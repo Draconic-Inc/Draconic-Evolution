@@ -13,10 +13,14 @@ public class BasicModuleType<T extends ModuleProperties<T>> implements ModuleTyp
     private int maxInstallable = -1;
     private int defaultWidth = -1;
     private int defaultHeight = -1;
+    private String name;
 
-    public BasicModuleType() {}
+    public BasicModuleType(String name) {
+        this.name = name;
+    }
 
-    public BasicModuleType(int maxInstallable) {
+    public BasicModuleType(String name, int maxInstallable) {
+        this.name = name;
         this.maxInstallable = maxInstallable;
     }
 
@@ -39,5 +43,10 @@ public class BasicModuleType<T extends ModuleProperties<T>> implements ModuleTyp
     @Override
     public int getDefaultHeight() {
         return defaultHeight;
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 }

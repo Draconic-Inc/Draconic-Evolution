@@ -2,10 +2,10 @@ package com.brandon3055.draconicevolution.api.modules.properties;
 
 import com.brandon3055.draconicevolution.api.TechLevel;
 import com.brandon3055.draconicevolution.api.modules.ModuleType;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by covers1624 on 4/16/20.
@@ -56,11 +56,28 @@ public abstract class ModuleProperties<T extends ModuleProperties<T>> {
 
     /**
      * Add information to the module item tooltip.
+     *
      * @param toolTip the item tool tip.
      */
-    public void addInformation(List<ITextComponent> toolTip) {
-        //TODO add info like module type and module grid size
-        toolTip.add(new StringTextComponent("//TODO"));
+    public void addInformation(List<ITextComponent> toolTip, ModuleType<?> type) {
+        toolTip.add(new TranslationTextComponent("module.de.type") //
+                .applyTextStyle(TextFormatting.GRAY)); //
+        toolTip.add(new StringTextComponent(" ") //
+                .appendSibling(new TranslationTextComponent("module.de.type." + type.getName()) //
+                        .applyTextStyle(TextFormatting.DARK_GREEN)));
+        toolTip.add(new TranslationTextComponent("module.de.size") //
+                .applyTextStyle(TextFormatting.GRAY)); //
+        toolTip.add(new StringTextComponent(" ") //
+                .appendSibling(new StringTextComponent(getWidth() + "x" + getHeight()) //
+                        .applyTextStyle(TextFormatting.DARK_GREEN)));
+//        toolTip.add(new TranslationTextComponent("module.de.type") //
+//                .setStyle(new Style().setColor(TextFormatting.GOLD)) //
+//                .appendSibling(new TranslationTextComponent("module.de.type." + type.getName()) //
+//                        .setStyle(new Style().setColor(TextFormatting.BLUE))));
+//        toolTip.add(new TranslationTextComponent("module.de.size") //
+//                .setStyle(new Style().setColor(TextFormatting.GOLD)) //
+//                .appendSibling(new StringTextComponent(getWidth() + "x" + getHeight()) //
+//                        .setStyle(new Style().setColor(TextFormatting.BLUE))));
     }
 
     /**
@@ -68,8 +85,8 @@ public abstract class ModuleProperties<T extends ModuleProperties<T>> {
      * This is then displayed in the module configuration GUI.
      * For example if there are multiple energy modules installed this will be used to display the total added energy capacity.
      *
-     * @param propertiesList List of module properties for all installed modules of this type.
-     * @param combinedStats The list to which the combined stats for this module type should be added.
+     * @param propertiesList   List of module properties for all installed modules of this type.
+     * @param statNameValueMap The map to which the combined stats for this module type should be added along with the name of the stat.
      */
-    public abstract void addCombinedStats(List<T> propertiesList, List<ITextComponent> combinedStats);
+    public abstract void addCombinedStats(List<T> propertiesList, Map<ITextComponent, ITextComponent> statNameValueMap);
 }

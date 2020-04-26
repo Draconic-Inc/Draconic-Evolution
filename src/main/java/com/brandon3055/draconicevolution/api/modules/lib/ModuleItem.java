@@ -35,9 +35,12 @@ public class ModuleItem<P extends ModuleProperties<P>> extends Item implements I
         this.moduleSupplier = moduleSupplier;
     }
 
-    public static IModule<?> getModuleFromItem(ItemStack stack) {
+    public static IModule<?> getModule(ItemStack stack) {
         LazyOptional<IModuleProvider<?>> cap = stack.getCapability(ModuleCapability.MODULE_CAPABILITY);
-        return cap.map(IModuleProvider::getModule).orElse(null);
+        if (!stack.isEmpty() && cap.isPresent()) {
+            return cap.orElseThrow(RuntimeException::new).getModule();
+        }
+        return null;
     }
 
     @Nullable
@@ -65,6 +68,6 @@ public class ModuleItem<P extends ModuleProperties<P>> extends Item implements I
     @Override
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         super.addInformation(stack, worldIn, tooltip, flagIn);
-        getModule().getProperties().addInformation(tooltip);
+        getModule().getProperties().addInformation(tooltip, getModule().getModuleType());
     }
 }

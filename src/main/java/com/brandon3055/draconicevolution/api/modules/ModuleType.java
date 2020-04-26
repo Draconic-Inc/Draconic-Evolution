@@ -38,4 +38,6 @@ public interface ModuleType<T extends ModuleProperties<T>> {
     int getDefaultWidth();
 
     int getDefaultHeight();
+
+    String getName();
 }

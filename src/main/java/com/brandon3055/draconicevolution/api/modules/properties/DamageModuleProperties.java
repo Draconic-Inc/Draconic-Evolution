@@ -5,6 +5,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by covers1624 on 4/16/20.
@@ -26,7 +27,7 @@ public class DamageModuleProperties extends ModuleProperties<DamageModulePropert
     }
 
     @Override
-    public void addCombinedStats(List<DamageModuleProperties> propertiesList, List<ITextComponent> combinedStats) {
-        combinedStats.add(new StringTextComponent("//TODO Combined Damage stats"));
+    public void addCombinedStats(List<DamageModuleProperties> propertiesList, Map<ITextComponent, ITextComponent> map) {
+        map.put(new StringTextComponent("DamageModule"), new StringTextComponent("TODO"));
     }
 }

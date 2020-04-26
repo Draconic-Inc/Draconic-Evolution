@@ -5,6 +5,7 @@ import com.brandon3055.draconicevolution.api.TechLevel;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleHostImpl;
 import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
 import com.brandon3055.draconicevolution.api.modules.capability.ModuleHostCapabilityProvider;
+import com.brandon3055.draconicevolution.init.ModuleCapability;
 import com.brandon3055.draconicevolution.inventory.ContainerModularItem;
 import com.brandon3055.draconicevolution.inventory.GuiLayoutFactories;
 import net.minecraft.client.util.ITooltipFlag;
@@ -21,6 +22,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fml.network.NetworkHooks;
@@ -61,12 +63,17 @@ public class TestModuleHost extends Item {
     @Override
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         super.addInformation(stack, worldIn, tooltip, flagIn);
-        if (stack.hasTag()) {
-            tooltip.add(new StringTextComponent("Itm: "+stack.getTag().getUniqueId("host_id").toString()));
-        }
-//        if (stack.capNBT != null) {
-//            tooltip.add(new StringTextComponent("Cap: "+stack.capNBT.getCompound("Parent").getUniqueId("host_id").toString()));
+//        if (stack.hasTag()) {
+//            tooltip.add(new StringTextComponent("Itm: " + stack.getTag().getUniqueId("host_id").toString()));
 //        }
+//        if (stack.capNBT != null) {
+//            tooltip.add(new StringTextComponent("Cap: "+stack.capNBT.toString()));
+//        }
+//        stack.getCapability(ModuleCapability.MODULE_HOST_CAPABILITY).ifPresent(moduleHost -> {
+//            tooltip.add(new StringTextComponent("Host: " + Integer.toHexString(moduleHost.hashCode())));
+//            tooltip.add(new StringTextComponent("Host: " + moduleHost.hashCode()));
+//            tooltip.add(new StringTextComponent("Modules: " + moduleHost.getModuleEntities()));
+//        });
     }
 
     @Override
@@ -76,7 +83,7 @@ public class TestModuleHost extends Item {
             NetworkHooks.openGui((ServerPlayerEntity) player, new INamedContainerProvider() {
                 @Override
                 public ITextComponent getDisplayName() {
-                    return new StringTextComponent("//Configure Modular Item");
+                    return player.getHeldItem(handIn).getDisplayName();
                 }
 
                 @Nullable

@@ -4,7 +4,7 @@ import codechicken.lib.model.ModelRegistryHelper;
 import codechicken.lib.texture.SpriteRegistryHelper;
 import codechicken.lib.util.ResourceUtils;
 import com.brandon3055.draconicevolution.CommonProxy;
-import com.brandon3055.draconicevolution.client.gui.GuiModularItem;
+import com.brandon3055.draconicevolution.client.gui.modular.GuiModularItem;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.energy.IENetEffectTile;

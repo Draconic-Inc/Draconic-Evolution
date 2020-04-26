@@ -1,17 +1,21 @@
 package com.brandon3055.draconicevolution.network;
 
+import codechicken.lib.data.MCDataInput;
 import codechicken.lib.packet.ICustomPacketHandler;
 import codechicken.lib.packet.PacketCustom;
 import com.brandon3055.brandonscore.handlers.HandHelper;
 import com.brandon3055.brandonscore.lib.ChatHelper;
+import com.brandon3055.draconicevolution.api.modules.lib.ModuleGrid;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.api.itemconfig.IConfigurableItem;
 import com.brandon3055.draconicevolution.api.itemconfig.ToolConfigHelper;
+import com.brandon3055.draconicevolution.inventory.ContainerModuleHost;
 import com.brandon3055.draconicevolution.items.tools.IAOEWeapon;
 import com.brandon3055.draconicevolution.items.tools.Magnet;
 import com.brandon3055.draconicevolution.items.tools.MiningToolBase;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.ClickType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.IServerPlayNetHandler;
 import net.minecraft.util.NonNullList;
@@ -26,17 +30,20 @@ public class ServerPacketHandler implements ICustomPacketHandler.IServerPacketHa
     @Override
     public void handlePacket(PacketCustom packet, ServerPlayerEntity sender, IServerPlayNetHandler handler) {
         switch (packet.getType()) {
-            case 1:
+            case DraconicNetwork.S_TOGGLE_DISLOCATORS:
                 toggleDislocators(sender);
                 break;
-            case 2:
+            case DraconicNetwork.S_TOOL_PROFILE:
                 changeToolProfile(sender, packet.readBoolean());
                 break;
-            case 3:
+            case DraconicNetwork.S_CYCLE_DIG_AOE:
                 cycleToolAOE(sender, packet.readBoolean());
                 break;
-            case 4:
+            case DraconicNetwork.S_CYCLE_ATTACK_AOE:
                 cycleAttackAOE(sender, packet.readBoolean());
+                break;
+            case DraconicNetwork.S_MODULE_CONTAINER_CLICK:
+                moduleSlotClick(sender, packet);
                 break;
         }
     }
@@ -140,6 +147,17 @@ public class ServerPacketHandler implements ICustomPacketHandler.IServerPacketHa
             }
 
             weapon.setWeaponAOE(stack, value);
+        }
+
+    }
+
+    private void moduleSlotClick(PlayerEntity player, MCDataInput input) {
+        if (player.openContainer instanceof ContainerModuleHost) {
+            ModuleGrid grid = ((ContainerModuleHost<?>) player.openContainer).getGrid();
+            if (grid != null) {
+                ModuleGrid.GridPos pos = grid.getCell(input.readByte(), input.readByte());
+                grid.cellClicked(pos, input.readByte(), input.readEnum(ClickType.class));
+            }
         }
 
     }

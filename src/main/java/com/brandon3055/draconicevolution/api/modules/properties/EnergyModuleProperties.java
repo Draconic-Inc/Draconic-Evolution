@@ -5,6 +5,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by covers1624 on 4/16/20.
@@ -27,10 +28,9 @@ public class EnergyModuleProperties extends ModuleProperties<EnergyModulePropert
     }
 
     @Override
-    public void addCombinedStats(List<EnergyModuleProperties> propertiesList, List<ITextComponent> combinedStats) {
-        combinedStats.add(new StringTextComponent("//TODO Combined Energy stats"));
+    public void addCombinedStats(List<EnergyModuleProperties> propertiesList, Map<ITextComponent, ITextComponent> map) {
+        map.put(new StringTextComponent("EnergyModule"), new StringTextComponent("TODO"));
     }
-
     //    class Impl implements EnergyModuleProperties {
 //
 //        public int width = 2;

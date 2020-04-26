@@ -3,7 +3,9 @@ package com.brandon3055.draconicevolution.network;
 import codechicken.lib.packet.PacketCustom;
 import codechicken.lib.packet.PacketCustomChannelBuilder;
 import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.api.modules.lib.ModuleGrid;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.ClickType;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -25,6 +27,7 @@ public class DraconicNetwork {
     public static final int S_TOOL_PROFILE =            2;
     public static final int S_CYCLE_DIG_AOE =           3;
     public static final int S_CYCLE_ATTACK_AOE =        4;
+    public static final int S_MODULE_CONTAINER_CLICK =  5;
 
     //Server to client
     public static final int C_CRYSTAL_UPDATE =          1;
@@ -52,6 +55,15 @@ public class DraconicNetwork {
     public static void sendCycleAttackAOE(boolean reverse) {
         PacketCustom packet = new PacketCustom(CHANNEL, S_CYCLE_ATTACK_AOE);
         packet.writeBoolean(reverse);
+        packet.sendToServer();
+    }
+
+    public static void sendModuleContainerClick(ModuleGrid.GridPos cell, int mouseButton, ClickType type) {
+        PacketCustom packet = new PacketCustom(CHANNEL, S_MODULE_CONTAINER_CLICK);
+        packet.writeByte(cell.getGridX());
+        packet.writeByte(cell.getGridY());
+        packet.writeByte(mouseButton);
+        packet.writeEnum(type);
         packet.sendToServer();
     }
 

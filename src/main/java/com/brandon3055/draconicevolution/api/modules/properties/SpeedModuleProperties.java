@@ -5,6 +5,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by covers1624 on 4/16/20.
@@ -32,7 +33,7 @@ public class SpeedModuleProperties extends ModuleProperties<SpeedModulePropertie
     }
 
     @Override
-    public void addCombinedStats(List<SpeedModuleProperties> propertiesList, List<ITextComponent> combinedStats) {
-        combinedStats.add(new StringTextComponent("//TODO Combined Speed stats"));
+    public void addCombinedStats(List<SpeedModuleProperties> propertiesList, Map<ITextComponent, ITextComponent> map) {
+        map.put(new StringTextComponent("SpeedModule"), new StringTextComponent("TODO"));
     }
 }

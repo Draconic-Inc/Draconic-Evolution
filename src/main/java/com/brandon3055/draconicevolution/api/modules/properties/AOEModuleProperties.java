@@ -5,6 +5,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by covers1624 on 4/16/20.
@@ -26,7 +27,7 @@ public class AOEModuleProperties extends ModuleProperties<AOEModuleProperties> {
     }
 
     @Override
-    public void addCombinedStats(List<AOEModuleProperties> propertiesList, List<ITextComponent> combinedStats) {
-        combinedStats.add(new StringTextComponent("//TODO Combined AOE stats"));
+    public void addCombinedStats(List<AOEModuleProperties> propertiesList, Map<ITextComponent, ITextComponent> map) {
+        map.put(new StringTextComponent("AOEModule"), new StringTextComponent("TODO"));
     }
 }

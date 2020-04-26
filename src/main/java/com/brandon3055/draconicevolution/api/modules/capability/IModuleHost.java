@@ -71,7 +71,7 @@ public interface IModuleHost extends INBTSerializable<CompoundNBT> {
                         return null;
                     }
                     int installed = (int) Streams.stream(newModules)//
-                            .filter(e -> e.getModuleTechLevel().index <= module.getModuleTechLevel().index)//
+                            .filter(e -> e.getModuleType() == module.getModuleType() && e.getModuleTechLevel().index <= module.getModuleTechLevel().index)//
                             .count();
                     if (installed > max) {
                         return new InstallResult(InstallResult.InstallResultType.NO, module, null, new TranslationTextComponent("too_complex"));//TODO Localize

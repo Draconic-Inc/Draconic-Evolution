@@ -5,6 +5,7 @@ import com.brandon3055.draconicevolution.api.TechLevel;
 import net.minecraft.util.text.ITextComponent;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by brandon3055 on 18/4/20.
@@ -21,7 +22,6 @@ public class BlankModuleProperties extends ModuleProperties<BlankModulePropertie
     }
 
     @Override
-    public void addCombinedStats(List<BlankModuleProperties> propertiesList, List<ITextComponent> combinedStats) {
-
+    public void addCombinedStats(List<BlankModuleProperties> propertiesList, Map<ITextComponent, ITextComponent> map) {
     }
 }

@@ -5,9 +5,8 @@ import com.brandon3055.brandonscore.client.utils.CyclingItemGroup;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 
 import com.brandon3055.draconicevolution.api.TechLevel;
-import com.brandon3055.draconicevolution.api.modules.properties.EnergyModuleProperties;
+import com.brandon3055.draconicevolution.api.modules.properties.*;
 import com.brandon3055.draconicevolution.api.modules.IModule;
-import com.brandon3055.draconicevolution.api.modules.properties.ShieldModuleProperties;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleItem;
 import com.brandon3055.draconicevolution.api.modules.lib.SimpleModuleImpl;
 import com.brandon3055.draconicevolution.items.modules.TestModuleHost;
@@ -24,8 +23,7 @@ import net.minecraftforge.registries.RegistryBuilder;
 
 import java.util.ArrayList;
 
-import static com.brandon3055.draconicevolution.api.modules.ModuleTypes.ENERGY_STORAGE;
-import static com.brandon3055.draconicevolution.api.modules.ModuleTypes.SHIELD;
+import static com.brandon3055.draconicevolution.api.modules.ModuleTypes.*;
 import static net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus.MOD;
 
 /**
@@ -54,6 +52,8 @@ public class DEModules {
     @ObjectHolder("test_module_1")          public static Item                          test_module_item_1;
     @ObjectHolder("test_module_2")          public static Item                          test_module_item_2;
     @ObjectHolder("test_module_3")          public static Item                          test_module_item_3;
+    @ObjectHolder("test_module_4")          public static Item                          test_module_item_4;
+    @ObjectHolder("test_module_5")          public static Item                          test_module_item_5;
     //@formatter:on
 
     @SubscribeEvent
@@ -73,20 +73,26 @@ public class DEModules {
         registerItem(event, new ModuleItem<>(new Properties().group(moduleGroup), () -> test_module_1).setRegistryName("test_module_1"));
         registerItem(event, new ModuleItem<>(new Properties().group(moduleGroup), () -> test_module_2).setRegistryName("test_module_2"));
         registerItem(event, new ModuleItem<>(new Properties().group(moduleGroup), () -> test_module_3).setRegistryName("test_module_3"));
+        registerItem(event, new ModuleItem<>(new Properties().group(moduleGroup), () -> test_module_4).setRegistryName("test_module_4"));
+        registerItem(event, new ModuleItem<>(new Properties().group(moduleGroup), () -> test_module_5).setRegistryName("test_module_5"));
     }
 
     //@formatter:off
     @ObjectHolder("test_module_1")        public static SimpleModuleImpl<?>          test_module_1;
     @ObjectHolder("test_module_2")        public static SimpleModuleImpl<?>          test_module_2;
     @ObjectHolder("test_module_3")        public static SimpleModuleImpl<?>          test_module_3;
+    @ObjectHolder("test_module_4")        public static SimpleModuleImpl<?>          test_module_4;
+    @ObjectHolder("test_module_5")        public static SimpleModuleImpl<?>          test_module_5;
     //@formatter:on
 
     @SubscribeEvent
     public static void registerModules(RegistryEvent.Register<IModule<?>> event) {
 
         event.getRegistry().register(new SimpleModuleImpl<>(ENERGY_STORAGE, new EnergyModuleProperties(TechLevel.DRACONIUM, 100000L), test_module_item_1).setRegistryName("test_module_1"));
-        event.getRegistry().register(new SimpleModuleImpl<>(ENERGY_STORAGE, new EnergyModuleProperties(TechLevel.WYVERN, 100000L), test_module_item_2).setRegistryName("test_module_2"));
-        event.getRegistry().register(new SimpleModuleImpl<>(SHIELD, new ShieldModuleProperties(TechLevel.WYVERN, 1000, 0), test_module_item_3).setRegistryName("test_module_3"));
+        event.getRegistry().register(new SimpleModuleImpl<>(SHIELD, new ShieldModuleProperties(TechLevel.WYVERN, 1000, 0), test_module_item_2).setRegistryName("test_module_2"));
+        event.getRegistry().register(new SimpleModuleImpl<>(AREA_OF_EFFECT, new AOEModuleProperties(TechLevel.WYVERN, 2), test_module_item_3).setRegistryName("test_module_3"));
+        event.getRegistry().register(new SimpleModuleImpl<>(DAMAGE, new DamageModuleProperties(TechLevel.WYVERN, 4), test_module_item_4).setRegistryName("test_module_4"));
+        event.getRegistry().register(new SimpleModuleImpl<>(SPEED, new SpeedModuleProperties(TechLevel.WYVERN, 5, 5), test_module_item_5).setRegistryName("test_module_5"));
     }
 
 

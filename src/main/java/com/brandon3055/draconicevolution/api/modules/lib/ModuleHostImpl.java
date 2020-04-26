@@ -82,6 +82,7 @@ public class ModuleHostImpl implements IModuleHost, INBTSerializable<CompoundNBT
             CompoundNBT entityNBT = new CompoundNBT();
             entityNBT.putString("id", entity.module.getRegistryName().toString());
             entity.writeToNBT(entityNBT);
+            modules.add(entityNBT);
         }
         nbt.put("modules", modules);
         return nbt;
