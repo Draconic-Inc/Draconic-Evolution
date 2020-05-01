@@ -9,21 +9,17 @@ import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Rotation;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.client.render.TESRBase;
-import com.brandon3055.brandonscore.lib.Vec3D;
-import com.brandon3055.brandonscore.utils.HolidayHelper;
 import com.brandon3055.brandonscore.utils.MathUtils;
-import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.client.render.shaders.DEShaders;
 import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
-import com.brandon3055.draconicevolution.utils.DETextures;
-import com.mojang.blaze3d.platform.GlStateManager;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.culling.Frustum;
+import com.brandon3055.draconicevolution.client.DETextures;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.math.AxisAlignedBB;
 import org.lwjgl.opengl.GL11;
 
 import java.util.Map;
@@ -41,7 +37,9 @@ public class RenderTileReactorCore extends TESRBase<TileReactorCore> {
     private static ShaderProgram reactorProgram;
     private static ShaderProgram shieldProgram;
 
-    public RenderTileReactorCore() {
+
+    public RenderTileReactorCore(TileEntityRendererDispatcher rendererDispatcherIn) {
+        super(rendererDispatcherIn);
         if (model == null) {
             Map<String, CCModel> map = OBJParser.parseModels(ResourceHelperDE.getResource("models/block/obj_models/reactor_core.obj"));
             model = CCModel.combine(map.values());
@@ -51,41 +49,46 @@ public class RenderTileReactorCore extends TESRBase<TileReactorCore> {
     }
 
     @Override
+    public void render(TileReactorCore tileEntityIn, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
+        super.render(tileEntityIn, partialTicks, matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn);
+    }
+
+//    @Override
     public void render(TileReactorCore te, double x, double y, double z, float partialTicks, int destroyStage) {
-        GlStateManager.pushMatrix();
+        RenderSystem.pushMatrix();
 //        GlStateTracker.pushState();
-        GlStateManager.disableLighting();
+        RenderSystem.disableLighting();
 
-        if (HolidayHelper.isAprilFools()) {
-            Frustum frustum = new Frustum();
-            Minecraft mc = Minecraft.getInstance();
-            Entity entity = mc.getRenderViewEntity();
-            double d0 = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * (double) mc.getRenderPartialTicks();
-            double d1 = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * (double) mc.getRenderPartialTicks();
-            double d2 = entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * (double) mc.getRenderPartialTicks();
-            frustum.setPosition(d0, d1, d2);
-            te.inView = frustum.isBoundingBoxInFrustum(new AxisAlignedBB(te.roller == null ? te.getPos() : te.roller.pos.getPos()).grow(3, 3, 3));
+//        if (HolidayHelper.isAprilFools()) {
+//            Frustum frustum = new Frustum();
+//            Minecraft mc = Minecraft.getInstance();
+//            Entity entity = mc.getRenderViewEntity();
+//            double d0 = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * (double) mc.getRenderPartialTicks();
+//            double d1 = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * (double) mc.getRenderPartialTicks();
+//            double d2 = entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * (double) mc.getRenderPartialTicks();
+//            frustum.setPosition(d0, d1, d2);
+//            te.inView = frustum.isBoundingBoxInFrustum(new AxisAlignedBB(te.roller == null ? te.getPos() : te.roller.pos.getPos()).grow(3, 3, 3));
+//
+//            if (te.roller != null) {
+//                Vec3D pos = te.roller.pos;
+//                Vec3D lastPos = te.roller.lastPos;
+//                Vec3D tePos = Vec3D.getCenter(te);
+//                double xOffset = (pos.x - tePos.x) + ((pos.x - lastPos.x) * partialTicks);
+//                double yOffset = (pos.y - tePos.y) + ((pos.y - lastPos.y) * partialTicks);
+//                double zOffset = (pos.z - tePos.z) + ((pos.z - lastPos.z) * partialTicks);
+//
+//                x += xOffset;
+//                y += yOffset;
+//                z += zOffset;
+//
+//                float travel = (float) Utils.getDistanceAtoB(te.getPos().getX(), te.getPos().getZ(), pos.x, pos.z);
+//                RenderSystem.translated(x + 0.5, y + 0.5, z + 0.5);
+//                RenderSystem.rotatef(travel * (360 / (float) (te.getCoreDiameter() * Math.PI)), (float) Math.sin(te.roller.direction), 0, (float) Math.cos(te.roller.direction) * -1);
+//                RenderSystem.translated(-(x + 0.5), -(y + 0.5), -(z + 0.5));
+//            }
+//        }
 
-            if (te.roller != null) {
-                Vec3D pos = te.roller.pos;
-                Vec3D lastPos = te.roller.lastPos;
-                Vec3D tePos = Vec3D.getCenter(te);
-                double xOffset = (pos.x - tePos.x) + ((pos.x - lastPos.x) * partialTicks);
-                double yOffset = (pos.y - tePos.y) + ((pos.y - lastPos.y) * partialTicks);
-                double zOffset = (pos.z - tePos.z) + ((pos.z - lastPos.z) * partialTicks);
-
-                x += xOffset;
-                y += yOffset;
-                z += zOffset;
-
-                float travel = (float) Utils.getDistanceAtoB(te.getPos().getX(), te.getPos().getZ(), pos.x, pos.z);
-                GlStateManager.translated(x + 0.5, y + 0.5, z + 0.5);
-                GlStateManager.rotatef(travel * (360 / (float) (te.getCoreDiameter() * Math.PI)), (float) Math.sin(te.roller.direction), 0, (float) Math.cos(te.roller.direction) * -1);
-                GlStateManager.translated(-(x + 0.5), -(y + 0.5), -(z + 0.5));
-            }
-        }
-
-        setLighting(200);
+//        setLighting(200);
         double diameter = te.getCoreDiameter();
         float t = (float) (te.temperature.get() / MAX_TEMPERATURE);
         float intensity = t <= 0.2 ? (float) MathUtils.map(t, 0, 0.2, 0, 0.3) : t <= 0.8 ? (float) MathUtils.map(t, 0.2, 0.8, 0.3, 1) : (float) MathUtils.map(t, 0.8, 1, 1, 1.3);
@@ -106,29 +109,29 @@ public class RenderTileReactorCore extends TESRBase<TileReactorCore> {
 //            renderShield(x, y, z, partialTicks, power, animation, diameter, DEShaders.useShaders());
 //        }
 
-        resetLighting();
+//        resetLighting();
 //        GlStateTracker.popState();
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
     }
 
     public void renderItem() {
-        GlStateManager.pushMatrix();
+        RenderSystem.pushMatrix();
 //        GlStateTracker.pushState();
-        GlStateManager.disableLighting();
-        setLighting(200);
+        RenderSystem.disableLighting();
+//        setLighting(200);
         float scale = 1.3F;
         float animation = 0;
         float intensity = 0;
 
         renderCore(0, 0, 0, 0, intensity, animation, scale, DEShaders.useShaders());
 
-        resetLighting();
+//        resetLighting();
 //        GlStateTracker.popState();
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
     }
 
     public static void renderGUI(TileReactorCore te, int x, int y) {
-        GlStateManager.pushMatrix();
+        RenderSystem.pushMatrix();
 //        GlStateTracker.pushState();
 
         double diameter = 100;
@@ -141,7 +144,7 @@ public class RenderTileReactorCore extends TESRBase<TileReactorCore> {
         renderShield(x - 0.5, y, 100, 0, (0.7F * shieldPower) - (float) (1 - te.shaderAnimationState.get()), animation, diameter, DEShaders.useShaders());
 
 //        GlStateTracker.popState();
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
     }
 
     private static void renderCore(double x, double y, double z, float partialTicks, float intensity, float animation, double diameter, boolean useShader) {
@@ -185,11 +188,11 @@ public class RenderTileReactorCore extends TESRBase<TileReactorCore> {
             float g = ff > 0.5F ? (ff - 0.5F) * 2 : 0;
             float b = ff * 2;
             float a = ff < 0.1F ? (ff * 10) : 1;
-            GlStateManager.color4f(r, g, b, a);
+            RenderSystem.color4f(r, g, b, a);
         }
 
-        GlStateManager.enableBlend();
-        GlStateManager.alphaFunc(GL11.GL_GREATER, 0);
+        RenderSystem.enableBlend();
+        RenderSystem.alphaFunc(GL11.GL_GREATER, 0);
         CCRenderState ccrs = CCRenderState.instance();
         ccrs.startDrawing(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX);
 
@@ -202,7 +205,7 @@ public class RenderTileReactorCore extends TESRBase<TileReactorCore> {
         }
 
         ccrs.draw();
-        GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
+        RenderSystem.alphaFunc(GL11.GL_GREATER, 0.1F);
 
         if (useShader) {
             shieldProgram.releaseShader();

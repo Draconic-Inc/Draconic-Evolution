@@ -54,7 +54,7 @@ public class GuiCelestialManipulator extends ModularGuiContainer<ContainerDummy<
 //        manager.add(new MGuiElementBase(this) {
 //            @Override
 //            public void renderBackgroundLayer(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
-//                GlStateManager.color(1, 1, 1);
+//                RenderSystem.color(1, 1, 1);
 //                GuiHelper.drawPlayerSlots(GuiCelestialManipulator.this, guiLeft + (GuiCelestialManipulator.this.xSize / 2), guiTop + 119, true);
 //            }
 //        });

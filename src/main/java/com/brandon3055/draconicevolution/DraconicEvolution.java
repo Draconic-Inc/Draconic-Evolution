@@ -1,38 +1,28 @@
 package com.brandon3055.draconicevolution;
 
-import com.brandon3055.brandonscore.BCConfig;
 import com.brandon3055.draconicevolution.client.ClientProxy;
+
 import com.brandon3055.draconicevolution.utils.LogHelper;
-import net.minecraft.data.AdvancementProvider;
-import net.minecraft.data.DataGenerator;
-import net.minecraft.data.DirectoryCache;
-import net.minecraft.data.IDataProvider;
-import net.minecraftforge.client.model.generators.BlockStateProvider;
+import io.netty.handler.codec.http.websocketx.WebSocketClientProtocolHandler;
+import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
+import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLDedicatedServerSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.fml.network.NetworkEvent;
 
-import java.io.IOException;
 
 @Mod(DraconicEvolution.MODID)
 public class DraconicEvolution {
     public static final String MODID = "draconicevolution";
     public static final String MODNAME = "Draconic Evolution";
-
-    //region Misc Fields
-//    public static CreativeTabs tabToolsWeapons = new DETab(CreativeTabs.getNextID(), DraconicEvolution.MODID, "toolsAndWeapons", 0);
-//    public static CreativeTabs tabBlocksItems = new DETab(CreativeTabs.getNextID(), DraconicEvolution.MODID, "blocksAndItems", 1);
-    //endregion
 
     public static CommonProxy proxy;
 
@@ -42,7 +32,8 @@ public class DraconicEvolution {
         proxy = DistExecutor.runForDist(() -> ClientProxy::new, () -> CommonProxy::new);
         FMLJavaModLoadingContext.get().getModEventBus().register(this);
         MinecraftForge.EVENT_BUS.register(this);
-
+//        ClientPlayerNetworkEvent.
+//        ClientPlayerNetworkEvent.LoggedInEvent
 //        DeferredRegister
 
 //        ModLoadingContext modLoadingContext = ModLoadingContext.get();
@@ -55,6 +46,23 @@ public class DraconicEvolution {
     @SubscribeEvent
     public void onCommonSetup(FMLCommonSetupEvent event) {
         proxy.commonSetup(event);
+    }
+
+    @SubscribeEvent
+    public void onColourSetup(ColorHandlerEvent.Block event) {
+        proxy.onColourSetup(event);
+//        AtlasTexture textureAtlas = new AtlasTexture(LOCATION_MODULE_TEXTURE);
+//        Minecraft.getInstance().textureManager.loadTexture(textureAtlas.getTextureLocation(), textureAtlas);
+
+//        Minecraft minecraft = Minecraft.getInstance();
+//        IReloadableResourceManager resourceManager = (IReloadableResourceManager)minecraft.getResourceManager();
+//        TextureManager textureManager = Minecraft.getInstance().textureManager;
+//        resourceManager.addReloadListener(new SpriteUploader(textureManager, ModuleTextures.LOCATION_MODULE_TEXTURE, "modules") {
+//            @Override
+//            protected Stream<ResourceLocation> getResourceLocations() {
+//                return Stream.<ResourceLocation>builder().build();
+//            }
+//        });
     }
 
     @SubscribeEvent

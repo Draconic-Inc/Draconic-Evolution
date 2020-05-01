@@ -7,6 +7,7 @@ import com.brandon3055.draconicevolution.init.ModuleCapability;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Rarity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
@@ -25,6 +26,7 @@ import java.util.function.Supplier;
  */
 public class ModuleItem<P extends ModuleProperties<P>> extends Item implements IModuleProvider<P> {
 
+    @Deprecated //Do not access this directly!
     private IModule<P> module = null;
     private final Supplier<IModule<P>> moduleSupplier;
 
@@ -68,6 +70,11 @@ public class ModuleItem<P extends ModuleProperties<P>> extends Item implements I
     @Override
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         super.addInformation(stack, worldIn, tooltip, flagIn);
-        getModule().getProperties().addInformation(tooltip, getModule().getModuleType());
+        getModule().addInformation(tooltip);
+    }
+
+    @Override
+    public Rarity getRarity(ItemStack stack) {
+        return getModule().getProperties().getTechLevel().getRarity();
     }
 }

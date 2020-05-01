@@ -102,7 +102,7 @@ public class StabilizedSpawnerLogic extends AbstractSpawner {
                             DEEventHandler.onMobSpawnedBySpawner((MobEntity) entity);
                         }
 
-                        addEntityToWorld(entity);
+                        func_221409_a(entity);
                         world.playEvent(2004, blockpos, 0);
 
                         if (entityliving != null) {

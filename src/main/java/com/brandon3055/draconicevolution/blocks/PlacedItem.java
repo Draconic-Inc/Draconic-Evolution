@@ -15,6 +15,7 @@ import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
@@ -118,9 +119,9 @@ public class PlacedItem extends BlockBCore /*implements ITileEntityProvider, IRe
     //region Interact
 
     @Override
-    public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hitIIn) {
+    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hitIIn) {
         if (world.isRemote) {
-            return true;
+            return ActionResultType.SUCCESS;
         }
 
         TileEntity tile = world.getTileEntity(pos);
@@ -133,12 +134,12 @@ public class PlacedItem extends BlockBCore /*implements ITileEntityProvider, IRe
                 hit = subHitResult;
             }
             else if (hit == null) {
-                return true;
+                return ActionResultType.SUCCESS;
             }
 
             ((TilePlacedItem) tile).handleClick(hit.subHit, player);
         }
-        return true;
+        return ActionResultType.SUCCESS;
     }
 
 //    @Override

@@ -1,6 +1,6 @@
 {
-	"parent": "block/block",
 	"credit": "Made by brandon3055 with Blockbench",
+	"parent": "block/block",
 	"textures": {
 		"3": "draconicevolution:models/parts/machine_frame",
 		"4": "draconicevolution:models/block/grinder",
@@ -11,7 +11,7 @@
 		{
 			"name": "frame1",
 			"from": [0, 0, 0],
-			"to": [0.98, 16, 16],
+			"to": [0.9, 16, 16],
 			"faces": {
 				"east": {"uv": [0, 0, 16, 16], "texture": "#3"},
 				"west": {"uv": [0, 0, 16, 16], "texture": "#3"}
@@ -19,7 +19,7 @@
 		},
 		{
 			"name": "frame2",
-			"from": [15.02, 0, 0],
+			"from": [15.1, 0, 0],
 			"to": [16, 16, 16],
 			"faces": {
 				"east": {"uv": [0, 0, 16, 16], "texture": "#3"},
@@ -28,7 +28,7 @@
 		},
 		{
 			"name": "frame3",
-			"from": [0, 15.02, 0],
+			"from": [0, 15.1, 0],
 			"to": [16, 16, 16],
 			"faces": {
 				"up": {"uv": [0, 0, 16, 16], "texture": "#3"},
@@ -38,7 +38,7 @@
 		{
 			"name": "frame4",
 			"from": [0, 0, 0],
-			"to": [16, 0.98, 16],
+			"to": [16, 0.9, 16],
 			"faces": {
 				"up": {"uv": [0, 0, 16, 16], "texture": "#3"},
 				"down": {"uv": [0, 0, 16, 16], "texture": "#3"}
@@ -46,7 +46,7 @@
 		},
 		{
 			"name": "frame5",
-			"from": [0, 0, 15.02],
+			"from": [0, 0, 15.1],
 			"to": [16, 16, 16],
 			"faces": {
 				"north": {"uv": [0, 0, 16, 16], "texture": "#3"},
@@ -56,7 +56,7 @@
 		{
 			"name": "frame6",
 			"from": [0, 0, 0],
-			"to": [16, 16, 0.98],
+			"to": [16, 16, 0.9],
 			"faces": {
 				"north": {"uv": [0, 0, 16, 16], "texture": "#3"},
 				"south": {"uv": [0, 0, 16, 16], "texture": "#3"}

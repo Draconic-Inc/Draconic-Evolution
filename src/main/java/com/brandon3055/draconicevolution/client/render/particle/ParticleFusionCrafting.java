@@ -137,15 +137,15 @@ public class ParticleFusionCrafting extends BCParticle {
 //        float correctY = (float) (this.prevPosY + (this.posY - this.prevPosY) * (double) partialTicks);
 //        float correctZ = (float) (this.prevPosZ + (this.posZ - this.prevPosZ) * (double) partialTicks);
 //
-//        GlStateManager.pushMatrix();
-//        GlStateManager.enableBlend();
-//        GlStateManager.color(particleRed, particleGreen, particleBlue, particleAlpha);
-//        // GlStateManager.color(1, 0, 0, 1);
-//        GlStateManager.translate(x, y, z);
+//        RenderSystem.pushMatrix();
+//        RenderSystem.enableBlend();
+//        RenderSystem.color(particleRed, particleGreen, particleBlue, particleAlpha);
+//        // RenderSystem.color(1, 0, 0, 1);
+//        RenderSystem.translate(x, y, z);
 //
-//        GlStateManager.rotate(rotation + (partialTicks * rotationSpeed), 0F, 1F, 0F);
-//        //GlStateManager.rotate((float)Math.sin((ROTATION + partialTicks) * rotationSpeed / 100F) * 20F, 1F, 0F, 0F);
-//        GlStateManager.translate(-x, -y, -z);
+//        RenderSystem.rotate(rotation + (partialTicks * rotationSpeed), 0F, 1F, 0F);
+//        //RenderSystem.rotate((float)Math.sin((ROTATION + partialTicks) * rotationSpeed / 100F) * 20F, 1F, 0F, 0F);
+//        RenderSystem.translate(-x, -y, -z);
 //
 //        ccrs.reset();
 //        ccrs.startDrawing(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_NORMAL, vertexbuffer);
@@ -154,13 +154,13 @@ public class ParticleFusionCrafting extends BCParticle {
 //        CCModelLibrary.icosahedron7.render(ccrs, pearlMat);
 //        ccrs.draw();
 //
-//        GlStateManager.popMatrix();
-//        GlStateManager.color(1F, 1F, 1F, 1F);
+//        RenderSystem.popMatrix();
+//        RenderSystem.color(1F, 1F, 1F, 1F);
 //
 //        //endregion
 //
-//        GlStateManager.pushMatrix();
-//        GlStateManager.translate(x, y, z);
+//        RenderSystem.pushMatrix();
+//        RenderSystem.translate(x, y, z);
 //
 //        if (renderBolt) {
 //            renderBolt = false;
@@ -175,10 +175,10 @@ public class ParticleFusionCrafting extends BCParticle {
 ////            RenderEnergyBolt.renderCorona(new Vec3D(), t, 0.01, 0.2, 4, world.rand.nextLong());
 ////        }
 //
-//        GlStateManager.enableBlend();
-//        GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-//        GlStateManager.disableLighting();
-//        GlStateManager.popMatrix();
+//        RenderSystem.enableBlend();
+//        RenderSystem.blendFunc(RenderSystem.SourceFactor.SRC_ALPHA, RenderSystem.DestFactor.ONE_MINUS_SRC_ALPHA);
+//        RenderSystem.disableLighting();
+//        RenderSystem.popMatrix();
 //
 //        //Restore Draw State
 //        vertexbuffer.begin(7, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);

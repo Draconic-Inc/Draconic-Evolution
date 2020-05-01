@@ -4,7 +4,6 @@ import com.brandon3055.brandonscore.blocks.BlockBCore;
 import com.brandon3055.brandonscore.blocks.ItemBlockBCore;
 import com.brandon3055.brandonscore.client.utils.CyclingItemGroup;
 import com.brandon3055.brandonscore.inventory.ContainerBCTile;
-import com.brandon3055.brandonscore.inventory.ContainerBCore;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.*;
 import com.brandon3055.draconicevolution.blocks.energynet.EnergyCrystal;
@@ -34,6 +33,7 @@ import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.ToolType;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -236,9 +236,9 @@ public class DEContent {
 
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> event) {
-        Properties machine = Properties.create(IRON, GRAY).hardnessAndResistance(3.0F, 8F);
-        Properties hardenedMachine = Properties.create(IRON, GRAY).hardnessAndResistance(5.0F, 12F);
-        Properties storageBlock = Properties.create(IRON, GRAY).hardnessAndResistance(30.0F, 600F);
+        Properties machine = Properties.create(IRON, GRAY).hardnessAndResistance(3.0F, 8F).notSolid();
+        Properties hardenedMachine = Properties.create(IRON, GRAY).hardnessAndResistance(5.0F, 12F).notSolid();
+        Properties storageBlock = Properties.create(IRON, GRAY).hardnessAndResistance(30.0F, 600F).harvestTool(ToolType.PICKAXE).harvestLevel(3);
         Properties stoneProp = Properties.create(Material.ROCK, GRAY).hardnessAndResistance(1.5F, 6F);
         Properties ore = Properties.create(Material.ROCK, GRAY).hardnessAndResistance(6.0F, 16F);
 
@@ -272,7 +272,7 @@ public class DEContent {
         event.getRegistry().register(new EnergyCore(hardenedMachine).setRegistryName("energy_core"));
         event.getRegistry().register(new EnergyCoreStabilizer(hardenedMachine).setRegistryName("energy_core_stabilizer"));
         event.getRegistry().register(new EnergyPylon(hardenedMachine).setRegistryName("energy_pylon"));
-        event.getRegistry().register(new EnergyCoreStructureBlock(Properties.create(IRON, GRAY).hardnessAndResistance(5.0F, 12F).noDrops()).setRegistryName("energy_core_structure"));
+        event.getRegistry().register(new EnergyCoreStructureBlock(Properties.create(IRON, GRAY).hardnessAndResistance(5.0F, 12F).noDrops().notSolid()).setRegistryName("energy_core_structure"));
 //        //Reactor
 //        event.getRegistry().register(new ReactorCore(hardenedMachine).setRegistryName("reactor_core"));
 //        event.getRegistry().register(new ReactorComponent(hardenedMachine, false).setRegistryName("reactor_stabilizer"));

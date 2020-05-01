@@ -1,66 +1,50 @@
 package com.brandon3055.draconicevolution.client.render.tile;
 
-import com.brandon3055.brandonscore.client.render.TESRBase;
+import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyCoreStabilizer;
 import com.brandon3055.draconicevolution.client.model.ModelLargeECStabilizer;
-import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
-import com.brandon3055.draconicevolution.utils.DETextures;
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Quaternion;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 
 /**
  * Created by brandon3055 on 19/4/2016.
  */
-public class RenderTileECStabilizer extends TESRBase<TileEnergyCoreStabilizer> {
+public class RenderTileECStabilizer extends TileEntityRenderer<TileEnergyCoreStabilizer> {
 
-    private static ModelLargeECStabilizer largeModel;
+    private static final RenderType modelType = RenderType.getEntitySolid(new ResourceLocation(DraconicEvolution.MODID, "textures/block/stabilizer_large.png"));
+    private final ModelLargeECStabilizer model;
 
-    public RenderTileECStabilizer() {
-        largeModel = new ModelLargeECStabilizer();
+    public RenderTileECStabilizer(TileEntityRendererDispatcher rendererDispatcherIn) {
+        super(rendererDispatcherIn);
+        model = new ModelLargeECStabilizer();
     }
-
 
     @Override
-    public void render(TileEnergyCoreStabilizer te, double x, double y, double z, float partialTicks, int destroyStage) {
-        GlStateManager.pushMatrix();
-        GlStateManager.translated(x + 0.5, y + 0.5, z + 0.5);
-        GlStateManager.disableBlend();
-        setLighting(200F);
+    public void render(TileEnergyCoreStabilizer tile, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer getter, int packedLightIn, int packedOverlayIn) {
+        if (!tile.isValidMultiBlock.get()) return;
 
-        //region Rotate Renderer
         Direction facing;
-        if (te.isCoreActive.get()) {
-            facing = te.coreDirection.get();
-        }
-        else {
-            facing = Direction.getFacingFromAxis(Direction.AxisDirection.POSITIVE, te.multiBlockAxis.get());
+        if (tile.isCoreActive.get()) {
+            facing = tile.coreDirection.get();
+        } else {
+            facing = Direction.getFacingFromAxis(Direction.AxisDirection.POSITIVE, tile.multiBlockAxis.get());
         }
 
+        matrixStack.push();
+        matrixStack.translate(0.5, 0.5, 0.5);
         if (facing.getAxis() == Direction.Axis.X || facing.getAxis() == Direction.Axis.Y) {
-            GlStateManager.rotatef(-90F, -facing.getYOffset(), facing.getXOffset(), 0);
+            matrixStack.rotate(new Quaternion(facing.getYOffset() * 90, facing.getXOffset() * -90, 0, true));
+        } else if (facing == Direction.SOUTH) {
+            matrixStack.rotate(new Quaternion(0, 180F, 0, true));
         }
-        else if (facing == Direction.SOUTH) {
-            GlStateManager.rotatef(180F, 0, 1, 0);
-        }
-        //endregion
-
-        renderRing(te, partialTicks);
-
-        resetLighting();
-        GlStateManager.popMatrix();
-    }
-
-    private void renderRing(TileEnergyCoreStabilizer te, float partialTicks) {
-        if (!te.isValidMultiBlock.get()) {
-            return;
-        }
-
-        GlStateManager.pushMatrix();
-//        ResourceHelperDE.bindTexture(DETextures.STABILIZER_LARGE);
-        ResourceHelperDE.bindTexture(DETextures.STABILIZER_LARGE);
-        GlStateManager.rotatef(te.rotation + (te.isCoreActive.get() ? partialTicks : 0), 0, 0, 1);
-        GlStateManager.depthMask(true);
-        largeModel.render(1F / 16F);
-        GlStateManager.popMatrix();
+        matrixStack.rotate(new Quaternion(0, 0F, tile.rotation + (tile.isCoreActive.get() ? partialTicks : 0), true));
+        model.render(matrixStack, getter.getBuffer(modelType), packedLightIn, packedOverlayIn, 1, 1, 1, 1);
+        matrixStack.pop();
     }
 }

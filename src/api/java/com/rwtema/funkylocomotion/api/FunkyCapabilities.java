@@ -39,7 +39,7 @@ public class FunkyCapabilities {
 
 			@Override
 			public INBT writeNBT(Capability<T> capability, T instance, Direction side) {
-				return new ByteNBT((byte) 0);
+				return ByteNBT.valueOf((byte) 0);
 			}
 
 			@Override

@@ -11,7 +11,7 @@
 //import net.minecraft.client.gui.GuiButton;
 //import net.minecraft.client.gui.screen.Screen;
 //import net.minecraft.client.gui.ScaledResolution;
-//import net.minecraft.client.renderer.GlStateManager;
+//import net.minecraft.client.renderer.RenderSystem;
 //import net.minecraft.client.renderer.RenderHelper;
 //import net.minecraft.client.resources.I18n;
 //import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -161,10 +161,10 @@
 //        drawCenteredString(fontRenderer, DEConfig.hudSettings[5] + "%", width / 2 + 97, height / 2 - 1, 0xFFFFFF);
 //        super.drawScreen(x, y, partial);
 //
-//        GlStateManager.disableRescaleNormal();
+//        RenderSystem.disableRescaleNormal();
 //        RenderHelper.disableStandardItemLighting();
-//        GlStateManager.disableLighting();
-//        GlStateManager.disableDepth();
+//        RenderSystem.disableLighting();
+//        RenderSystem.disableDepth();
 //
 //        GuiHelper.drawGradientRect(hudX - 19, hudY - 19, hudX + 20, hudY + 20, 0x20FF00FF, 0x20FF00FF, 1F, 1D);
 //        GuiHelper.drawGradientRect(hudX - 4, hudY, hudX + 5, hudY + 1, 0xFFFFFFFF, 0xFFFFFFFF, 1F, 1D);
@@ -182,10 +182,10 @@
 //        GuiHelper.drawGradientRect(armorX - 19, armorY - 19, armorX - 18, armorY + 20, 0xFFFFFFFF, 0xFFFFFFFF, 1F, 1D);
 //        GuiHelper.drawGradientRect(armorX + 19, armorY - 19, armorX + 20, armorY + 20, 0xFFFFFFFF, 0xFFFFFFFF, 1F, 1D);
 //
-//        GlStateManager.enableLighting();
-//        GlStateManager.enableDepth();
+//        RenderSystem.enableLighting();
+//        RenderSystem.enableDepth();
 //        RenderHelper.enableStandardItemLighting();
-//        GlStateManager.enableRescaleNormal();
+//        RenderSystem.enableRescaleNormal();
 //
 //        if (GuiHelper.isInRect(armorX - 19, armorY - 19, 39, 39, x, y) || GuiHelper.isInRect(hudX - 19, hudY - 19, 39, 39, x, y)) {
 //            drawHoveringText(new ArrayList<String>() {{

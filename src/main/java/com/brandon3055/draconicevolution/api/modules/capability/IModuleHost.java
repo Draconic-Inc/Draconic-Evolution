@@ -5,6 +5,10 @@ import com.brandon3055.draconicevolution.api.modules.IModule;
 import com.brandon3055.draconicevolution.api.modules.lib.InstallResult;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.brandon3055.draconicevolution.api.modules.ModuleType;
+import com.brandon3055.draconicevolution.api.modules.properties.EnergyModuleProperties;
+import com.brandon3055.draconicevolution.api.modules.properties.ModuleProperties;
+import com.brandon3055.draconicevolution.api.modules.properties.ModuleProperties.SubProperty;
+import com.brandon3055.draconicevolution.api.modules.properties.ShieldModuleProperties;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Streams;
 import net.minecraft.nbt.CompoundNBT;
@@ -52,6 +56,16 @@ public interface IModuleHost extends INBTSerializable<CompoundNBT> {
      * @return the height of this {@link IModuleHost}'s module grid.
      */
     int getGridHeight();
+
+    /**
+     * For modules that have different stats based on what they are installed in.
+     * For example speed modules have different sub properties for machines and players.
+     *
+     * This is currently only used for displaying the stats for modules installed in a grid.
+     */
+    default boolean isSubPropertySupported(ModuleProperties<?> properties, SubProperty<?> subProperty) {
+        return true;
+    }
 
     default InstallResult checkAddModule(IModule<?> newModule) {
         Collection<IModule<?>> view = Collections.unmodifiableList(getModules().collect(Collectors.toList()));

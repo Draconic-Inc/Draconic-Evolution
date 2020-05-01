@@ -1,10 +1,11 @@
-package com.brandon3055.draconicevolution.utils;
+package com.brandon3055.draconicevolution.client;
 
 import codechicken.lib.texture.AtlasRegistrar;
 import codechicken.lib.texture.IIconRegister;
 import com.brandon3055.brandonscore.BCConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.model.GlassParticleDummyModel;
+import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
@@ -31,10 +32,10 @@ public class DETextures implements IIconRegister, ISelectiveResourceReloadListen
     private static ArrayList<ResourceLocation> locations = new ArrayList<ResourceLocation>();
 
     static {
-        locations.add(new ResourceLocation(DraconicEvolution.MODID, "models/pylon_sphere_texture"));
-        locations.add(new ResourceLocation(DraconicEvolution.MODID, "models/energy_core_base"));
-        locations.add(new ResourceLocation(DraconicEvolution.MODID, "models/energy_core_overlay"));
-        locations.add(new ResourceLocation(DraconicEvolution.MODID, "models/stabilizer_sphere"));
+//        locations.add(new ResourceLocation(DraconicEvolution.MODID, "models/pylon_sphere_texture"));
+//        locations.add(new ResourceLocation(DraconicEvolution.MODID, "models/energy_core_base"));
+//        locations.add(new ResourceLocation(DraconicEvolution.MODID, "models/energy_core_overlay"));
+//        locations.add(new ResourceLocation(DraconicEvolution.MODID, "models/stabilizer_sphere"));
         locations.add(new ResourceLocation(DraconicEvolution.MODID, "items/tools/obj/arrow_common"));
         locations.add(new ResourceLocation(DraconicEvolution.MODID, "models/block/generator/generator_2"));
         locations.add(new ResourceLocation(DraconicEvolution.MODID, "models/block/grinder"));
@@ -53,59 +54,59 @@ public class DETextures implements IIconRegister, ISelectiveResourceReloadListen
     public void registerIcons(AtlasRegistrar registrar) {
         map = registrar;
 
-        //@formatter:off
-        register(TOOLS_ + "wyvern_axe", e -> WYVERN_AXE = e);
-        register(TOOLS_ + "wyvern_bow00", e -> WYVERN_BOW00 = e);
-        register(TOOLS_ + "wyvern_bow01", e -> WYVERN_BOW01 = e);
-        register(TOOLS_ + "wyvern_bow02", e -> WYVERN_BOW02 = e);
-        register(TOOLS_ + "wyvern_bow03", e -> WYVERN_BOW03 = e);
-        register(TOOLS_ + "wyvern_pickaxe", e -> WYVERN_PICKAXE = e);
-        register(TOOLS_ + "wyvern_shovel", e -> WYVERN_SHOVEL = e);
-        register(TOOLS_ + "wyvern_sword", e -> WYVERN_SWORD = e);
-        register(TOOLS_ + "draconic_axe", e -> DRACONIC_AXE = e);
-        register(TOOLS_ + "draconic_bow00", e -> DRACONIC_BOW00 = e);
-        register(TOOLS_ + "draconic_bow01", e -> DRACONIC_BOW01 = e);
-        register(TOOLS_ + "draconic_bow02", e -> DRACONIC_BOW02 = e);
-        register(TOOLS_ + "draconic_bow03", e -> DRACONIC_BOW03 = e);
-        register(TOOLS_ + "draconic_hoe", e -> DRACONIC_HOE = e);
-        register(TOOLS_ + "draconic_pickaxe", e -> DRACONIC_PICKAXE = e);
-        register(TOOLS_ + "draconic_shovel", e -> DRACONIC_SHOVEL = e);
-        register(TOOLS_ + "draconic_staff_of_power", e -> DRACONIC_STAFF_OF_POWER = e);
-        register(TOOLS_ + "draconic_sword", e -> DRACONIC_SWORD = e);
-
-        //OBJ textures. Just need to be registered, never accessed by us through here.
-        register(TOOLS_OBJ_ + "wyvern_axe", e -> {});
-        register(TOOLS_OBJ_ + "wyvern_bow00", e -> {});
-        register(TOOLS_OBJ_ + "wyvern_bow01", e -> {});
-        register(TOOLS_OBJ_ + "wyvern_bow02", e -> {});
-        register(TOOLS_OBJ_ + "wyvern_bow03", e -> {});
-        register(TOOLS_OBJ_ + "wyvern_pickaxe", e -> {});
-        register(TOOLS_OBJ_ + "wyvern_shovel", e -> {});
-        register(TOOLS_OBJ_ + "wyvern_sword", e -> {});
-        register(TOOLS_OBJ_ + "draconic_axe", e -> {});
-        register(TOOLS_OBJ_ + "draconic_bow00", e -> {});
-        register(TOOLS_OBJ_ + "draconic_bow01", e -> {});
-        register(TOOLS_OBJ_ + "draconic_bow02", e -> {});
-        register(TOOLS_OBJ_ + "draconic_bow03", e -> {});
-        register(TOOLS_OBJ_ + "draconic_hoe", e -> {});
-        register(TOOLS_OBJ_ + "draconic_pickaxe", e -> {});
-        register(TOOLS_OBJ_ + "draconic_shovel", e -> {});
-        register(TOOLS_OBJ_ + "draconic_staff_of_power", e -> {});
-        register(TOOLS_OBJ_ + "draconic_sword", e -> {});
-
-        WYVERN_BOW = new TextureAtlasSprite[] {
-                WYVERN_BOW00,
-                WYVERN_BOW01,
-                WYVERN_BOW02,
-                WYVERN_BOW03
-        };
-        DRACONIC_BOW = new TextureAtlasSprite[] {
-                DRACONIC_BOW00,
-                DRACONIC_BOW01,
-                DRACONIC_BOW02,
-                DRACONIC_BOW03
-        };
-        //@formatter:on
+//        //@formatter:off
+//        register(TOOLS_ + "wyvern_axe", e -> WYVERN_AXE = e);
+//        register(TOOLS_ + "wyvern_bow00", e -> WYVERN_BOW00 = e);
+//        register(TOOLS_ + "wyvern_bow01", e -> WYVERN_BOW01 = e);
+//        register(TOOLS_ + "wyvern_bow02", e -> WYVERN_BOW02 = e);
+//        register(TOOLS_ + "wyvern_bow03", e -> WYVERN_BOW03 = e);
+//        register(TOOLS_ + "wyvern_pickaxe", e -> WYVERN_PICKAXE = e);
+//        register(TOOLS_ + "wyvern_shovel", e -> WYVERN_SHOVEL = e);
+//        register(TOOLS_ + "wyvern_sword", e -> WYVERN_SWORD = e);
+//        register(TOOLS_ + "draconic_axe", e -> DRACONIC_AXE = e);
+//        register(TOOLS_ + "draconic_bow00", e -> DRACONIC_BOW00 = e);
+//        register(TOOLS_ + "draconic_bow01", e -> DRACONIC_BOW01 = e);
+//        register(TOOLS_ + "draconic_bow02", e -> DRACONIC_BOW02 = e);
+//        register(TOOLS_ + "draconic_bow03", e -> DRACONIC_BOW03 = e);
+//        register(TOOLS_ + "draconic_hoe", e -> DRACONIC_HOE = e);
+//        register(TOOLS_ + "draconic_pickaxe", e -> DRACONIC_PICKAXE = e);
+//        register(TOOLS_ + "draconic_shovel", e -> DRACONIC_SHOVEL = e);
+//        register(TOOLS_ + "draconic_staff_of_power", e -> DRACONIC_STAFF_OF_POWER = e);
+//        register(TOOLS_ + "draconic_sword", e -> DRACONIC_SWORD = e);
+//
+//        //OBJ textures. Just need to be registered, never accessed by us through here.
+//        register(TOOLS_OBJ_ + "wyvern_axe", e -> {});
+//        register(TOOLS_OBJ_ + "wyvern_bow00", e -> {});
+//        register(TOOLS_OBJ_ + "wyvern_bow01", e -> {});
+//        register(TOOLS_OBJ_ + "wyvern_bow02", e -> {});
+//        register(TOOLS_OBJ_ + "wyvern_bow03", e -> {});
+//        register(TOOLS_OBJ_ + "wyvern_pickaxe", e -> {});
+//        register(TOOLS_OBJ_ + "wyvern_shovel", e -> {});
+//        register(TOOLS_OBJ_ + "wyvern_sword", e -> {});
+//        register(TOOLS_OBJ_ + "draconic_axe", e -> {});
+//        register(TOOLS_OBJ_ + "draconic_bow00", e -> {});
+//        register(TOOLS_OBJ_ + "draconic_bow01", e -> {});
+//        register(TOOLS_OBJ_ + "draconic_bow02", e -> {});
+//        register(TOOLS_OBJ_ + "draconic_bow03", e -> {});
+//        register(TOOLS_OBJ_ + "draconic_hoe", e -> {});
+//        register(TOOLS_OBJ_ + "draconic_pickaxe", e -> {});
+//        register(TOOLS_OBJ_ + "draconic_shovel", e -> {});
+//        register(TOOLS_OBJ_ + "draconic_staff_of_power", e -> {});
+//        register(TOOLS_OBJ_ + "draconic_sword", e -> {});
+//
+//        WYVERN_BOW = new TextureAtlasSprite[] {
+//                WYVERN_BOW00,
+//                WYVERN_BOW01,
+//                WYVERN_BOW02,
+//                WYVERN_BOW03
+//        };
+//        DRACONIC_BOW = new TextureAtlasSprite[] {
+//                DRACONIC_BOW00,
+//                DRACONIC_BOW01,
+//                DRACONIC_BOW02,
+//                DRACONIC_BOW03
+//        };
+//        //@formatter:on
 
         for (ResourceLocation location : locations) {
             registrar.registerSprite(location, sprite -> textureCache.put(location, sprite));
@@ -152,7 +153,7 @@ public class DETextures implements IIconRegister, ISelectiveResourceReloadListen
     //TODO in 1.11 or 1.12 make there full names with mod prefix and ether remove texture cache or have it auto detect when the modid is already present.
     public static final String ENERGY_INFUSER_DECORATION = "textures/block/energy_infuser/energy_infuser_decoration.png";
     public static final String FUSION_PARTICLE = "textures/block/fusion_crafting/fusion_particle.png";
-    public static final String STABILIZER_LARGE = "textures/block/stabilizer_large.png";
+//    public static final String STABILIZER_LARGE = "textures/block/stabilizer_large.png";
     public static final String CHAOS_GUARDIAN = "textures/entity/chaos_guardian.png";
     public static final String CHAOS_GUARDIAN_CRYSTAL = "textures/entity/guardian_crystal.png";
     public static final String PROJECTILE_CHAOS = "textures/entity/projectile_chaos.png";
@@ -174,10 +175,10 @@ public class DETextures implements IIconRegister, ISelectiveResourceReloadListen
     public static final String CHAOS_CRYSTAL = "textures/models/chaos_crystal.png";
     public static final String REACTOR_CORE = "textures/models/reactor_core.png";
     public static final String REACTOR_SHIELD = "textures/models/reactor_shield.png";
-    public static final String STABILIZER_BEAM = "textures/models/stabilizer_beam.png";
+//    public static final String STABILIZER_BEAM = "textures/models/stabilizer_beam.png";
     public static final String CELESTIAL_PARTICLE = "textures/particle/celestial_manipulator.png";
-    public static final String ENERGY_CRYSTAL_BASE = "textures/models/crystal_base.png";
-    public static final String ENERGY_CRYSTAL_NO_SHADER = "textures/models/crystal_no_shader.png";
+//    public static final String ENERGY_CRYSTAL_BASE = "textures/models/crystal_base.png";
+//    public static final String ENERGY_CRYSTAL_NO_SHADER = "textures/models/crystal_no_shader.png";
     public static final String ENERGY_BEAM_BASIC = "textures/particle/energy_beam_basic.png";
     public static final String ENERGY_BEAM_WYVERN = "textures/particle/energy_beam_wyvern.png";
     public static final String ENERGY_BEAM_DRACONIC = "textures/particle/energy_beam_draconic.png";

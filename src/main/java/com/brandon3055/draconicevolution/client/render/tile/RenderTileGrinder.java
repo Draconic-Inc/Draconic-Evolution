@@ -5,15 +5,23 @@ import codechicken.lib.render.CCModel;
 import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.OBJParser;
 import codechicken.lib.render.RenderUtils;
+import codechicken.lib.render.buffer.TransformingVertexBuilder;
+import codechicken.lib.util.SneakyUtils;
 import codechicken.lib.vec.*;
-import com.brandon3055.brandonscore.client.render.TESRBase;
-import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.machines.Grinder;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileGrinder;
+import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.RenderState;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Direction;
@@ -21,80 +29,117 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 import java.util.Map;
+import java.util.OptionalDouble;
 
 /**
  * Created by brandon3055 on 3/11/19.
  */
-public class RenderTileGrinder extends TESRBase<TileGrinder> {
-
-    private static ResourceLocation MODEL_TEXTURE = new ResourceLocation(DraconicEvolution.MODID, "textures/models/block/grinder.png");
-    private static CCModel storageModel;
+public class RenderTileGrinder extends TileEntityRenderer<TileGrinder> {
     private static final double[] ROTATION_MAP = new double[]{0, 180, 90, -90};
+    private static final RenderType swordType = RenderType.getEntitySolid(new ResourceLocation(DraconicEvolution.MODID, "textures/models/block/grinder.png"));
+    private static final RenderType fanType = RenderType.getEntitySolid(new ResourceLocation(DraconicEvolution.MODID, "textures/models/parts/machine_fan.png"));
+    private static final RenderType aoeOutlineType = RenderType.makeType("aoe", DefaultVertexFormats.POSITION_COLOR, GL11.GL_LINES, 256, RenderType.State.getBuilder()
+            .transparency(RenderState.TRANSLUCENT_TRANSPARENCY)
+            .cull(RenderState.CULL_DISABLED)
+            .writeMask(RenderState.COLOR_WRITE)
+            .line(new RenderState.LineState(OptionalDouble.of(4.0)))
+            .texturing(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
+            .build(false)
+    );
+    private static final RenderType aoeSolidType = RenderType.makeType("aoe_solid", DefaultVertexFormats.POSITION_COLOR, GL11.GL_QUADS, 256, RenderType.State.getBuilder()
+            .transparency(RenderState.TRANSLUCENT_TRANSPARENCY)
+            .cull(RenderState.CULL_DISABLED)
+            .writeMask(RenderState.COLOR_WRITE)
+            .texturing(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
+            .build(false)
+    );
 
-    private static CCModel fanModel;
 
-    public RenderTileGrinder() {
-        Map<String, CCModel> map = OBJParser.parseModels(ResourceHelperDE.getResource("models/block/grinder/grinder_fan.obj"), GL11.GL_QUADS, null);
+    private final CCModel swordModel;
+    private final CCModel fanModel;
+
+
+    public RenderTileGrinder(TileEntityRendererDispatcher rendererDispatcherIn) {
+        super(rendererDispatcherIn);
+        Map<String, CCModel> map = OBJParser.parseModels(new ResourceLocation(DraconicEvolution.MODID, "models/block/grinder/grinder_fan.obj"), GL11.GL_QUADS, null);
         fanModel = CCModel.combine(map.values());
 
-        map = OBJParser.parseModels(ResourceHelperDE.getResource("models/block/grinder/grinder_sword.obj"));
-        storageModel = CCModel.combine(map.values());
-        storageModel.computeNormals();
-        storageModel.apply(new Scale(-1 / 16F));
-        storageModel.apply(new Rotation(180 * MathHelper.torad, 0, 0, 1));
-        storageModel.apply(new Rotation(90 * MathHelper.torad, 0, 1, 0));
+        map = OBJParser.parseModels(new ResourceLocation(DraconicEvolution.MODID, "models/block/grinder/grinder_sword.obj"), GL11.GL_QUADS, null);
+        swordModel = CCModel.combine(map.values());
+        swordModel.computeNormals();
+        swordModel.apply(new Scale(-1 / 16F));
+        swordModel.apply(new Rotation(180 * MathHelper.torad, 0, 0, 1));
+        swordModel.apply(new Rotation(90 * MathHelper.torad, 0, 1, 0));
     }
 
     @Override
-    public void render(TileGrinder te, double x, double y, double z, float partialTicks, int destroyStage) {
-        BlockState state = te.getWorld().getBlockState(te.getPos());
-        if (state.getBlock() == DEContent.grinder) {
-            GlStateManager.translated(x, y, z);
-            bindTexture(MODEL_TEXTURE);
-            Direction facing = state.get(Grinder.FACING);
-            CCRenderState ccrs = CCRenderState.instance();
-            ccrs.reset();
-            ccrs.startDrawing(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX_NORMAL);
-            Vector3 tilePos = Vector3.fromTileCenter(te);
-            Vector3 vecA = te.targetA == null ? null : getEntityMovingVec(te.targetA, partialTicks);
-            Vector3 vecB = te.targetB == null ? null : getEntityMovingVec(te.targetB, partialTicks);
-            renderSword(ccrs, facing, 0.34, tilePos, vecA, Math.min(te.animA + (partialTicks * te.getAnimSpeed()), 1), partialTicks);
-            renderSword(ccrs, facing, -0.34, tilePos, vecB, Math.min(te.animB + (partialTicks * te.getAnimSpeed()), 1), partialTicks);
-            ccrs.draw();
+    public void render(TileGrinder tile, float partialTicks, MatrixStack mStack, IRenderTypeBuffer getter, int packedLight, int packedOverlay) {
+        BlockState state = tile.getWorld().getBlockState(tile.getPos());
+        if (state.getBlock() != DEContent.grinder) return;
+        Direction facing = state.get(Grinder.FACING);
 
-            ResourceHelperDE.bindTexture("textures/models/parts/machine_fan.png");
-            ccrs.startDrawing(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_NORMAL);
-            Matrix4 mat = new Matrix4();
-            mat.apply(new Translation(.5, .5, .5));
-            mat.apply(new Rotation(facing.getHorizontalAngle() * -MathHelper.torad, 0, 1, 0));
-            mat.apply(new Scale(-0.0625));
-            mat.apply(new Rotation((te.fanRotation + (te.fanSpeed * partialTicks)), 0, 0, 1));
-            fanModel.render(ccrs, mat);
-            ccrs.draw();
+        Matrix4 mat = new Matrix4(mStack);
+        CCRenderState ccrs = CCRenderState.instance();
+        ccrs.reset();
+        ccrs.brightness = packedLight;
+        ccrs.overlay = packedOverlay;
 
-            if (te.aoeDisplay > 0.51) {
-                te.validateKillZone(true);
-                GlStateManager.enableBlend();
-                GlStateManager.color4f(0F, 1F, 1F, 0.2F);
-                GlStateManager.disableTexture();
-                GlStateManager.disableCull();
-                GlStateManager.depthMask(false);
-                GlStateManager.lineWidth(4);
-                GlStateManager.disableLighting();
-                Cuboid6 box = new Cuboid6(te.killZone.offset(Vector3.fromTile(te).multiply(-1).pos()).shrink(0.01).shrink(te.aoe.get() - te.aoeDisplay));
-                RenderUtils.drawCuboidSolid(box);
-                GlStateManager.color4f(0F, 0F, 0F, 1F);
-                RenderUtils.drawCuboidOutline(box);
-                GlStateManager.enableLighting();
-                GlStateManager.depthMask(true);
-                GlStateManager.enableCull();
-                GlStateManager.enableTexture();
-                GlStateManager.disableBlend();
-            }
+        //Note to self: this is the hacky approach. Ideally this should be converted to matrix operations.
+        //But it is performant so i am leaving it like this to remind myself that this is possible.
+        ccrs.bind(swordType, getter);
+        ccrs.r = new TransformingVertexBuilder(ccrs.r, mat);
+        Vector3 tilePos = Vector3.fromTileCenter(tile);
+        Vector3 vecA = tile.targetA == null ? null : getEntityMovingVec(tile.targetA, partialTicks);
+        Vector3 vecB = tile.targetB == null ? null : getEntityMovingVec(tile.targetB, partialTicks);
+        renderSword(ccrs, facing, 0.34, tilePos, vecA, Math.min(tile.animA + (partialTicks * tile.getAnimSpeed()), 1), partialTicks);
+        renderSword(ccrs, facing, -0.34, tilePos, vecB, Math.min(tile.animB + (partialTicks * tile.getAnimSpeed()), 1), partialTicks);
 
-            GlStateManager.translated(-x, -y, -z);
+        ccrs.bind(fanType, getter);
+        Matrix4 fanMat = mat.copy();
+        fanMat.translate(Vector3.CENTER);
+        fanMat.apply(new Rotation(facing.getHorizontalAngle() * -MathHelper.torad, 0, 1, 0));
+        fanMat.apply(new Scale(-0.0625));
+        fanMat.apply(new Rotation((tile.fanRotation + (tile.fanSpeed * partialTicks)), 0, 0, 1));
+        fanModel.render(ccrs, fanMat);
+
+        if (tile.aoeDisplay > 0.51) {
+            tile.validateKillZone(true);
+            IVertexBuilder builder = new TransformingVertexBuilder(getter.getBuffer(aoeOutlineType), mat);
+            Cuboid6 box = new Cuboid6(tile.killZone.offset(Vector3.fromTile(tile).multiply(-1).pos()).shrink(0.01).shrink(tile.aoe.get() - tile.aoeDisplay));
+            RenderUtils.bufferCuboidOutline(builder, box, 0F, 0F, 0F, 1F);
+            builder = new TransformingVertexBuilder(getter.getBuffer(aoeSolidType), mat);
+            RenderUtils.bufferCuboidSolid(builder, box, 0F, 1F, 1F, 0.2F);
         }
     }
+
+////    @Override
+//    public void render(TileGrinder te, double x, double y, double z, float partialTicks, int destroyStage) {
+//        BlockState state = te.getWorld().getBlockState(te.getPos());
+//        if (state.getBlock() == DEContent.grinder) {
+//
+//            if (te.aoeDisplay > 0.51) {
+//                te.validateKillZone(true);
+//                RenderSystem.enableBlend(); //RenderState.TRANSLUCENT_TRANSPARENCY
+//                RenderSystem.color4f(0F, 1F, 1F, 0.2F); //On the VF
+//                RenderSystem.disableTexture();
+//                RenderSystem.disableCull(); //RenderState.CULL_DISABLED
+//                RenderSystem.depthMask(false); //RenderState.COLOR_WRITE //writeState
+//                RenderSystem.lineWidth(4); //
+//                RenderSystem.disableLighting();
+//                Cuboid6 box = new Cuboid6(te.killZone.offset(Vector3.fromTile(te).multiply(-1).pos()).shrink(0.01).shrink(te.aoe.get() - te.aoeDisplay));
+//                RenderUtils.drawCuboidSolid(box);
+//                RenderSystem.color4f(0F, 0F, 0F, 1F);
+//                RenderUtils.drawCuboidOutline(box);
+//                RenderSystem.enableLighting();
+//                RenderSystem.depthMask(true);
+//                RenderSystem.enableCull();
+//                RenderSystem.enableTexture();
+//                RenderSystem.disableBlend();
+//            }
+//
+//            RenderSystem.translated(-x, -y, -z);
+//        }
+//    }
 
     private void renderSword(CCRenderState ccrs, Direction tileFacing, double sideOffset, Vector3 tilePos, Vector3 targetPos, double attackAnimTime, float partialTicks) {
         attackAnimTime *= 2;
@@ -117,7 +162,7 @@ public class RenderTileGrinder extends TESRBase<TileGrinder> {
             transforms = transforms.with(new Translation(targetVec.multiply(yoyo)));
         }
 
-        storageModel.render(ccrs, transforms);
+        swordModel.render(ccrs, transforms);
     }
 
     private Vector3 getEntityMovingVec(Entity entity, float partialTicks) {

@@ -181,7 +181,7 @@ public class DraconiumCapacitor extends ItemEnergyBase implements IInvCharge, IU
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
         ItemStack stack = player.getHeldItem(hand);
-        if (player.isSneaking()) {
+        if (player.isShiftKeyDown()) {
             int mode = ItemNBTHelper.getShort(stack, "Mode", (short) 0);
             int newMode = mode == 4 ? 0 : mode + 1;
             ItemNBTHelper.setShort(stack, "Mode", (short) newMode);

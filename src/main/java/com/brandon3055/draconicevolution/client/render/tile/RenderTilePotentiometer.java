@@ -11,15 +11,20 @@ import codechicken.lib.vec.uv.UV;
 import codechicken.lib.vec.uv.UVTransformation;
 import com.brandon3055.draconicevolution.blocks.Potentiometer;
 import com.brandon3055.draconicevolution.blocks.tileentity.TilePotentiometer;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraftforge.client.model.animation.TileEntityRendererFast;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 
-public class RenderTilePotentiometer extends TileEntityRendererFast<TilePotentiometer> {
+public class RenderTilePotentiometer extends TileEntityRenderer<TilePotentiometer> {
 
     private static CCModel model;
 
-    public RenderTilePotentiometer() {
+
+    public RenderTilePotentiometer(TileEntityRendererDispatcher rendererDispatcherIn) {
+        super(rendererDispatcherIn);
         double pxl = 1D / 16D;
         double ls = pxl * 2.5;      //Left Side
         double rs = pxl * 1.5;      //Right Side
@@ -60,8 +65,12 @@ public class RenderTilePotentiometer extends TileEntityRendererFast<TilePotentio
         model.computeLightCoords();
     }
 
-
     @Override
+    public void render(TilePotentiometer tileEntityIn, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
+
+    }
+
+//    @Override
     public void renderTileEntityFast(TilePotentiometer te, double x, double y, double z, float partialTicks, int destroyStage, BufferBuilder buffer) {
         TextureAtlasSprite stoneTex = TextureUtils.getBlockTexture("planks_oak");
         UVTransformation iconTransform = new IconTransformation(stoneTex);

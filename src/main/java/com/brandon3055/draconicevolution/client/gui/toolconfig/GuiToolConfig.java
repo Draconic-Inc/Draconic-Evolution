@@ -12,7 +12,7 @@
 //import net.minecraft.client.gui.GuiButton;
 //import net.minecraft.client.gui.screen.Screen;
 //import net.minecraft.client.gui.inventory.GuiInventory;
-//import net.minecraft.client.renderer.GlStateManager;
+//import net.minecraft.client.renderer.RenderSystem;
 //import net.minecraft.client.resources.I18n;
 //import net.minecraft.entity.player.PlayerEntity;
 //import net.minecraft.item.ItemStack;
@@ -235,24 +235,24 @@
 //
 //            if (!stack.isEmpty()) {
 //                if (hovered && stack.getItem() instanceof IConfigurableItem) {
-//                    GlStateManager.disableLighting();
-//                    GlStateManager.disableDepth();
+//                    RenderSystem.disableLighting();
+//                    RenderSystem.disableDepth();
 //                    int j1 = x;
 //                    int k1 = y;
-//                    GlStateManager.colorMask(true, true, true, false);
+//                    RenderSystem.colorMask(true, true, true, false);
 //                    this.drawGradientRect(j1, k1, j1 + 18, k1 + 18, 0x3000ffff, 0x3000ffff);
-//                    GlStateManager.colorMask(true, true, true, true);
-//                    GlStateManager.enableLighting();
-//                    GlStateManager.enableDepth();
+//                    RenderSystem.colorMask(true, true, true, true);
+//                    RenderSystem.enableLighting();
+//                    RenderSystem.enableDepth();
 //                }
 //
 //                mc.getRenderItem().renderItemAndEffectIntoGUI(mc.player, stack, x + 1, y + 1);
 //                mc.getRenderItem().renderItemOverlayIntoGUI(mc.fontRenderer, stack, x + 1, y + 1, stack.getCount() > 1 ? String.valueOf(stack.getCount()) : "");
 //            }
 //
-//            GlStateManager.disableLighting();
-//            GlStateManager.disableDepth();
-//            GlStateManager.colorMask(true, true, true, false);
+//            RenderSystem.disableLighting();
+//            RenderSystem.disableDepth();
+//            RenderSystem.colorMask(true, true, true, false);
 //            if (stack.isEmpty() || !(stack.getItem() instanceof IConfigurableItem)) {
 //                this.drawGradientRect(x, y, x + 18, y + 18, 0xB0000000, 0xB0000000);
 //                GuiHelper.drawColouredRect(x + 1, y + 1, 1, 16, 0x55FF0000);
@@ -266,9 +266,9 @@
 //                GuiHelper.drawColouredRect(x + 1, y, 16, 1, 0x8800FF00);
 //                GuiHelper.drawColouredRect(x + 1, y + 17, 16, 1, 0x8800FF00);
 //            }
-//            GlStateManager.colorMask(true, true, true, true);
-//            GlStateManager.enableLighting();
-//            GlStateManager.enableDepth();
+//            RenderSystem.colorMask(true, true, true, true);
+//            RenderSystem.enableLighting();
+//            RenderSystem.enableDepth();
 //
 //        }
 //

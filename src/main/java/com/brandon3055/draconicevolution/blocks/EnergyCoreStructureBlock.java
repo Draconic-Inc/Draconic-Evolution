@@ -14,7 +14,7 @@ import net.minecraft.fluid.IFluidState;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockRenderLayer;
+
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -38,20 +38,20 @@ public class EnergyCoreStructureBlock extends BlockBCore/* implements IRenderOve
         super(properties);
     }
 
-    @Override
-    public boolean isSolid(BlockState state) {
-        return false;
-    }
+//    @Override
+//    public boolean isSolid(BlockState state) {
+//        return false;
+//    }
 
     @Override
     public BlockRenderType getRenderType(BlockState state) {
         return BlockRenderType.INVISIBLE;
     }
 
-    @Override
-    public BlockRenderLayer getRenderLayer() {
-        return BlockRenderLayer.CUTOUT;
-    }
+//    @Override
+//    public BlockRenderLayer getRenderLayer() {
+//        return BlockRenderLayer.CUTOUT;
+//    }
 
     @Override
     public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {}
@@ -115,7 +115,8 @@ public class EnergyCoreStructureBlock extends BlockBCore/* implements IRenderOve
                 world.removeBlock(pos, false);
                 master.validateStructure();
                 if (block != Blocks.AIR && !player.abilities.isCreativeMode) {
-                    world.setBlockState(pos, block.getDefaultState());
+                    spawnAsEntity(world, pos, new ItemStack(block));
+//                    world.setBlockState(pos, block.getDefaultState());
                 }
             }
         }

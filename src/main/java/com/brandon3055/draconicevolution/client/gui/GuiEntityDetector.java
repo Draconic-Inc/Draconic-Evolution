@@ -140,7 +140,7 @@
 ////        manager.add(new MGuiElementBase(this) {
 ////            @Override
 ////            public void renderBackgroundLayer(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
-////                GlStateManager.color(1, 1, 1);
+////                RenderSystem.color(1, 1, 1);
 ////                GuiHelper.drawPlayerSlots(GuiEntityDetector.this, guiLeft() + (GuiEntityDetector.this.xSize / 2) - 9, guiTop() + 123, true);
 ////            }
 ////        });

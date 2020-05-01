@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.client.render.particle;
 
+import com.brandon3055.brandonscore.client.ClientProxy;
 import com.brandon3055.brandonscore.client.particle.BCParticle;
 import com.brandon3055.brandonscore.client.particle.IBCParticleFactory;
 import com.brandon3055.brandonscore.client.particle.IntParticleType;
@@ -40,7 +41,7 @@ public class ParticleEnergyCoreFX extends SpriteTexturedParticle {
 
     @Override
     public IParticleRenderType getRenderType() {
-        return IParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
+        return ClientProxy.PARTICLE_SHEET_NO_DEPTH;
     }
 
     @Override
@@ -71,7 +72,7 @@ public class ParticleEnergyCoreFX extends SpriteTexturedParticle {
         }
 
         Vec3D dir = Vec3D.getDirectionVec(new Vec3D(posX, posY, posZ), tPos);
-        double speed = toCore ? 0.5D : 0.25D;
+        double speed = (toCore ? 0.5D : 0.25D);
         motionX = dir.x * speed;
         motionY = dir.y * speed;
         motionZ = dir.z * speed;

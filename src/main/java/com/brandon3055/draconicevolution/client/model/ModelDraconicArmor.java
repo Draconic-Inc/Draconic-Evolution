@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.client.model;
 
 import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -66,6 +66,8 @@ public class ModelDraconicArmor extends BipedModel<LivingEntity> {
         this.bipedLeftLeg.cubeList.clear();
         this.bipedRightLeg.cubeList.clear();
 
+
+
 //        body.offsetY = 0.755F;
 //        rightArm.offsetY = 0.755F;
 //        leftArm.offsetY = 0.755F;
@@ -77,54 +79,21 @@ public class ModelDraconicArmor extends BipedModel<LivingEntity> {
 //        body.offsetY = 0.755F;
 //        body.offsetZ = -0.03F;
 //        rightArm.offsetY = 0.72F;
-//        rightArm.offsetX = -0.18F;
+//        rightArm.offsetX = -0.205F; //rightArm.offsetX = -0.18F;
 //        rightArm.offsetZ = -0.05F;
 //        leftArm.offsetY = 0.72F;
-//        leftArm.offsetX = 0.18F;
+//        leftArm.offsetX = 0.21F; //leftArm.offsetX = 0.18F;
 //        leftArm.offsetZ = -0.06F;
 //        belt.offsetY = 0.756F;
 //        belt.offsetZ = -0.04F;
 //        rightLeg.offsetY = 0.6F;
-//        rightLeg.offsetX = -0.05F;
+//        rightLeg.offsetX = -0.085F; //rightLeg.offsetX = -0.06F;
 //        leftLeg.offsetY = 0.6F;
-//        leftLeg.offsetX = 0.06F;
+//        leftLeg.offsetX = 0.085F; //leftLeg.offsetX = 0.06F;
 //        rightBoot.offsetY = 0.76F;
 //        rightBoot.offsetX = -0.03F;
 //        leftBoot.offsetY = 0.76F;
 //        leftBoot.offsetX = 0.03F;
-//
-//        leftLeg.scale = 1F / 15F;
-//        rightLeg.scale = 1F / 15F;
-//        leftBoot.scale = 1F / 15F;
-//        rightBoot.scale = 1F / 15F;
-
-
-        body.offsetY = 0.755F;
-        rightArm.offsetY = 0.755F;
-        leftArm.offsetY = 0.755F;
-
-        head.offsetY = -0.1F;
-        head.offsetX = -0.033F;
-        head.offsetZ = 0.1F;
-
-        body.offsetY = 0.755F;
-        body.offsetZ = -0.03F;
-        rightArm.offsetY = 0.72F;
-        rightArm.offsetX = -0.205F; //rightArm.offsetX = -0.18F;
-        rightArm.offsetZ = -0.05F;
-        leftArm.offsetY = 0.72F;
-        leftArm.offsetX = 0.21F; //leftArm.offsetX = 0.18F;
-        leftArm.offsetZ = -0.06F;
-        belt.offsetY = 0.756F;
-        belt.offsetZ = -0.04F;
-        rightLeg.offsetY = 0.6F;
-        rightLeg.offsetX = -0.085F; //rightLeg.offsetX = -0.06F;
-        leftLeg.offsetY = 0.6F;
-        leftLeg.offsetX = 0.085F; //leftLeg.offsetX = 0.06F;
-        rightBoot.offsetY = 0.76F;
-        rightBoot.offsetX = -0.03F;
-        leftBoot.offsetY = 0.76F;
-        leftBoot.offsetX = 0.03F;
 
         leftLeg.scale = 1F / 15F;
         rightLeg.scale = 1F / 15F;
@@ -162,59 +131,59 @@ public class ModelDraconicArmor extends BipedModel<LivingEntity> {
 
     }
 
-    @Override
-    public void render(LivingEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-        if (entity == null || entity instanceof ArmorStandEntity) {
-            isSneak = false;
-//            isRiding = false;
-            isChild = false;
-            //aimedBow = false;
-
-            this.bipedRightArm.rotateAngleX = 0F;
-            this.bipedRightArm.rotateAngleY = 0F;
-            this.bipedRightArm.rotateAngleZ = 0F;
-            this.bipedLeftArm.rotateAngleX = 0F;
-            this.bipedLeftArm.rotateAngleY = 0F;
-            this.bipedLeftArm.rotateAngleZ = 0F;
-
-            bipedBody.rotateAngleX = 0F;
-            bipedBody.rotateAngleY = 0F;
-            bipedBody.rotateAngleZ = 0F;
-
-            bipedHead.rotateAngleX = 0F;
-            bipedHead.rotateAngleY = 0F;
-            bipedHead.rotateAngleZ = 0F;
-
-            bipedLeftLeg.rotateAngleX = 0F;
-            bipedLeftLeg.rotateAngleY = 0F;
-            bipedLeftLeg.rotateAngleZ = 0F;
-
-            bipedRightLeg.rotateAngleX = 0F;
-            bipedRightLeg.rotateAngleY = 0F;
-            bipedRightLeg.rotateAngleZ = 0F;
-
-            setRotationAngles(0, 0, 0, 0, 0, 0, null);
-        }
-        else {
-//            super.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entity);
-        }
-
-
-        GlStateManager.pushMatrix();
-
-        if (entity.isSneaking()) {
-            GlStateManager.translatef(0.0F, 0.2F, 0.0F);
-        }
-
-        this.bipedHead.render(1F / 16F);
-        this.bipedRightArm.render(1F / 16F);
-        this.bipedLeftArm.render(1F / 16F);
-        this.bipedBody.render(1F / 16F);
-        this.bipedRightLeg.render(1F / 16F);
-        this.bipedLeftLeg.render(1F / 16F);
-
-        GlStateManager.popMatrix();
-    }
+//    @Override
+//    public void render(LivingEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+//        if (entity == null || entity instanceof ArmorStandEntity) {
+//            isSneak = false;
+////            isRiding = false;
+//            isChild = false;
+//            //aimedBow = false;
+//
+//            this.bipedRightArm.rotateAngleX = 0F;
+//            this.bipedRightArm.rotateAngleY = 0F;
+//            this.bipedRightArm.rotateAngleZ = 0F;
+//            this.bipedLeftArm.rotateAngleX = 0F;
+//            this.bipedLeftArm.rotateAngleY = 0F;
+//            this.bipedLeftArm.rotateAngleZ = 0F;
+//
+//            bipedBody.rotateAngleX = 0F;
+//            bipedBody.rotateAngleY = 0F;
+//            bipedBody.rotateAngleZ = 0F;
+//
+//            bipedHead.rotateAngleX = 0F;
+//            bipedHead.rotateAngleY = 0F;
+//            bipedHead.rotateAngleZ = 0F;
+//
+//            bipedLeftLeg.rotateAngleX = 0F;
+//            bipedLeftLeg.rotateAngleY = 0F;
+//            bipedLeftLeg.rotateAngleZ = 0F;
+//
+//            bipedRightLeg.rotateAngleX = 0F;
+//            bipedRightLeg.rotateAngleY = 0F;
+//            bipedRightLeg.rotateAngleZ = 0F;
+//
+//            setRotationAngles(0, 0, 0, 0, 0, 0, null);
+//        }
+//        else {
+////            super.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entity);
+//        }
+//
+//
+//        RenderSystem.pushMatrix();
+//
+//        if (entity.isShiftKeyDown()) {
+//            RenderSystem.translatef(0.0F, 0.2F, 0.0F);
+//        }
+//
+//        this.bipedHead.render(1F / 16F);
+//        this.bipedRightArm.render(1F / 16F);
+//        this.bipedLeftArm.render(1F / 16F);
+//        this.bipedBody.render(1F / 16F);
+//        this.bipedRightLeg.render(1F / 16F);
+//        this.bipedLeftLeg.render(1F / 16F);
+//
+//        RenderSystem.popMatrix();
+//    }
 
     public void setRotationAngles(float p_78087_1_, float p_78087_2_, float p_78087_3_, float p_78087_4_, float p_78087_5_, float p_78087_6_, Entity p_78087_7_) {
         this.bipedRightArm.rotateAngleZ = 0.0F;

@@ -2,16 +2,12 @@ package com.brandon3055.draconicevolution.items.tools;
 
 import com.brandon3055.brandonscore.lib.PairKV;
 import com.brandon3055.draconicevolution.api.itemupgrade.UpgradeHelper;
-import com.brandon3055.draconicevolution.client.model.tool.ToolTransforms;
+
 import com.brandon3055.draconicevolution.items.ToolUpgrade;
-import com.brandon3055.draconicevolution.utils.DETextures;
-import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
+import com.brandon3055.draconicevolution.client.DETextures;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.model.IModelState;
 
 /**
  * Created by brandon3055 on 5/06/2016.
@@ -79,10 +75,10 @@ public class DraconicSword extends WyvernSword {
 //        ToolOverrideList.putOverride(this, DraconicSword::handleTransforms);
 //    }
 
-    @OnlyIn(Dist.CLIENT)//Avoids synthetic lambda creation booping the classloader on the server.
-    private static IModelState handleTransforms(TransformType transformType, IModelState state) {
-        return transformType == TransformType.FIXED || transformType == TransformType.GROUND ? ToolTransforms.DR_SWORD_STATE : state;
-    }
+//    @OnlyIn(Dist.CLIENT)//Avoids synthetic lambda creation booping the classloader on the server.
+//    private static IModelState handleTransforms(TransformType transformType, IModelState state) {
+//        return transformType == TransformType.FIXED || transformType == TransformType.GROUND ? ToolTransforms.DR_SWORD_STATE : state;
+//    }
 
     @Override
     public PairKV<TextureAtlasSprite, ResourceLocation> getModels(ItemStack stack) {

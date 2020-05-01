@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.blocks.tileentity;
 
+import codechicken.lib.colour.Colour;
 import codechicken.lib.data.MCDataInput;
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.inventory.ContainerBCTile;
@@ -438,8 +439,6 @@ public class TileEnergyCore extends TileBCore implements ITickableTileEntity, IE
 
     //region Rendering
 
-
-
     @Override
     @OnlyIn(Dist.CLIENT)
     public AxisAlignedBB getRenderBoundingBox() {
@@ -450,6 +449,15 @@ public class TileEnergyCore extends TileBCore implements ITickableTileEntity, IE
     @OnlyIn(Dist.CLIENT)
     public double getMaxRenderDistanceSquared() {
         return 65536.0D;
+    }
+
+    public int getColour() {
+        if (tier.get() == 8) {
+            return Colour.packRGBA(1F, 0.28F, 0.05F, 1F);
+        }
+
+        float colour = 1F - ((float) getExtendedStorage() / (float) getExtendedCapacity());
+        return Colour.packRGBA(1F, colour * 0.3f, colour * 0.7f, 1F);
     }
 
 //    @Override

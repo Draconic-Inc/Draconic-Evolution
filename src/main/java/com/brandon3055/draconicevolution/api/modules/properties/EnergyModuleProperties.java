@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.api.modules.properties;
 
 import com.brandon3055.draconicevolution.api.TechLevel;
+import com.brandon3055.draconicevolution.api.modules.capability.IModuleHost;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 
@@ -28,7 +29,7 @@ public class EnergyModuleProperties extends ModuleProperties<EnergyModulePropert
     }
 
     @Override
-    public void addCombinedStats(List<EnergyModuleProperties> propertiesList, Map<ITextComponent, ITextComponent> map) {
+    public void addCombinedStats(List<EnergyModuleProperties> propertiesList, Map<ITextComponent, ITextComponent> map, IModuleHost moduleHost) {
         map.put(new StringTextComponent("EnergyModule"), new StringTextComponent("TODO"));
     }
     //    class Impl implements EnergyModuleProperties {

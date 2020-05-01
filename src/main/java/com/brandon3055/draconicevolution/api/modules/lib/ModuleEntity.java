@@ -23,6 +23,14 @@ public class ModuleEntity {
 
     }
 
+    public void onInstalled(ModuleContext context) {
+
+    }
+
+    public void onRemoved(ModuleContext context) {
+
+    }
+
     public void writeToNBT(CompoundNBT compound) {
         compound.putByte("x", (byte) gridX);
         compound.putByte("y", (byte) gridY);

@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.client.gui;
 import codechicken.lib.render.CCModel;
 import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.OBJParser;
+import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Rotation;
 import codechicken.lib.vec.Scale;
 import codechicken.lib.vec.TransformationList;
@@ -18,8 +19,12 @@ import com.brandon3055.brandonscore.inventory.ContainerBCTile;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileGenerator;
 import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
@@ -39,15 +44,13 @@ import static net.minecraft.util.text.TextFormatting.GRAY;
 
 public class GuiGenerator extends ModularGuiContainer<ContainerBCTile<TileGenerator>> {
 
-    private static ResourceLocation MODEL_TEXTURE = new ResourceLocation(DraconicEvolution.MODID, "textures/models/block/generator/generator_2.png");
-    private static CCModel storageModel;
+    private static final RenderType modelType = RenderType.getEntitySolid(new ResourceLocation(DraconicEvolution.MODID, "textures/models/block/generator/generator_2.png"));
+    private static final CCModel storageModel;
 
     static {
-        if (storageModel == null) {
-            Map<String, CCModel> map = OBJParser.parseModels(ResourceHelperDE.getResource("models/block/generator/generator_storage.obj"));
-            storageModel = CCModel.combine(map.values());
-            storageModel.computeNormals();
-        }
+        Map<String, CCModel> map = OBJParser.parseModels(ResourceHelperDE.getResource("models/block/generator/generator_storage.obj"), GL11.GL_QUADS, null);
+        storageModel = CCModel.combine(map.values());
+        storageModel.computeNormals();
     }
 
     public PlayerEntity player;
@@ -99,19 +102,18 @@ public class GuiGenerator extends ModularGuiContainer<ContainerBCTile<TileGenera
             CCRenderState ccrs = CCRenderState.instance();
             ccrs.reset();
 
-            GlStateManager.pushMatrix();
-            GlStateManager.translated(guiLeft() + 90, guiTop() + 45, 50);
+            MatrixStack mStack = new MatrixStack();
+            IRenderTypeBuffer.Impl getter = Minecraft.getInstance().getRenderTypeBuffers().getBufferSource();
+            ccrs.bind(modelType, getter);
 
+            Matrix4 mat = new Matrix4(mStack);
+            mat.translate(guiLeft() + 90, guiTop() + 45, 50);
             float mx = (((mouseX - guiLeft()) / (float) GuiGenerator.this.xSize()) - 0.5F) * .1F;
             float my = (((mouseY - guiTop()) / (float) GuiGenerator.this.ySize()) - 0.5F) * .1F;
-            TransformationList transforms = new Rotation(150 * torad, 1, 0, 0).with(new Rotation(10 * torad, -my, 1 + mx, 0)).with(new Scale(7.5));
-
-            bindTexture(MODEL_TEXTURE);
-            ccrs.startDrawing(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX);
-            storageModel.render(ccrs, transforms);
-            ccrs.draw();
-
-            GlStateManager.popMatrix();
+            mat.apply(new Rotation(150 * torad, 1, 0, 0).with(new Rotation(10 * torad, -my, 1 + mx, 0)));
+            mat.scale(7.5);
+            storageModel.render(ccrs, mat);
+            getter.finish();
         }
     }
 }

@@ -24,6 +24,7 @@ import com.brandon3055.draconicevolution.items.tools.CreativeExchanger;
 import com.brandon3055.draconicevolution.items.tools.MiningToolBase;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
@@ -109,7 +110,7 @@ public class ClientEventHandler {
 
     @SubscribeEvent
     public void renderPlayerEvent(RenderPlayerEvent.Post event) {
-        if (!DEConfig.disableShieldHitEffect &&  playerShieldStatus.containsKey(event.getEntityPlayer())) {
+        if (!DEConfig.disableShieldHitEffect &&  playerShieldStatus.containsKey(event.getPlayer())) {
             if (shieldModel == null) {
                 try {
 //                    shieldModel = OBJLoader.INSTANCE.loadModel(ResourceHelperDE.getResource("models/armor/shield_sphere.obj")).bake(TransformUtils.DEFAULT_BLOCK, DefaultVertexFormats.BLOCK, TextureUtils::getTexture);
@@ -120,49 +121,49 @@ public class ClientEventHandler {
                 }
             }
 
-            GlStateManager.pushMatrix();
-            GlStateManager.depthMask(false);
-            GlStateManager.disableCull();
-            GlStateManager.disableAlphaTest();
-            GlStateManager.enableBlend();
-            GlStateManager.disableLighting();
+            RenderSystem.pushMatrix();
+            RenderSystem.depthMask(false);
+            RenderSystem.disableCull();
+            RenderSystem.disableAlphaTest();
+            RenderSystem.enableBlend();
+            RenderSystem.disableLighting();
 
-            float p = playerShieldStatus.get(event.getEntityPlayer()).getKey();
+            float p = playerShieldStatus.get(event.getPlayer()).getKey();
 
             PlayerEntity viewingPlayer = Minecraft.getInstance().player;
 
-            int i = 5 - (elapsedTicks - playerShieldStatus.get(event.getEntityPlayer()).getValue());
+            int i = 5 - (elapsedTicks - playerShieldStatus.get(event.getPlayer()).getValue());
 
-            //GlStateManager.color(1F - p, 0F, p, i / 5F);
+            //RenderSystem.color(1F - p, 0F, p, i / 5F);
 
-            if (viewingPlayer != event.getEntityPlayer()) {
-                double translationXLT = event.getEntityPlayer().prevPosX - viewingPlayer.prevPosX;
-                double translationYLT = event.getEntityPlayer().prevPosY - viewingPlayer.prevPosY;
-                double translationZLT = event.getEntityPlayer().prevPosZ - viewingPlayer.prevPosZ;
+            if (viewingPlayer != event.getPlayer()) {
+                double translationXLT = event.getPlayer().prevPosX - viewingPlayer.prevPosX;
+                double translationYLT = event.getPlayer().prevPosY - viewingPlayer.prevPosY;
+                double translationZLT = event.getPlayer().prevPosZ - viewingPlayer.prevPosZ;
 
-                double translationX = translationXLT + (((event.getEntityPlayer().posX - viewingPlayer.posX) - translationXLT) * event.getPartialRenderTick());
-                double translationY = translationYLT + (((event.getEntityPlayer().posY - viewingPlayer.posY) - translationYLT) * event.getPartialRenderTick());
-                double translationZ = translationZLT + (((event.getEntityPlayer().posZ - viewingPlayer.posZ) - translationZLT) * event.getPartialRenderTick());
+                double translationX = translationXLT + (((event.getPlayer().posX - viewingPlayer.posX) - translationXLT) * event.getPartialRenderTick());
+                double translationY = translationYLT + (((event.getPlayer().posY - viewingPlayer.posY) - translationYLT) * event.getPartialRenderTick());
+                double translationZ = translationZLT + (((event.getPlayer().posZ - viewingPlayer.posZ) - translationZLT) * event.getPartialRenderTick());
 
-                GlStateManager.translated(translationX, translationY + 1.1, translationZ);
+                RenderSystem.translated(translationX, translationY + 1.1, translationZ);
             }
             else {
                 //GL11.glTranslated(0, -0.5, 0);
-                GlStateManager.translated(0, 1.15, 0);
+                RenderSystem.translated(0, 1.15, 0);
             }
 
-            GlStateManager.scaled(1, 1.5, 1);
+            RenderSystem.scaled(1, 1.5, 1);
 
-            GlStateManager.bindTexture(Minecraft.getInstance().getTextureMap().getGlTextureId());
+//            RenderSystem.bindTexture(Minecraft.getInstance().getTextureMap().getGlTextureId());
 
-            ModelUtils.renderQuadsARGB(shieldModel.getQuads(null, null, rand), new ColourRGBA(1D - p, 0D, p, i / 5D).argb());
+//            ModelUtils.renderQuadsARGB(shieldModel.getQuads(null, null, rand), new ColourRGBA(1D - p, 0D, p, i / 5D).argb());
 
-            GlStateManager.enableCull();
-            GlStateManager.enableAlphaTest();
-            GlStateManager.disableBlend();
-            GlStateManager.enableLighting();
-            GlStateManager.depthMask(true);
-            GlStateManager.popMatrix();
+            RenderSystem.enableCull();
+            RenderSystem.enableAlphaTest();
+            RenderSystem.disableBlend();
+            RenderSystem.enableLighting();
+            RenderSystem.depthMask(true);
+            RenderSystem.popMatrix();
         }
     }
 
@@ -215,11 +216,11 @@ public class ClientEventHandler {
             double offsetY = player.prevPosY + (player.posY - player.prevPosY) * (double) partialTicks;
             double offsetZ = player.prevPosZ + (player.posZ - player.prevPosZ) * (double) partialTicks;
 
-            GlStateManager.enableBlend();
-            GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-            GlStateManager.color4f(1F, 1F, 1F, 1F);
-            GlStateManager.lineWidth(2.0F);
-            GlStateManager.disableTexture();
+            RenderSystem.enableBlend();
+            RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+            RenderSystem.color4f(1F, 1F, 1F, 1F);
+            RenderSystem.lineWidth(2.0F);
+            RenderSystem.disableTexture();
 
             for (BlockPos block : blocks) {
                 if (world.isAirBlock(block)) {
@@ -233,20 +234,20 @@ public class ClientEventHandler {
                 Cuboid6 box = new Cuboid6(renderX, renderY, renderZ, renderX + 1, renderY + 1, renderZ + 1).expand(0.001, 0.001, 0.001);
                 float colour = 1F;
                 if (!world.getBlockState(block.offset(((BlockRayTraceResult)mc.objectMouseOver).getFace())).getMaterial().isReplaceable()) {
-                    GlStateManager.disableDepthTest();
+                    RenderSystem.disableDepthTest();
                     colour = 0.2F;
                 }
                 GL11.glColor4f(colour, colour, colour, colour);
 
-                RenderUtils.drawCuboidOutline(box);
+//                RenderUtils.drawCuboidOutline(box);
 
                 if (!world.getBlockState(block.offset(((BlockRayTraceResult) mc.objectMouseOver).getFace())).getMaterial().isReplaceable()) {
-                    GlStateManager.enableDepthTest();
+                    RenderSystem.enableDepthTest();
                 }
             }
 
-            GlStateManager.enableTexture();
-            GlStateManager.disableBlend();
+            RenderSystem.enableTexture();
+            RenderSystem.disableBlend();
         }
 
         if (stack.isEmpty() || !(stack.getItem() instanceof MiningToolBase) || !ToolConfigHelper.getBooleanField("showDigAOE", stack)) {
@@ -275,12 +276,12 @@ public class ClientEventHandler {
         double offsetY = player.prevPosY + (player.posY - player.prevPosY) * (double) partialTicks;
         double offsetZ = player.prevPosZ + (player.posZ - player.prevPosZ) * (double) partialTicks;
 
-        GlStateManager.enableBlend();
-        GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-        GlStateManager.color4f(1F, 1F, 1F, 1F);
-        GlStateManager.lineWidth(2.0F);
-        GlStateManager.disableTexture();
-        GlStateManager.disableDepthTest();
+        RenderSystem.enableBlend();
+        RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        RenderSystem.color4f(1F, 1F, 1F, 1F);
+        RenderSystem.lineWidth(2.0F);
+        RenderSystem.disableTexture();
+        RenderSystem.disableDepthTest();
 
 
         buffer.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
@@ -331,9 +332,9 @@ public class ClientEventHandler {
 
         tessellator.draw();
 
-        GlStateManager.enableDepthTest();
-        GlStateManager.enableTexture();
-        GlStateManager.disableBlend();
+        RenderSystem.enableDepthTest();
+        RenderSystem.enableTexture();
+        RenderSystem.disableBlend();
     }
 
     public static void triggerExplosionEffect(BlockPos pos) {
@@ -380,7 +381,7 @@ public class ClientEventHandler {
 
         GL11.glGetFloatv(2982, MODELVIEW);
         GL11.glGetFloatv(2983, PROJECTION);
-        GlStateManager.getInteger(2978, VIEWPORT);
+        GL11.glGetIntegerv(2978, VIEWPORT);
 
         Entity entity = mc.getRenderViewEntity();
         float x = (float) (entity.prevPosX + (entity.posX - entity.prevPosX) * (double) partialTick);

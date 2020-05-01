@@ -114,7 +114,7 @@ public class GuiFusionCraftingCore extends ModularGuiContainer<ContainerFusionCr
 //        //endregion
 //
 //        drawCenteredString(fontRenderer, I18n.format("gui.de.fusionCraftingCore.name"), guiLeft + (xSize / 2), guiTop + 5, InfoHelper.GUI_TITLE);
-//        GlStateManager.color(1F, 1F, 1F, 1F);
+//        RenderSystem.color(1F, 1F, 1F, 1F);
 //
 //        ResourceHelperDE.bindTexture(DETextures.GUI_FUSION_CRAFTING);
 //        //drawTexturedModalRect(guiLeft + (xSize / 2) - 8, guiTop + 45, 0, 0, 15, 21);
@@ -133,7 +133,7 @@ public class GuiFusionCraftingCore extends ModularGuiContainer<ContainerFusionCr
 //
 //            if (tile.isCrafting.get() && tile.craftingStage.get() > 0) {
 //
-//                GlStateManager.depthMask(false);
+//                RenderSystem.depthMask(false);
 //                double charge = tile.craftingStage.get() / 1000D;
 //                if (charge > 1) {
 //                    charge = 1;
@@ -146,7 +146,7 @@ public class GuiFusionCraftingCore extends ModularGuiContainer<ContainerFusionCr
 //
 //                RenderEnergyBolt.renderBoltBetween(new Vec3D(guiLeft + xSize - 34 + boltStats[0], guiTop + 106, 0), new Vec3D(guiLeft + xSize - 34 + boltStats[1], guiTop + 8 + size, 0), 1, charge * 10, 10, boltStats[2], true);
 //                RenderEnergyBolt.renderBoltBetween(new Vec3D(guiLeft + xSize - 34 + boltStats[3], guiTop + 106, 0), new Vec3D(guiLeft + xSize - 34 + boltStats[4], guiTop + 8 + size, 0), 1, charge * 10, 10, boltStats[5], true);
-//                GlStateManager.depthMask(true);
+//                RenderSystem.depthMask(true);
 //            }
 //
 //            //endregion
@@ -252,11 +252,11 @@ public class GuiFusionCraftingCore extends ModularGuiContainer<ContainerFusionCr
 //                    GuiHelper.drawCenteredString(fontRenderer, I18n.format("gui.fusionCrafting.outputObstructed.info"), (xSize / 2), 95, 0xAA00FF, false);
 //                }
 //                else {
-//                    GlStateManager.translate(0, 0, 600);
+//                    RenderSystem.translate(0, 0, 600);
 //                    GuiHelper.drawColouredRect(5, 88, xSize - 10, 20, 0xFFFF0000);
 //                    GuiHelper.drawColouredRect(6, 89, xSize - 12, 18, 0xFF000000);
 //                    GuiHelper.drawCenteredSplitString(fontRenderer, I18n.format(canCraft), (xSize / 2), 90, xSize - 10, 0xAA00FF, false);
-//                    GlStateManager.translate(0, 0, -600);
+//                    RenderSystem.translate(0, 0, -600);
 //                }
 //            }
 //        }

@@ -8,6 +8,7 @@ import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.draconicevolution.api.energy.ICrystalBinder;
 import com.brandon3055.draconicevolution.api.energy.ICrystalLink;
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
@@ -47,7 +48,7 @@ public class BinderHandler {
         boolean isBound = isBound(binder);
 
         //If the tile is linkable and the player is sneaking bind the tile to the tool.
-        if (tile instanceof ICrystalLink && player.isSneaking()) {
+        if (tile instanceof ICrystalLink && player.isShiftKeyDown()) {
             bind(binder, blockClicked);
             if (world.isRemote) {
                 ChatHelper.indexedTrans(player, "eNet.de.posSavedToTool.info", TextFormatting.GREEN, -442611624);
@@ -131,22 +132,22 @@ public class BinderHandler {
 
         Cuboid6 cuboid6 = new Cuboid6(shape.getBoundingBox());
 
-        GlStateManager.pushMatrix();
+        RenderSystem.pushMatrix();
 //        GlStateTracker.pushState();
-        GlStateManager.translated((double)pos.getX() - projectedX, (double)pos.getY() - projectedY, (double)pos.getZ() - projectedZ);
-        GlStateManager.disableTexture();
-        GlStateManager.enableBlend();
-        GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-        GlStateManager.color4f(valid ? 0 : 1, valid ? 1 : 0, 0, 0.5F);
-        GlStateManager.disableDepthTest();
+        RenderSystem.translated((double)pos.getX() - projectedX, (double)pos.getY() - projectedY, (double)pos.getZ() - projectedZ);
+        RenderSystem.disableTexture();
+        RenderSystem.enableBlend();
+        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+        RenderSystem.color4f(valid ? 0 : 1, valid ? 1 : 0, 0, 0.5F);
+        RenderSystem.disableDepthTest();
 
-        RenderUtils.drawCuboidOutline(cuboid6);
+//        RenderUtils.drawCuboidOutline(cuboid6);
 
-        GlStateManager.enableDepthTest();
-        GlStateManager.disableBlend();
-        GlStateManager.enableTexture();
+        RenderSystem.enableDepthTest();
+        RenderSystem.disableBlend();
+        RenderSystem.enableTexture();
 //        GlStateTracker.popState();
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
     }
 
     private static CCModel modelForAABB(AxisAlignedBB aabb) {

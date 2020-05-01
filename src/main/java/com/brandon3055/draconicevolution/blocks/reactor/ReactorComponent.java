@@ -15,6 +15,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -162,7 +164,7 @@ public class ReactorComponent extends BlockBCore/* implements ITileEntityProvide
         super.onBlockPlacedBy(world, pos, state, placer, stack);
         TileEntity te = world.getTileEntity(pos);
         Direction facing = RotationUtils.getPlacedRotation(pos, placer);
-        if (placer.isSneaking()) {
+        if (placer.isShiftKeyDown()) {
             facing = facing.getOpposite();
         }
 
@@ -173,13 +175,13 @@ public class ReactorComponent extends BlockBCore/* implements ITileEntityProvide
     }
 
     @Override
-    public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
         TileEntity te = world.getTileEntity(pos);
 
         if (te instanceof TileReactorComponent) {
             ((TileReactorComponent) te).onActivated(player);
         }
-        return true;
+        return ActionResultType.SUCCESS;
     }
 
     @Override

@@ -63,13 +63,13 @@ public class ParticleArrowShockwave extends BCParticle {
 //        CCRenderState ccrs = CCRenderState.instance();
 //        ccrs.draw();
 //
-//        GlStateManager.pushMatrix();
-//        GlStateManager.disableCull();
-//        GlStateManager.alphaFunc(GL11.GL_GREATER, 0F);
+//        RenderSystem.pushMatrix();
+//        RenderSystem.disableCull();
+//        RenderSystem.alphaFunc(GL11.GL_GREATER, 0F);
 //        float a = (float) Math.max(0D, 0.5D - (((size + partialTicks) / (maxSize)) * 0.5D));
-//        GlStateManager.color(1F, 0.1F, 0F, a);
-//        GlStateManager.disableTexture2D();
-//        GlStateManager.depthMask(false);
+//        RenderSystem.color(1F, 0.1F, 0F, a);
+//        RenderSystem.disableTexture2D();
+//        RenderSystem.depthMask(false);
 //
 //        float xx = (float) (this.prevPosX + (this.posX - this.prevPosX) * (double) partialTicks - interpPosX);
 //        float yy = (float) (this.prevPosY + (this.posY - this.prevPosY) * (double) partialTicks - interpPosY);
@@ -78,12 +78,12 @@ public class ParticleArrowShockwave extends BCParticle {
 //
 //        double baseScale = size + partialTicks;
 //
-//        GlStateManager.translate((double) xx + 0.5, (double) yy + 0.5, (double) zz + 0.5);
+//        RenderSystem.translate((double) xx + 0.5, (double) yy + 0.5, (double) zz + 0.5);
 //
 //        for (int i = 10; i > 0; i--) {
 //            double scale = baseScale / i * 2D;
 //
-//            GlStateManager.color(1F - (i / 5F), 0.1F, i / 8F, a);
+//            RenderSystem.color(1F - (i / 5F), 0.1F, i / 8F, a);
 //
 //            ccrs.startDrawing(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX);
 //            Matrix4 mat = RenderUtils.getMatrix(new Vector3(0, 0, 0), new Rotation((ClientEventHandler.elapsedTicks + partialTicks) / 40F, 0, 1, 0), -1 * scale);
@@ -93,10 +93,10 @@ public class ParticleArrowShockwave extends BCParticle {
 //        }
 //
 //
-//        GlStateManager.depthMask(true);
-//        GlStateManager.enableTexture2D();
-//        GlStateManager.enableCull();
-//        GlStateManager.popMatrix();
+//        RenderSystem.depthMask(true);
+//        RenderSystem.enableTexture2D();
+//        RenderSystem.enableCull();
+//        RenderSystem.popMatrix();
 //
 //        vertexbuffer.begin(7, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
 //

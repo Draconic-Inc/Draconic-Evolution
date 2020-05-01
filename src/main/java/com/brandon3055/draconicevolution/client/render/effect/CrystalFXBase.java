@@ -5,6 +5,8 @@ import com.brandon3055.draconicevolution.api.energy.IENetEffectTile;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.Quaternion;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
@@ -40,10 +42,23 @@ public abstract class CrystalFXBase<T extends TileEntity & IENetEffectTile> exte
     @Override
     public abstract void tick();
 
-    @Override
-    public abstract void renderParticle(BufferBuilder buffer, ActiveRenderInfo entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ);
-
     protected void setPosition(Vec3D pos) {
         setPosition(pos.x, pos.y, pos.z);
+    }
+
+    protected Vector3f[] getRenderVectors(ActiveRenderInfo renderInfo, float viewX, float viewY, float viewZ, float scale) {
+        Quaternion quaternion;
+        quaternion = renderInfo.getRotation();
+        Vector3f vector3f1 = new Vector3f(-1.0F, -1.0F, 0.0F);
+        vector3f1.transform(quaternion);
+        Vector3f[] renderVector = new Vector3f[]{new Vector3f(-1.0F, -1.0F, 0.0F), new Vector3f(-1.0F, 1.0F, 0.0F), new Vector3f(1.0F, 1.0F, 0.0F), new Vector3f(1.0F, -1.0F, 0.0F)};
+
+        for (int i = 0; i < 4; ++i) {
+            Vector3f vector3f = renderVector[i];
+            vector3f.transform(quaternion);
+            vector3f.mul(scale);
+            vector3f.add(viewX, viewY, viewZ);
+        }
+        return renderVector;
     }
 }

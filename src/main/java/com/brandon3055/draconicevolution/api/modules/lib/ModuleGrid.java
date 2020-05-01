@@ -69,13 +69,13 @@ public class ModuleGrid {
         this.cellSize = cellSize;
     }
 
-    public void cellClicked(GridPos pos, int button, ClickType clickType) {
+    public InstallResult cellClicked(GridPos pos, int button, ClickType clickType) {
         ItemStack stack = player.getItemStack();
         IModule<?> module = ModuleItem.getModule(stack);
 
         //Sanity Checks
         if ((!stack.isEmpty() && module == null) || !pos.isValidCell()) {
-            return; //Player tried to insert an item that is not a valid module
+            return null; //Player tried to insert an item that is not a valid module
         }
 
         if (clickType == ClickType.PICKUP) { ///Really this could be pick up or drop off
@@ -86,17 +86,19 @@ public class ModuleGrid {
                 if (result.resultType == InstallResultType.YES) {
                     getModuleHost().getModuleEntities().add(entity);
                     entity.readFromItemStack(stack);
+                    entity.onInstalled(container.getModuleContext());
                     stack.shrink(1);
                     onGridChange();
-                    return;
+                    return null;
                 }
-                //TODO error messaging system
+                return result;
             }
             else if (pos.hasEntity()) { //Try to extract module
                 ModuleEntity entity = pos.getEntity();
                 stack = new ItemStack(entity.getModule().getItem());
                 entity.writeToItemStack(stack);
                 getModuleHost().getModuleEntities().remove(entity);
+                entity.onRemoved(container.getModuleContext());
                 player.setItemStack(stack);
                 onGridChange();
             }
@@ -109,6 +111,7 @@ public class ModuleGrid {
                 if (player.addItemStackToInventory(stack)) {
                     getModuleHost().getModuleEntities().remove(entity);
                     onGridChange();
+                    entity.onRemoved(container.getModuleContext());
                 }
             }
         }
@@ -122,6 +125,7 @@ public class ModuleGrid {
                     if (Container.areItemsAndTagsEqual(stack, modStack) && stack.getCount() < stack.getMaxStackSize()) {
                         stack.grow(1);
                         i.remove();
+                        entity.onRemoved(container.getModuleContext());
                     }
                 }
             }
@@ -135,6 +139,7 @@ public class ModuleGrid {
                 player.setItemStack(modStack);
             }
         }
+        return null;
     }
 
     /**

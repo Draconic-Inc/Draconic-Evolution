@@ -135,7 +135,7 @@ public class Potentiometer extends BlockBCore /*implements ITileEntityProvider, 
 
     protected static boolean canPlaceBlock(World worldIn, BlockPos pos, Direction direction) {
         BlockPos blockpos = pos.offset(direction);
-        return worldIn.getBlockState(blockpos).func_224755_d(worldIn, blockpos, direction.getOpposite());
+        return worldIn.getBlockState(blockpos).isSolidSide(worldIn, blockpos, direction.getOpposite());
     }
 
     @Override
@@ -151,7 +151,7 @@ public class Potentiometer extends BlockBCore /*implements ITileEntityProvider, 
 
     @Override //TODO make sure this logic is not backwards
     public boolean isValidPosition(BlockState state, IWorldReader worldIn, BlockPos pos) {
-        return func_220055_a(worldIn, pos.offset(state.get(FACING).getOpposite()), state.get(FACING));
+        return hasEnoughSolidSide(worldIn, pos.offset(state.get(FACING).getOpposite()), state.get(FACING));
     }
 
     //    @Override

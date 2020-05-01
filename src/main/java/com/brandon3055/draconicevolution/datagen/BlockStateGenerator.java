@@ -32,21 +32,21 @@ public class BlockStateGenerator extends BlockStateProvider {
 
         //Simple Blocks
         simpleBlock(DEContent.block_draconium);
-        simpleBlock(DEContent.block_draconium_awakened, cubeBottomTop("block_draconium_awakened", modLoc("block/block_draconium_awakened_side"), modLoc("block/block_draconium_awakened"), modLoc("block/block_draconium_awakened")));
+        simpleBlock(DEContent.block_draconium_awakened, models().cubeBottomTop("block_draconium_awakened", modLoc("block/block_draconium_awakened_side"), modLoc("block/block_draconium_awakened"), modLoc("block/block_draconium_awakened")));
         simpleBlock(DEContent.ore_draconium_end);
         simpleBlock(DEContent.ore_draconium_nether);
         simpleBlock(DEContent.ore_draconium_overworld);
         simpleBlock(DEContent.energy_core);
-        simpleBlock(DEContent.energy_core_stabilizer, getExistingFile(modLoc("block/energy_core_stabilizer")));
+        simpleBlock(DEContent.energy_core_stabilizer, models().getExistingFile(modLoc("block/energy_core_stabilizer")));
         simpleBlock(DEContent.creative_op_capacitor);
-        simpleBlock(DEContent.stabilized_spawner, getExistingFile(modLoc("block/stabilized_spawner")));
+        simpleBlock(DEContent.stabilized_spawner, models().getExistingFile(modLoc("block/stabilized_spawner")));
 
-        getVariantBuilder(DEContent.energy_pylon).forAllStates(state -> ConfiguredModel.builder().modelFile(cubeBottomTop(state.get(EnergyPylon.OUTPUT) ? "energy_pylon_output" : "energy_pylon_input", modLoc("block/energy_pylon/energy_pylon_" + (state.get(EnergyPylon.OUTPUT) ? "output" : "input")), modLoc("block/energy_pylon/energy_pylon_active_face"), modLoc("block/energy_pylon/energy_pylon_active_face"))).build());
+        getVariantBuilder(DEContent.energy_pylon).forAllStates(state -> ConfiguredModel.builder().modelFile(models().cubeBottomTop(state.get(EnergyPylon.OUTPUT) ? "energy_pylon_output" : "energy_pylon_input", modLoc("block/energy_pylon/energy_pylon_" + (state.get(EnergyPylon.OUTPUT) ? "output" : "input")), modLoc("block/energy_pylon/energy_pylon_active_face"), modLoc("block/energy_pylon/energy_pylon_active_face"))).build());
 
 
         //Generator
-        ModelFile modelGenerator = getExistingFile(modLoc("block/generator/generator"));
-        ModelFile modelGeneratorFlame = getExistingFile(modLoc("block/generator/generator_flame"));
+        ModelFile modelGenerator = models().getExistingFile(modLoc("block/generator/generator"));
+        ModelFile modelGeneratorFlame = models().getExistingFile(modLoc("block/generator/generator_flame"));
         MultiPartBlockStateBuilder generatorBuilder = getMultipartBuilder(DEContent.generator);
         for (Direction dir : FenceGateBlock.HORIZONTAL_FACING.getAllowedValues()) {
             int angle = (int) dir.getOpposite().getHorizontalAngle();
@@ -55,8 +55,8 @@ public class BlockStateGenerator extends BlockStateProvider {
         }
 
         //Grinder
-        ModelFile modelGrinder = getExistingFile(modLoc("block/grinder/grinder"));
-        ModelFile modelGrinderActive = getExistingFile(modLoc("block/grinder/grinder_eyes"));
+        ModelFile modelGrinder = models().getExistingFile(modLoc("block/grinder/grinder"));
+        ModelFile modelGrinderActive = models().getExistingFile(modLoc("block/grinder/grinder_eyes"));
         MultiPartBlockStateBuilder grinderBuilder = getMultipartBuilder(DEContent.grinder);
         for (Direction dir : FenceGateBlock.HORIZONTAL_FACING.getAllowedValues()) {
             int angle = (int) dir.getOpposite().getHorizontalAngle();
@@ -114,10 +114,10 @@ public class BlockStateGenerator extends BlockStateProvider {
 
 
         // Unnecessarily complicated example to showcase how manual building works
-        ModelFile birchFenceGate = fenceGate("birch_fence_gate", mcLoc("block/birch_planks"));
-        ModelFile birchFenceGateOpen = fenceGateOpen("birch_fence_gate_open", mcLoc("block/birch_planks"));
-        ModelFile birchFenceGateWall = fenceGateWall("birch_fence_gate_wall", mcLoc("block/birch_planks"));
-        ModelFile birchFenceGateWallOpen = fenceGateWallOpen("birch_fence_gate_wall_open", mcLoc("block/birch_planks"));
+        ModelFile birchFenceGate = models().fenceGate("birch_fence_gate", mcLoc("block/birch_planks"));
+        ModelFile birchFenceGateOpen = models().fenceGateOpen("birch_fence_gate_open", mcLoc("block/birch_planks"));
+        ModelFile birchFenceGateWall = models().fenceGateWall("birch_fence_gate_wall", mcLoc("block/birch_planks"));
+        ModelFile birchFenceGateWallOpen = models().fenceGateWallOpen("birch_fence_gate_wall_open", mcLoc("block/birch_planks"));
         ModelFile invisbleModel = new ModelFile.UncheckedModelFile(new ResourceLocation("builtin/generated"));
         VariantBlockStateBuilder builder = getVariantBuilder(Blocks.BIRCH_FENCE_GATE);
         for (Direction dir : FenceGateBlock.HORIZONTAL_FACING.getAllowedValues()) {
@@ -171,7 +171,7 @@ public class BlockStateGenerator extends BlockStateProvider {
 //                    ConfiguredModel.class));
 
         // From here on, models are 1-to-1 copies of vanilla (except for model locations) and will be tested as such below
-        ModelFile block = getBuilder("block").transforms()
+        ModelFile block = models().getBuilder("block").transforms()
                 .transform(ModelBuilder.Perspective.GUI)
                 .rotation(30, 225, 0)
                 .scale(0.625f)
@@ -198,13 +198,13 @@ public class BlockStateGenerator extends BlockStateProvider {
                 .end()
                 .end();
 
-        getBuilder("cube")
+        models().getBuilder("cube")
                 .parent(block)
                 .element()
                 .allFaces((dir, face) -> face.texture("#" + dir.getName()).cullface(dir));
 
-        ModelFile furnace = orientable("furnace", mcLoc("block/furnace_side"), mcLoc("block/furnace_front"), mcLoc("block/furnace_top"));
-        ModelFile furnaceLit = orientable("furnace_on", mcLoc("block/furnace_side"), mcLoc("block/furnace_front_on"), mcLoc("block/furnace_top"));
+        ModelFile furnace = models().orientable("furnace", mcLoc("block/furnace_side"), mcLoc("block/furnace_front"), mcLoc("block/furnace_top"));
+        ModelFile furnaceLit = models().orientable("furnace_on", mcLoc("block/furnace_side"), mcLoc("block/furnace_front_on"), mcLoc("block/furnace_top"));
 
         getVariantBuilder(Blocks.FURNACE)
                 .forAllStates(state -> ConfiguredModel.builder()
@@ -213,8 +213,8 @@ public class BlockStateGenerator extends BlockStateProvider {
                         .build()
                 );
 
-        ModelFile barrel = cubeBottomTop("barrel", mcLoc("block/barrel_side"), mcLoc("block/barrel_bottom"), mcLoc("block/barrel_top"));
-        ModelFile barrelOpen = cubeBottomTop("barrel_open", mcLoc("block/barrel_side"), mcLoc("block/barrel_bottom"), mcLoc("block/barrel_top_open"));
+        ModelFile barrel = models().cubeBottomTop("barrel", mcLoc("block/barrel_side"), mcLoc("block/barrel_bottom"), mcLoc("block/barrel_top"));
+        ModelFile barrelOpen = models().cubeBottomTop("barrel_open", mcLoc("block/barrel_side"), mcLoc("block/barrel_bottom"), mcLoc("block/barrel_top_open"));
         directionalBlock(Blocks.BARREL, state -> state.get(BarrelBlock.PROPERTY_OPEN) ? barrelOpen : barrel); // Testing custom state interpreter
 
         logBlock((LogBlock) Blocks.ACACIA_LOG);
@@ -233,8 +233,8 @@ public class BlockStateGenerator extends BlockStateProvider {
         trapdoorBlock((TrapDoorBlock) Blocks.ACACIA_TRAPDOOR, "acacia", mcLoc("block/acacia_trapdoor"), true);
         trapdoorBlock((TrapDoorBlock) Blocks.OAK_TRAPDOOR, "oak", mcLoc("block/oak_trapdoor"), false); // Test a non-orientable trapdoor
 
-        simpleBlock(Blocks.TORCH, torch("torch", mcLoc("block/torch")));
-        horizontalBlock(Blocks.WALL_TORCH, torchWall("wall_torch", mcLoc("block/torch")), 90);
+        simpleBlock(Blocks.TORCH, models().torch("torch", mcLoc("block/torch")));
+        horizontalBlock(Blocks.WALL_TORCH, models().torchWall("wall_torch", mcLoc("block/torch")), 90);
     }
 
     // Testing the outputs

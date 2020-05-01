@@ -1,23 +1,25 @@
 package com.brandon3055.draconicevolution.integration.jei;
 
-import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.api.fusioncrafting.IFusionRecipe;
 import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
-import com.brandon3055.draconicevolution.utils.DETextures;
-import mezz.jei.api.IGuiHelper;
-import mezz.jei.api.gui.IDrawable;
+import com.brandon3055.draconicevolution.client.DETextures;
+
+
 import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.gui.drawable.IDrawable;
+import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
-import mezz.jei.api.recipe.BlankRecipeCategory;
-import mezz.jei.api.recipe.IRecipeWrapper;
-import net.minecraft.client.Minecraft;
+
+import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
 
 /**
  * Created by brandon3055 on 24/07/2016.
  */
-public class FusionRecipeCategory extends BlankRecipeCategory { //TODO Fix animation in PI
+public class FusionRecipeCategory implements IRecipeCategory<IFusionRecipe> { //TODO Fix animation in PI
 
     private final IDrawable background;
     private final String localizedName;
@@ -31,9 +33,10 @@ public class FusionRecipeCategory extends BlankRecipeCategory { //TODO Fix anima
 
     @Nonnull
     @Override
-    public String getUid() {
+    public ResourceLocation getUid() {
         return RecipeCategoryUids.FUSION_CRAFTING;
     }
+
 
     @Nonnull
     @Override
@@ -41,10 +44,10 @@ public class FusionRecipeCategory extends BlankRecipeCategory { //TODO Fix anima
         return localizedName;
     }
 
-    @Override
-    public String getModName() {
-        return DraconicEvolution.MODID;
-    }
+//    @Override
+//    public String getModName() {
+//        return DraconicEvolution.MODID;
+//    }
 
     @Nonnull
     @Override
@@ -53,7 +56,27 @@ public class FusionRecipeCategory extends BlankRecipeCategory { //TODO Fix anima
     }
 
     @Override
-    public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper, IIngredients ingredients) { //TODO JEI Update
+    public IDrawable getIcon() {
+        return null;
+    }
+
+    @Override
+    public Class<? extends IFusionRecipe> getRecipeClass() {
+        return IFusionRecipe.class;
+    }
+
+    @Override
+    public void setIngredients(IFusionRecipe iFusionRecipe, IIngredients iIngredients) {
+
+    }
+
+    @Override
+    public void setRecipe(IRecipeLayout iRecipeLayout, IFusionRecipe iFusionRecipe, IIngredients iIngredients) {
+
+    }
+
+    //    @Override
+//    public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper, IIngredients ingredients) { //TODO JEI Update
 //        try {
 //
 //            IFusionRecipe recipe = ((FusionRecipeWrapper) recipeWrapper).recipe;
@@ -122,10 +145,10 @@ public class FusionRecipeCategory extends BlankRecipeCategory { //TODO Fix anima
 //        catch (Throwable e) {
 //            e.printStackTrace();
 //        }
-    }
+//    }
 
-    @Override
-    public void drawExtras(@Nonnull Minecraft minecraft) {
-
-    }
+//    @Override
+//    public void drawExtras(@Nonnull Minecraft minecraft) {
+//
+//    }
 }

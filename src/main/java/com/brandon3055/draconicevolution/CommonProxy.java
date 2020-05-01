@@ -8,6 +8,7 @@ import com.brandon3055.draconicevolution.handlers.DEEventHandler;
 import com.brandon3055.draconicevolution.init.ModuleCapability;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import net.minecraft.client.audio.ISound;
+import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -121,4 +122,7 @@ public class CommonProxy {
         return null;
     }
 
+    public void onColourSetup(ColorHandlerEvent.Block event) {
+
+    }
 }

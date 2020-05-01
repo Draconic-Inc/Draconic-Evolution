@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.api.modules.properties;
 
 import com.brandon3055.draconicevolution.api.TechLevel;
+import com.brandon3055.draconicevolution.api.modules.capability.IModuleHost;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 
@@ -27,7 +28,7 @@ public class DamageModuleProperties extends ModuleProperties<DamageModulePropert
     }
 
     @Override
-    public void addCombinedStats(List<DamageModuleProperties> propertiesList, Map<ITextComponent, ITextComponent> map) {
+    public void addCombinedStats(List<DamageModuleProperties> propertiesList, Map<ITextComponent, ITextComponent> map, IModuleHost moduleHost) {
         map.put(new StringTextComponent("DamageModule"), new StringTextComponent("TODO"));
     }
 }

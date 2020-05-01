@@ -4,11 +4,11 @@
 //import com.brandon3055.draconicevolution.blocks.tileentity.TileParticleGenerator;
 //import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
 //import com.brandon3055.draconicevolution.network.PacketParticleGenerator;
-//import com.brandon3055.draconicevolution.utils.DETextures;
+//import com.brandon3055.draconicevolution.client.DETextures;
 //import net.minecraft.client.Minecraft;
 //import net.minecraft.client.gui.GuiButton;
 //import net.minecraft.client.gui.screen.Screen;
-//import net.minecraft.client.renderer.GlStateManager;
+//import net.minecraft.client.renderer.RenderSystem;
 //import net.minecraft.client.resources.I18n;
 //import net.minecraftforge.fml.client.config.GuiButtonExt;
 //import net.minecraftforge.fml.client.config.GuiSlider;
@@ -309,7 +309,7 @@
 //                    updateSlider();
 //                }
 //
-//                GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+//                RenderSystem.color(1.0F, 1.0F, 1.0F, 1.0F);
 //                this.drawTexturedModalRect(this.x + (int) (rangeValue * (float) (this.width - 8)), this.y, 0, 66, 4, 20);
 //                this.drawTexturedModalRect(this.x + (int) (rangeValue * (float) (this.width - 8)) + 4, this.y, 196, 66, 4, 20);
 //                this.drawTexturedModalRect(this.x + (int) (this.sliderValue * (float) (this.width - 8)), this.y, 0, 66, 4, 20);

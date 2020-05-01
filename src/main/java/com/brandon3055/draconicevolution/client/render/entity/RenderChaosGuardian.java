@@ -4,7 +4,7 @@
 //import com.brandon3055.draconicevolution.client.model.ModelChaosGuardian;
 //import com.brandon3055.draconicevolution.entity.EntityChaosGuardian;
 //import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
-//import com.brandon3055.draconicevolution.utils.DETextures;
+//import com.brandon3055.draconicevolution.client.DETextures;
 //import net.minecraft.client.renderer.*;
 //import net.minecraft.client.renderer.entity.RenderLiving;
 //import net.minecraft.client.renderer.entity.RenderManager;
@@ -223,22 +223,22 @@
 //
 //        public void doRenderLayer(EntityChaosGuardian entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
 //            this.dragonRenderer.bindTexture(TEXTURE);
-//            GlStateManager.enableBlend();
-//            GlStateManager.disableAlpha();
-//            GlStateManager.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE);
-//            GlStateManager.disableLighting();
-//            GlStateManager.depthFunc(514);
+//            RenderSystem.enableBlend();
+//            RenderSystem.disableAlpha();
+//            RenderSystem.blendFunc(RenderSystem.SourceFactor.ONE, RenderSystem.DestFactor.ONE);
+//            RenderSystem.disableLighting();
+//            RenderSystem.depthFunc(514);
 //            int i = 61680;
 //            int j = i % 65536;
 //            int k = i / 65536;
 //            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float) j, (float) k);
-//            GlStateManager.enableLighting();
-//            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+//            RenderSystem.enableLighting();
+//            RenderSystem.color(1.0F, 1.0F, 1.0F, 1.0F);
 //            this.dragonRenderer.getMainModel().render(entitylivingbaseIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
 //            this.dragonRenderer.setLightmap(entitylivingbaseIn);
-//            GlStateManager.disableBlend();
-//            GlStateManager.enableAlpha();
-//            GlStateManager.depthFunc(515);
+//            RenderSystem.disableBlend();
+//            RenderSystem.enableAlpha();
+//            RenderSystem.depthFunc(515);
 //        }
 //
 //        public boolean shouldCombineTextures() {

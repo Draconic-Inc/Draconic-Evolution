@@ -3,10 +3,14 @@ package com.brandon3055.draconicevolution.client.render.item;
 import codechicken.lib.render.item.IItemRenderer;
 import codechicken.lib.util.TransformUtils;
 import com.brandon3055.draconicevolution.init.DEContent;
+import com.google.common.collect.ImmutableMap;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.model.IModelState;
+
 
 /**
  * Created by brandon3055 on 18/04/2017.
@@ -39,14 +43,20 @@ public class RenderItemStabilizedSpawner implements IItemRenderer {
     //endregion
 
     @Override
-    public IModelState getTransforms() {
+    public void renderItem(ItemStack stack, ItemCameraTransforms.TransformType transformType, MatrixStack mStack, IRenderTypeBuffer getter, int packedLight, int packedOverlay) {
+
+    }
+
+    @Override
+    public ImmutableMap<ItemCameraTransforms.TransformType, TransformationMatrix> getTransforms() {
         return TransformUtils.DEFAULT_BLOCK;
     }
 
     @Override
-    public void renderItem(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
-
+    public boolean func_230044_c_() {
+        return false;
     }
+
 
     //Remember GuiInventory.drawEntityOnScreen
 //    @Override
@@ -67,11 +77,11 @@ public class RenderItemStabilizedSpawner implements IItemRenderer {
 //        Minecraft.getInstance().getRenderItem().renderModel(baseModel, 0xFFFFFFFF);
 //
 //
-//        GlStateManager.pushMatrix();
-//        GlStateManager.translate(0.5F, 0, 0.5F);
+//        RenderSystem.pushMatrix();
+//        RenderSystem.translate(0.5F, 0, 0.5F);
 //
 //        if (entity != null) {
-//            GlStateManager.pushMatrix();
+//            RenderSystem.pushMatrix();
 //            float f = 0.53125F;
 //            float f1 = Math.max(entity.width, entity.height);
 //
@@ -80,25 +90,25 @@ public class RenderItemStabilizedSpawner implements IItemRenderer {
 //            }
 //
 //            float partialTicks = Minecraft.getInstance().getRenderPartialTicks();
-//            GlStateManager.translate(0.0F, 0.4F, 0.0F);
-//            GlStateManager.rotate((ClientEventHandler.elapsedTicks + partialTicks) * 10.0F, 0.0F, 1.0F, 0.0F);
-//            GlStateManager.translate(0.0F, -0.2F, 0.0F);
-//            GlStateManager.rotate(-30.0F, 1.0F, 0.0F, 0.0F);
-//            GlStateManager.scale(f, f, f);
+//            RenderSystem.translate(0.0F, 0.4F, 0.0F);
+//            RenderSystem.rotate((ClientEventHandler.elapsedTicks + partialTicks) * 10.0F, 0.0F, 1.0F, 0.0F);
+//            RenderSystem.translate(0.0F, -0.2F, 0.0F);
+//            RenderSystem.rotate(-30.0F, 1.0F, 0.0F, 0.0F);
+//            RenderSystem.scale(f, f, f);
 //            entity.setLocationAndAngles(0, 0, 0, 0.0F, 0.0F);
 //            Minecraft.getInstance().getRenderManager().renderEntity(entity, 0.0D, 0.0D, 0.0D, 0.0F, partialTicks, false);
-//            GlStateManager.popMatrix();
+//            RenderSystem.popMatrix();
 //
 //            if (transformType != ItemCameraTransforms.TransformType.GROUND) {
-//                GlStateManager.enableRescaleNormal();
-//                GlStateManager.setActiveTexture(OpenGlHelper.lightmapTexUnit);
-//                GlStateManager.disableTexture2D();
-//                GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
-//                GlStateManager.disableLighting();
+//                RenderSystem.enableRescaleNormal();
+//                RenderSystem.setActiveTexture(OpenGlHelper.lightmapTexUnit);
+//                RenderSystem.disableTexture2D();
+//                RenderSystem.setActiveTexture(OpenGlHelper.defaultTexUnit);
+//                RenderSystem.disableLighting();
 //            }
 //
-//            GlStateManager.enableBlend();
-//            GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+//            RenderSystem.enableBlend();
+//            RenderSystem.tryBlendFuncSeparate(RenderSystem.SourceFactor.SRC_ALPHA, RenderSystem.DestFactor.ONE_MINUS_SRC_ALPHA, RenderSystem.SourceFactor.ONE, RenderSystem.DestFactor.ZERO);
 //        }
 //
 //
@@ -106,9 +116,9 @@ public class RenderItemStabilizedSpawner implements IItemRenderer {
 //        IBakedModel bakedModel = TESRBase.getStackModel(core);
 //        List<BakedQuad> quads = bakedModel.getQuads(null, null, 0);
 //
-//        GlStateManager.translate(-0.25, 1.225, -0.25);
-//        GlStateManager.scale(0.5, 0.5, 0.5);
-//        GlStateManager.rotate(90, 1, 0, 0);
+//        RenderSystem.translate(-0.25, 1.225, -0.25);
+//        RenderSystem.scale(0.5, 0.5, 0.5);
+//        RenderSystem.rotate(90, 1, 0, 0);
 //
 //        float lastBrightnessX = OpenGlHelper.lastBrightnessX;
 //        float lastBrightnessY = OpenGlHelper.lastBrightnessY;
@@ -116,21 +126,21 @@ public class RenderItemStabilizedSpawner implements IItemRenderer {
 //        TextureUtils.bindBlockTexture();
 //
 //        ModelUtils.renderQuads(quads);
-//        GlStateManager.disableLighting();
+//        RenderSystem.disableLighting();
 //        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 200, 200);
 //        renderEffect(quads);
 //        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lastBrightnessX, lastBrightnessY);
-//        GlStateManager.enableLighting();
+//        RenderSystem.enableLighting();
 //
-//        GlStateManager.translate(0, 0, 1.9);
+//        RenderSystem.translate(0, 0, 1.9);
 //
 //        ModelUtils.renderQuads(quads);
-//        GlStateManager.disableLighting();
+//        RenderSystem.disableLighting();
 //        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 200, 200);
 //        renderEffect(quads);
 //        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lastBrightnessX, lastBrightnessY);
-//        GlStateManager.enableLighting();
+//        RenderSystem.enableLighting();
 //
-//        GlStateManager.popMatrix();
+//        RenderSystem.popMatrix();
 //    }
 }

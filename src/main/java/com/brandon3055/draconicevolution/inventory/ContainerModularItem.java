@@ -5,7 +5,9 @@ import com.brandon3055.brandonscore.client.gui.modulargui.baseelements.GuiButton
 import com.brandon3055.brandonscore.inventory.ContainerSlotLayout;
 import com.brandon3055.brandonscore.inventory.PlayerSlot;
 import com.brandon3055.draconicevolution.api.modules.capability.IModuleHost;
+import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleGrid;
+import com.brandon3055.draconicevolution.api.modules.lib.StackModuleContext;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.init.ModuleCapability;
 import com.brandon3055.draconicevolution.utils.LogHelper;
@@ -62,6 +64,11 @@ public class ContainerModularItem extends ContainerModuleHost<TileBCore> {
             }
         }
         return moduleHost;
+    }
+
+    @Override
+    public ModuleContext getModuleContext() {
+        return new StackModuleContext(getModuleHost(), hostStack, player);
     }
 
     private void onContainerOpen() {

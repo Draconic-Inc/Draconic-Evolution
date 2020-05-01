@@ -312,7 +312,7 @@ public class TileEnergyPylon extends TileBCore implements ITickableTileEntity, I
             double randZ = world.rand.nextDouble() - 0.5D;
             particlePos.add(randX * offset, randY * offset, randZ * offset);
 
-            world.addParticle(new IntParticleType.IntParticleData(DEParticles.line_indicator, 150, 0, 255), particlePos.x, particlePos.y, particlePos.z, randX * speed, randY * speed, randZ * speed);
+            world.addParticle(new IntParticleType.IntParticleData(DEParticles.line_indicator, 150, 0, 255, 40 + world.rand.nextInt(20)), particlePos.x, particlePos.y, particlePos.z, randX * speed, randY * speed, randZ * speed);
         }
     }
 

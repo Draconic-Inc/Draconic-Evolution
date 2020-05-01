@@ -3,22 +3,25 @@ package com.brandon3055.draconicevolution.client.render.effect;
 import codechicken.lib.math.MathHelper;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalWirelessIO;
+import com.brandon3055.draconicevolution.client.DETextures;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
-import com.brandon3055.draconicevolution.utils.DETextures;
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.item.FireworkRocketItem;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.World;
@@ -87,19 +90,18 @@ public class CrystalFXWireless extends CrystalFXBase<TileCrystalWirelessIO> {
             }
         }
 
-        int ps = Minecraft.getInstance().gameSettings.particles.func_216832_b();
+        int ps = Minecraft.getInstance().gameSettings.particles.getId();
         if (age % 2 == 0 && powerLevel > rand.nextFloat() && (ps == 0 || (ps == 1 && rand.nextInt(3) == 0) || (ps == 2 && rand.nextInt(10) == 0))) {
             double travel = 50 + rand.nextInt(50);
             travel *= (1.4F - powerLevel);
             trackers.add(new PTracker((int) travel, new Vector3(targetBB.minX + (rand.nextDouble() * (targetBB.maxX - targetBB.minX)), targetBB.minY + (rand.nextDouble() * (targetBB.maxY - targetBB.minY)), targetBB.minZ + (rand.nextDouble() * (targetBB.maxZ - targetBB.minZ)))));
         }
 
-//        particleTextureIndexX = ClientEventHandler.elapsedTicks % 5;
         age++;
     }
 
     @Override
-    public void renderParticle(BufferBuilder buffer, ActiveRenderInfo entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
+    public void renderParticle(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks) {
         int texIndex = (ClientEventHandler.elapsedTicks) % DETextures.ENERGY_PARTICLE.length;
         TextureAtlasSprite sprite = DETextures.ENERGY_PARTICLE[texIndex];
         float minU = sprite.getMinU();
@@ -107,12 +109,12 @@ public class CrystalFXWireless extends CrystalFXBase<TileCrystalWirelessIO> {
         float minV = sprite.getMinV();
         float maxV = sprite.getMaxV();
 
-
-        double scale = 0.08;// * powerLevel;
+        float scale = 0.08F;
         boolean output = !tile.inputMode.get();
 
-        Vector3 source = new Vector3(posX - interpPosX, posY - interpPosY, posZ - interpPosZ);
-        Vector3 target = Vector3.fromBlockPos(linkTarget).subtract(interpPosX, interpPosY, interpPosZ);
+        Vec3d view = renderInfo.getProjectedView();
+        Vector3 source = new Vector3(posX - view.x, posY - view.y, posZ - view.z);
+        Vector3 target = Vector3.fromBlockPos(linkTarget).subtract(view.x, view.y, view.z);
 
         for (PTracker tracker : trackers) {
             double progress = ((double) tracker.ticksActive + partialTicks) / (double) tracker.travelTime;
@@ -125,18 +127,12 @@ public class CrystalFXWireless extends CrystalFXBase<TileCrystalWirelessIO> {
             pathVec.multiply(progress);
             pathVec.add(source);
 
-            buffer.pos((pathVec.x - rotationX * scale - rotationXY * scale), (pathVec.y - rotationZ * scale), (pathVec.z - rotationYZ * scale - rotationXZ * scale)).tex((double) maxU, (double) maxV)/*.color(particleRed, particleGreen, particleBlue, particleAlpha)*/.endVertex();
-            buffer.pos((pathVec.x - rotationX * scale + rotationXY * scale), (pathVec.y + rotationZ * scale), (pathVec.z - rotationYZ * scale + rotationXZ * scale)).tex((double) maxU, (double) minV)/*.color(particleRed, particleGreen, particleBlue, particleAlpha)*/.endVertex();
-            buffer.pos((pathVec.x + rotationX * scale + rotationXY * scale), (pathVec.y + rotationZ * scale), (pathVec.z + rotationYZ * scale + rotationXZ * scale)).tex((double) minU, (double) minV)/*.color(particleRed, particleGreen, particleBlue, particleAlpha)*/.endVertex();
-            buffer.pos((pathVec.x + rotationX * scale - rotationXY * scale), (pathVec.y - rotationZ * scale), (pathVec.z + rotationYZ * scale - rotationXZ * scale)).tex((double) minU, (double) maxV)/*.color(particleRed, particleGreen, particleBlue, particleAlpha)*/.endVertex();
+            Vector3f[] renderVector = getRenderVectors(renderInfo, (float) pathVec.x, (float) pathVec.y, (float) pathVec.z, scale);
+            buffer.pos(renderVector[0].getX(), renderVector[0].getY(), renderVector[0].getZ()).tex(maxU, maxV).endVertex();
+            buffer.pos(renderVector[1].getX(), renderVector[1].getY(), renderVector[1].getZ()).tex(maxU, minV).endVertex();
+            buffer.pos(renderVector[2].getX(), renderVector[2].getY(), renderVector[2].getZ()).tex(minU, minV).endVertex();
+            buffer.pos(renderVector[3].getX(), renderVector[3].getY(), renderVector[3].getZ()).tex(minU, maxV).endVertex();
         }
-    }
-
-    private void bufferQuad(BufferBuilder buffer, Vector3 p1, Vector3 p2, Vector3 p3, Vector3 p4, double anim, double dist) {
-        buffer.pos(p1.x, p1.y, p1.z).tex(0.5, anim).endVertex();
-        buffer.pos(p2.x, p2.y, p2.z).tex(0.5, dist + anim).endVertex();
-        buffer.pos(p4.x, p4.y, p4.z).tex(1.0, dist + anim).endVertex();
-        buffer.pos(p3.x, p3.y, p3.z).tex(1.0, anim).endVertex();
     }
 
     @Override
@@ -149,7 +145,6 @@ public class CrystalFXWireless extends CrystalFXBase<TileCrystalWirelessIO> {
     private static final IParticleRenderType DRACONIC_HANDLER = new FXHandler(DETextures.ENERGY_BEAM_DRACONIC);
 
     public static class FXHandler implements IParticleRenderType {
-
         private String texture;
         private float green;
 
@@ -159,22 +154,22 @@ public class CrystalFXWireless extends CrystalFXBase<TileCrystalWirelessIO> {
 
         @Override
         public void beginRender(BufferBuilder builder, TextureManager textureManager) {
-            GlStateManager.color4f(0.0F, 1.0F, 1.0F, 1.0F);
-            GlStateManager.depthMask(false);
-            GlStateManager.texParameter(3553, 10242, 10497.0F);
-            GlStateManager.texParameter(3553, 10243, 10497.0F);
-            GlStateManager.disableCull();
-            GlStateManager.alphaFunc(GL11.GL_GREATER, 0F);
+            RenderSystem.color4f(0.0F, 1.0F, 1.0F, 1.0F);
             textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
-            GlStateManager.enableBlend();
-            GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
+
+            RenderSystem.depthMask(false);
+            RenderSystem.alphaFunc(516, 0.003921569F);
+            RenderSystem.enableBlend();
+            RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
+            RenderSystem.glMultiTexCoord2f(0x84c2, 240.0F, 240.0F); //Lightmap
+
             builder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
         }
 
         @Override
         public void finishRender(Tessellator tessellator) {
             tessellator.draw();
-            GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+            RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
         }
     }
 

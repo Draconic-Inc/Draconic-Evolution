@@ -11,10 +11,11 @@ import com.brandon3055.brandonscore.client.render.TESRBase;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileChaosCrystal;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
-import com.brandon3055.draconicevolution.utils.DETextures;
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.brandon3055.draconicevolution.client.DETextures;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.math.MathHelper;
 import org.lwjgl.opengl.GL11;
@@ -27,7 +28,9 @@ import java.util.Map;
 public class RenderTileChaosCrystal extends TESRBase<TileChaosCrystal> {
     private CCModel model;
 
-    public RenderTileChaosCrystal() {
+
+    public RenderTileChaosCrystal(TileEntityRendererDispatcher rendererDispatcherIn, CCModel model) {
+        super(rendererDispatcherIn);
         Map<String, CCModel> map = OBJParser.parseModels(ResourceHelperDE.getResource("models/chaos_crystal.obj"));
         model = CCModel.combine(map.values());
     }
@@ -86,11 +89,11 @@ public class RenderTileChaosCrystal extends TESRBase<TileChaosCrystal> {
 ////                ResourceHelperDE.bindTexture("textures/models/reactor_core.png");
 //                //Do Rendering
 //
-////                GlStateManager.matrixMode(GL11.GL_TEXTURE);
-////                GlStateManager.pushMatrix();
-////                GlStateManager.loadIdentity();
-////                GlStateManager.enableBlend();
-////                GlStateManager.alphaFunc(GL11.GL_GREATER, 0.0F);
+////                RenderSystem.matrixMode(GL11.GL_TEXTURE);
+////                RenderSystem.pushMatrix();
+////                RenderSystem.loadIdentity();
+////                RenderSystem.enableBlend();
+////                RenderSystem.alphaFunc(GL11.GL_GREATER, 0.0F);
 //
 ////                mc.getFramebuffer().bindFramebuffer(true);
 ////                mc.getFramebuffer().bindFramebufferTexture();
@@ -128,9 +131,9 @@ public class RenderTileChaosCrystal extends TESRBase<TileChaosCrystal> {
 ////                tess.draw();
 //
 //
-////                GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
-////                GlStateManager.popMatrix();
-////                GlStateManager.matrixMode(GL11.GL_MODELVIEW);
+////                RenderSystem.alphaFunc(GL11.GL_GREATER, 0.1F);
+////                RenderSystem.popMatrix();
+////                RenderSystem.matrixMode(GL11.GL_MODELVIEW);
 ////                mc.getFramebuffer().createFramebuffer(width, height);
 ////                mc.getFramebuffer().bindFramebuffer(true);
 ////                framebuffer.framebufferRender(width, height);
@@ -144,7 +147,7 @@ public class RenderTileChaosCrystal extends TESRBase<TileChaosCrystal> {
 //        });
 //    }
 
-    @Override
+//    @Override
     public void render(TileChaosCrystal te, double x, double y, double z, float partialTicks, int destroyStage) {
         CCRenderState ccrs = CCRenderState.instance();
         ResourceHelperDE.bindTexture(DETextures.CHAOS_CRYSTAL);
@@ -154,36 +157,36 @@ public class RenderTileChaosCrystal extends TESRBase<TileChaosCrystal> {
         ccrs.draw();
 
         if (!te.guardianDefeated.get()) {
-            GlStateManager.pushMatrix();
-            GlStateManager.translated(0, -4.5, 0);
+            RenderSystem.pushMatrix();
+            RenderSystem.translated(0, -4.5, 0);
             Tessellator tessellator = Tessellator.getInstance();
             BufferBuilder buffer = tessellator.getBuffer();
             ResourceHelperDE.bindTexture(ResourceHelperDE.getResourceRAW("textures/entity/beacon_beam.png"));
-            GlStateManager.texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, 10497.0F);
-            GlStateManager.texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, 10497.0F);
-            GlStateManager.disableLighting();
-            GlStateManager.disableCull();
-            GlStateManager.blendFuncSeparate(770, 1, 1, 0);
+            RenderSystem.texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, 10497);
+            RenderSystem.texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, 10497);
+            RenderSystem.disableLighting();
+            RenderSystem.disableCull();
+            RenderSystem.blendFuncSeparate(770, 1, 1, 0);
             float f2 = (float) ClientEventHandler.elapsedTicks + partialTicks;
             float f3 = -f2 * 0.2F - (float) MathHelper.floor(-f2 * 0.1F);
-            GlStateManager.enableBlend();
-            GlStateManager.blendFuncSeparate(770, 771, 1, 0);
-            GlStateManager.depthMask(false);
+            RenderSystem.enableBlend();
+            RenderSystem.blendFuncSeparate(770, 771, 1, 0);
+            RenderSystem.depthMask(false);
 
-            double size = 0.7F;
-            double d30 = 0.2D - size;
-            double d4 = 0.2D - size;
-            double d6 = 0.8D + size;
-            double d8 = 0.2D - size;
-            double d10 = 0.2D - size;
-            double d12 = 0.8D + size;
-            double d14 = 0.8D + size;
-            double d16 = 0.8D + size;
-            double d18 = 10.0D; //Height
-            double d20 = 0.0D;
-            double d22 = 1.0D;
-            double d24 = (double) (-1.0F + f3);
-            double d26 = d18 + d24;
+            float size = 0.7F;
+            float d30 = 0.2F - size;
+            float d4 = 0.2F - size;
+            float d6 = 0.8F + size;
+            float d8 = 0.2F - size;
+            float d10 = 0.2F - size;
+            float d12 = 0.8F + size;
+            float d14 = 0.8F + size;
+            float d16 = 0.8F + size;
+            float d18 = 10.0F; //Height
+            float d20 = 0.0F;
+            float d22 = 1.0F;
+            float d24 = (-1.0F + f3);
+            float d26 = d18 + d24;
             buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
             buffer.pos(x + d30, y + d18, z + d4).tex(d22, d26).color(200, 0, 0, 62).endVertex();
             buffer.pos(x + d30, y, z + d4).tex(d22, d24).color(200, 0, 0, 62).endVertex();
@@ -202,9 +205,9 @@ public class RenderTileChaosCrystal extends TESRBase<TileChaosCrystal> {
             buffer.pos(x + d30, y, z + d4).tex(d20, d24).color(200, 0, 0, 62).endVertex();
             buffer.pos(x + d30, y + d18, z + d4).tex(d20, d26).color(200, 0, 0, 62).endVertex();
             tessellator.draw();
-            GlStateManager.enableLighting();
-            GlStateManager.depthMask(true);
-            GlStateManager.popMatrix();
+            RenderSystem.enableLighting();
+            RenderSystem.depthMask(true);
+            RenderSystem.popMatrix();
         }
     }
 
@@ -220,7 +223,7 @@ public class RenderTileChaosCrystal extends TESRBase<TileChaosCrystal> {
 ////        Tessellator tess = Tessellator.getInstance();
 ////        BufferBuilder buffer = tess.getBuffer();
 ////
-//////        GlStateManager.enableBlend();
+//////        RenderSystem.enableBlend();
 ////        program.bindShader();
 ////
 ////        int width = 20;
@@ -236,7 +239,7 @@ public class RenderTileChaosCrystal extends TESRBase<TileChaosCrystal> {
 //////        program.runShader();
 //////        program.runShader();
 ////        ShaderProgram.unbindShader();
-////        GlStateManager.disableBlend();
+////        RenderSystem.disableBlend();
 //////        float ex  = (float)this.rendererDispatcher.entityX;
 //////        float f1 = (float)this.rendererDispatcher.entityY;
 //////        float ez = (float)this.rendererDispatcher.entityZ;
@@ -246,12 +249,12 @@ public class RenderTileChaosCrystal extends TESRBase<TileChaosCrystal> {
 ////        Tessellator tess = Tessellator.getInstance();
 ////        BufferBuilder buffer = tess.getBuffer();
 ////
-////        GlStateManager.disableLighting();
-////        GlStateManager.enableBlend();
-//////        GlStateManager.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE);
+////        RenderSystem.disableLighting();
+////        RenderSystem.enableBlend();
+//////        RenderSystem.blendFunc(RenderSystem.SourceFactor.ONE, RenderSystem.DestFactor.ONE);
 ////
 ////        for (int i = 0; i < 16; i++) {
-////            GlStateManager.pushMatrix();
+////            RenderSystem.pushMatrix();
 //////            float f4 = (float)(16 - i);
 //////            float f5 = 0.0625F;
 //////            float f6 = 1.0F / (f4 + 1.0F);
@@ -268,28 +271,28 @@ public class RenderTileChaosCrystal extends TESRBase<TileChaosCrystal> {
 ////            float t3 = ClientEventHandler.elapsedTicks * 8F * RANDOM.nextFloat();
 ////
 ////
-////            GlStateManager.translate(1, 0.1, 0);
-////            GlStateManager.texGen(GlStateManager.TexGen.S, GL11.GL_OBJECT_LINEAR);
-////            GlStateManager.texGen(GlStateManager.TexGen.T, GL11.GL_OBJECT_LINEAR);
-////            GlStateManager.texGen(GlStateManager.TexGen.R, GL11.GL_OBJECT_LINEAR);
-////            GlStateManager.texGen(GlStateManager.TexGen.Q, GL11.GL_EYE_LINEAR);
-////            GlStateManager.texGen(GlStateManager.TexGen.S, GL11.GL_OBJECT_PLANE, this.getBuffer(1.0F, 0.0F, 0.0F, 0.0F));
-////            GlStateManager.texGen(GlStateManager.TexGen.T, GL11.GL_OBJECT_PLANE, this.getBuffer(0.0F, 0.0F, 1.0F, 0.0F));
-////            GlStateManager.texGen(GlStateManager.TexGen.R, GL11.GL_OBJECT_PLANE, this.getBuffer(0.0F, 0.0F, 0.0F, 1.0F));
-////            GlStateManager.texGen(GlStateManager.TexGen.Q, GL11.GL_EYE_PLANE, this.getBuffer(0.0F, 1.0F, 0.0F, 0.0F));
-////            GlStateManager.enableTexGenCoord(GlStateManager.TexGen.S);
-////            GlStateManager.enableTexGenCoord(GlStateManager.TexGen.T);
-////            GlStateManager.enableTexGenCoord(GlStateManager.TexGen.R);
-////            GlStateManager.enableTexGenCoord(GlStateManager.TexGen.Q);
+////            RenderSystem.translate(1, 0.1, 0);
+////            RenderSystem.texGen(RenderSystem.TexGen.S, GL11.GL_OBJECT_LINEAR);
+////            RenderSystem.texGen(RenderSystem.TexGen.T, GL11.GL_OBJECT_LINEAR);
+////            RenderSystem.texGen(RenderSystem.TexGen.R, GL11.GL_OBJECT_LINEAR);
+////            RenderSystem.texGen(RenderSystem.TexGen.Q, GL11.GL_EYE_LINEAR);
+////            RenderSystem.texGen(RenderSystem.TexGen.S, GL11.GL_OBJECT_PLANE, this.getBuffer(1.0F, 0.0F, 0.0F, 0.0F));
+////            RenderSystem.texGen(RenderSystem.TexGen.T, GL11.GL_OBJECT_PLANE, this.getBuffer(0.0F, 0.0F, 1.0F, 0.0F));
+////            RenderSystem.texGen(RenderSystem.TexGen.R, GL11.GL_OBJECT_PLANE, this.getBuffer(0.0F, 0.0F, 0.0F, 1.0F));
+////            RenderSystem.texGen(RenderSystem.TexGen.Q, GL11.GL_EYE_PLANE, this.getBuffer(0.0F, 1.0F, 0.0F, 0.0F));
+////            RenderSystem.enableTexGenCoord(RenderSystem.TexGen.S);
+////            RenderSystem.enableTexGenCoord(RenderSystem.TexGen.T);
+////            RenderSystem.enableTexGenCoord(RenderSystem.TexGen.R);
+////            RenderSystem.enableTexGenCoord(RenderSystem.TexGen.Q);
 ////
-////            GlStateManager.popMatrix();
-////            GlStateManager.matrixMode(GL11.GL_TEXTURE);
-////            GlStateManager.pushMatrix();
-////            GlStateManager.loadIdentity();
+////            RenderSystem.popMatrix();
+////            RenderSystem.matrixMode(GL11.GL_TEXTURE);
+////            RenderSystem.pushMatrix();
+////            RenderSystem.loadIdentity();
 ////
-//////            GlStateManager.translate(0.0F, (float)(Minecraft.getSystemTime() % 700000L) / 700000.0F, 0.0F);
+//////            RenderSystem.translate(0.0F, (float)(Minecraft.getSystemTime() % 700000L) / 700000.0F, 0.0F);
 ////            float scale = i * 0.01F;
-////            GlStateManager.scale(scale, scale, scale);
+////            RenderSystem.scale(scale, scale, scale);
 ////
 ////            float f11 = (RANDOM.nextFloat() * 0.5F + 0.1F);// * i / 16F;
 ////            float f12 = (RANDOM.nextFloat() * 0.5F + 0.4F);// * i / 16F;
@@ -303,16 +306,16 @@ public class RenderTileChaosCrystal extends TESRBase<TileChaosCrystal> {
 ////            tess.draw();
 ////
 ////
-////            GlStateManager.popMatrix();
-////            GlStateManager.matrixMode(GL11.GL_MODELVIEW);
+////            RenderSystem.popMatrix();
+////            RenderSystem.matrixMode(GL11.GL_MODELVIEW);
 ////        }
 ////
 ////
-////        GlStateManager.disableBlend();
-////        GlStateManager.disableTexGenCoord(GlStateManager.TexGen.S);
-////        GlStateManager.disableTexGenCoord(GlStateManager.TexGen.T);
-////        GlStateManager.disableTexGenCoord(GlStateManager.TexGen.R);
-////        GlStateManager.disableTexGenCoord(GlStateManager.TexGen.Q);
-////        GlStateManager.enableLighting();
+////        RenderSystem.disableBlend();
+////        RenderSystem.disableTexGenCoord(RenderSystem.TexGen.S);
+////        RenderSystem.disableTexGenCoord(RenderSystem.TexGen.T);
+////        RenderSystem.disableTexGenCoord(RenderSystem.TexGen.R);
+////        RenderSystem.disableTexGenCoord(RenderSystem.TexGen.Q);
+////        RenderSystem.enableLighting();
 //    }
 }

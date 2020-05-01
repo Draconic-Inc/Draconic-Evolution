@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.api.modules.properties;
 
 import com.brandon3055.draconicevolution.api.TechLevel;
 import com.brandon3055.draconicevolution.api.modules.ModuleType;
+import com.brandon3055.draconicevolution.api.modules.capability.IModuleHost;
 import net.minecraft.util.text.*;
 
 import java.util.List;
@@ -59,17 +60,20 @@ public abstract class ModuleProperties<T extends ModuleProperties<T>> {
      *
      * @param toolTip the item tool tip.
      */
-    public void addInformation(List<ITextComponent> toolTip, ModuleType<?> type) {
+    public void addStats(List<ITextComponent> toolTip, ModuleType<?> type) {
         toolTip.add(new TranslationTextComponent("module.de.type") //
-                .applyTextStyle(TextFormatting.GRAY)); //
-        toolTip.add(new StringTextComponent(" ") //
-                .appendSibling(new TranslationTextComponent("module.de.type." + type.getName()) //
-                        .applyTextStyle(TextFormatting.DARK_GREEN)));
+                .applyTextStyle(TextFormatting.GRAY) //
+                .appendSibling(new StringTextComponent(" ") //
+                        .appendSibling(techLevel.getDisplayName().applyTextStyle(techLevel.getTextColour())) //
+                        .appendSibling(new StringTextComponent(" ")) //
+                        .appendSibling(new TranslationTextComponent("module.de.type." + type.getName()).applyTextStyle(TextFormatting.DARK_GREEN))));
         toolTip.add(new TranslationTextComponent("module.de.size") //
-                .applyTextStyle(TextFormatting.GRAY)); //
-        toolTip.add(new StringTextComponent(" ") //
-                .appendSibling(new StringTextComponent(getWidth() + "x" + getHeight()) //
-                        .applyTextStyle(TextFormatting.DARK_GREEN)));
+                .applyTextStyle(TextFormatting.GRAY) //
+                .appendSibling(new StringTextComponent(" ") //
+                        .appendSibling(new StringTextComponent(getWidth() + "x" + getHeight()) //
+                                .applyTextStyle(TextFormatting.DARK_GREEN))));
+
+
 //        toolTip.add(new TranslationTextComponent("module.de.type") //
 //                .setStyle(new Style().setColor(TextFormatting.GOLD)) //
 //                .appendSibling(new TranslationTextComponent("module.de.type." + type.getName()) //
@@ -88,5 +92,17 @@ public abstract class ModuleProperties<T extends ModuleProperties<T>> {
      * @param propertiesList   List of module properties for all installed modules of this type.
      * @param statNameValueMap The map to which the combined stats for this module type should be added along with the name of the stat.
      */
-    public abstract void addCombinedStats(List<T> propertiesList, Map<ITextComponent, ITextComponent> statNameValueMap);
+    public abstract void addCombinedStats(List<T> propertiesList, Map<ITextComponent, ITextComponent> statNameValueMap, IModuleHost moduleHost);
+
+    public static class SubProperty<T extends ModuleProperties<T>> {
+        private final String name;
+
+        public SubProperty(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+    }
 }

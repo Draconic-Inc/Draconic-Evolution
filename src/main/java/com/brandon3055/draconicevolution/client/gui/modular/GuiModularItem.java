@@ -9,19 +9,16 @@ import com.brandon3055.brandonscore.client.utils.GuiHelper;
 import com.brandon3055.draconicevolution.api.modules.IModule;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleGrid;
 import com.brandon3055.draconicevolution.client.gui.ModuleGridRenderer;
-import com.brandon3055.draconicevolution.handlers.DEEventHandler;
 import com.brandon3055.draconicevolution.init.ModuleCapability;
 import com.brandon3055.draconicevolution.inventory.ContainerModularItem;
-import com.brandon3055.draconicevolution.utils.DETextures;
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.brandon3055.draconicevolution.client.DETextures;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponent;
 import net.minecraft.util.text.TextFormatting;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -79,7 +76,7 @@ public class GuiModularItem extends ModularGuiContainer<ContainerModularItem> {
         grid.getModuleHost().getModules().map(IModule::getModuleType).distinct().forEach(type -> {
             List<IModule<?>> list = grid.getModuleHost().getModules().filter(module -> module.getModuleType() == type).collect(Collectors.toList());
             if (!list.isEmpty()) {
-                type.getProperties(list.get(0)).addCombinedStats(list.stream().map(type::getProperties).collect(Collectors.toList()), nameStatMap);
+                type.getProperties(list.get(0)).addCombinedStats(list.stream().map(type::getProperties).collect(Collectors.toList()), nameStatMap, grid.getModuleHost());
             }
         });
 
@@ -103,16 +100,16 @@ public class GuiModularItem extends ModularGuiContainer<ContainerModularItem> {
         if (slot.getHasStack() && slot.getStack().getCapability(ModuleCapability.MODULE_HOST_CAPABILITY).isPresent()) {
             int x = slot.xPos;
             int y = slot.yPos;
-            GlStateManager.disableLighting();
-            GlStateManager.disableDepthTest();
+            RenderSystem.disableLighting();
+            RenderSystem.disableDepthTest();
             if (slot.getStack() == container.hostStack){
                 fill(x - 1, y -1, x + 17, y + 17, 0x80FF0000);
             }
             else {
                 GuiHelper.drawBorderedRect(x - 1, y - 1, 18, 18, 1, 0, 0x8000FFFF);
             }
-            GlStateManager.enableLighting();
-            GlStateManager.enableDepthTest();
+            RenderSystem.enableLighting();
+            RenderSystem.enableDepthTest();
         }
     }
 }

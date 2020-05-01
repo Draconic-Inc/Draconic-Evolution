@@ -70,7 +70,7 @@ public class ItemDraconiumBlock extends ItemBlockBCore {
 
 //    @Override
 //    public boolean canCharge(ItemStack stack, PlayerEntity player) {
-//        return HandHelper.getItemStack(player, stack) != null && player.isSneaking();
+//        return HandHelper.getItemStack(player, stack) != null && player.isShiftKeyDown();
 //    }
 
     @OnlyIn(Dist.CLIENT)

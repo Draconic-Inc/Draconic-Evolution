@@ -26,9 +26,9 @@ public class RenderEntityChaosVortex extends EntityRenderer<EntityChaosImplosion
 //        if (entity.ticksExisted < 100) {
 //            return;
 //        }
-//        GlStateManager.pushMatrix();
-//        GlStateManager.translate(x, y, z);
-//        GlStateManager.disableLighting();
+//        RenderSystem.pushMatrix();
+//        RenderSystem.translate(x, y, z);
+//        RenderSystem.disableLighting();
 //        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 200F, 200F);
 //        //ResourceHandler.bindResource("textures/models/white.png");
 //
@@ -36,16 +36,16 @@ public class RenderEntityChaosVortex extends EntityRenderer<EntityChaosImplosion
 //        scale /= 500F;
 //        if (scale > 0.5F) scale = 0.5F;
 //
-//        GlStateManager.scale(scale, scale, scale);
+//        RenderSystem.scale(scale, scale, scale);
 //        //uvSphere.renderAll();
 //
-//        GlStateManager.enableLighting();
-//        GlStateManager.popMatrix();
+//        RenderSystem.enableLighting();
+//        RenderSystem.popMatrix();
     }
 
 
     @Override
-    protected ResourceLocation getEntityTexture(EntityChaosImplosion entity) {
+    public ResourceLocation getEntityTexture(EntityChaosImplosion entity) {
         return null;
     }
 

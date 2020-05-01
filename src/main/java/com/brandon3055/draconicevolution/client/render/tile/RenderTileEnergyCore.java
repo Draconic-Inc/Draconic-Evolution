@@ -1,25 +1,28 @@
 package com.brandon3055.draconicevolution.client.render.tile;
 
+import codechicken.lib.colour.Colour;
+import codechicken.lib.math.MathHelper;
 import codechicken.lib.render.CCModel;
 import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.OBJParser;
-import codechicken.lib.vec.Scale;
-import codechicken.lib.vec.uv.IconTransformation;
-import com.brandon3055.brandonscore.client.render.TESRBase;
+import codechicken.lib.render.buffer.TransformingVertexBuilder;
+import codechicken.lib.util.SneakyUtils;
+import codechicken.lib.vec.*;
 import com.brandon3055.brandonscore.lib.Vec3I;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedVec3I;
+import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyCore;
 
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
-import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
-import com.brandon3055.draconicevolution.utils.DETextures;
-import com.mojang.blaze3d.platform.GlStateManager;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.Direction;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 import java.util.Map;
@@ -27,299 +30,308 @@ import java.util.Map;
 /**
  * Created by brandon3055 on 2/4/2016.
  */
-public class RenderTileEnergyCore extends TESRBase<TileEnergyCore> {
+public class RenderTileEnergyCore extends TileEntityRenderer<TileEnergyCore> {
     private static final double[] SCALES = {1.1, 1.7, 2.3, 3.6, 5.5, 7.1, 8.6, 10.2};
 
-    private static CCModel modelStabilizerSphere;
-    private static CCModel modelEnergyCore;
+    private static final RenderType innerCoreType = RenderType.getEntitySolid(new ResourceLocation(DraconicEvolution.MODID, "textures/models/block/core/energy_core_base.png"));
+    private static final RenderType outerCoreType = RenderType.makeType("outer_core", DefaultVertexFormats.ENTITY, GL11.GL_QUADS, 256, false, true, RenderType.State.getBuilder()
+            .texture(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/models/block/core/energy_core_overlay.png"), false, false))
+            .transparency(RenderState.TRANSLUCENT_TRANSPARENCY)
+//            .writeMask(RenderState.COLOR_WRITE)
+            .texturing(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
+            .build(false)
+    );
 
-    public RenderTileEnergyCore() {
-        Map<String, CCModel> map = OBJParser.parseModels(ResourceHelperDE.getResource("models/stabilizer_sphere.obj"));
+    private static final RenderType innerStabType = RenderType.makeType("inner_stab", DefaultVertexFormats.ENTITY, GL11.GL_QUADS, 256, false, true, RenderType.State.getBuilder()
+                    .texture(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/models/block/core/stabilizer_sphere.png"), false, false))
+                    .transparency(RenderState.NO_TRANSPARENCY)
+//            .texturing(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
+                    .build(false)
+    );
+    private static final RenderType outerStabType = RenderType.makeType("outer_stab", DefaultVertexFormats.ENTITY, GL11.GL_QUADS, 256, false, true, RenderType.State.getBuilder()
+            .texture(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/models/block/core/stabilizer_sphere.png"), false, false))
+            .transparency(RenderState.TRANSLUCENT_TRANSPARENCY)
+            .texturing(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
+            .build(false)
+    );
+
+    private static final RenderType beamType = RenderType.makeType("inner_beam", DefaultVertexFormats.POSITION_TEX, GL11.GL_QUADS, 256, false, true, RenderType.State.getBuilder()
+            .texture(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/models/block/core/stabilizer_beam.png"), false, false))
+            .transparency(RenderState.NO_TRANSPARENCY)
+            .texturing(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
+            .build(false)
+    );
+
+    private static final RenderType outerBeamType = RenderType.makeType("outer_beam", DefaultVertexFormats.POSITION_COLOR_TEX, GL11.GL_TRIANGLE_STRIP, 256, false, false, RenderType.State.getBuilder()
+            .texture(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/models/block/core/stabilizer_beam.png"), false, false))
+            .transparency(RenderState.TRANSLUCENT_TRANSPARENCY)
+            .writeMask(RenderState.COLOR_WRITE)
+            .texturing(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
+            .build(false)
+    );
+
+    private final CCModel modelStabilizerSphere;
+    private final CCModel modelEnergyCore;
+
+    public RenderTileEnergyCore(TileEntityRendererDispatcher rendererDispatcherIn) {
+        super(rendererDispatcherIn);
+        Map<String, CCModel> map = OBJParser.parseModels(new ResourceLocation(DraconicEvolution.MODID, "models/block/core/stabilizer_sphere.obj"), GL11.GL_QUADS, null);
         modelStabilizerSphere = CCModel.combine(map.values());
-//        modelStabilizerSphere.apply(new Scale(0.35, 0.35, 0.35));
         modelStabilizerSphere.computeNormals();
 
-        map = OBJParser.parseModels(ResourceHelperDE.getResource("models/energy_core_model.obj"));
+        map = OBJParser.parseModels(new ResourceLocation(DraconicEvolution.MODID, "models/block/core/energy_core_model.obj"), GL11.GL_QUADS, null);
         modelEnergyCore = CCModel.combine(map.values());
-//        modelEnergyCore.apply(new Scale(0.65, 0.65, 0.65));
         modelEnergyCore.computeNormals();
     }
 
     @Override
-    public void render(TileEnergyCore te, double x, double y, double z, float partialTicks, int destroyStage) {
-        //region Build Guide
-
-        if (te.buildGuide.get() /*&& MinecraftForgeClient.getRenderPass() == 0*/) {
-            GlStateManager.bindTexture(Minecraft.getInstance().getTextureMap().getGlTextureId());
-            GlStateManager.pushMatrix();
-            GlStateManager.translated(x, y, z);
-            te.coreStructure.renderTier(te.tier.get());
-            GlStateManager.popMatrix();
-        }
+    public void render(TileEnergyCore te, float partialTicks, MatrixStack mStack, IRenderTypeBuffer getter, int packedLight, int packedOverlay) {
         if (!te.active.get()) return;
 
-        //endregion
+        Matrix4 mat = new Matrix4(mStack);
+        CCRenderState ccrs = CCRenderState.instance();
+        ccrs.reset();
+        ccrs.brightness = packedLight;
+        ccrs.overlay = packedOverlay;
 
         //region Do Calculations
         float rotation = (ClientEventHandler.elapsedTicks + partialTicks) / 2F;
-        float brightness = (float) Math.abs(Math.sin((float) ClientEventHandler.elapsedTicks / 100f) * 100f);
+        int brightness = (int) Math.abs(Math.sin((float) ClientEventHandler.elapsedTicks / 100f) * 100f);
         double scale = SCALES[te.tier.get() - 1];
 
-        double colour = 1D - ((double) te.getExtendedStorage() / (double) te.getExtendedCapacity());
-        float red = 1F;
-        float green = (float) colour * 0.3f;
-        float blue = (float) colour * 0.7f;
+        ccrs.baseColour = te.getColour();
+        ccrs.brightness = 140 + brightness;
+        ccrs.bind(innerCoreType, getter);
+        Matrix4 coreMat = mat.copy();
+        coreMat.translate(Vector3.CENTER);
+        coreMat.scale(scale * -0.65, scale * -0.65, scale * -0.65);
+        coreMat.rotate(rotation * MathHelper.torad, new Vector3(0F, 1F, 0.5F).normalize());
+        modelEnergyCore.render(ccrs, coreMat);
 
         if (te.tier.get() == 8) {
-            red = 1F;
-            green = 0.28F;
-            blue = 0.05F;
-        }
-        //endregion
-
-        //region Render Core
-        CCRenderState ccrs = CCRenderState.instance();
-        ccrs.reset();
-
-        GlStateManager.bindTexture(Minecraft.getInstance().getTextureMap().getGlTextureId());
-        GlStateManager.pushMatrix();
-        GlStateManager.translated(x, y, z);
-        GlStateManager.color4f(red, green, blue, 1F);
-
-        //Render Solid Layer
-//        if (MinecraftForgeClient.getRenderPass() == 0) {
-//        GlStateManager.enableCull();
-        GlStateManager.disableBlend();
-        GlStateManager.depthMask(true);
-
-        setLighting(80f + brightness);
-        GlStateManager.pushMatrix();
-        GlStateManager.translated(0.5, 0.5, 0.5);
-        GlStateManager.scaled(scale * 0.65, scale * 0.65, scale * 0.65);
-        GlStateManager.rotated(rotation, 0F, 1F, 0.5F);
-
-        IconTransformation iconTransform = new IconTransformation(DETextures.getDETexture("models/energy_core_base"));
-        ccrs.startDrawing(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX_NORMAL);
-        modelEnergyCore.render(ccrs, iconTransform, new Scale(-1));
-        ccrs.draw();
-
-        GlStateManager.popMatrix();
-        GlStateManager.color4f(1F, 1F, 1F, 1F);
-        setLighting(200F);
-        renderStabilizers(te, false, partialTicks);
-
-
-        //Render Transparent Layer
-        GlStateManager.enableBlend();
-        GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-
-        GlStateManager.bindTexture(Minecraft.getInstance().getTextureMap().getGlTextureId());
-        if (te.tier.get() == 8) {
-            GlStateManager.color4f(0.95F, 0.45F, 0F, 1F);
+            ccrs.baseColour = Colour.packRGBA(0.95F, 0.45F, 0F, 1F);
         } else {
-            GlStateManager.color4f(0.2F, 1F, 1F, 1F);
+            ccrs.baseColour = Colour.packRGBA(0.2F, 1F, 1F, 1F);
         }
 
-        GlStateManager.pushMatrix();
-        GlStateManager.translated(0.5, 0.5, 0.5);
-        GlStateManager.scaled(scale * 0.7, scale * 0.7, scale * 0.7);
-        GlStateManager.rotated(rotation * 0.5F, 0F, -1F, -0.5F);
+        ccrs.bind(outerCoreType, getter);
+        Matrix4 overlayMat = mat.copy();
+        overlayMat.translate(Vector3.CENTER);
+        overlayMat.scale(scale * -0.7, scale * -0.7, scale * -0.7);
+        overlayMat.rotate(rotation * 0.5F * MathHelper.torad, new Vector3(0F, -1F, -0.5F).normalize());
+        modelEnergyCore.render(ccrs, overlayMat);
 
-        iconTransform = new IconTransformation(DETextures.getDETexture("models/energy_core_overlay"));
-        ccrs.startDrawing(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX_NORMAL);
-        modelEnergyCore.render(ccrs, iconTransform, new Scale(-1));
-        ccrs.draw();
-        GlStateManager.popMatrix();
-
-//        }
-
-//        GlStateManager.enableTexture();
-//        GlStateManager.depthMask(true);
-        renderStabilizers(te, true, partialTicks);
-        GlStateManager.disableBlend();
-
-        resetLighting();
-        GlStateManager.popMatrix();
-
-
-        //endregion
+        renderStabilizers(te, ccrs, mat, getter, partialTicks);
     }
 
-    private void renderStabilizers(TileEnergyCore te, boolean renderStage, float partialTick) {
+
+    //    @Override
+//    public void render(TileEnergyCore te, double x, double y, double z, float partialTicks, int destroyStage) {
+//        //region Build Guide
+//
+//        if (te.buildGuide.get() /*&& MinecraftForgeClient.getRenderPass() == 0*/) {
+//            RenderSystem.bindTexture(Minecraft.getInstance().getTextureMap().getGlTextureId());
+//            RenderSystem.pushMatrix();
+//            RenderSystem.translated(x, y, z);
+//            te.coreStructure.renderTier(te.tier.get());
+//            RenderSystem.popMatrix();
+//        }
+//        if (!te.active.get()) return;
+//
+//        RenderSystem.popMatrix();
+//        RenderSystem.color4f(1F, 1F, 1F, 1F);
+//        setLighting(200F);
+//        renderStabilizers(te, false, partialTicks);
+//
+//
+//        //Render Transparent Layer
+//        RenderSystem.enableBlend();
+//        RenderSystem.blendFuncSeparate(RenderSystem.SourceFactor.SRC_ALPHA, RenderSystem.DestFactor.ONE_MINUS_SRC_ALPHA, RenderSystem.SourceFactor.ONE, RenderSystem.DestFactor.ZERO);
+//
+//        RenderSystem.bindTexture(Minecraft.getInstance().getTextureMap().getGlTextureId());
+//        if (te.tier.get() == 8) {
+//            RenderSystem.color4f(0.95F, 0.45F, 0F, 1F);
+//        } else {
+//            RenderSystem.color4f(0.2F, 1F, 1F, 1F);
+//        }
+//
+//        RenderSystem.pushMatrix();
+//        RenderSystem.translated(0.5, 0.5, 0.5);
+//        RenderSystem.scaled(scale * 0.7, scale * 0.7, scale * 0.7);
+//        RenderSystem.rotated(rotation * 0.5F, 0F, -1F, -0.5F);
+//
+//        iconTransform = new IconTransformation(DETextures.getDETexture("models/energy_core_overlay"));
+//        ccrs.startDrawing(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX_NORMAL);
+//        modelEnergyCore.render(ccrs, iconTransform, new Scale(-1));
+//        ccrs.draw();
+//        RenderSystem.popMatrix();
+//
+////        }
+//
+////        RenderSystem.enableTexture();
+////        RenderSystem.depthMask(true);
+//        renderStabilizers(te, true, partialTicks);
+//        RenderSystem.disableBlend();
+//
+//        resetLighting();
+//        RenderSystem.popMatrix();
+//
+//
+//        //endregion
+//    }
+
+    private void renderStabilizers(TileEnergyCore te, CCRenderState ccrs, Matrix4 matrix4, IRenderTypeBuffer getter, float partialTick) {
         if (!te.stabilizersOK.get()) {
             return;
         }
 
         for (ManagedVec3I vec3I : te.stabOffsets) {
-            GlStateManager.pushMatrix();
-            GlStateManager.translated(-vec3I.get().x + 0.5, -vec3I.get().y + 0.5, -vec3I.get().z + 0.5);
+            Matrix4 mat = matrix4.copy();
+            mat.translate(-vec3I.get().x + 0.5, -vec3I.get().y + 0.5, -vec3I.get().z + 0.5);
 
             Direction facing = Direction.getFacingFromVector(vec3I.get().x, vec3I.get().y, vec3I.get().z);//Direction.getFacingFromAxis(Direction.AxisDirection.POSITIVE, te.multiBlockAxis);
             if (facing.getAxis() == Direction.Axis.X || facing.getAxis() == Direction.Axis.Y) {
-                GlStateManager.rotatef(-90F, -facing.getYOffset(), facing.getXOffset(), 0);
+                mat.rotate(-90F * MathHelper.torad, new Vector3(-facing.getYOffset(), facing.getXOffset(), 0).normalize());
             } else if (facing == Direction.SOUTH) {
-                GlStateManager.rotatef(180F, 0, 1, 0);
+                mat.rotate(180F * MathHelper.torad, new Vector3(0, 1, 0).normalize());
             }
 
-            GlStateManager.rotatef(90, 1, 0, 0);
-            GlStateManager.color3f(1, 1, 1);
-            renderStabilizerBeam(te, vec3I.get(), renderStage, partialTick);
+            mat.rotate(90F * MathHelper.torad, new Vector3(1, 0, 0).normalize());
+
+            ccrs.baseColour = 0xFFFFFFFF;
+            renderStabilizerBeam(te, mat, getter, vec3I.get(), partialTick);
             if (te.tier.get() >= 5) {
-                GlStateManager.scalef(1.2F, 0.5F, 1.2F);
+                mat.scale(-1.2F, -0.5F, -1.2F);
             } else {
-                GlStateManager.scaled(0.45, 0.45, 0.45);
+                mat.scale(-0.45, -0.45, -0.45);
             }
-//            LogHelper.dev(vec3I);
-            renderStabilizer(renderStage, partialTick);
-            GlStateManager.popMatrix();
+
+            Matrix4 innerMat = mat.copy();
+            innerMat.scale(0.9F, 0.9F, 0.9F);
+            ccrs.baseColour = 0x00FFFFFF;
+            ccrs.brightness = 240;
+            innerMat.rotate((ClientEventHandler.elapsedTicks + partialTick) * MathHelper.torad, new Vector3(0, -1, 0));
+            ccrs.bind(innerStabType, getter);
+            modelStabilizerSphere.render(ccrs, innerMat);
+
+            mat.scale(1.1F, 1.1F, 1.1F);
+            ccrs.baseColour = 0x00FFFF7F;
+            ccrs.brightness = 240;
+            mat.rotate((ClientEventHandler.elapsedTicks + partialTick) * 0.5F * MathHelper.torad, new Vector3(0, 1, 0));
+            ccrs.bind(outerStabType, getter);
+            modelStabilizerSphere.render(ccrs, mat);
         }
     }
 
-    private void renderStabilizer(boolean renderStage, float partialTick) {
-        CCRenderState ccrs = CCRenderState.instance();
-        GlStateManager.bindTexture(Minecraft.getInstance().getTextureMap().getGlTextureId());
-        IconTransformation iconTransform = new IconTransformation(DETextures.getDETexture("models/stabilizer_sphere"));
+    private void renderStabilizerBeam(TileEnergyCore te, Matrix4 matrix4, IRenderTypeBuffer getter, Vec3I vec, float partialTick) {
+        Matrix4 innerMat = matrix4.copy();
+        IVertexBuilder builder = new TransformingVertexBuilder(getter.getBuffer(beamType), innerMat);
+        innerMat.rotate(180 * MathHelper.torad, new Vector3(0, 0, 1));
 
-        if (!renderStage) {
-            GlStateManager.scalef(0.9F, 0.9F, 0.9F);
-            GlStateManager.rotated(ClientEventHandler.elapsedTicks + partialTick, 0, -1, 0);
-            GlStateManager.color3f(0, 1, 1);
-            ccrs.startDrawing(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX_NORMAL);
-            modelStabilizerSphere.render(ccrs, iconTransform, new Scale(-1));
-            ccrs.draw();
-        }
-        else {
-            GlStateManager.rotated((ClientEventHandler.elapsedTicks + partialTick) * 0.5F, 0, 1, 0);
-            GlStateManager.scalef(1.1F, 1.1F, 1.1F);
-            GlStateManager.color4f(0, 1, 1, 0.5F);
-            ccrs.startDrawing(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX_NORMAL);
-            modelStabilizerSphere.render(ccrs, iconTransform, new Scale(-1));
-            ccrs.draw();
-        }
-    }
-
-    private void renderStabilizerBeam(TileEnergyCore te, Vec3I vec, boolean renderStage, float partialTick) {
-        ResourceHelperDE.bindTexture(DETextures.STABILIZER_BEAM);
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder vertexBuffer = tessellator.getBuffer();
-        GL11.glPushMatrix();
-        GlStateManager.rotated(180, 0, 0, 1);
-
-        double beamLength = Math.abs(vec.x + vec.y + vec.z) - 0.5;
+        float beamLength = Math.abs(vec.x + vec.y + vec.z) - 0.5F;
         float time = ClientEventHandler.elapsedTicks + partialTick;
         double rotation = (double) time * 0.025D * -1.5D;
         float beamMotion = -time * 0.2F - (float) MathHelper.floor(-time * 0.1F);
 
-        if (!renderStage) {
-            //region Render Inner Beam
-            double scale = 0.2;
-            double d7 = 0.5D + Math.cos(rotation + 2.356194490192345D) * scale;  //x point 1
-            double d9 = 0.5D + Math.sin(rotation + 2.356194490192345D) * scale;  //z point 1
-            double d11 = 0.5D + Math.cos(rotation + (Math.PI / 4D)) * scale;        //x point 2
-            double d13 = 0.5D + Math.sin(rotation + (Math.PI / 4D)) * scale;     //z point 2
-            double d15 = 0.5D + Math.cos(rotation + 3.9269908169872414D) * scale;//Dist from x-3
-            double d17 = 0.5D + Math.sin(rotation + 3.9269908169872414D) * scale;
-            double d19 = 0.5D + Math.cos(rotation + 5.497787143782138D) * scale;
-            double d21 = 0.5D + Math.sin(rotation + 5.497787143782138D) * scale;
-            double texXMin = 0.0D;
-            double texXMax = 1.0D;
-            double d28 = (double) (-1.0F + beamMotion);
-            double texHeight = beamLength * (0.5D / scale) + d28;
+        //region Render Inner Beam
+        float scale = 0.2F;
+        float d7 = 0.5F + (float) Math.cos(rotation + 2.356194490192345F) * scale;  //x point 1
+        float d9 = 0.5F + (float) Math.sin(rotation + 2.356194490192345F) * scale;  //z point 1
+        float d11 = 0.5F + (float) Math.cos(rotation + (Math.PI / 4F)) * scale;        //x point 2
+        float d13 = 0.5F + (float) Math.sin(rotation + (Math.PI / 4F)) * scale;     //z point 2
+        float d15 = 0.5F + (float) Math.cos(rotation + 3.9269908169872414F) * scale;//Dist from x-3
+        float d17 = 0.5F + (float) Math.sin(rotation + 3.9269908169872414F) * scale;
+        float d19 = 0.5F + (float) Math.cos(rotation + 5.497787143782138F) * scale;
+        float d21 = 0.5F + (float) Math.sin(rotation + 5.497787143782138F) * scale;
+        float texXMin = 0.0F;
+        float texXMax = 1.0F;
+        float d28 = (-1.0F + beamMotion);
+        float texHeight = beamLength * (0.5F / scale) + d28;
 
-            if (te.tier.get() >= 5) {
-                GlStateManager.scaled(3.5, 1, 3.5);
-            }
-            GlStateManager.translated(-0.5, 0, -0.5);
+        if (te.tier.get() >= 5) {
+            innerMat.scale(3.5, 1, 3.5);
+        }
+        innerMat.translate(-0.5, 0, -0.5);
 
-            vertexBuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
-            vertexBuffer.pos(d7, beamLength, d9).tex(texXMax, texHeight).endVertex();
-            vertexBuffer.pos(d7, 0, d9).tex(texXMax, d28).endVertex();
-            vertexBuffer.pos(d11, 0, d13).tex(texXMin, d28).endVertex();
-            vertexBuffer.pos(d11, beamLength, d13).tex(texXMin, texHeight).endVertex();
+        builder.pos(d7, beamLength, d9).tex(texXMax, texHeight).endVertex();
+        builder.pos(d7, 0, d9).tex(texXMax, d28).endVertex();
+        builder.pos(d11, 0, d13).tex(texXMin, d28).endVertex();
+        builder.pos(d11, beamLength, d13).tex(texXMin, texHeight).endVertex();
 
-            vertexBuffer.pos(d19, beamLength, d21).tex(texXMax, texHeight).endVertex();
-            vertexBuffer.pos(d19, 0, d21).tex(texXMax, d28).endVertex();
-            vertexBuffer.pos(d15, 0, d17).tex(texXMin, d28).endVertex();
-            vertexBuffer.pos(d15, beamLength, d17).tex(texXMin, texHeight).endVertex();
+        builder.pos(d19, beamLength, d21).tex(texXMax, texHeight).endVertex();
+        builder.pos(d19, 0, d21).tex(texXMax, d28).endVertex();
+        builder.pos(d15, 0, d17).tex(texXMin, d28).endVertex();
+        builder.pos(d15, beamLength, d17).tex(texXMin, texHeight).endVertex();
 
-            vertexBuffer.pos(d11, beamLength, d13).tex(texXMax, texHeight).endVertex();
-            vertexBuffer.pos(d11, 0, d13).tex(texXMax, d28).endVertex();
-            vertexBuffer.pos(d19, 0, d21).tex(texXMin, d28).endVertex();
-            vertexBuffer.pos(d19, beamLength, d21).tex(texXMin, texHeight).endVertex();
+        builder.pos(d11, beamLength, d13).tex(texXMax, texHeight).endVertex();
+        builder.pos(d11, 0, d13).tex(texXMax, d28).endVertex();
+        builder.pos(d19, 0, d21).tex(texXMin, d28).endVertex();
+        builder.pos(d19, beamLength, d21).tex(texXMin, texHeight).endVertex();
 
-            vertexBuffer.pos(d15, beamLength, d17).tex(texXMax, texHeight).endVertex();
-            vertexBuffer.pos(d15, 0, d17).tex(texXMax, d28).endVertex();
-            vertexBuffer.pos(d7, 0, d9).tex(texXMin, d28).endVertex();
-            vertexBuffer.pos(d7, beamLength, d9).tex(texXMin, texHeight).endVertex();
+        builder.pos(d15, beamLength, d17).tex(texXMax, texHeight).endVertex();
+        builder.pos(d15, 0, d17).tex(texXMax, d28).endVertex();
+        builder.pos(d7, 0, d9).tex(texXMin, d28).endVertex();
+        builder.pos(d7, beamLength, d9).tex(texXMin, texHeight).endVertex();
 
-            rotation += 0.77f;
-            d7 = 0.5D + Math.cos(rotation + 2.356194490192345D) * scale;
-            d9 = 0.5D + Math.sin(rotation + 2.356194490192345D) * scale;
-            d11 = 0.5D + Math.cos(rotation + (Math.PI / 4D)) * scale;
-            d13 = 0.5D + Math.sin(rotation + (Math.PI / 4D)) * scale;
-            d15 = 0.5D + Math.cos(rotation + 3.9269908169872414D) * scale;
-            d17 = 0.5D + Math.sin(rotation + 3.9269908169872414D) * scale;
-            d19 = 0.5D + Math.cos(rotation + 5.497787143782138D) * scale;
-            d21 = 0.5D + Math.sin(rotation + 5.497787143782138D) * scale;
+        rotation += 0.77f;
+        d7 = 0.5F + (float) Math.cos(rotation + 2.356194490192345F) * scale;
+        d9 = 0.5F + (float) Math.sin(rotation + 2.356194490192345F) * scale;
+        d11 = 0.5F + (float) Math.cos(rotation + (Math.PI / 4F)) * scale;
+        d13 = 0.5F + (float) Math.sin(rotation + (Math.PI / 4F)) * scale;
+        d15 = 0.5F + (float) Math.cos(rotation + 3.9269908169872414F) * scale;
+        d17 = 0.5F + (float) Math.sin(rotation + 3.9269908169872414F) * scale;
+        d19 = 0.5F + (float) Math.cos(rotation + 5.497787143782138F) * scale;
+        d21 = 0.5F + (float) Math.sin(rotation + 5.497787143782138F) * scale;
 
-            d28 = (-1F + (beamMotion * 1));
-            texHeight = beamLength * (0.5D / scale) + d28;
+        d28 = (-1F + (beamMotion * 1));
+        texHeight = beamLength * (0.5F / scale) + d28;
 
-            vertexBuffer.pos(d7, beamLength, d9).tex(texXMax, texHeight).endVertex();
-            vertexBuffer.pos(d7, 0, d9).tex(texXMax, d28).endVertex();
-            vertexBuffer.pos(d11, 0, d13).tex(texXMin, d28).endVertex();
-            vertexBuffer.pos(d11, beamLength, d13).tex(texXMin, texHeight).endVertex();
+        builder.pos(d7, beamLength, d9).tex(texXMax, texHeight).endVertex();
+        builder.pos(d7, 0, d9).tex(texXMax, d28).endVertex();
+        builder.pos(d11, 0, d13).tex(texXMin, d28).endVertex();
+        builder.pos(d11, beamLength, d13).tex(texXMin, texHeight).endVertex();
 
-            vertexBuffer.pos(d19, beamLength, d21).tex(texXMax, texHeight).endVertex();
-            vertexBuffer.pos(d19, 0, d21).tex(texXMax, d28).endVertex();
-            vertexBuffer.pos(d15, 0, d17).tex(texXMin, d28).endVertex();
-            vertexBuffer.pos(d15, beamLength, d17).tex(texXMin, texHeight).endVertex();
+        builder.pos(d19, beamLength, d21).tex(texXMax, texHeight).endVertex();
+        builder.pos(d19, 0, d21).tex(texXMax, d28).endVertex();
+        builder.pos(d15, 0, d17).tex(texXMin, d28).endVertex();
+        builder.pos(d15, beamLength, d17).tex(texXMin, texHeight).endVertex();
 
-            vertexBuffer.pos(d11, beamLength, d13).tex(texXMax, texHeight).endVertex();
-            vertexBuffer.pos(d11, 0, d13).tex(texXMax, d28).endVertex();
-            vertexBuffer.pos(d19, 0, d21).tex(texXMin, d28).endVertex();
-            vertexBuffer.pos(d19, beamLength, d21).tex(texXMin, texHeight).endVertex();
+        builder.pos(d11, beamLength, d13).tex(texXMax, texHeight).endVertex();
+        builder.pos(d11, 0, d13).tex(texXMax, d28).endVertex();
+        builder.pos(d19, 0, d21).tex(texXMin, d28).endVertex();
+        builder.pos(d19, beamLength, d21).tex(texXMin, texHeight).endVertex();
 
-            vertexBuffer.pos(d15, beamLength, d17).tex(texXMax, texHeight).endVertex();
-            vertexBuffer.pos(d15, 0, d17).tex(texXMax, d28).endVertex();
-            vertexBuffer.pos(d7, 0, d9).tex(texXMin, d28).endVertex();
-            vertexBuffer.pos(d7, beamLength, d9).tex(texXMin, texHeight).endVertex();
-            //endregion
-        } else {
-            //region Render Outer Beam
-            GlStateManager.rotated(90, -1, 0, 0);
-            GlStateManager.rotated(45, 0, 0, 1);
-            GlStateManager.translated(0, 0, 0.4);
-//            GlStateManager.depthMask(true);
+        builder.pos(d15, beamLength, d17).tex(texXMax, texHeight).endVertex();
+        builder.pos(d15, 0, d17).tex(texXMax, d28).endVertex();
+        builder.pos(d7, 0, d9).tex(texXMin, d28).endVertex();
+        builder.pos(d7, beamLength, d9).tex(texXMin, texHeight).endVertex();
+        //endregion
 
-            int sides = 4;
-            float enlarge = 0.35F;
-            if (te.tier.get() >= 5) {
-                sides = 12;
-                enlarge = 0.5F + ((te.tier.get() - 5) * 0.1F);
-                GlStateManager.rotatef((ClientEventHandler.elapsedTicks + partialTick) * 0.6F, 0, 0, -1);
-                GlStateManager.scaled(3.5, 3.5, 1);
-            }
+        Matrix4 outerMat = matrix4.copy();
+        builder = new TransformingVertexBuilder(getter.getBuffer(outerBeamType), outerMat);
+        outerMat.rotate(180 * MathHelper.torad, new Vector3(0, 0, 1));
 
-            vertexBuffer.begin(5, DefaultVertexFormats.POSITION_TEX_COLOR);
-            for (int i = 0; i < 4; ++i) {
-                vertexBuffer.putColorRGBA(i + 1, 255, 255, 255, 32);
-            }
+        //region Render Outer Beam
+        outerMat.rotate(90 * MathHelper.torad, new Vector3(-1, 0, 0));
+        outerMat.rotate(45 * MathHelper.torad, new Vector3(0, 0, 1));
+        outerMat.translate(0, 0, 0.4);
 
-            for (int i = 0; i <= sides; i++) {
-
-                float verX = MathHelper.sin((float) (i % sides) * (float) Math.PI * 2F / (float) sides) * 1;
-                float verY = MathHelper.cos((float) (i % sides) * (float) Math.PI * 2F / (float) sides) * 1;
-                vertexBuffer.pos((double) (verX * 0.35F), (double) (verY * 0.35F), 0.0D).tex((double) i, (beamMotion * 2)).color(255, 255, 255, 32).endVertex();
-                vertexBuffer.pos((double) verX * enlarge, (double) verY * enlarge, beamLength).tex((double) i, beamLength + (beamMotion * 2)).color(255, 255, 255, 32).endVertex();
-            }
-
-//            GlStateManager.depthMask(true);
-            //endregion
+        int sides = 4;
+        float enlarge = 0.35F;
+        if (te.tier.get() >= 5) {
+            sides = 12;
+            enlarge = 0.5F + ((te.tier.get() - 5) * 0.1F);
+            outerMat.rotate((ClientEventHandler.elapsedTicks + partialTick) * 0.6F * MathHelper.torad, new Vector3(0, 0, -1));
+            outerMat.scale(3.5, 3.5, 1);
         }
 
-        tessellator.draw();
-        GlStateManager.popMatrix();
+        for (int i = 0; i <= sides; i++) {
+            float verX = (float) Math.sin((float) (i % sides) * (float) Math.PI * 2F / (float) sides) * 1F;
+            float verY = (float) Math.cos((float) (i % sides) * (float) Math.PI * 2F / (float) sides) * 1F;
+            builder.pos(verX * 0.35F, verY * 0.35F, 0.0D).color(255, 255, 255, 32).tex(i, (beamMotion * 2)).endVertex();
+            builder.pos(verX * enlarge, verY * enlarge, beamLength).color(255, 255, 255, 32).tex(i, beamLength + (beamMotion * 2)).endVertex();
+        }
+
     }
 
     @Override

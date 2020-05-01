@@ -10,6 +10,7 @@ import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.ITickableTileEntity;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -96,7 +97,7 @@ public class TileCreativeOPCapacitor extends TileBCore implements ITickableTileE
     @Override
     public boolean onBlockActivated(BlockState state, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
         if (!world.isRemote) {
-            if (player.isSneaking()) {
+            if (player.isShiftKeyDown()) {
                 powerRate.divide(10);
             } else {
                 powerRate.multiply(10);

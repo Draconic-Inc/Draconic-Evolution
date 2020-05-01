@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.api.modules.properties;
 
 import com.brandon3055.draconicevolution.api.TechLevel;
+import com.brandon3055.draconicevolution.api.modules.capability.IModuleHost;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 
@@ -11,9 +12,12 @@ import java.util.Map;
  * Created by covers1624 on 4/16/20.
  */
 public class ShieldModuleProperties extends ModuleProperties<ShieldModuleProperties> {
+    public static final SubProperty<ShieldModuleProperties> SHIELD_CAPACITY = new SubProperty<>("shield_capacity");
+    public static final SubProperty<ShieldModuleProperties> SHIELD_RECHARGE = new SubProperty<>("shield_recharge");
 
     private final int shieldCapacity;
     private final int shieldRecharge;
+
 
     public ShieldModuleProperties(TechLevel techLevel, int shieldCapacity, int shieldRecharge, int width, int height) {
         super(techLevel, width, height);
@@ -26,7 +30,10 @@ public class ShieldModuleProperties extends ModuleProperties<ShieldModulePropert
     }
 
     @Override
-    public void addCombinedStats(List<ShieldModuleProperties> propertiesList, Map<ITextComponent, ITextComponent> map) {
+    public void addCombinedStats(List<ShieldModuleProperties> propertiesList, Map<ITextComponent, ITextComponent> map, IModuleHost moduleHost) {
+        if (moduleHost.isSubPropertySupported(this, SHIELD_CAPACITY)) {
+            //
+        }
         map.put(new StringTextComponent("ShieldModule"), new StringTextComponent("TODO"));
     }
 

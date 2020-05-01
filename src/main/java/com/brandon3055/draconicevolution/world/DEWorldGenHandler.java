@@ -18,7 +18,7 @@ import net.minecraft.world.gen.feature.OreFeatureConfig.FillerBlockType;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.ChunkDataEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.IWorldGenerator;
+
 
 import java.util.ArrayDeque;
 import java.util.HashSet;
@@ -29,7 +29,7 @@ import java.util.Random;
  * This class will handle generation and retro generation of DE ores
  * This method of retrogening is borrowed from CoFH. Because its just so good!
  */
-public class DEWorldGenHandler implements IWorldGenerator {
+public class DEWorldGenHandler {
     public static DEWorldGenHandler instance = new DEWorldGenHandler();
     private static String DATA_TAG = "DEWorldGen";
     private static HashSet<ChunkReference> retroGenerating = new HashSet<ChunkReference>();
@@ -51,7 +51,7 @@ public class DEWorldGenHandler implements IWorldGenerator {
         }
     }
 
-    @Override
+//    @Override
     public void generate(Random random, int chunkX, int chunkZ, World world, ChunkGenerator chunkGenerator, AbstractChunkProvider chunkProvider) {
         addOreGen(random, chunkX, chunkZ, world, chunkGenerator);
     }

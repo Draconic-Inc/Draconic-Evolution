@@ -1,11 +1,13 @@
 package com.brandon3055.draconicevolution.integration.jei;
 
 import com.brandon3055.draconicevolution.integration.ModHelper;
-import mezz.jei.api.IRecipeRegistry;
+
 import mezz.jei.api.gui.IRecipeLayoutDrawable;
 import mezz.jei.api.recipe.IFocus;
-import mezz.jei.api.recipe.IRecipeCategory;
-import mezz.jei.api.recipe.IRecipeWrapper;
+
+
+import mezz.jei.api.recipe.IRecipeManager;
+import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StringUtils;
@@ -50,21 +52,21 @@ public class JeiHelper {//TODO This Is Now Borked
     private static List<IRecipeRenderer> getRenderers(ItemStack result) {
         List<IRecipeRenderer> renderers = new ArrayList<>();
 
-        IRecipeRegistry registry = DEJEIPlugin.jeiRuntime.getRecipeRegistry();
+        IRecipeManager registry = DEJEIPlugin.jeiRuntime.getRecipeManager();
         List<IRecipeCategory> categories = new LinkedList<>();
-//        categories.addAll(registry.getRecipeCategories(registry.createFocus(IFocus.Mode.INPUT, result)));//getRecipeCategoriesWithOutput(result);TODO Verify this is correct.
         categories.addAll(registry.getRecipeCategories(registry.createFocus(IFocus.Mode.OUTPUT, result)));
 
         for (IRecipeCategory category : categories) {
-            List wrappers = registry.getRecipeWrappers(category, registry.createFocus(IFocus.Mode.OUTPUT, result));
-            for (Object wrapper : wrappers) {
-                try {
-                    renderers.add(new RecipeRenderer(category, (IRecipeWrapper) wrapper, result));
-                }
-                catch (Throwable t) {
-                    t.printStackTrace();
-                }
-            }
+//            category.
+//            List wrappers = registry.getRecipeWrappers(category, registry.createFocus(IFocus.Mode.OUTPUT, result));
+//            for (Object wrapper : wrappers) {
+//                try {
+//                    renderers.add(new RecipeRenderer(category, (IRecipeWrapper) wrapper, result));
+//                }
+//                catch (Throwable t) {
+//                    t.printStackTrace();
+//                }
+//            }
         }
 
         return renderers;
@@ -83,16 +85,16 @@ public class JeiHelper {//TODO This Is Now Borked
         private int yPos = 0;
         private String title;
 
-        public RecipeRenderer(IRecipeCategory category, IRecipeWrapper wrapper, ItemStack result) {
-            IFocus<?> f = DEJEIPlugin.jeiRuntime.getRecipeRegistry().createFocus(IFocus.Mode.OUTPUT, result);//new Focus<Object>(result);
-            this.recipeLayout = DEJEIPlugin.jeiRuntime.getRecipeRegistry().createRecipeLayoutDrawable(category, wrapper, f);
-            this.width = category.getBackground().getWidth();
-            this.height = category.getBackground().getHeight();
-            this.title = category.getTitle();
-            if (StringUtils.isNullOrEmpty(this.title)) {
-                this.title = "[Unknown Crafting Type]";
-            }
-        }
+//        public RecipeRenderer(IRecipeCategory category, IRecipeWrapper wrapper, ItemStack result) {
+//            IFocus<?> f = DEJEIPlugin.jeiRuntime.getRecipeRegistry().createFocus(IFocus.Mode.OUTPUT, result);//new Focus<Object>(result);
+//            this.recipeLayout = DEJEIPlugin.jeiRuntime.getRecipeRegistry().createRecipeLayoutDrawable(category, wrapper, f);
+//            this.width = category.getBackground().getWidth();
+//            this.height = category.getBackground().getHeight();
+//            this.title = category.getTitle();
+//            if (StringUtils.isNullOrEmpty(this.title)) {
+//                this.title = "[Unknown Crafting Type]";
+//            }
+//        }
 
         @Override
         public int getWidth() {
@@ -112,7 +114,7 @@ public class JeiHelper {//TODO This Is Now Borked
                 recipeLayout.setPosition(xPos, yPos);
             }
 
-            recipeLayout.draw(mc, mouseX, mouseY);
+//            recipeLayout.draw(mc, mouseX, mouseY);
         }
 
         @Override
@@ -120,8 +122,8 @@ public class JeiHelper {//TODO This Is Now Borked
             Object clicked = recipeLayout.getIngredientUnderMouse(mouseX, mouseY);
 
             if (clicked != null) {
-                IFocus f = DEJEIPlugin.jeiRuntime.getRecipeRegistry().createFocus(mouseButton == 0 ? IFocus.Mode.OUTPUT : IFocus.Mode.INPUT, clicked);
-                DEJEIPlugin.jeiRuntime.getRecipesGui().show(f);
+//                IFocus f = DEJEIPlugin.jeiRuntime.getRecipeRegistry().createFocus(mouseButton == 0 ? IFocus.Mode.OUTPUT : IFocus.Mode.INPUT, clicked);
+//                DEJEIPlugin.jeiRuntime.getRecipesGui().show(f);
             }
 
             return false;//layout.handleRecipeClick(minecraft, mouseX, mouseY, mouseButton);

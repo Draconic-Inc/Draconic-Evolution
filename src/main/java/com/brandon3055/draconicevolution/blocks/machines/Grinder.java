@@ -10,7 +10,7 @@ import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockRenderLayer;
+
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
@@ -43,11 +43,11 @@ public class Grinder extends BlockBCore/* implements ITileEntityProvider, IRende
         builder.add(FACING, ACTIVE);
     }
 
-    @Override
-    public BlockRenderLayer getRenderLayer() {
-        return BlockRenderLayer.CUTOUT;
-    }
-//
+//    @Override
+//    public BlockRenderLayer getRenderLayer() {
+//        return BlockRenderLayer.CUTOUT;
+//    }
+
 //    @Override
 //    @OnlyIn(Dist.CLIENT)
 //    public void registerRenderer(Feature feature) {
@@ -137,7 +137,7 @@ public class Grinder extends BlockBCore/* implements ITileEntityProvider, IRende
 
 //    @Override
 //    public boolean onBlockActivated(World world, BlockPos pos, BlockState state, PlayerEntity player, Hand hand, Direction side, float hitX, float hitY, float hitZ) {
-//        if (player.isSneaking()) {
+//        if (player.isShiftKeyDown()) {
 ////            TileEntity tile = world.getTileEntity(pos);
 ////            if (tile instanceof TileGrinder && world.isRemote) {
 ////                AxisAlignedBB bb = ((TileGrinder) tile).getKillBoxForRender();

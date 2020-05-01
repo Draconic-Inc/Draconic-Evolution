@@ -225,7 +225,7 @@ public class WyvernArmor extends ArmorItem implements IConfigurableItem, IUpgrad
 //            return model;
 //        }
 //
-//        this.model.isSneak = entityLiving.isSneaking();
+//        this.model.isSneak = entityLiving.isShiftKeyDown();
 //        this.model.isRiding = entityLiving.isRiding();
 //        this.model.isChild = entityLiving.isChild();
 //        //     this.model.aimedBow = false;

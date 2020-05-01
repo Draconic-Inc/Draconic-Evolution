@@ -8,7 +8,7 @@ import com.brandon3055.draconicevolution.api.itemconfig.BooleanConfigField;
 import com.brandon3055.draconicevolution.api.itemconfig.ItemConfigFieldRegistry;
 import com.brandon3055.draconicevolution.api.itemconfig.ToolConfigHelper;
 import com.brandon3055.draconicevolution.handlers.DESoundHandler;
-import com.brandon3055.draconicevolution.utils.DETextures;
+import com.brandon3055.draconicevolution.client.DETextures;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
@@ -113,7 +113,7 @@ public class WyvernAxe extends MiningToolBase {
         PlayerEntity player = context.getPlayer();
 
         ItemStack stack = context.getItem();
-        if (world.getBlockState(pos).getMaterial() == Material.WOOD && !player.isSneaking()) {
+        if (world.getBlockState(pos).getMaterial() == Material.WOOD && !player.isShiftKeyDown()) {
             player.setActiveHand(context.getHand());
             if (!world.isRemote) {
                 SelectionController controller = new SelectionController(player, stack, pos, true, 2, this);

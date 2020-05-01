@@ -168,7 +168,7 @@ public class DraconicArmor extends WyvernArmor {
 //            return model;
 //        }
 //
-//        this.model.isSneak = entityLiving.isSneaking();
+//        this.model.isSneak = entityLiving.isShiftKeyDown();
 //        this.model.isRiding = entityLiving.isRiding();
 //        this.model.isChild = entityLiving.isChild();
 //        //     this.model.aimedBow = false;

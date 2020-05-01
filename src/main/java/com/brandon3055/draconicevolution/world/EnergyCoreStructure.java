@@ -13,7 +13,7 @@ import com.brandon3055.draconicevolution.client.gui.GuiEnergyCore;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.mojang.blaze3d.platform.GLX;
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
@@ -227,35 +227,35 @@ public class EnergyCoreStructure extends MultiBlockHelper {
 
         BlockState state = block.getDefaultState();
 
-        GlStateManager.pushMatrix();
-        GlStateManager.translated(translation.getX(), translation.getY(), translation.getZ());
+        RenderSystem.pushMatrix();
+        RenderSystem.translated(translation.getX(), translation.getY(), translation.getZ());
         if (invalid) {
-            GlStateManager.disableDepthTest();
-            GlStateManager.alphaFunc(GL11.GL_GREATER, 0F);
+            RenderSystem.disableDepthTest();
+            RenderSystem.alphaFunc(GL11.GL_GREATER, 0F);
             double s = Math.sin(ClientEventHandler.elapsedTicks / 10D) * 0.1D;
-            GlStateManager.scaled(0.8 + s, 0.8 + s, 0.8 + s);
-            GlStateManager.translated(0.1 - s, 0.1 - s, 0.1 - s);
+            RenderSystem.scaled(0.8 + s, 0.8 + s, 0.8 + s);
+            RenderSystem.translated(0.1 - s, 0.1 - s, 0.1 - s);
         }
         else {
-            GlStateManager.scaled(0.8, 0.8, 0.8);
-            GlStateManager.translated(0.1, 0.1, 0.1);
+            RenderSystem.scaled(0.8, 0.8, 0.8);
+            RenderSystem.translated(0.1, 0.1, 0.1);
         }
 
-        float brightnessX = GLX.lastBrightnessX;
-        float brightnessY = GLX.lastBrightnessY;
-        GLX.glMultiTexCoord2f(GLX.GL_TEXTURE1, 150f, 150f);
+//        float brightnessX = GLX.lastBrightnessX;
+//        float brightnessY = GLX.lastBrightnessY;
+//        GLX.glMultiTexCoord2f(GLX.GL_TEXTURE1, 150f, 150f);
 
-        List<BakedQuad> blockQuads = ModelUtils.getModelQuads(state);
+//        List<BakedQuad> blockQuads = ModelUtils.getModelQuads(state);
 
-        ModelUtils.renderQuadsARGB(blockQuads, (invalid ? 0x00500000 : 0x00404040) | alpha);
+//        ModelUtils.renderQuadsARGB(blockQuads, (invalid ? 0x00500000 : 0x00404040) | alpha);
 
         if (invalid) {
-            GlStateManager.enableDepthTest();
-            GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
+            RenderSystem.enableDepthTest();
+            RenderSystem.alphaFunc(GL11.GL_GREATER, 0.1F);
         }
 
-        GLX.glMultiTexCoord2f(GLX.GL_TEXTURE1, brightnessX, brightnessY);
-        GlStateManager.popMatrix();
+//        GLX.glMultiTexCoord2f(GLX.GL_TEXTURE1, brightnessX, brightnessY);
+        RenderSystem.popMatrix();
     }
 
     //region Structure Builders

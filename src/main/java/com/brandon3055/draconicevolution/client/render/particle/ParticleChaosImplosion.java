@@ -113,12 +113,12 @@ public class ParticleChaosImplosion extends BCParticle {
 //            return;
 //        }
 //
-//        GlStateManager.pushMatrix();
-//        GlStateManager.disableCull();
-//        GlStateManager.alphaFunc(GL11.GL_GREATER, 0F);
-//        GlStateManager.color(particleRed, particleGreen, particleBlue, particleAlpha);
-//        GlStateManager.disableTexture2D();
-//        GlStateManager.depthMask(false);
+//        RenderSystem.pushMatrix();
+//        RenderSystem.disableCull();
+//        RenderSystem.alphaFunc(GL11.GL_GREATER, 0F);
+//        RenderSystem.color(particleRed, particleGreen, particleBlue, particleAlpha);
+//        RenderSystem.disableTexture2D();
+//        RenderSystem.depthMask(false);
 //
 //        float xx = (float) (this.prevPosX + (this.posX - this.prevPosX) * (double) partialTicks - interpPosX);
 //        float yy = (float) (this.prevPosY + (this.posY - this.prevPosY) * (double) partialTicks - interpPosY);
@@ -127,7 +127,7 @@ public class ParticleChaosImplosion extends BCParticle {
 //        if (!explosion && !isOrigin) {
 //
 //            double scale = (contract ? 50D - (size + partialTicks) : size + partialTicks) * 8D;
-//            GlStateManager.translate((double) xx + 0.5, (double) yy + 0.5, (double) zz + 0.5);
+//            RenderSystem.translate((double) xx + 0.5, (double) yy + 0.5, (double) zz + 0.5);
 //            ccrs.startDrawing(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX);
 //            Matrix4 mat = RenderUtils.getMatrix(new Vector3(0, 0, 0), new Rotation((ClientEventHandler.elapsedTicks + partialTicks) / 40F, 0, 1, 0), -1 * scale);
 //            model.render(ccrs, mat);
@@ -136,7 +136,7 @@ public class ParticleChaosImplosion extends BCParticle {
 //        else if (explosion) {
 //            double baseScale = size + partialTicks;
 //
-//            GlStateManager.translate((double) xx + 0.5, (double) yy + 0.5, (double) zz + 0.5);
+//            RenderSystem.translate((double) xx + 0.5, (double) yy + 0.5, (double) zz + 0.5);
 //            ccrs.startDrawing(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX);
 //
 //            for (int i = 40; i > 0; i--) {
@@ -150,10 +150,10 @@ public class ParticleChaosImplosion extends BCParticle {
 //            ccrs.draw();
 //        }
 //
-//        GlStateManager.depthMask(true);
-//        GlStateManager.enableTexture2D();
-//        GlStateManager.enableCull();
-//        GlStateManager.popMatrix();
+//        RenderSystem.depthMask(true);
+//        RenderSystem.enableTexture2D();
+//        RenderSystem.enableCull();
+//        RenderSystem.popMatrix();
 //    }
 
     public static class Factory implements IBCParticleFactory {

@@ -13,13 +13,13 @@ import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockRenderLayer;
+
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IEnviromentBlockReader;
+
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
@@ -36,7 +36,6 @@ public class Generator extends BlockBCore/* implements ITileEntityProvider, IRen
 
     public Generator(Properties properties) {
         super(properties);
-
         this.setDefaultState(stateContainer.getBaseState().with(FACING, Direction.NORTH).with(ACTIVE, false));
     }
 
@@ -46,14 +45,20 @@ public class Generator extends BlockBCore/* implements ITileEntityProvider, IRen
 //    }
 
 
-    @Override
-    public boolean isSolid(BlockState state) {
-        return false;
-    }
+//    @Override
+//    public boolean isSolid(BlockState state) {
+//        return false;
+//    }
+
+//    @Override
+//    public BlockRenderLayer getRenderLayer() {
+//        return BlockRenderLayer.CUTOUT;
+//    }
+
 
     @Override
-    public BlockRenderLayer getRenderLayer() {
-        return BlockRenderLayer.CUTOUT;
+    public float getAmbientOcclusionLightValue(BlockState state, IBlockReader worldIn, BlockPos pos) {
+        return super.getAmbientOcclusionLightValue(state, worldIn, pos);
     }
 
     @Override

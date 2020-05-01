@@ -61,29 +61,29 @@ public class ParticleAxeSelection extends BCParticle {
 //
 //        Tessellator.getInstance().draw();
 //
-//        GlStateManager.pushMatrix();
+//        RenderSystem.pushMatrix();
 //        TextureUtils.bindBlockTexture();
-////        GlStateManager.disableCull();
-////        GlStateManager.alphaFunc(GL11.GL_GREATER, 0F);
-////        GlStateManager.color(particleRed, particleGreen, particleBlue, particleAlpha);
-////        GlStateManager.disableTexture2D();
-////        GlStateManager.depthMask(false);
-//        GlStateManager.disableDepth();
+////        RenderSystem.disableCull();
+////        RenderSystem.alphaFunc(GL11.GL_GREATER, 0F);
+////        RenderSystem.color(particleRed, particleGreen, particleBlue, particleAlpha);
+////        RenderSystem.disableTexture2D();
+////        RenderSystem.depthMask(false);
+//        RenderSystem.disableDepth();
 //
 //        float xx = (float) (this.prevPosX + (this.posX - this.prevPosX) * (double) partialTicks - interpPosX);
 //        float yy = (float) (this.prevPosY + (this.posY - this.prevPosY) * (double) partialTicks - interpPosY);
 //        float zz = (float) (this.prevPosZ + (this.posZ - this.prevPosZ) * (double) partialTicks - interpPosZ);
-//        GlStateManager.translate((double) xx + 0.5, (double) yy + 0.5, (double) zz + 0.5);
-//        GlStateManager.scale(particleScale, particleScale, particleScale);
-//        GlStateManager.translate(-0.5, -0.5, -0.5);
+//        RenderSystem.translate((double) xx + 0.5, (double) yy + 0.5, (double) zz + 0.5);
+//        RenderSystem.scale(particleScale, particleScale, particleScale);
+//        RenderSystem.translate(-0.5, -0.5, -0.5);
 //
 //        for (Direction facing : Direction.values()) ModelUtils.renderQuadsARGB(model.getQuads(state, facing, 0), new ColourARGB((int) (particleAlpha * 255), 255, 255, 255).argb());
 //
-////        GlStateManager.depthMask(true);
-//        GlStateManager.enableDepth();
-////        GlStateManager.enableTexture2D();
-////        GlStateManager.enableCull();
-//        GlStateManager.popMatrix();
+////        RenderSystem.depthMask(true);
+//        RenderSystem.enableDepth();
+////        RenderSystem.enableTexture2D();
+////        RenderSystem.enableCull();
+//        RenderSystem.popMatrix();
 //
 //        vertexbuffer.begin(7, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
 //    }

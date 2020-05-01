@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.api.modules.properties;
 
 import com.brandon3055.draconicevolution.api.TechLevel;
+import com.brandon3055.draconicevolution.api.modules.capability.IModuleHost;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 
@@ -27,7 +28,7 @@ public class AOEModuleProperties extends ModuleProperties<AOEModuleProperties> {
     }
 
     @Override
-    public void addCombinedStats(List<AOEModuleProperties> propertiesList, Map<ITextComponent, ITextComponent> map) {
+    public void addCombinedStats(List<AOEModuleProperties> propertiesList, Map<ITextComponent, ITextComponent> map, IModuleHost moduleHost) {
         map.put(new StringTextComponent("AOEModule"), new StringTextComponent("TODO"));
     }
 }

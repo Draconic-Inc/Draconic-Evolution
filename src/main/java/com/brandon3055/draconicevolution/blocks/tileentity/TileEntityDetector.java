@@ -26,6 +26,7 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.StringNBT;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.ITickableTileEntity;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -377,7 +378,7 @@ public class TileEntityDetector extends TileBCore implements IActivatableTile, I
             if (server != null) {
                 ListNBT list = new ListNBT();
                 for (String name : server.getPlayerList().getOnlinePlayerNames()) {
-                    list.add(new StringNBT(name));
+                    list.add(StringNBT.valueOf(name));
                 }
                 CompoundNBT compound = new CompoundNBT();
                 compound.put("List", list);

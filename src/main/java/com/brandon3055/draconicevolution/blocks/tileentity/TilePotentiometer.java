@@ -11,10 +11,7 @@ import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.blocks.Potentiometer;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockRayTraceResult;
 
 /**
@@ -55,7 +52,7 @@ public class TilePotentiometer extends TileBCore implements IRedstoneEmitter, IA
 
     @Override
     public boolean onBlockActivated(BlockState state, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
-        if (player.isSneaking()) {
+        if (player.isShiftKeyDown()) {
             power.dec();
             if (power.get() < 0) {
                 power.set((byte) 15);

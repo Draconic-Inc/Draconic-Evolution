@@ -206,7 +206,7 @@ public class DEEventHandler {
             return;
         }
 
-        PlayerEntity player = event.getEntityPlayer();
+        PlayerEntity player = event.getPlayer();
         ItemStack stack = event.getItemStack();
 
         //region Hacky check to compensate for the completely f***ing stupid interact event handling.
@@ -237,24 +237,24 @@ public class DEEventHandler {
             return;
         }
 
-        if (BinderHandler.onBinderUse(event.getEntityPlayer(), event.getHand(), event.getWorld(), event.getPos(), stack, event.getFace())) {
+        if (BinderHandler.onBinderUse(event.getPlayer(), event.getHand(), event.getWorld(), event.getPos(), stack, event.getFace())) {
             event.setCanceled(true);
         }
     }
 
     @SubscribeEvent
     public void rightClickItem(PlayerInteractEvent.RightClickItem event) {
-        if (event.getWorld().isRemote || event.isCanceled() || !event.getEntityPlayer().isSneaking() || !(event.getItemStack().getItem() instanceof ICrystalBinder)) {
+        if (event.getWorld().isRemote || event.isCanceled() || !event.getPlayer().isShiftKeyDown() || !(event.getItemStack().getItem() instanceof ICrystalBinder)) {
             return;
         }
 
-        BlockRayTraceResult traceResult = RayTracer.retrace(event.getEntityPlayer());
+        BlockRayTraceResult traceResult = RayTracer.retrace(event.getPlayer());
 
         if (traceResult != null) {
             return;
         }
 
-        if (BinderHandler.clearBinder(event.getEntityPlayer(), event.getItemStack())) {
+        if (BinderHandler.clearBinder(event.getPlayer(), event.getItemStack())) {
             event.setCanceled(true);
         }
     }
@@ -299,9 +299,9 @@ public class DEEventHandler {
 
     @SubscribeEvent(priority = EventPriority.LOW)
     public void getBreakSpeed(PlayerEvent.BreakSpeed event) {
-        if (event.getEntityPlayer() != null) {
+        if (event.getPlayer() != null) {
             float newDigSpeed = event.getOriginalSpeed();
-            CustomArmorHandler.ArmorSummery summery = new CustomArmorHandler.ArmorSummery().getSummery(event.getEntityPlayer());
+            CustomArmorHandler.ArmorSummery summery = new CustomArmorHandler.ArmorSummery().getSummery(event.getPlayer());
             if (summery == null) {
                 return;
             }

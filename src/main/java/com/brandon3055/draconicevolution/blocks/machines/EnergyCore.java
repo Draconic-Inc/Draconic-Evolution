@@ -10,7 +10,8 @@ import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.IntegerProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockRenderLayer;
+
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -41,10 +42,10 @@ public class EnergyCore extends BlockBCore {
         return state.get(ACTIVE) ? BlockRenderType.INVISIBLE : BlockRenderType.MODEL;
     }
 
-    @Override
-    public BlockRenderLayer getRenderLayer() {
-        return BlockRenderLayer.CUTOUT;
-    }
+//    @Override
+//    public BlockRenderLayer getRenderLayer() {
+//        return BlockRenderLayer.CUTOUT;
+//    }
 
 
     //region Render Stuff
@@ -65,14 +66,14 @@ public class EnergyCore extends BlockBCore {
 
 
     @Override
-    public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
         TileEntity core = world.getTileEntity(pos);
 
         if (core instanceof TileEnergyCore && !world.isRemote) {
             ((TileEnergyCore) core).onStructureClicked(world, pos, state, player);
         }
 
-        return true;
+        return ActionResultType.PASS;
     }
 
     //region Interfaces

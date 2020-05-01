@@ -19,7 +19,7 @@
 //import net.minecraft.client.gui.GuiPageButtonList;
 //import net.minecraft.client.gui.screen.Screen;
 //import net.minecraft.client.gui.GuiTextField;
-//import net.minecraft.client.renderer.GlStateManager;
+//import net.minecraft.client.renderer.RenderSystem;
 //import net.minecraft.client.renderer.RenderHelper;
 //import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 //import net.minecraft.client.resources.I18n;
@@ -204,22 +204,22 @@
 //    }
 //
 //    private void renderItem(int x, int y, float partialTicks) {
-//        GlStateManager.pushMatrix();
-//        GlStateManager.translate(x, y, 500);
-//        GlStateManager.disableCull();
+//        RenderSystem.pushMatrix();
+//        RenderSystem.translate(x, y, 500);
+//        RenderSystem.disableCull();
 //
-//        GlStateManager.scale(24, 24, 24);
-//        GlStateManager.rotate((ClientEventHandler.elapsedTicks + partialTicks) * 2F, 0, 1, 0);
-//        GlStateManager.rotate(180, 1, 0, 0);
-//        GlStateManager.rotate(45, 0, 0, 1);
+//        RenderSystem.scale(24, 24, 24);
+//        RenderSystem.rotate((ClientEventHandler.elapsedTicks + partialTicks) * 2F, 0, 1, 0);
+//        RenderSystem.rotate(180, 1, 0, 0);
+//        RenderSystem.rotate(45, 0, 0, 1);
 //
-//        //GlStateManager.
+//        //RenderSystem.
 //        RenderHelper.enableStandardItemLighting();
 //        mc.getRenderItem().renderItem(stack, ItemCameraTransforms.TransformType.NONE);
 //        RenderHelper.disableStandardItemLighting();
 //
-//        GlStateManager.enableCull();
-//        GlStateManager.popMatrix();
+//        RenderSystem.enableCull();
+//        RenderSystem.popMatrix();
 //    }
 //
 //    //endregion

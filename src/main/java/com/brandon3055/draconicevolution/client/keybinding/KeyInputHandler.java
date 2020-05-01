@@ -50,7 +50,7 @@ public class KeyInputHandler {
         onInput(player);
 
 //        int change = event.getDwheel();
-//        if (change == 0 || !player.isSneaking()) return;
+//        if (change == 0 || !player.isShiftKeyDown()) return;
 //
 //        ItemStack item = player.inventory.getStackInSlot(player.inventory.currentItem);
 //        if (item.getItem() == DEFeatures.dislocatorAdvanced) {
@@ -92,10 +92,10 @@ public class KeyInputHandler {
 //            PacketDispatcher.dispatchToolProfileChange(true);
         }
         else if (KeyBindings.cycleDigAOE.isPressed()) {
-//            PacketDispatcher.dispatchCycleDigAOE(player.isSneaking());
+//            PacketDispatcher.dispatchCycleDigAOE(player.isShiftKeyDown());
         }
         else if (KeyBindings.cycleAttackAOE.isPressed()) {
-//            PacketDispatcher.dispatchCycleAttackAOE(player.isSneaking());
+//            PacketDispatcher.dispatchCycleAttackAOE(player.isShiftKeyDown());
         }
     }
 

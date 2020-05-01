@@ -223,8 +223,8 @@ public class EntityCustomArrow extends ArrowEntity {
                     float distanceModifier = 1F - (entity.getDistance(this) / (float) range);
 
                     if (e instanceof EnderDragonEntity) {
-                        entity = ((EnderDragonEntity) entity).field_70987_i;
-                        distanceModifier = 1F - (entity.getDistance(this) / (bowProperties.shockWavePower * 4));
+//                        entity = ((EnderDragonEntity) entity).field_70987_i;
+//                        distanceModifier = 1F - (entity.getDistance(this) / (bowProperties.shockWavePower * 4));
                     }
 
                     if (distanceModifier > 0) {

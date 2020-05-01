@@ -4,12 +4,12 @@
 //import com.brandon3055.draconicevolution.handlers.ContributorHandler;
 //import com.brandon3055.draconicevolution.handlers.ContributorHandler.Contributor;
 //import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
-//import com.mojang.blaze3d.platform.GlStateManager;
+//import com.mojang.blaze3d.systems.RenderSystem;
 //import net.minecraft.client.Minecraft;
 //import net.minecraft.client.entity.AbstractClientPlayer;
 //import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 //import net.minecraft.client.model.ModelBase;
-//import net.minecraft.client.renderer.GlStateManager;
+//import net.minecraft.client.renderer.RenderSystem;
 //import net.minecraft.client.renderer.Tessellator;
 //import net.minecraft.client.renderer.BufferBuilder;
 //import net.minecraft.client.renderer.entity.PlayerRenderer;
@@ -43,18 +43,18 @@
 //
 //        Contributor contributor = ContributorHandler.contributors.get(player.getName());
 //
-//        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+//        RenderSystem.color(1.0F, 1.0F, 1.0F, 1.0F);
 //
 //        if (contributor.hasWings && contributor.contributorWingsEnabled) {
-//            GlStateManager.disableBlend();
+//            RenderSystem.disableBlend();
 //            ResourceHelperDE.bindTexture("textures/models/contributor_wings.png");
 //
-//            GlStateManager.pushMatrix();
-//            GlStateManager.translate(0.0F, 0.0F, 0.125F);
+//            RenderSystem.pushMatrix();
+//            RenderSystem.translate(0.0F, 0.0F, 0.125F);
 //            this.modelWings.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, player);
 //            this.modelWings.render(player, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
 //            renderEnchantedGlint(this.renderPlayer, player, this.modelWings, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, scale);
-//            GlStateManager.popMatrix();
+//            RenderSystem.popMatrix();
 //        }
 //
 //        if (contributor.isPatreonSupporter && contributor.patreonBadgeEnabled) {
@@ -65,38 +65,38 @@
 //            renderLolnetBadge(player, contributor.isPatreonSupporter && contributor.patreonBadgeEnabled);
 //        }
 //
-//        GlStateManager.color(1F, 1F, 1F, 1.0F);
+//        RenderSystem.color(1F, 1F, 1F, 1.0F);
 //    }
 //
 //    public static void renderEnchantedGlint(RenderLivingBase<?> livingBase, LivingEntity entity, ModelBase model, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
 //        float f = (float) entity.ticksExisted + partialTicks;
 //        livingBase.bindTexture(ENCHANTED_ITEM_GLINT_RES);
-//        GlStateManager.enableBlend();
-//        GlStateManager.depthFunc(514);
-//        GlStateManager.depthMask(false);
-//        GlStateManager.color4f(0.5F, 0.5F, 0.5F, 1.0F);
+//        RenderSystem.enableBlend();
+//        RenderSystem.depthFunc(514);
+//        RenderSystem.depthMask(false);
+//        RenderSystem.color4f(0.5F, 0.5F, 0.5F, 1.0F);
 //
 //        for (int i = 0; i < 2; ++i) {
-//            GlStateManager.disableLighting();
-//            GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_COLOR, GlStateManager.DestFactor.ONE);
+//            RenderSystem.disableLighting();
+//            RenderSystem.blendFunc(RenderSystem.SourceFactor.SRC_COLOR, RenderSystem.DestFactor.ONE);
 //            float f11 = 0.76F;
-//            GlStateManager.color4f(0.9F * f11, 0.8F * f11, 0.1F * f11, 1.0F);
-//            GlStateManager.matrixMode(5890);
-//            GlStateManager.loadIdentity();
-//            GlStateManager.scalef(0.23333334F, 0.23333334F, 0.23333334F);
-//            GlStateManager.rotatef(30.0F - (float) i * 60.0F, 0.0F, 0.0F, 1.0F);
-//            GlStateManager.translatef(0F, f * (0.003F + (float) i * 0.003F) * -20.0F, 0F);
-//            GlStateManager.matrixMode(5888);
+//            RenderSystem.color4f(0.9F * f11, 0.8F * f11, 0.1F * f11, 1.0F);
+//            RenderSystem.matrixMode(5890);
+//            RenderSystem.loadIdentity();
+//            RenderSystem.scalef(0.23333334F, 0.23333334F, 0.23333334F);
+//            RenderSystem.rotatef(30.0F - (float) i * 60.0F, 0.0F, 0.0F, 1.0F);
+//            RenderSystem.translatef(0F, f * (0.003F + (float) i * 0.003F) * -20.0F, 0F);
+//            RenderSystem.matrixMode(5888);
 //            model.render(entity, 0, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
 //        }
 //
-//        GlStateManager.matrixMode(5890);
-//        GlStateManager.loadIdentity();
-//        GlStateManager.matrixMode(5888);
-//        GlStateManager.enableLighting();
-//        GlStateManager.depthMask(true);
-//        GlStateManager.depthFunc(515);
-//        GlStateManager.disableBlend();
+//        RenderSystem.matrixMode(5890);
+//        RenderSystem.loadIdentity();
+//        RenderSystem.matrixMode(5888);
+//        RenderSystem.enableLighting();
+//        RenderSystem.depthMask(true);
+//        RenderSystem.depthFunc(515);
+//        RenderSystem.disableBlend();
 //    }
 //
 //    public boolean shouldCombineTextures() {
@@ -107,11 +107,11 @@
 //    public void renderBadge(AbstractClientPlayer player) {
 //        ResourceHelperDE.bindTexture("textures/special/patreon_badge.png");
 //        Tessellator tess = Tessellator.getInstance();
-//        GlStateManager.pushMatrix();
+//        RenderSystem.pushMatrix();
 //
-//        if (player.isSneaking()) {
-//            GlStateManager.rotate(29.0F, 1.0F, 0.0F, 0F);
-//            GlStateManager.translate(0, 0.15, -0.1);
+//        if (player.isShiftKeyDown()) {
+//            RenderSystem.rotate(29.0F, 1.0F, 0.0F, 0F);
+//            RenderSystem.translate(0, 0.15, -0.1);
 //        }
 //
 //        double x = 0.01;
@@ -120,10 +120,10 @@
 //        double xSize = 0.22;
 //        double ySize = 0.22;
 //
-//        GlStateManager.color(1F, 1F, 1F, 1F);
-//        GlStateManager.enableBlend();
-//        GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-//        GlStateManager.alphaFunc(516, 0.003921569F);
+//        RenderSystem.color(1F, 1F, 1F, 1F);
+//        RenderSystem.enableBlend();
+//        RenderSystem.blendFunc(RenderSystem.SourceFactor.SRC_ALPHA, RenderSystem.DestFactor.ONE_MINUS_SRC_ALPHA);
+//        RenderSystem.alphaFunc(516, 0.003921569F);
 //
 //        BufferBuilder buffer = tess.getBuffer();
 //        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
@@ -133,22 +133,22 @@
 //        buffer.pos(x + xSize, y, z).tex(1, 0).endVertex();
 //        tess.draw();
 //
-//        GlStateManager.alphaFunc(516, 0.1F);
+//        RenderSystem.alphaFunc(516, 0.1F);
 //
-//        GlStateManager.depthFunc(GL11.GL_EQUAL);
-//        GlStateManager.disableLighting();
+//        RenderSystem.depthFunc(GL11.GL_EQUAL);
+//        RenderSystem.disableLighting();
 //        renderPlayer.bindTexture(ENCHANTED_ITEM_GLINT_RES);
-//        GlStateManager.enableBlend();
-//        GlStateManager.blendFunc(GL11.GL_SRC_COLOR, GL11.GL_ONE);
+//        RenderSystem.enableBlend();
+//        RenderSystem.blendFunc(GL11.GL_SRC_COLOR, GL11.GL_ONE);
 //        float f11 = 0.76F;
-//        GlStateManager.color(0.9F * f11, 0.8F * f11, 0.1F * f11, 1.0F);
-//        GlStateManager.matrixMode(GL11.GL_TEXTURE);
-//        GlStateManager.pushMatrix();
+//        RenderSystem.color(0.9F * f11, 0.8F * f11, 0.1F * f11, 1.0F);
+//        RenderSystem.matrixMode(GL11.GL_TEXTURE);
+//        RenderSystem.pushMatrix();
 //
 //        float f12 = 0.125F;
-//        GlStateManager.scale(f12, f12, f12);
+//        RenderSystem.scale(f12, f12, f12);
 //        float f13 = (float) (Minecraft.getSystemTime() % 3000L) / 3000.0F * 8.0F;
-//        GlStateManager.translate(f13, 0.0F, 0.0F);
+//        RenderSystem.translate(f13, 0.0F, 0.0F);
 //        GL11.glRotatef(-50.0F, 0.0F, 0.0F, 1.0F);
 //
 //        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
@@ -172,23 +172,23 @@
 //        buffer.pos(x + xSize, y, z).tex(1, 0).endVertex();
 //        tess.draw();
 //
-//        GlStateManager.popMatrix();
-//        GlStateManager.matrixMode(GL11.GL_MODELVIEW);
-//        GlStateManager.disableBlend();
-//        GlStateManager.enableLighting();
-//        GlStateManager.depthFunc(GL11.GL_LEQUAL);
+//        RenderSystem.popMatrix();
+//        RenderSystem.matrixMode(GL11.GL_MODELVIEW);
+//        RenderSystem.disableBlend();
+//        RenderSystem.enableLighting();
+//        RenderSystem.depthFunc(GL11.GL_LEQUAL);
 //
-//        GlStateManager.popMatrix();
+//        RenderSystem.popMatrix();
 //    }
 //
 //    public void renderLolnetBadge(AbstractClientPlayer player, boolean offset) {
 //        ResourceHelperDE.bindTexture("textures/special/lolnet_badge.png");
 //        Tessellator tess = Tessellator.getInstance();
-//        GlStateManager.pushMatrix();
+//        RenderSystem.pushMatrix();
 //
-//        if (player.isSneaking()) {
-//            GlStateManager.rotate(29.0F, 1.0F, 0.0F, 0F);
-//            GlStateManager.translate(0, 0.15, -0.1);
+//        if (player.isShiftKeyDown()) {
+//            RenderSystem.rotate(29.0F, 1.0F, 0.0F, 0F);
+//            RenderSystem.translate(0, 0.15, -0.1);
 //        }
 //
 //        double x = 0.01;
@@ -197,10 +197,10 @@
 //        double xSize = 0.22;
 //        double ySize = 0.22;
 //
-//        GlStateManager.color(1F, 1F, 1F, 1F);
-//        GlStateManager.enableBlend();
-//        GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-//        GlStateManager.alphaFunc(516, 0.003921569F);
+//        RenderSystem.color(1F, 1F, 1F, 1F);
+//        RenderSystem.enableBlend();
+//        RenderSystem.blendFunc(RenderSystem.SourceFactor.SRC_ALPHA, RenderSystem.DestFactor.ONE_MINUS_SRC_ALPHA);
+//        RenderSystem.alphaFunc(516, 0.003921569F);
 //
 //        BufferBuilder buffer = tess.getBuffer();
 //        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
@@ -210,20 +210,20 @@
 //        buffer.pos(x + xSize, y, z).tex(1, 0).endVertex();
 //        tess.draw();
 //
-//        GlStateManager.depthFunc(GL11.GL_EQUAL);
-//        GlStateManager.disableLighting();
+//        RenderSystem.depthFunc(GL11.GL_EQUAL);
+//        RenderSystem.disableLighting();
 //        renderPlayer.bindTexture(ENCHANTED_ITEM_GLINT_RES);
-//        GlStateManager.enableBlend();
-//        GlStateManager.blendFunc(GL11.GL_SRC_COLOR, GL11.GL_ONE);
+//        RenderSystem.enableBlend();
+//        RenderSystem.blendFunc(GL11.GL_SRC_COLOR, GL11.GL_ONE);
 //        float f11 = 0.76F;
-//        GlStateManager.color(0.9F * f11, 0.8F * f11, 0.1F * f11, 1.0F);
-//        GlStateManager.matrixMode(GL11.GL_TEXTURE);
-//        GlStateManager.pushMatrix();
+//        RenderSystem.color(0.9F * f11, 0.8F * f11, 0.1F * f11, 1.0F);
+//        RenderSystem.matrixMode(GL11.GL_TEXTURE);
+//        RenderSystem.pushMatrix();
 //
 //        float f12 = 0.125F;
-//        GlStateManager.scale(f12, f12, f12);
+//        RenderSystem.scale(f12, f12, f12);
 //        float f13 = (float) ((Minecraft.getSystemTime() + 4352) % 3000L) / 3000.0F * 8.0F;
-//        GlStateManager.translate(f13, 0.0F, 0.0F);
+//        RenderSystem.translate(f13, 0.0F, 0.0F);
 //        GL11.glRotatef(-50.0F, 0.0F, 0.0F, 1.0F);
 //
 //        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
@@ -247,12 +247,12 @@
 //        buffer.pos(x + xSize, y, z).tex(1, 0).endVertex();
 //        tess.draw();
 //
-//        GlStateManager.popMatrix();
-//        GlStateManager.matrixMode(GL11.GL_MODELVIEW);
-//        GlStateManager.disableBlend();
-//        GlStateManager.enableLighting();
-//        GlStateManager.depthFunc(GL11.GL_LEQUAL);
+//        RenderSystem.popMatrix();
+//        RenderSystem.matrixMode(GL11.GL_MODELVIEW);
+//        RenderSystem.disableBlend();
+//        RenderSystem.enableLighting();
+//        RenderSystem.depthFunc(GL11.GL_LEQUAL);
 //
-//        GlStateManager.popMatrix();
+//        RenderSystem.popMatrix();
 //    }
 //}

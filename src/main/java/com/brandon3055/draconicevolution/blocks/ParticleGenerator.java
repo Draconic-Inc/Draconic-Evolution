@@ -168,7 +168,7 @@ public class ParticleGenerator extends BlockBCore {
 //    @Override
 //    public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
 //        if (state.get(TYPE).equals("normal") || state.get(TYPE).equals("inverted")) {
-//            if (player.isSneaking()) {
+//            if (player.isShiftKeyDown()) {
 //                world.setBlockState(pos, state.with(TYPE, state.get(TYPE).equals("normal") ? "inverted" : "normal"));
 //            } else if (world.isRemote) {
 ////                player.openGui(DraconicEvolution.instance, GuiHandler.GUIID_PARTICLEGEN, world, pos.getX(), pos.getY(), pos.getZ());

@@ -7,10 +7,9 @@ import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.api.IHudDisplay;
 import com.brandon3055.draconicevolution.handlers.CustomArmorHandler;
 import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
-import com.brandon3055.draconicevolution.utils.DETextures;
+import com.brandon3055.draconicevolution.client.DETextures;
 
-import com.mojang.blaze3d.platform.GLX;
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -52,9 +51,9 @@ public class HudHandler {
         }
 
 //        GlStateTracker.pushState();
-        GlStateManager.pushMatrix();
-        width = mc.mainWindow.getScaledWidth();
-        height = mc.mainWindow.getScaledHeight();
+        RenderSystem.pushMatrix();
+        width = mc.getMainWindow().getScaledWidth();
+        height = mc.getMainWindow().getScaledHeight();
         FontRenderer fontRenderer = mc.fontRenderer;
 
         if (DEConfig.hudSettings[10] == 1 && hudList != null && toolTipFadeOut > 0) {
@@ -62,7 +61,7 @@ public class HudHandler {
             int y = (int) (((float) DEConfig.hudSettings[1] / 1000F) * (float) height);
 
             GuiHelper.drawHoveringTextScaled(hudList, x, y, fontRenderer, toolTipFadeOut > 1 ? 1 : toolTipFadeOut, DEConfig.hudSettings[4] / 100D, width, height);
-            GlStateManager.disableLighting();
+            RenderSystem.disableLighting();
         }
 
         if (DEConfig.hudSettings[11] == 1 && showShieldHud) {
@@ -72,7 +71,7 @@ public class HudHandler {
             drawArmorHUD(x, y, DEConfig.hudSettings[8] == 1, DEConfig.hudSettings[5] / 100D);
         }
 
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
 //        GlStateTracker.popState();
     }
 
@@ -114,7 +113,7 @@ public class HudHandler {
         }
         else {
 
-            RayTraceResult traceResult = mc.player.func_213324_a(5, 0, false);
+            RayTraceResult traceResult = mc.player.pick(5, 0, false);
             BlockState state = null;
 
             if (traceResult instanceof BlockRayTraceResult) {
@@ -157,23 +156,23 @@ public class HudHandler {
     }
 
     private static void drawArmorHUD(int x, int y, boolean rotated, double scale) {
-        GlStateManager.pushMatrix();
-        GlStateManager.enableAlphaTest();
-        GlStateManager.enableBlend();
-        GLX.glBlendFuncSeparate(770, 771, 1, 0);
+        RenderSystem.pushMatrix();
+        RenderSystem.enableAlphaTest();
+        RenderSystem.enableBlend();
+        RenderSystem.blendFuncSeparate(770, 771, 1, 0);
         ResourceHelperDE.bindTexture(DETextures.GUI_HUD);
 
-        GlStateManager.translated(x, y, 0);
-        GlStateManager.scaled(scale, scale, 1);
-        GlStateManager.translated(-x, -y, 0);
-        GlStateManager.color4f(1F, 1F, 1F, Math.min(armorStatsFadeOut, 1F));
+        RenderSystem.translated(x, y, 0);
+        RenderSystem.scaled(scale, scale, 1);
+        RenderSystem.translated(-x, -y, 0);
+        RenderSystem.color4f(1F, 1F, 1F, Math.min(armorStatsFadeOut, 1F));
 
         if (rotated) {
             GuiHelper.drawTexturedRect(x - 15, y + 1, 14, 16, 2, 0, 13, 15, 0, GuiHelper.PXL128);
             x += 104;
-            GlStateManager.translated(x, y, 0);
-            GlStateManager.rotated(-90, 0, 0, -1);
-            GlStateManager.translated(-x, -y, 0);
+            RenderSystem.translated(x, y, 0);
+            RenderSystem.rotatef(-90, 0, 0, -1);
+            RenderSystem.translated(-x, -y, 0);
         }
         else GuiHelper.drawTexturedRect(x + 1, y + 105, 15, 17, 2, 0, 13, 15, 0, GuiHelper.PXL128);
 
@@ -185,9 +184,9 @@ public class HudHandler {
 
         if (DEConfig.hudSettings[9] == 1) {
             FontRenderer fontRenderer = Minecraft.getInstance().fontRenderer;
-            GlStateManager.translated(x, y, 0);
-            if (rotated) GlStateManager.rotated(90, 0, 0, -1);
-            GlStateManager.translated(-x, -y, 0);
+            RenderSystem.translated(x, y, 0);
+            if (rotated) RenderSystem.rotatef(90, 0, 0, -1);
+            RenderSystem.translated(-x, -y, 0);
             String shield = (int) shieldPoints + "/" + (int) maxShieldPoints;
             String entropy = "EN: " + (int) shieldEntropy + "%";
             String energy = "RF: " + Utils.formatNumber(rfTotal);
@@ -205,9 +204,9 @@ public class HudHandler {
         }
 
         ResourceHelperDE.bindTexture(ResourceHelperDE.getResourceRAW("minecraft:textures/gui/icons.png"));
-        GlStateManager.color4f(1F, 1F, 1F, 1F);
-        GlStateManager.disableBlend();
-        GlStateManager.disableAlphaTest();
-        GlStateManager.popMatrix();
+        RenderSystem.color4f(1F, 1F, 1F, 1F);
+        RenderSystem.disableBlend();
+        RenderSystem.disableAlphaTest();
+        RenderSystem.popMatrix();
     }
 }

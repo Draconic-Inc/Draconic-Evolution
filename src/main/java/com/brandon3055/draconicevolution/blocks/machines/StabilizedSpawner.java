@@ -8,7 +8,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockRenderLayer;
+
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
@@ -44,10 +44,10 @@ public class StabilizedSpawner extends BlockBCore {
         return new TileStabilizedSpawner();
     }
 
-    @OnlyIn(Dist.CLIENT)
-    public BlockRenderLayer getBlockLayer() {
-        return BlockRenderLayer.CUTOUT;
-    }
+//    @OnlyIn(Dist.CLIENT)
+//    public BlockRenderLayer getBlockLayer() {
+//        return BlockRenderLayer.CUTOUT;
+//    }
 //
 //    @Override
 //    @OnlyIn(Dist.CLIENT)
@@ -100,8 +100,8 @@ public class StabilizedSpawner extends BlockBCore {
         return true;
     }
 
-    @Override
-    public boolean isSolid(BlockState state) {
-        return false;
-    }
+//    @Override
+//    public boolean isSolid(BlockState state) {
+//        return false;
+//    }
 }

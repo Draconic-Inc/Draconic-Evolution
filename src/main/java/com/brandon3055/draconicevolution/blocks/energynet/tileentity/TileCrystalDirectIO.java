@@ -16,6 +16,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -85,7 +86,7 @@ public class TileCrystalDirectIO extends TileCrystalBase   {
 
     @Override
     public boolean onBlockActivated(BlockState state, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
-        if (player.isSneaking()) {
+        if (player.isShiftKeyDown()) {
             outputMode.invert();
             updateRotation(facing.get());
             return true;

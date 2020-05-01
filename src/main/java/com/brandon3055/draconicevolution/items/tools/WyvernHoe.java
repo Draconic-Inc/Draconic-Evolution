@@ -83,7 +83,7 @@ public abstract class WyvernHoe extends ToolBase {
             modifyEnergy(stack, -energyPerOperation);
         }
 
-        if (player.isSneaking()) {
+        if (player.isShiftKeyDown()) {
             return ActionResultType.SUCCESS;
         }
 

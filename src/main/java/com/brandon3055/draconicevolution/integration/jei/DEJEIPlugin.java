@@ -1,14 +1,17 @@
 package com.brandon3055.draconicevolution.integration.jei;
 
+import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.init.DEContent;
-import com.brandon3055.draconicevolution.api.fusioncrafting.IFusionRecipe;
-import com.brandon3055.draconicevolution.utils.LogHelper;
 import mezz.jei.api.*;
-import mezz.jei.api.ingredients.IModIngredientRegistration;
-import mezz.jei.api.recipe.IRecipeCategoryRegistration;
-import mezz.jei.api.recipe.VanillaRecipeCategoryUid;
-import mezz.jei.api.recipe.transfer.IRecipeTransferRegistry;
+import mezz.jei.api.constants.VanillaRecipeCategoryUid;
+import mezz.jei.api.helpers.IJeiHelpers;
+import mezz.jei.api.registration.IModIngredientRegistration;
+import mezz.jei.api.registration.IRecipeCatalystRegistration;
+import mezz.jei.api.registration.IRecipeCategoryRegistration;
+import mezz.jei.api.registration.IRecipeRegistration;
+import mezz.jei.api.runtime.IJeiRuntime;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +19,7 @@ import java.util.List;
 /**
  * Created by brandon3055 on 24/07/2016.
  */
-@JEIPlugin
+@JeiPlugin
 public class DEJEIPlugin implements IModPlugin {
 
     public static IJeiHelpers jeiHelpers = null;
@@ -26,9 +29,6 @@ public class DEJEIPlugin implements IModPlugin {
     public DEJEIPlugin() {
     }
 
-    @Override
-    public void registerItemSubtypes(ISubtypeRegistry subtypeRegistry) {
-    }
 
     @Override
     public void registerIngredients(IModIngredientRegistration registry) {
@@ -40,31 +40,46 @@ public class DEJEIPlugin implements IModPlugin {
     }
 
     @Override
-    public void register(IModRegistry registry) {
-        LogHelper.dev("Register JEI");
-        jeiHelpers = registry.getJeiHelpers();
+    public void registerRecipes(IRecipeRegistration registration) {
+        jeiHelpers = registration.getJeiHelpers();
+
+        //            this.recipeLayout = DEJEIPlugin.jeiRuntime.getRecipeRegistry().createRecipeLayoutDrawable(category, wrapper, f);
+
 
 //        registry.handleRecipes(EIOSpawnerRecipesWrapper.class, recipe -> recipe, VanillaRecipeCategoryUid.CRAFTING);
-        registry.handleRecipes(IFusionRecipe.class, FusionRecipeWrapper::new, RecipeCategoryUids.FUSION_CRAFTING);
+//        registration.handleRecipes(IFusionRecipe.class, FusionRecipeWrapper::new, RecipeCategoryUids.FUSION_CRAFTING);
 
-        if (DEContent.crafting_core.isBlockEnabled()){
-            registry.addRecipeCatalyst(new ItemStack(DEContent.crafting_core), RecipeCategoryUids.FUSION_CRAFTING);
-        }
-        if (DEContent.draconium_chest.isBlockEnabled()) {
-            registry.addRecipeCatalyst(new ItemStack(DEContent.draconium_chest), VanillaRecipeCategoryUid.CRAFTING);
-            registry.addRecipeCatalyst(new ItemStack(DEContent.draconium_chest), VanillaRecipeCategoryUid.SMELTING);
-        }
+
+    }
+
+
+    @Override
+    public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
+
+//        if (DEContent.crafting_core.isBlockEnabled()){
+//            registration.addRecipeCatalyst(new ItemStack(DEContent.crafting_core), RecipeCategoryUids.FUSION_CRAFTING);
+//        }
+//        if (DEContent.draconium_chest.isBlockEnabled()) {
+//            registration.addRecipeCatalyst(new ItemStack(DEContent.draconium_chest), VanillaRecipeCategoryUid.CRAFTING);
+//            registration.addRecipeCatalyst(new ItemStack(DEContent.draconium_chest), VanillaRecipeCategoryUid.FURNACE);
+//        }
+    }
+
+//    @Override
+//    public void register(IModRegistry registry) {
+//        LogHelper.dev("Register JEI");
+
 
 //        registry.addRecipeClickArea(GuiFusionCraftingCore.class, 81, 45, 18, 22, RecipeCategoryUids.FUSION_CRAFTING);
 //        registry.addRecipeClickArea(GuiDraconiumChest.class, 394, 216, 22, 15, VanillaRecipeCategoryUid.CRAFTING);
 //        registry.addRecipeClickArea(GuiDraconiumChest.class, 140, 202, 15, 22, VanillaRecipeCategoryUid.SMELTING);
 
-        hideFeature(DEContent.chaos_crystal);
-        hideFeature(DEContent.placed_item);
-        hideFeature(DEContent.energy_core_structure);
+//        hideFeature(DEContent.chaos_crystal);
+//        hideFeature(DEContent.placed_item);
+//        hideFeature(DEContent.energy_core_structure);
 //        hideFeature(DEContent.chaosShardAtmos);
 
-        IRecipeTransferRegistry recipeTransferRegistry = registry.getRecipeTransferRegistry();
+//        IRecipeTransferRegistry recipeTransferRegistry = registry.getRecipeTransferRegistry();
 //        recipeTransferRegistry.addRecipeTransferHandler(new IRecipeTransferInfo<ContainerDraconiumChest>() {
 //            @Override
 //            public Class<ContainerDraconiumChest> getContainerClass() {
@@ -130,7 +145,7 @@ public class DEJEIPlugin implements IModPlugin {
 //                iUpgradables.add(stack);
 //            }
 //        }
-    }
+//    }
 
     private void hideFeature(Object feature) {
 //        if (ModFeatureParser.isEnabled(feature)) {
@@ -155,4 +170,8 @@ public class DEJEIPlugin implements IModPlugin {
     }
 
 
+    @Override
+    public ResourceLocation getPluginUid() {
+        return new ResourceLocation(DraconicEvolution.MODID, "jei_plugin");
+    }
 }

@@ -184,7 +184,7 @@ public class TileGrinder extends TileBCore implements ITickableTileEntity, IRSSw
         if (forceReCalc || killZone == null) {
             BlockState state = world.getBlockState(pos);
             Direction facing = state.get(Grinder.FACING);
-            LogHelper.dev("Update Kill Zone: " + facing);
+//            LogHelper.dev("Update Kill Zone: " + facing);
             int aoe = this.aoe.get();
             BlockPos pos1 = pos.add(-(aoe - 1), -(aoe - 1), -(aoe - 1));
             BlockPos pos2 = pos.add(aoe, aoe, aoe);
@@ -396,7 +396,7 @@ public class TileGrinder extends TileBCore implements ITickableTileEntity, IRSSw
     public boolean onBlockActivated(BlockState state, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
         if (player instanceof ServerPlayerEntity) {
             NetworkHooks.openGui((ServerPlayerEntity) player, this, pos);
-        } else if (world.isRemote && player.isSneaking()) {
+        } else if (world.isRemote && player.isShiftKeyDown()) {
 //            AxisAlignedBB bb = getKillBoxForRender();
 
             for (double i = 0; i <= 7; i += 0.01) {
@@ -430,7 +430,7 @@ public class TileGrinder extends TileBCore implements ITickableTileEntity, IRSSw
 
     //    @Override
 //    public boolean onBlockActivated(BlockState state, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
-    //        if (player.isSneaking()) {
+    //        if (player.isShiftKeyDown()) {
 ////            TileEntity tile = world.getTileEntity(pos);
 ////            if (tile instanceof TileGrinder && world.isRemote) {
 ////                AxisAlignedBB bb = ((TileGrinder) tile).getKillBoxForRender();

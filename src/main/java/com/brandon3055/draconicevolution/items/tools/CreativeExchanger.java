@@ -77,7 +77,7 @@ public class CreativeExchanger extends ItemBCore implements IConfigurableItem, I
             return super.onItemRightClick(world, player, hand);
         }
 
-        if (player.isSneaking()) {
+        if (player.isShiftKeyDown()) {
             player.sendMessage(new StringTextComponent(TextFormatting.DARK_RED + "Clear Mode"));
             ItemNBTHelper.setString(stack, "BlockName", "");
             ItemNBTHelper.setByte(stack, "BlockData", (byte) 0);
@@ -99,7 +99,7 @@ public class CreativeExchanger extends ItemBCore implements IConfigurableItem, I
 
         BlockState prevState = world.getBlockState(pos);
 
-        if (player.isSneaking()) {
+        if (player.isShiftKeyDown()) {
             String name = prevState.getBlock().getRegistryName().toString();
 //            int data = prevState.getBlock().getMetaFromState(prevState);
 

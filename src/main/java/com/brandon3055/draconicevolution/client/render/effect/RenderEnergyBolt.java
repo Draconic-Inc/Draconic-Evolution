@@ -4,6 +4,7 @@ import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.mojang.blaze3d.platform.GLX;
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -22,11 +23,11 @@ public class RenderEnergyBolt {
         Tessellator tessellator = Tessellator.getInstance();
         Random random = new Random(boltSeed);
 
-        GlStateManager.disableTexture();
-        GlStateManager.disableLighting();
-        GlStateManager.enableBlend();
-        GLX.glMultiTexCoord2f(GLX.GL_TEXTURE1, 200, 200);
-        GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
+        RenderSystem.disableTexture();
+        RenderSystem.disableLighting();
+        RenderSystem.enableBlend();
+//        GLX.glMultiTexCoord2f(GLX.GL_TEXTURE1, 200, 200);
+        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
 
         double distance = Utils.getDistanceAtoB(point1, point2);
         Vec3D dirVec = Vec3D.getDirectionVec(point1, point2);
@@ -96,9 +97,9 @@ public class RenderEnergyBolt {
 
         //endregion
 
-        GlStateManager.disableBlend();
-        GlStateManager.enableLighting();
-        GlStateManager.enableTexture();
+        RenderSystem.disableBlend();
+        RenderSystem.enableLighting();
+        RenderSystem.enableTexture();
     }
 
     //WIP
@@ -106,11 +107,11 @@ public class RenderEnergyBolt {
         Tessellator tessellator = Tessellator.getInstance();
         Random random = new Random(boltSeed);
 
-        GlStateManager.disableTexture();
-        GlStateManager.disableLighting();
-        GlStateManager.enableBlend();
-        GLX.glMultiTexCoord2f(GLX.GL_TEXTURE1, 200, 200);
-        GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
+        RenderSystem.disableTexture();
+        RenderSystem.disableLighting();
+        RenderSystem.enableBlend();
+//        GLX.glMultiTexCoord2f(GLX.GL_TEXTURE1, 200, 200);
+        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
 
         double distance = Utils.getDistanceAtoB(source, target);
         Vec3D dirVec = Vec3D.getDirectionVec(source, target);
@@ -152,17 +153,17 @@ public class RenderEnergyBolt {
 
         //endregion
 
-        GlStateManager.disableBlend();
-        GlStateManager.enableLighting();
-        GlStateManager.enableTexture();
+        RenderSystem.disableBlend();
+        RenderSystem.enableLighting();
+        RenderSystem.enableTexture();
     }
 
 
     private static void drawBoltSegment(Tessellator tessellator, Vec3D p1, Vec3D p2, float scale) {
         BufferBuilder buffer = tessellator.getBuffer();
 
-        GlStateManager.pushMatrix();
-        GlStateManager.translated(p1.x, p1.y, p1.z);
+        RenderSystem.pushMatrix();
+        RenderSystem.translated(p1.x, p1.y, p1.z);
 
         double dist = Utils.getDistanceAtoB(p1, p2);
         float xd = (float) (p1.x - p2.x);
@@ -172,9 +173,9 @@ public class RenderEnergyBolt {
         float rotYaw = (float) (Math.atan2((double) xd, (double) zd) * 180.0D / 3.141592653589793D);
         float rotPitch = (float) (Math.atan2((double) yd, var7) * 180.0D / 3.141592653589793D);
 
-        GlStateManager.rotatef(90.0F, 1.0F, 0.0F, 0.0F);
-        GlStateManager.rotatef(180.0F + rotYaw, 0.0F, 0.0F, -1.0F);
-        GlStateManager.rotatef(rotPitch, 1.0F, 0.0F, 0.0F);
+        RenderSystem.rotatef(90.0F, 1.0F, 0.0F, 0.0F);
+        RenderSystem.rotatef(180.0F + rotYaw, 0.0F, 0.0F, -1.0F);
+        RenderSystem.rotatef(rotPitch, 1.0F, 0.0F, 0.0F);
 
         buffer.begin(GL11.GL_TRIANGLE_STRIP, DefaultVertexFormats.POSITION_COLOR);
         for (int i = 0; i <= 9; i++) {
@@ -187,6 +188,6 @@ public class RenderEnergyBolt {
         }
         tessellator.draw();
 
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
     }
 }

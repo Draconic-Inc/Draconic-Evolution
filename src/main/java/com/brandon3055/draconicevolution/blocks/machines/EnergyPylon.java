@@ -9,6 +9,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -73,19 +74,19 @@ public class EnergyPylon extends BlockBCore/* implements ITileEntityProvider, IR
 
 
     @Override
-    public boolean onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+    public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
         TileEntity tile = worldIn.getTileEntity(pos);
         if (tile instanceof TileEnergyPylon) {
-            if (player.isSneaking()) {
+            if (player.isShiftKeyDown()) {
                 ((TileEnergyPylon) tile).selectNextCore();
             }
             else {
                 ((TileEnergyPylon) tile).validateStructure();
             }
-            return ((TileEnergyPylon) tile).structureValid.get();
+            return ((TileEnergyPylon) tile).structureValid.get() ? ActionResultType.SUCCESS : ActionResultType.FAIL;
         }
 
-        return false;
+        return ActionResultType.SUCCESS;
     }
 
     @Override

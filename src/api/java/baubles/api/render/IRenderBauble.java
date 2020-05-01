@@ -42,7 +42,7 @@
 //		 * Use for renders under {@link RenderType#BODY}.
 //		 */
 //		public static void rotateIfSneaking(PlayerEntity player) {
-//			if(player.isSneaking())
+//			if(player.isShiftKeyDown())
 //				applySneakingRotation();
 //		}
 //
@@ -61,7 +61,7 @@
 //		 */
 //		public static void translateToHeadLevel(PlayerEntity player) {
 //			GlStateManager.translate(0, -player.getDefaultEyeHeight(), 0);
-//			if (player.isSneaking())
+//			if (player.isShiftKeyDown())
 //				GlStateManager.translate(0.25F * MathHelper.sin(player.rotationPitch * (float) Math.PI / 180), 0.25F * MathHelper.cos(player.rotationPitch * (float) Math.PI / 180), 0F);
 //		}
 //

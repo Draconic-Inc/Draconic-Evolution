@@ -44,7 +44,7 @@ public class TileDislocatorPedestal extends TileBCore implements ITeleportEndPoi
             return true;
         }
         ItemStack stack = itemHandler.getStackInSlot(0);
-        if (!player.isSneaking() && !stack.isEmpty()) {
+        if (!player.isShiftKeyDown() && !stack.isEmpty()) {
             if (stack.getItem() instanceof Dislocator) {
                 TeleportLocation location = ((Dislocator) stack.getItem()).getLocation(stack, world);
 

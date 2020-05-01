@@ -6,9 +6,10 @@ import com.brandon3055.brandonscore.client.render.TESRBase;
 import com.brandon3055.draconicevolution.blocks.tileentity.TilePlacedItem;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.google.common.base.Joiner;
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -21,11 +22,15 @@ import java.util.List;
  */
 public class RenderTilePlacedItem extends TESRBase<TilePlacedItem> {
 
-    @Override
+    public RenderTilePlacedItem(TileEntityRendererDispatcher rendererDispatcherIn) {
+        super(rendererDispatcherIn);
+    }
+
+//    @Override
     public void render(TilePlacedItem te, double x, double y, double z, float partialTicks, int destroyStage) {
-        GlStateManager.pushMatrix();
+        RenderSystem.pushMatrix();
 //        GlStateTracker.pushState();
-        GlStateManager.translated(x + 0.5, y + 0.5, z + 0.5);
+        RenderSystem.translated(x + 0.5, y + 0.5, z + 0.5);
 
         ItemStack[] stacks = new ItemStack[]{te.inventory.getStackInSlot(0), te.inventory.getStackInSlot(1), te.inventory.getStackInSlot(2), te.inventory.getStackInSlot(3)};
         int index = 0;
@@ -42,52 +47,52 @@ public class RenderTilePlacedItem extends TESRBase<TilePlacedItem> {
 
             ItemStack stack = stacks[(Integer) cuboid.data - 1];
             if (!stack.isEmpty()) {
-                GlStateManager.pushMatrix();
+                RenderSystem.pushMatrix();
                 Vector3 center = cuboid.center();//.copy().sub(new Vector3(te.getPos()));
-                GlStateManager.translated(center.x - 0.5, center.y - 0.5, center.z - 0.5);
+                RenderSystem.translated(center.x - 0.5, center.y - 0.5, center.z - 0.5);
 
                 if (te.facing.getAxis() == Direction.Axis.Y) {
-                    GlStateManager.rotated(90, te.facing.getYOffset(), 0, 0);
+                    RenderSystem.rotatef(90, te.facing.getYOffset(), 0, 0);
                 }
                 else if (te.facing.getAxis() == Direction.Axis.X) {
-                    GlStateManager.rotated(90, 0, -te.facing.getXOffset(), 0);
+                    RenderSystem.rotatef(90, 0, -te.facing.getXOffset(), 0);
                 }
                 else if (te.facing == Direction.SOUTH) {
-                    GlStateManager.rotated(180, 0, 1, 0);
+                    RenderSystem.rotatef(180, 0, 1, 0);
                 }
 
-                GlStateManager.rotated((float) te.rotation[index].get() * 22.5F, 0F, 0F, -1F);
+                RenderSystem.rotatef((float) te.rotation[index].get() * 22.5F, 0F, 0F, -1F);
 
                 if ((stack.getItem().isEnchantable(stack) || (te.altRenderMode.get() && !(stack.getItem() instanceof BlockItem))) && cuboids.size() == 1) {
-                    GlStateManager.scalef(0.8F, 0.8F, 0.8F);
-                    GlStateManager.rotated(180, 0, 1, 0);
-                    Minecraft.getInstance().getItemRenderer().renderItem(stack, ItemCameraTransforms.TransformType.FIXED);
+                    RenderSystem.scalef(0.8F, 0.8F, 0.8F);
+                    RenderSystem.rotatef(180, 0, 1, 0);
+//                    Minecraft.getInstance().getItemRenderer().renderItem(stack, ItemCameraTransforms.TransformType.FIXED);
                 }
                 else if (stack.getItem() instanceof BlockItem) {
                     float f = 0.72F;
-                    GlStateManager.scalef(f, f, f);
+                    RenderSystem.scalef(f, f, f);
                     if (te.altRenderMode.get()) {
-//                        GlStateManager.rotate(90, 1, 0, 0);
-                        GlStateManager.translated(0, 0, -0.2);
+//                        RenderSystem.rotate(90, 1, 0, 0);
+                        RenderSystem.translated(0, 0, -0.2);
                     }
                     else {
-                        GlStateManager.rotated(90, 1, 0, 0);
+                        RenderSystem.rotatef(90, 1, 0, 0);
                     }
-                    Minecraft.getInstance().getItemRenderer().renderItem(stack, ItemCameraTransforms.TransformType.FIXED);
+//                    Minecraft.getInstance().getItemRenderer().renderItem(stack, ItemCameraTransforms.TransformType.FIXED);
                 }
                 else {
-                    GlStateManager.scalef(0.45F, 0.45F, 0.45F);
-                    GlStateManager.rotated(180, 0, 1, 0);
-                    Minecraft.getInstance().getItemRenderer().renderItem(stack, ItemCameraTransforms.TransformType.FIXED);
+                    RenderSystem.scalef(0.45F, 0.45F, 0.45F);
+                    RenderSystem.rotatef(180, 0, 1, 0);
+//                    Minecraft.getInstance().getItemRenderer().renderItem(stack, ItemCameraTransforms.TransformType.FIXED);
                 }
 
-                GlStateManager.popMatrix();
+                RenderSystem.popMatrix();
             }
 
             index++;
         }
 
 //        GlStateTracker.popState();
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
     }
 }

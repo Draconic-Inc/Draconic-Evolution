@@ -2,14 +2,18 @@ package com.brandon3055.draconicevolution.client.render.effect;
 
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalBase;
 import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
-import com.brandon3055.draconicevolution.utils.DETextures;
+import com.brandon3055.draconicevolution.client.DETextures;
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
 
@@ -42,24 +46,20 @@ public class CrystalFXIO extends CrystalFXBase<TileCrystalBase> {
     }
 
     @Override
-    public void renderParticle(BufferBuilder buffer, ActiveRenderInfo entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
+    public void renderParticle(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks) {
         if (!renderEnabled) {
             return;
         }
 
-        float renderX = (float) (this.posX - interpPosX);
-        float renderY = (float) (this.posY - interpPosY);
-        float renderZ = (float) (this.posZ - interpPosZ);
-
-//        baseScale = 0.2F;
-        float scale = 0.2F;
-
-
-        buffer.pos(renderX - rotationX * scale - rotationXY * scale, renderY - rotationZ * scale, renderZ - rotationYZ * scale - rotationXZ * scale).tex(0.5, 0.5).color(particleRed, particleGreen, particleBlue, particleAlpha).lightmap(200, 200).endVertex();
-        buffer.pos(renderX - rotationX * scale + rotationXY * scale, renderY + rotationZ * scale, renderZ - rotationYZ * scale + rotationXZ * scale).tex(0.5, 0.0).color(particleRed, particleGreen, particleBlue, particleAlpha).lightmap(200, 200).endVertex();
-        buffer.pos(renderX + rotationX * scale + rotationXY * scale, renderY + rotationZ * scale, renderZ + rotationYZ * scale + rotationXZ * scale).tex(0.0, 0.0).color(particleRed, particleGreen, particleBlue, particleAlpha).lightmap(200, 200).endVertex();
-        buffer.pos(renderX + rotationX * scale - rotationXY * scale, renderY - rotationZ * scale, renderZ + rotationYZ * scale - rotationXZ * scale).tex(0.0, 0.5).color(particleRed, particleGreen, particleBlue, particleAlpha).lightmap(200, 200).endVertex();
-
+        Vec3d viewVec = renderInfo.getProjectedView();
+        float viewX = (float) (this.posX - viewVec.getX());
+        float viewY = (float) (this.posY - viewVec.getY());
+        float viewZ = (float) (this.posZ - viewVec.getZ());
+        Vector3f[] renderVector = getRenderVectors(renderInfo, viewX, viewY, viewZ, 0.2F);
+        buffer.pos(renderVector[0].getX(), renderVector[0].getY(), renderVector[0].getZ()).tex(0.5F, 0.5F).endVertex();
+        buffer.pos(renderVector[1].getX(), renderVector[1].getY(), renderVector[1].getZ()).tex(0.5F, 0.0F).endVertex();
+        buffer.pos(renderVector[2].getX(), renderVector[2].getY(), renderVector[2].getZ()).tex(0.0F, 0.0F).endVertex();
+        buffer.pos(renderVector[3].getX(), renderVector[3].getY(), renderVector[3].getZ()).tex(0.0F, 0.5F).endVertex();
     }
 
     @Override
@@ -81,16 +81,16 @@ public class CrystalFXIO extends CrystalFXBase<TileCrystalBase> {
 
         @Override
         public void beginRender(BufferBuilder builder, TextureManager textureManager) {
-            GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-            GlStateManager.depthMask(false);
-            GlStateManager.disableCull();
-            GlStateManager.alphaFunc(GL11.GL_GREATER, 0F);
+            RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
             ResourceHelperDE.bindTexture(texture);
-            GlStateManager.enableBlend();
-            GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-            GlStateManager.disableLighting();
 
-            builder.begin(GL11.GL_QUADS, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
+            RenderSystem.depthMask(false);
+            RenderSystem.alphaFunc(516, 0.003921569F);
+            RenderSystem.enableBlend();
+            RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
+            RenderSystem.glMultiTexCoord2f(0x84c2, 240.0F, 240.0F); //Lightmap
+
+            builder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
         }
 
         @Override
@@ -104,8 +104,8 @@ public class CrystalFXIO extends CrystalFXBase<TileCrystalBase> {
 //region Base Field Implementation
 //        rand.setSeed(3490276L);
 //                float animTime = ClientEventHandler.elapsedTicks + particleAge + partialTicks;
-//                GlStateManager.pushMatrix();
-//                GlStateManager.disableCull();
+//                RenderSystem.pushMatrix();
+//                RenderSystem.disableCull();
 //                ResourceHelperDE.bindTexture(DEParticles.DE_SHEET);
 //
 //                //region variables
@@ -185,5 +185,5 @@ public class CrystalFXIO extends CrystalFXBase<TileCrystalBase> {
 //
 //        //endregio
 //
-//        GlStateManager.popMatrix();
+//        RenderSystem.popMatrix();
 //endregion

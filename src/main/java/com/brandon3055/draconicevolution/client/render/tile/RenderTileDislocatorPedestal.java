@@ -10,13 +10,14 @@ import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileDislocatorPedestal;
 import com.brandon3055.draconicevolution.items.tools.Dislocator;
 import com.brandon3055.draconicevolution.items.tools.DislocatorAdvanced;
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -32,47 +33,51 @@ public class RenderTileDislocatorPedestal extends TESRBase<TileDislocatorPedesta
 
     public static List<BakedQuad> modelQuads = null;
 
-    @Override
+    public RenderTileDislocatorPedestal(TileEntityRendererDispatcher rendererDispatcherIn) {
+        super(rendererDispatcherIn);
+    }
+
+    //    @Override
     public void render(TileDislocatorPedestal te, double x, double y, double z, float partialTicks, int destroyStage) {
         if (modelQuads == null) {
             modelQuads = Minecraft.getInstance().getBlockRendererDispatcher().getModelForState(DEContent.dislocator_pedestal.getDefaultState()).getQuads(DEContent.dislocator_pedestal.getDefaultState(), null, ModelUtils.rand);
         }
 
-        GlStateManager.pushMatrix();
-        GlStateManager.translated(x + 0.5, y, z + 0.5);
+        RenderSystem.pushMatrix();
+        RenderSystem.translated(x + 0.5, y, z + 0.5);
 
         if (!te.itemHandler.getStackInSlot(0).isEmpty()) {
-            GlStateManager.pushMatrix();
-            GlStateManager.scalef(1F, -1F, -1F);
+            RenderSystem.pushMatrix();
+            RenderSystem.scalef(1F, -1F, -1F);
             drawNameString(te.itemHandler.getStackInSlot(0), 0, te, partialTicks);
-            GlStateManager.popMatrix();
+            RenderSystem.popMatrix();
         }
 
 
-        GlStateManager.rotatef(-te.rotation.get() * 22.5F, 0, 1, 0);
-        GlStateManager.translated(-0.5, 0, -0.5);
+        RenderSystem.rotatef(-te.rotation.get() * 22.5F, 0, 1, 0);
+        RenderSystem.translated(-0.5, 0, -0.5);
 
         TextureUtils.bindBlockTexture();
-        ModelUtils.renderQuads(modelQuads);
+//        ModelUtils.renderQuads(modelQuads);
 
 
         if (!te.itemHandler.getStackInSlot(0).isEmpty()) {
-            GlStateManager.translated(0.5, 0.79, 0.52);
-            GlStateManager.rotatef(-67.5F, 1, 0, 0);
-            GlStateManager.scalef(0.5F, 0.5F, 0.5F);
-            renderItem(te.itemHandler.getStackInSlot(0));
+            RenderSystem.translated(0.5, 0.79, 0.52);
+            RenderSystem.rotatef(-67.5F, 1, 0, 0);
+            RenderSystem.scalef(0.5F, 0.5F, 0.5F);
+//            renderItem(te.itemHandler.getStackInSlot(0));
         }
 
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
 
         //TODO render destination name. After i fix the advanced dislocator mess...
     }
 
     private void drawNameString(ItemStack item, float rotation, TileDislocatorPedestal te, float f) {
         ClientPlayerEntity player = Minecraft.getInstance().player;
-        RayTraceResult mop = player.func_213324_a(10, f, true);
+        RayTraceResult mop = player.pick(10, f, true);
         boolean isCursorOver = mop instanceof BlockRayTraceResult && ((BlockRayTraceResult) mop).getPos().equals(te.getPos());
-        boolean isSneaking = player.isSneaking();
+        boolean isSneaking = player.isShiftKeyDown();
 
         if (!isCursorOver && (isSneaking != DEConfig.invertDPDSB)) {
             return;
@@ -93,10 +98,10 @@ public class RenderTileDislocatorPedestal extends TESRBase<TileDislocatorPedesta
         FontRenderer fontRenderer = Minecraft.getInstance().fontRenderer;
         Tessellator tess = Tessellator.getInstance();
 
-        GlStateManager.pushMatrix();
-        GlStateManager.scalef(0.02f, 0.02f, 0.02f);
-        GlStateManager.rotated(180, 0, 1, 0);
-        GlStateManager.translated(0, -55, 0);
+        RenderSystem.pushMatrix();
+        RenderSystem.scalef(0.02f, 0.02f, 0.02f);
+        RenderSystem.rotatef(180, 0, 1, 0);
+        RenderSystem.translated(0, -55, 0);
 
         double xDiff = player.posX - (te.getPos().getX() + 0.5);
         double yDiff = (player.posY + player.getEyeHeight()) - (te.getPos().getY() + 0.5);
@@ -104,36 +109,36 @@ public class RenderTileDislocatorPedestal extends TESRBase<TileDislocatorPedesta
         double yawAngle = Math.toDegrees(Math.atan2(zDiff, xDiff));
         double pitchAngle = Math.toDegrees(Math.atan2(yDiff, Utils.getDistanceAtoB(player.posX, player.posY, player.posZ, te.getPos().getX() + 0.5, te.getPos().getY() + 0.5, te.getPos().getZ() + 0.5)));
 
-        GlStateManager.rotatef((float) yawAngle + 90 - rotation, 0, 1, 0);
-        GlStateManager.rotatef((float) -pitchAngle, 1, 0, 0);
+        RenderSystem.rotatef((float) yawAngle + 90 - rotation, 0, 1, 0);
+        RenderSystem.rotatef((float) -pitchAngle, 1, 0, 0);
 
         int xmin = -1 - fontRenderer.getStringWidth(s) / 2;
         int xmax = 1 + fontRenderer.getStringWidth(s) / 2;
         int ymin = -1;
         int ymax = fontRenderer.FONT_HEIGHT;
 
-        GlStateManager.enableBlend();
-        GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        GlStateManager.color4f(0f, 0f, 0f, 0.5f);
-        GlStateManager.disableTexture();
+        RenderSystem.enableBlend();
+        RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        RenderSystem.color4f(0f, 0f, 0f, 0.5f);
+        RenderSystem.disableTexture();
 
         BufferBuilder buffer = tess.getBuffer();
         buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-        buffer.pos(xmin, ymax, 0).tex(xmin / 64D, 1).endVertex();
-        buffer.pos(xmax, ymax, 0).tex(xmax / 64D, 1).endVertex();
-        buffer.pos(xmax, ymin, 0).tex(xmax / 64D, 0.75).endVertex();
-        buffer.pos(xmin, ymin, 0).tex(xmin / 64D, 0.75).endVertex();
+        buffer.pos(xmin, ymax, 0).tex(xmin / 64F, 1).endVertex();
+        buffer.pos(xmax, ymax, 0).tex(xmax / 64F, 1).endVertex();
+        buffer.pos(xmax, ymin, 0).tex(xmax / 64F, 0.75F).endVertex();
+        buffer.pos(xmin, ymin, 0).tex(xmin / 64F, 0.75F).endVertex();
         tess.draw();
 
-        GlStateManager.enableTexture();
-        GlStateManager.disableBlend();
-        GlStateManager.translated(0, 0, -0.1);
-        GlStateManager.color4f(1f, 1f, 1f, 1f);
-        GlStateManager.disableLighting();
+        RenderSystem.enableTexture();
+        RenderSystem.disableBlend();
+        RenderSystem.translated(0, 0, -0.1);
+        RenderSystem.color4f(1f, 1f, 1f, 1f);
+        RenderSystem.disableLighting();
 
         fontRenderer.drawString(s, -fontRenderer.getStringWidth(s) / 2F, 0, 0xffffff);
 
-        GlStateManager.enableLighting();
-        GlStateManager.popMatrix();
+        RenderSystem.enableLighting();
+        RenderSystem.popMatrix();
     }
 }

@@ -27,6 +27,8 @@ public abstract class BaseModule<T extends ModuleProperties<T>> extends ForgeReg
     public ModuleType<T> getModuleType() {
         return moduleType;
     }
+
+
 }
 
 

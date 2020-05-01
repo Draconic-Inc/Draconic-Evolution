@@ -4,18 +4,21 @@ import codechicken.lib.render.item.IItemRenderer;
 import codechicken.lib.util.TransformUtils;
 import com.brandon3055.draconicevolution.client.model.ModelReactorStabilizerCore;
 import com.brandon3055.draconicevolution.client.model.ModelReactorStabilizerRing;
+import com.google.common.collect.ImmutableMap;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.model.IModelState;
 
 /**
  * Created by brandon3055 on 21/11/2016.
  */
 public class RenderItemReactorPart implements IItemRenderer {
 
-    public static ModelReactorStabilizerCore modelBase = new ModelReactorStabilizerCore();
-    public static ModelReactorStabilizerCore modelBaseRotors = new ModelReactorStabilizerCore();
-    public static ModelReactorStabilizerRing modelRing = new ModelReactorStabilizerRing();
+//    public static ModelReactorStabilizerCore modelBase = new ModelReactorStabilizerCore();
+//    public static ModelReactorStabilizerCore modelBaseRotors = new ModelReactorStabilizerCore();
+//    public static ModelReactorStabilizerRing modelRing = new ModelReactorStabilizerRing();
 
     public RenderItemReactorPart() {
 //        modelBaseRotors.rotor1R.childModels.clear();
@@ -36,27 +39,32 @@ public class RenderItemReactorPart implements IItemRenderer {
 
     //endregion
 
-
     @Override
-    public void renderItem(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
+    public void renderItem(ItemStack stack, ItemCameraTransforms.TransformType transformType, MatrixStack mStack, IRenderTypeBuffer getter, int packedLight, int packedOverlay) {
 
     }
 
     @Override
-    public IModelState getTransforms() {
+    public ImmutableMap<ItemCameraTransforms.TransformType, TransformationMatrix> getTransforms() {
         return TransformUtils.DEFAULT_BLOCK;
     }
 
+    @Override
+    public boolean func_230044_c_() {
+        return false;
+    }
+
+
 //    @Override
 //    public void renderItem(ItemStack item, ItemCameraTransforms.TransformType transformType) {
-//        GlStateManager.pushMatrix();
+//        RenderSystem.pushMatrix();
 //        GlStateTracker.pushState();
-//        GlStateManager.translate(0.5, 0.5, 0.5);
+//        RenderSystem.translate(0.5, 0.5, 0.5);
 //
 ////        ResourceHelperDE.bindTexture(DETextures.REACTOR_STABILIZER_RING);
-////        GlStateManager.rotate(90, 1, 0, 0);
-////        GlStateManager.translate(0, -0.58, 0);
-////        GlStateManager.scale(0.95, 0.95, 0.95);
+////        RenderSystem.rotate(90, 1, 0, 0);
+////        RenderSystem.translate(0, -0.58, 0);
+////        RenderSystem.scale(0.95, 0.95, 0.95);
 //
 ////        RenderTileReactorComponent.renderStabilizer(25, 0, 1F, 0, true, -1);
 //
@@ -83,20 +91,20 @@ public class RenderItemReactorPart implements IItemRenderer {
 //                break;
 //            case 3:
 //                ResourceHelperDE.bindTexture(DETextures.REACTOR_STABILIZER);
-//                GlStateManager.rotate(30F, 0F, 0F, 1F);
+//                RenderSystem.rotate(30F, 0F, 0F, 1F);
 //                modelBase.rotor1R.render(0.0625F);
 //                modelBase.hub1.render(0.0625F);
-//                GlStateManager.rotate(60F, 0F, 0F, -1F);
+//                RenderSystem.rotate(60F, 0F, 0F, -1F);
 //                modelBase.hub2.render(0.0625F);
 //                modelBase.rotor2R.render(0.0625F);
 //                break;
 //            case 4:
 //                ResourceHelperDE.bindTexture(DETextures.REACTOR_STABILIZER_RING);
-//                GlStateManager.rotate(90F, 0F, 0F, 1F);
+//                RenderSystem.rotate(90F, 0F, 0F, 1F);
 //                modelRing.render(null, -30, 1, 1, 0, 0, 1F / 16F);
 //                break;
 //        }
 //        GlStateTracker.popState();
-//        GlStateManager.popMatrix();
+//        RenderSystem.popMatrix();
 //    }
 }

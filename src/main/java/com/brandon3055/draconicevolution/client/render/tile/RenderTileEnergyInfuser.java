@@ -2,11 +2,10 @@ package com.brandon3055.draconicevolution.client.render.tile;
 
 import com.brandon3055.brandonscore.client.render.TESRBase;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyInfuser;
-import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
-import com.brandon3055.draconicevolution.utils.DETextures;
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
@@ -33,11 +32,15 @@ public class RenderTileEnergyInfuser extends TESRBase<TileEnergyInfuser> {
 
     private static float pxl = 1F / 128F;
 
-    @Override
-    public void render(TileEnergyInfuser te, double x, double y, double z, float partialTicks, int destroyStage) {
-        GlStateManager.pushMatrix();
+    public RenderTileEnergyInfuser(TileEntityRendererDispatcher rendererDispatcherIn) {
+        super(rendererDispatcherIn);
+    }
 
-        GlStateManager.translatef((float) x, (float) y, (float) z);
+    //    @Override
+    public void render(TileEnergyInfuser te, double x, double y, double z, float partialTicks, int destroyStage) {
+        RenderSystem.pushMatrix();
+
+        RenderSystem.translatef((float) x, (float) y, (float) z);
 
         if (!te.running.get()) {
             partialTicks = 0;
@@ -45,18 +48,18 @@ public class RenderTileEnergyInfuser extends TESRBase<TileEnergyInfuser> {
 
         renderBlock(te, partialTicks);
 
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
     }
 
 
     public void renderBlock(TileEnergyInfuser tile, float partialTicks) {
         Tessellator tessellator = Tessellator.getInstance();
-        bindTexture(ResourceHelperDE.getResource(DETextures.ENERGY_INFUSER_DECORATION));
+//        bindTexture(ResourceHelperDE.getResource(DETextures.ENERGY_INFUSER_DECORATION));
 
 //        tessellator.setColorRGBA(255, 255, 255, 255);
 
-        GlStateManager.enableAlphaTest();
-        GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
+        RenderSystem.enableAlphaTest();
+        RenderSystem.alphaFunc(GL11.GL_GREATER, 0.1F);
 
         drawWings(tessellator, tile, partialTicks);
         renderChargingItem(tile, partialTicks);
@@ -65,39 +68,39 @@ public class RenderTileEnergyInfuser extends TESRBase<TileEnergyInfuser> {
 
 
     private void drawWings(Tessellator tess, TileEnergyInfuser tile, float partialTicks) {
-        GlStateManager.pushMatrix();
+        RenderSystem.pushMatrix();
         float srcXMin = 0F;        //iicon.getMinU();
         float srcYMin = 0F * pxl;  //iicon.getMaxU();
         float srcXMax = 92F * pxl;  //iicon.getMinV();
         float srcYMax = 51F * pxl; //iicon.getMaxV();
 
-        GlStateManager.translatef(-0.64F, 0.365F, 0.51F);
-        GlStateManager.scalef(0.7F, 0.7F, 0.7F);
+        RenderSystem.translatef(-0.64F, 0.365F, 0.51F);
+        RenderSystem.scalef(0.7F, 0.7F, 0.7F);
         float xTrans = 0.025F;
 
 
         {
-            GlStateManager.translatef(1.62F, 0F, -xTrans);
-            GlStateManager.rotatef(tile.rotation + partialTicks, 0F, 1F, 0F);
-            GlStateManager.translatef(-1.62F, 0F, xTrans);
+            RenderSystem.translatef(1.62F, 0F, -xTrans);
+            RenderSystem.rotatef(tile.rotation + partialTicks, 0F, 1F, 0F);
+            RenderSystem.translatef(-1.62F, 0F, xTrans);
             render2DWithThicness(tess, srcXMax, srcYMin, srcXMin, srcYMax, 92, 51, 0.0625F);
         }
         {
-            GlStateManager.translatef(1.62F, 0F, -xTrans);
-            GlStateManager.rotatef(90, 0F, 1F, 0F);
-            GlStateManager.translatef(-1.62F, 0F, xTrans);
+            RenderSystem.translatef(1.62F, 0F, -xTrans);
+            RenderSystem.rotatef(90, 0F, 1F, 0F);
+            RenderSystem.translatef(-1.62F, 0F, xTrans);
             render2DWithThicness(tess, srcXMax, srcYMin, srcXMin, srcYMax, 92, 51, 0.0625F);
         }
         {
-            GlStateManager.translatef(1.62F, 0F, -xTrans);
-            GlStateManager.rotatef(90, 0F, 1F, 0F);
-            GlStateManager.translatef(-1.62F, 0F, xTrans);
+            RenderSystem.translatef(1.62F, 0F, -xTrans);
+            RenderSystem.rotatef(90, 0F, 1F, 0F);
+            RenderSystem.translatef(-1.62F, 0F, xTrans);
             render2DWithThicness(tess, srcXMax, srcYMin, srcXMin, srcYMax, 92, 51, 0.0625F);
         }
         {
-            GlStateManager.translatef(1.62F, 0F, -xTrans);
-            GlStateManager.rotatef(90, 0F, 1F, 0F);
-            GlStateManager.translatef(-1.62F, 0F, xTrans);
+            RenderSystem.translatef(1.62F, 0F, -xTrans);
+            RenderSystem.rotatef(90, 0F, 1F, 0F);
+            RenderSystem.translatef(-1.62F, 0F, xTrans);
             render2DWithThicness(tess, srcXMax, srcYMin, srcXMin, srcYMax, 92, 51, 0.0625F);
         }
         {
@@ -105,15 +108,15 @@ public class RenderTileEnergyInfuser extends TESRBase<TileEnergyInfuser> {
             srcYMin = 51F * pxl;  //iicon.getMaxU();
             srcXMax = 33F * pxl;  //iicon.getMinV();
             srcYMax = 83F * pxl; //iicon.getMaxV();
-            GlStateManager.translatef(1.26F, 0F, 0.31F);
-            GlStateManager.translatef(0F, 0F, 0F);
-            GlStateManager.rotatef(90, 0F, 1F, 0F);
-            GlStateManager.rotatef(90, 1F, 0F, 0F);
-            GlStateManager.translatef(-0F, 0F, 0F);
-            GlStateManager.scalef(1.4F, 1.4F, 1.4F);
+            RenderSystem.translatef(1.26F, 0F, 0.31F);
+            RenderSystem.translatef(0F, 0F, 0F);
+            RenderSystem.rotatef(90, 0F, 1F, 0F);
+            RenderSystem.rotatef(90, 1F, 0F, 0F);
+            RenderSystem.translatef(-0F, 0F, 0F);
+            RenderSystem.scalef(1.4F, 1.4F, 1.4F);
             render2DWithThicness(tess, srcXMax, srcYMin, srcXMin, srcYMax, 32, 32, 0.0625F);
         }
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
     }
 
     public static void render2DWithThicness(Tessellator tess, float maxU, float minV, float minU, float maxV, int width, int height, float thickness) {
@@ -143,30 +146,30 @@ public class RenderTileEnergyInfuser extends TESRBase<TileEnergyInfuser> {
             d = k * pix;
             f7 = (float) k / (float) width;
             f8 = maxU + (minU - maxU) * f7 - f5;
-            buffer.pos(d, 0.0D, (double) (0.0F - thickness)).tex((double) f8, (double) maxV).endVertex();
-            buffer.pos(d, 0.0D, 0.0D).tex((double) f8, (double) maxV).endVertex();
-            buffer.pos(d, height * pix, 0.0D).tex((double) f8, (double) minV).endVertex();
-            buffer.pos(d, height * pix, (double) (0.0F - thickness)).tex((double) f8, (double) minV).endVertex();
+            buffer.pos(d, 0.0D, (double) (0.0F - thickness)).tex(f8, maxV).endVertex();
+            buffer.pos(d, 0.0D, 0.0D).tex(f8, maxV).endVertex();
+            buffer.pos(d, height * pix, 0.0D).tex(f8, minV).endVertex();
+            buffer.pos(d, height * pix, (double) (0.0F - thickness)).tex(f8, minV).endVertex();
         }
 
         for (k = 0; k < width; ++k) {
             d = (k + 1) * pix;
             f7 = (float) k / (float) width;
             f8 = maxU + (minU - maxU) * f7 - f5;
-            buffer.pos(d, height * pix, (double) (0.0F - thickness)).tex((double) f8, (double) minV).endVertex();
-            buffer.pos(d, height * pix, 0.0D).tex((double) f8, (double) minV).endVertex();
-            buffer.pos(d, 0.0D, 0.0D).tex((double) f8, (double) maxV).endVertex();
-            buffer.pos(d, 0.0D, (double) (0.0F - thickness)).tex((double) f8, (double) maxV).endVertex();
+            buffer.pos(d, height * pix, (double) (0.0F - thickness)).tex(f8, minV).endVertex();
+            buffer.pos(d, height * pix, 0.0D).tex(f8, minV).endVertex();
+            buffer.pos(d, 0.0D, 0.0D).tex(f8, maxV).endVertex();
+            buffer.pos(d, 0.0D, (double) (0.0F - thickness)).tex(f8, maxV).endVertex();
         }
 
         for (k = 0; k < height; ++k) {
             d = (k + 1) * pix;
             f7 = (float) k / (float) height;
             f8 = maxV + (minV - maxV) * f7 - f6;
-            buffer.pos(0.0D, d, 0.0D).tex((double) maxU, (double) f8).endVertex();
-            buffer.pos(width * pix, d, 0.0D).tex((double) minU, (double) f8).endVertex();
-            buffer.pos(width * pix, d, (double) (0.0F - thickness)).tex((double) minU, (double) f8).endVertex();
-            buffer.pos(0.0D, d, (double) (0.0F - thickness)).tex((double) maxU, (double) f8).endVertex();
+            buffer.pos(0.0D, d, 0.0D).tex(maxU, f8).endVertex();
+            buffer.pos(width * pix, d, 0.0D).tex(minU, f8).endVertex();
+            buffer.pos(width * pix, d, (double) (0.0F - thickness)).tex(minU, f8).endVertex();
+            buffer.pos(0.0D, d, (double) (0.0F - thickness)).tex(maxU, f8).endVertex();
         }
 
 
@@ -174,10 +177,10 @@ public class RenderTileEnergyInfuser extends TESRBase<TileEnergyInfuser> {
             d = k * pix;
             f7 = (float) k / (float) height;
             f8 = maxV + (minV - maxV) * f7 - f6;
-            buffer.pos(width * pix, d, 0.0D).tex((double) minU, (double) f8).endVertex();
-            buffer.pos(0.0D, d, 0.0D).tex((double) maxU, (double) f8).endVertex();
-            buffer.pos(0.0D, d, (double) (0.0F - thickness)).tex((double) maxU, (double) f8).endVertex();
-            buffer.pos(width * pix, d, (double) (0.0F - thickness)).tex((double) minU, (double) f8).endVertex();
+            buffer.pos(width * pix, d, 0.0D).tex(minU, f8).endVertex();
+            buffer.pos(0.0D, d, 0.0D).tex(maxU, f8).endVertex();
+            buffer.pos(0.0D, d, (double) (0.0F - thickness)).tex(maxU, f8).endVertex();
+            buffer.pos(width * pix, d, (double) (0.0F - thickness)).tex(minU, f8).endVertex();
         }
 
         tess.draw();
@@ -186,25 +189,25 @@ public class RenderTileEnergyInfuser extends TESRBase<TileEnergyInfuser> {
 
     public void renderChargingItem(TileEnergyInfuser tile, float partialTicks) {
         if (!tile.itemHandler.getStackInSlot(0).isEmpty()) {
-            GlStateManager.pushMatrix();
+            RenderSystem.pushMatrix();
 //
             ItemStack stack = tile.itemHandler.getStackInSlot(0);
 
 //
-            GlStateManager.translatef(0.5F, 0.7F, 0.5F);
-            GlStateManager.scalef(0.5F, 0.5F, 0.5F);
+            RenderSystem.translatef(0.5F, 0.7F, 0.5F);
+            RenderSystem.scalef(0.5F, 0.5F, 0.5F);
 //            if (tile.getWorldObj().getWorldInfo().getGameRulesInstance().getGameRuleBooleanValue("doDaylightCycle"))
 //                GL11.rotate(tile.getWorldObj().getWorldTime(), 0F, -1F, 0F);
 //            else
-            GlStateManager.rotatef(tile.rotation + partialTicks, 0F, -1F, 0F);
+            RenderSystem.rotatef(tile.rotation + partialTicks, 0F, -1F, 0F);
 //            if (stack.getItem() instanceof BlockItem)
 //            {
 //                GL11.scale(1F, 1F, 1F);
 //                GL11.translate(0F, 0.045F, 0.0f);
 //            }
 //
-            renderItem(stack);
-            GlStateManager.popMatrix();
+//            renderItem(stack);
+            RenderSystem.popMatrix();
         }
     }
 }

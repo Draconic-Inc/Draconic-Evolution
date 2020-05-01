@@ -438,7 +438,7 @@ public abstract class TileCrystalBase extends TileBCore implements ITilePlaceLis
 //        if (!world.isRemote) {
 //            player.openGui(DraconicEvolution.instance, GuiHandler.GUIID_ENERGY_CRYSTAL, world, pos.getX(), pos.getY(), pos.getZ());
 //        }
-        return false;
+        return true;
     }
 
     public String getUnlocalizedName() {
@@ -473,7 +473,7 @@ public abstract class TileCrystalBase extends TileBCore implements ITilePlaceLis
         double charge = MathUtils.round(((double) getEnergyStored() / (double) getMaxEnergyStored()) * 100D, 100);
         displayList.add(TextFormatting.BLUE + I18n.format("eNet.de.hudCharge.info") + ": " + Utils.formatNumber(getEnergyStored()) + " / " + Utils.formatNumber(getMaxEnergyStored()) + " RF [" + charge + "%]");
         displayList.add(TextFormatting.GREEN + I18n.format("eNet.de.hudLinks.info") + ": " + getLinks().size() + " / " + maxLinks() + "");
-//        if (BrandonsCore.proxy.getClientPlayer().isSneaking()) {
+//        if (BrandonsCore.proxy.getClientPlayer().isShiftKeyDown()) {
 //            for (BlockPos lPos : getLinks()) {
 //                displayList.add(TextFormatting.GRAY + " " + String.format("[x:%s, y:%s, z:%s]", lPos.getX(), lPos.getY(), lPos.getZ()));
 //            }

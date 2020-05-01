@@ -6,9 +6,16 @@ import com.brandon3055.draconicevolution.client.render.particle.CustomFlameParti
 import com.brandon3055.draconicevolution.client.render.particle.ParticleEnergy;
 import com.brandon3055.draconicevolution.client.render.particle.ParticleEnergyCoreFX;
 import com.brandon3055.draconicevolution.client.render.particle.ParticleLineIndicator;
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.ActiveRenderInfo;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.settings.ParticleStatus;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.crash.CrashReport;
@@ -75,18 +82,6 @@ public class DEParticles {
         }
         return null;
     }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

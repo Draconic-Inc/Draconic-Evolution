@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.items.tools;
 
 import com.brandon3055.brandonscore.lib.PairKV;
 import com.brandon3055.draconicevolution.api.itemconfig.ToolConfigHelper;
-import com.brandon3055.draconicevolution.utils.DETextures;
+import com.brandon3055.draconicevolution.client.DETextures;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -13,8 +13,6 @@ import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-
-import java.util.Set;
 
 /**
  * Created by brandon3055 on 2/06/2016.
@@ -89,7 +87,7 @@ public class WyvernShovel extends MiningToolBase {
             modifyEnergy(stack, -energyPerOperation);
         }
 
-        if (player.isSneaking()) {
+        if (player.isShiftKeyDown()) {
             return ActionResultType.SUCCESS;
         }
 

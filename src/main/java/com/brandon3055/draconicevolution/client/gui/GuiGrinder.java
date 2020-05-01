@@ -30,27 +30,17 @@ import static net.minecraft.util.text.TextFormatting.GRAY;
  */
 public class GuiGrinder extends ModularGuiContainer<ContainerBCTile<TileGrinder>> {
 
-    private PlayerEntity player;
     private TileGrinder tile;
-//    private LayoutFactory<TileGrinder> factory; //Temp for reload button
 
     protected GuiToolkit<GuiGrinder> toolkit = new GuiToolkit<>(this, EXTRA_WIDE_TALL);
 
     public GuiGrinder(ContainerBCTile<TileGrinder> container, PlayerInventory playerInventory, ITextComponent title) {
         super(container, playerInventory, title);
-        this.player = playerInventory.player;
         this.tile = container.tile;
-//        this.factory = container.factory;
     }
 
     @Override
     public void addElements(GuiElementManager manager) {
-//        manager.addChild(new GuiButton("Reload").setSize(50, 16).setVanillaButtonRender(true).onPressed(() -> minecraft.displayGuiScreen(new GuiGrinder(player, tile, factory))));
-
-        //Show Kill Zone
-        //Kill Zone Size
-//        Grinder Grinding Logic!
-
         TBasicMachine template = toolkit.loadTemplate(new TBasicMachine(this, tile, container.getSlotLayout()));
         GuiElement bg = template.background;
 
@@ -68,7 +58,6 @@ public class GuiGrinder extends ModularGuiContainer<ContainerBCTile<TileGrinder>
         filterUI.addBackGroundChild(filterBG);
 
         template.playerSlots.setMaxXPos(bg.maxXPos() - 7, false);
-//        template.playerSlots.setMaxXPos(filterUI.maxXPos() - 2, false);
         GuiBorderedRect invBG = new GuiBorderedRect().set3DGetters(Palette.SubItem::fill, Palette.SubItem::accentLight, Palette.SubItem::accentDark);
         invBG.setRelPos(template.playerSlots, -2, -2).setSize(template.playerSlots.xSize() + 4, template.playerSlots.ySize() + 4);
         template.playerSlots.addBackGroundChild(invBG);
@@ -154,7 +143,6 @@ public class GuiGrinder extends ModularGuiContainer<ContainerBCTile<TileGrinder>
 
         //Info Panel
         template.infoPanel.addLabeledValue(GOLD + I18n.format("gui.de.generator.stored_xp"), 6, 11, () -> GRAY + "" + tile.storedXP.get() + " " + I18n.format("gui.de.generator.stored_xp.raw"), true);
-
     }
 
     private String getAOEString() {

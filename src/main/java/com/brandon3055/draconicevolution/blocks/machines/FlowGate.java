@@ -108,7 +108,7 @@ public class FlowGate extends BlockBCore/* implements IRegistryOverride*/ {
 //    @Override
 //    public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
 //        Direction facing = RotationUtils.getPlacedRotation(pos, placer);
-//        if (placer.isSneaking()) {
+//        if (placer.isShiftKeyDown()) {
 //            facing = facing.getOpposite();
 //        }
 //        world.setBlockState(pos, state.withProperty(FACING, facing).withProperty(TYPE, (stack.getItemDamage() & 8) > 0 ? "fluid" : "flux"), 2);

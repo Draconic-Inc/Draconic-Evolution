@@ -16,6 +16,7 @@ import com.brandon3055.draconicevolution.client.render.shaders.DEShaders;
 import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
 import com.brandon3055.draconicevolution.handlers.DESoundHandler;
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
@@ -104,34 +105,34 @@ public class ExplosionFX extends BCParticle {
         age++;
     }
 
-    @Override
+//    @Override
     public void renderParticle(BufferBuilder buffer, ActiveRenderInfo entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
-        Vec3D pos = new Vec3D(posX - interpPosX, posY - interpPosY, posZ - interpPosZ);
-        CCRenderState ccrs = CCRenderState.instance();
-        float ttl = 1F - (((float) age + partialTicks) / (float) maxAge);
-        ttl = Math.min(1, ttl * 5);
-
-        double od = 1200;
-        double id = radius / 100D;
-
-        GlStateManager.color4f(1F, 1F, 1F, 0.15F * ttl * Math.min(1, maxAge / 25F));
-        ccrs.startDrawing(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX);
-        for (int i = 0; i < 8; i++) {
-            Matrix4 mat = RenderUtils.getMatrix(pos.toVector3(), new Rotation(0, 0, 1, 0), 1).apply(new Scale(od, id * i, od));
-            model_inv.render(ccrs, mat);
-            model.render(ccrs, mat);
-            od += id * i;
-        }
-        ccrs.draw();
-        GlStateManager.color4f(1F, 1F, 1F, 1F);
-
-        if (!coreEffect.isDead()) {
-            coreEffect.render(pos, ccrs, partialTicks);
-        }
-
-        for (EffectPart part : effectParts) {
-            part.render(pos, ccrs, partialTicks);
-        }
+//        Vec3D pos = new Vec3D(posX - interpPosX, posY - interpPosY, posZ - interpPosZ);
+//        CCRenderState ccrs = CCRenderState.instance();
+//        float ttl = 1F - (((float) age + partialTicks) / (float) maxAge);
+//        ttl = Math.min(1, ttl * 5);
+//
+//        double od = 1200;
+//        double id = radius / 100D;
+//
+//        RenderSystem.color4f(1F, 1F, 1F, 0.15F * ttl * Math.min(1, maxAge / 25F));
+//        ccrs.startDrawing(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX);
+//        for (int i = 0; i < 8; i++) {
+//            Matrix4 mat = RenderUtils.getMatrix(pos.toVector3(), new Rotation(0, 0, 1, 0), 1).apply(new Scale(od, id * i, od));
+//            model_inv.render(ccrs, mat);
+//            model.render(ccrs, mat);
+//            od += id * i;
+//        }
+//        ccrs.draw();
+//        RenderSystem.color4f(1F, 1F, 1F, 1F);
+//
+//        if (!coreEffect.isDead()) {
+//            coreEffect.render(pos, ccrs, partialTicks);
+//        }
+//
+//        for (EffectPart part : effectParts) {
+//            part.render(pos, ccrs, partialTicks);
+//        }
     }
 
     @Override
@@ -142,28 +143,28 @@ public class ExplosionFX extends BCParticle {
     public static final IGLFXHandler FX_HANDLER = new IGLFXHandler() {
         @Override
         public void preDraw(int layer, BufferBuilder vertexbuffer, Entity entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
-            GlStateManager.color4f(1F, 1F, 1F, 1F);
-            GlStateManager.depthMask(false);
-            GlStateManager.alphaFunc(GL11.GL_GREATER, 0F);
-            GlStateManager.disableTexture();
+            RenderSystem.color4f(1F, 1F, 1F, 1F);
+            RenderSystem.depthMask(false);
+            RenderSystem.alphaFunc(GL11.GL_GREATER, 0F);
+            RenderSystem.disableTexture();
 
             if (!DEShaders.useShaders()) {
-                GlStateManager.texParameter(3553, 10242, 10497.0F);
-                GlStateManager.texParameter(3553, 10243, 10497.0F);
-                GlStateManager.enableBlend();
-                GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
+                RenderSystem.texParameter(3553, 10242, 10497);
+                RenderSystem.texParameter(3553, 10243, 10497);
+                RenderSystem.enableBlend();
+                RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
             }
         }
 
         @Override
         public void postDraw(int layer, BufferBuilder vertexbuffer, Tessellator tessellator) {
-            GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
+            RenderSystem.alphaFunc(GL11.GL_GREATER, 0.1F);
 
-            GlStateManager.enableTexture();
+            RenderSystem.enableTexture();
 
-            GlStateManager.enableCull();
+            RenderSystem.enableCull();
             if (!DEShaders.useShaders()) {
-                GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+                RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
             }
         }
     };

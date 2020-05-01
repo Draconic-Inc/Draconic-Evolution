@@ -6,13 +6,17 @@ import codechicken.lib.util.TransformUtils;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.client.render.shaders.DEShaders;
 import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.google.common.collect.ImmutableMap;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.client.renderer.entity.model.GenericHeadModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.model.IModelState;
+
 
 /**
  * Created by brandon3055 on 18/04/2017.
@@ -43,49 +47,65 @@ public class RenderItemEnderEnergyManipulator implements IItemRenderer {
     //endregion
 
     @Override
-    public void renderItem(ItemStack item, ItemCameraTransforms.TransformType transformType) {
-        Minecraft mc = Minecraft.getInstance();
-        GlStateManager.pushMatrix();
-        GlStateManager.translated(0.5, 0.5, 0.5);
+    public void renderItem(ItemStack stack, ItemCameraTransforms.TransformType transformType, MatrixStack mStack, IRenderTypeBuffer getter, int packedLight, int packedOverlay) {
 
-        if (transformType == ItemCameraTransforms.TransformType.FIXED) {
-            GlStateManager.rotated(180, 0, 1, 0);
-        }
-
-        renderSkull();
-
-        if (DEShaders.useShaders()) {
-            if (shaderProgram == null) {
-                shaderProgram = new ShaderProgram();
-                shaderProgram.attachShader(DEShaders.reactorShield);
-            }
-            shaderProgram.useShader(cache -> {
-                cache.glUniform1F("time", ((float) ClientEventHandler.elapsedTicks + mc.getRenderPartialTicks()) / -100F);
-                cache.glUniform1F("intensity", 0.09F);
-            });
-            renderSkull();
-            shaderProgram.useShader(cache -> {
-                cache.glUniform1F("time", ((float) ClientEventHandler.elapsedTicks + mc.getRenderPartialTicks()) / 100F);
-                cache.glUniform1F("intensity", 0.02F);
-            });
-            renderSkull();
-            shaderProgram.releaseShader();
-        }
-
-        GlStateManager.popMatrix();
     }
 
     @Override
-    public IModelState getTransforms() {
-        return TransformUtils.DEFAULT_ITEM;
+    public ImmutableMap<ItemCameraTransforms.TransformType, TransformationMatrix> getTransforms() {
+        return TransformUtils.DEFAULT_BLOCK;
     }
 
-    private void renderSkull() {
-        GlStateManager.pushMatrix();
-        ResourceHelperDE.bindTexture(WITHER_SKELETON_TEXTURES);
-        GlStateManager.scalef(-1.0F, -1.0F, 1.0F);
-        GlStateManager.translated(0, 0.25, 0);
-        skeletonHead.func_217104_a(0, 0, 0, 180, 0, 0.0625F);
-        GlStateManager.popMatrix();
+    @Override
+    public boolean func_230044_c_() {
+        return false;
     }
+
+
+//    @Override
+//    public void renderItem(ItemStack item, ItemCameraTransforms.TransformType transformType) {
+//        Minecraft mc = Minecraft.getInstance();
+//        RenderSystem.pushMatrix();
+//        RenderSystem.translated(0.5, 0.5, 0.5);
+//
+//        if (transformType == ItemCameraTransforms.TransformType.FIXED) {
+//            RenderSystem.rotated(180, 0, 1, 0);
+//        }
+//
+//        renderSkull();
+//
+//        if (DEShaders.useShaders()) {
+//            if (shaderProgram == null) {
+//                shaderProgram = new ShaderProgram();
+//                shaderProgram.attachShader(DEShaders.reactorShield);
+//            }
+//            shaderProgram.useShader(cache -> {
+//                cache.glUniform1F("time", ((float) ClientEventHandler.elapsedTicks + mc.getRenderPartialTicks()) / -100F);
+//                cache.glUniform1F("intensity", 0.09F);
+//            });
+//            renderSkull();
+//            shaderProgram.useShader(cache -> {
+//                cache.glUniform1F("time", ((float) ClientEventHandler.elapsedTicks + mc.getRenderPartialTicks()) / 100F);
+//                cache.glUniform1F("intensity", 0.02F);
+//            });
+//            renderSkull();
+//            shaderProgram.releaseShader();
+//        }
+//
+//        RenderSystem.popMatrix();
+//    }
+//
+//    @Override
+//    public IModelState getTransforms() {
+//        return TransformUtils.DEFAULT_ITEM;
+//    }
+//
+//    private void renderSkull() {
+//        RenderSystem.pushMatrix();
+//        ResourceHelperDE.bindTexture(WITHER_SKELETON_TEXTURES);
+//        RenderSystem.scalef(-1.0F, -1.0F, 1.0F);
+//        RenderSystem.translated(0, 0.25, 0);
+//        skeletonHead.func_217104_a(0, 0, 0, 180, 0, 0.0625F);
+//        RenderSystem.popMatrix();
+//    }
 }

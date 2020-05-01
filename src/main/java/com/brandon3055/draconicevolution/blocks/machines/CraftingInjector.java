@@ -1,6 +1,5 @@
 package com.brandon3055.draconicevolution.blocks.machines;
 
-import codechicken.lib.block.property.PropertyString;
 import codechicken.lib.inventory.InventoryUtils;
 import com.brandon3055.brandonscore.blocks.BlockBCore;
 import com.brandon3055.brandonscore.lib.ChatHelper;
@@ -19,6 +18,7 @@ import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -123,24 +123,24 @@ public class CraftingInjector extends BlockBCore implements /*ITileEntityProvide
     }
 
     @Override
-    public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
         if (world.isRemote) {
-            return true;
+            return ActionResultType.SUCCESS;
         }
 
         TileEntity tile = world.getTileEntity(pos);
 
         if (!(tile instanceof TileCraftingInjector)) {
-            return false;
+            return ActionResultType.FAIL;
         }
 
         TileCraftingInjector craftingPedestal = (TileCraftingInjector) tile;
 
-        if (player.isSneaking()) {
+        if (player.isShiftKeyDown()) {
             craftingPedestal.singleItem.set(!craftingPedestal.singleItem.get());
             ChatHelper.indexedTrans(player, "msg.craftingInjector.singleItem" + (craftingPedestal.singleItem.get() ? "On" : "Off") + ".txt", -30553055);
             craftingPedestal.getDataManager().detectAndSendChanges();
-            return true;
+            return ActionResultType.SUCCESS;
         }
 
         if (!craftingPedestal.itemHandler.getStackInSlot(0).isEmpty()) {
@@ -158,7 +158,7 @@ public class CraftingInjector extends BlockBCore implements /*ITileEntityProvide
             player.setHeldItem(Hand.MAIN_HAND, InventoryUtils.insertItem(craftingPedestal.itemHandler, stack, false));
         }
 
-        return true;
+        return ActionResultType.SUCCESS;
     }
 
 //    @Override

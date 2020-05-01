@@ -11,6 +11,7 @@ import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.entity.EntityLootCore;
 import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -35,13 +36,13 @@ public class RenderLootCore extends EntityRenderer<EntityLootCore> {
     }
 
 
-    @Override
+//    @Override
     public void doRender(EntityLootCore entity, double x, double y, double z, float entityYaw, float partialTicks) {
         ResourceHelperDE.bindTexture("textures/items/loot_core.png");
 
         CCRenderState ccrs = CCRenderState.instance();
         ccrs.reset();
-        ccrs.startDrawing(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_NORMAL);
+//        ccrs.startDrawing(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_NORMAL);
         float yOffset = MathHelper.sin(((float) ClientEventHandler.elapsedTicks + partialTicks) / 10.0F) * 0.1F + 0.1F;
         Matrix4 pearlMat = RenderUtils.getMatrix(new Vector3(x, y + (entity.getHeight() / 2) + yOffset, z), new Rotation(((float) (ClientEventHandler.elapsedTicks + entity.timeOffset) + partialTicks) / 30F, new Vector3(entity.rotX, entity.rotY, 0).normalize()), 0.1);
         CCModelLibrary.icosahedron7.render(ccrs, pearlMat);
@@ -50,29 +51,29 @@ public class RenderLootCore extends EntityRenderer<EntityLootCore> {
         entity.isLooking = Minecraft.getInstance().getRenderManager().pointedEntity == entity;
 
         if (entity.lookAnimation > 0F) {
-            float f = this.renderManager.playerViewY;
-            float f1 = this.renderManager.playerViewX;
-            boolean flag1 = this.renderManager.options.thirdPersonView == 2;
-            renderLabel(entity, this.getFontRendererFromRenderManager(), (float) x, (float) y, (float) z, f, f1, flag1);
+//            float f = this.renderManager.playerViewY;
+//            float f1 = this.renderManager.playerViewX;
+//            boolean flag1 = this.renderManager.options.thirdPersonView == 2;
+//            renderLabel(entity, this.getFontRendererFromRenderManager(), (float) x, (float) y, (float) z, f, f1, flag1);
         }
     }
 
     public void renderLabel(EntityLootCore lootCore, FontRenderer renderer, float x, float y, float z, float viewY, float viewX, boolean thirdPerson) {
-        GlStateManager.pushMatrix();
-        GlStateManager.translated(x, y, z);
-        GlStateManager.normal3f(0.0F, 1.0F, 0.0F);
-        GlStateManager.rotatef(-viewY, 0.0F, 1.0F, 0.0F);
-        GlStateManager.rotatef((float) (thirdPerson ? -1 : 1) * viewX, 1.0F, 0.0F, 0.0F);
-        GlStateManager.scalef(-0.025F, -0.025F, 0.025F);
-        GlStateManager.disableLighting();
-        GlStateManager.depthMask(false);
-        GlStateManager.disableDepthTest();
-        GlStateManager.enableBlend();
-        GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        RenderSystem.pushMatrix();
+        RenderSystem.translated(x, y, z);
+        RenderSystem.normal3f(0.0F, 1.0F, 0.0F);
+        RenderSystem.rotatef(-viewY, 0.0F, 1.0F, 0.0F);
+        RenderSystem.rotatef((float) (thirdPerson ? -1 : 1) * viewX, 1.0F, 0.0F, 0.0F);
+        RenderSystem.scalef(-0.025F, -0.025F, 0.025F);
+        RenderSystem.disableLighting();
+        RenderSystem.depthMask(false);
+        RenderSystem.disableDepthTest();
+        RenderSystem.enableBlend();
+        RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 
         int rows = lootCore.displayMap.size();
 
-        GlStateManager.disableTexture();
+        RenderSystem.disableTexture();
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder vertexbuffer = tessellator.getBuffer();
         vertexbuffer.begin(7, DefaultVertexFormats.POSITION_COLOR);
@@ -92,15 +93,15 @@ public class RenderLootCore extends EntityRenderer<EntityLootCore> {
         renderBox(vertexbuffer, xPos, yPos, width, height, 0x60000000);
 
         tessellator.draw();
-        GlStateManager.enableTexture();
+        RenderSystem.enableTexture();
 
         if (lootCore.lookAnimation >= 1F) {
 
-            GlStateManager.pushMatrix();
-            GlStateManager.translated(-5, 0, 0);
-            GlStateManager.scaled(9, 9, 9);
-            GlStateManager.rotated(180, 1, 0, 0);
-            GlStateManager.popMatrix();
+            RenderSystem.pushMatrix();
+            RenderSystem.translated(-5, 0, 0);
+            RenderSystem.scaled(9, 9, 9);
+            RenderSystem.rotatef(180, 1, 0, 0);
+            RenderSystem.popMatrix();
             String name = I18n.format("entity.draconicevolution:lootCore.name");
             int w = renderer.getStringWidth(name);
             renderer.drawString(name, 11 - (w / 2F), (int) yPos - 10, -1);
@@ -108,24 +109,24 @@ public class RenderLootCore extends EntityRenderer<EntityLootCore> {
             int row = 0;
             for (ItemStack stack : lootCore.displayMap.keySet()) {
                 int rowY = (int) yPos + row * 8 + 4;
-                GlStateManager.pushMatrix();
-                GlStateManager.translated(-5, rowY, 0);
-                GlStateManager.scaled(9, 9, 9);
-                GlStateManager.rotated(180, 1, 0, 0);
-                Minecraft.getInstance().getItemRenderer().renderItem(stack, ItemCameraTransforms.TransformType.FIXED);
-                GlStateManager.popMatrix();
+                RenderSystem.pushMatrix();
+                RenderSystem.translated(-5, rowY, 0);
+                RenderSystem.scaled(9, 9, 9);
+                RenderSystem.rotatef(180, 1, 0, 0);
+//                Minecraft.getInstance().getItemRenderer().renderItem(stack, ItemCameraTransforms.TransformType.FIXED);
+                RenderSystem.popMatrix();
                 renderer.drawString("x" + lootCore.displayMap.get(stack), 0, -4 + rowY, -1);
                 row++;
             }
         }
 
 
-        GlStateManager.depthMask(true);
-        GlStateManager.enableDepthTest();
-        GlStateManager.enableLighting();
-        GlStateManager.disableBlend();
-        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        GlStateManager.popMatrix();
+        RenderSystem.depthMask(true);
+        RenderSystem.enableDepthTest();
+        RenderSystem.enableLighting();
+        RenderSystem.disableBlend();
+        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.popMatrix();
     }
 
     private void renderBox(BufferBuilder buffer, double x, double y, double width, double height, int colour) {
@@ -138,7 +139,7 @@ public class RenderLootCore extends EntityRenderer<EntityLootCore> {
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(EntityLootCore entity) {
+    public ResourceLocation getEntityTexture(EntityLootCore entity) {
         return ResourceHelperDE.getResource("textures/items/loot_core.png");
     }
 

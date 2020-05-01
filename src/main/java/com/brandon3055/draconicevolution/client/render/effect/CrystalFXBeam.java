@@ -9,15 +9,16 @@ import com.brandon3055.draconicevolution.api.energy.ICrystalLink;
 import com.brandon3055.draconicevolution.api.energy.IENetEffectTile;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
-import com.brandon3055.draconicevolution.utils.DETextures;
+import com.brandon3055.draconicevolution.client.DETextures;
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.particle.IParticleRenderType;
-import net.minecraft.client.renderer.ActiveRenderInfo;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
 
@@ -38,7 +39,7 @@ public class CrystalFXBeam<T extends TileEntity & IENetEffectTile> extends Cryst
         this.age = worldIn.rand.nextInt(1024);
         this.setPosition(tile.getBeamLinkPos(((TileEntity) linkTarget).getPos()));
         this.terminateSource = tile.renderBeamTermination();
-        this.linkTarget = linkTarget.getBeamLinkPos(((TileEntity) tile).getPos());
+        this.linkTarget = linkTarget.getBeamLinkPos(tile.getPos());
         this.terminateTarget = linkTarget.renderBeamTermination();
     }
 
@@ -62,19 +63,20 @@ public class CrystalFXBeam<T extends TileEntity & IENetEffectTile> extends Cryst
     }
 
     @Override
-    public void renderParticle(BufferBuilder buffer, ActiveRenderInfo entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
+    public void renderParticle(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks) {
         if (powerLevel <= 0 && !ClientEventHandler.playerHoldingWrench) {
             return;
         }
         BCProfiler.RENDER.start("crystal_beam_fx");
 
-        double scale = 0.1 * powerLevel;
+        float scale = 0.1F * powerLevel;
         if (ClientEventHandler.playerHoldingWrench) {
-            scale = 0.1;
+            scale = 0.1F;
         }
 
-        Vector3 source = new Vector3(posX - interpPosX, posY - interpPosY, posZ - interpPosZ);
-        Vector3 target = linkTarget.toVector3().subtract(interpPosX, interpPosY, interpPosZ);
+        Vec3d viewVec = renderInfo.getProjectedView();
+        Vector3 source = new Vector3(posX - viewVec.x, posY - viewVec.y, posZ - viewVec.z);
+        Vector3 target = linkTarget.toVector3().subtract(viewVec.x, viewVec.y, viewVec.z);
         Vector3 dirVec = source.copy().subtract(target).normalize();
         Vector3 planeA = dirVec.copy().perpendicular().normalize();
         Vector3 planeB = dirVec.copy().crossProduct(planeA);
@@ -84,8 +86,8 @@ public class CrystalFXBeam<T extends TileEntity & IENetEffectTile> extends Cryst
         planeB.multiply(scale);
         planeC.multiply(scale);
         planeD.multiply(scale);
-        double dist = 0.2 * Utils.getDistanceAtoB(new Vec3D(source), new Vec3D(target));
-        double anim = (ClientEventHandler.elapsedTicks + partialTicks) / -15D;
+        float dist = 0.2F * (float) Utils.getDistanceAtoB(new Vec3D(source), new Vec3D(target));
+        float anim = (ClientEventHandler.elapsedTicks + partialTicks) / -15F;
 
         Vector3 p1 = source.copy().add(planeA);
         Vector3 p2 = target.copy().add(planeA);
@@ -112,34 +114,43 @@ public class CrystalFXBeam<T extends TileEntity & IENetEffectTile> extends Cryst
         bufferQuad(buffer, p1, p2, p3, p4, anim, dist);
 
         scale *= 2;
-        double minU = 0.0;
-        double maxU = 0.53;
-        double minV = 0.0;
-        double maxV = 0.53;
+        float minU = 0.0F;
+        float maxU = 0.53F;
+        float minV = 0.0F;
+        float maxV = 0.53F;
+
 
         if (terminateSource) {
-            buffer.pos((source.x - rotationX * scale - rotationXY * scale), (source.y - rotationZ * scale), (source.z - rotationYZ * scale - rotationXZ * scale)).tex(maxU, maxV).endVertex();
-            buffer.pos((source.x - rotationX * scale + rotationXY * scale), (source.y + rotationZ * scale), (source.z - rotationYZ * scale + rotationXZ * scale)).tex(maxU, minV).endVertex();
-            buffer.pos((source.x + rotationX * scale + rotationXY * scale), (source.y + rotationZ * scale), (source.z + rotationYZ * scale + rotationXZ * scale)).tex(minU, minV).endVertex();
-            buffer.pos((source.x + rotationX * scale - rotationXY * scale), (source.y - rotationZ * scale), (source.z + rotationYZ * scale - rotationXZ * scale)).tex(minU, maxV).endVertex();
+            float viewX = (float) (this.posX - viewVec.getX());
+            float viewY = (float) (this.posY - viewVec.getY());
+            float viewZ = (float) (this.posZ - viewVec.getZ());
+            Vector3f[] renderVector = getRenderVectors(renderInfo, viewX, viewY, viewZ, scale);
+            buffer.pos(renderVector[0].getX(), renderVector[0].getY(), renderVector[0].getZ()).tex(maxU, maxV).endVertex();
+            buffer.pos(renderVector[1].getX(), renderVector[1].getY(), renderVector[1].getZ()).tex(maxU, minV).endVertex();
+            buffer.pos(renderVector[2].getX(), renderVector[2].getY(), renderVector[2].getZ()).tex(minU, minV).endVertex();
+            buffer.pos(renderVector[3].getX(), renderVector[3].getY(), renderVector[3].getZ()).tex(minU, maxV).endVertex();
         }
 
         if (terminateTarget) {
-            buffer.pos((target.x - rotationX * scale - rotationXY * scale), (target.y - rotationZ * scale), (target.z - rotationYZ * scale - rotationXZ * scale)).tex(maxU, maxV).endVertex();
-            buffer.pos((target.x - rotationX * scale + rotationXY * scale), (target.y + rotationZ * scale), (target.z - rotationYZ * scale + rotationXZ * scale)).tex(maxU, minV).endVertex();
-            buffer.pos((target.x + rotationX * scale + rotationXY * scale), (target.y + rotationZ * scale), (target.z + rotationYZ * scale + rotationXZ * scale)).tex(minU, minV).endVertex();
-            buffer.pos((target.x + rotationX * scale - rotationXY * scale), (target.y - rotationZ * scale), (target.z + rotationYZ * scale - rotationXZ * scale)).tex(minU, maxV).endVertex();
+            float viewX = (float) (this.linkTarget.x - viewVec.getX());
+            float viewY = (float) (this.linkTarget.y - viewVec.getY());
+            float viewZ = (float) (this.linkTarget.z - viewVec.getZ());
+            Vector3f[] renderVector = getRenderVectors(renderInfo, viewX, viewY, viewZ, scale);
+            buffer.pos(renderVector[0].getX(), renderVector[0].getY(), renderVector[0].getZ()).tex(maxU, maxV).endVertex();
+            buffer.pos(renderVector[1].getX(), renderVector[1].getY(), renderVector[1].getZ()).tex(maxU, minV).endVertex();
+            buffer.pos(renderVector[2].getX(), renderVector[2].getY(), renderVector[2].getZ()).tex(minU, minV).endVertex();
+            buffer.pos(renderVector[3].getX(), renderVector[3].getY(), renderVector[3].getZ()).tex(minU, maxV).endVertex();
         }
 
         BCProfiler.RENDER.stop();
     }
 
-    private void bufferQuad(BufferBuilder buffer, Vector3 p1, Vector3 p2, Vector3 p3, Vector3 p4, double anim, double dist) {
+    private void bufferQuad(IVertexBuilder buffer, Vector3 p1, Vector3 p2, Vector3 p3, Vector3 p4, float anim, float dist) {
         BCProfiler.RENDER.start("buffer_quad");
-        buffer.pos(p1.x, p1.y, p1.z).tex(0.5, anim).endVertex();
-        buffer.pos(p2.x, p2.y, p2.z).tex(0.5, dist + anim).endVertex();
-        buffer.pos(p4.x, p4.y, p4.z).tex(1.0, dist + anim).endVertex();
-        buffer.pos(p3.x, p3.y, p3.z).tex(1.0, anim).endVertex();
+        buffer.pos(p1.x, p1.y, p1.z).tex(0.5F, anim).endVertex();
+        buffer.pos(p2.x, p2.y, p2.z).tex(0.5F, dist + anim).endVertex();
+        buffer.pos(p4.x, p4.y, p4.z).tex(1.0F, dist + anim).endVertex();
+        buffer.pos(p3.x, p3.y, p3.z).tex(1.0F, anim).endVertex();
         BCProfiler.RENDER.stop();
     }
 
@@ -163,18 +174,18 @@ public class CrystalFXBeam<T extends TileEntity & IENetEffectTile> extends Cryst
 
         @Override
         public void beginRender(BufferBuilder builder, TextureManager p_217600_2_) {
-            GlStateManager.color4f(1.0F, green, 1.0F, 1.0F);
-            GlStateManager.depthMask(false);
-            GlStateManager.texParameter(3553, 10242, 10497.0F);
-            GlStateManager.texParameter(3553, 10243, 10497.0F);
-            GlStateManager.disableCull();
-            GlStateManager.alphaFunc(GL11.GL_GREATER, 0.003921569f);
             ResourceHelperDE.bindTexture(texture);
-            GlStateManager.enableBlend();
-            GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
+            RenderSystem.color4f(1.0F, green, 1.0F, 1.0F);
+
+            RenderSystem.disableCull();
+            RenderSystem.depthMask(false);
+            RenderSystem.alphaFunc(516, 0.003921569F);
+            RenderSystem.enableBlend();
+            RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
+            RenderSystem.glMultiTexCoord2f(0x84c2, 240.0F, 240.0F); //Lightmap
 
             if (ClientEventHandler.playerHoldingWrench) {
-                GlStateManager.color4f(0, 0, 1, 1);
+                RenderSystem.color4f(0, 0, 1, 1);
             }
 
             builder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
@@ -183,7 +194,6 @@ public class CrystalFXBeam<T extends TileEntity & IENetEffectTile> extends Cryst
         @Override
         public void finishRender(Tessellator tessellator) {
             tessellator.draw();
-            GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
         }
     }
 }

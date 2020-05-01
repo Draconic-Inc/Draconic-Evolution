@@ -18,9 +18,9 @@ import com.brandon3055.draconicevolution.handlers.DEEventHandler;
 import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
 import com.brandon3055.draconicevolution.handlers.DESoundHandler;
 import com.brandon3055.draconicevolution.init.RecipeManager;
-import com.brandon3055.draconicevolution.utils.DETextures;
+import com.brandon3055.draconicevolution.client.DETextures;
 import com.google.common.collect.Lists;
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.renderer.Tessellator;
@@ -453,20 +453,20 @@ public class TileCraftingCore extends TileBCore implements IFusionCraftingInvent
             Tessellator tessellator = Tessellator.getInstance();
 
             //Pre-Render
-            GlStateManager.enableBlend();
-            GlStateManager.disableLighting();
-            GlStateManager.depthMask(true);
-            GlStateManager.alphaFunc(GL11.GL_GREATER, 0F);
+            RenderSystem.enableBlend();
+            RenderSystem.disableLighting();
+            RenderSystem.depthMask(true);
+            RenderSystem.alphaFunc(GL11.GL_GREATER, 0F);
 
             for (EffectTrackerFusionCrafting effect : effects) {
                 effect.renderEffect(tessellator, partialTicks);
             }
 
             //Post-Render
-            GlStateManager.disableBlend();
-            GlStateManager.enableLighting();
-            GlStateManager.depthMask(true);
-            GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
+            RenderSystem.disableBlend();
+            RenderSystem.enableLighting();
+            RenderSystem.depthMask(true);
+            RenderSystem.alphaFunc(GL11.GL_GREATER, 0.1F);
         }
     }
 

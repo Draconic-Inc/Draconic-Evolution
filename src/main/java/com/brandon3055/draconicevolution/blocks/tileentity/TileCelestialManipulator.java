@@ -11,13 +11,13 @@ import com.brandon3055.brandonscore.lib.datamanager.ManagedByte;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.client.render.effect.EffectTrackerCelestialManipulator;
-import com.brandon3055.draconicevolution.client.render.effect.EffectTrackerCelestialManipulator.SubParticle;
+
 import com.brandon3055.draconicevolution.client.sound.CelestialModifierSound;
 import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
 import com.brandon3055.draconicevolution.handlers.DESoundHandler;
-import com.brandon3055.draconicevolution.utils.DETextures;
+import com.brandon3055.draconicevolution.client.DETextures;
 import com.brandon3055.draconicevolution.utils.LogHelper;
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.PlayerEntity;
@@ -341,7 +341,7 @@ public class TileCelestialManipulator extends TileBCore implements ITickableTile
             world.playSound(effectFocus.x, effectFocus.y, effectFocus.z, DESoundHandler.fusionComplete, SoundCategory.BLOCKS, 1F, 2F, false);
             for (int i = 0; i < 100; i++) {
                 try {
-                    SubParticle particle = new SubParticle(world, effects.get(world.rand.nextInt(effects.size())).pos);
+//                    SubParticle particle = new SubParticle(world, effects.get(world.rand.nextInt(effects.size())).pos);
 //                    particle.setScale(2);
                     //TODO particles
 //                    BCEffectHandler.spawnFXDirect(DEParticles.DE_SHEET, particle, 128, true);
@@ -498,7 +498,7 @@ public class TileCelestialManipulator extends TileBCore implements ITickableTile
 
     @OnlyIn(Dist.CLIENT)
     private void standbyParticleEffect() {
-        SubParticle particle = new SubParticle(world, Vec3D.getCenter(pos));
+//        SubParticle particle = new SubParticle(world, Vec3D.getCenter(pos));
 //        particle.setScale(0.2F);
         //TODO particles
 //        BCEffectHandler.spawnFXDirect(DEParticles.DE_SHEET, particle);
@@ -520,20 +520,20 @@ public class TileCelestialManipulator extends TileBCore implements ITickableTile
             Tessellator tessellator = Tessellator.getInstance();
 
             //Pre-Render
-            GlStateManager.enableBlend();
-            GlStateManager.disableLighting();
-            GlStateManager.depthMask(true);
-            GlStateManager.alphaFunc(GL11.GL_GREATER, 0F);
+            RenderSystem.enableBlend();
+            RenderSystem.disableLighting();
+            RenderSystem.depthMask(true);
+            RenderSystem.alphaFunc(GL11.GL_GREATER, 0F);
 
             for (EffectTrackerCelestialManipulator effect : effects) {
                 effect.renderEffect(tessellator, partialTicks);
             }
 
             //Post-Render
-            GlStateManager.disableBlend();
-            GlStateManager.enableLighting();
-            GlStateManager.depthMask(true);
-            GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
+            RenderSystem.disableBlend();
+            RenderSystem.enableLighting();
+            RenderSystem.depthMask(true);
+            RenderSystem.alphaFunc(GL11.GL_GREATER, 0.1F);
         }
     }
 

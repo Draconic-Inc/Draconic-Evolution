@@ -5,6 +5,7 @@ import com.brandon3055.brandonscore.inventory.ContainerBCore;
 import com.brandon3055.brandonscore.inventory.ContainerSlotLayout;
 import com.brandon3055.draconicevolution.api.modules.IModule;
 import com.brandon3055.draconicevolution.api.modules.capability.IModuleHost;
+import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleGrid;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleItem;
@@ -105,4 +106,6 @@ public abstract class ContainerModuleHost<T> extends ContainerBCore<T> {
 
     @OnlyIn(Dist.CLIENT)
     public void clientTick() {}
+
+    public abstract ModuleContext getModuleContext();
 }

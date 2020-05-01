@@ -92,10 +92,15 @@ public class RainSensor extends BlockBCore {
         }
     }
 
-    @Override
-    public void tick(BlockState state, World worldIn, BlockPos pos, Random random) {
-        super.tick(state, worldIn, pos, random);
-    }
+//    @Override
+//    public boolean ticksRandomly(BlockState state) {
+//        return super.ticksRandomly(state);
+//    }
+//
+//    @Override
+//    public void tick(BlockState state, World worldIn, BlockPos pos, Random random) {
+//        super.tick(state, worldIn, pos, random);
+//    }
 
 
     //    @OnlyIn(Dist.CLIENT)

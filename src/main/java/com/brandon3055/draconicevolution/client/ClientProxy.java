@@ -6,13 +6,8 @@ import codechicken.lib.util.ResourceUtils;
 import com.brandon3055.draconicevolution.CommonProxy;
 import com.brandon3055.draconicevolution.client.gui.modular.GuiModularItem;
 import com.brandon3055.draconicevolution.init.DEContent;
-import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.energy.IENetEffectTile;
 import com.brandon3055.draconicevolution.blocks.energynet.rendering.ENetFXHandler;
-import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalDirectIO;
-import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalRelay;
-import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalWirelessIO;
-import com.brandon3055.draconicevolution.blocks.tileentity.*;
 import com.brandon3055.draconicevolution.client.gui.GuiEnergyCore;
 import com.brandon3055.draconicevolution.client.gui.GuiGenerator;
 import com.brandon3055.draconicevolution.client.gui.GuiGrinder;
@@ -23,10 +18,11 @@ import com.brandon3055.draconicevolution.client.render.item.RenderItemChaosShard
 import com.brandon3055.draconicevolution.client.render.item.RenderItemEnergyCrystal;
 import com.brandon3055.draconicevolution.client.render.item.RenderItemMobSoul;
 import com.brandon3055.draconicevolution.client.render.tile.*;
-import com.brandon3055.draconicevolution.utils.DETextures;
 import net.minecraft.client.gui.ScreenManager;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
-import net.minecraftforge.client.model.obj.OBJLoader;
+import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.thread.EffectiveSide;
@@ -41,6 +37,7 @@ public class ClientProxy extends CommonProxy {
 
     public static SpriteRegistryHelper spriteHelper = new SpriteRegistryHelper();
     public static ModelRegistryHelper modelHelper = new ModelRegistryHelper();
+    public static ModuleSpriteUploader moduleSpriteUploader;
 //    public static LayerContributorPerkRenderer layerWings;
 
 
@@ -50,10 +47,37 @@ public class ClientProxy extends CommonProxy {
     }
 
     @Override
+    public void onColourSetup(ColorHandlerEvent.Block event) {
+        moduleSpriteUploader = new ModuleSpriteUploader();
+    }
+
+    @Override
     public void clientSetup(FMLClientSetupEvent event) {
         super.clientSetup(event);
 
-        //Gui's
+        registerGuiFactories();
+        registerItemRenderers();
+        registerTileRenderers();
+        setupRenderLayers();
+
+        MinecraftForge.EVENT_BUS.register(new KeyInputHandler());
+        MinecraftForge.EVENT_BUS.register(new ClientEventHandler());
+        KeyBindings.init();
+
+
+        spriteHelper.addIIconRegister(new DETextures());
+//        spriteHelper.addIIconRegister(ModuleTextures.LOCATION_MODULE_TEXTURE, new ModuleTextures());
+
+        ResourceUtils.registerReloadListener(new DETextures());
+//        ResourceUtils.registerReloadListener(new ModuleTextures());
+
+
+//        ModelResourceLocation modelLocation = new ModelResourceLocation(DEContent.stabilized_spawner.getRegistryName(), "inventory");
+//        IBakedModel bakedModel = new RenderItemStabilizedSpawner();
+//        modelHelper.register(modelLocation, bakedModel);
+    }
+
+    private void registerGuiFactories() {
         ScreenManager.registerFactory(DEContent.container_generator, GuiGenerator::new);
         ScreenManager.registerFactory(DEContent.container_grinder, GuiGrinder::new);
         ScreenManager.registerFactory(DEContent.container_energy_core, GuiEnergyCore::new);
@@ -66,19 +90,21 @@ public class ClientProxy extends CommonProxy {
 //        ScreenManager.registerFactory(DEContent.container_energy_infuser, ContainerEnergyInfuser::new);
 //        ScreenManager.registerFactory(DEContent.container_fusion_crafting_core, ContainerFusionCraftingCore::new);
 //        ScreenManager.registerFactory(DEContent.container_reactor, ContainerReactor::new);
+    }
 
-        //Tile's
-        ClientRegistry.bindTileEntitySpecialRenderer(TileGrinder.class, new RenderTileGrinder());
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEnergyCore.class, new RenderTileEnergyCore());
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEnergyPylon.class, new RenderTileEnergyPylon());
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEnergyCoreStabilizer.class, new RenderTileECStabilizer());
-        ClientRegistry.bindTileEntitySpecialRenderer(TileStabilizedSpawner.class, new RenderTileStabilizedSpawner());
-        ClientRegistry.bindTileEntitySpecialRenderer(TileGenerator.class, new RenderTileGenerator());
-        ClientRegistry.bindTileEntitySpecialRenderer(TileCrystalDirectIO.class, new RenderTileEnergyCrystal());
-        ClientRegistry.bindTileEntitySpecialRenderer(TileCrystalRelay.class, new RenderTileEnergyCrystal());
-        ClientRegistry.bindTileEntitySpecialRenderer(TileCrystalWirelessIO.class, new RenderTileEnergyCrystal());
+    private void registerTileRenderers() {
+        ClientRegistry.bindTileEntityRenderer(DEContent.tile_grinder, RenderTileGrinder::new);
+        ClientRegistry.bindTileEntityRenderer(DEContent.tile_storage_core, RenderTileEnergyCore::new);
+        ClientRegistry.bindTileEntityRenderer(DEContent.tile_energy_pylon, RenderTileEnergyPylon::new);
+        ClientRegistry.bindTileEntityRenderer(DEContent.tile_core_stabilizer, RenderTileECStabilizer::new);
+        ClientRegistry.bindTileEntityRenderer(DEContent.tile_stabilized_spawner, RenderTileStabilizedSpawner::new);
+        ClientRegistry.bindTileEntityRenderer(DEContent.tile_generator, RenderTileGenerator::new);
+        ClientRegistry.bindTileEntityRenderer(DEContent.tile_crystal_io, RenderTileEnergyCrystal::new);
+        ClientRegistry.bindTileEntityRenderer(DEContent.tile_crystal_relay, RenderTileEnergyCrystal::new);
+        ClientRegistry.bindTileEntityRenderer(DEContent.tile_crystal_wireless, RenderTileEnergyCrystal::new);
+    }
 
-        //Item Renderer's
+    private void registerItemRenderers() {
         modelHelper.register(new ModelResourceLocation(DEContent.chaos_shard.getRegistryName(), "inventory"), new RenderItemChaosShard(DEContent.chaos_shard));
         modelHelper.register(new ModelResourceLocation(DEContent.chaos_frag_large.getRegistryName(), "inventory"), new RenderItemChaosShard(DEContent.chaos_frag_large));
         modelHelper.register(new ModelResourceLocation(DEContent.chaos_frag_medium.getRegistryName(), "inventory"), new RenderItemChaosShard(DEContent.chaos_frag_medium));
@@ -96,20 +122,11 @@ public class ClientProxy extends CommonProxy {
         modelHelper.register(new ModelResourceLocation(DEContent.crystal_wireless_wyvern.getRegistryName(), "inventory"), new RenderItemEnergyCrystal(WIRELESS, WYVERN));
         modelHelper.register(new ModelResourceLocation(DEContent.crystal_wireless_draconic.getRegistryName(), "inventory"), new RenderItemEnergyCrystal(WIRELESS, DRACONIC));
 //        modelHelper.register(new ModelResourceLocation(DEContent.crystal_wireless_chaotic.getRegistryName(), "inventory"), new RenderItemEnergyCrystal(WIRELESS, CHAOTIC));
+    }
 
-
-        MinecraftForge.EVENT_BUS.register(new KeyInputHandler());
-        MinecraftForge.EVENT_BUS.register(new ClientEventHandler());
-        KeyBindings.init();
-
-        OBJLoader.INSTANCE.addDomain(DraconicEvolution.MODID);
-        spriteHelper.addIIconRegister(new DETextures());
-        ResourceUtils.registerReloadListener(new DETextures());
-
-
-//        ModelResourceLocation modelLocation = new ModelResourceLocation(DEContent.stabilized_spawner.getRegistryName(), "inventory");
-//        IBakedModel bakedModel = new RenderItemStabilizedSpawner();
-//        modelHelper.register(modelLocation, bakedModel);
+    private void setupRenderLayers() {
+        RenderTypeLookup.setRenderLayer(DEContent.grinder, RenderType.getCutoutMipped());
+        RenderTypeLookup.setRenderLayer(DEContent.generator, RenderType.getCutoutMipped());
     }
 
     @Override
@@ -139,7 +156,7 @@ public class ClientProxy extends CommonProxy {
 //
 //        super.init(event);
 
-//        CCRenderEventHandler.init();
+    //        CCRenderEventHandler.init();
 //    }
 //
 //    @Override

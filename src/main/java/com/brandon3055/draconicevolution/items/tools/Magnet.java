@@ -22,7 +22,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.player.PlayerPickupXpEvent;
+import net.minecraftforge.event.entity.player.PlayerXpEvent;
+
 
 import java.util.List;
 
@@ -51,7 +52,7 @@ public class Magnet extends ItemBCore /*implements IBauble*/ {
     }
 
     private void updateMagnet(ItemStack stack, Entity entity) {
-        if (!entity.isSneaking() && entity.ticksExisted % 10 == 0 && isEnabled(stack) && entity instanceof PlayerEntity) {
+        if (!entity.isShiftKeyDown() && entity.ticksExisted % 10 == 0 && isEnabled(stack) && entity instanceof PlayerEntity) {
             World world = entity.getEntityWorld();
 
             List<ItemEntity> items = world.getEntitiesWithinAABB(ItemEntity.class, new AxisAlignedBB(entity.posX, entity.posY, entity.posZ, entity.posX, entity.posY, entity.posZ).grow(range, range, range));
@@ -129,11 +130,11 @@ public class Magnet extends ItemBCore /*implements IBauble*/ {
             for (ExperienceOrbEntity orb : xp) {
                 if (!world.isRemote && orb.isAlive()) {
                     if (orb.delayBeforeCanPickup == 0) {
-                        if (MinecraftForge.EVENT_BUS.post(new PlayerPickupXpEvent(player, orb))) {
+                        if (MinecraftForge.EVENT_BUS.post(new PlayerXpEvent.PickupXp(player, orb))) {
                             continue;
                         }
                         if (!DEConfig.disableDislocatorSound) {
-                            world.playSound((PlayerEntity) null, entity.posX, entity.posY, entity.posZ, SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.1F, 0.5F * ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7F + 1.8F));
+                            world.playSound(null, entity.posX, entity.posY, entity.posZ, SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.1F, 0.5F * ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7F + 1.8F));
                         }
                         player.onItemPickup(orb, 1);
                         player.giveExperiencePoints(orb.xpValue);
@@ -147,7 +148,7 @@ public class Magnet extends ItemBCore /*implements IBauble*/ {
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
         ItemStack stack = player.getHeldItem(hand);
-        if (player.isSneaking()) {
+        if (player.isShiftKeyDown()) {
             toggleEnabled(stack);
         }
         return super.onItemRightClick(world, player, hand);

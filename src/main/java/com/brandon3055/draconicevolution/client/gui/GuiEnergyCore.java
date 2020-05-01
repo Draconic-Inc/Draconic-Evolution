@@ -114,7 +114,7 @@ public class GuiEnergyCore extends ModularGuiContainer<ContainerBCTile<TileEnerg
             String coreText = I18n.format("gui.de.core.txt") + ": " + (tile.coreValid.get() ? I18n.format("gui.de.valid.txt") : I18n.format("gui.de.invalid.txt"));
             GuiHelper.drawCenteredString(font, coreText, guiLeft + xSize / 2, guiTop + 36, coreColour, tile.coreValid.get());
             if (!tile.coreValid.get()) {
-                GuiHelper.drawCenteredSplitString(font, tile.invalidMessage.get(), guiLeft + xSize / 2, guiTop + 46, 180, coreColour, tile.coreValid.get());
+//                GuiHelper.drawCenteredSplitString(font, tile.invalidMessage.get(), guiLeft + xSize / 2, guiTop + 46, 180, coreColour, tile.coreValid.get());
             }
         }
     }
@@ -125,7 +125,7 @@ public class GuiEnergyCore extends ModularGuiContainer<ContainerBCTile<TileEnerg
         super.render(mouseX, mouseY, partialTicks);
 
         if (tile.active.get()) {
-            GuiHelper.drawEnergyBar(this, guiLeft + 5, guiTop + 82, 170, true, tile.getExtendedStorage(), tile.getExtendedCapacity(), true, mouseX, mouseY);
+//            GuiHelper.drawEnergyBar(this, guiLeft + 5, guiTop + 82, 170, true, tile.getExtendedStorage(), tile.getExtendedCapacity(), true, mouseX, mouseY);
 
             if (GuiHelper.isInRect(guiLeft + 40, guiTop + 27, xSize - 80, 8, mouseX, mouseY)) {
                 List<String> list = new ArrayList<String>();

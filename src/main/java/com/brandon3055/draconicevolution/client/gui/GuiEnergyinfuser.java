@@ -41,7 +41,7 @@ public class GuiEnergyinfuser extends ContainerScreen {
 //        //GuiHelper.drawPlayerSlots(this, guiLeft + (xSize / 2), guiTop + 115, true);
 //        drawCenteredString(fontRenderer, DEFeatures.energyInfuser.getLocalizedName(), guiLeft + (xSize / 2), guiTop + 5, InfoHelper.GUI_TITLE);
 //
-//        GlStateManager.color(1, 1, 1, 1);
+//        RenderSystem.color(1, 1, 1, 1);
 //        ResourceHelperDE.bindTexture(DETextures.GUI_ENERGY_INFUSER);
 //        drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 //
@@ -87,13 +87,13 @@ public class GuiEnergyinfuser extends ContainerScreen {
 //    private void drawAnimatedParts(float partial) {
 //        if (!tile.running.get()) drawTexturedModalRect(guiLeft + 79, guiTop + 21, xSize, 45, 18, 18);
 //        if (tile.running.get()) rotation += 0.2F;
-//        GlStateManager.pushMatrix();
-//        GlStateManager.enableBlend();
-//        GlStateManager.translate(guiLeft + 62, guiTop + 4, 0);
+//        RenderSystem.pushMatrix();
+//        RenderSystem.enableBlend();
+//        RenderSystem.translate(guiLeft + 62, guiTop + 4, 0);
 //        {//Draw Ring
-//            GlStateManager.translate(26, 26, 0);
-//            GlStateManager.rotate(rotation + (partial * 0.2F), 0, 0, 1);
-//            GlStateManager.translate(-26, -26, 0);
+//            RenderSystem.translate(26, 26, 0);
+//            RenderSystem.rotate(rotation + (partial * 0.2F), 0, 0, 1);
+//            RenderSystem.translate(-26, -26, 0);
 //            drawTexturedModalRect(0, 0, xSize, 63, 52, 52);
 //        }
 //        if (tile.running.get() && tile.charging.get()) {
@@ -103,33 +103,33 @@ public class GuiEnergyinfuser extends ContainerScreen {
 //            int boltT = rand.nextInt(10);
 //            drawTexturedModalRect(0, 0, xSize, 115, 52, 52);
 //
-//            GlStateManager.color(1F, 1F, 1F, 0.5F + (rand.nextFloat() / 2F));
+//            RenderSystem.color(1F, 1F, 1F, 0.5F + (rand.nextFloat() / 2F));
 //            drawTexturedModalRect(0, 0, xSize, 167, 52, 52);
-//            GlStateManager.color(1F, 1F, 1F, 1F);
+//            RenderSystem.color(1F, 1F, 1F, 1F);
 //
 //            if (boltT == 5) {
-//                GlStateManager.translate(26, 26, 0);
-//                GlStateManager.rotate(boltL * 90, 0, 0, 1);
-//                GlStateManager.translate(-26, -26, 0);
+//                RenderSystem.translate(26, 26, 0);
+//                RenderSystem.rotate(boltL * 90, 0, 0, 1);
+//                RenderSystem.translate(-26, -26, 0);
 //
 //                if (boltS == 0) {
-//                    GlStateManager.translate(-(guiLeft + 62), -(guiTop + 4), 0);
-//                    GlStateManager.translate(guiLeft + 68, guiTop + 23, 0);
+//                    RenderSystem.translate(-(guiLeft + 62), -(guiTop + 4), 0);
+//                    RenderSystem.translate(guiLeft + 68, guiTop + 23, 0);
 //                    drawTexturedModalRect(0, 0, 0, ySize, 27, 15);
 //                }
 //                if (boltS == 1) {
-//                    GlStateManager.translate(-(guiLeft + 62), -(guiTop + 4), 0);
-//                    GlStateManager.translate(guiLeft + 68, guiTop + 26, 0);
+//                    RenderSystem.translate(-(guiLeft + 62), -(guiTop + 4), 0);
+//                    RenderSystem.translate(guiLeft + 68, guiTop + 26, 0);
 //                    drawTexturedModalRect(0, 0, 0, 156, 25, 8);
 //                }
 //                if (boltS == 2) {
-//                    GlStateManager.translate(-(guiLeft + 62), -(guiTop + 4), 0);
-//                    GlStateManager.translate(guiLeft + 68, guiTop + 27, 0);
+//                    RenderSystem.translate(-(guiLeft + 62), -(guiTop + 4), 0);
+//                    RenderSystem.translate(guiLeft + 68, guiTop + 27, 0);
 //                    drawTexturedModalRect(0, 0, 0, 165, 23, 7);
 //                }
 //                if (boltS == 3) {
-//                    GlStateManager.translate(-(guiLeft + 62), -(guiTop + 4), 0);
-//                    GlStateManager.translate(guiLeft + 68, guiTop + 26, 0);
+//                    RenderSystem.translate(-(guiLeft + 62), -(guiTop + 4), 0);
+//                    RenderSystem.translate(guiLeft + 68, guiTop + 26, 0);
 //                    drawTexturedModalRect(0, 0, 0, 173, 26, 8);
 //                }
 //            }
@@ -137,8 +137,8 @@ public class GuiEnergyinfuser extends ContainerScreen {
 //        }
 //
 //
-//        GlStateManager.disableBlend();
-//        GlStateManager.popMatrix();
+//        RenderSystem.disableBlend();
+//        RenderSystem.popMatrix();
 //    }
 //
 //    @Override

@@ -3,16 +3,19 @@ package com.brandon3055.draconicevolution.client.render.item;
 import codechicken.lib.render.item.IItemRenderer;
 import codechicken.lib.util.TransformUtils;
 import com.brandon3055.draconicevolution.client.render.tile.RenderTileReactorCore;
+import com.google.common.collect.ImmutableMap;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.model.IModelState;
 
 /**
  * Created by brandon3055 on 21/11/2016.
  */
 public class RenderItemReactorComponent implements IItemRenderer {
 
-    private static RenderTileReactorCore coreRenderer = new RenderTileReactorCore();
+//    private static RenderTileReactorCore coreRenderer = new RenderTileReactorCore();
 
     public RenderItemReactorComponent() {
     }
@@ -32,14 +35,20 @@ public class RenderItemReactorComponent implements IItemRenderer {
     //endregion
 
     @Override
-    public IModelState getTransforms() {
+    public void renderItem(ItemStack stack, ItemCameraTransforms.TransformType transformType, MatrixStack mStack, IRenderTypeBuffer getter, int packedLight, int packedOverlay) {
+
+    }
+
+    @Override
+    public ImmutableMap<ItemCameraTransforms.TransformType, TransformationMatrix> getTransforms() {
         return TransformUtils.DEFAULT_BLOCK;
     }
 
     @Override
-    public void renderItem(ItemStack stack, ItemCameraTransforms.TransformType transformType) {
-
+    public boolean func_230044_c_() {
+        return false;
     }
+
 
     //    @Override
 //    public void renderItem(ItemStack item, ItemCameraTransforms.TransformType transformType) {
@@ -47,24 +56,24 @@ public class RenderItemReactorComponent implements IItemRenderer {
 //        boolean isStabilizer = !isCore && item.getItemDamage() == 0;
 //
 //
-//        GlStateManager.pushMatrix();
+//        RenderSystem.pushMatrix();
 //        GlStateTracker.pushState();
 //
 //        if (isCore) {
 //            coreRenderer.renderItem();
 //        }
 //        else if (isStabilizer) {
-//            GlStateManager.translate(0.5, 0.5, 0.5);
+//            RenderSystem.translate(0.5, 0.5, 0.5);
 //            float partial = Minecraft.getInstance().getRenderPartialTicks();
 //            RenderTileReactorComponent.renderStabilizer(ClientEventHandler.elapsedTicks + partial, (ClientEventHandler.elapsedTicks + partial) * 0.6F, 1F, 0, true, -1);
 //        }
 //        else {
-//            GlStateManager.translate(0.5, 0.5, 0.5);
-//            GlStateManager.rotate(90, 1, 0, 0);
+//            RenderSystem.translate(0.5, 0.5, 0.5);
+//            RenderSystem.rotate(90, 1, 0, 0);
 //            RenderTileReactorComponent.renderInjector(1F, 0, true, -1);
 //        }
 //
 //        GlStateTracker.popState();
-//        GlStateManager.popMatrix();
+//        RenderSystem.popMatrix();
 //    }
 }

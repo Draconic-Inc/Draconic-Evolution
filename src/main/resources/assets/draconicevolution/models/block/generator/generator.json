@@ -1,6 +1,6 @@
 {
-	"parent": "block/block",
 	"credit": "Made by brandon3055 with Blockbench",
+	"parent": "block/block",
 	"textures": {
 		"1": "draconicevolution:models/block/generator/generator",
 		"2": "draconicevolution:models/block/generator/generator_2",
@@ -10,7 +10,7 @@
 		{
 			"name": "frame_front",
 			"from": [0, 0, 0],
-			"to": [16, 16, 0.98],
+			"to": [16, 16, 0.95],
 			"faces": {
 				"north": {"uv": [0, 0, 8, 8], "texture": "#1"},
 				"south": {"uv": [0, 0, 8, 8], "texture": "#1"}
@@ -18,7 +18,7 @@
 		},
 		{
 			"name": "frame_back",
-			"from": [0, 0, 15.02],
+			"from": [0, 0, 15.05],
 			"to": [16, 16, 16],
 			"faces": {
 				"north": {"uv": [0, 0, 8, 8], "texture": "#1"},
@@ -27,7 +27,7 @@
 		},
 		{
 			"name": "frame_top",
-			"from": [0, 15.02, 0],
+			"from": [0, 15.05, 0],
 			"to": [16, 16, 16],
 			"faces": {
 				"up": {"uv": [0, 0, 8, 8], "texture": "#1"},
@@ -37,7 +37,7 @@
 		{
 			"name": "frame_bottom",
 			"from": [0, 0, 0],
-			"to": [16, 0.98, 16],
+			"to": [16, 0.95, 16],
 			"faces": {
 				"up": {"uv": [0, 0, 8, 8], "texture": "#1"},
 				"down": {"uv": [0, 0, 8, 8], "texture": "#1"}
@@ -46,7 +46,7 @@
 		{
 			"name": "frame_right",
 			"from": [0, 0, 0],
-			"to": [0.98, 16, 16],
+			"to": [0.95, 16, 16],
 			"faces": {
 				"east": {"uv": [0, 0, 8, 8], "texture": "#1"},
 				"west": {"uv": [0, 0, 8, 8], "texture": "#1"}
@@ -54,7 +54,7 @@
 		},
 		{
 			"name": "frame_left",
-			"from": [15.02, 0, 0],
+			"from": [15.05, 0, 0],
 			"to": [16, 16, 16],
 			"faces": {
 				"east": {"uv": [0, 0, 8, 8], "texture": "#1"},
@@ -546,11 +546,6 @@
 			}
 		}
 	],
-	"display": {
-		"thirdperson_righthand": {
-			"translation": [0, 8.25, -12.5]
-		}
-	},
 	"groups": [
 		{
 			"name": "Frame2",
