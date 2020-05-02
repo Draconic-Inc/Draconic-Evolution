@@ -3,7 +3,7 @@ package com.brandon3055.draconicevolution.items;
 import com.brandon3055.brandonscore.items.ItemBCore;
 import com.brandon3055.draconicevolution.api.fusioncrafting.FusionRecipeAPI;
 import com.brandon3055.draconicevolution.api.fusioncrafting.IFusionRecipe;
-import com.brandon3055.draconicevolution.api.itemupgrade.FusionUpgradeRecipe;
+import com.brandon3055.draconicevolution.api.itemupgrade_dep.FusionUpgradeRecipe;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;

@@ -1,4 +1,4 @@
-package com.brandon3055.draconicevolution.api.itemconfig;
+package com.brandon3055.draconicevolution.api.itemconfig_dep;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -6,6 +6,7 @@ import net.minecraft.nbt.CompoundNBT;
 /**
  * Created by brandon3055 on 1/06/2016.
  */
+@Deprecated
 public class ToolConfigHelper {
 
     /**

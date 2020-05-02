@@ -4,20 +4,18 @@ import com.brandon3055.draconicevolution.api.TechLevel;
 import com.brandon3055.draconicevolution.api.modules.properties.ModuleProperties;
 import com.brandon3055.draconicevolution.api.modules.lib.InstallResult;
 import net.minecraft.item.Item;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 /**
  * Created by brandon3055 and covers1624 on 4/16/20.
  */
-public interface IModule<P extends ModuleProperties<P>> extends IForgeRegistryEntry<IModule<?>> {
+public interface Module<P extends ModuleProperties<P>> extends IForgeRegistryEntry<Module<?>> {
 
     ModuleType<P> getModuleType();
 
@@ -76,7 +74,7 @@ public interface IModule<P extends ModuleProperties<P>> extends IForgeRegistryEn
      * @return pass with null value if this module can coexist with the other module.
      * Otherwise return fail with an ITextTranslation specifying a reason that can be displayed to the player.
      */
-    default InstallResult areModulesCompatible(IModule<?> otherModule) {
+    default InstallResult areModulesCompatible(Module<?> otherModule) {
         return getModuleType().areModulesCompatible(this, otherModule);
     }
 

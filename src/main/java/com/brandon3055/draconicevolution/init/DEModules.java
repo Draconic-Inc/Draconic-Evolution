@@ -6,7 +6,7 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 
 import com.brandon3055.draconicevolution.api.TechLevel;
 import com.brandon3055.draconicevolution.api.modules.properties.*;
-import com.brandon3055.draconicevolution.api.modules.IModule;
+import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleItem;
 import com.brandon3055.draconicevolution.api.modules.lib.SimpleModuleImpl;
 import com.brandon3055.draconicevolution.items.modules.TestModuleHost;
@@ -35,7 +35,7 @@ import static net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus.MOD;
 @ObjectHolder(DraconicEvolution.MODID)
 public class DEModules {
     public static transient ArrayList<ResourceLocation> ITEM_REGISTRY_ORDER = new ArrayList<>();
-    public static ForgeRegistry<IModule<?>> MODULE_REGISTRY;
+    public static ForgeRegistry<Module<?>> MODULE_REGISTRY;
 
 
 
@@ -43,7 +43,7 @@ public class DEModules {
     public static void createRegistries(RegistryEvent.NewRegistry event) {
         MODULE_REGISTRY = SneakyUtils.unsafeCast(new RegistryBuilder<>()//
                 .setName(new ResourceLocation(DraconicEvolution.MODID, "modules"))//
-                .setType(SneakyUtils.unsafeCast(IModule.class))//
+                .setType(SneakyUtils.unsafeCast(Module.class))//
                 .disableSaving()//
                 .create()//
         );
@@ -103,7 +103,7 @@ public class DEModules {
     //@formatter:on
 
     @SubscribeEvent
-    public static void registerModules(RegistryEvent.Register<IModule<?>> event) {
+    public static void registerModules(RegistryEvent.Register<Module<?>> event) {
         event.getRegistry().register(new SimpleModuleImpl<>(ENERGY_STORAGE, new EnergyModuleProperties(TechLevel.DRACONIUM, 100000L), test_module_item_1).setRegistryName("test_module_1"));
         event.getRegistry().register(new SimpleModuleImpl<>(SHIELD, new ShieldModuleProperties(TechLevel.WYVERN, 1000, 0).setDimensions(2, 1), test_module_item_2).setRegistryName("test_module_2"));
         event.getRegistry().register(new SimpleModuleImpl<>(AREA_OF_EFFECT, new AOEModuleProperties(TechLevel.WYVERN, 2).setDimensions(3, 1), test_module_item_3).setRegistryName("test_module_3"));

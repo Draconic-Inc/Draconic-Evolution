@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.api.modules.properties;
 
 import com.brandon3055.draconicevolution.api.TechLevel;
-import com.brandon3055.draconicevolution.api.modules.capability.IModuleHost;
+import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 
@@ -30,7 +30,7 @@ public class ShieldModuleProperties extends ModuleProperties<ShieldModulePropert
     }
 
     @Override
-    public void addCombinedStats(List<ShieldModuleProperties> propertiesList, Map<ITextComponent, ITextComponent> map, IModuleHost moduleHost) {
+    public void addCombinedStats(List<ShieldModuleProperties> propertiesList, Map<ITextComponent, ITextComponent> map, ModuleHost moduleHost) {
         if (moduleHost.isSubPropertySupported(this, SHIELD_CAPACITY)) {
             //
         }

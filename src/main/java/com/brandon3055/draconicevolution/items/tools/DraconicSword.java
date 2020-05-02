@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.items.tools;
 
 import com.brandon3055.brandonscore.lib.PairKV;
-import com.brandon3055.draconicevolution.api.itemupgrade.UpgradeHelper;
+import com.brandon3055.draconicevolution.api.itemupgrade_dep.UpgradeHelper;
 
 import com.brandon3055.draconicevolution.items.ToolUpgrade;
 import com.brandon3055.draconicevolution.client.DETextures;

@@ -1,10 +1,8 @@
 package com.brandon3055.draconicevolution.api.modules.lib;
 
-import com.brandon3055.draconicevolution.api.modules.capability.IModuleHost;
-import net.minecraft.entity.LivingEntity;
+import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 
 /**
  * Created by brandon3055 on 19/4/20.
@@ -13,7 +11,7 @@ public class StackModuleContext extends ModuleContext {
     private final ItemStack stack;
     private final PlayerEntity player;
 
-    public StackModuleContext(IModuleHost moduleHost, ItemStack stack, PlayerEntity player) {
+    public StackModuleContext(ModuleHost moduleHost, ItemStack stack, PlayerEntity player) {
         super(moduleHost);
         this.stack = stack;
         this.player = player;

@@ -1,4 +1,4 @@
-package com.brandon3055.draconicevolution.api.itemconfig;
+package com.brandon3055.draconicevolution.api.itemconfig_dep;
 
 import com.brandon3055.brandonscore.inventory.PlayerSlot;
 import com.brandon3055.draconicevolution.DraconicEvolution;
@@ -14,6 +14,7 @@ import java.util.Map;
 /**
  * Created by brandon3055 on 7/06/2016.
  */
+@Deprecated
 public interface IItemConfigField {
     Logger logger = LogManager.getLogger(DraconicEvolution.MODID);
 

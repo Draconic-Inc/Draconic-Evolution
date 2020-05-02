@@ -1,4 +1,4 @@
-package com.brandon3055.draconicevolution.api.itemupgrade;
+package com.brandon3055.draconicevolution.api.itemupgrade_dep;
 
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.api.OreDictHelper;

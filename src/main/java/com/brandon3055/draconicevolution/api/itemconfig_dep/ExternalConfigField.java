@@ -1,4 +1,4 @@
-package com.brandon3055.draconicevolution.api.itemconfig;
+package com.brandon3055.draconicevolution.api.itemconfig_dep;
 
 import com.brandon3055.brandonscore.inventory.PlayerSlot;
 import net.minecraft.client.resources.I18n;
@@ -11,6 +11,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
  * Created by brandon3055 on 1/06/2016.
  * This can be used to create a config button that opens a separate gui.
  */
+@Deprecated
 public class ExternalConfigField extends IntegerConfigField {
 
     private final Object mod;

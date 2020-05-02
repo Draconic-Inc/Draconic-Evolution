@@ -1,21 +1,19 @@
 package com.brandon3055.draconicevolution.api.modules.lib;
 
-import com.brandon3055.draconicevolution.api.modules.IModule;
+import com.brandon3055.draconicevolution.api.modules.Module;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-
-import java.awt.*;
 
 /**
  * Created by brandon3055 on 18/4/20.
  */
 public class ModuleEntity {
 
-    protected final IModule<?> module;
+    protected final Module<?> module;
     protected int gridX;
     protected int gridY;
 
-    public ModuleEntity(IModule<?> module) {
+    public ModuleEntity(Module<?> module) {
         this.module = module;
     }
 
@@ -60,7 +58,7 @@ public class ModuleEntity {
 
     //region Setters / Getters
 
-    public IModule<?> getModule() {
+    public Module<?> getModule() {
         return module;
     }
 

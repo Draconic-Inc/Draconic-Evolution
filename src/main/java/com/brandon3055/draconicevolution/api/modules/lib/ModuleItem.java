@@ -1,9 +1,10 @@
 package com.brandon3055.draconicevolution.api.modules.lib;
 
-import com.brandon3055.draconicevolution.api.modules.IModule;
+import com.brandon3055.draconicevolution.api.capability.DECapabilities;
+import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.properties.ModuleProperties;
-import com.brandon3055.draconicevolution.api.modules.capability.IModuleProvider;
-import com.brandon3055.draconicevolution.init.ModuleCapability;
+import com.brandon3055.draconicevolution.api.capability.ModuleProvider;
+import com.brandon3055.draconicevolution.init.ModCapabilities;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -24,21 +25,21 @@ import java.util.function.Supplier;
 /**
  * Created by covers1624 on 4/16/20.
  */
-public class ModuleItem<P extends ModuleProperties<P>> extends Item implements IModuleProvider<P> {
+public class ModuleItem<P extends ModuleProperties<P>> extends Item implements ModuleProvider<P> {
 
     @Deprecated //Do not access this directly!
-    private IModule<P> module = null;
-    private final Supplier<IModule<P>> moduleSupplier;
+    private Module<P> module = null;
+    private final Supplier<Module<P>> moduleSupplier;
 
     //This needs to be a supplier so i can lazy load the module. The reason being items are registered before modules
     //so when this item is created the module does not exist yet.
-    public ModuleItem(Properties properties, Supplier<IModule<P>> moduleSupplier) {
+    public ModuleItem(Properties properties, Supplier<Module<P>> moduleSupplier) {
         super(properties);
         this.moduleSupplier = moduleSupplier;
     }
 
-    public static IModule<?> getModule(ItemStack stack) {
-        LazyOptional<IModuleProvider<?>> cap = stack.getCapability(ModuleCapability.MODULE_CAPABILITY);
+    public static Module<?> getModule(ItemStack stack) {
+        LazyOptional<ModuleProvider<?>> cap = stack.getCapability(DECapabilities.MODULE_CAPABILITY);
         if (!stack.isEmpty() && cap.isPresent()) {
             return cap.orElseThrow(RuntimeException::new).getModule();
         }
@@ -51,7 +52,7 @@ public class ModuleItem<P extends ModuleProperties<P>> extends Item implements I
         return new ICapabilityProvider() {
             @Override
             public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-                if (cap == ModuleCapability.MODULE_CAPABILITY){
+                if (cap == DECapabilities.MODULE_CAPABILITY){
                     return LazyOptional.of(() -> ModuleItem.this).cast();
                 }
                 return LazyOptional.empty();
@@ -60,7 +61,7 @@ public class ModuleItem<P extends ModuleProperties<P>> extends Item implements I
     }
 
     @Override
-    public IModule<P> getModule() {
+    public Module<P> getModule() {
         if (module == null) {
             module = moduleSupplier.get();
         }

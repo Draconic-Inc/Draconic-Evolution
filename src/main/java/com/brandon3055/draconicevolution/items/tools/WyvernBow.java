@@ -7,8 +7,8 @@ import com.brandon3055.brandonscore.lib.PairKV;
 import com.brandon3055.brandonscore.utils.InfoHelper;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.api.IReaperItem;
-import com.brandon3055.draconicevolution.api.itemconfig.*;
-import com.brandon3055.draconicevolution.api.itemupgrade.UpgradeHelper;
+import com.brandon3055.draconicevolution.api.itemconfig_dep.*;
+import com.brandon3055.draconicevolution.api.itemupgrade_dep.UpgradeHelper;
 import com.brandon3055.draconicevolution.handlers.BowHandler;
 import com.brandon3055.draconicevolution.items.ToolUpgrade;
 import com.brandon3055.draconicevolution.client.DETextures;
@@ -35,7 +35,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
-import static com.brandon3055.draconicevolution.api.itemconfig.IItemConfigField.EnumControlType.SLIDER;
+import static com.brandon3055.draconicevolution.api.itemconfig_dep.IItemConfigField.EnumControlType.SLIDER;
 
 /**
  * Created by brandon3055 on 2/06/2016.

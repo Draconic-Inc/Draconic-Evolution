@@ -1,4 +1,4 @@
-package com.brandon3055.draconicevolution.api.itemupgrade;
+package com.brandon3055.draconicevolution.api.itemupgrade_dep;
 
 import com.brandon3055.brandonscore.utils.InfoHelper;
 import net.minecraft.client.resources.I18n;

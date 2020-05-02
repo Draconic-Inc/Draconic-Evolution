@@ -2,11 +2,11 @@ package com.brandon3055.draconicevolution.items.tools;
 
 import com.brandon3055.brandonscore.lib.PairKV;
 import com.brandon3055.draconicevolution.api.IReaperItem;
-import com.brandon3055.draconicevolution.api.itemconfig.DoubleConfigField;
-import com.brandon3055.draconicevolution.api.itemconfig.IItemConfigField;
-import com.brandon3055.draconicevolution.api.itemconfig.ItemConfigFieldRegistry;
-import com.brandon3055.draconicevolution.api.itemconfig.ToolConfigHelper;
-import com.brandon3055.draconicevolution.api.itemupgrade.UpgradeHelper;
+import com.brandon3055.draconicevolution.api.itemconfig_dep.DoubleConfigField;
+import com.brandon3055.draconicevolution.api.itemconfig_dep.IItemConfigField;
+import com.brandon3055.draconicevolution.api.itemconfig_dep.ItemConfigFieldRegistry;
+import com.brandon3055.draconicevolution.api.itemconfig_dep.ToolConfigHelper;
+import com.brandon3055.draconicevolution.api.itemupgrade_dep.UpgradeHelper;
 import com.brandon3055.draconicevolution.items.ToolUpgrade;
 import com.brandon3055.draconicevolution.client.DETextures;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;

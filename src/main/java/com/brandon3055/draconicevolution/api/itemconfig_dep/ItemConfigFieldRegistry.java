@@ -1,4 +1,4 @@
-package com.brandon3055.draconicevolution.api.itemconfig;
+package com.brandon3055.draconicevolution.api.itemconfig_dep;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -11,6 +11,7 @@ import java.util.Map;
  * Created by brandon3055 on 8/06/2016.
  * A simple map wrapper for handling IItemConfigField's
  */
+@Deprecated
 public class ItemConfigFieldRegistry {
     private Map<String, IItemConfigField> fields = new LinkedHashMap<>();
 

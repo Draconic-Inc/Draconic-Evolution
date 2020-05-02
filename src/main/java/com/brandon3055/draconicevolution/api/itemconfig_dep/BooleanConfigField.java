@@ -1,4 +1,4 @@
-package com.brandon3055.draconicevolution.api.itemconfig;
+package com.brandon3055.draconicevolution.api.itemconfig_dep;
 
 import net.minecraft.client.resources.I18n;
 import net.minecraft.nbt.CompoundNBT;
@@ -9,6 +9,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
  * Created by brandon3055 on 1/06/2016.
  * A simple boolean config field based on the integer config field
  */
+@Deprecated
 public class BooleanConfigField extends IntegerConfigField {
 
     private String onTxt = "config.field.on.state";

@@ -2,10 +2,12 @@ package com.brandon3055.draconicevolution.items.modules;
 
 import com.brandon3055.brandonscore.inventory.PlayerSlot;
 import com.brandon3055.draconicevolution.api.TechLevel;
+import com.brandon3055.draconicevolution.api.capability.DECapabilities;
+import com.brandon3055.draconicevolution.api.capability.PropertyProvider;
+import com.brandon3055.draconicevolution.api.config.PropertyProviderImpl;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleHostImpl;
 import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
-import com.brandon3055.draconicevolution.api.modules.capability.ModuleHostCapabilityProvider;
-import com.brandon3055.draconicevolution.init.ModuleCapability;
+import com.brandon3055.draconicevolution.api.capability.MultiCapabilityProvider;
 import com.brandon3055.draconicevolution.inventory.ContainerModularItem;
 import com.brandon3055.draconicevolution.inventory.GuiLayoutFactories;
 import net.minecraft.client.util.ITooltipFlag;
@@ -55,7 +57,15 @@ public class TestModuleHost extends Item {
     @Nullable
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundNBT nbt) {
-        return new ModuleHostCapabilityProvider(new ModuleHostImpl(TechLevel.DRACONIUM, width, height, ModuleTypes.ENERGY_STORAGE));
+        MultiCapabilityProvider capabilityProvider = new MultiCapabilityProvider();
+        capabilityProvider.addCapability("module_host", DECapabilities.MODULE_HOST_CAPABILITY, new ModuleHostImpl(TechLevel.DRACONIUM, width, height, ModuleTypes.ENERGY_STORAGE));
+
+        PropertyProviderImpl propertyProvider = new PropertyProviderImpl("test_configurable_item");
+        capabilityProvider.addCapability("property_provider", DECapabilities.PROPERTY_PROVIDER_CAPABILITY, propertyProvider);
+
+        //Add config properties to propertyProvider
+
+        return capabilityProvider;
     }
 
     @Override

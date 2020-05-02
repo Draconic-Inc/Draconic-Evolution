@@ -1,17 +1,14 @@
 package com.brandon3055.draconicevolution.api.modules.lib;
 
-import com.brandon3055.draconicevolution.api.modules.IModule;
-import com.brandon3055.draconicevolution.api.modules.capability.IModuleHost;
-import com.brandon3055.draconicevolution.api.modules.capability.IModuleProvider;
+import com.brandon3055.draconicevolution.api.modules.Module;
+import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.modules.lib.InstallResult.InstallResultType;
-import com.brandon3055.draconicevolution.init.ModuleCapability;
 import com.brandon3055.draconicevolution.inventory.ContainerModuleHost;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ClickType;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraftforge.common.util.LazyOptional;
 
 import java.util.Iterator;
 import java.util.Objects;
@@ -49,7 +46,7 @@ public class ModuleGrid {
         this.yPos = guiYPos;
     }
 
-    public IModuleHost getModuleHost() {
+    public ModuleHost getModuleHost() {
         return container.getModuleHost();
     }
 
@@ -71,7 +68,7 @@ public class ModuleGrid {
 
     public InstallResult cellClicked(GridPos pos, int button, ClickType clickType) {
         ItemStack stack = player.getItemStack();
-        IModule<?> module = ModuleItem.getModule(stack);
+        Module<?> module = ModuleItem.getModule(stack);
 
         //Sanity Checks
         if ((!stack.isEmpty() && module == null) || !pos.isValidCell()) {

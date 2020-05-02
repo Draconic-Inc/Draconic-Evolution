@@ -2,15 +2,15 @@ package com.brandon3055.draconicevolution.items.tools;
 
 import codechicken.lib.util.ItemNBTUtils;
 import com.brandon3055.brandonscore.lib.PairKV;
-import com.brandon3055.draconicevolution.api.itemconfig.BooleanConfigField;
-import com.brandon3055.draconicevolution.api.itemconfig.DoubleConfigField;
-import com.brandon3055.draconicevolution.api.itemconfig.ItemConfigFieldRegistry;
+import com.brandon3055.draconicevolution.api.itemconfig_dep.BooleanConfigField;
+import com.brandon3055.draconicevolution.api.itemconfig_dep.DoubleConfigField;
+import com.brandon3055.draconicevolution.api.itemconfig_dep.ItemConfigFieldRegistry;
 import com.brandon3055.draconicevolution.client.DETextures;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
-import static com.brandon3055.draconicevolution.api.itemconfig.IItemConfigField.EnumControlType.SLIDER;
+import static com.brandon3055.draconicevolution.api.itemconfig_dep.IItemConfigField.EnumControlType.SLIDER;
 
 /**
  * Created by brandon3055 on 5/06/2016.

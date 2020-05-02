@@ -1,10 +1,9 @@
 package com.brandon3055.draconicevolution.inventory;
 
-import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.inventory.ContainerBCore;
 import com.brandon3055.brandonscore.inventory.ContainerSlotLayout;
-import com.brandon3055.draconicevolution.api.modules.IModule;
-import com.brandon3055.draconicevolution.api.modules.capability.IModuleHost;
+import com.brandon3055.draconicevolution.api.modules.Module;
+import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleGrid;
@@ -17,9 +16,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.wrapper.EmptyHandler;
 
 import javax.annotation.Nullable;
 
@@ -46,7 +42,7 @@ public abstract class ContainerModuleHost<T> extends ContainerBCore<T> {
 
     public abstract ModuleGrid getGrid();
 
-    public abstract IModuleHost getModuleHost();
+    public abstract ModuleHost getModuleHost();
 
     @Override
     public ItemStack transferStackInSlot(PlayerEntity player, int i) {
@@ -54,7 +50,7 @@ public abstract class ContainerModuleHost<T> extends ContainerBCore<T> {
 
         if (slot != null && slot.getHasStack()) {
             ItemStack stack = slot.getStack();
-            IModule<?> module = ModuleItem.getModule(stack);
+            Module<?> module = ModuleItem.getModule(stack);
             if (module != null) {
                 ModuleEntity entity = new ModuleEntity(module);
                 entity.readFromItemStack(stack);

@@ -1,11 +1,11 @@
 package com.brandon3055.draconicevolution.items.tools;
 
 import com.brandon3055.brandonscore.utils.InventoryUtils;
-import com.brandon3055.draconicevolution.api.itemconfig.AOEConfigField;
-import com.brandon3055.draconicevolution.api.itemconfig.BooleanConfigField;
-import com.brandon3055.draconicevolution.api.itemconfig.ItemConfigFieldRegistry;
-import com.brandon3055.draconicevolution.api.itemconfig.ToolConfigHelper;
-import com.brandon3055.draconicevolution.api.itemupgrade.UpgradeHelper;
+import com.brandon3055.draconicevolution.api.itemconfig_dep.AOEConfigField;
+import com.brandon3055.draconicevolution.api.itemconfig_dep.BooleanConfigField;
+import com.brandon3055.draconicevolution.api.itemconfig_dep.ItemConfigFieldRegistry;
+import com.brandon3055.draconicevolution.api.itemconfig_dep.ToolConfigHelper;
+import com.brandon3055.draconicevolution.api.itemupgrade_dep.UpgradeHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;

@@ -3,8 +3,8 @@ package com.brandon3055.draconicevolution.lib;
 import cofh.redstoneflux.api.IEnergyContainerItem;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.draconicevolution.api.fusioncrafting.SimpleFusionRecipe;
-import com.brandon3055.draconicevolution.api.itemupgrade.IUpgradableItem;
-import com.brandon3055.draconicevolution.api.itemupgrade.UpgradeHelper;
+import com.brandon3055.draconicevolution.api.itemupgrade_dep.IUpgradableItem;
+import com.brandon3055.draconicevolution.api.itemupgrade_dep.UpgradeHelper;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.ItemStack;
 

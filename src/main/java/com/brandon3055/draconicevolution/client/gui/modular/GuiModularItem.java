@@ -6,10 +6,11 @@ import com.brandon3055.brandonscore.client.gui.modulargui.ModularGuiContainer;
 import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiTexture;
 import com.brandon3055.brandonscore.client.gui.modulargui.templates.TGuiBase;
 import com.brandon3055.brandonscore.client.utils.GuiHelper;
-import com.brandon3055.draconicevolution.api.modules.IModule;
+import com.brandon3055.draconicevolution.api.capability.DECapabilities;
+import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleGrid;
 import com.brandon3055.draconicevolution.client.gui.ModuleGridRenderer;
-import com.brandon3055.draconicevolution.init.ModuleCapability;
+import com.brandon3055.draconicevolution.init.ModCapabilities;
 import com.brandon3055.draconicevolution.inventory.ContainerModularItem;
 import com.brandon3055.draconicevolution.client.DETextures;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -73,8 +74,8 @@ public class GuiModularItem extends ModularGuiContainer<ContainerModularItem> {
         infoPanel.clear();
 
         Map<ITextComponent, ITextComponent> nameStatMap = new HashMap<>();
-        grid.getModuleHost().getModules().map(IModule::getModuleType).distinct().forEach(type -> {
-            List<IModule<?>> list = grid.getModuleHost().getModules().filter(module -> module.getModuleType() == type).collect(Collectors.toList());
+        grid.getModuleHost().getModules().map(Module::getModuleType).distinct().forEach(type -> {
+            List<Module<?>> list = grid.getModuleHost().getModules().filter(module -> module.getModuleType() == type).collect(Collectors.toList());
             if (!list.isEmpty()) {
                 type.getProperties(list.get(0)).addCombinedStats(list.stream().map(type::getProperties).collect(Collectors.toList()), nameStatMap, grid.getModuleHost());
             }
@@ -97,7 +98,7 @@ public class GuiModularItem extends ModularGuiContainer<ContainerModularItem> {
 
     @Override
     protected void drawSlotOverlay(Slot slot) {
-        if (slot.getHasStack() && slot.getStack().getCapability(ModuleCapability.MODULE_HOST_CAPABILITY).isPresent()) {
+        if (slot.getHasStack() && slot.getStack().getCapability(DECapabilities.MODULE_HOST_CAPABILITY).isPresent()) {
             int x = slot.xPos;
             int y = slot.yPos;
             RenderSystem.disableLighting();

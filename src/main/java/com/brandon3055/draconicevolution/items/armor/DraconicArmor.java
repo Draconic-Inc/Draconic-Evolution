@@ -2,10 +2,10 @@ package com.brandon3055.draconicevolution.items.armor;
 
 import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.draconicevolution.DEConfig;
-import com.brandon3055.draconicevolution.api.itemconfig.BooleanConfigField;
-import com.brandon3055.draconicevolution.api.itemconfig.ItemConfigFieldRegistry;
-import com.brandon3055.draconicevolution.api.itemconfig.ToolConfigHelper;
-import com.brandon3055.draconicevolution.api.itemupgrade.UpgradeHelper;
+import com.brandon3055.draconicevolution.api.itemconfig_dep.BooleanConfigField;
+import com.brandon3055.draconicevolution.api.itemconfig_dep.ItemConfigFieldRegistry;
+import com.brandon3055.draconicevolution.api.itemconfig_dep.ToolConfigHelper;
+import com.brandon3055.draconicevolution.api.itemupgrade_dep.UpgradeHelper;
 import com.brandon3055.draconicevolution.items.ToolUpgrade;
 import com.brandon3055.draconicevolution.items.tools.ToolStats;
 import net.minecraft.client.renderer.entity.model.BipedModel;

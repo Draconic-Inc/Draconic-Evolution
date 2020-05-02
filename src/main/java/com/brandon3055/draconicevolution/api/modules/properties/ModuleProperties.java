@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.api.modules.properties;
 
 import com.brandon3055.draconicevolution.api.TechLevel;
 import com.brandon3055.draconicevolution.api.modules.ModuleType;
-import com.brandon3055.draconicevolution.api.modules.capability.IModuleHost;
+import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import net.minecraft.util.text.*;
 
 import java.util.List;
@@ -72,16 +72,6 @@ public abstract class ModuleProperties<T extends ModuleProperties<T>> {
                 .appendSibling(new StringTextComponent(" ") //
                         .appendSibling(new StringTextComponent(getWidth() + "x" + getHeight()) //
                                 .applyTextStyle(TextFormatting.DARK_GREEN))));
-
-
-//        toolTip.add(new TranslationTextComponent("module.de.type") //
-//                .setStyle(new Style().setColor(TextFormatting.GOLD)) //
-//                .appendSibling(new TranslationTextComponent("module.de.type." + type.getName()) //
-//                        .setStyle(new Style().setColor(TextFormatting.BLUE))));
-//        toolTip.add(new TranslationTextComponent("module.de.size") //
-//                .setStyle(new Style().setColor(TextFormatting.GOLD)) //
-//                .appendSibling(new StringTextComponent(getWidth() + "x" + getHeight()) //
-//                        .setStyle(new Style().setColor(TextFormatting.BLUE))));
     }
 
     /**
@@ -92,7 +82,7 @@ public abstract class ModuleProperties<T extends ModuleProperties<T>> {
      * @param propertiesList   List of module properties for all installed modules of this type.
      * @param statNameValueMap The map to which the combined stats for this module type should be added along with the name of the stat.
      */
-    public abstract void addCombinedStats(List<T> propertiesList, Map<ITextComponent, ITextComponent> statNameValueMap, IModuleHost moduleHost);
+    public abstract void addCombinedStats(List<T> propertiesList, Map<ITextComponent, ITextComponent> statNameValueMap, ModuleHost moduleHost);
 
     public static class SubProperty<T extends ModuleProperties<T>> {
         private final String name;
@@ -105,4 +95,5 @@ public abstract class ModuleProperties<T extends ModuleProperties<T>> {
             return name;
         }
     }
+    
 }

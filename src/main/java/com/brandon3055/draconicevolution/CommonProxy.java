@@ -5,7 +5,7 @@ import com.brandon3055.draconicevolution.blocks.energynet.rendering.ENetFXHandle
 import com.brandon3055.draconicevolution.blocks.reactor.ReactorEffectHandler;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
 import com.brandon3055.draconicevolution.handlers.DEEventHandler;
-import com.brandon3055.draconicevolution.init.ModuleCapability;
+import com.brandon3055.draconicevolution.init.ModCapabilities;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import net.minecraft.client.audio.ISound;
 import net.minecraftforge.client.event.ColorHandlerEvent;
@@ -19,7 +19,7 @@ public class CommonProxy {
 
     public void commonSetup(FMLCommonSetupEvent event) {
         DraconicNetwork.init();
-        ModuleCapability.register();
+        ModCapabilities.register();
         MinecraftForge.EVENT_BUS.register(new DEEventHandler());
     }
 

@@ -1,4 +1,4 @@
-package com.brandon3055.draconicevolution.api.itemconfig;
+package com.brandon3055.draconicevolution.api.itemconfig_dep;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -9,6 +9,7 @@ import java.util.Map;
 /**
  * Created by brandon3055 on 8/06/2016.
  */
+@Deprecated
 public class AOEConfigField extends IntegerConfigField {
 
     public AOEConfigField(String name, int value, int minValue, int maxValue, String description) {

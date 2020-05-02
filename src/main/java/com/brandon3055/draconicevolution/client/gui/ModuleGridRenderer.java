@@ -3,7 +3,7 @@ package com.brandon3055.draconicevolution.client.gui;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
 import com.brandon3055.brandonscore.client.utils.GuiHelper;
 import com.brandon3055.draconicevolution.api.TechLevel;
-import com.brandon3055.draconicevolution.api.modules.IModule;
+import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.lib.InstallResult;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleGrid;
@@ -11,7 +11,6 @@ import com.brandon3055.draconicevolution.api.modules.lib.ModuleItem;
 import com.brandon3055.draconicevolution.client.ClientProxy;
 import com.brandon3055.draconicevolution.client.ModuleSpriteUploader;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -132,7 +131,7 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> {
         x += 8;
         y += 8;
         if (isMouseOver(x + modularGui.guiLeft(), y + modularGui.guiTop())) {
-            IModule<?> module = ModuleItem.getModule(stack);
+            Module<?> module = ModuleItem.getModule(stack);
             if (module != null) {
                 int cs = grid.getCellSize();
                 int mw = module.getProperties().getWidth() * cs;
@@ -224,7 +223,7 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> {
         int cs = grid.getCellSize();
         int x = (int) ((xPos - xPos()) / cs);
         int y = (int) ((yPos - yPos()) / cs);
-        IModule<?> module = ModuleItem.getModule(player.getItemStack());
+        Module<?> module = ModuleItem.getModule(player.getItemStack());
         if (module != null && withPlaceOffset) {
             int mw = module.getProperties().getWidth() * cs;
             int mh = module.getProperties().getHeight() * cs;
@@ -234,7 +233,7 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> {
         return grid.getCell(x, y);
     }
 
-    private void drawModule(IRenderTypeBuffer getter, int x, int y, IModule<?> module) {
+    private void drawModule(IRenderTypeBuffer getter, int x, int y, Module<?> module) {
         int cs = grid.getCellSize();
         int mw = module.getProperties().getWidth() * cs;
         int mh = module.getProperties().getHeight() * cs;
@@ -285,7 +284,7 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> {
         return super.onUpdate();
     }
 
-    private int getModuleColour(IModule<?> module) {
+    private int getModuleColour(Module<?> module) {
         switch (module.getProperties().getTechLevel()) {
             case DRACONIUM:
                 return 0xff1e4596;

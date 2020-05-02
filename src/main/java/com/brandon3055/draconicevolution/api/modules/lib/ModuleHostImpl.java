@@ -1,10 +1,10 @@
 package com.brandon3055.draconicevolution.api.modules.lib;
 
 import com.brandon3055.draconicevolution.api.TechLevel;
-import com.brandon3055.draconicevolution.api.modules.IModule;
+import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.ModuleRegistry;
 import com.brandon3055.draconicevolution.api.modules.ModuleType;
-import com.brandon3055.draconicevolution.api.modules.capability.IModuleHost;
+import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.ResourceLocation;
@@ -21,9 +21,9 @@ import java.util.stream.Stream;
 /**
  * Created by brandon3055 and covers1624 on 4/16/20.
  */
-public class ModuleHostImpl implements IModuleHost, INBTSerializable<CompoundNBT> {
+public class ModuleHostImpl implements ModuleHost, INBTSerializable<CompoundNBT> {
 
-    private static Logger logger = LogManager.getLogger("draconicevolution");
+    private static Logger logger = LogManager.getLogger("draconic-modules");
 
     private int gridWidth;
     private int gridHeight;
@@ -45,7 +45,7 @@ public class ModuleHostImpl implements IModuleHost, INBTSerializable<CompoundNBT
     }
 
     @Override
-    public Stream<IModule<?>> getModules() {
+    public Stream<Module<?>> getModules() {
         return getModuleEntities().stream().map(ModuleEntity::getModule);
     }
 
@@ -94,7 +94,7 @@ public class ModuleHostImpl implements IModuleHost, INBTSerializable<CompoundNBT
         ListNBT modules = nbt.getList("modules", 10);
         modules.stream().map(inbt -> (CompoundNBT) inbt).forEach(compound -> {
             ResourceLocation id = new ResourceLocation(compound.getString("id"));
-            IModule<?> module = ModuleRegistry.getRegistry().getValue(id);
+            Module<?> module = ModuleRegistry.getRegistry().getValue(id);
             if (module == null) {
                 logger.warn("Failed to load unregistered module: " + id + " Skipping...");
             }

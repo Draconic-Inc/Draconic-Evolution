@@ -1,20 +1,19 @@
 package com.brandon3055.draconicevolution.api.modules.lib;
 
-import com.brandon3055.draconicevolution.api.modules.capability.IModuleHost;
-import net.minecraft.world.World;
+import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 
 /**
  * Created by brandon3055 on 18/4/20.
  */
 public abstract class ModuleContext {
 
-    private IModuleHost moduleHost;
+    private ModuleHost moduleHost;
 
-    public ModuleContext(IModuleHost moduleHost) {
+    public ModuleContext(ModuleHost moduleHost) {
         this.moduleHost = moduleHost;
     }
 
-    public IModuleHost getModuleHost() {
+    public ModuleHost getModuleHost() {
         return moduleHost;
     }
 

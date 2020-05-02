@@ -6,7 +6,7 @@ import com.brandon3055.brandonscore.utils.FacingUtils;
 import com.brandon3055.brandonscore.utils.InfoHelper;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.draconicevolution.api.IHudDisplay;
-import com.brandon3055.draconicevolution.api.itemconfig.*;
+import com.brandon3055.draconicevolution.api.itemconfig_dep.*;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;

@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.items.tools;
 
 import com.brandon3055.brandonscore.lib.PairKV;
-import com.brandon3055.draconicevolution.api.itemconfig.ToolConfigHelper;
+import com.brandon3055.draconicevolution.api.itemconfig_dep.ToolConfigHelper;
 import com.brandon3055.draconicevolution.client.DETextures;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;

@@ -1,7 +1,9 @@
 package com.brandon3055.draconicevolution.api.modules;
 
-import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.registries.ForgeRegistry;
 import net.minecraftforge.registries.RegistryManager;
 
@@ -12,9 +14,9 @@ import net.minecraftforge.registries.RegistryManager;
  */
 public class ModuleRegistry {
 
-    private static ForgeRegistry<IModule<?>> MODULE_REGISTRY = null;
+    private static ForgeRegistry<Module<?>> MODULE_REGISTRY = null;
 
-    public static ForgeRegistry<IModule<?>> getRegistry() {
+    public static ForgeRegistry<Module<?>> getRegistry() {
         if (MODULE_REGISTRY == null) {
             MODULE_REGISTRY = RegistryManager.ACTIVE.getRegistry(new ResourceLocation("draconicevolution", "modules"));
         }

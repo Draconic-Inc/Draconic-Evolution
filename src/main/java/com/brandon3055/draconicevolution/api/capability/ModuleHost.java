@@ -1,14 +1,14 @@
-package com.brandon3055.draconicevolution.api.modules.capability;
+package com.brandon3055.draconicevolution.api.capability;
 
 import com.brandon3055.draconicevolution.api.TechLevel;
-import com.brandon3055.draconicevolution.api.modules.IModule;
+import com.brandon3055.draconicevolution.api.modules.Module;
+import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
 import com.brandon3055.draconicevolution.api.modules.lib.InstallResult;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.brandon3055.draconicevolution.api.modules.ModuleType;
 import com.brandon3055.draconicevolution.api.modules.properties.EnergyModuleProperties;
 import com.brandon3055.draconicevolution.api.modules.properties.ModuleProperties;
 import com.brandon3055.draconicevolution.api.modules.properties.ModuleProperties.SubProperty;
-import com.brandon3055.draconicevolution.api.modules.properties.ShieldModuleProperties;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Streams;
 import net.minecraft.nbt.CompoundNBT;
@@ -25,12 +25,12 @@ import static com.brandon3055.draconicevolution.api.modules.lib.InstallResult.In
 /**
  * Created by brandon3055 and covers1624 on 4/16/20.
  */
-public interface IModuleHost extends INBTSerializable<CompoundNBT> {
+public interface ModuleHost extends INBTSerializable<CompoundNBT> {
 
     /**
      * @return a list of installed modules.
      */
-    Stream<IModule<?>> getModules();
+    Stream<Module<?>> getModules();
 
     /**
      * @return a list of module entities for all installed modules.
@@ -48,12 +48,12 @@ public interface IModuleHost extends INBTSerializable<CompoundNBT> {
     TechLevel getHostTechLevel();
 
     /**
-     * @return the width of this {@link IModuleHost}'s module grid.
+     * @return the width of this {@link ModuleHost}'s module grid.
      */
     int getGridWidth();
 
     /**
-     * @return the height of this {@link IModuleHost}'s module grid.
+     * @return the height of this {@link ModuleHost}'s module grid.
      */
     int getGridHeight();
 
@@ -64,11 +64,17 @@ public interface IModuleHost extends INBTSerializable<CompoundNBT> {
      * This is currently only used for displaying the stats for modules installed in a grid.
      */
     default boolean isSubPropertySupported(ModuleProperties<?> properties, SubProperty<?> subProperty) {
+        EnergyModuleProperties props = getModuleProperties(ModuleTypes.ENERGY_STORAGE);
+
         return true;
     }
 
-    default InstallResult checkAddModule(IModule<?> newModule) {
-        Collection<IModule<?>> view = Collections.unmodifiableList(getModules().collect(Collectors.toList()));
+    default <T extends ModuleProperties<T>> T getModuleProperties(ModuleType<T> moduleType) {
+        return null;
+    }
+
+    default InstallResult checkAddModule(Module<?> newModule) {
+        Collection<Module<?>> view = Collections.unmodifiableList(getModules().collect(Collectors.toList()));
         Optional<InstallResult> opt = view.stream()//
                 .map(other -> newModule.areModulesCompatible(other).getBlockingResult(other.areModulesCompatible(newModule)))//
                 .filter(e -> e.resultType == NO || e.resultType == ONLY_WHEN_OVERRIDEN)//
@@ -77,7 +83,7 @@ public interface IModuleHost extends INBTSerializable<CompoundNBT> {
             return opt.get();
         }
 
-        Iterable<IModule<?>> newModules = Iterables.concat(view, Collections.singleton(newModule));
+        Iterable<Module<?>> newModules = Iterables.concat(view, Collections.singleton(newModule));
         opt = Streams.stream(newModules).parallel()//
                 .map(module -> {
                     int max = module.maxInstallable();

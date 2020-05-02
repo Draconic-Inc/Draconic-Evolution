@@ -1,10 +1,8 @@
 package com.brandon3055.draconicevolution.client.handler;
 
 
-import codechicken.lib.colour.ColourRGBA;
 import codechicken.lib.reflect.ObfMapping;
 import codechicken.lib.reflect.ReflectionManager;
-import codechicken.lib.render.RenderUtils;
 import codechicken.lib.render.shader.ShaderProgram;
 import codechicken.lib.vec.Cuboid6;
 import codechicken.lib.vec.Vector3;
@@ -12,12 +10,11 @@ import com.brandon3055.brandonscore.client.ProcessHandlerClient;
 import com.brandon3055.brandonscore.client.utils.GuiHelper;
 import com.brandon3055.brandonscore.lib.DelayedExecutor;
 import com.brandon3055.brandonscore.lib.PairKV;
-import com.brandon3055.brandonscore.utils.ModelUtils;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.api.energy.ICrystalBinder;
-import com.brandon3055.draconicevolution.api.itemconfig.ToolConfigHelper;
+import com.brandon3055.draconicevolution.api.itemconfig_dep.ToolConfigHelper;
 import com.brandon3055.draconicevolution.client.render.shaders.DEShaders;
 import com.brandon3055.draconicevolution.handlers.BinderHandler;
 import com.brandon3055.draconicevolution.items.tools.CreativeExchanger;

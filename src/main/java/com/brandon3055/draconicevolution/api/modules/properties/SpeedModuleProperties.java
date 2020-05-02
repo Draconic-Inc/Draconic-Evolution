@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.api.modules.properties;
 
 import com.brandon3055.draconicevolution.api.TechLevel;
-import com.brandon3055.draconicevolution.api.modules.capability.IModuleHost;
+import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 
@@ -37,7 +37,7 @@ public class SpeedModuleProperties extends ModuleProperties<SpeedModulePropertie
     }
 
     @Override
-    public void addCombinedStats(List<SpeedModuleProperties> propertiesList, Map<ITextComponent, ITextComponent> map, IModuleHost moduleHost) {
+    public void addCombinedStats(List<SpeedModuleProperties> propertiesList, Map<ITextComponent, ITextComponent> map, ModuleHost moduleHost) {
 //        PLAYER_SPEED / MACHINE_SPEED
         map.put(new StringTextComponent("SpeedModule"), new StringTextComponent("TODO"));
     }

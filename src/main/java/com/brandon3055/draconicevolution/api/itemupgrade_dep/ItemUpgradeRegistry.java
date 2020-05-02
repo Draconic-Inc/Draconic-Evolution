@@ -1,4 +1,4 @@
-package com.brandon3055.draconicevolution.api.itemupgrade;
+package com.brandon3055.draconicevolution.api.itemupgrade_dep;
 
 /**
  * Created by brandon3055 on 8/06/2016.

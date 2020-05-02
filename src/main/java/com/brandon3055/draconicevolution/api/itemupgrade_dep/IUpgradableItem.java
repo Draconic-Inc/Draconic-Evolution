@@ -1,4 +1,4 @@
-package com.brandon3055.draconicevolution.api.itemupgrade;
+package com.brandon3055.draconicevolution.api.itemupgrade_dep;
 
 import net.minecraft.item.ItemStack;
 

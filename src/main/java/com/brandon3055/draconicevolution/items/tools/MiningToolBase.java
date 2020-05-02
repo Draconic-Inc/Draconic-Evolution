@@ -6,9 +6,8 @@ import com.brandon3055.brandonscore.inventory.BlockToStackHelper;
 import com.brandon3055.brandonscore.inventory.InventoryDynamic;
 import com.brandon3055.brandonscore.lib.PairKV;
 import com.brandon3055.draconicevolution.DEConfig;
-import com.brandon3055.draconicevolution.api.itemconfig.*;
-import com.brandon3055.draconicevolution.api.itemupgrade.UpgradeHelper;
-import com.brandon3055.draconicevolution.entity.EntityLootCore;
+import com.brandon3055.draconicevolution.api.itemconfig_dep.*;
+import com.brandon3055.draconicevolution.api.itemupgrade_dep.UpgradeHelper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import net.minecraft.block.Block;
@@ -48,7 +47,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static com.brandon3055.draconicevolution.api.itemconfig.IItemConfigField.EnumControlType.SLIDER;
+import static com.brandon3055.draconicevolution.api.itemconfig_dep.IItemConfigField.EnumControlType.SLIDER;
 import static com.brandon3055.draconicevolution.items.ToolUpgrade.DIG_AOE;
 import static com.brandon3055.draconicevolution.items.ToolUpgrade.DIG_SPEED;
 

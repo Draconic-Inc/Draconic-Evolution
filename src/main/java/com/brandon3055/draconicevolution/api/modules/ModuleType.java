@@ -23,7 +23,7 @@ public interface ModuleType<T extends ModuleProperties<T>> {
      * @param otherModule Other module.
      * Otherwise return fail with an ITextTranslation specifying a reason that can be displayed to the player.
      */
-    default InstallResult areModulesCompatible(IModule<T> thisModule, IModule<?> otherModule) {
+    default InstallResult areModulesCompatible(Module<T> thisModule, Module<?> otherModule) {
         return new InstallResult(InstallResultType.YES, thisModule, null, null);
     }
 
@@ -31,7 +31,7 @@ public interface ModuleType<T extends ModuleProperties<T>> {
      * This is a convenience method that automatically casts the modules properties to the correct type for this {@link ModuleType}
      * @param module A module matching this module type.
      */
-    default T getProperties(IModule<?> module) {
+    default T getProperties(Module<?> module) {
         return SneakyUtils.unsafeCast(module.getProperties());
     }
 
