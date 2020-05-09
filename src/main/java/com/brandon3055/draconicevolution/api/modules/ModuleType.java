@@ -3,12 +3,12 @@ package com.brandon3055.draconicevolution.api.modules;
 import codechicken.lib.util.SneakyUtils;
 import com.brandon3055.draconicevolution.api.modules.lib.InstallResult;
 import com.brandon3055.draconicevolution.api.modules.lib.InstallResult.InstallResultType;
-import com.brandon3055.draconicevolution.api.modules.properties.ModuleProperties;
+import com.brandon3055.draconicevolution.api.modules.properties.ModuleData;
 
 /**
  * Created by brandon3055 and covers1624 on 4/16/20.
  */
-public interface ModuleType<T extends ModuleProperties<T>> {
+public interface ModuleType<T extends ModuleData<T>> {
 
     /**
      * @return The maximum number of modules of this type that can be installed (-1 = no limit)

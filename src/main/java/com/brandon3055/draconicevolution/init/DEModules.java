@@ -8,7 +8,7 @@ import com.brandon3055.draconicevolution.api.TechLevel;
 import com.brandon3055.draconicevolution.api.modules.properties.*;
 import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleItem;
-import com.brandon3055.draconicevolution.api.modules.lib.SimpleModuleImpl;
+import com.brandon3055.draconicevolution.api.modules.lib.ModuleImpl;
 import com.brandon3055.draconicevolution.items.modules.TestModuleHost;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.item.Item;
@@ -24,6 +24,7 @@ import net.minecraftforge.registries.RegistryBuilder;
 
 import java.util.ArrayList;
 
+import static com.brandon3055.draconicevolution.api.TechLevel.*;
 import static com.brandon3055.draconicevolution.api.modules.ModuleTypes.*;
 import static net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus.MOD;
 
@@ -91,30 +92,30 @@ public class DEModules {
     }
 
     //@formatter:off
-    @ObjectHolder("test_module_1")        public static SimpleModuleImpl<?>          test_module_1;
-    @ObjectHolder("test_module_2")        public static SimpleModuleImpl<?>          test_module_2;
-    @ObjectHolder("test_module_3")        public static SimpleModuleImpl<?>          test_module_3;
-    @ObjectHolder("test_module_4")        public static SimpleModuleImpl<?>          test_module_4;
-    @ObjectHolder("test_module_5")        public static SimpleModuleImpl<?>          test_module_5;
-    @ObjectHolder("test_module_6")        public static SimpleModuleImpl<?>          test_module_6;
-    @ObjectHolder("test_module_7")        public static SimpleModuleImpl<?>          test_module_7;
-    @ObjectHolder("test_module_8")        public static SimpleModuleImpl<?>          test_module_8;
-    @ObjectHolder("test_module_9")        public static SimpleModuleImpl<?>          test_module_9;
+    @ObjectHolder("test_module_1")        public static ModuleImpl<?>          test_module_1;
+    @ObjectHolder("test_module_2")        public static ModuleImpl<?>          test_module_2;
+    @ObjectHolder("test_module_3")        public static ModuleImpl<?>          test_module_3;
+    @ObjectHolder("test_module_4")        public static ModuleImpl<?>          test_module_4;
+    @ObjectHolder("test_module_5")        public static ModuleImpl<?>          test_module_5;
+    @ObjectHolder("test_module_6")        public static ModuleImpl<?>          test_module_6;
+    @ObjectHolder("test_module_7")        public static ModuleImpl<?>          test_module_7;
+    @ObjectHolder("test_module_8")        public static ModuleImpl<?>          test_module_8;
+    @ObjectHolder("test_module_9")        public static ModuleImpl<?>          test_module_9;
     //@formatter:on
 
     @SubscribeEvent
     public static void registerModules(RegistryEvent.Register<Module<?>> event) {
-        event.getRegistry().register(new SimpleModuleImpl<>(ENERGY_STORAGE, new EnergyModuleProperties(TechLevel.DRACONIUM, 100000L), test_module_item_1).setRegistryName("test_module_1"));
-        event.getRegistry().register(new SimpleModuleImpl<>(SHIELD, new ShieldModuleProperties(TechLevel.WYVERN, 1000, 0).setDimensions(2, 1), test_module_item_2).setRegistryName("test_module_2"));
-        event.getRegistry().register(new SimpleModuleImpl<>(AREA_OF_EFFECT, new AOEModuleProperties(TechLevel.WYVERN, 2).setDimensions(3, 1), test_module_item_3).setRegistryName("test_module_3"));
-        event.getRegistry().register(new SimpleModuleImpl<>(DAMAGE, new DamageModuleProperties(TechLevel.WYVERN, 4).setDimensions(1, 3), test_module_item_4).setRegistryName("test_module_4"));
-        event.getRegistry().register(new SimpleModuleImpl<>(SPEED, new SpeedModuleProperties(TechLevel.WYVERN, 5, 5), test_module_item_5).setRegistryName("test_module_5"));
-        event.getRegistry().register(new SimpleModuleImpl<>(DAMAGE, new DamageModuleProperties(TechLevel.DRACONIUM, 4).setDimensions(1, 3), test_module_item_6).setRegistryName("test_module_6"));
-        event.getRegistry().register(new SimpleModuleImpl<>(DAMAGE, new DamageModuleProperties(TechLevel.WYVERN, 4).setDimensions(1, 3), test_module_item_7).setRegistryName("test_module_7"));
-        event.getRegistry().register(new SimpleModuleImpl<>(DAMAGE, new DamageModuleProperties(TechLevel.DRACONIC, 4).setDimensions(1, 3), test_module_item_8).setRegistryName("test_module_8"));
-        event.getRegistry().register(new SimpleModuleImpl<>(DAMAGE, new DamageModuleProperties(TechLevel.CHAOTIC, 4).setDimensions(1, 3), test_module_item_9).setRegistryName("test_module_9"));
-
-        LogHelper.bigDev("Register Modules");
+        //@formatter:off
+        event.getRegistry().register(new ModuleImpl<>(ENERGY_STORAGE,   DRACONIUM,  new EnergyData(100000L),            test_module_item_1).setRegistryName("test_module_1"));
+        event.getRegistry().register(new ModuleImpl<>(SHIELD,           WYVERN,     new ShieldData(1000, 0),    2, 1,   test_module_item_2).setRegistryName("test_module_2"));
+        event.getRegistry().register(new ModuleImpl<>(AREA_OF_EFFECT,   WYVERN,     new AOEData(2),             3, 1,   test_module_item_3).setRegistryName("test_module_3"));
+        event.getRegistry().register(new ModuleImpl<>(DAMAGE,           WYVERN,     new DamageData(4),          1, 3,   test_module_item_4).setRegistryName("test_module_4"));
+        event.getRegistry().register(new ModuleImpl<>(SPEED,            WYVERN,     new SpeedData(5, 5),                test_module_item_5).setRegistryName("test_module_5"));
+        event.getRegistry().register(new ModuleImpl<>(DAMAGE,           DRACONIUM,  new DamageData(4),          1, 3,   test_module_item_6).setRegistryName("test_module_6"));
+        event.getRegistry().register(new ModuleImpl<>(DAMAGE,           WYVERN,     new DamageData(4),          1, 3,   test_module_item_7).setRegistryName("test_module_7"));
+        event.getRegistry().register(new ModuleImpl<>(DAMAGE,           DRACONIC,   new DamageData(4),          1, 3,   test_module_item_8).setRegistryName("test_module_8"));
+        event.getRegistry().register(new ModuleImpl<>(DAMAGE,           CHAOTIC,    new DamageData(4),          1, 3,   test_module_item_9).setRegistryName("test_module_9"));
+        //@formatter:on
     }
 
 

@@ -13,10 +13,8 @@ import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiLabel;
 import com.brandon3055.brandonscore.client.gui.modulargui.lib.GuiAlign;
 import com.brandon3055.brandonscore.client.gui.modulargui.templates.TBasicMachine;
 import com.brandon3055.brandonscore.inventory.ContainerBCTile;
-import com.brandon3055.brandonscore.inventory.ContainerBCore;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileGrinder;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
@@ -74,15 +72,14 @@ public class GuiGrinder extends ModularGuiContainer<ContainerBCTile<TileGrinder>
         popOutDialog.addChild(filterUI);
         popOutDialog.addChild(new GuiLabel(I18n.format("bc.guitoolkit.large_view.close")).onReload(e -> e.setYPos(bg.maxYPos()).setXPos(bg.xPos()).setSize(200, 12)).setAlignment(GuiAlign.LEFT));
 
-        GuiButton largeView = toolkit.createLargeViewButton();
-        largeView.setPos(filterBG.maxXPos() + 2, filterBG.maxYPos() - 10);
-        bg.addChild(largeView);
+        GuiButton largeView = toolkit.createResizeButton(bg);
+        largeView.setPos(filterBG.maxXPos() + 1, filterBG.maxYPos() - 12);
 
         //Remove the filterUI from the main background, Update its pos and size then display the dialog.
         largeView.onPressed(() -> {
             bg.removeChild(filterUI);
             popOutDialog.setPosAndSize(bg);
-            filterUI.setRelPos(bg, 4, 4).setSize(bg.xSize() - 8, bg.ySize() - 8);
+            filterUI.setRelPos(bg, 3, 3).setSize(bg.xSize() - 6, bg.ySize() - 6);
             filterBG.setPosAndSize(filterUI);
             popOutDialog.show(100);
         });

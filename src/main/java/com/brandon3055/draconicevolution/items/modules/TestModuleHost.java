@@ -1,13 +1,15 @@
 package com.brandon3055.draconicevolution.items.modules;
 
+import codechicken.lib.colour.EnumColour;
 import com.brandon3055.brandonscore.inventory.PlayerSlot;
 import com.brandon3055.draconicevolution.api.TechLevel;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
-import com.brandon3055.draconicevolution.api.capability.PropertyProvider;
-import com.brandon3055.draconicevolution.api.config.PropertyProviderImpl;
+import com.brandon3055.draconicevolution.api.config.*;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleHostImpl;
 import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
-import com.brandon3055.draconicevolution.api.capability.MultiCapabilityProvider;
+import com.brandon3055.draconicevolution.api.capability.ItemCapabilityProvider;
+import com.brandon3055.draconicevolution.init.DEModules;
+import com.brandon3055.draconicevolution.inventory.ContainerConfigurableItem;
 import com.brandon3055.draconicevolution.inventory.ContainerModularItem;
 import com.brandon3055.draconicevolution.inventory.GuiLayoutFactories;
 import net.minecraft.client.util.ITooltipFlag;
@@ -21,6 +23,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
@@ -30,6 +33,9 @@ import net.minecraftforge.fml.network.NetworkHooks;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.UUID;
+
+import static codechicken.lib.colour.EnumColour.*;
+import static net.minecraft.util.Direction.*;
 
 /**
  * Created by brandon3055 on 17/4/20.
@@ -57,15 +63,35 @@ public class TestModuleHost extends Item {
     @Nullable
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundNBT nbt) {
-        MultiCapabilityProvider capabilityProvider = new MultiCapabilityProvider();
-        capabilityProvider.addCapability("module_host", DECapabilities.MODULE_HOST_CAPABILITY, new ModuleHostImpl(TechLevel.DRACONIUM, width, height, ModuleTypes.ENERGY_STORAGE));
+//        ItemCapabilityProvider capabilityProvider = new ItemCapabilityProvider();
+//        capabilityProvider.addCapability("module_host", DECapabilities.MODULE_HOST_CAPABILITY, new ModuleHostImpl(TechLevel.DRACONIUM, width, height, ModuleTypes.ENERGY_STORAGE));
+//
+//        PropertyProviderImpl propertyProvider = new PropertyProviderImpl("test_configurable_item");
+//        capabilityProvider.addCapability("property_provider", DECapabilities.PROPERTY_PROVIDER_CAPABILITY, propertyProvider);
+//
+//        //Add config properties to propertyProvider
 
-        PropertyProviderImpl propertyProvider = new PropertyProviderImpl("test_configurable_item");
-        capabilityProvider.addCapability("property_provider", DECapabilities.PROPERTY_PROVIDER_CAPABILITY, propertyProvider);
+        ModuleHostImpl moduleHost = new ModuleHostImpl(TechLevel.DRACONIUM, width, height, "test_configurable_item");
+        moduleHost.setPropertyBuilder(properties -> {
+            properties.add(new BooleanProperty("test_boolean1", false));
+            properties.add(new IntegerProperty("test_integer1", 0).range(-100, 100));
+            properties.add(new DecimalProperty("test_decimal1", 0).range(-1, 10));
+            properties.add(new EnumProperty<>("test_enum", NORTH));
+            properties.add(new EnumProperty<>("test_enum2", RED).setAllowedValues(RED, GREEN, BLUE));
+            if (this.getRegistryName().getPath().equals("test_module_host_10x10")) {
+                properties.add(new BooleanProperty("test_boolean2", false));
+                properties.add(new BooleanProperty("test_boolean3", false));
+                properties.add(new IntegerProperty("test_integer2", 0).range(-100, 100));
+                properties.add(new IntegerProperty("test_integer3", 0).range(-100, 100));
+                properties.add(new DecimalProperty("test_decimal2", 0).range(-1, 10));
+                properties.add(new DecimalProperty("test_decimal3", 0).range(-1, 10));
 
-        //Add config properties to propertyProvider
+            }
 
-        return capabilityProvider;
+        });
+
+
+        return new ItemCapabilityProvider<>(moduleHost);
     }
 
     @Override
@@ -87,19 +113,12 @@ public class TestModuleHost extends Item {
     @Override
     public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity player, Hand handIn) {
         if (player instanceof ServerPlayerEntity) {
-            PlayerSlot slot = new PlayerSlot(player, handIn);
-            NetworkHooks.openGui((ServerPlayerEntity) player, new INamedContainerProvider() {
-                @Override
-                public ITextComponent getDisplayName() {
-                    return player.getHeldItem(handIn).getDisplayName();
-                }
-
-                @Nullable
-                @Override
-                public Container createMenu(int menuID, PlayerInventory playerInventory, PlayerEntity player) {
-                    return new ContainerModularItem(menuID, playerInventory, slot, GuiLayoutFactories.MODULAR_ITEM_LAYOUT);
-                }
-            }, slot::toBuff);
+            if (player.isShiftKeyDown()) {
+                NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerConfigurableItem.Provider());
+            } else {
+                PlayerSlot slot = new PlayerSlot(player, handIn);
+                NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerModularItem.Provider(slot.getStackInSlot(player), slot), slot::toBuff);
+            }
         }
 
         return super.onItemRightClick(worldIn, player, handIn);

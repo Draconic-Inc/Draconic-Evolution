@@ -1,6 +1,8 @@
 package com.brandon3055.draconicevolution.client.gui.modular;
 
+import com.brandon3055.brandonscore.client.BCSprites;
 import com.brandon3055.brandonscore.client.gui.GuiToolkit;
+import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElementManager;
 import com.brandon3055.brandonscore.client.gui.modulargui.ModularGuiContainer;
 import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiTexture;
@@ -10,10 +12,10 @@ import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleGrid;
 import com.brandon3055.draconicevolution.client.gui.ModuleGridRenderer;
-import com.brandon3055.draconicevolution.init.ModCapabilities;
 import com.brandon3055.draconicevolution.inventory.ContainerModularItem;
 import com.brandon3055.draconicevolution.client.DETextures;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
@@ -24,6 +26,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static com.brandon3055.brandonscore.BCConfig.darkMode;
 
 
 /**
@@ -48,13 +52,14 @@ public class GuiModularItem extends ModularGuiContainer<ContainerModularItem> {
         int height = yPadding + (cellSize * grid.getHeight());
         grid.setCellSize(cellSize);
         this.toolkit = new GuiToolkit<>(this, width, height);
+//        this.toolkit = new GuiToolkit<>(this, 300, 300);
     }
 
     @Override
     public void addElements(GuiElementManager manager) {
         TGuiBase template = new TGuiBase(this);
         //Custom background must be set before template is loaded.
-        template.background = GuiTexture.newDynamicTexture(xSize(), ySize(), DETextures::getBGDynamic);
+        template.background = GuiTexture.newDynamicTexture(xSize(), ySize(), () -> BCSprites.getThemed("background_dynamic"));
         template.background.onReload(guiTex -> guiTex.setPos(guiLeft(), guiTop()));
         toolkit.loadTemplate(template);
         template.addPlayerSlots();
@@ -72,19 +77,11 @@ public class GuiModularItem extends ModularGuiContainer<ContainerModularItem> {
 
     private void updateInfoPanel() {
         infoPanel.clear();
-
         Map<ITextComponent, ITextComponent> nameStatMap = new HashMap<>();
-        grid.getModuleHost().getModules().map(Module::getModuleType).distinct().forEach(type -> {
-            List<Module<?>> list = grid.getModuleHost().getModules().filter(module -> module.getModuleType() == type).collect(Collectors.toList());
-            if (!list.isEmpty()) {
-                type.getProperties(list.get(0)).addCombinedStats(list.stream().map(type::getProperties).collect(Collectors.toList()), nameStatMap, grid.getModuleHost());
-            }
-        });
-
+        grid.getModuleHost().addInformation(nameStatMap);
         for (ITextComponent name : nameStatMap.keySet()) {
             infoPanel.addLabeledValue(TextFormatting.GOLD + name.getFormattedText(), 6, 10, () -> TextFormatting.GRAY + nameStatMap.get(name).getFormattedText(), true);
         }
-
         infoPanel.setEnabled(!nameStatMap.isEmpty());
     }
 
@@ -99,18 +96,22 @@ public class GuiModularItem extends ModularGuiContainer<ContainerModularItem> {
     @Override
     protected void drawSlotOverlay(Slot slot) {
         if (slot.getHasStack() && slot.getStack().getCapability(DECapabilities.MODULE_HOST_CAPABILITY).isPresent()) {
-            int x = slot.xPos;
             int y = slot.yPos;
-            RenderSystem.disableLighting();
-            RenderSystem.disableDepthTest();
-            if (slot.getStack() == container.hostStack){
-                fill(x - 1, y -1, x + 17, y + 17, 0x80FF0000);
+            int x = slot.xPos;
+            int light = 0xFFfbe555;
+            int dark = 0xFFf45905;
+
+            IRenderTypeBuffer.Impl getter = minecraft.getRenderTypeBuffers().getBufferSource();
+            GuiHelper.drawShadedRect(getter.getBuffer(GuiHelper.TRANS_TYPE), x - 1, y - 1, 18, 18, 1, 0, dark, light, GuiElement.midColour(light, dark), 0);
+            getter.finish();
+
+            if (slot.getStack() == container.hostStack) {
+                RenderSystem.disableLighting();
+                RenderSystem.disableDepthTest();
+                fill(x, y, x + 16, y + 16, 0x80FF0000);
+                RenderSystem.enableLighting();
+                RenderSystem.enableDepthTest();
             }
-            else {
-                GuiHelper.drawBorderedRect(x - 1, y - 1, 18, 18, 1, 0, 0x8000FFFF);
-            }
-            RenderSystem.enableLighting();
-            RenderSystem.enableDepthTest();
         }
     }
 }

@@ -71,7 +71,7 @@ dependencies {
     compile "codechicken:CodeChickenLib:${config.mc_version}-${config.ccl_version}:deobf"
 //    compile "li.cil.oc:OpenComputers:${config.oc_version}:api"
 //    compile "mezz.jei:jei_${config.mc_version}:${config.jei_version}"
-    deobfCompile "mezz.jei:jei-1.14.4:6.0.0.18"
+    deobfCompile "mezz.jei:jei-1.15.2:6.0.0.4"
 //	compile "cofh:RedstoneFlux:${config.rf_mc_version}-${config.rf_version}:deobf"
 }
 

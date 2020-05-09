@@ -2,19 +2,23 @@ package com.brandon3055.draconicevolution.api.config;
 
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.ITextComponent;
 
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
  * Created by brandon3055 on 2/5/20.
  */
-public class BooleanProperty extends AbstractProperty<BooleanProperty> {
+public class BooleanProperty extends ConfigProperty {
     private boolean value;
-    private Function<Boolean, String> displayFormatter = String::valueOf;
+    private BooleanFormatter formatter = BooleanFormatter.TRUE_FALSE;
     private Supplier<Boolean> valueOverride;
+    private BiConsumer<ItemStack, BooleanProperty> changeListener;
 
     public BooleanProperty(String name, boolean defaultValue) {
         super(name);
@@ -40,11 +44,40 @@ public class BooleanProperty extends AbstractProperty<BooleanProperty> {
 
     @Override
     public String getDisplayValue() {
-        return displayFormatter.apply(getValue());
+        return formatter.format(getValue());
     }
 
-    public void setValueFormatter(Function<Boolean, String> displayFormatter) {
-        this.displayFormatter = displayFormatter;
+    public BooleanProperty setFormatter(BooleanFormatter formatter) {
+        this.formatter = formatter;
+        return this;
+    }
+
+    public BooleanFormatter getFormatter() {
+        return formatter;
+    }
+
+    @Override
+    public void onValueChanged(ItemStack stack) {
+        if (changeListener != null) {
+            changeListener.accept(stack, this);
+        }
+    }
+
+    @Override
+    public Type getType() {
+        return Type.BOOLEAN;
+    }
+
+    public void setChangeListener(Runnable changeListener) {
+        this.changeListener = (stack, t) -> changeListener.run();
+    }
+
+    public void setChangeListener(Consumer<ItemStack> changeListener) {
+        this.changeListener = (stack, booleanProperty) -> changeListener.accept(stack);
+    }
+
+    public void setChangeListener(BiConsumer<ItemStack, BooleanProperty> changeListener) {
+        this.changeListener = changeListener;
     }
 
     @Override

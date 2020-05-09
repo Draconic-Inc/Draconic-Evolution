@@ -865,5 +865,6 @@
     "gui.de.generator.stored_xp":                                     "Stored Expireance:",
     "gui.de.generator.stored_xp.raw":                                 "(Raw XP)",
     "module.de.type":                                                 "Module Type: ",
-    "module.de.size":                                                 "Module Size: "
+    "module.de.size":                                                 "Module Size: ",
+    "gui.draconicevolution.configure_items.name":                     "Configure Equipment"
 }

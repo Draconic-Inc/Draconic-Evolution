@@ -104,6 +104,7 @@ public class CrystalFXWireless extends CrystalFXBase<TileCrystalWirelessIO> {
     public void renderParticle(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks) {
         int texIndex = (ClientEventHandler.elapsedTicks) % DETextures.ENERGY_PARTICLE.length;
         TextureAtlasSprite sprite = DETextures.ENERGY_PARTICLE[texIndex];
+        if (sprite == null) return;
         float minU = sprite.getMinU();
         float maxU = sprite.getMaxU();
         float minV = sprite.getMinV();

@@ -2,19 +2,20 @@ package com.brandon3055.draconicevolution.api.capability;
 
 import com.brandon3055.draconicevolution.api.TechLevel;
 import com.brandon3055.draconicevolution.api.modules.Module;
-import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
 import com.brandon3055.draconicevolution.api.modules.lib.InstallResult;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.brandon3055.draconicevolution.api.modules.ModuleType;
-import com.brandon3055.draconicevolution.api.modules.properties.EnergyModuleProperties;
 import com.brandon3055.draconicevolution.api.modules.properties.ModuleProperties;
-import com.brandon3055.draconicevolution.api.modules.properties.ModuleProperties.SubProperty;
+import com.brandon3055.draconicevolution.api.modules.properties.ModuleData;
+import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Streams;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.util.INBTSerializable;
 
+import javax.annotation.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -58,19 +59,48 @@ public interface ModuleHost extends INBTSerializable<CompoundNBT> {
     int getGridHeight();
 
     /**
-     * For modules that have different stats based on what they are installed in.
-     * For example speed modules have different sub properties for machines and players.
+     * This method gathers up all modules of this type and returns their combined data.
      *
-     * This is currently only used for displaying the stats for modules installed in a grid.
+     * @param moduleType the module type
+     * @return a {@link ModuleData} object that is the result of merging the data from all installed modules of this type.
+     * Or null if there are no installed modules of this type.
      */
-    default boolean isSubPropertySupported(ModuleProperties<?> properties, SubProperty<?> subProperty) {
-        EnergyModuleProperties props = getModuleProperties(ModuleTypes.ENERGY_STORAGE);
-
-        return true;
+    @Nullable
+    default <T extends ModuleData<T>> T getModuleData(ModuleType<T> moduleType) {
+        // No that can not be replaced with a method reference. Doing so causes a BootstrapMethodError
+        // noinspection unchecked,Convert2MethodRef
+        return (T) getModules() //
+                .filter(module -> module.getType() == moduleType) //
+                .map(Module::getData) //
+                .reduce((o1, other) -> o1.combine(other)) //
+                .orElse(null);
     }
 
-    default <T extends ModuleProperties<T>> T getModuleProperties(ModuleType<T> moduleType) {
-        return null;
+    /**
+     * @return a stream containing all of the module types that are currently installed in this host.
+     */
+    default Stream<ModuleType<?>> getInstalledTypes() {
+        return getModules().map(Module::getType);
+    }
+
+    /**
+     * This method exists so that a module host can select which information from a given module will be displayed. <br>
+     * This is useful for module types like Speed which have different effects depending on what they are installed in.
+     */
+    default <T extends ModuleData<T>> void getDataInformation(T moduleData, Map<ITextComponent, ITextComponent> map) {
+        if (moduleData == null) return;
+        moduleData.addInformation(map);
+    }
+
+    /**
+     * Adds information about the installed modules to the supplied map.<br>
+     * Multiple modules of the same type will be combined and their combined stats wil be added.
+     * The map is of Property Name to Property Value
+     *
+     * @param map the map to which information will be added.
+     */
+    default void addInformation(Map<ITextComponent, ITextComponent> map) {
+        getInstalledTypes().map(this::getModuleData).forEach(data -> getDataInformation(data, map));
     }
 
     default InstallResult checkAddModule(Module<?> newModule) {
@@ -91,7 +121,7 @@ public interface ModuleHost extends INBTSerializable<CompoundNBT> {
                         return null;
                     }
                     int installed = (int) Streams.stream(newModules)//
-                            .filter(e -> e.getModuleType() == module.getModuleType() && e.getModuleTechLevel().index <= module.getModuleTechLevel().index)//
+                            .filter(e -> e.getType() == module.getType() && e.getModuleTechLevel().index <= module.getModuleTechLevel().index)//
                             .count();
                     if (installed > max) {
                         return new InstallResult(InstallResult.InstallResultType.NO, module, null, new TranslationTextComponent("too_complex"));//TODO Localize

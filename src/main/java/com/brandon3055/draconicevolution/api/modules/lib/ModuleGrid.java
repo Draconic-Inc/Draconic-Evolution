@@ -157,13 +157,17 @@ public class ModuleGrid {
     }
 
     public InstallResult checkInstall(ModuleEntity entity) {
-        if (getModuleHost().getModuleEntities().stream().anyMatch(entity::intersects)) {
+        ModuleHost host = getModuleHost();
+        if (!host.getSupportedTypes().isEmpty() && !host.getSupportedTypes().contains(entity.module.getType())) {
+            return new InstallResult(InstallResultType.NO, entity.module, null, new StringTextComponent("//Module type not supported"));
+        }
+        if (host.getModuleEntities().stream().anyMatch(entity::intersects)) {
             return new InstallResult(InstallResultType.NO, entity.module, null, new StringTextComponent("//Module does not fit in this space"));
         }
-        if (entity.getMaxGridX() > getModuleHost().getGridWidth() || entity.getMaxGridY() > getModuleHost().getGridHeight()) {
+        if (entity.getMaxGridX() > host.getGridWidth() || entity.getMaxGridY() > getModuleHost().getGridHeight()) {
             return new InstallResult(InstallResultType.NO, entity.module, null, new StringTextComponent("//Module out of bounds"));
         }
-        InstallResult result = getModuleHost().checkAddModule(entity.module);
+        InstallResult result = host.checkAddModule(entity.module);
         if (result.resultType == InstallResultType.YES || result.resultType == InstallResultType.OVERRIDE) {
             return new InstallResult(InstallResultType.YES, entity.module, null, null);
         }

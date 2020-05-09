@@ -1,44 +1,47 @@
 package com.brandon3055.draconicevolution.api.modules.properties;
 
 import com.brandon3055.draconicevolution.api.TechLevel;
+import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.ModuleType;
-import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import net.minecraft.util.text.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static net.minecraft.util.text.TextFormatting.*;
+
 /**
- * Created by covers1624 on 4/16/20.
+ * Created by brandon3055 on 3/5/20.
  */
-public abstract class ModuleProperties<T extends ModuleProperties<T>> {
-    private TechLevel techLevel;
-    private int width = -1;
-    private int height = -1;
+public class ModuleProperties<T extends ModuleData<T>> {
+    private final TechLevel techLevel;
+    private int width;
+    private int height;
+    private T data;
 
-    public ModuleProperties(TechLevel techLevel) {
-        this.techLevel = techLevel;
+    public ModuleProperties(TechLevel techLevel, T data) {
+        this(techLevel, -1, -1, data);
     }
 
-    public ModuleProperties(TechLevel techLevel, int width, int height) {
+    public ModuleProperties(TechLevel techLevel, int width, int height, T data) {
         this.techLevel = techLevel;
-        this.setDimensions(width, height);
-    }
-
-    @SuppressWarnings("unchecked")
-    public T setDimensions(int width, int height) {
         this.width = width;
         this.height = height;
-        return (T) this;
+        this.data = data;
+    }
+
+    public T getData() {
+        return data;
     }
 
     public int getWidth() {
-        if (width == -1) throw new IllegalStateException("Module dimensions have not been set!");
+        if (width == -1) throw new IllegalStateException("Module dimensions have not been set! " + getData());
         return width;
     }
 
     public int getHeight() {
-        if (height == -1) throw new IllegalStateException("Module dimensions have not been set!");
+        if (height == -1) throw new IllegalStateException("Module dimensions have not been set! " + getData());
         return height;
     }
 
@@ -60,40 +63,21 @@ public abstract class ModuleProperties<T extends ModuleProperties<T>> {
      *
      * @param toolTip the item tool tip.
      */
-    public void addStats(List<ITextComponent> toolTip, ModuleType<?> type) {
-        toolTip.add(new TranslationTextComponent("module.de.type") //
-                .applyTextStyle(TextFormatting.GRAY) //
-                .appendSibling(new StringTextComponent(" ") //
+    public void addStats(List<ITextComponent> toolTip, Module<?> module) {
+        toolTip.add(new TranslationTextComponent("module.draconicevolution.module_type") //
+                .applyTextStyle(GRAY) //
+                .appendSibling(new StringTextComponent(": ") //
                         .appendSibling(techLevel.getDisplayName().applyTextStyle(techLevel.getTextColour())) //
-                        .appendSibling(new StringTextComponent(" ")) //
-                        .appendSibling(new TranslationTextComponent("module.de.type." + type.getName()).applyTextStyle(TextFormatting.DARK_GREEN))));
-        toolTip.add(new TranslationTextComponent("module.de.size") //
-                .applyTextStyle(TextFormatting.GRAY) //
-                .appendSibling(new StringTextComponent(" ") //
+                        .appendSibling(new StringTextComponent(": ")) //
+                        .appendSibling(new TranslationTextComponent("module.draconicevolution." + module.getType().getName() + ".name").applyTextStyle(DARK_GREEN))));
+        toolTip.add(new TranslationTextComponent("module.draconicevolution.grid_size") //
+                .applyTextStyle(GRAY) //
+                .appendSibling(new StringTextComponent(": ") //
                         .appendSibling(new StringTextComponent(getWidth() + "x" + getHeight()) //
-                                .applyTextStyle(TextFormatting.DARK_GREEN))));
+                                .applyTextStyle(DARK_GREEN))));
+
+        Map<ITextComponent, ITextComponent> map = new HashMap<>();
+        getData().addInformation(map);
+        map.forEach((name, value) -> toolTip.add(name.applyTextStyle(GRAY).appendSibling(new StringTextComponent(": ")).appendSibling(value.applyTextStyle(DARK_GREEN))));
     }
-
-    /**
-     * This method is used to combine / add up the total stats of all installed modules of a specific type.
-     * This is then displayed in the module configuration GUI.
-     * For example if there are multiple energy modules installed this will be used to display the total added energy capacity.
-     *
-     * @param propertiesList   List of module properties for all installed modules of this type.
-     * @param statNameValueMap The map to which the combined stats for this module type should be added along with the name of the stat.
-     */
-    public abstract void addCombinedStats(List<T> propertiesList, Map<ITextComponent, ITextComponent> statNameValueMap, ModuleHost moduleHost);
-
-    public static class SubProperty<T extends ModuleProperties<T>> {
-        private final String name;
-
-        public SubProperty(String name) {
-            this.name = name;
-        }
-
-        public String getName() {
-            return name;
-        }
-    }
-    
 }

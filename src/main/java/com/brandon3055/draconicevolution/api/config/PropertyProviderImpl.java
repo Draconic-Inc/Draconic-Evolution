@@ -13,8 +13,8 @@ import java.util.*;
 public class PropertyProviderImpl implements PropertyProvider {
 
     private UUID providerID = null;
-    private Map<String, ConfigProperty> propertyMap = new HashMap<>();
     private String providerName;
+    private Map<String, ConfigProperty> propertyMap = new HashMap<>();
 
     /**
      * @see #getProviderName()
@@ -56,8 +56,8 @@ public class PropertyProviderImpl implements PropertyProvider {
     public CompoundNBT serializeNBT() {
         CompoundNBT nbt = new CompoundNBT();
         nbt.putUniqueId("provider_id", getProviderID());
-        ListNBT properties = new ListNBT();
-        propertyMap.values().forEach(property -> properties.add(property.serializeNBT()));
+        CompoundNBT properties = new CompoundNBT();
+        propertyMap.forEach((name, property) -> properties.put(name, property.serializeNBT()));
         nbt.put("properties", properties);
         return nbt;
     }
@@ -67,5 +67,7 @@ public class PropertyProviderImpl implements PropertyProvider {
         if (nbt.hasUniqueId("provider_id")){
             providerID = nbt.getUniqueId("provider_id");
         }
+        CompoundNBT properties = nbt.getCompound("properties");
+        propertyMap.forEach((name, property) -> property.deserializeNBT(properties.getCompound(name)));
     }
 }

@@ -5,11 +5,8 @@ import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.OBJParser;
 import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Rotation;
-import codechicken.lib.vec.Scale;
-import codechicken.lib.vec.TransformationList;
-import com.brandon3055.brandonscore.client.BCTextures;
+import com.brandon3055.brandonscore.client.BCSprites;
 import com.brandon3055.brandonscore.client.gui.GuiToolkit;
-import com.brandon3055.brandonscore.client.gui.GuiToolkit.SpriteData;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElementManager;
 import com.brandon3055.brandonscore.client.gui.modulargui.ModularGuiContainer;
@@ -20,12 +17,9 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileGenerator;
 import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -48,7 +42,7 @@ public class GuiGenerator extends ModularGuiContainer<ContainerBCTile<TileGenera
     private static final CCModel storageModel;
 
     static {
-        Map<String, CCModel> map = OBJParser.parseModels(ResourceHelperDE.getResource("models/block/generator/generator_storage.obj"), GL11.GL_QUADS, null);
+        Map<String, CCModel> map = OBJParser.parseModels(new ResourceLocation(DraconicEvolution.MODID, "models/block/generator/generator_storage.obj"), GL11.GL_QUADS, null);
         storageModel = CCModel.combine(map.values());
         storageModel.computeNormals();
     }
@@ -70,7 +64,7 @@ public class GuiGenerator extends ModularGuiContainer<ContainerBCTile<TileGenera
 
         //Storage Renderer
         template.background.addChild(new StorageRenderer());
-        GuiElement fuelSlots = toolkit.createSlots(template.background, 3, 1, 0, (x, y) -> container.getSlotLayout().getSlotData(TILE_INV, x), new SpriteData(BCTextures.WIDGETS_GENERIC, 128, 12, 16, 16));
+        GuiElement fuelSlots = toolkit.createSlots(template.background, 3, 1, 0, (x, y) -> container.getSlotLayout().getSlotData(TILE_INV, x), BCSprites.get("slots/fuel"));
         fuelSlots.zOffset += 100;
         fuelSlots.setPos(guiLeft() + 64, guiTop() + 28);
 
@@ -89,9 +83,9 @@ public class GuiGenerator extends ModularGuiContainer<ContainerBCTile<TileGenera
         modeButton.setPos(template.playerSlots.maxXPos() - modeButton.xSize(), template.playerSlots.yPos() - modeButton.ySize() + 8);
 
         //Info Panel
-        template.infoPanel.addLabeledValue(GOLD + I18n.format("gui.de.generator.fuel_efficiency"), 6, 11, () -> GRAY + (tile.mode.get().getEfficiency() + "%"), true);
-        template.infoPanel.addLabeledValue(GOLD + I18n.format("gui.de.generator.output_power"), 6, 11, () -> GRAY + (tile.productionRate.get() + " / " + tile.mode.get().powerOutput + " OP/t"), true);
-        template.infoPanel.addLabeledValue(GOLD + I18n.format("gui.de.generator.current_fuel_value"), 6, 11, () -> GRAY + (tile.fuelRemaining.get() == 0 ? "n/a" : tile.fuelRemaining.get() + " / " + tile.fuelValue.get()), true);
+        template.infoPanel.addLabeledValue(GOLD + I18n.format("gui.draconicevolution.generator.fuel_efficiency"), 6, 11, () -> GRAY + (tile.mode.get().getEfficiency() + "%"), true);
+        template.infoPanel.addLabeledValue(GOLD + I18n.format("gui.draconicevolution.generator.output_power"), 6, 11, () -> GRAY + (tile.productionRate.get() + " / " + tile.mode.get().powerOutput + " OP/t"), true);
+        template.infoPanel.addLabeledValue(GOLD + I18n.format("gui.draconicevolution.generator.current_fuel_value"), 6, 11, () -> GRAY + (tile.fuelRemaining.get() == 0 ? "n/a" : tile.fuelRemaining.get() + " / " + tile.fuelValue.get()), true);
     }
 
 

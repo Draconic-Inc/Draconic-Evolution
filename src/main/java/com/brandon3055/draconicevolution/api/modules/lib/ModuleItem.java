@@ -2,9 +2,8 @@ package com.brandon3055.draconicevolution.api.modules.lib;
 
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.modules.Module;
-import com.brandon3055.draconicevolution.api.modules.properties.ModuleProperties;
+import com.brandon3055.draconicevolution.api.modules.properties.ModuleData;
 import com.brandon3055.draconicevolution.api.capability.ModuleProvider;
-import com.brandon3055.draconicevolution.init.ModCapabilities;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -25,7 +24,7 @@ import java.util.function.Supplier;
 /**
  * Created by covers1624 on 4/16/20.
  */
-public class ModuleItem<P extends ModuleProperties<P>> extends Item implements ModuleProvider<P> {
+public class ModuleItem<P extends ModuleData<P>> extends Item implements ModuleProvider<P> {
 
     @Deprecated //Do not access this directly!
     private Module<P> module = null;

@@ -67,7 +67,7 @@ public enum TechLevel {
     }
 
     public ITextComponent getDisplayName() {
-        return new TranslationTextComponent("tech_level.de." + name().toLowerCase() + ".name");
+        return new TranslationTextComponent("tech_level.draconicevolution." + name().toLowerCase() + ".name");
     }
 
     public Rarity getRarity() {

@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.api.modules;
 
 import com.brandon3055.draconicevolution.api.TechLevel;
+import com.brandon3055.draconicevolution.api.modules.properties.ModuleData;
 import com.brandon3055.draconicevolution.api.modules.properties.ModuleProperties;
 import com.brandon3055.draconicevolution.api.modules.lib.InstallResult;
 import net.minecraft.item.Item;
@@ -15,11 +16,18 @@ import java.util.List;
 /**
  * Created by brandon3055 and covers1624 on 4/16/20.
  */
-public interface Module<P extends ModuleProperties<P>> extends IForgeRegistryEntry<Module<?>> {
+public interface Module<T extends ModuleData<T>> extends IForgeRegistryEntry<Module<?>> {
 
-    ModuleType<P> getModuleType();
+    ModuleType<T> getType();
 
-    P getProperties();
+    ModuleProperties<T> getProperties();
+
+    /**
+     * @return a convenience method for getting the module data.
+     */
+    default T getData() {
+        return getProperties().getData();
+    }
 
     /**
      * This is just a convenience method. This should always return the same tech level as defined by the {@link ModuleProperties}
@@ -75,18 +83,18 @@ public interface Module<P extends ModuleProperties<P>> extends IForgeRegistryEnt
      * Otherwise return fail with an ITextTranslation specifying a reason that can be displayed to the player.
      */
     default InstallResult areModulesCompatible(Module<?> otherModule) {
-        return getModuleType().areModulesCompatible(this, otherModule);
+        return getType().areModulesCompatible(this, otherModule);
     }
 
     /**
      * @return The maximum number of modules of this type that can be installed (-1 = no limit)
      */
     default int maxInstallable() {
-        return getModuleType().maxInstallable();
+        return getType().maxInstallable();
     }
 
     default void addInformation(List<ITextComponent> toolTip) {
-        getProperties().addStats(toolTip, getModuleType());
+        getProperties().addStats(toolTip, this);
 
         if (maxInstallable() != -1) {
             toolTip.add(new TranslationTextComponent("module.de.max_installable") //

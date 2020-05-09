@@ -1,20 +1,28 @@
 package com.brandon3055.draconicevolution.integration.jei;
 
+import codechicken.lib.reflect.ReflectionManager;
 import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.client.gui.modular.GuiConfigurableItem;
 import com.brandon3055.draconicevolution.init.DEContent;
 import mezz.jei.api.*;
 import mezz.jei.api.constants.VanillaRecipeCategoryUid;
+import mezz.jei.api.gui.handlers.IGlobalGuiHandler;
+import mezz.jei.api.gui.handlers.IGuiContainerHandler;
+import mezz.jei.api.gui.handlers.IGuiProperties;
+import mezz.jei.api.gui.handlers.IScreenHandler;
 import mezz.jei.api.helpers.IJeiHelpers;
-import mezz.jei.api.registration.IModIngredientRegistration;
-import mezz.jei.api.registration.IRecipeCatalystRegistration;
-import mezz.jei.api.registration.IRecipeCategoryRegistration;
-import mezz.jei.api.registration.IRecipeRegistration;
+import mezz.jei.api.registration.*;
 import mezz.jei.api.runtime.IJeiRuntime;
+import mezz.jei.load.registration.GuiHandlerRegistration;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by brandon3055 on 24/07/2016.
@@ -29,6 +37,17 @@ public class DEJEIPlugin implements IModPlugin {
     public DEJEIPlugin() {
     }
 
+/**    Phone   */
+
+    @Override
+    public void registerGuiHandlers(IGuiHandlerRegistration registration) {
+        registration.addGuiScreenHandler(GuiConfigurableItem.class, (gui) -> null);
+    }
+
+    @Override
+    public void registerAdvanced(IAdvancedRegistration registration) {
+
+    }
 
     @Override
     public void registerIngredients(IModIngredientRegistration registry) {

@@ -3,7 +3,10 @@ package com.brandon3055.draconicevolution.client;
 import codechicken.lib.model.ModelRegistryHelper;
 import codechicken.lib.texture.SpriteRegistryHelper;
 import codechicken.lib.util.ResourceUtils;
+import com.brandon3055.brandonscore.client.BCSprites;
 import com.brandon3055.draconicevolution.CommonProxy;
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.client.gui.modular.GuiConfigurableItem;
 import com.brandon3055.draconicevolution.client.gui.modular.GuiModularItem;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.api.energy.IENetEffectTile;
@@ -30,6 +33,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLDedicatedServerSetupEvent;
 
+import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
 import static com.brandon3055.draconicevolution.api.TechLevel.*;
 import static com.brandon3055.draconicevolution.blocks.energynet.EnergyCrystal.CrystalType.*;
 
@@ -58,6 +62,7 @@ public class ClientProxy extends CommonProxy {
         registerGuiFactories();
         registerItemRenderers();
         registerTileRenderers();
+        registerTextures();
         setupRenderLayers();
 
         MinecraftForge.EVENT_BUS.register(new KeyInputHandler());
@@ -77,11 +82,16 @@ public class ClientProxy extends CommonProxy {
 //        modelHelper.register(modelLocation, bakedModel);
     }
 
+    private void registerTextures() {
+//        BCSprites.registerThemed(MODID, "<location>");
+    }
+
     private void registerGuiFactories() {
         ScreenManager.registerFactory(DEContent.container_generator, GuiGenerator::new);
         ScreenManager.registerFactory(DEContent.container_grinder, GuiGrinder::new);
         ScreenManager.registerFactory(DEContent.container_energy_core, GuiEnergyCore::new);
         ScreenManager.registerFactory(DEContent.container_modular_item, GuiModularItem::new);
+        ScreenManager.registerFactory(DEContent.container_configurable_item, GuiConfigurableItem::new);
 
 //        ScreenManager.registerFactory(DEContent.container_celestial_manipulator, GuiCelestialManipulator::new);
 //        ScreenManager.registerFactory(DEContent.container_dissenchanter, ::new);

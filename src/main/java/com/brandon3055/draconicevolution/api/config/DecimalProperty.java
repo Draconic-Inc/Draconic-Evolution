@@ -2,55 +2,120 @@ package com.brandon3055.draconicevolution.api.config;
 
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.ITextComponent;
 
+import java.text.DecimalFormat;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
  * Created by brandon3055 on 2/5/20.
  */
-public class DecimalProperty extends AbstractProperty<DecimalProperty> {
+public class DecimalProperty extends ConfigProperty {
     private double value;
-    private double min;
-    private double max;
-    private Function<Double, String> displayFormatter = String::valueOf;
-    private Supplier<Double> valueOverride;
+    private DecimalFormatter formatter = DecimalFormatter.RAW;
+    private Supplier<Double> min = () -> 0D;
+    private Supplier<Double> max = () -> 0D;
+    private BiConsumer<ItemStack, DecimalProperty> changeListener = null;
 
-    public DecimalProperty(String name, double defaultValue, double min, double max) {
+    public DecimalProperty(String name, double defaultValue) {
         super(name);
         this.value = defaultValue;
-        this.min = min;
-        this.max = max;
     }
 
-    public DecimalProperty(String name, ITextComponent displayName, double defaultValue, double min, double max) {
+    public DecimalProperty(String name, ITextComponent displayName, double defaultValue) {
         super(name, displayName);
         this.value = defaultValue;
-        this.min = min;
-        this.max = max;
     }
 
     public double getValue() {
-        return valueOverride == null ? value : valueOverride.get();
+        return value;
     }
 
     public void setValue(double value) {
         this.value = value;
     }
 
-    public void setValueOverride(Supplier<Double> valueOverride) {
-        this.valueOverride = valueOverride;
+    public DecimalProperty min(double minValue) {
+        this.min = () -> minValue;
+        return this;
+    }
+
+    public DecimalProperty min(Supplier<Double> minSupplier) {
+        this.min = minSupplier;
+        return this;
+    }
+
+    public DecimalProperty max(double maxValue) {
+        this.max = () -> maxValue;
+        return this;
+    }
+
+    public DecimalProperty max(Supplier<Double> maxSupplier) {
+        this.max = maxSupplier;
+        return this;
+    }
+
+    public DecimalProperty range(double minValue, double maxValue) {
+        this.min = () -> minValue;
+        this.max = () -> maxValue;
+        return this;
+    }
+
+    public DecimalProperty range(Supplier<Double> minSupplier, Supplier<Double> maxSupplier) {
+        this.min = minSupplier;
+        this.max = maxSupplier;
+        return this;
+    }
+
+    public double getMin() {
+        return min.get();
+    }
+
+    public double getMax() {
+        return max.get();
     }
 
     @Override
     public String getDisplayValue() {
-        return displayFormatter.apply(getValue());
+        return formatter.format(getValue());
     }
 
-    public void setValueFormatter(Function<Double, String> displayFormatter) {
-        this.displayFormatter = displayFormatter;
+    @Override
+    public void onValueChanged(ItemStack stack) {
+        if (changeListener != null) {
+            changeListener.accept(stack, this);
+        }
+    }
+
+    @Override
+    public Type getType() {
+        return Type.DECIMAL;
+    }
+
+    public void setChangeListener(Runnable changeListener) {
+        this.changeListener = (stack, integerProperty) -> changeListener.run();
+    }
+
+    public void setChangeListener(Consumer<ItemStack> changeListener) {
+        this.changeListener = (stack, integerProperty) -> changeListener.accept(stack);
+    }
+
+    public void setChangeListener(BiConsumer<ItemStack, DecimalProperty> changeListener) {
+        this.changeListener = changeListener;
+    }
+
+    public DecimalProperty setFormatter(DecimalFormatter formatter) {
+        this.formatter = formatter;
+        return this;
+    }
+
+    public DecimalFormatter getFormatter() {
+        return formatter;
     }
 
     @Override
@@ -62,7 +127,7 @@ public class DecimalProperty extends AbstractProperty<DecimalProperty> {
 
     @Override
     public void deserializeNBT(CompoundNBT nbt) {
-        value = Math.max(min, Math.min(max, nbt.getDouble("value")));
+        value = Math.max(min.get(), Math.min(max.get(), nbt.getDouble("value")));
         super.deserializeNBT(nbt);
     }
 
@@ -75,6 +140,6 @@ public class DecimalProperty extends AbstractProperty<DecimalProperty> {
     @Override
     public void deSerializeMCData(MCDataInput input) {
         super.deSerializeMCData(input);
-        value = Math.max(min, Math.min(max, input.readDouble()));
+        value = Math.max(min.get(), Math.min(max.get(), input.readDouble()));
     }
 }

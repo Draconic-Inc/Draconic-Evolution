@@ -106,7 +106,7 @@ public class ContainerModularItem extends ContainerModuleHost<TileBCore> {
             if (slot != null && !slot.getStack().isEmpty()) {
                 if (slot.getStack() == hostStack) {
                     return ItemStack.EMPTY;
-                } else if (clickTypeIn == ClickType.PICKUP && button == 0) {
+                } else if (clickTypeIn == ClickType.PICKUP && button == 0 && player.inventory.getItemStack().isEmpty()) {
                     if (slot.getStack().getCapability(DECapabilities.MODULE_HOST_CAPABILITY).isPresent()) {
                         if (player instanceof ServerPlayerEntity) {
                             PlayerSlot playerSlot = new PlayerSlot(slotId, PlayerSlot.EnumInvCategory.MAIN);

@@ -190,9 +190,9 @@ public class DETextures implements IIconRegister, ISelectiveResourceReloadListen
     public static final String DRACONIUM_CHEST = "textures/models/draconium_chest.png";
 
     //Added / updated / still used in 1.14+
-
-    public static final ResourceLocation GUI_BG_DYNAMIC_DARK = new ResourceLocation(DraconicEvolution.MODID, "textures/gui/dark/background_dynamic.png");
-    public static final ResourceLocation GUI_BG_DYNAMIC_LIGHT = new ResourceLocation(DraconicEvolution.MODID, "textures/gui/light/background_dynamic.png");
-
-    public static ResourceLocation getBGDynamic() { return BCConfig.darkMode ? GUI_BG_DYNAMIC_DARK : GUI_BG_DYNAMIC_LIGHT; }
+//
+//    public static final ResourceLocation GUI_BG_DYNAMIC_DARK = new ResourceLocation(DraconicEvolution.MODID, "textures/gui/dark/background_dynamic.png");
+//    public static final ResourceLocation GUI_BG_DYNAMIC_LIGHT = new ResourceLocation(DraconicEvolution.MODID, "textures/gui/light/background_dynamic.png");
+//
+//    public static ResourceLocation getBGDynamic() { return BCConfig.darkMode ? GUI_BG_DYNAMIC_DARK : GUI_BG_DYNAMIC_LIGHT; }
 }

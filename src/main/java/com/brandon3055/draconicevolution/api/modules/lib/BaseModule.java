@@ -2,33 +2,32 @@ package com.brandon3055.draconicevolution.api.modules.lib;
 
 import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.ModuleType;
+import com.brandon3055.draconicevolution.api.modules.properties.ModuleData;
 import com.brandon3055.draconicevolution.api.modules.properties.ModuleProperties;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 /**
  * Created by covers1624 on 4/16/20.
  */
-public abstract class BaseModule<T extends ModuleProperties<T>> extends ForgeRegistryEntry<Module<?>> implements Module<T> {
+public abstract class BaseModule<T extends ModuleData<T>> extends ForgeRegistryEntry<Module<?>> implements Module<T> {
     private final ModuleType<T> moduleType;
-    private T properties;
+    private ModuleProperties<T> properties;
 
-    public BaseModule(ModuleType<T> moduleType, T properties) {
+    public BaseModule(ModuleType<T> moduleType, ModuleProperties<T> properties) {
         this.moduleType = moduleType;
         this.properties = properties;
         properties.loadDefaults(moduleType);
     }
 
     @Override
-    public T getProperties() {
+    public ModuleProperties<T> getProperties() {
         return properties;
     }
 
     @Override
-    public ModuleType<T> getModuleType() {
+    public ModuleType<T> getType() {
         return moduleType;
     }
-
-
 }
 
 

@@ -40,6 +40,11 @@ public interface PropertyProvider extends INBTSerializable<CompoundNBT> {
 
     Collection<ConfigProperty> getProperties();
 
+    /**
+     * Retrieves a property with the specified name if one exists.
+     *
+     * @param propertyName the name of the property to retrieve.
+     */
     @Nullable
-    ConfigProperty getProperty(String propertyID);
+    ConfigProperty getProperty(String propertyName);
 }

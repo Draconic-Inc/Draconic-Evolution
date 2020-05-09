@@ -155,6 +155,7 @@ public class DEContent {
     @ObjectHolder("fusion_crafting_core")   public static ContainerType<ContainerFusionCraftingCore>                container_fusion_crafting_core;
     @ObjectHolder("reactor")                public static ContainerType<ContainerReactor>                           container_reactor;
     @ObjectHolder("modular_item")           public static ContainerType<ContainerModularItem>                       container_modular_item;
+    @ObjectHolder("configurable_item")      public static ContainerType<ContainerConfigurableItem>                  container_configurable_item;
     //@formatter:on
 
     @SubscribeEvent
@@ -172,6 +173,7 @@ public class DEContent {
         event.getRegistry().register(IForgeContainerType.create(ContainerFusionCraftingCore::new).setRegistryName("fusion_crafting_core"));
         event.getRegistry().register(IForgeContainerType.create(ContainerReactor::new).setRegistryName("reactor"));
         event.getRegistry().register(IForgeContainerType.create((windowId, playerInv, extraData) -> new ContainerModularItem(windowId, playerInv, extraData, MODULAR_ITEM_LAYOUT)).setRegistryName("modular_item"));
+        event.getRegistry().register(IForgeContainerType.create((windowId, playerInv, extraData) -> new ContainerConfigurableItem(windowId, playerInv, extraData, CONFIGURABLE_ITEM_LAYOUT)).setRegistryName("configurable_item"));
 //        event.getRegistry().register(IForgeContainerType.create(ContainerDummy::new).setRegistryName("container_dummy"));
 //        event.getRegistry().register(IForgeContainerType.create(ContainerJunkFilter::new).setRegistryName("container_junk_filter"));
 //        event.getRegistry().register(IForgeContainerType.create(ContainerRecipeBuilder::new).setRegistryName("container_recipe_builder"));
