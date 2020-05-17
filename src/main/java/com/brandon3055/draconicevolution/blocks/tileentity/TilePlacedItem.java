@@ -109,7 +109,7 @@ public class TilePlacedItem extends TileBCore /*implements ICuboidProvider*/ {
     private synchronized void calculateBounds() {
 
         BlockState state = getBlockState();//world.getBlockState(getPos());
-        Cuboid6 box = new Cuboid6(0.5, 0, 0.5, 0.5, 0, 0.5).apply(Rotation.sideRotations[state.get(PlacedItem.FACING).getIndex()].at(Vector3.center));
+        Cuboid6 box = new Cuboid6(0.5, 0, 0.5, 0.5, 0, 0.5).apply(Rotation.sideRotations[state.get(PlacedItem.FACING).getIndex()].at(Vector3.CENTER));
 
         int i = 0;
         for (Cuboid6 cuboid : indexedCuboids) {
@@ -142,7 +142,7 @@ public class TilePlacedItem extends TileBCore /*implements ICuboidProvider*/ {
 
         double scale = displayCount.get() == 1 && (toolDisplay.get() || altRenderMode.get()) ? 0.2 : 0.32;
 
-        Transformation rotation = rotations[state.get(PlacedItem.FACING).getIndex()].at(Vector3.center);
+        Transformation rotation = rotations[state.get(PlacedItem.FACING).getIndex()].at(Vector3.CENTER);
 
         double offset = 0.225;
         double blockH = 0.36;

@@ -11,7 +11,7 @@ import com.brandon3055.brandonscore.client.utils.GuiHelper;
 import com.brandon3055.brandonscore.lib.DelayedExecutor;
 import com.brandon3055.brandonscore.lib.PairKV;
 import com.brandon3055.brandonscore.utils.Utils;
-import com.brandon3055.draconicevolution.DEConfig;
+import com.brandon3055.draconicevolution.DEOldConfig;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.api.energy.ICrystalBinder;
 import com.brandon3055.draconicevolution.api.itemconfig_dep.ToolConfigHelper;
@@ -107,7 +107,7 @@ public class ClientEventHandler {
 
     @SubscribeEvent
     public void renderPlayerEvent(RenderPlayerEvent.Post event) {
-        if (!DEConfig.disableShieldHitEffect &&  playerShieldStatus.containsKey(event.getPlayer())) {
+        if (!DEOldConfig.disableShieldHitEffect &&  playerShieldStatus.containsKey(event.getPlayer())) {
             if (shieldModel == null) {
                 try {
 //                    shieldModel = OBJLoader.INSTANCE.loadModel(ResourceHelperDE.getResource("models/armor/shield_sphere.obj")).bake(TransformUtils.DEFAULT_BLOCK, DefaultVertexFormats.BLOCK, TextureUtils::getTexture);

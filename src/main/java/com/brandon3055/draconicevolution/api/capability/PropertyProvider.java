@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.api.capability;
 
 import com.brandon3055.draconicevolution.api.config.ConfigProperty;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.util.INBTSerializable;
 
@@ -12,6 +13,9 @@ import java.util.UUID;
 /**
  * Created by brandon3055 on 2/5/20.
  * This capability forms the base of the DE item configuration system.
+ * Note any item implementing this MUST also implement the share tag read and write functions from {@link DECapabilities} Or something similar.
+ * @see DECapabilities#writeToShareTag(ItemStack, CompoundNBT)
+ * @see DECapabilities#readFromShareTag(ItemStack, CompoundNBT)
  */
 public interface PropertyProvider extends INBTSerializable<CompoundNBT> {
 

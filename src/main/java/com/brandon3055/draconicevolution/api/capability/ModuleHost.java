@@ -10,6 +10,7 @@ import com.brandon3055.draconicevolution.api.modules.properties.ModuleData;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Streams;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -25,6 +26,9 @@ import static com.brandon3055.draconicevolution.api.modules.lib.InstallResult.In
 
 /**
  * Created by brandon3055 and covers1624 on 4/16/20.
+ * Note any item implementing this MUST also implement the share tag read and write functions from {@link DECapabilities} Or something similar.
+ * @see DECapabilities#writeToShareTag(ItemStack, CompoundNBT)
+ * @see DECapabilities#readFromShareTag(ItemStack, CompoundNBT)
  */
 public interface ModuleHost extends INBTSerializable<CompoundNBT> {
 

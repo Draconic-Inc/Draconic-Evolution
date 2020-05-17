@@ -6,9 +6,11 @@ import codechicken.lib.packet.PacketCustom;
 import com.brandon3055.brandonscore.handlers.HandHelper;
 import com.brandon3055.brandonscore.lib.ChatHelper;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleGrid;
+import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.PropertyData;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.api.itemconfig_dep.IConfigurableItem;
 import com.brandon3055.draconicevolution.api.itemconfig_dep.ToolConfigHelper;
+import com.brandon3055.draconicevolution.inventory.ContainerConfigurableItem;
 import com.brandon3055.draconicevolution.inventory.ContainerModuleHost;
 import com.brandon3055.draconicevolution.items.tools.IAOEWeapon;
 import com.brandon3055.draconicevolution.items.tools.Magnet;
@@ -44,6 +46,9 @@ public class ServerPacketHandler implements ICustomPacketHandler.IServerPacketHa
                 break;
             case DraconicNetwork.S_MODULE_CONTAINER_CLICK:
                 moduleSlotClick(sender, packet);
+                break;
+            case DraconicNetwork.S_PROPERTY_DATA:
+                propertyData(sender, packet);
                 break;
         }
     }
@@ -94,8 +99,7 @@ public class ServerPacketHandler implements ICustomPacketHandler.IServerPacketHa
                 }
                 i++;
             }
-        }
-        else {
+        } else {
             ItemStack stack = HandHelper.getMainFirst(player);
             if (!stack.isEmpty() && stack.getItem() instanceof IConfigurableItem) {
                 ToolConfigHelper.incrementProfile(stack);
@@ -118,8 +122,7 @@ public class ServerPacketHandler implements ICustomPacketHandler.IServerPacketHa
 
             if (depth) {
                 tool.setMiningDepth(stack, value);
-            }
-            else {
+            } else {
                 tool.setMiningAOE(stack, value);
             }
         }
@@ -138,8 +141,7 @@ public class ServerPacketHandler implements ICustomPacketHandler.IServerPacketHa
                 if (value < 0) {
                     value = maxValue;
                 }
-            }
-            else {
+            } else {
                 value += 0.5;
                 if (value > maxValue) {
                     value = 0;
@@ -160,5 +162,12 @@ public class ServerPacketHandler implements ICustomPacketHandler.IServerPacketHa
             }
         }
 
+    }
+
+    private void propertyData(ServerPlayerEntity sender, PacketCustom packet) {
+        PropertyData data = PropertyData.read(packet);
+        if (sender.openContainer instanceof ContainerConfigurableItem) {
+            ((ContainerConfigurableItem) sender.openContainer).receivePropertyData(data);
+        }
     }
 }

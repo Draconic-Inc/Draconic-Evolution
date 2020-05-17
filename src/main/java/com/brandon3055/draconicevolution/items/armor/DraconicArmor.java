@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.items.armor;
 
 import com.brandon3055.brandonscore.BrandonsCore;
-import com.brandon3055.draconicevolution.DEConfig;
+import com.brandon3055.draconicevolution.DEOldConfig;
 import com.brandon3055.draconicevolution.api.itemconfig_dep.BooleanConfigField;
 import com.brandon3055.draconicevolution.api.itemconfig_dep.ItemConfigFieldRegistry;
 import com.brandon3055.draconicevolution.api.itemconfig_dep.ToolConfigHelper;
@@ -323,8 +323,8 @@ public class DraconicArmor extends WyvernArmor {
     @Override
     public float getFlightSpeedModifier(ItemStack stack, PlayerEntity player) {
         int value = ToolConfigHelper.getIntegerField("armorFSpeedModifier", stack);
-        if (DEConfig.flightSpeedLimit > -1 && value > DEConfig.flightSpeedLimit) {
-            value = DEConfig.flightSpeedLimit;
+        if (DEOldConfig.flightSpeedLimit > -1 && value > DEOldConfig.flightSpeedLimit) {
+            value = DEOldConfig.flightSpeedLimit;
         }
 
         float modifier = value / 100F;

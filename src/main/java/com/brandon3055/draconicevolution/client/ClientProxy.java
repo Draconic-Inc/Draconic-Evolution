@@ -3,10 +3,8 @@ package com.brandon3055.draconicevolution.client;
 import codechicken.lib.model.ModelRegistryHelper;
 import codechicken.lib.texture.SpriteRegistryHelper;
 import codechicken.lib.util.ResourceUtils;
-import com.brandon3055.brandonscore.client.BCSprites;
 import com.brandon3055.draconicevolution.CommonProxy;
-import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.client.gui.modular.GuiConfigurableItem;
+import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.GuiConfigurableItem;
 import com.brandon3055.draconicevolution.client.gui.modular.GuiModularItem;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.api.energy.IENetEffectTile;
@@ -32,8 +30,8 @@ import net.minecraftforge.fml.common.thread.EffectiveSide;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLDedicatedServerSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
-import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
 import static com.brandon3055.draconicevolution.api.TechLevel.*;
 import static com.brandon3055.draconicevolution.blocks.energynet.EnergyCrystal.CrystalType.*;
 
@@ -46,14 +44,16 @@ public class ClientProxy extends CommonProxy {
 
 
     @Override
+    public void construct() {
+        super.construct();
+        FMLJavaModLoadingContext.get().getModEventBus().addListener((ColorHandlerEvent.Block event) -> moduleSpriteUploader = new ModuleSpriteUploader());
+    }
+
+    @Override
     public void commonSetup(FMLCommonSetupEvent event) {
         super.commonSetup(event);
     }
 
-    @Override
-    public void onColourSetup(ColorHandlerEvent.Block event) {
-        moduleSpriteUploader = new ModuleSpriteUploader();
-    }
 
     @Override
     public void clientSetup(FMLClientSetupEvent event) {

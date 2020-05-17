@@ -11,7 +11,7 @@ import com.brandon3055.brandonscore.inventory.TileItemStackHandler;
 import com.brandon3055.brandonscore.lib.datamanager.*;
 import com.brandon3055.brandonscore.utils.DataUtils;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
-import com.brandon3055.draconicevolution.DEConfig;
+import com.brandon3055.draconicevolution.DEOldConfig;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.blocks.DraconiumChest;
 import com.brandon3055.draconicevolution.inventory.ContainerDraconiumChest;
@@ -418,7 +418,7 @@ public class TileDraconiumChest extends TileBCore implements ITickableTileEntity
     }
 
     public boolean isItemValidForSlot(int index, @Nonnull ItemStack stack) {
-        if (!stack.isEmpty() && DEConfig.chestBlacklist.contains(stack.getItem().getRegistryName().toString())) {
+        if (!stack.isEmpty() && DEOldConfig.chestBlacklist.contains(stack.getItem().getRegistryName().toString())) {
             return false;
         }
         if (index >= FIRST_FURNACE_SLOT && index <= LAST_FURNACE_SLOT) {

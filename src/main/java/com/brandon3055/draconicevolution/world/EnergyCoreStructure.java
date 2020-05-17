@@ -2,22 +2,19 @@ package com.brandon3055.draconicevolution.world;
 
 import com.brandon3055.brandonscore.lib.MultiBlockStorage;
 import com.brandon3055.brandonscore.lib.Vec3D;
-import com.brandon3055.brandonscore.utils.ModelUtils;
 import com.brandon3055.brandonscore.utils.MultiBlockHelper;
 import com.brandon3055.brandonscore.utils.Utils;
-import com.brandon3055.draconicevolution.DEConfig;
+import com.brandon3055.draconicevolution.DEOldConfig;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyCore;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileCoreStructure;
 import com.brandon3055.draconicevolution.client.gui.GuiEnergyCore;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.utils.LogHelper;
-import com.mojang.blaze3d.platform.GLX;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -26,8 +23,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.lwjgl.opengl.GL11;
-
-import java.util.List;
 
 /**
  * Created by brandon3055 on 1/4/2016.
@@ -701,7 +696,7 @@ public class EnergyCoreStructure extends MultiBlockHelper {
 //        String d = "draconicevolution:block_draconium";
 
         //region Hard
-        if (DEConfig.hardMode) {
+        if (DEOldConfig.hardMode) {
             storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
             storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);
             storage.addRow(e, e, e, e, e, e, e, e, e, e, e, e, e);

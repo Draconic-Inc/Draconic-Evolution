@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.items.tools;
 
 import com.brandon3055.brandonscore.items.ItemBCore;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
-import com.brandon3055.draconicevolution.DEConfig;
+import com.brandon3055.draconicevolution.DEOldConfig;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.entity.EntityLootCore;
 import net.minecraft.client.util.ITooltipFlag;
@@ -63,7 +63,7 @@ public class Magnet extends ItemBCore /*implements IBauble*/ {
                 ItemStack item = itemEntity.getItem();
 
                 String name = item.getItem().getRegistryName().toString();
-                if (!itemEntity.isAlive() || (DEConfig.itemDislocatorBlacklistMap.containsKey(name) && (DEConfig.itemDislocatorBlacklistMap.get(name) == -1/* || DEConfig.itemDislocatorBlacklistMap.get(name) == item.getItemDamage()*/))) {
+                if (!itemEntity.isAlive() || (DEOldConfig.itemDislocatorBlacklistMap.containsKey(name) && (DEOldConfig.itemDislocatorBlacklistMap.get(name) == -1/* || DEConfig.itemDislocatorBlacklistMap.get(name) == item.getItemDamage()*/))) {
                     continue;
                 }
 
@@ -119,7 +119,7 @@ public class Magnet extends ItemBCore /*implements IBauble*/ {
                 }
             }
 
-            if (flag && !DEConfig.disableDislocatorSound) {
+            if (flag && !DEOldConfig.disableDislocatorSound) {
                 world.playSound(null, entity.posX, entity.posY, entity.posZ, SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.1F, 0.5F * ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7F + 2F));
             }
 
@@ -133,7 +133,7 @@ public class Magnet extends ItemBCore /*implements IBauble*/ {
                         if (MinecraftForge.EVENT_BUS.post(new PlayerXpEvent.PickupXp(player, orb))) {
                             continue;
                         }
-                        if (!DEConfig.disableDislocatorSound) {
+                        if (!DEOldConfig.disableDislocatorSound) {
                             world.playSound(null, entity.posX, entity.posY, entity.posZ, SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.1F, 0.5F * ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7F + 1.8F));
                         }
                         player.onItemPickup(orb, 1);

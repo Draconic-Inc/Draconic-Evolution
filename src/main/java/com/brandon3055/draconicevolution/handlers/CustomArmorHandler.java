@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.handlers;
 
 import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
-import com.brandon3055.draconicevolution.DEConfig;
+import com.brandon3055.draconicevolution.DEOldConfig;
 import com.brandon3055.draconicevolution.integration.ModHelper;
 import com.brandon3055.draconicevolution.items.armor.DraconicArmor;
 import com.brandon3055.draconicevolution.items.armor.ICustomArmor;
@@ -224,7 +224,7 @@ public class CustomArmorHandler {
     public static void tickArmorEffects(ArmorSummery summery, PlayerEntity player) {
 
         //region/*----------------- Flight ------------------*/
-        if (DEConfig.enableFlight) {
+        if (DEOldConfig.enableFlight) {
             if (summery != null && summery.flight[0]) {
                 playersWithFlight.put(player, true);
                 player.abilities.allowFlying = true;

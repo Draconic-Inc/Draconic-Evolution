@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.world;
 
-import com.brandon3055.draconicevolution.DEConfig;
+import com.brandon3055.draconicevolution.DEOldConfig;
 import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -40,12 +40,12 @@ public class DEWorldGenHandler {
     //Save/load are not directly linked load is not called when generating
 
     public static void initialize() {
-        if (DEConfig.worldGenEnabled) {
+        if (DEOldConfig.worldGenEnabled) {
 //            ForgeRegistries.CHUNK_GENERATOR_TYPES.register(instance);
 //            GameRegistry.registerWorldGenerator(instance, 0);
             MinecraftForge.EVENT_BUS.register(instance);
 
-            if (DEConfig.enableRetroGen) {
+            if (DEOldConfig.enableRetroGen) {
                 MinecraftForge.EVENT_BUS.register(new WorldTickHandler());
             }
         }
@@ -60,7 +60,7 @@ public class DEWorldGenHandler {
         DimensionType type = world.getDimension().getType();
 
         if (type == DimensionType.OVERWORLD) {
-            if (!DEConfig.disableOreSpawnOverworld) {
+            if (!DEOldConfig.disableOreSpawnOverworld) {
                 addOreSpawn(DEContent.ore_draconium_overworld.getDefaultState(), FillerBlockType.NATURAL_STONE, chunkGenerator, world, random, chunkX * 16, chunkZ * 16, 6, 10, 2, 2, 8);
             }
         } else if (type == DimensionType.THE_END) {
@@ -69,21 +69,21 @@ public class DEWorldGenHandler {
 //            int x1 = actualX + random.nextInt(16);
             int y = 20 + random.nextInt(170);
 //            int z1 = actualZ + random.nextInt(16);
-            if (DEConfig.generateEnderComets && Math.sqrt(actualX * actualX + actualZ * actualZ) > 200 && random.nextInt(Math.max(1, DEConfig.cometRarity)) == 0) {
+            if (DEOldConfig.generateEnderComets && Math.sqrt(actualX * actualX + actualZ * actualZ) > 200 && random.nextInt(Math.max(1, DEOldConfig.cometRarity)) == 0) {
                 new WorldGenEnderComet().generate(world, random, new BlockPos(actualX + 8, y, actualZ + 8));
             }
-            if (DEConfig.generateChaosIslands) {
+            if (DEOldConfig.generateChaosIslands) {
                 ChaosWorldGenHandler.generateChunk(world, chunkX, chunkZ, null, random);
             }
-            if (!DEConfig.disableOreSpawnEnd) {
+            if (!DEOldConfig.disableOreSpawnEnd) {
                 addOreSpawn(DEContent.ore_draconium_end.getDefaultState(), END_FILLER_TYPE, chunkGenerator, world, random, actualX, actualZ, 4, 5, 10, 1, 70);
             }
         } else if (type == DimensionType.THE_NETHER) {
-            if (!DEConfig.disableOreSpawnNether) {
+            if (!DEOldConfig.disableOreSpawnNether) {
                 addOreSpawn(DEContent.ore_draconium_nether.getDefaultState(), FillerBlockType.NETHERRACK, chunkGenerator, world, random, chunkX * 16, chunkZ * 16, 5, 7, 5, 1, 125);
             }
         } else {
-            for (String name : DEConfig.oreGenDimentionBlacklist) {
+            for (String name : DEOldConfig.oreGenDimentionBlacklist) {
                 if (name.equals(world.getDimension().getType().getRegistryName().toString())) {
                     return;
                 }
@@ -135,7 +135,7 @@ public class DEWorldGenHandler {
             return;
         }
 
-        if (DEConfig.enableRetroGen) {
+        if (DEOldConfig.enableRetroGen) {
             ArrayDeque<ChunkPos> chunks = WorldTickHandler.chunksToGen.get(dim);
 
             if (chunks == null) {

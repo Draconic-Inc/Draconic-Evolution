@@ -5,7 +5,7 @@ import codechicken.lib.raytracer.RayTracer;
 import com.brandon3055.brandonscore.inventory.BlockToStackHelper;
 import com.brandon3055.brandonscore.inventory.InventoryDynamic;
 import com.brandon3055.brandonscore.lib.PairKV;
-import com.brandon3055.draconicevolution.DEConfig;
+import com.brandon3055.draconicevolution.DEOldConfig;
 import com.brandon3055.draconicevolution.api.itemconfig_dep.*;
 import com.brandon3055.draconicevolution.api.itemupgrade_dep.UpgradeHelper;
 import com.google.common.collect.Lists;
@@ -255,7 +255,7 @@ public abstract class MiningToolBase extends ToolBase {
         }
 
         if (!player.world.isRemote) {
-            if (DEConfig.disableLootCores) {
+            if (DEOldConfig.disableLootCores) {
                 for (int i = 0; i < inventoryDynamic.getSizeInventory(); i++) {
                     ItemStack sis = inventoryDynamic.getStackInSlot(i);
                     if (sis != null) {

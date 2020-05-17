@@ -50,7 +50,7 @@ public class EnergyCrystal extends BlockBCore implements IHudDisplay {
     static {
         for (Direction dir : Direction.values()) {
             Cuboid6 c = new Cuboid6(0.35, 0, 0.35, 0.65, 0.425, 0.65);
-            c.apply(Rotation.sideRotations[dir.getIndex()].at(Vector3.center));
+            c.apply(Rotation.sideRotations[dir.getIndex()].at(Vector3.CENTER));
             IO_CRYSTAL_SHAPES[dir.getIndex()] = VoxelShapes.create(c.aabb());
         }
     }

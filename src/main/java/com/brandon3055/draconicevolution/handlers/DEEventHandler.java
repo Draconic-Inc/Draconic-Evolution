@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.handlers;
 
 import codechicken.lib.raytracer.RayTracer;
-import com.brandon3055.draconicevolution.DEConfig;
+import com.brandon3055.draconicevolution.DEOldConfig;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.achievements.Achievements;
 import com.brandon3055.draconicevolution.api.energy.ICrystalBinder;
@@ -147,8 +147,8 @@ public class DEEventHandler {
         }
 
         World world = entity.world;
-        int rand = random.nextInt(Math.max(DEConfig.soulDropChance / dropChanceModifier, 1));
-        int rand2 = random.nextInt(Math.max(DEConfig.passiveSoulDropChance / dropChanceModifier, 1));
+        int rand = random.nextInt(Math.max(DEOldConfig.soulDropChance / dropChanceModifier, 1));
+        int rand2 = random.nextInt(Math.max(DEOldConfig.passiveSoulDropChance / dropChanceModifier, 1));
         boolean isAnimal = entity instanceof AnimalEntity;
 
         if ((rand == 0 && !isAnimal) || (rand2 == 0 && isAnimal)) {
@@ -173,18 +173,18 @@ public class DEEventHandler {
     }
 
     private boolean isValidEntity(LivingEntity entity) {
-        if (!entity.isNonBoss() && !DEConfig.allowBossSouls) {
+        if (!entity.isNonBoss() && !DEOldConfig.allowBossSouls) {
             return false;
         }
-        for (int i = 0; i < DEConfig.spawnerList.length; i++) {
-            if (DEConfig.spawnerList[i].equals(entity.getName()) && DEConfig.spawnerListWhiteList) {
+        for (int i = 0; i < DEOldConfig.spawnerList.length; i++) {
+            if (DEOldConfig.spawnerList[i].equals(entity.getName()) && DEOldConfig.spawnerListWhiteList) {
                 return true;
             }
-            else if (DEConfig.spawnerList[i].equals(entity.getName()) && !DEConfig.spawnerListWhiteList) {
+            else if (DEOldConfig.spawnerList[i].equals(entity.getName()) && !DEOldConfig.spawnerListWhiteList) {
                 return false;
             }
         }
-        return !DEConfig.spawnerListWhiteList;
+        return !DEOldConfig.spawnerListWhiteList;
     }
 
     //endregion
@@ -193,7 +193,7 @@ public class DEEventHandler {
     public void itemToss(ItemTossEvent event) {
         ItemEntity item = event.getEntityItem();
         PlayerEntity player = event.getPlayer();
-        if (DEConfig.forceDroppedItemOwner && player != null && (item.getThrowerId() == null)){
+        if (DEOldConfig.forceDroppedItemOwner && player != null && (item.getThrowerId() == null)){
             item.setThrowerId(player.getUniqueID());
         }
     }
@@ -264,7 +264,7 @@ public class DEEventHandler {
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public void itemTooltipEvent(ItemTooltipEvent event) {
-        if (DEConfig.expensiveDragonRitual && !event.getItemStack().isEmpty() && event.getItemStack().getItem() == Items.END_CRYSTAL) {
+        if (DEOldConfig.expensiveDragonRitual && !event.getItemStack().isEmpty() && event.getItemStack().getItem() == Items.END_CRYSTAL) {
             event.getToolTip().add(new StringTextComponent(TextFormatting.DARK_GRAY + "Recipe tweaked by Draconic Evolution."));
         }
 

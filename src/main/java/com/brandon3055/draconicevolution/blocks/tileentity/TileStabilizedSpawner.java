@@ -5,7 +5,7 @@ import com.brandon3055.brandonscore.lib.IActivatableTile;
 import com.brandon3055.brandonscore.lib.IChangeListener;
 import com.brandon3055.brandonscore.lib.datamanager.*;
 import com.brandon3055.brandonscore.utils.InventoryUtils;
-import com.brandon3055.draconicevolution.DEConfig;
+import com.brandon3055.draconicevolution.DEOldConfig;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.items.ItemCore;
 import net.minecraft.block.BlockState;
@@ -17,7 +17,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.SpawnEggItem;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -188,11 +187,11 @@ public class TileStabilizedSpawner extends TileBCore implements ITickableTileEnt
         }
 
         public int getMinDelay() {
-            return DEConfig.spawnerDelays[ordinal() * 2];
+            return DEOldConfig.spawnerDelays[ordinal() * 2];
         }
 
         public int getMaxDelay() {
-            return DEConfig.spawnerDelays[(ordinal() * 2) + 1];
+            return DEOldConfig.spawnerDelays[(ordinal() * 2) + 1];
         }
 
         public int getSpawnCount() {

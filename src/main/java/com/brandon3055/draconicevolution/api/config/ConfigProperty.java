@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.api.config;
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
 import com.brandon3055.draconicevolution.api.capability.PropertyProvider;
+import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.PropertyData;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -10,7 +11,6 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.util.INBTSerializable;
 
-import java.util.UUID;
 import java.util.function.Function;
 
 /**
@@ -24,7 +24,6 @@ public abstract class ConfigProperty implements INBTSerializable<CompoundNBT> {
     private String name;
     private ITextComponent displayName;
     private boolean showOnHud = true;
-    public byte displayMode = 0; //This is a general purpose field that can be used by the config gui element.
 
     public ConfigProperty(String name) {
         this.name = name;
@@ -84,31 +83,33 @@ public abstract class ConfigProperty implements INBTSerializable<CompoundNBT> {
     public CompoundNBT serializeNBT() {
         CompoundNBT nbt = new CompoundNBT();
         nbt.putBoolean("hud", showOnHud);
-        nbt.putByte("display", displayMode);
         return nbt;
     }
 
     @Override
     public void deserializeNBT(CompoundNBT nbt) {
         showOnHud = nbt.getBoolean("hud");
-        displayMode = nbt.getByte("display");
     }
 
     public void serializeMCData(MCDataOutput output) {
         output.writeBoolean(showOnHud);
-        output.writeByte(displayMode);
     }
 
     public void deSerializeMCData(MCDataInput input) {
         showOnHud = input.readBoolean();
-        displayMode = input.readByte();
     }
+
+    public abstract void loadData(PropertyData data);
 
     public enum Type {
         BOOLEAN,
         INTEGER,
         DECIMAL,
-        ENUM
+        ENUM;
+
+        public static Type getSafe(int index) {
+            return index >= 0 && index < values().length ? values()[index] : BOOLEAN;
+        }
     }
 
     public enum BooleanFormatter {
@@ -118,12 +119,17 @@ public abstract class ConfigProperty implements INBTSerializable<CompoundNBT> {
         YES_NO(e -> I18n.format("gui.draconicevolution.boolean_property." + (e ? "yes" : "no")));
 
         private Function<Boolean, String> formatter;
+
         BooleanFormatter(Function<Boolean, String> formatter) {
             this.formatter = formatter;
         }
 
         public String format(boolean value) {
             return formatter.apply(value);
+        }
+
+        public static BooleanFormatter getSafe(int index) {
+            return index >= 0 && index < values().length ? values()[index] : TRUE_FALSE;
         }
     }
 
@@ -132,6 +138,7 @@ public abstract class ConfigProperty implements INBTSerializable<CompoundNBT> {
         //Will add formatters as needed
 
         private Function<Integer, String> formatter;
+
         IntegerFormatter(Function<Integer, String> formatter) {
             this.formatter = formatter;
         }
@@ -139,19 +146,32 @@ public abstract class ConfigProperty implements INBTSerializable<CompoundNBT> {
         public String format(int value) {
             return formatter.apply(value);
         }
+
+        public static IntegerFormatter getSafe(int index) {
+            return index >= 0 && index < values().length ? values()[index] : RAW;
+        }
     }
 
     public enum DecimalFormatter {
-        RAW(String::valueOf);
+        RAW_0(e -> String.valueOf(e.intValue())),
+        RAW_1(e -> String.format("%.1f", e)),
+        RAW_2(e -> String.format("%.2f", e)),
+        RAW_3(e -> String.format("%.3f", e)),
+        RAW_4(e -> String.format("%.4f", e));
         //Will add formatters as needed
 
         private Function<Double, String> formatter;
+
         DecimalFormatter(Function<Double, String> formatter) {
             this.formatter = formatter;
         }
 
         public String format(double value) {
             return formatter.apply(value);
+        }
+
+        public static DecimalFormatter getSafe(int index) {
+            return index >= 0 && index < values().length ? values()[index] : RAW_1;
         }
     }
 }

@@ -22,7 +22,7 @@ import javax.annotation.Nullable;
  * Block for DE Generator
  */
 public class Grinder extends BlockBCore/* implements ITileEntityProvider, IRenderOverride*/ {
-    public static final DirectionProperty FACING = BlockStateProperties.FACING;
+    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
 
     public Grinder(Properties properties) {

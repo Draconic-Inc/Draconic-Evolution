@@ -2,13 +2,13 @@ package com.brandon3055.draconicevolution.api.config;
 
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
+import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.PropertyData;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.ITextComponent;
 
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
@@ -141,4 +141,10 @@ public class IntegerProperty extends ConfigProperty {
         super.deSerializeMCData(input);
         value = Math.max(min.get(), Math.min(max.get(), input.readInt()));
     }
+
+    @Override
+    public void loadData(PropertyData data) {
+        value = Math.max(min.get(), Math.min(max.get(), data.integerValue));
+    }
+
 }

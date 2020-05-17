@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.blocks.machines;
 
-import codechicken.lib.block.property.PropertyString;
 import com.brandon3055.brandonscore.blocks.BlockBCore;
+import com.brandon3055.brandonscore.blocks.PropertyString;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyPylon;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -79,8 +79,7 @@ public class EnergyPylon extends BlockBCore/* implements ITileEntityProvider, IR
         if (tile instanceof TileEnergyPylon) {
             if (player.isShiftKeyDown()) {
                 ((TileEnergyPylon) tile).selectNextCore();
-            }
-            else {
+            } else {
                 ((TileEnergyPylon) tile).validateStructure();
             }
             return ((TileEnergyPylon) tile).structureValid.get() ? ActionResultType.SUCCESS : ActionResultType.FAIL;

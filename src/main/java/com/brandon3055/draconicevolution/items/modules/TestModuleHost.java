@@ -5,6 +5,7 @@ import com.brandon3055.brandonscore.inventory.PlayerSlot;
 import com.brandon3055.draconicevolution.api.TechLevel;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.config.*;
+import com.brandon3055.draconicevolution.api.config.ConfigProperty.BooleanFormatter;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleHostImpl;
 import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
 import com.brandon3055.draconicevolution.api.capability.ItemCapabilityProvider;
@@ -32,9 +33,12 @@ import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 import static codechicken.lib.colour.EnumColour.*;
+import static com.brandon3055.draconicevolution.api.capability.DECapabilities.MODULE_HOST_CAPABILITY;
+import static com.brandon3055.draconicevolution.api.capability.DECapabilities.PROPERTY_PROVIDER_CAPABILITY;
 import static net.minecraft.util.Direction.*;
 
 /**
@@ -54,10 +58,10 @@ public class TestModuleHost extends Item {
     @Override
     public void inventoryTick(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
         super.inventoryTick(stack, worldIn, entityIn, itemSlot, isSelected);
-        if (!stack.getOrCreateTag().hasUniqueId("host_id")) { //TODO check if that capability overwrite issue is fixed in 1.15
-            stack.getOrCreateTag().putUniqueId("host_id", UUID.randomUUID());
+//        if (!stack.getOrCreateTag().hasUniqueId("host_id")) { //TODO check if that capability overwrite issue is fixed in 1.15
+//            stack.getOrCreateTag().putUniqueId("host_id", UUID.randomUUID());
 //            stack.getOrCreateTag().putUniqueId("host_id", UUID.fromString("5b5689b9-e43d-4282-a42a-dc916f3616b7"));
-        }
+//        }
     }
 
     @Nullable
@@ -73,23 +77,20 @@ public class TestModuleHost extends Item {
 
         ModuleHostImpl moduleHost = new ModuleHostImpl(TechLevel.DRACONIUM, width, height, "test_configurable_item");
         moduleHost.setPropertyBuilder(properties -> {
-            properties.add(new BooleanProperty("test_boolean1", false));
-            properties.add(new IntegerProperty("test_integer1", 0).range(-100, 100));
+            properties.add(new BooleanProperty("test_boolean1", false).setFormatter(BooleanFormatter.ACTIVE_INACTIVE));
+            properties.add(new IntegerProperty("test_integer1", 0).range(-3, 3));
             properties.add(new DecimalProperty("test_decimal1", 0).range(-1, 10));
             properties.add(new EnumProperty<>("test_enum", NORTH));
             properties.add(new EnumProperty<>("test_enum2", RED).setAllowedValues(RED, GREEN, BLUE));
             if (this.getRegistryName().getPath().equals("test_module_host_10x10")) {
-                properties.add(new BooleanProperty("test_boolean2", false));
-                properties.add(new BooleanProperty("test_boolean3", false));
+                properties.add(new BooleanProperty("test_boolean2", false).setFormatter(BooleanFormatter.ENABLED_DISABLED));
+                properties.add(new BooleanProperty("test_boolean3", false).setFormatter(BooleanFormatter.YES_NO));
                 properties.add(new IntegerProperty("test_integer2", 0).range(-100, 100));
-                properties.add(new IntegerProperty("test_integer3", 0).range(-100, 100));
-                properties.add(new DecimalProperty("test_decimal2", 0).range(-1, 10));
+                properties.add(new IntegerProperty("test_integer3", 0).range(100, 200));
+                properties.add(new DecimalProperty("test_decimal2", 0).range(0, 10));
                 properties.add(new DecimalProperty("test_decimal3", 0).range(-1, 10));
-
             }
-
         });
-
 
         return new ItemCapabilityProvider<>(moduleHost);
     }
@@ -122,5 +123,17 @@ public class TestModuleHost extends Item {
         }
 
         return super.onItemRightClick(worldIn, player, handIn);
+    }
+
+    @Nullable
+    @Override
+    public CompoundNBT getShareTag(ItemStack stack) {
+        return DECapabilities.writeToShareTag(stack, stack.getTag());
+    }
+
+    @Override
+    public void readShareTag(ItemStack stack, @Nullable CompoundNBT nbt) {
+        stack.setTag(nbt);
+        DECapabilities.readFromShareTag(stack, nbt);
     }
 }

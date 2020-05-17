@@ -94,7 +94,7 @@ public class GuiModularItem extends ModularGuiContainer<ContainerModularItem> {
     }
 
     @Override
-    protected void drawSlotOverlay(Slot slot) {
+    protected void drawSlotOverlay(Slot slot, boolean occluded) {
         if (slot.getHasStack() && slot.getStack().getCapability(DECapabilities.MODULE_HOST_CAPABILITY).isPresent()) {
             int y = slot.yPos;
             int x = slot.xPos;

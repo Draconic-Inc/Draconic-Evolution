@@ -1,10 +1,10 @@
 package com.brandon3055.draconicevolution.client.render.tile;
 
-import codechicken.lib.lighting.LightModel;
 import codechicken.lib.math.MathHelper;
 import codechicken.lib.render.CCModel;
 import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.OBJParser;
+import codechicken.lib.render.lighting.LightModel;
 import codechicken.lib.vec.*;
 import codechicken.lib.vec.uv.IconTransformation;
 import com.brandon3055.draconicevolution.blocks.machines.Generator;

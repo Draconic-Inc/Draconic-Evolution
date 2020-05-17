@@ -16,9 +16,11 @@ import net.minecraftforge.fml.event.lifecycle.FMLDedicatedServerSetupEvent;
 
 public class CommonProxy {
 
+    public void construct() {
+        DraconicNetwork.init();
+    }
 
     public void commonSetup(FMLCommonSetupEvent event) {
-        DraconicNetwork.init();
         ModCapabilities.register();
         MinecraftForge.EVENT_BUS.register(new DEEventHandler());
     }
@@ -122,7 +124,4 @@ public class CommonProxy {
         return null;
     }
 
-    public void onColourSetup(ColorHandlerEvent.Block event) {
-
-    }
 }

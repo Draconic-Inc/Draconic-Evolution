@@ -4,11 +4,10 @@ import codechicken.lib.colour.Colour;
 import codechicken.lib.data.MCDataInput;
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.inventory.ContainerBCTile;
-import com.brandon3055.brandonscore.inventory.ContainerBCore;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.lib.Vec3I;
 import com.brandon3055.brandonscore.lib.datamanager.*;
-import com.brandon3055.draconicevolution.DEConfig;
+import com.brandon3055.draconicevolution.DEOldConfig;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.brandonscore.api.power.IExtendedRFStorage;
 import com.brandon3055.draconicevolution.blocks.machines.EnergyCore;
@@ -213,7 +212,7 @@ public class TileEnergyCore extends TileBCore implements ITickableTileEntity, IE
             LogHelper.error("Tier not valid! WTF!!!");
             return 0;
         }
-        return (long) DEConfig.coreCapacity[tier.get() - 1];
+        return (long) DEOldConfig.coreCapacity[tier.get() - 1];
     }
 
     @Override

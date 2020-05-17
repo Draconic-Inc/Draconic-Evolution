@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.entity;
 
 import com.brandon3055.brandonscore.lib.Vec3D;
-import com.brandon3055.draconicevolution.DEConfig;
+import com.brandon3055.draconicevolution.DEOldConfig;
 import com.brandon3055.draconicevolution.handlers.BowHandler.BowProperties;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -177,7 +177,7 @@ public class EntityCustomArrow extends ArrowEntity {
     protected void onHit(RayTraceResult traceResult) {
 
         if (bowProperties.explosionPower > 0 && !world.isRemote) {
-            Explosion explosion = new Explosion(world, this, prevPosX, prevPosY, prevPosZ, bowProperties.explosionPower, false, DEConfig.bowBlockDamage ? Explosion.Mode.BREAK : Explosion.Mode.NONE) {
+            Explosion explosion = new Explosion(world, this, prevPosX, prevPosY, prevPosZ, bowProperties.explosionPower, false, DEOldConfig.bowBlockDamage ? Explosion.Mode.BREAK : Explosion.Mode.NONE) {
                 @Override
                 public LivingEntity getExplosivePlacedBy() {
                     return getShooter() instanceof LivingEntity ? (LivingEntity) getShooter() : null;

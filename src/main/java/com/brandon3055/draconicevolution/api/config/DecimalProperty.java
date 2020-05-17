@@ -2,14 +2,13 @@ package com.brandon3055.draconicevolution.api.config;
 
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
+import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.PropertyData;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.ITextComponent;
 
-import java.text.DecimalFormat;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
@@ -17,7 +16,7 @@ import java.util.function.Supplier;
  */
 public class DecimalProperty extends ConfigProperty {
     private double value;
-    private DecimalFormatter formatter = DecimalFormatter.RAW;
+    private DecimalFormatter formatter = DecimalFormatter.RAW_2;
     private Supplier<Double> min = () -> 0D;
     private Supplier<Double> max = () -> 0D;
     private BiConsumer<ItemStack, DecimalProperty> changeListener = null;
@@ -141,5 +140,10 @@ public class DecimalProperty extends ConfigProperty {
     public void deSerializeMCData(MCDataInput input) {
         super.deSerializeMCData(input);
         value = Math.max(min.get(), Math.min(max.get(), input.readDouble()));
+    }
+
+    @Override
+    public void loadData(PropertyData data) {
+        value = Math.max(min.get(), Math.min(max.get(), data.decimalValue));
     }
 }

@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.api.config;
 
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
+import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.PropertyData;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.ITextComponent;
@@ -49,8 +50,8 @@ public class EnumProperty<T extends Enum<T>> extends ConfigProperty {
         return allowedValues;
     }
 
-    public Map<String, String> generateValueDisplayMap() {
-        return allowedValues.stream().collect(Collectors.toMap(Enum::name, e -> displayFormatter.apply(e)));
+    public Map<Integer, String> generateValueDisplayMap() {
+        return allowedValues.stream().collect(Collectors.toMap(Enum::ordinal, e -> displayFormatter.apply(e)));
     }
 
     public T getValue() {
@@ -132,5 +133,15 @@ public class EnumProperty<T extends Enum<T>> extends ConfigProperty {
         if (allowedValues.contains(newValue)) {
             this.value = newValue;
         }
+    }
+
+    @Override
+    public void loadData(PropertyData data) {
+        try {
+            T newValue = value.getDeclaringClass().getEnumConstants()[data.enumValueIndex];
+            if (getAllowedValues().contains(newValue)) {
+                value = newValue;
+            }
+        } catch (Throwable ignored){}
     }
 }

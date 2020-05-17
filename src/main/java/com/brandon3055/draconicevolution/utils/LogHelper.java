@@ -1,9 +1,8 @@
 package com.brandon3055.draconicevolution.utils;
 
-import codechicken.lib.reflect.ObfMapping;
 import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.utils.MathUtils;
-import com.brandon3055.draconicevolution.DEConfig;
+import com.brandon3055.draconicevolution.DEOldConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -36,7 +35,7 @@ public class LogHelper {
     //Standard log entries.
 
     public static void dev(Object object) {
-        if (BrandonsCore.inDev || DEConfig.devLog) {
+        if (BrandonsCore.inDev || DEOldConfig.devLog) {
             log(Level.INFO, "[DEV]: " + object);
         }
     }
@@ -76,7 +75,7 @@ public class LogHelper {
     //log with format.
 
     public static void dev(String object, Object... format) {
-        if (BrandonsCore.inDev || DEConfig.devLog) {
+        if (BrandonsCore.inDev || DEOldConfig.devLog) {
             log(Level.INFO, "[DEV]: " + String.format(object, format));
         }
     }
@@ -183,7 +182,7 @@ public class LogHelper {
     //Log with trace element.
 
     public static void bigDev(String format, Object... data) {
-        if (BrandonsCore.inDev || DEConfig.devLog) {
+        if (BrandonsCore.inDev || DEOldConfig.devLog) {
             StackTraceElement[] trace = Thread.currentThread().getStackTrace();
             dev("****************************************");
             dev("* " + format, data);

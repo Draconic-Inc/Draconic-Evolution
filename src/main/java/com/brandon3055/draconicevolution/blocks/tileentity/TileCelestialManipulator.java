@@ -8,7 +8,7 @@ import com.brandon3055.brandonscore.lib.IChangeListener;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedByte;
-import com.brandon3055.draconicevolution.DEConfig;
+import com.brandon3055.draconicevolution.DEOldConfig;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.client.render.effect.EffectTrackerCelestialManipulator;
 
@@ -378,7 +378,7 @@ public class TileCelestialManipulator extends TileBCore implements ITickableTile
         }
 
         if (timer >= 220) {
-            world.playSound(effectFocus.x, effectFocus.y, effectFocus.z, DESoundHandler.boom, SoundCategory.BLOCKS, DEConfig.disableLoudCelestialManipulator ? 1 : 100, 1F, false);
+            world.playSound(effectFocus.x, effectFocus.y, effectFocus.z, DESoundHandler.boom, SoundCategory.BLOCKS, DEOldConfig.disableLoudCelestialManipulator ? 1 : 100, 1F, false);
             timer = 0;
             weatherToggleRunning.set(false);
             effects.clear();
@@ -566,6 +566,6 @@ public class TileCelestialManipulator extends TileBCore implements ITickableTile
     }
 
     private float getSoundVolume() {
-        return DEConfig.disableLoudCelestialManipulator ? 1 : 10;
+        return DEOldConfig.disableLoudCelestialManipulator ? 1 : 10;
     }
 }

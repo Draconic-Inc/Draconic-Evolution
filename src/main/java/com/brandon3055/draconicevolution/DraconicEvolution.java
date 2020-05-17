@@ -18,6 +18,11 @@ import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.NetworkEvent;
 
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+
 
 @Mod(DraconicEvolution.MODID)
 public class DraconicEvolution {
@@ -27,42 +32,22 @@ public class DraconicEvolution {
     public static CommonProxy proxy;
 
     public DraconicEvolution() {
-        LogHelper.info("Hello Minecraft!!!");
-
         proxy = DistExecutor.runForDist(() -> ClientProxy::new, () -> CommonProxy::new);
+        proxy.construct();
         FMLJavaModLoadingContext.get().getModEventBus().register(this);
         MinecraftForge.EVENT_BUS.register(this);
 //        ClientPlayerNetworkEvent.
 //        ClientPlayerNetworkEvent.LoggedInEvent
 //        DeferredRegister
 
-//        ModLoadingContext modLoadingContext = ModLoadingContext.get();
-//        modLoadingContext.registerConfig(ModConfig.Type.CLIENT, BCConfig.CLIENT_SPEC);
-//        modLoadingContext.registerConfig(ModConfig.Type.SERVER, BCConfig.SERVER_SPEC);
-//        modLoadingContext.registerConfig(ModConfig.Type.COMMON, BCConfig.COMMON_SPEC);
+
+        DEConfig.load();
     }
 
 
     @SubscribeEvent
     public void onCommonSetup(FMLCommonSetupEvent event) {
         proxy.commonSetup(event);
-    }
-
-    @SubscribeEvent
-    public void onColourSetup(ColorHandlerEvent.Block event) {
-        proxy.onColourSetup(event);
-//        AtlasTexture textureAtlas = new AtlasTexture(LOCATION_MODULE_TEXTURE);
-//        Minecraft.getInstance().textureManager.loadTexture(textureAtlas.getTextureLocation(), textureAtlas);
-
-//        Minecraft minecraft = Minecraft.getInstance();
-//        IReloadableResourceManager resourceManager = (IReloadableResourceManager)minecraft.getResourceManager();
-//        TextureManager textureManager = Minecraft.getInstance().textureManager;
-//        resourceManager.addReloadListener(new SpriteUploader(textureManager, ModuleTextures.LOCATION_MODULE_TEXTURE, "modules") {
-//            @Override
-//            protected Stream<ResourceLocation> getResourceLocations() {
-//                return Stream.<ResourceLocation>builder().build();
-//            }
-//        });
     }
 
     @SubscribeEvent

@@ -4,7 +4,7 @@ import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedLong;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedString;
-import com.brandon3055.draconicevolution.DEConfig;
+import com.brandon3055.draconicevolution.DEOldConfig;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.handlers.DESoundHandler;
 import net.minecraft.entity.effect.LightningBoltEntity;
@@ -76,7 +76,7 @@ public class TileChaosCrystal extends TileBCore implements ITickableTileEntity {
             return;
         }
 
-        if (DEConfig.disableChaosIslandExplosion || hasBeenMoved()) {
+        if (DEOldConfig.disableChaosIslandExplosion || hasBeenMoved()) {
             world.removeBlock(pos, false);
         }
         else {

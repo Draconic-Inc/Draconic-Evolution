@@ -2,24 +2,19 @@ package com.brandon3055.draconicevolution.client.render.effect;
 
 import codechicken.lib.colour.Colour;
 import codechicken.lib.colour.ColourARGB;
-import codechicken.lib.math.MathHelper;
 import codechicken.lib.render.shader.ShaderProgram;
 import com.brandon3055.brandonscore.client.particle.BCParticle;
 import com.brandon3055.brandonscore.client.particle.IGLFXHandler;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.utils.Utils;
-import com.brandon3055.draconicevolution.DEConfig;
+import com.brandon3055.draconicevolution.DEOldConfig;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
-import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.client.render.shaders.DEShaders;
 import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.particle.Particle;
-import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Direction;
 import net.minecraft.world.World;
@@ -221,7 +216,7 @@ public class ReactorBeamFX extends BCParticle {
             RenderSystem.depthMask(false);
             RenderSystem.alphaFunc(GL11.GL_GREATER, 0F);
 
-            if (!DEShaders.useShaders() || !DEConfig.useReactorBeamShaders) {
+            if (!DEShaders.useShaders() || !DEOldConfig.useReactorBeamShaders) {
                 RenderSystem.texParameter(3553, 10242, 10497);
                 RenderSystem.texParameter(3553, 10243, 10497);
                 RenderSystem.enableBlend();
@@ -234,7 +229,7 @@ public class ReactorBeamFX extends BCParticle {
             RenderSystem.alphaFunc(GL11.GL_GREATER, 0.1F);
 
             RenderSystem.enableCull();
-            if (!DEShaders.useShaders() || !DEConfig.useReactorBeamShaders) {
+            if (!DEShaders.useShaders() || !DEOldConfig.useReactorBeamShaders) {
                 RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
             }
         }

@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.items.tools;
 
-import codechicken.lib.util.ItemNBTUtils;
 import com.brandon3055.brandonscore.lib.PairKV;
+import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.draconicevolution.api.itemconfig_dep.BooleanConfigField;
 import com.brandon3055.draconicevolution.api.itemconfig_dep.DoubleConfigField;
 import com.brandon3055.draconicevolution.api.itemconfig_dep.ItemConfigFieldRegistry;
@@ -69,7 +69,7 @@ public class DraconicBow extends WyvernBow {
 
     @Override
     public PairKV<TextureAtlasSprite, ResourceLocation> getModels(ItemStack stack) {
-        byte pull = ItemNBTUtils.getByte(stack, "render:bow_pull");
+        byte pull = ItemNBTHelper.getByte(stack, "render:bow_pull", (byte) 0);
         return new PairKV<>(DETextures.DRACONIC_BOW[pull], new ResourceLocation("draconicevolution", String.format("models/item/tools/draconic_bow0%s.obj", pull)));
     }
 }

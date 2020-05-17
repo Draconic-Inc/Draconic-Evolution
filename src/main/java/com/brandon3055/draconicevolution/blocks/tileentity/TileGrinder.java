@@ -8,7 +8,6 @@ import com.brandon3055.brandonscore.api.power.OPStorage;
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.capability.CapabilityOP;
 import com.brandon3055.brandonscore.inventory.ContainerBCTile;
-import com.brandon3055.brandonscore.inventory.ContainerBCore;
 import com.brandon3055.brandonscore.inventory.TileItemStackHandler;
 import com.brandon3055.brandonscore.lib.IActivatableTile;
 import com.brandon3055.brandonscore.lib.IRSSwitchable;
@@ -17,7 +16,7 @@ import com.brandon3055.brandonscore.lib.datamanager.ManagedByte;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedInt;
 import com.brandon3055.brandonscore.lib.entityfilter.EntityFilter;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
-import com.brandon3055.draconicevolution.DEConfig;
+import com.brandon3055.draconicevolution.DEOldConfig;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.blocks.machines.Grinder;
 import com.brandon3055.draconicevolution.inventory.GuiLayoutFactories;
@@ -98,7 +97,7 @@ public class TileGrinder extends TileBCore implements ITickableTileEntity, IRSSw
 
         entityFilter = new EntityFilter(true, HOSTILE, TAMED, ADULTS, ENTITY_TYPE, FILTER_GROUP, PLAYER);
         entityFilter.setDirtyHandler(this::markDirty);
-        entityFilter.setTypePredicate(e -> e != PLAYER || DEConfig.allowGrindingPlayers);
+        entityFilter.setTypePredicate(e -> e != PLAYER || DEOldConfig.allowGrindingPlayers);
         entityFilter.setupServerPacketHandling(() -> createClientBoundPacket(0), packet -> sendPacketToClients(getAccessingPlayers(), packet));
         entityFilter.setupClientPacketHandling(() -> createServerBoundPacket(0), PacketCustom::sendToServer);
         setClientSidePacketHandler(0, input -> entityFilter.receivePacketFromServer(input));
@@ -168,7 +167,7 @@ public class TileGrinder extends TileBCore implements ITickableTileEntity, IRSSw
     }
 
     private boolean updateActiveState() {
-        int eph = DEConfig.grinderEnergyPerHeart;
+        int eph = DEOldConfig.grinderEnergyPerHeart;
         boolean isActive = isTileEnabled();
 
         //Only run if there is a reasonable energy buffer
@@ -199,7 +198,7 @@ public class TileGrinder extends TileBCore implements ITickableTileEntity, IRSSw
             return true;
         }
 
-        int eph = DEConfig.grinderEnergyPerHeart;
+        int eph = DEOldConfig.grinderEnergyPerHeart;
         float health = nextTarget.getHealth();
 
         //Ensure teh minimum damage dealt is 5 hearts. This is to help prevent endless hurt loops due to mobs with armor.
@@ -266,10 +265,10 @@ public class TileGrinder extends TileBCore implements ITickableTileEntity, IRSSw
 
     private boolean isValidEntity(LivingEntity livingBase) {
         if (!livingBase.isAlive()) return false;
-        if (livingBase instanceof PlayerEntity && !DEConfig.allowGrindingPlayers) return false;
-        if (DEConfig.grinderBlacklist.isEmpty()) return true;
+        if (livingBase instanceof PlayerEntity && !DEOldConfig.allowGrindingPlayers) return false;
+        if (DEOldConfig.grinderBlacklist.isEmpty()) return true;
         ResourceLocation reg = livingBase.getType().getRegistryName();
-        return !(reg != null && DEConfig.grinderBlacklist.contains(reg.toString()));
+        return !(reg != null && DEOldConfig.grinderBlacklist.contains(reg.toString()));
     }
 
     private void handleLootCollection() {

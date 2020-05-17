@@ -4,14 +4,10 @@ import codechicken.lib.packet.PacketCustom;
 import codechicken.lib.packet.PacketCustomChannelBuilder;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleGrid;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.PropertyData;
 import net.minecraft.inventory.container.ClickType;
-import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.fml.network.event.EventNetworkChannel;
-import sun.net.NetHooks;
 
 /**
  * Created by brandon3055 on 17/12/19.
@@ -28,6 +24,7 @@ public class DraconicNetwork {
     public static final int S_CYCLE_DIG_AOE =           3;
     public static final int S_CYCLE_ATTACK_AOE =        4;
     public static final int S_MODULE_CONTAINER_CLICK =  5;
+    public static final int S_PROPERTY_DATA =           6;
 
     //Server to client
     public static final int C_CRYSTAL_UPDATE =          1;
@@ -67,6 +64,11 @@ public class DraconicNetwork {
         packet.sendToServer();
     }
 
+    public static void sendPropertyData(PropertyData data) {
+        PacketCustom packet = new PacketCustom(CHANNEL, S_PROPERTY_DATA);
+        data.write(packet);
+        packet.sendToServer();
+    }
 
 
 

@@ -3,7 +3,7 @@ package com.brandon3055.draconicevolution.blocks.tileentity;
 import codechicken.lib.data.MCDataInput;
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.inventory.TileItemStackHandler;
-import com.brandon3055.draconicevolution.DEConfig;
+import com.brandon3055.draconicevolution.DEOldConfig;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.integration.ModHelper;
 import net.minecraft.enchantment.Enchantment;
@@ -69,7 +69,7 @@ public class TileDissEnchanter extends TileBCore {
                 continue;
             }
 
-            int cost = (int) ((((double) lvl / (double) e.getMaxLevel()) * 20) * DEConfig.disenchnaterCostMultiplyer);
+            int cost = (int) ((((double) lvl / (double) e.getMaxLevel()) * 20) * DEOldConfig.disenchnaterCostMultiplyer);
 
             if (!client.abilities.isCreativeMode && cost > client.experienceLevel) {
                 client.sendMessage(new TranslationTextComponent("chat.dissEnchanter.notEnoughLevels.msg", cost).setStyle(new Style().setColor(TextFormatting.RED)));

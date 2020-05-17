@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.client.gui;
 
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
+import com.brandon3055.brandonscore.client.gui.modulargui.ThemedElements;
 import com.brandon3055.brandonscore.client.utils.GuiHelper;
 import com.brandon3055.draconicevolution.api.TechLevel;
 import com.brandon3055.draconicevolution.api.modules.Module;
@@ -66,11 +67,17 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> {
         super.renderElement(minecraft, mouseX, mouseY, partialTicks);
         IRenderTypeBuffer.Impl getter = minecraft.getRenderTypeBuffers().getBufferSource();
 
-        int light = darkMode ? 0xFFFFFFFF : 0xFFFFFFFF;
-        int dark = darkMode ? 0xFF808080 : 0xFF505050;
+//        int light = darkMode ? 0xFFFFFFFF : 0xFFFFFFFF;
+//        int dark = darkMode ? 0xFF808080 : 0xFF505050;
+//
+//        drawShadedRect(getter, xPos() - 2, yPos() - 2, xSize() + 4, ySize() + 4, 1, 0, light, dark, midColour(light, dark));
+//        drawShadedRect(getter, xPos() - 1, yPos() - 1, xSize() + 2, ySize() + 2, 1, 0, dark, light, midColour(light, dark));
 
-        drawShadedRect(getter, xPos() - 2, yPos() - 2, xSize() + 4, ySize() + 4, 1, 0, light, dark, midColour(light, dark));
-        drawShadedRect(getter, xPos() - 1, yPos() - 1, xSize() + 2, ySize() + 2, 1, 0, dark, light, midColour(light, dark));
+        int light = ThemedElements.getBgLight();
+        int dark = ThemedElements.getBgDark();
+        int fill = ThemedElements.getBgFill();
+        drawShadedRect(getter, xPos() - 2, yPos() - 2, xSize() + 4, ySize() + 4, 1, 0, light, dark, fill);
+        drawShadedRect(getter, xPos() - 1, yPos() - 1, xSize() + 2, ySize() + 2, 1, 0, dark, light, fill);
         drawColouredRect(getter, xPos(), yPos(), xSize(), ySize(), midColour(light, dark));
 
         int s = grid.getCellSize();
@@ -108,7 +115,7 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> {
                 drawColouredRect(getter, xPos() + (entity.getGridX() * cs), yPos() + (entity.getGridY() * cs), cell.getEntity().getWidth() * cs, cell.getEntity().getHeight() * cs, 0x50FFFFFF);
             }
         } else {
-            drawColouredRect(getter, x + 1, y + 1, size - 2, size - 2, 0xFF505050);
+            drawColouredRect(getter, x + 1, y + 1, size - 2, size - 2, darkMode ? 0xFF808080 : 0xFF505050);
             if (mouseOver) {
                 drawColouredRect(getter, x, y, size, size, 0x50FFFFFF);
             }

@@ -1,9 +1,9 @@
 package com.brandon3055.draconicevolution.client.render.tile;
 
-import codechicken.lib.lighting.LightModel;
 import codechicken.lib.math.MathHelper;
 import codechicken.lib.render.CCModel;
 import codechicken.lib.render.CCRenderState;
+import codechicken.lib.render.lighting.LightModel;
 import codechicken.lib.texture.TextureUtils;
 import codechicken.lib.vec.*;
 import codechicken.lib.vec.uv.IconTransformation;
@@ -82,7 +82,7 @@ public class RenderTilePotentiometer extends TileEntityRenderer<TilePotentiomete
 
         Matrix4 mat = new Matrix4();
         mat.apply(new Translation(x, y, z));
-        mat.apply(Rotation.sideOrientation(te.getBlockState().get(Potentiometer.FACING).getOpposite().getIndex(), 0).at(Vector3.center));
+        mat.apply(Rotation.sideOrientation(te.getBlockState().get(Potentiometer.FACING).getOpposite().getIndex(), 0).at(Vector3.CENTER));
         mat.apply(new Translation(6 * pxl, pxl, 6 * pxl));
         mat.apply(new Rotation(te.power.get() * 22.5D * -MathHelper.torad, 0, 1, 0).at(new Vector3(pxl * 2, 0, pxl * 2)));
 

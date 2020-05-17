@@ -10,17 +10,14 @@ import codechicken.lib.util.SneakyUtils;
 import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Rotation;
 import codechicken.lib.vec.Vector3;
-import com.brandon3055.brandonscore.client.render.TESRBase;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.utils.Utils;
-import com.brandon3055.draconicevolution.DEConfig;
+import com.brandon3055.draconicevolution.DEOldConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalBase;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalDirectIO;
-import com.brandon3055.draconicevolution.client.DETextures;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.client.render.shaders.DEShaders;
-import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
@@ -30,13 +27,11 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import org.lwjgl.opengl.GL11;
 
 import java.util.Map;
-import java.util.OptionalDouble;
 
 /**
  * Created by brandon3055 on 6/11/2016.
@@ -177,7 +172,7 @@ public class RenderTileEnergyCrystal extends TileEntityRenderer<TileCrystalBase>
     public void bindShader(TileCrystalBase te, double x, double y, double z, float partialTicks, int tier) {
         BlockPos pos = te == null ? new BlockPos(0, 0, 0) : te.getPos();
         double mm = MathHelper.clip((((x * x) + (y * y) + (z * z) - 5) / 512), 0, 1);
-        if (DEShaders.useShaders() && DEConfig.useCrystalShaders && mm < 1) {
+        if (DEShaders.useShaders() && DEOldConfig.useCrystalShaders && mm < 1) {
 
             float xrot = (float) Math.atan2(x + 0.5, z + 0.5);
             float dist = (float) Utils.getDistanceAtoB(Vec3D.getCenter(pos).x, Vec3D.getCenter(pos).z, Minecraft.getInstance().player.posX, Minecraft.getInstance().player.posZ);
@@ -203,7 +198,7 @@ public class RenderTileEnergyCrystal extends TileEntityRenderer<TileCrystalBase>
     }
 
     private void releaseShader() {
-        if (DEShaders.useShaders() && DEConfig.useCrystalShaders && shaderProgram != null) {
+        if (DEShaders.useShaders() && DEOldConfig.useCrystalShaders && shaderProgram != null) {
             shaderProgram.releaseShader();
         }
     }
