@@ -42,6 +42,10 @@ public interface ModuleHost extends INBTSerializable<CompoundNBT> {
      */
     List<ModuleEntity> getModuleEntities();
 
+    void addModule(ModuleEntity moduleEntity);
+
+    void removeModule(ModuleEntity moduleEntity);
+
     /**
      * @return a list of module types supported by this host.
      */

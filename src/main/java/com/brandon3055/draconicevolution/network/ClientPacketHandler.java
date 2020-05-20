@@ -5,6 +5,8 @@ import codechicken.lib.packet.PacketCustom;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileDislocatorReceptacle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.play.IClientPlayNetHandler;
+import net.minecraft.entity.Entity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 
 public class ClientPacketHandler implements ICustomPacketHandler.IClientPacketHandler {
@@ -20,6 +22,14 @@ public class ClientPacketHandler implements ICustomPacketHandler.IClientPacketHa
 //                break;
             case DraconicNetwork.C_CRYSTAL_UPDATE:
                 CrystalUpdateBatcher.handleBatchedData(packet);
+                break;
+            case DraconicNetwork.C_TRACKER:
+                int entityID = packet.readVarInt();
+                CompoundNBT nbt = packet.readCompoundNBT();
+                if (mc.world == null || nbt == null) return;
+                Entity entity = mc.world.getEntityByID(entityID);
+                if (entity == null) return;
+                entity.getPersistentData().put("wr:trackers", nbt.getList("l", 10));
                 break;
         }
     }

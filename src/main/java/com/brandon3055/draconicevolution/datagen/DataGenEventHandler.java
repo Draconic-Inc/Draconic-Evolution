@@ -35,7 +35,7 @@ import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
 /**
  * Created by brandon3055 on 26/2/20.
  */
-//@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
+@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public class DataGenEventHandler {
 
     private static final Gson GSON = new GsonBuilder()
@@ -49,6 +49,7 @@ public class DataGenEventHandler {
         DataGenerator gen = event.getGenerator();
 
         if (event.includeClient()) {
+            gen.addProvider(new LangGenerator(gen));
             gen.addProvider(new ItemModelGenerator(gen, event.getExistingFileHelper()));
             gen.addProvider(new BlockStateGenerator(gen, event.getExistingFileHelper()));
         }
@@ -60,81 +61,60 @@ public class DataGenEventHandler {
 
     }
 
-    public static class Recipes extends RecipeProvider implements IConditionBuilder
-    {
-        public Recipes(DataGenerator gen)
-        {
-            super(gen);
-        }
-
-        @Override
-        protected void registerRecipes(Consumer<IFinishedRecipe> consumer)
-        {
-            ResourceLocation ID = new ResourceLocation("data_gen_test", "conditional");
-
-            ConditionalRecipe.builder()
-                    .addCondition(
-                            and(
-                                    not(modLoaded("minecraft")),
-                                    itemExists("minecraft", "dirt"),
-                                    FALSE()
-                            )
-                    )
-                    .addRecipe(
-                            ShapedRecipeBuilder.shapedRecipe(Blocks.DIAMOND_BLOCK, 64)
-                                    .patternLine("XXX")
-                                    .patternLine("XXX")
-                                    .patternLine("XXX")
-                                    .key('X', Blocks.DIRT)
-                                    .setGroup("")
-                                    .addCriterion("has_dirt", hasItem(Blocks.DIRT)) //Doesn't actually print... TODO: nested/conditional advancements?
-                                    ::build
-                    )
-                    .setAdvancement(ID,
-                            ConditionalAdvancement.builder()
-                                    .addCondition(
-                                            and(
-                                                    not(modLoaded("minecraft")),
-                                                    itemExists("minecraft", "dirt"),
-                                                    FALSE()
-                                            )
-                                    )
-                                    .addAdvancement(
-                                            Advancement.Builder.builder()
-                                                    .withParentId(new ResourceLocation("minecraft", "root"))
-                                                    .withDisplay(Blocks.DIAMOND_BLOCK,
-                                                            new StringTextComponent("Dirt2Diamonds"),
-                                                            new StringTextComponent("The BEST crafting recipe in the game!"),
-                                                            null, FrameType.TASK, false, false, false
-                                                    )
-                                                    .withRewards(AdvancementRewards.Builder.recipe(ID))
-                                                    .withCriterion("has_dirt", hasItem(Blocks.DIRT))
-                                    )
-                    )
-                    .build(consumer, ID);
-        }
-    }
-
-
-    public static class Lang extends LanguageProvider
-    {
-        public Lang(DataGenerator gen)
-        {
-            super(gen, MODID, "en_us");
-        }
-
-        @Override
-        protected void addTranslations()
-        {
+//    public static class Recipes extends RecipeProvider implements IConditionBuilder
+//    {
+//        public Recipes(DataGenerator gen)
+//        {
+//            super(gen);
+//        }
+//
+//        @Override
+//        protected void registerRecipes(Consumer<IFinishedRecipe> consumer)
+//        {
+//            ResourceLocation ID = new ResourceLocation("data_gen_test", "conditional");
+//
+//            ConditionalRecipe.builder()
+//                    .addCondition(
+//                            and(
+//                                    not(modLoaded("minecraft")),
+//                                    itemExists("minecraft", "dirt"),
+//                                    FALSE()
+//                            )
+//                    )
+//                    .addRecipe(
+//                            ShapedRecipeBuilder.shapedRecipe(Blocks.DIAMOND_BLOCK, 64)
+//                                    .patternLine("XXX")
+//                                    .patternLine("XXX")
+//                                    .patternLine("XXX")
+//                                    .key('X', Blocks.DIRT)
+//                                    .setGroup("")
+//                                    .addCriterion("has_dirt", hasItem(Blocks.DIRT)) //Doesn't actually print... TODO: nested/conditional advancements?
+//                                    ::build
+//                    )
+//                    .setAdvancement(ID,
+//                            ConditionalAdvancement.builder()
+//                                    .addCondition(
+//                                            and(
+//                                                    not(modLoaded("minecraft")),
+//                                                    itemExists("minecraft", "dirt"),
+//                                                    FALSE()
+//                                            )
+//                                    )
+//                                    .addAdvancement(
+//                                            Advancement.Builder.builder()
+//                                                    .withParentId(new ResourceLocation("minecraft", "root"))
+//                                                    .withDisplay(Blocks.DIAMOND_BLOCK,
+//                                                            new StringTextComponent("Dirt2Diamonds"),
+//                                                            new StringTextComponent("The BEST crafting recipe in the game!"),
+//                                                            null, FrameType.TASK, false, false, false
+//                                                    )
+//                                                    .withRewards(AdvancementRewards.Builder.recipe(ID))
+//                                                    .withCriterion("has_dirt", hasItem(Blocks.DIRT))
+//                                    )
+//                    )
+//                    .build(consumer, ID);
+//        }
+//    }
 
 
-//            add(Blocks.STONE, "Stone");
-//            add(Items.DIAMOND, "Diamond");
-//            add(Biomes.BEACH, "Beach");
-//            add(Effects.POISON, "Poison");
-//            add(Enchantments.SHARPNESS, "Sharpness");
-//            add(EntityType.CAT, "Cat");
-//            add(MODID + ".test.unicode", "\u0287s\u01DD\u2534 \u01DDpo\u0254\u1D09u\u2229");
-        }
-    }
 }

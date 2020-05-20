@@ -2,10 +2,12 @@ package com.brandon3055.draconicevolution.inventory;
 
 import com.brandon3055.brandonscore.inventory.ContainerBCore;
 import com.brandon3055.brandonscore.inventory.ContainerSlotLayout;
+import com.brandon3055.brandonscore.lib.Pair;
 import com.brandon3055.draconicevolution.api.capability.PropertyProvider;
 import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.PropertyData;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.lib.WTFException;
+import com.google.common.collect.Streams;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.*;
@@ -47,11 +49,8 @@ public class ContainerConfigurableItem extends ContainerBCore<Object> {
         this.selectedId = held == null ? DEFAULT_UUID : held;
     }
 
-    private Stream<ItemStack> getInventoryStacks(PlayerInventory player) {
-//        Stream<ItemStack> stackStream = Streams.concat(player.mainInventory.stream(), player.armorInventory.stream(), player.offHandInventory.stream()).filter(e -> !e.isEmpty());
+    private Stream<ItemStack> getInventoryStacks() {
 //        //TODO add support for things like baubles
-//        return stackStream;
-        //I pull from inventory slots because it does not matter server side and the slots will have the most up to date stacks on the client side.
         return inventorySlots.stream()
                 .map(Slot::getStack)
                 .filter(stack -> !stack.isEmpty());
@@ -65,15 +64,15 @@ public class ContainerConfigurableItem extends ContainerBCore<Object> {
         this.onSelectionMade = onSelectionMade;
     }
 
-    public Stream<PropertyProvider> getProviders() {
-        return getInventoryStacks(player.inventory)
+    public static Stream<PropertyProvider> getProviders(Stream<ItemStack> stacks) {
+        return stacks
                 .map(e -> e.getCapability(PROPERTY_PROVIDER_CAPABILITY))
                 .filter(LazyOptional::isPresent)
                 .map(e -> e.orElseThrow(WTFException::new));
     }
 
     public PropertyProvider findProvider(UUID providerID) {
-        return getProviders()
+        return getProviders(getInventoryStacks())
                 .filter(provider -> provider.getProviderID().equals(providerID))
                 .findFirst()
                 .orElse(null);
@@ -81,7 +80,7 @@ public class ContainerConfigurableItem extends ContainerBCore<Object> {
 
     private void sanitizeProviders() {
         HashSet<UUID> uuids = new HashSet<>();
-        getProviders()
+        getProviders(getInventoryStacks())
                 .filter(provider -> !uuids.add(provider.getProviderID()))
                 .forEach(PropertyProvider::regenProviderID);
     }
@@ -123,44 +122,56 @@ public class ContainerConfigurableItem extends ContainerBCore<Object> {
         return null;
     }
 
-    public void receivePropertyData(PropertyData data) {
+    private static Stream<ItemStack> getPlayerInventory(PlayerInventory player) {
+        return Streams.concat(player.mainInventory.stream(), player.armorInventory.stream(), player.offHandInventory.stream()).filter(e -> !e.isEmpty());
+    }
+
+    public static Stream<Pair<ItemStack, PropertyProvider>> getStackProviders(Stream<ItemStack> stacks) {
+        return stacks
+                .map(e -> Pair.of(e, e.getCapability(PROPERTY_PROVIDER_CAPABILITY)))
+                .filter(e -> e.value().isPresent())
+                .map(e -> Pair.of(e.key(), e.value().orElseThrow(WTFException::new)));
+    }
+
+    public static void handlePropertyData(PlayerEntity player, PropertyData data) {
         if (data.isGlobal) {
-            getProviders()
-                    .filter(e -> e.getProviderName().equals(data.providerName))
-                    .map(e -> e.getProperty(data.propertyName))
-                    .filter(Objects::nonNull)
-                    .filter(e -> e.getType() == data.type)
-                    .forEach(e -> e.loadData(data));
+            getStackProviders(getPlayerInventory(player.inventory))
+                    .filter(e -> e.value().getProviderName().equals(data.providerName))
+                    .map(e -> Pair.of(e.key(), e.value().getProperty(data.getPropertyName())))
+                    .filter(e -> Objects.nonNull(e.value()))
+                    .filter(e -> e.value().getType() == data.type)
+                    .forEach(e -> e.value().loadData(data, e.key()));
         } else {
-            getProviders()
-                    .filter(e -> e.getProviderID().equals(data.providerID))
-                    .map(e -> e.getProperty(data.propertyName))
-                    .filter(Objects::nonNull)
-                    .filter(e -> e.getType() == data.type)
+            getStackProviders(getPlayerInventory(player.inventory))
+                    .filter(e -> e.value().getProviderID().equals(data.providerID))
+                    .map(e -> Pair.of(e.key(), e.value().getProperty(data.getPropertyName())))
+                    .filter(e -> Objects.nonNull(e.value()))
+                    .filter(e -> e.value().getType() == data.type)
                     .findAny()
-                    .ifPresent(e -> e.loadData(data));
+                    .ifPresent(e -> e.value().loadData(data, e.key()));
         }
     }
 
-    //This is overridden and modified to ensure capability updates are sent.
-    @Override
-    public void detectAndSendChanges() {
-        for (int i = 0; i < this.inventorySlots.size(); ++i) {
-            ItemStack itemstack = this.inventorySlots.get(i).getStack();
-            ItemStack itemstack1 = this.inventoryItemStacks.get(i);
-            if (!ItemStack.areItemStacksEqual(itemstack1, itemstack)) {
-                boolean clientStackChanged = !itemstack1.equals(itemstack, true) || !itemstack1.areCapsCompatible(itemstack);
-                itemstack1 = itemstack.copy();
-                this.inventoryItemStacks.set(i, itemstack1);
-
-                if (clientStackChanged) {
-                    for (IContainerListener icontainerlistener : this.listeners) {
-                        icontainerlistener.sendSlotContents(this, i, itemstack1);
-                    }
-                }
-            }
-        }
-    }
+    //I shouldn't need this now that the capabilities are written to the share tag.
+//    //This is overridden and modified to ensure capability updates are sent.
+//    @Override
+//    public void detectAndSendChanges() {
+//        for (int i = 0; i < this.inventorySlots.size(); ++i) {
+//            ItemStack itemstack = this.inventorySlots.get(i).getStack();
+//            ItemStack itemstack1 = this.inventoryItemStacks.get(i);
+//            if (!ItemStack.areItemStacksEqual(itemstack1, itemstack)) {
+//                boolean clientStackChanged = !itemstack1.equals(itemstack, true) || !itemstack1.areCapsCompatible(itemstack);
+//                itemstack1 = itemstack.copy();
+//                this.inventoryItemStacks.set(i, itemstack1);
+//
+//                if (clientStackChanged) {
+//                    for (IContainerListener icontainerlistener : this.listeners) {
+//                        icontainerlistener.sendSlotContents(this, i, itemstack1);
+//                    }
+//                }
+//            }
+//        }
+//    }
 
     @Override
     public void setAll(List<ItemStack> stacks) {
@@ -175,6 +186,7 @@ public class ContainerConfigurableItem extends ContainerBCore<Object> {
     }
 
     private boolean initialSync = false;
+
     private void onSyncDataReceived() {
         if (!initialSync) {
             UUID held = getProviderID(player.getHeldItemMainhand());

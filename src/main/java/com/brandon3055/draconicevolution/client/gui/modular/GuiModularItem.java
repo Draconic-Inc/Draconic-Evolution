@@ -5,6 +5,7 @@ import com.brandon3055.brandonscore.client.gui.GuiToolkit;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElementManager;
 import com.brandon3055.brandonscore.client.gui.modulargui.ModularGuiContainer;
+import com.brandon3055.brandonscore.client.gui.modulargui.baseelements.GuiButton;
 import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiTexture;
 import com.brandon3055.brandonscore.client.gui.modulargui.templates.TGuiBase;
 import com.brandon3055.brandonscore.client.utils.GuiHelper;
@@ -14,8 +15,10 @@ import com.brandon3055.draconicevolution.api.modules.lib.ModuleGrid;
 import com.brandon3055.draconicevolution.client.gui.ModuleGridRenderer;
 import com.brandon3055.draconicevolution.inventory.ContainerModularItem;
 import com.brandon3055.draconicevolution.client.DETextures;
+import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
@@ -72,6 +75,11 @@ public class GuiModularItem extends ModularGuiContainer<ContainerModularItem> {
         grid.setPosition(gridRenderer.xPos() - guiLeft(), gridRenderer.yPos() - guiTop());
         grid.setOnGridChange(this::updateInfoPanel);
 
+        GuiButton itemConfig = toolkit.createThemedIconButton(template.background, "item_config");
+        itemConfig.onReload(e -> e.setMaxXPos(template.background.maxXPos() - 3, false).setYPos(infoPanel.isEnabled() ? infoPanel.maxYPos() + 1 : template.themeButton.maxYPos() + 1));
+        itemConfig.setHoverText(I18n.format("gui.draconicevolution.modular_item.open_item_config.info"));
+        itemConfig.onPressed(DraconicNetwork::sendOpenItemConfig);
+
         updateInfoPanel();
     }
 
@@ -83,6 +91,7 @@ public class GuiModularItem extends ModularGuiContainer<ContainerModularItem> {
             infoPanel.addLabeledValue(TextFormatting.GOLD + name.getFormattedText(), 6, 10, () -> TextFormatting.GRAY + nameStatMap.get(name).getFormattedText(), true);
         }
         infoPanel.setEnabled(!nameStatMap.isEmpty());
+        reloadGui();
     }
 
     @Override

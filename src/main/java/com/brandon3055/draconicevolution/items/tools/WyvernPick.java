@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.items.tools;
 
-import com.brandon3055.brandonscore.lib.PairKV;
+import com.brandon3055.brandonscore.lib.Pair;
 import com.brandon3055.draconicevolution.client.DETextures;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.ItemStack;
@@ -64,8 +64,8 @@ public class WyvernPick extends MiningToolBase {
     //region Rendering
 
     @Override
-    public PairKV<TextureAtlasSprite, ResourceLocation> getModels(ItemStack stack) {
-        return new PairKV<>(DETextures.WYVERN_PICKAXE, new ResourceLocation("draconicevolution", "models/item/tools/wyvern_pickaxe.obj"));
+    public Pair<TextureAtlasSprite, ResourceLocation> getModels(ItemStack stack) {
+        return new Pair<>(DETextures.WYVERN_PICKAXE, new ResourceLocation("draconicevolution", "models/item/tools/wyvern_pickaxe.obj"));
     }
 
     //endregion

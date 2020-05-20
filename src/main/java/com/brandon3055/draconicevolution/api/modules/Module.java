@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.api.modules;
 
 import com.brandon3055.draconicevolution.api.TechLevel;
+import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.brandon3055.draconicevolution.api.modules.properties.ModuleData;
 import com.brandon3055.draconicevolution.api.modules.properties.ModuleProperties;
 import com.brandon3055.draconicevolution.api.modules.lib.InstallResult;
@@ -38,42 +39,23 @@ public interface Module<T extends ModuleData<T>> extends IForgeRegistryEntry<Mod
 
     Item getItem();
 
-//    /**
-//     * Grid textures will be uses when rendering the module in a module grid. <br/>
-//     * Grid texture for a module must be located at:<br/>
-//     * [modid]:textures/module/[module registry name].png<br/><br/>
-//     * So the texture for module:<br/>
-//     * draconicevolution:wyvern_shield<br/>
-//     * Would be stored at:<br/>
-//     * draconicevolution:textures/module/wyvern_shield.png<br/><br/><br/>
-//     * If this returns false then the module item model will be used instead.
-//     *
-//     * @return true if this module has a custom grid texture.
-//     */
-//    default boolean hasGridTexture() {
-//        return true;
-//    }
-
-//    /**
-//     * Use this to set a custom grid texture for this module. This will be uses when rendering the module in a module grid.
-//     * Returning null means the item model will be rendered instead.
-//     * @return the icon texture for this module.
-//     */
-//    @Nullable
-//    default ResourceLocation getGridTexture() {
-//        return null;
-//    }
-
-//    /**
-//     * If using a custom grid texture that is not a square texture this must be used to specify the aspect ratio of the texture.
-//     * This is simply the texture width divided by the texture height.
-//     *
-//     * @return grid texture width divided by grid texture height.
-//     */
-//    default float getGridTextureAspect() {
-//        return 1;
-//    }
-
+    /**
+     * Ideally the module entity should be always be created by the {@link ModuleType} because all modules of a specific type should use the same entity.
+     * However if for some reason you wish need to modify the module entity for your module this method can be used to do that.<br><br>
+     * <b>
+     * Note the module entity you return MUST extend the default module entity for this module's type.
+     * If you do not do this any code that needs to retrieve, cast and interact with this entity WILL break.</b>
+     * In other words <br>
+     * Module#getType().createEntity(this).getClass().isAssignableFrom(Module#createEntity().getClass())<br>
+     * Must return true.
+     * <br><br>
+     *
+     * @return a new {@link ModuleEntity} instance for this module.
+     * @see ModuleType#createEntity(Module)
+     */
+    default ModuleEntity createEntity() {
+        return getType().createEntity(this);
+    }
 
     /**
      * This allows you to prevent this module from being installed along side any other specific module.

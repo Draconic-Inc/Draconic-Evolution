@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.items.tools;
 
-import com.brandon3055.brandonscore.lib.PairKV;
+import com.brandon3055.brandonscore.lib.Pair;
 import com.brandon3055.draconicevolution.api.IReaperItem;
 import com.brandon3055.draconicevolution.api.itemconfig_dep.DoubleConfigField;
 import com.brandon3055.draconicevolution.api.itemconfig_dep.IItemConfigField;
@@ -154,8 +154,8 @@ public class DraconicStaffOfPower extends MiningToolBase implements IAOEWeapon, 
 //    }
 
     @Override
-    public PairKV<TextureAtlasSprite, ResourceLocation> getModels(ItemStack stack) {
-        return new PairKV<>(DETextures.DRACONIC_STAFF_OF_POWER, new ResourceLocation("draconicevolution", "models/item/tools/draconic_staff_of_power.obj"));
+    public Pair<TextureAtlasSprite, ResourceLocation> getModels(ItemStack stack) {
+        return new Pair<>(DETextures.DRACONIC_STAFF_OF_POWER, new ResourceLocation("draconicevolution", "models/item/tools/draconic_staff_of_power.obj"));
     }
 
     //endregion

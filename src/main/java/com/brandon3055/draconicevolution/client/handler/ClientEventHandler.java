@@ -9,7 +9,7 @@ import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.client.ProcessHandlerClient;
 import com.brandon3055.brandonscore.client.utils.GuiHelper;
 import com.brandon3055.brandonscore.lib.DelayedExecutor;
-import com.brandon3055.brandonscore.lib.PairKV;
+import com.brandon3055.brandonscore.lib.Pair;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DEOldConfig;
 import com.brandon3055.draconicevolution.init.DEContent;
@@ -44,6 +44,7 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import org.lwjgl.opengl.GL11;
@@ -59,7 +60,7 @@ import java.util.Random;
  * Created by Brandon on 28/10/2014.
  */
 public class ClientEventHandler {
-    public static Map<PlayerEntity, PairKV<Float, Integer>> playerShieldStatus = new HashMap<PlayerEntity, PairKV<Float, Integer>>();
+    public static Map<PlayerEntity, Pair<Float, Integer>> playerShieldStatus = new HashMap<PlayerEntity, Pair<Float, Integer>>();
     public static ObfMapping splashTextMapping = new ObfMapping("net/minecraft/client/gui/GuiMainMenu", "field_110353_x");
     public static FloatBuffer winPos = GLAllocation.createDirectFloatBuffer(3);
     public static volatile int elapsedTicks;
@@ -74,7 +75,6 @@ public class ClientEventHandler {
 
     public static ShaderProgram explosionShader;
 
-    @SubscribeEvent
     public void renderGameOverlay(RenderGameOverlayEvent.Post event) {
         HudHandler.drawHUD(event);
 
@@ -97,7 +97,7 @@ public class ClientEventHandler {
             updateExplosion();
         }
 
-        playerShieldStatus.entrySet().removeIf(entry -> elapsedTicks - entry.getValue().getValue() > 5);
+        playerShieldStatus.entrySet().removeIf(entry -> elapsedTicks - entry.getValue().value() > 5);
 
         PlayerEntity player = Minecraft.getInstance().player;
         if (player != null) {
@@ -125,11 +125,11 @@ public class ClientEventHandler {
             RenderSystem.enableBlend();
             RenderSystem.disableLighting();
 
-            float p = playerShieldStatus.get(event.getPlayer()).getKey();
+            float p = playerShieldStatus.get(event.getPlayer()).key();
 
             PlayerEntity viewingPlayer = Minecraft.getInstance().player;
 
-            int i = 5 - (elapsedTicks - playerShieldStatus.get(event.getPlayer()).getValue());
+            int i = 5 - (elapsedTicks - playerShieldStatus.get(event.getPlayer()).value());
 
             //RenderSystem.color(1F - p, 0F, p, i / 5F);
 
@@ -264,8 +264,8 @@ public class ClientEventHandler {
 
     private void renderMiningAOE(World world, ItemStack stack, BlockPos pos, ClientPlayerEntity player, float partialTicks) {
         MiningToolBase tool = (MiningToolBase) stack.getItem();
-        PairKV<BlockPos, BlockPos> aoe = tool.getMiningArea(pos, player, tool.getDigAOE(stack), tool.getDigDepth(stack));
-        List<BlockPos> blocks = Lists.newArrayList(BlockPos.getAllInBoxMutable(aoe.getKey(), aoe.getValue()));
+        Pair<BlockPos, BlockPos> aoe = tool.getMiningArea(pos, player, tool.getDigAOE(stack), tool.getDigDepth(stack));
+        List<BlockPos> blocks = Lists.newArrayList(BlockPos.getAllInBoxMutable(aoe.key(), aoe.value()));
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
 

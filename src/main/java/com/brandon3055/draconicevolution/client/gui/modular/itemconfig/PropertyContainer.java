@@ -10,13 +10,18 @@ import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiManipul
 import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiTextField;
 import com.brandon3055.brandonscore.client.utils.GuiHelper;
 import com.brandon3055.brandonscore.client.gui.modulargui.ThemedElements;
+import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.GuiConfigurableItem.UpdateAnim;
+import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.model.Material;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.client.util.InputMappings;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
+import net.minecraftforge.client.settings.KeyModifier;
+import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nullable;
 import java.awt.*;
@@ -40,14 +45,19 @@ public class PropertyContainer extends GuiManipulable {
     private int setYPos = 0;
     private int timeSinceMove = 0;
     private int expandedHeight = 0;
+    private int prevUserHeight = 0;
     private final boolean isGroup;
+    protected String boundKey = "";
     private String defaultName = "Group";
+    private boolean binding = false;
     private boolean removed = false;
-    private boolean isPreset = false;
+    protected boolean isPreset = false;
     private boolean semiTrans = false;
     private boolean collapsed = false;
+    protected boolean globalKeyBind = false;
     private GuiButton applyPreset;
     private final GuiElement<?> parent;
+    protected KeyModifier modifier = KeyModifier.NONE;
     private GuiTextField groupName;
     private PropertyElement dropTargetElement = null;
     private GuiScrollElement scrollElement;
@@ -60,7 +70,7 @@ public class PropertyContainer extends GuiManipulable {
 
     public PropertyContainer(GuiConfigurableItem gui, boolean isGroup) {
         this.gui = gui;
-        this.parent = gui.advancedContainer;
+        this.parent = gui == null ? null : gui.advancedContainer;
         this.isGroup = isGroup;
         setSize(150, getMinSize().height);
         if (isGroup) {
@@ -70,6 +80,7 @@ public class PropertyContainer extends GuiManipulable {
         }
         setCanResizeV(() -> !collapsed);
         setEnableCursors(true);
+        this.setCapturesClicks(true);
     }
 
     public void setCancelZone(Rectangle cancelZone) {
@@ -99,15 +110,26 @@ public class PropertyContainer extends GuiManipulable {
             setDragZone(dragZone::isMouseOver);
 
             GuiButton togglePreset = gui.toolkit.createIconButton(this, 8, BCSprites.themedGetter("preset_icon"));
-            GuiElement<?> hoverRect = gui.toolkit.addHoverHighlight(togglePreset, 2, 2);
+            GuiElement<?> hoverRect = GuiToolkit.addHoverHighlight(togglePreset, 2, 2);
             togglePreset.setHoverText(I18n.format("gui.draconicevolution.item_config.toggle_preset.info"));
             togglePreset.onReload(e -> e.setMaxXPos(dragZone.xPos() - 2, false).setYPos(yPos() + 2));
             togglePreset.onPressed(this::togglePreset);
             togglePreset.addChild(new ThemedElements.ShadedRect(true, false).setPosAndSize(hoverRect).setEnabledCallback(() -> isPreset));
 
+            GuiButton globalBinding = gui.toolkit.createIconButton(this, 8, BCSprites.themedGetter("global_key_icon"));
+            hoverRect = GuiToolkit.addHoverHighlight(globalBinding, 2, 2);
+            globalBinding.setHoverText(I18n.format("gui.draconicevolution.item_config.toggle_global_binding.info"));
+            globalBinding.onReload(e -> e.setMaxXPos(togglePreset.xPos() - 2, false).setYPos(yPos() + 2));
+            globalBinding.onPressed(() -> {
+                globalKeyBind = !globalKeyBind;
+                gui.savePropertyConfig();
+            });
+            globalBinding.addChild(new ThemedElements.ShadedRect(true, false).setPosAndSize(hoverRect).setEnabledCallback(() -> globalKeyBind));
+            globalBinding.setEnabledCallback(() -> !boundKey.isEmpty() && isPreset);
+
             groupName = new GuiTextField();
             groupName.setPos(xPos() + 12, yPos() + 2);
-            groupName.onReload(e -> e.setMaxPos(togglePreset.xPos() - 2, e.yPos() + 8, true));
+            groupName.onReload(e -> e.setMaxPos(globalBinding.isEnabled() ? globalBinding.xPos() - 2 : togglePreset.xPos() - 2, e.yPos() + 8, true));
             groupName.setText(defaultName);
             groupName.setChangeListener(gui::savePropertyConfig);
             groupName.setEnableBackgroundDrawing(false);
@@ -118,19 +140,36 @@ public class PropertyContainer extends GuiManipulable {
             groupName.onFinishEdit(gui::savePropertyConfig);
             addChild(groupName);
 
+            GuiButton bindButton = gui.toolkit.createBorderlessButton(this, "");
+            bindButton.setHoverText(I18n.format("gui.draconicevolution.item_config.set_key_bind.info"));
+            bindButton.setHoverTextDelay(10);
+            bindButton.setYSize(12).setYPos(yPos() + 11);
+            bindButton.onReload(e -> e
+                    .setText(getBindingName())
+                    .setXSize(Math.min((xSize() - 3) / 2, fontRenderer.getStringWidth(bindButton.getDisplayString()) + 6))
+                    .setMaxXPos(maxXPos() - 2, false)
+            );
 
-            applyPreset = new GuiButton(I18n.format("gui.draconicevolution.item_config.apply_preset"));
+            bindButton.onPressed(() -> {
+                boundKey = "";
+                modifier = KeyModifier.NONE;
+                binding = !binding;
+                gui.savePropertyConfig();
+                reloadElement();
+            });
+            addChild(bindButton);
+
+            applyPreset = gui.toolkit.createBorderlessButton(this, "gui.draconicevolution.item_config.apply_preset");
             applyPreset.setEnabledCallback(() -> isPreset && collapsed && ySize() == getTargetHeight());
-            applyPreset.setPos(xPos() + 3, yPos() + 12).setYSize(10);
-            applyPreset.onReload(e -> e.setMaxXPos(maxXPos() - 3, true));
-            applyPreset.setInsets(0, 0, 0, 0);
-            applyPreset.set3dText(true);
+            applyPreset.setPos(xPos() + 2, yPos() + 11).setYSize(12);
+            applyPreset.onReload(e -> e.setMaxXPos(bindButton.xPos(), true));
             applyPreset.setTextColGetter((hovering, disabled) -> GuiToolkit.Palette.Ctrl.textH(hovering));
             applyPreset.onPressed(() -> dataElementMap.keySet().forEach(data -> {
                 applyData(data);
                 gui.updateAnimations.add(new UpdateAnim(data));
             }));
-            gui.toolkit.addHoverHighlight(applyPreset);
+            GuiToolkit.addHoverHighlight(applyPreset);
+            bindButton.setEnabledCallback(() -> applyPreset.isEnabled());
             addChild(applyPreset);
 
 
@@ -139,6 +178,70 @@ public class PropertyContainer extends GuiManipulable {
             scrollElement.onReload(e -> e.setMaxPos(maxXPos() - 1, maxYPos() - 1, true));
         }
         addChild(scrollElement);
+    }
+
+    @Override
+    protected boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (binding) {
+            modifier = KeyModifier.NONE;
+            if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
+                boundKey = "";
+                binding = false;
+                reloadElement();
+                gui.savePropertyConfig();
+                return true;
+            }
+
+            KeyModifier activeMod = KeyModifier.getActiveModifier();
+            InputMappings.Input input = InputMappings.getInputByCode(keyCode, scanCode);
+            boundKey = input.toString();
+            if (activeMod.matches(input)) {
+                reloadElement();
+                gui.savePropertyConfig();
+                return true;
+            } else {
+                modifier = activeMod;
+                binding = false;
+                gui.savePropertyConfig();
+                reloadElement();
+                return true;
+            }
+        }
+        return super.keyPressed(keyCode, scanCode, modifiers);
+    }
+
+    private String getBindingName() {
+        if (binding) return ">" + (boundKey.isEmpty() ? "   " : I18n.format(InputMappings.getInputByName(boundKey).getTranslationKey())) + "<";
+        else if (boundKey.isEmpty()) return I18n.format("gui.draconicevolution.item_config.not_bound");
+        InputMappings.Input keyCode = InputMappings.getInputByName(boundKey);
+        return modifier.getLocalizedComboName(keyCode, () -> {
+            String s = keyCode.getTranslationKey();
+            int i = keyCode.getKeyCode();
+            String s1 = null;
+            switch (keyCode.getType()) {
+                case KEYSYM:
+                    s1 = InputMappings.getKeynameFromKeycode(i);
+                    break;
+                case SCANCODE:
+                    s1 = InputMappings.getKeyNameFromScanCode(i);
+                    break;
+                case MOUSE:
+                    String s2 = I18n.format(s);
+                    s1 = Objects.equals(s2, s) ? I18n.format(InputMappings.Type.MOUSE.getName(), i + 1) : s2;
+            }
+
+            return s1 == null ? I18n.format(s) : s1;
+        });
+    }
+
+    @Override
+    protected boolean keyReleased(int keyCode, int scanCode, int modifiers) {
+        if (binding) {
+            binding = false;
+            reloadElement();
+            return true;
+        }
+        return super.keyReleased(keyCode, scanCode, modifiers);
     }
 
     @Override
@@ -165,6 +268,8 @@ public class PropertyContainer extends GuiManipulable {
         collapsed = !collapsed;
         if (!collapsed) {
             parent.bringToForeground(this);
+            gui.propertyContainers.remove(this);
+            gui.propertyContainers.add(this);
         }
         gui.savePropertyConfig();
     }
@@ -186,7 +291,7 @@ public class PropertyContainer extends GuiManipulable {
         dataList.forEach(e -> scrollElement.addElement(dataElementMap.computeIfAbsent(e, this::createElementFor)));
         if (willResize) {
             setYSize(getMaxSize().height);
-            expandedHeight = getMaxSize().height;
+            prevUserHeight = expandedHeight = getMaxSize().height;
             reloadElement();
             scrollElement.reloadElement();
         }
@@ -204,17 +309,25 @@ public class PropertyContainer extends GuiManipulable {
         });
 
         GuiButton dragZone = gui.toolkit.createIconButton(element, 8, 8, "reposition_gray");
+        element.dragZone = dragZone;
         dragZone.setHoverText((e) -> dragPos ? Collections.emptyList() : I18n.format("gui.draconicevolution.item_config.move_prop" + (isGroup ? "_in_group" : "") + ".info"));
         dragZone.onReload(e -> e.setMaxXPos(element.maxXPos() - 1, false).setYPos(element.yPos() + 1));
         if (!isGroup) {
             dragZone.setDisabled(true);
             setDragZone(dragZone::isMouseOver);
+            this.setEnabledCallback(() -> DEConfig.configUiShowUnavailable || (data.isGlobal || data.isPropertyAvailable()));
         } else {
+            element.setEnabledCallback(() -> DEConfig.configUiShowUnavailable || (data.isGlobal || data.isPropertyAvailable()));
             dragZone.onPressed(() -> {
+                boolean willResize = ySize() == getMaxSize().height;
                 dataList.remove(data);
                 dataElementMap.remove(data);
                 scrollElement.clearElements();
                 dataList.forEach(e -> scrollElement.addElement(dataElementMap.computeIfAbsent(e, this::createElementFor)));
+                if (willResize) {
+                    setYSize(getMaxSize().height);
+                    prevUserHeight = expandedHeight = getMaxSize().height;
+                }
                 scrollElement.reloadElement();
 
                 PropertyContainer newContainer = new PropertyContainer(gui, false);
@@ -242,8 +355,8 @@ public class PropertyContainer extends GuiManipulable {
     @Override
     protected void onStartManipulation(double mouseX, double mouseY) {
         parent.removeChild(this);
-        parent.modularGui.getManager().addChild(this, 200, false);
-        modifyZOffset(200);
+        parent.modularGui.getManager().addChild(this, 300, false);
+        modifyZOffset(300);
 
         //Move this container to the end of the list so it maintains its render position across save / load cycles.
         gui.propertyContainers.remove(this);
@@ -292,8 +405,11 @@ public class PropertyContainer extends GuiManipulable {
         parent.modularGui.getManager().removeChild(this);
         parent.addChild(this);
         displayZLevel = 0;
-        modifyZOffset(-200);
+        modifyZOffset(-300);
         semiTrans = false;
+        if (!collapsed) {
+            prevUserHeight = ySize();
+        }
 
         if (dropTarget != null && !dataList.isEmpty()) {
             if (dropTarget.isGroup) {
@@ -338,12 +454,14 @@ public class PropertyContainer extends GuiManipulable {
 
     @Override
     public Dimension getMaxSize() {
-        int maxY = MathHelper.clip((dataElementMap.size() * 22) + (isGroup ? 15 : 2), 24, 300);
+        int count = DEConfig.configUiShowUnavailable ? dataElementMap.size() : (int) dataElementMap.keySet().stream().filter(PropertyData::isPropertyAvailable).count();
+        int maxY = MathHelper.clip((count * 22) + (isGroup ? 15 : 2), 24, 300);
         return new Dimension(250, maxY);
     }
 
     @Override
     protected void validateMove(Rectangle previous, double mouseX, double mouseY) {
+        if (!DEConfig.configUiEnableSnapping) return;
         Rectangle newPos = getRect();
         Rectangle originalPos = new Rectangle(newPos);
         for (PropertyContainer element : gui.propertyContainers) {
@@ -367,10 +485,13 @@ public class PropertyContainer extends GuiManipulable {
     }
 
     private int getTargetHeight() {
+        if (!isDragging && prevUserHeight != expandedHeight && prevUserHeight <= getMaxSize().height) {
+            expandedHeight = prevUserHeight;
+        }
         if (expandedHeight == 0) {
             expandedHeight = ySize();
         } else if (expandedHeight > getMaxSize().height) {
-            setYSize(expandedHeight = getMaxSize().height);
+            expandedHeight = getMaxSize().height;
         }
         return collapsed ? isPreset ? 25 : 12 : expandedHeight;
     }
@@ -416,6 +537,8 @@ public class PropertyContainer extends GuiManipulable {
         IRenderTypeBuffer.Impl getter = minecraft.getRenderTypeBuffers().getBufferSource();
 
         if (dropTarget != null) {
+            double zLevel = getRenderZLevel() - 10;
+            zOffset -= zLevel;
             if (dropTargetElement != null) {
                 Rectangle rect = dropTargetElement.getRect();
                 if (mouseY < rect.y + (rect.height / 2D)) {
@@ -427,8 +550,8 @@ public class PropertyContainer extends GuiManipulable {
                 drawGradientRect(getter, dropTarget.xPos() + 3, dropTarget.yPos() + 13, dropTarget.maxXPos() - 3, dropTarget.yPos() + 15, 0xFF00FF00, 0x0000FF00);
                 drawGradientRect(getter, dropTarget.xPos() + 3, dropTarget.maxYPos() - 6, dropTarget.maxXPos() - 3, dropTarget.maxYPos() - 3, 0x0000FF00, 0xFF00FF00);
             }
+            zOffset += zLevel;
         }
-
 
         int alpha = semiTrans ? 0x60000000 : 0xFF000000;
         Material mat = BCSprites.getThemed("borderless_bg_dynamic_small");
@@ -436,15 +559,15 @@ public class PropertyContainer extends GuiManipulable {
 
         int contentPos = yPos() + 2 + 9;
         int contentHeight = ySize() - 4 - 9;
-        if (isGroup && contentHeight > 0) {
-            if (applyPreset.isEnabled() && !applyPreset.isPressed()) {
-                mat = BCSprites.getThemed("button_borderless" + (applyPreset.isPressed() ? "_invert" : ""));
-                drawDynamicSprite(mat.getBuffer(getter, e -> BCSprites.guiTexType), mat.getSprite(), xPos() + 2, contentPos, xSize() - 4, contentHeight, 2, 2, 2, 2, 0xFFFFFF | alpha);
-            } else {
-                int light = (darkMode ? 0x5b5b5b : 0xFFFFFF) | alpha;
-                int dark = (darkMode ? 0x282828 : 0x505050) | alpha;
-                drawShadedRect(getter, xPos() + 2, contentPos, xSize() - 4, contentHeight, 1, 0, dark, light, midColour(light, dark));
-            }
+        if (isGroup && contentHeight > 0 && !applyPreset.isEnabled()) {
+//            if (applyPreset.isEnabled() && !applyPreset.isPressed()) {
+//                mat = BCSprites.getThemed("button_borderless" + (applyPreset.isPressed() ? "_invert" : ""));
+//                drawDynamicSprite(mat.getBuffer(getter, e -> BCSprites.guiTexType), mat.getSprite(), xPos() + 2, contentPos, xSize() - 4, contentHeight, 2, 2, 2, 2, 0xFFFFFF | alpha);
+//            } else {
+            int light = (darkMode ? 0x5b5b5b : 0xFFFFFF) | alpha;
+            int dark = (darkMode ? 0x282828 : 0x505050) | alpha;
+            drawShadedRect(getter, xPos() + 2, contentPos, xSize() - 4, contentHeight, 1, 0, dark, light, midColour(light, dark));
+//            }
             if (dataList.isEmpty()) {
                 drawCustomString(fontRenderer, I18n.format("gui.draconicevolution.item_config.drop_prop_here"), xPos() + 3, yPos() + 13, xSize() - 6, GuiToolkit.Palette.BG.text(), CENTER, NORMAL, false, true, darkMode);
             }
@@ -477,6 +600,12 @@ public class PropertyContainer extends GuiManipulable {
             nbt.putBoolean("preset", isPreset);
             nbt.putBoolean("collapsed", collapsed);
             nbt.putString("name", groupName.getText());
+            nbt.putInt("user_height", prevUserHeight);
+            nbt.putBoolean("global_key", globalKeyBind);
+            if (!boundKey.isEmpty()) {
+                nbt.putString("binding", boundKey);
+                nbt.putInt("modifier", modifier.ordinal());
+            }
         }
         nbt.putInt("x_pos", setXPos);
         nbt.putInt("y_pos", setYPos);
@@ -496,6 +625,10 @@ public class PropertyContainer extends GuiManipulable {
             container.isPreset = nbt.getBoolean("preset");
             container.collapsed = nbt.getBoolean("collapsed");
             container.defaultName = nbt.getString("name");
+            container.prevUserHeight = nbt.getInt("user_height");
+            container.boundKey = nbt.getString("binding");
+            container.modifier = KeyModifier.values()[nbt.getInt("modifier")];
+            container.globalKeyBind = nbt.getBoolean("global_key");
         }
         container.setXPos = nbt.getInt("x_pos");
         container.setYPos = nbt.getInt("y_pos");

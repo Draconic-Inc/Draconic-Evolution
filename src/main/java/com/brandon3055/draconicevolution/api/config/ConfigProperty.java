@@ -2,8 +2,10 @@ package com.brandon3055.draconicevolution.api.config;
 
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
+import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.capability.PropertyProvider;
 import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.PropertyData;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -11,6 +13,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.util.INBTSerializable;
 
+import java.util.UUID;
 import java.util.function.Function;
 
 /**
@@ -24,6 +27,8 @@ public abstract class ConfigProperty implements INBTSerializable<CompoundNBT> {
     private String name;
     private ITextComponent displayName;
     private boolean showOnHud = true;
+    private String modid = "draconicevolution";
+    private UUID uniqueName = null;
 
     public ConfigProperty(String name) {
         this.name = name;
@@ -38,11 +43,11 @@ public abstract class ConfigProperty implements INBTSerializable<CompoundNBT> {
      * @return the display name for this config property. e.g. Mining AOE
      */
     public ITextComponent getDisplayName() {
-        return displayName == null ? new TranslationTextComponent("item_property.draconicevolution." + name + ".name") : displayName;
+        return displayName == null ? new TranslationTextComponent("item_prop.draconicevolution." + name + ".name") : displayName;
     }
 
     public ITextComponent getToolTip() {
-        return new TranslationTextComponent("item_property.draconicevolution." + name + ".info");
+        return new TranslationTextComponent("item_prop.draconicevolution." + name + ".info");
     }
 
     /**
@@ -59,7 +64,22 @@ public abstract class ConfigProperty implements INBTSerializable<CompoundNBT> {
      * @return the name of this property. e.g. "mining_aoe"
      */
     public String getName() {
-        return name;
+        return uniqueName == null ? name : uniqueName.toString();
+    }
+
+    /**
+     * This is a work around required to allow {@link com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity}'s to have properties.
+     * Because you can have multiple of the same module installed properties in modules require a globally unique name.
+     * Do not use this for normal properties. Doing so will make it impossible to retrieve this property fia {@link PropertyProvider#getProperty(String)}
+     * as you would need to know this properties UUID. ModuleEntity dont have this issue because they can just hold a reference to the property when they create it.
+     * The generated name is saved and loaded with the property data so it will persist.
+     */
+    public void generateUnique() {
+        this.uniqueName = UUID.randomUUID();
+    }
+
+    public UUID getUniqueName() {
+        return uniqueName;
     }
 
     /**
@@ -68,6 +88,8 @@ public abstract class ConfigProperty implements INBTSerializable<CompoundNBT> {
      * @param stack the {@link ItemStack} this property belongs to.
      */
     public abstract void onValueChanged(ItemStack stack);
+
+    public abstract void validateValue();
 
     public abstract Type getType();
 
@@ -83,23 +105,31 @@ public abstract class ConfigProperty implements INBTSerializable<CompoundNBT> {
     public CompoundNBT serializeNBT() {
         CompoundNBT nbt = new CompoundNBT();
         nbt.putBoolean("hud", showOnHud);
+        if (uniqueName != null) {
+            nbt.putUniqueId("uni_name", uniqueName);
+        }
         return nbt;
     }
 
     @Override
     public void deserializeNBT(CompoundNBT nbt) {
         showOnHud = nbt.getBoolean("hud");
+        if (nbt.hasUniqueId("uni_name")) {
+            uniqueName = nbt.getUniqueId("uni_name");
+        }
     }
 
+    @Deprecated // This didnt end up getting used for sync but i will leave it in just in case i need it later
     public void serializeMCData(MCDataOutput output) {
         output.writeBoolean(showOnHud);
     }
 
+    @Deprecated // This didnt end up getting used for sync but i will leave it in just in case i need it later
     public void deSerializeMCData(MCDataInput input) {
         showOnHud = input.readBoolean();
     }
 
-    public abstract void loadData(PropertyData data);
+    public abstract void loadData(PropertyData data, ItemStack stack);
 
     public enum Type {
         BOOLEAN,

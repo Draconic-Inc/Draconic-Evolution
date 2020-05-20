@@ -3,7 +3,7 @@ package com.brandon3055.draconicevolution.blocks.tileentity;
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.inventory.TileItemStackHandler;
 import com.brandon3055.brandonscore.lib.ChatHelper;
-import com.brandon3055.brandonscore.lib.PairKV;
+import com.brandon3055.brandonscore.lib.Pair;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.lib.Vec3I;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
@@ -381,12 +381,12 @@ public class TileDislocatorReceptacle extends TileBCore implements ITickableTile
             }
         }
 
-        PairKV<Axis, List<BlockPos>> portalConfiguration = scanConfigurations();
+        Pair<Axis, List<BlockPos>> portalConfiguration = scanConfigurations();
         if (portalConfiguration != null) {
             igniting = true;
 
-            for (BlockPos portalBlock : portalConfiguration.getValue()) {
-                world.setBlockState(portalBlock, DEContent.portal.getDefaultState().with(Portal.AXIS, portalConfiguration.getKey()));
+            for (BlockPos portalBlock : portalConfiguration.value()) {
+                world.setBlockState(portalBlock, DEContent.portal.getDefaultState().with(Portal.AXIS, portalConfiguration.key()));
                 TileEntity tile = world.getTileEntity(portalBlock);
                 if (tile instanceof TilePortal) {
                     ((TilePortal) tile).setMasterPos(pos);
@@ -394,7 +394,7 @@ public class TileDislocatorReceptacle extends TileBCore implements ITickableTile
             }
 
             active.set(true);
-            activeAxis.set(portalConfiguration.getKey());
+            activeAxis.set(portalConfiguration.key());
 
             BlockState state = world.getBlockState(pos);
             if (state.getBlock() == DEContent.dislocator_receptacle) {
@@ -405,8 +405,8 @@ public class TileDislocatorReceptacle extends TileBCore implements ITickableTile
             igniting = false;
 
             if (dislocator_p2p.isValid(stack) && !dislocator_p2p.isPlayer(stack)) {
-                updateSpawnBlock(portalConfiguration.getValue());
-                updateLinkBlock(portalConfiguration.getValue());
+                updateSpawnBlock(portalConfiguration.value());
+                updateLinkBlock(portalConfiguration.value());
             }
 
             return true;
@@ -511,12 +511,12 @@ public class TileDislocatorReceptacle extends TileBCore implements ITickableTile
         setLinkPos(closestPos);
     }
 
-    private PairKV<Axis, List<BlockPos>> scanConfigurations() {
+    private Pair<Axis, List<BlockPos>> scanConfigurations() {
         List<BlockPos> scanned = new ArrayList<BlockPos>();
         for (BlockPos offset : FacingUtils.AROUND_X) {
             List<BlockPos> portalBlocks = scanFromOrigin(pos.add(offset), Axis.X, scanned);
             if (portalBlocks != null) {
-                return new PairKV<Axis, List<BlockPos>>(Axis.X, portalBlocks);
+                return new Pair<Axis, List<BlockPos>>(Axis.X, portalBlocks);
             }
         }
 
@@ -524,7 +524,7 @@ public class TileDislocatorReceptacle extends TileBCore implements ITickableTile
         for (BlockPos offset : FacingUtils.AROUND_Y) {
             List<BlockPos> portalBlocks = scanFromOrigin(pos.add(offset), Axis.Y, scanned);
             if (portalBlocks != null) {
-                return new PairKV<Axis, List<BlockPos>>(Axis.Y, portalBlocks);
+                return new Pair<Axis, List<BlockPos>>(Axis.Y, portalBlocks);
             }
         }
 
@@ -532,7 +532,7 @@ public class TileDislocatorReceptacle extends TileBCore implements ITickableTile
         for (BlockPos offset : FacingUtils.AROUND_Z) {
             List<BlockPos> portalBlocks = scanFromOrigin(pos.add(offset), Axis.Z, scanned);
             if (portalBlocks != null) {
-                return new PairKV<Axis, List<BlockPos>>(Axis.Z, portalBlocks);
+                return new Pair<Axis, List<BlockPos>>(Axis.Z, portalBlocks);
             }
         }
 

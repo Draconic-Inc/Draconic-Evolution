@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.api.modules.lib;
 
 import codechicken.lib.util.SneakyUtils;
+import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.ModuleType;
 import com.brandon3055.draconicevolution.api.modules.properties.ModuleData;
 import com.brandon3055.draconicevolution.api.modules.properties.ModuleProperties;
@@ -43,5 +44,10 @@ public class BasicModuleType<T extends ModuleData<T>> implements ModuleType<T> {
     @Override
     public String getName() {
         return name;
+    }
+
+    @Override
+    public ModuleEntity createEntity(Module<T> module) {
+        return new ModuleEntity(module);
     }
 }

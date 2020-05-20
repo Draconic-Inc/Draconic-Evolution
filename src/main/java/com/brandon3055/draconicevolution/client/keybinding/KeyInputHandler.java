@@ -3,14 +3,21 @@ package com.brandon3055.draconicevolution.client.keybinding;
 import com.brandon3055.brandonscore.handlers.HandHelper;
 //import com.brandon3055.draconicevolution.client.gui.toolconfig.GuiToolConfig;
 //import com.brandon3055.draconicevolution.network.PacketDispatcher;
+import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.GuiConfigurableItem;
+import com.brandon3055.draconicevolution.inventory.ContainerConfigurableItem;
+import com.brandon3055.draconicevolution.network.DraconicNetwork;
+import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.InputEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.network.NetworkHooks;
 
 import java.awt.event.MouseEvent;
 
@@ -64,6 +71,7 @@ public class KeyInputHandler {
             handlePlaceItemKey();
         }
         else if (KeyBindings.toolConfig.isPressed()) {
+            DraconicNetwork.sendOpenItemConfig();
 //            Minecraft.getInstance().displayGuiScreen(new GuiToolConfig(player)); TODO PacketDispatcher stuff
         }
         else if (KeyBindings.toolProfileChange.isPressed() && HandHelper.getMainFirst(player) != null) {
@@ -104,5 +112,14 @@ public class KeyInputHandler {
         if (c == 0 && i < 0) return 8;
         if (c == 8 && i > 0) return 0;
         return c + i;
+    }
+
+
+    @OnlyIn(Dist.CLIENT)
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void priorityKeyInput(InputEvent.KeyInputEvent event) {
+        if (Minecraft.getInstance().player != null && event.getAction() == 1) {
+            GuiConfigurableItem.checkKeybinding(event.getKey(), event.getScanCode());
+        }
     }
 }

@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.items.tools;
 
-import com.brandon3055.brandonscore.lib.PairKV;
+import com.brandon3055.brandonscore.lib.Pair;
 import com.brandon3055.draconicevolution.api.IReaperItem;
 import com.brandon3055.draconicevolution.api.itemconfig_dep.DoubleConfigField;
 import com.brandon3055.draconicevolution.api.itemconfig_dep.IItemConfigField;
@@ -158,8 +158,8 @@ public class WyvernSword extends ToolBase implements IAOEWeapon, IReaperItem {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public PairKV<TextureAtlasSprite, ResourceLocation> getModels(ItemStack stack) {
-        return new PairKV<>(DETextures.WYVERN_SWORD, new ResourceLocation("draconicevolution", "models/item/tools/wyvern_sword.obj"));
+    public Pair<TextureAtlasSprite, ResourceLocation> getModels(ItemStack stack) {
+        return new Pair<>(DETextures.WYVERN_SWORD, new ResourceLocation("draconicevolution", "models/item/tools/wyvern_sword.obj"));
     }
 
 

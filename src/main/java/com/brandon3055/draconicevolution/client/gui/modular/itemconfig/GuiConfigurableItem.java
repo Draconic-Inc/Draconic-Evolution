@@ -3,38 +3,49 @@ package com.brandon3055.draconicevolution.client.gui.modular.itemconfig;
 import codechicken.lib.math.MathHelper;
 import com.brandon3055.brandonscore.client.BCSprites;
 import com.brandon3055.brandonscore.client.gui.GuiToolkit;
+import com.brandon3055.brandonscore.client.gui.StandardDialog;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElementManager;
 import com.brandon3055.brandonscore.client.gui.modulargui.ModularGuiContainer;
-import com.brandon3055.brandonscore.client.gui.modulargui.ThemedElements;
 import com.brandon3055.brandonscore.client.gui.modulargui.ThemedElements.ContentRect;
 import com.brandon3055.brandonscore.client.gui.modulargui.ThemedElements.ScrollBar;
 import com.brandon3055.brandonscore.client.gui.modulargui.baseelements.GuiButton;
 import com.brandon3055.brandonscore.client.gui.modulargui.baseelements.GuiScrollElement;
 import com.brandon3055.brandonscore.client.gui.modulargui.guielements.*;
 import com.brandon3055.brandonscore.client.utils.GuiHelper;
+import com.brandon3055.brandonscore.lib.Tripple;
+import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.capability.PropertyProvider;
 import com.brandon3055.draconicevolution.api.config.ConfigProperty;
+import com.brandon3055.draconicevolution.client.keybinding.KeyBindings;
 import com.brandon3055.draconicevolution.inventory.ContainerConfigurableItem;
+import com.brandon3055.draconicevolution.network.DraconicNetwork;
+import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.common.util.LazyOptional;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.*;
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static com.brandon3055.brandonscore.client.gui.GuiToolkit.LayoutPos.BOTTOM_CENTER;
 import static com.brandon3055.brandonscore.client.gui.modulargui.baseelements.GuiScrollElement.ListMode.VERT_LOCK_POS_WIDTH;
 import static com.brandon3055.brandonscore.client.gui.modulargui.lib.GuiAlign.CENTER;
-import static net.minecraft.util.text.TextFormatting.*;
+import static com.brandon3055.draconicevolution.DEConfig.*;
+import static com.brandon3055.draconicevolution.api.capability.DECapabilities.PROPERTY_PROVIDER_CAPABILITY;
 
 
 /**
@@ -51,17 +62,23 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
     private static float resizeAnim = 1; //Full size = 1
     private static boolean advancedUI = false;
     private static boolean hideUI = false;
+    private int holdTimer = 0;
+    private boolean closeOnRelease = false;
+    private boolean bindReleased = false;
     private GuiLabel title;
+    private GuiButton toggleAdvanced;
     private GuiElement<?> mainUI;
     private GuiElement<?> playerSlots;
     private GuiScrollElement simpleViewList;
     private GuiToolkit.InfoPanel infoPanel;
     protected GuiElement<?> deleteZone;
     protected GuiElement<?> advancedContainer;
-    protected List<PropertyContainer> propertyContainers = new ArrayList<>();
-    protected GuiToolkit<GuiConfigurableItem> toolkit;
     protected PropertyData hoveredData = null;
+    protected PropertyProvider hoveredProvider = null;
     protected List<UpdateAnim> updateAnimations = new ArrayList<>();
+    protected GuiToolkit<GuiConfigurableItem> toolkit;
+    protected List<PropertyContainer> propertyContainers = new ArrayList<>();
+    protected static Map<InputMappings.Input, PropertyContainer> keyBindingCache = null;
 
     public GuiConfigurableItem(ContainerConfigurableItem container, PlayerInventory inv, ITextComponent titleIn) {
         super(container, inv, titleIn);
@@ -88,13 +105,13 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
 
                 if (!advancedUI && provider.getProviderID().equals(selectedItem)) {
                     drawOverlay(x, y, 0x80FF0000, occluded);
-                } else if (hoveredData != null) {
+                } else if (DEConfig.configUiEnableVisualization && hoveredData != null) {
                     ConfigProperty prop = hoveredData.getPropIfApplicable(provider);
                     if (prop != null) {
                         drawOverlay(x, y, hoveredData.doesDataMatch(prop) ? 0x8000FF00 : 0x80ff9100, occluded);
                     }
                 }
-                if (!updateAnimations.isEmpty()) {
+                if (DEConfig.configUiEnableVisualization && !updateAnimations.isEmpty()) {
                     updateAnimations.stream()
                             .filter(e -> e.data.getPropIfApplicable(provider) != null)
                             .forEach(e -> e.render(x, y));
@@ -104,6 +121,7 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
     }
 
     private void drawOverlay(int x, int y, int colour, boolean occluded) {
+        occluded = true;
         RenderSystem.colorMask(true, true, true, false);
         if (occluded) RenderSystem.enableDepthTest();
         else RenderSystem.disableDepthTest();
@@ -134,10 +152,10 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
         hideButton.setHoverText(I18n.format("gui.draconicevolution.item_config.toggle_hidden.info"));
         hideButton.onReload(() -> hideButton.setPos(themeButton.xPos() - 12, mainUI.yPos() + 3));
 
-        GuiButton advancedButton = toolkit.createAdvancedButton(mainUI);
-        advancedButton.onPressed(this::toggleAdvanced);
-        advancedButton.setHoverText(I18n.format("gui.draconicevolution.item_config.toggle_advanced.info"));
-        advancedButton.onReload(() -> advancedButton.setPos(mainUI.xPos() + 3, mainUI.yPos() + 3));
+        toggleAdvanced = toolkit.createAdvancedButton(mainUI);
+        toggleAdvanced.onPressed(this::toggleAdvanced);
+        toggleAdvanced.setHoverText(I18n.format("gui.draconicevolution.item_config.toggle_advanced.info"));
+        toggleAdvanced.onReload(() -> toggleAdvanced.setPos(mainUI.xPos() + 3, mainUI.yPos() + 3));
 
         playerSlots = toolkit.createPlayerSlots(mainUI, false, true, true);
 
@@ -155,29 +173,51 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
         getStarted.setEnabledCallback(() -> (advancedUI && propertyContainers.isEmpty()) || (!advancedUI && simpleViewList.getScrollingElements().isEmpty()));
         mainUI.addChild(getStarted);
 
+        createOptionsButton();
+
+        GuiButton modulesSmall = toolkit.createThemedIconButton(mainUI, "grid_small");
+        modulesSmall.onReload(() -> modulesSmall.setPos(hideButton.xPos() - 12, mainUI.yPos() + 3));
+//        modulesSmall.setEnabledCallback(() -> hideUI);
+        modulesSmall.setHoverText(I18n.format("gui.draconicevolution.item_config.open_modules.info"));
+        modulesSmall.onPressed(this::openModulesGui);
+
+//        I think the small one looks better regardless
+//        GuiButton modulesLarge = toolkit.createThemedIconButton(mainUI, 18, "grid_large");
+//        modulesLarge.onReload(() -> modulesLarge.setPos(playerSlots.maxXPos() - 17, playerSlots.yPos() + 1));
+//        modulesLarge.setEnabledCallback(() -> !hideUI);
+//        modulesLarge.setHoverText(I18n.format("gui.draconicevolution.item_config.open_modules.info"));
+//        modulesLarge.onPressed(this::openModulesGui);
+
         mainUI.onReload(this::updateUIGeometry);
         selectedItem = container.getSelectedId();
         loadSelectedItemProperties();
         loadPropertyConfig();
     }
 
+    private void openModulesGui() {
+        minecraft.player.closeScreen();
+        onClose();
+        DraconicNetwork.sendOpenModuleConfig();
+    }
+
     private void addAdvancedUIElements(GuiElementManager manager) {
         advancedContainer = new GuiElement<>();
+        advancedContainer.setEnabledCallback(() -> advancedUI || configUiEnableAdvancedXOver);
         advancedContainer.onReload(() -> advancedContainer.setPosAndSize(0, 0, width, height));
         manager.addChild(advancedContainer);
 
         deleteZone = new GuiTexture(16, 16, () -> BCSprites.get("delete"));
-        deleteZone.setEnabledCallback(() -> advancedUI);
+        deleteZone.setEnabledCallback(() -> advancedUI && configUiEnableDeleteZone);
         deleteZone.setYPos(0).setXPosMod(() -> advancedContainer.maxXPos() - 16);
         deleteZone.setHoverText(I18n.format("gui.draconicevolution.item_config.delete_zone.info"));
-        toolkit.addHoverHighlight(deleteZone, 0, 0, true);
+        GuiToolkit.addHoverHighlight(deleteZone, 0, 0, true);
         advancedContainer.addChild(deleteZone);
 
         GuiButton addGroup = toolkit.createIconButton(advancedContainer, 16, BCSprites.getter("new_group"));
-        toolkit.addHoverHighlight(addGroup, 0, 0, true);
-        addGroup.setEnabledCallback(() -> advancedUI);
+        GuiToolkit.addHoverHighlight(addGroup, 0, 0, true);
+        addGroup.setEnabledCallback(() -> advancedUI && configUiEnableAddGroupButton);
         addGroup.setHoverText(I18n.format("gui.draconicevolution.item_config.add_group.info"));
-        addGroup.onReload(e -> e.setMaxXPos(width, false).setYPos(deleteZone.maxYPos() + 1));
+        addGroup.onReload(e -> e.setMaxXPos(width, false).setYPos(deleteZone.isEnabled() ? deleteZone.maxYPos() + 1 : 0));
         addGroup.onPressed(() -> {
             PropertyContainer newGroup = new PropertyContainer(this, true);
             propertyContainers.add(newGroup);
@@ -188,6 +228,68 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
         });
 
 //        advancedContainer.addChild(new ThemedElements.TestDialog());
+    }
+
+    private void createOptionsButton() {
+        List<Tripple<Supplier<String>, Supplier<String>, Runnable>> options = new ArrayList<>();
+        options.add(new Tripple<>(
+                () -> configUiShowUnavailable ? "hide_unavailable" : "show_unavailable",
+                () -> configUiShowUnavailable ? "hide_unavailable" : "show_unavailable",
+                () -> {
+                    DEConfig.modifyClientProperty("showUnavailable", tag -> tag.setBoolean(!configUiShowUnavailable), "itemConfigGUI");
+                    advancedContainer.reloadElement();
+                    advancedContainer.reloadElement(); //Avoids some annoying reload issues.
+                })
+        );
+        options.add(new Tripple<>(
+                () -> configUiEnableSnapping ? "disable_snapping" : "enable_snapping",
+                () -> "disable_snapping",
+                () -> DEConfig.modifyClientProperty("enableSnapping", tag -> tag.setBoolean(!configUiEnableSnapping), "itemConfigGUI"))
+        );
+        options.add(new Tripple<>(
+                () -> configUiEnableVisualization ? "disable_visualization" : "enable_visualization",
+                () -> "disable_visualization",
+                () -> DEConfig.modifyClientProperty("enableVisualization", tag -> tag.setBoolean(!configUiEnableVisualization), "itemConfigGUI"))
+        );
+        options.add(new Tripple<>(
+                () -> configUiEnableAddGroupButton ? "hide_group_button" : "show_group_button", null,
+                () -> DEConfig.modifyClientProperty("enableAddGroupButton", tag -> tag.setBoolean(!configUiEnableAddGroupButton), "itemConfigGUI"))
+        );
+        options.add(new Tripple<>(
+                () -> configUiEnableDeleteZone ? "hide_delete_zone" : "show_delete_zone", null,
+                () -> {
+                    DEConfig.modifyClientProperty("enableDeleteZone", tag -> tag.setBoolean(!configUiEnableDeleteZone), "itemConfigGUI");
+                    advancedContainer.reloadElement();
+                })
+        );
+        options.add(new Tripple<>(
+                () -> configUiEnableAdvancedXOver ? "disable_adv_xover" : "enable_adv_xover",
+                () -> configUiEnableAdvancedXOver ? "disable_adv_xover" : "enable_adv_xover",
+                () -> {
+                    DEConfig.modifyClientProperty("enableAdvancedXOver", tag -> tag.setBoolean(!configUiEnableAdvancedXOver), "itemConfigGUI");
+                    advancedContainer.reloadElement();
+                })
+        );
+
+        GuiButton optionsButton = toolkit.createThemedIconButton(mainUI, "gear");
+        optionsButton.setPos(toggleAdvanced.maxXPos(), toggleAdvanced.yPos());
+        optionsButton.setHoverText(I18n.format("gui.draconicevolution.item_config.options"));
+        optionsButton.setEnabledCallback(() -> advancedUI);
+        optionsButton.onPressed(() -> {
+            StandardDialog<Tripple<Supplier<String>, Supplier<String>, Runnable>> dialog = new StandardDialog<>(advancedContainer);
+            dialog.setHeading(I18n.format("gui.draconicevolution.item_config.options"));
+            dialog.setDefaultRenderer(e -> I18n.format("gui.draconicevolution.item_config." + e.getA().get()));
+            dialog.setToolTipHandler((key, element) -> {
+                if (key.getB() != null) {
+                    element.setHoverText(e -> I18n.format("gui.draconicevolution.item_config." + key.getB().get() + ".info")).setHoverTextDelay(20);
+                }
+            });
+            dialog.setSelectionListener(e -> e.getC().run());
+            dialog.addItems(options);
+            dialog.setPos(optionsButton.maxXPos() + 2, optionsButton.yPos() - 2);
+            dialog.show();
+            dialog.normalizePosition();
+        });
     }
 
     protected static GuiScrollElement createPropertyList() {
@@ -231,36 +333,12 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
             PropertyProvider provider = container.findProvider(container.getSelectedId());
             if (provider == null || provider.getProperties().isEmpty()) return;
 
-            GuiSelectDialog<ConfigProperty> dialog = GuiToolkit.createStandardDialog(mainUI,
-                    I18n.format("gui.draconicevolution.item_config.click_and_drag_to_place"),
-                    e -> e.getDisplayName().getFormattedText(),
-                    provider.getProperties());
-
-
-//            GuiSelectDialog<ConfigProperty> dialog = new GuiSelectDialog<>(mainUI);
-//            dialog.setRendererBuilder(e -> {
-//                GuiLabel label = new GuiLabel(e.getDisplayName().getFormattedText()).setYSize(10).setTextColour(GRAY, YELLOW);
-//                toolkit.addHoverHighlight(label);
-//                return label;
-//            });
-//            dialog.addItems(provider.getProperties());
-//            int width = provider.getProperties().stream()
-//                    .map(ConfigProperty::getDisplayName)
-//                    .map(ITextComponent::getFormattedText)
-//                    .mapToInt(e -> font.getStringWidth(e))
-//                    .max().orElse(50) + 6;
-//
+            StandardDialog<ConfigProperty> dialog = new StandardDialog<>(mainUI);
+            dialog.setHeading(I18n.format("gui.draconicevolution.item_config.click_and_drag_to_place"));
+            dialog.setDefaultRenderer(e -> e.getDisplayName().getFormattedText());
+            dialog.addItems(provider.getProperties());
             int x = (int) mainUI.getMouseX();
-//
-//            dialog.setInsets(13, 2, 2, 2);
-//            dialog.setSize(MathHelper.clip(width, 100, 200), (provider.getProperties().size() * 10) + 15);
-//            dialog.addBackGroundChild(new GuiBorderedRect().setSize(dialog).setYSize(12).setBorderColour(0xFF000000 | DARK_AQUA.getColor()).setFillColour(0xFF101010));
-//            dialog.addBackGroundChild(new GuiBorderedRect().setSize(dialog).setBorderColour(0xFF000000 | DARK_AQUA.getColor()).setFillColour(0xFF101010));
-//            dialog.addChild(new GuiLabel(I18n.format("gui.draconicevolution.item_config.click_and_drag_to_place")).setSize(dialog.xSize(), 12).setAlignment(CENTER).setTextColour(WHITE));
             dialog.setPos(x, height - dialog.ySize());
-//            dialog.setNoScrollBar();
-            dialog.normalizePosition();
-
             dialog.setSelectionListener(property -> {
                 PropertyContainer newContainer = new PropertyContainer(this, false);
                 advancedContainer.addChild(newContainer);
@@ -268,13 +346,12 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
                 newContainer.updatePosition();
                 newContainer.addProperty(new PropertyData(provider, property, true));
                 newContainer.startDragging();
-                GuiButton.playGenericClick();
                 newContainer.setCancelZone(dialog.getRect().intersection(mainUI.getRect()));
             });
 
             dialog.setBlockOutsideClicks(true);
             dialog.setCloseOnOutsideClick(true);
-            dialog.show(290);
+            dialog.show();
         }
         if (!initialLoad) {
             GuiButton.playGenericClick();
@@ -326,6 +403,33 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
     @Override
     public void tick() {
         hoveredData = null;
+        hoveredProvider = null;
+        if (configUiEnableVisualization) {
+            Slot hovered = container.inventorySlots.stream()
+                    .filter(slot -> isSlotSelected(slot, getMouseX(), getMouseY()))
+                    .findAny()
+                    .orElse(null);
+            if (hovered != null) {
+                LazyOptional<PropertyProvider> optionalCap = hovered.getStack().getCapability(PROPERTY_PROVIDER_CAPABILITY);
+                optionalCap.ifPresent(e -> hoveredProvider = e);
+            }
+        }
+
+        if (!bindReleased) {
+            InputMappings.Input bind = KeyBindings.toolConfig.getKey();
+            if (!InputMappings.isKeyDown(Minecraft.getInstance().getMainWindow().getHandle(), bind.getKeyCode())) {
+                if (closeOnRelease) {
+                    minecraft.player.closeScreen();
+                    onClose();
+                } else {
+                    bindReleased = true;
+                }
+            } else if (holdTimer > 10) {
+                closeOnRelease = true;
+            }
+            holdTimer++;
+        }
+
         super.tick();
     }
 
@@ -334,6 +438,75 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
         savePropertyConfig();
         super.onClose();
     }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (!bindReleased) {
+            closeOnRelease = true;
+        }
+        return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (!bindReleased) {
+            closeOnRelease = true;
+        }
+
+        if (super.keyPressed(keyCode, scanCode, modifiers)) {
+            return true;
+        }
+
+        InputMappings.Input input = InputMappings.getInputByCode(keyCode, scanCode);
+        List<PropertyContainer> targets = propertyContainers.stream()
+                .filter(e -> e.isPreset)
+                .filter(e -> !e.boundKey.isEmpty())
+                .filter(e -> e.boundKey.equals(input.toString()))
+                .filter(e -> e.modifier.isActive(null))
+                .collect(Collectors.toList());
+        targets.forEach(e -> e.dataList.forEach(data -> {
+            data.sendToServer();
+            updateAnimations.add(new UpdateAnim(data));
+        }));
+        if (!targets.isEmpty()) {
+            GuiButton.playGenericClick();
+        }
+
+        if (KeyBindings.toolConfig.getKey().equals(input)) {
+            minecraft.player.closeScreen();
+            onClose();
+            return true;
+        }
+
+
+        return false;
+    }
+
+    public static void checkKeybinding(int keyCode, int scanCode) {
+        if (Minecraft.getInstance().currentScreen instanceof GuiConfigurableItem) {
+            return;
+        }
+        InputMappings.Input input = InputMappings.getInputByCode(keyCode, scanCode);
+        if (keyBindingCache == null) {
+            keyBindingCache = new HashMap<>();
+            CompoundNBT nbt = ItemConfigDataHandler.retrieveData();
+            List<PropertyContainer> containers = nbt.getList("property_containers", 10)
+                    .stream()
+                    .map(e -> (CompoundNBT) e)
+                    .map(e -> PropertyContainer.deserialize(null, e))
+                    .collect(Collectors.toList());
+            containers.stream()
+                    .filter(e -> !e.boundKey.isEmpty() && e.globalKeyBind && e.isPreset)
+                    .forEach(e -> keyBindingCache.put(InputMappings.getInputByName(e.boundKey), e));
+        }
+
+        PropertyContainer container = keyBindingCache.get(input);
+        if (container != null && container.modifier.isActive(null)) {
+            container.dataList.forEach(PropertyData::sendToServer);
+            GuiButton.playGenericClick();
+        }
+    }
+
 
     private void loadPropertyConfig() {
         CompoundNBT nbt = ItemConfigDataHandler.retrieveData();
@@ -356,6 +529,7 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
     }
 
     protected void savePropertyConfig() {
+        keyBindingCache = null;
         CompoundNBT nbt = new CompoundNBT();
         nbt.putBoolean("advanced", advancedUI);
         nbt.putBoolean("hidden", hideUI);

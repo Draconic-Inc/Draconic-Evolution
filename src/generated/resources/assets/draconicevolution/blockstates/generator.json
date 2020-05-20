@@ -10,8 +10,8 @@
     },
     {
       "when": {
-        "active": "true",
-        "facing": "north"
+        "facing": "north",
+        "active": "true"
       },
       "apply": {
         "model": "draconicevolution:block/generator/generator_flame"
@@ -28,8 +28,8 @@
     },
     {
       "when": {
-        "active": "true",
-        "facing": "south"
+        "facing": "south",
+        "active": "true"
       },
       "apply": {
         "model": "draconicevolution:block/generator/generator_flame",
@@ -47,8 +47,8 @@
     },
     {
       "when": {
-        "active": "true",
-        "facing": "west"
+        "facing": "west",
+        "active": "true"
       },
       "apply": {
         "model": "draconicevolution:block/generator/generator_flame",
@@ -66,8 +66,8 @@
     },
     {
       "when": {
-        "active": "true",
-        "facing": "east"
+        "facing": "east",
+        "active": "true"
       },
       "apply": {
         "model": "draconicevolution:block/generator/generator_flame",

@@ -49,6 +49,7 @@ archivesBaseName = "Draconic-Evolution"
 
 sourceCompatibility = "1.8"
 targetCompatibility = "1.8"
+sourceSets.main.resources.srcDirs += "src/generated/resources"
 
 minecraft {
     version = config.mc_version + "-" + config.forge_version

@@ -28,6 +28,11 @@ public abstract class BaseModule<T extends ModuleData<T>> extends ForgeRegistryE
     public ModuleType<T> getType() {
         return moduleType;
     }
+
+    @Override
+    public ModuleEntity createEntity() {
+        return new ModuleEntity(this);
+    }
 }
 
 

@@ -27,14 +27,14 @@ public class PropertyData {
     public final Type type;
     public final UUID providerID;
     public final String providerName;
-    public final String propertyName;
+    private String propName;
+    private UUID propUniqueName;
     public String toolTip;
     public String displayName;
     public Runnable changeListener;
     //Logic
-    public boolean isPreset = false;
     public boolean isGlobal = false;
-    public boolean isPropertyAvailable = false;
+    private boolean isPropertyAvailable = false;
     public boolean isProviderAvailable = false;
     //Value
     public int integerValue = 0;
@@ -53,17 +53,21 @@ public class PropertyData {
     public Map<Integer, String> enumDisplayValues;
 
     public PropertyData(PropertyProvider provider, ConfigProperty property, boolean pullValue) {
-        this(provider.getProviderID(), provider.getProviderName(), property.getName(), property.getType());
+        this(provider.getProviderID(), provider.getProviderName(), property.getType());
         this.displayName = property.getDisplayName().getFormattedText();
         this.toolTip = property.getToolTip().getFormattedText();
+        if (property.getUniqueName() != null) {
+            propUniqueName = property.getUniqueName();
+        } else {
+            propName = property.getName();
+        }
         isProviderAvailable = true;
         pullData(property, pullValue);
     }
 
-    public PropertyData(UUID providerID, String providerName, String propertyName, Type type) {
+    public PropertyData(UUID providerID, String providerName, Type type) {
         this.providerID = providerID;
         this.providerName = providerName;
-        this.propertyName = propertyName;
         this.type = type;
     }
 
@@ -121,11 +125,15 @@ public class PropertyData {
         updateDisplayValue();
     }
 
+    public String getPropertyName() {
+        return propUniqueName == null ? propName : propUniqueName.toString();
+    }
+
     public void pullData(ContainerConfigurableItem container, boolean pullValue) {
         PropertyProvider provider = container.findProvider(providerID);
         isProviderAvailable = provider != null;
         if (isProviderAvailable) {
-            pullData(provider.getProperty(propertyName), pullValue);
+            pullData(provider.getProperty(getPropertyName()), pullValue);
         }
     }
 
@@ -236,7 +244,7 @@ public class PropertyData {
     public ConfigProperty getPropIfApplicable(PropertyProvider provider) {
         if (provider.getProviderName().equals(providerName)) {
             if (isGlobal || provider.getProviderID().equals(providerID)) {
-                return provider.getProperty(propertyName);
+                return provider.getProperty(getPropertyName());
             }
         }
         return null;
@@ -256,12 +264,20 @@ public class PropertyData {
         return false;
     }
 
+    public boolean isPropertyAvailable() {
+        return isPropertyAvailable && isProviderAvailable;
+    }
+
     public CompoundNBT serialize() {
         CompoundNBT nbt = new CompoundNBT();
         nbt.putByte("type", (byte) type.ordinal());
         nbt.putUniqueId("prov_id", providerID);
         nbt.putString("prov_name", providerName);
-        nbt.putString("prop_name", propertyName);
+        if (propUniqueName != null) {
+            nbt.putUniqueId("prop_name", propUniqueName);
+        } else {
+            nbt.putString("prop_name", propName);
+        }
 
         nbt.putString("tooltip", toolTip);
         nbt.putString("display_name", displayName);
@@ -301,15 +317,20 @@ public class PropertyData {
 
     @Nullable
     public static PropertyData deserialize(CompoundNBT nbt) {
-        if (!nbt.hasUniqueId("prov_id") || !nbt.contains("prov_name") || !nbt.contains("prop_name") || !nbt.contains("type")) {
+        if (!nbt.hasUniqueId("prov_id") || !nbt.contains("prov_name") || (!nbt.contains("prop_name") && !nbt.hasUniqueId("prop_name")) || !nbt.contains("type")) {
             return null;
         }
 
         PropertyData data = new PropertyData(
                 nbt.getUniqueId("prov_id"),
                 nbt.getString("prov_name"),
-                nbt.getString("prop_name"),
                 Type.getSafe(nbt.getByte("type")));
+
+        if (nbt.hasUniqueId("prop_name")) {
+            data.propUniqueName = nbt.getUniqueId("prop_name");
+        } else {
+            data.propName = nbt.getString("prop_name");
+        }
 
         data.toolTip = nbt.getString("tooltip");
         data.displayName = nbt.getString("display_name");
@@ -353,7 +374,13 @@ public class PropertyData {
         output.writeBoolean(isGlobal);
         if (!isGlobal) output.writeUUID(providerID);
         output.writeString(providerName);
-        output.writeString(propertyName);
+        output.writeBoolean(propUniqueName != null);
+        if (propUniqueName != null) {
+            output.writeUUID(propUniqueName);
+        }else {
+            output.writeString(propName);
+        }
+
         if (type == Type.BOOLEAN) {
             output.writeBoolean(booleanValue);
         } else if (type == Type.INTEGER) {
@@ -370,8 +397,13 @@ public class PropertyData {
         boolean isGlobal = input.readBoolean();
         UUID provID = isGlobal ? null : input.readUUID();
         String provName = input.readString();
-        String propName = input.readString();
-        PropertyData data = new PropertyData(provID, provName, propName, type);
+        PropertyData data = new PropertyData(provID, provName, type);
+        if (input.readBoolean()) {
+            data.propUniqueName = input.readUUID();
+        }else {
+            data.propName = input.readString();
+        }
+
         data.isGlobal = isGlobal;
         if (type == Type.BOOLEAN) {
             data.booleanValue = input.readBoolean();

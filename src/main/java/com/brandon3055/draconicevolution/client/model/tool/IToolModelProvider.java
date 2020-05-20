@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.client.model.tool;
 
-import com.brandon3055.brandonscore.lib.PairKV;
+import com.brandon3055.brandonscore.lib.Pair;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -19,6 +19,6 @@ public interface IToolModelProvider {
      * @return Pair of 2D model -> OBJ ResourceLocation
      */
     @OnlyIn(Dist.CLIENT)
-    PairKV<TextureAtlasSprite, ResourceLocation> getModels(ItemStack stack);
+    Pair<TextureAtlasSprite, ResourceLocation> getModels(ItemStack stack);
 
 }

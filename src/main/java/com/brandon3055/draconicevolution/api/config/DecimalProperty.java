@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.api.config;
 
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
+import codechicken.lib.math.MathHelper;
 import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.PropertyData;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -17,8 +18,8 @@ import java.util.function.Supplier;
 public class DecimalProperty extends ConfigProperty {
     private double value;
     private DecimalFormatter formatter = DecimalFormatter.RAW_2;
-    private Supplier<Double> min = () -> 0D;
-    private Supplier<Double> max = () -> 0D;
+    private Supplier<Double> min = () -> Double.NEGATIVE_INFINITY;
+    private Supplier<Double> max = () -> Double.POSITIVE_INFINITY;
     private BiConsumer<ItemStack, DecimalProperty> changeListener = null;
 
     public DecimalProperty(String name, double defaultValue) {
@@ -36,38 +37,44 @@ public class DecimalProperty extends ConfigProperty {
     }
 
     public void setValue(double value) {
-        this.value = value;
+        this.value = MathHelper.clip(value, getMin(), getMax());
     }
 
     public DecimalProperty min(double minValue) {
         this.min = () -> minValue;
+        validateValue();
         return this;
     }
 
     public DecimalProperty min(Supplier<Double> minSupplier) {
         this.min = minSupplier;
+        validateValue();
         return this;
     }
 
     public DecimalProperty max(double maxValue) {
         this.max = () -> maxValue;
+        validateValue();
         return this;
     }
 
     public DecimalProperty max(Supplier<Double> maxSupplier) {
         this.max = maxSupplier;
+        validateValue();
         return this;
     }
 
     public DecimalProperty range(double minValue, double maxValue) {
         this.min = () -> minValue;
         this.max = () -> maxValue;
+        validateValue();
         return this;
     }
 
     public DecimalProperty range(Supplier<Double> minSupplier, Supplier<Double> maxSupplier) {
         this.min = minSupplier;
         this.max = maxSupplier;
+        validateValue();
         return this;
     }
 
@@ -89,6 +96,11 @@ public class DecimalProperty extends ConfigProperty {
         if (changeListener != null) {
             changeListener.accept(stack, this);
         }
+    }
+
+    @Override
+    public void validateValue() {
+        value = Math.max(min.get(), Math.min(max.get(), value));
     }
 
     @Override
@@ -143,7 +155,8 @@ public class DecimalProperty extends ConfigProperty {
     }
 
     @Override
-    public void loadData(PropertyData data) {
+    public void loadData(PropertyData data, ItemStack stack) {
         value = Math.max(min.get(), Math.min(max.get(), data.decimalValue));
+        onValueChanged(stack);
     }
 }

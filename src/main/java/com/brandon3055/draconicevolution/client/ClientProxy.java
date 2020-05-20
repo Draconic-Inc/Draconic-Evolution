@@ -1,9 +1,18 @@
 package com.brandon3055.draconicevolution.client;
 
+import codechicken.lib.math.MathHelper;
 import codechicken.lib.model.ModelRegistryHelper;
+import codechicken.lib.render.CCModel;
+import codechicken.lib.render.CCRenderState;
+import codechicken.lib.render.OBJParser;
 import codechicken.lib.texture.SpriteRegistryHelper;
 import codechicken.lib.util.ResourceUtils;
+import codechicken.lib.vec.Matrix4;
+import codechicken.lib.vec.Rotation;
+import codechicken.lib.vec.Scale;
+import codechicken.lib.vec.Vector3;
 import com.brandon3055.draconicevolution.CommonProxy;
+import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.GuiConfigurableItem;
 import com.brandon3055.draconicevolution.client.gui.modular.GuiModularItem;
 import com.brandon3055.draconicevolution.init.DEContent;
@@ -19,18 +28,35 @@ import com.brandon3055.draconicevolution.client.render.item.RenderItemChaosShard
 import com.brandon3055.draconicevolution.client.render.item.RenderItemEnergyCrystal;
 import com.brandon3055.draconicevolution.client.render.item.RenderItemMobSoul;
 import com.brandon3055.draconicevolution.client.render.tile.*;
+import com.brandon3055.draconicevolution.utils.LogHelper;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
+import net.minecraft.client.renderer.entity.LivingRenderer;
+import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ColorHandlerEvent;
+import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.thread.EffectiveSide;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLDedicatedServerSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import org.lwjgl.opengl.GL11;
+
+import java.util.Map;
 
 import static com.brandon3055.draconicevolution.api.TechLevel.*;
 import static com.brandon3055.draconicevolution.blocks.energynet.EnergyCrystal.CrystalType.*;
@@ -80,6 +106,50 @@ public class ClientProxy extends CommonProxy {
 //        ModelResourceLocation modelLocation = new ModelResourceLocation(DEContent.stabilized_spawner.getRegistryName(), "inventory");
 //        IBakedModel bakedModel = new RenderItemStabilizedSpawner();
 //        modelHelper.register(modelLocation, bakedModel);
+//
+//        MinecraftForge.EVENT_BUS.addListener((EntityJoinWorldEvent e) -> LogHelper.dev(e.getEntity()));
+        Minecraft.getInstance().getRenderManager().renderers.values().forEach(e -> {
+            if (e instanceof LivingRenderer) {
+                ((LivingRenderer) e).addLayer(new TestRenderLayer((LivingRenderer) e));
+            }
+        });
+
+
+        RenderType modelType = RenderType.getEntitySolid(new ResourceLocation(DraconicEvolution.MODID, "textures/models/block/pylon_sphere_texture.png"));
+        CCModel trackerModel;
+        Map<String, CCModel> map = OBJParser.parseModels(new ResourceLocation(DraconicEvolution.MODID, "models/pylon_sphere.obj"), GL11.GL_QUADS, null);
+        trackerModel = CCModel.combine(map.values()).backfacedCopy();
+        trackerModel.apply(new Scale(1, 2, 1));
+        trackerModel.computeNormals();
+
+
+        MinecraftForge.EVENT_BUS.addListener((RenderLivingEvent.Post<LivingEntity, EntityModel<LivingEntity>> e) -> {
+            MatrixStack mStack = e.getMatrixStack();
+            IRenderTypeBuffer getter = e.getBuffers();
+            LivingEntity entity = e.getEntity();
+            if (!entity.getPersistentData().contains("wr:trackers")) return;
+            ListNBT trackers = entity.getPersistentData().getList("wr:trackers", 10);
+
+            for (INBT inbt : trackers) {
+                CompoundNBT nbt = (CompoundNBT) inbt;
+                Vector3 vec = Vector3.fromNBT(nbt.getCompound("vec"));
+                float rot = nbt.getFloat("rot");
+
+                Matrix4 mat = new Matrix4(mStack);
+                CCRenderState ccrs = CCRenderState.instance();
+                ccrs.reset();
+                ccrs.brightness = 240;
+                ccrs.bind(modelType, getter);
+
+                mat.apply(new Rotation((entity.renderYawOffset - rot) * -MathHelper.torad, Vector3.Y_POS));
+                mat.translate(0, entity.getHeight() / 2, 0);
+                mat.translate(vec);
+
+                mat.scale(0.1);
+
+                trackerModel.render(ccrs, mat);
+            }
+        });
     }
 
     private void registerTextures() {

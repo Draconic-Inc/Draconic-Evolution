@@ -38,11 +38,13 @@ public class EnumProperty<T extends Enum<T>> extends ConfigProperty {
 
     public EnumProperty<T> setAllowedValues(List<T> allowedValues) {
         this.allowedValues = allowedValues;
+        validateValue();
         return this;
     }
 
     public EnumProperty<T> setAllowedValues(T... allowedValues) {
         this.allowedValues = Arrays.asList(allowedValues);
+        validateValue();
         return this;
     }
 
@@ -71,6 +73,13 @@ public class EnumProperty<T extends Enum<T>> extends ConfigProperty {
     public void onValueChanged(ItemStack stack) {
         if (changeListener != null) {
             changeListener.accept(stack, this);
+        }
+    }
+
+    @Override
+    public void validateValue() {
+        if (!allowedValues.contains(value) && !allowedValues.isEmpty()) {
+            value = allowedValues.get(0);
         }
     }
 
@@ -136,11 +145,12 @@ public class EnumProperty<T extends Enum<T>> extends ConfigProperty {
     }
 
     @Override
-    public void loadData(PropertyData data) {
+    public void loadData(PropertyData data, ItemStack stack) {
         try {
             T newValue = value.getDeclaringClass().getEnumConstants()[data.enumValueIndex];
             if (getAllowedValues().contains(newValue)) {
                 value = newValue;
+                onValueChanged(stack);
             }
         } catch (Throwable ignored){}
     }

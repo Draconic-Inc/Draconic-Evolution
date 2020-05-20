@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.items.tools;
 
-import com.brandon3055.brandonscore.lib.PairKV;
+import com.brandon3055.brandonscore.lib.Pair;
 import com.brandon3055.draconicevolution.api.itemupgrade_dep.UpgradeHelper;
 
 import com.brandon3055.draconicevolution.items.ToolUpgrade;
@@ -81,8 +81,8 @@ public class DraconicSword extends WyvernSword {
 //    }
 
     @Override
-    public PairKV<TextureAtlasSprite, ResourceLocation> getModels(ItemStack stack) {
-        return new PairKV<>(DETextures.DRACONIC_SWORD, new ResourceLocation("draconicevolution", "models/item/tools/draconic_sword.obj"));
+    public Pair<TextureAtlasSprite, ResourceLocation> getModels(ItemStack stack) {
+        return new Pair<>(DETextures.DRACONIC_SWORD, new ResourceLocation("draconicevolution", "models/item/tools/draconic_sword.obj"));
     }
 
     //endregion

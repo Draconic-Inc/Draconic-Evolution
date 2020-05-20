@@ -68,7 +68,7 @@ public class DEModules {
     public static void registerItems(RegistryEvent.Register<Item> event) {
         //TODO Some sort of 'generate' method which creates all of the modules in a slightly more sane way when just pipes the appropriate junk into the register events.
 
-        CyclingItemGroup moduleGroup = new CyclingItemGroup("draconic.modules", 20, () -> new Object[]{Items.APPLE, Items.GOLDEN_APPLE, Items.ENCHANTED_GOLDEN_APPLE}, ITEM_REGISTRY_ORDER);
+        CyclingItemGroup moduleGroup = new CyclingItemGroup("draconicevolution.modules", 20, () -> new Object[]{Items.APPLE, Items.GOLDEN_APPLE, Items.ENCHANTED_GOLDEN_APPLE}, ITEM_REGISTRY_ORDER);
 
         registerItem(event, new TestModuleHost(new Properties().group(moduleGroup).maxStackSize(1), 5, 5).setRegistryName("test_module_host_5x5"));
         registerItem(event, new TestModuleHost(new Properties().group(moduleGroup).maxStackSize(1), 10, 10).setRegistryName("test_module_host_10x10"));

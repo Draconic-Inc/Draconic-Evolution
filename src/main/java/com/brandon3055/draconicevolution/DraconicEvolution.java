@@ -4,6 +4,7 @@ import com.brandon3055.draconicevolution.client.ClientProxy;
 
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import io.netty.handler.codec.http.websocketx.WebSocketClientProtocolHandler;
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -43,7 +44,6 @@ public class DraconicEvolution {
 
         DEConfig.load();
     }
-
 
     @SubscribeEvent
     public void onCommonSetup(FMLCommonSetupEvent event) {

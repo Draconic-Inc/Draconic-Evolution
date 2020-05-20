@@ -49,7 +49,7 @@ public class ToolModelBakery {
         IToolModelProvider provider = (IToolModelProvider) stack.getItem();
         String cacheKey = getKeyGenerator(stack.getItem()).generateKey(stack) + "|2d";
         return modelCache.computeIfAbsent(cacheKey, k -> {
-            List<BakedQuad> quads = ItemQuadBakery.bakeItem(provider.getModels(stack).getKey());
+            List<BakedQuad> quads = ItemQuadBakery.bakeItem(provider.getModels(stack).key());
             return new PerspectiveAwareBakedModel(quads, props2D);
         });
     }

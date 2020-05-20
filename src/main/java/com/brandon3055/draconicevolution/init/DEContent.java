@@ -401,9 +401,9 @@ public class DEContent {
         Block[] entityDetectors = {entity_detector, entity_detector_advanced};
         Block[] craftInjectors = {crafting_injector_basic, crafting_injector_wyvern, crafting_injector_awakened, crafting_injector_chaotic};
         Supplier<Object[]> tabBlocks = () -> new Object[]{ore_draconium_end, block_draconium_awakened, infused_obsidian, draconium_chest, stabilized_spawner, grinder, disenchanter};
-        CyclingItemGroup blockGroup = new CyclingItemGroup("draconic.blocks", 40, tabBlocks, ITEM_REGISTRY_ORDER).setOffset(20);
+        CyclingItemGroup blockGroup = new CyclingItemGroup("draconicevolution.blocks", 40, tabBlocks, ITEM_REGISTRY_ORDER).setOffset(20);
         Supplier<Object[]> tabItems = () -> new Object[]{core_wyvern, ingot_draconium_awakened, sword_chaotic, chaos_shard, energy_core_draconic, staff_draconic, crystal_binder, dust_draconium, axe_draconic};
-        CyclingItemGroup itemGroup = new CyclingItemGroup("draconic.items", 40, tabItems, ITEM_REGISTRY_ORDER);
+        CyclingItemGroup itemGroup = new CyclingItemGroup("draconicevolution.items", 40, tabItems, ITEM_REGISTRY_ORDER);
 
         //@formatter:off
         registerItem(event, new ItemBlockBCore(generator,                   new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(generator.getRegistryName())));

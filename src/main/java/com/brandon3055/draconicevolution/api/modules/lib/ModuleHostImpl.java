@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.api.modules.lib;
 
+import codechicken.lib.util.SneakyUtils;
 import com.brandon3055.draconicevolution.api.TechLevel;
 import com.brandon3055.draconicevolution.api.capability.PropertyProvider;
 import com.brandon3055.draconicevolution.api.config.ConfigProperty;
@@ -7,8 +8,10 @@ import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.ModuleRegistry;
 import com.brandon3055.draconicevolution.api.modules.ModuleType;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
+import com.brandon3055.draconicevolution.api.modules.properties.ModuleData;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
+import net.minecraft.state.Property;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.INBTSerializable;
 import org.apache.logging.log4j.LogManager;
@@ -36,8 +39,11 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
     private TechLevel techLevel;
     private List<ModuleEntity> moduleEntities = new ArrayList<>();
     private List<ModuleType<?>> supportedTypes = new ArrayList<>();
-    private Map<String, ConfigProperty> propertyMap = new HashMap<>();
+    private List<ConfigProperty> providedProperties = new ArrayList<>();
+    private Map<String, ConfigProperty> propertyMap = new LinkedHashMap<>();
     private Consumer<List<ConfigProperty>> propertyBuilder;
+    private Map<ModuleType<?>, Consumer<?>> propertyValidators = new HashMap<>();
+    private Map<ModuleType<?>, List<ConfigProperty>> typeProperties = new HashMap<>();
 
     public ModuleHostImpl(TechLevel techLevel, int gridWidth, int gridHeight, String providerName, ModuleType<?>... supportedTypes) {
         this.techLevel = techLevel;
@@ -56,7 +62,19 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
 
     @Override
     public List<ModuleEntity> getModuleEntities() {
-        return moduleEntities;
+        return Collections.unmodifiableList(moduleEntities);
+    }
+
+    @Override
+    public void addModule(ModuleEntity moduleEntity) {
+        moduleEntities.add(moduleEntity);
+        gatherProperties();
+    }
+
+    @Override
+    public void removeModule(ModuleEntity moduleEntity) {
+        moduleEntities.remove(moduleEntity);
+        gatherProperties();
     }
 
     @Override
@@ -119,15 +137,43 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
 
     private void gatherProperties() {
         List<ConfigProperty> gathered = new ArrayList<>();
-        //TODO Gather properties from modules
-
         if (propertyBuilder != null) {
             propertyBuilder.accept(gathered);
         }
 
-        Map<String, ConfigProperty> gatheredMap = gathered.stream().collect(Collectors.toMap(ConfigProperty::getName, property -> property));
-        propertyMap.entrySet().removeIf(entry -> !gatheredMap.containsKey(entry.getKey())); //Clear out old properties that no longer exist
-        gatheredMap.forEach((name, property) -> propertyMap.putIfAbsent(name, property));
+        typeProperties.clear();
+        propertyValidators.clear();
+        getInstalledTypes().forEach(type -> {
+            Map<ConfigProperty, Consumer<?>> map = new HashMap<>();
+            type.getTypeProperties(SneakyUtils.unsafeCast(getModuleData(type)), SneakyUtils.unsafeCast(map));
+            gathered.addAll(map.keySet());
+            map.forEach((property, consumer) -> {
+                if (consumer != null) {
+                    propertyValidators.put(type, consumer);
+                }
+                typeProperties.computeIfAbsent(type, e -> new ArrayList<>()).add(property);
+            });
+        });
+
+        //Gather is not just called on load but also when a property is added or removed so we need to avoid overwriting existing loaded properties.
+        Set<String> gatheredNames = gathered.stream().map(ConfigProperty::getName).collect(Collectors.toSet());
+        //Remove properties that no longer exist
+        providedProperties.removeIf(e -> !gatheredNames.contains(e.getName()));
+
+        Set<String> installedNames = providedProperties.stream().map(ConfigProperty::getName).collect(Collectors.toSet());
+        //Add new properties
+        providedProperties.addAll(gathered.stream().filter(e->!installedNames.contains(e.getName())).collect(Collectors.toList()));
+
+        //Repopulate the property map.
+        propertyMap.clear();
+        providedProperties.forEach(e -> propertyMap.put(e.getName(), e));
+
+        getModuleEntities().forEach(e -> e.getEntityProperties().forEach(p -> {
+            if (propertyMap.containsKey(p.getName())) {
+                p.generateUnique(); //This avoids duplicate names due to creative duped items.
+            }
+            propertyMap.put(p.getName(), p);
+        }));
     }
 
     //end
@@ -148,7 +194,7 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
         //Serialize Properties
         nbt.putUniqueId("provider_id", getProviderID());
         CompoundNBT properties = new CompoundNBT();
-        propertyMap.forEach((name, property) -> properties.put(name, property.serializeNBT()));
+        providedProperties.forEach(e -> properties.put(e.getName(), e.serializeNBT()));
         nbt.put("properties", properties);
         return nbt;
     }
@@ -163,9 +209,8 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
             Module<?> module = ModuleRegistry.getRegistry().getValue(id);
             if (module == null) {
                 logger.warn("Failed to load unregistered module: " + id + " Skipping...");
-            }
-            else {
-                ModuleEntity entity = new ModuleEntity(module);
+            } else {
+                ModuleEntity entity = module.createEntity();
                 entity.readFromNBT(compound);
                 moduleEntities.add(entity);
             }
@@ -173,10 +218,10 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
 
         //So that we can gather properties which may depend on installed modules.
         gatherProperties();
-        if (nbt.hasUniqueId("provider_id")){
+        if (nbt.hasUniqueId("provider_id")) {
             providerID = nbt.getUniqueId("provider_id");
         }
         CompoundNBT properties = nbt.getCompound("properties");
-        propertyMap.forEach((name, property) -> property.deserializeNBT(properties.getCompound(name)));
+        providedProperties.forEach(e -> e.deserializeNBT(properties.getCompound(e.getName())));
     }
 }

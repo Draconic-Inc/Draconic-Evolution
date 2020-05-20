@@ -11,6 +11,7 @@ import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.api.itemconfig_dep.IConfigurableItem;
 import com.brandon3055.draconicevolution.api.itemconfig_dep.ToolConfigHelper;
 import com.brandon3055.draconicevolution.inventory.ContainerConfigurableItem;
+import com.brandon3055.draconicevolution.inventory.ContainerModularItem;
 import com.brandon3055.draconicevolution.inventory.ContainerModuleHost;
 import com.brandon3055.draconicevolution.items.tools.IAOEWeapon;
 import com.brandon3055.draconicevolution.items.tools.Magnet;
@@ -22,6 +23,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.IServerPlayNetHandler;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.fml.network.NetworkHooks;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +51,12 @@ public class ServerPacketHandler implements ICustomPacketHandler.IServerPacketHa
                 break;
             case DraconicNetwork.S_PROPERTY_DATA:
                 propertyData(sender, packet);
+                break;
+            case DraconicNetwork.S_ITEM_CONFIG_GUI:
+                NetworkHooks.openGui(sender, new ContainerConfigurableItem.Provider());
+                break;
+            case DraconicNetwork.S_MODULE_CONFIG_GUI:
+                ContainerModularItem.tryOpenGui(sender);
                 break;
         }
     }
@@ -161,13 +169,10 @@ public class ServerPacketHandler implements ICustomPacketHandler.IServerPacketHa
                 grid.cellClicked(pos, input.readByte(), input.readEnum(ClickType.class));
             }
         }
-
     }
 
     private void propertyData(ServerPlayerEntity sender, PacketCustom packet) {
         PropertyData data = PropertyData.read(packet);
-        if (sender.openContainer instanceof ContainerConfigurableItem) {
-            ((ContainerConfigurableItem) sender.openContainer).receivePropertyData(data);
-        }
+        ContainerConfigurableItem.handlePropertyData(sender, data);
     }
 }

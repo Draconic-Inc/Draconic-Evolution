@@ -4,6 +4,7 @@ import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.modules.lib.InstallResult.InstallResultType;
 import com.brandon3055.draconicevolution.inventory.ContainerModuleHost;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ClickType;
 import net.minecraft.inventory.container.Container;
@@ -69,19 +70,21 @@ public class ModuleGrid {
     public InstallResult cellClicked(GridPos pos, int button, ClickType clickType) {
         ItemStack stack = player.getItemStack();
         Module<?> module = ModuleItem.getModule(stack);
+        boolean holdingStack = !stack.isEmpty();
 
         //Sanity Checks
-        if ((!stack.isEmpty() && module == null) || !pos.isValidCell()) {
+        if ((holdingStack && module == null) || !pos.isValidCell()) {
             return null; //Player tried to insert an item that is not a valid module
         }
 
-        if (clickType == ClickType.PICKUP) { ///Really this could be pick up or drop off
-            if (!stack.isEmpty()) { //Try to insert module
-                ModuleEntity entity = new ModuleEntity(module);
+        //Really this could be pick up or drop off
+        if (clickType == ClickType.PICKUP) {
+            if (holdingStack) { //Try to insert module
+                ModuleEntity entity = module.createEntity();
                 entity.setPos(pos.gridX, pos.gridY);
                 InstallResult result = checkInstall(entity);
                 if (result.resultType == InstallResultType.YES) {
-                    getModuleHost().getModuleEntities().add(entity);
+                    getModuleHost().addModule(entity);
                     entity.readFromItemStack(stack);
                     entity.onInstalled(container.getModuleContext());
                     stack.shrink(1);
@@ -92,41 +95,39 @@ public class ModuleGrid {
             }
             else if (pos.hasEntity()) { //Try to extract module
                 ModuleEntity entity = pos.getEntity();
-                stack = new ItemStack(entity.getModule().getItem());
-                entity.writeToItemStack(stack);
-                getModuleHost().getModuleEntities().remove(entity);
+                ItemStack extracted = new ItemStack(entity.getModule().getItem());
+                entity.writeToItemStack(extracted);
+                getModuleHost().removeModule(entity);
                 entity.onRemoved(container.getModuleContext());
-                player.setItemStack(stack);
+                player.setItemStack(extracted);
                 onGridChange();
             }
         }
         else if (clickType == ClickType.QUICK_MOVE) {
             if (pos.hasEntity()) { //Try to transfer module
                 ModuleEntity entity = pos.getEntity();
-                stack = new ItemStack(entity.getModule().getItem());
-                entity.writeToItemStack(stack);
-                if (player.addItemStackToInventory(stack)) {
-                    getModuleHost().getModuleEntities().remove(entity);
+                ItemStack extracted = new ItemStack(entity.getModule().getItem());
+                entity.writeToItemStack(extracted);
+                if (player.addItemStackToInventory(extracted)) {
+                    getModuleHost().removeModule(entity);
                     onGridChange();
                     entity.onRemoved(container.getModuleContext());
                 }
             }
         }
         else if (clickType == ClickType.PICKUP_ALL && module != null) {
-            Iterator<ModuleEntity> i = getModuleHost().getModuleEntities().iterator();
-            while (i.hasNext()) {
-                ModuleEntity entity = i.next();
+            for (ModuleEntity entity : ImmutableList.copyOf(getModuleHost().getModuleEntities())) {
                 if (entity.module == module) {
                     ItemStack modStack = new ItemStack(module.getItem());
                     entity.writeToItemStack(modStack);
                     if (Container.areItemsAndTagsEqual(stack, modStack) && stack.getCount() < stack.getMaxStackSize()) {
                         stack.grow(1);
-                        i.remove();
+                        getModuleHost().removeModule(entity);
                         entity.onRemoved(container.getModuleContext());
                     }
                 }
+                onGridChange();
             }
-            onGridChange();
         }
         else if (clickType == ClickType.CLONE) {
             if (player.player.abilities.isCreativeMode && player.getItemStack().isEmpty() && pos.hasEntity()) {
@@ -147,7 +148,7 @@ public class ModuleGrid {
             for (int x = 0; x < getWidth(); x++) {
                 entity.setPos(x, y);
                 if (checkInstall(entity).resultType == InstallResultType.YES) {
-                    getModuleHost().getModuleEntities().add(entity);
+                    getModuleHost().addModule(entity);
                     onGridChange();
                     return true;
                 }

@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.api.config;
 
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
+import codechicken.lib.math.MathHelper;
 import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.PropertyData;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -17,8 +18,8 @@ import java.util.function.Supplier;
 public class IntegerProperty extends ConfigProperty {
     private int value;
     private IntegerFormatter formatter = IntegerFormatter.RAW;
-    private Supplier<Integer> min = () -> 0;
-    private Supplier<Integer> max = () -> 0;
+    private Supplier<Integer> min = () -> Integer.MIN_VALUE;
+    private Supplier<Integer> max = () -> Integer.MAX_VALUE;
     private BiConsumer<ItemStack, IntegerProperty> changeListener = null;
 
     public IntegerProperty(String name, int defaultValue) {
@@ -36,38 +37,44 @@ public class IntegerProperty extends ConfigProperty {
     }
 
     public void setValue(int value) {
-        this.value = value;
+        this.value = MathHelper.clip(value, getMin(), getMax());
     }
 
     public IntegerProperty min(int minValue) {
         this.min = () -> minValue;
+        validateValue();
         return this;
     }
 
     public IntegerProperty min(Supplier<Integer> minSupplier) {
         this.min = minSupplier;
+        validateValue();
         return this;
     }
 
     public IntegerProperty max(int maxValue) {
         this.max = () -> maxValue;
+        validateValue();
         return this;
     }
 
     public IntegerProperty max(Supplier<Integer> maxSupplier) {
         this.max = maxSupplier;
+        validateValue();
         return this;
     }
 
     public IntegerProperty range(int minValue, int maxValue) {
         this.min = () -> minValue;
         this.max = () -> maxValue;
+        validateValue();
         return this;
     }
 
     public IntegerProperty range(Supplier<Integer> minSupplier, Supplier<Integer> maxSupplier) {
         this.min = minSupplier;
         this.max = maxSupplier;
+        validateValue();
         return this;
     }
 
@@ -89,6 +96,11 @@ public class IntegerProperty extends ConfigProperty {
         if (changeListener != null) {
             changeListener.accept(stack, this);
         }
+    }
+
+    @Override
+    public void validateValue() {
+        value = Math.max(min.get(), Math.min(max.get(), value));
     }
 
     @Override
@@ -143,8 +155,9 @@ public class IntegerProperty extends ConfigProperty {
     }
 
     @Override
-    public void loadData(PropertyData data) {
+    public void loadData(PropertyData data, ItemStack stack) {
         value = Math.max(min.get(), Math.min(max.get(), data.integerValue));
+        onValueChanged(stack);
     }
 
 }

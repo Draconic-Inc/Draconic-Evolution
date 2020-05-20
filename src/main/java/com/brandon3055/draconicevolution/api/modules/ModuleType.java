@@ -1,9 +1,18 @@
 package com.brandon3055.draconicevolution.api.modules;
 
 import codechicken.lib.util.SneakyUtils;
+import com.brandon3055.draconicevolution.api.config.ConfigProperty;
+import com.brandon3055.draconicevolution.api.config.IntegerProperty;
 import com.brandon3055.draconicevolution.api.modules.lib.InstallResult;
 import com.brandon3055.draconicevolution.api.modules.lib.InstallResult.InstallResultType;
+import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.brandon3055.draconicevolution.api.modules.properties.ModuleData;
+
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.Map;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 /**
  * Created by brandon3055 and covers1624 on 4/16/20.
@@ -40,4 +49,45 @@ public interface ModuleType<T extends ModuleData<T>> {
     int getDefaultHeight();
 
     String getName();
+
+    /**
+     * A module entity is to a module what a tile entity is to a block with a few differences.
+     * When a module is installed in a host it is always stored as a module entity.
+     * The default module entity does nothing but store its module as well as information about its
+     * position within the module grid. However a module entity can be extended to add additional functionality.
+     * For example the tick method can be used to do pretty much what ever you want. Module entities can also
+     * provide {@link com.brandon3055.draconicevolution.api.config.ConfigProperty}'s allowing modules to be configured via the item config gui.
+     * They can also supply tool tip information when for when they are in a module grid as well as render an overlay on the
+     * module in the grid. useful for things like cool down animations or charge bars etc.
+     * Finally module entities can save and load data from the module item when it is installed / removed from a grid.
+     *
+     * @param module The module this entity is being created for.
+     * @return a new {@link ModuleEntity} instance for this module.
+     */
+    ModuleEntity createEntity(Module<T> module);
+
+    /**
+     * These can be thought of as "global" properties for a specific type and their data is stored in the module host capability.
+     * These properties are held within the module host. The consumer you supply with each property will be called with the up to date module data
+     * whenever the module grid changes. Use this to ensure the property still complies with the new module data.
+     *.<br><br>
+     *
+     * An example use case for this is the speed module. Say for example the user has 5 speed modules installed giving them a speed boost of +500%
+     * The SPEED {@link ModuleType} can add a property that allows the user to adjust their speed between +0% and +500%<br><br>
+     *
+     * If you need to add per module properties then see {@link ModuleEntity#addProperty(ConfigProperty)}<br><br>
+     *
+     * Please note the names for these properties must not conflict with the names of other module properties or the names of any properties
+     * that could exist on anything these modules could be installed in. Recommended naming convention is [partial modid].[module].[name]<br>
+     * E.g. de.module.flightSpeed<br>
+     * This is not an issue with per module properties as those use a UUID for their name as its not possible to use standard names for those
+     * without the possibility of conflicts.
+     *
+     * @see ModuleEntity#addProperty(ConfigProperty)
+     * @param moduleData The combined data from all installed modules of this type.
+     * @param propertyMap The map to which you add your property and optional property validator.
+     */
+    default void getTypeProperties(@Nullable T moduleData, Map<ConfigProperty, Consumer<T>> propertyMap) {
+//        propertyMap.put(new IntegerProperty("de.module.testTypeProp", 0).range(0, 100), null);
+    }
 }

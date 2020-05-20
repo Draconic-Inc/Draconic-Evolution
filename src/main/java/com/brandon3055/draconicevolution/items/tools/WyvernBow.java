@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.items.tools;
 
 import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.api.IFOVModifierItem;
-import com.brandon3055.brandonscore.lib.PairKV;
+import com.brandon3055.brandonscore.lib.Pair;
 import com.brandon3055.brandonscore.utils.InfoHelper;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.brandonscore.utils.Utils;
@@ -142,9 +142,9 @@ public class WyvernBow extends ToolBase implements IFOVModifierItem, IReaperItem
 //    }
 
     @Override
-    public PairKV<TextureAtlasSprite, ResourceLocation> getModels(ItemStack stack) {
+    public Pair<TextureAtlasSprite, ResourceLocation> getModels(ItemStack stack) {
         byte pull = ItemNBTHelper.getByte(stack, "render:bow_pull", (byte)0);
-        return new PairKV<>(DETextures.WYVERN_BOW[pull], new ResourceLocation("draconicevolution", String.format("models/item/tools/wyvern_bow0%s.obj", pull)));
+        return new Pair<>(DETextures.WYVERN_BOW[pull], new ResourceLocation("draconicevolution", String.format("models/item/tools/wyvern_bow0%s.obj", pull)));
     }
 
     @OnlyIn(Dist.CLIENT)

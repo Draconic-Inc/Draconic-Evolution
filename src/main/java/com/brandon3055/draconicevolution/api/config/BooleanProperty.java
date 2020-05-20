@@ -64,6 +64,9 @@ public class BooleanProperty extends ConfigProperty {
     }
 
     @Override
+    public void validateValue() {}
+
+    @Override
     public Type getType() {
         return Type.BOOLEAN;
     }
@@ -106,7 +109,8 @@ public class BooleanProperty extends ConfigProperty {
     }
 
     @Override
-    public void loadData(PropertyData data) {
+    public void loadData(PropertyData data, ItemStack stack) {
         value = data.booleanValue;
+        onValueChanged(stack);
     }
 }

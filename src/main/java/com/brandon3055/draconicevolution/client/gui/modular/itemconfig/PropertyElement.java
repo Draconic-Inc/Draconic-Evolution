@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.client.gui.modular.itemconfig;
 
 import com.brandon3055.brandonscore.client.BCSprites;
+import com.brandon3055.brandonscore.client.gui.GuiToolkit;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
 import com.brandon3055.brandonscore.client.gui.modulargui.baseelements.GuiButton;
 import com.brandon3055.brandonscore.client.gui.modulargui.baseelements.GuiSlideControl;
@@ -11,6 +12,7 @@ import com.brandon3055.draconicevolution.api.config.ConfigProperty;
 import com.brandon3055.brandonscore.client.gui.modulargui.ThemedElements;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.model.Material;
 import net.minecraft.client.resources.I18n;
 
 import java.util.Collections;
@@ -33,10 +35,12 @@ public class PropertyElement extends GuiElement<PropertyElement> {
     private GuiButton decrement;
     private GuiButton increment;
     private GuiButton valueButton;
+    private GuiButton globalButton;
     private GuiSlideControl slider;
     private Supplier<Boolean> enableToolTip = () -> true;
     private Supplier<Integer> opacitySupplier = () -> 0xFF000000;
     private int index = 0;
+    protected GuiElement<?> dragZone;
 
     public PropertyElement(PropertyData data, GuiConfigurableItem gui, boolean advanced) {
         this.data = data;
@@ -57,10 +61,11 @@ public class PropertyElement extends GuiElement<PropertyElement> {
     @Override
     public void addChildElements() {
         label = addChild(new GuiLabel(data.displayName));
+//        label.setMidTrim(true);
         label.setTextColour(GOLD);
         label.setShadow(false);
-        label.setYSize(10).setPos(xPos() + 8, yPos());
-        label.onReload(e -> e.setMaxXPos(maxXPos() - 8, true));
+        label.setYSize(10).setPos(xPos() + 10, yPos());
+        label.onReload(e -> e.setMaxXPos(maxXPos() - 10, true));
         label.setHoverTextDelay(10);
         label.setHoverText((e) -> enableToolTip.get() ? data.toolTip : Collections.emptyList());
 
@@ -98,7 +103,7 @@ public class PropertyElement extends GuiElement<PropertyElement> {
         valueLabel.setMidTrim(true);
 
         if (advanced) {
-            GuiButton globalButton = gui.toolkit.createIconButton(this, 8, 8, () -> BCSprites.get(data.isGlobal ? "dark/global_icon" : "dark/global_icon_inactive"));
+            globalButton = gui.toolkit.createIconButton(this, 8, 8, () -> BCSprites.get(data.isGlobal ? "dark/global_icon" : "dark/global_icon_inactive"));
             globalButton.setHoverText(I18n.format("gui.draconicevolution.item_config.global.info"));
             globalButton.addChild(new GuiBorderedRect().setShadeColours(0, 0xFF409040, 0xFFBBFFBB).setRelPos(globalButton, -1, -1).setSize(10, 10).setEnabledCallback(() -> data.isGlobal));
             globalButton.onReload(e -> e.setPos(xPos() + 1, yPos() + 1));
@@ -129,7 +134,7 @@ public class PropertyElement extends GuiElement<PropertyElement> {
             GuiSelectDialog<Integer> dialog = new GuiSelectDialog<>(this);
             dialog.setRendererBuilder(e -> {
                 GuiLabel label = new GuiLabel(data.getEnumDisplayName(e)).setYSize(10).setTextColour(DARK_AQUA, AQUA);
-                gui.toolkit.addHoverHighlight(label, 16, 0);
+                GuiToolkit.addHoverHighlight(label, 16, 0);
                 return label;
             });
             dialog.addItem(data.enumValueIndex);
@@ -162,9 +167,18 @@ public class PropertyElement extends GuiElement<PropertyElement> {
     public void renderElement(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
         IRenderTypeBuffer.Impl getter = minecraft.getRenderTypeBuffers().getBufferSource();
         drawColouredRect(getter, xPos(), yPos(), xSize(), ySize(), (index % 2 == 0 ? 0x202020 : 0x101010) | opacitySupplier.get());
+
+        if (advanced && gui.hoveredProvider != null && gui.hoveredProvider.getProviderName().equals(data.providerName)) {
+            if (data.isGlobal) {
+                drawBorderedRect(getter, xPos(), yPos(), xSize(), ySize(), 1, 0, 0x80ffff00);
+            } else if (gui.hoveredProvider.getProviderID().equals(data.providerID)) {
+                drawBorderedRect(getter, xPos(), yPos(), xSize(), ySize(), 1, 0, 0x8000ff00);
+            }
+        }
+
         getter.finish();
         super.renderElement(minecraft, mouseX, mouseY, partialTicks);
-        if (!data.isProviderAvailable && !data.isGlobal) {
+        if (!data.isPropertyAvailable() && !data.isGlobal) {
             zOffset += 10;
             drawColouredRect(getter, xPos(), yPos(), xSize(), ySize(), 0x80FF8080);
             zOffset -= 10;
@@ -183,7 +197,9 @@ public class PropertyElement extends GuiElement<PropertyElement> {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (!data.isProviderAvailable && !data.isGlobal) return false;
+        if (!data.isProviderAvailable && !data.isGlobal && (globalButton == null || !globalButton.isMouseOver(mouseX, mouseY)) && (dragZone == null || !dragZone.isMouseOver(mouseX, mouseY))) {
+            return false;
+        }
         return super.mouseClicked(mouseX, mouseY, button);
     }
 

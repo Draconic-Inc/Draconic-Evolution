@@ -4,7 +4,7 @@ import codechicken.lib.inventory.InventoryUtils;
 import codechicken.lib.raytracer.RayTracer;
 import com.brandon3055.brandonscore.inventory.BlockToStackHelper;
 import com.brandon3055.brandonscore.inventory.InventoryDynamic;
-import com.brandon3055.brandonscore.lib.PairKV;
+import com.brandon3055.brandonscore.lib.Pair;
 import com.brandon3055.draconicevolution.DEOldConfig;
 import com.brandon3055.draconicevolution.api.itemconfig_dep.*;
 import com.brandon3055.draconicevolution.api.itemupgrade_dep.UpgradeHelper;
@@ -210,8 +210,8 @@ public abstract class MiningToolBase extends ToolBase {
 
         float refStrength = blockStrength(blockState, player, player.world, pos);
 
-        PairKV<BlockPos, BlockPos> aoe = getMiningArea(pos, player, breakRadius, breakDepth);
-        List<BlockPos> aoeBlocks = Lists.newArrayList(BlockPos.getAllInBoxMutable(aoe.getKey(), aoe.getValue()));
+        Pair<BlockPos, BlockPos> aoe = getMiningArea(pos, player, breakRadius, breakDepth);
+        List<BlockPos> aoeBlocks = Lists.newArrayList(BlockPos.getAllInBoxMutable(aoe.key(), aoe.value()));
 
         if (ToolConfigHelper.getBooleanField("aoeSafeMode", stack)) {
             for (BlockPos block : aoeBlocks) {
@@ -233,7 +233,7 @@ public abstract class MiningToolBase extends ToolBase {
         }
 
 
-        @SuppressWarnings("unchecked") List<ItemEntity> items = player.world.getEntitiesWithinAABB(ItemEntity.class, new AxisAlignedBB(aoe.getKey(), aoe.getValue().add(1, 1, 1)));
+        @SuppressWarnings("unchecked") List<ItemEntity> items = player.world.getEntitiesWithinAABB(ItemEntity.class, new AxisAlignedBB(aoe.key(), aoe.value().add(1, 1, 1)));
         for (ItemEntity item : items) {
             if (!player.world.isRemote && item.isAlive()) {
                 InventoryUtils.insertItem(inventoryDynamic, item.getItem(), false);
@@ -341,11 +341,11 @@ public abstract class MiningToolBase extends ToolBase {
 
     //endregion
 
-    public PairKV<BlockPos, BlockPos> getMiningArea(BlockPos pos, PlayerEntity player, int breakRadius, int breakDepth) {
+    public Pair<BlockPos, BlockPos> getMiningArea(BlockPos pos, PlayerEntity player, int breakRadius, int breakDepth) {
         BlockRayTraceResult traceResult = RayTracer.retrace(player);
 
         if (traceResult != null || traceResult.getType() != RayTraceResult.Type.BLOCK) {
-            return new PairKV<>(pos, pos);
+            return new Pair<>(pos, pos);
         }
 
         int sideHit = traceResult.getFace().getIndex();
@@ -399,7 +399,7 @@ public abstract class MiningToolBase extends ToolBase {
             yOffset = 0;
         }
 
-        return new PairKV<>(pos.add(-xMin, yOffset - yMin, -zMin), pos.add(xMax, yOffset + yMax, zMax));
+        return new Pair<>(pos.add(-xMin, yOffset - yMin, -zMin), pos.add(xMax, yOffset + yMax, zMax));
     }
 
     //endregion
