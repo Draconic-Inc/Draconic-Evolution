@@ -12,6 +12,7 @@ import net.minecraft.util.ResourceLocation;
 /**
  * Created by brandon3055 on 5/06/2016.
  */
+@Deprecated
 public class DraconicSword extends WyvernSword {
     public DraconicSword(Properties properties) {
         super(properties);

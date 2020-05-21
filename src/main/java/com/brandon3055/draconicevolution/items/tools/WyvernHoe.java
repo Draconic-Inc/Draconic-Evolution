@@ -31,6 +31,7 @@ import static com.brandon3055.draconicevolution.items.ToolUpgrade.DIG_AOE;
 /**
  * Created by brandon3055 on 5/06/2016.
  */
+@Deprecated
 public abstract class WyvernHoe extends ToolBase {
     protected int baseAOE;
 

@@ -28,7 +28,6 @@ import com.brandon3055.draconicevolution.client.render.item.RenderItemChaosShard
 import com.brandon3055.draconicevolution.client.render.item.RenderItemEnergyCrystal;
 import com.brandon3055.draconicevolution.client.render.item.RenderItemMobSoul;
 import com.brandon3055.draconicevolution.client.render.tile.*;
-import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
@@ -38,8 +37,8 @@ import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.item.Item;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
@@ -47,7 +46,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.thread.EffectiveSide;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -56,9 +54,11 @@ import net.minecraftforge.fml.event.lifecycle.FMLDedicatedServerSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.lwjgl.opengl.GL11;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
-import static com.brandon3055.draconicevolution.api.TechLevel.*;
+import static com.brandon3055.brandonscore.api.TechLevel.*;
 import static com.brandon3055.draconicevolution.blocks.energynet.EnergyCrystal.CrystalType.*;
 
 public class ClientProxy extends CommonProxy {
@@ -66,6 +66,7 @@ public class ClientProxy extends CommonProxy {
     public static SpriteRegistryHelper spriteHelper = new SpriteRegistryHelper();
     public static ModelRegistryHelper modelHelper = new ModelRegistryHelper();
     public static ModuleSpriteUploader moduleSpriteUploader;
+    public static List<Item> toolItems = new ArrayList<>();
 //    public static LayerContributorPerkRenderer layerWings;
 
 
@@ -184,6 +185,7 @@ public class ClientProxy extends CommonProxy {
         ClientRegistry.bindTileEntityRenderer(DEContent.tile_crystal_wireless, RenderTileEnergyCrystal::new);
     }
 
+    @SuppressWarnings("ConstantConditions")
     private void registerItemRenderers() {
         modelHelper.register(new ModelResourceLocation(DEContent.chaos_shard.getRegistryName(), "inventory"), new RenderItemChaosShard(DEContent.chaos_shard));
         modelHelper.register(new ModelResourceLocation(DEContent.chaos_frag_large.getRegistryName(), "inventory"), new RenderItemChaosShard(DEContent.chaos_frag_large));
@@ -202,6 +204,14 @@ public class ClientProxy extends CommonProxy {
         modelHelper.register(new ModelResourceLocation(DEContent.crystal_wireless_wyvern.getRegistryName(), "inventory"), new RenderItemEnergyCrystal(WIRELESS, WYVERN));
         modelHelper.register(new ModelResourceLocation(DEContent.crystal_wireless_draconic.getRegistryName(), "inventory"), new RenderItemEnergyCrystal(WIRELESS, DRACONIC));
 //        modelHelper.register(new ModelResourceLocation(DEContent.crystal_wireless_chaotic.getRegistryName(), "inventory"), new RenderItemEnergyCrystal(WIRELESS, CHAOTIC));
+
+
+
+    }
+
+    @Override
+    public void registerToolRenderer(Item tool) {
+        toolItems.add(tool);
     }
 
     private void setupRenderLayers() {

@@ -9,6 +9,7 @@ import net.minecraft.util.ResourceLocation;
 /**
  * Created by brandon3055 on 5/06/2016.
  */
+@Deprecated
 public class DraconicAxe extends WyvernAxe {
 //    public DraconicAxe(Set effectiveBlocks) {
 //        super(effectiveBlocks);

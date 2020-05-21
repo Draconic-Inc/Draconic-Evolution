@@ -9,6 +9,7 @@ import net.minecraft.item.ItemStack;
  * //TODO (DE3) Split this up into separate interfaces e.g. IShieldProvider
  * //Also add methods to modify things like protection points because that should be handled by the item not CustomArmorHandler
  */
+@Deprecated
 public interface ICustomArmor extends IEnergyContainerItem {
 
     /**

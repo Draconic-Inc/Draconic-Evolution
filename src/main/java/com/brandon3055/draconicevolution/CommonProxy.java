@@ -13,6 +13,7 @@ import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.item.Item;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.FloatNBT;
 import net.minecraft.nbt.ListNBT;
@@ -100,6 +101,10 @@ public class CommonProxy {
     }
 
     public void serverSetup(FMLDedicatedServerSetupEvent event) {
+    }
+
+    public void registerToolRenderer(Item tool) {
+
     }
 
 

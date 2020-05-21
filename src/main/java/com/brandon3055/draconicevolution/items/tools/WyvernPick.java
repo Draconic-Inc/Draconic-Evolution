@@ -9,6 +9,7 @@ import net.minecraft.util.ResourceLocation;
 /**
  * Created by brandon3055 on 2/06/2016.
  */
+@Deprecated
 public class WyvernPick extends MiningToolBase {
     public WyvernPick(Properties properties) {
         super(properties, MiningToolBase.PICKAXE_OVERRIDES);

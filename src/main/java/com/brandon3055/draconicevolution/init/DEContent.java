@@ -1,9 +1,11 @@
 package com.brandon3055.draconicevolution.init;
 
+import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.blocks.BlockBCore;
 import com.brandon3055.brandonscore.blocks.ItemBlockBCore;
 import com.brandon3055.brandonscore.client.utils.CyclingItemGroup;
 import com.brandon3055.brandonscore.inventory.ContainerBCTile;
+import com.brandon3055.brandonscore.lib.TechItemProps;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.*;
 import com.brandon3055.draconicevolution.blocks.energynet.EnergyCrystal;
@@ -31,6 +33,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
+import net.minecraft.item.Rarity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ToolType;
@@ -44,14 +47,16 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.function.Supplier;
 
-import static com.brandon3055.draconicevolution.api.TechLevel.*;
-import static com.brandon3055.draconicevolution.api.TechLevel.DRACONIC;
+import static com.brandon3055.brandonscore.api.TechLevel.*;
+import static com.brandon3055.brandonscore.api.TechLevel.DRACONIC;
 import static com.brandon3055.draconicevolution.blocks.energynet.EnergyCrystal.CrystalType.*;
 import static com.brandon3055.draconicevolution.blocks.energynet.EnergyCrystal.CrystalType.WIRELESS;
 import static com.brandon3055.draconicevolution.inventory.GuiLayoutFactories.*;
 import static net.minecraft.block.material.Material.GLASS;
 import static net.minecraft.block.material.Material.IRON;
 import static net.minecraft.block.material.MaterialColor.GRAY;
+import static net.minecraftforge.common.ToolType.*;
+import static net.minecraftforge.common.ToolType.AXE;
 import static net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus.MOD;
 
 /**
@@ -75,7 +80,7 @@ public class DEContent {
     @ObjectHolder("dislocator_receptacle")      public static TileEntityType<TileDislocatorReceptacle>  tile_dislocator_receptacle;
     @ObjectHolder("creative_op_capacitor")      public static TileEntityType<TileCreativeOPCapacitor>   tile_creative_op_capacitor;
     @ObjectHolder("entity_detector")            public static TileEntityType<TileEntityDetector>        tile_entity_detector;
-    @ObjectHolder("entity_detector_advanced")   public static TileEntityType<TileEntityDetector>        tile_entity_detector_advanced;
+    @ObjectHolder("advanced_entity_detector")   public static TileEntityType<TileEntityDetector>        tile_entity_detector_advanced;
     @ObjectHolder("stabilized_spawner")         public static TileEntityType<TileStabilizedSpawner>     tile_stabilized_spawner;
     @ObjectHolder("potentiometer")              public static TileEntityType<TilePotentiometer>         tile_potentiometer;
     @ObjectHolder("celestial_manipulator")      public static TileEntityType<TileCelestialManipulator>  tile_celestial_manipulator;
@@ -96,9 +101,9 @@ public class DEContent {
     @ObjectHolder("reactor_injector")           public static TileEntityType<TileReactorInjector>       tile_reactor_injector;
     @ObjectHolder("flux_gate")                  public static TileEntityType<TileFluxGate>              tile_flux_gate;
     @ObjectHolder("fluid_gate")                 public static TileEntityType<TileFluidGate>             tile_fluid_gate;
-    @ObjectHolder("crystal_io")                 public static TileEntityType<TileCrystalDirectIO>       tile_crystal_io;
-    @ObjectHolder("crystal_relay")              public static TileEntityType<TileCrystalRelay>          tile_crystal_relay;
-    @ObjectHolder("crystal_wireless")           public static TileEntityType<TileCrystalWirelessIO>     tile_crystal_wireless;
+    @ObjectHolder("io_crystal")                 public static TileEntityType<TileCrystalDirectIO>       tile_crystal_io;
+    @ObjectHolder("relay_crystal")              public static TileEntityType<TileCrystalRelay>          tile_crystal_relay;
+    @ObjectHolder("wireless_crystal")           public static TileEntityType<TileCrystalWirelessIO>     tile_crystal_wireless;
     //@formatter:on
 
     @SubscribeEvent
@@ -193,7 +198,7 @@ public class DEContent {
     @ObjectHolder("dislocator_receptacle")      public static DislocatorReceptacle      dislocator_receptacle;
     @ObjectHolder("creative_op_capacitor")      public static CreativeOPSource          creative_op_capacitor;
     @ObjectHolder("entity_detector")            public static EntityDetector            entity_detector;
-    @ObjectHolder("entity_detector_advanced")   public static EntityDetector            entity_detector_advanced;
+    @ObjectHolder("advanced_entity_detector")   public static EntityDetector            entity_detector_advanced;
     @ObjectHolder("stabilized_spawner")         public static StabilizedSpawner         stabilized_spawner;
     @ObjectHolder("potentiometer")              public static Potentiometer             potentiometer;
     @ObjectHolder("celestial_manipulator")      public static CelestialManipulator      celestial_manipulator;
@@ -202,10 +207,10 @@ public class DEContent {
     @ObjectHolder("placed_item")                public static PlacedItem                placed_item;
     @ObjectHolder("portal")                     public static Portal                    portal;
     @ObjectHolder("chaos_crystal")              public static ChaosCrystal              chaos_crystal;
-    @ObjectHolder("crafting_injector_basic")    public static CraftingInjector          crafting_injector_basic;
-    @ObjectHolder("crafting_injector_wyvern")   public static CraftingInjector          crafting_injector_wyvern;
-    @ObjectHolder("crafting_injector_awakened") public static CraftingInjector          crafting_injector_awakened;
-    @ObjectHolder("crafting_injector_chaotic")  public static CraftingInjector          crafting_injector_chaotic;
+    @ObjectHolder("basic_crafting_injector")    public static CraftingInjector          crafting_injector_basic;
+    @ObjectHolder("wyvern_crafting_injector")   public static CraftingInjector          crafting_injector_wyvern;
+    @ObjectHolder("awakened_crafting_injector") public static CraftingInjector          crafting_injector_awakened;
+    @ObjectHolder("chaotic_crafting_injector")  public static CraftingInjector          crafting_injector_chaotic;
     @ObjectHolder("crafting_core")              public static FusionCraftingCore        crafting_core;
     @ObjectHolder("energy_core")                public static EnergyCore                energy_core;
     @ObjectHolder("energy_core_stabilizer")     public static EnergyCoreStabilizer      energy_core_stabilizer;
@@ -216,24 +221,24 @@ public class DEContent {
     @ObjectHolder("reactor_injector")           public static ReactorComponent          reactor_injector;
     @ObjectHolder("rain_sensor")                public static RainSensor                rain_sensor;
     @ObjectHolder("dislocation_inhibitor")      public static DislocationInhibitor      dislocation_inhibitor;
-    @ObjectHolder("ore_draconium_overworld")    public static DraconiumOre              ore_draconium_overworld;
-    @ObjectHolder("ore_draconium_nether")       public static DraconiumOre              ore_draconium_nether;
-    @ObjectHolder("ore_draconium_end")          public static DraconiumOre              ore_draconium_end;
-    @ObjectHolder("block_draconium")            public static DraconiumBlock            block_draconium;
-    @ObjectHolder("block_draconium_awakened")   public static DraconiumBlock            block_draconium_awakened;
+    @ObjectHolder("overworld_draconium_ore")    public static DraconiumOre              ore_draconium_overworld;
+    @ObjectHolder("nether_draconium_ore")       public static DraconiumOre              ore_draconium_nether;
+    @ObjectHolder("end_draconium_ore")          public static DraconiumOre              ore_draconium_end;
+    @ObjectHolder("draconium_block")            public static DraconiumBlock            block_draconium;
+    @ObjectHolder("awakened_draconium_block")   public static DraconiumBlock            block_draconium_awakened;
     @ObjectHolder("infused_obsidian")           public static BlockBCore                infused_obsidian;
-    @ObjectHolder("crystal_io_basic")           public static EnergyCrystal             crystal_io_basic;
-    @ObjectHolder("crystal_io_wyvern")          public static EnergyCrystal             crystal_io_wyvern;
-    @ObjectHolder("crystal_io_draconic")        public static EnergyCrystal             crystal_io_draconic;
-//    @ObjectHolder("crystal_io_chaotic")         public static EnergyCrystal             crystal_io_chaotic;
-    @ObjectHolder("crystal_relay_basic")        public static EnergyCrystal             crystal_relay_basic;
-    @ObjectHolder("crystal_relay_wyvern")       public static EnergyCrystal             crystal_relay_wyvern;
-    @ObjectHolder("crystal_relay_draconic")     public static EnergyCrystal             crystal_relay_draconic;
-//    @ObjectHolder("crystal_relay_chaotic")      public static EnergyCrystal             crystal_relay_chaotic;
-    @ObjectHolder("crystal_wireless_basic")     public static EnergyCrystal             crystal_wireless_basic;
-    @ObjectHolder("crystal_wireless_wyvern")    public static EnergyCrystal             crystal_wireless_wyvern;
-    @ObjectHolder("crystal_wireless_draconic")  public static EnergyCrystal             crystal_wireless_draconic;
-//    @ObjectHolder("crystal_wireless_chaotic")   public static EnergyCrystal             crystal_wireless_chaotic;
+    @ObjectHolder("basic_io_crystal")           public static EnergyCrystal             crystal_io_basic;
+    @ObjectHolder("wyvern_io_crystal")          public static EnergyCrystal             crystal_io_wyvern;
+    @ObjectHolder("draconic_io_crystal")        public static EnergyCrystal             crystal_io_draconic;
+//    @ObjectHolder("chaotic_io_crystal")         public static EnergyCrystal             crystal_io_chaotic;
+    @ObjectHolder("basic_relay_crystal")        public static EnergyCrystal             crystal_relay_basic;
+    @ObjectHolder("wyvern_relay_crystal")       public static EnergyCrystal             crystal_relay_wyvern;
+    @ObjectHolder("draconic_relay_crystal")     public static EnergyCrystal             crystal_relay_draconic;
+//    @ObjectHolder("chaotic_relay_crystal")      public static EnergyCrystal             crystal_relay_chaotic;
+    @ObjectHolder("basic_wireless_crystal")     public static EnergyCrystal             crystal_wireless_basic;
+    @ObjectHolder("wyvern_wireless_crystal")    public static EnergyCrystal             crystal_wireless_wyvern;
+    @ObjectHolder("draconic_wireless_crystal")  public static EnergyCrystal             crystal_wireless_draconic;
+//    @ObjectHolder("chaotic_wireless_crystal")   public static EnergyCrystal             crystal_wireless_chaotic;
     //@formatter:on
 
     @SubscribeEvent
@@ -251,7 +256,7 @@ public class DEContent {
 //        event.getRegistry().register(new DislocatorReceptacle(machine).setRegistryName("dislocator_receptacle"));
         event.getRegistry().register(new CreativeOPSource(machine).setRegistryName("creative_op_capacitor"));
 //        event.getRegistry().register(new EntityDetector(machine).setRegistryName("entity_detector"));
-//        event.getRegistry().register(new EntityDetector(machine).setRegistryName("entity_detector_advanced"));
+//        event.getRegistry().register(new EntityDetector(machine).setRegistryName("advanced_entity_detector"));
         event.getRegistry().register(new StabilizedSpawner(machine).setRegistryName("stabilized_spawner"));
 //        event.getRegistry().register(new DraconiumChest(machine).setRegistryName("draconium_chest"));
 //        event.getRegistry().register(new ParticleGenerator(machine).setRegistryName("particle_generator"));
@@ -266,10 +271,10 @@ public class DEContent {
 //        event.getRegistry().register(new PlacedItem(hardenedMachine).setRegistryName("placed_item"));
 //        //Fusion Crafting
 //        event.getRegistry().register(new FusionCraftingCore(hardenedMachine).setRegistryName("crafting_core"));
-//        event.getRegistry().register(new CraftingInjector(hardenedMachine).setRegistryName("crafting_injector_basic"));
-//        event.getRegistry().register(new CraftingInjector(hardenedMachine).setRegistryName("crafting_injector_wyvern"));
-//        event.getRegistry().register(new CraftingInjector(hardenedMachine).setRegistryName("crafting_injector_awakened"));
-//        event.getRegistry().register(new CraftingInjector(hardenedMachine).setRegistryName("crafting_injector_chaotic"));
+//        event.getRegistry().register(new CraftingInjector(hardenedMachine).setRegistryName("basic_crafting_injector"));
+//        event.getRegistry().register(new CraftingInjector(hardenedMachine).setRegistryName("wyvern_crafting_injector"));
+//        event.getRegistry().register(new CraftingInjector(hardenedMachine).setRegistryName("awakened_crafting_injector"));
+//        event.getRegistry().register(new CraftingInjector(hardenedMachine).setRegistryName("chaotic_crafting_injector"));
 //        //Energy Core
         event.getRegistry().register(new EnergyCore(hardenedMachine).setRegistryName("energy_core"));
         event.getRegistry().register(new EnergyCoreStabilizer(hardenedMachine).setRegistryName("energy_core_stabilizer"));
@@ -280,12 +285,12 @@ public class DEContent {
 //        event.getRegistry().register(new ReactorComponent(hardenedMachine, false).setRegistryName("reactor_stabilizer"));
 //        event.getRegistry().register(new ReactorComponent(hardenedMachine, true).setRegistryName("reactor_injector"));
 //        //Ore
-        event.getRegistry().register(new DraconiumOre(ore).setRegistryName("ore_draconium_overworld"));
-        event.getRegistry().register(new DraconiumOre(ore).setRegistryName("ore_draconium_nether"));
-        event.getRegistry().register(new DraconiumOre(ore).setRegistryName("ore_draconium_end"));
+        event.getRegistry().register(new DraconiumOre(ore).setRegistryName("overworld_draconium_ore"));
+        event.getRegistry().register(new DraconiumOre(ore).setRegistryName("nether_draconium_ore"));
+        event.getRegistry().register(new DraconiumOre(ore).setRegistryName("end_draconium_ore"));
 //        //Storage Blocks
-        event.getRegistry().register(new DraconiumBlock(storageBlock).setRegistryName("block_draconium"));
-        event.getRegistry().register(new DraconiumBlock(storageBlock).setRegistryName("block_draconium_awakened"));
+        event.getRegistry().register(new DraconiumBlock(storageBlock).setRegistryName("draconium_block"));
+        event.getRegistry().register(new DraconiumBlock(storageBlock).setRegistryName("awakened_draconium_block"));
 //        //Special
 //        event.getRegistry().register(new Portal(Properties.create(Material.GLASS).hardnessAndResistance(-1F)).setRegistryName("portal"));
 //        event.getRegistry().register(new ChaosCrystal(Properties.create(Material.GLASS).hardnessAndResistance(100, 4000)).setRegistryName("chaos_crystal"));
@@ -296,34 +301,19 @@ public class DEContent {
         Properties crystalW = Properties.create(GLASS, DyeColor.PURPLE).hardnessAndResistance(5.0F, 16F);
         Properties crystalD = Properties.create(GLASS, DyeColor.ORANGE).hardnessAndResistance(8.0F, 32F);
         Properties crystalC = Properties.create(GLASS, DyeColor.BLACK).hardnessAndResistance(16.0F, 64F);
-        event.getRegistry().register(new EnergyCrystal(crystalB, DRACONIUM, CRYSTAL_IO).setRegistryName("crystal_io_basic"));
-        event.getRegistry().register(new EnergyCrystal(crystalW, WYVERN,    CRYSTAL_IO).setRegistryName("crystal_io_wyvern"));
-        event.getRegistry().register(new EnergyCrystal(crystalD, DRACONIC,  CRYSTAL_IO).setRegistryName("crystal_io_draconic"));
-//        event.getRegistry().register(new EnergyCrystal(crystalC, CHAOTIC,   CRYSTAL_IO).setRegistryName("crystal_io_chaotic"));
-        event.getRegistry().register(new EnergyCrystal(crystalB, DRACONIUM, RELAY).setRegistryName("crystal_relay_basic"));
-        event.getRegistry().register(new EnergyCrystal(crystalW, WYVERN,    RELAY).setRegistryName("crystal_relay_wyvern"));
-        event.getRegistry().register(new EnergyCrystal(crystalD, DRACONIC,  RELAY).setRegistryName("crystal_relay_draconic"));
-//        event.getRegistry().register(new EnergyCrystal(crystalC, CHAOTIC,   RELAY).setRegistryName("crystal_relay_chaotic"));
-        event.getRegistry().register(new EnergyCrystal(crystalB, DRACONIUM, WIRELESS).setRegistryName("crystal_wireless_basic"));
-        event.getRegistry().register(new EnergyCrystal(crystalW, WYVERN,    WIRELESS).setRegistryName("crystal_wireless_wyvern"));
-        event.getRegistry().register(new EnergyCrystal(crystalD, DRACONIC,  WIRELESS).setRegistryName("crystal_wireless_draconic"));
-//        event.getRegistry().register(new EnergyCrystal(crystalC, CHAOTIC,   WIRELESS).setRegistryName("crystal_wireless_chaotic"));
+        event.getRegistry().register(new EnergyCrystal(crystalB, DRACONIUM, CRYSTAL_IO).setRegistryName("basic_io_crystal"));
+        event.getRegistry().register(new EnergyCrystal(crystalW, WYVERN,    CRYSTAL_IO).setRegistryName("wyvern_io_crystal"));
+        event.getRegistry().register(new EnergyCrystal(crystalD, DRACONIC,  CRYSTAL_IO).setRegistryName("draconic_io_crystal"));
+//        event.getRegistry().register(new EnergyCrystal(crystalC, CHAOTIC,   CRYSTAL_IO).setRegistryName("chaotic_io_crystal"));
+        event.getRegistry().register(new EnergyCrystal(crystalB, DRACONIUM, RELAY).setRegistryName("basic_relay_crystal"));
+        event.getRegistry().register(new EnergyCrystal(crystalW, WYVERN,    RELAY).setRegistryName("wyvern_relay_crystal"));
+        event.getRegistry().register(new EnergyCrystal(crystalD, DRACONIC,  RELAY).setRegistryName("draconic_relay_crystal"));
+//        event.getRegistry().register(new EnergyCrystal(crystalC, CHAOTIC,   RELAY).setRegistryName("chaotic_relay_crystal"));
+        event.getRegistry().register(new EnergyCrystal(crystalB, DRACONIUM, WIRELESS).setRegistryName("basic_wireless_crystal"));
+        event.getRegistry().register(new EnergyCrystal(crystalW, WYVERN,    WIRELESS).setRegistryName("wyvern_wireless_crystal"));
+        event.getRegistry().register(new EnergyCrystal(crystalD, DRACONIC,  WIRELESS).setRegistryName("draconic_wireless_crystal"));
+//        event.getRegistry().register(new EnergyCrystal(crystalC, CHAOTIC,   WIRELESS).setRegistryName("chaotic_wireless_crystal"));
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -338,60 +328,61 @@ public class DEContent {
 
     //@formatter:off
     //Components
-    @ObjectHolder("dust_draconium")             public static Item                      dust_draconium;
-    @ObjectHolder("dust_draconium_awakened")    public static Item                      dust_draconium_awakened;
-    @ObjectHolder("ingot_draconium")            public static Item                      ingot_draconium;
-    @ObjectHolder("ingot_draconium_awakened")   public static Item                      ingot_draconium_awakened;
-    @ObjectHolder("nugget_draconium")           public static Item                      nugget_draconium;
-    @ObjectHolder("nugget_draconium_awakened")  public static Item                      nugget_draconium_awakened;
-    @ObjectHolder("core_draconium")             public static ItemCore                  core_draconium;
-    @ObjectHolder("core_wyvern")                public static ItemCore                  core_wyvern;
-    @ObjectHolder("core_awakened")              public static ItemCore                  core_awakened;
-    @ObjectHolder("core_chaotic")               public static ItemCore                  core_chaotic;
-    @ObjectHolder("energy_core_wyvern")         public static Item                      energy_core_wyvern;
-    @ObjectHolder("energy_core_draconic")       public static Item                      energy_core_draconic;
+    @ObjectHolder("draconium_dust")             public static Item                      dust_draconium;
+    @ObjectHolder("awakened_draconium_dust")    public static Item                      dust_draconium_awakened;
+    @ObjectHolder("draconium_ingot")            public static Item                      ingot_draconium;
+    @ObjectHolder("awakened_draconium_ingot")   public static Item                      ingot_draconium_awakened;
+    @ObjectHolder("draconium_nugget")           public static Item                      nugget_draconium;
+    @ObjectHolder("awakened_draconium_nugget")  public static Item                      nugget_draconium_awakened;
+    @ObjectHolder("draconium_core")             public static ItemCore                  core_draconium;
+    @ObjectHolder("wyvern_core")                public static ItemCore                  core_wyvern;
+    @ObjectHolder("awakened_core")              public static ItemCore                  core_awakened;
+    @ObjectHolder("chaotic_core")               public static ItemCore                  core_chaotic;
+    @ObjectHolder("wyvern_energy_core")         public static Item                      energy_core_wyvern;
+    @ObjectHolder("draconic_energy_core")       public static Item                      energy_core_draconic;
     @ObjectHolder("dragon_heart")               public static Item                      dragon_heart;
     @ObjectHolder("chaos_shard")                public static Item                      chaos_shard;
-    @ObjectHolder("chaos_frag_large")           public static Item                      chaos_frag_large;
-    @ObjectHolder("chaos_frag_medium")          public static Item                      chaos_frag_medium;
-    @ObjectHolder("chaos_frag_small")           public static Item                      chaos_frag_small;
+    @ObjectHolder("large_chaos_frag")           public static Item                      chaos_frag_large;
+    @ObjectHolder("medium_chaos_frag")          public static Item                      chaos_frag_medium;
+    @ObjectHolder("small_chaos_frag")           public static Item                      chaos_frag_small;
     //Misc Tools
     @ObjectHolder("magnet")                     public static Magnet                    magnet;
-    @ObjectHolder("magnet_advanced")            public static Magnet                    magnet_advanced;
+    @ObjectHolder("advanced_magnet")            public static Magnet                    magnet_advanced;
     @ObjectHolder("dislocator")                 public static Dislocator                dislocator;
-    @ObjectHolder("dislocator_advanced")        public static DislocatorAdvanced        dislocator_advanced;
-    @ObjectHolder("dislocator_p2p")             public static DislocatorBound           dislocator_p2p;
-    @ObjectHolder("dislocator_player")          public static DislocatorBound           dislocator_player;
+    @ObjectHolder("advanced_dislocator")        public static DislocatorAdvanced        dislocator_advanced;
+    @ObjectHolder("p2p_dislocator")             public static DislocatorBound           dislocator_p2p;
+    @ObjectHolder("player_dislocator")          public static DislocatorBound           dislocator_player;
     @ObjectHolder("crystal_binder")             public static CrystalBinder             crystal_binder;
     @ObjectHolder("info_tablet")                public static InfoTablet                info_tablet;
     @ObjectHolder("ender_energy_manipulator")   public static EnderEnergyManipulator    ender_energy_manipulator;
     @ObjectHolder("creative_exchanger")         public static CreativeExchanger         creative_exchanger;
     @ObjectHolder("mob_soul")                   public static MobSoul                   mob_soul;
     //Tools
-    @ObjectHolder("capacitor_wyvern")           public static DraconiumCapacitor        capacitor_wyvern;
-    @ObjectHolder("capacitor_draconic")         public static DraconiumCapacitor        capacitor_draconic;
-    @ObjectHolder("capacitor_creative")         public static DraconiumCapacitor        capacitor_creative;
-    @ObjectHolder("shovel_wyvern")              public static WyvernShovel              shovel_wyvern;
-    @ObjectHolder("shovel_draconic")            public static Item                      shovel_draconic;
-    @ObjectHolder("shovel_chaotic")             public static Item                      shovel_chaotic;
-    @ObjectHolder("pickaxe_wyvern")             public static Item                      pickaxe_wyvern;
-    @ObjectHolder("pickaxe_draconic")           public static Item                      pickaxe_draconic;
-    @ObjectHolder("pickaxe_chaotic")            public static Item                      pickaxe_chaotic;
-    @ObjectHolder("axe_wyvern")                 public static Item                      axe_wyvern;
-    @ObjectHolder("axe_draconic")               public static Item                      axe_draconic;
-    @ObjectHolder("axe_chaotic")                public static Item                      axe_chaotic;
-    @ObjectHolder("bow_wyvern")                 public static Item                      bow_wyvern;
-    @ObjectHolder("bow_draconic")               public static Item                      bow_draconic;
-    @ObjectHolder("bow_chaotic")                public static Item                      bow_chaotic;
-    @ObjectHolder("sword_wyvern")               public static Item                      sword_wyvern;
-    @ObjectHolder("sword_draconic")             public static Item                      sword_draconic;
-    @ObjectHolder("sword_chaotic")              public static Item                      sword_chaotic;
-    @ObjectHolder("staff_draconic")             public static Item                      staff_draconic;
-    @ObjectHolder("staff_chaotic")              public static Item                      staff_chaotic;
+    @ObjectHolder("wyvern_capacitor")           public static DraconiumCapacitor        capacitor_wyvern;
+    @ObjectHolder("draconic_capacitor")         public static DraconiumCapacitor        capacitor_draconic;
+    @ObjectHolder("chaotic_capacitor")          public static DraconiumCapacitor        capacitor_chaotic;
+    @ObjectHolder("creative_capacitor")         public static DraconiumCapacitor        capacitor_creative;
+    @ObjectHolder("wyvern_shovel")              public static ModularShovel             shovel_wyvern;
+    @ObjectHolder("draconic_shovel")            public static ModularShovel             shovel_draconic;
+    @ObjectHolder("chaotic_shovel")             public static ModularShovel             shovel_chaotic;
+    @ObjectHolder("wyvern_pickaxe")             public static ModularPickaxe            pickaxe_wyvern;
+    @ObjectHolder("draconic_pickaxe")           public static ModularPickaxe            pickaxe_draconic;
+    @ObjectHolder("chaotic_pickaxe")            public static ModularPickaxe            pickaxe_chaotic;
+    @ObjectHolder("wyvern_axe")                 public static ModularAxe                axe_wyvern;
+    @ObjectHolder("draconic_axe")               public static ModularAxe                axe_draconic;
+    @ObjectHolder("chaotic_axe")                public static ModularAxe                axe_chaotic;
+    @ObjectHolder("wyvern_bow")                 public static ModularBow                bow_wyvern;
+    @ObjectHolder("draconic_bow")               public static ModularBow                bow_draconic;
+    @ObjectHolder("chaotic_bow")                public static ModularBow                bow_chaotic;
+    @ObjectHolder("wyvern_sword")               public static ModularSword              sword_wyvern;
+    @ObjectHolder("draconic_sword")             public static ModularSword              sword_draconic;
+    @ObjectHolder("chaotic_sword")              public static ModularSword              sword_chaotic;
+    @ObjectHolder("draconic_staff")             public static ModularStaff              staff_draconic;
+    @ObjectHolder("chaotic_staff")              public static ModularStaff              staff_chaotic;
     //Armor
-    @ObjectHolder("armor_wyvern")               public static Item                      armor_wyvern;
-    @ObjectHolder("armor_draconic")             public static Item                      armor_draconic;
-    @ObjectHolder("armor_chaotic")              public static Item                      armor_chaotic;
+    @ObjectHolder("wyvern_chestpiece")          public static ModularArmor              armor_wyvern;
+    @ObjectHolder("draconic_chestpiece")        public static ModularArmor              armor_draconic;
+    @ObjectHolder("chaotic_chestpiece")         public static ModularArmor              armor_chaotic;
     //@formatter:on
 
     public static transient ArrayList<ResourceLocation> ITEM_REGISTRY_ORDER = new ArrayList<>();
@@ -453,30 +444,30 @@ public class DEContent {
         registerItem(event, new ItemBlockBCore(crystal_wireless_draconic,   new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(crystal_wireless_draconic.getRegistryName())));
 //        registerItem(event, new ItemBlockBCore(crystal_wireless_chaotic,    new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(crystal_wireless_chaotic.getRegistryName())));
         //Components
-        registerItem(event, new Item(new Item.Properties().group(itemGroup)).setRegistryName("dust_draconium"));
-        registerItem(event, new Item(new Item.Properties().group(itemGroup)).setRegistryName("dust_draconium_awakened"));
-        registerItem(event, new Item(new Item.Properties().group(itemGroup)).setRegistryName("ingot_draconium"));
-        registerItem(event, new Item(new Item.Properties().group(itemGroup)).setRegistryName("ingot_draconium_awakened"));
-        registerItem(event, new Item(new Item.Properties().group(itemGroup)).setRegistryName("nugget_draconium"));
-        registerItem(event, new Item(new Item.Properties().group(itemGroup)).setRegistryName("nugget_draconium_awakened"));
-        registerItem(event, new ItemCore(new Item.Properties().group(itemGroup)).setRegistryName("core_draconium"));
-        registerItem(event, new ItemCore(new Item.Properties().group(itemGroup)).setRegistryName("core_wyvern"));
-        registerItem(event, new ItemCore(new Item.Properties().group(itemGroup)).setRegistryName("core_awakened"));
-        registerItem(event, new ItemCore(new Item.Properties().group(itemGroup)).setRegistryName("core_chaotic"));
-        registerItem(event, new Item(new Item.Properties().group(itemGroup)).setRegistryName("energy_core_wyvern"));
-        registerItem(event, new Item(new Item.Properties().group(itemGroup)).setRegistryName("energy_core_draconic"));
+        registerItem(event, new Item(new Item.Properties().group(itemGroup)).setRegistryName("draconium_dust"));
+        registerItem(event, new Item(new Item.Properties().group(itemGroup)).setRegistryName("awakened_draconium_dust"));
+        registerItem(event, new Item(new Item.Properties().group(itemGroup)).setRegistryName("draconium_ingot"));
+        registerItem(event, new Item(new Item.Properties().group(itemGroup)).setRegistryName("awakened_draconium_ingot"));
+        registerItem(event, new Item(new Item.Properties().group(itemGroup)).setRegistryName("draconium_nugget"));
+        registerItem(event, new Item(new Item.Properties().group(itemGroup)).setRegistryName("awakened_draconium_nugget"));
+        registerItem(event, new ItemCore(new Item.Properties().group(itemGroup)).setRegistryName("draconium_core"));
+        registerItem(event, new ItemCore(new Item.Properties().group(itemGroup)).setRegistryName("wyvern_core"));
+        registerItem(event, new ItemCore(new Item.Properties().group(itemGroup)).setRegistryName("awakened_core"));
+        registerItem(event, new ItemCore(new Item.Properties().group(itemGroup)).setRegistryName("chaotic_core"));
+        registerItem(event, new Item(new Item.Properties().group(itemGroup)).setRegistryName("wyvern_energy_core"));
+        registerItem(event, new Item(new Item.Properties().group(itemGroup)).setRegistryName("draconic_energy_core"));
         registerItem(event, new Item(new Item.Properties().group(itemGroup)).setRegistryName("dragon_heart"));
         registerItem(event, new Item(new Item.Properties().group(itemGroup)).setRegistryName("chaos_shard"));
-        registerItem(event, new Item(new Item.Properties().group(itemGroup)).setRegistryName("chaos_frag_large"));
-        registerItem(event, new Item(new Item.Properties().group(itemGroup)).setRegistryName("chaos_frag_medium"));
-        registerItem(event, new Item(new Item.Properties().group(itemGroup)).setRegistryName("chaos_frag_small"));
+        registerItem(event, new Item(new Item.Properties().group(itemGroup)).setRegistryName("large_chaos_frag"));
+        registerItem(event, new Item(new Item.Properties().group(itemGroup)).setRegistryName("medium_chaos_frag"));
+        registerItem(event, new Item(new Item.Properties().group(itemGroup)).setRegistryName("small_chaos_frag"));
 //        //Items
         registerItem(event, new Magnet(new Item.Properties().maxStackSize(1).group(itemGroup), 8).setRegistryName("magnet"));
-        registerItem(event, new Magnet(new Item.Properties().maxStackSize(1).group(itemGroup), 32).setRegistryName("magnet_advanced"));
+        registerItem(event, new Magnet(new Item.Properties().maxStackSize(1).group(itemGroup), 32).setRegistryName("advanced_magnet"));
         registerItem(event, new Dislocator(new Item.Properties().maxStackSize(1).maxDamage(31).group(itemGroup)).setRegistryName("dislocator"));
-        registerItem(event, new DislocatorAdvanced(new Item.Properties().maxStackSize(1).group(itemGroup)).setRegistryName("dislocator_advanced"));
-        registerItem(event, new DislocatorBound(new Item.Properties().maxStackSize(1).group(itemGroup)).setRegistryName("dislocator_p2p"));
-        registerItem(event, new DislocatorBound(new Item.Properties().maxStackSize(1).group(itemGroup)).setRegistryName("dislocator_player"));
+        registerItem(event, new DislocatorAdvanced(new Item.Properties().maxStackSize(1).group(itemGroup)).setRegistryName("advanced_dislocator"));
+        registerItem(event, new DislocatorBound(new Item.Properties().maxStackSize(1).group(itemGroup)).setRegistryName("p2p_dislocator"));
+        registerItem(event, new DislocatorBound(new Item.Properties().maxStackSize(1).group(itemGroup)).setRegistryName("player_dislocator"));
         registerItem(event, new CrystalBinder(new Item.Properties().maxStackSize(1).group(itemGroup)).setRegistryName("crystal_binder"));
         registerItem(event, new InfoTablet(new Item.Properties().maxStackSize(1).group(itemGroup)).setRegistryName("info_tablet"));
 //        registerItem(event, new EnderEnergyManipulator(new Item.Properties().group(itemGroup)).setRegistryName("ender_energy_manipulator"));
@@ -484,30 +475,34 @@ public class DEContent {
         registerItem(event, new MobSoul(new Item.Properties().group(itemGroup)).setRegistryName("mob_soul"));
 
 //        //Tools
-//        registerItem(event, new DraconiumCapacitor(new Item.Properties().group(itemGroup)).setRegistryName("capacitor_wyvern"));
-//        registerItem(event, new DraconiumCapacitor(new Item.Properties().group(itemGroup)).setRegistryName("capacitor_draconic"));
-//        registerItem(event, new DraconiumCapacitor(new Item.Properties().group(itemGroup)).setRegistryName("capacitor_creative"));
-//        registerItem(event, new WyvernShovel(new Item.Properties().group(itemGroup)).setRegistryName("shovel_wyvern"));
-//        registerItem(event, new DraconicShovel(new Item.Properties().group(itemGroup)).setRegistryName("shovel_draconic"));
-//        registerItem(event, new DraconicShovel(new Item.Properties().group(itemGroup)).setRegistryName("shovel_chaotic"));
-//        registerItem(event, new WyvernPick(new Item.Properties().group(itemGroup)).setRegistryName("pickaxe_wyvern"));
-//        registerItem(event, new DraconicPick(new Item.Properties().group(itemGroup)).setRegistryName("pickaxe_draconic"));
-//        registerItem(event, new DraconicPick(new Item.Properties().group(itemGroup)).setRegistryName("pickaxe_chaotic"));
-//        registerItem(event, new WyvernAxe(new Item.Properties().group(itemGroup)).setRegistryName("axe_wyvern"));
-//        registerItem(event, new DraconicAxe(new Item.Properties().group(itemGroup)).setRegistryName("axe_draconic"));
-//        registerItem(event, new DraconicAxe(new Item.Properties().group(itemGroup)).setRegistryName("axe_chaotic"));
-//        registerItem(event, new WyvernBow(new Item.Properties().group(itemGroup)).setRegistryName("bow_wyvern"));
-//        registerItem(event, new DraconicBow(new Item.Properties().group(itemGroup)).setRegistryName("bow_draconic"));
-//        registerItem(event, new DraconicBow(new Item.Properties().group(itemGroup)).setRegistryName("bow_chaotic"));
-//        registerItem(event, new WyvernSword(new Item.Properties().group(itemGroup)).setRegistryName("sword_wyvern"));
-//        registerItem(event, new DraconicSword(new Item.Properties().group(itemGroup)).setRegistryName("sword_draconic"));
-//        registerItem(event, new DraconicSword(new Item.Properties().group(itemGroup)).setRegistryName("sword_chaotic"));
-//        registerItem(event, new DraconicStaffOfPower(new Item.Properties().group(itemGroup)).setRegistryName("staff_draconic"));
-//        registerItem(event, new DraconicStaffOfPower(new Item.Properties().group(itemGroup)).setRegistryName("staff_chaotic"));
-//        //Armor
-//        registerItem(event, new WyvernArmor(new Item.Properties().group(itemGroup)).setRegistryName("armor_wyvern"));
-//        registerItem(event, new DraconicArmor(new Item.Properties().group(itemGroup)).setRegistryName("armor_draconic"));
-//        registerItem(event, new DraconicArmor(new Item.Properties().group(itemGroup)).setRegistryName("armor_chaotic"));
+        TechItemProps wyvernTools = new TechItemProps(WYVERN).group(itemGroup).rarity(Rarity.UNCOMMON);
+        TechItemProps draconicTools = new TechItemProps(DRACONIC).group(itemGroup).rarity(Rarity.RARE);
+        TechItemProps chaoticTools = new TechItemProps(CHAOTIC).group(itemGroup).rarity(Rarity.EPIC);
+        registerItem(event, new DraconiumCapacitor(wyvernTools.copy()).setRegistryName("wyvern_capacitor"));
+        registerItem(event, new DraconiumCapacitor(draconicTools.copy()).setRegistryName("draconic_capacitor"));
+        registerItem(event, new DraconiumCapacitor(draconicTools.copy()).setRegistryName("chaotic_capacitor"));
+        registerItem(event, new DraconiumCapacitor(chaoticTools.copy()).setRegistryName("creative_capacitor"));
+        registerItem(event, new ModularShovel(wyvernTools.copy()).setRegistryName("wyvern_shovel"));
+        registerItem(event, new ModularShovel(draconicTools.copy()).setRegistryName("draconic_shovel"));
+        registerItem(event, new ModularShovel(chaoticTools.copy()).setRegistryName("chaotic_shovel"));
+        registerItem(event, new ModularPickaxe(wyvernTools.copy()).setRegistryName("wyvern_pickaxe"));
+        registerItem(event, new ModularPickaxe(draconicTools.copy()).setRegistryName("draconic_pickaxe"));
+        registerItem(event, new ModularPickaxe(chaoticTools.copy()).setRegistryName("chaotic_pickaxe"));
+        registerItem(event, new ModularAxe(wyvernTools.copy()).setRegistryName("wyvern_axe"));
+        registerItem(event, new ModularAxe(draconicTools.copy()).setRegistryName("draconic_axe"));
+        registerItem(event, new ModularAxe(chaoticTools.copy()).setRegistryName("chaotic_axe"));
+        registerItem(event, new ModularBow(wyvernTools.copy()).setRegistryName("wyvern_bow"));
+        registerItem(event, new ModularBow(draconicTools.copy()).setRegistryName("draconic_bow"));
+        registerItem(event, new ModularBow(chaoticTools.copy()).setRegistryName("chaotic_bow"));
+        registerItem(event, new ModularSword(wyvernTools.copy()).setRegistryName("wyvern_sword"));
+        registerItem(event, new ModularSword(draconicTools.copy()).setRegistryName("draconic_sword"));
+        registerItem(event, new ModularSword(chaoticTools.copy()).setRegistryName("chaotic_sword"));
+        registerItem(event, new ModularStaff(draconicTools.copy()).setRegistryName("draconic_staff"));
+        registerItem(event, new ModularStaff(chaoticTools.copy()).setRegistryName("chaotic_staff"));
+        //Armor
+        registerItem(event, new ModularArmor(wyvernTools.copy()).setRegistryName("wyvern_chestpiece"));
+        registerItem(event, new ModularArmor(draconicTools.copy()).setRegistryName("draconic_chestpiece"));
+        registerItem(event, new ModularArmor(chaoticTools.copy()).setRegistryName("chaotic_chestpiece"));
         //@formatter:on
     }
 

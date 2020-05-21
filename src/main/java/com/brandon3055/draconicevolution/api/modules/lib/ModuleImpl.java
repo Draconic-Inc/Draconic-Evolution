@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.api.modules.lib;
 
-import com.brandon3055.draconicevolution.api.TechLevel;
+import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.draconicevolution.api.modules.ModuleType;
 import com.brandon3055.draconicevolution.api.modules.properties.ModuleData;
 import com.brandon3055.draconicevolution.api.modules.properties.ModuleProperties;

@@ -28,6 +28,7 @@ import java.util.List;
 /**
  * Created by brandon3055 on 2/06/2016.
  */
+@Deprecated
 public class WyvernSword extends ToolBase implements IAOEWeapon, IReaperItem {
     public WyvernSword(Properties properties) {
         super(properties);

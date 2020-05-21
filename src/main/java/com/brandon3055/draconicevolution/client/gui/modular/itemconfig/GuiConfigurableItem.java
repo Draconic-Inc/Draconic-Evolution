@@ -176,7 +176,7 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
         createOptionsButton();
 
         GuiButton modulesSmall = toolkit.createThemedIconButton(mainUI, "grid_small");
-        modulesSmall.onReload(() -> modulesSmall.setPos(hideButton.xPos() - 12, mainUI.yPos() + 3));
+        modulesSmall.onReload(() -> modulesSmall.setPos(hideButton.isEnabled() ? hideButton.xPos() - 12 : themeButton.xPos() - 12, mainUI.yPos() + 3));
 //        modulesSmall.setEnabledCallback(() -> hideUI);
         modulesSmall.setHoverText(I18n.format("gui.draconicevolution.item_config.open_modules.info"));
         modulesSmall.onPressed(this::openModulesGui);
@@ -371,6 +371,7 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
         if (!advancedUI) {
             loadSelectedItemProperties();
         }
+        mainUI.reloadElement();
     }
 
     private void updateUIGeometry() {
@@ -385,6 +386,7 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
         simpleViewList.setMaxYPos(playerSlots.yPos() - 5, true);
         simpleViewList.updateScrollElement();
         simpleViewList.resetScrollPositions();
+
     }
 
     @Override

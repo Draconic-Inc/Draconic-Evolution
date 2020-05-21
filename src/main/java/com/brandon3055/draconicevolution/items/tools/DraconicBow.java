@@ -15,6 +15,7 @@ import static com.brandon3055.draconicevolution.api.itemconfig_dep.IItemConfigFi
 /**
  * Created by brandon3055 on 5/06/2016.
  */
+@Deprecated
 public class DraconicBow extends WyvernBow {
     public DraconicBow(Properties properties) {
         super(properties);

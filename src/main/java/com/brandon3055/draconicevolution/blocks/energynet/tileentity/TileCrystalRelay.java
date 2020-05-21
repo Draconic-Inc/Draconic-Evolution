@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.blocks.energynet.tileentity;
 
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.draconicevolution.init.DEContent;
-import com.brandon3055.draconicevolution.api.TechLevel;
+import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.draconicevolution.blocks.energynet.EnergyCrystal;
 import com.brandon3055.draconicevolution.client.render.effect.CrystalFXRing;
 import com.brandon3055.draconicevolution.client.render.effect.CrystalFXBase;

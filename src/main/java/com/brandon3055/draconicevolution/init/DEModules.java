@@ -4,13 +4,11 @@ import codechicken.lib.util.SneakyUtils;
 import com.brandon3055.brandonscore.client.utils.CyclingItemGroup;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 
-import com.brandon3055.draconicevolution.api.TechLevel;
 import com.brandon3055.draconicevolution.api.modules.properties.*;
 import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleItem;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleImpl;
 import com.brandon3055.draconicevolution.items.modules.TestModuleHost;
-import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.item.Item;
 import net.minecraft.item.Item.Properties;
 import net.minecraft.item.Items;
@@ -24,7 +22,7 @@ import net.minecraftforge.registries.RegistryBuilder;
 
 import java.util.ArrayList;
 
-import static com.brandon3055.draconicevolution.api.TechLevel.*;
+import static com.brandon3055.brandonscore.api.TechLevel.*;
 import static com.brandon3055.draconicevolution.api.modules.ModuleTypes.*;
 import static net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus.MOD;
 

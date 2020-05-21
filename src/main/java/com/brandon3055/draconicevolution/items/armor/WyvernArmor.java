@@ -31,6 +31,7 @@ import java.util.List;
 /**
  * Created by brandon3055 on 6/06/2016.
  */
+@Deprecated
 public class WyvernArmor extends ArmorItem implements IConfigurableItem, IUpgradableItem, ICustomArmor, IFOVModifierItem {
 
     private static IArmorMaterial wyvernMaterial = new IArmorMaterial() {

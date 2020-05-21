@@ -1,13 +1,11 @@
 package com.brandon3055.draconicevolution.api.capability;
 
-import com.brandon3055.draconicevolution.api.TechLevel;
+import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.lib.InstallResult;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.brandon3055.draconicevolution.api.modules.ModuleType;
-import com.brandon3055.draconicevolution.api.modules.properties.ModuleProperties;
 import com.brandon3055.draconicevolution.api.modules.properties.ModuleData;
-import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Streams;
 import net.minecraft.item.ItemStack;

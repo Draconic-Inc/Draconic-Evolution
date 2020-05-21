@@ -32,7 +32,7 @@ public class BlockStateGenerator extends BlockStateProvider {
 
         //Simple Blocks
         simpleBlock(DEContent.block_draconium);
-        simpleBlock(DEContent.block_draconium_awakened, models().cubeBottomTop("block_draconium_awakened", modLoc("block/block_draconium_awakened_side"), modLoc("block/block_draconium_awakened"), modLoc("block/block_draconium_awakened")));
+        simpleBlock(DEContent.block_draconium_awakened, models().cubeBottomTop("awakened_draconium_block", modLoc("block/awakened_draconium_block_side"), modLoc("block/awakened_draconium_block"), modLoc("block/awakened_draconium_block")));
         simpleBlock(DEContent.ore_draconium_end);
         simpleBlock(DEContent.ore_draconium_nether);
         simpleBlock(DEContent.ore_draconium_overworld);
@@ -40,6 +40,21 @@ public class BlockStateGenerator extends BlockStateProvider {
         simpleBlock(DEContent.energy_core_stabilizer, models().getExistingFile(modLoc("block/energy_core_stabilizer")));
         simpleBlock(DEContent.creative_op_capacitor);
         simpleBlock(DEContent.stabilized_spawner, models().getExistingFile(modLoc("block/stabilized_spawner")));
+
+        dummyBlock(DEContent.crystal_io_basic);
+        dummyBlock(DEContent.crystal_io_wyvern);
+        dummyBlock(DEContent.crystal_io_draconic);
+//        dummyBlock(DEContent.  crystal_io_chaotic);
+        dummyBlock(DEContent.crystal_relay_basic);
+        dummyBlock(DEContent.crystal_relay_wyvern);
+        dummyBlock(DEContent.crystal_relay_draconic);
+//        dummyBlock(DEContent.  crystal_relay_chaotic);
+        dummyBlock(DEContent.crystal_wireless_basic);
+        dummyBlock(DEContent.crystal_wireless_wyvern);
+        dummyBlock(DEContent.crystal_wireless_draconic);
+//        dummyBlock(DEContent.  crystal_wireless_chaotic);
+        dummyBlock(DEContent.energy_core_structure);
+
 
         getVariantBuilder(DEContent.energy_pylon).forAllStates(state -> ConfiguredModel.builder().modelFile(models().cubeBottomTop(state.get(EnergyPylon.OUTPUT) ? "energy_pylon_output" : "energy_pylon_input", modLoc("block/energy_pylon/energy_pylon_" + (state.get(EnergyPylon.OUTPUT) ? "output" : "input")), modLoc("block/energy_pylon/energy_pylon_active_face"), modLoc("block/energy_pylon/energy_pylon_active_face"))).build());
 
@@ -65,7 +80,7 @@ public class BlockStateGenerator extends BlockStateProvider {
         }
 
 
-        //Draconium Ore
+
 
 
 //            getVariantBuilder(DEContent.grinder)
@@ -235,6 +250,14 @@ public class BlockStateGenerator extends BlockStateProvider {
 
         simpleBlock(Blocks.TORCH, models().torch("torch", mcLoc("block/torch")));
         horizontalBlock(Blocks.WALL_TORCH, models().torchWall("wall_torch", mcLoc("block/torch")), 90);
+    }
+
+
+    private void dummyBlock(Block block) {
+        ModelFile model = models()//
+                .withExistingParent("dummy", "block")//
+                .texture("particle", "minecraft:block/glass");
+        simpleBlock(block, model);
     }
 
     // Testing the outputs

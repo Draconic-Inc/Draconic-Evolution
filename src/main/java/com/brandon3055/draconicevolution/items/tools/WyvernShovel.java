@@ -17,6 +17,7 @@ import net.minecraft.world.World;
 /**
  * Created by brandon3055 on 2/06/2016.
  */
+@Deprecated
 public class WyvernShovel extends MiningToolBase {
 
     public WyvernShovel(Properties properties) {

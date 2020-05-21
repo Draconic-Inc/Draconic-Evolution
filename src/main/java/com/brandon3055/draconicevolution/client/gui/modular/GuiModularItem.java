@@ -65,6 +65,7 @@ public class GuiModularItem extends ModularGuiContainer<ContainerModularItem> {
         template.background = GuiTexture.newDynamicTexture(xSize(), ySize(), () -> BCSprites.getThemed("background_dynamic"));
         template.background.onReload(guiTex -> guiTex.setPos(guiLeft(), guiTop()));
         toolkit.loadTemplate(template);
+        template.title.setInsets(0, 14, 0, 12);
         template.addPlayerSlots();
         infoPanel = template.infoPanel;
 
@@ -76,7 +77,7 @@ public class GuiModularItem extends ModularGuiContainer<ContainerModularItem> {
         grid.setOnGridChange(this::updateInfoPanel);
 
         GuiButton itemConfig = toolkit.createThemedIconButton(template.background, "item_config");
-        itemConfig.onReload(e -> e.setMaxXPos(template.background.maxXPos() - 3, false).setYPos(infoPanel.isEnabled() ? infoPanel.maxYPos() + 1 : template.themeButton.maxYPos() + 1));
+        itemConfig.onReload(e -> e.setRelPos(template.background, 3, 3));
         itemConfig.setHoverText(I18n.format("gui.draconicevolution.modular_item.open_item_config.info"));
         itemConfig.onPressed(DraconicNetwork::sendOpenItemConfig);
 

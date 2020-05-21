@@ -40,6 +40,7 @@ import static com.brandon3055.draconicevolution.api.itemconfig_dep.IItemConfigFi
 /**
  * Created by brandon3055 on 2/06/2016.
  */
+@Deprecated
 public class WyvernBow extends ToolBase implements IFOVModifierItem, IReaperItem {
     public WyvernBow(Properties properties) {
         super(properties);

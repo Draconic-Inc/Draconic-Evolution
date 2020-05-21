@@ -54,6 +54,7 @@ import static com.brandon3055.draconicevolution.items.ToolUpgrade.DIG_SPEED;
 /**
  * Created by brandon3055 on 2/06/2016.
  */
+@Deprecated
 public abstract class MiningToolBase extends ToolBase {
 
     protected static final Set SHOVEL_OVERRIDES = Sets.newHashSet(Blocks.CLAY, Blocks.DIRT, Blocks.FARMLAND, Blocks.GRASS, Blocks.GRAVEL, Blocks.MYCELIUM, Blocks.SAND, Blocks.SNOW, Blocks.SOUL_SAND, Blocks.GRASS_PATH);

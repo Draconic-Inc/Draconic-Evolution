@@ -27,6 +27,7 @@ import net.minecraft.world.server.ServerWorld;
 /**
  * Created by brandon3055 on 2/06/2016.
  */
+@Deprecated
 public class WyvernAxe extends MiningToolBase {
     public WyvernAxe(Properties properties) {
         super(properties, MiningToolBase.AXE_OVERRIDES);

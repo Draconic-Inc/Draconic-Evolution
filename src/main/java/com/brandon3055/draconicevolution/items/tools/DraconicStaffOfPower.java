@@ -27,6 +27,7 @@ import java.util.List;
 /**
  * Created by brandon3055 on 5/06/2016.
  */
+@Deprecated
 public class DraconicStaffOfPower extends MiningToolBase implements IAOEWeapon, IReaperItem {
     public DraconicStaffOfPower(Properties properties) {
         super(properties, MiningToolBase.PICKAXE_OVERRIDES);

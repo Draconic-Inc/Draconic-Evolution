@@ -50,6 +50,7 @@ import static com.brandon3055.draconicevolution.items.ToolUpgrade.ATTACK_DAMAGE;
 /**
  * Created by brandon3055 on 2/06/2016.
  */
+@Deprecated
 public abstract class ToolBase extends ItemEnergyBase implements /*IRenderOverride,*/ IUpgradableItem, IConfigurableItem, IHudDisplay, IToolModelProvider {
 
     private float baseAttackDamage;

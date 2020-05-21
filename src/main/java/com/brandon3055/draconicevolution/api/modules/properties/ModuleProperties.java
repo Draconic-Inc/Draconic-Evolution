@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.api.modules.properties;
 
-import com.brandon3055.draconicevolution.api.TechLevel;
+import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.ModuleType;
 import net.minecraft.util.text.*;

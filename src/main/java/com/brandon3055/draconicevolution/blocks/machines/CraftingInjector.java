@@ -6,7 +6,7 @@ import com.brandon3055.brandonscore.lib.ChatHelper;
 
 import com.brandon3055.brandonscore.utils.InfoHelper;
 import com.brandon3055.draconicevolution.api.IHudDisplay;
-import com.brandon3055.draconicevolution.api.TechLevel;
+import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileCraftingInjector;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;

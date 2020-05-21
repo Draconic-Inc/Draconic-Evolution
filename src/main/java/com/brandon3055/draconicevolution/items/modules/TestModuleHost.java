@@ -1,30 +1,22 @@
 package com.brandon3055.draconicevolution.items.modules;
 
-import codechicken.lib.colour.EnumColour;
 import com.brandon3055.brandonscore.inventory.PlayerSlot;
-import com.brandon3055.draconicevolution.api.TechLevel;
+import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.config.*;
 import com.brandon3055.draconicevolution.api.config.ConfigProperty.BooleanFormatter;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleHostImpl;
-import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
 import com.brandon3055.draconicevolution.api.capability.ItemCapabilityProvider;
-import com.brandon3055.draconicevolution.init.DEModules;
 import com.brandon3055.draconicevolution.inventory.ContainerConfigurableItem;
 import com.brandon3055.draconicevolution.inventory.ContainerModularItem;
-import com.brandon3055.draconicevolution.inventory.GuiLayoutFactories;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
@@ -33,12 +25,8 @@ import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
 
 import static codechicken.lib.colour.EnumColour.*;
-import static com.brandon3055.draconicevolution.api.capability.DECapabilities.MODULE_HOST_CAPABILITY;
-import static com.brandon3055.draconicevolution.api.capability.DECapabilities.PROPERTY_PROVIDER_CAPABILITY;
 import static net.minecraft.util.Direction.*;
 
 /**

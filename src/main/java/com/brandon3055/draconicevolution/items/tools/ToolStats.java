@@ -6,6 +6,7 @@ package com.brandon3055.draconicevolution.items.tools;
  * This class holds all of the base stats for the tools
  */
 //@ModConfigContainer(modid = DraconicEvolution.MODID)
+@Deprecated //Nope this shit needs to go!
 public class ToolStats {
     //Common
 //    @ModConfigProperty(category = "Stat Tweaks", name = "wyvernBaseRFCapacity", requiresSync = true)

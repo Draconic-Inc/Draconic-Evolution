@@ -117,7 +117,8 @@ public class LangGenerator extends LanguageProvider {
         //Tools
         add(DEContent.capacitor_wyvern                  ,"Wyvern Capacitor");
         add(DEContent.capacitor_draconic                ,"Draconic Capacitor");
-        add(DEContent.capacitor_creative                ,"Chaotic Capacitor");
+        add(DEContent.capacitor_chaotic                 ,"Chaotic Capacitor");
+        add(DEContent.capacitor_creative                ,"Creative Capacitor");
         add(DEContent.shovel_wyvern                     ,"Wyvern Shovel");
         add(DEContent.shovel_draconic                   ,"Draconic Shovel");
         add(DEContent.shovel_chaotic                    ,"Cheotic Shovel");

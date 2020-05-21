@@ -23,6 +23,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 /**
  * Created by brandon3055 on 6/06/2016.
  */
+@Deprecated
 public class DraconicArmor extends WyvernArmor {
 
     private static IArmorMaterial draconicMaterial = new IArmorMaterial() {
