@@ -22,6 +22,7 @@ import static codechicken.lib.model.bakery.ModelBakery.defaultItemKeyGenerator;
 /**
  * Created by brandon3055 on 21/06/2017.
  */
+@Deprecated
 public class ToolModelBakery {
 
     //Invalidating such a small cache after 30 min is pointless.

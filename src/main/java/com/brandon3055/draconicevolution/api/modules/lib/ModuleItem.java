@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.api.modules.lib;
 
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.modules.Module;
-import com.brandon3055.draconicevolution.api.modules.properties.ModuleData;
+import com.brandon3055.draconicevolution.api.modules.data.ModuleData;
 import com.brandon3055.draconicevolution.api.capability.ModuleProvider;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
@@ -28,13 +28,27 @@ public class ModuleItem<P extends ModuleData<P>> extends Item implements ModuleP
 
     @Deprecated //Do not access this directly!
     private Module<P> module = null;
-    private final Supplier<Module<P>> moduleSupplier;
+    private Supplier<Module<P>> moduleSupplier;
 
     //This needs to be a supplier so i can lazy load the module. The reason being items are registered before modules
     //so when this item is created the module does not exist yet.
     public ModuleItem(Properties properties, Supplier<Module<P>> moduleSupplier) {
         super(properties);
         this.moduleSupplier = moduleSupplier;
+    }
+
+    public ModuleItem(Properties properties, Module<P> module) {
+        super(properties);
+        this.module = module;
+    }
+
+    //Only use if you intend to call setModule immediately after construction.
+    public ModuleItem(Properties properties) {
+        super(properties);
+    }
+
+    public void setModule(Module<P> module) {
+        this.module = module;
     }
 
     public static Module<?> getModule(ItemStack stack) {

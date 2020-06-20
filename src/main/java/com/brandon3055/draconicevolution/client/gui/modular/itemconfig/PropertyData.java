@@ -268,6 +268,36 @@ public class PropertyData {
         return isPropertyAvailable && isProviderAvailable;
     }
 
+    public PropertyData copy() {
+        PropertyData copy = new PropertyData(providerID, providerName, type);
+        copy.propName = propName;
+        copy.propUniqueName = propUniqueName;
+        copy.toolTip = toolTip;
+        copy.displayName = displayName;
+        copy.changeListener = changeListener;
+
+        copy.isGlobal = isGlobal;
+        copy.isPropertyAvailable = isPropertyAvailable;
+        copy.isProviderAvailable = isProviderAvailable;
+        copy.integerValue = integerValue;
+        copy.decimalValue = decimalValue;
+        copy.displayValue = displayValue;
+        copy.booleanValue = booleanValue;
+        copy.minValue = minValue;
+        copy.maxValue = maxValue;
+
+        copy.booleanFormatter = booleanFormatter;
+        copy.integerFormatter = integerFormatter;
+        copy.decimalFormatter = decimalFormatter;
+
+        copy.enumValueIndex = enumValueIndex;
+        if (enumValueOptions != null && enumDisplayValues != null) {
+            copy.enumValueOptions = new ArrayList<>(enumValueOptions);
+            copy.enumDisplayValues = new HashMap<>(enumDisplayValues);
+        }
+        return copy;
+    }
+
     public CompoundNBT serialize() {
         CompoundNBT nbt = new CompoundNBT();
         nbt.putByte("type", (byte) type.ordinal());

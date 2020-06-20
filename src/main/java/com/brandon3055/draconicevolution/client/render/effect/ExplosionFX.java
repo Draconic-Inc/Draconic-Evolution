@@ -148,12 +148,12 @@ public class ExplosionFX extends BCParticle {
             RenderSystem.alphaFunc(GL11.GL_GREATER, 0F);
             RenderSystem.disableTexture();
 
-            if (!DEShaders.useShaders()) {
+//            if (!DEShaders.useShaders()) {
                 RenderSystem.texParameter(3553, 10242, 10497);
                 RenderSystem.texParameter(3553, 10243, 10497);
                 RenderSystem.enableBlend();
                 RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
-            }
+//            }
         }
 
         @Override
@@ -163,9 +163,9 @@ public class ExplosionFX extends BCParticle {
             RenderSystem.enableTexture();
 
             RenderSystem.enableCull();
-            if (!DEShaders.useShaders()) {
+//            if (!DEShaders.useShaders()) {
                 RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-            }
+//            }
         }
     };
 
@@ -216,23 +216,23 @@ public class ExplosionFX extends BCParticle {
             float ttl = (((float) age + partialTicks) / (float) maxAge);
             double scale = radius * ttl * 2;
 
-            if (leadingWaveProgram == null) {
-                leadingWaveProgram = new ShaderProgram();
-                leadingWaveProgram.attachShader(DEShaders.explosionLeadingWave);
-            }
-            leadingWaveProgram.useShader(cache -> {
-                cache.glUniform1F("time", (ClientEventHandler.elapsedTicks + partialTicks + randOffset) / 10F);
-                cache.glUniform1F("scale", ttl * 3);
-                cache.glUniform1F("alpha", 1 - ttl);
-            });
-
-            ccrs.startDrawing(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX);
-            Matrix4 mat = RenderUtils.getMatrix(pos.toVector3(), new Rotation(0, 0, 1, 0), 1).apply(new Scale(scale, 1, scale));
-            model_inv.render(ccrs, mat);
-            model.render(ccrs, mat);
-            ccrs.draw();
-
-            leadingWaveProgram.releaseShader();
+//            if (leadingWaveProgram == null) {
+//                leadingWaveProgram = new ShaderProgram();
+//                leadingWaveProgram.attachShader(DEShaders.explosionLeadingWave);
+//            }
+//            leadingWaveProgram.useShader(cache -> {
+//                cache.glUniform1F("time", (ClientEventHandler.elapsedTicks + partialTicks + randOffset) / 10F);
+//                cache.glUniform1F("scale", ttl * 3);
+//                cache.glUniform1F("alpha", 1 - ttl);
+//            });
+//
+//            ccrs.startDrawing(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX);
+//            Matrix4 mat = RenderUtils.getMatrix(pos.toVector3(), new Rotation(0, 0, 1, 0), 1).apply(new Scale(scale, 1, scale));
+//            model_inv.render(ccrs, mat);
+//            model.render(ccrs, mat);
+//            ccrs.draw();
+//
+//            leadingWaveProgram.releaseShader();
         }
     }
 
@@ -260,25 +260,25 @@ public class ExplosionFX extends BCParticle {
 
             float a = age + partialTicks;
 
-            if (blastWaveProgram == null) {
-                blastWaveProgram = new ShaderProgram();
-                blastWaveProgram.attachShader(DEShaders.explosionBlastWave);
-            }
-
-            blastWaveProgram.useShader(cache -> {
-                cache.glUniform1F("time", (ClientEventHandler.elapsedTicks + partialTicks + randOffset) / 10F);
-                cache.glUniform1F("scale", ttl);
-                cache.glUniform1F("alpha", a < 40 ? (a - 20) / 20F : 1 - ttl);
-            });
-
-
-            ccrs.startDrawing(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX);
-            Matrix4 mat = RenderUtils.getMatrix(pos.toVector3(), new Rotation(0, 0, 1, 0), 1).apply(new Scale(scale, vScale, scale));
-            model_inv.render(ccrs, mat);
-            model.render(ccrs, mat);
-            ccrs.draw();
-
-            blastWaveProgram.releaseShader();
+//            if (blastWaveProgram == null) {
+//                blastWaveProgram = new ShaderProgram();
+//                blastWaveProgram.attachShader(DEShaders.explosionBlastWave);
+//            }
+//
+//            blastWaveProgram.useShader(cache -> {
+//                cache.glUniform1F("time", (ClientEventHandler.elapsedTicks + partialTicks + randOffset) / 10F);
+//                cache.glUniform1F("scale", ttl);
+//                cache.glUniform1F("alpha", a < 40 ? (a - 20) / 20F : 1 - ttl);
+//            });
+//
+//
+//            ccrs.startDrawing(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX);
+//            Matrix4 mat = RenderUtils.getMatrix(pos.toVector3(), new Rotation(0, 0, 1, 0), 1).apply(new Scale(scale, vScale, scale));
+//            model_inv.render(ccrs, mat);
+//            model.render(ccrs, mat);
+//            ccrs.draw();
+//
+//            blastWaveProgram.releaseShader();
         }
     }
 
@@ -305,25 +305,25 @@ public class ExplosionFX extends BCParticle {
 
             float a = age + partialTicks;
 
-            if (coreEffectProgram == null) {
-                coreEffectProgram = new ShaderProgram();
-                coreEffectProgram.attachShader(DEShaders.explosionCoreEffect);
-            }
-
-            coreEffectProgram.useShader(cache -> {
-                cache.glUniform1F("time", (ClientEventHandler.elapsedTicks + partialTicks + randOffset) / 10F);
-                cache.glUniform1F("scale", a > 35 ? ((a - 35F) / 20F) * 2 : 0);
-                cache.glUniform1F("alpha", a > 50 ? 1 - ((a - 50F) / 10F) : 1);
-            });
-
-
-            ccrs.startDrawing(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX);
-            Matrix4 mat = RenderUtils.getMatrix(pos.toVector3(), new Rotation(0, 0, 1, 0), 1).apply(new Scale(scale, scale / 2, scale));
-            model_inv.render(ccrs, mat);
-            model.render(ccrs, mat);
-            ccrs.draw();
-
-            coreEffectProgram.releaseShader();
+//            if (coreEffectProgram == null) {
+//                coreEffectProgram = new ShaderProgram();
+//                coreEffectProgram.attachShader(DEShaders.explosionCoreEffect);
+//            }
+//
+//            coreEffectProgram.useShader(cache -> {
+//                cache.glUniform1F("time", (ClientEventHandler.elapsedTicks + partialTicks + randOffset) / 10F);
+//                cache.glUniform1F("scale", a > 35 ? ((a - 35F) / 20F) * 2 : 0);
+//                cache.glUniform1F("alpha", a > 50 ? 1 - ((a - 50F) / 10F) : 1);
+//            });
+//
+//
+//            ccrs.startDrawing(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX);
+//            Matrix4 mat = RenderUtils.getMatrix(pos.toVector3(), new Rotation(0, 0, 1, 0), 1).apply(new Scale(scale, scale / 2, scale));
+//            model_inv.render(ccrs, mat);
+//            model.render(ccrs, mat);
+//            ccrs.draw();
+//
+//            coreEffectProgram.releaseShader();
         }
     }
 }

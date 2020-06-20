@@ -111,19 +111,23 @@ public class EnumProperty<T extends Enum<T>> extends ConfigProperty {
     @Override
     public CompoundNBT serializeNBT() {
         CompoundNBT nbt = super.serializeNBT();
-        nbt.putByte("value", (byte) value.ordinal());
+        nbt.putBoolean("default", isDefaultValue);
+        if (!isDefaultValue)
+            nbt.putByte("value", (byte) value.ordinal());
         return nbt;
     }
 
     @Override
     public void deserializeNBT(CompoundNBT nbt) {
         try {
-            T newValue = value.getDeclaringClass().getEnumConstants()[nbt.getByte("value")];
-            if (allowedValues.contains(newValue)) {
-                value = newValue;
+            if (nbt.contains("value")) {
+                T newValue = value.getDeclaringClass().getEnumConstants()[nbt.getByte("value")];
+                if (allowedValues.contains(newValue)) {
+                    value = newValue;
+                }
             }
-
-        }catch (Throwable e) {
+        }
+        catch (Throwable e) {
             e.printStackTrace();
         }
         super.deserializeNBT(nbt);
@@ -152,6 +156,7 @@ public class EnumProperty<T extends Enum<T>> extends ConfigProperty {
                 value = newValue;
                 onValueChanged(stack);
             }
-        } catch (Throwable ignored){}
+        }
+        catch (Throwable ignored) {}
     }
 }

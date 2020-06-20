@@ -51,4 +51,8 @@ public interface PropertyProvider extends INBTSerializable<CompoundNBT> {
      */
     @Nullable
     ConfigProperty getProperty(String propertyName);
+
+    default boolean hasProperty(String propertyName) {
+        return getProperty(propertyName) != null;
+    }
 }

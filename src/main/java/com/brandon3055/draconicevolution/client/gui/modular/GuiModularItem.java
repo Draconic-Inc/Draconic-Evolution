@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.client.gui.modular;
 
+import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.client.BCSprites;
 import com.brandon3055.brandonscore.client.gui.GuiToolkit;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
@@ -25,6 +26,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 
+import java.awt.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,11 +53,10 @@ public class GuiModularItem extends ModularGuiContainer<ContainerModularItem> {
         int minXPadding = 30;
         int yPadding = 112;
         int cellSize = Math.min(Math.min(maxGridWidth / grid.getWidth(), maxGridHeight / grid.getHeight()), 16);
-        int width = Math.max(GuiToolkit.DEFAULT_WIDTH, (cellSize * grid.getWidth()) + minXPadding);
+        int width = Math.max((11 * 18) + 6 + 14, (cellSize * grid.getWidth()) + minXPadding);
         int height = yPadding + (cellSize * grid.getHeight());
         grid.setCellSize(cellSize);
         this.toolkit = new GuiToolkit<>(this, width, height);
-//        this.toolkit = new GuiToolkit<>(this, 300, 300);
     }
 
     @Override
@@ -66,7 +67,7 @@ public class GuiModularItem extends ModularGuiContainer<ContainerModularItem> {
         template.background.onReload(guiTex -> guiTex.setPos(guiLeft(), guiTop()));
         toolkit.loadTemplate(template);
         template.title.setInsets(0, 14, 0, 12);
-        template.addPlayerSlots();
+        template.addPlayerSlots(true, true, true);
         infoPanel = template.infoPanel;
 
         gridRenderer = new ModuleGridRenderer(container.getGrid(), playerInventory);
@@ -86,12 +87,22 @@ public class GuiModularItem extends ModularGuiContainer<ContainerModularItem> {
 
     private void updateInfoPanel() {
         infoPanel.clear();
+
+        TechLevel techLevel = container.getModuleHost().getHostTechLevel();
+        StringBuilder gridName = new StringBuilder();
+        gridName.append(grid.getWidth()).append("x").append(grid.getHeight());
+        gridName.append(" ");
+        gridName.append(techLevel.getDisplayName().applyTextStyle(techLevel.getTextColour()).getFormattedText());
+        gridName.append(" ");
+        gridName.append(I18n.format("gui.draconicevolution.modular_item.module_grid"));
+        infoPanel.addDynamicLabel(gridName::toString, 12);
+
         Map<ITextComponent, ITextComponent> nameStatMap = new HashMap<>();
-        grid.getModuleHost().addInformation(nameStatMap);
+        grid.getModuleHost().addInformation(nameStatMap, container.getModuleContext());
         for (ITextComponent name : nameStatMap.keySet()) {
             infoPanel.addLabeledValue(TextFormatting.GOLD + name.getFormattedText(), 6, 10, () -> TextFormatting.GRAY + nameStatMap.get(name).getFormattedText(), true);
         }
-        infoPanel.setEnabled(!nameStatMap.isEmpty());
+//        infoPanel.setEnabled(!nameStatMap.isEmpty());
         reloadGui();
     }
 
@@ -113,15 +124,14 @@ public class GuiModularItem extends ModularGuiContainer<ContainerModularItem> {
 
             IRenderTypeBuffer.Impl getter = minecraft.getRenderTypeBuffers().getBufferSource();
             GuiHelper.drawShadedRect(getter.getBuffer(GuiHelper.TRANS_TYPE), x - 1, y - 1, 18, 18, 1, 0, dark, light, GuiElement.midColour(light, dark), 0);
-            getter.finish();
 
             if (slot.getStack() == container.hostStack) {
-                RenderSystem.disableLighting();
-                RenderSystem.disableDepthTest();
-                fill(x, y, x + 16, y + 16, 0x80FF0000);
-                RenderSystem.enableLighting();
-                RenderSystem.enableDepthTest();
+//                RenderSystem.colorMask(true, true, true, false);
+//                GuiHelper.drawGradientRect(x, y, x + 16, y + 16, 0x80FF0000, 0x80FF0000, 1F, 300);
+                GuiHelper.drawBorderedRect(getter.getBuffer(GuiHelper.TRANS_TYPE), x, y, 16, 16, 1, 0x80FF0000, 0x80FF0000, 0);
+//                RenderSystem.colorMask(true, true, true, true);
             }
+            getter.finish();
         }
     }
 }

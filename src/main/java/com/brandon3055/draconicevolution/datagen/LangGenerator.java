@@ -1,10 +1,17 @@
 package com.brandon3055.draconicevolution.datagen;
 
+import com.brandon3055.draconicevolution.api.modules.Module;
+import com.brandon3055.draconicevolution.api.modules.ModuleType;
+import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
 import com.brandon3055.draconicevolution.init.DEContent;
+import com.brandon3055.draconicevolution.init.DEModules;
 import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.item.Item;
+import net.minecraft.util.Util;
+import net.minecraft.util.registry.Registry;
 import net.minecraftforge.common.data.LanguageProvider;
+import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
 
@@ -14,16 +21,6 @@ import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
 public class LangGenerator extends LanguageProvider {
     public LangGenerator(DataGenerator gen) {
         super(gen, MODID, "en_us");
-    }
-
-    @Override
-    public void add(Block key, String name) {
-        if (key != null)super.add(key, name);
-    }
-
-    @Override
-    public void add(Item key, String name) {
-        if (key != null)super.add(key, name);
     }
 
     @Override
@@ -122,6 +119,9 @@ public class LangGenerator extends LanguageProvider {
         add(DEContent.shovel_wyvern                     ,"Wyvern Shovel");
         add(DEContent.shovel_draconic                   ,"Draconic Shovel");
         add(DEContent.shovel_chaotic                    ,"Cheotic Shovel");
+        add(DEContent.hoe_wyvern                        ,"Wyvern Hoe");
+        add(DEContent.hoe_draconic                      ,"Draconic Hoe");
+        add(DEContent.hoe_chaotic                       ,"Chaotic Hoe");
         add(DEContent.pickaxe_wyvern                    ,"Wyvern Pickaxe");
         add(DEContent.pickaxe_draconic                  ,"Draconic Pickaxe");
         add(DEContent.pickaxe_chaotic                   ,"Chaotic Pickaxe");
@@ -137,14 +137,15 @@ public class LangGenerator extends LanguageProvider {
         add(DEContent.staff_draconic                    ,"Draconic Staff of Power");
         add(DEContent.staff_chaotic                     ,"Chaotic Staff of Power");
         //Armor
-        add(DEContent.armor_wyvern                      ,"Wyvern Chest Piece");
-        add(DEContent.armor_draconic                    ,"Draconic Chest Piece");
-        add(DEContent.armor_chaotic                     ,"Chaotic Chest Piece");
+        add(DEContent.chestpiece_wyvern                      ,"Wyvern Chest Piece");
+        add(DEContent.chestpiece_draconic                    ,"Draconic Chest Piece");
+        add(DEContent.chestpiece_chaotic                     ,"Chaotic Chest Piece");
         //endregion
 
         //region # Gui's and related translations
         //Item Config
         add("gui.draconicevolution.item_config.name"                                        ,"Configure Equipment");
+        add("gui.draconicevolution.item_config.configure"                                   ,"Configure");
         add("gui.draconicevolution.item_config.toggle_hidden.info"                          ,"Show / Hide Inventory");
         add("gui.draconicevolution.item_config.toggle_advanced.info"                        ,"Toggle advanced config mode");
         add("gui.draconicevolution.item_config.delete_zone.info"                            ,"Drop a property or group here to delete it");
@@ -155,6 +156,7 @@ public class LangGenerator extends LanguageProvider {
         add("gui.draconicevolution.item_config.expand_group.info"                           ,"Expand Group");
         add("gui.draconicevolution.item_config.collapse_group.info"                         ,"Collapse Group");
         add("gui.draconicevolution.item_config.move_group.info"                             ,"Click and drag to move this group");
+        add("gui.draconicevolution.item_config.copy_group.info"                             ,"Copy Group");
         add("gui.draconicevolution.item_config.toggle_preset.info"                          ,"Toggle preset mode\nConverts this property group into a property preset");
         add("gui.draconicevolution.item_config.apply_preset"                                ,"Apply Preset");
         add("gui.draconicevolution.item_config.move_prop.info"                              ,"Click and drag to move property");
@@ -200,9 +202,42 @@ public class LangGenerator extends LanguageProvider {
         add("gui.draconicevolution.boolean_property.no"                                     ,"No");
 
         //Module GUI
-        add("msg.draconicevolution.modular_item.no_module_hosts"                            ,"You do not have any modular items in your inventory!");
+        add("gui.draconicevolution.modular_item.name"                                       ,"Configure Modules");
+        add("gui.draconicevolution.modular_item.modules"                                    ,"Modules");
         add("gui.draconicevolution.modular_item.open_item_config.info"                      ,"Open item configuration GUI");
+        add("msg.draconicevolution.modular_item.no_module_hosts"                            ,"You do not have any modular items in your inventory!");
+        add("gui.draconicevolution.modular_item.module_grid"                                ,"Module Grid");
 
+        //Generator
+        add("gui.draconicevolution.generator.fuel_efficiency"                               ,"Fuel efficiency:");
+        add("gui.draconicevolution.generator.output_power"                                  ,"Output power:");
+        add("gui.draconicevolution.generator.current_fuel_value"                            ,"Current fuel value:");
+        add("gui.draconicevolution.generator.mode_eco_plus"                                 ,"Eco Plus");
+        add("gui.draconicevolution.generator.mode_eco_plus,info"                            ,"Eco Plus\nSignificantly increased fuel efficiency.\nSignificantly decreased output power.");
+        add("gui.draconicevolution.generator.mode_eco"                                      ,"Eco");
+        add("gui.draconicevolution.generator.mode_eco,info"                                 ,"Eco Mode\nIncreased fuel efficiency\nat the cost of output power.");
+        add("gui.draconicevolution.generator.mode_normal"                                   ,"Normal");
+        add("gui.draconicevolution.generator.mode_normal,info"                              ,"Normal Mode\nStandard output and efficiency.\nSimilar to other basic generators.");
+        add("gui.draconicevolution.generator.mode_performance"                              ,"Performance");
+        add("gui.draconicevolution.generator.mode_performance,info"                         ,"Performance Mode\nProvides a worthwhile increase in output power\nfor a small fuel efficiency penalty.");
+        add("gui.draconicevolution.generator.mode_performance_plus"                         ,"Overdrive");
+        add("gui.draconicevolution.generator.mode_performance_plus,info"                    ,"Overdrive Mode\nNeed all the power you can get\nHave plenty of fuel to burn?\nThis is the mode for you!");
+
+
+        //Grinder
+        add("gui.draconicevolution.grinder.aoe"                                           ,"AOE:");
+        add("gui.draconicevolution.grinder.aoe.info"                                      ,"Increment's the grinder's Area Of Effect.\n(The area in which it will kill mobs)");
+        add("gui.draconicevolution.grinder.show_aoe"                                      ,"Show AOE");
+        add("gui.draconicevolution.grinder.collect.items"                                 ,"Collect Items");
+        add("gui.draconicevolution.grinder.collect.items.info"                            ,"If enabled will collect items within the kill area and insert them into an adjacent inventory.");
+        add("gui.draconicevolution.grinder.collect.xp"                                    ,"Collect XP");
+        add("gui.draconicevolution.grinder.collect.xp.info"                               ,"If enabled will collect experiance dropped within the kill area and store itinternally.\nThis XP can then be claimed by a player or piped out if there is a mod installed that adds liquid XP.");
+        add("gui.draconicevolution.grinder.claim.xp"                                      ,"Claim XP");
+        add("gui.draconicevolution.grinder.claim.xp.info"                                 ,"Claim all stored XP");
+        add("gui.draconicevolution.grinder.claim.xp.level.info"                           ,"Claim 1 expireance level");
+        add("gui.draconicevolution.grinder.claim.xp.levels.info"                          ,"Claim %s expireance levels");
+        add("gui.draconicevolution.generator.stored_xp"                                   ,"Stored Expireance:");
+        add("gui.draconicevolution.generator.stored_xp.raw"                               ,"(Raw XP)");
 
         //endregion
 
@@ -215,9 +250,43 @@ public class LangGenerator extends LanguageProvider {
         add("itemGroup.draconicevolution.blocks"                                            ,"Draconic Evolution Blocks");
         add("itemGroup.draconicevolution.items"                                             ,"Draconic Evolution Items");
         add("itemGroup.draconicevolution.modules"                                           ,"Draconic Evolution Modules");
+        add("tech_level.draconicevolution.draconium"                                        ,"Draconium");
+        add("tech_level.draconicevolution.wyvern"                                           ,"Wyvern");
+        add("tech_level.draconicevolution.draconic"                                         ,"Draconic");
+        add("tech_level.draconicevolution.chaotic"                                          ,"Chaotic");
 
 
 
+        //region # Modules
+        add(ModuleTypes.ENERGY_STORAGE                                                      , "Energy Capacity");
+        add(ModuleTypes.ENERGY_SHARE                                                        , "Energy Share");
+        add(ModuleTypes.ENERGY_LINK                                                         , "Energy Link");
+        add(ModuleTypes.SHIELD_CONTROLLER                                                   , "Shield Controller");
+        add(ModuleTypes.SHIELD_BOOST                                                        , "Shield Boost");
+        add(ModuleTypes.FLIGHT                                                              , "Flight");
+        add(ModuleTypes.LAST_STAND                                                          , "Last Stand");
+        add(ModuleTypes.AUTO_FEED                                                           , "Auto Feed");
+        add(ModuleTypes.NIGHT_VISION                                                        , "Night Vision");
+        add(ModuleTypes.JUMP_BOOST                                                          , "Jump Boost");
+//        add(ModuleTypes.FALL_PROTECT                                                        , "Fall Protection");
+        add(ModuleTypes.AQUA_ADAPT                                                          , "Aqua Adaptation");
+        add(ModuleTypes.MINING_STABILITY                                                    , "Mining Stabilizer");
+        add(ModuleTypes.AOE                                                                 , "AOE");
+        add(ModuleTypes.DAMAGE                                                              , "Damage");
+        add(ModuleTypes.SPEED                                                               , "Speed");
+        add(ModuleTypes.JUNK_FILTER                                                         , "Junk Filter");
+
+        add(DEModules.draconiumEnergy                                                       , "Draconium Energy Module");
+        add(DEModules.wyvernEnergy                                                          , "Wyvern Energy Module");
+        add(DEModules.draconicEnergy                                                        , "Draconic Energy Module");
+        add(DEModules.chaoticEnergy                                                         , "Chaotic Energy Module");
+
+        add("module.draconicevolution.energy.stored_energy"                                 ,"Stored Energy");
+
+        add("module.draconicevolution.module_type"                                          ,"Module Type");
+        add("module.draconicevolution.grid_size"                                            ,"Module Size");
+
+        //endregion
 
 
         //temp
@@ -234,5 +303,29 @@ public class LangGenerator extends LanguageProvider {
         add("item_prop.draconicevolution.test_decimal3.name"                                ,"Test Decimal 3");
 
         //@formatter:on
+    }
+
+
+
+
+
+
+
+    @Override
+    public void add(Block key, String name) {
+        if (key != null) super.add(key, name);
+    }
+
+    @Override
+    public void add(Item key, String name) {
+        if (key != null) super.add(key, name);
+    }
+
+    public void add(ModuleType<?> key, String name) {
+        super.add("module_type." + MODID + "." + key.getName() + ".name", name);
+    }
+
+    public void add(Module<?> key, String name) {
+        super.add(key.getItem(), name);
     }
 }

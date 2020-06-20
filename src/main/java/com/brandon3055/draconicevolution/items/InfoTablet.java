@@ -4,6 +4,7 @@ import com.brandon3055.brandonscore.items.ItemBCore;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.projectintelligence.api.PiAPI;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -12,7 +13,7 @@ import net.minecraft.world.World;
 /**
  * Created by brandon3055 on 22/09/2016.
  */
-public class InfoTablet extends ItemBCore {
+public class InfoTablet extends Item {
 
     public static boolean nagShown = false;
 

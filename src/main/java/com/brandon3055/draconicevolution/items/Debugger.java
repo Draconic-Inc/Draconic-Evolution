@@ -6,6 +6,7 @@ import com.brandon3055.brandonscore.items.ItemBCore;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.tileentity.TileEntity;
@@ -24,7 +25,7 @@ import java.util.Random;
 /**
  * Created by brandon3055 on 4/4/2016.
  */
-public class Debugger extends ItemBCore {
+public class Debugger extends Item {
 
     private static final Map<Integer, String> MODES = new HashMap<Integer, String>();
     private static Random rand = new Random();

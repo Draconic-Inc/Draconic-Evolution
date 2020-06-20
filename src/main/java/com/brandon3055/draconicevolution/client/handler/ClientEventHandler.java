@@ -11,6 +11,7 @@ import com.brandon3055.brandonscore.client.utils.GuiHelper;
 import com.brandon3055.brandonscore.lib.DelayedExecutor;
 import com.brandon3055.brandonscore.lib.Pair;
 import com.brandon3055.brandonscore.utils.Utils;
+import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DEOldConfig;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.api.energy.ICrystalBinder;
@@ -18,7 +19,7 @@ import com.brandon3055.draconicevolution.api.itemconfig_dep.ToolConfigHelper;
 import com.brandon3055.draconicevolution.client.render.shaders.DEShaders;
 import com.brandon3055.draconicevolution.handlers.BinderHandler;
 import com.brandon3055.draconicevolution.items.tools.CreativeExchanger;
-import com.brandon3055.draconicevolution.items.tools.MiningToolBase;
+import com.brandon3055.draconicevolution.items.tools.old.MiningToolBase;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -44,7 +45,6 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import org.lwjgl.opengl.GL11;
@@ -75,6 +75,7 @@ public class ClientEventHandler {
 
     public static ShaderProgram explosionShader;
 
+    @SubscribeEvent
     public void renderGameOverlay(RenderGameOverlayEvent.Post event) {
         HudHandler.drawHUD(event);
 
@@ -395,7 +396,7 @@ public class ClientEventHandler {
         //endregion
 
         //region No Shader
-        if (!DEShaders.useShaders() || explosionRetreating) {
+        if (!DEConfig.otherShaders || explosionRetreating) {
             float alpha;
             if (explosionAnimation <= 0) {
                 alpha = 0;
@@ -411,20 +412,20 @@ public class ClientEventHandler {
         //endregion
 
         else {
-            if (explosionShader == null) {
-                explosionShader = new ShaderProgram();
-                explosionShader.attachShader(DEShaders.explosionOverlay);
-            }
-
-            explosionShader.useShader(cache -> {
-                cache.glUniform2F("screenPos", screenX, screenY);
-                cache.glUniform1F("intensity", (float) explosionAnimation);
-                cache.glUniform2F("screenSize", resolution.getWidth(), resolution.getHeight());
-            });
-
-            GuiHelper.drawColouredRect(0, 0, resolution.getScaledWidth(), resolution.getScaledHeight(), 0xFFFFFFFF);
-
-            explosionShader.releaseShader();
+//            if (explosionShader == null) {
+//                explosionShader = new ShaderProgram();
+//                explosionShader.attachShader(DEShaders.explosionOverlay);
+//            }
+//
+//            explosionShader.useShader(cache -> {
+//                cache.glUniform2F("screenPos", screenX, screenY);
+//                cache.glUniform1F("intensity", (float) explosionAnimation);
+//                cache.glUniform2F("screenSize", resolution.getWidth(), resolution.getHeight());
+//            });
+//
+//            GuiHelper.drawColouredRect(0, 0, resolution.getScaledWidth(), resolution.getScaledHeight(), 0xFFFFFFFF);
+//
+//            explosionShader.releaseShader();
         }
 
     }

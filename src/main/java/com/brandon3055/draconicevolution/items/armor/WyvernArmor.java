@@ -10,7 +10,7 @@ import com.brandon3055.draconicevolution.api.itemupgrade_dep.IUpgradableItem;
 import com.brandon3055.draconicevolution.api.itemupgrade_dep.UpgradeHelper;
 import com.brandon3055.draconicevolution.entity.EntityPersistentItem;
 import com.brandon3055.draconicevolution.items.ToolUpgrade;
-import com.brandon3055.draconicevolution.items.tools.ToolStats;
+import com.brandon3055.draconicevolution.items.tools.old.ToolStats;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;

@@ -12,6 +12,7 @@ import com.brandon3055.draconicevolution.api.modules.lib.StackModuleContext;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.init.ModCapabilities;
 import com.google.common.collect.Streams;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -23,6 +24,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Hand;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
@@ -137,7 +139,10 @@ public class ContainerModularItem extends ContainerModuleHost<TileBCore> {
                 } else if (clickTypeIn == ClickType.PICKUP && button == 0 && player.inventory.getItemStack().isEmpty()) {
                     if (slot.getStack().getCapability(MODULE_HOST_CAPABILITY).isPresent()) {
                         if (player instanceof ServerPlayerEntity) {
-                            PlayerSlot playerSlot = new PlayerSlot(slotId, PlayerSlot.EnumInvCategory.MAIN);
+                            PlayerSlot playerSlot;
+                            if (slotId >= 40) playerSlot = new PlayerSlot(slotId - 40, PlayerSlot.EnumInvCategory.OFF_HAND);
+                            else if (slotId >= 36) playerSlot = new PlayerSlot(slotId - 36, PlayerSlot.EnumInvCategory.ARMOR);
+                            else playerSlot = new PlayerSlot(slotId, PlayerSlot.EnumInvCategory.MAIN);
                             NetworkHooks.openGui((ServerPlayerEntity) player, new Provider(slot.getStack(), playerSlot), playerSlot::toBuff);
                         } else {
                             GuiButton.playGenericClick();
@@ -161,7 +166,7 @@ public class ContainerModularItem extends ContainerModuleHost<TileBCore> {
 
         @Override
         public ITextComponent getDisplayName() {
-            return stack.getDisplayName();
+            return stack.getDisplayName().appendText(" ").appendSibling(new TranslationTextComponent("gui.draconicevolution.modular_item.modules"));
         }
 
         @Nullable

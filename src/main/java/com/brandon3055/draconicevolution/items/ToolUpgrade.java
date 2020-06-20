@@ -20,6 +20,7 @@ import java.util.*;
 /**
  * Created by brandon3055 on 26/06/2016.
  */
+@Deprecated
 public class ToolUpgrade extends ItemBCore /*implements IRenderOverride*/ {
 
     public static final Map<Integer, String> ID_TO_NAME = new HashMap<Integer, String>();

@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.api.capability;
 
 
 import com.brandon3055.draconicevolution.api.modules.Module;
-import com.brandon3055.draconicevolution.api.modules.properties.ModuleData;
+import com.brandon3055.draconicevolution.api.modules.data.ModuleData;
 
 /**
  * Created by covers1624 on 4/16/20.

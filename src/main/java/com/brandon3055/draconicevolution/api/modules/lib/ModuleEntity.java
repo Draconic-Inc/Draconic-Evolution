@@ -1,14 +1,17 @@
 package com.brandon3055.draconicevolution.api.modules.lib;
 
-import com.brandon3055.draconicevolution.api.config.BooleanProperty;
+import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.config.ConfigProperty;
-import com.brandon3055.draconicevolution.api.config.IntegerProperty;
 import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.ModuleType;
-import com.brandon3055.draconicevolution.api.modules.properties.ModuleData;
+import com.brandon3055.draconicevolution.api.modules.data.ModuleData;
+import com.google.common.collect.Multimap;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 /**
@@ -17,6 +20,7 @@ import java.util.*;
 public class ModuleEntity {
 
     protected final Module<?> module;
+    protected ModuleHost host;
     protected Map<String, ConfigProperty> propertyMap = new HashMap<>();
     protected boolean savePropertiesToItem = false;
     protected int gridX;
@@ -28,14 +32,26 @@ public class ModuleEntity {
 //        savePropertiesToItem = true;
     }
 
+    public void setHost(ModuleHost host) {
+        this.host = host;
+    }
+
     public void tick(ModuleContext context) {
 
     }
 
+    /**
+     * Called when this module is installed into a module host
+     * After readFromItemStack
+     * */
     public void onInstalled(ModuleContext context) {
 
     }
 
+    /**
+     * Called when this module is removed from a module host
+     * After writeToItemStack
+     * */
     public void onRemoved(ModuleContext context) {
 
     }
@@ -65,6 +81,24 @@ public class ModuleEntity {
         return propertyMap.values();
     }
 
+    /**
+     * This method allows this module entities to apply attribute modifiers to the items they are installed in.
+     *
+     * @param slot the equipment slot that the item containing this module is in.
+     * @param stack The ItemStack containing this module/modules
+     * @param map The map to which the modifiers must be added.
+     */
+    public void getAttributeModifiers(EquipmentSlotType slot, ItemStack stack, Multimap<String, AttributeModifier> map) {
+
+    }
+
+//    /**
+//     * If you are using {@link #getAttributeModifiers(EquipmentSlotType, ItemStack, Multimap)} to add custom attributes you MUST also
+//     * implement this method and add all of your attribute id's to the provided list. This list is used to refresh or remove attributes added by modules.
+//     * @param list the list to which you must add your attribute id's
+//     */
+//    public void getAttributeIDs(List<UUID> list) {}
+
     public void writeToNBT(CompoundNBT compound) {
         compound.putByte("x", (byte) gridX);
         compound.putByte("y", (byte) gridY);
@@ -83,12 +117,13 @@ public class ModuleEntity {
     }
 
     /**
-     * Called when the module is removed from the module grid.
-     * This allows you to store data on the module item stack.
+     * Called when the module is about to be removed from the module grid.
+     * This allows you to store data on the module item stack.<br>
+     * Note: there is no guarantee the module will actually be removed at this point so do not modify the context.
      *
      * @param stack The module stack
      */
-    public void writeToItemStack(ItemStack stack) {
+    public void writeToItemStack(ItemStack stack, ModuleContext context) {
         if (savePropertiesToItem && !propertyMap.isEmpty()) {
             CompoundNBT properties = stack.getOrCreateChildTag("properties");
             propertyMap.forEach((name, property) -> properties.put(name, property.serializeNBT()));
@@ -96,13 +131,14 @@ public class ModuleEntity {
     }
 
     /**
-     * Called when a module is inserted into a module grid.
-     * This allows you to load any previously saved data.
+     * Called when a module is about to be inserted into a module grid.
+     * This allows you to load any previously saved data.<br>
+     * Note: there is no guarantee the module will actually be installed at this point so do not modify the context.
      *
      * @param stack The module stack
-     * @see #writeToItemStack(ItemStack)
+     * @see #writeToItemStack(ItemStack, ModuleContext)
      */
-    public void readFromItemStack(ItemStack stack) {
+    public void readFromItemStack(ItemStack stack, ModuleContext context) {
         CompoundNBT properties;
         if (savePropertiesToItem && (properties = stack.getChildTag("properties")) != null) {
             propertyMap.forEach((name, property) -> property.deserializeNBT(properties.getCompound(name)));
@@ -160,6 +196,10 @@ public class ModuleEntity {
         return this.gridX == gridX && this.gridY == gridY;
     }
 
+    public boolean isPosValid(int gridWidth, int gridHeight) {
+        return gridX >= 0 && gridY >= 0 && getMaxGridX() < gridWidth && getMaxGridY() < gridHeight;
+    }
+
     /**
      * Returns true if the specified grid coordinates are within this modules grid bounds.
      *
@@ -195,5 +235,14 @@ public class ModuleEntity {
                 (rh < ry || rh > ty) &&
                 (tw < tx || tw > rx) &&
                 (th < ty || th > ry));
+    }
+
+    @Override
+    public String toString() {
+        return "ModuleEntity{" +
+                "module=" + module.getRegistryName() +
+                ", gridX=" + gridX +
+                ", gridY=" + gridY +
+                '}';
     }
 }

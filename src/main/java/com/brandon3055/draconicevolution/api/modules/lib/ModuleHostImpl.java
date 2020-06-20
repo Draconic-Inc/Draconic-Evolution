@@ -4,10 +4,16 @@ import codechicken.lib.util.SneakyUtils;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.draconicevolution.api.capability.PropertyProvider;
 import com.brandon3055.draconicevolution.api.config.ConfigProperty;
-import com.brandon3055.draconicevolution.api.modules.Module;
-import com.brandon3055.draconicevolution.api.modules.ModuleRegistry;
-import com.brandon3055.draconicevolution.api.modules.ModuleType;
+import com.brandon3055.draconicevolution.api.modules.*;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
+import com.brandon3055.draconicevolution.api.modules.data.EnergyData;
+import com.brandon3055.draconicevolution.api.modules.data.ModuleData;
+import com.brandon3055.draconicevolution.api.modules.data.EnergyShareData;
+import com.google.common.collect.Multimap;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.ResourceLocation;
@@ -31,21 +37,29 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
     private int gridHeight;
     private UUID providerID = null;
     private String providerName;
+//    private boolean attributesDirty;
+    private boolean deleteInvalidModules;
     private TechLevel techLevel;
+    private EnergyData energyCache = null;
+    private ModuleData energyLinkCache = null;
+    private EnergyShareData energyShareCache = null;
     private List<ModuleEntity> moduleEntities = new ArrayList<>();
-    private List<ModuleType<?>> supportedTypes = new ArrayList<>();
+    private Set<ModuleType<?>> typeWhiteList = new HashSet<>();
+    private Set<ModuleType<?>> typeBlackList = new HashSet<>();
+    private Set<ModuleCategory> categories = new HashSet<>();
     private List<ConfigProperty> providedProperties = new ArrayList<>();
     private Map<String, ConfigProperty> propertyMap = new LinkedHashMap<>();
     private Consumer<List<ConfigProperty>> propertyBuilder;
     private Map<ModuleType<?>, Consumer<?>> propertyValidators = new HashMap<>();
     private Map<ModuleType<?>, List<ConfigProperty>> typeProperties = new HashMap<>();
 
-    public ModuleHostImpl(TechLevel techLevel, int gridWidth, int gridHeight, String providerName, ModuleType<?>... supportedTypes) {
+    public ModuleHostImpl(TechLevel techLevel, int gridWidth, int gridHeight, String providerName, boolean deleteInvalidModules, ModuleCategory... categories) {
         this.techLevel = techLevel;
         this.gridWidth = gridWidth;
         this.gridHeight = gridHeight;
         this.providerName = providerName;
-        this.supportedTypes.addAll(Arrays.asList(supportedTypes));
+        this.deleteInvalidModules = deleteInvalidModules;
+        this.categories.addAll(Arrays.asList(categories));
     }
 
     //region ModuleHost
@@ -61,20 +75,50 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
     }
 
     @Override
-    public void addModule(ModuleEntity moduleEntity) {
-        moduleEntities.add(moduleEntity);
+    public void addModule(ModuleEntity entity, ModuleContext context) {
+        clearCaches();
+        moduleEntities.add(entity);
+        entity.setHost(this);
+        entity.onInstalled(context);
         gatherProperties();
     }
 
     @Override
-    public void removeModule(ModuleEntity moduleEntity) {
-        moduleEntities.remove(moduleEntity);
+    public void removeModule(ModuleEntity entity, ModuleContext context) {
+        clearCaches();
+        moduleEntities.remove(entity);
+        entity.onRemoved(context);
         gatherProperties();
     }
 
     @Override
-    public List<ModuleType<?>> getSupportedTypes() {
-        return Collections.unmodifiableList(supportedTypes);
+    public Collection<ModuleCategory> getModuleCategories() {
+        return categories;
+    }
+
+    public ModuleHostImpl addCategories(ModuleCategory... categories) {
+        this.categories.addAll(Arrays.asList(categories));
+        return this;
+    }
+
+    @Override
+    public Collection<ModuleType<?>> getTypeWhiteList() {
+        return typeWhiteList;
+    }
+
+    public ModuleHostImpl whiteListType(ModuleType<?> type) {
+        typeWhiteList.add(type);
+        return this;
+    }
+
+    @Override
+    public Collection<ModuleType<?>> getTypeBlackList() {
+        return typeBlackList;
+    }
+
+    public ModuleHostImpl blackListType(ModuleType<?> type) {
+        typeBlackList.add(type);
+        return this;
     }
 
     @Override
@@ -92,12 +136,40 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
         return gridHeight;
     }
 
-    //end
+    @Override
+    public void getAttributeModifiers(EquipmentSlotType slot, ItemStack stack, Multimap<String, AttributeModifier> map) {
+        getInstalledTypes().forEach(t -> t.getAttributeModifiers(SneakyUtils.unsafeCast(getModuleData(t)), slot, stack, map));
+        getModuleEntities().forEach(e -> e.getAttributeModifiers(slot, stack, map));
+    }
+
+//    @Override
+//    public void markAttributesDirty() {
+//        this.attributesDirty = true;
+//    }
+
+    public void handleTick(ModuleContext context) {
+        getModuleEntities().forEach(e -> e.tick(context));
+//        if (context instanceof StackModuleContext && attributesDirty && ((StackModuleContext) context).getEntity() instanceof LivingEntity) {
+//            LivingEntity entity = (LivingEntity) ((StackModuleContext) context).getEntity();
+//            attributesDirty = false;
+//            List<UUID> ids = new ArrayList<>();
+//            getInstalledTypes().forEach(e -> e.getAttributeIDs(ids));
+//            getModuleEntities().forEach(e -> e.getAttributeIDs(ids));
+//            entity.getAttributes().
+//        }
+    }
+
+    //endregion
 
     //region PropertyProvider
 
-    public void setPropertyBuilder(Consumer<List<ConfigProperty>> propertyBuilder) {
-        this.propertyBuilder = propertyBuilder;
+    public void addPropertyBuilder(Consumer<List<ConfigProperty>> propertyBuilder) {
+        Consumer<List<ConfigProperty>> builder = this.propertyBuilder;
+        if (builder == null) {
+            this.propertyBuilder = propertyBuilder;
+        } else {
+            this.propertyBuilder = builder.andThen(propertyBuilder);
+        }
     }
 
     @Override
@@ -157,7 +229,7 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
 
         Set<String> installedNames = providedProperties.stream().map(ConfigProperty::getName).collect(Collectors.toSet());
         //Add new properties
-        providedProperties.addAll(gathered.stream().filter(e->!installedNames.contains(e.getName())).collect(Collectors.toList()));
+        providedProperties.addAll(gathered.stream().filter(e -> !installedNames.contains(e.getName())).collect(Collectors.toList()));
 
         //Repopulate the property map.
         propertyMap.clear();
@@ -171,7 +243,36 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
         }));
     }
 
-    //end
+    //endregion
+
+    //helpers
+
+    private void clearCaches() {
+        energyLinkCache = null;
+        energyCache = null;
+    }
+
+    public ModuleData getEnergyLink() {
+        return energyLinkCache; //TODO
+    }
+
+    public EnergyShareData getEnergyShare() {
+        if (energyShareCache == null) {
+            energyShareCache = getModuleData(ModuleTypes.ENERGY_SHARE, new EnergyShareData(0));
+        }
+        return energyShareCache; //TODO
+    }
+
+    /**
+     * @return the energy module data for this host. This data is cached for efficiency.
+     */
+    public EnergyData getEnergyData() {
+        if (energyCache == null) {
+            energyCache = getModuleData(ModuleTypes.ENERGY_STORAGE, new EnergyData(0, 0));
+        }
+        return energyCache;
+    }
+
 
     @Override
     public CompoundNBT serializeNBT() {
@@ -196,6 +297,7 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
 
     @Override
     public void deserializeNBT(CompoundNBT nbt) {
+        clearCaches();
         //Deserialize modules first
         moduleEntities.clear();
         ListNBT modules = nbt.getList("modules", 10);
@@ -207,7 +309,12 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
             } else {
                 ModuleEntity entity = module.createEntity();
                 entity.readFromNBT(compound);
-                moduleEntities.add(entity);
+                if (deleteInvalidModules && !entity.isPosValid(gridWidth, gridHeight)) {
+                    logger.warn("Deleting module from invalid grid position: " + entity.toString());
+                } else {
+                    moduleEntities.add(entity);
+                    entity.setHost(this);
+                }
             }
         });
 

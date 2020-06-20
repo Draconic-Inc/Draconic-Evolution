@@ -96,6 +96,7 @@ public class DecimalProperty extends ConfigProperty {
         if (changeListener != null) {
             changeListener.accept(stack, this);
         }
+        isDefaultValue = false;
     }
 
     @Override
@@ -132,13 +133,18 @@ public class DecimalProperty extends ConfigProperty {
     @Override
     public CompoundNBT serializeNBT() {
         CompoundNBT nbt = super.serializeNBT();
-        nbt.putDouble("value", value);
+        nbt.putBoolean("default", isDefaultValue);
+        if (!isDefaultValue)
+            nbt.putDouble("value", value);
         return nbt;
     }
 
     @Override
     public void deserializeNBT(CompoundNBT nbt) {
-        value = Math.max(min.get(), Math.min(max.get(), nbt.getDouble("value")));
+        if (nbt.contains("value")) {
+            value = nbt.getDouble("value");
+        }
+        value = Math.max(min.get(), Math.min(max.get(), value));
         super.deserializeNBT(nbt);
     }
 

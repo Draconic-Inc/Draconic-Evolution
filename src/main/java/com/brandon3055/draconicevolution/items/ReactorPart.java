@@ -5,6 +5,7 @@ import com.brandon3055.brandonscore.items.ItemBCore;
 /**
  * Created by brandon3055 on 22/09/2016.
  */
+@Deprecated
 public class ReactorPart extends ItemBCore /*implements IRenderOverride*/ {
 
     public ReactorPart(Properties properties) {

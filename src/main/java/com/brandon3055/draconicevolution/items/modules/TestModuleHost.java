@@ -3,12 +3,15 @@ package com.brandon3055.draconicevolution.items.modules;
 import com.brandon3055.brandonscore.inventory.PlayerSlot;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
+import com.brandon3055.brandonscore.capability.MultiCapabilityProvider;
 import com.brandon3055.draconicevolution.api.config.*;
 import com.brandon3055.draconicevolution.api.config.ConfigProperty.BooleanFormatter;
+import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleHostImpl;
-import com.brandon3055.draconicevolution.api.capability.ItemCapabilityProvider;
+import com.brandon3055.draconicevolution.init.ModuleCfg;
 import com.brandon3055.draconicevolution.inventory.ContainerConfigurableItem;
 import com.brandon3055.draconicevolution.inventory.ContainerModularItem;
+import com.brandon3055.draconicevolution.items.equipment.IModularItem;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -20,7 +23,8 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
@@ -32,7 +36,7 @@ import static net.minecraft.util.Direction.*;
 /**
  * Created by brandon3055 on 17/4/20.
  */
-public class TestModuleHost extends Item {
+public class TestModuleHost extends Item implements IModularItem {
 
     private final int width;
     private final int height;
@@ -52,19 +56,15 @@ public class TestModuleHost extends Item {
 //        }
     }
 
-    @Nullable
     @Override
-    public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundNBT nbt) {
-//        ItemCapabilityProvider capabilityProvider = new ItemCapabilityProvider();
-//        capabilityProvider.addCapability("module_host", DECapabilities.MODULE_HOST_CAPABILITY, new ModuleHostImpl(TechLevel.DRACONIUM, width, height, ModuleTypes.ENERGY_STORAGE));
-//
-//        PropertyProviderImpl propertyProvider = new PropertyProviderImpl("test_configurable_item");
-//        capabilityProvider.addCapability("property_provider", DECapabilities.PROPERTY_PROVIDER_CAPABILITY, propertyProvider);
-//
-//        //Add config properties to propertyProvider
+    public TechLevel getTechLevel() {
+        return TechLevel.DRACONIUM;
+    }
 
-        ModuleHostImpl moduleHost = new ModuleHostImpl(TechLevel.DRACONIUM, width, height, "test_configurable_item");
-        moduleHost.setPropertyBuilder(properties -> {
+    @Override
+    public ModuleHostImpl createHost(ItemStack stack) {
+        ModuleHostImpl moduleHost = new ModuleHostImpl(TechLevel.DRACONIUM, width, height, "test_configurable_item", ModuleCfg.removeInvalidModules);
+        moduleHost.addPropertyBuilder(properties -> {
             properties.add(new BooleanProperty("test_boolean1", false).setFormatter(BooleanFormatter.ACTIVE_INACTIVE));
             properties.add(new IntegerProperty("test_integer1", 0).range(-3, 3));
             properties.add(new DecimalProperty("test_decimal1", 0).range(-1, 10));
@@ -79,13 +79,33 @@ public class TestModuleHost extends Item {
                 properties.add(new DecimalProperty("test_decimal3", 0).range(-1, 10));
             }
         });
-
-        return new ItemCapabilityProvider<>(moduleHost);
+        return moduleHost;
     }
 
+    @Nullable
     @Override
+    public ModularOPStorage createOPStorage(ItemStack stack, ModuleHostImpl host) {
+        return new ModularOPStorage(host, 1000000, 32000);
+    }
+
+    //    @Override
+//    public void addAdditionalCapabilities(ItemStack stack, MultiCapabilityProvider provider) {
+
+//
+//        provider.addCapability(moduleHost, "module_host", DECapabilities.MODULE_HOST_CAPABILITY, DECapabilities.PROPERTY_PROVIDER_CAPABILITY);
+//    }
+
+
+//    @Override
+//    public MultiCapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundNBT nbt) {
+//        return IModularItem.super.initCapabilities(stack, nbt);
+//    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        super.addInformation(stack, worldIn, tooltip, flagIn);
+        addModularItemInformation(stack, worldIn, tooltip, flagIn);
+
 //        if (stack.hasTag()) {
 //            tooltip.add(new StringTextComponent("Itm: " + stack.getTag().getUniqueId("host_id").toString()));
 //        }
@@ -124,4 +144,7 @@ public class TestModuleHost extends Item {
         stack.setTag(nbt);
         DECapabilities.readFromShareTag(stack, nbt);
     }
+
+
+
 }

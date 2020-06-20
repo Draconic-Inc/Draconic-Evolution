@@ -6,7 +6,7 @@ import com.brandon3055.draconicevolution.DEOldConfig;
 import com.brandon3055.draconicevolution.integration.ModHelper;
 import com.brandon3055.draconicevolution.items.armor.DraconicArmor;
 import com.brandon3055.draconicevolution.items.armor.ICustomArmor;
-import com.brandon3055.draconicevolution.items.tools.ToolStats;
+import com.brandon3055.draconicevolution.items.tools.old.ToolStats;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttribute;

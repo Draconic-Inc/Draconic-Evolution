@@ -71,6 +71,7 @@ public class ModuleGrid {
         ItemStack stack = player.getItemStack();
         Module<?> module = ModuleItem.getModule(stack);
         boolean holdingStack = !stack.isEmpty();
+        ModuleContext context = container.getModuleContext();
 
         //Sanity Checks
         if ((holdingStack && module == null) || !pos.isValidCell()) {
@@ -84,9 +85,8 @@ public class ModuleGrid {
                 entity.setPos(pos.gridX, pos.gridY);
                 InstallResult result = checkInstall(entity);
                 if (result.resultType == InstallResultType.YES) {
-                    getModuleHost().addModule(entity);
-                    entity.readFromItemStack(stack);
-                    entity.onInstalled(container.getModuleContext());
+                    entity.readFromItemStack(stack, context);
+                    getModuleHost().addModule(entity, context);
                     stack.shrink(1);
                     onGridChange();
                     return null;
@@ -96,9 +96,8 @@ public class ModuleGrid {
             else if (pos.hasEntity()) { //Try to extract module
                 ModuleEntity entity = pos.getEntity();
                 ItemStack extracted = new ItemStack(entity.getModule().getItem());
-                entity.writeToItemStack(extracted);
-                getModuleHost().removeModule(entity);
-                entity.onRemoved(container.getModuleContext());
+                entity.writeToItemStack(extracted, context);
+                getModuleHost().removeModule(entity, context);
                 player.setItemStack(extracted);
                 onGridChange();
             }
@@ -107,11 +106,10 @@ public class ModuleGrid {
             if (pos.hasEntity()) { //Try to transfer module
                 ModuleEntity entity = pos.getEntity();
                 ItemStack extracted = new ItemStack(entity.getModule().getItem());
-                entity.writeToItemStack(extracted);
+                entity.writeToItemStack(extracted, context);
                 if (player.addItemStackToInventory(extracted)) {
-                    getModuleHost().removeModule(entity);
+                    getModuleHost().removeModule(entity, context);
                     onGridChange();
-                    entity.onRemoved(container.getModuleContext());
                 }
             }
         }
@@ -119,11 +117,10 @@ public class ModuleGrid {
             for (ModuleEntity entity : ImmutableList.copyOf(getModuleHost().getModuleEntities())) {
                 if (entity.module == module) {
                     ItemStack modStack = new ItemStack(module.getItem());
-                    entity.writeToItemStack(modStack);
+                    entity.writeToItemStack(modStack, context);
                     if (Container.areItemsAndTagsEqual(stack, modStack) && stack.getCount() < stack.getMaxStackSize()) {
                         stack.grow(1);
-                        getModuleHost().removeModule(entity);
-                        entity.onRemoved(container.getModuleContext());
+                        getModuleHost().removeModule(entity, context);
                     }
                 }
                 onGridChange();
@@ -133,7 +130,7 @@ public class ModuleGrid {
             if (player.player.abilities.isCreativeMode && player.getItemStack().isEmpty() && pos.hasEntity()) {
                 ModuleEntity entity = pos.getEntity();
                 ItemStack modStack = new ItemStack(entity.module.getItem());
-                entity.writeToItemStack(modStack);
+                entity.writeToItemStack(modStack, context);
                 player.setItemStack(modStack);
             }
         }
@@ -148,7 +145,7 @@ public class ModuleGrid {
             for (int x = 0; x < getWidth(); x++) {
                 entity.setPos(x, y);
                 if (checkInstall(entity).resultType == InstallResultType.YES) {
-                    getModuleHost().addModule(entity);
+                    getModuleHost().addModule(entity, container.getModuleContext());
                     onGridChange();
                     return true;
                 }
@@ -159,8 +156,11 @@ public class ModuleGrid {
 
     public InstallResult checkInstall(ModuleEntity entity) {
         ModuleHost host = getModuleHost();
-        if (!host.getSupportedTypes().isEmpty() && !host.getSupportedTypes().contains(entity.module.getType())) {
-            return new InstallResult(InstallResultType.NO, entity.module, null, new StringTextComponent("//Module type not supported"));
+        if (host.getHostTechLevel().index < entity.module.getModuleTechLevel().index) {
+            return new InstallResult(InstallResultType.NO, entity.module, null, new StringTextComponent("//Module tech level too high"));
+        }
+        if (!host.isModuleSupported(entity)) {
+            return new InstallResult(InstallResultType.NO, entity.module, null, new StringTextComponent("//Module not supported"));
         }
         if (host.getModuleEntities().stream().anyMatch(entity::intersects)) {
             return new InstallResult(InstallResultType.NO, entity.module, null, new StringTextComponent("//Module does not fit in this space"));

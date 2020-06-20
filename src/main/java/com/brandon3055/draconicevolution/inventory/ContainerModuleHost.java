@@ -53,7 +53,7 @@ public abstract class ContainerModuleHost<T> extends ContainerBCore<T> {
             Module<?> module = ModuleItem.getModule(stack);
             if (module != null) {
                 ModuleEntity entity = module.createEntity();
-                entity.readFromItemStack(stack);
+                entity.readFromItemStack(stack, getModuleContext());
                 if (getGrid().attemptInstall(entity)) {
                     stack.shrink(1);
                     return ItemStack.EMPTY;

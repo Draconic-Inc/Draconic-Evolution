@@ -1,6 +1,5 @@
 package com.brandon3055.draconicevolution.datagen;
 
-import com.brandon3055.draconicevolution.client.ClientProxy;
 import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
@@ -96,6 +95,7 @@ public class ItemModelGenerator extends ItemModelProvider {
         dummyModel(DEContent.chaos_frag_small);
         dummyModel(DEContent.chaos_frag_medium);
         dummyModel(DEContent.chaos_frag_large);
+        dummyModel(DEContent.mob_soul);
         simpleItem(DEContent.magnet);
         simpleItem(DEContent.magnet_advanced);
         simpleItem(DEContent.dislocator);
@@ -106,14 +106,31 @@ public class ItemModelGenerator extends ItemModelProvider {
         simpleItem(DEContent.info_tablet);
 
 
-        //Capacitors
+        //Modular Tools
         simpleItem(DEContent.capacitor_wyvern, "item/tools");
         simpleItem(DEContent.capacitor_draconic, "item/tools");
         simpleItem(DEContent.capacitor_chaotic, "item/tools");
         simpleItem(DEContent.capacitor_creative, "item/tools");
-
-        //Modular Tools
-        ClientProxy.toolItems.forEach(e -> simpleItem(e, "item/tools"));
+        simpleItem(DEContent.shovel_wyvern, "item/tools");
+        simpleItem(DEContent.shovel_draconic, "item/tools");
+        simpleItem(DEContent.shovel_chaotic, "item/tools");
+        simpleItem(DEContent.pickaxe_wyvern, "item/tools");
+        simpleItem(DEContent.pickaxe_draconic, "item/tools");
+        simpleItem(DEContent.pickaxe_chaotic, "item/tools");
+        simpleItem(DEContent.axe_wyvern, "item/tools");
+        simpleItem(DEContent.axe_draconic, "item/tools");
+        simpleItem(DEContent.axe_chaotic, "item/tools");
+        simpleItem(DEContent.bow_wyvern, "item/tools");
+        simpleItem(DEContent.bow_draconic, "item/tools");
+        simpleItem(DEContent.bow_chaotic, "item/tools");
+        simpleItem(DEContent.sword_wyvern, "item/tools");
+        simpleItem(DEContent.sword_draconic, "item/tools");
+        simpleItem(DEContent.sword_chaotic, "item/tools");
+        simpleItem(DEContent.staff_draconic, "item/tools");
+        simpleItem(DEContent.staff_chaotic, "item/tools");
+        simpleItem(DEContent.chestpiece_wyvern, "item/tools");
+        simpleItem(DEContent.chestpiece_draconic, "item/tools");
+        simpleItem(DEContent.chestpiece_chaotic, "item/tools");
 
 
 //            getBuilder("test_generated_model")

@@ -36,6 +36,7 @@ public class ContainerConfigurableItem extends ContainerBCore<Object> {
     private UUID selectedId; //Default is irrelevant as long as its not null.
     private Runnable onInventoryChange;
     private Consumer<Boolean> onSelectionMade;
+    private ItemStack stackCache = ItemStack.EMPTY;
 
     public ContainerConfigurableItem(int windowId, PlayerInventory player, PacketBuffer extraData, ContainerSlotLayout.LayoutFactory<Object> factory) {
         super(DEContent.container_configurable_item, windowId, player, extraData, factory);
@@ -98,6 +99,7 @@ public class ContainerConfigurableItem extends ContainerBCore<Object> {
                         if (onSelectionMade != null) {
                             onSelectionMade.accept(false);
                         }
+                        stackCache = slot.getStack();
                         return ItemStack.EMPTY;
                     }
                 }
@@ -152,27 +154,6 @@ public class ContainerConfigurableItem extends ContainerBCore<Object> {
         }
     }
 
-    //I shouldn't need this now that the capabilities are written to the share tag.
-//    //This is overridden and modified to ensure capability updates are sent.
-//    @Override
-//    public void detectAndSendChanges() {
-//        for (int i = 0; i < this.inventorySlots.size(); ++i) {
-//            ItemStack itemstack = this.inventorySlots.get(i).getStack();
-//            ItemStack itemstack1 = this.inventoryItemStacks.get(i);
-//            if (!ItemStack.areItemStacksEqual(itemstack1, itemstack)) {
-//                boolean clientStackChanged = !itemstack1.equals(itemstack, true) || !itemstack1.areCapsCompatible(itemstack);
-//                itemstack1 = itemstack.copy();
-//                this.inventoryItemStacks.set(i, itemstack1);
-//
-//                if (clientStackChanged) {
-//                    for (IContainerListener icontainerlistener : this.listeners) {
-//                        icontainerlistener.sendSlotContents(this, i, itemstack1);
-//                    }
-//                }
-//            }
-//        }
-//    }
-
     @Override
     public void setAll(List<ItemStack> stacks) {
         super.setAll(stacks);
@@ -191,6 +172,9 @@ public class ContainerConfigurableItem extends ContainerBCore<Object> {
         if (!initialSync) {
             UUID held = getProviderID(player.getHeldItemMainhand());
             this.selectedId = held == null ? DEFAULT_UUID : held;
+            if (selectedId != DEFAULT_UUID) {
+                stackCache = player.getHeldItemMainhand();
+            }
             initialSync = true;
             if (onSelectionMade != null) {
                 onSelectionMade.accept(true);
@@ -199,6 +183,13 @@ public class ContainerConfigurableItem extends ContainerBCore<Object> {
         if (onInventoryChange != null) {
             onInventoryChange.run();
         }
+    }
+
+    /**
+     * Do not use this for anything important!
+     * */
+    public ItemStack getLastStack() {
+        return stackCache;
     }
 
     public static class Provider implements INamedContainerProvider {

@@ -97,7 +97,7 @@ public class RenderTileReactorCore extends TESRBase<TileReactorCore> {
         //TODO Render Pass
 //        if (MinecraftForgeClient.getRenderPass() == 0) {
             float animation = (te.coreAnimation + (partialTicks * (float) te.shaderAnimationState.get())) / 20F;
-            renderCore(x, y, z, partialTicks, intensity, animation, diameter, DEShaders.useShaders());
+//            renderCore(x, y, z, partialTicks, intensity, animation, diameter, DEShaders.useShaders());
 //        } else if (te.shieldAnimationState > 0) {
 //            float animation = (te.shieldAnimation + (partialTicks * te.shieldAnimationState)) / 20F;
 //
@@ -123,7 +123,7 @@ public class RenderTileReactorCore extends TESRBase<TileReactorCore> {
         float animation = 0;
         float intensity = 0;
 
-        renderCore(0, 0, 0, 0, intensity, animation, scale, DEShaders.useShaders());
+//        renderCore(0, 0, 0, 0, intensity, animation, scale, DEShaders.useShaders());
 
 //        resetLighting();
 //        GlStateTracker.popState();
@@ -140,56 +140,56 @@ public class RenderTileReactorCore extends TESRBase<TileReactorCore> {
         float animation = (te.coreAnimation + (0 * (float) te.shaderAnimationState.get())) / 20F;
         float shieldPower = (float) (te.maxShieldCharge.get() > 0 ? te.shieldCharge.get() / te.maxShieldCharge.get() : 0);
 
-        renderCore(x - 0.5, y, 100, 0, intensity, animation, diameter, DEShaders.useShaders());
-        renderShield(x - 0.5, y, 100, 0, (0.7F * shieldPower) - (float) (1 - te.shaderAnimationState.get()), animation, diameter, DEShaders.useShaders());
+//        renderCore(x - 0.5, y, 100, 0, intensity, animation, diameter, DEShaders.useShaders());
+//        renderShield(x - 0.5, y, 100, 0, (0.7F * shieldPower) - (float) (1 - te.shaderAnimationState.get()), animation, diameter, DEShaders.useShaders());
 
 //        GlStateTracker.popState();
         RenderSystem.popMatrix();
     }
 
     private static void renderCore(double x, double y, double z, float partialTicks, float intensity, float animation, double diameter, boolean useShader) {
-        ResourceHelperDE.bindTexture(DETextures.REACTOR_CORE);
-        if (useShader) {
-            if (reactorProgram == null) {
-                reactorProgram = new ShaderProgram();
-                reactorProgram.attachShader(DEShaders.reactor);
-            }
-            reactorProgram.useShader(cache -> {
-                cache.glUniform1F("time", animation);
-                cache.glUniform1F("intensity", intensity);
-            });
-        }
-
-        CCRenderState ccrs = CCRenderState.instance();
-        ccrs.startDrawing(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX);
-        Matrix4 mat = RenderUtils.getMatrix(new Vector3(x + 0.5, y + 0.5, z + 0.5), new Rotation((ClientEventHandler.elapsedTicks + partialTicks) / 400F, 0, 1, 0), diameter);
-        model.render(ccrs, mat);
-        ccrs.draw();
-
-        if (useShader) {
-            reactorProgram.releaseShader();
-        }
+//        ResourceHelperDE.bindTexture(DETextures.REACTOR_CORE);
+//        if (useShader) {
+//            if (reactorProgram == null) {
+//                reactorProgram = new ShaderProgram();
+//                reactorProgram.attachShader(DEShaders.reactor);
+//            }
+//            reactorProgram.useShader(cache -> {
+//                cache.glUniform1F("time", animation);
+//                cache.glUniform1F("intensity", intensity);
+//            });
+//        }
+//
+//        CCRenderState ccrs = CCRenderState.instance();
+//        ccrs.startDrawing(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX);
+//        Matrix4 mat = RenderUtils.getMatrix(new Vector3(x + 0.5, y + 0.5, z + 0.5), new Rotation((ClientEventHandler.elapsedTicks + partialTicks) / 400F, 0, 1, 0), diameter);
+//        model.render(ccrs, mat);
+//        ccrs.draw();
+//
+//        if (useShader) {
+//            reactorProgram.releaseShader();
+//        }
     }
 
     private static void renderShield(double x, double y, double z, float partialTicks, float power, float animation, double diameter, boolean useShader) {
         ResourceHelperDE.bindTexture(DETextures.REACTOR_SHIELD);
-        if (useShader) {
-            if (shieldProgram == null) {
-                shieldProgram = new ShaderProgram();
-                shieldProgram.attachShader(DEShaders.reactorShield);
-            }
-            shieldProgram.useShader(cache -> {
-                cache.glUniform1F("time", animation);
-                cache.glUniform1F("intensity", power);
-            });
-        } else {
-            float ff = 0.5F;//tile.maxFieldCharge > 0 ? tile.fieldCharge / tile.maxFieldCharge : 0;
-            float r = ff < 0.5F ? 1 - (ff * 2) : 0;
-            float g = ff > 0.5F ? (ff - 0.5F) * 2 : 0;
-            float b = ff * 2;
-            float a = ff < 0.1F ? (ff * 10) : 1;
-            RenderSystem.color4f(r, g, b, a);
-        }
+//        if (useShader) {
+//            if (shieldProgram == null) {
+//                shieldProgram = new ShaderProgram();
+//                shieldProgram.attachShader(DEShaders.reactorShield);
+//            }
+//            shieldProgram.useShader(cache -> {
+//                cache.glUniform1F("time", animation);
+//                cache.glUniform1F("intensity", power);
+//            });
+//        } else {
+//            float ff = 0.5F;//tile.maxFieldCharge > 0 ? tile.fieldCharge / tile.maxFieldCharge : 0;
+//            float r = ff < 0.5F ? 1 - (ff * 2) : 0;
+//            float g = ff > 0.5F ? (ff - 0.5F) * 2 : 0;
+//            float b = ff * 2;
+//            float a = ff < 0.1F ? (ff * 10) : 1;
+//            RenderSystem.color4f(r, g, b, a);
+//        }
 
         RenderSystem.enableBlend();
         RenderSystem.alphaFunc(GL11.GL_GREATER, 0);
@@ -208,7 +208,7 @@ public class RenderTileReactorCore extends TESRBase<TileReactorCore> {
         RenderSystem.alphaFunc(GL11.GL_GREATER, 0.1F);
 
         if (useShader) {
-            shieldProgram.releaseShader();
+//            shieldProgram.releaseShader();
         }
     }
 

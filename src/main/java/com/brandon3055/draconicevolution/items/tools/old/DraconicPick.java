@@ -1,0 +1,74 @@
+package com.brandon3055.draconicevolution.items.tools.old;
+
+import com.brandon3055.brandonscore.lib.Pair;
+import com.brandon3055.draconicevolution.client.DETextures;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+
+/**
+ * Created by brandon3055 on 5/06/2016.
+ */
+@Deprecated
+public class DraconicPick extends WyvernPick {
+//    public DraconicPick(Set<Block> effectiveBlocks) {
+//        super(effectiveBlocks);
+//    }
+
+    public DraconicPick(Properties properties) {
+        super(properties);
+    }
+
+
+    //    public DraconicPick() {
+//        super(/*ToolStats.DRA_PICK_ATTACK_DAMAGE, ToolStats.DRA_PICK_ATTACK_SPEED, */PICKAXE_OVERRIDES);
+////        this.baseMiningSpeed = (float) ToolStats.DRA_PICK_MINING_SPEED;
+////        this.baseAOE = ToolStats.BASE_DRACONIC_MINING_AOE;
+////        setEnergyStats(ToolStats.DRACONIC_BASE_CAPACITY, 8000000, 0);
+//        this.setHarvestLevel("pickaxe", 10);
+//    }
+
+    @Override
+    public double getBaseMinSpeedConfig() {
+        return ToolStats.DRA_PICK_MINING_SPEED;
+    }
+
+    @Override
+    public int getBaseMinAOEConfig() {
+        return ToolStats.BASE_DRACONIC_MINING_AOE;
+    }
+
+    @Override
+    public double getBaseAttackSpeedConfig() {
+        return ToolStats.DRA_PICK_ATTACK_SPEED;
+    }
+
+    @Override
+    public double getBaseAttackDamageConfig() {
+        return ToolStats.DRA_PICK_ATTACK_DAMAGE;
+    }
+
+    @Override
+    public void loadEnergyStats() {
+        setEnergyStats(ToolStats.DRACONIC_BASE_CAPACITY, 8000000, 0);
+    }
+
+    @Override
+    public int getMaxUpgradeLevel(ItemStack stack, String upgrade) {
+        return 3;
+    }
+
+    @Override
+    public int getToolTier(ItemStack stack) {
+        return 1;
+    }
+
+    //region Rendering
+
+    @Override
+    public Pair<TextureAtlasSprite, ResourceLocation> getModels(ItemStack stack) {
+        return new Pair<>(DETextures.DRACONIC_PICKAXE, new ResourceLocation("draconicevolution", "models/item/tools/draconic_pickaxe.obj"));
+    }
+
+    //endregion
+}

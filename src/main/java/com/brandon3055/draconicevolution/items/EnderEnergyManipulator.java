@@ -10,6 +10,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.ActionResultType;
@@ -30,7 +31,7 @@ import java.util.List;
 /**
  * Created by brandon3055 on 9/05/2017.
  */
-public class EnderEnergyManipulator extends ItemBCore /*implements IRenderOverride*/ {
+public class EnderEnergyManipulator extends Item /*implements IRenderOverride*/ {
 
     public EnderEnergyManipulator(Properties properties) {
         super(properties);

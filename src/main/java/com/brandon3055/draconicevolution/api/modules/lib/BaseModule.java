@@ -2,8 +2,8 @@ package com.brandon3055.draconicevolution.api.modules.lib;
 
 import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.ModuleType;
-import com.brandon3055.draconicevolution.api.modules.properties.ModuleData;
-import com.brandon3055.draconicevolution.api.modules.properties.ModuleProperties;
+import com.brandon3055.draconicevolution.api.modules.data.ModuleData;
+import com.brandon3055.draconicevolution.api.modules.data.ModuleProperties;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 /**
@@ -29,9 +29,8 @@ public abstract class BaseModule<T extends ModuleData<T>> extends ForgeRegistryE
         return moduleType;
     }
 
-    @Override
-    public ModuleEntity createEntity() {
-        return new ModuleEntity(this);
+    public void reloadData() {
+        properties.reloadData(this);
     }
 }
 

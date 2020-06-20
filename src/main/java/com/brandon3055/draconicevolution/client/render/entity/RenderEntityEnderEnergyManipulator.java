@@ -37,25 +37,25 @@ public class RenderEntityEnderEnergyManipulator extends EntityRenderer<EntityEnd
         RenderSystem.rotatef((ClientEventHandler.elapsedTicks + partialTicks), 0, 1, 0);
 
 //        mc.getItemRenderer().renderItem(stack, ItemCameraTransforms.TransformType.FIXED);
-
-        if (DEShaders.useShaders()) {
-            if (shaderProgram == null) {
-                shaderProgram = new ShaderProgram();
-                shaderProgram.attachShader(DEShaders.reactorShield);
-            }
-            shaderProgram.useShader(cache -> {
-                cache.glUniform1F("time", ((float) ClientEventHandler.elapsedTicks + mc.getRenderPartialTicks()) / -100F);
-                cache.glUniform1F("intensity", 0.09F);
-            });
-//            mc.getItemRenderer().renderItem(stack, ItemCameraTransforms.TransformType.FIXED);
-
-            shaderProgram.useShader(cache -> {
-                cache.glUniform1F("time", ((float) ClientEventHandler.elapsedTicks + mc.getRenderPartialTicks()) / 100F);
-                cache.glUniform1F("intensity", 0.02F);
-            });
-//            mc.getItemRenderer().renderItem(stack, ItemCameraTransforms.TransformType.FIXED);
-            shaderProgram.releaseShader();
-        }
+//
+////        if (DEShaders.useShaders()) {
+//            if (shaderProgram == null) {
+//                shaderProgram = new ShaderProgram();
+//                shaderProgram.attachShader(DEShaders.reactorShield);
+//            }
+//            shaderProgram.useShader(cache -> {
+//                cache.glUniform1F("time", ((float) ClientEventHandler.elapsedTicks + mc.getRenderPartialTicks()) / -100F);
+//                cache.glUniform1F("intensity", 0.09F);
+//            });
+////            mc.getItemRenderer().renderItem(stack, ItemCameraTransforms.TransformType.FIXED);
+//
+//            shaderProgram.useShader(cache -> {
+//                cache.glUniform1F("time", ((float) ClientEventHandler.elapsedTicks + mc.getRenderPartialTicks()) / 100F);
+//                cache.glUniform1F("intensity", 0.02F);
+//            });
+////            mc.getItemRenderer().renderItem(stack, ItemCameraTransforms.TransformType.FIXED);
+//            shaderProgram.releaseShader();
+////        }
 
         RenderSystem.popMatrix();
     }

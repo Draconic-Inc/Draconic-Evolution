@@ -9,6 +9,7 @@ import net.minecraft.world.World;
 /**
  * Created by brandon3055 on 20/07/2016.
  */
+@Deprecated
 public class ItemPersistent extends ItemBCore {
 
     public ItemPersistent(Properties properties) {

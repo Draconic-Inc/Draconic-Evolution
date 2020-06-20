@@ -6,6 +6,7 @@ import com.brandon3055.brandonscore.utils.InventoryUtils;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileStabilizedSpawner.SpawnerTier;
 import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
@@ -20,7 +21,7 @@ import net.minecraft.world.World;
 /**
  * Created by brandon3055 on 2/06/2017.
  */
-public class ItemCore extends ItemBCore {
+public class ItemCore extends Item {
 
     public ItemCore(Properties properties) {
         super(properties);

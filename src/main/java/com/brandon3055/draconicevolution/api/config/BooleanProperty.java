@@ -86,13 +86,17 @@ public class BooleanProperty extends ConfigProperty {
     @Override
     public CompoundNBT serializeNBT() {
         CompoundNBT nbt = super.serializeNBT();
-        nbt.putBoolean("value", value);
+        nbt.putBoolean("default", isDefaultValue);
+        if (!isDefaultValue)
+            nbt.putBoolean("value", value);
         return nbt;
     }
 
     @Override
     public void deserializeNBT(CompoundNBT nbt) {
-        value = nbt.getBoolean("value");
+        if (nbt.contains("value")) {
+            value = nbt.getBoolean("value");
+        }
         super.deserializeNBT(nbt);
     }
 

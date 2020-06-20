@@ -216,12 +216,12 @@ public class ReactorBeamFX extends BCParticle {
             RenderSystem.depthMask(false);
             RenderSystem.alphaFunc(GL11.GL_GREATER, 0F);
 
-            if (!DEShaders.useShaders() || !DEOldConfig.useReactorBeamShaders) {
+//            if (!DEShaders.useShaders() || !DEOldConfig.useReactorBeamShaders) {
                 RenderSystem.texParameter(3553, 10242, 10497);
                 RenderSystem.texParameter(3553, 10243, 10497);
                 RenderSystem.enableBlend();
                 RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
-            }
+//            }
         }
 
         @Override
@@ -229,9 +229,9 @@ public class ReactorBeamFX extends BCParticle {
             RenderSystem.alphaFunc(GL11.GL_GREATER, 0.1F);
 
             RenderSystem.enableCull();
-            if (!DEShaders.useShaders() || !DEOldConfig.useReactorBeamShaders) {
+//            if (!DEShaders.useShaders() || !DEOldConfig.useReactorBeamShaders) {
                 RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-            }
+//            }
         }
     };
 }

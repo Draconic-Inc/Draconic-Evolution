@@ -1,6 +1,5 @@
 package com.brandon3055.draconicevolution.init;
 
-import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.blocks.BlockBCore;
 import com.brandon3055.brandonscore.blocks.ItemBlockBCore;
 import com.brandon3055.brandonscore.client.utils.CyclingItemGroup;
@@ -26,6 +25,7 @@ import com.brandon3055.draconicevolution.items.EnderEnergyManipulator;
 import com.brandon3055.draconicevolution.items.InfoTablet;
 import com.brandon3055.draconicevolution.items.ItemCore;
 import com.brandon3055.draconicevolution.items.MobSoul;
+import com.brandon3055.draconicevolution.items.equipment.*;
 import com.brandon3055.draconicevolution.items.tools.*;
 import net.minecraft.block.Block;
 import net.minecraft.block.Block.Properties;
@@ -55,8 +55,6 @@ import static com.brandon3055.draconicevolution.inventory.GuiLayoutFactories.*;
 import static net.minecraft.block.material.Material.GLASS;
 import static net.minecraft.block.material.Material.IRON;
 import static net.minecraft.block.material.MaterialColor.GRAY;
-import static net.minecraftforge.common.ToolType.*;
-import static net.minecraftforge.common.ToolType.AXE;
 import static net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus.MOD;
 
 /**
@@ -138,9 +136,9 @@ public class DEContent {
 //        event.getRegistry().register(TileEntityType.Builder.create(TileReactorStabilizer::new,    reactor_stabilizer     ).build(null).setRegistryName("reactor_stabilizer"));
 //        event.getRegistry().register(TileEntityType.Builder.create(TileReactorInjector::new,      reactor_injector       ).build(null).setRegistryName("reactor_injector"));
 
-        event.getRegistry().register(TileEntityType.Builder.create(() -> new TileCrystalDirectIO(), crystal_io_basic, crystal_io_wyvern, crystal_io_draconic/*, crystal_io_chaotic*/).build(null).setRegistryName("crystal_io"));
-        event.getRegistry().register(TileEntityType.Builder.create(TileCrystalRelay::new, crystal_relay_basic, crystal_relay_wyvern, crystal_relay_draconic/*, crystal_relay_chaotic*/).build(null).setRegistryName("crystal_relay"));
-        event.getRegistry().register(TileEntityType.Builder.create(TileCrystalWirelessIO::new, crystal_wireless_basic, crystal_wireless_wyvern, crystal_wireless_draconic/*, crystal_wireless_chaotic*/).build(null).setRegistryName("crystal_wireless"));
+        event.getRegistry().register(TileEntityType.Builder.create(TileCrystalDirectIO::new, crystal_io_basic, crystal_io_wyvern, crystal_io_draconic/*, crystal_io_chaotic*/).build(null).setRegistryName("io_crystal"));
+        event.getRegistry().register(TileEntityType.Builder.create(TileCrystalRelay::new, crystal_relay_basic, crystal_relay_wyvern, crystal_relay_draconic/*, crystal_relay_chaotic*/).build(null).setRegistryName("relay_crystal"));
+        event.getRegistry().register(TileEntityType.Builder.create(TileCrystalWirelessIO::new, crystal_wireless_basic, crystal_wireless_wyvern, crystal_wireless_draconic/*, crystal_wireless_chaotic*/).build(null).setRegistryName("wireless_crystal"));
         //@formatter:on
     }
 
@@ -365,6 +363,9 @@ public class DEContent {
     @ObjectHolder("wyvern_shovel")              public static ModularShovel             shovel_wyvern;
     @ObjectHolder("draconic_shovel")            public static ModularShovel             shovel_draconic;
     @ObjectHolder("chaotic_shovel")             public static ModularShovel             shovel_chaotic;
+    @ObjectHolder("wyvern_hoe")                 public static ModularHoe                hoe_wyvern;
+    @ObjectHolder("draconic_hoe")               public static ModularHoe                hoe_draconic;
+    @ObjectHolder("chaotic_hoe")                public static ModularHoe                hoe_chaotic;
     @ObjectHolder("wyvern_pickaxe")             public static ModularPickaxe            pickaxe_wyvern;
     @ObjectHolder("draconic_pickaxe")           public static ModularPickaxe            pickaxe_draconic;
     @ObjectHolder("chaotic_pickaxe")            public static ModularPickaxe            pickaxe_chaotic;
@@ -380,9 +381,9 @@ public class DEContent {
     @ObjectHolder("draconic_staff")             public static ModularStaff              staff_draconic;
     @ObjectHolder("chaotic_staff")              public static ModularStaff              staff_chaotic;
     //Armor
-    @ObjectHolder("wyvern_chestpiece")          public static ModularArmor              armor_wyvern;
-    @ObjectHolder("draconic_chestpiece")        public static ModularArmor              armor_draconic;
-    @ObjectHolder("chaotic_chestpiece")         public static ModularArmor              armor_chaotic;
+    @ObjectHolder("wyvern_chestpiece")          public static ModularChestpiece              chestpiece_wyvern;
+    @ObjectHolder("draconic_chestpiece")        public static ModularChestpiece              chestpiece_draconic;
+    @ObjectHolder("chaotic_chestpiece")         public static ModularChestpiece              chestpiece_chaotic;
     //@formatter:on
 
     public static transient ArrayList<ResourceLocation> ITEM_REGISTRY_ORDER = new ArrayList<>();
@@ -422,7 +423,6 @@ public class DEContent {
         registerItem(event, new ItemBlockBCore(energy_core,                 new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(energy_core.getRegistryName())));
         registerItem(event, new ItemBlockBCore(energy_core_stabilizer,      new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(energy_core_stabilizer.getRegistryName())));
         registerItem(event, new ItemBlockBCore(energy_pylon,                new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(energy_pylon.getRegistryName())));
-        registerItem(event, new ItemBlockBCore(energy_core_structure,       new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(energy_core_structure.getRegistryName())));
 //        registerItem(event, new ItemBlockBCore(reactor_core,                new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(reactor_core.getRegistryName())));
 //        registerItem(event, new ItemBlockBCore(reactor_stabilizer,          new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(reactor_stabilizer.getRegistryName())));
 //        registerItem(event, new ItemBlockBCore(reactor_injector,            new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(reactor_injector.getRegistryName())));
@@ -475,9 +475,9 @@ public class DEContent {
         registerItem(event, new MobSoul(new Item.Properties().group(itemGroup)).setRegistryName("mob_soul"));
 
 //        //Tools
-        TechItemProps wyvernTools = new TechItemProps(WYVERN).group(itemGroup).rarity(Rarity.UNCOMMON);
-        TechItemProps draconicTools = new TechItemProps(DRACONIC).group(itemGroup).rarity(Rarity.RARE);
-        TechItemProps chaoticTools = new TechItemProps(CHAOTIC).group(itemGroup).rarity(Rarity.EPIC);
+        TechItemProps wyvernTools = new TechItemProps(WYVERN).maxStackSize(1).group(itemGroup).rarity(Rarity.UNCOMMON);
+        TechItemProps draconicTools = new TechItemProps(DRACONIC).maxStackSize(1).group(itemGroup).rarity(Rarity.RARE);
+        TechItemProps chaoticTools = new TechItemProps(CHAOTIC).maxStackSize(1).group(itemGroup).rarity(Rarity.EPIC);
         registerItem(event, new DraconiumCapacitor(wyvernTools.copy()).setRegistryName("wyvern_capacitor"));
         registerItem(event, new DraconiumCapacitor(draconicTools.copy()).setRegistryName("draconic_capacitor"));
         registerItem(event, new DraconiumCapacitor(draconicTools.copy()).setRegistryName("chaotic_capacitor"));
@@ -485,6 +485,9 @@ public class DEContent {
         registerItem(event, new ModularShovel(wyvernTools.copy()).setRegistryName("wyvern_shovel"));
         registerItem(event, new ModularShovel(draconicTools.copy()).setRegistryName("draconic_shovel"));
         registerItem(event, new ModularShovel(chaoticTools.copy()).setRegistryName("chaotic_shovel"));
+        registerItem(event, new ModularHoe(wyvernTools.copy()).setRegistryName("wyvern_hoe"));
+        registerItem(event, new ModularHoe(draconicTools.copy()).setRegistryName("draconic_hoe"));
+        registerItem(event, new ModularHoe(chaoticTools.copy()).setRegistryName("chaotic_hoe"));
         registerItem(event, new ModularPickaxe(wyvernTools.copy()).setRegistryName("wyvern_pickaxe"));
         registerItem(event, new ModularPickaxe(draconicTools.copy()).setRegistryName("draconic_pickaxe"));
         registerItem(event, new ModularPickaxe(chaoticTools.copy()).setRegistryName("chaotic_pickaxe"));
@@ -500,9 +503,9 @@ public class DEContent {
         registerItem(event, new ModularStaff(draconicTools.copy()).setRegistryName("draconic_staff"));
         registerItem(event, new ModularStaff(chaoticTools.copy()).setRegistryName("chaotic_staff"));
         //Armor
-        registerItem(event, new ModularArmor(wyvernTools.copy()).setRegistryName("wyvern_chestpiece"));
-        registerItem(event, new ModularArmor(draconicTools.copy()).setRegistryName("draconic_chestpiece"));
-        registerItem(event, new ModularArmor(chaoticTools.copy()).setRegistryName("chaotic_chestpiece"));
+        registerItem(event, new ModularChestpiece(wyvernTools.copy()).setRegistryName("wyvern_chestpiece"));
+        registerItem(event, new ModularChestpiece(draconicTools.copy()).setRegistryName("draconic_chestpiece"));
+        registerItem(event, new ModularChestpiece(chaoticTools.copy()).setRegistryName("chaotic_chestpiece"));
         //@formatter:on
     }
 

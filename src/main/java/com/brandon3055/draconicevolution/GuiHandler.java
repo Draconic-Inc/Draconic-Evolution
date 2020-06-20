@@ -11,7 +11,7 @@
 //import com.brandon3055.draconicevolution.client.gui.*;
 //import com.brandon3055.draconicevolution.client.gui.toolconfig.GuiJunkFilter;
 //import com.brandon3055.draconicevolution.inventory.*;
-//import com.brandon3055.draconicevolution.items.tools.MiningToolBase;
+//import com.brandon3055.draconicevolution.items.tools.old.MiningToolBase;
 //import net.minecraft.entity.player.PlayerEntity;
 //import net.minecraft.item.ItemStack;
 //import net.minecraft.tileentity.TileEntity;

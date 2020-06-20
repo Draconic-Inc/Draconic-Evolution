@@ -14,6 +14,7 @@ import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.GuiConfigurableItem.UpdateAnim;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.model.Material;
 import net.minecraft.client.resources.I18n;
@@ -103,8 +104,8 @@ public class PropertyContainer extends GuiManipulable {
                 else return I18n.format("gui.draconicevolution.item_config." + (collapsed ? "expand_group" : "collapse_group") + ".info");
             });
 
-            GuiElement<?> dragZone = gui.toolkit.createHighlightIcon(this, 8, 8, 2, 2, BCSprites.themedGetter("reposition"), e -> e.getHoverTime() > 0 || dragPos);
-            dragZone.setHoverText(e -> dragPos ? Collections.emptyList() : I18n.format("gui.draconicevolution.item_config.move_group.info"));
+            GuiElement<?> dragZone = gui.toolkit.createHighlightIcon(this, 8, 8, 2, 2, () -> Screen.hasShiftDown() ? BCSprites.getThemed("copy") : BCSprites.getThemed("reposition"), e -> e.getHoverTime() > 0 || dragPos);
+            dragZone.setHoverText(e -> dragPos ? Collections.emptyList() : I18n.format(Screen.hasShiftDown() ? "gui.draconicevolution.item_config.copy_group.info" : "gui.draconicevolution.item_config.move_group.info"));
             dragZone.setHoverTextDelay(10);
             dragZone.onReload(e -> e.setMaxXPos(maxXPos() - 2, false).setYPos(yPos() + 2));
             setDragZone(dragZone::isMouseOver);
@@ -352,8 +353,34 @@ public class PropertyContainer extends GuiManipulable {
         dataElementMap.keySet().forEach(e -> e.pullData(gui.getContainer(), !isPreset && !e.isGlobal));
     }
 
+    boolean isCopy = false;
+
     @Override
-    protected void onStartManipulation(double mouseX, double mouseY) {
+    protected boolean onStartMove(double mouseX, double mouseY) {
+        if (dragZone.validate(mouseX, mouseY) && Screen.hasShiftDown() && !isCopy) {
+            PropertyContainer newGroup = new PropertyContainer(gui, true);
+            newGroup.isCopy = true;
+            gui.propertyContainers.add(newGroup);
+            gui.advancedContainer.addChild(newGroup);
+            dataList.forEach(e -> newGroup.addProperty(e.copy()));
+            newGroup.expandedHeight = expandedHeight;
+            newGroup.prevUserHeight = prevUserHeight;
+            newGroup.isPreset = isPreset;
+            newGroup.collapsed = collapsed;
+            newGroup.globalKeyBind = globalKeyBind;
+            newGroup.groupName.setText(groupName.getText());
+            newGroup.setSize(this);
+            newGroup.setMaxXPos((int) mouseX + 5, false).setYPos((int) mouseY - 5);
+            newGroup.updatePosition();
+            newGroup.startDragging();
+            return true;
+        }
+        isCopy = false;
+        return false;
+    }
+
+    @Override
+    protected boolean onStartManipulation(double mouseX, double mouseY) {
         parent.removeChild(this);
         parent.modularGui.getManager().addChild(this, 300, false);
         modifyZOffset(300);
@@ -364,6 +391,7 @@ public class PropertyContainer extends GuiManipulable {
         if (dragPos) {
             semiTrans = true;
         }
+        return false;
     }
 
     @Override

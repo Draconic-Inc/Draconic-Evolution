@@ -101,14 +101,15 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
                 IRenderTypeBuffer.Impl getter = minecraft.getRenderTypeBuffers().getBufferSource();
                 setZLevel(mainUI.displayZLevel);
                 GuiHelper.drawShadedRect(getter.getBuffer(GuiHelper.TRANS_TYPE), x - 1, y - 1, 18, 18, 1, 0, dark, light, GuiElement.midColour(light, dark), mainUI.getRenderZLevel());
-                getter.finish();
 
                 if (!advancedUI && provider.getProviderID().equals(selectedItem)) {
-                    drawOverlay(x, y, 0x80FF0000, occluded);
+//                    drawOverlay(x, y, 0x80FF0000, occluded);
+                    GuiHelper.drawColouredRect(getter.getBuffer(GuiHelper.TRANS_TYPE), x, y, 16, 16, 0x80FF0000, mainUI.displayZLevel);
                 } else if (DEConfig.configUiEnableVisualization && hoveredData != null) {
                     ConfigProperty prop = hoveredData.getPropIfApplicable(provider);
                     if (prop != null) {
-                        drawOverlay(x, y, hoveredData.doesDataMatch(prop) ? 0x8000FF00 : 0x80ff9100, occluded);
+//                        drawOverlay(x, y, hoveredData.doesDataMatch(prop) ? 0x8000FF00 : 0x80ff9100, occluded);
+                        GuiHelper.drawColouredRect(getter.getBuffer(GuiHelper.TRANS_TYPE), x, y, 16, 16, hoveredData.doesDataMatch(prop) ? 0x8000FF00 : 0x80ff9100, 0);
                     }
                 }
                 if (DEConfig.configUiEnableVisualization && !updateAnimations.isEmpty()) {
@@ -116,6 +117,7 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
                             .filter(e -> e.data.getPropIfApplicable(provider) != null)
                             .forEach(e -> e.render(x, y));
                 }
+                getter.finish();
             });
         }
     }
@@ -138,13 +140,24 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
         mainUI.setSize((11 * 18) + 6 + 14, 230);
         manager.addChild(mainUI, 90, false);
 
-        title = toolkit.createHeading("gui.draconicevolution.item_config.name", mainUI, false);
-        title.setAlignment(CENTER);
-        title.setSize(mainUI.xSize(), 8);
-        title.setPos(mainUI.xPos(), mainUI.yPos() + 4);
-
         GuiButton themeButton = toolkit.createThemeButton(mainUI);
         themeButton.onReload(() -> themeButton.setPos(mainUI.maxXPos() - 15, mainUI.yPos() + 3));
+
+        title = toolkit.createHeading("", mainUI, false);
+        title.setDisplaySupplier(() -> {
+            if (advancedUI || container.getLastStack().isEmpty()) return I18n.format("gui.draconicevolution.item_config.name");
+            else {
+                String name = container.getLastStack().getDisplayName().getFormattedText();
+                String prefix = I18n.format("gui.draconicevolution.item_config.configure") + " ";
+                if (font.getStringWidth(prefix + name) > (themeButton.xPos() - toggleAdvanced.maxXPos()) - 22) {
+                    return name;
+                }
+                return prefix + name;
+            }
+        });
+        title.setAlignment(CENTER);
+        title.setSize(mainUI.xSize() - 48, 8);
+        title.setPos(mainUI.xPos() + 24, mainUI.yPos() + 4);
 
         GuiButton hideButton = toolkit.createResizeButton(mainUI);
         hideButton.setEnabledCallback(() -> advancedUI);
@@ -372,6 +385,7 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
             loadSelectedItemProperties();
         }
         mainUI.reloadElement();
+        advancedContainer.reloadElement();
     }
 
     private void updateUIGeometry() {

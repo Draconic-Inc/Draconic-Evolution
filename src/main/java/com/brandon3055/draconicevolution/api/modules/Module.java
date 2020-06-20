@@ -2,8 +2,8 @@ package com.brandon3055.draconicevolution.api.modules;
 
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
-import com.brandon3055.draconicevolution.api.modules.properties.ModuleData;
-import com.brandon3055.draconicevolution.api.modules.properties.ModuleProperties;
+import com.brandon3055.draconicevolution.api.modules.data.ModuleData;
+import com.brandon3055.draconicevolution.api.modules.data.ModuleProperties;
 import com.brandon3055.draconicevolution.api.modules.lib.InstallResult;
 import net.minecraft.item.Item;
 import net.minecraft.util.text.ITextComponent;
@@ -12,6 +12,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -38,6 +39,10 @@ public interface Module<T extends ModuleData<T>> extends IForgeRegistryEntry<Mod
     }
 
     Item getItem();
+
+    default Collection<ModuleCategory> getCategories() {
+        return getType().getCategories();
+    }
 
     /**
      * Ideally the module entity should be always be created by the {@link ModuleType} because all modules of a specific type should use the same entity.
@@ -79,7 +84,7 @@ public interface Module<T extends ModuleData<T>> extends IForgeRegistryEntry<Mod
         getProperties().addStats(toolTip, this);
 
         if (maxInstallable() != -1) {
-            toolTip.add(new TranslationTextComponent("module.de.max_installable") //
+            toolTip.add(new TranslationTextComponent("module.draconicevolution.max_installable") //
                     .applyTextStyle(TextFormatting.GRAY) //
                     .appendSibling(new StringTextComponent(" ") //
                             .appendSibling(new StringTextComponent(String.valueOf(maxInstallable())) //

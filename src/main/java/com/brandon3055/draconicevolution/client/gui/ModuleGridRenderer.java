@@ -67,12 +67,6 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> {
         super.renderElement(minecraft, mouseX, mouseY, partialTicks);
         IRenderTypeBuffer.Impl getter = minecraft.getRenderTypeBuffers().getBufferSource();
 
-//        int light = darkMode ? 0xFFFFFFFF : 0xFFFFFFFF;
-//        int dark = darkMode ? 0xFF808080 : 0xFF505050;
-//
-//        drawShadedRect(getter, xPos() - 2, yPos() - 2, xSize() + 4, ySize() + 4, 1, 0, light, dark, midColour(light, dark));
-//        drawShadedRect(getter, xPos() - 1, yPos() - 1, xSize() + 2, ySize() + 2, 1, 0, dark, light, midColour(light, dark));
-
         int light = ThemedElements.getBgLight();
         int dark = ThemedElements.getBgDark();
         int fill = ThemedElements.getBgFill();
@@ -94,7 +88,7 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> {
     @Override
     public boolean renderOverlayLayer(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
         if (isMouseOver(mouseX, mouseY)) {
-            if (player.getItemStack().isEmpty()){
+            if (player.getItemStack().isEmpty()) {
                 renderCellOverlay(mouseX, mouseY);
             } else if (lastError != null) {
                 drawHoveringText(Collections.singletonList(lastError.getFormattedText()), mouseX, mouseY, fontRenderer);
@@ -124,10 +118,10 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> {
 
     public void renderCellOverlay(int mouseX, int mouseY) {
         ModuleGrid.GridPos cell = getCellAtPos(mouseX, mouseY, false);
-        if (cell.hasEntity()) {
+        if (cell.hasEntity() && hoverTime > 10) {
             Item item = cell.getEntity().getModule().getItem();
             ItemStack stack = new ItemStack(item);
-            cell.getEntity().writeToItemStack(stack);
+            cell.getEntity().writeToItemStack(stack, grid.container.getModuleContext());
             FontRenderer font = stack.getItem().getFontRenderer(stack);
             if (font == null) font = fontRenderer;
             drawHoveringText(getTooltipFromItem(stack), mouseX, mouseY, font);
@@ -214,7 +208,7 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> {
     protected void handleGridClick(ModuleGrid.GridPos cell, int mouseButton, ClickType type) {
         DraconicNetwork.sendModuleContainerClick(cell, mouseButton, type);
         InstallResult result = grid.cellClicked(cell, mouseButton, type);
-        if (result != null && result.resultType != YES  && result.resultType != OVERRIDE) {
+        if (result != null && result.resultType != YES && result.resultType != OVERRIDE) {
             lastError = result.reason;
             lastErrorTime = 0;
         }
@@ -282,8 +276,24 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> {
         //@formatter:on
     }
 
+
+    private ModuleGrid.GridPos hoverCell = null;
+    private int hoverTime = 0;
+
     @Override
     public boolean onUpdate() {
+        ModuleGrid.GridPos cell = getCellAtPos(getMouseX(), getMouseY(), false);
+        if (cell.hasEntity()) {
+            if (cell.equals(hoverCell)) {
+                hoverTime++;
+            } else {
+                hoverTime = 0;
+                hoverCell = cell;
+            }
+        } else {
+            hoverTime = 0;
+        }
+
         grid.container.clientTick();
         if (lastError != null && lastErrorTime++ > 100) {
             lastError = null;

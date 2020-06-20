@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.api.capability;
 
+import com.brandon3055.brandonscore.api.power.IOPStorage;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.capabilities.Capability;
@@ -21,6 +22,11 @@ public class DECapabilities {
 
     @CapabilityInject(PropertyProvider.class)
     public static Capability<PropertyProvider> PROPERTY_PROVIDER_CAPABILITY = null;
+
+    //This belongs to Brandon's Core but i have it here for convenience as its needed in parts of the DE API.
+    //And if you have the DE API then you should also have the BC API.
+    @CapabilityInject(IOPStorage.class)
+    public static Capability<IOPStorage> OP_STORAGE = null;
 
     /**
      * This and {@link #readFromShareTag(ItemStack, CompoundNBT)} must be implemented if your modular / configurable item's {@link net.minecraft.item.Item#getShareTag(ItemStack)} method.<br>

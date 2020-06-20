@@ -1,16 +1,19 @@
 package com.brandon3055.draconicevolution.items.tools;
 
+import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.items.ItemEnergyBase;
 import com.brandon3055.brandonscore.lib.ChatHelper;
+import com.brandon3055.brandonscore.lib.TechItemProps;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
 import com.brandon3055.brandonscore.utils.InfoHelper;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
-import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.IInvCharge;
 import com.brandon3055.draconicevolution.api.itemupgrade_dep.IUpgradableItem;
+import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.integration.BaublesHelper;
 import com.brandon3055.draconicevolution.integration.ModHelper;
 import com.brandon3055.draconicevolution.items.ToolUpgrade;
+import com.brandon3055.draconicevolution.items.tools.old.ToolBase;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
@@ -38,9 +41,11 @@ public class DraconiumCapacitor extends ItemEnergyBase implements IInvCharge, IU
 
     public static final int wyvernTransfer = 8000000;
     public static final int draconicTransfer = 64000000;
+    private TechLevel techLevel;
 
-    public DraconiumCapacitor(Properties properties) {
+    public DraconiumCapacitor(TechItemProps properties) {
         super(properties);
+        techLevel = properties.techLevel;
     }
 
 
@@ -116,8 +121,11 @@ public class DraconiumCapacitor extends ItemEnergyBase implements IInvCharge, IU
 //        return 0;
 //    }
 
-//    @Override
-//    public long getMaxReceive(ItemStack stack) {
+    @Override
+    public long getMaxReceive(ItemStack stack) {
+        if (this == DEContent.capacitor_creative) {
+            return Long.MAX_VALUE;
+        }
 //        int tier = stack.getItemDamage();
 //
 //        switch (tier) {
@@ -128,33 +136,38 @@ public class DraconiumCapacitor extends ItemEnergyBase implements IInvCharge, IU
 //            case 2:
 //                return Integer.MAX_VALUE;
 //        }
-//
-//        return 0;
-//    }
 
-//    @Override
-//    public long getMaxExtract(ItemStack stack) {
-//        int tier = stack.getItemDamage();
+        return 0;
+    }
+
+    @Override
+    public long getMaxExtract(ItemStack stack) {
+        if (this == DEContent.capacitor_creative) {
+            return Long.MAX_VALUE;
+        }
+
+        switch (techLevel) {
+
+            case DRACONIUM:
+                break;
+            case WYVERN:
+                return wyvernTransfer;
+            case DRACONIC:
+                return draconicTransfer;
+            case CHAOTIC:
+                break;
+        }
+
+        return 0;
+    }
 //
-//        switch (tier) {
-//            case 0:
-//                return wyvernTransfer;
-//            case 1:
-//                return draconicTransfer;
-//            case 2:
-//                return Long.MAX_VALUE;
-//        }
-//
-//        return 0;
-//    }
-//
-//    @Override
-//    public long getEnergyStored(ItemStack stack, boolean isOPAsking) {
-//        if (stack.getItemDamage() == 2) {
-//            return isOPAsking ? Long.MAX_VALUE / 2 : Integer.MAX_VALUE / 2;
-//        }
-//        return super.getEnergyStored(stack, isOPAsking);
-//    }
+    @Override
+    public long getEnergyStored(ItemStack stack, boolean isOPAsking) {
+        if (this == DEContent.capacitor_creative) {
+            return isOPAsking ? Long.MAX_VALUE / 2 : Integer.MAX_VALUE / 2;
+        }
+        return super.getEnergyStored(stack, isOPAsking);
+    }
 //
 //    @Override
 //    public long receiveEnergy(ItemStack stack, long maxReceive, boolean simulate) {
@@ -231,7 +244,7 @@ public class DraconiumCapacitor extends ItemEnergyBase implements IInvCharge, IU
         }
 
         for (ItemStack stack : stacks) {
-            long max = Math.min(getEnergyStored(capacitor), getMaxExtract(capacitor));
+            long max = Math.min(getEnergyStored(capacitor, true), getMaxExtract(capacitor));
 
             if (EnergyUtils.canReceiveEnergy(stack)) {
                 Item item = stack.getItem();

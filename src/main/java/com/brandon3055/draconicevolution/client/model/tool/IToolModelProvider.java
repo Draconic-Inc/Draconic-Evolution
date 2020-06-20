@@ -10,6 +10,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 /**
  * Created by covers1624 on 29/06/2017.
  */
+@Deprecated
 public interface IToolModelProvider {
 
     /**

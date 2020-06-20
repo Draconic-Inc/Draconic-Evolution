@@ -2,6 +2,9 @@ package com.brandon3055.draconicevolution;
 
 import codechicken.lib.config.ConfigTag;
 import codechicken.lib.config.StandardConfigFile;
+import com.brandon3055.draconicevolution.init.EquipCfg;
+import com.brandon3055.draconicevolution.init.ModuleCfg;
+import net.minecraftforge.fml.config.ModConfig;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.nio.file.Paths;
@@ -23,6 +26,8 @@ public class DEConfig {
         loadServer();
         loadClient();
         loadCommon();
+        EquipCfg.loadConfig(config);
+        ModuleCfg.loadConfig(config);
         config.runSync();
         config.save();
     }
@@ -32,7 +37,7 @@ public class DEConfig {
     public static String serverID;
 
     private static void loadServer() {
-        serverTag = config.getTag("server");
+        serverTag = config.getTag("Server");
         ConfigTag serverIDTag = serverTag.getTag("serverID")
                 .setSyncToClient()
                 .setComment("This is a randomly generated id that clients will use to map their tool config settings to this server.")
@@ -48,10 +53,31 @@ public class DEConfig {
     public static boolean configUiEnableAddGroupButton;
     public static boolean configUiEnableDeleteZone;
     public static boolean configUiEnableAdvancedXOver;
+    public static boolean fancyToolModels;
+    public static boolean toolShaders;
+    public static boolean crystalShaders;
+    public static boolean otherShaders;
 
     private static void loadClient() {
-        clientTag = config.getTag("client");
+        clientTag = config.getTag("Client");
         clientTag.setComment("These are client side config properties.");
+
+        clientTag.getTag("fancyToolModels")
+                .setComment("Set this to false to disable the fancy 3D tool models. (Requires restart)")
+                .setDefaultBoolean(true)
+                .setSyncCallback((tag, type) -> fancyToolModels = tag.getBoolean());
+        clientTag.getTag("toolShaders")
+                .setComment("Set this to false to disable tool shaders.")
+                .setDefaultBoolean(true)
+                .setSyncCallback((tag, type) -> toolShaders = tag.getBoolean());
+        clientTag.getTag("crystalShaders")
+                .setComment("Set this to false to disable crystal shaders.")
+                .setDefaultBoolean(true)
+                .setSyncCallback((tag, type) -> crystalShaders = tag.getBoolean());
+        clientTag.getTag("otherShaders")
+                .setComment("Set this to false to disable all other shaders.")
+                .setDefaultBoolean(true)
+                .setSyncCallback((tag, type) -> otherShaders = tag.getBoolean());
 
         ConfigTag itemConfigGui = clientTag.getTag("itemConfigGUI");
         itemConfigGui.setComment("These settings is accessible in game via the \"Configure Equipment\" gui.");
@@ -84,7 +110,7 @@ public class DEConfig {
     //Common properties
 
     private static void loadCommon() {
-        commonTag = config.getTag("common");
+        commonTag = config.getTag("Common");
     }
 
     private static void modifyProperty(String name, Consumer<ConfigTag> modifyCallback, String... groupPath) {
@@ -99,14 +125,14 @@ public class DEConfig {
     }
 
     public static void modifyClientProperty(String name, Consumer<ConfigTag> modifyCallback, String... groupPath) {
-        modifyProperty(name, modifyCallback, ArrayUtils.addAll(new String[]{"client"}, groupPath));
+        modifyProperty(name, modifyCallback, ArrayUtils.addAll(new String[]{"Client"}, groupPath));
     }
 
     public static void modifyServerProperty(String name, Consumer<ConfigTag> modifyCallback, String... groupPath) {
-        modifyProperty(name, modifyCallback, ArrayUtils.addAll(new String[]{"server"}, groupPath));
+        modifyProperty(name, modifyCallback, ArrayUtils.addAll(new String[]{"Server"}, groupPath));
     }
 
     public static void modifyCommonProperty(String name, Consumer<ConfigTag> modifyCallback, String... groupPath) {
-        modifyProperty(name, modifyCallback, ArrayUtils.addAll(new String[]{"common"}, groupPath));
+        modifyProperty(name, modifyCallback, ArrayUtils.addAll(new String[]{"Common"}, groupPath));
     }
 }

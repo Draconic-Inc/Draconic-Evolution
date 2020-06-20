@@ -132,13 +132,18 @@ public class IntegerProperty extends ConfigProperty {
     @Override
     public CompoundNBT serializeNBT() {
         CompoundNBT nbt = super.serializeNBT();
-        nbt.putInt("value", value);
+        nbt.putBoolean("default", isDefaultValue);
+        if (!isDefaultValue)
+            nbt.putInt("value", value);
         return nbt;
     }
 
     @Override
     public void deserializeNBT(CompoundNBT nbt) {
-        value = Math.max(min.get(), Math.min(max.get(), nbt.getInt("value")));
+        if (nbt.contains("value")) {
+            value = nbt.getInt("value");
+        }
+        value = Math.max(min.get(), Math.min(max.get(), value));
         super.deserializeNBT(nbt);
     }
 

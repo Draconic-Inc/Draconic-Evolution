@@ -2,16 +2,22 @@ package com.brandon3055.draconicevolution.api.modules;
 
 import codechicken.lib.util.SneakyUtils;
 import com.brandon3055.draconicevolution.api.config.ConfigProperty;
-import com.brandon3055.draconicevolution.api.config.IntegerProperty;
 import com.brandon3055.draconicevolution.api.modules.lib.InstallResult;
 import com.brandon3055.draconicevolution.api.modules.lib.InstallResult.InstallResultType;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
-import com.brandon3055.draconicevolution.api.modules.properties.ModuleData;
+import com.brandon3055.draconicevolution.api.modules.data.ModuleData;
+import com.google.common.collect.Multimap;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 
 import javax.annotation.Nullable;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiConsumer;
+import java.util.UUID;
 import java.util.function.Consumer;
 
 /**
@@ -37,11 +43,11 @@ public interface ModuleType<T extends ModuleData<T>> {
     }
 
     /**
-     * This is a convenience method that automatically casts the modules properties to the correct type for this {@link ModuleType}
+     * This is a convenience method that automatically casts the modules data to the correct type for this {@link ModuleType}
      * @param module A module matching this module type.
      */
-    default T getProperties(Module<?> module) {
-        return SneakyUtils.unsafeCast(module.getProperties());
+    default T getData(Module<?> module) {
+        return SneakyUtils.unsafeCast(module.getData());
     }
 
     int getDefaultWidth();
@@ -49,6 +55,10 @@ public interface ModuleType<T extends ModuleData<T>> {
     int getDefaultHeight();
 
     String getName();
+
+    default ITextComponent getDisplayName() {
+        return new TranslationTextComponent("module_type.draconicevolution." + getName() + ".name");
+    }
 
     /**
      * A module entity is to a module what a tile entity is to a block with a few differences.
@@ -90,4 +100,23 @@ public interface ModuleType<T extends ModuleData<T>> {
     default void getTypeProperties(@Nullable T moduleData, Map<ConfigProperty, Consumer<T>> propertyMap) {
 //        propertyMap.put(new IntegerProperty("de.module.testTypeProp", 0).range(0, 100), null);
     }
+
+    /**
+     * This method allows modules to apply attribute modifiers to the items they are installed in.
+     *
+     * @param moduleData The combined data from all installed modules of this type.
+     * @param slot the equipment slot that the item containing this module is in.
+     * @param stack The ItemStack containing this module/modules
+     * @param map The map to which the modifiers must be added.
+     */
+    default void getAttributeModifiers(@Nullable T moduleData, EquipmentSlotType slot, ItemStack stack, Multimap<String, AttributeModifier> map) {}
+
+    Collection<ModuleCategory> getCategories();
+
+//    /**
+//     * If you are using {@link #getAttributeModifiers(ModuleData, EquipmentSlotType, ItemStack, Multimap)} to add custom attributes you MUST also
+//     * implement this method and add all of your attribute id's to the provided list. This list is used to refresh or remove attributes added by modules.
+//     * @param list the list to which you must add your attribute id's
+//     */
+//    default void getAttributeIDs(List<UUID> list) {}
 }

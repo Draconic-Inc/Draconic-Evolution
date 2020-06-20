@@ -4,7 +4,6 @@ import codechicken.lib.texture.AtlasRegistrar;
 import codechicken.lib.texture.IIconRegister;
 import com.brandon3055.brandonscore.BCConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.client.model.GlassParticleDummyModel;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.IResourceManager;
@@ -22,10 +21,10 @@ import java.util.function.Predicate;
  */
 public class DETextures implements IIconRegister, ISelectiveResourceReloadListener {
 
-    private static final String ITEMS_ = "draconicevolution:items/";
+//    private static final String ITEMS_ = "draconicevolution:items/";
     private static final String PARTICLES_ = "draconicevolution:particle/";
-    private static final String TOOLS_ = ITEMS_ + "tools/";
-    private static final String TOOLS_OBJ_ = TOOLS_ + "obj/";
+//    private static final String TOOLS_ = ITEMS_ + "tools/";
+//    private static final String TOOLS_OBJ_ = TOOLS_ + "obj/";
 
     private static AtlasRegistrar map;
     private static HashMap<ResourceLocation, TextureAtlasSprite> textureCache = new HashMap<ResourceLocation, TextureAtlasSprite>();
@@ -47,7 +46,7 @@ public class DETextures implements IIconRegister, ISelectiveResourceReloadListen
 
     @Override
     public void onResourceManagerReload(IResourceManager resourceManager, Predicate<IResourceType> resourcePredicate) {
-        GlassParticleDummyModel.INSTANCE.sprite = null;
+//        GlassParticleDummyModel.INSTANCE.sprite = null;
     }
 
     @Override

@@ -2,12 +2,17 @@ package com.brandon3055.draconicevolution.api.capability;
 
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.draconicevolution.api.modules.Module;
+import com.brandon3055.draconicevolution.api.modules.ModuleCategory;
 import com.brandon3055.draconicevolution.api.modules.lib.InstallResult;
+import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.brandon3055.draconicevolution.api.modules.ModuleType;
-import com.brandon3055.draconicevolution.api.modules.properties.ModuleData;
+import com.brandon3055.draconicevolution.api.modules.data.ModuleData;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Multimap;
 import com.google.common.collect.Streams;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.ITextComponent;
@@ -25,6 +30,7 @@ import static com.brandon3055.draconicevolution.api.modules.lib.InstallResult.In
 /**
  * Created by brandon3055 and covers1624 on 4/16/20.
  * Note any item implementing this MUST also implement the share tag read and write functions from {@link DECapabilities} Or something similar.
+ *
  * @see DECapabilities#writeToShareTag(ItemStack, CompoundNBT)
  * @see DECapabilities#readFromShareTag(ItemStack, CompoundNBT)
  */
@@ -40,14 +46,38 @@ public interface ModuleHost extends INBTSerializable<CompoundNBT> {
      */
     List<ModuleEntity> getModuleEntities();
 
-    void addModule(ModuleEntity moduleEntity);
+    void addModule(ModuleEntity entity, ModuleContext context);
 
-    void removeModule(ModuleEntity moduleEntity);
+    void removeModule(ModuleEntity entity, ModuleContext context);
 
     /**
-     * @return a list of module types supported by this host.
+     * This is where the main "does this host support this module" check is done.
+     *
+     * @param entity the module entity.
+     * @return true if this module entity is supported bu this host.
      */
-    List<ModuleType<?>> getSupportedTypes();
+    default boolean isModuleSupported(ModuleEntity entity) {
+        Module<?> module = entity.getModule();
+        ModuleType<?> type = module.getType();
+        if (getTypeBlackList().contains(type)) {
+            return false;
+        } else if (getTypeWhiteList().contains(type) || module.getCategories().contains(ModuleCategory.ALL)) {
+            return true;
+        }
+        Collection<ModuleCategory> hostCats = getModuleCategories();
+        for (ModuleCategory cat : module.getCategories()) {
+            if (hostCats.contains(cat)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    Collection<ModuleCategory> getModuleCategories();
+
+    default Collection<ModuleType<?>> getTypeWhiteList() { return Collections.emptyList(); }
+
+    default Collection<ModuleType<?>> getTypeBlackList() { return Collections.emptyList(); }
 
     /**
      * Only modules with this tech level or lower will be accepted by this host.
@@ -82,6 +112,11 @@ public interface ModuleHost extends INBTSerializable<CompoundNBT> {
                 .orElse(null);
     }
 
+    default <T extends ModuleData<T>> T getModuleData(ModuleType<T> moduleType, T fallback) {
+        T data = getModuleData(moduleType);
+        return data == null ? fallback : data;
+    }
+
     /**
      * @return a stream containing all of the module types that are currently installed in this host.
      */
@@ -93,9 +128,9 @@ public interface ModuleHost extends INBTSerializable<CompoundNBT> {
      * This method exists so that a module host can select which information from a given module will be displayed. <br>
      * This is useful for module types like Speed which have different effects depending on what they are installed in.
      */
-    default <T extends ModuleData<T>> void getDataInformation(T moduleData, Map<ITextComponent, ITextComponent> map) {
+    default <T extends ModuleData<T>> void getDataInformation(T moduleData, Map<ITextComponent, ITextComponent> map, ModuleContext context) {
         if (moduleData == null) return;
-        moduleData.addInformation(map);
+        moduleData.addInformation(map, context);
     }
 
     /**
@@ -105,8 +140,8 @@ public interface ModuleHost extends INBTSerializable<CompoundNBT> {
      *
      * @param map the map to which information will be added.
      */
-    default void addInformation(Map<ITextComponent, ITextComponent> map) {
-        getInstalledTypes().map(this::getModuleData).forEach(data -> getDataInformation(data, map));
+    default void addInformation(Map<ITextComponent, ITextComponent> map, ModuleContext context) {
+        getInstalledTypes().map(this::getModuleData).forEach(data -> getDataInformation(data, map, context));
     }
 
     default InstallResult checkAddModule(Module<?> newModule) {
@@ -138,4 +173,14 @@ public interface ModuleHost extends INBTSerializable<CompoundNBT> {
                 .findFirst();
         return opt.orElseGet(() -> new InstallResult(InstallResult.InstallResultType.YES, newModule, null, null));
     }
+
+    void getAttributeModifiers(EquipmentSlotType slot, ItemStack stack, Multimap<String, AttributeModifier> map);
+
+//    /**
+//     * This will be balled by module entities when they dynamically update their attributes.
+//     * This should be used by the ModuleHost to update attributes on the next stack tick.
+//     */
+//    void markAttributesDirty();
+
+    void handleTick(ModuleContext context);
 }
