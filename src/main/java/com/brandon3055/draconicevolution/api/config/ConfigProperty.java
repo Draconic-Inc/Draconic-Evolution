@@ -29,7 +29,6 @@ public abstract class ConfigProperty implements INBTSerializable<CompoundNBT> {
     private boolean showOnHud = true;
     private String modid = "draconicevolution";
     private UUID uniqueName = null;
-    protected boolean isDefaultValue = true;
 
     public ConfigProperty(String name) {
         this.name = name;
@@ -115,7 +114,6 @@ public abstract class ConfigProperty implements INBTSerializable<CompoundNBT> {
     @Override
     public void deserializeNBT(CompoundNBT nbt) {
         showOnHud = nbt.getBoolean("hud");
-        isDefaultValue = !nbt.contains("default") || nbt.getBoolean("default");
         if (nbt.hasUniqueId("uni_name")) {
             uniqueName = nbt.getUniqueId("uni_name");
         }
@@ -190,9 +188,12 @@ public abstract class ConfigProperty implements INBTSerializable<CompoundNBT> {
         RAW_2(e -> String.format("%.2f", e)),
         RAW_3(e -> String.format("%.3f", e)),
         RAW_4(e -> String.format("%.4f", e)),
-        PERCENT_0(e -> String.valueOf((int) (e * 100D))),
+        PERCENT_0(e -> String.format("%.0f%%", e * 100D)),
         PERCENT_1(e -> String.format("%.1f%%", e * 100D)),
-        PERCENT_2(e -> String.format("%.2f%%", e * 100D));
+        PERCENT_2(e -> String.format("%.2f%%", e * 100D)),
+        PLUS_PERCENT_0(e -> String.format("+%.0f%%", e * 100D)),
+        PLUS_PERCENT_1(e -> String.format("+%.1f%%", e * 100D)),
+        PLUS_PERCENT_2(e -> String.format("+%.2f%%", e * 100D));
         //Will add formatters as needed
 
         private Function<Double, String> formatter;

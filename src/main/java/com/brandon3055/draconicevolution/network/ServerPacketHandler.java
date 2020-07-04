@@ -53,7 +53,10 @@ public class ServerPacketHandler implements ICustomPacketHandler.IServerPacketHa
                 propertyData(sender, packet);
                 break;
             case DraconicNetwork.S_ITEM_CONFIG_GUI:
-                NetworkHooks.openGui(sender, new ContainerConfigurableItem.Provider());
+                if (packet.readBoolean())
+                    ContainerModularItem.tryOpenGui(sender);
+                else
+                    NetworkHooks.openGui(sender, new ContainerConfigurableItem.Provider());
                 break;
             case DraconicNetwork.S_MODULE_CONFIG_GUI:
                 ContainerModularItem.tryOpenGui(sender);

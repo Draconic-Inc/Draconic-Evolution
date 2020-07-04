@@ -1,6 +1,10 @@
 package com.brandon3055.draconicevolution.datagen;
 
+import codechicken.lib.util.SneakyUtils;
+import com.brandon3055.brandonscore.handlers.FileHandler;
 import com.brandon3055.draconicevolution.init.DEContent;
+import com.brandon3055.draconicevolution.init.DEModules;
+import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.item.Item;
@@ -8,8 +12,13 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.generators.ExistingFileHelper;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
 import net.minecraftforge.client.model.generators.ModelFile;
+import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Objects;
 
 import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
 
@@ -25,11 +34,10 @@ public class ItemModelGenerator extends ItemModelProvider {
 
     @Override
     protected void registerModels() {
-
+        //region Block Items
         blockItem(DEContent.generator, modLoc("block/generator/generator"));
         blockItem(DEContent.grinder, modLoc("block/grinder/grinder"));
         blockItem(DEContent.energy_pylon, modLoc("block/energy_pylon_input"));
-
 
         blockItem(DEContent.disenchanter);
         blockItem(DEContent.energy_infuser);
@@ -77,7 +85,9 @@ public class ItemModelGenerator extends ItemModelProvider {
         dummyModel(DEContent.crystal_wireless_wyvern);
         dummyModel(DEContent.crystal_wireless_draconic);
 //      dummyModel(DEContent.  crystal_wireless_chaotic);
+        //endregion
 
+        //region Components
         simpleItem(DEContent.dust_draconium, "item/components");
         simpleItem(DEContent.dust_draconium_awakened, "item/components");
         simpleItem(DEContent.ingot_draconium, "item/components");
@@ -95,6 +105,9 @@ public class ItemModelGenerator extends ItemModelProvider {
         dummyModel(DEContent.chaos_frag_small);
         dummyModel(DEContent.chaos_frag_medium);
         dummyModel(DEContent.chaos_frag_large);
+        //endregion
+
+        //region Misc
         dummyModel(DEContent.mob_soul);
         simpleItem(DEContent.magnet);
         simpleItem(DEContent.magnet_advanced);
@@ -104,9 +117,21 @@ public class ItemModelGenerator extends ItemModelProvider {
         simpleItem(DEContent.dislocator_player, modLoc("item/bound_dislocator"));
         simpleItem(DEContent.crystal_binder);
         simpleItem(DEContent.info_tablet);
+        //endregion
 
+        //region Modules
+        File textures = new File("/home/brandon3055/Development/WorkSpaces/1.15/BrandonsMods/Draconic-Evolution/src/main/resources/assets/draconicevolution/textures");
+        DEModules.moduleItemMap.forEach((module, item) -> {
+            String name = Objects.requireNonNull(module.getRegistryName()).getPath();
+            File itemTexture = new File(textures, "item/modules/" + name + ".png");
+            File moduleTexture = new File(textures, "module/" + name + ".png");
+            if (!itemTexture.exists()) SneakyUtils.sneaky(() -> FileUtils.copyFile(new File(textures, "item/modules/blank_" + name.substring(0, name.indexOf("_")) + ".png"), itemTexture));
+            if (!moduleTexture.exists()) SneakyUtils.sneaky(() -> FileUtils.copyFile(itemTexture, moduleTexture));
+            simpleItem(item, new ResourceLocation(MODID, "item/modules/" + name));
+        });
+        //endregion
 
-        //Modular Tools
+        //region Modular Tools
         simpleItem(DEContent.capacitor_wyvern, "item/tools");
         simpleItem(DEContent.capacitor_draconic, "item/tools");
         simpleItem(DEContent.capacitor_chaotic, "item/tools");
@@ -131,37 +156,7 @@ public class ItemModelGenerator extends ItemModelProvider {
         simpleItem(DEContent.chestpiece_wyvern, "item/tools");
         simpleItem(DEContent.chestpiece_draconic, "item/tools");
         simpleItem(DEContent.chestpiece_chaotic, "item/tools");
-
-
-//            getBuilder("test_generated_model")
-//                    .parent(new ModelFile.UncheckedModelFile("item/generated"))
-//                    .texture("layer0", mcLoc("block/stone"));
-//
-//            getBuilder("test_block_model")
-//                    .parent(getExistingFile(mcLoc("block/block")))
-//                    .texture("all", mcLoc("block/dirt"))
-//                    .texture("top", mcLoc("block/stone"))
-//                    .element()
-//                    .cube("#all")
-//                    .face(Direction.UP)
-//                    .texture("#top")
-//                    .tintindex(0)
-//                    .end()
-//                    .end();
-//
-//            // Testing consistency
-//
-//            // Test overrides
-//            ModelFile fishingRod = withExistingParent("fishing_rod", "handheld_rod")
-//                    .texture("layer0", mcLoc("item/fishing_rod"))
-//                    .override()
-//                    .predicate(mcLoc("cast"), 1)
-//                    .model(getExistingFile(mcLoc("item/fishing_rod_cast"))) // Use the vanilla model for validation
-//                    .end();
-//
-//            withExistingParent("fishing_rod_cast", modLoc("fishing_rod"))
-//                    .parent(fishingRod)
-//                    .texture("layer0", mcLoc("item/fishing_rod_cast"));
+        //endregion
     }
 
     private void simpleItem(Item item) {

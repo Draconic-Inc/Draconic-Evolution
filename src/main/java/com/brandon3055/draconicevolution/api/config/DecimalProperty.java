@@ -17,6 +17,7 @@ import java.util.function.Supplier;
  */
 public class DecimalProperty extends ConfigProperty {
     private double value;
+    private double defaultValue;
     private DecimalFormatter formatter = DecimalFormatter.RAW_2;
     private Supplier<Double> min = () -> Double.NEGATIVE_INFINITY;
     private Supplier<Double> max = () -> Double.POSITIVE_INFINITY;
@@ -24,12 +25,12 @@ public class DecimalProperty extends ConfigProperty {
 
     public DecimalProperty(String name, double defaultValue) {
         super(name);
-        this.value = defaultValue;
+        this.value = this.defaultValue = defaultValue;
     }
 
     public DecimalProperty(String name, ITextComponent displayName, double defaultValue) {
         super(name, displayName);
-        this.value = defaultValue;
+        this.value = this.defaultValue = defaultValue;
     }
 
     public double getValue() {
@@ -96,7 +97,6 @@ public class DecimalProperty extends ConfigProperty {
         if (changeListener != null) {
             changeListener.accept(stack, this);
         }
-        isDefaultValue = false;
     }
 
     @Override
@@ -133,9 +133,9 @@ public class DecimalProperty extends ConfigProperty {
     @Override
     public CompoundNBT serializeNBT() {
         CompoundNBT nbt = super.serializeNBT();
-        nbt.putBoolean("default", isDefaultValue);
-        if (!isDefaultValue)
+//        if (this.value != this.defaultValue) {
             nbt.putDouble("value", value);
+//        }
         return nbt;
     }
 

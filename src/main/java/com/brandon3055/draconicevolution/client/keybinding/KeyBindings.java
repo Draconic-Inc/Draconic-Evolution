@@ -24,35 +24,30 @@ public class KeyBindings {
 
     public static KeyBinding placeItem;
     public static KeyBinding toolConfig;
-    public static KeyBinding toolProfileChange;
+    public static KeyBinding toolModules;
     public static KeyBinding toggleFlight;
-    public static KeyBinding toggleDislocator;
-    public static KeyBinding cycleDigAOE;
-    public static KeyBinding cycleAttackAOE;
-
-    public static KeyBinding armorProfileChange;
-
+//    public static KeyBinding toggleDislocator;
+//    public static KeyBinding cycleDigAOE;
+//    public static KeyBinding cycleAttackAOE;
 
     public static void init() {
         placeItem          = new KeyBinding("key.placeItem",          new CustomContext(IN_GAME, () -> placeItem),          InputMappings.Type.KEYSYM, GLFW.GLFW_KEY_P,         DraconicEvolution.MODNAME);
         toolConfig         = new KeyBinding("key.toolConfig",         new CustomContext(IN_GAME, () -> toolConfig),         InputMappings.Type.KEYSYM, GLFW.GLFW_KEY_C,         DraconicEvolution.MODNAME);
-        toolProfileChange  = new KeyBinding("key.toolProfileChange",  new CustomContext(IN_GAME, () -> toolProfileChange),  InputMappings.Type.KEYSYM, GLFW.GLFW_KEY_BACKSLASH, DraconicEvolution.MODNAME);
         toggleFlight       = new KeyBinding("key.toggleFlight",       new CustomContext(IN_GAME, () -> toggleFlight),       InputMappings.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN,   DraconicEvolution.MODNAME);
-        toggleDislocator   = new KeyBinding("key.toggleDislocator",   new CustomContext(IN_GAME, () -> toggleDislocator),   InputMappings.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN,   DraconicEvolution.MODNAME);
-        cycleDigAOE        = new KeyBinding("key.cycleDigAOE",        new CustomContext(IN_GAME, () -> cycleDigAOE),        InputMappings.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN,   DraconicEvolution.MODNAME);
-        cycleAttackAOE     = new KeyBinding("key.cycleAttackAOE",     new CustomContext(IN_GAME, () -> cycleAttackAOE),     InputMappings.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN,   DraconicEvolution.MODNAME);
+//        toggleDislocator   = new KeyBinding("key.toggleDislocator",   new CustomContext(IN_GAME, () -> toggleDislocator),   InputMappings.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN,   DraconicEvolution.MODNAME);
+//        cycleDigAOE        = new KeyBinding("key.cycleDigAOE",        new CustomContext(IN_GAME, () -> cycleDigAOE),        InputMappings.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN,   DraconicEvolution.MODNAME);
+//        cycleAttackAOE     = new KeyBinding("key.cycleAttackAOE",     new CustomContext(IN_GAME, () -> cycleAttackAOE),     InputMappings.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN,   DraconicEvolution.MODNAME);
 
-        armorProfileChange = new KeyBinding("key.armorProfileChange", new CustomContext(IN_GAME, () -> armorProfileChange), KeyModifier.ALT, InputMappings.Type.KEYSYM, GLFW.GLFW_KEY_BACKSLASH, DraconicEvolution.MODNAME);
+        toolModules        = new KeyBinding("key.toolModules",        new CustomContext(IN_GAME, () -> toolModules),        KeyModifier.SHIFT, InputMappings.Type.KEYSYM, GLFW.GLFW_KEY_C,         DraconicEvolution.MODNAME);
 
         ClientRegistry.registerKeyBinding(placeItem);
         ClientRegistry.registerKeyBinding(toolConfig);
-        ClientRegistry.registerKeyBinding(toolProfileChange);
+        ClientRegistry.registerKeyBinding(toolModules);
         ClientRegistry.registerKeyBinding(toggleFlight);
-        ClientRegistry.registerKeyBinding(toggleDislocator);
-        ClientRegistry.registerKeyBinding(cycleDigAOE);
-        ClientRegistry.registerKeyBinding(cycleAttackAOE);
+//        ClientRegistry.registerKeyBinding(toggleDislocator);
+//        ClientRegistry.registerKeyBinding(cycleDigAOE);
+//        ClientRegistry.registerKeyBinding(cycleAttackAOE);
 
-        ClientRegistry.registerKeyBinding(armorProfileChange);
     }
 
 

@@ -1,6 +1,8 @@
 package com.brandon3055.draconicevolution.items.equipment;
 
+import codechicken.lib.math.MathHelper;
 import com.brandon3055.brandonscore.api.TechLevel;
+import com.brandon3055.brandonscore.api.power.IOPStorage;
 import com.brandon3055.brandonscore.capability.MultiCapabilityProvider;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
@@ -11,11 +13,13 @@ import com.brandon3055.draconicevolution.api.config.DecimalProperty;
 import com.brandon3055.draconicevolution.api.modules.ModuleCategory;
 import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
 import com.brandon3055.draconicevolution.api.modules.data.DamageData;
+import com.brandon3055.draconicevolution.api.modules.data.EnergyData;
 import com.brandon3055.draconicevolution.api.modules.data.JumpData;
 import com.brandon3055.draconicevolution.api.modules.data.SpeedData;
 import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleHostImpl;
 import com.brandon3055.draconicevolution.api.modules.lib.StackTickContext;
+import com.brandon3055.draconicevolution.init.EquipCfg;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import net.minecraft.block.Block;
@@ -39,6 +43,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.common.extensions.IForgeItem;
+import net.minecraftforge.energy.IEnergyStorage;
 
 import javax.annotation.Nullable;
 
@@ -93,21 +98,12 @@ public interface IModularItem extends IForgeItem {
         EnergyUtils.addEnergyInfo(stack, tooltip);
     }
 
-    UUID speedUUID = UUID.fromString("deff7521-d4f1-4def-af63-03b88505505f");
-
     @Override
     default Multimap<String, AttributeModifier> getAttributeModifiers(EquipmentSlotType slot, ItemStack stack) {
         Multimap<String, AttributeModifier> map = HashMultimap.create();
         if (MODULE_HOST_CAPABILITY != null && stack.getCapability(MODULE_HOST_CAPABILITY).isPresent()) { //Because vanilla calls this before capabilities are registered.
             ModuleHost host = stack.getCapability(MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new);
             host.getAttributeModifiers(slot, stack, map);
-
-            if ((host.getModuleCategories().contains(ModuleCategory.CHESTPIECE) && slot == EquipmentSlotType.CHEST) || (host.getModuleCategories().contains(ModuleCategory.ARMOR_LEGS) && slot == EquipmentSlotType.LEGS)) {
-                SpeedData speed = host.getModuleData(ModuleTypes.SPEED);
-                if (speed != null){
-                    map.put(SharedMonsterAttributes.MOVEMENT_SPEED.getName(), new AttributeModifier(speedUUID, "Armor modifier", speed.getSpeedMultiplier(), AttributeModifier.Operation.MULTIPLY_BASE));
-                }
-            }
         }
         return map;
     }
@@ -122,7 +118,8 @@ public interface IModularItem extends IForgeItem {
         ModuleHost host = stack.getCapability(MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new);
         SpeedData data = host.getModuleData(ModuleTypes.SPEED);
         float moduleValue = data == null ? 0 : (float) data.getSpeedMultiplier();
-        float multiplier = (moduleValue + 1F) * (moduleValue + 1F);
+        //The way vanilla handles efficiency is kinda dumb. So this is far from perfect but its kinda close... ish.
+        float multiplier = MathHelper.map((moduleValue + 1F) * (moduleValue + 1F), 1F, 2F, 1F, 1.65F);
         //Module host should always be a property provider because it needs to provide module properties.
         if (host instanceof PropertyProvider && ((PropertyProvider) host).hasProperty("mining_speed")) {
             multiplier *= ((DecimalProperty) ((PropertyProvider) host).getProperty("mining_speed")).getValue();
@@ -130,6 +127,9 @@ public interface IModularItem extends IForgeItem {
         if (getToolTypes(stack).stream().anyMatch(state::isToolEffective) || overrideEffectivity(state.getMaterial()) || effectiveBlockAdditions().contains(state.getBlock())) {
             return getBaseEfficiency() * multiplier;
         }
+        IOPStorage opStorage = EnergyUtils.getStorage(stack);
+        if (opStorage != null && opStorage.getOPStored() < EquipCfg.)
+
         return multiplier < 1 ? 1.0F * multiplier : 1.0F;
     }
 

@@ -62,46 +62,12 @@ public abstract class ContainerModuleHost<T> extends ContainerBCore<T> {
         }
 
         return super.transferStackInSlot(player, i);
-
-//        LazyOptional<IItemHandler> optional = getItemHandler();
-//        if (optional.isPresent()) {
-//            IItemHandler handler = optional.orElse(EmptyHandler.INSTANCE);
-//            Slot slot = getSlot(i);
-//
-//            if (slot != null && slot.getHasStack()) {
-//                ItemStack stack = slot.getStack();
-//                ItemStack result = stack.copy();
-//
-//                //Transferring from tile to player
-//                if (i >= 36) {
-//                    if (!mergeItemStack(stack, 0, 36, false)) {
-//                        return ItemStack.EMPTY; //Return if failed to merge
-//                    }
-//                }
-//                else {
-//                    //Transferring from player to tile
-//                    if (!mergeItemStack(stack, 36, 36 + handler.getSlots(), false)) {
-//                        return ItemStack.EMPTY;  //Return if failed to merge
-//                    }
-//                }
-//
-//                if (stack.getCount() == 0) {
-//                    slot.putStack(ItemStack.EMPTY);
-//                }
-//                else {
-//                    slot.onSlotChanged();
-//                }
-//
-//                slot.onTake(player, stack);
-//
-//                return result;
-//            }
-//        }
-//        return ItemStack.EMPTY;
     }
 
     @OnlyIn(Dist.CLIENT)
     public void clientTick() {}
 
     public abstract ModuleContext getModuleContext();
+
+    public abstract void onGridChange();
 }

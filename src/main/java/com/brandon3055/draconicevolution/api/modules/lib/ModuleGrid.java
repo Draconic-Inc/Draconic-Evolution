@@ -40,6 +40,7 @@ public class ModuleGrid {
         if (onGridChange != null) {
             onGridChange.run();;
         }
+        container.onGridChange();
     }
 
     public void setPosition(int guiXPos, int guiYPos) {

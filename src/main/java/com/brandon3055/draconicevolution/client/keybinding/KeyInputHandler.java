@@ -71,12 +71,14 @@ public class KeyInputHandler {
             handlePlaceItemKey();
         }
         else if (KeyBindings.toolConfig.isPressed()) {
-            DraconicNetwork.sendOpenItemConfig();
-//            Minecraft.getInstance().displayGuiScreen(new GuiToolConfig(player)); TODO PacketDispatcher stuff
+            DraconicNetwork.sendOpenItemConfig(false);
         }
-        else if (KeyBindings.toolProfileChange.isPressed() && HandHelper.getMainFirst(player) != null) {
-//            PacketDispatcher.dispatchToolProfileChange(false);
+        else if (KeyBindings.toolModules.isPressed()) {
+            DraconicNetwork.sendOpenItemConfig(true);
         }
+//        else if (KeyBindings.toolProfileChange.isPressed() && HandHelper.getMainFirst(player) != null) {
+////            PacketDispatcher.dispatchToolProfileChange(false);
+//        }
         else if (KeyBindings.toggleFlight.isPressed()) {
             if (player.abilities.allowFlying) {
                 if (player.abilities.isFlying) {
@@ -93,18 +95,18 @@ public class KeyInputHandler {
                 }
             }
         }
-        else if (KeyBindings.toggleDislocator.isPressed()) {
-//            PacketDispatcher.dispatchToggleDislocators();
-        }
-        else if (KeyBindings.armorProfileChange.isPressed()) {
-//            PacketDispatcher.dispatchToolProfileChange(true);
-        }
-        else if (KeyBindings.cycleDigAOE.isPressed()) {
-//            PacketDispatcher.dispatchCycleDigAOE(player.isShiftKeyDown());
-        }
-        else if (KeyBindings.cycleAttackAOE.isPressed()) {
-//            PacketDispatcher.dispatchCycleAttackAOE(player.isShiftKeyDown());
-        }
+//        else if (KeyBindings.toggleDislocator.isPressed()) {
+////            PacketDispatcher.dispatchToggleDislocators();
+//        }
+//        else if (KeyBindings.armorProfileChange.isPressed()) {
+////            PacketDispatcher.dispatchToolProfileChange(true);
+//        }
+//        else if (KeyBindings.cycleDigAOE.isPressed()) {
+////            PacketDispatcher.dispatchCycleDigAOE(player.isShiftKeyDown());
+//        }
+//        else if (KeyBindings.cycleAttackAOE.isPressed()) {
+////            PacketDispatcher.dispatchCycleAttackAOE(player.isShiftKeyDown());
+//        }
     }
 
     private int previouseSlot(int i, int c) {

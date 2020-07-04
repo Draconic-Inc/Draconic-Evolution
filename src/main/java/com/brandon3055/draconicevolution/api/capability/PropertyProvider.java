@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.api.capability;
 
-import com.brandon3055.draconicevolution.api.config.ConfigProperty;
+import com.brandon3055.draconicevolution.api.config.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.util.INBTSerializable;
@@ -54,5 +54,37 @@ public interface PropertyProvider extends INBTSerializable<CompoundNBT> {
 
     default boolean hasProperty(String propertyName) {
         return getProperty(propertyName) != null;
+    }
+
+    default boolean hasBool(String propertyName) {
+        return getProperty(propertyName) instanceof BooleanProperty;
+    }
+
+    default boolean hasDecimal(String propertyName) {
+        return getProperty(propertyName) instanceof DecimalProperty;
+    }
+
+    default boolean hasInt(String propertyName) {
+        return getProperty(propertyName) instanceof IntegerProperty;
+    }
+
+    default boolean hasEnum(String propertyName) {
+        return getProperty(propertyName) instanceof EnumProperty;
+    }
+
+    default BooleanProperty getBool(String propertyName) {
+        return (BooleanProperty) getProperty(propertyName);
+    }
+
+    default DecimalProperty getDecimal(String propertyName) {
+        return (DecimalProperty) getProperty(propertyName);
+    }
+
+    default IntegerProperty getInt(String propertyName) {
+        return (IntegerProperty) getProperty(propertyName);
+    }
+
+    default EnumProperty<?> getEnum(String propertyName) {
+        return (EnumProperty<?>) getProperty(propertyName);
     }
 }

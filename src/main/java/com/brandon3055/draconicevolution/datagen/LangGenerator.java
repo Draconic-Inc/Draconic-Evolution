@@ -246,19 +246,15 @@ public class LangGenerator extends LanguageProvider {
 
 
 
-        //region # Misc
-        add("itemGroup.draconicevolution.blocks"                                            ,"Draconic Evolution Blocks");
-        add("itemGroup.draconicevolution.items"                                             ,"Draconic Evolution Items");
-        add("itemGroup.draconicevolution.modules"                                           ,"Draconic Evolution Modules");
-        add("tech_level.draconicevolution.draconium"                                        ,"Draconium");
-        add("tech_level.draconicevolution.wyvern"                                           ,"Wyvern");
-        add("tech_level.draconicevolution.draconic"                                         ,"Draconic");
-        add("tech_level.draconicevolution.chaotic"                                          ,"Chaotic");
-
 
 
         //region # Modules
         add(ModuleTypes.ENERGY_STORAGE                                                      , "Energy Capacity");
+        add("module.draconicevolution.energy.capacity"                                      , "Energy Capacity");
+        add("module.draconicevolution.energy.capacity.value"                                , "+%s OP");
+        add("module.draconicevolution.energy.transfer"                                      , "Energy Transfer");
+        add("module.draconicevolution.energy.transfer.value"                                , "+%s OP/t");
+
         add(ModuleTypes.ENERGY_SHARE                                                        , "Energy Share");
         add(ModuleTypes.ENERGY_LINK                                                         , "Energy Link");
         add(ModuleTypes.SHIELD_CONTROLLER                                                   , "Shield Controller");
@@ -272,8 +268,14 @@ public class LangGenerator extends LanguageProvider {
         add(ModuleTypes.AQUA_ADAPT                                                          , "Aqua Adaptation");
         add(ModuleTypes.MINING_STABILITY                                                    , "Mining Stabilizer");
         add(ModuleTypes.AOE                                                                 , "AOE");
+        add("module.draconicevolution.aoe.name"                                             , "AOE");
+        add("module.draconicevolution.aoe.value"                                            , "%sx%s");
         add(ModuleTypes.DAMAGE                                                              , "Damage");
+        add("module.draconicevolution.damage.name"                                          , "Damage");
+        add("module.draconicevolution.damage.attack"                                        , "+%.1f Attack Damage");
         add(ModuleTypes.SPEED                                                               , "Speed");
+        add("module.draconicevolution.speed.name"                                           , "Speed");
+        add("module.draconicevolution.speed.value"                                          , "+%s%%");
         add(ModuleTypes.JUNK_FILTER                                                         , "Junk Filter");
 
         add(DEModules.draconiumEnergy                                                       , "Draconium Energy Module");
@@ -281,26 +283,75 @@ public class LangGenerator extends LanguageProvider {
         add(DEModules.draconicEnergy                                                        , "Draconic Energy Module");
         add(DEModules.chaoticEnergy                                                         , "Chaotic Energy Module");
 
-        add("module.draconicevolution.energy.stored_energy"                                 ,"Stored Energy");
+        add(DEModules.draconiumSpeed                                                        , "Draconium Speed Module");
+        add(DEModules.wyvernSpeed                                                           , "Wyvern Speed Module");
+        add(DEModules.draconicSpeed                                                         , "Draconic Speed Module");
+        add(DEModules.chaoticSpeed                                                          , "Chaotic Speed Module");
 
+        add(DEModules.draconiumDamage                                                       , "Draconium Damage Module");
+        add(DEModules.wyvernDamage                                                          , "Wyvern Damage Module");
+        add(DEModules.draconicDamage                                                        , "Draconic Damage Module");
+        add(DEModules.chaoticDamage                                                         , "Chaotic Damage Module");
+
+        add(DEModules.draconiumAOE                                                          , "Draconium AOE Module");
+        add(DEModules.wyvernAOE                                                             , "Wyvern AOE Module");
+        add(DEModules.draconicAOE                                                           , "Draconic AOE Module");
+        add(DEModules.chaoticAOE                                                            , "Chaotic AOE Module");
+
+        add(DEModules.wyvernMiningStability                                                 , "Mining Stability Module");
+
+        add(DEModules.wyvernJunkFilter                                                      , "Junk Filter Module");
+
+        add(DEModules.wyvernShieldControl                                                   , "Wyvern Shield Control Module");
+        add(DEModules.draconicShieldControl                                                 , "Draconic Shield Control Module");
+        add(DEModules.chaoticShieldControl                                                  , "Chaotic Shield Control Module");
+
+        add(DEModules.wyvernShieldCapacity                                                  , "Wyvern Shield Capacity Module");
+        add(DEModules.draconicShieldCapacity                                                , "Draconic Shield Capacity Module");
+        add(DEModules.chaoticShieldCapacity                                                 , "Chaotic Shield Capacity Module");
+
+        add(DEModules.wyvernShieldRecovery                                                  , "Wyvern Shield Recovery Module");
+        add(DEModules.draconicShieldRecovery                                                , "Draconic Shield Recovery Module");
+        add(DEModules.chaoticShieldRecovery                                                 , "Chaotic Shield Recovery Module");
+
+        add(DEModules.wyvernFlight                                                          , "Wyvern Flight Module");
+        add(DEModules.draconicFlight                                                        , "Draconic Flight Module");
+        add(DEModules.chaoticFlight                                                         , "Chaotic Flight Module");
+
+        add(DEModules.wyvernLastStand                                                       , "Wyvern Last Stand Module");
+        add(DEModules.draconicLastStand                                                     , "Draconic Last Stand Module");
+        add(DEModules.chaoticLastStand                                                      , "Chaotic Last Stand Module");
+
+        add(DEModules.draconiumAutoFeed                                                     , "Auto Feed Module");
+        add(DEModules.draconicAutoFeed                                                      , "Draconic Auto Feed Module");
+
+        add(DEModules.wyvernNightVision                                                     , "Night Vision Module");
+
+        add(DEModules.draconiumJump                                                         , "Draconium Jump Module");
+        add(DEModules.wyvernJump                                                            , "Wyvern Jump Module");
+        add(DEModules.draconicJump                                                          , "Draconic Jump Module");
+        add(DEModules.chaoticJump                                                           , "Chaotic Jump Module");
+
+        add(DEModules.wyvernAquaAdapt                                                       , "Aqua Adapt Module");
+
+
+
+
+        add("module.draconicevolution.energy.stored_energy"                                 ,"Stored Energy");
         add("module.draconicevolution.module_type"                                          ,"Module Type");
         add("module.draconicevolution.grid_size"                                            ,"Module Size");
 
         //endregion
 
 
-        //temp
-        add("item_prop.draconicevolution.test_boolean1.name"                                ,"Test Boolean 1");
-        add("item_prop.draconicevolution.test_integer1.name"                                ,"Test Integer 1");
-        add("item_prop.draconicevolution.test_decimal1.name"                                ,"Test Decimal 1");
-        add("item_prop.draconicevolution.test_enum.name"                                    ,"Test Enum");
-        add("item_prop.draconicevolution.test_enum2.name"                                   ,"Test Enum 2");
-        add("item_prop.draconicevolution.test_boolean2.name"                                ,"Test Boolean 2");
-        add("item_prop.draconicevolution.test_boolean3.name"                                ,"Test Boolean 3");
-        add("item_prop.draconicevolution.test_integer2.name"                                ,"Test Integer 2");
-        add("item_prop.draconicevolution.test_integer3.name"                                ,"Test Integer 3");
-        add("item_prop.draconicevolution.test_decimal2.name"                                ,"Test Decimal 2");
-        add("item_prop.draconicevolution.test_decimal3.name"                                ,"Test Decimal 3");
+        //region # Misc
+        add("itemGroup.draconicevolution.blocks"                                            ,"Draconic Evolution Blocks");
+        add("itemGroup.draconicevolution.items"                                             ,"Draconic Evolution Items");
+        add("itemGroup.draconicevolution.modules"                                           ,"Draconic Evolution Modules");
+        add("tech_level.draconicevolution.draconium"                                        ,"Draconium");
+        add("tech_level.draconicevolution.wyvern"                                           ,"Wyvern");
+        add("tech_level.draconicevolution.draconic"                                         ,"Draconic");
+        add("tech_level.draconicevolution.chaotic"                                          ,"Chaotic");
 
         //@formatter:on
     }

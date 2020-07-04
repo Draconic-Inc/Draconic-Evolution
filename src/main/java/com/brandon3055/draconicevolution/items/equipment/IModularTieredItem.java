@@ -34,7 +34,7 @@ public interface IModularTieredItem extends IModularItem {
                 DamageData damage = host.getModuleData(ModuleTypes.DAMAGE, new DamageData(0));
                 SpeedData speed = host.getModuleData(ModuleTypes.SPEED, new SpeedData(0));
                 map.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(Item.ATTACK_DAMAGE_MODIFIER, "Tool modifier", (tier.getAttackDamage() - 1) + damage.getDamagePoints(), AttributeModifier.Operation.ADDITION));
-                map.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(Item.ATTACK_SPEED_MODIFIER, "Tool modifier", tier.getAttackSpeed() * (1 + speed.getSpeedMultiplier()), AttributeModifier.Operation.ADDITION));
+                map.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(Item.ATTACK_SPEED_MODIFIER, "Tool modifier", tier.getAttackSpeed() / (1 + speed.getSpeedMultiplier()), AttributeModifier.Operation.ADDITION));
             }
         }
 

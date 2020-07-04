@@ -35,6 +35,7 @@ public class DEConfig {
 
     //Server properties
     public static String serverID;
+    public static double armorSpeedLimit;
 
     private static void loadServer() {
         serverTag = config.getTag("Server");
@@ -43,6 +44,12 @@ public class DEConfig {
                 .setComment("This is a randomly generated id that clients will use to map their tool config settings to this server.")
                 .setDefaultString(UUID.randomUUID().toString());
         serverIDTag.setSyncCallback((tag, type) -> serverID = tag.getString());
+
+        serverTag.getTag("armorSpeedLimit")
+                .setSyncToClient()
+                .setComment("This can be used to limit the maximum speed boost allowed by the modular armor.", "A value of for example 1 means a maximum boost of +100%% over default character speed.", "Set to -1 for no limit, Default: 16 (+1600%%)")
+                .setDefaultDouble(16)
+                .setSyncCallback((tag, type) -> armorSpeedLimit = tag.getDouble());
     }
 
 

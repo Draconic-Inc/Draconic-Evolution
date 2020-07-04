@@ -37,12 +37,12 @@ public class ModuleTypes {
     //Enchantments?
 
     //General / Misc
-    public static final ModuleType<AOEData>         AOE                 = new ModuleTypeImpl<>("aoe",               2, 2, MINING_TOOL, MALAY_WEAPON, RANGED_WEAPON).setMaxInstallable(1);                           //I want there to be a limit on maximum AOE
+    public static final ModuleType<AOEData>         AOE                 = new ModuleTypeImpl<>("aoe",               3, 3, MINING_TOOL, MALAY_WEAPON, RANGED_WEAPON).setMaxInstallable(1);                           //I want there to be a limit on maximum AOE
     public static final ModuleType<DamageData>      DAMAGE              = new DamageType("damage",                  1, 1, MALAY_WEAPON, RANGED_WEAPON);
     public static final ModuleType<SpeedData>       SPEED               = new ModuleTypeImpl<>("speed",             1, 1, MINING_TOOL, MALAY_WEAPON, RANGED_WEAPON, CHESTPIECE, ARMOR_LEGS);
-    public static final ModuleType<SpeedData>       JUNK_FILTER         = new ModuleTypeImpl<>("junk_filter",       1, 1, MINING_TOOL);
-    public static final ModuleType<SpeedData>       VACUUM              = new ModuleTypeImpl<>("vacuum",            1, 1, MINING_TOOL, MALAY_WEAPON, RANGED_WEAPON);
-    public static final ModuleType<SpeedData>       ITEM_TRANSLOCATION  = new ModuleTypeImpl<>("item_translocation",1, 1, MINING_TOOL, MALAY_WEAPON, RANGED_WEAPON);
+    public static final ModuleType<NoData>          JUNK_FILTER         = new ModuleTypeImpl<>("junk_filter",       1, 1, MINING_TOOL);
+    public static final ModuleType<NoData>          VACUUM              = new ModuleTypeImpl<>("vacuum",            1, 1, MINING_TOOL, MALAY_WEAPON, RANGED_WEAPON);
+    public static final ModuleType<NoData>          ITEM_TRANSLOCATION  = new ModuleTypeImpl<>("item_translocation",1, 1, MINING_TOOL, MALAY_WEAPON, RANGED_WEAPON);
 
     //@formatter:on
 

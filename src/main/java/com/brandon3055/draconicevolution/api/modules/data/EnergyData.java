@@ -41,15 +41,7 @@ public class EnergyData implements ModuleData<EnergyData> {
     public void addInformation(Map<ITextComponent, ITextComponent> map, ModuleContext context) {
         long capacity = getCapacity();
         long transfer = getTransfer();
-//        if (context != null && context.getOpStorage() != null) {
-//            IOPStorage storage = context.getOpStorage();
-//            capacity = storage.getMaxOPStored();
-//            if (storage instanceof ModularOPStorage) {
-//                transfer = ((ModularOPStorage) storage).baseTransfer;
-//            }
-//        }
-
-        map.put(new TranslationTextComponent("op.brandonscore.op_capacity"), new StringTextComponent("+" + Utils.formatNumber(capacity) + " " + I18n.format("op.brandonscore.op")));
-        map.put(new TranslationTextComponent("op.brandonscore.op_transfer"), new StringTextComponent("+" + Utils.formatNumber(transfer) + " " + I18n.format("op.brandonscore.op") + "/t"));
+        map.put(new TranslationTextComponent("module.draconicevolution.energy.capacity"), new TranslationTextComponent("module.draconicevolution.energy.capacity.value", Utils.formatNumber(capacity)));
+        map.put(new TranslationTextComponent("module.draconicevolution.energy.transfer"), new TranslationTextComponent("module.draconicevolution.energy.transfer.value", Utils.formatNumber(transfer)));
     }
 }

@@ -16,18 +16,19 @@ import java.util.function.Supplier;
  */
 public class BooleanProperty extends ConfigProperty {
     private boolean value;
+    private boolean defaultValue;
     private BooleanFormatter formatter = BooleanFormatter.TRUE_FALSE;
     private Supplier<Boolean> valueOverride;
     private BiConsumer<ItemStack, BooleanProperty> changeListener;
 
     public BooleanProperty(String name, boolean defaultValue) {
         super(name);
-        this.value = defaultValue;
+        this.value = this.defaultValue = defaultValue;
     }
 
     public BooleanProperty(String name, ITextComponent displayName, boolean defaultValue) {
         super(name, displayName);
-        this.value = defaultValue;
+        this.value = this.defaultValue = defaultValue;
     }
 
     public boolean getValue() {
@@ -86,9 +87,9 @@ public class BooleanProperty extends ConfigProperty {
     @Override
     public CompoundNBT serializeNBT() {
         CompoundNBT nbt = super.serializeNBT();
-        nbt.putBoolean("default", isDefaultValue);
-        if (!isDefaultValue)
+        if (this.value != this.defaultValue) {
             nbt.putBoolean("value", value);
+        }
         return nbt;
     }
 

@@ -1,8 +1,10 @@
 package com.brandon3055.draconicevolution.api.modules.data;
 
+import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.Map;
 
@@ -27,6 +29,6 @@ public class AOEData implements ModuleData<AOEData> {
 
     @Override
     public void addInformation(Map<ITextComponent, ITextComponent> map, ModuleContext context) {
-        map.put(new StringTextComponent("AOEModule"), new StringTextComponent("TODO"));
+        map.put(new TranslationTextComponent("module.draconicevolution.aoe.name"), new TranslationTextComponent("module.draconicevolution.aoe.value", 1 + (aoe * 2), 1 + (aoe * 2)));
     }
 }

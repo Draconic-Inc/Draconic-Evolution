@@ -56,6 +56,9 @@ public class EquipCfg {
     private static double CAPACITOR_ENERGY_MULT     = 8D;
     private static double CHESTPIECE_ENERGY_MULT    = 2D;
 
+    private static int ENERGY_HARVEST               = 1024;
+    private static int ENERGY_ATTACK                = 2;
+
     //Static Access values
     public static double draconiumEfficiency;
     public static double wyvernEfficiency;

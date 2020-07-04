@@ -11,9 +11,9 @@ import java.util.Map;
  */
 public class ShieldData implements ModuleData<ShieldData> {
     private final int shieldCapacity;
-    private final int shieldRecharge;
+    private final double shieldRecharge; //Shield points per tick
 
-    public ShieldData(int shieldCapacity, int shieldRecharge) {
+    public ShieldData(int shieldCapacity, double shieldRecharge) {
         this.shieldCapacity = shieldCapacity;
         this.shieldRecharge = shieldRecharge;
     }
@@ -22,7 +22,7 @@ public class ShieldData implements ModuleData<ShieldData> {
         return shieldCapacity;
     }
 
-    public int getShieldRecharge() {
+    public double getShieldRecharge() {
         return shieldRecharge;
     }
 

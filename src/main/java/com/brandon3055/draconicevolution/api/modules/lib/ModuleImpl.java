@@ -16,6 +16,7 @@ import java.util.function.Supplier;
 public class ModuleImpl<T extends ModuleData<T>> extends BaseModule<T> {
 
     private Item moduleItem;
+    private int maxInstall = -1;
 
     public ModuleImpl(ModuleType<T> moduleType, TechLevel techLevel, Function<Module<T>, T> dataGenerator, Item moduleItem) {
         super(moduleType, new ModuleProperties<>(techLevel, dataGenerator));
@@ -42,5 +43,15 @@ public class ModuleImpl<T extends ModuleData<T>> extends BaseModule<T> {
     @Override
     public Item getItem() {
         return moduleItem;
+    }
+
+    public ModuleImpl<T> setMaxInstall(int maxInstall) {
+        this.maxInstall = maxInstall;
+        return this;
+    }
+
+    @Override
+    public int maxInstallable() {
+        return maxInstall == -1 ? super.maxInstallable() : maxInstall;
     }
 }

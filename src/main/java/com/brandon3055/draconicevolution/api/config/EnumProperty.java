@@ -111,9 +111,7 @@ public class EnumProperty<T extends Enum<T>> extends ConfigProperty {
     @Override
     public CompoundNBT serializeNBT() {
         CompoundNBT nbt = super.serializeNBT();
-        nbt.putBoolean("default", isDefaultValue);
-        if (!isDefaultValue)
-            nbt.putByte("value", (byte) value.ordinal());
+        nbt.putByte("value", (byte) value.ordinal());
         return nbt;
     }
 

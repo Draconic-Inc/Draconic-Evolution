@@ -39,9 +39,9 @@ import static com.brandon3055.draconicevolution.api.modules.lib.InstallResult.In
  * Created by brandon3055 on 26/4/20.
  */
 public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> {
-    private static final RenderType moduleType = RenderType.makeType("inner_stab", DefaultVertexFormats.POSITION_TEX, GL11.GL_QUADS, 256, RenderType.State.getBuilder()
+    private static final RenderType moduleType = RenderType.makeType("module_type", DefaultVertexFormats.POSITION_TEX, GL11.GL_QUADS, 256, RenderType.State.getBuilder()
             .texture(new RenderState.TextureState(ModuleSpriteUploader.LOCATION_MODULE_TEXTURE, false, false))
-            .transparency(RenderState.NO_TRANSPARENCY)
+            .transparency(RenderState.TRANSLUCENT_TRANSPARENCY)
             .build(false)
     );
 

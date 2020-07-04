@@ -28,6 +28,7 @@ import net.minecraft.util.text.TextFormatting;
 
 import java.awt.*;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -80,7 +81,7 @@ public class GuiModularItem extends ModularGuiContainer<ContainerModularItem> {
         GuiButton itemConfig = toolkit.createThemedIconButton(template.background, "item_config");
         itemConfig.onReload(e -> e.setRelPos(template.background, 3, 3));
         itemConfig.setHoverText(I18n.format("gui.draconicevolution.modular_item.open_item_config.info"));
-        itemConfig.onPressed(DraconicNetwork::sendOpenItemConfig);
+        itemConfig.onPressed(() -> DraconicNetwork.sendOpenItemConfig(false));
 
         updateInfoPanel();
     }
@@ -97,7 +98,7 @@ public class GuiModularItem extends ModularGuiContainer<ContainerModularItem> {
         gridName.append(I18n.format("gui.draconicevolution.modular_item.module_grid"));
         infoPanel.addDynamicLabel(gridName::toString, 12);
 
-        Map<ITextComponent, ITextComponent> nameStatMap = new HashMap<>();
+        Map<ITextComponent, ITextComponent> nameStatMap = new LinkedHashMap<>();
         grid.getModuleHost().addInformation(nameStatMap, container.getModuleContext());
         for (ITextComponent name : nameStatMap.keySet()) {
             infoPanel.addLabeledValue(TextFormatting.GOLD + name.getFormattedText(), 6, 10, () -> TextFormatting.GRAY + nameStatMap.get(name).getFormattedText(), true);

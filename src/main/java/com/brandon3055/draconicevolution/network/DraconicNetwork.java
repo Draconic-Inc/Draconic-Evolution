@@ -78,8 +78,9 @@ public class DraconicNetwork {
         packet.sendToServer();
     }
 
-    public static void sendOpenItemConfig() {
+    public static void sendOpenItemConfig(boolean modules) {
         PacketCustom packet = new PacketCustom(CHANNEL, S_ITEM_CONFIG_GUI);
+        packet.writeBoolean(modules);
         packet.sendToServer();
     }
 

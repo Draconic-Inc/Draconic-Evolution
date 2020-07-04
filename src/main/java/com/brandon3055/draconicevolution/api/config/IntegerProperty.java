@@ -17,6 +17,7 @@ import java.util.function.Supplier;
  */
 public class IntegerProperty extends ConfigProperty {
     private int value;
+    private int defaultValue;
     private IntegerFormatter formatter = IntegerFormatter.RAW;
     private Supplier<Integer> min = () -> Integer.MIN_VALUE;
     private Supplier<Integer> max = () -> Integer.MAX_VALUE;
@@ -24,12 +25,12 @@ public class IntegerProperty extends ConfigProperty {
 
     public IntegerProperty(String name, int defaultValue) {
         super(name);
-        this.value = defaultValue;
+        this.value = this.defaultValue = defaultValue;
     }
 
     public IntegerProperty(String name, ITextComponent displayName, int defaultValue) {
         super(name, displayName);
-        this.value = defaultValue;
+        this.value = this.defaultValue = defaultValue;
     }
 
     public int getValue() {
@@ -132,9 +133,9 @@ public class IntegerProperty extends ConfigProperty {
     @Override
     public CompoundNBT serializeNBT() {
         CompoundNBT nbt = super.serializeNBT();
-        nbt.putBoolean("default", isDefaultValue);
-        if (!isDefaultValue)
+        if (this.value != this.defaultValue) {
             nbt.putInt("value", value);
+        }
         return nbt;
     }
 

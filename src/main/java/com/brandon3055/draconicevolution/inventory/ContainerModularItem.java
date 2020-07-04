@@ -16,10 +16,7 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.ClickType;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.inventory.container.Slot;
+import net.minecraft.inventory.container.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Hand;
@@ -97,6 +94,23 @@ public class ContainerModularItem extends ContainerModuleHost<TileBCore> {
     @Override
     public ModuleContext getModuleContext() {
         return new StackModuleContext(getModuleHost(), hostStack, player);
+    }
+
+    @Override
+    public void onGridChange() {
+        if (EffectiveSide.get().isServer()) {
+            for (int i = 0; i < this.inventorySlots.size(); ++i) {
+                ItemStack itemstack = this.inventorySlots.get(i).getStack();
+                ItemStack itemstack1 = this.inventoryItemStacks.get(i);
+                if (!ItemStack.areItemStacksEqual(itemstack1, itemstack)) {
+                    itemstack1 = itemstack.copy();
+                    this.inventoryItemStacks.set(i, itemstack1);
+                    for (IContainerListener icontainerlistener : this.listeners) {
+                        icontainerlistener.sendSlotContents(this, i, itemstack1);
+                    }
+                }
+            }
+        }
     }
 
     private void onContainerOpen() {
