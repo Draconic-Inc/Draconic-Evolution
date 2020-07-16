@@ -301,10 +301,10 @@ public class DEEventHandler {
     public void getBreakSpeed(PlayerEvent.BreakSpeed event) {
         if (event.getPlayer() != null) {
             float newDigSpeed = event.getOriginalSpeed();
-            CustomArmorHandler.ArmorSummery summery = new CustomArmorHandler.ArmorSummery().getSummery(event.getPlayer());
-            if (summery == null) {
-                return;
-            }
+//            ModularArmorEventHandler.ArmorSummery summery = new ModularArmorEventHandler.ArmorSummery().getSummery(event.getPlayer());
+//            if (summery == null) {
+//                return;
+//            }
 
 //            if (event.getPlayer().world.isMaterialInBB(event.getPlayer().getBoundingBox(), Material.WATER)) {
 //                if (summery.armorStacks.get(3).getItem() == DEContent.draconicHelm) {
@@ -341,11 +341,11 @@ public class DEEventHandler {
 //        }
 
         if (!event.getPlayer().onGround) {
-            CustomArmorHandler.ArmorSummery summery = new CustomArmorHandler.ArmorSummery().getSummery(event.getPlayer());
-            if (summery != null && summery.flight[0]) {
-                event.getPlayer().abilities.isFlying = true;
-                event.getPlayer().sendPlayerAbilities();
-            }
+//            ModularArmorEventHandler.ArmorSummery summery = new ModularArmorEventHandler.ArmorSummery().getSummery(event.getPlayer());
+//            if (summery != null && summery.flight[0]) {
+//                event.getPlayer().abilities.isFlying = true;
+//                event.getPlayer().sendPlayerAbilities();
+//            }
         }
     }
 

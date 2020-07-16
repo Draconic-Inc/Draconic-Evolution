@@ -89,13 +89,13 @@ public class DEItemTier implements IItemTier {
     public float getAttackSpeed() {
         switch (techLevel) {
             case DRACONIUM:
-                return (float) (EquipCfg.draconiumSpeed * speedMultiplier.get()) - 4F;
+                return (float) (EquipCfg.draconiumSpeed * speedMultiplier.get());
             case WYVERN:
-                return (float) (EquipCfg.wyvernSpeed * speedMultiplier.get()) - 4F;
+                return (float) (EquipCfg.wyvernSpeed * speedMultiplier.get());
             case DRACONIC:
-                return (float) (EquipCfg.draconicSpeed * speedMultiplier.get()) - 4F;
+                return (float) (EquipCfg.draconicSpeed * speedMultiplier.get());
             case CHAOTIC:
-                return (float) (EquipCfg.chaoticSpeed * speedMultiplier.get()) - 4F;
+                return (float) (EquipCfg.chaoticSpeed * speedMultiplier.get());
         }
         return 1;
     }

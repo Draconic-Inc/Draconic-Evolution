@@ -66,11 +66,6 @@ public class ModularHoe extends HoeItem implements IModularTieredItem {
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
-        handleInventoryTick(stack, worldIn, entityIn, itemSlot, isSelected);
-    }
-
-    @Override
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         addModularItemInformation(stack, worldIn, tooltip, flagIn);

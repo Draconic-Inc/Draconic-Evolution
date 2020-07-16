@@ -29,4 +29,12 @@ public interface ModuleData<D extends ModuleData<D>> {
      * @param context The current module context
      */
     void addInformation(Map<ITextComponent, ITextComponent> map, @Nullable ModuleContext context);
+
+
+    /**
+     * This is just a helper method for rounding numbers.
+     */
+    static double round(double number, double multiplier) {
+        return Math.round(number * multiplier) / multiplier;
+    }
 }

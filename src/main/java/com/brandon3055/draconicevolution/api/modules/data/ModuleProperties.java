@@ -87,6 +87,6 @@ public class ModuleProperties<T extends ModuleData<T>> {
 
         Map<ITextComponent, ITextComponent> map = new HashMap<>();
         getData().addInformation(map, null);
-        map.forEach((name, value) -> toolTip.add(name.applyTextStyle(GRAY).appendSibling(new StringTextComponent(": ")).appendSibling(value.applyTextStyle(DARK_GREEN))));
+        map.forEach((name, value) -> toolTip.add(name.applyTextStyle(GRAY).appendText(": ").appendText(value.applyTextStyle(DARK_GREEN).getFormattedText().replace("\n", " "))));
     }
 }

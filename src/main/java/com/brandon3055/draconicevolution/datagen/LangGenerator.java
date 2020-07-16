@@ -259,6 +259,10 @@ public class LangGenerator extends LanguageProvider {
         add(ModuleTypes.ENERGY_LINK                                                         , "Energy Link");
         add(ModuleTypes.SHIELD_CONTROLLER                                                   , "Shield Controller");
         add(ModuleTypes.SHIELD_BOOST                                                        , "Shield Boost");
+        add("module.draconicevolution.shield_capacity.name"                                 , "Shield Capacity");
+        add("module.draconicevolution.shield_capacity.value"                                , "%s points");
+        add("module.draconicevolution.shield_recharge.name"                                 , "Shield Recharge");
+        add("module.draconicevolution.shield_recharge.value"                                , "%s pps (%s seconds)\n@ %s OP/t");
         add(ModuleTypes.FLIGHT                                                              , "Flight");
         add(ModuleTypes.LAST_STAND                                                          , "Last Stand");
         add(ModuleTypes.AUTO_FEED                                                           , "Auto Feed");
@@ -272,7 +276,7 @@ public class LangGenerator extends LanguageProvider {
         add("module.draconicevolution.aoe.value"                                            , "%sx%s");
         add(ModuleTypes.DAMAGE                                                              , "Damage");
         add("module.draconicevolution.damage.name"                                          , "Damage");
-        add("module.draconicevolution.damage.attack"                                        , "+%.1f Attack Damage");
+        add("module.draconicevolution.damage.attack"                                        , "+%s Attack Damage");
         add(ModuleTypes.SPEED                                                               , "Speed");
         add("module.draconicevolution.speed.name"                                           , "Speed");
         add("module.draconicevolution.speed.value"                                          , "+%s%%");
@@ -310,6 +314,10 @@ public class LangGenerator extends LanguageProvider {
         add(DEModules.draconicShieldCapacity                                                , "Draconic Shield Capacity Module");
         add(DEModules.chaoticShieldCapacity                                                 , "Chaotic Shield Capacity Module");
 
+        add(DEModules.wyvernLargeShieldCapacity                                             , "Wyvern Large Shield Capacity Module");
+        add(DEModules.draconicLargeShieldCapacity                                           , "Draconic Large Shield Capacity Module");
+        add(DEModules.chaoticLargeShieldCapacity                                            , "Chaotic Large Shield Capacity Module");
+
         add(DEModules.wyvernShieldRecovery                                                  , "Wyvern Shield Recovery Module");
         add(DEModules.draconicShieldRecovery                                                , "Draconic Shield Recovery Module");
         add(DEModules.chaoticShieldRecovery                                                 , "Chaotic Shield Recovery Module");
@@ -343,6 +351,20 @@ public class LangGenerator extends LanguageProvider {
 
         //endregion
 
+        //region Item Properties
+
+        add("item_prop.draconicevolution.attack_aoe"                                        , "Attack Radius");
+        add("item_prop.draconicevolution.attack_aoe.info"                                   , "Allows you to adjust the area covered by this weapon's swing.\nThis covers a 100 degree arc in the direction you are looking");
+        add("item_prop.draconicevolution.mining_aoe"                                        , "Mining AOE");
+        add("item_prop.draconicevolution.mining_aoe.info"                                   , "Allows you to adjust this tools mining area of effect.");
+        add("item_prop.draconicevolution.aoe_safe"                                          , "AOE Safe Mode");
+        add("item_prop.draconicevolution.aoe_safe.info"                                     , "When enabled this tool will not break anything if it detects a tile entity within its AOE range. This can help prevent you from accidentally breaking half your base with a single miss click");
+        add("item_prop.draconicevolution.aoe_safe.blocked"                                  , "§9(§aAOE §aSafe §aMode §ais §aenabled§9) §cOperation §cCanceled §cbecause §ca §ctile §centity §cwas §cdetected");
+        add("item_prop.draconicevolution.mining_speed"                                      , "Dig Speed Multiplier");
+        add("item_prop.draconicevolution.mining_speed.info"                                 , "Allows you to adjust how fast this tool breaks blocks. Useful if you need precision over speed.");
+
+
+        //emdregion
 
         //region # Misc
         add("itemGroup.draconicevolution.blocks"                                            ,"Draconic Evolution Blocks");

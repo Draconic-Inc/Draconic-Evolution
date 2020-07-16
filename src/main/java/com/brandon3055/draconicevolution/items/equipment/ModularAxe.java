@@ -54,7 +54,7 @@ public class ModularAxe extends AxeItem implements IReaperItem, IModularMiningTo
     @Override
     public ModuleHostImpl createHost(ItemStack stack) {
         ModuleHostImpl host = new ModuleHostImpl(techLevel, toolWidth(techLevel), toolHeight(techLevel), "axe", removeInvalidModules);
-        host.addCategories(ModuleCategory.MALAY_WEAPON);
+        host.addCategories(ModuleCategory.MELEE_WEAPON);
         return host;
     }
 
@@ -82,11 +82,6 @@ public class ModularAxe extends AxeItem implements IReaperItem, IModularMiningTo
     @Override
     public boolean overrideEffectivity(Material material) {
         return EFFECTIVE_MATS.contains(material);
-    }
-
-    @Override
-    public void inventoryTick(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
-        handleInventoryTick(stack, worldIn, entityIn, itemSlot, isSelected);
     }
 
     @Override

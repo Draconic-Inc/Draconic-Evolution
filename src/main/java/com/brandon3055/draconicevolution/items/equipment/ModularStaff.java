@@ -28,13 +28,13 @@ import static com.brandon3055.draconicevolution.init.ModuleCfg.*;
 /**
  * Created by brandon3055 on 21/5/20.
  */
-public class ModularStaff extends ToolItem implements IReaperItem, IModularMiningTool {
+public class ModularStaff extends ToolItem implements IReaperItem, IModularMiningTool, IModularMelee {
     private final TechLevel techLevel;
     private final DEItemTier itemTier;
 
     public ModularStaff(TechItemProps props) {
         //noinspection unchecked
-        super(0, 0, new DEItemTier(props, EquipCfg::getStaffDmgMult, EquipCfg::getStaffSpeedMult, EquipCfg::getStaffEffMult), Collections.EMPTY_SET, props);
+        super(0, 0, new DEItemTier(props, EquipCfg::getStaffDmgMult, EquipCfg::getStaffSpeedMult, EquipCfg::getStaffEffMult), Collections.EMPTY_SET, props.staffProps());
         this.techLevel = props.techLevel;
         this.itemTier = (DEItemTier) getTier();
     }
@@ -52,7 +52,7 @@ public class ModularStaff extends ToolItem implements IReaperItem, IModularMinin
     @Override
     public ModuleHostImpl createHost(ItemStack stack) {
         ModuleHostImpl host = new ModuleHostImpl(techLevel, staffWidth(techLevel), staffHeight(techLevel), "staff", removeInvalidModules);
-        host.addCategories(ModuleCategory.MALAY_WEAPON, ModuleCategory.RANGED_WEAPON);
+        host.addCategories(ModuleCategory.RANGED_WEAPON);
         return host;
     }
 
@@ -75,11 +75,6 @@ public class ModularStaff extends ToolItem implements IReaperItem, IModularMinin
     @Override
     public boolean overrideEffectivity(Material material) {
         return true;
-    }
-
-    @Override
-    public void inventoryTick(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
-        handleInventoryTick(stack, worldIn, entityIn, itemSlot, isSelected);
     }
 
     @Override

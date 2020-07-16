@@ -75,6 +75,9 @@ public class DEModules {
     @ObjectHolder("wyvern_shield_capacity")         public static Module<EnergyData> wyvernShieldCapacity;
     @ObjectHolder("draconic_shield_capacity")       public static Module<EnergyData> draconicShieldCapacity;
     @ObjectHolder("chaotic_shield_capacity")        public static Module<EnergyData> chaoticShieldCapacity;
+    @ObjectHolder("wyvern_large_shield_capacity")   public static Module<EnergyData> wyvernLargeShieldCapacity;
+    @ObjectHolder("draconic_large_shield_capacity") public static Module<EnergyData> draconicLargeShieldCapacity;
+    @ObjectHolder("chaotic_large_shield_capacity")  public static Module<EnergyData> chaoticLargeShieldCapacity;
     @ObjectHolder("wyvern_shield_recovery")         public static Module<EnergyData> wyvernShieldRecovery;
     @ObjectHolder("draconic_shield_recovery")       public static Module<EnergyData> draconicShieldRecovery;
     @ObjectHolder("chaotic_shield_recovery")        public static Module<EnergyData> chaoticShieldRecovery;
@@ -137,14 +140,17 @@ public class DEModules {
         register(new ModuleImpl<>(SHIELD_CONTROLLER,    DRACONIC,       noData()),                      "draconic_shield_control");
         register(new ModuleImpl<>(SHIELD_CONTROLLER,    CHAOTIC,        noData()),                      "chaotic_shield_control");
 
-        register(new ModuleImpl<>(SHIELD_BOOST,         WYVERN,         shieldData(25,  0.1D)),         "wyvern_shield_capacity");
-        register(new ModuleImpl<>(SHIELD_BOOST,         DRACONIC,       shieldData(50,  0.2D)),         "draconic_shield_capacity");
-        register(new ModuleImpl<>(SHIELD_BOOST,         CHAOTIC,        shieldData(100, 0.4D)),         "chaotic_shield_capacity");
-        register(new ModuleImpl<>(SHIELD_BOOST,         WYVERN,         shieldData(5,   1D)),           "wyvern_shield_recovery");
-        register(new ModuleImpl<>(SHIELD_BOOST,         DRACONIC,       shieldData(10,  2.5D)),         "draconic_shield_recovery");
-        register(new ModuleImpl<>(SHIELD_BOOST,         CHAOTIC,        shieldData(20,  6D)),           "chaotic_shield_recovery");
+        register(new ModuleImpl<>(SHIELD_BOOST,         WYVERN,         shieldData(25,  0.025D)),       "wyvern_shield_capacity");
+        register(new ModuleImpl<>(SHIELD_BOOST,         DRACONIC,       shieldData(50,  0.05D)),        "draconic_shield_capacity");
+        register(new ModuleImpl<>(SHIELD_BOOST,         CHAOTIC,        shieldData(100, 0.10D)),        "chaotic_shield_capacity");
+        register(new ModuleImpl<>(SHIELD_BOOST,         WYVERN,         shieldData(25*5,  0.0D), 2, 2), "wyvern_large_shield_capacity");
+        register(new ModuleImpl<>(SHIELD_BOOST,         DRACONIC,       shieldData(50*5,  0.0D), 2, 2), "draconic_large_shield_capacity");
+        register(new ModuleImpl<>(SHIELD_BOOST,         CHAOTIC,        shieldData(100*5, 0.0D), 2, 2), "chaotic_large_shield_capacity");
+        register(new ModuleImpl<>(SHIELD_BOOST,         WYVERN,         shieldData(5,   0.25D)),        "wyvern_shield_recovery");
+        register(new ModuleImpl<>(SHIELD_BOOST,         DRACONIC,       shieldData(10,  0.50D)),        "draconic_shield_recovery");
+        register(new ModuleImpl<>(SHIELD_BOOST,         CHAOTIC,        shieldData(20,  1.00D)),        "chaotic_shield_recovery");
 
-        register(new ModuleImpl<>(FLIGHT,               WYVERN,         noData()),                      "wyvern_flight");
+        register(new ModuleImpl<>(FLIGHT,               WYVERN,         noData(), 2, 2),                "wyvern_flight");
         register(new ModuleImpl<>(FLIGHT,               DRACONIC,       noData()),                      "draconic_flight");
         register(new ModuleImpl<>(FLIGHT,               CHAOTIC,        noData()),                      "chaotic_flight");
 

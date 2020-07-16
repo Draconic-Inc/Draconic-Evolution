@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import static com.brandon3055.brandonscore.BCConfig.darkMode;
@@ -41,6 +42,7 @@ import static com.brandon3055.brandonscore.BCConfig.darkMode;
  */
 public class GuiModularItem extends ModularGuiContainer<ContainerModularItem> {
 
+    private static AtomicBoolean infoExpanded = new AtomicBoolean(true);
     private ModuleGrid grid;
     private GuiToolkit<GuiModularItem> toolkit;
     private ModuleGridRenderer gridRenderer;
@@ -70,6 +72,7 @@ public class GuiModularItem extends ModularGuiContainer<ContainerModularItem> {
         template.title.setInsets(0, 14, 0, 12);
         template.addPlayerSlots(true, true, true);
         infoPanel = template.infoPanel;
+        infoPanel.setExpandedHolder(infoExpanded);
 
         gridRenderer = new ModuleGridRenderer(container.getGrid(), playerInventory);
         gridRenderer.setYPos(template.title.maxYPos() + 3);
@@ -129,8 +132,11 @@ public class GuiModularItem extends ModularGuiContainer<ContainerModularItem> {
             if (slot.getStack() == container.hostStack) {
 //                RenderSystem.colorMask(true, true, true, false);
 //                GuiHelper.drawGradientRect(x, y, x + 16, y + 16, 0x80FF0000, 0x80FF0000, 1F, 300);
-                GuiHelper.drawBorderedRect(getter.getBuffer(GuiHelper.TRANS_TYPE), x, y, 16, 16, 1, 0x80FF0000, 0x80FF0000, 0);
 //                RenderSystem.colorMask(true, true, true, true);
+//                RenderSystem.depthMask(true);
+//                RenderSystem.enableBlend();
+
+                GuiHelper.drawBorderedRect(getter.getBuffer(GuiHelper.TRANS_TYPE), x, y, 16, 16, 1, 0x50FF0000, 0xFFFF0000, 0);
             }
             getter.finish();
         }

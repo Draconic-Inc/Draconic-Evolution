@@ -31,6 +31,7 @@ import net.minecraftforge.fml.common.thread.EffectiveSide;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.stream.Stream;
 
 import static com.brandon3055.draconicevolution.api.capability.DECapabilities.MODULE_HOST_CAPABILITY;
@@ -70,7 +71,7 @@ public class ContainerModularItem extends ContainerModuleHost<TileBCore> {
             NetworkHooks.openGui(sender, new ContainerModularItem.Provider(stack, slot), slot::toBuff);
             return;
         } else {
-            PlayerSlot slot = PlayerSlot.findStack(sender.inventory, e -> e.getCapability(MODULE_HOST_CAPABILITY).isPresent());
+            PlayerSlot slot = PlayerSlot.findStackActiveFirst(sender.inventory, e -> e.getCapability(MODULE_HOST_CAPABILITY).isPresent());
             if (slot != null) {
                 NetworkHooks.openGui(sender, new ContainerModularItem.Provider(slot.getStackInSlot(sender), slot), slot::toBuff);
                 return;
@@ -138,6 +139,24 @@ public class ContainerModularItem extends ContainerModuleHost<TileBCore> {
     @OnlyIn(Dist.CLIENT)
     public void clientTick() {
         ItemStack stack = slot.getStackInSlot(player);
+        if (stack != hostStack && !stack.isEmpty() && stack.getCapability(MODULE_HOST_CAPABILITY).isPresent()) {
+            hostStack = stack; //Because the client side stack is invalidated every time the server sends an update.
+        }
+    }
+
+    @Override
+    public void setAll(List<ItemStack> stacks) {
+        super.setAll(stacks);
+        ItemStack stack = slot.getStackInSlot(player);
+        if (stack != hostStack && !stack.isEmpty() && stack.getCapability(MODULE_HOST_CAPABILITY).isPresent()) {
+            hostStack = stack; //Because the client side stack is invalidated every time the server sends an update.
+        }
+    }
+
+    @Override
+    public void putStackInSlot(int slotID, ItemStack stack) {
+        super.putStackInSlot(slotID, stack);
+        stack = slot.getStackInSlot(player);
         if (stack != hostStack && !stack.isEmpty() && stack.getCapability(MODULE_HOST_CAPABILITY).isPresent()) {
             hostStack = stack; //Because the client side stack is invalidated every time the server sends an update.
         }

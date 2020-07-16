@@ -1,8 +1,10 @@
 package com.brandon3055.draconicevolution.api.modules.data;
 
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
+import com.brandon3055.draconicevolution.init.EquipCfg;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.Map;
 
@@ -33,6 +35,13 @@ public class ShieldData implements ModuleData<ShieldData> {
 
     @Override
     public void addInformation(Map<ITextComponent, ITextComponent> map, ModuleContext context) {
-        map.put(new StringTextComponent("ShieldModule"), new StringTextComponent("TODO"));
+        if (shieldCapacity > 0){
+            map.put(new TranslationTextComponent("module.draconicevolution.shield_capacity.name"),
+                    new TranslationTextComponent("module.draconicevolution.shield_capacity.value", shieldCapacity));
+        }
+        if (shieldRecharge > 0){
+            map.put(new TranslationTextComponent("module.draconicevolution.shield_recharge.name"),
+                    new TranslationTextComponent("module.draconicevolution.shield_recharge.value", ModuleData.round(shieldRecharge * 20, 10), ModuleData.round((shieldCapacity / shieldRecharge) / 20, 10), (int) (Math.max(shieldRecharge * EquipCfg.energyShieldChg, EquipCfg.energyShieldChg))));
+        }
     }
 }

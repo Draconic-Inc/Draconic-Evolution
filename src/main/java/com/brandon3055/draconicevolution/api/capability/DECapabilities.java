@@ -53,6 +53,11 @@ public class DECapabilities {
             stack.getCapability(PROPERTY_PROVIDER_CAPABILITY).ifPresent(provider -> capTags.put("properties", Objects.requireNonNull(PROPERTY_PROVIDER_CAPABILITY.writeNBT(provider, null))));
         }
 
+        LazyOptional<IOPStorage> energy = stack.getCapability(OP_STORAGE);
+        if (energy.isPresent()) {
+            capTags.put("energy", Objects.requireNonNull(OP_STORAGE.writeNBT(energy.orElseThrow(RuntimeException::new), null)));
+        }
+
         if (capTags.isEmpty()) {
             return nbt;
         }
@@ -88,6 +93,9 @@ public class DECapabilities {
             }
             if (capTags.contains("properties")) {
                 stack.getCapability(PROPERTY_PROVIDER_CAPABILITY).ifPresent(provider -> PROPERTY_PROVIDER_CAPABILITY.readNBT(provider, null, capTags.get("properties")));
+            }
+            if (capTags.contains("energy")) {
+                stack.getCapability(OP_STORAGE).ifPresent(provider -> OP_STORAGE.readNBT(provider, null, capTags.get("energy")));
             }
 
             nbt.remove("share_caps");

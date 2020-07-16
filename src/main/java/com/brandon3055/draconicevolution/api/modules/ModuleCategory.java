@@ -32,7 +32,7 @@ public class ModuleCategory {
      * Anything designed to deal damage.
      */
 //    public static final ModuleCategory WEAPON           = new ModuleCategory();
-    public static final ModuleCategory MALAY_WEAPON     = new ModuleCategory();
+    public static final ModuleCategory MELEE_WEAPON     = new ModuleCategory();
     public static final ModuleCategory RANGED_WEAPON    = new ModuleCategory();
     public static final ModuleCategory MINING_TOOL      = new ModuleCategory();
     //@formatter:on

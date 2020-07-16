@@ -92,6 +92,12 @@ public class ModuleEntity {
 
     }
 
+    /**
+     * This is called whenever the module grid changes.
+     * This allows you to cache module data as long as you clear said cache when this is called.
+     */
+    public void clearCaches() {}
+
 //    /**
 //     * If you are using {@link #getAttributeModifiers(EquipmentSlotType, ItemStack, Multimap)} to add custom attributes you MUST also
 //     * implement this method and add all of your attribute id's to the provided list. This list is used to refresh or remove attributes added by modules.

@@ -9,6 +9,7 @@ import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.modules.data.EnergyData;
 import com.brandon3055.draconicevolution.api.modules.data.ModuleData;
 import com.brandon3055.draconicevolution.api.modules.data.EnergyShareData;
+import com.brandon3055.draconicevolution.api.modules.data.ShieldData;
 import com.google.common.collect.Multimap;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -41,6 +42,7 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
     private boolean deleteInvalidModules;
     private TechLevel techLevel;
     private EnergyData energyCache = null;
+    private ShieldData shieldCache = null;
     private ModuleData energyLinkCache = null;
     private EnergyShareData energyShareCache = null;
     private List<ModuleEntity> moduleEntities = new ArrayList<>();
@@ -250,6 +252,7 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
     private void clearCaches() {
         energyLinkCache = null;
         energyCache = null;
+        getModuleEntities().forEach(ModuleEntity::clearCaches);
     }
 
     public ModuleData getEnergyLink() {
@@ -272,7 +275,6 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
         }
         return energyCache;
     }
-
 
     @Override
     public CompoundNBT serializeNBT() {

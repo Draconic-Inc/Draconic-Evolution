@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.integration;
 
 import com.brandon3055.brandonscore.handlers.HandHelper;
+import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.integration.jei.DEJEIPlugin;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -15,7 +16,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.brandon3055.draconicevolution.handlers.CustomArmorHandler.ArmorSummery;
 
 /**
  * Created by brandon3055 on 29/9/2015.
@@ -85,10 +85,8 @@ public class ModHelper {
         return true;
     }
 
-    public static float applyModDamageAdjustments(ArmorSummery summery, LivingAttackEvent event) {
-        if (summery == null) return event.getAmount();
+    public static float applyModDamageAdjustments(LivingAttackEvent event, ModuleHost host) {
         PlayerEntity attacker = event.getSource().getTrueSource() instanceof PlayerEntity ? (PlayerEntity) event.getSource().getTrueSource() : null;
-
         if (attacker == null) {
             return event.getAmount();
         }
@@ -97,21 +95,21 @@ public class ModHelper {
             event.getEntityLiving().hurtResistantTime = 0;
             return 300F;
         }
-        else if (isHoldingBedrockSword(attacker)) {
-            summery.entropy += 10;
-
-            if (summery.entropy > 100) {
-                summery.entropy = 100;
-            }
-
-            return Math.max(event.getAmount(), Math.min(50F, summery.protectionPoints));
-        }
+//        else if (isHoldingBedrockSword(attacker)) {
+//            summery.entropy += 10;
+//
+//            if (summery.entropy > 100) {
+//                summery.entropy = 100;
+//            }
+//
+//            return Math.max(event.getAmount(), Math.min(50F, summery.protectionPoints));
+//        }
         else if (event.getSource().isUnblockable() || event.getSource().canHarmInCreative()) {
-            summery.entropy += 3;
-
-            if (summery.entropy > 100) {
-                summery.entropy = 100;
-            }
+//            summery.entropy += 3;
+//
+//            if (summery.entropy > 100) {
+//                summery.entropy = 100;
+//            }
 
             return event.getAmount() * 2;
         }

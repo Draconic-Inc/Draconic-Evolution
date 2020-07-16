@@ -56,8 +56,9 @@ public class EquipCfg {
     private static double CAPACITOR_ENERGY_MULT     = 8D;
     private static double CHESTPIECE_ENERGY_MULT    = 2D;
 
-    private static int ENERGY_HARVEST               = 1024;
-    private static int ENERGY_ATTACK                = 2;
+    private static int ENERGY_HARVEST               = 256;
+    private static int ENERGY_ATTACK                = 256;
+    private static int ENERGY_SHIELD_CHG            = 1024;
 
     //Static Access values
     public static double draconiumEfficiency;
@@ -105,6 +106,10 @@ public class EquipCfg {
     public static double toolEnergyMult;
     public static double capacitorEnergyMult;
     public static double chestpieceEnergyMult;
+
+    public static int energyHarvest;
+    public static int energyAttack;
+    public static int energyShieldChg;
 
     //@formatter:on
 
@@ -270,6 +275,19 @@ public class EquipCfg {
                 .setComment("This is a multiplier that is applied to the base energy value.\nInternal Default Value: " + CHESTPIECE_ENERGY_MULT)
                 .setDefaultDouble(-99)
                 .setSyncCallback((tag, type) -> chestpieceEnergyMult = tag.getDouble() != -99 ? tag.getDouble() : CHESTPIECE_ENERGY_MULT);
+
+        equipTag.getTag("energyHarvest")
+                .setComment("This is the per block energy requirement of all mining tools.\nInternal Default Value: " + ENERGY_HARVEST)
+                .setDefaultInt(-99)
+                .setSyncCallback((tag, type) -> energyHarvest = tag.getInt() != -99 ? tag.getInt() : ENERGY_HARVEST);
+        equipTag.getTag("energyAttack")
+                .setComment("This is the energy requirement for weapons. This is multiplied by the weapons attack damage.\nInternal Default Value: " + ENERGY_ATTACK)
+                .setDefaultInt(-99)
+                .setSyncCallback((tag, type) -> energyAttack = tag.getInt() != -99 ? tag.getInt() : ENERGY_ATTACK);
+        equipTag.getTag("energyShieldChg")
+                .setComment("Shield recharge base energy per shield point.\nInternal Default Value: " + ENERGY_SHIELD_CHG)
+                .setDefaultInt(-99)
+                .setSyncCallback((tag, type) -> energyShieldChg = tag.getInt() != -99 ? tag.getInt() : ENERGY_SHIELD_CHG);
 
         equipTag.setSyncToClient();
     }

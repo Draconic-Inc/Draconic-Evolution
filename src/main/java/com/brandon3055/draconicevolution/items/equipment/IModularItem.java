@@ -3,23 +3,27 @@ package com.brandon3055.draconicevolution.items.equipment;
 import codechicken.lib.math.MathHelper;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.api.power.IOPStorage;
+import com.brandon3055.brandonscore.api.power.IOPStorageModifiable;
 import com.brandon3055.brandonscore.capability.MultiCapabilityProvider;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.capability.PropertyProvider;
+import com.brandon3055.draconicevolution.api.config.BooleanProperty;
 import com.brandon3055.draconicevolution.api.config.ConfigProperty;
+import com.brandon3055.draconicevolution.api.config.ConfigProperty.BooleanFormatter;
+import com.brandon3055.draconicevolution.api.config.ConfigProperty.DecimalFormatter;
+import com.brandon3055.draconicevolution.api.config.ConfigProperty.IntegerFormatter;
 import com.brandon3055.draconicevolution.api.config.DecimalProperty;
+import com.brandon3055.draconicevolution.api.config.IntegerProperty;
 import com.brandon3055.draconicevolution.api.modules.ModuleCategory;
 import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
-import com.brandon3055.draconicevolution.api.modules.data.DamageData;
-import com.brandon3055.draconicevolution.api.modules.data.EnergyData;
-import com.brandon3055.draconicevolution.api.modules.data.JumpData;
-import com.brandon3055.draconicevolution.api.modules.data.SpeedData;
+import com.brandon3055.draconicevolution.api.modules.data.*;
 import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleHostImpl;
 import com.brandon3055.draconicevolution.api.modules.lib.StackTickContext;
 import com.brandon3055.draconicevolution.init.EquipCfg;
+import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import net.minecraft.block.Block;
@@ -28,6 +32,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.PlayerEntity;
@@ -35,6 +40,7 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Hand;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -75,7 +81,22 @@ public interface IModularItem extends IForgeItem {
         if (this instanceof IModularMiningTool) {
             host.addCategories(ModuleCategory.MINING_TOOL);
             host.addPropertyBuilder(props -> {
-                props.add(new DecimalProperty("mining_speed", 1).range(0, 1).setFormatter(ConfigProperty.DecimalFormatter.PERCENT_1));
+                props.add(new DecimalProperty("mining_speed", 1).range(0, 1).setFormatter(DecimalFormatter.PERCENT_1));
+                AOEData aoe = host.getModuleData(ModuleTypes.AOE);
+                if (aoe != null) {
+                    props.add(new IntegerProperty("mining_aoe", aoe.getAOE()).range(0, aoe.getAOE()).setFormatter(IntegerFormatter.AOE));
+                    props.add(new BooleanProperty("aoe_safe", false).setFormatter(BooleanFormatter.ENABLED_DISABLED));
+                }
+            });
+        }
+
+        if (this instanceof IModularMelee) {
+            host.addCategories(ModuleCategory.MELEE_WEAPON);
+            host.addPropertyBuilder(props -> {
+                AOEData aoe = host.getModuleData(ModuleTypes.AOE);
+                if (aoe != null) {
+                    props.add(new DecimalProperty("attack_aoe", aoe.getAOE() * 1.5).range(0, aoe.getAOE() * 1.5).setFormatter(DecimalFormatter.AOE_1));
+                }
             });
         }
 
@@ -108,9 +129,9 @@ public interface IModularItem extends IForgeItem {
         return map;
     }
 
-    default void handleInventoryTick(ItemStack stack, World world, Entity entity, int itemSlot, boolean isSelected) {
+    default void handleTick(ItemStack stack, LivingEntity entity, @Nullable EquipmentSlotType slot) {
         ModuleHost host = stack.getCapability(MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new);
-        StackTickContext context = new StackTickContext(host, stack, entity, itemSlot, isSelected);
+        StackTickContext context = new StackTickContext(host, stack, entity, slot);
         host.handleTick(context);
     }
 
@@ -120,17 +141,36 @@ public interface IModularItem extends IForgeItem {
         float moduleValue = data == null ? 0 : (float) data.getSpeedMultiplier();
         //The way vanilla handles efficiency is kinda dumb. So this is far from perfect but its kinda close... ish.
         float multiplier = MathHelper.map((moduleValue + 1F) * (moduleValue + 1F), 1F, 2F, 1F, 1.65F);
+        float propVal = 1F;
         //Module host should always be a property provider because it needs to provide module properties.
-        if (host instanceof PropertyProvider && ((PropertyProvider) host).hasProperty("mining_speed")) {
-            multiplier *= ((DecimalProperty) ((PropertyProvider) host).getProperty("mining_speed")).getValue();
+        if (host instanceof PropertyProvider && ((PropertyProvider) host).hasDecimal("mining_speed")) {
+            propVal = (float) ((PropertyProvider) host).getDecimal("mining_speed").getValue();
+            propVal *= propVal; //Make this exponential
         }
-        if (getToolTypes(stack).stream().anyMatch(state::isToolEffective) || overrideEffectivity(state.getMaterial()) || effectiveBlockAdditions().contains(state.getBlock())) {
-            return getBaseEfficiency() * multiplier;
-        }
-        IOPStorage opStorage = EnergyUtils.getStorage(stack);
-        if (opStorage != null && opStorage.getOPStored() < EquipCfg.)
 
-        return multiplier < 1 ? 1.0F * multiplier : 1.0F;
+        float aoe = host.getModuleData(ModuleTypes.AOE, new AOEData(0)).getAOE();
+        if (host instanceof PropertyProvider && ((PropertyProvider) host).hasInt("mining_aoe")) {
+            aoe = ((PropertyProvider) host).getInt("mining_aoe").getValue();
+        }
+
+        if (getEnergyStored(stack) < EquipCfg.energyHarvest) {
+            multiplier = 0;
+        } else if (aoe > 0) {
+            float userTarget = multiplier * propVal;
+            multiplier = Math.min(userTarget, multiplier / (1 + (aoe * 10)));
+        } else {
+            multiplier *= propVal;
+        }
+
+        if (isToolEffective(stack, state) && (multiplier > 0 || propVal == 0)) {
+            return getBaseEfficiency() * multiplier;
+        } else {
+            return propVal == 0 ? 0 : 1F;
+        }
+    }
+
+    default boolean isToolEffective(ItemStack stack, BlockState state) {
+        return getToolTypes(stack).stream().anyMatch(state::isToolEffective) || overrideEffectivity(state.getMaterial()) || effectiveBlockAdditions().contains(state.getBlock());
     }
 
     default float getBaseEfficiency() {
@@ -166,4 +206,31 @@ public interface IModularItem extends IForgeItem {
         DECapabilities.readFromShareTag(stack, nbt);
     }
 
+    default long getEnergyStored(ItemStack stack) {
+        return EnergyUtils.getEnergyStored(stack);
+    }
+
+    default long extractEnergy(PlayerEntity player, ItemStack stack, long amount) {
+        if (player != null && player.abilities.isCreativeMode) {
+            return amount;
+        }
+        IOPStorage storage = EnergyUtils.getStorage(stack);
+        if (storage instanceof IOPStorageModifiable) {
+            return ((IOPStorageModifiable) storage).modifyEnergyStored(-amount);
+        } else if (storage != null) {
+            return storage.extractOP(amount, false);
+        }
+        return 0;
+    }
+
+    @Override
+    default boolean showDurabilityBar(ItemStack stack) {
+        long max = EnergyUtils.getMaxEnergyStored(stack);
+        return max > 0 && EnergyUtils.getEnergyStored(stack) < max;
+    }
+
+    @Override
+    default double getDurabilityForDisplay(ItemStack stack) {
+        return 1D - ((double) EnergyUtils.getEnergyStored(stack) / EnergyUtils.getMaxEnergyStored(stack));
+    }
 }

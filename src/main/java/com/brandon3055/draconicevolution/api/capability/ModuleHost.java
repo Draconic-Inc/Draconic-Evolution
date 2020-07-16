@@ -117,6 +117,10 @@ public interface ModuleHost extends INBTSerializable<CompoundNBT> {
         return data == null ? fallback : data;
     }
 
+    default Stream<ModuleEntity> getEntitiesByType(ModuleType<?> moduleType) {
+        return getModuleEntities().stream().filter(e->e.getModule().getType() == moduleType);
+    }
+
     /**
      * @return a stream containing all of the module types that are currently installed in this host.
      */

@@ -1,11 +1,16 @@
 package com.brandon3055.draconicevolution.client.handler;
 
 
+import com.brandon3055.brandonscore.api.power.IOPStorage;
 import com.brandon3055.brandonscore.client.utils.GuiHelper;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DEOldConfig;
 import com.brandon3055.draconicevolution.api.IHudDisplay;
-import com.brandon3055.draconicevolution.handlers.CustomArmorHandler;
+import com.brandon3055.draconicevolution.api.capability.DECapabilities;
+import com.brandon3055.draconicevolution.api.capability.ModuleHost;
+import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
+import com.brandon3055.draconicevolution.api.modules.entities.ShieldControlEntity;
+import com.brandon3055.draconicevolution.handlers.ModularArmorEventHandler;
 import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
 import com.brandon3055.draconicevolution.client.DETextures;
 
@@ -15,10 +20,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 
 import net.minecraft.client.gui.screen.ChatScreen;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.common.util.LazyOptional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,9 +41,9 @@ public class HudHandler {
     private static float armorStatsFadeOut = 0F;
     private static boolean showShieldHud = false;
     private static int shieldPercentCharge = 0;
-    private static float shieldPoints = 0F;
-    private static float maxShieldPoints = 0F;
-    private static float shieldEntropy = 0F;
+    private static double shieldPoints = 0F;
+    private static double maxShieldPoints = 0F;
+    private static double shieldEntropy = 0F;
     private static int rfCharge = 0;
     private static long rfTotal = 0;
 
@@ -110,8 +117,7 @@ public class HudHandler {
 //                toolTipFadeOut = 1F;
 //                armorStatsFadeOut = 1F;
 //            }
-        }
-        else {
+        } else {
 
             RayTraceResult traceResult = mc.player.pick(5, 0, false);
             BlockState state = null;
@@ -137,22 +143,34 @@ public class HudHandler {
             }
         }
 
-        CustomArmorHandler.ArmorSummery summery = new CustomArmorHandler.ArmorSummery().getSummery(mc.player);
 
-        if (summery == null) {
+        ItemStack chestStack = mc.player.getItemStackFromSlot(EquipmentSlotType.CHEST);
+        LazyOptional<ModuleHost> optionalHost = chestStack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
+        LazyOptional<IOPStorage> optionalStorage = chestStack.getCapability(DECapabilities.OP_STORAGE);
+        if (chestStack.isEmpty() || !optionalHost.isPresent() || !optionalStorage.isPresent()) {
             showShieldHud = false;
             return;
         }
+        ModuleHost host = optionalHost.orElseThrow(IllegalStateException::new);
+        IOPStorage opStorage = optionalStorage.orElseThrow(IllegalStateException::new);
+        ShieldControlEntity shieldControl = host.getEntitiesByType(ModuleTypes.SHIELD_CONTROLLER).map(e -> (ShieldControlEntity) e).findAny().orElse(null);
+        if (shieldControl == null || shieldControl.getShieldCapacity() <= 0) {
+            showShieldHud = false;
+            return;
+        }
+
+
+        armorStatsFadeOut = 1;
         showShieldHud = armorStatsFadeOut > 0F;
 
-        if (maxShieldPoints != summery.maxProtectionPoints || shieldPoints != summery.protectionPoints || shieldEntropy != summery.entropy || rfTotal != summery.totalEnergyStored) armorStatsFadeOut = 5F;
+//        if (maxShieldPoints != summery.maxProtectionPoints || shieldPoints != summery.protectionPoints || shieldEntropy != summery.entropy || rfTotal != summery.totalEnergyStored) armorStatsFadeOut = 5F;
 
-        maxShieldPoints = summery.maxProtectionPoints;
-        shieldPoints = summery.protectionPoints;
-        shieldPercentCharge = (int) (summery.protectionPoints / summery.maxProtectionPoints * 100D);
-        shieldEntropy = summery.entropy;
-        rfCharge = (int) ((double) summery.totalEnergyStored / Math.max((double) summery.maxTotalEnergyStorage, 1D) * 100D);
-        rfTotal = summery.totalEnergyStored;
+        maxShieldPoints = shieldControl.getShieldCapacity();
+        shieldPoints = shieldControl.getShieldPoints();
+        shieldPercentCharge = (int) ((shieldPoints / maxShieldPoints) * 100D);
+        shieldEntropy = shieldControl.getShieldCoolDown();
+        rfTotal = opStorage.getOPStored();
+        rfCharge = (int) ((double) rfTotal / Math.max((double) opStorage.getMaxOPStored(), 1D) * 100D);
     }
 
     private static void drawArmorHUD(int x, int y, boolean rotated, double scale) {
@@ -173,8 +191,7 @@ public class HudHandler {
             RenderSystem.translated(x, y, 0);
             RenderSystem.rotatef(-90, 0, 0, -1);
             RenderSystem.translated(-x, -y, 0);
-        }
-        else GuiHelper.drawTexturedRect(x + 1, y + 105, 15, 17, 2, 0, 13, 15, 0, GuiHelper.PXL128);
+        } else GuiHelper.drawTexturedRect(x + 1, y + 105, 15, 17, 2, 0, 13, 15, 0, GuiHelper.PXL128);
 
         GuiHelper.drawTexturedRect(x, y, 17, 104, 0, 15, 17, 104, 0, GuiHelper.PXL128);
         GuiHelper.drawTexturedRect(x + 2, y + 2 + (100 - shieldPercentCharge), 7, shieldPercentCharge, 17, 100 - shieldPercentCharge, 7, shieldPercentCharge, 0, GuiHelper.PXL128);
@@ -195,8 +212,7 @@ public class HudHandler {
                 fontRenderer.drawStringWithShadow(shield, x + 18, y + 74, ((int) (fade * 240F) + 0x10 << 24) | 0x00FFFFFF);
                 fontRenderer.drawStringWithShadow(energy, x + 18, y + 84, ((int) (fade * 240F) + 0x10 << 24) | 0x00FFFFFF);
                 fontRenderer.drawStringWithShadow(entropy, x + 18, y + 94, ((int) (fade * 240F) + 0x10 << 24) | 0x00FFFFFF);
-            }
-            else {
+            } else {
                 fontRenderer.drawString(shield, x - 52 - fontRenderer.getStringWidth(shield) / 2, y + 2, ((int) (fade * 240F) + 0x10 << 24) | 0x000000FF);
                 fontRenderer.drawStringWithShadow(entropy, x - fontRenderer.getStringWidth(entropy), y + 18, ((int) (fade * 240F) + 0x10 << 24) | 0x00FFFFFF);
                 fontRenderer.drawStringWithShadow(energy, x - 102, y + 18, ((int) (fade * 240F) + 0x10 << 24) | 0x00FFFFFF);

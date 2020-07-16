@@ -43,7 +43,7 @@ public abstract class ConfigProperty implements INBTSerializable<CompoundNBT> {
      * @return the display name for this config property. e.g. Mining AOE
      */
     public ITextComponent getDisplayName() {
-        return displayName == null ? new TranslationTextComponent("item_prop.draconicevolution." + name + ".name") : displayName;
+        return displayName == null ? new TranslationTextComponent("item_prop.draconicevolution." + name) : displayName;
     }
 
     public ITextComponent getToolTip() {
@@ -164,7 +164,8 @@ public abstract class ConfigProperty implements INBTSerializable<CompoundNBT> {
     }
 
     public enum IntegerFormatter {
-        RAW(String::valueOf);
+        RAW(String::valueOf),
+        AOE(e -> String.format("%sx%s", 1 + (e * 2), 1 + (e * 2)));
         //Will add formatters as needed
 
         private Function<Integer, String> formatter;
@@ -193,7 +194,10 @@ public abstract class ConfigProperty implements INBTSerializable<CompoundNBT> {
         PERCENT_2(e -> String.format("%.2f%%", e * 100D)),
         PLUS_PERCENT_0(e -> String.format("+%.0f%%", e * 100D)),
         PLUS_PERCENT_1(e -> String.format("+%.1f%%", e * 100D)),
-        PLUS_PERCENT_2(e -> String.format("+%.2f%%", e * 100D));
+        PLUS_PERCENT_2(e -> String.format("+%.2f%%", e * 100D)),
+        AOE_0(e -> String.format("%.0fx%.0f", 1 + (e * 2), 1 + (e * 2))),
+        AOE_1(e -> String.format("%.1fx%.1f", 1 + (e * 2), 1 + (e * 2))),
+        AOE_2(e -> String.format("%.2fx%.2f", 1 + (e * 2), 1 + (e * 2)));
         //Will add formatters as needed
 
         private Function<Double, String> formatter;
