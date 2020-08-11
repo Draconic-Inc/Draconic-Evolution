@@ -319,8 +319,8 @@ public class GUIManual extends GUIScrollingBase implements GuiYesNoCallback {
             is.close();
             os.close();
 
+            JsonReader reader = new JsonReader(new InputStreamReader(new FileInputStream(manualJSON),"utf-8"));
 
-            JsonReader reader = new JsonReader(new FileReader(manualJSON));
             List<String> images;
             List<String> content;
 
