@@ -1,13 +1,7 @@
 package com.brandon3055.draconicevolution.api.modules.data;
 
-import com.brandon3055.brandonscore.api.power.IOPStorage;
-import com.brandon3055.brandonscore.api.power.OPStorage;
-import com.brandon3055.brandonscore.utils.Utils;
-import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.Map;
@@ -38,10 +32,10 @@ public class EnergyData implements ModuleData<EnergyData> {
     }
 
     @Override
-    public void addInformation(Map<ITextComponent, ITextComponent> map, ModuleContext context) {
+    public void addInformation(Map<ITextComponent, ITextComponent> map, ModuleContext context, boolean stack) {
         long capacity = getCapacity();
         long transfer = getTransfer();
-        map.put(new TranslationTextComponent("module.draconicevolution.energy.capacity"), new TranslationTextComponent("module.draconicevolution.energy.capacity.value", Utils.formatNumber(capacity)));
-        map.put(new TranslationTextComponent("module.draconicevolution.energy.transfer"), new TranslationTextComponent("module.draconicevolution.energy.transfer.value", Utils.formatNumber(transfer)));
+        map.put(new TranslationTextComponent("module.draconicevolution.energy.capacity"), new TranslationTextComponent("module.draconicevolution.energy.capacity.value", ModuleData.formatNumber(capacity)));
+        map.put(new TranslationTextComponent("module.draconicevolution.energy.transfer"), new TranslationTextComponent("module.draconicevolution.energy.transfer.value", ModuleData.formatNumber(transfer)));
     }
 }

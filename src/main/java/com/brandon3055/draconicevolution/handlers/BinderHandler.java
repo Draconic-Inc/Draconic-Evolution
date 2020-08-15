@@ -48,7 +48,7 @@ public class BinderHandler {
         boolean isBound = isBound(binder);
 
         //If the tile is linkable and the player is sneaking bind the tile to the tool.
-        if (tile instanceof ICrystalLink && player.isShiftKeyDown()) {
+        if (tile instanceof ICrystalLink && player.isSneaking()) {
             bind(binder, blockClicked);
             if (world.isRemote) {
                 ChatHelper.indexedTrans(player, "eNet.de.posSavedToTool.info", TextFormatting.GREEN, -442611624);

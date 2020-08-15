@@ -52,7 +52,7 @@ public class Magnet extends ItemBCore /*implements IBauble*/ {
     }
 
     private void updateMagnet(ItemStack stack, Entity entity) {
-        if (!entity.isShiftKeyDown() && entity.ticksExisted % 10 == 0 && isEnabled(stack) && entity instanceof PlayerEntity) {
+        if (!entity.isSneaking() && entity.ticksExisted % 10 == 0 && isEnabled(stack) && entity instanceof PlayerEntity) {
             World world = entity.getEntityWorld();
 
             List<ItemEntity> items = world.getEntitiesWithinAABB(ItemEntity.class, new AxisAlignedBB(entity.posX, entity.posY, entity.posZ, entity.posX, entity.posY, entity.posZ).grow(range, range, range));
@@ -148,7 +148,7 @@ public class Magnet extends ItemBCore /*implements IBauble*/ {
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
         ItemStack stack = player.getHeldItem(hand);
-        if (player.isShiftKeyDown()) {
+        if (player.isSneaking()) {
             toggleEnabled(stack);
         }
         return super.onItemRightClick(world, player, hand);

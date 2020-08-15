@@ -85,7 +85,7 @@ public class TileCrystalDirectIO extends TileCrystalBase   {
 
     @Override
     public boolean onBlockActivated(BlockState state, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
-        if (player.isShiftKeyDown()) {
+        if (player.isSneaking()) {
             outputMode.invert();
             updateRotation(facing.get());
             return true;

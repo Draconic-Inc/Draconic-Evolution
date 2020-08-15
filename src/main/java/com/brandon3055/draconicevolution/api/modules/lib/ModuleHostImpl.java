@@ -38,7 +38,7 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
     private int gridHeight;
     private UUID providerID = null;
     private String providerName;
-//    private boolean attributesDirty;
+    //    private boolean attributesDirty;
     private boolean deleteInvalidModules;
     private TechLevel techLevel;
     private EnergyData energyCache = null;
@@ -53,7 +53,7 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
     private Map<String, ConfigProperty> propertyMap = new LinkedHashMap<>();
     private Consumer<List<ConfigProperty>> propertyBuilder;
     private Map<ModuleType<?>, Consumer<?>> propertyValidators = new HashMap<>();
-    private Map<ModuleType<?>, List<ConfigProperty>> typeProperties = new HashMap<>();
+//    private Map<ModuleType<?>, List<ConfigProperty>> typeProperties = new HashMap<>();
 
     public ModuleHostImpl(TechLevel techLevel, int gridWidth, int gridHeight, String providerName, boolean deleteInvalidModules, ModuleCategory... categories) {
         this.techLevel = techLevel;
@@ -78,17 +78,17 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
 
     @Override
     public void addModule(ModuleEntity entity, ModuleContext context) {
-        clearCaches();
         moduleEntities.add(entity);
         entity.setHost(this);
+        clearCaches();
         entity.onInstalled(context);
         gatherProperties();
     }
 
     @Override
     public void removeModule(ModuleEntity entity, ModuleContext context) {
-        clearCaches();
         moduleEntities.remove(entity);
+        clearCaches();
         entity.onRemoved(context);
         gatherProperties();
     }
@@ -210,24 +210,37 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
             propertyBuilder.accept(gathered);
         }
 
-        typeProperties.clear();
-        propertyValidators.clear();
-        getInstalledTypes().forEach(type -> {
+//        typeProperties.clear();
+//        propertyValidators.clear();
+        Set<ModuleType<?>> installedTypes = getInstalledTypes().collect(Collectors.toSet());
+        propertyValidators.entrySet().removeIf(e -> !installedTypes.contains(e.getKey()));
+
+        installedTypes.forEach(type -> {
             Map<ConfigProperty, Consumer<?>> map = new HashMap<>();
             type.getTypeProperties(SneakyUtils.unsafeCast(getModuleData(type)), SneakyUtils.unsafeCast(map));
             gathered.addAll(map.keySet());
-            map.forEach((property, consumer) -> {
-                if (consumer != null) {
-                    propertyValidators.put(type, consumer);
-                }
-                typeProperties.computeIfAbsent(type, e -> new ArrayList<>()).add(property);
-            });
+            if (propertyValidators.containsKey(type)) {
+                propertyValidators.get(type).accept(SneakyUtils.unsafeCast(getModuleData(type)));
+            } else {
+                map.forEach((property, consumer) -> {
+                    if (consumer != null) {
+                        propertyValidators.put(type, consumer);
+                    }
+//                typeProperties.computeIfAbsent(type, e -> new ArrayList<>()).add(property);
+                });
+            }
         });
 
         //Gather is not just called on load but also when a property is added or removed so we need to avoid overwriting existing loaded properties.
         Set<String> gatheredNames = gathered.stream().map(ConfigProperty::getName).collect(Collectors.toSet());
         //Remove properties that no longer exist
         providedProperties.removeIf(e -> !gatheredNames.contains(e.getName()));
+
+//        getInstalledTypes().forEach(type -> {
+//            List<ConfigProperty> propList = new ArrayList<>();
+//            type.getTypeProperties(SneakyUtils.unsafeCast(getModuleData(type)), propList);
+//            gathered.addAll(propList);
+//        });
 
         Set<String> installedNames = providedProperties.stream().map(ConfigProperty::getName).collect(Collectors.toSet());
         //Add new properties

@@ -63,7 +63,7 @@ public class DislocatorAdvanced extends Dislocator implements IHudDisplay {
         }
 
         if (entity instanceof PlayerEntity) {
-            if (entity.isShiftKeyDown()) {
+            if (entity.isSneaking()) {
                 location.teleport(entity);
                 if (!player.abilities.isCreativeMode && fuel > 0) {
                     ItemNBTHelper.setInteger(stack, "Fuel", fuel - 1);
@@ -107,7 +107,7 @@ public class DislocatorAdvanced extends Dislocator implements IHudDisplay {
         ItemStack stack = player.getHeldItem(hand);
         int fuel = ItemNBTHelper.getInteger(stack, "Fuel", 0);
 
-        if (player.isShiftKeyDown()) {
+        if (player.isSneaking()) {
             if (world.isRemote) {
 //                FMLNetworkHandler.openGui(player, DraconicEvolution.instance, GuiHandler.GUIID_TELEPORTER, world, (int) player.posX, (int) player.posY, (int) player.posZ);
             }

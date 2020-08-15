@@ -97,7 +97,7 @@ public class TileCreativeOPCapacitor extends TileBCore implements ITickableTileE
     @Override
     public boolean onBlockActivated(BlockState state, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
         if (!world.isRemote) {
-            if (player.isShiftKeyDown()) {
+            if (player.isSneaking()) {
                 powerRate.divide(10);
             } else {
                 powerRate.multiply(10);

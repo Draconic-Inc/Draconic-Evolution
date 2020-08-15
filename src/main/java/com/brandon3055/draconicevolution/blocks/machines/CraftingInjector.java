@@ -136,7 +136,7 @@ public class CraftingInjector extends BlockBCore implements /*ITileEntityProvide
 
         TileCraftingInjector craftingPedestal = (TileCraftingInjector) tile;
 
-        if (player.isShiftKeyDown()) {
+        if (player.isSneaking()) {
             craftingPedestal.singleItem.set(!craftingPedestal.singleItem.get());
             ChatHelper.indexedTrans(player, "msg.craftingInjector.singleItem" + (craftingPedestal.singleItem.get() ? "On" : "Off") + ".txt", -30553055);
             craftingPedestal.getDataManager().detectAndSendChanges();

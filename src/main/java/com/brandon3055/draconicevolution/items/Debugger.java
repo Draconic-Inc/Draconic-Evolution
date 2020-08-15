@@ -763,7 +763,7 @@ public class Debugger extends Item {
 
 
         int mode = ItemNBTHelper.getInteger(stack, "mode", 0);
-        if (player.isShiftKeyDown()) {
+        if (player.isSneaking()) {
             mode++;
             if (mode == MODES.size()) {
                 mode = 0;

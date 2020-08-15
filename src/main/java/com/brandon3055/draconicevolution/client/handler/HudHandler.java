@@ -10,7 +10,6 @@ import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
 import com.brandon3055.draconicevolution.api.modules.entities.ShieldControlEntity;
-import com.brandon3055.draconicevolution.handlers.ModularArmorEventHandler;
 import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
 import com.brandon3055.draconicevolution.client.DETextures;
 
@@ -154,7 +153,7 @@ public class HudHandler {
         ModuleHost host = optionalHost.orElseThrow(IllegalStateException::new);
         IOPStorage opStorage = optionalStorage.orElseThrow(IllegalStateException::new);
         ShieldControlEntity shieldControl = host.getEntitiesByType(ModuleTypes.SHIELD_CONTROLLER).map(e -> (ShieldControlEntity) e).findAny().orElse(null);
-        if (shieldControl == null || shieldControl.getShieldCapacity() <= 0) {
+        if (shieldControl == null || (shieldControl.getShieldCapacity() <= 0 && shieldControl.getMaxShieldBoost() <= 0)) {
             showShieldHud = false;
             return;
         }
@@ -165,10 +164,10 @@ public class HudHandler {
 
 //        if (maxShieldPoints != summery.maxProtectionPoints || shieldPoints != summery.protectionPoints || shieldEntropy != summery.entropy || rfTotal != summery.totalEnergyStored) armorStatsFadeOut = 5F;
 
-        maxShieldPoints = shieldControl.getShieldCapacity();
+        maxShieldPoints = shieldControl.getShieldCapacity() == 0 ? shieldControl.getMaxShieldBoost() : shieldControl.getShieldCapacity();
         shieldPoints = shieldControl.getShieldPoints();
         shieldPercentCharge = (int) ((shieldPoints / maxShieldPoints) * 100D);
-        shieldEntropy = shieldControl.getShieldCoolDown();
+        shieldEntropy = (shieldControl.getShieldCoolDown() / (double)shieldControl.getMaxShieldCoolDown()) * 100D;
         rfTotal = opStorage.getOPStored();
         rfCharge = (int) ((double) rfTotal / Math.max((double) opStorage.getMaxOPStored(), 1D) * 100D);
     }
@@ -205,16 +204,16 @@ public class HudHandler {
             if (rotated) RenderSystem.rotatef(90, 0, 0, -1);
             RenderSystem.translated(-x, -y, 0);
             String shield = (int) shieldPoints + "/" + (int) maxShieldPoints;
-            String entropy = "EN: " + (int) shieldEntropy + "%";
-            String energy = "RF: " + Utils.formatNumber(rfTotal);
+//            String entropy = "EN: " + (int) shieldEntropy + "%";
+            String energy = "RF: " + formatNumber(rfTotal);
             float fade = Math.min(armorStatsFadeOut, 1F);
             if (!rotated) {
                 fontRenderer.drawStringWithShadow(shield, x + 18, y + 74, ((int) (fade * 240F) + 0x10 << 24) | 0x00FFFFFF);
                 fontRenderer.drawStringWithShadow(energy, x + 18, y + 84, ((int) (fade * 240F) + 0x10 << 24) | 0x00FFFFFF);
-                fontRenderer.drawStringWithShadow(entropy, x + 18, y + 94, ((int) (fade * 240F) + 0x10 << 24) | 0x00FFFFFF);
+//                fontRenderer.drawStringWithShadow(entropy, x + 18, y + 94, ((int) (fade * 240F) + 0x10 << 24) | 0x00FFFFFF);
             } else {
                 fontRenderer.drawString(shield, x - 52 - fontRenderer.getStringWidth(shield) / 2, y + 2, ((int) (fade * 240F) + 0x10 << 24) | 0x000000FF);
-                fontRenderer.drawStringWithShadow(entropy, x - fontRenderer.getStringWidth(entropy), y + 18, ((int) (fade * 240F) + 0x10 << 24) | 0x00FFFFFF);
+//                fontRenderer.drawStringWithShadow(entropy, x - fontRenderer.getStringWidth(entropy), y + 18, ((int) (fade * 240F) + 0x10 << 24) | 0x00FFFFFF);
                 fontRenderer.drawStringWithShadow(energy, x - 102, y + 18, ((int) (fade * 240F) + 0x10 << 24) | 0x00FFFFFF);
             }
         }
@@ -224,5 +223,16 @@ public class HudHandler {
         RenderSystem.disableBlend();
         RenderSystem.disableAlphaTest();
         RenderSystem.popMatrix();
+    }
+
+    public static String formatNumber(long value) {
+        if (value < 1000L) return String.valueOf(value);
+        else if (value < 1000000L) return Utils.addCommas(value); //I mean whats the ploint of displaying 1.235K instead of 1,235?
+        else if (value < 1000000000L) return String.valueOf(Math.round(value / 100000L) / 10D) + "M";
+        else if (value < 1000000000000L) return String.valueOf(Math.round(value / 100000000L) / 10D) + "G";
+        else if (value < 1000000000000000L) return String.valueOf(Math.round(value / 1000000000L) / 1000D) + "T";
+        else if (value < 1000000000000000000L) return String.valueOf(Math.round(value / 1000000000000L) / 1000D) + "P";
+        else if (value <= Long.MAX_VALUE) return String.valueOf(Math.round(value / 1000000000000000L) / 1000D) + "E";
+        else return "Something is very broken!!!!";
     }
 }

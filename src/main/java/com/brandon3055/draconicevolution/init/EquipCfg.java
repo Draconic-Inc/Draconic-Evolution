@@ -60,6 +60,12 @@ public class EquipCfg {
     private static int ENERGY_ATTACK                = 256;
     private static int ENERGY_SHIELD_CHG            = 1024;
 
+    private static double SHIELD_PASSIVE_MODIFIER   = 0.0005;
+
+    private static int WYVERN_SHIELD_COOL_DOWN      = 15 * 20;
+    private static int DRACONIC_SHIELD_COOL_DOWN    = 8 * 20;
+    private static int CHAOTIC_SHIELD_COOL_DOWN     = 5 * 20;
+
     //Static Access values
     public static double draconiumEfficiency;
     public static double wyvernEfficiency;
@@ -110,6 +116,12 @@ public class EquipCfg {
     public static int energyHarvest;
     public static int energyAttack;
     public static int energyShieldChg;
+
+    public static double shieldPassiveModifier;
+
+    public static int wyvernShieldCoolDown;
+    public static int draconicShieldCoolDown;
+    public static int chaoticShieldCoolDown;
 
     //@formatter:on
 
@@ -289,6 +301,24 @@ public class EquipCfg {
                 .setDefaultInt(-99)
                 .setSyncCallback((tag, type) -> energyShieldChg = tag.getInt() != -99 ? tag.getInt() : ENERGY_SHIELD_CHG);
 
+        equipTag.getTag("shieldPassiveModifier")
+                .setComment("This controls the shield's passive power usage. The formula is: passiveDraw = (shieldPoints * shieldPoints * shieldPassiveModifier) OP/t\nInternal Default Value: " + SHIELD_PASSIVE_MODIFIER)
+                .setDefaultDouble(-99)
+                .setSyncCallback((tag, type) -> shieldPassiveModifier = tag.getDouble() != -99 ? tag.getDouble() : SHIELD_PASSIVE_MODIFIER);
+
+        equipTag.getTag("wyvernShieldCoolDown")
+                .setComment("This is the delay in ticks before the Wyvern shield will start to regenerate after blocking damage.\nInternal Default Value: " + WYVERN_SHIELD_COOL_DOWN)
+                .setDefaultInt(-99)
+                .setSyncCallback((tag, type) -> wyvernShieldCoolDown = tag.getInt() != -99 ? tag.getInt() : WYVERN_SHIELD_COOL_DOWN);
+        equipTag.getTag("draconicShieldCoolDown")
+                .setComment("This is the delay in ticks before the Draconic shield will start to regenerate after blocking damage.\nInternal Default Value: " + DRACONIC_SHIELD_COOL_DOWN)
+                .setDefaultInt(-99)
+                .setSyncCallback((tag, type) -> draconicShieldCoolDown = tag.getInt() != -99 ? tag.getInt() : DRACONIC_SHIELD_COOL_DOWN);
+        equipTag.getTag("chaoticShieldCoolDown")
+                .setComment("This is the delay in ticks before the Chaotic shield will start to regenerate after blocking damage.\nInternal Default Value: " + CHAOTIC_SHIELD_COOL_DOWN)
+                .setDefaultInt(-99)
+                .setSyncCallback((tag, type) -> chaoticShieldCoolDown = tag.getInt() != -99 ? tag.getInt() : CHAOTIC_SHIELD_COOL_DOWN);
+
         equipTag.setSyncToClient();
     }
 
@@ -391,5 +421,17 @@ public class EquipCfg {
 
     public static long getBaseChestpieceTransfer(TechLevel techLevel) {
         return getBaseChestpieceEnergy(techLevel) / 64;
+    }
+
+    public static int getShieldCoolDown(TechLevel techLevel) {
+        switch (techLevel) {
+            case WYVERN:
+                return wyvernShieldCoolDown;
+            case DRACONIC:
+                return draconicShieldCoolDown;
+            case CHAOTIC:
+                return chaoticShieldCoolDown;
+        }
+        return wyvernShieldCoolDown;
     }
 }

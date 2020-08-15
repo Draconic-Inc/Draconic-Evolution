@@ -9,6 +9,7 @@ import com.brandon3055.draconicevolution.api.modules.data.DamageData;
 import com.brandon3055.draconicevolution.api.modules.data.SpeedData;
 import com.google.common.collect.Multimap;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -30,28 +31,29 @@ import static com.brandon3055.draconicevolution.api.capability.DECapabilities.MO
  */
 public interface IModularArmor extends IModularItem {
 
-    UUID speedUUID = UUID.fromString("deff7521-d4f1-4def-af63-03b88505555f");
+//    UUID speedUUID = UUID.fromString("deff7521-d4f1-4def-af63-03b88505555f");
 
     @Override
     default Multimap<String, AttributeModifier> getAttributeModifiers(EquipmentSlotType slot, ItemStack stack) {
         Multimap<String, AttributeModifier> map = IModularItem.super.getAttributeModifiers(slot, stack);
 
-        if (MODULE_HOST_CAPABILITY != null && stack.getCapability(MODULE_HOST_CAPABILITY).isPresent()) {
-            ModuleHost host = stack.getCapability(MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new);
-            if ((host.getModuleCategories().contains(ModuleCategory.CHESTPIECE) && slot == EquipmentSlotType.CHEST) || (host.getModuleCategories().contains(ModuleCategory.ARMOR_LEGS) && slot == EquipmentSlotType.LEGS)) {
-                SpeedData speed = host.getModuleData(ModuleTypes.SPEED);
-                if (speed != null) {
-                    double speedBoost = speed.getSpeedMultiplier();
-                    if (host instanceof PropertyProvider && ((PropertyProvider) host).hasDecimal("move_speed")) {
-                        speedBoost = Math.min(speedBoost, ((PropertyProvider) host).getDecimal("move_speed").getValue());
-                    }
-                    if (DEConfig.armorSpeedLimit != -1) {
-                        speedBoost = Math.min(speedBoost, DEConfig.armorSpeedLimit);
-                    }
-                    map.put(SharedMonsterAttributes.MOVEMENT_SPEED.getName(), new AttributeModifier(speedUUID, "Armor modifier", speedBoost, AttributeModifier.Operation.MULTIPLY_BASE));
-                }
-            }
-        }
+        //Had to move this to ModularArmorEventHandler in order to support separate walk and sprint speeds.
+//        if (MODULE_HOST_CAPABILITY != null && stack.getCapability(MODULE_HOST_CAPABILITY).isPresent()) {
+//            ModuleHost host = stack.getCapability(MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new);
+//            if ((host.getModuleCategories().contains(ModuleCategory.CHESTPIECE) && slot == EquipmentSlotType.CHEST) || (host.getModuleCategories().contains(ModuleCategory.ARMOR_LEGS) && slot == EquipmentSlotType.LEGS)) {
+//                SpeedData speed = host.getModuleData(ModuleTypes.SPEED);
+//                if (speed != null) {
+//                    double speedBoost = speed.getSpeedMultiplier();
+//                    if (host instanceof PropertyProvider && ((PropertyProvider) host).hasDecimal("move_speed")) {
+//                        speedBoost = Math.min(speedBoost, ((PropertyProvider) host).getDecimal("move_speed").getValue());
+//                    }
+//                    if (DEConfig.armorSpeedLimit != -1) {
+//                        speedBoost = Math.min(speedBoost, DEConfig.armorSpeedLimit);
+//                    }
+//                    map.put(SharedMonsterAttributes.MOVEMENT_SPEED.getName(), new AttributeModifier(speedUUID, "Armor modifier", speedBoost, AttributeModifier.Operation.MULTIPLY_BASE));
+//                }
+//            }
+//        }
 
         return map;
     }
@@ -66,5 +68,15 @@ public interface IModularArmor extends IModularItem {
                 tooltip.add(new StringTextComponent("Speed limit on this server is +" + (int) (DEConfig.armorSpeedLimit * 100) + "%").applyTextStyle(TextFormatting.RED));
             }
         }
+    }
+
+    @Override
+    default boolean elytraFlightTick(ItemStack stack, LivingEntity entity, int flightTicks) {
+        return true;
+    }
+
+    @Override
+    default boolean canElytraFly(ItemStack stack, LivingEntity entity) {
+        return true;
     }
 }

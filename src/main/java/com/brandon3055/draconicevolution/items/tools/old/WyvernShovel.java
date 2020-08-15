@@ -88,7 +88,7 @@ public class WyvernShovel extends MiningToolBase {
             modifyEnergy(stack, -energyPerOperation);
         }
 
-        if (player.isShiftKeyDown()) {
+        if (player.isSneaking()) {
             return ActionResultType.SUCCESS;
         }
 

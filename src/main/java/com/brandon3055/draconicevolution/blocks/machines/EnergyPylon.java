@@ -77,7 +77,7 @@ public class EnergyPylon extends BlockBCore/* implements ITileEntityProvider, IR
     public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
         TileEntity tile = worldIn.getTileEntity(pos);
         if (tile instanceof TileEnergyPylon) {
-            if (player.isShiftKeyDown()) {
+            if (player.isSneaking()) {
                 ((TileEnergyPylon) tile).selectNextCore();
             } else {
                 ((TileEnergyPylon) tile).validateStructure();

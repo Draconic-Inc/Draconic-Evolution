@@ -28,7 +28,7 @@ public class AOEData implements ModuleData<AOEData> {
     }
 
     @Override
-    public void addInformation(Map<ITextComponent, ITextComponent> map, ModuleContext context) {
+    public void addInformation(Map<ITextComponent, ITextComponent> map, ModuleContext context, boolean stack) {
         map.put(new TranslationTextComponent("module.draconicevolution.aoe.name"), new TranslationTextComponent("module.draconicevolution.aoe.value", 1 + (aoe * 2), 1 + (aoe * 2)));
     }
 }

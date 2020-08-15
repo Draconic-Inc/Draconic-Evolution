@@ -11,6 +11,7 @@ import com.brandon3055.draconicevolution.api.modules.lib.ModuleGrid;
 import com.brandon3055.draconicevolution.api.modules.lib.StackModuleContext;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.init.ModCapabilities;
+import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.google.common.collect.Streams;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
@@ -94,7 +95,7 @@ public class ContainerModularItem extends ContainerModuleHost<TileBCore> {
 
     @Override
     public ModuleContext getModuleContext() {
-        return new StackModuleContext(getModuleHost(), hostStack, player);
+        return new StackModuleContext(hostStack, player, slot.getEquipmentSlot());
     }
 
     @Override

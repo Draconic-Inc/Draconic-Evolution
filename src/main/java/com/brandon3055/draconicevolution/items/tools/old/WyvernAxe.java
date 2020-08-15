@@ -116,7 +116,7 @@ public class WyvernAxe extends MiningToolBase {
         PlayerEntity player = context.getPlayer();
 
         ItemStack stack = context.getItem();
-        if (world.getBlockState(pos).getMaterial() == Material.WOOD && !player.isShiftKeyDown()) {
+        if (world.getBlockState(pos).getMaterial() == Material.WOOD && !player.isSneaking()) {
             player.setActiveHand(context.getHand());
             if (!world.isRemote) {
                 SelectionController controller = new SelectionController(player, stack, pos, true, 2, this);

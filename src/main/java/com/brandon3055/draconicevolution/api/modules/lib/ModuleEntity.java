@@ -6,10 +6,15 @@ import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.ModuleType;
 import com.brandon3055.draconicevolution.api.modules.data.ModuleData;
 import com.google.common.collect.Multimap;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -196,6 +201,11 @@ public class ModuleEntity {
 
     //end
 
+    @OnlyIn(Dist.CLIENT)
+    public void renderSlotOverlay(IRenderTypeBuffer getter, Minecraft mc, int x, int y, int width, int height, double mouseX, double mouseY, boolean mouseOver, float partialTicks) {
+
+    }
+
     //region Helpers
 
     public boolean checkPos(int gridX, int gridY) {
@@ -251,4 +261,6 @@ public class ModuleEntity {
                 ", gridY=" + gridY +
                 '}';
     }
+
+    public void addToolTip(List<ITextComponent> list) {}
 }

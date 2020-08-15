@@ -4,6 +4,7 @@ import com.brandon3055.brandonscore.handlers.HandHelper;
 //import com.brandon3055.draconicevolution.client.gui.toolconfig.GuiToolConfig;
 //import com.brandon3055.draconicevolution.network.PacketDispatcher;
 import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.GuiConfigurableItem;
+
 import com.brandon3055.draconicevolution.inventory.ContainerConfigurableItem;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import com.brandon3055.draconicevolution.utils.LogHelper;
@@ -73,6 +74,10 @@ public class KeyInputHandler {
         else if (KeyBindings.toolConfig.isPressed()) {
             DraconicNetwork.sendOpenItemConfig(false);
         }
+//        else if (KeyBindings.hudConfig.isPressed()) {
+////            Minecraft.getInstance().displayGuiScreen(new GuiHudConfig());
+//
+//        }
         else if (KeyBindings.toolModules.isPressed()) {
             DraconicNetwork.sendOpenItemConfig(true);
         }

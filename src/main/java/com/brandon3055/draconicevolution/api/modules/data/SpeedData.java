@@ -27,7 +27,7 @@ public class SpeedData implements ModuleData<SpeedData> {
     }
 
     @Override
-    public void addInformation(Map<ITextComponent, ITextComponent> map, ModuleContext context) {
+    public void addInformation(Map<ITextComponent, ITextComponent> map, ModuleContext context, boolean stack) {
         map.put(new TranslationTextComponent("module.draconicevolution.speed.name"), new TranslationTextComponent("module.draconicevolution.speed.value", (int)(speedMultiplier * 100D)));
     }
 }

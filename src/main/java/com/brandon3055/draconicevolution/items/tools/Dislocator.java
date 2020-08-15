@@ -96,7 +96,7 @@ public class Dislocator extends ItemBCore {
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
         ItemStack stack = player.getHeldItem(hand);
-        if (player.isShiftKeyDown()) {
+        if (player.isSneaking()) {
             if (getLocation(stack, world) == null) {
                 if (world.isRemote) {
 //                    player.sendMessage(new StringTextComponent(new TranslationTextComponent("msg.teleporterBound.txt").getFormattedText() + "{X:" + (int) player.posX + " Y:" + (int) player.posY + " Z:" + (int) player.posZ + " Dim:" + player.world.getDimension().getType().getName() + "}"));

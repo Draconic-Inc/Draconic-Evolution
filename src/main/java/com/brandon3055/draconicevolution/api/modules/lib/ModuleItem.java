@@ -11,6 +11,7 @@ import net.minecraft.item.Rarity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -85,6 +86,10 @@ public class ModuleItem<P extends ModuleData<P>> extends Item implements ModuleP
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         super.addInformation(stack, worldIn, tooltip, flagIn);
         getModule().addInformation(tooltip);
+        ModuleEntity entity = getModule().createEntity();
+        entity.readFromItemStack(stack, new StackModuleContext(stack, null, null));
+        entity.addToolTip(tooltip);
+        tooltip.add(new StringTextComponent("//Module textures are wip"));
     }
 
     @Override

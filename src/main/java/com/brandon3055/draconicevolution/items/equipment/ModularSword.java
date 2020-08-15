@@ -80,7 +80,7 @@ public class ModularSword extends SwordItem implements IReaperItem, IModularMele
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity player, Hand handIn) {
-        if (!worldIn.isRemote && player.isShiftKeyDown()) {
+        if (!worldIn.isRemote && player.isSneaking()) {
             for (double x = 0; x < 15; x += 0.5) {
                 for (double z = 0; z < 15; z += 0.5) {
                     CreeperEntity creeper = EntityType.CREEPER.create(worldIn);

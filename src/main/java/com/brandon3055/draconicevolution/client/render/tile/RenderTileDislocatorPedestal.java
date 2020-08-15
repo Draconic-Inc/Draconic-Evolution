@@ -77,7 +77,7 @@ public class RenderTileDislocatorPedestal extends TESRBase<TileDislocatorPedesta
         ClientPlayerEntity player = Minecraft.getInstance().player;
         RayTraceResult mop = player.pick(10, f, true);
         boolean isCursorOver = mop instanceof BlockRayTraceResult && ((BlockRayTraceResult) mop).getPos().equals(te.getPos());
-        boolean isSneaking = player.isShiftKeyDown();
+        boolean isSneaking = player.isSneaking();
 
         if (!isCursorOver && (isSneaking != DEOldConfig.invertDPDSB)) {
             return;

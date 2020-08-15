@@ -82,8 +82,8 @@ public interface ModuleType<T extends ModuleData<T>> {
      * whenever the module grid changes. Use this to ensure the property still complies with the new module data.
      *.<br><br>
      *
-     * An example use case for this is the speed module. Say for example the user has 5 speed modules installed giving them a speed boost of +500%
-     * The SPEED {@link ModuleType} can add a property that allows the user to adjust their speed between +0% and +500%<br><br>
+     * An example use case for this is the jump module. Say for example the user has 5 jump modules installed giving them a jump boost of +500%
+     * The JUMP_BOOST {@link ModuleType} can add a property that allows the user to adjust their jump boost between +0% and +500%<br><br>
      *
      * If you need to add per module properties then see {@link ModuleEntity#addProperty(ConfigProperty)}<br><br>
      *

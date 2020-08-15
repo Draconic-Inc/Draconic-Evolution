@@ -18,6 +18,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ArmorStandEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.CrossbowItem;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
@@ -56,12 +57,10 @@ public abstract class VBOBipedModel<T extends LivingEntity> extends BipedModel<T
     @Override
     public void render(MatrixStack mStack, IVertexBuilder buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {}
 
-    public abstract void render(MatrixStack mStack, IRenderTypeBuffer getter, int packedLight, int packedOverlay, float red, float green, float blue, float alpha);
+    public abstract void render(MatrixStack mStack, IRenderTypeBuffer getter, T entity, ItemStack itemstack, int packedLight, int packedOverlay, float red, float green, float blue, float alpha);
 
     @Override
     public void setRotationAngles(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-
-
         boolean flag = entity.getTicksElytraFlying() > 4;
         boolean flag1 = entity.isActualySwimming();
         this.bipedHead.rotateAngleY = netHeadYaw * ((float)Math.PI / 180F);
@@ -288,6 +287,12 @@ public abstract class VBOBipedModel<T extends LivingEntity> extends BipedModel<T
             return;
         }
     }
+
+    @Override
+    protected ModelRenderer getArmForSide(HandSide side) {
+        return side == HandSide.LEFT ? this.bipedLeftArm : this.bipedRightArm;
+    }
+
 
     private void setRotationAngles(ArmorStandEntity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.bipedHead.rotateAngleX = ((float)Math.PI / 180F) * entityIn.getHeadRotation().getX();

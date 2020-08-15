@@ -47,7 +47,7 @@ public class MobSoul extends ItemBCore {
         PlayerEntity player = context.getPlayer();
 
         ItemStack stack = player.getHeldItem(context.getHand());
-        if (player.isShiftKeyDown()) {
+        if (player.isSneaking()) {
 
             Entity entity = createEntity(world, stack);
             double sX = pos.getX() + facing.getXOffset() + 0.5;

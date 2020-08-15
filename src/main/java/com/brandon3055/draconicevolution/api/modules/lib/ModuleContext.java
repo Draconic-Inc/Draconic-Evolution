@@ -12,15 +12,15 @@ import javax.annotation.Nullable;
  */
 public abstract class ModuleContext {
 
-    private ModuleHost moduleHost;
+//    private ModuleHost moduleHost;
 
-    public ModuleContext(ModuleHost moduleHost) {
-        this.moduleHost = moduleHost;
+    public ModuleContext(/*ModuleHost moduleHost*/) {
+//        this.moduleHost = moduleHost;
     }
 
-    public ModuleHost getModuleHost() {
-        return moduleHost;
-    }
+//    public ModuleHost getModuleHost() {
+//        return moduleHost;
+//    }
 
     public abstract IOPStorageModifiable getOpStorage();
 

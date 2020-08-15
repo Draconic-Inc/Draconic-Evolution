@@ -26,7 +26,7 @@ public class DamageData implements ModuleData<DamageData> {
     }
 
     @Override
-    public void addInformation(Map<ITextComponent, ITextComponent> map, ModuleContext context) {
+    public void addInformation(Map<ITextComponent, ITextComponent> map, ModuleContext context, boolean stack) {
         map.put(new TranslationTextComponent("module.draconicevolution.damage.name"), new TranslationTextComponent("module.draconicevolution.damage.attack", ModuleData.round(damagePoints, 10)));
     }
 }

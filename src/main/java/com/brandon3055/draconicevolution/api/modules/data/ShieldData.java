@@ -34,7 +34,7 @@ public class ShieldData implements ModuleData<ShieldData> {
     }
 
     @Override
-    public void addInformation(Map<ITextComponent, ITextComponent> map, ModuleContext context) {
+    public void addInformation(Map<ITextComponent, ITextComponent> map, ModuleContext context, boolean stack) {
         if (shieldCapacity > 0){
             map.put(new TranslationTextComponent("module.draconicevolution.shield_capacity.name"),
                     new TranslationTextComponent("module.draconicevolution.shield_capacity.value", shieldCapacity));
@@ -42,6 +42,10 @@ public class ShieldData implements ModuleData<ShieldData> {
         if (shieldRecharge > 0){
             map.put(new TranslationTextComponent("module.draconicevolution.shield_recharge.name"),
                     new TranslationTextComponent("module.draconicevolution.shield_recharge.value", ModuleData.round(shieldRecharge * 20, 10), ModuleData.round((shieldCapacity / shieldRecharge) / 20, 10), (int) (Math.max(shieldRecharge * EquipCfg.energyShieldChg, EquipCfg.energyShieldChg))));
+        }
+        if (shieldCapacity > 0){
+            map.put(new TranslationTextComponent("module.draconicevolution.shield_passive.name"),
+                    new TranslationTextComponent("module.draconicevolution.shield_passive.value", Math.round(shieldCapacity * shieldCapacity * EquipCfg.shieldPassiveModifier * 10) / 10D));
         }
     }
 }

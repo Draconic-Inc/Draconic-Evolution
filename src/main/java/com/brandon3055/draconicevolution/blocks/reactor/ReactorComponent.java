@@ -164,7 +164,7 @@ public class ReactorComponent extends BlockBCore/* implements ITileEntityProvide
         super.onBlockPlacedBy(world, pos, state, placer, stack);
         TileEntity te = world.getTileEntity(pos);
         Direction facing = RotationUtils.getPlacedRotation(pos, placer);
-        if (placer.isShiftKeyDown()) {
+        if (placer.isSneaking()) {
             facing = facing.getOpposite();
         }
 

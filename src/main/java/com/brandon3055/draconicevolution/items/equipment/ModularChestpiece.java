@@ -63,7 +63,8 @@ public class ModularChestpiece extends ArmorItem implements IModularArmor {
                 if (DEConfig.armorSpeedLimit != -1) {
                     maxSpeed = Math.min(maxSpeed, DEConfig.armorSpeedLimit);
                 }
-                props.add(new DecimalProperty("move_speed", maxSpeed).range(0, maxSpeed).setFormatter(PLUS_PERCENT_0));
+                props.add(new DecimalProperty("walk_speed", 0).range(0, maxSpeed).setFormatter(PLUS_PERCENT_0));
+                props.add(new DecimalProperty("run_speed", maxSpeed).range(0, maxSpeed).setFormatter(PLUS_PERCENT_0));
             }
         });
         return host;
@@ -94,10 +95,10 @@ public class ModularChestpiece extends ArmorItem implements IModularArmor {
 //            model = new ModelBiped(0.5F); //Leggings
         }
 
-        model.leftArmPose = _default.leftArmPose;
-        model.bipedLeftArm.rotateAngleX = _default.bipedLeftArm.rotateAngleX;
-        model.bipedLeftArm.rotateAngleY = _default.bipedLeftArm.rotateAngleY;
-        model.bipedLeftArm.rotateAngleZ = _default.bipedLeftArm.rotateAngleZ;
+//        model.leftArmPose = _default.leftArmPose;
+//        model.bipedLeftArm.rotateAngleX = _default.bipedLeftArm.rotateAngleX;
+//        model.bipedLeftArm.rotateAngleY = _default.bipedLeftArm.rotateAngleY;
+//        model.bipedLeftArm.rotateAngleZ = _default.bipedLeftArm.rotateAngleZ;
 
         return SneakyUtils.unsafeCast(model);
     }

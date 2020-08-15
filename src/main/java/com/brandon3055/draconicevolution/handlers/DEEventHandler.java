@@ -244,7 +244,7 @@ public class DEEventHandler {
 
     @SubscribeEvent
     public void rightClickItem(PlayerInteractEvent.RightClickItem event) {
-        if (event.getWorld().isRemote || event.isCanceled() || !event.getPlayer().isShiftKeyDown() || !(event.getItemStack().getItem() instanceof ICrystalBinder)) {
+        if (event.getWorld().isRemote || event.isCanceled() || !event.getPlayer().isSneaking() || !(event.getItemStack().getItem() instanceof ICrystalBinder)) {
             return;
         }
 

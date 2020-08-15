@@ -5,9 +5,7 @@ import codechicken.lib.render.CCModel;
 import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.OBJParser;
 import codechicken.lib.render.buffer.VBORenderType;
-import codechicken.lib.render.shader.ShaderProgram;
-import codechicken.lib.render.shader.ShaderProgramBuilder;
-import codechicken.lib.render.shader.UniformType;
+import codechicken.lib.render.shader.*;
 import codechicken.lib.util.TransformUtils;
 import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Vector3;
@@ -15,15 +13,21 @@ import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.client.BCClientEventHandler;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.api.capability.DECapabilities;
+import com.brandon3055.draconicevolution.api.capability.ModuleHost;
+import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
+import com.brandon3055.draconicevolution.api.modules.entities.ShieldControlEntity;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.util.LazyOptional;
 import org.lwjgl.opengl.GL11;
 
 import java.util.Arrays;
@@ -48,6 +52,7 @@ public class RenderModularChestpeice extends ToolRenderBase {
                     .type(FRAGMENT)
                     .source(new ResourceLocation(MODID, "shaders/crystal_core.frag"))
                     .uniform("time", UniformType.FLOAT)
+                    .uniform("baseColour", UniformType.VEC3)
                     .uniform("tier", UniformType.INT)
             )
             .whenUsed(cache -> cache.glUniform1f("time", (BCClientEventHandler.elapsedTicks + Minecraft.getInstance().getRenderPartialTicks()) / 20))
@@ -99,8 +104,18 @@ public class RenderModularChestpeice extends ToolRenderBase {
         }
 
         if (DEConfig.toolShaders) {
+            int shieldColour = 0xFFFFFFFF;
+            LazyOptional<ModuleHost> optionalHost = stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
+            if (!stack.isEmpty() && optionalHost.isPresent()) {
+                ModuleHost host = optionalHost.orElseThrow(IllegalStateException::new);
+                ShieldControlEntity shieldControl = host.getEntitiesByType(ModuleTypes.SHIELD_CONTROLLER).map(e -> (ShieldControlEntity) e).findAny().orElse(null);
+                if (shieldControl != null) {
+                    shieldColour = shieldControl.getShieldColour();
+                }
+            }
+
             getter.getBuffer(gemVBOType.withMatrix(mat).withLightMap(packedLight).withState(getShaderType(shaderParentType, techLevel, gemShader)));
-            getter.getBuffer(centralGemVBOType.withMatrix(mat).withLightMap(packedLight).withState(getShaderType(shaderParentType, techLevel, coreShader)));
+            getter.getBuffer(centralGemVBOType.withMatrix(mat).withLightMap(packedLight).withState(getShaderType(shaderParentType, techLevel, shieldColour, coreShader)));
         } else {
             getter.getBuffer(gemVBOType.withMatrix(mat).withLightMap(packedLight));
             getter.getBuffer(centralGemVBOType.withMatrix(mat).withLightMap(packedLight));
@@ -112,4 +127,10 @@ public class RenderModularChestpeice extends ToolRenderBase {
         return TransformUtils.DEFAULT_BLOCK;
     }
 
+    public static ShaderRenderType getShaderType(RenderType parent, TechLevel techLevel, int colour, ShaderProgram shader) {
+        UniformCache uniforms = shader.pushCache();
+        uniforms.glUniform1i("tier", techLevel.index);
+        uniforms.glUniform3f("baseColour", ((colour >> 16) & 0xFF) / 255F, ((colour >> 8) & 0xFF) / 255F, (colour & 0xFF) / 255F);
+        return new ShaderRenderType(parent, shader, uniforms);
+    }
 }

@@ -395,7 +395,7 @@ public class TileGrinder extends TileBCore implements ITickableTileEntity, IRSSw
     public boolean onBlockActivated(BlockState state, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
         if (player instanceof ServerPlayerEntity) {
             NetworkHooks.openGui((ServerPlayerEntity) player, this, pos);
-        } else if (world.isRemote && player.isShiftKeyDown()) {
+        } else if (world.isRemote && player.isSneaking()) {
 //            AxisAlignedBB bb = getKillBoxForRender();
 
             for (double i = 0; i <= 7; i += 0.01) {

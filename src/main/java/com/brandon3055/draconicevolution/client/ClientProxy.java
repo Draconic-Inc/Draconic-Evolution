@@ -27,6 +27,8 @@ import net.minecraft.client.renderer.entity.BipedRenderer;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
+import net.minecraft.client.renderer.entity.layers.ArmorLayer;
+import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraftforge.client.event.ColorHandlerEvent;
@@ -85,12 +87,22 @@ public class ClientProxy extends CommonProxy {
         //Because i want this to render on bipedal mobs.
         for (EntityRenderer<?> e : Minecraft.getInstance().getRenderManager().renderers.values()) {
             if (e instanceof LivingRenderer && ((LivingRenderer) e).getEntityModel() instanceof BipedModel) {
-                ((LivingRenderer<?, ?>) e).addLayer(new VBOArmorLayer((LivingRenderer<?, ?>) e));
+                boolean foundArmor = false;
+                for (Object layer : ((LivingRenderer) e).layerRenderers) {
+                    if (layer instanceof ArmorLayer) {
+                        ((LivingRenderer<?, ?>) e).addLayer(new VBOArmorLayer((LivingRenderer<?, ?>) e, (ArmorLayer) layer));
+                        foundArmor = true;
+                        break;
+                    }
+                }
+                if (!foundArmor){
+                    ((LivingRenderer<?, ?>) e).addLayer(new VBOArmorLayer((LivingRenderer<?, ?>) e, null));
+                }
             }
         }
 
         for (PlayerRenderer renderPlayer : Minecraft.getInstance().getRenderManager().getSkinMap().values()) {
-            renderPlayer.addLayer(new VBOArmorLayer<>(renderPlayer));
+            renderPlayer.addLayer(new VBOArmorLayer<>(renderPlayer, null));
         }
 
 

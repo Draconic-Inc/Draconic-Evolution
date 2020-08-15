@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.api.modules.data;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.Map;
 
@@ -26,7 +27,7 @@ public class JumpData implements ModuleData<JumpData> {
     }
 
     @Override
-    public void addInformation(Map<ITextComponent, ITextComponent> map, ModuleContext context) {
-        map.put(new StringTextComponent("JumpModule"), new StringTextComponent("TODO"));
+    public void addInformation(Map<ITextComponent, ITextComponent> map, ModuleContext context, boolean stack) {
+        map.put(new TranslationTextComponent("module.draconicevolution.jump.name"), new TranslationTextComponent("module.draconicevolution.jump.value", (int)(multiplier * 100D)));
     }
 }

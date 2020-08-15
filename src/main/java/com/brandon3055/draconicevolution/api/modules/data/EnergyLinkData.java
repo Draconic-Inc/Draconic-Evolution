@@ -22,7 +22,7 @@ public class EnergyLinkData implements ModuleData<EnergyLinkData> {
     }
 
     @Override
-    public void addInformation(Map<ITextComponent, ITextComponent> map, ModuleContext context) {
+    public void addInformation(Map<ITextComponent, ITextComponent> map, ModuleContext context, boolean stack) {
         map.put(new StringTextComponent("EnergyLinkModule"), new StringTextComponent("TODO"));
     }
 }

@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.api.modules.data;
 
+import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
 import net.minecraft.util.text.ITextComponent;
 
@@ -26,9 +27,10 @@ public interface ModuleData<D extends ModuleData<D>> {
      * The map is of Property Name to Property Value
      *
      * @param map the map to which this information should be added.
-     * @param context The current module context
+     * @param context The current module context.
+     * @param stack True when adding information to item tool tip.
      */
-    void addInformation(Map<ITextComponent, ITextComponent> map, @Nullable ModuleContext context);
+    void addInformation(Map<ITextComponent, ITextComponent> map, @Nullable ModuleContext context, boolean stack);
 
 
     /**
@@ -36,5 +38,14 @@ public interface ModuleData<D extends ModuleData<D>> {
      */
     static double round(double number, double multiplier) {
         return Math.round(number * multiplier) / multiplier;
+    }
+
+    static String formatNumber(long value) {
+        if (value < 1000000L) return String.valueOf(value);
+        else if (value < 1000000000L) return Math.round(value / 1000D) / 1000D + "M";
+        else if (value < 1000000000000L) return Math.round(value / 1000000D) / 1000D + "G";
+        else if (value < 1000000000000000L) return Math.round(value / 1000000000D) / 1000D + "T";
+        else if (value < 1000000000000000000L) return Math.round(value / 1000000000000D) / 1000D + "P";
+        else return Math.round(value / 1000000000000000D) / 1000D + "E";
     }
 }

@@ -13,8 +13,8 @@ import net.minecraftforge.common.util.LazyOptional;
 public class TileModuleContext extends ModuleContext {
     private TileEntity tile;
 
-    public TileModuleContext(ModuleHost moduleHost, TileEntity tile) {
-        super(moduleHost);
+    public TileModuleContext(TileEntity tile) {
+        super();
         this.tile = tile;
     }
 

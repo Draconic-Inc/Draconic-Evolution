@@ -1,9 +1,9 @@
 package com.brandon3055.draconicevolution.api.modules;
 
 
-import com.brandon3055.draconicevolution.api.modules.entities.EnergyEntity;
-import com.brandon3055.draconicevolution.api.modules.entities.ShieldControlEntity;
-import com.brandon3055.draconicevolution.api.modules.lib.ModuleTypeImpl;
+import com.brandon3055.draconicevolution.api.modules.entities.*;
+import com.brandon3055.draconicevolution.api.modules.types.JumpType;
+import com.brandon3055.draconicevolution.api.modules.types.ModuleTypeImpl;
 import com.brandon3055.draconicevolution.api.modules.data.*;
 import com.brandon3055.draconicevolution.api.modules.types.DamageType;
 
@@ -24,12 +24,13 @@ public class ModuleTypes {
     //Armor specific
     public static final ModuleType<NoData>          SHIELD_CONTROLLER   = new ModuleTypeImpl<>("shield_control",    2, 2, ShieldControlEntity::new, CHESTPIECE).setMaxInstallable(1);
     public static final ModuleType<ShieldData>      SHIELD_BOOST        = new ModuleTypeImpl<>("shield_boost",      1, 1, CHESTPIECE);                                      //This covers both capacity and recharge
-    public static final ModuleType<NoData>          FLIGHT              = new ModuleTypeImpl<>("flight",            3, 3, CHESTPIECE, ARMOR_CHEST).setMaxInstallable(1);
+    public static final ModuleType<FlightData>      FLIGHT              = new ModuleTypeImpl<>("flight",            3, 3, FlightEntity::new, CHESTPIECE, ARMOR_CHEST).setMaxInstallable(1);
 //    public static final ModuleType<NoData>          ELYTRA_FLIGHT       = new ModuleTypeImpl<>("elytra_flight",     2, 2, CHESTPIECE, ARMOR_CHEST).setMaxInstallable(1);       //Todo some property that controls some 'boost function' or something along those lines
-    public static final ModuleType<NoData>          LAST_STAND          = new ModuleTypeImpl<>("last_stand",        2, 2, CHESTPIECE, ARMOR_CHEST).setMaxInstallable(1);          //TODO this needs some properties
-    public static final ModuleType<NoData>          AUTO_FEED           = new ModuleTypeImpl<>("auto_feed",         2, 1, CHESTPIECE, ARMOR_HEAD).setMaxInstallable(1);           //Different tiers could make it smaller? Maybe chaotic removes need for food?
+    public static final ModuleType<LastStandData>   LAST_STAND          = new ModuleTypeImpl<>("last_stand",        2, 2, LastStandEntity::new, CHESTPIECE, ARMOR_CHEST).setMaxInstallable(1);          //TODO this needs some properties
+    public static final ModuleType<AutoFeedData>    AUTO_FEED           = new ModuleTypeImpl<>("auto_feed",         2, 1, AutoFeedEntity::new, CHESTPIECE, ARMOR_HEAD).setMaxInstallable(1);           //Different tiers could make it smaller? Maybe chaotic removes need for food?
     public static final ModuleType<NoData>          NIGHT_VISION        = new ModuleTypeImpl<>("night_vision",      2, 1, CHESTPIECE, ARMOR_HEAD).setMaxInstallable(1);
-    public static final ModuleType<JumpData>        JUMP_BOOST          = new ModuleTypeImpl<>("jump_boost",        1, 1, CHESTPIECE, ARMOR_FEET);
+    public static final JumpType                    JUMP_BOOST          = new JumpType("jump_boost",                1, 1, CHESTPIECE, ARMOR_FEET);
+    public static final ModuleType<NoData>          HILL_STEP           = new ModuleTypeImpl<>("hill_step",         2, 1, CHESTPIECE, ARMOR_FEET).setMaxInstallable(1);
 //    public static final ModuleType<NoData>          FALL_PROTECT        = new ModuleTypeImpl<>("fall_protect",      1, 1, CHESTPIECE, ARMOR_FEET);
     public static final ModuleType<NoData>          AQUA_ADAPT          = new ModuleTypeImpl<>("aqua_adapt",        1, 1, CHESTPIECE, ARMOR_CHEST);
 

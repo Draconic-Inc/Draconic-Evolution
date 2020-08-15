@@ -28,7 +28,7 @@ public class PropertyData {
     public final UUID providerID;
     public final String providerName;
     private String propName;
-    private UUID propUniqueName;
+    protected UUID propUniqueName;
     public String toolTip;
     public String displayName;
     public Runnable changeListener;

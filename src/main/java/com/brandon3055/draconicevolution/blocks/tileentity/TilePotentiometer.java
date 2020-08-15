@@ -52,7 +52,7 @@ public class TilePotentiometer extends TileBCore implements IRedstoneEmitter, IA
 
     @Override
     public boolean onBlockActivated(BlockState state, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
-        if (player.isShiftKeyDown()) {
+        if (player.isSneaking()) {
             power.dec();
             if (power.get() < 0) {
                 power.set((byte) 15);

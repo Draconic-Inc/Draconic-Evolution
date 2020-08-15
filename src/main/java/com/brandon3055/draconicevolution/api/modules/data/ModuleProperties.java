@@ -86,7 +86,7 @@ public class ModuleProperties<T extends ModuleData<T>> {
                         .applyTextStyle(DARK_GREEN)));
 
         Map<ITextComponent, ITextComponent> map = new HashMap<>();
-        getData().addInformation(map, null);
+        getData().addInformation(map, null, true);
         map.forEach((name, value) -> toolTip.add(name.applyTextStyle(GRAY).appendText(": ").appendText(value.applyTextStyle(DARK_GREEN).getFormattedText().replace("\n", " "))));
     }
 }

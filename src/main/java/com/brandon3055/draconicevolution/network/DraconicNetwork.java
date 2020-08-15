@@ -6,6 +6,7 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleGrid;
 import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.PropertyData;
 import com.brandon3055.draconicevolution.inventory.ContainerConfigurableItem;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.ClickType;
 import net.minecraft.nbt.CompoundNBT;
@@ -35,7 +36,7 @@ public class DraconicNetwork {
 
     //Server to client
     public static final int C_CRYSTAL_UPDATE =          1;
-    public static final int C_TRACKER =                 2;
+    public static final int C_SHIELD_HIT =              2;
 
 
     //@formatter:on
@@ -84,19 +85,16 @@ public class DraconicNetwork {
         packet.sendToServer();
     }
 
-    public static void sendTrackerData(int entityId, ListNBT list) {
-        PacketCustom packet = new PacketCustom(CHANNEL, C_TRACKER);
-        packet.writeVarInt(entityId);
-        CompoundNBT nbt = new CompoundNBT();
-        nbt.put("l", list);
-        packet.writeCompoundNBT(nbt);
-        packet.sendToClients();
-    }
-
     public static void sendOpenModuleConfig() {
         PacketCustom packet = new PacketCustom(CHANNEL, S_MODULE_CONFIG_GUI);
         packet.sendToServer();
     }
+
+//    public static void sendShieldHit(LivingEntity shieldedEntity) {
+//        PacketCustom packet = new PacketCustom(CHANNEL, C_SHIELD_HIT);
+//        packet.writeInt(shieldedEntity.getEntityId());
+//        packet.sendToChunk(shieldedEntity.world, shieldedEntity.getPosition());
+//    }
 
 
 

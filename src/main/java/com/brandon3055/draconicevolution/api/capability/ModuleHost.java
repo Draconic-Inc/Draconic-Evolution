@@ -132,9 +132,9 @@ public interface ModuleHost extends INBTSerializable<CompoundNBT> {
      * This method exists so that a module host can select which information from a given module will be displayed. <br>
      * This is useful for module types like Speed which have different effects depending on what they are installed in.
      */
-    default <T extends ModuleData<T>> void getDataInformation(T moduleData, Map<ITextComponent, ITextComponent> map, ModuleContext context) {
+    default <T extends ModuleData<T>> void getDataInformation(T moduleData, Map<ITextComponent, ITextComponent> map, ModuleContext context, boolean stack) {
         if (moduleData == null) return;
-        moduleData.addInformation(map, context);
+        moduleData.addInformation(map, context, stack);
     }
 
     /**
@@ -144,8 +144,8 @@ public interface ModuleHost extends INBTSerializable<CompoundNBT> {
      *
      * @param map the map to which information will be added.
      */
-    default void addInformation(Map<ITextComponent, ITextComponent> map, ModuleContext context) {
-        getInstalledTypes().map(this::getModuleData).forEach(data -> getDataInformation(data, map, context));
+    default void addInformation(Map<ITextComponent, ITextComponent> map, ModuleContext context, boolean stack) {
+        getInstalledTypes().map(this::getModuleData).forEach(data -> getDataInformation(data, map, context, stack));
     }
 
     default InstallResult checkAddModule(Module<?> newModule) {

@@ -1,5 +1,7 @@
 package com.brandon3055.draconicevolution.client.model;
 
+import codechicken.lib.colour.ColourARGB;
+import codechicken.lib.colour.ColourRGBA;
 import codechicken.lib.render.CCModel;
 import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.OBJParser;
@@ -10,6 +12,10 @@ import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.client.BCClientEventHandler;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.api.capability.DECapabilities;
+import com.brandon3055.draconicevolution.api.capability.ModuleHost;
+import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
+import com.brandon3055.draconicevolution.api.modules.entities.ShieldControlEntity;
 import com.brandon3055.draconicevolution.client.model.tool.VBOModelRender;
 import com.brandon3055.draconicevolution.client.render.item.RenderModularChestpeice;
 import com.brandon3055.draconicevolution.client.render.item.ToolRenderBase;
@@ -22,11 +28,15 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.CrossbowItem;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.common.util.LazyOptional;
 import org.lwjgl.opengl.GL11;
 
 import java.util.Collections;
@@ -40,7 +50,7 @@ import static net.minecraft.client.renderer.RenderState.*;
 /**
  * Created by brandon3055 on 29/6/20
  */
-public class ModularArmorModel extends VBOBipedModel<PlayerEntity> {
+public class ModularArmorModel extends VBOBipedModel<LivingEntity> {
 
     public static ShaderProgram shieldShader = ShaderProgramBuilder.builder()
             .addShader("vert", shader -> shader
@@ -52,6 +62,7 @@ public class ModularArmorModel extends VBOBipedModel<PlayerEntity> {
                     .source(new ResourceLocation(MODID, "shaders/armor_shield.frag"))
                     .uniform("time", UniformType.FLOAT)
                     .uniform("activation", UniformType.FLOAT)
+                    .uniform("baseColour", UniformType.VEC4)
                     .uniform("tier", UniformType.INT)
             )
             .whenUsed(cache -> cache.glUniform1f("time", (BCClientEventHandler.elapsedTicks + Minecraft.getInstance().getRenderPartialTicks()) / 20))
@@ -74,6 +85,7 @@ public class ModularArmorModel extends VBOBipedModel<PlayerEntity> {
     public RenderType shaderParentType;
 
     private float shieldState = 0;
+    private int shieldColour = 0x00FF00;
 
     public ModularArmorModel(float size, TechLevel techLevel) {
         super(size);
@@ -198,45 +210,60 @@ public class ModularArmorModel extends VBOBipedModel<PlayerEntity> {
         }
         bipedBody.addChild(matRender);
         bipedBody.addChild(new VBOModelRender(this, gemVBOType).setShader(() -> RenderModularChestpeice.getShaderType(shaderParentType, techLevel, RenderModularChestpeice.gemShader)));
-        bipedBody.addChild(new VBOModelRender(this, centralGemVBOType).setShader(() -> RenderModularChestpeice.getShaderType(shaderParentType, techLevel, RenderModularChestpeice.coreShader)));
-        bipedBody.addChild(new VBOModelRender(this, shieldBodyVBO).setShader(() -> getShaderType(shieldType, techLevel, shieldState, shieldShader)));
+        bipedBody.addChild(new VBOModelRender(this, centralGemVBOType).setShader(() -> RenderModularChestpeice.getShaderType(shaderParentType, techLevel, shieldColour, RenderModularChestpeice.coreShader)));
+        bipedBody.addChild(new VBOModelRender(this, shieldBodyVBO, () -> shieldState > 0).setShader(() -> getShaderType(shieldType, techLevel, shieldState, shieldColour, shieldShader)));
 
-        this.bipedHead = new VBOModelRender(this, shieldHeadVBO).setShader(() -> getShaderType(shieldType, techLevel, shieldState, shieldShader));
+        this.bipedHead = new VBOModelRender(this, shieldHeadVBO, () -> shieldState > 0).setShader(() -> getShaderType(shieldType, techLevel, shieldState, shieldColour, shieldShader));
         this.bipedHead.setRotationPoint(0.0F, 0.0F + yOffsetIn, 0.0F);
 
-        this.bipedRightArm = new VBOModelRender(this, shieldRightArmVBO).setShader(() -> getShaderType(shieldType, techLevel, shieldState, shieldShader));
+        this.bipedRightArm = new VBOModelRender(this, shieldRightArmVBO, () -> shieldState > 0).setShader(() -> getShaderType(shieldType, techLevel, shieldState, shieldColour, shieldShader));
         this.bipedRightArm.setRotationPoint(-5.0F, 2.0F + yOffsetIn, 0.0F);
 
-        this.bipedLeftArm = new VBOModelRender(this, shieldLeftArmVBO).setShader(() -> getShaderType(shieldType, techLevel, shieldState, shieldShader));
+        this.bipedLeftArm = new VBOModelRender(this, shieldLeftArmVBO, () -> shieldState > 0).setShader(() -> getShaderType(shieldType, techLevel, shieldState, shieldColour, shieldShader));
         this.bipedLeftArm.mirror = true;
         this.bipedLeftArm.setRotationPoint(5.0F, 2.0F + yOffsetIn, 0.0F);
 
-        this.bipedRightLeg = new VBOModelRender(this, shieldRightLegVBO).setShader(() -> getShaderType(shieldType, techLevel, shieldState, shieldShader));
+        this.bipedRightLeg = new VBOModelRender(this, shieldRightLegVBO, () -> shieldState > 0).setShader(() -> getShaderType(shieldType, techLevel, shieldState, shieldColour, shieldShader));
         this.bipedRightLeg.setRotationPoint(-1.9F, 12.0F + yOffsetIn, 0.0F);
 
-        this.bipedLeftLeg = new VBOModelRender(this, shieldLeftLegVBO).setShader(() -> getShaderType(shieldType, techLevel, shieldState, shieldShader));
+        this.bipedLeftLeg = new VBOModelRender(this, shieldLeftLegVBO, () -> shieldState > 0).setShader(() -> getShaderType(shieldType, techLevel, shieldState, shieldColour, shieldShader));
         this.bipedLeftLeg.mirror = true;
         this.bipedLeftLeg.setRotationPoint(1.9F, 12.0F + yOffsetIn, 0.0F);
     }
 
     @Override
-    public void render(MatrixStack mStack, IRenderTypeBuffer getter, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+    public void render(MatrixStack mStack, IRenderTypeBuffer getter, LivingEntity player, ItemStack stack, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
 //        DEConfig.toolShaders = false;
-        if (shieldState < 1) shieldState += 0.01;
+//        if (shieldState < 1) shieldState += 0.01;
+//
+//        shieldColour = 0x7F00FFFF;
+
+        shieldState = 0;
+        shieldColour = 0xFFFFFFFF;
+        LazyOptional<ModuleHost> optionalHost = stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
+        if (!stack.isEmpty() && optionalHost.isPresent()) {
+            ModuleHost host = optionalHost.orElseThrow(IllegalStateException::new);
+            ShieldControlEntity shieldControl = host.getEntitiesByType(ModuleTypes.SHIELD_CONTROLLER).map(e -> (ShieldControlEntity) e).findAny().orElse(null);
+            if (shieldControl != null) {
+                shieldState = shieldControl.getShieldState();
+                shieldColour = shieldControl.getShieldColour();
+            }
+        }
+
 
         if (this.isChild) {
             mStack.push();
-            if (this.field_228221_a_) {
-                float f = 1.5F / this.field_228224_g_;
+            if (this.isChildHeadScaled) {
+                float f = 1.5F / this.childHeadScale;
                 mStack.scale(f, f, f);
             }
-            mStack.translate(0.0D, this.field_228222_b_ / 16.0F, this.field_228223_f_ / 16.0F);
+            mStack.translate(0.0D, this.childHeadOffsetY / 16.0F, this.childHeadOffsetZ / 16.0F);
             bipedHead.render(mStack, getter, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             mStack.pop();
             mStack.push();
-            float f1 = 1.0F / this.field_228225_h_;
+            float f1 = 1.0F / this.childBodyScale;
             mStack.scale(f1, f1, f1);
-            mStack.translate(0.0D, this.field_228226_i_ / 16.0F, 0.0D);
+            mStack.translate(0.0D, this.childBodyOffsetY / 16.0F, 0.0D);
             bipedBody.render(mStack, getter, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             bipedLeftArm.render(mStack, getter, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             bipedRightArm.render(mStack, getter, packedLightIn, packedOverlayIn, red, green, blue, alpha);
@@ -253,10 +280,11 @@ public class ModularArmorModel extends VBOBipedModel<PlayerEntity> {
         }
     }
 
-    public static ShaderRenderType getShaderType(RenderType parent, TechLevel techLevel, float activation, ShaderProgram shader) {
+    public static ShaderRenderType getShaderType(RenderType parent, TechLevel techLevel, float activation, int colour, ShaderProgram shader) {
         UniformCache uniforms = shader.pushCache();
         uniforms.glUniform1i("tier", techLevel.index);
         uniforms.glUniform1f("activation", activation);
+        uniforms.glUniform4f("baseColour", ((colour >> 16) & 0xFF) / 255F, ((colour >> 8) & 0xFF) / 255F, (colour & 0xFF) / 255F, ((colour >> 24) & 0xFF) / 63F);
         return new ShaderRenderType(parent, shader, uniforms);
     }
 }

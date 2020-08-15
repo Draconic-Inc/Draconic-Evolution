@@ -26,7 +26,7 @@ public class EnergyShareData implements ModuleData<EnergyShareData> {
     }
 
     @Override
-    public void addInformation(Map<ITextComponent, ITextComponent> map, ModuleContext context) {
+    public void addInformation(Map<ITextComponent, ITextComponent> map, ModuleContext context, boolean stack) {
         map.put(new StringTextComponent("EnergyModule"), new StringTextComponent("TODO"));
     }
 }

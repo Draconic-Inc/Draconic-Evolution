@@ -30,6 +30,7 @@ import net.minecraft.util.text.ITextComponent;
 import org.lwjgl.opengl.GL11;
 
 import java.util.Collections;
+import java.util.List;
 
 import static com.brandon3055.brandonscore.BCConfig.darkMode;
 import static com.brandon3055.draconicevolution.api.modules.lib.InstallResult.InstallResultType.*;
@@ -79,7 +80,7 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> {
             for (int y = 0; y < grid.getHeight(); y++) {
                 int xPos = xPos() + (x * s);
                 int yPos = yPos() + (y * s);
-                renderCell(getter, xPos, yPos, s, x, y, GuiHelper.isInRect(xPos, yPos, s, s, mouseX, mouseY));
+                renderCell(getter, xPos, yPos, s, x, y, mouseX, mouseY, GuiHelper.isInRect(xPos, yPos, s, s, mouseX, mouseY), partialTicks);
             }
         }
         getter.finish();
@@ -97,7 +98,7 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> {
         return super.renderOverlayLayer(minecraft, mouseX, mouseY, partialTicks);
     }
 
-    public void renderCell(IRenderTypeBuffer getter, int x, int y, int size, int cellX, int cellY, boolean mouseOver) {
+    public void renderCell(IRenderTypeBuffer getter, int x, int y, int size, int cellX, int cellY, double mouseX, double mouseY, boolean mouseOver, float partialTicks) {
         ModuleGrid.GridPos cell = grid.getCell(cellX, cellY);
         if (cell.hasEntity()) {
             ModuleEntity entity = cell.getEntity();
@@ -108,6 +109,7 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> {
             if (mouseOver) {
                 drawColouredRect(getter, xPos() + (entity.getGridX() * cs), yPos() + (entity.getGridY() * cs), cell.getEntity().getWidth() * cs, cell.getEntity().getHeight() * cs, 0x50FFFFFF);
             }
+            entity.renderSlotOverlay(getter, mc, xPos() + (entity.getGridX() * cs), yPos() + (entity.getGridY() * cs), cell.getEntity().getWidth() * cs, cell.getEntity().getHeight() * cs, mouseX, mouseY, mouseOver, partialTicks);
         } else {
             drawColouredRect(getter, x + 1, y + 1, size - 2, size - 2, darkMode ? 0xFF808080 : 0xFF505050);
             if (mouseOver) {
@@ -124,7 +126,8 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> {
             cell.getEntity().writeToItemStack(stack, grid.container.getModuleContext());
             FontRenderer font = stack.getItem().getFontRenderer(stack);
             if (font == null) font = fontRenderer;
-            drawHoveringText(getTooltipFromItem(stack), mouseX, mouseY, font);
+            List<String> list = getTooltipFromItem(stack);
+            drawHoveringText(list, mouseX, mouseY, font);
         }
     }
 

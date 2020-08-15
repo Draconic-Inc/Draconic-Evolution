@@ -177,7 +177,7 @@ public class DislocatorBound extends Dislocator /*implements IRenderOverride*/ {
     }
 
     public boolean isPlayer(ItemStack stack) {
-        return stack.getTag().contains("PlayerLink");
+        return stack.hasTag() && stack.getTag().contains("PlayerLink");
     }
 
     public String getLinkID(ItemStack stack) {

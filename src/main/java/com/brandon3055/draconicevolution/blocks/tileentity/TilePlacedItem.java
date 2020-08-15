@@ -65,7 +65,7 @@ public class TilePlacedItem extends TileBCore /*implements ICuboidProvider*/ {
             return;
         }
 
-        if (player.isShiftKeyDown()) {
+        if (player.isSneaking()) {
             if (hit == -1) {
                 return;
             }

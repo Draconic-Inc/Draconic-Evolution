@@ -126,7 +126,7 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
 
     @Override
     public boolean onBlockActivated(BlockState state, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
-        if (player.isShiftKeyDown()) {
+        if (player.isSneaking()) {
             inputMode.invert();
             return true;
         }

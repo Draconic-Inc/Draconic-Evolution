@@ -263,11 +263,27 @@ public class LangGenerator extends LanguageProvider {
         add("module.draconicevolution.shield_capacity.value"                                , "%s points");
         add("module.draconicevolution.shield_recharge.name"                                 , "Shield Recharge");
         add("module.draconicevolution.shield_recharge.value"                                , "%s pps (%s seconds)\n@ %s OP/t");
+        add("module.draconicevolution.shield_passive.name"                                  , "Shield Operating Cost");
+        add("module.draconicevolution.shield_passive.value"                                 , "%s OP/t");
         add(ModuleTypes.FLIGHT                                                              , "Flight");
         add(ModuleTypes.LAST_STAND                                                          , "Last Stand");
+        add("module.draconicevolution.last_stand.health.name"                               , "Health Boost");
+        add("module.draconicevolution.last_stand.health.value"                              , "%s Health points");
+        add("module.draconicevolution.last_stand.shield.name"                               , "Shield Boost");
+        add("module.draconicevolution.last_stand.shield.value"                              , "%s for %s seconds");
+        add("module.draconicevolution.last_stand.charge.name"                               , "Charge Time");
+        add("module.draconicevolution.last_stand.charge.value"                              , "%s Seconds");
+        add("module.draconicevolution.last_stand.energy.name"                               , "Charge Energy");
+        add("module.draconicevolution.last_stand.energy.value"                              , "%sOP @%s OP/t");
         add(ModuleTypes.AUTO_FEED                                                           , "Auto Feed");
+        add("module.draconicevolution.auto_feed.name"                                       , "Food Storage");
+        add("module.draconicevolution.auto_feed.value"                                      , "%s Hunger points");
+        add("module.draconicevolution.auto_feed.stored"                                     , "Food Stored:");
+        add("module.draconicevolution.auto_feed.stored.value"                               , "%s Hunger Points");
         add(ModuleTypes.NIGHT_VISION                                                        , "Night Vision");
         add(ModuleTypes.JUMP_BOOST                                                          , "Jump Boost");
+        add("module.draconicevolution.jump.name"                                            , "Jump Boost");
+        add("module.draconicevolution.jump.value"                                           , "+%s%%");
 //        add(ModuleTypes.FALL_PROTECT                                                        , "Fall Protection");
         add(ModuleTypes.AQUA_ADAPT                                                          , "Aqua Adaptation");
         add(ModuleTypes.MINING_STABILITY                                                    , "Mining Stabilizer");
@@ -280,24 +296,25 @@ public class LangGenerator extends LanguageProvider {
         add(ModuleTypes.SPEED                                                               , "Speed");
         add("module.draconicevolution.speed.name"                                           , "Speed");
         add("module.draconicevolution.speed.value"                                          , "+%s%%");
+        add(ModuleTypes.HILL_STEP                                                           , "Step Assist");
         add(ModuleTypes.JUNK_FILTER                                                         , "Junk Filter");
 
-        add(DEModules.draconiumEnergy                                                       , "Draconium Energy Module");
+        add(DEModules.draconiumEnergy                                                       , "Energy Module");
         add(DEModules.wyvernEnergy                                                          , "Wyvern Energy Module");
         add(DEModules.draconicEnergy                                                        , "Draconic Energy Module");
         add(DEModules.chaoticEnergy                                                         , "Chaotic Energy Module");
 
-        add(DEModules.draconiumSpeed                                                        , "Draconium Speed Module");
+        add(DEModules.draconiumSpeed                                                        , "Speed Module");
         add(DEModules.wyvernSpeed                                                           , "Wyvern Speed Module");
         add(DEModules.draconicSpeed                                                         , "Draconic Speed Module");
         add(DEModules.chaoticSpeed                                                          , "Chaotic Speed Module");
 
-        add(DEModules.draconiumDamage                                                       , "Draconium Damage Module");
+        add(DEModules.draconiumDamage                                                       , "Damage Module");
         add(DEModules.wyvernDamage                                                          , "Wyvern Damage Module");
         add(DEModules.draconicDamage                                                        , "Draconic Damage Module");
         add(DEModules.chaoticDamage                                                         , "Chaotic Damage Module");
 
-        add(DEModules.draconiumAOE                                                          , "Draconium AOE Module");
+        add(DEModules.draconiumAOE                                                          , "AOE Module");
         add(DEModules.wyvernAOE                                                             , "Wyvern AOE Module");
         add(DEModules.draconicAOE                                                           , "Draconic AOE Module");
         add(DEModules.chaoticAOE                                                            , "Chaotic AOE Module");
@@ -331,16 +348,19 @@ public class LangGenerator extends LanguageProvider {
         add(DEModules.chaoticLastStand                                                      , "Chaotic Last Stand Module");
 
         add(DEModules.draconiumAutoFeed                                                     , "Auto Feed Module");
+        add(DEModules.wyvernAutoFeed                                                        , "Wyvern Auto Feed Module");
         add(DEModules.draconicAutoFeed                                                      , "Draconic Auto Feed Module");
 
         add(DEModules.wyvernNightVision                                                     , "Night Vision Module");
 
-        add(DEModules.draconiumJump                                                         , "Draconium Jump Module");
+        add(DEModules.draconiumJump                                                         , "Jump Module");
         add(DEModules.wyvernJump                                                            , "Wyvern Jump Module");
         add(DEModules.draconicJump                                                          , "Draconic Jump Module");
         add(DEModules.chaoticJump                                                           , "Chaotic Jump Module");
 
         add(DEModules.wyvernAquaAdapt                                                       , "Aqua Adapt Module");
+
+        add(DEModules.wyvernHillStep                                                        , "Hill Step Module");
 
 
 
@@ -348,6 +368,7 @@ public class LangGenerator extends LanguageProvider {
         add("module.draconicevolution.energy.stored_energy"                                 ,"Stored Energy");
         add("module.draconicevolution.module_type"                                          ,"Module Type");
         add("module.draconicevolution.grid_size"                                            ,"Module Size");
+        add("module.draconicevolution.max_installable"                                      ,"Max Installable");
 
         //endregion
 
@@ -360,9 +381,30 @@ public class LangGenerator extends LanguageProvider {
         add("item_prop.draconicevolution.aoe_safe"                                          , "AOE Safe Mode");
         add("item_prop.draconicevolution.aoe_safe.info"                                     , "When enabled this tool will not break anything if it detects a tile entity within its AOE range. This can help prevent you from accidentally breaking half your base with a single miss click");
         add("item_prop.draconicevolution.aoe_safe.blocked"                                  , "§9(§aAOE §aSafe §aMode §ais §aenabled§9) §cOperation §cCanceled §cbecause §ca §ctile §centity §cwas §cdetected");
+
         add("item_prop.draconicevolution.mining_speed"                                      , "Dig Speed Multiplier");
         add("item_prop.draconicevolution.mining_speed.info"                                 , "Allows you to adjust how fast this tool breaks blocks. Useful if you need precision over speed.");
+        add("item_prop.draconicevolution.walk_speed"                                        , "Walk Speed");
+        add("item_prop.draconicevolution.walk_speed.info"                                   , "Allows you to adjust the speed boost that is applied while you are walking.");
+        add("item_prop.draconicevolution.run_speed"                                         , "Sprint Speed");
+        add("item_prop.draconicevolution.run_speed.info"                                    , "Allows you to adjust the speed boost that is applied while you are sprinting.");
+        add("item_prop.draconicevolution.de.module.jump_boost.prop"                         , "Jump Boost");
+        add("item_prop.draconicevolution.de.module.jump_boost.prop.info"                    , "Adjust jump boost.");
+        add("item_prop.draconicevolution.de.module.jump_boost_run.prop"                     , "Run Jump Boost");
+        add("item_prop.draconicevolution.de.module.jump_boost_run.prop.info"                , "Adjust running jump boost.");
 
+        add("item_prop.draconicevolution.shield_mod.enabled"                                , "Shield Toggle");
+        add("item_prop.draconicevolution.shield_mod.enabled.info"                           , "Allows you to disable your shield. This prevents your shield from using power but leaves you vulnerable to damage.");
+        add("item_prop.draconicevolution.shield_mod.always_visible"                         , "Shield Always Visible");
+        add("item_prop.draconicevolution.shield_mod.always_visible.info"                    , "Purely cosmetic. If false your shield will only be visible when it absorbs damage.");
+
+        add("item_prop.draconicevolution.feed_mod.consume_food"                             , "Consume Food.");
+        add("item_prop.draconicevolution.feed_mod.consume_food.info"                        , "When enabled this module will automatically consume food from your inventory to fill its internal storage.");
+
+        add("item_prop.draconicevolution.flight_mod.elytra"                                 , "Elytra Flight");
+        add("item_prop.draconicevolution.flight_mod.elytra.info"                            , "Enables you to enable / disable elytra flight.");
+        add("item_prop.draconicevolution.flight_mod.creative"                               , "Creative Flight");
+        add("item_prop.draconicevolution.flight_mod.creative.info"                          , "Enables you to enable / disable creative flight.");
 
         //emdregion
 

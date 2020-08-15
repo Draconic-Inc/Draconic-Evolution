@@ -26,10 +26,17 @@ public class VBOModelRender extends ModelRenderer {
 
     private final VBORenderType vboRenderer;
     private Supplier<ShaderRenderType> shaderTypeGetter;
+    private Supplier<Boolean> enabledCallback = () -> this.showModel;
 
     public VBOModelRender(Model model, VBORenderType vboRenderer) {
         super(model);
         this.vboRenderer = vboRenderer;
+    }
+
+    public VBOModelRender(Model model, VBORenderType vboRenderer, Supplier<Boolean> enabledCallback) {
+        super(model);
+        this.vboRenderer = vboRenderer;
+        this.enabledCallback = enabledCallback;
     }
 
     public VBOModelRender setShader(Supplier<ShaderRenderType> shaderTypeGetter) {
@@ -42,7 +49,7 @@ public class VBOModelRender extends ModelRenderer {
     }
 
     public void render(MatrixStack mStack, IRenderTypeBuffer getter, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        if (this.showModel && vboRenderer != null) {
+        if (enabledCallback.get() && vboRenderer != null) {
             mStack.push();
             this.translateRotate(mStack);
             if (shaderTypeGetter != null && DEConfig.toolShaders) {

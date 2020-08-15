@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.IEntityRenderer;
 import net.minecraft.client.renderer.entity.layers.ArmorLayer;
+import net.minecraft.client.renderer.entity.model.AbstractZombieModel;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.entity.LivingEntity;
@@ -15,14 +16,17 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
+
+import javax.annotation.Nullable;
 
 /**
  * Created by brandon3055 on 30/6/20
  */
 public class VBOArmorLayer<T extends LivingEntity, M extends BipedModel<T>, A extends BipedModel<T>> extends ArmorLayer<T, M, A> {
 
-    public VBOArmorLayer(IEntityRenderer<T, M> renderer) {
-        super(renderer, SneakyUtils.unsafeCast(new BipedModel<T>(0.5F)), SneakyUtils.unsafeCast(new BipedModel<T>(1.0F)));
+    public VBOArmorLayer(IEntityRenderer<T, M> renderer, @Nullable ArmorLayer<T, M, A> parent) {
+        super(renderer, parent == null ? SneakyUtils.unsafeCast(new BipedModel<T>(0.5F)) : parent.modelLeggings, parent == null ? SneakyUtils.unsafeCast(new BipedModel<T>(1.0F)) : parent.modelArmor);
     }
 
     protected void setModelSlotVisible(A model, EquipmentSlotType slot) {
@@ -72,14 +76,25 @@ public class VBOArmorLayer<T extends LivingEntity, M extends BipedModel<T>, A ex
         if (itemstack.getItem() instanceof ArmorItem) {
             ArmorItem armoritem = (ArmorItem) itemstack.getItem();
             if (armoritem.getEquipmentSlot() == slot) {
-                A model = this.getModelFromSlot(slot);
+                A baseModel = this.getModelFromSlot(slot);
+                A model = baseModel;
                 model = getArmorModelHook(livingEntity, itemstack, slot, model);
                 if (model instanceof VBOBipedModel) {
-                    this.getEntityModel().setModelAttributes(model);
-                    model.setLivingAnimations(livingEntity, limbSwing, limbSwingAmount, partialTicks);
-                    this.setModelSlotVisible(model, slot);
-                    model.setRotationAngles(livingEntity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-                    ((VBOBipedModel<?>) model).render(mStack, getter, packedLight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+                    if (baseModel instanceof AbstractZombieModel) {
+                        baseModel.setRotationAngles(livingEntity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+                        ((VBOBipedModel) model).bipedRightArm.rotateAngleZ = baseModel.bipedRightArm.rotateAngleZ;
+                        ((VBOBipedModel) model).bipedLeftArm.rotateAngleZ = baseModel.bipedLeftArm.rotateAngleZ;
+                        ((VBOBipedModel) model).bipedRightArm.rotateAngleY = baseModel.bipedRightArm.rotateAngleY;
+                        ((VBOBipedModel) model).bipedLeftArm.rotateAngleY = baseModel.bipedLeftArm.rotateAngleY;
+                        ((VBOBipedModel) model).bipedRightArm.rotateAngleX = baseModel.bipedRightArm.rotateAngleX;
+                        ((VBOBipedModel) model).bipedLeftArm.rotateAngleX = baseModel.bipedLeftArm.rotateAngleX;
+                    }
+                    //Dont need this because this model is still "rendered" by the vanilla armor layer which handles all of this.
+//                    this.getEntityModel().setModelAttributes(model);
+//                    model.setLivingAnimations(livingEntity, limbSwing, limbSwingAmount, partialTicks);
+//                    this.setModelSlotVisible(model, slot);
+//                    model.setRotationAngles(livingEntity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+                    ((VBOBipedModel<T>) model).render(mStack, getter, livingEntity, itemstack, packedLight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
                 }
             }
         }

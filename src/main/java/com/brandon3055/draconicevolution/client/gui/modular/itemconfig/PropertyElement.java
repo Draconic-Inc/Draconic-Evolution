@@ -102,7 +102,7 @@ public class PropertyElement extends GuiElement<PropertyElement> {
         valueLabel.setTextColour(DARK_AQUA, AQUA);
         valueLabel.setMidTrim(true);
 
-        if (advanced) {
+        if (advanced && data.propUniqueName == null) {
             globalButton = gui.toolkit.createIconButton(this, 8, 8, () -> BCSprites.get(data.isGlobal ? "dark/global_icon" : "dark/global_icon_inactive"));
             globalButton.setHoverText(I18n.format("gui.draconicevolution.item_config.global.info"));
             globalButton.addChild(new GuiBorderedRect().setShadeColours(0, 0xFF409040, 0xFFBBFFBB).setRelPos(globalButton, -1, -1).setSize(10, 10).setEnabledCallback(() -> data.isGlobal));

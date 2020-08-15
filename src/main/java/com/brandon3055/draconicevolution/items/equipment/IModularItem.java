@@ -10,7 +10,6 @@ import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.capability.PropertyProvider;
 import com.brandon3055.draconicevolution.api.config.BooleanProperty;
-import com.brandon3055.draconicevolution.api.config.ConfigProperty;
 import com.brandon3055.draconicevolution.api.config.ConfigProperty.BooleanFormatter;
 import com.brandon3055.draconicevolution.api.config.ConfigProperty.DecimalFormatter;
 import com.brandon3055.draconicevolution.api.config.ConfigProperty.IntegerFormatter;
@@ -18,12 +17,12 @@ import com.brandon3055.draconicevolution.api.config.DecimalProperty;
 import com.brandon3055.draconicevolution.api.config.IntegerProperty;
 import com.brandon3055.draconicevolution.api.modules.ModuleCategory;
 import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
-import com.brandon3055.draconicevolution.api.modules.data.*;
+import com.brandon3055.draconicevolution.api.modules.data.AOEData;
+import com.brandon3055.draconicevolution.api.modules.data.SpeedData;
 import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleHostImpl;
-import com.brandon3055.draconicevolution.api.modules.lib.StackTickContext;
+import com.brandon3055.draconicevolution.api.modules.lib.StackModuleContext;
 import com.brandon3055.draconicevolution.init.EquipCfg;
-import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import net.minecraft.block.Block;
@@ -31,16 +30,12 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Hand;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -49,14 +44,11 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.common.extensions.IForgeItem;
-import net.minecraftforge.energy.IEnergyStorage;
 
 import javax.annotation.Nullable;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 import static com.brandon3055.draconicevolution.api.capability.DECapabilities.*;
 
@@ -131,8 +123,22 @@ public interface IModularItem extends IForgeItem {
 
     default void handleTick(ItemStack stack, LivingEntity entity, @Nullable EquipmentSlotType slot) {
         ModuleHost host = stack.getCapability(MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new);
-        StackTickContext context = new StackTickContext(host, stack, entity, slot);
+        StackModuleContext context = new StackModuleContext(stack, entity, slot);
         host.handleTick(context);
+    }
+
+    /**
+     * This is used to determine if a modular item is in a valid slot for its modules to operate.
+     * //TODO this is not currently implemented by some modules such as the shield modules
+     *
+     * @param stack The stack
+     * @param slot The equipment slot or null if this item is in the players general main inventory.
+     * @param inBaubleSlot //TODO Bauble support
+     * @return true if this stack is in a valid slot.
+     */
+    default boolean isEquipped(ItemStack stack, @Nullable EquipmentSlotType slot, boolean inBaubleSlot) {
+        if (this instanceof IModularArmor) return slot != null && slot.getSlotType() == EquipmentSlotType.Group.ARMOR;
+        return true;
     }
 
     default float getDestroySpeed(ItemStack stack, BlockState state) {
