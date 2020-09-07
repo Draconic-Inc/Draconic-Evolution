@@ -66,12 +66,10 @@ public class EntityLootCore extends Entity {
         if (world.isRemote) {
             if (isLooking && lookAnimation < 1F) {
                 lookAnimation += 0.05F;
-            }
-            else if (!isLooking && lookAnimation > 0F) {
+            } else if (!isLooking && lookAnimation > 0F) {
                 lookAnimation -= 0.05F;
             }
-        }
-        else if (canDespawn && despawnTimer++ > lifespan) {
+        } else if (canDespawn && despawnTimer++ > lifespan) {
             setDead();
         }
 
@@ -124,30 +122,23 @@ public class EntityLootCore extends Entity {
 
         boolean inserted = false;
 
-
         for (int i = inventory.getSizeInventory() - 1; i >= 0; i--) {
             ItemStack stack = inventory.getStackInSlot(i);
             if (!stack.isEmpty()) {
-                int start = stack.getCount();
+                ItemStack copy = stack.copy();
 
-                EntityItem item = new EntityItem(world, 0, 0, 0, stack);
-                item.setPosition(posX, posY, posZ);
-                int result = ForgeEventFactory.onItemPickup(item, player);
+                EntityItem item = new EntityItem(world, posX, posY, posZ, copy);
+                item.pickupDelay = 0;
+                item.onCollideWithPlayer(player);
+                copy = item.getItem();
 
-                if (result == 1 || stack.getCount() <= 0 || player.inventory.addItemStackToInventory(stack)) {
-                    if (item.isDead) {
-                        stack.setCount(0);
-                    }
-
-                    if (stack.getCount() == 0) {
+                if (item.isDead || !ItemStack.areItemStacksEqual(stack, copy)) {
+                    if (item.isDead || copy.isEmpty()) {
                         inventory.setInventorySlotContents(i, ItemStack.EMPTY);
-                    }
-                    else {
-                        inventory.setInventorySlotContents(i, stack);
-                    }
-
-                    if (stack.getCount() < start) {
                         inserted = true;
+                    } else {
+                        inventory.setInventorySlotContents(i, copy);
+                        inserted = copy.getCount() < stack.getCount();
                     }
                 }
             }

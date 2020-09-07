@@ -180,7 +180,7 @@ public class DislocatorBound extends Dislocator implements IRenderOverride {
     }
 
     public boolean isPlayer(ItemStack stack) {
-        return stack.getTagCompound().hasKey("PlayerLink");
+        return stack.hasTagCompound() && stack.getTagCompound().hasKey("PlayerLink");
     }
 
     public String getLinkID(ItemStack stack) {

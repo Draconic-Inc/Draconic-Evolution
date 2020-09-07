@@ -267,9 +267,9 @@ public class RenderTileEnergyStorageCore extends TESRBase<TileEnergyStorageCore>
             }
 
             vertexBuffer.begin(5, DefaultVertexFormats.POSITION_TEX_COLOR);
-            for (int i = 0; i < 4; ++i) {
-                vertexBuffer.putColorRGBA(i + 1, 255, 255, 255, 32);
-            }
+//            for (int i = 0; i < 4; ++i) {
+//                vertexBuffer.putColorRGBA(i + 1, 255, 255, 255, 32);
+//            }
 
             for (int i = 0; i <= sides; i++) {
 

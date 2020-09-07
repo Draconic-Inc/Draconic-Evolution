@@ -135,7 +135,7 @@ public abstract class ToolBase extends ItemEnergyBase implements IRenderOverride
         Map<Enchantment, Integer> disEnchants = getDisabledEnchants(stack);
         enchants.forEach((enchantment, integer) -> {
             ToolConfigHelper.getFieldStorage(stack).removeTag(enchantment.getName());
-            registry.register(stack, new BooleanConfigField(enchantment.getRegistryName() + "", false/*!disEnchants.containsKey(enchantment)*/, "config.field.toggleEnchant.description"){
+            registry.registerOverridden(stack, new BooleanConfigField(enchantment.getRegistryName() + "", !disEnchants.containsKey(enchantment), "config.field.toggleEnchant.description"){
                 @Override
                 public String getUnlocalizedName() {
                     return enchantment.getTranslatedName(integer);

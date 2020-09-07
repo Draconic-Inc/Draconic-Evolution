@@ -1,3 +1,8 @@
+######## 2.3.27.x ########
+-Fixed some inconsistencies when switching tool profiles with configured enchants.
+-Fixed a crash related to bound player Dislocators.
+-Fixed a bug with loot cores.
+
 ######## 2.3.26.353 ########
 -Fixed Grinder and Energy Infuser not accepting non IEnergyContainerItem's
 -Added Charge / Discharge ETA to energy core

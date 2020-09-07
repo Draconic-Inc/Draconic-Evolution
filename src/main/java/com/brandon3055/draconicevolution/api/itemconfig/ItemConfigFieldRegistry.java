@@ -31,6 +31,15 @@ public class ItemConfigFieldRegistry {
         return this;
     }
 
+    public ItemConfigFieldRegistry registerOverridden(ItemStack stack, IItemConfigField field) {
+        fields.put(field.getName(), field);
+
+        NBTTagCompound fieldStorage = ToolConfigHelper.getFieldStorage(stack);
+        field.writeToNBT(fieldStorage);
+
+        return this;
+    }
+
     public IItemConfigField getField(String name) {
         return fields.get(name);
     }
