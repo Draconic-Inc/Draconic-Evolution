@@ -266,6 +266,13 @@ public class LangGenerator extends LanguageProvider {
         add("module.draconicevolution.shield_passive.name"                                  , "Shield Operating Cost");
         add("module.draconicevolution.shield_passive.value"                                 , "%s OP/t");
         add(ModuleTypes.FLIGHT                                                              , "Flight");
+        add("module.draconicevolution.flight.name"                                          , "Flight");
+        add("module.draconicevolution.flight.true.false"                                    , "Elytra");
+        add("module.draconicevolution.flight.false.true"                                    , "Creative");
+        add("module.draconicevolution.flight.true.true"                                     , "Creative & Elytra");
+        add("module.draconicevolution.flight.boost.name"                                    , "Elytra Boost");
+//        add("module.draconicevolution.flight.boost.value"                                   , "%s%");
+
         add(ModuleTypes.LAST_STAND                                                          , "Last Stand");
         add("module.draconicevolution.last_stand.health.name"                               , "Health Boost");
         add("module.draconicevolution.last_stand.health.value"                              , "%s Health points");

@@ -66,6 +66,13 @@ public class EquipCfg {
     private static int DRACONIC_SHIELD_COOL_DOWN    = 8 * 20;
     private static int CHAOTIC_SHIELD_COOL_DOWN     = 5 * 20;
 
+    private static int ELYTRA_FLIGHT_ENERGY         = 256;
+    private static int CREATIVE_FLIGHT_ENERGY       = 512;
+
+    private static int ELYTRA_WYVERN_ENERGY         = 512;
+    private static int ELYTRA_DRACONIC_ENERGY       = 1024;
+    private static int ELYTRA_CHAOTIC_ENERGY        = 2048;
+
     //Static Access values
     public static double draconiumEfficiency;
     public static double wyvernEfficiency;
@@ -122,6 +129,13 @@ public class EquipCfg {
     public static int wyvernShieldCoolDown;
     public static int draconicShieldCoolDown;
     public static int chaoticShieldCoolDown;
+
+    public static int elytraFlightEnergy;
+    public static int creativeFlightEnergy;
+
+    public static int elytraWyvernEnergy;
+    public static int elytraDraconicEnergy;
+    public static int elytraChaoticEnergy;
 
     //@formatter:on
 
@@ -319,6 +333,30 @@ public class EquipCfg {
                 .setDefaultInt(-99)
                 .setSyncCallback((tag, type) -> chaoticShieldCoolDown = tag.getInt() != -99 ? tag.getInt() : CHAOTIC_SHIELD_COOL_DOWN);
 
+        equipTag.getTag("elytraFlightEnergy")
+                .setComment("Elytra flight energy use per tick.\nInternal Default Value: " + ELYTRA_FLIGHT_ENERGY)
+                .setDefaultInt(-99)
+                .setSyncCallback((tag, type) -> elytraFlightEnergy = tag.getInt() != -99 ? tag.getInt() : ELYTRA_FLIGHT_ENERGY);
+
+        equipTag.getTag("creativeFlightEnergy")
+                .setComment("Creative flight energy use per tick.\nInternal Default Value: " + CREATIVE_FLIGHT_ENERGY)
+                .setDefaultInt(-99)
+                .setSyncCallback((tag, type) -> creativeFlightEnergy = tag.getInt() != -99 ? tag.getInt() : CREATIVE_FLIGHT_ENERGY);
+
+
+        equipTag.getTag("elytraWyvernEnergy")
+                .setComment("Elytra boost energy per tick, Internal Default Value: " + ELYTRA_WYVERN_ENERGY)
+                .setDefaultInt(-99)
+                .setSyncCallback((tag, type) -> elytraWyvernEnergy = tag.getInt() != -99 ? tag.getInt() : ELYTRA_WYVERN_ENERGY);
+        equipTag.getTag("elytraDraconicEnergy")
+                .setComment("Elytra boost energy per tick, Internal Default Value: " + ELYTRA_DRACONIC_ENERGY)
+                .setDefaultInt(-99)
+                .setSyncCallback((tag, type) -> elytraDraconicEnergy = tag.getInt() != -99 ? tag.getInt() : ELYTRA_DRACONIC_ENERGY);
+        equipTag.getTag("elytraChaoticEnergy")
+                .setComment("Elytra boost energy per tick, Internal Default Value: " + ELYTRA_CHAOTIC_ENERGY)
+                .setDefaultInt(-99)
+                .setSyncCallback((tag, type) -> elytraChaoticEnergy = tag.getInt() != -99 ? tag.getInt() : ELYTRA_CHAOTIC_ENERGY);
+
         equipTag.setSyncToClient();
     }
 
@@ -433,5 +471,17 @@ public class EquipCfg {
                 return chaoticShieldCoolDown;
         }
         return wyvernShieldCoolDown;
+    }
+
+    public static int getElytraEnergy(TechLevel techLevel) {
+        switch (techLevel) {
+            case WYVERN:
+                return elytraWyvernEnergy;
+            case DRACONIC:
+                return elytraDraconicEnergy;
+            case CHAOTIC:
+                return elytraChaoticEnergy;
+        }
+        return 0;
     }
 }

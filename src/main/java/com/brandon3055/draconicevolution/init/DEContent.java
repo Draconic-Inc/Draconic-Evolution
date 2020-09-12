@@ -132,9 +132,9 @@ public class DEContent {
         event.getRegistry().register(TileEntityType.Builder.create(TileEnergyCoreStabilizer::new,       energy_core_stabilizer ).build(null).setRegistryName("core_stabilizer"));
         event.getRegistry().register(TileEntityType.Builder.create(TileEnergyPylon::new,          energy_pylon           ).build(null).setRegistryName("energy_pylon"));
         event.getRegistry().register(TileEntityType.Builder.create(TileCoreStructure::new,        energy_core_structure  ).build(null).setRegistryName("core_structure"));
-//        event.getRegistry().register(TileEntityType.Builder.create(TileReactorCore::new,          reactor_core           ).build(null).setRegistryName("reactor_core"));
-//        event.getRegistry().register(TileEntityType.Builder.create(TileReactorStabilizer::new,    reactor_stabilizer     ).build(null).setRegistryName("reactor_stabilizer"));
-//        event.getRegistry().register(TileEntityType.Builder.create(TileReactorInjector::new,      reactor_injector       ).build(null).setRegistryName("reactor_injector"));
+        event.getRegistry().register(TileEntityType.Builder.create(TileReactorCore::new,          reactor_core           ).build(null).setRegistryName("reactor_core"));
+        event.getRegistry().register(TileEntityType.Builder.create(TileReactorStabilizer::new,    reactor_stabilizer     ).build(null).setRegistryName("reactor_stabilizer"));
+        event.getRegistry().register(TileEntityType.Builder.create(TileReactorInjector::new,      reactor_injector       ).build(null).setRegistryName("reactor_injector"));
 
         event.getRegistry().register(TileEntityType.Builder.create(TileCrystalDirectIO::new, crystal_io_basic, crystal_io_wyvern, crystal_io_draconic/*, crystal_io_chaotic*/).build(null).setRegistryName("io_crystal"));
         event.getRegistry().register(TileEntityType.Builder.create(TileCrystalRelay::new, crystal_relay_basic, crystal_relay_wyvern, crystal_relay_draconic/*, crystal_relay_chaotic*/).build(null).setRegistryName("relay_crystal"));
@@ -278,10 +278,10 @@ public class DEContent {
         event.getRegistry().register(new EnergyCoreStabilizer(hardenedMachine).setRegistryName("energy_core_stabilizer"));
         event.getRegistry().register(new EnergyPylon(hardenedMachine).setRegistryName("energy_pylon"));
         event.getRegistry().register(new EnergyCoreStructureBlock(Properties.create(IRON, GRAY).hardnessAndResistance(5.0F, 12F).noDrops().notSolid()).setRegistryName("energy_core_structure"));
-//        //Reactor
-//        event.getRegistry().register(new ReactorCore(hardenedMachine).setRegistryName("reactor_core"));
-//        event.getRegistry().register(new ReactorComponent(hardenedMachine, false).setRegistryName("reactor_stabilizer"));
-//        event.getRegistry().register(new ReactorComponent(hardenedMachine, true).setRegistryName("reactor_injector"));
+        //Reactor
+        event.getRegistry().register(new ReactorCore(hardenedMachine).setRegistryName("reactor_core"));
+        event.getRegistry().register(new ReactorComponent(hardenedMachine, false).setRegistryName("reactor_stabilizer"));
+        event.getRegistry().register(new ReactorComponent(hardenedMachine, true).setRegistryName("reactor_injector"));
 //        //Ore
         event.getRegistry().register(new DraconiumOre(ore).setRegistryName("overworld_draconium_ore"));
         event.getRegistry().register(new DraconiumOre(ore).setRegistryName("nether_draconium_ore"));
@@ -423,9 +423,9 @@ public class DEContent {
         registerItem(event, new ItemBlockBCore(energy_core,                 new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(energy_core.getRegistryName())));
         registerItem(event, new ItemBlockBCore(energy_core_stabilizer,      new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(energy_core_stabilizer.getRegistryName())));
         registerItem(event, new ItemBlockBCore(energy_pylon,                new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(energy_pylon.getRegistryName())));
-//        registerItem(event, new ItemBlockBCore(reactor_core,                new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(reactor_core.getRegistryName())));
-//        registerItem(event, new ItemBlockBCore(reactor_stabilizer,          new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(reactor_stabilizer.getRegistryName())));
-//        registerItem(event, new ItemBlockBCore(reactor_injector,            new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(reactor_injector.getRegistryName())));
+        registerItem(event, new ItemBlockBCore(reactor_core,                new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(reactor_core.getRegistryName())));
+        registerItem(event, new ItemBlockBCore(reactor_stabilizer,          new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(reactor_stabilizer.getRegistryName())));
+        registerItem(event, new ItemBlockBCore(reactor_injector,            new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(reactor_injector.getRegistryName())));
         registerItem(event, new ItemBlockBCore(block_draconium,             new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(block_draconium.getRegistryName())));
         registerItem(event, new ItemBlockBCore(block_draconium_awakened,    new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(block_draconium_awakened.getRegistryName())));
         registerItem(event, new ItemBlockBCore(ore_draconium_end,           new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(ore_draconium_end.getRegistryName())));
@@ -513,260 +513,4 @@ public class DEContent {
         event.getRegistry().register(item);
         ITEM_REGISTRY_ORDER.add(item.getRegistryName());
     }
-
-
-//    //    @ModFeature(name = "generator", tileEntity = TileGenerator.class, itemBlock = ItemBlockBCore.class, cTab = 1)
-////    public static Generator generator = null;//new Generator();
-////        @ModFeature(name = "grinder", tileEntity = TileGrinder.class, itemBlock = ItemBlockBCore.class, cTab = 1)
-////    public static Grinder grinder = null;//new Grinder();
-//    //    @ModFeature(name = "particle_generator", variantMap = {"0:type=normal", "1:type=inverted", "2:type=stabilizer", "3:type=stabilizer"}, cTab = 1, itemBlock = ItemBlockBCore.class)
-//    public static ParticleGenerator particleGenerator = null;//new ParticleGenerator();
-//    //    @ModFeature(name = "energy_infuser", tileEntity = TileEnergyInfuser.class, itemBlock = ItemBlockBCore.class, cTab = 1)
-//    public static EnergyInfuser energyInfuser = null;//new EnergyInfuser();
-//
-//    /* ------------------ Blocks ------------------ */
-//
-//    //region Simple Blocks
-////TODO Split into multiple ore blocks
-////    @ModFeature(name = "draconium_ore", variantMap = {"0:type=normal", "1:type=nether", "2:type=end"}, itemBlock = ItemBlockBCore.class)
-//    public static DraconiumOre draconiumOre = null;//(DraconiumOre) new DraconiumOre().setHardness(10f).setResistance(20.0f);
-//
-//    //    @ModFeature(name = "draconium_block", variantMap = {"0:charged=false", "1:charged=true"}, itemBlock = ItemDraconiumBlock.class)
-//    public static DraconiumBlock draconiumBlock = null;//(DraconiumBlock) new DraconiumBlock().setHardness(10f).setResistance(20.0f);
-//
-//    //    @ModFeature(name = "draconic_block")
-//    public static BlockBCore draconicBlock = null;//new BlockBCore(Material.IRON) {
-////        @Override//TODO add a way to override this in BlockBCore
-////        public float getEnchantPowerBonus(World world, BlockPos pos) {
-////            return 12f;
-////        }
-////    }.setHardness(20F).setResistance(1000F)).setHarvestTool("pickaxe", 4);
-//
-//    //    @ModFeature(name = "infused_obsidian")
-//    public static BlockBCore infusedObsidian = null;//((BlockBCore) new BlockBCore(Material.IRON).setHardness(100F).setResistance(4000F)).setHarvestTool("pickaxe", 4);
-//
-//    //    @ModFeature(name = "portal", tileEntity = TilePortal.class)
-//    public static Portal portal = null;//new Portal();
-//
-//    //    @ModFeature(name = "item_dislocation_inhibitor")
-//    public static ItemDislocationInhibitor itemDislocationInhibitor = null;//new ItemDislocationInhibitor();
-//
-//    //endregion
-//
-//    //region Machines
-//
-//
-//    //    @ModFeature(name = "dislocator_receptacle", tileEntity = TileDislocatorReceptacle.class, itemBlock = ItemBlockBCore.class, cTab = 1)
-//    public static DislocatorReceptacle dislocatorReceptacle = null;//new DislocatorReceptacle();
-//    //    @ModFeature(name = "dislocator_pedestal", tileEntity = TileDislocatorPedestal.class, cTab = 1)
-//    public static DislocatorPedestal dislocatorPedestal = null;//new DislocatorPedestal();
-//    //    @ModFeature(name = "rain_sensor", tileEntity = TileRainSensor.class, cTab = 1)
-//    public static RainSensor rainSensor = null;//new RainSensor();
-//    //    @ModFeature(name = "diss_enchanter", tileEntity = TileDissEnchanter.class, itemBlock = ItemBlockBCore.class, cTab = 1)
-//    public static DissEnchanter dissEnchanter = null;//new DissEnchanter();
-//    //    @ModFeature(name = "potentiometer", tileEntity = TilePotentiometer.class, cTab = 1)
-//    public static Potentiometer potentiometer = null;//new Potentiometer();
-//    //    @ModFeature(name = "entity_detector", tileEntity = TileEntityDetector.class, variantMap = {"0:advanced=false", "1:advanced=true"}, itemBlock = ItemBlockBCore.class, cTab = 1)
-//    public static EntityDetector entityDetector = null;//new EntityDetector();
-//
-//    //endregion
-//
-//    //region Advanced Machines
-//
-//    //    @ModFeature(name = "energy_storage_core", tileEntity = TileEnergyStorageCore.class, cTab = 1)
-//    public static EnergyStorageCore energyStorageCore = null;//new EnergyStorageCore();
-//    //    @ModFeature(name = "energy_pylon", tileEntity = TileEnergyPylon.class, cTab = 1)
-//    public static EnergyPylon energyPylon = null;//new EnergyPylon();
-//    //    @ModFeature(name = "invis_e_core_block", tileEntity = TileInvisECoreBlock.class, cTab = -1)
-//    public static InvisECoreBlock invisECoreBlock = null;//new InvisECoreBlock();
-//    //    @ModFeature(name = "fusion_crafting_core", tileEntity = TileFusionCraftingCore.class, itemBlock = ItemBlockBCore.class, cTab = 1)
-//    public static FusionCraftingCore fusionCraftingCore = null;//new FusionCraftingCore();
-//    //    @ModFeature(name = "crafting_injector", variantMap = {"0:facing=up,tier=basic", "1:facing=up,tier=wyvern", "2:facing=up,tier=draconic", "3:facing=up,tier=chaotic"}, tileEntity = TileCraftingInjector.class, itemBlock = ItemBlockBCore.class, cTab = 1)
-//    public static CraftingInjector craftingInjector = null;//new CraftingInjector();
-//    //    @ModFeature(name = "celestial_manipulator", tileEntity = TileCelestialManipulator.class, cTab = 1)//, itemBlock = ItemBlockBCore.class, cTab = 1)
-//    public static CelestialManipulator celestialManipulator = null;//new CelestialManipulator();
-//    //    @ModFeature(name = "energy_crystal", itemBlock = ItemBlockBCore.class)
-//    public static EnergyCrystal energyCrystal = null;//new EnergyCrystal();
-//    //    @ModFeature(name = "flow_gate", variantMap = {"0:facing=north,type=flux", "8:facing=north,type=fluid"}, itemBlock = ItemBlockBCore.class, cTab = 1)
-//    public static FlowGate flowGate = null;//new FlowGate();
-//    //    @ModFeature(name = "reactor_core", tileEntity = TileReactorCore.class, itemBlock = ItemBlockBCore.class, cTab = 1)
-//    public static ReactorCore reactorCore = null;//new ReactorCore();
-//    //    @ModFeature(name = "reactor_part", cTab = 1)
-//    public static ReactorPart reactorPart = null;//new ReactorPart();
-//    //    @ModFeature(name = "reactor_component", itemBlock = ItemBlockBCore.class, cTab = 1)
-//    public static ReactorComponent reactorComponent = null;//new ReactorComponent();
-//    //    @ModFeature(name = "draconic_spawner", tileEntity = TileStabilizedSpawner.class, itemBlock = ItemBlockBCore.class)
-//    public static StabilizedSpawner stabilizedSpawner = null;//new StabilizedSpawner();
-//    //    @ModFeature(name = "draconium_chest", tileEntity = TileDraconiumChest.class, itemBlock = ItemBlockBCore.class)
-//    public static DraconiumChest draconiumChest = null;//new DraconiumChest();
-//    //endregion
-//
-//    //region Exotic Blocks
-//
-//    //    @ModFeature(name = "chaos_crystal", tileEntity = TileChaosCrystal.class, cTab = -1)
-//    public static ChaosCrystal chaosCrystal = null;//new ChaosCrystal();
-//    //    @ModFeature(name = "chaos_shard_atmos", cTab = -1)
-//    public static ChaosShardAtmos chaosShardAtmos = null;//new ChaosShardAtmos();
-//    //    @ModFeature(name = "creative_rf_source", tileEntity = TileCreativeRFCapacitor.class, cTab = 1)
-//    public static CreativeRFSource creativeRFSource = null;//new CreativeRFSource();
-//    //    @ModFeature(name = "placed_item", tileEntity = TilePlacedItem.class, cTab = -1)
-//    public static PlacedItem placedItem = null;//new PlacedItem();
-//    //endregion
-//
-//    /* ------------------ Items ------------------ */
-//
-//    //region Crafting Components / Base items
-//    @ModFeature(name = "draconium_dust", stateOverride = "simple_components#type=draconiumDust")
-//    public static Item draconiumDust = null;//new Item();
-//
-//    //    @ModFeature(name = "draconium_ingot", stateOverride = "simple_components#type=draconiumIngot")
-//    public static Item draconiumIngot = null;//new Item();
-//
-//    //    @ModFeature(name = "draconic_ingot", stateOverride = "simple_components#type=draconicIngot")
-//    public static Item draconicIngot = null;//new Item();
-//
-//    //    @ModFeature(name = "draconic_core", stateOverride = "simple_components#type=draconicCore")
-//    public static ItemCore draconicCore = null;//new ItemCore();
-//
-//    //    @ModFeature(name = "wyvern_core", stateOverride = "simple_components#type=wyvernCore")
-//    public static ItemCore wyvernCore = null;//new ItemCore();
-//
-//    //    @ModFeature(name = "awakened_core", stateOverride = "simple_components#type=awakenedCore")
-//    public static ItemCore awakenedCore = null;//new ItemCore();
-//
-//    //    @ModFeature(name = "chaotic_core", stateOverride = "simple_components#type=chaoticCore")
-//    public static ItemCore chaoticCore = null;//new ItemCore();
-//
-//    //    @ModFeature(name = "wyvern_energy_core", stateOverride = "simple_components#type=wyvernECore")
-//    public static Item wyvernEnergyCore = null;//new Item();
-//
-//    //    @ModFeature(name = "draconic_energy_core", stateOverride = "simple_components#type=draconicECore")
-//    public static Item draconicEnergyCore = null;//new Item();
-//
-//    //    @ModFeature(name = "dragon_heart", stateOverride = "simple_components#type=dragonHeart")
-//    public static ItemPersistent dragonHeart = null;//new ItemPersistent();
-//
-//    //    @ModFeature(name = "debugger", stateOverride = "simple_components#type=draconicIngot")
-//    public static Item debugger = null;//new Debugger();
-//
-//    //    @ModFeature(name = "nugget", variantMap = {"0:type=draconium", "1:type=awakened"})
-//    public static ItemSimpleSubs nugget = null;//new ItemSimpleSubs(new String[]{"0:draconium", "1:awakened"});
-//
-//    //    @ModFeature(name = "chaos_shard", variantMap = {"0:type=shard", "1:type=fragLarge", "2:type=fragMedium", "3:type=fragSmall"})
-//    public static ItemSimpleSubs chaosShard = null;//new ItemSimpleSubs(new String[]{"0:shard", "1:fragLarge", "2:fragMedium", "3:fragSmall"});
-//
-//
-//    //endregion
-//
-//    //region Tools
-//
-//    //    @ModFeature(name = "draconium_capacitor", variantMap = {"0:type=wyvern", "1:type=draconic", "2:type=creative"}, cTab = 1)
-//    public static DraconiumCapacitor draconiumCapacitor = null;//new DraconiumCapacitor();
-//    public static ItemStack wyvernCapacitor = null;//new ItemStack(draconiumCapacitor, 1, 0);
-//    public static ItemStack draconicCapacitor = null;//new ItemStack(draconiumCapacitor, 1, 1);
-//    public static ItemStack creativeCapacitor = null;//new ItemStack(draconiumCapacitor, 1, 2);
-//
-//    //    @ModFeature(name = "wyvern_axe", cTab = 1)
-//    public static WyvernAxe wyvernAxe = null;//new WyvernAxe();
-//
-//    //    @ModFeature(name = "wyvern_bow", cTab = 1)
-//    public static WyvernBow wyvernBow = null;//new WyvernBow();
-//
-//    //    @ModFeature(name = "wyvern_pick", cTab = 1)
-//    public static WyvernPick wyvernPick = null;//new WyvernPick();
-//
-//    //    @ModFeature(name = "wyvern_shovel", cTab = 1)
-//    public static WyvernShovel wyvernShovel = null;//new WyvernShovel();
-//
-//    //    @ModFeature(name = "wyvern_sword", cTab = 1)
-//    public static WyvernSword wyvernSword = null;//new WyvernSword();
-//
-//    //    @ModFeature(name = "draconic_axe", cTab = 1)
-//    public static DraconicAxe draconicAxe = null;//new DraconicAxe();
-//
-//    //    @ModFeature(name = "draconic_bow", cTab = 1)
-//    public static DraconicBow draconicBow = null;//new DraconicBow();
-//
-//    //    @ModFeature(name = "draconic_hoe", cTab = 1)
-//    public static DraconicHoe draconicHoe = null;//new DraconicHoe();
-//
-//    //    @ModFeature(name = "draconic_pick", cTab = 1)
-//    public static DraconicPick draconicPick = null;//new DraconicPick();
-//
-//    //    @ModFeature(name = "draconic_shovel", cTab = 1)
-//    public static DraconicShovel draconicShovel = null;//new DraconicShovel();
-//
-//    //    @ModFeature(name = "draconic_staff_of_power", cTab = 1)
-//    public static DraconicStaffOfPower draconicStaffOfPower = null;//new DraconicStaffOfPower();
-//
-//    //    @ModFeature(name = "draconic_sword", cTab = 1)
-//    public static DraconicSword draconicSword = null;//new DraconicSword();
-//
-//    //    @ModFeature(name = "tool_upgrade", cTab = 1)
-//    public static ToolUpgrade toolUpgrade = null;//new ToolUpgrade();
-//
-//    //    @ModFeature(name = "dislocator", cTab = 1)
-//    public static Dislocator dislocator = null;//new Dislocator();
-//
-//    //    @ModFeature(name = "dislocator_advanced", cTab = 1)
-//    public static DislocatorAdvanced dislocatorAdvanced = null;//new DislocatorAdvanced();
-//
-//    //    @ModFeature(name = "dislocator_bound", cTab = 1)
-//    public static DislocatorBound dislocatorBound = null;//new DislocatorBound();
-//
-//    //    @ModFeature(name = "magnet", cTab = 1, stateOverride = "misc", variantMap = {"0:type=magnet_basic", "1:type=magnet_advanced"})
-//    public static Magnet magnet = null;//new Magnet();
-//
-//    //    @ModFeature(name = "crystal_binder", stateOverride = "misc#type=crystal_binder")
-//    public static CrystalBinder crystalBinder = null;//new CrystalBinder();
-//
-//    //endregion
-//
-//    //region Armor
-//    @ModFeature(name = "wyvern_helm", cTab = 1, stateOverride = "armor#type=wyvernHelm")
-//    public static WyvernArmor wyvernHelm = null;//new WyvernArmor(0, EquipmentSlotType.HEAD);
-//
-//    //    @ModFeature(name = "wyvern_chest", cTab = 1, stateOverride = "armor#type=wyvernChest")
-//    public static WyvernArmor wyvernChest = null;//new WyvernArmor(1, EquipmentSlotType.CHEST);
-//
-//    //    @ModFeature(name = "wyvern_legs", cTab = 1, stateOverride = "armor#type=wyvernLegs")
-//    public static WyvernArmor wyvernLegs = null;//new WyvernArmor(2, EquipmentSlotType.LEGS);
-//
-//    //    @ModFeature(name = "wyvern_boots", cTab = 1, stateOverride = "armor#type=wyvernBoots")
-//    public static WyvernArmor wyvernBoots = null;//new WyvernArmor(3, EquipmentSlotType.FEET);
-//
-//    //    @ModFeature(name = "draconic_helm", cTab = 1, stateOverride = "armor#type=draconicHelm")
-//    public static DraconicArmor draconicHelm = null;//new DraconicArmor(0, EquipmentSlotType.HEAD);
-//
-//    //    @ModFeature(name = "draconic_chest", cTab = 1, stateOverride = "armor#type=draconicChest")
-//    public static DraconicArmor draconicChest = null;//new DraconicArmor(1, EquipmentSlotType.CHEST);
-//
-//    //    @ModFeature(name = "draconic_legs", cTab = 1, stateOverride = "armor#type=draconicLegs")
-//    public static DraconicArmor draconicLegs = null;//new DraconicArmor(2, EquipmentSlotType.LEGS);
-//
-//    //    @ModFeature(name = "draconic_boots", cTab = 1, stateOverride = "armor#type=draconicBoots")
-//    public static DraconicArmor draconicBoots = null;//new DraconicArmor(3, EquipmentSlotType.FEET);
-//
-//    //endregion
-//
-//    //region Misc
-//
-//    //    @ModFeature(name = "info_tablet", stateOverride = "simple_components#type=info_tablet", cTab = 1)
-//    public static InfoTablet infoTablet = null;//new InfoTablet();
-//
-//    //    @ModFeature(name = "mob_soul")
-//    public static MobSoul mobSoul = null;//new MobSoul();
-//
-//
-//    //endregion
-//
-//    //region Exotic Items
-//
-//    //    @ModFeature(name = "creative_exchanger", stateOverride = "misc#type=creative_exchanger", cTab = 1)
-//    public static CreativeExchanger creativeExchanger = null;//new CreativeExchanger();
-//
-//    //    @ModFeature(name = "ender_energy_manipulator", cTab = 1)
-//    public static EnderEnergyManipulator enderEnergyManipulator = null;//new EnderEnergyManipulator();
-//
-//    //endregion
 }

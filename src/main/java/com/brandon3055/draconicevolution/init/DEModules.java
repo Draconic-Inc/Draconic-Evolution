@@ -150,9 +150,9 @@ public class DEModules {
         register(new ModuleImpl<>(SHIELD_BOOST,         DRACONIC,       shieldData(10,  0.50D)),            "draconic_shield_recovery");
         register(new ModuleImpl<>(SHIELD_BOOST,         CHAOTIC,        shieldData(20,  1.00D)),            "chaotic_shield_recovery");
 
-        register(new ModuleImpl<>(FLIGHT,               WYVERN,         flightData(true, false), 2, 2),     "wyvern_flight");
-        register(new ModuleImpl<>(FLIGHT,               DRACONIC,       flightData(true, true)),            "draconic_flight");
-        register(new ModuleImpl<>(FLIGHT,               CHAOTIC,        flightData(true, true)),            "chaotic_flight");
+        register(new ModuleImpl<>(FLIGHT,               WYVERN,         flightData(true, false, 1), 2, 2),     "wyvern_flight");
+        register(new ModuleImpl<>(FLIGHT,               DRACONIC,       flightData(true, true, 2)),            "draconic_flight");
+        register(new ModuleImpl<>(FLIGHT,               CHAOTIC,        flightData(true, true, 3.5)),            "chaotic_flight");
 
         register(new ModuleImpl<>(LAST_STAND,           WYVERN,         lastStandData(6F,  25F, 15*20,  4*30*20, 5000000)),                       "wyvern_last_stand");
         register(new ModuleImpl<>(LAST_STAND,           DRACONIC,       lastStandData(12F, 50F, 30*20,  2*30*20, 10000000)).setMaxInstall(2),     "draconic_last_stand");
@@ -211,8 +211,11 @@ public class DEModules {
         return e -> new JumpData(ModuleCfg.getModuleDouble(e, "jump_boost", defMultiplier));
     }
 
-    private static Function<Module<FlightData>, FlightData> flightData(boolean elytra, boolean creative) {
-        return e -> new FlightData(elytra, creative);
+    private static Function<Module<FlightData>, FlightData> flightData(boolean elytra, boolean creative, double defSpeed) {
+        return e -> {
+            double speed = ModuleCfg.getModuleDouble(e, "elytra_boost_speed", defSpeed);
+            return new FlightData(elytra, creative, speed);
+        };
     }
 
     private static Function<Module<LastStandData>, LastStandData> lastStandData(float defHealthBoost, float defShieldBoost, int shieldBoostTime, int defChargeTime, long defChargeEnergy) {

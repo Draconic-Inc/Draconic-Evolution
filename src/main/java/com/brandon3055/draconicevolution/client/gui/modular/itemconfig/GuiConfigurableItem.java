@@ -21,7 +21,6 @@ import com.brandon3055.draconicevolution.api.config.ConfigProperty;
 import com.brandon3055.draconicevolution.client.keybinding.KeyBindings;
 import com.brandon3055.draconicevolution.inventory.ContainerConfigurableItem;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
-import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -34,7 +33,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.util.LazyOptional;
-import org.lwjgl.glfw.GLFW;
 
 import java.util.*;
 import java.util.List;
@@ -78,7 +76,7 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
     protected List<UpdateAnim> updateAnimations = new ArrayList<>();
     protected GuiToolkit<GuiConfigurableItem> toolkit;
     protected List<PropertyContainer> propertyContainers = new ArrayList<>();
-    protected static Map<InputMappings.Input, PropertyContainer> keyBindingCache = null;
+    protected static List<PropertyContainer> keyBindCache = null;
 
     public GuiConfigurableItem(ContainerConfigurableItem container, PlayerInventory inv, ITextComponent titleIn) {
         super(container, inv, titleIn);
@@ -503,8 +501,8 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
             return;
         }
         InputMappings.Input input = InputMappings.getInputByCode(keyCode, scanCode);
-        if (keyBindingCache == null) {
-            keyBindingCache = new HashMap<>();
+        if (keyBindCache == null) {
+            keyBindCache = new ArrayList<>();
             CompoundNBT nbt = ItemConfigDataHandler.retrieveData();
             List<PropertyContainer> containers = nbt.getList("property_containers", 10)
                     .stream()
@@ -513,13 +511,17 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
                     .collect(Collectors.toList());
             containers.stream()
                     .filter(e -> !e.boundKey.isEmpty() && e.globalKeyBind && e.isPreset)
-                    .forEach(e -> keyBindingCache.put(InputMappings.getInputByName(e.boundKey), e));
+                    .forEach(e -> keyBindCache.add(e));
+
+            keyBindCache.sort(Comparator.comparing(e -> e.modifier.ordinal()));
         }
 
-        PropertyContainer container = keyBindingCache.get(input);
-        if (container != null && container.modifier.isActive(null)) {
-            container.dataList.forEach(PropertyData::sendToServer);
-            GuiButton.playGenericClick();
+        for (PropertyContainer container : keyBindCache) {
+            if (input.toString().equals(container.boundKey) && container.modifier.isActive(null)) {
+                container.dataList.forEach(PropertyData::sendToServer);
+                GuiButton.playGenericClick();
+                return;
+            }
         }
     }
 
@@ -545,7 +547,7 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
     }
 
     protected void savePropertyConfig() {
-        keyBindingCache = null;
+        keyBindCache = null;
         CompoundNBT nbt = new CompoundNBT();
         nbt.putBoolean("advanced", advancedUI);
         nbt.putBoolean("hidden", hideUI);

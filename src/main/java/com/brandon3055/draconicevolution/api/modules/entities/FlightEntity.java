@@ -17,8 +17,8 @@ public class FlightEntity extends ModuleEntity {
 
     private BooleanProperty elytraEnabled = null;
     private BooleanProperty creativeEnabled = null;
-    private DecimalProperty speed = null;
-    private DecimalProperty boostSpeed = null;
+//    private DecimalProperty speed = null;
+//    private DecimalProperty boostSpeed = null;
 
     public FlightEntity(Module<FlightData> module) {
         super(module);
@@ -27,17 +27,17 @@ public class FlightEntity extends ModuleEntity {
         }
         if (module.getData().creative()) {
             addProperty(creativeEnabled = new BooleanProperty("flight_mod.creative", true).setFormatter(ENABLED_DISABLED));
-            addProperty(speed = new DecimalProperty("flight_mod.speed", 0).setFormatter(PLUS_PERCENT_0).range(0, 1));
-            addProperty(boostSpeed = new DecimalProperty("flight_mod.boost_speed", 1).setFormatter(PLUS_PERCENT_0).range(0, 1));
+//            addProperty(speed = new DecimalProperty("flight_mod.speed", 0).setFormatter(PLUS_PERCENT_0).range(0, 1));
+//            addProperty(boostSpeed = new DecimalProperty("flight_mod.boost_speed", 1).setFormatter(PLUS_PERCENT_0).range(0, 1));
         }
         this.savePropertiesToItem = true;
     }
 
     @Override
     public void onInstalled(ModuleContext context) {
-        SpeedData speedData = host.getModuleData(ModuleTypes.SPEED, new SpeedData(0));
-        speed.range(0, 1 + speedData.getSpeedMultiplier());
-        boostSpeed.range(0, 1 + speedData.getSpeedMultiplier());
+//        SpeedData speedData = host.getModuleData(ModuleTypes.SPEED, new SpeedData(0));
+//        speed.range(0, 1 + speedData.getSpeedMultiplier());
+//        boostSpeed.range(0, 1 + speedData.getSpeedMultiplier());
     }
 
     public boolean getElytraEnabled() {
@@ -48,11 +48,11 @@ public class FlightEntity extends ModuleEntity {
         return creativeEnabled != null && creativeEnabled.getValue();
     }
 
-    public double getSpeed(boolean boost) {
-        if (boost) {
-            return speed == null ? 0 : speed.getValue();
-        } else {
-            return boostSpeed == null ? 0 : boostSpeed.getValue();
-        }
-    }
+//    public double getSpeed(boolean boost) {
+//        if (boost) {
+//            return speed == null ? 0 : speed.getValue();
+//        } else {
+//            return boostSpeed == null ? 0 : boostSpeed.getValue();
+//        }
+//    }
 }

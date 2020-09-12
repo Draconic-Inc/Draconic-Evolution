@@ -15,11 +15,12 @@ import java.util.Map;
 public class FlightData implements ModuleData<FlightData> {
     private final boolean elytra;
     private final boolean creative;
+    private final double elytraSpeed;
 
-    public FlightData(boolean elytra, boolean creative) {
-
+    public FlightData(boolean elytra, boolean creative, double elytraSpeed) {
         this.elytra = elytra;
         this.creative = creative;
+        this.elytraSpeed = elytraSpeed;
     }
 
     public boolean elytra() {
@@ -30,6 +31,10 @@ public class FlightData implements ModuleData<FlightData> {
         return creative;
     }
 
+    public double getElytraSpeed() {
+        return elytraSpeed;
+    }
+
     @Override
     public FlightData combine(FlightData other) {
         return other;
@@ -37,6 +42,10 @@ public class FlightData implements ModuleData<FlightData> {
 
     @Override
     public void addInformation(Map<ITextComponent, ITextComponent> map, ModuleContext context, boolean stack) {
+        map.put(new TranslationTextComponent("module.draconicevolution.flight.name"), new TranslationTextComponent("module.draconicevolution.flight." + elytra + "." + creative));
+        if (elytra && elytraSpeed > 0) {
+            map.put(new TranslationTextComponent("module.draconicevolution.flight.boost.name"), new StringTextComponent((int)(elytraSpeed * 100) + "%"));
+        }
         if (elytra && !DEConfig.enableElytraFlight) {
             map.put(new StringTextComponent("Elytra Flight").applyTextStyle(TextFormatting.RED), new StringTextComponent("Disabled by server").applyTextStyle(TextFormatting.RED));
         }

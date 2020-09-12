@@ -14,6 +14,8 @@ import net.minecraft.item.ArmorMaterial;
 import net.minecraft.item.BowItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -56,6 +58,7 @@ public class ModularBow extends BowItem implements IReaperItem, IModularItem {
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         addModularItemInformation(stack, worldIn, tooltip, flagIn);
+        tooltip.add(new StringTextComponent("[Not yet implemented]").applyTextStyle(TextFormatting.RED));
     }
 
     @Override

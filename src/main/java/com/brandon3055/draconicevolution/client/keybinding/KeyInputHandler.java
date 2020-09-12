@@ -6,13 +6,17 @@ import com.brandon3055.brandonscore.handlers.HandHelper;
 import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.GuiConfigurableItem;
 
 import com.brandon3055.draconicevolution.inventory.ContainerConfigurableItem;
+import com.brandon3055.draconicevolution.items.equipment.IModularArmor;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.InputEvent;
@@ -70,8 +74,7 @@ public class KeyInputHandler {
     private void onInput(PlayerEntity player) {
         if (KeyBindings.placeItem.isPressed()) {
             handlePlaceItemKey();
-        }
-        else if (KeyBindings.toolConfig.isPressed()) {
+        } else if (KeyBindings.toolConfig.isPressed()) {
             DraconicNetwork.sendOpenItemConfig(false);
         }
 //        else if (KeyBindings.hudConfig.isPressed()) {
@@ -89,8 +92,7 @@ public class KeyInputHandler {
                 if (player.abilities.isFlying) {
                     player.abilities.isFlying = false;
                     player.sendPlayerAbilities();
-                }
-                else {
+                } else {
                     player.abilities.isFlying = true;
                     if (player.onGround) {
                         player.setPosition(player.posX, player.posY + 0.05D, player.posZ);
@@ -125,8 +127,18 @@ public class KeyInputHandler {
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void priorityKeyInput(InputEvent.KeyInputEvent event) {
-        if (Minecraft.getInstance().player != null && event.getAction() == 1) {
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.player != null && event.getAction() == 1) {
             GuiConfigurableItem.checkKeybinding(event.getKey(), event.getScanCode());
+        }
+        if (mc.gameSettings.keyBindForward.getKey().getKeyCode() == event.getKey() && mc.player.isElytraFlying() && mc.player.getItemStackFromSlot(EquipmentSlotType.CHEST).getItem() instanceof IModularArmor) {
+//            Vec3d look = mc.player.getLookVec();
+//            Vec3d motion = mc.player.getMotion();
+//            mc.player.setMotion(motion.add(
+//                    look.x * 0.1D + (look.x * 1.5D - motion.x) * 1.5D,
+//                    look.y * 0.1D + (look.y * 1.5D - motion.y) * 1.5D,
+//                    look.z * 0.1D + (look.z * 1.5D - motion.z) * 1.5D
+//            ));
         }
     }
 }
