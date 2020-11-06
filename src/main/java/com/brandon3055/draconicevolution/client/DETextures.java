@@ -181,10 +181,12 @@ public class DETextures implements IIconRegister, ISelectiveResourceReloadListen
     public static final String ENERGY_BEAM_BASIC = "textures/particle/energy_beam_basic.png";
     public static final String ENERGY_BEAM_WYVERN = "textures/particle/energy_beam_wyvern.png";
     public static final String ENERGY_BEAM_DRACONIC = "textures/particle/energy_beam_draconic.png";
+    public static final String REACTOR_BEAM = "textures/particle/reactor_beam.png";
+    public static final String REACTOR_ENERGY_BEAM = "textures/particle/reactor_energy_beam.png";
 
-    public static final String REACTOR_STABILIZER = "textures/models/reactor_stabilizer_core.png";
-    public static final String REACTOR_STABILIZER_RING = "textures/models/reactor_stabilizer_ring.png";
-    public static final String REACTOR_INJECTOR = "textures/models/model_reactor_power_injector.png";
+    public static final ResourceLocation REACTOR_STABILIZER = new ResourceLocation(DraconicEvolution.MODID, "textures/models/reactor/reactor_stabilizer_core.png");
+    public static final ResourceLocation REACTOR_STABILIZER_RING = new ResourceLocation(DraconicEvolution.MODID, "textures/models/reactor/reactor_stabilizer_ring.png");
+    public static final ResourceLocation REACTOR_INJECTOR = new ResourceLocation(DraconicEvolution.MODID, "textures/models/reactor/model_reactor_power_injector.png");
 
     public static final String DRACONIUM_CHEST = "textures/models/draconium_chest.png";
 

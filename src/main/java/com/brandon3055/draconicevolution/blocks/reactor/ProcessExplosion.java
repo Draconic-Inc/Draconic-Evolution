@@ -397,25 +397,4 @@ public class ProcessExplosion implements IProcess {
         return isDead;
     }
 
-//    private class ProcessThread extends Thread {
-//        private ServerWorld world;
-//
-//        public ProcessThread(ServerWorld world) {
-//            super("DE Explosion Calculator");
-//            this.world = world;
-//            this.setDaemon(true);
-//        }
-//
-//        @Override
-//        public void run() {
-//            long t = System.currentTimeMillis();
-//            while (!ProcessExplosion.this.calculationComplete) {
-//                LogHelper.dev("Calculation Progress: " + Utils.round((((double) radius / (double) maxRadius) * 100D), 100) + "% " + (Runtime.getRuntime().freeMemory() / 1000000));
-//                ProcessExplosion.this.updateCalculation();
-//            }
-//            t = System.currentTimeMillis() - t;
-//            LogHelper.dev("Threaded Explosion Calculation took " + t + "ms!");
-//        }
-//    }
-
 }

@@ -33,7 +33,7 @@ import static com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileRe
  */
 public abstract class TileReactorComponent extends TileBCore implements ITickableTileEntity, IDEPeripheral {
 
-    private final ManagedVec3I coreOffset       = register(new ManagedVec3I("core_offset", SAVE_NBT));
+    private final ManagedVec3I coreOffset       = register(new ManagedVec3I("core_offset", SAVE_NBT_SYNC_TILE));
     public final ManagedEnum<Direction> facing  = register(new ManagedEnum<>("facing", Direction.UP, SAVE_NBT_SYNC_TILE));
     public final ManagedBool isBound            = register(new ManagedBool("is_bound", SAVE_NBT_SYNC_TILE));
     public final ManagedEnum<RSMode> rsMode     = register(new ManagedEnum<>("rs_mode", RSMode.TEMP, SAVE_NBT_SYNC_TILE));

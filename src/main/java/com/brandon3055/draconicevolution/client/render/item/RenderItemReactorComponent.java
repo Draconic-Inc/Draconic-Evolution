@@ -1,11 +1,17 @@
 package com.brandon3055.draconicevolution.client.render.item;
 
+import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.item.IItemRenderer;
 import codechicken.lib.util.TransformUtils;
+import codechicken.lib.vec.Matrix4;
+import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
+import com.brandon3055.draconicevolution.client.render.tile.RenderTileReactorComponent;
 import com.brandon3055.draconicevolution.client.render.tile.RenderTileReactorCore;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Quaternion;
 import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
@@ -14,10 +20,10 @@ import net.minecraft.item.ItemStack;
  * Created by brandon3055 on 21/11/2016.
  */
 public class RenderItemReactorComponent implements IItemRenderer {
+    private int type;
 
-//    private static RenderTileReactorCore coreRenderer = new RenderTileReactorCore();
-
-    public RenderItemReactorComponent() {
+    public RenderItemReactorComponent(int type) {
+        this.type = type;
     }
 
     //region Unused
@@ -36,7 +42,30 @@ public class RenderItemReactorComponent implements IItemRenderer {
 
     @Override
     public void renderItem(ItemStack stack, ItemCameraTransforms.TransformType transformType, MatrixStack mStack, IRenderTypeBuffer getter, int packedLight, int packedOverlay) {
+        Matrix4 mat = new Matrix4(mStack);
+        CCRenderState ccrs = CCRenderState.instance();
+        ccrs.reset();
+        ccrs.brightness = packedLight;
+        ccrs.overlay = packedOverlay;
+        Minecraft mc = Minecraft.getInstance();
 
+        switch (type) {
+            case 0: //Core
+                mat.translate(0.5, 0.5, 0.5);
+                mat.scale(1.5);
+                RenderTileReactorCore.renderCore(mat, ccrs, (ClientEventHandler.elapsedTicks + mc.getRenderPartialTicks()) / 100F, 0F, 0.F, 0.5F, 0, getter);
+                break;
+            case 1: //Stabilizer
+                float coreRotation = (ClientEventHandler.elapsedTicks + mc.getRenderPartialTicks()) * 5F;
+                mStack.translate(0.5, 0.5, 0.5);
+                RenderTileReactorComponent.renderStabilizer(mStack, getter, coreRotation, 1F, packedLight, packedOverlay);
+                break;
+            case 2: //Injector
+                mStack.translate(0.5, 0.5, 0.5);
+                mStack.rotate(new Quaternion(90, 0, 0, true));
+                RenderTileReactorComponent.renderInjector(mStack, getter, 1F, packedLight, packedOverlay);
+                break;
+        }
     }
 
     @Override
@@ -48,32 +77,4 @@ public class RenderItemReactorComponent implements IItemRenderer {
     public boolean func_230044_c_() {
         return false;
     }
-
-
-    //    @Override
-//    public void renderItem(ItemStack item, ItemCameraTransforms.TransformType transformType) {
-//        boolean isCore = item.getItem() == Item.getItemFromBlock(DEFeatures.reactorCore);
-//        boolean isStabilizer = !isCore && item.getItemDamage() == 0;
-//
-//
-//        RenderSystem.pushMatrix();
-//        GlStateTracker.pushState();
-//
-//        if (isCore) {
-//            coreRenderer.renderItem();
-//        }
-//        else if (isStabilizer) {
-//            RenderSystem.translate(0.5, 0.5, 0.5);
-//            float partial = Minecraft.getInstance().getRenderPartialTicks();
-//            RenderTileReactorComponent.renderStabilizer(ClientEventHandler.elapsedTicks + partial, (ClientEventHandler.elapsedTicks + partial) * 0.6F, 1F, 0, true, -1);
-//        }
-//        else {
-//            RenderSystem.translate(0.5, 0.5, 0.5);
-//            RenderSystem.rotate(90, 1, 0, 0);
-//            RenderTileReactorComponent.renderInjector(1F, 0, true, -1);
-//        }
-//
-//        GlStateTracker.popState();
-//        RenderSystem.popMatrix();
-//    }
 }

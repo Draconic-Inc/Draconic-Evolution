@@ -1,8 +1,10 @@
 package com.brandon3055.draconicevolution.blocks.tileentity;
 
+import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.api.power.IOPStorage;
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.capability.CapabilityOP;
+import com.brandon3055.brandonscore.lib.ChatHelper;
 import com.brandon3055.brandonscore.lib.IActivatableTile;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedLong;
 import com.brandon3055.brandonscore.utils.Utils;
@@ -100,12 +102,18 @@ public class TileCreativeOPCapacitor extends TileBCore implements ITickableTileE
             if (player.isSneaking()) {
                 powerRate.divide(10);
             } else {
-                powerRate.multiply(10);
+                if (powerRate.get() == Long.MAX_VALUE) {
+                    powerRate.set(1);
+                }else {
+                    powerRate.multiply(10);
+                }
             }
             if (powerRate.get() < 1) {
                 powerRate.set(Long.MAX_VALUE);
             }
-            player.sendMessage(new StringTextComponent("Power Rate: " + Utils.addCommas(powerRate.get()) + " OP/t"));
+
+            BrandonsCore.proxy.setChatAtIndex(new StringTextComponent("Power Rate: " + Utils.addCommas(powerRate.get()) + " OP/t"), 0x30553055);
+//            player.sendMessage(new StringTextComponent("Power Rate: " + Utils.addCommas(powerRate.get()) + " OP/t"));
         }
         return true;
     }

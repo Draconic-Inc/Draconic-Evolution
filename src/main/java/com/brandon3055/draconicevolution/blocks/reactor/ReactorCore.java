@@ -34,7 +34,7 @@ public class ReactorCore extends BlockBCore /*implements ITileEntityProvider, IR
 
     @Override
     public boolean hasTileEntity(BlockState state) {
-        return false;
+        return true;
     }
 
     @Nullable

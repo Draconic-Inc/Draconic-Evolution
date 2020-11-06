@@ -5,6 +5,7 @@ import com.mojang.blaze3d.platform.GLX;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import net.minecraft.client.renderer.Quaternion;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
@@ -45,6 +46,7 @@ public class ModelReactorEnergyInjector extends Model {
     public ModelRenderer support5;
     public ModelRenderer support6;
     public ModelRenderer support7;
+    public float brightness;
 
 
     public ModelReactorEnergyInjector(Function<ResourceLocation, RenderType> renderTypeIn) {
@@ -163,37 +165,13 @@ public class ModelReactorEnergyInjector extends Model {
         this.support1.addChild(this.connector1);
     }
 
-//    public void render(float brightness, float invRender, float f5) {
-//        RenderSystem.rotated(90, 1, 0, 0);
-//        this.support1.render(f5);
-//        this.BasePlate.render(f5);
-//        //this.coreSupports.render(f5);
-//
-//        float lastBrightnessX = GLX.lastBrightnessX;
-//        float lastBrightnessY = GLX.lastBrightnessY;
-//
-//        float b = brightness * 200F;
-//        float colour = Math.min(2F, (brightness * 2F) + 0.5F);
-//
-//        if (brightness > 0F && invRender == 0) {
-//            GL11.glDisable(GL11.GL_LIGHTING);
-//        }
-//
-//        GLX.glMultiTexCoord2f(GLX.GL_TEXTURE1, Math.min(200F, lastBrightnessX + b), Math.min(200F, lastBrightnessY + b));
-//        GL11.glColor4f(colour, colour, colour, 1F);
-//        this.element1.render(f5);
-//        GL11.glColor4f(1F, 1F, 1F, 1F);
-//        GLX.glMultiTexCoord2f(GLX.GL_TEXTURE1, lastBrightnessX, lastBrightnessY);
-//
-//        if (brightness > 0F && invRender == 0) {
-//            GL11.glEnable(GL11.GL_LIGHTING);
-//        }
-//    }
-
-
     @Override
-    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-
+    public void render(MatrixStack matrix, IVertexBuilder buffer, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+        int light = Math.max((int)(brightness * 240), packedLightIn % 240);
+        matrix.rotate(new Quaternion(90, 0, 0, true));
+        this.support1.render(matrix, buffer, packedLightIn, packedOverlayIn);
+        this.BasePlate.render(matrix, buffer, packedLightIn, packedOverlayIn);
+        this.element1.render(matrix, buffer, light, packedOverlayIn);
     }
 
     /**

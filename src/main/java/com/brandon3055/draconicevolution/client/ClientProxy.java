@@ -5,6 +5,8 @@ import codechicken.lib.texture.SpriteRegistryHelper;
 import codechicken.lib.util.ResourceUtils;
 import com.brandon3055.draconicevolution.CommonProxy;
 import com.brandon3055.draconicevolution.DEConfig;
+import com.brandon3055.draconicevolution.blocks.reactor.ReactorEffectHandler;
+import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
 import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.GuiConfigurableItem;
 import com.brandon3055.draconicevolution.client.gui.modular.GuiModularItem;
 import com.brandon3055.draconicevolution.client.model.VBOArmorLayer;
@@ -195,6 +197,9 @@ public class ClientProxy extends CommonProxy {
         ClientRegistry.bindTileEntityRenderer(DEContent.tile_crystal_io, RenderTileEnergyCrystal::new);
         ClientRegistry.bindTileEntityRenderer(DEContent.tile_crystal_relay, RenderTileEnergyCrystal::new);
         ClientRegistry.bindTileEntityRenderer(DEContent.tile_crystal_wireless, RenderTileEnergyCrystal::new);
+        ClientRegistry.bindTileEntityRenderer(DEContent.tile_reactor_core, RenderTileReactorCore::new);
+        ClientRegistry.bindTileEntityRenderer(DEContent.tile_reactor_injector, RenderTileReactorComponent::new);
+        ClientRegistry.bindTileEntityRenderer(DEContent.tile_reactor_stabilizer, RenderTileReactorComponent::new);
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -216,6 +221,10 @@ public class ClientProxy extends CommonProxy {
         modelHelper.register(new ModelResourceLocation(DEContent.crystal_wireless_wyvern.getRegistryName(), "inventory"), new RenderItemEnergyCrystal(WIRELESS, WYVERN));
         modelHelper.register(new ModelResourceLocation(DEContent.crystal_wireless_draconic.getRegistryName(), "inventory"), new RenderItemEnergyCrystal(WIRELESS, DRACONIC));
 //        modelHelper.register(new ModelResourceLocation(DEContent.crystal_wireless_chaotic.getRegistryName(), "inventory"), new RenderItemEnergyCrystal(WIRELESS, CHAOTIC));
+
+        modelHelper.register(new ModelResourceLocation(DEContent.reactor_core.getRegistryName(), "inventory"), new RenderItemReactorComponent(0));
+        modelHelper.register(new ModelResourceLocation(DEContent.reactor_stabilizer.getRegistryName(), "inventory"), new RenderItemReactorComponent(1));
+        modelHelper.register(new ModelResourceLocation(DEContent.reactor_injector.getRegistryName(), "inventory"), new RenderItemReactorComponent(2));
 
 
         if (DEConfig.fancyToolModels) {
@@ -344,15 +353,15 @@ public class ClientProxy extends CommonProxy {
         }
         return tile.createClientFXHandler();
     }
-//
-//    @Override
-//    public ReactorEffectHandler createReactorFXHandler(TileReactorCore tile) {
-//        if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER) {
-//            return super.createReactorFXHandler(tile);
-//        }
-//        return new ReactorEffectHandler(tile);
-//    }
-//
+
+    @Override
+    public ReactorEffectHandler createReactorFXHandler(TileReactorCore tile) {
+        if (EffectiveSide.get().isServer()) {
+            return super.createReactorFXHandler(tile);
+        }
+        return new ReactorEffectHandler(tile);
+    }
+
 //    @Override
 //    public ISound playISound(ISound sound) {
 //        FMLClientHandler.instance().getClient().getSoundHandler().playSound(sound);

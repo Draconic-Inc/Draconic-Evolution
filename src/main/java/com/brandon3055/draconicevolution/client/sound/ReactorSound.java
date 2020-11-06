@@ -3,8 +3,10 @@ package com.brandon3055.draconicevolution.client.sound;
 import codechicken.lib.math.MathHelper;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
 import com.brandon3055.draconicevolution.handlers.DESoundHandler;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ITickableSound;
 import net.minecraft.client.audio.SimpleSound;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.SoundCategory;
 
 import static com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore.ReactorState.BEYOND_HOPE;
@@ -44,6 +46,7 @@ public class ReactorSound extends SimpleSound implements ITickableSound {
             z = (float) tile.getPos().getZ() + 0.5F;
         }
 
+
         pitch = (float) MathHelper.approachExp(pitch, targetPitch, 0.05);
         if (tile.reactorState.get() == TileReactorCore.ReactorState.WARMING_UP || tile.reactorState.get() == TileReactorCore.ReactorState.STOPPING || tile.reactorState.get() == TileReactorCore.ReactorState.COOLING) {
             targetPitch = 0.5F + (tile.shieldAnimationState / 2F);
@@ -61,7 +64,8 @@ public class ReactorSound extends SimpleSound implements ITickableSound {
         }
 
 
-        if (tile.isRemoved() || !tile.getWorld().getChunkAt(tile.getPos()).loaded) {// || player == null || tile.getDistanceFrom(player.posX, player.posY, player.posZ) > 512){
+        PlayerEntity player = Minecraft.getInstance().player;
+        if (tile.isRemoved() || player == null || tile.getDistanceSq(player.posX, player.posY, player.posZ) > (volume > 1.5F ? 4096 : 512)){
 //            if (stopTimer++ == 60) {
                 donePlaying = true;
                 repeat = false;

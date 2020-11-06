@@ -4,6 +4,7 @@ import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorComponent;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorInjector;
+import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.client.render.effect.ReactorBeamFX;
 import com.brandon3055.draconicevolution.client.sound.ReactorSound;
 import net.minecraft.client.Minecraft;
@@ -66,8 +67,7 @@ public class ReactorEffectHandler {
 
             ReactorBeamFX beamFX = new ReactorBeamFX(reactor.getWorld(), Vec3D.getCenter(component.getPos()), component.facing.get(), reactor, component instanceof TileReactorInjector);
             effects[index] = beamFX;
-            //TODO particles
-//            BCEffectHandler.spawnGLParticle(ReactorBeamFX.FX_HANDLER, beamFX);
+            DEParticles.addParticleDirect(reactor.getWorld(), beamFX);
         }
     }
 

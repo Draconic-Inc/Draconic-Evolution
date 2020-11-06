@@ -1,84 +1,74 @@
 package com.brandon3055.draconicevolution.client.render.tile;
 
-import com.brandon3055.brandonscore.client.render.TESRBase;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorComponent;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorInjector;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorStabilizer;
-import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
 import com.brandon3055.draconicevolution.client.DETextures;
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.brandon3055.draconicevolution.client.model.ModelReactorEnergyInjector;
+import com.brandon3055.draconicevolution.client.model.ModelReactorStabilizerCore;
+import com.brandon3055.draconicevolution.client.model.ModelReactorStabilizerRing;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Quaternion;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.Direction;
 
 /**
  * Created by brandon3055 on 20/01/2017.
  */
-public class RenderTileReactorComponent extends TESRBase<TileReactorComponent> {
+public class RenderTileReactorComponent extends TileEntityRenderer<TileReactorComponent> {
     public RenderTileReactorComponent(TileEntityRendererDispatcher rendererDispatcherIn) {
         super(rendererDispatcherIn);
     }
 
-//    public static ModelReactorStabilizerCore stabilizerModel = new ModelReactorStabilizerCore();
-//    public static ModelReactorStabilizerRing stabilizerRingModel = new ModelReactorStabilizerRing();
-//    public static ModelReactorEnergyInjector injectorModel = new ModelReactorEnergyInjector();
+    public static ModelReactorStabilizerCore stabilizerModel = new ModelReactorStabilizerCore(RenderType::getEntitySolid);
+    public static ModelReactorStabilizerRing stabilizerRingModel = new ModelReactorStabilizerRing(RenderType::getEntitySolid);
+    public static ModelReactorEnergyInjector injectorModel = new ModelReactorEnergyInjector(RenderType::getEntitySolid);
 
-//    @Override
-    public void render(TileReactorComponent te, double x, double y, double z, float partialTicks, int destroyStage) {
-        RenderSystem.pushMatrix();
-        RenderSystem.translated(x + 0.5, y + 0.5, z + 0.5);
+    @Override
+    public void render(TileReactorComponent te, float partialTicks, MatrixStack matrix, IRenderTypeBuffer getter, int packedLight, int packedOverlay) {
+        matrix.translate(0.5, 0.5, 0.5);
 
         if (te.facing.get() == Direction.SOUTH) {
-            RenderSystem.rotatef(180, 0, 1, 0);
-        }
-        else if (te.facing.get() == Direction.EAST) {
-            RenderSystem.rotatef(-90, 0, 1, 0);
-        }
-        else if (te.facing.get() == Direction.WEST) {
-            RenderSystem.rotatef(90, 0, 1, 0);
-        }
-        else if (te.facing.get() == Direction.UP) {
-            RenderSystem.rotatef(90, 1, 0, 0);
-        }
-        else if (te.facing.get() == Direction.DOWN) {
-            RenderSystem.rotatef(-90, 1, 0, 0);
+            matrix.rotate(new Quaternion(0, 180, 0, true));
+        } else if (te.facing.get() == Direction.EAST) {
+            matrix.rotate(new Quaternion(0, -90, 0, true));
+        } else if (te.facing.get() == Direction.WEST) {
+            matrix.rotate(new Quaternion(0, 90, 0, true));
+        } else if (te.facing.get() == Direction.UP) {
+            matrix.rotate(new Quaternion(90, 0, 0, true));
+        } else if (te.facing.get() == Direction.DOWN) {
+            matrix.rotate(new Quaternion(-90, 0, 0, true));
         }
 
         if (te instanceof TileReactorStabilizer) {
             float coreRotation = te.animRotation + (partialTicks * te.animRotationSpeed);//Remember Partial Ticks here
-            float ringRotation = coreRotation * -0.5F;//Remember Partial Ticks here
-            renderStabilizer(coreRotation, ringRotation, te.animRotationSpeed / 15F, partialTicks, false, destroyStage);
+            renderStabilizer(matrix, getter, coreRotation, te.animRotationSpeed / 15F, packedLight, packedOverlay);
+        } else if (te instanceof TileReactorInjector) {
+            renderInjector(matrix, getter, te.animRotationSpeed / 15F, packedLight, packedOverlay);
         }
-        else if (te instanceof TileReactorInjector) {
-            renderInjector(te.animRotationSpeed / 15F, partialTicks, false, destroyStage);
-        }
-
-        RenderSystem.popMatrix();
     }
 
-    public static void renderStabilizer(float coreRotation, float ringRotation, float brightness, float partialTicks, boolean invRender, int destroyStage) {
-        if (destroyStage >= 0) {
-//            ResourceHelperDE.bindTexture(DESTROY_STAGES[destroyStage]);
-        }
-        else {
-            ResourceHelperDE.bindTexture(DETextures.REACTOR_STABILIZER);
-        }
-//        stabilizerModel.render(coreRotation, brightness, invRender ? 1 : 0, 1F / 16F);
-        ResourceHelperDE.bindTexture(DETextures.REACTOR_STABILIZER_RING);
-        RenderSystem.rotatef(90, 1, 0, 0);
-        RenderSystem.translated(0, -0.58, 0);
-        RenderSystem.scaled(0.95, 0.95, 0.95);
-        RenderSystem.rotatef(ringRotation, 0, 1, 0);
-//        stabilizerRingModel.render(-70F, brightness, invRender ? 1 : 0, 1F / 16F);
+
+    public static void renderStabilizer(MatrixStack matrix, IRenderTypeBuffer getter, float coreRotation, float brightness, int packedLight, int packedOverlay) {
+        float ringRotation = coreRotation * -0.5F;//Remember Partial Ticks here
+        stabilizerModel.brightness = brightness;
+        stabilizerModel.rotation = coreRotation;
+        stabilizerModel.render(matrix, getter.getBuffer(stabilizerModel.getRenderType(DETextures.REACTOR_STABILIZER)), packedLight, packedOverlay, 1F, 1F, 1F, 1F);
+        matrix.rotate(new Quaternion(90, 0, 0, true));
+        matrix.translate(0, -0.58, 0);
+        matrix.scale(0.95F, 0.95F, 0.95F);
+        matrix.rotate(new Quaternion(0, ringRotation, 0, true));
+        stabilizerRingModel.brightness = brightness;
+        stabilizerRingModel.embitterRotation = 70F;
+        stabilizerRingModel.render(matrix, getter.getBuffer(stabilizerModel.getRenderType(DETextures.REACTOR_STABILIZER_RING)), packedLight, packedOverlay, 1F, 1F, 1F, 1F);
     }
 
-    public static void renderInjector(float brightness, float partialTicks, boolean invRender, int destroyStage) {
-        if (destroyStage >= 0) {
-//            ResourceHelperDE.bindTexture(DESTROY_STAGES[destroyStage]);
-        }
-        else {
-            ResourceHelperDE.bindTexture(DETextures.REACTOR_INJECTOR);
-        }
-//        injectorModel.render(brightness, invRender ? 1 : 0, 1F / 16F);
+    public static void renderInjector(MatrixStack matrix, IRenderTypeBuffer getter, float brightness, int packedLight, int packedOverlay) {
+        injectorModel.brightness = brightness;
+        injectorModel.render(matrix, getter.getBuffer(injectorModel.getRenderType(DETextures.REACTOR_INJECTOR)), packedLight, packedOverlay, 1F, 1F, 1F, 1F);
     }
 
 }

@@ -1,9 +1,11 @@
 package com.brandon3055.draconicevolution.client.model;
 
+import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GLX;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import net.minecraft.client.renderer.Quaternion;
 import net.minecraft.client.renderer.RenderType;
 
 import net.minecraft.client.renderer.model.Model;
@@ -60,6 +62,8 @@ public class ModelReactorStabilizerCore extends Model {
     public ModelRenderer backSpoke2;
     public ModelRenderer coreElement2;
     public ModelRenderer coreElement1;
+    public float brightness = 0F;
+    public float rotation = 0F;
 
     public ModelReactorStabilizerCore(Function<ResourceLocation, RenderType> renderTypeIn) {
         super(renderTypeIn);
@@ -259,42 +263,23 @@ public class ModelReactorStabilizerCore extends Model {
     }
 
     @Override
-    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+    public void render(MatrixStack matrix, IVertexBuilder buffer, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+        matrix.push();
+        int light = Math.max((int)(brightness * 240), packedLightIn % 240);
 
+        this.basePlate.render(matrix, buffer, packedLightIn, packedOverlayIn);
+
+        matrix.rotate(new Quaternion(0, 0, rotation, true));
+        this.hub1.render(matrix, buffer, packedLightIn, packedOverlayIn);
+        matrix.rotate(new Quaternion(0, 0, rotation * -2, true));
+        this.hub2.render(matrix, buffer, packedLightIn, packedOverlayIn);
+
+        this.rotor2R.render(matrix, buffer, light, packedOverlayIn);
+        matrix.rotate(new Quaternion(0, 0, rotation * 2, true));
+        this.rotor1R.render(matrix, buffer, light, packedOverlayIn);
+
+        matrix.pop();
     }
-
-//    public void render(float rotation, float brightness, float invRender, float f5) {
-//        RenderSystem.pushMatrix();
-//
-//        this.basePlate.render(f5);
-//        RenderSystem.rotatef(rotation, 0F, 0F, 1F);
-//        this.hub1.render(f5);
-//        RenderSystem.rotatef(rotation * 2F, 0F, 0F, -1F);
-//        this.hub2.render(f5);
-//
-//        float lastBrightnessX = GLX.lastBrightnessX;
-//        float lastBrightnessY = GLX.lastBrightnessY;
-//
-//        float b = brightness * 200F;
-//        float colour = Math.min(2F, (brightness * 2F) + 0.1F);
-//        GLX.glMultiTexCoord2f(GLX.GL_TEXTURE1, Math.min(200F, lastBrightnessX + b), Math.min(200F, lastBrightnessY + b));
-//        if (brightness > 0F && invRender == 0) {
-//            RenderSystem.disableLighting();
-//        }
-//
-//        RenderSystem.color4f(colour, colour, colour, 1F);
-//        this.rotor2R.render(f5);
-//        RenderSystem.rotatef(rotation * 2F, 0F, 0F, 1F);
-//        this.rotor1R.render(f5);
-//        RenderSystem.rotatef(1F, 1F, 1F, 1F);
-//
-//        GLX.glMultiTexCoord2f(GLX.GL_TEXTURE1, lastBrightnessX, lastBrightnessY);
-//        if (brightness > 0F && invRender == 0) {
-//            RenderSystem.enableLighting();
-//        }
-//
-//        RenderSystem.popMatrix();
-//    }
 
     /**
      * This is a helper function from Tabula to set the rotation of model parts

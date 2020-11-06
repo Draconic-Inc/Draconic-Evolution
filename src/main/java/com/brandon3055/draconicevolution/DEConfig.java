@@ -77,6 +77,7 @@ public class DEConfig {
     public static boolean fancyToolModels;
     public static boolean toolShaders;
     public static boolean crystalShaders;
+    public static boolean reactorShaders;
     public static boolean otherShaders;
 
     private static void loadClient() {
@@ -95,6 +96,10 @@ public class DEConfig {
                 .setComment("Set this to false to disable crystal shaders.")
                 .setDefaultBoolean(true)
                 .setSyncCallback((tag, type) -> crystalShaders = tag.getBoolean());
+        clientTag.getTag("reactorShaders")
+                .setComment("Set this to false to disable reactorShaders shaders.")
+                .setDefaultBoolean(true)
+                .setSyncCallback((tag, type) -> reactorShaders = tag.getBoolean());
         clientTag.getTag("otherShaders")
                 .setComment("Set this to false to disable all other shaders.")
                 .setDefaultBoolean(true)

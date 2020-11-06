@@ -1,14 +1,14 @@
 package com.brandon3055.draconicevolution.client.model;
 
+import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GLX;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.Quaternion;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
 
 import java.util.function.Function;
 
@@ -29,14 +29,11 @@ public class ModelReactorStabilizerRing extends Model {
     public ModelRenderer ringElement10;
     public ModelRenderer ringElement11;
     public ModelRenderer ringElement12;
-    public ModelRenderer hing1;
-    public ModelRenderer hing2;
-    public ModelRenderer hing3;
-    public ModelRenderer hing4;
-    public ModelRenderer emitter1;
-    public ModelRenderer emitter2;
-    public ModelRenderer emitter3;
-    public ModelRenderer emitter4;
+    public ModelRenderer hing;
+    public ModelRenderer emitter;
+
+    public float embitterRotation;
+    public float brightness;
 
     public ModelReactorStabilizerRing(Function<ResourceLocation, RenderType> renderTypeIn) {
         super(renderTypeIn);
@@ -57,28 +54,14 @@ public class ModelReactorStabilizerRing extends Model {
         this.ringElement7.setRotationPoint(-1.55F, 0.02F, -6.7F);
         this.ringElement7.addBox(0.0F, 0.0F, 0.0F, 4, 1, 1, 0.0F);
         this.setRotateAngle(ringElement7, 0.0F, -2.6179938779914944F, 0.0F);
-        this.hing4 = new ModelRenderer(this, 15, 0);
-        this.hing4.setRotationPoint(1.75F, -0.5F, 6.95F);
-        this.hing4.addBox(0.0F, 0.0F, 0.0F, 1, 1, 7, 0.0F);
-        this.setRotateAngle(hing4, 0.0F, -1.5716689914208934F, 0.0F);
         this.ringElement8 = new ModelRenderer(this, 0, 0);
         this.ringElement8.setRotationPoint(-6.7F, 0.01F, -1.55F);
         this.ringElement8.addBox(-4.0F, 0.0F, 0.0F, 4, 1, 1, 0.0F);
         this.setRotateAngle(ringElement8, 0.0F, -2.0943951023931953F, 0.0F);
-        this.emitter4 = new ModelRenderer(this, 0, 2);
-        this.emitter4.setRotationPoint(2.25F, -0.3F, 7.1F);
-        this.emitter4.addBox(-0.5F, -0.8F, 0.0F, 3, 1, 9, 0.0F);
-        this.setRotateAngle(emitter4, 0.0F, -1.5707963267948966F, 0.0F);
-        this.emitter2 = new ModelRenderer(this, 0, 2);
-        this.emitter2.setRotationPoint(-7.1F, -0.3F, 2.25F);
-        this.emitter2.addBox(-0.5F, -0.8F, 0.0F, 3, 1, 9, 0.0F);
-        this.setRotateAngle(emitter2, 0.0F, 3.141592653589793F, 0.0F);
-        this.emitter1 = new ModelRenderer(this, 0, 2);
-        this.emitter1.setRotationPoint(7.1F, -0.3F, -2.25F);
-        this.emitter1.addBox(-0.5F, -0.8F, 0.0F, 3, 1, 9, 0.0F);
-        this.hing2 = new ModelRenderer(this, 15, 0);
-        this.hing2.setRotationPoint(6.95F, -0.5F, -1.75F);
-        this.hing2.addBox(0.0F, 0.0F, 0.0F, 1, 1, 7, 0.0F);
+        this.emitter = new ModelRenderer(this, 0, 2);
+        this.emitter.setRotationPoint(-7.1F, -0.3F, 2.25F);
+        this.emitter.addBox(-0.5F, -0.8F, 0.0F, 3, 1, 9, 0.0F);
+        this.setRotateAngle(emitter, 0.0F, 3.141592653589793F, 0.0F);
         this.ringElement2 = new ModelRenderer(this, 0, 0);
         this.ringElement2.setRotationPoint(2.0F, 0.01F, -6.6F);
         this.ringElement2.addBox(0.0F, 0.0F, 0.0F, 4, 1, 1, 0.0F);
@@ -91,9 +74,9 @@ public class ModelReactorStabilizerRing extends Model {
         this.ringElement12.setRotationPoint(1.55F, 0.02F, 6.7F);
         this.ringElement12.addBox(0.0F, 0.0F, 0.0F, 4, 1, 1, 0.0F);
         this.setRotateAngle(ringElement12, 0.0F, 0.5235987755982988F, 0.0F);
-        this.hing1 = new ModelRenderer(this, 15, 0);
-        this.hing1.setRotationPoint(-7.45F, -0.5F, -1.75F);
-        this.hing1.addBox(0.0F, 0.0F, 0.0F, 1, 1, 7, 0.0F);
+        this.hing = new ModelRenderer(this, 15, 0);
+        this.hing.setRotationPoint(-7.45F, -0.5F, -1.75F);
+        this.hing.addBox(0.0F, 0.0F, 0.0F, 1, 1, 7, 0.0F);
         this.ringElement6 = new ModelRenderer(this, 0, 0);
         this.ringElement6.setRotationPoint(-1.55F, 0.02F, 6.7F);
         this.ringElement6.addBox(-4.0F, 0.0F, 0.0F, 4, 1, 1, 0.0F);
@@ -102,134 +85,53 @@ public class ModelReactorStabilizerRing extends Model {
         this.ringElement11.setRotationPoint(6.7F, 0.01F, 1.55F);
         this.ringElement11.addBox(-4.0F, 0.0F, 0.0F, 4, 1, 1, 0.0F);
         this.setRotateAngle(ringElement11, 0.0F, 1.0471975511965976F, 0.0F);
-        this.emitter3 = new ModelRenderer(this, 0, 2);
-        this.emitter3.setRotationPoint(-2.25F, -0.3F, -7.1F);
-        this.emitter3.addBox(-0.5F, -0.8F, 0.0F, 3, 1, 9, 0.0F);
-        this.setRotateAngle(emitter3, 0.0F, 1.5707963267948966F, 0.0F);
         this.ringElement4 = new ModelRenderer(this, 0, 0);
         this.ringElement4.setRotationPoint(-6.6F, 0.0F, -2.0F);
         this.ringElement4.addBox(0.0F, 0.0F, 0.0F, 4, 1, 1, 0.0F);
         this.setRotateAngle(ringElement4, 0.0F, -1.5707963267948966F, 0.0F);
-        this.hing3 = new ModelRenderer(this, 15, 0);
-        this.hing3.setRotationPoint(1.75F, -0.5F, -7.45F);
-        this.hing3.addBox(0.0F, 0.0F, 0.0F, 1, 1, 7, 0.0F);
-        this.setRotateAngle(hing3, 0.0F, -1.5716689914208934F, 0.0F);
         this.ringElement3 = new ModelRenderer(this, 0, 0);
         this.ringElement3.setRotationPoint(6.6F, 0.0F, 2.0F);
         this.ringElement3.addBox(0.0F, 0.0F, 0.0F, 4, 1, 1, 0.0F);
         this.setRotateAngle(ringElement3, 0.0F, 1.5707963267948966F, 0.0F);
     }
 
-//    public void render(float embitterRotation, float brightness, float invRender, float scale) {
-//
-//        this.ringElement1.render(scale);
-//        this.ringElement2.render(scale);
-//        this.ringElement3.render(scale);
-//        this.ringElement4.render(scale);
-//        this.ringElement5.render(scale);
-//        this.ringElement6.render(scale);
-//        this.ringElement7.render(scale);
-//        this.ringElement8.render(scale);
-//        this.ringElement9.render(scale);
-//        this.ringElement10.render(scale);
-//        this.ringElement11.render(scale);
-//        this.ringElement12.render(scale);
-//
-//        GL11.glPushMatrix();
-//        GL11.glTranslated(this.hing1.offsetX, this.hing1.offsetY, this.hing1.offsetZ);
-//        GL11.glTranslated(this.hing1.rotationPointX * scale, this.hing1.rotationPointY * scale, this.hing1.rotationPointZ * scale);
-//        GL11.glScaled(0.5D, 0.5D, 0.5D);
-//        GL11.glTranslated(-this.hing1.offsetX, -this.hing1.offsetY, -this.hing1.offsetZ);
-//        GL11.glTranslated(-this.hing1.rotationPointX * scale, -this.hing1.rotationPointY * scale, -this.hing1.rotationPointZ * scale);
-//        this.hing1.render(scale);
-//        GL11.glPopMatrix();
-//        GL11.glPushMatrix();
-//        GL11.glTranslated(this.hing2.offsetX, this.hing2.offsetY, this.hing2.offsetZ);
-//        GL11.glTranslated(this.hing2.rotationPointX * scale, this.hing2.rotationPointY * scale, this.hing2.rotationPointZ * scale);
-//        GL11.glScaled(0.5D, 0.5D, 0.5D);
-//        GL11.glTranslated(-this.hing2.offsetX, -this.hing2.offsetY, -this.hing2.offsetZ);
-//        GL11.glTranslated(-this.hing2.rotationPointX * scale, -this.hing2.rotationPointY * scale, -this.hing2.rotationPointZ * scale);
-//        this.hing2.render(scale);
-//        GL11.glPopMatrix();
-//        GL11.glPushMatrix();
-//        GL11.glTranslated(this.hing3.offsetX, this.hing3.offsetY, this.hing3.offsetZ);
-//        GL11.glTranslated(this.hing3.rotationPointX * scale, this.hing3.rotationPointY * scale, this.hing3.rotationPointZ * scale);
-//        GL11.glScaled(0.5D, 0.5D, 0.5D);
-//        GL11.glTranslated(-this.hing3.offsetX, -this.hing3.offsetY, -this.hing3.offsetZ);
-//        GL11.glTranslated(-this.hing3.rotationPointX * scale, -this.hing3.rotationPointY * scale, -this.hing3.rotationPointZ * scale);
-//        this.hing3.render(scale);
-//        GL11.glPopMatrix();
-//        GL11.glPushMatrix();
-//        GL11.glTranslated(this.hing4.offsetX, this.hing4.offsetY, this.hing4.offsetZ);
-//        GL11.glTranslated(this.hing4.rotationPointX * scale, this.hing4.rotationPointY * scale, this.hing4.rotationPointZ * scale);
-//        GL11.glScaled(0.5D, 0.5D, 0.5D);
-//        GL11.glTranslated(-this.hing4.offsetX, -this.hing4.offsetY, -this.hing4.offsetZ);
-//        GL11.glTranslated(-this.hing4.rotationPointX * scale, -this.hing4.rotationPointY * scale, -this.hing4.rotationPointZ * scale);
-//        this.hing4.render(scale);
-//        GL11.glPopMatrix();
-//
-////		float lastBrightnessX = OpenGlHelper.lastBrightnessX;
-////		float lastBrightnessY = OpenGlHelper.lastBrightnessY;
-////		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 200F, 200F);
-//        float lastBrightnessX = GLX.lastBrightnessX;
-//        float lastBrightnessY = GLX.lastBrightnessY;
-//
-//        float b = brightness * 200F;
-//        float colour = Math.min(2F, (brightness * 2F) + 0.1F);
-//
-//        GLX.glMultiTexCoord2f(GLX.GL_TEXTURE1, Math.min(200F, lastBrightnessX + b), Math.min(200F, lastBrightnessY + b));
-//        GL11.glColor4f(colour, colour, colour, 1F);
-//        if (brightness > 0F && invRender == 0) {
-//            GL11.glDisable(GL11.GL_LIGHTING);
-//        }
-//
-//        GL11.glPushMatrix();
-//        GL11.glTranslated(this.emitter1.offsetX, this.emitter1.offsetY, this.emitter1.offsetZ);
-//        GL11.glTranslated(this.emitter1.rotationPointX * scale, this.emitter1.rotationPointY * scale, this.emitter1.rotationPointZ * scale);
-//        GL11.glRotatef(embitterRotation, 0, 0, 1);
-//        GL11.glScaled(0.5D, 0.5D, 0.5D);
-//        GL11.glTranslated(-this.emitter1.offsetX, -this.emitter1.offsetY, -this.emitter1.offsetZ);
-//        GL11.glTranslated(-this.emitter1.rotationPointX * scale, -this.emitter1.rotationPointY * scale, -this.emitter1.rotationPointZ * scale);
-//        this.emitter1.render(scale);
-//        GL11.glPopMatrix();
-//        GL11.glPushMatrix();
-//        GL11.glTranslated(this.emitter2.offsetX, this.emitter2.offsetY, this.emitter2.offsetZ);
-//        GL11.glTranslated(this.emitter2.rotationPointX * scale, this.emitter2.rotationPointY * scale, this.emitter2.rotationPointZ * scale);
-//        GL11.glRotatef(embitterRotation, 0, 0, -1);
-//        GL11.glScaled(0.5D, 0.5D, 0.5D);
-//        GL11.glTranslated(-this.emitter2.offsetX, -this.emitter2.offsetY, -this.emitter2.offsetZ);
-//        GL11.glTranslated(-this.emitter2.rotationPointX * scale, -this.emitter2.rotationPointY * scale, -this.emitter2.rotationPointZ * scale);
-//        this.emitter2.render(scale);
-//        GL11.glPopMatrix();
-//        GL11.glPushMatrix();
-//        GL11.glTranslated(this.emitter3.offsetX, this.emitter3.offsetY, this.emitter3.offsetZ);
-//        GL11.glTranslated(this.emitter3.rotationPointX * scale, this.emitter3.rotationPointY * scale, this.emitter3.rotationPointZ * scale);
-//        GL11.glRotatef(embitterRotation, 1, 0, 0);
-//        GL11.glScaled(0.5D, 0.5D, 0.5D);
-//        GL11.glTranslated(-this.emitter3.offsetX, -this.emitter3.offsetY, -this.emitter3.offsetZ);
-//        GL11.glTranslated(-this.emitter3.rotationPointX * scale, -this.emitter3.rotationPointY * scale, -this.emitter3.rotationPointZ * scale);
-//        this.emitter3.render(scale);
-//        GL11.glPopMatrix();
-//        GL11.glPushMatrix();
-//        GL11.glTranslated(this.emitter4.offsetX, this.emitter4.offsetY, this.emitter4.offsetZ);
-//        GL11.glTranslated(this.emitter4.rotationPointX * scale, this.emitter4.rotationPointY * scale, this.emitter4.rotationPointZ * scale);
-//        GL11.glRotatef(embitterRotation, -1, 0, 0);
-//        GL11.glScaled(0.5D, 0.5D, 0.5D);
-//        GL11.glTranslated(-this.emitter4.offsetX, -this.emitter4.offsetY, -this.emitter4.offsetZ);
-//        GL11.glTranslated(-this.emitter4.rotationPointX * scale, -this.emitter4.rotationPointY * scale, -this.emitter4.rotationPointZ * scale);
-//        this.emitter4.render(scale);
-//        GL11.glPopMatrix();
-//
-//        if (brightness > 0F && invRender == 0) {
-//            GL11.glEnable(GL11.GL_LIGHTING);
-//        }
-//        GL11.glColor4f(1F, 1F, 1F, 1F);
-//        GLX.glMultiTexCoord2f(GLX.GL_TEXTURE1, lastBrightnessX, lastBrightnessY);
-//    }
 
     @Override
-    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+    public void render(MatrixStack matrix, IVertexBuilder buffer, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+        int light = Math.max((int)(brightness * 240), packedLightIn % 240);
 
+        this.ringElement1.render(matrix, buffer, light, packedOverlayIn);
+        this.ringElement2.render(matrix, buffer, light, packedOverlayIn);
+        this.ringElement3.render(matrix, buffer, light, packedOverlayIn);
+        this.ringElement4.render(matrix, buffer, light, packedOverlayIn);
+        this.ringElement5.render(matrix, buffer, light, packedOverlayIn);
+        this.ringElement6.render(matrix, buffer, light, packedOverlayIn);
+        this.ringElement7.render(matrix, buffer, light, packedOverlayIn);
+        this.ringElement8.render(matrix, buffer, light, packedOverlayIn);
+        this.ringElement9.render(matrix, buffer, light, packedOverlayIn);
+        this.ringElement10.render(matrix, buffer,light, packedOverlayIn);
+        this.ringElement11.render(matrix, buffer,light, packedOverlayIn);
+        this.ringElement12.render(matrix, buffer,light, packedOverlayIn);
+
+        for (int i = 0; i < 4; i++) {
+            matrix.push();
+            matrix.translate((this.hing.rotationPointX) * 0.0625, (this.hing.rotateAngleY - 0.25) * 0.0625, (this.hing.rotateAngleZ - 0.875) * 0.0625);
+            matrix.scale(0.5F, 0.5F, 0.5F);
+            matrix.translate(-this.hing.rotationPointX * 0.0625, -this.hing.rotateAngleY * 0.0625, -this.hing.rotateAngleZ * 0.0625);
+            this.hing.render(matrix, buffer, 240, packedOverlayIn);
+            matrix.pop();
+
+            matrix.push();
+            matrix.translate(0.0625 * .5, -0.0625 * 0.125, 0.0625 * 1.125);
+            matrix.translate((this.emitter.rotationPointX - .5) * 0.0625, (this.emitter.rotateAngleY - 3.5) * 0.0625, (this.emitter.rotateAngleZ) * 0.0625);
+            matrix.rotate(new Quaternion(0, 0, embitterRotation, true));
+            matrix.scale(0.5F, 0.5F, 0.5F);
+            matrix.translate(-(this.emitter.rotationPointX - .5) * 0.0625, -(this.emitter.rotateAngleY - 3.5) * 0.0625, -(this.emitter.rotateAngleZ) * 0.0625);
+            this.emitter.render(matrix, buffer, light, packedOverlayIn);
+            matrix.pop();
+
+            matrix.rotate(new Quaternion(0, 90, 0, true));
+        }
     }
 
     /**

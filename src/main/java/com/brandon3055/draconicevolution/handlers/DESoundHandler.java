@@ -72,6 +72,7 @@ public class DESoundHandler {
         }
     }
 
+    @Deprecated
     public static SoundEvent getSound(String id) {
         if (SOUND_EVENTS.containsKey(id)) {
             return SOUND_EVENTS.get(id);
@@ -82,10 +83,12 @@ public class DESoundHandler {
         }
     }
 
+    @Deprecated
     public static void playSoundFromServer(World world, Vec3D pos, SoundEvent soundIn, SoundCategory category, float volume, float pitch, boolean distanceDelay, double range) {
         playSoundFromServer(world, pos.x, pos.y, pos.z, soundIn, category, volume, pitch, distanceDelay, range);
     }
 
+    @Deprecated
     public static void playSoundFromServer(World world, double x, double y, double z, SoundEvent soundIn, SoundCategory category, float volume, float pitch, boolean distanceDelay, double range) {
 //        ResourceLocation soundName = ReflectionManager.getField(soundNameMapping, soundIn, ResourceLocation.class);
 
