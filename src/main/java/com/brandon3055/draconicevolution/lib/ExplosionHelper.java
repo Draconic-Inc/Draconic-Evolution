@@ -2,11 +2,15 @@ package com.brandon3055.draconicevolution.lib;
 
 import com.brandon3055.brandonscore.handlers.IProcess;
 import com.brandon3055.brandonscore.handlers.ProcessHandler;
+import com.brandon3055.brandonscore.lib.DelayedTask;
 import com.brandon3055.brandonscore.lib.ShortPos;
+import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.FallingBlock;
+import net.minecraft.network.play.server.SChunkDataPacket;
+import net.minecraft.network.play.server.SUpdateLightPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
@@ -14,6 +18,7 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkSection;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.server.ServerWorldLightManager;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -31,6 +36,7 @@ public class ExplosionHelper {
     private ShortPos shortPos;
     private HashSet<Chunk> modifiedChunks = new HashSet<>();
     private HashSet<Integer> blocksToUpdate = new HashSet<>();
+    private HashSet<Integer> lightUpdates = new HashSet<>();
     private HashSet<Integer> tilesToRemove = new HashSet<>();
     private HashMap<ChunkPos, Chunk> chunkCache = new HashMap<>();
     private static final BlockState AIR = Blocks.AIR.getDefaultState();
@@ -66,6 +72,7 @@ public class ExplosionHelper {
 //                }
 //            }
 
+            serverWorld.getLightManager().checkBlock(pos);
             return;
         }
 
@@ -74,6 +81,7 @@ public class ExplosionHelper {
             storage.setBlockState(pos.getX() & 15, pos.getY() & 15, pos.getZ() & 15, AIR);
         }
         setChunkModified(pos);
+        serverWorld.getLightManager().checkBlock(pos);
     }
 
     public void setChunkModified(BlockPos blockPos) {
@@ -94,36 +102,10 @@ public class ExplosionHelper {
         return chunkCache.get(cp);
     }
 
-    private boolean hasBlockStorage(BlockPos pos) {
-        Chunk chunk = getChunk(pos);
-        return chunk.getSections()[pos.getY() >> 4] != null;
-    }
-
     private ChunkSection getBlockStorage(BlockPos pos) {
         Chunk chunk = getChunk(pos);
         return chunk.getSections()[pos.getY() >> 4];
     }
-
-//    private void setRecalcPrecipitationHeightMap(BlockPos pos) {
-//        Chunk chunk = getChunk(pos);
-//        int i = (pos.getZ() & 15) << 4 | (pos.getX() & 15);
-//        if (pos.getY() >= chunk.precipitationHeightMap[i] - 1) {
-//            chunk.precipitationHeightMap[i] = -999;
-//        }
-//    }
-
-//    private void fireBlockBreak(BlockPos pos, BlockState oldState) {
-//        oldState.getBlock().breakBlock(serverWorld, pos, oldState);
-//    }
-
-//    private void removeTileEntity(BlockPos pos) {
-//        Chunk chunk = getChunk(pos);
-//        TileEntity tileEntity = chunk.getTileEntity(pos, EnumCreateEntityType.CHECK);
-//        if (tileEntity != null) {
-//            serverWorld.removeTileEntity(pos);
-//        }
-//    }
-
 
     /**
      * Call when finished removing blocks to calculate lighting and send chunk updates to the client.
@@ -174,24 +156,21 @@ public class ExplosionHelper {
             if (helper.toRemove.isEmpty()) {
                 isDead = true;
                 updateBlocks();
+                DraconicNetwork.sendExplosionEffect(helper.serverWorld.dimension.getType(), helper.start, 0, true);
             }
         }
 
         public void finishChunks() {
-//            PlayerChunkMap playerChunkMap = helper.serverWorld.getPlayerChunkMap();
-//            if (playerChunkMap == null) {
-//                return;
-//            }
-//
-//            for (Chunk chunk : helper.modifiedChunks) {
-//                chunk.setModified(true);
-//                chunk.generateSkylightMap(); //This is where this falls short. It can calculate basic sky lighting for blocks exposed to the sky but thats it.
-//
-//                PlayerChunkMapEntry watcher = playerChunkMap.getEntry(chunk.x, chunk.z);
-//                if (watcher != null) {//TODO Change chunk mask to only the sub chunks changed.
-//                    watcher.sendPacket(new SPacketChunkData(chunk, 65535));
-//                }
-//            }
+            for (Chunk chunk : helper.modifiedChunks) {
+                chunk.setModified(true);
+                ServerWorldLightManager lightManager = (ServerWorldLightManager) helper.serverWorld.getLightManager();
+                lightManager.lightChunk(chunk, false)
+                        .thenRun(() -> helper.serverWorld.getChunkProvider().chunkManager.getTrackingPlayers(chunk.getPos(), false)
+                        .forEach(e -> e.connection.sendPacket(new SUpdateLightPacket(chunk.getPos(), helper.serverWorld.getLightManager()))));
+
+                SChunkDataPacket packet = new SChunkDataPacket(chunk, 65535);
+                helper.serverWorld.getChunkProvider().chunkManager.getTrackingPlayers(chunk.getPos(), false).forEach(e -> e.connection.sendPacket(packet));
+            }
 
             helper.modifiedChunks.clear();
         }
@@ -201,12 +180,10 @@ public class ExplosionHelper {
 
             try {
                 LogHelper.dev("Updating " + helper.blocksToUpdate.size() + " Blocks");
-//                FallingBlock.fallInstantly = true;
                 for (int pos : helper.blocksToUpdate) {
                     BlockState state = helper.serverWorld.getBlockState(helper.shortPos.getActualPos(pos));
                     if (state.getBlock() instanceof FallingBlock) {
                         state.getBlock().tick(state, helper.serverWorld, helper.shortPos.getActualPos(pos), helper.serverWorld.rand);
-//                        state.getBlock().updateTick(helper.serverWorld, helper.shortPos.getActualPos(pos), state, helper.serverWorld.rand);
                     }
                     state.neighborChanged(helper.serverWorld, helper.shortPos.getActualPos(pos), Blocks.AIR, helper.shortPos.getActualPos(pos).up(), false);
                 }
@@ -215,12 +192,6 @@ public class ExplosionHelper {
                 e.printStackTrace();
             }
             LogHelper.stopTimer();
-
-//            BlockFalling.fallInstantly = false;
-
-//            PacketExplosionFX packet = new PacketExplosionFX(helper.start, 0, true);
-            //TODO Packet Stuff
-            //            DraconicEvolution.network.sendToAllAround(packet, new NetworkRegistry.TargetPoint(helper.serverWorld.provider.getDimension(), helper.start.getX(), helper.start.getY(), helper.start.getZ(), 500));
         }
 
         @Override

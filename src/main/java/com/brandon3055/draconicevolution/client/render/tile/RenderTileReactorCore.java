@@ -5,6 +5,7 @@ import codechicken.lib.render.CCModel;
 import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.OBJParser;
 import codechicken.lib.render.RenderUtils;
+import codechicken.lib.render.buffer.TransformingVertexBuilder;
 import codechicken.lib.render.shader.*;
 import codechicken.lib.util.SneakyUtils;
 import codechicken.lib.vec.Matrix4;
@@ -14,6 +15,7 @@ import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.api.TimeKeeper;
 import com.brandon3055.brandonscore.client.BCClientEventHandler;
 import com.brandon3055.brandonscore.client.render.TESRBase;
+import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.utils.HolidayHelper;
 import com.brandon3055.brandonscore.utils.MathUtils;
 import com.brandon3055.brandonscore.utils.Utils;
@@ -22,11 +24,13 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalDirectIO;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
+import com.brandon3055.draconicevolution.client.render.effect.ReactorBeamFX;
 import com.brandon3055.draconicevolution.client.render.shaders.DEShaders;
 import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
 import com.brandon3055.draconicevolution.client.DETextures;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderState;
@@ -62,7 +66,6 @@ public class RenderTileReactorCore extends TileEntityRenderer<TileReactorCore> {
                     .uniform("time", UniformType.FLOAT)
                     .uniform("intensity", UniformType.FLOAT)
             )
-            .whenUsed(e -> {})
             .build();
 
     public static ShaderProgram shieldShader = ShaderProgramBuilder.builder()
@@ -72,7 +75,6 @@ public class RenderTileReactorCore extends TileEntityRenderer<TileReactorCore> {
                     .uniform("time", UniformType.FLOAT)
                     .uniform("intensity", UniformType.FLOAT)
             )
-            .whenUsed(e -> {})
             .build();
 
 
@@ -151,9 +153,7 @@ public class RenderTileReactorCore extends TileEntityRenderer<TileReactorCore> {
     }
 
     public static void renderCore(Matrix4 mat, CCRenderState ccrs, float animation, double animState, float intensity, float shieldPower, float partialTicks, IRenderTypeBuffer getter) {
-
-
-        DEConfig.reactorShaders = true;//System.currentTimeMillis() % 6000 > 3000;
+//        DEConfig.reactorShaders = true;//System.currentTimeMillis() % 6000 > 3000;
         if (DEConfig.reactorShaders) {
             UniformCache uniforms = coreShader.pushCache();
             uniforms.glUniform1f("time", animation);
@@ -170,6 +170,8 @@ public class RenderTileReactorCore extends TileEntityRenderer<TileReactorCore> {
         } else {
             ccrs.bind(fallBackType, getter);
             model_no_shade.render(ccrs, mat);
+            ((IRenderTypeBuffer.Impl) getter).finish();
+
             mat.scale(1.05);
             mat.rotate((ClientEventHandler.elapsedTicks + partialTicks) / 400F, Vector3.X_NEG);
             float r = shieldPower < 0.5F ? 1 - (shieldPower * 2) : 0;
@@ -184,18 +186,24 @@ public class RenderTileReactorCore extends TileEntityRenderer<TileReactorCore> {
 
     public static void renderGUI(TileReactorCore te, int x, int y) {
         RenderSystem.pushMatrix();
-//        GlStateTracker.pushState();
-
         double diameter = 100;
         float t = (float) (te.temperature.get() / MAX_TEMPERATURE);
         float intensity = t <= 0.2 ? (float) MathUtils.map(t, 0, 0.2, 0, 0.3) : t <= 0.8 ? (float) MathUtils.map(t, 0.2, 0.8, 0.3, 1) : (float) MathUtils.map(t, 0.8, 1, 1, 1.3);
         float animation = (te.coreAnimation + (0 * (float) te.shaderAnimationState.get())) / 20F;
         float shieldPower = (float) (te.maxShieldCharge.get() > 0 ? te.shieldCharge.get() / te.maxShieldCharge.get() : 0);
-
-//        renderCore(x - 0.5, y, 100, 0, intensity, animation, diameter, DEShaders.useShaders());
-//        renderShield(x - 0.5, y, 100, 0, (0.7F * shieldPower) - (float) (1 - te.shaderAnimationState.get()), animation, diameter, DEShaders.useShaders());
-
-//        GlStateTracker.popState();
+        MatrixStack stack = new MatrixStack();
+        Minecraft mc = Minecraft.getInstance();
+        IRenderTypeBuffer.Impl getter = mc.getRenderTypeBuffers().getBufferSource();
+        Matrix4 mat = new Matrix4(stack);
+        mat.scale(diameter);
+        mat.rotate((ClientEventHandler.elapsedTicks + mc.getRenderPartialTicks()) / 400F, Vector3.Y_POS);
+        CCRenderState ccrs = CCRenderState.instance();
+        ccrs.reset();
+        RenderSystem.translated(x, y, 100);
+        RenderSystem.depthMask(false);
+        renderCore(mat, ccrs, animation, te.shaderAnimationState.get(), intensity, shieldPower, mc.getRenderPartialTicks(), getter);
+        getter.finish();
+        RenderSystem.depthMask(true);
         RenderSystem.popMatrix();
     }
 

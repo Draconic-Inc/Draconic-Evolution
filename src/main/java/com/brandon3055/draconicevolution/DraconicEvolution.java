@@ -1,8 +1,11 @@
 package com.brandon3055.draconicevolution;
 
+import com.brandon3055.brandonscore.command.BCUtilCommands;
+import com.brandon3055.brandonscore.command.CommandTPX;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.client.ClientProxy;
 
+import com.brandon3055.draconicevolution.command.CommandKaboom;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -67,4 +70,10 @@ public class DraconicEvolution {
 
     @SubscribeEvent
     public void onServerAboutToStart(FMLServerAboutToStartEvent event) {}
+
+    @SubscribeEvent
+    public void onServerStarting(FMLServerStartingEvent event) {
+        CommandKaboom.register(event.getCommandDispatcher());
+    }
+
 }

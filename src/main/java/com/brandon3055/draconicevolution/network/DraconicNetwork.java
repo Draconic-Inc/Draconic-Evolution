@@ -12,6 +12,9 @@ import net.minecraft.inventory.container.ClickType;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3i;
+import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.fml.network.event.EventNetworkChannel;
 
@@ -37,6 +40,7 @@ public class DraconicNetwork {
     //Server to client
     public static final int C_CRYSTAL_UPDATE =          1;
     public static final int C_SHIELD_HIT =              2;
+    public static final int C_EXPLOSION_EFFECT =        3;
 
 
     //@formatter:on
@@ -88,6 +92,14 @@ public class DraconicNetwork {
     public static void sendOpenModuleConfig() {
         PacketCustom packet = new PacketCustom(CHANNEL, S_MODULE_CONFIG_GUI);
         packet.sendToServer();
+    }
+
+    public static void sendExplosionEffect(DimensionType dimension, BlockPos pos, int radius, boolean reload) {
+        PacketCustom packet = new PacketCustom(CHANNEL, C_EXPLOSION_EFFECT);
+        packet.writePos(pos);
+        packet.writeVarInt(radius);
+        packet.writeBoolean(reload);
+        packet.sendToDimension(dimension);
     }
 
 //    public static void sendShieldHit(LivingEntity shieldedEntity) {

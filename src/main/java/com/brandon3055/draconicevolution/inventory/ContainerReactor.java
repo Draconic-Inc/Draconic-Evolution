@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.inventory;
 import codechicken.lib.math.MathHelper;
 import com.brandon3055.brandonscore.inventory.ContainerBCTile;
 import com.brandon3055.brandonscore.inventory.ContainerBCore;
+import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
 import net.minecraft.entity.player.PlayerEntity;
@@ -10,6 +11,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ClickType;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 
@@ -91,13 +93,19 @@ public class ContainerReactor extends ContainerBCTile<TileReactorCore> {
                 if ((value = getFuelValue(copy)) > 0) {
                     int maxInsert = free / value;
                     int insert = Math.min(Math.min(heldStack.getCount(), maxInsert), dragType == 1 ? 1 : 64);
-                    tile.reactableFuel.add((double)insert * value);
+                    tile.reactableFuel.add(insert * value);
+                    heldStack.shrink(insert);
+                }
+                else if ((value = getChaosValue(copy)) > 0) {
+                    int maxInsert = free / value;
+                    int insert = Math.min(Math.min(heldStack.getCount(), maxInsert), dragType == 1 ? 1 : 64);
+                    tile.convertedFuel.add(insert * value);
                     heldStack.shrink(insert);
                 }
 //                else if ((value = getChaosValue(copy)) > 0) {
 //                    int maxInsert = free / value;
 //                    int insert = Math.min(Math.min(heldStack.stackSize, maxInsert), dragType == 1 ? 1 : 64);
-//                    tile.convertedFuel.get() += insert * value;
+//                    tile.convertedFuel.value += insert * value;
 //                    heldStack.stackSize -= insert;
 //                }
 
@@ -106,8 +114,8 @@ public class ContainerReactor extends ContainerBCTile<TileReactorCore> {
                 }
             }
             else if (!stackInSlot.isEmpty()) {
-                tile.reactableFuel.subtract((double) getFuelValue(stackInSlot));
-                tile.convertedFuel.subtract((double) getChaosValue(stackInSlot));
+                tile.reactableFuel.subtract(getFuelValue(stackInSlot));
+                tile.convertedFuel.subtract(getChaosValue(stackInSlot));
                 inventory.setItemStack(stackInSlot);
             }
 
@@ -129,7 +137,7 @@ public class ContainerReactor extends ContainerBCTile<TileReactorCore> {
         else if (stack.getItem() == DEContent.ingot_draconium_awakened) {
             return stack.getCount() * 144;
         }
-        else if (stack.getItem() == DEContent.nugget_draconium_awakened /*&& stack.getItemDamage() == 1*/) {
+        else if (stack.getItem() == DEContent.nugget_draconium_awakened) {
             return stack.getCount() * 16;
         }
         return 0;
@@ -139,18 +147,17 @@ public class ContainerReactor extends ContainerBCTile<TileReactorCore> {
         if (stack.isEmpty()) {
             return 0;
         }
-        else if (stack.getItem() == DEContent.chaos_frag_large /*&& stack.getItemDamage() == 1*/) {
+        else if (stack.getItem() == DEContent.chaos_frag_large) {
             return stack.getCount() * 1296;
         }
-        else if (stack.getItem() == DEContent.chaos_frag_medium /*&& stack.getItemDamage() == 2*/) {
+        else if (stack.getItem() == DEContent.chaos_frag_medium) {
             return stack.getCount() * 144;
         }
-        else if (stack.getItem() == DEContent.chaos_frag_small /*&& stack.getItemDamage() == 3*/) {
+        else if (stack.getItem() == DEContent.chaos_frag_small) {
             return stack.getCount() * 16;
         }
         return 0;
     }
-
     public static class SlotReactor extends Slot {
 
         private final TileReactorCore tile;

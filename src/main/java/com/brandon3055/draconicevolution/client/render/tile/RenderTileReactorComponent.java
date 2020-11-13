@@ -59,7 +59,7 @@ public class RenderTileReactorComponent extends TileEntityRenderer<TileReactorCo
         stabilizerModel.render(matrix, getter.getBuffer(stabilizerModel.getRenderType(DETextures.REACTOR_STABILIZER)), packedLight, packedOverlay, 1F, 1F, 1F, 1F);
         matrix.rotate(new Quaternion(90, 0, 0, true));
         matrix.translate(0, -0.58, 0);
-        matrix.scale(0.95F, 0.95F, 0.95F);
+//        matrix.scale(0.95F, 0.95F, 0.95F);
         matrix.rotate(new Quaternion(0, ringRotation, 0, true));
         stabilizerRingModel.brightness = brightness;
         stabilizerRingModel.embitterRotation = 70F;
