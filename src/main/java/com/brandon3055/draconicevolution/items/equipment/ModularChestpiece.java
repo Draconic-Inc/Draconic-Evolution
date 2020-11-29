@@ -2,10 +2,8 @@ package com.brandon3055.draconicevolution.items.equipment;
 
 import codechicken.lib.util.SneakyUtils;
 import com.brandon3055.brandonscore.api.TechLevel;
-import com.brandon3055.brandonscore.lib.TechItemProps;
+import com.brandon3055.brandonscore.lib.TechPropBuilder;
 import com.brandon3055.draconicevolution.DEConfig;
-import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.api.config.ConfigProperty;
 import com.brandon3055.draconicevolution.api.config.DecimalProperty;
 import com.brandon3055.draconicevolution.api.modules.ModuleCategory;
 import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
@@ -16,12 +14,10 @@ import com.brandon3055.draconicevolution.client.model.ModularArmorModel;
 import com.brandon3055.draconicevolution.init.EquipCfg;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ArmorMaterial;
-import net.minecraft.item.IArmorMaterial;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
@@ -32,7 +28,6 @@ import javax.annotation.Nullable;
 
 import java.util.List;
 
-import static com.brandon3055.draconicevolution.api.config.ConfigProperty.DecimalFormatter.PERCENT_0;
 import static com.brandon3055.draconicevolution.api.config.ConfigProperty.DecimalFormatter.PLUS_PERCENT_0;
 import static com.brandon3055.draconicevolution.init.ModuleCfg.*;
 
@@ -42,8 +37,8 @@ import static com.brandon3055.draconicevolution.init.ModuleCfg.*;
 public class ModularChestpiece extends ArmorItem implements IModularArmor {
     private final TechLevel techLevel;
 
-    public ModularChestpiece(TechItemProps props) {
-        super(ArmorMaterial.DIAMOND, EquipmentSlotType.CHEST, props);
+    public ModularChestpiece(TechPropBuilder props) {
+        super(ArmorMaterial.DIAMOND, EquipmentSlotType.CHEST, props.build());
         this.techLevel = props.techLevel;
     }
 

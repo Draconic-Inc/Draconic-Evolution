@@ -5,6 +5,7 @@ import codechicken.lib.math.MathHelper;
 import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.handlers.ProcessHandler;
+import com.brandon3055.brandonscore.inventory.ContainerBCTile;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.lib.Vec3I;
 import com.brandon3055.brandonscore.lib.datamanager.*;
@@ -13,11 +14,14 @@ import com.brandon3055.brandonscore.utils.HolidayHelper;
 import com.brandon3055.brandonscore.utils.MathUtils;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DEOldConfig;
+import com.brandon3055.draconicevolution.client.gui.GuiReactor;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.reactor.ProcessExplosion;
 import com.brandon3055.draconicevolution.blocks.reactor.ReactorEffectHandler;
 import com.brandon3055.draconicevolution.handlers.DESoundHandler;
+import com.brandon3055.draconicevolution.inventory.ContainerReactor;
+import com.brandon3055.draconicevolution.inventory.GuiLayoutFactories;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -27,7 +31,10 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.item.FallingBlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -44,7 +51,9 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.network.NetworkHooks;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -54,7 +63,7 @@ import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.*;
 /**
  * Created by brandon3055 on 6/11/2016.
  */
-public class TileReactorCore extends TileBCore implements ITickableTileEntity {
+public class TileReactorCore extends TileBCore implements ITickableTileEntity, INamedContainerProvider {
 
     //Frame Movement
     public int frameMoveContactPoints = 0;
@@ -144,16 +153,33 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity {
 
     @Override
     public void tick() {
-        if (!world.isRemote) {
-//            LogHelper.dev("Temp: " + temperature.get() + ", Sat: " + saturation.get() + ", Shield: " + shieldCharge.get());
+        if (pos.getX() > 1000)LogHelper.dev(pos);
+//        if (explosionProcess != null) {
+//            explosionProcess.isDead = true;
+//            explosionProcess = null;
+//        }
+//        reactorState.set(ReactorState.COLD);
+//        temperature.set(20);
 
-            if (reactableFuel.get() == 0) {
-                reactableFuel.set(8000);
-                reactorState.set(ReactorState.WARMING_UP);
-            } else if (reactorState.get() == ReactorState.WARMING_UP && saturation.get() >= maxSaturation.get() / 3) {
-                reactorState.set(ReactorState.RUNNING);
-            }
-        }
+        //        if (!world.isRemote) {
+////            LogHelper.dev("Temp: " + temperature.get() + ", Sat: " + saturation.get() + ", Shield: " + shieldCharge.get());
+//
+//            if (reactableFuel.get() == 0 || reactorState.get() == ReactorState.COLD) {
+////                reactableFuel.set(8000);
+////                reactorState.set(ReactorState.WARMING_UP);
+//            } else if (reactorState.get() == ReactorState.WARMING_UP && saturation.get() >= maxSaturation.get() / 3) {
+//                reactorState.set(ReactorState.RUNNING);
+//            }
+////            shieldCharge.set(maxShieldCharge.get() / 2);
+////            if (reactorState.get() == ReactorState.RUNNING || saturation.get() > maxSaturation.get() * .1) {
+////                temperature.set(2000);
+////                saturation.set((long) (maxSaturation.get() * .1));
+////                reactorState.set(ReactorState.COOLING);
+////            }
+//        }
+
+
+
 //        reactorState.set(ReactorState.COLD);
 //        if (explosionProcess != null) {
 //            explosionProcess.isDead = true;
@@ -557,14 +583,15 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity {
 
     public void onComponentClicked(PlayerEntity player, TileReactorComponent component) {
         if (!world.isRemote) {
-            //TODO gui
-//            player.openGui(DraconicEvolution.instance, GuiHandler.GUIID_REACTOR, world, pos.getX(), pos.getY(), pos.getZ());
-//            CompoundNBT tag = new CompoundNBT();
-//            tag.setInteger("x", component.getPos().getX());
-//            tag.setInteger("y", component.getPos().getY());
-//            tag.setInteger("z", component.getPos().getZ());
+            NetworkHooks.openGui((ServerPlayerEntity) player, this, pos);
             sendPacketToClient((ServerPlayerEntity) player, output -> output.writePos(component.getPos()), 1);
         }
+    }
+
+    @Nullable
+    @Override
+    public Container createMenu(int currentWindowIndex, PlayerInventory playerInventory, PlayerEntity player) {
+        return new ContainerReactor(DEContent.container_reactor, currentWindowIndex, player.inventory, this);
     }
 
     @Override
@@ -588,12 +615,11 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity {
             BlockPos pos = data.readPos();
             TileEntity tile = world.getTileEntity(pos);
             Screen screen = Minecraft.getInstance().currentScreen;
-//            if (tile instanceof TileReactorComponent && screen instanceof GuiReactor) {TODO Gui Stuff
-//                ((GuiReactor) screen).component = (TileReactorComponent) tile;
-//            }
+            if (tile instanceof TileReactorComponent && screen instanceof GuiReactor) {
+                ((GuiReactor) screen).component = (TileReactorComponent) tile;
+            }
         }
     }
-
 
     private void checkPlayerCollision() {
         PlayerEntity player = BrandonsCore.proxy.getClientPlayer();
@@ -607,6 +633,8 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity {
             player.addVelocity(offsetX * m, offsetY * m, offsetZ * m);
         }
     }
+
+
 
     //endregion ############################################
 
@@ -632,7 +660,10 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity {
                 }
             }
 
-            validateStructure();
+            if (!validateStructure()) {
+                structureValid.set(false);
+                attemptInitialization();
+            }
         } else {
             attemptInitialization();
         }

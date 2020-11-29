@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.items;
 
 import com.brandon3055.brandonscore.items.ItemBCore;
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.projectintelligence.api.PiAPI;
+//import com.brandon3055.projectintelligence.api.PiAPI;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -38,10 +38,10 @@ public class InfoTablet extends Item {
 
 //    @Optional.Method(modid = "projectintelligence")
     public static boolean doOpenPiGui() {
-        if (PiAPI.isAPIAvalible()) {
-            PiAPI.openModPage(null, DraconicEvolution.MODID);
-            return true;
-        }
+//        if (PiAPI.isAPIAvalible()) {
+//            PiAPI.openModPage(null, DraconicEvolution.MODID);
+//            return true;
+//        }
         return false;
     }
 

@@ -45,6 +45,7 @@ public class CrystalFXBeam<T extends TileEntity & IENetEffectTile> extends Cryst
 
     @Override
     public void tick() {
+        super.tick();
         BCProfiler.TICK.start("crystal_beam_fx_update");
         if (ticksTillDeath-- <= 0) {
             setExpired();

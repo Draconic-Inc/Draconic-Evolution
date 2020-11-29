@@ -73,6 +73,7 @@ public class CrystalFXWireless extends CrystalFXBase<TileCrystalWirelessIO> {
 
     @Override
     public void tick() {
+        super.tick();
         if (ticksTillDeath-- <= 0) {
             setExpired();
         }

@@ -6,18 +6,23 @@ import com.brandon3055.draconicevolution.api.energy.IENetEffectTile;
 import com.brandon3055.draconicevolution.blocks.energynet.rendering.ENetFXHandler;
 import com.brandon3055.draconicevolution.blocks.reactor.ReactorEffectHandler;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
+import com.brandon3055.draconicevolution.entity.EntityChaosGuardian;
 import com.brandon3055.draconicevolution.handlers.DEEventHandler;
 import com.brandon3055.draconicevolution.init.ModCapabilities;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityClassification;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.boss.dragon.EnderDragonEntity;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.FloatNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.math.EntityRayTraceResult;
+import net.minecraft.util.registry.Registry;
 import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
@@ -25,8 +30,12 @@ import net.minecraftforge.fml.common.thread.EffectiveSide;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLDedicatedServerSetupEvent;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class CommonProxy {
+
+
+
 
     public void construct() {
         DraconicNetwork.init();
@@ -35,6 +44,7 @@ public class CommonProxy {
     public void commonSetup(FMLCommonSetupEvent event) {
         MinecraftForge.EVENT_BUS.register(new DEEventHandler());
         ModCapabilities.register();
+
 
 //        MinecraftForge.EVENT_BUS.addListener((ProjectileImpactEvent.Throwable e) -> {
 //            if (!(e.getRayTraceResult() instanceof EntityRayTraceResult) || EffectiveSide.get().isClient()) return;

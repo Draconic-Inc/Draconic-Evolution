@@ -1,14 +1,13 @@
 package com.brandon3055.draconicevolution.items.equipment;
 
 import com.brandon3055.brandonscore.api.TechLevel;
-import com.brandon3055.brandonscore.lib.TechItemProps;
+import com.brandon3055.brandonscore.lib.TechPropBuilder;
 import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleHostImpl;
 import com.brandon3055.draconicevolution.init.EquipCfg;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ShovelItem;
 import net.minecraft.util.text.ITextComponent;
@@ -29,7 +28,7 @@ public class ModularShovel extends ShovelItem implements IModularMiningTool {
     private final TechLevel techLevel;
     private final DEItemTier itemTier;
 
-    public ModularShovel(TechItemProps props) {
+    public ModularShovel(TechPropBuilder props) {
         super(new DEItemTier(props, EquipCfg::getShovelDmgMult, EquipCfg::getShovelSpeedMult), 0, 0, props.shovelProps());
         this.techLevel = props.techLevel;
         this.itemTier = (DEItemTier) getTier();

@@ -10,6 +10,7 @@ import java.util.List;
 /**
  * Created by brandon3055 on 11/06/2016.
  */
+@Deprecated
 public interface IFusionRecipe {
 
     /**

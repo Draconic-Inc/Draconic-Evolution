@@ -1,448 +1,381 @@
-//package com.brandon3055.draconicevolution.client.gui;
-//
-//import com.brandon3055.brandonscore.client.gui.modulargui.GuiElementManager;
-//import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
-//import com.brandon3055.brandonscore.client.gui.modulargui.ModularGuiContainer;
-//import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorComponent;
-//import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
-//import com.brandon3055.draconicevolution.inventory.ContainerReactor;
-//import net.minecraft.entity.player.PlayerEntity;
-//
-///**
-// * Created by brandon3055 on 10/02/2017.
-// */
-//public class GuiReactor extends ModularGuiContainer<ContainerReactor> {
-//
-//    private PlayerEntity player;
-//    private final TileReactorCore tile;
-//    public TileReactorComponent component = null;
-//    private static double compPanelAnim = 0;
-//    private static boolean compPanelExtended = false;
-//    private GuiElement compPanel;
-//
-//    public GuiReactor(PlayerEntity player, TileReactorCore tile) {
-//        super(new ContainerReactor(player, tile));
-//        this.player = player;
-//        this.tile = tile;
-//        this.xSize = 248;
-//        this.ySize = 222;
-//    }
-//
-//    @Override
-//    public void addElements(GuiElementManager manager) {
-//
-//    }
-//
-//    //    @Override
-////    public void initGui() {
-////        super.initGui();
-////        manager.clear();
-////
-////        //region Background Elements
-////
-////        manager.add(compPanel = new MGuiBorderedRect(this, guiLeft + xSize, guiTop + 125, 0, 91));
-////        manager.add(new MGuiBackground(this, guiLeft, guiTop, 0, 0, xSize, ySize, "draconicevolution:" + DETextures.GUI_REACTOR) {
-////            @Override
-////            public void renderForegroundLayer(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
-////                super.renderForegroundLayer(minecraft, mouseX, mouseY, partialTicks);
-////                RenderTileReactorCore.renderGUI(tile, guiLeft + xSize / 2, guiTop + 70);
-////            }
-////        });
-////        manager.add(new MGuiBorderedRect(this, guiLeft + 12, guiTop + 138, 162, 77) {
-////            @Override
-////            public boolean isEnabled() {
-////                return tile.reactorState.get() != TileReactorCore.ReactorState.COLD;
-////            }
-////        });
-////
-////        //endregion
-////
-////        //region Status Labels
-////
-////        int y = guiTop + 140;
-////        manager.add(new MGuiLabel(this, guiLeft + 10, y, 162, 8, I18n.format("gui.reactor.coreVolume.info")) {
-////            @Override
-////            public boolean isEnabled() {
-////                return tile.reactorState.get() != TileReactorCore.ReactorState.COLD && tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE;
-////            }
-////        }.setAlignment(EnumAlignment.LEFT).setShadow(false).setTextColour(0x00C0FF).addChild(new MGuiHoverPopup(this, new String[]{I18n.format("gui.reactor.coreVolume.txt")}).setHoverDelay(2)));
-////        manager.add(new MGuiLabel(this, guiLeft + 13, y += 8, 162, 8, "") {
-////            @Override
-////            public boolean isEnabled() {
-////                return tile.reactorState.get() != TileReactorCore.ReactorState.COLD && tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE;
-////            }
-////
-////            @Override
-////            public String getDisplayString() {
-////                return MathUtils.round((tile.reactableFuel.get() + tile.convertedFuel.get()) / 1296D, 100) + "m^3";
-////            }
-////        }.setAlignment(EnumAlignment.LEFT).setShadow(false).setTextColour(0xB0B0B0));
-////        manager.add(new MGuiLabel(this, guiLeft + 10, y += 11, 162, 8, I18n.format("gui.reactor.genRate.info")) {
-////            @Override
-////            public boolean isEnabled() {
-////                return tile.reactorState.get() != TileReactorCore.ReactorState.COLD && tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE;
-////            }
-////        }.setAlignment(EnumAlignment.LEFT).setShadow(false).setTextColour(0x00C0FF).addChild(new MGuiHoverPopup(this, new String[]{I18n.format("gui.reactor.genRate.txt")}).setHoverDelay(2)));
-////        manager.add(new MGuiLabel(this, guiLeft + 13, y += 8, 162, 8, "") {
-////            @Override
-////            public boolean isEnabled() {
-////                return tile.reactorState.get() != TileReactorCore.ReactorState.COLD && tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE;
-////            }
-////
-////            @Override
-////            public String getDisplayString() {
-////                return Utils.addCommas((int) tile.generationRate.get()) + " RF/t";
-////            }
-////        }.setAlignment(EnumAlignment.LEFT).setShadow(false).setTextColour(0xB0B0B0));
-////        manager.add(new MGuiLabel(this, guiLeft + 10, y += 11, 162, 8, I18n.format("gui.reactor.fieldInputRate.info")) {
-////            @Override
-////            public boolean isEnabled() {
-////                return tile.reactorState.get() != TileReactorCore.ReactorState.COLD && tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE;
-////            }
-////        }.setAlignment(EnumAlignment.LEFT).setShadow(false).setTextColour(0x00C0FF).addChild(new MGuiHoverPopup(this, new String[]{I18n.format("gui.reactor.inputRate.txt")}).setHoverDelay(2)));
-////        manager.add(new MGuiLabel(this, guiLeft + 13, y += 8, 162, 8, "") {
-////            @Override
-////            public boolean isEnabled() {
-////                return tile.reactorState.get() != TileReactorCore.ReactorState.COLD && tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE;
-////            }
-////
-////            @Override
-////            public String getDisplayString() {
-////                double inputRate = tile.fieldDrain.get() / (1D - (tile.shieldCharge.get() / tile.maxShieldCharge.get()));
-////                return Utils.addCommas((int) Math.min(inputRate, Integer.MAX_VALUE)) + "RF/t";
-////            }
-////        }.setAlignment(EnumAlignment.LEFT).setShadow(false).setTextColour(0xB0B0B0));
-////        manager.add(new MGuiLabel(this, guiLeft + 10, y += 11, 162, 8, I18n.format("gui.reactor.fuelConversionRate.info")) {
-////            @Override
-////            public boolean isEnabled() {
-////                return tile.reactorState.get() != TileReactorCore.ReactorState.COLD && tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE;
-////            }
-////        }.setAlignment(EnumAlignment.LEFT).setShadow(false).setTextColour(0x00C0FF).addChild(new MGuiHoverPopup(this, new String[]{I18n.format("gui.reactor.conversionRate.txt")}).setHoverDelay(2)));
-////        manager.add(new MGuiLabel(this, guiLeft + 13, y += 8, 162, 8, "") {
-////            @Override
-////            public boolean isEnabled() {
-////                return tile.reactorState.get() != TileReactorCore.ReactorState.COLD && tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE;
-////            }
-////
-////            @Override
-////            public String getDisplayString() {
-////                return Utils.addCommas((int) Math.round(tile.fuelUseRate.get() * 1000000D)) + "nb/t";
-////            }
-////        }.setAlignment(EnumAlignment.LEFT).setShadow(false).setTextColour(0xB0B0B0));
-////
-////        manager.add(new MGuiLabel(this, guiLeft + 13, guiTop + 139, 161, 77, "Emergency shield reserve is now active but it wont last long! There is no way to stop the overload the stabilizers are fried. I suggest you run!") {
-////            @Override
-////            public boolean isEnabled() {
-////                return tile.reactorState.get() == TileReactorCore.ReactorState.BEYOND_HOPE;
-////            }
-////        }.setWrap(true).setAlignment(EnumAlignment.LEFT).setShadow(false).setTextColour(0xB0B0B0));
-////
-////        //endregion
-////
-////        //region Slots, Misc labels and gauges
-////
-////        manager.add(new MGuiElementBase(this) {
-////            @Override
-////            public void renderBackgroundLayer(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
-////                if (tile.reactorState.get() == TileReactorCore.ReactorState.COLD) {
-//////                    drawTexturedModalRect(guiLeft + 12, guiTop + 193, 10, 193, 162, 4);
-////                    GuiHelper.drawPlayerSlots(GuiReactor.this, guiLeft + 43 - 31, guiTop + 139, false);
-////                    ResourceHelperBC.bindTexture("textures/gui/bc_widgets.png");
-////
-////                    for (int x = 0; x < 3; x++) {
-////                        drawTexturedModalRect(guiLeft + 182 + (x * 18), guiTop + 148, 138, 0, 18, 18);
-////                    }
-////
-////                    for (int x = 0; x < 3; x++) {
-////                        drawTexturedModalRect(guiLeft + 182 + (x * 18), guiTop + 179, 138, 0, 18, 18);
-////                    }
-////                }
-////            }
-////        });
-////
-////        manager.add(new MGuiLabel(this, guiLeft, guiTop + 2, xSize, 12, I18n.format("gui.reactor.draconicReactor.txt")).setAlignment(EnumAlignment.CENTER).setTextColour(InfoHelper.GUI_TITLE));
-////        manager.add(new MGuiLabel(this, guiLeft + 182, guiTop + 139, 54, 8, I18n.format("gui.reactor.fuelIn.txt")) {
-////            @Override
-////            public boolean isEnabled() {
-////                return tile.reactorState.get() == TileReactorCore.ReactorState.COLD;
-////            }
-////        }.setAlignment(EnumAlignment.CENTER));
-////        manager.add(new MGuiLabel(this, guiLeft + 182, guiTop + 170, 54, 8, I18n.format("gui.reactor.chaosOut.txt")) {
-////            @Override
-////            public boolean isEnabled() {
-////                return tile.reactorState.get() == TileReactorCore.ReactorState.COLD;
-////            }
-////        }.setAlignment(EnumAlignment.CENTER));
-////        manager.add(new MGuiLabel(this, guiLeft + 7, guiTop + 127, xSize, 12, "") {
-////            @Override
-////            public String getDisplayString() {
-////                String s = tile.reactorState.get().localize();
-////                if (tile.reactorState.get() == TileReactorCore.ReactorState.BEYOND_HOPE && ClientEventHandler.elapsedTicks % 10 > 5) {
-////                    s = TextFormatting.DARK_RED + "**" + s + "**";
-////                }
-////                else if (tile.reactorState.get() == TileReactorCore.ReactorState.BEYOND_HOPE) {
-////                    s = TextFormatting.DARK_RED + "--" + s + "--";
-////                }
-////
-////                return TextFormatting.GOLD + I18n.format("gui.reactor.status.info") + ": " + s;
-////            }
-////
-////            @Override
-////            public boolean isEnabled() {
-////                return super.isEnabled();
-////            }
-////
-////            @Override
-////            public boolean getDropShadow() {
-////                return tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE;
-////            }
-////
-////        }.setAlignment(EnumAlignment.LEFT));
-////
-////        manager.add(new MGuiTexturedPointer(this, guiLeft + 11, guiTop + 5, 14, 112, 0, 222, 5, ResourceHelperDE.getResource(DETextures.GUI_REACTOR)) {
-////            @Override
-////            public double getPos() {
-////                return MathHelper.clip(tile.temperature.get() / TileReactorCore.MAX_TEMPERATURE, 0, 1);
-////            }
-////        }.addChild(new MGuiHoverPopup(this) {
-////            @Override
-////            public List<String> getToolTip() {
-////                return getTempStats();
-////            }
-////        }.setHoverDelay(5)));
-////        manager.add(new MGuiTexturedPointer(this, guiLeft + 35, guiTop + 5, 14, 112, 0, 222, 5, ResourceHelperDE.getResource(DETextures.GUI_REACTOR)) {
-////            @Override
-////            public double getPos() {
-////                return MathHelper.clip(tile.shieldCharge.get() / Math.max(tile.maxShieldCharge.get(), 1), 0, 1);
-////            }
-////        }.addChild(new MGuiHoverPopup(this) {
-////            @Override
-////            public List<String> getToolTip() {
-////                return getShieldStats();
-////            }
-////        }.setHoverDelay(5)));
-////
-////        manager.add(new MGuiTexturedPointer(this, guiLeft + 199, guiTop + 5, 14, 112, 0, 222, 5, ResourceHelperDE.getResource(DETextures.GUI_REACTOR)) {
-////            @Override
-////            public double getPos() {
-////                return MathHelper.clip(tile.saturation.get() / (double) Math.max(tile.maxSaturation.get(), 1), 0, 1);
-////            }
-////        }.addChild(new MGuiHoverPopup(this) {
-////            @Override
-////            public List<String> getToolTip() {
-////                return getSaturationStats();
-////            }
-////        }.setHoverDelay(5)));
-////
-////
-////        manager.add(new MGuiTexturedPointer(this, guiLeft + 223, guiTop + 5, 14, 112, 0, 222, 5, ResourceHelperDE.getResource(DETextures.GUI_REACTOR)) {
-////            @Override
-////            public double getPos() {
-////                return MathHelper.clip(tile.convertedFuel.get() / Math.max(tile.reactableFuel.get() + tile.convertedFuel.get(), 1), 0, 1);
-////            }
-////        }.addChild(new MGuiHoverPopup(this) {
-////            @Override
-////            public List<String> getToolTip() {
-////                return getFuelStats();
-////            }
-////        }.setHoverDelay(5)));
-////
-////        //endregion
-////
-////        //region Buttons
-////
-////        manager.add(new MGuiButtonSolid(this, "CHARGE", guiLeft + 182, guiTop + 199, 54, 14, I18n.format("gui.reactor.charge.btn")) {
-////            @Override
-////            public boolean isEnabled() {
-////                return tile.canCharge();
-////            }
-////        });
-////        manager.add(new MGuiButtonSolid(this, "ACTIVATE", guiLeft + 182, guiTop + 182, 54, 14, I18n.format("gui.reactor.activate.btn")) {
-////            @Override
-////            public boolean isEnabled() {
-////                return tile.canActivate();
-////            }
-////        });
-////        manager.add(new MGuiButtonSolid(this, "SHUTDOWN", guiLeft + 182, guiTop + 199, 54, 14, I18n.format("gui.reactor.shutdown.btn")) {
-////            @Override
-////            public boolean isEnabled() {
-////                return tile.canStop();
-////            }
-////        });
-////        manager.add(new MGuiButtonSolid(this, "FAIL_SAFE", guiLeft + 182, guiTop + 165, 54, 14, I18n.format("gui.reactor.failSafe.btn")) {
-////            @Override
-////            public boolean isEnabled() {
-////                return tile.reactorState.get() != TileReactorCore.ReactorState.COLD && tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE;
-////            }
-////
-////            @Override
-////            public void onPressed(int mouseX, int mouseY, int mouseButton) {
-////                tile.toggleFailSafe();
-////            }
-////
-////            @Override
-////            public int getFillColour(boolean hovering, boolean disabled) {
-////                if (tile.failSafeMode.get()) {
-////                    return 0xFF4040FF;
-////                }
-////                return super.getFillColour(hovering, disabled);
-////            }
-////
-////        }.addChild(new MGuiHoverPopup(this, new String[]{I18n.format("gui.reactor.failSafe.txt")})));
-////
-////        manager.add(new MGuiLabel(this, guiLeft + 180, guiTop + 138, 58, 24, I18n.format("gui.reactor.rsMode.btn").replaceAll("\\\\n", "\n")) {
-////            @Override
-////            public boolean isEnabled() {
-////                return tile.reactorState.get() != TileReactorCore.ReactorState.COLD && component != null && tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE;
-////            }
-////        }.setWrap(true).addChild(new MGuiButtonSolid(this, "TOGGLE_COMP_P", guiLeft + 182, guiTop + 138, 54, 24, "") {
-////            @Override
-////            public String getDisplayString() {
-////                return super.getDisplayString();
-////            }
-////        }).addChild(new MGuiHoverPopup(this, new String[]{I18n.format("gui.reactor.redstoneMode.txt")})));
-////
-////        manager.add(new MGuiLabel(this, guiLeft + 175, guiTop + 138, 68, 80, "ETE") {
-////            @Override
-////            public String getDisplayString() {
-////                return "Estimated\nTime\nUntil\nDetonation\n\n" + TextFormatting.UNDERLINE + (tile.explosionCountdown.get() >= 0 ? (tile.explosionCountdown.get() / 20) + "s" : "Calculating..");
-////            }
-////
-////            @Override
-////            public boolean isEnabled() {
-////                return tile.reactorState.get() == TileReactorCore.ReactorState.BEYOND_HOPE;
-////            }
-////        }.setWrap(true).setTextColour(0xFF0000).setShadow(false));
-////
-////        y = 0;
-////        for (final RSMode mode : RSMode.values()) {
-////            manager.add(new MGuiButtonSolid(this, "RS_T", guiLeft + xSize + 2, guiTop + 127 + y, 66, 10, I18n.format("gui.reactor.rsMode_" + mode.name().toLowerCase() + ".btn")) {
-////                @Override
-////                public boolean isEnabled() {
-////                    return compPanelAnim == 1 && component != null;
-////                }
-////
-////                @Override
-////                public int getFillColour(boolean hovering, boolean disabled) {
-////                    if (component != null && component.rsMode.get() == mode) {
-////                        return 0xFFAA0000;
-////                    }
-////                    else if (hovering) {
-////                        return 0xFF656565;
-////                    }
-////                    return super.getFillColour(hovering, disabled);
-////                }
-////
-////                @Override
-////                public int getBorderColour(boolean hovering, boolean disabled) {
-////                    return getFillColour(hovering, disabled);
-////                }
-////
-////                @Override
-////                public void onPressed(int mouseX, int mouseY, int mouseButton) {
-////                    if (component != null) {
-////                        component.setRSMode(player, mode);
-////                    }
-////                }
-////
-////            }.setColours(0xFF454545, 0xFF454545, 0xFF454545).addChild(new MGuiHoverPopup(this, new String[]{I18n.format("gui.reactor.rsMode_" + mode.name().toLowerCase() + ".txt")})));
-////            y += 11;
-////        }
-////
-////        //endregion
-////
-////        manager.initElements();
-////    }
-////
-////    @Override
-////    public void onMGuiEvent(String eventString, MGuiElementBase eventElement) {
-////        if (eventElement instanceof MGuiButton) {
-////            if (((MGuiButton) eventElement).buttonName.equals("CHARGE")) {
-////                tile.chargeReactor();
-////            }
-////            else if (((MGuiButton) eventElement).buttonName.equals("ACTIVATE")) {
-////                tile.activateReactor();
-////            }
-////            else if (((MGuiButton) eventElement).buttonName.equals("SHUTDOWN")) {
-////                tile.shutdownReactor();
-////            }
-////            else if (((MGuiButton) eventElement).buttonName.equals("TOGGLE_COMP_P")) {
-////                compPanelExtended = !compPanelExtended;
-////            }
-////        }
-////    }
-////
-////    public List<String> getTempStats() {
-////        List<String> list = new ArrayList<>();
-////        list.add(I18n.format("gui.reactor.reactionTemp.info"));
-////        list.add(MathUtils.round(tile.temperature.get(), 10) + "C");
-////        return list;
-////    }
-////
-////    public List<String> getShieldStats() {
-////        List<String> list = new ArrayList<>();
-////        list.add(I18n.format("gui.reactor.fieldStrength.info"));
-////        if (tile.maxShieldCharge.get() > 0) {
-////            list.add(MathUtils.round(tile.shieldCharge.get() / tile.maxShieldCharge.get() * 100D, 100D) + "%");
-////        }
-////        list.add(Utils.addCommas((int) tile.shieldCharge.get()) + " / " + Utils.addCommas((int) tile.maxShieldCharge.get()));
-////        return list;
-////    }
-////
-////    public List<String> getSaturationStats() {
-////        List<String> list = new ArrayList<>();
-////        list.add(I18n.format("gui.reactor.energySaturation.info"));
-////        if (tile.maxSaturation.get() > 0) {
-////            list.add(MathUtils.round((double) tile.saturation.get() / (double) tile.maxSaturation.get() * 100D, 100D) + "%");
-////        }
-////        list.add(Utils.addCommas(tile.saturation.get()) + " / " + Utils.addCommas(tile.maxSaturation.get()));
-////        return list;
-////    }
-////
-////    public List<String> getFuelStats() {
-////        List<String> list = new ArrayList<>();
-////        list.add(I18n.format("gui.reactor.fuelConversion.info"));
-////        if (tile.reactableFuel.get() + tile.convertedFuel.get() > 0) {
-////            list.add(MathUtils.round(tile.convertedFuel.get() / (tile.reactableFuel.get() + tile.convertedFuel.get()) * 100D, 100D) + "%");
-////        }
-////        list.add(MathUtils.round(tile.convertedFuel.get(), 100) + " / " + MathUtils.round(tile.convertedFuel.get() + tile.reactableFuel.get(), 100));
-////        return list;
-////    }
-////
-////    @Override
-////    public void updateScreen() {
-////        super.updateScreen();
-////
-////        if (tile.reactorState.get() == TileReactorCore.ReactorState.COLD != container.fuelSlots) {
-////            container.setSlotState();
-////        }
-////
-////        if (compPanelExtended && (compPanelAnim < 1 || compPanel.xSize != 70)) {
-////            compPanelAnim += 0.1;
-////            if (compPanelAnim > 1) {
-////                compPanelAnim = 1;
-////            }
-////            compPanel.xSize = (int) (compPanelAnim * 70);
-////        }
-////        else if (!compPanelExtended && compPanelAnim > 0) {
-////            compPanelAnim -= 0.1;
-////            if (compPanelAnim < 0) {
-////                compPanelAnim = 0;
-////            }
-////            compPanel.xSize = (int) (compPanelAnim * 70);
-////        }
-////
-////        if (compPanel.isEnabled() && compPanelAnim == 0) {
-////            compPanel.setEnabled(false);
-////        }
-////        else if (!compPanel.isEnabled() && compPanelAnim > 0) {
-////            compPanel.setEnabled(true);
-////        }
-////    }
-////
-////    @Override
-////    public List<Rectangle> getGuiExtraAreas() {
-////        if (compPanel == null) return Collections.emptyList();
-////        return Collections.singletonList(new Rectangle(compPanel.xPos, compPanel.yPos, compPanel.xSize, compPanel.ySize));
-////    }
-//}
+package com.brandon3055.draconicevolution.client.gui;
+
+import codechicken.lib.math.MathHelper;
+import com.brandon3055.brandonscore.client.BCSprites;
+import com.brandon3055.brandonscore.client.ResourceHelperBC;
+import com.brandon3055.brandonscore.client.gui.GuiToolkit;
+import com.brandon3055.brandonscore.client.gui.modulargui.GuiElementManager;
+import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
+import com.brandon3055.brandonscore.client.gui.modulargui.ModularGuiContainer;
+import com.brandon3055.brandonscore.client.gui.modulargui.baseelements.GuiButton;
+import com.brandon3055.brandonscore.client.gui.modulargui.guielements.*;
+import com.brandon3055.brandonscore.client.gui.modulargui.lib.GuiAlign;
+import com.brandon3055.brandonscore.client.utils.GuiHelper;
+import com.brandon3055.brandonscore.utils.InfoHelper;
+import com.brandon3055.brandonscore.utils.MathUtils;
+import com.brandon3055.brandonscore.utils.Utils;
+import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorComponent;
+import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorComponent.RSMode;
+import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
+import com.brandon3055.draconicevolution.client.DETextures;
+import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
+import com.brandon3055.draconicevolution.client.render.tile.RenderTileReactorCore;
+import com.brandon3055.draconicevolution.inventory.ContainerReactor;
+import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
+import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.model.Material;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Created by brandon3055 on 10/02/2017.
+ */
+public class GuiReactor extends ModularGuiContainer<ContainerReactor> {
+
+    private PlayerEntity player;
+    private final TileReactorCore tile;
+    public TileReactorComponent component = null;
+    private static double compPanelAnim = 0;
+    private static boolean compPanelExtended = false;
+    private GuiElement<?> compPanel;
+
+    public GuiReactor(ContainerReactor container, PlayerInventory inv, ITextComponent titleIn) {
+        super(container, inv, titleIn);
+        this.player = player;
+        this.tile = container.tile;
+        this.xSize = 248;
+        this.ySize = 222;
+    }
+
+    @Override
+    public void addElements(GuiElementManager manager) {
+        List<GuiElement<?>> exclusions = new ArrayList<>();
+
+        //region Background Elements
+        manager.addChild(compPanel = new GuiBorderedRect(guiLeft + xSize, guiTop + 125, 0, 91));
+        exclusions.add(compPanel);
+        manager.setJeiExclusions(() -> exclusions);
+        manager.addChild(new GuiTexture(guiLeft, guiTop, 0, 0, xSize, ySize, new ResourceLocation("draconicevolution:" + DETextures.GUI_REACTOR)) {
+            @Override
+            public void renderElement(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
+                super.renderElement(minecraft, mouseX, mouseY, partialTicks);
+                RenderTileReactorCore.renderGUI(tile, guiLeft + xSize / 2, guiTop + 70);
+            }
+
+        });
+        manager.addChild(new GuiBorderedRect(guiLeft + 12, guiTop + 138, 162, 77)
+                .setEnabledCallback(() -> tile.reactorState.get() != TileReactorCore.ReactorState.COLD)
+                .setShadeColours(0xFF000000, 0xFFFFFFFF));
+        //endregion
+
+        //region Status Labels
+
+        int y = guiTop + 140;
+        manager.addChild(new GuiLabel(guiLeft + 10 + 5, y, 162, 8, I18n.format("gui.draconicevolution.reactor.core_volume"))
+                .setEnabledCallback(() -> tile.reactorState.get() != TileReactorCore.ReactorState.COLD && tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE)
+                .setAlignment(GuiAlign.LEFT)
+                .setShadow(false)
+                .setTextColour(0x00C0FF)
+                .setHoverText(I18n.format("gui.draconicevolution.reactor.core_volume.info"))
+                .setHoverTextDelay(2));
+
+        manager.addChild(new GuiLabel(guiLeft + 13 + 5, y += 8, 162, 8, "")
+                .setEnabledCallback(() -> tile.reactorState.get() != TileReactorCore.ReactorState.COLD && tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE)
+                .setDisplaySupplier(() -> MathUtils.round((tile.reactableFuel.get() + tile.convertedFuel.get()) / 1296D, 100) + "m^3")
+                .setAlignment(GuiAlign.LEFT)
+                .setShadow(false)
+                .setTextColour(0xB0B0B0));
+
+        manager.addChild(new GuiLabel(guiLeft + 10 + 5, y += 11, 162, 8, I18n.format("gui.draconicevolution.reactor.gen_rate"))
+                .setEnabledCallback(() -> tile.reactorState.get() != TileReactorCore.ReactorState.COLD && tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE)
+                .setAlignment(GuiAlign.LEFT)
+                .setShadow(false)
+                .setTextColour(0x00C0FF)
+                .setHoverText(I18n.format("gui.draconicevolution.reactor.gen_rate.info"))
+                .setHoverTextDelay(2));
+
+        manager.addChild(new GuiLabel(guiLeft + 13 + 5, y += 8, 162, 8, "")
+                .setEnabledCallback(() -> tile.reactorState.get() != TileReactorCore.ReactorState.COLD && tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE)
+                .setDisplaySupplier(() -> Utils.addCommas((int) tile.generationRate.get()) + " RF/t")
+                .setAlignment(GuiAlign.LEFT)
+                .setShadow(false)
+                .setTextColour(0xB0B0B0));
+
+        manager.addChild(new GuiLabel(guiLeft + 10 + 5, y += 11, 162, 8, I18n.format("gui.draconicevolution.reactor.field_rate"))
+                .setEnabledCallback(() -> tile.reactorState.get() != TileReactorCore.ReactorState.COLD && tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE)
+                .setAlignment(GuiAlign.LEFT)
+                .setShadow(false)
+                .setTextColour(0x00C0FF)
+                .setHoverText(I18n.format("gui.draconicevolution.reactor.field_rate.info"))
+                .setHoverTextDelay(2));
+
+        manager.addChild(new GuiLabel(guiLeft + 13 + 5, y += 8, 162, 8, "")
+                .setEnabledCallback(() -> tile.reactorState.get() != TileReactorCore.ReactorState.COLD && tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE)
+                .setDisplaySupplier(() -> {
+                    double inputRate = tile.fieldDrain.get() / (1D - (tile.shieldCharge.get() / tile.maxShieldCharge.get()));
+                    return Utils.addCommas((int) Math.min(inputRate, Integer.MAX_VALUE)) + "RF/t";
+                })
+                .setAlignment(GuiAlign.LEFT)
+                .setShadow(false)
+                .setTextColour(0xB0B0B0));
+
+        manager.addChild(new GuiLabel(guiLeft + 10 + 5, y += 11, 162, 8, I18n.format("gui.draconicevolution.reactor.convert_rate"))
+                .setEnabledCallback(() -> tile.reactorState.get() != TileReactorCore.ReactorState.COLD && tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE)
+                .setAlignment(GuiAlign.LEFT)
+                .setShadow(false)
+                .setTextColour(0x00C0FF)
+                .setHoverText(I18n.format("gui.draconicevolution.reactor.convert_rate.info"))
+                .setHoverTextDelay(2));
+
+        manager.addChild(new GuiLabel(guiLeft + 13 + 5, y += 8, 162, 8, "")
+                .setEnabledCallback(() -> tile.reactorState.get() != TileReactorCore.ReactorState.COLD && tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE)
+                .setDisplaySupplier(() -> Utils.addCommas((int) Math.round(tile.fuelUseRate.get() * 1000000D)) + "nb/t")
+                .setAlignment(GuiAlign.LEFT)
+                .setShadow(false)
+                .setTextColour(0xB0B0B0));
+
+        manager.addChild(new GuiLabel(guiLeft + 13 + 5, guiTop + 139, 161, 77, I18n.format("gui.draconicevolution.reactor.go_boom_now"))
+                .setEnabledCallback(() -> tile.reactorState.get() == TileReactorCore.ReactorState.BEYOND_HOPE)
+                .setAlignment(GuiAlign.LEFT)
+                .setWrap(true)
+                .setShadow(false)
+                .setTextColour(0xB0B0B0));
+        //endregion
+
+        //region Slots, Misc labels and gauges
+
+        manager.addChild(new GuiSlotRender());
+
+        manager.addChild(new GuiElement() {
+            @Override
+            public void renderElement(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
+                if (tile.reactorState.get() == TileReactorCore.ReactorState.COLD) {
+                    RenderSystem.color4f(1F, 1F, 1F, 1F);
+                    Material mat = BCSprites.getThemed("slot");
+                    bindTexture(mat.getAtlasLocation());
+                    IRenderTypeBuffer.Impl getter = minecraft.getRenderTypeBuffers().getBufferSource();
+                    GuiHelper.drawPlayerSlots(GuiReactor.this, guiLeft + 43 - 31, guiTop + 139, false);
+                    for (int x = 0; x < 3; x++) {
+                        drawSprite(mat.getBuffer(getter, BCSprites::makeType), guiLeft + 182 + (x * 18), guiTop + 148, 18, 18, mat.getSprite());
+                    }
+                    for (int x = 0; x < 3; x++) {
+                        drawSprite(mat.getBuffer(getter, BCSprites::makeType), guiLeft + 182 + (x * 18), guiTop + 179, 18, 18, mat.getSprite());
+                    }
+                    getter.finish();
+                }
+            }
+        });
+
+        manager.addChild(new GuiLabel(guiLeft, guiTop + 2, xSize, 12, I18n.format("gui.draconicevolution.reactor.title"))
+                .setAlignment(GuiAlign.CENTER)
+                .setTextColour(InfoHelper.GUI_TITLE));
+
+        manager.addChild(new GuiLabel(guiLeft + 182, guiTop + 139, 54, 8, I18n.format("gui.draconicevolution.reactor.fuel_in"))
+                .setEnabledCallback(() -> tile.reactorState.get() == TileReactorCore.ReactorState.COLD)
+                .setAlignment(GuiAlign.CENTER)
+                .setTrim(false));
+
+        manager.addChild(new GuiLabel(guiLeft + 182, guiTop + 170, 54, 8, I18n.format("gui.draconicevolution.reactor.chaos_out"))
+                .setEnabledCallback(() -> tile.reactorState.get() == TileReactorCore.ReactorState.COLD)
+                .setAlignment(GuiAlign.CENTER)
+                .setTrim(false));
+
+        manager.addChild(new GuiLabel(guiLeft + 7, guiTop + 127, xSize, 12, "")
+                .setShadowStateSupplier(() -> tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE)
+                .setDisplaySupplier(() -> {
+                    String s = tile.reactorState.get().localize();
+                    if (tile.reactorState.get() == TileReactorCore.ReactorState.BEYOND_HOPE && ClientEventHandler.elapsedTicks % 10 > 5) {
+                        s = TextFormatting.DARK_RED + "**" + s + "**";
+                    } else if (tile.reactorState.get() == TileReactorCore.ReactorState.BEYOND_HOPE) {
+                        s = TextFormatting.DARK_RED + "--" + s + "--";
+                    }
+                    return TextFormatting.GOLD + I18n.format("gui.draconicevolution.reactor.status") + ": " + s;
+                }).setAlignment(GuiAlign.LEFT));
+
+
+        manager.addChild(new GuiTexturedPointer(guiLeft + 11, guiTop + 5, 14, 112, 0, 222, 5, ResourceHelperDE.getResource(DETextures.GUI_REACTOR)) {
+            @Override
+            public double getPos() {
+                return MathHelper.clip(tile.temperature.get() / TileReactorCore.MAX_TEMPERATURE, 0, 1);
+            }
+        }.setHoverText(element -> getTempStats()).setHoverTextDelay(5));
+
+        manager.addChild(new GuiTexturedPointer(guiLeft + 35, guiTop + 5, 14, 112, 0, 222, 5, ResourceHelperDE.getResource(DETextures.GUI_REACTOR)) {
+            @Override
+            public double getPos() {
+                return MathHelper.clip(tile.shieldCharge.get() / Math.max(tile.maxShieldCharge.get(), 1), 0, 1);
+            }
+        }.setHoverText(element -> getShieldStats()).setHoverTextDelay(5));
+
+        manager.addChild(new GuiTexturedPointer(guiLeft + 199, guiTop + 5, 14, 112, 0, 222, 5, ResourceHelperDE.getResource(DETextures.GUI_REACTOR)) {
+            @Override
+            public double getPos() {
+                return MathHelper.clip(tile.saturation.get() / (double) Math.max(tile.maxSaturation.get(), 1), 0, 1);
+            }
+        }.setHoverText(element -> getSaturationStats()).setHoverTextDelay(5));
+
+        manager.addChild(new GuiTexturedPointer(guiLeft + 223, guiTop + 5, 14, 112, 0, 222, 5, ResourceHelperDE.getResource(DETextures.GUI_REACTOR)) {
+            @Override
+            public double getPos() {
+                return MathHelper.clip(tile.convertedFuel.get() / Math.max(tile.reactableFuel.get() + tile.convertedFuel.get(), 1), 0, 1);
+            }
+        }.setHoverText(element -> getFuelStats()).setHoverTextDelay(5));
+
+        //endregion
+
+        //region Buttons
+
+        manager.addChild(new GuiButton(guiLeft + 182, guiTop + 199, 54, 14, I18n.format("gui.draconicevolution.reactor.charge"))
+                .setEnabledCallback(tile::canCharge)
+                .setBorderColours(0xFF555555, 0xFF777777)
+                .setFillColour(0xFF000000)
+                .setTrim(false)
+                .onPressed(tile::chargeReactor));
+
+        manager.addChild(new GuiButton(guiLeft + 182, guiTop + 182, 54, 14, I18n.format("gui.draconicevolution.reactor.activate"))
+                .setEnabledCallback(tile::canActivate)
+                .setBorderColours(0xFF555555, 0xFF777777)
+                .setFillColour(0xFF000000)
+                .setTrim(false)
+                .onPressed(tile::activateReactor));
+
+        manager.addChild(new GuiButton(guiLeft + 182, guiTop + 199, 54, 14, I18n.format("gui.draconicevolution.reactor.shutdown"))
+                .setEnabledCallback(tile::canStop)
+                .setBorderColours(0xFF555555, 0xFF777777)
+                .setFillColour(0xFF000000)
+                .setTrim(false)
+                .onPressed(tile::shutdownReactor));
+
+        manager.addChild(new GuiButton(guiLeft + 182, guiTop + 165, 54, 14, I18n.format("gui.draconicevolution.reactor.sas"))
+                .setEnabledCallback(() -> tile.reactorState.get() != TileReactorCore.ReactorState.COLD && tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE)
+                .setBorderColours(0xFF555555, 0xFF777777)
+                .setRectFillColourGetter((hovering, disabled) -> tile.failSafeMode.get() ? 0xFF4040FF : 0xFF000000)
+                .setTrim(false)
+                .onPressed(tile::toggleFailSafe)
+                .setHoverText(I18n.format("gui.draconicevolution.reactor.sas.info")));
+
+        manager.addChild(new GuiButton(guiLeft + 182, guiTop + 138, 54, 24, I18n.format("gui.draconicevolution.reactor.rs_mode").replaceAll("\\\\n", "\n"))
+                .setEnabledCallback(() -> tile.reactorState.get() != TileReactorCore.ReactorState.COLD && component != null && tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE)
+                .setWrap(true)
+                .setBorderColours(0xFF555555, 0xFF777777)
+                .setFillColour(0xFF000000)
+                .onPressed(() -> compPanelExtended = !compPanelExtended)
+                .setInsets(5, 0, 5, 0)
+                .setHoverText(I18n.format("gui.draconicevolution.reactor.rs_mode.info")));
+
+        manager.addChild(new GuiLabel(guiLeft + 175, guiTop + 138, 68, 80, "ETE")
+                .setEnabledCallback(() -> tile.reactorState.get() == TileReactorCore.ReactorState.BEYOND_HOPE)
+                .setDisplaySupplier(() -> "Estimated\nTime\nUntil\nDetonation\n\n" + TextFormatting.UNDERLINE + (tile.explosionCountdown.get() >= 0 ? (tile.explosionCountdown.get() / 20) + "s" : "Calculating.."))
+                .setWrap(true)
+                .setShadow(false)
+                .setTextColour(0xFF0000));
+
+
+        y = 0;
+        for (RSMode mode : RSMode.values()) {
+            manager.addChild(new GuiButton(guiLeft + xSize + 2, guiTop + 127 + y, 66, 10, I18n.format("gui.draconicevolution.reactor.rs_mode_" + mode.name().toLowerCase()))
+                    .setEnabledCallback(() -> compPanelAnim == 1 && component != null)
+                    .setRectFillColourGetter((hovering, disabled) -> {
+                        if (component != null && component.rsMode.get() == mode) {
+                            return 0xFFAA0000;
+                        } else if (hovering) {
+                            return 0xFF656565;
+                        }
+                        return 0xFF000000;
+                    })
+                    .setRectBorderColourGetter((hovering, disabled) -> {
+                        if (component != null && component.rsMode.get() == mode) {
+                            return 0xFFAA0000;
+                        } else if (hovering) {
+                            return 0xFF656565;
+                        }
+                        return 0xFF000000;
+                    })
+                    .onPressed(() -> {
+                        if (component != null) {
+                            component.setRSMode(player, mode);
+                        }
+                    })
+                    .setHoverText("gui.draconicevolution.reactor.rs_mode_" + mode.name().toLowerCase() + ".info")
+                    .setTrim(false));
+            y += 11;
+        }
+
+        //endregion
+    }
+
+    public List<String> getTempStats() {
+        List<String> list = new ArrayList<>();
+        list.add(I18n.format("gui.draconicevolution.reactor.reaction_temp"));
+        list.add(MathUtils.round(tile.temperature.get(), 10) + "C");
+        return list;
+    }
+
+    public List<String> getShieldStats() {
+        List<String> list = new ArrayList<>();
+        list.add(I18n.format("gui.draconicevolution.reactor.field_strength"));
+        if (tile.maxShieldCharge.get() > 0) {
+            list.add(MathUtils.round(tile.shieldCharge.get() / tile.maxShieldCharge.get() * 100D, 100D) + "%");
+        }
+        list.add(Utils.addCommas((int) tile.shieldCharge.get()) + " / " + Utils.addCommas((int) tile.maxShieldCharge.get()));
+        return list;
+    }
+
+    public List<String> getSaturationStats() {
+        List<String> list = new ArrayList<>();
+        list.add(I18n.format("gui.draconicevolution.reactor.energy_saturation"));
+        if (tile.maxSaturation.get() > 0) {
+            list.add(MathUtils.round((double) tile.saturation.get() / (double) tile.maxSaturation.get() * 100D, 100D) + "%");
+        }
+        list.add(Utils.addCommas(tile.saturation.get()) + " / " + Utils.addCommas(tile.maxSaturation.get()));
+        return list;
+    }
+
+    public List<String> getFuelStats() {
+        List<String> list = new ArrayList<>();
+        list.add(I18n.format("gui.draconicevolution.reactor.fuel_conversion"));
+        if (tile.reactableFuel.get() + tile.convertedFuel.get() > 0) {
+            list.add(MathUtils.round(tile.convertedFuel.get() / (tile.reactableFuel.get() + tile.convertedFuel.get()) * 100D, 100D) + "%");
+        }
+        list.add(MathUtils.round(tile.convertedFuel.get(), 100) + " / " + MathUtils.round(tile.convertedFuel.get() + tile.reactableFuel.get(), 100));
+        return list;
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+
+        if (tile.reactorState.get() == TileReactorCore.ReactorState.COLD != container.fuelSlots) {
+            container.setSlotState();
+        }
+
+        if (compPanelExtended && (compPanelAnim < 1 || compPanel.xSize() != 70)) {
+            compPanelAnim += 0.1;
+            if (compPanelAnim > 1) {
+                compPanelAnim = 1;
+            }
+            compPanel.setXSize((int) (compPanelAnim * 70));
+        } else if (!compPanelExtended && compPanelAnim > 0) {
+            compPanelAnim -= 0.1;
+            if (compPanelAnim < 0) {
+                compPanelAnim = 0;
+            }
+            compPanel.setXSize((int) (compPanelAnim * 70));
+        }
+
+        if (compPanel.isEnabled() && compPanelAnim == 0) {
+            compPanel.setEnabled(false);
+        } else if (!compPanel.isEnabled() && compPanelAnim > 0) {
+            compPanel.setEnabled(true);
+        }
+    }
+}

@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.items.equipment;
 
 import com.brandon3055.brandonscore.api.TechLevel;
-import com.brandon3055.brandonscore.lib.TechItemProps;
+import com.brandon3055.brandonscore.lib.TechPropBuilder;
 import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleHostImpl;
 import com.brandon3055.draconicevolution.init.EquipCfg;
@@ -10,7 +10,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.PickaxeItem;
 import net.minecraft.util.text.ITextComponent;
@@ -32,7 +31,7 @@ public class ModularPickaxe extends PickaxeItem implements IModularMiningTool {
     private final TechLevel techLevel;
     private final DEItemTier itemTier;
 
-    public ModularPickaxe(TechItemProps props) {
+    public ModularPickaxe(TechPropBuilder props) {
         super(new DEItemTier(props, EquipCfg::getPickaxeDmgMult, EquipCfg::getPickaxeSpeedMult), 0, 0, props.pickaxeProps());
         this.techLevel = props.techLevel;
         this.itemTier = (DEItemTier) getTier();

@@ -32,6 +32,7 @@ public class CrystalFXIO extends CrystalFXBase<TileCrystalBase> {
 
     @Override
     public void tick() {
+        super.tick();
         if (ticksTillDeath-- <= 0) {
             setExpired();
         }

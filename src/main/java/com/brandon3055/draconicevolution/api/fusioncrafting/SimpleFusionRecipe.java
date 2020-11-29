@@ -16,6 +16,7 @@ import java.util.*;
  * A simple implementation if IFusionRecipe
  * Accepts ore dictionary entries.
  */
+@Deprecated
 public class SimpleFusionRecipe implements IFusionRecipe {
 
     protected ItemStack result;

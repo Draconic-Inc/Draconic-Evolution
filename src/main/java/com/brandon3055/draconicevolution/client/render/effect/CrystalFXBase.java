@@ -19,6 +19,7 @@ public abstract class CrystalFXBase<T extends TileEntity & IENetEffectTile> exte
     protected int ticksTillDeath = 0;
     protected float fxState;
     public boolean renderEnabled = true;
+    private int ttl = 10;
 
     public CrystalFXBase(World worldIn, T tile) {
         super(worldIn, tile.getPos().getX() + 0.5, tile.getPos().getY() + 0.5, tile.getPos().getZ() + 0.5);
@@ -37,10 +38,15 @@ public abstract class CrystalFXBase<T extends TileEntity & IENetEffectTile> exte
     public void updateFX(float fxState) {
         this.fxState = fxState;
         ticksTillDeath = 4;
+        if (ttl-- <= 0) {
+            setExpired();
+        }
     }
 
     @Override
-    public abstract void tick();
+    public void tick() {
+        ttl = 10;
+    }
 
     protected void setPosition(Vec3D pos) {
         setPosition(pos.x, pos.y, pos.z);

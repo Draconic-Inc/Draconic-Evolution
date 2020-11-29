@@ -1,16 +1,12 @@
 package com.brandon3055.draconicevolution.items.equipment;
 
 import com.brandon3055.brandonscore.api.TechLevel;
-import com.brandon3055.brandonscore.lib.TechItemProps;
-import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.brandonscore.lib.TechPropBuilder;
 import com.brandon3055.draconicevolution.api.IReaperItem;
 import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleHostImpl;
 import com.brandon3055.draconicevolution.init.EquipCfg;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ArmorMaterial;
 import net.minecraft.item.BowItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
@@ -19,7 +15,6 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.ToolType;
 
 import javax.annotation.Nullable;
 
@@ -33,8 +28,8 @@ import static com.brandon3055.draconicevolution.init.ModuleCfg.*;
 public class ModularBow extends BowItem implements IReaperItem, IModularItem {
     private final TechLevel techLevel;
 
-    public ModularBow(TechItemProps props) {
-        super(props);
+    public ModularBow(TechPropBuilder props) {
+        super(props.build());
         this.techLevel = props.techLevel;
     }
 

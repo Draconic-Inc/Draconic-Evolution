@@ -1,9 +1,9 @@
 package com.brandon3055.draconicevolution.entity;
 
-import cofh.redstoneflux.api.IEnergyContainerItem;
 import com.brandon3055.brandonscore.utils.FilterUtils;
 import com.brandon3055.brandonscore.utils.Teleporter;
 import com.brandon3055.brandonscore.utils.Utils;
+import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -79,8 +79,13 @@ public class EntityGuardianProjectile extends Entity {
 //    public EntityGuardianProjectile(World world) {
 //        this(world, 0, null, 10, null);
 //    }
-    public EntityGuardianProjectile(EntityType<?> entityTypeIn, World world, int type, LivingEntity target, float power, Entity shooter) {
-        super(entityTypeIn, world);
+
+    public EntityGuardianProjectile(EntityType<EntityGuardianProjectile> type, World world) {
+        super(type, world);
+    }
+
+    public EntityGuardianProjectile(World world, int type, LivingEntity target, float power, Entity shooter) {
+        super(DEContent.GUARDIAN_PROJECTILE, world);
         this.type = type;
         this.target = target;
         this.shooter = shooter;
@@ -340,11 +345,11 @@ public class EntityGuardianProjectile extends Entity {
             entityLivingBase.hurtResistantTime = 0;
             entityLivingBase.attackEntityFrom(source, damage / (float) (Utils.getDistanceAtoB(entityLivingBase.posX, entityLivingBase.posY, entityLivingBase.posZ, posX, posY, posZ) / radius));
             if (source == damageChaos && entityLivingBase instanceof PlayerEntity) {
-                for (ItemStack stack : ((PlayerEntity) entityLivingBase).inventory.armorInventory) {
-                    if (stack.getItem() instanceof IEnergyContainerItem) {
-                        ((IEnergyContainerItem) stack.getItem()).extractEnergy(stack, 30000 + rand.nextInt(10000), false);
-                    }
-                }
+//                for (ItemStack stack : ((PlayerEntity) entityLivingBase).inventory.armorInventory) {
+//                    if (stack.getItem() instanceof IEnergyContainerItem) {
+//                        ((IEnergyContainerItem) stack.getItem()).extractEnergy(stack, 30000 + rand.nextInt(10000), false);
+//                    }
+//                }
             }
         }
     }

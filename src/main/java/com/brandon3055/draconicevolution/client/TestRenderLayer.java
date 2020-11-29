@@ -61,7 +61,7 @@ public class TestRenderLayer extends LayerRenderer<LivingEntity, EntityModel<Liv
         if (model instanceof AgeableModel) {
             //This code could be converted to something a little smarter. II just wanted to retrieve a random box from the model to test if its possible to render on a random part of the entity.
 //            rendererList = Lists.newArrayList(((AgeableModel<LivingEntity>)model).getBodyParts());
-            rendererList = Lists.newArrayList(((AgeableModel<LivingEntity>) model).getHeadParts());
+//            rendererList = Lists.newArrayList(((AgeableModel<LivingEntity>) model).getHeadParts());
         } else if (model instanceof SegmentedModel) { //Because parrots have to be special...
             rendererList = Lists.newArrayList(((SegmentedModel<LivingEntity>) model).getParts());
         }

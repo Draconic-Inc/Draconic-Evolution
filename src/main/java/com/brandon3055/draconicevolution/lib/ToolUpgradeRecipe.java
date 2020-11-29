@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.lib;
 
-import cofh.redstoneflux.api.IEnergyContainerItem;
+//import cofh.redstoneflux.api.IEnergyContainerItem;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.draconicevolution.api.fusioncrafting.SimpleFusionRecipe;
 import com.brandon3055.draconicevolution.api.itemupgrade_dep.IUpgradableItem;
@@ -27,9 +27,9 @@ public class ToolUpgradeRecipe extends SimpleFusionRecipe {
     public ItemStack getRecipeOutput(@Nonnull ItemStack catalyst) {
         ItemStack stack = super.getRecipeOutput(catalyst);
 
-        if (catalyst.getItem() instanceof IEnergyContainerItem && catalyst.getItem() instanceof IEnergyContainerItem) {
-            ItemNBTHelper.setInteger(stack, "Energy", ((IEnergyContainerItem) catalyst.getItem()).getEnergyStored(catalyst));
-        }
+//        if (catalyst.getItem() instanceof IEnergyContainerItem && catalyst.getItem() instanceof IEnergyContainerItem) {
+//            ItemNBTHelper.setInteger(stack, "Energy", ((IEnergyContainerItem) catalyst.getItem()).getEnergyStored(catalyst));
+//        }
 
         if (catalyst.getItem() instanceof IUpgradableItem && catalyst.getItem() instanceof IUpgradableItem) {
             UpgradeHelper.setUpgrades(stack, UpgradeHelper.getUpgrades(catalyst));

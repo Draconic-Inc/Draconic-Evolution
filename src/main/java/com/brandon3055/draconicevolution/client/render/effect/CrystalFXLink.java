@@ -50,6 +50,7 @@ public class CrystalFXLink extends CrystalFXBase<TileCrystalBase> {
 
     @Override
     public void tick() {
+        super.tick();
         if (!ClientEventHandler.playerHoldingWrench && timeout <= 0) {
             setExpired();
         } else if (timeout > 0) {

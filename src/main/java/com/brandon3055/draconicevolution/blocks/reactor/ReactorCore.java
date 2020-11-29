@@ -4,15 +4,20 @@ import com.brandon3055.brandonscore.blocks.BlockBCore;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 
 import javax.annotation.Nullable;
 
@@ -22,6 +27,7 @@ import javax.annotation.Nullable;
 public class ReactorCore extends BlockBCore /*implements ITileEntityProvider, IRenderOverride*/ {
 
     private static final VoxelShape NO_AABB = VoxelShapes.create(0.5, 0.5, 0.5, 0.5, 0.5, 0.5);
+    private static final VoxelShape AABB = VoxelShapes.create(0.25, 0.25, 0.25, 0.75, 0.75, 0.75);
 
     public ReactorCore(Properties properties) {
         super(properties);
@@ -117,7 +123,48 @@ public class ReactorCore extends BlockBCore /*implements ITileEntityProvider, IR
         super.onBlockExploded(state, world, pos, explosion);
     }
 
-//    @Nullable
+    @Override
+    public VoxelShape getRenderShape(BlockState state, IBlockReader worldIn, BlockPos pos) {
+        return VoxelShapes.fullCube();
+    }
+
+    @Override
+    public VoxelShape getRaytraceShape(BlockState state, IBlockReader worldIn, BlockPos pos) {
+        return VoxelShapes.fullCube();
+    }
+
+    @Override
+    public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+        return VoxelShapes.fullCube();
+    }
+
+    @Override
+    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+//        AABB = VoxelShapes.create(0.25, 0.25, 0.25, 0.75, 0.75, 0.75);
+        return VoxelShapes.create(0.25, 0.25, 0.25, 0.75, 0.75, 0.75);
+    }
+
+    @Override
+    public boolean addDestroyEffects(BlockState state, World world, BlockPos pos, ParticleManager manager) {
+        return true;
+    }
+
+    @Override
+    public boolean addLandingEffects(BlockState state1, ServerWorld worldserver, BlockPos pos, BlockState state2, LivingEntity entity, int numberOfParticles) {
+        return true;
+    }
+
+    @Override
+    public boolean addHitEffects(BlockState state, World worldObj, RayTraceResult target, ParticleManager manager) {
+        return true;
+    }
+
+    @Override
+    public boolean addRunningEffects(BlockState state, World world, BlockPos pos, Entity entity) {
+        return true;
+    }
+
+    //    @Nullable
 //    @Override
 //    public RayTraceResult collisionRayTrace(BlockState blockState, World worldIn, BlockPos pos, Vec3d start, Vec3d end) {
 //        RayTraceResult result = super.collisionRayTrace(blockState, worldIn, pos, start, end);

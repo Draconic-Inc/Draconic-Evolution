@@ -3,7 +3,7 @@ package com.brandon3055.draconicevolution.items.tools;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.items.ItemEnergyBase;
 import com.brandon3055.brandonscore.lib.ChatHelper;
-import com.brandon3055.brandonscore.lib.TechItemProps;
+import com.brandon3055.brandonscore.lib.TechPropBuilder;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
 import com.brandon3055.brandonscore.utils.InfoHelper;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
@@ -43,8 +43,8 @@ public class DraconiumCapacitor extends ItemEnergyBase implements IInvCharge, IU
     public static final int draconicTransfer = 64000000;
     private TechLevel techLevel;
 
-    public DraconiumCapacitor(TechItemProps properties) {
-        super(properties);
+    public DraconiumCapacitor(TechPropBuilder properties) {
+        super(properties.build());
         techLevel = properties.techLevel;
     }
 

@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.api.capability;
 
+import codechicken.lib.util.SneakyUtils;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.ModuleCategory;
@@ -118,7 +119,7 @@ public interface ModuleHost extends INBTSerializable<CompoundNBT> {
     }
 
     default Stream<ModuleEntity> getEntitiesByType(ModuleType<?> moduleType) {
-        return getModuleEntities().stream().filter(e->e.getModule().getType() == moduleType);
+        return getModuleEntities().stream().filter(e -> e.getModule().getType() == moduleType);
     }
 
     /**
@@ -145,7 +146,7 @@ public interface ModuleHost extends INBTSerializable<CompoundNBT> {
      * @param map the map to which information will be added.
      */
     default void addInformation(Map<ITextComponent, ITextComponent> map, ModuleContext context, boolean stack) {
-        getInstalledTypes().map(this::getModuleData).forEach(data -> getDataInformation(data, map, context, stack));
+        getInstalledTypes().map(this::getModuleData).forEach(data -> getDataInformation(SneakyUtils.unsafeCast(data), map, context, stack));
     }
 
     default InstallResult checkAddModule(Module<?> newModule) {

@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.items.equipment;
 
 import com.brandon3055.brandonscore.api.TechLevel;
-import com.brandon3055.brandonscore.lib.TechItemProps;
+import com.brandon3055.brandonscore.lib.TechPropBuilder;
 import com.brandon3055.draconicevolution.api.IReaperItem;
 import com.brandon3055.draconicevolution.api.modules.ModuleCategory;
 import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
@@ -10,7 +10,6 @@ import com.brandon3055.draconicevolution.init.EquipCfg;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
@@ -32,7 +31,7 @@ public class ModularStaff extends ToolItem implements IReaperItem, IModularMinin
     private final TechLevel techLevel;
     private final DEItemTier itemTier;
 
-    public ModularStaff(TechItemProps props) {
+    public ModularStaff(TechPropBuilder props) {
         //noinspection unchecked
         super(0, 0, new DEItemTier(props, EquipCfg::getStaffDmgMult, EquipCfg::getStaffSpeedMult, EquipCfg::getStaffEffMult), Collections.EMPTY_SET, props.staffProps());
         this.techLevel = props.techLevel;

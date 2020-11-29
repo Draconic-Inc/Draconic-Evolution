@@ -7,10 +7,12 @@ import com.brandon3055.draconicevolution.CommonProxy;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.blocks.reactor.ReactorEffectHandler;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
+import com.brandon3055.draconicevolution.client.gui.GuiReactor;
 import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.GuiConfigurableItem;
 import com.brandon3055.draconicevolution.client.gui.modular.GuiModularItem;
 import com.brandon3055.draconicevolution.client.model.VBOArmorLayer;
 import com.brandon3055.draconicevolution.client.render.item.*;
+import com.brandon3055.draconicevolution.entity.EntityChaosGuardian;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.api.energy.IENetEffectTile;
 import com.brandon3055.draconicevolution.blocks.energynet.rendering.ENetFXHandler;
@@ -40,6 +42,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.thread.EffectiveSide;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -76,6 +79,7 @@ public class ClientProxy extends CommonProxy {
         registerGuiFactories();
         registerItemRenderers();
         registerTileRenderers();
+        registerEntityRendering();
         registerTextures();
         setupRenderLayers();
 
@@ -177,6 +181,7 @@ public class ClientProxy extends CommonProxy {
         ScreenManager.registerFactory(DEContent.container_energy_core, GuiEnergyCore::new);
         ScreenManager.registerFactory(DEContent.container_modular_item, GuiModularItem::new);
         ScreenManager.registerFactory(DEContent.container_configurable_item, GuiConfigurableItem::new);
+        ScreenManager.registerFactory(DEContent.container_reactor, GuiReactor::new);
 
 //        ScreenManager.registerFactory(DEContent.container_celestial_manipulator, GuiCelestialManipulator::new);
 //        ScreenManager.registerFactory(DEContent.container_dissenchanter, ::new);
@@ -273,6 +278,32 @@ public class ClientProxy extends CommonProxy {
     }
 
 
+    public void registerEntityRendering() {
+
+        //Entities
+//        RenderingRegistry.registerEntityRenderingHandler(EntityChaosGuardian.class, RenderChaosGuardian::new);
+//        RenderingRegistry.registerEntityRenderingHandler(EntityDragonHeart.class, RenderDragonHeart::new);
+//        RenderingRegistry.registerEntityRenderingHandler(EntityGuardianProjectile.class, RenderGuardianProjectile::new);
+//        RenderingRegistry.registerEntityRenderingHandler(EntityGuardianCrystal.class, RenderGuardianCrystal::new);
+//        RenderingRegistry.registerEntityRenderingHandler(EntityChaosImplosion.class, RenderEntityChaosVortex::new);
+//
+//        if (DEConfig.disableCustomArrowModel) {
+//            RenderingRegistry.registerEntityRenderingHandler(EntityCustomArrow.class, manager -> new RenderArrow<EntityCustomArrow>(manager) {
+//                @Override
+//                protected ResourceLocation getEntityTexture(EntityCustomArrow entity) {
+//                    return RenderTippedArrow.RES_ARROW;
+//                }
+//            });
+//        }
+//        else {
+//            RenderingRegistry.registerEntityRenderingHandler(EntityCustomArrow.class, RenderCustomArrow::new);
+//        }
+//
+//        RenderingRegistry.registerEntityRenderingHandler(EntityLootCore.class, RenderLootCore::new);
+//        RenderingRegistry.registerEntityRenderingHandler(EntityEnderEnergyManipulator.class, RenderEntityEnderEnergyManipulator::new);
+    }
+
+
 //    @Override
 //    public void preInit(FMLPreInitializationEvent event) {
 //        super.preInit(event);
@@ -312,30 +343,7 @@ public class ClientProxy extends CommonProxy {
 //        PacketCustom.assignHandler("DEPCChannel", new ClientPacketHandler());
 //    }
 //
-//    public void registerRendering() {
-//
-//        //Entities
-//        RenderingRegistry.registerEntityRenderingHandler(EntityChaosGuardian.class, RenderChaosGuardian::new);
-//        RenderingRegistry.registerEntityRenderingHandler(EntityDragonHeart.class, RenderDragonHeart::new);
-//        RenderingRegistry.registerEntityRenderingHandler(EntityGuardianProjectile.class, RenderGuardianProjectile::new);
-//        RenderingRegistry.registerEntityRenderingHandler(EntityGuardianCrystal.class, RenderGuardianCrystal::new);
-//        RenderingRegistry.registerEntityRenderingHandler(EntityChaosImplosion.class, RenderEntityChaosVortex::new);
-//
-//        if (DEConfig.disableCustomArrowModel) {
-//            RenderingRegistry.registerEntityRenderingHandler(EntityCustomArrow.class, manager -> new RenderArrow<EntityCustomArrow>(manager) {
-//                @Override
-//                protected ResourceLocation getEntityTexture(EntityCustomArrow entity) {
-//                    return RenderTippedArrow.RES_ARROW;
-//                }
-//            });
-//        }
-//        else {
-//            RenderingRegistry.registerEntityRenderingHandler(EntityCustomArrow.class, RenderCustomArrow::new);
-//        }
-//
-//        RenderingRegistry.registerEntityRenderingHandler(EntityLootCore.class, RenderLootCore::new);
-//        RenderingRegistry.registerEntityRenderingHandler(EntityEnderEnergyManipulator.class, RenderEntityEnderEnergyManipulator::new);
-//    }
+
 //
 //    @Override
 //    public void registerParticles() {

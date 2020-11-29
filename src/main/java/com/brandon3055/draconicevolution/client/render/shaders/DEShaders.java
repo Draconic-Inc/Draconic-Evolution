@@ -82,9 +82,9 @@ public class DEShaders {
 //        explosionOverlay = new ShaderObject(FRAGMENT, readShader(getStream("/assets/draconicevolution/shaders/explosion_overlay.frag")));
 
         //explosionWaveOp
-//        explosionBlastWave = new ShaderObject(FRAGMENT, readShader(getStream("/assets/draconicevolution/shaders/explosion_blast_wave.frag")));
-//        explosionLeadingWave = new ShaderObject(FRAGMENT, readShader(getStream("/assets/draconicevolution/shaders/explosion_leading_wave.frag")));
-//        explosionCoreEffect = new ShaderObject(FRAGMENT, readShader(getStream("/assets/draconicevolution/shaders/explosion_core_effect.frag")));
+//        explosionBlastWave = new ShaderObject(FRAGMENT, readShader(getStream("/assets/draconicevolution/shaders/.frag")));
+//        explosionLeadingWave = new ShaderObject(FRAGMENT, readShader(getStream("/assets/draconicevolution/shaders/.frag")));
+//        explosionCoreEffect = new ShaderObject(FRAGMENT, readShader(getStream("/assets/draconicevolution/shaders/.frag")));
 //
 //        dispose(toolBlade);
 //        dispose(toolTrace);

@@ -9,6 +9,7 @@ import com.brandon3055.brandonscore.utils.MathUtils;
 import com.brandon3055.brandonscore.utils.SimplexNoise;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.lib.ExplosionHelper;
+import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -16,18 +17,22 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.FallingBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fluids.IFluidBlock;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * Created by brandon3055 on 11/03/2017.
@@ -49,6 +54,7 @@ public class ProcessExplosion implements IProcess {
     public int maxRadius;
     public double circumference = 0;
     public double meanResistance = 0;
+    public boolean enableEffect = true;
     protected boolean calculationComplete = false;
     protected boolean detonated = false;
     protected long startTime = -1;
@@ -60,16 +66,12 @@ public class ProcessExplosion implements IProcess {
     public HashSet<Integer> blocksToUpdate = new HashSet<>();
     public LinkedList<HashSet<Integer>> destroyedBlocks = new LinkedList<>();
     public HashSet<Integer> lavaPositions = new HashSet<>();
-
     public HashSet<Integer> destroyedCache = new HashSet<>();
     public HashSet<Integer> scannedCache = new HashSet<>();
     public ShortPos shortPos;
-//    public File cacheFile;
-//    public BufferedWriter writer;
+    public Consumer<Double> progressMon = null;
 
     private BlockState lavaState;
-
-//    private ProcessThread thread;
 
     /**
      * This process is responsible for handling some extremely large explosions as efficiently as possible.
@@ -94,16 +96,14 @@ public class ProcessExplosion implements IProcess {
 
         LogHelper.info("Explosion Calculation Started for " + radius + " Block radius detonation!");
         maxRadius = radius;
-
         lavaState = Blocks.LAVA.getDefaultState();
         //TODO pyrotheum
-//        LogHelper.dev(FluidRegistry.isFluidRegistered("pyrotheum"));
-//        if (FluidRegistry.isFluidRegistered("pyrotheum")) {
-//            Fluid pyro = FluidRegistry.getFluid("pyrotheum");
+        if (ForgeRegistries.FLUIDS.containsKey(new ResourceLocation("cofhworld", "pyrotheum"))) {
+            Fluid pyro = ForgeRegistries.FLUIDS.getValue(new ResourceLocation("cofhworld", "pyrotheum"));
 //            if (pyro.canBePlacedInWorld()) {
-//                lavaState = pyro.getBlock().getDefaultState();
+//                lavaState = pyro.getAttributes().getBlock(world , pyro.getDefaultState())getBlock().getDefaultState();
 //            }
-//        }
+        }
     }
 
     @Override
@@ -126,6 +126,9 @@ public class ProcessExplosion implements IProcess {
             LogHelper.dev("Calculation Progress: " + MathUtils.round((((double) radius / (double) maxRadius) * 100D), 100) + "% " + (Runtime.getRuntime().freeMemory() / 1000000));
             if (calcWait > 0) {
                 LogHelper.dev("Explosion Calc loop took " + t + "ms! Waiting " + calcWait + " ticks before continuing");
+            }
+            if (progressMon != null) {
+                progressMon.accept((double) radius / (double) maxRadius);
             }
         }
         else if (minimumDelay == -1) {
@@ -231,7 +234,7 @@ public class ProcessExplosion implements IProcess {
         return (angularResistance[min] * (1 - delta)) + (angularResistance[max] * delta);
     }
 
-    public void addRadialResistance(double radialPos, double power) {
+    public void  addRadialResistance(double radialPos, double power) {
         int min = MathHelper.floor(radialPos);
         if (min >= angularResistance.length) {
             min -= angularResistance.length;
@@ -315,7 +318,6 @@ public class ProcessExplosion implements IProcess {
             if (destroyedCache.contains(iPos)) {
                 destroyedCache.remove(iPos);
             }
-//            world.setBlockState(pos, lavaState);
             lavaPositions.add(iPos);
             blocksToUpdate.add(iPos);
             scannedCache.add(iPos);
@@ -371,15 +373,14 @@ public class ProcessExplosion implements IProcess {
         detonated = true;
 
         final BlockPos pos = origin.getPos();
-//        PacketExplosionFX packet = new PacketExplosionFX(pos, radius, false);
-        //TODO packet stuff
-//        DraconicEvolution.network.sendToAllAround(packet, new NetworkRegistry.TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), radius * 4));
+        if (enableEffect) {
+            DraconicNetwork.sendExplosionEffect(world.dimension.getType(), pos, radius * 4, false);
+        }
 
         new DelayedExecutor(30) {
             @Override
             public void execute(Object[] args) {
                 List<Entity> list = world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(pos, pos.add(1, 1, 1)).grow(radius * 2.5, radius * 2.5, radius * 2.5));
-
                 for (Entity e : list) {
                     double dist = Vec3D.getCenter(pos).distance(e);
                     float dmg = 10000F * (1F - (float) (dist / (radius * 1.2D)));

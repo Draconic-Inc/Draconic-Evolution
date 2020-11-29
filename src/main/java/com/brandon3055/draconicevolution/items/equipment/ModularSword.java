@@ -1,25 +1,21 @@
 package com.brandon3055.draconicevolution.items.equipment;
 
 import com.brandon3055.brandonscore.api.TechLevel;
-import com.brandon3055.brandonscore.lib.TechItemProps;
+import com.brandon3055.brandonscore.lib.TechPropBuilder;
 import com.brandon3055.draconicevolution.api.IReaperItem;
-import com.brandon3055.draconicevolution.api.modules.ModuleCategory;
 import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleHostImpl;
 import com.brandon3055.draconicevolution.init.EquipCfg;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.monster.CreeperEntity;
-import net.minecraft.entity.monster.ZombieEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SwordItem;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -28,7 +24,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nullable;
 
 import java.util.List;
-import java.util.UUID;
 
 import static com.brandon3055.draconicevolution.init.ModuleCfg.*;
 
@@ -39,8 +34,8 @@ public class ModularSword extends SwordItem implements IReaperItem, IModularMele
     private final TechLevel techLevel;
     private final DEItemTier itemTier;
 
-    public ModularSword(TechItemProps props) {
-        super(new DEItemTier(props, EquipCfg::getSwordDmgMult, EquipCfg::getSwordSpeedMult), 0, 0, props);
+    public ModularSword(TechPropBuilder props) {
+        super(new DEItemTier(props, EquipCfg::getSwordDmgMult, EquipCfg::getSwordSpeedMult), 0, 0, props.build());
         this.techLevel = props.techLevel;
         this.itemTier = (DEItemTier) getTier();
     }

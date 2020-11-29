@@ -9,6 +9,7 @@ import java.util.List;
  * Created by brandon3055 on 11/06/2016.
  * This is a wrapper meant to give IFusionRecipes direct access to the items being used for crafting.
  */
+@Deprecated
 public interface IFusionCraftingInventory {
 
     /**

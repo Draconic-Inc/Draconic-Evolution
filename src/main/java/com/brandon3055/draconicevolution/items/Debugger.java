@@ -1,7 +1,5 @@
 package com.brandon3055.draconicevolution.items;
 
-import cofh.redstoneflux.api.IEnergyProvider;
-import cofh.redstoneflux.api.IEnergyReceiver;
 import com.brandon3055.brandonscore.items.ItemBCore;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import net.minecraft.entity.Entity;
@@ -890,17 +888,17 @@ public class Debugger extends Item {
             case 1:
             case 2:
                 TileEntity tile = world.getTileEntity(pos);
-                if (mode == 1 && tile instanceof IEnergyReceiver) {
-                    if (!world.isRemote) {
+//                if (mode == 1 && tile instanceof IEnergyReceiver) {
+//                    if (!world.isRemote) {
 //                        LogHelper.info(((IEnergyReceiver) tile).receiveEnergy(side, Integer.MAX_VALUE, false));
-                    }
-                    return ActionResultType.PASS;
-                } else if (mode == 2 && tile instanceof IEnergyProvider) {
-                    if (!world.isRemote) {
+//                    }
+//                    return ActionResultType.PASS;
+//                } else if (mode == 2 && tile instanceof IEnergyProvider) {
+//                    if (!world.isRemote) {
 //                        ((IEnergyProvider) tile).extractEnergy(side, Integer.MAX_VALUE, false);
-                    }
-                    return ActionResultType.PASS;
-                }
+//                    }
+//                    return ActionResultType.PASS;
+//                }
                 break;
 
         }

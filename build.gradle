@@ -7,164 +7,224 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
-    }
-}
-apply plugin: 'net.minecraftforge.gradle.forge'
-apply plugin: 'maven'
-apply plugin: 'maven-publish'
-
-repositories {
-	maven {
-        name = "CoFH Maven"
-        url = "http://maven.covers1624.net"
-    }
-    maven {
-        name 'CB Maven'
-        url "http://chickenbones.net/maven/"
-    }
-    maven {
-        name 'OC Maven'
-        url "http://maven.cil.li/"
-    }
-    maven {
-        name "JEI Maven."
-        url "http://dvs1.progwml6.com/files/maven"
+        classpath 'net.minecraftforge.gradle:ForgeGradle:3.+'
     }
 }
 
-// Define properties file
-ext.configFile = file "build.properties"
+plugins {
+    id 'java'
+    id 'maven-publish'
+    id "net.covers1624.signing" version '1.1.3'
+}
 
-configFile.withReader {
-    // Load config.  It shall from now be referenced as simply config or project.config
+apply plugin: 'net.minecraftforge.gradle'
+
+group = "com.brandon3055.draconicevolution"
+archivesBaseName = "Draconic-Evolution"
+
+targetCompatibility = "1.8"
+sourceCompatibility = "1.8"
+
+//Add generated resources to main resources.
+sourceSets.main.resources.srcDirs += "src/generated/resources"
+
+file('build.properties').withReader {
     def prop = new Properties()
     prop.load(it)
     project.ext.config = new ConfigSlurper().parse prop
 }
 
-version = "${config.mc_version}-${config.mod_version}"
-group = "com.brandon3055.draconicevolution"
-archivesBaseName = "Draconic-Evolution"
+def signProps = [:]
+if (System.getenv("KEY_STORE")) {
+    println "Using Env variables for jar signing."
+    signProps['keyStore'] = System.getenv("KEY_STORE")
+    file(System.getenv("KEY_STORE_PROPS")).withReader {
+        def props = new Properties()
+        props.load(it)
+        signProps.putAll(props)
+    }
+} else if (project.hasProperty('keyStore')) {
+    println "Using Project properties for jar signing."
+    signProps['keyStore'] = project.getProperty('keyStore')
+    signProps['storePass'] = project.getProperty('keyStorePass')
+    signProps['alias'] = project.getProperty('keyStoreAlias')
+    signProps['keyPass'] = project.getProperty('keyStoreKeyPass')
+} else {
+    println 'No signing secrets found, build will not be signed.'
+}
 
-sourceCompatibility = "1.8"
-targetCompatibility = "1.8"
-sourceSets.main.resources.srcDirs += "src/generated/resources"
+config.mod_version = "${config.mod_version}." + (System.getenv("BUILD_NUMBER") ?: "1")
+version = "${config.mc_version}-${config.mod_version}"
+println "Starting build of ${archivesBaseName}, Version: ${config.mod_version}"
+println "Using Forge: ${config.forge_version}, for Minecraft: ${config.mc_version}, with Mappings: ${config.mappings}"
 
 minecraft {
-    version = config.mc_version + "-" + config.forge_version
-    runDir = "run"
-    mappings = "${config.mappings}"
-    replace '${mod_version}', project.config.mod_version
-    replaceIn "DraconicEvolution.java"
-    makeObfSourceJar = false
+    mappings channel: 'snapshot', version: config.mappings
+    accessTransformer = file("src/main/resources/META-INF/accesstransformer.cfg")
+    runs {
+        client {
+            workingDirectory file('run')
+            mods { enderstorage { source sourceSets.main } }
+        }
+        server {
+            workingDirectory file('run')
+            mods { enderstorage { source sourceSets.main } }
+        }
+        data {
+            workingDirectory file('run')
+            args '--mod', 'draconicevolution', '--all', '--output', file("src/generated/resources")
+            mods { enderstorage { source sourceSets.main } }
+        }
+    }
 }
 
-String buildNo = "193"
-if (System.getenv("BUILD_NUMBER") != null) {
-    buildNo = System.getenv("BUILD_NUMBER")
+repositories {
+    mavenLocal()
+    maven { url = "http://chickenbones.net/maven" }
+    maven { url = "https://dvs1.progwml6.com/files/maven" }
+    maven { url = "http://maven.cil.li/" }
 }
-version = version + ".${buildNo}"
 
 dependencies {
+    minecraft "net.minecraftforge:forge:${config.mc_version}-${config.forge_version}"
     compile "com.brandon3055.brandonscore:BrandonsCore:${config.mc_version}-${config.bcore_version}:deobf"
-    compile "com.brandon3055.projectintelligence:ProjectIntelligence:${config.mc_version}-${config.pi_version}:deobf"
+//    compile "com.brandon3055.projectintelligence:ProjectIntelligence:${config.mc_version}-${config.pi_version}:deobf"
     compile "codechicken:CodeChickenLib:${config.mc_version}-${config.ccl_version}:deobf"
-//    compile "li.cil.oc:OpenComputers:${config.oc_version}:api"
-//    compile "mezz.jei:jei_${config.mc_version}:${config.jei_version}"
-    deobfCompile "mezz.jei:jei-1.15.2:6.0.0.4"
-//	compile "cofh:RedstoneFlux:${config.rf_mc_version}-${config.rf_version}:deobf"
+    compile fg.deobf("mezz.jei:jei-${config.mc_version}:${config.jei_version}")
 }
 
-processResources
-        {
-            // this will ensure that this task is redone when the versions change.
-            inputs.property "version", project.version
-            inputs.property "mc_version", project.minecraft.version
+signing {
+    if (!signProps.isEmpty()) {
+        jars {
+            sign jar
+            after reobfJar
 
-            // replace stuff in mcmod.info, nothing else
-            from(sourceSets.main.resources.srcDirs) {
-                include 'mcmod.info'
-
-                // replace version and mc_version
-                expand 'version': project.version, 'mc_version': project.minecraft.version
-            }
-
-            // copy everything else, thats not the mcmod.info
-            from(sourceSets.main.resources.srcDirs) {
-                exclude 'mcmod.info'
-            }
-            rename '(.+_at.cfg)', 'META-INF/$1'
+            keyStore = signProps.keyStore
+            alias = signProps.alias
+            storePass = signProps.storePass
+            keyPass = signProps.keyPass
         }
-
-def commonManifest = {
-    attributes 'FMLAT': 'DraconicEvolution_at.cfg'
+    }
 }
 
+processResources { task ->
+    inputs.property 'mod_version', config.mod_version
+    inputs.property 'mc_version', config.mc_version
+
+    from(sourceSets.main.resources.srcDirs) { spec ->
+        spec.include 'META-INF/mods.toml'
+        task.doFirst {
+            spec.expand 'version': config.mod_version,
+                    'mc_version': config.mc_version,
+                    'ccl_version': resolve("CodeChickenLib")
+        }
+    }
+}
+
+//version = "${config.mc_version}-${version}"
 
 jar {
+    finalizedBy 'reobfJar'
     classifier = 'universal'
-    manifest commonManifest
+    from file("LICENSE")
+    manifest {
+        attributes 'Specification-Title': archivesBaseName
+        attributes 'Specification-Vendor': 'brandon3055'
+        attributes 'Specification-Version': "1"
+        attributes 'Implementation-Title': archivesBaseName
+        attributes 'Implementation-Vendor': 'brandon3055'
+        attributes 'Implementation-Version': version
+        attributes 'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+    }
 }
 
 task srcJar(type: Jar) {
+    build.dependsOn it
     from sourceSets.main.allSource
     classifier = 'sources'
+    from file("LICENSE")
 }
 
-task deobfJar(type: Jar) {
-    from sourceSets.main.output
-    classifier = 'deobf'
-    manifest commonManifest
-}
-
-// Tell the artifact system about our extra jars
-artifacts {
-    archives srcJar, deobfJar
-}
-
-uploadArchives {
+publishing {
     repositories {
-        mavenDeployer {
-            if (project.hasProperty("local_maven")) {
-                repository(url: "file://${local_maven}")
-                pom {
-                    groupId = project.group
-                    version = project.version
-                    artifactId = project.archivesBaseName
-                    project {
-                        name project.archivesBaseName
-                        packaging 'jar'
-                        description 'DraconicEvolution'
-                        url 'https://github.com/brandon3055/Draconic-Evolution'
-                        scm {
-                            url 'https://github.com/brandon3055/Draconic-Evolution'
-                            connection 'scm:git:git@github.com:brandon3055/Draconic-Evolution.git'
-                            developerConnection 'scm:git:git@github.com:brandon3055/Draconic-Evolution.git'
-                        }
-                        issueManagement {
-                            system 'github'
-                            url 'https://github.com/brandon3055/Draconic-Evolution/issues'
-                        }
-                        licenses {
-                            license {
-                                name 'License'
-                                url 'https://raw.githubusercontent.com/brandon3055/Draconic-Evolution/master/LICENSE.txt'
-                                distribution 'repo'
-                            }
-                        }
-                        developers {
-                            developer {
-                                id 'brandon3055'
-                                name 'brandon3055'
-                                roles { role 'developer' }
-                            }
-                        }
-                    }
+        if (System.getenv('MAVEN_PASS')) {
+            maven {
+                url "https://maven-upload.covers1624.net/"
+                credentials {
+                    username 'brandon3055'
+                    password System.getenv('MAVEN_PASS')
                 }
-            } else {
-                println 'Maven upload triggered but no local_maven property found!'
             }
         }
     }
+    publications {
+        DraconicEvolution(MavenPublication) {
+            groupId project.group
+            artifactId project.archivesBaseName
+            version project.version
+            artifact jar
+            artifact srcJar
+
+            pom {
+                name = archivesBaseName
+                description = archivesBaseName
+                //The publish plugin doesnt like GString's here apparently..
+                url = "https://github.com/brandon3055/${archivesBaseName}".toString()
+                scm {
+                    url = "https://github.com/brandon3055/${archivesBaseName}".toString()
+                    connection = "scm:git:git://github.com/brandon3055/${archivesBaseName}.git".toString()
+                    connection = "scm:git:git@github.com:brandon3055/${archivesBaseName}.git".toString()
+                }
+
+                issueManagement {
+                    system = 'github'
+                    url = "https://github.com/brandon3055/${archivesBaseName}/issues".toString()
+                }
+                licenses {
+                    license {
+                        name = "CoFH \"Don't Be a Jerk\" License"
+                        url = "https://github.com/brandon3055/Draconic-Evolution/blob/master/LICENSE"
+                        distribution = 'Repo'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'brandon3055'
+                        name = 'brandon3055'
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+/**
+ * Polls the 'compile' configuration for a dependency with the given module name
+ * and resolves, and returns its version. E.g: '1.2.+' will resolve to '1.2.3.4'
+ *
+ * @param module The module to search for.
+ * @param chop If the string should be chopped on the last '-' in its string.
+ * @param configuration The name of the configuration to search.
+ * @param errorMissing If an error should be thrown if it can't be found.
+ * @return The version string, '0' if 'errorMissing' is false and nothing was found.
+ */
+def resolve(module, chop = true, configuration = 'compile', errorMissing = true) {
+    //Copy and lenient resolve the configuration, Forge cant be resolved at this time so lenient is required.
+    def filtered = configurations.getByName(configuration).copy().incoming.artifactView({ it.lenient = true }).artifacts
+            .findAll { it.id.componentIdentifier.module == module }
+            .collect { it.id.componentIdentifier.version }
+    if (filtered.size() > 1) {
+        println "WARNING: Found ${filtered.size()} Dependencies with ModuleName '${module}' in configuration '${configuration.name}'"
+    }
+    if (errorMissing && filtered.isEmpty()) {
+        throw new RuntimeException("Failed resolve dependency version for '${module}'")
+    }
+    if (filtered.isEmpty()) return "0"
+    def version = filtered.first() as String
+    if (chop) {
+        def idx = version.lastIndexOf('-')
+        return version.substring(idx + 1)
+    }
+    return version
 }

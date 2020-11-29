@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.handlers;
 
-import cofh.redstoneflux.api.IEnergyContainerItem;
+
 import com.brandon3055.brandonscore.utils.InventoryUtils;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.api.itemconfig_dep.ToolConfigHelper;
@@ -43,9 +43,9 @@ public class BowHandler {
 
     public static void onPlayerStoppedUsingBow(ItemStack stack, World world, PlayerEntity player, int timeLeft) {
         BowHandler.BowProperties properties = new BowHandler.BowProperties(stack, player);
-        if (!properties.canFire() || !(stack.getItem() instanceof IEnergyContainerItem)) {
-            return;
-        }
+//        if (!properties.canFire() || !(stack.getItem() instanceof IEnergyContainerItem)) {
+//            return;
+//        }
 
         int charge = stack.getUseDuration() - timeLeft;
         charge = ForgeEventFactory.onArrowLoose(stack, world, player, charge, true);
@@ -170,10 +170,10 @@ public class BowHandler {
             if (player == null) {
                 return false;
             }
-            if (!(bow.getItem() instanceof IEnergyContainerItem)) {
-                cantFireMessage = "[Error] This bow is not a valid energy container (This is a bug, Please report on the Draconic Evolution github)";
-                return false;
-            }
+//            if (!(bow.getItem() instanceof IEnergyContainerItem)) {
+//                cantFireMessage = "[Error] This bow is not a valid energy container (This is a bug, Please report on the Draconic Evolution github)";
+//                return false;
+//            }
             else if (!energyBolt && shockWavePower > 0) {
                 cantFireMessage = "msg.de.shockWaveForEnergyBoltsOnly.txt";
                 return false;
@@ -182,10 +182,10 @@ public class BowHandler {
                 cantFireMessage = "msg.de.explosiveNotForEnergyBolts.txt";
                 return false;
             }
-            else if (calculateEnergyCost() > ((IEnergyContainerItem) bow.getItem()).getEnergyStored(bow) && !player.abilities.isCreativeMode) {
-                cantFireMessage = "msg.de.insufficientPowerToFire.txt";
-                return false;
-            }
+//            else if (calculateEnergyCost() > ((IEnergyContainerItem) bow.getItem()).getEnergyStored(bow) && !player.abilities.isCreativeMode) {
+//                cantFireMessage = "msg.de.insufficientPowerToFire.txt";
+//                return false;
+//            }
             else if (!energyBolt && !player.inventory.hasItemStack(ammo) && EnchantmentHelper.getEnchantmentLevel(Enchantments.INFINITY, bow) == 0 && !player.abilities.isCreativeMode) {
                 cantFireMessage = "msg.de.outOfArrows.txt";
                 return false;

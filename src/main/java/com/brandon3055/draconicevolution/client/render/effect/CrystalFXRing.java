@@ -35,6 +35,7 @@ public class CrystalFXRing extends CrystalFXBase<TileCrystalBase> {
 
     @Override
     public void tick() {
+        super.tick();
         if (ticksTillDeath-- <= 0) {
             setExpired();
         }

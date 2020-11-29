@@ -4,7 +4,11 @@ package com.brandon3055.draconicevolution.client.handler;
 import codechicken.lib.reflect.ObfMapping;
 import codechicken.lib.reflect.ReflectionManager;
 import codechicken.lib.render.shader.ShaderProgram;
+import codechicken.lib.render.shader.ShaderProgramBuilder;
+import codechicken.lib.render.shader.UniformCache;
+import codechicken.lib.render.shader.UniformType;
 import codechicken.lib.vec.Cuboid6;
+import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.client.ProcessHandlerClient;
 import com.brandon3055.brandonscore.client.utils.GuiHelper;
@@ -20,6 +24,7 @@ import com.brandon3055.draconicevolution.client.render.shaders.DEShaders;
 import com.brandon3055.draconicevolution.handlers.BinderHandler;
 import com.brandon3055.draconicevolution.items.tools.CreativeExchanger;
 import com.brandon3055.draconicevolution.items.tools.old.MiningToolBase;
+import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -31,19 +36,18 @@ import net.minecraft.client.gui.screen.MainMenuScreen;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.Vector4f;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
-import net.minecraftforge.client.event.GuiOpenEvent;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.client.event.RenderPlayerEvent;
-import net.minecraftforge.client.event.RenderWorldLastEvent;
+import net.minecraftforge.client.event.*;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
@@ -55,6 +59,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+
+import static codechicken.lib.render.shader.ShaderObject.StandardShaderType.FRAGMENT;
+import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
 
 /**
  * Created by Brandon on 28/10/2014.
@@ -73,7 +80,15 @@ public class ClientEventHandler {
     public static int explosionTime = 0;
     public static boolean explosionRetreating = false;
 
-    public static ShaderProgram explosionShader;
+    public static ShaderProgram explosionShader = ShaderProgramBuilder.builder()
+            .addShader("frag", shader -> shader
+                    .type(FRAGMENT)
+                    .source(new ResourceLocation(MODID, "shaders/explosion_overlay.frag"))
+                    .uniform("screenPos", UniformType.VEC2)
+                    .uniform("intensity", UniformType.FLOAT)
+                    .uniform("screenSize", UniformType.VEC2)
+            )
+            .build();
 
     @SubscribeEvent
     public void renderGameOverlay(RenderGameOverlayEvent.Post event) {
@@ -176,11 +191,16 @@ public class ClientEventHandler {
         }
     }
 
+    public static final Matrix4 MODELVIEW = new Matrix4();
+    public static final Matrix4 PROJECTION = new Matrix4();
     @SubscribeEvent
     public void renderWorldEvent(RenderWorldLastEvent event) {
         if (event.isCanceled()) {
             return;
         }
+
+        MODELVIEW.set(event.getMatrixStack().getLast().getMatrix());
+        PROJECTION.set(event.getProjectionMatrix());
 
         ClientPlayerEntity player = Minecraft.getInstance().player;
         World world = player.getEntityWorld();
@@ -344,7 +364,7 @@ public class ClientEventHandler {
         ProcessHandlerClient.addProcess(new DelayedExecutor(5) {
             @Override
             public void execute(Object[] args) {
-//                FMLClientHandler.instance().reloadRenderers();TODO Reload
+                Minecraft.getInstance().worldRenderer.loadRenderers();
             }
         });
     }
@@ -369,34 +389,30 @@ public class ClientEventHandler {
             }
             explosionAnimation -= 0.01;
         }
+//        explosionTime = 10;
+//        explosionAnimation = explosionTime * 0.01;
     }
 
     public static final IntBuffer VIEWPORT = GLAllocation.createDirectByteBuffer(16 << 2).asIntBuffer();
-    public static final FloatBuffer MODELVIEW = GLAllocation.createDirectFloatBuffer(16);
-    public static final FloatBuffer PROJECTION = GLAllocation.createDirectFloatBuffer(16);
     private void updateExplosionAnimation(Minecraft mc, World world, MainWindow resolution, float partialTick) {
         //region TargetPoint Calculation
 
-        GL11.glGetFloatv(2982, MODELVIEW);
-        GL11.glGetFloatv(2983, PROJECTION);
-        GL11.glGetIntegerv(2978, VIEWPORT);
-
+        GL11.glGetIntegerv(GL11.GL_VIEWPORT, VIEWPORT);
         Entity entity = mc.getRenderViewEntity();
         float x = (float) (entity.prevPosX + (entity.posX - entity.prevPosX) * (double) partialTick);
         float y = (float) (entity.prevPosY + (entity.posY - entity.prevPosY) * (double) partialTick);
         float z = (float) (entity.prevPosZ + (entity.posZ - entity.prevPosZ) * (double) partialTick);
         Vector3 targetPos = Vector3.fromBlockPosCenter(explosionPos);
         targetPos.subtract(x, y, z);
-        gluProject((float) targetPos.x, (float) targetPos.y, (float) targetPos.z, MODELVIEW, PROJECTION, VIEWPORT, winPos);
+        Vector3 winPos = gluProject(targetPos, MODELVIEW, PROJECTION, VIEWPORT);
 
-        boolean behind = winPos.get(2) > 1;
-        float screenX = behind ? -1 : winPos.get(0) / resolution.getWidth();
-        float screenY = behind ? -1 : winPos.get(1) / resolution.getHeight();
+        boolean behind = winPos.z > 1;
+        float screenX = behind ? -1 : (float) winPos.x / resolution.getWidth();
+        float screenY = behind ? -1 : (float) winPos.y / resolution.getHeight();
 
         //endregion
 
-        //region No Shader
-        if (!DEConfig.otherShaders || explosionRetreating) {
+        if (!DEConfig.reactorShaders || explosionRetreating) {
             float alpha;
             if (explosionAnimation <= 0) {
                 alpha = 0;
@@ -409,76 +425,48 @@ public class ClientEventHandler {
             }
             GuiHelper.drawColouredRect(0, 0, resolution.getScaledWidth(), resolution.getScaledHeight(), 0x00FFFFFF | (int) (alpha * 255F) << 24);
         }
-        //endregion
-
         else {
-//            if (explosionShader == null) {
-//                explosionShader = new ShaderProgram();
-//                explosionShader.attachShader(DEShaders.explosionOverlay);
-//            }
-//
-//            explosionShader.useShader(cache -> {
-//                cache.glUniform2F("screenPos", screenX, screenY);
-//                cache.glUniform1F("intensity", (float) explosionAnimation);
-//                cache.glUniform2F("screenSize", resolution.getWidth(), resolution.getHeight());
-//            });
-//
-//            GuiHelper.drawColouredRect(0, 0, resolution.getScaledWidth(), resolution.getScaledHeight(), 0xFFFFFFFF);
-//
-//            explosionShader.releaseShader();
-        }
 
+            UniformCache uniforms = explosionShader.pushCache();
+            uniforms.glUniform2f("screenPos", screenX, screenY);
+            uniforms.glUniform1f("intensity", (float) explosionAnimation);
+            uniforms.glUniform2f("screenSize", resolution.getWidth(), resolution.getHeight());
+
+            explosionShader.use();
+            explosionShader.popCache(uniforms);
+            GuiHelper.drawColouredRect(0, 0, resolution.getScaledWidth(), resolution.getScaledHeight(), 0xFFFFFFFF);
+            explosionShader.release();
+        }
     }
 
-    private static final float[] in = new float[4];
-    private static final float[] out = new float[4];
+    //Thanks Covers1624!
+    private static Vector3 gluProject(Vector3 obj, Matrix4 modelMatrix, Matrix4 projMatrix, IntBuffer viewport) {
+        Vector4f o = new Vector4f((float) obj.x, (float) obj.y, (float) obj.z, 1.0F);
+        multMatrix(modelMatrix, o);
+        multMatrix(projMatrix, o);
 
-    public static boolean gluProject(
-            float objx,
-            float objy,
-            float objz,
-            FloatBuffer modelMatrix,
-            FloatBuffer projMatrix,
-            IntBuffer viewport,
-            FloatBuffer win_pos) {
+        if (o.getW() == 0) {
+            return Vector3.ZERO.copy();
+        }
+        o.setW((1.0F / o.getW()) * 0.5F);
 
-        float[] in = ClientEventHandler.in;
-        float[] out = ClientEventHandler.out;
+        o.setX(o.getX() * o.getW() + 0.5F);
+        o.setY(o.getY() * o.getW() + 0.5F);
+        o.setZ(o.getZ() * o.getW() + 0.5F);
 
-        in[0] = objx;
-        in[1] = objy;
-        in[2] = objz;
-        in[3] = 1.0f;
+        Vector3 winPos = new Vector3();
+        winPos.z = o.getZ();
 
-        __gluMultMatrixVecf(modelMatrix, in, out);
-        __gluMultMatrixVecf(projMatrix, out, in);
-
-        if (in[3] == 0.0)
-            return false;
-
-        in[3] = (1.0f / in[3]) * 0.5f;
-
-        // Map x, y and z to range 0-1
-        in[0] = in[0] * in[3] + 0.5f;
-        in[1] = in[1] * in[3] + 0.5f;
-        in[2] = in[2] * in[3] + 0.5f;
-
-        // Map x,y to viewport
-        win_pos.put(0, in[0] * viewport.get(viewport.position() + 2) + viewport.get(viewport.position() + 0));
-        win_pos.put(1, in[1] * viewport.get(viewport.position() + 3) + viewport.get(viewport.position() + 1));
-        win_pos.put(2, in[2]);
-
-        return true;
+        winPos.x = o.getX() * viewport.get(viewport.position() + 2) + viewport.get(viewport.position() + 0);
+        winPos.y = o.getY() * viewport.get(viewport.position() + 3) + viewport.get(viewport.position() + 1);
+        return winPos;
     }
 
-    private static void __gluMultMatrixVecf(FloatBuffer m, float[] in, float[] out) {
-        for (int i = 0; i < 4; i++) {
-            out[i] =
-                    in[0] * m.get(m.position() + 0*4 + i)
-                            + in[1] * m.get(m.position() + 1*4 + i)
-                            + in[2] * m.get(m.position() + 2*4 + i)
-                            + in[3] * m.get(m.position() + 3*4 + i);
-
-        }
+    private static void multMatrix(Matrix4 mat, Vector4f vec) {
+        double x = mat.m00 * vec.getX() + mat.m01 * vec.getY() + mat.m02 * vec.getZ() + mat.m03 * vec.getW();
+        double y = mat.m10 * vec.getX() + mat.m11 * vec.getY() + mat.m12 * vec.getZ() + mat.m13 * vec.getW();
+        double z = mat.m20 * vec.getX() + mat.m21 * vec.getY() + mat.m22 * vec.getZ() + mat.m23 * vec.getW();
+        double w = mat.m30 * vec.getX() + mat.m31 * vec.getY() + mat.m32 * vec.getZ() + mat.m33 * vec.getW();
+        vec.set((float) x, (float) y, (float) z, (float) w);
     }
 }

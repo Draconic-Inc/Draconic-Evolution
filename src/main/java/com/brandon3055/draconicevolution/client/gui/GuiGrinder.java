@@ -139,7 +139,7 @@ public class GuiGrinder extends ModularGuiContainer<ContainerBCTile<TileGrinder>
         toolkit.placeOutside(level10, claimXP, GuiToolkit.LayoutPos.BOTTOM_RIGHT, -level10.xSize(), 0);
 
         //Info Panel
-        template.infoPanel.addLabeledValue(GOLD + I18n.format("gui.draconicevolution.generator.stored_xp"), 6, 11, () -> GRAY + "" + tile.storedXP.get() + " " + I18n.format("gui.draconicevolution.generator.stored_xp.raw"), true);
+        template.infoPanel.addLabeledValue(GOLD + I18n.format("gui.draconicevolution.grinder.stored_xp"), 6, 11, () -> GRAY + "" + tile.storedXP.get() + " " + I18n.format("gui.draconicevolution.grinder.stored_xp.raw"), true);
     }
 
     private String getAOEString() {

@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.items.equipment;
 
 import com.brandon3055.brandonscore.api.TechLevel;
-import com.brandon3055.brandonscore.lib.TechItemProps;
+import com.brandon3055.brandonscore.lib.TechPropBuilder;
 import com.brandon3055.draconicevolution.init.EquipCfg;
 import net.minecraft.item.IItemTier;
 import net.minecraft.item.crafting.Ingredient;
@@ -12,20 +12,20 @@ import java.util.function.Supplier;
  * Created by brandon3055 on 16/6/20
  */
 public class DEItemTier implements IItemTier {
-    private TechItemProps itemProps;
+    private TechPropBuilder itemProps;
     private TechLevel techLevel;
     private Supplier<Float> damageMultiplier;
     private Supplier<Float> speedMultiplier;
     private Supplier<Float> efficiencyMultiplier;
 
-    public DEItemTier(TechItemProps itemProps, Supplier<Float> damageMultiplier, Supplier<Float> speedMultiplier) {
+    public DEItemTier(TechPropBuilder itemProps, Supplier<Float> damageMultiplier, Supplier<Float> speedMultiplier) {
         this.itemProps = itemProps;
         this.techLevel = itemProps.techLevel;
         this.damageMultiplier = damageMultiplier;
         this.speedMultiplier = speedMultiplier;
     }
 
-    public DEItemTier(TechItemProps itemProps, Supplier<Float> damageMultiplier, Supplier<Float> speedMultiplier, Supplier<Float> efficiencyMultiplier) {
+    public DEItemTier(TechPropBuilder itemProps, Supplier<Float> damageMultiplier, Supplier<Float> speedMultiplier, Supplier<Float> efficiencyMultiplier) {
         this(itemProps, damageMultiplier, speedMultiplier);
         this.efficiencyMultiplier = efficiencyMultiplier;
     }

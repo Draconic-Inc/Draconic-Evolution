@@ -4,8 +4,9 @@ import com.brandon3055.brandonscore.blocks.BlockBCore;
 import com.brandon3055.brandonscore.blocks.ItemBlockBCore;
 import com.brandon3055.brandonscore.client.utils.CyclingItemGroup;
 import com.brandon3055.brandonscore.inventory.ContainerBCTile;
-import com.brandon3055.brandonscore.lib.TechItemProps;
+import com.brandon3055.brandonscore.lib.TechPropBuilder;
 import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.api.crafting.FusionRecipeSerializer;
 import com.brandon3055.draconicevolution.blocks.*;
 import com.brandon3055.draconicevolution.blocks.energynet.EnergyCrystal;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalDirectIO;
@@ -20,6 +21,8 @@ import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorSt
 import com.brandon3055.draconicevolution.blocks.tileentity.*;
 import com.brandon3055.draconicevolution.blocks.tileentity.flowgate.TileFluidGate;
 import com.brandon3055.draconicevolution.blocks.tileentity.flowgate.TileFluxGate;
+import com.brandon3055.draconicevolution.entity.EntityChaosGuardian;
+import com.brandon3055.draconicevolution.entity.EntityGuardianProjectile;
 import com.brandon3055.draconicevolution.inventory.*;
 import com.brandon3055.draconicevolution.items.EnderEnergyManipulator;
 import com.brandon3055.draconicevolution.items.InfoTablet;
@@ -30,10 +33,13 @@ import com.brandon3055.draconicevolution.items.tools.*;
 import net.minecraft.block.Block;
 import net.minecraft.block.Block.Properties;
 import net.minecraft.block.material.Material;
+import net.minecraft.entity.EntityClassification;
+import net.minecraft.entity.EntityType;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.Rarity;
+import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ToolType;
@@ -300,24 +306,18 @@ public class DEContent {
         Properties crystalD = Properties.create(GLASS, DyeColor.ORANGE).hardnessAndResistance(8.0F, 32F);
         Properties crystalC = Properties.create(GLASS, DyeColor.BLACK).hardnessAndResistance(16.0F, 64F);
         event.getRegistry().register(new EnergyCrystal(crystalB, DRACONIUM, CRYSTAL_IO).setRegistryName("basic_io_crystal"));
-        event.getRegistry().register(new EnergyCrystal(crystalW, WYVERN,    CRYSTAL_IO).setRegistryName("wyvern_io_crystal"));
-        event.getRegistry().register(new EnergyCrystal(crystalD, DRACONIC,  CRYSTAL_IO).setRegistryName("draconic_io_crystal"));
+        event.getRegistry().register(new EnergyCrystal(crystalW, WYVERN, CRYSTAL_IO).setRegistryName("wyvern_io_crystal"));
+        event.getRegistry().register(new EnergyCrystal(crystalD, DRACONIC, CRYSTAL_IO).setRegistryName("draconic_io_crystal"));
 //        event.getRegistry().register(new EnergyCrystal(crystalC, CHAOTIC,   CRYSTAL_IO).setRegistryName("chaotic_io_crystal"));
         event.getRegistry().register(new EnergyCrystal(crystalB, DRACONIUM, RELAY).setRegistryName("basic_relay_crystal"));
-        event.getRegistry().register(new EnergyCrystal(crystalW, WYVERN,    RELAY).setRegistryName("wyvern_relay_crystal"));
-        event.getRegistry().register(new EnergyCrystal(crystalD, DRACONIC,  RELAY).setRegistryName("draconic_relay_crystal"));
+        event.getRegistry().register(new EnergyCrystal(crystalW, WYVERN, RELAY).setRegistryName("wyvern_relay_crystal"));
+        event.getRegistry().register(new EnergyCrystal(crystalD, DRACONIC, RELAY).setRegistryName("draconic_relay_crystal"));
 //        event.getRegistry().register(new EnergyCrystal(crystalC, CHAOTIC,   RELAY).setRegistryName("chaotic_relay_crystal"));
         event.getRegistry().register(new EnergyCrystal(crystalB, DRACONIUM, WIRELESS).setRegistryName("basic_wireless_crystal"));
-        event.getRegistry().register(new EnergyCrystal(crystalW, WYVERN,    WIRELESS).setRegistryName("wyvern_wireless_crystal"));
-        event.getRegistry().register(new EnergyCrystal(crystalD, DRACONIC,  WIRELESS).setRegistryName("draconic_wireless_crystal"));
+        event.getRegistry().register(new EnergyCrystal(crystalW, WYVERN, WIRELESS).setRegistryName("wyvern_wireless_crystal"));
+        event.getRegistry().register(new EnergyCrystal(crystalD, DRACONIC, WIRELESS).setRegistryName("draconic_wireless_crystal"));
 //        event.getRegistry().register(new EnergyCrystal(crystalC, CHAOTIC,   WIRELESS).setRegistryName("chaotic_wireless_crystal"));
     }
-
-
-
-
-
-
 
 
     //#################################################################
@@ -475,42 +475,61 @@ public class DEContent {
         registerItem(event, new MobSoul(new Item.Properties().group(itemGroup)).setRegistryName("mob_soul"));
 
 //        //Tools
-        TechItemProps wyvernTools = new TechItemProps(WYVERN).maxStackSize(1).group(itemGroup).rarity(Rarity.UNCOMMON);
-        TechItemProps draconicTools = new TechItemProps(DRACONIC).maxStackSize(1).group(itemGroup).rarity(Rarity.RARE);
-        TechItemProps chaoticTools = new TechItemProps(CHAOTIC).maxStackSize(1).group(itemGroup).rarity(Rarity.EPIC);
-        registerItem(event, new DraconiumCapacitor(wyvernTools.copy()).setRegistryName("wyvern_capacitor"));
-        registerItem(event, new DraconiumCapacitor(draconicTools.copy()).setRegistryName("draconic_capacitor"));
-        registerItem(event, new DraconiumCapacitor(draconicTools.copy()).setRegistryName("chaotic_capacitor"));
-        registerItem(event, new DraconiumCapacitor(chaoticTools.copy()).setRegistryName("creative_capacitor"));
-        registerItem(event, new ModularShovel(wyvernTools.copy()).setRegistryName("wyvern_shovel"));
-        registerItem(event, new ModularShovel(draconicTools.copy()).setRegistryName("draconic_shovel"));
-        registerItem(event, new ModularShovel(chaoticTools.copy()).setRegistryName("chaotic_shovel"));
-        registerItem(event, new ModularHoe(wyvernTools.copy()).setRegistryName("wyvern_hoe"));
-        registerItem(event, new ModularHoe(draconicTools.copy()).setRegistryName("draconic_hoe"));
-        registerItem(event, new ModularHoe(chaoticTools.copy()).setRegistryName("chaotic_hoe"));
-        registerItem(event, new ModularPickaxe(wyvernTools.copy()).setRegistryName("wyvern_pickaxe"));
-        registerItem(event, new ModularPickaxe(draconicTools.copy()).setRegistryName("draconic_pickaxe"));
-        registerItem(event, new ModularPickaxe(chaoticTools.copy()).setRegistryName("chaotic_pickaxe"));
-        registerItem(event, new ModularAxe(wyvernTools.copy()).setRegistryName("wyvern_axe"));
-        registerItem(event, new ModularAxe(draconicTools.copy()).setRegistryName("draconic_axe"));
-        registerItem(event, new ModularAxe(chaoticTools.copy()).setRegistryName("chaotic_axe"));
-        registerItem(event, new ModularBow(wyvernTools.copy()).setRegistryName("wyvern_bow"));
-        registerItem(event, new ModularBow(draconicTools.copy()).setRegistryName("draconic_bow"));
-        registerItem(event, new ModularBow(chaoticTools.copy()).setRegistryName("chaotic_bow"));
-        registerItem(event, new ModularSword(wyvernTools.copy()).setRegistryName("wyvern_sword"));
-        registerItem(event, new ModularSword(draconicTools.copy()).setRegistryName("draconic_sword"));
-        registerItem(event, new ModularSword(chaoticTools.copy()).setRegistryName("chaotic_sword"));
-        registerItem(event, new ModularStaff(draconicTools.copy()).setRegistryName("draconic_staff"));
-        registerItem(event, new ModularStaff(chaoticTools.copy()).setRegistryName("chaotic_staff"));
+        TechPropBuilder wyvernTools = new TechPropBuilder(WYVERN).maxStackSize(1).group(itemGroup).rarity(Rarity.UNCOMMON);
+        TechPropBuilder draconicTools = new TechPropBuilder(DRACONIC).maxStackSize(1).group(itemGroup).rarity(Rarity.RARE);
+        TechPropBuilder chaoticTools = new TechPropBuilder(CHAOTIC).maxStackSize(1).group(itemGroup).rarity(Rarity.EPIC);
+        registerItem(event, new DraconiumCapacitor(wyvernTools).setRegistryName("wyvern_capacitor"));
+        registerItem(event, new DraconiumCapacitor(draconicTools).setRegistryName("draconic_capacitor"));
+        registerItem(event, new DraconiumCapacitor(draconicTools).setRegistryName("chaotic_capacitor"));
+        registerItem(event, new DraconiumCapacitor(chaoticTools).setRegistryName("creative_capacitor"));
+        registerItem(event, new ModularShovel(wyvernTools).setRegistryName("wyvern_shovel"));
+        registerItem(event, new ModularShovel(draconicTools).setRegistryName("draconic_shovel"));
+        registerItem(event, new ModularShovel(chaoticTools).setRegistryName("chaotic_shovel"));
+        registerItem(event, new ModularHoe(wyvernTools).setRegistryName("wyvern_hoe"));
+        registerItem(event, new ModularHoe(draconicTools).setRegistryName("draconic_hoe"));
+        registerItem(event, new ModularHoe(chaoticTools).setRegistryName("chaotic_hoe"));
+        registerItem(event, new ModularPickaxe(wyvernTools).setRegistryName("wyvern_pickaxe"));
+        registerItem(event, new ModularPickaxe(draconicTools).setRegistryName("draconic_pickaxe"));
+        registerItem(event, new ModularPickaxe(chaoticTools).setRegistryName("chaotic_pickaxe"));
+        registerItem(event, new ModularAxe(wyvernTools).setRegistryName("wyvern_axe"));
+        registerItem(event, new ModularAxe(draconicTools).setRegistryName("draconic_axe"));
+        registerItem(event, new ModularAxe(chaoticTools).setRegistryName("chaotic_axe"));
+        registerItem(event, new ModularBow(wyvernTools).setRegistryName("wyvern_bow"));
+        registerItem(event, new ModularBow(draconicTools).setRegistryName("draconic_bow"));
+        registerItem(event, new ModularBow(chaoticTools).setRegistryName("chaotic_bow"));
+        registerItem(event, new ModularSword(wyvernTools).setRegistryName("wyvern_sword"));
+        registerItem(event, new ModularSword(draconicTools).setRegistryName("draconic_sword"));
+        registerItem(event, new ModularSword(chaoticTools).setRegistryName("chaotic_sword"));
+        registerItem(event, new ModularStaff(draconicTools).setRegistryName("draconic_staff"));
+        registerItem(event, new ModularStaff(chaoticTools).setRegistryName("chaotic_staff"));
         //Armor
-        registerItem(event, new ModularChestpiece(wyvernTools.copy()).setRegistryName("wyvern_chestpiece"));
-        registerItem(event, new ModularChestpiece(draconicTools.copy()).setRegistryName("draconic_chestpiece"));
-        registerItem(event, new ModularChestpiece(chaoticTools.copy()).setRegistryName("chaotic_chestpiece"));
+        registerItem(event, new ModularChestpiece(wyvernTools).setRegistryName("wyvern_chestpiece"));
+        registerItem(event, new ModularChestpiece(draconicTools).setRegistryName("draconic_chestpiece"));
+        registerItem(event, new ModularChestpiece(chaoticTools).setRegistryName("chaotic_chestpiece"));
         //@formatter:on
     }
 
     private static void registerItem(RegistryEvent.Register<Item> event, Item item) {
         event.getRegistry().register(item);
         ITEM_REGISTRY_ORDER.add(item.getRegistryName());
+    }
+
+
+    //#################################################################
+    // Entities
+    //#################################################################
+
+    @ObjectHolder("chaos_guardian")             public static EntityType<EntityChaosGuardian> CHAOS_GUARDIAN;
+    @ObjectHolder("guardian_projectile")        public static EntityType<EntityGuardianProjectile> GUARDIAN_PROJECTILE;
+
+    @SubscribeEvent
+    public static void registerEntities(RegistryEvent.Register<EntityType<?>> event) {
+        event.getRegistry().register(EntityType.Builder.create(EntityChaosGuardian::new, EntityClassification.MONSTER).immuneToFire().size(16.0F, 8.0F).build("chaos_guardian").setRegistryName("chaos_guardian"));
+        event.getRegistry().register(EntityType.Builder.<EntityGuardianProjectile>create(EntityGuardianProjectile::new, EntityClassification.MISC).immuneToFire().size(1F, 1F).build("guardian_projectile").setRegistryName("guardian_projectile"));
+    }
+
+    @SubscribeEvent
+    public static void registerRecipeType(RegistryEvent.Register<IRecipeSerializer<?>> event) {
+        event.getRegistry().register(new FusionRecipeSerializer().setRegistryName("fusion_crafting"));
     }
 }

@@ -1,26 +1,22 @@
 //package com.brandon3055.draconicevolution.client.render.entity;
 //
 //
-//import com.brandon3055.draconicevolution.client.model.ModelChaosGuardian;
 //import com.brandon3055.draconicevolution.entity.EntityChaosGuardian;
 //import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
 //import com.brandon3055.draconicevolution.client.DETextures;
 //import net.minecraft.client.renderer.*;
-//import net.minecraft.client.renderer.entity.RenderLiving;
-//import net.minecraft.client.renderer.entity.RenderManager;
+//import net.minecraft.client.renderer.entity.LivingRenderer;
 //import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 //import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 //import net.minecraft.util.ResourceLocation;
 //import net.minecraft.util.math.BlockPos;
 //import net.minecraft.util.math.MathHelper;
-//import net.minecraftforge.fml.relauncher.Side;
-//import net.minecraftforge.fml.relauncher.SideOnly;
 //import org.lwjgl.opengl.GL11;
 //
 ///**
 // * Created by brandon3055 on 06/07/2016.
 // */
-//public class RenderChaosGuardian extends RenderLiving<EntityChaosGuardian> {
+//public class RenderChaosGuardian extends LivingRenderer<EntityChaosGuardian> {
 //    protected ModelChaosGuardian modelDragon;
 //
 //    public RenderChaosGuardian(RenderManager manager) {

@@ -2,7 +2,9 @@ package com.brandon3055.draconicevolution;
 
 import com.brandon3055.brandonscore.command.BCUtilCommands;
 import com.brandon3055.brandonscore.command.CommandTPX;
+import com.brandon3055.draconicevolution.api.DraconicAPI;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
+import com.brandon3055.draconicevolution.api.crafting.FusionRecipe;
 import com.brandon3055.draconicevolution.client.ClientProxy;
 
 import com.brandon3055.draconicevolution.command.CommandKaboom;
@@ -13,9 +15,12 @@ import com.google.gson.JsonObject;
 import io.netty.handler.codec.http.websocketx.WebSocketClientProtocolHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.JsonReloadListener;
+import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.profiler.IProfiler;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.Registry;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -51,6 +56,10 @@ public class DraconicEvolution {
         FMLJavaModLoadingContext.get().getModEventBus().register(this);
         MinecraftForge.EVENT_BUS.register(this);
         DEConfig.load();
+
+        Registry.register(Registry.RECIPE_TYPE, new ResourceLocation(MODID, "fusion_crafting"), DraconicAPI.FUSION_RECIPE_TYPE = new IRecipeType<FusionRecipe>() {
+            public String toString() { return "draconicevolution:fusion_crafting"; }
+        });
     }
 
     @SubscribeEvent

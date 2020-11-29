@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.items.equipment;
 
 import com.brandon3055.brandonscore.api.TechLevel;
-import com.brandon3055.brandonscore.lib.TechItemProps;
+import com.brandon3055.brandonscore.lib.TechPropBuilder;
 import com.brandon3055.draconicevolution.api.IReaperItem;
 import com.brandon3055.draconicevolution.api.modules.ModuleCategory;
 import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
@@ -12,7 +12,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
 import net.minecraft.item.AxeItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
@@ -35,7 +34,7 @@ public class ModularAxe extends AxeItem implements IReaperItem, IModularMiningTo
     private final TechLevel techLevel;
     private final DEItemTier itemTier;
 
-    public ModularAxe(TechItemProps props) {
+    public ModularAxe(TechPropBuilder props) {
         super(new DEItemTier(props, EquipCfg::getAxeDmgMult, EquipCfg::getAxeSpeedMult), 0, 0, props.axeProps());
         this.techLevel = props.techLevel;
         this.itemTier = (DEItemTier) getTier();

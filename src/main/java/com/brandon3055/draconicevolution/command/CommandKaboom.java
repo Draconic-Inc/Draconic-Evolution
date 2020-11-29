@@ -1,82 +1,22 @@
 package com.brandon3055.draconicevolution.command;
 
-import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.api.TimeKeeper;
-import com.brandon3055.brandonscore.handlers.BCEventHandler;
-import com.brandon3055.brandonscore.handlers.HandHelper;
 import com.brandon3055.brandonscore.handlers.ProcessHandler;
-import com.brandon3055.brandonscore.inventory.ContainerPlayerAccess;
-import com.brandon3055.brandonscore.lib.ChatHelper;
-import com.brandon3055.brandonscore.lib.Pair;
-import com.brandon3055.brandonscore.network.BCoreNetwork;
-import com.brandon3055.brandonscore.utils.DataUtils;
-import com.brandon3055.brandonscore.utils.InventoryUtils;
-import com.brandon3055.brandonscore.utils.LogHelperBC;
 import com.brandon3055.draconicevolution.blocks.reactor.ProcessExplosion;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import com.brandon3055.draconicevolution.utils.LogHelper;
-import com.google.common.base.Charsets;
-import com.google.common.collect.Lists;
-import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
-import com.mojang.brigadier.arguments.StringArgumentType;
-import com.mojang.brigadier.builder.ArgumentBuilder;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.sun.istack.internal.Nullable;
-import net.minecraft.block.Blocks;
-import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
-import net.minecraft.command.ISuggestionProvider;
 import net.minecraft.command.arguments.BlockPosArgument;
-import net.minecraft.command.arguments.EntityArgument;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.SpawnEggItem;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.network.play.server.SChunkDataPacket;
 import net.minecraft.network.play.server.SUpdateLightPacket;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.management.PlayerProfileCache;
-import net.minecraft.util.math.*;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.event.ClickEvent;
-import net.minecraft.util.text.event.HoverEvent;
-import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.dimension.DimensionType;
-import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.server.ServerChunkProvider;
 import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.Tags;
-import net.minecraftforge.eventbus.EventBus;
-import net.minecraftforge.eventbus.api.Event;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.IEventListener;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
-import org.apache.commons.io.IOUtils;
-
-import java.io.*;
-import java.lang.reflect.Method;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
-
-import static net.minecraft.util.text.event.HoverEvent.Action.SHOW_TEXT;
 
 /**
  * Created by brandon3055 on 23/06/2017.
@@ -100,9 +40,12 @@ public class CommandKaboom {
                                                 ))
                                         .then(Commands.literal("prime")
                                                 .executes(ctx -> calculate(ctx.getSource(), IntegerArgumentType.getInteger(ctx, "radius"), BlockPosArgument.getBlockPos(ctx, "position"), true, true))
+                                                .then(Commands.literal("no_effect")
+                                                        .executes(ctx -> calculate(ctx.getSource(), IntegerArgumentType.getInteger(ctx, "radius"), BlockPosArgument.getBlockPos(ctx, "position"), true, false))
+                                                )
                                         )
                                         .then(Commands.literal("no_effect")
-                                                .executes(ctx -> calculate(ctx.getSource(), IntegerArgumentType.getInteger(ctx, "radius"), BlockPosArgument.getBlockPos(ctx, "position"), true, false))
+                                                .executes(ctx -> calculate(ctx.getSource(), IntegerArgumentType.getInteger(ctx, "radius"), BlockPosArgument.getBlockPos(ctx, "position"), false, false))
                                         )
                                 )
 //                                .then(Commands.literal("effect_only")
@@ -116,7 +59,7 @@ public class CommandKaboom {
                         )
                         .then(Commands.literal("detonate").executes(ctx -> detonate()))
                         .then(Commands.literal("abort").executes(ctx -> abort()))
-                        .then(Commands.literal("relight").executes(ctx -> relight(ctx.getSource())))
+//                        .then(Commands.literal("relight").executes(ctx -> relight(ctx.getSource())))
         );
     }
 
@@ -127,14 +70,14 @@ public class CommandKaboom {
         }
 
         LogHelper.dev("calculate Rad: " + radius + ", Pos: " + pos + ", Prime: " + prime);
-        ProcessExplosion explosion = new ProcessExplosion(new BlockPos(pos), radius, source.getWorld(), prime ? -1 : 0);
-        explosion.enableEffect = effect;
-        explosion.progressMon = progress -> {
+        explosionProcess = new ProcessExplosion(new BlockPos(pos), radius, source.getWorld(), prime ? -1 : 0);
+        explosionProcess.enableEffect = effect;
+        explosionProcess.progressMon = progress -> {
             if (TimeKeeper.getServerTick() % 20 == 0) {
                 source.sendFeedback(new StringTextComponent("Calculating: " + Math.round(progress * 100D) + "%"), true);
             }
         };
-        ProcessHandler.addProcess(explosion);
+        ProcessHandler.addProcess(explosionProcess);
         return 0;
     }
 
@@ -148,7 +91,7 @@ public class CommandKaboom {
     }
 
     private static int detonate() {
-        if (explosionProcess != null && !explosionProcess.isCalculationComplete()) {
+        if (explosionProcess != null && explosionProcess.isCalculationComplete()) {
             explosionProcess.detonate();
             explosionProcess = null;
             return 0;

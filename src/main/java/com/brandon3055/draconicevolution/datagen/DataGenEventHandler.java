@@ -38,11 +38,11 @@ import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public class DataGenEventHandler {
 
-    private static final Gson GSON = new GsonBuilder()
-            .registerTypeAdapter(Variant.class, new Variant.Deserializer())
-            .registerTypeAdapter(ItemCameraTransforms.class, new ItemCameraTransforms.Deserializer())
-            .registerTypeAdapter(ItemTransformVec3f.class, new ItemTransformVec3f.Deserializer())
-            .create();
+//    private static final Gson GSON = new GsonBuilder()
+//            .registerTypeAdapter(Variant.class, new Variant.Deserializer())
+//            .registerTypeAdapter(ItemCameraTransforms.class, new ItemCameraTransforms.Deserializer())
+//            .registerTypeAdapter(ItemTransformVec3f.class, new ItemTransformVec3f.Deserializer())
+//            .create();
 
     @SubscribeEvent
     public static void gatherData(GatherDataEvent event) {
