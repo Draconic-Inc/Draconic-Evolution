@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.items;
 
 import com.brandon3055.brandonscore.items.ItemBCore;
 import com.brandon3055.draconicevolution.api.fusioncrafting.FusionRecipeAPI;
-import com.brandon3055.draconicevolution.api.fusioncrafting.IFusionRecipe;
+import com.brandon3055.draconicevolution.api.fusioncrafting.IFusionRecipeOld;
 import com.brandon3055.draconicevolution.api.itemupgrade_dep.FusionUpgradeRecipe;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.ITooltipFlag;
@@ -43,7 +43,7 @@ public class ToolUpgrade extends ItemBCore /*implements IRenderOverride*/ {
     public static final String JUMP_BOOST = "jumpBoost";
 
     public static final Map<String, LinkedList<FusionUpgradeRecipe>> RECIPE_MAP = new HashMap<String, LinkedList<FusionUpgradeRecipe>>();
-    public static final List<IFusionRecipe> upgradeRecipes = new ArrayList<>();
+    public static final List<IFusionRecipeOld> upgradeRecipes = new ArrayList<>();
 
     private static final int[] UPGRADE_COST = new int[]{32000, 512000, 32000000, 256000000};
 
@@ -102,7 +102,7 @@ public class ToolUpgrade extends ItemBCore /*implements IRenderOverride*/ {
         }
     }
 
-    public static Collection<IFusionRecipe> createUpgradeRecipes() {
+    public static Collection<IFusionRecipeOld> createUpgradeRecipes() {
         upgradeRecipes.clear();
 
         for (String upgrade : NAME_TO_ID.keySet()) {

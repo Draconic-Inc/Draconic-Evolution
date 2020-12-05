@@ -1,12 +1,14 @@
 package com.brandon3055.draconicevolution.init;
 
+import codechicken.lib.util.SneakyUtils;
 import com.brandon3055.brandonscore.blocks.BlockBCore;
 import com.brandon3055.brandonscore.blocks.ItemBlockBCore;
 import com.brandon3055.brandonscore.client.utils.CyclingItemGroup;
 import com.brandon3055.brandonscore.inventory.ContainerBCTile;
 import com.brandon3055.brandonscore.lib.TechPropBuilder;
+import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.api.crafting.FusionRecipeSerializer;
+import com.brandon3055.draconicevolution.api.crafting.FusionRecipe;
 import com.brandon3055.draconicevolution.blocks.*;
 import com.brandon3055.draconicevolution.blocks.energynet.EnergyCrystal;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalDirectIO;
@@ -32,6 +34,7 @@ import com.brandon3055.draconicevolution.items.equipment.*;
 import com.brandon3055.draconicevolution.items.tools.*;
 import net.minecraft.block.Block;
 import net.minecraft.block.Block.Properties;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
@@ -42,11 +45,21 @@ import net.minecraft.item.Rarity;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.Biomes;
+import net.minecraft.world.gen.GenerationStage;
+import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.gen.feature.OreFeature;
+import net.minecraft.world.gen.feature.OreFeatureConfig;
+import net.minecraft.world.gen.placement.ChanceRangeConfig;
+import net.minecraft.world.gen.placement.CountRangeConfig;
+import net.minecraft.world.gen.placement.Placement;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ObjectHolder;
 
 import java.util.ArrayList;
@@ -115,15 +128,15 @@ public class DEContent {
         Block[] entityDetectors = {entity_detector, entity_detector_advanced};
         Block[] craftInjectors = {crafting_injector_basic, crafting_injector_wyvern, crafting_injector_awakened, crafting_injector_chaotic};
         //@formatter:off
-        event.getRegistry().register(TileEntityType.Builder.create(TileGenerator::new,            generator              ).build(null).setRegistryName("generator"));
-        event.getRegistry().register(TileEntityType.Builder.create(TileGrinder::new,              grinder                ).build(null).setRegistryName("grinder"));
+        event.getRegistry().register(TileEntityType.Builder.create(TileGenerator::new,              generator              ).build(null).setRegistryName("generator"));
+        event.getRegistry().register(TileEntityType.Builder.create(TileGrinder::new,                grinder                ).build(null).setRegistryName("grinder"));
 //        event.getRegistry().register(TileEntityType.Builder.create(TileDissEnchanter::new,        disenchanter           ).build(null).setRegistryName("disenchanter"));
 //        event.getRegistry().register(TileEntityType.Builder.create(TileEnergyInfuser::new,        energy_infuser         ).build(null).setRegistryName("energy_infuser"));
 //        event.getRegistry().register(TileEntityType.Builder.create(TileDislocatorPedestal::new,   dislocator_pedestal    ).build(null).setRegistryName("dislocator_pedestal"));
 //        event.getRegistry().register(TileEntityType.Builder.create(TileDislocatorReceptacle::new, dislocator_receptacle  ).build(null).setRegistryName("dislocator_receptacle"));
-        event.getRegistry().register(TileEntityType.Builder.create(TileCreativeOPCapacitor::new,  creative_op_capacitor  ).build(null).setRegistryName("creative_op_capacitor"));
+        event.getRegistry().register(TileEntityType.Builder.create(TileCreativeOPCapacitor::new,    creative_op_capacitor  ).build(null).setRegistryName("creative_op_capacitor"));
 //        event.getRegistry().register(TileEntityType.Builder.create(TileEntityDetector::new,       entityDetectors        ).build(null).setRegistryName("entity_detector"));
-        event.getRegistry().register(TileEntityType.Builder.create(TileStabilizedSpawner::new,    stabilized_spawner     ).build(null).setRegistryName("stabilized_spawner"));
+        event.getRegistry().register(TileEntityType.Builder.create(TileStabilizedSpawner::new,      stabilized_spawner     ).build(null).setRegistryName("stabilized_spawner"));
 //        event.getRegistry().register(TileEntityType.Builder.create(TilePotentiometer::new,        potentiometer          ).build(null).setRegistryName("potentiometer"));
 //        event.getRegistry().register(TileEntityType.Builder.create(TileCelestialManipulator::new, celestial_manipulator  ).build(null).setRegistryName("celestial_manipulator"));
 //        event.getRegistry().register(TileEntityType.Builder.create(TileDraconiumChest::new,       draconium_chest        ).build(null).setRegistryName("draconium_chest"));
@@ -132,15 +145,15 @@ public class DEContent {
 //        event.getRegistry().register(TileEntityType.Builder.create(TilePortal::new,               portal                 ).build(null).setRegistryName("portal"));
 //        event.getRegistry().register(TileEntityType.Builder.create(TilePortalClient::new,         portal                 ).build(null).setRegistryName("portal_client"));
 //        event.getRegistry().register(TileEntityType.Builder.create(TileChaosCrystal::new,         chaos_crystal          ).build(null).setRegistryName("chaos_crystal"));
-//        event.getRegistry().register(TileEntityType.Builder.create(TileCraftingInjector::new,     craftInjectors         ).build(null).setRegistryName("crafting_injector"));
-//        event.getRegistry().register(TileEntityType.Builder.create(TileCraftingCore::new,         crafting_core          ).build(null).setRegistryName("crafting_core"));
-        event.getRegistry().register(TileEntityType.Builder.create(TileEnergyCore::new,          energy_core            ).build(null).setRegistryName("storage_core"));
-        event.getRegistry().register(TileEntityType.Builder.create(TileEnergyCoreStabilizer::new,       energy_core_stabilizer ).build(null).setRegistryName("core_stabilizer"));
-        event.getRegistry().register(TileEntityType.Builder.create(TileEnergyPylon::new,          energy_pylon           ).build(null).setRegistryName("energy_pylon"));
-        event.getRegistry().register(TileEntityType.Builder.create(TileCoreStructure::new,        energy_core_structure  ).build(null).setRegistryName("core_structure"));
-        event.getRegistry().register(TileEntityType.Builder.create(TileReactorCore::new,          reactor_core           ).build(null).setRegistryName("reactor_core"));
-        event.getRegistry().register(TileEntityType.Builder.create(TileReactorStabilizer::new,    reactor_stabilizer     ).build(null).setRegistryName("reactor_stabilizer"));
-        event.getRegistry().register(TileEntityType.Builder.create(TileReactorInjector::new,      reactor_injector       ).build(null).setRegistryName("reactor_injector"));
+        event.getRegistry().register(TileEntityType.Builder.create(TileCraftingInjector::new,       craftInjectors         ).build(null).setRegistryName("crafting_injector"));
+        event.getRegistry().register(TileEntityType.Builder.create(TileCraftingCore::new,           crafting_core          ).build(null).setRegistryName("crafting_core"));
+        event.getRegistry().register(TileEntityType.Builder.create(TileEnergyCore::new,             energy_core            ).build(null).setRegistryName("storage_core"));
+        event.getRegistry().register(TileEntityType.Builder.create(TileEnergyCoreStabilizer::new,   energy_core_stabilizer ).build(null).setRegistryName("core_stabilizer"));
+        event.getRegistry().register(TileEntityType.Builder.create(TileEnergyPylon::new,            energy_pylon           ).build(null).setRegistryName("energy_pylon"));
+        event.getRegistry().register(TileEntityType.Builder.create(TileCoreStructure::new,          energy_core_structure  ).build(null).setRegistryName("core_structure"));
+        event.getRegistry().register(TileEntityType.Builder.create(TileReactorCore::new,            reactor_core           ).build(null).setRegistryName("reactor_core"));
+        event.getRegistry().register(TileEntityType.Builder.create(TileReactorStabilizer::new,      reactor_stabilizer     ).build(null).setRegistryName("reactor_stabilizer"));
+        event.getRegistry().register(TileEntityType.Builder.create(TileReactorInjector::new,        reactor_injector       ).build(null).setRegistryName("reactor_injector"));
 
         event.getRegistry().register(TileEntityType.Builder.create(TileCrystalDirectIO::new, crystal_io_basic, crystal_io_wyvern, crystal_io_draconic/*, crystal_io_chaotic*/).build(null).setRegistryName("io_crystal"));
         event.getRegistry().register(TileEntityType.Builder.create(TileCrystalRelay::new, crystal_relay_basic, crystal_relay_wyvern, crystal_relay_draconic/*, crystal_relay_chaotic*/).build(null).setRegistryName("relay_crystal"));
@@ -273,13 +286,13 @@ public class DEContent {
 //        event.getRegistry().register(new DissEnchanter(hardenedMachine).setRegistryName("disenchanter"));
 //        event.getRegistry().register(new CelestialManipulator(hardenedMachine).setRegistryName("celestial_manipulator"));
 //        event.getRegistry().register(new PlacedItem(hardenedMachine).setRegistryName("placed_item"));
-//        //Fusion Crafting
-//        event.getRegistry().register(new FusionCraftingCore(hardenedMachine).setRegistryName("crafting_core"));
-//        event.getRegistry().register(new CraftingInjector(hardenedMachine).setRegistryName("basic_crafting_injector"));
-//        event.getRegistry().register(new CraftingInjector(hardenedMachine).setRegistryName("wyvern_crafting_injector"));
-//        event.getRegistry().register(new CraftingInjector(hardenedMachine).setRegistryName("awakened_crafting_injector"));
-//        event.getRegistry().register(new CraftingInjector(hardenedMachine).setRegistryName("chaotic_crafting_injector"));
-//        //Energy Core
+        //Fusion Crafting
+        event.getRegistry().register(new FusionCraftingCore(hardenedMachine).setRegistryName("crafting_core"));
+        event.getRegistry().register(new CraftingInjector(hardenedMachine, DRACONIUM).setRegistryName("basic_crafting_injector"));
+        event.getRegistry().register(new CraftingInjector(hardenedMachine, WYVERN).setRegistryName("wyvern_crafting_injector"));
+        event.getRegistry().register(new CraftingInjector(hardenedMachine, DRACONIC).setRegistryName("awakened_crafting_injector"));
+        event.getRegistry().register(new CraftingInjector(hardenedMachine, CHAOTIC).setRegistryName("chaotic_crafting_injector"));
+        //Energy Core
         event.getRegistry().register(new EnergyCore(hardenedMachine).setRegistryName("energy_core"));
         event.getRegistry().register(new EnergyCoreStabilizer(hardenedMachine).setRegistryName("energy_core_stabilizer"));
         event.getRegistry().register(new EnergyPylon(hardenedMachine).setRegistryName("energy_pylon"));
@@ -391,7 +404,6 @@ public class DEContent {
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event) {
         Block[] entityDetectors = {entity_detector, entity_detector_advanced};
-        Block[] craftInjectors = {crafting_injector_basic, crafting_injector_wyvern, crafting_injector_awakened, crafting_injector_chaotic};
         Supplier<Object[]> tabBlocks = () -> new Object[]{ore_draconium_end, block_draconium_awakened, infused_obsidian, draconium_chest, stabilized_spawner, grinder, disenchanter};
         CyclingItemGroup blockGroup = new CyclingItemGroup("draconicevolution.blocks", 40, tabBlocks, ITEM_REGISTRY_ORDER).setOffset(20);
         Supplier<Object[]> tabItems = () -> new Object[]{core_wyvern, ingot_draconium_awakened, sword_chaotic, chaos_shard, energy_core_draconic, staff_draconic, crystal_binder, dust_draconium, axe_draconic};
@@ -415,11 +427,11 @@ public class DEContent {
 //        registerItem(event, new ItemBlockBCore(placed_item,                 new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(placed_item.getRegistryName())));
 //        registerItem(event, new ItemBlockBCore(portal,                      new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(portal.getRegistryName())));
 //        registerItem(event, new ItemBlockBCore(chaos_crystal,               new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(chaos_crystal.getRegistryName())));
-//        registerItem(event, new ItemBlockBCore(craftInjectors[0],           new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(craftInjectors[0].getRegistryName())));
-//        registerItem(event, new ItemBlockBCore(craftInjectors[1],           new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(craftInjectors[1].getRegistryName())));
-//        registerItem(event, new ItemBlockBCore(craftInjectors[2],           new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(craftInjectors[2].getRegistryName())));
-//        registerItem(event, new ItemBlockBCore(craftInjectors[3],           new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(craftInjectors[3].getRegistryName())));
-//        registerItem(event, new ItemBlockBCore(crafting_core,               new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(crafting_core.getRegistryName())));
+        registerItem(event, new ItemBlockBCore(crafting_injector_basic,     new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(crafting_injector_basic.getRegistryName())));
+        registerItem(event, new ItemBlockBCore(crafting_injector_wyvern,    new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(crafting_injector_wyvern.getRegistryName())));
+        registerItem(event, new ItemBlockBCore(crafting_injector_awakened,  new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(crafting_injector_awakened.getRegistryName())));
+        registerItem(event, new ItemBlockBCore(crafting_injector_chaotic,   new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(crafting_injector_chaotic.getRegistryName())));
+        registerItem(event, new ItemBlockBCore(crafting_core,               new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(crafting_core.getRegistryName())));
         registerItem(event, new ItemBlockBCore(energy_core,                 new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(energy_core.getRegistryName())));
         registerItem(event, new ItemBlockBCore(energy_core_stabilizer,      new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(energy_core_stabilizer.getRegistryName())));
         registerItem(event, new ItemBlockBCore(energy_pylon,                new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(energy_pylon.getRegistryName())));
@@ -519,8 +531,10 @@ public class DEContent {
     // Entities
     //#################################################################
 
-    @ObjectHolder("chaos_guardian")             public static EntityType<EntityChaosGuardian> CHAOS_GUARDIAN;
-    @ObjectHolder("guardian_projectile")        public static EntityType<EntityGuardianProjectile> GUARDIAN_PROJECTILE;
+    @ObjectHolder("chaos_guardian")
+    public static EntityType<EntityChaosGuardian> CHAOS_GUARDIAN;
+    @ObjectHolder("guardian_projectile")
+    public static EntityType<EntityGuardianProjectile> GUARDIAN_PROJECTILE;
 
     @SubscribeEvent
     public static void registerEntities(RegistryEvent.Register<EntityType<?>> event) {
@@ -530,6 +544,26 @@ public class DEContent {
 
     @SubscribeEvent
     public static void registerRecipeType(RegistryEvent.Register<IRecipeSerializer<?>> event) {
-        event.getRegistry().register(new FusionRecipeSerializer().setRegistryName("fusion_crafting"));
+        event.getRegistry().register(new FusionRecipe.Serializer().setRegistryName("fusion_crafting"));
+    }
+
+    private static OreFeatureConfig.FillerBlockType END_STONE_FILTER = OreFeatureConfig.FillerBlockType.create("END_STONE", "end_stone", e -> e.getBlock() == Blocks.END_STONE);
+
+    @SubscribeEvent
+    public static void registerWorldGen(RegistryEvent.Register<Feature<?>> event) {
+        for (Biome biome : ForgeRegistries.BIOMES) {
+            if (biome.getCategory() == Biome.Category.THEEND && DEConfig.enableOreEnd) {
+                biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Feature.ORE.withConfiguration(new OreFeatureConfig(END_STONE_FILTER, ore_draconium_end.getDefaultState(), 6))
+                        .withPlacement(Placement.CHANCE_RANGE.configure(new ChanceRangeConfig(0.5F, 32, 32, 128))));
+
+            } else if (biome.getCategory() == Biome.Category.NETHER && DEConfig.enableOreNether) {
+                biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Feature.ORE.withConfiguration(new OreFeatureConfig(OreFeatureConfig.FillerBlockType.NETHERRACK, ore_draconium_nether.getDefaultState(), 16))
+                        .withPlacement(Placement.CHANCE_RANGE.configure(new ChanceRangeConfig(0.1F, 0, 0, 16))));
+
+            } else if (DEConfig.enableOreOverworld) {
+                biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Feature.ORE.withConfiguration(new OreFeatureConfig(OreFeatureConfig.FillerBlockType.NATURAL_STONE, ore_draconium_overworld.getDefaultState(), 8))
+                        .withPlacement(Placement.CHANCE_RANGE.configure(new ChanceRangeConfig(0.1F, 0, 0, 16))));
+            }
+        }
     }
 }

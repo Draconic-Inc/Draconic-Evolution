@@ -26,6 +26,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
+import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.common.thread.EffectiveSide;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -44,65 +45,6 @@ public class CommonProxy {
     public void commonSetup(FMLCommonSetupEvent event) {
         MinecraftForge.EVENT_BUS.register(new DEEventHandler());
         ModCapabilities.register();
-
-
-//        MinecraftForge.EVENT_BUS.addListener((ProjectileImpactEvent.Throwable e) -> {
-//            if (!(e.getRayTraceResult() instanceof EntityRayTraceResult) || EffectiveSide.get().isClient()) return;
-//            LivingEntity entity = (LivingEntity) ((EntityRayTraceResult) e.getRayTraceResult()).getEntity();
-//            Entity throwable = e.getThrowable();
-//
-//            Vector3 evec = Vector3.fromEntityCenter(entity);
-////            Vector3 posVec = new Vector3(throwable.posX, throwable.posY + throwable.getHeight() / 2, throwable.posZ);
-//            Vector3 posVec = new Vector3(throwable.posX, throwable.posY + (throwable.getHeight() / 2D), throwable.posZ).subtract(new Vector3(throwable.getMotion()).multiply(4));
-////            Vector3 lastPosVec = new Vector3(throwable.lastTickPosX, throwable.lastTickPosY + (throwable.getHeight() / 2D), throwable.lastTickPosZ);
-//            Vector3 lastPosVec = new Vector3(throwable.posX, throwable.posY + (throwable.getHeight() / 2D), throwable.posZ);
-//            Vector3 diffVec = lastPosVec.copy().subtract(posVec);
-//            double distanceBetweenTicks = diffVec.mag();
-//            double width = entity.getWidth() + 0.0;
-//            double height = entity.getHeight() + 0.0;
-//
-//            Vector3 interpVec = null;
-//            for (double d = 0; d <= distanceBetweenTicks; d += 0.05) {
-//                interpVec = diffVec.copy().normalize().multiply(d).add(lastPosVec);
-//                double xDiff = Math.abs(evec.x - interpVec.x);
-//                double yDiff = Math.abs(evec.y - interpVec.y);
-//                double zDiff = Math.abs(evec.z - interpVec.z);
-//                if (yDiff <= height / 2 && xDiff <= width / 2 && zDiff <= width / 2) {
-//                    break;
-//                }
-//                interpVec = null;
-//            }
-//
-//            if (interpVec == null) {
-//                return; //In your actual entity code this would be considered a miss.
-//            }
-//
-//            interpVec.set(interpVec.x - entity.posX, (interpVec.y + throwable.getHeight() / 2 - (entity.posY - entity.getYOffset() + entity.getHeight() / 2)), interpVec.z - entity.posZ);
-////            interpVec.subtract(throwable.posX, 0, throwable.posZ);
-//
-////            Vector3 entPos = Vector3.fromEntity(hit);
-////            Vector3 throwPos = Vector3.fromEntity(e.getThrowable());
-////            Vector3 hitVec = throwPos.subtract(entPos);
-////            hitVec.rotate(MathHelper.torad * (hit.renderYawOffset + 180), Vector3.Y_POS);
-//
-////            entity.getPersistentData().remove("wr:trackers");
-//            CompoundNBT trackerData = new CompoundNBT();
-//            trackerData.put("vec", interpVec.writeToNBT(new CompoundNBT()));
-//            trackerData.putFloat("rot", entity.renderYawOffset);
-//
-//            ListNBT trackerList = entity.getPersistentData().getList("wr:trackers", 10);
-//            trackerList.add(trackerData);
-//            entity.getPersistentData().put("wr:trackers", trackerList);
-//
-//
-//            DraconicNetwork.sendTrackerData(entity.getEntityId(), trackerList);
-//
-////            LogHelper.dev(hitVec + " " + (hit.renderYawOffset % 360) * MathHelper.torad);
-////            LogHelper.dev((hit.renderYawOffset));
-//
-//
-//            ///summon minecraft:pig ~ ~ ~  {NoAI:1}
-//        });
     }
 
     public void clientSetup(FMLClientSetupEvent event) {

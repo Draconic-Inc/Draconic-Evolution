@@ -1,42 +1,54 @@
 package com.brandon3055.draconicevolution.client.render.tile;
 
+import codechicken.lib.vec.Matrix4;
 import com.brandon3055.brandonscore.client.render.TESRBase;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileCraftingCore;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
+import com.brandon3055.draconicevolution.client.render.effect.EffectTrackerFusionCrafting;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.block.BlockState;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Quaternion;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.item.ItemStack;
 
-public class RenderTileFusionCraftingCore extends TESRBase<TileCraftingCore> {
+import static net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType.FIXED;
+
+public class RenderTileFusionCraftingCore extends TileEntityRenderer<TileCraftingCore> {
 
     public RenderTileFusionCraftingCore(TileEntityRendererDispatcher rendererDispatcherIn) {
         super(rendererDispatcherIn);
     }
 
-//    @Override
-    public void render(TileCraftingCore te, double x, double y, double z, float partialTicks, int destroyStage) {
-//        if (MinecraftForgeClient.getRenderPass() == 0) {
-            ItemStack stack = !te.getStackInCore(1).isEmpty() ? te.getStackInCore(1) : te.getStackInCore(0);
-            if (!stack.isEmpty()) {
-                RenderSystem.pushMatrix();
-                RenderSystem.translated(x + 0.5, y + 0.5, z + 0.5);
-                RenderSystem.scalef(0.5F, 0.5F, 0.5F);
-                RenderSystem.rotatef((ClientEventHandler.elapsedTicks + partialTicks) * 0.8F, 0F, -1F, 0F);
-//                renderItem(stack);
-                RenderSystem.popMatrix();
-            }
-//        }
-//        else {
-//            ClientPlayerEntity player = Minecraft.getInstance().player;
-//            if (player == null) {
-//                return;
-//            }
-//            EffectTrackerFusionCrafting.interpPosX = player.lastTickPosX + (player.posX - player.lastTickPosX) * (double) partialTicks;
-//            EffectTrackerFusionCrafting.interpPosY = player.lastTickPosY + (player.posY - player.lastTickPosY) * (double) partialTicks;
-//            EffectTrackerFusionCrafting.interpPosZ = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * (double) partialTicks;
-//
-//            te.renderEffects(partialTicks);
-//
-//        }
+    @Override
+    public void render(TileCraftingCore te, float partialTicks, MatrixStack mStack, IRenderTypeBuffer getter, int packetLight, int packetOverlay) {
+        ItemStack stack = !te.getStackInCore(1).isEmpty() ? te.getStackInCore(1) : te.getStackInCore(0);
+        Minecraft mc = Minecraft.getInstance();
+        if (!stack.isEmpty()) {
+            mStack.push();
+            mStack.translate(0.5, 0.5, 0.5);
+            mStack.scale(0.5F, 0.5F, 0.5F);
+            mStack.rotate(new Quaternion(0, (ClientEventHandler.elapsedTicks + partialTicks) * 0.8F, 0, true));
+            mc.getItemRenderer().renderItem(stack, FIXED, packetLight, packetOverlay, mStack, getter);
+            mStack.pop();
+        }
+
+        ClientPlayerEntity player = mc.player;
+        if (player == null) {
+            return;
+        }
+//        mStack.scale(5, 5, 5);
+        mStack.translate(0.5, -1, 0.5);
+        RenderSystem.pushMatrix();
+        new Matrix4(mStack).glApply();
+        EffectTrackerFusionCrafting.interpPosX = player.lastTickPosX + (player.posX - player.lastTickPosX) * (double) partialTicks;
+        EffectTrackerFusionCrafting.interpPosY = player.lastTickPosY + (player.posY - player.lastTickPosY) * (double) partialTicks;
+        EffectTrackerFusionCrafting.interpPosZ = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * (double) partialTicks;
+//        te.renderEffects(partialTicks);
+        RenderSystem.popMatrix();
     }
 }

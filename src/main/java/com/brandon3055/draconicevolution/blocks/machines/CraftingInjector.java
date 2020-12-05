@@ -13,6 +13,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
@@ -23,6 +24,9 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -34,19 +38,22 @@ import java.util.List;
 /**
  * Created by brandon3055 on 10/06/2016.
  */
-public class CraftingInjector extends BlockBCore implements /*ITileEntityProvider, IRenderOverride,*/ IHudDisplay {
+public class CraftingInjector extends BlockBCore implements IHudDisplay {
 
-//    public static final PropertyString TIER = new PropertyString("tier", "basic", "wyvern", "draconic", "chaotic");
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
+    private static VoxelShape SHAPE_DOWN = VoxelShapes.create(0.0625, 0.375, 0.0625, 0.9375, 1, 0.9375);
+    private static VoxelShape SHAPE_UP = VoxelShapes.create(0.0625, 0, 0.0625, 0.9375, 0.625, 0.9375);
+    private static VoxelShape SHAPE_NORTH = VoxelShapes.create(0.0625, 0.0625, 0.375, 0.9375, 0.9375, 1);
+    private static VoxelShape SHAPE_SOUTH = VoxelShapes.create(0.0625, 0.0625, 0, 0.9375, 0.9375, 0.625);
+    private static VoxelShape SHAPE_WEST = VoxelShapes.create(0.375, 0.0625, 0.0625, 1, 0.9375, 0.9375);
+    private static VoxelShape SHAPE_EAST = VoxelShapes.create(0, 0.0625, 0.0625, 0.625, 0.9375, 0.9375);
+    private final TechLevel techLevel;
 
-    public CraftingInjector(Properties properties) {
+
+    public CraftingInjector(Properties properties, TechLevel techLevel) {
         super(properties);
-        this.setDefaultState(stateContainer.getBaseState()/*.with(TIER, "basic")*/.with(FACING, Direction.UP));
-
-//        this.addName(0, "crafting_injector_basic");
-//        this.addName(1, "crafting_injector_wyvern");
-//        this.addName(2, "crafting_injector_draconic");
-//        this.addName(3, "crafting_injector_chaotic");
+        this.techLevel = techLevel;
+        this.setDefaultState(stateContainer.getBaseState().with(FACING, Direction.UP));
     }
 
     @Override
@@ -59,41 +66,7 @@ public class CraftingInjector extends BlockBCore implements /*ITileEntityProvide
         builder.add(FACING);
     }
 
-    //region BlockState
-//    @Override
-//    protected BlockStateContainer createBlockState() {
-//        return new BlockStateContainer(this, TIER, FACING);
-//    }
-//
-//    @Override
-//    public BlockState getActualState(BlockState state, IBlockAccess worldIn, BlockPos pos) {
-//        TileEntity tile = worldIn.getTileEntity(pos);
-//
-//        if (tile instanceof TileCraftingInjector) {
-//            return state.withProperty(FACING, Direction.getFront(((TileCraftingInjector) tile).facing.get()));
-//        }
-//
-//        return state;
-//    }
-//
-//    @Override
-//    public BlockState getStateFromMeta(int meta) {
-//        return this.getDefaultState().withProperty(TIER, TIER.fromMeta(meta));
-//    }
-//
-//    @Override
-//    public int getMetaFromState(BlockState state) {
-//        return TIER.toMeta(state.getValue(TIER));
-//    }
-//
-//    @Override
-//    public void getSubBlocks(CreativeTabs tab, NonNullList<ItemStack> list) {
-//        list.add(new ItemStack(this, 1, 0));
-//        list.add(new ItemStack(this, 1, 1));
-//        list.add(new ItemStack(this, 1, 2));
-//        list.add(new ItemStack(this, 1, 3));
-//    }
-//
+
 //    @Override
 //    public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
 //        world.setBlockState(pos, state.withProperty(TIER, TIER.fromMeta(stack.getItemDamage())));
@@ -108,6 +81,11 @@ public class CraftingInjector extends BlockBCore implements /*ITileEntityProvide
 
     //endregion
 
+    @Override
+    public BlockState getStateForPlacement(BlockItemUseContext context) {
+        return this.getDefaultState().with(FACING, context.getNearestLookingDirection().getOpposite());
+    }
+
     //region Block
 
 
@@ -119,7 +97,7 @@ public class CraftingInjector extends BlockBCore implements /*ITileEntityProvide
     @Nullable
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        return new TileCraftingInjector(TechLevel.DRACONIUM);
+        return new TileCraftingInjector(techLevel);
     }
 
     @Override
@@ -153,40 +131,53 @@ public class CraftingInjector extends BlockBCore implements /*ITileEntityProvide
             }
         } else {
             ItemStack stack = player.getHeldItemMainhand();
-//            ItemStack remainder = ;
-//            stack.setCount(remainder);
             player.setHeldItem(Hand.MAIN_HAND, InventoryUtils.insertItem(craftingPedestal.itemHandler, stack, false));
         }
 
         return ActionResultType.SUCCESS;
     }
 
-//    @Override
-//    public int damageDropped(BlockState state) {
-//        return getMetaFromState(state);
-//    }
-
     //endregion
 
     //region Rendering
 
-//    @Override
+    @Override
+    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+        Direction facing = state.get(FACING);
+        switch (facing) {
+            case DOWN:
+                return SHAPE_DOWN;
+            case UP:
+                return SHAPE_UP;
+            case NORTH:
+                return SHAPE_NORTH;
+            case SOUTH:
+                return SHAPE_SOUTH;
+            case WEST:
+                return SHAPE_WEST;
+            case EAST:
+                return SHAPE_EAST;
+        }
+        return super.getShape(state, worldIn, pos, context);
+    }
+
+    //    @Override
 //    public AxisAlignedBB getBoundingBox(BlockState state, IBlockAccess source, BlockPos pos) {
 //        Direction facing = getActualState(state, source, pos).getValue(FACING);
 //
 //        switch (facing) {
 //            case DOWN:
-//                return new AxisAlignedBB(0.0625, 0.375, 0.0625, 0.9375, 1, 0.9375);
+//                return new AxisAlignedBB();
 //            case UP:
-//                return new AxisAlignedBB(0.0625, 0, 0.0625, 0.9375, 0.625, 0.9375);
+//                return new AxisAlignedBB();
 //            case NORTH:
-//                return new AxisAlignedBB(0.0625, 0.0625, 0.375, 0.9375, 0.9375, 1);
+//                return new AxisAlignedBB();
 //            case SOUTH:
-//                return new AxisAlignedBB(0.0625, 0.0625, 0, 0.9375, 0.9375, 0.625);
+//                return new AxisAlignedBB();
 //            case WEST:
-//                return new AxisAlignedBB(0.375, 0.0625, 0.0625, 1, 0.9375, 0.9375);
+//                return new AxisAlignedBB();
 //            case EAST:
-//                return new AxisAlignedBB(0, 0.0625, 0.0625, 0.625, 0.9375, 0.9375);
+//                return new AxisAlignedBB();
 //        }
 //
 //        return super.getBoundingBox(state, source, pos);

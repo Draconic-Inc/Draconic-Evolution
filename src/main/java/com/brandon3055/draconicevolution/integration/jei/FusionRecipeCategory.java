@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.integration.jei;
 
-import com.brandon3055.draconicevolution.api.fusioncrafting.IFusionRecipe;
+import com.brandon3055.draconicevolution.api.fusioncrafting.IFusionRecipeOld;
 import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
 import com.brandon3055.draconicevolution.client.DETextures;
 
@@ -19,7 +19,7 @@ import javax.annotation.Nonnull;
 /**
  * Created by brandon3055 on 24/07/2016.
  */
-public class FusionRecipeCategory implements IRecipeCategory<IFusionRecipe> { //TODO Fix animation in PI
+public class FusionRecipeCategory implements IRecipeCategory<IFusionRecipeOld> { //TODO Fix animation in PI
 
     private final IDrawable background;
     private final String localizedName;
@@ -61,17 +61,17 @@ public class FusionRecipeCategory implements IRecipeCategory<IFusionRecipe> { //
     }
 
     @Override
-    public Class<? extends IFusionRecipe> getRecipeClass() {
-        return IFusionRecipe.class;
+    public Class<? extends IFusionRecipeOld> getRecipeClass() {
+        return IFusionRecipeOld.class;
     }
 
     @Override
-    public void setIngredients(IFusionRecipe iFusionRecipe, IIngredients iIngredients) {
+    public void setIngredients(IFusionRecipeOld iFusionRecipe, IIngredients iIngredients) {
 
     }
 
     @Override
-    public void setRecipe(IRecipeLayout iRecipeLayout, IFusionRecipe iFusionRecipe, IIngredients iIngredients) {
+    public void setRecipe(IRecipeLayout iRecipeLayout, IFusionRecipeOld iFusionRecipe, IIngredients iIngredients) {
 
     }
 

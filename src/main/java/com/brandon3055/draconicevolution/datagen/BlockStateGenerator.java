@@ -9,6 +9,9 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.generators.*;
+import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.registries.ForgeRegistryEntry;
+import net.minecraftforge.registries.IForgeRegistryEntry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -40,6 +43,13 @@ public class BlockStateGenerator extends BlockStateProvider {
         simpleBlock(DEContent.energy_core_stabilizer, models().getExistingFile(modLoc("block/energy_core_stabilizer")));
         simpleBlock(DEContent.creative_op_capacitor);
         simpleBlock(DEContent.stabilized_spawner, models().getExistingFile(modLoc("block/stabilized_spawner")));
+
+        simpleBlock(DEContent.crafting_core, models().getExistingFile(modLoc("block/crafting/fusion_crafting_core")));
+        directionalBlock(DEContent.crafting_injector_basic, models().getExistingFile(modLoc("block/crafting/crafting_injector_draconium")));
+        directionalBlock(DEContent.crafting_injector_wyvern, models().getExistingFile(modLoc("block/crafting/crafting_injector_wyvern")));
+        directionalBlock(DEContent.crafting_injector_awakened, models().getExistingFile(modLoc("block/crafting/crafting_injector_draconic")));
+        directionalBlock(DEContent.crafting_injector_chaotic, models().getExistingFile(modLoc("block/crafting/crafting_injector_chaotic")));
+
 
         dummyBlock(DEContent.crystal_io_basic);
         dummyBlock(DEContent.crystal_io_wyvern);
@@ -73,56 +83,13 @@ public class BlockStateGenerator extends BlockStateProvider {
         ModelFile modelGrinder = models().getExistingFile(modLoc("block/grinder/grinder"));
         ModelFile modelGrinderActive = models().getExistingFile(modLoc("block/grinder/grinder_eyes"));
         MultiPartBlockStateBuilder grinderBuilder = getMultipartBuilder(DEContent.grinder);
-        for (Direction dir : FenceGateBlock.HORIZONTAL_FACING.getAllowedValues()) {
+        for (Direction dir : Direction.BY_HORIZONTAL_INDEX) {
             int angle = (int) dir.getOpposite().getHorizontalAngle();
             grinderBuilder.part().modelFile(modelGrinder).rotationY(angle).addModel().condition(Grinder.FACING, dir).end()
                     .part().modelFile(modelGrinderActive).rotationY(angle).addModel().condition(Grinder.FACING, dir).condition(Grinder.ACTIVE, true).end();
         }
 
 
-
-
-
-//            getVariantBuilder(DEContent.grinder)
-//                    .forAllStates(state -> ConfiguredModel.builder()
-//                            .modelFile(modelGrinder)
-//                            .rotationY((int) state.get(Generator.FACING).getOpposite().getHorizontalAngle())
-//                            .build());
-
-
-//            ModelFile modelGenerator = getExistingFile(modLoc("block/generator/generator"));
-//            ModelFile modelGeneratorFlame = getExistingFile(modLoc("block/generator/generator_flame"));
-//            MultiPartBlockStateBuilder generatorBuilder = getMultipartBuilder(DEContent.generator);
-//            for (Direction dir : FenceGateBlock.HORIZONTAL_FACING.getAllowedValues()) {
-//                int angle = (int) dir.getOpposite().getHorizontalAngle();
-//                generatorBuilder.part().modelFile(modelGenerator).rotationY(angle).addModel().condition(Generator.FACING, dir).end()
-//                        .part().modelFile(modelGeneratorFlame).rotationY(angle).addModel().condition(Generator.FACING, dir).condition(Generator.ACTIVE, true).end();
-//            }
-
-//            VariantBlockStateBuilder
-
-//            getVariantBuilder(DEContent.generator)
-//                    .forAllStates(state -> {
-//                        Builder<?> bdr = ConfiguredModel.builder()
-//                                .modelFile(modelGenerator)
-//                                .rotationY((int) state.get(Generator.FACING).getOpposite().getHorizontalAngle());
-//                        if (state.get(Generator.ACTIVE)) {
-//                            bdr = bdr.nextModel().modelFile(modelGeneratorFlame)
-//                                    .rotationY((int) state.get(Generator.FACING).getOpposite().getHorizontalAngle());
-//                        }
-//                        return bdr.build();
-//                    });
-
-
-//            getVariantBuilder(Blocks.FURNACE)
-//                    .forAllStates(state -> ConfiguredModel.builder()
-//                            .modelFile(state.get(FurnaceBlock.LIT) ? furnaceLit : furnace)
-//                            .rotationY((int) state.get(FurnaceBlock.FACING).getOpposite().getHorizontalAngle())
-//                            .build()
-//                    );
-
-
-//            simpleBlock(DEContent.generator, );
 
 
         if (true) return;
@@ -258,6 +225,10 @@ public class BlockStateGenerator extends BlockStateProvider {
                 .withExistingParent("dummy", "block")//
                 .texture("particle", "minecraft:block/glass");
         simpleBlock(block, model);
+    }
+
+    private String name(IForgeRegistryEntry<?> object) {
+        return object.getRegistryName().toString();
     }
 
     // Testing the outputs

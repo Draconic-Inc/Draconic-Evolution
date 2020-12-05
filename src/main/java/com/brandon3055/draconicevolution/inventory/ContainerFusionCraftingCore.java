@@ -27,26 +27,11 @@ public class ContainerFusionCraftingCore extends ContainerBCTile<TileCraftingCor
     public ContainerFusionCraftingCore(@Nullable ContainerType<?> type, int windowId, PlayerInventory player, TileCraftingCore tile) {
         super(type, windowId, player, tile);
 
-        addPlayerSlots(10, 116);
+        addPlayerSlots(10, 119);
         addSlot(new SlotItemHandler(tile.itemHandler, 0, 82, 26));
         addSlot(new OutputSlot(tile.itemHandler, 1, 82, 70));
     }
 
-//    public ContainerFusionCraftingCore(PlayerEntity player, TileFusionCraftingCore tile) {
-//        super(player, tile);
-//
-////		for (int x = 0; x < 9; x++) {
-////			addSlotToContainer(new Slot(invPlayer, x, 8 + 18 * x, 138));
-////		}
-////
-////		for (int y = 0; y < 3; y++) {
-////			for (int x = 0; x < 9; x++) {
-////				addSlotToContainer(new Slot(invPlayer, x + y * 9 + 9, 8 + 18 * x, 80 + y * 18));
-////			}
-////		}
-//
-//
-//    }
 
     @Override
     public boolean canInteractWith(PlayerEntity player) {

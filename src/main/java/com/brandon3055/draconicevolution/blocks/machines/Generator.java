@@ -30,7 +30,7 @@ import javax.annotation.Nullable;
  * Created by Brandon on 23/07/2014.
  * Block for DE Generator
  */
-public class Generator extends BlockBCore/* implements ITileEntityProvider, IRenderOverride*/ {
+public class Generator extends BlockBCore {
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
 
@@ -71,42 +71,12 @@ public class Generator extends BlockBCore/* implements ITileEntityProvider, IRen
         builder.add(FACING, ACTIVE);
     }
 
-    //    @Override
-//    public BlockRenderLayer getBlockLayer() {
-//        return BlockRenderLayer.CUTOUT;
-//    }
-//
-//    @Override
-//    @OnlyIn(Dist.CLIENT)
-//    public void registerRenderer(Feature feature) {
-//        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), 0, new ModelResourceLocation(feature.getRegistryName(), "inventory"));
-//        ClientRegistry.bindTileEntitySpecialRenderer(TileGenerator.class, new AnimationTESR<>());
-//    }
-
-
-//    @Override
-//    public int getMetaFromState(BlockState state) {
-//        return state.getValue(FACING).getIndex();
-//    }
-//
-//    @Override
-//    public BlockState withRotation(BlockState state, Rotation rot) {
-//        return state.withProperty(FACING, rot.rotate(state.getValue(FACING)));
-//    }
-//
-//    @Override
-//    public BlockState withMirror(BlockState state, Mirror mirrorIn) {
-//        return state.withRotation(mirrorIn.toRotation(state.getValue(FACING)));
-//    }
-//
-
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context) {
         return this.getDefaultState().with(FACING, context.getPlacementHorizontalFacing().getOpposite());
     }
 
     //endregion
-
 
     @Override
     public boolean hasTileEntity(BlockState state) {

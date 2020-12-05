@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.api.fusioncrafting;
 
+import com.brandon3055.draconicevolution.api.crafting.IFusionInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 
@@ -41,7 +42,7 @@ public interface ICraftingInjector {
      * @return true if the pedestal accepts the inventory and can craft. false if the pedestal does not accept the inventory.
      * Will return false if the pedestal is already working with a different core.
      */
-    boolean setCraftingInventory(@Nullable IFusionCraftingInventory craftingInventory);
+    boolean setCraftingInventory(@Nullable IFusionInventory craftingInventory);
 
     /**
      * Return the direction this pedestal is facing.

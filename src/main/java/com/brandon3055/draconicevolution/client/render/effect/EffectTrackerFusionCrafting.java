@@ -9,6 +9,7 @@ import codechicken.lib.vec.Vector3;
 
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.utils.Utils;
+import com.brandon3055.draconicevolution.api.crafting.IFusionInventory;
 import com.brandon3055.draconicevolution.api.fusioncrafting.IFusionCraftingInventory;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileCraftingInjector;
 import com.brandon3055.draconicevolution.handlers.DESoundHandler;
@@ -35,7 +36,7 @@ public class EffectTrackerFusionCrafting {
     public static double interpPosZ = 0;
     private Random rand = new Random();
     private final Vec3D corePos;
-    public final IFusionCraftingInventory craftingInventory;
+    public final IFusionInventory craftingInventory;
     private final int effectCount;
     private int renderBolt = 0;
     private float rotation;
@@ -55,7 +56,7 @@ public class EffectTrackerFusionCrafting {
     public float green = 1F;
     public float blue = 1F;
 
-    public EffectTrackerFusionCrafting(World world, Vec3D pos, Vec3D corePos, IFusionCraftingInventory craftingInventory, int effectCount) {
+    public EffectTrackerFusionCrafting(World world, Vec3D pos, Vec3D corePos, IFusionInventory craftingInventory, int effectCount) {
         this.world = world;
         this.corePos = corePos;
         this.craftingInventory = craftingInventory;

@@ -38,6 +38,17 @@ public class ItemModelGenerator extends ItemModelProvider {
         blockItem(DEContent.generator, modLoc("block/generator/generator"));
         blockItem(DEContent.grinder, modLoc("block/grinder/grinder"));
         blockItem(DEContent.energy_pylon, modLoc("block/energy_pylon_input"));
+        blockItem(DEContent.crafting_injector_basic);
+        blockItem(DEContent.crafting_injector_wyvern);
+        blockItem(DEContent.crafting_injector_awakened);
+        blockItem(DEContent.crafting_injector_chaotic);
+        blockItem(DEContent.crafting_core, modLoc("block/crafting/fusion_crafting_core"));
+        blockItem(DEContent.crafting_injector_basic, modLoc("block/crafting/crafting_injector_draconium"));
+        blockItem(DEContent.crafting_injector_wyvern, modLoc("block/crafting/crafting_injector_wyvern"));
+        blockItem(DEContent.crafting_injector_awakened, modLoc("block/crafting/crafting_injector_draconic"));
+        blockItem(DEContent.crafting_injector_chaotic, modLoc("block/crafting/crafting_injector_chaotic"));
+
+
 
         blockItem(DEContent.disenchanter);
         blockItem(DEContent.energy_infuser);
@@ -54,11 +65,6 @@ public class ItemModelGenerator extends ItemModelProvider {
         blockItem(DEContent.placed_item);
         blockItem(DEContent.portal);
         blockItem(DEContent.chaos_crystal);
-        blockItem(DEContent.crafting_injector_basic);
-        blockItem(DEContent.crafting_injector_wyvern);
-        blockItem(DEContent.crafting_injector_awakened);
-        blockItem(DEContent.crafting_injector_chaotic);
-        blockItem(DEContent.crafting_core);
         blockItem(DEContent.energy_core);
         blockItem(DEContent.energy_core_stabilizer);
         blockItem(DEContent.energy_core_structure);

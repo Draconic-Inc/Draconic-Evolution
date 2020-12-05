@@ -1,57 +1,110 @@
 package com.brandon3055.draconicevolution.client.gui;
 
+import com.brandon3055.brandonscore.client.BCSprites;
+import com.brandon3055.brandonscore.client.gui.GuiToolkit;
 import com.brandon3055.brandonscore.client.gui.effects.GuiEffectRenderer;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElementManager;
 import com.brandon3055.brandonscore.client.gui.modulargui.ModularGuiContainer;
-import com.brandon3055.draconicevolution.api.fusioncrafting.IFusionRecipe;
+import com.brandon3055.brandonscore.client.gui.modulargui.baseelements.GuiButton;
+import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiLabel;
+import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiSlotRender;
+import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiStackIcon;
+import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiTexture;
+import com.brandon3055.brandonscore.client.gui.modulargui.lib.GuiAlign;
+import com.brandon3055.brandonscore.client.gui.modulargui.templates.TBasicMachine;
+import com.brandon3055.brandonscore.lib.StackReference;
+import com.brandon3055.draconicevolution.api.DraconicAPI;
+import com.brandon3055.draconicevolution.api.crafting.IFusionRecipe;
+import com.brandon3055.draconicevolution.api.fusioncrafting.IFusionRecipeOld;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileCraftingCore;
 import com.brandon3055.draconicevolution.inventory.ContainerFusionCraftingCore;
+import com.brandon3055.draconicevolution.inventory.ContainerReactor;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
 
 import java.util.Random;
+
+import static com.brandon3055.brandonscore.client.gui.GuiToolkit.GuiLayout.DEFAULT;
+import static com.brandon3055.brandonscore.client.gui.GuiToolkit.LayoutPos.BOTTOM_CENTER;
 
 public class GuiFusionCraftingCore extends ModularGuiContainer<ContainerFusionCraftingCore> {
 
     private final PlayerEntity player;
     private final TileCraftingCore tile;
     private IFusionRecipe currentRecipe = null;
-    private IFusionRecipe lastRecipe = null;
+    //    private IFusionRecipeOld lastRecipe = null;
     private String canCraft = "";
     private Button startCrafting;
     private GuiEffectRenderer guiEffectRenderer = new GuiEffectRenderer();
     private Random rand = new Random();
     private int[] boltStats = {0, 0, 0, 0, 0, 0};
+    protected GuiToolkit<GuiFusionCraftingCore> toolkit = new GuiToolkit<>(this, 180, 200);
+    private GuiStackIcon stackIcon;
 
-    public GuiFusionCraftingCore(ContainerFusionCraftingCore container, PlayerInventory inv, ITextComponent titleIn, PlayerEntity player, TileCraftingCore tile) {
+    public GuiFusionCraftingCore(ContainerFusionCraftingCore container, PlayerInventory inv, ITextComponent titleIn) {
         super(container, inv, titleIn);
-        this.player = player;
-        this.tile = tile;
+        this.player = inv.player;
+        this.tile = container.tile;
+        this.xSize = 180;
+        this.ySize = 200;
     }
-
-//    public GuiFusionCraftingCore(PlayerEntity player, TileFusionCraftingCore tile) {
-//        super(new ContainerFusionCraftingCore(player, tile));
-//        this.player = player;
-//        this.tile = tile;
-//    }
 
     @Override
     public void addElements(GuiElementManager manager) {
+        TBasicMachine template = new TBasicMachine(this, tile);
+
+        template.background = GuiTexture.newDynamicTexture(this.xSize(), this.ySize(), () -> BCSprites.getThemed("background_dynamic"));
+        template.background.onReload((guiTex) -> guiTex.setPos(this.guiLeft(), this.guiTop()));
+        toolkit.loadTemplate(template);
+
+        template.background.addChild(new GuiSlotRender().setRelPos(81, 25));
+        template.background.addChild(new GuiSlotRender().setRelPos(81, 69));
+        template.background.addChild(stackIcon = new GuiStackIcon(null).setRelPos(81, 47));
+
+        template.background.addChild(new GuiButton("Craft")
+                .setPosAndSize(width / 2 - 40, guiTop + 93, 80, 14)
+                .setVanillaButtonRender(true)
+                .setEnabledCallback(() -> currentRecipe != null && !tile.isCrafting.get())
+                .onPressed(() -> tile.sendPacketToServer(output -> {}, 0)));
+
+        template.background.addChild(new GuiLabel()
+                .setPosAndSize(width / 2 - 40, guiTop + 93, 80, 14)
+                .setAlignment(GuiAlign.CENTER)
+                .setEnabledCallback(() -> currentRecipe != null && tile.isCrafting.get())
+                .setDisplaySupplier(() -> {
+                    int state = tile.craftingStage.get();
+                    String status = state > 1000 ? "Crafting" : "Charging";
+                    double d = state > 1000 ? (state - 1000F) / 1000D : state / 1000D;
+                    String progress = ((int) (d * 100) + "%");
+                    return status + ": " + progress;
+                }));
+
+        GuiLabel wip = new GuiLabel("WIP: Fusion crafting will be completely overhauled before final release.")
+                .setSize(xSize() + 20, 20)
+                .setWrap(true)
+                .setTextColour(TextFormatting.RED);
+        template.background.addChild(wip);
+        toolkit.placeOutside(wip, template.background, BOTTOM_CENTER, 0, 0);
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+
+        currentRecipe = tile.getWorld().getRecipeManager().getRecipe(DraconicAPI.FUSION_RECIPE_TYPE, tile, tile.getWorld()).orElse(null);
+        if (currentRecipe == null) {
+            stackIcon.setStack(ItemStack.EMPTY);
+        } else {
+            stackIcon.setStack(currentRecipe.getRecipeOutput());
+        }
 
     }
 
-
-//    public GuiFusionCraftingCore(PlayerEntity player, TileFusionCraftingCore tile) {
-//        super(new ContainerFusionCraftingCore(player, tile));
-//        this.player = player;
-//        this.tile = tile;
-//
-////        this.xSize = 180;
-////        this.ySize = 200;
-//    }
-//
+    //
 //    @Override
 //    public void initGui() {
 //        super.initGui();

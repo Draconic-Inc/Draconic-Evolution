@@ -2,23 +2,6 @@
   "multipart": [
     {
       "when": {
-        "facing": "north"
-      },
-      "apply": {
-        "model": "draconicevolution:block/grinder/grinder"
-      }
-    },
-    {
-      "when": {
-        "facing": "north",
-        "active": "true"
-      },
-      "apply": {
-        "model": "draconicevolution:block/grinder/grinder_eyes"
-      }
-    },
-    {
-      "when": {
         "facing": "south"
       },
       "apply": {
@@ -53,6 +36,23 @@
       "apply": {
         "model": "draconicevolution:block/grinder/grinder_eyes",
         "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "north"
+      },
+      "apply": {
+        "model": "draconicevolution:block/grinder/grinder"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "active": "true"
+      },
+      "apply": {
+        "model": "draconicevolution:block/grinder/grinder_eyes"
       }
     },
     {

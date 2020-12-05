@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.init;
 
 import com.brandon3055.draconicevolution.api.fusioncrafting.FusionRegistry;
 import com.brandon3055.draconicevolution.api.fusioncrafting.IFusionCraftingInventory;
-import com.brandon3055.draconicevolution.api.fusioncrafting.IFusionRecipe;
+import com.brandon3055.draconicevolution.api.fusioncrafting.IFusionRecipeOld;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
@@ -16,35 +16,35 @@ import java.util.List;
  */
 public class FusionRecipeRegistry implements FusionRegistry {
 
-    private final List<IFusionRecipe> REGISTRY = new ArrayList<IFusionRecipe>();
+    private final List<IFusionRecipeOld> REGISTRY = new ArrayList<IFusionRecipeOld>();
 
     //region API Interface
 
     @Override
-    public void add(IFusionRecipe recipe) {
+    public void add(IFusionRecipeOld recipe) {
         REGISTRY.add(recipe);
     }
 
     @Override
-    public void remove(IFusionRecipe recipe) {
+    public void remove(IFusionRecipeOld recipe) {
         if (REGISTRY.contains(recipe)) {
             REGISTRY.remove(recipe);
         }
     }
 
     @Override
-    public List<IFusionRecipe> getRecipes() {
+    public List<IFusionRecipeOld> getRecipes() {
         return new ArrayList<>(REGISTRY);
     }
 
     //endregion
 
-    public IFusionRecipe findRecipeForCatalyst(ItemStack catalyst) {
+    public IFusionRecipeOld findRecipeForCatalyst(ItemStack catalyst) {
         if (catalyst.isEmpty()) {
             return null;
         }
 
-        for (IFusionRecipe recipe : REGISTRY) {
+        for (IFusionRecipeOld recipe : REGISTRY) {
             if (recipe.isRecipeCatalyst(catalyst)) {
                 return recipe;
             }
@@ -53,12 +53,12 @@ public class FusionRecipeRegistry implements FusionRegistry {
         return null;
     }
 
-    public IFusionRecipe findRecipe(IFusionCraftingInventory inventory, World world, BlockPos corePos) {
+    public IFusionRecipeOld findRecipe(IFusionCraftingInventory inventory, World world, BlockPos corePos) {
         if (inventory == null || inventory.getStackInCore(0).isEmpty()) {
             return null;
         }
 
-        for (IFusionRecipe recipe : REGISTRY) {
+        for (IFusionRecipeOld recipe : REGISTRY) {
             if (REGISTRY.indexOf(recipe) == 74) {
                 LogHelper.dev("Here!");
             }

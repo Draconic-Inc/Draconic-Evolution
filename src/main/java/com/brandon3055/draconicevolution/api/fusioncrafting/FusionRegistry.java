@@ -9,9 +9,9 @@ import java.util.List;
 @Deprecated
 public interface FusionRegistry {
 
-    void add(IFusionRecipe recipe);
+    void add(IFusionRecipeOld recipe);
 
-    void remove(IFusionRecipe recipe);
+    void remove(IFusionRecipeOld recipe);
 
-    List<IFusionRecipe> getRecipes();
+    List<IFusionRecipeOld> getRecipes();
 }

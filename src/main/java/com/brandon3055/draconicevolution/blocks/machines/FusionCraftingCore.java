@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.blocks.machines;
 
 import com.brandon3055.brandonscore.blocks.BlockBCore;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileCraftingCore;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -70,8 +71,9 @@ public class FusionCraftingCore extends BlockBCore /*implements IRenderOverride,
         return VoxelShapes.create(0.0625, 0.0625, 0.0625, 0.9375, 0.9375, 0.9375);
     }
 
+
     @Override
-    public void onNeighborChange(BlockState state, IWorldReader world, BlockPos pos, BlockPos neighbor) {
+    public void neighborChanged(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
         if (!world.isRemote()) {
             if (isBlockPowered(world, pos)) {
                 TileEntity tile = world.getTileEntity(pos);

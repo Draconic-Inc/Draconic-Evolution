@@ -11,7 +11,7 @@ import java.util.List;
  * Created by brandon3055 on 11/06/2016.
  */
 @Deprecated
-public interface IFusionRecipe {
+public interface IFusionRecipeOld {
 
     /**
      * @param catalyst Nullable recipe catalyst used when finding a recipe that matches a specific catalyst.

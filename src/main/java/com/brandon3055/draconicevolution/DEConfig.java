@@ -38,6 +38,9 @@ public class DEConfig {
     public static double armorSpeedLimit;
     public static boolean enableElytraFlight;
     public static boolean enableCreativeFlight;
+    public static boolean enableOreEnd;
+    public static boolean enableOreOverworld;
+    public static boolean enableOreNether;
 
     private static void loadServer() {
         serverTag = config.getTag("Server");
@@ -64,6 +67,22 @@ public class DEConfig {
                 .setComment("Allows you to disable creative flight supplied by DE's armor")
                 .setDefaultBoolean(true)
                 .setSyncCallback((tag, type) -> enableCreativeFlight = tag.getBoolean());
+
+        serverTag.getTag("enableOreEnd")
+                .setSyncToClient()
+                .setComment("Allows you to disable draconium ore generation in the End")
+                .setDefaultBoolean(true)
+                .setSyncCallback((tag, type) -> enableOreEnd = tag.getBoolean());
+        serverTag.getTag("enableOreOverworld")
+                .setSyncToClient()
+                .setComment("Allows you to disable draconium ore generation in the Overworld")
+                .setDefaultBoolean(true)
+                .setSyncCallback((tag, type) -> enableOreOverworld = tag.getBoolean());
+        serverTag.getTag("enableOreNether")
+                .setSyncToClient()
+                .setComment("Allows you to disable draconium ore generation in the Nether")
+                .setDefaultBoolean(true)
+                .setSyncCallback((tag, type) -> enableOreNether = tag.getBoolean());
     }
 
 

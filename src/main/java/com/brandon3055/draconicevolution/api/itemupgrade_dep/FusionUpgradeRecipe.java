@@ -4,7 +4,7 @@ import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.api.OreDictHelper;
 import com.brandon3055.draconicevolution.api.fusioncrafting.ICraftingInjector;
 import com.brandon3055.draconicevolution.api.fusioncrafting.IFusionCraftingInventory;
-import com.brandon3055.draconicevolution.api.fusioncrafting.IFusionRecipe;
+import com.brandon3055.draconicevolution.api.fusioncrafting.IFusionRecipeOld;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
@@ -19,7 +19,7 @@ import java.util.*;
  * this so it can be identified as an upgrade recipe.
  */
 @Deprecated
-public class FusionUpgradeRecipe implements IFusionRecipe {
+public class FusionUpgradeRecipe implements IFusionRecipeOld {
 
     public final int upgradeLevel;
     public final ItemStack upgradeKey;

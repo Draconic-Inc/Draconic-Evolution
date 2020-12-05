@@ -17,7 +17,7 @@ import java.util.*;
  * Accepts ore dictionary entries.
  */
 @Deprecated
-public class SimpleFusionRecipe implements IFusionRecipe {
+public class SimpleFusionRecipe implements IFusionRecipeOld {
 
     protected ItemStack result;
     protected ItemStack catalyst;

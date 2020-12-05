@@ -125,8 +125,10 @@ public class RenderModularStaff extends ToolRenderBase {
             }
             return;
         }
+
         if (transform == TransformType.FIXED || transform == TransformType.GROUND || transform == TransformType.NONE) {
-            transform(mat, 0.6, 0.6, 0.5, 1.125);
+//            transform(mat, 0.6, 0.6, 0.5, 1.125);
+            transform(mat, 0.6, 0.6, 0.5, 0.75);
         } else {
             transform(mat, 0.27, 0.27, 0.5, 1.125);
         }

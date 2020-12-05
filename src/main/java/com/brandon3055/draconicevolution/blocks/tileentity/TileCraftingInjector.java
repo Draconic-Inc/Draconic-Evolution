@@ -4,10 +4,12 @@ import com.brandon3055.brandonscore.api.power.OPStorage;
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.capability.CapabilityOP;
 import com.brandon3055.brandonscore.inventory.TileItemStackHandler;
+import com.brandon3055.brandonscore.lib.Vec3B;
 import com.brandon3055.brandonscore.lib.Vec3I;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedLong;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedVec3I;
+import com.brandon3055.draconicevolution.api.crafting.IFusionInventory;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.brandonscore.api.power.IExtendedRFStorage;
 import com.brandon3055.brandonscore.api.TechLevel;
@@ -15,8 +17,12 @@ import com.brandon3055.draconicevolution.api.fusioncrafting.ICraftingInjector;
 import com.brandon3055.draconicevolution.api.fusioncrafting.IFusionCraftingInventory;
 import com.brandon3055.draconicevolution.blocks.machines.CraftingInjector;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.ByteArrayNBT;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.SAVE_NBT_SYNC_TILE;
@@ -32,7 +38,7 @@ public class TileCraftingInjector extends TileBCore implements ICraftingInjector
 //    public final ManagedByte facing = register(new ManagedByte("facing", SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE));
     public final ManagedBool singleItem = register(new ManagedBool("single_item", SAVE_NBT_SYNC_TILE));
 
-    public IFusionCraftingInventory currentCraftingInventory = null;
+    public IFusionInventory currentCraftingInventory = null;
     private int chargeSpeedModifier = 300;
 
     public TileItemStackHandler itemHandler = new TileItemStackHandler(1);
@@ -40,20 +46,20 @@ public class TileCraftingInjector extends TileBCore implements ICraftingInjector
 
     public TileCraftingInjector() {
         super(DEContent.tile_crafting_injector);
-    }
 
-    public TileCraftingInjector(TechLevel techLevel) {
-        super(DEContent.tile_crafting_injector);
-        this.techLevel = techLevel;
-
-        capManager.setManaged("inventory", CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, itemHandler).saveBoth();
+        capManager.setManaged("inventory", CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, itemHandler).saveBoth().syncTile();
         itemHandler.setStackLimit(() -> singleItem.get() ? 1 : 64); //TODO make sure this cant void items
         itemHandler.setContentsChangeListener(this::slotContentsChanged);
 
         capManager.set(CapabilityOP.OP, new OPStorage(0){
             @Override
             public long receiveOP(long maxReceive, boolean simulate) {
-                return super.receiveOP(maxReceive, simulate);
+                return TileCraftingInjector.this.receiveEnergy(maxReceive, simulate);
+            }
+
+            @Override
+            public boolean canReceive() {
+                return true;
             }
 
             @Override
@@ -66,6 +72,11 @@ public class TileCraftingInjector extends TileBCore implements ICraftingInjector
                 return getExtendedCapacity();
             }
         });
+    }
+
+    public TileCraftingInjector(TechLevel techLevel) {
+        this();
+        this.techLevel = techLevel;
     }
 
     @Override
@@ -142,7 +153,7 @@ public class TileCraftingInjector extends TileBCore implements ICraftingInjector
     }
 
     @Override
-    public boolean setCraftingInventory(IFusionCraftingInventory craftingInventory) {
+    public boolean setCraftingInventory(IFusionInventory craftingInventory) {
         if (craftingInventory == null) {
             currentCraftingInventory = null;
             return false;
@@ -208,5 +219,23 @@ public class TileCraftingInjector extends TileBCore implements ICraftingInjector
             currentCraftingInventory.getIngredientEnergyCost();
         }
         return 0;
+    }
+
+
+    @Override
+    public void writeExtraNBT(CompoundNBT compound) {
+        compound.putByte("tech_level", (byte) techLevel.ordinal());
+        super.writeExtraNBT(compound);
+    }
+
+    @Override
+    public void readExtraNBT(CompoundNBT compound) {
+        techLevel = TechLevel.values()[compound.getInt("tech_level")];
+        super.readExtraNBT(compound);
+    }
+
+    @Override
+    public AxisAlignedBB getRenderBoundingBox() {
+        return new AxisAlignedBB(pos.add(-1, -1, -1), pos.add(1, 1, 1));
     }
 }

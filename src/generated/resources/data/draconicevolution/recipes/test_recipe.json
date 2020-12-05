@@ -1,0 +1,56 @@
+{
+  "type": "draconicevolution:fusion_crafting",
+  "result": {
+    "item": "draconicevolution:chaotic_staff"
+  },
+  "catalyst": {
+    "item": "minecraft:diamond_pickaxe"
+  },
+  "total_energy": 100000,
+  "tier": 3,
+  "ingredients": [
+    {
+      "item": "minecraft:nether_star"
+    },
+    {
+      "item": "minecraft:apple"
+    },
+    {
+      "tag": "forge:rods/wooden"
+    },
+    {
+      "tag": "forge:fences"
+    },
+    {
+      "consume": false,
+      "ingredient": [
+        {
+          "item": "minecraft:diamond"
+        },
+        {
+          "item": "minecraft:coal"
+        },
+        {
+          "item": "minecraft:iron_ingot"
+        }
+      ]
+    },
+    [
+      {
+        "item": "minecraft:carrot_on_a_stick"
+      },
+      {
+        "item": "minecraft:gold_ingot"
+      }
+    ],
+    {
+      "item": "minecraft:beacon"
+    },
+    {
+      "consume": false,
+      "ingredient": {
+        "item": "minecraft:dragon_egg"
+      }
+    }
+  ]
+}

@@ -20,7 +20,7 @@ public class FusionRecipeAPI {
      * Adds a recipe to the registry.<br>
      * This should only be called during initialization.
      */
-    public static void addRecipe(IFusionRecipe recipe) {
+    public static void addRecipe(IFusionRecipeOld recipe) {
         if (registry != null) {
             registry.add(recipe);
         }
@@ -30,7 +30,7 @@ public class FusionRecipeAPI {
      * Can be used to remove a recipe from the registry.<br>
      * If for whatever reason you wish to remove a recipe from another mod do so in during post initialisation.
      */
-    public static void removeRecipe(IFusionRecipe recipe) {
+    public static void removeRecipe(IFusionRecipeOld recipe) {
         if (registry != null) {
             registry.remove(recipe);
         }
@@ -39,10 +39,10 @@ public class FusionRecipeAPI {
     /**
      * @return a list of all currently registered fusion crafting recipes.
      */
-    public static List<IFusionRecipe> getRecipes() {
+    public static List<IFusionRecipeOld> getRecipes() {
         if (registry != null) {
             return registry.getRecipes();
         }
-        return new ArrayList<IFusionRecipe>();
+        return new ArrayList<IFusionRecipeOld>();
     }
 }

@@ -1,0 +1,30 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "draconicevolution:block/crafting/crafting_injector_draconic",
+      "x": 180
+    },
+    "facing=up": {
+      "model": "draconicevolution:block/crafting/crafting_injector_draconic"
+    },
+    "facing=north": {
+      "model": "draconicevolution:block/crafting/crafting_injector_draconic",
+      "x": 90
+    },
+    "facing=south": {
+      "model": "draconicevolution:block/crafting/crafting_injector_draconic",
+      "x": 90,
+      "y": 180
+    },
+    "facing=west": {
+      "model": "draconicevolution:block/crafting/crafting_injector_draconic",
+      "x": 90,
+      "y": 270
+    },
+    "facing=east": {
+      "model": "draconicevolution:block/crafting/crafting_injector_draconic",
+      "x": 90,
+      "y": 90
+    }
+  }
+}

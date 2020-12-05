@@ -1,5 +1,12 @@
 {
     "__comment": "Model generated using MrCrayfish's Model Creator (http://mrcrayfish.com/modelcreator/)",
+    "parent": "block/block",
+    "textures": {
+        "base":"draconicevolution:models/block/crafting/injector_base",
+        "core":"draconicevolution:models/block/crafting/injector_core_draconic",
+        "ring":"draconicevolution:models/block/crafting/injector_ring",
+        "particle": "draconicevolution:models/block/crafting/injector_base"
+    },
     "elements": [
         {
             "name": "Base0",

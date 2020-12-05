@@ -7,7 +7,7 @@ import com.brandon3055.draconicevolution.CommonProxy;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.blocks.reactor.ReactorEffectHandler;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
-import com.brandon3055.draconicevolution.client.gui.GuiReactor;
+import com.brandon3055.draconicevolution.client.gui.*;
 import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.GuiConfigurableItem;
 import com.brandon3055.draconicevolution.client.gui.modular.GuiModularItem;
 import com.brandon3055.draconicevolution.client.model.VBOArmorLayer;
@@ -16,13 +16,11 @@ import com.brandon3055.draconicevolution.entity.EntityChaosGuardian;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.api.energy.IENetEffectTile;
 import com.brandon3055.draconicevolution.blocks.energynet.rendering.ENetFXHandler;
-import com.brandon3055.draconicevolution.client.gui.GuiEnergyCore;
-import com.brandon3055.draconicevolution.client.gui.GuiGenerator;
-import com.brandon3055.draconicevolution.client.gui.GuiGrinder;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.client.keybinding.KeyBindings;
 import com.brandon3055.draconicevolution.client.keybinding.KeyInputHandler;
 import com.brandon3055.draconicevolution.client.render.tile.*;
+import com.brandon3055.draconicevolution.inventory.ContainerFusionCraftingCore;
 import com.brandon3055.draconicevolution.items.equipment.IModularArmor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
@@ -188,7 +186,7 @@ public class ClientProxy extends CommonProxy {
 //        ScreenManager.registerFactory(DEContent.container_draconium_chest, ContainerDraconiumChest::new);
 //        ScreenManager.registerFactory(DEContent.container_energy_crystal, ContainerEnergyCrystal::new);
 //        ScreenManager.registerFactory(DEContent.container_energy_infuser, ContainerEnergyInfuser::new);
-//        ScreenManager.registerFactory(DEContent.container_fusion_crafting_core, ContainerFusionCraftingCore::new);
+        ScreenManager.registerFactory(DEContent.container_fusion_crafting_core, GuiFusionCraftingCore::new);
 //        ScreenManager.registerFactory(DEContent.container_reactor, ContainerReactor::new);
     }
 
@@ -205,6 +203,8 @@ public class ClientProxy extends CommonProxy {
         ClientRegistry.bindTileEntityRenderer(DEContent.tile_reactor_core, RenderTileReactorCore::new);
         ClientRegistry.bindTileEntityRenderer(DEContent.tile_reactor_injector, RenderTileReactorComponent::new);
         ClientRegistry.bindTileEntityRenderer(DEContent.tile_reactor_stabilizer, RenderTileReactorComponent::new);
+        ClientRegistry.bindTileEntityRenderer(DEContent.tile_crafting_core, RenderTileFusionCraftingCore::new);
+        ClientRegistry.bindTileEntityRenderer(DEContent.tile_crafting_injector, RenderTileCraftingInjector::new);
     }
 
     @SuppressWarnings("ConstantConditions")

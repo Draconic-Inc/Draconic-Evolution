@@ -2,15 +2,22 @@ package com.brandon3055.draconicevolution.command;
 
 import com.brandon3055.brandonscore.api.TimeKeeper;
 import com.brandon3055.brandonscore.handlers.ProcessHandler;
+import com.brandon3055.draconicevolution.DEConfig;
+import com.brandon3055.draconicevolution.blocks.DraconiumOre;
 import com.brandon3055.draconicevolution.blocks.reactor.ProcessExplosion;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.BlockPosArgument;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.play.server.SUpdateLightPacket;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
@@ -31,23 +38,23 @@ public class CommandKaboom {
                         .requires(cs -> cs.hasPermissionLevel(3))
                         .then(Commands.argument("radius", IntegerArgumentType.integer(10, 50000))
 //                                .executes(ctx -> calculate(ctx.getSource(), IntegerArgumentType.getInteger(ctx, "radius"), new BlockPos(ctx.getSource().getPos()), false))
-                                .then(Commands.argument("position", BlockPosArgument.blockPos())
-                                        .executes(ctx -> calculate(ctx.getSource(), IntegerArgumentType.getInteger(ctx, "radius"), BlockPosArgument.getBlockPos(ctx, "position"), false, true))
-                                        .then(Commands.literal("effect_only")
-                                                .executes(ctx -> effect(ctx.getSource(), IntegerArgumentType.getInteger(ctx, "radius"), BlockPosArgument.getBlockPos(ctx, "position"), false))
-                                                .then(Commands.literal("flash")
-                                                        .executes(ctx -> effect(ctx.getSource(), IntegerArgumentType.getInteger(ctx, "radius"), BlockPosArgument.getBlockPos(ctx, "position"), true))
-                                                ))
-                                        .then(Commands.literal("prime")
-                                                .executes(ctx -> calculate(ctx.getSource(), IntegerArgumentType.getInteger(ctx, "radius"), BlockPosArgument.getBlockPos(ctx, "position"), true, true))
+                                        .then(Commands.argument("position", BlockPosArgument.blockPos())
+                                                .executes(ctx -> calculate(ctx.getSource(), IntegerArgumentType.getInteger(ctx, "radius"), BlockPosArgument.getBlockPos(ctx, "position"), false, true))
+                                                .then(Commands.literal("effect_only")
+                                                        .executes(ctx -> effect(ctx.getSource(), IntegerArgumentType.getInteger(ctx, "radius"), BlockPosArgument.getBlockPos(ctx, "position"), false))
+                                                        .then(Commands.literal("flash")
+                                                                .executes(ctx -> effect(ctx.getSource(), IntegerArgumentType.getInteger(ctx, "radius"), BlockPosArgument.getBlockPos(ctx, "position"), true))
+                                                        ))
+                                                .then(Commands.literal("prime")
+                                                        .executes(ctx -> calculate(ctx.getSource(), IntegerArgumentType.getInteger(ctx, "radius"), BlockPosArgument.getBlockPos(ctx, "position"), true, true))
+                                                        .then(Commands.literal("no_effect")
+                                                                .executes(ctx -> calculate(ctx.getSource(), IntegerArgumentType.getInteger(ctx, "radius"), BlockPosArgument.getBlockPos(ctx, "position"), true, false))
+                                                        )
+                                                )
                                                 .then(Commands.literal("no_effect")
-                                                        .executes(ctx -> calculate(ctx.getSource(), IntegerArgumentType.getInteger(ctx, "radius"), BlockPosArgument.getBlockPos(ctx, "position"), true, false))
+                                                        .executes(ctx -> calculate(ctx.getSource(), IntegerArgumentType.getInteger(ctx, "radius"), BlockPosArgument.getBlockPos(ctx, "position"), false, false))
                                                 )
                                         )
-                                        .then(Commands.literal("no_effect")
-                                                .executes(ctx -> calculate(ctx.getSource(), IntegerArgumentType.getInteger(ctx, "radius"), BlockPosArgument.getBlockPos(ctx, "position"), false, false))
-                                        )
-                                )
 //                                .then(Commands.literal("effect_only")
 //                                        .executes(ctx -> effect(ctx.getSource(), IntegerArgumentType.getInteger(ctx, "radius"), new BlockPos(ctx.getSource().getPos()), false))
 //                                        .then(Commands.literal("flash")
@@ -58,7 +65,7 @@ public class CommandKaboom {
 //                                )
                         )
                         .then(Commands.literal("detonate").executes(ctx -> detonate()))
-                        .then(Commands.literal("abort").executes(ctx -> abort()))
+                        .then(Commands.literal("abort").executes(ctx -> abort(ctx)))
 //                        .then(Commands.literal("relight").executes(ctx -> relight(ctx.getSource())))
         );
     }
@@ -99,7 +106,24 @@ public class CommandKaboom {
         return 1;
     }
 
-    private static int abort() {
+    private static int abort(CommandContext<CommandSource> ctx) throws CommandSyntaxException {
+        ServerPlayerEntity player = ctx.getSource().asPlayer();
+
+        int xzRange = 100;
+        int yRange = 20;
+        BlockPos.Mutable pos = new BlockPos.Mutable();
+        for (int x = -xzRange; x < xzRange; x++) {
+            for (int z = -xzRange; z < xzRange; z++) {
+                for (int y = 0; y < yRange; y++) {
+                    pos.setPos(player.posX + x, y, player.posZ + z);
+                    BlockState state = player.world.getBlockState(pos);
+                    if (state.getBlock() instanceof DraconiumOre || state.getBlock() == Blocks.BEDROCK || state.getBlock() == Blocks.DIAMOND_ORE) continue;
+                    player.world.setBlockState(pos, Blocks.AIR.getDefaultState());
+                }
+            }
+        }
+
+
         if (explosionProcess != null) {
             explosionProcess.isDead = true;
             explosionProcess = null;
