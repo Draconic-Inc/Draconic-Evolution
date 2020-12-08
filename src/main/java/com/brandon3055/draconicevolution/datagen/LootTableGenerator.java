@@ -16,14 +16,17 @@ import net.minecraft.data.loot.BlockLootTables;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
-import net.minecraft.state.IProperty;
+
+import net.minecraft.loot.*;
+import net.minecraft.loot.conditions.ILootCondition;
+import net.minecraft.loot.conditions.MatchTool;
+import net.minecraft.loot.functions.ApplyBonus;
+import net.minecraft.loot.functions.SetCount;
 import net.minecraft.state.properties.SlabType;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.world.storage.loot.*;
-import net.minecraft.world.storage.loot.conditions.*;
-import net.minecraft.world.storage.loot.functions.*;
+
 
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -50,7 +53,7 @@ public class LootTableGenerator extends LootTableProvider {
 //            validationresults.addProblem("Missing built-in table: " + resourcelocation);
 //        }
         map.forEach((p_218436_2_, p_218436_3_) -> {
-            LootTableManager.func_227508_a_(validationtracker, p_218436_2_, p_218436_3_);
+            LootTableManager.validateLootTable(validationtracker, p_218436_2_, p_218436_3_);
         });
     }
 

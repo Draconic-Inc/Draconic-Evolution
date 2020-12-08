@@ -263,11 +263,6 @@ public abstract class TileReactorComponent extends TileBCore implements ITickabl
 
     //endregion
 
-    @Override
-    public boolean canRenderBreaking() {
-        return true;
-    }
-
 //    @Override
 //    public boolean canConnectEnergy(Direction from) {
 //        return from == facing.get().getOpposite();

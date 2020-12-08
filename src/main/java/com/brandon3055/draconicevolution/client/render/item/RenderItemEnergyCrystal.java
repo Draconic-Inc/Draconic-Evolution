@@ -1,28 +1,20 @@
 package com.brandon3055.draconicevolution.client.render.item;
 
 import codechicken.lib.colour.Colour;
-import codechicken.lib.math.MathHelper;
 import codechicken.lib.render.CCModel;
 import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.OBJParser;
 import codechicken.lib.render.item.IItemRenderer;
-import codechicken.lib.render.shader.ShaderProgram;
-import codechicken.lib.render.shader.ShaderProgramBuilder;
-import codechicken.lib.render.shader.ShaderRenderType;
-import codechicken.lib.render.shader.UniformCache;
-import codechicken.lib.render.shader.UniformType;
+import codechicken.lib.render.shader.*;
 import codechicken.lib.util.SneakyUtils;
 import codechicken.lib.util.TransformUtils;
 import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Rotation;
-import codechicken.lib.vec.Vector3;
+import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.draconicevolution.blocks.energynet.EnergyCrystal.CrystalType;
-import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalDirectIO;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
-import com.brandon3055.draconicevolution.client.render.shaders.DEShaders;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -30,11 +22,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderState;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.vector.TransformationMatrix;
 import org.lwjgl.opengl.GL11;
 
 import java.util.Map;
@@ -102,6 +94,11 @@ public class RenderItemEnergyCrystal implements IItemRenderer {
         return false;
     }
 
+    @Override
+    public boolean isSideLit() {
+        return false;
+    }
+
     //endregion
 
 
@@ -164,10 +161,7 @@ public class RenderItemEnergyCrystal implements IItemRenderer {
         return TransformUtils.DEFAULT_BLOCK;
     }
 
-    @Override
-    public boolean func_230044_c_() {
-        return false;
-    }
+
 
     private static float[] r = {0.0F, 0.47F, 1.0F};
     private static float[] g = {0.2F, 0.0F, 0.4F};

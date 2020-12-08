@@ -6,6 +6,7 @@ import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.utils.Utils;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 
@@ -14,11 +15,11 @@ public class ParticleInfuser extends BCParticle {
     public Vec3D targetPos;
     public int type = 0;
 
-    public ParticleInfuser(World worldIn, Vec3D pos) {
+    public ParticleInfuser(ClientWorld worldIn, Vec3D pos) {
         super(worldIn, pos);
     }
 
-    public ParticleInfuser(World worldIn, Vec3D pos, Vec3D targetPos) {
+    public ParticleInfuser(ClientWorld worldIn, Vec3D pos, Vec3D targetPos) {
         super(worldIn, pos, new Vec3D(0, 0, 0));
         this.targetPos = targetPos;
 //        this.particleMaxAge = 60;

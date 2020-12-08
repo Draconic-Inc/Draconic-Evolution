@@ -85,10 +85,10 @@ public interface Module<T extends ModuleData<T>> extends IForgeRegistryEntry<Mod
 
         if (maxInstallable() != -1) {
             toolTip.add(new TranslationTextComponent("module.draconicevolution.max_installable") //
-                    .applyTextStyle(TextFormatting.GRAY) //
-                    .appendText(": ") //
-                    .appendSibling(new StringTextComponent(String.valueOf(maxInstallable())) //
-                            .applyTextStyle(TextFormatting.DARK_GREEN)));
+                    .mergeStyle(TextFormatting.GRAY) //
+                    .appendString(": ") //
+                    .append(new StringTextComponent(String.valueOf(maxInstallable())) //
+                            .mergeStyle(TextFormatting.DARK_GREEN)));
         }
     }
 }

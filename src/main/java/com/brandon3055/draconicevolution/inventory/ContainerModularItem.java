@@ -21,6 +21,7 @@ import net.minecraft.inventory.container.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Util;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -79,7 +80,7 @@ public class ContainerModularItem extends ContainerModuleHost<TileBCore> {
             }
         }
 
-        sender.sendMessage(new TranslationTextComponent("msg.draconicevolution.modular_item.no_module_hosts").applyTextStyle(TextFormatting.RED));
+        sender.sendMessage(new TranslationTextComponent("msg.draconicevolution.modular_item.no_module_hosts").mergeStyle(TextFormatting.RED), Util.DUMMY_UUID);
     }
 
     @Override
@@ -200,7 +201,7 @@ public class ContainerModularItem extends ContainerModuleHost<TileBCore> {
 
         @Override
         public ITextComponent getDisplayName() {
-            return stack.getDisplayName().appendText(" ").appendSibling(new TranslationTextComponent("gui.draconicevolution.modular_item.modules"));
+            return stack.getDisplayName().copyRaw().appendString(" ").append(new TranslationTextComponent("gui.draconicevolution.modular_item.modules"));
         }
 
         @Nullable

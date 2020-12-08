@@ -10,6 +10,7 @@ import codechicken.lib.vec.Vector3;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.entity.EntityLootCore;
 import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
@@ -104,7 +105,7 @@ public class RenderLootCore extends EntityRenderer<EntityLootCore> {
             RenderSystem.popMatrix();
             String name = I18n.format("entity.draconicevolution:lootCore.name");
             int w = renderer.getStringWidth(name);
-            renderer.drawString(name, 11 - (w / 2F), (int) yPos - 10, -1);
+            renderer.drawString(new MatrixStack(), name, 11 - (w / 2F), (int) yPos - 10, -1);
 
             int row = 0;
             for (ItemStack stack : lootCore.displayMap.keySet()) {
@@ -115,7 +116,7 @@ public class RenderLootCore extends EntityRenderer<EntityLootCore> {
                 RenderSystem.rotatef(180, 1, 0, 0);
 //                Minecraft.getInstance().getItemRenderer().renderItem(stack, ItemCameraTransforms.TransformType.FIXED);
                 RenderSystem.popMatrix();
-                renderer.drawString("x" + lootCore.displayMap.get(stack), 0, -4 + rowY, -1);
+                renderer.drawString(new MatrixStack(), "x" + lootCore.displayMap.get(stack), 0, -4 + rowY, -1);
                 row++;
             }
         }

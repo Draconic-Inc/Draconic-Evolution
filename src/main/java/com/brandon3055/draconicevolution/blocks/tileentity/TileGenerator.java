@@ -244,11 +244,6 @@ public class TileGenerator extends TileBCore implements ITickableTileEntity, IRS
         }
     }
 
-    @Override
-    public boolean hasFastRenderer() {
-        return true;
-    }
-
     @Nullable
     @Override
     public Container createMenu(int currentWindowIndex, PlayerInventory playerInventory, PlayerEntity player) {

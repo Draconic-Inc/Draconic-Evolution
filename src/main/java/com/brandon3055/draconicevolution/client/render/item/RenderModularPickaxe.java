@@ -9,6 +9,7 @@ import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -66,5 +67,10 @@ public class RenderModularPickaxe extends ToolRenderBase {
             getter.getBuffer(bladeVBOType.withMatrix(mat).withLightMap(packedLight));
             getter.getBuffer(gemVBOType.withMatrix(mat).withLightMap(packedLight));
         }
+    }
+
+    @Override
+    public boolean isSideLit() {
+        return false;
     }
 }

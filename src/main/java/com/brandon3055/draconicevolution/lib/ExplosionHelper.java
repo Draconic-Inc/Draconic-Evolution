@@ -156,7 +156,7 @@ public class ExplosionHelper {
             if (helper.toRemove.isEmpty()) {
                 isDead = true;
                 updateBlocks();
-                DraconicNetwork.sendExplosionEffect(helper.serverWorld.dimension.getType(), helper.start, 0, true);
+                DraconicNetwork.sendExplosionEffect(helper.serverWorld.getDimensionKey(), helper.start, 0, true);
             }
         }
 
@@ -166,7 +166,7 @@ public class ExplosionHelper {
                 ServerWorldLightManager lightManager = (ServerWorldLightManager) helper.serverWorld.getLightManager();
                 lightManager.lightChunk(chunk, false)
                         .thenRun(() -> helper.serverWorld.getChunkProvider().chunkManager.getTrackingPlayers(chunk.getPos(), false)
-                        .forEach(e -> e.connection.sendPacket(new SUpdateLightPacket(chunk.getPos(), helper.serverWorld.getLightManager()))));
+                        .forEach(e -> e.connection.sendPacket(new SUpdateLightPacket(chunk.getPos(), helper.serverWorld.getLightManager(), true))));
 
                 SChunkDataPacket packet = new SChunkDataPacket(chunk, 65535);
                 helper.serverWorld.getChunkProvider().chunkManager.getTrackingPlayers(chunk.getPos(), false).forEach(e -> e.connection.sendPacket(packet));

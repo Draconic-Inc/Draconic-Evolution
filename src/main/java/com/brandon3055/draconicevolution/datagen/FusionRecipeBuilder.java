@@ -16,6 +16,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.tags.ITag;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
@@ -96,11 +97,11 @@ public class FusionRecipeBuilder {
         return ingredient(true, ingredient);
     }
 
-    public FusionRecipeBuilder ingredient(boolean consume, Tag<Item> ingredient) {
+    public FusionRecipeBuilder ingredient(boolean consume, ITag<Item> ingredient) {
         return ingredient(consume, Ingredient.fromTag(ingredient));
     }
 
-    public FusionRecipeBuilder ingredient(Tag<Item> ingredient) {
+    public FusionRecipeBuilder ingredient(ITag<Item> ingredient) {
         return ingredient(true, ingredient);
     }
 

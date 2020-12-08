@@ -6,6 +6,7 @@ import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.draconicevolution.blocks.energynet.EnergyCrystal;
 import com.brandon3055.draconicevolution.client.render.effect.CrystalFXRing;
 import com.brandon3055.draconicevolution.client.render.effect.CrystalFXBase;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -33,7 +34,7 @@ public class TileCrystalRelay extends TileCrystalBase {
     @OnlyIn(Dist.CLIENT)
     @Override
     public CrystalFXBase createStaticFX() {
-        return new CrystalFXRing(world, this);
+        return new CrystalFXRing((ClientWorld)world, this);
     }
 
     @Override

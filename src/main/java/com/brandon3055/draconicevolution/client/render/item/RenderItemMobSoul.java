@@ -2,20 +2,13 @@ package com.brandon3055.draconicevolution.client.render.item;
 
 import codechicken.lib.render.item.IItemRenderer;
 import codechicken.lib.util.TransformUtils;
-import com.brandon3055.draconicevolution.init.DEContent;
-import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
-import com.brandon3055.draconicevolution.items.MobSoul;
-import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.TransformationMatrix;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.vector.TransformationMatrix;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -106,7 +99,7 @@ public class RenderItemMobSoul implements IItemRenderer {
     }
 
     @Override
-    public boolean func_230044_c_() {
+    public boolean isSideLit() {
         return false;
     }
 }

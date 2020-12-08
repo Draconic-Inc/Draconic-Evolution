@@ -14,17 +14,17 @@ import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.world.World;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
@@ -41,7 +41,7 @@ public class CrystalFXWireless extends CrystalFXBase<TileCrystalWirelessIO> {
     private float powerLevel = 0;
     private List<PTracker> trackers = new ArrayList<>();
 
-    public CrystalFXWireless(World worldIn, TileCrystalWirelessIO tile, BlockPos linkTarget) {
+    public CrystalFXWireless(ClientWorld worldIn, TileCrystalWirelessIO tile, BlockPos linkTarget) {
         super(worldIn, tile);
         this.age = worldIn.rand.nextInt(1024);
         this.setPosition(tile.getBeamLinkPos(linkTarget));
@@ -114,7 +114,7 @@ public class CrystalFXWireless extends CrystalFXBase<TileCrystalWirelessIO> {
         float scale = 0.08F;
         boolean output = !tile.inputMode.get();
 
-        Vec3d view = renderInfo.getProjectedView();
+        Vector3d view = renderInfo.getProjectedView();
         Vector3 source = new Vector3(posX - view.x, posY - view.y, posZ - view.z);
         Vector3 target = Vector3.fromBlockPos(linkTarget).subtract(view.x, view.y, view.z);
 

@@ -28,7 +28,7 @@ public class ModularHoe extends HoeItem implements IModularTieredItem {
     private final DEItemTier itemTier;
 
     public ModularHoe(TechPropBuilder props) {
-        super(new DEItemTier(props, EquipCfg::getHoeDmgMult, EquipCfg::getHoeSpeedMult), 0, props.build());
+        super(new DEItemTier(props, EquipCfg::getHoeDmgMult, EquipCfg::getHoeSpeedMult), 0, 0, props.build());
         this.techLevel = props.techLevel;
         this.itemTier = (DEItemTier) getTier();
     }

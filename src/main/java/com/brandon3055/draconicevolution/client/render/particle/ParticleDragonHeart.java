@@ -5,6 +5,7 @@ import com.brandon3055.brandonscore.client.particle.IBCParticleFactory;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.utils.Utils;
 import net.minecraft.client.particle.Particle;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.world.World;
 
 public class ParticleDragonHeart extends BCParticle {
@@ -12,11 +13,11 @@ public class ParticleDragonHeart extends BCParticle {
     public Vec3D targetPos;
     public double startDist = 1;
 
-    public ParticleDragonHeart(World worldIn, Vec3D pos) {
+    public ParticleDragonHeart(ClientWorld worldIn, Vec3D pos) {
         super(worldIn, pos);
     }
 
-    public ParticleDragonHeart(World worldIn, Vec3D pos, Vec3D targetPos) {
+    public ParticleDragonHeart(ClientWorld worldIn, Vec3D pos, Vec3D targetPos) {
         super(worldIn, pos, new Vec3D(0, 0, 0));
         this.targetPos = targetPos;
         this.startDist = Utils.getDistanceAtoB(pos, targetPos);
@@ -64,7 +65,7 @@ public class ParticleDragonHeart extends BCParticle {
 
         @Override
         public Particle getEntityFX(int particleID, World world, Vec3D pos, Vec3D speed, int... args) {
-            ParticleDragonHeart particleHeart = new ParticleDragonHeart(world, pos, speed);
+            ParticleDragonHeart particleHeart = new ParticleDragonHeart((ClientWorld)world, pos, speed);
 
             if (args.length >= 3) {
 //                particleHeart.setRBGColorF(args[0] / 255F, args[1] / 255F, args[2] / 255F);

@@ -20,10 +20,7 @@ import net.minecraft.item.Rarity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.*;
 import net.minecraft.world.World;
@@ -77,7 +74,7 @@ public class DislocatorBound extends Dislocator /*implements IRenderOverride*/ {
     public boolean onEntityItemUpdate(ItemStack stack, ItemEntity entity) {
         if (entity.getAge() % 20 == 0) {
             if (!entity.world.isRemote && isValid(stack) && !isPlayer(stack)) {
-                DislocatorLinkHandler.updateLink(entity.world, stack, new BlockPos(entity), entity.dimension);
+                DislocatorLinkHandler.updateLink(entity.world, stack, entity.getPosition(), entity.world.getDimensionKey());
             }
         }
         return false;
@@ -93,10 +90,10 @@ public class DislocatorBound extends Dislocator /*implements IRenderOverride*/ {
         TeleportLocation location = getLocation(stack, player.world);
         if (location == null) {
             if (isPlayer(stack)) {
-                player.sendMessage(new TranslationTextComponent("info.de.bound_dislocator.cant_find_player").setStyle(new Style().setColor(TextFormatting.RED)));
+                player.sendMessage(new TranslationTextComponent("info.de.bound_dislocator.cant_find_player").mergeStyle(TextFormatting.RED), Util.DUMMY_UUID);
             }
             else {
-                player.sendMessage(new TranslationTextComponent("info.de.bound_dislocator.cant_find_target").setStyle(new Style().setColor(TextFormatting.RED)));
+                player.sendMessage(new TranslationTextComponent("info.de.bound_dislocator.cant_find_target").mergeStyle(TextFormatting.RED), Util.DUMMY_UUID);
             }
 
             return true;
@@ -106,16 +103,16 @@ public class DislocatorBound extends Dislocator /*implements IRenderOverride*/ {
             return true;
         }
 
-        DESoundHandler.playSoundFromServer(player.world, player.posX, player.posY, player.posZ, DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, player.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
+        DESoundHandler.playSoundFromServer(player.world, player.getPosX(), player.getPosY(), player.getPosZ(), DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, player.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
 
         location.setPitch(player.rotationPitch);
         location.setYaw(player.rotationYaw);
         notifyArriving(stack, player.world, entity);
         location.teleport(entity);
 
-        DESoundHandler.playSoundFromServer(player.world, player.posX, player.posY, player.posZ, DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, player.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
+        DESoundHandler.playSoundFromServer(player.world, player.getPosX(), player.getPosY(), player.getPosZ(), DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, player.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
 
-        player.sendMessage(new StringTextComponent(new TranslationTextComponent("msg.teleporterSentMob.txt").getFormattedText() + " x:" + (int) location.getXCoord() + " y:" + (int) location.getYCoord() + " z:" + (int) location.getZCoord() + " Dimension: " + location.getDimensionName()));
+        player.sendMessage(new StringTextComponent(new TranslationTextComponent("msg.teleporterSentMob.txt").getString() + " x:" + (int) location.getXCoord() + " y:" + (int) location.getYCoord() + " z:" + (int) location.getZCoord() + " Dimension: " + location.getDimensionName()), Util.DUMMY_UUID);
 
         return true;
     }
@@ -157,14 +154,14 @@ public class DislocatorBound extends Dislocator /*implements IRenderOverride*/ {
 //                return new ActionResult<>(ActionResultType.PASS, stack);
 //            }
 //
-//            DESoundHandler.playSoundFromServer(player.world, player.posX, player.posY, player.posZ, DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, player.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
+//            DESoundHandler.playSoundFromServer(player.world, player.getPosX(), player.getPosY(), player.getPosZ(), DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, player.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
 //
 //            location.setPitch(player.rotationPitch);
 //            location.setYaw(player.rotationYaw);
 //            notifyArriving(stack, player.world, player);
 //            location.teleport(player);
 //
-//            DESoundHandler.playSoundFromServer(player.world, player.posX, player.posY, player.posZ, DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, player.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
+//            DESoundHandler.playSoundFromServer(player.world, player.getPosX(), player.getPosY(), player.getPosZ(), DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, player.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
 //
 //            return new ActionResult<>(ActionResultType.PASS, stack);
 //        }
@@ -213,7 +210,7 @@ public class DislocatorBound extends Dislocator /*implements IRenderOverride*/ {
                 if (server == null) return null;
                 PlayerEntity player = server.getPlayerList().getPlayerByUUID(UUID.fromString(getPlayerID(stack)));
                 if (player == null) return null;
-                return new TeleportLocation(player.posX, player.posY + 0.2, player.posZ, player.dimension);
+                return new TeleportLocation(player.getPosX(), player.getPosY() + 0.2, player.getPosZ(), player.world.getDimensionKey());
             }
             Vec3D pos = DislocatorLinkHandler.getLinkPos(world, stack);
             if (data != null && pos != null) {

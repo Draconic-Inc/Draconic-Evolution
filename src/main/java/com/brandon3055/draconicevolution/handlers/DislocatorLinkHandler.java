@@ -13,11 +13,12 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.PlayerList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.WorldSavedData;
 
@@ -50,7 +51,7 @@ public class DislocatorLinkHandler extends WorldSavedData {
 //            return null;
 //        }
         if (world instanceof ServerWorld) {
-            return world.getServer().getWorld(DimensionType.OVERWORLD).getSavedData().getOrCreate(() -> new DislocatorLinkHandler(SAVE_DATA_NAME), SAVE_DATA_NAME);
+            return world.getServer().getWorld(World.OVERWORLD).getSavedData().getOrCreate(() -> new DislocatorLinkHandler(SAVE_DATA_NAME), SAVE_DATA_NAME);
         }
         return null;
 //        if (data != null && data instanceof DislocatorLinkHandler) {
@@ -65,7 +66,7 @@ public class DislocatorLinkHandler extends WorldSavedData {
     }
 
 
-    public static void updateLink(World world, ItemStack stack, BlockPos pos, DimensionType dimension) {
+    public static void updateLink(World world, ItemStack stack, BlockPos pos, RegistryKey<World> dimension) {
         DislocatorLinkHandler data = getDataInstance(world);
         if (data == null || world.isRemote || !dislocator_p2p.isValid(stack)) {
             return;
@@ -262,7 +263,7 @@ public class DislocatorLinkHandler extends WorldSavedData {
         private String linkID;
         public DislocatorLinkHandler handler;
         public BlockPos pos = new BlockPos(0, 128, 0);
-        public DimensionType dimension;
+        public RegistryKey<World> dimension;
         private String playerUUID;
         public boolean isPlayer = false;
 
@@ -273,7 +274,7 @@ public class DislocatorLinkHandler extends WorldSavedData {
             this.handler = handler;
         }
 
-        public void setTarget(BlockPos pos, DimensionType dimension) {
+        public void setTarget(BlockPos pos, RegistryKey<World> dimension) {
             this.pos = pos;
             this.dimension = dimension;
             isPlayer = false;
@@ -289,7 +290,7 @@ public class DislocatorLinkHandler extends WorldSavedData {
         public CompoundNBT toNBT(CompoundNBT compound) {
             compound.putString("LinkID", linkID);
             compound.putBoolean("IsPlayer", isPlayer);
-            compound.putString("Dim", dimension.getRegistryName().toString());
+            compound.putString("Dim", dimension.getLocation().toString());
 
             if (isPlayer) {
                 compound.putString("PlayerID", playerUUID);
@@ -302,7 +303,7 @@ public class DislocatorLinkHandler extends WorldSavedData {
         public LinkData fromNBT(CompoundNBT compound) {
             linkID = compound.getString("LinkID");
             isPlayer = compound.getBoolean("IsPlayer");
-            dimension = DimensionType.byName(new ResourceLocation(compound.getString("Dim")));
+            dimension = RegistryKey.getOrCreateKey(Registry.WORLD_KEY, new ResourceLocation(compound.getString("Dim")));
 
             if (isPlayer) {
                 playerUUID = compound.getString("PlayerID");

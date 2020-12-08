@@ -626,9 +626,9 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
         double distance = Math.min(Utils.getDistanceAtoB(new Vec3D(player).add(0, player.getEyeHeight(), 0), Vec3D.getCenter(pos)), Utils.getDistanceAtoB(new Vec3D(player), Vec3D.getCenter(pos)));
         if (distance < (getCoreDiameter() / 2) + 0.5 && !player.isSpectator()) {
             double dMod = 1D - (distance / Math.max(0.1, (getCoreDiameter() / 2) + 0.5));
-            double offsetX = player.posX - pos.getX() + 0.5;
-            double offsetY = player.posY - pos.getY() + 0.5;
-            double offsetZ = player.posZ - pos.getZ() + 0.5;
+            double offsetX = player.getPosX() - pos.getX() + 0.5;
+            double offsetY = player.getPosY() - pos.getY() + 0.5;
+            double offsetZ = player.getPosZ() - pos.getZ() + 0.5;
             double m = 1D * dMod;
             player.addVelocity(offsetX * m, offsetY * m, offsetZ * m);
         }
@@ -1005,10 +1005,6 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
 
     //region Rendering
 
-    @Override
-    public boolean canRenderBreaking() {
-        return true;
-    }
 
 //    @Override
 //    public boolean shouldRenderInPass(int pass) {

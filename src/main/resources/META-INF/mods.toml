@@ -1,5 +1,6 @@
 modLoader="javafml"
-loaderVersion="[28,)"
+loaderVersion="[32,)"
+license="CoFH \"Don't Be a Jerk\" License"
 
 [[mods]]
 	modId="draconicevolution"
@@ -10,13 +11,13 @@ loaderVersion="[28,)"
 [[dependencies.draconicevolution]]
 	modId="forge"
 	mandatory=true
-	versionRange="[28,)"
+	versionRange="[32,)"
 	ordering="NONE"
 	side="BOTH"
 [[dependencies.draconicevolution]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.15.2]"
+    versionRange="[1.16.4]"
     ordering="NONE"
     side="BOTH"
 

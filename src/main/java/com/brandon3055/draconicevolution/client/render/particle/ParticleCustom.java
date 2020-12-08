@@ -4,6 +4,7 @@ import com.brandon3055.brandonscore.client.particle.BCParticle;
 import com.brandon3055.brandonscore.client.particle.IBCParticleFactory;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import net.minecraft.client.particle.Particle;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.world.World;
 
 public class ParticleCustom extends BCParticle {
@@ -12,7 +13,7 @@ public class ParticleCustom extends BCParticle {
     public int fadeAge = 0;
     public float spawnAlpha = 0;
 
-    public ParticleCustom(World worldIn, Vec3D pos, Vec3D speed) {
+    public ParticleCustom(ClientWorld worldIn, Vec3D pos, Vec3D speed) {
         super(worldIn, pos, speed);
 
         motionX = speed.x;
@@ -49,7 +50,7 @@ public class ParticleCustom extends BCParticle {
 
         @Override
         public Particle getEntityFX(int particleID, World world, Vec3D pos, Vec3D speed, int... args) {
-            ParticleCustom particle = new ParticleCustom(world, pos, speed);
+            ParticleCustom particle = new ParticleCustom((ClientWorld)world, pos, speed);
 
             if (args.length >= 10) {
                 particle.setColour(args[0]/255f, args[1]/255f, args[2]/255f);

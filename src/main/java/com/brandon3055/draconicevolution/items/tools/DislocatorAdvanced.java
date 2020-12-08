@@ -13,10 +13,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -49,7 +46,7 @@ public class DislocatorAdvanced extends Dislocator implements IHudDisplay {
         Teleporter.TeleportLocation location = getLocation(stack, player.world);
         if (location == null) {
             if (player.world.isRemote) {
-                player.sendMessage(new TranslationTextComponent("msg.teleporterUnSet.txt"));
+                player.sendMessage(new TranslationTextComponent("msg.teleporterUnSet.txt"), Util.DUMMY_UUID);
             }
             return true;
         }
@@ -58,7 +55,7 @@ public class DislocatorAdvanced extends Dislocator implements IHudDisplay {
         World world = player.world;
 
         if (!player.abilities.isCreativeMode && fuel <= 0) {
-            if (world.isRemote) player.sendMessage(new TranslationTextComponent("msg.teleporterOutOfFuel.txt"));
+            if (world.isRemote) player.sendMessage(new TranslationTextComponent("msg.teleporterOutOfFuel.txt"), Util.DUMMY_UUID);
             return true;
         }
 
@@ -71,7 +68,7 @@ public class DislocatorAdvanced extends Dislocator implements IHudDisplay {
             }
             else {
                 if (world.isRemote) {
-                    player.sendMessage(new TranslationTextComponent("msg.teleporterPlayerConsent.txt"));
+                    player.sendMessage(new TranslationTextComponent("msg.teleporterPlayerConsent.txt"), Util.DUMMY_UUID);
                 }
             }
             return true;
@@ -82,17 +79,17 @@ public class DislocatorAdvanced extends Dislocator implements IHudDisplay {
         }
 
         if (!entity.world.isRemote) {
-            DESoundHandler.playSoundFromServer(player.world, player.posX, player.posY, player.posZ, DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, player.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
+            DESoundHandler.playSoundFromServer(player.world, player.getPosX(), player.getPosY(), player.getPosZ(), DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, player.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
         }
 
         location.teleport(entity);
 
         if (!entity.world.isRemote) {
-            DESoundHandler.playSoundFromServer(player.world, player.posX, player.posY, player.posZ, DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, player.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
+            DESoundHandler.playSoundFromServer(player.world, player.getPosX(), player.getPosY(), player.getPosZ(), DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, player.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
         }
 
         if (player.world.isRemote) {
-            player.sendMessage(new StringTextComponent(I18n.format("msg.teleporterSentMob.txt") + " x:" + (int) location.getXCoord() + " y:" + (int) location.getYCoord() + " z:" + (int) location.getZCoord() + " Dimension: " + location.getDimensionName()));
+            player.sendMessage(new StringTextComponent(I18n.format("msg.teleporterSentMob.txt") + " x:" + (int) location.getXCoord() + " y:" + (int) location.getYCoord() + " z:" + (int) location.getZCoord() + " Dimension: " + location.getDimensionName()), Util.DUMMY_UUID);
         }
 
         if (!player.abilities.isCreativeMode && fuel > 0) {
@@ -109,21 +106,21 @@ public class DislocatorAdvanced extends Dislocator implements IHudDisplay {
 
         if (player.isSneaking()) {
             if (world.isRemote) {
-//                FMLNetworkHandler.openGui(player, DraconicEvolution.instance, GuiHandler.GUIID_TELEPORTER, world, (int) player.posX, (int) player.posY, (int) player.posZ);
+//                FMLNetworkHandler.openGui(player, DraconicEvolution.instance, GuiHandler.GUIID_TELEPORTER, world, (int) player.getPosX(), (int) player.getPosY(), (int) player.getPosZ());
             }
         }
         else {
 
             if (getLocation(stack, world) == null) {
                 if (world.isRemote) {
-//                    FMLNetworkHandler.openGui(player, DraconicEvolution.instance, GuiHandler.GUIID_TELEPORTER, world, (int) player.posX, (int) player.posY, (int) player.posZ);
+//                    FMLNetworkHandler.openGui(player, DraconicEvolution.instance, GuiHandler.GUIID_TELEPORTER, world, (int) player.getPosX(), (int) player.getPosY(), (int) player.getPosZ());
                 }
                 return new ActionResult<>(ActionResultType.PASS, stack);
             }
 
             if (!player.abilities.isCreativeMode && fuel <= 0) {
                 if (world.isRemote) {
-                    player.sendMessage(new TranslationTextComponent("msg.teleporterOutOfFuel.txt"));
+                    player.sendMessage(new TranslationTextComponent("msg.teleporterOutOfFuel.txt"), Util.DUMMY_UUID);
                 }
                 return new ActionResult<>(ActionResultType.PASS, stack);
             }
@@ -133,11 +130,11 @@ public class DislocatorAdvanced extends Dislocator implements IHudDisplay {
             }
 
             if (!world.isRemote) {
-                DESoundHandler.playSoundFromServer(player.world, player.posX, player.posY, player.posZ, DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, player.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
+                DESoundHandler.playSoundFromServer(player.world, player.getPosX(), player.getPosY(), player.getPosZ(), DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, player.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
             }
             getLocation(stack, world).teleport(player);
             if (!world.isRemote) {
-                DESoundHandler.playSoundFromServer(player.world, player.posX, player.posY, player.posZ, DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, player.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
+                DESoundHandler.playSoundFromServer(player.world, player.getPosX(), player.getPosY(), player.getPosZ(), DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, player.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
             }
         }
         return new ActionResult<>(ActionResultType.PASS, stack);

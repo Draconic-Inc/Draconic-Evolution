@@ -3,13 +3,12 @@ package com.brandon3055.draconicevolution.client.render.effect;
 import codechicken.lib.math.MathHelper;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.lib.Vec3D;
-import com.brandon3055.brandonscore.utils.BCProfiler;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalBase;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalWirelessIO;
+import com.brandon3055.draconicevolution.client.DETextures;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
-import com.brandon3055.draconicevolution.client.DETextures;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
@@ -17,12 +16,12 @@ import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.Direction;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -35,7 +34,7 @@ public class CrystalFXLink extends CrystalFXBase<TileCrystalBase> {
     private final boolean terminateTarget;
     public int timeout = 0;
 
-    public CrystalFXLink(World worldIn, TileCrystalBase tile, Vec3D linkTarget) {
+    public CrystalFXLink(ClientWorld worldIn, TileCrystalBase tile, Vec3D linkTarget) {
         super(worldIn, tile);
         this.age = worldIn.rand.nextInt(1024);
         this.setPosition(tile.getBeamLinkPos(linkTarget.getPos()));
@@ -61,7 +60,7 @@ public class CrystalFXLink extends CrystalFXBase<TileCrystalBase> {
     @Override
     public void renderParticle(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks) {
         float scale = 0.1F + (timeout * 0.005F);
-        Vec3d viewVec = renderInfo.getProjectedView();
+        Vector3d viewVec = renderInfo.getProjectedView();
         Vector3 source = new Vector3(posX - viewVec.x, posY - viewVec.y, posZ - viewVec.z);
         Vector3 target = linkTarget.toVector3().subtract(viewVec.x, viewVec.y, viewVec.z);
         Vector3 dirVec = source.copy().subtract(target).normalize();

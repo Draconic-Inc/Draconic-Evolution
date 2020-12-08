@@ -11,17 +11,10 @@ import codechicken.lib.render.shader.UniformType;
 import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Rotation;
 import codechicken.lib.vec.Scale;
-import com.brandon3055.brandonscore.client.particle.BCParticle;
-import com.brandon3055.brandonscore.client.particle.IGLFXHandler;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
-import com.brandon3055.draconicevolution.client.DETextures;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
-import com.brandon3055.draconicevolution.client.render.shaders.DEShaders;
-import com.brandon3055.draconicevolution.utils.LogHelper;
-import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
 import com.brandon3055.draconicevolution.handlers.DESoundHandler;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -33,12 +26,10 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.Direction;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
+import net.minecraft.util.math.vector.Vector3d;
 import org.lwjgl.opengl.GL11;
 
 import java.util.Iterator;
@@ -98,7 +89,7 @@ public class ExplosionFX extends Particle {
     private final Vec3D pos;
     public final int radius;
 
-    public ExplosionFX(World worldIn, Vec3D pos, int radius) {
+    public ExplosionFX(ClientWorld worldIn, Vec3D pos, int radius) {
         super(worldIn, pos.x, pos.y, pos.z);
         this.pos = pos;
         this.radius = radius;
@@ -147,7 +138,7 @@ public class ExplosionFX extends Particle {
 
     @Override
     public void renderParticle(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks) {
-        Vec3d viewVec = renderInfo.getProjectedView();
+        Vector3d viewVec = renderInfo.getProjectedView();
         Vec3D pos = new Vec3D(posX - viewVec.x, posY - viewVec.y, posZ - viewVec.z);
 
         CCRenderState ccrs = CCRenderState.instance();

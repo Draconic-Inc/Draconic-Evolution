@@ -26,11 +26,6 @@ public class TilePotentiometer extends TileBCore implements IRedstoneEmitter, IA
         super(DEContent.tile_potentiometer);
     }
 
-    @Override
-    public boolean hasFastRenderer() {
-        return true;
-    }
-
     public Direction getRotation() {
         return rotation.get();
     }

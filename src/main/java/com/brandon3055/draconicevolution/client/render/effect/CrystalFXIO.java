@@ -1,8 +1,8 @@
 package com.brandon3055.draconicevolution.client.render.effect;
 
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalBase;
-import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
 import com.brandon3055.draconicevolution.client.DETextures;
+import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
@@ -10,11 +10,11 @@ import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
+import net.minecraft.client.world.ClientWorld;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -24,7 +24,7 @@ public class CrystalFXIO extends CrystalFXBase<TileCrystalBase> {
 
     private long rSeed = 0;
 
-    public CrystalFXIO(World worldIn, TileCrystalBase tile) {
+    public CrystalFXIO(ClientWorld worldIn, TileCrystalBase tile) {
         super(worldIn, tile);
         this.age = worldIn.rand.nextInt(1024);
         this.rSeed = tile.getPos().toLong();
@@ -52,7 +52,7 @@ public class CrystalFXIO extends CrystalFXBase<TileCrystalBase> {
             return;
         }
 
-        Vec3d viewVec = renderInfo.getProjectedView();
+        Vector3d viewVec = renderInfo.getProjectedView();
         float viewX = (float) (this.posX - viewVec.getX());
         float viewY = (float) (this.posY - viewVec.getY());
         float viewZ = (float) (this.posZ - viewVec.getZ());

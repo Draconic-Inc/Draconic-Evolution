@@ -61,7 +61,7 @@ public interface IModularMelee extends IModularTieredItem {
             if (getEnergyStored(stack) < energyPerHit && !player.abilities.isCreativeMode) break;
             float distance = player.getDistance(entity);
             if (entity == player || entity == target || player.isOnSameTeam(entity) || distance < 1 || entity.getDistance(target) > aoe) continue;
-            double angle = Math.atan2(player.posX - entity.posX, player.posZ - entity.posZ) * MathHelper.todeg;
+            double angle = Math.atan2(player.getPosX() - entity.getPosX(), player.getPosZ() - entity.getPosZ()) * MathHelper.todeg;
             double relativeAngle = Math.abs((angle + yaw) % 360);
             if (relativeAngle <= aoeAngle / 2 || relativeAngle > 360 - (aoeAngle / 2)) {
                 boolean lit = false;
@@ -73,7 +73,7 @@ public interface IModularMelee extends IModularTieredItem {
 
                 if (entity.attackEntityFrom(DamageSource.causePlayerDamage(player), damage)) {
                     float damageDealt = health - entity.getHealth();
-                    entity.knockBack(player, 0.4F, MathHelper.sin(player.rotationYaw * MathHelper.torad), (-MathHelper.cos(player.rotationYaw * MathHelper.torad)));
+                    entity.applyKnockback(0.4F, MathHelper.sin(player.rotationYaw * MathHelper.torad), (-MathHelper.cos(player.rotationYaw * MathHelper.torad)));
 
                     if (fireAspect > 0) {
                         entity.setFire(fireAspect * 4);

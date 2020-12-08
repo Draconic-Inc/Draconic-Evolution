@@ -15,9 +15,9 @@ import com.brandon3055.draconicevolution.api.modules.entities.ShieldControlEntit
 import com.brandon3055.draconicevolution.init.EquipCfg;
 import com.brandon3055.draconicevolution.items.equipment.IModularItem;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.ai.attributes.IAttribute;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
@@ -28,7 +28,6 @@ import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.thread.EffectiveSide;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -208,7 +207,7 @@ public class ModularArmorEventHandler {
 
         //region/*---------------- Movement Speed ----------------*/
 
-        IAttribute speedAttr = SharedMonsterAttributes.MOVEMENT_SPEED;
+        Attribute speedAttr = Attributes.MOVEMENT_SPEED;
         double speedModifier = 0;
         if (armorAbilities.data != null) {
             speedModifier = armorAbilities.data.getSpeedMultiplier();
@@ -222,13 +221,13 @@ public class ModularArmorEventHandler {
         AttributeModifier currentModifier = entity.getAttribute(speedAttr).getModifier(WALK_SPEED_UUID);
         if (speedModifier > 0) {
             if (currentModifier == null) {
-                entity.getAttribute(speedAttr).applyModifier(new AttributeModifier(WALK_SPEED_UUID, speedAttr.getName(), speedModifier, AttributeModifier.Operation.MULTIPLY_BASE));
+                entity.getAttribute(speedAttr).applyNonPersistentModifier(new AttributeModifier(WALK_SPEED_UUID, speedAttr.getAttributeName(), speedModifier, AttributeModifier.Operation.MULTIPLY_BASE));
             } else if (currentModifier.getAmount() != speedModifier) {
                 entity.getAttribute(speedAttr).removeModifier(currentModifier);
-                entity.getAttribute(speedAttr).applyModifier(new AttributeModifier(WALK_SPEED_UUID, speedAttr.getName(), speedModifier, AttributeModifier.Operation.MULTIPLY_BASE));
+                entity.getAttribute(speedAttr).applyNonPersistentModifier(new AttributeModifier(WALK_SPEED_UUID, speedAttr.getAttributeName(), speedModifier, AttributeModifier.Operation.MULTIPLY_BASE));
             }
 
-            if (!entity.onGround && entity.getRidingEntity() == null) {
+            if (!entity.isOnGround() && entity.getRidingEntity() == null) {
                 entity.jumpMovementFactor = 0.02F + (0.02F * (float) speedModifier);
             }
         } else {

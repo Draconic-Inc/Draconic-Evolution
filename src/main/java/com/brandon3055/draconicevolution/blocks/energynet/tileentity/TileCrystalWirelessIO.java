@@ -18,6 +18,7 @@ import com.brandon3055.draconicevolution.client.render.effect.CrystalFXBase;
 import com.brandon3055.draconicevolution.handlers.DEEventHandler;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.IContainerListener;
@@ -294,7 +295,7 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
     @OnlyIn(Dist.CLIENT)
     @Override
     public CrystalFXBase createStaticFX() {
-        return new CrystalFXRing(world, this);
+        return new CrystalFXRing((ClientWorld)world, this);
     }
 
     @Override

@@ -14,11 +14,11 @@ import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.vector.TransformationMatrix;
 import org.lwjgl.opengl.GL11;
 
 import java.util.Map;
@@ -49,8 +49,12 @@ public class RenderItemChaosShard implements IItemRenderer {
         return false;
     }
 
-    //endregion
+    @Override
+    public boolean isSideLit() {
+        return false;
+    }
 
+    //endregion
 
     @Override
     public void renderItem(ItemStack stack, ItemCameraTransforms.TransformType transformType, MatrixStack mStack, IRenderTypeBuffer getter, int packedLight, int packedOverlay) {
@@ -68,14 +72,4 @@ public class RenderItemChaosShard implements IItemRenderer {
     public ImmutableMap<ItemCameraTransforms.TransformType, TransformationMatrix> getTransforms() {
         return TransformUtils.DEFAULT_BLOCK;
     }
-
-    @Override
-    public boolean func_230044_c_() {
-        return false;
-    }
-
-//    @Override
-//    public IModelState getTransforms() {
-//        return TransformUtils.DEFAULT_ITEM;
-//    }
 }

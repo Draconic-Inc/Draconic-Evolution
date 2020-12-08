@@ -142,9 +142,9 @@
 //                CompoundNBT tag = new CompoundNBT();
 //                message.location.setDimensionName(BrandonsCore.proxy.getMCServer().getWorld(message.location.getDimension()).provider.getDimensionType().getName());
 //
-//                message.location.setXCoord(ctx.getServerHandler().player.posX);
-//                message.location.setYCoord(ctx.getServerHandler().player.posY);
-//                message.location.setZCoord(ctx.getServerHandler().player.posZ);
+//                message.location.setXCoord(ctx.getServerHandler().player.getPosX());
+//                message.location.setYCoord(ctx.getServerHandler().player.getPosY());
+//                message.location.setZCoord(ctx.getServerHandler().player.getPosZ());
 //
 //                message.location.writeToNBT(tag);
 //                list.appendTag(tag);
@@ -181,9 +181,9 @@
 //                CompoundNBT tag = list.getCompoundTagAt(message.data);
 //                message.location.setDimensionName(BrandonsCore.proxy.getMCServer().getWorld(message.location.getDimension()).provider.getDimensionType().getName());
 //
-//                message.location.setXCoord(ctx.getServerHandler().player.posX);
-//                message.location.setYCoord(ctx.getServerHandler().player.posY);
-//                message.location.setZCoord(ctx.getServerHandler().player.posZ);
+//                message.location.setXCoord(ctx.getServerHandler().player.getPosX());
+//                message.location.setYCoord(ctx.getServerHandler().player.getPosY());
+//                message.location.setZCoord(ctx.getServerHandler().player.getPosZ());
 //
 //                message.location.writeToNBT(tag);
 //                list.set(message.data, tag);
@@ -216,11 +216,11 @@
 //                destination.readFromNBT(list.getCompoundTagAt(message.data));
 //
 //                if (!ctx.getServerHandler().player.world.isRemote) {
-//                    DESoundHandler.playSoundFromServer(ctx.getServerHandler().player.world, ctx.getServerHandler().player.posX, ctx.getServerHandler().player.posY, ctx.getServerHandler().player.posZ, DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, ctx.getServerHandler().player.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
+//                    DESoundHandler.playSoundFromServer(ctx.getServerHandler().player.world, ctx.getServerHandler().player.getPosX(), ctx.getServerHandler().player.getPosY(), ctx.getServerHandler().player.getPosZ(), DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, ctx.getServerHandler().player.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
 //                }
 //                destination.teleport(ctx.getServerHandler().player);
 //                if (!ctx.getServerHandler().player.world.isRemote) {
-//                    DESoundHandler.playSoundFromServer(ctx.getServerHandler().player.world, ctx.getServerHandler().player.posX, ctx.getServerHandler().player.posY, ctx.getServerHandler().player.posZ, DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, ctx.getServerHandler().player.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
+//                    DESoundHandler.playSoundFromServer(ctx.getServerHandler().player.world, ctx.getServerHandler().player.getPosX(), ctx.getServerHandler().player.getPosY(), ctx.getServerHandler().player.getPosZ(), DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, ctx.getServerHandler().player.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
 //                }
 //            }
 //

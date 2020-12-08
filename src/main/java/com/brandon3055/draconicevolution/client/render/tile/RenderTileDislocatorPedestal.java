@@ -6,10 +6,11 @@ import com.brandon3055.brandonscore.utils.ModelUtils;
 import com.brandon3055.brandonscore.utils.Teleporter;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DEOldConfig;
-import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileDislocatorPedestal;
+import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.items.tools.Dislocator;
 import com.brandon3055.draconicevolution.items.tools.DislocatorAdvanced;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
@@ -83,7 +84,7 @@ public class RenderTileDislocatorPedestal extends TESRBase<TileDislocatorPedesta
             return;
         }
 
-        String s = item.hasDisplayName() ? item.getDisplayName().getFormattedText() : "";
+        String s = item.hasDisplayName() ? item.getDisplayName().getString() : "";
         if (item.getItem() instanceof DislocatorAdvanced) {
             Teleporter.TeleportLocation location = ((Dislocator) item.getItem()).getLocation(item, te.getWorld());
             if (location != null) {
@@ -103,11 +104,11 @@ public class RenderTileDislocatorPedestal extends TESRBase<TileDislocatorPedesta
         RenderSystem.rotatef(180, 0, 1, 0);
         RenderSystem.translated(0, -55, 0);
 
-        double xDiff = player.posX - (te.getPos().getX() + 0.5);
-        double yDiff = (player.posY + player.getEyeHeight()) - (te.getPos().getY() + 0.5);
-        double zDiff = player.posZ - (te.getPos().getZ() + 0.5);
+        double xDiff = player.getPosX() - (te.getPos().getX() + 0.5);
+        double yDiff = (player.getPosY() + player.getEyeHeight()) - (te.getPos().getY() + 0.5);
+        double zDiff = player.getPosZ() - (te.getPos().getZ() + 0.5);
         double yawAngle = Math.toDegrees(Math.atan2(zDiff, xDiff));
-        double pitchAngle = Math.toDegrees(Math.atan2(yDiff, Utils.getDistanceAtoB(player.posX, player.posY, player.posZ, te.getPos().getX() + 0.5, te.getPos().getY() + 0.5, te.getPos().getZ() + 0.5)));
+        double pitchAngle = Math.toDegrees(Math.atan2(yDiff, Utils.getDistanceAtoB(player.getPosX(), player.getPosY(), player.getPosZ(), te.getPos().getX() + 0.5, te.getPos().getY() + 0.5, te.getPos().getZ() + 0.5)));
 
         RenderSystem.rotatef((float) yawAngle + 90 - rotation, 0, 1, 0);
         RenderSystem.rotatef((float) -pitchAngle, 1, 0, 0);
@@ -136,7 +137,7 @@ public class RenderTileDislocatorPedestal extends TESRBase<TileDislocatorPedesta
         RenderSystem.color4f(1f, 1f, 1f, 1f);
         RenderSystem.disableLighting();
 
-        fontRenderer.drawString(s, -fontRenderer.getStringWidth(s) / 2F, 0, 0xffffff);
+        fontRenderer.drawString(new MatrixStack(), s, -fontRenderer.getStringWidth(s) / 2F, 0, 0xffffff);
 
         RenderSystem.enableLighting();
         RenderSystem.popMatrix();

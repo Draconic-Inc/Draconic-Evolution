@@ -12,6 +12,7 @@ import com.brandon3055.draconicevolution.api.modules.data.ModuleData;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Streams;
+import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
@@ -179,7 +180,7 @@ public interface ModuleHost extends INBTSerializable<CompoundNBT> {
         return opt.orElseGet(() -> new InstallResult(InstallResult.InstallResultType.YES, newModule, null, null));
     }
 
-    void getAttributeModifiers(EquipmentSlotType slot, ItemStack stack, Multimap<String, AttributeModifier> map);
+    void getAttributeModifiers(EquipmentSlotType slot, ItemStack stack, Multimap<Attribute, AttributeModifier> map);
 
 //    /**
 //     * This will be balled by module entities when they dynamically update their attributes.

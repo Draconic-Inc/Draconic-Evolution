@@ -4,7 +4,10 @@ import codechicken.lib.colour.Colour;
 import codechicken.lib.colour.ColourARGB;
 import codechicken.lib.math.MathHelper;
 import codechicken.lib.render.CCRenderState;
-import codechicken.lib.render.shader.*;
+import codechicken.lib.render.shader.ShaderProgram;
+import codechicken.lib.render.shader.ShaderProgramBuilder;
+import codechicken.lib.render.shader.UniformCache;
+import codechicken.lib.render.shader.UniformType;
 import codechicken.lib.util.SneakyUtils;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.utils.Utils;
@@ -13,25 +16,22 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
 import com.brandon3055.draconicevolution.client.DETextures;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
-import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
+import net.minecraft.util.math.vector.Vector3d;
 import org.lwjgl.opengl.GL11;
 
 import static codechicken.lib.render.shader.ShaderObject.StandardShaderType.FRAGMENT;
-import static codechicken.lib.render.shader.ShaderObject.StandardShaderType.VERTEX;
 import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
 
 /**
@@ -91,7 +91,7 @@ public class ReactorBeamFX extends Particle {
             )
             .build();
 
-    public ReactorBeamFX(World worldIn, Vec3D pos, Direction facing, TileReactorCore tile, boolean isInjectorEffect) {
+    public ReactorBeamFX(ClientWorld worldIn, Vec3D pos, Direction facing, TileReactorCore tile, boolean isInjectorEffect) {
         super(worldIn, pos.x, pos.y, pos.z);
         this.tile = tile;
         this.facing = facing;
@@ -132,7 +132,7 @@ public class ReactorBeamFX extends Particle {
         ccrs.bind(buffer, DefaultVertexFormats.POSITION_COLOR_TEX);
         ccrs.brightness = 240;
 
-        Vec3d viewVec = renderInfo.getProjectedView();
+        Vector3d viewVec = renderInfo.getProjectedView();
         Vec3D pos1 = new Vec3D(posX - viewVec.x, posY - viewVec.y, posZ - viewVec.z).offset(facing, -0.35D);
 
         float texOffset = (ClientEventHandler.elapsedTicks + partialTicks) / -150F;

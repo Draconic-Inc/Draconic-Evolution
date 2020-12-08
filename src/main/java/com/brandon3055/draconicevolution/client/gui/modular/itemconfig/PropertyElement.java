@@ -12,7 +12,6 @@ import com.brandon3055.draconicevolution.api.config.ConfigProperty;
 import com.brandon3055.brandonscore.client.gui.modulargui.ThemedElements;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.model.Material;
 import net.minecraft.client.resources.I18n;
 
 import java.util.Collections;

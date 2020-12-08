@@ -6,6 +6,7 @@ import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.utils.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.world.World;
 
 /**
@@ -17,7 +18,7 @@ public class ParticlePortal extends BCParticle {
     public Vec3D start;
     public float baseScale;
 
-    public ParticlePortal(World worldIn, Vec3D pos, Vec3D target) {
+    public ParticlePortal(ClientWorld worldIn, Vec3D pos, Vec3D target) {
         super(worldIn, pos, new Vec3D(0, 0, 0));
         this.start = pos;
         this.target = target;
@@ -57,7 +58,7 @@ public class ParticlePortal extends BCParticle {
 
         @Override
         public Particle getEntityFX(int particleID, World world, Vec3D pos, Vec3D speed, int... args) {
-            return new ParticlePortal(world, pos, speed);
+            return new ParticlePortal((ClientWorld)world, pos, speed);
         }
     }
 }

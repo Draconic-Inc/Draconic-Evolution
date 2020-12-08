@@ -8,6 +8,7 @@ import com.brandon3055.brandonscore.client.particle.IBCParticleFactory;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
 import net.minecraft.client.particle.Particle;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.world.World;
 
 import java.util.Map;
@@ -24,7 +25,7 @@ public class ParticleChaosImplosion extends BCParticle {
     public boolean contract = false;
     public boolean explosion = false;
 
-    public ParticleChaosImplosion(World worldIn, Vec3D pos, Vec3D target) {
+    public ParticleChaosImplosion(ClientWorld worldIn, Vec3D pos, Vec3D target) {
         super(worldIn, pos, new Vec3D(0, 0, 0));
         this.texturesPerRow = 8F;
         this.target = target;
@@ -160,7 +161,7 @@ public class ParticleChaosImplosion extends BCParticle {
 
         @Override
         public Particle getEntityFX(int particleID, World world, Vec3D pos, Vec3D speed, int... args) {
-            ParticleChaosImplosion particle = new ParticleChaosImplosion(world, pos, speed);
+            ParticleChaosImplosion particle = new ParticleChaosImplosion((ClientWorld)world, pos, speed);
 
             if (args.length > 0) {
                 if (args[0] == 0) {              //0 Tracer

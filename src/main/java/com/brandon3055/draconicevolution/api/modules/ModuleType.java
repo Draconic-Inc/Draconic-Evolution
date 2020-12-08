@@ -7,10 +7,12 @@ import com.brandon3055.draconicevolution.api.modules.lib.InstallResult.InstallRe
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.brandon3055.draconicevolution.api.modules.data.ModuleData;
 import com.google.common.collect.Multimap;
+import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 
 import javax.annotation.Nullable;
@@ -56,7 +58,7 @@ public interface ModuleType<T extends ModuleData<T>> {
 
     String getName();
 
-    default ITextComponent getDisplayName() {
+    default TextComponent getDisplayName() {
         return new TranslationTextComponent("module_type.draconicevolution." + getName() + ".name");
     }
 
@@ -109,7 +111,7 @@ public interface ModuleType<T extends ModuleData<T>> {
      * @param stack The ItemStack containing this module/modules
      * @param map The map to which the modifiers must be added.
      */
-    default void getAttributeModifiers(@Nullable T moduleData, EquipmentSlotType slot, ItemStack stack, Multimap<String, AttributeModifier> map) {}
+    default void getAttributeModifiers(@Nullable T moduleData, EquipmentSlotType slot, ItemStack stack, Multimap<Attribute, AttributeModifier> map) {}
 
     Collection<ModuleCategory> getCategories();
 

@@ -106,7 +106,7 @@ public class ServerPacketHandler implements ICustomPacketHandler.IServerPacketHa
                     ToolConfigHelper.incrementProfile(stack);
                     int newProfile = ToolConfigHelper.getProfile(stack);
                     String name = ToolConfigHelper.getProfileName(stack, newProfile);
-                    ChatHelper.indexedTrans(player, new TranslationTextComponent("config.de.armor_profile_" + i + ".msg").getFormattedText() + " " + name, -30553045 + i);
+                    ChatHelper.indexedTrans(player, new TranslationTextComponent("config.de.armor_profile_" + i + ".msg").toString() + " " + name, -30553045 + i);
                 }
                 i++;
             }

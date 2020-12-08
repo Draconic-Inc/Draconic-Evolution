@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.client.gui;
 
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyInfuser;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -25,7 +26,7 @@ public class GuiEnergyinfuser extends ContainerScreen {
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
+    protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int x, int y) {
 
     }
 

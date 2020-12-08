@@ -222,14 +222,14 @@ public abstract class VBOBipedModel<T extends LivingEntity> extends BipedModel<T
             this.bipedRightArm.rotateAngleY = -0.8F;
             this.bipedRightArm.rotateAngleX = -0.97079635F;
             this.bipedLeftArm.rotateAngleX = -0.97079635F;
-            float f5 = MathHelper.clamp(this.remainingItemUseTime, 0.0F, f4);
+            float f5 = 0;//TODOMathHelper.clamp(this.remainingItemUseTime, 0.0F, f4);
             this.bipedLeftArm.rotateAngleY = MathHelper.lerp(f5 / f4, 0.4F, 0.85F);
             this.bipedLeftArm.rotateAngleX = MathHelper.lerp(f5 / f4, this.bipedLeftArm.rotateAngleX, (-(float)Math.PI / 2F));
         } else if (this.leftArmPose == BipedModel.ArmPose.CROSSBOW_CHARGE) {
             this.bipedLeftArm.rotateAngleY = 0.8F;
             this.bipedRightArm.rotateAngleX = -0.97079635F;
             this.bipedLeftArm.rotateAngleX = -0.97079635F;
-            float f6 = MathHelper.clamp(this.remainingItemUseTime, 0.0F, f4);
+            float f6 = 0;//TODOMathHelper.clamp(this.remainingItemUseTime, 0.0F, f4);
             this.bipedRightArm.rotateAngleY = MathHelper.lerp(f6 / f4, -0.4F, -0.85F);
             this.bipedRightArm.rotateAngleX = MathHelper.lerp(f6 / f4, this.bipedRightArm.rotateAngleX, (-(float)Math.PI / 2F));
         }

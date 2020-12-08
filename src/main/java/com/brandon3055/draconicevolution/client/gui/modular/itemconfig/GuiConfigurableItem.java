@@ -21,6 +21,7 @@ import com.brandon3055.draconicevolution.api.config.ConfigProperty;
 import com.brandon3055.draconicevolution.client.keybinding.KeyBindings;
 import com.brandon3055.draconicevolution.inventory.ContainerConfigurableItem;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -145,7 +146,7 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
         title.setDisplaySupplier(() -> {
             if (advancedUI || container.getLastStack().isEmpty()) return I18n.format("gui.draconicevolution.item_config.name");
             else {
-                String name = container.getLastStack().getDisplayName().getFormattedText();
+                String name = container.getLastStack().getDisplayName().getString();
                 String prefix = I18n.format("gui.draconicevolution.item_config.configure") + " ";
                 if (font.getStringWidth(prefix + name) > (themeButton.xPos() - toggleAdvanced.maxXPos()) - 22) {
                     return name;
@@ -346,7 +347,7 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
 
             StandardDialog<ConfigProperty> dialog = new StandardDialog<>(mainUI);
             dialog.setHeading(I18n.format("gui.draconicevolution.item_config.click_and_drag_to_place"));
-            dialog.setDefaultRenderer(e -> e.getDisplayName().getFormattedText());
+            dialog.setDefaultRenderer(e -> e.getDisplayName().getString());
             dialog.addItems(provider.getProperties());
             int x = (int) mainUI.getMouseX();
             dialog.setPos(x, height - dialog.ySize());
@@ -402,7 +403,7 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partialTicks) {
+    public void render(MatrixStack mStack, int mouseX, int mouseY, float partialTicks) {
         if ((isFullSize() ? 1 : 0) != resizeAnim || (advancedUI ? 0 : 1) != rePosAnim || (isUIHidden() ? 1 : 0) != hideAnim) {
             resizeAnim = MathHelper.clip(MathHelper.approachLinear(resizeAnim, (isFullSize() ? 1 : 0), 0.15F * partialTicks), 0, 1);
             hideAnim = MathHelper.clip(MathHelper.approachLinear(hideAnim, (isUIHidden() ? 1 : 0), 0.15F * partialTicks), 0, 1);
@@ -411,7 +412,7 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
         }
         updateAnimations.removeIf(UpdateAnim::isFinished);
         updateAnimations.forEach(e -> e.tick(partialTicks));
-        super.render(mouseX, mouseY, partialTicks);
+        super.render(mStack, mouseX, mouseY, partialTicks);
     }
 
     @Override

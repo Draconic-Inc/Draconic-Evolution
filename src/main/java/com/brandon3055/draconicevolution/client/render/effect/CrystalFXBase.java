@@ -4,11 +4,10 @@ import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.draconicevolution.api.energy.IENetEffectTile;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.ActiveRenderInfo;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Quaternion;
-import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
+import net.minecraft.util.math.vector.Quaternion;
+import net.minecraft.util.math.vector.Vector3f;
 
 /**
  * Created by brandon3055 on 29/11/2016.
@@ -21,7 +20,7 @@ public abstract class CrystalFXBase<T extends TileEntity & IENetEffectTile> exte
     public boolean renderEnabled = true;
     private int ttl = 10;
 
-    public CrystalFXBase(World worldIn, T tile) {
+    public CrystalFXBase(ClientWorld worldIn, T tile) {
         super(worldIn, tile.getPos().getX() + 0.5, tile.getPos().getY() + 0.5, tile.getPos().getZ() + 0.5);
         this.tile = tile;
     }

@@ -11,6 +11,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
@@ -66,7 +67,7 @@ public class EnergyCoreBuilder implements IProcess {
             BlockState state = world.getBlockState(key);
             if (state.getBlock() != targetBlock) {
                 isDead = true;
-                player.sendMessage(new TranslationTextComponent("ecore.de.assemble_found_invalid.txt", state.getBlock().getTranslationKey(), key.toString()).setStyle(new Style().setColor(TextFormatting.RED)));
+                player.sendMessage(new TranslationTextComponent("ecore.de.assemble_found_invalid.txt", state.getBlock().getTranslationKey(), key.toString()).mergeStyle(TextFormatting.RED), Util.DUMMY_UUID);
                 return;
             }
         }
@@ -88,7 +89,7 @@ public class EnergyCoreBuilder implements IProcess {
             if (world.getBlockState(pos).getBlock() == state.getBlock()) {
                 return;
             }
-            player.sendMessage(new TranslationTextComponent("ecore.de.assemble_error_expected_air.txt", pos.toString()).setStyle(new Style().setColor(TextFormatting.RED)));
+            player.sendMessage(new TranslationTextComponent("ecore.de.assemble_error_expected_air.txt", pos.toString()).mergeStyle(TextFormatting.RED), Util.DUMMY_UUID);
             isDead = true;
             return;
         }
@@ -100,7 +101,7 @@ public class EnergyCoreBuilder implements IProcess {
             world.playSound(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, soundtype.getPlaceSound(), SoundCategory.BLOCKS, (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
         }
         else {
-            player.sendMessage(new TranslationTextComponent("ecore.de.assemble_missing_required.txt", state.getBlock().getTranslationKey()).setStyle(new Style().setColor(TextFormatting.RED)));
+            player.sendMessage(new TranslationTextComponent("ecore.de.assemble_missing_required.txt", state.getBlock().getTranslationKey()).mergeStyle(TextFormatting.RED), Util.DUMMY_UUID);
             isDead = true;
         }
     }

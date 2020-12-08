@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.client.render.particle;
 
 import com.brandon3055.brandonscore.client.particle.IntParticleType.IntParticleData;
 import net.minecraft.client.particle.*;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -11,7 +12,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class CustomFlameParticle extends SpriteTexturedParticle {
 //    private float drag =
 
-    private CustomFlameParticle(World worldIn, double xCoordIn, double yCoordIn, double zCoordIn, double xSpeedIn, double ySpeedIn, double zSpeedIn) {
+    private CustomFlameParticle(ClientWorld worldIn, double xCoordIn, double yCoordIn, double zCoordIn, double xSpeedIn, double ySpeedIn, double zSpeedIn) {
         super(worldIn, xCoordIn, yCoordIn, zCoordIn, xSpeedIn, ySpeedIn, zSpeedIn);
         this.motionX = this.motionX * (double)0.01F + xSpeedIn;
         this.motionY = this.motionY * (double)0.01F + ySpeedIn;
@@ -78,7 +79,8 @@ public class CustomFlameParticle extends SpriteTexturedParticle {
             this.spriteSet = p_i50823_1_;
         }
 
-        public Particle makeParticle(IntParticleData data, World worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        @Override
+        public Particle makeParticle(IntParticleData data, ClientWorld worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
             CustomFlameParticle flameparticle = new CustomFlameParticle(worldIn, x, y, z, xSpeed, ySpeed, zSpeed);
             flameparticle.selectSpriteRandomly(this.spriteSet);
             if (data.get().length >= 1) {

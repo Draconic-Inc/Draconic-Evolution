@@ -10,6 +10,7 @@ import com.brandon3055.draconicevolution.client.render.effect.CrystalFXLink;
 import com.brandon3055.draconicevolution.client.render.effect.CrystalFXWireless;
 import com.brandon3055.draconicevolution.client.render.effect.CrystalFXBase;
 import com.brandon3055.draconicevolution.network.CrystalUpdateBatcher.BatchedCrystalUpdate;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 
@@ -89,7 +90,7 @@ public class ENetFXHandlerClientWireless extends ENetFXHandler<TileCrystalWirele
 
                 linkFX = new LinkedList<>();
                 for (BlockPos receiver : tile.getReceivers()) {
-                    CrystalFXLink link = new CrystalFXLink(tile.getWorld(), tile, Vec3D.getCenter(receiver));
+                    CrystalFXLink link = new CrystalFXLink((ClientWorld)tile.getWorld(), tile, Vec3D.getCenter(receiver));
                     linkFX.add(link);
                     DEParticles.addParticleDirect(tile.getWorld(), link);
                 }
@@ -144,7 +145,7 @@ public class ENetFXHandlerClientWireless extends ENetFXHandler<TileCrystalWirele
         }
 
         for (BlockPos pos : tile.getReceivers()) {
-            CrystalFXWireless wirelessFX = new CrystalFXWireless(tile.getWorld(), tile, pos);
+            CrystalFXWireless wirelessFX = new CrystalFXWireless((ClientWorld)tile.getWorld(), tile, pos);
             transferFXList.add(wirelessFX);
             DEParticles.addParticleDirect(tile.getWorld(), wirelessFX);
         }

@@ -11,7 +11,7 @@ import net.minecraft.network.IPacket;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -58,7 +58,7 @@ public class EntityChaosImplosion extends Entity {
             dataManager.set(TICKS, ticksExisted);
         }
 
-        Vec3D pos = new Vec3D(posX, posY, posZ);
+//        Vec3D pos = new Vec3D(getPosX(), getPosY(), getPosZ());
 
         if (ticksExisted < 30 && ticksExisted % 5 == 0 && world.isRemote) {
             //TODO Particles
@@ -75,9 +75,9 @@ public class EntityChaosImplosion extends Entity {
 
         if (ticksExisted < 600) {
             for (int i = 0; i < 10; i++) {
-                double x = posX - 18 + rand.nextDouble() * 36;
-                double y = posY - 8 + rand.nextDouble() * 16;
-                double z = posZ - 18 + rand.nextDouble() * 36;
+//                double x = posX - 18 + rand.nextDouble() * 36;
+//                double y = posY - 8 + rand.nextDouble() * 16;
+//                double z = posZ - 18 + rand.nextDouble() * 36;
                 if (world.isRemote) {
 //                    BCEffectHandler.spawnFX(DEParticles.CHAOS_IMPLOSION, world, new Vec3D(x, y, z), pos, 512D, 0);
                 }
@@ -90,7 +90,7 @@ public class EntityChaosImplosion extends Entity {
 
         if (ticksExisted == 700 && !world.isRemote) {
 //            BCEffectHandler.spawnFX(DEParticles.CHAOS_IMPLOSION, world, pos, pos, 1024D, 5);
-            ProcessHandler.addProcess(new ProcessChaosImplosion(world, (int) posX, (int) posY, (int) posZ));
+            ProcessHandler.addProcess(new ProcessChaosImplosion(world, (int) getPosX(), (int) getPosY(), (int) getPosZ()));
         }
 
         if (ticksExisted > 720) {
@@ -108,7 +108,7 @@ public class EntityChaosImplosion extends Entity {
         for (PlayerEntity player : players) {
             double x = (rand.nextDouble() - 0.5) * 2 * intensity;
             double z = (rand.nextDouble() - 0.5) * 2 * intensity;
-            player.move(MoverType.SELF, new Vec3d(x / 5D, 0, z / 5D));
+            player.move(MoverType.SELF, new Vector3d(x / 5D, 0, z / 5D));
             player.rotationYaw -= x * 2;
             player.rotationPitch -= z * 2;
         }

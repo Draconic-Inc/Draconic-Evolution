@@ -8,6 +8,7 @@ import com.brandon3055.brandonscore.client.particle.IBCParticleFactory;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
 import net.minecraft.client.particle.Particle;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.world.World;
@@ -22,7 +23,7 @@ public class ParticleArrowShockwave extends BCParticle {
     public double size = 0;
     public double maxSize;
 
-    public ParticleArrowShockwave(World worldIn, Vec3D pos) {
+    public ParticleArrowShockwave(ClientWorld worldIn, Vec3D pos) {
         super(worldIn, pos);
         if (model == null) {
             Map<String, CCModel> map = OBJParser.parseModels(ResourceHelperDE.getResource("models/reactor_core_model.obj"));
@@ -31,7 +32,7 @@ public class ParticleArrowShockwave extends BCParticle {
         }
     }
 
-    public ParticleArrowShockwave(World worldIn, Vec3D pos, Vec3D speed) {
+    public ParticleArrowShockwave(ClientWorld worldIn, Vec3D pos, Vec3D speed) {
         this(worldIn, pos);
     }
 
@@ -106,7 +107,7 @@ public class ParticleArrowShockwave extends BCParticle {
 
         @Override
         public Particle getEntityFX(int particleID, World world, Vec3D pos, Vec3D speed, int... args) {
-            ParticleArrowShockwave arrowShockwave = new ParticleArrowShockwave(world, pos, speed);
+            ParticleArrowShockwave arrowShockwave = new ParticleArrowShockwave((ClientWorld) world, pos, speed);
 
             world.playSound(pos.x, pos.y, pos.z, SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.PLAYERS, 10, 0.9F + world.rand.nextFloat() * 0.2F, false);
             if (args.length >= 1) {

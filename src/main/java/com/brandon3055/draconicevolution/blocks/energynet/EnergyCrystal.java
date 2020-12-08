@@ -124,7 +124,7 @@ public class EnergyCrystal extends BlockBCore implements IHudDisplay {
             return;
         }
 
-        displayList.add(InfoHelper.HITC() + asItem().getName().getFormattedText());
+        displayList.add(InfoHelper.HITC() + asItem().getName().getString());
         TileCrystalBase tile = (TileCrystalBase) te;
         tile.addDisplayData(displayList);
     }
@@ -176,7 +176,7 @@ public class EnergyCrystal extends BlockBCore implements IHudDisplay {
         }
 
         @Override
-        public String getName() {
+        public String getString() {
             return name().toLowerCase();
         }
 

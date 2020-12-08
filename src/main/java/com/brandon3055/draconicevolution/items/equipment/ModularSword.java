@@ -8,8 +8,8 @@ import com.brandon3055.draconicevolution.api.modules.lib.ModuleHostImpl;
 import com.brandon3055.draconicevolution.init.EquipCfg;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.monster.CreeperEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -22,7 +22,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
-
 import java.util.List;
 
 import static com.brandon3055.draconicevolution.init.ModuleCfg.*;
@@ -81,8 +80,8 @@ public class ModularSword extends SwordItem implements IReaperItem, IModularMele
                     CreeperEntity creeper = EntityType.CREEPER.create(worldIn);
                     creeper.setNoAI(true);
                     creeper.setInvulnerable(true);
-                    creeper.setPosition(player.posX + x, player.posY, player.posZ + z);
-                    creeper.getAttribute(SharedMonsterAttributes.MAX_HEALTH).applyModifier(new AttributeModifier("Health Boost", 10000, AttributeModifier.Operation.MULTIPLY_TOTAL));
+                    creeper.setPosition(player.getPosX() + x, player.getPosY(), player.getPosZ() + z);
+                    creeper.getAttribute(Attributes.MAX_HEALTH).applyNonPersistentModifier(new AttributeModifier("Health Boost", 10000, AttributeModifier.Operation.MULTIPLY_TOTAL));
                     creeper.setHealth(Float.MAX_VALUE);
                     worldIn.addEntity(creeper);
                 }

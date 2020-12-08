@@ -8,10 +8,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
@@ -132,10 +129,10 @@ public class Debugger extends Item {
     public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
         ItemStack itemStack = player.getHeldItem(hand);
         //if (!world.isRemote) {
-        double posX = player.posX - (player.posX % 16) + 8;
-        double posZ = player.posZ - (player.posZ % 16) + 8;
+        double posX = player.getPosX() - (player.getPosX() % 16) + 8;
+        double posZ = player.getPosZ() - (player.getPosZ() % 16) + 8;
 
-//            player.setPosition(posX, player.posY, posZ);
+//            player.setPosition(posX, player.getPosY(), posZ);
 
 //            for (int d = 1; d <= 30; d++) {
 //
@@ -280,7 +277,7 @@ public class Debugger extends Item {
 //
 //            int range = 10;
 //
-//            Iterable<BlockPos> blocks = BlockPos.getAllInBox(new BlockPos(player.posX - range, 0, player.posZ - range), new BlockPos(player.posX + range, 128, player.posZ + range));
+//            Iterable<BlockPos> blocks = BlockPos.getAllInBox(new BlockPos(player.getPosX() - range, 0, player.getPosZ() - range), new BlockPos(player.getPosX() + range, 128, player.getPosZ() + range));
 //
 //            for (BlockPos pos : blocks) {
 //                plThread.setBlock(pos, Blocks.AIR.getDefaultState());
@@ -299,7 +296,7 @@ public class Debugger extends Item {
 //
 //            int range = 100;
 //
-//            Iterable<BlockPos> blocks = BlockPos.getAllInBox(new BlockPos(player.posX - range, 0, player.posZ - range), new BlockPos(player.posX + range, 128, player.posZ + range));
+//            Iterable<BlockPos> blocks = BlockPos.getAllInBox(new BlockPos(player.getPosX() - range, 0, player.getPosZ() - range), new BlockPos(player.getPosX() + range, 128, player.getPosZ() + range));
 //
 //            for (BlockPos pos : blocks) {
 //
@@ -326,7 +323,7 @@ public class Debugger extends Item {
 //            for (int chunkX = - range; chunkX < range; chunkX++) {
 //                for (int chunkZ = - range; chunkZ < range; chunkZ++) {
 //
-//                    Chunk chunk = world.getChunkFromChunkCoords((int) (player.posX / 16) + chunkX, (int) (player.posZ / 16) + chunkZ);
+//                    Chunk chunk = world.getChunkFromChunkCoords((int) (player.getPosX() / 16) + chunkX, (int) (player.getPosZ() / 16) + chunkZ);
 //
 //                    ExtendedBlockStorage[] blockStorage = chunk.getBlockStorageArray();
 //
@@ -356,7 +353,7 @@ public class Debugger extends Item {
 //            for (int chunkX = - range; chunkX < range; chunkX++) {
 //                for (int chunkZ = - range; chunkZ < range; chunkZ++) {
 //
-//                    Chunk chunk = world.getChunkFromChunkCoords((int) (player.posX / 16) + chunkX, (int) (player.posZ / 16) + chunkZ);
+//                    Chunk chunk = world.getChunkFromChunkCoords((int) (player.getPosX() / 16) + chunkX, (int) (player.getPosZ() / 16) + chunkZ);
 //
 //                    ExtendedBlockStorage[] blockStorage = chunk.getBlockStorageArray();
 //
@@ -420,12 +417,12 @@ public class Debugger extends Item {
 //        FusionRecipes.registerRecipes();
 //
 //        if (world.isRemote && BCEffectHandler.effectRenderer != null) {
-//            BCEffectHandler.effectRenderer.addEffect(new ResourceLocation("textures/particle/particles2.png"), new ParticleFusionCrafting(world, new Vec3D(player.posX, player.posY, player.posZ + 3), new Vec3D(), new TileFusionCraftingCore()));
+//            BCEffectHandler.effectRenderer.addEffect(new ResourceLocation("textures/particle/particles2.png"), new ParticleFusionCrafting(world, new Vec3D(player.getPosX(), player.getPosY(), player.getPosZ() + 3), new Vec3D(), new TileFusionCraftingCore()));
 //
 //            return super.onItemRightClick(itemStack, world, player, hand);
 //        }
 //
-//        world.addWeatherEffect(new EntityLightningBolt(world, player.posX, player.posY + 0, player.posZ+ 20, true));
+//        world.addWeatherEffect(new EntityLightningBolt(world, player.getPosX(), player.getPosY() + 0, player.getPosZ()+ 20, true));
 //
 //        try {
 //            List<String> list = new ArrayList<String>();
@@ -454,7 +451,7 @@ public class Debugger extends Item {
 
 
 //        int range = 1;
-//        for (BlockPos pos : BlockPos.getAllInBox(new BlockPos(player.posX-range, player.posY-range + (range * 2) + 5, player.posZ-range), new BlockPos(player.posX+range, player.posY+range + (range * 2) + 5, player.posZ+range))){
+//        for (BlockPos pos : BlockPos.getAllInBox(new BlockPos(player.getPosX()-range, player.getPosY()-range + (range * 2) + 5, player.getPosZ()-range), new BlockPos(player.getPosX()+range, player.getPosY()+range + (range * 2) + 5, player.getPosZ()+range))){
 //            world.setBlockState(pos, Blocks.TNT.getDefaultState());
 //           // world.setBlockToAir(pos);
 //        }
@@ -504,23 +501,23 @@ public class Debugger extends Item {
 //        BigInteger bigInteger2 = BigInteger.valueOf(Long.MAX_VALUE);
 //        BigInteger value = bigInteger.multiply(bigInteger2);
 //        LogHelper.info(value+" "+bigInteger);
-        // generate(world, world.rand, new BlockPos(player.posX, player.posY, player.posZ));
+        // generate(world, world.rand, new BlockPos(player.getPosX(), player.getPosY(), player.getPosZ()));
 
 
 //        for (int i = 0; i < 6; i++){
 //            LogHelper.info(i+" " + (i / 3) + " " + (i % 3));
 //        }
 
-        //BCEffectHandler.testRenderer.spawnEffectParticle(EnumParticleTypes.BARRIER.getParticleID(), player.posX, player.posY, player.posZ, 0, 0, 0);
-        //world.spawnParticle(EnumParticleTypes.BARRIER, player.posX, player.posY, player.posZ + 1, 0, 0, 0);
-        // for (int i = 0; i < 20000; i++) BCEffectHandler.s(new ResourceLocation("textures/particle/particles.png"), new EntitySpellParticleFX.AmbientMobFactory().getEntityFX(EnumParticleTypes.SPELL_MOB.getParticleID(), world, player.posX + itemRand.nextDouble(), player.posY+itemRand.nextDouble(), player.posZ + itemRand.nextDouble(), 0, 0, 0));
+        //BCEffectHandler.testRenderer.spawnEffectParticle(EnumParticleTypes.BARRIER.getParticleID(), player.getPosX(), player.getPosY(), player.getPosZ(), 0, 0, 0);
+        //world.spawnParticle(EnumParticleTypes.BARRIER, player.getPosX(), player.getPosY(), player.getPosZ() + 1, 0, 0, 0);
+        // for (int i = 0; i < 20000; i++) BCEffectHandler.s(new ResourceLocation("textures/particle/particles.png"), new EntitySpellParticleFX.AmbientMobFactory().getEntityFX(EnumParticleTypes.SPELL_MOB.getParticleID(), world, player.getPosX() + itemRand.nextDouble(), player.getPosY()+itemRand.nextDouble(), player.getPosZ() + itemRand.nextDouble(), 0, 0, 0));
 
-//        for (int i = 0; i < 200; i++) BCEffectHandler.spawnFX(DEParticles.ENERGY_PARTICLE, world, player.posX+ itemRand.nextFloat(), player.posY+ itemRand.nextFloat(), player.posZ+ itemRand.nextFloat(), player.posX, player.posY, player.posZ + 10);
+//        for (int i = 0; i < 200; i++) BCEffectHandler.spawnFX(DEParticles.ENERGY_PARTICLE, world, player.getPosX()+ itemRand.nextFloat(), player.getPosY()+ itemRand.nextFloat(), player.getPosZ()+ itemRand.nextFloat(), player.getPosX(), player.getPosY(), player.getPosZ() + 10);
 
 //        LogHelper.info("Clic");
-//        int posX = (int)player.posX;
-//        int posY = (int)player.posY;
-//        int posZ = (int)player.posZ;
+//        int posX = (int)player.getPosX();
+//        int posY = (int)player.getPosY();
+//        int posZ = (int)player.getPosZ();
 //        int size = 500;
 //
 //
@@ -636,9 +633,9 @@ public class Debugger extends Item {
 ////
 //        if (false) {
 //
-//            int posX = (int) player.posX;
-//            double posY = (int) player.posY;
-//            int posZ = (int) player.posZ;
+//            int posX = (int) player.getPosX();
+//            double posY = (int) player.getPosY();
+//            int posZ = (int) player.getPosZ();
 //
 //            int rayCount = 500;
 //
@@ -720,9 +717,9 @@ public class Debugger extends Item {
 //                }
 //            }
 //
-//            posX = (int) player.posX;
-//            posY = (int) player.posY;
-//            posZ = (int) player.posZ;
+//            posX = (int) player.getPosX();
+//            posY = (int) player.getPosY();
+//            posZ = (int) player.getPosZ();
 //
 //            rayCount = 100;
 //
@@ -767,7 +764,7 @@ public class Debugger extends Item {
                 mode = 0;
             }
             if (!world.isRemote) {
-                player.sendMessage(new StringTextComponent(MODES.get(mode)));
+                player.sendMessage(new StringTextComponent(MODES.get(mode)), Util.DUMMY_UUID);
             }
             ItemNBTHelper.setInteger(stack, "mode", mode);
             return new ActionResult<>(ActionResultType.SUCCESS, stack);
@@ -870,7 +867,7 @@ public class Debugger extends Item {
 ////            for (int i = 0; i < inventory.getSizeInventory(); i++) {
 ////                ItemStack s = inventory.removeStackFromSlot(i);
 ////                if (s != null) {
-////                    ItemEntity item = new ItemEntity(world, player.posX, player.posY - 10, player.posZ, s);
+////                    ItemEntity item = new ItemEntity(world, player.getPosX(), player.getPosY() - 10, player.getPosZ(), s);
 ////                    world.spawnEntityInWorld(item);
 ////                }
 ////            }
@@ -991,10 +988,10 @@ public class Debugger extends Item {
 //        }
 //
 //        World world = player.world;
-//        world.createExplosion(null, player.posX, player.posY, player.posZ, 8, true);
+//        world.createExplosion(null, player.getPosX(), player.getPosY(), player.getPosZ(), 8, true);
 //        int c = 25 + world.rand.nextInt(25);
 //        for (int i = 0; i < c; i++) {
-//            EntityFallingBlock entity = new EntityFallingBlock(world, ((int) player.posX) + 0.5, (int) player.posY, ((int) player.posZ) + 0.5, lava);
+//            EntityFallingBlock entity = new EntityFallingBlock(world, ((int) player.getPosX()) + 0.5, (int) player.getPosY(), ((int) player.getPosZ()) + 0.5, lava);
 //            entity.fallTime = 1;
 //            entity.shouldDropItem = false;
 //            double vMod = 0.5 + (2 * world.rand.nextDouble());
@@ -1073,9 +1070,9 @@ public class Debugger extends Item {
 
 ////    private void generate(ItemStack itemStack, World world, PlayerEntity player, Hand hand) {
 ////
-////        int posX = (int)player.posX;
-////        double posY = (int)player.posY;
-////        int posZ = (int)player.posZ;
+////        int posX = (int)player.getPosX();
+////        double posY = (int)player.getPosY();
+////        int posZ = (int)player.getPosZ();
 ////
 ////        int rayCount = 500;
 ////
@@ -1157,9 +1154,9 @@ public class Debugger extends Item {
 ////            }
 ////        }
 //
-////        int posX = (int)player.posX;
-////        double posY = (int)player.posY;
-////        int posZ = (int)player.posZ;
+////        int posX = (int)player.getPosX();
+////        double posY = (int)player.getPosY();
+////        int posZ = (int)player.getPosZ();
 ////
 ////        int rayCount = 100;
 ////

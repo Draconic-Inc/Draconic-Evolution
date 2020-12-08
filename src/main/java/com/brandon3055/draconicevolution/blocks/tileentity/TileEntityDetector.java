@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.blocks.tileentity;
 
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.packet.PacketCustom;
+import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.api.power.OPStorage;
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.capability.CapabilityOP;
@@ -18,6 +19,7 @@ import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.client.render.particle.ParticleStarSpark;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -32,7 +34,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -148,14 +150,15 @@ public class TileEntityDetector extends TileBCore implements IActivatableTile, I
         Entity closest = null;
         double closestDist = -1;
 
+        Vector3d posVec = new Vector3d(pos.getX(), pos.getY(), pos.getZ());
         for (Entity entity : entities) {
             if (closest == null) {
                 closest = entity;
-                closestDist = entity.getDistanceSq(new Vec3d(pos));
+                closestDist = entity.getDistanceSq(posVec);
             }
-            else if (entity.getDistanceSq(new Vec3d(pos)) < closestDist) {
+            else if (entity.getDistanceSq(posVec) < closestDist) {
                 closest = entity;
-                closestDist = entity.getDistanceSq(new Vec3d(pos));
+                closestDist = entity.getDistanceSq(posVec);
             }
         }
 
@@ -164,9 +167,9 @@ public class TileEntityDetector extends TileBCore implements IActivatableTile, I
 
         if (closest != null) {
 
-            double xDist = closest.posX - (double) ((float) getPos().getX() + 0.5F);
-            double zDist = closest.posZ - (double) ((float) getPos().getZ() + 0.5F);
-            double yDist = (closest.posY + closest.getEyeHeight()) - (double) ((float) pos.getY() + 0.5F);
+            double xDist = closest.getPosX() - (double) ((float) getPos().getX() + 0.5F);
+            double zDist = closest.getPosZ() - (double) ((float) getPos().getZ() + 0.5F);
+            double yDist = (closest.getPosY() + closest.getEyeHeight()) - (double) ((float) pos.getY() + 0.5F);
             double dist = Utils.getDistanceAtoB(Vec3D.getCenter(pos), new Vec3D(closest));
 
 
@@ -213,7 +216,7 @@ public class TileEntityDetector extends TileBCore implements IActivatableTile, I
         //region Effects
 
 
-        ParticleStarSpark spark = new ParticleStarSpark(world, Vec3D.getCenter(pos).add((-0.5 + world.rand.nextDouble()) * 0.1, 0.005, (-0.5 + world.rand.nextDouble()) * 0.1));
+        ParticleStarSpark spark = new ParticleStarSpark((ClientWorld)world, Vec3D.getCenter(pos).add((-0.5 + world.rand.nextDouble()) * 0.1, 0.005, (-0.5 + world.rand.nextDouble()) * 0.1));
         spark.setSizeAndRandMotion(0.4F * (world.rand.nextFloat() + 0.1), 0.02D, 0, 0.02D);
         spark.setMaxAge(30, 10);
         spark.setGravity(0.0002D);
@@ -226,7 +229,7 @@ public class TileEntityDetector extends TileBCore implements IActivatableTile, I
         double x = i / 2;
         double z = i % 2;
 
-        spark = new ParticleStarSpark(world, new Vec3D(pos).add(0.14 + (x * 0.72), 0.17, 0.14 + (z * 0.72)));
+        spark = new ParticleStarSpark((ClientWorld)world, new Vec3D(pos).add(0.14 + (x * 0.72), 0.17, 0.14 + (z * 0.72)));
         spark.setSizeAndRandMotion(0.3F * (world.rand.nextFloat() + 0.2), 0.002D, 0, 0.002D);
         spark.setGravity(0.0002D);
         spark.sparkSize = 0.15F;
@@ -416,12 +419,6 @@ public class TileEntityDetector extends TileBCore implements IActivatableTile, I
     public int getPulseCost() {
         return (int) (125 * Math.pow(range.get(), 1.5));
     }
-
-    @Override
-    public boolean hasFastRenderer() {
-        return false;
-    }
-
 
     public boolean isAdvanced() {
         return advanced;

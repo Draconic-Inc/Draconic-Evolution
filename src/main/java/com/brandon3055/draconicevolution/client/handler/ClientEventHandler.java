@@ -17,14 +17,12 @@ import com.brandon3055.brandonscore.lib.Pair;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DEOldConfig;
-import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.api.energy.ICrystalBinder;
 import com.brandon3055.draconicevolution.api.itemconfig_dep.ToolConfigHelper;
-import com.brandon3055.draconicevolution.client.render.shaders.DEShaders;
 import com.brandon3055.draconicevolution.handlers.BinderHandler;
+import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.items.tools.CreativeExchanger;
 import com.brandon3055.draconicevolution.items.tools.old.MiningToolBase;
-import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -36,7 +34,6 @@ import net.minecraft.client.gui.screen.MainMenuScreen;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.Vector4f;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
@@ -46,8 +43,12 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.vector.Vector4f;
 import net.minecraft.world.World;
-import net.minecraftforge.client.event.*;
+import net.minecraftforge.client.event.GuiOpenEvent;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.RenderPlayerEvent;
+import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
@@ -154,9 +155,9 @@ public class ClientEventHandler {
                 double translationYLT = event.getPlayer().prevPosY - viewingPlayer.prevPosY;
                 double translationZLT = event.getPlayer().prevPosZ - viewingPlayer.prevPosZ;
 
-                double translationX = translationXLT + (((event.getPlayer().posX - viewingPlayer.posX) - translationXLT) * event.getPartialRenderTick());
-                double translationY = translationYLT + (((event.getPlayer().posY - viewingPlayer.posY) - translationYLT) * event.getPartialRenderTick());
-                double translationZ = translationZLT + (((event.getPlayer().posZ - viewingPlayer.posZ) - translationZLT) * event.getPartialRenderTick());
+                double translationX = translationXLT + (((event.getPlayer().getPosX() - viewingPlayer.getPosX()) - translationXLT) * event.getPartialRenderTick());
+                double translationY = translationYLT + (((event.getPlayer().getPosY() - viewingPlayer.getPosY()) - translationYLT) * event.getPartialRenderTick());
+                double translationZ = translationZLT + (((event.getPlayer().getPosZ() - viewingPlayer.getPosZ()) - translationZLT) * event.getPartialRenderTick());
 
                 RenderSystem.translated(translationX, translationY + 1.1, translationZ);
             }
@@ -230,9 +231,9 @@ public class ClientEventHandler {
             Tessellator tessellator = Tessellator.getInstance();
             BufferBuilder buffer = tessellator.getBuffer();
 
-            double offsetX = player.prevPosX + (player.posX - player.prevPosX) * (double) partialTicks;
-            double offsetY = player.prevPosY + (player.posY - player.prevPosY) * (double) partialTicks;
-            double offsetZ = player.prevPosZ + (player.posZ - player.prevPosZ) * (double) partialTicks;
+            double offsetX = player.prevPosX + (player.getPosX() - player.prevPosX) * (double) partialTicks;
+            double offsetY = player.prevPosY + (player.getPosY() - player.prevPosY) * (double) partialTicks;
+            double offsetZ = player.prevPosZ + (player.getPosZ() - player.prevPosZ) * (double) partialTicks;
 
             RenderSystem.enableBlend();
             RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
@@ -290,9 +291,9 @@ public class ClientEventHandler {
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
 
-        double offsetX = player.prevPosX + (player.posX - player.prevPosX) * (double) partialTicks;
-        double offsetY = player.prevPosY + (player.posY - player.prevPosY) * (double) partialTicks;
-        double offsetZ = player.prevPosZ + (player.posZ - player.prevPosZ) * (double) partialTicks;
+        double offsetX = player.prevPosX + (player.getPosX() - player.prevPosX) * (double) partialTicks;
+        double offsetY = player.prevPosY + (player.getPosY() - player.prevPosY) * (double) partialTicks;
+        double offsetZ = player.prevPosZ + (player.getPosZ() - player.prevPosZ) * (double) partialTicks;
 
         RenderSystem.enableBlend();
         RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
@@ -399,9 +400,9 @@ public class ClientEventHandler {
 
         GL11.glGetIntegerv(GL11.GL_VIEWPORT, VIEWPORT);
         Entity entity = mc.getRenderViewEntity();
-        float x = (float) (entity.prevPosX + (entity.posX - entity.prevPosX) * (double) partialTick);
-        float y = (float) (entity.prevPosY + (entity.posY - entity.prevPosY) * (double) partialTick);
-        float z = (float) (entity.prevPosZ + (entity.posZ - entity.prevPosZ) * (double) partialTick);
+        float x = (float) (entity.prevPosX + (entity.getPosX() - entity.prevPosX) * (double) partialTick);
+        float y = (float) (entity.prevPosY + (entity.getPosY() - entity.prevPosY) * (double) partialTick);
+        float z = (float) (entity.prevPosZ + (entity.getPosZ() - entity.prevPosZ) * (double) partialTick);
         Vector3 targetPos = Vector3.fromBlockPosCenter(explosionPos);
         targetPos.subtract(x, y, z);
         Vector3 winPos = gluProject(targetPos, MODELVIEW, PROJECTION, VIEWPORT);

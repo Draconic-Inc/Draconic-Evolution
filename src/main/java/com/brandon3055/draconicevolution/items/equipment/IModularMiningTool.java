@@ -2,31 +2,25 @@ package com.brandon3055.draconicevolution.items.equipment;
 
 import codechicken.lib.inventory.InventoryUtils;
 import codechicken.lib.raytracer.RayTracer;
-import com.brandon3055.brandonscore.api.power.IOPStorage;
 import com.brandon3055.brandonscore.inventory.BlockToStackHelper;
 import com.brandon3055.brandonscore.inventory.InventoryDynamic;
 import com.brandon3055.brandonscore.lib.Pair;
-import com.brandon3055.brandonscore.utils.EnergyUtils;
-import com.brandon3055.draconicevolution.DEOldConfig;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.capability.PropertyProvider;
-import com.brandon3055.draconicevolution.api.config.DecimalProperty;
-import com.brandon3055.draconicevolution.api.itemconfig_dep.ToolConfigHelper;
 import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
 import com.brandon3055.draconicevolution.api.modules.data.AOEData;
 import com.brandon3055.draconicevolution.init.EquipCfg;
-import com.brandon3055.draconicevolution.utils.LogHelper;
-import com.google.common.collect.Lists;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.fluid.IFluidState;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.CPlayerDiggingPacket;
 import net.minecraft.network.play.server.SChangeBlockPacket;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -34,13 +28,10 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.common.ToolType;
 
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static com.brandon3055.draconicevolution.api.capability.DECapabilities.MODULE_HOST_CAPABILITY;
 
@@ -91,7 +82,7 @@ public interface IModularMiningTool extends IModularTieredItem {
         if (aoeSafe) {
             for (BlockPos block : aoeBlocks) {
                 if (!player.world.isAirBlock(block) && player.world.getTileEntity(block) != null) {
-                    if (player.world.isRemote) player.sendMessage(new TranslationTextComponent("item_prop.draconicevolution.aoe_safe.blocked"));
+                    if (player.world.isRemote) player.sendMessage(new TranslationTextComponent("item_prop.draconicevolution.aoe_safe.blocked"), Util.DUMMY_UUID);
                     else ((ServerPlayerEntity) player).connection.sendPacket(new SChangeBlockPacket(((ServerPlayerEntity) player).world, block));
                     return true;
                 }
@@ -126,7 +117,7 @@ public interface IModularMiningTool extends IModularTieredItem {
             for (int i = 0; i < inventoryDynamic.getSizeInventory(); i++) {
                 ItemStack sis = inventoryDynamic.getStackInSlot(i);
                 if (sis != null) {
-                    ItemEntity item = new ItemEntity(player.world, player.posX, player.posY, player.posZ, sis);
+                    ItemEntity item = new ItemEntity(player.world, player.getPosX(), player.getPosY(), player.getPosZ(), sis);
                     item.setPickupDelay(0);
 //                        player.world.addEntity(item);
                 }
@@ -135,7 +126,7 @@ public interface IModularMiningTool extends IModularTieredItem {
             inventoryDynamic.clear();
 //            } else {
 //                EntityLootCore lootCore = new EntityLootCore(player.world, inventoryDynamic); TODO Entity Stuff
-//                lootCore.setPosition(player.posX, player.posY, player.posZ);
+//                lootCore.setPosition(player.getPosX(), player.getPosY(), player.getPosZ());
 //                player.world.addEntity(lootCore);
 //            }
         }
@@ -222,7 +213,7 @@ public interface IModularMiningTool extends IModularTieredItem {
         }
 
         BlockState state = world.getBlockState(pos);
-        IFluidState fluidState = world.getFluidState(pos);
+        FluidState fluidState = world.getFluidState(pos);
         Block block = state.getBlock();
 
         if (!isToolEffective(stack, state)) {

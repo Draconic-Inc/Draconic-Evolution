@@ -1,6 +1,5 @@
 package com.brandon3055.draconicevolution.api.modules.entities;
 
-import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.client.BCSprites;
 import com.brandon3055.brandonscore.client.utils.GuiHelper;
 import com.brandon3055.draconicevolution.api.config.BooleanProperty;
@@ -10,8 +9,6 @@ import com.brandon3055.draconicevolution.api.modules.data.AutoFeedData;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.brandon3055.draconicevolution.api.modules.lib.StackModuleContext;
-import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
-import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -105,7 +102,7 @@ public class AutoFeedEntity extends ModuleEntity {
 
     @Override
     public void addToolTip(List<ITextComponent> list) {
-        list.add(new TranslationTextComponent("module.draconicevolution.auto_feed.stored").applyTextStyle(TextFormatting.GRAY).appendText(" ").appendSibling(new TranslationTextComponent("module.draconicevolution.auto_feed.stored.value", (int)storedFood).applyTextStyle(TextFormatting.DARK_GREEN)));
+        list.add(new TranslationTextComponent("module.draconicevolution.auto_feed.stored").mergeStyle(TextFormatting.GRAY).appendString(" ").append(new TranslationTextComponent("module.draconicevolution.auto_feed.stored.value", (int)storedFood).mergeStyle(TextFormatting.DARK_GREEN)));
     }
 
     @Override

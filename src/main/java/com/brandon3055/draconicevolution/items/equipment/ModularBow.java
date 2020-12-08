@@ -53,7 +53,7 @@ public class ModularBow extends BowItem implements IReaperItem, IModularItem {
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         addModularItemInformation(stack, worldIn, tooltip, flagIn);
-        tooltip.add(new StringTextComponent("[Not yet implemented]").applyTextStyle(TextFormatting.RED));
+        tooltip.add(new StringTextComponent("[Not yet implemented]").mergeStyle(TextFormatting.RED));
     }
 
     @Override

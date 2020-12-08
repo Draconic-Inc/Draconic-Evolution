@@ -7,6 +7,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -50,24 +51,26 @@ public class ReactorCore extends BlockBCore /*implements ITileEntityProvider, IR
     }
 
     @Override
-    public float getBlockHardness(BlockState blockState, IBlockReader world, BlockPos pos) {
+    public float getExplosionResistance(BlockState state, IBlockReader world, BlockPos pos, Explosion explosion) {
         TileEntity tile = world.getTileEntity(pos);
         if (tile instanceof TileReactorCore) {
-            return ((TileReactorCore) tile).reactorState.get().isShieldActive() ? -1F : super.getBlockHardness(blockState, world, pos);
+            return ((TileReactorCore) tile).reactorState.get().isShieldActive() ? 6000000.0F : super.getExplosionResistance(state, world, pos, explosion);
         }
 
-        return super.getBlockHardness(blockState, world, pos);
+        return super.getExplosionResistance(state, world, pos, explosion);
     }
 
     @Override
-    public float getExplosionResistance(BlockState state, IWorldReader world, BlockPos pos, @Nullable Entity exploder, Explosion explosion) {
+    public float getPlayerRelativeBlockHardness(BlockState state, PlayerEntity player, IBlockReader world, BlockPos pos) {
         TileEntity tile = world.getTileEntity(pos);
         if (tile instanceof TileReactorCore) {
-            return ((TileReactorCore) tile).reactorState.get().isShieldActive() ? 6000000.0F : super.getExplosionResistance(state, world, pos, exploder, explosion);
+            return ((TileReactorCore) tile).reactorState.get().isShieldActive() ? -1F : super.getPlayerRelativeBlockHardness(state, player, world, pos);
         }
-
-        return super.getExplosionResistance(state, world, pos, exploder, explosion);
+        return super.getPlayerRelativeBlockHardness(state, player, world, pos);
     }
+
+
+
 
     //region Rendering
 

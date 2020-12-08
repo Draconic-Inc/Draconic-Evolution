@@ -442,17 +442,17 @@ public abstract class TileCrystalBase extends TileBCore implements ITilePlaceLis
     }
 
     public String getUnlocalizedName() {
-        return "tile.draconicevolution:energy_crystal." + getCrystalType().getName() + "." + (getTier() == 0 ? "basic" : getTier() == 1 ? "wyvern" : "draconic") + ".name";
+        return "tile.draconicevolution:energy_crystal." + getCrystalType().getString() + "." + (getTier() == 0 ? "basic" : getTier() == 1 ? "wyvern" : "draconic") + ".name";
     }
 
     //endregion
 
     //region Render
 
-    @Override
-    public boolean canRenderBreaking() {
-        return true;
-    }
+//    @Override
+//    public boolean canRenderBreaking() {
+//        return true;
+//    }
 
 //    @Override
 //    public boolean shouldRenderInPass(int pass) {

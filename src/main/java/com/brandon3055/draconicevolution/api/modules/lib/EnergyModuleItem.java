@@ -38,7 +38,7 @@ public class EnergyModuleItem extends ModuleItem<EnergyData> {
                     + Utils.formatNumber(stack.getOrCreateTag().getLong("stored_energy"))
                     + " "
                     + I18n.format("op.brandonscore." + (Screen.hasShiftDown() ? "operational_potential" : "op")))
-                    .applyTextStyle(TextFormatting.GRAY));
+                    .mergeStyle(TextFormatting.GRAY));
         }
     }
 }

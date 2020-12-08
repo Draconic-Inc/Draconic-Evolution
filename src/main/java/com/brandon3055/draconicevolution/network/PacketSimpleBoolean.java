@@ -53,7 +53,7 @@
 //            switch (message.id) {
 //
 //                case ID_TOOL_CONFIG: {
-//                    ctx.getServerHandler().player.openGui(DraconicEvolution.instance, GuiHandler.GUIID_TOOL_CONFIG, ctx.getServerHandler().player.world, (int) ctx.getServerHandler().player.posX, (int) ctx.getServerHandler().player.posY, (int) ctx.getServerHandler().player.posZ);
+//                    ctx.getServerHandler().player.openGui(DraconicEvolution.instance, GuiHandler.GUIID_TOOL_CONFIG, ctx.getServerHandler().player.world, (int) ctx.getServerHandler().player.getPosX(), (int) ctx.getServerHandler().player.getPosY(), (int) ctx.getServerHandler().player.getPosZ());
 //                    break;
 //                }
 //                case ID_TOOL_PROFILE_CHANGE: {

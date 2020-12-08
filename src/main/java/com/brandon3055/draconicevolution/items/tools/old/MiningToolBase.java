@@ -8,8 +8,6 @@ import com.brandon3055.brandonscore.lib.Pair;
 import com.brandon3055.draconicevolution.DEOldConfig;
 import com.brandon3055.draconicevolution.api.itemconfig_dep.*;
 import com.brandon3055.draconicevolution.api.itemupgrade_dep.UpgradeHelper;
-import com.brandon3055.draconicevolution.items.tools.old.ToolBase;
-import com.brandon3055.draconicevolution.items.tools.old.WyvernAxe;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import net.minecraft.block.Block;
@@ -23,12 +21,13 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.fluid.IFluidState;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.play.client.CPlayerDiggingPacket;
 import net.minecraft.network.play.server.SChangeBlockPacket;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -193,7 +192,7 @@ public abstract class MiningToolBase extends ToolBase {
 
     @Override
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
-        return super.canApplyAtEnchantingTable(stack, enchantment) && (enchantment.type == EnchantmentType.DIGGER || enchantment.type == EnchantmentType.ALL);
+        return super.canApplyAtEnchantingTable(stack, enchantment) && (enchantment.type == EnchantmentType.DIGGER/* || enchantment.type == EnchantmentType.ALL*/);
     }
 
     //endregion
@@ -220,7 +219,7 @@ public abstract class MiningToolBase extends ToolBase {
             for (BlockPos block : aoeBlocks) {
                 if (!player.world.isAirBlock(block) && player.world.getTileEntity(block) != null) {
                     if (player.world.isRemote) {
-                        player.sendMessage(new TranslationTextComponent("msg.de.baseSafeAOW.txt"));
+                        player.sendMessage(new TranslationTextComponent("msg.de.baseSafeAOW.txt"), Util.DUMMY_UUID);
                     } else {
                         ((ServerPlayerEntity) player).connection.sendPacket(new SChangeBlockPacket(((ServerPlayerEntity) player).world, block));
                     }
@@ -262,7 +261,7 @@ public abstract class MiningToolBase extends ToolBase {
                 for (int i = 0; i < inventoryDynamic.getSizeInventory(); i++) {
                     ItemStack sis = inventoryDynamic.getStackInSlot(i);
                     if (sis != null) {
-                        ItemEntity item = new ItemEntity(player.world, player.posX, player.posY, player.posZ, sis);
+                        ItemEntity item = new ItemEntity(player.world, player.getPosX(), player.getPosY(), player.getPosZ(), sis);
                         item.setPickupDelay(0);
                         player.world.addEntity(item);
                     }
@@ -271,7 +270,7 @@ public abstract class MiningToolBase extends ToolBase {
                 inventoryDynamic.clear();
             } else {
 //                EntityLootCore lootCore = new EntityLootCore(player.world, inventoryDynamic); TODO Entity Stuff
-//                lootCore.setPosition(player.posX, player.posY, player.posZ);
+//                lootCore.setPosition(player.getPosX(), player.getPosY(), player.getPosZ());
 //                player.world.addEntity(lootCore);
             }
         }
@@ -285,7 +284,7 @@ public abstract class MiningToolBase extends ToolBase {
         }
 
         BlockState state = world.getBlockState(pos);
-        IFluidState fluidState = world.getFluidState(pos);
+        FluidState fluidState = world.getFluidState(pos);
         Block block = state.getBlock();
 
         if (!isToolEffective(stack, state)) {

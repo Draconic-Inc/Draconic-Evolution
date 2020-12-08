@@ -7,6 +7,7 @@ import com.brandon3055.brandonscore.lib.datamanager.ManagedString;
 import com.brandon3055.draconicevolution.DEOldConfig;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.handlers.DESoundHandler;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.effect.LightningBoltEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
@@ -30,9 +31,6 @@ public class TileChaosCrystal extends TileBCore implements ITickableTileEntity {
     private final ManagedString dimLock = register(new ManagedString("dim_lock", "", SAVE_NBT));
     private int soundTimer;
 
-    boolean validateOldHash = false;
-    int oldhash = 0;
-
     public TileChaosCrystal() {
         super(DEContent.tile_chaos_crystal);
     }
@@ -40,18 +38,6 @@ public class TileChaosCrystal extends TileBCore implements ITickableTileEntity {
     @Override
     public void tick() {
         tick++;
-
-        //Prevent existing crystals breaking due to update
-        if (validateOldHash) {
-            int hash = (pos.toString() + world.dimension.getType()).hashCode();
-            if (hash == oldhash) {
-                setLockPos();
-            }
-            else {
-                world.removeBlock(pos, false);
-            }
-            validateOldHash = false;
-        }
 
         if (tick > 1 && !world.isRemote && hasBeenMoved()) {
             world.removeBlock(pos, false);
@@ -65,9 +51,10 @@ public class TileChaosCrystal extends TileBCore implements ITickableTileEntity {
         if (!world.isRemote && world instanceof ServerWorld && guardianDefeated.get() && world.rand.nextInt(50) == 0) {
             int x = 5 - world.rand.nextInt(11);
             int z = 5 - world.rand.nextInt(11);
-            LightningBoltEntity bolt = new LightningBoltEntity(world, pos.getX() + x, world.getHeight(Heightmap.Type.WORLD_SURFACE, pos).getY(), pos.getZ() + z, false);
+            LightningBoltEntity bolt = new LightningBoltEntity(EntityType.LIGHTNING_BOLT, world);
+            bolt.setPosition(pos.getX() + x, world.getHeight(Heightmap.Type.WORLD_SURFACE, pos).getY(), pos.getZ() + z);
             bolt.ignoreFrustumCheck = true;
-            ((ServerWorld) world).addLightningBolt(bolt);
+            ((ServerWorld) world).addEntity(bolt);
         }
     }
 
@@ -94,21 +81,15 @@ public class TileChaosCrystal extends TileBCore implements ITickableTileEntity {
     @Override
     public void readExtraNBT(CompoundNBT compound) {
         super.readExtraNBT(compound);
-
-        //Prevent existing crystals breaking due to update
-        if (compound.contains("LocationHash")) {
-            oldhash = compound.getInt("LocationHash");
-            validateOldHash = true;
-        }
     }
 
     public void setLockPos() {
         posLock.set(pos.toLong());
-        dimLock.set(world.getDimension().getType().getRegistryName().toString());
+        dimLock.set(world.getDimensionKey().getLocation().toString());
     }
 
     private boolean hasBeenMoved() {
-        return posLock.get() != pos.toLong() || !dimLock.get().equals(world.getDimension().getType().getRegistryName().toString());
+        return posLock.get() != pos.toLong() || !dimLock.get().equals(world.getDimensionKey().getLocation().toString());
     }
 
     @Override

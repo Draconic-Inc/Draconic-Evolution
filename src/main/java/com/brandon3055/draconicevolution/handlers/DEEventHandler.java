@@ -153,7 +153,7 @@ public class DEEventHandler {
 
         if ((rand == 0 && !isAnimal) || (rand2 == 0 && isAnimal)) {
             ItemStack soul = DEContent.mob_soul.getSoulFromEntity(entity, false);
-            world.addEntity(new ItemEntity(world, entity.posX, entity.posY, entity.posZ, soul));
+            world.addEntity(new ItemEntity(world, entity.getPosX(), entity.getPosY(), entity.getPosZ(), soul));
             Achievements.triggerAchievement((PlayerEntity) attacker, "draconicevolution.soul");
         }
     }
@@ -340,7 +340,7 @@ public class DEEventHandler {
 //            }
 //        }
 
-        if (!event.getPlayer().onGround) {
+        if (!event.getPlayer().isOnGround()) {
 //            ModularArmorEventHandler.ArmorSummery summery = new ModularArmorEventHandler.ArmorSummery().getSummery(event.getPlayer());
 //            if (summery != null && summery.flight[0]) {
 //                event.getPlayer().abilities.isFlying = true;

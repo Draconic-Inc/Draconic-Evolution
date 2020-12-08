@@ -96,7 +96,7 @@ public class GuiModularItem extends ModularGuiContainer<ContainerModularItem> {
         StringBuilder gridName = new StringBuilder();
         gridName.append(grid.getWidth()).append("x").append(grid.getHeight());
         gridName.append(" ");
-        gridName.append(techLevel.getDisplayName().applyTextStyle(techLevel.getTextColour()).getFormattedText());
+        gridName.append(techLevel.getDisplayName().copyRaw().mergeStyle(techLevel.getTextColour()).getString());
         gridName.append(" ");
         gridName.append(I18n.format("gui.draconicevolution.modular_item.module_grid"));
         infoPanel.addDynamicLabel(gridName::toString, 12);
@@ -104,7 +104,7 @@ public class GuiModularItem extends ModularGuiContainer<ContainerModularItem> {
         Map<ITextComponent, ITextComponent> nameStatMap = new LinkedHashMap<>();
         grid.getModuleHost().addInformation(nameStatMap, container.getModuleContext(), false);
         for (ITextComponent name : nameStatMap.keySet()) {
-            infoPanel.addLabeledValue(TextFormatting.GOLD + name.getFormattedText(), 6, 10, () -> TextFormatting.GRAY + nameStatMap.get(name).getFormattedText(), true);
+            infoPanel.addLabeledValue(TextFormatting.GOLD + name.getString(), 6, 10, () -> TextFormatting.GRAY + nameStatMap.get(name).getString(), true);
         }
 //        infoPanel.setEnabled(!nameStatMap.isEmpty());
         reloadGui();

@@ -15,7 +15,7 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
@@ -169,8 +169,8 @@ public class EntityDragonOld extends MobEntity implements IEntityMultiPart, IMob
 //            Entity entity = (Entity) iterator.next();
 //
 //            if (entity instanceof LivingEntity) {
-//                double d2 = entity.posX - d0;
-//                double d3 = entity.posZ - d1;
+//                double d2 = entity.getPosX() - d0;
+//                double d3 = entity.getPosZ() - d1;
 //                double d4 = d2 * d2 + d3 * d3;
 //                entity.addVelocity(d2 / d4 * 4.0D, 0.20000000298023224D, d3 / d4 * 4.0D);
 //            }
@@ -281,9 +281,9 @@ public class EntityDragonOld extends MobEntity implements IEntityMultiPart, IMob
         float f1 = this.rotationYaw * (float) Math.PI / 180.0F;
         float f2 = MathHelper.sin(f1);
         float f3 = MathHelper.cos(f1);
-        this.targetX = this.posX + (double) (f2 * 5.0F) + (double) ((this.rand.nextFloat() - 0.5F) * 2.0F);
-        this.targetY = this.posY + (double) (this.rand.nextFloat() * 3.0F) + 1.0D;
-        this.targetZ = this.posZ - (double) (f3 * 5.0F) + (double) ((this.rand.nextFloat() - 0.5F) * 2.0F);
+        this.targetX = this.getPosX() + (double) (f2 * 5.0F) + (double) ((this.rand.nextFloat() - 0.5F) * 2.0F);
+        this.targetY = this.getPosY() + (double) (this.rand.nextFloat() * 3.0F) + 1.0D;
+        this.targetZ = this.getPosZ() - (double) (f3 * 5.0F) + (double) ((this.rand.nextFloat() - 0.5F) * 2.0F);
         this.target = null;
 
         if (p_70965_2_.getTrueSource() instanceof PlayerEntity || p_70965_2_.isExplosion()) {
@@ -331,11 +331,11 @@ public class EntityDragonOld extends MobEntity implements IEntityMultiPart, IMob
             }
 
             if (this.deathTicks == 1) {
-                this.world.playBroadcastSound(1018, new BlockPos(this), 0);
+                this.world.playBroadcastSound(1018, this.getPosition(), 0);
             }
         }
 
-        this.move(MoverType.SELF, new Vec3d(0.0D, (double)0.1F, 0.0D));
+        this.move(MoverType.SELF, new Vector3d(0.0D, (double)0.1F, 0.0D));
         this.renderYawOffset = this.rotationYaw += 20.0F;
 
         if (this.deathTicks == 200 && !this.world.isRemote) {
@@ -347,7 +347,7 @@ public class EntityDragonOld extends MobEntity implements IEntityMultiPart, IMob
                 this.dropExperience(MathHelper.floor((float)i * 0.2F));
             }
 
-            this.createEnderPortal(MathHelper.floor(this.posX), MathHelper.floor(this.posZ));
+            this.createEnderPortal(MathHelper.floor(this.getPosX()), MathHelper.floor(this.getPosZ()));
             this.remove();
         }
     }

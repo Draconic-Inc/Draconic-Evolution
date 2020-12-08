@@ -62,6 +62,12 @@ public class TestModuleHost extends Item implements IModularItem {
     }
 
     @Override
+    public MultiCapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
+        return null;
+    }
+
+
+    @Override
     public ModuleHostImpl createHost(ItemStack stack) {
         ModuleHostImpl moduleHost = new ModuleHostImpl(TechLevel.DRACONIUM, width, height, "test_configurable_item", ModuleCfg.removeInvalidModules);
         moduleHost.addPropertyBuilder(properties -> {

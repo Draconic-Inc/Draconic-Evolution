@@ -142,7 +142,7 @@ public class EntityLootCore extends Entity {
                 int start = stack.getCount();
 
                 ItemEntity item = new ItemEntity(world, 0, 0, 0, stack);
-                item.setPosition(posX, posY, posZ);
+                item.setPosition(getPosX(), getPosY(), getPosZ());
                 int result = ForgeEventFactory.onItemPickup(item, player);
 
                 if (result == 1 || stack.getCount() <= 0 || player.inventory.addItemStackToInventory(stack)) {
@@ -165,7 +165,7 @@ public class EntityLootCore extends Entity {
         }
 
         if (inserted) {
-            this.world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F, ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+            this.world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F, ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
             updateStored();
         }
 

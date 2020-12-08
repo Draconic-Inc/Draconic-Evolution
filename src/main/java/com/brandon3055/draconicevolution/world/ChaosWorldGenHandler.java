@@ -282,43 +282,43 @@ public class ChaosWorldGenHandler {
         }
     }
 
-    public static class CrystalRemover implements IProcess {
-        private boolean dead = false;
-
-        private Entity entity;
-        private int delay = 2;
-
-        public CrystalRemover(Entity entity) {
-            this.entity = entity;
-        }
-
-        @Override
-        public void updateProcess() {
-            if (delay > 0) delay--;
-            else {
-                boolean flag = true;
-                int y = (int) entity.posY - 1;
-                for (; flag; ) {
-                    flag = false;
-                    for (int x = (int) Math.floor(entity.posX) - 4; x <= (int) Math.floor(entity.posX) + 4; x++) {
-                        for (int z = (int) Math.floor(entity.posZ) - 4; z <= (int) Math.floor(entity.posZ) + 4; z++) {
-                            Block block = entity.world.getBlockState(new BlockPos(x, y, z)).getBlock();
-                            if (block == Blocks.BEDROCK || block == Blocks.OBSIDIAN) {
-                                flag = true;
-                                entity.world.removeBlock(new BlockPos(x, y, z), false);
-                            }
-                        }
-                    }
-                    if (flag) y--;
-                }
-                entity.remove();
-                this.dead = true;
-            }
-        }
-
-        @Override
-        public boolean isDead() {
-            return dead;
-        }
-    }
+//    public static class CrystalRemover implements IProcess {
+//        private boolean dead = false;
+//
+//        private Entity entity;
+//        private int delay = 2;
+//
+//        public CrystalRemover(Entity entity) {
+//            this.entity = entity;
+//        }
+//
+//        @Override
+//        public void updateProcess() {
+//            if (delay > 0) delay--;
+//            else {
+//                boolean flag = true;
+//                int y = (int) entity.getPosY() - 1;
+//                for (; flag; ) {
+//                    flag = false;
+//                    for (int x = (int) Math.floor(entity.getPosX()) - 4; x <= (int) Math.floor(entity.getPosX()) + 4; x++) {
+//                        for (int z = (int) Math.floor(entity.getPosZ()) - 4; z <= (int) Math.floor(entity.getPosZ()) + 4; z++) {
+//                            Block block = entity.world.getBlockState(new BlockPos(x, y, z)).getBlock();
+//                            if (block == Blocks.BEDROCK || block == Blocks.OBSIDIAN) {
+//                                flag = true;
+//                                entity.world.removeBlock(new BlockPos(x, y, z), false);
+//                            }
+//                        }
+//                    }
+//                    if (flag) y--;
+//                }
+//                entity.remove();
+//                this.dead = true;
+//            }
+//        }
+//
+//        @Override
+//        public boolean isDead() {
+//            return dead;
+//        }
+//    }
 }

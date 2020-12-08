@@ -1,19 +1,12 @@
 package com.brandon3055.draconicevolution.client.model.tool;
 
-import codechicken.lib.math.MathHelper;
 import codechicken.lib.render.buffer.VBORenderType;
-import codechicken.lib.render.shader.ShaderProgram;
 import codechicken.lib.render.shader.ShaderRenderType;
 import codechicken.lib.vec.Matrix4;
-import codechicken.lib.vec.Rotation;
-import codechicken.lib.vec.Vector3;
 import com.brandon3055.draconicevolution.DEConfig;
-import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
 

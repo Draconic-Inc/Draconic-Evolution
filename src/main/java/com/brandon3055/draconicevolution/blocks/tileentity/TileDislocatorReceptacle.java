@@ -38,11 +38,13 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.dimension.DimensionType;
+
+import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -149,9 +151,9 @@ public class TileDislocatorReceptacle extends TileBCore implements ITickableTile
             }
 
             dislocator_p2p.notifyArriving(stack, world, entity);
-            DESoundHandler.playSoundFromServer(entity.world, entity.posX, entity.posY, entity.posZ, DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, entity.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
+            DESoundHandler.playSoundFromServer(entity.world, entity.getPosX(), entity.getPosY(), entity.getPosZ(), DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, entity.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
             location.teleport(entity);
-            DESoundHandler.playSoundFromServer(entity.world, entity.posX, entity.posY, entity.posZ, DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, entity.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
+            DESoundHandler.playSoundFromServer(entity.world, entity.getPosX(), entity.getPosY(), entity.getPosZ(), DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, entity.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
         }
 
         try {
@@ -312,7 +314,7 @@ public class TileDislocatorReceptacle extends TileBCore implements ITickableTile
     private void checkIn() {
         ItemStack stack = itemHandler.getStackInSlot(0);
         if (dislocator_p2p.isValid(stack) && !dislocator_p2p.isPlayer(stack)) {
-            DislocatorLinkHandler.updateLink(world, stack, pos, world.getDimension().getType());
+            DislocatorLinkHandler.updateLink(world, stack, pos, world.getDimensionKey());
             isBound.set(true);
         }
         else {
@@ -728,7 +730,7 @@ public class TileDislocatorReceptacle extends TileBCore implements ITickableTile
     }
 
     private BlockPos remotePosCache = null;
-    private DimensionType remoteDimCache = DimensionType.OVERWORLD;
+    private RegistryKey<World> remoteDimCache = World.OVERWORLD;
     private int invalidLinkTime = 0;
     protected ENetFXHandler fxHandler;
 
@@ -750,7 +752,7 @@ public class TileDislocatorReceptacle extends TileBCore implements ITickableTile
                 TileEntity tile = DislocatorLinkHandler.getTargetTile(world, stack);
                 if (tile instanceof TileDislocatorReceptacle) {
                     remotePosCache = tile.getPos();
-                    remoteDimCache = tile.getWorld().getDimension().getType();
+                    remoteDimCache = tile.getWorld().getDimensionKey();
                 }
                 else {
                     invalidLinkTime = 100;

@@ -707,11 +707,6 @@ public class TileDraconiumChest extends TileBCore implements ITickableTileEntity
         }
     }
 
-    @Override
-    public boolean canRenderBreaking() {
-        return true;
-    }
-
     //endregion
 
     public enum AutoSmeltMode {

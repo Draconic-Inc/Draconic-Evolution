@@ -11,10 +11,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
+import net.minecraft.util.*;
 import net.minecraft.util.text.*;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -45,14 +42,14 @@ public class Dislocator extends ItemBCore {
     public boolean onLeftClickEntity(ItemStack stack, PlayerEntity player, Entity entity) {
         if (getLocation(stack, player.world) == null) {
             if (player.world.isRemote) {
-                player.sendMessage(new TranslationTextComponent("msg.teleporterUnSet.txt"));
+                player.sendMessage(new TranslationTextComponent("msg.teleporterUnSet.txt"), Util.DUMMY_UUID);
             }
             return true;
         }
 
         if (entity instanceof PlayerEntity && !(this instanceof DislocatorAdvanced)) {
             if (player.world.isRemote) {
-                player.sendMessage(new TranslationTextComponent("msg.teleporterPlayerT1.txt"));
+                player.sendMessage(new TranslationTextComponent("msg.teleporterPlayerT1.txt"), Util.DUMMY_UUID);
             }
             return true;
         }
@@ -67,7 +64,7 @@ public class Dislocator extends ItemBCore {
             }
 
             if (!entity.world.isRemote) {
-                DESoundHandler.playSoundFromServer(player.world, player.posX, player.posY, player.posZ, DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, player.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
+                DESoundHandler.playSoundFromServer(player.world, player.getPosX(), player.getPosY(), player.getPosZ(), DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, player.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
             }
 
             getLocation(stack, player.world).teleport(entity);
@@ -78,16 +75,16 @@ public class Dislocator extends ItemBCore {
 
 
             if (!entity.world.isRemote) {
-                DESoundHandler.playSoundFromServer(player.world, player.posX, player.posY, player.posZ, DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, player.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
+                DESoundHandler.playSoundFromServer(player.world, player.getPosX(), player.getPosY(), player.getPosZ(), DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, player.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
             }
 
             if (player.world.isRemote) {
                 TeleportLocation location = getLocation(stack, player.world);
-                player.sendMessage(new StringTextComponent(I18n.format("msg.teleporterSentMob.txt") + " x:" + (int) location.getXCoord() + " y:" + (int) location.getYCoord() + " z:" + (int) location.getZCoord() + " Dimension: " + location.getDimensionName()));
+                player.sendMessage(new StringTextComponent(I18n.format("msg.teleporterSentMob.txt") + " x:" + (int) location.getXCoord() + " y:" + (int) location.getYCoord() + " z:" + (int) location.getZCoord() + " Dimension: " + location.getDimensionName()), Util.DUMMY_UUID);
             }
         }
         else if (player.world.isRemote) {
-            player.sendMessage(new TranslationTextComponent("msg.teleporterLowHealth.txt"));
+            player.sendMessage(new TranslationTextComponent("msg.teleporterLowHealth.txt"), Util.DUMMY_UUID);
         }
 
         return true;
@@ -99,22 +96,22 @@ public class Dislocator extends ItemBCore {
         if (player.isSneaking()) {
             if (getLocation(stack, world) == null) {
                 if (world.isRemote) {
-//                    player.sendMessage(new StringTextComponent(new TranslationTextComponent("msg.teleporterBound.txt").getFormattedText() + "{X:" + (int) player.posX + " Y:" + (int) player.posY + " Z:" + (int) player.posZ + " Dim:" + player.world.getDimension().getType().getName() + "}"));
+//                    player.sendMessage(new StringTextComponent(new TranslationTextComponent("msg.teleporterBound.txt").getFormattedText() + "{X:" + (int) player.getPosX() + " Y:" + (int) player.getPosY() + " Z:" + (int) player.getPosZ() + " Dim:" + player.world.getDimension().getType().getName() + "}"));
                 }
                 else {
-                    ItemNBTHelper.setDouble(stack, "X", player.posX);
-                    ItemNBTHelper.setDouble(stack, "Y", player.posY);
-                    ItemNBTHelper.setDouble(stack, "Z", player.posZ);
+                    ItemNBTHelper.setDouble(stack, "X", player.getPosX());
+                    ItemNBTHelper.setDouble(stack, "Y", player.getPosY());
+                    ItemNBTHelper.setDouble(stack, "Z", player.getPosZ());
                     ItemNBTHelper.setFloat(stack, "Yaw", player.rotationYaw);
                     ItemNBTHelper.setFloat(stack, "Pitch", player.rotationPitch);
-                    ItemNBTHelper.setString(stack, "Dimension", player.dimension.getRegistryName().toString());
+                    ItemNBTHelper.setString(stack, "Dimension", player.world.getDimensionKey().getLocation().toString());
                     ItemNBTHelper.setBoolean(stack, "IsSet", true);
 //                    ItemNBTHelper.setString(stack, "DimentionName", BrandonsCore.proxy.getMCServer().getWorld(player.dimension).getDimension().tra);//TODO Is this really needed?
                 }
                 return new ActionResult<>(ActionResultType.PASS, stack);
             }
             else if (world.isRemote) {
-                player.sendMessage(new TranslationTextComponent("msg.teleporterAlreadySet.txt"));
+                player.sendMessage(new TranslationTextComponent("msg.teleporterAlreadySet.txt"), Util.DUMMY_UUID);
             }
 
             return new ActionResult<>(ActionResultType.PASS, stack);
@@ -122,7 +119,7 @@ public class Dislocator extends ItemBCore {
         else {
             if (getLocation(stack, world) == null) {
                 if (world.isRemote) {
-                    player.sendMessage(new TranslationTextComponent("msg.teleporterUnSet.txt"));
+                    player.sendMessage(new TranslationTextComponent("msg.teleporterUnSet.txt"), Util.DUMMY_UUID);
                 }
                 return new ActionResult<>(ActionResultType.PASS, stack);
             }
@@ -130,13 +127,13 @@ public class Dislocator extends ItemBCore {
             if (player.getHealth() > 2 || player.abilities.isCreativeMode) {
 
                 if (!world.isRemote) {
-                    DESoundHandler.playSoundFromServer(player.world, player.posX, player.posY, player.posZ, DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, player.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
+                    DESoundHandler.playSoundFromServer(player.world, player.getPosX(), player.getPosY(), player.getPosZ(), DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, player.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
                 }
 
                 getLocation(stack, world).teleport(player);
 
                 if (!world.isRemote) {
-                    DESoundHandler.playSoundFromServer(player.world, player.posX, player.posY, player.posZ, DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, player.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
+                    DESoundHandler.playSoundFromServer(player.world, player.getPosX(), player.getPosY(), player.getPosZ(), DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, player.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
                 }
 
                 stack.damageItem(1, player, e -> {});
@@ -146,7 +143,7 @@ public class Dislocator extends ItemBCore {
                 }
             }
             else if (world.isRemote) {
-                player.sendMessage(new TranslationTextComponent("msg.teleporterLowHealth.txt"));
+                player.sendMessage(new TranslationTextComponent("msg.teleporterLowHealth.txt"), Util.DUMMY_UUID);
             }
             return new ActionResult<>(ActionResultType.PASS, stack);
         }
@@ -157,14 +154,14 @@ public class Dislocator extends ItemBCore {
     @Override
     public void addInformation(ItemStack stack, World world, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         if (!ItemNBTHelper.getBoolean(stack, "IsSet", false)) {
-            tooltip.add(new TranslationTextComponent("info.teleporterInfUnset1.txt").setStyle(new Style().setColor(TextFormatting.RED)));
-            tooltip.add(new TranslationTextComponent("info.teleporterInfUnset2.txt").setStyle(new Style().setColor(TextFormatting.WHITE)));
-            tooltip.add(new TranslationTextComponent("info.teleporterInfUnset3.txt").setStyle(new Style().setColor(TextFormatting.WHITE)));
-            tooltip.add(new TranslationTextComponent("info.teleporterInfUnset4.txt").setStyle(new Style().setColor(TextFormatting.WHITE)));
-            tooltip.add(new TranslationTextComponent("info.teleporterInfUnset5.txt").setStyle(new Style().setColor(TextFormatting.WHITE)));
+            tooltip.add(new TranslationTextComponent("info.teleporterInfUnset1.txt").mergeStyle(TextFormatting.RED));
+            tooltip.add(new TranslationTextComponent("info.teleporterInfUnset2.txt").mergeStyle(TextFormatting.WHITE));
+            tooltip.add(new TranslationTextComponent("info.teleporterInfUnset3.txt").mergeStyle(TextFormatting.WHITE));
+            tooltip.add(new TranslationTextComponent("info.teleporterInfUnset4.txt").mergeStyle(TextFormatting.WHITE));
+            tooltip.add(new TranslationTextComponent("info.teleporterInfUnset5.txt").mergeStyle(TextFormatting.WHITE));
         }
         else {
-            tooltip.add(new TranslationTextComponent("info.teleporterInfSet1.txt").setStyle(new Style().setColor(TextFormatting.GREEN)));
+            tooltip.add(new TranslationTextComponent("info.teleporterInfSet1.txt").mergeStyle(TextFormatting.GREEN));
             tooltip.add(new StringTextComponent(TextFormatting.WHITE + "{x:" + (int) ItemNBTHelper.getDouble(stack, "X", 0) + " y:" + (int) ItemNBTHelper.getDouble(stack, "Y", 0) + " z:" + (int) ItemNBTHelper.getDouble(stack, "Z", 0) + " Dim:" + getLocation(stack, world).getDimensionName() + "}"));
             tooltip.add(new StringTextComponent(TextFormatting.BLUE + String.valueOf(stack.getMaxDamage() - stack.getDamage() + 1) + " " + I18n.format("info.teleporterInfSet2.txt")));
         }

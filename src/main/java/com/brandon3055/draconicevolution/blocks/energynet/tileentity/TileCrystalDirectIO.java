@@ -12,6 +12,7 @@ import com.brandon3055.draconicevolution.client.render.effect.CrystalFXIO;
 import com.brandon3055.draconicevolution.client.render.effect.CrystalFXBase;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
@@ -103,7 +104,7 @@ public class TileCrystalDirectIO extends TileCrystalBase   {
     @OnlyIn(Dist.CLIENT)
     @Override
     public CrystalFXBase createStaticFX() {
-        return new CrystalFXIO(world, this);
+        return new CrystalFXIO((ClientWorld)world, this);
     }
 
     @Override

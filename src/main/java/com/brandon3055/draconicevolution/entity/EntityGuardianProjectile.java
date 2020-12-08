@@ -95,7 +95,7 @@ public class EntityGuardianProjectile extends Entity {
 //
 //        if (shooter != null) {
 //            if (!world.isRemote) {
-//                DESoundHandler.playSoundFromServer(world, shooter.posX + 0.5D, shooter.posY + 0.5D, shooter.posZ + 0.5D, SoundEvents.ENTITY_ENDERDRAGON_SHOOT, SoundCategory.HOSTILE, 10.0F, rand.nextFloat() * 0.3F + 0.85F, false, 256);
+//                DESoundHandler.playSoundFromServer(world, shooter.posX + 0.5D, shooter.getPosY() + 0.5D, shooter.getPosZ() + 0.5D, SoundEvents.ENTITY_ENDERDRAGON_SHOOT, SoundCategory.HOSTILE, 10.0F, rand.nextFloat() * 0.3F + 0.85F, false, 256);
 //            }
 //
 //            this.rotationYaw = shooter instanceof EntityChaosGuardian ? shooter.rotationYaw + 180F : shooter.rotationYaw;
@@ -160,7 +160,7 @@ public class EntityGuardianProjectile extends Entity {
 
         //Check that there is still a target available and if not kills the projectile.
         if (target == null) {
-            target = Utils.getClosestPlayer(world, posX, posY, posZ, 60, true);
+            target = Utils.getClosestPlayer(world, getPosX(), getPosY(), getPosZ(), 60, true);
             if (target == null) {
                 if (!world.isRemote) {
                     remove();
@@ -170,12 +170,12 @@ public class EntityGuardianProjectile extends Entity {
         }
 
         if (isChaser && !world.isRemote) {
-            double tDist = Utils.getDistanceAtoB(target.posX, target.posY, target.posZ, posX, posY, posZ);
+            double tDist = Utils.getDistanceAtoB(target.getPosX(), target.getPosY(), target.getPosZ(), getPosX(), getPosY(), getPosZ());
             if (tDist <= 0) tDist = 0.1;
 
-            double x = (target.posX - posX) / tDist;
-            double y = (target.posY - posY - -1) / tDist;
-            double z = (target.posZ - posZ) / tDist;
+            double x = (target.getPosX() - getPosX()) / tDist;
+            double y = (target.getPosY() - getPosY() - -1) / tDist;
+            double z = (target.getPosZ() - getPosZ()) / tDist;
             double speed = type == CHAOS_CHASER ? 0.15D : 0.1D;
 
 //            motionX /= 1.1;
@@ -193,7 +193,7 @@ public class EntityGuardianProjectile extends Entity {
             return false;
         }
 
-        double targetDistance = Utils.getDistanceAtoB(posX, posY, posZ, target.posX, target.posY, target.posZ);
+        double targetDistance = Utils.getDistanceAtoB(getPosX(), getPosY(), getPosZ(), target.getPosX(), target.getPosY(), target.getPosZ());
 
         Entity entityHit = getHitEntity();
         if (entityHit instanceof EnderDragonPartEntity) {
@@ -204,9 +204,9 @@ public class EntityGuardianProjectile extends Entity {
 
         switch (type) {
             case FIREBOMB:
-                if (genericHit || (targetDistance > lastTickTargetDistance && targetDistance < power) || collided || ticksExisted > 600 || heath <= 0) {
+                if (genericHit || (targetDistance > lastTickTargetDistance && targetDistance < power) || (collidedHorizontally || collidedVertically) || ticksExisted > 600 || heath <= 0) {
                     remove();
-                    world.createExplosion(shooter, this.posX, this.posY, this.posZ, 2F, true, Explosion.Mode.BREAK);
+                    world.createExplosion(shooter, this.getPosX(), this.getPosY(), this.getPosZ(), 2F, true, Explosion.Mode.BREAK);
                     damageEntitiesInRadius(damageFireball, power, power * 2);
                 }
                 break;
@@ -219,22 +219,22 @@ public class EntityGuardianProjectile extends Entity {
                     }
                     int r = rand.nextInt();
                     if (shooter != null) {
-                        new Teleporter.TeleportLocation(shooter.posX + (Math.cos(r) * 600), rand.nextInt(255), shooter.posZ + (Math.sin(r) * 600), hit.dimension).teleport(hit);
+                        new Teleporter.TeleportLocation(shooter.getPosX() + (Math.cos(r) * 600), rand.nextInt(255), shooter.getPosZ() + (Math.sin(r) * 600), hit.world.getDimensionKey()).teleport(hit);
                     } else {
-                        new Teleporter.TeleportLocation(posX + (Math.cos(r) * 600), rand.nextInt(255), posZ + (Math.sin(r) * 600), hit.dimension).teleport(hit);
+                        new Teleporter.TeleportLocation(getPosX() + (Math.cos(r) * 600), rand.nextInt(255), getPosZ() + (Math.sin(r) * 600), hit.world.getDimensionKey()).teleport(hit);
                     }
 
                     hit.attackEntityFrom(DamageSource.FALL, 10F);
 
-                } else if (collided || ticksExisted > 400 || heath <= 0) {
+                } else if ((collidedHorizontally || collidedVertically) || ticksExisted > 400 || heath <= 0) {
                     remove();
                 }
                 break;
             case FIRE_CHASER:
                 noClip = ticksExisted < 60;
-                if (genericHit || (targetDistance > lastTickTargetDistance && targetDistance < power / 2) || (collided && ticksExisted > 60) || ticksExisted > 400 || heath <= 0) {
+                if (genericHit || (targetDistance > lastTickTargetDistance && targetDistance < power / 2) || ((collidedHorizontally || collidedVertically) && ticksExisted > 60) || ticksExisted > 400 || heath <= 0) {
                     remove();
-                    world.createExplosion(shooter, this.posX, this.posY, this.posZ, 2F, true, Explosion.Mode.BREAK);
+                    world.createExplosion(shooter, this.getPosX(), this.getPosY(), this.getPosZ(), 2F, true, Explosion.Mode.BREAK);
                     damageEntitiesInRadius(damageFireball, power, power * 2);
                 }
                 break;
@@ -242,9 +242,9 @@ public class EntityGuardianProjectile extends Entity {
                 if (genericHit || (targetDistance > lastTickTargetDistance && targetDistance < power) || ticksExisted > 800 || heath <= 0) {
                     remove();
                     //TODO Particles
-//                    BCEffectHandler.spawnFX(DEParticles.GUARDIAN_PROJECTILE, world, posX, posY, posZ, 0, 0, 0, 256, this.getEntityId(), 0, 255, 255);
+//                    BCEffectHandler.spawnFX(DEParticles.GUARDIAN_PROJECTILE, world, getPosX(), getPosY(), getPosZ(), 0, 0, 0, 256, this.getEntityId(), 0, 255, 255);
                     damageEntitiesInRadius(damageEnergy, power, power * 3);
-                    world.playSound(posX, posY, posZ, SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.HOSTILE, 4.0F, (1.0F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.2F) * 0.7F, false);
+                    world.playSound(getPosX(), getPosY(), getPosZ(), SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.HOSTILE, 4.0F, (1.0F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.2F) * 0.7F, false);
                 }
                 break;
             case CHAOS_CHASER:
@@ -252,9 +252,9 @@ public class EntityGuardianProjectile extends Entity {
                 if (genericHit || (targetDistance > lastTickTargetDistance && targetDistance < power) || ticksExisted > 800 || heath <= 0) {
                     remove();
                     //TODO Particles
-//                    BCEffectHandler.spawnFX(DEParticles.GUARDIAN_PROJECTILE, world, posX, posY, posZ, 0, 0, 0, 256, this.getEntityId(), 0x44, 0, 0);
+//                    BCEffectHandler.spawnFX(DEParticles.GUARDIAN_PROJECTILE, world, getPosX(), getPosY(), getPosZ(), 0, 0, 0, 256, this.getEntityId(), 0x44, 0, 0);
                     damageEntitiesInRadius(damageChaos, power, power * 3);
-                    world.playSound(posX, posY, posZ, SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.HOSTILE, 4.0F, (1.0F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.2F) * 0.7F, false);
+                    world.playSound(getPosX(), getPosY(), getPosZ(), SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.HOSTILE, 4.0F, (1.0F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.2F) * 0.7F, false);
                     int i = 3 + rand.nextInt(3);
                     EntityGuardianProjectile newProjectile;
                     @SuppressWarnings("unchecked") List<Entity> list = world.getEntitiesInAABBexcluding(shooter, getBoundingBox().grow(60, 60, 60), FilterUtils.IS_PLAYER);
@@ -271,7 +271,7 @@ public class EntityGuardianProjectile extends Entity {
 //                        double speed = 1 + rand.nextDouble() * 5;
 //                        newProjectile.motionX = Math.sin(randDir) * speed;
 //                        newProjectile.motionZ = Math.cos(randDir) * speed;
-//                        newProjectile.setPosition(posX, posY, posZ);
+//                        newProjectile.setPosition(getPosX(), getPosY(), getPosZ());
 //                        world.spawnEntity(newProjectile);
                     }
                 }
@@ -281,10 +281,10 @@ public class EntityGuardianProjectile extends Entity {
                 if ((genericHit || (targetDistance > lastTickTargetDistance && targetDistance < power) || ticksExisted > 800 || heath <= 0) && ticksExisted > 5) {
                     remove();
                     //TODO Particles
-//                    BCEffectHandler.spawnFX(DEParticles.GUARDIAN_PROJECTILE, world, posX, posY, posZ, 0, 0, 0, 256, this.getEntityId(), 0x44, 0, 0);
-                    //DraconicEvolution.network.sendToAllAround(new GenericParticlePacket(GenericParticlePacket.CHAOS_BALL_KILL, posX, posY, posZ), new NetworkRegistry.TargetPoint(dimension, posX, posY, posZ, 128));
+//                    BCEffectHandler.spawnFX(DEParticles.GUARDIAN_PROJECTILE, world, getPosX(), getPosY(), getPosZ(), 0, 0, 0, 256, this.getEntityId(), 0x44, 0, 0);
+                    //DraconicEvolution.network.sendToAllAround(new GenericParticlePacket(GenericParticlePacket.CHAOS_BALL_KILL, getPosX(), getPosY(), getPosZ()), new NetworkRegistry.TargetPoint(dimension, getPosX(), getPosY(), getPosZ(), 128));
                     damageEntitiesInRadius(damageChaos, power, power * 3);
-                    world.playSound(posX, posY, posZ, SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.HOSTILE, 4.0F, (1.0F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.2F) * 0.7F, false);
+                    world.playSound(getPosX(), getPosY(), getPosZ(), SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.HOSTILE, 4.0F, (1.0F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.2F) * 0.7F, false);
                 }
                 break;
             case IGNITION_CHARGE:
@@ -302,8 +302,8 @@ public class EntityGuardianProjectile extends Entity {
     }
 
     private Entity getHitEntity() {
-//        Vec3d vec31 = new Vec3d(this.posX, this.posY, this.posZ);
-//        Vec3d vec3 = new Vec3d(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
+//        Vec3d vec31 = new Vec3d(this.getPosX(), this.getPosY(), this.getPosZ());
+//        Vec3d vec3 = new Vec3d(this.getPosX() + this.motionX, this.getPosY() + this.motionY, this.getPosZ() + this.motionZ);
 //
 //        Entity entityHit = null;
 //        List list = this.world.getEntitiesWithinAABBExcludingEntity(this, this.getEntityBoundingBox().grow(this.motionX, this.motionY, this.motionZ).grow(1.0D, 1.0D, 1.0D));
@@ -336,14 +336,14 @@ public class EntityGuardianProjectile extends Entity {
 
     private void damageEntitiesInRadius(DamageSource source, double radius, float damage) {
         if (world.isRemote) return;
-        @SuppressWarnings("unchecked") List<LivingEntity> entities = world.getEntitiesWithinAABB(LivingEntity.class, new AxisAlignedBB(posX, posY, posZ, posX, posY, posZ).grow(radius, radius, radius));
+        @SuppressWarnings("unchecked") List<LivingEntity> entities = world.getEntitiesWithinAABB(LivingEntity.class, new AxisAlignedBB(getPosX(), getPosY(), getPosZ(), getPosX(), getPosY(), getPosZ()).grow(radius, radius, radius));
 
         for (LivingEntity entityLivingBase : entities) {
             if (entityLivingBase == shooter) {
                 continue;
             }
             entityLivingBase.hurtResistantTime = 0;
-            entityLivingBase.attackEntityFrom(source, damage / (float) (Utils.getDistanceAtoB(entityLivingBase.posX, entityLivingBase.posY, entityLivingBase.posZ, posX, posY, posZ) / radius));
+            entityLivingBase.attackEntityFrom(source, damage / (float) (Utils.getDistanceAtoB(entityLivingBase.getPosX(), entityLivingBase.getPosY(), entityLivingBase.getPosZ(), getPosX(), getPosY(), getPosZ()) / radius));
             if (source == damageChaos && entityLivingBase instanceof PlayerEntity) {
 //                for (ItemStack stack : ((PlayerEntity) entityLivingBase).inventory.armorInventory) {
 //                    if (stack.getItem() instanceof IEnergyContainerItem) {
@@ -367,7 +367,7 @@ public class EntityGuardianProjectile extends Entity {
         }
 
         if (heath <= 0) {
-            world.createExplosion(this, this.posX, this.posY, this.posZ, 2F, false, Explosion.Mode.BREAK);
+            world.createExplosion(this, this.getPosX(), this.getPosY(), this.getPosZ(), 2F, false, Explosion.Mode.BREAK);
             remove();
         }
 
@@ -382,10 +382,10 @@ public class EntityGuardianProjectile extends Entity {
         }
 
         //TODO Particles
-//        BCEffectHandler.spawnFX(DEParticles.GUARDIAN_PROJECTILE, world, posX, posY, posZ, 0, 0, 0, 256D, this.getEntityId(), colour[0], colour[1], colour[2]);
+//        BCEffectHandler.spawnFX(DEParticles.GUARDIAN_PROJECTILE, world, getPosX(), getPosY(), getPosZ(), 0, 0, 0, 256D, this.getEntityId(), colour[0], colour[1], colour[2]);
 
 
-//        Particles.DragonProjectileParticle particle = new Particles.DragonProjectileParticle(world, posX - 0.25 + rand.nextDouble() * 0.5, posY + rand.nextDouble() * 0.5, posZ - 0.25 + rand.nextDouble() * 0.5, this);
+//        Particles.DragonProjectileParticle particle = new Particles.DragonProjectileParticle(world, getPosX() - 0.25 + rand.nextDouble() * 0.5, getPosY() + rand.nextDouble() * 0.5, getPosZ() - 0.25 + rand.nextDouble() * 0.5, this);
 //        double mm = 0.2;
 //        particle.motionX = (rand.nextDouble() - 0.5) * mm;
 //        particle.motionY = (rand.nextDouble() - 0.5) * mm;

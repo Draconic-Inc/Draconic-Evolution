@@ -68,14 +68,14 @@ public class TileDislocatorPedestal extends TileBCore implements ITeleportEndPoi
                 boolean silenced = world.getBlockState(pos.down()).getBlock().getTags().contains(WOOL_TAG);
 
                 if (!silenced) {
-                    DESoundHandler.playSoundFromServer(player.world, player.posX, player.posY, player.posZ, DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, player.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
+                    DESoundHandler.playSoundFromServer(player.world, player.getPosX(), player.getPosY(), player.getPosZ(), DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, player.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
                 }
 
                 dislocator_p2p.notifyArriving(stack, player.world, player);
                 location.teleport(player);
 
                 if (!silenced) {
-                    DESoundHandler.playSoundFromServer(player.world, player.posX, player.posY, player.posZ, DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, player.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
+                    DESoundHandler.playSoundFromServer(player.world, player.getPosX(), player.getPosY(), player.getPosZ(), DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, player.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
                 }
             }
 
@@ -113,7 +113,7 @@ public class TileDislocatorPedestal extends TileBCore implements ITeleportEndPoi
     public void checkIn() {
         ItemStack stack = itemHandler.getStackInSlot(0);
         if (dislocator_p2p.isValid(stack) && !dislocator_p2p.isPlayer(stack)) {
-            DislocatorLinkHandler.updateLink(world, stack, pos, world.getDimension().getType());
+            DislocatorLinkHandler.updateLink(world, stack, pos, world.getDimensionKey());
         }
     }
 

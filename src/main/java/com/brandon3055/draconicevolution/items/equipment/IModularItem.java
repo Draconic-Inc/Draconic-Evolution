@@ -31,6 +31,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -106,14 +107,15 @@ public interface IModularItem extends IForgeItem {
     @OnlyIn(Dist.CLIENT)
     default void addModularItemInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         if (!Screen.hasShiftDown()) {
-            tooltip.add(new TranslationTextComponent("[Modular Item]").applyTextStyle(TextFormatting.BLUE));
+            tooltip.add(new TranslationTextComponent("[Modular Item]").mergeStyle(TextFormatting.BLUE));
         }
         EnergyUtils.addEnergyInfo(stack, tooltip);
     }
 
+
     @Override
-    default Multimap<String, AttributeModifier> getAttributeModifiers(EquipmentSlotType slot, ItemStack stack) {
-        Multimap<String, AttributeModifier> map = HashMultimap.create();
+    default Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlotType slot, ItemStack stack) {
+        Multimap<Attribute, AttributeModifier> map = HashMultimap.create();
         if (MODULE_HOST_CAPABILITY != null && stack.getCapability(MODULE_HOST_CAPABILITY).isPresent()) { //Because vanilla calls this before capabilities are registered.
             ModuleHost host = stack.getCapability(MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new);
             host.getAttributeModifiers(slot, stack, map);

@@ -11,13 +11,13 @@ import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
+import net.minecraft.client.world.ClientWorld;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -27,7 +27,7 @@ public class CrystalFXRing extends CrystalFXBase<TileCrystalBase> {
 
     private long rSeed = 0;
 
-    public CrystalFXRing(World worldIn, TileCrystalBase tile) {
+    public CrystalFXRing(ClientWorld worldIn, TileCrystalBase tile) {
         super(worldIn, tile);
         this.age = worldIn.rand.nextInt(1024);
         this.rSeed = tile.getPos().toLong();
@@ -62,7 +62,7 @@ public class CrystalFXRing extends CrystalFXBase<TileCrystalBase> {
 
         //region variables
 
-        Vec3d view = renderInfo.getProjectedView();
+        Vector3d view = renderInfo.getProjectedView();
         float viewX = (float) (this.posX - view.getX());
         float viewY = (float) (this.posY - view.getY());
         float viewZ = (float) (this.posZ - view.getZ());

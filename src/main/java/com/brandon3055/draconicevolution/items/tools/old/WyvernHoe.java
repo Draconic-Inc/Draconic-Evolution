@@ -108,7 +108,7 @@ public abstract class WyvernHoe extends ToolBase {
             boolean lowerBlockOk = world.getBlockState(aoePos.down()).isSolid() || world.getBlockState(aoePos.down()).getBlock() == Blocks.FARMLAND;
 
             if (fill && airOrReplaceable && lowerBlockOk && (player.abilities.isCreativeMode || player.inventory.hasItemStack(new ItemStack(Blocks.DIRT)))) {
-                boolean canceled = ForgeEventFactory.onBlockPlace(player, new BlockSnapshot(world, aoePos, Blocks.DIRT.getDefaultState()), Direction.UP);
+                boolean canceled = false;//TODOForgeEventFactory.onBlockPlace(player, new BlockSnapshot(world.getDimensionKey(), world, aoePos, Blocks.DIRT.getDefaultState()), Direction.UP);
 
                 if (!canceled && (player.abilities.isCreativeMode || InventoryUtils.consumeStack(new ItemStack(Blocks.DIRT), player.inventory))) {
                     world.setBlockState(aoePos, Blocks.DIRT.getDefaultState());
@@ -121,7 +121,7 @@ public abstract class WyvernHoe extends ToolBase {
 
             if (fill && !world.isAirBlock(aoePos.up()) && canRemoveAbove && up2OK) {
                 if (canDropAbove) {
-                    world.addEntity(new ItemEntity(world, player.posX, player.posY, player.posZ, new ItemStack(Blocks.DIRT)));
+                    world.addEntity(new ItemEntity(world, player.getPosX(), player.getPosY(), player.getPosZ(), new ItemStack(Blocks.DIRT)));
                 }
                 world.removeBlock(aoePos.up(), false);
             }
@@ -205,7 +205,7 @@ public abstract class WyvernHoe extends ToolBase {
         if (getDisabledEnchants(stack).containsKey(enchantment)) {
             return false;
         }
-        return enchantment.type == EnchantmentType.ALL;
+        return false;//enchantment.type == EnchantmentType.ALL;
     }
 
     @Override

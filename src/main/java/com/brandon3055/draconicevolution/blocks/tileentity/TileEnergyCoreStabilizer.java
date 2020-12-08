@@ -21,6 +21,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -119,7 +120,7 @@ public class TileEnergyCoreStabilizer extends TileBCore implements ITickableTile
         if (core != null) {
             core.onStructureClicked(world, pos, state, player);
         } else {
-            player.sendMessage(new TranslationTextComponent("msg.de.coreNotFound.txt").setStyle(new Style().setColor(TextFormatting.DARK_RED)));
+            player.sendMessage(new TranslationTextComponent("msg.de.coreNotFound.txt").mergeStyle(TextFormatting.DARK_RED), Util.DUMMY_UUID);
         }
         return true;
     }

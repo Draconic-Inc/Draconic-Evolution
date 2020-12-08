@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.client.render.particle;
 import com.brandon3055.brandonscore.client.particle.BCParticle;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.draconicevolution.api.fusioncrafting.IFusionCraftingInventory;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.world.World;
 
 /**
@@ -22,7 +23,7 @@ public class ParticleFusionCrafting extends BCParticle {
     private float aRandomFloat = 0;
     private boolean rotationLock = false;
 
-    public ParticleFusionCrafting(World worldIn, Vec3D pos, Vec3D corePos, IFusionCraftingInventory craftingInventory) {
+    public ParticleFusionCrafting(ClientWorld worldIn, Vec3D pos, Vec3D corePos, IFusionCraftingInventory craftingInventory) {
         super(worldIn, pos, new Vec3D());
         this.corePos = corePos;
         this.craftingInventory = craftingInventory;
@@ -186,7 +187,7 @@ public class ParticleFusionCrafting extends BCParticle {
 
     public class SubParticle extends BCParticle {
 
-        public SubParticle(World worldIn, Vec3D pos) {
+        public SubParticle(ClientWorld worldIn, Vec3D pos) {
             super(worldIn, pos);
 
             double speed = 0.1;

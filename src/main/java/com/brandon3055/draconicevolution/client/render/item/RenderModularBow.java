@@ -27,6 +27,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BowItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.vector.TransformationMatrix;
 import org.lwjgl.opengl.GL11;
 
 import java.util.Map;
@@ -269,26 +270,4 @@ public class RenderModularBow extends ToolRenderBase {
         }
         return 0;
     }
-
-//    private ShaderProgram stringShaderProgram;
-//    public void bindString() {
-//        if (DEShaders.useShaders()) {
-//            RenderSystem.disableLighting();
-//            if (stringShaderProgram == null) {
-//                stringShaderProgram = new ShaderProgram();
-//                stringShaderProgram.attachShader(DEShaders.bowString);
-//                stringShaderProgram.attachShader(DEShaders.commonVert);
-//            }
-//            stringShaderProgram.useShader(cache -> {
-//                cache.glUniform1F("time", (BCClientEventHandler.elapsedTicks + Minecraft.getInstance().getRenderPartialTicks()) / 20);
-//                cache.glUniform1I("tier", techLevel.index);
-//            });
-//        }
-//    }
-//
-//    public void releaseString() {
-//        if (DEShaders.useShaders()) {
-//            stringShaderProgram.releaseShader();
-//        }
-//    }
 }

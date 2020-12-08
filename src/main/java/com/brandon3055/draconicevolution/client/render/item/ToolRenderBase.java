@@ -5,15 +5,11 @@ import codechicken.lib.render.CCModel;
 import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.buffer.VBORenderType;
 import codechicken.lib.render.item.IItemRenderer;
-import codechicken.lib.render.shader.ShaderProgram;
-import codechicken.lib.render.shader.ShaderRenderType;
-import codechicken.lib.render.shader.UniformCache;
 import codechicken.lib.render.shader.*;
 import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.client.BCClientEventHandler;
-import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -21,20 +17,19 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderState;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.vector.TransformationMatrix;
 import org.lwjgl.opengl.GL11;
-
 
 import static codechicken.lib.render.shader.ShaderObject.StandardShaderType.FRAGMENT;
 import static codechicken.lib.render.shader.ShaderObject.StandardShaderType.VERTEX;
-import static codechicken.lib.util.TransformUtils.*;
+import static codechicken.lib.util.TransformUtils.DEFAULT_TOOL;
 import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
 import static net.minecraft.client.renderer.RenderState.*;
-import static net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType.*;
+import static net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType.GUI;
 
 /**
  * Created by brandon3055 on 22/5/20.
@@ -194,7 +189,7 @@ public abstract class ToolRenderBase implements IItemRenderer {
     }
 
     @Override
-    public boolean func_230044_c_() {
+    public boolean isSideLit() {
         return false;
     }
 

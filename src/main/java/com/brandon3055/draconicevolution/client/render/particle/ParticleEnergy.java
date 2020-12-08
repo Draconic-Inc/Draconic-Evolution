@@ -7,6 +7,7 @@ import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.utils.Utils;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 
@@ -17,7 +18,7 @@ public class ParticleEnergy extends SpriteTexturedParticle {
     public Vec3D targetPos;
     private final IAnimatedSprite spriteSet;
 
-    public ParticleEnergy(World world, double xPos, double yPos, double zPos, Vec3D targetPos, IAnimatedSprite spriteSet) {
+    public ParticleEnergy(ClientWorld world, double xPos, double yPos, double zPos, Vec3D targetPos, IAnimatedSprite spriteSet) {
         super(world, xPos, yPos, zPos);
         this.targetPos = targetPos;
         this.spriteSet = spriteSet;
@@ -117,9 +118,8 @@ public class ParticleEnergy extends SpriteTexturedParticle {
             this.spriteSet = p_i50823_1_;
         }
 
-        @Nullable
         @Override
-        public Particle makeParticle(IntParticleType.IntParticleData data, World world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public Particle makeParticle(IntParticleType.IntParticleData data, ClientWorld world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
             ParticleEnergy particleEnergy = new ParticleEnergy(world, x, y, z, new Vec3D(xSpeed, ySpeed, zSpeed), spriteSet);
 
             if (data.get().length >= 3) {
@@ -127,7 +127,7 @@ public class ParticleEnergy extends SpriteTexturedParticle {
             }
 
             if (data.get().length >= 4) {
-                particleEnergy.multipleParticleScaleBy(data.get()[3] / 100F);
+                particleEnergy.multiplyParticleScaleBy(data.get()[3] / 100F);
             }
 
             return particleEnergy;

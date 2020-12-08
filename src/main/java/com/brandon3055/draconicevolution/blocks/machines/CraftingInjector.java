@@ -126,7 +126,7 @@ public class CraftingInjector extends BlockBCore implements IHudDisplay {
                 player.setHeldItem(Hand.MAIN_HAND, craftingPedestal.itemHandler.getStackInSlot(0));
                 craftingPedestal.setStackInPedestal(ItemStack.EMPTY);
             } else {
-                world.addEntity(new ItemEntity(world, player.posX, player.posY, player.posZ, craftingPedestal.itemHandler.getStackInSlot(0)));
+                world.addEntity(new ItemEntity(world, player.getPosX(), player.getPosY(), player.getPosZ(), craftingPedestal.itemHandler.getStackInSlot(0)));
                 craftingPedestal.setStackInPedestal(ItemStack.EMPTY);
             }
         } else {

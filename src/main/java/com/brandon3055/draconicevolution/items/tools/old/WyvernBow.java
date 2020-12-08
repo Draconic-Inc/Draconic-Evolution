@@ -203,7 +203,7 @@ public class WyvernBow extends ToolBase implements IFOVModifierItem, IReaperItem
         if (getDisabledEnchants(stack).containsKey(enchantment)) {
             return false;
         }
-        return enchantment.type == EnchantmentType.BOW || enchantment.type == EnchantmentType.ALL;
+        return enchantment.type == EnchantmentType.BOW /*|| enchantment.type == EnchantmentType.ALL*/;
     }
 
     @Override

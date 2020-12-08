@@ -1,6 +1,6 @@
 {
-  "parent": "block/block",
+  "parent": "minecraft:block/block",
   "textures": {
-    "particle": "block/glass"
+    "particle": "minecraft:block/glass"
   }
 }

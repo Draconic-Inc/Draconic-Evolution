@@ -22,6 +22,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.IndirectEntityDamageSource;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.*;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 
@@ -174,13 +175,13 @@ public class EntityCustomArrow extends ArrowEntity {
     //endregion
 
     @Override
-    protected void onHit(RayTraceResult traceResult) {
+    protected void onEntityHit(EntityRayTraceResult traceResult) {
 
         if (bowProperties.explosionPower > 0 && !world.isRemote) {
             Explosion explosion = new Explosion(world, this, prevPosX, prevPosY, prevPosZ, bowProperties.explosionPower, false, DEOldConfig.bowBlockDamage ? Explosion.Mode.BREAK : Explosion.Mode.NONE) {
                 @Override
                 public LivingEntity getExplosivePlacedBy() {
-                    return getShooter() instanceof LivingEntity ? (LivingEntity) getShooter() : null;
+                    return func_234616_v_() instanceof LivingEntity ? (LivingEntity) func_234616_v_() : null;
                 }
             };
             if (!net.minecraftforge.event.ForgeEventFactory.onExplosionStart(world, explosion)) {
@@ -190,7 +191,7 @@ public class EntityCustomArrow extends ArrowEntity {
 
                 for (PlayerEntity entityplayer : world.getPlayers()) {
                     if (entityplayer.getDistanceSq(prevPosX, prevPosY, prevPosZ) < 4096.0D) {
-                        ((ServerPlayerEntity) entityplayer).connection.sendPacket(new SExplosionPacket(prevPosX, prevPosY, prevPosZ, bowProperties.explosionPower, explosion.getAffectedBlockPositions(), (Vec3d) explosion.getPlayerKnockbackMap().get(entityplayer)));
+                        ((ServerPlayerEntity) entityplayer).connection.sendPacket(new SExplosionPacket(prevPosX, prevPosY, prevPosZ, bowProperties.explosionPower, explosion.getAffectedBlockPositions(), explosion.getPlayerKnockbackMap().get(entityplayer)));
                     }
                 }
             }
@@ -201,12 +202,12 @@ public class EntityCustomArrow extends ArrowEntity {
         //region Shock Wave
         if (bowProperties.shockWavePower > 0 && !world.isRemote) {
             Vec3D hitPos = new Vec3D(this);
-            if (traceResult instanceof BlockRayTraceResult) {
-                hitPos = Vec3D.getCenter(((BlockRayTraceResult) traceResult).getPos());
-            }
-            else if (traceResult instanceof EntityRayTraceResult) {
+//            if (traceResult instanceof BlockRayTraceResult) {
+//                hitPos = Vec3D.getCenter(((BlockRayTraceResult) traceResult).getPos());
+//            }
+//            else if (traceResult instanceof EntityRayTraceResult) {
                 hitPos = new Vec3D(((EntityRayTraceResult) traceResult).getEntity());
-            }
+//            }
 //            Vec3D hitPos = traceResult.typeOfHit == RayTraceResult.Type.BLOCK ? Vec3D.getCenter(traceResult.getBlockPos()) : traceResult.typeOfHit == RayTraceResult.Type.ENTITY ? new Vec3D(traceResult.entityHit) : new Vec3D(this);
 
             //TODO Particles
@@ -228,7 +229,7 @@ public class EntityCustomArrow extends ArrowEntity {
                     }
 
                     if (distanceModifier > 0) {
-                        DamageSource source = new IndirectEntityDamageSource("customArrowEnergy", this, shootingEntity != null ? getShooter() : this).setProjectile().setExplosion().setDamageIsAbsolute();
+                        DamageSource source = new IndirectEntityDamageSource("customArrowEnergy", this, func_234616_v_() != null ? func_234616_v_() : this).setProjectile().setExplosion().setDamageIsAbsolute();
                         entity.attackEntityFrom(source, distanceModifier * damage);
                     }
                 }
@@ -321,8 +322,8 @@ public class EntityCustomArrow extends ArrowEntity {
 
     private DamageSource getDamageSource() {
         if (bowProperties.energyBolt) {
-            return new IndirectEntityDamageSource("customArrowEnergy", this, shootingEntity != null ? getShooter() : this).setProjectile().setDamageIsAbsolute();
+            return new IndirectEntityDamageSource("customArrowEnergy", this, func_234616_v_() != null ? func_234616_v_() : this).setProjectile().setDamageIsAbsolute();
         }
-        else return DamageSource.causeArrowDamage(this, shootingEntity != null ? getShooter() : this);
+        else return DamageSource.causeArrowDamage(this, func_234616_v_() != null ? func_234616_v_() : this);
     }
 }

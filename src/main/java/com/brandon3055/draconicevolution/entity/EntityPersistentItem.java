@@ -30,7 +30,7 @@ public class EntityPersistentItem extends ItemEntity {
 //    }
 
     public EntityPersistentItem(World world, Entity original, ItemStack stack) {
-        this(world, original.posX, original.posY, original.posZ);
+        this(world, original.getPosX(), original.getPosY(), original.getPosZ());
         if (original instanceof ItemEntity) {
             this.pickupDelay = ((ItemEntity) original).pickupDelay;
         }

@@ -1,20 +1,18 @@
 package com.brandon3055.draconicevolution.client.render.tile;
 
 import codechicken.lib.vec.Matrix4;
-import com.brandon3055.brandonscore.client.render.TESRBase;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileCraftingCore;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.client.render.effect.EffectTrackerFusionCrafting;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Quaternion;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.vector.Quaternion;
 
 import static net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType.FIXED;
 
@@ -45,9 +43,9 @@ public class RenderTileFusionCraftingCore extends TileEntityRenderer<TileCraftin
         mStack.translate(0.5, -1, 0.5);
         RenderSystem.pushMatrix();
         new Matrix4(mStack).glApply();
-        EffectTrackerFusionCrafting.interpPosX = player.lastTickPosX + (player.posX - player.lastTickPosX) * (double) partialTicks;
-        EffectTrackerFusionCrafting.interpPosY = player.lastTickPosY + (player.posY - player.lastTickPosY) * (double) partialTicks;
-        EffectTrackerFusionCrafting.interpPosZ = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * (double) partialTicks;
+        EffectTrackerFusionCrafting.interpPosX = player.lastTickPosX + (player.getPosX() - player.lastTickPosX) * (double) partialTicks;
+        EffectTrackerFusionCrafting.interpPosY = player.lastTickPosY + (player.getPosY() - player.lastTickPosY) * (double) partialTicks;
+        EffectTrackerFusionCrafting.interpPosZ = player.lastTickPosZ + (player.getPosZ() - player.lastTickPosZ) * (double) partialTicks;
 //        te.renderEffects(partialTicks);
         RenderSystem.popMatrix();
     }

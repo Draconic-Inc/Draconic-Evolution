@@ -9,6 +9,7 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.generators.*;
+import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
@@ -183,7 +184,7 @@ public class BlockStateGenerator extends BlockStateProvider {
         models().getBuilder("cube")
                 .parent(block)
                 .element()
-                .allFaces((dir, face) -> face.texture("#" + dir.getName()).cullface(dir));
+                .allFaces((dir, face) -> face.texture("#" + dir.getString()).cullface(dir));
 
         ModelFile furnace = models().orientable("furnace", mcLoc("block/furnace_side"), mcLoc("block/furnace_front"), mcLoc("block/furnace_top"));
         ModelFile furnaceLit = models().orientable("furnace_on", mcLoc("block/furnace_side"), mcLoc("block/furnace_front_on"), mcLoc("block/furnace_top"));
@@ -199,7 +200,7 @@ public class BlockStateGenerator extends BlockStateProvider {
         ModelFile barrelOpen = models().cubeBottomTop("barrel_open", mcLoc("block/barrel_side"), mcLoc("block/barrel_bottom"), mcLoc("block/barrel_top_open"));
         directionalBlock(Blocks.BARREL, state -> state.get(BarrelBlock.PROPERTY_OPEN) ? barrelOpen : barrel); // Testing custom state interpreter
 
-        logBlock((LogBlock) Blocks.ACACIA_LOG);
+//        logBlock((LogBlock) Blocks.ACACIA_LOG);
 
         stairsBlock((StairsBlock) Blocks.ACACIA_STAIRS, "acacia", mcLoc("block/acacia_planks"));
         slabBlock((SlabBlock) Blocks.ACACIA_SLAB, Blocks.ACACIA_PLANKS.getRegistryName(), mcLoc("block/acacia_planks"));

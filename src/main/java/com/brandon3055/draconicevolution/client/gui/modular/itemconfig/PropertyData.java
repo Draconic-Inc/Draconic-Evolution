@@ -54,8 +54,8 @@ public class PropertyData {
 
     public PropertyData(PropertyProvider provider, ConfigProperty property, boolean pullValue) {
         this(provider.getProviderID(), provider.getProviderName(), property.getType());
-        this.displayName = property.getDisplayName().getFormattedText();
-        this.toolTip = property.getToolTip().getFormattedText();
+        this.displayName = property.getDisplayName().getString();
+        this.toolTip = property.getToolTip().getString();
         if (property.getUniqueName() != null) {
             propUniqueName = property.getUniqueName();
         } else {
@@ -78,8 +78,8 @@ public class PropertyData {
     public void pullData(ConfigProperty property, boolean pullValue) {
         isPropertyAvailable = property != null;
         if (isPropertyAvailable) {
-            displayName = property.getDisplayName().getFormattedText();
-            toolTip = property.getToolTip().getFormattedText();
+            displayName = property.getDisplayName().getString();
+            toolTip = property.getToolTip().getString();
             displayValue = property.getDisplayValue();
 
             switch (property.getType()) {

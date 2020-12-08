@@ -90,7 +90,7 @@ public class Generator extends BlockBCore {
     }
 
     @Override
-    public int getLightValue(BlockState state) {
+    public int getLightValue(BlockState state, IBlockReader world, BlockPos pos) {
         return state.get(ACTIVE) ? 13 : 0;
     }
 }

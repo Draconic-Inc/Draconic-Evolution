@@ -19,9 +19,9 @@ public class RenderTileCelestialManipulator extends TESRBase<TileCelestialManipu
         if (player == null) {
             return;
         }
-        EffectTrackerCelestialManipulator.interpPosX = player.lastTickPosX + (player.posX - player.lastTickPosX) * (double) partialTicks;
-        EffectTrackerCelestialManipulator.interpPosY = player.lastTickPosY + (player.posY - player.lastTickPosY) * (double) partialTicks;
-        EffectTrackerCelestialManipulator.interpPosZ = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * (double) partialTicks;
+        EffectTrackerCelestialManipulator.interpPosX = player.lastTickPosX + (player.getPosX() - player.lastTickPosX) * (double) partialTicks;
+        EffectTrackerCelestialManipulator.interpPosY = player.lastTickPosY + (player.getPosY() - player.lastTickPosY) * (double) partialTicks;
+        EffectTrackerCelestialManipulator.interpPosZ = player.lastTickPosZ + (player.getPosZ() - player.lastTickPosZ) * (double) partialTicks;
 
         te.renderEffects(partialTicks);
     }

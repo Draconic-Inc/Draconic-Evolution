@@ -8,6 +8,7 @@ import com.brandon3055.draconicevolution.api.modules.data.ModuleData;
 import com.google.common.collect.Multimap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
@@ -93,7 +94,7 @@ public class ModuleEntity {
      * @param stack The ItemStack containing this module/modules
      * @param map The map to which the modifiers must be added.
      */
-    public void getAttributeModifiers(EquipmentSlotType slot, ItemStack stack, Multimap<String, AttributeModifier> map) {
+    public void getAttributeModifiers(EquipmentSlotType slot, ItemStack stack, Multimap<Attribute, AttributeModifier> map) {
 
     }
 

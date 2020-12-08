@@ -2,14 +2,12 @@ package com.brandon3055.draconicevolution.client.render.item;
 
 import codechicken.lib.render.item.IItemRenderer;
 import codechicken.lib.util.TransformUtils;
-import com.brandon3055.draconicevolution.client.model.ModelReactorStabilizerCore;
-import com.brandon3055.draconicevolution.client.model.ModelReactorStabilizerRing;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.vector.TransformationMatrix;
 
 /**
  * Created by brandon3055 on 21/11/2016.
@@ -50,12 +48,11 @@ public class RenderItemReactorPart implements IItemRenderer {
     }
 
     @Override
-    public boolean func_230044_c_() {
+    public boolean isSideLit() {
         return false;
     }
 
-
-//    @Override
+    //    @Override
 //    public void renderItem(ItemStack item, ItemCameraTransforms.TransformType transformType) {
 //        RenderSystem.pushMatrix();
 //        GlStateTracker.pushState();

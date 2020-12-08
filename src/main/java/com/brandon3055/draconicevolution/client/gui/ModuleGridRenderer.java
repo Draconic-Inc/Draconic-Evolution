@@ -12,6 +12,7 @@ import com.brandon3055.draconicevolution.api.modules.lib.ModuleItem;
 import com.brandon3055.draconicevolution.client.ClientProxy;
 import com.brandon3055.draconicevolution.client.ModuleSpriteUploader;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -92,7 +93,7 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> {
             if (player.getItemStack().isEmpty()) {
                 renderCellOverlay(mouseX, mouseY);
             } else if (lastError != null) {
-                drawHoveringText(Collections.singletonList(lastError.getFormattedText()), mouseX, mouseY, fontRenderer);
+                drawHoveringText(Collections.singletonList(lastError.getString()), mouseX, mouseY, fontRenderer);
             }
         }
         return super.renderOverlayLayer(minecraft, mouseX, mouseY, partialTicks);
@@ -126,7 +127,7 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> {
             cell.getEntity().writeToItemStack(stack, grid.container.getModuleContext());
             FontRenderer font = stack.getItem().getFontRenderer(stack);
             if (font == null) font = fontRenderer;
-            List<String> list = getTooltipFromItem(stack);
+            List<String> list = getTooltipFromItemString(stack);
             drawHoveringText(list, mouseX, mouseY, font);
         }
     }
@@ -148,7 +149,7 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> {
                     FontRenderer font = stack.getItem().getFontRenderer(stack);
                     if (font == null) font = fontRenderer;
                     String s = altText == null ? String.valueOf(stack.getCount()) : altText;
-                    font.drawStringWithShadow(s, (float) (x - font.getStringWidth(s)) + (mw / 2F) - 1, (float) (y - font.FONT_HEIGHT) + (mh / 2F), 0xffffff);
+                    font.drawStringWithShadow(new MatrixStack(), s, (float) (x - font.getStringWidth(s)) + (mw / 2F) - 1, (float) (y - font.FONT_HEIGHT) + (mh / 2F), 0xffffff);
                     zOffset -= 250;
                 }
                 return true;

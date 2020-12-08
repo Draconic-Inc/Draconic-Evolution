@@ -88,7 +88,7 @@ public class WyvernSword extends ToolBase implements IAOEWeapon, IReaperItem {
         if (getDisabledEnchants(stack).containsKey(enchantment)) {
             return false;
         }
-        return enchantment.type == EnchantmentType.WEAPON || enchantment.type == EnchantmentType.ALL;
+        return enchantment.type == EnchantmentType.WEAPON /*|| enchantment.type == EnchantmentType.ALL*/;
     }
 
     @Override

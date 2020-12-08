@@ -72,21 +72,21 @@ public class ModuleProperties<T extends ModuleData<T>> {
      */
     public void addStats(List<ITextComponent> toolTip, Module<?> module) {
         toolTip.add(new TranslationTextComponent("module.draconicevolution.module_type")
-                .applyTextStyle(GRAY)
-                .appendText(": ")
-                .appendSibling(techLevel.getDisplayName()
-                        .applyTextStyle(techLevel.getTextColour()))
-                .appendText(" ")
-                .appendSibling(module.getType().getDisplayName()
-                        .applyTextStyle(techLevel.getTextColour())));
+                .mergeStyle(GRAY)
+                .appendString(": ")
+                .append(techLevel.getDisplayName()
+                        .mergeStyle(techLevel.getTextColour()))
+                .appendString(" ")
+                .append(module.getType().getDisplayName()
+                        .mergeStyle(techLevel.getTextColour())));
         toolTip.add(new TranslationTextComponent("module.draconicevolution.grid_size")
-                .applyTextStyle(GRAY)
-                .appendText(": ")
-                .appendSibling(new StringTextComponent(getWidth() + "x" + getHeight())
-                        .applyTextStyle(DARK_GREEN)));
+                .mergeStyle(GRAY)
+                .appendString(": ")
+                .append(new StringTextComponent(getWidth() + "x" + getHeight())
+                        .mergeStyle(DARK_GREEN)));
 
         Map<ITextComponent, ITextComponent> map = new HashMap<>();
         getData().addInformation(map, null, true);
-        map.forEach((name, value) -> toolTip.add(name.applyTextStyle(GRAY).appendText(": ").appendText(value.applyTextStyle(DARK_GREEN).getFormattedText().replace("\n", " "))));
+        map.forEach((name, value) -> toolTip.add(name.copyRaw().mergeStyle(GRAY).appendString(": ").appendString(value.copyRaw().mergeStyle(DARK_GREEN).getString().replace("\n", " "))));
     }
 }

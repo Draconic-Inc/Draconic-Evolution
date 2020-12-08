@@ -10,6 +10,7 @@ import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Direction;
 import net.minecraft.world.World;
@@ -29,7 +30,7 @@ public class ParticleEnergyCoreFX extends SpriteTexturedParticle {
     public boolean isLargeStabilizer = false;
     private final IAnimatedSprite spriteSet;
 
-    public ParticleEnergyCoreFX(World world, double xPos, double yPos, double zPos, Vec3D targetPos, IAnimatedSprite spriteSet) {
+    public ParticleEnergyCoreFX(ClientWorld world, double xPos, double yPos, double zPos, Vec3D targetPos, IAnimatedSprite spriteSet) {
         super(world, xPos, yPos, zPos);
         this.targetPos = targetPos;
         this.spriteSet = spriteSet;
@@ -92,14 +93,13 @@ public class ParticleEnergyCoreFX extends SpriteTexturedParticle {
             this.spriteSet = p_i50823_1_;
         }
 
-        @Nullable
         @Override
-        public Particle makeParticle(IntParticleType.IntParticleData data, World world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public Particle makeParticle(IntParticleType.IntParticleData data, ClientWorld world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
             ParticleEnergyCoreFX particle = new ParticleEnergyCoreFX(world, x, y, z, new Vec3D(xSpeed, ySpeed, zSpeed), spriteSet);
             particle.toCore = data.get().length >= 1 && data.get()[0] == 1;
             particle.startRotation = data.get().length >= 2 ? data.get()[1] : 0;
             particle.isLargeStabilizer = data.get().length >= 3 && data.get()[2] == 1;
-            particle.multipleParticleScaleBy(particle.isLargeStabilizer ? 2 : 1);
+            particle.multiplyParticleScaleBy(particle.isLargeStabilizer ? 2 : 1);
             return particle;
         }
     }

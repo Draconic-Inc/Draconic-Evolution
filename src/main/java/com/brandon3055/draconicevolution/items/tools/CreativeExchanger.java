@@ -13,10 +13,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.text.StringTextComponent;
@@ -78,7 +75,7 @@ public class CreativeExchanger extends ItemBCore implements IConfigurableItem, I
         }
 
         if (player.isSneaking()) {
-            player.sendMessage(new StringTextComponent(TextFormatting.DARK_RED + "Clear Mode"));
+            player.sendMessage(new StringTextComponent(TextFormatting.DARK_RED + "Clear Mode"), Util.DUMMY_UUID);
             ItemNBTHelper.setString(stack, "BlockName", "");
             ItemNBTHelper.setByte(stack, "BlockData", (byte) 0);
             return super.onItemRightClick(world, player, hand);

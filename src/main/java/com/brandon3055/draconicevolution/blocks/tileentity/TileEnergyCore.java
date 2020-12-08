@@ -25,9 +25,10 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
@@ -148,16 +149,16 @@ public class TileEnergyCore extends TileBCore implements ITickableTileEntity, IE
 
                 if (boundary <= 0) {
                     if (dir < 0) {
-                        player.move(MoverType.PLAYER, new Vec3d(-player.getMotion().x * 1.5, -player.getMotion().y * 1.5, -player.getMotion().z * 1.5));
+                        player.move(MoverType.PLAYER, new Vector3d(-player.getMotion().x * 1.5, -player.getMotion().y * 1.5, -player.getMotion().z * 1.5));
                     }
 
                     double multiplier = (threshold - dist) * 0.05;
 
-                    double xm = ((pos.getX() + 0.5 - player.posX) / distNext) * multiplier;
-                    double ym = ((pos.getY() - 0.4 - player.posY) / distNext) * multiplier;
-                    double zm = ((pos.getZ() + 0.5 - player.posZ) / distNext) * multiplier;
+                    double xm = ((pos.getX() + 0.5 - player.getPosX()) / distNext) * multiplier;
+                    double ym = ((pos.getY() - 0.4 - player.getPosY()) / distNext) * multiplier;
+                    double zm = ((pos.getZ() + 0.5 - player.getPosZ()) / distNext) * multiplier;
 
-                    player.move(MoverType.PLAYER, new Vec3d(-xm, -ym, -zm));
+                    player.move(MoverType.PLAYER, new Vector3d(-xm, -ym, -zm));
                 }
             }
         }
@@ -251,7 +252,7 @@ public class TileEnergyCore extends TileBCore implements ITickableTileEntity, IE
 
     private void startBuilder(PlayerEntity player) {
         if (activeBuilder != null && !activeBuilder.isDead()) {
-            player.sendMessage(new TranslationTextComponent("ecore.de.already_assembling.txt").setStyle(new Style().setColor(RED)));
+            player.sendMessage(new TranslationTextComponent("ecore.de.already_assembling.txt").mergeStyle(RED), Util.DUMMY_UUID);
         }
         else {
             activeBuilder = new EnergyCoreBuilder(this, player);

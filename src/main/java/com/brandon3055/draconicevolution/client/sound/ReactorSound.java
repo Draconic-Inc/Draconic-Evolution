@@ -8,6 +8,7 @@ import net.minecraft.client.audio.ITickableSound;
 import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.vector.Vector3d;
 
 import static com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore.ReactorState.BEYOND_HOPE;
 
@@ -65,7 +66,7 @@ public class ReactorSound extends SimpleSound implements ITickableSound {
 
 
         PlayerEntity player = Minecraft.getInstance().player;
-        if (tile.isRemoved() || player == null || tile.getDistanceSq(player.posX, player.posY, player.posZ) > (volume > 1.5F ? 4096 : 512)){
+        if (tile.isRemoved() || player == null || player.getDistanceSq(Vector3d.copy(tile.getPos())) > (volume > 1.5F ? 4096 : 512)){
 //            if (stopTimer++ == 60) {
                 donePlaying = true;
                 repeat = false;

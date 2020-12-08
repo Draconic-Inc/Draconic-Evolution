@@ -6,6 +6,7 @@ import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.draconicevolution.entity.EntityGuardianProjectile;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 
@@ -13,11 +14,11 @@ public class ParticleGuardianProjectile extends BCParticle {
 
     public EntityGuardianProjectile entity;
 
-    protected ParticleGuardianProjectile(World worldIn, Vec3D pos) {
+    protected ParticleGuardianProjectile(ClientWorld worldIn, Vec3D pos) {
         super(worldIn, pos);
     }
 
-    public ParticleGuardianProjectile(World worldIn, Vec3D pos, Vec3D speed) {
+    public ParticleGuardianProjectile(ClientWorld worldIn, Vec3D pos, Vec3D speed) {
         super(worldIn, pos, speed);
 //        this.particleMaxAge = 50;
         this.particleRed = this.particleGreen = this.particleBlue = 1.0f;
@@ -75,7 +76,7 @@ public class ParticleGuardianProjectile extends BCParticle {
 
         @Override
         public Particle getEntityFX(int particleID, World world, Vec3D pos, Vec3D speed, int... args) {
-            ParticleGuardianProjectile particle = new ParticleGuardianProjectile(world, pos, speed);
+            ParticleGuardianProjectile particle = new ParticleGuardianProjectile((ClientWorld)world, pos, speed);
 
             if (args.length > 0) {
                 Entity projectile = world.getEntityByID(args[0]);

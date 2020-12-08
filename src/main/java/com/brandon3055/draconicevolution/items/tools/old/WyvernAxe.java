@@ -230,7 +230,7 @@ public class WyvernAxe extends MiningToolBase {
                 return;
             }
 
-            DESoundHandler.playSoundFromServer(player.world, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 1, 0.9F + player.world.rand.nextFloat() * 0.2F, false, 16);
+            DESoundHandler.playSoundFromServer(player.world, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 1, 0.9F + player.world.rand.nextFloat() * 0.2F, false, 16);
 
             if (!collector.isCollectionComplete()) {
                 collector.killCollector();
@@ -245,14 +245,14 @@ public class WyvernAxe extends MiningToolBase {
 
             if (inventory.getSizeInventory() > 2) {
 //                EntityLootCore lootCore = new EntityLootCore(player.world, inventory);
-//                lootCore.setPosition(player.posX, player.posY, player.posZ);
+//                lootCore.setPosition(player.getPosX(), player.getPosY(), player.getPosZ());
 //                player.world.addEntity(lootCore); TODO Entity Stuff
             }
             else {
                 for (int i = 0; i < inventory.getSizeInventory(); i++) {
                     ItemStack s = inventory.removeStackFromSlot(i);
                     if (s != null) {
-                        ItemEntity item = new ItemEntity(player.world, player.posX, player.posY, player.posZ, s);
+                        ItemEntity item = new ItemEntity(player.world, player.getPosX(), player.getPosY(), player.getPosZ(), s);
                         player.world.addEntity(item);
                     }
                 }

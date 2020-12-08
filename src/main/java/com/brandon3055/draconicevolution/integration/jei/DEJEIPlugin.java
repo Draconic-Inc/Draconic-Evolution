@@ -1,14 +1,26 @@
 package com.brandon3055.draconicevolution.integration.jei;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.api.DraconicAPI;
+import com.brandon3055.draconicevolution.api.crafting.IFusionRecipe;
 import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.GuiConfigurableItem;
+import com.brandon3055.draconicevolution.init.DEContent;
 import mezz.jei.api.*;
+import mezz.jei.api.constants.VanillaRecipeCategoryUid;
+import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.helpers.IJeiHelpers;
 import mezz.jei.api.registration.*;
 import mezz.jei.api.runtime.IJeiRuntime;
+import mezz.jei.plugins.vanilla.cooking.CampfireCategory;
+import mezz.jei.util.ErrorUtil;
+import net.minecraft.block.Blocks;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.registries.ForgeRegistries;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +33,9 @@ public class DEJEIPlugin implements IModPlugin {
     public static IJeiHelpers jeiHelpers = null;
     public static IJeiRuntime jeiRuntime = null;
     public static List<ItemStack> iUpgradables = new ArrayList<>();
+
+    @Nullable
+    private FusionRecipeCategory fusionRecipeCategory;
 
     public DEJEIPlugin() {
     }
@@ -38,23 +53,29 @@ public class DEJEIPlugin implements IModPlugin {
     }
 
     @Override
-    public void registerIngredients(IModIngredientRegistration registry) {
+    public void registerIngredients(IModIngredientRegistration registration) {
     }
 
     @Override
-    public void registerCategories(IRecipeCategoryRegistration registry) {
-        registry.addRecipeCategories(new FusionRecipeCategory(registry.getJeiHelpers().getGuiHelper()));
+    public void registerCategories(IRecipeCategoryRegistration registration) {
+        IJeiHelpers jeiHelpers = registration.getJeiHelpers();
+        IGuiHelper guiHelper = jeiHelpers.getGuiHelper();
+        fusionRecipeCategory = new FusionRecipeCategory(guiHelper);
+        registration.addRecipeCategories(fusionRecipeCategory);
     }
 
     @Override
     public void registerRecipes(IRecipeRegistration registration) {
+        ErrorUtil.checkNotNull(fusionRecipeCategory, "fusionRecipeCategory");
         jeiHelpers = registration.getJeiHelpers();
 
         //            this.recipeLayout = DEJEIPlugin.jeiRuntime.getRecipeRegistry().createRecipeLayoutDrawable(category, wrapper, f);
 
 
 //        registry.handleRecipes(EIOSpawnerRecipesWrapper.class, recipe -> recipe, VanillaRecipeCategoryUid.CRAFTING);
-//        registration.handleRecipes(IFusionRecipe.class, FusionRecipeWrapper::new, RecipeCategoryUids.FUSION_CRAFTING);
+
+        ClientWorld world = Minecraft.getInstance().world;
+        registration.addRecipes(world.getRecipeManager().getRecipesForType(DraconicAPI.FUSION_RECIPE_TYPE), RecipeCategoryUids.FUSION_CRAFTING);
 
 
     }
@@ -62,6 +83,7 @@ public class DEJEIPlugin implements IModPlugin {
 
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
+        registration.addRecipeCatalyst(new ItemStack(DEContent.crafting_core), RecipeCategoryUids.FUSION_CRAFTING);
 
 //        if (DEContent.crafting_core.isBlockEnabled()){
 //            registration.addRecipeCatalyst(new ItemStack(DEContent.crafting_core), RecipeCategoryUids.FUSION_CRAFTING);

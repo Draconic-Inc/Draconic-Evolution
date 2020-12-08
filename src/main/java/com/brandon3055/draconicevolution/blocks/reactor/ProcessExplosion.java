@@ -374,7 +374,7 @@ public class ProcessExplosion implements IProcess {
 
         final BlockPos pos = origin.getPos();
         if (enableEffect) {
-            DraconicNetwork.sendExplosionEffect(world.dimension.getType(), pos, radius * 4, false);
+            DraconicNetwork.sendExplosionEffect(world.getDimensionKey(), pos, radius * 4, false);
         }
 
         new DelayedExecutor(30) {

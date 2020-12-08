@@ -1,30 +1,18 @@
 package com.brandon3055.draconicevolution.client.keybinding;
 
-import com.brandon3055.brandonscore.handlers.HandHelper;
-//import com.brandon3055.draconicevolution.client.gui.toolconfig.GuiToolConfig;
-//import com.brandon3055.draconicevolution.network.PacketDispatcher;
 import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.GuiConfigurableItem;
-
-import com.brandon3055.draconicevolution.inventory.ContainerConfigurableItem;
 import com.brandon3055.draconicevolution.items.equipment.IModularArmor;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
-import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.network.NetworkHooks;
-
-import java.awt.event.MouseEvent;
 
 /**
  * Created by Brandon on 14/08/2014.
@@ -94,8 +82,8 @@ public class KeyInputHandler {
                     player.sendPlayerAbilities();
                 } else {
                     player.abilities.isFlying = true;
-                    if (player.onGround) {
-                        player.setPosition(player.posX, player.posY + 0.05D, player.posZ);
+                    if (player.isOnGround()) {
+                        player.setPosition(player.getPosX(), player.getPosY() + 0.05D, player.getPosZ());
                         player.setMotion(player.getMotion().x, 0, player.getMotion().z);
                     }
                     player.sendPlayerAbilities();

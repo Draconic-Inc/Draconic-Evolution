@@ -455,7 +455,7 @@
 //            attackTimer = 1000;
 //        }
 //        if (deathTicks <= 0) {
-//            this.world.playSound(player.posX, player.posY, player.posZ, SoundEvents.ENTITY_ENDERDRAGON_GROWL, SoundCategory.HOSTILE, 20.0F, 0.8F + this.rand.nextFloat() * 0.3F, false);
+//            this.world.playSound(player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.ENTITY_ENDERDRAGON_GROWL, SoundCategory.HOSTILE, 20.0F, 0.8F + this.rand.nextFloat() * 0.3F, false);
 //        }
 //    }
 //
@@ -1040,8 +1040,8 @@
 ////			Entity entity = (Entity) iterator.next();
 ////
 ////			if (entity instanceof LivingEntity) {
-////				double d2 = entity.posX - d0;
-////				double d3 = entity.posZ - d1;
+////				double d2 = entity.getPosX() - d0;
+////				double d3 = entity.getPosZ() - d1;
 ////				double d4 = d2 * d2 + d3 * d3;
 ////				if (rand.nextInt(isUber ? 3 : 10) == 0) entity.addVelocity(d2 / d4 * 8.0D, 5.20000000298023224D, d3 / d4 * 8.0D);
 ////				entity.velocityChanged = true;

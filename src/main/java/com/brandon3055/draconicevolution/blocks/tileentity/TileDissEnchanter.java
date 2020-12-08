@@ -14,6 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
+import net.minecraft.util.Util;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -72,7 +73,7 @@ public class TileDissEnchanter extends TileBCore {
             int cost = (int) ((((double) lvl / (double) e.getMaxLevel()) * 20) * DEOldConfig.disenchnaterCostMultiplyer);
 
             if (!client.abilities.isCreativeMode && cost > client.experienceLevel) {
-                client.sendMessage(new TranslationTextComponent("chat.dissEnchanter.notEnoughLevels.msg", cost).setStyle(new Style().setColor(TextFormatting.RED)));
+                client.sendMessage(new TranslationTextComponent("chat.dissEnchanter.notEnoughLevels.msg", cost).mergeStyle(TextFormatting.RED), Util.DUMMY_UUID);
                 return;
             }
 

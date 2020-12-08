@@ -3,19 +3,14 @@ package com.brandon3055.draconicevolution.client.render.item;
 import codechicken.lib.render.item.IItemRenderer;
 import codechicken.lib.render.shader.ShaderProgram;
 import codechicken.lib.util.TransformUtils;
-import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
-import com.brandon3055.draconicevolution.client.render.shaders.DEShaders;
-import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.client.renderer.entity.model.GenericHeadModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.vector.TransformationMatrix;
 
 
 /**
@@ -57,12 +52,11 @@ public class RenderItemEnderEnergyManipulator implements IItemRenderer {
     }
 
     @Override
-    public boolean func_230044_c_() {
+    public boolean isSideLit() {
         return false;
     }
 
-
-//    @Override
+    //    @Override
 //    public void renderItem(ItemStack item, ItemCameraTransforms.TransformType transformType) {
 //        Minecraft mc = Minecraft.getInstance();
 //        RenderSystem.pushMatrix();

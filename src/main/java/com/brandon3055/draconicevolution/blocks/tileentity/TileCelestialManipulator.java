@@ -24,10 +24,13 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.storage.IServerWorldInfo;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.opengl.GL11;
@@ -75,10 +78,10 @@ public class TileCelestialManipulator extends TileBCore implements ITickableTile
                     timer = 0;
                     weatherToggleRunning.set(false);
                     world.getWorldInfo().setRaining(rain);
-                    world.getWorldInfo().setThundering(storm);
+                    ((IServerWorldInfo)world.getWorldInfo()).setThundering(storm);
                     int time = (10 * 60 * 20) + world.rand.nextInt(20 * 60 * 20);
-                    world.getWorldInfo().setRainTime(rain ? time : 0);
-                    world.getWorldInfo().setClearWeatherTime(rain ? 0 : time);
+                    ((IServerWorldInfo)world.getWorldInfo()).setRainTime(rain ? time : 0);
+                    ((IServerWorldInfo)world.getWorldInfo()).setClearWeatherTime(rain ? 0 : time);
                 }
             }
         }
@@ -97,7 +100,7 @@ public class TileCelestialManipulator extends TileBCore implements ITickableTile
                     int extracted = opStorage.extractEnergy(16000, true);
                     int ticks = extracted / 320;
                     opStorage.extractEnergy(ticks * 320, false);
-                    world.setGameTime(world.getGameTime() + ticks); //ToDo test time adjustment. May need world.setDayTime();
+                    ((IServerWorldInfo)world.getWorldInfo()).setGameTime(world.getGameTime() + ticks); //ToDo test time adjustment. May need world.setDayTime();
                 }
 
                 if (!world.isRemote) {
@@ -205,7 +208,7 @@ public class TileCelestialManipulator extends TileBCore implements ITickableTile
                     return;
                 }
                 if (opStorage.getEnergyStored() < 256000) {
-                    sendMessage(new TranslationTextComponent("msg.de.insufficientPower.txt").appendText(" (256000RF)"), player);
+                    sendMessage(new TranslationTextComponent("msg.de.insufficientPower.txt").appendString(" (256000RF)"), player);
                     return;
                 }
                 opStorage.modifyEnergyStored(-256000);
@@ -218,7 +221,7 @@ public class TileCelestialManipulator extends TileBCore implements ITickableTile
                     return;
                 }
                 if (opStorage.getEnergyStored() < 256000) {
-                    sendMessage(new TranslationTextComponent("msg.de.insufficientPower.txt").appendText(" (256000RF)"), player);
+                    sendMessage(new TranslationTextComponent("msg.de.insufficientPower.txt").appendString(" (256000RF)"), player);
                     return;
                 }
                 opStorage.modifyEnergyStored(-256000);
@@ -231,7 +234,7 @@ public class TileCelestialManipulator extends TileBCore implements ITickableTile
                     return;
                 }
                 if (opStorage.getEnergyStored() < 384000) {
-                    sendMessage(new TranslationTextComponent("msg.de.insufficientPower.txt").appendText(" (384000RF)"), player);
+                    sendMessage(new TranslationTextComponent("msg.de.insufficientPower.txt").appendString(" (384000RF)"), player);
                     return;
                 }
                 opStorage.modifyEnergyStored(-384000);
@@ -271,7 +274,7 @@ public class TileCelestialManipulator extends TileBCore implements ITickableTile
 
     private void sendMessage(ITextComponent message, PlayerEntity player) {
         if (player != null) {
-            player.sendMessage(message);
+            player.sendMessage(message, Util.DUMMY_UUID);
         }
     }
 

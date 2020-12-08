@@ -5,17 +5,11 @@ import codechicken.lib.packet.PacketCustomChannelBuilder;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleGrid;
 import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.PropertyData;
-import com.brandon3055.draconicevolution.inventory.ContainerConfigurableItem;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.ClickType;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3i;
-import net.minecraft.world.dimension.DimensionType;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.network.event.EventNetworkChannel;
 
 /**
@@ -94,7 +88,7 @@ public class DraconicNetwork {
         packet.sendToServer();
     }
 
-    public static void sendExplosionEffect(DimensionType dimension, BlockPos pos, int radius, boolean reload) {
+    public static void sendExplosionEffect(RegistryKey<World> dimension, BlockPos pos, int radius, boolean reload) {
         PacketCustom packet = new PacketCustom(CHANNEL, C_EXPLOSION_EFFECT);
         packet.writePos(pos);
         packet.writeVarInt(radius);

@@ -221,7 +221,7 @@ public class FusionRecipe implements IFusionRecipe {
                 fusionIngredients.add(new FusionIngredient(ingredient, isConsumed));
             }
 
-            long totalEnergy = JSONUtils.func_226161_m_(json, "total_energy");
+            long totalEnergy = JSONUtils.getLong(json, "total_energy");
             TechLevel techLevel = TechLevel.VALUES[MathHelper.clamp(JSONUtils.getInt(json, "tier"), 0, TechLevel.values().length - 1)];
 
             return new FusionRecipe(id, result, catalyst, totalEnergy, techLevel, fusionIngredients);

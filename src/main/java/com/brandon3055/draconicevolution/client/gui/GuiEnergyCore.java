@@ -7,16 +7,19 @@ import com.brandon3055.brandonscore.client.gui.modulargui.ModularGuiContainer;
 import com.brandon3055.brandonscore.client.utils.GuiHelper;
 import com.brandon3055.brandonscore.inventory.ContainerBCTile;
 import com.brandon3055.brandonscore.inventory.ContainerBCore;
+import com.brandon3055.brandonscore.lib.datamanager.ManagedStack;
 import com.brandon3055.brandonscore.utils.InfoHelper;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyCore;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.IReorderingProcessor;
+import net.minecraft.util.Util;
+import net.minecraft.util.text.*;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -81,12 +84,11 @@ public class GuiEnergyCore extends ModularGuiContainer<ContainerBCTile<TileEnerg
         updateButtonStates();
     }
 
-
     @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
+    protected void drawGuiContainerBackgroundLayer(MatrixStack mStack, float partialTicks, int mouseX, int mouseY) {
         GuiHelper.drawGuiBaseBackground(this, guiLeft, guiTop, xSize, ySize);
         GuiHelper.drawPlayerSlots(this, guiLeft + (xSize / 2), guiTop + 115, true);
-        drawCenteredString(font, I18n.format("gui.de.energyStorageCore.name", tile.tier.get()), guiLeft + (xSize / 2), guiTop + 5, InfoHelper.GUI_TITLE);
+        drawCenteredString(mStack, font, I18n.format("gui.de.energyStorageCore.name", tile.tier.get()), guiLeft + (xSize / 2), guiTop + 5, InfoHelper.GUI_TITLE);
 
         if (tile.active.get()) {
             GuiHelper.drawCenteredString(font, I18n.format("gui.de.capacity.txt"), guiLeft + xSize / 2, guiTop + 16, 0xFFAA00, true);
@@ -120,31 +122,27 @@ public class GuiEnergyCore extends ModularGuiContainer<ContainerBCTile<TileEnerg
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partialTicks) {
-        this.renderBackground();
-        super.render(mouseX, mouseY, partialTicks);
+    public void render(MatrixStack mStack, int mouseX, int mouseY, float partialTicks) {
+        this.renderBackground(mStack);
+        super.render(mStack, mouseX, mouseY, partialTicks);
 
         if (tile.active.get()) {
 //            GuiHelper.drawEnergyBar(this, guiLeft + 5, guiTop + 82, 170, true, tile.getExtendedStorage(), tile.getExtendedCapacity(), true, mouseX, mouseY);
 
             if (GuiHelper.isInRect(guiLeft + 40, guiTop + 27, xSize - 80, 8, mouseX, mouseY)) {
-                List<String> list = new ArrayList<String>();
-                list.add(TextFormatting.GRAY + "[" + Utils.addCommas(tile.getExtendedCapacity()) + " OP]");
-                renderTooltip(list, mouseX, mouseY);
+                renderTooltip(mStack, new StringTextComponent(TextFormatting.GRAY + "[" + Utils.addCommas(tile.getExtendedCapacity()) + " OP]"), mouseX, mouseY);
             }
 
             if (GuiHelper.isInRect(guiLeft + 40, guiTop + 48, xSize - 80, 8, mouseX, mouseY)) {
-                List<String> list = new ArrayList<String>();
-                list.add(TextFormatting.GRAY + "[" + Utils.addCommas(tile.getExtendedStorage()) + " OP]");
-                renderTooltip(list, mouseX, mouseY);
+                renderTooltip(mStack, new StringTextComponent(TextFormatting.GRAY + "[" + Utils.addCommas(tile.getExtendedStorage()) + " OP]"), mouseX, mouseY);
             }
         }
 
         if (tile.buildGuide.get()) {
-            drawCenteredString(font, layer == -1 ? "All" : layer + "", guiLeft + (xSize / 2), guiTop - 10, 0xFFFFFF);
+            drawCenteredString(mStack, font, layer == -1 ? "All" : layer + "", guiLeft + (xSize / 2), guiTop - 10, 0xFFFFFF);
         }
 
-        this.renderHoveredToolTip(mouseX, mouseY);
+        this.renderHoveredTooltip(mStack, mouseX, mouseY);
     }
 
     @Override
@@ -155,10 +153,10 @@ public class GuiEnergyCore extends ModularGuiContainer<ContainerBCTile<TileEnerg
 
     private void updateButtonStates() {
         if (tile.active.get()) {
-            activate.setMessage(I18n.format("button.de.deactivate.txt"));
+            activate.setMessage(new TranslationTextComponent("button.de.deactivate.txt"));
         } else {
-            activate.setMessage(I18n.format("button.de.activate.txt"));
-            toggleGuide.setMessage(I18n.format("button.de.buildGuide.txt") + " " + (tile.buildGuide.get() ? I18n.format("gui.de.active.txt") : I18n.format("gui.de.inactive.txt")));
+            activate.setMessage(new TranslationTextComponent("button.de.activate.txt"));
+            toggleGuide.setMessage(new StringTextComponent(I18n.format("button.de.buildGuide.txt") + " " + (tile.buildGuide.get() ? I18n.format("gui.de.active.txt") : I18n.format("gui.de.inactive.txt"))));
             tierUp.active = tile.tier.get() < 8;
             tierDown.active = tile.tier.get() > 1;
         }

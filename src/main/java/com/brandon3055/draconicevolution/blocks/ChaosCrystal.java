@@ -8,6 +8,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -39,11 +40,28 @@ public class ChaosCrystal extends BlockBCore/*, IRenderOverride*/ {
     }
 
     @Override
-    public float getBlockHardness(BlockState blockState, IBlockReader world, BlockPos pos) {
+    public boolean removedByPlayer(BlockState state, World world, BlockPos pos, PlayerEntity player, boolean willHarvest, FluidState fluid) {
+        TileChaosCrystal tile = world.getTileEntity(pos) instanceof TileChaosCrystal ? (TileChaosCrystal) world.getTileEntity(pos) : null;
+        if (tile == null || !tile.guardianDefeated.get()) {
+            return false;
+        }
+        return super.removedByPlayer(state, world, pos, player, willHarvest, fluid);
+    }
+
+    @Override
+    public float getPlayerRelativeBlockHardness(BlockState state, PlayerEntity player, IBlockReader world, BlockPos pos) {
         TileChaosCrystal tile = world.getTileEntity(pos) instanceof TileChaosCrystal ? (TileChaosCrystal) world.getTileEntity(pos) : null;
         if (tile != null) return tile.guardianDefeated.get() ? 100F : -1F;
-        return super.getBlockHardness(blockState, world, pos);
+        return super.getPlayerRelativeBlockHardness(state, player, world, pos);
     }
+
+
+    //    @Override
+//    public float getBlockHardness(BlockState blockState, IBlockReader world, BlockPos pos) {
+//        TileChaosCrystal tile = world.getTileEntity(pos) instanceof TileChaosCrystal ? (TileChaosCrystal) world.getTileEntity(pos) : null;
+//        if (tile != null) return tile.guardianDefeated.get() ? 100F : -1F;
+//        return super.getBlockHardness(blockState, world, pos);
+//    }
 
     @Override
     public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {}
@@ -96,8 +114,7 @@ public class ChaosCrystal extends BlockBCore/*, IRenderOverride*/ {
                 ((TileChaosCrystal) tile).setLockPos();
                 ((TileChaosCrystal) tile).guardianDefeated.set(true);
             }
-        }
-        else {
+        } else {
             placer.attackEntityFrom(punishment, Float.MAX_VALUE);
         }
     }

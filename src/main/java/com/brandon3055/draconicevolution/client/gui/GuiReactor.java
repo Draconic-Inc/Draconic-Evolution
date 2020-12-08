@@ -25,7 +25,7 @@ import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.model.Material;
+import net.minecraft.client.renderer.model.RenderMaterial;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -160,7 +160,7 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> {
             public void renderElement(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
                 if (tile.reactorState.get() == TileReactorCore.ReactorState.COLD) {
                     RenderSystem.color4f(1F, 1F, 1F, 1F);
-                    Material mat = BCSprites.getThemed("slot");
+                    RenderMaterial mat = BCSprites.getThemed("slot");
                     bindTexture(mat.getAtlasLocation());
                     IRenderTypeBuffer.Impl getter = minecraft.getRenderTypeBuffers().getBufferSource();
                     GuiHelper.drawPlayerSlots(GuiReactor.this, guiLeft + 43 - 31, guiTop + 139, false);

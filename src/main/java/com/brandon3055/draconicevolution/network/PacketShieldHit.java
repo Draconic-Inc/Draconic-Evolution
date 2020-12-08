@@ -50,7 +50,7 @@
 //            if (entity instanceof PlayerEntity) {
 //                ClientEventHandler.playerShieldStatus.put((PlayerEntity) entity, new PairKV<>(message.shieldPowerF, ClientEventHandler.elapsedTicks));
 //                if (!DEConfig.disableShieldHitSound){
-//                    entity.world.playSound(entity.posX + 0.5D, entity.posY + 0.5D, entity.posZ + 0.5D, DESoundHandler.shieldStrike, SoundCategory.PLAYERS, 0.9F, entity.world.rand.nextFloat() * 0.1F + 0.5F + (0.3F * message.shieldPowerF), false);
+//                    entity.world.playSound(entity.getPosX() + 0.5D, entity.getPosY() + 0.5D, entity.getPosZ() + 0.5D, DESoundHandler.shieldStrike, SoundCategory.PLAYERS, 0.9F, entity.world.rand.nextFloat() * 0.1F + 0.5F + (0.3F * message.shieldPowerF), false);
 //                }
 //            }
 //            return null;

@@ -140,15 +140,16 @@ public class DEModules {
         register(new ModuleImpl<>(SHIELD_CONTROLLER,    DRACONIC,       noData()),                          "draconic_shield_control");
         register(new ModuleImpl<>(SHIELD_CONTROLLER,    CHAOTIC,        noData()),                          "chaotic_shield_control");
 
-        register(new ModuleImpl<>(SHIELD_BOOST,         WYVERN,         shieldData(25,  0.025D)),           "wyvern_shield_capacity");
-        register(new ModuleImpl<>(SHIELD_BOOST,         DRACONIC,       shieldData(50,  0.05D)),            "draconic_shield_capacity");
-        register(new ModuleImpl<>(SHIELD_BOOST,         CHAOTIC,        shieldData(100, 0.10D)),            "chaotic_shield_capacity");
+        //TODO i want to tweak these a bit more. I may want to reduce recovery rate a little
+        register(new ModuleImpl<>(SHIELD_BOOST,         WYVERN,         shieldData(25,  0.5)),           "wyvern_shield_capacity");
+        register(new ModuleImpl<>(SHIELD_BOOST,         DRACONIC,       shieldData(50,  1.0)),            "draconic_shield_capacity");
+        register(new ModuleImpl<>(SHIELD_BOOST,         CHAOTIC,        shieldData(100, 2.0)),            "chaotic_shield_capacity");
         register(new ModuleImpl<>(SHIELD_BOOST,         WYVERN,         shieldData(25*5,  0.0D), 2, 2),     "wyvern_large_shield_capacity");
         register(new ModuleImpl<>(SHIELD_BOOST,         DRACONIC,       shieldData(50*5,  0.0D), 2, 2),     "draconic_large_shield_capacity");
         register(new ModuleImpl<>(SHIELD_BOOST,         CHAOTIC,        shieldData(100*5, 0.0D), 2, 2),     "chaotic_large_shield_capacity");
-        register(new ModuleImpl<>(SHIELD_BOOST,         WYVERN,         shieldData(5,   0.25D)),            "wyvern_shield_recovery");
-        register(new ModuleImpl<>(SHIELD_BOOST,         DRACONIC,       shieldData(10,  0.50D)),            "draconic_shield_recovery");
-        register(new ModuleImpl<>(SHIELD_BOOST,         CHAOTIC,        shieldData(20,  1.00D)),            "chaotic_shield_recovery");
+        register(new ModuleImpl<>(SHIELD_BOOST,         WYVERN,         shieldData(5,   5.0)),            "wyvern_shield_recovery");
+        register(new ModuleImpl<>(SHIELD_BOOST,         DRACONIC,       shieldData(10,  10.0)),            "draconic_shield_recovery");
+        register(new ModuleImpl<>(SHIELD_BOOST,         CHAOTIC,        shieldData(20,  20.0)),            "chaotic_shield_recovery");
 
         register(new ModuleImpl<>(FLIGHT,               WYVERN,         flightData(true, false, 1), 2, 2),     "wyvern_flight");
         register(new ModuleImpl<>(FLIGHT,               DRACONIC,       flightData(true, true, 2)),            "draconic_flight");
@@ -187,11 +188,11 @@ public class DEModules {
         };
     }
 
-    private static Function<Module<ShieldData>, ShieldData> shieldData(int defCapacity, double defRecharge) {
+    private static Function<Module<ShieldData>, ShieldData> shieldData(int defCapacity, double defRechargePerSecond) {
         return e -> {
             int capacity = ModuleCfg.getModuleInt(e, "capacity", defCapacity);
-            double transfer = ModuleCfg.getModuleDouble(e, "recharge", defRecharge);
-            return new ShieldData(capacity, transfer);
+            double recharge = ModuleCfg.getModuleDouble(e, "recharge", defRechargePerSecond / 20); //Convert to per-tick
+            return new ShieldData(capacity, recharge);
         };
     }
 

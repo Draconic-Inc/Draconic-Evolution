@@ -9,7 +9,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.scoreboard.ScoreboardSaveData;
-import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.WorldSavedData;
 
@@ -27,7 +27,7 @@ public class ItemConfigDataHandler {
     public static CompoundNBT retrieveData() {
         Minecraft mc = Minecraft.getInstance();
         if (mc.isSingleplayer()) {
-            ServerWorld world = mc.getIntegratedServer().getWorld(DimensionType.OVERWORLD);
+            ServerWorld world = mc.getIntegratedServer().getWorld(World.OVERWORLD);
             SinglePlayerWorldData data = world.getSavedData().getOrCreate(SinglePlayerWorldData::new, "draconic_item_config");
             return data.data;
         } else {
@@ -47,7 +47,7 @@ public class ItemConfigDataHandler {
     public static void saveData(CompoundNBT nbt) {
         Minecraft mc = Minecraft.getInstance();
         if (mc.isSingleplayer()) {
-            ServerWorld world = mc.getIntegratedServer().getWorld(DimensionType.OVERWORLD);
+            ServerWorld world = mc.getIntegratedServer().getWorld(World.OVERWORLD);
             SinglePlayerWorldData data = world.getSavedData().getOrCreate(SinglePlayerWorldData::new, "draconic_item_config");
             data.data = nbt;
             data.markDirty();

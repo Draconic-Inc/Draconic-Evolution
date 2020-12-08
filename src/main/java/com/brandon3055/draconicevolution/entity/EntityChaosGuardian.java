@@ -1,7 +1,6 @@
 package com.brandon3055.draconicevolution.entity;
 
 import com.brandon3055.brandonscore.utils.Utils;
-import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DEOldConfig;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileChaosCrystal;
 import com.brandon3055.draconicevolution.lib.DEDamageSources;
@@ -10,12 +9,14 @@ import com.google.common.collect.Lists;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.entity.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MoverType;
 import net.minecraft.entity.effect.LightningBoltEntity;
 import net.minecraft.entity.item.ExperienceOrbEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.DyeColor;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -24,12 +25,12 @@ import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.*;
-import net.minecraft.util.text.Style;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.*;
-import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.server.ServerBossInfo;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.ForgeHooks;
 
 import javax.annotation.Nullable;
@@ -117,10 +118,10 @@ public class EntityChaosGuardian extends EntityDragonOld {
         enablePersistence();
     }
 
-    @Override
-    public ILivingEntityData onInitialSpawn(IWorld worldIn, DifficultyInstance difficultyIn, SpawnReason reason, ILivingEntityData spawnDataIn, CompoundNBT dataTag) {
-        return super.onInitialSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
-    }
+//    @Override
+//    public ILivingEntityData onInitialSpawn(IWorld worldIn, DifficultyInstance difficultyIn, SpawnReason reason, ILivingEntityData spawnDataIn, CompoundNBT dataTag) {
+//        return super.onInitialSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+//    }
 
 //    @Override
 //    protected void entityInit() {
@@ -146,10 +147,10 @@ public class EntityChaosGuardian extends EntityDragonOld {
     }
 
 
-    protected void registerAttributes() {
-        super.registerAttributes();
-        this.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(DEOldConfig.chaosGuardianHealth);
-    }
+//    protected void registerAttributes() {
+//        super.registerAttributes();
+//        this.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(DEOldConfig.chaosGuardianHealth);
+//    }
 
     @Override
     public void livingTick() {
@@ -163,14 +164,14 @@ public class EntityChaosGuardian extends EntityDragonOld {
 
         //setHealth(0);
         // if (!world.isRemote)LogHelper.info(behaviour);
-        //if (player != null) player.setLocationAndAngles(posX, posY, posZ, 0, 0);
+        //if (player != null) player.setLocationAndAngles(getPosX(), getPosY(), getPosZ(), 0, 0);
         //setPosition(10000, 100, 0);
 
         //Set home position when spawned
         if (!homeSet) {
-            homeX = (int) posX;
-            homeY = (int) posY;
-            homeZ = (int) posZ;
+            homeX = (int) getPosX();
+            homeY = (int) getPosY();
+            homeZ = (int) getPosZ();
 
             targetX = homeX;
             targetZ = homeZ;
@@ -196,7 +197,7 @@ public class EntityChaosGuardian extends EntityDragonOld {
 
             if (f1 <= -0.3F && f >= -0.3F) {
                 if (deathTicks <= 0) {
-                    this.world.playSound(this.posX, this.posY, this.posZ, SoundEvents.ENTITY_ENDER_DRAGON_FLAP, SoundCategory.HOSTILE, 5.0F, 0.8F + this.rand.nextFloat() * 0.3F, false);
+                    this.world.playSound(this.getPosX(), this.getPosY(), this.getPosZ(), SoundEvents.ENTITY_ENDER_DRAGON_FLAP, SoundCategory.HOSTILE, 5.0F, 0.8F + this.rand.nextFloat() * 0.3F, false);
                 }
             }
         }
@@ -211,21 +212,21 @@ public class EntityChaosGuardian extends EntityDragonOld {
 //            dataWatcher.updateObject(23, crystalZ);
             updateTarget();
 
-            if (Utils.getClosestPlayer(world, posX, posY, posZ, 500, true, true) == null && getDistance(homeX, homeY, homeZ) < 100) {
+            if (Utils.getClosestPlayer(world, getPosX(), getPosY(), getPosZ(), 500, true, true) == null && getDistance(homeX, homeY, homeZ) < 100) {
 //                LogHelper.dev("Preparing to unload Guardian...");
 //                DragonChunkLoader.updateLoaded(this);
 //                behaviour = EnumBehaviour.ROAMING;
 //                motionX = motionY = motionZ = 0;
 //
-//                double posX = this.posX - (this.posX % 16) + 8;
-//                double posZ = this.posZ - (this.posZ % 16) + 8;
+//                double getPosX() = this.getPosX() - (this.getPosX() % 16) + 8;
+//                double getPosZ() = this.getPosZ() - (this.getPosZ() % 16) + 8;
 //
-//                int chunkX = MathHelper.floor_double(posX / 16.0D);
-//                int chunkZ = MathHelper.floor_double(posZ / 16.0D);
+//                int chunkX = MathHelper.floor_double(getPosX() / 16.0D);
+//                int chunkZ = MathHelper.floor_double(getPosZ() / 16.0D);
 //
-//                setPosition(posX, posY, posZ);
-//                setPositionAndUpdate(posX, posY, posZ);
-//                LogHelper.dev(String.format("Position (%s, %s) x=%s, z=%s %s", chunkX, chunkZ, posX, posZ, this));
+//                setPosition(getPosX(), getPosY(), getPosZ());
+//                setPositionAndUpdate(getPosX(), getPosY(), getPosZ());
+//                LogHelper.dev(String.format("Position (%s, %s) x=%s, z=%s %s", chunkX, chunkZ, getPosX(), getPosZ(), this));
 //
 //                if (chunkX != chunkCoordX || chunkZ != chunkCoordZ) {
 //                    world.getChunkFromChunkCoords(chunkCoordX, chunkCoordZ).removeEntity(this);
@@ -250,7 +251,7 @@ public class EntityChaosGuardian extends EntityDragonOld {
             }
 
             customAIUpdate();
-            if (behaviour == EnumBehaviour.FIREBOMB && Utils.getDistanceAtoB(posX, posY, posZ, homeX, homeY + 30, homeZ) <= 3) {
+            if (behaviour == EnumBehaviour.FIREBOMB && Utils.getDistanceAtoB(getPosX(), getPosY(), getPosZ(), homeX, homeY + 30, homeZ) <= 3) {
                 moveSpeedMultiplier = 0;
             }
         }
@@ -260,8 +261,8 @@ public class EntityChaosGuardian extends EntityDragonOld {
             f = (this.rand.nextFloat() - 0.5F) * 8.0F;
             f1 = (this.rand.nextFloat() - 0.5F) * 4.0F;
             f2 = (this.rand.nextFloat() - 0.5F) * 8.0F;
-            world.addParticle(ParticleTypes.EXPLOSION_EMITTER, this.posX + (double) f, this.posY + 2.0D + (double) f1, this.posZ + (double) f2, 0.0D, 0.0D, 0.0D);
-//            this.world.spawnParticle("largeexplode", this.posX + (double) f, this.posY + 2.0D + (double) f1, this.posZ + (double) f2, 0.0D, 0.0D, 0.0D);
+            world.addParticle(ParticleTypes.EXPLOSION_EMITTER, this.getPosX() + (double) f, this.getPosY() + 2.0D + (double) f1, this.getPosZ() + (double) f2, 0.0D, 0.0D, 0.0D);
+//            this.world.spawnParticle("largeexplode", this.getPosX() + (double) f, this.getPosY() + 2.0D + (double) f1, this.getPosZ() + (double) f2, 0.0D, 0.0D, 0.0D);
         }
 
         this.updateDragonEnderCrystal();
@@ -281,7 +282,7 @@ public class EntityChaosGuardian extends EntityDragonOld {
         if (this.ringBufferIndex < 0) {
             for (int i = 0; i < this.ringBuffer.length; ++i) {
                 this.ringBuffer[i][0] = (double) this.rotationYaw;
-                this.ringBuffer[i][1] = this.posY;
+                this.ringBuffer[i][1] = this.getPosY();
             }
         }
 
@@ -290,7 +291,7 @@ public class EntityChaosGuardian extends EntityDragonOld {
         }
 
         this.ringBuffer[this.ringBufferIndex][0] = (double) this.rotationYaw;
-        this.ringBuffer[this.ringBufferIndex][1] = this.posY;
+        this.ringBuffer[this.ringBufferIndex][1] = this.getPosY();
         double d0;
         double d1;
         double d2;
@@ -299,9 +300,9 @@ public class EntityChaosGuardian extends EntityDragonOld {
 
         if (this.world.isRemote) {
             if (this.newPosRotationIncrements > 0) {
-                d10 = this.posX + (this.interpTargetX - this.posX) / (double) this.newPosRotationIncrements;
-                d0 = this.posY + (this.interpTargetY - this.posY) / (double) this.newPosRotationIncrements;
-                d1 = this.posZ + (this.interpTargetZ - this.posZ) / (double) this.newPosRotationIncrements;
+                d10 = this.getPosX() + (this.interpTargetX - this.getPosX()) / (double) this.newPosRotationIncrements;
+                d0 = this.getPosY() + (this.interpTargetY - this.getPosY()) / (double) this.newPosRotationIncrements;
+                d1 = this.getPosZ() + (this.interpTargetZ - this.getPosZ()) / (double) this.newPosRotationIncrements;
                 d2 = MathHelper.wrapDegrees(this.interpTargetYaw - (double) this.rotationYaw);
                 this.rotationYaw = (float) ((double) this.rotationYaw + d2 / (double) this.newPosRotationIncrements);
                 this.rotationPitch = (float) ((double) this.rotationPitch + (this.interpTargetPitch - (double) this.rotationPitch) / (double) this.newPosRotationIncrements);
@@ -312,27 +313,27 @@ public class EntityChaosGuardian extends EntityDragonOld {
         }
         else {
 
-            if (target != null && (!target.isAlive() || !target.isAlive() || target.getDistanceSq(posX, posY, posZ) > (300*300))) {
+            if (target != null && (!target.isAlive() || !target.isAlive() || target.getDistanceSq(getPosX(), getPosY(), getPosZ()) > (300*300))) {
                 target = null;
             }
-            d10 = this.targetX - this.posX;
-            d0 = this.targetY - this.posY;
-            d1 = this.targetZ - this.posZ;
+            d10 = this.targetX - this.getPosX();
+            d0 = this.targetY - this.getPosY();
+            d1 = this.targetZ - this.getPosZ();
             d2 = d10 * d10 + d0 * d0 + d1 * d1;
 
             if (this.target != null) {
                 if (behaviour == EnumBehaviour.CIRCLE_PLAYER) {
-                    this.targetX = this.target.posX + (int) (Math.cos(circlePosition) * 60);
-                    this.targetZ = this.target.posZ + (int) (Math.sin(circlePosition) * 60);
-                    moveSpeedMultiplier = 1F + Math.min(((float) Utils.getDistanceAtoB(targetX, targetZ, posX, posZ) / 50) * 3F, 3F);
+                    this.targetX = this.target.getPosX() + (int) (Math.cos(circlePosition) * 60);
+                    this.targetZ = this.target.getPosZ() + (int) (Math.sin(circlePosition) * 60);
+                    moveSpeedMultiplier = 1F + Math.min(((float) Utils.getDistanceAtoB(targetX, targetZ, getPosX(), getPosZ()) / 50) * 3F, 3F);
                 }
                 else {
-                    this.targetX = this.target.posX;
-                    this.targetZ = this.target.posZ;
+                    this.targetX = this.target.getPosX();
+                    this.targetZ = this.target.getPosZ();
                 }
 
-                double d3 = this.targetX - this.posX;
-                double d5 = this.targetZ - this.posZ;
+                double d3 = this.targetX - this.getPosX();
+                double d5 = this.targetZ - this.getPosZ();
                 double d7 = Math.sqrt(d3 * d3 + d5 * d5);
                 double d8 = 0.4000000059604645D + d7 / 80.0D - 1.0D;
 
@@ -378,8 +379,8 @@ public class EntityChaosGuardian extends EntityDragonOld {
                 d6 = -50.0D;
             }
 
-            Vec3d vec3 = new Vec3d(this.targetX - this.posX, this.targetY - this.posY, this.targetZ - this.posZ).normalize();
-            Vec3d vec32 = new Vec3d((double) MathHelper.sin(this.rotationYaw * (float) Math.PI / 180.0F), this.getMotion().y, (double) (-MathHelper.cos(this.rotationYaw * (float) Math.PI / 180.0F))).normalize();
+            Vector3d vec3 = new Vector3d(this.targetX - this.getPosX(), this.targetY - this.getPosY(), this.targetZ - this.getPosZ()).normalize();
+            Vector3d vec32 = new Vector3d((double) MathHelper.sin(this.rotationYaw * (float) Math.PI / 180.0F), this.getMotion().y, (double) (-MathHelper.cos(this.rotationYaw * (float) Math.PI / 180.0F))).normalize();
             float f5 = (float) (vec32.dotProduct(vec3) + 0.5D) / 1.5F;
 
             if (f5 < 0.0F) {
@@ -398,16 +399,16 @@ public class EntityChaosGuardian extends EntityDragonOld {
             this.rotationYaw += this.randomYawVelocity * 0.1F;
             float f7 = (float) (2.0D / (d9 + 1.0D));
             float f8 = 0.06F;
-            this.moveRelative(0.06F * (f7 * f8 + (1.0F - f8)), new Vec3d(0.0F, 0.0F, -1.0F));
+            this.moveRelative(0.06F * (f7 * f8 + (1.0F - f8)), new Vector3d(0.0F, 0.0F, -1.0F));
 
             if (this.slowed) {
-                this.move(MoverType.SELF, new Vec3d(this.getMotion().x * 0.800000011920929D * moveSpeedMultiplier, this.getMotion().y * 0.800000011920929D * moveSpeedMultiplier, this.getMotion().z * 0.800000011920929D * moveSpeedMultiplier));
+                this.move(MoverType.SELF, new Vector3d(this.getMotion().x * 0.800000011920929D * moveSpeedMultiplier, this.getMotion().y * 0.800000011920929D * moveSpeedMultiplier, this.getMotion().z * 0.800000011920929D * moveSpeedMultiplier));
             }
             else {
-                this.move(MoverType.SELF, new Vec3d(this.getMotion().x * moveSpeedMultiplier, this.getMotion().y * moveSpeedMultiplier, this.getMotion().z * moveSpeedMultiplier));
+                this.move(MoverType.SELF, new Vector3d(this.getMotion().x * moveSpeedMultiplier, this.getMotion().y * moveSpeedMultiplier, this.getMotion().z * moveSpeedMultiplier));
             }
 
-            Vec3d vec31 = new Vec3d(this.getMotion().x, this.getMotion().y, this.getMotion().z).normalize();
+            Vector3d vec31 = new Vector3d(this.getMotion().x, this.getMotion().y, this.getMotion().z).normalize();
             float f9 = (float) (vec31.dotProduct(vec32) + 1.0D) / 2.0F;
             f9 = 0.8F + 0.15F * f9;
             this.setMotion(getMotion().add(f9, 0.9100000262260437D, f9));
@@ -431,11 +432,11 @@ public class EntityChaosGuardian extends EntityDragonOld {
         float f11 = MathHelper.sin(f3);
         float f4 = MathHelper.cos(f3);
         this.dragonPartBody.tick();
-        this.dragonPartBody.setLocationAndAngles(this.posX + (double) (f11 * 0.5F), this.posY, this.posZ - (double) (f4 * 0.5F), 0.0F, 0.0F);
+        this.dragonPartBody.setLocationAndAngles(this.getPosX() + (double) (f11 * 0.5F), this.getPosY(), this.getPosZ() - (double) (f4 * 0.5F), 0.0F, 0.0F);
         this.dragonPartWing1.tick();
-        this.dragonPartWing1.setLocationAndAngles(this.posX + (double) (f4 * 4.5F), this.posY + 2.0D, this.posZ + (double) (f11 * 4.5F), 0.0F, 0.0F);
+        this.dragonPartWing1.setLocationAndAngles(this.getPosX() + (double) (f4 * 4.5F), this.getPosY() + 2.0D, this.getPosZ() + (double) (f11 * 4.5F), 0.0F, 0.0F);
         this.dragonPartWing2.tick();
-        this.dragonPartWing2.setLocationAndAngles(this.posX - (double) (f4 * 4.5F), this.posY + 2.0D, this.posZ - (double) (f11 * 4.5F), 0.0F, 0.0F);
+        this.dragonPartWing2.setLocationAndAngles(this.getPosX() - (double) (f4 * 4.5F), this.getPosY() + 2.0D, this.getPosZ() - (double) (f11 * 4.5F), 0.0F, 0.0F);
 
         if (!this.world.isRemote && this.hurtTime == 0) {
             this.collideWithEntities(this.world.getEntitiesWithinAABBExcludingEntity(this, this.dragonPartWing1.getBoundingBox().grow(4.0D, 2.0D, 4.0D).offset(0.0D, -2.0D, 0.0D)));
@@ -448,7 +449,7 @@ public class EntityChaosGuardian extends EntityDragonOld {
         f12 = MathHelper.sin(this.rotationYaw * (float) Math.PI / 180.0F - this.randomYawVelocity * 0.01F);
         float f13 = MathHelper.cos(this.rotationYaw * (float) Math.PI / 180.0F - this.randomYawVelocity * 0.01F);
         this.dragonPartHead.tick();
-        this.dragonPartHead.setLocationAndAngles(this.posX + (double) (f12 * 5.5F * f2), this.posY + (adouble[1] - adouble1[1]) * 1.0D + (double) (f10 * 5.5F), this.posZ - (double) (f13 * 5.5F * f2), 0.0F, 0.0F);
+        this.dragonPartHead.setLocationAndAngles(this.getPosX() + (double) (f12 * 5.5F * f2), this.getPosY() + (adouble[1] - adouble1[1]) * 1.0D + (double) (f10 * 5.5F), this.getPosZ() - (double) (f13 * 5.5F * f2), 0.0F, 0.0F);
 
         for (int j = 0; j < 3; ++j) {
             MultiPartEntityPart entitydragonpart = null;
@@ -472,7 +473,7 @@ public class EntityChaosGuardian extends EntityDragonOld {
             float f17 = 1.5F;
             float f18 = (float) (j + 1) * 2.0F;
             entitydragonpart.tick();
-            entitydragonpart.setLocationAndAngles(this.posX - (double) ((f11 * f17 + f15 * f18) * f2), this.posY + (adouble2[1] - adouble1[1]) * 1.0D - (double) ((f18 + f17) * f10) + 1.5D, this.posZ + (double) ((f4 * f17 + f16 * f18) * f2), 0.0F, 0.0F);
+            entitydragonpart.setLocationAndAngles(this.getPosX() - (double) ((f11 * f17 + f15 * f18) * f2), this.getPosY() + (adouble2[1] - adouble1[1]) * 1.0D - (double) ((f18 + f17) * f10) + 1.5D, this.getPosZ() + (double) ((f4 * f17 + f16 * f18) * f2), 0.0F, 0.0F);
         }
 
         if (!this.world.isRemote) {
@@ -503,7 +504,7 @@ public class EntityChaosGuardian extends EntityDragonOld {
             attackTimer = 1000;
         }
         if (deathTicks <= 0) {
-            this.world.playSound(player.posX, player.posY, player.posZ, SoundEvents.ENTITY_ENDER_DRAGON_GROWL, SoundCategory.HOSTILE, 20.0F, 0.8F + this.rand.nextFloat() * 0.3F, false);
+            this.world.playSound(player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.ENTITY_ENDER_DRAGON_GROWL, SoundCategory.HOSTILE, 20.0F, 0.8F + this.rand.nextFloat() * 0.3F, false);
         }
     }
 
@@ -538,19 +539,19 @@ public class EntityChaosGuardian extends EntityDragonOld {
                 break;
 
             case GO_HOME:
-                if (Utils.getDistanceAtoB(posX, posZ, homeX, homeZ) < 70) selectNewBehaviour();
+                if (Utils.getDistanceAtoB(getPosX(), getPosZ(), homeX, homeZ) < 70) selectNewBehaviour();
                 break;
 
             case GUARDING:
                 break;
 
             case CHARGING:
-                if (Utils.getDistanceAtoB(posX, posZ, homeX, homeZ) > 300) behaviour = EnumBehaviour.GO_HOME;
+                if (Utils.getDistanceAtoB(getPosX(), getPosZ(), homeX, homeZ) > 300) behaviour = EnumBehaviour.GO_HOME;
                 break;
 
             case CIRCLE_PLAYER:
                 circlePosition += (0.02F * circleDirection);
-                if (Utils.getDistanceAtoB(posX, posZ, homeX, homeZ) > 300 || posY > 250) behaviour = EnumBehaviour.GO_HOME;
+                if (Utils.getDistanceAtoB(getPosX(), getPosZ(), homeX, homeZ) > 300 || getPosY() > 250) behaviour = EnumBehaviour.GO_HOME;
                 break;
 
             case LOW_HEALTH_STRATEGY:
@@ -601,7 +602,7 @@ public class EntityChaosGuardian extends EntityDragonOld {
                 }
                 if (closest != null) {
                     EntityGuardianProjectile charge = new EntityGuardianProjectile(world, EntityGuardianProjectile.IGNITION_CHARGE, closest, 0, this);
-                    charge.setPosition(dragonPartHead.posX + Math.cos((rotationYaw - 90) / 180.0F * (float) Math.PI) * 2, dragonPartHead.posY + 1.5, dragonPartHead.posZ + Math.sin((rotationYaw - 90) / 180.0F * (float) Math.PI) * 2);
+                    charge.setPosition(dragonPartHead.getPosX() + Math.cos((rotationYaw - 90) / 180.0F * (float) Math.PI) * 2, dragonPartHead.getPosY() + 1.5, dragonPartHead.getPosZ() + Math.sin((rotationYaw - 90) / 180.0F * (float) Math.PI) * 2);
                     world.addEntity(charge);
                 }
             }
@@ -614,23 +615,23 @@ public class EntityChaosGuardian extends EntityDragonOld {
     private void updateAttack() {
         if (world.isRemote || behaviour == EnumBehaviour.DEAD) return;
 
-        if (behaviour == EnumBehaviour.FIREBOMB && Utils.getDistanceAtoB(posX, posY, posZ, homeX, homeY + 30, homeZ) <= 3) {
+        if (behaviour == EnumBehaviour.FIREBOMB && Utils.getDistanceAtoB(getPosX(), getPosY(), getPosZ(), homeX, homeY + 30, homeZ) <= 3) {
             if (target == null || ticksExisted % 100 == 0) {
                 setNewTarget();
             }
             if (target != null) {
-                double distance = Utils.getDistanceAtoB(target.posX, target.posZ, dragonPartHead.posX, dragonPartHead.posZ);
-                if (Utils.getDistanceAtoB(target.posX, target.posZ, posX, posZ) < 5) distance *= -1;
-                float anglePitch = (float) Math.toDegrees(Math.atan2(target.posY - dragonPartHead.posY, distance)) * -1F;
-                float angleYaw = (float) Math.toDegrees(Math.atan2(target.posX - dragonPartHead.posX, target.posZ - posZ)) * -1F;
+                double distance = Utils.getDistanceAtoB(target.getPosX(), target.getPosZ(), dragonPartHead.getPosX(), dragonPartHead.getPosZ());
+                if (Utils.getDistanceAtoB(target.getPosX(), target.getPosZ(), getPosX(), getPosZ()) < 5) distance *= -1;
+                float anglePitch = (float) Math.toDegrees(Math.atan2(target.getPosY() - dragonPartHead.getPosY(), distance)) * -1F;
+                float angleYaw = (float) Math.toDegrees(Math.atan2(target.getPosX() - dragonPartHead.getPosX(), target.getPosZ() - getPosZ())) * -1F;
                 rotationPitch = anglePitch;
-                if (Utils.getDistanceAtoB(target.posX, target.posZ, posX, posZ) > 8) {
+                if (Utils.getDistanceAtoB(target.getPosX(), target.getPosZ(), getPosX(), getPosZ()) > 8) {
                     rotationYaw = angleYaw + 180;
                 }
 
                 if (ticksExisted % 2 == 0) {
                     EntityGuardianProjectile projectile = new EntityGuardianProjectile(world, EntityGuardianProjectile.FIREBOMB, target instanceof LivingEntity ? (LivingEntity) target : null, 5F + (rand.nextFloat() * 8F), this);
-                    projectile.setPosition(dragonPartHead.posX + Math.cos((rotationYaw - 90) / 180.0F * (float) Math.PI) * 2, dragonPartHead.posY + 1.5, dragonPartHead.posZ + Math.sin((rotationYaw - 90) / 180.0F * (float) Math.PI) * 2);
+                    projectile.setPosition(dragonPartHead.getPosX() + Math.cos((rotationYaw - 90) / 180.0F * (float) Math.PI) * 2, dragonPartHead.getPosY() + 1.5, dragonPartHead.getPosZ() + Math.sin((rotationYaw - 90) / 180.0F * (float) Math.PI) * 2);
                     world.addEntity(projectile);
                 }
             }
@@ -684,15 +685,15 @@ public class EntityChaosGuardian extends EntityDragonOld {
                             ForgeHooks.onLivingSetAttackTarget(this, (LivingEntity) target);
                         }
                     }
-                    if (Utils.getDistanceAtoB(posX, posY, posZ, attackTarget.posX, attackTarget.posY, attackTarget.posZ) > 10) {
+                    if (Utils.getDistanceAtoB(getPosX(), getPosY(), getPosZ(), attackTarget.getPosX(), attackTarget.getPosY(), attackTarget.getPosZ()) > 10) {
                         if (attackTimer % 2 == 0) {
                             EntityGuardianProjectile projectile = new EntityGuardianProjectile(world, EntityGuardianProjectile.FIREBOMB, attackTarget instanceof LivingEntity ? (LivingEntity) attackTarget : null, 5F + (rand.nextFloat() * 8F), this);
-                            projectile.setPosition(dragonPartHead.posX, dragonPartHead.posY, dragonPartHead.posZ);
+                            projectile.setPosition(dragonPartHead.getPosX(), dragonPartHead.getPosY(), dragonPartHead.getPosZ());
                             world.addEntity(projectile);
                         }
 
-                        double distance = Utils.getDistanceAtoB(attackTarget.posX, attackTarget.posZ, dragonPartHead.posX, dragonPartHead.posZ);
-                        rotationPitch = (float) Math.toDegrees(Math.atan2(attackTarget.posY - dragonPartHead.posY, distance)) * -1F;
+                        double distance = Utils.getDistanceAtoB(attackTarget.getPosX(), attackTarget.getPosZ(), dragonPartHead.getPosX(), dragonPartHead.getPosZ());
+                        rotationPitch = (float) Math.toDegrees(Math.atan2(attackTarget.getPosY() - dragonPartHead.getPosY(), distance)) * -1F;
 
                     }
                     else attackTimer = 0;
@@ -700,27 +701,27 @@ public class EntityChaosGuardian extends EntityDragonOld {
                 case ATTACK_FIREBALL_CHASER:
                     if (attackTimer % 10 == 0) {
                         EntityGuardianProjectile projectile = new EntityGuardianProjectile(world, EntityGuardianProjectile.FIRE_CHASER, attackTarget instanceof LivingEntity ? (LivingEntity) attackTarget : null, 5F + (rand.nextFloat() * 2F), this);
-                        projectile.setPosition(dragonPartHead.posX, dragonPartHead.posY, dragonPartHead.posZ);
+                        projectile.setPosition(dragonPartHead.getPosX(), dragonPartHead.getPosY(), dragonPartHead.getPosZ());
                         world.addEntity(projectile);
                     }
                     break;
                 case ATTACK_ENERGY_CHASER:
                     if (attackTimer % 10 == 0) {
                         EntityGuardianProjectile projectile = new EntityGuardianProjectile(world, EntityGuardianProjectile.ENERGY_CHASER, attackTarget instanceof LivingEntity ? (LivingEntity) attackTarget : null, 5F + (rand.nextFloat() * 10F), this);
-                        projectile.setPosition(dragonPartHead.posX, dragonPartHead.posY, dragonPartHead.posZ);
+                        projectile.setPosition(dragonPartHead.getPosX(), dragonPartHead.getPosY(), dragonPartHead.getPosZ());
                         world.addEntity(projectile);
                     }
                     break;
                 case ATTACK_CHAOS_CHASER:
                     if (attackTimer % 10 == 0) {
                         EntityGuardianProjectile projectile = new EntityGuardianProjectile(world, EntityGuardianProjectile.CHAOS_CHASER, attackTarget instanceof LivingEntity ? (LivingEntity) attackTarget : null, 5F + (rand.nextFloat() * 10F), this);
-                        projectile.setPosition(dragonPartHead.posX, dragonPartHead.posY, dragonPartHead.posZ);
+                        projectile.setPosition(dragonPartHead.getPosX(), dragonPartHead.getPosY(), dragonPartHead.getPosZ());
                         world.addEntity(projectile);
                     }
                     break;
                 case ATTACK_TELEPORT:
                     if (target == null) {
-                        target = Utils.getClosestPlayer(world, posX, posY, posZ, 100, false);
+                        target = Utils.getClosestPlayer(world, getPosX(), getPosY(), getPosZ(), 100, false);
                         if (target != null) {
                             ForgeHooks.onLivingSetAttackTarget(this, (LivingEntity) target);
                         }
@@ -729,15 +730,15 @@ public class EntityChaosGuardian extends EntityDragonOld {
                         attackInProgress = -1;
                         return;
                     }
-                    if (Utils.getDistanceAtoB(posX, posY, posZ, attackTarget.posX, attackTarget.posY, attackTarget.posZ) > 15) {
+                    if (Utils.getDistanceAtoB(getPosX(), getPosY(), getPosZ(), attackTarget.getPosX(), attackTarget.getPosY(), attackTarget.getPosZ()) > 15) {
                         if (attackTimer % 2 == 0) {
                             EntityGuardianProjectile projectile = new EntityGuardianProjectile(world, EntityGuardianProjectile.TELEPORT, attackTarget instanceof LivingEntity ? (LivingEntity) attackTarget : null, 5F + (rand.nextFloat() * 8F), this);
-                            projectile.setPosition(dragonPartHead.posX, dragonPartHead.posY, dragonPartHead.posZ);
+                            projectile.setPosition(dragonPartHead.getPosX(), dragonPartHead.getPosY(), dragonPartHead.getPosZ());
                             world.addEntity(projectile);
                         }
 
-                        double distance = Utils.getDistanceAtoB(attackTarget.posX, attackTarget.posZ, dragonPartHead.posX, dragonPartHead.posZ);
-                        rotationPitch = (float) Math.toDegrees(Math.atan2(attackTarget.posY - dragonPartHead.posY, distance)) * -1F;
+                        double distance = Utils.getDistanceAtoB(attackTarget.getPosX(), attackTarget.getPosZ(), dragonPartHead.getPosX(), dragonPartHead.getPosZ());
+                        rotationPitch = (float) Math.toDegrees(Math.atan2(attackTarget.getPosY() - dragonPartHead.getPosY(), distance)) * -1F;
 
                     }
                     else attackTimer = 0;
@@ -800,7 +801,7 @@ public class EntityChaosGuardian extends EntityDragonOld {
 
                 break;
             case FIREBOMB:
-                if (Utils.getDistanceAtoB(posX, posY, posZ, homeX, homeY + 30, homeZ) > 3) {
+                if (Utils.getDistanceAtoB(getPosX(), getPosY(), getPosZ(), homeX, homeY + 30, homeZ) > 3) {
                     targetX = homeX;
                     targetY = homeY + 30;
                     targetZ = homeZ;
@@ -840,9 +841,9 @@ public class EntityChaosGuardian extends EntityDragonOld {
                     targetZ = homeZ;
                     targetX += rand.nextFloat() * 120.0F - 60.0F;
                     targetZ += rand.nextFloat() * 120.0F - 60.0F;
-                    double d0 = posX - targetX;
-                    double d1 = posY - targetY;
-                    double d2 = posZ - targetZ;
+                    double d0 = getPosX() - targetX;
+                    double d1 = getPosY() - targetY;
+                    double d2 = getPosZ() - targetZ;
                     flag = d0 * d0 + d1 * d1 + d2 * d2 > 100.0D;
                 } while (!flag);
                 this.target = null;
@@ -873,7 +874,7 @@ public class EntityChaosGuardian extends EntityDragonOld {
                 target = null;
                 while (targets.size() > 0 && target == null) {
                     PlayerEntity potentialTarget = targets.get(rand.nextInt(targets.size()));
-                    RayTraceContext context = new RayTraceContext(new Vec3d(posX, posY, posZ), new Vec3d(potentialTarget.posX, potentialTarget.posY, potentialTarget.posZ), RayTraceContext.BlockMode.OUTLINE, RayTraceContext.FluidMode.NONE, this);
+                    RayTraceContext context = new RayTraceContext(new Vector3d(getPosX(), getPosY(), getPosZ()), new Vector3d(potentialTarget.getPosX(), potentialTarget.getPosY(), potentialTarget.getPosZ()), RayTraceContext.BlockMode.OUTLINE, RayTraceContext.FluidMode.NONE, this);
                     if (world.rayTraceBlocks(context).getType() == RayTraceResult.Type.MISS) {
                         target = potentialTarget;
                         ForgeHooks.onLivingSetAttackTarget(this, (LivingEntity) target);
@@ -939,11 +940,11 @@ public class EntityChaosGuardian extends EntityDragonOld {
 
                 break;
             case FIREBOMB:
-                if ((target == null && Utils.getDistanceAtoB(posX, posY, posZ, homeX, homeY + 30, homeZ) <= 3) || rand.nextInt(5) == 0) {
+                if ((target == null && Utils.getDistanceAtoB(getPosX(), getPosY(), getPosZ(), homeX, homeY + 30, homeZ) <= 3) || rand.nextInt(5) == 0) {
                     selectNewBehaviour();
                 }
 
-                if (damageSource.getTrueSource() instanceof PlayerEntity && damageSource.getTrueSource() != target && world.rayTraceBlocks(new RayTraceContext(new Vec3d(posX, posY, posZ), new Vec3d(damageSource.getTrueSource().posX, damageSource.getTrueSource().posY, damageSource.getTrueSource().posZ), RayTraceContext.BlockMode.OUTLINE, RayTraceContext.FluidMode.NONE, this)).getType() == RayTraceResult.Type.MISS) {
+                if (damageSource.getTrueSource() instanceof PlayerEntity && damageSource.getTrueSource() != target && world.rayTraceBlocks(new RayTraceContext(new Vector3d(getPosX(), getPosY(), getPosZ()), new Vector3d(damageSource.getTrueSource().getPosX(), damageSource.getTrueSource().getPosY(), damageSource.getTrueSource().getPosZ()), RayTraceContext.BlockMode.OUTLINE, RayTraceContext.FluidMode.NONE, this)).getType() == RayTraceResult.Type.MISS) {
                     target = damageSource.getTrueSource();
                     if (target instanceof LivingEntity) {
                         ForgeHooks.onLivingSetAttackTarget(this, (LivingEntity) target);
@@ -959,7 +960,7 @@ public class EntityChaosGuardian extends EntityDragonOld {
             super.attackEntityFrom(damageSource, dmg);
         }
         else if (damageSource.getTrueSource() instanceof PlayerEntity) {
-            ((PlayerEntity) damageSource.getTrueSource()).sendMessage(new TranslationTextComponent("msg.de.guardianAttackBlocked.txt").setStyle(new Style().setColor(TextFormatting.DARK_PURPLE)));
+            ((PlayerEntity) damageSource.getTrueSource()).sendMessage(new TranslationTextComponent("msg.de.guardianAttackBlocked.txt").mergeStyle(TextFormatting.DARK_PURPLE), Util.DUMMY_UUID);
         }
 
         return true;
@@ -1064,18 +1065,19 @@ public class EntityChaosGuardian extends EntityDragonOld {
             float f = (this.rand.nextFloat() - 0.5F) * 8.0F;
             float f1 = (this.rand.nextFloat() - 0.5F) * 4.0F;
             float f2 = (this.rand.nextFloat() - 0.5F) * 8.0F;
-            world.addParticle(ParticleTypes.EXPLOSION_EMITTER, this.posX + (double) f, this.posY + 2.0D + (double) f1, this.posZ + (double) f2, 0.0D, 0.0D, 0.0D);
+            world.addParticle(ParticleTypes.EXPLOSION_EMITTER, this.getPosX() + (double) f, this.getPosY() + 2.0D + (double) f1, this.getPosZ() + (double) f2, 0.0D, 0.0D, 0.0D);
         }
 
         int i;
         int j;
 
         if (this.deathTicks == 1) {
-            this.world.playSound(this.posX, this.posY, this.posZ, SoundEvents.ENTITY_ENDER_DRAGON_DEATH, SoundCategory.HOSTILE, 50.0F, 1F, false);
+            this.world.playSound(this.getPosX(), this.getPosY(), this.getPosZ(), SoundEvents.ENTITY_ENDER_DRAGON_DEATH, SoundCategory.HOSTILE, 50.0F, 1F, false);
         }
 
         if (getDistance(homeX, homeY, homeZ) < 20 && deathTicks % 2 == 0) {
-            LightningBoltEntity bolt = new LightningBoltEntity(world, homeX, homeY + 1, homeZ, true);
+            LightningBoltEntity bolt = new LightningBoltEntity(EntityType.LIGHTNING_BOLT, world);
+            bolt.setPosition(homeX, homeY + 1, homeZ);
             bolt.ignoreFrustumCheck = true;
             world.addEntity(bolt);
         }
@@ -1086,7 +1088,7 @@ public class EntityChaosGuardian extends EntityDragonOld {
             while (i > 0) {
                 j = ExperienceOrbEntity.getXPSplit(i);
                 i -= j;
-                this.world.addEntity(new ExperienceOrbEntity(this.world, this.posX, this.posY, this.posZ, j));
+                this.world.addEntity(new ExperienceOrbEntity(this.world, this.getPosX(), this.getPosY(), this.getPosZ(), j));
             }
 
             //spawnEgg();
@@ -1107,8 +1109,8 @@ public class EntityChaosGuardian extends EntityDragonOld {
 //			Entity entity = (Entity) iterator.next();
 //
 //			if (entity instanceof LivingEntity) {
-//				double d2 = entity.posX - d0;
-//				double d3 = entity.posZ - d1;
+//				double d2 = entity.getPosX() - d0;
+//				double d3 = entity.getPosZ() - d1;
 //				double d4 = d2 * d2 + d3 * d3;
 //				if (rand.nextInt(isUber ? 3 : 10) == 0) entity.addVelocity(d2 / d4 * 8.0D, 5.20000000298023224D, d3 / d4 * 8.0D);
 //				entity.velocityChanged = true;
@@ -1147,7 +1149,7 @@ public class EntityChaosGuardian extends EntityDragonOld {
                 }
             }
             else if (healingChaosCrystal != null) {
-                if (pos == null || Utils.getDistanceSq(healingChaosCrystal.posX, healingChaosCrystal.posY, healingChaosCrystal.posZ, pos.getX(), pos.getY(), pos.getZ()) > 10) {
+                if (pos == null || Utils.getDistanceSq(healingChaosCrystal.getPosX(), healingChaosCrystal.getPosY(), healingChaosCrystal.getPosZ(), pos.getX(), pos.getY(), pos.getZ()) > 10) {
                     healingChaosCrystal = null;
                 }
             }
@@ -1179,10 +1181,10 @@ public class EntityChaosGuardian extends EntityDragonOld {
             healingChaosCrystal = closest;
             if (healingChaosCrystal != null) {
 //				connectedCrystalID = healingChaosCrystal.getEntityId();
-                setCrystalPos(new BlockPos((int) Math.floor(healingChaosCrystal.posX), (int) Math.floor(healingChaosCrystal.posY), (int) Math.floor(healingChaosCrystal.posZ)));
-//                crystalX = (int) Math.floor(healingChaosCrystal.posX);
-//                crystalY = (int) Math.floor(healingChaosCrystal.posY);
-//                crystalZ = (int) Math.floor(healingChaosCrystal.posZ);
+                setCrystalPos(new BlockPos((int) Math.floor(healingChaosCrystal.getPosX()), (int) Math.floor(healingChaosCrystal.getPosY()), (int) Math.floor(healingChaosCrystal.getPosZ())));
+//                crystalX = (int) Math.floor(healingChaosCrystal.getPosX());
+//                crystalY = (int) Math.floor(healingChaosCrystal.getPosY());
+//                crystalZ = (int) Math.floor(healingChaosCrystal.getPosZ());
             }
             else {
                 setCrystalPos(null);
@@ -1325,9 +1327,9 @@ public class EntityChaosGuardian extends EntityDragonOld {
         compound.putInt("HomeZCoord", homeZ);
         compound.putString("Behaviour", behaviour.name());
         compound.putBoolean("HomeSet", homeSet);
-        int chunkX = MathHelper.floor(posX / 16.0D);
-        int chunkZ = MathHelper.floor(posZ / 16.0D);
-//        LogHelper.bigDev(String.format("ChaosGuardian: Save chunkCoord:(%s, %s) actualChunkCoord:(%s, %s) x=%s, z=%s", chunkCoordX, chunkCoordZ, chunkX, chunkZ, posX, posZ));
+        int chunkX = MathHelper.floor(getPosX() / 16.0D);
+        int chunkZ = MathHelper.floor(getPosZ() / 16.0D);
+//        LogHelper.bigDev(String.format("ChaosGuardian: Save chunkCoord:(%s, %s) actualChunkCoord:(%s, %s) x=%s, z=%s", chunkCoordX, chunkCoordZ, chunkX, chunkZ, getPosX(), getPosZ()));
     }
 
     @Override
@@ -1340,9 +1342,9 @@ public class EntityChaosGuardian extends EntityDragonOld {
         homeSet = compound.getBoolean("HomeSet");
         targetX = homeX;
         targetZ = homeZ;
-        int chunkX = MathHelper.floor(posX / 16.0D);
-        int chunkZ = MathHelper.floor(posZ / 16.0D);
-//        LogHelper.bigDev(String.format("ChaosGuardian: Load chunkCoord:(%s, %s) actualChunkCoord:(%s, %s) x=%s, z=%s", chunkCoordX, chunkCoordZ, chunkX, chunkZ, posX, posZ));
+        int chunkX = MathHelper.floor(getPosX() / 16.0D);
+        int chunkZ = MathHelper.floor(getPosZ() / 16.0D);
+//        LogHelper.bigDev(String.format("ChaosGuardian: Load chunkCoord:(%s, %s) actualChunkCoord:(%s, %s) x=%s, z=%s", chunkCoordX, chunkCoordZ, chunkX, chunkZ, getPosX(), getPosZ()));
     }
 
     @Override
@@ -1367,7 +1369,7 @@ public class EntityChaosGuardian extends EntityDragonOld {
     }
 
     @Override
-    public Entity changeDimension(DimensionType destination) {
+    public Entity changeDimension(ServerWorld server) {
         return this;
     }
 
@@ -1432,9 +1434,9 @@ public class EntityChaosGuardian extends EntityDragonOld {
 
     public double getDistance(double x, double y, double z)
     {
-        double d0 = this.posX - x;
-        double d1 = this.posY - y;
-        double d2 = this.posZ - z;
+        double d0 = this.getPosX() - x;
+        double d1 = this.getPosY() - y;
+        double d2 = this.getPosZ() - z;
         return (double)MathHelper.sqrt(d0 * d0 + d1 * d1 + d2 * d2);
     }
 

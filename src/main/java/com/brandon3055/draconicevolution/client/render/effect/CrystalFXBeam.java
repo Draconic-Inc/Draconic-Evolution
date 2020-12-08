@@ -17,8 +17,11 @@ import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.Vec3d;
+
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
 
@@ -35,7 +38,7 @@ public class CrystalFXBeam<T extends TileEntity & IENetEffectTile> extends Cryst
     private float powerLevel = 0;
 
     public CrystalFXBeam(World worldIn, T tile, ICrystalLink linkTarget) {
-        super(worldIn, tile);
+        super((ClientWorld)worldIn, tile);
         this.age = worldIn.rand.nextInt(1024);
         this.setPosition(tile.getBeamLinkPos(((TileEntity) linkTarget).getPos()));
         this.terminateSource = tile.renderBeamTermination();
@@ -75,7 +78,7 @@ public class CrystalFXBeam<T extends TileEntity & IENetEffectTile> extends Cryst
             scale = 0.1F;
         }
 
-        Vec3d viewVec = renderInfo.getProjectedView();
+        Vector3d viewVec = renderInfo.getProjectedView();
         Vector3 source = new Vector3(posX - viewVec.x, posY - viewVec.y, posZ - viewVec.z);
         Vector3 target = linkTarget.toVector3().subtract(viewVec.x, viewVec.y, viewVec.z);
         Vector3 dirVec = source.copy().subtract(target).normalize();

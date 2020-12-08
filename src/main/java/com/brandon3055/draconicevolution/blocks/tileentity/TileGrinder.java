@@ -228,7 +228,7 @@ public class TileGrinder extends TileBCore implements ITickableTileEntity, IRSSw
             opStorage.modifyEnergyStored(-cost);
             return true;
         }
-        LogHelper.dev("Grinder: Failed to deal damage to entity: " + nextTarget.getType().getName().getFormattedText() + " Waiting 3 ticks...");
+        LogHelper.dev("Grinder: Failed to deal damage to entity: " + nextTarget.getType().getName().getString() + " Waiting 3 ticks...");
         if (!killZone.intersects(nextTarget.getBoundingBox())) {
             nextTarget = null;
         }

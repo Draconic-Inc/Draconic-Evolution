@@ -18,6 +18,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -62,7 +63,7 @@ public class MobSoul extends ItemBCore {
             if (!world.isRemote) {
                 CompoundNBT compound = ItemNBTHelper.getCompound(stack);
                 if (!compound.contains("EntityData") && entity instanceof MobEntity) {
-                    ((MobEntity) entity).onInitialSpawn(world, world.getDifficultyForLocation(new BlockPos(0, 0, 0)), SpawnReason.SPAWN_EGG, null, null);
+                    ((MobEntity) entity).onInitialSpawn((ServerWorld)world, world.getDifficultyForLocation(new BlockPos(0, 0, 0)), SpawnReason.SPAWN_EGG, null, null);
                 }
                 world.addEntity(entity);
                 if (!player.abilities.isCreativeMode) {
@@ -160,11 +161,11 @@ public class MobSoul extends ItemBCore {
                 else {
                     loadAdditionalEntityInfo(stack, entity);
                     if (entity instanceof MobEntity) {
-                        ((MobEntity) entity).onInitialSpawn(world, world.getDifficultyForLocation(new BlockPos(0, 0, 0)), SpawnReason.SPAWN_EGG, null, null);
+                        ((MobEntity) entity).onInitialSpawn((ServerWorld)world, world.getDifficultyForLocation(new BlockPos(0, 0, 0)), SpawnReason.SPAWN_EGG, null, null);
 //                        entitytype.spawn(worldIn, itemstack, playerIn, blockpos, SpawnReason.SPAWN_EGG, false, false)
 //                        type.spawn(world, stack, null, new BlockPos(0, 0, 0), SpawnReason.SPAWN_EGG, false, false);
 
-//                        if (!ForgeEventFactory.doSpecialSpawn((MobEntity) entity, world, (float) entity.posX, (float) entity.posY, (float) entity.posZ)) {
+//                        if (!ForgeEventFactory.doSpecialSpawn((MobEntity) entity, world, (float) entity.getPosX(), (float) entity.getPosY(), (float) entity.getPosZ())) {
 //                            ((LivingEntity) entity).onInitialSpawn(world.getDifficultyForLocation(new BlockPos(entity)), null);
 //                        }
                     }

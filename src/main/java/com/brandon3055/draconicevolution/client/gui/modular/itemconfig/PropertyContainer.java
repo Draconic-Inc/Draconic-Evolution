@@ -16,7 +16,7 @@ import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.model.Material;
+import net.minecraft.client.renderer.model.RenderMaterial;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.nbt.CompoundNBT;
@@ -215,24 +215,7 @@ public class PropertyContainer extends GuiManipulable {
         if (binding) return ">" + (boundKey.isEmpty() ? "   " : I18n.format(InputMappings.getInputByName(boundKey).getTranslationKey())) + "<";
         else if (boundKey.isEmpty()) return I18n.format("gui.draconicevolution.item_config.not_bound");
         InputMappings.Input keyCode = InputMappings.getInputByName(boundKey);
-        return modifier.getLocalizedComboName(keyCode, () -> {
-            String s = keyCode.getTranslationKey();
-            int i = keyCode.getKeyCode();
-            String s1 = null;
-            switch (keyCode.getType()) {
-                case KEYSYM:
-                    s1 = InputMappings.getKeynameFromKeycode(i);
-                    break;
-                case SCANCODE:
-                    s1 = InputMappings.getKeyNameFromScanCode(i);
-                    break;
-                case MOUSE:
-                    String s2 = I18n.format(s);
-                    s1 = Objects.equals(s2, s) ? I18n.format(InputMappings.Type.MOUSE.getName(), i + 1) : s2;
-            }
-
-            return s1 == null ? I18n.format(s) : s1;
-        });
+        return modifier.getCombinedName(keyCode, keyCode::func_237520_d_).getString();
     }
 
     @Override
@@ -582,7 +565,7 @@ public class PropertyContainer extends GuiManipulable {
         }
 
         int alpha = semiTrans ? 0x60000000 : 0xFF000000;
-        Material mat = BCSprites.getThemed("borderless_bg_dynamic_small");
+        RenderMaterial mat = BCSprites.getThemed("borderless_bg_dynamic_small");
         drawDynamicSprite(mat.getBuffer(getter, e -> BCSprites.guiTexType), mat.getSprite(), xPos(), yPos(), xSize(), ySize(), 2, 2, 2, 2, 0xFFFFFF | alpha);
 
         int contentPos = yPos() + 2 + 9;

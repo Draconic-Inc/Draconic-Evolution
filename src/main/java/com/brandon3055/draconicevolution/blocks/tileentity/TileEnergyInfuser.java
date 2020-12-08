@@ -88,10 +88,12 @@ public class TileEnergyInfuser extends TileBCore implements ITickableTileEntity 
         }
     }
 
-    @Override
-    public boolean hasFastRenderer() {
-        return false;//ToDo Re write fancy renderer
-    }
+
+
+//    @Override
+//    public boolean hasFastRenderer() {
+//        return false;//ToDo Re write fancy renderer
+//    }
 
     //endregion
 }

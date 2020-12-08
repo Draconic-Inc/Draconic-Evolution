@@ -99,13 +99,13 @@ public class RenderTileEnergyCrystal extends TileEntityRenderer<TileCrystalBase>
         ccrs.overlay = packedOverlay;
 
         PlayerEntity player = Minecraft.getInstance().player;
-        double x = player.posX - (te.getPos().getX() + 0.5);
-        double y = player.posY - (te.getPos().getY() + 0.5);
-        double z = player.posZ - (te.getPos().getZ() + 0.5);
+        double x = player.getPosX() - (te.getPos().getX() + 0.5);
+        double y = player.getPosY() - (te.getPos().getY() + 0.5);
+        double z = player.getPosZ() - (te.getPos().getZ() + 0.5);
         BlockPos pos = te.getPos();
         double mm = MathHelper.clip((((x * x) + (y * y) + (z * z) - 5) / 512), 0, 1);
         float xrot = (float) Math.atan2(x + 0.5, z + 0.5);
-        float dist = (float) Utils.getDistanceAtoB(Vec3D.getCenter(pos).x, Vec3D.getCenter(pos).z, Minecraft.getInstance().player.posX, Minecraft.getInstance().player.posZ);
+        float dist = (float) Utils.getDistanceAtoB(Vec3D.getCenter(pos).x, Vec3D.getCenter(pos).z, Minecraft.getInstance().player.getPosX(), Minecraft.getInstance().player.getPosZ());
         float yrot = (float) net.minecraft.util.math.MathHelper.atan2(dist, y + 0.5);
 
         if (te instanceof TileCrystalDirectIO) {

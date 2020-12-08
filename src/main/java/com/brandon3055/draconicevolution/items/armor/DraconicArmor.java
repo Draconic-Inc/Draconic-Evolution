@@ -237,10 +237,10 @@
 ////                                    foodStats.addStats(food, foodStack);
 ////                                    foodStack = food.onItemUseFinish(foodStack, world, player);
 ////                                    if (world.rand.nextInt(3) == 0) {
-////                                        DelayedTask.run(20, () -> world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_PLAYER_BURP, SoundCategory.PLAYERS, .5F, world.rand.nextFloat() * 0.1F + 0.9F));
+////                                        DelayedTask.run(20, () -> world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.ENTITY_PLAYER_BURP, SoundCategory.PLAYERS, .5F, world.rand.nextFloat() * 0.1F + 0.9F));
 ////                                    }
 ////
-////                                    world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_GENERIC_EAT, SoundCategory.PLAYERS, 0.5F + 0.5F * (float)world.rand.nextInt(2), (world.rand.nextFloat() - world.rand.nextFloat()) * 0.2F + 1.0F);
+////                                    world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.ENTITY_GENERIC_EAT, SoundCategory.PLAYERS, 0.5F + 0.5F * (float)world.rand.nextInt(2), (world.rand.nextFloat() - world.rand.nextFloat()) * 0.2F + 1.0F);
 ////                                    foodStack = handler.insertItem(i, foodStack, false);
 ////                                    this.modifyEnergy(stack, -500);
 ////                                    if (!foodStack.isEmpty()) {
@@ -267,7 +267,7 @@
 ////            }
 ////
 ////            PotionEffect active = player.getActivePotionEffect(nv);
-////            if (ToolConfigHelper.getBooleanField("armorNV", stack) && (player.world.getLightBrightness(new BlockPos((int) Math.floor(player.posX), (int) player.posY + 1, (int) Math.floor(player.posZ))) < 0.1F || ToolConfigHelper.getBooleanField("armorNVLock", stack))) {
+////            if (ToolConfigHelper.getBooleanField("armorNV", stack) && (player.world.getLightBrightness(new BlockPos((int) Math.floor(player.getPosX()), (int) player.getPosY() + 1, (int) Math.floor(player.getPosZ()))) < 0.1F || ToolConfigHelper.getBooleanField("armorNVLock", stack))) {
 ////                player.addPotionEffect(new PotionEffect(nv, 500, 0, false, false));
 ////            }
 ////            else if (active != null && ToolConfigHelper.getBooleanField("armorNVLock", stack)) {

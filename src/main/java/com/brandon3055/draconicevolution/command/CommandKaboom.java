@@ -2,10 +2,11 @@ package com.brandon3055.draconicevolution.command;
 
 import com.brandon3055.brandonscore.api.TimeKeeper;
 import com.brandon3055.brandonscore.handlers.ProcessHandler;
-import com.brandon3055.draconicevolution.DEConfig;
+import com.brandon3055.brandonscore.lib.ShortPos;
 import com.brandon3055.draconicevolution.blocks.DraconiumOre;
 import com.brandon3055.draconicevolution.blocks.reactor.ProcessExplosion;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
+import com.brandon3055.draconicevolution.lib.ExplosionHelper;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.mojang.brigadier.CommandDispatcher;
@@ -18,12 +19,14 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.BlockPosArgument;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.play.server.SUpdateLightPacket;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.server.ServerWorld;
+
+import java.util.HashSet;
+import java.util.LinkedList;
 
 /**
  * Created by brandon3055 on 23/06/2017.
@@ -70,7 +73,7 @@ public class CommandKaboom {
         );
     }
 
-    private static int calculate(CommandSource source, int radius, Vec3i pos, boolean prime, boolean effect) {
+    private static int calculate(CommandSource source, int radius, Vector3i pos, boolean prime, boolean effect) {
         if (explosionProcess != null && !explosionProcess.isDead()) {
             source.sendErrorMessage(new StringTextComponent("Explosion already in progress"));
             return 1;
@@ -88,11 +91,11 @@ public class CommandKaboom {
         return 0;
     }
 
-    private static int effect(CommandSource source, int radius, Vec3i pos, boolean flash) {
+    private static int effect(CommandSource source, int radius, Vector3i pos, boolean flash) {
         if (flash) {
             ClientEventHandler.triggerExplosionEffect(new BlockPos(pos));
         } else {
-            DraconicNetwork.sendExplosionEffect(source.getWorld().getDimension().getType(), new BlockPos(pos), radius, false);
+            DraconicNetwork.sendExplosionEffect(source.getWorld().getDimensionKey(), new BlockPos(pos), radius, false);
         }
         return 0;
     }
@@ -109,19 +112,29 @@ public class CommandKaboom {
     private static int abort(CommandContext<CommandSource> ctx) throws CommandSyntaxException {
         ServerPlayerEntity player = ctx.getSource().asPlayer();
 
+        ShortPos shortPos = new ShortPos(player.getPosition());
+        ExplosionHelper helper = new ExplosionHelper((ServerWorld) player.world, player.getPosition(), shortPos);
+        LinkedList<HashSet<Integer>> list = new LinkedList<>();
+        HashSet<Integer> set= new HashSet<>();
+
         int xzRange = 100;
-        int yRange = 20;
+        int yRange = 70;
         BlockPos.Mutable pos = new BlockPos.Mutable();
         for (int x = -xzRange; x < xzRange; x++) {
             for (int z = -xzRange; z < xzRange; z++) {
                 for (int y = 0; y < yRange; y++) {
-                    pos.setPos(player.posX + x, y, player.posZ + z);
+                    pos.setPos(player.getPosX() + x, y, player.getPosZ() + z);
                     BlockState state = player.world.getBlockState(pos);
-                    if (state.getBlock() instanceof DraconiumOre || state.getBlock() == Blocks.BEDROCK || state.getBlock() == Blocks.DIAMOND_ORE) continue;
-                    player.world.setBlockState(pos, Blocks.AIR.getDefaultState());
+                    if (state.getBlock() instanceof DraconiumOre || state.getBlock() == Blocks.BEDROCK || state.getBlock() == Blocks.DIAMOND_ORE || state.getBlock() == Blocks.ANCIENT_DEBRIS) continue;
+//                    player.world.setBlockState(pos, Blocks.AIR.getDefaultState());
+                    set.add(shortPos.getIntPos(pos));
                 }
             }
         }
+        list.add(set);
+        helper.setBlocksForRemoval(list);
+        helper.finish();
+
 
 
         if (explosionProcess != null) {
@@ -142,8 +155,8 @@ public class CommandKaboom {
         BlockPos.getAllInBox(pos.add(-10, -10, -10), pos.add(10, 10, 10)).forEach(e -> {
             world.getLightManager().checkBlock(e);
             Chunk chunk = world.getChunkAt(e);
-            SUpdateLightPacket packet = new SUpdateLightPacket(chunk.getPos(), world.getLightManager());
-            world.getChunkProvider().chunkManager.getTrackingPlayers(chunk.getPos(), false).forEach(f -> f.connection.sendPacket(packet));
+//            SUpdateLightPacket packet = new SUpdateLightPacket(chunk.getPos(), world.getLightManager());
+//            world.getChunkProvider().chunkManager.getTrackingPlayers(chunk.getPos(), false).forEach(f -> f.connection.sendPacket(packet));
 //            world.getLightManager().func_215567_a(e, true);
         });
 

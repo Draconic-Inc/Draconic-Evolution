@@ -1,5 +1,5 @@
 {
-  "parent": "block/cube_bottom_top",
+  "parent": "minecraft:block/cube_bottom_top",
   "textures": {
     "side": "draconicevolution:block/energy_pylon/energy_pylon_output",
     "bottom": "draconicevolution:block/energy_pylon/energy_pylon_active_face",

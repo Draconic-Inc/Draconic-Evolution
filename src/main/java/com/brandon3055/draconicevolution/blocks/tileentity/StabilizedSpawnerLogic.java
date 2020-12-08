@@ -93,16 +93,16 @@ public class StabilizedSpawnerLogic extends AbstractSpawner {
                     }
 
                     LivingEntity entityliving = entity instanceof LivingEntity ? (LivingEntity) entity : null;
-                    entity.setLocationAndAngles(entity.posX, entity.posY, entity.posZ, world.rand.nextFloat() * 360.0F, 0.0F);
+                    entity.setLocationAndAngles(entity.getPosX(), entity.getPosY(), entity.getPosZ(), world.rand.nextFloat() * 360.0F, 0.0F);
 
-                    if (entityliving == null || !(entityliving instanceof MobEntity) || canEntitySpawnSpawner((MobEntity)entityliving, getWorld(), (float) entity.posX, (float) entity.posY, (float) entity.posZ, this)) {
+                    if (entityliving == null || !(entityliving instanceof MobEntity) || canEntitySpawnSpawner((MobEntity)entityliving, getWorld(), (float) entity.getPosX(), (float) entity.getPosY(), (float) entity.getPosZ(), this)) {
                         if (!tier.requiresPlayer() && entity instanceof MobEntity) {
                             ((MobEntity) entity).enablePersistence();
                             entity.getPersistentData().putLong("DESpawnedMob", System.currentTimeMillis());
                             DEEventHandler.onMobSpawnedBySpawner((MobEntity) entity);
                         }
 
-                        func_221409_a(entity);
+//                        func_221409_a(entity);
                         world.playEvent(2004, blockpos, 0);
 
                         if (entityliving != null) {

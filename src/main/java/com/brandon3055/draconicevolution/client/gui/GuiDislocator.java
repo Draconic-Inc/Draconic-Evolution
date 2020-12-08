@@ -388,7 +388,7 @@
 //        }
 //
 //        if (button.id == 1) {
-//            TeleportLocation location = new TeleportLocation(player.posX, player.posY - 1.62, player.posZ, player.dimension, player.rotationPitch, player.rotationYaw, getLocationSafely(selected + selectionOffset).getName());
+//            TeleportLocation location = new TeleportLocation(player.getPosX(), player.getPosY() - 1.62, player.getPosZ(), player.dimension, player.rotationPitch, player.rotationYaw, getLocationSafely(selected + selectionOffset).getName());
 //            DraconicEvolution.network.sendToServer(new PacketDislocator(location, PacketDislocator.UPDATEDESTINATION, selected + selectionOffset));
 //            locations.set(selected + selectionOffset, location);
 //        }
@@ -433,7 +433,7 @@
 //            if (!editingNew) {
 //                editingNew = true;
 //                textBeingEdited.setVisible(true);
-//                textBeingEdited.setText("" + (int) player.posX + " " + (int) player.posY + " " + (int) player.posZ);
+//                textBeingEdited.setText("" + (int) player.getPosX() + " " + (int) player.getPosY() + " " + (int) player.getPosZ());
 //                textBeingEdited.setSelectionPos(0);
 //                textBeingEdited.setFocused(true);
 //                buttonList.get(6).visible = true;
@@ -555,7 +555,7 @@
 //    }
 //
 //    private void addCurrentLocationToList(String name) {
-//        TeleportLocation currentLocation = new TeleportLocation(player.posX, player.posY - 1.62, player.posZ, player.dimension, player.rotationPitch, player.rotationYaw, name);
+//        TeleportLocation currentLocation = new TeleportLocation(player.getPosX(), player.getPosY() - 1.62, player.getPosZ(), player.dimension, player.rotationPitch, player.rotationYaw, name);
 //        DraconicEvolution.network.sendToServer(new PacketDislocator(currentLocation, PacketDislocator.ADDDESTINATION));
 //        locations.add(currentLocation);
 //    }

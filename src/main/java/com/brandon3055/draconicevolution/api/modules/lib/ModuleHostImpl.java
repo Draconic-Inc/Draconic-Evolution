@@ -12,6 +12,7 @@ import com.brandon3055.draconicevolution.api.modules.data.EnergyShareData;
 import com.brandon3055.draconicevolution.api.modules.data.ShieldData;
 import com.google.common.collect.Multimap;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
@@ -139,7 +140,7 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
     }
 
     @Override
-    public void getAttributeModifiers(EquipmentSlotType slot, ItemStack stack, Multimap<String, AttributeModifier> map) {
+    public void getAttributeModifiers(EquipmentSlotType slot, ItemStack stack, Multimap<Attribute, AttributeModifier> map) {
         getInstalledTypes().forEach(t -> t.getAttributeModifiers(SneakyUtils.unsafeCast(getModuleData(t)), slot, stack, map));
         getModuleEntities().forEach(e -> e.getAttributeModifiers(slot, stack, map));
     }

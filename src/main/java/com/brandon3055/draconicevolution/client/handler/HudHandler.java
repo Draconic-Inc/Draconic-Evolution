@@ -13,6 +13,7 @@ import com.brandon3055.draconicevolution.api.modules.entities.ShieldControlEntit
 import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
 import com.brandon3055.draconicevolution.client.DETextures;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
@@ -74,7 +75,7 @@ public class HudHandler {
             int x = (int) (((float) DEOldConfig.hudSettings[2] / 1000F) * (float) width);
             int y = (int) (((float) DEOldConfig.hudSettings[3] / 1000F) * (float) height);
 
-            drawArmorHUD(x, y, DEOldConfig.hudSettings[8] == 1, DEOldConfig.hudSettings[5] / 100D);
+            drawArmorHUD(event.getMatrixStack(), x, y, DEOldConfig.hudSettings[8] == 1, DEOldConfig.hudSettings[5] / 100D);
         }
 
         RenderSystem.popMatrix();
@@ -172,7 +173,7 @@ public class HudHandler {
         rfCharge = (int) ((double) rfTotal / Math.max((double) opStorage.getMaxOPStored(), 1D) * 100D);
     }
 
-    private static void drawArmorHUD(int x, int y, boolean rotated, double scale) {
+    private static void drawArmorHUD(MatrixStack mStack, int x, int y, boolean rotated, double scale) {
         RenderSystem.pushMatrix();
         RenderSystem.enableAlphaTest();
         RenderSystem.enableBlend();
@@ -208,13 +209,13 @@ public class HudHandler {
             String energy = "RF: " + formatNumber(rfTotal);
             float fade = Math.min(armorStatsFadeOut, 1F);
             if (!rotated) {
-                fontRenderer.drawStringWithShadow(shield, x + 18, y + 74, ((int) (fade * 240F) + 0x10 << 24) | 0x00FFFFFF);
-                fontRenderer.drawStringWithShadow(energy, x + 18, y + 84, ((int) (fade * 240F) + 0x10 << 24) | 0x00FFFFFF);
+                fontRenderer.drawStringWithShadow(mStack, shield, x + 18, y + 74, ((int) (fade * 240F) + 0x10 << 24) | 0x00FFFFFF);
+                fontRenderer.drawStringWithShadow(mStack, energy, x + 18, y + 84, ((int) (fade * 240F) + 0x10 << 24) | 0x00FFFFFF);
 //                fontRenderer.drawStringWithShadow(entropy, x + 18, y + 94, ((int) (fade * 240F) + 0x10 << 24) | 0x00FFFFFF);
             } else {
-                fontRenderer.drawString(shield, x - 52 - fontRenderer.getStringWidth(shield) / 2, y + 2, ((int) (fade * 240F) + 0x10 << 24) | 0x000000FF);
+                fontRenderer.drawString(mStack, shield, x - 52 - fontRenderer.getStringWidth(shield) / 2, y + 2, ((int) (fade * 240F) + 0x10 << 24) | 0x000000FF);
 //                fontRenderer.drawStringWithShadow(entropy, x - fontRenderer.getStringWidth(entropy), y + 18, ((int) (fade * 240F) + 0x10 << 24) | 0x00FFFFFF);
-                fontRenderer.drawStringWithShadow(energy, x - 102, y + 18, ((int) (fade * 240F) + 0x10 << 24) | 0x00FFFFFF);
+                fontRenderer.drawStringWithShadow(mStack, energy, x - 102, y + 18, ((int) (fade * 240F) + 0x10 << 24) | 0x00FFFFFF);
             }
         }
 

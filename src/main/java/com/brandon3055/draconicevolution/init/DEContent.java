@@ -1,12 +1,10 @@
 package com.brandon3055.draconicevolution.init;
 
-import codechicken.lib.util.SneakyUtils;
 import com.brandon3055.brandonscore.blocks.BlockBCore;
 import com.brandon3055.brandonscore.blocks.ItemBlockBCore;
 import com.brandon3055.brandonscore.client.utils.CyclingItemGroup;
 import com.brandon3055.brandonscore.inventory.ContainerBCTile;
 import com.brandon3055.brandonscore.lib.TechPropBuilder;
-import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.crafting.FusionRecipe;
 import com.brandon3055.draconicevolution.blocks.*;
@@ -32,9 +30,8 @@ import com.brandon3055.draconicevolution.items.ItemCore;
 import com.brandon3055.draconicevolution.items.MobSoul;
 import com.brandon3055.draconicevolution.items.equipment.*;
 import com.brandon3055.draconicevolution.items.tools.*;
+import net.minecraft.block.AbstractBlock.Properties;
 import net.minecraft.block.Block;
-import net.minecraft.block.Block.Properties;
-import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
@@ -45,21 +42,11 @@ import net.minecraft.item.Rarity;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.Biomes;
-import net.minecraft.world.gen.GenerationStage;
-import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.OreFeature;
-import net.minecraft.world.gen.feature.OreFeatureConfig;
-import net.minecraft.world.gen.placement.ChanceRangeConfig;
-import net.minecraft.world.gen.placement.CountRangeConfig;
-import net.minecraft.world.gen.placement.Placement;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ObjectHolder;
 
 import java.util.ArrayList;
@@ -67,9 +54,7 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 import static com.brandon3055.brandonscore.api.TechLevel.*;
-import static com.brandon3055.brandonscore.api.TechLevel.DRACONIC;
 import static com.brandon3055.draconicevolution.blocks.energynet.EnergyCrystal.CrystalType.*;
-import static com.brandon3055.draconicevolution.blocks.energynet.EnergyCrystal.CrystalType.WIRELESS;
 import static com.brandon3055.draconicevolution.inventory.GuiLayoutFactories.*;
 import static net.minecraft.block.material.Material.GLASS;
 import static net.minecraft.block.material.Material.IRON;
@@ -547,23 +532,5 @@ public class DEContent {
         event.getRegistry().register(new FusionRecipe.Serializer().setRegistryName("fusion_crafting"));
     }
 
-    private static OreFeatureConfig.FillerBlockType END_STONE_FILTER = OreFeatureConfig.FillerBlockType.create("END_STONE", "end_stone", e -> e.getBlock() == Blocks.END_STONE);
 
-    @SubscribeEvent
-    public static void registerWorldGen(RegistryEvent.Register<Feature<?>> event) {
-        for (Biome biome : ForgeRegistries.BIOMES) {
-            if (biome.getCategory() == Biome.Category.THEEND && DEConfig.enableOreEnd) {
-                biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Feature.ORE.withConfiguration(new OreFeatureConfig(END_STONE_FILTER, ore_draconium_end.getDefaultState(), 6))
-                        .withPlacement(Placement.CHANCE_RANGE.configure(new ChanceRangeConfig(0.5F, 32, 32, 128))));
-
-            } else if (biome.getCategory() == Biome.Category.NETHER && DEConfig.enableOreNether) {
-                biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Feature.ORE.withConfiguration(new OreFeatureConfig(OreFeatureConfig.FillerBlockType.NETHERRACK, ore_draconium_nether.getDefaultState(), 16))
-                        .withPlacement(Placement.CHANCE_RANGE.configure(new ChanceRangeConfig(0.1F, 0, 0, 16))));
-
-            } else if (DEConfig.enableOreOverworld) {
-                biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Feature.ORE.withConfiguration(new OreFeatureConfig(OreFeatureConfig.FillerBlockType.NATURAL_STONE, ore_draconium_overworld.getDefaultState(), 8))
-                        .withPlacement(Placement.CHANCE_RANGE.configure(new ChanceRangeConfig(0.1F, 0, 0, 16))));
-            }
-        }
-    }
 }

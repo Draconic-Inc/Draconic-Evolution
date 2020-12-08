@@ -8,6 +8,7 @@ import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.draconicevolution.client.DEParticles;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 
@@ -19,7 +20,7 @@ import javax.annotation.Nullable;
  */
 public class ParticleLineIndicator extends SpriteTexturedParticle {
     public ParticleLineIndicator(World worldIn, double xCoordIn, double yCoordIn, double zCoordIn, double xSpeedIn, double ySpeedIn, double zSpeedIn) {
-        super(worldIn, xCoordIn, yCoordIn, zCoordIn, xSpeedIn, ySpeedIn, zSpeedIn);
+        super((ClientWorld)worldIn, xCoordIn, yCoordIn, zCoordIn, xSpeedIn, ySpeedIn, zSpeedIn);
         this.motionX = xSpeedIn;
         this.motionY = ySpeedIn;
         this.motionZ = zSpeedIn;
@@ -37,9 +38,8 @@ public class ParticleLineIndicator extends SpriteTexturedParticle {
             this.spriteSet = p_i50823_1_;
         }
 
-        @Nullable
         @Override
-        public Particle makeParticle(IntParticleType.IntParticleData data, World world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public Particle makeParticle(IntParticleType.IntParticleData data, ClientWorld world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
             ParticleLineIndicator particle = new ParticleLineIndicator(world, x, y, z, xSpeed, ySpeed, zSpeed);
             particle.selectSpriteRandomly(spriteSet);
 
