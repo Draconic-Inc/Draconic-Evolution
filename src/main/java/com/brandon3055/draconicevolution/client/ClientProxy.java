@@ -202,6 +202,7 @@ public class ClientProxy extends CommonProxy {
         ClientRegistry.bindTileEntityRenderer(DEContent.tile_reactor_stabilizer, RenderTileReactorComponent::new);
         ClientRegistry.bindTileEntityRenderer(DEContent.tile_crafting_core, RenderTileFusionCraftingCore::new);
         ClientRegistry.bindTileEntityRenderer(DEContent.tile_crafting_injector, RenderTileCraftingInjector::new);
+        ClientRegistry.bindTileEntityRenderer(DEContent.tile_potentiometer, RenderTilePotentiometer::new);
     }
 
     @SuppressWarnings("ConstantConditions")

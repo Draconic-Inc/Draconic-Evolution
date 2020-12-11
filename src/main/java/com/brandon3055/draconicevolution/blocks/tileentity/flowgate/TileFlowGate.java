@@ -72,7 +72,7 @@ public abstract class TileFlowGate extends TileBCore implements ITickableTileEnt
         if (rsSignal.get() == -1) {
             rsSignal.set((byte) world.getRedstonePowerFromNeighbors(pos));
         }
-        return minFlow.get() + (int) (((double) rsSignal.get() / 15D) * (double) (maxFlow.get() - minFlow.get()));
+        return minFlow.get() + (long) (((double) rsSignal.get() / 15D) * (double) (maxFlow.get() - minFlow.get()));
     }
 
     //endregion

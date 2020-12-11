@@ -19,7 +19,7 @@ import net.minecraft.util.math.BlockRayTraceResult;
  */
 public class TilePotentiometer extends TileBCore implements IRedstoneEmitter, IActivatableTile {
 
-    public final ManagedEnum<Direction> rotation = register(new ManagedEnum<>("rotation", Direction.NORTH, DataFlags.SAVE_BOTH_SYNC_TILE));
+    public final ManagedEnum<Direction> rotation = register(new ManagedEnum<>("rotation", Direction.NORTH, DataFlags.SAVE_NBT_SYNC_TILE));
     public final ManagedByte power = register(new ManagedByte("power", DataFlags.SAVE_BOTH_SYNC_TILE));
 
     public TilePotentiometer() {
@@ -61,7 +61,7 @@ public class TilePotentiometer extends TileBCore implements IRedstoneEmitter, IA
         }
 
         if (world.isRemote) {
-            ChatHelper.indexedMsg(player, power.toString());
+            ChatHelper.indexedMsg(player, String.valueOf(power.get()));
         }
         else {
             world.playSound(null, pos, SoundEvents.BLOCK_STONE_BUTTON_CLICK_ON, SoundCategory.BLOCKS, 0.3F, 0.5F + (power.get() / 20F));

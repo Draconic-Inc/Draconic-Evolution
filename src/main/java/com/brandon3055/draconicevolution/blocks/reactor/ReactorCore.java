@@ -80,43 +80,6 @@ public class ReactorCore extends BlockBCore /*implements ITileEntityProvider, IR
         return BlockRenderType.INVISIBLE;
     }
 
-//    @OnlyIn(Dist.CLIENT)
-//    @Override
-//    public void registerRenderer(Feature feature) {
-//        ClientRegistry.bindTileEntitySpecialRenderer(TileReactorCore.class, new RenderTileReactorCore());
-//        ModelRegistryHelper.registerItemRenderer(Item.getItemFromBlock(this), new RenderItemReactorComponent());
-//    }
-//
-//    @Override
-//    public boolean registerNormal(Feature feature) {
-//        return false;
-//    }
-
-
-//    @Override
-//    public VoxelShape getRaytraceShape(BlockState state, IBlockReader worldIn, BlockPos pos) {
-//        return super.getRaytraceShape(state, worldIn, pos);
-//    }
-//
-//    @Override
-//    public AxisAlignedBB getSelectedBoundingBox(BlockState state, World worldIn, BlockPos pos) {
-//        return NO_AABB;
-//    }
-//
-//    //endregion
-//
-//    @Nullable
-//    public AxisAlignedBB getCollisionBoundingBox(BlockState blockState, World worldIn, BlockPos pos) {
-//        TileEntity tile = worldIn.getTileEntity(pos);
-//
-//        if (tile instanceof TileReactorCore && ((TileReactorCore) tile).reactorState.get().isShieldActive()) {
-//            return NULL_AABB;
-//        }
-//
-//        return super.getCollisionBoundingBox(blockState, worldIn, pos);
-//    }
-
-
     @Override
     public void onBlockExploded(BlockState state, World world, BlockPos pos, Explosion explosion) {
         TileEntity tile = world.getTileEntity(pos);
@@ -143,8 +106,7 @@ public class ReactorCore extends BlockBCore /*implements ITileEntityProvider, IR
 
     @Override
     public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
-//        AABB = VoxelShapes.create(0.25, 0.25, 0.25, 0.75, 0.75, 0.75);
-        return VoxelShapes.create(0.25, 0.25, 0.25, 0.75, 0.75, 0.75);
+        return AABB;
     }
 
     @Override
@@ -166,19 +128,5 @@ public class ReactorCore extends BlockBCore /*implements ITileEntityProvider, IR
     public boolean addRunningEffects(BlockState state, World world, BlockPos pos, Entity entity) {
         return true;
     }
-
-    //    @Nullable
-//    @Override
-//    public RayTraceResult collisionRayTrace(BlockState blockState, World worldIn, BlockPos pos, Vec3d start, Vec3d end) {
-//        RayTraceResult result = super.collisionRayTrace(blockState, worldIn, pos, start, end);
-//
-//        if (result != null && result.typeOfHit == RayTraceResult.Type.BLOCK) {
-//            TileEntity tile = worldIn.getTileEntity(pos);
-//            if (tile instanceof TileReactorCore && ((TileReactorCore) tile).reactorState.get().isShieldActive()) {
-//                result = new RayTraceResult(RayTraceResult.Type.MISS, result.hitVec, result.sideHit, pos);
-//            }
-//        }
-//        return result;
-//    }
 
 }

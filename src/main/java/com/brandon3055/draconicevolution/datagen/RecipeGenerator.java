@@ -12,6 +12,7 @@ import java.util.function.Consumer;
 import static com.brandon3055.brandonscore.api.TechLevel.*;
 import static com.brandon3055.draconicevolution.init.DEContent.*;
 import static net.minecraft.item.Items.*;
+import static net.minecraft.tags.ItemTags.PLANKS;
 import static net.minecraftforge.common.Tags.Items.*;
 
 /**
@@ -58,6 +59,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .key('C', GEMS_DIAMOND)
                 .addCriterion("has_draconium", hasItem(ingot_draconium))
                 .build(consumer);
+
         ShapedRecipeBuilder.shapedRecipe(core_wyvern)
                 .patternLine("ABA")
                 .patternLine("BCB")
@@ -67,6 +69,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .key('C', NETHER_STARS)
                 .addCriterion("has_core_draconium", hasItem(core_draconium))
                 .build(consumer);
+
         FusionRecipeBuilder.fusionRecipe(core_awakened)
                 .catalyst(NETHER_STARS)
                 .energy(1000000)
@@ -80,6 +83,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .ingredient(ingot_draconium_awakened)
                 .ingredient(core_wyvern, core_wyvern)
                 .build(consumer);
+
         FusionRecipeBuilder.fusionRecipe(core_chaotic)
                 .catalyst(chaos_shard)
                 .energy(100000000)
@@ -92,8 +96,8 @@ public class RecipeGenerator extends RecipeProvider {
                 .ingredient(core_awakened)
                 .ingredient(core_awakened)
                 .ingredient(ingot_draconium_awakened)
-                .build
-                        (consumer);
+                .build(consumer);
+
         ShapedRecipeBuilder.shapedRecipe(energy_core_wyvern)
                 .patternLine("ABA")
                 .patternLine("BCB")
@@ -103,6 +107,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .key('C', core_draconium)
                 .addCriterion("has_core_draconium", hasItem(core_draconium))
                 .build(consumer);
+
         ShapedRecipeBuilder.shapedRecipe(energy_core_draconic)
                 .patternLine("ABA")
                 .patternLine("BCB")
@@ -143,6 +148,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .key('C', core_draconium)
                 .addCriterion("has_core_draconium", hasItem(core_draconium))
                 .build(consumer);
+
         ShapedRecipeBuilder.shapedRecipe(crafting_injector_basic)
                 .patternLine("ABA")
                 .patternLine("CDC")
@@ -153,6 +159,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .key('D', STORAGE_BLOCKS_IRON)
                 .addCriterion("has_core_draconium", hasItem(core_draconium))
                 .build(consumer);
+
         FusionRecipeBuilder.fusionRecipe(crafting_injector_wyvern)
                 .catalyst(crafting_injector_basic)
                 .energy(32000)
@@ -166,6 +173,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .ingredient(block_draconium)
                 .ingredient(GEMS_DIAMOND)
                 .build(consumer);
+
         FusionRecipeBuilder.fusionRecipe(crafting_injector_awakened)
                 .catalyst(crafting_injector_wyvern)
                 .energy(256000)
@@ -178,6 +186,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .ingredient(GEMS_DIAMOND)
                 .ingredient(GEMS_DIAMOND)
                 .build(consumer);
+
         FusionRecipeBuilder.fusionRecipe(crafting_injector_chaotic)
                 .catalyst(crafting_injector_awakened)
                 .energy(8000000)
@@ -200,6 +209,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .key('D', core_draconium)
                 .addCriterion("has_core_draconium", hasItem(core_draconium))
                 .build(consumer);
+
         ShapedRecipeBuilder.shapedRecipe(grinder)
                 .patternLine("ABA")
                 .patternLine("CDC")
@@ -211,6 +221,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .key('E', FURNACE)
                 .addCriterion("has_core_draconium", hasItem(core_draconium))
                 .build(consumer);
+
 //        ShapedRecipeBuilder.shapedRecipe(energy_infuser)
 //                .patternLine("ABA")
 //                .patternLine("CDC")
@@ -221,6 +232,7 @@ public class RecipeGenerator extends RecipeProvider {
 //                .key('D', ENCHANTING_TABLE)
 //                .addCriterion("has_core_draconium", hasItem(core_draconium))
 //                .build(consumer);
+
         ShapedRecipeBuilder.shapedRecipe(particle_generator)
                 .patternLine("ABA")
                 .patternLine("BCB")
@@ -230,6 +242,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .key('C', core_draconium)
                 .addCriterion("has_core_draconium", hasItem(core_draconium))
                 .build(consumer);
+
         FusionRecipeBuilder.fusionRecipe(draconium_chest)
                 .catalyst(CHEST)
                 .energy(2000000)
@@ -244,6 +257,17 @@ public class RecipeGenerator extends RecipeProvider {
                 .ingredient(block_draconium)
                 .ingredient(FURNACE)
                 .ingredient(CRAFTING_TABLE)
+                .build(consumer);
+
+        ShapedRecipeBuilder.shapedRecipe(potentiometer)
+                .patternLine(" A ")
+                .patternLine("BCB")
+                .patternLine("DDD")
+                .key('A', PLANKS)
+                .key('B', DUSTS_REDSTONE)
+                .key('C', dust_draconium)
+                .key('D', STONE_SLAB)
+                .addCriterion("has_STONE_SLAB", hasItem(STONE_SLAB))
                 .build(consumer);
     }
 
@@ -518,7 +542,7 @@ public class RecipeGenerator extends RecipeProvider {
 //        ShapedRecipeBuilder.shapedRecipe(rain_sensor).patternLine(" A ").patternLine("BCB").patternLine("DDD").key('A', BUCKET).key('B', DUSTS_REDSTONE).key('C', STONE_PRESSURE_PLATE).key('D', STONE_SLAB).build(consumer);
 //        ShapedRecipeBuilder.shapedRecipe(disenchanter).patternLine("ABA").patternLine("CDC").patternLine("EEE").key('A', GEMS_EMERALD).key('B', core_draconium).key('C', ENCHANTED_BOOK).key('D', ENCHANTING_TABLE).key('E', BOOKSHELF).build(consumer);
 //        ShapedRecipeBuilder.shapedRecipe(celestial_manipulator).patternLine("ABA").patternLine("CDC").patternLine("EFE").key('A', STORAGE_BLOCKS_REDSTONE).key('B', CLOCK).key('C', ingot_draconium).key('D', DRAGON_EGG).key('E', INGOTS_IRON).key('F', core_wyvern).build(consumer);
-//        ShapedRecipeBuilder.shapedRecipe(potentiometer).patternLine(" A ").patternLine("BCB").patternLine("DDD").key('A', ItemTags.PLANKS).key('B', DUSTS_REDSTONE).key('C', dust_draconium).key('D', STONE_SLAB).build(consumer);
+//
 //        ShapedRecipeBuilder.shapedRecipe(entity_detector).patternLine("ABA").patternLine("CDC").patternLine("EFE").key('A', GEMS_LAPIS).key('B', ENDER_EYE).key('C', DUSTS_REDSTONE).key('D', ingot_draconium).key('E', INGOTS_IRON).key('F', core_draconium).build(consumer);
 //        ShapedRecipeBuilder.shapedRecipe(entity_detector_advanced).patternLine("ABA").patternLine("CDC").patternLine("EFE").key('A', STORAGE_BLOCKS_REDSTONE).key('B', SKELETON_SKULL).key('C', STORAGE_BLOCKS_LAPIS).key('D', GEMS_DIAMOND).key('E', ingot_draconium).key('F', entity_detector).build(consumer);
 //        ShapedRecipeBuilder.shapedRecipe(flow_gate).patternLine("ABA").patternLine("CDC").patternLine("AEA").key('A', INGOTS_IRON).key('B', potentiometer).key('C', BUCKET).key('D', core_draconium).key('E', COMPARATOR).build(consumer);

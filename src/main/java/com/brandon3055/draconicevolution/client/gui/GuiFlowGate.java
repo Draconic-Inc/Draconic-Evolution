@@ -86,7 +86,7 @@ public class GuiFlowGate extends ModularGuiContainer<ContainerBCTile<TileFlowGat
                 .setSize(xSize(), 8)
                 .setYPos(lowField.maxYPos() + 5)
                 .setMaxXPos(template.playerSlots.maxXPos(), false)
-                .setDisplaySupplier(() -> toolkit.i18n("flow") + ": " + Utils.addCommas(tile.getFlow()) + tile.getUnits())
+                .setDisplaySupplier(() -> toolkit.i18n("flow") + ": " + (tile.getFlow() > 999999 ? Utils.formatNumber(tile.getFlow()) : Utils.addCommas(tile.getFlow())) + tile.getUnits())
                 .setAlignment(GuiAlign.RIGHT);
 
         manager.onTick(() -> {

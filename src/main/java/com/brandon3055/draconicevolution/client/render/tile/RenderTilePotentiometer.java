@@ -14,9 +14,12 @@ import com.brandon3055.draconicevolution.blocks.tileentity.TilePotentiometer;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.inventory.container.PlayerContainer;
+import net.minecraft.util.ResourceLocation;
 
 public class RenderTilePotentiometer extends TileEntityRenderer<TilePotentiometer> {
 
@@ -63,25 +66,21 @@ public class RenderTilePotentiometer extends TileEntityRenderer<TilePotentiomete
 
         model.computeNormals();
         model.computeLightCoords();
+        model = model.twoFacedCopy();
     }
 
     @Override
-    public void render(TilePotentiometer tileEntityIn, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
-
-    }
-
-//    @Override
-    public void renderTileEntityFast(TilePotentiometer te, double x, double y, double z, float partialTicks, int destroyStage, BufferBuilder buffer) {
-        TextureAtlasSprite stoneTex = TextureUtils.getBlockTexture("planks_oak");
+    public void render(TilePotentiometer te, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer buffer, int combinedLightIn, int combinedOverlayIn) {
+        TextureAtlasSprite stoneTex = TextureUtils.getBlockTexture("oak_planks");
         UVTransformation iconTransform = new IconTransformation(stoneTex);
         CCRenderState state = CCRenderState.instance();
         state.reset();
-        state.bind(buffer);
-        state.setBrightness(te.getWorld(), te.getPos());
+        state.bind(RenderType.getSolid(), buffer);
+        state.brightness = combinedLightIn;
+        state.overlay = combinedOverlayIn;
         double pxl = 1D / 16D;
 
-        Matrix4 mat = new Matrix4();
-        mat.apply(new Translation(x, y, z));
+        Matrix4 mat = new Matrix4(matrixStackIn);
         mat.apply(Rotation.sideOrientation(te.getBlockState().get(Potentiometer.FACING).getOpposite().getIndex(), 0).at(Vector3.CENTER));
         mat.apply(new Translation(6 * pxl, pxl, 6 * pxl));
         mat.apply(new Rotation(te.power.get() * 22.5D * -MathHelper.torad, 0, 1, 0).at(new Vector3(pxl * 2, 0, pxl * 2)));

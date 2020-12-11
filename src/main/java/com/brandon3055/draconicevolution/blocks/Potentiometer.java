@@ -39,7 +39,6 @@ public class Potentiometer extends BlockBCore /*implements ITileEntityProvider, 
         super(properties);
         setDefaultState(stateContainer.getBaseState().with(FACING, Direction.UP));
         this.canProvidePower = true;
-//        this.setHardness(2F);
     }
 
     @Override
@@ -52,74 +51,6 @@ public class Potentiometer extends BlockBCore /*implements ITileEntityProvider, 
         builder.add(FACING);
     }
 
-    //region Blockstate
-
-//    public BlockState getStateFromMeta(int meta) {
-//        Direction enumfacing;
-//
-//        switch (meta) {
-//            case 0:
-//                enumfacing = Direction.DOWN;
-//                break;
-//            case 1:
-//                enumfacing = Direction.EAST;
-//                break;
-//            case 2:
-//                enumfacing = Direction.WEST;
-//                break;
-//            case 3:
-//                enumfacing = Direction.SOUTH;
-//                break;
-//            case 4:
-//                enumfacing = Direction.NORTH;
-//                break;
-//            case 5:
-//            default:
-//                enumfacing = Direction.UP;
-//        }
-//
-//        return this.getDefaultState().withProperty(FACING, enumfacing);
-//    }
-//
-//    public int getMetaFromState(BlockState state) {
-//        int i;
-//
-//        switch (state.getValue(FACING)) {
-//            case EAST:
-//                i = 1;
-//                break;
-//            case WEST:
-//                i = 2;
-//                break;
-//            case SOUTH:
-//                i = 3;
-//                break;
-//            case NORTH:
-//                i = 4;
-//                break;
-//            case UP:
-//            default:
-//                i = 5;
-//                break;
-//            case DOWN:
-//                i = 0;
-//        }
-//
-//        return i;
-//    }
-//
-//    @Override
-//    protected BlockStateContainer createBlockState() {
-//        return new BlockStateContainer(this, FACING);
-//    }
-//
-//    @Override
-//    public BlockState getActualState(BlockState state, IBlockAccess worldIn, BlockPos pos) {
-//        return super.getActualState(state, worldIn, pos);
-//    }
-
-    //endregion
-
     @Override
     public boolean hasTileEntity(BlockState state) {
         return true;
@@ -130,8 +61,6 @@ public class Potentiometer extends BlockBCore /*implements ITileEntityProvider, 
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {
         return new TilePotentiometer();
     }
-
-    //region place
 
     protected static boolean canPlaceBlock(World worldIn, BlockPos pos, Direction direction) {
         BlockPos blockpos = pos.offset(direction);
@@ -152,6 +81,23 @@ public class Potentiometer extends BlockBCore /*implements ITileEntityProvider, 
     @Override //TODO make sure this logic is not backwards
     public boolean isValidPosition(BlockState state, IWorldReader worldIn, BlockPos pos) {
         return hasEnoughSolidSide(worldIn, pos.offset(state.get(FACING).getOpposite()), state.get(FACING));
+    }
+
+    @Override
+    public void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
+        if (!isMoving && !state.isIn(newState.getBlock())) {
+            TileEntity tile = worldIn.getTileEntity(pos);
+            if (tile instanceof TilePotentiometer && ((TilePotentiometer) tile).power.get() > 0) {
+                this.updateNeighbors(state, worldIn, pos, (TilePotentiometer)tile);
+            }
+
+            super.onReplaced(state, worldIn, pos, newState, isMoving);
+        }
+    }
+
+    private void updateNeighbors(BlockState state, World world, BlockPos pos, TilePotentiometer tile) {
+        world.notifyNeighborsOfStateChange(pos, this);
+        world.notifyNeighborsOfStateChange(pos.offset(state.get(FACING).getOpposite()), this);
     }
 
     //    @Override
@@ -188,32 +134,6 @@ public class Potentiometer extends BlockBCore /*implements ITileEntityProvider, 
 //        }
 //
 //        return false;
-//    }
-
-    //endregion
-
-    //region render
-
-//    @OnlyIn(Dist.CLIENT)
-//    @Override
-//    public void registerRenderer(Feature feature) {
-//        ClientRegistry.bindTileEntitySpecialRenderer(TilePotentiometer.class, new RenderTilePotentiometer());
-//    }
-//
-//    @Override
-//    public boolean registerNormal(Feature feature) {
-//        return true;
-//    }
-
-
-    @Override
-    public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
-        return VoxelShapes.empty();
-    }
-
-//    @Nullable
-//    public AxisAlignedBB getCollisionBoundingBox(BlockState blockState, World worldIn, BlockPos pos) {
-//        return NULL_AABB;
 //    }
 
 

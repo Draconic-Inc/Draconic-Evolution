@@ -58,6 +58,8 @@ public class BlockStateGenerator extends BlockStateProvider {
         directionalFromNorth(DEContent.fluid_gate, models().getExistingFile(modLoc("block/fluid_gate")));
         directionalFromNorth(DEContent.flux_gate, models().getExistingFile(modLoc("block/flux_gate")));
 
+        directionalBlock(DEContent.potentiometer, models().getExistingFile(modLoc("block/potentiometer")));
+
 
         dummyBlock(DEContent.crystal_io_basic);
         dummyBlock(DEContent.crystal_io_wyvern);

@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.blocks.tileentity.flowgate;
 
+import codechicken.lib.data.MCDataInput;
 import codechicken.lib.util.SneakyUtils;
 import com.brandon3055.brandonscore.api.power.IOPStorage;
 import com.brandon3055.brandonscore.blocks.TileBCore;
@@ -84,6 +85,30 @@ public class TileFluxGate extends TileFlowGate {
             NetworkHooks.openGui((ServerPlayerEntity) player, this, pos);
         }
         return true;
+    }
+
+    @Override
+    public void receivePacketFromClient(MCDataInput data, ServerPlayerEntity client, int id) {
+        if (flowOverridden.get()) {
+            return;
+        }
+
+        try {
+            String value = data.readString();
+            long l = Long.parseLong(value);
+            if (l < 0) {
+                l = 0;
+            }
+
+            if (id == 0) {
+                minFlow.set(l);
+            }
+            else if (id == 1) {
+                maxFlow.set(l);
+            }
+        }
+        catch (NumberFormatException ignored) {
+        }
     }
 
     private static class OPRegulator implements IOPStorage {

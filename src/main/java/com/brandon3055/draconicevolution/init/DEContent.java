@@ -124,7 +124,7 @@ public class DEContent {
         event.getRegistry().register(TileEntityType.Builder.create(TileCreativeOPCapacitor::new,    creative_op_capacitor  ).build(null).setRegistryName("creative_op_capacitor"));
 //        event.getRegistry().register(TileEntityType.Builder.create(TileEntityDetector::new,       entityDetectors        ).build(null).setRegistryName("entity_detector"));
         event.getRegistry().register(TileEntityType.Builder.create(TileStabilizedSpawner::new,      stabilized_spawner     ).build(null).setRegistryName("stabilized_spawner"));
-//        event.getRegistry().register(TileEntityType.Builder.create(TilePotentiometer::new,        potentiometer          ).build(null).setRegistryName("potentiometer"));
+        event.getRegistry().register(TileEntityType.Builder.create(TilePotentiometer::new,        potentiometer          ).build(null).setRegistryName("potentiometer"));
 //        event.getRegistry().register(TileEntityType.Builder.create(TileCelestialManipulator::new, celestial_manipulator  ).build(null).setRegistryName("celestial_manipulator"));
 //        event.getRegistry().register(TileEntityType.Builder.create(TileDraconiumChest::new,       draconium_chest        ).build(null).setRegistryName("draconium_chest"));
 //        event.getRegistry().register(TileEntityType.Builder.create(TileParticleGenerator::new,    particle_generator     ).build(null).setRegistryName("particle_generator"));
@@ -274,7 +274,7 @@ public class DEContent {
 //        event.getRegistry().register(new DislocationInhibitor(machine).setRegistryName("dislocation_inhibitor"));
         //Stone Type
 //        event.getRegistry().register(new RainSensor(stoneProp).setRegistryName("rain_sensor"));
-//        event.getRegistry().register(new Potentiometer(stoneProp).setRegistryName("potentiometer"));
+        event.getRegistry().register(new Potentiometer(stoneProp).setRegistryName("potentiometer"));
         //Hardened Machine
         event.getRegistry().register(new Grinder(hardenedMachine).setRegistryName("grinder"));
 //        event.getRegistry().register(new DissEnchanter(hardenedMachine).setRegistryName("disenchanter"));
@@ -416,7 +416,7 @@ public class DEContent {
 //        registerItem(event, new ItemBlockBCore(entityDetectors[0],          new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(entityDetectors[0].getRegistryName())));
 //        registerItem(event, new ItemBlockBCore(entityDetectors[1],          new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(entityDetectors[1].getRegistryName())));
         registerItem(event, new ItemBlockBCore(stabilized_spawner,          new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(stabilized_spawner.getRegistryName())));
-//        registerItem(event, new ItemBlockBCore(potentiometer,               new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(potentiometer.getRegistryName())));
+        registerItem(event, new ItemBlockBCore(potentiometer,               new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(potentiometer.getRegistryName())));
 //        registerItem(event, new ItemBlockBCore(celestial_manipulator,       new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(celestial_manipulator.getRegistryName())));
 //        registerItem(event, new ItemBlockBCore(draconium_chest,             new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(draconium_chest.getRegistryName())));
         registerItem(event, new ItemBlockBCore(particle_generator,          new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(particle_generator.getRegistryName())));
