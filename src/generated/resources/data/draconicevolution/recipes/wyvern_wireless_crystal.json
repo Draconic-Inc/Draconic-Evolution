@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ABA",
+    "CDC",
+    "ABA"
+  ],
+  "key": {
+    "A": {
+      "item": "minecraft:ender_pearl"
+    },
+    "B": {
+      "item": "draconicevolution:particle_generator"
+    },
+    "C": {
+      "item": "minecraft:ender_eye"
+    },
+    "D": {
+      "item": "draconicevolution:wyvern_relay_crystal"
+    }
+  },
+  "result": {
+    "item": "draconicevolution:wyvern_wireless_crystal"
+  }
+}

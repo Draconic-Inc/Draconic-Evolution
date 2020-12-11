@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ABA",
+    "BCB",
+    "ABA"
+  ],
+  "key": {
+    "A": {
+      "item": "draconicevolution:draconium_ingot"
+    },
+    "B": {
+      "item": "draconicevolution:wyvern_energy_core"
+    },
+    "C": {
+      "item": "draconicevolution:wyvern_core"
+    }
+  },
+  "result": {
+    "item": "draconicevolution:wyvern_capacitor"
+  }
+}

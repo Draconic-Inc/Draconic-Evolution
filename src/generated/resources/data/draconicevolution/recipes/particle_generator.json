@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ABA",
+    "BCB",
+    "ABA"
+  ],
+  "key": {
+    "A": {
+      "tag": "forge:storage_blocks/redstone"
+    },
+    "B": {
+      "item": "minecraft:blaze_rod"
+    },
+    "C": {
+      "item": "draconicevolution:draconium_core"
+    }
+  },
+  "result": {
+    "item": "draconicevolution:particle_generator"
+  }
+}

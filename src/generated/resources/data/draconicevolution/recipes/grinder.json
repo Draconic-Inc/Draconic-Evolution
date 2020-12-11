@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ABA",
+    "CDC",
+    "AEA"
+  ],
+  "key": {
+    "A": {
+      "tag": "forge:ingots/iron"
+    },
+    "B": {
+      "item": "draconicevolution:draconium_ingot"
+    },
+    "C": {
+      "item": "minecraft:diamond_sword"
+    },
+    "D": {
+      "item": "draconicevolution:draconium_core"
+    },
+    "E": {
+      "item": "minecraft:furnace"
+    }
+  },
+  "result": {
+    "item": "draconicevolution:grinder"
+  }
+}

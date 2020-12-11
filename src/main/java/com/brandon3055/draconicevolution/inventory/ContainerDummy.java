@@ -13,6 +13,7 @@ import net.minecraft.network.PacketBuffer;
 /**
  * Created by brandon3055 on 17/10/2016.
  */
+@Deprecated //This does not need to exist. Can just use ContainerBCTile
 public class ContainerDummy<T extends TileBCore> extends ContainerBCTile<T> {
 
     public ContainerDummy(ContainerType<?> type, int windowId, PlayerInventory playerInv, PacketBuffer extraData) {

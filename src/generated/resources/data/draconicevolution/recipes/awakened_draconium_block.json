@@ -1,0 +1,41 @@
+{
+  "type": "draconicevolution:fusion_crafting",
+  "result": {
+    "item": "draconicevolution:awakened_draconium_block",
+    "count": 4
+  },
+  "catalyst": {
+    "count": 4,
+    "items": [
+      {
+        "item": "draconicevolution:draconium_block"
+      }
+    ],
+    "type": "draconicevolution:ingredient_stack"
+  },
+  "total_energy": 50000000,
+  "tier": "WYVERN",
+  "ingredients": [
+    {
+      "item": "draconicevolution:draconium_core"
+    },
+    {
+      "item": "draconicevolution:draconium_core"
+    },
+    {
+      "item": "draconicevolution:draconium_core"
+    },
+    {
+      "item": "draconicevolution:dragon_heart"
+    },
+    {
+      "item": "draconicevolution:draconium_core"
+    },
+    {
+      "item": "draconicevolution:draconium_core"
+    },
+    {
+      "item": "draconicevolution:draconium_core"
+    }
+  ]
+}

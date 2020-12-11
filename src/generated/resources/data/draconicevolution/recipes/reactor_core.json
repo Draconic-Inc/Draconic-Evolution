@@ -1,0 +1,34 @@
+{
+  "type": "draconicevolution:fusion_crafting",
+  "result": {
+    "item": "draconicevolution:reactor_core"
+  },
+  "catalyst": {
+    "item": "draconicevolution:chaos_shard"
+  },
+  "total_energy": 64000000,
+  "tier": "CHAOTIC",
+  "ingredients": [
+    {
+      "item": "draconicevolution:awakened_draconium_ingot"
+    },
+    {
+      "item": "draconicevolution:draconium_ingot"
+    },
+    {
+      "item": "draconicevolution:awakened_draconium_ingot"
+    },
+    {
+      "item": "draconicevolution:draconium_ingot"
+    },
+    {
+      "item": "draconicevolution:awakened_draconium_ingot"
+    },
+    {
+      "item": "draconicevolution:draconium_ingot"
+    },
+    {
+      "item": "draconicevolution:awakened_draconium_ingot"
+    }
+  ]
+}

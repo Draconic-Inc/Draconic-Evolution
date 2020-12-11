@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.api;
 import com.brandon3055.draconicevolution.api.crafting.FusionRecipe;
 import net.minecraft.block.Block;
 import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ObjectHolder;
 
 /**
@@ -23,4 +24,6 @@ public class DraconicAPI {
 
     @ObjectHolder("draconicevolution:crafting_core")
     public static Block CRAFTING_CORE;
+
+    public static ResourceLocation INGREDIENT_STACK_TYPE = new ResourceLocation("draconicevolution:ingredient_stack");
 }

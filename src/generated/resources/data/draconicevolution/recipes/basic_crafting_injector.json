@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ABA",
+    "CDC",
+    "CCC"
+  ],
+  "key": {
+    "A": {
+      "tag": "forge:gems/diamond"
+    },
+    "B": {
+      "item": "draconicevolution:draconium_core"
+    },
+    "C": {
+      "tag": "forge:stone"
+    },
+    "D": {
+      "tag": "forge:storage_blocks/iron"
+    }
+  },
+  "result": {
+    "item": "draconicevolution:basic_crafting_injector"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "draconicevolution:compress/awakened_draconium_ingot"
+    ]
+  },
+  "criteria": {
+    "has_awakened_draconium_nugget": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "draconicevolution:awakened_draconium_nugget"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "draconicevolution:compress/awakened_draconium_ingot"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_awakened_draconium_nugget",
+      "has_the_recipe"
+    ]
+  ]
+}

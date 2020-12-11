@@ -5,6 +5,7 @@ import com.brandon3055.draconicevolution.api.DraconicAPI;
 import com.brandon3055.draconicevolution.api.OreDictHelper;
 import com.brandon3055.draconicevolution.api.fusioncrafting.ICraftingInjector;
 import com.brandon3055.draconicevolution.api.fusioncrafting.IFusionCraftingInventory;
+import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonArray;
@@ -222,7 +223,7 @@ public class FusionRecipe implements IFusionRecipe {
             }
 
             long totalEnergy = JSONUtils.getLong(json, "total_energy");
-            TechLevel techLevel = TechLevel.VALUES[MathHelper.clamp(JSONUtils.getInt(json, "tier"), 0, TechLevel.values().length - 1)];
+            TechLevel techLevel = TechLevel.valueOf(JSONUtils.getString(json, "tier", TechLevel.DRACONIUM.name()));
 
             return new FusionRecipe(id, result, catalyst, totalEnergy, techLevel, fusionIngredients);
         }

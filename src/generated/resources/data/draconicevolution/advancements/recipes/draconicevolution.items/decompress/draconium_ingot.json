@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "draconicevolution:decompress/draconium_ingot"
+    ]
+  },
+  "criteria": {
+    "has_draconium_block": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "draconicevolution:draconium_block"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "draconicevolution:decompress/draconium_ingot"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_draconium_block",
+      "has_the_recipe"
+    ]
+  ]
+}

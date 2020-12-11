@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "draconicevolution:basic_relay_crystal"
+    ]
+  },
+  "criteria": {
+    "has_core_draconium": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "draconicevolution:draconium_core"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "draconicevolution:basic_relay_crystal"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_core_draconium",
+      "has_the_recipe"
+    ]
+  ]
+}

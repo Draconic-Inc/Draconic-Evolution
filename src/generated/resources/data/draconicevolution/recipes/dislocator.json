@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ABA",
+    "BCB",
+    "ABA"
+  ],
+  "key": {
+    "A": {
+      "item": "minecraft:blaze_powder"
+    },
+    "B": {
+      "item": "draconicevolution:draconium_dust"
+    },
+    "C": {
+      "item": "minecraft:ender_eye"
+    }
+  },
+  "result": {
+    "item": "draconicevolution:dislocator"
+  }
+}

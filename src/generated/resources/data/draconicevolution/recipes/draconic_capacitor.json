@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ABA",
+    "CDC",
+    "ACA"
+  ],
+  "key": {
+    "A": {
+      "item": "draconicevolution:draconic_energy_core"
+    },
+    "B": {
+      "item": "draconicevolution:awakened_core"
+    },
+    "C": {
+      "item": "draconicevolution:awakened_draconium_ingot"
+    },
+    "D": {
+      "item": "draconicevolution:wyvern_capacitor"
+    }
+  },
+  "result": {
+    "item": "draconicevolution:draconic_capacitor"
+  }
+}

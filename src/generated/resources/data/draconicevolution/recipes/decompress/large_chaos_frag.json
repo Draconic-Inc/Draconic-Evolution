@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "draconicevolution:chaos_shard"
+    }
+  ],
+  "result": {
+    "item": "draconicevolution:large_chaos_frag",
+    "count": 9
+  }
+}

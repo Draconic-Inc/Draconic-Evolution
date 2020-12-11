@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "draconicevolution:draconic_capacitor"
+    ]
+  },
+  "criteria": {
+    "has_core_awakened": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "draconicevolution:awakened_core"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "draconicevolution:draconic_capacitor"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_core_awakened",
+      "has_the_recipe"
+    ]
+  ]
+}

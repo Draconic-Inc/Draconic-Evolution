@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " A ",
+    "BCB",
+    " D "
+  ],
+  "key": {
+    "A": {
+      "item": "draconicevolution:wyvern_core"
+    },
+    "B": {
+      "item": "draconicevolution:draconium_ingot"
+    },
+    "C": {
+      "item": "minecraft:diamond_pickaxe"
+    },
+    "D": {
+      "item": "draconicevolution:wyvern_energy_core"
+    }
+  },
+  "result": {
+    "item": "draconicevolution:wyvern_pickaxe"
+  }
+}
