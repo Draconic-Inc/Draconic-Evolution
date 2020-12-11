@@ -2,7 +2,6 @@ package com.brandon3055.draconicevolution.blocks.tileentity;
 
 import codechicken.lib.data.MCDataInput;
 import com.brandon3055.brandonscore.blocks.TileBCore;
-import com.brandon3055.brandonscore.inventory.ContainerBCTile;
 import com.brandon3055.brandonscore.inventory.TileItemStackHandler;
 import com.brandon3055.brandonscore.lib.IActivatableTile;
 import com.brandon3055.brandonscore.lib.Vec3D;
@@ -11,29 +10,23 @@ import com.brandon3055.brandonscore.lib.datamanager.ManagedShort;
 import com.brandon3055.brandonscore.utils.FacingUtils;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.api.DraconicAPI;
-import com.brandon3055.draconicevolution.api.OreDictHelper;
-import com.brandon3055.draconicevolution.api.crafting.FusionRecipe;
 import com.brandon3055.draconicevolution.api.crafting.IFusionInventory;
 import com.brandon3055.draconicevolution.api.crafting.IFusionRecipe;
+import com.brandon3055.draconicevolution.api.crafting.IngredientStack;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.api.fusioncrafting.ICraftingInjector;
-import com.brandon3055.draconicevolution.api.fusioncrafting.IFusionCraftingInventory;
 import com.brandon3055.draconicevolution.client.render.effect.EffectTrackerFusionCrafting;
 import com.brandon3055.draconicevolution.client.sound.FusionRotationSound;
 import com.brandon3055.draconicevolution.handlers.DEEventHandler;
 import com.brandon3055.draconicevolution.inventory.ContainerFusionCraftingCore;
-import com.brandon3055.draconicevolution.inventory.GuiLayoutFactories;
-import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
 import com.brandon3055.draconicevolution.handlers.DESoundHandler;
-import com.brandon3055.draconicevolution.init.RecipeManager;
 import com.brandon3055.draconicevolution.client.DETextures;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SoundHandler;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -41,7 +34,6 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -55,7 +47,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
 import org.lwjgl.opengl.GL11;
-import sun.rmi.log.LogHandler;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -202,16 +193,15 @@ public class TileCraftingCore extends TileBCore implements IFusionInventory, ITi
             }
         }
 
+        int catCount = 1;
+        if (activeRecipe.getCatalyst() instanceof IngredientStack) {
+            catCount = ((IngredientStack) activeRecipe.getCatalyst()).getCount();
+        }
+
         ItemStack catalyst = getStackInCore(0);
         ItemStack result = activeRecipe.getCraftingResult(this);
-//        int count = 1;
-//        for(ItemStack itemstack : activeRecipe.getCatalyst().getMatchingStacks()) {
-//            if (itemstack.getItem() == catalyst.getItem()) {
-//                count = itemstack.getCount();
-//            }
-//        }
 
-        catalyst.shrink(1);
+        catalyst.shrink(catCount);
         setStackInCore(0, catalyst);
         setStackInCore(1, result.copy());
     }
@@ -278,7 +268,7 @@ public class TileCraftingCore extends TileBCore implements IFusionInventory, ITi
                 if (dist >= 2 && Direction.getFacingFromVector((int) dirVec.x, (int) dirVec.y, (int) dirVec.z) == pedestal.getDirection().getOpposite() && pedestal.setCraftingInventory(this)) {
                     BlockPos pPos = tile.getPos();
                     Direction facing = pedestal.getDirection();
-                    List<BlockPos> checkList = Lists.newArrayList(BlockPos.getAllInBoxMutable(pPos.offset(facing), pPos.offset(facing, FacingUtils.destanceInDirection(pPos, pos, facing) - 1)));
+                    List<BlockPos> checkList = Lists.newArrayList(BlockPos.getAllInBoxMutable(pPos.offset(facing), pPos.offset(facing, FacingUtils.distanceInDirection(pPos, pos, facing) - 1)));
 
                     boolean obstructed = false;
                     for (BlockPos bp : checkList) {
@@ -398,7 +388,7 @@ public class TileCraftingCore extends TileBCore implements IFusionInventory, ITi
                 if (dist >= 2 && Direction.getFacingFromVector((int) dirVec.x, (int) dirVec.y, (int) dirVec.z) == pedestal.getDirection().getOpposite() && pedestal.setCraftingInventory(this)) {
                     BlockPos pPos = tile.getPos();
                     Direction facing = pedestal.getDirection();
-                    List<BlockPos> checkList = Lists.newArrayList(BlockPos.getAllInBoxMutable(pPos.offset(facing), pPos.offset(facing, FacingUtils.destanceInDirection(pPos, pos, facing) - 1)));
+                    List<BlockPos> checkList = Lists.newArrayList(BlockPos.getAllInBoxMutable(pPos.offset(facing), pPos.offset(facing, FacingUtils.distanceInDirection(pPos, pos, facing) - 1)));
 
                     boolean obstructed = false;
                     for (BlockPos bp : checkList) {

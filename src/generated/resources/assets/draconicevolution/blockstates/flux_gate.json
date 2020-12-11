@@ -1,0 +1,27 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "draconicevolution:block/flux_gate",
+      "x": 90
+    },
+    "facing=up": {
+      "model": "draconicevolution:block/flux_gate",
+      "x": -90
+    },
+    "facing=north": {
+      "model": "draconicevolution:block/flux_gate"
+    },
+    "facing=south": {
+      "model": "draconicevolution:block/flux_gate",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "draconicevolution:block/flux_gate",
+      "y": 270
+    },
+    "facing=east": {
+      "model": "draconicevolution:block/flux_gate",
+      "y": 90
+    }
+  }
+}

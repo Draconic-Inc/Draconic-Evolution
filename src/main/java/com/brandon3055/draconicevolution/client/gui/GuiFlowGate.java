@@ -1,113 +1,109 @@
-//package com.brandon3055.draconicevolution.client.gui;
-//
-//import com.brandon3055.brandonscore.client.gui.modulargui.GuiElementManager;
-//import com.brandon3055.brandonscore.client.gui.modulargui.ModularGuiContainer;
-//import com.brandon3055.draconicevolution.blocks.tileentity.flowgate.TileFlowGate;
-//import com.brandon3055.draconicevolution.inventory.ContainerDummy;
-//import net.minecraft.entity.player.PlayerEntity;
-//
-///**
-// * Created by brandon3055 on 15/11/2016.
-// */
-//public class GuiFlowGate extends ModularGuiContainer {
-//    public TileFlowGate tile;
-////    private MGuiTextField minField;
-////    private MGuiTextField maxField;
-////    private long ltMin = -1;
-////    private long ltMax = -1;
-////    //region Validator
-////    private Predicate<String> fieldValidator = new Predicate<String>() {
-////        @Override
-////        public boolean apply(@Nullable String input) {
-////            try {
-////                if (input.equals("")) {
-////                    return true;
-////                }
-////                Long.parseLong(input);
-////            }
-////            catch (Exception e) {
-////                return false;
-////            }
-////
-////            return true;
-////        }
-////    };
-////    //endregion
-//
-//    public GuiFlowGate(TileFlowGate tile, PlayerEntity player) {
-//        super(new ContainerDummy(tile, player, -1, -1));
-////        this.tile = tile;
-////        this.xSize = 197;
-////        this.ySize = 88;
-//    }
-//
-//    @Override
-//    public void addElements(GuiElementManager manager) {
-//
-//    }
-//
-////    @Override
-////    public void initGui() {
-////        super.initGui();
-////        manager.clear();
-////
-////        manager.add(MGuiBackground.newGenericBackground(this, guiLeft(), guiTop(), xSize, ySize));
-////        manager.add(new MGuiLabel(this, guiLeft(), guiTop() + 4, xSize, 8, I18n.format(tile.getName())).setTextColour(InfoHelper.GUI_TITLE));
-////
-////        if (tile.flowOverridden.get()) {
-////            manager.add(new MGuiLabel(this, guiLeft(), guiTop(), xSize, ySize, I18n.format("gui.de.flowGateOverridden.txt")).setTextColour(0x00FF00));
-////        }
-////        else {
-////            manager.add(new MGuiLabel(this, guiLeft(), guiTop() + 16, xSize, 8, I18n.format("gui.de.flowGateRSHigh.name")).setTextColour(0xff0000).setShadow(false).setAlignment(EnumAlignment.LEFT));
-////            manager.add(maxField = new MGuiTextField(this, guiLeft() + 4, guiTop() + 26, xSize - 44, 16, fontRenderer));
-////            manager.add(new MGuiButton(this, "SAVE_HIGH", guiLeft() + xSize - 39, guiTop() + 26, 35, 16, I18n.format("gui.button.save")));
-////
-////            manager.add(new MGuiLabel(this, guiLeft(), guiTop() + 44, xSize, 8, I18n.format("gui.de.flowGateRSLow.name")).setTextColour(0x660000).setShadow(false).setAlignment(EnumAlignment.LEFT));
-////            manager.add(minField = new MGuiTextField(this, guiLeft() + 4, guiTop() + 54, xSize - 44, 16, fontRenderer));
-////            manager.add(new MGuiButton(this, "SAVE_LOW", guiLeft() + xSize - 39, guiTop() + 54, 35, 16, I18n.format("gui.button.save")));
-////
-////            minField.setValidator(fieldValidator);
-////            maxField.setValidator(fieldValidator);
-////        }
-////
-////        manager.add(new MGuiLabel(this, guiLeft(), guiTop() + ySize - 12, xSize, 8, "") {
-////            @Override
-////            public String getDisplayString() {
-////                return I18n.format("gui.de.flowGateCurrentFlow.name") + ": " + Utils.addCommas(tile.getFlow()) + tile.getUnits();
-////            }
-////        }.setTextColour(0x2c2c2c).setShadow(false));
-////        manager.initElements();
-////    }
-////
-////    @Override
-////    public void onMGuiEvent(String eventString, MGuiElementBase eventElement) {
-////        if (eventElement instanceof MGuiButton && ((MGuiButton) eventElement).buttonName.equals("SAVE_HIGH")) {
-////            tile.setMax(maxField.getText());
-////        }
-////        else if (eventElement instanceof MGuiButton && ((MGuiButton) eventElement).buttonName.equals("SAVE_LOW")) {
-////            tile.setMin(minField.getText());
-////        }
-////    }
-////
-////    @Override
-////    public void updateScreen() {
-////        super.updateScreen();
-////
-////        if (tile.minFlow.get() != ltMin && minField != null) {
-////            ltMin = tile.minFlow.get();
-////            minField.setText(String.valueOf(ltMin));
-////        }
-////
-////        if (tile.maxFlow.get() != ltMax && maxField != null) {
-////            ltMax = tile.maxFlow.get();
-////            maxField.setText(String.valueOf(ltMax));
-////        }
-////
-////        if (maxField != null && !maxField.isFocused() && maxField.getText().equals("")) {
-////            maxField.setText("0");
-////        }
-////        if (minField != null && !minField.isFocused() && minField.getText().equals("")) {
-////            minField.setText("0");
-////        }
-////    }
-//}
+package com.brandon3055.draconicevolution.client.gui;
+
+import com.brandon3055.brandonscore.client.gui.GuiToolkit;
+import com.brandon3055.brandonscore.client.gui.modulargui.GuiElementManager;
+import com.brandon3055.brandonscore.client.gui.modulargui.ModularGuiContainer;
+import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiLabel;
+import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiTextField;
+import com.brandon3055.brandonscore.client.gui.modulargui.lib.GuiAlign;
+import com.brandon3055.brandonscore.client.gui.modulargui.templates.TBasicMachine;
+import com.brandon3055.brandonscore.inventory.ContainerBCTile;
+import com.brandon3055.brandonscore.utils.Utils;
+import com.brandon3055.draconicevolution.blocks.tileentity.flowgate.TileFlowGate;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
+
+import static com.brandon3055.brandonscore.client.gui.GuiToolkit.GuiLayout.DEFAULT;
+
+/**
+ * Created by brandon3055 on 15/11/2016.
+ */
+public class GuiFlowGate extends ModularGuiContainer<ContainerBCTile<TileFlowGate>> {
+
+    private GuiToolkit<GuiFlowGate> toolkit = new GuiToolkit<>(this, DEFAULT).setTranslationPrefix("gui.draconicevolution.flow_gate");
+    private TileFlowGate tile;
+    private long ltMin = -1;
+    private long ltMax = -1;
+
+    public GuiFlowGate(ContainerBCTile<TileFlowGate> container, PlayerInventory inv, ITextComponent title) {
+        super(container, inv, title);
+        this.tile = container.tile;
+    }
+
+    @Override
+    public void addElements(GuiElementManager manager) {
+        TBasicMachine template = toolkit.loadTemplate(new TBasicMachine(this, tile));
+
+        template.background.addChild(new GuiLabel(toolkit.i18n("overridden")))
+                .setHoverText(toolkit.i18n("overridden.info"))
+                .setSize(60, 8)
+                .setTextColour(0xff0000)
+                .setShadow(false)
+                .setEnabledCallback(() -> tile.flowOverridden.get())
+                .setPos(guiLeft() + 4, guiTop() + 4);
+
+        GuiLabel highLabel = template.background.addChild(new GuiLabel(toolkit.i18n("redstone_high")))
+                .setSize(xSize(), 8)
+                .setTextColour(0xff0000)
+                .setShadow(false)
+                .setPos(template.playerSlots.xPos(), template.title.maxYPos() + 4);
+
+        GuiTextField highField = toolkit.createTextField(template.background)
+                .setHoverText(toolkit.i18n("redstone_high.info"))
+                .setValidator(toolkit.catchyValidator(s -> s.equals("") || Long.parseLong(s) >= 0))
+                .setSize(template.playerSlots.xSize() - 40, 14)
+                .setPos(highLabel.xPos(), highLabel.maxYPos() + 2);
+
+        toolkit.createButton(toolkit.i18n("apply"), template.background, false)
+                .setPos(highField.maxXPos() + 1, highField.yPos())
+                .setYSize(highField.ySize())
+                .setMaxXPos(template.playerSlots.maxXPos(), true)
+                .onPressed(() -> tile.setMax(highField.getText()));
+
+        GuiLabel lowLabel = template.background.addChild(new GuiLabel(toolkit.i18n("redstone_low")))
+                .setSize(xSize(), 8)
+                .setTextColour(0x990000)
+                .setShadow(false)
+                .setPos(highField.xPos(), highField.maxYPos() + 3);
+
+        GuiTextField lowField = toolkit.createTextField(template.background)
+                .setHoverText(toolkit.i18n("redstone_low.info"))
+                .setValidator(toolkit.catchyValidator(s -> s.equals("") || Long.parseLong(s) >= 0))
+                .setSize(template.playerSlots.xSize() - 40, 14)
+                .setPos(lowLabel.xPos(), lowLabel.maxYPos() + 2);
+
+        toolkit.createButton(toolkit.i18n("apply"), template.background, false)
+                .setPos(lowField.maxXPos() + 1, lowField.yPos())
+                .setYSize(lowField.ySize())
+                .setMaxXPos(template.playerSlots.maxXPos(), true)
+                .onPressed(() -> tile.setMin(lowField.getText()));
+
+        template.background.addChild(new GuiLabel())
+                .setHoverText(toolkit.i18n("flow.info"))
+                .setTrim(false)
+                .setShadow(false)
+                .setTextColGetter(GuiToolkit.Palette.Slot::text)
+                .setSize(xSize(), 8)
+                .setYPos(lowField.maxYPos() + 5)
+                .setMaxXPos(template.playerSlots.maxXPos(), false)
+                .setDisplaySupplier(() -> toolkit.i18n("flow") + ": " + Utils.addCommas(tile.getFlow()) + tile.getUnits())
+                .setAlignment(GuiAlign.RIGHT);
+
+        manager.onTick(() -> {
+            if (tile.minFlow.get() != ltMin) {
+                ltMin = tile.minFlow.get();
+                lowField.setText(String.valueOf(ltMin));
+            }
+            if (tile.maxFlow.get() != ltMax) {
+                ltMax = tile.maxFlow.get();
+                highField.setText(String.valueOf(ltMax));
+            }
+            if (!highField.isFocused() && highField.getText().equals("")) {
+                highField.setText("0");
+            }
+            if (!lowField.isFocused() && lowField.getText().equals("")) {
+                lowField.setText("0");
+            }
+        });
+    }
+}

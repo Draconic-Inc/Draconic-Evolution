@@ -57,6 +57,7 @@ public class ClientProxy extends CommonProxy {
     public void construct() {
         super.construct();
         FMLJavaModLoadingContext.get().getModEventBus().addListener((ColorHandlerEvent.Block event) -> moduleSpriteUploader = new ModuleSpriteUploader());
+        spriteHelper.addIIconRegister(new DETextures());
     }
 
     @Override
@@ -81,7 +82,7 @@ public class ClientProxy extends CommonProxy {
         KeyBindings.init();
 
 
-        spriteHelper.addIIconRegister(new DETextures());
+
 //        spriteHelper.addIIconRegister(ModuleTextures.LOCATION_MODULE_TEXTURE, new ModuleTextures());
 
         ResourceUtils.registerReloadListener(new DETextures());
@@ -183,6 +184,7 @@ public class ClientProxy extends CommonProxy {
 //        ScreenManager.registerFactory(DEContent.container_energy_infuser, ContainerEnergyInfuser::new);
         ScreenManager.registerFactory(DEContent.container_fusion_crafting_core, GuiFusionCraftingCore::new);
 //        ScreenManager.registerFactory(DEContent.container_reactor, ContainerReactor::new);
+        ScreenManager.registerFactory(DEContent.container_flow_gate, GuiFlowGate::new);
     }
 
     private void registerTileRenderers() {

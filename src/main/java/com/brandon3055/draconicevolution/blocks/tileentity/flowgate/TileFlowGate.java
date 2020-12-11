@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.blocks.tileentity.flowgate;
 
 import codechicken.lib.data.MCDataInput;
 import com.brandon3055.brandonscore.blocks.TileBCore;
+import com.brandon3055.brandonscore.lib.IActivatableTile;
 import com.brandon3055.brandonscore.lib.IChangeListener;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedByte;
@@ -11,6 +12,7 @@ import com.brandon3055.draconicevolution.integration.computers.ArgHelper;
 import com.brandon3055.draconicevolution.integration.computers.IDEPeripheral;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -27,7 +29,7 @@ import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.SAVE_NBT_SY
 /**
  * Created by brandon3055 on 15/11/2016.
  */
-public abstract class TileFlowGate extends TileBCore implements ITickableTileEntity, IChangeListener, IDEPeripheral {
+public abstract class TileFlowGate extends TileBCore implements ITickableTileEntity, IChangeListener, IDEPeripheral, INamedContainerProvider, IActivatableTile {
 
     protected long transferThisTick = 0;
 
@@ -36,6 +38,8 @@ public abstract class TileFlowGate extends TileBCore implements ITickableTileEnt
     public final ManagedLong flowOverride = register(new ManagedLong("flow_override", SAVE_NBT_SYNC_TILE));
     public final ManagedBool flowOverridden = register(new ManagedBool("flow_overridden", SAVE_NBT_SYNC_TILE));
     public final ManagedByte rsSignal = register(new ManagedByte("rs_signal", (byte) -1, SAVE_NBT_SYNC_TILE));
+
+    private Direction rotationCache = null;
 
     public TileFlowGate(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
@@ -48,11 +52,6 @@ public abstract class TileFlowGate extends TileBCore implements ITickableTileEnt
     }
 
     //region Gate
-
-    @Override
-    public ITextComponent getName() {
-        return new TranslationTextComponent("tile.draconicevolution:" + (this instanceof TileFluxGate ? "flux_gate" : "fluid_gate") + ".name");
-    }
 
     public abstract String getUnits();
 
@@ -114,9 +113,17 @@ public abstract class TileFlowGate extends TileBCore implements ITickableTileEnt
         return world.getTileEntity(pos.offset(getDirection().getOpposite()));
     }
 
+    @Override
+    public void updateContainingBlockInfo() {
+        super.updateContainingBlockInfo();
+        rotationCache = null;
+    }
+
     public Direction getDirection() {
-        BlockState state = getBlockState();
-        return state.get(FlowGate.FACING);
+        if (rotationCache == null) {
+            rotationCache = getBlockState().get(FlowGate.FACING);
+        }
+        return rotationCache;
     }
 
     @Override

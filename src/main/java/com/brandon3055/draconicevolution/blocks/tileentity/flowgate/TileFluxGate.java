@@ -1,10 +1,29 @@
 package com.brandon3055.draconicevolution.blocks.tileentity.flowgate;
 
+import codechicken.lib.util.SneakyUtils;
 import com.brandon3055.brandonscore.api.power.IOPStorage;
+import com.brandon3055.brandonscore.blocks.TileBCore;
+import com.brandon3055.brandonscore.capability.CapabilityOP;
+import com.brandon3055.brandonscore.inventory.ContainerBCTile;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
 import com.brandon3055.draconicevolution.init.DEContent;
+import com.brandon3055.draconicevolution.inventory.GuiLayoutFactories;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fml.network.NetworkHooks;
+
+import javax.annotation.Nonnull;
 
 /**
  * Created by brandon3055 on 15/11/2016.
@@ -23,78 +42,48 @@ public class TileFluxGate extends TileFlowGate {
         return "RF/t";
     }
 
-//    public boolean canConnectEnergy(Direction from) {
-//        return from == getDirection() || from == getDirection().getOpposite();
-//    }
-
-    public long getEnergyStored(Direction from) {
-        if (getTarget() == null) {
-            return 0;
-        }
-        return EnergyUtils.getEnergyStored(getTarget(), getDirection().getOpposite());
+    private void updateCapabilities() {
+        capManager.remove(CapabilityOP.OP);
+        capManager.set(CapabilityOP.OP, inputReg, getDirection().getOpposite());
+        capManager.set(CapabilityOP.OP, outputReg, getDirection());
     }
 
-    public long getMaxEnergyStored(Direction from) {
-        if (getTarget() == null) {
-            return 0;
-        }
-        return EnergyUtils.getMaxEnergyStored(getTarget(), getDirection().getOpposite());
+    @Override
+    public void updateContainingBlockInfo() {
+        super.updateContainingBlockInfo();
+        updateCapabilities();
     }
-
-    public long receiveEnergy(Direction from, int maxReceive, boolean simulate) {
-        if (from != getDirection().getOpposite()) {
-            return 0;
-        }
-
-        TileEntity target = getTarget();
-
-        if (target == null) {
-            return 0;
-        }
-
-        long sim = EnergyUtils.insertEnergy(target, maxReceive, getDirection().getOpposite(), true);
-        long transfer = EnergyUtils.insertEnergy(target, Math.min(Math.max(0, getFlow() - transferThisTick), sim), getDirection().getOpposite(), simulate);
-
-        if (!simulate) {
-            transferThisTick += transfer;
-        }
-        return transfer;
-    }
-
-    //region Capability
-
-//    @Override
-//    public boolean hasCapability(Capability<?> capability, Direction facing) {
-//        if (facing == getDirection() || facing == getDirection().getOpposite()) {
-//            if (capability == CapabilityEnergy.ENERGY || capability == CapabilityOP.OP) {
-//                return true;
-//            }
-//        }
-//
-//        return super.hasCapability(capability, facing);
-//    }
-//
-//    @Override
-//    public <T> T getCapability(Capability<T> capability, Direction facing) {
-//        Direction dir = getDirection();
-//        if (facing == dir || facing == dir.getOpposite()) {
-//            if (capability == CapabilityEnergy.ENERGY) {
-//                return CapabilityEnergy.ENERGY.cast(facing != dir ? outputReg : inputReg);
-//            }
-//            else if (capability == CapabilityOP.OP) {
-//                return CapabilityOP.OP.cast(facing == dir ? outputReg : inputReg);
-//
-//            }
-//        }
-//
-//        return super.getCapability(capability, facing);
-//    }
 
     //endregion
+
+    //THis is an annoying hack required due to the fact you cant get the block state in onLoad()
+    private boolean capsLoaded = false;
+
+    @Override
+    public <T> LazyOptional<T> getCapability(Capability<T> capability, Direction side) {
+        if (!capsLoaded) {
+            updateCapabilities();
+            capsLoaded = true;
+        }
+        return super.getCapability(capability, side);
+    }
 
     @Override
     public String getPeripheralName() {
         return "flux_gate";
+    }
+
+    @Override
+    public Container createMenu(int id, PlayerInventory inventory, PlayerEntity player) {
+        return new ContainerBCTile<TileFlowGate>(DEContent.container_flow_gate, id, player.inventory, this, SneakyUtils.unsafeCast(GuiLayoutFactories.PLAYER_ONLY_LAYOUT));
+    }
+
+    @Override
+    public boolean onBlockActivated(BlockState state, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+        if (player instanceof ServerPlayerEntity) {
+            NetworkHooks.openGui((ServerPlayerEntity) player, this, pos);
+        }
+        return true;
     }
 
     private static class OPRegulator implements IOPStorage {
@@ -211,5 +200,6 @@ public class TileFluxGate extends TileFlowGate {
             return isInput;
         }
     }
+
 
 }

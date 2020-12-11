@@ -37,7 +37,7 @@ import java.util.List;
 /**
  * Created by brandon3055 on 18/01/2017.
  */
-public class ReactorComponent extends BlockBCore/* implements ITileEntityProvider, IRegistryOverride, IRenderOverride*/ {
+public class ReactorComponent extends BlockBCore {
 
     public static final PropertyString TYPE = new PropertyString("type", "stabilizer", "injector");
     private static final VoxelShape SHAPE_INJ_DOWN  = VoxelShapes.create(0F, 0.885F, 0F, 1F, 1F, 1F);
@@ -52,8 +52,6 @@ public class ReactorComponent extends BlockBCore/* implements ITileEntityProvide
         super(properties);
         this.injector = injector;
         this.setDefaultState(stateContainer.getBaseState().with(TYPE, "stabilizer"));
-//        this.addName(0, "reactor_stabilizer");
-//        this.addName(1, "reactor_injector");
     }
 
     @Override
@@ -66,30 +64,6 @@ public class ReactorComponent extends BlockBCore/* implements ITileEntityProvide
         builder.add(TYPE);
     }
 
-    //region Block & Registry
-
-//    @Override
-//    protected BlockStateContainer createBlockState() {
-//        return new BlockStateContainer(this, TYPE);
-//    }
-//
-//    @Override
-//    public int getMetaFromState(BlockState state) {
-//        return state.getValue(TYPE).equals("stabilizer") ? 0 : 1;
-//    }
-//
-//    @Override
-//    public BlockState getStateFromMeta(int meta) {
-//        return getDefaultState().withProperty(TYPE, meta == 0 ? "stabilizer" : "injector");
-//    }
-//
-//    @Override
-//    public void getSubBlocks(CreativeTabs tab, NonNullList<ItemStack> list) {
-//        list.add(new ItemStack(this, 1, 0));
-//        list.add(new ItemStack(this, 1, 1));
-//    }
-
-
     @Override
     public boolean hasTileEntity(BlockState state) {
         return true;
@@ -100,12 +74,6 @@ public class ReactorComponent extends BlockBCore/* implements ITileEntityProvide
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {
         return injector ? new TileReactorInjector() : new TileReactorStabilizer();
     }
-
-//    @Override
-//    public void handleCustomRegistration(Feature feature) {
-//        GameRegistry.registerTileEntity(TileReactorStabilizer.class, feature.getRegistryName() + "_stabilizer");
-//        GameRegistry.registerTileEntity(TileReactorEnergyInjector.class, feature.getRegistryName() + "_injector");
-//    }
 
 
     @Override
@@ -131,42 +99,16 @@ public class ReactorComponent extends BlockBCore/* implements ITileEntityProvide
         return super.getShape(state, world, pos, context);
     }
 
-    //endregion
-
-    //region Rendering
-
-//    @OnlyIn(Dist.CLIENT)
-//    @Override
-//    public void registerRenderer(Feature feature) {
-//        StateMap deviceStateMap = new StateMap.Builder().ignore(TYPE).build();
-//        ModelLoader.setCustomStateMapper(this, deviceStateMap);
-//        ClientRegistry.bindTileEntitySpecialRenderer(TileReactorStabilizer.class, new RenderTileReactorComponent());
-//        ClientRegistry.bindTileEntitySpecialRenderer(TileReactorEnergyInjector.class, new RenderTileReactorComponent());
-//        ModelRegistryHelper.registerItemRenderer(Item.getItemFromBlock(this), new RenderItemReactorComponent());
-//    }
-//
-//    @Override
-//    public boolean registerNormal(Feature feature) {
-//        return false;
-//    }
-
     @Override
     public BlockRenderType getRenderType(BlockState state) {
         return BlockRenderType.INVISIBLE;
     }
 
-    //endregion
-
-    //region Place & Interact
-
     @Override
     public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
         super.onBlockPlacedBy(world, pos, state, placer, stack);
         TileEntity te = world.getTileEntity(pos);
-        Direction facing = RotationUtils.getPlacedRotation(pos, placer);
-        if (placer.isSneaking()) {
-            facing = facing.getOpposite();
-        }
+        Direction facing = RotationUtils.getPlacedRotation(pos, placer).getOpposite();
 
         if (te instanceof TileReactorComponent) {
             ((TileReactorComponent) te).facing.set(facing);
@@ -200,14 +142,6 @@ public class ReactorComponent extends BlockBCore/* implements ITileEntityProvide
         tooltip.add(new TranslationTextComponent("info.de.shiftReversePlaceLogic.txt"));
         super.addInformation(stack, worldIn, tooltip, flagIn);
     }
-
-//    @Override
-//    public int damageDropped(BlockState state) {
-//        return getMetaFromState(state);
-//    }
-
-    //endregion
-
 
     @Override
     public boolean hasComparatorInputOverride(BlockState state) {

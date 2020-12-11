@@ -258,7 +258,6 @@ public class TileGrinder extends TileBCore implements ITickableTileEntity, IRSSw
             }
         }
 
-//        LogHelper.dev("Grinder: No attackable entities in range. Waiting 5 seconds.");
         coolDown = foundInvulnerable ? 5 : 100;
         nextTarget = null;
     }
@@ -395,26 +394,6 @@ public class TileGrinder extends TileBCore implements ITickableTileEntity, IRSSw
     public boolean onBlockActivated(BlockState state, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
         if (player instanceof ServerPlayerEntity) {
             NetworkHooks.openGui((ServerPlayerEntity) player, this, pos);
-        } else if (world.isRemote && player.isSneaking()) {
-//            AxisAlignedBB bb = getKillBoxForRender();
-
-            for (double i = 0; i <= 7; i += 0.01) {
-//                Vec3D minX = new Vec3D(bb.minX + i, bb.minY, bb.minZ);
-//                Vec3D minY = new Vec3D(bb.minX, bb.minY + i, bb.minZ);
-//                Vec3D minZ = new Vec3D(bb.minX, bb.minY, bb.minZ + i);
-
-//                BCEffectHandler.spawnFX(DEParticles.LINE_INDICATOR, world, minX, new Vec3D(), 0, 255, 255, 130);
-//                BCEffectHandler.spawnFX(DEParticles.LINE_INDICATOR, world, minY, new Vec3D(), 0, 255, 255, 130);
-//                BCEffectHandler.spawnFX(DEParticles.LINE_INDICATOR, world, minZ, new Vec3D(), 0, 255, 255, 130);
-
-//                Vec3D maxX = new Vec3D(bb.maxX - i, bb.maxY, bb.maxZ);
-//                Vec3D maxY = new Vec3D(bb.maxX, bb.maxY - i, bb.maxZ);
-//                Vec3D maxZ = new Vec3D(bb.maxX, bb.maxY, bb.maxZ - i);
-
-//                BCEffectHandler.spawnFX(DEParticles.LINE_INDICATOR, world, maxX, new Vec3D(), 0, 255, 255, 130);
-//                BCEffectHandler.spawnFX(DEParticles.LINE_INDICATOR, world, maxY, new Vec3D(), 0, 255, 255, 130);
-//                BCEffectHandler.spawnFX(DEParticles.LINE_INDICATOR, world, maxZ, new Vec3D(), 0, 255, 255, 130);
-            }
         }
         return true;
     }
@@ -426,38 +405,4 @@ public class TileGrinder extends TileBCore implements ITickableTileEntity, IRSSw
         }
         return super.getRenderBoundingBox();
     }
-
-    //    @Override
-//    public boolean onBlockActivated(BlockState state, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
-    //        if (player.isShiftKeyDown()) {
-////            TileEntity tile = world.getTileEntity(pos);
-////            if (tile instanceof TileGrinder && world.isRemote) {
-////                AxisAlignedBB bb = ((TileGrinder) tile).getKillBoxForRender();
-////
-////                for (double i = 0; i <= 7; i += 0.01) {
-////                    Vec3D minX = new Vec3D(bb.minX + i, bb.minY, bb.minZ);
-////                    Vec3D minY = new Vec3D(bb.minX, bb.minY + i, bb.minZ);
-////                    Vec3D minZ = new Vec3D(bb.minX, bb.minY, bb.minZ + i);
-////
-////                    BCEffectHandler.spawnFX(DEParticles.LINE_INDICATOR, world, minX, new Vec3D(), 0, 255, 255, 130);
-////                    BCEffectHandler.spawnFX(DEParticles.LINE_INDICATOR, world, minY, new Vec3D(), 0, 255, 255, 130);
-////                    BCEffectHandler.spawnFX(DEParticles.LINE_INDICATOR, world, minZ, new Vec3D(), 0, 255, 255, 130);
-////
-////                    Vec3D maxX = new Vec3D(bb.maxX - i, bb.maxY, bb.maxZ);
-////                    Vec3D maxY = new Vec3D(bb.maxX, bb.maxY - i, bb.maxZ);
-////                    Vec3D maxZ = new Vec3D(bb.maxX, bb.maxY, bb.maxZ - i);
-////
-////                    BCEffectHandler.spawnFX(DEParticles.LINE_INDICATOR, world, maxX, new Vec3D(), 0, 255, 255, 130);
-////                    BCEffectHandler.spawnFX(DEParticles.LINE_INDICATOR, world, maxY, new Vec3D(), 0, 255, 255, 130);
-////                    BCEffectHandler.spawnFX(DEParticles.LINE_INDICATOR, world, maxZ, new Vec3D(), 0, 255, 255, 130);
-////                }
-////
-////
-////            }
-//        }
-//        else if (!world.isRemote) {
-//            FMLNetworkHandler.openGui(player, DraconicEvolution.instance, GuiHandler.GUIID_GRINDER, world, pos.getX(), pos.getY(), pos.getZ());
-//        }
-//        return true;
-//    }
 }

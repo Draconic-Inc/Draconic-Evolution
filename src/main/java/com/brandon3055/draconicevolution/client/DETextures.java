@@ -27,31 +27,36 @@ public class DETextures implements IIconRegister, ISelectiveResourceReloadListen
 //    private static final String TOOLS_OBJ_ = TOOLS_ + "obj/";
 
     private static AtlasRegistrar map;
-    private static HashMap<ResourceLocation, TextureAtlasSprite> textureCache = new HashMap<ResourceLocation, TextureAtlasSprite>();
-    private static ArrayList<ResourceLocation> locations = new ArrayList<ResourceLocation>();
+//    private static HashMap<ResourceLocation, TextureAtlasSprite> textureCache = new HashMap<ResourceLocation, TextureAtlasSprite>();
+//    private static ArrayList<ResourceLocation> locations = new ArrayList<ResourceLocation>();
 
     static {
 //        locations.add(new ResourceLocation(DraconicEvolution.MODID, "models/pylon_sphere_texture"));
 //        locations.add(new ResourceLocation(DraconicEvolution.MODID, "models/energy_core_base"));
 //        locations.add(new ResourceLocation(DraconicEvolution.MODID, "models/energy_core_overlay"));
 //        locations.add(new ResourceLocation(DraconicEvolution.MODID, "models/stabilizer_sphere"));
-        locations.add(new ResourceLocation(DraconicEvolution.MODID, "items/tools/obj/arrow_common"));
-        locations.add(new ResourceLocation(DraconicEvolution.MODID, "models/block/generator/generator_2"));
-        locations.add(new ResourceLocation(DraconicEvolution.MODID, "models/block/grinder"));
+//        locations.add(new ResourceLocation(DraconicEvolution.MODID, "items/tools/obj/arrow_common"));
+//        locations.add(new ResourceLocation(DraconicEvolution.MODID, "models/block/generator/generator_2"));
+//        locations.add(new ResourceLocation(DraconicEvolution.MODID, "models/block/grinder"));
     }
 
-    public static TextureAtlasSprite getDETexture(String texture) {
-        return textureCache.get(new ResourceLocation(DraconicEvolution.MODID, texture));
-    }
+//    public static TextureAtlasSprite getDETexture(String texture) {
+//        return textureCache.get(new ResourceLocation(DraconicEvolution.MODID, texture));
+//    }
 
     @Override
     public void onResourceManagerReload(IResourceManager resourceManager, Predicate<IResourceType> resourcePredicate) {
 //        GlassParticleDummyModel.INSTANCE.sprite = null;
     }
 
+    public static TextureAtlasSprite GENERATOR;
+
+
     @Override
     public void registerIcons(AtlasRegistrar registrar) {
         map = registrar;
+
+        registerDE("models/block/generator/generator_2", e -> GENERATOR = e);
 
 //        //@formatter:off
 //        register(TOOLS_ + "wyvern_axe", e -> WYVERN_AXE = e);
@@ -107,9 +112,9 @@ public class DETextures implements IIconRegister, ISelectiveResourceReloadListen
 //        };
 //        //@formatter:on
 
-        for (ResourceLocation location : locations) {
-            registrar.registerSprite(location, sprite -> textureCache.put(location, sprite));
-        }
+//        for (ResourceLocation location : locations) {
+//            registrar.registerSprite(location, sprite -> textureCache.put(location, sprite));
+//        }
 
         ENERGY_PARTICLE = new TextureAtlasSprite[5];
         for (int i = 0; i < ENERGY_PARTICLE.length; i++) {
@@ -119,9 +124,12 @@ public class DETextures implements IIconRegister, ISelectiveResourceReloadListen
         register(PARTICLES_ + "white_orb", sprite -> ORB_PARTICLE = sprite);
     }
 
-    // Bouncer to make the class readable.
     private static void register(String sprite, Consumer<TextureAtlasSprite> onReady) {
         map.registerSprite(new ResourceLocation(sprite), onReady);
+    }
+
+    private static void registerDE(String sprite, Consumer<TextureAtlasSprite> onReady) {
+        map.registerSprite(new ResourceLocation(DraconicEvolution.MODID, sprite), onReady);
     }
 
     public static TextureAtlasSprite WYVERN_AXE;

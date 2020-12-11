@@ -1,12 +1,24 @@
 package com.brandon3055.draconicevolution.blocks.tileentity.flowgate;
 
+import codechicken.lib.util.SneakyUtils;
+import com.brandon3055.brandonscore.inventory.ContainerBCTile;
 import com.brandon3055.draconicevolution.init.DEContent;
+import com.brandon3055.draconicevolution.inventory.GuiLayoutFactories;
 import com.brandon3055.draconicevolution.lib.WTFException;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Hand;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nonnull;
 
@@ -123,5 +135,23 @@ public class TileFluidGate extends TileFlowGate implements IFluidHandler {
     @Override
     public String getPeripheralName() {
         return "fluid_gate";
+    }
+
+    @Override
+    public Container createMenu(int id, PlayerInventory inventory, PlayerEntity player) {
+        return new ContainerBCTile<TileFlowGate>(DEContent.container_flow_gate, id, player.inventory, this, SneakyUtils.unsafeCast(GuiLayoutFactories.PLAYER_ONLY_LAYOUT));
+    }
+
+    @Override
+    public ITextComponent getName() {
+        return super.getName();
+    }
+
+    @Override
+    public boolean onBlockActivated(BlockState state, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+        if (player instanceof ServerPlayerEntity) {
+            NetworkHooks.openGui((ServerPlayerEntity) player, this, pos);
+        }
+        return true;
     }
 }
