@@ -13,7 +13,9 @@ import com.brandon3055.draconicevolution.api.config.ConfigProperty.Type;
 import com.brandon3055.draconicevolution.inventory.ContainerConfigurableItem;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.nbt.*;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.IntNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nullable;

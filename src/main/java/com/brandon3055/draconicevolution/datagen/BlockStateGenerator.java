@@ -6,6 +6,7 @@ import com.brandon3055.draconicevolution.blocks.machines.Generator;
 import com.brandon3055.draconicevolution.blocks.machines.Grinder;
 import net.minecraft.block.*;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.generators.*;
@@ -18,6 +19,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
 
@@ -45,11 +47,16 @@ public class BlockStateGenerator extends BlockStateProvider {
         simpleBlock(DEContent.creative_op_capacitor);
         simpleBlock(DEContent.stabilized_spawner, models().getExistingFile(modLoc("block/stabilized_spawner")));
 
+        simpleBlock(DEContent.particle_generator, models().getExistingFile(modLoc("block/particle_generator")));
+
         simpleBlock(DEContent.crafting_core, models().getExistingFile(modLoc("block/crafting/fusion_crafting_core")));
         directionalBlock(DEContent.crafting_injector_basic, models().getExistingFile(modLoc("block/crafting/crafting_injector_draconium")));
         directionalBlock(DEContent.crafting_injector_wyvern, models().getExistingFile(modLoc("block/crafting/crafting_injector_wyvern")));
         directionalBlock(DEContent.crafting_injector_awakened, models().getExistingFile(modLoc("block/crafting/crafting_injector_draconic")));
         directionalBlock(DEContent.crafting_injector_chaotic, models().getExistingFile(modLoc("block/crafting/crafting_injector_chaotic")));
+
+        directionalFromNorth(DEContent.fluid_gate, models().getExistingFile(modLoc("block/fluid_gate")));
+        directionalFromNorth(DEContent.flux_gate, models().getExistingFile(modLoc("block/flux_gate")));
 
 
         dummyBlock(DEContent.crystal_io_basic);
@@ -228,188 +235,49 @@ public class BlockStateGenerator extends BlockStateProvider {
         simpleBlock(block, model);
     }
 
-    private String name(IForgeRegistryEntry<?> object) {
-        return object.getRegistryName().toString();
+    public void directionalFromNorth(Block block, ModelFile model) {
+        directionalFromNorth(block, model, 180);
     }
 
-    // Testing the outputs
+    public void directionalFromNorth(Block block, ModelFile model, int angleOffset) {
+        directionalFromNorth(block, $ -> model, angleOffset);
+    }
 
-//        private static final Set<Block> IGNORED_BLOCKS = ImmutableSet.of(Blocks.BIRCH_FENCE_GATE, Blocks.STONE);
-//        private static final Set<ResourceLocation> IGNORED_MODELS = ImmutableSet.of();
+    public void directionalFromNorth(Block block, Function<BlockState, ModelFile> modelFunc) {
+        directionalFromNorth(block, modelFunc, 180);
+    }
 
-    private List<String> errors = new ArrayList<>();
+    public void directionalFromNorth(Block block, Function<BlockState, ModelFile> modelFunc, int angleOffset) {
+        getVariantBuilder(block)
+                .forAllStates(state -> {
+                    Direction dir = state.get(BlockStateProperties.FACING);
+                    return ConfiguredModel.builder()
+                            .modelFile(modelFunc.apply(state))
+                            .rotationX(dir == Direction.DOWN ? 90 : dir == Direction.UP ? -90 : 0)
+                            .rotationY(dir.getAxis().isVertical() ? 0 : (((int) dir.getHorizontalAngle()) + angleOffset) % 360)
+                            .build();
+                });
+    }
 
-//        @Override
-//        public void act(DirectoryCache cache) throws IOException {
-//            super.act(cache);
-////            this.errors.addAll(testModelResults(this.generatedModels, existingFileHelper, IGNORED_MODELS));
-//            this.registeredBlocks.forEach((block, state) -> {
-////                if (IGNORED_BLOCKS.contains(block)) return;
-//                JsonObject generated = state.toJson();
-//                try {
-//                    IResource vanillaResource = existingFileHelper.getResource(block.getRegistryName(), ResourcePackType.CLIENT_RESOURCES, ".json", "blockstates");
-//                    JsonObject existing = GSON.fromJson(new InputStreamReader(vanillaResource.getInputStream()), JsonObject.class);
-//                    if (state instanceof VariantBlockStateBuilder) {
-//                        compareVariantBlockstates(block, generated, existing);
-//                    } else if (state instanceof MultiPartBlockStateBuilder) {
-//                        compareMultipartBlockstates(block, generated, existing);
-//                    } else {
-//                        throw new IllegalStateException("Unknown blockstate type: " + state.getClass());
-//                    }
-//                }
-//                catch (IOException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            });
-//
-//            if (!errors.isEmpty()) {
-//                LOGGER.error("Found {} discrepancies between generated and vanilla models/blockstates: ", errors.size());
-//                for (String s : errors) {
-//                    LOGGER.error("    {}", s);
-//                }
-//                throw new AssertionError("Generated blockstates/models differed from vanilla equivalents, check above errors.");
-//            }
-//        }
-//
-//        private void compareVariantBlockstates(Block block, JsonObject generated, JsonObject vanilla) {
-//            JsonObject generatedVariants = generated.getAsJsonObject("variants");
-//            JsonObject vanillaVariants = vanilla.getAsJsonObject("variants");
-//            Stream.concat(generatedVariants.entrySet().stream(), vanillaVariants.entrySet().stream())
-//                    .map(e -> e.getKey())
-//                    .distinct()
-//                    .forEach(key -> {
-//                        JsonElement generatedVariant = generatedVariants.get(key);
-//                        JsonElement vanillaVariant = vanillaVariants.get(key);
-//                        if (generatedVariant.isJsonArray()) {
-//                            compareArrays(block, "key " + key, "random variants", generatedVariant, vanillaVariant);
-//                            for (int i = 0; i < generatedVariant.getAsJsonArray().size(); i++) {
-//                                compareVariant(block, key + "[" + i + "]", generatedVariant.getAsJsonArray().get(i).getAsJsonObject(), vanillaVariant.getAsJsonArray().get(i).getAsJsonObject());
-//                            }
-//                        }
-//                        if (generatedVariant.isJsonObject()) {
-//                            if (!vanillaVariant.isJsonObject()) {
-//                                blockstateError(block, "incorrectly does not have an array of variants for key %s", key);
-//                                return;
-//                            }
-//                            compareVariant(block, key, generatedVariant.getAsJsonObject(), vanillaVariant.getAsJsonObject());
-//                        }
-//                    });
-//        }
 
-//        private void compareVariant(Block block, String key, JsonObject generatedVariant, JsonObject vanillaVariant) {
-//            if (generatedVariant == null) {
-//                blockstateError(block, "missing variant for %s", key);
-//                return;
-//            }
-//            if (vanillaVariant == null) {
-//                blockstateError(block, "has extra variant %s", key);
-//                return;
-//            }
-//            String generatedModel = toVanillaModel(generatedVariant.get("model").getAsString());
-//            String vanillaModel = vanillaVariant.get("model").getAsString();
-//            if (!generatedModel.equals(vanillaModel)) {
-//                blockstateError(block, "has incorrect model \"%s\" for variant %s. Expecting: %s", generatedModel, key, vanillaModel);
-//                return;
-//            }
-//            generatedVariant.addProperty("model", generatedModel);
-//            // Parse variants to objects to handle default values in vanilla jsons
-//            Variant parsedGeneratedVariant = GSON.fromJson(generatedVariant, Variant.class);
-//            Variant parsedVanillaVariant = GSON.fromJson(vanillaVariant, Variant.class);
-//            if (!parsedGeneratedVariant.equals(parsedVanillaVariant)) {
-//                blockstateError(block, "has incorrect variant %s. Expecting: %s, Found: %s", key, vanillaVariant, generatedVariant);
-//                return;
-//            }
-//        }
-//
-//        private void compareMultipartBlockstates(Block block, JsonObject generated, JsonObject vanilla) {
-//            JsonElement generatedPartsElement = generated.get("multipart");
-//            JsonElement vanillaPartsElement = vanilla.getAsJsonArray("multipart");
-//            compareArrays(block, "parts", "multipart", generatedPartsElement, vanillaPartsElement);
-//            // String instead of JSON types due to inconsistent hashing
-//            Multimap<String, String> generatedPartsByCondition = HashMultimap.create();
-//            Multimap<String, String> vanillaPartsByCondition = HashMultimap.create();
-//
-//            JsonArray generatedParts = generatedPartsElement.getAsJsonArray();
-//            JsonArray vanillaParts = vanillaPartsElement.getAsJsonArray();
-//            for (int i = 0; i < generatedParts.size(); i++) {
-//                JsonObject generatedPart = generatedParts.get(i).getAsJsonObject();
-//                String generatedCondition = toEquivalentString(generatedPart.get("when"));
-//                JsonElement generatedVariants = generatedPart.get("apply");
-//                if (generatedVariants.isJsonObject()) {
-//                    correctVariant(generatedVariants.getAsJsonObject());
-//                } else if (generatedVariants.isJsonArray()) {
-//                    for (int j = 0; j < generatedVariants.getAsJsonArray().size(); j++) {
-//                        correctVariant(generatedVariants.getAsJsonArray().get(i).getAsJsonObject());
-//                    }
-//                }
-//                generatedPartsByCondition.put(generatedCondition, toEquivalentString(generatedVariants));
-//
-//                JsonObject vanillaPart = vanillaParts.get(i).getAsJsonObject();
-//                String vanillaCondition = toEquivalentString(vanillaPart.get("when"));
-//                String vanillaVariants = toEquivalentString(vanillaPart.get("apply"));
-//
-//                vanillaPartsByCondition.put(vanillaCondition, vanillaVariants);
-//            }
-//
-//            Stream.concat(generatedPartsByCondition.keySet().stream(), vanillaPartsByCondition.keySet().stream())
-//                    .distinct()
-//                    .forEach(cond -> {
-//                        Collection<String> generatedVariants = generatedPartsByCondition.get(cond);
-//                        Collection<String> vanillaVariants = vanillaPartsByCondition.get(cond);
-//                        if (generatedVariants.size() != vanillaVariants.size()) {
-//                            if (vanillaVariants.isEmpty()) {
-//                                blockstateError(block, " has extra condition %s", cond);
-//                            } else if (generatedVariants.isEmpty()) {
-//                                blockstateError(block, " is missing condition %s", cond);
-//                            } else {
-//                                blockstateError(block, " has differing amounts of variant lists matching condition %s. Expected: %d, Found: %d", cond, vanillaVariants.size(), generatedVariants.size());
-//                            }
-//                            return;
-//                        }
-//
-//                        if (!vanillaVariants.containsAll(generatedVariants) || !generatedVariants.containsAll(vanillaVariants)) {
-//                            List<String> extra = new ArrayList<>(generatedVariants);
-//                            extra.removeAll(vanillaVariants);
-//                            List<String> missing = new ArrayList<>(vanillaVariants);
-//                            missing.removeAll(generatedVariants);
-//                            if (!extra.isEmpty()) {
-//                                blockstateError(block, " has extra variants for condition %s: %s", cond, extra);
-//                            }
-//                            if (!missing.isEmpty()) {
-//                                blockstateError(block, " has missing variants for condition %s: %s", cond, missing);
-//                            }
-//                        }
-//                    });
-//        }
 
-//        // Eliminate some formatting differences that are not meaningful
-//        private String toEquivalentString(JsonElement element) {
-//            return Objects.toString(element)
-//                    .replaceAll("\"(true|false)\"", "$1") // Unwrap booleans in strings
-//                    .replaceAll("\"(-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?)\"", "$1"); // Unwrap numbers in strings, regex from https://stackoverflow.com/questions/13340717/json-numbers-regular-expression
-//        }
-//
-//        private void correctVariant(JsonObject variant) {
-//            variant.addProperty("model", toVanillaModel(variant.get("model").getAsString()));
-//        }
-//
-//        private boolean compareArrays(Block block, String key, String name, JsonElement generated, JsonElement vanilla) {
-//            if (!vanilla.isJsonArray()) {
-//                blockstateError(block, "incorrectly has an array of %s for %s", name, key);
-//                return false;
-//            }
-//            JsonArray generatedArray = generated.getAsJsonArray();
-//            JsonArray vanillaArray = vanilla.getAsJsonArray();
-//            if (generatedArray.size() != vanillaArray.size()) {
-//                blockstateError(block, "has incorrect number of %s for %s. Expecting: %s, Found: %s", name, key, vanillaArray.size(), generatedArray.size());
-//                return false;
-//            }
-//            return true;
-//        }
 
-//        private void blockstateError(Block block, String fmt, Object... args) {
-//            errors.add("Generated blockstate for block " + block + " " + String.format(fmt, args));
-//        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     @Override
     public String getName() {

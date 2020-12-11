@@ -89,7 +89,6 @@ public class RenderTileEnergyCrystal extends TileEntityRenderer<TileCrystalBase>
 
     @Override
     public void render(TileCrystalBase te, float partialTicks, MatrixStack mStack, IRenderTypeBuffer getter, int packedLight, int packedOverlay) {
-        te.getFxHandler().renderCooldown = 5;
         int tier = te.getTier();
 
         Matrix4 mat = new Matrix4(mStack);

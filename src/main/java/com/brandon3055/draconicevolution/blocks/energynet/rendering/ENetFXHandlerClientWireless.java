@@ -40,10 +40,6 @@ public class ENetFXHandlerClientWireless extends ENetFXHandler<TileCrystalWirele
                 DEParticles.addParticleDirect(tile.getWorld(), staticFX);
             }
             staticFX.updateFX(0.5F);
-            staticFX.renderEnabled = renderCooldown > 0;
-        }
-        if (renderCooldown > 0) {
-            renderCooldown--;
         }
         //endregion
 

@@ -65,10 +65,10 @@ public interface IModularArmor extends IModularItem {
                 if (entity.isSprinting()) {
                     ModuleHost host = stack.getCapability(MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new);
                     FlightEntity module = (FlightEntity)host.getEntitiesByType(ModuleTypes.FLIGHT).findAny().orElse(null);
-                    if (module != null && ((FlightData)module.getModule().getData()).getElytraSpeed() > 0) {
-                        FlightData flight = (FlightData)module.getModule().getData();
-                        double speed = 1.5D * flight.getElytraSpeed();
-                        double accel = 0.01 * flight.getElytraSpeed();
+                    double flightSpeed = module == null ? 0 : module.getElytraBoost();
+                    if (flightSpeed > 0) {
+                        double speed = 1.5D * flightSpeed;
+                        double accel = 0.01 * flightSpeed;
                         Vector3d look = entity.getLookVec();
                         Vector3d motion = entity.getMotion();
                         entity.setMotion(motion.add(

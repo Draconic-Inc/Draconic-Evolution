@@ -129,7 +129,7 @@ public class TestModuleHost extends Item implements IModularItem {
     public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity player, Hand handIn) {
         if (player instanceof ServerPlayerEntity) {
             if (player.isSneaking()) {
-                NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerConfigurableItem.Provider());
+                NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerConfigurableItem.Provider(new PlayerSlot(player, handIn)));
             } else {
                 PlayerSlot slot = new PlayerSlot(player, handIn);
                 NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerModularItem.Provider(slot.getStackInSlot(player), slot), slot::toBuff);

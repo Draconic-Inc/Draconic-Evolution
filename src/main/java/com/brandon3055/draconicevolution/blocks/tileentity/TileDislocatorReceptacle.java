@@ -861,7 +861,7 @@ public class TileDislocatorReceptacle extends TileBCore implements ITickableTile
 
     @Override
     public Vec3D getBeamLinkPos(BlockPos linkTo) {
-        double dist = FacingUtils.destanceInDirection(pos, linkTo, FacingUtils.getAxisFaces(activeAxis.get())[0]);
+        double dist = FacingUtils.distanceInDirection(pos, linkTo, FacingUtils.getAxisFaces(activeAxis.get())[0]);
         Vec3D vec = Vec3D.getCenter(getLinkPos());
 
         Direction facing;

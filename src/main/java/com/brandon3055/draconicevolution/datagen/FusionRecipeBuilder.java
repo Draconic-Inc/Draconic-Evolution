@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.datagen;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.draconicevolution.api.DraconicAPI;
 import com.brandon3055.draconicevolution.api.crafting.FusionRecipe;
+import com.brandon3055.draconicevolution.api.crafting.IngredientStack;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -45,7 +46,7 @@ public class FusionRecipeBuilder {
         return new FusionRecipeBuilder(result);
     }
 
-    public FusionRecipeBuilder catalyst(Tag<Item> catalyst) {
+    public FusionRecipeBuilder catalyst(ITag<Item> catalyst) {
         return catalyst(Ingredient.fromTag(catalyst));
     }
 
@@ -55,6 +56,18 @@ public class FusionRecipeBuilder {
 
     public FusionRecipeBuilder catalyst(ItemStack... catalyst) {
         return catalyst(Ingredient.fromStacks(catalyst));
+    }
+
+    public FusionRecipeBuilder catalyst(int count, ITag<Item> catalyst) {
+        return catalyst(IngredientStack.fromTag(catalyst, count));
+    }
+
+    public FusionRecipeBuilder catalyst(int count, IItemProvider... catalyst) {
+        return catalyst(IngredientStack.fromItems(count, catalyst));
+    }
+
+    public FusionRecipeBuilder catalyst(int count, ItemStack... catalyst) {
+        return catalyst(IngredientStack.fromStacks(count, catalyst));
     }
 
     public FusionRecipeBuilder catalyst(Ingredient catalyst) {
@@ -126,6 +139,7 @@ public class FusionRecipeBuilder {
     }
 
     public void build(Consumer<IFinishedRecipe> consumer, ResourceLocation id) {
+        if (result.isEmpty()) return;
         validate(id);
 //        advancementBuilder.withParentId(new ResourceLocation("recipes/root")).withCriterion("has_the_recipe", new RecipeUnlockedTrigger.Instance(id)).withRewards(AdvancementRewards.Builder.recipe(id)).withRequirementsStrategy(IRequirementsStrategy.OR);
         consumer.accept(new Result(id, result, catalyst, energy, techLevel, ingredients));//, this.advancementBuilder, new ResourceLocation(id.getNamespace(), "recipes/" + this.result.getGroup().getPath() + "/" + id.getPath())));
@@ -181,7 +195,7 @@ public class FusionRecipeBuilder {
             json.add("result", writeItemStack(result));
             json.add("catalyst", catalyst.serialize());
             json.addProperty("total_energy", energy);
-            json.addProperty("tier", techLevel.index);
+            json.addProperty("tier", techLevel.name());
 
             JsonArray ingredientArray = new JsonArray();
             for (FusionRecipe.FusionIngredient ingredient : ingredients) {

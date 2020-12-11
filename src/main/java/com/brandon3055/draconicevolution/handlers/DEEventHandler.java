@@ -21,6 +21,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
@@ -250,7 +251,7 @@ public class DEEventHandler {
 
         BlockRayTraceResult traceResult = RayTracer.retrace(event.getPlayer());
 
-        if (traceResult != null) {
+        if (traceResult.getType() == RayTraceResult.Type.BLOCK) {
             return;
         }
 

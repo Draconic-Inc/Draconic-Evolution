@@ -47,6 +47,8 @@ public class ItemModelGenerator extends ItemModelProvider {
         blockItem(DEContent.crafting_injector_wyvern, modLoc("block/crafting/crafting_injector_wyvern"));
         blockItem(DEContent.crafting_injector_awakened, modLoc("block/crafting/crafting_injector_draconic"));
         blockItem(DEContent.crafting_injector_chaotic, modLoc("block/crafting/crafting_injector_chaotic"));
+        blockItem(DEContent.fluid_gate, modLoc("block/fluid_gate"));
+        blockItem(DEContent.flux_gate, modLoc("block/flux_gate"));
 
 
 

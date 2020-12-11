@@ -102,7 +102,7 @@ public class BinderHandler {
     public static boolean clearBinder(PlayerEntity player, @Nonnull ItemStack stack) {
         if (stack.hasTag() && stack.getTag().contains(ICrystalBinder.BINDER_TAG)) {
             stack.getTag().remove(ICrystalBinder.BINDER_TAG);
-            ChatHelper.indexedTrans(player, "eNet.de.posCleared.info", TextFormatting.GREEN, -442611624);
+            ChatHelper.indexedTrans(player, "eNet.de.posCleared.info",  -442611624);
             return true;
         }
         return false;

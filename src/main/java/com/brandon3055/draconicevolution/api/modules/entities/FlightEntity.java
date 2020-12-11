@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.api.modules.entities;
 
 import com.brandon3055.draconicevolution.api.config.BooleanProperty;
 import com.brandon3055.draconicevolution.api.config.ConfigProperty;
+import com.brandon3055.draconicevolution.api.config.ConfigProperty.DecimalFormatter;
 import com.brandon3055.draconicevolution.api.config.DecimalProperty;
 import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
@@ -17,13 +18,15 @@ public class FlightEntity extends ModuleEntity {
 
     private BooleanProperty elytraEnabled = null;
     private BooleanProperty creativeEnabled = null;
-//    private DecimalProperty speed = null;
+    //    private DecimalProperty speed = null;
 //    private DecimalProperty boostSpeed = null;
+    private DecimalProperty elytraBoost = null;
 
     public FlightEntity(Module<FlightData> module) {
         super(module);
         if (module.getData().elytra()) {
             addProperty(elytraEnabled = new BooleanProperty("flight_mod.elytra", true).setFormatter(ENABLED_DISABLED));
+            addProperty(elytraBoost = new DecimalProperty("flight_mod.elytra_boost", module.getData().getElytraSpeed()).setFormatter(DecimalFormatter.PERCENT_0).range(0, module.getData().getElytraSpeed()));
         }
         if (module.getData().creative()) {
             addProperty(creativeEnabled = new BooleanProperty("flight_mod.creative", true).setFormatter(ENABLED_DISABLED));
@@ -48,7 +51,11 @@ public class FlightEntity extends ModuleEntity {
         return creativeEnabled != null && creativeEnabled.getValue();
     }
 
-//    public double getSpeed(boolean boost) {
+    public double getElytraBoost() {
+        return elytraBoost != null ? elytraBoost.getValue() : 0;
+    }
+
+    //    public double getSpeed(boolean boost) {
 //        if (boost) {
 //            return speed == null ? 0 : speed.getValue();
 //        } else {

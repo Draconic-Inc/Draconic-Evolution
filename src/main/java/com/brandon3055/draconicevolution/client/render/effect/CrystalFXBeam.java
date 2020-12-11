@@ -20,6 +20,7 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.tileentity.TileEntity;
 
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.world.World;
@@ -44,7 +45,9 @@ public class CrystalFXBeam<T extends TileEntity & IENetEffectTile> extends Cryst
         this.terminateSource = tile.renderBeamTermination();
         this.linkTarget = linkTarget.getBeamLinkPos(tile.getPos());
         this.terminateTarget = linkTarget.renderBeamTermination();
+        setBoundingBox(new AxisAlignedBB(posX, posY, posZ, this.linkTarget.x, this.linkTarget.y, this.linkTarget.z));
     }
+
 
     @Override
     public void tick() {

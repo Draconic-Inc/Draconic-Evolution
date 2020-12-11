@@ -36,7 +36,8 @@ public class RenderTileGenerator extends TileEntityRenderer<TileGenerator> {
 
     @Override
     public void render(TileGenerator tile, float partialTicks, MatrixStack mStack, IRenderTypeBuffer getter, int packedLight, int packedOverlay) {
-        IconTransformation icon = new IconTransformation(DETextures.getDETexture("models/block/generator/generator_2"));
+        IconTransformation icon = new IconTransformation(DETextures.GENERATOR);
+        if (icon.icon == null) return;
         Matrix4 mat = new Matrix4(mStack);
         CCRenderState ccrs = CCRenderState.instance();
         ccrs.reset();

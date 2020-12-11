@@ -91,6 +91,7 @@ public class PropertyContainer extends GuiManipulable {
     @Override
     public void addChildElements() {
         scrollElement = GuiConfigurableItem.createPropertyList();
+        //Everything is a group but groups with a single element are rendered as a stand alone property
         if (isGroup) {
             scrollElement.setPos(xPos() + 3, yPos() + 3 + 9);
             scrollElement.onReload(e -> e.setMaxPos(maxXPos() - 3, maxYPos() - 3, true));
@@ -104,8 +105,12 @@ public class PropertyContainer extends GuiManipulable {
                 else return I18n.format("gui.draconicevolution.item_config." + (collapsed ? "expand_group" : "collapse_group") + ".info");
             });
 
-            GuiElement<?> dragZone = gui.toolkit.createHighlightIcon(this, 8, 8, 2, 2, () -> Screen.hasShiftDown() ? BCSprites.getThemed("copy") : BCSprites.getThemed("reposition"), e -> e.getHoverTime() > 0 || dragPos);
-            dragZone.setHoverText(e -> dragPos ? Collections.emptyList() : I18n.format(Screen.hasShiftDown() ? "gui.draconicevolution.item_config.copy_group.info" : "gui.draconicevolution.item_config.move_group.info"));
+            GuiElement<?> dragZone = gui.toolkit.createHighlightIcon(this, 8, 8, 2, 2, () -> {
+                return Screen.hasShiftDown() ? BCSprites.getThemed("copy") : Screen.hasControlDown() ? BCSprites.get("delete") : BCSprites.getThemed("reposition");
+            }, e -> e.getHoverTime() > 0 || dragPos);
+            dragZone.setHoverText(e -> {
+                return dragPos ? Collections.emptyList() : I18n.format(Screen.hasShiftDown() ? "gui.draconicevolution.item_config.copy_group.info" : Screen.hasControlDown() ? "gui.draconicevolution.item_config.delete_group.info" : "gui.draconicevolution.item_config.move_group.info");
+            });
             dragZone.setHoverTextDelay(10);
             dragZone.onReload(e -> e.setMaxXPos(maxXPos() - 2, false).setYPos(yPos() + 2));
             setDragZone(dragZone::isMouseOver);
@@ -292,9 +297,10 @@ public class PropertyContainer extends GuiManipulable {
             }
         });
 
-        GuiButton dragZone = gui.toolkit.createIconButton(element, 8, 8, "reposition_gray");
+        GuiButton dragZone = gui.toolkit.createIconButton(element, 8, 8, () -> Screen.hasShiftDown() ? BCSprites.get("dark/copy") : Screen.hasControlDown() ? BCSprites.get("delete") : BCSprites.get("reposition_gray"));
         element.dragZone = dragZone;
-        dragZone.setHoverText((e) -> dragPos ? Collections.emptyList() : I18n.format("gui.draconicevolution.item_config.move_prop" + (isGroup ? "_in_group" : "") + ".info"));
+        dragZone.setHoverText(e -> dragPos ? Collections.emptyList() : I18n.format(Screen.hasShiftDown() ? "gui.draconicevolution.item_config.copy_group.info" : Screen.hasControlDown() ? "gui.draconicevolution.item_config.delete_group.info" : "gui.draconicevolution.item_config.move_group.info"));
+
         dragZone.onReload(e -> e.setMaxXPos(element.maxXPos() - 1, false).setYPos(element.yPos() + 1));
         if (!isGroup) {
             dragZone.setDisabled(true);
@@ -303,24 +309,29 @@ public class PropertyContainer extends GuiManipulable {
         } else {
             element.setEnabledCallback(() -> DEConfig.configUiShowUnavailable || (data.isGlobal || data.isPropertyAvailable()));
             dragZone.onPressed(() -> {
-                boolean willResize = ySize() == getMaxSize().height;
-                dataList.remove(data);
-                dataElementMap.remove(data);
-                scrollElement.clearElements();
-                dataList.forEach(e -> scrollElement.addElement(dataElementMap.computeIfAbsent(e, this::createElementFor)));
-                if (willResize) {
-                    setYSize(getMaxSize().height);
-                    prevUserHeight = expandedHeight = getMaxSize().height;
+                if (!Screen.hasShiftDown()) {
+                    boolean willResize = ySize() == getMaxSize().height;
+                    dataList.remove(data);
+                    dataElementMap.remove(data);
+                    scrollElement.clearElements();
+                    dataList.forEach(e -> scrollElement.addElement(dataElementMap.computeIfAbsent(e, this::createElementFor)));
+                    if (willResize) {
+                        setYSize(getMaxSize().height);
+                        prevUserHeight = expandedHeight = getMaxSize().height;
+                    }
+                    scrollElement.reloadElement();
                 }
-                scrollElement.reloadElement();
 
-                PropertyContainer newContainer = new PropertyContainer(gui, false);
-                newContainer.setXSize(Math.max(element.xSize(), newContainer.getMinSize().width));
-                gui.toolkit.placeInside(newContainer, element, TOP_RIGHT, 0, 0);
-                newContainer.updatePosition();
-                parent.addChild(newContainer);
-                newContainer.addProperty(data);
-                newContainer.startDragging();
+                if (!Screen.hasControlDown()) {
+                    PropertyContainer newContainer = new PropertyContainer(gui, false);
+                    newContainer.setXSize(Math.max(element.xSize(), newContainer.getMinSize().width));
+                    gui.toolkit.placeInside(newContainer, element, TOP_RIGHT, 0, 0);
+                    newContainer.updatePosition();
+                    parent.addChild(newContainer);
+                    newContainer.addProperty(data.copy());
+                    newContainer.isCopy = true;
+                    newContainer.startDragging();
+                }
             });
         }
 
@@ -340,23 +351,33 @@ public class PropertyContainer extends GuiManipulable {
 
     @Override
     protected boolean onStartMove(double mouseX, double mouseY) {
-        if (dragZone.validate(mouseX, mouseY) && Screen.hasShiftDown() && !isCopy) {
-            PropertyContainer newGroup = new PropertyContainer(gui, true);
-            newGroup.isCopy = true;
-            gui.propertyContainers.add(newGroup);
-            gui.advancedContainer.addChild(newGroup);
-            dataList.forEach(e -> newGroup.addProperty(e.copy()));
-            newGroup.expandedHeight = expandedHeight;
-            newGroup.prevUserHeight = prevUserHeight;
-            newGroup.isPreset = isPreset;
-            newGroup.collapsed = collapsed;
-            newGroup.globalKeyBind = globalKeyBind;
-            newGroup.groupName.setText(groupName.getText());
-            newGroup.setSize(this);
-            newGroup.setMaxXPos((int) mouseX + 5, false).setYPos((int) mouseY - 5);
-            newGroup.updatePosition();
-            newGroup.startDragging();
-            return true;
+        if (dragZone.validate(mouseX, mouseY) && !isCopy) {
+            if (Screen.hasShiftDown()) {
+                PropertyContainer newGroup = new PropertyContainer(gui, isGroup);
+                newGroup.isCopy = true;
+                gui.propertyContainers.add(newGroup);
+                gui.advancedContainer.addChild(newGroup);
+                dataList.forEach(e -> newGroup.addProperty(e.copy()));
+                newGroup.expandedHeight = expandedHeight;
+                newGroup.prevUserHeight = prevUserHeight;
+                newGroup.isPreset = isPreset;
+                newGroup.collapsed = collapsed;
+                newGroup.globalKeyBind = globalKeyBind;
+                if (isGroup){
+                    newGroup.groupName.setText(groupName.getText());
+                }
+                newGroup.setSize(this);
+                newGroup.setMaxXPos((int) mouseX + 5, false).setYPos((int) mouseY - 5);
+                newGroup.updatePosition();
+                newGroup.startDragging();
+                return true;
+            }
+            else if (Screen.hasControlDown()) {
+                removed = true;
+                parent.removeChild(this);
+                gui.propertyContainers.remove(this);
+                return true;
+            }
         }
         isCopy = false;
         return false;
@@ -531,7 +552,15 @@ public class PropertyContainer extends GuiManipulable {
     public void renderElement(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
         int targetHeight = getTargetHeight();
         if (targetHeight != ySize()) {
-            if (animDistance == 0) animDistance = targetHeight - ySize();
+            if (animDistance == 0) {
+                animDistance = targetHeight - ySize();
+                animHeight = ySize();
+                //No need for a drawn out animation for a tiny adjustment.
+                if (Math.abs(animDistance) <= 3) {
+                    setYSize((int) (animHeight = targetHeight));
+                    animDistance = 0;
+                }
+            }
             animHeight = MathHelper.approachLinear(animHeight, targetHeight, Math.abs(animDistance) * 0.15F * partialTicks);
             if (animDistance > 0 && animHeight > targetHeight) animHeight = targetHeight;
             else if (animDistance < 0 && animHeight < targetHeight) animHeight = targetHeight;

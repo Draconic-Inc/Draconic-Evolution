@@ -56,7 +56,7 @@ public class ServerPacketHandler implements ICustomPacketHandler.IServerPacketHa
                 if (packet.readBoolean())
                     ContainerModularItem.tryOpenGui(sender);
                 else
-                    NetworkHooks.openGui(sender, new ContainerConfigurableItem.Provider());
+                    ContainerConfigurableItem.tryOpenGui(sender);
                 break;
             case DraconicNetwork.S_MODULE_CONFIG_GUI:
                 ContainerModularItem.tryOpenGui(sender);

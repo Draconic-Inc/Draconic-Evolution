@@ -51,25 +51,8 @@ public class CrystalFXWireless extends CrystalFXBase<TileCrystalWirelessIO> {
         if (shape.isEmpty()) shape = VoxelShapes.fullCube();
         targetBB = shape.getBoundingBox();
         targetBB.shrink(0.05);
+        setBoundingBox(new AxisAlignedBB(posX, posY, posZ, this.linkTarget.getX(), this.linkTarget.getY(), this.linkTarget.getZ()));
     }
-
-    //    public CrystalFXWireless(World worldIn, TileCrystalWirelessIO tile, BlockPos linkTarget) {
-//        super(worldIn, tile);
-////        this.particleTextureIndexX = 3 + tile.getTier();
-//        this.age = worldIn.rand.nextInt(1024);
-//        this.setPosition(tile.getBeamLinkPos(linkTarget));
-//        this.linkTarget = linkTarget;
-////        this.particleTextureIndexY = 1;
-//        this.texturesPerRow = 8;
-//        BlockState state = worldIn.getBlockState(linkTarget);
-//        targetBB = state.getShape(worldIn, linkTarget).getBoundingBox();
-//        targetBB.shrink(0.05);
-//    }
-
-//    @Override
-//    public int getFXLayer() {
-//        return 1;
-//    }
 
     @Override
     public void tick() {

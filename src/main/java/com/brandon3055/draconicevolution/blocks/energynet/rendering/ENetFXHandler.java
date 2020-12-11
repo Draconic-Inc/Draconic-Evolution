@@ -14,7 +14,6 @@ import net.minecraft.tileentity.TileEntity;
 public abstract class ENetFXHandler<T extends TileEntity & IENetEffectTile> {
 
     protected final T tile;
-    public int renderCooldown;
 
     public ENetFXHandler(T tile) {
         this.tile = tile;

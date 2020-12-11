@@ -33,10 +33,6 @@ public class ENetFXHandlerClient<T extends TileEntity & IENetEffectTile> extends
                 DEParticles.addParticleDirect(tile.getWorld(), staticFX);
             }
             staticFX.updateFX(0.5F);
-            staticFX.renderEnabled = renderCooldown > 0;
-        }
-        if (renderCooldown > 0) {
-            renderCooldown--;
         }
         //endregion
 

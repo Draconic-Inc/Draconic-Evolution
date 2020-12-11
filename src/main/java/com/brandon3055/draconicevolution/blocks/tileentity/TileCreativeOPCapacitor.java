@@ -87,12 +87,10 @@ public class TileCreativeOPCapacitor extends TileBCore implements ITickableTileE
     @Override
     public void tick() {
         super.tick();
-        if (world.isRemote) {
-            return;
-        }
-
-        for (Direction direction : Direction.values()) {
-            sendEnergyTo(world, pos, powerRate.get(), direction);
+        if (!world.isRemote) {
+            for (Direction direction : Direction.values()) {
+                sendEnergyTo(world, pos, powerRate.get(), direction);
+            }
         }
     }
 

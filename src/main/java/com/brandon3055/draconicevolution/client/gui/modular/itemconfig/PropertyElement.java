@@ -10,6 +10,7 @@ import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiLabel;
 import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiSelectDialog;
 import com.brandon3055.draconicevolution.api.config.ConfigProperty;
 import com.brandon3055.brandonscore.client.gui.modulargui.ThemedElements;
+import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.resources.I18n;
