@@ -67,7 +67,7 @@ public class RenderModularBow extends ToolRenderBase {
         gemModel = model.get("bow_gem").backfacedCopy();
 
         bowStringType = RenderType.makeType("shaderStringType", DefaultVertexFormats.POSITION_COLOR_TEX, GL11.GL_QUADS, 256, RenderType.State.getBuilder()
-                .texture(new RenderState.TextureState(new ResourceLocation(MODID, "textures/models/item/equipment/bow_string.png"), true, false))
+                .texture(new RenderState.TextureState(new ResourceLocation(MODID, "textures/item/equipment/bow_string.png"), true, false))
                 .transparency(RenderState.LIGHTNING_TRANSPARENCY)
                 .cull(RenderState.CULL_DISABLED)
                 .writeMask(RenderState.WriteMaskState.COLOR_WRITE)

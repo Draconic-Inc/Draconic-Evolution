@@ -36,8 +36,8 @@ import java.util.OptionalDouble;
  */
 public class RenderTileGrinder extends TileEntityRenderer<TileGrinder> {
     private static final double[] ROTATION_MAP = new double[]{0, 180, 90, -90};
-    private static final RenderType swordType = RenderType.getEntitySolid(new ResourceLocation(DraconicEvolution.MODID, "textures/models/block/grinder.png"));
-    private static final RenderType fanType = RenderType.getEntitySolid(new ResourceLocation(DraconicEvolution.MODID, "textures/models/parts/machine_fan.png"));
+    private static final RenderType swordType = RenderType.getEntitySolid(new ResourceLocation(DraconicEvolution.MODID, "textures/block/grinder.png"));
+    private static final RenderType fanType = RenderType.getEntitySolid(new ResourceLocation(DraconicEvolution.MODID, "textures/block/parts/machine_fan.png"));
     private static final RenderType aoeOutlineType = RenderType.makeType("aoe", DefaultVertexFormats.POSITION_COLOR, GL11.GL_LINES, 256, RenderType.State.getBuilder()
             .transparency(RenderState.TRANSLUCENT_TRANSPARENCY)
             .cull(RenderState.CULL_DISABLED)

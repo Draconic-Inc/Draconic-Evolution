@@ -20,7 +20,7 @@ import net.minecraft.util.math.BlockRayTraceResult;
 public class TilePotentiometer extends TileBCore implements IRedstoneEmitter, IActivatableTile {
 
     public final ManagedEnum<Direction> rotation = register(new ManagedEnum<>("rotation", Direction.NORTH, DataFlags.SAVE_NBT_SYNC_TILE));
-    public final ManagedByte power = register(new ManagedByte("power", DataFlags.SAVE_BOTH_SYNC_TILE));
+    public final ManagedByte power = register(new ManagedByte("power", DataFlags.SAVE_NBT_SYNC_TILE));
 
     public TilePotentiometer() {
         super(DEContent.tile_potentiometer);

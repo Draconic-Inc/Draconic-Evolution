@@ -82,7 +82,7 @@ public class AutoFeedEntity extends ModuleEntity {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void renderSlotOverlay(IRenderTypeBuffer getter, Minecraft mc, int x, int y, int width, int height, double mouseX, double mouseY, boolean mouseOver, float partialTicks) {
-        IVertexBuilder builder = getter.getBuffer(BCSprites.guiTexType);
+        IVertexBuilder builder = getter.getBuffer(BCSprites.GUI_TEX_TYPE);
         AutoFeedData data = (AutoFeedData) module.getData();
         double progress = storedFood / data.getFoodStorage();
         progress = (int) (progress * 21F);

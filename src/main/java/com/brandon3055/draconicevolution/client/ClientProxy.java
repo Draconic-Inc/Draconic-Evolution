@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.client;
 import codechicken.lib.model.ModelRegistryHelper;
 import codechicken.lib.texture.SpriteRegistryHelper;
 import codechicken.lib.util.ResourceUtils;
+import com.brandon3055.brandonscore.client.BCSprites;
 import com.brandon3055.draconicevolution.CommonProxy;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.api.energy.IENetEffectTile;
@@ -58,6 +59,7 @@ public class ClientProxy extends CommonProxy {
         super.construct();
         FMLJavaModLoadingContext.get().getModEventBus().addListener((ColorHandlerEvent.Block event) -> moduleSpriteUploader = new ModuleSpriteUploader());
         spriteHelper.addIIconRegister(new DETextures());
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(DESprites::initialize);
     }
 
     @Override
@@ -185,6 +187,7 @@ public class ClientProxy extends CommonProxy {
         ScreenManager.registerFactory(DEContent.container_fusion_crafting_core, GuiFusionCraftingCore::new);
 //        ScreenManager.registerFactory(DEContent.container_reactor, ContainerReactor::new);
         ScreenManager.registerFactory(DEContent.container_flow_gate, GuiFlowGate::new);
+        ScreenManager.registerFactory(DEContent.container_energy_transfuser, GuiEnergyTransfuser::new);
     }
 
     private void registerTileRenderers() {
@@ -203,6 +206,7 @@ public class ClientProxy extends CommonProxy {
         ClientRegistry.bindTileEntityRenderer(DEContent.tile_crafting_core, RenderTileFusionCraftingCore::new);
         ClientRegistry.bindTileEntityRenderer(DEContent.tile_crafting_injector, RenderTileCraftingInjector::new);
         ClientRegistry.bindTileEntityRenderer(DEContent.tile_potentiometer, RenderTilePotentiometer::new);
+        ClientRegistry.bindTileEntityRenderer(DEContent.tile_energy_transfuser, RenderTileEnergyTransfuser::new);
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -268,6 +272,7 @@ public class ClientProxy extends CommonProxy {
     private void setupRenderLayers() {
         RenderTypeLookup.setRenderLayer(DEContent.grinder, RenderType.getCutoutMipped());
         RenderTypeLookup.setRenderLayer(DEContent.generator, RenderType.getCutoutMipped());
+        RenderTypeLookup.setRenderLayer(DEContent.energy_transfuser, RenderType.getCutoutMipped());
     }
 
     @Override

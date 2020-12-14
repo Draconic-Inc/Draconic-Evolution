@@ -60,6 +60,7 @@ public class BlockStateGenerator extends BlockStateProvider {
 
         directionalBlock(DEContent.potentiometer, models().getExistingFile(modLoc("block/potentiometer")));
 
+        simpleBlock(DEContent.energy_transfuser, models().getExistingFile(modLoc("block/energy_transfuser")));
 
         dummyBlock(DEContent.crystal_io_basic);
         dummyBlock(DEContent.crystal_io_wyvern);

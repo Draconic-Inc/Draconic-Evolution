@@ -213,6 +213,10 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
             return super.binderUsed(player, linkTarget, sideClicked);
         }
 
+        if (world.isRemote) {
+            return true;
+        }
+
         Vec3B offset = getOffset(linkTarget);
 
         if (linkedReceivers.contains(offset)) {

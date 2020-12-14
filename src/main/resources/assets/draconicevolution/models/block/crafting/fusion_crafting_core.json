@@ -2,8 +2,8 @@
     "__comment": "Model generated using MrCrayfish's Model Creator (http://mrcrayfish.com/modelcreator/)",
     "parent": "block/block",
     "textures": {
-        "texture": "draconicevolution:models/block/crafting/crafting_core",
-        "particle": "draconicevolution:models/block/crafting/crafting_core"
+        "texture": "draconicevolution:block/crafting/crafting_core",
+        "particle": "draconicevolution:block/crafting/crafting_core"
     },
     "elements": [
         {

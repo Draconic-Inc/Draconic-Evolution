@@ -28,6 +28,7 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.vector.Vector3d;
 import org.lwjgl.opengl.GL11;
 
@@ -98,6 +99,7 @@ public class ReactorBeamFX extends Particle {
         this.isInjectorEffect = isInjectorEffect;
         this.dist = (float) Utils.getDistanceAtoB(pos, Vec3D.getCenter(tile.getPos()));
         this.rand.setSeed(worldIn.rand.nextLong());
+        setBoundingBox(new AxisAlignedBB(posX, posY, posZ, tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ()));
     }
 
     public void updateFX(float fxState, float powerState) {

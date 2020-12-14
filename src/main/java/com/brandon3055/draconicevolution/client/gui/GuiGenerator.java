@@ -38,7 +38,7 @@ import static net.minecraft.util.text.TextFormatting.GRAY;
 
 public class GuiGenerator extends ModularGuiContainer<ContainerBCTile<TileGenerator>> {
 
-    private static final RenderType modelType = RenderType.getEntitySolid(new ResourceLocation(DraconicEvolution.MODID, "textures/models/block/generator/generator_2.png"));
+    private static final RenderType modelType = RenderType.getEntitySolid(new ResourceLocation(DraconicEvolution.MODID, "textures/block/generator/generator_2.png"));
     private static final CCModel storageModel;
 
     static {
@@ -50,7 +50,7 @@ public class GuiGenerator extends ModularGuiContainer<ContainerBCTile<TileGenera
     public PlayerEntity player;
     private TileGenerator tile;
 
-    protected GuiToolkit<GuiGenerator> toolkit = new GuiToolkit<>(this, DEFAULT);
+    protected GuiToolkit<GuiGenerator> toolkit = new GuiToolkit<>(this, DEFAULT).setTranslationPrefix("gui.draconicevolution.generator");
 
     public GuiGenerator(ContainerBCTile<TileGenerator> container, PlayerInventory playerInventory, ITextComponent title) {
         super(container, playerInventory, title);
@@ -83,9 +83,9 @@ public class GuiGenerator extends ModularGuiContainer<ContainerBCTile<TileGenera
         modeButton.setPos(template.playerSlots.maxXPos() - modeButton.xSize(), template.playerSlots.yPos() - modeButton.ySize() + 8);
 
         //Info Panel
-        template.infoPanel.addLabeledValue(GOLD + I18n.format("gui.draconicevolution.generator.fuel_efficiency"), 6, 11, () -> GRAY + (tile.mode.get().getEfficiency() + "%"), true);
-        template.infoPanel.addLabeledValue(GOLD + I18n.format("gui.draconicevolution.generator.output_power"), 6, 11, () -> GRAY + (tile.productionRate.get() + " / " + tile.mode.get().powerOutput + " OP/t"), true);
-        template.infoPanel.addLabeledValue(GOLD + I18n.format("gui.draconicevolution.generator.current_fuel_value"), 6, 11, () -> GRAY + (tile.fuelRemaining.get() == 0 ? "n/a" : tile.fuelRemaining.get() + " / " + tile.fuelValue.get()), true);
+        template.infoPanel.addLabeledValue(GOLD + toolkit.i18n("fuel_efficiency"), 6, 11, () -> GRAY + (tile.mode.get().getEfficiency() + "%"), true);
+        template.infoPanel.addLabeledValue(GOLD + toolkit.i18n("output_power"), 6, 11, () -> GRAY + (tile.productionRate.get() + " / " + tile.mode.get().powerOutput + " OP/t"), true);
+        template.infoPanel.addLabeledValue(GOLD + toolkit.i18n("current_fuel_value"), 6, 11, () -> GRAY + (tile.fuelRemaining.get() == 0 ? "n/a" : tile.fuelRemaining.get() + " / " + tile.fuelValue.get()), true);
     }
 
 

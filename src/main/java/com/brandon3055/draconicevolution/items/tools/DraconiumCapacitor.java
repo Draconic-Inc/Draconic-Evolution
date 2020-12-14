@@ -121,6 +121,15 @@ public class DraconiumCapacitor extends ItemEnergyBase implements IInvCharge, IU
 //        return 0;
 //    }
 
+
+    @Override
+    protected long getCapacity(ItemStack stack) {
+        if (this == DEContent.capacitor_creative) {
+            return Long.MAX_VALUE;
+        }
+        return 0;
+    }
+
     @Override
     public long getMaxReceive(ItemStack stack) {
         if (this == DEContent.capacitor_creative) {
@@ -169,23 +178,23 @@ public class DraconiumCapacitor extends ItemEnergyBase implements IInvCharge, IU
         return super.getEnergyStored(stack, isOPAsking);
     }
 //
-//    @Override
-//    public long receiveEnergy(ItemStack stack, long maxReceive, boolean simulate) {
-//        if (stack.getItemDamage() == 2) {
-//            return maxReceive;
-//        }
-//
-//        return super.receiveEnergy(stack, maxReceive, simulate);
-//    }
-//
-//    @Override
-//    public long extractEnergy(ItemStack container, long maxExtract, boolean simulate) {
-//        if (container.getItemDamage() == 2) {
-//            return maxExtract;
-//        }
-//
-//        return super.extractEnergy(container, maxExtract, simulate);
-//    }
+    @Override
+    public long receiveEnergy(ItemStack stack, long maxReceive, boolean simulate) {
+        if (this == DEContent.capacitor_creative) {
+            return maxReceive;
+        }
+
+        return super.receiveEnergy(stack, maxReceive, simulate);
+    }
+
+    @Override
+    public long extractEnergy(ItemStack container, long maxExtract, boolean simulate) {
+        if (this == DEContent.capacitor_creative) {
+            return maxExtract;
+        }
+
+        return super.extractEnergy(container, maxExtract, simulate);
+    }
 
     //endregion
 

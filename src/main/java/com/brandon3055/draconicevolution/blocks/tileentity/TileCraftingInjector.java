@@ -4,7 +4,6 @@ import com.brandon3055.brandonscore.api.power.OPStorage;
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.capability.CapabilityOP;
 import com.brandon3055.brandonscore.inventory.TileItemStackHandler;
-import com.brandon3055.brandonscore.lib.Vec3B;
 import com.brandon3055.brandonscore.lib.Vec3I;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedLong;
@@ -17,9 +16,7 @@ import com.brandon3055.draconicevolution.api.fusioncrafting.ICraftingInjector;
 import com.brandon3055.draconicevolution.api.fusioncrafting.IFusionCraftingInventory;
 import com.brandon3055.draconicevolution.blocks.machines.CraftingInjector;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.ByteArrayNBT;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -48,7 +45,7 @@ public class TileCraftingInjector extends TileBCore implements ICraftingInjector
         super(DEContent.tile_crafting_injector);
 
         capManager.setManaged("inventory", CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, itemHandler).saveBoth().syncTile();
-        itemHandler.setStackLimit(() -> singleItem.get() ? 1 : 64); //TODO make sure this cant void items
+        itemHandler.setPerSlotLimit(() -> singleItem.get() ? 1 : 64); //TODO make sure this cant void items
         itemHandler.setContentsChangeListener(this::slotContentsChanged);
 
         capManager.set(CapabilityOP.OP, new OPStorage(0){

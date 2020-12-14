@@ -1,7 +1,7 @@
 {
 	"credit": "Made by brandon3055 with Blockbench",
 	"textures": {
-		"3": "draconicevolution:models/block/generator/generator_flame"
+		"3": "draconicevolution:block/generator/generator_flame"
 	},
 	"elements": [
 		{

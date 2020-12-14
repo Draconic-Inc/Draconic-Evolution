@@ -61,7 +61,7 @@ public class RenderItemChaosShard implements IItemRenderer {
         RenderSystem.pushMatrix();
         CCRenderState ccrs = CCRenderState.instance();
         ccrs.reset();
-        ResourceHelperDE.bindTexture("textures/models/item/chaos_crystal.png");
+        ResourceHelperDE.bindTexture("textures/item/chaos_crystal.png");
         ccrs.startDrawing(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX);
         shard.render(ccrs, new Scale(item == DEContent.chaos_shard ? 1 : item == DEContent.chaos_frag_large ? 0.75 : item == DEContent.chaos_frag_medium ? 0.5 : 0.25).at(new Vector3(0.5, 0.5, 0)).with(new Translation(-0.5, -0.5, 0)));
         ccrs.draw();

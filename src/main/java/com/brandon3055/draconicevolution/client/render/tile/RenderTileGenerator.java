@@ -52,21 +52,4 @@ public class RenderTileGenerator extends TileEntityRenderer<TileGenerator> {
 
         fanModel.render(ccrs, LightModel.standardLightModel, icon, mat);
     }
-//
-////    @Override
-//    public void renderTileEntityFast(TileGenerator te, double x, double y, double z, float partialTicks, int destroyStage, BufferBuilder buffer) {
-//        IconTransformation icon = new IconTransformation(DETextures.getDETexture("models/block/generator/generator_2"));
-//        CCRenderState state = CCRenderState.instance();
-//        state.reset();
-//        state.bind(buffer);
-//        state.setBrightness(te.getWorld(), te.getPos());
-//
-//        Matrix4 mat = new Matrix4();
-//        mat.apply(new Translation(x + .5, y + .5, z + .5));
-//        mat.apply(new Rotation(te.getBlockState().get(Generator.FACING).getOpposite().getHorizontalAngle() * -MathHelper.torad, 0, 1, 0));
-//        mat.apply(new Scale(0.0625));
-//        mat.apply(new Rotation((te.rotation + (te.rotationSpeed * partialTicks)), 1, 0, 0).at(new Vector3(0, -1.5, -4.5)));
-//
-//        fanModel.render(state, LightModel.standardLightModel, icon, mat);
-//    }
 }

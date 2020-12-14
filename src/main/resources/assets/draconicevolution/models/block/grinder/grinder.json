@@ -2,10 +2,10 @@
 	"credit": "Made by brandon3055 with Blockbench",
 	"parent": "block/block",
 	"textures": {
-		"3": "draconicevolution:models/parts/machine_frame",
-		"4": "draconicevolution:models/block/grinder",
-		"5": "draconicevolution:models/parts/machine_fan",
-		"particle": "draconicevolution:models/parts/machine_fan"
+		"3": "draconicevolution:block/parts/machine_frame",
+		"4": "draconicevolution:block/grinder",
+		"5": "draconicevolution:block/parts/machine_fan",
+		"particle": "draconicevolution:block/parts/machine_fan"
 	},
 	"elements": [
 		{

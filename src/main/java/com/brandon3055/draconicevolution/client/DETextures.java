@@ -56,7 +56,7 @@ public class DETextures implements IIconRegister, ISelectiveResourceReloadListen
     public void registerIcons(AtlasRegistrar registrar) {
         map = registrar;
 
-        registerDE("models/block/generator/generator_2", e -> GENERATOR = e);
+        registerDE("block/generator/generator_2", e -> GENERATOR = e);
 
 //        //@formatter:off
 //        register(TOOLS_ + "wyvern_axe", e -> WYVERN_AXE = e);
@@ -192,11 +192,8 @@ public class DETextures implements IIconRegister, ISelectiveResourceReloadListen
     public static final String REACTOR_BEAM = "textures/particle/reactor_beam.png";
     public static final String REACTOR_ENERGY_BEAM = "textures/particle/reactor_energy_beam.png";
 
-    public static final ResourceLocation REACTOR_STABILIZER = new ResourceLocation(DraconicEvolution.MODID, "textures/models/reactor/reactor_stabilizer_core.png");
-    public static final ResourceLocation REACTOR_STABILIZER_RING = new ResourceLocation(DraconicEvolution.MODID, "textures/models/reactor/reactor_stabilizer_ring.png");
-    public static final ResourceLocation REACTOR_INJECTOR = new ResourceLocation(DraconicEvolution.MODID, "textures/models/reactor/model_reactor_power_injector.png");
 
-    public static final String DRACONIUM_CHEST = "textures/models/draconium_chest.png";
+    public static final String DRACONIUM_CHEST = "textures/block/draconium_chest.png";
 
     //Added / updated / still used in 1.14+
 //

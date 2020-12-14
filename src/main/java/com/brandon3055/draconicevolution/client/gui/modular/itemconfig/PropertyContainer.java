@@ -12,7 +12,6 @@ import com.brandon3055.brandonscore.client.utils.GuiHelper;
 import com.brandon3055.brandonscore.client.gui.modulargui.ThemedElements;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.GuiConfigurableItem.UpdateAnim;
-import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -595,7 +594,7 @@ public class PropertyContainer extends GuiManipulable {
 
         int alpha = semiTrans ? 0x60000000 : 0xFF000000;
         RenderMaterial mat = BCSprites.getThemed("borderless_bg_dynamic_small");
-        drawDynamicSprite(mat.getBuffer(getter, e -> BCSprites.guiTexType), mat.getSprite(), xPos(), yPos(), xSize(), ySize(), 2, 2, 2, 2, 0xFFFFFF | alpha);
+        drawDynamicSprite(mat.getBuffer(getter, e -> BCSprites.GUI_TEX_TYPE), mat.getSprite(), xPos(), yPos(), xSize(), ySize(), 2, 2, 2, 2, 0xFFFFFF | alpha);
 
         int contentPos = yPos() + 2 + 9;
         int contentHeight = ySize() - 4 - 9;

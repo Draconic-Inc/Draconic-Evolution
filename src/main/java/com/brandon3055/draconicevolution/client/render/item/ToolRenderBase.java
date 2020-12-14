@@ -127,27 +127,27 @@ public abstract class ToolRenderBase implements IItemRenderer {
         this.techLevel = techLevel;
         String levelName = techLevel.name().toLowerCase();
         modelType = RenderType.makeType("modelType", DefaultVertexFormats.BLOCK, GL11.GL_TRIANGLES, 256, true, false, RenderType.State.getBuilder()
-                .texture(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/models/item/equipment/" + levelName + "_" + tool + ".png"), false, false))
+                .texture(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/item/equipment/" + levelName + "_" + tool + ".png"), false, false))
                 .diffuseLighting(DIFFUSE_LIGHTING_ENABLED)
                 .lightmap(LIGHTMAP_ENABLED)
                 .build(true));
 
         modelGuiType = RenderType.makeType("modelGuiType", DefaultVertexFormats.BLOCK, GL11.GL_TRIANGLES, 256, RenderType.State.getBuilder()
-                .texture(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/models/item/equipment/" + levelName + "_" + tool + ".png"), false, false))
+                .texture(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/item/equipment/" + levelName + "_" + tool + ".png"), false, false))
                 .lightmap(LIGHTMAP_ENABLED)
                 .overlay(OVERLAY_DISABLED)
                 .build(false)
         );
 
         chaosType = RenderType.makeType("chaosShaderType", DefaultVertexFormats.BLOCK, GL11.GL_TRIANGLES, 256, RenderType.State.getBuilder()
-                .texture(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/models/item/equipment/chaos_shader.png"), true, false))
+                .texture(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/item/equipment/chaos_shader.png"), true, false))
                 .lightmap(LIGHTMAP_ENABLED)
                 .overlay(OVERLAY_ENABLED)
                 .build(false)
         );
 
         shaderParentType = RenderType.makeType("shaderGemType", DefaultVertexFormats.BLOCK, GL11.GL_TRIANGLES, 256, RenderType.State.getBuilder()
-                .texture(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/models/item/equipment/shader_fallback_" + levelName + ".png"), false, false))
+                .texture(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/item/equipment/shader_fallback_" + levelName + ".png"), false, false))
                 .lightmap(LIGHTMAP_ENABLED)
                 .overlay(OVERLAY_ENABLED)
                 .build(false)

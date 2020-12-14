@@ -281,6 +281,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .key('C', core_wyvern)
                 .addCriterion("has_core_wyvern", hasItem(core_wyvern))
                 .build(consumer);
+
         ShapedRecipeBuilder.shapedRecipe(energy_core_stabilizer)
                 .patternLine("A A")
                 .patternLine(" B ")
@@ -289,6 +290,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .key('B', particle_generator)
                 .addCriterion("has_core_wyvern", hasItem(core_wyvern))
                 .build(consumer);
+
         ShapedRecipeBuilder.shapedRecipe(energy_pylon, 2)
                 .patternLine("ABA")
                 .patternLine("CDC")
@@ -333,6 +335,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .key('B', energy_core_wyvern)
                 .addCriterion("has_core_draconium", hasItem(core_draconium))
                 .build(consumer);
+
         ShapedRecipeBuilder.shapedRecipe(crystal_relay_wyvern, 4)
                 .patternLine("ABA")
                 .patternLine("BCB")
@@ -342,6 +345,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .key('C', core_draconium)
                 .addCriterion("has_core_draconium", hasItem(core_draconium))
                 .build(consumer);
+
         FusionRecipeBuilder.fusionRecipe(crystal_relay_draconic, 4)
                 .catalyst(4, crystal_relay_wyvern)
                 .energy(128000)
@@ -367,6 +371,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .key('D', crystal_relay_basic)
                 .addCriterion("has_core_draconium", hasItem(core_draconium))
                 .build(consumer);
+
         ShapedRecipeBuilder.shapedRecipe(crystal_wireless_wyvern)
                 .patternLine("ABA")
                 .patternLine("CDC")
@@ -377,6 +382,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .key('D', crystal_relay_wyvern)
                 .addCriterion("has_core_draconium", hasItem(core_draconium))
                 .build(consumer);
+
         ShapedRecipeBuilder.shapedRecipe(crystal_wireless_draconic)
                 .patternLine("ABA")
                 .patternLine("CDC")
@@ -393,24 +399,29 @@ public class RecipeGenerator extends RecipeProvider {
                 .addIngredient(crystal_relay_basic)
                 .addCriterion("has_core_draconium", hasItem(core_draconium))
                 .build(consumer);
+
         ShapelessRecipeBuilder.shapelessRecipe(crystal_io_wyvern, 2)
                 .addIngredient(crystal_relay_wyvern)
                 .addCriterion("has_core_draconium", hasItem(core_draconium))
                 .build(consumer);
+
         ShapelessRecipeBuilder.shapelessRecipe(crystal_io_draconic, 2)
                 .addIngredient(crystal_relay_draconic)
                 .addCriterion("has_core_draconium", hasItem(core_draconium))
                 .build(consumer);
+
         ShapelessRecipeBuilder.shapelessRecipe(crystal_relay_basic)
                 .addIngredient(crystal_io_basic)
                 .addIngredient(crystal_io_basic)
                 .addCriterion("has_core_draconium", hasItem(core_draconium))
                 .build(consumer, "draconicevolution:crystal_io_basic_combine");
+
         ShapelessRecipeBuilder.shapelessRecipe(crystal_relay_wyvern)
                 .addIngredient(crystal_io_wyvern)
                 .addIngredient(crystal_io_wyvern)
                 .addCriterion("has_core_draconium", hasItem(core_draconium))
                 .build(consumer, "draconicevolution:crystal_io_wyvern_combine");
+
         ShapelessRecipeBuilder.shapelessRecipe(crystal_relay_draconic)
                 .addIngredient(crystal_io_draconic)
                 .addIngredient(crystal_io_draconic)
@@ -429,6 +440,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .key('D', energy_core_wyvern)
                 .addCriterion("has_core_wyvern", hasItem(core_wyvern))
                 .build(consumer);
+
         ShapedRecipeBuilder.shapedRecipe(shovel_wyvern)
                 .patternLine(" A ")
                 .patternLine("BCB")
@@ -439,6 +451,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .key('D', energy_core_wyvern)
                 .addCriterion("has_core_wyvern", hasItem(core_wyvern))
                 .build(consumer);
+
         ShapedRecipeBuilder.shapedRecipe(axe_wyvern)
                 .patternLine(" A ")
                 .patternLine("BCB")
@@ -449,6 +462,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .key('D', energy_core_wyvern)
                 .addCriterion("has_core_wyvern", hasItem(core_wyvern))
                 .build(consumer);
+
         ShapedRecipeBuilder.shapedRecipe(bow_wyvern)
                 .patternLine(" A ")
                 .patternLine("BCB")
@@ -459,6 +473,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .key('D', energy_core_wyvern)
                 .addCriterion("has_core_wyvern", hasItem(core_wyvern))
                 .build(consumer);
+
         ShapedRecipeBuilder.shapedRecipe(sword_wyvern)
                 .patternLine(" A ")
                 .patternLine("BCB")
@@ -479,6 +494,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .key('C', core_wyvern)
                 .addCriterion("has_core_wyvern", hasItem(core_wyvern))
                 .build(consumer);
+
         ShapedRecipeBuilder.shapedRecipe(capacitor_draconic)
                 .patternLine("ABA")
                 .patternLine("CDC")
@@ -499,6 +515,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .key('C', ENDER_EYE)
                 .addCriterion("has_dust_draconium", hasItem(dust_draconium))
                 .build(consumer);
+
         FusionRecipeBuilder.fusionRecipe(dislocator_advanced)
                 .catalyst(dislocator)
                 .energy(1000000)
@@ -512,6 +529,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .ingredient(core_wyvern)
                 .ingredient(ingot_draconium)
                 .build(consumer);
+
         ShapelessRecipeBuilder.shapelessRecipe(dislocator_p2p)
                 .addIngredient(dislocator)
                 .addIngredient(core_draconium)
@@ -519,6 +537,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .addIngredient(GHAST_TEAR)
                 .addCriterion("has_core_draconium", hasItem(core_draconium))
                 .build(consumer);
+
         ShapelessRecipeBuilder.shapelessRecipe(dislocator_player)
                 .addIngredient(dislocator)
                 .addIngredient(core_draconium)

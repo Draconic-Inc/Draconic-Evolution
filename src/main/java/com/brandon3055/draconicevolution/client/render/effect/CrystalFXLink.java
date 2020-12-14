@@ -20,6 +20,7 @@ import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
 import org.lwjgl.opengl.GL11;
@@ -45,6 +46,7 @@ public class CrystalFXLink extends CrystalFXBase<TileCrystalBase> {
             linkTarget.add(face.getXOffset() * 0.6, face.getYOffset() * 0.6, face.getZOffset() * 0.6);
         }
         this.terminateTarget = true;
+        setBoundingBox(new AxisAlignedBB(posX, posY, posZ, this.linkTarget.x, this.linkTarget.y, this.linkTarget.z));
     }
 
     @Override

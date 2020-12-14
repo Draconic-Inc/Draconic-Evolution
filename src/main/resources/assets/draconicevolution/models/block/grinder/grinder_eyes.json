@@ -2,7 +2,7 @@
 	"parent": "block/block",
 	"credit": "Made by brandon3055 with Blockbench",
 	"textures": {
-		"skull_eyes": "draconicevolution:models/block/grinder"
+		"skull_eyes": "draconicevolution:block/grinder"
 	},
 	"elements": [
 		{

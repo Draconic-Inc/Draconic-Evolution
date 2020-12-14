@@ -1,10 +1,8 @@
 package com.brandon3055.draconicevolution.datagen;
 
 import codechicken.lib.util.SneakyUtils;
-import com.brandon3055.brandonscore.handlers.FileHandler;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.init.DEModules;
-import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.item.Item;
@@ -17,7 +15,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Objects;
 
 import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
@@ -26,7 +23,6 @@ import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
  * Created by brandon3055 on 28/2/20.
  */
 public class ItemModelGenerator extends ItemModelProvider {
-    private static final Logger LOGGER = LogManager.getLogger();
 
     public ItemModelGenerator(DataGenerator generator, ExistingFileHelper existingFileHelper) {
         super(generator, MODID, existingFileHelper);
@@ -53,9 +49,8 @@ public class ItemModelGenerator extends ItemModelProvider {
         blockItem(DEContent.potentiometer);
 
 
-
         blockItem(DEContent.disenchanter);
-        blockItem(DEContent.energy_infuser);
+        blockItem(DEContent.energy_transfuser, modLoc("block/energy_transfuser"));
         blockItem(DEContent.dislocator_pedestal);
         blockItem(DEContent.dislocator_receptacle);
         blockItem(DEContent.creative_op_capacitor);
@@ -128,8 +123,8 @@ public class ItemModelGenerator extends ItemModelProvider {
         simpleItem(DEContent.info_tablet);
         //endregion
 
-        //region Modules
-        File textures = new File("/home/brandon3055/Development/WorkSpaces/1.15/BrandonsMods/Draconic-Evolution/src/main/resources/assets/draconicevolution/textures");
+        //region Modules (Dont mind this. This is just me being to lazy to go copy paste some images)
+        File textures = new File("/home/brandon3055/Development/WorkSpaces/1.16/BrandonsMods/Draconic-Evolution/src/main/resources/assets/draconicevolution/textures");
         DEModules.moduleItemMap.forEach((module, item) -> {
             String name = Objects.requireNonNull(module.getRegistryName()).getPath();
             File itemTexture = new File(textures, "item/modules/" + name + ".png");
@@ -172,11 +167,13 @@ public class ItemModelGenerator extends ItemModelProvider {
         simpleItem(item, "item");
     }
 
+    @SuppressWarnings("ConstantConditions")
     private void simpleItem(Item item, String textureFolder) {
         ResourceLocation reg = item.getRegistryName();
         simpleItem(item, new ResourceLocation(reg.getNamespace(), textureFolder + "/" + reg.getPath()));
     }
 
+    @SuppressWarnings("ConstantConditions")
     private void simpleItem(Item item, ResourceLocation texture) {
         ResourceLocation reg = item.getRegistryName();
         getBuilder(reg.getPath())

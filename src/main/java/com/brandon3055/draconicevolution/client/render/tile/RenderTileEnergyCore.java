@@ -33,9 +33,9 @@ import java.util.Map;
 public class RenderTileEnergyCore extends TileEntityRenderer<TileEnergyCore> {
     private static final double[] SCALES = {1.1, 1.7, 2.3, 3.6, 5.5, 7.1, 8.6, 10.2};
 
-    private static final RenderType innerCoreType = RenderType.getEntitySolid(new ResourceLocation(DraconicEvolution.MODID, "textures/models/block/core/energy_core_base.png"));
+    private static final RenderType innerCoreType = RenderType.getEntitySolid(new ResourceLocation(DraconicEvolution.MODID, "textures/block/core/energy_core_base.png"));
     private static final RenderType outerCoreType = RenderType.makeType("outer_core", DefaultVertexFormats.ENTITY, GL11.GL_QUADS, 256, false, true, RenderType.State.getBuilder()
-            .texture(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/models/block/core/energy_core_overlay.png"), false, false))
+            .texture(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/block/core/energy_core_overlay.png"), false, false))
             .transparency(RenderState.TRANSLUCENT_TRANSPARENCY)
 //            .writeMask(RenderState.COLOR_WRITE)
             .texturing(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
@@ -43,27 +43,27 @@ public class RenderTileEnergyCore extends TileEntityRenderer<TileEnergyCore> {
     );
 
     private static final RenderType innerStabType = RenderType.makeType("inner_stab", DefaultVertexFormats.ENTITY, GL11.GL_QUADS, 256, false, true, RenderType.State.getBuilder()
-                    .texture(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/models/block/core/stabilizer_sphere.png"), false, false))
+                    .texture(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/block/core/stabilizer_sphere.png"), false, false))
                     .transparency(RenderState.NO_TRANSPARENCY)
 //            .texturing(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
                     .build(false)
     );
     private static final RenderType outerStabType = RenderType.makeType("outer_stab", DefaultVertexFormats.ENTITY, GL11.GL_QUADS, 256, false, true, RenderType.State.getBuilder()
-            .texture(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/models/block/core/stabilizer_sphere.png"), false, false))
+            .texture(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/block/core/stabilizer_sphere.png"), false, false))
             .transparency(RenderState.TRANSLUCENT_TRANSPARENCY)
             .texturing(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
             .build(false)
     );
 
     private static final RenderType beamType = RenderType.makeType("inner_beam", DefaultVertexFormats.POSITION_TEX, GL11.GL_QUADS, 256, false, true, RenderType.State.getBuilder()
-            .texture(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/models/block/core/stabilizer_beam.png"), false, false))
+            .texture(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/block/core/stabilizer_beam.png"), false, false))
             .transparency(RenderState.NO_TRANSPARENCY)
             .texturing(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
             .build(false)
     );
 
     private static final RenderType outerBeamType = RenderType.makeType("outer_beam", DefaultVertexFormats.POSITION_COLOR_TEX, GL11.GL_TRIANGLE_STRIP, 256, false, false, RenderType.State.getBuilder()
-            .texture(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/models/block/core/stabilizer_beam.png"), false, false))
+            .texture(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/block/core/stabilizer_beam.png"), false, false))
             .transparency(RenderState.TRANSLUCENT_TRANSPARENCY)
             .writeMask(RenderState.COLOR_WRITE)
             .texturing(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))

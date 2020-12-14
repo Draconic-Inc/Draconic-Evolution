@@ -32,9 +32,8 @@ public class DEItemTier implements IItemTier {
 
     @Override
     public int getMaxUses() {
-        return 0; // = unbreakable but can be overridden by item properties
+        return 0; // = unbreakable but ~can be~ "IS" overridden by item properties "Unless extending TieredItem"
     }
-
 
     @Override
     public int getHarvestLevel() {

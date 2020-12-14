@@ -84,11 +84,13 @@ public class ModularOPStorage implements IOPStorageModifiable, INBTSerializable<
         return energy < getMaxOPStored();
     }
 
-    private long maxExtract() {
-        return canExtract ? baseTransfer + host.getEnergyData().getTransfer() : host.getEnergyShare().getTransferRate();
+    @Override
+    public long maxExtract() {
+        return baseTransfer + host.getEnergyData().getTransfer();
     }
 
-    private long maxReceive() {
+    @Override
+    public long maxReceive() {
         return baseTransfer + host.getEnergyData().getTransfer();
     }
 

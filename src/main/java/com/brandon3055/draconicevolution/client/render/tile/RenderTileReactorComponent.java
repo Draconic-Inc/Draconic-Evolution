@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.client.render.tile;
 
+import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorComponent;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorInjector;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorStabilizer;
@@ -13,6 +14,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Quaternion;
 
 /**
@@ -22,6 +24,10 @@ public class RenderTileReactorComponent extends TileEntityRenderer<TileReactorCo
     public RenderTileReactorComponent(TileEntityRendererDispatcher rendererDispatcherIn) {
         super(rendererDispatcherIn);
     }
+
+    public static final ResourceLocation REACTOR_STABILIZER = new ResourceLocation(DraconicEvolution.MODID, "textures/block/reactor/reactor_stabilizer_core.png");
+    public static final ResourceLocation REACTOR_STABILIZER_RING = new ResourceLocation(DraconicEvolution.MODID, "textures/block/reactor/reactor_stabilizer_ring.png");
+    public static final ResourceLocation REACTOR_INJECTOR = new ResourceLocation(DraconicEvolution.MODID, "textures/block/reactor/model_reactor_power_injector.png");
 
     public static ModelReactorStabilizerCore stabilizerModel = new ModelReactorStabilizerCore(RenderType::getEntitySolid);
     public static ModelReactorStabilizerRing stabilizerRingModel = new ModelReactorStabilizerRing(RenderType::getEntitySolid);
@@ -56,19 +62,19 @@ public class RenderTileReactorComponent extends TileEntityRenderer<TileReactorCo
         float ringRotation = coreRotation * -0.5F;//Remember Partial Ticks here
         stabilizerModel.brightness = brightness;
         stabilizerModel.rotation = coreRotation;
-        stabilizerModel.render(matrix, getter.getBuffer(stabilizerModel.getRenderType(DETextures.REACTOR_STABILIZER)), packedLight, packedOverlay, 1F, 1F, 1F, 1F);
+        stabilizerModel.render(matrix, getter.getBuffer(stabilizerModel.getRenderType(REACTOR_STABILIZER)), packedLight, packedOverlay, 1F, 1F, 1F, 1F);
         matrix.rotate(new Quaternion(90, 0, 0, true));
         matrix.translate(0, -0.58, 0);
 //        matrix.scale(0.95F, 0.95F, 0.95F);
         matrix.rotate(new Quaternion(0, ringRotation, 0, true));
         stabilizerRingModel.brightness = brightness;
         stabilizerRingModel.embitterRotation = 70F;
-        stabilizerRingModel.render(matrix, getter.getBuffer(stabilizerModel.getRenderType(DETextures.REACTOR_STABILIZER_RING)), packedLight, packedOverlay, 1F, 1F, 1F, 1F);
+        stabilizerRingModel.render(matrix, getter.getBuffer(stabilizerModel.getRenderType(REACTOR_STABILIZER_RING)), packedLight, packedOverlay, 1F, 1F, 1F, 1F);
     }
 
     public static void renderInjector(MatrixStack matrix, IRenderTypeBuffer getter, float brightness, int packedLight, int packedOverlay) {
         injectorModel.brightness = brightness;
-        injectorModel.render(matrix, getter.getBuffer(injectorModel.getRenderType(DETextures.REACTOR_INJECTOR)), packedLight, packedOverlay, 1F, 1F, 1F, 1F);
+        injectorModel.render(matrix, getter.getBuffer(injectorModel.getRenderType(REACTOR_INJECTOR)), packedLight, packedOverlay, 1F, 1F, 1F, 1F);
     }
 
 }

@@ -1,8 +1,8 @@
 {
 	"credit": "Made by brandon3055 with Blockbench",
 	"textures": {
-		"2": "draconicevolution:models/blocks/generator/generator_2",
-		"particle": "draconicevolution:models/blocks/generator/generator_2"
+		"2": "draconicevolution:block/generator/generator_2",
+		"particle": "draconicevolution:block/generator/generator_2"
 	},
 	"elements": [
 		{

@@ -79,14 +79,14 @@ public class RenderTileReactorCore extends TileEntityRenderer<TileReactorCore> {
 
 
     private static RenderType fallBackType = RenderType.makeType("fall_back_type", DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP, GL11.GL_QUADS, 256, RenderType.State.getBuilder()
-            .texture(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/models/reactor/reactor_core.png"), false, false))
+            .texture(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/block/reactor/reactor_core.png"), false, false))
             .texturing(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
             .build(false)
     );
 
     private static RenderType fallBackShieldType = RenderType.makeType("fall_back_shield_type", DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP, GL11.GL_QUADS, 256, RenderType.State.getBuilder()
             .transparency(RenderState.TRANSLUCENT_TRANSPARENCY)
-            .texture(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/models/reactor/reactor_shield.png"), false, false))
+            .texture(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/block/reactor/reactor_shield.png"), false, false))
             .texturing(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
             .build(false)
     );

@@ -45,6 +45,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.common.extensions.IForgeItem;
+import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.EnergyStorage;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
@@ -67,7 +69,7 @@ public interface IModularItem extends IForgeItem {
         provider.addCapability(host, "module_host", MODULE_HOST_CAPABILITY, PROPERTY_PROVIDER_CAPABILITY);
         ModularOPStorage opStorage = createOPStorage(stack, host);
         if (opStorage != null) {
-            provider.addCapability(opStorage, "energy", OP_STORAGE);
+            provider.addCapability(opStorage, "energy", OP_STORAGE, CapabilityEnergy.ENERGY);
             host.addCategories(ModuleCategory.ENERGY);
         }
 
