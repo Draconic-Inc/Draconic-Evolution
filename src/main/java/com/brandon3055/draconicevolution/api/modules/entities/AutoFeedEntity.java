@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.api.modules.entities;
 
+import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.client.BCSprites;
 import com.brandon3055.brandonscore.client.utils.GuiHelper;
 import com.brandon3055.draconicevolution.api.config.BooleanProperty;
@@ -67,12 +68,12 @@ public class AutoFeedEntity extends ModuleEntity {
                 FoodStats foodStats = player.getFoodStats();
                 if (storedFood > 0 && (foodStats.getFoodLevel() < 20 || foodStats.getSaturationLevel() < 20)) {
                     //Feed player
-//                    TechLevel tech = module.getModuleTechLevel();
-                    double maxSat = 0.1;//tech == TechLevel.DRACONIUM ? 1 : tech == TechLevel.WYVERN ? 2 : 4; //Problem is i'm not sure if i want this to essentially be a "Regeneration module"
+                    TechLevel tech = module.getModuleTechLevel();
+                    double maxSat = entity.ticksExisted % 20 == 0 && tech == TechLevel.DRACONIUM? 4 : 0.1;//tech == TechLevel.DRACONIUM ? 1 : tech == TechLevel.WYVERN ? 2 : 4; //Problem is i'm not sure if i want this to essentially be a "Regeneration module"
                     if (foodStats.needFood() && storedFood > 1) {
                         foodStats.addStats((int)Math.min(Math.min(storedFood, 1), 20 - foodStats.getFoodLevel()), 0);
                     }else if (foodStats.getSaturationLevel() < maxSat && storedFood > 0) {
-                        foodStats.foodSaturationLevel += Math.min(Math.min(storedFood, 1), maxSat - foodStats.getSaturationLevel());
+                        foodStats.foodSaturationLevel += Math.min(storedFood, maxSat - foodStats.getSaturationLevel());
                     }
                 }
             }

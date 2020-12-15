@@ -168,7 +168,11 @@ public class HudHandler {
         maxShieldPoints = shieldControl.getShieldCapacity() == 0 ? shieldControl.getMaxShieldBoost() : shieldControl.getShieldCapacity();
         shieldPoints = shieldControl.getShieldPoints();
         shieldPercentCharge = (int) ((shieldPoints / maxShieldPoints) * 100D);
-        shieldEntropy = (shieldControl.getShieldCoolDown() / (double)shieldControl.getMaxShieldCoolDown()) * 100D;
+        if (!shieldControl.isShieldEnabled()) {
+            maxShieldPoints = shieldPoints = shieldPercentCharge = 0;
+        }
+
+        shieldEntropy = (shieldControl.getShieldCoolDown() / (double) shieldControl.getMaxShieldCoolDown()) * 100D;
         rfTotal = opStorage.getOPStored();
         rfCharge = (int) ((double) rfTotal / Math.max((double) opStorage.getMaxOPStored(), 1D) * 100D);
     }

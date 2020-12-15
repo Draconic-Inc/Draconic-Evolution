@@ -44,6 +44,7 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -138,10 +139,10 @@ public class TileDislocatorReceptacle extends TileBCore implements ITickableTile
                 else {
                     if (entity instanceof PlayerEntity) {
                         if (dislocator_p2p.isPlayer(stack)) {
-                            ChatHelper.translate((PlayerEntity) entity, "info.de.bound_dislocator.cant_find_player", TextFormatting.RED);
+                            ChatHelper.sendMessage((PlayerEntity) entity, new TranslationTextComponent("info.de.bound_dislocator.cant_find_player").mergeStyle(TextFormatting.RED));
                         }
                         else {
-                            ChatHelper.translate((PlayerEntity) entity, "info.de.bound_dislocator.cant_find_target", TextFormatting.RED);
+                            ChatHelper.sendMessage((PlayerEntity) entity, new TranslationTextComponent("info.de.bound_dislocator.cant_find_target").mergeStyle(TextFormatting.RED));
                         }
                     }
                 }

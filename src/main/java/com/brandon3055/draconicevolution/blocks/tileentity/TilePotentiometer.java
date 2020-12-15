@@ -13,6 +13,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.text.StringTextComponent;
 
 /**
  * Created by brandon3055 on 28/09/2016.
@@ -61,7 +62,7 @@ public class TilePotentiometer extends TileBCore implements IRedstoneEmitter, IA
         }
 
         if (world.isRemote) {
-            ChatHelper.indexedMsg(player, String.valueOf(power.get()));
+            ChatHelper.sendIndexed(player, new StringTextComponent(String.valueOf(power.get())), 41);
         }
         else {
             world.playSound(null, pos, SoundEvents.BLOCK_STONE_BUTTON_CLICK_ON, SoundCategory.BLOCKS, 0.3F, 0.5F + (power.get() / 20F));

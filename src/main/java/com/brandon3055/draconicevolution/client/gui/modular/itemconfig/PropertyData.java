@@ -16,7 +16,9 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.IntNBT;
 import net.minecraft.nbt.ListNBT;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -81,7 +83,12 @@ public class PropertyData {
         isPropertyAvailable = property != null;
         if (isPropertyAvailable) {
             displayName = property.getDisplayName().getString();
-            toolTip = property.getToolTip().getString();
+            ITextComponent component = property.getToolTip();
+            toolTip = component.getString();
+            if (component instanceof TranslationTextComponent && ((TranslationTextComponent) component).getKey().equals(toolTip)) {
+                toolTip = "";
+            }
+
             displayValue = property.getDisplayValue();
 
             switch (property.getType()) {

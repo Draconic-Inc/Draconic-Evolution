@@ -19,6 +19,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 import static com.brandon3055.draconicevolution.init.DEContent.dislocator_p2p;
@@ -51,10 +52,10 @@ public class TileDislocatorPedestal extends TileBCore implements ITeleportEndPoi
                 if (location == null) {
                     if (dislocator_p2p.isValid(stack)) {
                         if (dislocator_p2p.isPlayer(stack)) {
-                            ChatHelper.translate(player, "info.de.bound_dislocator.cant_find_player", TextFormatting.RED);
+                            ChatHelper.sendIndexed(player, new TranslationTextComponent("info.de.bound_dislocator.cant_find_player").mergeStyle(TextFormatting.RED), 34);
                         }
                         else {
-                            ChatHelper.translate(player, "info.de.bound_dislocator.cant_find_target", TextFormatting.RED);
+                            ChatHelper.sendIndexed(player, new TranslationTextComponent("info.de.bound_dislocator.cant_find_player").mergeStyle(TextFormatting.RED), 34);
                         }
                     }
                     return true;

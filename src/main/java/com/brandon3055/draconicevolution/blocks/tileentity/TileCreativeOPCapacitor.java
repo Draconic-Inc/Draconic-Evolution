@@ -110,7 +110,7 @@ public class TileCreativeOPCapacitor extends TileBCore implements ITickableTileE
                 powerRate.set(Long.MAX_VALUE);
             }
 
-            BrandonsCore.proxy.setChatAtIndex(new StringTextComponent("Power Rate: " + Utils.addCommas(powerRate.get()) + " OP/t"), 0x30553055);
+            BrandonsCore.proxy.sendIndexedMessage(player, new StringTextComponent("Power Rate: " + Utils.addCommas(powerRate.get()) + " OP/t"), 42);
 //            player.sendMessage(new StringTextComponent("Power Rate: " + Utils.addCommas(powerRate.get()) + " OP/t"));
         }
         return true;

@@ -41,6 +41,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -215,7 +216,7 @@ public abstract class TileCrystalBase extends TileBCore implements ITilePlaceLis
 
         //region Check if the target device is valid
         if (!(te instanceof ICrystalLink)) {
-            ChatHelper.indexedTrans(player, "eNet.de.deviceInvalid.info", TextFormatting.RED, -442611624);
+            ChatHelper.sendDeDupeIndexed(player, new TranslationTextComponent("eNet.de.deviceInvalid.info").mergeStyle(TextFormatting.RED), 99);
             return false;
         }
         //endregion
@@ -226,45 +227,45 @@ public abstract class TileCrystalBase extends TileBCore implements ITilePlaceLis
         if (getLinks().contains(te.getPos())) {
             breakLink(te.getPos());
             target.breakLink(pos);
-            ChatHelper.indexedTrans(player, "eNet.de.linkBroken.info", TextFormatting.GREEN, -442611624);
+            ChatHelper.sendDeDupeIndexed(player, new TranslationTextComponent("eNet.de.linkBroken.info").mergeStyle(TextFormatting.GREEN), 99);
             return true;
         }
         //endregion
 
         //region Check if both devices to see if ether of them have reached their connection limit.
         if (getLinks().size() >= maxLinks()) {
-            ChatHelper.indexedTrans(player, "eNet.de.linkLimitReachedThis.info", TextFormatting.RED, -442611624);
+            ChatHelper.sendDeDupeIndexed(player, new TranslationTextComponent("eNet.de.linkLimitReachedThis.info").mergeStyle(TextFormatting.RED), 99);
             return false;
         } else if (target.getLinks().size() >= target.maxLinks()) {
-            ChatHelper.indexedTrans(player, "eNet.de.linkLimitReachedTarget.info", TextFormatting.RED, -442611624);
+            ChatHelper.sendDeDupeIndexed(player, new TranslationTextComponent("eNet.de.linkLimitReachedTarget.info").mergeStyle(TextFormatting.RED), 99);
             return false;
         }
         //endregion
 
         //region Check both devices are in range
         if (!Utils.inRangeSphere(pos, linkTarget, maxLinkRange())) {
-            ChatHelper.indexedTrans(player, "eNet.de.thisRangeLimit.info", TextFormatting.RED, -442611624);
+            ChatHelper.sendDeDupeIndexed(player, new TranslationTextComponent("eNet.de.thisRangeLimit.info").mergeStyle(TextFormatting.RED), 99);
             return false;
         } else if (!Utils.inRangeSphere(pos, linkTarget, target.maxLinkRange())) {
-            ChatHelper.indexedTrans(player, "eNet.de.targetRangeLimit.info", TextFormatting.RED, -442611624);
+            ChatHelper.sendDeDupeIndexed(player, new TranslationTextComponent("eNet.de.targetRangeLimit.info").mergeStyle(TextFormatting.RED), 99);
             return false;
         }
         //endregion
 
         //region All checks have passed. Make the link!
         if (!target.createLink(this)) {
-            ChatHelper.indexedTrans(player, "eNet.de.linkFailedUnknown.info", TextFormatting.RED, -442611624);
+            ChatHelper.sendDeDupeIndexed(player, new TranslationTextComponent("eNet.de.linkFailedUnknown.info").mergeStyle(TextFormatting.RED), 99);
             return false;
         }
 
         if (!createLink(target)) {
             //Ensure we don't leave a half linked device if this fails.
             target.breakLink(pos);
-            ChatHelper.indexedTrans(player, "eNet.de.linkFailedUnknown.info", TextFormatting.RED, -442611624);
+            ChatHelper.sendDeDupeIndexed(player, new TranslationTextComponent("eNet.de.linkFailedUnknown.info").mergeStyle(TextFormatting.RED), 99);
             return false;
         }
 
-        ChatHelper.indexedTrans(player, "eNet.de.devicesLinked.info", TextFormatting.GREEN, -442611624);
+        ChatHelper.sendDeDupeIndexed(player, new TranslationTextComponent("eNet.de.devicesLinked.info").mergeStyle(TextFormatting.GREEN), 99);
         return true;
         //endregion
     }

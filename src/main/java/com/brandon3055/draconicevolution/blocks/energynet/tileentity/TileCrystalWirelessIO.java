@@ -30,6 +30,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -221,14 +222,14 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
 
         if (linkedReceivers.contains(offset)) {
             removeReceiver(linkTarget);
-            ChatHelper.indexedTrans(player, "eNet.de.linkBroken.info", TextFormatting.GREEN);
+            ChatHelper.sendIndexed(player, new TranslationTextComponent("eNet.de.linkBroken.info").mergeStyle(TextFormatting.GREEN), 99);
             return true;
         }
 
         if (inputMode.get()) {
             if (!EnergyUtils.canExtractEnergy(tile, sideClicked)) {
                 if (EnergyUtils.getStorage(tile, sideClicked) != null) {
-                    ChatHelper.indexedTrans(player, "eNet.de.sideCanNotExtract.info", TextFormatting.RED);
+                    ChatHelper.sendIndexed(player, new TranslationTextComponent("eNet.de.sideCanNotExtract.info").mergeStyle(TextFormatting.RED), 99);
                     return false;
                 }
                 return super.binderUsed(player, linkTarget, sideClicked);
@@ -237,7 +238,7 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
         else {
             if (!EnergyUtils.canReceiveEnergy(tile, sideClicked)) {
                 if (EnergyUtils.getStorage(tile, sideClicked) != null) {
-                    ChatHelper.indexedTrans(player, "eNet.de.sideCanNotReceive.info", TextFormatting.RED);
+                    ChatHelper.sendIndexed(player, new TranslationTextComponent("eNet.de.sideCanNotReceive.info").mergeStyle(TextFormatting.RED), 99);
                     return false;
                 }
                 return super.binderUsed(player, linkTarget, sideClicked);
@@ -245,12 +246,12 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
         }
 
         if (linkedReceivers.size() >= getMaxReceivers()) {
-            ChatHelper.indexedTrans(player, "eNet.de.maxReceivers.info", TextFormatting.RED);
+            ChatHelper.sendIndexed(player, new TranslationTextComponent("eNet.de.maxReceivers.info").mergeStyle(TextFormatting.RED), 99);
             return false;
         }
 
         addReceiver(linkTarget, sideClicked);
-        ChatHelper.indexedTrans(player, "eNet.de.devicesLinked.info", TextFormatting.GREEN);
+        ChatHelper.sendIndexed(player, new TranslationTextComponent("eNet.de.devicesLinked.info").mergeStyle(TextFormatting.GREEN), 99);
 
         return true;
     }

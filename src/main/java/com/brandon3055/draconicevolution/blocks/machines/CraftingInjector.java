@@ -27,6 +27,7 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -116,7 +117,7 @@ public class CraftingInjector extends BlockBCore implements IHudDisplay {
 
         if (player.isSneaking()) {
             craftingPedestal.singleItem.set(!craftingPedestal.singleItem.get());
-            ChatHelper.indexedTrans(player, "msg.craftingInjector.singleItem" + (craftingPedestal.singleItem.get() ? "On" : "Off") + ".txt", -30553055);
+            ChatHelper.sendIndexed(player, new TranslationTextComponent("msg.craftingInjector.singleItem" + (craftingPedestal.singleItem.get() ? "On" : "Off") + ".txt"), 98);
             craftingPedestal.getDataManager().detectAndSendChanges();
             return ActionResultType.SUCCESS;
         }

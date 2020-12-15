@@ -291,6 +291,10 @@ public class ShieldControlEntity extends ModuleEntity {
         return shieldEnabled.getValue() || shieldAnim > 0 ? shieldColour | ((int) ((63 + (192 * shieldHitIndicator)) * Math.min(1, getShieldPoints() / (shieldCapacity * 0.1))) << 24) : 0xFFFFFF;
     }
 
+    public boolean isShieldEnabled() {
+        return shieldEnabled.getValue();
+    }
+
     public float getShieldState() {
         return shieldAnim;
     }
