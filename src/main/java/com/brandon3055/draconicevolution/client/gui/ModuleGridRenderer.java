@@ -93,7 +93,7 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> {
             if (player.getItemStack().isEmpty()) {
                 renderCellOverlay(mouseX, mouseY);
             } else if (lastError != null) {
-                drawHoveringText(Collections.singletonList(lastError.getString()), mouseX, mouseY, fontRenderer);
+                drawHoveringTextString(Collections.singletonList(lastError.getString()), mouseX, mouseY, fontRenderer);
             }
         }
         return super.renderOverlayLayer(minecraft, mouseX, mouseY, partialTicks);
@@ -127,7 +127,7 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> {
             cell.getEntity().writeToItemStack(stack, grid.container.getModuleContext());
             FontRenderer font = stack.getItem().getFontRenderer(stack);
             if (font == null) font = fontRenderer;
-            List<String> list = getTooltipFromItemString(stack);
+            List<ITextComponent> list = getTooltipFromItem(stack);
             drawHoveringText(list, mouseX, mouseY, font);
         }
     }

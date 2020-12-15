@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.api;
 
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 
 /**
@@ -9,5 +9,5 @@ import net.minecraft.item.ItemStack;
  * Not sure if i will be keeping this so if anyone uses it please poke or pm me and i will leave it in.
  */
 public interface IInvCharge {
-    boolean canCharge(ItemStack stack, PlayerEntity player);
+    boolean canCharge(ItemStack stack, LivingEntity player, boolean isHeldItem);
 }

@@ -172,6 +172,17 @@ public class LangGenerator extends LanguageProvider {
         helper.add("flight_mod.creative.info"                                               , "Enables you to enable / disable creative flight.");
         helper.add("flight_mod.elytra_boost"                                                , "Elytra Boost");
         helper.add("flight_mod.elytra_boost.info"                                           , "Allows you to adjust the power of Elytra speed boost.\nSpeed boost can be activated by pressing forward + sprint key while flying");
+
+        helper.add("charge_held_item"                                                       , "Charge held item");
+//        helper.add("charge_held_item.info"                                                  , "");
+        helper.add("charge_armor"                                                           , "Charge armor");
+//        helper.add("charge_armor.info"                                                      , "");
+        helper.add("charge_hot_bar"                                                         , "Charge hotbar");
+//        helper.add("charge_hot_bar.info"                                                    , "");
+        helper.add("charge_main"                                                            , "Charge main inventory");
+//        helper.add("charge_main.info"                                                       , "");
+        helper.add("charge_baubles"                                                         , "Charge baubles");
+//        helper.add("charge_baubles.info"                                                    , "");
     }
 
     private void addModules(PrefixHelper helper) {

@@ -92,7 +92,7 @@ public class ServerPacketHandler implements ICustomPacketHandler.IServerPacketHa
         for (ItemStack dislocator : dislocators) {
             Magnet.toggleEnabled(dislocator);
             boolean enabled = Magnet.isEnabled(dislocator);
-            ChatHelper.indexedTrans(player, "chat.item_dislocator_" + (enabled ? "activate" : "deactivate") + ".msg", -30553055);
+            ChatHelper.sendIndexed(player, new TranslationTextComponent("chat.item_dislocator_" + (enabled ? "activate" : "deactivate") + ".msg"), 567);
         }
     }
 
@@ -106,7 +106,7 @@ public class ServerPacketHandler implements ICustomPacketHandler.IServerPacketHa
                     ToolConfigHelper.incrementProfile(stack);
                     int newProfile = ToolConfigHelper.getProfile(stack);
                     String name = ToolConfigHelper.getProfileName(stack, newProfile);
-                    ChatHelper.indexedTrans(player, new TranslationTextComponent("config.de.armor_profile_" + i + ".msg").toString() + " " + name, -30553045 + i);
+//                    ChatHelper.indexedTrans(player, new TranslationTextComponent("config.de.armor_profile_" + i + ".msg").toString() + " " + name, -30553045 + i);
                 }
                 i++;
             }

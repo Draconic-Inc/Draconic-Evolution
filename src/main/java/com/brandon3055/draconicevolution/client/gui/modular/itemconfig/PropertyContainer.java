@@ -534,14 +534,14 @@ public class PropertyContainer extends GuiManipulable {
     public boolean renderOverlayLayer(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
         if (dropTarget != null && timeSinceMove > 10) {
             if (!dropTarget.isGroup) {
-                drawHoveringText(Collections.singletonList(I18n.format("gui.draconicevolution.item_config.drop_create_group.info")), mouseX, mouseY, fontRenderer);
+                drawHoveringTextString(Collections.singletonList(I18n.format("gui.draconicevolution.item_config.drop_create_group.info")), mouseX, mouseY, fontRenderer);
             } else {
-                drawHoveringText(Collections.singletonList(I18n.format("gui.draconicevolution.item_config.add_to_group.info")), mouseX, mouseY, fontRenderer);
+                drawHoveringTextString(Collections.singletonList(I18n.format("gui.draconicevolution.item_config.add_to_group.info")), mouseX, mouseY, fontRenderer);
             }
             return true;
         }
         if (dragPos && gui.deleteZone.isMouseOver(mouseX, mouseY)) {
-            drawHoveringText(Collections.singletonList(I18n.format("gui.draconicevolution.item_config.drop_to_delete.info")), mouseX, mouseY, fontRenderer);
+            drawHoveringTextString(Collections.singletonList(I18n.format("gui.draconicevolution.item_config.drop_to_delete.info")), mouseX, mouseY, fontRenderer);
         }
 
         return super.renderOverlayLayer(minecraft, mouseX, mouseY, partialTicks);

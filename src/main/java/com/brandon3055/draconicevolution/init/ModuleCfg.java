@@ -25,8 +25,8 @@ public class ModuleCfg {
     private static Integer[] DRACONIC_TOOLS          = new Integer[] {6, 5};
     private static Integer[] CHAOTIC_TOOLS           = new Integer[] {8, 6};
 
-    private static Integer[] DRACONIC_STAFF          = new Integer[] {9, 9};
-    private static Integer[] CHAOTIC_STAFF           = new Integer[] {11, 11};
+    private static Integer[] DRACONIC_STAFF          = new Integer[] {8, 6};
+    private static Integer[] CHAOTIC_STAFF           = new Integer[] {10, 8};
 
     private static Integer[] WYVERN_CHESTPIECE       = new Integer[] {6, 5};  // 6 * 5 = 30
     private static Integer[] DRACONIC_CHESTPIECE     = new Integer[] {8, 6};  // 8 * 6 = 48

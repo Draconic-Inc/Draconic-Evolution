@@ -46,7 +46,7 @@ public class EquipCfg {
 
     private static double STAFF_EFF_MULT            = 3.0D;
 
-    private static long DRACONIUM_BASE_ENERGY       = 1000000;
+    private static long DRACONIUM_BASE_ENERGY       = 500000;
     private static long WYVERN_BASE_ENERGY          = 2000000;
     private static long DRACONIC_BASE_ENERGY        = 4000000;
     private static long CHAOTIC_BASE_ENERGY         = 8000000;

@@ -490,7 +490,7 @@ public class DEContent {
         TechPropBuilder chaoticTools = new TechPropBuilder(CHAOTIC).maxStackSize(1).group(itemGroup).rarity(Rarity.EPIC).maxDamage(-1);
         registerItem(event, new DraconiumCapacitor(wyvernTools).setRegistryName("wyvern_capacitor"));
         registerItem(event, new DraconiumCapacitor(draconicTools).setRegistryName("draconic_capacitor"));
-        registerItem(event, new DraconiumCapacitor(draconicTools).setRegistryName("chaotic_capacitor"));
+        registerItem(event, new DraconiumCapacitor(chaoticTools).setRegistryName("chaotic_capacitor"));
         registerItem(event, new DraconiumCapacitor(chaoticTools).setRegistryName("creative_capacitor"));
         registerItem(event, new ModularShovel(wyvernTools).setRegistryName("wyvern_shovel"));
         registerItem(event, new ModularShovel(draconicTools).setRegistryName("draconic_shovel"));
