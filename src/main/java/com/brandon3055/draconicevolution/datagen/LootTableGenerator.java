@@ -20,6 +20,7 @@ import net.minecraft.loot.*;
 import net.minecraft.loot.conditions.ILootCondition;
 import net.minecraft.loot.conditions.MatchTool;
 import net.minecraft.loot.functions.ApplyBonus;
+import net.minecraft.loot.functions.LimitCount;
 import net.minecraft.loot.functions.SetCount;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
@@ -53,30 +54,21 @@ public class LootTableGenerator extends LootTableProvider {
 
     public static class BlockLootTables extends net.minecraft.data.loot.BlockLootTables {
 
-        private static final ILootCondition.IBuilder SILK_TOUCH = MatchTool.builder(ItemPredicate.Builder.create().enchantment(new EnchantmentPredicate(Enchantments.SILK_TOUCH, MinMaxBounds.IntBound.atLeast(1))));
-        private static final ILootCondition.IBuilder NO_SILK_TOUCH = SILK_TOUCH.inverted();
-        private static final ILootCondition.IBuilder SHEARS = MatchTool.builder(ItemPredicate.Builder.create().item(Items.SHEARS));
-        private static final ILootCondition.IBuilder SILK_TOUCH_OR_SHEARS = SHEARS.alternative(SILK_TOUCH);
-        private static final ILootCondition.IBuilder NOT_SILK_TOUCH_OR_SHEARS = SILK_TOUCH_OR_SHEARS.inverted();
-        private static final Set<Item> IMMUNE_TO_EXPLOSIONS = Collections.EMPTY_SET;//Stream.of(Blocks.DRAGON_EGG).map(IItemProvider::asItem).collect(ImmutableSet.toImmutableSet());
-
-        private final Map<ResourceLocation, LootTable.Builder> lootTables = Maps.newHashMap();
-
         protected void addTables() {
             registerDropSelfLootTable(DEContent.generator);
             registerDropSelfLootTable(DEContent.grinder);
 //            registerDropSelfLootTable(DEContent.disenchanter);
-//            registerDropSelfLootTable(DEContent.energy_infuser);
+            registerDropSelfLootTable(DEContent.energy_transfuser);
 //            registerDropSelfLootTable(DEContent.dislocator_pedestal);
 //            registerDropSelfLootTable(DEContent.dislocator_receptacle);
             registerDropSelfLootTable(DEContent.creative_op_capacitor);
 //            registerDropSelfLootTable(DEContent.entity_detector);
 //            registerDropSelfLootTable(DEContent.entity_detector_advanced);
             registerDropSelfLootTable(DEContent.stabilized_spawner);
-//            registerDropSelfLootTable(DEContent.potentiometer);
+            registerDropSelfLootTable(DEContent.potentiometer);
 //            registerDropSelfLootTable(DEContent.celestial_manipulator);
 //            registerDropSelfLootTable(DEContent.draconium_chest);
-//            registerDropSelfLootTable(DEContent.particle_generator);
+            registerDropSelfLootTable(DEContent.particle_generator);
             registerDropSelfLootTable(DEContent.crafting_injector_basic);
             registerDropSelfLootTable(DEContent.crafting_injector_wyvern);
             registerDropSelfLootTable(DEContent.crafting_injector_awakened);
@@ -94,48 +86,37 @@ public class LootTableGenerator extends LootTableProvider {
             registerDropSelfLootTable(DEContent.block_draconium_awakened);
             registerDropSelfLootTable(DEContent.fluid_gate);
             registerDropSelfLootTable(DEContent.flux_gate);
-//            registerDropSelfLootTable(DEContent.infused_obsidian);
+            registerDropSelfLootTable(DEContent.infused_obsidian);
+
+            registerDropSelfLootTable(DEContent.crystal_io_basic);
+            registerDropSelfLootTable(DEContent.crystal_io_wyvern);
+            registerDropSelfLootTable(DEContent.crystal_io_draconic);
+            registerDropSelfLootTable(DEContent.crystal_relay_basic);
+            registerDropSelfLootTable(DEContent.crystal_relay_wyvern);
+            registerDropSelfLootTable(DEContent.crystal_relay_draconic);
+            registerDropSelfLootTable(DEContent.crystal_wireless_basic);
+            registerDropSelfLootTable(DEContent.crystal_wireless_wyvern);
+            registerDropSelfLootTable(DEContent.crystal_wireless_draconic);
+
 
             //Special Stuff
 //            registerDropSelfLootTable(DEContent.energy_core_structure);
 //            registerDropSelfLootTable(DEContent.placed_item);
-//            registerLootTable(DEContent.chaos_crystal, p_218546_0_ -> dropping(DEContent.chaos_shard, 5));
+            registerLootTable(DEContent.chaos_crystal, block -> dropping(DEContent.chaos_shard).acceptFunction(SetCount.builder(ConstantRange.of(5))));
+            registerLootTable(DEContent.chaos_crystal_part, blockNoDrop());
 
             //Fortune
             registerLootTable(DEContent.ore_draconium_overworld, (block) -> droppingWithSilkTouch(block, withExplosionDecay(block, ItemLootEntry.builder(DEContent.dust_draconium).acceptFunction(SetCount.builder(RandomValueRange.of(2.0F, 4.0F))).acceptFunction(ApplyBonus.uniformBonusCount(Enchantments.FORTUNE)))));
             registerLootTable(DEContent.ore_draconium_nether, (block) -> droppingWithSilkTouch(block, withExplosionDecay(block, ItemLootEntry.builder(DEContent.dust_draconium).acceptFunction(SetCount.builder(RandomValueRange.of(2.0F, 4.0F))).acceptFunction(ApplyBonus.uniformBonusCount(Enchantments.FORTUNE)))));
             registerLootTable(DEContent.ore_draconium_end, (block) -> droppingWithSilkTouch(block, withExplosionDecay(block, ItemLootEntry.builder(DEContent.dust_draconium).acceptFunction(SetCount.builder(RandomValueRange.of(2.0F, 4.0F))).acceptFunction(ApplyBonus.uniformBonusCount(Enchantments.FORTUNE)))));
+
+
         }
-
-
-
-
 
         @Override
-        public void accept(BiConsumer<ResourceLocation, LootTable.Builder> consumer) {
-            addTables();
-            Set<ResourceLocation> set = Sets.newHashSet();
-
-            for (Block block : getKnownDEBlocks()) {
-                ResourceLocation resourcelocation = block.getLootTable();
-                if (resourcelocation != LootTables.EMPTY && set.add(resourcelocation)) {
-
-                    LootTable.Builder loottable$builder = this.lootTables.remove(resourcelocation);
-                    if (loottable$builder == null) {
-                        throw new IllegalStateException(String.format("Missing loottable '%s' for '%s'", resourcelocation, Registry.BLOCK.getKey(block)));
-                    }
-
-                    consumer.accept(resourcelocation, loottable$builder);
-                }
-            }
-
-            if (!this.lootTables.isEmpty()) {
-                throw new IllegalStateException("Created block loot tables for non-blocks: " + this.lootTables.keySet());
-            }
-        }
-
-        protected Iterable<Block> getKnownDEBlocks() {
+        protected Iterable<Block> getKnownBlocks() {
             return Registry.BLOCK.stream().filter(block -> Objects.requireNonNull(block.getRegistryName()).getNamespace().equals(DraconicEvolution.MODID)).collect(Collectors.toList());
         }
+
     }
 }
