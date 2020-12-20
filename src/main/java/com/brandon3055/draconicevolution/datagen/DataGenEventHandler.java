@@ -52,12 +52,11 @@ public class DataGenEventHandler {
             gen.addProvider(new LangGenerator(gen));
             gen.addProvider(new BlockStateGenerator(gen, event.getExistingFileHelper()));
             gen.addProvider(new ItemModelGenerator(gen, event.getExistingFileHelper()));
-            gen.addProvider(new RecipeGenerator(gen));
         }
 
         if (event.includeServer()) {
-            //Recipes
-//            gen.addProvider(new LootTableGenerator(gen));
+            gen.addProvider(new RecipeGenerator(gen));
+            gen.addProvider(new LootTableGenerator(gen));
         }
 
     }

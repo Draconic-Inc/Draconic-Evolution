@@ -10,13 +10,10 @@ import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.api.crafting.IFusionInventory;
-import com.brandon3055.draconicevolution.api.fusioncrafting.IFusionCraftingInventory;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileCraftingInjector;
-import com.brandon3055.draconicevolution.handlers.DESoundHandler;
-import com.mojang.blaze3d.platform.GLX;
+import com.brandon3055.draconicevolution.handlers.DESounds;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -74,7 +71,7 @@ public class EffectTrackerFusionCrafting {
         //region Movement
         if (isMoving) {
             if (pos.equals(startPos)) {
-                world.playSound(pos.x, pos.y, pos.z, DESoundHandler.fusionComplete, SoundCategory.BLOCKS, 0.5F, 0.5F, false);
+                world.playSound(pos.x, pos.y, pos.z, DESounds.fusionComplete, SoundCategory.BLOCKS, 0.5F, 0.5F, false);
             }
 
             double distance = Utils.getDistanceAtoB(circlePosition, pos);
@@ -90,7 +87,7 @@ public class EffectTrackerFusionCrafting {
             }
             else {
                 if (!positionLocked) {
-                    world.playSound(pos.x, pos.y, pos.z, DESoundHandler.fusionComplete, SoundCategory.BLOCKS, 2F, 0.5F, false);
+                    world.playSound(pos.x, pos.y, pos.z, DESounds.fusionComplete, SoundCategory.BLOCKS, 2F, 0.5F, false);
                 }
                 positionLocked = true;
                 pos.set(circlePosition);
@@ -123,7 +120,7 @@ public class EffectTrackerFusionCrafting {
             boltSeed = rand.nextLong();
             Vec3D pos = corePos.copy().add(0.5, 0.5, 0.5);
 //            BCEffectHandler.spawnFXDirect(DEParticles.DE_SHEET, new SubParticle(world, pos));
-            world.playSound(pos.x, pos.y, pos.z, DESoundHandler.energyBolt, SoundCategory.BLOCKS, 1F, 0.9F + rand.nextFloat() * 0.2F, false);
+            world.playSound(pos.x, pos.y, pos.z, DESounds.energyBolt, SoundCategory.BLOCKS, 1F, 0.9F + rand.nextFloat() * 0.2F, false);
         }
 
         if (craftingInventory.getCraftingStage() < 1000) {

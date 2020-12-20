@@ -15,7 +15,7 @@ import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
-import com.brandon3055.draconicevolution.handlers.DESoundHandler;
+import com.brandon3055.draconicevolution.handlers.DESounds;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
@@ -130,7 +130,7 @@ public class ExplosionFX extends Particle {
         }
 
         if (age == 10) {
-            world.playSound(posX, posY, posZ, DESoundHandler.fusionExplosion, SoundCategory.PLAYERS, 100, 0.9F, false);
+            world.playSound(posX, posY, posZ, DESounds.fusionExplosion, SoundCategory.PLAYERS, 100, 0.9F, false);
         }
 
         this.age++;

@@ -511,6 +511,7 @@ public class LangGenerator extends LanguageProvider {
         add("tech_level.draconicevolution.wyvern"                                           ,"Wyvern");
         add("tech_level.draconicevolution.draconic"                                         ,"Draconic");
         add("tech_level.draconicevolution.chaotic"                                          ,"Chaotic");
+        add("entity.draconicevolution.draconic_guardian"                                    ,"Chaos Guardian");
     }
 
 

@@ -10,6 +10,7 @@ import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedByte;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedEnum;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedVec3I;
+import com.brandon3055.brandonscore.network.BCoreNetwork;
 import com.brandon3055.brandonscore.utils.FacingUtils;
 import com.brandon3055.brandonscore.utils.InventoryUtils;
 import com.brandon3055.brandonscore.utils.Teleporter;
@@ -28,7 +29,7 @@ import com.brandon3055.draconicevolution.client.render.effect.CrystalFXBase;
 import com.brandon3055.draconicevolution.handlers.DEEventHandler;
 import com.brandon3055.draconicevolution.handlers.DislocatorLinkHandler;
 import com.brandon3055.draconicevolution.items.tools.Dislocator;
-import com.brandon3055.draconicevolution.handlers.DESoundHandler;
+import com.brandon3055.draconicevolution.handlers.DESounds;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -152,9 +153,9 @@ public class TileDislocatorReceptacle extends TileBCore implements ITickableTile
             }
 
             dislocator_p2p.notifyArriving(stack, world, entity);
-            DESoundHandler.playSoundFromServer(entity.world, entity.getPosX(), entity.getPosY(), entity.getPosZ(), DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, entity.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
+            BCoreNetwork.sendSound(entity.world, entity.getPosition(), DESounds.portal, SoundCategory.PLAYERS, 0.1F, entity.world.rand.nextFloat() * 0.1F + 0.9F, false);
             location.teleport(entity);
-            DESoundHandler.playSoundFromServer(entity.world, entity.getPosX(), entity.getPosY(), entity.getPosZ(), DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, entity.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
+            BCoreNetwork.sendSound(entity.world, entity.getPosition(), DESounds.portal, SoundCategory.PLAYERS, 0.1F, entity.world.rand.nextFloat() * 0.1F + 0.9F, false);
         }
 
         try {

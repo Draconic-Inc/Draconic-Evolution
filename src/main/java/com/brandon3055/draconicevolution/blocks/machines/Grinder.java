@@ -28,7 +28,7 @@ public class Grinder extends BlockBCore/* implements ITileEntityProvider, IRende
     public Grinder(Properties properties) {
         super(properties);
         this.setDefaultState(stateContainer.getBaseState().with(FACING, Direction.NORTH).with(ACTIVE, false)); //TODO figure out if/when set default is actually needed.
-        setMobResistant(true);
+        setMobResistant();
     }
 
     // Rendering

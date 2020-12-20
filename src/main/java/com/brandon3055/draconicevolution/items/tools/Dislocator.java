@@ -1,10 +1,11 @@
 package com.brandon3055.draconicevolution.items.tools;
 
 import com.brandon3055.brandonscore.items.ItemBCore;
+import com.brandon3055.brandonscore.network.BCoreNetwork;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.brandonscore.utils.Teleporter.TeleportLocation;
 import com.brandon3055.draconicevolution.init.DEContent;
-import com.brandon3055.draconicevolution.handlers.DESoundHandler;
+import com.brandon3055.draconicevolution.handlers.DESounds;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
@@ -64,7 +65,7 @@ public class Dislocator extends ItemBCore {
             }
 
             if (!entity.world.isRemote) {
-                DESoundHandler.playSoundFromServer(player.world, player.getPosX(), player.getPosY(), player.getPosZ(), DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, player.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
+                BCoreNetwork.sendSound(player.world, player.getPosition(), DESounds.portal, SoundCategory.PLAYERS, 0.1F, player.world.rand.nextFloat() * 0.1F + 0.9F, false);
             }
 
             getLocation(stack, player.world).teleport(entity);
@@ -75,7 +76,7 @@ public class Dislocator extends ItemBCore {
 
 
             if (!entity.world.isRemote) {
-                DESoundHandler.playSoundFromServer(player.world, player.getPosX(), player.getPosY(), player.getPosZ(), DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, player.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
+                BCoreNetwork.sendSound(player.world, player.getPosition(), DESounds.portal, SoundCategory.PLAYERS, 0.1F, player.world.rand.nextFloat() * 0.1F + 0.9F, false);
             }
 
             if (player.world.isRemote) {
@@ -127,13 +128,13 @@ public class Dislocator extends ItemBCore {
             if (player.getHealth() > 2 || player.abilities.isCreativeMode) {
 
                 if (!world.isRemote) {
-                    DESoundHandler.playSoundFromServer(player.world, player.getPosX(), player.getPosY(), player.getPosZ(), DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, player.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
+                    BCoreNetwork.sendSound(player.world, player.getPosition(), DESounds.portal, SoundCategory.PLAYERS, 0.1F, player.world.rand.nextFloat() * 0.1F + 0.9F, false);
                 }
 
                 getLocation(stack, world).teleport(player);
 
                 if (!world.isRemote) {
-                    DESoundHandler.playSoundFromServer(player.world, player.getPosX(), player.getPosY(), player.getPosZ(), DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, player.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
+                    BCoreNetwork.sendSound(player.world, player.getPosition(), DESounds.portal, SoundCategory.PLAYERS, 0.1F, player.world.rand.nextFloat() * 0.1F + 0.9F, false);
                 }
 
                 stack.damageItem(1, player, e -> {});

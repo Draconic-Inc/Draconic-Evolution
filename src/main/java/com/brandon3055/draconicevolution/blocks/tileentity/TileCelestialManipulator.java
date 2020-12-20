@@ -14,7 +14,7 @@ import com.brandon3055.draconicevolution.client.render.effect.EffectTrackerCeles
 
 import com.brandon3055.draconicevolution.client.sound.CelestialModifierSound;
 import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
-import com.brandon3055.draconicevolution.handlers.DESoundHandler;
+import com.brandon3055.draconicevolution.handlers.DESounds;
 import com.brandon3055.draconicevolution.client.DETextures;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -29,7 +29,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.IServerWorldInfo;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -303,10 +302,10 @@ public class TileCelestialManipulator extends TileBCore implements ITickableTile
         }
 
         Vec3D vec = Vec3D.getCenter(pos.add(0, 1, 0));
-        sound = new CelestialModifierSound(DESoundHandler.electricBuzz, pos);
+        sound = new CelestialModifierSound(DESounds.electricBuzz, pos);
         sound.updateSound(vec, 0.01F, 0.5F);
         Minecraft.getInstance().getSoundHandler().play(sound);
-        world.playSound(vec.x, vec.y, vec.z, DESoundHandler.fusionComplete, SoundCategory.BLOCKS, getSoundVolume(), 0.5F, false);
+        world.playSound(vec.x, vec.y, vec.z, DESounds.fusionComplete, SoundCategory.BLOCKS, getSoundVolume(), 0.5F, false);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -338,10 +337,10 @@ public class TileCelestialManipulator extends TileBCore implements ITickableTile
         Vec3D effectFocus = Vec3D.getCenter(pos).add(0, height, 0);
 
         if (timer == riseEnd) {
-            world.playSound(effectFocus.x, effectFocus.y, effectFocus.z, DESoundHandler.fusionComplete, SoundCategory.BLOCKS, 1F, 1F, false);
+            world.playSound(effectFocus.x, effectFocus.y, effectFocus.z, DESounds.fusionComplete, SoundCategory.BLOCKS, 1F, 1F, false);
         }
         else if (timer == ascendStart) {
-            world.playSound(effectFocus.x, effectFocus.y, effectFocus.z, DESoundHandler.fusionComplete, SoundCategory.BLOCKS, 1F, 2F, false);
+            world.playSound(effectFocus.x, effectFocus.y, effectFocus.z, DESounds.fusionComplete, SoundCategory.BLOCKS, 1F, 2F, false);
             for (int i = 0; i < 100; i++) {
                 try {
 //                    SubParticle particle = new SubParticle(world, effects.get(world.rand.nextInt(effects.size())).pos);
@@ -381,7 +380,7 @@ public class TileCelestialManipulator extends TileBCore implements ITickableTile
         }
 
         if (timer >= 220) {
-            world.playSound(effectFocus.x, effectFocus.y, effectFocus.z, DESoundHandler.boom, SoundCategory.BLOCKS, DEOldConfig.disableLoudCelestialManipulator ? 1 : 100, 1F, false);
+            world.playSound(effectFocus.x, effectFocus.y, effectFocus.z, DESounds.boom, SoundCategory.BLOCKS, DEOldConfig.disableLoudCelestialManipulator ? 1 : 100, 1F, false);
             timer = 0;
             weatherToggleRunning.set(false);
             effects.clear();
@@ -415,7 +414,7 @@ public class TileCelestialManipulator extends TileBCore implements ITickableTile
         effects.get(1).blue = 1F;
         effects.get(1).renderBolts = false;
 
-        sound = new CelestialModifierSound(DESoundHandler.sunDialEffect, pos);
+        sound = new CelestialModifierSound(DESounds.sunDialEffect, pos);
         sound.updateSound(Vec3D.getCenter(pos), getSoundVolume(), 0.5F);
         Minecraft.getInstance().getSoundHandler().play(sound);
     }

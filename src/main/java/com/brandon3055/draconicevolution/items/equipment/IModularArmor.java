@@ -76,7 +76,7 @@ public interface IModularArmor extends IModularItem {
                                 look.y * accel + (look.y * speed - motion.y) * accel,
                                 look.z * accel + (look.z * speed - motion.z) * accel
                         ));
-                        energy += EquipCfg.getElytraEnergy(module.getModule().getModuleTechLevel());
+                        energy += EquipCfg.getElytraEnergy(module.getModule().getModuleTechLevel()) * flightSpeed;
                     }
                 }
 

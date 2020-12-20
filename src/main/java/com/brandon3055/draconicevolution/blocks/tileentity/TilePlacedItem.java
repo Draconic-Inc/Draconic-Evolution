@@ -6,11 +6,12 @@ import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedByte;
+import com.brandon3055.brandonscore.network.BCoreNetwork;
 import com.brandon3055.brandonscore.utils.FeatureUtils;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.blocks.PlacedItem;
 import com.brandon3055.draconicevolution.integration.ModHelper;
-import com.brandon3055.draconicevolution.handlers.DESoundHandler;
+import com.brandon3055.draconicevolution.handlers.DESounds;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.block.BlockState;
@@ -74,7 +75,7 @@ public class TilePlacedItem extends TileBCore /*implements ICuboidProvider*/ {
 
             if (index >= 0 && index < rotation.length) {
                 rotation[index].inc();
-                DESoundHandler.playSoundFromServer(world, Vec3D.getCenter(pos), SoundEvents.ENTITY_ITEM_FRAME_ROTATE_ITEM, SoundCategory.PLAYERS, 1.0F, 0.9F + world.rand.nextFloat() * 0.2F, false, 24);
+                BCoreNetwork.sendSound(world, pos, SoundEvents.ENTITY_ITEM_FRAME_ROTATE_ITEM, SoundCategory.PLAYERS, 1.0F, 0.9F + world.rand.nextFloat() * 0.2F, false);
                 super.tick();
             }
 

@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.client.sound;
 
 import codechicken.lib.math.MathHelper;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
-import com.brandon3055.draconicevolution.handlers.DESoundHandler;
+import com.brandon3055.draconicevolution.handlers.DESounds;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ITickableSound;
 import net.minecraft.client.audio.SimpleSound;
@@ -23,7 +23,7 @@ public class ReactorSound extends SimpleSound implements ITickableSound {
     private int stopTimer = 0;
 
     public ReactorSound(TileReactorCore tile) {
-        super(DESoundHandler.coreSound, SoundCategory.BLOCKS, tile.reactorState.get() == BEYOND_HOPE ? 10F : 1.5F, 1, tile.getPos());
+        super(DESounds.coreSound, SoundCategory.BLOCKS, tile.reactorState.get() == BEYOND_HOPE ? 10F : 1.5F, 1, tile.getPos());
         this.tile = tile;
         this.repeat = true;
         this.targetPitch = 1F;

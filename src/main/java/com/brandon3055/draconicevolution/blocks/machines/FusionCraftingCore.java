@@ -20,6 +20,8 @@ import javax.annotation.Nullable;
  */
 public class FusionCraftingCore extends BlockBCore /*implements IRenderOverride, ITileEntityProvider*/ {
 
+    private static final VoxelShape SHAPE = VoxelShapes.create(0.0625, 0.0625, 0.0625, 0.9375, 0.9375, 0.9375);
+
     public FusionCraftingCore(Properties properties) {
         super(properties);
     }
@@ -68,7 +70,7 @@ public class FusionCraftingCore extends BlockBCore /*implements IRenderOverride,
 
     @Override
     public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
-        return VoxelShapes.create(0.0625, 0.0625, 0.0625, 0.9375, 0.9375, 0.9375);
+        return SHAPE;
     }
 
 

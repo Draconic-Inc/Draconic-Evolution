@@ -20,7 +20,7 @@ import com.brandon3055.draconicevolution.client.sound.FusionRotationSound;
 import com.brandon3055.draconicevolution.handlers.DEEventHandler;
 import com.brandon3055.draconicevolution.inventory.ContainerFusionCraftingCore;
 import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
-import com.brandon3055.draconicevolution.handlers.DESoundHandler;
+import com.brandon3055.draconicevolution.handlers.DESounds;
 import com.brandon3055.draconicevolution.client.DETextures;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -506,7 +506,7 @@ public class TileCraftingCore extends TileBCore implements IFusionInventory, ITi
 //                BCEffectHandler.spawnFXDirect(DEParticles.DE_SHEET, new EffectTrackerFusionCrafting.SubParticle(world, new Vec3D(pos).add(0.5, 0.5, 0.5)));
             }
 
-            world.playSound(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, DESoundHandler.fusionComplete, SoundCategory.BLOCKS, 2F, 1F, false);
+            world.playSound(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, DESounds.fusionComplete, SoundCategory.BLOCKS, 2F, 1F, false);
             effects = null;
         }
     }

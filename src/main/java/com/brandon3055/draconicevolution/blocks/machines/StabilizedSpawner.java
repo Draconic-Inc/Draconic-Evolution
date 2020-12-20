@@ -25,7 +25,7 @@ public class StabilizedSpawner extends BlockBCore {
 
     public StabilizedSpawner(Properties properties) {
         super(properties);
-        setMobResistant(true);
+        setMobResistant();
     }
 
     @Override

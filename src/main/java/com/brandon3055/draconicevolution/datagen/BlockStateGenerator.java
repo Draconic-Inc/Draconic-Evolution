@@ -42,6 +42,7 @@ public class BlockStateGenerator extends BlockStateProvider {
         simpleBlock(DEContent.ore_draconium_end);
         simpleBlock(DEContent.ore_draconium_nether);
         simpleBlock(DEContent.ore_draconium_overworld);
+        simpleBlock(DEContent.infused_obsidian);
         simpleBlock(DEContent.energy_core);
         simpleBlock(DEContent.energy_core_stabilizer, models().getExistingFile(modLoc("block/energy_core_stabilizer")));
         simpleBlock(DEContent.creative_op_capacitor);
@@ -75,6 +76,8 @@ public class BlockStateGenerator extends BlockStateProvider {
         dummyBlock(DEContent.crystal_wireless_draconic);
 //        dummyBlock(DEContent.  crystal_wireless_chaotic);
         dummyBlock(DEContent.energy_core_structure);
+        dummyBlock(DEContent.chaos_crystal);
+        dummyBlock(DEContent.chaos_crystal_part);
 
 
         getVariantBuilder(DEContent.energy_pylon).forAllStates(state -> ConfiguredModel.builder().modelFile(models().cubeBottomTop(state.get(EnergyPylon.OUTPUT) ? "energy_pylon_output" : "energy_pylon_input", modLoc("block/energy_pylon/energy_pylon_" + (state.get(EnergyPylon.OUTPUT) ? "output" : "input")), modLoc("block/energy_pylon/energy_pylon_active_face"), modLoc("block/energy_pylon/energy_pylon_active_face"))).build());

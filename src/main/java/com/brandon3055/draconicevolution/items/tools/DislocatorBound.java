@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.items.tools;
 
 import com.brandon3055.brandonscore.lib.Vec3D;
+import com.brandon3055.brandonscore.network.BCoreNetwork;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.brandonscore.utils.Teleporter.TeleportLocation;
 import com.brandon3055.draconicevolution.init.DEContent;
@@ -8,7 +9,7 @@ import com.brandon3055.draconicevolution.api.ITeleportEndPoint;
 import com.brandon3055.draconicevolution.entity.EntityPersistentItem;
 import com.brandon3055.draconicevolution.handlers.DislocatorLinkHandler;
 import com.brandon3055.draconicevolution.handlers.DislocatorLinkHandler.LinkData;
-import com.brandon3055.draconicevolution.handlers.DESoundHandler;
+import com.brandon3055.draconicevolution.handlers.DESounds;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
@@ -21,7 +22,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.*;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
@@ -103,14 +103,14 @@ public class DislocatorBound extends Dislocator /*implements IRenderOverride*/ {
             return true;
         }
 
-        DESoundHandler.playSoundFromServer(player.world, player.getPosX(), player.getPosY(), player.getPosZ(), DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, player.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
+        BCoreNetwork.sendSound(player.world, player.getPosition(), DESounds.portal, SoundCategory.PLAYERS, 0.1F, player.world.rand.nextFloat() * 0.1F + 0.9F, false);
 
         location.setPitch(player.rotationPitch);
         location.setYaw(player.rotationYaw);
         notifyArriving(stack, player.world, entity);
         location.teleport(entity);
 
-        DESoundHandler.playSoundFromServer(player.world, player.getPosX(), player.getPosY(), player.getPosZ(), DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, player.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
+        BCoreNetwork.sendSound(player.world, player.getPosition(), DESounds.portal, SoundCategory.PLAYERS, 0.1F, player.world.rand.nextFloat() * 0.1F + 0.9F, false);
 
         player.sendMessage(new StringTextComponent(new TranslationTextComponent("msg.teleporterSentMob.txt").getString() + " x:" + (int) location.getXCoord() + " y:" + (int) location.getYCoord() + " z:" + (int) location.getZCoord() + " Dimension: " + location.getDimensionName()), Util.DUMMY_UUID);
 

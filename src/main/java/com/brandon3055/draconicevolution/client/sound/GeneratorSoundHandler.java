@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.client.sound;
 
 import codechicken.lib.math.MathHelper;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileGenerator;
-import com.brandon3055.draconicevolution.handlers.DESoundHandler;
+import com.brandon3055.draconicevolution.handlers.DESounds;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ITickableSound;
 import net.minecraft.client.audio.SimpleSound;
@@ -38,12 +38,12 @@ public class GeneratorSoundHandler {
         TileGenerator.Mode mode = tile.mode.get();
         if (activeSound == null || activeSound.isDonePlaying()) {
             if (mode.index >= 2) {
-                activeSound = new GeneratorSound(tile, DESoundHandler.generator2, startHigh ? 1.5F : 0.5F);
+                activeSound = new GeneratorSound(tile, DESounds.generator2, startHigh ? 1.5F : 0.5F);
                 Minecraft.getInstance().getSoundHandler().play(activeSound);
                 currentHigh = true;
             }
             else {
-                activeSound = new GeneratorSound(tile, DESoundHandler.generator1, startHigh ? 1F : 0.5F);
+                activeSound = new GeneratorSound(tile, DESounds.generator1, startHigh ? 1F : 0.5F);
                 Minecraft.getInstance().getSoundHandler().play(activeSound);
                 currentHigh = false;
             }

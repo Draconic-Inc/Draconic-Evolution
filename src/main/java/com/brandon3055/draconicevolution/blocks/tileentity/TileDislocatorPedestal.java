@@ -5,13 +5,14 @@ import com.brandon3055.brandonscore.inventory.TileItemStackHandler;
 import com.brandon3055.brandonscore.lib.ChatHelper;
 import com.brandon3055.brandonscore.lib.datamanager.DataFlags;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedInt;
+import com.brandon3055.brandonscore.network.BCoreNetwork;
 import com.brandon3055.brandonscore.utils.InventoryUtils;
 import com.brandon3055.brandonscore.utils.Teleporter.TeleportLocation;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.api.ITeleportEndPoint;
 import com.brandon3055.draconicevolution.handlers.DislocatorLinkHandler;
 import com.brandon3055.draconicevolution.items.tools.Dislocator;
-import com.brandon3055.draconicevolution.handlers.DESoundHandler;
+import com.brandon3055.draconicevolution.handlers.DESounds;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -69,14 +70,14 @@ public class TileDislocatorPedestal extends TileBCore implements ITeleportEndPoi
                 boolean silenced = world.getBlockState(pos.down()).getBlock().getTags().contains(WOOL_TAG);
 
                 if (!silenced) {
-                    DESoundHandler.playSoundFromServer(player.world, player.getPosX(), player.getPosY(), player.getPosZ(), DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, player.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
+                    BCoreNetwork.sendSound(player.world, player.getPosition(), DESounds.portal, SoundCategory.PLAYERS, 0.1F, player.world.rand.nextFloat() * 0.1F + 0.9F, false);
                 }
 
                 dislocator_p2p.notifyArriving(stack, player.world, player);
                 location.teleport(player);
 
                 if (!silenced) {
-                    DESoundHandler.playSoundFromServer(player.world, player.getPosX(), player.getPosY(), player.getPosZ(), DESoundHandler.portal, SoundCategory.PLAYERS, 0.1F, player.world.rand.nextFloat() * 0.1F + 0.9F, false, 32);
+                    BCoreNetwork.sendSound(player.world, player.getPosition(), DESounds.portal, SoundCategory.PLAYERS, 0.1F, player.world.rand.nextFloat() * 0.1F + 0.9F, false);
                 }
             }
 
