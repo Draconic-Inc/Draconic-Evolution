@@ -2,9 +2,8 @@ package com.brandon3055.draconicevolution.blocks;
 
 import com.brandon3055.brandonscore.blocks.BlockBCore;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileChaosCrystal;
-import net.minecraft.block.BlockRenderType;
+import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -17,6 +16,9 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
@@ -29,10 +31,11 @@ import java.util.List;
  */
 public class ChaosCrystal extends BlockBCore/*, IRenderOverride*/ {
 
+    private static VoxelShape SHAPE = VoxelShapes.create(0, -2, 0, 1, 3, 1);
+
     public ChaosCrystal(Properties properties) {
         super(properties);
     }
-
 
     @Override
     public boolean isBlockFullCube() {
@@ -42,7 +45,7 @@ public class ChaosCrystal extends BlockBCore/*, IRenderOverride*/ {
     @Override
     public boolean removedByPlayer(BlockState state, World world, BlockPos pos, PlayerEntity player, boolean willHarvest, FluidState fluid) {
         TileChaosCrystal tile = world.getTileEntity(pos) instanceof TileChaosCrystal ? (TileChaosCrystal) world.getTileEntity(pos) : null;
-        if (tile == null || !tile.guardianDefeated.get()) {
+        if (tile == null || !tile.canBreak()) {
             return false;
         }
         return super.removedByPlayer(state, world, pos, player, willHarvest, fluid);
@@ -51,17 +54,10 @@ public class ChaosCrystal extends BlockBCore/*, IRenderOverride*/ {
     @Override
     public float getPlayerRelativeBlockHardness(BlockState state, PlayerEntity player, IBlockReader world, BlockPos pos) {
         TileChaosCrystal tile = world.getTileEntity(pos) instanceof TileChaosCrystal ? (TileChaosCrystal) world.getTileEntity(pos) : null;
-        if (tile != null) return tile.guardianDefeated.get() ? 100F : -1F;
+        if (tile != null) return tile.canBreak() ? super.getPlayerRelativeBlockHardness(state, player, world, pos) : -1F;
         return super.getPlayerRelativeBlockHardness(state, player, world, pos);
     }
 
-
-    //    @Override
-//    public float getBlockHardness(BlockState blockState, IBlockReader world, BlockPos pos) {
-//        TileChaosCrystal tile = world.getTileEntity(pos) instanceof TileChaosCrystal ? (TileChaosCrystal) world.getTileEntity(pos) : null;
-//        if (tile != null) return tile.guardianDefeated.get() ? 100F : -1F;
-//        return super.getBlockHardness(blockState, world, pos);
-//    }
 
     @Override
     public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {}
@@ -77,20 +73,8 @@ public class ChaosCrystal extends BlockBCore/*, IRenderOverride*/ {
         return new TileChaosCrystal();
     }
 
-//    @Nullable
-//    @Override
-//    public Item getItemDropped(BlockState state, Random rand, int fortune) {
-//        return DEFeatures.chaosShard;
-//    }
-//
-//    @Override
-//    public int quantityDropped(Random random) {
-//        return 5;
-//    }
-
     @Override
-    public void onExplosionDestroy(World worldIn, BlockPos pos, Explosion explosionIn) {
-    }
+    public void onExplosionDestroy(World worldIn, BlockPos pos, Explosion explosionIn) {}
 
     @Override
     public boolean canEntityDestroy(BlockState state, IBlockReader world, BlockPos pos, Entity entity) {
@@ -101,7 +85,7 @@ public class ChaosCrystal extends BlockBCore/*, IRenderOverride*/ {
     public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving) {
         TileEntity tile = world.getTileEntity(pos);
         if (!world.isRemote && tile instanceof TileChaosCrystal) {
-            ((TileChaosCrystal) tile).detonate();
+            ((TileChaosCrystal) tile).detonate(null);
         }
         super.onReplaced(state, world, pos, newState, isMoving);
     }
@@ -111,7 +95,7 @@ public class ChaosCrystal extends BlockBCore/*, IRenderOverride*/ {
         if (placer instanceof PlayerEntity && ((PlayerEntity) placer).abilities.isCreativeMode) {
             TileEntity tile = world.getTileEntity(pos);
             if (!world.isRemote && tile instanceof TileChaosCrystal) {
-                ((TileChaosCrystal) tile).setLockPos();
+                ((TileChaosCrystal) tile).onValidPlacement();
                 ((TileChaosCrystal) tile).guardianDefeated.set(true);
             }
         } else {
@@ -136,26 +120,23 @@ public class ChaosCrystal extends BlockBCore/*, IRenderOverride*/ {
     //region Rendering
 
 
-//    @Override
-//    public boolean canRenderInLayer(BlockState state, BlockRenderLayer layer) {
-//        return false;
-//    }
-
     @Override
-    public BlockRenderType getRenderType(BlockState state) {
-        return BlockRenderType.INVISIBLE;
+    public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
+
+        if (state.getBlock() == DEContent.chaos_crystal) {
+            return SHAPE;
+        }
+        else {
+            TileEntity tile = world.getTileEntity(pos);
+            if (tile instanceof TileChaosCrystal) {
+                BlockPos offset = ((TileChaosCrystal) tile).parentPos.get().subtract(pos);
+                return SHAPE.withOffset(0, offset.getY(), 0);
+            }
+        }
+
+        return SHAPE;
     }
 
-//    @OnlyIn(Dist.CLIENT)
-//    @Override
-//    public void registerRenderer(Feature feature) {
-//        ClientRegistry.bindTileEntitySpecialRenderer(TileChaosCrystal.class, new RenderTileChaosCrystal());
-//    }
-//
-//    @Override
-//    public boolean registerNormal(Feature feature) {
-//        return false;
-//    }
 
     //endregion
 }

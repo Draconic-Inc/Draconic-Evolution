@@ -10,7 +10,7 @@ import com.brandon3055.draconicevolution.api.modules.data.ShieldData;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.brandon3055.draconicevolution.api.modules.lib.StackModuleContext;
-import com.brandon3055.draconicevolution.handlers.DESoundHandler;
+import com.brandon3055.draconicevolution.handlers.DESounds;
 import com.brandon3055.draconicevolution.init.EquipCfg;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.google.common.collect.Sets;
@@ -212,7 +212,7 @@ public class ShieldControlEntity extends ModuleEntity {
                 shieldCoolDown = getMaxShieldCoolDown();
                 if (envDmgCoolDown == 0) {
                     float hitPitch = 0.7F + (float) (Math.min(1, getShieldPoints() / ((shieldCapacity + getMaxShieldBoost()) * 0.1)) * 0.3);
-                    entity.world.playSound(null, entity.getPosition(), DESoundHandler.shieldStrike, SoundCategory.PLAYERS, 0.25F, (0.95F + (entity.world.rand.nextFloat() * 0.1F)) * hitPitch);
+                    entity.world.playSound(null, entity.getPosition(), DESounds.shieldStrike, SoundCategory.PLAYERS, 0.25F, (0.95F + (entity.world.rand.nextFloat() * 0.1F)) * hitPitch);
                     envDmgCoolDown = 40;
                 }
                 return true;
@@ -226,6 +226,8 @@ public class ShieldControlEntity extends ModuleEntity {
      * This will calculate how much damage the shield can absorb and subtract that
      * amount from the damage event.
      *
+     * *Except in cases where something skips LivingAttackEvent and goes strait to LivingDamageEvent... We need to account for that to...
+     *
      * @param event The damage event.
      */
     public void tryBlockDamage(LivingDamageEvent event) {
@@ -234,13 +236,18 @@ public class ShieldControlEntity extends ModuleEntity {
         float damage = applyDamageModifiers(source, event.getAmount());
 
         LivingEntity entity = event.getEntityLiving();
-        if (getShieldPoints() > 0) {
+        if (damage <= getShieldPoints()) {
+            event.setCanceled(true);
+            subtractShieldPoints(damage);
+            onShieldHit(entity, true);
+        }
+        else if (getShieldPoints() > 0) {
             damage -= getShieldPoints();
             event.setAmount(damage);
+            onShieldHit(entity, false);
+            shieldPoints = 0;
+            shieldBoost = 0;
         }
-        onShieldHit(entity, getShieldPoints() > 0);
-        shieldPoints = 0;
-        shieldBoost = 0;
     }
 
     private void onShieldHit(LivingEntity entity, boolean damageBlocked) {
@@ -249,7 +256,7 @@ public class ShieldControlEntity extends ModuleEntity {
         if (damageBlocked && (shieldCapacity + getMaxShieldBoost()) > 0) {
             shieldCoolDown = getMaxShieldCoolDown();
             float hitPitch = 0.7F + (float) (Math.min(1, getShieldPoints() / ((shieldCapacity + getMaxShieldBoost()) * 0.1)) * 0.3);
-            entity.world.playSound(null, entity.getPosition(), DESoundHandler.shieldStrike, SoundCategory.PLAYERS, 1F, (0.95F + (entity.world.rand.nextFloat() * 0.1F)) * hitPitch);
+            entity.world.playSound(null, entity.getPosition(), DESounds.shieldStrike, SoundCategory.PLAYERS, 1F, (0.95F + (entity.world.rand.nextFloat() * 0.1F)) * hitPitch);
         }
     }
 

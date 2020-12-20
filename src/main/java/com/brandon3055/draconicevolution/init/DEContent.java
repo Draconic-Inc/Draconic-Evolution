@@ -6,6 +6,7 @@ import com.brandon3055.brandonscore.blocks.ItemBlockBCore;
 import com.brandon3055.brandonscore.client.utils.CyclingItemGroup;
 import com.brandon3055.brandonscore.inventory.ContainerBCTile;
 import com.brandon3055.brandonscore.lib.TechPropBuilder;
+import com.brandon3055.brandonscore.worldentity.WorldEntityType;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.crafting.FusionRecipe;
 import com.brandon3055.draconicevolution.blocks.*;
@@ -23,8 +24,10 @@ import com.brandon3055.draconicevolution.blocks.tileentity.*;
 import com.brandon3055.draconicevolution.blocks.tileentity.flowgate.TileFlowGate;
 import com.brandon3055.draconicevolution.blocks.tileentity.flowgate.TileFluidGate;
 import com.brandon3055.draconicevolution.blocks.tileentity.flowgate.TileFluxGate;
-import com.brandon3055.draconicevolution.entity.EntityChaosGuardian;
-import com.brandon3055.draconicevolution.entity.EntityGuardianProjectile;
+import com.brandon3055.draconicevolution.entity.GuardianCrystalEntity;
+import com.brandon3055.draconicevolution.entity.guardian.DraconicGuardianEntity;
+import com.brandon3055.draconicevolution.entity.guardian.GuardianFightManager;
+import com.brandon3055.draconicevolution.entity.GuardianProjectileEntity;
 import com.brandon3055.draconicevolution.inventory.*;
 import com.brandon3055.draconicevolution.items.EnderEnergyManipulator;
 import com.brandon3055.draconicevolution.items.InfoTablet;
@@ -35,8 +38,13 @@ import com.brandon3055.draconicevolution.items.tools.*;
 import net.minecraft.block.AbstractBlock.Properties;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.material.MaterialColor;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
+import net.minecraft.entity.boss.dragon.EnderDragonEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
@@ -131,7 +139,7 @@ public class DEContent {
 //        event.getRegistry().register(TileEntityType.Builder.create(TilePlacedItem::new,           placed_item             ).build(null).setRegistryName("placed_item"));
 //        event.getRegistry().register(TileEntityType.Builder.create(TilePortal::new,               portal                  ).build(null).setRegistryName("portal"));
 //        event.getRegistry().register(TileEntityType.Builder.create(TilePortalClient::new,         portal                  ).build(null).setRegistryName("portal_client"));
-//        event.getRegistry().register(TileEntityType.Builder.create(TileChaosCrystal::new,         chaos_crystal           ).build(null).setRegistryName("chaos_crystal"));
+        event.getRegistry().register(TileEntityType.Builder.create(TileChaosCrystal::new,           chaos_crystal, chaos_crystal_part           ).build(null).setRegistryName("chaos_crystal"));
         event.getRegistry().register(TileEntityType.Builder.create(TileCraftingInjector::new,       craftInjectors          ).build(null).setRegistryName("crafting_injector"));
         event.getRegistry().register(TileEntityType.Builder.create(TileCraftingCore::new,           crafting_core           ).build(null).setRegistryName("crafting_core"));
         event.getRegistry().register(TileEntityType.Builder.create(TileEnergyCore::new,             energy_core             ).build(null).setRegistryName("storage_core"));
@@ -215,6 +223,7 @@ public class DEContent {
     @ObjectHolder("placed_item")                public static PlacedItem                placed_item;
     @ObjectHolder("portal")                     public static Portal                    portal;
     @ObjectHolder("chaos_crystal")              public static ChaosCrystal              chaos_crystal;
+    @ObjectHolder("chaos_crystal_part")         public static ChaosCrystal              chaos_crystal_part;
     @ObjectHolder("basic_crafting_injector")    public static CraftingInjector          crafting_injector_basic;
     @ObjectHolder("wyvern_crafting_injector")   public static CraftingInjector          crafting_injector_wyvern;
     @ObjectHolder("awakened_crafting_injector") public static CraftingInjector          crafting_injector_awakened;
@@ -306,8 +315,9 @@ public class DEContent {
         event.getRegistry().register(new DraconiumBlock(storageBlock).setRegistryName("awakened_draconium_block"));
 //        //Special
 //        event.getRegistry().register(new Portal(Properties.create(Material.GLASS).hardnessAndResistance(-1F)).setRegistryName("portal"));
-//        event.getRegistry().register(new ChaosCrystal(Properties.create(Material.GLASS).hardnessAndResistance(100, 4000)).setRegistryName("chaos_crystal"));
-//        event.getRegistry().register(new BlockBCore(Block.Properties.create(Material.ROCK, MaterialColor.BLACK).hardnessAndResistance(100.0F, 2400.0F)).setRegistryName("infused_obsidian"));
+        event.getRegistry().register(new ChaosCrystal(Properties.create(Material.GLASS).hardnessAndResistance(100, 4000)).setRegistryName("chaos_crystal"));
+        event.getRegistry().register(new ChaosCrystal(Properties.create(Material.GLASS).hardnessAndResistance(100, 4000)).setRegistryName("chaos_crystal_part"));
+        event.getRegistry().register(new BlockBCore(Block.Properties.create(Material.ROCK, MaterialColor.BLACK).hardnessAndResistance(100.0F, 2400.0F)).setMobResistant().setRegistryName("infused_obsidian"));
 
         //Energy Crystals
         Properties crystalB = Properties.create(GLASS, DyeColor.BLUE).hardnessAndResistance(3.0F, 8F);      //TODO may want to tweak these after testing
@@ -423,6 +433,7 @@ public class DEContent {
 //        registerItem(event, new ItemBlockBCore(placed_item,                 new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(placed_item.getRegistryName())));
         registerItem(event, new ItemBlockBCore(flux_gate,                   new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(flux_gate.getRegistryName())));
         registerItem(event, new ItemBlockBCore(fluid_gate,                  new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(fluid_gate.getRegistryName())));
+        registerItem(event, new ItemBlockBCore(infused_obsidian,            new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(infused_obsidian.getRegistryName())));
 //        registerItem(event, new ItemBlockBCore(portal,                      new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(portal.getRegistryName())));
 //        registerItem(event, new ItemBlockBCore(chaos_crystal,               new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(chaos_crystal.getRegistryName())));
         registerItem(event, new ItemBlockBCore(crafting_injector_basic,     new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(crafting_injector_basic.getRegistryName())));
@@ -529,21 +540,39 @@ public class DEContent {
     // Entities
     //#################################################################
 
-    @ObjectHolder("chaos_guardian")
-    public static EntityType<EntityChaosGuardian> CHAOS_GUARDIAN;
-    @ObjectHolder("guardian_projectile")
-    public static EntityType<EntityGuardianProjectile> GUARDIAN_PROJECTILE;
+//    @ObjectHolder("chaos_guardian")
+//    public static EntityType<EntityChaosGuardian> CHAOS_GUARDIAN;
+//    @ObjectHolder("guardian_projectile")
+//    public static EntityType<EntityGuardianProjectile> GUARDIAN_PROJECTILE;
 
+    public static EntityType<DraconicGuardianEntity> draconicGuardian;
+    @ObjectHolder("guardian_projectile")
+    public static EntityType<GuardianProjectileEntity> guardianProjectile;
+    @ObjectHolder("guardian_crystal")
+    public static EntityType<GuardianCrystalEntity> guardianCrystal;
+
+    @SuppressWarnings("unchecked")
     @SubscribeEvent
     public static void registerEntities(RegistryEvent.Register<EntityType<?>> event) {
-        event.getRegistry().register(EntityType.Builder.create(EntityChaosGuardian::new, EntityClassification.MONSTER).immuneToFire().size(16.0F, 8.0F).build("chaos_guardian").setRegistryName("chaos_guardian"));
-        event.getRegistry().register(EntityType.Builder.<EntityGuardianProjectile>create(EntityGuardianProjectile::new, EntityClassification.MISC).immuneToFire().size(1F, 1F).build("guardian_projectile").setRegistryName("guardian_projectile"));
+//        event.getRegistry().register(EntityType.Builder.create(EntityChaosGuardian::new, EntityClassification.MONSTER).immuneToFire().size(16.0F, 8.0F).build("chaos_guardian").setRegistryName("chaos_guardian"));
+//        event.getRegistry().register(EntityType.Builder.<EntityGuardianProjectile>create(EntityGuardianProjectile::new, EntityClassification.MISC).immuneToFire().size(1F, 1F).build("guardian_projectile").setRegistryName("guardian_projectile"));
+        event.getRegistry().register(draconicGuardian = (EntityType<DraconicGuardianEntity>)EntityType.Builder.create(DraconicGuardianEntity::new, EntityClassification.MONSTER).immuneToFire().size(16.0F, 8.0F).trackingRange(20).build("draconic_guardian").setRegistryName("draconic_guardian"));
+        GlobalEntityTypeAttributes.put(draconicGuardian, MobEntity.func_233666_p_().createMutableAttribute(Attributes.MAX_HEALTH, 1000.0D).create());
+        event.getRegistry().register(EntityType.Builder.create(GuardianProjectileEntity::new, EntityClassification.MISC).immuneToFire().size(2F, 2F).trackingRange(20)/*.func_233608_b_(10)*/.build("guardian_projectile").setRegistryName("guardian_projectile"));
+        event.getRegistry().register(EntityType.Builder.create(GuardianCrystalEntity::new, EntityClassification.MISC).immuneToFire().size(2F, 2F).trackingRange(20).func_233608_b_(100).build("guardian_crystal").setRegistryName("guardian_crystal"));
     }
+
 
     @SubscribeEvent
     public static void registerRecipeType(RegistryEvent.Register<IRecipeSerializer<?>> event) {
         event.getRegistry().register(new FusionRecipe.Serializer().setRegistryName("fusion_crafting"));
     }
 
+    @ObjectHolder("guardian_manager")
+    public static WorldEntityType<GuardianFightManager> guardianManagerType;
 
+    @SubscribeEvent
+    public static void registerWorldEntityType(RegistryEvent.Register<WorldEntityType<?>> event) {
+        event.getRegistry().register(new WorldEntityType<>(GuardianFightManager::new).setRegistryName("guardian_manager"));
+    }
 }

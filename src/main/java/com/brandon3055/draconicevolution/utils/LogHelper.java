@@ -13,6 +13,7 @@ import org.apache.logging.log4j.Logger;
  * Created by covers1624 on 3/21/2016.
  * Covers gave me permission to use this. In fact he FORCED me to use it!!!
  */
+@Deprecated //Want to transition everything over to {@link DraconicEvolution#LOGGER}
 public class LogHelper {
 
     private static long startTime = 0;

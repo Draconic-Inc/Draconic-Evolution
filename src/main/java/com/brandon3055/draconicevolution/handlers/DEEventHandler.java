@@ -2,11 +2,11 @@ package com.brandon3055.draconicevolution.handlers;
 
 import codechicken.lib.raytracer.RayTracer;
 import com.brandon3055.draconicevolution.DEOldConfig;
+import com.brandon3055.draconicevolution.entity.GuardianCrystalEntity;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.achievements.Achievements;
 import com.brandon3055.draconicevolution.api.energy.ICrystalBinder;
 import com.brandon3055.draconicevolution.api.IReaperItem;
-import com.brandon3055.draconicevolution.entity.EntityGuardianCrystal;
 import com.brandon3055.draconicevolution.magic.EnchantmentReaper;
 import com.brandon3055.draconicevolution.network.CrystalUpdateBatcher;
 import com.brandon3055.draconicevolution.utils.LogHelper;
@@ -352,7 +352,7 @@ public class DEEventHandler {
 
     @SubscribeEvent
     public void entityInteract(PlayerInteractEvent.EntityInteract event) {
-        if (event.getTarget() instanceof EntityGuardianCrystal) {
+        if (event.getTarget() instanceof GuardianCrystalEntity) {
             event.setCanceled(true);
         }
     }

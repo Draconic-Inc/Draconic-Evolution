@@ -15,26 +15,24 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLDedicatedServerSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 
 @Mod(DraconicEvolution.MODID)
 public class DraconicEvolution {
+    public static final Logger LOGGER = LogManager.getLogger("DraconicEvolution"); //TODO going to slowly transition everything to this.
     public static final String MODID = "draconicevolution";
     public static final String MODNAME = "Draconic Evolution";
 
     public static CommonProxy proxy;
 
     public DraconicEvolution() {
-        proxy = DistExecutor.runForDist(() -> ClientProxy::new, () -> CommonProxy::new);
+        proxy = DistExecutor.safeRunForDist(() -> ClientProxy::new, () -> CommonProxy::new);
         proxy.construct();
         FMLJavaModLoadingContext.get().getModEventBus().register(this);
         MinecraftForge.EVENT_BUS.addListener(DraconicEvolution::registerCommands);
-
         DEConfig.load();
-//
-//        Registry.register(Registry.RECIPE_TYPE, new ResourceLocation(MODID, "fusion_crafting"), DraconicAPI.FUSION_RECIPE_TYPE = new IRecipeType<FusionRecipe>() {
-//            public String toString() { return "draconicevolution:fusion_crafting"; }
-//        });
 
         DraconicAPI.FUSION_RECIPE_TYPE = IRecipeType.register(MODID + ":fusion_crafting");
         CraftingHelper.register(DraconicAPI.INGREDIENT_STACK_TYPE, IngredientStack.SERIALIZER);

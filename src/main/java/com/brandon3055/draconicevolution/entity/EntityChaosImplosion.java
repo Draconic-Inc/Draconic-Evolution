@@ -19,6 +19,7 @@ import java.util.List;
 /**
  * Created by brandon3055 on 3/10/2015.
  */
+@Deprecated
 public class EntityChaosImplosion extends Entity {
     protected static final DataParameter<Integer> TICKS = EntityDataManager.<Integer>createKey(EntityChaosImplosion.class, DataSerializers.VARINT);
 

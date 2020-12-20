@@ -21,6 +21,7 @@ import java.util.LinkedList;
 /**
  * Created by brandon3055 on 10/05/2017.
  */
+@Deprecated
 public class EntityEnderEnergyManipulator extends LivingEntity {
 
     private int soulsCollected = 0;

@@ -55,7 +55,7 @@ public class IngredientStack extends Ingredient {
     }
 
     @Override
-    protected void determineMatchingStacks() {
+    public void determineMatchingStacks() {
         if (this.matchingStacks == null) {
             this.matchingStacks = Arrays.stream(this.acceptedItems)
                     .flatMap((itemList) -> itemList.getStacks().stream())

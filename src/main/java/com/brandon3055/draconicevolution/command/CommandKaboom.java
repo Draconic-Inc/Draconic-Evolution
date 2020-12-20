@@ -3,12 +3,19 @@ package com.brandon3055.draconicevolution.command;
 import com.brandon3055.brandonscore.api.TimeKeeper;
 import com.brandon3055.brandonscore.handlers.ProcessHandler;
 import com.brandon3055.brandonscore.lib.ShortPos;
+import com.brandon3055.brandonscore.worldentity.WorldEntity;
+import com.brandon3055.brandonscore.worldentity.WorldEntityHandler;
 import com.brandon3055.draconicevolution.blocks.DraconiumOre;
 import com.brandon3055.draconicevolution.blocks.reactor.ProcessExplosion;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
+import com.brandon3055.draconicevolution.entity.guardian.DraconicGuardianEntity;
+import com.brandon3055.draconicevolution.entity.guardian.control.PhaseType;
+import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.lib.ExplosionHelper;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import com.brandon3055.draconicevolution.utils.LogHelper;
+import com.brandon3055.draconicevolution.world.ChaosWorldGenHandler;
+import com.brandon3055.draconicevolution.world.TestWorldEntity;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -101,6 +108,8 @@ public class CommandKaboom {
     }
 
     private static int detonate() {
+        WorldEntityHandler.getWorldEntities().forEach(WorldEntity::removeEntity);
+
         if (explosionProcess != null && explosionProcess.isCalculationComplete()) {
             explosionProcess.detonate();
             explosionProcess = null;
@@ -112,29 +121,42 @@ public class CommandKaboom {
     private static int abort(CommandContext<CommandSource> ctx) throws CommandSyntaxException {
         ServerPlayerEntity player = ctx.getSource().asPlayer();
 
-        ShortPos shortPos = new ShortPos(player.getPosition());
-        ExplosionHelper helper = new ExplosionHelper((ServerWorld) player.world, player.getPosition(), shortPos);
-        LinkedList<HashSet<Integer>> list = new LinkedList<>();
-        HashSet<Integer> set= new HashSet<>();
+//        try {
+////            DraconicGuardianEntity guardian = DEContent.draconicGuardian.create(player.world);
+////            guardian.getPhaseManager().setPhase(PhaseType.HOLDING_PATTERN);
+////            guardian.setPosition(0, 128, 0);
+////            player.world.addEntity(guardian);
+//            ChaosWorldGenHandler.generateObelisk((ServerWorld)player.world, player.getPosition().add(0, 0, 40), player.world.rand);
+//        } catch (Throwable e) {
+//            e.printStackTrace();
+//        }
 
-        int xzRange = 100;
-        int yRange = 70;
-        BlockPos.Mutable pos = new BlockPos.Mutable();
-        for (int x = -xzRange; x < xzRange; x++) {
-            for (int z = -xzRange; z < xzRange; z++) {
-                for (int y = 0; y < yRange; y++) {
-                    pos.setPos(player.getPosX() + x, y, player.getPosZ() + z);
-                    BlockState state = player.world.getBlockState(pos);
-                    if (state.getBlock() instanceof DraconiumOre || state.getBlock() == Blocks.BEDROCK || state.getBlock() == Blocks.DIAMOND_ORE || state.getBlock() == Blocks.ANCIENT_DEBRIS) continue;
-//                    player.world.setBlockState(pos, Blocks.AIR.getDefaultState());
-                    set.add(shortPos.getIntPos(pos));
-                }
-            }
-        }
-        list.add(set);
-        helper.setBlocksForRemoval(list);
-        helper.finish();
 
+//        ShortPos shortPos = new ShortPos(player.getPosition());
+//        ExplosionHelper helper = new ExplosionHelper((ServerWorld) player.world, player.getPosition(), shortPos);
+//        LinkedList<HashSet<Integer>> list = new LinkedList<>();
+//        HashSet<Integer> set= new HashSet<>();
+//
+//        int xzRange = 100;
+//        int yRange = 70;
+//        BlockPos.Mutable pos = new BlockPos.Mutable();
+//        for (int x = -xzRange; x < xzRange; x++) {
+//            for (int z = -xzRange; z < xzRange; z++) {
+//                for (int y = 0; y < yRange; y++) {
+//                    pos.setPos(player.getPosX() + x, y, player.getPosZ() + z);
+//                    BlockState state = player.world.getBlockState(pos);
+//                    if (state.getBlock() instanceof DraconiumOre || state.getBlock() == Blocks.BEDROCK || state.getBlock() == Blocks.DIAMOND_ORE || state.getBlock() == Blocks.ANCIENT_DEBRIS) continue;
+////                    player.world.setBlockState(pos, Blocks.AIR.getDefaultState());
+//                    set.add(shortPos.getIntPos(pos));
+//                }
+//            }
+//        }
+//        list.add(set);
+//        helper.setBlocksForRemoval(list);
+//        helper.finish();
+
+
+//        WorldEntityHandler.addWorldEntity(player.world, new TestWorldEntity());
 
 
         if (explosionProcess != null) {

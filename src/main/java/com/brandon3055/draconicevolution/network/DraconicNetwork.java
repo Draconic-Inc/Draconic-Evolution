@@ -35,6 +35,7 @@ public class DraconicNetwork {
     public static final int C_CRYSTAL_UPDATE =          1;
     public static final int C_SHIELD_HIT =              2;
     public static final int C_EXPLOSION_EFFECT =        3;
+    public static final int C_IMPACT_EFFECT =           4;
 
 
     //@formatter:on
@@ -96,13 +97,12 @@ public class DraconicNetwork {
         packet.sendToDimension(dimension);
     }
 
-//    public static void sendShieldHit(LivingEntity shieldedEntity) {
-//        PacketCustom packet = new PacketCustom(CHANNEL, C_SHIELD_HIT);
-//        packet.writeInt(shieldedEntity.getEntityId());
-//        packet.sendToChunk(shieldedEntity.world, shieldedEntity.getPosition());
-//    }
-
-
+    public static void sendImpactEffect(World world, BlockPos position, int i) {
+        PacketCustom packet = new PacketCustom(CHANNEL, C_IMPACT_EFFECT);
+        packet.writePos(position);
+        packet.writeByte(i);
+        packet.sendToChunk(world, position);
+    }
 
 
 

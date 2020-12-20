@@ -7,7 +7,7 @@ import com.brandon3055.brandonscore.lib.Pair;
 import com.brandon3055.draconicevolution.api.itemconfig_dep.BooleanConfigField;
 import com.brandon3055.draconicevolution.api.itemconfig_dep.ItemConfigFieldRegistry;
 import com.brandon3055.draconicevolution.api.itemconfig_dep.ToolConfigHelper;
-import com.brandon3055.draconicevolution.handlers.DESoundHandler;
+import com.brandon3055.draconicevolution.handlers.DESounds;
 import com.brandon3055.draconicevolution.client.DETextures;
 import com.brandon3055.draconicevolution.items.tools.CollectorCallBack;
 import com.brandon3055.draconicevolution.items.tools.TreeCollector;
@@ -230,7 +230,7 @@ public class WyvernAxe extends MiningToolBase {
                 return;
             }
 
-            DESoundHandler.playSoundFromServer(player.world, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 1, 0.9F + player.world.rand.nextFloat() * 0.2F, false, 16);
+//            DESounds.playSoundFromServer(player.world, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 1, 0.9F + player.world.rand.nextFloat() * 0.2F, false, 16);
 
             if (!collector.isCollectionComplete()) {
                 collector.killCollector();

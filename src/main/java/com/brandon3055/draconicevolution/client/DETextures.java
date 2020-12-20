@@ -161,7 +161,7 @@ public class DETextures implements IIconRegister, ISelectiveResourceReloadListen
     public static final String ENERGY_INFUSER_DECORATION = "textures/block/energy_infuser/energy_infuser_decoration.png";
     public static final String FUSION_PARTICLE = "textures/block/fusion_crafting/fusion_particle.png";
 //    public static final String STABILIZER_LARGE = "textures/block/stabilizer_large.png";
-    public static final String CHAOS_GUARDIAN = "textures/entity/chaos_guardian.png";
+
     public static final String CHAOS_GUARDIAN_CRYSTAL = "textures/entity/guardian_crystal.png";
     public static final String PROJECTILE_CHAOS = "textures/entity/projectile_chaos.png";
     public static final String PROJECTILE_ENERGY = "textures/entity/projectile_energy.png";
@@ -179,7 +179,6 @@ public class DETextures implements IIconRegister, ISelectiveResourceReloadListen
     public static final String GUI_DRACONIUM_CHEST = "textures/gui/draconium_chest.png";
     public static final String GUI_PARTICLE_GENERATOR = "textures/gui/particle_generator.png";
     public static final String DRAGON_HEART = "textures/items/components/dragon_heart.png";
-    public static final String CHAOS_CRYSTAL = "textures/models/chaos_crystal.png";
     public static final String REACTOR_CORE = "textures/models/reactor_core.png";
     public static final String REACTOR_SHIELD = "textures/models/reactor_shield.png";
 //    public static final String STABILIZER_BEAM = "textures/models/stabilizer_beam.png";

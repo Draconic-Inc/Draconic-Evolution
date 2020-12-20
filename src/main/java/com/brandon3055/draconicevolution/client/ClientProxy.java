@@ -17,8 +17,12 @@ import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.client.keybinding.KeyBindings;
 import com.brandon3055.draconicevolution.client.keybinding.KeyInputHandler;
 import com.brandon3055.draconicevolution.client.model.VBOArmorLayer;
+import com.brandon3055.draconicevolution.client.render.entity.DraconicGuardianRenderer;
+import com.brandon3055.draconicevolution.client.render.entity.GuardianCrystalRenderer;
+import com.brandon3055.draconicevolution.client.render.entity.GuardianProjectileRenderer;
 import com.brandon3055.draconicevolution.client.render.item.*;
 import com.brandon3055.draconicevolution.client.render.tile.*;
+import com.brandon3055.draconicevolution.entity.guardian.DraconicGuardianEntity;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.items.equipment.IModularArmor;
 import net.minecraft.client.Minecraft;
@@ -37,6 +41,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.thread.EffectiveSide;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -207,6 +212,7 @@ public class ClientProxy extends CommonProxy {
         ClientRegistry.bindTileEntityRenderer(DEContent.tile_crafting_injector, RenderTileCraftingInjector::new);
         ClientRegistry.bindTileEntityRenderer(DEContent.tile_potentiometer, RenderTilePotentiometer::new);
         ClientRegistry.bindTileEntityRenderer(DEContent.tile_energy_transfuser, RenderTileEnergyTransfuser::new);
+        ClientRegistry.bindTileEntityRenderer(DEContent.tile_chaos_crystal, RenderTileChaosCrystal::new);
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -273,6 +279,8 @@ public class ClientProxy extends CommonProxy {
         RenderTypeLookup.setRenderLayer(DEContent.grinder, RenderType.getCutoutMipped());
         RenderTypeLookup.setRenderLayer(DEContent.generator, RenderType.getCutoutMipped());
         RenderTypeLookup.setRenderLayer(DEContent.energy_transfuser, RenderType.getCutoutMipped());
+//        RenderTypeLookup.setRenderLayer(DEContent.chaos_crystal, RenderType.getCutout());
+//        RenderTypeLookup.setRenderLayer(DEContent.chaos_crystal_part, RenderType.getCutout());
     }
 
     @Override
@@ -282,6 +290,10 @@ public class ClientProxy extends CommonProxy {
 
 
     public void registerEntityRendering() {
+
+        RenderingRegistry.registerEntityRenderingHandler(DEContent.draconicGuardian, DraconicGuardianRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(DEContent.guardianProjectile, GuardianProjectileRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(DEContent.guardianCrystal, GuardianCrystalRenderer::new);
 
         //Entities
 //        RenderingRegistry.registerEntityRenderingHandler(EntityChaosGuardian.class, RenderChaosGuardian::new);
