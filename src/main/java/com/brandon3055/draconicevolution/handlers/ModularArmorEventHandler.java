@@ -240,14 +240,14 @@ public class ModularArmorEventHandler {
 
         //region/*----------------- Flight ------------------*/
 
-        if (entity instanceof PlayerEntity && !entity.world.isRemote) {
+        if (entity instanceof PlayerEntity) {
             PlayerEntity player = (PlayerEntity) entity;
             boolean canFly = true;
             boolean noPower = false;
             if (armorAbilities.creativeFlight && armorAbilities.flightPower != null && !player.abilities.isCreativeMode) {
                 canFly = armorAbilities.flightPower.getOPStored() >= EquipCfg.creativeFlightEnergy;
                 noPower = !canFly;
-                if (canFly && player.abilities.isFlying) {
+                if (canFly && player.abilities.isFlying && !entity.world.isRemote) {
                     if (armorAbilities.flightPower instanceof IOPStorageModifiable) {
                         ((IOPStorageModifiable) armorAbilities.flightPower).modifyEnergyStored(-EquipCfg.creativeFlightEnergy);
                     } else {
@@ -256,18 +256,14 @@ public class ModularArmorEventHandler {
                 }
             }
             if (armorAbilities.creativeFlight && canFly) {
-                if (!player.abilities.allowFlying) {
-                    player.abilities.allowFlying = true;
-                    player.sendPlayerAbilities();
-                }
+                player.abilities.allowFlying = true;
                 playersWithFlight.put(player, true);
-                //TODO do i want to do creative flight speed boost? I mean i kinda like the idea of creative as "precise" flight and elytra a "fast" flight.
             } else {
                 if (!playersWithFlight.containsKey(player)) {
                     playersWithFlight.put(player, false);
                 }
 
-                if (playersWithFlight.get(player)) {
+                if (playersWithFlight.get(player) && !entity.world.isRemote) {
                     playersWithFlight.put(player, false);
 
                     if (!player.abilities.isCreativeMode) {
@@ -278,6 +274,14 @@ public class ModularArmorEventHandler {
                         if (wasFlying && noPower) {
                             player.tryToStartFallFlying();
                         }
+                    }
+                }
+
+                if (player.world.isRemote && playersWithFlight.get(player)) {
+                    playersWithFlight.put(player, false);
+                    if (!player.abilities.isCreativeMode) {
+                        player.abilities.allowFlying = false;
+                        player.abilities.isFlying = false;
                     }
                 }
             }

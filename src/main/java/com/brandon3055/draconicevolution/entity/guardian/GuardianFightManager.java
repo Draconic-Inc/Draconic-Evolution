@@ -66,7 +66,7 @@ public class GuardianFightManager extends WorldEntity implements ITickableWorldE
         this.arenaOrigin = origin;
         this.validPlayer = EntityPredicates.IS_ALIVE.and(EntityPredicates.withinRange(origin.getX(), origin.getY(), origin.getZ(), 192.0D));
         this.respawnState = GuardianSpawnState.START_WAIT_FOR_PLAYER;
-        bossInfo.setPercent(0);
+        this.bossInfo.setPercent(0);
     }
 
     @Override
@@ -91,7 +91,7 @@ public class GuardianFightManager extends WorldEntity implements ITickableWorldE
                 this.respawnState.process(world, this, this.crystals, this.respawnStateTicks++, this.arenaOrigin);
             }
 
-            if (!this.guardianKilled) {
+            if (!this.guardianKilled && respawnState == null) {
                 if ((this.guardianUniqueId == null || ++this.ticksSinceGuardianSeen >= 1200) && areaLoaded) {
                     this.findOrCreateGuardian();
                     this.ticksSinceGuardianSeen = 0;
