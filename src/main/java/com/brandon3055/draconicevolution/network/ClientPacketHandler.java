@@ -6,10 +6,14 @@ import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.render.effect.ExplosionFX;
+import com.brandon3055.draconicevolution.init.DEModules;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.play.IClientPlayNetHandler;
 import net.minecraft.client.particle.FireworkParticle;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.entity.Entity;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
@@ -34,6 +38,9 @@ public class ClientPacketHandler implements ICustomPacketHandler.IClientPacketHa
                 break;
             case DraconicNetwork.C_IMPACT_EFFECT:
                 handleImpactEffect(mc, packet.readPos(), packet.readByte());
+                break;
+            case DraconicNetwork.C_LAST_STAND_ACTIVATION:
+                handleLastStandActivation(mc, packet.readVarInt(), packet.readRegistryId());
                 break;
 
         }
@@ -81,6 +88,17 @@ public class ClientPacketHandler implements ICustomPacketHandler.IClientPacketHa
         particle.setMaxAge(15 + mc.world.rand.nextInt(5));
         float ci = 0.5F + (mc.world.rand.nextFloat() * 0.5F);
         particle.setColor(1F, 0.6F * ci, 0.06F * ci);
+    }
+
+    private static void handleLastStandActivation(Minecraft mc, int id, Item item) {
+        if (mc.world == null) return;;
+        Entity entity = mc.world.getEntityByID(id);
+        if (entity != null) {
+            mc.particles.emitParticleAtEntity(entity, ParticleTypes.TOTEM_OF_UNDYING, 30);
+            if (entity == mc.player) {
+                Minecraft.getInstance().gameRenderer.displayItemActivation(new ItemStack(item));
+            }
+        }
     }
 }
 

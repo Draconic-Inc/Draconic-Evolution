@@ -8,7 +8,7 @@
     "count": 4,
     "items": [
       {
-        "item": "draconicevolution:draconium_block"
+        "tag": "forge:storage_blocks/draconium"
       }
     ],
     "type": "draconicevolution:ingredient_stack"

@@ -10,7 +10,7 @@
       "tag": "forge:ingots/iron"
     },
     "B": {
-      "item": "draconicevolution:draconium_ingot"
+      "tag": "forge:ingots/draconium"
     },
     "C": {
       "item": "minecraft:diamond_sword"

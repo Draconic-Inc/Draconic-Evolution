@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#I#",
+    "ABA",
+    "#I#"
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:nether_stars"
+    },
+    "A": {
+      "item": "draconicevolution:chaotic_core"
+    },
+    "B": {
+      "item": "draconicevolution:draconic_shield_control_module"
+    },
+    "I": {
+      "tag": "forge:ingots/netherite"
+    }
+  },
+  "result": {
+    "item": "draconicevolution:chaotic_shield_control_module"
+  }
+}

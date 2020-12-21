@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "IPI",
+    "ABA",
+    "IPI"
+  ],
+  "key": {
+    "I": {
+      "tag": "forge:ingots/draconium"
+    },
+    "P": {
+      "type": "forge:nbt",
+      "item": "minecraft:potion",
+      "count": 1,
+      "nbt": "{Potion:\"minecraft:strong_strength\"}"
+    },
+    "A": {
+      "item": "draconicevolution:draconium_damage_module"
+    },
+    "B": {
+      "item": "draconicevolution:draconium_core"
+    }
+  },
+  "result": {
+    "item": "draconicevolution:wyvern_damage_module"
+  }
+}

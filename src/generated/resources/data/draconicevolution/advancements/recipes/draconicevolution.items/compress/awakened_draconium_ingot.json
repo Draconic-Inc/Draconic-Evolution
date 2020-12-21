@@ -6,12 +6,12 @@
     ]
   },
   "criteria": {
-    "has_awakened_draconium_nugget": {
+    "has_nugget_draconium_awakened": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "item": "draconicevolution:awakened_draconium_nugget"
+            "tag": "forge:nuggets/draconium_awakened"
           }
         ]
       }
@@ -25,7 +25,7 @@
   },
   "requirements": [
     [
-      "has_awakened_draconium_nugget",
+      "has_nugget_draconium_awakened",
       "has_the_recipe"
     ]
   ]

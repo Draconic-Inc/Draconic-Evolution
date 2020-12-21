@@ -1,5 +1,8 @@
 package com.brandon3055.draconicevolution.datagen;
 
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.init.DEContent;
+import com.brandon3055.draconicevolution.init.DETags;
 import com.google.gson.*;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRewards;
@@ -11,21 +14,25 @@ import net.minecraft.client.renderer.model.Variant;
 import net.minecraft.data.*;
 import net.minecraft.resources.IResource;
 import net.minecraft.resources.ResourcePackType;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.generators.*;
 import net.minecraftforge.client.model.generators.ModelBuilder.Perspective;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.crafting.ConditionalAdvancement;
 import net.minecraftforge.common.crafting.ConditionalRecipe;
 import net.minecraftforge.common.crafting.conditions.IConditionBuilder;
+import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.common.data.LanguageProvider;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 import org.jline.utils.InputStreamReader;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.*;
 import java.util.function.Consumer;
@@ -37,12 +44,6 @@ import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
  */
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public class DataGenEventHandler {
-
-//    private static final Gson GSON = new GsonBuilder()
-//            .registerTypeAdapter(Variant.class, new Variant.Deserializer())
-//            .registerTypeAdapter(ItemCameraTransforms.class, new ItemCameraTransforms.Deserializer())
-//            .registerTypeAdapter(ItemTransformVec3f.class, new ItemTransformVec3f.Deserializer())
-//            .create();
 
     @SubscribeEvent
     public static void gatherData(GatherDataEvent event) {
@@ -57,64 +58,55 @@ public class DataGenEventHandler {
         if (event.includeServer()) {
             gen.addProvider(new RecipeGenerator(gen));
             gen.addProvider(new LootTableGenerator(gen));
+            BlockTagGenerator blockGenerator = new BlockTagGenerator(gen, DraconicEvolution.MODID, event.getExistingFileHelper());
+            gen.addProvider(blockGenerator);
+            gen.addProvider(new ItemTagGenerator(gen, blockGenerator, DraconicEvolution.MODID, event.getExistingFileHelper()));
         }
-
     }
 
-//    public static class Recipes extends RecipeProvider implements IConditionBuilder
-//    {
-//        public Recipes(DataGenerator gen)
-//        {
-//            super(gen);
-//        }
-//
-//        @Override
-//        protected void registerRecipes(Consumer<IFinishedRecipe> consumer)
-//        {
-//            ResourceLocation ID = new ResourceLocation("data_gen_test", "conditional");
-//
-//            ConditionalRecipe.builder()
-//                    .addCondition(
-//                            and(
-//                                    not(modLoaded("minecraft")),
-//                                    itemExists("minecraft", "dirt"),
-//                                    FALSE()
-//                            )
-//                    )
-//                    .addRecipe(
-//                            ShapedRecipeBuilder.shapedRecipe(Blocks.DIAMOND_BLOCK, 64)
-//                                    .patternLine("XXX")
-//                                    .patternLine("XXX")
-//                                    .patternLine("XXX")
-//                                    .key('X', Blocks.DIRT)
-//                                    .setGroup("")
-//                                    .addCriterion("has_dirt", hasItem(Blocks.DIRT)) //Doesn't actually print... TODO: nested/conditional advancements?
-//                                    ::build
-//                    )
-//                    .setAdvancement(ID,
-//                            ConditionalAdvancement.builder()
-//                                    .addCondition(
-//                                            and(
-//                                                    not(modLoaded("minecraft")),
-//                                                    itemExists("minecraft", "dirt"),
-//                                                    FALSE()
-//                                            )
-//                                    )
-//                                    .addAdvancement(
-//                                            Advancement.Builder.builder()
-//                                                    .withParentId(new ResourceLocation("minecraft", "root"))
-//                                                    .withDisplay(Blocks.DIAMOND_BLOCK,
-//                                                            new StringTextComponent("Dirt2Diamonds"),
-//                                                            new StringTextComponent("The BEST crafting recipe in the game!"),
-//                                                            null, FrameType.TASK, false, false, false
-//                                                    )
-//                                                    .withRewards(AdvancementRewards.Builder.recipe(ID))
-//                                                    .withCriterion("has_dirt", hasItem(Blocks.DIRT))
-//                                    )
-//                    )
-//                    .build(consumer, ID);
-//        }
-//    }
+    private static class ItemTagGenerator extends ItemTagsProvider {
+        public ItemTagGenerator(DataGenerator dataGenerator, BlockTagsProvider blockTagProvider, String modId, @Nullable ExistingFileHelper existingFileHelper) {
+            super(dataGenerator, blockTagProvider, modId, existingFileHelper);
+        }
+
+        @Override
+        protected void registerTags() {
+            getOrCreateBuilder(DETags.Items.DUSTS_DRACONIUM).add(DEContent.dust_draconium);
+            getOrCreateBuilder(DETags.Items.DUSTS_DRACONIUM_AWAKENED).add(DEContent.dust_draconium_awakened);
+            getOrCreateBuilder(Tags.Items.DUSTS).add(DEContent.dust_draconium, DEContent.dust_draconium_awakened);
+
+            getOrCreateBuilder(DETags.Items.NUGGETS_DRACONIUM).add(DEContent.nugget_draconium);
+            getOrCreateBuilder(DETags.Items.NUGGETS_DRACONIUM_AWAKENED).add(DEContent.nugget_draconium_awakened);
+            getOrCreateBuilder(Tags.Items.NUGGETS).add(DEContent.nugget_draconium, DEContent.nugget_draconium_awakened);
+
+            getOrCreateBuilder(DETags.Items.INGOTS_DRACONIUM).add(DEContent.ingot_draconium);
+            getOrCreateBuilder(DETags.Items.INGOTS_DRACONIUM_AWAKENED).add(DEContent.ingot_draconium_awakened);
+            getOrCreateBuilder(Tags.Items.INGOTS).add(DEContent.ingot_draconium, DEContent.ingot_draconium_awakened);
+
+
+            copy(DETags.Blocks.STORAGE_BLOCKS_DRACONIUM, DETags.Items.STORAGE_BLOCKS_DRACONIUM);
+            copy(DETags.Blocks.STORAGE_BLOCKS_DRACONIUM_AWAKENED, DETags.Items.STORAGE_BLOCKS_DRACONIUM_AWAKENED);
+            copy(Tags.Blocks.STORAGE_BLOCKS, Tags.Items.STORAGE_BLOCKS);
+            copy(DETags.Blocks.ORES_DRACONIUM, DETags.Items.ORES_DRACONIUM);
+            copy(Tags.Blocks.ORES, Tags.Items.ORES);
+        }
+    }
+
+    private static class BlockTagGenerator extends BlockTagsProvider {
+        public BlockTagGenerator(DataGenerator generatorIn, String modId, @Nullable ExistingFileHelper existingFileHelper) {
+            super(generatorIn, modId, existingFileHelper);
+        }
+
+        @Override
+        protected void registerTags() {
+            getOrCreateBuilder(DETags.Blocks.STORAGE_BLOCKS_DRACONIUM).add(DEContent.block_draconium);
+            getOrCreateBuilder(DETags.Blocks.STORAGE_BLOCKS_DRACONIUM_AWAKENED).add(DEContent.block_draconium_awakened);
+            getOrCreateBuilder(Tags.Blocks.STORAGE_BLOCKS).add(DEContent.block_draconium, DEContent.block_draconium_awakened);
+
+            getOrCreateBuilder(DETags.Blocks.ORES_DRACONIUM).add(DEContent.ore_draconium_end, DEContent.ore_draconium_nether, DEContent.ore_draconium_overworld);
+            getOrCreateBuilder(Tags.Blocks.ORES).add(DEContent.ore_draconium_end, DEContent.ore_draconium_nether, DEContent.ore_draconium_overworld);
+        }
+    }
 
 
 }

@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#I#",
+    "ABA",
+    "#I#"
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:ingots/netherite"
+    },
+    "I": {
+      "tag": "forge:ingots/draconium_awakened"
+    },
+    "A": {
+      "item": "draconicevolution:wyvern_aoe_module"
+    },
+    "B": {
+      "item": "draconicevolution:awakened_core"
+    }
+  },
+  "result": {
+    "item": "draconicevolution:draconic_aoe_module"
+  }
+}

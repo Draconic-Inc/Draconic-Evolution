@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "IPI",
+    "ABA",
+    "IPI"
+  ],
+  "key": {
+    "I": {
+      "tag": "forge:nuggets/draconium_awakened"
+    },
+    "P": {
+      "item": "minecraft:dragon_breath"
+    },
+    "A": {
+      "item": "draconicevolution:wyvern_damage_module"
+    },
+    "B": {
+      "item": "draconicevolution:wyvern_core"
+    }
+  },
+  "result": {
+    "item": "draconicevolution:draconic_damage_module"
+  }
+}

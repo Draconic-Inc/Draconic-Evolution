@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#C#",
+    "ABA",
+    "#D#"
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:ingots/draconium_awakened"
+    },
+    "A": {
+      "item": "draconicevolution:wyvern_core"
+    },
+    "B": {
+      "item": "draconicevolution:wyvern_flight_module"
+    },
+    "C": {
+      "type": "forge:nbt",
+      "item": "minecraft:potion",
+      "count": 1,
+      "nbt": "{Potion:\"minecraft:slow_falling\"}"
+    },
+    "D": {
+      "item": "minecraft:firework_rocket"
+    }
+  },
+  "result": {
+    "item": "draconicevolution:draconic_flight_module"
+  }
+}

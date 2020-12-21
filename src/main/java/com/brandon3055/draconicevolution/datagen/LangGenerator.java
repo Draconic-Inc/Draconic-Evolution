@@ -94,6 +94,7 @@ public class LangGenerator extends LanguageProvider {
         helper.add(DEContent.chaos_frag_large                   ,"Large Chaos Fragment");
         helper.add(DEContent.chaos_frag_medium                  ,"Small Chaos Fragment");
         helper.add(DEContent.chaos_frag_small                   ,"Tiny Chaos Fragment");
+        helper.add(DEContent.module_core                        ,"Module Core");
         //Misc Tools
         helper.add(DEContent.magnet                             ,"Item Dislocator");
         helper.add(DEContent.magnet_advanced                    ,"Awakened Item Dislocator");
@@ -512,6 +513,8 @@ public class LangGenerator extends LanguageProvider {
         add("tech_level.draconicevolution.draconic"                                         ,"Draconic");
         add("tech_level.draconicevolution.chaotic"                                          ,"Chaotic");
         add("entity.draconicevolution.draconic_guardian"                                    ,"Chaos Guardian");
+        add("death.attack.draconicevolution.draconic_guardian"                              ,"%1$s was torn apart by %2$s");
+        add("death.attack.draconicevolution.guardian_projectile"                            ,"%1$s was obliterated %2$s");
     }
 
 

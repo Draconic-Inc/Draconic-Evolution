@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#C#",
+    "ABA",
+    "#D#"
+  ],
+  "key": {
+    "#": {
+      "item": "draconicevolution:medium_chaos_frag"
+    },
+    "A": {
+      "item": "draconicevolution:awakened_core"
+    },
+    "B": {
+      "item": "draconicevolution:draconic_last_stand_module"
+    },
+    "C": {
+      "item": "minecraft:enchanted_golden_apple"
+    },
+    "D": {
+      "item": "draconicevolution:chaotic_shield_capacity_module"
+    }
+  },
+  "result": {
+    "item": "draconicevolution:chaotic_last_stand_module"
+  }
+}

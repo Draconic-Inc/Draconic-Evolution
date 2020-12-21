@@ -10,19 +10,10 @@
   "tier": "DRACONIC",
   "ingredients": [
     {
-      "item": "draconicevolution:awakened_draconium_ingot"
+      "tag": "forge:ingots/draconium_awakened"
     },
     {
-      "item": "draconicevolution:awakened_draconium_ingot"
-    },
-    {
-      "item": "draconicevolution:awakened_core"
-    },
-    {
-      "item": "draconicevolution:awakened_core"
-    },
-    {
-      "item": "draconicevolution:awakened_draconium_ingot"
+      "tag": "forge:ingots/draconium_awakened"
     },
     {
       "item": "draconicevolution:awakened_core"
@@ -31,7 +22,16 @@
       "item": "draconicevolution:awakened_core"
     },
     {
-      "item": "draconicevolution:awakened_draconium_ingot"
+      "tag": "forge:ingots/draconium_awakened"
+    },
+    {
+      "item": "draconicevolution:awakened_core"
+    },
+    {
+      "item": "draconicevolution:awakened_core"
+    },
+    {
+      "tag": "forge:ingots/draconium_awakened"
     }
   ]
 }

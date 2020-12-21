@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
     {
-      "item": "draconicevolution:awakened_draconium_block"
+      "tag": "forge:storage_blocks/draconium_awakened"
     }
   ],
   "result": {

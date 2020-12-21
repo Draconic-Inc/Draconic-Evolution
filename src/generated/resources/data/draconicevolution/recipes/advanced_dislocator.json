@@ -13,25 +13,25 @@
       "tag": "forge:ender_pearls"
     },
     {
-      "item": "draconicevolution:draconium_ingot"
+      "tag": "forge:ingots/draconium"
     },
     {
       "tag": "forge:ender_pearls"
     },
     {
-      "item": "draconicevolution:draconium_ingot"
+      "tag": "forge:ingots/draconium"
     },
     {
       "tag": "forge:ender_pearls"
     },
     {
-      "item": "draconicevolution:draconium_ingot"
+      "tag": "forge:ingots/draconium"
     },
     {
       "item": "draconicevolution:wyvern_core"
     },
     {
-      "item": "draconicevolution:draconium_ingot"
+      "tag": "forge:ingots/draconium"
     }
   ]
 }

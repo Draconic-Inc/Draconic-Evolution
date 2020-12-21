@@ -10,25 +10,25 @@
   "tier": "CHAOTIC",
   "ingredients": [
     {
-      "item": "draconicevolution:awakened_draconium_ingot"
+      "tag": "forge:ingots/draconium_awakened"
     },
     {
-      "item": "draconicevolution:draconium_ingot"
+      "tag": "forge:ingots/draconium"
     },
     {
-      "item": "draconicevolution:awakened_draconium_ingot"
+      "tag": "forge:ingots/draconium_awakened"
     },
     {
-      "item": "draconicevolution:draconium_ingot"
+      "tag": "forge:ingots/draconium"
     },
     {
-      "item": "draconicevolution:awakened_draconium_ingot"
+      "tag": "forge:ingots/draconium_awakened"
     },
     {
-      "item": "draconicevolution:draconium_ingot"
+      "tag": "forge:ingots/draconium"
     },
     {
-      "item": "draconicevolution:awakened_draconium_ingot"
+      "tag": "forge:ingots/draconium_awakened"
     }
   ]
 }

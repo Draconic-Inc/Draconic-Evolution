@@ -5,6 +5,7 @@ import com.brandon3055.draconicevolution.entity.guardian.DraconicGuardianEntity;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EntityDamageSource;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
@@ -57,7 +58,7 @@ public class ChargingPlayerPhase extends Phase {
                 if (distance <= 5) {
                     guardian.getPhaseManager().setPhase(PhaseType.START);
                     LOGGER.debug("Charge Successful");
-                    targetPlayer.attackEntityFrom(DamageSource.causeMobDamage(guardian), 300);
+                    targetPlayer.attackEntityFrom(new EntityDamageSource(DraconicEvolution.MODID + ".draconic_guardian", guardian), 300);
                     guardian.playSound(SoundEvents.ENTITY_GENERIC_EAT, 20, 0.95F + (guardian.getRNG().nextFloat() * 0.2F));
                     guardian.playSound(SoundEvents.ENTITY_GENERIC_EAT, 20, 0.95F + (guardian.getRNG().nextFloat() * 0.2F));
                     DraconicNetwork.sendImpactEffect(guardian.world, targetPlayer.getPosition(), 0);

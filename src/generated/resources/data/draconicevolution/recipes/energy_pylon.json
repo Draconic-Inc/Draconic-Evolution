@@ -7,7 +7,7 @@
   ],
   "key": {
     "A": {
-      "item": "draconicevolution:draconium_ingot"
+      "tag": "forge:ingots/draconium"
     },
     "B": {
       "item": "minecraft:ender_eye"

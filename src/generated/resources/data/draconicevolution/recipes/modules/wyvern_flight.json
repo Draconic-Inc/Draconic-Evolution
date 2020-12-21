@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#C#",
+    "ABA",
+    "#D#"
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:ingots/draconium"
+    },
+    "C": {
+      "item": "minecraft:elytra"
+    },
+    "A": {
+      "item": "draconicevolution:draconium_core"
+    },
+    "B": {
+      "item": "draconicevolution:module_core"
+    },
+    "D": {
+      "item": "minecraft:firework_rocket"
+    }
+  },
+  "result": {
+    "item": "draconicevolution:wyvern_flight_module"
+  }
+}

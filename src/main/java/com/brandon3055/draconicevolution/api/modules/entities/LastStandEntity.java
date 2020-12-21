@@ -10,6 +10,7 @@ import com.brandon3055.draconicevolution.api.modules.data.LastStandData;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.brandon3055.draconicevolution.api.modules.lib.StackModuleContext;
+import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -77,6 +78,7 @@ public class LastStandEntity extends ModuleEntity {
                 }
             }
             charge = 0;
+            DraconicNetwork.sendLastStandActivation(entity, module.getItem());
             entity.world.playSound(null, entity.getPosition(), SoundEvents.ITEM_TOTEM_USE, SoundCategory.PLAYERS, 5F, (0.95F + (entity.world.rand.nextFloat() * 0.1F)));
             return true;
         }

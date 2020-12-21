@@ -10,7 +10,7 @@
       "item": "minecraft:blaze_powder"
     },
     "B": {
-      "item": "draconicevolution:draconium_dust"
+      "tag": "forge:dusts/draconium"
     },
     "C": {
       "item": "minecraft:ender_eye"

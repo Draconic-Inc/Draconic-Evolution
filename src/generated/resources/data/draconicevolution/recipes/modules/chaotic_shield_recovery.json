@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#C#",
+    "ABA",
+    "#D#"
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:ingots/draconium_awakened"
+    },
+    "A": {
+      "item": "draconicevolution:medium_chaos_frag"
+    },
+    "B": {
+      "item": "draconicevolution:draconic_shield_recovery_module"
+    },
+    "C": {
+      "item": "draconicevolution:wyvern_core"
+    },
+    "D": {
+      "item": "draconicevolution:chaotic_core"
+    }
+  },
+  "result": {
+    "item": "draconicevolution:chaotic_shield_recovery_module"
+  }
+}

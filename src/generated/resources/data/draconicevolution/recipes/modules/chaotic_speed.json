@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#C#",
+    "ABA",
+    "#C#"
+  ],
+  "key": {
+    "#": {
+      "item": "draconicevolution:small_chaos_frag"
+    },
+    "A": {
+      "item": "draconicevolution:draconic_speed_module"
+    },
+    "B": {
+      "item": "draconicevolution:awakened_core"
+    },
+    "C": {
+      "item": "draconicevolution:medium_chaos_frag"
+    }
+  },
+  "result": {
+    "item": "draconicevolution:chaotic_speed_module"
+  }
+}

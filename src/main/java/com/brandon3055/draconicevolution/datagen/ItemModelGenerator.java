@@ -105,6 +105,7 @@ public class ItemModelGenerator extends ItemModelProvider {
         simpleItem(DEContent.energy_core_wyvern, "item/components");
         simpleItem(DEContent.energy_core_draconic, "item/components");
         simpleItem(DEContent.dragon_heart, "item/components");
+        simpleItem(DEContent.module_core, "item/components");
         dummyModel(DEContent.chaos_shard);
         dummyModel(DEContent.chaos_frag_small);
         dummyModel(DEContent.chaos_frag_medium);

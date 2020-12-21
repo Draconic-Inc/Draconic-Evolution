@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "draconicevolution:chaotic_large_shield_capacity_module"
+    }
+  ],
+  "result": {
+    "item": "draconicevolution:chaotic_shield_capacity_module",
+    "count": 5
+  }
+}

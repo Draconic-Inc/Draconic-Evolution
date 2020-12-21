@@ -7,7 +7,7 @@
   ],
   "key": {
     "A": {
-      "item": "draconicevolution:awakened_draconium_ingot"
+      "tag": "forge:ingots/draconium_awakened"
     },
     "B": {
       "item": "draconicevolution:wyvern_energy_core"

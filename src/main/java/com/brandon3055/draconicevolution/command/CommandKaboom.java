@@ -2,26 +2,16 @@ package com.brandon3055.draconicevolution.command;
 
 import com.brandon3055.brandonscore.api.TimeKeeper;
 import com.brandon3055.brandonscore.handlers.ProcessHandler;
-import com.brandon3055.brandonscore.lib.ShortPos;
 import com.brandon3055.brandonscore.worldentity.WorldEntity;
 import com.brandon3055.brandonscore.worldentity.WorldEntityHandler;
-import com.brandon3055.draconicevolution.blocks.DraconiumOre;
 import com.brandon3055.draconicevolution.blocks.reactor.ProcessExplosion;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
-import com.brandon3055.draconicevolution.entity.guardian.DraconicGuardianEntity;
-import com.brandon3055.draconicevolution.entity.guardian.control.PhaseType;
-import com.brandon3055.draconicevolution.init.DEContent;
-import com.brandon3055.draconicevolution.lib.ExplosionHelper;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import com.brandon3055.draconicevolution.utils.LogHelper;
-import com.brandon3055.draconicevolution.world.ChaosWorldGenHandler;
-import com.brandon3055.draconicevolution.world.TestWorldEntity;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.BlockPosArgument;
@@ -31,9 +21,6 @@ import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.server.ServerWorld;
-
-import java.util.HashSet;
-import java.util.LinkedList;
 
 /**
  * Created by brandon3055 on 23/06/2017.

@@ -413,7 +413,7 @@ public class DraconicGuardianEntity extends MobEntity implements IMob {
                 double d4 = Math.max(d2 * d2 + d3 * d3, 0.1D);
                 entity.addVelocity(d2 / d4 * 4.0D, 0.2F, d3 / d4 * 4.0D);
                 if (!this.phaseManager.getCurrentPhase().getIsStationary() && ((LivingEntity) entity).getRevengeTimer() < entity.ticksExisted - 2) {
-                    entity.attackEntityFrom(DamageSource.causeMobDamage(this), 5.0F);
+                    entity.attackEntityFrom(new EntityDamageSource(DraconicEvolution.MODID + ".draconic_guardian", this), 15.0F);
                     this.applyEnchantments(this, entity);
                 }
             }
@@ -424,7 +424,7 @@ public class DraconicGuardianEntity extends MobEntity implements IMob {
     private void attackEntitiesInList(List<Entity> entities) {
         for (Entity entity : entities) {
             if (entity instanceof LivingEntity) {
-                entity.attackEntityFrom(DamageSource.causeMobDamage(this), 10.0F);
+                entity.attackEntityFrom(new EntityDamageSource(DraconicEvolution.MODID + ".draconic_guardian", this), 20.0F);
                 this.applyEnchantments(this, entity);
             }
         }

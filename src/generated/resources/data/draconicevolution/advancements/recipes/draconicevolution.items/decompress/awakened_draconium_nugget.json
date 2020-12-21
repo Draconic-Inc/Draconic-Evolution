@@ -6,12 +6,12 @@
     ]
   },
   "criteria": {
-    "has_awakened_draconium_ingot": {
+    "has_ingot_draconium_awakened": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "item": "draconicevolution:awakened_draconium_ingot"
+            "tag": "forge:ingots/draconium_awakened"
           }
         ]
       }
@@ -25,7 +25,7 @@
   },
   "requirements": [
     [
-      "has_awakened_draconium_ingot",
+      "has_ingot_draconium_awakened",
       "has_the_recipe"
     ]
   ]

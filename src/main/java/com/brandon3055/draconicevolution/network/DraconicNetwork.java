@@ -5,7 +5,10 @@ import codechicken.lib.packet.PacketCustomChannelBuilder;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleGrid;
 import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.PropertyData;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.ClickType;
+import net.minecraft.item.Item;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -36,6 +39,7 @@ public class DraconicNetwork {
     public static final int C_SHIELD_HIT =              2;
     public static final int C_EXPLOSION_EFFECT =        3;
     public static final int C_IMPACT_EFFECT =           4;
+    public static final int C_LAST_STAND_ACTIVATION =   5;
 
 
     //@formatter:on
@@ -104,7 +108,12 @@ public class DraconicNetwork {
         packet.sendToChunk(world, position);
     }
 
-
+    public static void sendLastStandActivation(LivingEntity target, Item item) {
+        PacketCustom packet = new PacketCustom(CHANNEL, C_LAST_STAND_ACTIVATION);
+        packet.writeVarInt(target.getEntityId());
+        packet.writeRegistryId(item);
+        packet.sendToChunk(target.world, target.getPosition());
+    }
 
 
 

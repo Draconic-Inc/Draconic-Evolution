@@ -10,7 +10,7 @@
       "item": "draconicevolution:wyvern_core"
     },
     "B": {
-      "item": "draconicevolution:draconium_ingot"
+      "tag": "forge:ingots/draconium"
     },
     "C": {
       "item": "minecraft:diamond_axe"

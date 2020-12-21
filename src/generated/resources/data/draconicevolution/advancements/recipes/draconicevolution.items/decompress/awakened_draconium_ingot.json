@@ -6,12 +6,12 @@
     ]
   },
   "criteria": {
-    "has_awakened_draconium_block": {
+    "has_block_draconium_awakened": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "item": "draconicevolution:awakened_draconium_block"
+            "tag": "forge:storage_blocks/draconium_awakened"
           }
         ]
       }
@@ -25,7 +25,7 @@
   },
   "requirements": [
     [
-      "has_awakened_draconium_block",
+      "has_block_draconium_awakened",
       "has_the_recipe"
     ]
   ]

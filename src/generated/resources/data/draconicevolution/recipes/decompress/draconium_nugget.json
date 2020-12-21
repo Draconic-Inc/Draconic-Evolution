@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
     {
-      "item": "draconicevolution:draconium_ingot"
+      "tag": "forge:ingots/draconium"
     }
   ],
   "result": {
