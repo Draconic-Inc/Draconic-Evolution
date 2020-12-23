@@ -1,7 +1,7 @@
 {
   "replace": false,
   "values": [
-    "draconicevolution:draconium_dust",
-    "draconicevolution:awakened_draconium_dust"
+    "#forge:dusts/draconium_awakened",
+    "#forge:dusts/draconium"
   ]
 }

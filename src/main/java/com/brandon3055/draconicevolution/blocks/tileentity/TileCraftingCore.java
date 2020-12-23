@@ -138,8 +138,8 @@ public class TileCraftingCore extends TileBCore implements IFusionInventory, ITi
                 totalCharge += pedestal.getInjectorCharge();
             }
 
-            long averageCharge = totalCharge / activeRecipe.getIngredients().size();
-            double percentage = averageCharge / (double) activeRecipe.getIngredientEnergyCost();
+//            long averageCharge = totalCharge / activeRecipe.getIngredients().size();
+            double percentage = totalCharge / (double) activeRecipe.getEnergyCost();
 
             if (percentage <= 1D && craftingStage.get() < 1000) {
                 craftingStage.set((short) (percentage * 1000D));
@@ -303,7 +303,7 @@ public class TileCraftingCore extends TileBCore implements IFusionInventory, ITi
         if (activeRecipe == null) {
             return 0;
         } else {
-            return activeRecipe.getIngredientEnergyCost();
+            return activeRecipe.fusionIngredients().isEmpty() ? 0 : activeRecipe.getEnergyCost() / activeRecipe.fusionIngredients().size();
         }
     }
 

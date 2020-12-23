@@ -8,6 +8,7 @@ import com.brandon3055.brandonscore.lib.datamanager.ManagedEnum;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedInt;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedVec3I;
 import com.brandon3055.brandonscore.utils.MathUtils;
+import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.integration.computers.ArgHelper;
 import com.brandon3055.draconicevolution.integration.computers.IDEPeripheral;
 import com.brandon3055.draconicevolution.utils.LogHelper;
@@ -20,6 +21,7 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.server.ChunkHolder;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -240,7 +242,7 @@ public abstract class TileReactorComponent extends TileBCore implements ITickabl
             BlockPos corePos = getCorePos();
             Chunk coreChunk = world.getChunkAt(corePos);
 
-            if (!coreChunk.loaded) {
+            if (!Utils.isAreaLoaded(world, corePos, ChunkHolder.LocationType.TICKING)) {
                 cachedCore = null;
                 return null;
             }

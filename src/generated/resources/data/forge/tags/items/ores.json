@@ -1,8 +1,6 @@
 {
   "replace": false,
   "values": [
-    "draconicevolution:end_draconium_ore",
-    "draconicevolution:nether_draconium_ore",
-    "draconicevolution:overworld_draconium_ore"
+    "#forge:ores/draconium"
   ]
 }

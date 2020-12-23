@@ -44,6 +44,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ChunkHolder;
+import net.minecraft.world.server.ChunkHolder.LocationType;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -873,7 +875,7 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
         LogHelper.dev("Reactor: Validate Structure");
         for (Direction facing : FacingUtils.getFacingsAroundAxis(stabilizerAxis.get())) {
             BlockPos pos = getOffsetPos(componentPositions[facing.getIndex()].get());
-            if (!world.getChunkAt(pos).loaded) {
+            if (!Utils.isAreaLoaded(world, pos, LocationType.TICKING)) {
                 return true;
             }
 

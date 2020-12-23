@@ -124,7 +124,7 @@ public class ClientEventHandler {
 
     @SubscribeEvent
     public void renderPlayerEvent(RenderPlayerEvent.Post event) {
-        if (!DEOldConfig.disableShieldHitEffect &&  playerShieldStatus.containsKey(event.getPlayer())) {
+        if (!DEOldConfig.disableShieldHitEffect && playerShieldStatus.containsKey(event.getPlayer())) {
             if (shieldModel == null) {
                 try {
 //                    shieldModel = OBJLoader.INSTANCE.loadModel(ResourceHelperDE.getResource("models/armor/shield_sphere.obj")).bake(TransformUtils.DEFAULT_BLOCK, DefaultVertexFormats.BLOCK, TextureUtils::getTexture);
@@ -160,8 +160,7 @@ public class ClientEventHandler {
                 double translationZ = translationZLT + (((event.getPlayer().getPosZ() - viewingPlayer.getPosZ()) - translationZLT) * event.getPartialRenderTick());
 
                 RenderSystem.translated(translationX, translationY + 1.1, translationZ);
-            }
-            else {
+            } else {
                 //GL11.glTranslated(0, -0.5, 0);
                 RenderSystem.translated(0, 1.15, 0);
             }
@@ -194,6 +193,7 @@ public class ClientEventHandler {
 
     public static final Matrix4 MODELVIEW = new Matrix4();
     public static final Matrix4 PROJECTION = new Matrix4();
+
     @SubscribeEvent
     public void renderWorldEvent(RenderWorldLastEvent event) {
         if (event.isCanceled()) {
@@ -210,13 +210,17 @@ public class ClientEventHandler {
         Minecraft mc = Minecraft.getInstance();
         float partialTicks = event.getPartialTicks();
 
-        if (!stack.isEmpty() && stack.getItem() instanceof ICrystalBinder) {
-            BinderHandler.renderWorldOverlay(player, world, stack, mc, partialTicks);
-            return;
+        try {
+            if (!stack.isEmpty() && stack.getItem() instanceof ICrystalBinder) {
+                BinderHandler.renderWorldOverlay(player, event.getMatrixStack(), world, stack, mc, partialTicks);
+                return;
+            } else if (!stack.isEmpty() && offStack.getItem() instanceof ICrystalBinder) {
+                BinderHandler.renderWorldOverlay(player, event.getMatrixStack(), world, offStack, mc, partialTicks);
+                return;
+            }
         }
-        else if (!stack.isEmpty() && offStack.getItem() instanceof ICrystalBinder) {
-            BinderHandler.renderWorldOverlay(player, world, offStack, mc, partialTicks);
-            return;
+        catch (Throwable e) {
+            e.printStackTrace();
         }
 
 
@@ -226,7 +230,7 @@ public class ClientEventHandler {
 
         if (!stack.isEmpty() && stack.getItem() == DEContent.creative_exchanger) {
 
-            List<BlockPos> blocks = CreativeExchanger.getBlocksToReplace(stack, ((BlockRayTraceResult)mc.objectMouseOver).getPos(), world, ((BlockRayTraceResult)mc.objectMouseOver).getFace());
+            List<BlockPos> blocks = CreativeExchanger.getBlocksToReplace(stack, ((BlockRayTraceResult) mc.objectMouseOver).getPos(), world, ((BlockRayTraceResult) mc.objectMouseOver).getFace());
 
             Tessellator tessellator = Tessellator.getInstance();
             BufferBuilder buffer = tessellator.getBuffer();
@@ -252,7 +256,7 @@ public class ClientEventHandler {
 
                 Cuboid6 box = new Cuboid6(renderX, renderY, renderZ, renderX + 1, renderY + 1, renderZ + 1).expand(0.001, 0.001, 0.001);
                 float colour = 1F;
-                if (!world.getBlockState(block.offset(((BlockRayTraceResult)mc.objectMouseOver).getFace())).getMaterial().isReplaceable()) {
+                if (!world.getBlockState(block.offset(((BlockRayTraceResult) mc.objectMouseOver).getFace())).getMaterial().isReplaceable()) {
                     RenderSystem.disableDepthTest();
                     colour = 0.2F;
                 }
@@ -381,8 +385,7 @@ public class ClientEventHandler {
                 explosionAnimation = 1;
                 explosionRetreating = true;
             }
-        }
-        else {
+        } else {
             if (explosionAnimation <= 0) {
                 explosionAnimation = 0;
                 explosionPos = null;
@@ -395,6 +398,7 @@ public class ClientEventHandler {
     }
 
     public static final IntBuffer VIEWPORT = GLAllocation.createDirectByteBuffer(16 << 2).asIntBuffer();
+
     private void updateExplosionAnimation(Minecraft mc, World world, MainWindow resolution, float partialTick) {
         //region TargetPoint Calculation
 
@@ -417,16 +421,13 @@ public class ClientEventHandler {
             float alpha;
             if (explosionAnimation <= 0) {
                 alpha = 0;
-            }
-            else if (explosionRetreating) {
+            } else if (explosionRetreating) {
                 alpha = (float) explosionAnimation - (partialTick * 0.003F);
-            }
-            else {
+            } else {
                 alpha = (float) explosionAnimation + (partialTick * 0.2F);
             }
             GuiHelper.drawColouredRect(0, 0, resolution.getScaledWidth(), resolution.getScaledHeight(), 0x00FFFFFF | (int) (alpha * 255F) << 24);
-        }
-        else {
+        } else {
 
             UniformCache uniforms = explosionShader.pushCache();
             uniforms.glUniform2f("screenPos", screenX, screenY);

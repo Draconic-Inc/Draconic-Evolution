@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.items.equipment;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.lib.TechPropBuilder;
 import com.brandon3055.draconicevolution.api.IReaperItem;
+import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.modules.ModuleCategory;
 import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleHostImpl;
@@ -15,6 +16,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.pathfinding.FlyingNodeProcessor;
 import net.minecraft.pathfinding.NodeProcessor;
 import net.minecraft.pathfinding.Path;
@@ -78,6 +80,11 @@ public class ModularStaff extends ToolItem implements IReaperItem, IModularMinin
     }
 
     @Override
+    public boolean canHarvestBlock(BlockState blockIn) {
+        return true;
+    }
+
+    @Override
     public float getBaseEfficiency() {
         return getTier().getEfficiency();
     }
@@ -95,21 +102,21 @@ public class ModularStaff extends ToolItem implements IReaperItem, IModularMinin
 
     @Override
     public int getReaperLevel(ItemStack stack) {
-        return 0;
+        return techLevel.index + 1;
     }
 
-    @Override
-    public boolean onEntitySwing(ItemStack stack, LivingEntity entity) {
-        if (entity instanceof PlayerEntity) {
-            ((PlayerEntity) entity).ticksSinceLastSwing = (int) Math.ceil(((PlayerEntity) entity).getCooledAttackStrength(0));
-        }
-        return true;
-    }
-
-    @Override
-    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
-        return slotChanged;
-    }
+//    @Override
+//    public boolean onEntitySwing(ItemStack stack, LivingEntity entity) {
+//        if (entity instanceof PlayerEntity) {
+//            ((PlayerEntity) entity).ticksSinceLastSwing = (int) Math.ceil(((PlayerEntity) entity).getCooledAttackStrength(0));
+//        }
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
+//        return slotChanged;
+//    }
 
 
     @Override
@@ -133,36 +140,3 @@ public class ModularStaff extends ToolItem implements IReaperItem, IModularMinin
         return super.onItemRightClick(world, entity, hand);
     }
 }
-
-
-//    @Nullable
-//    public Path getPathToEntity(Entity entityIn, int p_75494_2_) {
-//        return this.func_225464_a(ImmutableSet.of(new BlockPos(entityIn)), 16, true, p_75494_2_);
-//    }
-//
-//    @Nullable
-//    protected Path func_225464_a(Set<BlockPos> p_225464_1_, int p_225464_2_, boolean p_225464_3_, int p_225464_4_) {
-//        if (p_225464_1_.isEmpty()) {
-//            return null;
-//        } else if (this.entity.getPosY() < 0.0D) {
-//            return null;
-//        } else if (!this.canNavigate()) {
-//            return null;
-//        } else if (this.currentPath != null && !this.currentPath.isFinished() && p_225464_1_.contains(this.targetPos)) {
-//            return this.currentPath;
-//        } else {
-//            this.world.getProfiler().startSection("pathfind");
-//            float f = (float)this.field_226333_p_.getValue();
-//            BlockPos blockpos = p_225464_3_ ? (new BlockPos(this.entity)).up() : new BlockPos(this.entity);
-//            int i = (int)(f + (float)p_225464_2_);
-//            Region region = new Region(this.world, blockpos.add(-i, -i, -i), blockpos.add(i, i, i));
-//            Path path = this.pathFinder.func_227478_a_(region, this.entity, p_225464_1_, f, p_225464_4_, this.field_226334_s_);
-//            this.world.getProfiler().endSection();
-//            if (path != null && path.getTarget() != null) {
-//                this.targetPos = path.getTarget();
-//                this.field_225468_r = p_225464_4_;
-//            }
-//
-//            return path;
-//        }
-//    }

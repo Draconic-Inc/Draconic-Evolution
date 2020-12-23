@@ -5,7 +5,8 @@ import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.utils.DataUtils;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.draconicevolution.api.ITeleportEndPoint;
-import com.brandon3055.draconicevolution.entity.EntityPersistentItem;
+
+import com.brandon3055.draconicevolution.entity.PersistentItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -202,8 +203,8 @@ public class DislocatorLinkHandler extends WorldSavedData {
         } else {
             AxisAlignedBB bb = new AxisAlignedBB(link.pos, link.pos.add(1, 1, 1));
             bb.grow(5);
-            List<EntityPersistentItem> items = targetWorld.getEntitiesWithinAABB(EntityPersistentItem.class, bb);
-            for (EntityPersistentItem item : items) {
+            List<PersistentItemEntity> items = targetWorld.getEntitiesWithinAABB(PersistentItemEntity.class, bb);
+            for (PersistentItemEntity item : items) {
                 ItemStack i = item.getItem();
                 if (dislocator_p2p.isValid(i)) {
                     String l = dislocator_p2p.getLinkID(i);

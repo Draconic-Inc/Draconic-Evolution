@@ -89,7 +89,7 @@ public class ModuleItem<P extends ModuleData<P>> extends Item implements ModuleP
         ModuleEntity entity = getModule().createEntity();
         entity.readFromItemStack(stack, new StackModuleContext(stack, null, null));
         entity.addToolTip(tooltip);
-        tooltip.add(new StringTextComponent("//Module textures are wip"));
+//        tooltip.add(new StringTextComponent("//Module textures are wip"));
     }
 
     @Override

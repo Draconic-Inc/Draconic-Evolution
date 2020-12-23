@@ -39,11 +39,9 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
     private int gridHeight;
     private UUID providerID = null;
     private String providerName;
-    //    private boolean attributesDirty;
     private boolean deleteInvalidModules;
     private TechLevel techLevel;
     private EnergyData energyCache = null;
-    private ShieldData shieldCache = null;
     private ModuleData energyLinkCache = null;
     private EnergyShareData energyShareCache = null;
     private List<ModuleEntity> moduleEntities = new ArrayList<>();
@@ -54,7 +52,6 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
     private Map<String, ConfigProperty> propertyMap = new LinkedHashMap<>();
     private Consumer<List<ConfigProperty>> propertyBuilder;
     private Map<ModuleType<?>, Consumer<?>> propertyValidators = new HashMap<>();
-//    private Map<ModuleType<?>, List<ConfigProperty>> typeProperties = new HashMap<>();
 
     public ModuleHostImpl(TechLevel techLevel, int gridWidth, int gridHeight, String providerName, boolean deleteInvalidModules, ModuleCategory... categories) {
         this.techLevel = techLevel;
@@ -145,21 +142,8 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
         getModuleEntities().forEach(e -> e.getAttributeModifiers(slot, stack, map));
     }
 
-//    @Override
-//    public void markAttributesDirty() {
-//        this.attributesDirty = true;
-//    }
-
     public void handleTick(ModuleContext context) {
         getModuleEntities().forEach(e -> e.tick(context));
-//        if (context instanceof StackModuleContext && attributesDirty && ((StackModuleContext) context).getEntity() instanceof LivingEntity) {
-//            LivingEntity entity = (LivingEntity) ((StackModuleContext) context).getEntity();
-//            attributesDirty = false;
-//            List<UUID> ids = new ArrayList<>();
-//            getInstalledTypes().forEach(e -> e.getAttributeIDs(ids));
-//            getModuleEntities().forEach(e -> e.getAttributeIDs(ids));
-//            entity.getAttributes().
-//        }
     }
 
     //endregion
@@ -173,6 +157,7 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
         } else {
             this.propertyBuilder = builder.andThen(propertyBuilder);
         }
+        gatherProperties();
     }
 
     @Override
@@ -211,8 +196,6 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
             propertyBuilder.accept(gathered);
         }
 
-//        typeProperties.clear();
-//        propertyValidators.clear();
         Set<ModuleType<?>> installedTypes = getInstalledTypes().collect(Collectors.toSet());
         propertyValidators.entrySet().removeIf(e -> !installedTypes.contains(e.getKey()));
 
@@ -227,7 +210,6 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
                     if (consumer != null) {
                         propertyValidators.put(type, consumer);
                     }
-//                typeProperties.computeIfAbsent(type, e -> new ArrayList<>()).add(property);
                 });
             }
         });
@@ -236,12 +218,6 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
         Set<String> gatheredNames = gathered.stream().map(ConfigProperty::getName).collect(Collectors.toSet());
         //Remove properties that no longer exist
         providedProperties.removeIf(e -> !gatheredNames.contains(e.getName()));
-
-//        getInstalledTypes().forEach(type -> {
-//            List<ConfigProperty> propList = new ArrayList<>();
-//            type.getTypeProperties(SneakyUtils.unsafeCast(getModuleData(type)), propList);
-//            gathered.addAll(propList);
-//        });
 
         Set<String> installedNames = providedProperties.stream().map(ConfigProperty::getName).collect(Collectors.toSet());
         //Add new properties

@@ -6,6 +6,7 @@ import com.brandon3055.brandonscore.lib.Vec3B;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
+import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.api.energy.ICrystalLink;
 import com.brandon3055.brandonscore.api.TechLevel;
@@ -32,6 +33,7 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ChunkHolder;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -222,14 +224,14 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
 
         if (linkedReceivers.contains(offset)) {
             removeReceiver(linkTarget);
-            ChatHelper.sendIndexed(player, new TranslationTextComponent("eNet.de.linkBroken.info").mergeStyle(TextFormatting.GREEN), 99);
+            ChatHelper.sendIndexed(player, new TranslationTextComponent("gui.draconicevolution.energy_net.link_broken").mergeStyle(TextFormatting.GREEN), 99);
             return true;
         }
 
         if (inputMode.get()) {
             if (!EnergyUtils.canExtractEnergy(tile, sideClicked)) {
                 if (EnergyUtils.getStorage(tile, sideClicked) != null) {
-                    ChatHelper.sendIndexed(player, new TranslationTextComponent("eNet.de.sideCanNotExtract.info").mergeStyle(TextFormatting.RED), 99);
+                    ChatHelper.sendIndexed(player, new TranslationTextComponent("gui.draconicevolution.energy_net.side_can_not_extract").mergeStyle(TextFormatting.RED), 99);
                     return false;
                 }
                 return super.binderUsed(player, linkTarget, sideClicked);
@@ -238,7 +240,7 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
         else {
             if (!EnergyUtils.canReceiveEnergy(tile, sideClicked)) {
                 if (EnergyUtils.getStorage(tile, sideClicked) != null) {
-                    ChatHelper.sendIndexed(player, new TranslationTextComponent("eNet.de.sideCanNotReceive.info").mergeStyle(TextFormatting.RED), 99);
+                    ChatHelper.sendIndexed(player, new TranslationTextComponent("gui.draconicevolution.energy_net.side_can_not_receive").mergeStyle(TextFormatting.RED), 99);
                     return false;
                 }
                 return super.binderUsed(player, linkTarget, sideClicked);
@@ -246,12 +248,12 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
         }
 
         if (linkedReceivers.size() >= getMaxReceivers()) {
-            ChatHelper.sendIndexed(player, new TranslationTextComponent("eNet.de.maxReceivers.info").mergeStyle(TextFormatting.RED), 99);
+            ChatHelper.sendIndexed(player, new TranslationTextComponent("gui.draconicevolution.energy_net.max_receivers").mergeStyle(TextFormatting.RED), 99);
             return false;
         }
 
         addReceiver(linkTarget, sideClicked);
-        ChatHelper.sendIndexed(player, new TranslationTextComponent("eNet.de.devicesLinked.info").mergeStyle(TextFormatting.GREEN), 99);
+        ChatHelper.sendIndexed(player, new TranslationTextComponent("gui.draconicevolution.energy_net.devices_linked").mergeStyle(TextFormatting.GREEN), 99);
 
         return true;
     }
@@ -347,9 +349,9 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
     @OnlyIn(Dist.CLIENT)
     public void addDisplayData(List<String> displayList) {
         super.addDisplayData(displayList);
-        displayList.add(TextFormatting.GREEN + I18n.format("eNet.de.hudWirelessLinks.info") + ": " + getReceivers().size() + " / " + getMaxReceivers());
+        displayList.add(TextFormatting.GREEN + I18n.format("gui.draconicevolution.energy_net.hud_wireless_links") + ": " + getReceivers().size() + " / " + getMaxReceivers());
         TextFormatting colour = !inputMode.get() ? TextFormatting.GOLD : TextFormatting.DARK_AQUA;
-        displayList.add(I18n.format("eNet.de.IOOutput_" + !inputMode.get() + ".info", colour));
+        displayList.add(I18n.format("gui.draconicevolution.energy_net.io_output_" + !inputMode.get(), colour));
     }
 
     //endregion
@@ -497,7 +499,7 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
         public boolean isLinkValid(World world) {
             tileCache = world.getTileEntity(pos);
 
-            if ((tileCache == null || EnergyUtils.getStorage(tileCache, side) == null) && world.getChunkAt(pos).loaded) {
+            if ((tileCache == null || EnergyUtils.getStorage(tileCache, side) == null) && Utils.isAreaLoaded(world, pos, ChunkHolder.LocationType.TICKING)) {
                 return false;
             }
 

@@ -5,7 +5,6 @@ import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.capability.CapabilityOP;
 import com.brandon3055.brandonscore.client.particle.IntParticleType.IntParticleData;
 import com.brandon3055.brandonscore.inventory.ContainerBCTile;
-import com.brandon3055.brandonscore.inventory.ContainerBCore;
 import com.brandon3055.brandonscore.inventory.ItemHandlerIOControl;
 import com.brandon3055.brandonscore.inventory.TileItemStackHandler;
 import com.brandon3055.brandonscore.lib.IActivatableTile;
@@ -15,11 +14,13 @@ import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedEnum;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedInt;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
+import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.blocks.machines.Generator;
 import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.client.sound.GeneratorSoundHandler;
 import com.brandon3055.draconicevolution.inventory.GuiLayoutFactories;
+import com.brandon3055.draconicevolution.lib.ISidedTileHandler;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
@@ -30,7 +31,6 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -47,8 +47,7 @@ import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.*;
 
 public class TileGenerator extends TileBCore implements ITickableTileEntity, IRSSwitchable, INamedContainerProvider, IActivatableTile {
 
-    @OnlyIn(Dist.CLIENT)
-    private GeneratorSoundHandler sound = new GeneratorSoundHandler(this);
+    private ISidedTileHandler soundHandler = DraconicEvolution.proxy.createGeneratorSoundHandler(this);
 
     /**
      * The fuel value of the last item that was consumed.
@@ -172,7 +171,7 @@ public class TileGenerator extends TileBCore implements ITickableTileEntity, IRS
 
     @OnlyIn(Dist.CLIENT)
     private void updateSoundAndFX() {
-        sound.update();
+        soundHandler.tick();
         if (!active.get() || pos.distanceSq(Minecraft.getInstance().player.getPosition()) > 16 * 16) {
             return;
         }

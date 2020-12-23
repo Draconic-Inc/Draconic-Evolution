@@ -22,6 +22,7 @@ import com.brandon3055.draconicevolution.api.modules.data.SpeedData;
 import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleHostImpl;
 import com.brandon3055.draconicevolution.api.modules.lib.StackModuleContext;
+import com.brandon3055.draconicevolution.entity.PersistentItemEntity;
 import com.brandon3055.draconicevolution.init.EquipCfg;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
@@ -30,13 +31,16 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -114,7 +118,6 @@ public interface IModularItem extends IForgeItem {
         EnergyUtils.addEnergyInfo(stack, tooltip);
     }
 
-
     @Override
     default Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlotType slot, ItemStack stack) {
         Multimap<Attribute, AttributeModifier> map = HashMultimap.create();
@@ -135,8 +138,8 @@ public interface IModularItem extends IForgeItem {
      * This is used to determine if a modular item is in a valid slot for its modules to operate.
      * //TODO this is not currently implemented by some modules such as the shield modules
      *
-     * @param stack The stack
-     * @param slot The equipment slot or null if this item is in the players general main inventory.
+     * @param stack        The stack
+     * @param slot         The equipment slot or null if this item is in the players general main inventory.
      * @param inBaubleSlot //TODO Bauble support
      * @return true if this stack is in a valid slot.
      */
@@ -242,5 +245,20 @@ public interface IModularItem extends IForgeItem {
     @Override
     default double getDurabilityForDisplay(ItemStack stack) {
         return 1D - ((double) EnergyUtils.getEnergyStored(stack) / EnergyUtils.getMaxEnergyStored(stack));
+    }
+
+    @Override
+    default boolean hasCustomEntity(ItemStack stack) {
+        return true; //Waiting for forge to not be broken
+    }
+
+    @Nullable
+    @Override
+    default Entity createEntity(World world, Entity location, ItemStack itemstack) {
+//        return new PersistentItemEntity(world, location, itemstack);
+        if (location instanceof ItemEntity) {
+            ((ItemEntity) location).age = -32767; //extra 27 minute despawn delay
+        }
+        return null;
     }
 }

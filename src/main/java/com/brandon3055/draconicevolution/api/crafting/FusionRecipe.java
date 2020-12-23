@@ -56,7 +56,7 @@ public class FusionRecipe implements IFusionRecipe {
     }
 
     @Override
-    public long getIngredientEnergyCost() {
+    public long getEnergyCost() {
         return totalEnergy;
     }
 

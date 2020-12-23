@@ -36,8 +36,8 @@ import static net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus.MOD;
 @ObjectHolder(DraconicEvolution.MODID)
 public class DEModules {
     private static transient ArrayList<ResourceLocation> ITEM_REGISTRY_ORDER = new ArrayList<>();
-    private static transient CyclingItemGroup moduleGroup = new CyclingItemGroup("draconicevolution.modules", 20, () -> new Object[]{Items.APPLE, Items.GOLDEN_APPLE, Items.ENCHANTED_GOLDEN_APPLE}, ITEM_REGISTRY_ORDER);
     public static transient Map<BaseModule<?>, Item> moduleItemMap = new LinkedHashMap<>();
+    private static transient CyclingItemGroup moduleGroup = new CyclingItemGroup("draconicevolution.modules", 20, () -> moduleItemMap.values().toArray(new Item[0]), ITEM_REGISTRY_ORDER);
     public static ForgeRegistry<Module<?>> MODULE_REGISTRY;
 
     //@formatter:off
@@ -136,24 +136,24 @@ public class DEModules {
         register(new ModuleImpl<>(JUNK_FILTER,          WYVERN,         noData()),                          "wyvern_junk_filter");
 
         //Armor
-        register(new ModuleImpl<>(SHIELD_CONTROLLER,    WYVERN,         noData()),                          "wyvern_shield_control");
-        register(new ModuleImpl<>(SHIELD_CONTROLLER,    DRACONIC,       noData()),                          "draconic_shield_control");
-        register(new ModuleImpl<>(SHIELD_CONTROLLER,    CHAOTIC,        noData()),                          "chaotic_shield_control");
+        register(new ModuleImpl<>(SHIELD_CONTROLLER,    WYVERN,         shieldControl(20.0)),               "wyvern_shield_control");
+        register(new ModuleImpl<>(SHIELD_CONTROLLER,    DRACONIC,       shieldControl(10.0)),               "draconic_shield_control");
+        register(new ModuleImpl<>(SHIELD_CONTROLLER,    CHAOTIC,        shieldControl(5.0)),                "chaotic_shield_control");
 
         //TODO i want to tweak these a bit more. I may want to reduce recovery rate a little
-        register(new ModuleImpl<>(SHIELD_BOOST,         WYVERN,         shieldData(25,  0.5)),           "wyvern_shield_capacity");
-        register(new ModuleImpl<>(SHIELD_BOOST,         DRACONIC,       shieldData(50,  1.0)),            "draconic_shield_capacity");
-        register(new ModuleImpl<>(SHIELD_BOOST,         CHAOTIC,        shieldData(100, 2.0)),            "chaotic_shield_capacity");
+        register(new ModuleImpl<>(SHIELD_BOOST,         WYVERN,         shieldData(25,  0.5)),              "wyvern_shield_capacity");
+        register(new ModuleImpl<>(SHIELD_BOOST,         DRACONIC,       shieldData(50,  1.0)),              "draconic_shield_capacity");
+        register(new ModuleImpl<>(SHIELD_BOOST,         CHAOTIC,        shieldData(100, 2.0)),              "chaotic_shield_capacity");
         register(new ModuleImpl<>(SHIELD_BOOST,         WYVERN,         shieldData(25*5,  0.0D), 2, 2),     "wyvern_large_shield_capacity");
         register(new ModuleImpl<>(SHIELD_BOOST,         DRACONIC,       shieldData(50*5,  0.0D), 2, 2),     "draconic_large_shield_capacity");
         register(new ModuleImpl<>(SHIELD_BOOST,         CHAOTIC,        shieldData(100*5, 0.0D), 2, 2),     "chaotic_large_shield_capacity");
-        register(new ModuleImpl<>(SHIELD_BOOST,         WYVERN,         shieldData(5,   5.0)),            "wyvern_shield_recovery");
-        register(new ModuleImpl<>(SHIELD_BOOST,         DRACONIC,       shieldData(10,  10.0)),            "draconic_shield_recovery");
-        register(new ModuleImpl<>(SHIELD_BOOST,         CHAOTIC,        shieldData(20,  20.0)),            "chaotic_shield_recovery");
+        register(new ModuleImpl<>(SHIELD_BOOST,         WYVERN,         shieldData(5,   5.0)),              "wyvern_shield_recovery");
+        register(new ModuleImpl<>(SHIELD_BOOST,         DRACONIC,       shieldData(10,  10.0)),             "draconic_shield_recovery");
+        register(new ModuleImpl<>(SHIELD_BOOST,         CHAOTIC,        shieldData(20,  20.0)),             "chaotic_shield_recovery");
 
-        register(new ModuleImpl<>(FLIGHT,               WYVERN,         flightData(true, false, 1), 2, 2),     "wyvern_flight");
-        register(new ModuleImpl<>(FLIGHT,               DRACONIC,       flightData(true, true, 2)),            "draconic_flight");
-        register(new ModuleImpl<>(FLIGHT,               CHAOTIC,        flightData(true, true, 3.5)),            "chaotic_flight");
+        register(new ModuleImpl<>(FLIGHT,               WYVERN,         flightData(true, false, 1), 2, 2),  "wyvern_flight");
+        register(new ModuleImpl<>(FLIGHT,               DRACONIC,       flightData(true, true, 2)),         "draconic_flight");
+        register(new ModuleImpl<>(FLIGHT,               CHAOTIC,        flightData(true, true, 3.5)),       "chaotic_flight");
 
         register(new ModuleImpl<>(LAST_STAND,           WYVERN,         lastStandData(6F,  25F, 15*20,  4*30*20, 5000000)),                       "wyvern_last_stand");
         register(new ModuleImpl<>(LAST_STAND,           DRACONIC,       lastStandData(12F, 50F, 30*20,  2*30*20, 10000000)).setMaxInstall(2),     "draconic_last_stand");
@@ -193,6 +193,13 @@ public class DEModules {
             int capacity = ModuleCfg.getModuleInt(e, "capacity", defCapacity);
             double recharge = ModuleCfg.getModuleDouble(e, "recharge", defRechargePerSecond / 20); //Convert to per-tick
             return new ShieldData(capacity, recharge);
+        };
+    }
+
+    private static Function<Module<ShieldControlData>, ShieldControlData> shieldControl(double defSeconds) {
+        return e -> {
+            int ticks = ModuleCfg.getModuleInt(e, "cool_down_ticks", (int) (defSeconds * 20D));
+            return new ShieldControlData(ticks);
         };
     }
 

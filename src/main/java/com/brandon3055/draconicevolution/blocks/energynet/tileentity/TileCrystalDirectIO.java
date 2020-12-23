@@ -122,7 +122,7 @@ public class TileCrystalDirectIO extends TileCrystalBase   {
     public void addDisplayData(List<String> displayList) {
         super.addDisplayData(displayList);
         TextFormatting colour = outputMode.get() ? TextFormatting.GOLD : TextFormatting.DARK_AQUA;
-        displayList.add(I18n.format("eNet.de.IOOutput_" + outputMode.get() + ".info", colour));
+        displayList.add(I18n.format("gui.draconicevolution.energy_net.io_output_" + outputMode.get(), colour));
     }
 
     //endregion

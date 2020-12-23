@@ -109,15 +109,7 @@ public abstract class TileCrystalBase extends TileBCore implements ITilePlaceLis
                 flowRates.add(calculateFlow(i));
             }
             fxHandler.detectAndSendChanges();
-
-//            if (Utils.getClosestPlayer(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 2) != null) {
-//                LogHelper.dev(flowRates + " " + linkedCrystals);
-//            }
         }
-
-//        if (Utils.getClosestPlayer(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 2) != null) {
-//            LogHelper.dev(flowRates + " " + linkedCrystals);
-//        }
 
         tick++;
     }
@@ -216,7 +208,7 @@ public abstract class TileCrystalBase extends TileBCore implements ITilePlaceLis
 
         //region Check if the target device is valid
         if (!(te instanceof ICrystalLink)) {
-            ChatHelper.sendDeDupeIndexed(player, new TranslationTextComponent("eNet.de.deviceInvalid.info").mergeStyle(TextFormatting.RED), 99);
+            ChatHelper.sendDeDupeIndexed(player, new TranslationTextComponent("gui.draconicevolution.energy_net.device_invalid").mergeStyle(TextFormatting.RED), 99);
             return false;
         }
         //endregion
@@ -227,45 +219,45 @@ public abstract class TileCrystalBase extends TileBCore implements ITilePlaceLis
         if (getLinks().contains(te.getPos())) {
             breakLink(te.getPos());
             target.breakLink(pos);
-            ChatHelper.sendDeDupeIndexed(player, new TranslationTextComponent("eNet.de.linkBroken.info").mergeStyle(TextFormatting.GREEN), 99);
+            ChatHelper.sendDeDupeIndexed(player, new TranslationTextComponent("gui.draconicevolution.energy_net.link_broken").mergeStyle(TextFormatting.GREEN), 99);
             return true;
         }
         //endregion
 
         //region Check if both devices to see if ether of them have reached their connection limit.
         if (getLinks().size() >= maxLinks()) {
-            ChatHelper.sendDeDupeIndexed(player, new TranslationTextComponent("eNet.de.linkLimitReachedThis.info").mergeStyle(TextFormatting.RED), 99);
+            ChatHelper.sendDeDupeIndexed(player, new TranslationTextComponent("gui.draconicevolution.energy_net.link_limit_reached_this").mergeStyle(TextFormatting.RED), 99);
             return false;
         } else if (target.getLinks().size() >= target.maxLinks()) {
-            ChatHelper.sendDeDupeIndexed(player, new TranslationTextComponent("eNet.de.linkLimitReachedTarget.info").mergeStyle(TextFormatting.RED), 99);
+            ChatHelper.sendDeDupeIndexed(player, new TranslationTextComponent("gui.draconicevolution.energy_net.link_limit_reached_target").mergeStyle(TextFormatting.RED), 99);
             return false;
         }
         //endregion
 
         //region Check both devices are in range
         if (!Utils.inRangeSphere(pos, linkTarget, maxLinkRange())) {
-            ChatHelper.sendDeDupeIndexed(player, new TranslationTextComponent("eNet.de.thisRangeLimit.info").mergeStyle(TextFormatting.RED), 99);
+            ChatHelper.sendDeDupeIndexed(player, new TranslationTextComponent("gui.draconicevolution.energy_net.this_range_limit").mergeStyle(TextFormatting.RED), 99);
             return false;
         } else if (!Utils.inRangeSphere(pos, linkTarget, target.maxLinkRange())) {
-            ChatHelper.sendDeDupeIndexed(player, new TranslationTextComponent("eNet.de.targetRangeLimit.info").mergeStyle(TextFormatting.RED), 99);
+            ChatHelper.sendDeDupeIndexed(player, new TranslationTextComponent("gui.draconicevolution.energy_net.target_range_limit").mergeStyle(TextFormatting.RED), 99);
             return false;
         }
         //endregion
 
         //region All checks have passed. Make the link!
         if (!target.createLink(this)) {
-            ChatHelper.sendDeDupeIndexed(player, new TranslationTextComponent("eNet.de.linkFailedUnknown.info").mergeStyle(TextFormatting.RED), 99);
+            ChatHelper.sendDeDupeIndexed(player, new TranslationTextComponent("gui.draconicevolution.energy_net.link_failed_unknown").mergeStyle(TextFormatting.RED), 99);
             return false;
         }
 
         if (!createLink(target)) {
             //Ensure we don't leave a half linked device if this fails.
             target.breakLink(pos);
-            ChatHelper.sendDeDupeIndexed(player, new TranslationTextComponent("eNet.de.linkFailedUnknown.info").mergeStyle(TextFormatting.RED), 99);
+            ChatHelper.sendDeDupeIndexed(player, new TranslationTextComponent("gui.draconicevolution.energy_net.link_failed_unknown").mergeStyle(TextFormatting.RED), 99);
             return false;
         }
 
-        ChatHelper.sendDeDupeIndexed(player, new TranslationTextComponent("eNet.de.devicesLinked.info").mergeStyle(TextFormatting.GREEN), 99);
+        ChatHelper.sendDeDupeIndexed(player, new TranslationTextComponent("gui.draconicevolution.energy_net.devices_linked").mergeStyle(TextFormatting.GREEN), 99);
         return true;
         //endregion
     }
@@ -472,8 +464,8 @@ public abstract class TileCrystalBase extends TileBCore implements ITilePlaceLis
     @OnlyIn(Dist.CLIENT)
     public void addDisplayData(List<String> displayList) {
         double charge = MathUtils.round(((double) getEnergyStored() / (double) getMaxEnergyStored()) * 100D, 100);
-        displayList.add(TextFormatting.BLUE + I18n.format("eNet.de.hudCharge.info") + ": " + Utils.formatNumber(getEnergyStored()) + " / " + Utils.formatNumber(getMaxEnergyStored()) + " RF [" + charge + "%]");
-        displayList.add(TextFormatting.GREEN + I18n.format("eNet.de.hudLinks.info") + ": " + getLinks().size() + " / " + maxLinks() + "");
+        displayList.add(TextFormatting.BLUE + I18n.format("gui.draconicevolution.energy_net.hud_charge") + ": " + Utils.formatNumber(getEnergyStored()) + " / " + Utils.formatNumber(getMaxEnergyStored()) + " RF [" + charge + "%]");
+        displayList.add(TextFormatting.GREEN + I18n.format("gui.draconicevolution.energy_net.hud_links") + ": " + getLinks().size() + " / " + maxLinks() + "");
 //        if (BrandonsCore.proxy.getClientPlayer().isShiftKeyDown()) {
 //            for (BlockPos lPos : getLinks()) {
 //                displayList.add(TextFormatting.GRAY + " " + String.format("[x:%s, y:%s, z:%s]", lPos.getX(), lPos.getY(), lPos.getZ()));

@@ -14,6 +14,7 @@ import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
@@ -150,7 +151,7 @@ public class EnergyCoreStructure extends MultiBlockHelper {
 
     @Override
     public void forBlock(String name, World world, BlockPos pos, BlockPos startPos, int flag) {
-        if (name.isEmpty() || name.equals("draconicevolution:energy_core")) {
+        if (name.isEmpty() || name.equals(DEContent.energy_core.getRegistryName().toString())) {
             return;
         }
 
@@ -257,7 +258,7 @@ public class EnergyCoreStructure extends MultiBlockHelper {
 
     private MultiBlockStorage buildTier1() {
         MultiBlockStorage storage = new MultiBlockStorage(1, this);
-        String X = "draconicevolution:energy_core";
+        String X = DEContent.energy_core.getRegistryName().toString();
 
         storage.addRow(X);
 
@@ -267,8 +268,8 @@ public class EnergyCoreStructure extends MultiBlockHelper {
     private MultiBlockStorage buildTier2() {
         MultiBlockStorage storage = new MultiBlockStorage(3, this);
         String e = "";
-        String X = "draconicevolution:energy_core";
-        String D = "draconicevolution:block_draconium";
+        String X = DEContent.energy_core.getRegistryName().toString();
+        String D = DEContent.block_draconium.getRegistryName().toString();
 
         storage.addRow(e, e, e);
         storage.addRow(e, D, e);
@@ -289,8 +290,8 @@ public class EnergyCoreStructure extends MultiBlockHelper {
 
     private MultiBlockStorage buildTier3() {
         MultiBlockStorage storage = new MultiBlockStorage(3, this);
-        String X = "draconicevolution:energy_core";
-        String D = "draconicevolution:block_draconium";
+        String X = DEContent.energy_core.getRegistryName().toString();
+        String D = DEContent.block_draconium.getRegistryName().toString();
 
         storage.addRow(D, D, D);
         storage.addRow(D, D, D);
@@ -312,9 +313,9 @@ public class EnergyCoreStructure extends MultiBlockHelper {
     private MultiBlockStorage buildTier4() {
         MultiBlockStorage storage = new MultiBlockStorage(5, this);
         String e = "";
-        String X = "draconicevolution:energy_core";
-        String D = "draconicevolution:block_draconium";
-        String R = "minecraft:redstone_block";
+        String X = DEContent.energy_core.getRegistryName().toString();
+        String D = DEContent.block_draconium.getRegistryName().toString();
+        String R = Blocks.REDSTONE_BLOCK.getRegistryName().toString();
 
         storage.addRow(e, e, e, e, e);
         storage.addRow(e, D, D, D, e);
@@ -356,9 +357,9 @@ public class EnergyCoreStructure extends MultiBlockHelper {
     private MultiBlockStorage buildTier5() {
         MultiBlockStorage storage = new MultiBlockStorage(7, this);
         String e = "";
-        String X = "draconicevolution:energy_core";
-        String D = "draconicevolution:block_draconium";
-        String R = "minecraft:redstone_block";
+        String X = DEContent.energy_core.getRegistryName().toString();
+        String D = DEContent.block_draconium.getRegistryName().toString();
+        String R = Blocks.REDSTONE_BLOCK.getRegistryName().toString();
 
         storage.addRow(e, e, e, e, e, e, e);
         storage.addRow(e, e, e, e, e, e, e);
@@ -428,9 +429,9 @@ public class EnergyCoreStructure extends MultiBlockHelper {
     private MultiBlockStorage buildTier6() {
         MultiBlockStorage storage = new MultiBlockStorage(9, this);
         String e = "";
-        String X = "draconicevolution:energy_core";
-        String D = "draconicevolution:block_draconium";
-        String R = "minecraft:redstone_block";
+        String X = DEContent.energy_core.getRegistryName().toString();
+        String D = DEContent.block_draconium.getRegistryName().toString();
+        String R = Blocks.REDSTONE_BLOCK.getRegistryName().toString();
 
         storage.addRow(e, e, e, e, e, e, e, e, e);
         storage.addRow(e, e, e, e, e, e, e, e, e);
@@ -536,9 +537,9 @@ public class EnergyCoreStructure extends MultiBlockHelper {
     private MultiBlockStorage buildTier7() {
         MultiBlockStorage storage = new MultiBlockStorage(11, this);
         String e = "";
-        String X = "draconicevolution:energy_core";
-        String D = "draconicevolution:block_draconium";
-        String R = "minecraft:redstone_block";
+        String X = DEContent.energy_core.getRegistryName().toString();
+        String D = DEContent.block_draconium.getRegistryName().toString();
+        String R = Blocks.REDSTONE_BLOCK.getRegistryName().toString();
 
 
         storage.addRow(e, e, e, e, e, e, e, e, e, e, e);
@@ -690,10 +691,9 @@ public class EnergyCoreStructure extends MultiBlockHelper {
     private MultiBlockStorage buildTierOMG() {
         MultiBlockStorage storage = new MultiBlockStorage(13, this);
         String e = "";
-        String X = "draconicevolution:energy_core";
-        String A = "draconicevolution:block_draconium_awakened";
-        String D = "draconicevolution:block_draconium";
-//        String d = "draconicevolution:block_draconium";
+        String A = DEContent.block_draconium_awakened.getRegistryName().toString();
+        String X = DEContent.energy_core.getRegistryName().toString();
+        String D = DEContent.block_draconium.getRegistryName().toString();
 
         //region Hard
         if (DEOldConfig.hardMode) {
@@ -1116,7 +1116,7 @@ public class EnergyCoreStructure extends MultiBlockHelper {
 
     @Override
     public void setBlock(String name, World world, BlockPos pos) {
-        if (!name.equals("draconicevolution:energy_core") && name.length() > 0) {
+        if (!name.equals(DEContent.energy_core.getRegistryName().toString()) && name.length() > 0) {
             super.setBlock(name, world, pos);
         }
     }

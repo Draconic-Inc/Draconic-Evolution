@@ -73,22 +73,24 @@ public class DataGenEventHandler {
         protected void registerTags() {
             getOrCreateBuilder(DETags.Items.DUSTS_DRACONIUM).add(DEContent.dust_draconium);
             getOrCreateBuilder(DETags.Items.DUSTS_DRACONIUM_AWAKENED).add(DEContent.dust_draconium_awakened);
-            getOrCreateBuilder(Tags.Items.DUSTS).add(DEContent.dust_draconium, DEContent.dust_draconium_awakened);
+            getOrCreateBuilder(Tags.Items.DUSTS).addTags(DETags.Items.DUSTS_DRACONIUM_AWAKENED, DETags.Items.DUSTS_DRACONIUM);
 
             getOrCreateBuilder(DETags.Items.NUGGETS_DRACONIUM).add(DEContent.nugget_draconium);
             getOrCreateBuilder(DETags.Items.NUGGETS_DRACONIUM_AWAKENED).add(DEContent.nugget_draconium_awakened);
-            getOrCreateBuilder(Tags.Items.NUGGETS).add(DEContent.nugget_draconium, DEContent.nugget_draconium_awakened);
+            getOrCreateBuilder(Tags.Items.NUGGETS).addTags(DETags.Items.NUGGETS_DRACONIUM_AWAKENED, DETags.Items.NUGGETS_DRACONIUM);
 
             getOrCreateBuilder(DETags.Items.INGOTS_DRACONIUM).add(DEContent.ingot_draconium);
             getOrCreateBuilder(DETags.Items.INGOTS_DRACONIUM_AWAKENED).add(DEContent.ingot_draconium_awakened);
-            getOrCreateBuilder(Tags.Items.INGOTS).add(DEContent.ingot_draconium, DEContent.ingot_draconium_awakened);
+            getOrCreateBuilder(Tags.Items.INGOTS).addTags(DETags.Items.INGOTS_DRACONIUM_AWAKENED, DETags.Items.INGOTS_DRACONIUM);
 
 
-            copy(DETags.Blocks.STORAGE_BLOCKS_DRACONIUM, DETags.Items.STORAGE_BLOCKS_DRACONIUM);
-            copy(DETags.Blocks.STORAGE_BLOCKS_DRACONIUM_AWAKENED, DETags.Items.STORAGE_BLOCKS_DRACONIUM_AWAKENED);
-            copy(Tags.Blocks.STORAGE_BLOCKS, Tags.Items.STORAGE_BLOCKS);
-            copy(DETags.Blocks.ORES_DRACONIUM, DETags.Items.ORES_DRACONIUM);
-            copy(Tags.Blocks.ORES, Tags.Items.ORES);
+            getOrCreateBuilder(DETags.Items.STORAGE_BLOCKS_DRACONIUM).add(DEContent.block_draconium.asItem());
+            getOrCreateBuilder(DETags.Items.STORAGE_BLOCKS_DRACONIUM_AWAKENED).add(DEContent.block_draconium_awakened.asItem());
+            getOrCreateBuilder(Tags.Items.STORAGE_BLOCKS).addTags(DETags.Items.STORAGE_BLOCKS_DRACONIUM, DETags.Items.STORAGE_BLOCKS_DRACONIUM_AWAKENED);
+
+            getOrCreateBuilder(DETags.Items.ORES_DRACONIUM).add(DEContent.ore_draconium_end.asItem(), DEContent.ore_draconium_nether.asItem(), DEContent.ore_draconium_overworld.asItem());
+            getOrCreateBuilder(Tags.Items.ORES).addTag(DETags.Items.ORES_DRACONIUM);
+
         }
     }
 

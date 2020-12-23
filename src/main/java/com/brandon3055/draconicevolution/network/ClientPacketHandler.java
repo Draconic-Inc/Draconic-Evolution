@@ -5,6 +5,7 @@ import codechicken.lib.packet.PacketCustom;
 import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.client.render.effect.ExplosionFX;
 import com.brandon3055.draconicevolution.init.DEModules;
 import net.minecraft.client.Minecraft;
@@ -83,11 +84,13 @@ public class ClientPacketHandler implements ICustomPacketHandler.IClientPacketHa
     }
 
     private static void createParticle(Minecraft mc, double x, double y, double z, double motionX, double motionY, double motionZ) {
-        FireworkParticle.Spark particle = (FireworkParticle.Spark)mc.particles.addParticle(ParticleTypes.FIREWORK, x, y, z, motionX, motionY, motionZ);
-        particle.canCollide = false;
-        particle.setMaxAge(15 + mc.world.rand.nextInt(5));
-        float ci = 0.5F + (mc.world.rand.nextFloat() * 0.5F);
-        particle.setColor(1F, 0.6F * ci, 0.06F * ci);
+        mc.particles.addParticle(DEParticles.guardian_projectile, x, y, z, motionX, motionY, motionZ);
+
+//        FireworkParticle.Spark particle = (FireworkParticle.Spark)mc.particles.addParticle(ParticleTypes.FIREWORK, x, y, z, motionX, motionY, motionZ);
+//        particle.canCollide = false;
+//        particle.setMaxAge(15 + mc.world.rand.nextInt(5));
+//        float ci = 0.5F + (mc.world.rand.nextFloat() * 0.5F);
+//        particle.setColor(1F, 0.6F * ci, 0.06F * ci);
     }
 
     private static void handleLastStandActivation(Minecraft mc, int id, Item item) {

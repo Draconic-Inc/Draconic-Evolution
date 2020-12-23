@@ -294,7 +294,7 @@ public class DEOldConfig {
     public static double reactorFuelUsageMultiplier = 1;
 
     //    @ModConfigProperty(category = "Tweaks", name = "dragonDustLootModifier", comment = "This can be used to adjust the amount of Draconium Dust the Ender Dragon drops when killed.\nThe amount dropped will be this number +/- 10%")
-    public static int dragonDustLootModifier = 1;
+    public static int dragonDustLootModifier = 64;
 
     //    @ModConfigProperty(category = "Tweaks", name = "disableLargeReactorBoom", comment = "If true, this will disable the massive reactor explosion and replace it with a much smaller one.")
     public static boolean disableLargeReactorBoom = false;

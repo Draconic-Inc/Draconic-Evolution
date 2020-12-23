@@ -11,6 +11,7 @@ import net.minecraft.util.WeightedSpawnerEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.spawner.AbstractSpawner;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -102,7 +103,11 @@ public class StabilizedSpawnerLogic extends AbstractSpawner {
                             DEEventHandler.onMobSpawnedBySpawner((MobEntity) entity);
                         }
 
-//                        func_221409_a(entity);
+                        if (!((ServerWorld)world).func_242106_g(entity)) {
+                            this.resetTimer();
+                            return;
+                        }
+
                         world.playEvent(2004, blockpos, 0);
 
                         if (entityliving != null) {

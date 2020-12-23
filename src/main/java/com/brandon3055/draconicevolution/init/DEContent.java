@@ -25,6 +25,7 @@ import com.brandon3055.draconicevolution.blocks.tileentity.flowgate.TileFlowGate
 import com.brandon3055.draconicevolution.blocks.tileentity.flowgate.TileFluidGate;
 import com.brandon3055.draconicevolution.blocks.tileentity.flowgate.TileFluxGate;
 import com.brandon3055.draconicevolution.entity.GuardianCrystalEntity;
+import com.brandon3055.draconicevolution.entity.PersistentItemEntity;
 import com.brandon3055.draconicevolution.entity.guardian.DraconicGuardianEntity;
 import com.brandon3055.draconicevolution.entity.guardian.GuardianFightManager;
 import com.brandon3055.draconicevolution.entity.GuardianProjectileEntity;
@@ -357,6 +358,7 @@ public class DEContent {
     @ObjectHolder("chaotic_core")               public static ItemCore                  core_chaotic;
     @ObjectHolder("wyvern_energy_core")         public static Item                      energy_core_wyvern;
     @ObjectHolder("draconic_energy_core")       public static Item                      energy_core_draconic;
+    @ObjectHolder("chaotic_energy_core")        public static Item                      energy_core_chaotic;
     @ObjectHolder("dragon_heart")               public static Item                      dragon_heart;
     @ObjectHolder("chaos_shard")                public static Item                      chaos_shard;
     @ObjectHolder("large_chaos_frag")           public static Item                      chaos_frag_large;
@@ -478,6 +480,7 @@ public class DEContent {
         registerItem(event, new ItemCore(new Item.Properties().group(itemGroup)).setRegistryName("chaotic_core"));
         registerItem(event, new Item(new Item.Properties().group(itemGroup)).setRegistryName("wyvern_energy_core"));
         registerItem(event, new Item(new Item.Properties().group(itemGroup)).setRegistryName("draconic_energy_core"));
+        registerItem(event, new Item(new Item.Properties().group(itemGroup)).setRegistryName("chaotic_energy_core"));
         registerItem(event, new Item(new Item.Properties().group(itemGroup)).setRegistryName("dragon_heart"));
         registerItem(event, new Item(new Item.Properties().group(itemGroup)).setRegistryName("chaos_shard"));
         registerItem(event, new Item(new Item.Properties().group(itemGroup)).setRegistryName("large_chaos_frag"));
@@ -552,6 +555,8 @@ public class DEContent {
     public static EntityType<GuardianProjectileEntity> guardianProjectile;
     @ObjectHolder("guardian_crystal")
     public static EntityType<GuardianCrystalEntity> guardianCrystal;
+    @ObjectHolder("persistent_item")
+    public static EntityType<PersistentItemEntity> persistentItem;
 
     @SuppressWarnings("unchecked")
     @SubscribeEvent
@@ -562,6 +567,7 @@ public class DEContent {
         GlobalEntityTypeAttributes.put(draconicGuardian, MobEntity.func_233666_p_().createMutableAttribute(Attributes.MAX_HEALTH, 1000.0D).create());
         event.getRegistry().register(EntityType.Builder.create(GuardianProjectileEntity::new, EntityClassification.MISC).immuneToFire().size(2F, 2F).trackingRange(20)/*.func_233608_b_(10)*/.build("guardian_projectile").setRegistryName("guardian_projectile"));
         event.getRegistry().register(EntityType.Builder.create(GuardianCrystalEntity::new, EntityClassification.MISC).immuneToFire().size(2F, 2F).trackingRange(20).func_233608_b_(100).build("guardian_crystal").setRegistryName("guardian_crystal"));
+        event.getRegistry().register(EntityType.Builder.<PersistentItemEntity>create(PersistentItemEntity::new, EntityClassification.MISC).size(0.25F, 0.25F).trackingRange(6).func_233608_b_(20).build("persistent_item").setRegistryName("persistent_item"));
     }
 
 

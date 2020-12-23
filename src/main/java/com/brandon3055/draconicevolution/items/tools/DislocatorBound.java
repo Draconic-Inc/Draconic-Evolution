@@ -4,12 +4,12 @@ import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.network.BCoreNetwork;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.brandonscore.utils.Teleporter.TeleportLocation;
-import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.api.ITeleportEndPoint;
-import com.brandon3055.draconicevolution.entity.EntityPersistentItem;
+import com.brandon3055.draconicevolution.entity.PersistentItemEntity;
+import com.brandon3055.draconicevolution.handlers.DESounds;
 import com.brandon3055.draconicevolution.handlers.DislocatorLinkHandler;
 import com.brandon3055.draconicevolution.handlers.DislocatorLinkHandler.LinkData;
-import com.brandon3055.draconicevolution.handlers.DESounds;
+import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
@@ -22,7 +22,10 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
-import net.minecraft.util.text.*;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
@@ -281,7 +284,7 @@ public class DislocatorBound extends Dislocator /*implements IRenderOverride*/ {
 
     @Override
     public Entity createEntity(World world, Entity location, ItemStack itemstack) {
-        return new EntityPersistentItem(world, location, itemstack);
+        return new PersistentItemEntity(world, location, itemstack);
     }
 
     private ModelResourceLocation modelLocation = new ModelResourceLocation("draconicevolution:dislocator_bound");

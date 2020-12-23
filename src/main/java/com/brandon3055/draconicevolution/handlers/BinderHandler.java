@@ -1,18 +1,25 @@
 package com.brandon3055.draconicevolution.handlers;
 
 import codechicken.lib.render.CCModel;
+import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.RenderUtils;
+import codechicken.lib.render.buffer.TransformingVertexBuilder;
 import codechicken.lib.vec.Cuboid6;
+import codechicken.lib.vec.Matrix4;
+import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
 import com.brandon3055.brandonscore.lib.ChatHelper;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.draconicevolution.api.energy.ICrystalBinder;
 import com.brandon3055.draconicevolution.api.energy.ICrystalLink;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.client.renderer.ActiveRenderInfo;
+import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -27,11 +34,16 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.OptionalDouble;
+
+import static net.minecraft.client.renderer.RenderState.TRANSLUCENT_TRANSPARENCY;
+import static net.minecraft.client.renderer.RenderState.field_239235_M_;
 
 /**
  * Created by brandon3055 on 26/11/2016.
@@ -52,7 +64,7 @@ public class BinderHandler {
         if (tile instanceof ICrystalLink && player.isSneaking()) {
             bind(binder, blockClicked);
             if (world.isRemote) {
-                ChatHelper.sendIndexed(player, new TranslationTextComponent("eNet.de.posSavedToTool.info").mergeStyle(TextFormatting.GREEN), 99);
+                ChatHelper.sendIndexed(player, new TranslationTextComponent("gui.draconicevolution.energy_net.pos_saved_to_tool").mergeStyle(TextFormatting.GREEN), 99);
                 player.swingArm(hand);
             }
             return true;
@@ -61,7 +73,7 @@ public class BinderHandler {
         //If the tool is not bound but the player clicked on a linkable block then give them a hint.
         //Note: We don't want to do this if they did not click on a linkable block because that would break other mods that implement ICrystalBinder in their tools.
         if (tile instanceof ICrystalLink && !isBound) {
-            ChatHelper.sendIndexed(player, new TranslationTextComponent("eNet.de.toolNotBound.info").mergeStyle(TextFormatting.RED), 99);
+            ChatHelper.sendIndexed(player, new TranslationTextComponent("gui.draconicevolution.energy_net.tool_not_bound").mergeStyle(TextFormatting.RED), 99);
             return true;
         }
 
@@ -69,7 +81,7 @@ public class BinderHandler {
         if (isBound) {
             BlockPos boundLinkable = getBound(binder);
             if (boundLinkable.equals(blockClicked)) {
-                ChatHelper.sendIndexed(player, new TranslationTextComponent("eNet.de.linkToSelf.info").mergeStyle(TextFormatting.RED), 99);
+                ChatHelper.sendIndexed(player, new TranslationTextComponent("gui.draconicevolution.energy_net.link_to_self").mergeStyle(TextFormatting.RED), 99);
                 return true;
             }
             TileEntity boundTile = world.getTileEntity(boundLinkable);
@@ -79,7 +91,7 @@ public class BinderHandler {
                 }
             }
             else {
-                ChatHelper.sendIndexed(player, new TranslationTextComponent("eNet.de.boundToInvalid.info").mergeStyle(TextFormatting.RED), 99);
+                ChatHelper.sendIndexed(player, new TranslationTextComponent("gui.draconicevolution.energy_net.bound_to_invalid").mergeStyle(TextFormatting.RED), 99);
             }
             return true;
         }
@@ -103,7 +115,7 @@ public class BinderHandler {
     public static boolean clearBinder(PlayerEntity player, @Nonnull ItemStack stack) {
         if (stack.hasTag() && stack.getTag().contains(ICrystalBinder.BINDER_TAG)) {
             stack.getTag().remove(ICrystalBinder.BINDER_TAG);
-            ChatHelper.sendIndexed(player, new TranslationTextComponent("eNet.de.posCleared.info"), 99);
+            ChatHelper.sendIndexed(player, new TranslationTextComponent("gui.draconicevolution.energy_net.pos_cleared"), 99);
             return true;
         }
         return false;
@@ -112,11 +124,12 @@ public class BinderHandler {
     public static Map<AxisAlignedBB, CCModel> modelCache = new HashMap<>();
 
     @OnlyIn(Dist.CLIENT)
-    public static void renderWorldOverlay(ClientPlayerEntity player, World world, ItemStack stack, Minecraft mc, float partialTicks) {
+    public static void renderWorldOverlay(ClientPlayerEntity player, MatrixStack matrixStack, World world, ItemStack stack, Minecraft mc, float partialTicks) {
         if (!isBound(stack)) {
             return;
         }
 
+        Matrix4 mat = new Matrix4(matrixStack);
         BlockPos pos = getBound(stack);
         boolean valid = world.getTileEntity(pos) instanceof ICrystalLink;
         ActiveRenderInfo renderInfo = mc.gameRenderer.getActiveRenderInfo();
@@ -131,24 +144,28 @@ public class BinderHandler {
             shape = VoxelShapes.fullCube();
         }
 
-        Cuboid6 cuboid6 = new Cuboid6(shape.getBoundingBox());
+        IRenderTypeBuffer.Impl getter = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
 
-        RenderSystem.pushMatrix();
-//        GlStateTracker.pushState();
-        RenderSystem.translated((double)pos.getX() - projectedX, (double)pos.getY() - projectedY, (double)pos.getZ() - projectedZ);
+        Cuboid6 cuboid6 = new Cuboid6(shape.getBoundingBox());
         RenderSystem.disableTexture();
         RenderSystem.enableBlend();
         RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-        RenderSystem.color4f(valid ? 0 : 1, valid ? 1 : 0, 0, 0.5F);
         RenderSystem.disableDepthTest();
 
-//        RenderUtils.drawCuboidOutline(cuboid6);
+        CCRenderState ccrs = CCRenderState.instance();
+        mat.translate((double)pos.getX() - projectedX, (double)pos.getY() - projectedY, (double)pos.getZ() - projectedZ);
+
+        IVertexBuilder builder = new TransformingVertexBuilder(getter.getBuffer(GuiElement.transColourType), mat);
+        RenderUtils.bufferCuboidSolid(builder, cuboid6, valid ? 0 : 1, valid ? 1 : 0, 0, 0.5F);
+        ccrs.draw();
+
+        builder = new TransformingVertexBuilder(getter.getBuffer(RenderType.getLines()), mat);
+        RenderUtils.bufferCuboidOutline(builder, cuboid6, 0, 0, 0, 1);
+        ccrs.draw();
 
         RenderSystem.enableDepthTest();
         RenderSystem.disableBlend();
         RenderSystem.enableTexture();
-//        GlStateTracker.popState();
-        RenderSystem.popMatrix();
     }
 
     private static CCModel modelForAABB(AxisAlignedBB aabb) {

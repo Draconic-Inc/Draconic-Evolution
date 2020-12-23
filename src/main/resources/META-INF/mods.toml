@@ -5,19 +5,26 @@ license="CoFH \"Don't Be a Jerk\" License"
 [[mods]]
 	modId="draconicevolution"
 	displayName="Draconic Evolution"
-	version="3.0.0"
+	version="${version}"
 	authors="brandon3055"
 	description=''''''
+
 [[dependencies.draconicevolution]]
 	modId="forge"
-    mandatory=true
-	versionRange="[32,)"
+	mandatory=true
+	versionRange="[35.1,)"
 	ordering="NONE"
 	side="BOTH"
 [[dependencies.draconicevolution]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.16.4]"
+    versionRange="[1.16,)"
     ordering="NONE"
     side="BOTH"
+[[dependencies.draconicevolution]]
+	modId="codechickenlib"
+	mandatory=true
+	versionRange="[${ccl_version},)"
+	ordering="AFTER"
+	side="BOTH"
 

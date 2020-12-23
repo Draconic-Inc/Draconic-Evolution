@@ -119,14 +119,5 @@ public class KeyInputHandler {
         if (mc.player != null && event.getAction() == 1) {
             GuiConfigurableItem.checkKeybinding(event.getKey(), event.getScanCode());
         }
-        if (mc.gameSettings.keyBindForward.getKey().getKeyCode() == event.getKey() && mc.player.isElytraFlying() && mc.player.getItemStackFromSlot(EquipmentSlotType.CHEST).getItem() instanceof IModularArmor) {
-//            Vec3d look = mc.player.getLookVec();
-//            Vec3d motion = mc.player.getMotion();
-//            mc.player.setMotion(motion.add(
-//                    look.x * 0.1D + (look.x * 1.5D - motion.x) * 1.5D,
-//                    look.y * 0.1D + (look.y * 1.5D - motion.y) * 1.5D,
-//                    look.z * 0.1D + (look.z * 1.5D - motion.z) * 1.5D
-//            ));
-        }
     }
 }

@@ -32,7 +32,7 @@ public class ModuleCfg {
     private static Integer[] DRACONIC_CHESTPIECE     = new Integer[] {8, 6};  // 8 * 6 = 48
     private static Integer[] CHAOTIC_CHESTPIECE      = new Integer[] {10, 8}; // 10 * 8 = 80
 
-    private static Integer[] WYVERN_CAPACITOR        = new Integer[] {3, 3};
+    private static Integer[] WYVERN_CAPACITOR        = new Integer[] {4, 4};
     private static Integer[] DRACONIC_CAPACITOR      = new Integer[] {5, 5};
     private static Integer[] CHAOTIC_CAPACITOR       = new Integer[] {8, 6};
 

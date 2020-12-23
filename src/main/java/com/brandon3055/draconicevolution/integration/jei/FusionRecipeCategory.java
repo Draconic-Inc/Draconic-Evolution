@@ -1,35 +1,31 @@
 package com.brandon3055.draconicevolution.integration.jei;
 
+import com.brandon3055.brandonscore.api.TechLevel;
+import com.brandon3055.brandonscore.client.utils.GuiHelper;
+import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.api.crafting.IFusionRecipe;
-import com.brandon3055.draconicevolution.api.fusioncrafting.IFusionRecipeOld;
 import com.brandon3055.draconicevolution.init.DEContent;
-import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
 import com.brandon3055.draconicevolution.client.DETextures;
 
 
-import com.google.common.collect.Lists;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawable;
-import mezz.jei.api.gui.ingredient.ICraftingGridHelper;
 import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.ingredients.IIngredientType;
 import mezz.jei.api.ingredients.IIngredients;
 
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import mezz.jei.util.Translator;
-import net.minecraft.block.Blocks;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -81,19 +77,25 @@ public class FusionRecipeCategory implements IRecipeCategory<IFusionRecipe> {
     }
 
     @Override
+    public void draw(IFusionRecipe recipe, MatrixStack matrixStack, double mouseX, double mouseY) {
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.fontRenderer != null) {
+            TechLevel tier = recipe.getRecipeTier();
+            int colour = tier.index == 0 ? 5263615 : (tier.index == 1 ? 8388863 : (tier.index == 2 ? 16737792 : 5263440));
+
+            GuiHelper.drawCenteredString(mc.fontRenderer, matrixStack, I18n.format("gui.de.tier." + recipe.getRecipeTier().name(), new Object[0]), this.xSize / 2, 5, colour, false);
+            GuiHelper.drawCenteredString(mc.fontRenderer, matrixStack, I18n.format("gui.de.energyCost.txt"), this.xSize / 2, this.ySize - 20, 4474111, false);
+            GuiHelper.drawCenteredString(mc.fontRenderer, matrixStack, Utils.addCommas(recipe.getEnergyCost()) + " OP", this.xSize / 2, this.ySize - 10, 4500223, false);
+        }
+    }
+
+    @Override
     public void setIngredients(IFusionRecipe recipe, IIngredients ingredients) {
         List<Ingredient> recipeIngredients = new ArrayList<>();
         recipeIngredients.add(recipe.getCatalyst());
         recipeIngredients.addAll(recipe.getIngredients());
         ingredients.setInputIngredients(recipeIngredients);
         ingredients.setOutput(VanillaTypes.ITEM, recipe.getRecipeOutput());
-
-//        ItemStack[] stacks = recipe.getCatalyst().getMatchingStacks();
-//
-//        ingredients.setInputLists(VanillaTypes.ITEM, Collections.singletonList(Lists.newArrayList(stacks)));
-//
-//        ingredients.setInputIngredients(recipe.getIngredients());
-//        ingredients.setOutput(VanillaTypes.ITEM, recipe.getRecipeOutput());
     }
 
     @Override

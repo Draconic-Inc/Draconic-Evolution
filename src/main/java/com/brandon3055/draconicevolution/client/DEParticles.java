@@ -2,10 +2,7 @@ package com.brandon3055.draconicevolution.client;
 
 import com.brandon3055.brandonscore.client.particle.IntParticleType;
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.client.render.particle.CustomFlameParticle;
-import com.brandon3055.draconicevolution.client.render.particle.ParticleEnergy;
-import com.brandon3055.draconicevolution.client.render.particle.ParticleEnergyCoreFX;
-import com.brandon3055.draconicevolution.client.render.particle.ParticleLineIndicator;
+import com.brandon3055.draconicevolution.client.render.particle.*;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
@@ -21,6 +18,7 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.crash.ReportedException;
+import net.minecraft.particles.BasicParticleType;
 import net.minecraft.particles.ParticleType;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
@@ -50,6 +48,8 @@ public class DEParticles {
     public static IntParticleType energy;
     @ObjectHolder("energy_core")
     public static IntParticleType energy_core;
+    @ObjectHolder("guardian_projectile")
+    public static BasicParticleType guardian_projectile;
 
     @SubscribeEvent
     public static void registerParticles(RegistryEvent.Register<ParticleType<?>> event) {
@@ -57,6 +57,7 @@ public class DEParticles {
         event.getRegistry().register(new IntParticleType(false).setRegistryName("line_indicator"));
         event.getRegistry().register(new IntParticleType(false).setRegistryName("energy"));
         event.getRegistry().register(new IntParticleType(false).setRegistryName("energy_core"));
+        event.getRegistry().register(new BasicParticleType(false).setRegistryName("guardian_projectile"));
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -67,6 +68,7 @@ public class DEParticles {
         manager.registerFactory(line_indicator, ParticleLineIndicator.Factory::new);
         manager.registerFactory(energy, ParticleEnergy.Factory::new);
         manager.registerFactory(energy_core, ParticleEnergyCoreFX.Factory::new);
+        manager.registerFactory(guardian_projectile, GuardianProjectileParticle.Factory::new);
     }
 
 

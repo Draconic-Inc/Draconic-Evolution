@@ -1,23 +1,29 @@
 package com.brandon3055.draconicevolution.datagen;
 
+import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.api.crafting.IngredientStack;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.init.DEModules;
+import com.brandon3055.draconicevolution.init.DETags;
 import net.minecraft.data.*;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.potion.Potions;
 import net.minecraft.tags.ITag;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.Tags;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import java.io.IOException;
 import java.util.function.Consumer;
 
-import static com.brandon3055.brandonscore.api.TechLevel.*;
 import static com.brandon3055.draconicevolution.init.DEContent.*;
 import static com.brandon3055.draconicevolution.init.DETags.Items.*;
 import static net.minecraft.item.Items.*;
@@ -33,8 +39,6 @@ public class RecipeGenerator extends RecipeProvider {
         super(generatorIn);
     }
 
-//    Module recipes are done just need to rethink tool recipess and remove energy
-
     @Override
     protected void registerRecipes(Consumer<IFinishedRecipe> consumer) {
         components(consumer);
@@ -43,13 +47,14 @@ public class RecipeGenerator extends RecipeProvider {
         machines(consumer);
         energy(consumer);
         tools(consumer);
+        equipment(consumer);
         modules(consumer);
         unsorted(consumer);
 
         FusionRecipeBuilder.fusionRecipe(block_draconium_awakened, 4)
                 .catalyst(4, STORAGE_BLOCKS_DRACONIUM)
                 .energy(50000000)
-                .techLevel(WYVERN)
+                .techLevel(TechLevel.WYVERN)
                 .ingredient(core_draconium)
                 .ingredient(core_draconium)
                 .ingredient(core_draconium)
@@ -69,7 +74,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .key('B', INGOTS_GOLD)
                 .key('C', GEMS_DIAMOND)
                 .addCriterion("has_draconium", hasItem(ingot_draconium))
-                .build(consumer);
+                .build(consumer, folder("components", core_draconium));
 
         ShapedRecipeBuilder.shapedRecipe(core_wyvern)
                 .patternLine("ABA")
@@ -79,26 +84,26 @@ public class RecipeGenerator extends RecipeProvider {
                 .key('B', core_draconium)
                 .key('C', NETHER_STARS)
                 .addCriterion("has_core_draconium", hasItem(core_draconium))
-                .build(consumer);
+                .build(consumer, folder("components", core_wyvern));
 
         FusionRecipeBuilder.fusionRecipe(core_awakened)
                 .catalyst(NETHER_STARS)
                 .energy(1000000)
-                .techLevel(WYVERN)
+                .techLevel(TechLevel.WYVERN)
                 .ingredient(core_wyvern)
                 .ingredient(core_wyvern)
                 .ingredient(INGOTS_DRACONIUM_AWAKENED)
                 .ingredient(INGOTS_DRACONIUM_AWAKENED)
                 .ingredient(INGOTS_DRACONIUM_AWAKENED)
                 .ingredient(INGOTS_DRACONIUM_AWAKENED)
-                .ingredient(INGOTS_DRACONIUM_AWAKENED)
-                .ingredient(core_wyvern, core_wyvern)
-                .build(consumer);
+                .ingredient(core_wyvern)
+                .ingredient(core_wyvern)
+                .build(consumer, folder("components", core_awakened));
 
         FusionRecipeBuilder.fusionRecipe(core_chaotic)
                 .catalyst(chaos_shard)
                 .energy(100000000)
-                .techLevel(DRACONIC)
+                .techLevel(TechLevel.DRACONIC)
                 .ingredient(INGOTS_DRACONIUM_AWAKENED)
                 .ingredient(INGOTS_DRACONIUM_AWAKENED)
                 .ingredient(core_awakened)
@@ -107,7 +112,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .ingredient(core_awakened)
                 .ingredient(core_awakened)
                 .ingredient(INGOTS_DRACONIUM_AWAKENED)
-                .build(consumer);
+                .build(consumer, folder("components", core_chaotic));
 
         ShapedRecipeBuilder.shapedRecipe(energy_core_wyvern)
                 .patternLine("ABA")
@@ -117,7 +122,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .key('B', Tags.Items.STORAGE_BLOCKS_REDSTONE)
                 .key('C', core_draconium)
                 .addCriterion("has_core_draconium", hasItem(core_draconium))
-                .build(consumer);
+                .build(consumer, folder("components", energy_core_wyvern));
 
         ShapedRecipeBuilder.shapedRecipe(energy_core_draconic)
                 .patternLine("ABA")
@@ -127,10 +132,20 @@ public class RecipeGenerator extends RecipeProvider {
                 .key('B', energy_core_wyvern)
                 .key('C', core_wyvern)
                 .addCriterion("has_core_wyvern", hasItem(core_wyvern))
-                .build(consumer);
+                .build(consumer, folder("components", energy_core_draconic));
+
+        ShapedRecipeBuilder.shapedRecipe(energy_core_chaotic)
+                .patternLine("ABA")
+                .patternLine("BCB")
+                .patternLine("ABA")
+                .key('A', chaos_frag_medium)
+                .key('B', energy_core_draconic)
+                .key('C', core_awakened)
+                .addCriterion("has_core_awakened", hasItem(core_awakened))
+                .build(consumer, folder("components", energy_core_chaotic));
     }
 
-    public static void compressDecompress(Consumer<IFinishedRecipe> consumer) {
+    private static void compressDecompress(Consumer<IFinishedRecipe> consumer) {
         compress3x3(ingot_draconium, NUGGETS_DRACONIUM, "nugget_draconium", consumer);
         compress3x3(ingot_draconium_awakened, NUGGETS_DRACONIUM_AWAKENED, "nugget_draconium_awakened", consumer);
         compress3x3(block_draconium, INGOTS_DRACONIUM, "ingot_draconium", consumer);
@@ -149,7 +164,7 @@ public class RecipeGenerator extends RecipeProvider {
         compress3x3(chaos_frag_medium, chaos_frag_small, consumer);
     }
 
-    public static void machines(Consumer<IFinishedRecipe> consumer) {
+    private static void machines(Consumer<IFinishedRecipe> consumer) {
         ShapedRecipeBuilder.shapedRecipe(crafting_core)
                 .patternLine("ABA")
                 .patternLine("BCB")
@@ -174,7 +189,7 @@ public class RecipeGenerator extends RecipeProvider {
         FusionRecipeBuilder.fusionRecipe(crafting_injector_wyvern)
                 .catalyst(crafting_injector_basic)
                 .energy(32000)
-                .techLevel(DRACONIUM)
+                .techLevel(TechLevel.DRACONIUM)
                 .ingredient(core_wyvern)
                 .ingredient(GEMS_DIAMOND)
                 .ingredient(core_draconium)
@@ -188,7 +203,7 @@ public class RecipeGenerator extends RecipeProvider {
         FusionRecipeBuilder.fusionRecipe(crafting_injector_awakened)
                 .catalyst(crafting_injector_wyvern)
                 .energy(256000)
-                .techLevel(WYVERN)
+                .techLevel(TechLevel.WYVERN)
                 .ingredient(GEMS_DIAMOND)
                 .ingredient(GEMS_DIAMOND)
                 .ingredient(core_wyvern)
@@ -201,7 +216,7 @@ public class RecipeGenerator extends RecipeProvider {
         FusionRecipeBuilder.fusionRecipe(crafting_injector_chaotic)
                 .catalyst(crafting_injector_awakened)
                 .energy(8000000)
-                .techLevel(DRACONIC)
+                .techLevel(TechLevel.DRACONIC)
                 .ingredient(GEMS_DIAMOND)
                 .ingredient(GEMS_DIAMOND)
                 .ingredient(core_chaotic)
@@ -257,7 +272,7 @@ public class RecipeGenerator extends RecipeProvider {
         FusionRecipeBuilder.fusionRecipe(draconium_chest)
                 .catalyst(CHEST)
                 .energy(2000000)
-                .techLevel(DRACONIUM)
+                .techLevel(TechLevel.DRACONIUM)
                 .ingredient(FURNACE)
                 .ingredient(core_draconium)
                 .ingredient(FURNACE)
@@ -282,7 +297,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .build(consumer);
     }
 
-    public static void energy(Consumer<IFinishedRecipe> consumer) {
+    private static void energy(Consumer<IFinishedRecipe> consumer) {
         ShapedRecipeBuilder.shapedRecipe(energy_core)
                 .patternLine("AAA")
                 .patternLine("BCB")
@@ -317,7 +332,7 @@ public class RecipeGenerator extends RecipeProvider {
         FusionRecipeBuilder.fusionRecipe(reactor_core)
                 .catalyst(chaos_shard)
                 .energy(64000000)
-                .techLevel(CHAOTIC)
+                .techLevel(TechLevel.CHAOTIC)
                 .ingredient(INGOTS_DRACONIUM_AWAKENED)
                 .ingredient(INGOTS_DRACONIUM)
                 .ingredient(INGOTS_DRACONIUM_AWAKENED)
@@ -360,7 +375,7 @@ public class RecipeGenerator extends RecipeProvider {
         FusionRecipeBuilder.fusionRecipe(crystal_relay_draconic, 4)
                 .catalyst(4, crystal_relay_wyvern)
                 .energy(128000)
-                .techLevel(DRACONIC)
+                .techLevel(TechLevel.DRACONIC)
                 .ingredient(energy_core_wyvern)
                 .ingredient(GEMS_DIAMOND)
                 .ingredient(core_wyvern)
@@ -440,83 +455,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .build(consumer, "draconicevolution:crystal_io_draconic_combine");
     }
 
-    public static void tools(Consumer<IFinishedRecipe> consumer) {
-        ShapedRecipeBuilder.shapedRecipe(pickaxe_wyvern)
-                .patternLine(" A ")
-                .patternLine("BCB")
-                .patternLine(" D ")
-                .key('A', core_wyvern)
-                .key('B', INGOTS_DRACONIUM)
-                .key('C', DIAMOND_PICKAXE)
-                .key('D', energy_core_wyvern)
-                .addCriterion("has_core_wyvern", hasItem(core_wyvern))
-                .build(consumer);
-
-        ShapedRecipeBuilder.shapedRecipe(shovel_wyvern)
-                .patternLine(" A ")
-                .patternLine("BCB")
-                .patternLine(" D ")
-                .key('A', core_wyvern)
-                .key('B', INGOTS_DRACONIUM)
-                .key('C', DIAMOND_SHOVEL)
-                .key('D', energy_core_wyvern)
-                .addCriterion("has_core_wyvern", hasItem(core_wyvern))
-                .build(consumer);
-
-        ShapedRecipeBuilder.shapedRecipe(axe_wyvern)
-                .patternLine(" A ")
-                .patternLine("BCB")
-                .patternLine(" D ")
-                .key('A', core_wyvern)
-                .key('B', INGOTS_DRACONIUM)
-                .key('C', DIAMOND_AXE)
-                .key('D', energy_core_wyvern)
-                .addCriterion("has_core_wyvern", hasItem(core_wyvern))
-                .build(consumer);
-
-        ShapedRecipeBuilder.shapedRecipe(bow_wyvern)
-                .patternLine(" A ")
-                .patternLine("BCB")
-                .patternLine(" D ")
-                .key('A', core_wyvern)
-                .key('B', INGOTS_DRACONIUM)
-                .key('C', BOW)
-                .key('D', energy_core_wyvern)
-                .addCriterion("has_core_wyvern", hasItem(core_wyvern))
-                .build(consumer);
-
-        ShapedRecipeBuilder.shapedRecipe(sword_wyvern)
-                .patternLine(" A ")
-                .patternLine("BCB")
-                .patternLine(" D ")
-                .key('A', core_wyvern)
-                .key('B', INGOTS_DRACONIUM)
-                .key('C', DIAMOND_SWORD)
-                .key('D', energy_core_wyvern)
-                .addCriterion("has_core_wyvern", hasItem(core_wyvern))
-                .build(consumer);
-
-        ShapedRecipeBuilder.shapedRecipe(capacitor_wyvern)
-                .patternLine("ABA")
-                .patternLine("BCB")
-                .patternLine("ABA")
-                .key('A', INGOTS_DRACONIUM)
-                .key('B', energy_core_wyvern)
-                .key('C', core_wyvern)
-                .addCriterion("has_core_wyvern", hasItem(core_wyvern))
-                .build(consumer);
-
-        ShapedRecipeBuilder.shapedRecipe(capacitor_draconic)
-                .patternLine("ABA")
-                .patternLine("CDC")
-                .patternLine("ACA")
-                .key('A', energy_core_draconic)
-                .key('B', core_awakened)
-                .key('C', INGOTS_DRACONIUM_AWAKENED)
-                .key('D', capacitor_wyvern)
-                .addCriterion("has_core_awakened", hasItem(core_awakened))
-                .build(consumer);
-
+    private static void tools(Consumer<IFinishedRecipe> consumer) {
         ShapedRecipeBuilder.shapedRecipe(dislocator)
                 .patternLine("ABA")
                 .patternLine("BCB")
@@ -530,7 +469,7 @@ public class RecipeGenerator extends RecipeProvider {
         FusionRecipeBuilder.fusionRecipe(dislocator_advanced)
                 .catalyst(dislocator)
                 .energy(1000000)
-                .techLevel(WYVERN)
+                .techLevel(TechLevel.WYVERN)
                 .ingredient(ENDER_PEARLS)
                 .ingredient(INGOTS_DRACONIUM)
                 .ingredient(ENDER_PEARLS)
@@ -557,7 +496,388 @@ public class RecipeGenerator extends RecipeProvider {
                 .build(consumer);
     }
 
-    public static void modules(Consumer<IFinishedRecipe> consumer) {
+    private static void equipment(Consumer<IFinishedRecipe> consumer) {
+        //Capacitors
+        FusionRecipeBuilder.fusionRecipe(DEContent.capacitor_wyvern)
+                .catalyst(DEContent.core_wyvern)
+                .energy(8000000)
+                .techLevel(TechLevel.WYVERN)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM)
+                .ingredient(DEContent.energy_core_wyvern)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM)
+                .ingredient(DEContent.energy_core_wyvern)
+                .ingredient(DEContent.energy_core_wyvern)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM)
+                .ingredient(DEContent.energy_core_wyvern)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM)
+                .build(consumer, folder("tools", DEContent.capacitor_wyvern));
+
+        FusionRecipeBuilder.fusionRecipe(DEContent.capacitor_draconic)
+                .catalyst(DEContent.core_awakened)
+                .energy(32000000)
+                .techLevel(TechLevel.DRACONIC)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .ingredient(DEContent.capacitor_wyvern)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .ingredient(DEContent.energy_core_draconic)
+                .ingredient(DEContent.energy_core_draconic)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .ingredient(DEContent.energy_core_draconic)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .build(consumer, folder("tools", DEContent.capacitor_draconic));
+
+        FusionRecipeBuilder.fusionRecipe(DEContent.capacitor_chaotic)
+                .catalyst(DEContent.core_chaotic)
+                .energy(128000000)
+                .techLevel(TechLevel.CHAOTIC)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .ingredient(DEContent.capacitor_draconic)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .ingredient(DEContent.energy_core_chaotic)
+                .ingredient(DEContent.energy_core_chaotic)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .ingredient(DEContent.energy_core_chaotic)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .build(consumer, folder("tools", DEContent.capacitor_chaotic));
+
+        //Shovel
+        FusionRecipeBuilder.fusionRecipe(DEContent.shovel_wyvern)
+                .catalyst(Items.DIAMOND_SHOVEL)
+                .energy(8000000)
+                .techLevel(TechLevel.WYVERN)
+                .ingredient(DEContent.core_draconium)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM)
+                .ingredient(DEContent.crystal_relay_basic)
+                .ingredient(DEContent.energy_core_wyvern)
+                .ingredient(DEContent.crystal_relay_basic)
+                .build(consumer, folder("tools", DEContent.shovel_wyvern));
+
+        FusionRecipeBuilder.fusionRecipe(DEContent.shovel_draconic)
+                .catalyst(DEContent.shovel_wyvern)
+                .energy(32000000)
+                .techLevel(TechLevel.DRACONIC)
+                .ingredient(Tags.Items.INGOTS_NETHERITE)
+                .ingredient(DEContent.core_wyvern)
+                .ingredient(Tags.Items.INGOTS_NETHERITE)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .ingredient(Tags.Items.INGOTS_NETHERITE)
+                .ingredient(DEContent.energy_core_draconic)
+                .ingredient(Tags.Items.INGOTS_NETHERITE)
+                .build(consumer, folder("tools", DEContent.shovel_draconic));
+
+        FusionRecipeBuilder.fusionRecipe(DEContent.shovel_chaotic)
+                .catalyst(DEContent.shovel_draconic)
+                .energy(128000000)
+                .techLevel(TechLevel.CHAOTIC)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .ingredient(DEContent.core_awakened)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .ingredient(DEContent.chaos_frag_medium)
+                .ingredient(DEContent.chaos_frag_medium)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .ingredient(DEContent.energy_core_chaotic)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .build(consumer, folder("tools", DEContent.shovel_chaotic));
+
+        //Hoe
+        FusionRecipeBuilder.fusionRecipe(DEContent.hoe_wyvern)
+                .catalyst(Items.DIAMOND_HOE)
+                .energy(8000000)
+                .techLevel(TechLevel.WYVERN)
+                .ingredient(DEContent.core_draconium)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM)
+                .ingredient(DEContent.crystal_relay_basic)
+                .ingredient(DEContent.energy_core_wyvern)
+                .ingredient(DEContent.crystal_relay_basic)
+                .build(consumer, folder("tools", DEContent.hoe_wyvern));
+
+        FusionRecipeBuilder.fusionRecipe(DEContent.hoe_draconic)
+                .catalyst(DEContent.hoe_wyvern)
+                .energy(32000000)
+                .techLevel(TechLevel.DRACONIC)
+                .ingredient(Tags.Items.INGOTS_NETHERITE)
+                .ingredient(DEContent.core_wyvern)
+                .ingredient(Tags.Items.INGOTS_NETHERITE)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .ingredient(Tags.Items.INGOTS_NETHERITE)
+                .ingredient(DEContent.energy_core_draconic)
+                .ingredient(Tags.Items.INGOTS_NETHERITE)
+                .build(consumer, folder("tools", DEContent.hoe_draconic));
+
+        FusionRecipeBuilder.fusionRecipe(DEContent.hoe_chaotic)
+                .catalyst(DEContent.hoe_draconic)
+                .energy(128000000)
+                .techLevel(TechLevel.CHAOTIC)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .ingredient(DEContent.core_awakened)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .ingredient(DEContent.chaos_frag_medium)
+                .ingredient(DEContent.chaos_frag_medium)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .ingredient(DEContent.energy_core_chaotic)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .build(consumer, folder("tools", DEContent.hoe_chaotic));
+
+        //Pickaxe
+        FusionRecipeBuilder.fusionRecipe(DEContent.pickaxe_wyvern)
+                .catalyst(Items.DIAMOND_PICKAXE)
+                .energy(8000000)
+                .techLevel(TechLevel.WYVERN)
+                .ingredient(DEContent.core_draconium)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM)
+                .ingredient(DEContent.crystal_relay_basic)
+                .ingredient(DEContent.energy_core_wyvern)
+                .ingredient(DEContent.crystal_relay_basic)
+                .build(consumer, folder("tools", DEContent.pickaxe_wyvern));
+
+        FusionRecipeBuilder.fusionRecipe(DEContent.pickaxe_draconic)
+                .catalyst(DEContent.pickaxe_wyvern)
+                .energy(32000000)
+                .techLevel(TechLevel.DRACONIC)
+                .ingredient(Tags.Items.INGOTS_NETHERITE)
+                .ingredient(DEContent.core_wyvern)
+                .ingredient(Tags.Items.INGOTS_NETHERITE)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .ingredient(Tags.Items.INGOTS_NETHERITE)
+                .ingredient(DEContent.energy_core_draconic)
+                .ingredient(Tags.Items.INGOTS_NETHERITE)
+                .build(consumer, folder("tools", DEContent.pickaxe_draconic));
+
+        FusionRecipeBuilder.fusionRecipe(DEContent.pickaxe_chaotic)
+                .catalyst(DEContent.pickaxe_draconic)
+                .energy(128000000)
+                .techLevel(TechLevel.CHAOTIC)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .ingredient(DEContent.core_awakened)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .ingredient(DEContent.chaos_frag_medium)
+                .ingredient(DEContent.chaos_frag_medium)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .ingredient(DEContent.energy_core_chaotic)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .build(consumer, folder("tools", DEContent.pickaxe_chaotic));
+
+        //Axe
+        FusionRecipeBuilder.fusionRecipe(DEContent.axe_wyvern)
+                .catalyst(Items.DIAMOND_AXE)
+                .energy(8000000)
+                .techLevel(TechLevel.WYVERN)
+                .ingredient(DEContent.core_draconium)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM)
+                .ingredient(DEContent.crystal_relay_basic)
+                .ingredient(DEContent.energy_core_wyvern)
+                .ingredient(DEContent.crystal_relay_basic)
+                .build(consumer, folder("tools", DEContent.axe_wyvern));
+
+        FusionRecipeBuilder.fusionRecipe(DEContent.axe_draconic)
+                .catalyst(DEContent.axe_wyvern)
+                .energy(32000000)
+                .techLevel(TechLevel.DRACONIC)
+                .ingredient(Tags.Items.INGOTS_NETHERITE)
+                .ingredient(DEContent.core_wyvern)
+                .ingredient(Tags.Items.INGOTS_NETHERITE)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .ingredient(Tags.Items.INGOTS_NETHERITE)
+                .ingredient(DEContent.energy_core_draconic)
+                .ingredient(Tags.Items.INGOTS_NETHERITE)
+                .build(consumer, folder("tools", DEContent.axe_draconic));
+
+        FusionRecipeBuilder.fusionRecipe(DEContent.axe_chaotic)
+                .catalyst(DEContent.axe_draconic)
+                .energy(128000000)
+                .techLevel(TechLevel.CHAOTIC)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .ingredient(DEContent.core_awakened)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .ingredient(DEContent.chaos_frag_medium)
+                .ingredient(DEContent.chaos_frag_medium)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .ingredient(DEContent.energy_core_chaotic)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .build(consumer, folder("tools", DEContent.axe_chaotic));
+
+        //Bow
+        FusionRecipeBuilder.fusionRecipe(DEContent.bow_wyvern)
+                .catalyst(Items.BOW)
+                .energy(8000000)
+                .techLevel(TechLevel.WYVERN)
+                .ingredient(DEContent.core_draconium)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM)
+                .ingredient(DEContent.crystal_relay_basic)
+                .ingredient(DEContent.energy_core_wyvern)
+                .ingredient(DEContent.crystal_relay_basic)
+                .build(consumer, folder("tools", DEContent.bow_wyvern));
+
+        FusionRecipeBuilder.fusionRecipe(DEContent.bow_draconic)
+                .catalyst(DEContent.bow_wyvern)
+                .energy(32000000)
+                .techLevel(TechLevel.DRACONIC)
+                .ingredient(Tags.Items.INGOTS_NETHERITE)
+                .ingredient(DEContent.core_wyvern)
+                .ingredient(Tags.Items.INGOTS_NETHERITE)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .ingredient(Tags.Items.INGOTS_NETHERITE)
+                .ingredient(DEContent.energy_core_draconic)
+                .ingredient(Tags.Items.INGOTS_NETHERITE)
+                .build(consumer, folder("tools", DEContent.bow_draconic));
+
+        FusionRecipeBuilder.fusionRecipe(DEContent.bow_chaotic)
+                .catalyst(DEContent.bow_draconic)
+                .energy(128000000)
+                .techLevel(TechLevel.CHAOTIC)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .ingredient(DEContent.core_awakened)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .ingredient(DEContent.chaos_frag_medium)
+                .ingredient(DEContent.chaos_frag_medium)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .ingredient(DEContent.energy_core_chaotic)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .build(consumer, folder("tools", DEContent.bow_chaotic));
+
+        //Sword
+        FusionRecipeBuilder.fusionRecipe(DEContent.sword_wyvern)
+                .catalyst(Items.DIAMOND_SWORD)
+                .energy(8000000)
+                .techLevel(TechLevel.WYVERN)
+                .ingredient(DEContent.core_draconium)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM)
+                .ingredient(DEContent.crystal_relay_basic)
+                .ingredient(DEContent.energy_core_wyvern)
+                .ingredient(DEContent.crystal_relay_basic)
+                .build(consumer, folder("tools", DEContent.sword_wyvern));
+
+        FusionRecipeBuilder.fusionRecipe(DEContent.sword_draconic)
+                .catalyst(DEContent.sword_wyvern)
+                .energy(32000000)
+                .techLevel(TechLevel.DRACONIC)
+                .ingredient(Tags.Items.INGOTS_NETHERITE)
+                .ingredient(DEContent.core_wyvern)
+                .ingredient(Tags.Items.INGOTS_NETHERITE)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .ingredient(Tags.Items.INGOTS_NETHERITE)
+                .ingredient(DEContent.energy_core_draconic)
+                .ingredient(Tags.Items.INGOTS_NETHERITE)
+                .build(consumer, folder("tools", DEContent.sword_draconic));
+
+        FusionRecipeBuilder.fusionRecipe(DEContent.sword_chaotic)
+                .catalyst(DEContent.sword_draconic)
+                .energy(128000000)
+                .techLevel(TechLevel.CHAOTIC)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .ingredient(DEContent.core_awakened)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .ingredient(DEContent.chaos_frag_medium)
+                .ingredient(DEContent.chaos_frag_medium)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .ingredient(DEContent.energy_core_chaotic)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .build(consumer, folder("tools", DEContent.sword_chaotic));
+
+        //Staff
+        FusionRecipeBuilder.fusionRecipe(DEContent.staff_draconic)
+                .catalyst(DEContent.core_awakened)
+                .energy(256000000)
+                .techLevel(TechLevel.DRACONIC)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .ingredient(DEContent.pickaxe_draconic)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .ingredient(DEContent.sword_draconic)
+                .ingredient(DEContent.shovel_draconic)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .ingredient(DEContent.energy_core_draconic)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .build(consumer, folder("tools", DEContent.staff_draconic));
+
+        FusionRecipeBuilder.fusionRecipe(DEContent.staff_chaotic)
+                .catalyst(DEContent.core_chaotic)
+                .energy(1024000000)
+                .techLevel(TechLevel.CHAOTIC)
+                .ingredient(DEContent.chaos_frag_medium)
+                .ingredient(DEContent.pickaxe_chaotic)
+                .ingredient(DEContent.chaos_frag_medium)
+                .ingredient(DEContent.chaos_frag_medium)
+                .ingredient(DEContent.sword_chaotic)
+                .ingredient(DEContent.shovel_chaotic)
+                .ingredient(DEContent.chaos_frag_medium)
+                .ingredient(DEContent.energy_core_chaotic)
+                .ingredient(DEContent.chaos_frag_medium)
+                .ingredient(DEContent.chaos_frag_medium)
+                .build(consumer, folder("tools", DEContent.staff_chaotic));
+
+        FusionRecipeBuilder.fusionRecipe(DEContent.staff_chaotic)
+                .catalyst(DEContent.staff_draconic)
+                .energy(1024000000)
+                .techLevel(TechLevel.CHAOTIC)
+                .ingredient(DEContent.chaos_frag_medium)
+                .ingredient(DEContent.core_chaotic)
+                .ingredient(DEContent.chaos_frag_medium)
+                .ingredient(DEContent.energy_core_chaotic)
+                .ingredient(DEContent.core_awakened)
+                .ingredient(DEContent.core_awakened)
+                .ingredient(DEContent.chaos_frag_large)
+                .ingredient(DEContent.energy_core_chaotic)
+                .ingredient(DEContent.chaos_frag_large)
+                .ingredient(DEContent.energy_core_chaotic)
+                .build(consumer, folder("tools", "alt_"+DEContent.staff_chaotic.getItem().getRegistryName().getPath()));
+
+        //Chestpiece
+        FusionRecipeBuilder.fusionRecipe(DEContent.chestpiece_wyvern)
+                .catalyst(Items.DIAMOND_CHESTPLATE)
+                .energy(8000000)
+                .techLevel(TechLevel.WYVERN)
+                .ingredient(DEContent.core_draconium)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM)
+                .ingredient(DEContent.crystal_relay_basic)
+                .ingredient(DEContent.energy_core_wyvern)
+                .ingredient(DEContent.crystal_relay_basic)
+                .build(consumer, folder("tools", DEContent.chestpiece_wyvern));
+
+        FusionRecipeBuilder.fusionRecipe(DEContent.chestpiece_draconic)
+                .catalyst(DEContent.chestpiece_wyvern)
+                .energy(32000000)
+                .techLevel(TechLevel.DRACONIC)
+                .ingredient(Tags.Items.INGOTS_NETHERITE)
+                .ingredient(DEContent.core_wyvern)
+                .ingredient(Tags.Items.INGOTS_NETHERITE)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .ingredient(Tags.Items.INGOTS_NETHERITE)
+                .ingredient(DEContent.energy_core_draconic)
+                .ingredient(Tags.Items.INGOTS_NETHERITE)
+                .build(consumer, folder("tools", DEContent.chestpiece_draconic));
+
+        FusionRecipeBuilder.fusionRecipe(DEContent.chestpiece_chaotic)
+                .catalyst(DEContent.chestpiece_draconic)
+                .energy(128000000)
+                .techLevel(TechLevel.CHAOTIC)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .ingredient(DEContent.core_awakened)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .ingredient(DEContent.chaos_frag_medium)
+                .ingredient(DEContent.chaos_frag_medium)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .ingredient(DEContent.energy_core_chaotic)
+                .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .build(consumer, folder("tools", DEContent.chestpiece_chaotic));
+    }
+
+    private static void modules(Consumer<IFinishedRecipe> consumer) {
         ShapedRecipeBuilder.shapedRecipe(module_core)
                 .patternLine("IRI")
                 .patternLine("GDG")
@@ -1113,7 +1433,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .build(consumer, folder("modules", DEModules.wyvernHillStep));
     }
 
-    public static void unsorted(Consumer<IFinishedRecipe> consumer) {
+    private static void unsorted(Consumer<IFinishedRecipe> consumer) {
 
 
 //        FusionRecipeBuilder.fusionRecipe(ender_energy_manipulator).catalyst(SKELETON_SKULL).energy(12000000).techLevel(WYVERN).ingredient(ENDER_EYE).ingredient(ENDER_EYE).ingredient(ENDER_EYE).ingredient(ENDER_EYE).ingredient(ENDER_EYE).ingredient(ENDER_EYE).ingredient(core_draconium).ingredient(core_wyvern).ingredient(core_draconium).ingredient(ENDER_EYE).build(consumer);
@@ -1198,7 +1518,7 @@ public class RecipeGenerator extends RecipeProvider {
 
     }
 
-    public static void compress3x3(IItemProvider output, IItemProvider input, Consumer<IFinishedRecipe> consumer) {
+    private static void compress3x3(IItemProvider output, IItemProvider input, Consumer<IFinishedRecipe> consumer) {
         ResourceLocation name = output.asItem().getRegistryName();
         ShapedRecipeBuilder.shapedRecipe(output)
                 .patternLine("###")
@@ -1209,7 +1529,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .build(consumer, new ResourceLocation(name.getNamespace(), "compress/" + name.getPath()));
     }
 
-    public static void compress3x3(IItemProvider output, ITag<Item> input, String inputName, Consumer<IFinishedRecipe> consumer) {
+    private static void compress3x3(IItemProvider output, ITag<Item> input, String inputName, Consumer<IFinishedRecipe> consumer) {
         ResourceLocation name = output.asItem().getRegistryName();
         ShapedRecipeBuilder.shapedRecipe(output)
                 .patternLine("###")
@@ -1220,7 +1540,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .build(consumer, new ResourceLocation(name.getNamespace(), "compress/" + name.getPath()));
     }
 
-    public static void compress2x2(IItemProvider output, IItemProvider input, Consumer<IFinishedRecipe> consumer) {
+    private static void compress2x2(IItemProvider output, IItemProvider input, Consumer<IFinishedRecipe> consumer) {
         ResourceLocation name = output.asItem().getRegistryName();
         ShapedRecipeBuilder.shapedRecipe(output)
                 .patternLine("###")
@@ -1231,7 +1551,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .build(consumer, new ResourceLocation(name.getNamespace(), "compress/" + name.getPath()));
     }
 
-    public static void deCompress(IItemProvider output, int count, IItemProvider from, Consumer<IFinishedRecipe> consumer) {
+    private static void deCompress(IItemProvider output, int count, IItemProvider from, Consumer<IFinishedRecipe> consumer) {
         ResourceLocation name = output.asItem().getRegistryName();
         ShapelessRecipeBuilder.shapelessRecipe(output, count)
                 .addIngredient(from)
@@ -1239,7 +1559,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .build(consumer, new ResourceLocation(name.getNamespace(), "decompress/" + name.getPath()));
     }
 
-    public static void deCompress(IItemProvider output, int count, ITag<Item> from, String hasName, Consumer<IFinishedRecipe> consumer) {
+    private static void deCompress(IItemProvider output, int count, ITag<Item> from, String hasName, Consumer<IFinishedRecipe> consumer) {
         ResourceLocation name = output.asItem().getRegistryName();
         ShapelessRecipeBuilder.shapelessRecipe(output, count)
                 .addIngredient(from)
@@ -1247,16 +1567,20 @@ public class RecipeGenerator extends RecipeProvider {
                 .build(consumer, new ResourceLocation(name.getNamespace(), "decompress/" + name.getPath()));
     }
 
-    public static void deCompress(IItemProvider output, IItemProvider from, Consumer<IFinishedRecipe> consumer) {
+    private static void deCompress(IItemProvider output, IItemProvider from, Consumer<IFinishedRecipe> consumer) {
         deCompress(output, 9, from, consumer);
     }
 
-    public static void deCompress(IItemProvider output, ITag<Item> from, String hasName, Consumer<IFinishedRecipe> consumer) {
+    private static void deCompress(IItemProvider output, ITag<Item> from, String hasName, Consumer<IFinishedRecipe> consumer) {
         deCompress(output, 9, from, hasName, consumer);
     }
 
     public static String folder(String folder, IForgeRegistryEntry<?> key) {
         return DraconicEvolution.MODID + ":" + folder + "/" + key.getRegistryName().getPath();
+    }
+
+    public static String folder(String folder, String name) {
+        return DraconicEvolution.MODID + ":" + folder + "/" + name;
     }
 
     @Override

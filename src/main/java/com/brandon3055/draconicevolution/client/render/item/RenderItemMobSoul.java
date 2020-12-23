@@ -2,13 +2,19 @@ package com.brandon3055.draconicevolution.client.render.item;
 
 import codechicken.lib.render.item.IItemRenderer;
 import codechicken.lib.util.TransformUtils;
+import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
+import com.brandon3055.draconicevolution.init.DEContent;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.TransformationMatrix;
+import net.minecraft.util.math.vector.Vector3f;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -41,14 +47,11 @@ public class RenderItemMobSoul implements IItemRenderer {
 //    //    Remember GuiInventory.drawEntityOnScreen
 //    @Override
 //    public void renderItem(ItemStack item, ItemCameraTransforms.TransformType transformType) {
-//        Entity mob = DEContent.mob_soul.getRenderEntity(item);
-//        if (brokenMobs.contains(mob)) return;
+
 //
 //        try {
 //            RenderSystem.pushMatrix();
-//            float scale = 0.6F / Math.max(mob.getWidth(), mob.getHeight());
-//            RenderSystem.translated(0.5, 0.175, 0.5);
-//            RenderSystem.scalef(scale, scale, scale);
+
 //
 //            if (transformType != ItemCameraTransforms.TransformType.GROUND && transformType != ItemCameraTransforms.TransformType.FIXED) {
 //                RenderSystem.rotatef((float) Math.sin((ClientEventHandler.elapsedTicks + Minecraft.getInstance().getRenderPartialTicks()) / 50F) * 15F, 1, 0, -0.5F);
@@ -90,6 +93,23 @@ public class RenderItemMobSoul implements IItemRenderer {
 
     @Override
     public void renderItem(ItemStack stack, ItemCameraTransforms.TransformType transformType, MatrixStack mStack, IRenderTypeBuffer getter, int packedLight, int packedOverlay) {
+        Entity mob = DEContent.mob_soul.getRenderEntity(stack);
+        if (brokenMobs.contains(mob)) return;
+
+//        mStack.translate(0.5, -0.5, 0.5);
+
+        float scale = 1F / Math.max(mob.getWidth(), mob.getHeight());
+        mStack.translate(0.5, 0, 0.5);
+        mStack.scale(scale, scale, scale);
+
+        if (transformType != ItemCameraTransforms.TransformType.GROUND && transformType != ItemCameraTransforms.TransformType.FIXED) {
+            mStack.rotate(new Quaternion(new Vector3f(1, 0, -0.5F), (float) Math.sin((ClientEventHandler.elapsedTicks + Minecraft.getInstance().getRenderPartialTicks()) / 50F) * 15F, true));
+            mStack.rotate(new Quaternion(new Vector3f(0, 1, 0), (ClientEventHandler.elapsedTicks + Minecraft.getInstance().getRenderPartialTicks()) * 3, true));
+        }
+
+        EntityRendererManager manager = Minecraft.getInstance().getRenderManager();
+        manager.renderEntityStatic(mob, 0, 0, 0, 0, 0, mStack, getter, packedLight);
+
 
     }
 

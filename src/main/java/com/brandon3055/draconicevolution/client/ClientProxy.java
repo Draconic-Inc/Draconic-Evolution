@@ -10,6 +10,7 @@ import com.brandon3055.draconicevolution.api.energy.IENetEffectTile;
 import com.brandon3055.draconicevolution.blocks.energynet.rendering.ENetFXHandler;
 import com.brandon3055.draconicevolution.blocks.reactor.ReactorEffectHandler;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
+import com.brandon3055.draconicevolution.blocks.tileentity.TileGenerator;
 import com.brandon3055.draconicevolution.client.gui.*;
 import com.brandon3055.draconicevolution.client.gui.modular.GuiModularItem;
 import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.GuiConfigurableItem;
@@ -22,14 +23,17 @@ import com.brandon3055.draconicevolution.client.render.entity.GuardianCrystalRen
 import com.brandon3055.draconicevolution.client.render.entity.GuardianProjectileRenderer;
 import com.brandon3055.draconicevolution.client.render.item.*;
 import com.brandon3055.draconicevolution.client.render.tile.*;
+import com.brandon3055.draconicevolution.client.sound.GeneratorSoundHandler;
 import com.brandon3055.draconicevolution.entity.guardian.DraconicGuardianEntity;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.items.equipment.IModularArmor;
+import com.brandon3055.draconicevolution.lib.ISidedTileHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.renderer.entity.layers.BipedArmorLayer;
@@ -37,6 +41,7 @@ import net.minecraft.client.renderer.entity.layers.ElytraLayer;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -294,6 +299,7 @@ public class ClientProxy extends CommonProxy {
         RenderingRegistry.registerEntityRenderingHandler(DEContent.draconicGuardian, DraconicGuardianRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(DEContent.guardianProjectile, GuardianProjectileRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(DEContent.guardianCrystal, GuardianCrystalRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(DEContent.persistentItem, manager -> new ItemRenderer(manager, Minecraft.getInstance().getItemRenderer()));
 
         //Entities
 //        RenderingRegistry.registerEntityRenderingHandler(EntityChaosGuardian.class, RenderChaosGuardian::new);
@@ -385,7 +391,12 @@ public class ClientProxy extends CommonProxy {
         return new ReactorEffectHandler(tile);
     }
 
-//    @Override
+    @Override
+    public ISidedTileHandler createGeneratorSoundHandler(TileGenerator tile) {
+        return new GeneratorSoundHandler(tile);
+    }
+
+    //    @Override
 //    public ISound playISound(ISound sound) {
 //        FMLClientHandler.instance().getClient().getSoundHandler().playSound(sound);
 //        return sound;

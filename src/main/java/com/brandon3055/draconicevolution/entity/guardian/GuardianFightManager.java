@@ -71,7 +71,7 @@ public class GuardianFightManager extends WorldEntity implements ITickableWorldE
 
     @Override
     public void tick() {
-        bossInfo.setCreateFog(false);
+//        bossInfo.setCreateFog(false);
         ServerWorld world = (ServerWorld) this.world;
 
         //Update Boss Info

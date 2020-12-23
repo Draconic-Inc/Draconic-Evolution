@@ -34,7 +34,7 @@ public class ModularSword extends SwordItem implements IReaperItem, IModularMele
     private final DEItemTier itemTier;
 
     public ModularSword(TechPropBuilder props) {
-        super(new DEItemTier(props, EquipCfg::getSwordDmgMult, EquipCfg::getSwordSpeedMult), 0, 0, props.build());
+        super(new DEItemTier(props, EquipCfg::getSwordDmgMult, EquipCfg::getSwordSpeedMult), 0, 0, props.build().isImmuneToFire());
         this.techLevel = props.techLevel;
         this.itemTier = (DEItemTier) getTier();
     }

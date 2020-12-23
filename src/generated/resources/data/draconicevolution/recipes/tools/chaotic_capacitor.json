@@ -1,0 +1,37 @@
+{
+  "type": "draconicevolution:fusion_crafting",
+  "result": {
+    "item": "draconicevolution:chaotic_capacitor"
+  },
+  "catalyst": {
+    "item": "draconicevolution:chaotic_core"
+  },
+  "total_energy": 128000000,
+  "tier": "CHAOTIC",
+  "ingredients": [
+    {
+      "tag": "forge:ingots/draconium_awakened"
+    },
+    {
+      "item": "draconicevolution:draconic_capacitor"
+    },
+    {
+      "tag": "forge:ingots/draconium_awakened"
+    },
+    {
+      "item": "draconicevolution:chaotic_energy_core"
+    },
+    {
+      "item": "draconicevolution:chaotic_energy_core"
+    },
+    {
+      "tag": "forge:ingots/draconium_awakened"
+    },
+    {
+      "item": "draconicevolution:chaotic_energy_core"
+    },
+    {
+      "tag": "forge:ingots/draconium_awakened"
+    }
+  ]
+}

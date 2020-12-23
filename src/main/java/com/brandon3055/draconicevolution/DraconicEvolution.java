@@ -4,6 +4,7 @@ import com.brandon3055.draconicevolution.api.DraconicAPI;
 import com.brandon3055.draconicevolution.api.crafting.IngredientStack;
 import com.brandon3055.draconicevolution.client.ClientProxy;
 import com.brandon3055.draconicevolution.command.CommandKaboom;
+import com.brandon3055.draconicevolution.command.CommandMakeRecipe;
 import com.brandon3055.draconicevolution.init.DETags;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraftforge.common.MinecraftForge;
@@ -58,6 +59,7 @@ public class DraconicEvolution {
 
     public static void registerCommands(RegisterCommandsEvent event) {
         CommandKaboom.register(event.getDispatcher());
+        CommandMakeRecipe.register(event.getDispatcher());
     }
 
 }

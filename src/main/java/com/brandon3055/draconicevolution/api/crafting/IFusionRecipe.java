@@ -2,19 +2,15 @@ package com.brandon3055.draconicevolution.api.crafting;
 
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.draconicevolution.api.DraconicAPI;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by brandon3055 on 26/11/20
@@ -37,8 +33,7 @@ public interface IFusionRecipe extends IRecipe<IFusionInventory> {
 
     TechLevel getRecipeTier();
 
-    long getIngredientEnergyCost();
-
+    long getEnergyCost();
 
     /**
      * @return A list of recipe ingredients NOT including the catalyst.

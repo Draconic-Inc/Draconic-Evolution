@@ -6,6 +6,7 @@ import com.brandon3055.draconicevolution.api.config.BooleanProperty;
 import com.brandon3055.draconicevolution.api.config.ConfigProperty.BooleanFormatter;
 import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
+import com.brandon3055.draconicevolution.api.modules.data.ShieldControlData;
 import com.brandon3055.draconicevolution.api.modules.data.ShieldData;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
@@ -169,7 +170,7 @@ public class ShieldControlEntity extends ModuleEntity {
     }
 
     public int getMaxShieldCoolDown() {
-        return EquipCfg.getShieldCoolDown(module.getModuleTechLevel()) * 100;
+        return ((ShieldControlData) module.getData()).getCoolDownTicks() * 100;
     }
 
     /**
@@ -225,7 +226,7 @@ public class ShieldControlEntity extends ModuleEntity {
      * Called when the shield in unable to completely block a damage source.
      * This will calculate how much damage the shield can absorb and subtract that
      * amount from the damage event.
-     *
+     * <p>
      * *Except in cases where something skips LivingAttackEvent and goes strait to LivingDamageEvent... We need to account for that to...
      *
      * @param event The damage event.
@@ -240,8 +241,7 @@ public class ShieldControlEntity extends ModuleEntity {
             event.setCanceled(true);
             subtractShieldPoints(damage);
             onShieldHit(entity, true);
-        }
-        else if (getShieldPoints() > 0) {
+        } else if (getShieldPoints() > 0) {
             damage -= getShieldPoints();
             event.setAmount(damage);
             onShieldHit(entity, false);

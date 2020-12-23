@@ -46,10 +46,10 @@ public class EquipCfg {
 
     private static double STAFF_EFF_MULT            = 3.0D;
 
-    private static long DRACONIUM_BASE_ENERGY       = 500000;
-    private static long WYVERN_BASE_ENERGY          = 2000000;
-    private static long DRACONIC_BASE_ENERGY        = 4000000;
-    private static long CHAOTIC_BASE_ENERGY         = 8000000;
+    private static long DRACONIUM_BASE_ENERGY       = 0;//500000;
+    private static long WYVERN_BASE_ENERGY          = 0;//2000000;
+    private static long DRACONIC_BASE_ENERGY        = 0;//4000000;
+    private static long CHAOTIC_BASE_ENERGY         = 0;//8000000;
     
     private static double STAFF_ENERGY_MULT         = 3D;
     private static double TOOL_ENERGY_MULT          = 1D;
@@ -126,9 +126,9 @@ public class EquipCfg {
 
     public static double shieldPassiveModifier;
 
-    public static int wyvernShieldCoolDown;
-    public static int draconicShieldCoolDown;
-    public static int chaoticShieldCoolDown;
+//    public static int wyvernShieldCoolDown;
+//    public static int draconicShieldCoolDown;
+//    public static int chaoticShieldCoolDown;
 
     public static int elytraFlightEnergy;
     public static int creativeFlightEnergy;
@@ -320,18 +320,18 @@ public class EquipCfg {
                 .setDefaultDouble(-99)
                 .setSyncCallback((tag, type) -> shieldPassiveModifier = tag.getDouble() != -99 ? tag.getDouble() : SHIELD_PASSIVE_MODIFIER);
 
-        equipTag.getTag("wyvernShieldCoolDown")
-                .setComment("This is the delay in ticks before the Wyvern shield will start to regenerate after blocking damage.\nInternal Default Value: " + WYVERN_SHIELD_COOL_DOWN)
-                .setDefaultInt(-99)
-                .setSyncCallback((tag, type) -> wyvernShieldCoolDown = tag.getInt() != -99 ? tag.getInt() : WYVERN_SHIELD_COOL_DOWN);
-        equipTag.getTag("draconicShieldCoolDown")
-                .setComment("This is the delay in ticks before the Draconic shield will start to regenerate after blocking damage.\nInternal Default Value: " + DRACONIC_SHIELD_COOL_DOWN)
-                .setDefaultInt(-99)
-                .setSyncCallback((tag, type) -> draconicShieldCoolDown = tag.getInt() != -99 ? tag.getInt() : DRACONIC_SHIELD_COOL_DOWN);
-        equipTag.getTag("chaoticShieldCoolDown")
-                .setComment("This is the delay in ticks before the Chaotic shield will start to regenerate after blocking damage.\nInternal Default Value: " + CHAOTIC_SHIELD_COOL_DOWN)
-                .setDefaultInt(-99)
-                .setSyncCallback((tag, type) -> chaoticShieldCoolDown = tag.getInt() != -99 ? tag.getInt() : CHAOTIC_SHIELD_COOL_DOWN);
+//        equipTag.getTag("wyvernShieldCoolDown")
+//                .setComment("This is the delay in ticks before the Wyvern shield will start to regenerate after blocking damage.\nInternal Default Value: " + WYVERN_SHIELD_COOL_DOWN)
+//                .setDefaultInt(-99)
+//                .setSyncCallback((tag, type) -> wyvernShieldCoolDown = tag.getInt() != -99 ? tag.getInt() : WYVERN_SHIELD_COOL_DOWN);
+//        equipTag.getTag("draconicShieldCoolDown")
+//                .setComment("This is the delay in ticks before the Draconic shield will start to regenerate after blocking damage.\nInternal Default Value: " + DRACONIC_SHIELD_COOL_DOWN)
+//                .setDefaultInt(-99)
+//                .setSyncCallback((tag, type) -> draconicShieldCoolDown = tag.getInt() != -99 ? tag.getInt() : DRACONIC_SHIELD_COOL_DOWN);
+//        equipTag.getTag("chaoticShieldCoolDown")
+//                .setComment("This is the delay in ticks before the Chaotic shield will start to regenerate after blocking damage.\nInternal Default Value: " + CHAOTIC_SHIELD_COOL_DOWN)
+//                .setDefaultInt(-99)
+//                .setSyncCallback((tag, type) -> chaoticShieldCoolDown = tag.getInt() != -99 ? tag.getInt() : CHAOTIC_SHIELD_COOL_DOWN);
 
         equipTag.getTag("elytraFlightEnergy")
                 .setComment("Elytra flight energy use per tick.\nInternal Default Value: " + ELYTRA_FLIGHT_ENERGY)
@@ -461,17 +461,17 @@ public class EquipCfg {
         return getBaseChestpieceEnergy(techLevel) / 64;
     }
 
-    public static int getShieldCoolDown(TechLevel techLevel) {
-        switch (techLevel) {
-            case WYVERN:
-                return wyvernShieldCoolDown;
-            case DRACONIC:
-                return draconicShieldCoolDown;
-            case CHAOTIC:
-                return chaoticShieldCoolDown;
-        }
-        return wyvernShieldCoolDown;
-    }
+//    public static int getShieldCoolDown(TechLevel techLevel) {
+//        switch (techLevel) {
+//            case WYVERN:
+//                return wyvernShieldCoolDown;
+//            case DRACONIC:
+//                return draconicShieldCoolDown;
+//            case CHAOTIC:
+//                return chaoticShieldCoolDown;
+//        }
+//        return wyvernShieldCoolDown;
+//    }
 
     public static int getElytraEnergy(TechLevel techLevel) {
         switch (techLevel) {

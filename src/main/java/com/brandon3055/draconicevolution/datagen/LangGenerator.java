@@ -21,7 +21,7 @@ public class LangGenerator extends LanguageProvider {
         super(gen, MODID, "en_us");
     }
 
-    private void addBlocks(PrefixHelper helper) {
+    private void blocks(PrefixHelper helper) {
         helper.add(DEContent.block_draconium                    ,"Draconium Block");
         helper.add(DEContent.block_draconium_awakened           ,"Awakened Draconium Block");
         helper.add(DEContent.chaos_crystal                      ,"Chaos Crystal");
@@ -75,7 +75,7 @@ public class LangGenerator extends LanguageProvider {
         helper.add(DEContent.stabilized_spawner                 ,"Stabilized Mob Spawner");
     }
 
-    private void addItems(PrefixHelper helper) {
+    private void items(PrefixHelper helper) {
         //Components
         helper.add(DEContent.dust_draconium                     ,"Draconium Dust");
         helper.add(DEContent.dust_draconium_awakened            ,"Awakened Draconium Dust");
@@ -87,8 +87,9 @@ public class LangGenerator extends LanguageProvider {
         helper.add(DEContent.core_wyvern                        ,"Wyvern Core");
         helper.add(DEContent.core_awakened                      ,"Draconic Core");
         helper.add(DEContent.core_chaotic                       ,"Chaotic Core");
-        helper.add(DEContent.energy_core_wyvern                 ,"Wyvern Energy Core");
-        helper.add(DEContent.energy_core_draconic               ,"Draconic Energy Core");
+        helper.add(DEContent.energy_core_wyvern                 ,"Wyvern Energy Controller");
+        helper.add(DEContent.energy_core_draconic               ,"Draconic Energy Controller");
+        helper.add(DEContent.energy_core_chaotic                ,"Chaotic Energy Controller");
         helper.add(DEContent.dragon_heart                       ,"Dragon Heart");
         helper.add(DEContent.chaos_shard                        ,"Chaos Shard");
         helper.add(DEContent.chaos_frag_large                   ,"Large Chaos Fragment");
@@ -138,7 +139,7 @@ public class LangGenerator extends LanguageProvider {
         helper.add(DEContent.chestpiece_chaotic                 ,"Chaotic Chest Piece");
     }
 
-    private void addItemProps(PrefixHelper helper) {
+    private void itemProps(PrefixHelper helper) {
         helper.setPrefix("item_prop.draconicevolution");
         helper.add("attack_aoe"                                                             , "Attack Radius");
         helper.add("attack_aoe.info"                                                        , "Allows you to adjust the area covered by this weapon's swing.\nThis covers a 100 degree arc in the direction you are looking");
@@ -186,7 +187,7 @@ public class LangGenerator extends LanguageProvider {
 //        helper.add("charge_baubles.info"                                                    , "");
     }
 
-    private void addModules(PrefixHelper helper) {
+    private void modules(PrefixHelper helper) {
         helper.setPrefix("module.draconicevolution");
         helper.add(ModuleTypes.ENERGY_STORAGE                                               , "Energy Capacity");
 
@@ -205,6 +206,8 @@ public class LangGenerator extends LanguageProvider {
         helper.add("shield_recharge.value"                                                  , "%s pps (%s seconds)\n@ %s OP/t");
         helper.add("shield_passive.name"                                                    , "Shield Operating Cost");
         helper.add("shield_passive.value"                                                   , "%s OP/t");
+        helper.add("shield_control.name"                                                    , "Shield c ool down");
+        helper.add("shield_control.value"                                                   , "%s Seconds");
 
         helper.add(ModuleTypes.FLIGHT                                                       , "Flight");
         helper.add("flight.name"                                                            , "Flight");
@@ -326,7 +329,7 @@ public class LangGenerator extends LanguageProvider {
         helper.add("max_installable"                                                        ,"Max Installable");
     }
 
-    private void addGuis(PrefixHelper helper) {
+    private void guis(PrefixHelper helper) {
         //Item Config
         helper.setPrefix("gui.draconicevolution.item_config");
         helper.add("name"                                                                   ,"Configure Equipment");
@@ -504,7 +507,40 @@ public class LangGenerator extends LanguageProvider {
         helper.add("balanced_charge"                                                        ,"Balanced Input Priority\nPower input will be balanced between all 4 slots\nbut each slot will be limited to 1/4 of the total input rate.");
     }
 
-    private void addMisc(PrefixHelper helper) {
+    private void hudAndMessages(PrefixHelper helper) {
+        //Energy Network
+            helper.setPrefix("gui.draconicevolution.energy_net");
+             helper.add("pos_saved_to_tool",                                "Block Position saved to tool. (Sneak-Right click air to clear)");
+             helper.add("pos_cleared",                                    "Position Cleared");
+             helper.add("tool_not_bound",                                  "Tool not bound! Sneak+Right click to bind.");
+             helper.add("bound_to_invalid",                                "The tool is bound to an invalid block!");
+             helper.add("link_broken",                                    "Link Broken!");
+             helper.add("devices_linked",                                 "Devices Linked!");
+             helper.add("link_limit_reached_this",                          "This device has reached its connection limit!");
+             helper.add("link_limit_reached_target",                        "The target device has reached its connection limit!");
+             helper.add("this_range_limit",                                "The target device is too far away!");
+             helper.add("target_range_limit",                              "This device is too far from the target device!");
+             helper.add("device_invalid",                                 "That is not a valid device!");
+             helper.add("link_failed_unknown",                             "Link Failed! [Reason Unknown...]");
+             helper.add("link_to_self",                                    "You can not link a device to itself...");
+             helper.add("hud_charge",                                     "Charge");
+             helper.add("hud_links",                                      "Links");
+             helper.add("hud_wireless_links",                              "Wireless Links");
+             helper.add("io_output_true",                                 "I/O Mode:%s Output");
+             helper.add("io_output_false",                                "I/O Mode:%s Input");
+             helper.add("side_can_not_receive",                             "That tile can not receive energy on that side!.");
+             helper.add("side_can_not_extract",                             "That tile can not supply energy on that side!.");
+             helper.add("max_receivers",                                  "Receiver Limit Reached!");
+            helper.add("output",                                        "Output");
+            helper.add("input",                                         "Input");
+            helper.add("identify",                                      "Identify");
+            helper.add("unlink",                                        "UnLink");
+            helper.add("clear_links",                                    "Clear Links");
+            helper.add("clear_receivers",                                "Clear Receivers");
+
+    }
+
+    private void misc(PrefixHelper helper) {
         add("itemGroup.draconicevolution.blocks"                                            ,"Draconic Evolution Blocks");
         add("itemGroup.draconicevolution.items"                                             ,"Draconic Evolution Items");
         add("itemGroup.draconicevolution.modules"                                           ,"Draconic Evolution Modules");
@@ -516,17 +552,17 @@ public class LangGenerator extends LanguageProvider {
         add("death.attack.draconicevolution.draconic_guardian"                              ,"%1$s was torn apart by %2$s");
         add("death.attack.draconicevolution.guardian_projectile"                            ,"%1$s was obliterated %2$s");
     }
-
-
+    
     @Override
     protected void addTranslations() {
         PrefixHelper helper = new PrefixHelper(this);
-        addBlocks(helper);
-        addItems(helper);
-        addItemProps(helper);
-        addGuis(helper);
-        addModules(helper);
-        addMisc(helper);
+        blocks(helper);
+        items(helper);
+        itemProps(helper);
+        guis(helper);
+        modules(helper);
+        misc(helper);
+        hudAndMessages(helper);
     }
 
     //region Helpers

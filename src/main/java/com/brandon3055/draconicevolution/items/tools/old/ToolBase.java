@@ -8,7 +8,8 @@ import com.brandon3055.draconicevolution.api.itemconfig_dep.*;
 import com.brandon3055.draconicevolution.api.itemupgrade_dep.IUpgradableItem;
 import com.brandon3055.draconicevolution.api.itemupgrade_dep.UpgradeHelper;
 import com.brandon3055.draconicevolution.client.model.tool.IToolModelProvider;
-import com.brandon3055.draconicevolution.entity.EntityPersistentItem;
+
+import com.brandon3055.draconicevolution.entity.PersistentItemEntity;
 import com.brandon3055.draconicevolution.items.ToolUpgrade;
 import com.google.common.collect.Multimap;
 import net.minecraft.client.gui.screen.Screen;
@@ -113,7 +114,7 @@ public abstract class ToolBase extends ItemEnergyBase implements /*IRenderOverri
 
     @Override
     public Entity createEntity(World world, Entity location, ItemStack itemstack) {
-        return new EntityPersistentItem(world, location, itemstack);
+        return new PersistentItemEntity(world, location, itemstack);
     }
 
     //endregion

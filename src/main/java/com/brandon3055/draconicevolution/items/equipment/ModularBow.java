@@ -29,7 +29,7 @@ public class ModularBow extends BowItem implements IReaperItem, IModularItem {
     private final TechLevel techLevel;
 
     public ModularBow(TechPropBuilder props) {
-        super(props.build());
+        super(props.build().isImmuneToFire());
         this.techLevel = props.techLevel;
     }
 

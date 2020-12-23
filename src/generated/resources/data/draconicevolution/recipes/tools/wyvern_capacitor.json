@@ -1,0 +1,37 @@
+{
+  "type": "draconicevolution:fusion_crafting",
+  "result": {
+    "item": "draconicevolution:wyvern_capacitor"
+  },
+  "catalyst": {
+    "item": "draconicevolution:wyvern_core"
+  },
+  "total_energy": 8000000,
+  "tier": "WYVERN",
+  "ingredients": [
+    {
+      "tag": "forge:ingots/draconium"
+    },
+    {
+      "item": "draconicevolution:wyvern_energy_core"
+    },
+    {
+      "tag": "forge:ingots/draconium"
+    },
+    {
+      "item": "draconicevolution:wyvern_energy_core"
+    },
+    {
+      "item": "draconicevolution:wyvern_energy_core"
+    },
+    {
+      "tag": "forge:ingots/draconium"
+    },
+    {
+      "item": "draconicevolution:wyvern_energy_core"
+    },
+    {
+      "tag": "forge:ingots/draconium"
+    }
+  ]
+}

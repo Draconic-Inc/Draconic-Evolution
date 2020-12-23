@@ -1,7 +1,7 @@
 {
   "replace": false,
   "values": [
-    "draconicevolution:draconium_block",
-    "draconicevolution:awakened_draconium_block"
+    "#forge:storage_blocks/draconium",
+    "#forge:storage_blocks/draconium_awakened"
   ]
 }

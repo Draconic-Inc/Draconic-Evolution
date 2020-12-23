@@ -151,6 +151,7 @@ public class RenderTileEnergyCrystal extends TileEntityRenderer<TileCrystalBase>
                 crystalFull.render(ccrs, mat);
             }
         }
+        ((IRenderTypeBuffer.Impl) getter).finish();
     }
 
     private static float[] r = {0.0F, 0.55F, 1.0F};

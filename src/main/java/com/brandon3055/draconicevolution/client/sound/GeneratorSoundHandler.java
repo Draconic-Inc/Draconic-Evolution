@@ -1,20 +1,23 @@
 package com.brandon3055.draconicevolution.client.sound;
 
 import codechicken.lib.math.MathHelper;
+import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileGenerator;
 import com.brandon3055.draconicevolution.handlers.DESounds;
+import com.brandon3055.draconicevolution.lib.ISidedTileHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ITickableSound;
 import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.world.server.ChunkHolder;
 
 import static com.brandon3055.draconicevolution.blocks.tileentity.TileGenerator.Mode.*;
 
 /**
  * Created by brandon3055 on 4/10/2015.
  */
-public class GeneratorSoundHandler {
+public class GeneratorSoundHandler implements ISidedTileHandler {
     private TileGenerator tile;
     private GeneratorSound activeSound = null;
     private boolean currentHigh = false;
@@ -24,7 +27,8 @@ public class GeneratorSoundHandler {
         this.tile = tile;
     }
 
-    public void update() {
+    @Override
+    public void tick() {
         if (!tile.active.get()) {
             if (activeSound != null) {
                 activeSound.fadeDown = true;
@@ -102,7 +106,7 @@ public class GeneratorSoundHandler {
                 targetPitch = 0.5F;
             }
 
-            if (((fadeUp && pitch >= 1) || (fadeDown && pitch <= 0.55)) || tile.isRemoved() || !tile.getWorld().getChunkAt(tile.getPos()).loaded) {
+            if (((fadeUp && pitch >= 1) || (fadeDown && pitch <= 0.55)) || tile.isRemoved() || !Utils.isAreaLoaded(tile.getWorld(), tile.getPos(), ChunkHolder.LocationType.TICKING)) {
                 donePlaying = true;
                 repeat = false;
             }

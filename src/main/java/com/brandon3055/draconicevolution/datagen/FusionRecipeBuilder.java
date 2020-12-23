@@ -21,6 +21,7 @@ import net.minecraft.tags.ITag;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.Registry;
 
 public class FusionRecipeBuilder {
     private final ItemStack result;
@@ -128,13 +129,12 @@ public class FusionRecipeBuilder {
         build(consumer, result.getItem().getRegistryName());
     }
 
-    public void build(Consumer<IFinishedRecipe> consumer, String name) {
+    public void build(Consumer<IFinishedRecipe> consumer, String save) {
         ResourceLocation resourcelocation = result.getItem().getRegistryName();
-        ResourceLocation saveName = new ResourceLocation(resourcelocation.getNamespace(), name);
-        if (saveName.equals(resourcelocation)) {
-            throw new IllegalStateException("Fusion Recipe " + saveName + " should remove its 'name' argument");
+        if ((new ResourceLocation(save)).equals(resourcelocation)) {
+            throw new IllegalStateException("Fusion Recipe " + save + " should remove its 'save' argument");
         } else {
-            build(consumer, saveName);
+            this.build(consumer, new ResourceLocation(save));
         }
     }
 

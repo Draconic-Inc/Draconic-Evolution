@@ -1,0 +1,31 @@
+{
+  "type": "draconicevolution:fusion_crafting",
+  "result": {
+    "item": "draconicevolution:wyvern_chestpiece"
+  },
+  "catalyst": {
+    "item": "minecraft:diamond_chestplate"
+  },
+  "total_energy": 8000000,
+  "tier": "WYVERN",
+  "ingredients": [
+    {
+      "item": "draconicevolution:draconium_core"
+    },
+    {
+      "tag": "forge:ingots/draconium"
+    },
+    {
+      "tag": "forge:ingots/draconium"
+    },
+    {
+      "item": "draconicevolution:basic_relay_crystal"
+    },
+    {
+      "item": "draconicevolution:wyvern_energy_core"
+    },
+    {
+      "item": "draconicevolution:basic_relay_crystal"
+    }
+  ]
+}

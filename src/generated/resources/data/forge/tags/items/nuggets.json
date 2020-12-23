@@ -1,7 +1,7 @@
 {
   "replace": false,
   "values": [
-    "draconicevolution:draconium_nugget",
-    "draconicevolution:awakened_draconium_nugget"
+    "#forge:nuggets/draconium_awakened",
+    "#forge:nuggets/draconium"
   ]
 }

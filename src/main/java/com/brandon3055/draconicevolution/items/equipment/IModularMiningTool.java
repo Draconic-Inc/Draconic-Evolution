@@ -119,7 +119,7 @@ public interface IModularMiningTool extends IModularTieredItem {
                 if (sis != null) {
                     ItemEntity item = new ItemEntity(player.world, player.getPosX(), player.getPosY(), player.getPosZ(), sis);
                     item.setPickupDelay(0);
-//                        player.world.addEntity(item);
+                        player.world.addEntity(item);
                 }
             }
             player.giveExperiencePoints(inventoryDynamic.xp);
