@@ -96,6 +96,11 @@ public class LangGenerator extends LanguageProvider {
         helper.add(DEContent.chaos_frag_medium                  ,"Small Chaos Fragment");
         helper.add(DEContent.chaos_frag_small                   ,"Tiny Chaos Fragment");
         helper.add(DEContent.module_core                        ,"Module Core");
+        helper.add(DEContent.reactor_prt_stab_frame             ,"Reactor Stabilizer Frame");
+        helper.add(DEContent.reactor_prt_in_rotor               ,"Reactor Stabilizer Inner Rotor");
+        helper.add(DEContent.reactor_prt_out_rotor              ,"Reactor Stabilizer Outer Rotor");
+        helper.add(DEContent.reactor_prt_rotor_full             ,"Reactor Stabilizer Rotor Assembly");
+        helper.add(DEContent.reactor_prt_focus_ring             ,"Reactor Stabilizer Focus Ring");
         //Misc Tools
         helper.add(DEContent.magnet                             ,"Item Dislocator");
         helper.add(DEContent.magnet_advanced                    ,"Awakened Item Dislocator");
@@ -538,6 +543,12 @@ public class LangGenerator extends LanguageProvider {
             helper.add("clear_links",                                    "Clear Links");
             helper.add("clear_receivers",                                "Clear Receivers");
 
+        //Modular Item
+        helper.setPrefix("modular_item.draconicevolution");
+        helper.add("requires_energy",                                   "This item requires energy modules to function");
+        helper.add("requires_energy_press",                             "Press %s to open module config.");
+
+
     }
 
     private void misc(PrefixHelper helper) {
@@ -551,6 +562,24 @@ public class LangGenerator extends LanguageProvider {
         add("entity.draconicevolution.draconic_guardian"                                    ,"Chaos Guardian");
         add("death.attack.draconicevolution.draconic_guardian"                              ,"%1$s was torn apart by %2$s");
         add("death.attack.draconicevolution.guardian_projectile"                            ,"%1$s was obliterated %2$s");
+
+        //Temporary
+        add("gui.de.energyStorageCore.name",                                                "Tier %s Energy Core");
+        add("button.de.buildGuide.txt",                                                     "Build Guide:");
+        add("button.de.assembleCore.txt",                                                   "Assemble Core");
+        add("button.de.tierUp.txt",                                                         "Tier Up");
+        add("button.de.tierDown.txt",                                                       "Tier Down");
+        add("button.de.activate.txt",                                                       "Activate");
+        add("button.de.deactivate.txt",                                                     "Deactivate");
+        add("ecore.de.already_assembling.txt",                                              "Assembly already in progress!");
+        add("ecore.de.assemble_found_invalid.txt",                                          "Error found invalid block within build area! %s at %s");
+        add("ecore.de.assemble_error_expected_air.txt",                                     "An error occurred while building structure! Expected air block at %s");
+        add("ecore.de.assemble_missing_required.txt",                                       "Unable to complete structure! Missing required block(s) %s");
+        add("gui.de.transfer.txt",                                                          "Transfer");
+        add("gui.de.capacity.txt",                                                          "Capacity");
+        add("gui.de.maxStorage.txt",                                                        ">> Max Storage <<");
+        add("info.bc.charge.txt",                                                           "Charge");
+        add("gui.de.almostInfinite.txt",                                                    "Almost Infinite!");
     }
     
     @Override

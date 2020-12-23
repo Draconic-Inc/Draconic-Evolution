@@ -365,6 +365,11 @@ public class DEContent {
     @ObjectHolder("medium_chaos_frag")          public static Item                      chaos_frag_medium;
     @ObjectHolder("small_chaos_frag")           public static Item                      chaos_frag_small;
     @ObjectHolder("module_core")                public static Item                      module_core;
+    @ObjectHolder("reactor_prt_stab_frame")     public static Item                      reactor_prt_stab_frame;
+    @ObjectHolder("reactor_prt_in_rotor")       public static Item                      reactor_prt_in_rotor;
+    @ObjectHolder("reactor_prt_out_rotor")      public static Item                      reactor_prt_out_rotor;
+    @ObjectHolder("reactor_prt_rotor_full")     public static Item                      reactor_prt_rotor_full;
+    @ObjectHolder("reactor_prt_focus_ring")     public static Item                      reactor_prt_focus_ring;
     //Misc Tools
     @ObjectHolder("magnet")                     public static Magnet                    magnet;
     @ObjectHolder("advanced_magnet")            public static Magnet                    magnet_advanced;
@@ -487,6 +492,12 @@ public class DEContent {
         registerItem(event, new Item(new Item.Properties().group(itemGroup)).setRegistryName("medium_chaos_frag"));
         registerItem(event, new Item(new Item.Properties().group(itemGroup)).setRegistryName("small_chaos_frag"));
         registerItem(event, new Item(new Item.Properties().group(itemGroup)).setRegistryName("module_core"));
+
+        registerItem(event, new Item(new Item.Properties().group(itemGroup)).setRegistryName("reactor_prt_stab_frame"));
+        registerItem(event, new Item(new Item.Properties().group(itemGroup)).setRegistryName("reactor_prt_in_rotor"));
+        registerItem(event, new Item(new Item.Properties().group(itemGroup)).setRegistryName("reactor_prt_out_rotor"));
+        registerItem(event, new Item(new Item.Properties().group(itemGroup)).setRegistryName("reactor_prt_rotor_full"));
+        registerItem(event, new Item(new Item.Properties().group(itemGroup)).setRegistryName("reactor_prt_focus_ring"));
 //        //Items
         registerItem(event, new Magnet(new Item.Properties().maxStackSize(1).group(itemGroup), 8).setRegistryName("magnet"));
         registerItem(event, new Magnet(new Item.Properties().maxStackSize(1).group(itemGroup), 32).setRegistryName("advanced_magnet"));

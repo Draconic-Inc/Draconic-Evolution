@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " AB",
+    "CDD",
+    " AB"
+  ],
+  "key": {
+    "A": {
+      "item": "draconicevolution:reactor_prt_in_rotor"
+    },
+    "B": {
+      "item": "draconicevolution:reactor_prt_out_rotor"
+    },
+    "C": {
+      "item": "draconicevolution:wyvern_core"
+    },
+    "D": {
+      "tag": "forge:ingots/draconium"
+    }
+  },
+  "result": {
+    "item": "draconicevolution:reactor_prt_rotor_full"
+  }
+}

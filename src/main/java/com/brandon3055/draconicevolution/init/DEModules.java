@@ -141,15 +141,15 @@ public class DEModules {
         register(new ModuleImpl<>(SHIELD_CONTROLLER,    CHAOTIC,        shieldControl(5.0)),                "chaotic_shield_control");
 
         //TODO i want to tweak these a bit more. I may want to reduce recovery rate a little
-        register(new ModuleImpl<>(SHIELD_BOOST,         WYVERN,         shieldData(25,  0.5)),              "wyvern_shield_capacity");
-        register(new ModuleImpl<>(SHIELD_BOOST,         DRACONIC,       shieldData(50,  1.0)),              "draconic_shield_capacity");
-        register(new ModuleImpl<>(SHIELD_BOOST,         CHAOTIC,        shieldData(100, 2.0)),              "chaotic_shield_capacity");
+        register(new ModuleImpl<>(SHIELD_BOOST,         WYVERN,         shieldData(25,  0.1)),              "wyvern_shield_capacity");
+        register(new ModuleImpl<>(SHIELD_BOOST,         DRACONIC,       shieldData(50,  0.25)),             "draconic_shield_capacity");
+        register(new ModuleImpl<>(SHIELD_BOOST,         CHAOTIC,        shieldData(100, 0.5)),              "chaotic_shield_capacity");
         register(new ModuleImpl<>(SHIELD_BOOST,         WYVERN,         shieldData(25*5,  0.0D), 2, 2),     "wyvern_large_shield_capacity");
         register(new ModuleImpl<>(SHIELD_BOOST,         DRACONIC,       shieldData(50*5,  0.0D), 2, 2),     "draconic_large_shield_capacity");
         register(new ModuleImpl<>(SHIELD_BOOST,         CHAOTIC,        shieldData(100*5, 0.0D), 2, 2),     "chaotic_large_shield_capacity");
-        register(new ModuleImpl<>(SHIELD_BOOST,         WYVERN,         shieldData(5,   5.0)),              "wyvern_shield_recovery");
-        register(new ModuleImpl<>(SHIELD_BOOST,         DRACONIC,       shieldData(10,  10.0)),             "draconic_shield_recovery");
-        register(new ModuleImpl<>(SHIELD_BOOST,         CHAOTIC,        shieldData(20,  20.0)),             "chaotic_shield_recovery");
+        register(new ModuleImpl<>(SHIELD_BOOST,         WYVERN,         shieldData(5,   1.0)),              "wyvern_shield_recovery");
+        register(new ModuleImpl<>(SHIELD_BOOST,         DRACONIC,       shieldData(10,  2.5)),              "draconic_shield_recovery");
+        register(new ModuleImpl<>(SHIELD_BOOST,         CHAOTIC,        shieldData(20,  5.0)),              "chaotic_shield_recovery");
 
         register(new ModuleImpl<>(FLIGHT,               WYVERN,         flightData(true, false, 1), 2, 2),  "wyvern_flight");
         register(new ModuleImpl<>(FLIGHT,               DRACONIC,       flightData(true, true, 2)),         "draconic_flight");

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "draconicevolution:magnet"
+    ]
+  },
+  "criteria": {
+    "has_dust_draconium": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "draconicevolution:draconium_dust"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "draconicevolution:magnet"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_dust_draconium",
+      "has_the_recipe"
+    ]
+  ]
+}

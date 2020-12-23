@@ -22,6 +22,7 @@ import com.brandon3055.draconicevolution.api.modules.data.SpeedData;
 import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleHostImpl;
 import com.brandon3055.draconicevolution.api.modules.lib.StackModuleContext;
+import com.brandon3055.draconicevolution.client.keybinding.KeyBindings;
 import com.brandon3055.draconicevolution.entity.PersistentItemEntity;
 import com.brandon3055.draconicevolution.init.EquipCfg;
 import com.google.common.collect.HashMultimap;
@@ -116,6 +117,12 @@ public interface IModularItem extends IForgeItem {
             tooltip.add(new TranslationTextComponent("[Modular Item]").mergeStyle(TextFormatting.BLUE));
         }
         EnergyUtils.addEnergyInfo(stack, tooltip);
+        if (EnergyUtils.isEnergyItem(stack) && EnergyUtils.getMaxEnergyStored(stack) == 0) {
+            tooltip.add(new TranslationTextComponent("modular_item.draconicevolution.requires_energy").mergeStyle(TextFormatting.RED));
+            if (KeyBindings.toolModules != null && KeyBindings.toolModules.func_238171_j_() != null){
+                tooltip.add(new TranslationTextComponent("modular_item.draconicevolution.requires_energy_press", KeyBindings.toolModules.func_238171_j_().getString()).mergeStyle(TextFormatting.BLUE));
+            }
+        }
     }
 
     @Override

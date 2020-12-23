@@ -6,6 +6,7 @@ import com.brandon3055.draconicevolution.api.crafting.IngredientStack;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.init.DEModules;
 import com.brandon3055.draconicevolution.init.DETags;
+import net.minecraft.client.gui.recipebook.RecipeOverlayGui;
 import net.minecraft.data.*;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -66,6 +67,10 @@ public class RecipeGenerator extends RecipeProvider {
     }
 
     private static void components(Consumer<IFinishedRecipe> consumer) {
+
+        CookingRecipeBuilder.smeltingRecipe(Ingredient.fromTag(DUSTS_DRACONIUM), ingot_draconium, 0, 200);
+        CookingRecipeBuilder.smeltingRecipe(Ingredient.fromTag(ORES_DRACONIUM), ingot_draconium, 1, 200);
+
         ShapedRecipeBuilder.shapedRecipe(core_draconium)
                 .patternLine("ABA")
                 .patternLine("BCB")
@@ -248,16 +253,16 @@ public class RecipeGenerator extends RecipeProvider {
                 .addCriterion("has_core_draconium", hasItem(core_draconium))
                 .build(consumer);
 
-//        ShapedRecipeBuilder.shapedRecipe(energy_infuser)
-//                .patternLine("ABA")
-//                .patternLine("CDC")
-//                .patternLine("ACA")
-//                .key('A', INGOTS_DRACONIUM)
-//                .key('B', energy_core_stabilizer)
-//                .key('C', core_draconium)
-//                .key('D', ENCHANTING_TABLE)
-//                .addCriterion("has_core_draconium", hasItem(core_draconium))
-//                .build(consumer);
+        ShapedRecipeBuilder.shapedRecipe(energy_transfuser)
+                .patternLine("ABA")
+                .patternLine("CDC")
+                .patternLine("ACA")
+                .key('A', INGOTS_DRACONIUM)
+                .key('B', energy_core_stabilizer)
+                .key('C', core_draconium)
+                .key('D', ENCHANTING_TABLE)
+                .addCriterion("has_core_draconium", hasItem(core_draconium))
+                .build(consumer);
 
         ShapedRecipeBuilder.shapedRecipe(particle_generator)
                 .patternLine("ABA")
@@ -295,6 +300,8 @@ public class RecipeGenerator extends RecipeProvider {
                 .key('D', STONE_SLAB)
                 .addCriterion("has_STONE_SLAB", hasItem(STONE_SLAB))
                 .build(consumer);
+
+
     }
 
     private static void energy(Consumer<IFinishedRecipe> consumer) {
@@ -328,6 +335,88 @@ public class RecipeGenerator extends RecipeProvider {
                 .key('E', GEMS_DIAMOND)
                 .addCriterion("has_core_wyvern", hasItem(core_wyvern))
                 .build(consumer);
+
+        //Reactor
+        ShapedRecipeBuilder.shapedRecipe(reactor_prt_stab_frame)
+                .patternLine("AAA")
+                .patternLine("BC ")
+                .patternLine("AAA")
+                .key('A', INGOTS_IRON)
+                .key('B', core_wyvern)
+                .key('C', INGOTS_DRACONIUM_AWAKENED)
+                .addCriterion("has_core_wyvern", hasItem(core_wyvern))
+                .build(consumer);
+
+        ShapedRecipeBuilder.shapedRecipe(reactor_prt_in_rotor)
+                .patternLine("   ")
+                .patternLine("AAA")
+                .patternLine("BCC")
+                .key('A', INGOTS_DRACONIUM_AWAKENED)
+                .key('B', core_draconium)
+                .key('C', INGOTS_DRACONIUM)
+                .addCriterion("has_core_draconium", hasItem(core_draconium))
+                .build(consumer);
+
+        ShapedRecipeBuilder.shapedRecipe(reactor_prt_out_rotor)
+                .patternLine("   ")
+                .patternLine("AAA")
+                .patternLine("BCC")
+                .key('A', GEMS_DIAMOND)
+                .key('B', core_draconium)
+                .key('C', INGOTS_DRACONIUM)
+                .addCriterion("has_core_draconium", hasItem(core_draconium))
+                .build(consumer);
+
+        ShapedRecipeBuilder.shapedRecipe(reactor_prt_rotor_full)
+                .patternLine(" AB")
+                .patternLine("CDD")
+                .patternLine(" AB")
+                .key('A', reactor_prt_in_rotor)
+                .key('B', reactor_prt_out_rotor)
+                .key('C', core_wyvern)
+                .key('D', INGOTS_DRACONIUM)
+                .addCriterion("has_core_wyvern", hasItem(core_wyvern))
+                .build(consumer);
+
+        ShapedRecipeBuilder.shapedRecipe(reactor_prt_focus_ring)
+                .patternLine("ABA")
+                .patternLine("CBC")
+                .patternLine("ABA")
+                .key('A', INGOTS_GOLD)
+                .key('B', GEMS_DIAMOND)
+                .key('C', core_wyvern)
+                .addCriterion("has_core_wyvern", hasItem(core_wyvern))
+                .build(consumer);
+
+        FusionRecipeBuilder.fusionRecipe(reactor_stabilizer)
+                .catalyst(reactor_prt_stab_frame)
+                .energy(16000000)
+                .techLevel(TechLevel.CHAOTIC)
+                .ingredient(energy_core_draconic)
+                .ingredient(reactor_prt_rotor_full)
+                .ingredient(reactor_prt_focus_ring)
+                .ingredient(INGOTS_DRACONIUM_AWAKENED)
+                .ingredient(INGOTS_DRACONIUM_AWAKENED)
+                .ingredient(core_chaotic)
+                .ingredient(INGOTS_DRACONIUM_AWAKENED)
+                .build(consumer);
+
+        FusionRecipeBuilder.fusionRecipe(reactor_injector)
+                .catalyst(core_wyvern)
+                .energy(16000000)
+                .techLevel(TechLevel.CHAOTIC)
+                .ingredient(INGOTS_DRACONIUM)
+                .ingredient(reactor_prt_in_rotor)
+                .ingredient(reactor_prt_in_rotor)
+                .ingredient(reactor_prt_in_rotor)
+                .ingredient(INGOTS_DRACONIUM)
+                .ingredient(INGOTS_DRACONIUM)
+                .ingredient(INGOTS_IRON)
+                .ingredient(reactor_prt_in_rotor)
+                .ingredient(INGOTS_IRON)
+                .ingredient(INGOTS_DRACONIUM)
+                .build(consumer);
+
 
         FusionRecipeBuilder.fusionRecipe(reactor_core)
                 .catalyst(chaos_shard)
@@ -493,6 +582,28 @@ public class RecipeGenerator extends RecipeProvider {
                 .addIngredient(core_draconium)
                 .addIngredient(GHAST_TEAR)
                 .addCriterion("has_core_draconium", hasItem(core_draconium))
+                .build(consumer);
+
+        ShapedRecipeBuilder.shapedRecipe(magnet)
+                .patternLine("A A")
+                .patternLine("B B")
+                .patternLine("CDC")
+                .key('A', DUSTS_REDSTONE)
+                .key('B', INGOTS_DRACONIUM)
+                .key('C', INGOTS_IRON)
+                .key('D', dislocator)
+                .addCriterion("has_dust_draconium", hasItem(dust_draconium))
+                .build(consumer);
+
+        ShapedRecipeBuilder.shapedRecipe(magnet_advanced)
+                .patternLine("A A")
+                .patternLine("B B")
+                .patternLine("CDC")
+                .key('A', INGOTS_DRACONIUM)
+                .key('B', DUSTS_REDSTONE)
+                .key('C', INGOTS_DRACONIUM_AWAKENED)
+                .key('D', magnet)
+                .addCriterion("has_dust_draconium", hasItem(dust_draconium))
                 .build(consumer);
     }
 
@@ -833,7 +944,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .ingredient(DEContent.energy_core_chaotic)
                 .ingredient(DEContent.chaos_frag_large)
                 .ingredient(DEContent.energy_core_chaotic)
-                .build(consumer, folder("tools", "alt_"+DEContent.staff_chaotic.getItem().getRegistryName().getPath()));
+                .build(consumer, folder("tools", "alt_" + DEContent.staff_chaotic.getItem().getRegistryName().getPath()));
 
         //Chestpiece
         FusionRecipeBuilder.fusionRecipe(DEContent.chestpiece_wyvern)
@@ -1435,11 +1546,20 @@ public class RecipeGenerator extends RecipeProvider {
 
     private static void unsorted(Consumer<IFinishedRecipe> consumer) {
 
+        ShapedRecipeBuilder.shapedRecipe(infused_obsidian)
+                .patternLine("ABA")
+                .patternLine("BCB")
+                .patternLine("ABA")
+                .key('A', BLAZE_POWDER)
+                .key('B', Tags.Items.OBSIDIAN)
+                .key('C', DUSTS_DRACONIUM)
+                .addCriterion("has_dust_draconium", hasItem(dust_draconium))
+                .build(consumer);
+
 
 //        FusionRecipeBuilder.fusionRecipe(ender_energy_manipulator).catalyst(SKELETON_SKULL).energy(12000000).techLevel(WYVERN).ingredient(ENDER_EYE).ingredient(ENDER_EYE).ingredient(ENDER_EYE).ingredient(ENDER_EYE).ingredient(ENDER_EYE).ingredient(ENDER_EYE).ingredient(core_draconium).ingredient(core_wyvern).ingredient(core_draconium).ingredient(ENDER_EYE).build(consumer);
 
 
-//        ShapedRecipeBuilder.shapedRecipe(infused_obsidian).patternLine("ABA").patternLine("BCB").patternLine("ABA").key('A', BLAZE_POWDER).key('B', Tags.Items.OBSIDIAN).key('C', DUSTS_DRACONIUM).build(consumer);
 //        ShapedRecipeBuilder.shapedRecipe(dislocator_receptacle).patternLine("ABA").patternLine(" C ").patternLine("A A").key('A', INGOTS_IRON).key('B', core_draconium).key('C', infused_obsidian).build(consumer);
 //        ShapedRecipeBuilder.shapedRecipe(dislocator_pedestal).patternLine(" A ").patternLine(" B ").patternLine("CDC").key('A', STONE_PRESSURE_PLATE).key('B', Tags.Items.STONE).key('C', STONE_SLAB).key('D', BLAZE_POWDER).build(consumer);
 
@@ -1450,71 +1570,34 @@ public class RecipeGenerator extends RecipeProvider {
 //
 //        ShapedRecipeBuilder.shapedRecipe(entity_detector).patternLine("ABA").patternLine("CDC").patternLine("EFE").key('A', GEMS_LAPIS).key('B', ENDER_EYE).key('C', DUSTS_REDSTONE).key('D', INGOTS_DRACONIUM).key('E', INGOTS_IRON).key('F', core_draconium).build(consumer);
 //        ShapedRecipeBuilder.shapedRecipe(entity_detector_advanced).patternLine("ABA").patternLine("CDC").patternLine("EFE").key('A', STORAGE_BLOCKS_REDSTONE).key('B', SKELETON_SKULL).key('C', STORAGE_BLOCKS_LAPIS).key('D', GEMS_DIAMOND).key('E', INGOTS_DRACONIUM).key('F', entity_detector).build(consumer);
-//        ShapedRecipeBuilder.shapedRecipe(flow_gate).patternLine("ABA").patternLine("CDC").patternLine("AEA").key('A', INGOTS_IRON).key('B', potentiometer).key('C', BUCKET).key('D', core_draconium).key('E', COMPARATOR).build(consumer);
-//        ShapedRecipeBuilder.shapedRecipe(flux_gate).patternLine("ABA").patternLine("CDC").patternLine("AEA").key('A', INGOTS_IRON).key('B', potentiometer).key('C', STORAGE_BLOCKS_REDSTONE).key('D', core_draconium).key('E', COMPARATOR).build(consumer);
+        ShapedRecipeBuilder.shapedRecipe(fluid_gate)
+                .patternLine("ABA")
+                .patternLine("CDC")
+                .patternLine("AEA")
+                .key('A', INGOTS_IRON)
+                .key('B', potentiometer)
+                .key('C', BUCKET)
+                .key('D', core_draconium)
+                .key('E', COMPARATOR)
+                .addCriterion("has_dust_draconium", hasItem(dust_draconium))
+                .build(consumer);
+
+        ShapedRecipeBuilder.shapedRecipe(flux_gate)
+                .patternLine("ABA")
+                .patternLine("CDC")
+                .patternLine("AEA")
+                .key('A', INGOTS_IRON)
+                .key('B', potentiometer)
+                .key('C', STORAGE_BLOCKS_REDSTONE)
+                .key('D', core_draconium)
+                .key('E', COMPARATOR)
+                .addCriterion("has_dust_draconium", hasItem(dust_draconium))
+                .build(consumer);
 //        ShapedRecipeBuilder.shapedRecipe(dislocation_inhibitor).patternLine("AAA").patternLine("BCB").patternLine("AAA").key('A', INGOTS_IRON).key('B', IRON_BARS).key('C', magnet).build(consumer);
 
 
 //        ShapedRecipeBuilder.shapedRecipe(info_tablet).patternLine("AAA").patternLine("ABA").patternLine("AAA").key('A', Tags.Items.STONE).key('B', DUSTS_DRACONIUM).build(consumer);
-//        ShapedRecipeBuilder.shapedRecipe(magnet).patternLine("A A").patternLine("B B").patternLine("CDC").key('A', DUSTS_REDSTONE).key('B', INGOTS_DRACONIUM).key('C', INGOTS_IRON).key('D', dislocator).build(consumer);
-//        ShapedRecipeBuilder.shapedRecipe(magnet_advanced).patternLine("A A").patternLine("B B").patternLine("CDC").key('A', INGOTS_DRACONIUM).key('B', DUSTS_REDSTONE).key('C', INGOTS_DRACONIUM_AWAKENED).key('D', magnet).build(consumer);
 
-
-//                                        addFusion( new ItemStack(reactorComponent), new ItemStack(reactorPart), 16000000, 3, INGOTS_DRACONIUM_AWAKENED, energy_core_draconic, new ItemStack(reactorPart, 1, 3), new ItemStack(reactorPart, 1, 4), INGOTS_DRACONIUM_AWAKENED, INGOTS_DRACONIUM_AWAKENED, core_chaotic, INGOTS_DRACONIUM_AWAKENED);
-
-//                                        addFusion( new ItemStack(reactorComponent, 1, 1), core_wyvern, 16000000, 3, INGOTS_DRACONIUM, new ItemStack(reactorPart, 1, 1), new ItemStack(reactorPart, 1, 1), new ItemStack(reactorPart, 1, 1), INGOTS_DRACONIUM, INGOTS_DRACONIUM, INGOTS_IRON, new ItemStack(reactorPart, 1, 1), INGOTS_IRON, INGOTS_DRACONIUM);
-
-
-//        addFusionTool(NORMAL, new ItemStack(draconicPick), new ItemStack(wyvernPick), 16000, 2, core_awakened, INGOTS_DRACONIUM_AWAKENED, energy_core_draconic, INGOTS_DRACONIUM_AWAKENED);
-//        addFusionTool(HARD, new ItemStack(draconicPick), new ItemStack(wyvernPick), 512000, 2, energy_core_draconic, core_awakened, STORAGE_BLOCKS_DRACONIUM_AWAKENED, STORAGE_BLOCKS_DRACONIUM_AWAKENED);
-//        addFusionTool(NORMAL, new ItemStack(draconicShovel), new ItemStack(wyvernShovel), 16000, 2, core_awakened, INGOTS_DRACONIUM_AWAKENED, energy_core_draconic, INGOTS_DRACONIUM_AWAKENED);
-//        addFusionTool(HARD, new ItemStack(draconicShovel), new ItemStack(wyvernShovel), 512000, 2, energy_core_draconic, core_awakened, STORAGE_BLOCKS_DRACONIUM_AWAKENED, STORAGE_BLOCKS_DRACONIUM_AWAKENED);
-//        addFusionTool(NORMAL, new ItemStack(draconicAxe), new ItemStack(wyvernAxe), 16000, 2, core_awakened, INGOTS_DRACONIUM_AWAKENED, energy_core_draconic, INGOTS_DRACONIUM_AWAKENED);
-//        addFusionTool(HARD, new ItemStack(draconicAxe), new ItemStack(wyvernAxe), 512000, 2, energy_core_draconic, core_awakened, STORAGE_BLOCKS_DRACONIUM_AWAKENED, STORAGE_BLOCKS_DRACONIUM_AWAKENED);
-//        addFusionTool(NORMAL, new ItemStack(draconicBow), new ItemStack(wyvernBow), 16000, 2, core_awakened, INGOTS_DRACONIUM_AWAKENED, energy_core_draconic, INGOTS_DRACONIUM_AWAKENED);
-//        addFusionTool(HARD, new ItemStack(draconicBow), new ItemStack(wyvernBow), 512000, 2, energy_core_draconic, core_awakened, STORAGE_BLOCKS_DRACONIUM_AWAKENED, STORAGE_BLOCKS_DRACONIUM_AWAKENED);
-//        addFusionTool(NORMAL, new ItemStack(draconicSword), new ItemStack(wyvernSword), 16000, 2, core_awakened, INGOTS_DRACONIUM_AWAKENED, energy_core_draconic, INGOTS_DRACONIUM_AWAKENED);
-//        addFusionTool(HARD, new ItemStack(draconicSword), new ItemStack(wyvernSword), 512000, 2, energy_core_draconic, core_awakened, STORAGE_BLOCKS_DRACONIUM_AWAKENED, STORAGE_BLOCKS_DRACONIUM_AWAKENED);
-//        addFusionTool(NORMAL, new ItemStack(draconicHoe), new ItemStack(DIAMOND_HOE), 16000, 2, core_awakened, INGOTS_DRACONIUM_AWAKENED, energy_core_draconic, INGOTS_DRACONIUM_AWAKENED);
-//        addFusionTool(HARD, new ItemStack(draconicHoe), new ItemStack(DIAMOND_HOE), 512000, 2, energy_core_draconic, core_awakened, STORAGE_BLOCKS_DRACONIUM_AWAKENED, STORAGE_BLOCKS_DRACONIUM_AWAKENED);
-//        addFusionTool(NORMAL, new ItemStack(draconicStaffOfPower), new ItemStack(draconicPick), 16000, 2, INGOTS_DRACONIUM_AWAKENED, INGOTS_DRACONIUM_AWAKENED, INGOTS_DRACONIUM_AWAKENED, INGOTS_DRACONIUM_AWAKENED, INGOTS_DRACONIUM_AWAKENED, core_awakened, draconicShovel, draconicSword);
-//        addFusionTool(HARD, new ItemStack(draconicStaffOfPower), new ItemStack(draconicPick), 512000, 2, STORAGE_BLOCKS_DRACONIUM_AWAKENED, STORAGE_BLOCKS_DRACONIUM_AWAKENED, STORAGE_BLOCKS_DRACONIUM_AWAKENED, STORAGE_BLOCKS_DRACONIUM_AWAKENED, STORAGE_BLOCKS_DRACONIUM_AWAKENED, core_awakened, draconicShovel, draconicSword);
-
-
-//        addFusionTool(NORMAL, new ItemStack(draconicHelm), new ItemStack(wyvernHelm), 320000, 2, INGOTS_DRACONIUM_AWAKENED, core_awakened, INGOTS_DRACONIUM_AWAKENED, energy_core_draconic);
-//        addFusionTool(HARD, new ItemStack(draconicHelm), new ItemStack(wyvernHelm), 5000000, 2, STORAGE_BLOCKS_DRACONIUM_AWAKENED, core_awakened, energy_core_draconic);
-//        addFusionTool(NORMAL, new ItemStack(draconicChest), new ItemStack(wyvernChest), 320000, 2, INGOTS_DRACONIUM_AWAKENED, core_awakened, INGOTS_DRACONIUM_AWAKENED, energy_core_draconic);
-//        addFusionTool(HARD, new ItemStack(draconicChest), new ItemStack(wyvernChest), 5000000, 2, STORAGE_BLOCKS_DRACONIUM_AWAKENED, core_awakened, energy_core_draconic);
-//        addFusionTool(NORMAL, new ItemStack(draconicLegs), new ItemStack(wyvernLegs), 320000, 2, INGOTS_DRACONIUM_AWAKENED, core_awakened, INGOTS_DRACONIUM_AWAKENED, energy_core_draconic);
-//        addFusionTool(HARD, new ItemStack(draconicLegs), new ItemStack(wyvernLegs), 5000000, 2, STORAGE_BLOCKS_DRACONIUM_AWAKENED, core_awakened, energy_core_draconic);
-//        addFusionTool(NORMAL, new ItemStack(draconicBoots), new ItemStack(wyvernBoots), 320000, 2, INGOTS_DRACONIUM_AWAKENED, core_awakened, INGOTS_DRACONIUM_AWAKENED, energy_core_draconic);
-//        addFusionTool(HARD, new ItemStack(draconicBoots), new ItemStack(wyvernBoots), 5000000, 2, STORAGE_BLOCKS_DRACONIUM_AWAKENED, core_awakened, energy_core_draconic);
-
-
-//        //Reactor
-//        addShaped(reactorPart, "AAA", "BC ", "AAA", 'A', INGOTS_IRON, 'B', core_wyvern, 'C', INGOTS_DRACONIUM_AWAKENED);
-//
-//        addShaped(new ItemStack(reactorPart, 1, 1), "   ", "AAA", "BCC", 'A', INGOTS_DRACONIUM_AWAKENED, 'B', core_draconium, 'C', INGOTS_DRACONIUM);
-//
-//        addShaped(new ItemStack(reactorPart, 1, 2), "   ", "AAA", "BCC", 'A', GEMS_DIAMOND, 'B', core_draconium, 'C', INGOTS_DRACONIUM);
-//
-//        addShaped(new ItemStack(reactorPart, 1, 3), " AB", "CDD", " AB", 'A', new ItemStack(reactorPart, 1, 1), 'B', new ItemStack(reactorPart, 1, 2), 'C', core_wyvern, 'D', INGOTS_DRACONIUM);
-//
-//        addShaped(new ItemStack(reactorPart, 1, 4), "ABA", "BCB", "ABA", 'A', "ingotGold", 'B', GEMS_DIAMOND, 'C', core_wyvern);
-
-        //region Upgrade Keys
-//                                        addShaped(getKey(ToolUpgrade.RF_CAPACITY), "ABA", "CDC", "ABA", 'A', new ItemStack(DYE, 1, 4), 'B', core_draconium, 'C', INGOTS_DRACONIUM, 'D', energy_core_wyvern);
-//                                        addShaped(getKey(ToolUpgrade.DIG_SPEED), "ABA", "CDC", "ABA", 'A', new ItemStack(DYE, 1, 4), 'B', core_draconium, 'C', INGOTS_DRACONIUM, 'D', GOLDEN_PICKAXE);
-//                                        addShaped(getKey(ToolUpgrade.DIG_AOE), "ABA", "CDC", "ABA", 'A', new ItemStack(DYE, 1, 4), 'B', core_draconium, 'C', INGOTS_DRACONIUM, 'D', ENDER_PEARLS);
-//                                        addShaped(getKey(ToolUpgrade.ATTACK_DAMAGE), "ABA", "CDC", "ABA", 'A', new ItemStack(DYE, 1, 4), 'B', core_draconium, 'C', INGOTS_DRACONIUM, 'D', GOLDEN_SWORD);
-//                                        addShaped(getKey(ToolUpgrade.ATTACK_AOE), "ABA", "CDC", "ABA", 'A', new ItemStack(DYE, 1, 4), 'B', core_draconium, 'C', INGOTS_DRACONIUM, 'D', DIAMOND_SWORD);
-//                                        addShaped(getKey(ToolUpgrade.ARROW_DAMAGE), "ABC", "DED", "ABA", 'A', new ItemStack(DYE, 1, 4), 'B', core_draconium, 'C', "ingotGold", 'D', INGOTS_DRACONIUM, 'E', ARROW);
-//                                        addShaped(getKey(ToolUpgrade.DRAW_SPEED), "ABA", "CDC", "ABE", 'A', new ItemStack(DYE, 1, 4), 'B', core_draconium, 'C', INGOTS_DRACONIUM, 'D', BOW, 'E', "ingotGold");
-//                                        addShaped(getKey(ToolUpgrade.ARROW_SPEED), "ABC", "DED", "ABA", 'A', new ItemStack(DYE, 1, 4), 'B', core_draconium, 'C', "feather", 'D', INGOTS_DRACONIUM, 'E', ARROW);
-//                                        addShaped(getKey(ToolUpgrade.SHIELD_CAPACITY), "ABA", "CDC", "ABA", 'A', new ItemStack(DYE, 1, 4), 'B', core_draconium, 'C', INGOTS_DRACONIUM, 'D', DIAMOND_CHESTPLATE);
-//                                        addShaped(getKey(ToolUpgrade.SHIELD_RECOVERY), "ABA", "CDC", "ABA", 'A', new ItemStack(DYE, 1, 4), 'B', core_draconium, 'C', INGOTS_DRACONIUM, 'D', GOLDEN_CHESTPLATE);
-//                                        addShaped(getKey(ToolUpgrade.MOVE_SPEED), "ABA", "CDC", "AEA", 'A', new ItemStack(DYE, 1, 4), 'B', core_draconium, 'C', INGOTS_DRACONIUM, 'D', GOLDEN_BOOTS, 'E', STORAGE_BLOCKS_REDSTONE);
-//                                        addShaped(getKey(ToolUpgrade.JUMP_BOOST), "ABA", "CDC", "AEA", 'A', new ItemStack(DYE, 1, 4), 'B', core_draconium, 'C', INGOTS_DRACONIUM, 'D', GOLDEN_BOOTS, 'E', "blockSlime");
 
     }
 

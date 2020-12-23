@@ -111,6 +111,11 @@ public class ItemModelGenerator extends ItemModelProvider {
         dummyModel(DEContent.chaos_frag_small);
         dummyModel(DEContent.chaos_frag_medium);
         dummyModel(DEContent.chaos_frag_large);
+        dummyModel(DEContent.reactor_prt_stab_frame);
+        dummyModel(DEContent.reactor_prt_in_rotor);
+        dummyModel(DEContent.reactor_prt_out_rotor);
+        dummyModel(DEContent.reactor_prt_rotor_full);
+        dummyModel(DEContent.reactor_prt_focus_ring);
         //endregion
 
         //region Misc

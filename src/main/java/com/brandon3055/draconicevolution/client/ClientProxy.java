@@ -243,6 +243,11 @@ public class ClientProxy extends CommonProxy {
         modelHelper.register(new ModelResourceLocation(DEContent.reactor_core.getRegistryName(), "inventory"), new RenderItemReactorComponent(0));
         modelHelper.register(new ModelResourceLocation(DEContent.reactor_stabilizer.getRegistryName(), "inventory"), new RenderItemReactorComponent(1));
         modelHelper.register(new ModelResourceLocation(DEContent.reactor_injector.getRegistryName(), "inventory"), new RenderItemReactorComponent(2));
+        modelHelper.register(new ModelResourceLocation(DEContent.reactor_prt_stab_frame.getRegistryName(), "inventory"), new RenderItemReactorPart());
+        modelHelper.register(new ModelResourceLocation(DEContent.reactor_prt_in_rotor.getRegistryName(), "inventory"), new RenderItemReactorPart());
+        modelHelper.register(new ModelResourceLocation(DEContent.reactor_prt_out_rotor.getRegistryName(), "inventory"), new RenderItemReactorPart());
+        modelHelper.register(new ModelResourceLocation(DEContent.reactor_prt_rotor_full.getRegistryName(), "inventory"), new RenderItemReactorPart());
+        modelHelper.register(new ModelResourceLocation(DEContent.reactor_prt_focus_ring.getRegistryName(), "inventory"), new RenderItemReactorPart());
 
 
         if (DEConfig.fancyToolModels) {
