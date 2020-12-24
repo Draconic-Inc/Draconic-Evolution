@@ -210,7 +210,7 @@ public class HudHandler {
             RenderSystem.translated(-x, -y, 0);
             String shield = (int) shieldPoints + "/" + (int) maxShieldPoints;
 //            String entropy = "EN: " + (int) shieldEntropy + "%";
-            String energy = "RF: " + formatNumber(rfTotal);
+            String energy = "OP: " + formatNumber(rfTotal);
             float fade = Math.min(armorStatsFadeOut, 1F);
             if (!rotated) {
                 fontRenderer.drawStringWithShadow(mStack, shield, x + 18, y + 74, ((int) (fade * 240F) + 0x10 << 24) | 0x00FFFFFF);

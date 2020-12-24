@@ -60,9 +60,10 @@ public class KeyInputHandler {
     }
 
     private void onInput(PlayerEntity player) {
-        if (KeyBindings.placeItem.isPressed()) {
-            handlePlaceItemKey();
-        } else if (KeyBindings.toolConfig.isPressed()) {
+//        if (KeyBindings.placeItem.isPressed()) {
+//            handlePlaceItemKey();
+//        }
+        if (KeyBindings.toolConfig.isPressed()) {
             DraconicNetwork.sendOpenItemConfig(false);
         }
 //        else if (KeyBindings.hudConfig.isPressed()) {

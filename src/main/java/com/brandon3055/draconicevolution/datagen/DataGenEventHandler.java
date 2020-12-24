@@ -3,10 +3,12 @@ package com.brandon3055.draconicevolution.datagen;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.init.DETags;
+import com.google.common.collect.Sets;
 import com.google.gson.*;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.FrameType;
+import net.minecraft.advancements.criterion.ChangeDimensionTrigger;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.model.ItemTransformVec3f;
@@ -17,6 +19,8 @@ import net.minecraft.resources.ResourcePackType;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.generators.*;
@@ -34,6 +38,7 @@ import org.jline.utils.InputStreamReader;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -110,5 +115,54 @@ public class DataGenEventHandler {
         }
     }
 
+    private static class AdvancementBuilder extends AdvancementProvider {
+        private DataGenerator generator;
+        private static final Gson GSON = (new GsonBuilder()).setPrettyPrinting().create();
+
+        public AdvancementBuilder(DataGenerator generator) {
+            super(generator);
+            this.generator = generator;
+        }
+
+        private void aggAdvancements(Consumer<Advancement> consumer) {
+
+//            Advancement advancement = Advancement.Builder.builder()
+//                    .withDisplay(Blocks.END_STONE, new TranslationTextComponent("advancements.end.root.title"), new TranslationTextComponent("advancements.end.root.description"), new ResourceLocation("textures/gui/advancements/backgrounds/end.png"), FrameType.TASK, false, false, false)
+//                    .withCriterion("entered_end", ChangeDimensionTrigger.Instance.toWorld(World.THE_END))
+//                    .register(consumer, "end/root");
+        }
+
+        @Override
+        public void act(DirectoryCache cache) throws IOException {
+            Path path = this.generator.getOutputFolder();
+            Set<ResourceLocation> set = Sets.newHashSet();
+            Consumer<Advancement> consumer = (advancement) -> {
+                if (!set.add(advancement.getId())) {
+                    throw new IllegalStateException("Duplicate advancement " + advancement.getId());
+                } else {
+                    Path path1 = makePath(advancement.getId());
+
+                    try {
+                        IDataProvider.save(GSON, cache, advancement.copy().serialize(), path1);
+                    } catch (IOException ioexception) {
+                        DraconicEvolution.LOGGER.error("Couldn't save advancement {}", path1, ioexception);
+                    }
+
+                }
+            };
+
+            aggAdvancements(consumer);
+
+
+        }
+
+//        private static Path getPath(Path pathIn, Advancement advancementIn) {
+//            return pathIn.resolve("data/" + advancementIn.getId().getNamespace() + "/advancements/" + advancementIn.getId().getPath() + ".json");
+//        }
+
+        protected Path makePath(ResourceLocation id) {
+            return this.generator.getOutputFolder().resolve("data/" + id.getNamespace() + "/advancements/" + id.getPath() + ".json");
+        }
+    }
 
 }

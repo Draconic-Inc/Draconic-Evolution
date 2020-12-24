@@ -4,6 +4,7 @@ import codechicken.lib.data.MCDataInput;
 import codechicken.lib.inventory.InventoryUtils;
 import codechicken.lib.math.MathHelper;
 import codechicken.lib.packet.PacketCustom;
+import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.api.power.OPStorage;
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.capability.CapabilityOP;
@@ -99,7 +100,7 @@ public class TileGrinder extends TileBCore implements ITickableTileEntity, IRSSw
         entityFilter.setDirtyHandler(this::markDirty);
         entityFilter.setTypePredicate(e -> e != PLAYER || DEOldConfig.allowGrindingPlayers);
         entityFilter.setupServerPacketHandling(() -> createClientBoundPacket(0), packet -> sendPacketToClients(getAccessingPlayers(), packet));
-        entityFilter.setupClientPacketHandling(() -> createServerBoundPacket(0), PacketCustom::sendToServer);
+        entityFilter.setupClientPacketHandling(() -> createServerBoundPacket(0), packetCustom -> BrandonsCore.proxy.sendToServer(packetCustom));
         setClientSidePacketHandler(0, input -> entityFilter.receivePacketFromServer(input));
         setServerSidePacketHandler(0, (input, player) -> entityFilter.receivePacketFromClient(input));
         setSavedDataObject("entity_filter", entityFilter);

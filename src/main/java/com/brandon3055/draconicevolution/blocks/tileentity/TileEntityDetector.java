@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.blocks.tileentity;
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.packet.PacketCustom;
 import codechicken.lib.vec.Vector3;
+import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.api.power.OPStorage;
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.capability.CapabilityOP;
@@ -99,7 +100,7 @@ public class TileEntityDetector extends TileBCore implements IActivatableTile, I
         entityFilter = new EntityFilter(true, FilterType.values());
         entityFilter.setDirtyHandler(this::markDirty);
         entityFilter.setupServerPacketHandling(() -> createClientBoundPacket(0), packet -> sendPacketToClients(getAccessingPlayers(), packet));
-        entityFilter.setupClientPacketHandling(() -> createServerBoundPacket(0), PacketCustom::sendToServer);
+        entityFilter.setupClientPacketHandling(() -> createServerBoundPacket(0), packetCustom -> BrandonsCore.proxy.sendToServer(packetCustom));
         setClientSidePacketHandler(0, input -> entityFilter.receivePacketFromServer(input));
         setServerSidePacketHandler(0, (input, player) -> entityFilter.receivePacketFromClient(input));
         setSavedDataObject("entity_filter", entityFilter);

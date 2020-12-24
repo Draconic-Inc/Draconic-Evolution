@@ -70,7 +70,7 @@ public class GuiGrinder extends ModularGuiContainer<ContainerBCTile<TileGrinder>
         PopoutDialog popOutDialog = new PopoutDialog(bg);
         popOutDialog.onReload(e -> e.setPosAndSize(bg));
         popOutDialog.addChild(filterUI);
-        popOutDialog.addChild(new GuiLabel(I18n.format("bc.guitoolkit.large_view.close")).onReload(e -> e.setYPos(bg.maxYPos()).setXPos(bg.xPos()).setSize(200, 12)).setAlignment(GuiAlign.LEFT));
+        popOutDialog.addChild(new GuiLabel(I18n.format("gui_tkt.brandonscore.click_out_close")).onReload(e -> e.setYPos(bg.maxYPos()).setXPos(bg.xPos()).setSize(200, 12)).setAlignment(GuiAlign.LEFT));
 
         GuiButton largeView = toolkit.createResizeButton(bg);
         largeView.setPos(filterBG.maxXPos() + 1, filterBG.maxYPos() - 12);

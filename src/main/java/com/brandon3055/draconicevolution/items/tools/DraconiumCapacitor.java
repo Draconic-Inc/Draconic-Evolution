@@ -72,7 +72,12 @@ public class DraconiumCapacitor extends Item implements IInvCharge, IModularItem
 
     @Override
     public ModuleHostImpl createHost(ItemStack stack) {
-        ModuleHostImpl host = new ModuleHostImpl(techLevel, ModuleCfg.capacitorWidth(techLevel), ModuleCfg.capacitorHeight(techLevel), "capacitor", ModuleCfg.removeInvalidModules);
+        ModuleHostImpl host;
+        if (this == DEContent.capacitor_creative) {
+            host = new ModuleHostImpl(techLevel, 1, 1, "capacitor", ModuleCfg.removeInvalidModules);
+        }else {
+            host = new ModuleHostImpl(techLevel, ModuleCfg.capacitorWidth(techLevel), ModuleCfg.capacitorHeight(techLevel), "capacitor", ModuleCfg.removeInvalidModules);
+        }
         host.addPropertyBuilder(props -> {
             props.add(new BooleanProperty("charge_held_item", false));
             props.add(new BooleanProperty("charge_armor", false));

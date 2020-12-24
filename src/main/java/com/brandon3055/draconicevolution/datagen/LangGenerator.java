@@ -211,7 +211,7 @@ public class LangGenerator extends LanguageProvider {
         helper.add("shield_recharge.value"                                                  , "%s pps (%s seconds)\n@ %s OP/t");
         helper.add("shield_passive.name"                                                    , "Shield Operating Cost");
         helper.add("shield_passive.value"                                                   , "%s OP/t");
-        helper.add("shield_control.name"                                                    , "Shield c ool down");
+        helper.add("shield_control.name"                                                    , "Shield cool down");
         helper.add("shield_control.value"                                                   , "%s Seconds");
 
         helper.add(ModuleTypes.FLIGHT                                                       , "Flight");
@@ -222,7 +222,7 @@ public class LangGenerator extends LanguageProvider {
         helper.add("flight.boost.name"                                                      , "Elytra Boost");
 //        add("module.draconicevolution.flight.boost.value"                                   , "%s%");
 
-        helper.add(ModuleTypes.LAST_STAND                                                   , "Last Stand");
+        helper.add(ModuleTypes.LAST_STAND                                                   , "Undying");
         helper.add("last_stand.health.name"                                                 , "Health Boost");
         helper.add("last_stand.health.value"                                                , "%s Health points");
         helper.add("last_stand.shield.name"                                                 , "Shield Boost");
@@ -580,6 +580,22 @@ public class LangGenerator extends LanguageProvider {
         add("gui.de.maxStorage.txt",                                                        ">> Max Storage <<");
         add("info.bc.charge.txt",                                                           "Charge");
         add("gui.de.almostInfinite.txt",                                                    "Almost Infinite!");
+
+        add("gui.de.stabilizers.txt",                                                       "Stabilizers");
+        add("gui.de.invalid.txt",                                                           "Invalid");
+        add("gui.de.valid.txt",                                                             "Valid");
+        add("gui.de.advancedStabilizersRequired.txt",                                       "Advanced Stabilizers Required");
+        add("gui.de.core.txt",                                                              "Core");
+        add("gui.de.inactive.txt",                                                          "Inactive");
+        add("gui.de.active.txt",                                                            "Active");
+
+
+
+        add("key.draconicevolution.place_item",                                             "Place Item");
+        add("key.draconicevolution.tool_config",                                            "Tool Config");
+        add("key.draconicevolution.toggle_flight",                                          "Toggle Flight");
+        add("key.draconicevolution.tool_modules",                                           "Tool Modules");
+
     }
     
     @Override
