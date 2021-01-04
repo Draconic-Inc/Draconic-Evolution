@@ -7,6 +7,7 @@ import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.api.config.DecimalProperty;
 import com.brandon3055.draconicevolution.api.modules.ModuleCategory;
 import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
+import com.brandon3055.draconicevolution.api.modules.data.JumpData;
 import com.brandon3055.draconicevolution.api.modules.data.SpeedData;
 import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleHostImpl;
@@ -27,6 +28,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nullable;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 import static com.brandon3055.draconicevolution.api.config.ConfigProperty.DecimalFormatter.PLUS_PERCENT_0;
 import static com.brandon3055.draconicevolution.init.ModuleCfg.*;
@@ -54,12 +56,28 @@ public class ModularChestpiece extends ArmorItem implements IModularArmor {
         host.addPropertyBuilder(props -> {
             SpeedData speed = host.getModuleData(ModuleTypes.SPEED);
             if (speed != null) {
-                double maxSpeed = speed.getSpeedMultiplier();
-                if (DEConfig.armorSpeedLimit != -1) {
-                    maxSpeed = Math.min(maxSpeed, DEConfig.armorSpeedLimit);
-                }
-                props.add(new DecimalProperty("walk_speed", 0).range(0, maxSpeed).setFormatter(PLUS_PERCENT_0));
-                props.add(new DecimalProperty("run_speed", maxSpeed).range(0, maxSpeed).setFormatter(PLUS_PERCENT_0));
+                Supplier<Double> speedGetter = () -> {
+                    SpeedData data = host.getModuleData(ModuleTypes.SPEED);
+                    double maxSpeed = data == null ? 0 : data.getSpeedMultiplier();
+                    if (DEConfig.armorSpeedLimit != -1) {
+                        maxSpeed = Math.min(maxSpeed, DEConfig.armorSpeedLimit);
+                    }
+                    return maxSpeed;
+                };
+
+                props.add(new DecimalProperty("walk_speed", 0).min(0).max(speedGetter).setFormatter(PLUS_PERCENT_0));
+                props.add(new DecimalProperty("run_speed", speedGetter.get()).min(0).max(speedGetter).setFormatter(PLUS_PERCENT_0));
+            }
+            
+            JumpData jump = host.getModuleData(ModuleTypes.JUMP_BOOST);
+            if (jump != null) {
+                Supplier<Double> jumpGetter = () -> {
+                    JumpData data = host.getModuleData(ModuleTypes.JUMP_BOOST);
+                    return data == null ? 0 : data.getMultiplier();
+                };
+
+                props.add(new DecimalProperty("jump_boost_run", 0).min(0).max(jumpGetter).setFormatter(PLUS_PERCENT_0));
+                props.add(new DecimalProperty("jump_boost", jumpGetter.get()).min(0).max(jumpGetter).setFormatter(PLUS_PERCENT_0));
             }
         });
         return host;

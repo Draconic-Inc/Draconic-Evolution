@@ -191,6 +191,7 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
     }
 
     private void gatherProperties() {
+        //TODO there are issues with this. It does not update properties when modules change
         List<ConfigProperty> gathered = new ArrayList<>();
         if (propertyBuilder != null) {
             propertyBuilder.accept(gathered);

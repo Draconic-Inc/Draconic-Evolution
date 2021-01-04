@@ -260,7 +260,7 @@ public interface IModularItem extends IForgeItem {
     }
 
     @Nullable
-    @Override
+    @Override //Todo waiting on forge to fix shit
     default Entity createEntity(World world, Entity location, ItemStack itemstack) {
 //        return new PersistentItemEntity(world, location, itemstack);
         if (location instanceof ItemEntity) {

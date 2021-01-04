@@ -26,12 +26,12 @@ public class JumpType extends ModuleTypeImpl<JumpData> {
 
     @Override
     public void getTypeProperties(@Nullable JumpData jumpData, Map<ConfigProperty, Consumer<JumpData>> propertyMap) {
-        if (jumpData != null) {
-            double jumpVal = jumpData.getMultiplier();
-            DecimalProperty jump = new DecimalProperty("de.module.jump_boost_run.prop", jumpVal).setFormatter(PLUS_PERCENT_0).range(0, jumpVal);
-            propertyMap.put(jump, e-> jump.range(0, jumpVal));
-            DecimalProperty runJump = new DecimalProperty("de.module.jump_boost.prop", 0).setFormatter(PLUS_PERCENT_0).range(0, jumpVal);
-            propertyMap.put(runJump, e-> runJump.range(0, jumpVal));
-        }
+//        if (jumpData != null) {
+//            double jumpVal = jumpData.getMultiplier();
+//            DecimalProperty jump = new DecimalProperty("de.module.jump_boost_run.prop", jumpVal).setFormatter(PLUS_PERCENT_0).range(0, jumpVal);
+//            propertyMap.put(jump, e-> jump.range(0, jumpVal));
+//            DecimalProperty runJump = new DecimalProperty("de.module.jump_boost.prop", 0).setFormatter(PLUS_PERCENT_0).range(0, jumpVal);
+//            propertyMap.put(runJump, e-> runJump.range(0, jumpVal));
+//        }
     }
 }
