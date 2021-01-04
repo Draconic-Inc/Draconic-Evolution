@@ -1237,7 +1237,6 @@ public class RecipeGenerator extends RecipeProvider {
                 .build(consumer, folder("modules", DEModules.chaoticShieldControl));
 
         //Shield Capacity
-
         ShapedRecipeBuilder.shapedRecipe(DEModules.wyvernShieldCapacity.getItem())
                 .patternLine("#I#")
                 .patternLine("ABA")
@@ -1246,7 +1245,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .key('A', DUSTS_GLOWSTONE)
                 .key('B', module_core)
                 .key('I', NETHERITE_SCRAP)
-                .addCriterion("has_module_core", hasItem(module_core))
+                .addCriterion("has_wyvern_shield", hasItem(DEModules.wyvernShieldControl.getItem()))
                 .build(consumer, folder("modules", DEModules.wyvernShieldCapacity));
 
         ShapedRecipeBuilder.shapedRecipe(DEModules.draconicShieldCapacity.getItem())
@@ -1258,7 +1257,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .key('B', DEModules.wyvernShieldCapacity.getItem())
                 .key('C', core_draconium)
                 .key('D', core_wyvern)
-                .addCriterion("has_module_core", hasItem(module_core))
+                .addCriterion("has_draconic_shield", hasItem(DEModules.draconicShieldControl.getItem()))
                 .build(consumer, folder("modules", DEModules.draconicShieldCapacity));
 
         ShapedRecipeBuilder.shapedRecipe(DEModules.chaoticShieldCapacity.getItem())
@@ -1270,7 +1269,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .key('B', DEModules.draconicShieldCapacity.getItem())
                 .key('C', core_wyvern)
                 .key('D', core_chaotic)
-                .addCriterion("has_module_core", hasItem(module_core))
+                .addCriterion("has_chaotic_shield", hasItem(DEModules.chaoticShieldControl.getItem()))
                 .build(consumer, folder("modules", DEModules.chaoticShieldCapacity));
 
         //Shield Capacity XL
@@ -1280,7 +1279,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .patternLine("#A#")
                 .key('#', DEModules.wyvernShieldCapacity.getItem())
                 .key('A', core_draconium)
-                .addCriterion("has_module_core", hasItem(module_core))
+                .addCriterion("has_wyvern_shield", hasItem(DEModules.wyvernShieldControl.getItem()))
                 .build(consumer, folder("modules", DEModules.wyvernLargeShieldCapacity));
 
         ShapedRecipeBuilder.shapedRecipe(DEModules.draconicLargeShieldCapacity.getItem())
@@ -1289,7 +1288,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .patternLine("#A#")
                 .key('#', DEModules.draconicShieldCapacity.getItem())
                 .key('A', core_draconium)
-                .addCriterion("has_module_core", hasItem(module_core))
+                .addCriterion("has_draconic_shield", hasItem(DEModules.draconicShieldControl.getItem()))
                 .build(consumer, folder("modules", DEModules.draconicLargeShieldCapacity));
 
         ShapedRecipeBuilder.shapedRecipe(DEModules.chaoticLargeShieldCapacity.getItem())
@@ -1298,22 +1297,22 @@ public class RecipeGenerator extends RecipeProvider {
                 .patternLine("#A#")
                 .key('#', DEModules.chaoticShieldCapacity.getItem())
                 .key('A', core_draconium)
-                .addCriterion("has_module_core", hasItem(module_core))
+                .addCriterion("has_chaotic_shield", hasItem(DEModules.chaoticShieldControl.getItem()))
                 .build(consumer, folder("modules", DEModules.chaoticLargeShieldCapacity));
 
         ShapelessRecipeBuilder.shapelessRecipe(DEModules.wyvernShieldCapacity.getItem(), 5)
                 .addIngredient(DEModules.wyvernLargeShieldCapacity.getItem())
-                .addCriterion("has_module_core", hasItem(module_core))
+                .addCriterion("has_wyvern_shield", hasItem(DEModules.wyvernShieldControl.getItem()))
                 .build(consumer, DraconicEvolution.MODID + ":modules/uncraft_" + DEModules.wyvernShieldCapacity.getRegistryName().getPath());
 
         ShapelessRecipeBuilder.shapelessRecipe(DEModules.draconicShieldCapacity.getItem(), 5)
                 .addIngredient(DEModules.draconicLargeShieldCapacity.getItem())
-                .addCriterion("has_module_core", hasItem(module_core))
+                .addCriterion("has_draconic_shield", hasItem(DEModules.draconicShieldControl.getItem()))
                 .build(consumer, DraconicEvolution.MODID + ":modules/uncraft_" + DEModules.draconicShieldCapacity.getRegistryName().getPath());
 
         ShapelessRecipeBuilder.shapelessRecipe(DEModules.chaoticShieldCapacity.getItem(), 5)
                 .addIngredient(DEModules.chaoticLargeShieldCapacity.getItem())
-                .addCriterion("has_module_core", hasItem(module_core))
+                .addCriterion("has_chaotic_shield", hasItem(DEModules.chaoticShieldControl.getItem()))
                 .build(consumer, DraconicEvolution.MODID + ":modules/uncraft_" + DEModules.chaoticShieldCapacity.getRegistryName().getPath());
 
         //Shield Recovery
@@ -1325,7 +1324,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .key('A', DUSTS_REDSTONE)
                 .key('B', module_core)
                 .key('I', NETHERITE_SCRAP)
-                .addCriterion("has_module_core", hasItem(module_core))
+                .addCriterion("has_wyvern_shield", hasItem(DEModules.wyvernShieldControl.getItem()))
                 .build(consumer, folder("modules", DEModules.wyvernShieldRecovery));
 
         ShapedRecipeBuilder.shapedRecipe(DEModules.draconicShieldRecovery.getItem())
@@ -1337,7 +1336,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .key('B', DEModules.wyvernShieldRecovery.getItem())
                 .key('C', core_draconium)
                 .key('D', core_wyvern)
-                .addCriterion("has_module_core", hasItem(module_core))
+                .addCriterion("has_draconic_shield", hasItem(DEModules.draconicShieldControl.getItem()))
                 .build(consumer, folder("modules", DEModules.draconicShieldRecovery));
 
         ShapedRecipeBuilder.shapedRecipe(DEModules.chaoticShieldRecovery.getItem())
@@ -1349,7 +1348,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .key('B', DEModules.draconicShieldRecovery.getItem())
                 .key('C', core_wyvern)
                 .key('D', core_chaotic)
-                .addCriterion("has_module_core", hasItem(module_core))
+                .addCriterion("has_chaotic_shield", hasItem(DEModules.chaoticShieldControl.getItem()))
                 .build(consumer, folder("modules", DEModules.chaoticShieldRecovery));
 
         //Flight

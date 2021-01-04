@@ -6,6 +6,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
@@ -23,5 +24,5 @@ public interface IHudDisplay {
      * @param displayList The list to which display data should be added.
      */
     @OnlyIn(Dist.CLIENT)
-    void addDisplayData(@Nullable ItemStack stack, World world, @Nullable BlockPos pos, List<String> displayList);
+    void addDisplayData(@Nonnull ItemStack stack, World world, @Nullable BlockPos pos, List<String> displayList);
 }

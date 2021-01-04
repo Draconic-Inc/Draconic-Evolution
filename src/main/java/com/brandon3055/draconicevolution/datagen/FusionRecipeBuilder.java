@@ -119,12 +119,6 @@ public class FusionRecipeBuilder {
         return ingredient(true, ingredient);
     }
 
-//    public FusionRecipeBuilder addCriterion(String name, ICriterionInstance criterionIn) {
-//        advancementBuilder.withCriterion(name, criterionIn);
-//        return this;
-//    }
-
-
     public void build(Consumer<IFinishedRecipe> consumer) {
         build(consumer, result.getItem().getRegistryName());
     }
@@ -177,8 +171,6 @@ public class FusionRecipeBuilder {
         private final TechLevel techLevel;
         private final Collection<FusionRecipe.FusionIngredient> ingredients;
         private final long energy;
-//        private final Advancement.Builder advancementBuilder;
-//        private final ResourceLocation advancementId;
 
         public Result(ResourceLocation id, ItemStack result, Ingredient catalyst, long energy, TechLevel techLevel, Collection<FusionRecipe.FusionIngredient> ingredients) {//, Advancement.Builder advancementBuilderIn, ResourceLocation advancementIdIn) {
             this.id = id;
@@ -187,8 +179,6 @@ public class FusionRecipeBuilder {
             this.energy = energy;
             this.techLevel = techLevel;
             this.ingredients = ingredients;
-//            this.advancementBuilder = advancementBuilderIn;
-//            this.advancementId = advancementIdIn;
         }
 
         public void serialize(JsonObject json) {

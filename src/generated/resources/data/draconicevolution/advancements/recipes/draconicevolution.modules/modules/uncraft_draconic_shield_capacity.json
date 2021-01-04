@@ -6,12 +6,12 @@
     ]
   },
   "criteria": {
-    "has_module_core": {
+    "has_draconic_shield": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "item": "draconicevolution:module_core"
+            "item": "draconicevolution:draconic_shield_control_module"
           }
         ]
       }
@@ -25,7 +25,7 @@
   },
   "requirements": [
     [
-      "has_module_core",
+      "has_draconic_shield",
       "has_the_recipe"
     ]
   ]
