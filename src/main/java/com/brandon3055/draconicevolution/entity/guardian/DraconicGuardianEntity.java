@@ -44,7 +44,6 @@ import net.minecraft.world.gen.feature.EndPodiumFeature;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.entity.PartEntity;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nullable;
@@ -899,14 +898,8 @@ public class DraconicGuardianEntity extends MobEntity implements IMob {
         return false;
     }
 
-    @Override
-    public boolean isMultipartEntity() {
-        return true;
-    }
-
     @Nullable
-    @Override
-    public PartEntity<?>[] getParts() {
+    public DraconicGuardianPartEntity[] getParts() {
         return dragonParts;
     }
 

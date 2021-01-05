@@ -1,23 +1,24 @@
 buildscript {
     repositories {
+        mavenLocal()
         jcenter()
-        maven {
-            name = "forge"
-            url = "http://files.minecraftforge.net/maven"
-        }
+        maven { url = "http://files.minecraftforge.net/maven" }
+        maven { url = "https://repo.spongepowered.org/maven" }
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:3.+'
+        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
     }
 }
 
 plugins {
     id 'java'
     id 'maven-publish'
-    id "net.covers1624.signing" version '1.1.3'
+    id "net.covers1624.signing" version '1.1.4'
 }
 
 apply plugin: 'net.minecraftforge.gradle'
+apply plugin: "org.spongepowered.mixin"
 
 group = "com.brandon3055.draconicevolution"
 archivesBaseName = "Draconic-Evolution"
@@ -78,6 +79,10 @@ minecraft {
     }
 }
 
+mixin {
+    add (sourceSets.main, "mixins.draconicevolution.refmap.json")
+}
+
 repositories {
     mavenLocal()
     maven { url = "http://chickenbones.net/maven" }
@@ -91,13 +96,15 @@ dependencies {
 //    compile "com.brandon3055.projectintelligence:ProjectIntelligence:${config.mc_version}-${config.pi_version}:deobf"
     compile "codechicken:CodeChickenLib:${config.mc_version}-${config.ccl_version}:deobf"
     compile fg.deobf("mezz.jei:jei-${config.mc_version}:${config.jei_version}")
+
+    annotationProcessor("org.spongepowered:mixin:0.8.2:processor")
 }
 
 signing {
     if (!signProps.isEmpty()) {
         jars {
             sign jar
-            after reobfJar
+            after 'reobfJar'
 
             keyStore = signProps.keyStore
             alias = signProps.alias
@@ -121,8 +128,6 @@ processResources { task ->
     }
 }
 
-//version = "${config.mc_version}-${version}"
-
 jar {
     finalizedBy 'reobfJar'
     classifier = 'universal'
@@ -135,6 +140,7 @@ jar {
         attributes 'Implementation-Vendor': 'brandon3055'
         attributes 'Implementation-Version': version
         attributes 'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        attributes 'MixinConfigs': 'mixins.draconicevolution.json'
     }
 }
 
