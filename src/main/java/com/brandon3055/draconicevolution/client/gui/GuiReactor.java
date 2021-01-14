@@ -105,7 +105,7 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> {
 
         manager.addChild(new GuiLabel(guiLeft + 13 + 5, y += 8, 162, 8, "")
                 .setEnabledCallback(() -> tile.reactorState.get() != TileReactorCore.ReactorState.COLD && tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE)
-                .setDisplaySupplier(() -> Utils.addCommas((int) tile.generationRate.get()) + " RF/t")
+                .setDisplaySupplier(() -> Utils.addCommas((int) tile.generationRate.get()) + " OP/t")
                 .setAlignment(GuiAlign.LEFT)
                 .setShadow(false)
                 .setTextColour(0xB0B0B0));
@@ -122,7 +122,7 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> {
                 .setEnabledCallback(() -> tile.reactorState.get() != TileReactorCore.ReactorState.COLD && tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE)
                 .setDisplaySupplier(() -> {
                     double inputRate = tile.fieldDrain.get() / (1D - (tile.shieldCharge.get() / tile.maxShieldCharge.get()));
-                    return Utils.addCommas((int) Math.min(inputRate, Integer.MAX_VALUE)) + "RF/t";
+                    return Utils.addCommas((int) Math.min(inputRate, Integer.MAX_VALUE)) + "OP/t";
                 })
                 .setAlignment(GuiAlign.LEFT)
                 .setShadow(false)

@@ -288,10 +288,10 @@ public class DEOldConfig {
     public static String[] itemDislocatorBlacklist = new String[]{"appliedenergistics2:crystal_seed"};
 
     //    @ModConfigProperty(category = "Tweaks", name = "reactorOutputMultiplier", comment = "Adjusts the energy output multiplier of the reactor.")
-    public static double reactorOutputMultiplier = 1;
+    public static double reactorOutputMultiplier = 10;
 
     //    @ModConfigProperty(category = "Tweaks", name = "reactorFuelUsageMultiplier", comment = "Adjusts the fuel usage multiplier of the reactor.")
-    public static double reactorFuelUsageMultiplier = 1;
+    public static double reactorFuelUsageMultiplier = 5;
 
     //    @ModConfigProperty(category = "Tweaks", name = "dragonDustLootModifier", comment = "This can be used to adjust the amount of Draconium Dust the Ender Dragon drops when killed.\nThe amount dropped will be this number +/- 10%")
     public static int dragonDustLootModifier = 64;
