@@ -139,9 +139,11 @@ public class TileCraftingCore extends TileBCore implements IFusionInventory, ITi
             }
 
 //            long averageCharge = totalCharge / activeRecipe.getIngredients().size();
+            long craftCost = activeRecipe.getEnergyCost();
             double percentage = totalCharge / (double) activeRecipe.getEnergyCost();
 
-            if (percentage <= 1D && craftingStage.get() < 1000) {
+                                        //>10 is just to account for incomplete injector power allocation.
+            if (craftCost - totalCharge > 10 && craftingStage.get() < 1000) {
                 craftingStage.set((short) (percentage * 1000D));
                 if (craftingStage.get() == 0 && percentage > 0) {
                     craftingStage.set((short) 1);
