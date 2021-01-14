@@ -106,7 +106,7 @@ public class GeneratorSoundHandler implements ISidedTileHandler {
                 targetPitch = 0.5F;
             }
 
-            if (((fadeUp && pitch >= 1) || (fadeDown && pitch <= 0.55)) || tile.isRemoved() || !Utils.isAreaLoaded(tile.getWorld(), tile.getPos(), ChunkHolder.LocationType.TICKING)) {
+            if (((fadeUp && pitch >= 1) || (fadeDown && pitch <= 0.55)) || tile.isRemoved()) {
                 donePlaying = true;
                 repeat = false;
             }

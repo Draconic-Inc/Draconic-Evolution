@@ -102,7 +102,9 @@ public class LastStandEntity extends ModuleEntity {
             double vertY = y + (height / 2D) + Math.cos(angle * (Math.PI * 2)) * diameter;
             builder.pos(vertX, vertY, 0).color(255, 255, 255, 64).endVertex();
         }
-        ((IRenderTypeBuffer.Impl) getter).finish();
+        if (getter instanceof IRenderTypeBuffer.Impl) {
+            ((IRenderTypeBuffer.Impl) getter).finish();
+        }
 
         String pText = (int) (progress * 100) + "%";
         String tText = ((data.getChargeTime() - charge) / 20) + "s";

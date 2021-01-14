@@ -169,8 +169,8 @@ public class DEModules {
 //        register(new ModuleImpl<>(HILL_STEP,            DRACONIC,       noData()),                          "draconic_hill_step");
 
         register(new ModuleImpl<>(JUMP_BOOST,           DRACONIUM,      jumpData(0.25)),                    "draconium_jump");
-        register(new ModuleImpl<>(JUMP_BOOST,           WYVERN,         jumpData(0.50)),                    "wyvern_jump");
-        register(new ModuleImpl<>(JUMP_BOOST,           DRACONIC,       jumpData(2.00)),                    "draconic_jump");
+        register(new ModuleImpl<>(JUMP_BOOST,           WYVERN,         jumpData(0.75)),                    "wyvern_jump");
+        register(new ModuleImpl<>(JUMP_BOOST,           DRACONIC,       jumpData(1.25)),                    "draconic_jump");
         register(new ModuleImpl<>(JUMP_BOOST,           CHAOTIC,        jumpData(4.00)),                    "chaotic_jump");
 
         register(new ModuleImpl<>(AQUA_ADAPT,           WYVERN,         noData()),                          "wyvern_aqua_adapt");

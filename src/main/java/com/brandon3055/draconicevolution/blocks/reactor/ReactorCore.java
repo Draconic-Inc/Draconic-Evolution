@@ -69,11 +69,7 @@ public class ReactorCore extends BlockBCore /*implements ITileEntityProvider, IR
         return super.getPlayerRelativeBlockHardness(state, player, world, pos);
     }
 
-
-
-
     //region Rendering
-
 
     @Override
     public BlockRenderType getRenderType(BlockState state) {

@@ -16,6 +16,7 @@ import com.brandon3055.draconicevolution.api.modules.entities.ShieldControlEntit
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.init.DEModules;
 import com.brandon3055.draconicevolution.init.EquipCfg;
+import com.brandon3055.draconicevolution.integration.equipment.EquipmentManager;
 import com.brandon3055.draconicevolution.items.equipment.IModularItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.LivingEntity;
@@ -182,6 +183,11 @@ public class ModularArmorEventHandler {
             for (ItemStack stack : player.inventory.offHandInventory) {
                 tryTickStack(stack, player, EquipmentSlotType.OFFHAND, armorAbilities);
             }
+            if (EquipmentManager.equipModLoaded()) {
+                EquipmentManager.findItems(e -> e.getItem() instanceof IModularItem, entity).forEach(stack -> {
+                    tryTickStack(stack, player, null, armorAbilities);
+                });
+            }
         } else {
             for (EquipmentSlotType slot : EquipmentSlotType.values()) {
                 tryTickStack(entity.getItemStackFromSlot(slot), entity, slot, armorAbilities);
@@ -319,7 +325,7 @@ public class ModularArmorEventHandler {
     }
 
     private static void tryTickStack(ItemStack stack, LivingEntity entity, EquipmentSlotType slot, ArmorAbilities abilities) {
-        if (!stack.isEmpty() && stack.getItem() instanceof IModularItem) {
+        if (stack.getItem() instanceof IModularItem) {
             ((IModularItem) stack.getItem()).handleTick(stack, entity, slot);
 
             if (slot != null && slot.getSlotType() == EquipmentSlotType.Group.ARMOR) {
@@ -335,7 +341,7 @@ public class ModularArmorEventHandler {
     public static void onLivingJumpEvent(LivingEvent.LivingJumpEvent event) {
         LivingEntity entity = event.getEntityLiving();
         float jumpBoost = getJumpBoost(entity, false);
-        if (jumpBoost > 0) {
+        if (jumpBoost > 0 && !entity.isSneaking()) {
             entity.addVelocity(0, 0.1F * (jumpBoost + 1), 0);
         }
     }

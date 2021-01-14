@@ -19,6 +19,7 @@ import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.vector.Vector3d;
 
 public class ClientPacketHandler implements ICustomPacketHandler.IClientPacketHandler {
 
@@ -42,6 +43,9 @@ public class ClientPacketHandler implements ICustomPacketHandler.IClientPacketHa
                 break;
             case DraconicNetwork.C_LAST_STAND_ACTIVATION:
                 handleLastStandActivation(mc, packet.readVarInt(), packet.readRegistryId());
+                break;
+            case DraconicNetwork.C_BLINK:
+                handleBlinkEffect(mc, packet.readVarInt(), packet.readFloat());
                 break;
 
         }
@@ -101,6 +105,27 @@ public class ClientPacketHandler implements ICustomPacketHandler.IClientPacketHa
             if (entity == mc.player) {
                 Minecraft.getInstance().gameRenderer.displayItemActivation(new ItemStack(item));
             }
+        }
+    }
+
+    private static void handleBlinkEffect(Minecraft mc, int id, float distance) {
+        Entity entity;
+        if (mc.world == null || (entity = mc.world.getEntityByID(id)) == null) return;
+
+        Vector3d vec = entity.getLookVec();
+        Vector3d pos = entity.getEyePosition(1);
+
+        for (int i = 0; i < 100; i++) {
+            float offset = mc.world.rand.nextFloat() ;
+            float speed = (1F - offset) * distance;
+            speed *= speed;
+            Vector3d spawnPos = pos.add(vec.mul(speed * 10, speed * 10, speed * 10));
+
+            double x = spawnPos.x + (mc.world.rand.nextGaussian() - 0.5) * offset;
+            double y = spawnPos.y + (mc.world.rand.nextGaussian() - 0.5) * offset;
+            double z = spawnPos.z + (mc.world.rand.nextGaussian() - 0.5) * offset;
+
+            mc.world.addParticle(DEParticles.blink, x, y, z, vec.x * speed, vec.y * speed, vec.z * speed);
         }
     }
 }

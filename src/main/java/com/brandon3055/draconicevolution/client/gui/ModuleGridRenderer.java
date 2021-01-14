@@ -254,7 +254,9 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> {
             builder.pos(x + mw, y + mh, zLevel).tex(((float) mw / mh) / 64F, ((float) mh / mw) / 64F).endVertex();
             builder.pos(x + mw, y, zLevel).tex(((float) mw / mh) / 64F, 0).endVertex();
             builder.pos(x, y, zLevel).tex(0, 0).endVertex();
-            ((IRenderTypeBuffer.Impl) getter).finish(); //Because i want the glint to render under the sprite.
+            if (getter instanceof IRenderTypeBuffer.Impl) {
+                ((IRenderTypeBuffer.Impl) getter).finish();
+            }
         }
 
         TextureAtlasSprite sprite = ClientProxy.moduleSpriteUploader.getSprite(module);

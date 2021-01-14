@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.network;
 
+import codechicken.lib.data.MCDataOutput;
 import codechicken.lib.packet.PacketCustom;
 import codechicken.lib.packet.PacketCustomChannelBuilder;
 import com.brandon3055.draconicevolution.DraconicEvolution;
@@ -7,6 +8,7 @@ import com.brandon3055.draconicevolution.api.modules.lib.ModuleGrid;
 import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.PropertyData;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.ClickType;
 import net.minecraft.item.Item;
 import net.minecraft.util.RegistryKey;
@@ -14,6 +16,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.event.EventNetworkChannel;
+
+import java.util.function.Consumer;
 
 /**
  * Created by brandon3055 on 17/12/19.
@@ -33,6 +37,7 @@ public class DraconicNetwork {
     public static final int S_PROPERTY_DATA =           6;
     public static final int S_ITEM_CONFIG_GUI =         7;
     public static final int S_MODULE_CONFIG_GUI =       8;
+    public static final int S_DISLOCATOR_MESSAGE =      9;
 
     //Server to client
     public static final int C_CRYSTAL_UPDATE =          1;
@@ -40,11 +45,12 @@ public class DraconicNetwork {
     public static final int C_EXPLOSION_EFFECT =        3;
     public static final int C_IMPACT_EFFECT =           4;
     public static final int C_LAST_STAND_ACTIVATION =   5;
+    public static final int C_BLINK =                   6;
 
 
     //@formatter:on
 
-    public static void sendToggleDislocators() {
+    public static void sendToggleMagnets() {
         PacketCustom packet = new PacketCustom(CHANNEL, S_TOGGLE_DISLOCATORS);
         packet.sendToServer();
     }
@@ -115,9 +121,19 @@ public class DraconicNetwork {
         packet.sendToChunk(target.world, target.getPosition());
     }
 
+    public static void sendDislocatorMessage(int id, Consumer<MCDataOutput> callback) {
+        PacketCustom packet = new PacketCustom(CHANNEL, S_DISLOCATOR_MESSAGE);
+        packet.writeByte(id);
+        callback.accept(packet);
+        packet.sendToServer();
+    }
 
-
-
+    public static void sendBlinkEffect(ServerPlayerEntity player, float distance) {
+        PacketCustom packet = new PacketCustom(CHANNEL, C_BLINK);
+        packet.writeVarInt(player.getEntityId());
+        packet.writeFloat(distance);
+        packet.sendToChunk(player.world, player.getPosition());
+    }
 
     public static void init() {
         netChannel = PacketCustomChannelBuilder.named(CHANNEL)

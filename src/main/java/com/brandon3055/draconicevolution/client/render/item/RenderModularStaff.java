@@ -1,16 +1,24 @@
 package com.brandon3055.draconicevolution.client.render.item;
 
+import codechicken.lib.math.MathHelper;
 import codechicken.lib.render.CCModel;
 import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.OBJParser;
 import codechicken.lib.render.buffer.VBORenderType;
 import codechicken.lib.vec.Matrix4;
+import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.api.TechLevel;
+import com.brandon3055.brandonscore.client.BCSprites;
+import com.brandon3055.brandonscore.client.utils.GuiHelper;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.client.DESprites;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -149,5 +157,27 @@ public class RenderModularStaff extends ToolRenderBase {
             getter.getBuffer(bladeVBOType.withMatrix(mat).withLightMap(packedLight));
             getter.getBuffer(gemVBOType.withMatrix(mat).withLightMap(packedLight));
         }
+//        ((IRenderTypeBuffer.Impl) getter).finish();
+//
+//
+//        RenderSystem.pushMatrix();
+//        mat.rotate(90 * MathHelper.torad, new Vector3(0, 1, 0));
+//        mat.glApply();
+//        IVertexBuilder builder = getter.getBuffer(BCSprites.GUI_TEX_TYPE);
+//        TextureAtlasSprite sprite = BCSprites.get("dark/gear").getSprite();
+//        float x = 0;
+//        float y = 0;
+//        float z = 0;
+//        float width = 1000;
+//        float height = 1000;
+//
+//        builder.pos(x,          y + height, z).color(1F, 1F, 1F, 1F).tex(sprite.getMinU(), sprite.getMaxV()).endVertex();
+//        builder.pos(x + width,  y + height, z).color(1F, 1F, 1F, 1F).tex(sprite.getMaxU(), sprite.getMaxV()).endVertex();
+//        builder.pos(x + width,  y,          z).color(1F, 1F, 1F, 1F).tex(sprite.getMaxU(), sprite.getMinV()).endVertex();
+//        builder.pos(x,          y,          z).color(1F, 1F, 1F, 1F).tex(sprite.getMinU(), sprite.getMinV()).endVertex();
+//
+//        ((IRenderTypeBuffer.Impl) getter).finish();
+//
+//        RenderSystem.popMatrix();
     }
 }

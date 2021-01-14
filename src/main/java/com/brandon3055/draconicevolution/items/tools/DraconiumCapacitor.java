@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.items.tools;
 
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.api.power.IOPStorageModifiable;
+import com.brandon3055.brandonscore.capability.MultiCapabilityProvider;
 import com.brandon3055.brandonscore.lib.TechPropBuilder;
 import com.brandon3055.brandonscore.utils.DataUtils;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
@@ -13,6 +14,8 @@ import com.brandon3055.draconicevolution.api.modules.lib.ModuleHostImpl;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.init.EquipCfg;
 import com.brandon3055.draconicevolution.init.ModuleCfg;
+import com.brandon3055.draconicevolution.integration.equipment.EquipmentManager;
+import com.brandon3055.draconicevolution.integration.equipment.IDEEquipment;
 import com.brandon3055.draconicevolution.items.equipment.IModularItem;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
@@ -70,6 +73,11 @@ public class DraconiumCapacitor extends Item implements IInvCharge, IModularItem
         }
     }
 
+//    @Override
+//    public void initCapabilities(ItemStack stack, ModuleHostImpl host, MultiCapabilityProvider provider) {
+//        EquipmentManager.addCaps(stack, provider);
+//    }
+
     @Override
     public ModuleHostImpl createHost(ItemStack stack) {
         ModuleHostImpl host;
@@ -83,8 +91,8 @@ public class DraconiumCapacitor extends Item implements IInvCharge, IModularItem
             props.add(new BooleanProperty("charge_armor", false));
             props.add(new BooleanProperty("charge_hot_bar", false));
             props.add(new BooleanProperty("charge_main", false));
-            if (ModList.get().isLoaded("baubles")) {
-                props.add(new BooleanProperty("charge_baubles", false));
+            if (EquipmentManager.equipModLoaded()) {
+                props.add(new BooleanProperty("charge_" + EquipmentManager.equipModID(), false));
             }
         });
         return host;
@@ -119,6 +127,11 @@ public class DraconiumCapacitor extends Item implements IInvCharge, IModularItem
         return new ModularOPStorage(host, EquipCfg.getBaseCapEnergy(techLevel), EquipCfg.getBaseCapTransfer(techLevel), true);
     }
 
+//    @Override
+//    public void equipmentTick(ItemStack stack, LivingEntity livingEntity) {
+//        handleTick(stack, livingEntity, null);
+//    }
+
     @Override
     public void handleTick(ItemStack stack, LivingEntity entity, @Nullable EquipmentSlotType slot) {
         ArrayList<ItemStack> stacks = new ArrayList<>();
@@ -128,7 +141,10 @@ public class DraconiumCapacitor extends Item implements IInvCharge, IModularItem
             boolean armor = props.getBool("charge_armor").getValue();
             boolean hot_bar = props.getBool("charge_hot_bar").getValue();
             boolean main = props.getBool("charge_main").getValue();
-//            boolean baubles = props.getBool("charge_baubles").getValue(); //TODO
+
+            if (EquipmentManager.equipModLoaded() &&  props.getBool("charge_" + EquipmentManager.equipModID()).getValue()) {
+                stacks.addAll(EquipmentManager.getAllItems(entity));
+            }
 
             if (entity instanceof PlayerEntity) {
                 PlayerEntity player = (PlayerEntity) entity;
@@ -177,7 +193,6 @@ public class DraconiumCapacitor extends Item implements IInvCharge, IModularItem
             }
         });
     }
-
 
     @Override
     @OnlyIn(Dist.CLIENT)

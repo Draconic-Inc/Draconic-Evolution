@@ -160,6 +160,15 @@
         "stream": false
       }
     ]
+  },
+  "blink": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "draconicevolution:blink",
+        "stream": false
+      }
+    ]
   }
 }
 

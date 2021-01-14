@@ -8,9 +8,6 @@ import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.blocks.DraconiumChest;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileDraconiumChest;
 import com.brandon3055.draconicevolution.items.ItemCore;
-import invtweaks.api.container.ChestContainer;
-import invtweaks.api.container.ContainerSection;
-import invtweaks.api.container.ContainerSectionCallback;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.CraftingInventory;
@@ -33,7 +30,6 @@ import java.util.Map;
 /**
  * Created by brandon3055 on 4/06/2017.
  */
-@ChestContainer(isLargeChest = true, rowSize = 26)
 public class ContainerDraconiumChest extends ContainerBCTile<TileDraconiumChest> {
 
     public CraftingInventory craftMatrix;
@@ -168,13 +164,6 @@ public class ContainerDraconiumChest extends ContainerBCTile<TileDraconiumChest>
     public void onContainerClosed(PlayerEntity playerIn) {
         super.onContainerClosed(playerIn);
         tile.onPlayerCloseContainer(playerIn);
-    }
-
-    @ContainerSectionCallback
-    public Map<ContainerSection, List<Slot>> getContainerSelection() {
-        Map<ContainerSection, List<Slot>> map = new LinkedHashMap<>();
-        map.put(ContainerSection.CHEST, mainInventorySlots);
-        return map;
     }
 
     public class SlotSmeltable extends SlotItemHandler {

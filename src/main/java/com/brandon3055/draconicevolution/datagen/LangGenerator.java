@@ -120,7 +120,7 @@ public class LangGenerator extends LanguageProvider {
         helper.add(DEContent.capacitor_creative                 ,"Creative Capacitor");
         helper.add(DEContent.shovel_wyvern                      ,"Wyvern Shovel");
         helper.add(DEContent.shovel_draconic                    ,"Draconic Shovel");
-        helper.add(DEContent.shovel_chaotic                     ,"Cheotic Shovel");
+        helper.add(DEContent.shovel_chaotic                     ,"Chaotic Shovel");
         helper.add(DEContent.hoe_wyvern                         ,"Wyvern Hoe");
         helper.add(DEContent.hoe_draconic                       ,"Draconic Hoe");
         helper.add(DEContent.hoe_chaotic                        ,"Chaotic Hoe");
@@ -160,10 +160,10 @@ public class LangGenerator extends LanguageProvider {
         helper.add("walk_speed.info"                                                        , "Allows you to adjust the speed boost that is applied while you are walking.");
         helper.add("run_speed"                                                              , "Sprint Speed");
         helper.add("run_speed.info"                                                         , "Allows you to adjust the speed boost that is applied while you are sprinting.");
-        helper.add("de.module.jump_boost.prop"                                              , "Jump Boost");
-        helper.add("de.module.jump_boost.prop.info"                                         , "Adjust jump boost.");
-        helper.add("de.module.jump_boost_run.prop"                                          , "Run Jump Boost");
-        helper.add("de.module.jump_boost_run.prop.info"                                     , "Adjust running jump boost.");
+        helper.add("jump_boost"                                                             , "Jump Boost");
+        helper.add("jump_boost.info"                                                        , "Adjust jump boost.");
+        helper.add("jump_boost_run"                                                         , "Run Jump Boost");
+        helper.add("jump_boost_run.info"                                                    , "Adjust running jump boost.");
 
         helper.add("shield_mod.enabled"                                                     , "Shield Toggle");
         helper.add("shield_mod.enabled.info"                                                , "Allows you to disable your shield. This prevents your shield from using power but leaves you vulnerable to damage.");
@@ -190,6 +190,8 @@ public class LangGenerator extends LanguageProvider {
 //        helper.add("charge_main.info"                                                       , "");
         helper.add("charge_baubles"                                                         , "Charge baubles");
 //        helper.add("charge_baubles.info"                                                    , "");
+        helper.add("charge_curios"                                                          , "Charge Curios");
+        helper.add("charge_curios.info"                                                     , "Charge items in curios equipment slots");
     }
 
     private void modules(PrefixHelper helper) {
@@ -310,9 +312,9 @@ public class LangGenerator extends LanguageProvider {
         helper.add(DEModules.draconicFlight                                                 , "Draconic Flight Module");
         helper.add(DEModules.chaoticFlight                                                  , "Chaotic Flight Module");
 
-        helper.add(DEModules.wyvernLastStand                                                , "Wyvern Last Stand Module");
-        helper.add(DEModules.draconicLastStand                                              , "Draconic Last Stand Module");
-        helper.add(DEModules.chaoticLastStand                                               , "Chaotic Last Stand Module");
+        helper.add(DEModules.wyvernLastStand                                                , "Wyvern Undying Module");
+        helper.add(DEModules.draconicLastStand                                              , "Draconic Undying Module");
+        helper.add(DEModules.chaoticLastStand                                               , "Chaotic Undying Module");
 
         helper.add(DEModules.draconiumAutoFeed                                              , "Auto Feed Module");
         helper.add(DEModules.wyvernAutoFeed                                                 , "Wyvern Auto Feed Module");
@@ -510,6 +512,30 @@ public class LangGenerator extends LanguageProvider {
         helper.add("mode_disabled"                                                          ,"Disabled\n - Slot is disabled");
         helper.add("sequential_charge"                                                      ,"Sequential Input Priority\nThe left most item will receive charging priority.\nOnce that item is full the next will receive priority.");
         helper.add("balanced_charge"                                                        ,"Balanced Input Priority\nPower input will be balanced between all 4 slots\nbut each slot will be limited to 1/4 of the total input rate.");
+
+        //Energy Dislocator
+        helper.setPrefix("gui.draconicevolution.dislocator");
+        helper.add("add"                                                                    ,"Add New");
+        helper.add("add.info"                                                               ,"Add current position\n- insert below selected");
+        helper.add("add_top.info"                                                           ,"Add current position\n- add to top of list");
+        helper.add("add_bottom.info"                                                        ,"Add current position\n- add to bottom of list");
+        helper.add("fuel"                                                                   ,"Fuel:");
+        helper.add("fuel.info"                                                              ,"The total number of teleports remaining.");
+        helper.add("update"                                                                 ,"Set Here");
+        helper.add("update.info"                                                            ,"Update the selected location to your current coordinates.");
+        helper.add("fuel_add_1.info"                                                        ,"Add 1 Ender Pearl from your inventory.\nEnder pearls are used as teleport fuel.");
+        helper.add("fuel_add_16.info"                                                       ,"Add 16 Ender Pearls from your inventory.\nEnder pearls are used as teleport fuel.");
+        helper.add("fuel_add_all.info"                                                      ,"Add all Ender Pearls from your inventory.\nEnder pearls are used as teleport fuel.");
+        helper.add("right_click_tp"                                                         ,"Right click to teleport");
+        helper.add("double_click_name"                                                      ,"Double left click to rename");
+        helper.add("must_unlock"                                                            ,"(must be unlocked)");
+        helper.add("drag_to_move"                                                           ,"Left click and drag to move.");
+        helper.add("delete.info"                                                            ,"Delete");
+        helper.add("edit_lock.info"                                                         ,"Toggle edit lock");
+        helper.add("right_click_mode.info",                                                 "Switch between teleport to selected and Blink on right click.\nYou can also configure keybindings.");
+        helper.add("mode_blink",                                                            "Use Mode:\nBlink");
+        helper.add("mode_tp",                                                               "Use Mode:\nTeleport");
+
     }
 
     private void hudAndMessages(PrefixHelper helper) {
@@ -548,7 +574,34 @@ public class LangGenerator extends LanguageProvider {
         helper.add("requires_energy",                                   "This item requires energy modules to function");
         helper.add("requires_energy_press",                             "Press %s to open module config.");
 
+        //Dislocator
+        helper.setPrefix("dislocate.draconicevolution");
+        helper.add("not_set",                                           "You must first set the destination before you can teleport (Sneak + Right click)");
+        helper.add("player_need_advanced",                              "You need a more powerful dislocator to do that");
+        helper.add("entity_sent_to",                                    "The entity has been sent to");
+        helper.add("low_health",                                        "You are to low on health!");
+        helper.add("already_bound",                                     "Error this charm can only be bound to one location");
+        helper.add("un_set_info1",                                      "Unbound");
+        helper.add("un_set_info2",                                      "Shift right click to bind your current");
+        helper.add("un_set_info3",                                      "x, y, z coordinates");
+        helper.add("un_set_info4",                                      "As well as the direction you are facing");
+        helper.add("un_set_info5",                                      "And the dimension you are currently in");
+        helper.add("bound_to",                                          "Bound to");
+        helper.add("uses_remain",                                       "%s Uses remaining");
 
+        helper.add("no_fuel",                                           "OUT OF FUEL!!!");
+        helper.add("player_allow",                                      "The player must give their consent by sneaking");
+        helper.add("fuel",                                              "Fuel:");
+        helper.add("teleport_fuel",                                     "Teleport Fuel:");
+        helper.add("to_open_gui",                                       "Sneak + Right click to open gui");
+//        helper.add("",                                           "");
+//        helper.add("",                                           "");
+
+
+        //Item Dislocator
+        helper.setPrefix("item_dislocate.draconicevolution");
+        helper.add("activate",                                          "Item Dislocator Activated");
+        helper.add("deactivate",                                        "Item Dislocator Deactivated");
     }
 
     private void misc(PrefixHelper helper) {
@@ -595,6 +648,12 @@ public class LangGenerator extends LanguageProvider {
         add("key.draconicevolution.tool_config",                                            "Tool Config");
         add("key.draconicevolution.toggle_flight",                                          "Toggle Flight");
         add("key.draconicevolution.tool_modules",                                           "Tool Modules");
+        add("key.draconicevolution.toggle_magnet",                                          "Toggle Item Dislocator");
+        add("key.draconicevolution.dislocator_teleport",                                    "Advanced Dislocator Teleport");
+        add("key.draconicevolution.dislocator_blink",                                       "Advanced Dislocator Blink");
+        add("key.draconicevolution.dislocator_gui",                                         "Advanced Dislocator Gui");
+        add("key.draconicevolution.dislocator_up",                                          "Advanced Dislocator Select Up");
+        add("key.draconicevolution.dislocator_down",                                        "Advanced Dislocator Select Down");
 
     }
     

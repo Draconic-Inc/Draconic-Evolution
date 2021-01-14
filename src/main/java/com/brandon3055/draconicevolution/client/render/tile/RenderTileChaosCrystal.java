@@ -139,7 +139,9 @@ public class RenderTileChaosCrystal extends TileEntityRenderer<TileChaosCrystal>
             uniforms.glUniform4f("baseColour", 1F, 0F, 0F, 1F);
             ccrs.bind(new ShaderRenderType(shieldType, shieldShader, uniforms), getter);
             model.render(ccrs, mat);
-            ((IRenderTypeBuffer.Impl) getter).finish();
+            if (getter instanceof IRenderTypeBuffer.Impl) {
+                ((IRenderTypeBuffer.Impl) getter).finish();
+            }
         }
     }
 }

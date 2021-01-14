@@ -3,7 +3,7 @@ package com.brandon3055.draconicevolution.items.tools;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.network.BCoreNetwork;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
-import com.brandon3055.brandonscore.utils.Teleporter.TeleportLocation;
+import com.brandon3055.brandonscore.utils.TargetPos;
 import com.brandon3055.draconicevolution.api.ITeleportEndPoint;
 import com.brandon3055.draconicevolution.entity.PersistentItemEntity;
 import com.brandon3055.draconicevolution.handlers.DESounds;
@@ -90,7 +90,7 @@ public class DislocatorBound extends Dislocator /*implements IRenderOverride*/ {
         if (player.world.isRemote) {
             return true;
         }
-        TeleportLocation location = getLocation(stack, player.world);
+        TargetPos location = getTargetPos(stack, player.world);
         if (location == null) {
             if (isPlayer(stack)) {
                 player.sendMessage(new TranslationTextComponent("info.de.bound_dislocator.cant_find_player").mergeStyle(TextFormatting.RED), Util.DUMMY_UUID);
@@ -115,7 +115,7 @@ public class DislocatorBound extends Dislocator /*implements IRenderOverride*/ {
 
         BCoreNetwork.sendSound(player.world, player.getPosition(), DESounds.portal, SoundCategory.PLAYERS, 0.1F, player.world.rand.nextFloat() * 0.1F + 0.9F, false);
 
-        player.sendMessage(new StringTextComponent(new TranslationTextComponent("msg.teleporterSentMob.txt").getString() + " x:" + (int) location.getXCoord() + " y:" + (int) location.getYCoord() + " z:" + (int) location.getZCoord() + " Dimension: " + location.getDimensionName()), Util.DUMMY_UUID);
+//        player.sendMessage(new StringTextComponent(new TranslationTextComponent("msg.teleporterSentMob.txt").getString() + " x:" + (int) location.getXCoord() + " y:" + (int) location.getYCoord() + " z:" + (int) location.getZCoord() + " Dimension: " + location.getDimensionName()), Util.DUMMY_UUID);
 
         return true;
     }
@@ -205,7 +205,7 @@ public class DislocatorBound extends Dislocator /*implements IRenderOverride*/ {
     //region Teleporter
 
     @Override
-    public TeleportLocation getLocation(ItemStack stack, World world) {
+    public TargetPos getTargetPos(ItemStack stack, @Nullable World world) {
         if (world instanceof ServerWorld) {
             LinkData data = DislocatorLinkHandler.getLink(stack, (ServerWorld)world);
             if (isPlayer(stack)) {
@@ -213,11 +213,11 @@ public class DislocatorBound extends Dislocator /*implements IRenderOverride*/ {
                 if (server == null) return null;
                 PlayerEntity player = server.getPlayerList().getPlayerByUUID(UUID.fromString(getPlayerID(stack)));
                 if (player == null) return null;
-                return new TeleportLocation(player.getPosX(), player.getPosY() + 0.2, player.getPosZ(), player.world.getDimensionKey());
+                return new TargetPos(player.getPosX(), player.getPosY() + 0.2, player.getPosZ(), player.world.getDimensionKey());
             }
             Vec3D pos = DislocatorLinkHandler.getLinkPos(world, stack);
             if (data != null && pos != null) {
-                return new TeleportLocation(pos.x, pos.y, pos.z, data.dimension);
+                return new TargetPos(pos.x, pos.y, pos.z, data.dimension);
             }
         }
         return null;

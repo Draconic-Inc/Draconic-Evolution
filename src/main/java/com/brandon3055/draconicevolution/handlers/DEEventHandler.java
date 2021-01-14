@@ -52,7 +52,6 @@ public class DEEventHandler {
 
     private static WeakHashMap<MobEntity, Long> deSpawnedMobs = new WeakHashMap<>();
     private static Random random = new Random();
-
     public static int serverTicks = 0;
 
 

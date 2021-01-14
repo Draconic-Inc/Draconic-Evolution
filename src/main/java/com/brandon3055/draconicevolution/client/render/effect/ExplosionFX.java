@@ -98,6 +98,11 @@ public class ExplosionFX extends Particle {
     }
 
     @Override
+    public boolean shouldCull() {
+        return false;
+    }
+
+    @Override
     public void tick() {
         if (effectParts.size() > 0) {
             Iterator<EffectPart> i = effectParts.iterator();

@@ -27,7 +27,7 @@ public interface IModularTieredItem extends IModularItem {
     @Override
     default Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlotType slot, ItemStack stack) {
         Multimap<Attribute, AttributeModifier> map = IModularItem.super.getAttributeModifiers(slot, stack);
-        if (MODULE_HOST_CAPABILITY != null && stack.getCapability(MODULE_HOST_CAPABILITY).isPresent()) {
+        if (stack.getCapability(MODULE_HOST_CAPABILITY).isPresent()) {
             DEItemTier tier = getItemTier();
             if (slot == EquipmentSlotType.MAINHAND) {
                 ModuleHost host = stack.getCapability(MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new);

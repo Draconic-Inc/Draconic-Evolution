@@ -3,7 +3,7 @@ package com.brandon3055.draconicevolution.client.render.tile;
 import codechicken.lib.texture.TextureUtils;
 import com.brandon3055.brandonscore.client.render.TESRBase;
 import com.brandon3055.brandonscore.utils.ModelUtils;
-import com.brandon3055.brandonscore.utils.Teleporter;
+import com.brandon3055.brandonscore.utils.TargetPos;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DEOldConfig;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileDislocatorPedestal;
@@ -86,7 +86,7 @@ public class RenderTileDislocatorPedestal extends TESRBase<TileDislocatorPedesta
 
         String s = item.hasDisplayName() ? item.getDisplayName().getString() : "";
         if (item.getItem() instanceof DislocatorAdvanced) {
-            Teleporter.TeleportLocation location = ((Dislocator) item.getItem()).getLocation(item, te.getWorld());
+            DislocatorAdvanced.DislocatorTarget location = ((DislocatorAdvanced) item.getItem()).getTargetPos(item, te.getWorld());
             if (location != null) {
                 s = location.getName();
             }

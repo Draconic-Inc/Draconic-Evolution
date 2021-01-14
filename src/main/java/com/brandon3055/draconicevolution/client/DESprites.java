@@ -26,6 +26,14 @@ public class DESprites {
         register(MODID, "transfuser/balanced_charge");
         register(MODID, "transfuser/sequential_charge");
 
+        register(MODID, "dislocator/slot");
+        register(MODID, "dislocator/slot_selected");
+        register(MODID, "dislocator/locked");
+        register(MODID, "dislocator/unlocked");
+        register(MODID, "dislocator/delete");
+        register(MODID, "dislocator/add_top");
+        register(MODID, "dislocator/add_bottom");
+
     }
 
 

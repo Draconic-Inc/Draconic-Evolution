@@ -281,7 +281,7 @@ public class DEContent {
         event.getRegistry().register(new StabilizedSpawner(machine).setRegistryName("stabilized_spawner"));
 //        event.getRegistry().register(new DraconiumChest(machine).setRegistryName("draconium_chest"));
         event.getRegistry().register(new ParticleGenerator(machine).setRegistryName("particle_generator"));
-//        event.getRegistry().register(new DislocationInhibitor(machine).setRegistryName("dislocation_inhibitor"));
+        event.getRegistry().register(new DislocationInhibitor(machine).setRegistryName("dislocation_inhibitor"));
         //Stone Type
 //        event.getRegistry().register(new RainSensor(stoneProp).setRegistryName("rain_sensor"));
         event.getRegistry().register(new Potentiometer(stoneProp).setRegistryName("potentiometer"));
@@ -305,8 +305,8 @@ public class DEContent {
         event.getRegistry().register(new EnergyCoreStructureBlock(Properties.create(IRON, GRAY).hardnessAndResistance(5.0F, 12F).noDrops().notSolid()).setRegistryName("energy_core_structure"));
         //Reactor
         event.getRegistry().register(new ReactorCore(hardenedMachine).setRegistryName("reactor_core"));
-        event.getRegistry().register(new ReactorComponent(hardenedMachine, false).setRegistryName("reactor_stabilizer"));
-        event.getRegistry().register(new ReactorComponent(hardenedMachine, true).setRegistryName("reactor_injector"));
+        event.getRegistry().register(new ReactorComponent(Properties.create(IRON, GRAY).hardnessAndResistance(5.0F, 6000F).notSolid(), false).setRegistryName("reactor_stabilizer"));
+        event.getRegistry().register(new ReactorComponent(Properties.create(IRON, GRAY).hardnessAndResistance(5.0F, 6000F).notSolid(), true).setRegistryName("reactor_injector"));
         //Ore
         event.getRegistry().register(new DraconiumOre(ore).setRegistryName("overworld_draconium_ore"));
         event.getRegistry().register(new DraconiumOre(ore).setRegistryName("nether_draconium_ore"));

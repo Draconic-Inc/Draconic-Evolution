@@ -50,6 +50,11 @@ public abstract class TileReactorComponent extends TileBCore implements ITickabl
         super(tileEntityTypeIn);
     }
 
+    @Override
+    public int getAccessDistanceSq() {
+        return 256;
+    }
+
     //region update
 
     @Override

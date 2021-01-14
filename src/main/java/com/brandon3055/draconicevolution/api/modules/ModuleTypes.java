@@ -29,7 +29,7 @@ public class ModuleTypes {
     public static final ModuleType<LastStandData>       LAST_STAND          = new ModuleTypeImpl<>("last_stand",        2, 2, LastStandEntity::new, CHESTPIECE, ARMOR_CHEST).setMaxInstallable(1);          //TODO this needs some properties
     public static final ModuleType<AutoFeedData>        AUTO_FEED           = new ModuleTypeImpl<>("auto_feed",         2, 1, AutoFeedEntity::new, CHESTPIECE, ARMOR_HEAD).setMaxInstallable(1);           //Different tiers could make it smaller? Maybe chaotic removes need for food?
     public static final ModuleType<NoData>              NIGHT_VISION        = new ModuleTypeImpl<>("night_vision",      2, 1, CHESTPIECE, ARMOR_HEAD).setMaxInstallable(1);
-    public static final JumpType                        JUMP_BOOST          = new JumpType("jump_boost",                1, 1, CHESTPIECE, ARMOR_FEET);
+    public static final JumpType                        JUMP_BOOST          = new JumpType("jump_boost",                1, 1, CHESTPIECE, ARMOR_FEET).setMaxInstallable(3);
     public static final ModuleType<NoData>              HILL_STEP           = new ModuleTypeImpl<>("hill_step",         2, 1, CHESTPIECE, ARMOR_FEET).setMaxInstallable(1);
 //    public static final ModuleType<NoData>            FALL_PROTECT        = new ModuleTypeImpl<>("fall_protect",      1, 1, CHESTPIECE, ARMOR_FEET);
     public static final ModuleType<NoData>              AQUA_ADAPT          = new ModuleTypeImpl<>("aqua_adapt",        1, 1, CHESTPIECE, ARMOR_CHEST);
@@ -41,7 +41,7 @@ public class ModuleTypes {
     //General / Misc
     public static final ModuleType<AOEData>             AOE                 = new ModuleTypeImpl<>("aoe",               3, 3, MINING_TOOL, MELEE_WEAPON, RANGED_WEAPON).setMaxInstallable(1);                           //I want there to be a limit on maximum AOE
     public static final ModuleType<DamageData>          DAMAGE              = new DamageType("damage",                  1, 1, MELEE_WEAPON, RANGED_WEAPON);
-    public static final ModuleType<SpeedData>           SPEED               = new ModuleTypeImpl<>("speed",             1, 1, MINING_TOOL, MELEE_WEAPON, RANGED_WEAPON, CHESTPIECE, ARMOR_LEGS);
+    public static final ModuleType<SpeedData>           SPEED               = new ModuleTypeImpl<>("speed",             1, 1, MINING_TOOL, MELEE_WEAPON, RANGED_WEAPON, CHESTPIECE, ARMOR_LEGS).setMaxInstallable(8);
     public static final ModuleType<NoData>              JUNK_FILTER         = new ModuleTypeImpl<>("junk_filter",       1, 1, MINING_TOOL);
     public static final ModuleType<NoData>              VACUUM              = new ModuleTypeImpl<>("vacuum",            1, 1, MINING_TOOL, MELEE_WEAPON, RANGED_WEAPON);
     public static final ModuleType<NoData>              ITEM_TRANSLOCATION  = new ModuleTypeImpl<>("item_translocation",1, 1, MINING_TOOL, MELEE_WEAPON, RANGED_WEAPON);

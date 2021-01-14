@@ -40,7 +40,6 @@ import java.util.List;
  */
 public class ReactorComponent extends BlockBCore {
 
-    public static final PropertyString TYPE = new PropertyString("type", "stabilizer", "injector");
     private static final VoxelShape SHAPE_INJ_DOWN  = VoxelShapes.create(0F, 0.885F, 0F, 1F, 1F, 1F);
     private static final VoxelShape SHAPE_INJ_UP    = VoxelShapes.create(0F, 0F, 0F, 1F, 0.125F, 1F);
     private static final VoxelShape SHAPE_INJ_NORTH = VoxelShapes.create(0F, 0F, 0.885F, 1F, 1F, 1F);
@@ -52,17 +51,11 @@ public class ReactorComponent extends BlockBCore {
     public ReactorComponent(Properties properties, boolean injector) {
         super(properties);
         this.injector = injector;
-        this.setDefaultState(stateContainer.getBaseState().with(TYPE, "stabilizer"));
     }
 
     @Override
     public boolean isBlockFullCube() {
         return false;
-    }
-
-    @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-        builder.add(TYPE);
     }
 
     @Override
@@ -75,7 +68,6 @@ public class ReactorComponent extends BlockBCore {
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {
         return injector ? new TileReactorInjector() : new TileReactorStabilizer();
     }
-
 
     @Override
     public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
@@ -140,7 +132,7 @@ public class ReactorComponent extends BlockBCore {
     @OnlyIn(Dist.CLIENT)
     @Override
     public void addInformation(ItemStack stack, @Nullable IBlockReader worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        tooltip.add(new TranslationTextComponent("info.de.shiftReversePlaceLogic.txt"));
+//        tooltip.add(new TranslationTextComponent("info.de.shiftReversePlaceLogic.txt"));
         super.addInformation(stack, worldIn, tooltip, flagIn);
     }
 

@@ -88,6 +88,7 @@ repositories {
     maven { url = "http://chickenbones.net/maven" }
     maven { url = "https://dvs1.progwml6.com/files/maven" }
     maven { url = "http://maven.cil.li/" }
+    maven { url = "https://maven.theillusivec4.top/" }
 }
 
 dependencies {
@@ -96,6 +97,8 @@ dependencies {
 //    compile "com.brandon3055.projectintelligence:ProjectIntelligence:${config.mc_version}-${config.pi_version}:deobf"
     compile "codechicken:CodeChickenLib:${config.mc_version}-${config.ccl_version}:deobf"
     compile fg.deobf("mezz.jei:jei-${config.mc_version}:${config.jei_version}")
+
+    compile fg.deobf("top.theillusivec4.curios:curios-forge:${config.mc_version}-${config.curios_version}")
 
     annotationProcessor("org.spongepowered:mixin:0.8.2:processor")
 }

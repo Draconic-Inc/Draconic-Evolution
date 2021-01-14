@@ -7,7 +7,7 @@ import com.brandon3055.brandonscore.lib.datamanager.DataFlags;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedInt;
 import com.brandon3055.brandonscore.network.BCoreNetwork;
 import com.brandon3055.brandonscore.utils.InventoryUtils;
-import com.brandon3055.brandonscore.utils.Teleporter.TeleportLocation;
+import com.brandon3055.brandonscore.utils.TargetPos;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.api.ITeleportEndPoint;
 import com.brandon3055.draconicevolution.handlers.DislocatorLinkHandler;
@@ -48,7 +48,7 @@ public class TileDislocatorPedestal extends TileBCore implements ITeleportEndPoi
         ItemStack stack = itemHandler.getStackInSlot(0);
         if (!player.isSneaking() && !stack.isEmpty()) {
             if (stack.getItem() instanceof Dislocator) {
-                TeleportLocation location = ((Dislocator) stack.getItem()).getLocation(stack, world);
+                TargetPos location = ((Dislocator) stack.getItem()).getTargetPos(stack, world);
 
                 if (location == null) {
                     if (dislocator_p2p.isValid(stack)) {

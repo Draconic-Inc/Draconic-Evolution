@@ -43,7 +43,7 @@ public interface IModularArmor extends IModularItem {
     @Override
     default void addModularItemInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         IModularItem.super.addModularItemInformation(stack, worldIn, tooltip, flagIn);
-        if (DEConfig.armorSpeedLimit != -1 && MODULE_HOST_CAPABILITY != null && stack.getCapability(MODULE_HOST_CAPABILITY).isPresent()) {
+        if (DEConfig.armorSpeedLimit != -1 && stack.getCapability(MODULE_HOST_CAPABILITY).isPresent()) {
             ModuleHost host = stack.getCapability(MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new);
             SpeedData speed = host.getModuleData(ModuleTypes.SPEED);
             if (speed != null && speed.getSpeedMultiplier() > DEConfig.armorSpeedLimit) {

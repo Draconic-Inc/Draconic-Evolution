@@ -68,7 +68,7 @@ public class ModularChestpiece extends ArmorItem implements IModularArmor {
                 props.add(new DecimalProperty("walk_speed", 0).min(0).max(speedGetter).setFormatter(PLUS_PERCENT_0));
                 props.add(new DecimalProperty("run_speed", speedGetter.get()).min(0).max(speedGetter).setFormatter(PLUS_PERCENT_0));
             }
-            
+
             JumpData jump = host.getModuleData(ModuleTypes.JUMP_BOOST);
             if (jump != null) {
                 Supplier<Double> jumpGetter = () -> {

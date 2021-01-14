@@ -8,6 +8,8 @@ import com.brandon3055.draconicevolution.blocks.tileentity.TileGenerator;
 import com.brandon3055.draconicevolution.handlers.DEEventHandler;
 import com.brandon3055.draconicevolution.init.DETags;
 import com.brandon3055.draconicevolution.init.ModCapabilities;
+import com.brandon3055.draconicevolution.integration.equipment.EquipmentManager;
+import com.brandon3055.draconicevolution.items.tools.Dislocator;
 import com.brandon3055.draconicevolution.lib.ISidedTileHandler;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import net.minecraft.client.audio.ISound;
@@ -23,10 +25,16 @@ public class CommonProxy {
         DraconicNetwork.init();
         DETags.init();
         DEConfig.load();
+
+        MinecraftForge.EVENT_BUS.addListener(DraconicEvolution::registerCommands);
+        MinecraftForge.EVENT_BUS.addListener(Dislocator::onAnvilUpdate);
+
+        MinecraftForge.EVENT_BUS.register(new DEEventHandler());
+
+        EquipmentManager.initialize();
     }
 
     public void commonSetup(FMLCommonSetupEvent event) {
-        MinecraftForge.EVENT_BUS.register(new DEEventHandler());
         ModCapabilities.register();
     }
 

@@ -170,7 +170,9 @@ public class RenderTileReactorCore extends TileEntityRenderer<TileReactorCore> {
         } else {
             ccrs.bind(fallBackType, getter);
             model_no_shade.render(ccrs, mat);
-            ((IRenderTypeBuffer.Impl) getter).finish();
+            if (getter instanceof IRenderTypeBuffer.Impl) {
+                ((IRenderTypeBuffer.Impl) getter).finish();
+            }
 
             mat.scale(1.05);
             mat.rotate((ClientEventHandler.elapsedTicks + partialTicks) / 400F, Vector3.X_NEG);

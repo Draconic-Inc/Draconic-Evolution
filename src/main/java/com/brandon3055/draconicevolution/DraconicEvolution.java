@@ -5,9 +5,7 @@ import com.brandon3055.draconicevolution.api.crafting.IngredientStack;
 import com.brandon3055.draconicevolution.client.ClientProxy;
 import com.brandon3055.draconicevolution.command.CommandKaboom;
 import com.brandon3055.draconicevolution.command.CommandMakeRecipe;
-import com.brandon3055.draconicevolution.init.DETags;
 import net.minecraft.item.crafting.IRecipeType;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -33,7 +31,6 @@ public class DraconicEvolution {
         proxy = DistExecutor.safeRunForDist(() -> ClientProxy::new, () -> CommonProxy::new);
         proxy.construct();
         FMLJavaModLoadingContext.get().getModEventBus().register(this);
-        MinecraftForge.EVENT_BUS.addListener(DraconicEvolution::registerCommands);
 
         DraconicAPI.FUSION_RECIPE_TYPE = IRecipeType.register(MODID + ":fusion_crafting");
         CraftingHelper.register(DraconicAPI.INGREDIENT_STACK_TYPE, IngredientStack.SERIALIZER);
@@ -54,12 +51,8 @@ public class DraconicEvolution {
         proxy.serverSetup(event);
     }
 
-//    @SubscribeEvent
-//    public void onServerAboutToStart(FMLServerAboutToStartEvent event) {}
-
     public static void registerCommands(RegisterCommandsEvent event) {
         CommandKaboom.register(event.getDispatcher());
         CommandMakeRecipe.register(event.getDispatcher());
     }
-
 }

@@ -13,7 +13,7 @@ import com.brandon3055.brandonscore.lib.datamanager.ManagedVec3I;
 import com.brandon3055.brandonscore.network.BCoreNetwork;
 import com.brandon3055.brandonscore.utils.FacingUtils;
 import com.brandon3055.brandonscore.utils.InventoryUtils;
-import com.brandon3055.brandonscore.utils.Teleporter;
+import com.brandon3055.brandonscore.utils.TargetPos;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.DraconicEvolution;
@@ -127,7 +127,7 @@ public class TileDislocatorReceptacle extends TileBCore implements ITickableTile
                 return;
             }
 
-            Teleporter.TeleportLocation location = ((Dislocator) stack.getItem()).getLocation(stack, world);
+            TargetPos location = ((Dislocator) stack.getItem()).getTargetPos(stack, world);
             if (dislocator_p2p.isValid(stack) && location != null) {
                 location.setYaw(entity.rotationYaw);
                 location.setPitch(entity.rotationPitch);
@@ -379,7 +379,7 @@ public class TileDislocatorReceptacle extends TileBCore implements ITickableTile
 //        newOffsets.set(true);
         ItemStack stack = itemHandler.getStackInSlot(0);
 
-        if (!(stack.getItem() instanceof Dislocator) || ((Dislocator) stack.getItem()).getLocation(stack, world) == null) {
+        if (!(stack.getItem() instanceof Dislocator) || ((Dislocator) stack.getItem()).getTargetPos(stack, world) == null) {
             if (!dislocator_p2p.isValid(stack)) {
                 return false;
             }

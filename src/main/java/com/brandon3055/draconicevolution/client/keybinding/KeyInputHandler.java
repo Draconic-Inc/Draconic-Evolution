@@ -1,11 +1,12 @@
 package com.brandon3055.draconicevolution.client.keybinding;
 
+import com.brandon3055.draconicevolution.client.gui.GuiDislocator;
 import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.GuiConfigurableItem;
-import com.brandon3055.draconicevolution.items.equipment.IModularArmor;
+import com.brandon3055.draconicevolution.items.tools.DislocatorAdvanced;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.api.distmarker.Dist;
@@ -91,9 +92,27 @@ public class KeyInputHandler {
                 }
             }
         }
-//        else if (KeyBindings.toggleDislocator.isPressed()) {
-////            PacketDispatcher.dispatchToggleDislocators();
-//        }
+        else if (KeyBindings.toggleMagnet.isPressed()) {
+            DraconicNetwork.sendToggleMagnets();
+        }
+        else if (KeyBindings.dislocatorTeleport.isPressed()) {
+            DraconicNetwork.sendDislocatorMessage(11, output -> {});
+        }
+        else if (KeyBindings.dislocatorBlink.isPressed()) {
+            DraconicNetwork.sendDislocatorMessage(12, output -> {});
+        }
+        else if (KeyBindings.dislocatorUp.isPressed()) {
+            DraconicNetwork.sendDislocatorMessage(13, output -> output.writeBoolean(false));
+        }
+        else if (KeyBindings.dislocatorDown.isPressed()) {
+            DraconicNetwork.sendDislocatorMessage(13, output -> output.writeBoolean(true));
+        }
+        else if (KeyBindings.dislocatorGui.isPressed()) {
+            ItemStack stack = DislocatorAdvanced.findDislocator(player);
+            if (!stack.isEmpty()) {
+                Minecraft.getInstance().displayGuiScreen(new GuiDislocator(stack.getDisplayName(), player));
+            }
+        }
 //        else if (KeyBindings.armorProfileChange.isPressed()) {
 ////            PacketDispatcher.dispatchToolProfileChange(true);
 //        }

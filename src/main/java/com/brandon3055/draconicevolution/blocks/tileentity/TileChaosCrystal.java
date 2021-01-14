@@ -1,7 +1,9 @@
 package com.brandon3055.draconicevolution.blocks.tileentity;
 
+import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.lib.datamanager.*;
+import com.brandon3055.brandonscore.network.BCoreNetwork;
 import com.brandon3055.draconicevolution.DEOldConfig;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.handlers.DESounds;
@@ -64,9 +66,10 @@ public class TileChaosCrystal extends TileBCore implements ITickableTileEntity {
             world.removeBlock(pos, false);
         }
 
-        if (world.isRemote && soundTimer-- <= 0) {
+        if (!world.isRemote && soundTimer-- <= 0) {
             soundTimer = 3600 + world.rand.nextInt(1200);
-            world.playSound(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, DESounds.chaosChamberAmbient, SoundCategory.AMBIENT, 1.5F, world.rand.nextFloat() * 0.4F + 0.8F, false);
+//            world.playSound(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, DESounds.chaosChamberAmbient, SoundCategory.AMBIENT, 1F, world.rand.nextFloat() * 0.4F + 0.8F, false);
+            BCoreNetwork.sendSound(world, pos, DESounds.chaosChamberAmbient, SoundCategory.AMBIENT, 1.5F, world.rand.nextFloat() * 0.4F + 0.8F, false);
         }
 
         if (!world.isRemote && world instanceof ServerWorld && guardianDefeated.get() && world.rand.nextInt(50) == 0) {

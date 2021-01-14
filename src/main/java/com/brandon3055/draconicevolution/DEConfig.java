@@ -41,6 +41,8 @@ public class DEConfig {
     public static boolean enableOreEnd;
     public static boolean enableOreOverworld;
     public static boolean enableOreNether;
+    public static int dislocatorBlinkRange;
+    public static int dislocatorBlinksPerPearl;
 
     private static void loadServer() {
         serverTag = config.getTag("Server");
@@ -83,6 +85,18 @@ public class DEConfig {
                 .setComment("Allows you to disable draconium ore generation in the Nether")
                 .setDefaultBoolean(true)
                 .setSyncCallback((tag, type) -> enableOreNether = tag.getBoolean());
+
+        serverTag.getTag("dislocatorBlinkRange")
+                .setSyncToClient()
+                .setComment("Sets the maximum blink range for the Advanced Dislocator")
+                .setDefaultInt(32)
+                .setSyncCallback((tag, type) -> dislocatorBlinkRange = tag.getInt());
+
+        serverTag.getTag("dislocatorBlinksPerPearl")
+                .setSyncToClient()
+                .setComment("Sets the blinks to regular fuel ratio. Default 1 regular fuel (1 pearl) allows 4 blinks.")
+                .setDefaultInt(4)
+                .setSyncCallback((tag, type) -> dislocatorBlinksPerPearl = tag.getInt());
     }
 
 
