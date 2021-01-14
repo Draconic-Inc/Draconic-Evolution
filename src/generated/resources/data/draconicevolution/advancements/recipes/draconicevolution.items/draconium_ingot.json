@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "draconicevolution:draconium_ingot"
+    ]
+  },
+  "criteria": {
+    "has_draconium_ore": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:ores/draconium"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "draconicevolution:draconium_ingot"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_draconium_ore",
+      "has_the_recipe"
+    ]
+  ]
+}

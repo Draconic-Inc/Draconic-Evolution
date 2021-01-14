@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "draconicevolution:components/draconium_ingot"
+    ]
+  },
+  "criteria": {
+    "has_draconium_dust": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:dusts/draconium"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "draconicevolution:components/draconium_ingot"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_draconium_dust",
+      "has_the_recipe"
+    ]
+  ]
+}

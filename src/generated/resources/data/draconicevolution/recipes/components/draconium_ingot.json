@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smelting",
+  "ingredient": {
+    "tag": "forge:dusts/draconium"
+  },
+  "result": "draconicevolution:draconium_ingot",
+  "experience": 0.0,
+  "cookingtime": 200
+}

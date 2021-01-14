@@ -6,6 +6,7 @@ import com.brandon3055.draconicevolution.api.crafting.IngredientStack;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.init.DEModules;
 import com.brandon3055.draconicevolution.init.DETags;
+import net.minecraft.advancements.criterion.ItemPredicate;
 import net.minecraft.client.gui.recipebook.RecipeOverlayGui;
 import net.minecraft.data.*;
 import net.minecraft.item.Item;
@@ -68,8 +69,8 @@ public class RecipeGenerator extends RecipeProvider {
 
     private static void components(Consumer<IFinishedRecipe> consumer) {
 
-        CookingRecipeBuilder.smeltingRecipe(Ingredient.fromTag(DUSTS_DRACONIUM), ingot_draconium, 0, 200);
-        CookingRecipeBuilder.smeltingRecipe(Ingredient.fromTag(ORES_DRACONIUM), ingot_draconium, 1, 200);
+        CookingRecipeBuilder.smeltingRecipe(Ingredient.fromTag(DUSTS_DRACONIUM), ingot_draconium, 0, 200).addCriterion("has_draconium_dust", hasItem(DUSTS_DRACONIUM)).build(consumer, folder("components", ingot_draconium));
+        CookingRecipeBuilder.smeltingRecipe(Ingredient.fromTag(ORES_DRACONIUM), ingot_draconium, 1, 200).addCriterion("has_draconium_ore", hasItem(ORES_DRACONIUM)).build(consumer);
 
         ShapedRecipeBuilder.shapedRecipe(core_draconium)
                 .patternLine("ABA")
@@ -300,6 +301,8 @@ public class RecipeGenerator extends RecipeProvider {
                 .key('D', STONE_SLAB)
                 .addCriterion("has_STONE_SLAB", hasItem(STONE_SLAB))
                 .build(consumer);
+
+
 
 
     }
@@ -1592,7 +1595,16 @@ public class RecipeGenerator extends RecipeProvider {
                 .key('E', COMPARATOR)
                 .addCriterion("has_dust_draconium", hasItem(dust_draconium))
                 .build(consumer);
-//        ShapedRecipeBuilder.shapedRecipe(dislocation_inhibitor).patternLine("AAA").patternLine("BCB").patternLine("AAA").key('A', INGOTS_IRON).key('B', IRON_BARS).key('C', magnet).build(consumer);
+
+        ShapedRecipeBuilder.shapedRecipe(dislocation_inhibitor)
+                .patternLine("AAA")
+                .patternLine("BCB")
+                .patternLine("AAA")
+                .key('A', INGOTS_IRON)
+                .key('B', IRON_BARS)
+                .key('C', magnet)
+                .addCriterion("has_magnet", hasItem(magnet))
+                .build(consumer);
 
 
 //        ShapedRecipeBuilder.shapedRecipe(info_tablet).patternLine("AAA").patternLine("ABA").patternLine("AAA").key('A', Tags.Items.STONE).key('B', DUSTS_DRACONIUM).build(consumer);
