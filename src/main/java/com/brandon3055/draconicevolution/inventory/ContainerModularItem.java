@@ -175,7 +175,8 @@ public class ContainerModularItem extends ContainerModuleHost<TileBCore> {
                     if (slot.getStack().getCapability(MODULE_HOST_CAPABILITY).isPresent()) {
                         if (player instanceof ServerPlayerEntity) {
                             PlayerSlot playerSlot;
-                            if (slotId >= 40) playerSlot = new PlayerSlot(slotId - 40, PlayerSlot.EnumInvCategory.OFF_HAND);
+                            if (slotId >= 41) playerSlot = new PlayerSlot(slotId - 41, PlayerSlot.EnumInvCategory.EQUIPMENT);
+                            else if (slotId >= 40) playerSlot = new PlayerSlot(slotId - 40, PlayerSlot.EnumInvCategory.OFF_HAND);
                             else if (slotId >= 36) playerSlot = new PlayerSlot(slotId - 36, PlayerSlot.EnumInvCategory.ARMOR);
                             else playerSlot = new PlayerSlot(slotId, PlayerSlot.EnumInvCategory.MAIN);
                             NetworkHooks.openGui((ServerPlayerEntity) player, new Provider(slot.getStack(), playerSlot), playerSlot::toBuff);
@@ -186,6 +187,9 @@ public class ContainerModularItem extends ContainerModuleHost<TileBCore> {
                     }
                 }
             }
+        }
+        if (slotId > 40) {
+            return ItemStack.EMPTY;
         }
         return super.slotClick(slotId, button, clickTypeIn, player);
     }

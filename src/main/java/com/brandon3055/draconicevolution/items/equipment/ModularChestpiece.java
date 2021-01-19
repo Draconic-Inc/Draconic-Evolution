@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.items.equipment;
 
 import codechicken.lib.util.SneakyUtils;
 import com.brandon3055.brandonscore.api.TechLevel;
+import com.brandon3055.brandonscore.capability.MultiCapabilityProvider;
 import com.brandon3055.brandonscore.lib.TechPropBuilder;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.api.config.DecimalProperty;
@@ -13,9 +14,13 @@ import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleHostImpl;
 import com.brandon3055.draconicevolution.client.model.ModularArmorModel;
 import com.brandon3055.draconicevolution.init.EquipCfg;
+import com.brandon3055.draconicevolution.integration.equipment.EquipmentManager;
+import com.brandon3055.draconicevolution.integration.equipment.IDEEquipment;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ArmorMaterial;
@@ -36,12 +41,25 @@ import static com.brandon3055.draconicevolution.init.ModuleCfg.*;
 /**
  * Created by brandon3055 on 21/5/20.
  */
-public class ModularChestpiece extends ArmorItem implements IModularArmor {
+public class ModularChestpiece extends ArmorItem implements IModularArmor, IDEEquipment {
     private final TechLevel techLevel;
 
     public ModularChestpiece(TechPropBuilder props) {
         super(ArmorMaterial.DIAMOND, EquipmentSlotType.CHEST, props.build().isImmuneToFire());
         this.techLevel = props.techLevel;
+    }
+
+    @Override
+    public boolean canEquip(ItemStack stack, EquipmentSlotType armorType, Entity entity) {
+        if (entity instanceof LivingEntity && !EquipmentManager.findItem(e -> e.getItem() instanceof ModularChestpiece, (LivingEntity) entity).isEmpty()) {
+            return false;
+        }
+        return MobEntity.getSlotForItemStack(stack) == armorType;
+    }
+
+    @Override
+    public boolean canEquip(LivingEntity livingEntity) {
+        return !(livingEntity.getItemStackFromSlot(EquipmentSlotType.CHEST).getItem() instanceof ModularChestpiece);
     }
 
     @Override
@@ -90,6 +108,11 @@ public class ModularChestpiece extends ArmorItem implements IModularArmor {
     }
 
     @Override
+    public void initCapabilities(ItemStack stack, ModuleHostImpl host, MultiCapabilityProvider provider) {
+        EquipmentManager.addCaps(stack, provider);
+    }
+
+    @Override
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         addModularItemInformation(stack, worldIn, tooltip, flagIn);
@@ -98,12 +121,15 @@ public class ModularChestpiece extends ArmorItem implements IModularArmor {
     @OnlyIn(Dist.CLIENT)
     private BipedModel<?> model;
 
+    @OnlyIn(Dist.CLIENT)
+    private BipedModel<?> model_on_armor;
+
     @Nullable
     @Override
     @OnlyIn(Dist.CLIENT)
     public <A extends BipedModel<?>> A getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlotType armorSlot, A _default) {
         if (model == null) {
-            model = new ModularArmorModel(1F, techLevel);
+            model = new ModularArmorModel(1F, techLevel, false);
 //            model = new ModelTestArmor(1F); //Armor
 //            model = new ModelBiped(0.5F); //Leggings
         }
@@ -114,5 +140,25 @@ public class ModularChestpiece extends ArmorItem implements IModularArmor {
 //        model.bipedLeftArm.rotateAngleZ = _default.bipedLeftArm.rotateAngleZ;
 
         return SneakyUtils.unsafeCast(model);
+    }
+
+
+    @OnlyIn(Dist.CLIENT)
+    public <A extends BipedModel<?>> A getChestPieceModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlotType armorSlot, boolean onArmor) {
+        if (model == null) {
+            model = new ModularArmorModel(1F, techLevel, false);
+            model_on_armor = new ModularArmorModel(1F, techLevel, true);
+        }
+
+        return SneakyUtils.unsafeCast(onArmor ? model_on_armor : model);
+    }
+
+
+    public static ItemStack getChestpiece(LivingEntity entity) {
+        ItemStack stack = entity.getItemStackFromSlot(EquipmentSlotType.CHEST);
+        if (stack.getItem() instanceof ModularChestpiece) {
+            return stack;
+        }
+        return EquipmentManager.findItem(e -> e.getItem() instanceof ModularChestpiece, entity);
     }
 }

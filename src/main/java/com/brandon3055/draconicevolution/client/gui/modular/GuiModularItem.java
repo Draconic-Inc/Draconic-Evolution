@@ -10,10 +10,12 @@ import com.brandon3055.brandonscore.client.gui.modulargui.baseelements.GuiButton
 import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiTexture;
 import com.brandon3055.brandonscore.client.gui.modulargui.templates.TGuiBase;
 import com.brandon3055.brandonscore.client.utils.GuiHelper;
+import com.brandon3055.brandonscore.inventory.ContainerSlotLayout;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleGrid;
 import com.brandon3055.draconicevolution.client.gui.ModuleGridRenderer;
+import com.brandon3055.draconicevolution.integration.equipment.EquipmentManager;
 import com.brandon3055.draconicevolution.inventory.ContainerModularItem;
 import com.brandon3055.draconicevolution.client.DETextures;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
@@ -25,6 +27,8 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.IItemHandlerModifiable;
 
 import java.awt.*;
 import java.util.HashMap;
@@ -35,6 +39,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import static com.brandon3055.brandonscore.BCConfig.darkMode;
+import static com.brandon3055.brandonscore.BrandonsCore.equipmentManager;
+import static com.brandon3055.brandonscore.inventory.ContainerSlotLayout.SlotType.PLAYER_EQUIPMENT;
 
 
 /**
@@ -80,6 +86,29 @@ public class GuiModularItem extends ModularGuiContainer<ContainerModularItem> {
         template.background.addChild(gridRenderer);
         grid.setPosition(gridRenderer.xPos() - guiLeft(), gridRenderer.yPos() - guiTop());
         grid.setOnGridChange(this::updateInfoPanel);
+
+        if (EquipmentManager.equipModLoaded()) {
+            LazyOptional<IItemHandlerModifiable> optional = equipmentManager.getInventory(playerInventory.player);
+            optional.ifPresent(handler -> {
+                GuiElement equipBg = GuiTexture.newDynamicTexture(() -> BCSprites.getThemed("bg_dynamic_small"));
+                toolkit.jeiExclude(equipBg);
+                template.background.addBackGroundChild(equipBg);
+                equipBg.setPos(template.background.xPos() - 28, template.background.yPos());
+                equipBg.setMaxXPos(template.background.xPos() - 2, true);
+                int c = 0;
+                for (int i = 0; i < handler.getSlots(); i++) {
+                    int finalI = i;
+                    ContainerSlotLayout.SlotData data = container.getSlotLayout().getSlotData(PLAYER_EQUIPMENT, finalI);
+                    if (data.slot.getHasStack() && data.slot.getStack().getCapability(DECapabilities.PROPERTY_PROVIDER_CAPABILITY).isPresent()) {
+                        GuiElement element = toolkit.createSlots(equipBg, 1, 1, 0, (column, row) -> data, null);
+                        element.setXPos(equipBg.xPos() + 4, false);
+                        element.setYPos(equipBg.yPos() + (c * 19) + 4);
+                        equipBg.setMaxYPos(element.maxYPos() + 4, true);
+                        c++;
+                    }
+                }
+            });
+        }
 
         GuiButton itemConfig = toolkit.createThemedIconButton(template.background, "item_config");
         itemConfig.onReload(e -> e.setRelPos(template.background, 3, 3));

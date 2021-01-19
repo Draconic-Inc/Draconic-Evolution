@@ -10,6 +10,7 @@ import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
 import com.brandon3055.draconicevolution.api.modules.entities.ShieldControlEntity;
+import com.brandon3055.draconicevolution.items.equipment.ModularChestpiece;
 import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
 import com.brandon3055.draconicevolution.client.DETextures;
 
@@ -144,7 +145,7 @@ public class HudHandler {
         }
 
 
-        ItemStack chestStack = mc.player.getItemStackFromSlot(EquipmentSlotType.CHEST);
+        ItemStack chestStack = ModularChestpiece.getChestpiece(mc.player);//mc.player.getItemStackFromSlot(EquipmentSlotType.CHEST);
         LazyOptional<ModuleHost> optionalHost = chestStack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
         LazyOptional<IOPStorage> optionalStorage = chestStack.getCapability(DECapabilities.OP_STORAGE);
         if (chestStack.isEmpty() || !optionalHost.isPresent() || !optionalStorage.isPresent()) {

@@ -135,9 +135,9 @@ public interface IModularItem extends IForgeItem {
         return map;
     }
 
-    default void handleTick(ItemStack stack, LivingEntity entity, @Nullable EquipmentSlotType slot) {
+    default void handleTick(ItemStack stack, LivingEntity entity, @Nullable EquipmentSlotType slot, boolean inEquipModSlot) {
         ModuleHost host = stack.getCapability(MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new);
-        StackModuleContext context = new StackModuleContext(stack, entity, slot);
+        StackModuleContext context = new StackModuleContext(stack, entity, slot).setInEquipModSlot(inEquipModSlot);
         host.handleTick(context);
     }
 
@@ -147,11 +147,11 @@ public interface IModularItem extends IForgeItem {
      *
      * @param stack        The stack
      * @param slot         The equipment slot or null if this item is in the players general main inventory.
-     * @param inBaubleSlot //TODO Bauble support
+     * @param inEquipSlot  In equipment slot such as curio
      * @return true if this stack is in a valid slot.
      */
-    default boolean isEquipped(ItemStack stack, @Nullable EquipmentSlotType slot, boolean inBaubleSlot) {
-        if (this instanceof IModularArmor) return slot != null && slot.getSlotType() == EquipmentSlotType.Group.ARMOR;
+    default boolean isEquipped(ItemStack stack, @Nullable EquipmentSlotType slot, boolean inEquipSlot) {
+        if (this instanceof IModularArmor) return (slot != null && slot.getSlotType() == EquipmentSlotType.Group.ARMOR) || inEquipSlot;
         return true;
     }
 

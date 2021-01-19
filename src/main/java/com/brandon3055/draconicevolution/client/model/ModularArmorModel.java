@@ -8,6 +8,7 @@ import codechicken.lib.render.OBJParser;
 import codechicken.lib.render.buffer.VBORenderType;
 import codechicken.lib.render.shader.*;
 import codechicken.lib.util.SneakyUtils;
+import codechicken.lib.vec.Translation;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.client.BCClientEventHandler;
 import com.brandon3055.draconicevolution.DEConfig;
@@ -86,9 +87,11 @@ public class ModularArmorModel extends VBOBipedModel<LivingEntity> {
 
     private float shieldState = 0;
     private int shieldColour = 0x00FF00;
+    private boolean onArmor;
 
-    public ModularArmorModel(float size, TechLevel techLevel) {
+    public ModularArmorModel(float size, TechLevel techLevel, boolean onArmor) {
         super(size);
+        this.onArmor = onArmor;
         float yOffsetIn = 0;
 
         Map<String, CCModel> model = OBJParser.parseModels(new ResourceLocation(DraconicEvolution.MODID, "models/item/equipment/chestpeice.obj"), GL11.GL_TRIANGLES, null);
@@ -97,6 +100,11 @@ public class ModularArmorModel extends VBOBipedModel<LivingEntity> {
         gemModel = model.get("power_crystals").backfacedCopy();
         centralGemModel = model.get("crystal_core").backfacedCopy();
 
+        if (onArmor) {
+            materialModel.apply(new Translation(0, 0, -0.0625));
+            gemModel.apply(new Translation(0, 0, -0.0625 / 2));
+            centralGemModel.apply(new Translation(0, 0, -0.0625 / 2));
+        }
 
         String levelName = techLevel.name().toLowerCase();
         modelType = RenderType.makeType("modelType", DefaultVertexFormats.BLOCK, GL11.GL_TRIANGLES, 256, true, false, RenderType.State.getBuilder()
@@ -124,11 +132,14 @@ public class ModularArmorModel extends VBOBipedModel<LivingEntity> {
                 .build(false));
 
         baseVBOType = new VBORenderType(modelType, DefaultVertexFormats.POSITION_TEX_COLOR_NORMAL, (format, builder) -> {
-            CCRenderState ccrs = CCRenderState.instance();
-            ccrs.reset();
-            ccrs.bind(builder, format);
-            baseModel.render(ccrs);
+            if (!onArmor) {
+                CCRenderState ccrs = CCRenderState.instance();
+                ccrs.reset();
+                ccrs.bind(builder, format);
+                baseModel.render(ccrs);
+            }
         });
+
         materialVBOType = new VBORenderType(modelType, DefaultVertexFormats.POSITION_TEX_COLOR_NORMAL, (format, builder) -> {
             CCRenderState ccrs = CCRenderState.instance();
             ccrs.reset();

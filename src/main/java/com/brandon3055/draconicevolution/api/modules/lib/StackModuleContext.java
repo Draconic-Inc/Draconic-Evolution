@@ -21,12 +21,18 @@ public class StackModuleContext extends ModuleContext {
     private final ItemStack stack;
     private final LivingEntity entity;
     private final EquipmentSlotType slot;
+    private boolean inEquipModSlot = false;
 
     public StackModuleContext(/*ModuleHost moduleHost, */ItemStack stack, LivingEntity entity, EquipmentSlotType slot) {
         super(/*moduleHost*/);
         this.stack = stack;
         this.entity = entity;
         this.slot = slot;
+    }
+
+    public StackModuleContext setInEquipModSlot(boolean inEquipModSlot) {
+        this.inEquipModSlot = inEquipModSlot;
+        return this;
     }
 
     @Override
@@ -71,6 +77,6 @@ public class StackModuleContext extends ModuleContext {
     }
 
     public boolean isEquipped() {
-        return getItem().isEquipped(getStack(), getSlot(), false);
+        return getItem().isEquipped(getStack(), getSlot(), false) || inEquipModSlot;
     }
 }

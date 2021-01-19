@@ -13,12 +13,14 @@ import com.brandon3055.brandonscore.client.gui.modulargui.baseelements.GuiButton
 import com.brandon3055.brandonscore.client.gui.modulargui.baseelements.GuiScrollElement;
 import com.brandon3055.brandonscore.client.gui.modulargui.guielements.*;
 import com.brandon3055.brandonscore.client.utils.GuiHelper;
+import com.brandon3055.brandonscore.inventory.ContainerSlotLayout;
 import com.brandon3055.brandonscore.lib.Tripple;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.capability.PropertyProvider;
 import com.brandon3055.draconicevolution.api.config.ConfigProperty;
 import com.brandon3055.draconicevolution.client.keybinding.KeyBindings;
+import com.brandon3055.draconicevolution.integration.equipment.EquipmentManager;
 import com.brandon3055.draconicevolution.inventory.ContainerConfigurableItem;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -34,15 +36,19 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.IItemHandlerModifiable;
 
 import java.util.*;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import static com.brandon3055.brandonscore.BrandonsCore.equipmentManager;
 import static com.brandon3055.brandonscore.client.gui.GuiToolkit.LayoutPos.BOTTOM_CENTER;
 import static com.brandon3055.brandonscore.client.gui.modulargui.baseelements.GuiScrollElement.ListMode.VERT_LOCK_POS_WIDTH;
 import static com.brandon3055.brandonscore.client.gui.modulargui.lib.GuiAlign.CENTER;
+import static com.brandon3055.brandonscore.inventory.ContainerSlotLayout.SlotType.PLAYER_ARMOR;
+import static com.brandon3055.brandonscore.inventory.ContainerSlotLayout.SlotType.PLAYER_EQUIPMENT;
 import static com.brandon3055.draconicevolution.DEConfig.*;
 import static com.brandon3055.draconicevolution.api.capability.DECapabilities.PROPERTY_PROVIDER_CAPABILITY;
 
@@ -102,12 +108,10 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
                 GuiHelper.drawShadedRect(getter.getBuffer(GuiHelper.TRANS_TYPE), x - 1, y - 1, 18, 18, 1, 0, dark, light, GuiElement.midColour(light, dark), mainUI.getRenderZLevel());
 
                 if (!advancedUI && provider.getProviderID().equals(selectedItem)) {
-//                    drawOverlay(x, y, 0x80FF0000, occluded);
                     GuiHelper.drawColouredRect(getter.getBuffer(GuiHelper.TRANS_TYPE), x, y, 16, 16, 0x80FF0000, mainUI.displayZLevel);
                 } else if (DEConfig.configUiEnableVisualization && hoveredData != null) {
                     ConfigProperty prop = hoveredData.getPropIfApplicable(provider);
                     if (prop != null) {
-//                        drawOverlay(x, y, hoveredData.doesDataMatch(prop) ? 0x8000FF00 : 0x80ff9100, occluded);
                         GuiHelper.drawColouredRect(getter.getBuffer(GuiHelper.TRANS_TYPE), x, y, 16, 16, hoveredData.doesDataMatch(prop) ? 0x8000FF00 : 0x80ff9100, 0);
                     }
                 }
@@ -170,6 +174,29 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
         toggleAdvanced.onReload(() -> toggleAdvanced.setPos(mainUI.xPos() + 3, mainUI.yPos() + 3));
 
         playerSlots = toolkit.createPlayerSlots(mainUI, false, true, true);
+
+        if (EquipmentManager.equipModLoaded()) {
+            LazyOptional<IItemHandlerModifiable> optional = equipmentManager.getInventory(playerInventory.player);
+            optional.ifPresent(handler -> {
+                GuiElement equipBg = GuiTexture.newDynamicTexture(() -> BCSprites.getThemed("bg_dynamic_small"));
+                mainUI.addBackGroundChild(equipBg);
+                equipBg.setPos(mainUI.xPos() - 28, mainUI.yPos());
+                equipBg.setMaxXPos(mainUI.xPos() - 2, true);
+                int c = 0;
+                for (int i = 0; i < handler.getSlots(); i++) {
+                    int finalI = i;
+                    ContainerSlotLayout.SlotData data = container.getSlotLayout().getSlotData(PLAYER_EQUIPMENT, finalI);
+                    if (data.slot.getHasStack() && data.slot.getStack().getCapability(DECapabilities.PROPERTY_PROVIDER_CAPABILITY).isPresent()) {
+                        GuiElement element = toolkit.createSlots(equipBg, 1, 1, 0, (column, row) -> data, null);
+                        element.setXPos(equipBg.xPos() + 4, false);
+                        element.setYPos(equipBg.yPos() + (c * 19) + 4);
+                        equipBg.setMaxYPos(element.maxYPos() + 4, true);
+                        c++;
+                    }
+                }
+            });
+        }
+
 
         simpleViewList = createPropertyList();
         simpleViewList.setInsets(2, 2, 2, 2);

@@ -18,6 +18,7 @@ import com.brandon3055.draconicevolution.init.DEModules;
 import com.brandon3055.draconicevolution.init.EquipCfg;
 import com.brandon3055.draconicevolution.integration.equipment.EquipmentManager;
 import com.brandon3055.draconicevolution.items.equipment.IModularItem;
+import com.brandon3055.draconicevolution.items.equipment.ModularChestpiece;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.Attribute;
@@ -64,7 +65,7 @@ public class ModularArmorEventHandler {
         }
 
         LivingEntity entity = event.getEntityLiving();
-        ItemStack chestStack = entity.getItemStackFromSlot(EquipmentSlotType.CHEST);
+        ItemStack chestStack = ModularChestpiece.getChestpiece(entity);
         LazyOptional<ModuleHost> optionalHost = chestStack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
 
         if (chestStack.isEmpty() || !optionalHost.isPresent()) {
@@ -87,7 +88,7 @@ public class ModularArmorEventHandler {
         }
 
         LivingEntity entity = event.getEntityLiving();
-        ItemStack chestStack = entity.getItemStackFromSlot(EquipmentSlotType.CHEST);
+        ItemStack chestStack = ModularChestpiece.getChestpiece(entity);
         LazyOptional<ModuleHost> optionalHost = chestStack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
 
         if (chestStack.isEmpty() || !optionalHost.isPresent()) {
@@ -126,17 +127,22 @@ public class ModularArmorEventHandler {
             PlayerEntity player = (PlayerEntity) entity;
             NonNullList<ItemStack> stacks = player.inventory.mainInventory;
             for (int i = 0; i < stacks.size(); ++i) {
-                getLastStandEntities(stacks.get(i), lastStandModules, player.inventory.currentItem == i ? EquipmentSlotType.MAINHAND : null);
+                getLastStandEntities(stacks.get(i), lastStandModules, player.inventory.currentItem == i ? EquipmentSlotType.MAINHAND : null, false);
             }
             for (EquipmentSlotType slot : ARMOR_SLOTS) {
-                getLastStandEntities(player.inventory.armorInventory.get(slot.getIndex()), lastStandModules, slot);
+                getLastStandEntities(player.inventory.armorInventory.get(slot.getIndex()), lastStandModules, slot, false);
             }
             for (ItemStack stack : player.inventory.offHandInventory) {
-                getLastStandEntities(stack, lastStandModules, EquipmentSlotType.OFFHAND);
+                getLastStandEntities(stack, lastStandModules, EquipmentSlotType.OFFHAND, false);
+            }
+            for (ItemStack stack : EquipmentManager.getAllItems(entity)) {
+                getLastStandEntities(stack, lastStandModules, null, true);
             }
         } else {
-            for (EquipmentSlotType slot : EquipmentSlotType.values()) {
-                getLastStandEntities(entity.getItemStackFromSlot(slot), lastStandModules, slot);
+            if (EquipmentManager.equipModLoaded()) {
+                for (EquipmentSlotType slot : EquipmentSlotType.values()) {
+                    getLastStandEntities(entity.getItemStackFromSlot(slot), lastStandModules, slot, true);
+                }
             }
         }
 
@@ -153,9 +159,9 @@ public class ModularArmorEventHandler {
         }
     }
 
-    private static void getLastStandEntities(ItemStack stack, List<LastStandEntity> entities, EquipmentSlotType slot) {
+    private static void getLastStandEntities(ItemStack stack, List<LastStandEntity> entities, EquipmentSlotType slot, boolean inEquipModSlot) {
         LazyOptional<ModuleHost> optional = stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
-        if (!stack.isEmpty() && stack.getItem() instanceof IModularItem && ((IModularItem) stack.getItem()).isEquipped(stack, slot, false)) {
+        if (!stack.isEmpty() && stack.getItem() instanceof IModularItem && ((IModularItem) stack.getItem()).isEquipped(stack, slot, inEquipModSlot)) {
             optional.ifPresent(host -> {
                 entities.addAll(host.getModuleEntities()
                         .stream()
@@ -175,29 +181,29 @@ public class ModularArmorEventHandler {
             PlayerEntity player = (PlayerEntity) entity;
             NonNullList<ItemStack> stacks = player.inventory.mainInventory;
             for (int i = 0; i < stacks.size(); ++i) {
-                tryTickStack(stacks.get(i), player, player.inventory.currentItem == i ? EquipmentSlotType.MAINHAND : null, armorAbilities);
+                tryTickStack(stacks.get(i), player, player.inventory.currentItem == i ? EquipmentSlotType.MAINHAND : null, armorAbilities, false);
             }
             for (EquipmentSlotType slot : ARMOR_SLOTS) {
-                tryTickStack(player.inventory.armorInventory.get(slot.getIndex()), player, slot, armorAbilities);
+                tryTickStack(player.inventory.armorInventory.get(slot.getIndex()), player, slot, armorAbilities, false);
             }
             for (ItemStack stack : player.inventory.offHandInventory) {
-                tryTickStack(stack, player, EquipmentSlotType.OFFHAND, armorAbilities);
+                tryTickStack(stack, player, EquipmentSlotType.OFFHAND, armorAbilities, false);
             }
             if (EquipmentManager.equipModLoaded()) {
                 EquipmentManager.findItems(e -> e.getItem() instanceof IModularItem, entity).forEach(stack -> {
-                    tryTickStack(stack, player, null, armorAbilities);
+                    tryTickStack(stack, player, null, armorAbilities, true);
                 });
             }
         } else {
             for (EquipmentSlotType slot : EquipmentSlotType.values()) {
-                tryTickStack(entity.getItemStackFromSlot(slot), entity, slot, armorAbilities);
+                tryTickStack(entity.getItemStackFromSlot(slot), entity, slot, armorAbilities, false);
             }
         }
 
         //region/*---------------- HillStep -----------------*/
 
         if (entity.world.isRemote) {
-            ItemStack chestStack = entity.getItemStackFromSlot(EquipmentSlotType.CHEST);
+            ItemStack chestStack = ModularChestpiece.getChestpiece(entity);
             LazyOptional<ModuleHost> optional = chestStack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
             boolean hasHost = !chestStack.isEmpty() && optional.isPresent();
             boolean highStepListed = playersWithUphillStep.contains(entity.getUniqueID()) && entity.stepHeight >= 1f;
@@ -301,8 +307,8 @@ public class ModularArmorEventHandler {
     }
 
     private static float getJumpBoost(LivingEntity entity, boolean max) {
-        ItemStack stack = entity.getItemStackFromSlot(EquipmentSlotType.CHEST);
-        LazyOptional<ModuleHost> optional = stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
+        ItemStack chestStack = ModularChestpiece.getChestpiece(entity);
+        LazyOptional<ModuleHost> optional = chestStack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
         if (optional.isPresent()) {
             ModuleHost host = optional.orElseThrow(IllegalStateException::new);
             JumpData jumpData = host.getModuleData(ModuleTypes.JUMP_BOOST);
@@ -324,9 +330,9 @@ public class ModularArmorEventHandler {
         return 0;
     }
 
-    private static void tryTickStack(ItemStack stack, LivingEntity entity, EquipmentSlotType slot, ArmorAbilities abilities) {
+    private static void tryTickStack(ItemStack stack, LivingEntity entity, EquipmentSlotType slot, ArmorAbilities abilities, boolean equipMod) {
         if (stack.getItem() instanceof IModularItem) {
-            ((IModularItem) stack.getItem()).handleTick(stack, entity, slot);
+            ((IModularItem) stack.getItem()).handleTick(stack, entity, slot, equipMod);
 
             if (slot != null && slot.getSlotType() == EquipmentSlotType.Group.ARMOR) {
                 LazyOptional<ModuleHost> optional = stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);

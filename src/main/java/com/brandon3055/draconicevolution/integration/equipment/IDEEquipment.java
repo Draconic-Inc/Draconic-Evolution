@@ -21,4 +21,8 @@ public interface IDEEquipment {
     default boolean canRightClickEquip(ItemStack stack) {
         return false;
     }
+
+    default boolean canEquip(LivingEntity livingEntity) {
+        return true;
+    }
 }

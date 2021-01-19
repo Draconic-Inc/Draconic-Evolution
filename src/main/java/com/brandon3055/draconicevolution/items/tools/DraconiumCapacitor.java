@@ -133,7 +133,7 @@ public class DraconiumCapacitor extends Item implements IInvCharge, IModularItem
 //    }
 
     @Override
-    public void handleTick(ItemStack stack, LivingEntity entity, @Nullable EquipmentSlotType slot) {
+    public void handleTick(ItemStack stack, LivingEntity entity, @Nullable EquipmentSlotType slot, boolean inEquipModSlot) {
         ArrayList<ItemStack> stacks = new ArrayList<>();
 
         stack.getCapability(DECapabilities.PROPERTY_PROVIDER_CAPABILITY).ifPresent(props -> {

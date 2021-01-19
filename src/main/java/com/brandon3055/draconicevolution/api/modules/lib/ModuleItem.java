@@ -2,8 +2,10 @@ package com.brandon3055.draconicevolution.api.modules.lib;
 
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.modules.Module;
+import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
 import com.brandon3055.draconicevolution.api.modules.data.ModuleData;
 import com.brandon3055.draconicevolution.api.capability.ModuleProvider;
+import com.brandon3055.draconicevolution.integration.equipment.EquipmentManager;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -90,6 +92,10 @@ public class ModuleItem<P extends ModuleData<P>> extends Item implements ModuleP
         entity.readFromItemStack(stack, new StackModuleContext(stack, null, null));
         entity.addToolTip(tooltip);
 //        tooltip.add(new StringTextComponent("//Module textures are wip"));
+
+        if (getModule().getType() == ModuleTypes.FLIGHT && EquipmentManager.equipModLoaded()) {
+            tooltip.add(new StringTextComponent("//Elytra does not currently work when chestpiece is in a curio slot."));
+        }
     }
 
     @Override

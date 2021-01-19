@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.integration.equipment;
 
 import com.brandon3055.brandonscore.capability.MultiCapabilityProvider;
+import com.brandon3055.brandonscore.inventory.PlayerSlot;
 import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.data.TagsProvider;
 import net.minecraft.entity.LivingEntity;
@@ -30,6 +31,7 @@ import java.util.function.Predicate;
 public class CuriosIntegration extends EquipmentManager {
 
     public static final Tags.IOptionalNamedTag<Item> CURIO_TAG = ItemTags.createOptional(new ResourceLocation("curios", "curio"));
+    public static final Tags.IOptionalNamedTag<Item> BODY_TAG = ItemTags.createOptional(new ResourceLocation("curios", "body"));
 
     @CapabilityInject(ICurio.class)
     public static Capability<ICurio> CURIO_CAP = null;
@@ -43,17 +45,17 @@ public class CuriosIntegration extends EquipmentManager {
     }
 
     @Override
-    protected void addEquipCaps(ItemStack stack, MultiCapabilityProvider provider) {
+    public void addEquipCaps(ItemStack stack, MultiCapabilityProvider provider) {
         provider.addUnsavedCap(CURIO_CAP, new CurioWrapper(stack));
     }
 
     @Override
-    protected LazyOptional<IItemHandlerModifiable> getInventory(LivingEntity entity) {
+    public LazyOptional<IItemHandlerModifiable> getInventory(LivingEntity entity) {
         return CuriosApi.getCuriosHelper().getEquippedCurios(entity);
     }
 
     @Override
-    protected ItemStack findMatchingItem(Item item, LivingEntity entity) {
+    public ItemStack findMatchingItem(Item item, LivingEntity entity) {
         return CuriosApi.getCuriosHelper()
                 .findEquippedCurio(item, entity)
                 .map(ImmutableTriple::getRight)
@@ -61,7 +63,7 @@ public class CuriosIntegration extends EquipmentManager {
     }
 
     @Override
-    protected ItemStack findMatchingItem(Predicate<ItemStack> predicate, LivingEntity entity) {
+    public ItemStack findMatchingItem(Predicate<ItemStack> predicate, LivingEntity entity) {
         return CuriosApi.getCuriosHelper()
                 .findEquippedCurio(predicate, entity)
                 .map(ImmutableTriple::getRight)
@@ -72,12 +74,15 @@ public class CuriosIntegration extends EquipmentManager {
      * Data Gen
      */
     public static void generateTags(Function<Tags.IOptionalNamedTag<Item>, TagsProvider.Builder<Item>> builder) {
-        builder.apply(CURIO_TAG).add(DEContent.dislocator_advanced,
+        builder.apply(CURIO_TAG).add(
+                DEContent.dislocator_advanced,
                 DEContent.magnet,
                 DEContent.magnet_advanced,
                 DEContent.capacitor_wyvern,
                 DEContent.capacitor_draconic,
                 DEContent.capacitor_chaotic,
                 DEContent.capacitor_creative);
+
+        builder.apply(BODY_TAG).add(DEContent.chestpiece_wyvern, DEContent.chestpiece_draconic, DEContent.chestpiece_chaotic);
     }
 }

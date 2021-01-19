@@ -1,12 +1,14 @@
 package com.brandon3055.draconicevolution.integration.equipment;
 
+import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.capability.MultiCapabilityProvider;
+import com.brandon3055.brandonscore.inventory.PlayerSlot;
+import com.brandon3055.brandonscore.lib.IEquipmentManager;
 import com.brandon3055.draconicevolution.lib.WTFException;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -18,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 /**
  * Created by brandon3055 on 6/1/21
@@ -27,7 +28,7 @@ import java.util.stream.Stream;
  * Safe as in the DE will still run if no such mod is installed.
  * This currently only supports Curio but may also add support for baubles at some point if that's still a thing in 1.16.
  */
-public abstract class EquipmentManager {
+public abstract class EquipmentManager implements IEquipmentManager {
     private static boolean curiosLoaded;
     private static EquipmentManager instance = null;
 
@@ -40,6 +41,8 @@ public abstract class EquipmentManager {
             modBus.addListener(CuriosIntegration::sendIMC);
             instance = new CuriosIntegration();
         }
+
+        BrandonsCore.equipmentManager = instance;
     }
 
     public static boolean equipModLoaded() {
@@ -107,12 +110,4 @@ public abstract class EquipmentManager {
         return findItems(stack -> !stack.isEmpty(), entity);
     }
 
-    //Abstract
-    protected abstract void addEquipCaps(ItemStack stack, MultiCapabilityProvider provider);
-
-    protected abstract LazyOptional<IItemHandlerModifiable> getInventory(LivingEntity entity);
-
-    protected abstract ItemStack findMatchingItem(Item item, LivingEntity entity);
-
-    protected abstract ItemStack findMatchingItem(Predicate<ItemStack> predicate, LivingEntity entity);
 }

@@ -8,6 +8,7 @@ import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.capability.PropertyProvider;
 import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.PropertyData;
 import com.brandon3055.draconicevolution.init.DEContent;
+import com.brandon3055.draconicevolution.integration.equipment.EquipmentManager;
 import com.brandon3055.draconicevolution.lib.WTFException;
 import com.google.common.collect.Streams;
 import net.minecraft.entity.player.PlayerEntity;
@@ -63,7 +64,12 @@ public class ContainerConfigurableItem extends ContainerBCore<Object> {
     }
 
     private Stream<ItemStack> getInventoryStacks() {
-//        //TODO add support for things like baubles
+//        if (EquipmentManager.equipModLoaded()) {
+//            return Streams.concat(
+//                    EquipmentManager.getAllItems(player).stream(),
+//                    inventorySlots.stream().map(Slot::getStack))
+//                    .filter(stack -> !stack.isEmpty());
+//        }
         return inventorySlots.stream()
                 .map(Slot::getStack)
                 .filter(stack -> !stack.isEmpty());
@@ -117,6 +123,9 @@ public class ContainerConfigurableItem extends ContainerBCore<Object> {
                 }
             }
         }
+        if (slotId > 40) {
+            return ItemStack.EMPTY;
+        }
         ItemStack ret = super.slotClick(slotId, button, clickTypeIn, player);
         if (onInventoryChange != null) {
             onInventoryChange.run();
@@ -137,7 +146,7 @@ public class ContainerConfigurableItem extends ContainerBCore<Object> {
     }
 
     private static Stream<ItemStack> getPlayerInventory(PlayerInventory player) {
-        return Streams.concat(player.mainInventory.stream(), player.armorInventory.stream(), player.offHandInventory.stream()).filter(e -> !e.isEmpty());
+        return Streams.concat(player.mainInventory.stream(), player.armorInventory.stream(), player.offHandInventory.stream(), EquipmentManager.getAllItems(player.player).stream()).filter(e -> !e.isEmpty());
     }
 
     public static Stream<Pair<ItemStack, PropertyProvider>> getStackProviders(Stream<ItemStack> stacks) {
@@ -186,6 +195,7 @@ public class ContainerConfigurableItem extends ContainerBCore<Object> {
     private boolean initialSync = false;
 
     private UUID lastSelected = null;
+
     private void onSyncDataReceived() {
         if (!initialSync) {
             initialSync = true;
@@ -201,7 +211,7 @@ public class ContainerConfigurableItem extends ContainerBCore<Object> {
 
     /**
      * Do not use this for anything important!
-     * */
+     */
     public ItemStack getLastStack() {
         return stackCache;
     }

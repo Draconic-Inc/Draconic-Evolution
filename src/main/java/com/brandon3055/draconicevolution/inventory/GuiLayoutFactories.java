@@ -15,8 +15,8 @@ public class GuiLayoutFactories {
     public static final ContainerSlotLayout.LayoutFactory<TileGenerator>            GENERATOR_LAYOUT            = (player, tile) -> new ContainerSlotLayout().playerMain(player).allTile(tile.itemHandler);
     public static final ContainerSlotLayout.LayoutFactory<TileGrinder>              GRINDER_LAYOUT              = (player, tile) -> new ContainerSlotLayout().playerMain(player).allTile(tile.itemHandler);
     public static final ContainerSlotLayout.LayoutFactory<TileEnergyCore>           ENERGY_CORE_LAYOUT          = (player, tile) -> new ContainerSlotLayout().playerMain(player);
-    public static final ContainerSlotLayout.LayoutFactory<TileBCore>                MODULAR_ITEM_LAYOUT         = (player, noOp) -> new ContainerSlotLayout().playerMain(player).playerArmor(player).playerOffHand(player);
-    public static final ContainerSlotLayout.LayoutFactory<Object>                   CONFIGURABLE_ITEM_LAYOUT    = (player, noOp) -> new ContainerSlotLayout().playerMain(player).playerArmor(player).playerOffHand(player);
+    public static final ContainerSlotLayout.LayoutFactory<TileBCore>                MODULAR_ITEM_LAYOUT         = (player, noOp) -> new ContainerSlotLayout().playerMain(player).playerArmor(player).playerOffHand(player).playerEquipMod(player);
+    public static final ContainerSlotLayout.LayoutFactory<Object>                   CONFIGURABLE_ITEM_LAYOUT    = (player, noOp) -> new ContainerSlotLayout().playerMain(player).playerArmor(player).playerOffHand(player).playerEquipMod(player);
     public static final ContainerSlotLayout.LayoutFactory<TileEnergyTransfuser>     TRANSFUSER_LAYOUT           = (player, tile) -> new ContainerSlotLayout().playerMain(player).playerArmor(player).playerOffHand(player).allTile(tile.itemsCombined);
 
 

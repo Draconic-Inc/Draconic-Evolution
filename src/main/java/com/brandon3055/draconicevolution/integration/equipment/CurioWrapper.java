@@ -38,6 +38,12 @@ public class CurioWrapper implements ICurio {
 //        return false;
 //    }
 
+
+    @Override
+    public boolean canEquip(String identifier, LivingEntity livingEntity) {
+        return item.canEquip(livingEntity);
+    }
+
     @Override
     public List<ITextComponent> getTagsTooltip(List<ITextComponent> tagTooltips) {
         return item.getTagsTooltip(stack, tagTooltips);
@@ -74,8 +80,8 @@ public class CurioWrapper implements ICurio {
 //        return false;
 //    }
 //
-//    @Override
-//    public void render(String identifier, int index, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light, LivingEntity livingEntity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-//
-//    }
+    @Override
+    public void render(String identifier, int index, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light, LivingEntity livingEntity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+//        item.renderEquipment(matrixStack, renderTypeBuffer, light, light, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch);
+    }
 }
