@@ -47,10 +47,11 @@ public class BlockStateGenerator extends BlockStateProvider {
         simpleBlock(DEContent.energy_core_stabilizer, models().getExistingFile(modLoc("block/energy_core_stabilizer")));
         simpleBlock(DEContent.creative_op_capacitor);
         simpleBlock(DEContent.stabilized_spawner, models().getExistingFile(modLoc("block/stabilized_spawner")));
-
         simpleBlock(DEContent.particle_generator, models().getExistingFile(modLoc("block/particle_generator")));
-
         simpleBlock(DEContent.crafting_core, models().getExistingFile(modLoc("block/crafting/fusion_crafting_core")));
+
+        simpleBlock(DEContent.dislocation_inhibitor, models().cubeBottomTop("dislocation_inhibitor", modLoc("block/dislocation_inhibitor"), modLoc("block/parts/machine_top"), modLoc("block/parts/machine_top")));
+
         directionalBlock(DEContent.crafting_injector_basic, models().getExistingFile(modLoc("block/crafting/crafting_injector_draconium")));
         directionalBlock(DEContent.crafting_injector_wyvern, models().getExistingFile(modLoc("block/crafting/crafting_injector_wyvern")));
         directionalBlock(DEContent.crafting_injector_awakened, models().getExistingFile(modLoc("block/crafting/crafting_injector_draconic")));

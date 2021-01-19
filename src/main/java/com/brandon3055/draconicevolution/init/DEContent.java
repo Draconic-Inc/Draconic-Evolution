@@ -438,6 +438,7 @@ public class DEContent {
 //        registerItem(event, new ItemBlockBCore(celestial_manipulator,       new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(celestial_manipulator.getRegistryName())));
 //        registerItem(event, new ItemBlockBCore(draconium_chest,             new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(draconium_chest.getRegistryName())));
         registerItem(event, new ItemBlockBCore(particle_generator,          new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(particle_generator.getRegistryName())));
+        registerItem(event, new ItemBlockBCore(dislocation_inhibitor,       new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(dislocation_inhibitor.getRegistryName())));
 //        registerItem(event, new ItemBlockBCore(placed_item,                 new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(placed_item.getRegistryName())));
         registerItem(event, new ItemBlockBCore(flux_gate,                   new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(flux_gate.getRegistryName())));
         registerItem(event, new ItemBlockBCore(fluid_gate,                  new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(fluid_gate.getRegistryName())));

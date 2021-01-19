@@ -81,7 +81,7 @@ public class LootTableGenerator extends LootTableProvider {
             registerDropSelfLootTable(DEContent.reactor_stabilizer);
             registerDropSelfLootTable(DEContent.reactor_injector);
 //            registerDropSelfLootTable(DEContent.rain_sensor);
-//            registerDropSelfLootTable(DEContent.dislocation_inhibitor);
+            registerDropSelfLootTable(DEContent.dislocation_inhibitor);
             registerDropSelfLootTable(DEContent.block_draconium);
             registerDropSelfLootTable(DEContent.block_draconium_awakened);
             registerDropSelfLootTable(DEContent.fluid_gate);
