@@ -65,16 +65,16 @@ minecraft {
     runs {
         client {
             workingDirectory file('run')
-            mods { enderstorage { source sourceSets.main } }
+            mods { draconicevolution { source sourceSets.main } }
         }
         server {
             workingDirectory file('run')
-            mods { enderstorage { source sourceSets.main } }
+            mods { draconicevolution { source sourceSets.main } }
         }
         data {
             workingDirectory file('run')
             args '--mod', 'draconicevolution', '--all', '--output', file("src/generated/resources")
-            mods { enderstorage { source sourceSets.main } }
+            mods { draconicevolution { source sourceSets.main } }
         }
     }
 }
