@@ -65,7 +65,7 @@ public class TileGrinder extends TileBCore implements ITickableTileEntity, IRSSw
     public final ManagedBool collectItems = register(new ManagedBool("collect_items", true, SAVE_NBT_SYNC_CONTAINER, CLIENT_CONTROL));
     public final ManagedBool collectXP = register(new ManagedBool("collect_xp", true, SAVE_NBT_SYNC_CONTAINER, CLIENT_CONTROL));
     public final ManagedInt storedXP = register(new ManagedInt("stored_xp", SAVE_BOTH_SYNC_CONTAINER));
-    public TileItemStackHandler itemHandler = new TileItemStackHandler(1);
+    public TileItemStackHandler itemHandler = new TileItemStackHandler(2);
     public EntityFilter entityFilter;
     public OPStorage opStorage = new OPStorage(1000000, 128000, 0);
 
@@ -135,15 +135,13 @@ public class TileGrinder extends TileBCore implements ITickableTileEntity, IRSSw
             fanRotation += fanSpeed;
             if (active.get() && fanSpeed < 1) {
                 fanSpeed = Math.min(fanSpeed + 0.03F, 1F);
-            }
-            else if (!active.get() && fanSpeed > 0) {
+            } else if (!active.get() && fanSpeed > 0) {
                 fanSpeed = Math.max(fanSpeed - 0.08F, 0F);
             }
 
             if (showAOE.get()) {
                 aoeDisplay = (float) MathHelper.approachExp(aoeDisplay, aoe.get(), 0.1F);
-            }
-            else {
+            } else {
                 aoeDisplay = MathHelper.approachLinear(aoeDisplay, 0.5F, 0.15F);
             }
 
@@ -199,6 +197,12 @@ public class TileGrinder extends TileBCore implements ITickableTileEntity, IRSSw
             return true;
         }
 
+        ItemStack weapon = itemHandler.getStackInSlot(1);
+        if (weapon.isEmpty() || weapon.getDamage() >= weapon.getMaxDamage() - 1) {
+            weapon = ItemStack.EMPTY;
+        }
+        getFakePlayer().setHeldItem(Hand.MAIN_HAND, weapon);
+
         int eph = DEOldConfig.grinderEnergyPerHeart;
         float health = nextTarget.getHealth();
 
@@ -224,6 +228,12 @@ public class TileGrinder extends TileBCore implements ITickableTileEntity, IRSSw
 
         //Attack the mob and enter cooldown mode for 5 ticks if successful. Else cooldown for 3 ticks.
         if (nextTarget.attackEntityFrom(source, damage)) {
+            if (!weapon.isEmpty()) {
+                ItemStack justInCase = weapon.copy();
+                justInCase.setDamage(justInCase.getMaxDamage() - 1);
+                weapon.damageItem(1, getFakePlayer(), fakePlayer -> itemHandler.setStackInSlot(1, justInCase));
+            }
+
             LogHelper.dev("Grinder: Dealt " + damage + " damage to entity: " + nextTarget);
             nextTarget = null;
             opStorage.modifyEnergyStored(-cost);

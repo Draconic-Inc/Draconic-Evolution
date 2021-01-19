@@ -51,7 +51,7 @@ public class CrystalFXRing extends CrystalFXBase<TileCrystalBase> {
 
     @Override
     public void renderParticle(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks) {
-        if (!renderEnabled) {
+        if (!renderEnabled || DETextures.ENERGY_PARTICLE == null || DETextures.ENERGY_PARTICLE[0] == null) {
             return;
         }
 

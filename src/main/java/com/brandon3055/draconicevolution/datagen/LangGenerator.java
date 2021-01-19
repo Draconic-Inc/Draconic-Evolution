@@ -436,6 +436,7 @@ public class LangGenerator extends LanguageProvider {
         helper.add("claim.xp.levels.info"                                                   ,"Claim %s expireance levels");
         helper.add("stored_xp"                                                              ,"Stored Expireance:");
         helper.add("stored_xp.raw"                                                          ,"(Raw XP)");
+        helper.add("weapon_slot"                                                            ,"Optional weapon to use when attacking.");
 
         //Reactor
         helper.setPrefix("gui.draconicevolution.reactor");
