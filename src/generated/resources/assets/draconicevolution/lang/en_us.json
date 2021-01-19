@@ -468,7 +468,7 @@
   "module.draconicevolution.module_type": "Module Type",
   "module.draconicevolution.shield_capacity.name": "Shield Capacity",
   "module.draconicevolution.shield_capacity.value": "%s points",
-  "module.draconicevolution.shield_control.name": "Shield cool down",
+  "module.draconicevolution.shield_control.name": "Shield Cooldown",
   "module.draconicevolution.shield_control.value": "%s Seconds",
   "module.draconicevolution.shield_passive.name": "Shield Operating Cost",
   "module.draconicevolution.shield_passive.value": "%s OP/t",

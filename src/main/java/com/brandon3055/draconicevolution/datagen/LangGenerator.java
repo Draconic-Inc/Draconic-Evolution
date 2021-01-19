@@ -213,7 +213,7 @@ public class LangGenerator extends LanguageProvider {
 		helper.add("shield_recharge.value",                      "%s pps (%s seconds)\n@ %s OP/t");
 		helper.add("shield_passive.name",                        "Shield Operating Cost");
 		helper.add("shield_passive.value",                       "%s OP/t");
-		helper.add("shield_control.name",                        "Shield cool down");
+		helper.add("shield_control.name",                        "Shield Cooldown");
 		helper.add("shield_control.value",                       "%s Seconds");
 
 		helper.add(ModuleTypes.FLIGHT,                           "Flight");
