@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.api.modules.entities;
 
 import com.brandon3055.brandonscore.api.power.IOPStorageModifiable;
 import com.brandon3055.brandonscore.client.utils.GuiHelper;
+import com.brandon3055.brandonscore.utils.MathUtils;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.modules.Module;
@@ -15,15 +16,22 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.Util;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.fml.common.thread.EffectiveSide;
 
@@ -32,23 +40,61 @@ import java.util.Iterator;
 public class LastStandEntity extends ModuleEntity {
 
     private int charge;
+    private int invulnerableTime = 0;
 
     public LastStandEntity(Module<LastStandData> module) {
         super(module);
     }
 
     @Override
+    public void onInstalled(ModuleContext context) {
+        super.onInstalled(context);
+        invulnerableTime = 0;
+    }
+
+    @Override
     public void tick(ModuleContext moduleContext) {
+        if (invulnerableTime > 0) {
+            invulnerableTime--;
+            if (moduleContext instanceof StackModuleContext) {
+                LivingEntity entity = ((StackModuleContext) moduleContext).getEntity();
+                if (entity instanceof PlayerEntity) {
+                    ((PlayerEntity) entity).sendStatusMessage(new TranslationTextComponent("module.draconicevolution.last_stand.invuln.active", MathUtils.round(invulnerableTime / 20D, 10)).mergeStyle(TextFormatting.GOLD), true);
+                }
+            }
+        }
+
         IOPStorageModifiable storage = moduleContext.getOpStorage();
-        if (!(moduleContext instanceof StackModuleContext && EffectiveSide.get().isServer() && storage != null)) return;
+        if (!(moduleContext instanceof StackModuleContext && EffectiveSide.get().isServer() && storage != null)) {
+            return;
+        }
+
         StackModuleContext context = (StackModuleContext) moduleContext;
         LastStandData data = (LastStandData) module.getData();
-        if (!context.isEquipped() || charge >= data.getChargeTime()) return;
+        if (!context.isEquipped() || charge >= data.getChargeTime()) {
+            return;
+        }
+
         if (storage.getOPStored() >= data.getChargeEnergyRate()) {
             storage.modifyEnergyStored(-data.getChargeEnergyRate());
             charge++;
-//            charge+=100;
         }
+    }
+
+    public boolean tryBlockDamage(LivingAttackEvent event) {
+        if (invulnerableTime > 0) {
+            event.setCanceled(true);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean tryBlockDamage(LivingDamageEvent event) {
+        if (invulnerableTime > 0) {
+            event.setCanceled(true);
+            return true;
+        }
+        return false;
     }
 
     public boolean tryBlockDeath(LivingDeathEvent event) {
@@ -80,6 +126,7 @@ public class LastStandEntity extends ModuleEntity {
             charge = 0;
             DraconicNetwork.sendLastStandActivation(entity, module.getItem());
             entity.world.playSound(null, entity.getPosition(), SoundEvents.ITEM_TOTEM_USE, SoundCategory.PLAYERS, 5F, (0.95F + (entity.world.rand.nextFloat() * 0.1F)));
+            invulnerableTime = data.getInvulnerableTime();
             return true;
         }
         return false;
@@ -131,11 +178,13 @@ public class LastStandEntity extends ModuleEntity {
     public void writeToNBT(CompoundNBT compound) {
         super.writeToNBT(compound);
         compound.putInt("charge", charge);
+        compound.putInt("invul", invulnerableTime);
     }
 
     @Override
     public void readFromNBT(CompoundNBT compound) {
         super.readFromNBT(compound);
         charge = compound.getInt("charge");
+        invulnerableTime = compound.getInt("invul");
     }
 }

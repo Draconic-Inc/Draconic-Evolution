@@ -155,9 +155,9 @@ public class DEModules {
         register(new ModuleImpl<>(FLIGHT,               DRACONIC,       flightData(true, true, 2)),         "draconic_flight");
         register(new ModuleImpl<>(FLIGHT,               CHAOTIC,        flightData(true, true, 3.5)),       "chaotic_flight");
 
-        register(new ModuleImpl<>(LAST_STAND,           WYVERN,         lastStandData(6F,  25F, 15*20,  4*30*20, 5000000)),                       "wyvern_last_stand");
-        register(new ModuleImpl<>(LAST_STAND,           DRACONIC,       lastStandData(12F, 50F, 30*20,  2*30*20, 10000000)).setMaxInstall(2),     "draconic_last_stand");
-        register(new ModuleImpl<>(LAST_STAND,           CHAOTIC,        lastStandData(20F, 100F,120*20, 1*30*20, 20000000)).setMaxInstall(3),     "chaotic_last_stand");
+        register(new ModuleImpl<>(LAST_STAND,           WYVERN,         lastStandData(6F,  25F, 15*20,  4*30*20, 5000000, 2)),                       "wyvern_last_stand");
+        register(new ModuleImpl<>(LAST_STAND,           DRACONIC,       lastStandData(12F, 50F, 30*20,  2*30*20, 10000000, 3)).setMaxInstall(2),     "draconic_last_stand");
+        register(new ModuleImpl<>(LAST_STAND,           CHAOTIC,        lastStandData(20F, 100F,120*20, 1*30*20, 20000000, 4)).setMaxInstall(3),     "chaotic_last_stand");
 
         register(new ModuleImpl<>(AUTO_FEED,            DRACONIUM,      autoFeedData(40)),                  "draconium_auto_feed");
         register(new ModuleImpl<>(AUTO_FEED,            WYVERN,         autoFeedData(150)),                 "wyvern_auto_feed");
@@ -226,14 +226,15 @@ public class DEModules {
         };
     }
 
-    private static Function<Module<LastStandData>, LastStandData> lastStandData(float defHealthBoost, float defShieldBoost, int shieldBoostTime, int defChargeTime, long defChargeEnergy) {
+    private static Function<Module<LastStandData>, LastStandData> lastStandData(float defHealthBoost, float defShieldBoost, int shieldBoostTime, int defChargeTime, long defChargeEnergy, double defInvulnSeconds) {
         return e -> {
             float health = (float) ModuleCfg.getModuleDouble(e, "health_boost", defHealthBoost);
             float shield = (float) ModuleCfg.getModuleDouble(e, "shield_boost", defShieldBoost);
             int shieldTime = ModuleCfg.getModuleInt(e, "shield_boost_time", shieldBoostTime);
             int charge = ModuleCfg.getModuleInt(e, "charge_ticks", defChargeTime);
             long energy = ModuleCfg.getModuleLong(e, "charge_energy", defChargeEnergy);
-            return new LastStandData(health, shield, shieldTime, charge, energy);
+            double invuln = ModuleCfg.getModuleDouble(e, "invulnerable_time", defInvulnSeconds);
+            return new LastStandData(health, shield, shieldTime, charge, energy, (int) (invuln * 20));
         };
     }
 

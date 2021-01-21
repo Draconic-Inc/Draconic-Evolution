@@ -73,6 +73,11 @@ public class ModularArmorEventHandler {
         }
 
         ModuleHost host = optionalHost.orElseThrow(IllegalStateException::new);
+
+        if (host.getEntitiesByType(ModuleTypes.LAST_STAND).anyMatch(module -> ((LastStandEntity)module).tryBlockDamage(event))) {
+            return;
+        }
+
         ShieldControlEntity shieldControl = host.getEntitiesByType(ModuleTypes.SHIELD_CONTROLLER).map(e -> (ShieldControlEntity) e).findAny().orElse(null);
         if (shieldControl == null) {
             return;
@@ -96,6 +101,11 @@ public class ModularArmorEventHandler {
         }
 
         ModuleHost host = optionalHost.orElseThrow(IllegalStateException::new);
+
+        if (host.getEntitiesByType(ModuleTypes.LAST_STAND).anyMatch(module -> ((LastStandEntity)module).tryBlockDamage(event))) {
+            return;
+        }
+
         ShieldControlEntity shieldControl = host.getEntitiesByType(ModuleTypes.SHIELD_CONTROLLER).map(e -> (ShieldControlEntity) e).findAny().orElse(null);
         if (shieldControl == null) {
             return;
@@ -334,7 +344,7 @@ public class ModularArmorEventHandler {
         if (stack.getItem() instanceof IModularItem) {
             ((IModularItem) stack.getItem()).handleTick(stack, entity, slot, equipMod);
 
-            if (slot != null && slot.getSlotType() == EquipmentSlotType.Group.ARMOR) {
+            if ((slot != null && slot.getSlotType() == EquipmentSlotType.Group.ARMOR) || equipMod) {
                 LazyOptional<ModuleHost> optional = stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
                 optional.ifPresent(host -> {
                     gatherArmorProps(stack, host, entity, abilities);
