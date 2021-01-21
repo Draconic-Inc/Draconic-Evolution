@@ -175,28 +175,8 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
 
         playerSlots = toolkit.createPlayerSlots(mainUI, false, true, true);
 
-        if (EquipmentManager.equipModLoaded()) {
-            LazyOptional<IItemHandlerModifiable> optional = equipmentManager.getInventory(playerInventory.player);
-            optional.ifPresent(handler -> {
-                GuiElement equipBg = GuiTexture.newDynamicTexture(() -> BCSprites.getThemed("bg_dynamic_small"));
-                mainUI.addBackGroundChild(equipBg);
-                equipBg.setPos(mainUI.xPos() - 28, mainUI.yPos());
-                equipBg.setMaxXPos(mainUI.xPos() - 2, true);
-                int c = 0;
-                for (int i = 0; i < handler.getSlots(); i++) {
-                    int finalI = i;
-                    ContainerSlotLayout.SlotData data = container.getSlotLayout().getSlotData(PLAYER_EQUIPMENT, finalI);
-                    if (data.slot.getHasStack() && data.slot.getStack().getCapability(DECapabilities.PROPERTY_PROVIDER_CAPABILITY).isPresent()) {
-                        GuiElement element = toolkit.createSlots(equipBg, 1, 1, 0, (column, row) -> data, null);
-                        element.setXPos(equipBg.xPos() + 4, false);
-                        element.setYPos(equipBg.yPos() + (c * 19) + 4);
-                        equipBg.setMaxYPos(element.maxYPos() + 4, true);
-                        c++;
-                    }
-                }
-            });
-        }
-
+        GuiElement<?> equipModSlots = toolkit.createEquipModSlots(mainUI, playerInventory.player, true, e -> e.getCapability(PROPERTY_PROVIDER_CAPABILITY).isPresent());
+        equipModSlots.setPos(mainUI.xPos() - 28, mainUI.yPos());
 
         simpleViewList = createPropertyList();
         simpleViewList.setInsets(2, 2, 2, 2);

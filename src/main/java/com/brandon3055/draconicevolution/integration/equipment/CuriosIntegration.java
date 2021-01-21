@@ -2,7 +2,10 @@ package com.brandon3055.draconicevolution.integration.equipment;
 
 import com.brandon3055.brandonscore.capability.MultiCapabilityProvider;
 import com.brandon3055.brandonscore.inventory.PlayerSlot;
+import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.init.DEContent;
+import com.brandon3055.draconicevolution.lib.WTFException;
+import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.data.TagsProvider;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
@@ -17,11 +20,16 @@ import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
+import sun.rmi.log.LogHandler;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotTypeMessage;
 import top.theillusivec4.curios.api.SlotTypePreset;
 import top.theillusivec4.curios.api.type.capability.ICurio;
+import top.theillusivec4.curios.api.type.capability.ICuriosItemHandler;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -37,7 +45,7 @@ public class CuriosIntegration extends EquipmentManager {
     public static Capability<ICurio> CURIO_CAP = null;
 
     public static void sendIMC(InterModEnqueueEvent event) {
-        InterModComms.sendTo("curios", SlotTypeMessage.REGISTER_TYPE, () -> SlotTypePreset.CURIO.getMessageBuilder().build());
+        InterModComms.sendTo("curios", SlotTypeMessage.REGISTER_TYPE, () -> SlotTypePreset.CURIO.getMessageBuilder().size(2).build());
         InterModComms.sendTo("curios", SlotTypeMessage.REGISTER_TYPE, () -> SlotTypePreset.BELT.getMessageBuilder().build());
         InterModComms.sendTo("curios", SlotTypeMessage.REGISTER_TYPE, () -> SlotTypePreset.CHARM.getMessageBuilder().build());
         InterModComms.sendTo("curios", SlotTypeMessage.REGISTER_TYPE, () -> SlotTypePreset.BODY.getMessageBuilder().build());
@@ -68,6 +76,22 @@ public class CuriosIntegration extends EquipmentManager {
                 .findEquippedCurio(predicate, entity)
                 .map(ImmutableTriple::getRight)
                 .orElse(ItemStack.EMPTY);
+    }
+
+    @Override
+    public List<ResourceLocation> getSlotIcons(LivingEntity entity) {
+        LazyOptional<ICuriosItemHandler> optional = CuriosApi.getCuriosHelper().getCuriosHandler(entity);
+        if (optional.isPresent()) {
+            ICuriosItemHandler handler = optional.orElseThrow(WTFException::new);
+            List<ResourceLocation> icons = new ArrayList<>();
+            handler.getCurios().forEach((s, h) -> {
+                for (int i = 0; i < h.getSlots(); i++) {
+                    icons.add(CuriosApi.getIconHelper().getIcon(s));
+                }
+            });
+            return icons;
+        }
+        return Collections.emptyList();
     }
 
     /**
