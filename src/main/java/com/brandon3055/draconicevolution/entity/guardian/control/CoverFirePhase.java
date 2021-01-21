@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.entity.guardian.control;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.entity.guardian.DraconicGuardianEntity;
 import com.brandon3055.draconicevolution.entity.GuardianProjectileEntity;
+import com.brandon3055.draconicevolution.entity.guardian.GuardianFightManager;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3i;
@@ -43,7 +44,7 @@ public class CoverFirePhase extends Phase {
       if (!guardian.isSilent()) {
          guardian.world.playEvent(null, 1017, guardian.getPosition(), 0);
       }
-      GuardianProjectileEntity projectile = new GuardianProjectileEntity(this.guardian.world, this.guardian, targetRelX, targetRelY, targetRelZ, targetPos, 25, 20);
+      GuardianProjectileEntity projectile = new GuardianProjectileEntity(this.guardian.world, this.guardian, targetRelX, targetRelY, targetRelZ, targetPos, 25, GuardianFightManager.COVER_FIRE_POWER);
       projectile.setLocationAndAngles(headX, headY, headZ, 0.0F, 0.0F);
       guardian.world.addEntity(projectile);
 

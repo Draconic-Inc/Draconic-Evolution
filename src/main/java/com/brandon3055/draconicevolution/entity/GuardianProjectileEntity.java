@@ -30,7 +30,7 @@ public class GuardianProjectileEntity extends DamagingProjectileEntity implement
     private Vector3d target;
     private double splashRange = 15;
     private double power = 10;
-    private DamageSource damageSource = new DamageSource("damage.draconicevolution.guardian_projectile").setMagicDamage().setExplosion();
+    private DamageSource damageSource = new DamageSource("damage.draconicevolution.guardian_projectile").setDamageIsAbsolute().setDamageBypassesArmor().setMagicDamage().setExplosion();
     private double closestApproach;
 
     public GuardianProjectileEntity(EntityType<?> type, World world) {
@@ -42,7 +42,7 @@ public class GuardianProjectileEntity extends DamagingProjectileEntity implement
         this.target = target;
         this.splashRange = splashRange;
         this.power = power;
-        this.damageSource = new IndirectEntityDamageSource("draconicevolution.guardian_projectile", this, shooter).setMagicDamage().setExplosion();
+        this.damageSource = new IndirectEntityDamageSource("draconicevolution.guardian_projectile", this, shooter).setDamageIsAbsolute().setDamageBypassesArmor().setMagicDamage().setExplosion();
         if (target != null) {
             closestApproach = getDistanceSq(target);
         }
@@ -91,7 +91,8 @@ public class GuardianProjectileEntity extends DamagingProjectileEntity implement
                 continue;
             }
             df *= Explosion.getBlockDensity(getPositionVec(), entity);
-            float damage = (float) ((int) ((df * df + df) / 2.0D * 7.0D * power + 1.0D));
+            float damage = (float) ((int) ((df * df + df) / 2.0D * 6.0D * power + 1.0D));
+//            float damage = (float) ((int) ((df * df + df) / 2.0D * 7.0D * power + 1.0D));
             entity.attackEntityFrom(damageSource, damage);
         }
         DraconicNetwork.sendImpactEffect(world, getPosition(), 0);

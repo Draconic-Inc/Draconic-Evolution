@@ -8,5 +8,6 @@
 - Fixed issue where fusion crafting gets stuck at 99%
 - Made the chestpiece a curio.
 - Added an optional weapon slot to the grinder (Primary use is applying enchants like fortune)
+- Added invulnerable timer to undying module
 
 ######## 3.5.0-alpha... ########

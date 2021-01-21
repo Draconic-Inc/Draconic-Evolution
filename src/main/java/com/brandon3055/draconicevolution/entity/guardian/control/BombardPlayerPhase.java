@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.entity.guardian.control;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.entity.guardian.DraconicGuardianEntity;
 import com.brandon3055.draconicevolution.entity.GuardianProjectileEntity;
+import com.brandon3055.draconicevolution.entity.guardian.GuardianFightManager;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvents;
@@ -66,7 +67,7 @@ public class BombardPlayerPhase extends Phase {
                 if (!guardian.isSilent()) {
                     guardian.world.playEvent(null, 1017, guardian.getPosition(), 0);
                 }
-                GuardianProjectileEntity projectile = new GuardianProjectileEntity(this.guardian.world, this.guardian, targetRelX, targetRelY, targetRelZ, targetPos, 25, 20);
+                GuardianProjectileEntity projectile = new GuardianProjectileEntity(this.guardian.world, this.guardian, targetRelX, targetRelY, targetRelZ, targetPos, 25, GuardianFightManager.PROJECTILE_POWER);
                 projectile.setLocationAndAngles(headX, headY, headZ, 0.0F, 0.0F);
                 guardian.world.addEntity(projectile);
             }

@@ -43,6 +43,11 @@ public class GuardianFightManager extends WorldEntity implements ITickableWorldE
     private static final Logger LOGGER = DraconicEvolution.LOGGER;
     public static final int CRYSTAL_DIST_FROM_CENTER = 90;
     public static final int CRYSTAL_HEIGHT_FROM_ORIGIN = 40;
+
+    public static final float PROJECTILE_POWER = 15;
+    public static final float CHARGE_DAMAGE = 150;
+    public static final float COVER_FIRE_POWER = 15;
+
     private Predicate<Entity> validPlayer;
     private final ServerBossInfo bossInfo = (ServerBossInfo) (new ServerBossInfo(new TranslationTextComponent("entity.draconicevolution.draconic_guardian"), BossInfo.Color.RED, BossInfo.Overlay.PROGRESS)).setPlayEndBossMusic(true).setCreateFog(true);
     private int ticksSinceGuardianSeen;
