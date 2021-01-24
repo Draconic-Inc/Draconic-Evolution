@@ -1,13 +1,15 @@
-######## 3.5.0-alpha3.5 ########
-- Fixed a bunch of random bugs.
-- Added Curios support
-- Re implemented dislocators and re wrote advanced dislocator
-- Fixed smelting recipes for draconium
-- Fixed draconium not dropping XP
-- Re implemented Dislocation Inhibitor
-- Fixed issue where fusion crafting gets stuck at 99%
-- Made the chestpiece a curio.
-- Added an optional weapon slot to the grinder (Primary use is applying enchants like fortune)
-- Added invulnerable timer to undying module
-
 ######## 3.5.0-alpha... ########
+
+######## 3.5.0-alpha3.6 ########
+- Fixed a bunch of random bugs.
+- Added Curios support.
+- Re implemented dislocators and re wrote advanced dislocator.
+- Fixed smelting recipes for draconium.
+- Fixed draconium not dropping XP.
+- Re implemented Dislocation Inhibitor.
+- Fixed issue where fusion crafting gets stuck at 99%.
+- Made the chestpiece a curio.
+- Added an optional weapon slot to the grinder (Primary use is applying enchants like fortune).
+- Added invulnerable timer to undying module.
+- Added Energy core charge / discharge ETA.
+

@@ -1,18 +1,10 @@
 package com.brandon3055.draconicevolution.client.render.particle;
 
 import com.brandon3055.brandonscore.client.ClientProxy;
-import com.brandon3055.brandonscore.client.particle.BCParticle;
-import com.brandon3055.brandonscore.client.particle.IBCParticleFactory;
 import com.brandon3055.brandonscore.client.particle.IntParticleType;
-import com.brandon3055.brandonscore.lib.Vec3D;
-import com.brandon3055.draconicevolution.client.DEParticles;
 import net.minecraft.client.particle.*;
-import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
-
-import javax.annotation.Nullable;
 
 /**
  * Created by brandon3055 on 2/5/2016.
@@ -28,7 +20,7 @@ public class ParticleLineIndicator extends SpriteTexturedParticle {
 
     @Override
     public IParticleRenderType getRenderType() {
-        return ClientProxy.PARTICLE_SHEET_NO_DEPTH;
+        return ClientProxy.PARTICLE_NO_DEPTH_NO_LIGHT;
     }
 
     public static class Factory implements IParticleFactory<IntParticleType.IntParticleData> {
