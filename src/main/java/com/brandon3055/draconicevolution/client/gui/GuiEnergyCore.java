@@ -41,6 +41,14 @@ public class GuiEnergyCore extends ModularGuiContainer<ContainerBCTile<TileEnerg
     private Button layerMinus;
     public static int layer = -1;
 
+    //Charge/Discharge time
+    private long ticks;
+    private long seconds;
+    private long minutes;
+    private long hours;
+    private long days;
+    private long years;
+
     public GuiEnergyCore(ContainerBCTile<TileEnergyCore> container, PlayerInventory playerInventory, ITextComponent title) {
         super(container, playerInventory, title);
         this.tile = container.tile;
@@ -104,6 +112,26 @@ public class GuiEnergyCore extends ModularGuiContainer<ContainerBCTile<TileEnerg
             String transfer = (tile.transferRate.get() > 0 ? "+" : tile.transferRate.get() < 0 ? "-" : "") + Utils.formatNumber(Math.abs(tile.transferRate.get())) + " OP/t";
             GuiHelper.drawCenteredString(font, I18n.format("gui.de.transfer.txt"), guiLeft + xSize / 2, guiTop + 59, 0xFFAA00, true);
             GuiHelper.drawCenteredString(font, transfer, guiLeft + xSize / 2, guiTop + 70, coreColour, tile.transferRate.get() > 0);
+
+
+            if (tile.transferRate.get() != 0) {
+                String time = "";
+                if (years > 0) {
+                    time += formatYear(years) + ", ";
+                    time += days % 365 + " Days";
+                } else if (days > 0) {
+                    time += days % 365 + " Days, ";
+                    time += (hours % 24 < 10 ? "0" : "") + hours % 24 + ":";
+                    time += (minutes % 60 < 10 ? "0" : "") + minutes % 60 + ":";
+                    time += (seconds % 60 < 10 ? "0" : "") + seconds % 60 + "." + (ticks % 20 < 10 ? "0" : "") + ticks % 20;
+                } else {
+                    time += (hours % 24 < 10 ? "0" : "") + hours % 24 + ":";
+                    time += (minutes % 60 < 10 ? "0" : "") + minutes % 60 + ":";
+                    time += (seconds % 60 < 10 ? "0" : "") + seconds % 60 + "." + (ticks % 20 < 10 ? "0" : "") + ticks % 20;
+                }
+
+                GuiHelper.drawCenteredString(font, time, guiLeft + xSize / 2, guiTop + 70 + 10, 0x555555, false);
+            }
         } else {
             int stabColour = tile.stabilizersOK.get() ? 0x00FF00 : 0xFF0000;
             String stabText = I18n.format("gui.de.stabilizers.txt") + ": " + (tile.stabilizersOK.get() ? I18n.format("gui.de.valid.txt") : I18n.format("gui.de.invalid.txt"));
@@ -149,6 +177,19 @@ public class GuiEnergyCore extends ModularGuiContainer<ContainerBCTile<TileEnerg
     public void tick() {
         super.tick();
         updateButtonStates();
+
+        if (tile.transferRate.get() != 0) {
+            long space = tile.transferRate.get() > 0 ? tile.getExtendedCapacity() - tile.getExtendedStorage() : tile.getExtendedStorage();
+            ticks = Math.abs(space / tile.transferRate.get());
+        }
+        else {
+            ticks = 0;
+        }
+        seconds = ticks / 20L;
+        minutes = seconds / 60L;
+        hours = minutes / 60L;
+        days = hours / 24L;
+        years = days / 365L;
     }
 
     private void updateButtonStates() {
@@ -168,6 +209,17 @@ public class GuiEnergyCore extends ModularGuiContainer<ContainerBCTile<TileEnerg
 
         layerPlus.visible = tile.buildGuide.get();
         layerMinus.visible = tile.buildGuide.get();
+    }
+
+    public static String formatYear(long value) {
+        if (value < 1000L) return value + " Years";
+        else if (value < 1000000L) return Math.round(value / 10D) / 100D + " Thousand Years";
+        else if (value < 1000000000L) return Math.round(value / 10000D) / 100D + " Million Years";
+        else if (value < 1000000000000L) return Math.round(value / 10000000D) / 100D + " Billion Years";
+        else if (value < 1000000000000000L) return Math.round(value / 10000000000D) / 100D + " Trillion Years";
+        else if (value < 1000000000000000000L) return Math.round(value / 10000000000000D) / 100D + " Quadrillion Years";
+        else if (value <= Long.MAX_VALUE) return Math.round(value / 10000000000000000D) / 100D + " Quintillion Years";
+        else return "Something is very broken!!!!";
     }
 
     protected void layer(int add) {
