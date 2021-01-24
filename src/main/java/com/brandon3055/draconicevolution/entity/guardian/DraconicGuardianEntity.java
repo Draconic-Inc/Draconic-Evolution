@@ -102,6 +102,11 @@ public class DraconicGuardianEntity extends MobEntity implements IMob {
         this.phaseManager = new PhaseManager(this);
     }
 
+    @Override
+    public void applyKnockback(float strength, double ratioX, double ratioZ) {
+//        super.applyKnockback(strength, ratioX, ratioZ); //NO!
+    }
+
     public void setFightManager(GuardianFightManager fightManager) {
         this.fightManager = fightManager;
     }
