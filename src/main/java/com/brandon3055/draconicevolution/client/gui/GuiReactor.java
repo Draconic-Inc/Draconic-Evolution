@@ -64,15 +64,16 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> {
         manager.addChild(compPanel = new GuiBorderedRect(guiLeft + xSize, guiTop + 125, 0, 91));
         exclusions.add(compPanel);
         manager.setJeiExclusions(() -> exclusions);
-        manager.addChild(new GuiTexture(guiLeft, guiTop, 0, 0, xSize, ySize, new ResourceLocation("draconicevolution:" + DETextures.GUI_REACTOR)) {
+        GuiTexture background = manager.addChild(new GuiTexture(guiLeft, guiTop, 0, 0, xSize, ySize, new ResourceLocation("draconicevolution:" + DETextures.GUI_REACTOR)) {
             @Override
             public void renderElement(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
                 super.renderElement(minecraft, mouseX, mouseY, partialTicks);
                 RenderTileReactorCore.renderGUI(tile, guiLeft + xSize / 2, guiTop + 70);
             }
 
-        });
-        manager.addChild(new GuiBorderedRect(guiLeft + 12, guiTop + 138, 162, 77)
+        }.onReload(e -> e.setPosAndSize(guiLeft, guiTop, xSize, ySize)));
+
+        background.addChild(new GuiBorderedRect(guiLeft + 12, guiTop + 138, 162, 77)
                 .setEnabledCallback(() -> tile.reactorState.get() != TileReactorCore.ReactorState.COLD)
                 .setShadeColours(0xFF000000, 0xFFFFFFFF));
         //endregion
@@ -80,7 +81,7 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> {
         //region Status Labels
 
         int y = guiTop + 140;
-        manager.addChild(new GuiLabel(guiLeft + 10 + 5, y, 162, 8, I18n.format("gui.draconicevolution.reactor.core_volume"))
+        background.addChild(new GuiLabel(guiLeft + 10 + 5, y, 162, 8, I18n.format("gui.draconicevolution.reactor.core_volume"))
                 .setEnabledCallback(() -> tile.reactorState.get() != TileReactorCore.ReactorState.COLD && tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE)
                 .setAlignment(GuiAlign.LEFT)
                 .setShadow(false)
@@ -88,14 +89,14 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> {
                 .setHoverText(I18n.format("gui.draconicevolution.reactor.core_volume.info"))
                 .setHoverTextDelay(2));
 
-        manager.addChild(new GuiLabel(guiLeft + 13 + 5, y += 8, 162, 8, "")
+        background.addChild(new GuiLabel(guiLeft + 13 + 5, y += 8, 162, 8, "")
                 .setEnabledCallback(() -> tile.reactorState.get() != TileReactorCore.ReactorState.COLD && tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE)
                 .setDisplaySupplier(() -> MathUtils.round((tile.reactableFuel.get() + tile.convertedFuel.get()) / 1296D, 100) + "m^3")
                 .setAlignment(GuiAlign.LEFT)
                 .setShadow(false)
                 .setTextColour(0xB0B0B0));
 
-        manager.addChild(new GuiLabel(guiLeft + 10 + 5, y += 11, 162, 8, I18n.format("gui.draconicevolution.reactor.gen_rate"))
+        background.addChild(new GuiLabel(guiLeft + 10 + 5, y += 11, 162, 8, I18n.format("gui.draconicevolution.reactor.gen_rate"))
                 .setEnabledCallback(() -> tile.reactorState.get() != TileReactorCore.ReactorState.COLD && tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE)
                 .setAlignment(GuiAlign.LEFT)
                 .setShadow(false)
@@ -103,14 +104,14 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> {
                 .setHoverText(I18n.format("gui.draconicevolution.reactor.gen_rate.info"))
                 .setHoverTextDelay(2));
 
-        manager.addChild(new GuiLabel(guiLeft + 13 + 5, y += 8, 162, 8, "")
+        background.addChild(new GuiLabel(guiLeft + 13 + 5, y += 8, 162, 8, "")
                 .setEnabledCallback(() -> tile.reactorState.get() != TileReactorCore.ReactorState.COLD && tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE)
                 .setDisplaySupplier(() -> Utils.addCommas((int) tile.generationRate.get()) + " OP/t")
                 .setAlignment(GuiAlign.LEFT)
                 .setShadow(false)
                 .setTextColour(0xB0B0B0));
 
-        manager.addChild(new GuiLabel(guiLeft + 10 + 5, y += 11, 162, 8, I18n.format("gui.draconicevolution.reactor.field_rate"))
+        background.addChild(new GuiLabel(guiLeft + 10 + 5, y += 11, 162, 8, I18n.format("gui.draconicevolution.reactor.field_rate"))
                 .setEnabledCallback(() -> tile.reactorState.get() != TileReactorCore.ReactorState.COLD && tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE)
                 .setAlignment(GuiAlign.LEFT)
                 .setShadow(false)
@@ -118,7 +119,7 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> {
                 .setHoverText(I18n.format("gui.draconicevolution.reactor.field_rate.info"))
                 .setHoverTextDelay(2));
 
-        manager.addChild(new GuiLabel(guiLeft + 13 + 5, y += 8, 162, 8, "")
+        background.addChild(new GuiLabel(guiLeft + 13 + 5, y += 8, 162, 8, "")
                 .setEnabledCallback(() -> tile.reactorState.get() != TileReactorCore.ReactorState.COLD && tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE)
                 .setDisplaySupplier(() -> {
                     double inputRate = tile.fieldDrain.get() / (1D - (tile.shieldCharge.get() / tile.maxShieldCharge.get()));
@@ -128,7 +129,7 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> {
                 .setShadow(false)
                 .setTextColour(0xB0B0B0));
 
-        manager.addChild(new GuiLabel(guiLeft + 10 + 5, y += 11, 162, 8, I18n.format("gui.draconicevolution.reactor.convert_rate"))
+        background.addChild(new GuiLabel(guiLeft + 10 + 5, y += 11, 162, 8, I18n.format("gui.draconicevolution.reactor.convert_rate"))
                 .setEnabledCallback(() -> tile.reactorState.get() != TileReactorCore.ReactorState.COLD && tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE)
                 .setAlignment(GuiAlign.LEFT)
                 .setShadow(false)
@@ -136,14 +137,14 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> {
                 .setHoverText(I18n.format("gui.draconicevolution.reactor.convert_rate.info"))
                 .setHoverTextDelay(2));
 
-        manager.addChild(new GuiLabel(guiLeft + 13 + 5, y += 8, 162, 8, "")
+        background.addChild(new GuiLabel(guiLeft + 13 + 5, y += 8, 162, 8, "")
                 .setEnabledCallback(() -> tile.reactorState.get() != TileReactorCore.ReactorState.COLD && tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE)
                 .setDisplaySupplier(() -> Utils.addCommas((int) Math.round(tile.fuelUseRate.get() * 1000000D)) + "nb/t")
                 .setAlignment(GuiAlign.LEFT)
                 .setShadow(false)
                 .setTextColour(0xB0B0B0));
 
-        manager.addChild(new GuiLabel(guiLeft + 13 + 5, guiTop + 139, 161, 77, I18n.format("gui.draconicevolution.reactor.go_boom_now"))
+        background.addChild(new GuiLabel(guiLeft + 13 + 5, guiTop + 139, 161, 77, I18n.format("gui.draconicevolution.reactor.go_boom_now"))
                 .setEnabledCallback(() -> tile.reactorState.get() == TileReactorCore.ReactorState.BEYOND_HOPE)
                 .setAlignment(GuiAlign.LEFT)
                 .setWrap(true)
@@ -153,9 +154,7 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> {
 
         //region Slots, Misc labels and gauges
 
-        manager.addChild(new GuiSlotRender());
-
-        manager.addChild(new GuiElement() {
+        background.addChild(new GuiElement() {
             @Override
             public void renderElement(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
                 if (tile.reactorState.get() == TileReactorCore.ReactorState.COLD) {
@@ -175,21 +174,21 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> {
             }
         });
 
-        manager.addChild(new GuiLabel(guiLeft, guiTop + 2, xSize, 12, I18n.format("gui.draconicevolution.reactor.title"))
+        background.addChild(new GuiLabel(guiLeft, guiTop + 2, xSize, 12, I18n.format("gui.draconicevolution.reactor.title"))
                 .setAlignment(GuiAlign.CENTER)
                 .setTextColour(InfoHelper.GUI_TITLE));
 
-        manager.addChild(new GuiLabel(guiLeft + 182, guiTop + 139, 54, 8, I18n.format("gui.draconicevolution.reactor.fuel_in"))
+        background.addChild(new GuiLabel(guiLeft + 182, guiTop + 139, 54, 8, I18n.format("gui.draconicevolution.reactor.fuel_in"))
                 .setEnabledCallback(() -> tile.reactorState.get() == TileReactorCore.ReactorState.COLD)
                 .setAlignment(GuiAlign.CENTER)
                 .setTrim(false));
 
-        manager.addChild(new GuiLabel(guiLeft + 182, guiTop + 170, 54, 8, I18n.format("gui.draconicevolution.reactor.chaos_out"))
+        background.addChild(new GuiLabel(guiLeft + 182, guiTop + 170, 54, 8, I18n.format("gui.draconicevolution.reactor.chaos_out"))
                 .setEnabledCallback(() -> tile.reactorState.get() == TileReactorCore.ReactorState.COLD)
                 .setAlignment(GuiAlign.CENTER)
                 .setTrim(false));
 
-        manager.addChild(new GuiLabel(guiLeft + 7, guiTop + 127, xSize, 12, "")
+        background.addChild(new GuiLabel(guiLeft + 7, guiTop + 127, xSize, 12, "")
                 .setShadowStateSupplier(() -> tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE)
                 .setDisplaySupplier(() -> {
                     String s = tile.reactorState.get().localize();
@@ -202,28 +201,28 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> {
                 }).setAlignment(GuiAlign.LEFT));
 
 
-        manager.addChild(new GuiTexturedPointer(guiLeft + 11, guiTop + 5, 14, 112, 0, 222, 5, ResourceHelperDE.getResource(DETextures.GUI_REACTOR)) {
+        background.addChild(new GuiTexturedPointer(guiLeft + 11, guiTop + 5, 14, 112, 0, 222, 5, ResourceHelperDE.getResource(DETextures.GUI_REACTOR)) {
             @Override
             public double getPos() {
                 return MathHelper.clip(tile.temperature.get() / TileReactorCore.MAX_TEMPERATURE, 0, 1);
             }
         }.setHoverText(element -> getTempStats()).setHoverTextDelay(5));
 
-        manager.addChild(new GuiTexturedPointer(guiLeft + 35, guiTop + 5, 14, 112, 0, 222, 5, ResourceHelperDE.getResource(DETextures.GUI_REACTOR)) {
+        background.addChild(new GuiTexturedPointer(guiLeft + 35, guiTop + 5, 14, 112, 0, 222, 5, ResourceHelperDE.getResource(DETextures.GUI_REACTOR)) {
             @Override
             public double getPos() {
                 return MathHelper.clip(tile.shieldCharge.get() / Math.max(tile.maxShieldCharge.get(), 1), 0, 1);
             }
         }.setHoverText(element -> getShieldStats()).setHoverTextDelay(5));
 
-        manager.addChild(new GuiTexturedPointer(guiLeft + 199, guiTop + 5, 14, 112, 0, 222, 5, ResourceHelperDE.getResource(DETextures.GUI_REACTOR)) {
+        background.addChild(new GuiTexturedPointer(guiLeft + 199, guiTop + 5, 14, 112, 0, 222, 5, ResourceHelperDE.getResource(DETextures.GUI_REACTOR)) {
             @Override
             public double getPos() {
                 return MathHelper.clip(tile.saturation.get() / (double) Math.max(tile.maxSaturation.get(), 1), 0, 1);
             }
         }.setHoverText(element -> getSaturationStats()).setHoverTextDelay(5));
 
-        manager.addChild(new GuiTexturedPointer(guiLeft + 223, guiTop + 5, 14, 112, 0, 222, 5, ResourceHelperDE.getResource(DETextures.GUI_REACTOR)) {
+        background.addChild(new GuiTexturedPointer(guiLeft + 223, guiTop + 5, 14, 112, 0, 222, 5, ResourceHelperDE.getResource(DETextures.GUI_REACTOR)) {
             @Override
             public double getPos() {
                 return MathHelper.clip(tile.convertedFuel.get() / Math.max(tile.reactableFuel.get() + tile.convertedFuel.get(), 1), 0, 1);
@@ -234,28 +233,28 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> {
 
         //region Buttons
 
-        manager.addChild(new GuiButton(guiLeft + 182, guiTop + 199, 54, 14, I18n.format("gui.draconicevolution.reactor.charge"))
+        background.addChild(new GuiButton(guiLeft + 182, guiTop + 199, 54, 14, I18n.format("gui.draconicevolution.reactor.charge"))
                 .setEnabledCallback(tile::canCharge)
                 .setBorderColours(0xFF555555, 0xFF777777)
                 .setFillColour(0xFF000000)
                 .setTrim(false)
                 .onPressed(tile::chargeReactor));
 
-        manager.addChild(new GuiButton(guiLeft + 182, guiTop + 182, 54, 14, I18n.format("gui.draconicevolution.reactor.activate"))
+        background.addChild(new GuiButton(guiLeft + 182, guiTop + 182, 54, 14, I18n.format("gui.draconicevolution.reactor.activate"))
                 .setEnabledCallback(tile::canActivate)
                 .setBorderColours(0xFF555555, 0xFF777777)
                 .setFillColour(0xFF000000)
                 .setTrim(false)
                 .onPressed(tile::activateReactor));
 
-        manager.addChild(new GuiButton(guiLeft + 182, guiTop + 199, 54, 14, I18n.format("gui.draconicevolution.reactor.shutdown"))
+        background.addChild(new GuiButton(guiLeft + 182, guiTop + 199, 54, 14, I18n.format("gui.draconicevolution.reactor.shutdown"))
                 .setEnabledCallback(tile::canStop)
                 .setBorderColours(0xFF555555, 0xFF777777)
                 .setFillColour(0xFF000000)
                 .setTrim(false)
                 .onPressed(tile::shutdownReactor));
 
-        manager.addChild(new GuiButton(guiLeft + 182, guiTop + 165, 54, 14, I18n.format("gui.draconicevolution.reactor.sas"))
+        background.addChild(new GuiButton(guiLeft + 182, guiTop + 165, 54, 14, I18n.format("gui.draconicevolution.reactor.sas"))
                 .setEnabledCallback(() -> tile.reactorState.get() != TileReactorCore.ReactorState.COLD && tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE)
                 .setBorderColours(0xFF555555, 0xFF777777)
                 .setRectFillColourGetter((hovering, disabled) -> tile.failSafeMode.get() ? 0xFF4040FF : 0xFF000000)
@@ -263,7 +262,7 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> {
                 .onPressed(tile::toggleFailSafe)
                 .setHoverText(I18n.format("gui.draconicevolution.reactor.sas.info")));
 
-        manager.addChild(new GuiButton(guiLeft + 182, guiTop + 138, 54, 24, I18n.format("gui.draconicevolution.reactor.rs_mode").replaceAll("\\\\n", "\n"))
+        background.addChild(new GuiButton(guiLeft + 182, guiTop + 138, 54, 24, I18n.format("gui.draconicevolution.reactor.rs_mode").replaceAll("\\\\n", "\n"))
                 .setEnabledCallback(() -> tile.reactorState.get() != TileReactorCore.ReactorState.COLD && component != null && tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE)
                 .setWrap(true)
                 .setBorderColours(0xFF555555, 0xFF777777)
@@ -272,7 +271,7 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> {
                 .setInsets(5, 0, 5, 0)
                 .setHoverText(I18n.format("gui.draconicevolution.reactor.rs_mode.info")));
 
-        manager.addChild(new GuiLabel(guiLeft + 175, guiTop + 138, 68, 80, "ETE")
+        background.addChild(new GuiLabel(guiLeft + 175, guiTop + 138, 68, 80, "ETE")
                 .setEnabledCallback(() -> tile.reactorState.get() == TileReactorCore.ReactorState.BEYOND_HOPE)
                 .setDisplaySupplier(() -> "Estimated\nTime\nUntil\nDetonation\n\n" + TextFormatting.UNDERLINE + (tile.explosionCountdown.get() >= 0 ? (tile.explosionCountdown.get() / 20) + "s" : "Calculating.."))
                 .setWrap(true)
@@ -282,7 +281,7 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> {
 
         y = 0;
         for (RSMode mode : RSMode.values()) {
-            manager.addChild(new GuiButton(guiLeft + xSize + 2, guiTop + 127 + y, 66, 10, I18n.format("gui.draconicevolution.reactor.rs_mode_" + mode.name().toLowerCase()))
+            background.addChild(new GuiButton(guiLeft + xSize + 2, guiTop + 127 + y, 66, 10, I18n.format("gui.draconicevolution.reactor.rs_mode_" + mode.name().toLowerCase()))
                     .setEnabledCallback(() -> compPanelAnim == 1 && component != null)
                     .setRectFillColourGetter((hovering, disabled) -> {
                         if (component != null && component.rsMode.get() == mode) {
