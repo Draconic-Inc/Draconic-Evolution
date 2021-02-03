@@ -116,9 +116,11 @@ public class DEEventHandler {
             ItemEntity item = EntityType.ITEM.create(entity.world);
             if (item != null) {
                 item.setItem(new ItemStack(DEContent.dragon_heart));
-                BlockPos podiumPos = entity.world.getHeight(Heightmap.Type.WORLD_SURFACE, EndPodiumFeature.END_PODIUM_LOCATION).add(0, 10, 0);
+                BlockPos podiumPos = entity.world.getHeight(Heightmap.Type.WORLD_SURFACE, EndPodiumFeature.END_PODIUM_LOCATION).add(0, 3, 0);
                 item.setLocationAndAngles(podiumPos.getX() + 0.5, podiumPos.getY(), podiumPos.getZ() + 0.5, 0, 0);
                 item.setMotion(0, 0, 0);
+                item.age = -32767;
+                item.setNoGravity(true);
                 entity.world.addEntity(item);
             }
 

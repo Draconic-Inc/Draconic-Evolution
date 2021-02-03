@@ -72,22 +72,22 @@ public class ModularSword extends SwordItem implements IReaperItem, IModularMele
         return techLevel.index;
     }
 
-    @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity player, Hand handIn) {
-        if (!worldIn.isRemote && player.isSneaking()) {
-            for (double x = 0; x < 15; x += 0.5) {
-                for (double z = 0; z < 15; z += 0.5) {
-                    CreeperEntity creeper = EntityType.CREEPER.create(worldIn);
-                    creeper.setNoAI(true);
-                    creeper.setInvulnerable(true);
-                    creeper.setPosition(player.getPosX() + x, player.getPosY(), player.getPosZ() + z);
-                    creeper.getAttribute(Attributes.MAX_HEALTH).applyNonPersistentModifier(new AttributeModifier("Health Boost", 10000, AttributeModifier.Operation.MULTIPLY_TOTAL));
-                    creeper.setHealth(Float.MAX_VALUE);
-                    worldIn.addEntity(creeper);
-                }
-            }
-        }
-
-        return super.onItemRightClick(worldIn, player, handIn);
-    }
+//    @Override
+//    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity player, Hand handIn) {
+//        if (!worldIn.isRemote && player.isSneaking()) {
+//            for (double x = 0; x < 15; x += 0.5) {
+//                for (double z = 0; z < 15; z += 0.5) {
+//                    CreeperEntity creeper = EntityType.CREEPER.create(worldIn);
+//                    creeper.setNoAI(true);
+//                    creeper.setInvulnerable(true);
+//                    creeper.setPosition(player.getPosX() + x, player.getPosY(), player.getPosZ() + z);
+//                    creeper.getAttribute(Attributes.MAX_HEALTH).applyNonPersistentModifier(new AttributeModifier("Health Boost", 10000, AttributeModifier.Operation.MULTIPLY_TOTAL));
+//                    creeper.setHealth(Float.MAX_VALUE);
+//                    worldIn.addEntity(creeper);
+//                }
+//            }
+//        }
+//
+//        return super.onItemRightClick(worldIn, player, handIn);
+//    }
 }

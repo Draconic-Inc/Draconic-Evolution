@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.items.tools;
 
 import com.brandon3055.brandonscore.items.ItemBCore;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
-import com.brandon3055.draconicevolution.DEOldConfig;
+import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.entity.EntityLootCore;
 import net.minecraft.client.util.ITooltipFlag;
@@ -52,18 +52,22 @@ public class Magnet extends ItemBCore /*implements IBauble*/ {
     }
 
     private void updateMagnet(ItemStack stack, Entity entity) {
-        if (!entity.isSneaking() && entity.ticksExisted % 10 == 0 && isEnabled(stack) && entity instanceof PlayerEntity) {
+        if (!entity.isSneaking() && isEnabled(stack) && entity instanceof PlayerEntity) {
             World world = entity.getEntityWorld();
-
-            List<ItemEntity> items = world.getEntitiesWithinAABB(ItemEntity.class, new AxisAlignedBB(entity.getPosX(), entity.getPosY(), entity.getPosZ(), entity.getPosX(), entity.getPosY(), entity.getPosZ()).grow(range, range, range));
+            List<ItemEntity> items;
+            if (entity.ticksExisted % 10 == 0) {
+                items = world.getEntitiesWithinAABB(ItemEntity.class, new AxisAlignedBB(entity.getPosX(), entity.getPosY(), entity.getPosZ(), entity.getPosX(), entity.getPosY(), entity.getPosZ()).grow(range, range, range));
+            } else {
+                items = world.getEntitiesWithinAABB(ItemEntity.class, new AxisAlignedBB(entity.getPosX(), entity.getPosY(), entity.getPosZ(), entity.getPosX(), entity.getPosY(), entity.getPosZ()).grow(5, 5, 5));
+            }
 
             boolean flag = false;
-
             for (ItemEntity itemEntity : items) {
-                ItemStack item = itemEntity.getItem();
+//                ItemStack item = itemEntity.getItem();
 
-                String name = item.getItem().getRegistryName().toString();
-                if (!itemEntity.isAlive() || (DEOldConfig.itemDislocatorBlacklistMap.containsKey(name) && (DEOldConfig.itemDislocatorBlacklistMap.get(name) == -1/* || DEConfig.itemDislocatorBlacklistMap.get(name) == item.getItemDamage()*/))) {
+                //For now i think the dislocation inhibitor is a better solution that makes more sense to the user.
+//                String name = item.getItem().getRegistryName().toString();
+                if (!itemEntity.isAlive() /*|| (DEOldConfig.itemDislocatorBlacklistMap.containsKey(name) && (DEOldConfig.itemDislocatorBlacklistMap.get(name) == -1*//* || DEConfig.itemDislocatorBlacklistMap.get(name) == item.getItemDamage()*/) {
                     continue;
                 }
 
@@ -94,33 +98,37 @@ public class Magnet extends ItemBCore /*implements IBauble*/ {
                     continue;
                 }
 
-                flag = true;
+                if (entity.getDistanceSq(itemEntity) > 2 * 2) {
+                    flag = true;
+                }
 
                 if (!world.isRemote) {
                     if (itemEntity.pickupDelay > 0) {
                         itemEntity.pickupDelay = 0;
                     }
                     itemEntity.setMotion(0, 0, 0);
+                    itemEntity.fallDistance = 0;
                     itemEntity.setPosition(entity.getPosX() - 0.2 + (world.rand.nextDouble() * 0.4), entity.getPosY() - 0.6, entity.getPosZ() - 0.2 + (world.rand.nextDouble() * 0.4));
                 }
             }
 
-            List<EntityLootCore> cores = world.getEntitiesWithinAABB(EntityLootCore.class, new AxisAlignedBB(entity.getPosX(), entity.getPosY(), entity.getPosZ(), entity.getPosX(), entity.getPosY(), entity.getPosZ()).grow(range, range, range));
-            for (EntityLootCore core : cores) {
-                PlayerEntity closest = world.getClosestPlayer(core, 4);
-                if (closest != null && closest != entity) {
-                    continue;
-                }
+            //TODO When loot piles are a thing
+//            List<EntityLootCore> cores = world.getEntitiesWithinAABB(EntityLootCore.class, new AxisAlignedBB(entity.getPosX(), entity.getPosY(), entity.getPosZ(), entity.getPosX(), entity.getPosY(), entity.getPosZ()).grow(range, range, range));
+//            for (EntityLootCore core : cores) {
+//                PlayerEntity closest = world.getClosestPlayer(core, 4);
+//                if (closest != null && closest != entity) {
+//                    continue;
+//                }
+//
+//                flag = true;
+//
+//                if (!world.isRemote) {
+//                    core.setPosition(entity.getPosX() - 0.2 + (world.rand.nextDouble() * 0.4), entity.getPosY() - 0.6, entity.getPosZ() - 0.2 + (world.rand.nextDouble() * 0.4));
+//                }
+//            }
 
-                flag = true;
-
-                if (!world.isRemote) {
-                    core.setPosition(entity.getPosX() - 0.2 + (world.rand.nextDouble() * 0.4), entity.getPosY() - 0.6, entity.getPosZ() - 0.2 + (world.rand.nextDouble() * 0.4));
-                }
-            }
-
-            if (flag && !DEOldConfig.disableDislocatorSound) {
-                world.playSound(null, entity.getPosX(), entity.getPosY(), entity.getPosZ(), SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.1F, 0.5F * ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7F + 2F));
+            if (flag && DEConfig.itemDislocatorSound) {
+                world.playSound(null, entity.getPosX(), entity.getPosY(), entity.getPosZ(), SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.1F, 1F + (random.nextFloat() * 0.1F));
             }
 
             List<ExperienceOrbEntity> xp = world.getEntitiesWithinAABB(ExperienceOrbEntity.class, new AxisAlignedBB(entity.getPosX(), entity.getPosY(), entity.getPosZ(), entity.getPosX(), entity.getPosY(), entity.getPosZ()).grow(4, 4, 4));
@@ -133,7 +141,7 @@ public class Magnet extends ItemBCore /*implements IBauble*/ {
                         if (MinecraftForge.EVENT_BUS.post(new PlayerXpEvent.PickupXp(player, orb))) {
                             continue;
                         }
-                        if (!DEOldConfig.disableDislocatorSound) {
+                        if (DEConfig.itemDislocatorSound) {
                             world.playSound(null, entity.getPosX(), entity.getPosY(), entity.getPosZ(), SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.1F, 0.5F * ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7F + 1.8F));
                         }
                         player.onItemPickup(orb, 1);
@@ -149,7 +157,7 @@ public class Magnet extends ItemBCore /*implements IBauble*/ {
     public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
         ItemStack stack = player.getHeldItem(hand);
         if (player.isSneaking()) {
-            toggleEnabled(stack);
+            toggleEnabled(stack, player);
         }
         return super.onItemRightClick(world, player, hand);
     }
@@ -167,8 +175,9 @@ public class Magnet extends ItemBCore /*implements IBauble*/ {
         return ItemNBTHelper.getBoolean(stack, "IsActive", false);
     }
 
-    public static void toggleEnabled(ItemStack stack) {
+    public static void toggleEnabled(ItemStack stack, PlayerEntity player) {
         ItemNBTHelper.setBoolean(stack, "IsActive", !isEnabled(stack));
+        player.world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.1F, isEnabled(stack) ? 1F : 0.5F);
     }
 
 //    @Optional.Method(modid = "baubles")

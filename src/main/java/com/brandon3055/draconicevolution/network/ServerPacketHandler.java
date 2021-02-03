@@ -24,6 +24,7 @@ import net.minecraft.inventory.container.ClickType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.IServerPlayNetHandler;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.fml.network.NetworkHooks;
 
@@ -86,9 +87,10 @@ public class ServerPacketHandler implements ICustomPacketHandler.IServerPacketHa
         }
 
         for (ItemStack stack : dislocators) {
-            Magnet.toggleEnabled(stack);
+            Magnet.toggleEnabled(stack, player);
             boolean enabled = Magnet.isEnabled(stack);
-            ChatHelper.sendIndexed(player, new TranslationTextComponent("item_dislocate.draconicevolution." + (enabled ? "activate" : "deactivate")), 567);
+//            ChatHelper.sendIndexed(player, new TranslationTextComponent("item_dislocate.draconicevolution." + (enabled ? "activate" : "deactivate")), 567);
+            player.sendStatusMessage(new TranslationTextComponent("item_dislocate.draconicevolution." + (enabled ? "activate" : "deactivate")).mergeStyle(enabled ? TextFormatting.GREEN : TextFormatting.RED), true);
         }
     }
 

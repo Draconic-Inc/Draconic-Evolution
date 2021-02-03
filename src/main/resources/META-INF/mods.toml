@@ -27,4 +27,10 @@ license="CoFH \"Don't Be a Jerk\" License"
 	versionRange="[${ccl_version},)"
 	ordering="AFTER"
 	side="BOTH"
+[[dependencies.draconicevolution]]
+	modId="brandonscore"
+	mandatory=true
+	versionRange="[${bcore_version},)"
+	ordering="AFTER"
+	side="BOTH"
 

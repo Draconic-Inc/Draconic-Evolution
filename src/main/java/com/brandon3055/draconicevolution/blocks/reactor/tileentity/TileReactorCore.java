@@ -147,6 +147,11 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
         effectHandler = DraconicEvolution.proxy.createReactorFXHandler(this);
     }
 
+    @Override
+    public int getAccessDistanceSq() {
+        return 16*16;
+    }
+
     //region Update Logic
 
     @Override

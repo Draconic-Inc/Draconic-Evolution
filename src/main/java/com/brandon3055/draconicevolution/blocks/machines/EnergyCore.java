@@ -42,29 +42,6 @@ public class EnergyCore extends BlockBCore {
         return state.get(ACTIVE) ? BlockRenderType.INVISIBLE : BlockRenderType.MODEL;
     }
 
-//    @Override
-//    public BlockRenderLayer getRenderLayer() {
-//        return BlockRenderLayer.CUTOUT;
-//    }
-
-
-    //region Render Stuff
-
-
-//    @Override
-//    public AxisAlignedBB getCollisionBoundingBox(BlockState state, IBlockAccess worldIn, BlockPos pos) {
-//        return getActualState(state, worldIn, pos).getValue(ACTIVE) ? new AxisAlignedBB(0, 0, 0, 0, 0, 0) : super.getCollisionBoundingBox(state, worldIn, pos);
-//    }
-//
-//    @OnlyIn(Dist.CLIENT)
-//    @Override
-//    public boolean shouldSideBeRendered(BlockState state, IBlockAccess blockAccess, BlockPos pos, Direction side) {
-//        return !state.getValue(ACTIVE);
-//    }
-
-    //endregion
-
-
     @Override
     public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
         TileEntity core = world.getTileEntity(pos);
@@ -73,11 +50,10 @@ public class EnergyCore extends BlockBCore {
             ((TileEnergyCore) core).onStructureClicked(world, pos, state, player);
         }
 
-        return ActionResultType.PASS;
+        return ActionResultType.SUCCESS;
     }
 
     //region Interfaces
-
 
     @Override
     public boolean hasTileEntity(BlockState state) {

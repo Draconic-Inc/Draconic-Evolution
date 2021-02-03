@@ -1,4 +1,11 @@
-######## 3.5.0-alpha... ########
+######## 3.5.0-alpha4.0 ########
+- Fixed Reactor GUI resize issue.
+- Fixed reactor gui closing when you are close to the stabilizer.
+- tpx <dimension> now places you in a safe position if possible (This is a BrandonsCore change)
+- Fixed issue where opening Energy core GUI while holding a block would place that block.
+- Fixed issue where dragon heart would get knocked into the end portal bu the egg the first time you kill the dragon.
+- Fixed missing Brandons Core dependency.
+-
 
 ######## 3.5.0-alpha3.6 ########
 - Fixed a bunch of random bugs.
@@ -12,4 +19,4 @@
 - Added an optional weapon slot to the grinder (Primary use is applying enchants like fortune).
 - Added invulnerable timer to undying module.
 - Added Energy core charge / discharge ETA.
-
+- Adjusted magnet pickup logic to improve reliability while maintaining efficiency.

@@ -4,7 +4,6 @@ import codechicken.lib.config.ConfigTag;
 import codechicken.lib.config.StandardConfigFile;
 import com.brandon3055.draconicevolution.init.EquipCfg;
 import com.brandon3055.draconicevolution.init.ModuleCfg;
-import net.minecraftforge.fml.config.ModConfig;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.nio.file.Paths;
@@ -19,13 +18,11 @@ public class DEConfig {
     private static ConfigTag config;
     private static ConfigTag clientTag;
     private static ConfigTag serverTag;
-    private static ConfigTag commonTag;
 
     public static void load() {
         config = new StandardConfigFile(Paths.get("./config/brandon3055/DraconicEvolution.cfg")).load();
         loadServer();
         loadClient();
-        loadCommon();
         EquipCfg.loadConfig(config);
         ModuleCfg.loadConfig(config);
         config.runSync();
@@ -112,6 +109,7 @@ public class DEConfig {
     public static boolean crystalShaders;
     public static boolean reactorShaders;
     public static boolean otherShaders;
+    public static boolean itemDislocatorSound;
 
     private static void loadClient() {
         clientTag = config.getTag("Client");
@@ -164,13 +162,14 @@ public class DEConfig {
                 .setComment("If enabled your configured properties, property groups and presets will still be accessible when in the simple configuration mode.")
                 .setDefaultBoolean(false)
                 .setSyncCallback((tag, type) -> configUiEnableAdvancedXOver = tag.getBoolean());
+
+        clientTag.getTag("itemDislocatorSound")
+                .setComment("Enable / Disable item dislocator pickup sound")
+                .setDefaultBoolean(true)
+                .setSyncCallback((tag, type) -> itemDislocatorSound = tag.getBoolean());
     }
 
     //Common properties
-
-    private static void loadCommon() {
-        commonTag = config.getTag("Common");
-    }
 
     private static void modifyProperty(String name, Consumer<ConfigTag> modifyCallback, String... groupPath) {
         ConfigTag parent = config;

@@ -399,7 +399,7 @@ public class DEOldConfig {
     public static boolean disableLoudCelestialManipulator = false;
 
 //    @ModConfigProperty(category = "Client Settings", name = "disableDislocatorSound", comment = "If true, the item dislocator will not make the pickup sound when it collects items.")
-    public static boolean disableDislocatorSound = false;
+
 
 //    @ModConfigProperty(category = "Client Settings", name = "disableShieldHitEffect", comment = "If true, the armor shield will not render when you take damage (this is only a visual change).")
     public static boolean disableShieldHitEffect = false;
