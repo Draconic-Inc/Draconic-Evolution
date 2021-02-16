@@ -170,7 +170,7 @@ public class LangGenerator extends LanguageProvider {
         helper.add("shield_mod.always_visible",                                 "Shield Always Visible");
         helper.add("shield_mod.always_visible.info",                            "Purely cosmetic. If false your shield will only be visible when it absorbs damage.");
 
-        helper.add("feed_mod.consume_food",                                     "Consume Food.");
+        helper.add("feed_mod.consume_food",                                     "Consume Food");
         helper.add("feed_mod.consume_food.info",                                "When enabled this module will automatically consume food from your inventory to fill its internal storage.");
 
         helper.add("flight_mod.elytra",                                         "Elytra Flight");
