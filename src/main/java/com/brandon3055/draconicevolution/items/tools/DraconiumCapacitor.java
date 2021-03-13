@@ -16,8 +16,10 @@ import com.brandon3055.draconicevolution.init.EquipCfg;
 import com.brandon3055.draconicevolution.init.ModuleCfg;
 import com.brandon3055.draconicevolution.integration.equipment.EquipmentManager;
 import com.brandon3055.draconicevolution.integration.equipment.IDEEquipment;
+import com.brandon3055.draconicevolution.items.equipment.DEItemTier;
 import com.brandon3055.draconicevolution.items.equipment.IModularItem;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -73,11 +75,6 @@ public class DraconiumCapacitor extends Item implements IInvCharge, IModularItem
         }
     }
 
-//    @Override
-//    public void initCapabilities(ItemStack stack, ModuleHostImpl host, MultiCapabilityProvider provider) {
-//        EquipmentManager.addCaps(stack, provider);
-//    }
-
     @Override
     public ModuleHostImpl createHost(ItemStack stack) {
         ModuleHostImpl host;
@@ -126,11 +123,6 @@ public class DraconiumCapacitor extends Item implements IInvCharge, IModularItem
         }
         return new ModularOPStorage(host, EquipCfg.getBaseCapEnergy(techLevel), EquipCfg.getBaseCapTransfer(techLevel), true);
     }
-
-//    @Override
-//    public void equipmentTick(ItemStack stack, LivingEntity livingEntity) {
-//        handleTick(stack, livingEntity, null);
-//    }
 
     @Override
     public void handleTick(ItemStack stack, LivingEntity entity, @Nullable EquipmentSlotType slot, boolean inEquipModSlot) {
@@ -210,18 +202,13 @@ public class DraconiumCapacitor extends Item implements IInvCharge, IModularItem
 //        return new EntityPersistentItem(world, location, itemstack);
 //    }
 
+    @Override
+    public int getItemEnchantability() {
+        return DEItemTier.getEnchantability(techLevel);
+    }
 
-//    @Override
-//    public void inventoryTick(ItemStack stack, World worldIn, Entity entity, int itemSlot, boolean isSelected) {
-//        if (!(entity instanceof PlayerEntity)) {
-//            return;
-//        }
-//        if (ModHelper.isBaublesInstalled) {
-//            updateEnergy(stack, (PlayerEntity) entity, getBaubles((PlayerEntity) entity));
-//        }
-//        else {
-//            updateEnergy(stack, (PlayerEntity) entity, new ArrayList<>());
-//        }
-//    }
-//
+    @Override
+    public boolean isEnchantable(ItemStack stack) {
+        return true;
+    }
 }
