@@ -27,7 +27,7 @@ public class CommonProxy {
         DEConfig.load();
 
         MinecraftForge.EVENT_BUS.addListener(DraconicEvolution::registerCommands);
-        MinecraftForge.EVENT_BUS.addListener(Dislocator::onAnvilUpdate);
+        MinecraftForge.EVENT_BUS.addListener(Dislocator::onAnvilUpdate); //TODO move this to an event handler before covers yells at me
 
         MinecraftForge.EVENT_BUS.register(new DEEventHandler());
 

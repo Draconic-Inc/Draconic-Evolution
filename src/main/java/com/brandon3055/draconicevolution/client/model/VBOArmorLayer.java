@@ -94,21 +94,19 @@ public class VBOArmorLayer<T extends LivingEntity, M extends BipedModel<T>, A ex
                 }
 
                 if (model instanceof VBOBipedModel) {
-                    this.getEntityModel().setModelAttributes(model);
-                    model.setLivingAnimations(livingEntity, limbSwing, limbSwingAmount, partialTicks);
-                    this.setModelSlotVisible(model, slot);
-                    model.setRotationAngles(livingEntity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-                    if (baseModel instanceof AbstractZombieModel) {
-                        baseModel.setRotationAngles(livingEntity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-                        ((VBOBipedModel) model).bipedRightArm.rotateAngleZ = baseModel.bipedRightArm.rotateAngleZ;
-                        ((VBOBipedModel) model).bipedLeftArm.rotateAngleZ = baseModel.bipedLeftArm.rotateAngleZ;
-                        ((VBOBipedModel) model).bipedRightArm.rotateAngleY = baseModel.bipedRightArm.rotateAngleY;
-                        ((VBOBipedModel) model).bipedLeftArm.rotateAngleY = baseModel.bipedLeftArm.rotateAngleY;
-                        ((VBOBipedModel) model).bipedRightArm.rotateAngleX = baseModel.bipedRightArm.rotateAngleX;
-                        ((VBOBipedModel) model).bipedLeftArm.rotateAngleX = baseModel.bipedLeftArm.rotateAngleX;
-                    }
-
-                    ((VBOBipedModel<T>) model).render(mStack, getter, livingEntity, itemstack, packedLight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+                    @SuppressWarnings("unchecked") VBOBipedModel<T> bpModel = (VBOBipedModel<T>) model;
+                    BipedModel<T> entityModel = this.getEntityModel();
+                    entityModel.copyModelAttributesTo(bpModel);
+                    bpModel.leftArmPose = entityModel.leftArmPose;
+                    bpModel.rightArmPose = entityModel.rightArmPose;
+                    bpModel.isSneak = entityModel.isSneak;
+                    bpModel.bipedHead.copyModelAngles(entityModel.bipedHead);
+                    bpModel.bipedBody.copyModelAngles(entityModel.bipedBody);
+                    bpModel.bipedRightArm.copyModelAngles(entityModel.bipedRightArm);
+                    bpModel.bipedLeftArm.copyModelAngles(entityModel.bipedLeftArm);
+                    bpModel.bipedRightLeg.copyModelAngles(entityModel.bipedRightLeg);
+                    bpModel.bipedLeftLeg.copyModelAngles(entityModel.bipedLeftLeg);
+                    bpModel.render(mStack, getter, livingEntity, itemstack, packedLight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
                 }
             }
         }
