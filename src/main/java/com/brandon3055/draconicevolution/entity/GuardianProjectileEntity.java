@@ -87,12 +87,11 @@ public class GuardianProjectileEntity extends DamagingProjectileEntity implement
             if (entity == shooter) continue;
             double distance = entity.getDistance(this);
             double df = (1D - (distance / power));
-            if (df > 1) {
+            if (df <= 0) {
                 continue;
             }
             df *= Explosion.getBlockDensity(getPositionVec(), entity);
             float damage = (float) ((int) ((df * df + df) / 2.0D * 6.0D * power + 1.0D));
-//            float damage = (float) ((int) ((df * df + df) / 2.0D * 7.0D * power + 1.0D));
             entity.attackEntityFrom(damageSource, damage);
         }
         DraconicNetwork.sendImpactEffect(world, getPosition(), 0);
