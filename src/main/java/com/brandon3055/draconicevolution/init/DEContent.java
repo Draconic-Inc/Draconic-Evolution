@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.init;
 
+import codechicken.lib.gui.SimpleItemGroup;
 import codechicken.lib.util.SneakyUtils;
 import com.brandon3055.brandonscore.blocks.BlockBCore;
 import com.brandon3055.brandonscore.blocks.ItemBlockBCore;
@@ -47,13 +48,15 @@ import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
 import net.minecraft.entity.boss.dragon.EnderDragonEntity;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.DyeColor;
-import net.minecraft.item.Item;
-import net.minecraft.item.Rarity;
+import net.minecraft.item.*;
 import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.potion.*;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ToolType;
+import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
+import net.minecraftforge.common.crafting.NBTIngredient;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -264,11 +267,11 @@ public class DEContent {
 
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> event) {
-        Properties machine = Properties.create(IRON, GRAY).hardnessAndResistance(3.0F, 8F).notSolid();
-        Properties hardenedMachine = Properties.create(IRON, GRAY).hardnessAndResistance(5.0F, 12F).notSolid();
+        Properties machine = Properties.create(IRON, GRAY).hardnessAndResistance(3.0F, 8F).notSolid().harvestTool(ToolType.PICKAXE).harvestLevel(1);
+        Properties hardenedMachine = Properties.create(IRON, GRAY).hardnessAndResistance(5.0F, 12F).notSolid().harvestTool(ToolType.PICKAXE).harvestLevel(1);
         Properties storageBlock = Properties.create(IRON, GRAY).hardnessAndResistance(30.0F, 600F).harvestTool(ToolType.PICKAXE).harvestLevel(3);
-        Properties stoneProp = Properties.create(Material.ROCK, GRAY).hardnessAndResistance(1.5F, 6F);
-        Properties ore = Properties.create(Material.ROCK, GRAY).hardnessAndResistance(6.0F, 16F);
+        Properties stoneProp = Properties.create(Material.ROCK, GRAY).hardnessAndResistance(1.5F, 6F).harvestTool(ToolType.PICKAXE).harvestLevel(2);
+        Properties ore = Properties.create(Material.ROCK, GRAY).hardnessAndResistance(6.0F, 16F).harvestTool(ToolType.PICKAXE).harvestLevel(2);
 
         //Machines
         event.getRegistry().register(new Generator(machine).setRegistryName("generator"));
@@ -562,6 +565,7 @@ public class DEContent {
 //    @ObjectHolder("guardian_projectile")
 //    public static EntityType<EntityGuardianProjectile> GUARDIAN_PROJECTILE;
 
+    @ObjectHolder("draconic_guardian")
     public static EntityType<DraconicGuardianEntity> draconicGuardian;
     @ObjectHolder("guardian_projectile")
     public static EntityType<GuardianProjectileEntity> guardianProjectile;
