@@ -6,13 +6,16 @@ import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.buffer.VBORenderType;
 import codechicken.lib.render.item.IItemRenderer;
 import codechicken.lib.render.shader.*;
+import codechicken.lib.util.SneakyUtils;
 import codechicken.lib.vec.Matrix4;
+import codechicken.lib.vec.RedundantTransformation;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.client.BCClientEventHandler;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderState;
@@ -67,7 +70,7 @@ public abstract class ToolRenderBase implements IItemRenderer {
                     .type(FRAGMENT)
                     .source(new ResourceLocation(MODID, "shaders/tool_gem.frag"))
                     .uniform("time", UniformType.FLOAT)
-                    .uniform("tier", UniformType.INT)
+                    .uniform("baseColour", UniformType.VEC4)
             )
             .whenUsed(cache -> cache.glUniform1f("time", (BCClientEventHandler.elapsedTicks + Minecraft.getInstance().getRenderPartialTicks()) / 20))
             .build();
@@ -81,7 +84,7 @@ public abstract class ToolRenderBase implements IItemRenderer {
                     .type(FRAGMENT)
                     .source(new ResourceLocation(MODID, "shaders/tool_blade.frag"))
                     .uniform("time", UniformType.FLOAT)
-                    .uniform("tier", UniformType.INT)
+                    .uniform("baseColour", UniformType.VEC4)
             )
             .whenUsed(cache -> cache.glUniform1f("time", (BCClientEventHandler.elapsedTicks + Minecraft.getInstance().getRenderPartialTicks()) / 20))
             .build();
@@ -95,7 +98,7 @@ public abstract class ToolRenderBase implements IItemRenderer {
                     .type(FRAGMENT)
                     .source(new ResourceLocation(MODID, "shaders/tool_trace.frag"))
                     .uniform("time", UniformType.FLOAT)
-                    .uniform("tier", UniformType.INT)
+                    .uniform("baseColour", UniformType.VEC4)
             )
             .whenUsed(cache -> cache.glUniform1f("time", (BCClientEventHandler.elapsedTicks + Minecraft.getInstance().getRenderPartialTicks()) / 20))
             .build();
@@ -130,12 +133,14 @@ public abstract class ToolRenderBase implements IItemRenderer {
                 .texture(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/item/equipment/" + levelName + "_" + tool + ".png"), false, false))
                 .diffuseLighting(DIFFUSE_LIGHTING_ENABLED)
                 .lightmap(LIGHTMAP_ENABLED)
+//                .texturing(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
                 .build(true));
 
         modelGuiType = RenderType.makeType("modelGuiType", DefaultVertexFormats.BLOCK, GL11.GL_TRIANGLES, 256, RenderType.State.getBuilder()
                 .texture(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/item/equipment/" + levelName + "_" + tool + ".png"), false, false))
                 .lightmap(LIGHTMAP_ENABLED)
                 .overlay(OVERLAY_DISABLED)
+//                .texturing(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
                 .build(false)
         );
 
@@ -193,9 +198,41 @@ public abstract class ToolRenderBase implements IItemRenderer {
         return false;
     }
 
+    protected static float[][] baseColours = {
+            {0.0F, 0.5F, 0.8F, 1F},
+            {0.55F, 0.0F, 0.65F, 1F},
+            {0.8F, 0.5F, 0.1F, 1F},
+            {0.75F, 0.05F, 0.05F, 0.2F}};
+
     public static ShaderRenderType getShaderType(RenderType parent, TechLevel techLevel, ShaderProgram shader) {
+        return getShaderType(parent, techLevel, shader, 1F);
+    }
+
+    public static ShaderRenderType getShaderType(RenderType parent, TechLevel techLevel, ShaderProgram shader, float pulse) {
+//        techLevel = TechLevel.DRACONIUM;
         UniformCache uniforms = shader.pushCache();
-        uniforms.glUniform1i("tier", techLevel.index);
+        float[] baseColour = baseColours[techLevel.index];
+        float r = baseColour[0];
+        float g = baseColour[1];
+        float b = baseColour[2];
+        float a = baseColour[3];
+        switch (techLevel) {
+            case DRACONIUM:
+                a *= 1F + pulse;
+                break;
+            case WYVERN:
+                a *= 1F + pulse;
+                break;
+            case DRACONIC:
+                a *= 1F + pulse;
+                break;
+            case CHAOTIC:
+                r += pulse * 0.2F;
+                g += pulse * 0.2F;
+                b += pulse * 0.2F;
+                break;
+        }
+        uniforms.glUniform4f("baseColour", r, g, b, a);
         return new ShaderRenderType(parent, shader, uniforms);
     }
 
@@ -258,7 +295,6 @@ public abstract class ToolRenderBase implements IItemRenderer {
             ccrs.bind(builder, format);
             materialModel.render(ccrs);
         });
-
     }
 
     public void initTraceVBO() {

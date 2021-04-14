@@ -9,9 +9,7 @@ import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.modules.data.EnergyData;
 import com.brandon3055.draconicevolution.api.modules.data.ModuleData;
 import com.brandon3055.draconicevolution.api.modules.data.EnergyShareData;
-import com.brandon3055.draconicevolution.api.modules.data.ShieldData;
 import com.google.common.collect.Multimap;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -45,7 +43,7 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
     private ModuleData energyLinkCache = null;
     private EnergyShareData energyShareCache = null;
     private List<ModuleEntity> moduleEntities = new ArrayList<>();
-    private Set<ModuleType<?>> typeWhiteList = new HashSet<>();
+    private Set<ModuleType<?>> additionalTypeList = new HashSet<>();
     private Set<ModuleType<?>> typeBlackList = new HashSet<>();
     private Set<ModuleCategory> categories = new HashSet<>();
     private List<ConfigProperty> providedProperties = new ArrayList<>();
@@ -102,13 +100,8 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
     }
 
     @Override
-    public Collection<ModuleType<?>> getTypeWhiteList() {
-        return typeWhiteList;
-    }
-
-    public ModuleHostImpl whiteListType(ModuleType<?> type) {
-        typeWhiteList.add(type);
-        return this;
+    public Collection<ModuleType<?>> getAdditionalTypes() {
+        return additionalTypeList;
     }
 
     @Override
@@ -116,6 +109,17 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
         return typeBlackList;
     }
 
+    /**
+     * Allows you to specifically allow certain module types bypassing the category system.
+     */
+    public ModuleHostImpl addAdditionalType(ModuleType<?> type) {
+        additionalTypeList.add(type);
+        return this;
+    }
+
+    /**
+     * Allows you to specifically deny certain module types bypassing the category system.
+     */
     public ModuleHostImpl blackListType(ModuleType<?> type) {
         typeBlackList.add(type);
         return this;

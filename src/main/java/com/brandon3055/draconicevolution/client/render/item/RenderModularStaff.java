@@ -6,41 +6,60 @@ import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.OBJParser;
 import codechicken.lib.render.buffer.TransformingVertexBuilder;
 import codechicken.lib.render.buffer.VBORenderType;
+import codechicken.lib.util.TransformUtils;
 import codechicken.lib.vec.Matrix4;
-import codechicken.lib.vec.Quat;
-import codechicken.lib.vec.Rotation;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.api.TechLevel;
-import com.brandon3055.brandonscore.client.BCSprites;
 import com.brandon3055.brandonscore.client.utils.GuiHelper;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.client.DESprites;
+import com.brandon3055.draconicevolution.client.render.modelfx.ModelEffect;
+import com.brandon3055.draconicevolution.client.render.modelfx.ToolModelEffect;
+import com.brandon3055.draconicevolution.items.equipment.ModularStaff;
+import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import com.mojang.blaze3d.vertex.MatrixApplyingVertexBuilder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.entity.model.PlayerModel;
+import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.model.ItemOverrideList;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.world.ClientWorld;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.HandSide;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.TransformationMatrix;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3f;
 import org.lwjgl.opengl.GL11;
 
+import javax.annotation.Nullable;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Created by brandon3055 on 22/5/20.
  */
 public class RenderModularStaff extends ToolRenderBase {
+
+    private static ImmutableMap<TransformType, TransformationMatrix> TRANSFORMATION;
+    static {
+        Map<TransformType, TransformationMatrix> map = new HashMap<>();
+        map.put(TransformType.GROUND,                   TransformUtils.create(   0F,   2F,    0F, 0F,   0F,  0F,  0.5F));
+        map.put(TransformType.FIXED,                    TransformUtils.create(   0F,   0F,    0F, 0F, 180F,  0F,    1F));
+
+        map.put(TransformType.THIRD_PERSON_RIGHT_HAND,  TransformUtils.create(   0F,   1.5F,  -6.5F, 0F,  90F, -15F, 0.85F));
+        map.put(TransformType.THIRD_PERSON_LEFT_HAND,   TransformUtils.create(   0F,   1.5F,  -6.5F, 0F, -90F,  15F, 0.85F));
+
+        map.put(TransformType.FIRST_PERSON_RIGHT_HAND,  TransformUtils.create(1.13F, 3.2F, 1.13F, 0F,  90F, -45F, 0.68F));
+        map.put(TransformType.FIRST_PERSON_LEFT_HAND,   TransformUtils.create(1.13F, 3.2F, 1.13F, 0F,  -90F, 45F, 0.68F));
+        TRANSFORMATION = ImmutableMap.copyOf(map);
+    }
 
     private CCModel baseGui;
     private CCModel materialGui;
@@ -54,6 +73,13 @@ public class RenderModularStaff extends ToolRenderBase {
     private VBORenderType guiTraceVBOType;
     private VBORenderType guiBladeVBOType;
     private VBORenderType guiGemVBOType;
+
+    @Nullable
+    protected LivingEntity entity;
+    @Nullable
+    protected ClientWorld world;
+
+    private ToolModelEffect effectRenderer = new ToolModelEffect();
 
     public RenderModularStaff(TechLevel techLevel) {
         super(techLevel, "staff");
@@ -120,8 +146,30 @@ public class RenderModularStaff extends ToolRenderBase {
         });
     }
 
+    private final ItemOverrideList overrideList = new ItemOverrideList() {
+        @Override
+        public IBakedModel getOverrideModel(IBakedModel originalModel, ItemStack stack, @Nullable ClientWorld world, @Nullable LivingEntity entity) {
+            RenderModularStaff.this.entity = entity;
+            RenderModularStaff.this.world = world == null ? entity == null ? null : (ClientWorld) entity.world : null;
+            return originalModel;
+        }
+    };
+
+    @Override
+    public ItemOverrideList getOverrides() {
+        return overrideList;
+    }
+
+    //TODO want to combine the swing and equip animation somehow so the 'draw back / return' after a stab corresponds to the equip cooldown
     @Override
     public void renderTool(CCRenderState ccrs, ItemStack stack, TransformType transform, Matrix4 mat, MatrixStack mStack, IRenderTypeBuffer getter, boolean gui, int packedLight) {
+        float flair = 0F;
+        if (entity != null && entity.getHeldItemMainhand() == stack) {
+            flair = MathHelper.interpolate(entity.prevSwingProgress, entity.swingProgress, Minecraft.getInstance().getRenderPartialTicks());
+            flair = MathHelper.clip(flair * 5F, 0F, 1F);
+        }
+
+        handleArmPose(stack, transform, mat);
         if (gui) {
             transform(mat, 0.19, 0.19, 0.5, 1.1);
 
@@ -133,9 +181,9 @@ public class RenderModularStaff extends ToolRenderBase {
             }
 
             if (DEConfig.toolShaders) {
-                getter.getBuffer(guiTraceVBOType.withMatrix(mat).withLightMap(packedLight).withState(getShaderType(shaderParentType, techLevel, traceShader)));
-                getter.getBuffer(guiBladeVBOType.withMatrix(mat).withLightMap(packedLight).withState(getShaderType(shaderParentType, techLevel, bladeShader)));
-                getter.getBuffer(guiGemVBOType.withMatrix(mat).withLightMap(packedLight).withState(getShaderType(shaderParentType, techLevel, gemShader)));
+                getter.getBuffer(guiTraceVBOType.withMatrix(mat).withLightMap(packedLight).withState(getShaderType(shaderParentType, techLevel, traceShader, flair)));
+                getter.getBuffer(guiBladeVBOType.withMatrix(mat).withLightMap(packedLight).withState(getShaderType(shaderParentType, techLevel, bladeShader, flair)));
+                getter.getBuffer(guiGemVBOType.withMatrix(mat).withLightMap(packedLight).withState(getShaderType(shaderParentType, techLevel, gemShader, flair)));
             } else {
                 getter.getBuffer(guiTraceVBOType.withMatrix(mat).withLightMap(packedLight));
                 getter.getBuffer(guiBladeVBOType.withMatrix(mat).withLightMap(packedLight));
@@ -149,6 +197,11 @@ public class RenderModularStaff extends ToolRenderBase {
             transform(mat, 0.6, 0.6, 0.5, 0.75);
         } else {
             transform(mat, 0.27, 0.27, 0.5, 1.125);
+            if (transform == TransformType.FIRST_PERSON_LEFT_HAND || transform == TransformType.THIRD_PERSON_LEFT_HAND) {
+                mat.rotate(45 * -MathHelper.torad, Vector3.Z_NEG);
+            } else {
+                mat.rotate(45 * MathHelper.torad, Vector3.Z_NEG);
+            }
         }
 
         getter.getBuffer(baseVBOType.withMatrix(mat).withLightMap(packedLight));
@@ -159,15 +212,21 @@ public class RenderModularStaff extends ToolRenderBase {
         }
 
         if (DEConfig.toolShaders) {
-            getter.getBuffer(traceVBOType.withMatrix(mat).withLightMap(packedLight).withState(getShaderType(shaderParentType, techLevel, traceShader)));
-            getter.getBuffer(bladeVBOType.withMatrix(mat).withLightMap(packedLight).withState(getShaderType(shaderParentType, techLevel, bladeShader)));
-            getter.getBuffer(gemVBOType.withMatrix(mat).withLightMap(packedLight).withState(getShaderType(shaderParentType, techLevel, gemShader)));
+            getter.getBuffer(traceVBOType.withMatrix(mat).withLightMap(packedLight).withState(getShaderType(shaderParentType, techLevel, traceShader, flair)));
+            getter.getBuffer(bladeVBOType.withMatrix(mat).withLightMap(packedLight).withState(getShaderType(shaderParentType, techLevel, bladeShader, flair)));
+            getter.getBuffer(gemVBOType.withMatrix(mat).withLightMap(packedLight).withState(getShaderType(shaderParentType, techLevel, gemShader, flair)));
         } else {
             getter.getBuffer(traceVBOType.withMatrix(mat).withLightMap(packedLight));
             getter.getBuffer(bladeVBOType.withMatrix(mat).withLightMap(packedLight));
             getter.getBuffer(gemVBOType.withMatrix(mat).withLightMap(packedLight));
         }
         ((IRenderTypeBuffer.Impl) getter).finish();
+
+        Minecraft mc = Minecraft.getInstance();
+        mat.rotate(torad(90), Vector3.X_NEG);
+        mat.translate(-0.5, 0.1, -0.5);
+        effectRenderer.renderEffect(mat, getter, mc.getRenderPartialTicks());
+//        new ModelEffect.DebugEffect().renderEffect(mat, getter, mc.getRenderPartialTicks());
 
 //        testParticleRender(ccrs, stack, transform, mat, mStack, getter, gui);
 //        if (true) return;
@@ -245,53 +304,59 @@ public class RenderModularStaff extends ToolRenderBase {
 //
 //        RenderSystem.popMatrix();
     }
-//
-//    private void testParticleRender(CCRenderState ccrs, ItemStack stack, TransformType transform, Matrix4 mat, MatrixStack mStack, IRenderTypeBuffer getter, boolean gui) {
-//        Minecraft mc = Minecraft.getInstance();
-//        float partialTicks = mc.getRenderPartialTicks();
-//        ActiveRenderInfo renderInfo = mc.getRenderManager().info;
-//
-//
-//        RenderSystem.pushMatrix();
-//        RenderSystem.disableCull();
-////        mat.translate(0, 0, -1);
-//
-////        mat.rotate(new Rotation(new Quat(new TransformationMatrix(mat.toMatrix4f()).getRotationLeft())));
-//
-//        mStack.translate(0, 1, 1);
-//
-//
-//
-////        mStack.rotate(new TransformationMatrix(mStack.getLast().getMatrix()).getRotationLeft());
-//
-//
-////        mat.apply(new Rotation(new Quat(new TransformationMatrix(mat.toMatrix4f()).getRotationLeft())).inverse());
-////        mat.glApply();
-//
+
+    private void testParticleRender(CCRenderState ccrs, ItemStack stack, TransformType transform, Matrix4 mat, MatrixStack mStack, IRenderTypeBuffer getter, boolean gui) {
+        Minecraft mc = Minecraft.getInstance();
+        float partialTicks = mc.getRenderPartialTicks();
+        ActiveRenderInfo renderInfo = mc.getRenderManager().info;
+
+
+        RenderSystem.pushMatrix();
+        RenderSystem.disableCull();
+//        mat.translate(0, 0, -1);
+
+//        mat.rotate(new Rotation(new Quat(new TransformationMatrix(mat.toMatrix4f()).getRotationLeft())));
+
+        mStack.translate(0, 1, 1);
+
+
+//        mStack.rotate(new TransformationMatrix(mStack.getLast().getMatrix()).getRotationLeft());
+
+
+//        mat.apply(new Rotation(new Quat(new TransformationMatrix(mat.toMatrix4f()).getRotationLeft())).inverse());
+//        mat.glApply();
+
 //        Quaternion quaternion = new TransformationMatrix(mat.toMatrix4f()).getRotationLeft();
-//
-//
-//
-////        mat.apply(new Rotation(new Quat(undoQuat)).inverse());
-//
-////        mat.apply(new Vector3(1, 0, 0).apply(mat));
-//
-////        mat.apply(new Rotation(new Quat(renderInfo.getRotation())));
-//
-//        IVertexBuilder builder = new TransformingVertexBuilder(getter.getBuffer(GuiHelper.TRANS_TYPE), mat);
-//
-//
-////        float x = 0;
-////        float y = 0;
-////        float z = 0;
-////        float width = 1;
-////        float height = 1;
-////        builder.pos(x, y + height, z).color(1F, 1F, 1F, 1F).endVertex();
-////        builder.pos(x + width, y + height, z).color(1F, 1F, 1F, 1F).endVertex();
-////        builder.pos(x + width, y, z).color(1F, 1F, 1F, 1F).endVertex();
-////        builder.pos(x, y, z).color(1F, 1F, 1F, 1F).endVertex();
-//
-//
+
+
+//        mat.apply(new Rotation(new Quat(undoQuat)).inverse());
+
+//        mat.apply(new Vector3(1, 0, 0).apply(mat));
+
+//        mat.apply(new Rotation(new Quat(renderInfo.getRotation())));
+
+        Vector3 vec = new Vector3(0, 0, -1);
+        mat.applyN(vec);
+
+
+//        Matrix4f matrix4f = mat.toMatrix4f().copy();
+//        matrix4f.invert();
+//        matrix4f(vec);
+
+        IVertexBuilder builder = new TransformingVertexBuilder(getter.getBuffer(GuiHelper.TRANS_TYPE), mat);
+
+
+        float x = 0;
+        float y = 0;
+        float z = 0;
+        float width = 1;
+        float height = 1;
+        builder.pos(x, y + height, z).color(1F, 1F, 1F, 1F).endVertex();
+        builder.pos(x + width, y + height, z).color(1F, 1F, 1F, 1F).endVertex();
+        builder.pos(x + width, y, z).color(1F, 1F, 1F, 1F).endVertex();
+        builder.pos(x, y, z).color(1F, 1F, 1F, 1F).endVertex();
+
+
 //        Vector3 vector3f1 = new Vector3(-1.0F, -1.0F, 0.0F);
 //        vector3f1.rotate(new Quat(quaternion));
 //        Vector3[] avector3f = new Vector3[]{new Vector3(-1.0F, -1.0F, 0.0F), new Vector3(-1.0F, 1.0F, 0.0F), new Vector3(1.0F, 1.0F, 0.0F), new Vector3(1.0F, -1.0F, 0.0F)};
@@ -299,7 +364,7 @@ public class RenderModularStaff extends ToolRenderBase {
 //
 //        for (int i = 0; i < 4; ++i) {
 //            Vector3 vector3f = avector3f[i];
-//            vector3f.rotate(new Quat(quaternion));
+////            vector3f.rotate(new Quat(quaternion));
 //            vector3f.multiply(f4);
 //            vector3f.apply(mat);
 ////            vector3f.add(f, f1, f2);
@@ -315,13 +380,84 @@ public class RenderModularStaff extends ToolRenderBase {
 //        builder.pos((double) avector3f[2].x, (double) avector3f[2].y, (double) avector3f[2].z)/*.tex(f7, f5)*/.color(1F, 1F, 1F, 1F)/*.lightmap(j)*/.endVertex();
 //        builder.pos((double) avector3f[3].x, (double) avector3f[3].y, (double) avector3f[3].z)/*.tex(f7, f6)*/.color(1F, 1F, 1F, 1F)/*.lightmap(j)*/.endVertex();
 //
-//
-//
-//        if (getter instanceof IRenderTypeBuffer.Impl) {
-//            ((IRenderTypeBuffer.Impl) getter).finish();
-//        }
-//        RenderSystem.popMatrix();
-//    }
 
 
+        if (getter instanceof IRenderTypeBuffer.Impl) {
+            ((IRenderTypeBuffer.Impl) getter).finish();
+        }
+        RenderSystem.popMatrix();
+    }
+
+    @Override
+    public ImmutableMap<TransformType, TransformationMatrix> getTransforms() {
+        return TRANSFORMATION;
+    }
+
+    private void handleArmPose(ItemStack stack, TransformType transform, Matrix4 mat) {
+        if (isThirdPerson(transform)) {
+            if (transform == TransformType.THIRD_PERSON_RIGHT_HAND) {
+                mat.rotate(torad(-15), new Vector3(-0.5, 0.5, 0));
+            } else {
+                mat.rotate(torad(15), new Vector3(-0.5, 0.5, 0));
+            }
+            if (entity != null){
+                double anim = entity.swingProgress;
+                mat.translate(0.125 * anim, 0.125 * anim, 0);
+                mat.rotate(torad(-20) * anim, Vector3.Z_POS);
+            }
+        }
+    }
+
+    private boolean isThirdPerson(TransformType transform) {
+        return transform == TransformType.THIRD_PERSON_RIGHT_HAND || transform == TransformType.THIRD_PERSON_LEFT_HAND;
+    }
+
+    //TODO. This is temporary to allow hotswap and debugging. Will move into mixin method when done.
+    public static void doMixinStuff(LivingEntity entity, PlayerModel<?> model) {
+        ItemStack mainHand = entity.getHeldItemMainhand();
+        ItemStack offHand = entity.getHeldItemOffhand();
+        boolean rightHanded = entity.getPrimaryHand() == HandSide.RIGHT;
+        boolean hasMain = mainHand.getItem() instanceof ModularStaff;
+        boolean hasOff = offHand.getItem() instanceof ModularStaff;
+
+        if (/*hasOff || */hasMain) {
+//            if (hasOff) {
+//                setStaffPose(entity, model.bipedRightArm, model.bipedLeftArm, model.bipedBody, model.bipedHead, rightHanded, !hasMain);
+//            }
+            if (hasMain) {
+                setStaffPose(entity, model.bipedRightArm, model.bipedLeftArm, model.bipedBody, model.bipedHead, !rightHanded, !hasOff);
+            }
+            model.bipedLeftLegwear.copyModelAngles(model.bipedLeftLeg);
+            model.bipedRightLegwear.copyModelAngles(model.bipedRightLeg);
+            model.bipedLeftArmwear.copyModelAngles(model.bipedLeftArm);
+            model.bipedRightArmwear.copyModelAngles(model.bipedRightArm);
+            model.bipedBodyWear.copyModelAngles(model.bipedBody);
+        }
+    }
+
+    public static void setStaffPose(LivingEntity entity, ModelRenderer rightArm, ModelRenderer leftArm, ModelRenderer body, ModelRenderer head, boolean lefthand, boolean bothHands) {
+        if (lefthand) {
+            //Yaw
+            leftArm.rotateAngleY = head.rotateAngleY + torad(15F);
+            //Pitch
+            leftArm.rotateAngleX = head.rotateAngleX - torad(60F) - torad(20F * entity.swingProgress);
+            if (bothHands) {
+                rightArm.rotateAngleX = head.rotateAngleX - torad(60F) - torad(20F * entity.swingProgress);
+                rightArm.rotateAngleY = head.rotateAngleY - torad(45F);
+            }
+        } else {
+            //Yaw
+            rightArm.rotateAngleY = head.rotateAngleY - torad(15F);
+            //Pitch
+            rightArm.rotateAngleX = head.rotateAngleX - torad(60F) - torad(20F * entity.swingProgress);
+            if (bothHands) {
+                leftArm.rotateAngleX = head.rotateAngleX - torad(60F) - torad(20F * entity.swingProgress);
+                leftArm.rotateAngleY = head.rotateAngleY + torad(45F);
+            }
+        }
+    }
+
+    public static float torad(double degrees) {
+        return (float) (degrees * MathHelper.torad);
+    }
 }

@@ -28,6 +28,7 @@ import net.minecraft.world.World;
 
 import java.util.List;
 
+@Deprecated
 public class EntityCustomArrow extends ArrowEntity {
 
     private static final DataParameter<Boolean> IS_ENERGY = EntityDataManager.<Boolean>createKey(EntityCustomArrow.class, DataSerializers.BOOLEAN);

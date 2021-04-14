@@ -2,9 +2,10 @@
 
 uniform float time;
 uniform int tier;
+uniform vec4 baseColour;
 varying vec3 position;
 
-vec4 type = vec4[](vec4(0.0, 0.5, 0.8, 1), vec4(0.55, 0.0, 0.65, 1), vec4(0.8 ,0.5 ,0.1, 1), vec4(0.75 ,0.05 ,0.05, 0.5))[tier];
+//vec4 type = vec4[](vec4(0.0, 0.5, 0.8, 1), vec4(0.55, 0.0, 0.65, 1), vec4(0.8 ,0.5 ,0.1, 1), vec4(0.75 ,0.05 ,0.05, 0.5))[tier];
 
 float ils = -3; //Inner layer speed
 float ols = 6;  //Outer layer speed
@@ -46,6 +47,6 @@ void main() {
         }
     }
 
-    brightness = max(brightness, 0) * type.w;
-    gl_FragColor = vec4(pow(brightness * type.r, 3 * (1.0-type.r)), pow(brightness * type.g, 3*(1.0-type.g)), pow(brightness * type.b, 3*(1.0-type.b)), 1.0);
+    brightness = max(brightness, 0) * ((baseColour.w / 0.2) * 0.5);
+    gl_FragColor = vec4(pow(brightness * baseColour.r, 3 * (1.0-baseColour.r)), pow(brightness * baseColour.g, 3*(1.0-baseColour.g)), pow(brightness * baseColour.b, 3*(1.0-baseColour.b)), 1.0);
 }

@@ -12,6 +12,7 @@
 		"ServerWorldMixin"
 	],
 	"client" : [
-		"ClientPlayNetHandlerMixin"
+		"ClientPlayNetHandlerMixin",
+		"PlayerModelMixin"
 	]
 }

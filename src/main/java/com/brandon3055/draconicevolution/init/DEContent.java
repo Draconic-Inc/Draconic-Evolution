@@ -1,6 +1,5 @@
 package com.brandon3055.draconicevolution.init;
 
-import codechicken.lib.gui.SimpleItemGroup;
 import codechicken.lib.util.SneakyUtils;
 import com.brandon3055.brandonscore.blocks.BlockBCore;
 import com.brandon3055.brandonscore.blocks.ItemBlockBCore;
@@ -30,6 +29,7 @@ import com.brandon3055.draconicevolution.entity.PersistentItemEntity;
 import com.brandon3055.draconicevolution.entity.guardian.DraconicGuardianEntity;
 import com.brandon3055.draconicevolution.entity.guardian.GuardianFightManager;
 import com.brandon3055.draconicevolution.entity.GuardianProjectileEntity;
+import com.brandon3055.draconicevolution.entity.projectile.DraconicProjectileEntity;
 import com.brandon3055.draconicevolution.inventory.*;
 import com.brandon3055.draconicevolution.items.EnderEnergyManipulator;
 import com.brandon3055.draconicevolution.items.InfoTablet;
@@ -46,17 +46,12 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
-import net.minecraft.entity.boss.dragon.EnderDragonEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.*;
 import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.potion.*;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ToolType;
-import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
-import net.minecraftforge.common.crafting.NBTIngredient;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -560,11 +555,6 @@ public class DEContent {
     // Entities
     //#################################################################
 
-//    @ObjectHolder("chaos_guardian")
-//    public static EntityType<EntityChaosGuardian> CHAOS_GUARDIAN;
-//    @ObjectHolder("guardian_projectile")
-//    public static EntityType<EntityGuardianProjectile> GUARDIAN_PROJECTILE;
-
     @ObjectHolder("draconic_guardian")
     public static EntityType<DraconicGuardianEntity> draconicGuardian;
     @ObjectHolder("guardian_projectile")
@@ -573,17 +563,18 @@ public class DEContent {
     public static EntityType<GuardianCrystalEntity> guardianCrystal;
     @ObjectHolder("persistent_item")
     public static EntityType<PersistentItemEntity> persistentItem;
+    @ObjectHolder("draconic_arrow")
+    public static EntityType<DraconicProjectileEntity> draconicArrow;
 
     @SuppressWarnings("unchecked")
     @SubscribeEvent
     public static void registerEntities(RegistryEvent.Register<EntityType<?>> event) {
-//        event.getRegistry().register(EntityType.Builder.create(EntityChaosGuardian::new, EntityClassification.MONSTER).immuneToFire().size(16.0F, 8.0F).build("chaos_guardian").setRegistryName("chaos_guardian"));
-//        event.getRegistry().register(EntityType.Builder.<EntityGuardianProjectile>create(EntityGuardianProjectile::new, EntityClassification.MISC).immuneToFire().size(1F, 1F).build("guardian_projectile").setRegistryName("guardian_projectile"));
         event.getRegistry().register(draconicGuardian = (EntityType<DraconicGuardianEntity>)EntityType.Builder.create(DraconicGuardianEntity::new, EntityClassification.MONSTER).immuneToFire().size(16.0F, 8.0F).trackingRange(20).build("draconic_guardian").setRegistryName("draconic_guardian"));
         GlobalEntityTypeAttributes.put(draconicGuardian, MobEntity.func_233666_p_().createMutableAttribute(Attributes.MAX_HEALTH, 1000.0D).create());
         event.getRegistry().register(EntityType.Builder.create(GuardianProjectileEntity::new, EntityClassification.MISC).immuneToFire().size(2F, 2F).trackingRange(20)/*.func_233608_b_(10)*/.build("guardian_projectile").setRegistryName("guardian_projectile"));
         event.getRegistry().register(EntityType.Builder.create(GuardianCrystalEntity::new, EntityClassification.MISC).immuneToFire().size(2F, 2F).trackingRange(20).func_233608_b_(100).build("guardian_crystal").setRegistryName("guardian_crystal"));
         event.getRegistry().register(EntityType.Builder.<PersistentItemEntity>create(PersistentItemEntity::new, EntityClassification.MISC).size(0.25F, 0.25F).trackingRange(6).func_233608_b_(20).build("persistent_item").setRegistryName("persistent_item"));
+        event.getRegistry().register(EntityType.Builder.<DraconicProjectileEntity>create(DraconicProjectileEntity::new, EntityClassification.MISC).size(0.5F, 0.5F).trackingRange(4).func_233608_b_(20).build("draconic_arrow").setRegistryName("draconic_arrow"));
     }
 
 

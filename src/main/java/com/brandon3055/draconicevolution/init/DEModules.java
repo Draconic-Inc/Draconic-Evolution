@@ -6,18 +6,20 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 
 import com.brandon3055.draconicevolution.api.modules.data.*;
 import com.brandon3055.draconicevolution.api.modules.Module;
-import com.brandon3055.draconicevolution.api.modules.lib.BaseModule;
-import com.brandon3055.draconicevolution.api.modules.lib.EnergyModuleItem;
-import com.brandon3055.draconicevolution.api.modules.lib.ModuleItem;
-import com.brandon3055.draconicevolution.api.modules.lib.ModuleImpl;
+import com.brandon3055.draconicevolution.api.modules.lib.*;
+import com.brandon3055.draconicevolution.items.equipment.damage.FireDmgMod;
+import com.brandon3055.draconicevolution.items.equipment.damage.IceDmgMod;
+import com.brandon3055.draconicevolution.items.equipment.damage.LightningDmgMod;
 import net.minecraft.item.Item;
 import net.minecraft.item.Item.Properties;
-import net.minecraft.item.Items;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.datasync.IDataSerializer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ForgeRegistry;
+import net.minecraftforge.registries.IForgeRegistryEntry;
 import net.minecraftforge.registries.ObjectHolder;
 import net.minecraftforge.registries.RegistryBuilder;
 
@@ -41,66 +43,75 @@ public class DEModules {
     public static ForgeRegistry<Module<?>> MODULE_REGISTRY;
 
     //@formatter:off
-    @ObjectHolder("draconium_energy")               public static Module<EnergyData> draconiumEnergy;
-    @ObjectHolder("wyvern_energy")                  public static Module<EnergyData> wyvernEnergy;
-    @ObjectHolder("draconic_energy")                public static Module<EnergyData> draconicEnergy;
-    @ObjectHolder("chaotic_energy")                 public static Module<EnergyData> chaoticEnergy;
+    @ObjectHolder("draconium_energy")               public static Module<EnergyData>    draconiumEnergy;
+    @ObjectHolder("wyvern_energy")                  public static Module<EnergyData>    wyvernEnergy;
+    @ObjectHolder("draconic_energy")                public static Module<EnergyData>    draconicEnergy;
+    @ObjectHolder("chaotic_energy")                 public static Module<EnergyData>    chaoticEnergy;
 
-    @ObjectHolder("draconium_speed")                public static Module<SpeedData>  draconiumSpeed;
-    @ObjectHolder("wyvern_speed")                   public static Module<SpeedData>  wyvernSpeed;
-    @ObjectHolder("draconic_speed")                 public static Module<SpeedData>  draconicSpeed;
-    @ObjectHolder("chaotic_speed")                  public static Module<SpeedData>  chaoticSpeed;
+    @ObjectHolder("draconium_speed")                public static Module<SpeedData>     draconiumSpeed;
+    @ObjectHolder("wyvern_speed")                   public static Module<SpeedData>     wyvernSpeed;
+    @ObjectHolder("draconic_speed")                 public static Module<SpeedData>     draconicSpeed;
+    @ObjectHolder("chaotic_speed")                  public static Module<SpeedData>     chaoticSpeed;
 
-    @ObjectHolder("draconium_damage")               public static Module<DamageData> draconiumDamage;
-    @ObjectHolder("wyvern_damage")                  public static Module<DamageData> wyvernDamage;
-    @ObjectHolder("draconic_damage")                public static Module<DamageData> draconicDamage;
-    @ObjectHolder("chaotic_damage")                 public static Module<DamageData> chaoticDamage;
+    @ObjectHolder("draconium_damage")               public static Module<DamageData>    draconiumDamage;
+    @ObjectHolder("wyvern_damage")                  public static Module<DamageData>    wyvernDamage;
+    @ObjectHolder("draconic_damage")                public static Module<DamageData>    draconicDamage;
+    @ObjectHolder("chaotic_damage")                 public static Module<DamageData>    chaoticDamage;
 
-    @ObjectHolder("draconium_aoe")                  public static Module<AOEData>    draconiumAOE;
-    @ObjectHolder("wyvern_aoe")                     public static Module<AOEData>    wyvernAOE;
-    @ObjectHolder("draconic_aoe")                   public static Module<AOEData>    draconicAOE;
-    @ObjectHolder("chaotic_aoe")                    public static Module<AOEData>    chaoticAOE;
+    @ObjectHolder("draconium_aoe")                  public static Module<AOEData>       draconiumAOE;
+    @ObjectHolder("wyvern_aoe")                     public static Module<AOEData>       wyvernAOE;
+    @ObjectHolder("draconic_aoe")                   public static Module<AOEData>       draconicAOE;
+    @ObjectHolder("chaotic_aoe")                    public static Module<AOEData>       chaoticAOE;
 
-    @ObjectHolder("wyvern_mining_stability")        public static Module<NoData>     wyvernMiningStability;
+    @ObjectHolder("wyvern_mining_stability")        public static Module<NoData>        wyvernMiningStability;
 
-    @ObjectHolder("wyvern_junk_filter")             public static Module<NoData>     wyvernJunkFilter;
+    @ObjectHolder("wyvern_junk_filter")             public static Module<NoData>        wyvernJunkFilter;
 
-    @ObjectHolder("wyvern_shield_control")          public static Module<NoData>     wyvernShieldControl;
-    @ObjectHolder("draconic_shield_control")        public static Module<NoData>     draconicShieldControl;
-    @ObjectHolder("chaotic_shield_control")         public static Module<NoData>     chaoticShieldControl;
+    @ObjectHolder("draconic_fire_mod")              public static Module<DamageModData> draconicFireMod;
+    @ObjectHolder("chaotic_fire_mod")               public static Module<DamageModData> chaoticFireMod;
 
-    @ObjectHolder("wyvern_shield_capacity")         public static Module<ShieldData> wyvernShieldCapacity;
-    @ObjectHolder("draconic_shield_capacity")       public static Module<ShieldData> draconicShieldCapacity;
-    @ObjectHolder("chaotic_shield_capacity")        public static Module<ShieldData> chaoticShieldCapacity;
-    @ObjectHolder("wyvern_large_shield_capacity")   public static Module<ShieldData> wyvernLargeShieldCapacity;
-    @ObjectHolder("draconic_large_shield_capacity") public static Module<ShieldData> draconicLargeShieldCapacity;
-    @ObjectHolder("chaotic_large_shield_capacity")  public static Module<ShieldData> chaoticLargeShieldCapacity;
-    @ObjectHolder("wyvern_shield_recovery")         public static Module<ShieldData> wyvernShieldRecovery;
-    @ObjectHolder("draconic_shield_recovery")       public static Module<ShieldData> draconicShieldRecovery;
-    @ObjectHolder("chaotic_shield_recovery")        public static Module<ShieldData> chaoticShieldRecovery;
+    @ObjectHolder("draconic_lightning_mod")         public static Module<DamageModData> draconicLightningMod;
+    @ObjectHolder("chaotic_lightning_mod")          public static Module<DamageModData> chaoticLightningMod;
 
-    @ObjectHolder("wyvern_flight")                  public static Module<FlightData> wyvernFlight;
-    @ObjectHolder("draconic_flight")                public static Module<FlightData> draconicFlight;
-    @ObjectHolder("chaotic_flight")                 public static Module<FlightData> chaoticFlight;
+    @ObjectHolder("draconic_ice_mod")               public static Module<DamageModData> draconicIceMod;
+    @ObjectHolder("chaotic_ice_mod")                public static Module<DamageModData> chaoticIceMod;
 
-    @ObjectHolder("wyvern_last_stand")              public static Module<NoData>     wyvernLastStand;
-    @ObjectHolder("draconic_last_stand")            public static Module<NoData>     draconicLastStand;
-    @ObjectHolder("chaotic_last_stand")             public static Module<NoData>     chaoticLastStand;
+    @ObjectHolder("wyvern_shield_control")          public static Module<NoData>        wyvernShieldControl;
+    @ObjectHolder("draconic_shield_control")        public static Module<NoData>        draconicShieldControl;
+    @ObjectHolder("chaotic_shield_control")         public static Module<NoData>        chaoticShieldControl;
 
-    @ObjectHolder("draconium_auto_feed")            public static Module<NoData>     draconiumAutoFeed;
-    @ObjectHolder("wyvern_auto_feed")               public static Module<NoData>     wyvernAutoFeed;
-    @ObjectHolder("draconic_auto_feed")             public static Module<NoData>     draconicAutoFeed;
+    @ObjectHolder("wyvern_shield_capacity")         public static Module<ShieldData>    wyvernShieldCapacity;
+    @ObjectHolder("draconic_shield_capacity")       public static Module<ShieldData>    draconicShieldCapacity;
+    @ObjectHolder("chaotic_shield_capacity")        public static Module<ShieldData>    chaoticShieldCapacity;
+    @ObjectHolder("wyvern_large_shield_capacity")   public static Module<ShieldData>    wyvernLargeShieldCapacity;
+    @ObjectHolder("draconic_large_shield_capacity") public static Module<ShieldData>    draconicLargeShieldCapacity;
+    @ObjectHolder("chaotic_large_shield_capacity")  public static Module<ShieldData>    chaoticLargeShieldCapacity;
+    @ObjectHolder("wyvern_shield_recovery")         public static Module<ShieldData>    wyvernShieldRecovery;
+    @ObjectHolder("draconic_shield_recovery")       public static Module<ShieldData>    draconicShieldRecovery;
+    @ObjectHolder("chaotic_shield_recovery")        public static Module<ShieldData>    chaoticShieldRecovery;
 
-    @ObjectHolder("wyvern_night_vision")            public static Module<NoData>     wyvernNightVision;
+    @ObjectHolder("wyvern_flight")                  public static Module<FlightData>    wyvernFlight;
+    @ObjectHolder("draconic_flight")                public static Module<FlightData>    draconicFlight;
+    @ObjectHolder("chaotic_flight")                 public static Module<FlightData>    chaoticFlight;
 
-    @ObjectHolder("draconium_jump")                 public static Module<JumpData>   draconiumJump;
-    @ObjectHolder("wyvern_jump")                    public static Module<JumpData>   wyvernJump;
-    @ObjectHolder("draconic_jump")                  public static Module<JumpData>   draconicJump;
-    @ObjectHolder("chaotic_jump")                   public static Module<JumpData>   chaoticJump;
+    @ObjectHolder("wyvern_last_stand")              public static Module<NoData>        wyvernLastStand;
+    @ObjectHolder("draconic_last_stand")            public static Module<NoData>        draconicLastStand;
+    @ObjectHolder("chaotic_last_stand")             public static Module<NoData>        chaoticLastStand;
 
-    @ObjectHolder("wyvern_aqua_adapt")              public static Module<NoData>     wyvernAquaAdapt;
+    @ObjectHolder("draconium_auto_feed")            public static Module<NoData>        draconiumAutoFeed;
+    @ObjectHolder("wyvern_auto_feed")               public static Module<NoData>        wyvernAutoFeed;
+    @ObjectHolder("draconic_auto_feed")             public static Module<NoData>        draconicAutoFeed;
 
-    @ObjectHolder("wyvern_hill_step")               public static Module<NoData>     wyvernHillStep;
+    @ObjectHolder("wyvern_night_vision")            public static Module<NoData>        wyvernNightVision;
+
+    @ObjectHolder("draconium_jump")                 public static Module<JumpData>      draconiumJump;
+    @ObjectHolder("wyvern_jump")                    public static Module<JumpData>      wyvernJump;
+    @ObjectHolder("draconic_jump")                  public static Module<JumpData>      draconicJump;
+    @ObjectHolder("chaotic_jump")                   public static Module<JumpData>      chaoticJump;
+
+    @ObjectHolder("wyvern_aqua_adapt")              public static Module<NoData>        wyvernAquaAdapt;
+
+    @ObjectHolder("wyvern_hill_step")               public static Module<NoData>        wyvernHillStep;
 
     //@formatter:on
 
@@ -134,6 +145,15 @@ public class DEModules {
         register(new ModuleImpl<>(MINING_STABILITY,     WYVERN,         noData()),                          "wyvern_mining_stability");
 
         register(new ModuleImpl<>(JUNK_FILTER,          WYVERN,         noData()),                          "wyvern_junk_filter");
+
+        register(new ModuleImpl<>(DAMAGE_MOD,           DRACONIC,       dmgModData(new FireDmgMod())),      "draconic_fire_mod");
+        register(new ModuleImpl<>(DAMAGE_MOD,           CHAOTIC,        dmgModData(new FireDmgMod())),      "chaotic_fire_mod");
+
+        register(new ModuleImpl<>(DAMAGE_MOD,           DRACONIC,       dmgModData(new LightningDmgMod())), "draconic_lightning_mod");
+        register(new ModuleImpl<>(DAMAGE_MOD,           CHAOTIC,        dmgModData(new LightningDmgMod())), "chaotic_lightning_mod");
+
+        register(new ModuleImpl<>(DAMAGE_MOD,           DRACONIC,       dmgModData(new IceDmgMod())),       "draconic_ice_mod");
+        register(new ModuleImpl<>(DAMAGE_MOD,           CHAOTIC,        dmgModData(new IceDmgMod())),       "chaotic_ice_mod");
 
         //Armor
         register(new ModuleImpl<>(SHIELD_CONTROLLER,    WYVERN,         shieldControl(20.0)),               "wyvern_shield_control");
@@ -245,6 +265,12 @@ public class DEModules {
         };
     }
 
+    private static Function<Module<DamageModData>, DamageModData> dmgModData(IDamageModifier modifier) {
+        return e -> {
+            return new DamageModData(modifier);
+        };
+    }
+
     private static Function<Module<NoData>, NoData> noData() {
         return e -> new NoData();
     }
@@ -294,4 +320,23 @@ public class DEModules {
     }
 
     //endregion
+
+
+
+    public static final IDataSerializer<Optional<Module<?>>> OPTIONAL_SERIALIZER = new IDataSerializer<Optional<Module<?>>>() {
+        public void write(PacketBuffer buf, Optional<Module<?>> value) {
+            buf.writeBoolean(value.isPresent());
+            value.ifPresent(module -> buf.writeResourceLocation(module.getRegistryName()));
+
+        }
+
+        public Optional<Module<?>> read(PacketBuffer buf) {
+            Module<?> module = MODULE_REGISTRY.getValue(buf.readResourceLocation());
+            return !buf.readBoolean() || module == null ? Optional.empty() : Optional.of(module);
+        }
+
+        public Optional<Module<?>> copyValue(Optional<Module<?>> value) {
+            return value;
+        }
+    };
 }

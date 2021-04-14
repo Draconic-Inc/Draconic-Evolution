@@ -3,7 +3,6 @@ package com.brandon3055.draconicevolution.client;
 import codechicken.lib.model.ModelRegistryHelper;
 import codechicken.lib.texture.SpriteRegistryHelper;
 import codechicken.lib.util.ResourceUtils;
-import com.brandon3055.brandonscore.client.BCSprites;
 import com.brandon3055.draconicevolution.CommonProxy;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.api.energy.IENetEffectTile;
@@ -15,16 +14,17 @@ import com.brandon3055.draconicevolution.client.gui.*;
 import com.brandon3055.draconicevolution.client.gui.modular.GuiModularItem;
 import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.GuiConfigurableItem;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
+import com.brandon3055.draconicevolution.client.handler.StaffRenderEventHandler;
 import com.brandon3055.draconicevolution.client.keybinding.KeyBindings;
 import com.brandon3055.draconicevolution.client.keybinding.KeyInputHandler;
 import com.brandon3055.draconicevolution.client.model.VBOArmorLayer;
 import com.brandon3055.draconicevolution.client.render.entity.DraconicGuardianRenderer;
 import com.brandon3055.draconicevolution.client.render.entity.GuardianCrystalRenderer;
 import com.brandon3055.draconicevolution.client.render.entity.GuardianProjectileRenderer;
+import com.brandon3055.draconicevolution.client.render.entity.projectile.DraconicArrowRenderer;
 import com.brandon3055.draconicevolution.client.render.item.*;
 import com.brandon3055.draconicevolution.client.render.tile.*;
 import com.brandon3055.draconicevolution.client.sound.GeneratorSoundHandler;
-import com.brandon3055.draconicevolution.entity.guardian.DraconicGuardianEntity;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.items.equipment.IModularArmor;
 import com.brandon3055.draconicevolution.lib.ISidedTileHandler;
@@ -41,7 +41,6 @@ import net.minecraft.client.renderer.entity.layers.ElytraLayer;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -70,6 +69,8 @@ public class ClientProxy extends CommonProxy {
         FMLJavaModLoadingContext.get().getModEventBus().addListener((ColorHandlerEvent.Block event) -> moduleSpriteUploader = new ModuleSpriteUploader());
         spriteHelper.addIIconRegister(new DETextures());
         FMLJavaModLoadingContext.get().getModEventBus().addListener(DESprites::initialize);
+
+        StaffRenderEventHandler.init();
     }
 
     @Override
@@ -86,7 +87,6 @@ public class ClientProxy extends CommonProxy {
         registerItemRenderers();
         registerTileRenderers();
         registerEntityRendering();
-        registerTextures();
         setupRenderLayers();
 
         MinecraftForge.EVENT_BUS.register(new KeyInputHandler());
@@ -94,11 +94,7 @@ public class ClientProxy extends CommonProxy {
         KeyBindings.init();
 
 
-
-//        spriteHelper.addIIconRegister(ModuleTextures.LOCATION_MODULE_TEXTURE, new ModuleTextures());
-
         ResourceUtils.registerReloadListener(new DETextures());
-//        ResourceUtils.registerReloadListener(new ModuleTextures());
 
         //Because i want this to render on bipedal mobs.
         for (EntityRenderer<?> e : Minecraft.getInstance().getRenderManager().renderers.values()) {
@@ -126,60 +122,8 @@ public class ClientProxy extends CommonProxy {
                 }
             });
         }
-
-
-//        ModelResourceLocation modelLocation = new ModelResourceLocation(DEContent.stabilized_spawner.getRegistryName(), "inventory");
-//        IBakedModel bakedModel = new RenderItemStabilizedSpawner();
-//        modelHelper.register(modelLocation, bakedModel);
-//
-//        MinecraftForge.EVENT_BUS.addListener((EntityJoinWorldEvent e) -> LogHelper.dev(e.getEntity()));
-//        Minecraft.getInstance().getRenderManager().renderers.values().forEach(e -> {
-//            if (e instanceof LivingRenderer) {
-//                ((LivingRenderer) e).addLayer(new TestRenderLayer((LivingRenderer) e));
-//            }
-//        });
-
-
-//        RenderType modelType = RenderType.getEntitySolid(new ResourceLocation(DraconicEvolution.MODID, "textures/models/block/pylon_sphere_texture.png"));
-//        CCModel trackerModel;
-//        Map<String, CCModel> map = OBJParser.parseModels(new ResourceLocation(DraconicEvolution.MODID, "models/pylon_sphere.obj"), GL11.GL_QUADS, null);
-//        trackerModel = CCModel.combine(map.values()).backfacedCopy();
-//        trackerModel.apply(new Scale(1, 2, 1));
-//        trackerModel.computeNormals();
-//
-//
-//        MinecraftForge.EVENT_BUS.addListener((RenderLivingEvent.Post<LivingEntity, EntityModel<LivingEntity>> e) -> {
-//            MatrixStack mStack = e.getMatrixStack();
-//            IRenderTypeBuffer getter = e.getBuffers();
-//            LivingEntity entity = e.getEntity();
-//            if (!entity.getPersistentData().contains("wr:trackers")) return;
-//            ListNBT trackers = entity.getPersistentData().getList("wr:trackers", 10);
-//
-//            for (INBT inbt : trackers) {
-//                CompoundNBT nbt = (CompoundNBT) inbt;
-//                Vector3 vec = Vector3.fromNBT(nbt.getCompound("vec"));
-//                float rot = nbt.getFloat("rot");
-//
-//                Matrix4 mat = new Matrix4(mStack);
-//                CCRenderState ccrs = CCRenderState.instance();
-//                ccrs.reset();
-//                ccrs.brightness = 240;
-//                ccrs.bind(modelType, getter);
-//
-//                mat.apply(new Rotation((entity.renderYawOffset - rot) * -MathHelper.torad, Vector3.Y_POS));
-//                mat.translate(0, entity.getHeight() / 2, 0);
-//                mat.translate(vec);
-//
-//                mat.scale(0.1);
-//
-//                trackerModel.render(ccrs, mat);
-//            }
-//        });
     }
 
-    private void registerTextures() {
-//        BCSprites.registerThemed(MODID, "<location>");
-    }
 
     private void registerGuiFactories() {
         ScreenManager.registerFactory(DEContent.container_generator, GuiGenerator::new);
@@ -305,6 +249,7 @@ public class ClientProxy extends CommonProxy {
         RenderingRegistry.registerEntityRenderingHandler(DEContent.guardianProjectile, GuardianProjectileRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(DEContent.guardianCrystal, GuardianCrystalRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(DEContent.persistentItem, manager -> new ItemRenderer(manager, Minecraft.getInstance().getItemRenderer()));
+        RenderingRegistry.registerEntityRenderingHandler(DEContent.draconicArrow, DraconicArrowRenderer::new);
 
         //Entities
 //        RenderingRegistry.registerEntityRenderingHandler(EntityChaosGuardian.class, RenderChaosGuardian::new);

@@ -45,6 +45,7 @@ public class ModuleTypes {
     public static final ModuleType<NoData>              JUNK_FILTER         = new ModuleTypeImpl<>("junk_filter",       1, 1, MINING_TOOL);
     public static final ModuleType<NoData>              VACUUM              = new ModuleTypeImpl<>("vacuum",            1, 1, MINING_TOOL, MELEE_WEAPON, RANGED_WEAPON);
     public static final ModuleType<NoData>              ITEM_TRANSLOCATION  = new ModuleTypeImpl<>("item_translocation",1, 1, MINING_TOOL, MELEE_WEAPON, RANGED_WEAPON);
+    public static final ModuleType<DamageModData>       DAMAGE_MOD          = new ModuleTypeImpl<>("damage_mod",        3, 3).setMaxInstallable(1);
 
     //@formatter:on
 

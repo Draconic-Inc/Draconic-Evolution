@@ -63,7 +63,7 @@ public interface ModuleHost extends INBTSerializable<CompoundNBT> {
         ModuleType<?> type = module.getType();
         if (getTypeBlackList().contains(type)) {
             return false;
-        } else if (getTypeWhiteList().contains(type) || module.getCategories().contains(ModuleCategory.ALL)) {
+        } else if (getAdditionalTypes().contains(type) || module.getCategories().contains(ModuleCategory.ALL)) {
             return true;
         }
         Collection<ModuleCategory> hostCats = getModuleCategories();
@@ -77,7 +77,7 @@ public interface ModuleHost extends INBTSerializable<CompoundNBT> {
 
     Collection<ModuleCategory> getModuleCategories();
 
-    default Collection<ModuleType<?>> getTypeWhiteList() { return Collections.emptyList(); }
+    default Collection<ModuleType<?>> getAdditionalTypes() { return Collections.emptyList(); }
 
     default Collection<ModuleType<?>> getTypeBlackList() { return Collections.emptyList(); }
 

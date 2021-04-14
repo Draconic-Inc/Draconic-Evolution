@@ -2,13 +2,17 @@ package com.brandon3055.draconicevolution.client.render.effect;
 
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.utils.Utils;
-import com.mojang.blaze3d.platform.GLX;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.vector.Matrix4f;
 import org.lwjgl.opengl.GL11;
 
 import java.util.Random;
@@ -19,6 +23,7 @@ import java.util.Random;
 public class RenderEnergyBolt {
 
 
+    @Deprecated
     public static void renderBoltBetween(Vec3D point1, Vec3D point2, double scale, double maxDeflection, int maxSegments, long boltSeed, boolean corona) {
         Tessellator tessellator = Tessellator.getInstance();
         Random random = new Random(boltSeed);
@@ -103,6 +108,7 @@ public class RenderEnergyBolt {
     }
 
     //WIP
+    @Deprecated
     public static void renderCorona(Vec3D source, Vec3D target, double scale, double maxDeflection, int maxSegments, long boltSeed) {
         Tessellator tessellator = Tessellator.getInstance();
         Random random = new Random(boltSeed);
@@ -159,6 +165,7 @@ public class RenderEnergyBolt {
     }
 
 
+    @Deprecated
     private static void drawBoltSegment(Tessellator tessellator, Vec3D p1, Vec3D p2, float scale) {
         BufferBuilder buffer = tessellator.getBuffer();
 
@@ -189,5 +196,97 @@ public class RenderEnergyBolt {
         tessellator.draw();
 
         RenderSystem.popMatrix();
+    }
+
+
+
+
+
+
+
+
+
+    @Deprecated //Currently just for reference
+    public static void renderVanillaLightning(MatrixStack mStack, IRenderTypeBuffer getter) {
+        //This is basically used to pre calculate the segment random positions. The next position is then re calculated using the same random seed.
+        float[] segXOffset = new float[8];
+        float[] segZOffset = new float[8];
+        float cumulativeX = 0.0F;
+        float cumulativeZ = 0.0F;
+
+        long boltRand = 0;//TimeKeeper.getClientTick() / 20;
+
+        Random random = new Random(boltRand);
+
+        for(int segment = 7; segment >= 0; --segment) {
+            segXOffset[segment] = cumulativeX;
+            segZOffset[segment] = cumulativeZ;
+            cumulativeX += (float)(random.nextInt(11) - 5);
+            cumulativeZ += (float)(random.nextInt(11) - 5);
+        }
+
+        IVertexBuilder builder = getter.getBuffer(RenderType.getLightning());
+        Matrix4f matrix4f = mStack.getLast().getMatrix();
+
+        //Render each bolt layer
+        for(int layer = 0; layer < 4; ++layer) {
+            Random random1 = new Random(boltRand);
+
+            //For each branch starting with the main branch
+            for(int branch = 0; branch < 3; ++branch) {
+                int startSeg = 7; //Top of the bolt
+                int endSeg = 0;
+                if (branch > 0) {
+                    startSeg = 7 - branch;
+                }
+
+                if (branch > 0) {
+                    endSeg = startSeg - 2;
+                }
+
+                float x = segXOffset[startSeg] - cumulativeX;
+                float z = segZOffset[startSeg] - cumulativeZ;
+                //For each segment in the branch
+                for(int seg = startSeg; seg >= endSeg; --seg) {
+                    float prevX = x;
+                    float prevZ = z;
+                    if (branch == 0) { //Main Trunk Offsets
+                        x += (float)(random1.nextInt(11) - 5); //These randoms need to match the segXOffset randoms
+                        z += (float)(random1.nextInt(11) - 5);
+                    } else { //Branch Offsets
+                        x += (float)(random1.nextInt(31) - 15);
+                        z += (float)(random1.nextInt(31) - 15);
+                    }
+
+                    float f6 = 0.5F; //?
+                    float red = 0.45F;
+                    float green = 0.45F;
+                    float blue = 0.5F;
+                    //The size of each shell
+                    float layerOffsetA = 0.1F + (layer * 0.20F);
+                    if (branch == 0) {
+                        layerOffsetA *= 1.0F + (seg * 0.1F); //Adds a slight taper to the main branch (Thicker at the top)
+                    }
+
+                    float layerOffsetB = 0.1F + (layer * 0.2F);
+                    if (branch == 0) {
+                        layerOffsetB *= 1.0F + ((seg-1F) * 0.1F); //Adds a slight taper to the main branch  (Thicker at the top)
+                    }
+
+                    addVanillaSegmentQuad(matrix4f, builder, x, z, seg, prevX, prevZ, red, green, blue, layerOffsetA, layerOffsetB, false, false, true,  false);    //North Side
+                    addVanillaSegmentQuad(matrix4f, builder, x, z, seg, prevX, prevZ, red, green, blue, layerOffsetA, layerOffsetB, true,  false, true,  true);      //East Side
+                    addVanillaSegmentQuad(matrix4f, builder, x, z, seg, prevX, prevZ, red, green, blue, layerOffsetA, layerOffsetB, true,  true,  false, true);      //South Side
+                    addVanillaSegmentQuad(matrix4f, builder, x, z, seg, prevX, prevZ, red, green, blue, layerOffsetA, layerOffsetB, false, true,  false, false);    //West Side
+                }
+            }
+        }
+    }
+
+    private static void addVanillaSegmentQuad(Matrix4f matrix4f, IVertexBuilder builder, float x1, float z1, int segIndex, float x2, float z2, float red, float green, float blue, float offsetA, float offsetB, boolean invA, boolean invB, boolean invC, boolean invD) {
+        float segHeight = 16F;
+        builder.pos(matrix4f, x1 + (invA ? offsetB : -offsetB), segIndex * segHeight,          z1 + (invB ? offsetB : -offsetB)).color(red, green, blue, 0.3F).endVertex();
+        builder.pos(matrix4f, x2 + (invA ? offsetA : -offsetA), (segIndex + 1F) * segHeight,   z2 + (invB ? offsetA : -offsetA)).color(red, green, blue, 0.3F).endVertex();
+        builder.pos(matrix4f, x2 + (invC ? offsetA : -offsetA), (segIndex + 1F) * segHeight,   z2 + (invD ? offsetA : -offsetA)).color(red, green, blue, 0.3F).endVertex();
+        builder.pos(matrix4f, x1 + (invC ? offsetB : -offsetB), segIndex * segHeight,          z1 + (invD ? offsetB : -offsetB)).color(red, green, blue, 0.3F).endVertex();
     }
 }

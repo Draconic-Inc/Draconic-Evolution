@@ -42,6 +42,10 @@ public class DEItemTier implements IItemTier {
 
     @Override
     public int getEnchantability() {
+        return getEnchantability(techLevel);
+    }
+
+    public static int getEnchantability(TechLevel techLevel) {
         switch (techLevel) {
             case DRACONIUM:
                 return EquipCfg.draconiumEnchantability;
