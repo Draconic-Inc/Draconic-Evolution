@@ -199,8 +199,8 @@ public class ShieldControlEntity extends ModuleEntity {
 
     private boolean blockEnvironmentalDamage(LivingAttackEvent event, DamageSource source) {
         LivingEntity entity = event.getEntityLiving();
-        if (source.isFireDamage() && getShieldPoints() > 10) {
-            entity.extinguish();
+        if (source.isFire() && getShieldPoints() > 10) {
+            entity.clearFire();
         }
         if (ENV_SOURCES.containsKey(source)) {
             ENV_SOURCES.put(DamageSource.LAVA, 4D);
@@ -213,7 +213,7 @@ public class ShieldControlEntity extends ModuleEntity {
                 shieldCoolDown = getMaxShieldCoolDown();
                 if (envDmgCoolDown == 0) {
                     float hitPitch = 0.7F + (float) (Math.min(1, getShieldPoints() / ((shieldCapacity + getMaxShieldBoost()) * 0.1)) * 0.3);
-                    entity.world.playSound(null, entity.getPosition(), DESounds.shieldStrike, SoundCategory.PLAYERS, 0.25F, (0.95F + (entity.world.rand.nextFloat() * 0.1F)) * hitPitch);
+                    entity.level.playSound(null, entity.blockPosition(), DESounds.shieldStrike, SoundCategory.PLAYERS, 0.25F, (0.95F + (entity.level.random.nextFloat() * 0.1F)) * hitPitch);
                     envDmgCoolDown = 40;
                 }
                 return true;
@@ -256,7 +256,7 @@ public class ShieldControlEntity extends ModuleEntity {
         if (damageBlocked && (shieldCapacity + getMaxShieldBoost()) > 0) {
             shieldCoolDown = getMaxShieldCoolDown();
             float hitPitch = 0.7F + (float) (Math.min(1, getShieldPoints() / ((shieldCapacity + getMaxShieldBoost()) * 0.1)) * 0.3);
-            entity.world.playSound(null, entity.getPosition(), DESounds.shieldStrike, SoundCategory.PLAYERS, 1F, (0.95F + (entity.world.rand.nextFloat() * 0.1F)) * hitPitch);
+            entity.level.playSound(null, entity.blockPosition(), DESounds.shieldStrike, SoundCategory.PLAYERS, 1F, (0.95F + (entity.level.random.nextFloat() * 0.1F)) * hitPitch);
         }
     }
 
@@ -268,8 +268,8 @@ public class ShieldControlEntity extends ModuleEntity {
     }
 
     private float applyDamageModifiers(DamageSource source, float damage) {
-        if (source.isUnblockable()) damage *= 3;
-        if (source.isMagicDamage()) damage *= 2;
+        if (source.isBypassArmor()) damage *= 3;
+        if (source.isMagic()) damage *= 2;
         return damage;
     }
 

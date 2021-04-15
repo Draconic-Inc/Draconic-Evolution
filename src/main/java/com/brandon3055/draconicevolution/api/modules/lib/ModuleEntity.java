@@ -137,7 +137,7 @@ public class ModuleEntity {
      */
     public void writeToItemStack(ItemStack stack, ModuleContext context) {
         if (savePropertiesToItem && !propertyMap.isEmpty()) {
-            CompoundNBT properties = stack.getOrCreateChildTag("properties");
+            CompoundNBT properties = stack.getOrCreateTagElement("properties");
             propertyMap.forEach((name, property) -> properties.put(name, property.serializeNBT()));
         }
     }
@@ -152,7 +152,7 @@ public class ModuleEntity {
      */
     public void readFromItemStack(ItemStack stack, ModuleContext context) {
         CompoundNBT properties;
-        if (savePropertiesToItem && (properties = stack.getChildTag("properties")) != null) {
+        if (savePropertiesToItem && (properties = stack.getTagElement("properties")) != null) {
             propertyMap.forEach((name, property) -> property.deserializeNBT(properties.getCompound(name)));
         }
     }

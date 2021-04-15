@@ -59,7 +59,7 @@ public class ModHelper {
             avaritiaSword = ForgeRegistries.ITEMS.getValue(new ResourceLocation("avaritia", "infinity_sword"));
         }
 
-        return avaritiaSword != null && !player.getHeldItemMainhand().isEmpty() && player.getHeldItemMainhand().getItem().equals(avaritiaSword);
+        return avaritiaSword != null && !player.getMainHandItem().isEmpty() && player.getMainHandItem().getItem().equals(avaritiaSword);
     }
 
     public static boolean isHoldingBedrockSword(PlayerEntity player) {
@@ -70,7 +70,7 @@ public class ModHelper {
             bedrockSword =  ForgeRegistries.ITEMS.getValue(new ResourceLocation("rotarycraft", "rotarycraft_item_bedsword"));
         }
 
-        return bedrockSword != null && !player.getHeldItemMainhand().isEmpty() && player.getHeldItemMainhand().getItem().equals(bedrockSword);
+        return bedrockSword != null && !player.getMainHandItem().isEmpty() && player.getMainHandItem().getItem().equals(bedrockSword);
     }
 
     public static boolean canRemoveEnchants(ItemStack stack) {
@@ -86,13 +86,13 @@ public class ModHelper {
     }
 
     public static float applyModDamageAdjustments(LivingAttackEvent event, ModuleHost host) {
-        PlayerEntity attacker = event.getSource().getTrueSource() instanceof PlayerEntity ? (PlayerEntity) event.getSource().getTrueSource() : null;
+        PlayerEntity attacker = event.getSource().getEntity() instanceof PlayerEntity ? (PlayerEntity) event.getSource().getEntity() : null;
         if (attacker == null) {
             return event.getAmount();
         }
 
         if (isHoldingAvaritiaSword(attacker)) {
-            event.getEntityLiving().hurtResistantTime = 0;
+            event.getEntityLiving().invulnerableTime = 0;
             return 300F;
         }
 //        else if (isHoldingBedrockSword(attacker)) {
@@ -104,7 +104,7 @@ public class ModHelper {
 //
 //            return Math.max(event.getAmount(), Math.min(50F, summery.protectionPoints));
 //        }
-        else if (event.getSource().isUnblockable() || event.getSource().canHarmInCreative()) {
+        else if (event.getSource().isBypassArmor() || event.getSource().isBypassInvul()) {
 //            summery.entropy += 3;
 //
 //            if (summery.entropy > 100) {

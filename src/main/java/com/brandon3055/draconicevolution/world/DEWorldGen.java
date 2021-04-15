@@ -26,8 +26,8 @@ import org.apache.logging.log4j.Logger;
 import java.util.Random;
 
 import static net.minecraft.world.gen.GenerationStage.Decoration.UNDERGROUND_ORES;
-import static net.minecraft.world.gen.feature.OreFeatureConfig.FillerBlockType.BASE_STONE_NETHER;
-import static net.minecraft.world.gen.feature.OreFeatureConfig.FillerBlockType.BASE_STONE_OVERWORLD;
+import static net.minecraft.world.gen.feature.OreFeatureConfig.FillerBlockType.NETHER_ORE_REPLACEABLES;
+import static net.minecraft.world.gen.feature.OreFeatureConfig.FillerBlockType.NATURAL_STONE;
 import static net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus.FORGE;
 
 /**
@@ -37,7 +37,7 @@ import static net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus.FORGE;
 public class DEWorldGen {
     private static Logger LOGGER = DraconicEvolution.LOGGER;
 
-    //    public static final ConfiguredFeature<?, ?> ORE_IRON = register("ore_iron", Feature.ORE.withConfiguration(new OreFeatureConfig(OreFeatureConfig.FillerBlockType.BASE_STONE_OVERWORLD, Features.States.IRON_ORE, 9)).range(64).square().func_242731_b(20));
+    //    public static final ConfiguredFeature<?, ?> ORE_IRON = register("ore_iron", Feature.ORE.withConfiguration(new OreFeatureConfig(OreFeatureConfig.FillerBlockType.BASE_STONE_OVERWORLD, Features.States.IRON_ORE, 9)).range(64).square().count(20));
     public static final RuleTest BASE_STONE_END = new BlockMatchRuleTest(Blocks.END_STONE);
 
 
@@ -48,29 +48,29 @@ public class DEWorldGen {
             event.getGeneration().withFeature(UNDERGROUND_ORES, Feature.ORE.withConfiguration(new OreFeatureConfig(BASE_STONE_END, DEContent.ore_draconium_end.getDefaultState(), 32))
                     .withPlacement(Placement.RANGE.configure(new TopSolidRangeConfig(0, 0, 80)))
                     .square()
-                    .func_242731_b(6));
+                    .count(6));
         } else */if (event.getCategory() == Biome.Category.THEEND) {
-            event.getGeneration().withFeature(UNDERGROUND_ORES, Feature.ORE.withConfiguration(new OreFeatureConfig(BASE_STONE_END, DEContent.ore_draconium_end.getDefaultState(), 8))
-                    .withPlacement(Placement.RANGE.configure(new TopSolidRangeConfig(0, 0, 80)))
-                    .square()
-                    .func_242731_b(2));
+            event.getGeneration().addFeature(UNDERGROUND_ORES, Feature.ORE.configured(new OreFeatureConfig(BASE_STONE_END, DEContent.ore_draconium_end.defaultBlockState(), 8))
+                    .decorated(Placement.RANGE.configured(new TopSolidRangeConfig(0, 0, 80)))
+                    .squared()
+                    .count(2));
 
-            event.getGeneration().withFeature(GenerationStage.Decoration.RAW_GENERATION, new ConfiguredFeature<>(new Feature<NoFeatureConfig>(NoFeatureConfig.field_236558_a_) {
+            event.getGeneration().addFeature(GenerationStage.Decoration.RAW_GENERATION, new ConfiguredFeature<>(new Feature<NoFeatureConfig>(NoFeatureConfig.CODEC) {
                 @Override
-                public boolean generate(ISeedReader reader, ChunkGenerator generator, Random rand, BlockPos pos, NoFeatureConfig config) {
+                public boolean place(ISeedReader reader, ChunkGenerator generator, Random rand, BlockPos pos, NoFeatureConfig config) {
                     return ChaosWorldGenHandler.generateChunk(this, reader, generator, rand, pos);
                 }
-            }, NoFeatureConfig.NO_FEATURE_CONFIG));
+            }, NoFeatureConfig.NONE));
 
 
         } else if (event.getCategory() == Biome.Category.NETHER) {
-            event.getGeneration().withFeature(UNDERGROUND_ORES, Feature.ORE.withConfiguration(new OreFeatureConfig(BASE_STONE_NETHER, DEContent.ore_draconium_nether.getDefaultState(), 16))
+            event.getGeneration().addFeature(UNDERGROUND_ORES, Feature.ORE.configured(new OreFeatureConfig(NETHER_ORE_REPLACEABLES, DEContent.ore_draconium_nether.defaultBlockState(), 16))
                     .chance(10)
-                    .withPlacement(Placement.RANGE.configure(new TopSolidRangeConfig(4, 4, 16))));
+                    .decorated(Placement.RANGE.configured(new TopSolidRangeConfig(4, 4, 16))));
         } else {
-            event.getGeneration().withFeature(UNDERGROUND_ORES, Feature.ORE.withConfiguration(new OreFeatureConfig(BASE_STONE_OVERWORLD, DEContent.ore_draconium_overworld.getDefaultState(), 8))
+            event.getGeneration().addFeature(UNDERGROUND_ORES, Feature.ORE.configured(new OreFeatureConfig(NATURAL_STONE, DEContent.ore_draconium_overworld.defaultBlockState(), 8))
                     .chance(10)
-                    .withPlacement(Placement.RANGE.configure(new TopSolidRangeConfig(4, 4, 16))));
+                    .decorated(Placement.RANGE.configured(new TopSolidRangeConfig(4, 4, 16))));
         }
     }
 }

@@ -92,12 +92,12 @@ public class DraconicStaffOfPower extends MiningToolBase implements IAOEWeapon, 
         if (getDisabledEnchants(stack).containsKey(enchantment)) {
             return false;
         }
-        return super.canApplyAtEnchantingTable(stack, enchantment) || enchantment.type == EnchantmentType.WEAPON;
+        return super.canApplyAtEnchantingTable(stack, enchantment) || enchantment.category == EnchantmentType.WEAPON;
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
-        return super.onItemRightClick(worldIn, playerIn, handIn);
+    public ActionResult<ItemStack> use(World worldIn, PlayerEntity playerIn, Hand handIn) {
+        return super.use(worldIn, playerIn, handIn);
     }
 
     @Override

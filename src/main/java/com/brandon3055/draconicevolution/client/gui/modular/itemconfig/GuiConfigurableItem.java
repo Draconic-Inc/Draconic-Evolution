@@ -95,15 +95,15 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
 
     @Override
     protected void drawSlotOverlay(Slot slot, boolean occluded) {
-        ItemStack stack = slot.getStack();
+        ItemStack stack = slot.getItem();
         if (!stack.isEmpty()) {
             stack.getCapability(DECapabilities.PROPERTY_PROVIDER_CAPABILITY).ifPresent(provider -> {
-                int y = slot.yPos;
-                int x = slot.xPos;
+                int y = slot.y;
+                int x = slot.x;
                 int light = 0xFFfbe555;
                 int dark = 0xFFf45905;
 
-                IRenderTypeBuffer.Impl getter = minecraft.getRenderTypeBuffers().getBufferSource();
+                IRenderTypeBuffer.Impl getter = minecraft.renderBuffers().bufferSource();
                 setZLevel(mainUI.displayZLevel);
                 GuiHelper.drawShadedRect(getter.getBuffer(GuiHelper.TRANS_TYPE), x - 1, y - 1, 18, 18, 1, 0, dark, light, GuiElement.midColour(light, dark), mainUI.getRenderZLevel());
 
@@ -120,7 +120,7 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
                             .filter(e -> e.data.getPropIfApplicable(provider) != null)
                             .forEach(e -> e.render(x, y));
                 }
-                getter.finish();
+                getter.endBatch();
             });
         }
     }
@@ -148,11 +148,11 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
 
         title = toolkit.createHeading("", mainUI, false);
         title.setDisplaySupplier(() -> {
-            if (advancedUI || container.getLastStack().isEmpty()) return I18n.format("gui.draconicevolution.item_config.name");
+            if (advancedUI || container.getLastStack().isEmpty()) return I18n.get("gui.draconicevolution.item_config.name");
             else {
-                String name = container.getLastStack().getDisplayName().getString();
-                String prefix = I18n.format("gui.draconicevolution.item_config.configure") + " ";
-                if (font.getStringWidth(prefix + name) > (themeButton.xPos() - toggleAdvanced.maxXPos()) - 22) {
+                String name = container.getLastStack().getHoverName().getString();
+                String prefix = I18n.get("gui.draconicevolution.item_config.configure") + " ";
+                if (font.width(prefix + name) > (themeButton.xPos() - toggleAdvanced.maxXPos()) - 22) {
                     return name;
                 }
                 return prefix + name;
@@ -165,17 +165,17 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
         GuiButton hideButton = toolkit.createResizeButton(mainUI);
         hideButton.setEnabledCallback(() -> advancedUI);
         hideButton.onPressed(() -> hideUI = !hideUI);
-        hideButton.setHoverText(I18n.format("gui.draconicevolution.item_config.toggle_hidden.info"));
+        hideButton.setHoverText(I18n.get("gui.draconicevolution.item_config.toggle_hidden.info"));
         hideButton.onReload(() -> hideButton.setPos(themeButton.xPos() - 12, mainUI.yPos() + 3));
 
         toggleAdvanced = toolkit.createAdvancedButton(mainUI);
         toggleAdvanced.onPressed(this::toggleAdvanced);
-        toggleAdvanced.setHoverText(I18n.format("gui.draconicevolution.item_config.toggle_advanced.info"));
+        toggleAdvanced.setHoverText(I18n.get("gui.draconicevolution.item_config.toggle_advanced.info"));
         toggleAdvanced.onReload(() -> toggleAdvanced.setPos(mainUI.xPos() + 3, mainUI.yPos() + 3));
 
         playerSlots = toolkit.createPlayerSlots(mainUI, false, true, true);
 
-        GuiElement<?> equipModSlots = toolkit.createEquipModSlots(mainUI, playerInventory.player, true, e -> e.getCapability(PROPERTY_PROVIDER_CAPABILITY).isPresent());
+        GuiElement<?> equipModSlots = toolkit.createEquipModSlots(mainUI, inventory.player, true, e -> e.getCapability(PROPERTY_PROVIDER_CAPABILITY).isPresent());
         equipModSlots.setPos(mainUI.xPos() - 28, mainUI.yPos());
 
         simpleViewList = createPropertyList();
@@ -187,7 +187,7 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
         simpleViewList.setInsetScrollBars(true);
         mainUI.addChild(simpleViewList);
 
-        GuiLabel getStarted = new GuiLabel(I18n.format("gui.draconicevolution.item_config.select_item_to_get_started"));
+        GuiLabel getStarted = new GuiLabel(I18n.get("gui.draconicevolution.item_config.select_item_to_get_started"));
         getStarted.onReload(e -> e.setPosAndSize(0, mainUI.yPos() - 20, width, 8));
         getStarted.setEnabledCallback(() -> (advancedUI && propertyContainers.isEmpty()) || (!advancedUI && simpleViewList.getScrollingElements().isEmpty()));
         mainUI.addChild(getStarted);
@@ -197,7 +197,7 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
         GuiButton modulesSmall = toolkit.createThemedIconButton(mainUI, "grid_small");
         modulesSmall.onReload(() -> modulesSmall.setPos(hideButton.isEnabled() ? hideButton.xPos() - 12 : themeButton.xPos() - 12, mainUI.yPos() + 3));
 //        modulesSmall.setEnabledCallback(() -> hideUI);
-        modulesSmall.setHoverText(I18n.format("gui.draconicevolution.item_config.open_modules.info"));
+        modulesSmall.setHoverText(I18n.get("gui.draconicevolution.item_config.open_modules.info"));
         modulesSmall.onPressed(this::openModulesGui);
 
 //        I think the small one looks better regardless
@@ -214,8 +214,8 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
     }
 
     private void openModulesGui() {
-        minecraft.player.closeScreen();
-        onClose();
+        minecraft.player.closeContainer();
+        removed();
         DraconicNetwork.sendOpenModuleConfig();
     }
 
@@ -228,14 +228,14 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
         deleteZone = new GuiTexture(16, 16, () -> BCSprites.get("delete"));
         deleteZone.setEnabledCallback(() -> advancedUI && configUiEnableDeleteZone);
         deleteZone.setYPos(0).setXPosMod(() -> advancedContainer.maxXPos() - 16);
-        deleteZone.setHoverText(I18n.format("gui.draconicevolution.item_config.delete_zone.info"));
+        deleteZone.setHoverText(I18n.get("gui.draconicevolution.item_config.delete_zone.info"));
         GuiToolkit.addHoverHighlight(deleteZone, 0, 0, true);
         advancedContainer.addChild(deleteZone);
 
         GuiButton addGroup = toolkit.createIconButton(advancedContainer, 16, BCSprites.getter("new_group"));
         GuiToolkit.addHoverHighlight(addGroup, 0, 0, true);
         addGroup.setEnabledCallback(() -> advancedUI && configUiEnableAddGroupButton);
-        addGroup.setHoverText(I18n.format("gui.draconicevolution.item_config.add_group.info"));
+        addGroup.setHoverText(I18n.get("gui.draconicevolution.item_config.add_group.info"));
         addGroup.onReload(e -> e.setMaxXPos(width, false).setYPos(deleteZone.isEnabled() ? deleteZone.maxYPos() + 1 : 0));
         addGroup.onPressed(() -> {
             PropertyContainer newGroup = new PropertyContainer(this, true);
@@ -292,15 +292,15 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
 
         GuiButton optionsButton = toolkit.createThemedIconButton(mainUI, "gear");
         optionsButton.setPos(toggleAdvanced.maxXPos(), toggleAdvanced.yPos());
-        optionsButton.setHoverText(I18n.format("gui.draconicevolution.item_config.options"));
+        optionsButton.setHoverText(I18n.get("gui.draconicevolution.item_config.options"));
         optionsButton.setEnabledCallback(() -> advancedUI);
         optionsButton.onPressed(() -> {
             StandardDialog<Tripple<Supplier<String>, Supplier<String>, Runnable>> dialog = new StandardDialog<>(advancedContainer);
-            dialog.setHeading(I18n.format("gui.draconicevolution.item_config.options"));
-            dialog.setDefaultRenderer(e -> I18n.format("gui.draconicevolution.item_config." + e.getA().get()));
+            dialog.setHeading(I18n.get("gui.draconicevolution.item_config.options"));
+            dialog.setDefaultRenderer(e -> I18n.get("gui.draconicevolution.item_config." + e.getA().get()));
             dialog.setToolTipHandler((key, element) -> {
                 if (key.getB() != null) {
-                    element.setHoverText(e -> I18n.format("gui.draconicevolution.item_config." + key.getB().get() + ".info")).setHoverTextDelay(20);
+                    element.setHoverText(e -> I18n.get("gui.draconicevolution.item_config." + key.getB().get() + ".info")).setHoverTextDelay(20);
                 }
             });
             dialog.setSelectionListener(e -> e.getC().run());
@@ -353,7 +353,7 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
             if (provider == null || provider.getProperties().isEmpty()) return;
 
             StandardDialog<ConfigProperty> dialog = new StandardDialog<>(mainUI);
-            dialog.setHeading(I18n.format("gui.draconicevolution.item_config.click_and_drag_to_place"));
+            dialog.setHeading(I18n.get("gui.draconicevolution.item_config.click_and_drag_to_place"));
             dialog.setDefaultRenderer(e -> e.getDisplayName().getString());
             dialog.addItems(provider.getProperties());
             int x = (int) mainUI.getMouseX();
@@ -427,22 +427,22 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
         hoveredData = null;
         hoveredProvider = null;
         if (configUiEnableVisualization) {
-            Slot hovered = container.inventorySlots.stream()
-                    .filter(slot -> isSlotSelected(slot, getMouseX(), getMouseY()))
+            Slot hovered = container.slots.stream()
+                    .filter(slot -> isHovering(slot, getMouseX(), getMouseY()))
                     .findAny()
                     .orElse(null);
             if (hovered != null) {
-                LazyOptional<PropertyProvider> optionalCap = hovered.getStack().getCapability(PROPERTY_PROVIDER_CAPABILITY);
+                LazyOptional<PropertyProvider> optionalCap = hovered.getItem().getCapability(PROPERTY_PROVIDER_CAPABILITY);
                 optionalCap.ifPresent(e -> hoveredProvider = e);
             }
         }
 
         if (!bindReleased) {
             InputMappings.Input bind = KeyBindings.toolConfig.getKey();
-            if (!InputMappings.isKeyDown(Minecraft.getInstance().getMainWindow().getHandle(), bind.getKeyCode())) {
+            if (!InputMappings.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), bind.getValue())) {
                 if (closeOnRelease) {
-                    minecraft.player.closeScreen();
-                    onClose();
+                    minecraft.player.closeContainer();
+                    removed();
                 } else {
                     bindReleased = true;
                 }
@@ -456,9 +456,9 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
     }
 
     @Override
-    public void onClose() {
+    public void removed() {
         savePropertyConfig();
-        super.onClose();
+        super.removed();
     }
 
     @Override
@@ -479,7 +479,7 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
             return true;
         }
 
-        InputMappings.Input input = InputMappings.getInputByCode(keyCode, scanCode);
+        InputMappings.Input input = InputMappings.getKey(keyCode, scanCode);
         List<PropertyContainer> targets = propertyContainers.stream()
                 .filter(e -> e.isPreset)
                 .filter(e -> !e.boundKey.isEmpty())
@@ -495,8 +495,8 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
         }
 
         if (KeyBindings.toolConfig.getKey().equals(input)) {
-            minecraft.player.closeScreen();
-            onClose();
+            minecraft.player.closeContainer();
+            removed();
             return true;
         }
 
@@ -505,10 +505,10 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
     }
 
     public static void checkKeybinding(int keyCode, int scanCode) {
-        if (Minecraft.getInstance().currentScreen instanceof GuiConfigurableItem) {
+        if (Minecraft.getInstance().screen instanceof GuiConfigurableItem) {
             return;
         }
-        InputMappings.Input input = InputMappings.getInputByCode(keyCode, scanCode);
+        InputMappings.Input input = InputMappings.getKey(keyCode, scanCode);
         if (keyBindCache == null) {
             keyBindCache = new ArrayList<>();
             CompoundNBT nbt = ItemConfigDataHandler.retrieveData();

@@ -55,7 +55,7 @@ public class PropertyProviderImpl implements PropertyProvider {
     @Override
     public CompoundNBT serializeNBT() {
         CompoundNBT nbt = new CompoundNBT();
-        nbt.putUniqueId("provider_id", getProviderID());
+        nbt.putUUID("provider_id", getProviderID());
         CompoundNBT properties = new CompoundNBT();
         propertyMap.forEach((name, property) -> properties.put(name, property.serializeNBT()));
         nbt.put("properties", properties);
@@ -64,8 +64,8 @@ public class PropertyProviderImpl implements PropertyProvider {
 
     @Override
     public void deserializeNBT(CompoundNBT nbt) {
-        if (nbt.hasUniqueId("provider_id")){
-            providerID = nbt.getUniqueId("provider_id");
+        if (nbt.hasUUID("provider_id")){
+            providerID = nbt.getUUID("provider_id");
         }
         CompoundNBT properties = nbt.getCompound("properties");
         propertyMap.forEach((name, property) -> property.deserializeNBT(properties.getCompound(name)));

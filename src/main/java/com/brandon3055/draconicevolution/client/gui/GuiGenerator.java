@@ -38,7 +38,7 @@ import static net.minecraft.util.text.TextFormatting.GRAY;
 
 public class GuiGenerator extends ModularGuiContainer<ContainerBCTile<TileGenerator>> {
 
-    private static final RenderType modelType = RenderType.getEntitySolid(new ResourceLocation(DraconicEvolution.MODID, "textures/block/generator/generator_2.png"));
+    private static final RenderType modelType = RenderType.entitySolid(new ResourceLocation(DraconicEvolution.MODID, "textures/block/generator/generator_2.png"));
     private static final CCModel storageModel;
 
     static {
@@ -74,8 +74,8 @@ public class GuiGenerator extends ModularGuiContainer<ContainerBCTile<TileGenera
 
         //Mode Button
         GuiButton modeButton = toolkit.createButton("", template.background);
-        modeButton.setDisplaySupplier(() -> I18n.format(tile.mode.get().unlocalizedName()));
-        modeButton.setHoverText(element -> TextFormatting.BLUE + I18n.format(tile.mode.get().unlocalizedName() + ".info"));
+        modeButton.setDisplaySupplier(() -> I18n.get(tile.mode.get().unlocalizedName()));
+        modeButton.setHoverText(element -> TextFormatting.BLUE + I18n.get(tile.mode.get().unlocalizedName() + ".info"));
         modeButton.onButtonPressed((pressed) -> tile.mode.set(tile.mode.get().next(hasShiftDown() || pressed == 1)));
         modeButton.setSize(80, 14);
         modeButton.zOffset += 100;
@@ -97,7 +97,7 @@ public class GuiGenerator extends ModularGuiContainer<ContainerBCTile<TileGenera
             ccrs.reset();
 
             MatrixStack mStack = new MatrixStack();
-            IRenderTypeBuffer.Impl getter = Minecraft.getInstance().getRenderTypeBuffers().getBufferSource();
+            IRenderTypeBuffer.Impl getter = Minecraft.getInstance().renderBuffers().bufferSource();
             ccrs.bind(modelType, getter);
 
             Matrix4 mat = new Matrix4(mStack);
@@ -107,7 +107,7 @@ public class GuiGenerator extends ModularGuiContainer<ContainerBCTile<TileGenera
             mat.apply(new Rotation(150 * torad, 1, 0, 0).with(new Rotation(10 * torad, -my, 1 + mx, 0)));
             mat.scale(7.5);
             storageModel.render(ccrs, mat);
-            getter.finish();
+            getter.endBatch();
         }
     }
 }

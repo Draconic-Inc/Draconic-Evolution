@@ -28,37 +28,37 @@ public class ItemCore extends Item {
     }
 
     @Override
-    public ActionResultType onItemUse(ItemUseContext context) {
-        World world = context.getWorld();
+    public ActionResultType useOn(ItemUseContext context) {
+        World world = context.getLevel();
         Hand hand = context.getHand();
-        BlockPos pos = context.getPos();
+        BlockPos pos = context.getClickedPos();
 
-        TileEntity tile = world.getTileEntity(pos);
+        TileEntity tile = world.getBlockEntity(pos);
 
         if (tile instanceof MobSpawnerTileEntity) {
-            if (!world.isRemote) {
-                ResourceLocation name = ((MobSpawnerTileEntity) tile).getSpawnerBaseLogic().getEntityId();
+            if (!world.isClientSide) {
+                ResourceLocation name = ((MobSpawnerTileEntity) tile).getSpawner().getEntityId();
                 ItemStack soul = new ItemStack(DEContent.mob_soul);
                 DEContent.mob_soul.setEntity(name, soul);
                 SpawnerTier tier = SpawnerTier.getTierFromCore(this);
 
                 ItemStack spawner = new ItemStack(DEContent.stabilized_spawner);
                 CompoundNBT managedData = new CompoundNBT();
-                spawner.getOrCreateChildTag(BlockBCore.BC_TILE_DATA_TAG).put(BlockBCore.BC_MANAGED_DATA_FLAG, managedData);
+                spawner.getOrCreateTagElement(BlockBCore.BC_TILE_DATA_TAG).put(BlockBCore.BC_MANAGED_DATA_FLAG, managedData);
                 managedData.put("mob_soul", soul.serializeNBT());
                 managedData.putByte("spawner_tier", (byte) tier.ordinal());
 
                 world.removeBlock(pos, false);
-                world.addEntity(new ItemEntity(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, spawner));
-                InventoryUtils.consumeHeldItem(context.getPlayer(), context.getPlayer().getHeldItem(hand), hand);
+                world.addFreshEntity(new ItemEntity(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, spawner));
+                InventoryUtils.consumeHeldItem(context.getPlayer(), context.getPlayer().getItemInHand(hand), hand);
             }
             return ActionResultType.SUCCESS;
         }
-        return super.onItemUse(context);
+        return super.useOn(context);
     }
 
     @Override
-    public boolean hasEffect(ItemStack stack) {
+    public boolean isFoil(ItemStack stack) {
         return stack.getItem() == DEContent.core_chaotic;
     }
 }

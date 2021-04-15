@@ -81,7 +81,7 @@ public class EffectTrackerCelestialManipulator {
     }
 
     public void renderEffect(Tessellator tessellator, float partialTicks) {
-        BufferBuilder vertexbuffer = tessellator.getBuffer();
+        BufferBuilder vertexbuffer = tessellator.getBuilder();
         CCRenderState ccrs = CCRenderState.instance();
         //region Icosahedron
 
@@ -104,7 +104,7 @@ public class EffectTrackerCelestialManipulator {
         Matrix4 pearlMat = RenderUtils.getMatrix(new Vector3(relativeX, relativeY, relativeZ), new Rotation(0F, new Vector3(0, 0, 0)), 0.15 * scale);
         ccrs.bind(vertexbuffer);
         CCModelLibrary.icosahedron7.render(ccrs, pearlMat);
-        tessellator.draw();
+        tessellator.end();
         RenderSystem.popMatrix();
         RenderSystem.color4f(1F, 1F, 1F, 1F);
 

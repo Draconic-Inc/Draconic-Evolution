@@ -37,7 +37,7 @@ public class ENetFXHandlerClientWireless extends ENetFXHandler<TileCrystalWirele
         if (tile.hasStaticFX()) {
             if (staticFX == null || !staticFX.isAlive()) {
                 staticFX = tile.createStaticFX();
-                DEParticles.addParticleDirect(tile.getWorld(), staticFX);
+                DEParticles.addParticleDirect(tile.getLevel(), staticFX);
             }
             staticFX.updateFX(0.5F);
         }
@@ -80,15 +80,15 @@ public class ENetFXHandlerClientWireless extends ENetFXHandler<TileCrystalWirele
             if (linkFX == null || linkFX.size() != tile.getReceivers().size()) {
                 if (linkFX != null) {
                     for (CrystalFXBase fx : linkFX) {
-                        fx.setExpired();
+                        fx.remove();
                     }
                 }
 
                 linkFX = new LinkedList<>();
                 for (BlockPos receiver : tile.getReceivers()) {
-                    CrystalFXLink link = new CrystalFXLink((ClientWorld)tile.getWorld(), tile, Vec3D.getCenter(receiver));
+                    CrystalFXLink link = new CrystalFXLink((ClientWorld)tile.getLevel(), tile, Vec3D.getCenter(receiver));
                     linkFX.add(link);
-                    DEParticles.addParticleDirect(tile.getWorld(), link);
+                    DEParticles.addParticleDirect(tile.getLevel(), link);
                 }
             }
         } else if (linkFX != null) {
@@ -131,19 +131,19 @@ public class ENetFXHandlerClientWireless extends ENetFXHandler<TileCrystalWirele
         transferFXList.clear();
 
         for (BlockPos pos : tile.getLinks()) {
-            TileEntity target = tile.getWorld().getTileEntity(pos);
+            TileEntity target = tile.getLevel().getBlockEntity(pos);
             if (!(target instanceof ICrystalLink)) {
                 continue;
             }
-            CrystalFXBeam beam = new CrystalFXBeam(tile.getWorld(), tile, (ICrystalLink) target);
+            CrystalFXBeam beam = new CrystalFXBeam(tile.getLevel(), tile, (ICrystalLink) target);
             beamFXList.add(beam);
-            DEParticles.addParticleDirect(tile.getWorld(), beam);
+            DEParticles.addParticleDirect(tile.getLevel(), beam);
         }
 
         for (BlockPos pos : tile.getReceivers()) {
-            CrystalFXWireless wirelessFX = new CrystalFXWireless((ClientWorld)tile.getWorld(), tile, pos);
+            CrystalFXWireless wirelessFX = new CrystalFXWireless((ClientWorld)tile.getLevel(), tile, pos);
             transferFXList.add(wirelessFX);
-            DEParticles.addParticleDirect(tile.getWorld(), wirelessFX);
+            DEParticles.addParticleDirect(tile.getLevel(), wirelessFX);
         }
     }
 

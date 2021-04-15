@@ -7,6 +7,7 @@ import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.model.GenericHeadModel;
+import net.minecraft.client.renderer.model.IModelTransform;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -30,7 +31,7 @@ public class RenderItemEnderEnergyManipulator implements IItemRenderer {
 
     //region Unused
     @Override
-    public boolean isAmbientOcclusion() {
+    public boolean useAmbientOcclusion() {
         return false;
     }
 
@@ -47,12 +48,12 @@ public class RenderItemEnderEnergyManipulator implements IItemRenderer {
     }
 
     @Override
-    public ImmutableMap<ItemCameraTransforms.TransformType, TransformationMatrix> getTransforms() {
+    public IModelTransform getModelTransform() {
         return TransformUtils.DEFAULT_BLOCK;
     }
 
     @Override
-    public boolean isSideLit() {
+    public boolean usesBlockLight() {
         return false;
     }
 

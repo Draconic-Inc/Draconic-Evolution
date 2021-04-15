@@ -34,7 +34,6 @@ import static codechicken.lib.render.shader.ShaderObject.StandardShaderType.FRAG
 import static codechicken.lib.render.shader.ShaderObject.StandardShaderType.VERTEX;
 import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
 import static net.minecraft.client.renderer.RenderState.*;
-import static net.minecraft.client.renderer.RenderState.CULL_DISABLED;
 
 /**
  * Created by brandon3055 on 24/9/2015.
@@ -55,7 +54,7 @@ public class RenderTileChaosCrystal extends TileEntityRenderer<TileChaosCrystal>
                     .uniform("baseColour", UniformType.VEC4)
                     .uniform("tier", UniformType.INT)
             )
-            .whenUsed(cache -> cache.glUniform1f("time", (BCClientEventHandler.elapsedTicks + Minecraft.getInstance().getRenderPartialTicks()) / 20))
+            .whenUsed(cache -> cache.glUniform1f("time", (BCClientEventHandler.elapsedTicks + Minecraft.getInstance().getFrameTime()) / 20))
             .build();
 
     public static ShaderProgram chaosShader = ShaderProgramBuilder.builder()
@@ -74,35 +73,35 @@ public class RenderTileChaosCrystal extends TileEntityRenderer<TileChaosCrystal>
             .whenUsed(cache -> {
                 cache.glUniform1f("alpha", 0.7F);
                 Minecraft mc = Minecraft.getInstance();
-                cache.glUniform1f("yaw", (float) ((mc.player.rotationYaw * 2 * Math.PI) / 360.0));
-                cache.glUniform1f("pitch", -(float) ((mc.player.rotationPitch * 2 * Math.PI) / 360.0));
-                cache.glUniform1f("time", (BCClientEventHandler.elapsedTicks + Minecraft.getInstance().getRenderPartialTicks()) / 1);
+                cache.glUniform1f("yaw", (float) ((mc.player.yRot * 2 * Math.PI) / 360.0));
+                cache.glUniform1f("pitch", -(float) ((mc.player.xRot * 2 * Math.PI) / 360.0));
+                cache.glUniform1f("time", (BCClientEventHandler.elapsedTicks + Minecraft.getInstance().getFrameTime()) / 1);
             })
             .build();
 
 
-    private static RenderType crystalType = RenderType.makeType("crystal_type", DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP, GL11.GL_QUADS, 256, RenderType.State.getBuilder()
-            .texture(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/block/chaos_crystal.png"), false, false))
-            .transparency(TRANSLUCENT_TRANSPARENCY)
-            .texturing(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
-            .build(false));
+    private static RenderType crystalType = RenderType.create("crystal_type", DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP, GL11.GL_QUADS, 256, RenderType.State.builder()
+            .setTextureState(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/block/chaos_crystal.png"), false, false))
+            .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+            .setTexturingState(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
+            .createCompositeState(false));
 
-    private static RenderType shieldType = RenderType.makeType("shieldTypse", DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP, GL11.GL_QUADS, 256, RenderType.State.getBuilder()
-            .diffuseLighting(DIFFUSE_LIGHTING_ENABLED)
-            .transparency(TRANSLUCENT_TRANSPARENCY)
-            .texturing(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
-            .lightmap(LIGHTMAP_ENABLED)
-            .cull(CULL_DISABLED)
-            .build(false));
+    private static RenderType shieldType = RenderType.create("shieldTypse", DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP, GL11.GL_QUADS, 256, RenderType.State.builder()
+            .setDiffuseLightingState(DIFFUSE_LIGHTING)
+            .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+            .setTexturingState(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
+            .setLightmapState(LIGHTMAP)
+            .setCullState(NO_CULL)
+            .createCompositeState(false));
 
-    public static RenderType chaosType = RenderType.makeType("chaosShaderType", DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP, GL11.GL_QUADS, 256, RenderType.State.getBuilder()
-            .texture(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/item/equipment/chaos_shader.png"), true, false))
-            .diffuseLighting(DIFFUSE_LIGHTING_ENABLED)
-            .transparency(TRANSLUCENT_TRANSPARENCY)
-            .texturing(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
-            .lightmap(LIGHTMAP_ENABLED)
-            .cull(CULL_DISABLED)
-            .build(false));
+    public static RenderType chaosType = RenderType.create("chaosShaderType", DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP, GL11.GL_QUADS, 256, RenderType.State.builder()
+            .setTextureState(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/item/equipment/chaos_shader.png"), true, false))
+            .setDiffuseLightingState(DIFFUSE_LIGHTING)
+            .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+            .setTexturingState(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
+            .setLightmapState(LIGHTMAP)
+            .setCullState(NO_CULL)
+            .createCompositeState(false));
 
 
     public RenderTileChaosCrystal(TileEntityRendererDispatcher rendererDispatcherIn) {
@@ -140,7 +139,7 @@ public class RenderTileChaosCrystal extends TileEntityRenderer<TileChaosCrystal>
             ccrs.bind(new ShaderRenderType(shieldType, shieldShader, uniforms), getter);
             model.render(ccrs, mat);
             if (getter instanceof IRenderTypeBuffer.Impl) {
-                ((IRenderTypeBuffer.Impl) getter).finish();
+                ((IRenderTypeBuffer.Impl) getter).endBatch();
             }
         }
     }

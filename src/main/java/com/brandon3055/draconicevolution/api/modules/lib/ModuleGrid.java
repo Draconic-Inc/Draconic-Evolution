@@ -69,7 +69,7 @@ public class ModuleGrid {
     }
 
     public InstallResult cellClicked(GridPos pos, int button, ClickType clickType) {
-        ItemStack stack = player.getItemStack();
+        ItemStack stack = player.getCarried();
         Module<?> module = ModuleItem.getModule(stack);
         boolean holdingStack = !stack.isEmpty();
         ModuleContext context = container.getModuleContext();
@@ -99,7 +99,7 @@ public class ModuleGrid {
                 ItemStack extracted = new ItemStack(entity.getModule().getItem());
                 entity.writeToItemStack(extracted, context);
                 getModuleHost().removeModule(entity, context);
-                player.setItemStack(extracted);
+                player.setCarried(extracted);
                 onGridChange();
             }
         }
@@ -108,7 +108,7 @@ public class ModuleGrid {
                 ModuleEntity entity = pos.getEntity();
                 ItemStack extracted = new ItemStack(entity.getModule().getItem());
                 entity.writeToItemStack(extracted, context);
-                if (player.addItemStackToInventory(extracted)) {
+                if (player.add(extracted)) {
                     getModuleHost().removeModule(entity, context);
                     onGridChange();
                 }
@@ -119,7 +119,7 @@ public class ModuleGrid {
                 if (entity.module == module) {
                     ItemStack modStack = new ItemStack(module.getItem());
                     entity.writeToItemStack(modStack, context);
-                    if (Container.areItemsAndTagsEqual(stack, modStack) && stack.getCount() < stack.getMaxStackSize()) {
+                    if (Container.consideredTheSameItem(stack, modStack) && stack.getCount() < stack.getMaxStackSize()) {
                         stack.grow(1);
                         getModuleHost().removeModule(entity, context);
                     }
@@ -128,11 +128,11 @@ public class ModuleGrid {
             }
         }
         else if (clickType == ClickType.CLONE) {
-            if (player.player.abilities.isCreativeMode && player.getItemStack().isEmpty() && pos.hasEntity()) {
+            if (player.player.abilities.instabuild && player.getCarried().isEmpty() && pos.hasEntity()) {
                 ModuleEntity entity = pos.getEntity();
                 ItemStack modStack = new ItemStack(entity.module.getItem());
                 entity.writeToItemStack(modStack, context);
-                player.setItemStack(modStack);
+                player.setCarried(modStack);
             }
         }
         return null;

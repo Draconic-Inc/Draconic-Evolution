@@ -49,8 +49,8 @@ public class GuiFusionCraftingCore extends ModularGuiContainer<ContainerFusionCr
         super(container, inv, titleIn);
         this.player = inv.player;
         this.tile = container.tile;
-        this.xSize = 180;
-        this.ySize = 200;
+        this.imageWidth = 180;
+        this.imageHeight = 200;
     }
 
     @Override
@@ -66,13 +66,13 @@ public class GuiFusionCraftingCore extends ModularGuiContainer<ContainerFusionCr
         template.background.addChild(stackIcon = new GuiStackIcon(null).setRelPos(81, 47));
 
         template.background.addChild(new GuiButton("Craft")
-                .setPosAndSize(width / 2 - 40, guiTop + 93, 80, 14)
+                .setPosAndSize(width / 2 - 40, topPos + 93, 80, 14)
                 .setVanillaButtonRender(true)
                 .setEnabledCallback(() -> currentRecipe != null && !tile.isCrafting.get())
                 .onPressed(() -> tile.sendPacketToServer(output -> {}, 0)));
 
         template.background.addChild(new GuiLabel()
-                .setPosAndSize(width / 2 - 40, guiTop + 93, 80, 14)
+                .setPosAndSize(width / 2 - 40, topPos + 93, 80, 14)
                 .setAlignment(GuiAlign.CENTER)
                 .setEnabledCallback(() -> currentRecipe != null && tile.isCrafting.get())
                 .setDisplaySupplier(() -> {
@@ -95,11 +95,11 @@ public class GuiFusionCraftingCore extends ModularGuiContainer<ContainerFusionCr
     public void tick() {
         super.tick();
 
-        currentRecipe = tile.getWorld().getRecipeManager().getRecipe(DraconicAPI.FUSION_RECIPE_TYPE, tile, tile.getWorld()).orElse(null);
+        currentRecipe = tile.getLevel().getRecipeManager().getRecipeFor(DraconicAPI.FUSION_RECIPE_TYPE, tile, tile.getLevel()).orElse(null);
         if (currentRecipe == null) {
             stackIcon.setStack(ItemStack.EMPTY);
         } else {
-            stackIcon.setStack(currentRecipe.getRecipeOutput());
+            stackIcon.setStack(currentRecipe.getResultItem());
         }
 
     }

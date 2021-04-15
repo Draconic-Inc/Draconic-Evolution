@@ -85,7 +85,7 @@ public class FusionUpgradeRecipe implements IFusionRecipeOld {
         //Check if the upgrade key is present
         boolean flag = false;
         for (ICraftingInjector pedestal : pedestals) {
-            if (!pedestal.getStackInPedestal().isEmpty() && upgradeKey.isItemEqual(pedestal.getStackInPedestal())) {
+            if (!pedestal.getStackInPedestal().isEmpty() && upgradeKey.sameItem(pedestal.getStackInPedestal())) {
                 flag = true;
                 break;
             }
@@ -114,7 +114,7 @@ public class FusionUpgradeRecipe implements IFusionRecipeOld {
 
         //Check that there are no extra items that are not part of the recipe.
         for (ICraftingInjector pedestal : pedestals) {
-            if (!pedestal.getStackInPedestal().isEmpty() && !pedestal.getStackInPedestal().isItemEqual(upgradeKey)) {
+            if (!pedestal.getStackInPedestal().isEmpty() && !pedestal.getStackInPedestal().sameItem(upgradeKey)) {
                 return false;
             }
         }
@@ -171,7 +171,7 @@ public class FusionUpgradeRecipe implements IFusionRecipeOld {
         //Use Ingredients
         for (Object ingredient : ingredients) {
             for (ICraftingInjector pedestal : pedestals) {
-                if (!pedestal.getStackInPedestal().isEmpty() && OreDictHelper.areStacksEqual(ingredient, pedestal.getStackInPedestal()) && pedestal.getPedestalTier() >= craftingTier && !pedestal.getStackInPedestal().isItemEqual(upgradeKey)) {
+                if (!pedestal.getStackInPedestal().isEmpty() && OreDictHelper.areStacksEqual(ingredient, pedestal.getStackInPedestal()) && pedestal.getPedestalTier() >= craftingTier && !pedestal.getStackInPedestal().sameItem(upgradeKey)) {
 
                     ItemStack stack = pedestal.getStackInPedestal();
                     if (stack.getItem().hasContainerItem(stack)) {

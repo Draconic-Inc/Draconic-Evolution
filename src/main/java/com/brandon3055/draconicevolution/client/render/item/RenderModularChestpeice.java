@@ -22,6 +22,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.model.IModelTransform;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
@@ -54,7 +55,7 @@ public class RenderModularChestpeice extends ToolRenderBase {
                     .uniform("baseColour", UniformType.VEC3)
                     .uniform("tier", UniformType.INT)
             )
-            .whenUsed(cache -> cache.glUniform1f("time", (BCClientEventHandler.elapsedTicks + Minecraft.getInstance().getRenderPartialTicks()) / 20))
+            .whenUsed(cache -> cache.glUniform1f("time", (BCClientEventHandler.elapsedTicks + Minecraft.getInstance().getFrameTime()) / 20))
             .build();
 
     private CCModel centralGemModel;
@@ -122,7 +123,7 @@ public class RenderModularChestpeice extends ToolRenderBase {
     }
 
     @Override
-    public ImmutableMap<TransformType, TransformationMatrix> getTransforms() {
+    public IModelTransform getModelTransform() {
         return TransformUtils.DEFAULT_BLOCK;
     }
 

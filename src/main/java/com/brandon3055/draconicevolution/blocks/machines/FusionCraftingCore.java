@@ -20,7 +20,7 @@ import javax.annotation.Nullable;
  */
 public class FusionCraftingCore extends BlockBCore /*implements IRenderOverride, ITileEntityProvider*/ {
 
-    private static final VoxelShape SHAPE = VoxelShapes.create(0.0625, 0.0625, 0.0625, 0.9375, 0.9375, 0.9375);
+    private static final VoxelShape SHAPE = VoxelShapes.box(0.0625, 0.0625, 0.0625, 0.9375, 0.9375, 0.9375);
 
     public FusionCraftingCore(Properties properties) {
         super(properties);
@@ -76,9 +76,9 @@ public class FusionCraftingCore extends BlockBCore /*implements IRenderOverride,
 
     @Override
     public void neighborChanged(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
-        if (!world.isRemote()) {
+        if (!world.isClientSide()) {
             if (isBlockPowered(world, pos)) {
-                TileEntity tile = world.getTileEntity(pos);
+                TileEntity tile = world.getBlockEntity(pos);
                 if (tile instanceof TileCraftingCore) {
                     ((TileCraftingCore) tile).attemptStartCrafting();
                 }
@@ -87,16 +87,16 @@ public class FusionCraftingCore extends BlockBCore /*implements IRenderOverride,
     }
 
     @Override
-    public boolean hasComparatorInputOverride(BlockState state) {
+    public boolean hasAnalogOutputSignal(BlockState state) {
         return true;
     }
 
     @Override
-    public int getComparatorInputOverride(BlockState blockState, World worldIn, BlockPos pos) {
-        TileEntity tile = worldIn.getTileEntity(pos);
+    public int getAnalogOutputSignal(BlockState blockState, World worldIn, BlockPos pos) {
+        TileEntity tile = worldIn.getBlockEntity(pos);
         if (tile instanceof TileCraftingCore) {
             return ((TileCraftingCore) tile).getComparatorOutput();
         }
-        return super.getComparatorInputOverride(blockState, worldIn, pos);
+        return super.getAnalogOutputSignal(blockState, worldIn, pos);
     }
 }

@@ -41,10 +41,10 @@ import static com.brandon3055.draconicevolution.api.modules.lib.InstallResult.In
  * Created by brandon3055 on 26/4/20.
  */
 public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> {
-    private static final RenderType moduleType = RenderType.makeType("module_type", DefaultVertexFormats.POSITION_TEX, GL11.GL_QUADS, 256, RenderType.State.getBuilder()
-            .texture(new RenderState.TextureState(ModuleSpriteUploader.LOCATION_MODULE_TEXTURE, false, false))
-            .transparency(RenderState.TRANSLUCENT_TRANSPARENCY)
-            .build(false)
+    private static final RenderType moduleType = RenderType.create("module_type", DefaultVertexFormats.POSITION_TEX, GL11.GL_QUADS, 256, RenderType.State.builder()
+            .setTextureState(new RenderState.TextureState(ModuleSpriteUploader.LOCATION_MODULE_TEXTURE, false, false))
+            .setTransparencyState(RenderState.TRANSLUCENT_TRANSPARENCY)
+            .createCompositeState(false)
     );
 
     private ModuleGrid grid;
@@ -67,7 +67,7 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> {
     @Override
     public void renderElement(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
         super.renderElement(minecraft, mouseX, mouseY, partialTicks);
-        IRenderTypeBuffer.Impl getter = minecraft.getRenderTypeBuffers().getBufferSource();
+        IRenderTypeBuffer.Impl getter = minecraft.renderBuffers().bufferSource();
 
         int light = ThemedElements.getBgLight();
         int dark = ThemedElements.getBgDark();
@@ -84,13 +84,13 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> {
                 renderCell(getter, xPos, yPos, s, x, y, mouseX, mouseY, GuiHelper.isInRect(xPos, yPos, s, s, mouseX, mouseY), partialTicks);
             }
         }
-        getter.finish();
+        getter.endBatch();
     }
 
     @Override
     public boolean renderOverlayLayer(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
         if (isMouseOver(mouseX, mouseY)) {
-            if (player.getItemStack().isEmpty()) {
+            if (player.getCarried().isEmpty()) {
                 renderCellOverlay(mouseX, mouseY);
             } else if (lastError != null) {
                 drawHoveringTextString(Collections.singletonList(lastError.getString()), mouseX, mouseY, fontRenderer);
@@ -141,15 +141,15 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> {
                 int cs = grid.getCellSize();
                 int mw = module.getProperties().getWidth() * cs;
                 int mh = module.getProperties().getHeight() * cs;
-                IRenderTypeBuffer.Impl getter = Minecraft.getInstance().getRenderTypeBuffers().getBufferSource();
+                IRenderTypeBuffer.Impl getter = Minecraft.getInstance().renderBuffers().bufferSource();
                 drawModule(getter, x - (mw / 2), y - (mh / 2), module);
-                getter.finish();
+                getter.endBatch();
                 if (stack.getCount() > 1 || altText != null) {
                     zOffset += 250;
                     FontRenderer font = stack.getItem().getFontRenderer(stack);
                     if (font == null) font = fontRenderer;
                     String s = altText == null ? String.valueOf(stack.getCount()) : altText;
-                    font.drawStringWithShadow(new MatrixStack(), s, (float) (x - font.getStringWidth(s)) + (mw / 2F) - 1, (float) (y - font.FONT_HEIGHT) + (mh / 2F), 0xffffff);
+                    font.drawShadow(new MatrixStack(), s, (float) (x - font.width(s)) + (mw / 2F) - 1, (float) (y - font.lineHeight) + (mh / 2F), 0xffffff);
                     zOffset -= 250;
                 }
                 return true;
@@ -163,19 +163,19 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> {
         canDrop = false;
         lastError = null;
         if (isMouseOver(mouseX, mouseY)) {
-            InputMappings.Input mouseKey = InputMappings.Type.MOUSE.getOrMakeInput(button);
-            boolean pickBlock = mc.gameSettings.keyBindPickBlock.isActiveAndMatches(mouseKey);
+            InputMappings.Input mouseKey = InputMappings.Type.MOUSE.getOrCreate(button);
+            boolean pickBlock = mc.options.keyPickItem.isActiveAndMatches(mouseKey);
             ModuleGrid.GridPos cell = getCellAtPos(mouseX, mouseY, true);
-            long i = Util.milliTime();
+            long i = Util.getMillis();
             //Double click pickup wont track the cell you click
             doubleClick = i - lastClickTime < 250L && lastClickButton == button && getCellAtPos(mouseX, mouseY, false).equals(lastClickPos);
 
             if ((button == 0 || pickBlock) && cell.isValidCell()) {
-                if (player.getItemStack().isEmpty()) {
+                if (player.getCarried().isEmpty()) {
                     if (pickBlock) {
                         handleGridClick(cell, button, ClickType.CLONE); //Creative Clone
                     } else {
-                        boolean shiftClick = (InputMappings.isKeyDown(Minecraft.getInstance().getMainWindow().getHandle(), 340) || InputMappings.isKeyDown(Minecraft.getInstance().getMainWindow().getHandle(), 344));
+                        boolean shiftClick = (InputMappings.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), 340) || InputMappings.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), 344));
                         ClickType clicktype = ClickType.PICKUP;
                         if (shiftClick) {
                             clicktype = ClickType.QUICK_MOVE;
@@ -228,7 +228,7 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> {
         int cs = grid.getCellSize();
         int x = (int) ((xPos - xPos()) / cs);
         int y = (int) ((yPos - yPos()) / cs);
-        Module<?> module = ModuleItem.getModule(player.getItemStack());
+        Module<?> module = ModuleItem.getModule(player.getCarried());
         if (module != null && withPlaceOffset) {
             int mw = module.getProperties().getWidth() * cs;
             int mh = module.getProperties().getHeight() * cs;
@@ -248,14 +248,14 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> {
         drawBorderedRect(getter, x, y, mw, mh, 1, 0, mixColours(colour, 0x20202000, true));
 
         if (module.getProperties().getTechLevel() == TechLevel.CHAOTIC) {
-            IVertexBuilder builder = getter.getBuffer(RenderType.getGlint());
+            IVertexBuilder builder = getter.getBuffer(RenderType.glint());
             float zLevel = getRenderZLevel();
-            builder.pos(x, y + mh, zLevel).tex(0, ((float) mh / mw) / 64F).endVertex();
-            builder.pos(x + mw, y + mh, zLevel).tex(((float) mw / mh) / 64F, ((float) mh / mw) / 64F).endVertex();
-            builder.pos(x + mw, y, zLevel).tex(((float) mw / mh) / 64F, 0).endVertex();
-            builder.pos(x, y, zLevel).tex(0, 0).endVertex();
+            builder.vertex(x, y + mh, zLevel).uv(0, ((float) mh / mw) / 64F).endVertex();
+            builder.vertex(x + mw, y + mh, zLevel).uv(((float) mw / mh) / 64F, ((float) mh / mw) / 64F).endVertex();
+            builder.vertex(x + mw, y, zLevel).uv(((float) mw / mh) / 64F, 0).endVertex();
+            builder.vertex(x, y, zLevel).uv(0, 0).endVertex();
             if (getter instanceof IRenderTypeBuffer.Impl) {
-                ((IRenderTypeBuffer.Impl) getter).finish();
+                ((IRenderTypeBuffer.Impl) getter).endBatch();
             }
         }
 
@@ -275,10 +275,10 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> {
 
     private void bufferSprite(IVertexBuilder builder, TextureAtlasSprite sprite, double x, double y, double width, double height) {
         //@formatter:off
-        builder.pos(x,         y + height, zOffset).tex(sprite.getMinU(), sprite.getMaxV()).endVertex();
-        builder.pos(x + width, y + height, zOffset).tex(sprite.getMaxU(), sprite.getMaxV()).endVertex();
-        builder.pos(x + width, y,          zOffset).tex(sprite.getMaxU(), sprite.getMinV()).endVertex();
-        builder.pos(x,         y,          zOffset).tex(sprite.getMinU(), sprite.getMinV()).endVertex();
+        builder.vertex(x,         y + height, zOffset).uv(sprite.getU0(), sprite.getV1()).endVertex();
+        builder.vertex(x + width, y + height, zOffset).uv(sprite.getU1(), sprite.getV1()).endVertex();
+        builder.vertex(x + width, y,          zOffset).uv(sprite.getU1(), sprite.getV0()).endVertex();
+        builder.vertex(x,         y,          zOffset).uv(sprite.getU0(), sprite.getV0()).endVertex();
         //@formatter:on
     }
 

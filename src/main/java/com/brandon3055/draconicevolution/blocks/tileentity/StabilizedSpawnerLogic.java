@@ -41,20 +41,20 @@ public class StabilizedSpawnerLogic extends AbstractSpawner {
     }
 
     @Override
-    public void setEntityType(EntityType<?> type) {}
+    public void setEntityId(EntityType<?> type) {}
 
 
     @Override
     public void tick() {
-        if (!this.isActivated()) {
+        if (!this.isNearPlayer()) {
             this.prevMobRotation = this.mobRotation;
         } else {
-            BlockPos blockpos = this.getSpawnerPosition();
-            World world = this.getWorld();
-            if (world.isRemote) {
-                double d3 = (float) blockpos.getX() + world.rand.nextFloat();
-                double d4 = (float) blockpos.getY() + world.rand.nextFloat();
-                double d5 = (float) blockpos.getZ() + world.rand.nextFloat();
+            BlockPos blockpos = this.getPos();
+            World world = this.getLevel();
+            if (world.isClientSide) {
+                double d3 = (float) blockpos.getX() + world.random.nextFloat();
+                double d4 = (float) blockpos.getY() + world.random.nextFloat();
+                double d5 = (float) blockpos.getZ() + world.random.nextFloat();
                 world.addParticle(ParticleTypes.SMOKE, d3, d4, d5, 0.0D, 0.0D, 0.0D);
                 world.addParticle(ParticleTypes.FLAME, d3, d4, d5, 0.0D, 0.0D, 0.0D);
 
@@ -81,45 +81,45 @@ public class StabilizedSpawnerLogic extends AbstractSpawner {
                     Entity entity = DEContent.mob_soul.createEntity(world, tile.mobSoul.get());
 
                     do {
-                        double spawnX = (double) blockpos.getX() + (world.rand.nextDouble() - world.rand.nextDouble()) * (double) this.spawnRange + 0.5D;
-                        double spawnY = blockpos.getY() + world.rand.nextInt(3) - 1;
-                        double spawnZ = (double) blockpos.getZ() + (world.rand.nextDouble() - world.rand.nextDouble()) * (double) this.spawnRange + 0.5D;
-                        entity.setPositionAndRotation(spawnX, spawnY, spawnZ, 0, 0);
-                    } while (entity.getPosition().getX() == tile.getPos().getX() && entity.getPosition().getZ() == tile.getPos().getZ());
+                        double spawnX = (double) blockpos.getX() + (world.random.nextDouble() - world.random.nextDouble()) * (double) this.spawnRange + 0.5D;
+                        double spawnY = blockpos.getY() + world.random.nextInt(3) - 1;
+                        double spawnZ = (double) blockpos.getZ() + (world.random.nextDouble() - world.random.nextDouble()) * (double) this.spawnRange + 0.5D;
+                        entity.absMoveTo(spawnX, spawnY, spawnZ, 0, 0);
+                    } while (entity.blockPosition().getX() == tile.getBlockPos().getX() && entity.blockPosition().getZ() == tile.getBlockPos().getZ());
 
-                    int nearbyCount = world.getEntitiesWithinAABB(entity.getClass(), (new AxisAlignedBB(blockpos.getX(), blockpos.getY(), blockpos.getZ(), blockpos.getX() + 1, blockpos.getY() + 1, blockpos.getZ() + 1)).grow(this.spawnRange)).size();
+                    int nearbyCount = world.getEntitiesOfClass(entity.getClass(), (new AxisAlignedBB(blockpos.getX(), blockpos.getY(), blockpos.getZ(), blockpos.getX() + 1, blockpos.getY() + 1, blockpos.getZ() + 1)).inflate(this.spawnRange)).size();
                     if (nearbyCount >= tier.getMaxCluster()) {
                         this.resetTimer();
                         return;
                     }
 
                     LivingEntity entityliving = entity instanceof LivingEntity ? (LivingEntity) entity : null;
-                    entity.setLocationAndAngles(entity.getPosX(), entity.getPosY(), entity.getPosZ(), world.rand.nextFloat() * 360.0F, 0.0F);
+                    entity.moveTo(entity.getX(), entity.getY(), entity.getZ(), world.random.nextFloat() * 360.0F, 0.0F);
 
-                    if (entityliving == null || !(entityliving instanceof MobEntity) || canEntitySpawnSpawner((MobEntity)entityliving, getWorld(), (float) entity.getPosX(), (float) entity.getPosY(), (float) entity.getPosZ(), this)) {
+                    if (entityliving == null || !(entityliving instanceof MobEntity) || canEntitySpawnSpawner((MobEntity)entityliving, getLevel(), (float) entity.getX(), (float) entity.getY(), (float) entity.getZ(), this)) {
                         if (!tier.requiresPlayer() && entity instanceof MobEntity) {
-                            ((MobEntity) entity).enablePersistence();
+                            ((MobEntity) entity).setPersistenceRequired();
                             entity.getPersistentData().putLong("DESpawnedMob", System.currentTimeMillis());
                             DEEventHandler.onMobSpawnedBySpawner((MobEntity) entity);
                         }
 
-                        if (!((ServerWorld)world).func_242106_g(entity)) {
+                        if (!((ServerWorld)world).tryAddFreshEntityWithPassengers(entity)) {
                             this.resetTimer();
                             return;
                         }
 
-                        world.playEvent(2004, blockpos, 0);
+                        world.levelEvent(2004, blockpos, 0);
 
                         if (entityliving != null) {
                             if (entity instanceof MobEntity) {
-                                ((MobEntity)entity).spawnExplosionParticle();
+                                ((MobEntity)entity).spawnAnim();
                             }
 
                             if (tier == TileStabilizedSpawner.SpawnerTier.CHAOTIC) {
                                 double velocity = 2.5;
-                                entity.setMotion((world.rand.nextDouble() - 0.5) * velocity,
-                                        world.rand.nextDouble() * velocity,
-                                        (world.rand.nextDouble() - 0.5) * velocity);
+                                entity.setDeltaMovement((world.random.nextDouble() - 0.5) * velocity,
+                                        world.random.nextDouble() * velocity,
+                                        (world.random.nextDouble() - 0.5) * velocity);
                             }
                         }
 
@@ -141,7 +141,7 @@ public class StabilizedSpawnerLogic extends AbstractSpawner {
     public boolean canEntitySpawnSpawner(MobEntity entity, World world, float x, float y, float z, AbstractSpawner spawner) {
         Event.Result result = ForgeEventFactory.canEntitySpawn(entity, world, x, y, z, spawner, SpawnReason.SPAWNER);
         if (result == Event.Result.DEFAULT) {
-            return (tile.spawnerTier.get().ignoreSpawnReq() || entity.canSpawn(world, SpawnReason.SPAWNER)) && entity.isNotColliding(world);
+            return (tile.spawnerTier.get().ignoreSpawnReq() || entity.checkSpawnRules(world, SpawnReason.SPAWNER)) && entity.checkSpawnObstruction(world);
         } else {
             return result == Event.Result.ALLOW;
         }
@@ -153,19 +153,19 @@ public class StabilizedSpawnerLogic extends AbstractSpawner {
             tile.spawnDelay.set((short) tier.getMinDelay());
         } else {
             int i = tier.getMaxDelay() - tier.getMinDelay();
-            tile.spawnDelay.set((short) (tier.getMinDelay() + this.getWorld().rand.nextInt(i)));
+            tile.spawnDelay.set((short) (tier.getMinDelay() + this.getLevel().random.nextInt(i)));
         }
 
         this.broadcastEvent(1);
     }
 
     @Override
-    public boolean setDelayToMin(int delay) {
+    public boolean onEventTriggered(int delay) {
         return false;
     }
 
     @Override
-    public Entity getCachedEntity() {
+    public Entity getOrCreateDisplayEntity() {
         return tile.getRenderEntity();
     }
 
@@ -174,13 +174,13 @@ public class StabilizedSpawnerLogic extends AbstractSpawner {
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public double getMobRotation() {
+    public double getSpin() {
         return mobRotation;
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public double getPrevMobRotation() {
+    public double getoSpin() {
         return prevMobRotation;
     }
 
@@ -191,30 +191,30 @@ public class StabilizedSpawnerLogic extends AbstractSpawner {
     }
 
     @Override
-    public boolean isActivated() {
+    public boolean isNearPlayer() {
         return tile.isActive();
     }
 
     @Override
     public void broadcastEvent(int id) {
-        tile.getWorld().addBlockEvent(tile.getPos(), Blocks.SPAWNER, id, 0);
+        tile.getLevel().blockEvent(tile.getBlockPos(), Blocks.SPAWNER, id, 0);
     }
 
     @Override
-    public World getWorld() {
-        return tile.getWorld();
+    public World getLevel() {
+        return tile.getLevel();
     }
 
     @Override
-    public BlockPos getSpawnerPosition() {
-        return tile.getPos();
+    public BlockPos getPos() {
+        return tile.getBlockPos();
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT compound) {
+    public CompoundNBT save(CompoundNBT compound) {
         return compound;
     }
 
     @Override
-    public void read(CompoundNBT nbt) {}
+    public void load(CompoundNBT nbt) {}
 }

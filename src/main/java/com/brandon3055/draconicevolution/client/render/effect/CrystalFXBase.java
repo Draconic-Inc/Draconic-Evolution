@@ -21,7 +21,7 @@ public abstract class CrystalFXBase<T extends TileEntity & IENetEffectTile> exte
     private int ttl = 10;
 
     public CrystalFXBase(ClientWorld worldIn, T tile) {
-        super(worldIn, tile.getPos().getX() + 0.5, tile.getPos().getY() + 0.5, tile.getPos().getZ() + 0.5);
+        super(worldIn, tile.getBlockPos().getX() + 0.5, tile.getBlockPos().getY() + 0.5, tile.getBlockPos().getZ() + 0.5);
         this.tile = tile;
     }
 
@@ -38,7 +38,7 @@ public abstract class CrystalFXBase<T extends TileEntity & IENetEffectTile> exte
         this.fxState = fxState;
         ticksTillDeath = 4;
         if (ttl-- <= 0) {
-            setExpired();
+            remove();
         }
     }
 
@@ -48,12 +48,12 @@ public abstract class CrystalFXBase<T extends TileEntity & IENetEffectTile> exte
     }
 
     protected void setPosition(Vec3D pos) {
-        setPosition(pos.x, pos.y, pos.z);
+        setPos(pos.x, pos.y, pos.z);
     }
 
     protected Vector3f[] getRenderVectors(ActiveRenderInfo renderInfo, float viewX, float viewY, float viewZ, float scale) {
         Quaternion quaternion;
-        quaternion = renderInfo.getRotation();
+        quaternion = renderInfo.rotation();
         Vector3f vector3f1 = new Vector3f(-1.0F, -1.0F, 0.0F);
         vector3f1.transform(quaternion);
         Vector3f[] renderVector = new Vector3f[]{new Vector3f(-1.0F, -1.0F, 0.0F), new Vector3f(-1.0F, 1.0F, 0.0F), new Vector3f(1.0F, 1.0F, 0.0F), new Vector3f(1.0F, -1.0F, 0.0F)};

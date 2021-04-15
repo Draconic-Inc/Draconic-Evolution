@@ -16,6 +16,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.model.IModelTransform;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -29,22 +30,22 @@ public class RenderItemReactorPart implements IItemRenderer {
 
     public static final ResourceLocation REACTOR_STABILIZER = new ResourceLocation(DraconicEvolution.MODID, "textures/block/reactor/reactor_stabilizer_core.png");
     public static final ResourceLocation REACTOR_STABILIZER_RING = new ResourceLocation(DraconicEvolution.MODID, "textures/block/reactor/reactor_stabilizer_ring.png");
-    public static ModelReactorStabilizerCore stabilizerModel = new ModelReactorStabilizerCore(RenderType::getEntitySolid);
-    public static ModelReactorStabilizerCore stabilizerModelCombined = new ModelReactorStabilizerCore(RenderType::getEntitySolid);
-    public static ModelReactorStabilizerRing stabilizerRingModel = new ModelReactorStabilizerRing(RenderType::getEntitySolid);
+    public static ModelReactorStabilizerCore stabilizerModel = new ModelReactorStabilizerCore(RenderType::entitySolid);
+    public static ModelReactorStabilizerCore stabilizerModelCombined = new ModelReactorStabilizerCore(RenderType::entitySolid);
+    public static ModelReactorStabilizerRing stabilizerRingModel = new ModelReactorStabilizerRing(RenderType::entitySolid);
 
     public RenderItemReactorPart() {
         stabilizerModel.brightness = 1F;
         stabilizerModelCombined.brightness = 1F;
         stabilizerRingModel.brightness = 1F;
-        stabilizerModel.rotor2R.childModels.clear();
-        stabilizerModel.rotor1R.childModels.clear();
+        stabilizerModel.rotor2R.children.clear();
+        stabilizerModel.rotor1R.children.clear();
     }
 
     //region Unused
 
     @Override
-    public boolean isAmbientOcclusion() {
+    public boolean useAmbientOcclusion() {
         return false;
     }
 
@@ -64,43 +65,43 @@ public class RenderItemReactorPart implements IItemRenderer {
 
         if (stack.getItem() == DEContent.reactor_prt_stab_frame) {
             mStack.translate(0.5, 0.5, 0.5);
-            stabilizerModel.basePlate.render(mStack, getter.getBuffer(stabilizerModel.getRenderType(REACTOR_STABILIZER)), packedLight, packedOverlay);
+            stabilizerModel.basePlate.render(mStack, getter.getBuffer(stabilizerModel.renderType(REACTOR_STABILIZER)), packedLight, packedOverlay);
         } else if (stack.getItem() == DEContent.reactor_prt_in_rotor) {
             mStack.translate(0.3, 0.5, 0.5);
             mStack.scale(1.5F, 1.5F, 1.5F);
-            stabilizerModel.rotor1R.render(mStack, getter.getBuffer(stabilizerModel.getRenderType(REACTOR_STABILIZER)), packedLight, packedOverlay);
-            stabilizerModel.rotor1R_1.render(mStack, getter.getBuffer(stabilizerModel.getRenderType(REACTOR_STABILIZER)), packedLight, packedOverlay);
-            stabilizerModel.rotor1R_2.render(mStack, getter.getBuffer(stabilizerModel.getRenderType(REACTOR_STABILIZER)), packedLight, packedOverlay);
-            stabilizerModel.rotor1R_3.render(mStack, getter.getBuffer(stabilizerModel.getRenderType(REACTOR_STABILIZER)), packedLight, packedOverlay);
-            stabilizerModel.rotor1R_4.render(mStack, getter.getBuffer(stabilizerModel.getRenderType(REACTOR_STABILIZER)), packedLight, packedOverlay);
+            stabilizerModel.rotor1R.render(mStack, getter.getBuffer(stabilizerModel.renderType(REACTOR_STABILIZER)), packedLight, packedOverlay);
+            stabilizerModel.rotor1R_1.render(mStack, getter.getBuffer(stabilizerModel.renderType(REACTOR_STABILIZER)), packedLight, packedOverlay);
+            stabilizerModel.rotor1R_2.render(mStack, getter.getBuffer(stabilizerModel.renderType(REACTOR_STABILIZER)), packedLight, packedOverlay);
+            stabilizerModel.rotor1R_3.render(mStack, getter.getBuffer(stabilizerModel.renderType(REACTOR_STABILIZER)), packedLight, packedOverlay);
+            stabilizerModel.rotor1R_4.render(mStack, getter.getBuffer(stabilizerModel.renderType(REACTOR_STABILIZER)), packedLight, packedOverlay);
         } else if (stack.getItem() == DEContent.reactor_prt_out_rotor) {
             mStack.translate(0.3, 0.5, 0.5);
             mStack.scale(1.5F, 1.5F, 1.5F);
-            stabilizerModel.rotor2R.render(mStack, getter.getBuffer(stabilizerModel.getRenderType(REACTOR_STABILIZER)), packedLight, packedOverlay);
-            stabilizerModel.rotor2R_1.render(mStack, getter.getBuffer(stabilizerModel.getRenderType(REACTOR_STABILIZER)), packedLight, packedOverlay);
-            stabilizerModel.rotor2R_2.render(mStack, getter.getBuffer(stabilizerModel.getRenderType(REACTOR_STABILIZER)), packedLight, packedOverlay);
-            stabilizerModel.rotor2R_3.render(mStack, getter.getBuffer(stabilizerModel.getRenderType(REACTOR_STABILIZER)), packedLight, packedOverlay);
-            stabilizerModel.rotor2R_4.render(mStack, getter.getBuffer(stabilizerModel.getRenderType(REACTOR_STABILIZER)), packedLight, packedOverlay);
+            stabilizerModel.rotor2R.render(mStack, getter.getBuffer(stabilizerModel.renderType(REACTOR_STABILIZER)), packedLight, packedOverlay);
+            stabilizerModel.rotor2R_1.render(mStack, getter.getBuffer(stabilizerModel.renderType(REACTOR_STABILIZER)), packedLight, packedOverlay);
+            stabilizerModel.rotor2R_2.render(mStack, getter.getBuffer(stabilizerModel.renderType(REACTOR_STABILIZER)), packedLight, packedOverlay);
+            stabilizerModel.rotor2R_3.render(mStack, getter.getBuffer(stabilizerModel.renderType(REACTOR_STABILIZER)), packedLight, packedOverlay);
+            stabilizerModel.rotor2R_4.render(mStack, getter.getBuffer(stabilizerModel.renderType(REACTOR_STABILIZER)), packedLight, packedOverlay);
         } else if (stack.getItem() == DEContent.reactor_prt_rotor_full) {
             mStack.translate(0.5, 0.5, 0.5);
-            stabilizerModelCombined.rotor1R.render(mStack, getter.getBuffer(stabilizerModel.getRenderType(REACTOR_STABILIZER)), packedLight, packedOverlay);
-            stabilizerModelCombined.hub1.render(mStack, getter.getBuffer(stabilizerModel.getRenderType(REACTOR_STABILIZER)), packedLight, packedOverlay);
-            mStack.rotate(new Quaternion(0, 0, -60, true));
-            stabilizerModelCombined.hub2.render(mStack, getter.getBuffer(stabilizerModel.getRenderType(REACTOR_STABILIZER)), packedLight, packedOverlay);
-            stabilizerModelCombined.rotor2R.render(mStack, getter.getBuffer(stabilizerModel.getRenderType(REACTOR_STABILIZER)), packedLight, packedOverlay);
+            stabilizerModelCombined.rotor1R.render(mStack, getter.getBuffer(stabilizerModel.renderType(REACTOR_STABILIZER)), packedLight, packedOverlay);
+            stabilizerModelCombined.hub1.render(mStack, getter.getBuffer(stabilizerModel.renderType(REACTOR_STABILIZER)), packedLight, packedOverlay);
+            mStack.mulPose(new Quaternion(0, 0, -60, true));
+            stabilizerModelCombined.hub2.render(mStack, getter.getBuffer(stabilizerModel.renderType(REACTOR_STABILIZER)), packedLight, packedOverlay);
+            stabilizerModelCombined.rotor2R.render(mStack, getter.getBuffer(stabilizerModel.renderType(REACTOR_STABILIZER)), packedLight, packedOverlay);
         } else if (stack.getItem() == DEContent.reactor_prt_focus_ring) {
             mStack.translate(0.5, 0.5, 0.5);
-            stabilizerRingModel.render(mStack, getter.getBuffer(stabilizerRingModel.getRenderType(REACTOR_STABILIZER_RING)), packedLight, packedOverlay, 1F, 1F, 1F, 1F);
+            stabilizerRingModel.renderToBuffer(mStack, getter.getBuffer(stabilizerRingModel.renderType(REACTOR_STABILIZER_RING)), packedLight, packedOverlay, 1F, 1F, 1F, 1F);
         }
     }
 
     @Override
-    public ImmutableMap<ItemCameraTransforms.TransformType, TransformationMatrix> getTransforms() {
+    public IModelTransform getModelTransform() {
         return TransformUtils.DEFAULT_BLOCK;
     }
 
     @Override
-    public boolean isSideLit() {
+    public boolean usesBlockLight() {
         return false;
     }
 

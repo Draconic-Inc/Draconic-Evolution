@@ -34,8 +34,8 @@ public interface IModularTieredItem extends IModularItem {
                 double damage = getAttackDamage(host, stack);
                 double speed = 1 + host.getModuleData(ModuleTypes.SPEED, new SpeedData(0)).getSpeedMultiplier();
 
-                map.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(Item.ATTACK_DAMAGE_MODIFIER, "Tool modifier", damage, AttributeModifier.Operation.ADDITION));
-                map.put(Attributes.ATTACK_SPEED, new AttributeModifier(Item.ATTACK_SPEED_MODIFIER, "Tool modifier", (tier.getAttackSpeed() * speed) - 4, AttributeModifier.Operation.ADDITION));
+                map.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(Item.BASE_ATTACK_DAMAGE_UUID, "Tool modifier", damage, AttributeModifier.Operation.ADDITION));
+                map.put(Attributes.ATTACK_SPEED, new AttributeModifier(Item.BASE_ATTACK_SPEED_UUID, "Tool modifier", (tier.getAttackSpeed() * speed) - 4, AttributeModifier.Operation.ADDITION));
             }
         }
 
@@ -47,6 +47,6 @@ public interface IModularTieredItem extends IModularItem {
         if (getEnergyStored(stack) < EquipCfg.energyAttack * damage) {
             damage = 0;
         }
-        return damage + (getItemTier().getAttackDamage() - 1);
+        return damage + (getItemTier().getAttackDamageBonus() - 1);
     }
 }

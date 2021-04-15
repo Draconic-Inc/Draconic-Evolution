@@ -67,7 +67,7 @@ public class WyvernSword extends ToolBase implements IAOEWeapon, IReaperItem {
     @Override
     public boolean canHarvestBlock(ItemStack stack, BlockState state) {
         Material mat = state.getMaterial();
-        return mat.isReplaceable() || mat == Material.WEB || mat == Material.WOOL || mat == Material.CARPET || mat == Material.LEAVES || mat == Material.PLANTS;
+        return mat.isReplaceable() || mat == Material.WEB || mat == Material.WOOL || mat == Material.CLOTH_DECORATION || mat == Material.LEAVES || mat == Material.PLANT;
     }
 
     @Override
@@ -88,7 +88,7 @@ public class WyvernSword extends ToolBase implements IAOEWeapon, IReaperItem {
         if (getDisabledEnchants(stack).containsKey(enchantment)) {
             return false;
         }
-        return enchantment.type == EnchantmentType.WEAPON /*|| enchantment.type == EnchantmentType.ALL*/;
+        return enchantment.category == EnchantmentType.WEAPON /*|| enchantment.type == EnchantmentType.ALL*/;
     }
 
     @Override
@@ -98,10 +98,10 @@ public class WyvernSword extends ToolBase implements IAOEWeapon, IReaperItem {
 
     @Override
     public boolean onBlockStartBreak(ItemStack itemstack, BlockPos pos, PlayerEntity player) {
-        boolean cancel = super.onBlockStartBreak(itemstack, pos, player) || player.abilities.isCreativeMode;
+        boolean cancel = super.onBlockStartBreak(itemstack, pos, player) || player.abilities.instabuild;
 
         if (cancel && player instanceof ServerPlayerEntity) {
-            ((ServerPlayerEntity) player).connection.sendPacket(new SChangeBlockPacket(player.world, pos));
+            ((ServerPlayerEntity) player).connection.send(new SChangeBlockPacket(player.level, pos));
         }
 
         return cancel;

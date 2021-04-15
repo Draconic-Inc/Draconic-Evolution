@@ -106,7 +106,7 @@ public abstract class ConfigProperty implements INBTSerializable<CompoundNBT> {
         CompoundNBT nbt = new CompoundNBT();
         nbt.putBoolean("hud", showOnHud);
         if (uniqueName != null) {
-            nbt.putUniqueId("uni_name", uniqueName);
+            nbt.putUUID("uni_name", uniqueName);
         }
         return nbt;
     }
@@ -114,8 +114,8 @@ public abstract class ConfigProperty implements INBTSerializable<CompoundNBT> {
     @Override
     public void deserializeNBT(CompoundNBT nbt) {
         showOnHud = nbt.getBoolean("hud");
-        if (nbt.hasUniqueId("uni_name")) {
-            uniqueName = nbt.getUniqueId("uni_name");
+        if (nbt.hasUUID("uni_name")) {
+            uniqueName = nbt.getUUID("uni_name");
         }
     }
 
@@ -143,10 +143,10 @@ public abstract class ConfigProperty implements INBTSerializable<CompoundNBT> {
     }
 
     public enum BooleanFormatter {
-        TRUE_FALSE(e -> I18n.format("gui.draconicevolution.boolean_property." + (e ? "true" : "false"))),
-        ENABLED_DISABLED(e -> I18n.format("gui.draconicevolution.boolean_property." + (e ? "enabled" : "disabled"))),
-        ACTIVE_INACTIVE(e -> I18n.format("gui.draconicevolution.boolean_property." + (e ? "active" : "inactive"))),
-        YES_NO(e -> I18n.format("gui.draconicevolution.boolean_property." + (e ? "yes" : "no")));
+        TRUE_FALSE(e -> I18n.get("gui.draconicevolution.boolean_property." + (e ? "true" : "false"))),
+        ENABLED_DISABLED(e -> I18n.get("gui.draconicevolution.boolean_property." + (e ? "enabled" : "disabled"))),
+        ACTIVE_INACTIVE(e -> I18n.get("gui.draconicevolution.boolean_property." + (e ? "active" : "inactive"))),
+        YES_NO(e -> I18n.get("gui.draconicevolution.boolean_property." + (e ? "yes" : "no")));
 
         private Function<Boolean, String> formatter;
 

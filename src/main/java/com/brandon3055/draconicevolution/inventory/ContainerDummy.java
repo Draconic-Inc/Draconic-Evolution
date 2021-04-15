@@ -46,7 +46,7 @@ public class ContainerDummy<T extends TileBCore> extends ContainerBCTile<T> {
 //    }
 
     @Override
-    public boolean canInteractWith(PlayerEntity playerIn) {
-        return tile instanceof IInventory ? ((IInventory) tile).isUsableByPlayer(playerIn) : tile != null;
+    public boolean stillValid(PlayerEntity playerIn) {
+        return tile instanceof IInventory ? ((IInventory) tile).stillValid(playerIn) : tile != null;
     }
 }

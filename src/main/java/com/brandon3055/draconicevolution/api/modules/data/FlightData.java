@@ -47,10 +47,10 @@ public class FlightData implements ModuleData<FlightData> {
             map.put(new TranslationTextComponent("module.draconicevolution.flight.boost.name"), new StringTextComponent((int)(elytraSpeed * 100) + "%"));
         }
         if (elytra && !DEConfig.enableElytraFlight) {
-            map.put(new StringTextComponent("Elytra Flight").mergeStyle(TextFormatting.RED), new StringTextComponent("Disabled by server").mergeStyle(TextFormatting.RED));
+            map.put(new StringTextComponent("Elytra Flight").withStyle(TextFormatting.RED), new StringTextComponent("Disabled by server").withStyle(TextFormatting.RED));
         }
         if (creative && !DEConfig.enableCreativeFlight) {
-            map.put(new StringTextComponent("Creative Flight").mergeStyle(TextFormatting.RED), new StringTextComponent("Disabled by server").mergeStyle(TextFormatting.RED));
+            map.put(new StringTextComponent("Creative Flight").withStyle(TextFormatting.RED), new StringTextComponent("Disabled by server").withStyle(TextFormatting.RED));
         }
     }
 }

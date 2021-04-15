@@ -48,15 +48,15 @@ public class FusionRecipeBuilder {
     }
 
     public FusionRecipeBuilder catalyst(ITag<Item> catalyst) {
-        return catalyst(Ingredient.fromTag(catalyst));
+        return catalyst(Ingredient.of(catalyst));
     }
 
     public FusionRecipeBuilder catalyst(IItemProvider... catalyst) {
-        return catalyst(Ingredient.fromItems(catalyst));
+        return catalyst(Ingredient.of(catalyst));
     }
 
     public FusionRecipeBuilder catalyst(ItemStack... catalyst) {
-        return catalyst(Ingredient.fromStacks(catalyst));
+        return catalyst(Ingredient.of(catalyst));
     }
 
     public FusionRecipeBuilder catalyst(int count, ITag<Item> catalyst) {
@@ -96,7 +96,7 @@ public class FusionRecipeBuilder {
     }
 
     public FusionRecipeBuilder ingredient(boolean consume, ItemStack... ingredient) {
-        return ingredient(consume, Ingredient.fromStacks(ingredient));
+        return ingredient(consume, Ingredient.of(ingredient));
     }
 
     public FusionRecipeBuilder ingredient(ItemStack... ingredient) {
@@ -104,7 +104,7 @@ public class FusionRecipeBuilder {
     }
 
     public FusionRecipeBuilder ingredient(boolean consume, IItemProvider... ingredient) {
-        return ingredient(consume, Ingredient.fromItems(ingredient));
+        return ingredient(consume, Ingredient.of(ingredient));
     }
 
     public FusionRecipeBuilder ingredient(IItemProvider... ingredient) {
@@ -112,7 +112,7 @@ public class FusionRecipeBuilder {
     }
 
     public FusionRecipeBuilder ingredient(boolean consume, ITag<Item> ingredient) {
-        return ingredient(consume, Ingredient.fromTag(ingredient));
+        return ingredient(consume, Ingredient.of(ingredient));
     }
 
     public FusionRecipeBuilder ingredient(ITag<Item> ingredient) {
@@ -181,15 +181,15 @@ public class FusionRecipeBuilder {
             this.ingredients = ingredients;
         }
 
-        public void serialize(JsonObject json) {
+        public void serializeRecipeData(JsonObject json) {
             json.add("result", writeItemStack(result));
-            json.add("catalyst", catalyst.serialize());
+            json.add("catalyst", catalyst.toJson());
             json.addProperty("total_energy", energy);
             json.addProperty("tier", techLevel.name());
 
             JsonArray ingredientArray = new JsonArray();
             for (FusionRecipe.FusionIngredient ingredient : ingredients) {
-                JsonElement element = ingredient.get().serialize();
+                JsonElement element = ingredient.get().toJson();
                 if (!ingredient.consume()) {
                     JsonObject object = new JsonObject();
                     object.addProperty("consume", false);
@@ -202,21 +202,21 @@ public class FusionRecipeBuilder {
             json.add("ingredients", ingredientArray);
         }
 
-        public IRecipeSerializer<?> getSerializer() {
+        public IRecipeSerializer<?> getType() {
             return DraconicAPI.FUSION_RECIPE_SERIALIZER;
         }
 
-        public ResourceLocation getID() {
+        public ResourceLocation getId() {
             return this.id;
         }
 
         @Nullable
-        public JsonObject getAdvancementJson() {
+        public JsonObject serializeAdvancement() {
             return null;//this.advancementBuilder.serialize();
         }
 
         @Nullable
-        public ResourceLocation getAdvancementID() {
+        public ResourceLocation getAdvancementId() {
             return null;//this.advancementId;
         }
     }

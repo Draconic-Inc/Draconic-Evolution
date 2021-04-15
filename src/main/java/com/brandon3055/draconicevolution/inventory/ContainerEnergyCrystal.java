@@ -28,8 +28,8 @@ public class ContainerEnergyCrystal extends ContainerBCTile<TileCrystalBase> {
 //    }
 
     @Override
-    public void detectAndSendChanges() {
-        super.detectAndSendChanges();
-        tile.detectAndSendContainerChanges(listeners);
+    public void broadcastChanges() {
+        super.broadcastChanges();
+        tile.detectAndSendContainerChanges(containerListeners);
     }
 }

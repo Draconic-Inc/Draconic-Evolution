@@ -18,11 +18,11 @@ public class ModuleSpriteUploader extends SpriteUploader {
    public ModuleSpriteUploader() {
       super(Minecraft.getInstance().textureManager, LOCATION_MODULE_TEXTURE, "module");
       IReloadableResourceManager resourceManager = (IReloadableResourceManager) Minecraft.getInstance().getResourceManager();
-      resourceManager.addReloadListener(this);
+      resourceManager.registerReloadListener(this);
    }
 
    @Override
-   protected Stream<ResourceLocation> getResourceLocations() {
+   protected Stream<ResourceLocation> getResourcesToLoad() {
       return DEModules.MODULE_REGISTRY.getKeys().stream();
    }
 

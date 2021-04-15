@@ -73,16 +73,16 @@ public class ParticleDragonHeart extends BCParticle {
 
             if (args.length >= 4) {
                 pos.add(0, 0.5, 0);
-                particleHeart.setExpired();
+                particleHeart.remove();
                 Vec3D playerDir = Vec3D.getDirectionVec(pos, speed);
                 double dist = Utils.getDistanceAtoB(pos, speed);
 
                 for (int i = 0; i < 100; i++) {
                     double d = dist * (1D / 100D);
 
-                    double randX = world.rand.nextDouble() - 0.5D;
-                    double randY = world.rand.nextDouble() - 0.5D;
-                    double randZ = world.rand.nextDouble() - 0.5D;
+                    double randX = world.random.nextDouble() - 0.5D;
+                    double randY = world.random.nextDouble() - 0.5D;
+                    double randZ = world.random.nextDouble() - 0.5D;
                     //TODO Particles
 //                    BCEffectHandler.spawnFX(DEParticles.LINE_INDICATOR, world, pos.add(playerDir.x * d, playerDir.y * d, playerDir.z * d), new Vec3D(randX * 0.05F, randY * 0.05F, randZ * 0.05F), 512D, 255, 0, 0);
                 }

@@ -90,57 +90,57 @@ public class ContainerDraconiumChest extends ContainerBCTile<TileDraconiumChest>
     }
 
     @Override
-    public void onCraftMatrixChanged(IInventory inventory) {
+    public void slotsChanged(IInventory inventory) {
 //        craftResult.setInventorySlotContents(0, RecipeMatcher.findMatches(craftMatrix, tile.getWorld()));
     }
 
     @Nullable
     @Override
-    public ItemStack transferStackInSlot(PlayerEntity playerIn, int index) {
+    public ItemStack quickMoveStack(PlayerEntity playerIn, int index) {
         ItemStack itemstack = ItemStack.EMPTY;
-        Slot slot = inventorySlots.get(index);
-        if (slot != null && slot.getHasStack()) {
-            ItemStack itemstack1 = slot.getStack();
+        Slot slot = slots.get(index);
+        if (slot != null && slot.hasItem()) {
+            ItemStack itemstack1 = slot.getItem();
             itemstack = itemstack1.copy();
 
             //Transferring from Main Container
             if (index < 260) {
-                if (!mergeItemStack(itemstack1, 277, inventorySlots.size(), false)) {
+                if (!moveItemStackTo(itemstack1, 277, slots.size(), false)) {
                     return ItemStack.EMPTY;
                 }
-                slot.onSlotChange(itemstack1, itemstack);
+                slot.onQuickCraft(itemstack1, itemstack);
             }
             //Transferring from a crafting inventory
             else if (index == 267 || index == 265 || index == 266) {
                 //First try placing the stack in the players inventory
-                if (!mergeItemStack(itemstack1, 277, inventorySlots.size(), false)) {
+                if (!moveItemStackTo(itemstack1, 277, slots.size(), false)) {
                     //If that fails try the chest inventory
-                    if (!mergeItemStack(itemstack1, 0, 259, false)) {
+                    if (!moveItemStackTo(itemstack1, 0, 259, false)) {
                         return ItemStack.EMPTY;
                     }
                 }
-                slot.onSlotChange(itemstack1, itemstack);
+                slot.onQuickCraft(itemstack1, itemstack);
             }
             else if (index >= 260 && index < 277) {
                 //First try the players inventory
-                if (!mergeItemStack(itemstack1, 0, 259, false)) {
+                if (!moveItemStackTo(itemstack1, 0, 259, false)) {
                     //If that fails try the chest inventory
-                    if (!mergeItemStack(itemstack1, 277, inventorySlots.size(), false)) {
+                    if (!moveItemStackTo(itemstack1, 277, slots.size(), false)) {
                         return ItemStack.EMPTY;
                     }
                 }
-                slot.onSlotChange(itemstack1, itemstack);
+                slot.onQuickCraft(itemstack1, itemstack);
             }
             //Transferring from Player Inventory
-            else if (!DraconiumChest.isStackValid(itemstack1) || !mergeItemStack(itemstack1, 0, 259, false)) {
+            else if (!DraconiumChest.isStackValid(itemstack1) || !moveItemStackTo(itemstack1, 0, 259, false)) {
                 return ItemStack.EMPTY;
             }
 
             if (itemstack1.getCount() == 0) {
-                slot.putStack(ItemStack.EMPTY);
+                slot.set(ItemStack.EMPTY);
             }
             else {
-                slot.onSlotChanged();
+                slot.setChanged();
             }
 
             slot.onTake(player, itemstack1);
@@ -150,8 +150,8 @@ public class ContainerDraconiumChest extends ContainerBCTile<TileDraconiumChest>
 
     @Nullable
     @Override
-    public ItemStack slotClick(int slotId, int dragType, ClickType clickTypeIn, PlayerEntity player) {
-        ItemStack stack = super.slotClick(slotId, dragType, clickTypeIn, player);
+    public ItemStack clicked(int slotId, int dragType, ClickType clickTypeIn, PlayerEntity player) {
+        ItemStack stack = super.clicked(slotId, dragType, clickTypeIn, player);
 
         if (dragType == 1 && clickTypeIn == ClickType.PICKUP && slotId >= 260 && slotId <= 264) {
             tile.validateSmelting();
@@ -161,8 +161,8 @@ public class ContainerDraconiumChest extends ContainerBCTile<TileDraconiumChest>
     }
 
     @Override
-    public void onContainerClosed(PlayerEntity playerIn) {
-        super.onContainerClosed(playerIn);
+    public void removed(PlayerEntity playerIn) {
+        super.removed(playerIn);
         tile.onPlayerCloseContainer(playerIn);
     }
 
@@ -172,7 +172,7 @@ public class ContainerDraconiumChest extends ContainerBCTile<TileDraconiumChest>
         }
 
         @Override
-        public boolean isItemValid(ItemStack stack) {
+        public boolean mayPlace(ItemStack stack) {
             return tile.getSmeltResult(stack) != null;
         }
     }
@@ -184,15 +184,15 @@ public class ContainerDraconiumChest extends ContainerBCTile<TileDraconiumChest>
         }
 
         @Override
-        public boolean isItemValid(ItemStack stack) {
-            if (super.isItemValid(stack)) {
+        public boolean mayPlace(ItemStack stack) {
+            if (super.mayPlace(stack)) {
                 return EnergyUtils.canExtractEnergy(stack);
             }
             return false;
         }
 
         @Override
-        public int getSlotStackLimit() {
+        public int getMaxStackSize() {
             return 1;
         }
     }
@@ -204,15 +204,15 @@ public class ContainerDraconiumChest extends ContainerBCTile<TileDraconiumChest>
         }
 
         @Override
-        public boolean isItemValid(ItemStack stack) {
-            if (super.isItemValid(stack)) {
+        public boolean mayPlace(ItemStack stack) {
+            if (super.mayPlace(stack)) {
                 return !stack.isEmpty() && stack.getItem() instanceof ItemCore /*&& stack.getItem() != DEContent.draconicCore*/;
             }
             return false;
         }
 
         @Override
-        public int getSlotStackLimit() {
+        public int getMaxStackSize() {
             return 1;
         }
     }

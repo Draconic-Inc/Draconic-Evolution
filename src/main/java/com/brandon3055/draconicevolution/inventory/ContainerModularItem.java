@@ -63,11 +63,11 @@ public class ContainerModularItem extends ContainerModuleHost<TileBCore> {
     }
 
     private static Stream<ItemStack> getPlayerInventory(PlayerInventory player) {
-        return Streams.concat(player.mainInventory.stream(), player.armorInventory.stream(), player.offHandInventory.stream()).filter(e -> !e.isEmpty());
+        return Streams.concat(player.items.stream(), player.armor.stream(), player.offhand.stream()).filter(e -> !e.isEmpty());
     }
 
     public static void tryOpenGui(ServerPlayerEntity sender) {
-        ItemStack stack = sender.getHeldItemMainhand();
+        ItemStack stack = sender.getMainHandItem();
         if (!stack.isEmpty() && stack.getCapability(MODULE_HOST_CAPABILITY).isPresent()) {
             PlayerSlot slot = new PlayerSlot(sender, Hand.MAIN_HAND);
             NetworkHooks.openGui(sender, new ContainerModularItem.Provider(stack, slot), slot::toBuff);
@@ -80,7 +80,7 @@ public class ContainerModularItem extends ContainerModuleHost<TileBCore> {
             }
         }
 
-        sender.sendMessage(new TranslationTextComponent("msg.draconicevolution.modular_item.no_module_hosts").mergeStyle(TextFormatting.RED), Util.DUMMY_UUID);
+        sender.sendMessage(new TranslationTextComponent("msg.draconicevolution.modular_item.no_module_hosts").withStyle(TextFormatting.RED), Util.NIL_UUID);
     }
 
     @Override
@@ -102,14 +102,14 @@ public class ContainerModularItem extends ContainerModuleHost<TileBCore> {
     @Override
     public void onGridChange() {
         if (EffectiveSide.get().isServer()) {
-            for (int i = 0; i < this.inventorySlots.size(); ++i) {
-                ItemStack itemstack = this.inventorySlots.get(i).getStack();
-                ItemStack itemstack1 = this.inventoryItemStacks.get(i);
-                if (!ItemStack.areItemStacksEqual(itemstack1, itemstack)) {
+            for (int i = 0; i < this.slots.size(); ++i) {
+                ItemStack itemstack = this.slots.get(i).getItem();
+                ItemStack itemstack1 = this.lastSlots.get(i);
+                if (!ItemStack.matches(itemstack1, itemstack)) {
                     itemstack1 = itemstack.copy();
-                    this.inventoryItemStacks.set(i, itemstack1);
-                    for (IContainerListener icontainerlistener : this.listeners) {
-                        icontainerlistener.sendSlotContents(this, i, itemstack1);
+                    this.lastSlots.set(i, itemstack1);
+                    for (IContainerListener icontainerlistener : this.containerListeners) {
+                        icontainerlistener.slotChanged(this, i, itemstack1);
                     }
                 }
             }
@@ -122,7 +122,7 @@ public class ContainerModularItem extends ContainerModuleHost<TileBCore> {
     }
 
     @Override
-    public boolean canInteractWith(PlayerEntity playerIn) {
+    public boolean stillValid(PlayerEntity playerIn) {
         if (moduleHost == null || hostStack != slot.getStackInSlot(player)) {
             return false;
         }
@@ -156,8 +156,8 @@ public class ContainerModularItem extends ContainerModuleHost<TileBCore> {
     }
 
     @Override
-    public void putStackInSlot(int slotID, ItemStack stack) {
-        super.putStackInSlot(slotID, stack);
+    public void setItem(int slotID, ItemStack stack) {
+        super.setItem(slotID, stack);
         stack = slot.getStackInSlot(player);
         if (stack != hostStack && !stack.isEmpty() && stack.getCapability(MODULE_HOST_CAPABILITY).isPresent()) {
             hostStack = stack; //Because the client side stack is invalidated every time the server sends an update.
@@ -165,21 +165,21 @@ public class ContainerModularItem extends ContainerModuleHost<TileBCore> {
     }
 
     @Override
-    public ItemStack slotClick(int slotId, int button, ClickType clickTypeIn, PlayerEntity player) {
-        if (slotId >= 0 && slotId < inventorySlots.size()) {
-            Slot slot = this.inventorySlots.get(slotId);
-            if (slot != null && !slot.getStack().isEmpty()) {
-                if (slot.getStack() == hostStack) {
+    public ItemStack clicked(int slotId, int button, ClickType clickTypeIn, PlayerEntity player) {
+        if (slotId >= 0 && slotId < slots.size()) {
+            Slot slot = this.slots.get(slotId);
+            if (slot != null && !slot.getItem().isEmpty()) {
+                if (slot.getItem() == hostStack) {
                     return ItemStack.EMPTY;
-                } else if (clickTypeIn == ClickType.PICKUP && button == 0 && player.inventory.getItemStack().isEmpty()) {
-                    if (slot.getStack().getCapability(MODULE_HOST_CAPABILITY).isPresent()) {
+                } else if (clickTypeIn == ClickType.PICKUP && button == 0 && player.inventory.getCarried().isEmpty()) {
+                    if (slot.getItem().getCapability(MODULE_HOST_CAPABILITY).isPresent()) {
                         if (player instanceof ServerPlayerEntity) {
                             PlayerSlot playerSlot;
                             if (slotId >= 41) playerSlot = new PlayerSlot(slotId - 41, PlayerSlot.EnumInvCategory.EQUIPMENT);
                             else if (slotId >= 40) playerSlot = new PlayerSlot(slotId - 40, PlayerSlot.EnumInvCategory.OFF_HAND);
                             else if (slotId >= 36) playerSlot = new PlayerSlot(slotId - 36, PlayerSlot.EnumInvCategory.ARMOR);
                             else playerSlot = new PlayerSlot(slotId, PlayerSlot.EnumInvCategory.MAIN);
-                            NetworkHooks.openGui((ServerPlayerEntity) player, new Provider(slot.getStack(), playerSlot), playerSlot::toBuff);
+                            NetworkHooks.openGui((ServerPlayerEntity) player, new Provider(slot.getItem(), playerSlot), playerSlot::toBuff);
                         } else {
                             GuiButton.playGenericClick();
                         }
@@ -191,7 +191,7 @@ public class ContainerModularItem extends ContainerModuleHost<TileBCore> {
         if (slotId > 40) {
             return ItemStack.EMPTY;
         }
-        return super.slotClick(slotId, button, clickTypeIn, player);
+        return super.clicked(slotId, button, clickTypeIn, player);
     }
 
     public static class Provider implements INamedContainerProvider {
@@ -205,7 +205,7 @@ public class ContainerModularItem extends ContainerModuleHost<TileBCore> {
 
         @Override
         public ITextComponent getDisplayName() {
-            return stack.getDisplayName().copyRaw().appendString(" ").append(new TranslationTextComponent("gui.draconicevolution.modular_item.modules"));
+            return stack.getHoverName().plainCopy().append(" ").append(new TranslationTextComponent("gui.draconicevolution.modular_item.modules"));
         }
 
         @Nullable

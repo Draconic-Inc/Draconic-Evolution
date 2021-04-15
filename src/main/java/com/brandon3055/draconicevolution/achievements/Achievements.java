@@ -121,8 +121,8 @@ public class Achievements {
     public void craftEvent(PlayerEvent.ItemCraftedEvent event) {
         ItemStack stack = event.getCrafting().copy();
         stack.setCount(1);
-        if (achievementItems.containsKey(stack.getTranslationKey()) && achievementItems.get(stack.getTranslationKey()).isCorrectCondition("craft")) {
-            triggerAchievement(event.getPlayer(), achievementItems.get(stack.getTranslationKey()).getName());
+        if (achievementItems.containsKey(stack.getDescriptionId()) && achievementItems.get(stack.getDescriptionId()).isCorrectCondition("craft")) {
+            triggerAchievement(event.getPlayer(), achievementItems.get(stack.getDescriptionId()).getName());
         }
     }
 
@@ -130,8 +130,8 @@ public class Achievements {
     public void smeltEvent(PlayerEvent.ItemSmeltedEvent event) {
         ItemStack stack = event.getSmelting().copy();
         stack.setCount(1);
-        if (achievementItems.containsKey(stack.getTranslationKey()) && achievementItems.get(stack.getTranslationKey()).isCorrectCondition("smelt")) {
-            triggerAchievement(event.getPlayer(), achievementItems.get(stack.getTranslationKey()).getName());
+        if (achievementItems.containsKey(stack.getDescriptionId()) && achievementItems.get(stack.getDescriptionId()).isCorrectCondition("smelt")) {
+            triggerAchievement(event.getPlayer(), achievementItems.get(stack.getDescriptionId()).getName());
         }
     }
 

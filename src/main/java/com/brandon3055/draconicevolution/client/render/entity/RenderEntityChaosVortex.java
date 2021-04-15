@@ -45,7 +45,7 @@ public class RenderEntityChaosVortex extends EntityRenderer<EntityChaosImplosion
 
 
     @Override
-    public ResourceLocation getEntityTexture(EntityChaosImplosion entity) {
+    public ResourceLocation getTextureLocation(EntityChaosImplosion entity) {
         return null;
     }
 

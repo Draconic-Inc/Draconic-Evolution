@@ -44,7 +44,7 @@ public class ContainerRecipeBuilder extends Container {
             }
         }
 
-        for (int i = 0; i < inventoryCache.getSizeInventory(); i++) {
+        for (int i = 0; i < inventoryCache.getContainerSize(); i++) {
             Slot slot = new Slot(inventoryCache, i, 1000, 1000);
             addSlot(slot);
             craftingSlots.add(slot);
@@ -53,7 +53,7 @@ public class ContainerRecipeBuilder extends Container {
 
     public void arangeCraftingSlots(int craftingType) {
         for (Slot slot : craftingSlots) {
-            slot.xPos = slot.yPos = 1000;
+            slot.x = slot.y = 1000;
         }
 
         if (craftingType == 0) {
@@ -61,53 +61,53 @@ public class ContainerRecipeBuilder extends Container {
             int posY = 30;
             for (int y = 0; y < 3; y++) {
                 for (int x = 0; x < 3; x++) {
-                    craftingSlots.get(x + y * 3 + 1).xPos = posX + 18 * x;
-                    craftingSlots.get(x + y * 3 + 1).yPos = posY + y * 18;
+                    craftingSlots.get(x + y * 3 + 1).x = posX + 18 * x;
+                    craftingSlots.get(x + y * 3 + 1).y = posY + y * 18;
                 }
             }
 
-            craftingSlots.get(0).xPos = 107;
-            craftingSlots.get(0).yPos = posY + 18;
+            craftingSlots.get(0).x = 107;
+            craftingSlots.get(0).y = posY + 18;
         }
         else if (craftingType == 1) {
-            craftingSlots.get(0).xPos = 90 - 18;
-            craftingSlots.get(0).yPos = 20;
-            craftingSlots.get(1).xPos = 90 + 18;
-            craftingSlots.get(1).yPos = 20;
+            craftingSlots.get(0).x = 90 - 18;
+            craftingSlots.get(0).y = 20;
+            craftingSlots.get(1).x = 90 + 18;
+            craftingSlots.get(1).y = 20;
 
             for (int i = 2; i < 11; i++) {
-                craftingSlots.get(i).xPos = 20 + (i - 2) * 18;
-                craftingSlots.get(i).yPos = 50;
+                craftingSlots.get(i).x = 20 + (i - 2) * 18;
+                craftingSlots.get(i).y = 50;
 
-                craftingSlots.get(i + 9).xPos = 20 + (i - 2) * 18;
-                craftingSlots.get(i + 9).yPos = 68;
+                craftingSlots.get(i + 9).x = 20 + (i - 2) * 18;
+                craftingSlots.get(i + 9).y = 68;
             }
         }
     }
 
     @Nullable
     @Override
-    public ItemStack transferStackInSlot(PlayerEntity playerIn, int index) {
+    public ItemStack quickMoveStack(PlayerEntity playerIn, int index) {
         Slot slot = getSlot(index);
 
-        if (slot.getHasStack()) {
-            ItemStack stack = slot.getStack();
+        if (slot.hasItem()) {
+            ItemStack stack = slot.getItem();
             ItemStack result = stack.copy();
 
             if (index >= 36) {
-                if (!mergeItemStack(stack, 0, 36, false)) {
+                if (!moveItemStackTo(stack, 0, 36, false)) {
                     return ItemStack.EMPTY;
                 }
             }
-            else if (ForgeHooks.getBurnTime(stack) == 0 || !mergeItemStack(stack, 36, 36 + inventoryCache.getSizeInventory(), false)) {
+            else if (ForgeHooks.getBurnTime(stack) == 0 || !moveItemStackTo(stack, 36, 36 + inventoryCache.getContainerSize(), false)) {
                 return ItemStack.EMPTY;
             }
 
             if (stack.getCount() == 0) {
-                slot.putStack(ItemStack.EMPTY);
+                slot.set(ItemStack.EMPTY);
             }
             else {
-                slot.onSlotChanged();
+                slot.setChanged();
             }
 
             slot.onTake(player, stack);
@@ -119,7 +119,7 @@ public class ContainerRecipeBuilder extends Container {
     }
 
     @Override
-    public boolean canInteractWith(PlayerEntity playerIn) {
+    public boolean stillValid(PlayerEntity playerIn) {
         return true;
     }
 

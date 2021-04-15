@@ -31,7 +31,7 @@ import java.util.List;
  */
 public class ChaosCrystal extends BlockBCore/*, IRenderOverride*/ {
 
-    private static VoxelShape SHAPE = VoxelShapes.create(0, -2, 0, 1, 3, 1);
+    private static VoxelShape SHAPE = VoxelShapes.box(0, -2, 0, 1, 3, 1);
 
     public ChaosCrystal(Properties properties) {
         super(properties);
@@ -44,7 +44,7 @@ public class ChaosCrystal extends BlockBCore/*, IRenderOverride*/ {
 
     @Override
     public boolean removedByPlayer(BlockState state, World world, BlockPos pos, PlayerEntity player, boolean willHarvest, FluidState fluid) {
-        TileChaosCrystal tile = world.getTileEntity(pos) instanceof TileChaosCrystal ? (TileChaosCrystal) world.getTileEntity(pos) : null;
+        TileChaosCrystal tile = world.getBlockEntity(pos) instanceof TileChaosCrystal ? (TileChaosCrystal) world.getBlockEntity(pos) : null;
         if (tile == null || !tile.canBreak()) {
             return false;
         }
@@ -52,15 +52,15 @@ public class ChaosCrystal extends BlockBCore/*, IRenderOverride*/ {
     }
 
     @Override
-    public float getPlayerRelativeBlockHardness(BlockState state, PlayerEntity player, IBlockReader world, BlockPos pos) {
-        TileChaosCrystal tile = world.getTileEntity(pos) instanceof TileChaosCrystal ? (TileChaosCrystal) world.getTileEntity(pos) : null;
-        if (tile != null) return tile.canBreak() ? super.getPlayerRelativeBlockHardness(state, player, world, pos) : -1F;
-        return super.getPlayerRelativeBlockHardness(state, player, world, pos);
+    public float getDestroyProgress(BlockState state, PlayerEntity player, IBlockReader world, BlockPos pos) {
+        TileChaosCrystal tile = world.getBlockEntity(pos) instanceof TileChaosCrystal ? (TileChaosCrystal) world.getBlockEntity(pos) : null;
+        if (tile != null) return tile.canBreak() ? super.getDestroyProgress(state, player, world, pos) : -1F;
+        return super.getDestroyProgress(state, player, world, pos);
     }
 
 
     @Override
-    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {}
+    public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> items) {}
 
     @Override
     public boolean hasTileEntity(BlockState state) {
@@ -74,7 +74,7 @@ public class ChaosCrystal extends BlockBCore/*, IRenderOverride*/ {
     }
 
     @Override
-    public void onExplosionDestroy(World worldIn, BlockPos pos, Explosion explosionIn) {}
+    public void wasExploded(World worldIn, BlockPos pos, Explosion explosionIn) {}
 
     @Override
     public boolean canEntityDestroy(BlockState state, IBlockReader world, BlockPos pos, Entity entity) {
@@ -82,38 +82,38 @@ public class ChaosCrystal extends BlockBCore/*, IRenderOverride*/ {
     }
 
     @Override
-    public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving) {
-        TileEntity tile = world.getTileEntity(pos);
-        if (!world.isRemote && tile instanceof TileChaosCrystal) {
+    public void onRemove(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving) {
+        TileEntity tile = world.getBlockEntity(pos);
+        if (!world.isClientSide && tile instanceof TileChaosCrystal) {
             ((TileChaosCrystal) tile).detonate(null);
         }
-        super.onReplaced(state, world, pos, newState, isMoving);
+        super.onRemove(state, world, pos, newState, isMoving);
     }
 
     @Override
-    public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
-        if (placer instanceof PlayerEntity && ((PlayerEntity) placer).abilities.isCreativeMode) {
-            TileEntity tile = world.getTileEntity(pos);
-            if (!world.isRemote && tile instanceof TileChaosCrystal) {
+    public void setPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+        if (placer instanceof PlayerEntity && ((PlayerEntity) placer).abilities.instabuild) {
+            TileEntity tile = world.getBlockEntity(pos);
+            if (!world.isClientSide && tile instanceof TileChaosCrystal) {
                 ((TileChaosCrystal) tile).onValidPlacement();
                 ((TileChaosCrystal) tile).guardianDefeated.set(true);
             }
         } else {
-            placer.attackEntityFrom(punishment, Float.MAX_VALUE);
+            placer.hurt(punishment, Float.MAX_VALUE);
         }
     }
 
-    private static DamageSource punishment = new DamageSource("chrystalMoved").setDamageAllowedInCreativeMode().setDamageBypassesArmor().setDamageIsAbsolute();
+    private static DamageSource punishment = new DamageSource("chrystalMoved").bypassInvul().bypassArmor().bypassMagic();
 
     @Override
-    public void onBlockAdded(BlockState state, World world, BlockPos pos, BlockState oldState, boolean isMoving) {
-        List<PlayerEntity> players = world.getEntitiesWithinAABB(PlayerEntity.class, new AxisAlignedBB(pos, pos.add(1, 1, 1)).grow(15, 15, 15));
+    public void onPlace(BlockState state, World world, BlockPos pos, BlockState oldState, boolean isMoving) {
+        List<PlayerEntity> players = world.getEntitiesOfClass(PlayerEntity.class, new AxisAlignedBB(pos, pos.offset(1, 1, 1)).inflate(15, 15, 15));
 
         for (PlayerEntity player : players) {
-            if (player.abilities.isCreativeMode) {
+            if (player.abilities.instabuild) {
                 return;
             }
-            player.attackEntityFrom(punishment, Float.MAX_VALUE);
+            player.hurt(punishment, Float.MAX_VALUE);
         }
     }
 
@@ -127,10 +127,10 @@ public class ChaosCrystal extends BlockBCore/*, IRenderOverride*/ {
             return SHAPE;
         }
         else {
-            TileEntity tile = world.getTileEntity(pos);
+            TileEntity tile = world.getBlockEntity(pos);
             if (tile instanceof TileChaosCrystal) {
                 BlockPos offset = ((TileChaosCrystal) tile).parentPos.get().subtract(pos);
-                return SHAPE.withOffset(0, offset.getY(), 0);
+                return SHAPE.move(0, offset.getY(), 0);
             }
         }
 

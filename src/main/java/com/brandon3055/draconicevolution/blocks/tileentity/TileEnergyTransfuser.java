@@ -87,7 +87,7 @@ public class TileEnergyTransfuser extends TileBCore implements ITickableTileEnti
     @Override
     public void tick() {
         super.tick();
-        if (world.isRemote || !isTileEnabled()) {
+        if (level.isClientSide || !isTileEnabled()) {
             return;
         }
 
@@ -143,7 +143,7 @@ public class TileEnergyTransfuser extends TileBCore implements ITickableTileEnti
 
     @Override
     public boolean onBlockActivated(BlockState state, PlayerEntity player, Hand handIn, BlockRayTraceResult trace) {
-        if (world.isRemote) {
+        if (level.isClientSide) {
             return true;
         }
 
@@ -151,9 +151,9 @@ public class TileEnergyTransfuser extends TileBCore implements ITickableTileEnti
         int slot = hit.subHit;
         if (slot > -1 && slot < 4) {
             ItemStack stack = itemsCombined.getStackInSlot(slot);
-            ItemStack heldStack = player.getHeldItem(handIn);
+            ItemStack heldStack = player.getItemInHand(handIn);
             if (!stack.isEmpty() && heldStack.isEmpty()) {
-                player.setHeldItem(handIn, stack);
+                player.setItemInHand(handIn, stack);
                 itemsCombined.setStackInSlot(slot, ItemStack.EMPTY);
                 return true;
             } else if (stack.isEmpty() && !heldStack.isEmpty()) {
@@ -165,7 +165,7 @@ public class TileEnergyTransfuser extends TileBCore implements ITickableTileEnti
                         heldStack.shrink(1);
                     } else {
                         itemsCombined.setStackInSlot(slot, heldStack);
-                        player.setHeldItem(handIn, ItemStack.EMPTY);
+                        player.setItemInHand(handIn, ItemStack.EMPTY);
                     }
                     return true;
                 }
@@ -173,7 +173,7 @@ public class TileEnergyTransfuser extends TileBCore implements ITickableTileEnti
         }
 
         if (player instanceof ServerPlayerEntity) {
-            NetworkHooks.openGui((ServerPlayerEntity) player, this, pos);
+            NetworkHooks.openGui((ServerPlayerEntity) player, this, worldPosition);
         }
         return true;
     }

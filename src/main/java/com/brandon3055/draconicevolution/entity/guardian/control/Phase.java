@@ -62,7 +62,7 @@ public abstract class Phase implements IPhase {
 
    @Override
    public float getYawFactor() {
-      float f = MathHelper.sqrt(Entity.horizontalMag(this.guardian.getMotion())) + 1.0F;
+      float f = MathHelper.sqrt(Entity.getHorizontalDistanceSqr(this.guardian.getDeltaMovement())) + 1.0F;
       float f1 = Math.min(f, 40.0F);
       return 0.7F / f1 / f;
    }

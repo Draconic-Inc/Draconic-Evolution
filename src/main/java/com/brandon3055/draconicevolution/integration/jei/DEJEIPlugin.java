@@ -74,8 +74,8 @@ public class DEJEIPlugin implements IModPlugin {
 
 //        registry.handleRecipes(EIOSpawnerRecipesWrapper.class, recipe -> recipe, VanillaRecipeCategoryUid.CRAFTING);
 
-        ClientWorld world = Minecraft.getInstance().world;
-        registration.addRecipes(world.getRecipeManager().getRecipesForType(DraconicAPI.FUSION_RECIPE_TYPE), RecipeCategoryUids.FUSION_CRAFTING);
+        ClientWorld world = Minecraft.getInstance().level;
+        registration.addRecipes(world.getRecipeManager().getAllRecipesFor(DraconicAPI.FUSION_RECIPE_TYPE), RecipeCategoryUids.FUSION_CRAFTING);
 
 
     }

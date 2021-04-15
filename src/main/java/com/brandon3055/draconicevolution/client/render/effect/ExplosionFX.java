@@ -93,7 +93,7 @@ public class ExplosionFX extends Particle {
         super(worldIn, pos.x, pos.y, pos.z);
         this.pos = pos;
         this.radius = radius;
-        maxAge = 20 * 12;
+        lifetime = 20 * 12;
         coreEffect = new CoreEffect(0);
     }
 
@@ -119,8 +119,8 @@ public class ExplosionFX extends Particle {
 
         coreEffect.update();
 
-        if (age > maxAge) {
-            setExpired();
+        if (age > lifetime) {
+            remove();
         }
 
         if (age == 0) {
@@ -135,29 +135,29 @@ public class ExplosionFX extends Particle {
         }
 
         if (age == 10) {
-            world.playSound(posX, posY, posZ, DESounds.fusionExplosion, SoundCategory.PLAYERS, 100, 0.9F, false);
+            level.playLocalSound(x, y, z, DESounds.fusionExplosion, SoundCategory.PLAYERS, 100, 0.9F, false);
         }
 
         this.age++;
     }
 
     @Override
-    public void renderParticle(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks) {
-        Vector3d viewVec = renderInfo.getProjectedView();
-        Vec3D pos = new Vec3D(posX - viewVec.x, posY - viewVec.y, posZ - viewVec.z);
+    public void render(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks) {
+        Vector3d viewVec = renderInfo.getPosition();
+        Vec3D pos = new Vec3D(x - viewVec.x, y - viewVec.y, z - viewVec.z);
 
         CCRenderState ccrs = CCRenderState.instance();
         ccrs.reset();
         ccrs.baseColour = 0xFFFFFFFF;
 
-        float ttl = 1F - (((float) age + partialTicks) / (float) maxAge);
+        float ttl = 1F - (((float) age + partialTicks) / (float) lifetime);
         ttl = Math.min(1, ttl * 5);
         double od = 1200;
         double id = radius / 100D;
 
 
         RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
-        RenderSystem.color4f(1F, 1F, 1F, 0.15F * ttl * Math.min(1, maxAge / 25F));
+        RenderSystem.color4f(1F, 1F, 1F, 0.15F * ttl * Math.min(1, lifetime / 25F));
         ccrs.startDrawing(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX);
         for (double i = 0; i < 16; i+= 1) {
             Matrix4 mat = RenderUtils.getMatrix(pos.toVector3(), new Rotation(0, 0, 1, 0), 1).apply(new Scale(od, id * i, od));
@@ -186,7 +186,7 @@ public class ExplosionFX extends Particle {
 
     public static class FXHandler implements IParticleRenderType {
         @Override
-        public void beginRender(BufferBuilder builder, TextureManager p_217600_2_) {
+        public void begin(BufferBuilder builder, TextureManager p_217600_2_) {
             RenderSystem.color4f(1F, 1F, 1F, 1F);
             RenderSystem.depthMask(false);
             RenderSystem.alphaFunc(GL11.GL_GREATER, 0F);
@@ -201,7 +201,7 @@ public class ExplosionFX extends Particle {
         }
 
         @Override
-        public void finishRender(Tessellator tessellator) {
+        public void end(Tessellator tessellator) {
             RenderSystem.alphaFunc(GL11.GL_GREATER, 0.1F);
             RenderSystem.enableTexture();
             RenderSystem.enableCull();

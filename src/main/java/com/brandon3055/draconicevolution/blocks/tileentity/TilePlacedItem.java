@@ -59,14 +59,14 @@ public class TilePlacedItem extends TileBCore /*implements ICuboidProvider*/ {
     //region Bounds / Interaction
 
     public void handleClick(int hit, PlayerEntity player) {
-        if (!player.getHeldItemMainhand().isEmpty() && ModHelper.isWrench(player.getHeldItemMainhand())) {
+        if (!player.getMainHandItem().isEmpty() && ModHelper.isWrench(player.getMainHandItem())) {
             altRenderMode.invert();
             LogHelper.dev(altRenderMode);
             super.tick();
             return;
         }
 
-        if (player.isSneaking()) {
+        if (player.isShiftKeyDown()) {
             if (hit == -1) {
                 return;
             }
@@ -75,7 +75,7 @@ public class TilePlacedItem extends TileBCore /*implements ICuboidProvider*/ {
 
             if (index >= 0 && index < rotation.length) {
                 rotation[index].inc();
-                BCoreNetwork.sendSound(world, pos, SoundEvents.ENTITY_ITEM_FRAME_ROTATE_ITEM, SoundCategory.PLAYERS, 1.0F, 0.9F + world.rand.nextFloat() * 0.2F, false);
+                BCoreNetwork.sendSound(level, worldPosition, SoundEvents.ITEM_FRAME_ROTATE_ITEM, SoundCategory.PLAYERS, 1.0F, 0.9F + level.random.nextFloat() * 0.2F, false);
                 super.tick();
             }
 
@@ -83,23 +83,23 @@ public class TilePlacedItem extends TileBCore /*implements ICuboidProvider*/ {
         }
 
         if (hit == 0) {
-            for (int i = 0; i < inventory.getSizeInventory(); i++) {
-                FeatureUtils.dropItemNoDellay(inventory.getStackInSlot(i), world, Vector3.fromEntity(player));
+            for (int i = 0; i < inventory.getContainerSize(); i++) {
+                FeatureUtils.dropItemNoDellay(inventory.getItem(i), level, Vector3.fromEntity(player));
             }
             inventory.stacks.clear();
-            world.removeBlock(pos, false);
+            level.removeBlock(worldPosition, false);
         }
         else {
-            if (!inventory.getStackInSlot(hit - 1).isEmpty()) {
-                FeatureUtils.dropItemNoDellay(inventory.getStackInSlot(hit - 1), world, Vector3.fromEntity(player));
-                inventory.setInventorySlotContents(hit - 1, ItemStack.EMPTY);
+            if (!inventory.getItem(hit - 1).isEmpty()) {
+                FeatureUtils.dropItemNoDellay(inventory.getItem(hit - 1), level, Vector3.fromEntity(player));
+                inventory.setItem(hit - 1, ItemStack.EMPTY);
             }
         }
     }
 
     public void breakBlock() {
-        for (int i = 0; i < inventory.getSizeInventory(); i++) {
-            FeatureUtils.dropItemNoDellay(inventory.getStackInSlot(i), world, Vector3.fromTileCenter(this));
+        for (int i = 0; i < inventory.getContainerSize(); i++) {
+            FeatureUtils.dropItemNoDellay(inventory.getItem(i), level, Vector3.fromTileCenter(this));
         }
         inventory.stacks.clear();
     }
@@ -110,7 +110,7 @@ public class TilePlacedItem extends TileBCore /*implements ICuboidProvider*/ {
     private synchronized void calculateBounds() {
 
         BlockState state = getBlockState();//world.getBlockState(getPos());
-        Cuboid6 box = new Cuboid6(0.5, 0, 0.5, 0.5, 0, 0.5).apply(Rotation.sideRotations[state.get(PlacedItem.FACING).getIndex()].at(Vector3.CENTER));
+        Cuboid6 box = new Cuboid6(0.5, 0, 0.5, 0.5, 0, 0.5).apply(Rotation.sideRotations[state.getValue(PlacedItem.FACING).get3DDataValue()].at(Vector3.CENTER));
 
         int i = 0;
         for (Cuboid6 cuboid : indexedCuboids) {
@@ -119,10 +119,10 @@ public class TilePlacedItem extends TileBCore /*implements ICuboidProvider*/ {
         }
 
         if (facing.getAxisDirection() == Direction.AxisDirection.NEGATIVE) {
-            box.setSide(facing.getIndex() ^ 1, 0.01);
+            box.setSide(facing.get3DDataValue() ^ 1, 0.01);
         }
         else {
-            box.setSide(facing.getIndex() ^ 1, 0.99);
+            box.setSide(facing.get3DDataValue() ^ 1, 0.99);
         }
 
 
@@ -135,7 +135,7 @@ public class TilePlacedItem extends TileBCore /*implements ICuboidProvider*/ {
     }
 
     private synchronized void recalculateCuboids() {
-        BlockState state = world.getBlockState(getPos());
+        BlockState state = level.getBlockState(getBlockPos());
         if (state.getBlock() != DEContent.placed_item) {
             return;
         }
@@ -143,7 +143,7 @@ public class TilePlacedItem extends TileBCore /*implements ICuboidProvider*/ {
 
         double scale = displayCount.get() == 1 && (toolDisplay.get() || altRenderMode.get()) ? 0.2 : 0.32;
 
-        Transformation rotation = rotations[state.get(PlacedItem.FACING).getIndex()].at(Vector3.CENTER);
+        Transformation rotation = rotations[state.getValue(PlacedItem.FACING).get3DDataValue()].at(Vector3.CENTER);
 
         double offset = 0.225;
         double blockH = 0.36;
@@ -208,7 +208,7 @@ public class TilePlacedItem extends TileBCore /*implements ICuboidProvider*/ {
     @Override
     public void writeExtraNBT(CompoundNBT compound) {
         super.writeExtraNBT(compound);
-        compound.putByte("Facing", (byte) facing.getIndex());
+        compound.putByte("Facing", (byte) facing.get3DDataValue());
         for (int i = 0; i < isBlock.length; i++) {
             compound.putBoolean("IsBlock" + i, isBlock[i]);
         }
@@ -218,7 +218,7 @@ public class TilePlacedItem extends TileBCore /*implements ICuboidProvider*/ {
     @Override
     public void readExtraNBT(CompoundNBT compound) {
         super.readExtraNBT(compound);
-        facing = Direction.byIndex(compound.getByte("Facing"));
+        facing = Direction.from3DDataValue(compound.getByte("Facing"));
         for (int i = 0; i < isBlock.length; i++) {
             isBlock[i] = compound.getBoolean("IsBlock" + i);
         }
@@ -231,7 +231,7 @@ public class TilePlacedItem extends TileBCore /*implements ICuboidProvider*/ {
     @OnlyIn(Dist.CLIENT)
     @Override
     public AxisAlignedBB getRenderBoundingBox() {
-        return new AxisAlignedBB(pos.add(-1, -1, -1), pos.add(2, 2, 2));
+        return new AxisAlignedBB(worldPosition.offset(-1, -1, -1), worldPosition.offset(2, 2, 2));
     }
 
     public static class PlacedItemInventory implements IInventory {
@@ -243,23 +243,23 @@ public class TilePlacedItem extends TileBCore /*implements ICuboidProvider*/ {
         }
 
         @Override
-        public void setInventorySlotContents(int index, ItemStack stack) {
+        public void setItem(int index, ItemStack stack) {
             setSlot(index, stack);
 
             int count = 0;
-            for (int i = 0; i < getSizeInventory(); i++) {
-                if (!getStackInSlot(i).isEmpty()) {
-                    tile.isBlock[i] = getStackInSlot(i).getItem() instanceof BlockItem;
+            for (int i = 0; i < getContainerSize(); i++) {
+                if (!getItem(i).isEmpty()) {
+                    tile.isBlock[i] = getItem(i).getItem() instanceof BlockItem;
                     count++;
                 }
             }
 
             if (count == 0) {
-                tile.world.removeBlock(tile.getPos(), false);
+                tile.level.removeBlock(tile.getBlockPos(), false);
             }
             else {
                 tile.displayCount.set((byte) count);
-                ItemStack stack0 = getStackInSlot(0);
+                ItemStack stack0 = getItem(0);
                 tile.toolDisplay.set(count == 1 && stack0.getItem().isEnchantable(stack0));
                 tile.tick();
                 tile.updateBlock();
@@ -267,12 +267,12 @@ public class TilePlacedItem extends TileBCore /*implements ICuboidProvider*/ {
         }
 
         @Override
-        public int getSizeInventory() {
+        public int getContainerSize() {
             return 4;
         }
 
         @Override
-        public ItemStack getStackInSlot(int index) {
+        public ItemStack getItem(int index) {
             return index >= 0 && index < stacks.size() && stacks.get(index) != null ? stacks.get(index) : ItemStack.EMPTY;
         }
 
@@ -293,7 +293,7 @@ public class TilePlacedItem extends TileBCore /*implements ICuboidProvider*/ {
                 stacks.add(stack);
             }
 
-            markDirty();
+            setChanged();
         }
 
         protected void toNBT(CompoundNBT compound) {
@@ -303,7 +303,7 @@ public class TilePlacedItem extends TileBCore /*implements ICuboidProvider*/ {
                 if (stack.isEmpty()) {
                     continue;
                 }
-                itemList.add(stack.write(new CompoundNBT()));
+                itemList.add(stack.save(new CompoundNBT()));
             }
 
             compound.put("InventoryStacks", itemList);
@@ -314,14 +314,14 @@ public class TilePlacedItem extends TileBCore /*implements ICuboidProvider*/ {
             ListNBT itemList = compound.getList("InventoryStacks", 10);
 
             for (int i = 0; i < itemList.size(); i++) {
-                stacks.add(ItemStack.read(itemList.getCompound(i)));
+                stacks.add(ItemStack.of(itemList.getCompound(i)));
             }
         }
 
         @Override
-        public ItemStack removeStackFromSlot(int index) {
-            ItemStack stack = getStackInSlot(index);
-            setInventorySlotContents(index, ItemStack.EMPTY);
+        public ItemStack removeItemNoUpdate(int index) {
+            ItemStack stack = getItem(index);
+            setItem(index, ItemStack.EMPTY);
             return stack;
         }
 
@@ -331,7 +331,7 @@ public class TilePlacedItem extends TileBCore /*implements ICuboidProvider*/ {
         }
 
         @Override
-        public ItemStack decrStackSize(int index, int count) {
+        public ItemStack removeItem(int index, int count) {
             ItemStack stack;
 
             if (index >= 0 && index < stacks.size() && !stacks.get(index).isEmpty() && count > 0) {
@@ -342,7 +342,7 @@ public class TilePlacedItem extends TileBCore /*implements ICuboidProvider*/ {
             }
 
             if (!stack.isEmpty()) {
-                markDirty();
+                setChanged();
             }
 
             return stack;
@@ -350,39 +350,39 @@ public class TilePlacedItem extends TileBCore /*implements ICuboidProvider*/ {
 
 
         @Override
-        public int getInventoryStackLimit() {
+        public int getMaxStackSize() {
             return 64;
         }
 
         @Override
-        public void markDirty() {
-            tile.markDirty();
+        public void setChanged() {
+            tile.setChanged();
         }
 
         @Override
-        public boolean isUsableByPlayer(PlayerEntity player) {
+        public boolean stillValid(PlayerEntity player) {
             return true;
         }
 
         @Override
-        public void openInventory(PlayerEntity player) {
+        public void startOpen(PlayerEntity player) {
 
         }
 
         @Override
-        public void closeInventory(PlayerEntity player) {
+        public void stopOpen(PlayerEntity player) {
 
         }
 
         @Override
-        public boolean isItemValidForSlot(int index, ItemStack stack) {
+        public boolean canPlaceItem(int index, ItemStack stack) {
             return true;
         }
 
         @Override
-        public void clear() {
+        public void clearContent() {
             stacks.clear();
-            tile.world.removeBlock(tile.getPos(), false);
+            tile.level.removeBlock(tile.getBlockPos(), false);
         }
 
 

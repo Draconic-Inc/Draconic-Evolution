@@ -91,7 +91,7 @@ public class TileGenerator extends TileBCore implements ITickableTileEntity, IRS
     @Override
     public void tick() {
         super.tick();
-        if (world.isRemote) {
+        if (level.isClientSide) {
             rotationSpeed = (active.get() ? mode.get().animFanSpeed : 0F);
             rotation += rotationSpeed;
             updateSoundAndFX();
@@ -102,7 +102,7 @@ public class TileGenerator extends TileBCore implements ITickableTileEntity, IRS
         boolean last = active.get();
         active.set(fuelRemaining.get() > 0 && opStorage.getOPStored() < opStorage.getMaxOPStored() && isTileEnabled());
         if (active.get() != last) {
-            world.setBlockState(pos, world.getBlockState(pos).with(Generator.ACTIVE, active.get()));
+            level.setBlockAndUpdate(worldPosition, level.getBlockState(worldPosition).setValue(Generator.ACTIVE, active.get()));
         }
 
         if (active.get()) {
@@ -172,14 +172,14 @@ public class TileGenerator extends TileBCore implements ITickableTileEntity, IRS
     @OnlyIn(Dist.CLIENT)
     private void updateSoundAndFX() {
         soundHandler.tick();
-        if (!active.get() || pos.distanceSq(Minecraft.getInstance().player.getPosition()) > 16 * 16) {
+        if (!active.get() || worldPosition.distSqr(Minecraft.getInstance().player.blockPosition()) > 16 * 16) {
             return;
         }
-        Random rand = world.rand;
+        Random rand = level.random;
 
         double p = 0.0625;
         if (rand.nextInt(17 - (mode.get().index * 4)) == 0) {
-            Direction enumfacing = getBlockState().get(Generator.FACING);
+            Direction enumfacing = getBlockState().getValue(Generator.FACING);
 
             double pgx = (p * 7.5D) + (rand.nextInt(6) * (p));
             double pgy = 0.3D;
@@ -188,20 +188,20 @@ public class TileGenerator extends TileBCore implements ITickableTileEntity, IRS
 
             switch (enumfacing) {
                 case WEST:
-                    spawnGrillParticle(rand, pos.getX() + pgz - outOffset, pos.getY() + pgy, pos.getZ() + pgx);
+                    spawnGrillParticle(rand, worldPosition.getX() + pgz - outOffset, worldPosition.getY() + pgy, worldPosition.getZ() + pgx);
                     break;
                 case EAST:
-                    spawnGrillParticle(rand, pos.getX() + pgz + outOffset, pos.getY() + pgy, pos.getZ() + (1D - pgx));
+                    spawnGrillParticle(rand, worldPosition.getX() + pgz + outOffset, worldPosition.getY() + pgy, worldPosition.getZ() + (1D - pgx));
                     break;
                 case NORTH:
-                    spawnGrillParticle(rand, pos.getX() + (1D - pgx), pos.getY() + pgy, pos.getZ() + pgz - outOffset);
+                    spawnGrillParticle(rand, worldPosition.getX() + (1D - pgx), worldPosition.getY() + pgy, worldPosition.getZ() + pgz - outOffset);
                     break;
                 case SOUTH:
-                    spawnGrillParticle(rand, pos.getX() + pgx, pos.getY() + pgy, pos.getZ() + pgz + outOffset);
+                    spawnGrillParticle(rand, worldPosition.getX() + pgx, worldPosition.getY() + pgy, worldPosition.getZ() + pgz + outOffset);
             }
         }
         if (rand.nextInt(5 - mode.get().index) == 0) {
-            Direction enumfacing = getBlockState().get(Generator.FACING);
+            Direction enumfacing = getBlockState().getValue(Generator.FACING);
 
             double pex = (p * 3D) + (rand.nextInt(5) * p);
             double pey = p * 6.5;
@@ -211,35 +211,35 @@ public class TileGenerator extends TileBCore implements ITickableTileEntity, IRS
 
             switch (enumfacing) {
                 case WEST:
-                    spawnExhaustParticle(rand, pos.getX() + (1D - pex), pos.getY() + pey, pos.getZ() + pez - exhaustOffset, new Vec3D(0, 0, -exhaustVelocity));
+                    spawnExhaustParticle(rand, worldPosition.getX() + (1D - pex), worldPosition.getY() + pey, worldPosition.getZ() + pez - exhaustOffset, new Vec3D(0, 0, -exhaustVelocity));
                     break;
                 case EAST:
-                    spawnExhaustParticle(rand, pos.getX() + pex, pos.getY() + pey, pos.getZ() + pez + exhaustOffset, new Vec3D(0, 0, exhaustVelocity));
+                    spawnExhaustParticle(rand, worldPosition.getX() + pex, worldPosition.getY() + pey, worldPosition.getZ() + pez + exhaustOffset, new Vec3D(0, 0, exhaustVelocity));
                     break;
                 case NORTH:
-                    spawnExhaustParticle(rand, pos.getX() + pez + exhaustOffset, pos.getY() + pey, pos.getZ() + (1D - pex), new Vec3D(exhaustVelocity, 0, 0));
+                    spawnExhaustParticle(rand, worldPosition.getX() + pez + exhaustOffset, worldPosition.getY() + pey, worldPosition.getZ() + (1D - pex), new Vec3D(exhaustVelocity, 0, 0));
                     break;
                 case SOUTH:
-                    spawnExhaustParticle(rand, pos.getX() + pez - exhaustOffset, pos.getY() + pey, pos.getZ() + pex, new Vec3D(-exhaustVelocity, 0, 0));
+                    spawnExhaustParticle(rand, worldPosition.getX() + pez - exhaustOffset, worldPosition.getY() + pey, worldPosition.getZ() + pex, new Vec3D(-exhaustVelocity, 0, 0));
             }
         }
     }
 
     @OnlyIn(Dist.CLIENT)
     private void spawnGrillParticle(Random rand, double x, double y, double z) {
-        world.addParticle(ParticleTypes.SMOKE, x, y, z, 0.0D, 0.0D, 0.0D);
+        level.addParticle(ParticleTypes.SMOKE, x, y, z, 0.0D, 0.0D, 0.0D);
         if (mode.get() != Mode.PERFORMANCE_PLUS && rand.nextInt(8) == 0) {
-            world.addParticle(new IntParticleData(DEParticles.flame, 127), x, y, z, 0, 0, 0);
+            level.addParticle(new IntParticleData(DEParticles.flame, 127), x, y, z, 0, 0, 0);
         }
     }
 
     @OnlyIn(Dist.CLIENT)
     private void spawnExhaustParticle(Random rand, double x, double y, double z, Vec3D velocity) {
         if (rand.nextBoolean()) {
-            world.addParticle(ParticleTypes.SMOKE, x, y, z, velocity.x, velocity.y, velocity.z);
-            world.addParticle(ParticleTypes.SMOKE, x, y, z, velocity.x, velocity.y, velocity.z);
+            level.addParticle(ParticleTypes.SMOKE, x, y, z, velocity.x, velocity.y, velocity.z);
+            level.addParticle(ParticleTypes.SMOKE, x, y, z, velocity.x, velocity.y, velocity.z);
         } else {
-            world.addParticle(new IntParticleData(DEParticles.flame, 64, (int) ((0.1 + (rand.nextDouble() * 0.05)) * 255)), x, y, z, velocity.x, velocity.y, velocity.z);
+            level.addParticle(new IntParticleData(DEParticles.flame, 64, (int) ((0.1 + (rand.nextDouble() * 0.05)) * 255)), x, y, z, velocity.x, velocity.y, velocity.z);
         }
     }
 
@@ -252,7 +252,7 @@ public class TileGenerator extends TileBCore implements ITickableTileEntity, IRS
     @Override
     public boolean onBlockActivated(BlockState state, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
         if (player instanceof ServerPlayerEntity) {
-            NetworkHooks.openGui((ServerPlayerEntity) player, this, pos);
+            NetworkHooks.openGui((ServerPlayerEntity) player, this, worldPosition);
         }
         return true;
     }

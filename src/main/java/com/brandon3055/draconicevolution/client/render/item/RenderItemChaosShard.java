@@ -21,6 +21,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderState;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.model.IModelTransform;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.Item;
@@ -41,11 +42,11 @@ public class RenderItemChaosShard implements IItemRenderer {
     private CCModel shard;
     private Item item;
 
-    private static RenderType crystalType = RenderType.makeType("crystal_type", DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP, GL11.GL_QUADS, 256, RenderType.State.getBuilder()
-            .texture(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/item/chaos_crystal.png"), false, false))
-            .transparency(TRANSLUCENT_TRANSPARENCY)
-            .texturing(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
-            .build(false));
+    private static RenderType crystalType = RenderType.create("crystal_type", DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP, GL11.GL_QUADS, 256, RenderType.State.builder()
+            .setTextureState(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/item/chaos_crystal.png"), false, false))
+            .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+            .setTexturingState(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
+            .createCompositeState(false));
 
     public RenderItemChaosShard(Item item) {
         this.item = item;
@@ -56,7 +57,7 @@ public class RenderItemChaosShard implements IItemRenderer {
     //region Unused
 
     @Override
-    public boolean isAmbientOcclusion() {
+    public boolean useAmbientOcclusion() {
         return false;
     }
 
@@ -66,7 +67,7 @@ public class RenderItemChaosShard implements IItemRenderer {
     }
 
     @Override
-    public boolean isSideLit() {
+    public boolean usesBlockLight() {
         return false;
     }
 
@@ -89,7 +90,7 @@ public class RenderItemChaosShard implements IItemRenderer {
     }
 
     @Override
-    public ImmutableMap<ItemCameraTransforms.TransformType, TransformationMatrix> getTransforms() {
+    public IModelTransform getModelTransform() {
         return TransformUtils.DEFAULT_ITEM;
     }
 }

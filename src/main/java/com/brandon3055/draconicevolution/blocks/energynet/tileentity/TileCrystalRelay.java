@@ -34,18 +34,18 @@ public class TileCrystalRelay extends TileCrystalBase {
     @OnlyIn(Dist.CLIENT)
     @Override
     public CrystalFXBase createStaticFX() {
-        return new CrystalFXRing((ClientWorld)world, this);
+        return new CrystalFXRing((ClientWorld)level, this);
     }
 
     @Override
     public Vec3D getBeamLinkPos(BlockPos linkTo) {
-        Vec3D thisVec = Vec3D.getCenter(pos);
+        Vec3D thisVec = Vec3D.getCenter(worldPosition);
         Vec3D targVec = Vec3D.getCenter(linkTo);
         double dist = thisVec.distXZ(targVec);
         double offM = 0.4D;
 
         if (dist == 0) {
-            if (pos.getY() > linkTo.getY()) {
+            if (worldPosition.getY() > linkTo.getY()) {
                 return thisVec.subtract(0, 0.4, 0);
             }
             else {

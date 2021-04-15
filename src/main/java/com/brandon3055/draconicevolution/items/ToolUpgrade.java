@@ -137,7 +137,7 @@ public class ToolUpgrade extends ItemBCore /*implements IRenderOverride*/ {
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         if (!Screen.hasShiftDown()) {
             tooltip.add(new TranslationTextComponent("upgrade.de.holdShiftForRecipes.info", TextFormatting.AQUA + "" + TextFormatting.ITALIC, TextFormatting.RESET + "" + TextFormatting.GRAY));
         }

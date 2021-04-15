@@ -30,7 +30,7 @@ public class ModularBow extends BowItem implements IReaperItem, IModularItem {
     private final TechLevel techLevel;
 
     public ModularBow(TechPropBuilder props) {
-        super(props.build().isImmuneToFire());
+        super(props.build().fireResistant());
         this.techLevel = props.techLevel;
     }
 
@@ -54,9 +54,9 @@ public class ModularBow extends BowItem implements IReaperItem, IModularItem {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         addModularItemInformation(stack, worldIn, tooltip, flagIn);
-        tooltip.add(new StringTextComponent("[Not yet implemented]").mergeStyle(TextFormatting.RED));
+        tooltip.add(new StringTextComponent("[Not yet implemented]").withStyle(TextFormatting.RED));
     }
 
     @Override

@@ -76,7 +76,7 @@ public class ItemDraconiumBlock extends ItemBlockBCore {
     @OnlyIn(Dist.CLIENT)
     @SuppressWarnings("unchecked")
     @Override
-    public void addInformation(ItemStack stack, @Nullable World world, List list, ITooltipFlag p_77624_4_) {
+    public void appendHoverText(ItemStack stack, @Nullable World world, List list, ITooltipFlag p_77624_4_) {
 //        if (stack.hasTagCompound()) {
 //            list.add(Utils.addCommas(getEnergyStored(stack)) + " / " + Utils.addCommas(getMaxEnergyStored(stack)) + "RF");
 //        }

@@ -75,7 +75,7 @@ public class WyvernAxe extends MiningToolBase {
     //region Item
 
     @Override
-    public UseAction getUseAction(ItemStack stack) {
+    public UseAction getUseAnimation(ItemStack stack) {
         return UseAction.BOW;
     }
 
@@ -110,26 +110,26 @@ public class WyvernAxe extends MiningToolBase {
 
 
     @Override
-    public ActionResultType onItemUse(ItemUseContext context) {
-        World world = context.getWorld();
-        BlockPos pos = context.getPos();
+    public ActionResultType useOn(ItemUseContext context) {
+        World world = context.getLevel();
+        BlockPos pos = context.getClickedPos();
         PlayerEntity player = context.getPlayer();
 
-        ItemStack stack = context.getItem();
-        if (world.getBlockState(pos).getMaterial() == Material.WOOD && !player.isSneaking()) {
-            player.setActiveHand(context.getHand());
-            if (!world.isRemote) {
+        ItemStack stack = context.getItemInHand();
+        if (world.getBlockState(pos).getMaterial() == Material.WOOD && !player.isShiftKeyDown()) {
+            player.startUsingItem(context.getHand());
+            if (!world.isClientSide) {
                 SelectionController controller = new SelectionController(player, stack, pos, true, 2, this);
                 ProcessHandler.addProcess(controller);
             }
             return ActionResultType.PASS;
         }
-        return super.onItemUse(context);
+        return super.useOn(context);
     }
 
     @Override
-    public void onPlayerStoppedUsing(ItemStack stack, World worldIn, LivingEntity entityLiving, int timeLeft) {
-        super.onPlayerStoppedUsing(stack, worldIn, entityLiving, timeLeft);
+    public void releaseUsing(ItemStack stack, World worldIn, LivingEntity entityLiving, int timeLeft) {
+        super.releaseUsing(stack, worldIn, entityLiving, timeLeft);
     }
 
     protected static boolean isTree(World world, BlockPos pos) {
@@ -140,14 +140,14 @@ public class WyvernAxe extends MiningToolBase {
         else {
             int treeTop = 0;
             for (int y = 0; y <= 50; y++) {
-                BlockState state = world.getBlockState(pos.add(0, y, 0));
+                BlockState state = world.getBlockState(pos.offset(0, y, 0));
                 if (state.getMaterial() != Material.WOOD && state.getMaterial() != Material.LEAVES) {
                     treeTop = y;
                     break;
                 }
             }
 
-            Iterable<BlockPos> list = BlockPos.getAllInBoxMutable(pos.add(-1, 0, -1), pos.add(1, treeTop, 1));
+            Iterable<BlockPos> list = BlockPos.betweenClosed(pos.offset(-1, 0, -1), pos.offset(1, treeTop, 1));
 
             int leaves = 0;
             for (BlockPos checkPos : list) {
@@ -188,10 +188,10 @@ public class WyvernAxe extends MiningToolBase {
             this.player = player;
             this.stack = stack;
             this.axe = axe;
-            this.collector = new TreeCollector(player.world, breakDown, connectRad, stack, player, axe);
+            this.collector = new TreeCollector(player.level, breakDown, connectRad, stack, player, axe);
             this.collector.setCollectionCallback(this);
             this.collector.collectTree(clicked);
-            this.hand = player.getActiveHand();
+            this.hand = player.getUsedItemHand();
             LogHelper.dev("StartSelector");
             showHarvest = ToolConfigHelper.getBooleanField("showHarvestIndicator", stack);
         }
@@ -206,14 +206,14 @@ public class WyvernAxe extends MiningToolBase {
 
         @Override
         public void updateProcess() {
-            if (!player.isAlive() || player.getHeldItem(hand) != stack || collector.collected >= axe.getMaxHarvest() || collector.isCollectionComplete()) {
+            if (!player.isAlive() || player.getItemInHand(hand) != stack || collector.collected >= axe.getMaxHarvest() || collector.isCollectionComplete()) {
                 collector.killCollector();
                 LogHelper.dev("Finish " + collector.collected);
                 finishHarvest();
                 return;
             }
 
-            if (player.isHandActive() && player.getActiveItemStack() == stack) {
+            if (player.isUsingItem() && player.getUseItem() == stack) {
                 return;
             }
 
@@ -226,7 +226,7 @@ public class WyvernAxe extends MiningToolBase {
         }
 
         private void finishHarvest() {
-            if (hasFinished || !(player.world instanceof ServerWorld)) {
+            if (hasFinished || !(player.level instanceof ServerWorld)) {
                 return;
             }
 
@@ -243,17 +243,17 @@ public class WyvernAxe extends MiningToolBase {
 
             InventoryDynamic inventory = collector.getCollected();
 
-            if (inventory.getSizeInventory() > 2) {
+            if (inventory.getContainerSize() > 2) {
 //                EntityLootCore lootCore = new EntityLootCore(player.world, inventory);
 //                lootCore.setPosition(player.getPosX(), player.getPosY(), player.getPosZ());
 //                player.world.addEntity(lootCore); TODO Entity Stuff
             }
             else {
-                for (int i = 0; i < inventory.getSizeInventory(); i++) {
-                    ItemStack s = inventory.removeStackFromSlot(i);
+                for (int i = 0; i < inventory.getContainerSize(); i++) {
+                    ItemStack s = inventory.removeItemNoUpdate(i);
                     if (s != null) {
-                        ItemEntity item = new ItemEntity(player.world, player.getPosX(), player.getPosY(), player.getPosZ(), s);
-                        player.world.addEntity(item);
+                        ItemEntity item = new ItemEntity(player.level, player.getX(), player.getY(), player.getZ(), s);
+                        player.level.addFreshEntity(item);
                     }
                 }
             }

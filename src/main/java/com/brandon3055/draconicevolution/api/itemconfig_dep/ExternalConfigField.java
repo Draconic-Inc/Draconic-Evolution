@@ -28,7 +28,7 @@ public class ExternalConfigField extends IntegerConfigField {
     @OnlyIn(Dist.CLIENT)
     @Override
     public String getReadableValue() {
-        return I18n.format(unloacalizedButtonText);
+        return I18n.get(unloacalizedButtonText);
     }
 
     @Override

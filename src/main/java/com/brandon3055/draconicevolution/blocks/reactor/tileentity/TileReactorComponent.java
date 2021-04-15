@@ -62,7 +62,7 @@ public abstract class TileReactorComponent extends TileBCore implements ITickabl
         super.tick();
         moveCheckComplete = false;
 
-        if (world.isRemote) {
+        if (level.isClientSide) {
             TileReactorCore core = tryGetCore();
             if (core != null) {
                 animRotationSpeed = core.shieldAnimationState * 15F;
@@ -74,13 +74,13 @@ public abstract class TileReactorComponent extends TileBCore implements ITickabl
             }
 
             animRotation += animRotationSpeed;
-            if (coreFalureIminent && world.rand.nextInt(10) == 0) {
-                animRotation += (world.rand.nextDouble() - 0.5) * 360;
-                if (world.rand.nextBoolean()) {
-                    world.addParticle(ParticleTypes.LARGE_SMOKE, pos.getX() + world.rand.nextDouble(), pos.getY() + world.rand.nextDouble(), pos.getZ() + world.rand.nextDouble(), 0, 0, 0);
+            if (coreFalureIminent && level.random.nextInt(10) == 0) {
+                animRotation += (level.random.nextDouble() - 0.5) * 360;
+                if (level.random.nextBoolean()) {
+                    level.addParticle(ParticleTypes.LARGE_SMOKE, worldPosition.getX() + level.random.nextDouble(), worldPosition.getY() + level.random.nextDouble(), worldPosition.getZ() + level.random.nextDouble(), 0, 0, 0);
                 }
                 else {
-                    world.addParticle(ParticleTypes.CLOUD, pos.getX() + world.rand.nextDouble(), pos.getY() + world.rand.nextDouble(), pos.getZ() + world.rand.nextDouble(), 0, 0, 0);
+                    level.addParticle(ParticleTypes.CLOUD, worldPosition.getX() + level.random.nextDouble(), worldPosition.getY() + level.random.nextDouble(), worldPosition.getZ() + level.random.nextDouble(), 0, 0, 0);
                 }
             }
         }
@@ -91,7 +91,7 @@ public abstract class TileReactorComponent extends TileBCore implements ITickabl
                 int rs = rsMode.get().getRSSignal(core);
                 if (rs != rsPower.get()) {
                     rsPower.set(rs);
-                    world.notifyNeighborsOfStateChange(pos, getBlockState().getBlock());
+                    level.updateNeighborsAt(worldPosition, getBlockState().getBlock());
                 }
             }
         }
@@ -109,7 +109,7 @@ public abstract class TileReactorComponent extends TileBCore implements ITickabl
     public void bindToCore(TileReactorCore core) {
         LogHelper.dev("Reactor-Comp: Bind To Core");
         isBound.set(true);
-        coreOffset.set(getCoreOffset(core.getPos()));
+        coreOffset.set(getCoreOffset(core.getBlockPos()));
     }
 
     /**
@@ -127,9 +127,9 @@ public abstract class TileReactorComponent extends TileBCore implements ITickabl
 
         LogHelper.dev("Reactor-Comp: Try Poke Core | Find");
         for (int i = 1; i < COMPONENT_MAX_DISTANCE; i++) {
-            BlockPos searchPos = pos.offset(facing.get(), i);
-            if (!world.isAirBlock(searchPos)) {
-                TileEntity tile = world.getTileEntity(searchPos);
+            BlockPos searchPos = worldPosition.relative(facing.get(), i);
+            if (!level.isEmptyBlock(searchPos)) {
+                TileEntity tile = level.getBlockEntity(searchPos);
                 LogHelper.dev("Reactor-Comp: Check: " + tile);
                 LogHelper.dev("Reactor-Comp: Try Poke Core | Found: " + tile);
 
@@ -151,14 +151,14 @@ public abstract class TileReactorComponent extends TileBCore implements ITickabl
     //region Player Interaction
 
     public void onPlaced() {
-        if (world.isRemote) {
+        if (level.isClientSide) {
             return;
         }
         pokeCore();
     }
 
     public void onBroken() {
-        if (world.isRemote) {
+        if (level.isClientSide) {
             return;
         }
 
@@ -169,7 +169,7 @@ public abstract class TileReactorComponent extends TileBCore implements ITickabl
     }
 
     public void onActivated(PlayerEntity player) {
-        if (world.isRemote) {
+        if (level.isClientSide) {
             return;
         }
 
@@ -181,7 +181,7 @@ public abstract class TileReactorComponent extends TileBCore implements ITickabl
     }
 
     public void setRSMode(PlayerEntity player, RSMode rsMode) {
-        if (world.isRemote) {
+        if (level.isClientSide) {
             sendPacketToServer(output -> output.writeString(rsMode.name()), 0);
         }
         else {
@@ -201,11 +201,11 @@ public abstract class TileReactorComponent extends TileBCore implements ITickabl
     //region Getters & Setters
 
     protected BlockPos getCorePos() {
-        return pos.subtract(coreOffset.get().getPos());
+        return worldPosition.subtract(coreOffset.get().getPos());
     }
 
     protected Vec3I getCoreOffset(BlockPos corePos) {
-        return new Vec3I(pos.subtract(corePos));
+        return new Vec3I(worldPosition.subtract(corePos));
     }
 
     /**
@@ -217,12 +217,12 @@ public abstract class TileReactorComponent extends TileBCore implements ITickabl
             return null;
         }
 
-        TileEntity tile = world.getTileEntity(getCorePos());
+        TileEntity tile = level.getBlockEntity(getCorePos());
         if (tile instanceof TileReactorCore) {
             return (TileReactorCore) tile;
         }
 
-        if (world.isAreaLoaded(getCorePos(), 16)) {
+        if (level.isAreaLoaded(getCorePos(), 16)) {
             invalidateComponent();
         }
 
@@ -235,7 +235,7 @@ public abstract class TileReactorComponent extends TileBCore implements ITickabl
             return null;
         }
 
-        TileEntity tile = world.getTileEntity(getCorePos());
+        TileEntity tile = level.getBlockEntity(getCorePos());
         if (tile instanceof TileReactorCore) {
             return (TileReactorCore) tile;
         }
@@ -245,16 +245,16 @@ public abstract class TileReactorComponent extends TileBCore implements ITickabl
     protected TileReactorCore getCachedCore() {
         if (isBound.get()) {
             BlockPos corePos = getCorePos();
-            Chunk coreChunk = world.getChunkAt(corePos);
+            Chunk coreChunk = level.getChunkAt(corePos);
 
-            if (!Utils.isAreaLoaded(world, corePos, ChunkHolder.LocationType.TICKING)) {
+            if (!Utils.isAreaLoaded(level, corePos, ChunkHolder.LocationType.TICKING)) {
                 cachedCore = null;
                 return null;
             }
 
-            TileEntity tileAtPos = coreChunk.getTileEntity(corePos, Chunk.CreateEntityType.CHECK);
+            TileEntity tileAtPos = coreChunk.getBlockEntity(corePos, Chunk.CreateEntityType.CHECK);
             if (tileAtPos == null || cachedCore == null || tileAtPos != cachedCore || tileAtPos.isRemoved()) {
-                TileEntity tile = world.getTileEntity(corePos);
+                TileEntity tile = level.getBlockEntity(corePos);
 
                 if (tile instanceof TileReactorCore) {
                     cachedCore = (TileReactorCore) tile;

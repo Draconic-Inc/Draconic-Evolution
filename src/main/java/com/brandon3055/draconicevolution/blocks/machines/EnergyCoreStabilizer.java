@@ -29,24 +29,24 @@ import net.minecraft.world.World;
 public class EnergyCoreStabilizer extends BlockBCore {
 
     public static final BooleanProperty LARGE = BooleanProperty.create("large");
-    public static VoxelShape SHAPE = makeCuboidShape(0.98, 0.98, 0.98, 15.02, 15.02, 15.02);
-    public static VoxelShape SHAPE_X = VoxelShapes.create(0, -1, -1, 1, 2, 2);
-    public static VoxelShape SHAPE_Y = VoxelShapes.create(-1, 0, -1, 2, 1, 2);
-    public static VoxelShape SHAPE_Z = VoxelShapes.create(-1, -1, 0, 2, 2, 1);
+    public static VoxelShape SHAPE = box(0.98, 0.98, 0.98, 15.02, 15.02, 15.02);
+    public static VoxelShape SHAPE_X = VoxelShapes.box(0, -1, -1, 1, 2, 2);
+    public static VoxelShape SHAPE_Y = VoxelShapes.box(-1, 0, -1, 2, 1, 2);
+    public static VoxelShape SHAPE_Z = VoxelShapes.box(-1, -1, 0, 2, 2, 1);
 
     public EnergyCoreStabilizer(Properties properties) {
         super(properties);
-        this.setDefaultState(stateContainer.getBaseState().with(LARGE, false));
+        this.registerDefaultState(stateDefinition.any().setValue(LARGE, false));
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
         builder.add(LARGE);
     }
 
     @Override
-    public BlockRenderType getRenderType(BlockState state) {
-        return state.get(LARGE) ? BlockRenderType.INVISIBLE : BlockRenderType.MODEL;
+    public BlockRenderType getRenderShape(BlockState state) {
+        return state.getValue(LARGE) ? BlockRenderType.INVISIBLE : BlockRenderType.MODEL;
     }
 
 //    @Override
@@ -73,16 +73,16 @@ public class EnergyCoreStabilizer extends BlockBCore {
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
-        return VoxelShapes.fullCube();//VoxelShapes.empty();//super.getCollisionShape(state, worldIn, pos, context);
+        return VoxelShapes.block();//VoxelShapes.empty();//super.getCollisionShape(state, worldIn, pos, context);
     }
 
     @Override
-    public VoxelShape getRaytraceShape(BlockState state, IBlockReader worldIn, BlockPos pos) {
+    public VoxelShape getInteractionShape(BlockState state, IBlockReader worldIn, BlockPos pos) {
         return VoxelShapes.empty();//super.getRaytraceShape(state, worldIn, pos);
     }
 
     @Override
-    public VoxelShape getRenderShape(BlockState state, IBlockReader worldIn, BlockPos pos) {
+    public VoxelShape getOcclusionShape(BlockState state, IBlockReader worldIn, BlockPos pos) {
         return VoxelShapes.empty();//super.getRenderShape(state, worldIn, pos);
     }
 
@@ -95,7 +95,7 @@ public class EnergyCoreStabilizer extends BlockBCore {
 //        SHAPE_Y = VoxelShapes.create(-1, 0, -1, 2, 1, 2);
 //        SHAPE_Z = VoxelShapes.create(-1, -1, 0, 2, 2, 1);
 
-        TileEntity tile = world.getTileEntity(pos);
+        TileEntity tile = world.getBlockEntity(pos);
 //
         if (tile instanceof TileEnergyCoreStabilizer) {
             if (((TileEnergyCoreStabilizer) tile).isValidMultiBlock.get()) {
@@ -118,19 +118,19 @@ public class EnergyCoreStabilizer extends BlockBCore {
     //region Place/Break stuff
 
     @Override
-    public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
-        TileEntity tile = world.getTileEntity(pos);
+    public void setPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+        TileEntity tile = world.getBlockEntity(pos);
 
         if (tile instanceof TileEnergyCoreStabilizer) {
             ((TileEnergyCoreStabilizer) tile).onPlaced();
         } else {
-            super.onBlockPlacedBy(world, pos, state, placer, stack);
+            super.setPlacedBy(world, pos, state, placer, stack);
         }
     }
 
     @Override
-    public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving) {
-        TileEntity tile = world.getTileEntity(pos);
+    public void onRemove(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving) {
+        TileEntity tile = world.getBlockEntity(pos);
 
         if (tile instanceof TileEnergyCoreStabilizer) {
             if (((TileEnergyCoreStabilizer) tile).isValidMultiBlock.get()) {
@@ -139,12 +139,12 @@ public class EnergyCoreStabilizer extends BlockBCore {
             TileEnergyCore core = ((TileEnergyCoreStabilizer) tile).getCore();
 
             if (core != null) {
-                world.removeTileEntity(pos);
+                world.removeBlockEntity(pos);
                 ((TileEnergyCoreStabilizer) tile).validateStructure();
             }
 
         }
-        super.onReplaced(state, world, pos, newState, isMoving);
+        super.onRemove(state, world, pos, newState, isMoving);
     }
 
 

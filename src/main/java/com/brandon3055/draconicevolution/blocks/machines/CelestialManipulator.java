@@ -17,7 +17,7 @@ import javax.annotation.Nullable;
  */
 public class CelestialManipulator extends BlockBCore /*implements ITileEntityProvider, IRenderOverride*/ {//Replacement For both the weather controller and sun dial
 
-    private VoxelShape SHAPE = Block.makeCuboidShape(1.0, 0, 1.0, 15.0, 13.0, 15.0);
+    private VoxelShape SHAPE = Block.box(1.0, 0, 1.0, 15.0, 13.0, 15.0);
 
     public CelestialManipulator(Properties properties) {
         super(properties);

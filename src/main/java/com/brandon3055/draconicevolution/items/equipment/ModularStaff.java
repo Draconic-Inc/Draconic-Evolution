@@ -71,13 +71,13 @@ public class ModularStaff extends ToolItem implements IReaperItem, IModularMinin
     }
 
     @Override
-    public boolean canHarvestBlock(BlockState blockIn) {
+    public boolean isCorrectToolForDrops(BlockState blockIn) {
         return true;
     }
 
     @Override
     public float getBaseEfficiency() {
-        return getTier().getEfficiency();
+        return getTier().getSpeed();
     }
 
     @Override
@@ -87,7 +87,7 @@ public class ModularStaff extends ToolItem implements IReaperItem, IModularMinin
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         addModularItemInformation(stack, worldIn, tooltip, flagIn);
     }
 
@@ -104,12 +104,12 @@ public class ModularStaff extends ToolItem implements IReaperItem, IModularMinin
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity entity, Hand hand) {
+    public ActionResult<ItemStack> use(World world, PlayerEntity entity, Hand hand) {
         return StaffAttackHandler.onRightClick(world, entity, hand);
     }
 
     @Override
-    public void onPlayerStoppedUsing(ItemStack stack, World worldIn, LivingEntity entityLiving, int timeLeft) {
+    public void releaseUsing(ItemStack stack, World worldIn, LivingEntity entityLiving, int timeLeft) {
         StaffAttackHandler.onStopUsing(stack, worldIn, entityLiving, timeLeft);
     }
 }

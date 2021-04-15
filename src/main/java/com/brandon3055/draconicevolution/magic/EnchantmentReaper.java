@@ -29,12 +29,12 @@ public class EnchantmentReaper extends Enchantment {
     }
 
     @Override
-    public int getMinEnchantability(int level) {
+    public int getMinCost(int level) {
         return 1 + 10 * (level - 1);
     }
 
     @Override
-    public int getMaxEnchantability(int level) {
-        return super.getMinEnchantability(level) + 50;
+    public int getMaxCost(int level) {
+        return super.getMinCost(level) + 50;
     }
 }

@@ -11,6 +11,7 @@ import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.model.IModelTransform;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.vector.Quaternion;
@@ -29,7 +30,7 @@ public class RenderItemReactorComponent implements IItemRenderer {
     //region Unused
 
     @Override
-    public boolean isAmbientOcclusion() {
+    public boolean useAmbientOcclusion() {
         return false;
     }
 
@@ -53,28 +54,28 @@ public class RenderItemReactorComponent implements IItemRenderer {
             case 0: //Core
                 mat.translate(0.5, 0.5, 0.5);
                 mat.scale(1.5);
-                RenderTileReactorCore.renderCore(mat, ccrs, (ClientEventHandler.elapsedTicks + mc.getRenderPartialTicks()) / 100F, 0F, 0.F, 0.5F, 0, getter);
+                RenderTileReactorCore.renderCore(mat, ccrs, (ClientEventHandler.elapsedTicks + mc.getFrameTime()) / 100F, 0F, 0.F, 0.5F, 0, getter);
                 break;
             case 1: //Stabilizer
-                float coreRotation = (ClientEventHandler.elapsedTicks + mc.getRenderPartialTicks()) * 5F;
+                float coreRotation = (ClientEventHandler.elapsedTicks + mc.getFrameTime()) * 5F;
                 mStack.translate(0.5, 0.5, 0.5);
                 RenderTileReactorComponent.renderStabilizer(mStack, getter, coreRotation, 1F, packedLight, packedOverlay);
                 break;
             case 2: //Injector
                 mStack.translate(0.5, 0.5, 0.5);
-                mStack.rotate(new Quaternion(90, 0, 0, true));
+                mStack.mulPose(new Quaternion(90, 0, 0, true));
                 RenderTileReactorComponent.renderInjector(mStack, getter, 1F, packedLight, packedOverlay);
                 break;
         }
     }
 
     @Override
-    public ImmutableMap<ItemCameraTransforms.TransformType, TransformationMatrix> getTransforms() {
+    public IModelTransform getModelTransform() {
         return TransformUtils.DEFAULT_BLOCK;
     }
 
     @Override
-    public boolean isSideLit() {
+    public boolean usesBlockLight() {
         return false;
     }
 }

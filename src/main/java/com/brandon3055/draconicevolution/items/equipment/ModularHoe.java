@@ -28,7 +28,7 @@ public class ModularHoe extends HoeItem implements IModularTieredItem {
     private final DEItemTier itemTier;
 
     public ModularHoe(TechPropBuilder props) {
-        super(new DEItemTier(props, EquipCfg::getHoeDmgMult, EquipCfg::getHoeSpeedMult), 0, 0, props.build().isImmuneToFire());
+        super(new DEItemTier(props, EquipCfg::getHoeDmgMult, EquipCfg::getHoeSpeedMult), 0, 0, props.build().fireResistant());
         this.techLevel = props.techLevel;
         this.itemTier = (DEItemTier) getTier();
     }
@@ -61,12 +61,12 @@ public class ModularHoe extends HoeItem implements IModularTieredItem {
 
     @Override
     public float getBaseEfficiency() {
-        return getTier().getEfficiency();
+        return getTier().getSpeed();
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         addModularItemInformation(stack, worldIn, tooltip, flagIn);
     }
 }

@@ -23,7 +23,7 @@ public class InventoryCache implements IInventory {
     }
 
     @Override
-    public int getSizeInventory() {
+    public int getContainerSize() {
         return inventoryStacks.length;
     }
 
@@ -34,23 +34,23 @@ public class InventoryCache implements IInventory {
 
     @Nonnull
     @Override
-    public ItemStack getStackInSlot(int index) {
+    public ItemStack getItem(int index) {
         return inventoryStacks[index] == null ? ItemStack.EMPTY : inventoryStacks[index];
     }
 
     @Nullable
     @Override
-    public ItemStack decrStackSize(int index, int count) {
-        ItemStack itemstack = getStackInSlot(index);
+    public ItemStack removeItem(int index, int count) {
+        ItemStack itemstack = getItem(index);
 
         if (!itemstack.isEmpty()) {
             if (itemstack.getCount() <= count) {
-                setInventorySlotContents(index, ItemStack.EMPTY);
+                setItem(index, ItemStack.EMPTY);
             }
             else {
                 itemstack = itemstack.split(count);
                 if (itemstack.getCount() == 0) {
-                    setInventorySlotContents(index, ItemStack.EMPTY);
+                    setItem(index, ItemStack.EMPTY);
                 }
             }
         }
@@ -59,61 +59,61 @@ public class InventoryCache implements IInventory {
 
     @Nullable
     @Override
-    public ItemStack removeStackFromSlot(int index) {
-        ItemStack item = getStackInSlot(index);
+    public ItemStack removeItemNoUpdate(int index) {
+        ItemStack item = getItem(index);
 
         if (!item.isEmpty()) {
-            setInventorySlotContents(index, ItemStack.EMPTY);
+            setItem(index, ItemStack.EMPTY);
         }
 
         return item;
     }
 
     @Override
-    public void setInventorySlotContents(int index, @Nonnull ItemStack stack) {
+    public void setItem(int index, @Nonnull ItemStack stack) {
         if (index < 0 || index >= inventoryStacks.length) {
             return;
         }
 
         inventoryStacks[index] = stack;
 
-        if (!stack.isEmpty() && stack.getCount() > getInventoryStackLimit()) {
-            stack.setCount(getInventoryStackLimit());
+        if (!stack.isEmpty() && stack.getCount() > getMaxStackSize()) {
+            stack.setCount(getMaxStackSize());
         }
     }
 
     @Override
-    public int getInventoryStackLimit() {
+    public int getMaxStackSize() {
         return 64;
     }
 
     @Override
-    public void markDirty() {
+    public void setChanged() {
 
     }
 
     @Override
-    public boolean isUsableByPlayer(PlayerEntity player) {
+    public boolean stillValid(PlayerEntity player) {
         return true;
     }
 
     @Override
-    public void openInventory(PlayerEntity player) {
+    public void startOpen(PlayerEntity player) {
 
     }
 
     @Override
-    public void closeInventory(PlayerEntity player) {
+    public void stopOpen(PlayerEntity player) {
 
     }
 
     @Override
-    public boolean isItemValidForSlot(int index, ItemStack stack) {
+    public boolean canPlaceItem(int index, ItemStack stack) {
         return false;
     }
 
     @Override
-    public void clear() {
+    public void clearContent() {
         for (int i = 0; i < inventoryStacks.length; i++) {
             inventoryStacks[i] = ItemStack.EMPTY;
         }

@@ -32,14 +32,14 @@ public class RenderTilePlacedItem extends TESRBase<TilePlacedItem> {
 //        GlStateTracker.pushState();
         RenderSystem.translated(x + 0.5, y + 0.5, z + 0.5);
 
-        ItemStack[] stacks = new ItemStack[]{te.inventory.getStackInSlot(0), te.inventory.getStackInSlot(1), te.inventory.getStackInSlot(2), te.inventory.getStackInSlot(3)};
+        ItemStack[] stacks = new ItemStack[]{te.inventory.getItem(0), te.inventory.getItem(1), te.inventory.getItem(2), te.inventory.getItem(3)};
         int index = 0;
 
         List<IndexedCuboid6> cuboids = te.getCachedRenderCuboids();
         for (IndexedCuboid6 cuboid : cuboids) {
             if (index == 4) {
-                LogHelper.bigError("Detected illegal render state for placed item at " + te.getPos() + " Index: " + index);
-                LogHelper.error("Tile NBT Dump: " + te.write(new CompoundNBT()));
+                LogHelper.bigError("Detected illegal render state for placed item at " + te.getBlockPos() + " Index: " + index);
+                LogHelper.error("Tile NBT Dump: " + te.save(new CompoundNBT()));
                 LogHelper.error("Cuboid List: " + cuboids.size() + " " + Joiner.on(", ").join(cuboids));
                 LogHelper.error("Thread: " + Thread.currentThread().getName());
                 index = 3;
@@ -52,10 +52,10 @@ public class RenderTilePlacedItem extends TESRBase<TilePlacedItem> {
                 RenderSystem.translated(center.x - 0.5, center.y - 0.5, center.z - 0.5);
 
                 if (te.facing.getAxis() == Direction.Axis.Y) {
-                    RenderSystem.rotatef(90, te.facing.getYOffset(), 0, 0);
+                    RenderSystem.rotatef(90, te.facing.getStepY(), 0, 0);
                 }
                 else if (te.facing.getAxis() == Direction.Axis.X) {
-                    RenderSystem.rotatef(90, 0, -te.facing.getXOffset(), 0);
+                    RenderSystem.rotatef(90, 0, -te.facing.getStepX(), 0);
                 }
                 else if (te.facing == Direction.SOUTH) {
                     RenderSystem.rotatef(180, 0, 1, 0);

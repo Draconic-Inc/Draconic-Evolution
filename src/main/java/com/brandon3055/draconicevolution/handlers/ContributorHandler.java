@@ -75,7 +75,7 @@ public class ContributorHandler {
     public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
         if (event.getPlayer() instanceof ServerPlayerEntity) {
             for (String contribName : ContributorHandler.contributors.keySet()) {
-                for (String name : BrandonsCore.proxy.getMCServer().getOnlinePlayerNames()) {
+                for (String name : BrandonsCore.proxy.getMCServer().getPlayerNames()) {
                     if (name.equals(contribName)) {
                         ContributorHandler.Contributor contributor = ContributorHandler.contributors.get(contribName);
                         //Packet Stuff
@@ -270,7 +270,7 @@ public class ContributorHandler {
                 return false;
             }
             if (!validated) {
-                isValid = !UUID.nameUUIDFromBytes(("OfflinePlayer:" + player.getName()).getBytes(Charsets.UTF_8)).equals(player.getUniqueID());
+                isValid = !UUID.nameUUIDFromBytes(("OfflinePlayer:" + player.getName()).getBytes(Charsets.UTF_8)).equals(player.getUUID());
                 validated = true;
             }
             return isValid;

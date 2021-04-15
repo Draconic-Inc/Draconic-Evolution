@@ -28,13 +28,13 @@ public class StaffRenderEventHandler {
         if (event.getHand() == Hand.MAIN_HAND && stack.getItem() instanceof ModularStaff) {
             event.setCanceled(true);
             Minecraft mc = Minecraft.getInstance();
-            HandSide handside = mc.player.getPrimaryHand();
+            HandSide handside = mc.player.getMainArm();
 
             boolean rightHand = handside == HandSide.RIGHT;
             float swingProgress = event.getSwingProgress(); //Going to need something custom when
             float equippedProgress = 0 /* event.getEquipProgress() GET FUCKED RECHARGE ANIMATION!!!!*/;
             MatrixStack mStack = event.getMatrixStack();
-            mStack.push();
+            mStack.pushPose();
 
 //            float f5 = -0.4F * MathHelper.sin(MathHelper.sqrt(swingProgress) * (float)Math.PI);
             float f5 = -0.3F * MathHelper.sin(MathHelper.sqrt(swingProgress) * (float)Math.PI); //Shift Left
@@ -47,8 +47,8 @@ public class StaffRenderEventHandler {
             mStack.translate((float)l * f5, f6, f10);
             transformSideFirstPerson(mStack, handside, equippedProgress);
 
-            mc.getFirstPersonRenderer().renderItemSide(mc.player, stack, rightHand ? ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND : ItemCameraTransforms.TransformType.FIRST_PERSON_LEFT_HAND, !rightHand, mStack, event.getBuffers(), event.getLight());
-            mStack.pop();
+            mc.getItemInHandRenderer().renderItem(mc.player, stack, rightHand ? ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND : ItemCameraTransforms.TransformType.FIRST_PERSON_LEFT_HAND, !rightHand, mStack, event.getBuffers(), event.getLight());
+            mStack.popPose();
         }
     }
 

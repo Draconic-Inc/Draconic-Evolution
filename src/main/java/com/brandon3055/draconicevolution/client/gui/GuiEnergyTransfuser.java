@@ -32,6 +32,8 @@ import static com.brandon3055.brandonscore.client.gui.GuiToolkit.GuiLayout.*;
 import static com.brandon3055.brandonscore.client.gui.GuiToolkit.Palette.*;
 import static com.brandon3055.brandonscore.inventory.ContainerSlotLayout.SlotType.TILE_INV;
 
+import com.brandon3055.brandonscore.client.gui.GuiToolkit.Palette.Ctrl;
+
 /**
  * Created by brandon3055 on 12/12/2020.
  */
@@ -45,7 +47,7 @@ public class GuiEnergyTransfuser extends ModularGuiContainer<ContainerBCTile<Til
     public GuiEnergyTransfuser(ContainerBCTile<TileEnergyTransfuser> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
         this.tile = container.tile;
-        this.player = playerInventory.player;
+        this.player = inventory.player;
     }
 
     @Override
@@ -102,7 +104,7 @@ public class GuiEnergyTransfuser extends ModularGuiContainer<ContainerBCTile<Til
                     MatrixStack mStack = new MatrixStack();
                     mStack.translate(xPos() + (fi == 0 ? 5 : fi == 2 ? 7 : 4)  , yPos() + 2, 0);
                     mStack.scale(2, 2, 2);
-                    fontRenderer.func_238422_b_(mStack, RenderTileEnergyTransfuser.TEXT[fi].func_241878_f(), 0, 0, tile.ioModes[fi].get().getColour());
+                    fontRenderer.draw(mStack, RenderTileEnergyTransfuser.TEXT[fi].getVisualOrderText(), 0, 0, tile.ioModes[fi].get().getColour());
                 }
             }.setPosAndSize(slot));
 

@@ -19,7 +19,7 @@ import net.minecraft.world.World;
  */
 public class EntityDragonHeart extends Entity {
 
-    private static final DataParameter<Integer> AGE = EntityDataManager.<Integer>createKey(EntityDragonHeart.class, DataSerializers.VARINT);
+    private static final DataParameter<Integer> AGE = EntityDataManager.<Integer>defineId(EntityDragonHeart.class, DataSerializers.INT);
     public float rotation = 0f;
     public float rotationInc = 0;
     public ItemStack renderStack = new ItemStack(DEContent.dragon_heart);
@@ -44,27 +44,27 @@ public class EntityDragonHeart extends Entity {
 //    }
 
     @Override
-    public boolean isInRangeToRenderDist(double distance) {
+    public boolean shouldRenderAtSqrDistance(double distance) {
         return true;
     }
 
     @Override
-    protected void registerData() {
+    protected void defineSynchedData() {
 
     }
 
     @Override
-    protected void readAdditional(CompoundNBT compound) {
+    protected void readAdditionalSaveData(CompoundNBT compound) {
 
     }
 
     @Override
-    protected void writeAdditional(CompoundNBT compound) {
+    protected void addAdditionalSaveData(CompoundNBT compound) {
 
     }
 
     @Override
-    public IPacket<?> createSpawnPacket() {
+    public IPacket<?> getAddEntityPacket() {
         return null;
     }
 
@@ -74,7 +74,7 @@ public class EntityDragonHeart extends Entity {
 //    }
 
     @Override
-    public boolean attackEntityFrom(DamageSource damageSource, float dmg) {
+    public boolean hurt(DamageSource damageSource, float dmg) {
         return false;
     }
 
@@ -141,17 +141,17 @@ public class EntityDragonHeart extends Entity {
 //    }
 
     @Override
-    public void onCollideWithPlayer(PlayerEntity player) {
+    public void playerTouch(PlayerEntity player) {
         if (getAge() < 1200) {
             //setAge(1200);
         }
     }
 
     public int getAge() {
-        return dataManager.get(AGE);
+        return entityData.get(AGE);
     }
 
     public void setAge(int age) {
-        dataManager.set(AGE, age);
+        entityData.set(AGE, age);
     }
 }

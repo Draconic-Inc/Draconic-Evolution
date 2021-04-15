@@ -18,14 +18,14 @@ import java.awt.*;
  * Created by brandon3055 on 28/2/21
  */
 public class ToolModelEffect extends ModelEffect {
-    private RenderType renderType = RenderType.makeType("modelEffectType", DefaultVertexFormats.POSITION_COLOR_TEX, GL11.GL_QUADS, 256, RenderType.State.getBuilder()
-                    .texture(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/particle/white_orb.png"), false, false))
-                    .transparency(RenderState.LIGHTNING_TRANSPARENCY)
-                    .alpha(RenderState.ZERO_ALPHA)
-                    .cull(RenderState.CULL_DISABLED)
-                    .writeMask(RenderState.COLOR_WRITE)
-                    .texturing(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
-                    .build(false)
+    private RenderType renderType = RenderType.create("modelEffectType", DefaultVertexFormats.POSITION_COLOR_TEX, GL11.GL_QUADS, 256, RenderType.State.builder()
+                    .setTextureState(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/particle/white_orb.png"), false, false))
+                    .setTransparencyState(RenderState.LIGHTNING_TRANSPARENCY)
+                    .setAlphaState(RenderState.NO_ALPHA)
+                    .setCullState(RenderState.NO_CULL)
+                    .setWriteMaskState(RenderState.COLOR_WRITE)
+                    .setTexturingState(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
+                    .createCompositeState(false)
     );
 //    private RenderType renderType2 = RenderType.makeType("modelEffectType2", DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP, GL11.GL_QUADS, 256, RenderType.State.getBuilder()
 //                    .texture(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/particle/orb2.png"), false, false))
@@ -46,10 +46,10 @@ public class ToolModelEffect extends ModelEffect {
 //                    .build(false)
 //    );
 
-    private RenderType renderSolidType = RenderType.makeType("modelEffectType4", DefaultVertexFormats.POSITION_COLOR_LIGHTMAP, GL11.GL_TRIANGLE_FAN, 256, RenderType.State.getBuilder()
-            .cull(RenderState.CULL_DISABLED)
-            .texturing(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
-            .build(false)
+    private RenderType renderSolidType = RenderType.create("modelEffectType4", DefaultVertexFormats.POSITION_COLOR_LIGHTMAP, GL11.GL_TRIANGLE_FAN, 256, RenderType.State.builder()
+            .setCullState(RenderState.NO_CULL)
+            .setTexturingState(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
+            .createCompositeState(false)
     );
 
     public ToolModelEffect() {}

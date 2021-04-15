@@ -117,7 +117,7 @@ public class DEModules {
 
 
     private static void registerModules() {
-        Properties props = new Properties().group(moduleGroup);
+        Properties props = new Properties().tab(moduleGroup);
         //@formatter:off
 
         //Energy
@@ -290,7 +290,7 @@ public class DEModules {
     }
 
     private static void register(ModuleImpl<?> module, String name) {
-        ModuleItem<?> item = new ModuleItem<>(new Properties().group(moduleGroup), module);
+        ModuleItem<?> item = new ModuleItem<>(new Properties().tab(moduleGroup), module);
         item.setRegistryName(name + "_module");
         module.setRegistryName(name);
         module.setModuleItem(item);
@@ -320,23 +320,4 @@ public class DEModules {
     }
 
     //endregion
-
-
-
-    public static final IDataSerializer<Optional<Module<?>>> OPTIONAL_SERIALIZER = new IDataSerializer<Optional<Module<?>>>() {
-        public void write(PacketBuffer buf, Optional<Module<?>> value) {
-            buf.writeBoolean(value.isPresent());
-            value.ifPresent(module -> buf.writeResourceLocation(module.getRegistryName()));
-
-        }
-
-        public Optional<Module<?>> read(PacketBuffer buf) {
-            Module<?> module = MODULE_REGISTRY.getValue(buf.readResourceLocation());
-            return !buf.readBoolean() || module == null ? Optional.empty() : Optional.of(module);
-        }
-
-        public Optional<Module<?>> copyValue(Optional<Module<?>> value) {
-            return value;
-        }
-    };
 }

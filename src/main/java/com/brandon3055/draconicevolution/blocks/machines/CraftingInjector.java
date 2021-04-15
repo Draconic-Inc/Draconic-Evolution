@@ -42,19 +42,19 @@ import java.util.List;
 public class CraftingInjector extends BlockBCore implements IHudDisplay {
 
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
-    private static VoxelShape SHAPE_DOWN = VoxelShapes.create(0.0625, 0.375, 0.0625, 0.9375, 1, 0.9375);
-    private static VoxelShape SHAPE_UP = VoxelShapes.create(0.0625, 0, 0.0625, 0.9375, 0.625, 0.9375);
-    private static VoxelShape SHAPE_NORTH = VoxelShapes.create(0.0625, 0.0625, 0.375, 0.9375, 0.9375, 1);
-    private static VoxelShape SHAPE_SOUTH = VoxelShapes.create(0.0625, 0.0625, 0, 0.9375, 0.9375, 0.625);
-    private static VoxelShape SHAPE_WEST = VoxelShapes.create(0.375, 0.0625, 0.0625, 1, 0.9375, 0.9375);
-    private static VoxelShape SHAPE_EAST = VoxelShapes.create(0, 0.0625, 0.0625, 0.625, 0.9375, 0.9375);
+    private static VoxelShape SHAPE_DOWN = VoxelShapes.box(0.0625, 0.375, 0.0625, 0.9375, 1, 0.9375);
+    private static VoxelShape SHAPE_UP = VoxelShapes.box(0.0625, 0, 0.0625, 0.9375, 0.625, 0.9375);
+    private static VoxelShape SHAPE_NORTH = VoxelShapes.box(0.0625, 0.0625, 0.375, 0.9375, 0.9375, 1);
+    private static VoxelShape SHAPE_SOUTH = VoxelShapes.box(0.0625, 0.0625, 0, 0.9375, 0.9375, 0.625);
+    private static VoxelShape SHAPE_WEST = VoxelShapes.box(0.375, 0.0625, 0.0625, 1, 0.9375, 0.9375);
+    private static VoxelShape SHAPE_EAST = VoxelShapes.box(0, 0.0625, 0.0625, 0.625, 0.9375, 0.9375);
     private final TechLevel techLevel;
 
 
     public CraftingInjector(Properties properties, TechLevel techLevel) {
         super(properties);
         this.techLevel = techLevel;
-        this.setDefaultState(stateContainer.getBaseState().with(FACING, Direction.UP));
+        this.registerDefaultState(stateDefinition.any().setValue(FACING, Direction.UP));
     }
 
     @Override
@@ -63,7 +63,7 @@ public class CraftingInjector extends BlockBCore implements IHudDisplay {
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
         builder.add(FACING);
     }
 
@@ -84,7 +84,7 @@ public class CraftingInjector extends BlockBCore implements IHudDisplay {
 
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context) {
-        return this.getDefaultState().with(FACING, context.getNearestLookingDirection().getOpposite());
+        return this.defaultBlockState().setValue(FACING, context.getNearestLookingDirection().getOpposite());
     }
 
     //region Block
@@ -102,12 +102,12 @@ public class CraftingInjector extends BlockBCore implements IHudDisplay {
     }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
-        if (world.isRemote) {
+    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+        if (world.isClientSide) {
             return ActionResultType.SUCCESS;
         }
 
-        TileEntity tile = world.getTileEntity(pos);
+        TileEntity tile = world.getBlockEntity(pos);
 
         if (!(tile instanceof TileCraftingInjector)) {
             return ActionResultType.FAIL;
@@ -115,7 +115,7 @@ public class CraftingInjector extends BlockBCore implements IHudDisplay {
 
         TileCraftingInjector craftingPedestal = (TileCraftingInjector) tile;
 
-        if (player.isSneaking()) {
+        if (player.isShiftKeyDown()) {
             craftingPedestal.singleItem.set(!craftingPedestal.singleItem.get());
             ChatHelper.sendIndexed(player, new TranslationTextComponent("msg.craftingInjector.singleItem" + (craftingPedestal.singleItem.get() ? "On" : "Off") + ".txt"), 98);
             craftingPedestal.getDataManager().detectAndSendChanges();
@@ -123,16 +123,16 @@ public class CraftingInjector extends BlockBCore implements IHudDisplay {
         }
 
         if (!craftingPedestal.itemHandler.getStackInSlot(0).isEmpty()) {
-            if (player.getHeldItemMainhand().isEmpty()) {
-                player.setHeldItem(Hand.MAIN_HAND, craftingPedestal.itemHandler.getStackInSlot(0));
+            if (player.getMainHandItem().isEmpty()) {
+                player.setItemInHand(Hand.MAIN_HAND, craftingPedestal.itemHandler.getStackInSlot(0));
                 craftingPedestal.setStackInPedestal(ItemStack.EMPTY);
             } else {
-                world.addEntity(new ItemEntity(world, player.getPosX(), player.getPosY(), player.getPosZ(), craftingPedestal.itemHandler.getStackInSlot(0)));
+                world.addFreshEntity(new ItemEntity(world, player.getX(), player.getY(), player.getZ(), craftingPedestal.itemHandler.getStackInSlot(0)));
                 craftingPedestal.setStackInPedestal(ItemStack.EMPTY);
             }
         } else {
-            ItemStack stack = player.getHeldItemMainhand();
-            player.setHeldItem(Hand.MAIN_HAND, InventoryUtils.insertItem(craftingPedestal.itemHandler, stack, false));
+            ItemStack stack = player.getMainHandItem();
+            player.setItemInHand(Hand.MAIN_HAND, InventoryUtils.insertItem(craftingPedestal.itemHandler, stack, false));
         }
 
         return ActionResultType.SUCCESS;
@@ -144,7 +144,7 @@ public class CraftingInjector extends BlockBCore implements IHudDisplay {
 
     @Override
     public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
-        Direction facing = state.get(FACING);
+        Direction facing = state.getValue(FACING);
         switch (facing) {
             case DOWN:
                 return SHAPE_DOWN;
@@ -198,13 +198,13 @@ public class CraftingInjector extends BlockBCore implements IHudDisplay {
     @OnlyIn(Dist.CLIENT)
     @Override
     public void addDisplayData(@Nullable ItemStack stack, World world, @Nullable BlockPos pos, List<String> displayList) {
-        TileEntity te = world.getTileEntity(pos);
+        TileEntity te = world.getBlockEntity(pos);
 
         if (!(te instanceof TileCraftingInjector)) {
             return;
         }
 
-        displayList.add(InfoHelper.HITC() + I18n.format("msg.craftingInjector.singleItem" + (((TileCraftingInjector) te).singleItem.get() ? "On" : "Off") + ".txt"));
+        displayList.add(InfoHelper.HITC() + I18n.get("msg.craftingInjector.singleItem" + (((TileCraftingInjector) te).singleItem.get() ? "On" : "Off") + ".txt"));
     }
 
     //endregion

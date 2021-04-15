@@ -37,33 +37,33 @@ public class CrystalFXLink extends CrystalFXBase<TileCrystalBase> {
 
     public CrystalFXLink(ClientWorld worldIn, TileCrystalBase tile, Vec3D linkTarget) {
         super(worldIn, tile);
-        this.age = worldIn.rand.nextInt(1024);
+        this.age = worldIn.random.nextInt(1024);
         this.setPosition(tile.getBeamLinkPos(linkTarget.getPos()));
         this.terminateSource = true;
         this.linkTarget = linkTarget;
         Direction face = tile instanceof TileCrystalWirelessIO ? ((TileCrystalWirelessIO) tile).getReceiversFaces().get(linkTarget.getPos()) : null;
         if (face != null) {
-            linkTarget.add(face.getXOffset() * 0.6, face.getYOffset() * 0.6, face.getZOffset() * 0.6);
+            linkTarget.add(face.getStepX() * 0.6, face.getStepY() * 0.6, face.getStepZ() * 0.6);
         }
         this.terminateTarget = true;
-        setBoundingBox(new AxisAlignedBB(posX, posY, posZ, this.linkTarget.x, this.linkTarget.y, this.linkTarget.z));
+        setBoundingBox(new AxisAlignedBB(x, y, z, this.linkTarget.x, this.linkTarget.y, this.linkTarget.z));
     }
 
     @Override
     public void tick() {
         super.tick();
         if (!ClientEventHandler.playerHoldingWrench && timeout <= 0) {
-            setExpired();
+            remove();
         } else if (timeout > 0) {
             timeout--;
         }
     }
 
     @Override
-    public void renderParticle(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks) {
+    public void render(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks) {
         float scale = 0.1F + (timeout * 0.005F);
-        Vector3d viewVec = renderInfo.getProjectedView();
-        Vector3 source = new Vector3(posX - viewVec.x, posY - viewVec.y, posZ - viewVec.z);
+        Vector3d viewVec = renderInfo.getPosition();
+        Vector3 source = new Vector3(x - viewVec.x, y - viewVec.y, z - viewVec.z);
         Vector3 target = linkTarget.toVector3().subtract(viewVec.x, viewVec.y, viewVec.z);
         Vector3 dirVec = source.copy().subtract(target).normalize();
         Vector3 planeA = dirVec.copy().perpendicular().normalize();
@@ -109,34 +109,34 @@ public class CrystalFXLink extends CrystalFXBase<TileCrystalBase> {
 
 
         if (terminateSource) {
-            float viewX = (float) (this.posX - viewVec.getX());
-            float viewY = (float) (this.posY - viewVec.getY());
-            float viewZ = (float) (this.posZ - viewVec.getZ());
+            float viewX = (float) (this.x - viewVec.x());
+            float viewY = (float) (this.y - viewVec.y());
+            float viewZ = (float) (this.z - viewVec.z());
             Vector3f[] renderVector = getRenderVectors(renderInfo, viewX, viewY, viewZ, scale);
-            buffer.pos(renderVector[0].getX(), renderVector[0].getY(), renderVector[0].getZ()).tex(maxU, maxV).endVertex();
-            buffer.pos(renderVector[1].getX(), renderVector[1].getY(), renderVector[1].getZ()).tex(maxU, minV).endVertex();
-            buffer.pos(renderVector[2].getX(), renderVector[2].getY(), renderVector[2].getZ()).tex(minU, minV).endVertex();
-            buffer.pos(renderVector[3].getX(), renderVector[3].getY(), renderVector[3].getZ()).tex(minU, maxV).endVertex();
+            buffer.vertex(renderVector[0].x(), renderVector[0].y(), renderVector[0].z()).uv(maxU, maxV).endVertex();
+            buffer.vertex(renderVector[1].x(), renderVector[1].y(), renderVector[1].z()).uv(maxU, minV).endVertex();
+            buffer.vertex(renderVector[2].x(), renderVector[2].y(), renderVector[2].z()).uv(minU, minV).endVertex();
+            buffer.vertex(renderVector[3].x(), renderVector[3].y(), renderVector[3].z()).uv(minU, maxV).endVertex();
         }
 
         if (terminateTarget) {
-            float viewX = (float) (this.linkTarget.x - viewVec.getX());
-            float viewY = (float) (this.linkTarget.y - viewVec.getY());
-            float viewZ = (float) (this.linkTarget.z - viewVec.getZ());
+            float viewX = (float) (this.linkTarget.x - viewVec.x());
+            float viewY = (float) (this.linkTarget.y - viewVec.y());
+            float viewZ = (float) (this.linkTarget.z - viewVec.z());
             Vector3f[] renderVector = getRenderVectors(renderInfo, viewX, viewY, viewZ, scale);
-            buffer.pos(renderVector[0].getX(), renderVector[0].getY(), renderVector[0].getZ()).tex(maxU, maxV).endVertex();
-            buffer.pos(renderVector[1].getX(), renderVector[1].getY(), renderVector[1].getZ()).tex(maxU, minV).endVertex();
-            buffer.pos(renderVector[2].getX(), renderVector[2].getY(), renderVector[2].getZ()).tex(minU, minV).endVertex();
-            buffer.pos(renderVector[3].getX(), renderVector[3].getY(), renderVector[3].getZ()).tex(minU, maxV).endVertex();
+            buffer.vertex(renderVector[0].x(), renderVector[0].y(), renderVector[0].z()).uv(maxU, maxV).endVertex();
+            buffer.vertex(renderVector[1].x(), renderVector[1].y(), renderVector[1].z()).uv(maxU, minV).endVertex();
+            buffer.vertex(renderVector[2].x(), renderVector[2].y(), renderVector[2].z()).uv(minU, minV).endVertex();
+            buffer.vertex(renderVector[3].x(), renderVector[3].y(), renderVector[3].z()).uv(minU, maxV).endVertex();
         }
 
     }
 
     private void bufferQuad(IVertexBuilder buffer, Vector3 p1, Vector3 p2, Vector3 p3, Vector3 p4, float anim, float dist) {
-        buffer.pos(p1.x, p1.y, p1.z).tex(0.5F, anim).endVertex();
-        buffer.pos(p2.x, p2.y, p2.z).tex(0.5F, dist + anim).endVertex();
-        buffer.pos(p4.x, p4.y, p4.z).tex(1.0F, dist + anim).endVertex();
-        buffer.pos(p3.x, p3.y, p3.z).tex(1.0F, anim).endVertex();
+        buffer.vertex(p1.x, p1.y, p1.z).uv(0.5F, anim).endVertex();
+        buffer.vertex(p2.x, p2.y, p2.z).uv(0.5F, dist + anim).endVertex();
+        buffer.vertex(p4.x, p4.y, p4.z).uv(1.0F, dist + anim).endVertex();
+        buffer.vertex(p3.x, p3.y, p3.z).uv(1.0F, anim).endVertex();
     }
 
     @Override
@@ -151,7 +151,7 @@ public class CrystalFXLink extends CrystalFXBase<TileCrystalBase> {
         public FXHandler() {}
 
         @Override
-        public void beginRender(BufferBuilder builder, TextureManager p_217600_2_) {
+        public void begin(BufferBuilder builder, TextureManager p_217600_2_) {
             RenderSystem.disableCull();
             RenderSystem.depthMask(false);
             RenderSystem.alphaFunc(516, 0.003921569F);
@@ -166,8 +166,8 @@ public class CrystalFXLink extends CrystalFXBase<TileCrystalBase> {
         }
 
         @Override
-        public void finishRender(Tessellator tessellator) {
-            tessellator.draw();
+        public void end(Tessellator tessellator) {
+            tessellator.end();
             RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
 //            RenderSystem.enableTexture2D();
         }

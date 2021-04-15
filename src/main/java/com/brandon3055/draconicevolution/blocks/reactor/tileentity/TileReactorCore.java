@@ -156,7 +156,7 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
 
     @Override
     public void tick() {
-        if (pos.getX() > 1000)LogHelper.dev(pos);
+        if (worldPosition.getX() > 1000)LogHelper.dev(worldPosition);
 //        if (explosionProcess != null) {
 //            explosionProcess.isDead = true;
 //            explosionProcess = null;
@@ -194,15 +194,15 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
         isFrameMoving = false;
         moveBlocksProvided = false;
 
-        if (world.isRemote && effectHandler != null) {
+        if (level.isClientSide && effectHandler != null) {
             effectHandler.updateEffects();
 
             if (HolidayHelper.isAprilFools()) {
                 if (inView) {
                     viewTicks++;
                     if (viewTicks > 100 && roller == null) {
-                        if (world.rand.nextInt(25) == 0) {
-                            roller = new Roller(Vec3D.getCenter(this), world, getCoreDiameter());
+                        if (level.random.nextInt(25) == 0) {
+                            roller = new Roller(Vec3D.getCenter(this), level, getCoreDiameter());
                         } else {
                             viewTicks = 0;
                         }
@@ -229,7 +229,7 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
     //region ################# Core Logic ##################
 
     private void updateCoreLogic() {
-        if (world.isRemote) {
+        if (level.isClientSide) {
             checkPlayerCollision();
             coreAnimation += shaderAnimationState.get();
             if (maxShieldCharge.get() == 0) {
@@ -241,7 +241,7 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
             }
 
             if (reactorState.get() == ReactorState.BEYOND_HOPE) {
-                shieldAnimationState = world.rand.nextInt(10) == 0 ? 0 : 1;
+                shieldAnimationState = level.random.nextInt(10) == 0 ? 0 : 1;
                 shieldAnimation += shieldAnimationState;
             }
             return;
@@ -311,12 +311,12 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
             temperature.subtract(0.5);
         }
         if (shieldCharge.get() > 0) {
-            shieldCharge.subtract(maxShieldCharge.get() * 0.0005 * world.rand.nextDouble());
+            shieldCharge.subtract(maxShieldCharge.get() * 0.0005 * level.random.nextDouble());
         } else if (shieldCharge.get() < 0) {
             shieldCharge.zero();
         }
         if (saturation.get() > 0) {
-            saturation.subtract((int) (maxSaturation.get() * 0.000002D * world.rand.nextDouble()));
+            saturation.subtract((int) (maxSaturation.get() * 0.000002D * level.random.nextDouble()));
         } else if (saturation.get() < 0) {
             saturation.zero();
         }
@@ -424,8 +424,8 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
             for (int i = 0; i < componentPositions.length; i++) {
                 ManagedVec3I v = componentPositions[i];
                 if (v.get().sum() > 0) {
-                    BlockPos p = getOffsetPos(v.get()).offset(Direction.byIndex(i).getOpposite());
-                    world.createExplosion(null, p.getX() + 0.5, p.getY() + 0.5, p.getZ() + 0.5, 4, true, Explosion.Mode.DESTROY);
+                    BlockPos p = getOffsetPos(v.get()).relative(Direction.from3DDataValue(i).getOpposite());
+                    level.explode(null, p.getX() + 0.5, p.getY() + 0.5, p.getZ() + 0.5, 4, true, Explosion.Mode.DESTROY);
                 }
             }
         }
@@ -433,22 +433,22 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
 
         //Worst case it rolls back a second
         if (tick % 20 == 0) {
-            markDirty();
+            setChanged();
         }
     }
 
     public void updateCriticalState() {
-        if (!(world instanceof ServerWorld)) {
+        if (!(level instanceof ServerWorld)) {
             return;
         }
 
-        shieldCharge.set((double) world.rand.nextInt(Math.max(1, (int) (maxShieldCharge.get() * 0.01))));
+        shieldCharge.set((double) level.random.nextInt(Math.max(1, (int) (maxShieldCharge.get() * 0.01))));
         animExtractState.set(1D);
         temperature.set(MathHelper.approachExp(temperature.get(), MAX_TEMPERATURE * 1.2, 0.0005));
 
         if (DEOldConfig.disableLargeReactorBoom) {
             if (explosionCountdown.get() == -1) {
-                explosionCountdown.set(1200 + world.rand.nextInt(2400));
+                explosionCountdown.set(1200 + level.random.nextInt(2400));
             }
 
             if (explosionCountdown.dec() <= 0) {
@@ -465,10 +465,10 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
 
         if (explosionProcess == null) {
             double radius = MathUtils.map(convertedFuel.get() + reactableFuel.get(), 144, 10368, 50D, 350D) * DEOldConfig.reactorExplosionScale;
-            explosionProcess = new ProcessExplosion(pos, (int) radius, (ServerWorld) world, -1);
+            explosionProcess = new ProcessExplosion(worldPosition, (int) radius, (ServerWorld) level, -1);
             ProcessHandler.addProcess(explosionProcess);
             explosionCountdown.set(-1);
-            minExplosionDelay = 1200 + world.rand.nextInt(2400);
+            minExplosionDelay = 1200 + level.random.nextInt(2400);
             return;
         }
 
@@ -487,12 +487,12 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
         if (explosionCountdown.dec() <= 0) {
 //            explosionProcess = null;
             explosionProcess.detonate();
-            world.removeBlock(pos, false);
+            level.removeBlock(worldPosition, false);
         }
     }
 
     public boolean canCharge() {
-        if (!world.isRemote && !validateStructure()) {
+        if (!level.isClientSide && !validateStructure()) {
             return false;
         } else if (reactorState.get() == ReactorState.BEYOND_HOPE) {
             return false;
@@ -502,7 +502,7 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
     }
 
     public boolean canActivate() {
-        if (!world.isRemote && !validateStructure()) {
+        if (!level.isClientSide && !validateStructure()) {
             return false;
         } else if (reactorState.get() == ReactorState.BEYOND_HOPE) {
             return false;
@@ -547,7 +547,7 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
     private static final byte ID_FAIL_SAFE = 3;
 
     public void chargeReactor() {
-        if (world.isRemote) {
+        if (level.isClientSide) {
             LogHelper.dev("Reactor: Start Charging");
             sendPacketToServer(output -> output.writeByte(ID_CHARGE), 0);
         } else if (canCharge()) {
@@ -557,7 +557,7 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
     }
 
     public void activateReactor() {
-        if (world.isRemote) {
+        if (level.isClientSide) {
             LogHelper.dev("Reactor: Activate");
             sendPacketToServer(output -> output.writeByte(ID_ACTIVATE), 0);
         } else if (canActivate()) {
@@ -567,7 +567,7 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
     }
 
     public void shutdownReactor() {
-        if (world.isRemote) {
+        if (level.isClientSide) {
             LogHelper.dev("Reactor: Shutdown");
             sendPacketToServer(output -> output.writeByte(ID_SHUTDOWN), 0);
         } else if (canStop()) {
@@ -577,7 +577,7 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
     }
 
     public void toggleFailSafe() {
-        if (world.isRemote) {
+        if (level.isClientSide) {
             sendPacketToServer(output -> output.writeByte(ID_FAIL_SAFE), 0);
         } else {
             failSafeMode.set(!failSafeMode.get());
@@ -585,9 +585,9 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
     }
 
     public void onComponentClicked(PlayerEntity player, TileReactorComponent component) {
-        if (!world.isRemote) {
-            NetworkHooks.openGui((ServerPlayerEntity) player, this, pos);
-            sendPacketToClient((ServerPlayerEntity) player, output -> output.writePos(component.getPos()), 1);
+        if (!level.isClientSide) {
+            NetworkHooks.openGui((ServerPlayerEntity) player, this, worldPosition);
+            sendPacketToClient((ServerPlayerEntity) player, output -> output.writePos(component.getBlockPos()), 1);
         }
     }
 
@@ -616,8 +616,8 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
     public void receivePacketFromServer(MCDataInput data, int id) {
         if (id == 1) {
             BlockPos pos = data.readPos();
-            TileEntity tile = world.getTileEntity(pos);
-            Screen screen = Minecraft.getInstance().currentScreen;
+            TileEntity tile = level.getBlockEntity(pos);
+            Screen screen = Minecraft.getInstance().screen;
             if (tile instanceof TileReactorComponent && screen instanceof GuiReactor) {
                 ((GuiReactor) screen).component = (TileReactorComponent) tile;
             }
@@ -626,14 +626,14 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
 
     private void checkPlayerCollision() {
         PlayerEntity player = BrandonsCore.proxy.getClientPlayer();
-        double distance = Math.min(Utils.getDistanceAtoB(new Vec3D(player).add(0, player.getEyeHeight(), 0), Vec3D.getCenter(pos)), Utils.getDistanceAtoB(new Vec3D(player), Vec3D.getCenter(pos)));
+        double distance = Math.min(Utils.getDistanceAtoB(new Vec3D(player).add(0, player.getEyeHeight(), 0), Vec3D.getCenter(worldPosition)), Utils.getDistanceAtoB(new Vec3D(player), Vec3D.getCenter(worldPosition)));
         if (distance < (getCoreDiameter() / 2) + 0.5 && !player.isSpectator()) {
             double dMod = 1D - (distance / Math.max(0.1, (getCoreDiameter() / 2) + 0.5));
-            double offsetX = player.getPosX() - pos.getX() + 0.5;
-            double offsetY = player.getPosY() - pos.getY() + 0.5;
-            double offsetZ = player.getPosZ() - pos.getZ() + 0.5;
+            double offsetX = player.getX() - worldPosition.getX() + 0.5;
+            double offsetY = player.getY() - worldPosition.getY() + 0.5;
+            double offsetZ = player.getZ() - worldPosition.getZ() + 0.5;
             double m = 1D * dMod;
-            player.addVelocity(offsetX * m, offsetY * m, offsetZ * m);
+            player.push(offsetX * m, offsetY * m, offsetZ * m);
         }
     }
 
@@ -655,9 +655,9 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
         if (structureValid.get()) {
             //If the component is an unbound injector and there is no component bound on the same side then bind it.
             if (component instanceof TileReactorInjector && !component.isBound.get()) {
-                TileEntity tile = world.getTileEntity(getOffsetPos(componentPositions[pokeFrom.getIndex()].get()));
+                TileEntity tile = level.getBlockEntity(getOffsetPos(componentPositions[pokeFrom.get3DDataValue()].get()));
                 if (tile == this) {
-                    componentPositions[pokeFrom.getIndex()].set(getOffsetVec(component.getPos()));
+                    componentPositions[pokeFrom.get3DDataValue()].set(getOffsetVec(component.getBlockPos()));
                     component.bindToCore(this);
                     LogHelper.dev("Reactor: Injector Added!");
                 }
@@ -682,11 +682,11 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
 
         if (component instanceof TileReactorInjector) {
             LogHelper.dev("Reactor: Component broken! (Injector)");
-            TileEntity tile = world.getTileEntity(getOffsetPos(componentPositions[componentSide.getIndex()].get()));
+            TileEntity tile = level.getBlockEntity(getOffsetPos(componentPositions[componentSide.get3DDataValue()].get()));
 
             if (tile == component || tile == null) {
                 LogHelper.dev("Reactor: -Removed");
-                componentPositions[componentSide.getIndex()].get().set(0, 0, 0);
+                componentPositions[componentSide.get3DDataValue()].get().set(0, 0, 0);
             }
         } else if (reactorState.get() != ReactorState.COLD) {
             LogHelper.dev("Reactor: Component broken, Structure Invalidated (Unsafe!!!!)");
@@ -706,21 +706,21 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
     }
 
     public void checkBlockIntrusions() {
-        if (!(world instanceof ServerWorld)) {
+        if (!(level instanceof ServerWorld)) {
             return;
         }
 
         if (tick % 100 == 0) {
             double rad = (getCoreDiameter() * 1.05) / 2;
-            Iterable<BlockPos> inRange = BlockPos.getAllInBoxMutable(pos.add(-rad, -rad, -rad), pos.add(rad + 1, rad + 1, rad + 1));
+            Iterable<BlockPos> inRange = BlockPos.betweenClosed(worldPosition.offset(-rad, -rad, -rad), worldPosition.offset(rad + 1, rad + 1, rad + 1));
 
             for (BlockPos p : inRange) {
-                if (p.equals(pos) || Utils.getDistanceAtoB(p.getX(), p.getY(), p.getZ(), pos.getX(), pos.getY(), pos.getZ()) - 0.5 >= rad) {
+                if (p.equals(worldPosition) || Utils.getDistanceAtoB(p.getX(), p.getY(), p.getZ(), worldPosition.getX(), worldPosition.getY(), worldPosition.getZ()) - 0.5 >= rad) {
                     continue;
                 }
 
-                if (!world.isAirBlock(p) && !blockIntrusions.containsKey(p)) {
-                    blockIntrusions.put(p.toImmutable(), 0);
+                if (!level.isEmptyBlock(p) && !blockIntrusions.containsKey(p)) {
+                    blockIntrusions.put(p.immutable(), 0);
                 }
             }
         }
@@ -732,20 +732,20 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
                 Map.Entry<BlockPos, Integer> entry = i.next();
                 final Vec3D iPos = new Vec3D(entry.getKey());
 
-                if (world.rand.nextInt(10) == 0) {
-                    ((ServerWorld) world).spawnParticle(ParticleTypes.FLAME, iPos.x + 0.5, iPos.y + 0.5, iPos.z + 0.5, 5, 0.5, 0.5, 0.5, 0.01D);
+                if (level.random.nextInt(10) == 0) {
+                    ((ServerWorld) level).sendParticles(ParticleTypes.FLAME, iPos.x + 0.5, iPos.y + 0.5, iPos.z + 0.5, 5, 0.5, 0.5, 0.5, 0.01D);
                 }
 
                 entry.setValue(entry.getValue() + 1);
                 if (entry.getValue() > 100) {
                     i.remove();
-                    world.playEvent(2001, entry.getKey(), Block.getStateId(world.getBlockState(entry.getKey())));
-                    world.removeBlock(entry.getKey(), false);
+                    level.levelEvent(2001, entry.getKey(), Block.getId(level.getBlockState(entry.getKey())));
+                    level.removeBlock(entry.getKey(), false);
                 }
             }
 
-            if (tick % 20 == 0 || world.rand.nextInt(40) == 0) {
-                world.playSound(null, pos, SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.BLOCKS, 1, 0.9F + world.rand.nextFloat() * 0.2F);
+            if (tick % 20 == 0 || level.random.nextInt(40) == 0) {
+                level.playSound(null, worldPosition, SoundEvents.FIRE_EXTINGUISH, SoundCategory.BLOCKS, 1, 0.9F + level.random.nextFloat() * 0.2F);
             }
         }
     }
@@ -793,17 +793,17 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
         LogHelper.dev("Reactor: Find Components");
         int stabilizersFound = 0;
         for (Direction facing : Direction.values()) {
-            componentPositions[facing.getIndex()].get().set(0, 0, 0);
+            componentPositions[facing.get3DDataValue()].get().set(0, 0, 0);
             for (int i = 4; i < COMPONENT_MAX_DISTANCE; i++) {
-                BlockPos searchPos = pos.offset(facing, i);
+                BlockPos searchPos = worldPosition.relative(facing, i);
 
-                if (!world.isAirBlock(searchPos)) {
-                    TileEntity searchTile = world.getTileEntity(searchPos);
+                if (!level.isEmptyBlock(searchPos)) {
+                    TileEntity searchTile = level.getBlockEntity(searchPos);
                     LogHelper.dev("Reactor: -Found: " + searchTile);
 
                     if (searchTile instanceof TileReactorComponent && ((TileReactorComponent) searchTile).facing.get() == facing.getOpposite()) {
-                        LogHelper.dev("Set " + facing.getIndex() + " " + getOffsetVec(searchPos));
-                        componentPositions[facing.getIndex()].set(getOffsetVec(searchPos));
+                        LogHelper.dev("Set " + facing.get3DDataValue() + " " + getOffsetVec(searchPos));
+                        componentPositions[facing.get3DDataValue()].set(getOffsetVec(searchPos));
                         if (searchTile instanceof TileReactorStabilizer) {
                             stabilizersFound++;
                         }
@@ -828,7 +828,7 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
         for (Axis axis : Axis.values()) {
             boolean axisValid = true;
             for (Direction facing : FacingUtils.getFacingsAroundAxis(axis)) {
-                TileEntity tile = world.getTileEntity(getOffsetPos(componentPositions[facing.getIndex()].get()));
+                TileEntity tile = level.getBlockEntity(getOffsetPos(componentPositions[facing.get3DDataValue()].get()));
                 //The facing check should not be needed here but does not heart to be to careful.
                 if (!(tile instanceof TileReactorStabilizer && ((TileReactorStabilizer) tile).facing.get() == facing.getOpposite())) {
                     axisValid = false;
@@ -856,7 +856,7 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
         LogHelper.dev("Reactor: Binding Components");
         int stabilizersBound = 0;
         for (int i = 0; i < 6; i++) {
-            TileEntity tile = world.getTileEntity(getOffsetPos(componentPositions[i].get()));
+            TileEntity tile = level.getBlockEntity(getOffsetPos(componentPositions[i].get()));
             if (tile instanceof TileReactorComponent) {
                 ((TileReactorComponent) tile).bindToCore(this);
 
@@ -879,28 +879,28 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
     public boolean validateStructure() {
         LogHelper.dev("Reactor: Validate Structure");
         for (Direction facing : FacingUtils.getFacingsAroundAxis(stabilizerAxis.get())) {
-            BlockPos pos = getOffsetPos(componentPositions[facing.getIndex()].get());
-            if (!Utils.isAreaLoaded(world, pos, LocationType.TICKING)) {
+            BlockPos pos = getOffsetPos(componentPositions[facing.get3DDataValue()].get());
+            if (!Utils.isAreaLoaded(level, pos, LocationType.TICKING)) {
                 return true;
             }
 
 
-            TileEntity tile = world.getTileEntity(pos);
+            TileEntity tile = level.getBlockEntity(pos);
             LogHelper.dev("Reactor: Validate Stabilizer: " + tile);
-            if (!(tile instanceof TileReactorStabilizer) || !((TileReactorStabilizer) tile).getCorePos().equals(this.pos)) {
+            if (!(tile instanceof TileReactorStabilizer) || !((TileReactorStabilizer) tile).getCorePos().equals(this.worldPosition)) {
                 LogHelper.dev("Reactor: Structure Validation Failed!!!");
                 return false;
             }
 
             for (ManagedVec3I vec : componentPositions) {
                 pos = getOffsetPos(vec.get());
-                tile = world.getTileEntity(pos);
+                tile = level.getBlockEntity(pos);
 
                 if (tile instanceof TileReactorInjector && !((TileReactorInjector) tile).isBound.get()) {
                     ((TileReactorInjector) tile).bindToCore(this);
                 }
 
-                if (tile instanceof TileReactorComponent && ((TileReactorComponent) tile).getCorePos().equals(this.pos) && !((TileReactorComponent) tile).isBound.get()) {
+                if (tile instanceof TileReactorComponent && ((TileReactorComponent) tile).getCorePos().equals(this.worldPosition) && !((TileReactorComponent) tile).isBound.get()) {
                     LogHelper.warn("Detected a reactor component in an invalid state. This is likely due to a recent bug that has since been fixed. The state of this component will now be corrected.");
                     ((TileReactorComponent) tile).bindToCore(this);
                 }
@@ -914,7 +914,7 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
     //endregion
 
     private void minimalBoom() {
-        BlockState lava = Blocks.LAVA.getDefaultState();
+        BlockState lava = Blocks.LAVA.defaultBlockState();
         //TODO pyrotheum
 //        LogHelper.dev(FluidRegistry.isFluidRegistered("pyrotheum"));
 //        if (FluidRegistry.isFluidRegistered("pyrotheum")) {
@@ -924,32 +924,32 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
 //            }
 //        }
 
-        Vec3D vec = Vec3D.getCenter(pos);
-        world.removeBlock(pos, false);
-        world.createExplosion(null, vec.x, vec.y, vec.z, 8, Explosion.Mode.BREAK);
-        int c = 25 + world.rand.nextInt(25);
+        Vec3D vec = Vec3D.getCenter(worldPosition);
+        level.removeBlock(worldPosition, false);
+        level.explode(null, vec.x, vec.y, vec.z, 8, Explosion.Mode.BREAK);
+        int c = 25 + level.random.nextInt(25);
         for (int i = 0; i < c; i++) {
-            FallingBlockEntity entity = new FallingBlockEntity(world, vec.x, vec.y, vec.z, lava);
-            entity.fallTime = 1;
-            entity.shouldDropItem = false;
-            double vMod = 0.5 + (2 * world.rand.nextDouble());
-            entity.addVelocity((world.rand.nextDouble() - 0.5) * vMod, (world.rand.nextDouble() / 1.5) * vMod, (world.rand.nextDouble() - 0.5) * vMod);
-            world.addEntity(entity);
+            FallingBlockEntity entity = new FallingBlockEntity(level, vec.x, vec.y, vec.z, lava);
+            entity.time = 1;
+            entity.dropItem = false;
+            double vMod = 0.5 + (2 * level.random.nextDouble());
+            entity.push((level.random.nextDouble() - 0.5) * vMod, (level.random.nextDouble() / 1.5) * vMod, (level.random.nextDouble() - 0.5) * vMod);
+            level.addFreshEntity(entity);
         }
     }
 
     //region Getters & Setters
 
     private BlockPos getOffsetPos(Vec3I vec) {
-        return pos.subtract(vec.getPos());
+        return worldPosition.subtract(vec.getPos());
     }
 
     private Vec3I getOffsetVec(BlockPos offsetPos) {
-        return new Vec3I(pos.subtract(offsetPos));
+        return new Vec3I(worldPosition.subtract(offsetPos));
     }
 
     public TileReactorComponent getComponent(Direction facing) {
-        TileEntity tile = world.getTileEntity(getOffsetPos(componentPositions[facing.getIndex()].get()));
+        TileEntity tile = level.getBlockEntity(getOffsetPos(componentPositions[facing.get3DDataValue()].get()));
 
         if (tile instanceof TileReactorComponent && ((TileReactorComponent) tile).facing.get() == facing.getOpposite()) {
             return (TileReactorComponent) tile;
@@ -1020,7 +1020,7 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
     }
 
     @Override
-    public double getMaxRenderDistanceSquared() {
+    public double getViewDistance() {
         return 40960.0D;
     }
 
@@ -1050,7 +1050,7 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
         public Roller(Vec3D pos, World world, double diameter) {
             this.pos = pos;
             this.lastPos = pos.copy();
-            this.direction = world.rand.nextDouble() * Math.PI * 2;
+            this.direction = world.random.nextDouble() * Math.PI * 2;
             this.world = world;
             this.diameter = (diameter / 2) + 1;
             this.speed = -0.3;
@@ -1062,12 +1062,12 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
             double z = Math.sin(direction);
 
             BlockPos p = pos.getPos();
-            if (world.isAirBlock(p) || world.getBlockState(p).getBlock() == DEContent.reactor_core) {
-                while ((world.isAirBlock(p) || world.getBlockState(p).getBlock() == DEContent.reactor_core) && p.getY() > 0) {
-                    p = p.down();
+            if (world.isEmptyBlock(p) || world.getBlockState(p).getBlock() == DEContent.reactor_core) {
+                while ((world.isEmptyBlock(p) || world.getBlockState(p).getBlock() == DEContent.reactor_core) && p.getY() > 0) {
+                    p = p.below();
                 }
             } else {
-                while (!world.isAirBlock(p)) p = p.up();
+                while (!world.isEmptyBlock(p)) p = p.above();
             }
 
             int y = p.getY();
@@ -1141,7 +1141,7 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
         @OnlyIn(Dist.CLIENT)
         public String localize() {
             TextFormatting[] colours = {TextFormatting.RED, TextFormatting.DARK_AQUA, TextFormatting.LIGHT_PURPLE, TextFormatting.GREEN, TextFormatting.LIGHT_PURPLE, TextFormatting.LIGHT_PURPLE, TextFormatting.DARK_RED};
-            return colours[ordinal()] + I18n.format("gui.reactor.status." + name().toLowerCase() + ".info");
+            return colours[ordinal()] + I18n.get("gui.reactor.status." + name().toLowerCase() + ".info");
         }
     }
 }

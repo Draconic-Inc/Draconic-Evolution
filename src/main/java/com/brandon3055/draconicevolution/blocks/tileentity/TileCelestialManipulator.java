@@ -69,24 +69,24 @@ public class TileCelestialManipulator extends TileBCore implements ITickableTile
 
         if (weatherToggleRunning.get()) {
             timer++;
-            if (world.isRemote) {
+            if (level.isClientSide) {
                 updateWeatherEffects();
             }
             else {
                 if (timer >= 230) {
                     timer = 0;
                     weatherToggleRunning.set(false);
-                    world.getWorldInfo().setRaining(rain);
-                    ((IServerWorldInfo)world.getWorldInfo()).setThundering(storm);
-                    int time = (10 * 60 * 20) + world.rand.nextInt(20 * 60 * 20);
-                    ((IServerWorldInfo)world.getWorldInfo()).setRainTime(rain ? time : 0);
-                    ((IServerWorldInfo)world.getWorldInfo()).setClearWeatherTime(rain ? 0 : time);
+                    level.getLevelData().setRaining(rain);
+                    ((IServerWorldInfo)level.getLevelData()).setThundering(storm);
+                    int time = (10 * 60 * 20) + level.random.nextInt(20 * 60 * 20);
+                    ((IServerWorldInfo)level.getLevelData()).setRainTime(rain ? time : 0);
+                    ((IServerWorldInfo)level.getLevelData()).setClearWeatherTime(rain ? 0 : time);
                 }
             }
         }
         else if (timeWarpRunning.get()) {
             timer++;
-            if (world.isRemote) {
+            if (level.isClientSide) {
                 updateSunEffect();
             }
 //            else {
@@ -99,11 +99,11 @@ public class TileCelestialManipulator extends TileBCore implements ITickableTile
                     int extracted = opStorage.extractEnergy(16000, true);
                     int ticks = extracted / 320;
                     opStorage.extractEnergy(ticks * 320, false);
-                    ((IServerWorldInfo)world.getWorldInfo()).setGameTime(world.getGameTime() + ticks); //ToDo test time adjustment. May need world.setDayTime();
+                    ((IServerWorldInfo)level.getLevelData()).setGameTime(level.getGameTime() + ticks); //ToDo test time adjustment. May need world.setDayTime();
                 }
 
-                if (!world.isRemote) {
-                    if (world.getGameTime() >= targetTime) {
+                if (!level.isClientSide) {
+                    if (level.getGameTime() >= targetTime) {
                         stopTimeWarp();
                     }
                 }
@@ -115,14 +115,14 @@ public class TileCelestialManipulator extends TileBCore implements ITickableTile
             }
 
             timer--;
-            if (timer <= 0 && !world.isRemote) {
+            if (timer <= 0 && !level.isClientSide) {
                 timeWarpStopping.set(false);
             }
 
-            if (world.isRemote && timer >= 0) {
+            if (level.isClientSide && timer >= 0) {
                 updateSunEffect();
             }
-            else if (world.isRemote) {
+            else if (level.isClientSide) {
                 if (effects != null) {
                     effects.clear();
                 }
@@ -135,13 +135,13 @@ public class TileCelestialManipulator extends TileBCore implements ITickableTile
         else if (active.get()) {
             active.set(false);
         }
-        else if (world.isRemote) {
+        else if (level.isClientSide) {
             standbyParticleEffect();
         }
     }
 
     public void toggleWeather(boolean rain, boolean storm) {
-        if (world.isRemote || active.get()) {
+        if (level.isClientSide || active.get()) {
             return;
         }
 
@@ -202,83 +202,83 @@ public class TileCelestialManipulator extends TileBCore implements ITickableTile
                 weatherMode.set(false);
                 return;
             case "STOP_RAIN":
-                if (!world.isRaining()) {
+                if (!level.isRaining()) {
                     sendMessage(new TranslationTextComponent("msg.de.notRaining.txt"), player);
                     return;
                 }
                 if (opStorage.getEnergyStored() < 256000) {
-                    sendMessage(new TranslationTextComponent("msg.de.insufficientPower.txt").appendString(" (256000RF)"), player);
+                    sendMessage(new TranslationTextComponent("msg.de.insufficientPower.txt").append(" (256000RF)"), player);
                     return;
                 }
                 opStorage.modifyEnergyStored(-256000);
                 toggleWeather(false, false);
-                LogHelper.info("Stopped rain! Cause: " + pos);
+                LogHelper.info("Stopped rain! Cause: " + worldPosition);
                 return;
             case "START_RAIN":
-                if (world.isRaining()) {
+                if (level.isRaining()) {
                     sendMessage(new TranslationTextComponent("msg.de.alreadyRaining.txt"), player);
                     return;
                 }
                 if (opStorage.getEnergyStored() < 256000) {
-                    sendMessage(new TranslationTextComponent("msg.de.insufficientPower.txt").appendString(" (256000RF)"), player);
+                    sendMessage(new TranslationTextComponent("msg.de.insufficientPower.txt").append(" (256000RF)"), player);
                     return;
                 }
                 opStorage.modifyEnergyStored(-256000);
                 toggleWeather(true, false);
-                LogHelper.info("Started rain! Cause: " + pos);
+                LogHelper.info("Started rain! Cause: " + worldPosition);
                 return;
             case "START_STORM":
-                if (world.isRaining() && world.isThundering()) {
+                if (level.isRaining() && level.isThundering()) {
                     sendMessage(new TranslationTextComponent("msg.de.alreadyStorm.txt"), player);
                     return;
                 }
                 if (opStorage.getEnergyStored() < 384000) {
-                    sendMessage(new TranslationTextComponent("msg.de.insufficientPower.txt").appendString(" (384000RF)"), player);
+                    sendMessage(new TranslationTextComponent("msg.de.insufficientPower.txt").append(" (384000RF)"), player);
                     return;
                 }
                 opStorage.modifyEnergyStored(-384000);
                 toggleWeather(true, true);
-                LogHelper.info("Started storm! Cause: " + pos);
+                LogHelper.info("Started storm! Cause: " + worldPosition);
                 return;
             case "SUN_RISE":
-                startTimeWarp(world.getGameTime() + calculateTimeTill(0));
-                LogHelper.info("Set time to sunrise! Cause: " + pos);
+                startTimeWarp(level.getGameTime() + calculateTimeTill(0));
+                LogHelper.info("Set time to sunrise! Cause: " + worldPosition);
                 break;
             case "MID_DAY":
-                startTimeWarp(world.getGameTime() + calculateTimeTill(5900));
-                LogHelper.info("Set time to midday! Cause: " + pos);
+                startTimeWarp(level.getGameTime() + calculateTimeTill(5900));
+                LogHelper.info("Set time to midday! Cause: " + worldPosition);
                 break;
             case "SUN_SET":
-                startTimeWarp(world.getGameTime() + calculateTimeTill(12000));
-                LogHelper.info("Set time to sunset! Cause: " + pos);
+                startTimeWarp(level.getGameTime() + calculateTimeTill(12000));
+                LogHelper.info("Set time to sunset! Cause: " + worldPosition);
                 break;
             case "MOON_RISE":
-                startTimeWarp(world.getGameTime() + calculateTimeTill(13000));
-                LogHelper.info("Set time to moonrise! Cause: " + pos);
+                startTimeWarp(level.getGameTime() + calculateTimeTill(13000));
+                LogHelper.info("Set time to moonrise! Cause: " + worldPosition);
                 break;
             case "MIDNIGHT":
-                startTimeWarp(world.getGameTime() + calculateTimeTill(17900));
-                LogHelper.info("Set time to midnight! Cause: " + pos);
+                startTimeWarp(level.getGameTime() + calculateTimeTill(17900));
+                LogHelper.info("Set time to midnight! Cause: " + worldPosition);
                 break;
             case "MOON_SET":
-                startTimeWarp(world.getGameTime() + calculateTimeTill(22500));
-                LogHelper.info("Set time to moonset! Cause: " + pos);
+                startTimeWarp(level.getGameTime() + calculateTimeTill(22500));
+                LogHelper.info("Set time to moonset! Cause: " + worldPosition);
                 break;
             case "SKIP_24":
-                startTimeWarp(world.getGameTime() + 24000);
-                LogHelper.info("Skipped one day! Cause: " + pos);
+                startTimeWarp(level.getGameTime() + 24000);
+                LogHelper.info("Skipped one day! Cause: " + worldPosition);
                 break;
         }
     }
 
     private void sendMessage(ITextComponent message, PlayerEntity player) {
         if (player != null) {
-            player.sendMessage(message, Util.DUMMY_UUID);
+            player.sendMessage(message, Util.NIL_UUID);
         }
     }
 
     private int calculateTimeTill(int time) {
-        int currentTime = (int) (world.getGameTime() % 24000);
+        int currentTime = (int) (level.getGameTime() % 24000);
         return currentTime > time ? (24000 - (currentTime - time)) : time - currentTime;
     }
 
@@ -298,14 +298,14 @@ public class TileCelestialManipulator extends TileBCore implements ITickableTile
 
         effects = new LinkedList<>();
         for (int i = 0; i < 8; i++) {
-            effects.add(new EffectTrackerCelestialManipulator(world, Vec3D.getCenter(pos).add(0, 1.5, 0), Vec3D.getCenter(pos).add(0, 1.5, 0)));
+            effects.add(new EffectTrackerCelestialManipulator(level, Vec3D.getCenter(worldPosition).add(0, 1.5, 0), Vec3D.getCenter(worldPosition).add(0, 1.5, 0)));
         }
 
-        Vec3D vec = Vec3D.getCenter(pos.add(0, 1, 0));
-        sound = new CelestialModifierSound(DESounds.electricBuzz, pos);
+        Vec3D vec = Vec3D.getCenter(worldPosition.offset(0, 1, 0));
+        sound = new CelestialModifierSound(DESounds.electricBuzz, worldPosition);
         sound.updateSound(vec, 0.01F, 0.5F);
-        Minecraft.getInstance().getSoundHandler().play(sound);
-        world.playSound(vec.x, vec.y, vec.z, DESounds.fusionComplete, SoundCategory.BLOCKS, getSoundVolume(), 0.5F, false);
+        Minecraft.getInstance().getSoundManager().play(sound);
+        level.playLocalSound(vec.x, vec.y, vec.z, DESounds.fusionComplete, SoundCategory.BLOCKS, getSoundVolume(), 0.5F, false);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -334,13 +334,13 @@ public class TileCelestialManipulator extends TileBCore implements ITickableTile
             secondaryExpand = ascPos * ascPos * 100D;
         }
 
-        Vec3D effectFocus = Vec3D.getCenter(pos).add(0, height, 0);
+        Vec3D effectFocus = Vec3D.getCenter(worldPosition).add(0, height, 0);
 
         if (timer == riseEnd) {
-            world.playSound(effectFocus.x, effectFocus.y, effectFocus.z, DESounds.fusionComplete, SoundCategory.BLOCKS, 1F, 1F, false);
+            level.playLocalSound(effectFocus.x, effectFocus.y, effectFocus.z, DESounds.fusionComplete, SoundCategory.BLOCKS, 1F, 1F, false);
         }
         else if (timer == ascendStart) {
-            world.playSound(effectFocus.x, effectFocus.y, effectFocus.z, DESounds.fusionComplete, SoundCategory.BLOCKS, 1F, 2F, false);
+            level.playLocalSound(effectFocus.x, effectFocus.y, effectFocus.z, DESounds.fusionComplete, SoundCategory.BLOCKS, 1F, 2F, false);
             for (int i = 0; i < 100; i++) {
                 try {
 //                    SubParticle particle = new SubParticle(world, effects.get(world.rand.nextInt(effects.size())).pos);
@@ -380,7 +380,7 @@ public class TileCelestialManipulator extends TileBCore implements ITickableTile
         }
 
         if (timer >= 220) {
-            world.playSound(effectFocus.x, effectFocus.y, effectFocus.z, DESounds.boom, SoundCategory.BLOCKS, DEOldConfig.disableLoudCelestialManipulator ? 1 : 100, 1F, false);
+            level.playLocalSound(effectFocus.x, effectFocus.y, effectFocus.z, DESounds.boom, SoundCategory.BLOCKS, DEOldConfig.disableLoudCelestialManipulator ? 1 : 100, 1F, false);
             timer = 0;
             weatherToggleRunning.set(false);
             effects.clear();
@@ -401,7 +401,7 @@ public class TileCelestialManipulator extends TileBCore implements ITickableTile
 
         effects = new LinkedList<>();
         for (int i = 0; i < 12; i++) {
-            effects.add(new EffectTrackerCelestialManipulator(world, Vec3D.getCenter(pos).add(0, 1.5, 0), Vec3D.getCenter(pos).add(0, 1.5, 0)));
+            effects.add(new EffectTrackerCelestialManipulator(level, Vec3D.getCenter(worldPosition).add(0, 1.5, 0), Vec3D.getCenter(worldPosition).add(0, 1.5, 0)));
         }
 
         effects.get(0).red = 1F;
@@ -414,9 +414,9 @@ public class TileCelestialManipulator extends TileBCore implements ITickableTile
         effects.get(1).blue = 1F;
         effects.get(1).renderBolts = false;
 
-        sound = new CelestialModifierSound(DESounds.sunDialEffect, pos);
-        sound.updateSound(Vec3D.getCenter(pos), getSoundVolume(), 0.5F);
-        Minecraft.getInstance().getSoundHandler().play(sound);
+        sound = new CelestialModifierSound(DESounds.sunDialEffect, worldPosition);
+        sound.updateSound(Vec3D.getCenter(worldPosition), getSoundVolume(), 0.5F);
+        Minecraft.getInstance().getSoundManager().play(sound);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -437,7 +437,7 @@ public class TileCelestialManipulator extends TileBCore implements ITickableTile
         double depProg = Math.min(timer / 100F, 1D);
 
         EffectTrackerCelestialManipulator effect;
-        Vec3D focus = Vec3D.getCenter(pos).add(0, 5.5 * depProg, 0);
+        Vec3D focus = Vec3D.getCenter(worldPosition).add(0, 5.5 * depProg, 0);
         sound.updateSound(focus, (float) depProg, 0.5F + (float) depProg);
 
         if (timer % 4 == 0) {
@@ -448,7 +448,7 @@ public class TileCelestialManipulator extends TileBCore implements ITickableTile
         }
 
 
-        double rotation = (world.getGameTime() % 24000) / 24000D;
+        double rotation = (level.getGameTime() % 24000) / 24000D;
         double offset;
         double offsetX;
         double offsetY;
@@ -551,7 +551,7 @@ public class TileCelestialManipulator extends TileBCore implements ITickableTile
 
     @Override
     public void onNeighborChange(BlockPos blockChanged) {
-        if (world.isBlockPowered(pos)) {
+        if (level.hasNeighborSignal(worldPosition)) {
             if (!redstoneSignal.get()) {
                 redstoneSignal.set(true);
                 handleInteract(ACTIONS[rsMode.get()], null);

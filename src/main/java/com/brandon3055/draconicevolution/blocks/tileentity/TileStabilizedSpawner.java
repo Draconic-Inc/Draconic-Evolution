@@ -63,7 +63,7 @@ public class TileStabilizedSpawner extends TileBCore implements ITickableTileEnt
     public boolean isActive() {
         if (isPowered.get() || mobSoul.get().isEmpty()) {
             return false;
-        } else if (spawnerTier.get().requiresPlayer && !world.isPlayerWithin(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, (double) this.activatingRangeFromPlayer)) {
+        } else if (spawnerTier.get().requiresPlayer && !level.hasNearbyAlivePlayer(worldPosition.getX() + 0.5D, worldPosition.getY() + 0.5D, worldPosition.getZ() + 0.5D, (double) this.activatingRangeFromPlayer)) {
             return false;
         }
         return true;
@@ -71,14 +71,14 @@ public class TileStabilizedSpawner extends TileBCore implements ITickableTileEnt
 
     @Override
     public void onNeighborChange(BlockPos changePos) {
-        isPowered.set(world.isBlockPowered(pos));
+        isPowered.set(level.hasNeighborSignal(worldPosition));
     }
 
     @Override
     public boolean onBlockActivated(BlockState state, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
-        ItemStack stack = player.getHeldItem(hand);
+        ItemStack stack = player.getItemInHand(hand);
         if (stack.getItem() == DEContent.mob_soul) {
-            if (!world.isRemote) {
+            if (!level.isClientSide) {
                 (mobSoul.set(stack.copy())).setCount(1);
                 if (!player.isCreative()) {
                     InventoryUtils.consumeHeldItem(player, stack, hand);
@@ -90,7 +90,7 @@ public class TileStabilizedSpawner extends TileBCore implements ITickableTileEnt
             ItemStack soul = new ItemStack(DEContent.mob_soul);
             DEContent.mob_soul.setEntity(type.getRegistryName(), soul);
             mobSoul.set(soul);
-            if (!player.abilities.isCreativeMode) {
+            if (!player.abilities.instabuild) {
                 stack.shrink(1);
             }
             return true;
@@ -127,11 +127,11 @@ public class TileStabilizedSpawner extends TileBCore implements ITickableTileEnt
                     dropStack = new ItemStack(DEContent.core_chaotic);
                     break;
             }
-            if (!world.isRemote && !player.abilities.isCreativeMode) {
-                ItemEntity entityItem = new ItemEntity(world, pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5, dropStack);
-                entityItem.setMotion(entityItem.getMotion().x, 0.2, entityItem.getMotion().z);
+            if (!level.isClientSide && !player.abilities.instabuild) {
+                ItemEntity entityItem = new ItemEntity(level, worldPosition.getX() + 0.5, worldPosition.getY() + 1, worldPosition.getZ() + 0.5, dropStack);
+                entityItem.setDeltaMovement(entityItem.getDeltaMovement().x, 0.2, entityItem.getDeltaMovement().z);
                 ;
-                world.addEntity(entityItem);
+                level.addFreshEntity(entityItem);
                 InventoryUtils.consumeHeldItem(player, stack, hand);
             }
         }

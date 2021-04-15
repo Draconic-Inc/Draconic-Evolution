@@ -31,7 +31,7 @@ public class FlowGate extends BlockBCore {
     public FlowGate(Properties properties, boolean fluxGate) {
         super(properties);
         this.fluxGate = fluxGate;
-        this.setDefaultState(stateContainer.getBaseState().with(FACING, Direction.NORTH));
+        this.registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH));
     }
 
     @Override
@@ -40,18 +40,18 @@ public class FlowGate extends BlockBCore {
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
         builder.add(FACING);
     }
 
     @Override
-    public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
-        super.onBlockPlacedBy(world, pos, state, placer, stack);
+    public void setPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+        super.setPlacedBy(world, pos, state, placer, stack);
     }
 
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context) {
-        return this.getDefaultState().with(FACING, context.getNearestLookingDirection().getOpposite());
+        return this.defaultBlockState().setValue(FACING, context.getNearestLookingDirection().getOpposite());
     }
 
     @Override
@@ -65,6 +65,6 @@ public class FlowGate extends BlockBCore {
 
     @Override
     public BlockState rotate(BlockState state, IWorld world, BlockPos pos, Rotation direction) {
-        return state.with(FACING, FacingUtils.rotateXYZ(state.get(FACING)));
+        return state.setValue(FACING, FacingUtils.rotateXYZ(state.getValue(FACING)));
     }
 }

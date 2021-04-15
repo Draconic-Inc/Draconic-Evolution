@@ -69,15 +69,15 @@ public class WyvernBow extends ToolBase implements IFOVModifierItem, IReaperItem
     //region Bow Stuff
 
     private ItemStack findAmmo(PlayerEntity player) {
-        if (this.isArrow(player.getHeldItem(Hand.OFF_HAND))) {
-            return player.getHeldItem(Hand.OFF_HAND);
+        if (this.isArrow(player.getItemInHand(Hand.OFF_HAND))) {
+            return player.getItemInHand(Hand.OFF_HAND);
         }
-        else if (this.isArrow(player.getHeldItem(Hand.MAIN_HAND))) {
-            return player.getHeldItem(Hand.MAIN_HAND);
+        else if (this.isArrow(player.getItemInHand(Hand.MAIN_HAND))) {
+            return player.getItemInHand(Hand.MAIN_HAND);
         }
         else {
-            for (int i = 0; i < player.inventory.getSizeInventory(); ++i) {
-                ItemStack itemstack = player.inventory.getStackInSlot(i);
+            for (int i = 0; i < player.inventory.getContainerSize(); ++i) {
+                ItemStack itemstack = player.inventory.getItem(i);
 
                 if (this.isArrow(itemstack)) {
                     return itemstack;
@@ -93,7 +93,7 @@ public class WyvernBow extends ToolBase implements IFOVModifierItem, IReaperItem
     }
 
     @Override
-    public void onPlayerStoppedUsing(ItemStack stack, World world, LivingEntity entityLiving, int timeLeft) {
+    public void releaseUsing(ItemStack stack, World world, LivingEntity entityLiving, int timeLeft) {
         if (entityLiving instanceof PlayerEntity) {
             BowHandler.onPlayerStoppedUsingBow(stack, world, (PlayerEntity) entityLiving, timeLeft);
         }
@@ -116,13 +116,13 @@ public class WyvernBow extends ToolBase implements IFOVModifierItem, IReaperItem
     }
 
     @Override
-    public UseAction getUseAction(ItemStack stack) {
+    public UseAction getUseAnimation(ItemStack stack) {
         return UseAction.BOW;
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
-        return BowHandler.onBowRightClick(player.getHeldItem(hand), world, player, hand);
+    public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
+        return BowHandler.onBowRightClick(player.getItemInHand(hand), world, player, hand);
     }
 
     @Override
@@ -155,9 +155,9 @@ public class WyvernBow extends ToolBase implements IFOVModifierItem, IReaperItem
 
         if (BrandonsCore.proxy.getClientPlayer() != null) {
             BowHandler.BowProperties properties = new BowHandler.BowProperties(stack, BrandonsCore.proxy.getClientPlayer());
-            displayList.add(InfoHelper.ITC() + I18n.format("gui.de.rfPerShot.txt") + ": " + InfoHelper.HITC() + Utils.addCommas(properties.calculateEnergyCost()));
+            displayList.add(InfoHelper.ITC() + I18n.get("gui.de.rfPerShot.txt") + ": " + InfoHelper.HITC() + Utils.addCommas(properties.calculateEnergyCost()));
             if (!properties.canFire() && properties.cantFireMessage != null) {
-                displayList.add(TextFormatting.DARK_RED + I18n.format(properties.cantFireMessage));
+                displayList.add(TextFormatting.DARK_RED + I18n.get(properties.cantFireMessage));
             }
         }
     }
@@ -203,7 +203,7 @@ public class WyvernBow extends ToolBase implements IFOVModifierItem, IReaperItem
         if (getDisabledEnchants(stack).containsKey(enchantment)) {
             return false;
         }
-        return enchantment.type == EnchantmentType.BOW /*|| enchantment.type == EnchantmentType.ALL*/;
+        return enchantment.category == EnchantmentType.BOW /*|| enchantment.type == EnchantmentType.ALL*/;
     }
 
     @Override
@@ -217,7 +217,7 @@ public class WyvernBow extends ToolBase implements IFOVModifierItem, IReaperItem
     public float getNewFOV(PlayerEntity player, ItemStack stack, float currentFOV, float originalFOV, EquipmentSlotType slot) {
         float zoom = ((10 + ToolConfigHelper.getIntegerField("bowZoomModifier", stack)) / 605F);
 
-        if (player.getActiveItemStack() == stack) {
+        if (player.getUseItem() == stack) {
             if (currentFOV > 1.5F) {
                 currentFOV = 1.5F;
             }

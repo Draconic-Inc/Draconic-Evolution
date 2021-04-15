@@ -33,41 +33,41 @@ import java.util.Map;
 public class RenderTileEnergyCore extends TileEntityRenderer<TileEnergyCore> {
     private static final double[] SCALES = {1.1, 1.7, 2.3, 3.6, 5.5, 7.1, 8.6, 10.2};
 
-    private static final RenderType innerCoreType = RenderType.getEntitySolid(new ResourceLocation(DraconicEvolution.MODID, "textures/block/core/energy_core_base.png"));
-    private static final RenderType outerCoreType = RenderType.makeType("outer_core", DefaultVertexFormats.ENTITY, GL11.GL_QUADS, 256, false, true, RenderType.State.getBuilder()
-            .texture(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/block/core/energy_core_overlay.png"), false, false))
-            .transparency(RenderState.TRANSLUCENT_TRANSPARENCY)
+    private static final RenderType innerCoreType = RenderType.entitySolid(new ResourceLocation(DraconicEvolution.MODID, "textures/block/core/energy_core_base.png"));
+    private static final RenderType outerCoreType = RenderType.create("outer_core", DefaultVertexFormats.NEW_ENTITY, GL11.GL_QUADS, 256, false, true, RenderType.State.builder()
+            .setTextureState(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/block/core/energy_core_overlay.png"), false, false))
+            .setTransparencyState(RenderState.TRANSLUCENT_TRANSPARENCY)
 //            .writeMask(RenderState.COLOR_WRITE)
-            .texturing(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
-            .build(false)
+            .setTexturingState(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
+            .createCompositeState(false)
     );
 
-    private static final RenderType innerStabType = RenderType.makeType("inner_stab", DefaultVertexFormats.ENTITY, GL11.GL_QUADS, 256, false, true, RenderType.State.getBuilder()
-                    .texture(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/block/core/stabilizer_sphere.png"), false, false))
-                    .transparency(RenderState.NO_TRANSPARENCY)
+    private static final RenderType innerStabType = RenderType.create("inner_stab", DefaultVertexFormats.NEW_ENTITY, GL11.GL_QUADS, 256, false, true, RenderType.State.builder()
+                    .setTextureState(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/block/core/stabilizer_sphere.png"), false, false))
+                    .setTransparencyState(RenderState.NO_TRANSPARENCY)
 //            .texturing(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
-                    .build(false)
+                    .createCompositeState(false)
     );
-    private static final RenderType outerStabType = RenderType.makeType("outer_stab", DefaultVertexFormats.ENTITY, GL11.GL_QUADS, 256, false, true, RenderType.State.getBuilder()
-            .texture(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/block/core/stabilizer_sphere.png"), false, false))
-            .transparency(RenderState.TRANSLUCENT_TRANSPARENCY)
-            .texturing(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
-            .build(false)
-    );
-
-    private static final RenderType beamType = RenderType.makeType("inner_beam", DefaultVertexFormats.POSITION_TEX, GL11.GL_QUADS, 256, false, true, RenderType.State.getBuilder()
-            .texture(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/block/core/stabilizer_beam.png"), false, false))
-            .transparency(RenderState.NO_TRANSPARENCY)
-            .texturing(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
-            .build(false)
+    private static final RenderType outerStabType = RenderType.create("outer_stab", DefaultVertexFormats.NEW_ENTITY, GL11.GL_QUADS, 256, false, true, RenderType.State.builder()
+            .setTextureState(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/block/core/stabilizer_sphere.png"), false, false))
+            .setTransparencyState(RenderState.TRANSLUCENT_TRANSPARENCY)
+            .setTexturingState(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
+            .createCompositeState(false)
     );
 
-    private static final RenderType outerBeamType = RenderType.makeType("outer_beam", DefaultVertexFormats.POSITION_COLOR_TEX, GL11.GL_TRIANGLE_STRIP, 256, false, false, RenderType.State.getBuilder()
-            .texture(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/block/core/stabilizer_beam.png"), false, false))
-            .transparency(RenderState.TRANSLUCENT_TRANSPARENCY)
-            .writeMask(RenderState.COLOR_WRITE)
-            .texturing(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
-            .build(false)
+    private static final RenderType beamType = RenderType.create("inner_beam", DefaultVertexFormats.POSITION_TEX, GL11.GL_QUADS, 256, false, true, RenderType.State.builder()
+            .setTextureState(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/block/core/stabilizer_beam.png"), false, false))
+            .setTransparencyState(RenderState.NO_TRANSPARENCY)
+            .setTexturingState(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
+            .createCompositeState(false)
+    );
+
+    private static final RenderType outerBeamType = RenderType.create("outer_beam", DefaultVertexFormats.POSITION_COLOR_TEX, GL11.GL_TRIANGLE_STRIP, 256, false, false, RenderType.State.builder()
+            .setTextureState(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/block/core/stabilizer_beam.png"), false, false))
+            .setTransparencyState(RenderState.TRANSLUCENT_TRANSPARENCY)
+            .setWriteMaskState(RenderState.COLOR_WRITE)
+            .setTexturingState(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
+            .createCompositeState(false)
     );
 
     private final CCModel modelStabilizerSphere;
@@ -189,9 +189,9 @@ public class RenderTileEnergyCore extends TileEntityRenderer<TileEnergyCore> {
             Matrix4 mat = matrix4.copy();
             mat.translate(-vec3I.get().x + 0.5, -vec3I.get().y + 0.5, -vec3I.get().z + 0.5);
 
-            Direction facing = Direction.getFacingFromVector(vec3I.get().x, vec3I.get().y, vec3I.get().z);//Direction.getFacingFromAxis(Direction.AxisDirection.POSITIVE, te.multiBlockAxis);
+            Direction facing = Direction.getNearest(vec3I.get().x, vec3I.get().y, vec3I.get().z);//Direction.getFacingFromAxis(Direction.AxisDirection.POSITIVE, te.multiBlockAxis);
             if (facing.getAxis() == Direction.Axis.X || facing.getAxis() == Direction.Axis.Y) {
-                mat.rotate(-90F * MathHelper.torad, new Vector3(-facing.getYOffset(), facing.getXOffset(), 0).normalize());
+                mat.rotate(-90F * MathHelper.torad, new Vector3(-facing.getStepY(), facing.getStepX(), 0).normalize());
             } else if (facing == Direction.SOUTH) {
                 mat.rotate(180F * MathHelper.torad, new Vector3(0, 1, 0).normalize());
             }
@@ -253,25 +253,25 @@ public class RenderTileEnergyCore extends TileEntityRenderer<TileEnergyCore> {
         }
         innerMat.translate(-0.5, 0, -0.5);
 
-        builder.pos(d7, beamLength, d9).tex(texXMax, texHeight).endVertex();
-        builder.pos(d7, 0, d9).tex(texXMax, d28).endVertex();
-        builder.pos(d11, 0, d13).tex(texXMin, d28).endVertex();
-        builder.pos(d11, beamLength, d13).tex(texXMin, texHeight).endVertex();
+        builder.vertex(d7, beamLength, d9).uv(texXMax, texHeight).endVertex();
+        builder.vertex(d7, 0, d9).uv(texXMax, d28).endVertex();
+        builder.vertex(d11, 0, d13).uv(texXMin, d28).endVertex();
+        builder.vertex(d11, beamLength, d13).uv(texXMin, texHeight).endVertex();
 
-        builder.pos(d19, beamLength, d21).tex(texXMax, texHeight).endVertex();
-        builder.pos(d19, 0, d21).tex(texXMax, d28).endVertex();
-        builder.pos(d15, 0, d17).tex(texXMin, d28).endVertex();
-        builder.pos(d15, beamLength, d17).tex(texXMin, texHeight).endVertex();
+        builder.vertex(d19, beamLength, d21).uv(texXMax, texHeight).endVertex();
+        builder.vertex(d19, 0, d21).uv(texXMax, d28).endVertex();
+        builder.vertex(d15, 0, d17).uv(texXMin, d28).endVertex();
+        builder.vertex(d15, beamLength, d17).uv(texXMin, texHeight).endVertex();
 
-        builder.pos(d11, beamLength, d13).tex(texXMax, texHeight).endVertex();
-        builder.pos(d11, 0, d13).tex(texXMax, d28).endVertex();
-        builder.pos(d19, 0, d21).tex(texXMin, d28).endVertex();
-        builder.pos(d19, beamLength, d21).tex(texXMin, texHeight).endVertex();
+        builder.vertex(d11, beamLength, d13).uv(texXMax, texHeight).endVertex();
+        builder.vertex(d11, 0, d13).uv(texXMax, d28).endVertex();
+        builder.vertex(d19, 0, d21).uv(texXMin, d28).endVertex();
+        builder.vertex(d19, beamLength, d21).uv(texXMin, texHeight).endVertex();
 
-        builder.pos(d15, beamLength, d17).tex(texXMax, texHeight).endVertex();
-        builder.pos(d15, 0, d17).tex(texXMax, d28).endVertex();
-        builder.pos(d7, 0, d9).tex(texXMin, d28).endVertex();
-        builder.pos(d7, beamLength, d9).tex(texXMin, texHeight).endVertex();
+        builder.vertex(d15, beamLength, d17).uv(texXMax, texHeight).endVertex();
+        builder.vertex(d15, 0, d17).uv(texXMax, d28).endVertex();
+        builder.vertex(d7, 0, d9).uv(texXMin, d28).endVertex();
+        builder.vertex(d7, beamLength, d9).uv(texXMin, texHeight).endVertex();
 
         rotation += 0.77f;
         d7 = 0.5F + (float) Math.cos(rotation + 2.356194490192345F) * scale;
@@ -286,25 +286,25 @@ public class RenderTileEnergyCore extends TileEntityRenderer<TileEnergyCore> {
         d28 = (-1F + (beamMotion * 1));
         texHeight = beamLength * (0.5F / scale) + d28;
 
-        builder.pos(d7, beamLength, d9).tex(texXMax, texHeight).endVertex();
-        builder.pos(d7, 0, d9).tex(texXMax, d28).endVertex();
-        builder.pos(d11, 0, d13).tex(texXMin, d28).endVertex();
-        builder.pos(d11, beamLength, d13).tex(texXMin, texHeight).endVertex();
+        builder.vertex(d7, beamLength, d9).uv(texXMax, texHeight).endVertex();
+        builder.vertex(d7, 0, d9).uv(texXMax, d28).endVertex();
+        builder.vertex(d11, 0, d13).uv(texXMin, d28).endVertex();
+        builder.vertex(d11, beamLength, d13).uv(texXMin, texHeight).endVertex();
 
-        builder.pos(d19, beamLength, d21).tex(texXMax, texHeight).endVertex();
-        builder.pos(d19, 0, d21).tex(texXMax, d28).endVertex();
-        builder.pos(d15, 0, d17).tex(texXMin, d28).endVertex();
-        builder.pos(d15, beamLength, d17).tex(texXMin, texHeight).endVertex();
+        builder.vertex(d19, beamLength, d21).uv(texXMax, texHeight).endVertex();
+        builder.vertex(d19, 0, d21).uv(texXMax, d28).endVertex();
+        builder.vertex(d15, 0, d17).uv(texXMin, d28).endVertex();
+        builder.vertex(d15, beamLength, d17).uv(texXMin, texHeight).endVertex();
 
-        builder.pos(d11, beamLength, d13).tex(texXMax, texHeight).endVertex();
-        builder.pos(d11, 0, d13).tex(texXMax, d28).endVertex();
-        builder.pos(d19, 0, d21).tex(texXMin, d28).endVertex();
-        builder.pos(d19, beamLength, d21).tex(texXMin, texHeight).endVertex();
+        builder.vertex(d11, beamLength, d13).uv(texXMax, texHeight).endVertex();
+        builder.vertex(d11, 0, d13).uv(texXMax, d28).endVertex();
+        builder.vertex(d19, 0, d21).uv(texXMin, d28).endVertex();
+        builder.vertex(d19, beamLength, d21).uv(texXMin, texHeight).endVertex();
 
-        builder.pos(d15, beamLength, d17).tex(texXMax, texHeight).endVertex();
-        builder.pos(d15, 0, d17).tex(texXMax, d28).endVertex();
-        builder.pos(d7, 0, d9).tex(texXMin, d28).endVertex();
-        builder.pos(d7, beamLength, d9).tex(texXMin, texHeight).endVertex();
+        builder.vertex(d15, beamLength, d17).uv(texXMax, texHeight).endVertex();
+        builder.vertex(d15, 0, d17).uv(texXMax, d28).endVertex();
+        builder.vertex(d7, 0, d9).uv(texXMin, d28).endVertex();
+        builder.vertex(d7, beamLength, d9).uv(texXMin, texHeight).endVertex();
         //endregion
 
         Matrix4 outerMat = matrix4.copy();
@@ -328,14 +328,14 @@ public class RenderTileEnergyCore extends TileEntityRenderer<TileEnergyCore> {
         for (int i = 0; i <= sides; i++) {
             float verX = (float) Math.sin((float) (i % sides) * (float) Math.PI * 2F / (float) sides) * 1F;
             float verY = (float) Math.cos((float) (i % sides) * (float) Math.PI * 2F / (float) sides) * 1F;
-            builder.pos(verX * 0.35F, verY * 0.35F, 0.0D).color(255, 255, 255, 32).tex(i, (beamMotion * 2)).endVertex();
-            builder.pos(verX * enlarge, verY * enlarge, beamLength).color(255, 255, 255, 32).tex(i, beamLength + (beamMotion * 2)).endVertex();
+            builder.vertex(verX * 0.35F, verY * 0.35F, 0.0D).color(255, 255, 255, 32).uv(i, (beamMotion * 2)).endVertex();
+            builder.vertex(verX * enlarge, verY * enlarge, beamLength).color(255, 255, 255, 32).uv(i, beamLength + (beamMotion * 2)).endVertex();
         }
 
     }
 
     @Override
-    public boolean isGlobalRenderer(TileEnergyCore p_188185_1_) {
+    public boolean shouldRenderOffScreen(TileEnergyCore p_188185_1_) {
         return true;
     }
 }

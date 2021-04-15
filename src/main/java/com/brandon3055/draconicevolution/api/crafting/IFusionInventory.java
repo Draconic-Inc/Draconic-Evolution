@@ -75,17 +75,17 @@ public interface IFusionInventory extends IInventory {
      */
     int getCraftingStage();
 
-    BlockPos getPos();
+    BlockPos getCorePos();
 
     //@formatter:off
-    @Override default int getSizeInventory() { return 0; }
+    @Override default int getContainerSize() { return 0; }
     @Override default boolean isEmpty() { return false; }
-    @Override default ItemStack getStackInSlot(int index) { return null; }
-    @Override default ItemStack decrStackSize(int index, int count) { return null; }
-    @Override default ItemStack removeStackFromSlot(int index) { return null; }
-    @Override default void setInventorySlotContents(int index, ItemStack stack) { }
-    @Override default void markDirty() { }
-    @Override default boolean isUsableByPlayer(PlayerEntity player) { return false; }
-    @Override default void clear() { }
+    @Override default ItemStack getItem(int index) { return null; }
+    @Override default ItemStack removeItem(int index, int count) { return null; }
+    @Override default ItemStack removeItemNoUpdate(int index) { return null; }
+    @Override default void setItem(int index, ItemStack stack) { }
+    @Override default void setChanged() { }
+    @Override default boolean stillValid(PlayerEntity player) { return false; }
+    @Override default void clearContent() { }
     //@formatter:on
 }

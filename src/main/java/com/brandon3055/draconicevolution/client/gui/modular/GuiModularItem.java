@@ -72,19 +72,19 @@ public class GuiModularItem extends ModularGuiContainer<ContainerModularItem> {
         infoPanel = template.infoPanel;
         infoPanel.setExpandedHolder(infoExpanded);
 
-        gridRenderer = new ModuleGridRenderer(container.getGrid(), playerInventory);
+        gridRenderer = new ModuleGridRenderer(container.getGrid(), inventory);
         gridRenderer.setYPos(template.title.maxYPos() + 3);
         toolkit.centerX(gridRenderer, template.background, 0);
         template.background.addChild(gridRenderer);
         grid.setPosition(gridRenderer.xPos() - guiLeft(), gridRenderer.yPos() - guiTop());
         grid.setOnGridChange(this::updateInfoPanel);
 
-        GuiElement<?> equipModSlots = toolkit.createEquipModSlots(template.background, playerInventory.player, true, e -> e.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).isPresent());
+        GuiElement<?> equipModSlots = toolkit.createEquipModSlots(template.background, inventory.player, true, e -> e.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).isPresent());
         equipModSlots.setPos(template.background.xPos() - 28, template.background.yPos());
 
         GuiButton itemConfig = toolkit.createThemedIconButton(template.background, "item_config");
         itemConfig.onReload(e -> e.setRelPos(template.background, 3, 3));
-        itemConfig.setHoverText(I18n.format("gui.draconicevolution.modular_item.open_item_config.info"));
+        itemConfig.setHoverText(I18n.get("gui.draconicevolution.modular_item.open_item_config.info"));
         itemConfig.onPressed(() -> DraconicNetwork.sendOpenItemConfig(false));
 
         updateInfoPanel();
@@ -97,9 +97,9 @@ public class GuiModularItem extends ModularGuiContainer<ContainerModularItem> {
         StringBuilder gridName = new StringBuilder();
         gridName.append(grid.getWidth()).append("x").append(grid.getHeight());
         gridName.append(" ");
-        gridName.append(techLevel.getDisplayName().copyRaw().mergeStyle(techLevel.getTextColour()).getString());
+        gridName.append(techLevel.getDisplayName().plainCopy().withStyle(techLevel.getTextColour()).getString());
         gridName.append(" ");
-        gridName.append(I18n.format("gui.draconicevolution.modular_item.module_grid"));
+        gridName.append(I18n.get("gui.draconicevolution.modular_item.module_grid"));
         infoPanel.addDynamicLabel(gridName::toString, 12);
 
         Map<ITextComponent, ITextComponent> nameStatMap = new LinkedHashMap<>();
@@ -112,25 +112,25 @@ public class GuiModularItem extends ModularGuiContainer<ContainerModularItem> {
     }
 
     @Override
-    public void drawItemStack(ItemStack stack, int x, int y, String altText) {
+    public void renderFloatingItem(ItemStack stack, int x, int y, String altText) {
         if (gridRenderer.renderStackOverride(stack, x, y, altText)) {
             return;
         }
-        super.drawItemStack(stack, x, y, altText);
+        super.renderFloatingItem(stack, x, y, altText);
     }
 
     @Override
     protected void drawSlotOverlay(Slot slot, boolean occluded) {
-        if (slot.getHasStack() && slot.getStack().getCapability(DECapabilities.MODULE_HOST_CAPABILITY).isPresent()) {
-            int y = slot.yPos;
-            int x = slot.xPos;
+        if (slot.hasItem() && slot.getItem().getCapability(DECapabilities.MODULE_HOST_CAPABILITY).isPresent()) {
+            int y = slot.y;
+            int x = slot.x;
             int light = 0xFFfbe555;
             int dark = 0xFFf45905;
 
-            IRenderTypeBuffer.Impl getter = minecraft.getRenderTypeBuffers().getBufferSource();
+            IRenderTypeBuffer.Impl getter = minecraft.renderBuffers().bufferSource();
             GuiHelper.drawShadedRect(getter.getBuffer(GuiHelper.TRANS_TYPE), x - 1, y - 1, 18, 18, 1, 0, dark, light, GuiElement.midColour(light, dark), 0);
 
-            if (slot.getStack() == container.hostStack) {
+            if (slot.getItem() == container.hostStack) {
 //                RenderSystem.colorMask(true, true, true, false);
 //                GuiHelper.drawGradientRect(x, y, x + 16, y + 16, 0x80FF0000, 0x80FF0000, 1F, 300);
 //                RenderSystem.colorMask(true, true, true, true);
@@ -139,7 +139,7 @@ public class GuiModularItem extends ModularGuiContainer<ContainerModularItem> {
 
                 GuiHelper.drawBorderedRect(getter.getBuffer(GuiHelper.TRANS_TYPE), x, y, 16, 16, 1, 0x50FF0000, 0xFFFF0000, 0);
             }
-            getter.finish();
+            getter.endBatch();
         }
     }
 }

@@ -16,9 +16,9 @@ public class ParticleCustom extends BCParticle {
     public ParticleCustom(ClientWorld worldIn, Vec3D pos, Vec3D speed) {
         super(worldIn, pos, speed);
 
-        motionX = speed.x;
-        motionY = speed.y;
-        motionZ = speed.z;
+        xd = speed.x;
+        yd = speed.y;
+        zd = speed.z;
 
         texturesPerRow = 4;
     }
@@ -54,15 +54,15 @@ public class ParticleCustom extends BCParticle {
 
             if (args.length >= 10) {
                 particle.setColour(args[0]/255f, args[1]/255f, args[2]/255f);
-                particle.setAlphaF(args[3]/255f);
+                particle.setAlpha(args[3]/255f);
                 particle.spawnAlpha = args[3]/255f;
 //                particle.setScale(args[4]/10000F);
-                particle.setMaxAge(args[5]);
+                particle.setLifetime(args[5]);
                 particle.setGravity(args[6]/10000D);
                 particle.maxFade = args[7];
 //                particle.particleTextureIndexX = args[8] % 4;
 //                particle.particleTextureIndexY = args[8] / 4;
-                particle.canCollide = args[9] == 1;
+                particle.hasPhysics = args[9] == 1;
             }
 
             return particle;

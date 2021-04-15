@@ -52,11 +52,11 @@ public class TileCrystalDirectIO extends TileCrystalBase   {
     public void tick() {
         super.tick();
 
-        if (world.isRemote) {
+        if (level.isClientSide) {
             return;
         }
 
-        TileEntity tile = world.getTileEntity(pos.offset(facing.get()));
+        TileEntity tile = level.getBlockEntity(worldPosition.relative(facing.get()));
 
         if (outputMode.get() && tile != null) {
             opStorage.extractOP(EnergyUtils.insertEnergy(tile, opStorage.extractOP(opStorage.getMaxExtract(), true), facing.get().getOpposite(), false), false);
@@ -86,7 +86,7 @@ public class TileCrystalDirectIO extends TileCrystalBase   {
 
     @Override
     public boolean onBlockActivated(BlockState state, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
-        if (player.isSneaking()) {
+        if (player.isShiftKeyDown()) {
             outputMode.invert();
             updateRotation(facing.get());
             return true;
@@ -104,12 +104,12 @@ public class TileCrystalDirectIO extends TileCrystalBase   {
     @OnlyIn(Dist.CLIENT)
     @Override
     public CrystalFXBase createStaticFX() {
-        return new CrystalFXIO((ClientWorld)world, this);
+        return new CrystalFXIO((ClientWorld)level, this);
     }
 
     @Override
     public Vec3D getBeamLinkPos(BlockPos linkTo) {
-        return Vec3D.getCenter(pos);
+        return Vec3D.getCenter(worldPosition);
     }
 
     @Override
@@ -122,7 +122,7 @@ public class TileCrystalDirectIO extends TileCrystalBase   {
     public void addDisplayData(List<String> displayList) {
         super.addDisplayData(displayList);
         TextFormatting colour = outputMode.get() ? TextFormatting.GOLD : TextFormatting.DARK_AQUA;
-        displayList.add(I18n.format("gui.draconicevolution.energy_net.io_output_" + outputMode.get(), colour));
+        displayList.add(I18n.get("gui.draconicevolution.energy_net.io_output_" + outputMode.get(), colour));
     }
 
     //endregion
@@ -130,7 +130,7 @@ public class TileCrystalDirectIO extends TileCrystalBase   {
     @Override
     public void onTilePlaced(BlockItemUseContext context, BlockState state) {
         super.onTilePlaced(context, state);
-        updateRotation(context.getFace().getOpposite());
+        updateRotation(context.getClickedFace().getOpposite());
     }
 
     public void updateRotation(Direction newDirection) {

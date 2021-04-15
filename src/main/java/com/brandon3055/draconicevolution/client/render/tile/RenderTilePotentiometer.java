@@ -75,13 +75,13 @@ public class RenderTilePotentiometer extends TileEntityRenderer<TilePotentiomete
         UVTransformation iconTransform = new IconTransformation(stoneTex);
         CCRenderState state = CCRenderState.instance();
         state.reset();
-        state.bind(RenderType.getSolid(), buffer);
+        state.bind(RenderType.solid(), buffer);
         state.brightness = combinedLightIn;
         state.overlay = combinedOverlayIn;
         double pxl = 1D / 16D;
 
         Matrix4 mat = new Matrix4(matrixStackIn);
-        mat.apply(Rotation.sideOrientation(te.getBlockState().get(Potentiometer.FACING).getOpposite().getIndex(), 0).at(Vector3.CENTER));
+        mat.apply(Rotation.sideOrientation(te.getBlockState().getValue(Potentiometer.FACING).getOpposite().get3DDataValue(), 0).at(Vector3.CENTER));
         mat.apply(new Translation(6 * pxl, pxl, 6 * pxl));
         mat.apply(new Rotation(te.power.get() * 22.5D * -MathHelper.torad, 0, 1, 0).at(new Vector3(pxl * 2, 0, pxl * 2)));
 

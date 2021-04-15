@@ -40,12 +40,12 @@ import java.util.List;
  */
 public class ReactorComponent extends BlockBCore {
 
-    private static final VoxelShape SHAPE_INJ_DOWN  = VoxelShapes.create(0F, 0.885F, 0F, 1F, 1F, 1F);
-    private static final VoxelShape SHAPE_INJ_UP    = VoxelShapes.create(0F, 0F, 0F, 1F, 0.125F, 1F);
-    private static final VoxelShape SHAPE_INJ_NORTH = VoxelShapes.create(0F, 0F, 0.885F, 1F, 1F, 1F);
-    private static final VoxelShape SHAPE_INJ_SOUTH = VoxelShapes.create(0F, 0F, 0F, 1F, 1F, 0.125F);
-    private static final VoxelShape SHAPE_INJ_WEST  = VoxelShapes.create(0.885F, 0F, 0F, 1F, 1F, 1F);
-    private static final VoxelShape SHAPE_INJ_EAST  = VoxelShapes.create(0F, 0F, 0F, 0.125F, 1F, 1F);
+    private static final VoxelShape SHAPE_INJ_DOWN  = VoxelShapes.box(0F, 0.885F, 0F, 1F, 1F, 1F);
+    private static final VoxelShape SHAPE_INJ_UP    = VoxelShapes.box(0F, 0F, 0F, 1F, 0.125F, 1F);
+    private static final VoxelShape SHAPE_INJ_NORTH = VoxelShapes.box(0F, 0F, 0.885F, 1F, 1F, 1F);
+    private static final VoxelShape SHAPE_INJ_SOUTH = VoxelShapes.box(0F, 0F, 0F, 1F, 1F, 0.125F);
+    private static final VoxelShape SHAPE_INJ_WEST  = VoxelShapes.box(0.885F, 0F, 0F, 1F, 1F, 1F);
+    private static final VoxelShape SHAPE_INJ_EAST  = VoxelShapes.box(0F, 0F, 0F, 0.125F, 1F, 1F);
     private final boolean injector;
 
     public ReactorComponent(Properties properties, boolean injector) {
@@ -71,7 +71,7 @@ public class ReactorComponent extends BlockBCore {
 
     @Override
     public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
-        TileEntity tile = world.getTileEntity(pos);
+        TileEntity tile = world.getBlockEntity(pos);
 
         if (tile instanceof TileReactorInjector) {
             switch (((TileReactorInjector) tile).facing.get()) {
@@ -93,14 +93,14 @@ public class ReactorComponent extends BlockBCore {
     }
 
     @Override
-    public BlockRenderType getRenderType(BlockState state) {
+    public BlockRenderType getRenderShape(BlockState state) {
         return BlockRenderType.INVISIBLE;
     }
 
     @Override
-    public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
-        super.onBlockPlacedBy(world, pos, state, placer, stack);
-        TileEntity te = world.getTileEntity(pos);
+    public void setPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+        super.setPlacedBy(world, pos, state, placer, stack);
+        TileEntity te = world.getBlockEntity(pos);
         Direction facing = RotationUtils.getPlacedRotation(pos, placer).getOpposite();
 
         if (te instanceof TileReactorComponent) {
@@ -110,8 +110,8 @@ public class ReactorComponent extends BlockBCore {
     }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
-        TileEntity te = world.getTileEntity(pos);
+    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+        TileEntity te = world.getBlockEntity(pos);
 
         if (te instanceof TileReactorComponent) {
             ((TileReactorComponent) te).onActivated(player);
@@ -120,30 +120,30 @@ public class ReactorComponent extends BlockBCore {
     }
 
     @Override
-    public void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
-        TileEntity te = worldIn.getTileEntity(pos);
+    public void onRemove(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
+        TileEntity te = worldIn.getBlockEntity(pos);
 
         if (te instanceof TileReactorComponent) {
             ((TileReactorComponent) te).onBroken();
         }
-        super.onReplaced(state, worldIn, pos, newState, isMoving);
+        super.onRemove(state, worldIn, pos, newState, isMoving);
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void addInformation(ItemStack stack, @Nullable IBlockReader worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, @Nullable IBlockReader worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
 //        tooltip.add(new TranslationTextComponent("info.de.shiftReversePlaceLogic.txt"));
-        super.addInformation(stack, worldIn, tooltip, flagIn);
+        super.appendHoverText(stack, worldIn, tooltip, flagIn);
     }
 
     @Override
-    public boolean hasComparatorInputOverride(BlockState state) {
+    public boolean hasAnalogOutputSignal(BlockState state) {
         return true;
     }
 
     @Override
-    public int getComparatorInputOverride(BlockState blockState, World worldIn, BlockPos pos) {
-        TileEntity tileEntity = worldIn.getTileEntity(pos);
+    public int getAnalogOutputSignal(BlockState blockState, World worldIn, BlockPos pos) {
+        TileEntity tileEntity = worldIn.getBlockEntity(pos);
 
         if (tileEntity instanceof TileReactorComponent) {
             return ((TileReactorComponent) tileEntity).rsPower.get();

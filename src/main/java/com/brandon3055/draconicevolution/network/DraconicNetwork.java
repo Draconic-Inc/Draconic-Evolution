@@ -116,9 +116,9 @@ public class DraconicNetwork {
 
     public static void sendLastStandActivation(LivingEntity target, Item item) {
         PacketCustom packet = new PacketCustom(CHANNEL, C_LAST_STAND_ACTIVATION);
-        packet.writeVarInt(target.getEntityId());
+        packet.writeVarInt(target.getId());
         packet.writeRegistryId(item);
-        packet.sendToChunk(target.world, target.getPosition());
+        packet.sendToChunk(target.level, target.blockPosition());
     }
 
     public static void sendDislocatorMessage(int id, Consumer<MCDataOutput> callback) {
@@ -130,9 +130,9 @@ public class DraconicNetwork {
 
     public static void sendBlinkEffect(ServerPlayerEntity player, float distance) {
         PacketCustom packet = new PacketCustom(CHANNEL, C_BLINK);
-        packet.writeVarInt(player.getEntityId());
+        packet.writeVarInt(player.getId());
         packet.writeFloat(distance);
-        packet.sendToChunk(player.world, player.getPosition());
+        packet.sendToChunk(player.level, player.blockPosition());
     }
 
     public static void init() {

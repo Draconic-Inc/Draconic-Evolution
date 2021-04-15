@@ -36,13 +36,13 @@ public class Portal extends BlockBCore {
     public Portal(Block.Properties properties) {
         super(properties);
 //        setHardness(Float.MAX_VALUE);
-        this.setDefaultState(stateContainer.getBaseState() //
-                .with(AXIS, X) //
-                .with(DRAW_UP, true) //
-                .with(DRAW_DOWN, true) //
-                .with(DRAW_EAST, true) //
-                .with(DRAW_WEST, true) //
-                .with(VISIBLE, true));
+        this.registerDefaultState(stateDefinition.any() //
+                .setValue(AXIS, X) //
+                .setValue(DRAW_UP, true) //
+                .setValue(DRAW_DOWN, true) //
+                .setValue(DRAW_EAST, true) //
+                .setValue(DRAW_WEST, true) //
+                .setValue(VISIBLE, true));
     }
 
     @Override
@@ -51,7 +51,7 @@ public class Portal extends BlockBCore {
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
         builder.add(AXIS, DRAW_UP, DRAW_DOWN, DRAW_EAST, DRAW_WEST, VISIBLE);
     }
 
@@ -146,11 +146,11 @@ public class Portal extends BlockBCore {
 
     @Override
     public void neighborChanged(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
-        if (world.isRemote) {
+        if (world.isClientSide) {
             return;
         }
 
-        TileEntity tile = world.getTileEntity(pos);
+        TileEntity tile = world.getBlockEntity(pos);
         if (tile instanceof TilePortal) {
             ((TilePortal) tile).validatePortal();
         } else {
@@ -160,8 +160,8 @@ public class Portal extends BlockBCore {
     }
 
     @Override
-    public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
-        TileEntity tile = world.getTileEntity(pos);
+    public void entityInside(BlockState state, World world, BlockPos pos, Entity entity) {
+        TileEntity tile = world.getBlockEntity(pos);
         if (tile instanceof TilePortal && ((TilePortal) tile).getMaster() != null) {
             ((TilePortal) tile).getMaster().handleEntityTeleport(entity);
         }

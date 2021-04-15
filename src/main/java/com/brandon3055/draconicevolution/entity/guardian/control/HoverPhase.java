@@ -16,7 +16,7 @@ public class HoverPhase extends Phase {
    int i = 0;
    public void serverTick() {
       if (this.targetLocation == null) {
-         this.targetLocation = this.guardian.getPositionVec();
+         this.targetLocation = this.guardian.position();
       }
 //
 //      if (i++ > 10*20) {

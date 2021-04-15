@@ -93,7 +93,7 @@ public class TileCraftingCore extends TileBCore implements IFusionInventory, ITi
     public boolean onBlockActivated(BlockState state, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
         updateInjectors();
         if (player instanceof ServerPlayerEntity) {
-            NetworkHooks.openGui((ServerPlayerEntity) player, this, pos);
+            NetworkHooks.openGui((ServerPlayerEntity) player, this, worldPosition);
         }
         return true;
     }
@@ -106,7 +106,7 @@ public class TileCraftingCore extends TileBCore implements IFusionInventory, ITi
         //LogHelper.info("- " + isCrafting);
 //        if (craftingStage.get() > 0) craftingStage.set((short) 0);
 
-        if (world.isRemote) {
+        if (level.isClientSide) {
             updateEffects();
             return;
         }
@@ -114,7 +114,7 @@ public class TileCraftingCore extends TileBCore implements IFusionInventory, ITi
         //Update Crafting
         if (isCrafting.get()) {
             if (DEEventHandler.serverTicks % 10 == 0) {
-                world.notifyNeighborsOfStateChange(pos, getBlockState().getBlock());
+                level.updateNeighborsAt(worldPosition, getBlockState().getBlock());
             }
 
             for (ICraftingInjector pedestal : pedestals) {
@@ -124,7 +124,7 @@ public class TileCraftingCore extends TileBCore implements IFusionInventory, ITi
                 }
             }
 
-            if (activeRecipe == null || !activeRecipe.matches(this, world) || !activeRecipe.canCraft(this, world)/* || !activeRecipe.canCraft(this, world, pos).equals("true")*/) {
+            if (activeRecipe == null || !activeRecipe.matches(this, level) || !activeRecipe.canCraft(this, level)/* || !activeRecipe.canCraft(this, world, pos).equals("true")*/) {
                 invalidateCrafting();
                 return;
             }
@@ -168,7 +168,7 @@ public class TileCraftingCore extends TileBCore implements IFusionInventory, ITi
 
     private void doCraft() {
         //This shouldn't be needed but cant hurt.
-        if (!activeRecipe.matches(this, world)) {
+        if (!activeRecipe.matches(this, level)) {
             return;
         }
 
@@ -201,7 +201,7 @@ public class TileCraftingCore extends TileBCore implements IFusionInventory, ITi
         }
 
         ItemStack catalyst = getStackInCore(0);
-        ItemStack result = activeRecipe.getCraftingResult(this);
+        ItemStack result = activeRecipe.assemble(this);
 
         catalyst.shrink(catCount);
         setStackInCore(0, catalyst);
@@ -209,13 +209,13 @@ public class TileCraftingCore extends TileBCore implements IFusionInventory, ITi
     }
 
     public void attemptStartCrafting() {
-        if (world.isRemote) {
+        if (level.isClientSide) {
             return;
         }
         updateInjectors();
-        activeRecipe = world.getRecipeManager().getRecipe(DraconicAPI.FUSION_RECIPE_TYPE, this, world).orElse(null);
+        activeRecipe = level.getRecipeManager().getRecipeFor(DraconicAPI.FUSION_RECIPE_TYPE, this, level).orElse(null);
 
-        if (activeRecipe != null && activeRecipe.canCraft(this, world)) {
+        if (activeRecipe != null && activeRecipe.canCraft(this, level)) {
             int minTier = 3;
             for (ICraftingInjector pedestal : pedestals) {
                 if (!pedestal.getStackInPedestal().isEmpty() && pedestal.getPedestalTier() < minTier) {
@@ -230,14 +230,14 @@ public class TileCraftingCore extends TileBCore implements IFusionInventory, ITi
     }
 
     private void invalidateCrafting() {
-        if (world.isRemote) {
+        if (level.isClientSide) {
             return;
         }
         isCrafting.set(false);
         activeRecipe = null;
         craftingStage.zero();
         pedestals.clear();
-        world.notifyNeighborsOfStateChange(pos, getBlockState().getBlock());
+        level.updateNeighborsAt(worldPosition, getBlockState().getBlock());
     }
 
     /**
@@ -253,28 +253,28 @@ public class TileCraftingCore extends TileBCore implements IFusionInventory, ITi
 
         List<BlockPos> positions = new ArrayList<BlockPos>();
         //X
-        positions.addAll(Lists.newArrayList(BlockPos.getAllInBox(pos.add(-range, -1, -1), pos.add(range, 1, 1)).map(BlockPos::new).collect(Collectors.toList())));
+        positions.addAll(Lists.newArrayList(BlockPos.betweenClosedStream(worldPosition.offset(-range, -1, -1), worldPosition.offset(range, 1, 1)).map(BlockPos::new).collect(Collectors.toList())));
         //Y
-        positions.addAll(Lists.newArrayList(BlockPos.getAllInBox(pos.add(-1, -range, -1), pos.add(1, range, 1)).map(BlockPos::new).collect(Collectors.toList())));
+        positions.addAll(Lists.newArrayList(BlockPos.betweenClosedStream(worldPosition.offset(-1, -range, -1), worldPosition.offset(1, range, 1)).map(BlockPos::new).collect(Collectors.toList())));
         //Z
-        positions.addAll(Lists.newArrayList(BlockPos.getAllInBox(pos.add(-1, -1, -range), pos.add(1, 1, range)).map(BlockPos::new).collect(Collectors.toList())));
+        positions.addAll(Lists.newArrayList(BlockPos.betweenClosedStream(worldPosition.offset(-1, -1, -range), worldPosition.offset(1, 1, range)).map(BlockPos::new).collect(Collectors.toList())));
 
         for (BlockPos checkPos : positions) {
-            TileEntity tile = world.getTileEntity(checkPos);
+            TileEntity tile = level.getBlockEntity(checkPos);
 
             if (tile instanceof ICraftingInjector) {
                 ICraftingInjector pedestal = (ICraftingInjector) tile;
-                Vec3D dirVec = new Vec3D(tile.getPos()).subtract(pos);
-                double dist = Utils.getDistanceAtoB(new Vec3D(tile.getPos()), new Vec3D(pos));
+                Vec3D dirVec = new Vec3D(tile.getBlockPos()).subtract(worldPosition);
+                double dist = Utils.getDistanceAtoB(new Vec3D(tile.getBlockPos()), new Vec3D(worldPosition));
 
-                if (dist >= 2 && Direction.getFacingFromVector((int) dirVec.x, (int) dirVec.y, (int) dirVec.z) == pedestal.getDirection().getOpposite() && pedestal.setCraftingInventory(this)) {
-                    BlockPos pPos = tile.getPos();
+                if (dist >= 2 && Direction.getNearest((int) dirVec.x, (int) dirVec.y, (int) dirVec.z) == pedestal.getDirection().getOpposite() && pedestal.setCraftingInventory(this)) {
+                    BlockPos pPos = tile.getBlockPos();
                     Direction facing = pedestal.getDirection();
-                    List<BlockPos> checkList = Lists.newArrayList(BlockPos.getAllInBoxMutable(pPos.offset(facing), pPos.offset(facing, FacingUtils.distanceInDirection(pPos, pos, facing) - 1)));
+                    List<BlockPos> checkList = Lists.newArrayList(BlockPos.betweenClosed(pPos.relative(facing), pPos.relative(facing, FacingUtils.distanceInDirection(pPos, worldPosition, facing) - 1)));
 
                     boolean obstructed = false;
                     for (BlockPos bp : checkList) {
-                        if (!world.isAirBlock(bp) && (world.getBlockState(bp).isSolid() || world.getTileEntity(bp) instanceof ICraftingInjector)) {
+                        if (!level.isEmptyBlock(bp) && (level.getBlockState(bp).canOcclude() || level.getBlockEntity(bp) instanceof ICraftingInjector)) {
                             obstructed = true;
                             break;
                         }
@@ -312,6 +312,11 @@ public class TileCraftingCore extends TileBCore implements IFusionInventory, ITi
     @Override
     public int getCraftingStage() {
         return craftingStage.get();
+    }
+
+    @Override
+    public BlockPos getCorePos() {
+        return getBlockPos();
     }
 
     //endregion
@@ -373,28 +378,28 @@ public class TileCraftingCore extends TileBCore implements IFusionInventory, ITi
         List<BlockPos> positions = new ArrayList<BlockPos>();
 
         //X
-        positions.addAll(Lists.newArrayList(BlockPos.getAllInBox(pos.add(-range, -1, -1), pos.add(range, 1, 1)).map(BlockPos::new).collect(Collectors.toList())));
+        positions.addAll(Lists.newArrayList(BlockPos.betweenClosedStream(worldPosition.offset(-range, -1, -1), worldPosition.offset(range, 1, 1)).map(BlockPos::new).collect(Collectors.toList())));
         //Y
-        positions.addAll(Lists.newArrayList(BlockPos.getAllInBox(pos.add(-1, -range, -1), pos.add(1, range, 1)).map(BlockPos::new).collect(Collectors.toList())));
+        positions.addAll(Lists.newArrayList(BlockPos.betweenClosedStream(worldPosition.offset(-1, -range, -1), worldPosition.offset(1, range, 1)).map(BlockPos::new).collect(Collectors.toList())));
         //Z
-        positions.addAll(Lists.newArrayList(BlockPos.getAllInBox(pos.add(-1, -1, -range), pos.add(1, 1, range)).map(BlockPos::new).collect(Collectors.toList())));
+        positions.addAll(Lists.newArrayList(BlockPos.betweenClosedStream(worldPosition.offset(-1, -1, -range), worldPosition.offset(1, 1, range)).map(BlockPos::new).collect(Collectors.toList())));
 
         for (BlockPos checkPos : positions) {
-            TileEntity tile = world.getTileEntity(checkPos);
+            TileEntity tile = level.getBlockEntity(checkPos);
 
             if (tile instanceof ICraftingInjector) {
                 ICraftingInjector pedestal = (ICraftingInjector) tile;
-                Vec3D dirVec = new Vec3D(tile.getPos()).subtract(pos);
-                double dist = Utils.getDistanceAtoB(new Vec3D(tile.getPos()), new Vec3D(pos));
+                Vec3D dirVec = new Vec3D(tile.getBlockPos()).subtract(worldPosition);
+                double dist = Utils.getDistanceAtoB(new Vec3D(tile.getBlockPos()), new Vec3D(worldPosition));
 
-                if (dist >= 2 && Direction.getFacingFromVector((int) dirVec.x, (int) dirVec.y, (int) dirVec.z) == pedestal.getDirection().getOpposite() && pedestal.setCraftingInventory(this)) {
-                    BlockPos pPos = tile.getPos();
+                if (dist >= 2 && Direction.getNearest((int) dirVec.x, (int) dirVec.y, (int) dirVec.z) == pedestal.getDirection().getOpposite() && pedestal.setCraftingInventory(this)) {
+                    BlockPos pPos = tile.getBlockPos();
                     Direction facing = pedestal.getDirection();
-                    List<BlockPos> checkList = Lists.newArrayList(BlockPos.getAllInBoxMutable(pPos.offset(facing), pPos.offset(facing, FacingUtils.distanceInDirection(pPos, pos, facing) - 1)));
+                    List<BlockPos> checkList = Lists.newArrayList(BlockPos.betweenClosed(pPos.relative(facing), pPos.relative(facing, FacingUtils.distanceInDirection(pPos, worldPosition, facing) - 1)));
 
                     boolean obstructed = false;
                     for (BlockPos bp : checkList) {
-                        if (!world.isAirBlock(bp) && (world.getBlockState(bp).isSolid() || world.getTileEntity(bp) instanceof ICraftingInjector)) {
+                        if (!level.isEmptyBlock(bp) && (level.getBlockState(bp).canOcclude() || level.getBlockEntity(bp) instanceof ICraftingInjector)) {
                             obstructed = true;
                             break;
                         }
@@ -410,7 +415,7 @@ public class TileCraftingCore extends TileBCore implements IFusionInventory, ITi
         }
 
 //        activeRecipe = RecipeManager.FUSION_REGISTRY.findRecipe(this, world, pos);
-        activeRecipe = world.getRecipeManager().getRecipe(DraconicAPI.FUSION_RECIPE_TYPE, this, world).orElse(null);
+        activeRecipe = level.getRecipeManager().getRecipeFor(DraconicAPI.FUSION_RECIPE_TYPE, this, level).orElse(null);
 
         if (activeRecipe == null) {
             effects = null;
@@ -425,9 +430,9 @@ public class TileCraftingCore extends TileBCore implements IFusionInventory, ITi
             }
 
             pedestal.setCraftingInventory(this);
-            Vec3D spawn = new Vec3D(((TileEntity) pedestal).getPos());
-            spawn.add(0.5 + pedestal.getDirection().getXOffset() * 0.45, 0.5 + pedestal.getDirection().getYOffset() * 0.45, 0.5 + pedestal.getDirection().getZOffset() * 0.45);
-            effects.add(new EffectTrackerFusionCrafting(world, spawn, new Vec3D(pos), this, activeRecipe.getIngredients().size()));
+            Vec3D spawn = new Vec3D(((TileEntity) pedestal).getBlockPos());
+            spawn.add(0.5 + pedestal.getDirection().getStepX() * 0.45, 0.5 + pedestal.getDirection().getStepY() * 0.45, 0.5 + pedestal.getDirection().getStepZ() * 0.45);
+            effects.add(new EffectTrackerFusionCrafting(level, spawn, new Vec3D(worldPosition), this, activeRecipe.getIngredients().size()));
 //            BCEffectHandler.effectRenderer.addEffect(ResourceHelperDE.getResource("textures/blocks/fusion_crafting/fusion_particle.png"), new ParticleFusionCrafting(world, spawn, new Vec3D(pos), this));
         }
     }
@@ -491,11 +496,11 @@ public class TileCraftingCore extends TileBCore implements IFusionInventory, ITi
 
             double offsetY = (xAdditive + zAdditive) * 0.2 * (distFromCore / 1.2);
 
-            effect.circlePosition.set(pos.getX() + 0.5 + offsetX, pos.getY() + 0.5 + offsetY, pos.getZ() + 0.5 + offsetZ);
+            effect.circlePosition.set(worldPosition.getX() + 0.5 + offsetX, worldPosition.getY() + 0.5 + offsetY, worldPosition.getZ() + 0.5 + offsetZ);
             index++;
         }
 
-        SoundHandler soundManager = Minecraft.getInstance().getSoundHandler();
+        SoundHandler soundManager = Minecraft.getInstance().getSoundManager();
         if (!allLocked && flag) {
             soundManager.play(new FusionRotationSound(this));
         }
@@ -508,7 +513,7 @@ public class TileCraftingCore extends TileBCore implements IFusionInventory, ITi
 //                BCEffectHandler.spawnFXDirect(DEParticles.DE_SHEET, new EffectTrackerFusionCrafting.SubParticle(world, new Vec3D(pos).add(0.5, 0.5, 0.5)));
             }
 
-            world.playSound(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, DESounds.fusionComplete, SoundCategory.BLOCKS, 2F, 1F, false);
+            level.playLocalSound(worldPosition.getX() + 0.5, worldPosition.getY() + 0.5, worldPosition.getZ() + 0.5, DESounds.fusionComplete, SoundCategory.BLOCKS, 2F, 1F, false);
             effects = null;
         }
     }
@@ -544,7 +549,7 @@ public class TileCraftingCore extends TileBCore implements IFusionInventory, ITi
 
     @Override
     public AxisAlignedBB getRenderBoundingBox() {
-        return new AxisAlignedBB(pos.add(-16, -16, -16), pos.add(17, 17, 17));
+        return new AxisAlignedBB(worldPosition.offset(-16, -16, -16), worldPosition.offset(17, 17, 17));
     }
 //
 //    @Override
@@ -561,8 +566,8 @@ public class TileCraftingCore extends TileBCore implements IFusionInventory, ITi
         } else if (craftingStage.get() > 0) {
             return (int) Math.max(1, ((craftingStage.get() / 2000D) * 15D));
         } else {
-            IFusionRecipe recipe = world.getRecipeManager().getRecipe(DraconicAPI.FUSION_RECIPE_TYPE, this, world).orElse(null);
-            if (recipe != null && recipe.canCraft(this, world)) {
+            IFusionRecipe recipe = level.getRecipeManager().getRecipeFor(DraconicAPI.FUSION_RECIPE_TYPE, this, level).orElse(null);
+            if (recipe != null && recipe.canCraft(this, level)) {
                 return 1;
             }
 

@@ -27,7 +27,7 @@ import static com.brandon3055.draconicevolution.init.ModuleCfg.*;
  * Created by brandon3055 on 21/5/20.
  */
 public class ModularPickaxe extends PickaxeItem implements IModularMiningTool {
-    public static final Set<Material> EFFECTIVE_MATS = ImmutableSet.of(Material.IRON, Material.ANVIL, Material.ROCK, Material.GLASS);
+    public static final Set<Material> EFFECTIVE_MATS = ImmutableSet.of(Material.METAL, Material.HEAVY_METAL, Material.STONE, Material.GLASS);
     private final TechLevel techLevel;
     private final DEItemTier itemTier;
 
@@ -65,12 +65,12 @@ public class ModularPickaxe extends PickaxeItem implements IModularMiningTool {
 
     @Override
     public float getBaseEfficiency() {
-        return getTier().getEfficiency();
+        return getTier().getSpeed();
     }
 
     @Override
     public Set<Block> effectiveBlockAdditions() {
-        return effectiveBlocks;
+        return blocks;
     }
 
     @Override
@@ -80,7 +80,7 @@ public class ModularPickaxe extends PickaxeItem implements IModularMiningTool {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         addModularItemInformation(stack, worldIn, tooltip, flagIn);
     }
 }

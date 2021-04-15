@@ -19,13 +19,13 @@ public class StaffAttackHandler {
     }
 
     public static ActionResult<ItemStack> onRightClick(World world, PlayerEntity player, Hand hand) {
-        ItemStack stack = player.getHeldItem(hand);
+        ItemStack stack = player.getItemInHand(hand);
 
         DraconicEvolution.LOGGER.info("Click");
 
-        player.setActiveHand(hand);
+        player.startUsingItem(hand);
 
-        return ActionResult.resultPass(stack);
+        return ActionResult.pass(stack);
     }
 
     public static void onStopUsing(ItemStack stack, World world, LivingEntity entity, int timeLeft) {

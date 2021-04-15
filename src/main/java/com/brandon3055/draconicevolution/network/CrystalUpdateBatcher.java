@@ -57,7 +57,7 @@ public class CrystalUpdateBatcher {
                 continue;
             }
 
-            TileEntity tile = BrandonsCore.proxy.getClientWorld().getTileEntity(ID_CRYSTAL_MAP.get(update.crystalID));
+            TileEntity tile = BrandonsCore.proxy.getClientWorld().getBlockEntity(ID_CRYSTAL_MAP.get(update.crystalID));
             if (tile instanceof TileCrystalBase && !tile.isRemoved()) {
                 ((TileCrystalBase) tile).receiveBatchedUpdate(update);
             }

@@ -38,21 +38,21 @@ public class EnderEnergyManipulator extends Item /*implements IRenderOverride*/ 
     }
 
     @Override
-    public ActionResultType onItemUse(ItemUseContext context) {
+    public ActionResultType useOn(ItemUseContext context) {
         assert false; //Not Implemented
         PlayerEntity player = context.getPlayer();
-        World cWorld = context.getWorld();
+        World cWorld = context.getLevel();
         Hand hand = context.getHand();
-        BlockPos pos = context.getPos();
+        BlockPos pos = context.getClickedPos();
 
         if (cWorld instanceof ServerWorld) {
             ServerWorld world = (ServerWorld) cWorld;
 
-            ItemStack stack = context.getItem();
+            ItemStack stack = context.getItemInHand();
             BlockState state = world.getBlockState(pos);
             List<Entity> list = world.getEntities(null, Entity::isAlive);
-            if (world.getDimensionKey() == World.THE_END && Utils.getDistanceAtoB(Vec3D.getCenter(pos), new Vec3D(0, pos.getY(), 0)) <= 8 && state.getBlock() == Blocks.BEDROCK && list.isEmpty()) {
-                if (!world.isRemote) {
+            if (world.dimension() == World.END && Utils.getDistanceAtoB(Vec3D.getCenter(pos), new Vec3D(0, pos.getY(), 0)) <= 8 && state.getBlock() == Blocks.BEDROCK && list.isEmpty()) {
+                if (!world.isClientSide) {
 //                    EntityEnderEnergyManipulator entity = new EntityEnderEnergyManipulator(world);
 //                    entity.setPosition(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
 //                    world.addEntity(entity);
@@ -62,15 +62,15 @@ public class EnderEnergyManipulator extends Item /*implements IRenderOverride*/ 
                 return ActionResultType.SUCCESS;
             }
 
-            if (!world.isRemote) {
+            if (!world.isClientSide) {
                 if (!list.isEmpty()) {
-                    player.sendMessage(new TranslationTextComponent("info.de.ender_energy_manipulator.running.msg"), Util.DUMMY_UUID);
+                    player.sendMessage(new TranslationTextComponent("info.de.ender_energy_manipulator.running.msg"), Util.NIL_UUID);
                 } else {
-                    player.sendMessage(new TranslationTextComponent("info.de.ender_energy_manipulator.location.msg"), Util.DUMMY_UUID);
+                    player.sendMessage(new TranslationTextComponent("info.de.ender_energy_manipulator.location.msg"), Util.NIL_UUID);
                 }
             }
         }
-        return super.onItemUse(context);
+        return super.useOn(context);
     }
 
 //    @OnlyIn(Dist.CLIENT)
@@ -86,8 +86,8 @@ public class EnderEnergyManipulator extends Item /*implements IRenderOverride*/ 
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        super.addInformation(stack, worldIn, tooltip, flagIn);
+    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+        super.appendHoverText(stack, worldIn, tooltip, flagIn);
         tooltip.add(new TranslationTextComponent("info.de.ender_energy_manipulator.info.txt"));
         tooltip.add(new TranslationTextComponent("info.de.ender_energy_manipulator.info2.txt"));
     }

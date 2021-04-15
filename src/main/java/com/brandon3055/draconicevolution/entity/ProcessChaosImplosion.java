@@ -18,7 +18,7 @@ import java.util.Random;
  */
 public class ProcessChaosImplosion implements IProcess {
 
-    public static DamageSource chaosImplosion = new DamageSource("chaosImplosion").setExplosion().setDamageBypassesArmor().setDamageIsAbsolute();
+    public static DamageSource chaosImplosion = new DamageSource("chaosImplosion").setExplosion().bypassArmor().bypassMagic();
 
     private World world;
     private int xCoord;
@@ -35,7 +35,7 @@ public class ProcessChaosImplosion implements IProcess {
         this.yCoord = y;
         this.zCoord = z;
         this.power = 30F;
-        isDead = world.isRemote;
+        isDead = world.isClientSide;
     }
 
     @Override
@@ -90,8 +90,8 @@ public class ProcessChaosImplosion implements IProcess {
             float energy = power * 10;
 
             for (int y = yCoord; y >= 0 && energy > 0; y--) {
-                List<Entity> entities = world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(xCoord, y, zCoord, xCoord + 1, y + 1, zCoord + 1));
-                for (Entity entity : entities) entity.attackEntityFrom(ProcessChaosImplosion.chaosImplosion, power * 100);
+                List<Entity> entities = world.getEntitiesOfClass(Entity.class, new AxisAlignedBB(xCoord, y, zCoord, xCoord + 1, y + 1, zCoord + 1));
+                for (Entity entity : entities) entity.hurt(ProcessChaosImplosion.chaosImplosion, power * 100);
 
                 //energy -= block instanceof BlockLiquid ? 10 : block.getExplosionResistance(null);
 
@@ -102,10 +102,10 @@ public class ProcessChaosImplosion implements IProcess {
             energy = power * 20;
             yCoord++;
             for (int y = yCoord; y < 255 && energy > 0; y++) {
-                List<Entity> entities = world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(xCoord, y, zCoord, xCoord + 1, y + 1, zCoord + 1));
+                List<Entity> entities = world.getEntitiesOfClass(Entity.class, new AxisAlignedBB(xCoord, y, zCoord, xCoord + 1, y + 1, zCoord + 1));
 
                 for (Entity entity : entities) {
-                    entity.attackEntityFrom(DEDamageSources.CHAOS_ISLAND_IMPLOSION, power * 100);
+                    entity.hurt(DEDamageSources.CHAOS_ISLAND_IMPLOSION, power * 100);
                 }
 
                 //energy -= block instanceof BlockLiquid ? 10 : block.getExplosionResistance(null);

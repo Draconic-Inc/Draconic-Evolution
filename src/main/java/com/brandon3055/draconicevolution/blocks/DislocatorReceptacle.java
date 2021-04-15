@@ -30,11 +30,11 @@ public class DislocatorReceptacle extends BlockBCore/* implements ITileEntityPro
 
     public DislocatorReceptacle(Block.Properties properties) {
         super(properties);
-        this.setDefaultState(stateContainer.getBaseState().with(ACTIVE, false).with(CAMO, false));
+        this.registerDefaultState(stateDefinition.any().setValue(ACTIVE, false).setValue(CAMO, false));
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
         builder.add(ACTIVE, CAMO);
     }
 
@@ -79,11 +79,11 @@ public class DislocatorReceptacle extends BlockBCore/* implements ITileEntityPro
 
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
-        TileEntity tile = worldIn.getTileEntity(pos);
+    public ActionResultType use(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+        TileEntity tile = worldIn.getBlockEntity(pos);
 
         if (tile instanceof TileDislocatorReceptacle) {
-            ItemStack stack = player.getHeldItem(hand);
+            ItemStack stack = player.getItemInHand(hand);
             if (stack.getItem() instanceof BlockItem && ((BlockItem) stack.getItem()).getBlock() == DEContent.infused_obsidian) {
                 ((TileDislocatorReceptacle) tile).camo.set(!((TileDislocatorReceptacle) tile).camo.get());
                 ((TileDislocatorReceptacle) tile).updateBlock();
@@ -97,19 +97,19 @@ public class DislocatorReceptacle extends BlockBCore/* implements ITileEntityPro
     }
 
     @Override
-    public void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
-        TileEntity tile = worldIn.getTileEntity(pos);
+    public void onRemove(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
+        TileEntity tile = worldIn.getBlockEntity(pos);
 
         if (tile instanceof TileDislocatorReceptacle) {
             ((TileDislocatorReceptacle) tile).deactivate();
         }
 
-        super.onReplaced(state, worldIn, pos, newState, isMoving);
+        super.onRemove(state, worldIn, pos, newState, isMoving);
     }
 
     @Override
-    public void onBlockAdded(BlockState state, World worldIn, BlockPos pos, BlockState oldState, boolean isMoving) {
-        TileEntity tile = worldIn.getTileEntity(pos);
+    public void onPlace(BlockState state, World worldIn, BlockPos pos, BlockState oldState, boolean isMoving) {
+        TileEntity tile = worldIn.getBlockEntity(pos);
 
         if (tile instanceof TileDislocatorReceptacle) {
             ((TileDislocatorReceptacle) tile).attemptIgnition();
@@ -118,12 +118,12 @@ public class DislocatorReceptacle extends BlockBCore/* implements ITileEntityPro
 
     @Override
     public void neighborChanged(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
-        TileEntity t = world.getTileEntity(pos);
+        TileEntity t = world.getBlockEntity(pos);
 
         if (t instanceof TileDislocatorReceptacle) {
             TileDislocatorReceptacle tile = (TileDislocatorReceptacle) t;
 
-            boolean powered = world.isBlockPowered(pos);
+            boolean powered = world.hasNeighborSignal(pos);
 
             if (!powered && tile.ltRedstone.get()) {
                 tile.ltRedstone.set(false);

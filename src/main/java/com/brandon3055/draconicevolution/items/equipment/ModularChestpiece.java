@@ -45,7 +45,7 @@ public class ModularChestpiece extends ArmorItem implements IModularArmor, IDEEq
     private final TechLevel techLevel;
 
     public ModularChestpiece(TechPropBuilder props) {
-        super(ArmorMaterial.DIAMOND, EquipmentSlotType.CHEST, props.build().isImmuneToFire());
+        super(ArmorMaterial.DIAMOND, EquipmentSlotType.CHEST, props.build().fireResistant());
         this.techLevel = props.techLevel;
     }
 
@@ -54,12 +54,12 @@ public class ModularChestpiece extends ArmorItem implements IModularArmor, IDEEq
         if (entity instanceof LivingEntity && !EquipmentManager.findItem(e -> e.getItem() instanceof ModularChestpiece, (LivingEntity) entity).isEmpty()) {
             return false;
         }
-        return MobEntity.getSlotForItemStack(stack) == armorType;
+        return MobEntity.getEquipmentSlotForItem(stack) == armorType;
     }
 
     @Override
     public boolean canEquip(LivingEntity livingEntity) {
-        return !(livingEntity.getItemStackFromSlot(EquipmentSlotType.CHEST).getItem() instanceof ModularChestpiece);
+        return !(livingEntity.getItemBySlot(EquipmentSlotType.CHEST).getItem() instanceof ModularChestpiece);
     }
 
     @Override
@@ -114,7 +114,7 @@ public class ModularChestpiece extends ArmorItem implements IModularArmor, IDEEq
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         addModularItemInformation(stack, worldIn, tooltip, flagIn);
     }
 
@@ -155,7 +155,7 @@ public class ModularChestpiece extends ArmorItem implements IModularArmor, IDEEq
 
 
     public static ItemStack getChestpiece(LivingEntity entity) {
-        ItemStack stack = entity.getItemStackFromSlot(EquipmentSlotType.CHEST);
+        ItemStack stack = entity.getItemBySlot(EquipmentSlotType.CHEST);
         if (stack.getItem() instanceof ModularChestpiece) {
             return stack;
         }

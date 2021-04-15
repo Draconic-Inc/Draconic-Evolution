@@ -78,17 +78,17 @@ public class RenderTileReactorCore extends TileEntityRenderer<TileReactorCore> {
             .build();
 
 
-    private static RenderType fallBackType = RenderType.makeType("fall_back_type", DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP, GL11.GL_QUADS, 256, RenderType.State.getBuilder()
-            .texture(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/block/reactor/reactor_core.png"), false, false))
-            .texturing(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
-            .build(false)
+    private static RenderType fallBackType = RenderType.create("fall_back_type", DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP, GL11.GL_QUADS, 256, RenderType.State.builder()
+            .setTextureState(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/block/reactor/reactor_core.png"), false, false))
+            .setTexturingState(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
+            .createCompositeState(false)
     );
 
-    private static RenderType fallBackShieldType = RenderType.makeType("fall_back_shield_type", DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP, GL11.GL_QUADS, 256, RenderType.State.getBuilder()
-            .transparency(RenderState.TRANSLUCENT_TRANSPARENCY)
-            .texture(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/block/reactor/reactor_shield.png"), false, false))
-            .texturing(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
-            .build(false)
+    private static RenderType fallBackShieldType = RenderType.create("fall_back_shield_type", DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP, GL11.GL_QUADS, 256, RenderType.State.builder()
+            .setTransparencyState(RenderState.TRANSLUCENT_TRANSPARENCY)
+            .setTextureState(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/block/reactor/reactor_shield.png"), false, false))
+            .setTexturingState(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
+            .createCompositeState(false)
     );
 
     public RenderTileReactorCore(TileEntityRendererDispatcher rendererDispatcherIn) {
@@ -171,7 +171,7 @@ public class RenderTileReactorCore extends TileEntityRenderer<TileReactorCore> {
             ccrs.bind(fallBackType, getter);
             model_no_shade.render(ccrs, mat);
             if (getter instanceof IRenderTypeBuffer.Impl) {
-                ((IRenderTypeBuffer.Impl) getter).finish();
+                ((IRenderTypeBuffer.Impl) getter).endBatch();
             }
 
             mat.scale(1.05);
@@ -195,22 +195,22 @@ public class RenderTileReactorCore extends TileEntityRenderer<TileReactorCore> {
         float shieldPower = (float) (te.maxShieldCharge.get() > 0 ? te.shieldCharge.get() / te.maxShieldCharge.get() : 0);
         MatrixStack stack = new MatrixStack();
         Minecraft mc = Minecraft.getInstance();
-        IRenderTypeBuffer.Impl getter = mc.getRenderTypeBuffers().getBufferSource();
+        IRenderTypeBuffer.Impl getter = mc.renderBuffers().bufferSource();
         Matrix4 mat = new Matrix4(stack);
         mat.scale(diameter);
-        mat.rotate((ClientEventHandler.elapsedTicks + mc.getRenderPartialTicks()) / 400F, Vector3.Y_POS);
+        mat.rotate((ClientEventHandler.elapsedTicks + mc.getFrameTime()) / 400F, Vector3.Y_POS);
         CCRenderState ccrs = CCRenderState.instance();
         ccrs.reset();
         RenderSystem.translated(x, y, 100);
         RenderSystem.depthMask(false);
-        renderCore(mat, ccrs, animation, te.shaderAnimationState.get(), intensity, shieldPower, mc.getRenderPartialTicks(), getter);
-        getter.finish();
+        renderCore(mat, ccrs, animation, te.shaderAnimationState.get(), intensity, shieldPower, mc.getFrameTime(), getter);
+        getter.endBatch();
         RenderSystem.depthMask(true);
         RenderSystem.popMatrix();
     }
 
     @Override
-    public boolean isGlobalRenderer(TileReactorCore te) {
+    public boolean shouldRenderOffScreen(TileReactorCore te) {
         return true;
     }
 }

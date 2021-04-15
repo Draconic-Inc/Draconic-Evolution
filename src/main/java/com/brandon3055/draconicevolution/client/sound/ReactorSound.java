@@ -23,14 +23,14 @@ public class ReactorSound extends SimpleSound implements ITickableSound {
     private int stopTimer = 0;
 
     public ReactorSound(TileReactorCore tile) {
-        super(DESounds.coreSound, SoundCategory.BLOCKS, tile.reactorState.get() == BEYOND_HOPE ? 10F : 1.5F, 1, tile.getPos());
+        super(DESounds.coreSound, SoundCategory.BLOCKS, tile.reactorState.get() == BEYOND_HOPE ? 10F : 1.5F, 1, tile.getBlockPos());
         this.tile = tile;
-        this.repeat = true;
+        this.looping = true;
         this.targetPitch = 1F;
     }
 
     @Override
-    public boolean isDonePlaying() {
+    public boolean isStopped() {
         return donePlaying;
     }
 
@@ -42,9 +42,9 @@ public class ReactorSound extends SimpleSound implements ITickableSound {
             z = (float) tile.roller.pos.z;
         }
         else {
-            x = (float) tile.getPos().getX() + 0.5F;
-            y = (float) tile.getPos().getY() + 0.5F;
-            z = (float) tile.getPos().getZ() + 0.5F;
+            x = (float) tile.getBlockPos().getX() + 0.5F;
+            y = (float) tile.getBlockPos().getY() + 0.5F;
+            z = (float) tile.getBlockPos().getZ() + 0.5F;
         }
 
 
@@ -59,17 +59,17 @@ public class ReactorSound extends SimpleSound implements ITickableSound {
             if (volume == 1.5F) {
                 donePlaying = true;
             }
-            if (tile.getWorld().rand.nextInt(10) == 0) {
-                targetPitch = 1F + (tile.getWorld().rand.nextFloat() / 2F);
+            if (tile.getLevel().random.nextInt(10) == 0) {
+                targetPitch = 1F + (tile.getLevel().random.nextFloat() / 2F);
             }
         }
 
 
         PlayerEntity player = Minecraft.getInstance().player;
-        if (tile.isRemoved() || player == null || player.getDistanceSq(Vector3d.copy(tile.getPos())) > (volume > 1.5F ? 4096 : 512)){
+        if (tile.isRemoved() || player == null || player.distanceToSqr(Vector3d.atLowerCornerOf(tile.getBlockPos())) > (volume > 1.5F ? 4096 : 512)){
 //            if (stopTimer++ == 60) {
                 donePlaying = true;
-                repeat = false;
+                looping = false;
 //            }
         }
     }

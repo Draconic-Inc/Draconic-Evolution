@@ -31,13 +31,13 @@ import java.util.Map;
  */
 public class RenderTileEnergyPylon extends TileEntityRenderer<TileEnergyPylon> {
 
-    private static RenderType modelType = RenderType.getEntitySolid(new ResourceLocation(DraconicEvolution.MODID, "textures/block/pylon_sphere_texture.png"));
-    private static RenderType shelType = RenderType.makeType("pylon_sphere22", DefaultVertexFormats.POSITION_COLOR_TEX, GL11.GL_QUADS, 256, RenderType.State.getBuilder()
-            .texture(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/block/pylon_sphere_texture.png"), false, false))
-            .transparency(RenderState.LIGHTNING_TRANSPARENCY)
-            .writeMask(RenderState.COLOR_WRITE)
-            .texturing(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
-            .build(false)
+    private static RenderType modelType = RenderType.entitySolid(new ResourceLocation(DraconicEvolution.MODID, "textures/block/pylon_sphere_texture.png"));
+    private static RenderType shelType = RenderType.create("pylon_sphere22", DefaultVertexFormats.POSITION_COLOR_TEX, GL11.GL_QUADS, 256, RenderType.State.builder()
+            .setTextureState(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/block/pylon_sphere_texture.png"), false, false))
+            .setTransparencyState(RenderState.LIGHTNING_TRANSPARENCY)
+            .setWriteMaskState(RenderState.COLOR_WRITE)
+            .setTexturingState(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
+            .createCompositeState(false)
     );
     private final CCModel model;
 

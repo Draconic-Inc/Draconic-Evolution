@@ -56,19 +56,19 @@ public class DislocatorAdvanced extends Dislocator implements IHudDisplay {
 
     @Override
     public boolean onLeftClickEntity(ItemStack stack, PlayerEntity player, Entity entity) {
-        if (player.world.isRemote) {
+        if (player.level.isClientSide) {
             return true;
         }
-        TargetPos location = getTargetPos(stack, player.world);
+        TargetPos location = getTargetPos(stack, player.level);
         int fuel = getFuel(stack);
 
-        if (!player.abilities.isCreativeMode && fuel <= 0) {
-            messageUser(player, new TranslationTextComponent("dislocate.draconicevolution.no_fuel").mergeStyle(TextFormatting.RED));
+        if (!player.abilities.instabuild && fuel <= 0) {
+            messageUser(player, new TranslationTextComponent("dislocate.draconicevolution.no_fuel").withStyle(TextFormatting.RED));
             return true;
         }
 
         if (entity instanceof PlayerEntity) {
-            if (entity.isSneaking()) {
+            if (entity.isShiftKeyDown()) {
                 if (useFuel(stack, player)) {
                     dislocateEntity(stack, player, entity, location);
                 }
@@ -78,29 +78,29 @@ public class DislocatorAdvanced extends Dislocator implements IHudDisplay {
             return true;
         }
 
-        if (!entity.isNonBoss() || !(entity instanceof LivingEntity)) {
+        if (!entity.canChangeDimensions() || !(entity instanceof LivingEntity)) {
             return true;
         }
 
         if (useFuel(stack, player)) {
             dislocateEntity(stack, player, entity, location);
-            messageUser(player, new StringTextComponent(I18n.format("dislocate.draconicevolution.entity_sent_to") + " " + location.getReadableName(false)).mergeStyle(TextFormatting.GREEN));
+            messageUser(player, new StringTextComponent(I18n.get("dislocate.draconicevolution.entity_sent_to") + " " + location.getReadableName(false)).withStyle(TextFormatting.GREEN));
         }
 
         return true;
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
-        ItemStack stack = player.getHeldItem(hand);
-        TargetPos location = getTargetPos(stack, player.world);
+    public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
+        ItemStack stack = player.getItemInHand(hand);
+        TargetPos location = getTargetPos(stack, player.level);
 
         boolean blink = getBlinkMode(stack);
-        if (player.isSneaking() || (location == null && !blink)) {
-            if (world.isRemote) {
+        if (player.isShiftKeyDown() || (location == null && !blink)) {
+            if (world.isClientSide) {
                 openGui(stack, player);
             }
-        } else if (!world.isRemote) {
+        } else if (!world.isClientSide) {
             if (blink) {
                 handleBlink((ServerPlayerEntity) player, stack, false);
             }else {
@@ -112,27 +112,27 @@ public class DislocatorAdvanced extends Dislocator implements IHudDisplay {
 
     @OnlyIn(Dist.CLIENT)
     private void openGui(ItemStack stack, PlayerEntity player) {
-        Minecraft.getInstance().displayGuiScreen(new GuiDislocator(stack.getDisplayName(), player));
+        Minecraft.getInstance().setScreen(new GuiDislocator(stack.getHoverName(), player));
     }
 
     private void handleTeleport(PlayerEntity player, ItemStack stack, TargetPos targetPos, boolean showFuel) {
         int fuel = getFuel(stack);
-        if (!player.abilities.isCreativeMode && fuel <= 0) {
-            messageUser(player, new TranslationTextComponent("dislocate.draconicevolution.no_fuel").mergeStyle(TextFormatting.RED));
+        if (!player.abilities.instabuild && fuel <= 0) {
+            messageUser(player, new TranslationTextComponent("dislocate.draconicevolution.no_fuel").withStyle(TextFormatting.RED));
         } else if (useFuel(stack, player)) {
             dislocateEntity(stack, player, player, targetPos);
             if (showFuel){
-                player.sendStatusMessage(new TranslationTextComponent("dislocate.draconicevolution.teleport_fuel").appendString(" " + getFuel(stack)).mergeStyle(TextFormatting.WHITE), true);
+                player.displayClientMessage(new TranslationTextComponent("dislocate.draconicevolution.teleport_fuel").append(" " + getFuel(stack)).withStyle(TextFormatting.WHITE), true);
             }
         }
     }
 
     private void handleBlink(ServerPlayerEntity player, ItemStack stack, boolean showFuel) {
-        if (!player.abilities.isCreativeMode) {
+        if (!player.abilities.instabuild) {
             int blinkFuel = stack.getOrCreateTag().getByte("blink_fuel");
             if (blinkFuel <= 0) {
                 if (!useFuel(stack, player)) {
-                    messageUser(player, new TranslationTextComponent("dislocate.draconicevolution.no_fuel").mergeStyle(TextFormatting.RED));
+                    messageUser(player, new TranslationTextComponent("dislocate.draconicevolution.no_fuel").withStyle(TextFormatting.RED));
                     return;
                 }else {
                     blinkFuel = DEConfig.dislocatorBlinksPerPearl;
@@ -141,43 +141,43 @@ public class DislocatorAdvanced extends Dislocator implements IHudDisplay {
             blinkFuel--;
             stack.getOrCreateTag().putByte("blink_fuel", (byte) blinkFuel);
             if (showFuel){
-                player.sendStatusMessage(new TranslationTextComponent("dislocate.draconicevolution.teleport_fuel").appendString(" " + getFuel(stack)).mergeStyle(TextFormatting.WHITE), true);
+                player.displayClientMessage(new TranslationTextComponent("dislocate.draconicevolution.teleport_fuel").append(" " + getFuel(stack)).withStyle(TextFormatting.WHITE), true);
             }
         }
 
         Vector3d playerVec = player.getEyePosition(1);
         double range = DEConfig.dislocatorBlinkRange;
-        Vector3d endVec = playerVec.add(player.getLookVec().mul(range, range, range));
+        Vector3d endVec = playerVec.add(player.getLookAngle().multiply(range, range, range));
         RayTraceContext context = new RayTraceContext(playerVec, endVec, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, player);
-        BlockRayTraceResult result = player.world.rayTraceBlocks(context);
+        BlockRayTraceResult result = player.level.clip(context);
 
-        player.world.playSound(null, playerVec.x, playerVec.y, playerVec.z, DESounds.blink, SoundCategory.PLAYERS, 1F, 1F);
+        player.level.playSound(null, playerVec.x, playerVec.y, playerVec.z, DESounds.blink, SoundCategory.PLAYERS, 1F, 1F);
 
         DraconicNetwork.sendBlinkEffect(player, (float) (playerVec.distanceTo(endVec) / range));
 
         if (result.getType() == RayTraceResult.Type.MISS) {
-            if (player.isElytraFlying()) { //Maintain momentum if elytra flying
-                player.connection.setPlayerLocation(endVec.x, endVec.y, endVec.z, player.rotationYaw, player.rotationPitch, Sets.newHashSet(Flags.X, Flags.Y, Flags.Z));
-                player.setRotationYawHead(player.rotationYaw);
+            if (player.isFallFlying()) { //Maintain momentum if elytra flying
+                player.connection.teleport(endVec.x, endVec.y, endVec.z, player.yRot, player.xRot, Sets.newHashSet(Flags.X, Flags.Y, Flags.Z));
+                player.setYHeadRot(player.yRot);
             } else {
-                TeleportUtils.teleportEntity(player, player.world.getDimensionKey(), endVec.x, endVec.y, endVec.z);
+                TeleportUtils.teleportEntity(player, player.level.dimension(), endVec.x, endVec.y, endVec.z);
             }
         } else {
-            BlockPos pos = result.getPos().offset(result.getFace());
+            BlockPos pos = result.getBlockPos().relative(result.getDirection());
             Vec3D vec = new Vec3D(pos).add(0.5, 0, 0.5);
-            switch (result.getFace()) {
+            switch (result.getDirection()) {
                 case DOWN:
                 case UP:
                     break;
                 default:
-                    if (player.world.getBlockState(pos.down()).allowsMovement(player.world, pos.down(), PathType.AIR)) {
+                    if (player.level.getBlockState(pos.below()).isPathfindable(player.level, pos.below(), PathType.AIR)) {
                         vec.y -= 1;
                     }
             }
-            TeleportUtils.teleportEntity(player, player.world.getDimensionKey(), vec.x, vec.y, vec.z);
+            TeleportUtils.teleportEntity(player, player.level.dimension(), vec.x, vec.y, vec.z);
         }
 
-        player.world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), DESounds.blink, SoundCategory.PLAYERS, 1F, 1F);
+        player.level.playSound(null, player.getX(), player.getY(), player.getZ(), DESounds.blink, SoundCategory.PLAYERS, 1F, 1F);
     }
 
     @Override
@@ -187,15 +187,15 @@ public class DislocatorAdvanced extends Dislocator implements IHudDisplay {
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void addInformation(ItemStack stack, World world, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, World world, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         DislocatorTarget selected = getTargetPos(stack, world);
         int fuel = getFuel(stack);
         if (selected != null) {
-            tooltip.add(new StringTextComponent(selected.getName()).mergeStyle(TextFormatting.GOLD));
+            tooltip.add(new StringTextComponent(selected.getName()).withStyle(TextFormatting.GOLD));
         }
-        tooltip.add(new TranslationTextComponent("dislocate.draconicevolution.fuel").appendString(" " + fuel).mergeStyle(TextFormatting.WHITE));
-        tooltip.add(new TranslationTextComponent("dislocate.draconicevolution.to_open_gui").mergeStyle(TextFormatting.DARK_PURPLE, TextFormatting.ITALIC));
-        tooltip.add(new TranslationTextComponent("dislocate.draconicevolution.scroll_change_select").mergeStyle(TextFormatting.DARK_PURPLE, TextFormatting.ITALIC));
+        tooltip.add(new TranslationTextComponent("dislocate.draconicevolution.fuel").append(" " + fuel).withStyle(TextFormatting.WHITE));
+        tooltip.add(new TranslationTextComponent("dislocate.draconicevolution.to_open_gui").withStyle(TextFormatting.DARK_PURPLE, TextFormatting.ITALIC));
+        tooltip.add(new TranslationTextComponent("dislocate.draconicevolution.scroll_change_select").withStyle(TextFormatting.DARK_PURPLE, TextFormatting.ITALIC));
     }
 
     @Override
@@ -204,11 +204,11 @@ public class DislocatorAdvanced extends Dislocator implements IHudDisplay {
         if (location != null) {
             displayData.add(location.getName());
         }
-        displayData.add(I18n.format("dislocate.draconicevolution.fuel") + " " + getFuel(stack));
+        displayData.add(I18n.get("dislocate.draconicevolution.fuel") + " " + getFuel(stack));
     }
 
     @Override
-    public boolean getIsRepairable(ItemStack toRepair, ItemStack repair) {
+    public boolean isValidRepairItem(ItemStack toRepair, ItemStack repair) {
         return false;
     }
 
@@ -221,7 +221,7 @@ public class DislocatorAdvanced extends Dislocator implements IHudDisplay {
     }
 
     public boolean useFuel(ItemStack stack, PlayerEntity player) {
-        if (player.abilities.isCreativeMode) {
+        if (player.abilities.instabuild) {
             return true;
         }
         int fuel = getFuel(stack);
@@ -334,9 +334,9 @@ public class DislocatorAdvanced extends Dislocator implements IHudDisplay {
                 if (selected != null) {
                     DislocatorTarget up = DataUtils.safeGet(list, Math.floorMod(selectIndex - 1, list.size()));
                     DislocatorTarget down = DataUtils.safeGet(list, Math.floorMod(selectIndex + 1, list.size()));
-                    if (up != null) ChatHelper.sendIndexed(player, new StringTextComponent(up.getName()).mergeStyle(TextFormatting.GRAY), 391);
+                    if (up != null) ChatHelper.sendIndexed(player, new StringTextComponent(up.getName()).withStyle(TextFormatting.GRAY), 391);
                     ChatHelper.sendIndexed(player, new StringTextComponent(TextFormatting.GREEN + ">" + TextFormatting.GOLD + selected.getName() + TextFormatting.GREEN + "<"), 392);
-                    if (down != null) ChatHelper.sendIndexed(player, new StringTextComponent(down.getName()).mergeStyle(TextFormatting.GRAY), 393);
+                    if (down != null) ChatHelper.sendIndexed(player, new StringTextComponent(down.getName()).withStyle(TextFormatting.GRAY), 393);
                 }
                 break;
             default:
@@ -359,8 +359,8 @@ public class DislocatorAdvanced extends Dislocator implements IHudDisplay {
         int max = 1024 - getFuel(dislocator); //TODO config for max fuel
         int wanted = allStacks ? max : Math.min(max, fullStack ? 16 : 1);
         int added = 0;
-        for (int i = 0; i < player.inventory.getSizeInventory() && wanted > 0; i++) {
-            ItemStack stack = player.inventory.getStackInSlot(i);
+        for (int i = 0; i < player.inventory.getContainerSize() && wanted > 0; i++) {
+            ItemStack stack = player.inventory.getItem(i);
             if (Tags.Items.ENDER_PEARLS.contains(stack.getItem())) {
                 while (!stack.isEmpty() && wanted > 0) {
                     wanted--;
@@ -383,8 +383,8 @@ public class DislocatorAdvanced extends Dislocator implements IHudDisplay {
             return stack;
         }
 
-        for (int i = 0; i < player.inventory.getSizeInventory() - player.inventory.offHandInventory.size(); i++) {
-            stack = player.inventory.getStackInSlot(i);
+        for (int i = 0; i < player.inventory.getContainerSize() - player.inventory.offhand.size(); i++) {
+            stack = player.inventory.getItem(i);
             if (stack.getItem() == DEContent.dislocator_advanced) {
                 return stack;
             }

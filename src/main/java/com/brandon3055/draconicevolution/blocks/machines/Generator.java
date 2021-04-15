@@ -36,7 +36,7 @@ public class Generator extends BlockBCore {
 
     public Generator(Properties properties) {
         super(properties);
-        this.setDefaultState(stateContainer.getBaseState().with(FACING, Direction.NORTH).with(ACTIVE, false));
+        this.registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(ACTIVE, false));
     }
 
 //    @Override
@@ -57,23 +57,23 @@ public class Generator extends BlockBCore {
 
 
     @Override
-    public float getAmbientOcclusionLightValue(BlockState state, IBlockReader worldIn, BlockPos pos) {
-        return super.getAmbientOcclusionLightValue(state, worldIn, pos);
+    public float getShadeBrightness(BlockState state, IBlockReader worldIn, BlockPos pos) {
+        return super.getShadeBrightness(state, worldIn, pos);
     }
 
     @Override
-    public BlockRenderType getRenderType(BlockState state) {
-        return super.getRenderType(state);
+    public BlockRenderType getRenderShape(BlockState state) {
+        return super.getRenderShape(state);
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
         builder.add(FACING, ACTIVE);
     }
 
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context) {
-        return this.getDefaultState().with(FACING, context.getPlacementHorizontalFacing().getOpposite());
+        return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
     }
 
     //endregion
@@ -91,7 +91,7 @@ public class Generator extends BlockBCore {
 
     @Override
     public int getLightValue(BlockState state, IBlockReader world, BlockPos pos) {
-        return state.get(ACTIVE) ? 13 : 0;
+        return state.getValue(ACTIVE) ? 13 : 0;
     }
 }
 

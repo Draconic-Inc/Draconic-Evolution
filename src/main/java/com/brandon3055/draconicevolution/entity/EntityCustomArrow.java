@@ -31,7 +31,7 @@ import java.util.List;
 @Deprecated
 public class EntityCustomArrow extends ArrowEntity {
 
-    private static final DataParameter<Boolean> IS_ENERGY = EntityDataManager.<Boolean>createKey(EntityCustomArrow.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Boolean> IS_ENERGY = EntityDataManager.<Boolean>defineId(EntityCustomArrow.class, DataSerializers.BOOLEAN);
 
     public BowProperties bowProperties = new BowProperties();
 
@@ -66,9 +66,9 @@ public class EntityCustomArrow extends ArrowEntity {
         par1 /= f2;
         par3 /= f2;
         par5 /= f2;
-        par1 += this.rand.nextGaussian() * (this.rand.nextBoolean() ? -1 : 1) * 0.0007499999832361937D * par8;
-        par3 += this.rand.nextGaussian() * (this.rand.nextBoolean() ? -1 : 1) * 0.0007499999832361937D * par8;
-        par5 += this.rand.nextGaussian() * (this.rand.nextBoolean() ? -1 : 1) * 0.0007499999832361937D * par8;
+        par1 += this.random.nextGaussian() * (this.random.nextBoolean() ? -1 : 1) * 0.0007499999832361937D * par8;
+        par3 += this.random.nextGaussian() * (this.random.nextBoolean() ? -1 : 1) * 0.0007499999832361937D * par8;
+        par5 += this.random.nextGaussian() * (this.random.nextBoolean() ? -1 : 1) * 0.0007499999832361937D * par8;
         par1 *= par7;
         par3 *= par7;
         par5 *= par7;
@@ -76,8 +76,8 @@ public class EntityCustomArrow extends ArrowEntity {
 //        this.motionY = par3;
 //        this.motionZ = par5;
         float f3 = MathHelper.sqrt(par1 * par1 + par5 * par5);
-        this.prevRotationYaw = this.rotationYaw = (float) (Math.atan2(par1, par5) * 180.0D / Math.PI);
-        this.prevRotationPitch = this.rotationPitch = (float) (Math.atan2(par3, f3) * 180.0D / Math.PI);
+        this.yRotO = this.yRot = (float) (Math.atan2(par1, par5) * 180.0D / Math.PI);
+        this.xRotO = this.xRot = (float) (Math.atan2(par3, f3) * 180.0D / Math.PI);
 //        this.ticksInGround = 0;
     }
 
@@ -95,22 +95,22 @@ public class EntityCustomArrow extends ArrowEntity {
 //    }
 
     @Override
-    protected ItemStack getArrowStack() {
+    protected ItemStack getPickupItem() {
         return new ItemStack(Items.ARROW);
     }
 
     @Override
-    public void onCollideWithPlayer(PlayerEntity entityIn) {
-        if (!this.world.isRemote && this.inGround && this.arrowShake <= 0) {
-            boolean flag = this.pickupStatus == ArrowEntity.PickupStatus.ALLOWED || this.pickupStatus == ArrowEntity.PickupStatus.CREATIVE_ONLY && entityIn.abilities.isCreativeMode;
+    public void playerTouch(PlayerEntity entityIn) {
+        if (!this.level.isClientSide && this.inGround && this.shakeTime <= 0) {
+            boolean flag = this.pickup == ArrowEntity.PickupStatus.ALLOWED || this.pickup == ArrowEntity.PickupStatus.CREATIVE_ONLY && entityIn.abilities.instabuild;
 
-            if (this.pickupStatus == ArrowEntity.PickupStatus.ALLOWED && !entityIn.inventory.addItemStackToInventory(getArrowStack())) {
+            if (this.pickup == ArrowEntity.PickupStatus.ALLOWED && !entityIn.inventory.add(getPickupItem())) {
                 flag = false;
             }
 
             if (flag) {
-                this.playSound(SoundEvents.ENTITY_ITEM_PICKUP, 0.2F, ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
-                entityIn.onItemPickup(this, 1);
+                this.playSound(SoundEvents.ITEM_PICKUP, 0.2F, ((this.random.nextFloat() - this.random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+                entityIn.take(this, 1);
                 this.remove();
             }
         }
@@ -158,16 +158,16 @@ public class EntityCustomArrow extends ArrowEntity {
 
 
     @Override
-    public void writeAdditional(CompoundNBT compound) {
-        super.writeAdditional(compound);
+    public void addAdditionalSaveData(CompoundNBT compound) {
+        super.addAdditionalSaveData(compound);
         if (bowProperties != null) {
             bowProperties.writeToNBT(compound);
         }
     }
 
     @Override
-    public void readAdditional(CompoundNBT compound) {
-        super.readAdditional(compound);
+    public void readAdditionalSaveData(CompoundNBT compound) {
+        super.readAdditionalSaveData(compound);
         if (bowProperties != null) {
             bowProperties.readFromNBT(compound);
         }
@@ -176,23 +176,23 @@ public class EntityCustomArrow extends ArrowEntity {
     //endregion
 
     @Override
-    protected void onEntityHit(EntityRayTraceResult traceResult) {
+    protected void onHitEntity(EntityRayTraceResult traceResult) {
 
-        if (bowProperties.explosionPower > 0 && !world.isRemote) {
-            Explosion explosion = new Explosion(world, this, prevPosX, prevPosY, prevPosZ, bowProperties.explosionPower, false, DEOldConfig.bowBlockDamage ? Explosion.Mode.BREAK : Explosion.Mode.NONE) {
+        if (bowProperties.explosionPower > 0 && !level.isClientSide) {
+            Explosion explosion = new Explosion(level, this, xo, yo, zo, bowProperties.explosionPower, false, DEOldConfig.bowBlockDamage ? Explosion.Mode.BREAK : Explosion.Mode.NONE) {
                 @Override
-                public LivingEntity getExplosivePlacedBy() {
-                    return func_234616_v_() instanceof LivingEntity ? (LivingEntity) func_234616_v_() : null;
+                public LivingEntity getSourceMob() {
+                    return getOwner() instanceof LivingEntity ? (LivingEntity) getOwner() : null;
                 }
             };
-            if (!net.minecraftforge.event.ForgeEventFactory.onExplosionStart(world, explosion)) {
-                explosion.doExplosionA();
-                explosion.doExplosionB(true);
-                explosion.clearAffectedBlockPositions();
+            if (!net.minecraftforge.event.ForgeEventFactory.onExplosionStart(level, explosion)) {
+                explosion.explode();
+                explosion.finalizeExplosion(true);
+                explosion.clearToBlow();
 
-                for (PlayerEntity entityplayer : world.getPlayers()) {
-                    if (entityplayer.getDistanceSq(prevPosX, prevPosY, prevPosZ) < 4096.0D) {
-                        ((ServerPlayerEntity) entityplayer).connection.sendPacket(new SExplosionPacket(prevPosX, prevPosY, prevPosZ, bowProperties.explosionPower, explosion.getAffectedBlockPositions(), explosion.getPlayerKnockbackMap().get(entityplayer)));
+                for (PlayerEntity entityplayer : level.players()) {
+                    if (entityplayer.distanceToSqr(xo, yo, zo) < 4096.0D) {
+                        ((ServerPlayerEntity) entityplayer).connection.send(new SExplosionPacket(xo, yo, zo, bowProperties.explosionPower, explosion.getToBlow(), explosion.getHitPlayers().get(entityplayer)));
                     }
                 }
             }
@@ -201,7 +201,7 @@ public class EntityCustomArrow extends ArrowEntity {
         }
 
         //region Shock Wave
-        if (bowProperties.shockWavePower > 0 && !world.isRemote) {
+        if (bowProperties.shockWavePower > 0 && !level.isClientSide) {
             Vec3D hitPos = new Vec3D(this);
 //            if (traceResult instanceof BlockRayTraceResult) {
 //                hitPos = Vec3D.getCenter(((BlockRayTraceResult) traceResult).getPos());
@@ -215,23 +215,23 @@ public class EntityCustomArrow extends ArrowEntity {
 //            BCEffectHandler.spawnFX(DEParticles.ARROW_SHOCKWAVE, world, hitPos.x, hitPos.y, hitPos.z, 0, 0, 0, 256D, (int) (bowProperties.shockWavePower * 100));
 
             double range = (double) (bowProperties.shockWavePower + 5) * 1.5;
-            List<Entity> list = world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(hitPos.x, hitPos.y, hitPos.z, hitPos.x, hitPos.y, hitPos.z).grow(range * 2));
+            List<Entity> list = level.getEntitiesOfClass(Entity.class, new AxisAlignedBB(hitPos.x, hitPos.y, hitPos.z, hitPos.x, hitPos.y, hitPos.z).inflate(range * 2));
 
             float damage = 40F * bowProperties.shockWavePower;
 
             for (Entity e : list) {
                 if (e instanceof LivingEntity) {
                     Entity entity = e;
-                    float distanceModifier = 1F - (entity.getDistance(this) / (float) range);
+                    float distanceModifier = 1F - (entity.distanceTo(this) / (float) range);
 
                     if (e instanceof EnderDragonEntity) {
-//                        entity = ((EnderDragonEntity) entity).field_70987_i;
+//                        entity = ((EnderDragonEntity) entity).body;
 //                        distanceModifier = 1F - (entity.getDistance(this) / (bowProperties.shockWavePower * 4));
                     }
 
                     if (distanceModifier > 0) {
-                        DamageSource source = new IndirectEntityDamageSource("customArrowEnergy", this, func_234616_v_() != null ? func_234616_v_() : this).setProjectile().setExplosion().setDamageIsAbsolute();
-                        entity.attackEntityFrom(source, distanceModifier * damage);
+                        DamageSource source = new IndirectEntityDamageSource("customArrowEnergy", this, getOwner() != null ? getOwner() : this).setProjectile().setExplosion().bypassMagic();
+                        entity.hurt(source, distanceModifier * damage);
                     }
                 }
             }
@@ -247,7 +247,7 @@ public class EntityCustomArrow extends ArrowEntity {
 
             int actualDamage;
             //Calculate Damage
-            double velocity = this.getMotion().length();
+            double velocity = this.getDeltaMovement().length();
             actualDamage = MathHelper.ceil(velocity * bowProperties.arrowDamage);
 
             if (bowProperties.energyBolt) {
@@ -255,19 +255,19 @@ public class EntityCustomArrow extends ArrowEntity {
             }
 
             if (bowProperties.energyBolt) {
-                ((EntityRayTraceResult) traceResult).getEntity().hurtResistantTime = 0;
+                ((EntityRayTraceResult) traceResult).getEntity().invulnerableTime = 0;
             }
 
-            if (((EntityRayTraceResult) traceResult).getEntity() instanceof EnderDragonPartEntity && ((EnderDragonPartEntity) ((EntityRayTraceResult) traceResult).getEntity()).dragon != null && bowProperties.energyBolt) {
-                ((EnderDragonEntity) ((EnderDragonPartEntity) ((EntityRayTraceResult) traceResult).getEntity()).dragon).hurtResistantTime = 0;
+            if (((EntityRayTraceResult) traceResult).getEntity() instanceof EnderDragonPartEntity && ((EnderDragonPartEntity) ((EntityRayTraceResult) traceResult).getEntity()).parentMob != null && bowProperties.energyBolt) {
+                ((EnderDragonEntity) ((EnderDragonPartEntity) ((EntityRayTraceResult) traceResult).getEntity()).parentMob).invulnerableTime = 0;
             }
 
-            if (((EntityRayTraceResult) traceResult).getEntity().attackEntityFrom(getDamageSource(), actualDamage)) {
+            if (((EntityRayTraceResult) traceResult).getEntity().hurt(getDamageSource(), actualDamage)) {
                 if (((EntityRayTraceResult) traceResult).getEntity() instanceof LivingEntity) {
                     LivingEntity entitylivingbase = (LivingEntity) ((EntityRayTraceResult) traceResult).getEntity();
 
-                    if (!this.world.isRemote) {
-                        entitylivingbase.setArrowCountInEntity(entitylivingbase.getArrowCountInEntity() + 1);
+                    if (!this.level.isClientSide) {
+                        entitylivingbase.setArrowCount(entitylivingbase.getArrowCount() + 1);
                     }
 
 //                    if (this.knockbackStrength > 0) {
@@ -279,8 +279,8 @@ public class EntityCustomArrow extends ArrowEntity {
 //                    }
 
 //                    if (this.shootingEntity != null && this.shootingEntity instanceof LivingEntity) {
-//                        EnchantmentHelper.func_151384_a(entitylivingbase, this.shootingEntity);
-//                        EnchantmentHelper.func_151385_b((LivingEntity) this.shootingEntity, entitylivingbase);
+//                        EnchantmentHelper.doPostHurtEffects(entitylivingbase, this.shootingEntity);
+//                        EnchantmentHelper.doPostDamageEffects((LivingEntity) this.shootingEntity, entitylivingbase);
 //                    }
 //
 //                    if (this.shootingEntity != null && traceResult.entityHit != this.shootingEntity && traceResult.entityHit instanceof PlayerEntity && this.shootingEntity instanceof ServerPlayerEntity) {
@@ -289,7 +289,7 @@ public class EntityCustomArrow extends ArrowEntity {
                 }
 
 //                this.playSound("random.bowhit", 1.0F, 1.2F / (this.rand.nextFloat() * 0.2F + 0.9F));
-                playSound(SoundEvents.ENTITY_ARROW_HIT, 1.0F, 1.2F / (rand.nextFloat() * 0.2F + 0.9F));
+                playSound(SoundEvents.ARROW_HIT, 1.0F, 1.2F / (random.nextFloat() * 0.2F + 0.9F));
                 this.remove();
 
             }
@@ -323,8 +323,8 @@ public class EntityCustomArrow extends ArrowEntity {
 
     private DamageSource getDamageSource() {
         if (bowProperties.energyBolt) {
-            return new IndirectEntityDamageSource("customArrowEnergy", this, func_234616_v_() != null ? func_234616_v_() : this).setProjectile().setDamageIsAbsolute();
+            return new IndirectEntityDamageSource("customArrowEnergy", this, getOwner() != null ? getOwner() : this).setProjectile().bypassMagic();
         }
-        else return DamageSource.causeArrowDamage(this, func_234616_v_() != null ? func_234616_v_() : this);
+        else return DamageSource.arrow(this, getOwner() != null ? getOwner() : this);
     }
 }

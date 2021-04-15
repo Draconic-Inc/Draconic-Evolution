@@ -61,7 +61,7 @@ public class RenderEntityEnderEnergyManipulator extends EntityRenderer<EntityEnd
     }
 
     @Override
-    public ResourceLocation getEntityTexture(EntityEnderEnergyManipulator entity) {
+    public ResourceLocation getTextureLocation(EntityEnderEnergyManipulator entity) {
         return ResourceHelperDE.getResource(DETextures.DRAGON_HEART);
     }
 }

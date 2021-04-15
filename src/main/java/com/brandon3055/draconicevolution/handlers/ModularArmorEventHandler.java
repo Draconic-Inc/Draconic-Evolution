@@ -47,20 +47,20 @@ public class ModularArmorEventHandler {
     private static final EquipmentSlotType[] ARMOR_SLOTS = new EquipmentSlotType[]{EquipmentSlotType.FEET, EquipmentSlotType.LEGS, EquipmentSlotType.CHEST, EquipmentSlotType.HEAD};
 
     public static final UUID WALK_SPEED_UUID = UUID.fromString("0ea6ce8e-d2e8-11e5-ab30-625662870761");
-    private static final DamageSource KILL_COMMAND = new DamageSource("administrative.kill").setDamageAllowedInCreativeMode().setDamageBypassesArmor().setDamageIsAbsolute();
+    private static final DamageSource KILL_COMMAND = new DamageSource("administrative.kill").bypassInvul().bypassArmor().bypassMagic();
     public static Map<PlayerEntity, Boolean> playersWithFlight = new WeakHashMap<>();
     public static List<UUID> playersWithUphillStep = new ArrayList<>();
 
     @SubscribeEvent(priority = EventPriority.LOW)
     public static void onEntityAttacked(LivingAttackEvent event) {
-        if (event.isCanceled() || event.getAmount() <= 0 || event.getEntityLiving().world.isRemote || event.getSource() == KILL_COMMAND) {
+        if (event.isCanceled() || event.getAmount() <= 0 || event.getEntityLiving().level.isClientSide || event.getSource() == KILL_COMMAND) {
             return;
         }
 
         //Allows /kill to completely bypass all protections
         if (event.getAmount() == Float.MAX_VALUE && event.getSource() == DamageSource.OUT_OF_WORLD) {
             event.setCanceled(true);
-            event.getEntityLiving().attackEntityFrom(KILL_COMMAND, Float.MAX_VALUE);
+            event.getEntityLiving().hurt(KILL_COMMAND, Float.MAX_VALUE);
             return;
         }
 
@@ -88,7 +88,7 @@ public class ModularArmorEventHandler {
 
     @SubscribeEvent(priority = EventPriority.LOW)
     public static void onEntityDamaged(LivingDamageEvent event) {
-        if (event.isCanceled() || event.getAmount() <= 0 || event.getEntityLiving().world.isRemote || event.getSource() == KILL_COMMAND) {
+        if (event.isCanceled() || event.getAmount() <= 0 || event.getEntityLiving().level.isClientSide || event.getSource() == KILL_COMMAND) {
             return;
         }
 
@@ -126,7 +126,7 @@ public class ModularArmorEventHandler {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onEntityDeath(LivingDeathEvent event) {
-        if (event.isCanceled() || event.getEntityLiving().world.isRemote) {
+        if (event.isCanceled() || event.getEntityLiving().level.isClientSide) {
             return;
         }
 
@@ -135,14 +135,14 @@ public class ModularArmorEventHandler {
 
         if (entity instanceof PlayerEntity) {
             PlayerEntity player = (PlayerEntity) entity;
-            NonNullList<ItemStack> stacks = player.inventory.mainInventory;
+            NonNullList<ItemStack> stacks = player.inventory.items;
             for (int i = 0; i < stacks.size(); ++i) {
-                getLastStandEntities(stacks.get(i), lastStandModules, player.inventory.currentItem == i ? EquipmentSlotType.MAINHAND : null, false);
+                getLastStandEntities(stacks.get(i), lastStandModules, player.inventory.selected == i ? EquipmentSlotType.MAINHAND : null, false);
             }
             for (EquipmentSlotType slot : ARMOR_SLOTS) {
-                getLastStandEntities(player.inventory.armorInventory.get(slot.getIndex()), lastStandModules, slot, false);
+                getLastStandEntities(player.inventory.armor.get(slot.getIndex()), lastStandModules, slot, false);
             }
-            for (ItemStack stack : player.inventory.offHandInventory) {
+            for (ItemStack stack : player.inventory.offhand) {
                 getLastStandEntities(stack, lastStandModules, EquipmentSlotType.OFFHAND, false);
             }
             for (ItemStack stack : EquipmentManager.getAllItems(entity)) {
@@ -151,7 +151,7 @@ public class ModularArmorEventHandler {
         } else {
             if (EquipmentManager.equipModLoaded()) {
                 for (EquipmentSlotType slot : EquipmentSlotType.values()) {
-                    getLastStandEntities(entity.getItemStackFromSlot(slot), lastStandModules, slot, true);
+                    getLastStandEntities(entity.getItemBySlot(slot), lastStandModules, slot, true);
                 }
             }
         }
@@ -189,14 +189,14 @@ public class ModularArmorEventHandler {
         ArmorAbilities armorAbilities = new ArmorAbilities();
         if (entity instanceof PlayerEntity) {
             PlayerEntity player = (PlayerEntity) entity;
-            NonNullList<ItemStack> stacks = player.inventory.mainInventory;
+            NonNullList<ItemStack> stacks = player.inventory.items;
             for (int i = 0; i < stacks.size(); ++i) {
-                tryTickStack(stacks.get(i), player, player.inventory.currentItem == i ? EquipmentSlotType.MAINHAND : null, armorAbilities, false);
+                tryTickStack(stacks.get(i), player, player.inventory.selected == i ? EquipmentSlotType.MAINHAND : null, armorAbilities, false);
             }
             for (EquipmentSlotType slot : ARMOR_SLOTS) {
-                tryTickStack(player.inventory.armorInventory.get(slot.getIndex()), player, slot, armorAbilities, false);
+                tryTickStack(player.inventory.armor.get(slot.getIndex()), player, slot, armorAbilities, false);
             }
-            for (ItemStack stack : player.inventory.offHandInventory) {
+            for (ItemStack stack : player.inventory.offhand) {
                 tryTickStack(stack, player, EquipmentSlotType.OFFHAND, armorAbilities, false);
             }
             if (EquipmentManager.equipModLoaded()) {
@@ -206,27 +206,27 @@ public class ModularArmorEventHandler {
             }
         } else {
             for (EquipmentSlotType slot : EquipmentSlotType.values()) {
-                tryTickStack(entity.getItemStackFromSlot(slot), entity, slot, armorAbilities, false);
+                tryTickStack(entity.getItemBySlot(slot), entity, slot, armorAbilities, false);
             }
         }
 
         //region/*---------------- HillStep -----------------*/
 
-        if (entity.world.isRemote) {
+        if (entity.level.isClientSide) {
             ItemStack chestStack = ModularChestpiece.getChestpiece(entity);
             LazyOptional<ModuleHost> optional = chestStack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
             boolean hasHost = !chestStack.isEmpty() && optional.isPresent();
-            boolean highStepListed = playersWithUphillStep.contains(entity.getUniqueID()) && entity.stepHeight >= 1f;
+            boolean highStepListed = playersWithUphillStep.contains(entity.getUUID()) && entity.maxUpStep >= 1f;
             boolean hasHighStep = hasHost && optional.orElseThrow(IllegalStateException::new).getEntitiesByType(ModuleTypes.HILL_STEP).findAny().isPresent();
 
             if (hasHighStep && !highStepListed) {
-                playersWithUphillStep.add(entity.getUniqueID());
-                entity.stepHeight = 1.0625f;
+                playersWithUphillStep.add(entity.getUUID());
+                entity.maxUpStep = 1.0625f;
             }
 
             if (!hasHighStep && highStepListed) {
-                playersWithUphillStep.remove(entity.getUniqueID());
-                entity.stepHeight = 0.6F;
+                playersWithUphillStep.remove(entity.getUUID());
+                entity.maxUpStep = 0.6F;
             }
         }
 
@@ -248,14 +248,14 @@ public class ModularArmorEventHandler {
         AttributeModifier currentModifier = entity.getAttribute(speedAttr).getModifier(WALK_SPEED_UUID);
         if (speedModifier > 0) {
             if (currentModifier == null) {
-                entity.getAttribute(speedAttr).applyNonPersistentModifier(new AttributeModifier(WALK_SPEED_UUID, speedAttr.getAttributeName(), speedModifier, AttributeModifier.Operation.MULTIPLY_BASE));
+                entity.getAttribute(speedAttr).addTransientModifier(new AttributeModifier(WALK_SPEED_UUID, speedAttr.getDescriptionId(), speedModifier, AttributeModifier.Operation.MULTIPLY_BASE));
             } else if (currentModifier.getAmount() != speedModifier) {
                 entity.getAttribute(speedAttr).removeModifier(currentModifier);
-                entity.getAttribute(speedAttr).applyNonPersistentModifier(new AttributeModifier(WALK_SPEED_UUID, speedAttr.getAttributeName(), speedModifier, AttributeModifier.Operation.MULTIPLY_BASE));
+                entity.getAttribute(speedAttr).addTransientModifier(new AttributeModifier(WALK_SPEED_UUID, speedAttr.getDescriptionId(), speedModifier, AttributeModifier.Operation.MULTIPLY_BASE));
             }
 
-            if (!entity.isOnGround() && entity.getRidingEntity() == null) {
-                entity.jumpMovementFactor = 0.02F + (0.02F * (float) speedModifier);
+            if (!entity.isOnGround() && entity.getVehicle() == null) {
+                entity.flyingSpeed = 0.02F + (0.02F * (float) speedModifier);
             }
         } else {
             if (currentModifier != null) {
@@ -271,10 +271,10 @@ public class ModularArmorEventHandler {
             PlayerEntity player = (PlayerEntity) entity;
             boolean canFly = true;
             boolean noPower = false;
-            if (armorAbilities.creativeFlight && armorAbilities.flightPower != null && !player.abilities.isCreativeMode) {
+            if (armorAbilities.creativeFlight && armorAbilities.flightPower != null && !player.abilities.instabuild) {
                 canFly = armorAbilities.flightPower.getOPStored() >= EquipCfg.creativeFlightEnergy;
                 noPower = !canFly;
-                if (canFly && player.abilities.isFlying && !entity.world.isRemote) {
+                if (canFly && player.abilities.flying && !entity.level.isClientSide) {
                     if (armorAbilities.flightPower instanceof IOPStorageModifiable) {
                         ((IOPStorageModifiable) armorAbilities.flightPower).modifyEnergyStored(-EquipCfg.creativeFlightEnergy);
                     } else {
@@ -283,32 +283,32 @@ public class ModularArmorEventHandler {
                 }
             }
             if (armorAbilities.creativeFlight && canFly) {
-                player.abilities.allowFlying = true;
+                player.abilities.mayfly = true;
                 playersWithFlight.put(player, true);
             } else {
                 if (!playersWithFlight.containsKey(player)) {
                     playersWithFlight.put(player, false);
                 }
 
-                if (playersWithFlight.get(player) && !entity.world.isRemote) {
+                if (playersWithFlight.get(player) && !entity.level.isClientSide) {
                     playersWithFlight.put(player, false);
 
-                    if (!player.abilities.isCreativeMode) {
-                        boolean wasFlying = player.abilities.isFlying;
-                        player.abilities.allowFlying = false;
-                        player.abilities.isFlying = false;
-                        player.sendPlayerAbilities();
+                    if (!player.abilities.instabuild) {
+                        boolean wasFlying = player.abilities.flying;
+                        player.abilities.mayfly = false;
+                        player.abilities.flying = false;
+                        player.onUpdateAbilities();
                         if (wasFlying && noPower) {
                             player.tryToStartFallFlying();
                         }
                     }
                 }
 
-                if (player.world.isRemote && playersWithFlight.get(player)) {
+                if (player.level.isClientSide && playersWithFlight.get(player)) {
                     playersWithFlight.put(player, false);
-                    if (!player.abilities.isCreativeMode) {
-                        player.abilities.allowFlying = false;
-                        player.abilities.isFlying = false;
+                    if (!player.abilities.instabuild) {
+                        player.abilities.mayfly = false;
+                        player.abilities.flying = false;
                     }
                 }
             }
@@ -344,7 +344,7 @@ public class ModularArmorEventHandler {
         if (stack.getItem() instanceof IModularItem) {
             ((IModularItem) stack.getItem()).handleTick(stack, entity, slot, equipMod);
 
-            if ((slot != null && slot.getSlotType() == EquipmentSlotType.Group.ARMOR) || equipMod) {
+            if ((slot != null && slot.getType() == EquipmentSlotType.Group.ARMOR) || equipMod) {
                 LazyOptional<ModuleHost> optional = stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
                 optional.ifPresent(host -> {
                     gatherArmorProps(stack, host, entity, abilities);
@@ -357,8 +357,8 @@ public class ModularArmorEventHandler {
     public static void onLivingJumpEvent(LivingEvent.LivingJumpEvent event) {
         LivingEntity entity = event.getEntityLiving();
         float jumpBoost = getJumpBoost(entity, false);
-        if (jumpBoost > 0 && !entity.isSneaking()) {
-            entity.addVelocity(0, 0.1F * (jumpBoost + 1), 0);
+        if (jumpBoost > 0 && !entity.isShiftKeyDown()) {
+            entity.push(0, 0.1F * (jumpBoost + 1), 0);
         }
     }
 

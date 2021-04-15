@@ -52,7 +52,7 @@ public class DislocatorLinkHandler extends WorldSavedData {
 //            return null;
 //        }
         if (world instanceof ServerWorld) {
-            return world.getServer().getWorld(World.OVERWORLD).getSavedData().getOrCreate(() -> new DislocatorLinkHandler(SAVE_DATA_NAME), SAVE_DATA_NAME);
+            return world.getServer().getLevel(World.OVERWORLD).getDataStorage().computeIfAbsent(() -> new DislocatorLinkHandler(SAVE_DATA_NAME), SAVE_DATA_NAME);
         }
         return null;
 //        if (data != null && data instanceof DislocatorLinkHandler) {
@@ -69,7 +69,7 @@ public class DislocatorLinkHandler extends WorldSavedData {
 
     public static void updateLink(World world, ItemStack stack, BlockPos pos, RegistryKey<World> dimension) {
         DislocatorLinkHandler data = getDataInstance(world);
-        if (data == null || world.isRemote || !dislocator_p2p.isValid(stack)) {
+        if (data == null || world.isClientSide || !dislocator_p2p.isValid(stack)) {
             return;
         }
         String linkID = dislocator_p2p.getLinkID(stack);
@@ -79,7 +79,7 @@ public class DislocatorLinkHandler extends WorldSavedData {
 
     public static void updateLink(World world, ItemStack stack, PlayerEntity player) {
         DislocatorLinkHandler data = getDataInstance(world);
-        if (data == null || world.isRemote || !dislocator_p2p.isValid(stack)) {
+        if (data == null || world.isClientSide || !dislocator_p2p.isValid(stack)) {
             return;
         }
         String linkID = dislocator_p2p.getLinkID(stack);
@@ -90,12 +90,12 @@ public class DislocatorLinkHandler extends WorldSavedData {
 
     public static void removeLink(World world, ItemStack stack) {
         DislocatorLinkHandler data = getDataInstance(world);
-        if (data == null || world.isRemote || !dislocator_p2p.isValid(stack)) {
+        if (data == null || world.isClientSide || !dislocator_p2p.isValid(stack)) {
             return;
         }
         String linkID = dislocator_p2p.getLinkID(stack);
         data.linkDataMap.remove(linkID);
-        data.markDirty();
+        data.setDirty();
     }
 
     /**
@@ -158,9 +158,9 @@ public class DislocatorLinkHandler extends WorldSavedData {
                 if (server == null) {
                     return null;
                 }
-                World targetWorld = server.getWorld(link.dimension);
+                World targetWorld = server.getLevel(link.dimension);
 
-                TileEntity tile = targetWorld.getTileEntity(link.pos);
+                TileEntity tile = targetWorld.getBlockEntity(link.pos);
                 if (tile instanceof ITeleportEndPoint) {
                     return tile;
                 }
@@ -175,12 +175,12 @@ public class DislocatorLinkHandler extends WorldSavedData {
             return null;
         }
         PlayerList players = world.getServer().getPlayerList();
-        PlayerEntity player = players.getPlayerByUUID(UUID.fromString(link.playerUUID));
-        boolean flag = DataUtils.firstMatch(player.inventory.mainInventory, stack -> dislocator_p2p.isValid(stack) && dislocator_p2p.getLinkID(stack).equals(linkID)) != null;
-        flag = flag || DataUtils.firstMatch(player.inventory.offHandInventory, stack -> dislocator_p2p.isValid(stack) && dislocator_p2p.getLinkID(stack).equals(linkID)) != null;
+        PlayerEntity player = players.getPlayer(UUID.fromString(link.playerUUID));
+        boolean flag = DataUtils.firstMatch(player.inventory.items, stack -> dislocator_p2p.isValid(stack) && dislocator_p2p.getLinkID(stack).equals(linkID)) != null;
+        flag = flag || DataUtils.firstMatch(player.inventory.offhand, stack -> dislocator_p2p.isValid(stack) && dislocator_p2p.getLinkID(stack).equals(linkID)) != null;
         if (!flag) {
             data.linkDataMap.remove(linkID);
-            data.markDirty();
+            data.setDirty();
             return null;
         }
         return new Vec3D(player);
@@ -191,9 +191,9 @@ public class DislocatorLinkHandler extends WorldSavedData {
         if (server == null) {
             return null;
         }
-        World targetWorld = server.getWorld(link.dimension);
+        World targetWorld = server.getLevel(link.dimension);
 
-        TileEntity tile = targetWorld.getTileEntity(link.pos);
+        TileEntity tile = targetWorld.getBlockEntity(link.pos);
         if (tile instanceof ITeleportEndPoint) {
             BlockPos tilePos = ((ITeleportEndPoint) tile).getArrivalPos(linkID);
             if (tilePos == null) {
@@ -201,9 +201,9 @@ public class DislocatorLinkHandler extends WorldSavedData {
             }
             return new Vec3D(tilePos.getX() + 0.5, tilePos.getY() + 0.2, tilePos.getZ() + 0.5);
         } else {
-            AxisAlignedBB bb = new AxisAlignedBB(link.pos, link.pos.add(1, 1, 1));
-            bb.grow(5);
-            List<PersistentItemEntity> items = targetWorld.getEntitiesWithinAABB(PersistentItemEntity.class, bb);
+            AxisAlignedBB bb = new AxisAlignedBB(link.pos, link.pos.offset(1, 1, 1));
+            bb.inflate(5);
+            List<PersistentItemEntity> items = targetWorld.getEntitiesOfClass(PersistentItemEntity.class, bb);
             for (PersistentItemEntity item : items) {
                 ItemStack i = item.getItem();
                 if (dislocator_p2p.isValid(i)) {
@@ -233,7 +233,7 @@ public class DislocatorLinkHandler extends WorldSavedData {
             return null;
         }
         PlayerList players = world.getServer().getPlayerList();
-        PlayerEntity player = players.getPlayerByUUID(UUID.fromString(playerID));
+        PlayerEntity player = players.getPlayer(UUID.fromString(playerID));
         return player == null ? null : new Vec3D(player);
     }
 
@@ -242,7 +242,7 @@ public class DislocatorLinkHandler extends WorldSavedData {
 //    }
 
     @Override
-    public void read(CompoundNBT nbt) {
+    public void load(CompoundNBT nbt) {
         linkDataMap.clear();
         ListNBT dataList = nbt.getList("LinkList", 10);
         dataList.forEach(nbtBase -> {
@@ -252,7 +252,7 @@ public class DislocatorLinkHandler extends WorldSavedData {
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT compound) {
+    public CompoundNBT save(CompoundNBT compound) {
         ListNBT dataList = new ListNBT();
         linkDataMap.forEach((id, linkData) -> dataList.add(linkData.toNBT(new CompoundNBT())));
         compound.put("LinkList", dataList);
@@ -279,24 +279,24 @@ public class DislocatorLinkHandler extends WorldSavedData {
             this.pos = pos;
             this.dimension = dimension;
             isPlayer = false;
-            handler.markDirty();
+            handler.setDirty();
         }
 
         public void setTarget(String playerUUID) {
             this.playerUUID = playerUUID;
             isPlayer = true;
-            handler.markDirty();
+            handler.setDirty();
         }
 
         public CompoundNBT toNBT(CompoundNBT compound) {
             compound.putString("LinkID", linkID);
             compound.putBoolean("IsPlayer", isPlayer);
-            compound.putString("Dim", dimension.getLocation().toString());
+            compound.putString("Dim", dimension.location().toString());
 
             if (isPlayer) {
                 compound.putString("PlayerID", playerUUID);
             } else {
-                compound.putLong("Pos", pos.toLong());
+                compound.putLong("Pos", pos.asLong());
             }
             return compound;
         }
@@ -304,12 +304,12 @@ public class DislocatorLinkHandler extends WorldSavedData {
         public LinkData fromNBT(CompoundNBT compound) {
             linkID = compound.getString("LinkID");
             isPlayer = compound.getBoolean("IsPlayer");
-            dimension = RegistryKey.getOrCreateKey(Registry.WORLD_KEY, new ResourceLocation(compound.getString("Dim")));
+            dimension = RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(compound.getString("Dim")));
 
             if (isPlayer) {
                 playerUUID = compound.getString("PlayerID");
             } else {
-                pos = BlockPos.fromLong(compound.getLong("Pos"));
+                pos = BlockPos.of(compound.getLong("Pos"));
             }
             return this;
         }

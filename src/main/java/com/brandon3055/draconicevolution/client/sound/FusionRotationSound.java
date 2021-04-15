@@ -13,13 +13,13 @@ public class FusionRotationSound extends SimpleSound implements ITickableSound {
     private TileCraftingCore tile;
 
     public FusionRotationSound(TileCraftingCore tile) {
-        super(DESounds.fusionRotation, SoundCategory.BLOCKS, 1.5F, 1, tile.getPos());
+        super(DESounds.fusionRotation, SoundCategory.BLOCKS, 1.5F, 1, tile.getBlockPos());
         this.tile = tile;
-        repeat = true;
+        looping = true;
     }
 
     @Override
-    public boolean isDonePlaying() {
+    public boolean isStopped() {
         return tile.isRemoved() || !tile.craftingInProgress();
     }
 

@@ -14,13 +14,13 @@ public class CustomFlameParticle extends SpriteTexturedParticle {
 
     private CustomFlameParticle(ClientWorld worldIn, double xCoordIn, double yCoordIn, double zCoordIn, double xSpeedIn, double ySpeedIn, double zSpeedIn) {
         super(worldIn, xCoordIn, yCoordIn, zCoordIn, xSpeedIn, ySpeedIn, zSpeedIn);
-        this.motionX = this.motionX * (double)0.01F + xSpeedIn;
-        this.motionY = this.motionY * (double)0.01F + ySpeedIn;
-        this.motionZ = this.motionZ * (double)0.01F + zSpeedIn;
-        this.posX += (double)((this.rand.nextFloat() - this.rand.nextFloat()) * 0.05F);
-        this.posY += (double)((this.rand.nextFloat() - this.rand.nextFloat()) * 0.05F);
-        this.posZ += (double)((this.rand.nextFloat() - this.rand.nextFloat()) * 0.05F);
-        this.maxAge = (int)(8.0D / (Math.random() * 0.8D + 0.2D)) + 4;
+        this.xd = this.xd * (double)0.01F + xSpeedIn;
+        this.yd = this.yd * (double)0.01F + ySpeedIn;
+        this.zd = this.zd * (double)0.01F + zSpeedIn;
+        this.x += (double)((this.random.nextFloat() - this.random.nextFloat()) * 0.05F);
+        this.y += (double)((this.random.nextFloat() - this.random.nextFloat()) * 0.05F);
+        this.z += (double)((this.random.nextFloat() - this.random.nextFloat()) * 0.05F);
+        this.lifetime = (int)(8.0D / (Math.random() * 0.8D + 0.2D)) + 4;
     }
 
     public IParticleRenderType getRenderType() {
@@ -28,19 +28,19 @@ public class CustomFlameParticle extends SpriteTexturedParticle {
     }
 
     public void move(double x, double y, double z) {
-        this.setBoundingBox(this.getBoundingBox().offset(x, y, z));
-        this.resetPositionToBB();
+        this.setBoundingBox(this.getBoundingBox().move(x, y, z));
+        this.setLocationFromBoundingbox();
     }
 
-    public float getScale(float p_217561_1_) {
-        float f = ((float)this.age + p_217561_1_) / (float)this.maxAge;
-        return this.particleScale * (1.0F - f * f * 0.5F);
+    public float getQuadSize(float p_217561_1_) {
+        float f = ((float)this.age + p_217561_1_) / (float)this.lifetime;
+        return this.quadSize * (1.0F - f * f * 0.5F);
     }
 
-    public int getBrightnessForRender(float partialTick) {
-        float f = ((float)this.age + partialTick) / (float)this.maxAge;
+    public int getLightColor(float partialTick) {
+        float f = ((float)this.age + partialTick) / (float)this.lifetime;
         f = MathHelper.clamp(f, 0.0F, 1.0F);
-        int i = super.getBrightnessForRender(partialTick);
+        int i = super.getLightColor(partialTick);
         int j = i & 255;
         int k = i >> 16 & 255;
         j = j + (int)(f * 15.0F * 16.0F);
@@ -52,16 +52,16 @@ public class CustomFlameParticle extends SpriteTexturedParticle {
     }
 
     public void tick() {
-        this.prevPosX = this.posX;
-        this.prevPosY = this.posY;
-        this.prevPosZ = this.posZ;
-        if (this.age++ >= this.maxAge) {
-            this.setExpired();
+        this.xo = this.x;
+        this.yo = this.y;
+        this.zo = this.z;
+        if (this.age++ >= this.lifetime) {
+            this.remove();
         } else {
-            this.motionY -= 0.04D * (double)this.particleGravity;
-            this.move(this.motionX, this.motionY, this.motionZ);
+            this.yd -= 0.04D * (double)this.gravity;
+            this.move(this.xd, this.yd, this.zd);
 //            this.motionX *= (double)0.96F;
-            this.motionY *= (double)0.96F;
+            this.yd *= (double)0.96F;
 //            this.motionZ *= (double)0.96F;
             if (this.onGround) {
 //                this.motionX *= (double)0.7F;
@@ -80,14 +80,14 @@ public class CustomFlameParticle extends SpriteTexturedParticle {
         }
 
         @Override
-        public Particle makeParticle(IntParticleData data, ClientWorld worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public Particle createParticle(IntParticleData data, ClientWorld worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
             CustomFlameParticle flameparticle = new CustomFlameParticle(worldIn, x, y, z, xSpeed, ySpeed, zSpeed);
-            flameparticle.selectSpriteRandomly(this.spriteSet);
+            flameparticle.pickSprite(this.spriteSet);
             if (data.get().length >= 1) {
-                flameparticle.particleScale *= (data.get()[0] / 255F);
+                flameparticle.quadSize *= (data.get()[0] / 255F);
             }
             if (data.get().length >= 2) {
-                flameparticle.particleGravity = -data.get()[1] / 255F;
+                flameparticle.gravity = -data.get()[1] / 255F;
             }
             return flameparticle;
         }

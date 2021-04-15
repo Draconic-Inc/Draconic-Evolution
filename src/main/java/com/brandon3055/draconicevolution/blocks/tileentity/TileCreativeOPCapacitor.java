@@ -87,17 +87,17 @@ public class TileCreativeOPCapacitor extends TileBCore implements ITickableTileE
     @Override
     public void tick() {
         super.tick();
-        if (!world.isRemote) {
+        if (!level.isClientSide) {
             for (Direction direction : Direction.values()) {
-                sendEnergyTo(world, pos, powerRate.get(), direction);
+                sendEnergyTo(level, worldPosition, powerRate.get(), direction);
             }
         }
     }
 
     @Override
     public boolean onBlockActivated(BlockState state, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
-        if (!world.isRemote) {
-            if (player.isSneaking()) {
+        if (!level.isClientSide) {
+            if (player.isShiftKeyDown()) {
                 powerRate.divide(10);
             } else {
                 if (powerRate.get() == Long.MAX_VALUE) {

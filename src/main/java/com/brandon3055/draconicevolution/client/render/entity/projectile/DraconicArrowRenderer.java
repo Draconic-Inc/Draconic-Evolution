@@ -32,22 +32,22 @@ public class DraconicArrowRenderer extends EntityRenderer<DraconicProjectileEnti
     }
 
     public void render(DraconicProjectileEntity arrowEntity, float entityYaw, float partialTicks, MatrixStack mStack, IRenderTypeBuffer getter, int packedLightIn) {
-        mStack.push();
-        mStack.rotate(Vector3f.YP.rotationDegrees(MathHelper.lerp(partialTicks, arrowEntity.prevRotationYaw, arrowEntity.rotationYaw) - 90.0F));
-        mStack.rotate(Vector3f.ZP.rotationDegrees(MathHelper.lerp(partialTicks, arrowEntity.prevRotationPitch, arrowEntity.rotationPitch)));
-        float f9 = (float) arrowEntity.arrowShake - partialTicks;
+        mStack.pushPose();
+        mStack.mulPose(Vector3f.YP.rotationDegrees(MathHelper.lerp(partialTicks, arrowEntity.yRotO, arrowEntity.yRot) - 90.0F));
+        mStack.mulPose(Vector3f.ZP.rotationDegrees(MathHelper.lerp(partialTicks, arrowEntity.xRotO, arrowEntity.xRot)));
+        float f9 = (float) arrowEntity.shakeTime - partialTicks;
         if (f9 > 0.0F) {
             float f10 = -MathHelper.sin(f9 * 3.0F) * f9;
-            mStack.rotate(Vector3f.ZP.rotationDegrees(f10));
+            mStack.mulPose(Vector3f.ZP.rotationDegrees(f10));
         }
 
-        mStack.rotate(Vector3f.XP.rotationDegrees(45.0F));
+        mStack.mulPose(Vector3f.XP.rotationDegrees(45.0F));
         mStack.scale(0.05625F, 0.05625F, 0.05625F);
         mStack.translate(-4.0D, 0.0D, 0.0D);
-        IVertexBuilder ivertexbuilder = getter.getBuffer(RenderType.getEntityCutout(this.getEntityTexture(arrowEntity)));
-        MatrixStack.Entry matrixstack$entry = mStack.getLast();
-        Matrix4f matrix4f = matrixstack$entry.getMatrix();
-        Matrix3f matrix3f = matrixstack$entry.getNormal();
+        IVertexBuilder ivertexbuilder = getter.getBuffer(RenderType.entityCutout(this.getTextureLocation(arrowEntity)));
+        MatrixStack.Entry matrixstack$entry = mStack.last();
+        Matrix4f matrix4f = matrixstack$entry.pose();
+        Matrix3f matrix3f = matrixstack$entry.normal();
         this.drawVertex(matrix4f, matrix3f, ivertexbuilder, -7, -2, -2, 0.0F, 0.15625F, -1, 0, 0, packedLightIn);
         this.drawVertex(matrix4f, matrix3f, ivertexbuilder, -7, -2, 2, 0.15625F, 0.15625F, -1, 0, 0, packedLightIn);
         this.drawVertex(matrix4f, matrix3f, ivertexbuilder, -7, 2, 2, 0.15625F, 0.3125F, -1, 0, 0, packedLightIn);
@@ -58,14 +58,14 @@ public class DraconicArrowRenderer extends EntityRenderer<DraconicProjectileEnti
         this.drawVertex(matrix4f, matrix3f, ivertexbuilder, -7, -2, -2, 0.0F, 0.3125F, 1, 0, 0, packedLightIn);
 
         for (int j = 0; j < 4; ++j) {
-            mStack.rotate(Vector3f.XP.rotationDegrees(90.0F));
+            mStack.mulPose(Vector3f.XP.rotationDegrees(90.0F));
             this.drawVertex(matrix4f, matrix3f, ivertexbuilder, -8, -2, 0, 0.0F, 0.0F, 0, 1, 0, packedLightIn);
             this.drawVertex(matrix4f, matrix3f, ivertexbuilder, 8, -2, 0, 0.5F, 0.0F, 0, 1, 0, packedLightIn);
             this.drawVertex(matrix4f, matrix3f, ivertexbuilder, 8, 2, 0, 0.5F, 0.15625F, 0, 1, 0, packedLightIn);
             this.drawVertex(matrix4f, matrix3f, ivertexbuilder, -8, 2, 0, 0.0F, 0.15625F, 0, 1, 0, packedLightIn);
         }
 
-        mStack.pop();
+        mStack.popPose();
 
 //        mStack.rotate(new Quaternion(new Vector3f(0, 0, 1), (TimeKeeper.getClientTick() + partialTicks) * 100F, true));
         super.render(arrowEntity, entityYaw, partialTicks, mStack, getter, packedLightIn);
@@ -84,15 +84,15 @@ public class DraconicArrowRenderer extends EntityRenderer<DraconicProjectileEnti
     }
 
     public void drawVertex(Matrix4f matrix, Matrix3f normals, IVertexBuilder vertexBuilder, int offsetX, int offsetY, int offsetZ, float textureX, float textureY, int p_229039_9_, int p_229039_10_, int p_229039_11_, int packedLightIn) {
-        vertexBuilder.pos(matrix, (float) offsetX, (float) offsetY, (float) offsetZ).color(255, 255, 255, 255).tex(textureX, textureY).overlay(OverlayTexture.NO_OVERLAY).lightmap(packedLightIn).normal(normals, (float) p_229039_9_, (float) p_229039_11_, (float) p_229039_10_).endVertex();
+        vertexBuilder.vertex(matrix, (float) offsetX, (float) offsetY, (float) offsetZ).color(255, 255, 255, 255).uv(textureX, textureY).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLightIn).normal(normals, (float) p_229039_9_, (float) p_229039_11_, (float) p_229039_10_).endVertex();
     }
 
-    public ResourceLocation getEntityTexture(DraconicProjectileEntity entity) {
+    public ResourceLocation getTextureLocation(DraconicProjectileEntity entity) {
         return entity.getColor() > 0 ? RES_TIPPED_ARROW : RES_ARROW;
     }
 
     public static void renderEnergyBolt(Vector3 startPos, Vector3 endPos, Matrix4 mat, IRenderTypeBuffer getter, float partialTicks) {
-        IVertexBuilder builder = new TransformingVertexBuilder(getter.getBuffer(RenderType.getLightning()), mat);
+        IVertexBuilder builder = new TransformingVertexBuilder(getter.getBuffer(RenderType.lightning()), mat);
     }
 
 
@@ -148,8 +148,8 @@ public class DraconicArrowRenderer extends EntityRenderer<DraconicProjectileEnti
         xOffSum -= (float) (endPos.x - startPos.x);
         zOffSum -= (float) (endPos.z - startPos.z);
 
-        IVertexBuilder builder = getter.getBuffer(RenderType.getLightning());
-        Matrix4f matrix4f = mStack.getLast().getMatrix();
+        IVertexBuilder builder = getter.getBuffer(RenderType.lightning());
+        Matrix4f matrix4f = mStack.last().pose();
 
         for (int layer = 0; layer < 4; ++layer) {
             float red = ((colour >> 16) & 0xFF) / 255F;
@@ -182,10 +182,10 @@ public class DraconicArrowRenderer extends EntityRenderer<DraconicProjectileEnti
     }
 
     private static void addSegmentQuad(Matrix4f matrix4f, IVertexBuilder builder, float x1, float yOffset, float z1, int segIndex, float x2, float z2, float red, float green, float blue, float alpha, float offsetA, float offsetB, boolean invA, boolean invB, boolean invC, boolean invD, float segHeight) {
-        builder.pos(matrix4f, x1 + (invA ? offsetB : -offsetB), yOffset + segIndex * segHeight, z1 + (invB ? offsetB : -offsetB)).color(red, green, blue, alpha).endVertex();
-        builder.pos(matrix4f, x2 + (invA ? offsetA : -offsetA), yOffset + (segIndex + 1F) * segHeight, z2 + (invB ? offsetA : -offsetA)).color(red, green, blue, alpha).endVertex();
-        builder.pos(matrix4f, x2 + (invC ? offsetA : -offsetA), yOffset + (segIndex + 1F) * segHeight, z2 + (invD ? offsetA : -offsetA)).color(red, green, blue, alpha).endVertex();
-        builder.pos(matrix4f, x1 + (invC ? offsetB : -offsetB), yOffset + segIndex * segHeight, z1 + (invD ? offsetB : -offsetB)).color(red, green, blue, alpha).endVertex();
+        builder.vertex(matrix4f, x1 + (invA ? offsetB : -offsetB), yOffset + segIndex * segHeight, z1 + (invB ? offsetB : -offsetB)).color(red, green, blue, alpha).endVertex();
+        builder.vertex(matrix4f, x2 + (invA ? offsetA : -offsetA), yOffset + (segIndex + 1F) * segHeight, z2 + (invB ? offsetA : -offsetA)).color(red, green, blue, alpha).endVertex();
+        builder.vertex(matrix4f, x2 + (invC ? offsetA : -offsetA), yOffset + (segIndex + 1F) * segHeight, z2 + (invD ? offsetA : -offsetA)).color(red, green, blue, alpha).endVertex();
+        builder.vertex(matrix4f, x1 + (invC ? offsetB : -offsetB), yOffset + segIndex * segHeight, z1 + (invD ? offsetB : -offsetB)).color(red, green, blue, alpha).endVertex();
     }
 
 }

@@ -43,7 +43,7 @@ public class Debugger extends Item {
 
     @Override
     public boolean onLeftClickEntity(ItemStack stack, PlayerEntity player, Entity entity) {
-        World world = player.world;
+        World world = player.level;
 //        EntityChaosGuardian guardian = DataUtils.firstMatch(world.getEntitiesWithinAABB(EntityChaosGuardian.class, player.getEntityBoundingBox().grow(300)), entityChaosGuardian -> true);
 //        if (guardian != null) {
 //            guardian.removePassengers();
@@ -119,18 +119,18 @@ public class Debugger extends Item {
 //    }
 
     @Override
-    public boolean hasEffect(ItemStack stack) {
+    public boolean isFoil(ItemStack stack) {
         return true;
     }
 
 //    private
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
-        ItemStack itemStack = player.getHeldItem(hand);
+    public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
+        ItemStack itemStack = player.getItemInHand(hand);
         //if (!world.isRemote) {
-        double posX = player.getPosX() - (player.getPosX() % 16) + 8;
-        double posZ = player.getPosZ() - (player.getPosZ() % 16) + 8;
+        double posX = player.getX() - (player.getX() % 16) + 8;
+        double posZ = player.getZ() - (player.getZ() % 16) + 8;
 
 //            player.setPosition(posX, player.getPosY(), posZ);
 
@@ -623,7 +623,7 @@ public class Debugger extends Item {
 //        }
 
 
-        return super.onItemRightClick(world, player, hand);
+        return super.use(world, player, hand);
     }
 
     public ActionResult<ItemStack> handleRightClick(ItemStack stack, World world, PlayerEntity player, Hand hand) {
@@ -758,13 +758,13 @@ public class Debugger extends Item {
 
 
         int mode = ItemNBTHelper.getInteger(stack, "mode", 0);
-        if (player.isSneaking()) {
+        if (player.isShiftKeyDown()) {
             mode++;
             if (mode == MODES.size()) {
                 mode = 0;
             }
-            if (!world.isRemote) {
-                player.sendMessage(new StringTextComponent(MODES.get(mode)), Util.DUMMY_UUID);
+            if (!world.isClientSide) {
+                player.sendMessage(new StringTextComponent(MODES.get(mode)), Util.NIL_UUID);
             }
             ItemNBTHelper.setInteger(stack, "mode", mode);
             return new ActionResult<>(ActionResultType.SUCCESS, stack);
@@ -774,7 +774,7 @@ public class Debugger extends Item {
             case 0:
                 break;
             case 3:
-                if (world.isRemote) {
+                if (world.isClientSide) {
 //                    Map<ResourceLocation, ArrayDeque<Particle>[][]> texturedRenderQueue = ReflectionHelper.getPrivateValue(BCEffectRenderer.class, BCEffectHandler.effectRenderer, "texturedRenderQueue");
 //
 //                    for (ArrayDeque<Particle>[][] array : texturedRenderQueue.values()) {
@@ -788,23 +788,23 @@ public class Debugger extends Item {
                 }
                 break;
             case 4:
-                if (!world.isRemote) {
+                if (!world.isClientSide) {
 //                    player.openGui(DraconicEvolution.instance, 2016, world, 0, 0, 0);
                 }
                 break;
 
             case 6:
-                if (world.isRemote) {
+                if (world.isClientSide) {
                     openWiki();
                 }
                 break;
             case 7:
-                if (!world.isRemote) {
+                if (!world.isClientSide) {
                     destroyUniverse(player);
                 }
                 break;
             case 8:
-                if (!world.isRemote) {
+                if (!world.isClientSide) {
 //                    lightingTest(world, new BlockPos(player));
                 }
                 break;
@@ -815,9 +815,9 @@ public class Debugger extends Item {
 
     @Override
     public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
-        World world = context.getWorld();
-        BlockPos pos = context.getPos();
-        Direction side = context.getFace();
+        World world = context.getLevel();
+        BlockPos pos = context.getClickedPos();
+        Direction side = context.getClickedFace();
 
 //        ItemStack stack = player.getHeldItem(hand);
         //        if (world.isRemote) return EnumActionResult.PASS;
@@ -884,7 +884,7 @@ public class Debugger extends Item {
 
             case 1:
             case 2:
-                TileEntity tile = world.getTileEntity(pos);
+                TileEntity tile = world.getBlockEntity(pos);
 //                if (mode == 1 && tile instanceof IEnergyReceiver) {
 //                    if (!world.isRemote) {
 //                        LogHelper.info(((IEnergyReceiver) tile).receiveEnergy(side, Integer.MAX_VALUE, false));
@@ -1260,7 +1260,7 @@ public class Debugger extends Item {
 //            double r = 1 + rand.nextDouble();
 //
 //            for (int rayD = 0; rayD < rayDist; rayD++) {
-//                double d2 = direction + (ng.func_151605_a(x/1.8, z/1.8) * r);
+//                double d2 = direction + (ng.getValue(x/1.8, z/1.8) * r);
 //                x += Math.cos(d2);
 //                z += Math.sin(d2);
 //
@@ -1296,7 +1296,7 @@ public class Debugger extends Item {
 ////            for (int rayD = 0; rayD < rayDist; rayD++) {
 ////                double dpc = 1D - (rayD / (double) rayDist);
 ////
-////                double d2 = direction + (ng.func_151605_a(x / 1.8, z / 1.8) * r);
+////                double d2 = direction + (ng.getValue(x / 1.8, z / 1.8) * r);
 ////                x += Math.cos(d2);
 ////                z += Math.sin(d2);
 ////
@@ -1334,7 +1334,7 @@ public class Debugger extends Item {
 ////            for (int rayD = 0; rayD < rayDist; rayD++) {
 ////                double dpc = 1D - (rayD / (double) rayDist);
 ////
-////                double d2 = direction + (ng.func_151605_a(x / 1.8, z / 1.8) * r);
+////                double d2 = direction + (ng.getValue(x / 1.8, z / 1.8) * r);
 ////                x += Math.cos(d2);
 ////                z += Math.sin(d2);
 ////

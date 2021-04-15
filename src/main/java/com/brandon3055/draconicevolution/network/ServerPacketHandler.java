@@ -73,8 +73,8 @@ public class ServerPacketHandler implements ICustomPacketHandler.IServerPacketHa
     private void toggleDislocators(PlayerEntity player) {
         List<ItemStack> dislocators = new ArrayList<>();
 
-        for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
-            ItemStack stack = player.inventory.getStackInSlot(i);
+        for (int i = 0; i < player.inventory.getContainerSize(); i++) {
+            ItemStack stack = player.inventory.getItem(i);
             if (stack.getItem() instanceof Magnet) {
                 dislocators.add(stack);
             }
@@ -90,7 +90,7 @@ public class ServerPacketHandler implements ICustomPacketHandler.IServerPacketHa
             Magnet.toggleEnabled(stack, player);
             boolean enabled = Magnet.isEnabled(stack);
 //            ChatHelper.sendIndexed(player, new TranslationTextComponent("item_dislocate.draconicevolution." + (enabled ? "activate" : "deactivate")), 567);
-            player.sendStatusMessage(new TranslationTextComponent("item_dislocate.draconicevolution." + (enabled ? "activate" : "deactivate")).mergeStyle(enabled ? TextFormatting.GREEN : TextFormatting.RED), true);
+            player.displayClientMessage(new TranslationTextComponent("item_dislocate.draconicevolution." + (enabled ? "activate" : "deactivate")).withStyle(enabled ? TextFormatting.GREEN : TextFormatting.RED), true);
         }
     }
 
@@ -163,8 +163,8 @@ public class ServerPacketHandler implements ICustomPacketHandler.IServerPacketHa
 //    }
 
     private void moduleSlotClick(PlayerEntity player, MCDataInput input) {
-        if (player.openContainer instanceof ContainerModuleHost) {
-            ModuleGrid grid = ((ContainerModuleHost<?>) player.openContainer).getGrid();
+        if (player.containerMenu instanceof ContainerModuleHost) {
+            ModuleGrid grid = ((ContainerModuleHost<?>) player.containerMenu).getGrid();
             if (grid != null) {
                 ModuleGrid.GridPos pos = grid.getCell(input.readByte(), input.readByte());
                 grid.cellClicked(pos, input.readByte(), input.readEnum(ClickType.class));

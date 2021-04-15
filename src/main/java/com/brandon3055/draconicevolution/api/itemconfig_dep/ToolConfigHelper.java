@@ -64,7 +64,7 @@ public class ToolConfigHelper {
      */
     public static CompoundNBT getFieldStorage(ItemStack stack) {
         String tag = "Profile_" + getProfile(stack);
-        return stack.getOrCreateChildTag(tag);
+        return stack.getOrCreateTagElement(tag);
     }
 
     /**

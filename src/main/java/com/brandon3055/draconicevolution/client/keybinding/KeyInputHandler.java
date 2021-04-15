@@ -33,7 +33,7 @@ public class KeyInputHandler {
 
 
     private void handlePlaceItemKey() {
-        RayTraceResult mop = Minecraft.getInstance().objectMouseOver;
+        RayTraceResult mop = Minecraft.getInstance().hitResult;
         if (mop != null && mop instanceof BlockRayTraceResult) {
             //TODO Packet stuff
 //            DraconicEvolution.network.sendToServer(new PacketPlaceItem());
@@ -64,53 +64,53 @@ public class KeyInputHandler {
 //        if (KeyBindings.placeItem.isPressed()) {
 //            handlePlaceItemKey();
 //        }
-        if (KeyBindings.toolConfig.isPressed()) {
+        if (KeyBindings.toolConfig.consumeClick()) {
             DraconicNetwork.sendOpenItemConfig(false);
         }
 //        else if (KeyBindings.hudConfig.isPressed()) {
 ////            Minecraft.getInstance().displayGuiScreen(new GuiHudConfig());
 //
 //        }
-        else if (KeyBindings.toolModules.isPressed()) {
+        else if (KeyBindings.toolModules.consumeClick()) {
             DraconicNetwork.sendOpenItemConfig(true);
         }
 //        else if (KeyBindings.toolProfileChange.isPressed() && HandHelper.getMainFirst(player) != null) {
 ////            PacketDispatcher.dispatchToolProfileChange(false);
 //        }
-        else if (KeyBindings.toggleFlight.isPressed()) {
-            if (player.abilities.allowFlying) {
-                if (player.abilities.isFlying) {
-                    player.abilities.isFlying = false;
-                    player.sendPlayerAbilities();
+        else if (KeyBindings.toggleFlight.consumeClick()) {
+            if (player.abilities.mayfly) {
+                if (player.abilities.flying) {
+                    player.abilities.flying = false;
+                    player.onUpdateAbilities();
                 } else {
-                    player.abilities.isFlying = true;
+                    player.abilities.flying = true;
                     if (player.isOnGround()) {
-                        player.setPosition(player.getPosX(), player.getPosY() + 0.05D, player.getPosZ());
-                        player.setMotion(player.getMotion().x, 0, player.getMotion().z);
+                        player.setPos(player.getX(), player.getY() + 0.05D, player.getZ());
+                        player.setDeltaMovement(player.getDeltaMovement().x, 0, player.getDeltaMovement().z);
                     }
-                    player.sendPlayerAbilities();
+                    player.onUpdateAbilities();
                 }
             }
         }
-        else if (KeyBindings.toggleMagnet.isPressed()) {
+        else if (KeyBindings.toggleMagnet.consumeClick()) {
             DraconicNetwork.sendToggleMagnets();
         }
-        else if (KeyBindings.dislocatorTeleport.isPressed()) {
+        else if (KeyBindings.dislocatorTeleport.consumeClick()) {
             DraconicNetwork.sendDislocatorMessage(11, output -> {});
         }
-        else if (KeyBindings.dislocatorBlink.isPressed()) {
+        else if (KeyBindings.dislocatorBlink.consumeClick()) {
             DraconicNetwork.sendDislocatorMessage(12, output -> {});
         }
-        else if (KeyBindings.dislocatorUp.isPressed()) {
+        else if (KeyBindings.dislocatorUp.consumeClick()) {
             DraconicNetwork.sendDislocatorMessage(13, output -> output.writeBoolean(false));
         }
-        else if (KeyBindings.dislocatorDown.isPressed()) {
+        else if (KeyBindings.dislocatorDown.consumeClick()) {
             DraconicNetwork.sendDislocatorMessage(13, output -> output.writeBoolean(true));
         }
-        else if (KeyBindings.dislocatorGui.isPressed()) {
+        else if (KeyBindings.dislocatorGui.consumeClick()) {
             ItemStack stack = DislocatorAdvanced.findDislocator(player);
             if (!stack.isEmpty()) {
-                Minecraft.getInstance().displayGuiScreen(new GuiDislocator(stack.getDisplayName(), player));
+                Minecraft.getInstance().setScreen(new GuiDislocator(stack.getHoverName(), player));
             }
         }
 //        else if (KeyBindings.armorProfileChange.isPressed()) {

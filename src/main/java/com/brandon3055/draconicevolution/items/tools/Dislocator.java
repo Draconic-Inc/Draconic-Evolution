@@ -37,7 +37,7 @@ import java.util.List;
 public class Dislocator extends Item implements IHudDisplay {
 
     public Dislocator(Properties properties) {
-        super(properties.isImmuneToFire());
+        super(properties.fireResistant());
     }
 
     @Override
@@ -51,54 +51,54 @@ public class Dislocator extends Item implements IHudDisplay {
      * @param target The entity being teleported if not the user.
      */
     public Entity dislocateEntity(ItemStack stack, @Nonnull Entity user, @Nonnull Entity target, TargetPos targetPos) {
-        if (target.world.isRemote) {
+        if (target.level.isClientSide) {
             return target;
         }
 
         if (targetPos == null) {
-            messageUser(user, new TranslationTextComponent("dislocate.draconicevolution.not_set").mergeStyle(TextFormatting.RED));
+            messageUser(user, new TranslationTextComponent("dislocate.draconicevolution.not_set").withStyle(TextFormatting.RED));
             return target;
         }
 
-        BCoreNetwork.sendSound(target.world, target.getPosition(), DESounds.portal, SoundCategory.PLAYERS, 0.1F, target.world.rand.nextFloat() * 0.1F + 0.9F, false);
+        BCoreNetwork.sendSound(target.level, target.blockPosition(), DESounds.portal, SoundCategory.PLAYERS, 0.1F, target.level.random.nextFloat() * 0.1F + 0.9F, false);
         target = targetPos.teleport(target);
-        BCoreNetwork.sendSound(target.world, target.getPosition(), DESounds.portal, SoundCategory.PLAYERS, 0.1F, target.world.rand.nextFloat() * 0.1F + 0.9F, false);
+        BCoreNetwork.sendSound(target.level, target.blockPosition(), DESounds.portal, SoundCategory.PLAYERS, 0.1F, target.level.random.nextFloat() * 0.1F + 0.9F, false);
         return target;
     }
 
     public void messageUser(Entity user, ITextComponent message) {
         if (user instanceof PlayerEntity) {
 //            ChatHelper.sendIndexed((PlayerEntity) user, message, 576);
-            ((PlayerEntity) user).sendStatusMessage(message, true);
+            ((PlayerEntity) user).displayClientMessage(message, true);
         }
     }
 
     @Override
     public boolean onLeftClickEntity(ItemStack stack, PlayerEntity player, Entity entity) {
         if (entity instanceof PlayerEntity && !(this instanceof DislocatorAdvanced)) {
-            messageUser(player, new TranslationTextComponent("dislocate.draconicevolution.player_need_advanced").mergeStyle(TextFormatting.RED));
+            messageUser(player, new TranslationTextComponent("dislocate.draconicevolution.player_need_advanced").withStyle(TextFormatting.RED));
             return true;
         }
 
-        if (player.world.isRemote || !entity.isNonBoss() || !(entity instanceof LivingEntity) || player.getCooldownTracker().getCooldown(this, 0) > 0) {
+        if (player.level.isClientSide || !entity.canChangeDimensions() || !(entity instanceof LivingEntity) || player.getCooldowns().getCooldownPercent(this, 0) > 0) {
             return true;
         }
 
-        if (player.getHealth() > 2 || player.abilities.isCreativeMode) {
-            if (!player.abilities.isCreativeMode) {
+        if (player.getHealth() > 2 || player.abilities.instabuild) {
+            if (!player.abilities.instabuild) {
                 player.setHealth(player.getHealth() - 2);
             }
 
-            TargetPos location = getTargetPos(stack, player.world);
-            player.getCooldownTracker().setCooldown(this, 20);
+            TargetPos location = getTargetPos(stack, player.level);
+            player.getCooldowns().addCooldown(this, 20);
             dislocateEntity(stack, player, entity, location);
-            stack.damageItem(1, player, e -> {});
+            stack.hurtAndBreak(1, player, e -> {});
             if (location != null){
-                messageUser(player, new StringTextComponent(I18n.format("dislocate.draconicevolution.entity_sent_to") + " "+ location.getReadableName(false)).mergeStyle(TextFormatting.GREEN));
+                messageUser(player, new StringTextComponent(I18n.get("dislocate.draconicevolution.entity_sent_to") + " "+ location.getReadableName(false)).withStyle(TextFormatting.GREEN));
             }
 
-        } else if (player.world.isRemote) {
-            messageUser(player, new TranslationTextComponent("dislocate.draconicevolution.low_health").mergeStyle(TextFormatting.RED));
+        } else if (player.level.isClientSide) {
+            messageUser(player, new TranslationTextComponent("dislocate.draconicevolution.low_health").withStyle(TextFormatting.RED));
         }
 
         return true;
@@ -106,66 +106,66 @@ public class Dislocator extends Item implements IHudDisplay {
 
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
-        ItemStack stack = player.getHeldItem(hand);
-        if (world.isRemote) {
+    public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
+        ItemStack stack = player.getItemInHand(hand);
+        if (world.isClientSide) {
             return new ActionResult<>(ActionResultType.PASS, stack);
         }
 
         TargetPos targetPos = getTargetPos(stack, world);
 
-        if (player.isSneaking()) {
+        if (player.isShiftKeyDown()) {
             if (targetPos == null) {
                 setLocation(stack, targetPos = new TargetPos(player));
-                messageUser(player, new TranslationTextComponent("dislocate.draconicevolution.bound_to").appendString("{" + targetPos.getReadableName(false) + "}").mergeStyle(TextFormatting.GREEN));
+                messageUser(player, new TranslationTextComponent("dislocate.draconicevolution.bound_to").append("{" + targetPos.getReadableName(false) + "}").withStyle(TextFormatting.GREEN));
             } else {
-                messageUser(player, new TranslationTextComponent("dislocate.draconicevolution.already_bound").mergeStyle(TextFormatting.RED));
+                messageUser(player, new TranslationTextComponent("dislocate.draconicevolution.already_bound").withStyle(TextFormatting.RED));
             }
             return new ActionResult<>(ActionResultType.PASS, stack);
         } else {
             if (targetPos == null) {
-                messageUser(player, new TranslationTextComponent("dislocate.draconicevolution.not_set").mergeStyle(TextFormatting.RED));
+                messageUser(player, new TranslationTextComponent("dislocate.draconicevolution.not_set").withStyle(TextFormatting.RED));
                 return new ActionResult<>(ActionResultType.PASS, stack);
             }
-            if (player.getHealth() > 2 || player.abilities.isCreativeMode) {
-                player.getCooldownTracker().setCooldown(this, 20);
+            if (player.getHealth() > 2 || player.abilities.instabuild) {
+                player.getCooldowns().addCooldown(this, 20);
                 dislocateEntity(stack, player, player, targetPos);
-                stack.damageItem(1, player, e -> {});
+                stack.hurtAndBreak(1, player, e -> {});
 
-                if (!player.abilities.isCreativeMode) {
+                if (!player.abilities.instabuild) {
                     player.setHealth(player.getHealth() - 2);
                 }
             } else {
-                messageUser(player, new TranslationTextComponent("dislocate.draconicevolution.low_health").mergeStyle(TextFormatting.RED));
+                messageUser(player, new TranslationTextComponent("dislocate.draconicevolution.low_health").withStyle(TextFormatting.RED));
             }
             return new ActionResult<>(ActionResultType.PASS, stack);
         }
     }
 
     @Override
-    public boolean hasEffect(ItemStack stack) {
+    public boolean isFoil(ItemStack stack) {
         return getTargetPos(stack, null) != null;
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void addInformation(ItemStack stack, World world, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, World world, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         TargetPos targetPos = getTargetPos(stack, world);
         if (targetPos == null) {
-            tooltip.add(new TranslationTextComponent("dislocate.draconicevolution.un_set_info1").mergeStyle(TextFormatting.RED));
-            tooltip.add(new TranslationTextComponent("dislocate.draconicevolution.un_set_info2").mergeStyle(TextFormatting.WHITE));
-            tooltip.add(new TranslationTextComponent("dislocate.draconicevolution.un_set_info3").mergeStyle(TextFormatting.WHITE));
-            tooltip.add(new TranslationTextComponent("dislocate.draconicevolution.un_set_info4").mergeStyle(TextFormatting.WHITE));
-            tooltip.add(new TranslationTextComponent("dislocate.draconicevolution.un_set_info5").mergeStyle(TextFormatting.WHITE));
+            tooltip.add(new TranslationTextComponent("dislocate.draconicevolution.un_set_info1").withStyle(TextFormatting.RED));
+            tooltip.add(new TranslationTextComponent("dislocate.draconicevolution.un_set_info2").withStyle(TextFormatting.WHITE));
+            tooltip.add(new TranslationTextComponent("dislocate.draconicevolution.un_set_info3").withStyle(TextFormatting.WHITE));
+            tooltip.add(new TranslationTextComponent("dislocate.draconicevolution.un_set_info4").withStyle(TextFormatting.WHITE));
+            tooltip.add(new TranslationTextComponent("dislocate.draconicevolution.un_set_info5").withStyle(TextFormatting.WHITE));
         } else {
-            tooltip.add(new TranslationTextComponent("dislocate.draconicevolution.bound_to").mergeStyle(TextFormatting.GREEN));
+            tooltip.add(new TranslationTextComponent("dislocate.draconicevolution.bound_to").withStyle(TextFormatting.GREEN));
             tooltip.add(new StringTextComponent(TextFormatting.WHITE + "{" + targetPos.getReadableName(flagIn.isAdvanced()) + "}"));
-            tooltip.add(new TranslationTextComponent("dislocate.draconicevolution.uses_remain", stack.getMaxDamage() - stack.getDamage() + 1).mergeStyle(TextFormatting.BLUE));
+            tooltip.add(new TranslationTextComponent("dislocate.draconicevolution.uses_remain", stack.getMaxDamage() - stack.getDamageValue() + 1).withStyle(TextFormatting.BLUE));
         }
     }
 
     public TargetPos getTargetPos(ItemStack stack, @Nullable World world) {
-        CompoundNBT targetTag = stack.getChildTag("target");
+        CompoundNBT targetTag = stack.getTagElement("target");
         if (targetTag != null) {
             return new TargetPos(targetTag);
         }
@@ -173,7 +173,7 @@ public class Dislocator extends Item implements IHudDisplay {
     }
 
     public void setLocation(ItemStack stack, TargetPos pos) {
-        stack.setTagInfo("target", pos.writeToNBT());
+        stack.addTagElement("target", pos.writeToNBT());
     }
 
     @Override
@@ -192,7 +192,7 @@ public class Dislocator extends Item implements IHudDisplay {
     }
 
     @Override
-    public boolean getIsRepairable(ItemStack toRepair, ItemStack repair) {
+    public boolean isValidRepairItem(ItemStack toRepair, ItemStack repair) {
         return repair.getItem() == DEContent.ingot_draconium;
     }
 
@@ -205,15 +205,15 @@ public class Dislocator extends Item implements IHudDisplay {
     public void addDisplayData(ItemStack stack, World world, @Nullable BlockPos pos, List<String> displayData) {
         TargetPos location = getTargetPos(stack, world);
         if (location != null) {
-            displayData.add(stack.getDisplayName().getString());
+            displayData.add(stack.getHoverName().getString());
             displayData.add("{" + location.getReadableName(false) + ")");
         }
     }
 
     public static void onAnvilUpdate(AnvilUpdateEvent event) {
-        if (event.getLeft().getItem() == DEContent.dislocator && event.getRight().getItem() == DEContent.ingot_draconium && event.getLeft().getDamage() > 0) {
+        if (event.getLeft().getItem() == DEContent.dislocator && event.getRight().getItem() == DEContent.ingot_draconium && event.getLeft().getDamageValue() > 0) {
             event.setOutput(event.getLeft().copy());
-            event.getOutput().setDamage(0);
+            event.getOutput().setDamageValue(0);
             event.setCost(1);
             event.setMaterialCost(1);
         }

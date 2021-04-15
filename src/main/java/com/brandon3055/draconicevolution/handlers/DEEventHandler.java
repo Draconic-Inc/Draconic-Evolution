@@ -97,7 +97,7 @@ public class DEEventHandler {
 
     private void handleDragonDrops(LivingDropsEvent event) {
         Entity entity = event.getEntity();
-        if (deadDragons.contains(entity.getUniqueID())) {
+        if (deadDragons.contains(entity.getUUID())) {
             LogHelper.dev("WTF Is Going On!?!?!? The dragon is already dead how can it die again!?!?!");
             LogHelper.dev("Whoever is screwing with the dragon you need to fix your shit!");
             LogHelper.dev("Offending Entity: " + entity + " Class: " + entity.getClass());
@@ -110,69 +110,69 @@ public class DEEventHandler {
             event.setCanceled(true);
             return;
         }
-        if (!entity.world.isRemote && (entity instanceof EnderDragonEntity || entity instanceof DraconicGuardianEntity)) {
-            deadDragons.add(entity.getUniqueID());
+        if (!entity.level.isClientSide && (entity instanceof EnderDragonEntity || entity instanceof DraconicGuardianEntity)) {
+            deadDragons.add(entity.getUUID());
 
-            ItemEntity item = EntityType.ITEM.create(entity.world);
+            ItemEntity item = EntityType.ITEM.create(entity.level);
             if (item != null) {
                 item.setItem(new ItemStack(DEContent.dragon_heart));
-                BlockPos podiumPos = entity.world.getHeight(Heightmap.Type.WORLD_SURFACE, EndPodiumFeature.END_PODIUM_LOCATION).add(0, 3, 0);
-                item.setLocationAndAngles(podiumPos.getX() + 0.5, podiumPos.getY(), podiumPos.getZ() + 0.5, 0, 0);
-                item.setMotion(0, 0, 0);
+                BlockPos podiumPos = entity.level.getHeightmapPos(Heightmap.Type.WORLD_SURFACE, EndPodiumFeature.END_PODIUM_LOCATION).offset(0, 3, 0);
+                item.moveTo(podiumPos.getX() + 0.5, podiumPos.getY(), podiumPos.getZ() + 0.5, 0, 0);
+                item.setDeltaMovement(0, 0, 0);
                 item.age = -32767;
                 item.setNoGravity(true);
-                entity.world.addEntity(item);
+                entity.level.addFreshEntity(item);
             }
 
             if (entity instanceof EnderDragonEntity) {
-                DragonFightManager manager = ((EnderDragonEntity) entity).getFightManager();
+                DragonFightManager manager = ((EnderDragonEntity) entity).getDragonFight();
                 if (DEOldConfig.dragonEggSpawnOverride && manager != null && manager.hasPreviouslyKilledDragon()) {
-                    entity.world.setBlockState(entity.world.getHeight(Heightmap.Type.WORLD_SURFACE, EndPodiumFeature.END_PODIUM_LOCATION).add(0, 0, -4), Blocks.DRAGON_EGG.getDefaultState());
+                    entity.level.setBlockAndUpdate(entity.level.getHeightmapPos(Heightmap.Type.WORLD_SURFACE, EndPodiumFeature.END_PODIUM_LOCATION).offset(0, 0, -4), Blocks.DRAGON_EGG.defaultBlockState());
                 }
             }
 
             if (DEOldConfig.dragonDustLootModifier > 0) {
-                double count = (DEOldConfig.dragonDustLootModifier * 0.9D) + (entity.world.rand.nextDouble() * (DEOldConfig.dragonDustLootModifier * 0.2));
+                double count = (DEOldConfig.dragonDustLootModifier * 0.9D) + (entity.level.random.nextDouble() * (DEOldConfig.dragonDustLootModifier * 0.2));
                 for (int i = 0; i < (int) count; i++) {
                     float mm = 0.3F;
-                    ItemEntity dust = new ItemEntity(entity.world, entity.getPosX() - 2 + entity.world.rand.nextInt(4), entity.getPosY() - 2 + entity.world.rand.nextInt(4), entity.getPosZ() - 2 + entity.world.rand.nextInt(4), new ItemStack(DEContent.dust_draconium));
-                    dust.setMotion(
-                            mm * ((((float) entity.world.rand.nextInt(100)) / 100F) - 0.5F),
-                            mm * ((((float) entity.world.rand.nextInt(100)) / 100F) - 0.5F),
-                            mm * ((((float) entity.world.rand.nextInt(100)) / 100F) - 0.5F)
+                    ItemEntity dust = new ItemEntity(entity.level, entity.getX() - 2 + entity.level.random.nextInt(4), entity.getY() - 2 + entity.level.random.nextInt(4), entity.getZ() - 2 + entity.level.random.nextInt(4), new ItemStack(DEContent.dust_draconium));
+                    dust.setDeltaMovement(
+                            mm * ((((float) entity.level.random.nextInt(100)) / 100F) - 0.5F),
+                            mm * ((((float) entity.level.random.nextInt(100)) / 100F) - 0.5F),
+                            mm * ((((float) entity.level.random.nextInt(100)) / 100F) - 0.5F)
                     );
-                    entity.world.addEntity(dust);
+                    entity.level.addFreshEntity(dust);
                 }
             }
         }
     }
 
     private void handleSoulDrops(LivingDropsEvent event) {
-        if (event.getEntity().world.isRemote || !(event.getSource().damageType.equals("player") || event.getSource().damageType.equals("arrow")) || !isValidEntity(event.getEntityLiving())) {
+        if (event.getEntity().level.isClientSide || !(event.getSource().msgId.equals("player") || event.getSource().msgId.equals("arrow")) || !isValidEntity(event.getEntityLiving())) {
             return;
         }
 
         LivingEntity entity = event.getEntityLiving();
-        Entity attacker = event.getSource().getTrueSource();
+        Entity attacker = event.getSource().getEntity();
 
         if (attacker == null || !(attacker instanceof PlayerEntity)) {
             return;
         }
 
-        int dropChanceModifier = getDropChanceFromItem(((PlayerEntity) attacker).getHeldItemMainhand());
+        int dropChanceModifier = getDropChanceFromItem(((PlayerEntity) attacker).getMainHandItem());
 
         if (dropChanceModifier == 0) {
             return;
         }
 
-        World world = entity.world;
+        World world = entity.level;
         int rand = random.nextInt(Math.max(DEOldConfig.soulDropChance / dropChanceModifier, 1));
         int rand2 = random.nextInt(Math.max(DEOldConfig.passiveSoulDropChance / dropChanceModifier, 1));
         boolean isAnimal = entity instanceof AnimalEntity;
 
         if ((rand == 0 && !isAnimal) || (rand2 == 0 && isAnimal)) {
             ItemStack soul = DEContent.mob_soul.getSoulFromEntity(entity, false);
-            world.addEntity(new ItemEntity(world, entity.getPosX(), entity.getPosY(), entity.getPosZ(), soul));
+            world.addFreshEntity(new ItemEntity(world, entity.getX(), entity.getY(), entity.getZ(), soul));
             Achievements.triggerAchievement((PlayerEntity) attacker, "draconicevolution.soul");
         }
     }
@@ -187,12 +187,12 @@ public class DEEventHandler {
             chance = ((IReaperItem) stack.getItem()).getReaperLevel(stack);
         }
 
-        chance += EnchantmentHelper.getEnchantmentLevel(EnchantmentReaper.instance, stack);
+        chance += EnchantmentHelper.getItemEnchantmentLevel(EnchantmentReaper.instance, stack);
         return chance;
     }
 
     private boolean isValidEntity(LivingEntity entity) {
-        if (!entity.isNonBoss() && !DEOldConfig.allowBossSouls) {
+        if (!entity.canChangeDimensions() && !DEOldConfig.allowBossSouls) {
             return false;
         }
         for (int i = 0; i < DEOldConfig.spawnerList.length; i++) {
@@ -211,8 +211,8 @@ public class DEEventHandler {
     public void itemToss(ItemTossEvent event) {
         ItemEntity item = event.getEntityItem();
         PlayerEntity player = event.getPlayer();
-        if (DEOldConfig.forceDroppedItemOwner && player != null && (item.getThrowerId() == null)) {
-            item.setThrowerId(player.getUniqueID());
+        if (DEOldConfig.forceDroppedItemOwner && player != null && (item.getThrower() == null)) {
+            item.setThrower(player.getUUID());
         }
     }
 
@@ -231,7 +231,7 @@ public class DEEventHandler {
         //If you cancel the right click event for one hand the event will still fire for the other hand!
         //This check ensures that if the event was cancels by a binder in the other hand the event for this hand will also be canceled.
         //@Forge THIS IS HOW IT SHOULD WORK BY DEFAULT!!!!!!
-        ItemStack other = player.getHeldItem(event.getHand() == Hand.OFF_HAND ? Hand.MAIN_HAND : Hand.OFF_HAND);
+        ItemStack other = player.getItemInHand(event.getHand() == Hand.OFF_HAND ? Hand.MAIN_HAND : Hand.OFF_HAND);
         if (stack.getItem() instanceof ICrystalBinder && other.getItem() instanceof ICrystalBinder) {
             if (event.getHand() == Hand.OFF_HAND) {
                 event.setCanceled(true);
@@ -261,7 +261,7 @@ public class DEEventHandler {
 
     @SubscribeEvent
     public void rightClickItem(PlayerInteractEvent.RightClickItem event) {
-        if (event.getWorld().isRemote || event.isCanceled() || !event.getPlayer().isSneaking() || !(event.getItemStack().getItem() instanceof ICrystalBinder)) {
+        if (event.getWorld().isClientSide || event.isCanceled() || !event.getPlayer().isShiftKeyDown() || !(event.getItemStack().getItem() instanceof ICrystalBinder)) {
             return;
         }
 

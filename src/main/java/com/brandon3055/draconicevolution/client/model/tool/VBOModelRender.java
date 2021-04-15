@@ -19,7 +19,7 @@ public class VBOModelRender extends ModelRenderer {
 
     private final VBORenderType vboRenderer;
     private Supplier<ShaderRenderType> shaderTypeGetter;
-    private Supplier<Boolean> enabledCallback = () -> this.showModel;
+    private Supplier<Boolean> enabledCallback = () -> this.visible;
 
     public VBOModelRender(Model model, VBORenderType vboRenderer) {
         super(model);
@@ -43,19 +43,19 @@ public class VBOModelRender extends ModelRenderer {
 
     public void render(MatrixStack mStack, IRenderTypeBuffer getter, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
         if (enabledCallback.get() && vboRenderer != null) {
-            mStack.push();
-            this.translateRotate(mStack);
+            mStack.pushPose();
+            this.translateAndRotate(mStack);
             if (shaderTypeGetter != null && DEConfig.toolShaders) {
                 getter.getBuffer(vboRenderer.withMatrix(new Matrix4(mStack)).withLightMap(packedLight).withState(shaderTypeGetter.get()));
             } else {
                 getter.getBuffer(vboRenderer.withMatrix(new Matrix4(mStack)).withLightMap(packedLight));
             }
-            for (ModelRenderer child : this.childModels) {
+            for (ModelRenderer child : this.children) {
                 if (child instanceof VBOModelRender) {
                     ((VBOModelRender) child).render(mStack, getter, packedLight, packedOverlay, red, green, blue, alpha);
                 }
             }
-            mStack.pop();
+            mStack.popPose();
         }
     }
 }

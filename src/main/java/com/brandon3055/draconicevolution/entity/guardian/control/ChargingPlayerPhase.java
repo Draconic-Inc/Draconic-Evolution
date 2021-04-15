@@ -36,17 +36,17 @@ public class ChargingPlayerPhase extends Phase {
             guardian.getPhaseManager().setPhase(PhaseType.START);
             LOGGER.debug("Aborting charge, Timed out");
         } else {
-            double distance = targetPlayer.getDistance(guardian);
+            double distance = targetPlayer.distanceTo(guardian);
             if (distance - closestApproach > 16 && timeSinceCharge > 10) {
                 guardian.getPhaseManager().setPhase(PhaseType.START);
                 LOGGER.debug("Aborting charge, Player got away");
             } else {
                 closestApproach = Math.min(distance, closestApproach);
-                targetLocation = targetPlayer.getPositionVec();
+                targetLocation = targetPlayer.position();
                 if (!charging) {
-                    double tRelX = targetLocation.x - guardian.getPosX();
-                    double tRelZ = targetLocation.z - guardian.getPosZ();
-                    double relTargetAngle = MathHelper.clamp(MathHelper.wrapDegrees(180.0D - MathHelper.atan2(tRelX, tRelZ) * (double) (180F / (float) Math.PI) - (double) guardian.rotationYaw), -50.0D, 50.0D);
+                    double tRelX = targetLocation.x - guardian.getX();
+                    double tRelZ = targetLocation.z - guardian.getZ();
+                    double relTargetAngle = MathHelper.clamp(MathHelper.wrapDegrees(180.0D - MathHelper.atan2(tRelX, tRelZ) * (double) (180F / (float) Math.PI) - (double) guardian.yRot), -50.0D, 50.0D);
                     charging = Math.abs(relTargetAngle) < 1;
                     if (charging) {
                         LOGGER.debug("CHARGE!");
@@ -59,10 +59,10 @@ public class ChargingPlayerPhase extends Phase {
                 if (distance <= 5) {
                     guardian.getPhaseManager().setPhase(PhaseType.START);
                     LOGGER.debug("Charge Successful");
-                    targetPlayer.attackEntityFrom(new EntityDamageSource(DraconicEvolution.MODID + ".draconic_guardian", guardian).setDamageIsAbsolute().setDamageBypassesArmor(), GuardianFightManager.CHARGE_DAMAGE);
-                    guardian.playSound(SoundEvents.ENTITY_GENERIC_EAT, 20, 0.95F + (guardian.getRNG().nextFloat() * 0.2F));
-                    guardian.playSound(SoundEvents.ENTITY_GENERIC_EAT, 20, 0.95F + (guardian.getRNG().nextFloat() * 0.2F));
-                    DraconicNetwork.sendImpactEffect(guardian.world, targetPlayer.getPosition(), 0);
+                    targetPlayer.hurt(new EntityDamageSource(DraconicEvolution.MODID + ".draconic_guardian", guardian).bypassMagic().bypassArmor(), GuardianFightManager.CHARGE_DAMAGE);
+                    guardian.playSound(SoundEvents.GENERIC_EAT, 20, 0.95F + (guardian.getRandom().nextFloat() * 0.2F));
+                    guardian.playSound(SoundEvents.GENERIC_EAT, 20, 0.95F + (guardian.getRandom().nextFloat() * 0.2F));
+                    DraconicNetwork.sendImpactEffect(guardian.level, targetPlayer.blockPosition(), 0);
                 }
             }
         }
@@ -72,7 +72,7 @@ public class ChargingPlayerPhase extends Phase {
             LOGGER.debug("Aborting charge, Master timed out");
         }
         else if (charging && timeSinceCharge < 20 && timeSinceCharge % 5 == 0) {
-            guardian.playSound(SoundEvents.ENTITY_ENDER_DRAGON_GROWL, 20, 0.95F + (guardian.getRNG().nextFloat() * 0.2F));
+            guardian.playSound(SoundEvents.ENDER_DRAGON_GROWL, 20, 0.95F + (guardian.getRandom().nextFloat() * 0.2F));
         }
 
         tick++;

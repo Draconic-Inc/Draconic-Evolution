@@ -18,7 +18,7 @@ import javax.annotation.Nullable;
  * Created by brandon3055 on 25/09/2016.
  */
 public class DissEnchanter extends BlockBCore/* implements ITileEntityProvider, IRenderOverride*/ {
-    protected static final VoxelShape SHAPE = Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 12.0D, 16.0D);
+    protected static final VoxelShape SHAPE = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 12.0D, 16.0D);
 
     public DissEnchanter(Properties properties) {
         super(properties);

@@ -65,8 +65,8 @@ public class DislocatorBound extends Dislocator /*implements IRenderOverride*/ {
 
     @Override
     public void inventoryTick(ItemStack stack, World world, Entity entity, int itemSlot, boolean isSelected) {
-        if (entity.ticksExisted % 20 == 0) {
-            if (!world.isRemote && isValid(stack) && !isPlayer(stack) && entity instanceof PlayerEntity) {
+        if (entity.tickCount % 20 == 0) {
+            if (!world.isClientSide && isValid(stack) && !isPlayer(stack) && entity instanceof PlayerEntity) {
                 DislocatorLinkHandler.updateLink(world, stack, (PlayerEntity) entity);
             }
         }
@@ -76,8 +76,8 @@ public class DislocatorBound extends Dislocator /*implements IRenderOverride*/ {
     @Override
     public boolean onEntityItemUpdate(ItemStack stack, ItemEntity entity) {
         if (entity.getAge() % 20 == 0) {
-            if (!entity.world.isRemote && isValid(stack) && !isPlayer(stack)) {
-                DislocatorLinkHandler.updateLink(entity.world, stack, entity.getPosition(), entity.world.getDimensionKey());
+            if (!entity.level.isClientSide && isValid(stack) && !isPlayer(stack)) {
+                DislocatorLinkHandler.updateLink(entity.level, stack, entity.blockPosition(), entity.level.dimension());
             }
         }
         return false;
@@ -87,33 +87,33 @@ public class DislocatorBound extends Dislocator /*implements IRenderOverride*/ {
 
     @Override
     public boolean onLeftClickEntity(ItemStack stack, PlayerEntity player, Entity entity) {
-        if (player.world.isRemote) {
+        if (player.level.isClientSide) {
             return true;
         }
-        TargetPos location = getTargetPos(stack, player.world);
+        TargetPos location = getTargetPos(stack, player.level);
         if (location == null) {
             if (isPlayer(stack)) {
-                player.sendMessage(new TranslationTextComponent("info.de.bound_dislocator.cant_find_player").mergeStyle(TextFormatting.RED), Util.DUMMY_UUID);
+                player.sendMessage(new TranslationTextComponent("info.de.bound_dislocator.cant_find_player").withStyle(TextFormatting.RED), Util.NIL_UUID);
             }
             else {
-                player.sendMessage(new TranslationTextComponent("info.de.bound_dislocator.cant_find_target").mergeStyle(TextFormatting.RED), Util.DUMMY_UUID);
+                player.sendMessage(new TranslationTextComponent("info.de.bound_dislocator.cant_find_target").withStyle(TextFormatting.RED), Util.NIL_UUID);
             }
 
             return true;
         }
 
-        if (!entity.isNonBoss() || !(entity instanceof LivingEntity)) {
+        if (!entity.canChangeDimensions() || !(entity instanceof LivingEntity)) {
             return true;
         }
 
-        BCoreNetwork.sendSound(player.world, player.getPosition(), DESounds.portal, SoundCategory.PLAYERS, 0.1F, player.world.rand.nextFloat() * 0.1F + 0.9F, false);
+        BCoreNetwork.sendSound(player.level, player.blockPosition(), DESounds.portal, SoundCategory.PLAYERS, 0.1F, player.level.random.nextFloat() * 0.1F + 0.9F, false);
 
-        location.setPitch(player.rotationPitch);
-        location.setYaw(player.rotationYaw);
-        notifyArriving(stack, player.world, entity);
+        location.setPitch(player.xRot);
+        location.setYaw(player.yRot);
+        notifyArriving(stack, player.level, entity);
         location.teleport(entity);
 
-        BCoreNetwork.sendSound(player.world, player.getPosition(), DESounds.portal, SoundCategory.PLAYERS, 0.1F, player.world.rand.nextFloat() * 0.1F + 0.9F, false);
+        BCoreNetwork.sendSound(player.level, player.blockPosition(), DESounds.portal, SoundCategory.PLAYERS, 0.1F, player.level.random.nextFloat() * 0.1F + 0.9F, false);
 
 //        player.sendMessage(new StringTextComponent(new TranslationTextComponent("msg.teleporterSentMob.txt").getString() + " x:" + (int) location.getXCoord() + " y:" + (int) location.getYCoord() + " z:" + (int) location.getZCoord() + " Dimension: " + location.getDimensionName()), Util.DUMMY_UUID);
 
@@ -121,9 +121,9 @@ public class DislocatorBound extends Dislocator /*implements IRenderOverride*/ {
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
-        ItemStack stack = player.getHeldItem(hand);
-        if (player.world.isRemote) {
+    public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
+        ItemStack stack = player.getItemInHand(hand);
+        if (player.level.isClientSide) {
             return new ActionResult<>(ActionResultType.PASS, stack);
         }
 //        if (stack.getMetadata() == 1 && !world.isRemote) {
@@ -211,9 +211,9 @@ public class DislocatorBound extends Dislocator /*implements IRenderOverride*/ {
             if (isPlayer(stack)) {
                 MinecraftServer server = world.getServer();
                 if (server == null) return null;
-                PlayerEntity player = server.getPlayerList().getPlayerByUUID(UUID.fromString(getPlayerID(stack)));
+                PlayerEntity player = server.getPlayerList().getPlayer(UUID.fromString(getPlayerID(stack)));
                 if (player == null) return null;
-                return new TargetPos(player.getPosX(), player.getPosY() + 0.2, player.getPosZ(), player.world.getDimensionKey());
+                return new TargetPos(player.getX(), player.getY() + 0.2, player.getZ(), player.level.dimension());
             }
             Vec3D pos = DislocatorLinkHandler.getLinkPos(world, stack);
             if (data != null && pos != null) {
@@ -230,7 +230,7 @@ public class DislocatorBound extends Dislocator /*implements IRenderOverride*/ {
                 if (world.getServer() == null /*|| !DimensionManager.isDimensionRegistered(data.dimension)*/) {
                     return;
                 }
-                TileEntity tile = world.getServer().getWorld(data.dimension).getTileEntity(data.pos);
+                TileEntity tile = world.getServer().getLevel(data.dimension).getBlockEntity(data.pos);
                 if (tile instanceof ITeleportEndPoint) {
                     ((ITeleportEndPoint) tile).entityArriving(entity);
                 }
@@ -244,7 +244,7 @@ public class DislocatorBound extends Dislocator /*implements IRenderOverride*/ {
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
 //        if (stack.getMetadata() == 0) {
 //            if (!isValid(stack)) {
 //                tooltip.add(new StringTextComponent("Error this item is not valid! (Item is missing required NBT data)").setStyle(new Style().setColor(TextFormatting.RED)));

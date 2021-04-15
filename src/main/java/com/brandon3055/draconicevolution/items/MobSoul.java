@@ -41,37 +41,37 @@ public class MobSoul extends ItemBCore {
     }
 
     @Override
-    public ActionResultType onItemUse(ItemUseContext context) {
-        World world = context.getWorld();
-        Direction facing = context.getFace();
-        BlockPos pos = context.getPos();
+    public ActionResultType useOn(ItemUseContext context) {
+        World world = context.getLevel();
+        Direction facing = context.getClickedFace();
+        BlockPos pos = context.getClickedPos();
         PlayerEntity player = context.getPlayer();
 
-        ItemStack stack = player.getHeldItem(context.getHand());
-        if (player.isSneaking()) {
+        ItemStack stack = player.getItemInHand(context.getHand());
+        if (player.isShiftKeyDown()) {
 
             Entity entity = createEntity(world, stack);
-            double sX = pos.getX() + facing.getXOffset() + 0.5;
-            double sY = pos.getY() + facing.getYOffset() + 0.5;
-            double sZ = pos.getZ() + facing.getZOffset() + 0.5;
+            double sX = pos.getX() + facing.getStepX() + 0.5;
+            double sY = pos.getY() + facing.getStepY() + 0.5;
+            double sZ = pos.getZ() + facing.getStepZ() + 0.5;
             if (entity == null) {
                 LogHelper.error("Mob Soul bound entity = null");
-                return super.onItemUse(context);
+                return super.useOn(context);
             }
-            entity.setLocationAndAngles(sX, sY, sZ, player.rotationYaw, 0F);
+            entity.moveTo(sX, sY, sZ, player.yRot, 0F);
 
-            if (!world.isRemote) {
+            if (!world.isClientSide) {
                 CompoundNBT compound = ItemNBTHelper.getCompound(stack);
                 if (!compound.contains("EntityData") && entity instanceof MobEntity) {
-                    ((MobEntity) entity).onInitialSpawn((ServerWorld)world, world.getDifficultyForLocation(new BlockPos(0, 0, 0)), SpawnReason.SPAWN_EGG, null, null);
+                    ((MobEntity) entity).finalizeSpawn((ServerWorld)world, world.getCurrentDifficultyAt(new BlockPos(0, 0, 0)), SpawnReason.SPAWN_EGG, null, null);
                 }
-                world.addEntity(entity);
-                if (!player.abilities.isCreativeMode) {
+                world.addFreshEntity(entity);
+                if (!player.abilities.instabuild) {
                     InventoryUtils.consumeHeldItem(player, stack, context.getHand());
                 }
             }
         }
-        return super.onItemUse(context);
+        return super.useOn(context);
     }
 
 //    @Override
@@ -156,12 +156,12 @@ public class MobSoul extends ItemBCore {
             else {
                 entity = type.create(world);
                 if (entityData != null) {
-                    entity.read(entityData);
+                    entity.load(entityData);
                 }
                 else {
                     loadAdditionalEntityInfo(stack, entity);
                     if (entity instanceof MobEntity) {
-                        ((MobEntity) entity).onInitialSpawn((ServerWorld)world, world.getDifficultyForLocation(new BlockPos(0, 0, 0)), SpawnReason.SPAWN_EGG, null, null);
+                        ((MobEntity) entity).finalizeSpawn((ServerWorld)world, world.getCurrentDifficultyAt(new BlockPos(0, 0, 0)), SpawnReason.SPAWN_EGG, null, null);
 //                        entitytype.spawn(worldIn, itemstack, playerIn, blockpos, SpawnReason.SPAWN_EGG, false, false)
 //                        type.spawn(world, stack, null, new BlockPos(0, 0, 0), SpawnReason.SPAWN_EGG, false, false);
 
@@ -186,7 +186,7 @@ public class MobSoul extends ItemBCore {
 
         if (saveEntityData) {
             CompoundNBT compound = new CompoundNBT();
-            entity.writeWithoutTypeId(compound);
+            entity.saveWithoutId(compound);
             setEntityData(compound, soul);
         }
         else {
@@ -205,7 +205,7 @@ public class MobSoul extends ItemBCore {
         if (name.equals("[Random-Display]")) {
             if (randomDisplayList == null) {
                 randomDisplayList = new ArrayList<>();
-                SpawnEggItem.EGGS.keySet().forEach(type -> randomDisplayList.add(type.getRegistryName().toString()));
+                SpawnEggItem.BY_ID.keySet().forEach(type -> randomDisplayList.add(type.getRegistryName().toString()));
             }
 
             if (randomDisplayList.size() > 0) {
@@ -214,7 +214,7 @@ public class MobSoul extends ItemBCore {
         }
 
         if (!renderEntityMap.containsKey(name)) {
-            World world = Minecraft.getInstance().world;
+            World world = Minecraft.getInstance().level;
             Entity entity;
             try {
                 EntityType type = ForgeRegistries.ENTITIES.getValue(getCachedRegName(name));

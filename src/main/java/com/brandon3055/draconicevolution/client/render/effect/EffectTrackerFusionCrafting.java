@@ -71,7 +71,7 @@ public class EffectTrackerFusionCrafting {
         //region Movement
         if (isMoving) {
             if (pos.equals(startPos)) {
-                world.playSound(pos.x, pos.y, pos.z, DESounds.fusionComplete, SoundCategory.BLOCKS, 0.5F, 0.5F, false);
+                world.playLocalSound(pos.x, pos.y, pos.z, DESounds.fusionComplete, SoundCategory.BLOCKS, 0.5F, 0.5F, false);
             }
 
             double distance = Utils.getDistanceAtoB(circlePosition, pos);
@@ -87,7 +87,7 @@ public class EffectTrackerFusionCrafting {
             }
             else {
                 if (!positionLocked) {
-                    world.playSound(pos.x, pos.y, pos.z, DESounds.fusionComplete, SoundCategory.BLOCKS, 2F, 0.5F, false);
+                    world.playLocalSound(pos.x, pos.y, pos.z, DESounds.fusionComplete, SoundCategory.BLOCKS, 2F, 0.5F, false);
                 }
                 positionLocked = true;
                 pos.set(circlePosition);
@@ -120,11 +120,11 @@ public class EffectTrackerFusionCrafting {
             boltSeed = rand.nextLong();
             Vec3D pos = corePos.copy().add(0.5, 0.5, 0.5);
 //            BCEffectHandler.spawnFXDirect(DEParticles.DE_SHEET, new SubParticle(world, pos));
-            world.playSound(pos.x, pos.y, pos.z, DESounds.energyBolt, SoundCategory.BLOCKS, 1F, 0.9F + rand.nextFloat() * 0.2F, false);
+            world.playLocalSound(pos.x, pos.y, pos.z, DESounds.energyBolt, SoundCategory.BLOCKS, 1F, 0.9F + rand.nextFloat() * 0.2F, false);
         }
 
         if (craftingInventory.getCraftingStage() < 1000) {
-            TileEntity tile = world.getTileEntity(pos.getPos());
+            TileEntity tile = world.getBlockEntity(pos.getPos());
             if (tile instanceof TileCraftingInjector && craftingInventory.getIngredientEnergyCost() > 0) {
                 alpha = (float) (((TileCraftingInjector) tile).getInjectorCharge() / (double) craftingInventory.getIngredientEnergyCost());
             }
@@ -146,7 +146,7 @@ public class EffectTrackerFusionCrafting {
     }
 
     public void renderEffect(Tessellator tessellator, float partialTicks) {
-        BufferBuilder vertexbuffer = tessellator.getBuffer();
+        BufferBuilder vertexbuffer = tessellator.getBuilder();
         CCRenderState ccrs = CCRenderState.instance();
         //region Icosahedron
 
@@ -169,7 +169,7 @@ public class EffectTrackerFusionCrafting {
         Matrix4 pearlMat = RenderUtils.getMatrix(new Vector3(relativeX, relativeY, relativeZ), new Rotation(0F, new Vector3(0, 0, 0)), 0.15 * scale);
         ccrs.bind(vertexbuffer);
         CCModelLibrary.icosahedron7.render(ccrs, pearlMat);
-        tessellator.draw();
+        tessellator.end();
         RenderSystem.popMatrix();
         RenderSystem.color4f(1F, 1F, 1F, 1F);
 

@@ -22,11 +22,11 @@ public class PhaseManager {
          }
 
          phase = getPhase(phaseIn);
-         if (!dragon.world.isRemote) {
-            dragon.getDataManager().set(DraconicGuardianEntity.PHASE, phaseIn.getId());
+         if (!dragon.level.isClientSide) {
+            dragon.getEntityData().set(DraconicGuardianEntity.PHASE, phaseIn.getId());
          }
 
-         LOGGER.debug("Dragon is now in phase {} on the {}", phaseIn, dragon.world.isRemote ? "client" : "server");
+         LOGGER.debug("Dragon is now in phase {} on the {}", phaseIn, dragon.level.isClientSide ? "client" : "server");
          phase.initPhase();
          return (T) phase;
       }

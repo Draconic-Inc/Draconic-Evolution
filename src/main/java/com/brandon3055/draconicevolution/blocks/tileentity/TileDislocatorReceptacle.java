@@ -100,7 +100,7 @@ public class TileDislocatorReceptacle extends TileBCore implements ITickableTile
         updateHidden(false);
         updateCrystalLogic();
 
-        if (world.isRemote && !active.get()) {
+        if (level.isClientSide && !active.get()) {
             hiddenTime = 5;
         }
 
@@ -113,7 +113,7 @@ public class TileDislocatorReceptacle extends TileBCore implements ITickableTile
 
         if (frameMoving) {
             if (active.get()) {
-                finishMove(pos, new HashSet<>());
+                finishMove(worldPosition, new HashSet<>());
             }
             frameMoving = false;
             checkIn();
@@ -127,10 +127,10 @@ public class TileDislocatorReceptacle extends TileBCore implements ITickableTile
                 return;
             }
 
-            TargetPos location = ((Dislocator) stack.getItem()).getTargetPos(stack, world);
+            TargetPos location = ((Dislocator) stack.getItem()).getTargetPos(stack, level);
             if (dislocator_p2p.isValid(stack) && location != null) {
-                location.setYaw(entity.rotationYaw);
-                location.setPitch(entity.rotationPitch);
+                location.setYaw(entity.yRot);
+                location.setPitch(entity.xRot);
             }
 
             if (location == null) {
@@ -140,10 +140,10 @@ public class TileDislocatorReceptacle extends TileBCore implements ITickableTile
                 else {
                     if (entity instanceof PlayerEntity) {
                         if (dislocator_p2p.isPlayer(stack)) {
-                            ChatHelper.sendMessage((PlayerEntity) entity, new TranslationTextComponent("info.de.bound_dislocator.cant_find_player").mergeStyle(TextFormatting.RED));
+                            ChatHelper.sendMessage((PlayerEntity) entity, new TranslationTextComponent("info.de.bound_dislocator.cant_find_player").withStyle(TextFormatting.RED));
                         }
                         else {
-                            ChatHelper.sendMessage((PlayerEntity) entity, new TranslationTextComponent("info.de.bound_dislocator.cant_find_target").mergeStyle(TextFormatting.RED));
+                            ChatHelper.sendMessage((PlayerEntity) entity, new TranslationTextComponent("info.de.bound_dislocator.cant_find_target").withStyle(TextFormatting.RED));
                         }
                     }
                 }
@@ -152,10 +152,10 @@ public class TileDislocatorReceptacle extends TileBCore implements ITickableTile
                 return;
             }
 
-            dislocator_p2p.notifyArriving(stack, world, entity);
-            BCoreNetwork.sendSound(entity.world, entity.getPosition(), DESounds.portal, SoundCategory.PLAYERS, 0.1F, entity.world.rand.nextFloat() * 0.1F + 0.9F, false);
+            dislocator_p2p.notifyArriving(stack, level, entity);
+            BCoreNetwork.sendSound(entity.level, entity.blockPosition(), DESounds.portal, SoundCategory.PLAYERS, 0.1F, entity.level.random.nextFloat() * 0.1F + 0.9F, false);
             location.teleport(entity);
-            BCoreNetwork.sendSound(entity.world, entity.getPosition(), DESounds.portal, SoundCategory.PLAYERS, 0.1F, entity.world.rand.nextFloat() * 0.1F + 0.9F, false);
+            BCoreNetwork.sendSound(entity.level, entity.blockPosition(), DESounds.portal, SoundCategory.PLAYERS, 0.1F, entity.level.random.nextFloat() * 0.1F + 0.9F, false);
         }
 
         try {
@@ -203,16 +203,16 @@ public class TileDislocatorReceptacle extends TileBCore implements ITickableTile
         fxHandler.update();
 
         boolean boundCrystals = active.get() && isBound.get() && linkedCrystal.get().y != -999;
-        if (world.isRemote && boundCrystals && remoteCrystalTier.isDirty(true)) {
+        if (level.isClientSide && boundCrystals && remoteCrystalTier.isDirty(true)) {
             fxHandler.reloadConnections();
         }
 
-        if (!world.isRemote && boundCrystals) {
+        if (!level.isClientSide && boundCrystals) {
             if (DEEventHandler.serverTicks % 10 == 0) {
                 TileEntity remoteTile = getRemoteReceptacle();
                 ICrystalLink remote = getRemoteCrystal();
                 if (remoteTile != null && remote instanceof IENetEffectTile) {
-                    int i = remote.getLinks().indexOf(remoteTile.getPos());
+                    int i = remote.getLinks().indexOf(remoteTile.getBlockPos());
                     List<Byte> rates = ((IENetEffectTile) remote).getFlowRates();
                     if (i >= 0 && i < rates.size()) {
                         linkedFlowRate.set(rates.get(i));
@@ -229,7 +229,7 @@ public class TileDislocatorReceptacle extends TileBCore implements ITickableTile
                 dataManager.forceSync(linkedFlowRate);
             }
         }
-        else if (!world.isRemote) {
+        else if (!level.isClientSide) {
             linkedFlowRate.zero();
         }
     }
@@ -243,18 +243,18 @@ public class TileDislocatorReceptacle extends TileBCore implements ITickableTile
     }
 
     private void updateHidden(boolean setHidden) {
-        if (world.isRemote && hiddenTime > 0) {
+        if (level.isClientSide && hiddenTime > 0) {
             hiddenTime--;
             if (hiddenTime == 0 || setHidden) {
                 long time = System.nanoTime();
-                for (BlockPos checkPos : BlockPos.getAllInBoxMutable(pos.add(-1, -1, -1), pos.add(1, 1, 1))) {
-                    TileEntity tile = world.getTileEntity(checkPos);
+                for (BlockPos checkPos : BlockPos.betweenClosed(worldPosition.offset(-1, -1, -1), worldPosition.offset(1, 1, 1))) {
+                    TileEntity tile = level.getBlockEntity(checkPos);
                     if (tile instanceof TilePortal) {
-                        BlockPos spawn = spawnPos.get().y == -999 ? pos : getSpawnPos();
+                        BlockPos spawn = spawnPos.get().y == -999 ? worldPosition : getSpawnPos();
                         TilePortal tPortal = (TilePortal) tile;
-                        if (tPortal.getMasterPos().equals(pos) && tPortal.updateTime != time) {
+                        if (tPortal.getMasterPos().equals(worldPosition) && tPortal.updateTime != time) {
                             if (!setHidden) {
-                                world.playSound(spawn.getX() + 0.5, spawn.getY() + 0.5, spawn.getZ() + 0.5, SoundEvents.ENTITY_FIREWORK_ROCKET_LARGE_BLAST, SoundCategory.BLOCKS, 2, 0.5F + (world.rand.nextFloat() * 0.1F), false);
+                                level.playLocalSound(spawn.getX() + 0.5, spawn.getY() + 0.5, spawn.getZ() + 0.5, SoundEvents.FIREWORK_ROCKET_LARGE_BLAST, SoundCategory.BLOCKS, 2, 0.5F + (level.random.nextFloat() * 0.1F), false);
                             }
                             ((TilePortal) tile).propRenderUpdate(time, !setHidden);
                         }
@@ -267,7 +267,7 @@ public class TileDislocatorReceptacle extends TileBCore implements ITickableTile
     //region Activation & Inventory
 
     public boolean onBlockActivated(PlayerEntity player) {
-        if (world.isRemote) {
+        if (level.isClientSide) {
             return !ltRedstone.get();
         }
 
@@ -279,7 +279,7 @@ public class TileDislocatorReceptacle extends TileBCore implements ITickableTile
         ItemStack prev = itemHandler.getListenerPrevStack();
 
         if (dislocator_p2p.isValid(prev) && !dislocator_p2p.isPlayer(prev)) {
-            DislocatorLinkHandler.removeLink(world, prev);
+            DislocatorLinkHandler.removeLink(level, prev);
         }
 
         isBound.set(false);
@@ -316,7 +316,7 @@ public class TileDislocatorReceptacle extends TileBCore implements ITickableTile
     private void checkIn() {
         ItemStack stack = itemHandler.getStackInSlot(0);
         if (dislocator_p2p.isValid(stack) && !dislocator_p2p.isPlayer(stack)) {
-            DislocatorLinkHandler.updateLink(world, stack, pos, world.getDimensionKey());
+            DislocatorLinkHandler.updateLink(level, stack, worldPosition, level.dimension());
             isBound.set(true);
         }
         else {
@@ -334,21 +334,21 @@ public class TileDislocatorReceptacle extends TileBCore implements ITickableTile
     //region Teleport Handling
 
     public void handleEntityTeleport(Entity entity) {
-        if (world.isRemote || teleportQ.contains(entity) || coolDownMap.containsKey(entity.getEntityId())) {
+        if (level.isClientSide || teleportQ.contains(entity) || coolDownMap.containsKey(entity.getId())) {
             return;
         }
 
         //TODO in 1.13 use entity.portalCooldown
-        if (arrivalsMap.containsKey(entity.getEntityId())) {
-            if (entity instanceof PlayerEntity && arrivalsMap.get(entity.getEntityId()) < 10) {
+        if (arrivalsMap.containsKey(entity.getId())) {
+            if (entity instanceof PlayerEntity && arrivalsMap.get(entity.getId()) < 10) {
                 //TODO Packet Stuff
 //                new PacketCustom("DEPCChannel", 1).writePos(pos).sendToPlayer((PlayerEntity) entity);
             }
-            arrivalsMap.put(entity.getEntityId(), 10);
+            arrivalsMap.put(entity.getId(), 10);
             return;
         }
 
-        coolDownMap.put(entity.getEntityId(), 10);
+        coolDownMap.put(entity.getId(), 10);
         teleportQ.add(entity);
     }
 
@@ -357,19 +357,19 @@ public class TileDislocatorReceptacle extends TileBCore implements ITickableTile
     //region MultiBlock
 
     public void deactivate() {
-        if (!world.isRemote) {
+        if (!level.isClientSide) {
             active.set(false);
         }
 
-        BlockState state = world.getBlockState(pos);
+        BlockState state = level.getBlockState(worldPosition);
         if (state.getBlock() == DEContent.dislocator_receptacle) {
-            world.setBlockState(pos, state.with(DislocatorReceptacle.ACTIVE, false));
+            level.setBlockAndUpdate(worldPosition, state.setValue(DislocatorReceptacle.ACTIVE, false));
         }
 
-        for (BlockPos checkPos : BlockPos.getAllInBoxMutable(pos.add(-1, -1, -1), pos.add(1, 1, 1))) {
-            TileEntity tile = world.getTileEntity(checkPos);
-            if (tile instanceof TilePortal && ((TilePortal) tile).getMasterPos().equals(pos)) {
-                world.removeBlock(tile.getPos(), false);
+        for (BlockPos checkPos : BlockPos.betweenClosed(worldPosition.offset(-1, -1, -1), worldPosition.offset(1, 1, 1))) {
+            TileEntity tile = level.getBlockEntity(checkPos);
+            if (tile instanceof TilePortal && ((TilePortal) tile).getMasterPos().equals(worldPosition)) {
+                level.removeBlock(tile.getBlockPos(), false);
             }
         }
         updateBlock();
@@ -379,7 +379,7 @@ public class TileDislocatorReceptacle extends TileBCore implements ITickableTile
 //        newOffsets.set(true);
         ItemStack stack = itemHandler.getStackInSlot(0);
 
-        if (!(stack.getItem() instanceof Dislocator) || ((Dislocator) stack.getItem()).getTargetPos(stack, world) == null) {
+        if (!(stack.getItem() instanceof Dislocator) || ((Dislocator) stack.getItem()).getTargetPos(stack, level) == null) {
             if (!dislocator_p2p.isValid(stack)) {
                 return false;
             }
@@ -390,19 +390,19 @@ public class TileDislocatorReceptacle extends TileBCore implements ITickableTile
             igniting = true;
 
             for (BlockPos portalBlock : portalConfiguration.value()) {
-                world.setBlockState(portalBlock, DEContent.portal.getDefaultState().with(Portal.AXIS, portalConfiguration.key()));
-                TileEntity tile = world.getTileEntity(portalBlock);
+                level.setBlockAndUpdate(portalBlock, DEContent.portal.defaultBlockState().setValue(Portal.AXIS, portalConfiguration.key()));
+                TileEntity tile = level.getBlockEntity(portalBlock);
                 if (tile instanceof TilePortal) {
-                    ((TilePortal) tile).setMasterPos(pos);
+                    ((TilePortal) tile).setMasterPos(worldPosition);
                 }
             }
 
             active.set(true);
             activeAxis.set(portalConfiguration.key());
 
-            BlockState state = world.getBlockState(pos);
+            BlockState state = level.getBlockState(worldPosition);
             if (state.getBlock() == DEContent.dislocator_receptacle) {
-                world.setBlockState(pos, state.with(DislocatorReceptacle.ACTIVE, true));
+                level.setBlockAndUpdate(worldPosition, state.setValue(DislocatorReceptacle.ACTIVE, true));
             }
 
             updateBlock();
@@ -429,7 +429,7 @@ public class TileDislocatorReceptacle extends TileBCore implements ITickableTile
         for (int level : levels) {
             List<BlockPos> blocks = levelMap.get(level);
             for (BlockPos pos : blocks) {
-                if (world.isAirBlock(pos.up()) || world.getBlockState(pos.up()).getBlock() == DEContent.portal) {
+                if (this.level.isEmptyBlock(pos.above()) || this.level.getBlockState(pos.above()).getBlock() == DEContent.portal) {
                     foundValid.add(pos);
                 }
             }
@@ -518,7 +518,7 @@ public class TileDislocatorReceptacle extends TileBCore implements ITickableTile
     private Pair<Axis, List<BlockPos>> scanConfigurations() {
         List<BlockPos> scanned = new ArrayList<BlockPos>();
         for (BlockPos offset : FacingUtils.AROUND_X) {
-            List<BlockPos> portalBlocks = scanFromOrigin(pos.add(offset), Axis.X, scanned);
+            List<BlockPos> portalBlocks = scanFromOrigin(worldPosition.offset(offset), Axis.X, scanned);
             if (portalBlocks != null) {
                 return new Pair<Axis, List<BlockPos>>(Axis.X, portalBlocks);
             }
@@ -526,7 +526,7 @@ public class TileDislocatorReceptacle extends TileBCore implements ITickableTile
 
         scanned = new ArrayList<BlockPos>();
         for (BlockPos offset : FacingUtils.AROUND_Y) {
-            List<BlockPos> portalBlocks = scanFromOrigin(pos.add(offset), Axis.Y, scanned);
+            List<BlockPos> portalBlocks = scanFromOrigin(worldPosition.offset(offset), Axis.Y, scanned);
             if (portalBlocks != null) {
                 return new Pair<Axis, List<BlockPos>>(Axis.Y, portalBlocks);
             }
@@ -534,7 +534,7 @@ public class TileDislocatorReceptacle extends TileBCore implements ITickableTile
 
         scanned = new ArrayList<BlockPos>();
         for (BlockPos offset : FacingUtils.AROUND_Z) {
-            List<BlockPos> portalBlocks = scanFromOrigin(pos.add(offset), Axis.Z, scanned);
+            List<BlockPos> portalBlocks = scanFromOrigin(worldPosition.offset(offset), Axis.Z, scanned);
             if (portalBlocks != null) {
                 return new Pair<Axis, List<BlockPos>>(Axis.Z, portalBlocks);
             }
@@ -544,7 +544,7 @@ public class TileDislocatorReceptacle extends TileBCore implements ITickableTile
     }
 
     private List<BlockPos> scanFromOrigin(BlockPos scanOrigin, Axis scanAxis, List<BlockPos> alreadyScanned) {
-        if (!world.isAirBlock(scanOrigin) || alreadyScanned.contains(scanOrigin)) {
+        if (!level.isEmptyBlock(scanOrigin) || alreadyScanned.contains(scanOrigin)) {
             return null;
         }
 
@@ -564,11 +564,11 @@ public class TileDislocatorReceptacle extends TileBCore implements ITickableTile
         scanList.add(scanPos);
 
         for (Direction facing : FacingUtils.getFacingsAroundAxis(scanAxis)) {
-            BlockPos nextPos = scanPos.offset(facing);
+            BlockPos nextPos = scanPos.relative(facing);
             if (scanList.contains(nextPos) || isFrame(nextPos)) {
                 continue;
             }
-            else if (world.isAirBlock(nextPos)) {
+            else if (level.isEmptyBlock(nextPos)) {
                 if (!scanPortal(nextPos, origin, scanAxis, scanList, blackList)) {
                     return false;
                 }
@@ -582,7 +582,7 @@ public class TileDislocatorReceptacle extends TileBCore implements ITickableTile
     }
 
     private boolean isFrame(BlockPos pos) {
-        BlockState state = world.getBlockState(pos);
+        BlockState state = level.getBlockState(pos);
         return state.getBlock() == DEContent.infused_obsidian || state.getBlock() == DEContent.dislocator_receptacle;
     }
 
@@ -601,25 +601,25 @@ public class TileDislocatorReceptacle extends TileBCore implements ITickableTile
 
     @Override
     public void entityArriving(Entity entity) {
-        Entity rootEntity = entity.getLowestRidingEntity();
+        Entity rootEntity = entity.getRootVehicle();
         PassengerHelper passengerHelper = new PassengerHelper(rootEntity);
-        passengerHelper.forEach(e -> arrivalsMap.put(e.getEntityId(), 10));
+        passengerHelper.forEach(e -> arrivalsMap.put(e.getId(), 10));
     }
 
     public void setSpawnPos(BlockPos spawnPos) {
-        this.spawnPos.get().set(pos.subtract(spawnPos));
+        this.spawnPos.get().set(worldPosition.subtract(spawnPos));
     }
 
     protected BlockPos getSpawnPos() {
-        return pos.subtract(spawnPos.get().getPos());
+        return worldPosition.subtract(spawnPos.get().getPos());
     }
 
     public void setLinkPos(BlockPos spawnPos) {
-        crystalLinkPos.get().set(pos.subtract(spawnPos));
+        crystalLinkPos.get().set(worldPosition.subtract(spawnPos));
     }
 
     protected BlockPos getLinkPos() {
-        return pos.subtract(crystalLinkPos.get().getPos());
+        return worldPosition.subtract(crystalLinkPos.get().getPos());
     }
 
 //    @Override
@@ -704,12 +704,12 @@ public class TileDislocatorReceptacle extends TileBCore implements ITickableTile
 
     public void finishMove(BlockPos pos, HashSet<BlockPos> blocks) {
         for (Direction facing : FacingUtils.getFacingsAroundAxis(activeAxis.get())) {
-            BlockPos np = pos.offset(facing);
+            BlockPos np = pos.relative(facing);
             if (blocks.contains(np)) continue;
-            BlockState state = world.getBlockState(np);
+            BlockState state = level.getBlockState(np);
 
             if (state.getBlock() == DEContent.portal) {
-                TileEntity tile = world.getTileEntity(np);
+                TileEntity tile = level.getBlockEntity(np);
                 if (tile instanceof TilePortal) {
                     ((TilePortal) tile).frameMoving = false;
                 }
@@ -724,11 +724,11 @@ public class TileDislocatorReceptacle extends TileBCore implements ITickableTile
     //region F!@#$%^ Lasers through portals code for Morph
 
     protected void setCrystalPos(BlockPos crystalPos) {
-        linkedCrystal.get().set(pos.subtract(crystalPos));
+        linkedCrystal.get().set(worldPosition.subtract(crystalPos));
     }
 
     protected BlockPos getCrystalPos() {
-        return pos.subtract(linkedCrystal.get().getPos());
+        return worldPosition.subtract(linkedCrystal.get().getPos());
     }
 
     private BlockPos remotePosCache = null;
@@ -751,10 +751,10 @@ public class TileDislocatorReceptacle extends TileBCore implements ITickableTile
         if (remotePosCache == null) {
             ItemStack stack = itemHandler.getStackInSlot(0);
             if (dislocator_p2p.isValid(stack) && !dislocator_p2p.isPlayer(stack)) {
-                TileEntity tile = DislocatorLinkHandler.getTargetTile(world, stack);
+                TileEntity tile = DislocatorLinkHandler.getTargetTile(level, stack);
                 if (tile instanceof TileDislocatorReceptacle) {
-                    remotePosCache = tile.getPos();
-                    remoteDimCache = tile.getWorld().getDimensionKey();
+                    remotePosCache = tile.getBlockPos();
+                    remoteDimCache = tile.getLevel().dimension();
                 }
                 else {
                     invalidLinkTime = 100;
@@ -766,9 +766,9 @@ public class TileDislocatorReceptacle extends TileBCore implements ITickableTile
             }
         }
 
-        MinecraftServer server = world.getServer();
+        MinecraftServer server = level.getServer();
         if (server != null) {
-            TileEntity tile = server.getWorld(remoteDimCache).getTileEntity(remotePosCache);
+            TileEntity tile = server.getLevel(remoteDimCache).getBlockEntity(remotePosCache);
             if (tile instanceof TileDislocatorReceptacle) {
                 if (skipRemoteCheck) {
                     return (TileDislocatorReceptacle) tile;
@@ -787,9 +787,9 @@ public class TileDislocatorReceptacle extends TileBCore implements ITickableTile
     private ICrystalLink getRemoteCrystal() {
         TileDislocatorReceptacle tile = getRemoteReceptacle();
         if (tile != null) {
-            MinecraftServer server = world.getServer();
+            MinecraftServer server = level.getServer();
             if (server != null && tile.linkedCrystal.get().y != -999) {
-                TileEntity crystal = server.getWorld(remoteDimCache).getTileEntity(tile.getCrystalPos());
+                TileEntity crystal = server.getLevel(remoteDimCache).getBlockEntity(tile.getCrystalPos());
                 if (crystal instanceof IENetEffectTile) {
                     remoteCrystalTier.set((byte) ((IENetEffectTile) crystal).getTier());
                     return (ICrystalLink) crystal;
@@ -816,7 +816,7 @@ public class TileDislocatorReceptacle extends TileBCore implements ITickableTile
 
     @Override
     public boolean createLink(ICrystalLink otherCrystal) {
-        setCrystalPos(((TileEntity) otherCrystal).getPos());
+        setCrystalPos(((TileEntity) otherCrystal).getBlockPos());
         return true;
     }
 
@@ -863,7 +863,7 @@ public class TileDislocatorReceptacle extends TileBCore implements ITickableTile
 
     @Override
     public Vec3D getBeamLinkPos(BlockPos linkTo) {
-        double dist = FacingUtils.distanceInDirection(pos, linkTo, FacingUtils.getAxisFaces(activeAxis.get())[0]);
+        double dist = FacingUtils.distanceInDirection(worldPosition, linkTo, FacingUtils.getAxisFaces(activeAxis.get())[0]);
         Vec3D vec = Vec3D.getCenter(getLinkPos());
 
         Direction facing;
@@ -874,7 +874,7 @@ public class TileDislocatorReceptacle extends TileBCore implements ITickableTile
             facing = FacingUtils.getAxisFaces(activeAxis.get())[1];
         }
 
-        vec.add(facing.getXOffset() * 0.35, facing.getYOffset() * 0.35, facing.getZOffset() * 0.35);
+        vec.add(facing.getStepX() * 0.35, facing.getStepY() * 0.35, facing.getStepZ() * 0.35);
 
         return vec;
     }
@@ -923,7 +923,7 @@ public class TileDislocatorReceptacle extends TileBCore implements ITickableTile
     @Override
     public int getIDHash() {
         if (!hashCached) {
-            hashID = pos.hashCode();
+            hashID = worldPosition.hashCode();
             hashCached = true;
         }
         return hashID;

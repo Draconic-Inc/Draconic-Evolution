@@ -109,7 +109,7 @@ public class ParticleArrowShockwave extends BCParticle {
         public Particle getEntityFX(int particleID, World world, Vec3D pos, Vec3D speed, int... args) {
             ParticleArrowShockwave arrowShockwave = new ParticleArrowShockwave((ClientWorld) world, pos, speed);
 
-            world.playSound(pos.x, pos.y, pos.z, SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.PLAYERS, 10, 0.9F + world.rand.nextFloat() * 0.2F, false);
+            world.playLocalSound(pos.x, pos.y, pos.z, SoundEvents.GENERIC_EXPLODE, SoundCategory.PLAYERS, 10, 0.9F + world.random.nextFloat() * 0.2F, false);
             if (args.length >= 1) {
                 arrowShockwave.maxSize = args[0] / 100D;
             }

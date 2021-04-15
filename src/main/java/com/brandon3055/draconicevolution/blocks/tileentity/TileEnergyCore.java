@@ -61,7 +61,7 @@ public class TileEnergyCore extends TileBCore implements ITickableTileEntity, IE
     public static final byte ORIENT_EAST_WEST = 3;
 
     public static final Direction[][] STAB_ORIENTATIONS = new Direction[][]{{},   // ORIENT_UNKNOWN
-            Direction.BY_HORIZONTAL_INDEX,                                                 // ORIENT_UP_DOWN //TODO is 'BY_HORIZONTAL_INDEX' correct?
+            Direction.BY_2D_DATA,                                                 // ORIENT_UP_DOWN //TODO is 'BY_HORIZONTAL_INDEX' correct?
             {Direction.UP, Direction.DOWN, Direction.EAST, Direction.WEST},     // ORIENT_NORTH_SOUTH
             {Direction.UP, Direction.DOWN, Direction.NORTH, Direction.SOUTH}    // ORIENT_EAST_WEST
     };
@@ -94,7 +94,7 @@ public class TileEnergyCore extends TileBCore implements ITickableTileEntity, IE
         }
 
         active.addValueListener(active -> {
-            if (world != null) world.setBlockState(pos, world.getBlockState(pos).with(EnergyCore.ACTIVE, active));
+            if (level != null) level.setBlockAndUpdate(worldPosition, level.getBlockState(worldPosition).setValue(EnergyCore.ACTIVE, active));
         });
     }
 
@@ -105,7 +105,7 @@ public class TileEnergyCore extends TileBCore implements ITickableTileEntity, IE
 
     @Override
     public void tick() {
-        if (!world.isRemote) {
+        if (!level.isClientSide) {
             flowArray[ticksElapsed % 20] = (energy.get() - lastTickEnergy);
             lastTickEnergy = energy.get();
 
@@ -134,29 +134,29 @@ public class TileEnergyCore extends TileBCore implements ITickableTileEntity, IE
 
         super.tick();
 
-        if (ticksElapsed % 20 == 0 && !world.isRemote && transferRate.isDirty(true)) {
+        if (ticksElapsed % 20 == 0 && !level.isClientSide && transferRate.isDirty(true)) {
             dataManager.forceSync(transferRate);
         }
 
-        if (world.isRemote && active.get()) {
-            List<PlayerEntity> players = world.getEntitiesWithinAABB(PlayerEntity.class, new AxisAlignedBB(pos, pos.add(1, 1, 1)).grow(10, 10, 10));
+        if (level.isClientSide && active.get()) {
+            List<PlayerEntity> players = level.getEntitiesOfClass(PlayerEntity.class, new AxisAlignedBB(worldPosition, worldPosition.offset(1, 1, 1)).inflate(10, 10, 10));
             for (PlayerEntity player : players) {
                 double dist = Vec3D.getCenter(this).distance(new Vec3D(player));
-                double distNext = new Vec3D(player).distance(new Vec3D(pos.getX() + player.getMotion().x + 0.5, pos.getY() + player.getMotion().y - 0.4, pos.getZ() + player.getMotion().z + 0.5));
+                double distNext = new Vec3D(player).distance(new Vec3D(worldPosition.getX() + player.getDeltaMovement().x + 0.5, worldPosition.getY() + player.getDeltaMovement().y - 0.4, worldPosition.getZ() + player.getDeltaMovement().z + 0.5));
                 double threshold = tier.get() > 2 ? tier.get() - 0.5 : tier.get() + 0.5;
                 double boundary = distNext - threshold;
                 double dir = dist - distNext;
 
                 if (boundary <= 0) {
                     if (dir < 0) {
-                        player.move(MoverType.PLAYER, new Vector3d(-player.getMotion().x * 1.5, -player.getMotion().y * 1.5, -player.getMotion().z * 1.5));
+                        player.move(MoverType.PLAYER, new Vector3d(-player.getDeltaMovement().x * 1.5, -player.getDeltaMovement().y * 1.5, -player.getDeltaMovement().z * 1.5));
                     }
 
                     double multiplier = (threshold - dist) * 0.05;
 
-                    double xm = ((pos.getX() + 0.5 - player.getPosX()) / distNext) * multiplier;
-                    double ym = ((pos.getY() - 0.4 - player.getPosY()) / distNext) * multiplier;
-                    double zm = ((pos.getZ() + 0.5 - player.getPosZ()) / distNext) * multiplier;
+                    double xm = ((worldPosition.getX() + 0.5 - player.getX()) / distNext) * multiplier;
+                    double ym = ((worldPosition.getY() - 0.4 - player.getY()) / distNext) * multiplier;
+                    double zm = ((worldPosition.getZ() + 0.5 - player.getZ()) / distNext) * multiplier;
 
                     player.move(MoverType.PLAYER, new Vector3d(-xm, -ym, -zm));
                 }
@@ -175,16 +175,16 @@ public class TileEnergyCore extends TileBCore implements ITickableTileEntity, IE
     }
 
     public void onStructureClicked(World world, BlockPos blockClicked, BlockState state, PlayerEntity player) {
-        if (!world.isRemote) {
+        if (!world.isClientSide) {
             validateStructure();
             if (player instanceof ServerPlayerEntity) {
-                NetworkHooks.openGui((ServerPlayerEntity) player, this, pos);
+                NetworkHooks.openGui((ServerPlayerEntity) player, this, worldPosition);
             }
         }
     }
 
     public void activateCore() {
-        if (world.isRemote || !validateStructure()) {
+        if (level.isClientSide || !validateStructure()) {
             return;
         }
 
@@ -199,7 +199,7 @@ public class TileEnergyCore extends TileBCore implements ITickableTileEntity, IE
     }
 
     public void deactivateCore() {
-        if (world.isRemote) {
+        if (level.isClientSide) {
             return;
         }
 
@@ -252,7 +252,7 @@ public class TileEnergyCore extends TileBCore implements ITickableTileEntity, IE
 
     private void startBuilder(PlayerEntity player) {
         if (activeBuilder != null && !activeBuilder.isDead()) {
-            player.sendMessage(new TranslationTextComponent("ecore.de.already_assembling.txt").mergeStyle(RED), Util.DUMMY_UUID);
+            player.sendMessage(new TranslationTextComponent("ecore.de.already_assembling.txt").withStyle(RED), Util.NIL_UUID);
         }
         else {
             activeBuilder = new EnergyCoreBuilder(this, player);
@@ -264,8 +264,8 @@ public class TileEnergyCore extends TileBCore implements ITickableTileEntity, IE
      */
     private void updateStabilizers(boolean coreActive) {
         for (ManagedVec3I offset : stabOffsets) {
-            BlockPos tilePos = pos.add(-offset.get().x, -offset.get().y, -offset.get().z);
-            TileEntity tile = world.getTileEntity(tilePos);
+            BlockPos tilePos = worldPosition.offset(-offset.get().x, -offset.get().y, -offset.get().z);
+            TileEntity tile = level.getBlockEntity(tilePos);
 
             if (tile instanceof TileEnergyCoreStabilizer) {
                 ((TileEnergyCoreStabilizer) tile).isCoreActive.set(coreActive);
@@ -312,8 +312,8 @@ public class TileEnergyCore extends TileBCore implements ITickableTileEntity, IE
         boolean flag = true;
         if (stabilizersOK.get()) {
             for (ManagedVec3I offset : stabOffsets) {
-                BlockPos tilePos = pos.subtract(offset.get().getPos());
-                TileEntity tile = world.getTileEntity(tilePos);
+                BlockPos tilePos = worldPosition.subtract(offset.get().getPos());
+                TileEntity tile = level.getBlockEntity(tilePos);
 
                 if (!(tile instanceof TileEnergyCoreStabilizer) || !((TileEnergyCoreStabilizer) tile).hasCoreLock.get() || ((TileEnergyCoreStabilizer) tile).getCore() != this || !((TileEnergyCoreStabilizer) tile).isStabilizerValid(tier.get(), this)) {
                     flag = false;
@@ -338,8 +338,8 @@ public class TileEnergyCore extends TileBCore implements ITickableTileEntity, IE
                     Direction facing = dirs[fIndex];
 
                     for (int dist = 0; dist < 16; dist++) {
-                        BlockPos pos1 = pos.add(facing.getXOffset() * dist, facing.getYOffset() * dist, facing.getZOffset() * dist);
-                        TileEntity stabilizer = world.getTileEntity(pos1);
+                        BlockPos pos1 = worldPosition.offset(facing.getStepX() * dist, facing.getStepY() * dist, facing.getStepZ() * dist);
+                        TileEntity stabilizer = level.getBlockEntity(pos1);
                         if (stabilizer instanceof TileEnergyCoreStabilizer && (!((TileEnergyCoreStabilizer) stabilizer).hasCoreLock.get() || ((TileEnergyCoreStabilizer) stabilizer).getCore().equals(this)) && ((TileEnergyCoreStabilizer) stabilizer).isStabilizerValid(tier.get(), this)) {
                             stabsFound.add((TileEnergyCoreStabilizer) stabilizer);
                             break;
@@ -349,7 +349,7 @@ public class TileEnergyCore extends TileBCore implements ITickableTileEntity, IE
 
                 if (stabsFound.size() == 4) {
                     for (TileEnergyCoreStabilizer stab : stabsFound) {
-                        stabOffsets[stabsFound.indexOf(stab)].set(new Vec3I(pos.getX() - stab.getPos().getX(), pos.getY() - stab.getPos().getY(), pos.getZ() - stab.getPos().getZ()));
+                        stabOffsets[stabsFound.indexOf(stab)].set(new Vec3I(worldPosition.getX() - stab.getBlockPos().getX(), worldPosition.getY() - stab.getBlockPos().getY(), worldPosition.getZ() - stab.getBlockPos().getZ()));
                         stab.setCore(this);
                     }
                     stabilizersOK.set(true);
@@ -369,8 +369,8 @@ public class TileEnergyCore extends TileBCore implements ITickableTileEntity, IE
      */
     private void releaseStabilizers() {
         for (ManagedVec3I offset : stabOffsets) {
-            BlockPos tilePos = pos.add(-offset.get().x, -offset.get().y, -offset.get().z);
-            TileEntity tile = world.getTileEntity(tilePos);
+            BlockPos tilePos = worldPosition.offset(-offset.get().x, -offset.get().y, -offset.get().z);
+            TileEntity tile = level.getBlockEntity(tilePos);
 
             if (tile instanceof TileEnergyCoreStabilizer) {
                 ((TileEnergyCoreStabilizer) tile).hasCoreLock.set(false);
@@ -386,27 +386,27 @@ public class TileEnergyCore extends TileBCore implements ITickableTileEntity, IE
     //region Energy Transfer
 
     public long receiveEnergy(long maxReceive, boolean simulate) {
-        if (world.isRemote) {
+        if (level.isClientSide) {
             return 0;
         }
         long energyReceived = Math.min(getExtendedCapacity() - energy.get(), maxReceive);
 
         if (!simulate) {
             energy.add(energyReceived);
-            markDirty();
+            setChanged();
         }
         return energyReceived;
     }
 
     public long extractEnergy(long maxExtract, boolean simulate) {
-        if (world.isRemote) {
+        if (level.isClientSide) {
             return 0;
         }
         long energyExtracted = Math.min(energy.get(), maxExtract);
 
         if (!simulate) {
             energy.subtract(energyExtracted);
-            markDirty();
+            setChanged();
         }
         return energyExtracted;
     }
@@ -447,7 +447,7 @@ public class TileEnergyCore extends TileBCore implements ITickableTileEntity, IE
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public double getMaxRenderDistanceSquared() {
+    public double getViewDistance() {
         return 65536.0D;
     }
 

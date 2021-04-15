@@ -98,7 +98,7 @@ public class TileEntityDetector extends TileBCore implements IActivatableTile, I
         capManager.setManaged("energy", CapabilityOP.OP, opStorage).saveBoth().syncContainer();
 
         entityFilter = new EntityFilter(true, FilterType.values());
-        entityFilter.setDirtyHandler(this::markDirty);
+        entityFilter.setDirtyHandler(this::setChanged);
         entityFilter.setupServerPacketHandling(() -> createClientBoundPacket(0), packet -> sendPacketToClients(getAccessingPlayers(), packet));
         entityFilter.setupClientPacketHandling(() -> createServerBoundPacket(0), packetCustom -> BrandonsCore.proxy.sendToServer(packetCustom));
         setClientSidePacketHandler(0, input -> entityFilter.receivePacketFromServer(input));
@@ -113,7 +113,7 @@ public class TileEntityDetector extends TileBCore implements IActivatableTile, I
     public void tick() {
         super.tick();
 
-        if (world.isRemote) {
+        if (level.isClientSide) {
             updateAnimation();
             return;
         }
@@ -136,7 +136,7 @@ public class TileEntityDetector extends TileBCore implements IActivatableTile, I
 
         if (outputStrength.get() > 0 && pulseRsMode.get() && pulseDuration <= 0) {
             outputStrength.zero();
-            world.notifyNeighborsOfStateChange(pos, getBlockState().getBlock());
+            level.updateNeighborsAt(worldPosition, getBlockState().getBlock());
         }
         else {
             pulseDuration--;
@@ -147,19 +147,19 @@ public class TileEntityDetector extends TileBCore implements IActivatableTile, I
     private void updateAnimation() {
         //region Targeting
 
-        List<Entity> entities = entityFilter.filterEntities(world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(pos, pos.add(1, 1, 1)).grow(range.get(), range.get(), range.get())));
+        List<Entity> entities = entityFilter.filterEntities(level.getEntitiesOfClass(Entity.class, new AxisAlignedBB(worldPosition, worldPosition.offset(1, 1, 1)).inflate(range.get(), range.get(), range.get())));
         Entity closest = null;
         double closestDist = -1;
 
-        Vector3d posVec = new Vector3d(pos.getX(), pos.getY(), pos.getZ());
+        Vector3d posVec = new Vector3d(worldPosition.getX(), worldPosition.getY(), worldPosition.getZ());
         for (Entity entity : entities) {
             if (closest == null) {
                 closest = entity;
-                closestDist = entity.getDistanceSq(posVec);
+                closestDist = entity.distanceToSqr(posVec);
             }
-            else if (entity.getDistanceSq(posVec) < closestDist) {
+            else if (entity.distanceToSqr(posVec) < closestDist) {
                 closest = entity;
-                closestDist = entity.getDistanceSq(posVec);
+                closestDist = entity.distanceToSqr(posVec);
             }
         }
 
@@ -168,10 +168,10 @@ public class TileEntityDetector extends TileBCore implements IActivatableTile, I
 
         if (closest != null) {
 
-            double xDist = closest.getPosX() - (double) ((float) getPos().getX() + 0.5F);
-            double zDist = closest.getPosZ() - (double) ((float) getPos().getZ() + 0.5F);
-            double yDist = (closest.getPosY() + closest.getEyeHeight()) - (double) ((float) pos.getY() + 0.5F);
-            double dist = Utils.getDistanceAtoB(Vec3D.getCenter(pos), new Vec3D(closest));
+            double xDist = closest.getX() - (double) ((float) getBlockPos().getX() + 0.5F);
+            double zDist = closest.getZ() - (double) ((float) getBlockPos().getZ() + 0.5F);
+            double yDist = (closest.getY() + closest.getEyeHeight()) - (double) ((float) worldPosition.getY() + 0.5F);
+            double dist = Utils.getDistanceAtoB(Vec3D.getCenter(worldPosition), new Vec3D(closest));
 
 
             float thRot = (float) MathHelper.atan2(zDist, xDist);
@@ -217,8 +217,8 @@ public class TileEntityDetector extends TileBCore implements IActivatableTile, I
         //region Effects
 
 
-        ParticleStarSpark spark = new ParticleStarSpark((ClientWorld)world, Vec3D.getCenter(pos).add((-0.5 + world.rand.nextDouble()) * 0.1, 0.005, (-0.5 + world.rand.nextDouble()) * 0.1));
-        spark.setSizeAndRandMotion(0.4F * (world.rand.nextFloat() + 0.1), 0.02D, 0, 0.02D);
+        ParticleStarSpark spark = new ParticleStarSpark((ClientWorld)level, Vec3D.getCenter(worldPosition).add((-0.5 + level.random.nextDouble()) * 0.1, 0.005, (-0.5 + level.random.nextDouble()) * 0.1));
+        spark.setSizeAndRandMotion(0.4F * (level.random.nextFloat() + 0.1), 0.02D, 0, 0.02D);
         spark.setMaxAge(30, 10);
         spark.setGravity(0.0002D);
         spark.setAirResistance(0.02F);
@@ -226,12 +226,12 @@ public class TileEntityDetector extends TileBCore implements IActivatableTile, I
         //TODO particles
 //        BCEffectHandler.spawnFXDirect(DEParticles.DE_SHEET, spark);
 
-        int i = world.rand.nextInt(4);
+        int i = level.random.nextInt(4);
         double x = i / 2;
         double z = i % 2;
 
-        spark = new ParticleStarSpark((ClientWorld)world, new Vec3D(pos).add(0.14 + (x * 0.72), 0.17, 0.14 + (z * 0.72)));
-        spark.setSizeAndRandMotion(0.3F * (world.rand.nextFloat() + 0.2), 0.002D, 0, 0.002D);
+        spark = new ParticleStarSpark((ClientWorld)level, new Vec3D(worldPosition).add(0.14 + (x * 0.72), 0.17, 0.14 + (z * 0.72)));
+        spark.setSizeAndRandMotion(0.3F * (level.random.nextFloat() + 0.2), 0.002D, 0, 0.002D);
         spark.setGravity(0.0002D);
         spark.sparkSize = 0.15F;
         if (isAdvanced()) {
@@ -248,7 +248,7 @@ public class TileEntityDetector extends TileBCore implements IActivatableTile, I
     }
 
     public void doScanPulse() {
-        List<Entity> entities = entityFilter.filterEntities(world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(pos, pos.add(1, 1, 1)).grow(range.get(), range.get(), range.get())));
+        List<Entity> entities = entityFilter.filterEntities(level.getEntitiesOfClass(Entity.class, new AxisAlignedBB(worldPosition, worldPosition.offset(1, 1, 1)).inflate(range.get(), range.get(), range.get())));
 
         double min = rsMinDetection.get() - 1;
         double max = rsMaxDetection.get();
@@ -267,7 +267,7 @@ public class TileEntityDetector extends TileBCore implements IActivatableTile, I
 
         if (outputStrength.get() != output) {
             outputStrength.set((byte) output);
-            world.notifyNeighborsOfStateChange(pos, getBlockState().getBlock());
+            level.updateNeighborsAt(worldPosition, getBlockState().getBlock());
         }
 
         if (pulseRsMode.get()) {
@@ -375,13 +375,13 @@ public class TileEntityDetector extends TileBCore implements IActivatableTile, I
 
     @Override
     public boolean onBlockActivated(BlockState state, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
-        if (!world.isRemote) {
+        if (!level.isClientSide) {
 //            FMLNetworkHandler.openGui(player, DraconicEvolution.instance, GuiHandler.GUIID_ENTITY_DETECTOR, world, pos.getX(), pos.getY(), pos.getZ());
 
             MinecraftServer server = player.getServer();
             if (server != null) {
                 ListNBT list = new ListNBT();
-                for (String name : server.getPlayerList().getOnlinePlayerNames()) {
+                for (String name : server.getPlayerList().getPlayerNamesArray()) {
                     list.add(StringNBT.valueOf(name));
                 }
                 CompoundNBT compound = new CompoundNBT();
@@ -432,6 +432,6 @@ public class TileEntityDetector extends TileBCore implements IActivatableTile, I
     @OnlyIn(Dist.CLIENT)
     @Override
     public AxisAlignedBB getRenderBoundingBox() {
-        return new AxisAlignedBB(pos, pos.add(1, 1, 1));
+        return new AxisAlignedBB(worldPosition, worldPosition.offset(1, 1, 1));
     }
 }

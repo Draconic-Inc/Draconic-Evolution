@@ -22,19 +22,19 @@ public class LandingPhase extends Phase {
    @Override
    public void clientTick() {
       Vector3d vector3d = this.guardian.getHeadLookVec(1.0F).normalize();
-      vector3d.rotateYaw((-(float)Math.PI / 4F));
-      double d0 = this.guardian.dragonPartHead.getPosX();
-      double d1 = this.guardian.dragonPartHead.getPosYHeight(0.5D);
-      double d2 = this.guardian.dragonPartHead.getPosZ();
+      vector3d.yRot((-(float)Math.PI / 4F));
+      double d0 = this.guardian.dragonPartHead.getX();
+      double d1 = this.guardian.dragonPartHead.getY(0.5D);
+      double d2 = this.guardian.dragonPartHead.getZ();
 
       for(int i = 0; i < 8; ++i) {
-         Random random = this.guardian.getRNG();
+         Random random = this.guardian.getRandom();
          double d3 = d0 + random.nextGaussian() / 2.0D;
          double d4 = d1 + random.nextGaussian() / 2.0D;
          double d5 = d2 + random.nextGaussian() / 2.0D;
-         Vector3d vector3d1 = this.guardian.getMotion();
-         this.guardian.world.addParticle(ParticleTypes.DRAGON_BREATH, d3, d4, d5, -vector3d.x * (double)0.08F + vector3d1.x, -vector3d.y * (double)0.3F + vector3d1.y, -vector3d.z * (double)0.08F + vector3d1.z);
-         vector3d.rotateYaw(0.19634955F);
+         Vector3d vector3d1 = this.guardian.getDeltaMovement();
+         this.guardian.level.addParticle(ParticleTypes.DRAGON_BREATH, d3, d4, d5, -vector3d.x * (double)0.08F + vector3d1.x, -vector3d.y * (double)0.3F + vector3d1.y, -vector3d.z * (double)0.08F + vector3d1.z);
+         vector3d.yRot(0.19634955F);
       }
 
    }
@@ -42,10 +42,10 @@ public class LandingPhase extends Phase {
    @Override
    public void serverTick() {
       if (this.targetLocation == null) {
-         this.targetLocation = Vector3d.copyCenteredHorizontally(this.guardian.world.getHeight(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, EndPodiumFeature.END_PODIUM_LOCATION));
+         this.targetLocation = Vector3d.atBottomCenterOf(this.guardian.level.getHeightmapPos(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, EndPodiumFeature.END_PODIUM_LOCATION));
       }
 
-      if (this.targetLocation.squareDistanceTo(this.guardian.getPosX(), this.guardian.getPosY(), this.guardian.getPosZ()) < 1.0D) {
+      if (this.targetLocation.distanceToSqr(this.guardian.getX(), this.guardian.getY(), this.guardian.getZ()) < 1.0D) {
          this.guardian.getPhaseManager().getPhase(PhaseType.SITTING_FLAMING).resetFlameCount();
          this.guardian.getPhaseManager().setPhase(PhaseType.SITTING_SCANNING);
       }
@@ -59,7 +59,7 @@ public class LandingPhase extends Phase {
 
    @Override
    public float getYawFactor() {
-      float f = MathHelper.sqrt(Entity.horizontalMag(this.guardian.getMotion())) + 1.0F;
+      float f = MathHelper.sqrt(Entity.getHorizontalDistanceSqr(this.guardian.getDeltaMovement())) + 1.0F;
       float f1 = Math.min(f, 40.0F);
       return f1 / f;
    }

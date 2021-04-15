@@ -28,16 +28,16 @@ import javax.annotation.Nullable;
 public class Potentiometer extends BlockBCore /*implements ITileEntityProvider, IRenderOverride*/ {
 
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
-    protected static final VoxelShape AABB_DOWN = VoxelShapes.create(0.0625D, 0.9375D, 0.0625D, 0.9375D, 1.0D, 0.9375D);
-    protected static final VoxelShape AABB_UP = VoxelShapes.create(0.0625D, 0.0D, 0.0625D, 0.9375D, 0.0625D, 0.9375D);
-    protected static final VoxelShape AABB_NORTH = VoxelShapes.create(0.0625D, 0.0625D, 0.9375D, 0.9375D, 0.9375D, 1.0D);
-    protected static final VoxelShape AABB_SOUTH = VoxelShapes.create(0.0625D, 0.0625D, 0.0D, 0.9375D, 0.9375D, 0.0625D);
-    protected static final VoxelShape AABB_WEST = VoxelShapes.create(0.9375D, 0.0625D, 0.0625D, 1.0D, 0.9375D, 0.9375D);
-    protected static final VoxelShape AABB_EAST = VoxelShapes.create(0.0D, 0.0625D, 0.0625D, 0.0625D, 0.9375D, 0.9375D);
+    protected static final VoxelShape AABB_DOWN = VoxelShapes.box(0.0625D, 0.9375D, 0.0625D, 0.9375D, 1.0D, 0.9375D);
+    protected static final VoxelShape AABB_UP = VoxelShapes.box(0.0625D, 0.0D, 0.0625D, 0.9375D, 0.0625D, 0.9375D);
+    protected static final VoxelShape AABB_NORTH = VoxelShapes.box(0.0625D, 0.0625D, 0.9375D, 0.9375D, 0.9375D, 1.0D);
+    protected static final VoxelShape AABB_SOUTH = VoxelShapes.box(0.0625D, 0.0625D, 0.0D, 0.9375D, 0.9375D, 0.0625D);
+    protected static final VoxelShape AABB_WEST = VoxelShapes.box(0.9375D, 0.0625D, 0.0625D, 1.0D, 0.9375D, 0.9375D);
+    protected static final VoxelShape AABB_EAST = VoxelShapes.box(0.0D, 0.0625D, 0.0625D, 0.0625D, 0.9375D, 0.9375D);
 
     public Potentiometer(Block.Properties properties) {
         super(properties);
-        setDefaultState(stateContainer.getBaseState().with(FACING, Direction.UP));
+        registerDefaultState(stateDefinition.any().setValue(FACING, Direction.UP));
         this.canProvidePower = true;
     }
 
@@ -47,7 +47,7 @@ public class Potentiometer extends BlockBCore /*implements ITileEntityProvider, 
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
         builder.add(FACING);
     }
 
@@ -63,41 +63,41 @@ public class Potentiometer extends BlockBCore /*implements ITileEntityProvider, 
     }
 
     protected static boolean canPlaceBlock(World worldIn, BlockPos pos, Direction direction) {
-        BlockPos blockpos = pos.offset(direction);
-        return worldIn.getBlockState(blockpos).isSolidSide(worldIn, blockpos, direction.getOpposite());
+        BlockPos blockpos = pos.relative(direction);
+        return worldIn.getBlockState(blockpos).isFaceSturdy(worldIn, blockpos, direction.getOpposite());
     }
 
     @Override
-    public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
-        super.onBlockPlacedBy(world, pos, state, placer, stack);
+    public void setPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+        super.setPlacedBy(world, pos, state, placer, stack);
     }
 
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context) {
-        return canPlaceBlock(context.getWorld(), context.getPos(), context.getFace().getOpposite()) ? this.getDefaultState().with(FACING, context.getFace()) : this.getDefaultState().with(FACING, Direction.DOWN);
+        return canPlaceBlock(context.getLevel(), context.getClickedPos(), context.getClickedFace().getOpposite()) ? this.defaultBlockState().setValue(FACING, context.getClickedFace()) : this.defaultBlockState().setValue(FACING, Direction.DOWN);
     }
 
     @Override //TODO make sure this logic is not backwards
-    public boolean isValidPosition(BlockState state, IWorldReader worldIn, BlockPos pos) {
-        return hasEnoughSolidSide(worldIn, pos.offset(state.get(FACING).getOpposite()), state.get(FACING));
+    public boolean canSurvive(BlockState state, IWorldReader worldIn, BlockPos pos) {
+        return canSupportCenter(worldIn, pos.relative(state.getValue(FACING).getOpposite()), state.getValue(FACING));
     }
 
     @Override
-    public void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
-        if (!isMoving && !state.isIn(newState.getBlock())) {
-            TileEntity tile = worldIn.getTileEntity(pos);
+    public void onRemove(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
+        if (!isMoving && !state.is(newState.getBlock())) {
+            TileEntity tile = worldIn.getBlockEntity(pos);
             if (tile instanceof TilePotentiometer && ((TilePotentiometer) tile).power.get() > 0) {
                 this.updateNeighbors(state, worldIn, pos, (TilePotentiometer)tile);
             }
 
-            super.onReplaced(state, worldIn, pos, newState, isMoving);
+            super.onRemove(state, worldIn, pos, newState, isMoving);
         }
     }
 
     private void updateNeighbors(BlockState state, World world, BlockPos pos, TilePotentiometer tile) {
-        world.notifyNeighborsOfStateChange(pos, this);
-        world.notifyNeighborsOfStateChange(pos.offset(state.get(FACING).getOpposite()), this);
+        world.updateNeighborsAt(pos, this);
+        world.updateNeighborsAt(pos.relative(state.getValue(FACING).getOpposite()), this);
     }
 
     //    @Override
@@ -139,7 +139,7 @@ public class Potentiometer extends BlockBCore /*implements ITileEntityProvider, 
 
     @Override
     public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
-        Direction enumfacing = state.get(FACING);
+        Direction enumfacing = state.getValue(FACING);
 
         switch (enumfacing) {
             case EAST:

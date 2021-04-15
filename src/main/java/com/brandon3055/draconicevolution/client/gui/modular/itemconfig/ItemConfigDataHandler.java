@@ -26,9 +26,9 @@ public class ItemConfigDataHandler {
 
     public static CompoundNBT retrieveData() {
         Minecraft mc = Minecraft.getInstance();
-        if (mc.isSingleplayer()) {
-            ServerWorld world = mc.getIntegratedServer().getWorld(World.OVERWORLD);
-            SinglePlayerWorldData data = world.getSavedData().getOrCreate(SinglePlayerWorldData::new, "draconic_item_config");
+        if (mc.hasSingleplayerServer()) {
+            ServerWorld world = mc.getSingleplayerServer().getLevel(World.OVERWORLD);
+            SinglePlayerWorldData data = world.getDataStorage().computeIfAbsent(SinglePlayerWorldData::new, "draconic_item_config");
             return data.data;
         } else {
             Path file = Paths.get("./config/brandon3055/servers/" + DEConfig.serverID + ".dat");
@@ -46,11 +46,11 @@ public class ItemConfigDataHandler {
 
     public static void saveData(CompoundNBT nbt) {
         Minecraft mc = Minecraft.getInstance();
-        if (mc.isSingleplayer()) {
-            ServerWorld world = mc.getIntegratedServer().getWorld(World.OVERWORLD);
-            SinglePlayerWorldData data = world.getSavedData().getOrCreate(SinglePlayerWorldData::new, "draconic_item_config");
+        if (mc.hasSingleplayerServer()) {
+            ServerWorld world = mc.getSingleplayerServer().getLevel(World.OVERWORLD);
+            SinglePlayerWorldData data = world.getDataStorage().computeIfAbsent(SinglePlayerWorldData::new, "draconic_item_config");
             data.data = nbt;
-            data.markDirty();
+            data.setDirty();
         } else {
             Path file = Paths.get("./config/brandon3055/servers/" + DEConfig.serverID + ".dat");
             if (Files.notExists(file)) {
@@ -77,12 +77,12 @@ public class ItemConfigDataHandler {
         }
 
         @Override
-        public void read(CompoundNBT nbt) {
+        public void load(CompoundNBT nbt) {
             data = nbt;
         }
 
         @Override
-        public CompoundNBT write(CompoundNBT compound) {
+        public CompoundNBT save(CompoundNBT compound) {
             return data;
         }
     }

@@ -40,11 +40,11 @@ public class IngredientStack extends Ingredient {
         if (stack == null) {
             return false;
         } else {
-            this.determineMatchingStacks();
-            if (this.matchingStacks.length == 0) {
+            this.dissolve();
+            if (this.itemStacks.length == 0) {
                 return stack.isEmpty();
             } else {
-                for (ItemStack itemstack : this.matchingStacks) {
+                for (ItemStack itemstack : this.itemStacks) {
                     if (itemstack.getItem() == stack.getItem() && itemstack.getCount() >= count) {
                         return true;
                     }
@@ -55,10 +55,10 @@ public class IngredientStack extends Ingredient {
     }
 
     @Override
-    protected void determineMatchingStacks() {
-        if (this.matchingStacks == null) {
-            this.matchingStacks = Arrays.stream(this.acceptedItems)
-                    .flatMap((itemList) -> itemList.getStacks().stream())
+    protected void dissolve() {
+        if (this.itemStacks == null) {
+            this.itemStacks = Arrays.stream(this.values)
+                    .flatMap((itemList) -> itemList.getItems().stream())
                     .peek(stack -> stack.setCount(count))
                     .distinct()
                     .toArray(ItemStack[]::new);
@@ -71,11 +71,11 @@ public class IngredientStack extends Ingredient {
     }
 
     @Override
-    public JsonElement serialize() {
+    public JsonElement toJson() {
         JsonObject obj = new JsonObject();
         obj.addProperty("count", count);
         JsonArray jsonarray = new JsonArray();
-        for (Ingredient.IItemList ingredient$iitemlist : this.acceptedItems) {
+        for (Ingredient.IItemList ingredient$iitemlist : this.values) {
             jsonarray.add(ingredient$iitemlist.serialize());
         }
         obj.add("items", jsonarray);
@@ -86,7 +86,7 @@ public class IngredientStack extends Ingredient {
 
     public static IngredientStack fromItemListStream(Stream<? extends Ingredient.IItemList> stream, int count) {
         IngredientStack ingredient = new IngredientStack(stream, count);
-        return ingredient.acceptedItems.length == 0 ? EMPTY : ingredient;
+        return ingredient.values.length == 0 ? EMPTY : ingredient;
     }
 
     public static IngredientStack fromItems(int count, IItemProvider... itemsIn) {
@@ -110,23 +110,23 @@ public class IngredientStack extends Ingredient {
         @Override
         public IngredientStack parse(PacketBuffer buffer) {
             int count = buffer.readShort();
-            return IngredientStack.fromItemListStream(Stream.generate(() -> new Ingredient.SingleItemList(buffer.readItemStack())).limit(buffer.readVarInt()), count);
+            return IngredientStack.fromItemListStream(Stream.generate(() -> new Ingredient.SingleItemList(buffer.readItem())).limit(buffer.readVarInt()), count);
         }
 
         @Override
         public IngredientStack parse(JsonObject json) {
             int count = json.get("count").getAsShort();
             JsonArray stacks = json.get("items").getAsJsonArray();
-            return IngredientStack.fromItemListStream(Streams.stream(stacks).map(e -> Ingredient.deserializeItemList(e.getAsJsonObject())), count);
+            return IngredientStack.fromItemListStream(Streams.stream(stacks).map(e -> Ingredient.valueFromJson(e.getAsJsonObject())), count);
         }
 
         @Override
         public void write(PacketBuffer buffer, IngredientStack ingredient) {
             buffer.writeShort(ingredient.getCount());
-            ItemStack[] items = ingredient.getMatchingStacks();
+            ItemStack[] items = ingredient.getItems();
             buffer.writeVarInt(items.length);
             for (ItemStack stack : items) {
-                buffer.writeItemStack(stack);
+                buffer.writeItem(stack);
             }
         }
     }

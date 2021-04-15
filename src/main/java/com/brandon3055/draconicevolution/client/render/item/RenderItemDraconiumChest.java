@@ -8,6 +8,7 @@ import com.brandon3055.draconicevolution.client.render.tile.RenderTileDraconiumC
 import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.model.IModelTransform;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.ItemStack;
@@ -25,7 +26,7 @@ public class RenderItemDraconiumChest implements IItemRenderer {
     //region Unused
 
     @Override
-    public boolean isAmbientOcclusion() {
+    public boolean useAmbientOcclusion() {
         return true;
     }
 
@@ -35,7 +36,7 @@ public class RenderItemDraconiumChest implements IItemRenderer {
     }
 
     @Override
-    public TextureAtlasSprite getParticleTexture() {
+    public TextureAtlasSprite getParticleIcon() {
         return TextureUtils.getTexture("draconicevolution:blocks/draconium_block");
     }
 
@@ -49,12 +50,12 @@ public class RenderItemDraconiumChest implements IItemRenderer {
     }
 
     @Override
-    public ImmutableMap<ItemCameraTransforms.TransformType, TransformationMatrix> getTransforms() {
+    public IModelTransform getModelTransform() {
         return TransformUtils.DEFAULT_BLOCK;
     }
 
     @Override
-    public boolean isSideLit() {
+    public boolean usesBlockLight() {
         return false;
     }
 }

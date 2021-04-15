@@ -41,11 +41,11 @@ public class TileCoreStructure extends TileBCore implements IMultiBlockPart, IAc
 //
     @Override
     public IMultiBlockPart getController() {
-        TileEntity tile = world.getTileEntity(getCorePos());
+        TileEntity tile = level.getBlockEntity(getCorePos());
         if (tile instanceof IMultiBlockPart) {
             return (IMultiBlockPart) tile;
         }
-        else if (!world.isRemote) {
+        else if (!level.isClientSide) {
             revert();
         }
 
@@ -73,7 +73,7 @@ public class TileCoreStructure extends TileBCore implements IMultiBlockPart, IAc
             ((TileEnergyCoreStabilizer) controller).onBlockActivated(state, player, handIn, hit);
         }
         else if (controller instanceof TileEnergyCore) {
-            ((TileEnergyCore) controller).onStructureClicked(world, pos, state, player);
+            ((TileEnergyCore) controller).onStructureClicked(level, worldPosition, state, player);
         }
         else if (controller instanceof TileEnergyPylon) {
             ((TileEnergyPylon) controller).invertIO();
@@ -83,24 +83,24 @@ public class TileCoreStructure extends TileBCore implements IMultiBlockPart, IAc
     }
 
     public void revert() {
-        if (world.isRemote) return;
+        if (level.isClientSide) return;
         Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(blockName.get()));
         if (block != Blocks.AIR) {
-            world.setBlockState(pos, block.getDefaultState());
+            level.setBlockAndUpdate(worldPosition, block.defaultBlockState());
         }
         else {
-            world.removeBlock(pos, false);
+            level.removeBlock(worldPosition, false);
         }
     }
 
     public void setController(IMultiBlockPart controller) {
-        coreOffset.set(new Vec3I(pos.subtract(((TileEntity) controller).getPos())));
+        coreOffset.set(new Vec3I(worldPosition.subtract(((TileEntity) controller).getBlockPos())));
 //        DelayedTask.run(100, () -> dataManager.forceSync());
 //        ProcessHandler.addProcess(new DelayedTask.Task(10, () -> dataManager.forceSync()));
     }
 
     private BlockPos getCorePos() {
-        return pos.add(-coreOffset.get().x, -coreOffset.get().y, -coreOffset.get().z);
+        return worldPosition.offset(-coreOffset.get().x, -coreOffset.get().y, -coreOffset.get().z);
     }
 
 //    @Override

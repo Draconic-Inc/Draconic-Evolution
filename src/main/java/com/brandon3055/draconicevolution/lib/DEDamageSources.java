@@ -9,16 +9,16 @@ import net.minecraft.util.EntityDamageSource;
  */
 public class DEDamageSources {
 
-    public static final DamageSource CHAOS_ISLAND_IMPLOSION = new DamageSource("de.islandImplode").setDamageBypassesArmor().setDamageIsAbsolute();
+    public static final DamageSource CHAOS_ISLAND_IMPLOSION = new DamageSource("de.islandImplode").bypassArmor().bypassMagic();
 
     public static class DamageSourceChaos extends EntityDamageSource {
         public DamageSourceChaos(Entity entity) {
             super("chaos", entity);
-            this.setDamageBypassesArmor();
+            this.bypassArmor();
         }
 
         @Override
-        public boolean isUnblockable() {
+        public boolean isBypassArmor() {
             return true;
         }
     }

@@ -39,7 +39,7 @@ import java.util.function.Consumer;
  */
 public class ProcessExplosion implements IProcess {
 
-    public static DamageSource fusionExplosion = new DamageSource("damage.de.fusionExplode").setExplosion().setDamageBypassesArmor().setDamageIsAbsolute();
+    public static DamageSource fusionExplosion = new DamageSource("damage.de.fusionExplode").setExplosion().bypassArmor().bypassMagic();
 
     /**
      * The origin of the explosion.
@@ -96,7 +96,7 @@ public class ProcessExplosion implements IProcess {
 
         LogHelper.info("Explosion Calculation Started for " + radius + " Block radius detonation!");
         maxRadius = radius;
-        lavaState = Blocks.LAVA.getDefaultState();
+        lavaState = Blocks.LAVA.defaultBlockState();
         //TODO pyrotheum
         if (ForgeRegistries.FLUIDS.containsKey(new ResourceLocation("cofhworld", "pyrotheum"))) {
             Fluid pyro = ForgeRegistries.FLUIDS.getValue(new ResourceLocation("cofhworld", "pyrotheum"));
@@ -108,7 +108,7 @@ public class ProcessExplosion implements IProcess {
 
     @Override
     public void updateProcess() {
-        server.serverTime = Util.milliTime();
+        server.nextTickTime = Util.getMillis();
         if (startTime == -1) {
             startTime = System.currentTimeMillis();
         }
@@ -161,15 +161,15 @@ public class ProcessExplosion implements IProcess {
                     coreFalloff = 1 - ((1 - coreFalloff) * (1 - coreFalloff) * (1 - coreFalloff));
                     double coreHeight = coreFalloff * maxCoreHeight;
                     double edgeNoise = Math.max(0, (-radialPos + 0.2) * 5);
-                    double edgeScatter = edgeNoise * world.rand.nextInt(10);
+                    double edgeScatter = edgeNoise * world.random.nextInt(10);
                     double sim = SimplexNoise.noise(x / 50D, z / 50D);
                     edgeNoise = 1 + (Math.abs(sim) * edgeNoise * 8);
 
                     double power = (10000 * radialPos * radialPos * radialPos * angularLoad * edgeNoise) + edgeScatter;
                     double heightUp = 20 + ((5D + (radius / 10D)) * angularLoad);
                     double heightDown = coreHeight + ((5D + (radius / 10D)) * angularLoad * (1 - coreFalloff));
-                    heightDown += (Math.abs(sim) * 4) + world.rand.nextDouble();
-                    heightUp += (Math.abs(sim) * 4) + world.rand.nextDouble();
+                    heightDown += (Math.abs(sim) * 4) + world.random.nextDouble();
+                    heightUp += (Math.abs(sim) * 4) + world.random.nextDouble();
 
                     posVecDown.set(posVecUp);
                     double resist = trace(posVecUp, power/* * (1 + 8 * radialPos)*/, (int) heightUp * 3, 1, 0, 0);
@@ -313,7 +313,7 @@ public class ProcessExplosion implements IProcess {
         totalResist += r;
         power -= r;
 
-        if (dist == 1 && traceDir == -1 && lava && world.rand.nextInt(250) == 0 && !world.isAirBlock(pos.down())) {
+        if (dist == 1 && traceDir == -1 && lava && world.random.nextInt(250) == 0 && !world.isEmptyBlock(pos.below())) {
             dist = 0;
             if (destroyedCache.contains(iPos)) {
                 destroyedCache.remove(iPos);
@@ -358,7 +358,7 @@ public class ProcessExplosion implements IProcess {
         LogHelper.startTimer("Adding Lava");
 
         for (Integer pos : lavaPositions) {
-            world.setBlockState(shortPos.getActualPos(pos), lavaState);
+            world.setBlockAndUpdate(shortPos.getActualPos(pos), lavaState);
         }
 
         LogHelper.stopTimer();
@@ -374,17 +374,17 @@ public class ProcessExplosion implements IProcess {
 
         final BlockPos pos = origin.getPos();
         if (enableEffect) {
-            DraconicNetwork.sendExplosionEffect(world.getDimensionKey(), pos, radius * 4, false);
+            DraconicNetwork.sendExplosionEffect(world.dimension(), pos, radius * 4, false);
         }
 
         new DelayedExecutor(30) {
             @Override
             public void execute(Object[] args) {
-                List<Entity> list = world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(pos, pos.add(1, 1, 1)).grow(radius * 2.5, radius * 2.5, radius * 2.5));
+                List<Entity> list = world.getEntitiesOfClass(Entity.class, new AxisAlignedBB(pos, pos.offset(1, 1, 1)).inflate(radius * 2.5, radius * 2.5, radius * 2.5));
                 for (Entity e : list) {
                     double dist = Vec3D.getCenter(pos).distance(e);
                     float dmg = 10000F * (1F - (float) (dist / (radius * 1.2D)));
-                    e.attackEntityFrom(fusionExplosion, dmg);
+                    e.hurt(fusionExplosion, dmg);
                 }
             }
         }.run();

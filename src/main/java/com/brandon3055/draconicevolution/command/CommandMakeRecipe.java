@@ -75,7 +75,7 @@ public class CommandMakeRecipe {
     public static void register(CommandDispatcher<CommandSource> dispatcher) {
         dispatcher.register(
                 Commands.literal("gen_recipe")
-                        .requires(cs -> cs.hasPermissionLevel(3))
+                        .requires(cs -> cs.hasPermission(3))
                         .then(Commands.literal("fusion")
                                 .executes(CommandMakeRecipe::genFusion))
                         .then(Commands.literal("crafting")
@@ -84,20 +84,20 @@ public class CommandMakeRecipe {
     }
 
     private static int genFusion(CommandContext<CommandSource> ctx) throws CommandSyntaxException {
-        ServerPlayerEntity player = ctx.getSource().asPlayer();
+        ServerPlayerEntity player = ctx.getSource().getPlayerOrException();
         BlockRayTraceResult result = RayTracer.retrace(player, 10, RayTraceContext.BlockMode.OUTLINE);
         if (result.getType() != RayTraceResult.Type.BLOCK) {
             throw new CommandException(new StringTextComponent("No chest found.\nYou must be looking at a single chest with the recipe laid out on the far left and the result in the center slot.\nFor fusion recipes all slots other than center are ingredients except row 2, slot 2 which is the catalyst."));
         }
 
-        BlockPos pos = result.getPos();
-        IItemHandler handler = getInventory(player.world, pos);
+        BlockPos pos = result.getBlockPos();
+        IItemHandler handler = getInventory(player.level, pos);
         String recipe = getFusionRecipe(handler);
 
-        while (player.getHeldItemOffhand().getItem() == Items.GOLDEN_APPLE) {
-            pos = pos.up();
-            if (player.world.getTileEntity(pos) instanceof ChestTileEntity) {
-                handler = getInventory(player.world, pos);
+        while (player.getOffhandItem().getItem() == Items.GOLDEN_APPLE) {
+            pos = pos.above();
+            if (player.level.getBlockEntity(pos) instanceof ChestTileEntity) {
+                handler = getInventory(player.level, pos);
                 recipe += "\n\n" + getFusionRecipe(handler);
             } else {
                 break;
@@ -110,7 +110,7 @@ public class CommandMakeRecipe {
     }
 
     private static int genCrafting(CommandContext<CommandSource> ctx) throws CommandSyntaxException {
-        ServerPlayerEntity player = ctx.getSource().asPlayer();
+        ServerPlayerEntity player = ctx.getSource().getPlayerOrException();
 //        IItemHandler handler = getInventory(player.);
         return 0;
     }
@@ -277,7 +277,7 @@ public class CommandMakeRecipe {
     }
 
     private static IItemHandler getInventory(World world, BlockPos pos) {
-        TileEntity tile = world.getTileEntity(pos);
+        TileEntity tile = world.getBlockEntity(pos);
         if (tile instanceof ChestTileEntity) {
             LazyOptional<IItemHandler> optional = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
             if (optional.isPresent()) {

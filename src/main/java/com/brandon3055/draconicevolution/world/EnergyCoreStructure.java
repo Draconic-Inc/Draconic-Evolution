@@ -54,21 +54,21 @@ public class EnergyCoreStructure extends MultiBlockHelper {
 
         switch (tier) {
             case 1:
-                return structureTiers[0].checkStructure(core.getWorld(), core.getPos().add(offset));
+                return structureTiers[0].checkStructure(core.getLevel(), core.getBlockPos().offset(offset));
             case 2:
-                return structureTiers[1].checkStructure(core.getWorld(), core.getPos().add(offset));
+                return structureTiers[1].checkStructure(core.getLevel(), core.getBlockPos().offset(offset));
             case 3:
-                return structureTiers[2].checkStructure(core.getWorld(), core.getPos().add(offset));
+                return structureTiers[2].checkStructure(core.getLevel(), core.getBlockPos().offset(offset));
             case 4:
-                return structureTiers[3].checkStructure(core.getWorld(), core.getPos().add(offset));
+                return structureTiers[3].checkStructure(core.getLevel(), core.getBlockPos().offset(offset));
             case 5:
-                return structureTiers[4].checkStructure(core.getWorld(), core.getPos().add(offset));
+                return structureTiers[4].checkStructure(core.getLevel(), core.getBlockPos().offset(offset));
             case 6:
-                return structureTiers[5].checkStructure(core.getWorld(), core.getPos().add(offset));
+                return structureTiers[5].checkStructure(core.getLevel(), core.getBlockPos().offset(offset));
             case 7:
-                return structureTiers[6].checkStructure(core.getWorld(), core.getPos().add(offset));
+                return structureTiers[6].checkStructure(core.getLevel(), core.getBlockPos().offset(offset));
             case 8:
-                return structureTiers[7].checkStructure(core.getWorld(), core.getPos().add(offset));
+                return structureTiers[7].checkStructure(core.getLevel(), core.getBlockPos().offset(offset));
         }
         if (tier <= 0) {
             LogHelper.error("[EnergyCoreStructure] Tier value to small. As far as TileEnergyStorageCore is concerned the tiers now start at 1 not 0. This class automatically handles the conversion now");
@@ -86,28 +86,28 @@ public class EnergyCoreStructure extends MultiBlockHelper {
 
         switch (tier) {
             case 1:
-                structureTiers[0].placeStructure(core.getWorld(), core.getPos().add(offset));
+                structureTiers[0].placeStructure(core.getLevel(), core.getBlockPos().offset(offset));
                 return;
             case 2:
-                structureTiers[1].placeStructure(core.getWorld(), core.getPos().add(offset));
+                structureTiers[1].placeStructure(core.getLevel(), core.getBlockPos().offset(offset));
                 return;
             case 3:
-                structureTiers[2].placeStructure(core.getWorld(), core.getPos().add(offset));
+                structureTiers[2].placeStructure(core.getLevel(), core.getBlockPos().offset(offset));
                 return;
             case 4:
-                structureTiers[3].placeStructure(core.getWorld(), core.getPos().add(offset));
+                structureTiers[3].placeStructure(core.getLevel(), core.getBlockPos().offset(offset));
                 return;
             case 5:
-                structureTiers[4].placeStructure(core.getWorld(), core.getPos().add(offset));
+                structureTiers[4].placeStructure(core.getLevel(), core.getBlockPos().offset(offset));
                 return;
             case 6:
-                structureTiers[5].placeStructure(core.getWorld(), core.getPos().add(offset));
+                structureTiers[5].placeStructure(core.getLevel(), core.getBlockPos().offset(offset));
                 return;
             case 7:
-                structureTiers[6].placeStructure(core.getWorld(), core.getPos().add(offset));
+                structureTiers[6].placeStructure(core.getLevel(), core.getBlockPos().offset(offset));
                 return;
             case 8:
-                structureTiers[7].placeStructure(core.getWorld(), core.getPos().add(offset));
+                structureTiers[7].placeStructure(core.getLevel(), core.getBlockPos().offset(offset));
                 return;
         }
         if (tier <= 0) {
@@ -141,7 +141,7 @@ public class EnergyCoreStructure extends MultiBlockHelper {
             LogHelper.error("[EnergyCoreStructure#placeTier] What exactly were you expecting after Tier 8? Infinity.MAX_VALUE?");
         }
         else {
-            structureTiers[tier].forEachInStructure(core.getWorld(), core.getPos().add(getCoreOffset(tier + 1)), flag);
+            structureTiers[tier].forEachInStructure(core.getLevel(), core.getBlockPos().offset(getCoreOffset(tier + 1)), flag);
         }
     }
 
@@ -158,7 +158,7 @@ public class EnergyCoreStructure extends MultiBlockHelper {
         //region Render Build Guide
 
         if (flag == FLAG_RENDER) {
-            if (world.isRemote) {
+            if (world.isClientSide) {
                 renderBuildGuide(name, world, pos, startPos, flag);
             }
         }
@@ -168,8 +168,8 @@ public class EnergyCoreStructure extends MultiBlockHelper {
         //region Activate
 
         else if (flag == FLAG_FORME) {
-            world.setBlockState(pos, DEContent.energy_core_structure.getDefaultState());
-            TileEntity tile = world.getTileEntity(pos);
+            world.setBlockAndUpdate(pos, DEContent.energy_core_structure.defaultBlockState());
+            TileEntity tile = world.getBlockEntity(pos);
             if (tile instanceof TileCoreStructure) {
                 ((TileCoreStructure) tile).blockName.set(name);
                 ((TileCoreStructure) tile).setController(core);
@@ -181,7 +181,7 @@ public class EnergyCoreStructure extends MultiBlockHelper {
         //region Deactivate
 
         else if (flag == FLAG_REVERT) {
-            TileEntity tile = world.getTileEntity(pos);
+            TileEntity tile = world.getBlockEntity(pos);
             if (tile instanceof TileCoreStructure) {
                 ((TileCoreStructure) tile).revert();
             }
@@ -203,7 +203,7 @@ public class EnergyCoreStructure extends MultiBlockHelper {
         }
 
         BlockState atPos = world.getBlockState(pos);
-        boolean invalid = !world.isAirBlock(pos) && (atPos.getBlock().getRegistryName() == null || !atPos.getBlock().getRegistryName().toString().equals(name));
+        boolean invalid = !world.isEmptyBlock(pos) && (atPos.getBlock().getRegistryName() == null || !atPos.getBlock().getRegistryName().toString().equals(name));
 
         if (dist + 2 > pDist && !invalid) {
             return;
@@ -214,14 +214,14 @@ public class EnergyCoreStructure extends MultiBlockHelper {
         }
 
         BlockPos translation = new BlockPos(pos.getX() - startPos.getX(), pos.getY() - startPos.getY(), pos.getZ() - startPos.getZ());
-        translation = translation.add(getCoreOffset(core.tier.get()));
+        translation = translation.offset(getCoreOffset(core.tier.get()));
 
         int alpha = 0xFF000000;
         if (invalid) {
             alpha = (int) (((Math.sin(ClientEventHandler.elapsedTicks / 20D) + 1D) / 2D) * 255D) << 24;
         }
 
-        BlockState state = block.getDefaultState();
+        BlockState state = block.defaultBlockState();
 
         RenderSystem.pushMatrix();
         RenderSystem.translated(translation.getX(), translation.getY(), translation.getZ());
@@ -1100,7 +1100,7 @@ public class EnergyCoreStructure extends MultiBlockHelper {
 
     @Override
     public boolean checkBlock(String name, World world, BlockPos pos) {
-        TileEntity tile = world.getTileEntity(pos);
+        TileEntity tile = world.getBlockEntity(pos);
         if (tile instanceof TileCoreStructure && ((TileCoreStructure) tile).blockName.get().equals(name)) {
             return true;
         }

@@ -2,7 +2,6 @@ package com.brandon3055.draconicevolution.items;
 
 import com.brandon3055.brandonscore.items.ItemBCore;
 import com.brandon3055.draconicevolution.DraconicEvolution;
-//import com.brandon3055.projectintelligence.api.PiAPI;
 import com.brandon3055.draconicevolution.client.gui.WhatsBrokenGui;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
@@ -13,6 +12,8 @@ import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import net.minecraft.item.Item.Properties;
 
 /**
  * Created by brandon3055 on 22/09/2016.
@@ -26,11 +27,11 @@ public class InfoTablet extends Item {
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand hand) {
-        if (worldIn.isRemote) {
+    public ActionResult<ItemStack> use(World worldIn, PlayerEntity playerIn, Hand hand) {
+        if (worldIn.isClientSide) {
             openPIGui();
         }
-        return super.onItemRightClick(worldIn, playerIn, hand);
+        return super.use(worldIn, playerIn, hand);
     }
 
 
@@ -39,7 +40,7 @@ public class InfoTablet extends Item {
 //        if (Loader.isModLoaded("projectintelligence")) {
 //            return doOpenPiGui();
 //        }
-        Minecraft.getInstance().displayGuiScreen(new WhatsBrokenGui());
+        Minecraft.getInstance().setScreen(new WhatsBrokenGui());
 //        return false;
     }
 

@@ -62,13 +62,13 @@ public class TileParticleGenerator extends TileBCBase implements ITickableTileEn
     public void tick() {
         super.tick();
 
-        if (world.isRemote && (inverted.get() != world.isBlockPowered(pos))) {
+        if (level.isClientSide && (inverted.get() != level.hasNeighborSignal(worldPosition))) {
             if (tick >= delay.get()) {
-                Random rand = world.rand;
+                Random rand = level.random;
 
-                final double X = pos.getX() + spawnX.get() + randomSpawnX.get() * rand.nextDouble() + .5D;
-                final double Y = pos.getY() + spawnY.get() + randomSpawnY.get() * rand.nextDouble() + .5D;
-                final double Z = pos.getZ() + spawnZ.get() + randomSpawnZ.get() * rand.nextDouble() + .5D;
+                final double X = worldPosition.getX() + spawnX.get() + randomSpawnX.get() * rand.nextDouble() + .5D;
+                final double Y = worldPosition.getY() + spawnY.get() + randomSpawnY.get() * rand.nextDouble() + .5D;
+                final double Z = worldPosition.getZ() + spawnZ.get() + randomSpawnZ.get() * rand.nextDouble() + .5D;
                 final double MX = motionX.get() + randomMotionX.get() * rand.nextDouble();
                 final double MY = motionY.get() + randomMotionY.get() * rand.nextDouble();
                 final double MZ = motionZ.get() + randomMotionZ.get() * rand.nextDouble();

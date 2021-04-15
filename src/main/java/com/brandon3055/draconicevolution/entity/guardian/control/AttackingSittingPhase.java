@@ -12,7 +12,7 @@ public class AttackingSittingPhase extends SittingPhase {
    }
 
    public void clientTick() {
-      this.guardian.world.playSound(this.guardian.getPosX(), this.guardian.getPosY(), this.guardian.getPosZ(), SoundEvents.ENTITY_ENDER_DRAGON_GROWL, this.guardian.getSoundCategory(), 2.5F, 0.8F + this.guardian.getRNG().nextFloat() * 0.3F, false);
+      this.guardian.level.playLocalSound(this.guardian.getX(), this.guardian.getY(), this.guardian.getZ(), SoundEvents.ENDER_DRAGON_GROWL, this.guardian.getSoundSource(), 2.5F, 0.8F + this.guardian.getRandom().nextFloat() * 0.3F, false);
    }
 
    public void serverTick() {

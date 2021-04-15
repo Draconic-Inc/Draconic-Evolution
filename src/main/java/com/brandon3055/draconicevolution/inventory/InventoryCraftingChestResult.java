@@ -20,7 +20,7 @@ public class InventoryCraftingChestResult extends CraftResultInventory {
      * Returns the number of slots in the inventory.
      */
     @Override
-    public int getSizeInventory() {
+    public int getContainerSize() {
         return 1;
     }
 
@@ -28,7 +28,7 @@ public class InventoryCraftingChestResult extends CraftResultInventory {
      * Returns the stack in slot i
      */
     @Override
-    public ItemStack getStackInSlot(int par1) {
+    public ItemStack getItem(int par1) {
         return tile.getStackInCraftingSlot(0);// this.stackResult[0];
     }
 
@@ -53,7 +53,7 @@ public class InventoryCraftingChestResult extends CraftResultInventory {
      * (second arg) of items and returns them in a new stack.
      */
     @Override
-    public ItemStack decrStackSize(int par1, int par2) {
+    public ItemStack removeItem(int par1, int par2) {
         ItemStack stack = tile.getStackInCraftingSlot(0);
         if (!stack.isEmpty()) {
             tile.setInventoryCraftingSlotContents(0, ItemStack.EMPTY);
@@ -70,7 +70,7 @@ public class InventoryCraftingChestResult extends CraftResultInventory {
      * GUI.
      */
     @Override
-    public ItemStack removeStackFromSlot(int par1) {
+    public ItemStack removeItemNoUpdate(int par1) {
         return ItemStack.EMPTY;
     }
 
@@ -79,7 +79,7 @@ public class InventoryCraftingChestResult extends CraftResultInventory {
      * crafting or armor sections).
      */
     @Override
-    public void setInventorySlotContents(int par1, ItemStack par2ItemStack) {
+    public void setItem(int par1, ItemStack par2ItemStack) {
         tile.setInventoryCraftingSlotContents(0, par2ItemStack);
     }
 
@@ -88,7 +88,7 @@ public class InventoryCraftingChestResult extends CraftResultInventory {
      * 64, possibly will be extended. *Isn't this more of a set than a get?*
      */
     @Override
-    public int getInventoryStackLimit() {
+    public int getMaxStackSize() {
         return 64;
     }
 
@@ -96,7 +96,7 @@ public class InventoryCraftingChestResult extends CraftResultInventory {
      * Called when an the contents of an Inventory change, usually
      */
     @Override
-    public void markDirty() {
+    public void setChanged() {
     }
 
     /**
@@ -104,7 +104,7 @@ public class InventoryCraftingChestResult extends CraftResultInventory {
      * with Container
      */
     @Override
-    public boolean isUsableByPlayer(PlayerEntity par1EntityPlayer) {
+    public boolean stillValid(PlayerEntity par1EntityPlayer) {
         return true;
     }
 

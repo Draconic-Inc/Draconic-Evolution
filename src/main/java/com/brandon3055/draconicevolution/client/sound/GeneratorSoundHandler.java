@@ -32,7 +32,7 @@ public class GeneratorSoundHandler implements ISidedTileHandler {
         if (!tile.active.get()) {
             if (activeSound != null) {
                 activeSound.fadeDown = true;
-                if (activeSound.isDonePlaying()) {
+                if (activeSound.isStopped()) {
                     activeSound = null;
                 }
             }
@@ -40,15 +40,15 @@ public class GeneratorSoundHandler implements ISidedTileHandler {
         }
 
         TileGenerator.Mode mode = tile.mode.get();
-        if (activeSound == null || activeSound.isDonePlaying()) {
+        if (activeSound == null || activeSound.isStopped()) {
             if (mode.index >= 2) {
                 activeSound = new GeneratorSound(tile, DESounds.generator2, startHigh ? 1.5F : 0.5F);
-                Minecraft.getInstance().getSoundHandler().play(activeSound);
+                Minecraft.getInstance().getSoundManager().play(activeSound);
                 currentHigh = true;
             }
             else {
                 activeSound = new GeneratorSound(tile, DESounds.generator1, startHigh ? 1F : 0.5F);
-                Minecraft.getInstance().getSoundHandler().play(activeSound);
+                Minecraft.getInstance().getSoundManager().play(activeSound);
                 currentHigh = false;
             }
         }
@@ -81,23 +81,23 @@ public class GeneratorSoundHandler implements ISidedTileHandler {
         boolean fadeDown = false;
 
         public GeneratorSound(TileGenerator tile, SoundEvent sound, float startPitch) {
-            super(sound, SoundCategory.BLOCKS, 0.3F, 1F, tile.getPos());
+            super(sound, SoundCategory.BLOCKS, 0.3F, 1F, tile.getBlockPos());
             this.tile = tile;
-            this.repeat = true;
+            this.looping = true;
             this.pitch = startPitch;
             this.targetPitch = startPitch;
         }
 
         @Override
-        public boolean isDonePlaying() {
+        public boolean isStopped() {
             return donePlaying;
         }
 
         @Override
         public void tick() {
-            x = (float) tile.getPos().getX() + 0.5F;
-            y = (float) tile.getPos().getY() + 0.5F;
-            z = (float) tile.getPos().getZ() + 0.5F;
+            x = (float) tile.getBlockPos().getX() + 0.5F;
+            y = (float) tile.getBlockPos().getY() + 0.5F;
+            z = (float) tile.getBlockPos().getZ() + 0.5F;
 
             if (fadeUp) {
                 targetPitch = 1.5F;
@@ -108,7 +108,7 @@ public class GeneratorSoundHandler implements ISidedTileHandler {
 
             if (((fadeUp && pitch >= 1) || (fadeDown && pitch <= 0.55)) || tile.isRemoved()) {
                 donePlaying = true;
-                repeat = false;
+                looping = false;
             }
 
             pitch = (float) MathHelper.approachExp(pitch, targetPitch, 0.05);

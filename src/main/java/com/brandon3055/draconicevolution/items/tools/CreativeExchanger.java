@@ -37,7 +37,7 @@ public class CreativeExchanger extends ItemBCore implements IConfigurableItem, I
     //region Basic
 
     @Override
-    public boolean hasEffect(ItemStack stack) {
+    public boolean isFoil(ItemStack stack) {
         return true;
     }
 
@@ -62,48 +62,48 @@ public class CreativeExchanger extends ItemBCore implements IConfigurableItem, I
     //region Interaction
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
-        ItemStack stack = player.getHeldItem(hand);
+    public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
+        ItemStack stack = player.getItemInHand(hand);
         BlockRayTraceResult traceResult = RayTracer.retrace(player);
 
         if (traceResult != null) {
-            return super.onItemRightClick(world, player, hand);
+            return super.use(world, player, hand);
         }
 
-        if (world.isRemote) {
-            return super.onItemRightClick(world, player, hand);
+        if (world.isClientSide) {
+            return super.use(world, player, hand);
         }
 
-        if (player.isSneaking()) {
-            player.sendMessage(new StringTextComponent(TextFormatting.DARK_RED + "Clear Mode"), Util.DUMMY_UUID);
+        if (player.isShiftKeyDown()) {
+            player.sendMessage(new StringTextComponent(TextFormatting.DARK_RED + "Clear Mode"), Util.NIL_UUID);
             ItemNBTHelper.setString(stack, "BlockName", "");
             ItemNBTHelper.setByte(stack, "BlockData", (byte) 0);
-            return super.onItemRightClick(world, player, hand);
+            return super.use(world, player, hand);
         }
 
-        return super.onItemRightClick(world, player, hand);
+        return super.use(world, player, hand);
     }
 
     @Override
     public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
-        World world = context.getWorld();
+        World world = context.getLevel();
         PlayerEntity player = context.getPlayer();
-        BlockPos pos = context.getPos();
+        BlockPos pos = context.getClickedPos();
 
-        if (world.isRemote) {
+        if (world.isClientSide) {
             return ActionResultType.PASS;
         }
 
         BlockState prevState = world.getBlockState(pos);
 
-        if (player.isSneaking()) {
+        if (player.isShiftKeyDown()) {
             String name = prevState.getBlock().getRegistryName().toString();
 //            int data = prevState.getBlock().getMetaFromState(prevState);
 
             ItemNBTHelper.setString(stack, "BlockName", name);
 //            ItemNBTHelper.setByte(stack, "BlockData", (byte) data);
 
-            Item item = Item.getItemFromBlock(prevState.getBlock());
+            Item item = Item.byBlock(prevState.getBlock());
 
             if (item != null) {
 //                player.sendMessage(new StringTextComponent("Selected: " + new TranslationTextComponent(item.getTranslationKey(new ItemStack(item, 1, data)) + ".name").getFormattedText()).setStyle(new Style().setColor(TextFormatting.GREEN)));
@@ -158,7 +158,7 @@ public class CreativeExchanger extends ItemBCore implements IConfigurableItem, I
     }
 
     @Override
-    public boolean canHarvestBlock(BlockState blockIn) {
+    public boolean isCorrectToolForDrops(BlockState blockIn) {
         return false;
     }
 
@@ -205,7 +205,7 @@ public class CreativeExchanger extends ItemBCore implements IConfigurableItem, I
     private static void scanBlocks(World world, BlockPos pos, BlockPos origin, BlockState originState, Direction side, int range, boolean replaceSame, boolean replaceVisible, boolean fillLogic, List<BlockPos> toReplace, List<BlockPos> scanned) {
 
         for (Direction dir : FacingUtils.getFacingsAroundAxis(side.getAxis())) {
-            BlockPos newPos = pos.offset(dir);
+            BlockPos newPos = pos.relative(dir);
 
             if (scanned.contains(newPos) || !isInRange(origin, newPos, range)) {
                 continue;
@@ -247,7 +247,7 @@ public class CreativeExchanger extends ItemBCore implements IConfigurableItem, I
         displayList.add(opMode);
 
         for (IItemConfigField field : registry.getFields()) {
-            displayList.add(InfoHelper.ITC() + I18n.format(field.getUnlocalizedName()) + ": " + InfoHelper.HITC() + field.getReadableValue());
+            displayList.add(InfoHelper.ITC() + I18n.get(field.getUnlocalizedName()) + ": " + InfoHelper.HITC() + field.getReadableValue());
         }
     }
 

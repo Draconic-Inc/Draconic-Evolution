@@ -92,13 +92,13 @@ public class OreDoublingRegistry {
             return stackToStackRecipes.get(stack);
         }
 
-        FurnaceRecipe recipe = world.getRecipeManager().getRecipe(IRecipeType.SMELTING, new RecipeWrapper(new Wrap(stack)), world).orElse(null);
-        return recipe == null ? ItemStack.EMPTY : recipe.getCraftingResult(new RecipeWrapper(new Wrap(stack)));
+        FurnaceRecipe recipe = world.getRecipeManager().getRecipeFor(IRecipeType.SMELTING, new RecipeWrapper(new Wrap(stack)), world).orElse(null);
+        return recipe == null ? ItemStack.EMPTY : recipe.assemble(new RecipeWrapper(new Wrap(stack)));
     }
 
     public static ItemStack getSmeltingResult(ItemStack stack, World world) {
-        FurnaceRecipe recipe = world.getRecipeManager().getRecipe(IRecipeType.SMELTING, new RecipeWrapper(new Wrap(stack)), world).orElse(null);
-        return recipe == null ? ItemStack.EMPTY : recipe.getCraftingResult(new RecipeWrapper(new Wrap(stack)));
+        FurnaceRecipe recipe = world.getRecipeManager().getRecipeFor(IRecipeType.SMELTING, new RecipeWrapper(new Wrap(stack)), world).orElse(null);
+        return recipe == null ? ItemStack.EMPTY : recipe.assemble(new RecipeWrapper(new Wrap(stack)));
     }
 
     private static void registerDEOverrides() {

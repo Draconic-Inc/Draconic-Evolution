@@ -45,11 +45,11 @@ public class RenderLootCore extends EntityRenderer<EntityLootCore> {
         ccrs.reset();
 //        ccrs.startDrawing(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_NORMAL);
         float yOffset = MathHelper.sin(((float) ClientEventHandler.elapsedTicks + partialTicks) / 10.0F) * 0.1F + 0.1F;
-        Matrix4 pearlMat = RenderUtils.getMatrix(new Vector3(x, y + (entity.getHeight() / 2) + yOffset, z), new Rotation(((float) (ClientEventHandler.elapsedTicks + entity.timeOffset) + partialTicks) / 30F, new Vector3(entity.rotX, entity.rotY, 0).normalize()), 0.1);
+        Matrix4 pearlMat = RenderUtils.getMatrix(new Vector3(x, y + (entity.getBbHeight() / 2) + yOffset, z), new Rotation(((float) (ClientEventHandler.elapsedTicks + entity.timeOffset) + partialTicks) / 30F, new Vector3(entity.rotX, entity.rotY, 0).normalize()), 0.1);
         CCModelLibrary.icosahedron7.render(ccrs, pearlMat);
         ccrs.draw();
 
-        entity.isLooking = Minecraft.getInstance().getRenderManager().pointedEntity == entity;
+        entity.isLooking = Minecraft.getInstance().getEntityRenderDispatcher().crosshairPickEntity == entity;
 
         if (entity.lookAnimation > 0F) {
 //            float f = this.renderManager.playerViewY;
@@ -76,7 +76,7 @@ public class RenderLootCore extends EntityRenderer<EntityLootCore> {
 
         RenderSystem.disableTexture();
         Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder vertexbuffer = tessellator.getBuffer();
+        BufferBuilder vertexbuffer = tessellator.getBuilder();
         vertexbuffer.begin(7, DefaultVertexFormats.POSITION_COLOR);
 
         double scale = lootCore.lookAnimation;
@@ -93,7 +93,7 @@ public class RenderLootCore extends EntityRenderer<EntityLootCore> {
         renderBox(vertexbuffer, xPos - 1, yPos + height, width + 2, 1, 0x60AAAAAA);
         renderBox(vertexbuffer, xPos, yPos, width, height, 0x60000000);
 
-        tessellator.draw();
+        tessellator.end();
         RenderSystem.enableTexture();
 
         if (lootCore.lookAnimation >= 1F) {
@@ -103,9 +103,9 @@ public class RenderLootCore extends EntityRenderer<EntityLootCore> {
             RenderSystem.scaled(9, 9, 9);
             RenderSystem.rotatef(180, 1, 0, 0);
             RenderSystem.popMatrix();
-            String name = I18n.format("entity.draconicevolution:lootCore.name");
-            int w = renderer.getStringWidth(name);
-            renderer.drawString(new MatrixStack(), name, 11 - (w / 2F), (int) yPos - 10, -1);
+            String name = I18n.get("entity.draconicevolution:lootCore.name");
+            int w = renderer.width(name);
+            renderer.draw(new MatrixStack(), name, 11 - (w / 2F), (int) yPos - 10, -1);
 
             int row = 0;
             for (ItemStack stack : lootCore.displayMap.keySet()) {
@@ -116,7 +116,7 @@ public class RenderLootCore extends EntityRenderer<EntityLootCore> {
                 RenderSystem.rotatef(180, 1, 0, 0);
 //                Minecraft.getInstance().getItemRenderer().renderItem(stack, ItemCameraTransforms.TransformType.FIXED);
                 RenderSystem.popMatrix();
-                renderer.drawString(new MatrixStack(), "x" + lootCore.displayMap.get(stack), 0, -4 + rowY, -1);
+                renderer.draw(new MatrixStack(), "x" + lootCore.displayMap.get(stack), 0, -4 + rowY, -1);
                 row++;
             }
         }
@@ -133,14 +133,14 @@ public class RenderLootCore extends EntityRenderer<EntityLootCore> {
     private void renderBox(BufferBuilder buffer, double x, double y, double width, double height, int colour) {
         ColourARGB colourARGB = new ColourARGB(colour);
         double zLevel = 0;
-        buffer.pos(x, y + height, zLevel).color(colourARGB.r / 255F, colourARGB.g / 255F, colourARGB.b / 255F, colourARGB.a / 255F).endVertex();
-        buffer.pos(x + width, y + height, zLevel).color(colourARGB.r / 255F, colourARGB.g / 255F, colourARGB.b / 255F, colourARGB.a / 255F).endVertex();
-        buffer.pos(x + width, y, zLevel).color(colourARGB.r / 255F, colourARGB.g / 255F, colourARGB.b / 255F, colourARGB.a / 255F).endVertex();
-        buffer.pos(x, y, zLevel).color(colourARGB.r / 255F, colourARGB.g / 255F, colourARGB.b / 255F, colourARGB.a / 255F).endVertex();
+        buffer.vertex(x, y + height, zLevel).color(colourARGB.r / 255F, colourARGB.g / 255F, colourARGB.b / 255F, colourARGB.a / 255F).endVertex();
+        buffer.vertex(x + width, y + height, zLevel).color(colourARGB.r / 255F, colourARGB.g / 255F, colourARGB.b / 255F, colourARGB.a / 255F).endVertex();
+        buffer.vertex(x + width, y, zLevel).color(colourARGB.r / 255F, colourARGB.g / 255F, colourARGB.b / 255F, colourARGB.a / 255F).endVertex();
+        buffer.vertex(x, y, zLevel).color(colourARGB.r / 255F, colourARGB.g / 255F, colourARGB.b / 255F, colourARGB.a / 255F).endVertex();
     }
 
     @Override
-    public ResourceLocation getEntityTexture(EntityLootCore entity) {
+    public ResourceLocation getTextureLocation(EntityLootCore entity) {
         return ResourceHelperDE.getResource("textures/items/loot_core.png");
     }
 

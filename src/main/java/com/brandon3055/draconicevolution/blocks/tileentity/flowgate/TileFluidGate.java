@@ -22,6 +22,8 @@ import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nonnull;
 
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
+
 /**
  * Created by brandon3055 on 15/11/2016.
  */
@@ -150,7 +152,7 @@ public class TileFluidGate extends TileFlowGate implements IFluidHandler {
     @Override
     public boolean onBlockActivated(BlockState state, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
         if (player instanceof ServerPlayerEntity) {
-            NetworkHooks.openGui((ServerPlayerEntity) player, this, pos);
+            NetworkHooks.openGui((ServerPlayerEntity) player, this, worldPosition);
         }
         return true;
     }

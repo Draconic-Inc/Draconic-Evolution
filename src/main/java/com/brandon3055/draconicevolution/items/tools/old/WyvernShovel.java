@@ -72,12 +72,12 @@ public class WyvernShovel extends MiningToolBase {
     }
 
     @Override
-    public ActionResultType onItemUse(ItemUseContext context) {
-        ItemStack stack = context.getItem();
+    public ActionResultType useOn(ItemUseContext context) {
+        ItemStack stack = context.getItemInHand();
         PlayerEntity player = context.getPlayer();
-        World world = context.getWorld();
-        BlockPos pos = context.getPos();
-        Direction facing = context.getFace();
+        World world = context.getLevel();
+        BlockPos pos = context.getClickedPos();
+        Direction facing = context.getClickedFace();
 
         if (!flattenBlock(stack, player, world, pos, facing)) {
             if (world.getBlockState(pos).getBlock() != Blocks.GRASS_PATH) {
@@ -88,22 +88,22 @@ public class WyvernShovel extends MiningToolBase {
             modifyEnergy(stack, -energyPerOperation);
         }
 
-        if (player.isSneaking()) {
+        if (player.isShiftKeyDown()) {
             return ActionResultType.SUCCESS;
         }
 
         int AOE = ToolConfigHelper.getIntegerField("digAOE", stack);
 
-        Iterable<BlockPos> blocks = BlockPos.getAllInBoxMutable(pos.add(-AOE, 0, -AOE), pos.add(AOE, 0, AOE));
+        Iterable<BlockPos> blocks = BlockPos.betweenClosed(pos.offset(-AOE, 0, -AOE), pos.offset(AOE, 0, AOE));
 
         for (BlockPos aoePos : blocks) {
             if (aoePos.equals(pos)) {
                 continue;
             }
 
-            BlockState repState = world.getBlockState(aoePos.up());
+            BlockState repState = world.getBlockState(aoePos.above());
             boolean replaceable = repState.getMaterial().isReplaceable();
-            if (world.isAirBlock(aoePos) || !replaceable) {
+            if (world.isEmptyBlock(aoePos) || !replaceable) {
                 continue;
             }
 
@@ -115,10 +115,10 @@ public class WyvernShovel extends MiningToolBase {
     }
 
     private boolean flattenBlock(ItemStack stack, PlayerEntity player, World world, BlockPos pos, Direction face) {
-        if (getEnergyStored(stack) < energyPerOperation && !player.abilities.isCreativeMode) {
+        if (getEnergyStored(stack) < energyPerOperation && !player.abilities.instabuild) {
             return false;
         }
-        else if (!player.canPlayerEdit(pos, face, stack)) {
+        else if (!player.mayUseItemAt(pos, face, stack)) {
             return false;
         }
         else {
@@ -126,13 +126,13 @@ public class WyvernShovel extends MiningToolBase {
             Block block = iblockstate.getBlock();
 
             if (face != Direction.DOWN && block == Blocks.GRASS) {
-                world.playSound(player, pos, SoundEvents.ITEM_SHOVEL_FLATTEN, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                world.playSound(player, pos, SoundEvents.SHOVEL_FLATTEN, SoundCategory.BLOCKS, 1.0F, 1.0F);
 
-                if (!world.isRemote) {
-                    if (!world.isAirBlock(pos.up())) {
-                        world.removeBlock(pos.up(), false);
+                if (!world.isClientSide) {
+                    if (!world.isEmptyBlock(pos.above())) {
+                        world.removeBlock(pos.above(), false);
                     }
-                    setBlock(player, world, pos, Blocks.GRASS_PATH.getDefaultState());
+                    setBlock(player, world, pos, Blocks.GRASS_PATH.defaultBlockState());
                 }
 
                 return true;
@@ -143,10 +143,10 @@ public class WyvernShovel extends MiningToolBase {
     }
 
     protected void setBlock(PlayerEntity player, World worldIn, BlockPos pos, BlockState state) {
-        worldIn.playSound(player, pos, SoundEvents.ITEM_SHOVEL_FLATTEN, SoundCategory.BLOCKS, 1.0F, 1.0F);
+        worldIn.playSound(player, pos, SoundEvents.SHOVEL_FLATTEN, SoundCategory.BLOCKS, 1.0F, 1.0F);
 
-        if (!worldIn.isRemote) {
-            worldIn.setBlockState(pos, state, 11);
+        if (!worldIn.isClientSide) {
+            worldIn.setBlock(pos, state, 11);
         }
     }
 

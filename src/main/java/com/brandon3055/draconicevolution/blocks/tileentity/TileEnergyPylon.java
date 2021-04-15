@@ -134,18 +134,18 @@ public class TileEnergyPylon extends TileBCore implements ITickableTileEntity, I
             updateComparators();
         }
 
-        if (!world.isRemote && isOutputMode.get()) {
+        if (!level.isClientSide && isOutputMode.get()) {
             long extracted = getCore().extractEnergy(sendEnergyToAll(opAdapter.getOPStored(), opAdapter.getOPStored()), false);
             if (extracted > 0) {
                 particleRate.set((byte) Math.min(20, extracted < 500 ? 1 : extracted / 500));
             }
         }
 
-        if (world.isRemote) {
+        if (level.isClientSide) {
             spawnParticles();
         }
 
-        if (!world.isRemote && (particleRate.get() > 1 || (particleRate.get() > 0 && world.rand.nextInt(2) == 0))) {
+        if (!level.isClientSide && (particleRate.get() > 1 || (particleRate.get() > 0 && level.random.nextInt(2) == 0))) {
             particleRate.subtract((byte) 2);
         }
     }
@@ -154,7 +154,7 @@ public class TileEnergyPylon extends TileBCore implements ITickableTileEntity, I
         int cOut = (int) (((double) getExtendedStorage() / getExtendedCapacity()) * 15D);
         if (cOut != lastCompOverride) {
             lastCompOverride = cOut;
-            world.notifyNeighborsOfStateChange(pos, getBlockState().getBlock());
+            level.updateNeighborsAt(worldPosition, getBlockState().getBlock());
         }
     }
 
@@ -162,22 +162,22 @@ public class TileEnergyPylon extends TileBCore implements ITickableTileEntity, I
 
     public void invertIO() {
         isOutputMode.invert();
-        world.setBlockState(pos, world.getBlockState(pos).with(EnergyPylon.OUTPUT, isOutputMode.get()));
+        level.setBlockAndUpdate(worldPosition, level.getBlockState(worldPosition).setValue(EnergyPylon.OUTPUT, isOutputMode.get()));
     }
 
     private TileEnergyCore getCore() {
         if (hasCoreLock.get()) {
-            BlockPos corePos = pos.subtract(coreOffset.get().getPos());
-            Chunk coreChunk = world.getChunkAt(corePos);
+            BlockPos corePos = worldPosition.subtract(coreOffset.get().getPos());
+            Chunk coreChunk = level.getChunkAt(corePos);
 
-            if (!world.isAreaLoaded(corePos, 16)) {
+            if (!level.isAreaLoaded(corePos, 16)) {
                 core = null;
                 return null;
             }
 
-            TileEntity tileAtPos = coreChunk.getTileEntity(corePos, Chunk.CreateEntityType.CHECK);
+            TileEntity tileAtPos = coreChunk.getBlockEntity(corePos, Chunk.CreateEntityType.CHECK);
             if (tileAtPos == null || core == null || tileAtPos != core) {
-                TileEntity tile = world.getTileEntity(corePos);
+                TileEntity tile = level.getBlockEntity(corePos);
 
                 if (tile instanceof TileEnergyCore) {
                     core = (TileEnergyCore) tile;
@@ -195,11 +195,11 @@ public class TileEnergyPylon extends TileBCore implements ITickableTileEntity, I
         int yMod = sphereOnTop.get() ? 18 : -18;
         int range = 18;
 
-        Iterable<BlockPos> positions = BlockPos.getAllInBoxMutable(pos.add(-range, -range + yMod, -range), pos.add(range, range + yMod, range));
+        Iterable<BlockPos> positions = BlockPos.betweenClosed(worldPosition.offset(-range, -range + yMod, -range), worldPosition.offset(range, range + yMod, range));
 
         for (BlockPos blockPos : positions) {
-            if (world.getBlockState(blockPos).getBlock() == DEContent.energy_core) {
-                TileEntity tile = world.getTileEntity(blockPos);
+            if (level.getBlockState(blockPos).getBlock() == DEContent.energy_core) {
+                TileEntity tile = level.getBlockEntity(blockPos);
                 if (tile instanceof TileEnergyCore && ((TileEnergyCore) tile).active.get()) {
                     list.add(((TileEnergyCore) tile));
                 }
@@ -210,7 +210,7 @@ public class TileEnergyPylon extends TileBCore implements ITickableTileEntity, I
     }
 
     public void selectNextCore() {
-        if (world.isRemote) {
+        if (level.isClientSide) {
             return;
         }
         List<TileEnergyCore> cores = findActiveCores();
@@ -225,10 +225,10 @@ public class TileEnergyPylon extends TileBCore implements ITickableTileEntity, I
         }
 
         TileEnergyCore selectedCore = cores.get(coreSelection);
-        coreOffset.set(new Vec3I(pos.subtract(selectedCore.getPos())));
+        coreOffset.set(new Vec3I(worldPosition.subtract(selectedCore.getBlockPos())));
         core = selectedCore;
         hasCoreLock.set(true);
-        world.notifyNeighborsOfStateChange(pos, getBlockState().getBlock());
+        level.updateNeighborsAt(worldPosition, getBlockState().getBlock());
         coreSelection++;
 
         if (hasCoreLock.get()) {
@@ -241,26 +241,26 @@ public class TileEnergyPylon extends TileBCore implements ITickableTileEntity, I
     @Override
     public boolean validateStructure() {
         if (!structureValid.get()) {
-            if (world.getBlockState(pos.add(0, 1, 0)).getBlock() == Blocks.GLASS) {
-                world.setBlockState(pos.add(0, 1, 0), DEContent.energy_core_structure.getDefaultState());
-                TileEntity tile = world.getTileEntity(pos.add(0, 1, 0));
+            if (level.getBlockState(worldPosition.offset(0, 1, 0)).getBlock() == Blocks.GLASS) {
+                level.setBlockAndUpdate(worldPosition.offset(0, 1, 0), DEContent.energy_core_structure.defaultBlockState());
+                TileEntity tile = level.getBlockEntity(worldPosition.offset(0, 1, 0));
                 if (tile instanceof TileCoreStructure) {
                     ((TileCoreStructure) tile).blockName.set("minecraft:glass");
                     ((TileCoreStructure) tile).setController(this);
                 }
                 sphereOnTop.set(true);
-                world.setBlockState(pos, world.getBlockState(pos).with(EnergyPylon.FACING, "up"));
-            } else if (world.getBlockState(pos.add(0, -1, 0)).getBlock() == Blocks.GLASS) {
-                world.setBlockState(pos.add(0, -1, 0), DEContent.energy_core_structure.getDefaultState());
-                TileEntity tile = world.getTileEntity(pos.add(0, -1, 0));
+                level.setBlockAndUpdate(worldPosition, level.getBlockState(worldPosition).setValue(EnergyPylon.FACING, "up"));
+            } else if (level.getBlockState(worldPosition.offset(0, -1, 0)).getBlock() == Blocks.GLASS) {
+                level.setBlockAndUpdate(worldPosition.offset(0, -1, 0), DEContent.energy_core_structure.defaultBlockState());
+                TileEntity tile = level.getBlockEntity(worldPosition.offset(0, -1, 0));
                 if (tile instanceof TileCoreStructure) {
                     ((TileCoreStructure) tile).blockName.set("minecraft:glass");
                     ((TileCoreStructure) tile).setController(this);
                 }
                 sphereOnTop.set(false);
-                world.setBlockState(pos, world.getBlockState(pos).with(EnergyPylon.FACING, "down"));
+                level.setBlockAndUpdate(worldPosition, level.getBlockState(worldPosition).setValue(EnergyPylon.FACING, "down"));
             } else {
-                world.setBlockState(pos, world.getBlockState(pos).with(EnergyPylon.FACING, "null"));
+                level.setBlockAndUpdate(worldPosition, level.getBlockState(worldPosition).setValue(EnergyPylon.FACING, "null"));
                 return false;
             }
         }
@@ -272,7 +272,7 @@ public class TileEnergyPylon extends TileBCore implements ITickableTileEntity, I
             hasCoreLock.set(false);
         }
 
-        if (hasCoreLock.get() && world.isRemote) {
+        if (hasCoreLock.get() && level.isClientSide) {
             drawParticleBeam();
         }
 
@@ -281,11 +281,11 @@ public class TileEnergyPylon extends TileBCore implements ITickableTileEntity, I
 
     @Override
     public boolean isStructureValid() {
-        return (isGlass(pos.add(0, 1, 0)) || isGlass(pos.add(0, -1, 0))) && (!isGlass(pos.add(0, 1, 0)) || !isGlass(pos.add(0, -1, 0)));
+        return (isGlass(worldPosition.offset(0, 1, 0)) || isGlass(worldPosition.offset(0, -1, 0))) && (!isGlass(worldPosition.offset(0, 1, 0)) || !isGlass(worldPosition.offset(0, -1, 0)));
     }
 
     private boolean isGlass(BlockPos pos) {
-        TileEntity tile = world.getTileEntity(pos);
+        TileEntity tile = level.getBlockEntity(pos);
         return tile instanceof TileCoreStructure && ((TileCoreStructure) tile).blockName.get().equals("minecraft:glass");
     }
 
@@ -296,9 +296,9 @@ public class TileEnergyPylon extends TileBCore implements ITickableTileEntity, I
     private void drawParticleBeam() {
         if (getCore() == null) return;
 
-        BlockPos thisPos = pos.add(0, sphereOnTop.get() ? 1 : -1, 0);
-        Vec3D coreVec = Vec3D.getDirectionVec(new Vec3D(thisPos).add(0.5, 0.5, 0.5), new Vec3D(getCore().getPos()).add(0.5, 0.5, 0.5));
-        double coreDistance = Utils.getDistanceAtoB(new Vec3D(thisPos).add(0.5, 0.5, 0.5), new Vec3D(getCore().getPos().add(0.5, 0.5, 0.5)));
+        BlockPos thisPos = worldPosition.offset(0, sphereOnTop.get() ? 1 : -1, 0);
+        Vec3D coreVec = Vec3D.getDirectionVec(new Vec3D(thisPos).add(0.5, 0.5, 0.5), new Vec3D(getCore().getBlockPos()).add(0.5, 0.5, 0.5));
+        double coreDistance = Utils.getDistanceAtoB(new Vec3D(thisPos).add(0.5, 0.5, 0.5), new Vec3D(getCore().getBlockPos().offset(0.5, 0.5, 0.5)));
 
         for (int i = 0; i < 100; i++) {
             double location = i / 100D;
@@ -307,18 +307,18 @@ public class TileEnergyPylon extends TileBCore implements ITickableTileEntity, I
 
             double speed = 0.02F;
             double offset = 0.2F;
-            double randX = world.rand.nextDouble() - 0.5D;
-            double randY = world.rand.nextDouble() - 0.5D;
-            double randZ = world.rand.nextDouble() - 0.5D;
+            double randX = level.random.nextDouble() - 0.5D;
+            double randY = level.random.nextDouble() - 0.5D;
+            double randZ = level.random.nextDouble() - 0.5D;
             particlePos.add(randX * offset, randY * offset, randZ * offset);
 
-            world.addParticle(new IntParticleType.IntParticleData(DEParticles.line_indicator, 150, 0, 255, 40 + world.rand.nextInt(20)), particlePos.x, particlePos.y, particlePos.z, randX * speed, randY * speed, randZ * speed);
+            level.addParticle(new IntParticleType.IntParticleData(DEParticles.line_indicator, 150, 0, 255, 40 + level.random.nextInt(20)), particlePos.x, particlePos.y, particlePos.z, randX * speed, randY * speed, randZ * speed);
         }
     }
 
     @OnlyIn(Dist.CLIENT)
     private void spawnParticles() {
-        Random rand = world.rand;
+        Random rand = level.random;
         if (getCore() == null || particleRate.get() <= 0) return;
         if (particleRate.get() > 20) particleRate.set((byte) 20);
 
@@ -330,14 +330,14 @@ public class TileEnergyPylon extends TileBCore implements ITickableTileEntity, I
                 spawn = getParticleSpawn(rand);
                 dest = getParticleDest(rand);
 //                BCEffectHandler.spawnFX(DEParticles.ENERGY_PARTICLE, world, spawn, dest, 0, 200, 255, 200);
-                world.addParticle(new IntParticleType.IntParticleData(DEParticles.energy, 0, 200, 255, 200), spawn.x, spawn.y, spawn.z, dest.x, dest.y, dest.z);
+                level.addParticle(new IntParticleType.IntParticleData(DEParticles.energy, 0, 200, 255, 200), spawn.x, spawn.y, spawn.z, dest.x, dest.y, dest.z);
 
             }
         } else if (rand.nextInt(Math.max(1, 10 - particleRate.get())) == 0) {
             spawn = getParticleSpawn(rand);
             dest = getParticleDest(rand);
 //            BCEffectHandler.spawnFX(DEParticles.ENERGY_PARTICLE, world, spawn, dest, 0, 200, 255, 200);
-            world.addParticle(new IntParticleType.IntParticleData(DEParticles.energy, 0, 200, 255, 200), spawn.x, spawn.y, spawn.z, dest.x, dest.y, dest.z);
+            level.addParticle(new IntParticleType.IntParticleData(DEParticles.energy, 0, 200, 255, 200), spawn.x, spawn.y, spawn.z, dest.x, dest.y, dest.z);
         }
     }
 
@@ -345,19 +345,19 @@ public class TileEnergyPylon extends TileBCore implements ITickableTileEntity, I
     private Vec3D getParticleSpawn(Random random) {
         if (isOutputMode.get()) {
             double range = getCore().tier.get();
-            return new Vec3D(getCore().getPos()).add((random.nextFloat() - 0.5F) * range, (random.nextFloat() - 0.5F) * range, (random.nextFloat() - 0.5F) * range);
+            return new Vec3D(getCore().getBlockPos()).add((random.nextFloat() - 0.5F) * range, (random.nextFloat() - 0.5F) * range, (random.nextFloat() - 0.5F) * range);
         } else {
-            return sphereOnTop.get() ? new Vec3D(pos).add(0.5, 1.5, 0.5) : new Vec3D(pos).add(0.5, -0.5, 0.5);
+            return sphereOnTop.get() ? new Vec3D(worldPosition).add(0.5, 1.5, 0.5) : new Vec3D(worldPosition).add(0.5, -0.5, 0.5);
         }
     }
 
     @OnlyIn(Dist.CLIENT)
     private Vec3D getParticleDest(Random random) {
         if (isOutputMode.get()) {
-            return sphereOnTop.get() ? new Vec3D(pos).add(0.5, 1.5, 0.5) : new Vec3D(pos).add(0.5, -0.5, 0.5);
+            return sphereOnTop.get() ? new Vec3D(worldPosition).add(0.5, 1.5, 0.5) : new Vec3D(worldPosition).add(0.5, -0.5, 0.5);
         } else {
             double range = getCore().tier.get() / 2D;
-            return new Vec3D(getCore().getPos()).add((random.nextFloat() - 0.5F) * range, (random.nextFloat() - 0.5F) * range, (random.nextFloat() - 0.5F) * range);
+            return new Vec3D(getCore().getBlockPos()).add((random.nextFloat() - 0.5F) * range, (random.nextFloat() - 0.5F) * range, (random.nextFloat() - 0.5F) * range);
         }
     }
 

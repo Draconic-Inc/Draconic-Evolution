@@ -74,7 +74,7 @@ public class EntityDetector extends BlockBCore /*implements ITileEntityProvider,
 
     @Override
     public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
-        return VoxelShapes.create(0.0626, 0, 0.0626, 0.9375, 0.125, 0.9375);
+        return VoxelShapes.box(0.0626, 0, 0.0626, 0.9375, 0.125, 0.9375);
     }
 
 

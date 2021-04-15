@@ -62,17 +62,17 @@ public class ModularShovel extends ShovelItem implements IModularMiningTool {
 
     @Override
     public float getBaseEfficiency() {
-        return getTier().getEfficiency();
+        return getTier().getSpeed();
     }
 
     @Override
     public Set<Block> effectiveBlockAdditions() {
-        return effectiveBlocks;
+        return blocks;
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         addModularItemInformation(stack, worldIn, tooltip, flagIn);
     }
 }

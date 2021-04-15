@@ -21,8 +21,8 @@ public class GuiDissEnchanter extends ModularGuiContainer<ContainerDissEnchanter
         super(container, playerInventory, title);
 //        this.tile = container.tile;
         this.player = playerInventory.player;
-        xSize = 175;
-        ySize = 142 + 70;
+        imageWidth = 175;
+        imageHeight = 142 + 70;
     }
 
     @Override

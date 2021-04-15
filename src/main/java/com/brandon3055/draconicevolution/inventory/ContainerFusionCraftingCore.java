@@ -34,32 +34,32 @@ public class ContainerFusionCraftingCore extends ContainerBCTile<TileCraftingCor
 
 
     @Override
-    public boolean canInteractWith(PlayerEntity player) {
+    public boolean stillValid(PlayerEntity player) {
         return true;//tile.isUsableByPlayer(player);
     }
 
     @Override
-    public ItemStack transferStackInSlot(PlayerEntity player, int i) {
+    public ItemStack quickMoveStack(PlayerEntity player, int i) {
         Slot slot = getSlot(i);
 
-        if (slot != null && slot.getHasStack()) {
-            ItemStack stack = slot.getStack();
+        if (slot != null && slot.hasItem()) {
+            ItemStack stack = slot.getItem();
             ItemStack result = stack.copy();
 
             if (i >= 36) {
-                if (!mergeItemStack(stack, 0, 36, false)) {
+                if (!moveItemStackTo(stack, 0, 36, false)) {
                     return ItemStack.EMPTY;
                 }
             }
-            else if (!tile.itemHandler.isItemValid(0, stack) || !mergeItemStack(stack, 36, 36 + tile.itemHandler.getSlots(), false)) {
+            else if (!tile.itemHandler.isItemValid(0, stack) || !moveItemStackTo(stack, 36, 36 + tile.itemHandler.getSlots(), false)) {
                 return ItemStack.EMPTY;
             }
 
             if (stack.getCount() == 0) {
-                slot.putStack(ItemStack.EMPTY);
+                slot.set(ItemStack.EMPTY);
             }
             else {
-                slot.onSlotChanged();
+                slot.setChanged();
             }
 
             slot.onTake(player, stack);
@@ -77,7 +77,7 @@ public class ContainerFusionCraftingCore extends ContainerBCTile<TileCraftingCor
         }
 
         @Override
-        public boolean isItemValid(@Nullable ItemStack stack) {
+        public boolean mayPlace(@Nullable ItemStack stack) {
             return false;
         }
     }

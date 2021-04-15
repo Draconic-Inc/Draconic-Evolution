@@ -30,7 +30,7 @@ import static com.brandon3055.draconicevolution.init.ModuleCfg.*;
  * Created by brandon3055 on 21/5/20.
  */
 public class ModularAxe extends AxeItem implements IReaperItem, IModularMiningTool {
-    public static final Set<Material> EFFECTIVE_MATS = ImmutableSet.of(Material.WOOD, Material.PLANTS, Material.TALL_PLANTS, Material.BAMBOO, Material.LEAVES);
+    public static final Set<Material> EFFECTIVE_MATS = ImmutableSet.of(Material.WOOD, Material.PLANT, Material.REPLACEABLE_PLANT, Material.BAMBOO, Material.LEAVES);
     private final TechLevel techLevel;
     private final DEItemTier itemTier;
 
@@ -70,7 +70,7 @@ public class ModularAxe extends AxeItem implements IReaperItem, IModularMiningTo
 
     @Override
     public float getBaseEfficiency() {
-        return getTier().getEfficiency();
+        return getTier().getSpeed();
     }
 
     @Override
@@ -85,7 +85,7 @@ public class ModularAxe extends AxeItem implements IReaperItem, IModularMiningTo
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         addModularItemInformation(stack, worldIn, tooltip, flagIn);
     }
 

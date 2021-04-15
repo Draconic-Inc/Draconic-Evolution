@@ -31,7 +31,7 @@ public class GuardianProjectileEntity extends DamagingProjectileEntity implement
     private Vector3d target;
     private double splashRange = 15;
     private double power = 10;
-    private DamageSource damageSource = new DamageSource("damage.draconicevolution.guardian_projectile").setDamageIsAbsolute().setDamageBypassesArmor().setMagicDamage().setExplosion();
+    private DamageSource damageSource = new DamageSource("damage.draconicevolution.guardian_projectile").bypassMagic().bypassArmor().setMagic().setExplosion();
     private double closestApproach;
 
     public GuardianProjectileEntity(EntityType<?> type, World world) {
@@ -43,24 +43,24 @@ public class GuardianProjectileEntity extends DamagingProjectileEntity implement
         this.target = target;
         this.splashRange = splashRange;
         this.power = power;
-        this.damageSource = new IndirectEntityDamageSource("draconicevolution.guardian_projectile", this, shooter).setDamageIsAbsolute().setDamageBypassesArmor().setMagicDamage().setExplosion();
+        this.damageSource = new IndirectEntityDamageSource("draconicevolution.guardian_projectile", this, shooter).bypassMagic().bypassArmor().setMagic().setExplosion();
         if (target != null) {
-            closestApproach = getDistanceSq(target);
+            closestApproach = distanceToSqr(target);
         }
         double accelDotProduct = MathHelper.sqrt(accelX * accelX + accelY * accelY + accelZ * accelZ);
         if (accelDotProduct != 0.0D) {
-            this.accelerationX = accelX / accelDotProduct * 0.3D;
-            this.accelerationY = accelY / accelDotProduct * 0.3D;
-            this.accelerationZ = accelZ / accelDotProduct * 0.3D;
+            this.xPower = accelX / accelDotProduct * 0.3D;
+            this.yPower = accelY / accelDotProduct * 0.3D;
+            this.zPower = accelZ / accelDotProduct * 0.3D;
         }
     }
 
     @Override
-    protected void onImpact(RayTraceResult result) {
-        super.onImpact(result);
-        Entity shooter = this.func_234616_v_();
-        if (result.getType() != RayTraceResult.Type.ENTITY || !((EntityRayTraceResult) result).getEntity().isEntityEqual(shooter)) {
-            if (!this.world.isRemote) {
+    protected void onHit(RayTraceResult result) {
+        super.onHit(result);
+        Entity shooter = this.getOwner();
+        if (result.getType() != RayTraceResult.Type.ENTITY || !((EntityRayTraceResult) result).getEntity().is(shooter)) {
+            if (!this.level.isClientSide) {
                 detonate();
             }
         }
@@ -70,58 +70,58 @@ public class GuardianProjectileEntity extends DamagingProjectileEntity implement
     public void tick() {
         super.tick();
         if (target != null) {
-            double distSq = getDistanceSq(target);
+            double distSq = distanceToSqr(target);
             if (distSq <= 1) {
                 detonate();
             } else if (distSq < closestApproach) {
                 closestApproach = distSq;
-            } else if (ticksExisted > 5){
+            } else if (tickCount > 5){
                 detonate();
             }
         }
     }
 
     private void detonate() {
-        List<LivingEntity> list = world.getEntitiesWithinAABB(LivingEntity.class, getBoundingBox().grow(splashRange), EntityPredicates.CAN_AI_TARGET);
-        Entity shooter = this.func_234616_v_();
+        List<LivingEntity> list = level.getEntitiesOfClass(LivingEntity.class, getBoundingBox().inflate(splashRange), EntityPredicates.NO_CREATIVE_OR_SPECTATOR);
+        Entity shooter = this.getOwner();
         for (LivingEntity entity : list) {
             if (entity == shooter) continue;
-            double distance = entity.getDistance(this);
+            double distance = entity.distanceTo(this);
             double df = (1D - (distance / power));
             if (df <= 0) {
                 continue;
             }
-            df *= Explosion.getBlockDensity(getPositionVec(), entity);
+            df *= Explosion.getSeenPercent(position(), entity);
             float damage = (float) ((int) ((df * df + df) / 2.0D * 6.0D * power + 1.0D));
-            entity.attackEntityFrom(damageSource, damage);
+            entity.hurt(damageSource, damage);
         }
-        DraconicNetwork.sendImpactEffect(world, getPosition(), 0);
-        BCoreNetwork.sendSound(world, getPosition(), SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.HOSTILE, 10, rand.nextFloat() * 0.1F + 0.9F, false);
+        DraconicNetwork.sendImpactEffect(level, blockPosition(), 0);
+        BCoreNetwork.sendSound(level, blockPosition(), SoundEvents.GENERIC_EXPLODE, SoundCategory.HOSTILE, 10, random.nextFloat() * 0.1F + 0.9F, false);
         this.remove();
     }
 
     @Override
-    public boolean canBeCollidedWith() {
+    public boolean isPickable() {
         return false;
     }
 
     @Override
-    public boolean attackEntityFrom(DamageSource source, float amount) {
+    public boolean hurt(DamageSource source, float amount) {
         return false;
     }
 
     @Override
-    protected IParticleData getParticle() {
+    protected IParticleData getTrailParticle() {
         return ParticleTypes.DRAGON_BREATH;
     }
 
     @Override
-    protected boolean isFireballFiery() {
+    protected boolean shouldBurn() {
         return false;
     }
 
     @Override
-    public IPacket<?> createSpawnPacket() {
+    public IPacket<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 

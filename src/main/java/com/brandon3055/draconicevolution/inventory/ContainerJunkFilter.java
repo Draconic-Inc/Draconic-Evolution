@@ -50,53 +50,53 @@ public class ContainerJunkFilter extends Container {
 //    }
 
     @Override
-    public void detectAndSendChanges() {
-        if (stack != slot.getStackInSlot(player) && !player.world.isRemote) {
-            player.closeScreen();
+    public void broadcastChanges() {
+        if (stack != slot.getStackInSlot(player) && !player.level.isClientSide) {
+            player.closeContainer();
         }
-        super.detectAndSendChanges();
+        super.broadcastChanges();
     }
 
     @Override
-    public ItemStack slotClick(int slotId, int dragType, ClickType clickTypeIn, PlayerEntity player) {
-        if (slotId >= 0 && slotId < inventorySlots.size() && inventorySlots.get(slotId).getStack() == stack) {
+    public ItemStack clicked(int slotId, int dragType, ClickType clickTypeIn, PlayerEntity player) {
+        if (slotId >= 0 && slotId < slots.size() && slots.get(slotId).getItem() == stack) {
             return ItemStack.EMPTY;
         }
-        return super.slotClick(slotId, dragType, clickTypeIn, player);
+        return super.clicked(slotId, dragType, clickTypeIn, player);
     }
 
     @Override
-    public boolean canInteractWith(PlayerEntity playerIn) {
+    public boolean stillValid(PlayerEntity playerIn) {
         return true;
     }
 
     @Nullable
     @Override
-    public ItemStack transferStackInSlot(PlayerEntity playerIn, int i) {
+    public ItemStack quickMoveStack(PlayerEntity playerIn, int i) {
         Slot slot = getSlot(i);
 
-        if (slot != null && slot.getHasStack()) {
-            ItemStack stack = slot.getStack();
+        if (slot != null && slot.hasItem()) {
+            ItemStack stack = slot.getItem();
             ItemStack result = stack.copy();
 
             //Move To Player Inventory
             if (i >= 36) {
-                if (!mergeItemStack(stack, 0, 36, false)) {
+                if (!moveItemStackTo(stack, 0, 36, false)) {
                     return ItemStack.EMPTY;
                 }
             }
             //Move From Player inventory
             else {
-                if (!mergeItemStack(stack, 36, 36 + itemHandler.getSlots(), false)) {
+                if (!moveItemStackTo(stack, 36, 36 + itemHandler.getSlots(), false)) {
                     return ItemStack.EMPTY;
                 }
             }
 
             if (stack.getCount() == 0) {
-                slot.putStack(ItemStack.EMPTY);
+                slot.set(ItemStack.EMPTY);
             }
             else {
-                slot.onSlotChanged();
+                slot.setChanged();
             }
 
             slot.onTake(player, stack);
@@ -110,17 +110,17 @@ public class ContainerJunkFilter extends Container {
     //The following are some safety checks to handle conditions vanilla normally does not have to deal with.
 
     @Override
-    public void putStackInSlot(int slotID, ItemStack stack) {
+    public void setItem(int slotID, ItemStack stack) {
         Slot slot = this.getSlot(slotID);
         if (slot != null) {
-            slot.putStack(stack);
+            slot.set(stack);
         }
     }
 
     @Override
     public Slot getSlot(int slotId) {
-        if (slotId < inventorySlots.size() && slotId >= 0) {
-            return inventorySlots.get(slotId);
+        if (slotId < slots.size() && slotId >= 0) {
+            return slots.get(slotId);
         }
         return null;
     }
@@ -131,7 +131,7 @@ public class ContainerJunkFilter extends Container {
         for (int i = 0; i < stacks.size(); ++i) {
             Slot slot = getSlot(i);
             if (slot != null) {
-                slot.putStack(stacks.get(i));
+                slot.set(stacks.get(i));
             }
         }
     }

@@ -21,24 +21,24 @@ public class PersistentItemEntity extends ItemEntity {
 
     public PersistentItemEntity(World world, double x, double y, double z) {
         super(DEContent.persistentItem, world);
-        this.setPosition(x, y, z);
+        this.setPos(x, y, z);
     }
 
     public PersistentItemEntity(World world, double x, double y, double z, ItemStack stack) {
         super(DEContent.persistentItem, world);
-        this.setPosition(x, y, z);
+        this.setPos(x, y, z);
         this.setItem(stack);
     }
 
     public PersistentItemEntity(World world, Entity location, ItemStack itemstack) {
         super(DEContent.persistentItem, world);
         this.setItem(itemstack);
-        this.setPosition(location.getPosX(), location.getPosY(), location.getPosZ());
-        this.setMotion(location.getMotion());
+        this.setPos(location.getX(), location.getY(), location.getZ());
+        this.setDeltaMovement(location.getDeltaMovement());
         if (location instanceof ItemEntity){
-            this.setPickupDelay(((ItemEntity)location).pickupDelay);
+            this.setPickUpDelay(((ItemEntity)location).pickupDelay);
         }else {
-            this.setDefaultPickupDelay();
+            this.setDefaultPickUpDelay();
         }
     }
 
@@ -54,7 +54,7 @@ public class PersistentItemEntity extends ItemEntity {
     }
 
     @Override
-    public IPacket<?> createSpawnPacket() {
+    public IPacket<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 }

@@ -31,25 +31,25 @@ public class CoverFirePhase extends Phase {
 
    @Override
    public void serverTick() {
-      Vector3d vector3d2 = guardian.getLook(1.0F);
-      double headX = guardian.dragonPartHead.getPosX() - vector3d2.x * 1.0D;
-      double headY = guardian.dragonPartHead.getPosYHeight(0.5D) + 0.5D;
-      double headZ = guardian.dragonPartHead.getPosZ() - vector3d2.z * 1.0D;
-      Vector3d targetPos = guardian.getPositionVec();
-      targetPos = targetPos.add((guardian.getRNG().nextDouble() - 0.5) * 50, (guardian.getRNG().nextDouble() - 0.5) * 50, (guardian.getRNG().nextDouble() - 0.5) * 50);
+      Vector3d vector3d2 = guardian.getViewVector(1.0F);
+      double headX = guardian.dragonPartHead.getX() - vector3d2.x * 1.0D;
+      double headY = guardian.dragonPartHead.getY(0.5D) + 0.5D;
+      double headZ = guardian.dragonPartHead.getZ() - vector3d2.z * 1.0D;
+      Vector3d targetPos = guardian.position();
+      targetPos = targetPos.add((guardian.getRandom().nextDouble() - 0.5) * 50, (guardian.getRandom().nextDouble() - 0.5) * 50, (guardian.getRandom().nextDouble() - 0.5) * 50);
 //      targetPos = targetPos.add(0, 20, 0);
       double targetRelX = targetPos.x - headX;
       double targetRelY = targetPos.y - headY;
       double targetRelZ = targetPos.z - headZ;
       if (!guardian.isSilent()) {
-         guardian.world.playEvent(null, 1017, guardian.getPosition(), 0);
+         guardian.level.levelEvent(null, 1017, guardian.blockPosition(), 0);
       }
-      GuardianProjectileEntity projectile = new GuardianProjectileEntity(this.guardian.world, this.guardian, targetRelX, targetRelY, targetRelZ, targetPos, 25, GuardianFightManager.COVER_FIRE_POWER);
-      projectile.setLocationAndAngles(headX, headY, headZ, 0.0F, 0.0F);
-      guardian.world.addEntity(projectile);
+      GuardianProjectileEntity projectile = new GuardianProjectileEntity(this.guardian.level, this.guardian, targetRelX, targetRelY, targetRelZ, targetPos, 25, GuardianFightManager.COVER_FIRE_POWER);
+      projectile.moveTo(headX, headY, headZ, 0.0F, 0.0F);
+      guardian.level.addFreshEntity(projectile);
 
-      double distanceFromTarget = targetLocation == null ? 0.0D : targetLocation.squareDistanceTo(guardian.getPosX(), guardian.getPosY(), guardian.getPosZ());
-      if (currentPath != null && currentPath.isFinished() && distanceFromTarget < 100) {
+      double distanceFromTarget = targetLocation == null ? 0.0D : targetLocation.distanceToSqr(guardian.getX(), guardian.getY(), guardian.getZ());
+      if (currentPath != null && currentPath.isDone() && distanceFromTarget < 100) {
          guardian.getPhaseManager().setPhase(PhaseType.START).immediateAttack();
          return;
       }
@@ -67,10 +67,10 @@ public class CoverFirePhase extends Phase {
    }
 
    private void updatePathing() {
-      if (this.currentPath == null || this.currentPath.isFinished()) {
+      if (this.currentPath == null || this.currentPath.isDone()) {
          int nearestIndex = this.guardian.initPathPoints(false);
          int endIndex = nearestIndex;
-         if (this.guardian.getRNG().nextInt(8) == 0) {
+         if (this.guardian.getRandom().nextInt(8) == 0) {
             this.clockwise = !this.clockwise;
          }
 
@@ -84,7 +84,7 @@ public class CoverFirePhase extends Phase {
 
          this.currentPath = this.guardian.findPath(nearestIndex, endIndex, null);
          if (this.currentPath != null) {
-            this.currentPath.incrementPathIndex();
+            this.currentPath.advance();
          }
       }
 
@@ -92,12 +92,12 @@ public class CoverFirePhase extends Phase {
    }
 
    private void navigateToNextPathNode() {
-      if (currentPath != null && !currentPath.isFinished()) {
-         Vector3i nextPos = currentPath.func_242948_g();
-         currentPath.incrementPathIndex();
+      if (currentPath != null && !currentPath.isDone()) {
+         Vector3i nextPos = currentPath.getNextNodePos();
+         currentPath.advance();
          double x = nextPos.getX();
          double z = nextPos.getZ();
-         double y = (float) nextPos.getY() + guardian.getRNG().nextFloat() * 20.0F;
+         double y = (float) nextPos.getY() + guardian.getRandom().nextFloat() * 20.0F;
          targetLocation = new Vector3d(x, y, z);
       }
    }

@@ -20,6 +20,7 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.entity.TippedArrowRenderer;
+import net.minecraft.client.renderer.model.IModelTransform;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -53,7 +54,7 @@ public class RenderModularBow extends ToolRenderBase {
                     .uniform("tier", UniformType.INT)
             )
             .whenUsed(cache -> {
-                cache.glUniform1f("time", (BCClientEventHandler.elapsedTicks + Minecraft.getInstance().getRenderPartialTicks()) / 20);
+                cache.glUniform1f("time", (BCClientEventHandler.elapsedTicks + Minecraft.getInstance().getFrameTime()) / 20);
             })
             .build();
 
@@ -66,13 +67,13 @@ public class RenderModularBow extends ToolRenderBase {
         materialModel = model.get("bow_arm").backfacedCopy();
         gemModel = model.get("bow_gem").backfacedCopy();
 
-        bowStringType = RenderType.makeType("shaderStringType", DefaultVertexFormats.POSITION_COLOR_TEX, GL11.GL_QUADS, 256, RenderType.State.getBuilder()
-                .texture(new RenderState.TextureState(new ResourceLocation(MODID, "textures/item/equipment/bow_string.png"), true, false))
-                .transparency(RenderState.LIGHTNING_TRANSPARENCY)
-                .cull(RenderState.CULL_DISABLED)
-                .writeMask(RenderState.WriteMaskState.COLOR_WRITE)
-                .alpha(RenderState.AlphaState.DEFAULT_ALPHA)
-                .build(false)
+        bowStringType = RenderType.create("shaderStringType", DefaultVertexFormats.POSITION_COLOR_TEX, GL11.GL_QUADS, 256, RenderType.State.builder()
+                .setTextureState(new RenderState.TextureState(new ResourceLocation(MODID, "textures/item/equipment/bow_string.png"), true, false))
+                .setTransparencyState(RenderState.LIGHTNING_TRANSPARENCY)
+                .setCullState(RenderState.NO_CULL)
+                .setWriteMaskState(RenderState.WriteMaskState.COLOR_WRITE)
+                .setAlphaState(RenderState.AlphaState.DEFAULT_ALPHA)
+                .createCompositeState(false)
         );
 
         initBaseVBO();
@@ -175,7 +176,7 @@ public class RenderModularBow extends ToolRenderBase {
 
     private void renderBeam(IVertexBuilder buffer, Vector3 source, Vector3 target, float r, float g, float b) {
         double scale = 0.03;
-        float partialTicks = Minecraft.getInstance().getRenderPartialTicks();
+        float partialTicks = Minecraft.getInstance().getFrameTime();
 
         Vector3 dirVec = source.copy().subtract(target).normalize();
         Vector3 planeA = dirVec.copy().perpendicular().normalize();
@@ -219,22 +220,22 @@ public class RenderModularBow extends ToolRenderBase {
             bufferQuad(buffer, p1, p2, p3, p4, anim, dist, r, g, b);
             return;
         }
-        buffer.pos(p1.x, p1.y, p1.z).color(r, g, b, 1F).tex(0.0F, 0F).endVertex();
-        buffer.pos(p2.x, p2.y, p2.z).color(r, g, b, 1F).tex(0.0F, 1F).endVertex();
-        buffer.pos(p4.x, p4.y, p4.z).color(r, g, b, 1F).tex(1F, 1F).endVertex();
-        buffer.pos(p3.x, p3.y, p3.z).color(r, g, b, 1F).tex(1F, 0F).endVertex();
+        buffer.vertex(p1.x, p1.y, p1.z).color(r, g, b, 1F).uv(0.0F, 0F).endVertex();
+        buffer.vertex(p2.x, p2.y, p2.z).color(r, g, b, 1F).uv(0.0F, 1F).endVertex();
+        buffer.vertex(p4.x, p4.y, p4.z).color(r, g, b, 1F).uv(1F, 1F).endVertex();
+        buffer.vertex(p3.x, p3.y, p3.z).color(r, g, b, 1F).uv(1F, 0F).endVertex();
     }
 
     private void bufferQuad(IVertexBuilder buffer, Vector3 p1, Vector3 p2, Vector3 p3, Vector3 p4, float anim, float dist, float r, float g, float b) {
-        buffer.pos(p1.x, p1.y, p1.z).color(r, g, b, 1F).tex(0.5F, anim).endVertex();
-        buffer.pos(p2.x, p2.y, p2.z).color(r, g, b, 1F).tex(0.5F, dist + anim).endVertex();
-        buffer.pos(p4.x, p4.y, p4.z).color(r, g, b, 1F).tex(1.0F, dist + anim).endVertex();
-        buffer.pos(p3.x, p3.y, p3.z).color(r, g, b, 1F).tex(1.0F, anim).endVertex();
+        buffer.vertex(p1.x, p1.y, p1.z).color(r, g, b, 1F).uv(0.5F, anim).endVertex();
+        buffer.vertex(p2.x, p2.y, p2.z).color(r, g, b, 1F).uv(0.5F, dist + anim).endVertex();
+        buffer.vertex(p4.x, p4.y, p4.z).color(r, g, b, 1F).uv(1.0F, dist + anim).endVertex();
+        buffer.vertex(p3.x, p3.y, p3.z).color(r, g, b, 1F).uv(1.0F, anim).endVertex();
     }
 
     private void renderArrow(Matrix4 mat, IRenderTypeBuffer getter, int packedLight) {
         mat.scale(0.05625F, 0.05625F, 0.05625F);
-        IVertexBuilder builder = new TransformingVertexBuilder(getter.getBuffer(RenderType.getEntityCutout(TippedArrowRenderer.RES_ARROW)), mat);
+        IVertexBuilder builder = new TransformingVertexBuilder(getter.getBuffer(RenderType.entityCutout(TippedArrowRenderer.NORMAL_ARROW_LOCATION)), mat);
         this.buggerVertex(builder, -7, -2, -2, 0.0F, 0.15625F, -1, 0, 0, packedLight);
         this.buggerVertex(builder, -7, -2, 2, 0.15625F, 0.15625F, -1, 0, 0, packedLight);
         this.buggerVertex(builder, -7, 2, 2, 0.15625F, 0.3125F, -1, 0, 0, packedLight);
@@ -254,19 +255,19 @@ public class RenderModularBow extends ToolRenderBase {
     }
 
     public void buggerVertex(IVertexBuilder builder, float x, float y, float z, float u, float v, int normX, int normZ, int normY, int light) {
-        builder.pos(x, y, z).color(255, 255, 255, 255).tex(u, v).overlay(OverlayTexture.NO_OVERLAY).lightmap(light).normal((float) normX, (float) normY, (float) normZ).endVertex();
+        builder.vertex(x, y, z).color(255, 255, 255, 255).uv(u, v).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal((float) normX, (float) normY, (float) normZ).endVertex();
     }
 
     @Override
-    public ImmutableMap<TransformType, TransformationMatrix> getTransforms() {
+    public IModelTransform getModelTransform() {
         return TransformUtils.DEFAULT_BOW;
     }
 
     private double getDrawAngle(ItemStack stack) {
         PlayerEntity player = Minecraft.getInstance().player;
-        if (player != null && player.getActiveItemStack() == stack) {
-            int maxCount = player.getItemInUseMaxCount();
-            return BowItem.getArrowVelocity(maxCount) * 45F;
+        if (player != null && player.getUseItem() == stack) {
+            int maxCount = player.getTicksUsingItem();
+            return BowItem.getPowerForTime(maxCount) * 45F;
         }
         return 0;
     }

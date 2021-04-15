@@ -102,7 +102,7 @@ public class TileDraconiumChest extends TileBCore implements ITickableTileEntity
     public void tick() {
         super.tick();
         autoFeedRun = false;
-        if (!world.isRemote) {
+        if (!level.isClientSide) {
             updateEnergy();
             updateSmelting();
 
@@ -214,9 +214,9 @@ public class TileDraconiumChest extends TileBCore implements ITickableTileEntity
         if (stack.isEmpty()) {
             return ItemStack.EMPTY;
         } else if (!itemHandler.getStackInSlot(CORE_SLOT).isEmpty()) {
-            return OreDoublingRegistry.getDoubledSmeltingResult(stack, world);
+            return OreDoublingRegistry.getDoubledSmeltingResult(stack, level);
         }
-        return OreDoublingRegistry.getSmeltingResult(stack, world);
+        return OreDoublingRegistry.getSmeltingResult(stack, level);
     }
 
     /**
@@ -287,7 +287,7 @@ public class TileDraconiumChest extends TileBCore implements ITickableTileEntity
                     switch (autoSmeltMode.get()) {
                         case FILL:
                         case LOCK:
-                            if (ItemStack.areItemsEqual(stackInFernace, stack) && ItemStack.areItemStackTagsEqual(stackInFernace, stack) && stackInFernace.getCount() < stackInFernace.getMaxStackSize()) {
+                            if (ItemStack.isSame(stackInFernace, stack) && ItemStack.tagMatches(stackInFernace, stack) && stackInFernace.getCount() < stackInFernace.getMaxStackSize()) {
                                 int count = Math.min(stack.getCount(), stackInFernace.getMaxStackSize() - stackInFernace.getCount());
                                 stackInFernace.grow(count);
                                 stack.shrink(count);
@@ -299,7 +299,7 @@ public class TileDraconiumChest extends TileBCore implements ITickableTileEntity
                                 itemHandler.setStackInSlot(f, stack.copy());
                                 stack = ItemStack.EMPTY;
                                 stacksInserted = true;
-                            } else if (ItemStack.areItemsEqual(stackInFernace, stack) && ItemStack.areItemStackTagsEqual(stackInFernace, stack) && stackInFernace.getCount() < stackInFernace.getMaxStackSize()) {
+                            } else if (ItemStack.isSame(stackInFernace, stack) && ItemStack.tagMatches(stackInFernace, stack) && stackInFernace.getCount() < stackInFernace.getMaxStackSize()) {
                                 int count = Math.min(stack.getCount(), stackInFernace.getMaxStackSize() - stackInFernace.getCount());
                                 stackInFernace.grow(count);
                                 stack.shrink(count);
@@ -334,13 +334,13 @@ public class TileDraconiumChest extends TileBCore implements ITickableTileEntity
     //region Interaction
 
     public void setAutoSmeltMode(AutoSmeltMode mode) {
-        if (world.isRemote) {
+        if (level.isClientSide) {
             sendPacketToServer(output -> output.writeByte(mode.ordinal()), 0);
         }
     }
 
     public void setColour(int colour) {
-        if (world.isRemote) {
+        if (level.isClientSide) {
             sendPacketToServer(output -> output.writeInt(colour), 2);
         }
     }
@@ -371,14 +371,14 @@ public class TileDraconiumChest extends TileBCore implements ITickableTileEntity
                     r.validate();
                 }
                 ioCacheValid = false;
-                markDirty();
+                setChanged();
 
                 scheduleAutoFeed();
                 validateSmelting();
             }
         } else if (id == 2) {
             colour.set(data.readInt());
-            markDirty();
+            setChanged();
         }
     }
 
@@ -395,7 +395,7 @@ public class TileDraconiumChest extends TileBCore implements ITickableTileEntity
             if (!itemstack.isEmpty()) {
                 CompoundNBT nbttagcompound = new CompoundNBT();
                 nbttagcompound.putByte("Slot", (byte) i);
-                itemstack.write(nbttagcompound);
+                itemstack.save(nbttagcompound);
                 nbttaglist.add(nbttagcompound);
             }
         }
@@ -412,7 +412,7 @@ public class TileDraconiumChest extends TileBCore implements ITickableTileEntity
             CompoundNBT nbttagcompound = nbttaglist.getCompound(i);
             int j = nbttagcompound.getByte("Slot") & 255;
             if (j >= 0 && j < craftingStacks.size()) {
-                craftingStacks.set(j, ItemStack.read(nbttagcompound));
+                craftingStacks.set(j, ItemStack.of(nbttagcompound));
             }
         }
     }
@@ -442,7 +442,7 @@ public class TileDraconiumChest extends TileBCore implements ITickableTileEntity
             stack.setCount(itemHandler.getSlotLimit(i));
         }
 
-        markDirty();
+        setChanged();
     }
 
     public void onSlotContentsChange(int index) {
@@ -547,7 +547,7 @@ public class TileDraconiumChest extends TileBCore implements ITickableTileEntity
 
         //Iterate over all the directions and regions to assign which slots allow inserting and or extracting from each face
         for (Direction worldFace : Direction.values()) {
-            int faceIndex = worldFace.getIndex();
+            int faceIndex = worldFace.get3DDataValue();
             Direction facing = getRotatedFacing(worldFace);
             List<Integer> accessibleSlots = new ArrayList<>();
             List<Integer> insertSlots = new ArrayList<>();
@@ -610,7 +610,7 @@ public class TileDraconiumChest extends TileBCore implements ITickableTileEntity
 //        Direction f = worldFacing;
         int rotate = facing.get() == Direction.NORTH ? 0 : facing.get() == Direction.EAST ? 1 : facing.get() == Direction.SOUTH ? 2 : 3;
         for (int i = 0; i < rotate; i++) {
-            worldFacing = worldFacing.rotateYCCW();
+            worldFacing = worldFacing.getCounterClockWise();
         }
 //        LogHelper.dev(f + " -> " + worldFacing);
         return worldFacing;
@@ -623,12 +623,12 @@ public class TileDraconiumChest extends TileBCore implements ITickableTileEntity
 
     public boolean canInsertItem(int index, ItemStack itemStackIn, Direction direction) {
         checkIOCache();
-        return index < 260 && canInsert[direction.getIndex()][index];
+        return index < 260 && canInsert[direction.get3DDataValue()][index];
     }
 
     public boolean canExtractItem(int index, ItemStack stack, Direction direction) {
         checkIOCache();
-        return index < 260 && canExtract[direction.getIndex()][index];
+        return index < 260 && canExtract[direction.get3DDataValue()][index];
     }
 
     //endregion
@@ -636,17 +636,17 @@ public class TileDraconiumChest extends TileBCore implements ITickableTileEntity
     //region Model Rendering Stuff
 
     private void updateModel() {
-        int xCoord = this.pos.getX();
-        int yCoord = this.pos.getY();
-        int zCoord = this.pos.getZ();
+        int xCoord = this.worldPosition.getX();
+        int yCoord = this.worldPosition.getY();
+        int zCoord = this.worldPosition.getZ();
         ++ticksSinceSync;
 
-        if (!world.isRemote && numPlayersUsing.get() != 0 && (ticksSinceSync + xCoord + yCoord + zCoord) % 200 == 0) {
+        if (!level.isClientSide && numPlayersUsing.get() != 0 && (ticksSinceSync + xCoord + yCoord + zCoord) % 200 == 0) {
             numPlayersUsing.zero();
 
-            for (PlayerEntity entityplayer : this.world.getEntitiesWithinAABB(PlayerEntity.class, new AxisAlignedBB((double) ((float) xCoord - 5.0F), (double) ((float) yCoord - 5.0F), (double) ((float) zCoord - 5.0F), (double) ((float) (xCoord + 1) + 5.0F), (double) ((float) (yCoord + 1) + 5.0F), (double) ((float) (zCoord + 1) + 5.0F)))) {
-                if (entityplayer.openContainer instanceof ContainerDraconiumChest) {
-                    TileDraconiumChest tile = ((ContainerDraconiumChest) entityplayer.openContainer).tile;
+            for (PlayerEntity entityplayer : this.level.getEntitiesOfClass(PlayerEntity.class, new AxisAlignedBB((double) ((float) xCoord - 5.0F), (double) ((float) yCoord - 5.0F), (double) ((float) zCoord - 5.0F), (double) ((float) (xCoord + 1) + 5.0F), (double) ((float) (yCoord + 1) + 5.0F), (double) ((float) (zCoord + 1) + 5.0F)))) {
+                if (entityplayer.containerMenu instanceof ContainerDraconiumChest) {
+                    TileDraconiumChest tile = ((ContainerDraconiumChest) entityplayer.containerMenu).tile;
                     if (tile == this) {
                         numPlayersUsing.inc();
                     }
@@ -659,7 +659,7 @@ public class TileDraconiumChest extends TileBCore implements ITickableTileEntity
         if (this.numPlayersUsing.get() > 0 && this.lidAngle == 0.0F) {
             double d1 = (double) xCoord + 0.5D;
             double d2 = (double) zCoord + 0.5D;
-            this.world.playSound((PlayerEntity) null, d1, (double) yCoord + 0.5D, d2, SoundEvents.BLOCK_CHEST_OPEN, SoundCategory.BLOCKS, 0.5F, this.world.rand.nextFloat() * 0.1F + 0.9F);
+            this.level.playSound((PlayerEntity) null, d1, (double) yCoord + 0.5D, d2, SoundEvents.CHEST_OPEN, SoundCategory.BLOCKS, 0.5F, this.level.random.nextFloat() * 0.1F + 0.9F);
         }
 
         if (this.numPlayersUsing.get() == 0 && this.lidAngle > 0.0F || this.numPlayersUsing.get() > 0 && this.lidAngle < 1.0F) {
@@ -678,7 +678,7 @@ public class TileDraconiumChest extends TileBCore implements ITickableTileEntity
             if (this.lidAngle < 0.5F && f2 >= 0.5F) {
                 double d3 = (double) xCoord + 0.5D;
                 double d0 = (double) zCoord + 0.5D;
-                this.world.playSound((PlayerEntity) null, d3, (double) yCoord + 0.5D, d0, SoundEvents.BLOCK_CHEST_CLOSE, SoundCategory.BLOCKS, 0.5F, this.world.rand.nextFloat() * 0.1F + 0.9F);
+                this.level.playSound((PlayerEntity) null, d3, (double) yCoord + 0.5D, d0, SoundEvents.CHEST_CLOSE, SoundCategory.BLOCKS, 0.5F, this.level.random.nextFloat() * 0.1F + 0.9F);
             }
 
             if (this.lidAngle < 0.0F) {

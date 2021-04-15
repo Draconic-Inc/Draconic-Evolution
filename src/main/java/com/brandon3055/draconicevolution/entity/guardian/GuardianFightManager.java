@@ -49,7 +49,7 @@ public class GuardianFightManager extends WorldEntity implements ITickableWorldE
     public static final float COVER_FIRE_POWER = 15;
 
     private Predicate<Entity> validPlayer;
-    private final ServerBossInfo bossInfo = (ServerBossInfo) (new ServerBossInfo(new TranslationTextComponent("entity.draconicevolution.draconic_guardian"), BossInfo.Color.RED, BossInfo.Overlay.PROGRESS)).setPlayEndBossMusic(true).setCreateFog(true);
+    private final ServerBossInfo bossInfo = (ServerBossInfo) (new ServerBossInfo(new TranslationTextComponent("entity.draconicevolution.draconic_guardian"), BossInfo.Color.RED, BossInfo.Overlay.PROGRESS)).setPlayBossMusic(true).setCreateWorldFog(true);
     private int ticksSinceGuardianSeen;
     private int aliveCrystals;
     private int ticksSinceCrystalsScanned;
@@ -69,7 +69,7 @@ public class GuardianFightManager extends WorldEntity implements ITickableWorldE
     public GuardianFightManager(BlockPos origin) {
         super(DEContent.guardianManagerType);
         this.arenaOrigin = origin;
-        this.validPlayer = EntityPredicates.IS_ALIVE.and(EntityPredicates.withinRange(origin.getX(), origin.getY(), origin.getZ(), 192.0D));
+        this.validPlayer = EntityPredicates.ENTITY_STILL_ALIVE.and(EntityPredicates.withinDistance(origin.getX(), origin.getY(), origin.getZ(), 192.0D));
         this.respawnState = GuardianSpawnState.START_WAIT_FOR_PLAYER;
         this.bossInfo.setPercent(0);
     }
@@ -89,7 +89,7 @@ public class GuardianFightManager extends WorldEntity implements ITickableWorldE
         //This is just using the player list in boss info to check if there are any players in the area.
         if (!this.bossInfo.getPlayers().isEmpty()) {
 //            testGenPath();
-            world.getChunkProvider().registerTicket(TicketType.DRAGON, new ChunkPos(arenaOrigin), 12, Unit.INSTANCE); //Is this chunk loading?
+            world.getChunkSource().addRegionTicket(TicketType.DRAGON, new ChunkPos(arenaOrigin), 12, Unit.INSTANCE); //Is this chunk loading?
             boolean areaLoaded = this.isFightAreaLoaded();
 
             if (this.respawnState != null) {
@@ -108,7 +108,7 @@ public class GuardianFightManager extends WorldEntity implements ITickableWorldE
                 }
             }
         } else {
-            world.getChunkProvider().releaseTicket(TicketType.DRAGON, new ChunkPos(arenaOrigin), 12, Unit.INSTANCE);
+            world.getChunkSource().removeRegionTicket(TicketType.DRAGON, new ChunkPos(arenaOrigin), 12, Unit.INSTANCE);
         }
     }
 
@@ -121,7 +121,7 @@ public class GuardianFightManager extends WorldEntity implements ITickableWorldE
             this.createNewGuardian();
         } else {
             LOGGER.debug("Haven't seen our guardian, but found another one to use.");
-            this.guardianUniqueId = list.get(0).getUniqueID();
+            this.guardianUniqueId = list.get(0).getUUID();
         }
 
     }
@@ -153,8 +153,8 @@ public class GuardianFightManager extends WorldEntity implements ITickableWorldE
                     return false;
                 }
 
-                ChunkHolder.LocationType locationType = ((Chunk) ichunk).getLocationType();
-                if (!locationType.isAtLeast(ChunkHolder.LocationType.TICKING)) {
+                ChunkHolder.LocationType locationType = ((Chunk) ichunk).getFullStatus();
+                if (!locationType.isOrAfter(ChunkHolder.LocationType.TICKING)) {
                     return false;
                 }
             }
@@ -185,7 +185,7 @@ public class GuardianFightManager extends WorldEntity implements ITickableWorldE
         this.bossInfo.setVisible(false);
 //            this.generatePortal(true); //Unlock Crystal?
         this.guardianKilled = true;
-        TileEntity tile = world.getTileEntity(arenaOrigin);
+        TileEntity tile = world.getBlockEntity(arenaOrigin);
         if (tile instanceof TileChaosCrystal) {
             ((TileChaosCrystal) tile).setDefeated();
         }
@@ -198,16 +198,16 @@ public class GuardianFightManager extends WorldEntity implements ITickableWorldE
         DraconicGuardianEntity guardian = DEContent.draconicGuardian.create(world);
         guardian.getPhaseManager().setPhase(PhaseType.START);
 //        guardian.getPhaseManager().setPhase(PhaseType.HOVER);
-        guardian.setLocationAndAngles(guardianSpawnPos().getX(), guardianSpawnPos().getY(), guardianSpawnPos().getZ(), this.world.rand.nextFloat() * 360.0F, 0.0F);
+        guardian.moveTo(guardianSpawnPos().getX(), guardianSpawnPos().getY(), guardianSpawnPos().getZ(), this.world.random.nextFloat() * 360.0F, 0.0F);
         guardian.setFightManager(this);
         guardian.setArenaOrigin(arenaOrigin);
-        world.addEntity(guardian);
-        this.guardianUniqueId = guardian.getUniqueID();
+        world.addFreshEntity(guardian);
+        this.guardianUniqueId = guardian.getUUID();
         return guardian;
     }
 
     public void guardianUpdate(DraconicGuardianEntity guardian) {
-        if (guardian.getUniqueID().equals(this.guardianUniqueId)) {
+        if (guardian.getUUID().equals(this.guardianUniqueId)) {
             this.bossInfo.setPercent(guardian.getHealth() / guardian.getMaxHealth());
             this.ticksSinceGuardianSeen = 0;
             if (!arenaOrigin.equals(guardian.getArenaOrigin())) {
@@ -221,7 +221,7 @@ public class GuardianFightManager extends WorldEntity implements ITickableWorldE
     }
 
     private void cleanUpAndDispose() {
-        ((ServerWorld) world).getChunkProvider().releaseTicket(TicketType.DRAGON, new ChunkPos(arenaOrigin), 12, Unit.INSTANCE);
+        ((ServerWorld) world).getChunkSource().removeRegionTicket(TicketType.DRAGON, new ChunkPos(arenaOrigin), 12, Unit.INSTANCE);
         bossInfo.removeAllPlayers();
         removeEntity();
     }
@@ -239,7 +239,7 @@ public class GuardianFightManager extends WorldEntity implements ITickableWorldE
         this.aliveCrystals = 0;
 
         for (BlockPos pos : getCrystalPositions()) {
-            List<GuardianCrystalEntity> list = this.world.getEntitiesWithinAABB(GuardianCrystalEntity.class, new AxisAlignedBB(pos.add(-3, -3, -3), pos.add(4, 4, 4)));
+            List<GuardianCrystalEntity> list = this.world.getEntitiesOfClass(GuardianCrystalEntity.class, new AxisAlignedBB(pos.offset(-3, -3, -3), pos.offset(4, 4, 4)));
             for (GuardianCrystalEntity crystal : list) {
                 if (!crystal.getManagerId().equals(getUniqueID())) {
                     crystal.setManagerId(getUniqueID());
@@ -258,15 +258,15 @@ public class GuardianFightManager extends WorldEntity implements ITickableWorldE
     public void onCrystalDestroyed(GuardianCrystalEntity crystal, DamageSource dmgSrc) {
         ServerWorld world = (ServerWorld) this.world;
         this.findAliveCrystals();
-        Entity entity = world.getEntityByUuid(this.guardianUniqueId);
+        Entity entity = world.getEntity(this.guardianUniqueId);
         if (entity instanceof DraconicGuardianEntity) {
-            ((DraconicGuardianEntity) entity).onCrystalDestroyed(crystal, crystal.getPosition(), dmgSrc);
+            ((DraconicGuardianEntity) entity).onCrystalDestroyed(crystal, crystal.blockPosition(), dmgSrc);
         }
     }
 
     public void resetCrystals() {
         for (BlockPos pos : getCrystalPositions()) {
-            for (GuardianCrystalEntity endercrystalentity : this.world.getEntitiesWithinAABB(GuardianCrystalEntity.class, new AxisAlignedBB(pos.add(-3, -3, -3), pos.add(4, 4, 4)))) {
+            for (GuardianCrystalEntity endercrystalentity : this.world.getEntitiesOfClass(GuardianCrystalEntity.class, new AxisAlignedBB(pos.offset(-3, -3, -3), pos.offset(4, 4, 4)))) {
                 endercrystalentity.setInvulnerable(false);
                 endercrystalentity.setBeamTarget(null);
             }
@@ -276,7 +276,7 @@ public class GuardianFightManager extends WorldEntity implements ITickableWorldE
     public List<GuardianCrystalEntity> getCrystals() {
         List<GuardianCrystalEntity> list = new ArrayList<>();
         for (BlockPos pos : getCrystalPositions()) {
-            list.addAll(this.world.getEntitiesWithinAABB(GuardianCrystalEntity.class, new AxisAlignedBB(pos.add(-3, -3, -3), pos.add(4, 4, 4))));
+            list.addAll(this.world.getEntitiesOfClass(GuardianCrystalEntity.class, new AxisAlignedBB(pos.offset(-3, -3, -3), pos.offset(4, 4, 4))));
         }
         return list;
     }
@@ -307,7 +307,7 @@ public class GuardianFightManager extends WorldEntity implements ITickableWorldE
     }
 
     public BlockPos guardianSpawnPos() {
-        return arenaOrigin.add(0, 80, 0);
+        return arenaOrigin.offset(0, 80, 0);
     }
 
 
@@ -319,7 +319,7 @@ public class GuardianFightManager extends WorldEntity implements ITickableWorldE
     public void write(CompoundNBT nbt) {
         super.write(nbt);
         if (guardianUniqueId != null) {
-            nbt.putUniqueId("guardian", guardianUniqueId);
+            nbt.putUUID("guardian", guardianUniqueId);
         }
 
         nbt.putBoolean("guardian_killed", guardianKilled);
@@ -332,12 +332,12 @@ public class GuardianFightManager extends WorldEntity implements ITickableWorldE
     @Override
     public void read(CompoundNBT nbt) {
         super.read(nbt);
-        if (nbt.hasUniqueId("guardian")) {
-            guardianUniqueId = nbt.getUniqueId("guardian");
+        if (nbt.hasUUID("guardian")) {
+            guardianUniqueId = nbt.getUUID("guardian");
         }
         guardianKilled = nbt.getBoolean("guardian_killed");
         arenaOrigin = NBTUtil.readBlockPos(nbt.getCompound("arena_origin"));
-        validPlayer = EntityPredicates.IS_ALIVE.and(EntityPredicates.withinRange(arenaOrigin.getX(), arenaOrigin.getY(), arenaOrigin.getZ(), 192.0D));
+        validPlayer = EntityPredicates.ENTITY_STILL_ALIVE.and(EntityPredicates.withinDistance(arenaOrigin.getX(), arenaOrigin.getY(), arenaOrigin.getZ(), 192.0D));
         if (nbt.getBoolean("respawning")) {
             respawnState = GuardianSpawnState.START_WAIT_FOR_PLAYER;
         }

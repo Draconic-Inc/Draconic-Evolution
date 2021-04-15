@@ -60,7 +60,7 @@ public class WhatsBrokenGui extends ModularGuiScreen {
             label.setAlignment(GuiAlign.LEFT);
             label.setXSize(xSize() - 10);
             label.setWrap(true);
-            label.setYSize(font.getWordWrappedHeight(line, xSize() - 12));
+            label.setYSize(font.wordWrapHeight(line, xSize() - 12));
             label.setXPos(guiLeft() + 5);
             label.setYPos(last == null ? temp.title.maxYPos() + 5 : last.maxYPos() + 3);
             last = label;

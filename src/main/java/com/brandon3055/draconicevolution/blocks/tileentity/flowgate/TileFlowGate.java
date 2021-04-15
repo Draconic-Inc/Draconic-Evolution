@@ -70,7 +70,7 @@ public abstract class TileFlowGate extends TileBCore implements ITickableTileEnt
             return flowOverride.get();
         }
         if (rsSignal.get() == -1) {
-            rsSignal.set((byte) world.getRedstonePowerFromNeighbors(pos));
+            rsSignal.set((byte) level.getBestNeighborSignal(worldPosition));
         }
         return minFlow.get() + (long) (((double) rsSignal.get() / 15D) * (double) (maxFlow.get() - minFlow.get()));
     }
@@ -106,29 +106,29 @@ public abstract class TileFlowGate extends TileBCore implements ITickableTileEnt
     }
 
     public TileEntity getTarget() {
-        return world.getTileEntity(pos.offset(getDirection()));
+        return level.getBlockEntity(worldPosition.relative(getDirection()));
     }
 
     public TileEntity getSource() {
-        return world.getTileEntity(pos.offset(getDirection().getOpposite()));
+        return level.getBlockEntity(worldPosition.relative(getDirection().getOpposite()));
     }
 
     @Override
-    public void updateContainingBlockInfo() {
-        super.updateContainingBlockInfo();
+    public void clearCache() {
+        super.clearCache();
         rotationCache = null;
     }
 
     public Direction getDirection() {
         if (rotationCache == null) {
-            rotationCache = getBlockState().get(FlowGate.FACING);
+            rotationCache = getBlockState().getValue(FlowGate.FACING);
         }
         return rotationCache;
     }
 
     @Override
     public void onNeighborChange(BlockPos neighbor) {
-        rsSignal.set((byte) world.getRedstonePowerFromNeighbors(pos));
+        rsSignal.set((byte) level.getBestNeighborSignal(worldPosition));
     }
 
     //region Peripheral

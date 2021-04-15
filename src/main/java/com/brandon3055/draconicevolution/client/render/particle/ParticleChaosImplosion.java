@@ -30,7 +30,7 @@ public class ParticleChaosImplosion extends BCParticle {
         this.texturesPerRow = 8F;
         this.target = target;
 
-        this.motionX = this.motionY = this.motionZ = 0;
+        this.xd = this.yd = this.zd = 0;
 
         if (model == null) {
             Map<String, CCModel> map = OBJParser.parseModels(ResourceHelperDE.getResource("models/reactor_core_model.obj"));

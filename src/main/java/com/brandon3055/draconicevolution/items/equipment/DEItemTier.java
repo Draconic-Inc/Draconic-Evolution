@@ -31,17 +31,17 @@ public class DEItemTier implements IItemTier {
     }
 
     @Override
-    public int getMaxUses() {
+    public int getUses() {
         return 0; // = unbreakable but ~can be~ "IS" overridden by item properties "Unless extending TieredItem"
     }
 
     @Override
-    public int getHarvestLevel() {
+    public int getLevel() {
         return itemProps.miningLevel;
     }
 
     @Override
-    public int getEnchantability() {
+    public int getEnchantmentValue() {
         return getEnchantability(techLevel);
     }
 
@@ -60,7 +60,7 @@ public class DEItemTier implements IItemTier {
     }
 
     @Override
-    public float getEfficiency() {
+    public float getSpeed() {
         switch (techLevel) {
             case DRACONIUM:
                 return (float) EquipCfg.draconiumEfficiency * (efficiencyMultiplier == null ? 1 : efficiencyMultiplier.get());
@@ -75,7 +75,7 @@ public class DEItemTier implements IItemTier {
     }
 
     @Override
-    public float getAttackDamage() {
+    public float getAttackDamageBonus() {
         switch (techLevel) {
             case DRACONIUM:
                 return (float) EquipCfg.draconiumDamage * damageMultiplier.get();
@@ -104,7 +104,7 @@ public class DEItemTier implements IItemTier {
     }
 
     @Override
-    public Ingredient getRepairMaterial() {
+    public Ingredient getRepairIngredient() {
         return Ingredient.EMPTY;
     }
 }

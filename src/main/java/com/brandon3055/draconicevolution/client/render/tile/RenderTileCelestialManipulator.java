@@ -19,15 +19,15 @@ public class RenderTileCelestialManipulator extends TESRBase<TileCelestialManipu
         if (player == null) {
             return;
         }
-        EffectTrackerCelestialManipulator.interpPosX = player.lastTickPosX + (player.getPosX() - player.lastTickPosX) * (double) partialTicks;
-        EffectTrackerCelestialManipulator.interpPosY = player.lastTickPosY + (player.getPosY() - player.lastTickPosY) * (double) partialTicks;
-        EffectTrackerCelestialManipulator.interpPosZ = player.lastTickPosZ + (player.getPosZ() - player.lastTickPosZ) * (double) partialTicks;
+        EffectTrackerCelestialManipulator.interpPosX = player.xOld + (player.getX() - player.xOld) * (double) partialTicks;
+        EffectTrackerCelestialManipulator.interpPosY = player.yOld + (player.getY() - player.yOld) * (double) partialTicks;
+        EffectTrackerCelestialManipulator.interpPosZ = player.zOld + (player.getZ() - player.zOld) * (double) partialTicks;
 
         te.renderEffects(partialTicks);
     }
 
     @Override
-    public boolean isGlobalRenderer(TileCelestialManipulator te) {
+    public boolean shouldRenderOffScreen(TileCelestialManipulator te) {
         return true;
     }
 }

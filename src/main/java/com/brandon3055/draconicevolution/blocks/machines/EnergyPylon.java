@@ -28,11 +28,11 @@ public class EnergyPylon extends BlockBCore/* implements ITileEntityProvider, IR
 
     public EnergyPylon(Properties properties) {
         super(properties);
-        this.setDefaultState(stateContainer.getBaseState().with(OUTPUT, false).with(FACING, "null"));
+        this.registerDefaultState(stateDefinition.any().setValue(OUTPUT, false).setValue(FACING, "null"));
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
         builder.add(OUTPUT, FACING);
     }
 
@@ -74,10 +74,10 @@ public class EnergyPylon extends BlockBCore/* implements ITileEntityProvider, IR
 
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
-        TileEntity tile = worldIn.getTileEntity(pos);
+    public ActionResultType use(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+        TileEntity tile = worldIn.getBlockEntity(pos);
         if (tile instanceof TileEnergyPylon) {
-            if (player.isSneaking()) {
+            if (player.isShiftKeyDown()) {
                 ((TileEnergyPylon) tile).selectNextCore();
             } else {
                 ((TileEnergyPylon) tile).validateStructure();
@@ -90,7 +90,7 @@ public class EnergyPylon extends BlockBCore/* implements ITileEntityProvider, IR
 
     @Override
     public void neighborChanged(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
-        TileEntity tile = world.getTileEntity(pos);
+        TileEntity tile = world.getBlockEntity(pos);
 
         if (tile instanceof TileEnergyPylon) {
             ((TileEnergyPylon) tile).validateStructure();
@@ -98,13 +98,13 @@ public class EnergyPylon extends BlockBCore/* implements ITileEntityProvider, IR
     }
 
     @Override
-    public boolean hasComparatorInputOverride(BlockState state) {
+    public boolean hasAnalogOutputSignal(BlockState state) {
         return true;
     }
 
     @Override
-    public int getComparatorInputOverride(BlockState blockState, World world, BlockPos pos) {
-        TileEntity tile = world.getTileEntity(pos);
+    public int getAnalogOutputSignal(BlockState blockState, World world, BlockPos pos) {
+        TileEntity tile = world.getBlockEntity(pos);
         if (tile != null && tile instanceof TileEnergyPylon && ((TileEnergyPylon) tile).getExtendedCapacity() > 0) {
             return (int) ((double) ((TileEnergyPylon) tile).getExtendedStorage() / ((TileEnergyPylon) tile).getExtendedCapacity() * 15D);
         }

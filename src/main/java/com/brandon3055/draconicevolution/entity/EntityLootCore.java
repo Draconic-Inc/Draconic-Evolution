@@ -40,12 +40,12 @@ public class EntityLootCore extends Entity {
     }
 
     @Override
-    protected void registerData() {
+    protected void defineSynchedData() {
 
     }
 
     @Override
-    public IPacket<?> createSpawnPacket() {
+    public IPacket<?> getAddEntityPacket() {
         return null;
     }
 
@@ -64,7 +64,7 @@ public class EntityLootCore extends Entity {
 //    }
 
     @Override
-    public boolean canBeCollidedWith() {
+    public boolean isPickable() {
         return true;
     }
 
@@ -74,7 +74,7 @@ public class EntityLootCore extends Entity {
 
     @Override
     public void tick() {
-        if (world.isRemote) {
+        if (level.isClientSide) {
             if (isLooking && lookAnimation < 1F) {
                 lookAnimation += 0.05F;
             }
@@ -116,8 +116,8 @@ public class EntityLootCore extends Entity {
 //    }
 
     @Override
-    public void onCollideWithPlayer(PlayerEntity player) {
-        if (world.isRemote) {
+    public void playerTouch(PlayerEntity player) {
+        if (level.isClientSide) {
             return;
         }
 
@@ -136,25 +136,25 @@ public class EntityLootCore extends Entity {
         boolean inserted = false;
 
 
-        for (int i = inventory.getSizeInventory() - 1; i >= 0; i--) {
-            ItemStack stack = inventory.getStackInSlot(i);
+        for (int i = inventory.getContainerSize() - 1; i >= 0; i--) {
+            ItemStack stack = inventory.getItem(i);
             if (!stack.isEmpty()) {
                 int start = stack.getCount();
 
-                ItemEntity item = new ItemEntity(world, 0, 0, 0, stack);
-                item.setPosition(getPosX(), getPosY(), getPosZ());
+                ItemEntity item = new ItemEntity(level, 0, 0, 0, stack);
+                item.setPos(getX(), getY(), getZ());
                 int result = ForgeEventFactory.onItemPickup(item, player);
 
-                if (result == 1 || stack.getCount() <= 0 || player.inventory.addItemStackToInventory(stack)) {
+                if (result == 1 || stack.getCount() <= 0 || player.inventory.add(stack)) {
                     if (!item.isAlive()) {
                         stack.setCount(0);
                     }
 
                     if (stack.getCount() == 0) {
-                        inventory.setInventorySlotContents(i, ItemStack.EMPTY);
+                        inventory.setItem(i, ItemStack.EMPTY);
                     }
                     else {
-                        inventory.setInventorySlotContents(i, stack);
+                        inventory.setItem(i, stack);
                     }
 
                     if (stack.getCount() < start) {
@@ -165,33 +165,33 @@ public class EntityLootCore extends Entity {
         }
 
         if (inserted) {
-            this.world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F, ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+            this.level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F, ((this.random.nextFloat() - this.random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
             updateStored();
         }
 
         pickupDellay = 10;
 
-        if (inventory.getSizeInventory() == 1 && inventory.getStackInSlot(0).isEmpty()) {
+        if (inventory.getContainerSize() == 1 && inventory.getItem(0).isEmpty()) {
             remove();
         }
     }
 
     private void updateStored() {
-        if (world.isRemote) {
+        if (level.isClientSide) {
             return;
         }
 
         displayMap = new HashMap<>();
 
-        for (int i = 0; i < inventory.getSizeInventory(); i++) {
-            ItemStack insert = inventory.getStackInSlot(i);
+        for (int i = 0; i < inventory.getContainerSize(); i++) {
+            ItemStack insert = inventory.getItem(i);
             if (insert.isEmpty()) {
                 continue;
             }
 
             boolean added = false;
             for (ItemStack stack : displayMap.keySet()) {
-                if (insert.isItemEqual(stack) && ItemStack.areItemStackTagsEqual(insert, stack)) {
+                if (insert.sameItem(stack) && ItemStack.tagMatches(insert, stack)) {
                     added = true;
                     displayMap.put(stack, displayMap.get(stack) + insert.getCount());
                     break;
@@ -212,20 +212,20 @@ public class EntityLootCore extends Entity {
     private List<ServerPlayerEntity> trackingPlayers = new ArrayList<>();
 
     @Override
-    public void addTrackingPlayer(ServerPlayerEntity player) {
+    public void startSeenByPlayer(ServerPlayerEntity player) {
         trackingPlayers.add(player);
 //        DraconicEvolution.network.sendTo(new PacketLootSync(getEntityId(), displayMap), player);
-        super.addTrackingPlayer(player);
+        super.startSeenByPlayer(player);
     }
 
     @Override
-    public void removeTrackingPlayer(ServerPlayerEntity player) {
+    public void stopSeenByPlayer(ServerPlayerEntity player) {
         trackingPlayers.remove(player);
-        super.removeTrackingPlayer(player);
+        super.stopSeenByPlayer(player);
     }
 
     @Override
-    protected void readAdditional(CompoundNBT compound) {
+    protected void readAdditionalSaveData(CompoundNBT compound) {
         inventory.readFromNBT(compound);
         updateStored();
         despawnTimer = compound.getInt("DespawnTimer");
@@ -234,7 +234,7 @@ public class EntityLootCore extends Entity {
     }
 
     @Override
-    protected void writeAdditional(CompoundNBT compound) {
+    protected void addAdditionalSaveData(CompoundNBT compound) {
         inventory.writeToNBT(compound);
         compound.putInt("DespawnTimer", despawnTimer);
         compound.putInt("Lifespan", lifespan);

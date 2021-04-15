@@ -30,8 +30,8 @@ public class GuiCelestialManipulator extends ModularGuiContainer<ContainerDummy<
     public GuiCelestialManipulator(ContainerDummy<TileCelestialManipulator> container, PlayerInventory playerInventory, ITextComponent title) {
         super(container, playerInventory, title);
 
-        this.xSize = 180;
-        this.ySize = 200;
+        this.imageWidth = 180;
+        this.imageHeight = 200;
 
         this.player = playerInventory.player;
         this.tile = container.tile;

@@ -33,14 +33,14 @@ public class InventoryCraftingChest extends CraftingInventory {
      * Returns the number of slots in the inventory.
      */
     @Override
-    public int getSizeInventory() {
+    public int getContainerSize() {
         return 9;
     }
 
     @Override
-    public ItemStack getStackInSlot(int slot) {
+    public ItemStack getItem(int slot) {
         // the 9 slots + 1 output slot that's not accessible, we therefore have to add 1 to the slot accessed
-        return slot >= getSizeInventory() ? ItemStack.EMPTY : tile.getStackInCraftingSlot(slot + 1);
+        return slot >= getContainerSize() ? ItemStack.EMPTY : tile.getStackInCraftingSlot(slot + 1);
     }
 
 //    @Override
@@ -63,7 +63,7 @@ public class InventoryCraftingChest extends CraftingInventory {
     }
 
     @Override
-    public ItemStack removeStackFromSlot(int par1) {
+    public ItemStack removeItemNoUpdate(int par1) {
         return ItemStack.EMPTY;
     }
 
@@ -72,7 +72,7 @@ public class InventoryCraftingChest extends CraftingInventory {
      * (second arg) of items and returns them in a new stack.
      */
     @Override
-    public ItemStack decrStackSize(int slotID, int par2) {
+    public ItemStack removeItem(int slotID, int par2) {
         ItemStack stack = tile.getStackInCraftingSlot(slotID + 1);
         if (!stack.isEmpty()) {
             ItemStack itemstack;
@@ -81,7 +81,7 @@ public class InventoryCraftingChest extends CraftingInventory {
                 itemstack = stack.copy();
                 stack = ItemStack.EMPTY;
                 tile.setInventoryCraftingSlotContents(slotID + 1, ItemStack.EMPTY);
-                eventHandler.onCraftMatrixChanged(this);
+                eventHandler.slotsChanged(this);
                 return itemstack;
             }
             else {
@@ -91,7 +91,7 @@ public class InventoryCraftingChest extends CraftingInventory {
                     stack = ItemStack.EMPTY;
                 }
 
-                eventHandler.onCraftMatrixChanged(this);
+                eventHandler.slotsChanged(this);
                 return itemstack;
             }
         }
@@ -105,9 +105,9 @@ public class InventoryCraftingChest extends CraftingInventory {
      * crafting or armor sections).
      */
     @Override
-    public void setInventorySlotContents(int slot, ItemStack itemstack) {
+    public void setItem(int slot, ItemStack itemstack) {
         tile.setInventoryCraftingSlotContents(slot + 1, itemstack);
-        eventHandler.onCraftMatrixChanged(this);
+        eventHandler.slotsChanged(this);
     }
 
     /**
@@ -115,7 +115,7 @@ public class InventoryCraftingChest extends CraftingInventory {
      * 64, possibly will be extended. *Isn't this more of a set than a get?*
      */
     @Override
-    public int getInventoryStackLimit() {
+    public int getMaxStackSize() {
         return 64;
     }
 
@@ -123,7 +123,7 @@ public class InventoryCraftingChest extends CraftingInventory {
      * Called when an the contents of an Inventory change, usually
      */
     @Override
-    public void markDirty() {
+    public void setChanged() {
     }
 
     /**
@@ -131,7 +131,7 @@ public class InventoryCraftingChest extends CraftingInventory {
      * with Container
      */
     @Override
-    public boolean isUsableByPlayer(PlayerEntity par1EntityPlayer) {
+    public boolean stillValid(PlayerEntity par1EntityPlayer) {
         return true;
     }
 

@@ -17,7 +17,7 @@ public class CelestialModifierSound extends SimpleSound implements ITickableSoun
 
     public CelestialModifierSound(SoundEvent soundEvent, BlockPos pos) {
         super(soundEvent, SoundCategory.BLOCKS, 1, 1, pos);
-        repeat = true;
+        looping = true;
     }
 
     public void updateSound(Vec3D pos, float volume, float pitch) {
@@ -34,7 +34,7 @@ public class CelestialModifierSound extends SimpleSound implements ITickableSoun
     }
 
     @Override
-    public boolean isDonePlaying() {
+    public boolean isStopped() {
         return done || timer > 20;
     }
 

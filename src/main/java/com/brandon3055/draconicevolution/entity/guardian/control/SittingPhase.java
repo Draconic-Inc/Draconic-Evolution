@@ -15,8 +15,8 @@ public abstract class SittingPhase extends Phase {
    }
 
    public float onAttacked(DamageSource source, float damage) {
-      if (source.getImmediateSource() instanceof AbstractArrowEntity) {
-         source.getImmediateSource().setFire(1);
+      if (source.getDirectEntity() instanceof AbstractArrowEntity) {
+         source.getDirectEntity().setSecondsOnFire(1);
          return 0.0F;
       } else {
          return super.onAttacked(source, damage);

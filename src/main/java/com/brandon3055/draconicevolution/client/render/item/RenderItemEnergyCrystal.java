@@ -22,6 +22,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderState;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.model.IModelTransform;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
@@ -53,17 +54,17 @@ public class RenderItemEnergyCrystal implements IItemRenderer {
                     .uniform("type", UniformType.INT)
                     .uniform("angle", UniformType.VEC2)
             )
-            .whenUsed(cache -> cache.glUniform1f("time", (ClientEventHandler.elapsedTicks + Minecraft.getInstance().getRenderPartialTicks()) / 50))
+            .whenUsed(cache -> cache.glUniform1f("time", (ClientEventHandler.elapsedTicks + Minecraft.getInstance().getFrameTime()) / 50))
             .build();
 
-    public static final RenderType fallBackType = RenderType.makeType("fall_back_type", DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP, GL11.GL_QUADS, 256, RenderType.State.getBuilder()
-            .texture(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/models/crystal_no_shader.png"), false, false))
-            .texturing(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
-            .cull(RenderState.CULL_DISABLED)
-            .build(false)
+    public static final RenderType fallBackType = RenderType.create("fall_back_type", DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP, GL11.GL_QUADS, 256, RenderType.State.builder()
+            .setTextureState(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/models/crystal_no_shader.png"), false, false))
+            .setTexturingState(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
+            .setCullState(RenderState.NO_CULL)
+            .createCompositeState(false)
     );
-    public static final RenderType crystalBaseType = RenderType.getEntitySolid(new ResourceLocation(DraconicEvolution.MODID, "textures/models/crystal_base.png"));
-    public static final RenderType fallBackOverlayType = RenderType.getEntityTranslucent(new ResourceLocation(DraconicEvolution.MODID, "textures/models/crystal_base.png"));
+    public static final RenderType crystalBaseType = RenderType.entitySolid(new ResourceLocation(DraconicEvolution.MODID, "textures/models/crystal_base.png"));
+    public static final RenderType fallBackOverlayType = RenderType.entityTranslucent(new ResourceLocation(DraconicEvolution.MODID, "textures/models/crystal_base.png"));
 
     private final CrystalType type;
     private final TechLevel techLevel;
@@ -85,7 +86,7 @@ public class RenderItemEnergyCrystal implements IItemRenderer {
     //region Unused
 
     @Override
-    public boolean isAmbientOcclusion() {
+    public boolean useAmbientOcclusion() {
         return false;
     }
 
@@ -95,7 +96,7 @@ public class RenderItemEnergyCrystal implements IItemRenderer {
     }
 
     @Override
-    public boolean isSideLit() {
+    public boolean usesBlockLight() {
         return false;
     }
 
@@ -157,11 +158,9 @@ public class RenderItemEnergyCrystal implements IItemRenderer {
     }
 
     @Override
-    public ImmutableMap<ItemCameraTransforms.TransformType, TransformationMatrix> getTransforms() {
+    public IModelTransform getModelTransform() {
         return TransformUtils.DEFAULT_BLOCK;
     }
-
-
 
     private static float[] r = {0.0F, 0.47F, 1.0F};
     private static float[] g = {0.2F, 0.0F, 0.4F};

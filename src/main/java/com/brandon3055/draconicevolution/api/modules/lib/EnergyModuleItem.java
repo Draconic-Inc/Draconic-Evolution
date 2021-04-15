@@ -30,15 +30,15 @@ public class EnergyModuleItem extends ModuleItem<EnergyData> {
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        super.addInformation(stack, worldIn, tooltip, flagIn);
+    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+        super.appendHoverText(stack, worldIn, tooltip, flagIn);
         if (stack.hasTag() && stack.getOrCreateTag().contains("stored_energy")) {
-            tooltip.add(new StringTextComponent(I18n.format("module.draconicevolution.energy.stored_energy")
+            tooltip.add(new StringTextComponent(I18n.get("module.draconicevolution.energy.stored_energy")
                     + ": "
                     + Utils.formatNumber(stack.getOrCreateTag().getLong("stored_energy"))
                     + " "
-                    + I18n.format("op.brandonscore." + (Screen.hasShiftDown() ? "operational_potential" : "op")))
-                    .mergeStyle(TextFormatting.GRAY));
+                    + I18n.get("op.brandonscore." + (Screen.hasShiftDown() ? "operational_potential" : "op")))
+                    .withStyle(TextFormatting.GRAY));
         }
     }
 }

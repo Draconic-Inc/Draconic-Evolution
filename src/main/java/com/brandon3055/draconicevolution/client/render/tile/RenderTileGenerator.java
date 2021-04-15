@@ -25,7 +25,7 @@ import java.util.Map;
  */
 public class RenderTileGenerator extends TileEntityRenderer<TileGenerator> {
 
-    private static RenderType modelType = RenderType.getSolid();
+    private static RenderType modelType = RenderType.solid();
     private final CCModel fanModel;
 
     public RenderTileGenerator(TileEntityRendererDispatcher rendererDispatcherIn) {
@@ -46,7 +46,7 @@ public class RenderTileGenerator extends TileEntityRenderer<TileGenerator> {
 
         ccrs.bind(modelType, getter);
         mat.translate(Vector3.CENTER);
-        mat.apply(new Rotation(tile.getBlockState().get(Generator.FACING).getOpposite().getHorizontalAngle() * -MathHelper.torad, 0, 1, 0));
+        mat.apply(new Rotation(tile.getBlockState().getValue(Generator.FACING).getOpposite().toYRot() * -MathHelper.torad, 0, 1, 0));
         mat.apply(new Scale(0.0625));
         mat.apply(new Rotation((tile.rotation + (tile.rotationSpeed * partialTicks)), 1, 0, 0).at(new Vector3(0, -1.5, -4.5)));
 

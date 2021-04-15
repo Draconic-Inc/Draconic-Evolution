@@ -13,9 +13,9 @@ import net.minecraft.world.World;
 public class ParticleLineIndicator extends SpriteTexturedParticle {
     public ParticleLineIndicator(World worldIn, double xCoordIn, double yCoordIn, double zCoordIn, double xSpeedIn, double ySpeedIn, double zSpeedIn) {
         super((ClientWorld)worldIn, xCoordIn, yCoordIn, zCoordIn, xSpeedIn, ySpeedIn, zSpeedIn);
-        this.motionX = xSpeedIn;
-        this.motionY = ySpeedIn;
-        this.motionZ = zSpeedIn;
+        this.xd = xSpeedIn;
+        this.yd = ySpeedIn;
+        this.zd = zSpeedIn;
     }
 
     @Override
@@ -31,15 +31,15 @@ public class ParticleLineIndicator extends SpriteTexturedParticle {
         }
 
         @Override
-        public Particle makeParticle(IntParticleType.IntParticleData data, ClientWorld world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public Particle createParticle(IntParticleType.IntParticleData data, ClientWorld world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
             ParticleLineIndicator particle = new ParticleLineIndicator(world, x, y, z, xSpeed, ySpeed, zSpeed);
-            particle.selectSpriteRandomly(spriteSet);
+            particle.pickSprite(spriteSet);
 
             if (data.get().length >= 3) {
                 particle.setColor(data.get()[0] / 255F, data.get()[1] / 255F, data.get()[2] / 255F);
             }
             if (data.get().length >= 4) {
-                particle.setMaxAge(data.get()[3]);
+                particle.setLifetime(data.get()[3]);
             }
 
             return particle;

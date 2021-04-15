@@ -70,8 +70,8 @@ public class ContainerConfigurableItem extends ContainerBCore<Object> {
 //                    inventorySlots.stream().map(Slot::getStack))
 //                    .filter(stack -> !stack.isEmpty());
 //        }
-        return inventorySlots.stream()
-                .map(Slot::getStack)
+        return slots.stream()
+                .map(Slot::getItem)
                 .filter(stack -> !stack.isEmpty());
     }
 
@@ -105,19 +105,19 @@ public class ContainerConfigurableItem extends ContainerBCore<Object> {
     }
 
     @Override
-    public ItemStack slotClick(int slotId, int button, ClickType clickTypeIn, PlayerEntity player) {
-        if (slotId >= 0 && slotId < inventorySlots.size()) {
-            Slot slot = this.inventorySlots.get(slotId);
-            if (slot != null && !slot.getStack().isEmpty()) {
-                LazyOptional<PropertyProvider> optionalCap = slot.getStack().getCapability(PROPERTY_PROVIDER_CAPABILITY);
+    public ItemStack clicked(int slotId, int button, ClickType clickTypeIn, PlayerEntity player) {
+        if (slotId >= 0 && slotId < slots.size()) {
+            Slot slot = this.slots.get(slotId);
+            if (slot != null && !slot.getItem().isEmpty()) {
+                LazyOptional<PropertyProvider> optionalCap = slot.getItem().getCapability(PROPERTY_PROVIDER_CAPABILITY);
                 if (optionalCap.isPresent()) {
                     PropertyProvider provider = optionalCap.orElseThrow(WTFException::new);
-                    if (clickTypeIn == ClickType.PICKUP && button == 0 && player.inventory.getItemStack().isEmpty()) {
+                    if (clickTypeIn == ClickType.PICKUP && button == 0 && player.inventory.getCarried().isEmpty()) {
                         selectedId = provider.getProviderID();
                         if (onSelectionMade != null) {
                             onSelectionMade.accept(false);
                         }
-                        stackCache = slot.getStack();
+                        stackCache = slot.getItem();
                         return ItemStack.EMPTY;
                     }
                 }
@@ -126,7 +126,7 @@ public class ContainerConfigurableItem extends ContainerBCore<Object> {
         if (slotId > 40) {
             return ItemStack.EMPTY;
         }
-        ItemStack ret = super.slotClick(slotId, button, clickTypeIn, player);
+        ItemStack ret = super.clicked(slotId, button, clickTypeIn, player);
         if (onInventoryChange != null) {
             onInventoryChange.run();
         }
@@ -146,7 +146,7 @@ public class ContainerConfigurableItem extends ContainerBCore<Object> {
     }
 
     private static Stream<ItemStack> getPlayerInventory(PlayerInventory player) {
-        return Streams.concat(player.mainInventory.stream(), player.armorInventory.stream(), player.offHandInventory.stream(), EquipmentManager.getAllItems(player.player).stream()).filter(e -> !e.isEmpty());
+        return Streams.concat(player.items.stream(), player.armor.stream(), player.offhand.stream(), EquipmentManager.getAllItems(player.player).stream()).filter(e -> !e.isEmpty());
     }
 
     public static Stream<Pair<ItemStack, PropertyProvider>> getStackProviders(Stream<ItemStack> stacks) {
@@ -182,13 +182,13 @@ public class ContainerConfigurableItem extends ContainerBCore<Object> {
     }
 
     @Override
-    public void detectAndSendChanges() {
-        super.detectAndSendChanges();
+    public void broadcastChanges() {
+        super.broadcastChanges();
     }
 
     @Override
-    public void putStackInSlot(int slotID, ItemStack stack) {
-        super.putStackInSlot(slotID, stack);
+    public void setItem(int slotID, ItemStack stack) {
+        super.setItem(slotID, stack);
         onSyncDataReceived();
     }
 
@@ -218,7 +218,7 @@ public class ContainerConfigurableItem extends ContainerBCore<Object> {
 
 
     public static void tryOpenGui(ServerPlayerEntity sender) {
-        ItemStack stack = sender.getHeldItemMainhand();
+        ItemStack stack = sender.getMainHandItem();
         if (!stack.isEmpty() && stack.getCapability(PROPERTY_PROVIDER_CAPABILITY).isPresent()) {
             PlayerSlot slot = new PlayerSlot(sender, Hand.MAIN_HAND);
             NetworkHooks.openGui(sender, new ContainerConfigurableItem.Provider(slot), slot::toBuff);
@@ -231,7 +231,7 @@ public class ContainerConfigurableItem extends ContainerBCore<Object> {
             }
         }
 
-        sender.sendMessage(new TranslationTextComponent("msg.draconicevolution.configure_item.no_configurabel_item").mergeStyle(TextFormatting.RED), Util.DUMMY_UUID);
+        sender.sendMessage(new TranslationTextComponent("msg.draconicevolution.configure_item.no_configurabel_item").withStyle(TextFormatting.RED), Util.NIL_UUID);
     }
 
     public static class Provider implements INamedContainerProvider {

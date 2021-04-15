@@ -27,7 +27,7 @@ public class Grinder extends BlockBCore/* implements ITileEntityProvider, IRende
 
     public Grinder(Properties properties) {
         super(properties);
-        this.setDefaultState(stateContainer.getBaseState().with(FACING, Direction.NORTH).with(ACTIVE, false)); //TODO figure out if/when set default is actually needed.
+        this.registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(ACTIVE, false)); //TODO figure out if/when set default is actually needed.
         setMobResistant();
     }
 
@@ -39,7 +39,7 @@ public class Grinder extends BlockBCore/* implements ITileEntityProvider, IRende
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
         builder.add(FACING, ACTIVE);
     }
 
@@ -113,7 +113,7 @@ public class Grinder extends BlockBCore/* implements ITileEntityProvider, IRende
 
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context) {
-        return this.getDefaultState().with(FACING, context.getPlacementHorizontalFacing().getOpposite());
+        return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
     }
 
 //    @Override

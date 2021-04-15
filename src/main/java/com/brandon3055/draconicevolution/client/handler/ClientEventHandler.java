@@ -70,7 +70,7 @@ import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
 public class ClientEventHandler {
     public static Map<PlayerEntity, Pair<Float, Integer>> playerShieldStatus = new HashMap<PlayerEntity, Pair<Float, Integer>>();
     public static ObfMapping splashTextMapping = new ObfMapping("net/minecraft/client/gui/GuiMainMenu", "field_110353_x");
-    public static FloatBuffer winPos = GLAllocation.createDirectFloatBuffer(3);
+    public static FloatBuffer winPos = GLAllocation.createFloatBuffer(3);
     public static volatile int elapsedTicks;
     public static boolean playerHoldingWrench = false;
     public static Minecraft mc;
@@ -97,7 +97,7 @@ public class ClientEventHandler {
 
         if (explosionPos != null && event.getType() == RenderGameOverlayEvent.ElementType.ALL) {
             mc = Minecraft.getInstance();
-            updateExplosionAnimation(mc, mc.world, event.getWindow(), mc.getRenderPartialTicks());
+            updateExplosionAnimation(mc, mc.level, event.getWindow(), mc.getFrameTime());
         }
     }
 
@@ -118,7 +118,7 @@ public class ClientEventHandler {
 
         PlayerEntity player = Minecraft.getInstance().player;
         if (player != null) {
-            playerHoldingWrench = (!player.getHeldItemMainhand().isEmpty() && player.getHeldItemMainhand().getItem() instanceof ICrystalBinder) || (!player.getHeldItemOffhand().isEmpty() && player.getHeldItemOffhand().getItem() instanceof ICrystalBinder);
+            playerHoldingWrench = (!player.getMainHandItem().isEmpty() && player.getMainHandItem().getItem() instanceof ICrystalBinder) || (!player.getOffhandItem().isEmpty() && player.getOffhandItem().getItem() instanceof ICrystalBinder);
         }
     }
 
@@ -151,13 +151,13 @@ public class ClientEventHandler {
             //RenderSystem.color(1F - p, 0F, p, i / 5F);
 
             if (viewingPlayer != event.getPlayer()) {
-                double translationXLT = event.getPlayer().prevPosX - viewingPlayer.prevPosX;
-                double translationYLT = event.getPlayer().prevPosY - viewingPlayer.prevPosY;
-                double translationZLT = event.getPlayer().prevPosZ - viewingPlayer.prevPosZ;
+                double translationXLT = event.getPlayer().xo - viewingPlayer.xo;
+                double translationYLT = event.getPlayer().yo - viewingPlayer.yo;
+                double translationZLT = event.getPlayer().zo - viewingPlayer.zo;
 
-                double translationX = translationXLT + (((event.getPlayer().getPosX() - viewingPlayer.getPosX()) - translationXLT) * event.getPartialRenderTick());
-                double translationY = translationYLT + (((event.getPlayer().getPosY() - viewingPlayer.getPosY()) - translationYLT) * event.getPartialRenderTick());
-                double translationZ = translationZLT + (((event.getPlayer().getPosZ() - viewingPlayer.getPosZ()) - translationZLT) * event.getPartialRenderTick());
+                double translationX = translationXLT + (((event.getPlayer().getX() - viewingPlayer.getX()) - translationXLT) * event.getPartialRenderTick());
+                double translationY = translationYLT + (((event.getPlayer().getY() - viewingPlayer.getY()) - translationYLT) * event.getPartialRenderTick());
+                double translationZ = translationZLT + (((event.getPlayer().getZ() - viewingPlayer.getZ()) - translationZLT) * event.getPartialRenderTick());
 
                 RenderSystem.translated(translationX, translationY + 1.1, translationZ);
             } else {
@@ -200,13 +200,13 @@ public class ClientEventHandler {
             return;
         }
 
-        MODELVIEW.set(event.getMatrixStack().getLast().getMatrix());
+        MODELVIEW.set(event.getMatrixStack().last().pose());
         PROJECTION.set(event.getProjectionMatrix());
 
         ClientPlayerEntity player = Minecraft.getInstance().player;
-        World world = player.getEntityWorld();
-        ItemStack stack = player.getHeldItemMainhand();
-        ItemStack offStack = player.getHeldItemOffhand();
+        World world = player.getCommandSenderWorld();
+        ItemStack stack = player.getMainHandItem();
+        ItemStack offStack = player.getOffhandItem();
         Minecraft mc = Minecraft.getInstance();
         float partialTicks = event.getPartialTicks();
 
@@ -224,20 +224,20 @@ public class ClientEventHandler {
         }
 
 
-        if (!(mc.objectMouseOver instanceof BlockRayTraceResult)) {
+        if (!(mc.hitResult instanceof BlockRayTraceResult)) {
             return;
         }
 
         if (!stack.isEmpty() && stack.getItem() == DEContent.creative_exchanger) {
 
-            List<BlockPos> blocks = CreativeExchanger.getBlocksToReplace(stack, ((BlockRayTraceResult) mc.objectMouseOver).getPos(), world, ((BlockRayTraceResult) mc.objectMouseOver).getFace());
+            List<BlockPos> blocks = CreativeExchanger.getBlocksToReplace(stack, ((BlockRayTraceResult) mc.hitResult).getBlockPos(), world, ((BlockRayTraceResult) mc.hitResult).getDirection());
 
             Tessellator tessellator = Tessellator.getInstance();
-            BufferBuilder buffer = tessellator.getBuffer();
+            BufferBuilder buffer = tessellator.getBuilder();
 
-            double offsetX = player.prevPosX + (player.getPosX() - player.prevPosX) * (double) partialTicks;
-            double offsetY = player.prevPosY + (player.getPosY() - player.prevPosY) * (double) partialTicks;
-            double offsetZ = player.prevPosZ + (player.getPosZ() - player.prevPosZ) * (double) partialTicks;
+            double offsetX = player.xo + (player.getX() - player.xo) * (double) partialTicks;
+            double offsetY = player.yo + (player.getY() - player.yo) * (double) partialTicks;
+            double offsetZ = player.zo + (player.getZ() - player.zo) * (double) partialTicks;
 
             RenderSystem.enableBlend();
             RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
@@ -246,7 +246,7 @@ public class ClientEventHandler {
             RenderSystem.disableTexture();
 
             for (BlockPos block : blocks) {
-                if (world.isAirBlock(block)) {
+                if (world.isEmptyBlock(block)) {
                     continue;
                 }
 
@@ -256,7 +256,7 @@ public class ClientEventHandler {
 
                 Cuboid6 box = new Cuboid6(renderX, renderY, renderZ, renderX + 1, renderY + 1, renderZ + 1).expand(0.001, 0.001, 0.001);
                 float colour = 1F;
-                if (!world.getBlockState(block.offset(((BlockRayTraceResult) mc.objectMouseOver).getFace())).getMaterial().isReplaceable()) {
+                if (!world.getBlockState(block.relative(((BlockRayTraceResult) mc.hitResult).getDirection())).getMaterial().isReplaceable()) {
                     RenderSystem.disableDepthTest();
                     colour = 0.2F;
                 }
@@ -264,7 +264,7 @@ public class ClientEventHandler {
 
 //                RenderUtils.drawCuboidOutline(box);
 
-                if (!world.getBlockState(block.offset(((BlockRayTraceResult) mc.objectMouseOver).getFace())).getMaterial().isReplaceable()) {
+                if (!world.getBlockState(block.relative(((BlockRayTraceResult) mc.hitResult).getDirection())).getMaterial().isReplaceable()) {
                     RenderSystem.enableDepthTest();
                 }
             }
@@ -277,7 +277,7 @@ public class ClientEventHandler {
             return;
         }
 
-        BlockPos pos = ((BlockRayTraceResult) mc.objectMouseOver).getPos();
+        BlockPos pos = ((BlockRayTraceResult) mc.hitResult).getBlockPos();
         BlockState state = world.getBlockState(pos);
         MiningToolBase tool = (MiningToolBase) stack.getItem();
 
@@ -291,13 +291,13 @@ public class ClientEventHandler {
     private void renderMiningAOE(World world, ItemStack stack, BlockPos pos, ClientPlayerEntity player, float partialTicks) {
         MiningToolBase tool = (MiningToolBase) stack.getItem();
         Pair<BlockPos, BlockPos> aoe = tool.getMiningArea(pos, player, tool.getDigAOE(stack), tool.getDigDepth(stack));
-        List<BlockPos> blocks = Lists.newArrayList(BlockPos.getAllInBoxMutable(aoe.key(), aoe.value()));
+        List<BlockPos> blocks = Lists.newArrayList(BlockPos.betweenClosed(aoe.key(), aoe.value()));
         Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBuffer();
+        BufferBuilder buffer = tessellator.getBuilder();
 
-        double offsetX = player.prevPosX + (player.getPosX() - player.prevPosX) * (double) partialTicks;
-        double offsetY = player.prevPosY + (player.getPosY() - player.prevPosY) * (double) partialTicks;
-        double offsetZ = player.prevPosZ + (player.getPosZ() - player.prevPosZ) * (double) partialTicks;
+        double offsetX = player.xo + (player.getX() - player.xo) * (double) partialTicks;
+        double offsetY = player.yo + (player.getY() - player.yo) * (double) partialTicks;
+        double offsetZ = player.zo + (player.getZ() - player.zo) * (double) partialTicks;
 
         RenderSystem.enableBlend();
         RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
@@ -320,7 +320,7 @@ public class ClientEventHandler {
             double renderY = block.getY() - offsetY;
             double renderZ = block.getZ() - offsetZ;
 
-            AxisAlignedBB box = new AxisAlignedBB(renderX, renderY, renderZ, renderX + 1, renderY + 1, renderZ + 1).shrink(0.49D);
+            AxisAlignedBB box = new AxisAlignedBB(renderX, renderY, renderZ, renderX + 1, renderY + 1, renderZ + 1).deflate(0.49D);
 
             double rDist = Utils.getDistanceSq(pos.getX(), pos.getY(), pos.getZ(), block.getX(), block.getY(), block.getZ());
 
@@ -339,21 +339,21 @@ public class ClientEventHandler {
             float b = 1F;
 
 
-            buffer.pos(box.minX, box.minY, box.minZ).color(r * colour, g * colour, b * colour, alpha).endVertex();
-            buffer.pos(box.maxX, box.maxY, box.maxZ).color(r * colour, g * colour, b * colour, alpha).endVertex();
+            buffer.vertex(box.minX, box.minY, box.minZ).color(r * colour, g * colour, b * colour, alpha).endVertex();
+            buffer.vertex(box.maxX, box.maxY, box.maxZ).color(r * colour, g * colour, b * colour, alpha).endVertex();
 
-            buffer.pos(box.maxX, box.minY, box.minZ).color(r * colour, g * colour, b * colour, alpha).endVertex();
-            buffer.pos(box.minX, box.maxY, box.maxZ).color(r * colour, g * colour, b * colour, alpha).endVertex();
+            buffer.vertex(box.maxX, box.minY, box.minZ).color(r * colour, g * colour, b * colour, alpha).endVertex();
+            buffer.vertex(box.minX, box.maxY, box.maxZ).color(r * colour, g * colour, b * colour, alpha).endVertex();
 
-            buffer.pos(box.minX, box.minY, box.maxZ).color(r * colour, g * colour, b * colour, alpha).endVertex();
-            buffer.pos(box.maxX, box.maxY, box.minZ).color(r * colour, g * colour, b * colour, alpha).endVertex();
+            buffer.vertex(box.minX, box.minY, box.maxZ).color(r * colour, g * colour, b * colour, alpha).endVertex();
+            buffer.vertex(box.maxX, box.maxY, box.minZ).color(r * colour, g * colour, b * colour, alpha).endVertex();
 
-            buffer.pos(box.maxX, box.minY, box.maxZ).color(r * colour, g * colour, b * colour, alpha).endVertex();
-            buffer.pos(box.minX, box.maxY, box.minZ).color(r * colour, g * colour, b * colour, alpha).endVertex();
+            buffer.vertex(box.maxX, box.minY, box.maxZ).color(r * colour, g * colour, b * colour, alpha).endVertex();
+            buffer.vertex(box.minX, box.maxY, box.minZ).color(r * colour, g * colour, b * colour, alpha).endVertex();
 
         }
 
-        tessellator.draw();
+        tessellator.end();
 
         RenderSystem.enableDepthTest();
         RenderSystem.enableTexture();
@@ -369,13 +369,13 @@ public class ClientEventHandler {
         ProcessHandlerClient.addProcess(new DelayedExecutor(5) {
             @Override
             public void execute(Object[] args) {
-                Minecraft.getInstance().worldRenderer.loadRenderers();
+                Minecraft.getInstance().levelRenderer.allChanged();
             }
         });
     }
 
     private void updateExplosion() {
-        if (Minecraft.getInstance().isGamePaused()) {
+        if (Minecraft.getInstance().isPaused()) {
             return;
         }
         explosionTime++;
@@ -397,23 +397,23 @@ public class ClientEventHandler {
 //        explosionAnimation = explosionTime * 0.01;
     }
 
-    public static final IntBuffer VIEWPORT = GLAllocation.createDirectByteBuffer(16 << 2).asIntBuffer();
+    public static final IntBuffer VIEWPORT = GLAllocation.createByteBuffer(16 << 2).asIntBuffer();
 
     private void updateExplosionAnimation(Minecraft mc, World world, MainWindow resolution, float partialTick) {
         //region TargetPoint Calculation
 
         GL11.glGetIntegerv(GL11.GL_VIEWPORT, VIEWPORT);
-        Entity entity = mc.getRenderViewEntity();
-        float x = (float) (entity.prevPosX + (entity.getPosX() - entity.prevPosX) * (double) partialTick);
-        float y = (float) (entity.prevPosY + (entity.getPosY() - entity.prevPosY) * (double) partialTick);
-        float z = (float) (entity.prevPosZ + (entity.getPosZ() - entity.prevPosZ) * (double) partialTick);
+        Entity entity = mc.getCameraEntity();
+        float x = (float) (entity.xo + (entity.getX() - entity.xo) * (double) partialTick);
+        float y = (float) (entity.yo + (entity.getY() - entity.yo) * (double) partialTick);
+        float z = (float) (entity.zo + (entity.getZ() - entity.zo) * (double) partialTick);
         Vector3 targetPos = Vector3.fromBlockPosCenter(explosionPos);
         targetPos.subtract(x, y, z);
         Vector3 winPos = gluProject(targetPos, MODELVIEW, PROJECTION, VIEWPORT);
 
         boolean behind = winPos.z > 1;
-        float screenX = behind ? -1 : (float) winPos.x / resolution.getWidth();
-        float screenY = behind ? -1 : (float) winPos.y / resolution.getHeight();
+        float screenX = behind ? -1 : (float) winPos.x / resolution.getScreenWidth();
+        float screenY = behind ? -1 : (float) winPos.y / resolution.getScreenHeight();
 
         //endregion
 
@@ -426,17 +426,17 @@ public class ClientEventHandler {
             } else {
                 alpha = (float) explosionAnimation + (partialTick * 0.2F);
             }
-            GuiHelper.drawColouredRect(0, 0, resolution.getScaledWidth(), resolution.getScaledHeight(), 0x00FFFFFF | (int) (alpha * 255F) << 24);
+            GuiHelper.drawColouredRect(0, 0, resolution.getGuiScaledWidth(), resolution.getGuiScaledHeight(), 0x00FFFFFF | (int) (alpha * 255F) << 24);
         } else {
 
             UniformCache uniforms = explosionShader.pushCache();
             uniforms.glUniform2f("screenPos", screenX, screenY);
             uniforms.glUniform1f("intensity", (float) explosionAnimation);
-            uniforms.glUniform2f("screenSize", resolution.getWidth(), resolution.getHeight());
+            uniforms.glUniform2f("screenSize", resolution.getScreenWidth(), resolution.getScreenHeight());
 
             explosionShader.use();
             explosionShader.popCache(uniforms);
-            GuiHelper.drawColouredRect(0, 0, resolution.getScaledWidth(), resolution.getScaledHeight(), 0xFFFFFFFF);
+            GuiHelper.drawColouredRect(0, 0, resolution.getGuiScaledWidth(), resolution.getGuiScaledHeight(), 0xFFFFFFFF);
             explosionShader.release();
         }
     }
@@ -447,28 +447,28 @@ public class ClientEventHandler {
         multMatrix(modelMatrix, o);
         multMatrix(projMatrix, o);
 
-        if (o.getW() == 0) {
+        if (o.w() == 0) {
             return Vector3.ZERO.copy();
         }
-        o.setW((1.0F / o.getW()) * 0.5F);
+        o.setW((1.0F / o.w()) * 0.5F);
 
-        o.setX(o.getX() * o.getW() + 0.5F);
-        o.setY(o.getY() * o.getW() + 0.5F);
-        o.setZ(o.getZ() * o.getW() + 0.5F);
+        o.setX(o.x() * o.w() + 0.5F);
+        o.setY(o.y() * o.w() + 0.5F);
+        o.setZ(o.z() * o.w() + 0.5F);
 
         Vector3 winPos = new Vector3();
-        winPos.z = o.getZ();
+        winPos.z = o.z();
 
-        winPos.x = o.getX() * viewport.get(viewport.position() + 2) + viewport.get(viewport.position() + 0);
-        winPos.y = o.getY() * viewport.get(viewport.position() + 3) + viewport.get(viewport.position() + 1);
+        winPos.x = o.x() * viewport.get(viewport.position() + 2) + viewport.get(viewport.position() + 0);
+        winPos.y = o.y() * viewport.get(viewport.position() + 3) + viewport.get(viewport.position() + 1);
         return winPos;
     }
 
     private static void multMatrix(Matrix4 mat, Vector4f vec) {
-        double x = mat.m00 * vec.getX() + mat.m01 * vec.getY() + mat.m02 * vec.getZ() + mat.m03 * vec.getW();
-        double y = mat.m10 * vec.getX() + mat.m11 * vec.getY() + mat.m12 * vec.getZ() + mat.m13 * vec.getW();
-        double z = mat.m20 * vec.getX() + mat.m21 * vec.getY() + mat.m22 * vec.getZ() + mat.m23 * vec.getW();
-        double w = mat.m30 * vec.getX() + mat.m31 * vec.getY() + mat.m32 * vec.getZ() + mat.m33 * vec.getW();
+        double x = mat.m00 * vec.x() + mat.m01 * vec.y() + mat.m02 * vec.z() + mat.m03 * vec.w();
+        double y = mat.m10 * vec.x() + mat.m11 * vec.y() + mat.m12 * vec.z() + mat.m13 * vec.w();
+        double z = mat.m20 * vec.x() + mat.m21 * vec.y() + mat.m22 * vec.z() + mat.m23 * vec.w();
+        double w = mat.m30 * vec.x() + mat.m31 * vec.y() + mat.m32 * vec.z() + mat.m33 * vec.w();
         vec.set((float) x, (float) y, (float) z, (float) w);
     }
 }

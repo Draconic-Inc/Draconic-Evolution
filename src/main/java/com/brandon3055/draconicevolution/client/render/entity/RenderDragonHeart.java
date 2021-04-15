@@ -44,26 +44,26 @@ public class RenderDragonHeart extends EntityRenderer<EntityDragonHeart> {
         RenderSystem.color4f(2f - sine * 1.3f, 1f - sine / 1.5f, 1f - sine / 1.8f, 1F - sine / 1.6f);
 
         Tessellator tess = Tessellator.getInstance();
-        BufferBuilder buffer = tess.getBuffer();
+        BufferBuilder buffer = tess.getBuilder();
 
         RenderSystem.scalef(0.55f, 0.55f, 0.55f);
         RenderSystem.translated(-0.5, 0.47, 0.061);
 
         buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-        buffer.pos(0, 1, 0).tex(0, 0).endVertex();
-        buffer.pos(0, 0, 0).tex(0, 1).endVertex();
-        buffer.pos(1, 0, 0).tex(1, 1).endVertex();
-        buffer.pos(1, 1, 0).tex(1, 0).endVertex();
-        tess.draw();
+        buffer.vertex(0, 1, 0).uv(0, 0).endVertex();
+        buffer.vertex(0, 0, 0).uv(0, 1).endVertex();
+        buffer.vertex(1, 0, 0).uv(1, 1).endVertex();
+        buffer.vertex(1, 1, 0).uv(1, 0).endVertex();
+        tess.end();
 
         RenderSystem.translated(0, 0, -0.12);
 
         buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-        buffer.pos(0, 1, 0).tex(0, 0).endVertex();
-        buffer.pos(0, 0, 0).tex(0, 1).endVertex();
-        buffer.pos(1, 0, 0).tex(1, 1).endVertex();
-        buffer.pos(1, 1, 0).tex(1, 0).endVertex();
-        tess.draw();
+        buffer.vertex(0, 1, 0).uv(0, 0).endVertex();
+        buffer.vertex(0, 0, 0).uv(0, 1).endVertex();
+        buffer.vertex(1, 0, 0).uv(1, 1).endVertex();
+        buffer.vertex(1, 1, 0).uv(1, 0).endVertex();
+        tess.end();
 
         RenderSystem.disableBlend();
         RenderSystem.enableLighting();
@@ -72,7 +72,7 @@ public class RenderDragonHeart extends EntityRenderer<EntityDragonHeart> {
     }
 
     @Override
-    public ResourceLocation getEntityTexture(EntityDragonHeart entity) {
+    public ResourceLocation getTextureLocation(EntityDragonHeart entity) {
         return ResourceHelperDE.getResource(DETextures.DRAGON_HEART);
     }
 }

@@ -114,8 +114,8 @@ public class ChaosWorldGenHandler {
                         density = centerFalloff * plateauFalloff * heightMapFalloff;
 
                         BlockPos pos = new BlockPos(x + closestSpawn.x, y + 64 + DEOldConfig.chaosIslandYOffset, z + closestSpawn.z);
-                        if (density > 0.1 && (reader.isAirBlock(pos) && reader.getBlockState(pos).getBlock() != Blocks.CAVE_AIR/*DEContent.chaosShardAtmos*/)) {
-                            reader.setBlockState(pos, (dist > 60 || dist > rand.nextInt(60)) ? Blocks.END_STONE.getDefaultState() : Blocks.OBSIDIAN.getDefaultState(), 3);
+                        if (density > 0.1 && (reader.isEmptyBlock(pos) && reader.getBlockState(pos).getBlock() != Blocks.CAVE_AIR/*DEContent.chaosShardAtmos*/)) {
+                            reader.setBlock(pos, (dist > 60 || dist > rand.nextInt(60)) ? Blocks.END_STONE.defaultBlockState() : Blocks.OBSIDIAN.defaultBlockState(), 3);
                             chunkModified = true;
                         }
                     }
@@ -147,10 +147,10 @@ public class ChaosWorldGenHandler {
 
         BlockPos center = new BlockPos(islandCenter.x, shardY, islandCenter.z);
 
-        reader.setBlockState(center, DEContent.chaos_crystal.getDefaultState(), 3);
-        TileChaosCrystal tileChaosShard = (TileChaosCrystal) reader.getTileEntity(center);
+        reader.setBlock(center, DEContent.chaos_crystal.defaultBlockState(), 3);
+        TileChaosCrystal tileChaosShard = (TileChaosCrystal) reader.getBlockEntity(center);
         tileChaosShard.onValidPlacement();
-        WorldEntityHandler.addWorldEntity(reader.getWorld(), new GuardianFightManager(center));
+        WorldEntityHandler.addWorldEntity(reader.getLevel(), new GuardianFightManager(center));
 
 //        EntityChaosGuardian guardian = new EntityChaosGuardian(reader);
 //        guardian.setPosition(islandCenter.x, shardY, islandCenter.z);
@@ -192,13 +192,13 @@ public class ChaosWorldGenHandler {
                 if (dist > oRad - 3D && rand.nextDouble() * 3D < dist - (oRad - 3D)) continue;
 
                 if (fillIn && (int) (Utils.getDistanceAtoB(x, z, xi, zi)) <= ringRadius) {
-                    if ((int) dist < 9) world.setBlockState(new BlockPos(x, yi, z), DEContent.infused_obsidian.getDefaultState(), 3);
-                    else world.setBlockState(new BlockPos(x, yi, z), Blocks.OBSIDIAN.getDefaultState(), 3);
+                    if ((int) dist < 9) world.setBlock(new BlockPos(x, yi, z), DEContent.infused_obsidian.defaultBlockState(), 3);
+                    else world.setBlock(new BlockPos(x, yi, z), Blocks.OBSIDIAN.defaultBlockState(), 3);
                 } else if (!fillIn && (int) (Utils.getDistanceAtoB(x, z, xi, zi)) >= ringRadius) {
-                    world.setBlockState(new BlockPos(x, yi, z), Blocks.OBSIDIAN.getDefaultState(), 3);
+                    world.setBlock(new BlockPos(x, yi, z), Blocks.OBSIDIAN.defaultBlockState(), 3);
                 } else if (!fillIn && (int) Utils.getDistanceAtoB(x, z, xi, zi) <= ringRadius) {
                     Block b = world.getBlockState(new BlockPos(x, yi, z)).getBlock();
-                    if (b == Blocks.AIR || b == Blocks.END_STONE || b == Blocks.OBSIDIAN) world.setBlockState(new BlockPos(x, yi, z), /*DEContent.chaosShardAtmos*/Blocks.CAVE_AIR.getDefaultState(), 3);
+                    if (b == Blocks.AIR || b == Blocks.END_STONE || b == Blocks.OBSIDIAN) world.setBlock(new BlockPos(x, yi, z), /*DEContent.chaosShardAtmos*/Blocks.CAVE_AIR.defaultBlockState(), 3);
                 }
 
             }
@@ -235,26 +235,26 @@ public class ChaosWorldGenHandler {
 
         for (int i = 0; i < 20; i+=3) {
             LightningBoltEntity entity = new LightningBoltEntity(EntityType.LIGHTNING_BOLT, world);
-            entity.setPosition(genPos.getX() - 2 + rand.nextInt(5), genPos.getY() - rand.nextInt(20), genPos.getZ() - 2 + rand.nextInt(5));
-            world.addEntity(entity);
+            entity.setPos(genPos.getX() - 2 + rand.nextInt(5), genPos.getY() - rand.nextInt(20), genPos.getZ() - 2 + rand.nextInt(5));
+            world.addFreshEntity(entity);
         }
 
 
         if (DEOldConfig.chaosIslandVoidMode) return;
 
         int r = 3;
-        BlockPos.getAllInBox(genPos.add(-r, -25, -r), genPos.add(r, 4, r)).forEach(pos -> {
+        BlockPos.betweenClosedStream(genPos.offset(-r, -25, -r), genPos.offset(r, 4, r)).forEach(pos -> {
             if (pos.getY() < genPos.getY()) {
                 double pct = (double) (genPos.getY() - pos.getY()) / 25D;
                 if (Utils.getDistanceAtoB(pos.getX(), pos.getZ(), genPos.getX(), genPos.getZ()) <= r + 0.5) {
                     if (1D - pct > rand.nextDouble()) {
                         float block = rand.nextFloat();
                         if (block < 0.1) {
-                            world.setBlockState(pos, DEContent.infused_obsidian.getDefaultState(), 3);
+                            world.setBlock(pos, DEContent.infused_obsidian.defaultBlockState(), 3);
                         } else if (block < 0.4) {
-                            world.setBlockState(pos, Blocks.NETHER_BRICKS.getDefaultState(), 3);
+                            world.setBlock(pos, Blocks.NETHER_BRICKS.defaultBlockState(), 3);
                         } else {
-                            world.setBlockState(pos, Blocks.OBSIDIAN.getDefaultState(), 3);
+                            world.setBlock(pos, Blocks.OBSIDIAN.defaultBlockState(), 3);
                         }
                     }
                 }
@@ -263,10 +263,10 @@ public class ChaosWorldGenHandler {
             int absRelX = Math.abs(pos.getX() - genPos.getX());
             int absRelZ = Math.abs(pos.getZ() - genPos.getZ());
             if ((absRelX == 2 || absRelZ == 2) && absRelX <= 2 && absRelZ <= 2 && relY < 4 && relY > -1) {
-                world.setBlockState(pos, Blocks.IRON_BARS.getDefaultState(), 3);
+                world.setBlock(pos, Blocks.IRON_BARS.defaultBlockState(), 3);
             }
             if (relY == 4 && absRelX <= 2 && absRelZ <= 2) {
-                world.setBlockState(pos, Blocks.NETHER_BRICK_SLAB.getDefaultState(), 3);
+                world.setBlock(pos, Blocks.NETHER_BRICK_SLAB.defaultBlockState(), 3);
             }
 
         });

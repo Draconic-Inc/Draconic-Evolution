@@ -48,7 +48,7 @@ public class TilePotentiometer extends TileBCore implements IRedstoneEmitter, IA
 
     @Override
     public boolean onBlockActivated(BlockState state, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
-        if (player.isSneaking()) {
+        if (player.isShiftKeyDown()) {
             power.dec();
             if (power.get() < 0) {
                 power.set((byte) 15);
@@ -61,15 +61,15 @@ public class TilePotentiometer extends TileBCore implements IRedstoneEmitter, IA
             }
         }
 
-        if (world.isRemote) {
+        if (level.isClientSide) {
             ChatHelper.sendIndexed(player, new StringTextComponent(String.valueOf(power.get())), 41);
         }
         else {
-            world.playSound(null, pos, SoundEvents.BLOCK_STONE_BUTTON_CLICK_ON, SoundCategory.BLOCKS, 0.3F, 0.5F + (power.get() / 20F));
+            level.playSound(null, worldPosition, SoundEvents.STONE_BUTTON_CLICK_ON, SoundCategory.BLOCKS, 0.3F, 0.5F + (power.get() / 20F));
         }
 
-        world.notifyNeighborsOfStateChange(pos, getBlockState().getBlock());
-        world.notifyNeighborsOfStateChange(pos.offset(getBlockState().get(Potentiometer.FACING).getOpposite()), getBlockState().getBlock());
+        level.updateNeighborsAt(worldPosition, getBlockState().getBlock());
+        level.updateNeighborsAt(worldPosition.relative(getBlockState().getValue(Potentiometer.FACING).getOpposite()), getBlockState().getBlock());
         super.tick();
 
         return true;

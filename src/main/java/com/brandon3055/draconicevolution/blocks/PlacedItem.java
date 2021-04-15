@@ -36,11 +36,11 @@ public class PlacedItem extends BlockBCore /*implements ITileEntityProvider, IRe
 
     public PlacedItem(Properties properties) {
         super(properties);
-        this.setDefaultState(stateContainer.getBaseState().with(FACING, Direction.UP));
+        this.registerDefaultState(stateDefinition.any().setValue(FACING, Direction.UP));
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
         builder.add(FACING);
     }
 
@@ -52,7 +52,7 @@ public class PlacedItem extends BlockBCore /*implements ITileEntityProvider, IRe
     }
 
     @Override
-    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {}
+    public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> items) {}
 
 
 //    @Override
@@ -99,7 +99,7 @@ public class PlacedItem extends BlockBCore /*implements ITileEntityProvider, IRe
 
 
     @Override
-    public BlockRenderType getRenderType(BlockState state) {
+    public BlockRenderType getRenderShape(BlockState state) {
         return BlockRenderType.INVISIBLE;
     }
 
@@ -119,12 +119,12 @@ public class PlacedItem extends BlockBCore /*implements ITileEntityProvider, IRe
     //region Interact
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hitIIn) {
-        if (world.isRemote) {
+    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hitIIn) {
+        if (world.isClientSide) {
             return ActionResultType.SUCCESS;
         }
 
-        TileEntity tile = world.getTileEntity(pos);
+        TileEntity tile = world.getBlockEntity(pos);
         if (tile instanceof TilePlacedItem) {
 
             RayTraceResult hit = RayTracer.retraceBlock(world, player, pos);
@@ -178,7 +178,7 @@ public class PlacedItem extends BlockBCore /*implements ITileEntityProvider, IRe
 
     @Override
     public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader world, BlockPos pos, PlayerEntity player) {
-        TileEntity tile = world.getTileEntity(pos);
+        TileEntity tile = world.getBlockEntity(pos);
         if (tile instanceof TilePlacedItem) {
 
             RayTraceResult hit = target;
@@ -191,8 +191,8 @@ public class PlacedItem extends BlockBCore /*implements ITileEntityProvider, IRe
                 return ItemStack.EMPTY;
             }
 
-            if (hit.subHit > 0 && ((TilePlacedItem) tile).inventory.getStackInSlot(hit.subHit - 1) != null) {
-                ItemStack stack = ((TilePlacedItem) tile).inventory.getStackInSlot(hit.subHit - 1).copy();
+            if (hit.subHit > 0 && ((TilePlacedItem) tile).inventory.getItem(hit.subHit - 1) != null) {
+                ItemStack stack = ((TilePlacedItem) tile).inventory.getItem(hit.subHit - 1).copy();
                 if (stack.hasTag()) {
                     stack.getTag().remove("BlockEntityTag");
                 }
@@ -204,17 +204,17 @@ public class PlacedItem extends BlockBCore /*implements ITileEntityProvider, IRe
     }
 
     @Override
-    public void harvestBlock(World world, PlayerEntity player, BlockPos pos, BlockState state, TileEntity te, ItemStack heldStack) {
+    public void playerDestroy(World world, PlayerEntity player, BlockPos pos, BlockState state, TileEntity te, ItemStack heldStack) {
     }
 
     @Override
-    public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving) {
-        TileEntity tile = world.getTileEntity(pos);
+    public void onRemove(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving) {
+        TileEntity tile = world.getBlockEntity(pos);
 
         if (tile instanceof TilePlacedItem) {
             ((TilePlacedItem) tile).breakBlock();
         }
-        super.onReplaced(state, world, pos, newState, isMoving);
+        super.onRemove(state, world, pos, newState, isMoving);
     }
 
     //endregion

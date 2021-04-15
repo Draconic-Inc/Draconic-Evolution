@@ -155,18 +155,18 @@ public class TileCraftingInjector extends TileBCore implements ICraftingInjector
             currentCraftingInventory = null;
             return false;
         }
-        if (validateCraftingInventory() && !world.isRemote) {
+        if (validateCraftingInventory() && !level.isClientSide) {
             return false;
         }
         currentCraftingInventory = craftingInventory;
-        lastCorePos.set(new Vec3I(((TileEntity) craftingInventory).getPos()));
+        lastCorePos.set(new Vec3I(((TileEntity) craftingInventory).getBlockPos()));
         chargeSpeedModifier = 300 - (getPedestalTier() * 80);
         return true;
     }
 
     @Override
     public Direction getDirection() {
-        return getBlockState().get(CraftingInjector.FACING);
+        return getBlockState().getValue(CraftingInjector.FACING);
     }
 
     @Override
@@ -194,11 +194,11 @@ public class TileCraftingInjector extends TileBCore implements ICraftingInjector
     //endregion
 
     public void slotContentsChanged(int index) {
-        markDirty();
+        setChanged();
 
-        TileEntity tile = world.getTileEntity(lastCorePos.get().getPos());
+        TileEntity tile = level.getBlockEntity(lastCorePos.get().getPos());
         if (tile instanceof IFusionCraftingInventory) {
-            world.notifyNeighborsOfStateChange(tile.getPos(), tile.getBlockState().getBlock());
+            level.updateNeighborsAt(tile.getBlockPos(), tile.getBlockState().getBlock());
         }
 
         updateBlock();
@@ -233,6 +233,6 @@ public class TileCraftingInjector extends TileBCore implements ICraftingInjector
 
     @Override
     public AxisAlignedBB getRenderBoundingBox() {
-        return new AxisAlignedBB(pos.add(-1, -1, -1), pos.add(1, 1, 1));
+        return new AxisAlignedBB(worldPosition.offset(-1, -1, -1), worldPosition.offset(1, 1, 1));
     }
 }

@@ -29,7 +29,7 @@ public class BowHandler {
                 return ret;
             }
 
-            player.setActiveHand(hand);
+            player.startUsingItem(hand);
         }
 
         return new ActionResult<>(ActionResultType.SUCCESS, stack);
@@ -38,7 +38,7 @@ public class BowHandler {
     public static void onBowUsingTick(ItemStack stack, PlayerEntity player, int count) {
         BowHandler.BowProperties properties = new BowHandler.BowProperties(stack, player);
         int j = 72000 - count;
-        if (properties.autoFire && j >= properties.getDrawTicks()) player.stopActiveHand();
+        if (properties.autoFire && j >= properties.getDrawTicks()) player.releaseUsingItem();
     }
 
     public static void onPlayerStoppedUsingBow(ItemStack stack, World world, PlayerEntity player, int timeLeft) {
@@ -81,7 +81,7 @@ public class BowHandler {
 //            world.addEntity(customArrow);
 //        }
 
-        world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.NEUTRAL, 1.0F, (1.0F / (world.rand.nextFloat() * 0.4F + 1.2F) + (drawArrowSpeedModifier + (velocity / 40F)) * 0.5F));
+        world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ARROW_SHOOT, SoundCategory.NEUTRAL, 1.0F, (1.0F / (world.random.nextFloat() * 0.4F + 1.2F) + (drawArrowSpeedModifier + (velocity / 40F)) * 0.5F));
     }
 
     public static void enderShot(ItemStack stack, World world, PlayerEntity player, int count, Random itemRand, float pullSpeedModifier, float speedModifier, float soundPitchModifier, int minRelease) {
@@ -186,7 +186,7 @@ public class BowHandler {
 //                cantFireMessage = "msg.de.insufficientPowerToFire.txt";
 //                return false;
 //            }
-            else if (!energyBolt && !player.inventory.hasItemStack(ammo) && EnchantmentHelper.getEnchantmentLevel(Enchantments.INFINITY, bow) == 0 && !player.abilities.isCreativeMode) {
+            else if (!energyBolt && !player.inventory.contains(ammo) && EnchantmentHelper.getItemEnchantmentLevel(Enchantments.INFINITY_ARROWS, bow) == 0 && !player.abilities.instabuild) {
                 cantFireMessage = "msg.de.outOfArrows.txt";
                 return false;
             }
@@ -227,11 +227,11 @@ public class BowHandler {
          */
         public boolean consumeArrowAndEnergy() {
 
-            if (!player.abilities.isCreativeMode) {
+            if (!player.abilities.instabuild) {
                 ((WyvernBow) bow.getItem()).modifyEnergy(bow, -calculateEnergyCost());
             }
 
-            if (!energyBolt && EnchantmentHelper.getEnchantmentLevel(Enchantments.INFINITY, bow) == 0 && !player.abilities.isCreativeMode) {
+            if (!energyBolt && EnchantmentHelper.getItemEnchantmentLevel(Enchantments.INFINITY_ARROWS, bow) == 0 && !player.abilities.instabuild) {
                 InventoryUtils.consumeStack(new ItemStack(Items.ARROW), player.inventory);
                 return true;
             }

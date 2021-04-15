@@ -24,12 +24,12 @@ import java.util.Random;
  */
 public class RainSensor extends BlockBCore {
 
-    protected static final VoxelShape SHAPE = Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0, 1.0, 16.0);
+    protected static final VoxelShape SHAPE = Block.box(0.0D, 0.0D, 0.0D, 16.0, 1.0, 16.0);
     public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
 
     public RainSensor(Block.Properties properties) {
         super(properties);
-        setDefaultState(stateContainer.getBaseState().with(ACTIVE, false));
+        registerDefaultState(stateDefinition.any().setValue(ACTIVE, false));
         canProvidePower = true;
     }
 
@@ -39,7 +39,7 @@ public class RainSensor extends BlockBCore {
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
         builder.add(ACTIVE);
     }
 
@@ -70,25 +70,25 @@ public class RainSensor extends BlockBCore {
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context) {
-        context.getWorld().getPendingBlockTicks().scheduleTick(context.getPos(), this, 10);
+        context.getLevel().getBlockTicks().scheduleTick(context.getClickedPos(), this, 10);
         return super.getStateForPlacement(context);
     }
 
     @Override
-    public int getStrongPower(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side) {
-        return blockState.get(ACTIVE) ? 15 : 0;
+    public int getDirectSignal(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side) {
+        return blockState.getValue(ACTIVE) ? 15 : 0;
     }
 
     @Override
-    public int getWeakPower(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side) {
-        return blockState.get(ACTIVE) ? 15 : 0;
+    public int getSignal(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side) {
+        return blockState.getValue(ACTIVE) ? 15 : 0;
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
     public void animateTick(BlockState stateIn, World worldIn, BlockPos pos, Random rand) {
-        if (stateIn.get(ACTIVE)) {
-            worldIn.addParticle(RedstoneParticleData.REDSTONE_DUST, pos.getX() + 0.1875 + (rand.nextBoolean() ? 0.625 : 0), pos.getY(), pos.getZ() + 0.1875 + (rand.nextBoolean() ? 0.625 : 0), 0, 0.0625, 0);
+        if (stateIn.getValue(ACTIVE)) {
+            worldIn.addParticle(RedstoneParticleData.REDSTONE, pos.getX() + 0.1875 + (rand.nextBoolean() ? 0.625 : 0), pos.getY(), pos.getZ() + 0.1875 + (rand.nextBoolean() ? 0.625 : 0), 0, 0.0625, 0);
         }
     }
 

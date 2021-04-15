@@ -285,7 +285,7 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
         nbt.put("modules", modules);
 
         //Serialize Properties
-        nbt.putUniqueId("provider_id", getProviderID());
+        nbt.putUUID("provider_id", getProviderID());
         CompoundNBT properties = new CompoundNBT();
         providedProperties.forEach(e -> properties.put(e.getName(), e.serializeNBT()));
         nbt.put("properties", properties);
@@ -317,8 +317,8 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
 
         //So that we can gather properties which may depend on installed modules.
         gatherProperties();
-        if (nbt.hasUniqueId("provider_id")) {
-            providerID = nbt.getUniqueId("provider_id");
+        if (nbt.hasUUID("provider_id")) {
+            providerID = nbt.getUUID("provider_id");
         }
         CompoundNBT properties = nbt.getCompound("properties");
         providedProperties.forEach(e -> e.deserializeNBT(properties.getCompound(e.getName())));

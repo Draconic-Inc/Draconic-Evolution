@@ -310,10 +310,10 @@ public class PropertyData {
     public CompoundNBT serialize() {
         CompoundNBT nbt = new CompoundNBT();
         nbt.putByte("type", (byte) type.ordinal());
-        nbt.putUniqueId("prov_id", providerID);
+        nbt.putUUID("prov_id", providerID);
         nbt.putString("prov_name", providerName);
         if (propUniqueName != null) {
-            nbt.putUniqueId("prop_name", propUniqueName);
+            nbt.putUUID("prop_name", propUniqueName);
         } else {
             nbt.putString("prop_name", propName);
         }
@@ -356,17 +356,17 @@ public class PropertyData {
 
     @Nullable
     public static PropertyData deserialize(CompoundNBT nbt) {
-        if (!nbt.hasUniqueId("prov_id") || !nbt.contains("prov_name") || (!nbt.contains("prop_name") && !nbt.hasUniqueId("prop_name")) || !nbt.contains("type")) {
+        if (!nbt.hasUUID("prov_id") || !nbt.contains("prov_name") || (!nbt.contains("prop_name") && !nbt.hasUUID("prop_name")) || !nbt.contains("type")) {
             return null;
         }
 
         PropertyData data = new PropertyData(
-                nbt.getUniqueId("prov_id"),
+                nbt.getUUID("prov_id"),
                 nbt.getString("prov_name"),
                 Type.getSafe(nbt.getByte("type")));
 
-        if (nbt.hasUniqueId("prop_name")) {
-            data.propUniqueName = nbt.getUniqueId("prop_name");
+        if (nbt.hasUUID("prop_name")) {
+            data.propUniqueName = nbt.getUUID("prop_name");
         } else {
             data.propName = nbt.getString("prop_name");
         }
@@ -396,11 +396,11 @@ public class PropertyData {
             case ENUM:
                 data.enumValueIndex = nbt.getInt("value");
                 if (nbt.contains("names")) {
-                    data.enumValueOptions = nbt.getList("names", 3).stream().map(inbt -> ((IntNBT) inbt).getInt()).collect(Collectors.toList());
+                    data.enumValueOptions = nbt.getList("names", 3).stream().map(inbt -> ((IntNBT) inbt).getAsInt()).collect(Collectors.toList());
                 }
                 if (nbt.contains("name_values")) {
                     CompoundNBT nameValues = nbt.getCompound("name_values");
-                    data.enumDisplayValues = nameValues.keySet().stream().collect(Collectors.toMap(Utils::parseInt, nameValues::getString));
+                    data.enumDisplayValues = nameValues.getAllKeys().stream().collect(Collectors.toMap(Utils::parseInt, nameValues::getString));
                 }
                 break;
         }

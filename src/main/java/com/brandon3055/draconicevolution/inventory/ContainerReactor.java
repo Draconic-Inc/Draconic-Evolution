@@ -41,8 +41,8 @@ public class ContainerReactor extends ContainerBCTile<TileReactorCore> {
     public void setSlotState() {
         fuelSlots = tile.reactorState.get() == TileReactorCore.ReactorState.COLD;
 
-        inventorySlots.clear();
-        inventoryItemStacks.clear();
+        slots.clear();
+        lastSlots.clear();
 
         if (fuelSlots) {
             addPlayerSlots(44 - 31, 140);
@@ -64,8 +64,8 @@ public class ContainerReactor extends ContainerBCTile<TileReactorCore> {
     }
 
     @Override
-    public void detectAndSendChanges() {
-        super.detectAndSendChanges();
+    public void broadcastChanges() {
+        super.broadcastChanges();
 
         if (tile.reactorState.get() == TileReactorCore.ReactorState.COLD != fuelSlots) {
             setSlotState();
@@ -74,7 +74,7 @@ public class ContainerReactor extends ContainerBCTile<TileReactorCore> {
 
     @Nullable
     @Override
-    public ItemStack slotClick(int slotId, int dragType, ClickType clickTypeIn, PlayerEntity player) {
+    public ItemStack clicked(int slotId, int dragType, ClickType clickTypeIn, PlayerEntity player) {
         int maxFuel = 10368 + 15;
         int installedFuel = (int) (tile.reactableFuel.get() + tile.convertedFuel.get());
         int free = maxFuel - installedFuel;
@@ -82,8 +82,8 @@ public class ContainerReactor extends ContainerBCTile<TileReactorCore> {
         Slot slot = getSlot(slotId);
         if (slot instanceof SlotReactor && clickTypeIn == ClickType.PICKUP) {
             PlayerInventory inventory = player.inventory;
-            ItemStack stackInSlot = slot.getStack();
-            ItemStack heldStack = inventory.getItemStack();
+            ItemStack stackInSlot = slot.getItem();
+            ItemStack heldStack = inventory.getCarried();
 
             if (!heldStack.isEmpty()) {
                 int value;
@@ -110,19 +110,19 @@ public class ContainerReactor extends ContainerBCTile<TileReactorCore> {
 //                }
 
                 if (heldStack.getCount() <= 0) {
-                    inventory.setItemStack(ItemStack.EMPTY);
+                    inventory.setCarried(ItemStack.EMPTY);
                 }
             }
             else if (!stackInSlot.isEmpty()) {
                 tile.reactableFuel.subtract(getFuelValue(stackInSlot));
                 tile.convertedFuel.subtract(getChaosValue(stackInSlot));
-                inventory.setItemStack(stackInSlot);
+                inventory.setCarried(stackInSlot);
             }
 
             return ItemStack.EMPTY;
         }
         else if (slotId <= 35) {
-            return super.slotClick(slotId, dragType, clickTypeIn, player);
+            return super.clicked(slotId, dragType, clickTypeIn, player);
         }
         return ItemStack.EMPTY;
     }
@@ -168,26 +168,26 @@ public class ContainerReactor extends ContainerBCTile<TileReactorCore> {
         }
 
         @Override
-        public void onSlotChange(ItemStack before, ItemStack after) {
+        public void onQuickCraft(ItemStack before, ItemStack after) {
             if (!before.isEmpty() && !after.isEmpty()) {
                 if (before.getItem() == after.getItem()) {
                     int i = after.getCount() - before.getCount();
 
                     if (i > 0) {
-                        this.onCrafting(before, i);
+                        this.onQuickCraft(before, i);
                     }
                 }
             }
         }
 
         @Override
-        public boolean isItemValid(@Nullable ItemStack stack) {
+        public boolean mayPlace(@Nullable ItemStack stack) {
             return false;
         }
 
         @Nullable
         @Override
-        public ItemStack getStack() {
+        public ItemStack getItem() {
             int index = getSlotIndex();
             if (index < 3) {
                 int fuel = MathHelper.floor(tile.reactableFuel.get());
@@ -226,23 +226,23 @@ public class ContainerReactor extends ContainerBCTile<TileReactorCore> {
         }
 
         @Override
-        public void putStack(@Nonnull ItemStack stack) {
+        public void set(@Nonnull ItemStack stack) {
             //this.inventory.setInventorySlotContents(this.slotIndex, stack);
-            this.onSlotChanged();
+            this.setChanged();
         }
 
         @Override
-        public void onSlotChanged() {
-            this.tile.markDirty();
+        public void setChanged() {
+            this.tile.setChanged();
         }
 
         @Override
-        public int getSlotStackLimit() {
+        public int getMaxStackSize() {
             return 64;//this.inventory.getInventoryStackLimit();
         }
 
         @Override
-        public ItemStack decrStackSize(int amount) {
+        public ItemStack remove(int amount) {
             return ItemStack.EMPTY;//this.inventory.decrStackSize(this.getSlotIndex, amount);
         }
 

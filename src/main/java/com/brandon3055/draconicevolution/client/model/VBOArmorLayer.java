@@ -25,35 +25,35 @@ import javax.annotation.Nullable;
 public class VBOArmorLayer<T extends LivingEntity, M extends BipedModel<T>, A extends BipedModel<T>> extends BipedArmorLayer<T, M, A> {
 
     public VBOArmorLayer(IEntityRenderer<T, M> renderer, @Nullable BipedArmorLayer<T, M, A> parent) {
-        super(renderer, parent == null ? SneakyUtils.unsafeCast(new BipedModel<T>(0.5F)) : parent.modelLeggings, parent == null ? SneakyUtils.unsafeCast(new BipedModel<T>(1.0F)) : parent.modelArmor);
+        super(renderer, parent == null ? SneakyUtils.unsafeCast(new BipedModel<T>(0.5F)) : parent.innerModel, parent == null ? SneakyUtils.unsafeCast(new BipedModel<T>(1.0F)) : parent.outerModel);
     }
 
-    protected void setModelSlotVisible(A model, EquipmentSlotType slot) {
+    protected void setPartVisibility(A model, EquipmentSlotType slot) {
         this.setModelVisible(model);
         switch (slot) {
             case HEAD:
-                model.bipedHead.showModel = true;
-                model.bipedHeadwear.showModel = true;
+                model.head.visible = true;
+                model.hat.visible = true;
                 break;
             case CHEST:
-                model.bipedBody.showModel = true;
-                model.bipedRightArm.showModel = true;
-                model.bipedLeftArm.showModel = true;
+                model.body.visible = true;
+                model.rightArm.visible = true;
+                model.leftArm.visible = true;
                 break;
             case LEGS:
-                model.bipedBody.showModel = true;
-                model.bipedRightLeg.showModel = true;
-                model.bipedLeftLeg.showModel = true;
+                model.body.visible = true;
+                model.rightLeg.visible = true;
+                model.leftLeg.visible = true;
                 break;
             case FEET:
-                model.bipedRightLeg.showModel = true;
-                model.bipedLeftLeg.showModel = true;
+                model.rightLeg.visible = true;
+                model.leftLeg.visible = true;
         }
 
     }
 
     protected void setModelVisible(A model) {
-        model.setVisible(false);
+        model.setAllVisible(false);
     }
 
     @Override
@@ -71,20 +71,20 @@ public class VBOArmorLayer<T extends LivingEntity, M extends BipedModel<T>, A ex
 
         ItemStack stack = EquipmentManager.findItem(e -> e.getItem() instanceof ModularChestpiece, livingEntity);
         if (!stack.isEmpty()) {
-            renderArmorPart(mStack, getter, livingEntity, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, EquipmentSlotType.CHEST, stack, packedLightIn, !livingEntity.getItemStackFromSlot(EquipmentSlotType.CHEST).isEmpty());
+            renderArmorPart(mStack, getter, livingEntity, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, EquipmentSlotType.CHEST, stack, packedLightIn, !livingEntity.getItemBySlot(EquipmentSlotType.CHEST).isEmpty());
         }
     }
 
     private void renderArmorPart(MatrixStack mStack, IRenderTypeBuffer getter, T livingEntity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, EquipmentSlotType slot, int packedLight) {
-        ItemStack itemstack = livingEntity.getItemStackFromSlot(slot);
+        ItemStack itemstack = livingEntity.getItemBySlot(slot);
         renderArmorPart(mStack, getter, livingEntity, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, slot, itemstack, packedLight, false);
     }
 
     private void renderArmorPart(MatrixStack mStack, IRenderTypeBuffer getter, T livingEntity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, EquipmentSlotType slot, ItemStack itemstack, int packedLight, boolean onArmor) {
         if (itemstack.getItem() instanceof ArmorItem) {
             ArmorItem armoritem = (ArmorItem) itemstack.getItem();
-            if (armoritem.getEquipmentSlot() == slot) {
-                A baseModel = this.func_241736_a_(slot);
+            if (armoritem.getSlot() == slot) {
+                A baseModel = this.getArmorModel(slot);
                 A model = baseModel;
 
                 if (armoritem instanceof ModularChestpiece) {
@@ -95,17 +95,17 @@ public class VBOArmorLayer<T extends LivingEntity, M extends BipedModel<T>, A ex
 
                 if (model instanceof VBOBipedModel) {
                     @SuppressWarnings("unchecked") VBOBipedModel<T> bpModel = (VBOBipedModel<T>) model;
-                    BipedModel<T> entityModel = this.getEntityModel();
-                    entityModel.copyModelAttributesTo(bpModel);
+                    BipedModel<T> entityModel = this.getParentModel();
+                    entityModel.copyPropertiesTo(bpModel);
                     bpModel.leftArmPose = entityModel.leftArmPose;
                     bpModel.rightArmPose = entityModel.rightArmPose;
-                    bpModel.isSneak = entityModel.isSneak;
-                    bpModel.bipedHead.copyModelAngles(entityModel.bipedHead);
-                    bpModel.bipedBody.copyModelAngles(entityModel.bipedBody);
-                    bpModel.bipedRightArm.copyModelAngles(entityModel.bipedRightArm);
-                    bpModel.bipedLeftArm.copyModelAngles(entityModel.bipedLeftArm);
-                    bpModel.bipedRightLeg.copyModelAngles(entityModel.bipedRightLeg);
-                    bpModel.bipedLeftLeg.copyModelAngles(entityModel.bipedLeftLeg);
+                    bpModel.crouching = entityModel.crouching;
+                    bpModel.bipedHead.copyFrom(entityModel.head);
+                    bpModel.bipedBody.copyFrom(entityModel.body);
+                    bpModel.bipedRightArm.copyFrom(entityModel.rightArm);
+                    bpModel.bipedLeftArm.copyFrom(entityModel.leftArm);
+                    bpModel.bipedRightLeg.copyFrom(entityModel.rightLeg);
+                    bpModel.bipedLeftLeg.copyFrom(entityModel.leftLeg);
                     bpModel.render(mStack, getter, livingEntity, itemstack, packedLight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
                 }
             }

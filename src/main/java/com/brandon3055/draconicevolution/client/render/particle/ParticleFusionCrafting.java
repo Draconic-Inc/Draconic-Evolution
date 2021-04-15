@@ -27,13 +27,13 @@ public class ParticleFusionCrafting extends BCParticle {
         super(worldIn, pos, new Vec3D());
         this.corePos = corePos;
         this.craftingInventory = craftingInventory;
-        this.particleAlpha = 0;
-        this.rotation = rand.nextInt(1000);
-        this.motionX = this.motionY = this.motionZ = 0;
-        this.circlePos = rand.nextFloat() * 1000F;
-        this.circleDir = rand.nextBoolean();
-        this.aRandomFloat = rand.nextFloat();
-        this.rotYAngle = rand.nextFloat() * 1000;
+        this.alpha = 0;
+        this.rotation = random.nextInt(1000);
+        this.xd = this.yd = this.zd = 0;
+        this.circlePos = random.nextFloat() * 1000F;
+        this.circleDir = random.nextBoolean();
+        this.aRandomFloat = random.nextFloat();
+        this.rotYAngle = random.nextFloat() * 1000;
 //        this.particleScale = 1F;
     }
 
@@ -191,15 +191,15 @@ public class ParticleFusionCrafting extends BCParticle {
             super(worldIn, pos);
 
             double speed = 0.1;
-            this.motionX = (-0.5 + rand.nextDouble()) * speed;
-            this.motionY = (-0.5 + rand.nextDouble()) * speed;
-            this.motionZ = (-0.5 + rand.nextDouble()) * speed;
+            this.xd = (-0.5 + random.nextDouble()) * speed;
+            this.yd = (-0.5 + random.nextDouble()) * speed;
+            this.zd = (-0.5 + random.nextDouble()) * speed;
 
 //            this.particleMaxAge = 10 + rand.nextInt(10);
 //            this.particleScale = 1F;
 //            this.particleTextureIndexY = 1;
 
-            this.particleRed = 0;
+            this.rCol = 0;
         }
 
 //        @Override

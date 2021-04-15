@@ -45,19 +45,19 @@ public class AutoFeedEntity extends ModuleEntity {
         AutoFeedData data = (AutoFeedData) module.getData();
         if (context instanceof StackModuleContext) {
             LivingEntity entity = ((StackModuleContext) context).getEntity();
-            if (entity instanceof ServerPlayerEntity && entity.ticksExisted % 10 == 0 && ((StackModuleContext) context).isEquipped()) {
+            if (entity instanceof ServerPlayerEntity && entity.tickCount % 10 == 0 && ((StackModuleContext) context).isEquipped()) {
                 ServerPlayerEntity player = (ServerPlayerEntity) entity;
                 if (storedFood < data.getFoodStorage() && consumeFood.getValue()) {
                     //Do food consumption
-                    for (ItemStack stack : player.inventory.mainInventory) {
-                        if (!stack.isEmpty() && stack.isFood()) {
-                            Food food = stack.getItem().getFood();
-                            if (food != null && food.getHealing() > 0 && food.getEffects().isEmpty()) {
-                                double val = food.getHealing() + food.getSaturation();
+                    for (ItemStack stack : player.inventory.items) {
+                        if (!stack.isEmpty() && stack.isEdible()) {
+                            Food food = stack.getItem().getFoodProperties();
+                            if (food != null && food.getNutrition() > 0 && food.getEffects().isEmpty()) {
+                                double val = food.getNutrition() + food.getSaturationModifier();
                                 double rem = storedFood + val - data.getFoodStorage();
                                 if (rem <= val * 0.25) {
                                     storedFood = (float) Math.min(storedFood + val, data.getFoodStorage());
-                                    entity.world.playSound(null, entity.getPosition(), SoundEvents.ENTITY_GENERIC_EAT, SoundCategory.PLAYERS, 0.25F, (0.95F + (entity.world.rand.nextFloat() * 0.1F)));
+                                    entity.level.playSound(null, entity.blockPosition(), SoundEvents.GENERIC_EAT, SoundCategory.PLAYERS, 0.25F, (0.95F + (entity.level.random.nextFloat() * 0.1F)));
                                     stack.shrink(1);
                                     break;
                                 }
@@ -65,15 +65,15 @@ public class AutoFeedEntity extends ModuleEntity {
                         }
                     }
                 }
-                FoodStats foodStats = player.getFoodStats();
+                FoodStats foodStats = player.getFoodData();
                 if (storedFood > 0 && (foodStats.getFoodLevel() < 20 || foodStats.getSaturationLevel() < 20)) {
                     //Feed player
                     TechLevel tech = module.getModuleTechLevel();
-                    double maxSat = entity.ticksExisted % 20 == 0 && tech == TechLevel.DRACONIUM? 4 : 0.1;//tech == TechLevel.DRACONIUM ? 1 : tech == TechLevel.WYVERN ? 2 : 4; //Problem is i'm not sure if i want this to essentially be a "Regeneration module"
-                    if (foodStats.needFood() && storedFood > 1) {
-                        foodStats.addStats((int)Math.min(Math.min(storedFood, 1), 20 - foodStats.getFoodLevel()), 0);
+                    double maxSat = entity.tickCount % 20 == 0 && tech == TechLevel.DRACONIUM? 4 : 0.1;//tech == TechLevel.DRACONIUM ? 1 : tech == TechLevel.WYVERN ? 2 : 4; //Problem is i'm not sure if i want this to essentially be a "Regeneration module"
+                    if (foodStats.needsFood() && storedFood > 1) {
+                        foodStats.eat((int)Math.min(Math.min(storedFood, 1), 20 - foodStats.getFoodLevel()), 0);
                     }else if (foodStats.getSaturationLevel() < maxSat && storedFood > 0) {
-                        foodStats.foodSaturationLevel += Math.min(storedFood, maxSat - foodStats.getSaturationLevel());
+                        foodStats.saturationLevel += Math.min(storedFood, maxSat - foodStats.getSaturationLevel());
                     }
                 }
             }
@@ -90,12 +90,12 @@ public class AutoFeedEntity extends ModuleEntity {
         progress = (20 - progress) - 1;
         for (int i = 0; i < 10; i++){
             float size = (width - 3) / 10F;
-            GuiHelper.drawSprite(builder, x + 1 + i * size, y + height - size - 2, size + 1, size + 1, BCSprites.get("bars/food_empty").getSprite(), 0);
+            GuiHelper.drawSprite(builder, x + 1 + i * size, y + height - size - 2, size + 1, size + 1, BCSprites.get("bars/food_empty").sprite(), 0);
             if (progress / 2F <= i){
                 if (progress / 2F < i){
-                    GuiHelper.drawSprite(builder, x + 1 + i * size, y + height - size - 2, size + 1, size + 1, BCSprites.get("bars/food_full").getSprite(), 0);
+                    GuiHelper.drawSprite(builder, x + 1 + i * size, y + height - size - 2, size + 1, size + 1, BCSprites.get("bars/food_full").sprite(), 0);
                 } else {
-                    GuiHelper.drawSprite(builder, x + 1 + i * size, y + height - size - 2, size + 1, size + 1, BCSprites.get("bars/food_half").getSprite(), 0);
+                    GuiHelper.drawSprite(builder, x + 1 + i * size, y + height - size - 2, size + 1, size + 1, BCSprites.get("bars/food_half").sprite(), 0);
                 }
             }
         }
@@ -103,7 +103,7 @@ public class AutoFeedEntity extends ModuleEntity {
 
     @Override
     public void addToolTip(List<ITextComponent> list) {
-        list.add(new TranslationTextComponent("module.draconicevolution.auto_feed.stored").mergeStyle(TextFormatting.GRAY).appendString(" ").append(new TranslationTextComponent("module.draconicevolution.auto_feed.stored.value", (int)storedFood).mergeStyle(TextFormatting.DARK_GREEN)));
+        list.add(new TranslationTextComponent("module.draconicevolution.auto_feed.stored").withStyle(TextFormatting.GRAY).append(" ").append(new TranslationTextComponent("module.draconicevolution.auto_feed.stored.value", (int)storedFood).withStyle(TextFormatting.DARK_GREEN)));
     }
 
     @Override

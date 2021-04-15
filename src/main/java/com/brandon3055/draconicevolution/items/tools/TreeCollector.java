@@ -58,7 +58,7 @@ public class TreeCollector {
     public void clearCollected() {
         collectionComplete = false;
         isKilled = false;
-        inventory.clear();
+        inventory.clearContent();
         collected = 0;
     }
 
@@ -92,7 +92,7 @@ public class TreeCollector {
             this.inventory = inventory;
             this.processedBlocks = processedBlocks;
             selector.activeProcesses.add(this);
-            randOffset = 0.5D + (selector.world.rand.nextDouble() * 0.5D);
+            randOffset = 0.5D + (selector.world.random.nextDouble() * 0.5D);
         }
 
         @Override
@@ -111,7 +111,7 @@ public class TreeCollector {
                 return;
             }
 
-            if ((collector.axe.getEnergyStored(collector.stack) - collector.energyUsed) < collector.axe.energyPerOperation && !collector.player.abilities.isCreativeMode) {
+            if ((collector.axe.getEnergyStored(collector.stack) - collector.energyUsed) < collector.axe.energyPerOperation && !collector.player.abilities.instabuild) {
                 isDead = true;
                 return;
             }
@@ -127,7 +127,7 @@ public class TreeCollector {
                 collector.collectionCallback.call(pos);
             }
 
-            int xp = ForgeHooks.onBlockBreakEvent(world, ((ServerPlayerEntity) collector.player).interactionManager.getGameType(), (ServerPlayerEntity) collector.player, pos);
+            int xp = ForgeHooks.onBlockBreakEvent(world, ((ServerPlayerEntity) collector.player).gameMode.getGameModeForPlayer(), (ServerPlayerEntity) collector.player, pos);
             if (xp == -1) {
                 isDead = true;
                 return;
@@ -137,12 +137,12 @@ public class TreeCollector {
 
             collector.energyUsed += collector.axe.energyPerOperation;
 
-            world.playEvent(2001, pos, Block.getStateId(state));
+            world.levelEvent(2001, pos, Block.getId(state));
             BlockToStackHelper.breakAndCollect(world, pos, inventory, xp);
             collector.collected++;
 
             int rad = collector.connectionRadius;
-            Iterable<BlockPos> blocks = BlockPos.getAllInBoxMutable(pos.add(-rad, collector.breakDown ? -rad : 0, -rad), pos.add(rad, rad, rad));
+            Iterable<BlockPos> blocks = BlockPos.betweenClosed(pos.offset(-rad, collector.breakDown ? -rad : 0, -rad), pos.offset(rad, rad, rad));
             for (BlockPos newPos : blocks) {
 
                 if (processedBlocks.contains(newPos)) {

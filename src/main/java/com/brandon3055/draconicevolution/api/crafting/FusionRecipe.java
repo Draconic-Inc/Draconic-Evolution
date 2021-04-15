@@ -107,7 +107,7 @@ public class FusionRecipe implements IFusionRecipe {
             for (ICraftingInjector pedestal : pedestals) {
                 if (!pedestal.getStackInPedestal().isEmpty() && ingredient.test(pedestal.getStackInPedestal())) {
                     ItemStack i = OreDictHelper.resolveObject(ingredient);
-                    if (i.hasTag() && !ItemStack.areItemStackTagsEqual(i, pedestal.getStackInPedestal())) {
+                    if (i.hasTag() && !ItemStack.tagMatches(i, pedestal.getStackInPedestal())) {
                         continue;
                     }
 
@@ -151,14 +151,14 @@ public class FusionRecipe implements IFusionRecipe {
     }
 
     @Override
-    public ItemStack getCraftingResult(IFusionInventory inv) {
+    public ItemStack assemble(IFusionInventory inv) {
         //TODO Apply any required data transfer
         return result.copy();
     }
 
 
     @Override
-    public ItemStack getRecipeOutput() {
+    public ItemStack getResultItem() {
         return result;
     }
 
@@ -193,24 +193,24 @@ public class FusionRecipe implements IFusionRecipe {
 
         protected void write(PacketBuffer buffer) {
             buffer.writeBoolean(consume);
-            ingredient.write(buffer);
+            ingredient.toNetwork(buffer);
         }
 
         protected static FusionIngredient read(PacketBuffer buffer) {
             boolean consume = buffer.readBoolean();
-            Ingredient ingredient = Ingredient.read(buffer);
+            Ingredient ingredient = Ingredient.fromNetwork(buffer);
             return new FusionIngredient(ingredient, consume);
         }
     }
 
     public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<FusionRecipe> {
         @Override
-        public FusionRecipe read(ResourceLocation id, JsonObject json) {
-            ItemStack result = CraftingHelper.getItemStack(JSONUtils.getJsonObject(json, "result"), true);
-            Ingredient catalyst = CraftingHelper.getIngredient(JSONUtils.getJsonObject(json, "catalyst"));
+        public FusionRecipe fromJson(ResourceLocation id, JsonObject json) {
+            ItemStack result = CraftingHelper.getItemStack(JSONUtils.getAsJsonObject(json, "result"), true);
+            Ingredient catalyst = CraftingHelper.getIngredient(JSONUtils.getAsJsonObject(json, "catalyst"));
 
             List<FusionIngredient> fusionIngredients = new ArrayList<>();
-            JsonArray ingredients = JSONUtils.getJsonArray(json, "ingredients");
+            JsonArray ingredients = JSONUtils.getAsJsonArray(json, "ingredients");
             for (JsonElement element : ingredients) {
                 Ingredient ingredient;
                 if (element.isJsonObject() && element.getAsJsonObject().has("ingredient")) {
@@ -218,20 +218,20 @@ public class FusionRecipe implements IFusionRecipe {
                 } else {
                     ingredient = CraftingHelper.getIngredient(element);
                 }
-                boolean isConsumed = !element.isJsonObject() || JSONUtils.getBoolean(element.getAsJsonObject(), "consume", true);
+                boolean isConsumed = !element.isJsonObject() || JSONUtils.getAsBoolean(element.getAsJsonObject(), "consume", true);
                 fusionIngredients.add(new FusionIngredient(ingredient, isConsumed));
             }
 
-            long totalEnergy = JSONUtils.getLong(json, "total_energy");
-            TechLevel techLevel = TechLevel.valueOf(JSONUtils.getString(json, "tier", TechLevel.DRACONIUM.name()));
+            long totalEnergy = JSONUtils.getAsLong(json, "total_energy");
+            TechLevel techLevel = TechLevel.valueOf(JSONUtils.getAsString(json, "tier", TechLevel.DRACONIUM.name()));
 
             return new FusionRecipe(id, result, catalyst, totalEnergy, techLevel, fusionIngredients);
         }
 
         @Override
-        public FusionRecipe read(ResourceLocation id, PacketBuffer buffer) {
-            ItemStack result = buffer.readItemStack();
-            Ingredient catalyst = Ingredient.read(buffer);
+        public FusionRecipe fromNetwork(ResourceLocation id, PacketBuffer buffer) {
+            ItemStack result = buffer.readItem();
+            Ingredient catalyst = Ingredient.fromNetwork(buffer);
 
             int count = buffer.readByte();
             List<FusionIngredient> fusionIngredients = new ArrayList<>();
@@ -246,9 +246,9 @@ public class FusionRecipe implements IFusionRecipe {
         }
 
         @Override
-        public void write(PacketBuffer buffer, FusionRecipe recipe) {
+        public void toNetwork(PacketBuffer buffer, FusionRecipe recipe) {
             buffer.writeItemStack(recipe.result, false);
-            recipe.catalyst.write(buffer);
+            recipe.catalyst.toNetwork(buffer);
 
             buffer.writeByte(recipe.ingredients.size());
             for (FusionIngredient ingredient : recipe.ingredients) {

@@ -54,13 +54,13 @@ public class DEParticles {
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public static void registerFactories(ParticleFactoryRegisterEvent event) {
-        ParticleManager manager = Minecraft.getInstance().particles;
-        manager.registerFactory(flame, CustomFlameParticle.Factory::new);
-        manager.registerFactory(line_indicator, ParticleLineIndicator.Factory::new);
-        manager.registerFactory(energy, ParticleEnergy.Factory::new);
-        manager.registerFactory(energy_core, ParticleEnergyCoreFX.Factory::new);
-        manager.registerFactory(guardian_projectile, GuardianProjectileParticle.Factory::new);
-        manager.registerFactory(blink, BlinkParticle.Factory::new);
+        ParticleManager manager = Minecraft.getInstance().particleEngine;
+        manager.register(flame, CustomFlameParticle.Factory::new);
+        manager.register(line_indicator, ParticleLineIndicator.Factory::new);
+        manager.register(energy, ParticleEnergy.Factory::new);
+        manager.register(energy_core, ParticleEnergyCoreFX.Factory::new);
+        manager.register(guardian_projectile, GuardianProjectileParticle.Factory::new);
+        manager.register(blink, BlinkParticle.Factory::new);
     }
 
 
@@ -68,9 +68,9 @@ public class DEParticles {
     public static Particle addParticleDirect(World world, Particle particle) {
         if (world instanceof ClientWorld) {
             Minecraft mc = Minecraft.getInstance();
-            ActiveRenderInfo activerenderinfo = mc.gameRenderer.getActiveRenderInfo();
-            if (mc != null && activerenderinfo.isValid() && mc.particles != null) {
-                mc.particles.addEffect(particle);
+            ActiveRenderInfo activerenderinfo = mc.gameRenderer.getMainCamera();
+            if (mc != null && activerenderinfo.isInitialized() && mc.particleEngine != null) {
+                mc.particleEngine.add(particle);
                 return particle;
             }
         }

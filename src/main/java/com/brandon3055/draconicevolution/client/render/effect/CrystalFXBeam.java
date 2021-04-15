@@ -40,12 +40,12 @@ public class CrystalFXBeam<T extends TileEntity & IENetEffectTile> extends Cryst
 
     public CrystalFXBeam(World worldIn, T tile, ICrystalLink linkTarget) {
         super((ClientWorld)worldIn, tile);
-        this.age = worldIn.rand.nextInt(1024);
-        this.setPosition(tile.getBeamLinkPos(((TileEntity) linkTarget).getPos()));
+        this.age = worldIn.random.nextInt(1024);
+        this.setPosition(tile.getBeamLinkPos(((TileEntity) linkTarget).getBlockPos()));
         this.terminateSource = tile.renderBeamTermination();
-        this.linkTarget = linkTarget.getBeamLinkPos(tile.getPos());
+        this.linkTarget = linkTarget.getBeamLinkPos(tile.getBlockPos());
         this.terminateTarget = linkTarget.renderBeamTermination();
-        setBoundingBox(new AxisAlignedBB(posX, posY, posZ, this.linkTarget.x, this.linkTarget.y, this.linkTarget.z));
+        setBoundingBox(new AxisAlignedBB(x, y, z, this.linkTarget.x, this.linkTarget.y, this.linkTarget.z));
     }
 
 
@@ -54,23 +54,23 @@ public class CrystalFXBeam<T extends TileEntity & IENetEffectTile> extends Cryst
         super.tick();
         BCProfiler.TICK.start("crystal_beam_fx_update");
         if (ticksTillDeath-- <= 0) {
-            setExpired();
+            remove();
         }
 
         float[] r = {0.0F, 0.8F, 1.0F};
         float[] g = {0.8F, 0.1F, 0.7F};
         float[] b = {1F, 1F, 0.2F};
 
-        particleRed = r[tile.getTier()];
-        particleGreen = g[tile.getTier()];
-        particleBlue = b[tile.getTier()];
+        rCol = r[tile.getTier()];
+        gCol = g[tile.getTier()];
+        bCol = b[tile.getTier()];
 
         powerLevel = (float) MathHelper.approachExp(powerLevel, fxState, 0.05);
         BCProfiler.TICK.stop();
     }
 
     @Override
-    public void renderParticle(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks) {
+    public void render(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks) {
         if (powerLevel <= 0 && !ClientEventHandler.playerHoldingWrench) {
             return;
         }
@@ -81,8 +81,8 @@ public class CrystalFXBeam<T extends TileEntity & IENetEffectTile> extends Cryst
             scale = 0.1F;
         }
 
-        Vector3d viewVec = renderInfo.getProjectedView();
-        Vector3 source = new Vector3(posX - viewVec.x, posY - viewVec.y, posZ - viewVec.z);
+        Vector3d viewVec = renderInfo.getPosition();
+        Vector3 source = new Vector3(x - viewVec.x, y - viewVec.y, z - viewVec.z);
         Vector3 target = linkTarget.toVector3().subtract(viewVec.x, viewVec.y, viewVec.z);
         Vector3 dirVec = source.copy().subtract(target).normalize();
         Vector3 planeA = dirVec.copy().perpendicular().normalize();
@@ -128,25 +128,25 @@ public class CrystalFXBeam<T extends TileEntity & IENetEffectTile> extends Cryst
 
 
         if (terminateSource) {
-            float viewX = (float) (this.posX - viewVec.getX());
-            float viewY = (float) (this.posY - viewVec.getY());
-            float viewZ = (float) (this.posZ - viewVec.getZ());
+            float viewX = (float) (this.x - viewVec.x());
+            float viewY = (float) (this.y - viewVec.y());
+            float viewZ = (float) (this.z - viewVec.z());
             Vector3f[] renderVector = getRenderVectors(renderInfo, viewX, viewY, viewZ, scale);
-            buffer.pos(renderVector[0].getX(), renderVector[0].getY(), renderVector[0].getZ()).tex(maxU, maxV).endVertex();
-            buffer.pos(renderVector[1].getX(), renderVector[1].getY(), renderVector[1].getZ()).tex(maxU, minV).endVertex();
-            buffer.pos(renderVector[2].getX(), renderVector[2].getY(), renderVector[2].getZ()).tex(minU, minV).endVertex();
-            buffer.pos(renderVector[3].getX(), renderVector[3].getY(), renderVector[3].getZ()).tex(minU, maxV).endVertex();
+            buffer.vertex(renderVector[0].x(), renderVector[0].y(), renderVector[0].z()).uv(maxU, maxV).endVertex();
+            buffer.vertex(renderVector[1].x(), renderVector[1].y(), renderVector[1].z()).uv(maxU, minV).endVertex();
+            buffer.vertex(renderVector[2].x(), renderVector[2].y(), renderVector[2].z()).uv(minU, minV).endVertex();
+            buffer.vertex(renderVector[3].x(), renderVector[3].y(), renderVector[3].z()).uv(minU, maxV).endVertex();
         }
 
         if (terminateTarget) {
-            float viewX = (float) (this.linkTarget.x - viewVec.getX());
-            float viewY = (float) (this.linkTarget.y - viewVec.getY());
-            float viewZ = (float) (this.linkTarget.z - viewVec.getZ());
+            float viewX = (float) (this.linkTarget.x - viewVec.x());
+            float viewY = (float) (this.linkTarget.y - viewVec.y());
+            float viewZ = (float) (this.linkTarget.z - viewVec.z());
             Vector3f[] renderVector = getRenderVectors(renderInfo, viewX, viewY, viewZ, scale);
-            buffer.pos(renderVector[0].getX(), renderVector[0].getY(), renderVector[0].getZ()).tex(maxU, maxV).endVertex();
-            buffer.pos(renderVector[1].getX(), renderVector[1].getY(), renderVector[1].getZ()).tex(maxU, minV).endVertex();
-            buffer.pos(renderVector[2].getX(), renderVector[2].getY(), renderVector[2].getZ()).tex(minU, minV).endVertex();
-            buffer.pos(renderVector[3].getX(), renderVector[3].getY(), renderVector[3].getZ()).tex(minU, maxV).endVertex();
+            buffer.vertex(renderVector[0].x(), renderVector[0].y(), renderVector[0].z()).uv(maxU, maxV).endVertex();
+            buffer.vertex(renderVector[1].x(), renderVector[1].y(), renderVector[1].z()).uv(maxU, minV).endVertex();
+            buffer.vertex(renderVector[2].x(), renderVector[2].y(), renderVector[2].z()).uv(minU, minV).endVertex();
+            buffer.vertex(renderVector[3].x(), renderVector[3].y(), renderVector[3].z()).uv(minU, maxV).endVertex();
         }
 
         BCProfiler.RENDER.stop();
@@ -154,10 +154,10 @@ public class CrystalFXBeam<T extends TileEntity & IENetEffectTile> extends Cryst
 
     private void bufferQuad(IVertexBuilder buffer, Vector3 p1, Vector3 p2, Vector3 p3, Vector3 p4, float anim, float dist) {
         BCProfiler.RENDER.start("buffer_quad");
-        buffer.pos(p1.x, p1.y, p1.z).tex(0.5F, anim).endVertex();
-        buffer.pos(p2.x, p2.y, p2.z).tex(0.5F, dist + anim).endVertex();
-        buffer.pos(p4.x, p4.y, p4.z).tex(1.0F, dist + anim).endVertex();
-        buffer.pos(p3.x, p3.y, p3.z).tex(1.0F, anim).endVertex();
+        buffer.vertex(p1.x, p1.y, p1.z).uv(0.5F, anim).endVertex();
+        buffer.vertex(p2.x, p2.y, p2.z).uv(0.5F, dist + anim).endVertex();
+        buffer.vertex(p4.x, p4.y, p4.z).uv(1.0F, dist + anim).endVertex();
+        buffer.vertex(p3.x, p3.y, p3.z).uv(1.0F, anim).endVertex();
         BCProfiler.RENDER.stop();
     }
 
@@ -180,7 +180,7 @@ public class CrystalFXBeam<T extends TileEntity & IENetEffectTile> extends Cryst
         }
 
         @Override
-        public void beginRender(BufferBuilder builder, TextureManager p_217600_2_) {
+        public void begin(BufferBuilder builder, TextureManager p_217600_2_) {
             ResourceHelperDE.bindTexture(texture);
             RenderSystem.color4f(1.0F, green, 1.0F, 1.0F);
 
@@ -199,8 +199,8 @@ public class CrystalFXBeam<T extends TileEntity & IENetEffectTile> extends Cryst
         }
 
         @Override
-        public void finishRender(Tessellator tessellator) {
-            tessellator.draw();
+        public void end(Tessellator tessellator) {
+            tessellator.end();
         }
     }
 }

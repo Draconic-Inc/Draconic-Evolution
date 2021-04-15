@@ -54,15 +54,15 @@ public class ClientPacketHandler implements ICustomPacketHandler.IClientPacketHa
 
     public static void handleExplosionEffect(Minecraft mc, BlockPos pos, int radius, boolean reload) {
         if (reload) {
-            mc.worldRenderer.loadRenderers();
+            mc.levelRenderer.allChanged();
         } else {
             ExplosionFX explosionFX = new ExplosionFX((ClientWorld) BrandonsCore.proxy.getClientWorld(), Vec3D.getCenter(pos), radius);
-            mc.particles.addEffect(explosionFX);
+            mc.particleEngine.add(explosionFX);
         }
     }
 
     public static void handleImpactEffect(Minecraft mc, BlockPos pos, int type) {
-        if (mc.world == null) return;
+        if (mc.level == null) return;
         if (type == 0) { //Burst-Explosion Effect
             int size = 4;
             double speed = 1;
@@ -72,10 +72,10 @@ public class ClientPacketHandler implements ICustomPacketHandler.IClientPacketHa
             for(int i = -size; i <= size; ++i) {
                 for(int j = -size; j <= size; ++j) {
                     for(int k = -size; k <= size; ++k) {
-                        double d3 = (double)j + (mc.world.rand.nextDouble() - mc.world.rand.nextDouble()) * 0.5D;
-                        double d4 = (double)i + (mc.world.rand.nextDouble() - mc.world.rand.nextDouble()) * 0.5D;
-                        double d5 = (double)k + (mc.world.rand.nextDouble() - mc.world.rand.nextDouble()) * 0.5D;
-                        double d6 = (double) MathHelper.sqrt(d3 * d3 + d4 * d4 + d5 * d5) / speed + mc.world.rand.nextGaussian() * 6D;
+                        double d3 = (double)j + (mc.level.random.nextDouble() - mc.level.random.nextDouble()) * 0.5D;
+                        double d4 = (double)i + (mc.level.random.nextDouble() - mc.level.random.nextDouble()) * 0.5D;
+                        double d5 = (double)k + (mc.level.random.nextDouble() - mc.level.random.nextDouble()) * 0.5D;
+                        double d6 = (double) MathHelper.sqrt(d3 * d3 + d4 * d4 + d5 * d5) / speed + mc.level.random.nextGaussian() * 6D;
                         createParticle(mc, x, y, z, d3 / d6, d4 / d6, d5 / d6);
                         if (i != -size && i != size && j != -size && j != size) {
                             k += size * 2 - 1;
@@ -83,12 +83,12 @@ public class ClientPacketHandler implements ICustomPacketHandler.IClientPacketHa
                     }
                 }
             }
-            mc.particles.addParticle(ParticleTypes.EXPLOSION_EMITTER, x, y, z, 0, 0, 0);
+            mc.particleEngine.createParticle(ParticleTypes.EXPLOSION_EMITTER, x, y, z, 0, 0, 0);
         }
     }
 
     private static void createParticle(Minecraft mc, double x, double y, double z, double motionX, double motionY, double motionZ) {
-        mc.particles.addParticle(DEParticles.guardian_projectile, x, y, z, motionX, motionY, motionZ);
+        mc.particleEngine.createParticle(DEParticles.guardian_projectile, x, y, z, motionX, motionY, motionZ);
 
 //        FireworkParticle.Spark particle = (FireworkParticle.Spark)mc.particles.addParticle(ParticleTypes.FIREWORK, x, y, z, motionX, motionY, motionZ);
 //        particle.canCollide = false;
@@ -98,10 +98,10 @@ public class ClientPacketHandler implements ICustomPacketHandler.IClientPacketHa
     }
 
     private static void handleLastStandActivation(Minecraft mc, int id, Item item) {
-        if (mc.world == null) return;;
-        Entity entity = mc.world.getEntityByID(id);
+        if (mc.level == null) return;;
+        Entity entity = mc.level.getEntity(id);
         if (entity != null) {
-            mc.particles.emitParticleAtEntity(entity, ParticleTypes.TOTEM_OF_UNDYING, 30);
+            mc.particleEngine.createTrackingEmitter(entity, ParticleTypes.TOTEM_OF_UNDYING, 30);
             if (entity == mc.player) {
                 Minecraft.getInstance().gameRenderer.displayItemActivation(new ItemStack(item));
             }
@@ -110,22 +110,22 @@ public class ClientPacketHandler implements ICustomPacketHandler.IClientPacketHa
 
     private static void handleBlinkEffect(Minecraft mc, int id, float distance) {
         Entity entity;
-        if (mc.world == null || (entity = mc.world.getEntityByID(id)) == null) return;
+        if (mc.level == null || (entity = mc.level.getEntity(id)) == null) return;
 
-        Vector3d vec = entity.getLookVec();
+        Vector3d vec = entity.getLookAngle();
         Vector3d pos = entity.getEyePosition(1);
 
         for (int i = 0; i < 100; i++) {
-            float offset = mc.world.rand.nextFloat() ;
+            float offset = mc.level.random.nextFloat() ;
             float speed = (1F - offset) * distance;
             speed *= speed;
-            Vector3d spawnPos = pos.add(vec.mul(speed * 10, speed * 10, speed * 10));
+            Vector3d spawnPos = pos.add(vec.multiply(speed * 10, speed * 10, speed * 10));
 
-            double x = spawnPos.x + (mc.world.rand.nextGaussian() - 0.5) * offset;
-            double y = spawnPos.y + (mc.world.rand.nextGaussian() - 0.5) * offset;
-            double z = spawnPos.z + (mc.world.rand.nextGaussian() - 0.5) * offset;
+            double x = spawnPos.x + (mc.level.random.nextGaussian() - 0.5) * offset;
+            double y = spawnPos.y + (mc.level.random.nextGaussian() - 0.5) * offset;
+            double z = spawnPos.z + (mc.level.random.nextGaussian() - 0.5) * offset;
 
-            mc.world.addParticle(DEParticles.blink, x, y, z, vec.x * speed, vec.y * speed, vec.z * speed);
+            mc.level.addParticle(DEParticles.blink, x, y, z, vec.x * speed, vec.y * speed, vec.z * speed);
         }
     }
 }

@@ -23,8 +23,8 @@ public class TakeoffPhase extends Phase {
 
    public void serverTick() {
       if (!this.firstTick && this.currentPath != null) {
-         BlockPos blockpos = this.guardian.world.getHeight(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, EndPodiumFeature.END_PODIUM_LOCATION);
-         if (!blockpos.withinDistance(this.guardian.getPositionVec(), 10.0D)) {
+         BlockPos blockpos = this.guardian.level.getHeightmapPos(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, EndPodiumFeature.END_PODIUM_LOCATION);
+         if (!blockpos.closerThan(this.guardian.position(), 10.0D)) {
             this.guardian.getPhaseManager().setPhase(PhaseType.START);
          }
       } else {
@@ -61,14 +61,14 @@ public class TakeoffPhase extends Phase {
 
    private void navigateToNextPathNode() {
       if (this.currentPath != null) {
-         this.currentPath.incrementPathIndex();
-         if (!this.currentPath.isFinished()) {
-            Vector3i vector3i = this.currentPath.func_242948_g();
-            this.currentPath.incrementPathIndex();
+         this.currentPath.advance();
+         if (!this.currentPath.isDone()) {
+            Vector3i vector3i = this.currentPath.getNextNodePos();
+            this.currentPath.advance();
 
             double d0;
             do {
-               d0 = (double)((float)vector3i.getY() + this.guardian.getRNG().nextFloat() * 20.0F);
+               d0 = (double)((float)vector3i.getY() + this.guardian.getRandom().nextFloat() * 20.0F);
             } while(d0 < (double)vector3i.getY());
 
             this.targetLocation = new Vector3d((double)vector3i.getX(), d0, (double)vector3i.getZ());

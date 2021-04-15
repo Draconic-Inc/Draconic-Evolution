@@ -85,8 +85,8 @@ public class ModuleItem<P extends ModuleData<P>> extends Item implements ModuleP
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        super.addInformation(stack, worldIn, tooltip, flagIn);
+    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+        super.appendHoverText(stack, worldIn, tooltip, flagIn);
         getModule().addInformation(tooltip);
         ModuleEntity entity = getModule().createEntity();
         entity.readFromItemStack(stack, new StackModuleContext(stack, null, null));

@@ -97,10 +97,10 @@ public class ClientProxy extends CommonProxy {
         ResourceUtils.registerReloadListener(new DETextures());
 
         //Because i want this to render on bipedal mobs.
-        for (EntityRenderer<?> e : Minecraft.getInstance().getRenderManager().renderers.values()) {
-            if (e instanceof LivingRenderer && ((LivingRenderer) e).getEntityModel() instanceof BipedModel) {
+        for (EntityRenderer<?> e : Minecraft.getInstance().getEntityRenderDispatcher().renderers.values()) {
+            if (e instanceof LivingRenderer && ((LivingRenderer) e).getModel() instanceof BipedModel) {
                 boolean foundArmor = false;
-                for (Object layer : ((LivingRenderer) e).layerRenderers) {
+                for (Object layer : ((LivingRenderer) e).layers) {
                     if (layer instanceof BipedArmorLayer) {
                         ((LivingRenderer<?, ?>) e).addLayer(new VBOArmorLayer((LivingRenderer<?, ?>) e, (BipedArmorLayer) layer));
                         foundArmor = true;
@@ -113,7 +113,7 @@ public class ClientProxy extends CommonProxy {
             }
         }
 
-        for (PlayerRenderer renderPlayer : Minecraft.getInstance().getRenderManager().getSkinMap().values()) {
+        for (PlayerRenderer renderPlayer : Minecraft.getInstance().getEntityRenderDispatcher().getSkinMap().values()) {
             renderPlayer.addLayer(new VBOArmorLayer<>(renderPlayer, null));
             renderPlayer.addLayer(new ElytraLayer(renderPlayer){
                 @Override
@@ -126,22 +126,22 @@ public class ClientProxy extends CommonProxy {
 
 
     private void registerGuiFactories() {
-        ScreenManager.registerFactory(DEContent.container_generator, GuiGenerator::new);
-        ScreenManager.registerFactory(DEContent.container_grinder, GuiGrinder::new);
-        ScreenManager.registerFactory(DEContent.container_energy_core, GuiEnergyCore::new);
-        ScreenManager.registerFactory(DEContent.container_modular_item, GuiModularItem::new);
-        ScreenManager.registerFactory(DEContent.container_configurable_item, GuiConfigurableItem::new);
-        ScreenManager.registerFactory(DEContent.container_reactor, GuiReactor::new);
+        ScreenManager.register(DEContent.container_generator, GuiGenerator::new);
+        ScreenManager.register(DEContent.container_grinder, GuiGrinder::new);
+        ScreenManager.register(DEContent.container_energy_core, GuiEnergyCore::new);
+        ScreenManager.register(DEContent.container_modular_item, GuiModularItem::new);
+        ScreenManager.register(DEContent.container_configurable_item, GuiConfigurableItem::new);
+        ScreenManager.register(DEContent.container_reactor, GuiReactor::new);
 
 //        ScreenManager.registerFactory(DEContent.container_celestial_manipulator, GuiCelestialManipulator::new);
 //        ScreenManager.registerFactory(DEContent.container_dissenchanter, ::new);
 //        ScreenManager.registerFactory(DEContent.container_draconium_chest, ContainerDraconiumChest::new);
 //        ScreenManager.registerFactory(DEContent.container_energy_crystal, ContainerEnergyCrystal::new);
 //        ScreenManager.registerFactory(DEContent.container_energy_infuser, ContainerEnergyInfuser::new);
-        ScreenManager.registerFactory(DEContent.container_fusion_crafting_core, GuiFusionCraftingCore::new);
+        ScreenManager.register(DEContent.container_fusion_crafting_core, GuiFusionCraftingCore::new);
 //        ScreenManager.registerFactory(DEContent.container_reactor, ContainerReactor::new);
-        ScreenManager.registerFactory(DEContent.container_flow_gate, GuiFlowGate::new);
-        ScreenManager.registerFactory(DEContent.container_energy_transfuser, GuiEnergyTransfuser::new);
+        ScreenManager.register(DEContent.container_flow_gate, GuiFlowGate::new);
+        ScreenManager.register(DEContent.container_energy_transfuser, GuiEnergyTransfuser::new);
     }
 
     private void registerTileRenderers() {
@@ -230,9 +230,9 @@ public class ClientProxy extends CommonProxy {
 
 
     private void setupRenderLayers() {
-        RenderTypeLookup.setRenderLayer(DEContent.grinder, RenderType.getCutoutMipped());
-        RenderTypeLookup.setRenderLayer(DEContent.generator, RenderType.getCutoutMipped());
-        RenderTypeLookup.setRenderLayer(DEContent.energy_transfuser, RenderType.getCutoutMipped());
+        RenderTypeLookup.setRenderLayer(DEContent.grinder, RenderType.cutoutMipped());
+        RenderTypeLookup.setRenderLayer(DEContent.generator, RenderType.cutoutMipped());
+        RenderTypeLookup.setRenderLayer(DEContent.energy_transfuser, RenderType.cutoutMipped());
 //        RenderTypeLookup.setRenderLayer(DEContent.chaos_crystal, RenderType.getCutout());
 //        RenderTypeLookup.setRenderLayer(DEContent.chaos_crystal_part, RenderType.getCutout());
     }

@@ -53,10 +53,10 @@ public class ReactorBeamFX extends Particle {
     private int boltSeed = -1;
     private int ttl = 10;
 
-    public static final RenderType fallBackType = RenderType.makeType("fall_back_type", DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP, GL11.GL_QUADS, 256, RenderType.State.getBuilder()
-            .texture(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/particle/reactor_energy_beam.png"), false, false))
-            .texturing(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
-            .build(false)
+    public static final RenderType fallBackType = RenderType.create("fall_back_type", DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP, GL11.GL_QUADS, 256, RenderType.State.builder()
+            .setTextureState(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/particle/reactor_energy_beam.png"), false, false))
+            .setTexturingState(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
+            .createCompositeState(false)
     );
 
     public static ShaderProgram beamShaderI = ShaderProgramBuilder.builder()
@@ -97,9 +97,9 @@ public class ReactorBeamFX extends Particle {
         this.tile = tile;
         this.facing = facing;
         this.isInjectorEffect = isInjectorEffect;
-        this.dist = (float) Utils.getDistanceAtoB(pos, Vec3D.getCenter(tile.getPos()));
-        this.rand.setSeed(worldIn.rand.nextLong());
-        setBoundingBox(new AxisAlignedBB(posX, posY, posZ, tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ()));
+        this.dist = (float) Utils.getDistanceAtoB(pos, Vec3D.getCenter(tile.getBlockPos()));
+        this.random.setSeed(worldIn.random.nextLong());
+        setBoundingBox(new AxisAlignedBB(x, y, z, tile.getBlockPos().getX(), tile.getBlockPos().getY(), tile.getBlockPos().getZ()));
     }
 
     public void updateFX(float fxState, float powerState) {
@@ -112,20 +112,20 @@ public class ReactorBeamFX extends Particle {
         this.powerState = powerState;
         ticksTillDeath = 4;
         if (ttl-- <= 0) {
-            setExpired();
+            remove();
         }
     }
 
     @Override
     public void tick() {
         if (ticksTillDeath-- <= 0) {
-            setExpired();
+            remove();
         }
         ttl = 10;
     }
 
     @Override
-    public void renderParticle(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks) {
+    public void render(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks) {
         if (tile.roller != null || !(buffer instanceof BufferBuilder)) {
             return;
         }
@@ -134,8 +134,8 @@ public class ReactorBeamFX extends Particle {
         ccrs.bind(buffer, DefaultVertexFormats.POSITION_COLOR_TEX);
         ccrs.brightness = 240;
 
-        Vector3d viewVec = renderInfo.getProjectedView();
-        Vec3D pos1 = new Vec3D(posX - viewVec.x, posY - viewVec.y, posZ - viewVec.z).offset(facing, -0.35D);
+        Vector3d viewVec = renderInfo.getPosition();
+        Vec3D pos1 = new Vec3D(x - viewVec.x, y - viewVec.y, z - viewVec.z).offset(facing, -0.35D);
 
         float texOffset = (ClientEventHandler.elapsedTicks + partialTicks) / -150F;
         float coreSize = (float) tile.getCoreDiameter() / 2.3F;
@@ -215,10 +215,10 @@ public class ReactorBeamFX extends Particle {
             float cos = (float) MathHelper.cos(angle);
             float texX = i / sides;
             Vec3D point = pos.copy().radialOffset(facing.getAxis(), sin, cos, widthStart);
-            buffer.pos(point.x, point.y, point.z).color(r, g, b, fadeReverse ? 0F : fxState).tex(texX, 0 + beamAnimation).endVertex();
+            buffer.vertex(point.x, point.y, point.z).color(r, g, b, fadeReverse ? 0F : fxState).uv(texX, 0 + beamAnimation).endVertex();
             point.offset(facing, length);
             point.radialOffset(facing.getAxis(), sin, cos, widthEnd - widthStart);
-            buffer.pos(point.x, point.y, point.z).color(r, g, b, fadeReverse ? fxState : 0F).tex(texX, 0.1F + beamAnimation).endVertex();
+            buffer.vertex(point.x, point.y, point.z).color(r, g, b, fadeReverse ? fxState : 0F).uv(texX, 0.1F + beamAnimation).endVertex();
         }
         ccrs.draw();
     }
@@ -252,10 +252,10 @@ public class ReactorBeamFX extends Particle {
             float cos = (float) MathHelper.cos(angle);
             float texX = i / sides;
             Vec3D point = pos.copy().radialOffset(facing.getAxis(), sin, cos, widthStart);
-            buffer.pos(point.x, point.y, point.z).color(1F, 1F, 1F, fadeReverse ? 0F : fxState).tex(texX, (fadeReverse ? 0.1F : 1F)).endVertex();
+            buffer.vertex(point.x, point.y, point.z).color(1F, 1F, 1F, fadeReverse ? 0F : fxState).uv(texX, (fadeReverse ? 0.1F : 1F)).endVertex();
             point.offset(facing, length);
             point.radialOffset(facing.getAxis(), sin, cos, widthEnd - widthStart);
-            buffer.pos(point.x, point.y, point.z).color(1F, 1F, 1F, fadeReverse ? fxState : 0F).tex(texX, 0).endVertex();
+            buffer.vertex(point.x, point.y, point.z).color(1F, 1F, 1F, fadeReverse ? fxState : 0F).uv(texX, 0).endVertex();
         }
 //        ccrs.draw();
     }
@@ -275,7 +275,7 @@ public class ReactorBeamFX extends Particle {
         }
 
         @Override
-        public void beginRender(BufferBuilder builder, TextureManager p_217600_2_) {
+        public void begin(BufferBuilder builder, TextureManager p_217600_2_) {
             ResourceHelperDE.bindTexture(texture);
             RenderSystem.disableCull();
             RenderSystem.depthMask(false);
@@ -293,7 +293,7 @@ public class ReactorBeamFX extends Particle {
         }
 
         @Override
-        public void finishRender(Tessellator tessellator) {
+        public void end(Tessellator tessellator) {
             RenderSystem.alphaFunc(GL11.GL_GREATER, 0.1F);
             RenderSystem.enableCull();
             if (!DEConfig.reactorShaders) {

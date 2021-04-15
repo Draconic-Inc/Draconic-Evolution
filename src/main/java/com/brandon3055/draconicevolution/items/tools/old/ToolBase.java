@@ -130,11 +130,11 @@ public abstract class ToolBase extends ItemEnergyBase implements /*IRenderOverri
         Map<Enchantment, Integer> enchants = getAllEnchants(stack);
         Map<Enchantment, Integer> disEnchants = getDisabledEnchants(stack);
         enchants.forEach((enchantment, integer) -> {
-            ToolConfigHelper.getFieldStorage(stack).remove(enchantment.getName());
+            ToolConfigHelper.getFieldStorage(stack).remove(enchantment.getDescriptionId());
             registry.register(stack, new BooleanConfigField(enchantment.getRegistryName() + "", false/*!disEnchants.containsKey(enchantment)*/, "config.field.toggleEnchant.description") {
                 @Override
                 public String getUnlocalizedName() {
-                    return enchantment.getDisplayName(integer).getString();
+                    return enchantment.getFullname(integer).getString();
                 }
 
                 @Override
@@ -165,7 +165,7 @@ public abstract class ToolBase extends ItemEnergyBase implements /*IRenderOverri
         ListNBT list = ItemNBTHelper.getCompound(stack).getList("disableEnchants", 10);
         Map<Enchantment, Integer> disEnch = new HashMap<>();
         for (int i = 0; i < list.size(); i++) {
-            Enchantment enchantment = Enchantment.getEnchantmentByID(list.getCompound(i).getShort("id"));
+            Enchantment enchantment = Enchantment.byId(list.getCompound(i).getShort("id"));
             int level = list.getCompound(i).getShort("lvl");
             disEnch.put(enchantment, level);
         }
@@ -207,14 +207,14 @@ public abstract class ToolBase extends ItemEnergyBase implements /*IRenderOverri
                     if (enchantment == target) {
                         ListNBT list = ItemNBTHelper.getCompound(stack).getList("disableEnchants", 10);
                         for (int i = 0; i < list.size(); i++) {
-                            Enchantment e = Enchantment.getEnchantmentByID(list.getCompound(i).getShort("id"));
+                            Enchantment e = Enchantment.byId(list.getCompound(i).getShort("id"));
                             if (e == enchantment) {
                                 list.remove(i);
                                 break;
                             }
                         }
 
-                        stack.addEnchantment(enchantment, enchants.get(enchantment));
+                        stack.enchant(enchantment, enchants.get(enchantment));
                         ToolConfigHelper.getFieldStorage(stack).putBoolean(field.getName(), true);
                         return;
                     }
@@ -283,9 +283,9 @@ public abstract class ToolBase extends ItemEnergyBase implements /*IRenderOverri
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         holdCTRLForUpgrades(tooltip, stack);
-        super.addInformation(stack, worldIn, tooltip, flagIn);
+        super.appendHoverText(stack, worldIn, tooltip, flagIn);
     }
 
     public static void holdCTRLForUpgrades(List<ITextComponent> list, ItemStack stack) {
@@ -293,7 +293,7 @@ public abstract class ToolBase extends ItemEnergyBase implements /*IRenderOverri
         if (!Screen.hasControlDown()) {
             list.add(new TranslationTextComponent("upgrade.de.holdCtrlForUpgrades.info", TextFormatting.AQUA + "" + TextFormatting.ITALIC, TextFormatting.RESET + "" + TextFormatting.GRAY));
         } else {
-            list.add(new TranslationTextComponent("upgrade.de.upgrades.info").mergeStyle(TextFormatting.GOLD));
+            list.add(new TranslationTextComponent("upgrade.de.upgrades.info").withStyle(TextFormatting.GOLD));
 //            list.addAll(UpgradeHelper.getUpgradeStats(stack));//TODO Maybe?
         }
     }
@@ -328,18 +328,18 @@ public abstract class ToolBase extends ItemEnergyBase implements /*IRenderOverri
 
     @Override
     public boolean onLeftClickEntity(ItemStack stack, PlayerEntity player, Entity entity) {
-        if (this instanceof IAOEWeapon && player.getCooledAttackStrength(0.5F) >= 0.95F && ((IAOEWeapon) this).getWeaponAOE(stack) > 0) {
-            List<LivingEntity> entities = player.world.getEntitiesWithinAABB(LivingEntity.class, entity.getBoundingBox().grow(((IAOEWeapon) this).getWeaponAOE(stack), 0.25D, ((IAOEWeapon) this).getWeaponAOE(stack)));
+        if (this instanceof IAOEWeapon && player.getAttackStrengthScale(0.5F) >= 0.95F && ((IAOEWeapon) this).getWeaponAOE(stack) > 0) {
+            List<LivingEntity> entities = player.level.getEntitiesOfClass(LivingEntity.class, entity.getBoundingBox().inflate(((IAOEWeapon) this).getWeaponAOE(stack), 0.25D, ((IAOEWeapon) this).getWeaponAOE(stack)));
 
             for (LivingEntity aoeEntity : entities) {
-                if (aoeEntity != player && aoeEntity != entity && !player.isOnSameTeam(entity) && extractAttackEnergy(stack, aoeEntity, player)) {
+                if (aoeEntity != player && aoeEntity != entity && !player.isAlliedTo(entity) && extractAttackEnergy(stack, aoeEntity, player)) {
 //                    aoeEntity.knockBack(player, 0.4F, (double) MathHelper.sin(player.rotationYaw * 0.017453292F), (double) (-MathHelper.cos(player.rotationYaw * 0.017453292F)));
-                    aoeEntity.attackEntityFrom(DamageSource.causePlayerDamage(player), getAttackDamage(stack));
+                    aoeEntity.hurt(DamageSource.playerAttack(player), getAttackDamage(stack));
                 }
             }
 
-            player.world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.ENTITY_PLAYER_ATTACK_SWEEP, player.getSoundCategory(), 1.0F, 1.0F);
-            player.spawnSweepParticles();
+            player.level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.PLAYER_ATTACK_SWEEP, player.getSoundSource(), 1.0F, 1.0F);
+            player.sweepAttack();
         }
 
         extractAttackEnergy(stack, entity, player);
@@ -371,8 +371,8 @@ public abstract class ToolBase extends ItemEnergyBase implements /*IRenderOverri
         Multimap<Attribute, AttributeModifier> multimap = super.getAttributeModifiers(equipmentSlot, stack);
 
         if (equipmentSlot == EquipmentSlotType.MAINHAND) {
-            multimap.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", (double) getAttackDamage(stack) - 1, AttributeModifier.Operation.ADDITION));
-            multimap.put(Attributes.ATTACK_SPEED, new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", (double) getAttackSpeed(stack), AttributeModifier.Operation.ADDITION));
+            multimap.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", (double) getAttackDamage(stack) - 1, AttributeModifier.Operation.ADDITION));
+            multimap.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier", (double) getAttackSpeed(stack), AttributeModifier.Operation.ADDITION));
         }
 
         return multimap;
@@ -394,7 +394,7 @@ public abstract class ToolBase extends ItemEnergyBase implements /*IRenderOverri
 
         for (IItemConfigField field : registry.getFields()) {
             if (field instanceof ExternalConfigField) continue;
-            displayList.add(InfoHelper.ITC() + I18n.format(field.getUnlocalizedName()) + ": " + InfoHelper.HITC() + field.getReadableValue());
+            displayList.add(InfoHelper.ITC() + I18n.get(field.getUnlocalizedName()) + ": " + InfoHelper.HITC() + field.getReadableValue());
         }
     }
 

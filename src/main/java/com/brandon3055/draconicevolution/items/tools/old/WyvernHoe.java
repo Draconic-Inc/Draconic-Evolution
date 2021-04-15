@@ -69,12 +69,12 @@ public abstract class WyvernHoe extends ToolBase {
 
 
     @Override
-    public ActionResultType onItemUse(ItemUseContext context) {
-        ItemStack stack = context.getItem();
+    public ActionResultType useOn(ItemUseContext context) {
+        ItemStack stack = context.getItemInHand();
         PlayerEntity player = context.getPlayer();
-        World world = context.getWorld();
-        BlockPos pos = context.getPos();
-        Direction facing = context.getFace();
+        World world = context.getLevel();
+        BlockPos pos = context.getClickedPos();
+        Direction facing = context.getClickedFace();
 
         if (!hoeBlock(stack, player, world, pos, facing, context)) {
             if (world.getBlockState(pos).getBlock() != Blocks.FARMLAND) {
@@ -84,46 +84,46 @@ public abstract class WyvernHoe extends ToolBase {
             modifyEnergy(stack, -energyPerOperation);
         }
 
-        if (player.isSneaking()) {
+        if (player.isShiftKeyDown()) {
             return ActionResultType.SUCCESS;
         }
 
         int AOE = ToolConfigHelper.getIntegerField("digAOE", stack);
         boolean fill = ToolConfigHelper.getBooleanField("landFill", stack);
 
-        Iterable<BlockPos> blocks = BlockPos.getAllInBoxMutable(pos.add(-AOE, 0, -AOE), pos.add(AOE, 0, AOE));
+        Iterable<BlockPos> blocks = BlockPos.betweenClosed(pos.offset(-AOE, 0, -AOE), pos.offset(AOE, 0, AOE));
 
         for (BlockPos aoePos : blocks) {
             if (aoePos.equals(pos)) {
                 continue;
             }
 
-            if (!fill && (world.isAirBlock(aoePos) || !world.isAirBlock(aoePos.up()))) {
+            if (!fill && (world.isEmptyBlock(aoePos) || !world.isEmptyBlock(aoePos.above()))) {
                 continue;
             }
 
 
-            boolean airOrReplaceable = world.isAirBlock(aoePos) || world.getBlockState(aoePos).getMaterial().isReplaceable();
+            boolean airOrReplaceable = world.isEmptyBlock(aoePos) || world.getBlockState(aoePos).getMaterial().isReplaceable();
             //TODO Solid Stuff
-            boolean lowerBlockOk = world.getBlockState(aoePos.down()).isSolid() || world.getBlockState(aoePos.down()).getBlock() == Blocks.FARMLAND;
+            boolean lowerBlockOk = world.getBlockState(aoePos.below()).canOcclude() || world.getBlockState(aoePos.below()).getBlock() == Blocks.FARMLAND;
 
-            if (fill && airOrReplaceable && lowerBlockOk && (player.abilities.isCreativeMode || player.inventory.hasItemStack(new ItemStack(Blocks.DIRT)))) {
+            if (fill && airOrReplaceable && lowerBlockOk && (player.abilities.instabuild || player.inventory.contains(new ItemStack(Blocks.DIRT)))) {
                 boolean canceled = false;//TODOForgeEventFactory.onBlockPlace(player, new BlockSnapshot(world.getDimensionKey(), world, aoePos, Blocks.DIRT.getDefaultState()), Direction.UP);
 
-                if (!canceled && (player.abilities.isCreativeMode || InventoryUtils.consumeStack(new ItemStack(Blocks.DIRT), player.inventory))) {
-                    world.setBlockState(aoePos, Blocks.DIRT.getDefaultState());
+                if (!canceled && (player.abilities.instabuild || InventoryUtils.consumeStack(new ItemStack(Blocks.DIRT), player.inventory))) {
+                    world.setBlockAndUpdate(aoePos, Blocks.DIRT.defaultBlockState());
                 }
             }
 
-            boolean canDropAbove = world.getBlockState(aoePos.up()).getBlock() == Blocks.DIRT || world.getBlockState(aoePos.up()).getBlock() == Blocks.GRASS || world.getBlockState(aoePos.up()).getBlock() == Blocks.FARMLAND;
-            boolean canRemoveAbove = canDropAbove || world.getBlockState(aoePos.up()).getMaterial().isReplaceable();
-            boolean up2OK = world.isAirBlock(aoePos.up().up()) || world.getBlockState(aoePos.up().up()).getMaterial().isReplaceable();
+            boolean canDropAbove = world.getBlockState(aoePos.above()).getBlock() == Blocks.DIRT || world.getBlockState(aoePos.above()).getBlock() == Blocks.GRASS || world.getBlockState(aoePos.above()).getBlock() == Blocks.FARMLAND;
+            boolean canRemoveAbove = canDropAbove || world.getBlockState(aoePos.above()).getMaterial().isReplaceable();
+            boolean up2OK = world.isEmptyBlock(aoePos.above().above()) || world.getBlockState(aoePos.above().above()).getMaterial().isReplaceable();
 
-            if (fill && !world.isAirBlock(aoePos.up()) && canRemoveAbove && up2OK) {
+            if (fill && !world.isEmptyBlock(aoePos.above()) && canRemoveAbove && up2OK) {
                 if (canDropAbove) {
-                    world.addEntity(new ItemEntity(world, player.getPosX(), player.getPosY(), player.getPosZ(), new ItemStack(Blocks.DIRT)));
+                    world.addFreshEntity(new ItemEntity(world, player.getX(), player.getY(), player.getZ(), new ItemStack(Blocks.DIRT)));
                 }
-                world.removeBlock(aoePos.up(), false);
+                world.removeBlock(aoePos.above(), false);
             }
 
             if (hoeBlock(stack, player, world, aoePos, facing, context)) {
@@ -136,11 +136,11 @@ public abstract class WyvernHoe extends ToolBase {
 
     private boolean hoeBlock(ItemStack stack, PlayerEntity player, World world, BlockPos pos, Direction face, ItemUseContext context) {
 
-        if (getEnergyStored(stack) < energyPerOperation && !player.abilities.isCreativeMode) {
+        if (getEnergyStored(stack) < energyPerOperation && !player.abilities.instabuild) {
             return false;
         }
 
-        if (!player.canPlayerEdit(pos, face, stack)) {
+        if (!player.mayUseItemAt(pos, face, stack)) {
             return false;
         } else {
             int hook = ForgeEventFactory.onHoeUse(context);
@@ -151,16 +151,16 @@ public abstract class WyvernHoe extends ToolBase {
             BlockState iblockstate = world.getBlockState(pos);
             Block block = iblockstate.getBlock();
 
-            if (face != Direction.DOWN && world.isAirBlock(pos.up())) {
+            if (face != Direction.DOWN && world.isEmptyBlock(pos.above())) {
                 if (block == Blocks.GRASS || block == Blocks.GRASS_PATH) {
-                    this.setBlock(player, world, pos, Blocks.FARMLAND.getDefaultState());
+                    this.setBlock(player, world, pos, Blocks.FARMLAND.defaultBlockState());
                     return true;
                 }
 
                 if (block == Blocks.DIRT) {
-                    this.setBlock(player, world, pos, Blocks.FARMLAND.getDefaultState());
+                    this.setBlock(player, world, pos, Blocks.FARMLAND.defaultBlockState());
                 } else if (block == Blocks.COARSE_DIRT) {
-                    this.setBlock(player, world, pos, Blocks.DIRT.getDefaultState());
+                    this.setBlock(player, world, pos, Blocks.DIRT.defaultBlockState());
                 }
             }
 
@@ -169,10 +169,10 @@ public abstract class WyvernHoe extends ToolBase {
     }
 
     protected void setBlock(PlayerEntity player, World worldIn, BlockPos pos, BlockState state) {
-        worldIn.playSound(player, pos, SoundEvents.ITEM_HOE_TILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
+        worldIn.playSound(player, pos, SoundEvents.HOE_TILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
 
-        if (!worldIn.isRemote) {
-            worldIn.setBlockState(pos, state, 11);
+        if (!worldIn.isClientSide) {
+            worldIn.setBlock(pos, state, 11);
         }
     }
 

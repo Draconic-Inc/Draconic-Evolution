@@ -54,15 +54,15 @@ public class HudHandler {
     public static void drawHUD(RenderGameOverlayEvent.Post event) {
         //LogHelper.info(event.getType());
         Minecraft mc = Minecraft.getInstance();
-        if (event.getType() != RenderGameOverlayEvent.ElementType.ALL || mc.gameSettings.showDebugInfo || mc.currentScreen instanceof ChatScreen) {
+        if (event.getType() != RenderGameOverlayEvent.ElementType.ALL || mc.options.renderDebug || mc.screen instanceof ChatScreen) {
             return;
         }
 
 //        GlStateTracker.pushState();
         RenderSystem.pushMatrix();
-        width = mc.getMainWindow().getScaledWidth();
-        height = mc.getMainWindow().getScaledHeight();
-        FontRenderer fontRenderer = mc.fontRenderer;
+        width = mc.getWindow().getGuiScaledWidth();
+        height = mc.getWindow().getGuiScaledHeight();
+        FontRenderer fontRenderer = mc.font;
 
         if (DEOldConfig.hudSettings[10] == 1 && hudList != null && toolTipFadeOut > 0) {
             int x = (int) (((float) DEOldConfig.hudSettings[0] / 1000F) * (float) width);
@@ -108,7 +108,7 @@ public class HudHandler {
 
         hudList = new ArrayList<String>();
 
-        if (mc.currentScreen != null) {
+        if (mc.screen != null) {
 //            if (mc.currentScreen instanceof GuiHudConfig) {//TODO Gui Stuff
 //                hudList.add(I18n.format("info.de.hudDisplayConfigTxt1.txt"));
 //                hudList.add("");
@@ -125,20 +125,20 @@ public class HudHandler {
 
             if (traceResult instanceof BlockRayTraceResult) {
                 if (traceResult != null) {
-                    state = mc.world.getBlockState(((BlockRayTraceResult) traceResult).getPos());
+                    state = mc.level.getBlockState(((BlockRayTraceResult) traceResult).getBlockPos());
                 }
 
                 if (state != null && state.getBlock() instanceof IHudDisplay) {
-                    ((IHudDisplay) state.getBlock()).addDisplayData(null, mc.world, ((BlockRayTraceResult) traceResult).getPos(), hudList);
+                    ((IHudDisplay) state.getBlock()).addDisplayData(null, mc.level, ((BlockRayTraceResult) traceResult).getBlockPos(), hudList);
                 } else {
-                    ItemStack stack = mc.player.getHeldItemMainhand();
+                    ItemStack stack = mc.player.getMainHandItem();
 
                     if (stack.isEmpty() || !(stack.getItem() instanceof IHudDisplay)) {
-                        stack = mc.player.getHeldItemOffhand();
+                        stack = mc.player.getOffhandItem();
                     }
 
                     if (!stack.isEmpty() && stack.getItem() instanceof IHudDisplay) {
-                        ((IHudDisplay) stack.getItem()).addDisplayData(stack, mc.world, null, hudList);
+                        ((IHudDisplay) stack.getItem()).addDisplayData(stack, mc.level, null, hudList);
                     }
                 }
             }
@@ -205,7 +205,7 @@ public class HudHandler {
 
 
         if (DEOldConfig.hudSettings[9] == 1) {
-            FontRenderer fontRenderer = Minecraft.getInstance().fontRenderer;
+            FontRenderer fontRenderer = Minecraft.getInstance().font;
             RenderSystem.translated(x, y, 0);
             if (rotated) RenderSystem.rotatef(90, 0, 0, -1);
             RenderSystem.translated(-x, -y, 0);
@@ -214,13 +214,13 @@ public class HudHandler {
             String energy = "OP: " + formatNumber(rfTotal);
             float fade = Math.min(armorStatsFadeOut, 1F);
             if (!rotated) {
-                fontRenderer.drawStringWithShadow(mStack, shield, x + 18, y + 74, ((int) (fade * 240F) + 0x10 << 24) | 0x00FFFFFF);
-                fontRenderer.drawStringWithShadow(mStack, energy, x + 18, y + 84, ((int) (fade * 240F) + 0x10 << 24) | 0x00FFFFFF);
+                fontRenderer.drawShadow(mStack, shield, x + 18, y + 74, ((int) (fade * 240F) + 0x10 << 24) | 0x00FFFFFF);
+                fontRenderer.drawShadow(mStack, energy, x + 18, y + 84, ((int) (fade * 240F) + 0x10 << 24) | 0x00FFFFFF);
 //                fontRenderer.drawStringWithShadow(entropy, x + 18, y + 94, ((int) (fade * 240F) + 0x10 << 24) | 0x00FFFFFF);
             } else {
-                fontRenderer.drawString(mStack, shield, x - 52 - fontRenderer.getStringWidth(shield) / 2, y + 2, ((int) (fade * 240F) + 0x10 << 24) | 0x000000FF);
+                fontRenderer.draw(mStack, shield, x - 52 - fontRenderer.width(shield) / 2, y + 2, ((int) (fade * 240F) + 0x10 << 24) | 0x000000FF);
 //                fontRenderer.drawStringWithShadow(entropy, x - fontRenderer.getStringWidth(entropy), y + 18, ((int) (fade * 240F) + 0x10 << 24) | 0x00FFFFFF);
-                fontRenderer.drawStringWithShadow(mStack, energy, x - 102, y + 18, ((int) (fade * 240F) + 0x10 << 24) | 0x00FFFFFF);
+                fontRenderer.drawShadow(mStack, energy, x - 102, y + 18, ((int) (fade * 240F) + 0x10 << 24) | 0x00FFFFFF);
             }
         }
 

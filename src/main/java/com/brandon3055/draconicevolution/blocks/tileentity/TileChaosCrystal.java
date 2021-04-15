@@ -46,15 +46,15 @@ public class TileChaosCrystal extends TileBCore implements ITickableTileEntity {
     @Override
     public void tick() {
         if (validatePlacement) {
-            posLock.set(pos.toLong());
-            dimLock.set(world.getDimensionKey().getLocation().toString());
+            posLock.set(worldPosition.asLong());
+            dimLock.set(level.dimension().location().toString());
             for (int i = 1; i <= 2; i++) {
-                world.setBlockState(pos.up(i), DEContent.chaos_crystal_part.getDefaultState());
-                world.setBlockState(pos.down(i), DEContent.chaos_crystal_part.getDefaultState());
-                TileEntity tile = world.getTileEntity(pos.up(i));
-                if (tile instanceof TileChaosCrystal) ((TileChaosCrystal) tile).parentPos.set(pos);
-                tile = world.getTileEntity(pos.down(i));
-                if (tile instanceof TileChaosCrystal) ((TileChaosCrystal) tile).parentPos.set(pos);
+                level.setBlockAndUpdate(worldPosition.above(i), DEContent.chaos_crystal_part.defaultBlockState());
+                level.setBlockAndUpdate(worldPosition.below(i), DEContent.chaos_crystal_part.defaultBlockState());
+                TileEntity tile = level.getBlockEntity(worldPosition.above(i));
+                if (tile instanceof TileChaosCrystal) ((TileChaosCrystal) tile).parentPos.set(worldPosition);
+                tile = level.getBlockEntity(worldPosition.below(i));
+                if (tile instanceof TileChaosCrystal) ((TileChaosCrystal) tile).parentPos.set(worldPosition);
             }
             validatePlacement = false;
         }
@@ -62,49 +62,49 @@ public class TileChaosCrystal extends TileBCore implements ITickableTileEntity {
         if (getBlockState().getBlock() != DEContent.chaos_crystal) return;
         tick++;
 
-        if (tick > 1 && !world.isRemote && hasBeenMoved()) {
-            world.removeBlock(pos, false);
+        if (tick > 1 && !level.isClientSide && hasBeenMoved()) {
+            level.removeBlock(worldPosition, false);
         }
 
-        if (!world.isRemote && soundTimer-- <= 0) {
-            soundTimer = 3600 + world.rand.nextInt(1200);
+        if (!level.isClientSide && soundTimer-- <= 0) {
+            soundTimer = 3600 + level.random.nextInt(1200);
 //            world.playSound(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, DESounds.chaosChamberAmbient, SoundCategory.AMBIENT, 1F, world.rand.nextFloat() * 0.4F + 0.8F, false);
-            BCoreNetwork.sendSound(world, pos, DESounds.chaosChamberAmbient, SoundCategory.AMBIENT, 1.5F, world.rand.nextFloat() * 0.4F + 0.8F, false);
+            BCoreNetwork.sendSound(level, worldPosition, DESounds.chaosChamberAmbient, SoundCategory.AMBIENT, 1.5F, level.random.nextFloat() * 0.4F + 0.8F, false);
         }
 
-        if (!world.isRemote && world instanceof ServerWorld && guardianDefeated.get() && world.rand.nextInt(50) == 0) {
-            int x = 5 - world.rand.nextInt(11);
-            int z = 5 - world.rand.nextInt(11);
-            LightningBoltEntity bolt = new LightningBoltEntity(EntityType.LIGHTNING_BOLT, world);
-            bolt.setPosition(pos.getX() + x, world.getHeight(Heightmap.Type.WORLD_SURFACE, pos).getY(), pos.getZ() + z);
-            bolt.ignoreFrustumCheck = true;
-            world.addEntity(bolt);
+        if (!level.isClientSide && level instanceof ServerWorld && guardianDefeated.get() && level.random.nextInt(50) == 0) {
+            int x = 5 - level.random.nextInt(11);
+            int z = 5 - level.random.nextInt(11);
+            LightningBoltEntity bolt = new LightningBoltEntity(EntityType.LIGHTNING_BOLT, level);
+            bolt.setPos(worldPosition.getX() + x, level.getHeightmapPos(Heightmap.Type.WORLD_SURFACE, worldPosition).getY(), worldPosition.getZ() + z);
+            bolt.noCulling = true;
+            level.addFreshEntity(bolt);
         }
     }
 
     private boolean removing = false;
     public void detonate(Entity entity) {
-        if (world.isRemote) {
+        if (level.isClientSide) {
             return;
         }
 
         if (parentPos.get().getY() != -1) {
-            TileEntity tile = world.getTileEntity(parentPos.get());
+            TileEntity tile = level.getBlockEntity(parentPos.get());
             if (tile instanceof TileChaosCrystal && !((TileChaosCrystal) tile).removing) {
                 ((TileChaosCrystal) tile).detonate(entity);
-                world.destroyBlock(tile.getPos(), true, entity);
+                level.destroyBlock(tile.getBlockPos(), true, entity);
             }
             return;
         }
 
         removing = true;
-        world.setBlockState(pos.up(), Blocks.AIR.getDefaultState());
-        world.setBlockState(pos.up(2), Blocks.AIR.getDefaultState());
-        world.setBlockState(pos.down(), Blocks.AIR.getDefaultState());
-        world.setBlockState(pos.down(2), Blocks.AIR.getDefaultState());
+        level.setBlockAndUpdate(worldPosition.above(), Blocks.AIR.defaultBlockState());
+        level.setBlockAndUpdate(worldPosition.above(2), Blocks.AIR.defaultBlockState());
+        level.setBlockAndUpdate(worldPosition.below(), Blocks.AIR.defaultBlockState());
+        level.setBlockAndUpdate(worldPosition.below(2), Blocks.AIR.defaultBlockState());
 
         if (DEOldConfig.disableChaosIslandExplosion || hasBeenMoved()) {
-            world.removeBlock(pos, false);
+            level.removeBlock(worldPosition, false);
         } else {
 //            EntityChaosImplosion vortex = new EntityChaosImplosion(world); TODO Implosion
 //            vortex.setPosition(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
@@ -136,12 +136,12 @@ public class TileChaosCrystal extends TileBCore implements ITickableTileEntity {
     }
 
     private boolean hasBeenMoved() {
-        return posLock.get() != pos.toLong() || !dimLock.get().equals(world.getDimensionKey().getLocation().toString());
+        return posLock.get() != worldPosition.asLong() || !dimLock.get().equals(level.dimension().location().toString());
     }
 
     @Override
     public AxisAlignedBB getRenderBoundingBox() {
-        return new AxisAlignedBB(pos, pos.add(1, 1, 1)).grow(3, 3, 3);
+        return new AxisAlignedBB(worldPosition, worldPosition.offset(1, 1, 1)).inflate(3, 3, 3);
     }
 
     @Override
@@ -153,7 +153,7 @@ public class TileChaosCrystal extends TileBCore implements ITickableTileEntity {
         if (parentPos.get().getY() == -1) {
             return guardianDefeated.get();
         }
-        TileEntity tile = world.getTileEntity(parentPos.get());
+        TileEntity tile = level.getBlockEntity(parentPos.get());
         if (tile instanceof TileChaosCrystal) {
             return ((TileChaosCrystal) tile).guardianDefeated.get();
         }

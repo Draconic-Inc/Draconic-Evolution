@@ -15,9 +15,9 @@ public class ParticleStarSpark extends BCParticle {
         super(worldIn, pos);
 
         double speed = 0.1;
-        this.motionX = (-0.5 + rand.nextDouble()) * speed;
-        this.motionY = (-0.5 + rand.nextDouble()) * speed;
-        this.motionZ = (-0.5 + rand.nextDouble()) * speed;
+        this.xd = (-0.5 + random.nextDouble()) * speed;
+        this.yd = (-0.5 + random.nextDouble()) * speed;
+        this.zd = (-0.5 + random.nextDouble()) * speed;
 
 //        this.particleMaxAge = 10 + rand.nextInt(10);
 //        this.particleTextureIndexY = 1;
@@ -33,11 +33,11 @@ public class ParticleStarSpark extends BCParticle {
 //        if (particleAge++ > particleMaxAge) {
 //            setExpired();
 //        }
-        this.prevPosX = this.posX;
-        this.prevPosY = this.posY;
-        this.prevPosZ = this.posZ;
+        this.xo = this.x;
+        this.yo = this.y;
+        this.zo = this.z;
 
-        motionY += particleGravity;
+        yd += gravity;
 
 //        particleTextureIndexX = rand.nextInt(5);
 //        int ttd = particleMaxAge - particleAge;
@@ -48,11 +48,11 @@ public class ParticleStarSpark extends BCParticle {
 //            particleScale = sparkSize;
 //        }
 
-        motionX *= 1 - airResistance;
-        motionY *= 1 - airResistance;
-        motionZ *= 1 - airResistance;
+        xd *= 1 - airResistance;
+        yd *= 1 - airResistance;
+        zd *= 1 - airResistance;
 
-        moveEntityNoClip(motionX, motionY, motionZ);
+        moveEntityNoClip(xd, yd, zd);
     }
 
 //    @Override

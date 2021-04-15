@@ -53,7 +53,7 @@ public class TileDissEnchanter extends TileBCore {
             return;
         }
 
-        ListNBT list = input.getEnchantmentTagList();
+        ListNBT list = input.getEnchantmentTags();
         if (list.isEmpty()) {
             return;
         }
@@ -64,7 +64,7 @@ public class TileDissEnchanter extends TileBCore {
             CompoundNBT compound = list.getCompound(i);
             int id = compound.getShort("id");
             int lvl = compound.getShort("lvl");
-            Enchantment e = Enchantment.getEnchantmentByID(id);
+            Enchantment e = Enchantment.byId(id);
 
             if (e == null || id != targetId) {
                 continue;
@@ -72,13 +72,13 @@ public class TileDissEnchanter extends TileBCore {
 
             int cost = (int) ((((double) lvl / (double) e.getMaxLevel()) * 20) * DEOldConfig.disenchnaterCostMultiplyer);
 
-            if (!client.abilities.isCreativeMode && cost > client.experienceLevel) {
-                client.sendMessage(new TranslationTextComponent("chat.dissEnchanter.notEnoughLevels.msg", cost).mergeStyle(TextFormatting.RED), Util.DUMMY_UUID);
+            if (!client.abilities.instabuild && cost > client.experienceLevel) {
+                client.sendMessage(new TranslationTextComponent("chat.dissEnchanter.notEnoughLevels.msg", cost).withStyle(TextFormatting.RED), Util.NIL_UUID);
                 return;
             }
 
-            if (!client.abilities.isCreativeMode) {
-                client.addExperienceLevel(-cost);
+            if (!client.abilities.instabuild) {
+                client.giveExperienceLevels(-cost);
             }
 
             CompoundNBT stackCompound = input.getTag();

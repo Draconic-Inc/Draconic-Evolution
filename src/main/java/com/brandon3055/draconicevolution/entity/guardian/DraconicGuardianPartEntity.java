@@ -6,48 +6,49 @@ import net.minecraft.entity.Pose;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.util.DamageSource;
+import net.minecraftforge.entity.PartEntity;
 
-public class DraconicGuardianPartEntity extends Entity {
+public class DraconicGuardianPartEntity extends PartEntity<DraconicGuardianEntity> {
    public final DraconicGuardianEntity dragon;
    public final String name;
    private final EntitySize size;
 
    public DraconicGuardianPartEntity(DraconicGuardianEntity dragon, String name, float width, float height) {
-      super(dragon.getType(), dragon.world);
-      this.size = EntitySize.flexible(width, height);
-      this.recalculateSize();
+      super(dragon);
+      this.size = EntitySize.scalable(width, height);
+      this.refreshDimensions();
       this.dragon = dragon;
       this.name = name;
    }
 
-   protected void registerData() {
+   protected void defineSynchedData() {
    }
 
-   protected void readAdditional(CompoundNBT compound) {
-
-   }
-
-   protected void writeAdditional(CompoundNBT compound) {
+   protected void readAdditionalSaveData(CompoundNBT compound) {
 
    }
 
-   public boolean canBeCollidedWith() {
+   protected void addAdditionalSaveData(CompoundNBT compound) {
+
+   }
+
+   public boolean isPickable() {
       return true;
    }
 
-   public boolean attackEntityFrom(DamageSource source, float amount) {
+   public boolean hurt(DamageSource source, float amount) {
       return !this.isInvulnerableTo(source) && this.dragon.attackEntityPartFrom(this, source, amount);
    }
 
-   public boolean isEntityEqual(Entity entityIn) {
+   public boolean is(Entity entityIn) {
       return this == entityIn || this.dragon == entityIn;
    }
 
-   public IPacket<?> createSpawnPacket() {
+   public IPacket<?> getAddEntityPacket() {
       throw new UnsupportedOperationException();
    }
 
-   public EntitySize getSize(Pose poseIn) {
+   public EntitySize getDimensions(Pose poseIn) {
       return this.size;
    }
 }

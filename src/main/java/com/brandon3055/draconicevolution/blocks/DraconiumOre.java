@@ -31,7 +31,7 @@ public class DraconiumOre extends BlockBCore {
 
     @Override
     public int getExpDrop(BlockState state, IWorldReader world, BlockPos pos, int fortune, int silktouch) {
-        Random rand = world instanceof World ? ((World) world).rand : new Random();
+        Random rand = world instanceof World ? ((World) world).random : new Random();
         return MathHelper.nextInt(rand, 5, 12) * fortune;
     }
 

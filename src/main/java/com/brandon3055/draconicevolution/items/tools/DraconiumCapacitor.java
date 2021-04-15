@@ -60,8 +60,8 @@ public class DraconiumCapacitor extends Item implements IInvCharge, IModularItem
     }
 
     @Override
-    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-        if (this.isInGroup(group)) {
+    public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> items) {
+        if (this.allowdedIn(group)) {
             items.add(new ItemStack(this));
             if (this != DEContent.capacitor_creative) {
                 ItemStack stack = new ItemStack(this);
@@ -141,26 +141,26 @@ public class DraconiumCapacitor extends Item implements IInvCharge, IModularItem
             if (entity instanceof PlayerEntity) {
                 PlayerEntity player = (PlayerEntity) entity;
                 if (hot_bar && main) {
-                    stacks.addAll(player.inventory.mainInventory);
+                    stacks.addAll(player.inventory.items);
                 } else if (hot_bar) {
-                    stacks.addAll(player.inventory.mainInventory.subList(0, 9));
+                    stacks.addAll(player.inventory.items.subList(0, 9));
                 } else if (main) {
-                    stacks.addAll(player.inventory.mainInventory.subList(9, 36));
+                    stacks.addAll(player.inventory.items.subList(9, 36));
                 }
                 if (held) {
                     if (!hot_bar) {
-                        stacks.add(entity.getHeldItemMainhand());
+                        stacks.add(entity.getMainHandItem());
                     }
-                    stacks.add(entity.getHeldItemOffhand());
+                    stacks.add(entity.getOffhandItem());
                 }
             } else {
                 if (held) {
-                    entity.getHeldEquipment().forEach(stacks::add);
+                    entity.getHandSlots().forEach(stacks::add);
                 }
             }
 
             if (armor) {
-                entity.getArmorInventoryList().forEach(stacks::add);
+                entity.getArmorSlots().forEach(stacks::add);
             }
         });
 
@@ -177,7 +177,7 @@ public class DraconiumCapacitor extends Item implements IInvCharge, IModularItem
             for (ItemStack stack : stacks) {
                 if (EnergyUtils.canReceiveEnergy(stack)) {
                     Item item = stack.getItem();
-                    if (item instanceof IInvCharge && !((IInvCharge) item).canCharge(stack, player, DataUtils.contains(player.getHeldEquipment(), stack))) {
+                    if (item instanceof IInvCharge && !((IInvCharge) item).canCharge(stack, player, DataUtils.contains(player.getHandSlots(), stack))) {
                         continue;
                     }
                     EnergyUtils.insertEnergy(stack, EnergyUtils.extractEnergy(capacitor, EnergyUtils.insertEnergy(stack, storage.getOPStored(), true), false), false);
@@ -188,7 +188,7 @@ public class DraconiumCapacitor extends Item implements IInvCharge, IModularItem
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         addModularItemInformation(stack, worldIn, tooltip, flagIn);
     }
 
@@ -203,7 +203,7 @@ public class DraconiumCapacitor extends Item implements IInvCharge, IModularItem
 //    }
 
     @Override
-    public int getItemEnchantability() {
+    public int getEnchantmentValue() {
         return DEItemTier.getEnchantability(techLevel);
     }
 

@@ -37,7 +37,7 @@ public class TilePortal extends TileBCore {
             return;
         }
 
-        TileEntity tile = world.getTileEntity(getMasterPos());
+        TileEntity tile = level.getBlockEntity(getMasterPos());
 
         if (tile instanceof TileDislocatorReceptacle) {
             if (((TileDislocatorReceptacle) tile).igniting) {
@@ -45,35 +45,35 @@ public class TilePortal extends TileBCore {
             }
 
             if (!((TileDislocatorReceptacle) tile).active.get()) {
-                world.removeBlock(pos, false);
+                level.removeBlock(worldPosition, false);
                 return;
             }
 
-            BlockState state = world.getBlockState(pos);
-            for (Direction facing : FacingUtils.getFacingsAroundAxis(state.get(Portal.AXIS))) {
-                BlockState checkPos = world.getBlockState(pos.offset(facing));
+            BlockState state = level.getBlockState(worldPosition);
+            for (Direction facing : FacingUtils.getFacingsAroundAxis(state.getValue(Portal.AXIS))) {
+                BlockState checkPos = level.getBlockState(worldPosition.relative(facing));
                 if (checkPos.getBlock() != DEContent.portal && checkPos.getBlock() != DEContent.infused_obsidian && checkPos.getBlock() != DEContent.dislocator_receptacle) {
                     ((TileDislocatorReceptacle) tile).deactivate();
-                    world.removeBlock(pos, false);
+                    level.removeBlock(worldPosition, false);
                 }
             }
             dataManager.detectAndSendChanges();
         }
         else {
-            world.removeBlock(pos, false);
+            level.removeBlock(worldPosition, false);
         }
     }
 
     public void setMasterPos(BlockPos masterPos) {
-        this.masterPos.get().set(pos.subtract(masterPos));
+        this.masterPos.get().set(worldPosition.subtract(masterPos));
     }
 
     protected BlockPos getMasterPos() {
-        return pos.subtract(masterPos.get().getPos());
+        return worldPosition.subtract(masterPos.get().getPos());
     }
 
     public TileDislocatorReceptacle getMaster() {
-        TileEntity tile = world.getTileEntity(getMasterPos());
+        TileEntity tile = level.getBlockEntity(getMasterPos());
         return tile instanceof TileDislocatorReceptacle ? (TileDislocatorReceptacle) tile : null;
     }
 

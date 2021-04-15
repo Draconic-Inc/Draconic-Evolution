@@ -59,30 +59,30 @@ public abstract class ModelEffect {
     protected void drawParticle(IVertexBuilder builder, double x, double y, double z, double scale, float red, float green, float blue, float alpha) {
         double min = (1 - scale) * 0.5;
         double max = 0.5 + (scale * 0.5);
-        builder.pos(x + min, y + 0.5, z + min).color(red, green, blue, alpha).tex(0, 0)/*.lightmap(240)*/.endVertex();
-        builder.pos(x + min, y + 0.5, z + max).color(red, green, blue, alpha).tex(0, 1)/*.lightmap(240)*/.endVertex();
-        builder.pos(x + max, y + 0.5, z + max).color(red, green, blue, alpha).tex(1, 1)/*.lightmap(240)*/.endVertex();
-        builder.pos(x + max, y + 0.5, z + min).color(red, green, blue, alpha).tex(1, 0)/*.lightmap(240)*/.endVertex();
+        builder.vertex(x + min, y + 0.5, z + min).color(red, green, blue, alpha).uv(0, 0)/*.lightmap(240)*/.endVertex();
+        builder.vertex(x + min, y + 0.5, z + max).color(red, green, blue, alpha).uv(0, 1)/*.lightmap(240)*/.endVertex();
+        builder.vertex(x + max, y + 0.5, z + max).color(red, green, blue, alpha).uv(1, 1)/*.lightmap(240)*/.endVertex();
+        builder.vertex(x + max, y + 0.5, z + min).color(red, green, blue, alpha).uv(1, 0)/*.lightmap(240)*/.endVertex();
 
-        builder.pos(x + min, y + min, z + 0.5).color(red, green, blue, alpha).tex(0, 0)/*.lightmap(240)*/.endVertex();
-        builder.pos(x + min, y + max, z + 0.5).color(red, green, blue, alpha).tex(0, 1)/*.lightmap(240)*/.endVertex();
-        builder.pos(x + max, y + max, z + 0.5).color(red, green, blue, alpha).tex(1, 1)/*.lightmap(240)*/.endVertex();
-        builder.pos(x + max, y + min, z + 0.5).color(red, green, blue, alpha).tex(1, 0)/*.lightmap(240)*/.endVertex();
+        builder.vertex(x + min, y + min, z + 0.5).color(red, green, blue, alpha).uv(0, 0)/*.lightmap(240)*/.endVertex();
+        builder.vertex(x + min, y + max, z + 0.5).color(red, green, blue, alpha).uv(0, 1)/*.lightmap(240)*/.endVertex();
+        builder.vertex(x + max, y + max, z + 0.5).color(red, green, blue, alpha).uv(1, 1)/*.lightmap(240)*/.endVertex();
+        builder.vertex(x + max, y + min, z + 0.5).color(red, green, blue, alpha).uv(1, 0)/*.lightmap(240)*/.endVertex();
 
-        builder.pos(x + 0.5, y + min, z + min).color(red, green, blue, alpha).tex(0, 0)/*.lightmap(240)*/.endVertex();
-        builder.pos(x + 0.5, y + min, z + max).color(red, green, blue, alpha).tex(0, 1)/*.lightmap(240)*/.endVertex();
-        builder.pos(x + 0.5, y + max, z + max).color(red, green, blue, alpha).tex(1, 1)/*.lightmap(240)*/.endVertex();
-        builder.pos(x + 0.5, y + max, z + min).color(red, green, blue, alpha).tex(1, 0)/*.lightmap(240)*/.endVertex();
+        builder.vertex(x + 0.5, y + min, z + min).color(red, green, blue, alpha).uv(0, 0)/*.lightmap(240)*/.endVertex();
+        builder.vertex(x + 0.5, y + min, z + max).color(red, green, blue, alpha).uv(0, 1)/*.lightmap(240)*/.endVertex();
+        builder.vertex(x + 0.5, y + max, z + max).color(red, green, blue, alpha).uv(1, 1)/*.lightmap(240)*/.endVertex();
+        builder.vertex(x + 0.5, y + max, z + min).color(red, green, blue, alpha).uv(1, 0)/*.lightmap(240)*/.endVertex();
     }
 
     protected void drawPolyParticle(IVertexBuilder builder, double x, double y, double z, double scale, float red, float green, float blue, float alpha) {
         double min = (1 - scale) * 0.5;
         double max = 0.5 + (scale * 0.5);
 
-        builder.pos(x + min, y + 0.5, z + min).color(red, green, blue, alpha).lightmap(240).endVertex();
-        builder.pos(x + min, y + 0.5, z + max).color(red, green, blue, alpha).lightmap(240).endVertex();
-        builder.pos(x + max, y + 0.5, z + max).color(red, green, blue, alpha).lightmap(240).endVertex();
-        builder.pos(x + max, y + 0.5, z + min).color(red, green, blue, alpha).lightmap(240).endVertex();
+        builder.vertex(x + min, y + 0.5, z + min).color(red, green, blue, alpha).uv2(240).endVertex();
+        builder.vertex(x + min, y + 0.5, z + max).color(red, green, blue, alpha).uv2(240).endVertex();
+        builder.vertex(x + max, y + 0.5, z + max).color(red, green, blue, alpha).uv2(240).endVertex();
+        builder.vertex(x + max, y + 0.5, z + min).color(red, green, blue, alpha).uv2(240).endVertex();
 
 //        builder.pos(x + min, y + min, z + 0.5).color(red, green, blue, alpha).lightmap(240).endVertex();
 //        builder.pos(x + min, y + max, z + 0.5).color(red, green, blue, alpha).lightmap(240).endVertex();
@@ -143,12 +143,12 @@ public abstract class ModelEffect {
     }
 
     public static class DebugEffect extends ModelEffect {
-        private RenderType alignRenderType = RenderType.makeType("alignRenderType", DefaultVertexFormats.POSITION_COLOR, GL11.GL_QUADS, 256, RenderType.State.getBuilder()
-                .transparency(RenderState.TRANSLUCENT_TRANSPARENCY)
-                .alpha(RenderState.ZERO_ALPHA)
-                .cull(RenderState.CULL_DISABLED)
-                .texturing(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
-                .build(false)
+        private RenderType alignRenderType = RenderType.create("alignRenderType", DefaultVertexFormats.POSITION_COLOR, GL11.GL_QUADS, 256, RenderType.State.builder()
+                .setTransparencyState(RenderState.TRANSLUCENT_TRANSPARENCY)
+                .setAlphaState(RenderState.NO_ALPHA)
+                .setCullState(RenderState.NO_CULL)
+                .setTexturingState(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
+                .createCompositeState(false)
         );
 
         @Override

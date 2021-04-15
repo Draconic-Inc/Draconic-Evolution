@@ -21,19 +21,19 @@ import java.util.List;
  */
 @Deprecated
 public class EntityChaosImplosion extends Entity {
-    protected static final DataParameter<Integer> TICKS = EntityDataManager.<Integer>createKey(EntityChaosImplosion.class, DataSerializers.VARINT);
+    protected static final DataParameter<Integer> TICKS = EntityDataManager.<Integer>defineId(EntityChaosImplosion.class, DataSerializers.INT);
 
     public EntityChaosImplosion(EntityType<?> entityTypeIn, World worldIn) {
         super(entityTypeIn, worldIn);
     }
 
     @Override
-    protected void registerData() {
+    protected void defineSynchedData() {
 
     }
 
     @Override
-    public IPacket<?> createSpawnPacket() {
+    public IPacket<?> getAddEntityPacket() {
         return null;
     }
 
@@ -44,7 +44,7 @@ public class EntityChaosImplosion extends Entity {
 //    }
 
     @Override
-    public boolean isInRangeToRenderDist(double p_70112_1_) {
+    public boolean shouldRenderAtSqrDistance(double p_70112_1_) {
         return true;
     }
 
@@ -55,73 +55,73 @@ public class EntityChaosImplosion extends Entity {
 
     @Override
     public void tick() {
-        if (!world.isRemote) {
-            dataManager.set(TICKS, ticksExisted);
+        if (!level.isClientSide) {
+            entityData.set(TICKS, tickCount);
         }
 
 //        Vec3D pos = new Vec3D(getPosX(), getPosY(), getPosZ());
 
-        if (ticksExisted < 30 && ticksExisted % 5 == 0 && world.isRemote) {
+        if (tickCount < 30 && tickCount % 5 == 0 && level.isClientSide) {
             //TODO Particles
 //            BCEffectHandler.spawnFX(DEParticles.CHAOS_IMPLOSION, world, pos, pos, 1024D, 1);
 //            DraconicEvolution.proxy.spawnParticle(new Particles.ChaosExpansionParticle(world, posX, posY, posZ, false), 512);
         }
-        if (ticksExisted >= 100 && ticksExisted < 130 && ticksExisted % 5 == 0 && world.isRemote) {
+        if (tickCount >= 100 && tickCount < 130 && tickCount % 5 == 0 && level.isClientSide) {
 //            BCEffectHandler.spawnFX(DEParticles.CHAOS_IMPLOSION, world, pos, pos, 1024D, 2);
 //            DraconicEvolution.proxy.spawnParticle(new Particles.ChaosExpansionParticle(world, posX, posY, posZ, true), 512);
         }
-        if (ticksExisted < 100) {
+        if (tickCount < 100) {
             return;
         }
 
-        if (ticksExisted < 600) {
+        if (tickCount < 600) {
             for (int i = 0; i < 10; i++) {
 //                double x = posX - 18 + rand.nextDouble() * 36;
 //                double y = posY - 8 + rand.nextDouble() * 16;
 //                double z = posZ - 18 + rand.nextDouble() * 36;
-                if (world.isRemote) {
+                if (level.isClientSide) {
 //                    BCEffectHandler.spawnFX(DEParticles.CHAOS_IMPLOSION, world, new Vec3D(x, y, z), pos, 512D, 0);
                 }
             }
 
-            if (ticksExisted > 130 && world.isRemote && ticksExisted % 2 == 0) {
+            if (tickCount > 130 && level.isClientSide && tickCount % 2 == 0) {
                 shakeScreen();
             }
         }
 
-        if (ticksExisted == 700 && !world.isRemote) {
+        if (tickCount == 700 && !level.isClientSide) {
 //            BCEffectHandler.spawnFX(DEParticles.CHAOS_IMPLOSION, world, pos, pos, 1024D, 5);
-            ProcessHandler.addProcess(new ProcessChaosImplosion(world, (int) getPosX(), (int) getPosY(), (int) getPosZ()));
+            ProcessHandler.addProcess(new ProcessChaosImplosion(level, (int) getX(), (int) getY(), (int) getZ()));
         }
 
-        if (ticksExisted > 720) {
+        if (tickCount > 720) {
             remove();
         }
     }
 
 
     private void shakeScreen() {
-        double intensity = (ticksExisted - 130) / 100D;
+        double intensity = (tickCount - 130) / 100D;
         if (intensity > 1D) intensity = 1D;
 
-        @SuppressWarnings("unchecked") List<PlayerEntity> players = world.getEntitiesWithinAABB(PlayerEntity.class, getBoundingBox().grow(200, 200, 200));
+        @SuppressWarnings("unchecked") List<PlayerEntity> players = level.getEntitiesOfClass(PlayerEntity.class, getBoundingBox().inflate(200, 200, 200));
 
         for (PlayerEntity player : players) {
-            double x = (rand.nextDouble() - 0.5) * 2 * intensity;
-            double z = (rand.nextDouble() - 0.5) * 2 * intensity;
+            double x = (random.nextDouble() - 0.5) * 2 * intensity;
+            double z = (random.nextDouble() - 0.5) * 2 * intensity;
             player.move(MoverType.SELF, new Vector3d(x / 5D, 0, z / 5D));
-            player.rotationYaw -= x * 2;
-            player.rotationPitch -= z * 2;
+            player.yRot -= x * 2;
+            player.xRot -= z * 2;
         }
     }
 
     @Override
-    protected void readAdditional(CompoundNBT compound) {
+    protected void readAdditionalSaveData(CompoundNBT compound) {
 
     }
 
     @Override
-    protected void writeAdditional(CompoundNBT compound) {
+    protected void addAdditionalSaveData(CompoundNBT compound) {
 
     }
 }

@@ -31,14 +31,14 @@ public class CrystalBinder extends Item implements ICrystalBinder {
 
     @Override
     public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
-        BlockState state = context.getWorld().getBlockState(context.getPos());
-        World world = context.getWorld();
-        BlockPos pos = context.getPos();
+        BlockState state = context.getLevel().getBlockState(context.getClickedPos());
+        World world = context.getLevel();
+        BlockPos pos = context.getClickedPos();
 
         BlockState rotated = state.rotate(world, pos, Rotation.CLOCKWISE_90);
         if (!rotated.equals(state)) {
-            world.setBlockState(pos, rotated);
-            return world.isRemote ? ActionResultType.PASS : ActionResultType.SUCCESS;
+            world.setBlockAndUpdate(pos, rotated);
+            return world.isClientSide ? ActionResultType.PASS : ActionResultType.SUCCESS;
         }
 
         return ActionResultType.PASS;

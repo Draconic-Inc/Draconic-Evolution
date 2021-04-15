@@ -17,7 +17,7 @@ import net.minecraft.util.math.vector.Quaternion;
  */
 public class RenderTileECStabilizer extends TileEntityRenderer<TileEnergyCoreStabilizer> {
 
-    private static final RenderType modelType = RenderType.getEntitySolid(new ResourceLocation(DraconicEvolution.MODID, "textures/block/stabilizer_large.png"));
+    private static final RenderType modelType = RenderType.entitySolid(new ResourceLocation(DraconicEvolution.MODID, "textures/block/stabilizer_large.png"));
     private final ModelLargeECStabilizer model;
 
     public RenderTileECStabilizer(TileEntityRendererDispatcher rendererDispatcherIn) {
@@ -33,18 +33,18 @@ public class RenderTileECStabilizer extends TileEntityRenderer<TileEnergyCoreSta
         if (tile.isCoreActive.get()) {
             facing = tile.coreDirection.get();
         } else {
-            facing = Direction.getFacingFromAxis(Direction.AxisDirection.POSITIVE, tile.multiBlockAxis.get());
+            facing = Direction.get(Direction.AxisDirection.POSITIVE, tile.multiBlockAxis.get());
         }
 
-        matrixStack.push();
+        matrixStack.pushPose();
         matrixStack.translate(0.5, 0.5, 0.5);
         if (facing.getAxis() == Direction.Axis.X || facing.getAxis() == Direction.Axis.Y) {
-            matrixStack.rotate(new Quaternion(facing.getYOffset() * 90, facing.getXOffset() * -90, 0, true));
+            matrixStack.mulPose(new Quaternion(facing.getStepY() * 90, facing.getStepX() * -90, 0, true));
         } else if (facing == Direction.SOUTH) {
-            matrixStack.rotate(new Quaternion(0, 180F, 0, true));
+            matrixStack.mulPose(new Quaternion(0, 180F, 0, true));
         }
-        matrixStack.rotate(new Quaternion(0, 0F, tile.rotation + (tile.isCoreActive.get() ? partialTicks : 0), true));
-        model.render(matrixStack, getter.getBuffer(modelType), packedLightIn, packedOverlayIn, 1, 1, 1, 1);
-        matrixStack.pop();
+        matrixStack.mulPose(new Quaternion(0, 0F, tile.rotation + (tile.isCoreActive.get() ? partialTicks : 0), true));
+        model.renderToBuffer(matrixStack, getter.getBuffer(modelType), packedLightIn, packedOverlayIn, 1, 1, 1, 1);
+        matrixStack.popPose();
     }
 }

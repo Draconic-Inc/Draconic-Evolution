@@ -68,8 +68,8 @@ public class StabilizedSpawner extends BlockBCore {
 
 
     @Override
-    public void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
-        super.onReplaced(state, worldIn, pos, newState, isMoving);
+    public void onRemove(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
+        super.onRemove(state, worldIn, pos, newState, isMoving);
     }
 
     public void setStackData(ItemStack stack, String entityString, TileStabilizedSpawner.SpawnerTier tier) {
@@ -78,9 +78,9 @@ public class StabilizedSpawner extends BlockBCore {
     }
 
     public void setStackDataTier(ItemStack stack, TileStabilizedSpawner.SpawnerTier tier) {
-        CompoundNBT managedData = stack.getOrCreateChildTag(BlockBCore.BC_TILE_DATA_TAG).getCompound(BlockBCore.BC_MANAGED_DATA_FLAG);
+        CompoundNBT managedData = stack.getOrCreateTagElement(BlockBCore.BC_TILE_DATA_TAG).getCompound(BlockBCore.BC_MANAGED_DATA_FLAG);
         managedData.putByte("spawner_tier", (byte) tier.ordinal());
-        stack.getOrCreateChildTag(BlockBCore.BC_TILE_DATA_TAG).put(BlockBCore.BC_MANAGED_DATA_FLAG, managedData);
+        stack.getOrCreateTagElement(BlockBCore.BC_TILE_DATA_TAG).put(BlockBCore.BC_MANAGED_DATA_FLAG, managedData);
     }
 
     //TODO
@@ -88,10 +88,10 @@ public class StabilizedSpawner extends BlockBCore {
         if (entityString != null) {
             ItemStack soul = new ItemStack(DEContent.mob_soul);
             DEContent.mob_soul.setEntity(MobSoul.getCachedRegName(entityString), soul);
-            CompoundNBT managedData = stack.getOrCreateChildTag(BlockBCore.BC_TILE_DATA_TAG).getCompound(BlockBCore.BC_MANAGED_DATA_FLAG);
-            stack.getOrCreateChildTag(BlockBCore.BC_TILE_DATA_TAG).getCompound(BlockBCore.BC_MANAGED_DATA_FLAG);
+            CompoundNBT managedData = stack.getOrCreateTagElement(BlockBCore.BC_TILE_DATA_TAG).getCompound(BlockBCore.BC_MANAGED_DATA_FLAG);
+            stack.getOrCreateTagElement(BlockBCore.BC_TILE_DATA_TAG).getCompound(BlockBCore.BC_MANAGED_DATA_FLAG);
             managedData.put("mob_soul", soul.serializeNBT());
-            stack.getOrCreateChildTag(BlockBCore.BC_TILE_DATA_TAG).put(BlockBCore.BC_MANAGED_DATA_FLAG, managedData);
+            stack.getOrCreateTagElement(BlockBCore.BC_TILE_DATA_TAG).put(BlockBCore.BC_MANAGED_DATA_FLAG, managedData);
         }
     }
 

@@ -136,7 +136,7 @@ public class InvJunkFilter implements IItemHandlerModifiable {
         for (ItemStack stack : stacks) {
             if (stack != null && stack.getCount() > 0) {
                 CompoundNBT tag = new CompoundNBT();
-                stack.write(tag);
+                stack.save(tag);
                 list.add(tag);
             }
         }
@@ -155,7 +155,7 @@ public class InvJunkFilter implements IItemHandlerModifiable {
         stacks.clear();
 
         for (int i = 0; i < list.size(); i++) {
-            stacks.add(ItemStack.read(list.getCompound(i)));
+            stacks.add(ItemStack.of(list.getCompound(i)));
         }
     }
 }

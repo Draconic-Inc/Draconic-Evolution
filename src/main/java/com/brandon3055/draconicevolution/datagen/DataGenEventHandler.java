@@ -53,29 +53,29 @@ public class DataGenEventHandler {
         }
 
         @Override
-        protected void registerTags() {
-            getOrCreateBuilder(DETags.Items.DUSTS_DRACONIUM).add(DEContent.dust_draconium);
-            getOrCreateBuilder(DETags.Items.DUSTS_DRACONIUM_AWAKENED).add(DEContent.dust_draconium_awakened);
-            getOrCreateBuilder(Tags.Items.DUSTS).addTags(DETags.Items.DUSTS_DRACONIUM_AWAKENED, DETags.Items.DUSTS_DRACONIUM);
+        protected void addTags() {
+            tag(DETags.Items.DUSTS_DRACONIUM).add(DEContent.dust_draconium);
+            tag(DETags.Items.DUSTS_DRACONIUM_AWAKENED).add(DEContent.dust_draconium_awakened);
+            tag(Tags.Items.DUSTS).addTags(DETags.Items.DUSTS_DRACONIUM_AWAKENED, DETags.Items.DUSTS_DRACONIUM);
 
-            getOrCreateBuilder(DETags.Items.NUGGETS_DRACONIUM).add(DEContent.nugget_draconium);
-            getOrCreateBuilder(DETags.Items.NUGGETS_DRACONIUM_AWAKENED).add(DEContent.nugget_draconium_awakened);
-            getOrCreateBuilder(Tags.Items.NUGGETS).addTags(DETags.Items.NUGGETS_DRACONIUM_AWAKENED, DETags.Items.NUGGETS_DRACONIUM);
+            tag(DETags.Items.NUGGETS_DRACONIUM).add(DEContent.nugget_draconium);
+            tag(DETags.Items.NUGGETS_DRACONIUM_AWAKENED).add(DEContent.nugget_draconium_awakened);
+            tag(Tags.Items.NUGGETS).addTags(DETags.Items.NUGGETS_DRACONIUM_AWAKENED, DETags.Items.NUGGETS_DRACONIUM);
 
-            getOrCreateBuilder(DETags.Items.INGOTS_DRACONIUM).add(DEContent.ingot_draconium);
-            getOrCreateBuilder(DETags.Items.INGOTS_DRACONIUM_AWAKENED).add(DEContent.ingot_draconium_awakened);
-            getOrCreateBuilder(Tags.Items.INGOTS).addTags(DETags.Items.INGOTS_DRACONIUM_AWAKENED, DETags.Items.INGOTS_DRACONIUM);
+            tag(DETags.Items.INGOTS_DRACONIUM).add(DEContent.ingot_draconium);
+            tag(DETags.Items.INGOTS_DRACONIUM_AWAKENED).add(DEContent.ingot_draconium_awakened);
+            tag(Tags.Items.INGOTS).addTags(DETags.Items.INGOTS_DRACONIUM_AWAKENED, DETags.Items.INGOTS_DRACONIUM);
 
 
-            getOrCreateBuilder(DETags.Items.STORAGE_BLOCKS_DRACONIUM).add(DEContent.block_draconium.asItem());
-            getOrCreateBuilder(DETags.Items.STORAGE_BLOCKS_DRACONIUM_AWAKENED).add(DEContent.block_draconium_awakened.asItem());
-            getOrCreateBuilder(Tags.Items.STORAGE_BLOCKS).addTags(DETags.Items.STORAGE_BLOCKS_DRACONIUM, DETags.Items.STORAGE_BLOCKS_DRACONIUM_AWAKENED);
+            tag(DETags.Items.STORAGE_BLOCKS_DRACONIUM).add(DEContent.block_draconium.asItem());
+            tag(DETags.Items.STORAGE_BLOCKS_DRACONIUM_AWAKENED).add(DEContent.block_draconium_awakened.asItem());
+            tag(Tags.Items.STORAGE_BLOCKS).addTags(DETags.Items.STORAGE_BLOCKS_DRACONIUM, DETags.Items.STORAGE_BLOCKS_DRACONIUM_AWAKENED);
 
-            getOrCreateBuilder(DETags.Items.ORES_DRACONIUM).add(DEContent.ore_draconium_end.asItem(), DEContent.ore_draconium_nether.asItem(), DEContent.ore_draconium_overworld.asItem());
-            getOrCreateBuilder(Tags.Items.ORES).addTag(DETags.Items.ORES_DRACONIUM);
+            tag(DETags.Items.ORES_DRACONIUM).add(DEContent.ore_draconium_end.asItem(), DEContent.ore_draconium_nether.asItem(), DEContent.ore_draconium_overworld.asItem());
+            tag(Tags.Items.ORES).addTag(DETags.Items.ORES_DRACONIUM);
 
             if (ModList.get().isLoaded("curios")) {
-                CuriosIntegration.generateTags(this::getOrCreateBuilder);
+                CuriosIntegration.generateTags(this::tag);
             }
         }
     }
@@ -86,13 +86,13 @@ public class DataGenEventHandler {
         }
 
         @Override
-        protected void registerTags() {
-            getOrCreateBuilder(DETags.Blocks.STORAGE_BLOCKS_DRACONIUM).add(DEContent.block_draconium);
-            getOrCreateBuilder(DETags.Blocks.STORAGE_BLOCKS_DRACONIUM_AWAKENED).add(DEContent.block_draconium_awakened);
-            getOrCreateBuilder(Tags.Blocks.STORAGE_BLOCKS).add(DEContent.block_draconium, DEContent.block_draconium_awakened);
+        protected void addTags() {
+            tag(DETags.Blocks.STORAGE_BLOCKS_DRACONIUM).add(DEContent.block_draconium);
+            tag(DETags.Blocks.STORAGE_BLOCKS_DRACONIUM_AWAKENED).add(DEContent.block_draconium_awakened);
+            tag(Tags.Blocks.STORAGE_BLOCKS).add(DEContent.block_draconium, DEContent.block_draconium_awakened);
 
-            getOrCreateBuilder(DETags.Blocks.ORES_DRACONIUM).add(DEContent.ore_draconium_end, DEContent.ore_draconium_nether, DEContent.ore_draconium_overworld);
-            getOrCreateBuilder(Tags.Blocks.ORES).add(DEContent.ore_draconium_end, DEContent.ore_draconium_nether, DEContent.ore_draconium_overworld);
+            tag(DETags.Blocks.ORES_DRACONIUM).add(DEContent.ore_draconium_end, DEContent.ore_draconium_nether, DEContent.ore_draconium_overworld);
+            tag(Tags.Blocks.ORES).add(DEContent.ore_draconium_end, DEContent.ore_draconium_nether, DEContent.ore_draconium_overworld);
         }
     }
 
@@ -114,7 +114,7 @@ public class DataGenEventHandler {
         }
 
         @Override
-        public void act(DirectoryCache cache) throws IOException {
+        public void run(DirectoryCache cache) throws IOException {
             Path path = this.generator.getOutputFolder();
             Set<ResourceLocation> set = Sets.newHashSet();
             Consumer<Advancement> consumer = (advancement) -> {
@@ -124,7 +124,7 @@ public class DataGenEventHandler {
                     Path path1 = makePath(advancement.getId());
 
                     try {
-                        IDataProvider.save(GSON, cache, advancement.copy().serialize(), path1);
+                        IDataProvider.save(GSON, cache, advancement.deconstruct().serializeToJson(), path1);
                     } catch (IOException ioexception) {
                         DraconicEvolution.LOGGER.error("Couldn't save advancement {}", path1, ioexception);
                     }

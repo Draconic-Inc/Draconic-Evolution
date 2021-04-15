@@ -23,21 +23,21 @@ public class FlamingSittingPhase extends SittingPhase {
       ++this.flameTicks;
       if (this.flameTicks % 2 == 0 && this.flameTicks < 10) {
          Vector3d vector3d = this.guardian.getHeadLookVec(1.0F).normalize();
-         vector3d.rotateYaw((-(float)Math.PI / 4F));
-         double d0 = this.guardian.dragonPartHead.getPosX();
-         double d1 = this.guardian.dragonPartHead.getPosYHeight(0.5D);
-         double d2 = this.guardian.dragonPartHead.getPosZ();
+         vector3d.yRot((-(float)Math.PI / 4F));
+         double d0 = this.guardian.dragonPartHead.getX();
+         double d1 = this.guardian.dragonPartHead.getY(0.5D);
+         double d2 = this.guardian.dragonPartHead.getZ();
 
          for(int i = 0; i < 8; ++i) {
-            double d3 = d0 + this.guardian.getRNG().nextGaussian() / 2.0D;
-            double d4 = d1 + this.guardian.getRNG().nextGaussian() / 2.0D;
-            double d5 = d2 + this.guardian.getRNG().nextGaussian() / 2.0D;
+            double d3 = d0 + this.guardian.getRandom().nextGaussian() / 2.0D;
+            double d4 = d1 + this.guardian.getRandom().nextGaussian() / 2.0D;
+            double d5 = d2 + this.guardian.getRandom().nextGaussian() / 2.0D;
 
             for(int j = 0; j < 6; ++j) {
-               this.guardian.world.addParticle(ParticleTypes.DRAGON_BREATH, d3, d4, d5, -vector3d.x * (double)0.08F * (double)j, -vector3d.y * (double)0.6F, -vector3d.z * (double)0.08F * (double)j);
+               this.guardian.level.addParticle(ParticleTypes.DRAGON_BREATH, d3, d4, d5, -vector3d.x * (double)0.08F * (double)j, -vector3d.y * (double)0.6F, -vector3d.z * (double)0.08F * (double)j);
             }
 
-            vector3d.rotateYaw(0.19634955F);
+            vector3d.yRot(0.19634955F);
          }
       }
 
@@ -52,32 +52,32 @@ public class FlamingSittingPhase extends SittingPhase {
             this.guardian.getPhaseManager().setPhase(PhaseType.SITTING_SCANNING);
          }
       } else if (this.flameTicks == 10) {
-         Vector3d vector3d = (new Vector3d(this.guardian.dragonPartHead.getPosX() - this.guardian.getPosX(), 0.0D, this.guardian.dragonPartHead.getPosZ() - this.guardian.getPosZ())).normalize();
+         Vector3d vector3d = (new Vector3d(this.guardian.dragonPartHead.getX() - this.guardian.getX(), 0.0D, this.guardian.dragonPartHead.getZ() - this.guardian.getZ())).normalize();
          float f = 5.0F;
-         double d0 = this.guardian.dragonPartHead.getPosX() + vector3d.x * 5.0D / 2.0D;
-         double d1 = this.guardian.dragonPartHead.getPosZ() + vector3d.z * 5.0D / 2.0D;
-         double d2 = this.guardian.dragonPartHead.getPosYHeight(0.5D);
+         double d0 = this.guardian.dragonPartHead.getX() + vector3d.x * 5.0D / 2.0D;
+         double d1 = this.guardian.dragonPartHead.getZ() + vector3d.z * 5.0D / 2.0D;
+         double d2 = this.guardian.dragonPartHead.getY(0.5D);
          double d3 = d2;
          BlockPos.Mutable blockpos$mutable = new BlockPos.Mutable(d0, d2, d1);
 
-         while(this.guardian.world.isAirBlock(blockpos$mutable)) {
+         while(this.guardian.level.isEmptyBlock(blockpos$mutable)) {
             --d3;
             if (d3 < 0.0D) {
                d3 = d2;
                break;
             }
 
-            blockpos$mutable.setPos(d0, d3, d1);
+            blockpos$mutable.set(d0, d3, d1);
          }
 
          d3 = (double)(MathHelper.floor(d3) + 1);
-         this.areaEffectCloud = new AreaEffectCloudEntity(this.guardian.world, d0, d3, d1);
+         this.areaEffectCloud = new AreaEffectCloudEntity(this.guardian.level, d0, d3, d1);
          this.areaEffectCloud.setOwner(this.guardian);
          this.areaEffectCloud.setRadius(5.0F);
          this.areaEffectCloud.setDuration(200);
-         this.areaEffectCloud.setParticleData(ParticleTypes.DRAGON_BREATH);
-         this.areaEffectCloud.addEffect(new EffectInstance(Effects.INSTANT_DAMAGE));
-         this.guardian.world.addEntity(this.areaEffectCloud);
+         this.areaEffectCloud.setParticle(ParticleTypes.DRAGON_BREATH);
+         this.areaEffectCloud.addEffect(new EffectInstance(Effects.HARM));
+         this.guardian.level.addFreshEntity(this.areaEffectCloud);
       }
 
    }

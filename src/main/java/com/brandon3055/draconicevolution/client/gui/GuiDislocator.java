@@ -105,7 +105,7 @@ public class GuiDislocator extends ModularGuiScreen {
                         TextFormatting.GOLD + "X: " + (int) getTarget().getX(),
                         TextFormatting.GOLD + "Y: " + (int) getTarget().getY(),
                         TextFormatting.GOLD + "Z: " + (int) getTarget().getY(),
-                        TextFormatting.GOLD + (hasShiftDown() ? getTarget().getDimension().getLocation().toString() : getTarget().getDimension().getLocation().getPath())});
+                        TextFormatting.GOLD + (hasShiftDown() ? getTarget().getDimension().location().toString() : getTarget().getDimension().location().getPath())});
 
         GuiLabel xLabel = infoBG.addChild(new GuiLabel().setAlignment(GuiAlign.LEFT).setShadowStateSupplier(() -> BCConfig.darkMode))
                 .setDisplaySupplier(() -> "X: " + (int) getTarget().getX())
@@ -132,7 +132,7 @@ public class GuiDislocator extends ModularGuiScreen {
                 .setEnabledCallback(() -> selectedIndex >= 0 && selectedIndex < targetList.size());
 
         GuiLabel dimLabel = infoBG.addChild(new GuiLabel().setAlignment(GuiAlign.LEFT).setShadowStateSupplier(() -> BCConfig.darkMode))
-                .setDisplaySupplier(() -> getTarget().getDimension().getLocation().getPath())
+                .setDisplaySupplier(() -> getTarget().getDimension().location().getPath())
                 .setPos(infoBG.xPos() + 2, zLabel.maxYPos() + 2)
                 .setYSize(8)
                 .setTextColGetter(GuiToolkit.Palette.Slot::text)
@@ -247,7 +247,7 @@ public class GuiDislocator extends ModularGuiScreen {
     }
 
     private void addNew(int mode) {
-        String tempName = (int) player.getPosX() + " " + (int) player.getPosY() + " " + (int) player.getPosZ();
+        String tempName = (int) player.getX() + " " + (int) player.getY() + " " + (int) player.getZ();
         lastAdded = mode == 0 ? selectedIndex + 1 : mode == 1 ? 0 : targetList.size();
         DraconicNetwork.sendDislocatorMessage(0, output -> output.writeByte(mode).writeVarInt(lastAdded).writeString(tempName));
     }
@@ -255,7 +255,7 @@ public class GuiDislocator extends ModularGuiScreen {
     private void detectChanges() {
         ItemStack stack = DislocatorAdvanced.findDislocator(player);
         if (stack.isEmpty() || !player.isAlive()) {
-            closeScreen();
+            onClose();
             return;
         }
 
@@ -379,7 +379,7 @@ public class GuiDislocator extends ModularGuiScreen {
             //Teleport on right click
             if (mouseOver && button == 1) {
                 DraconicNetwork.sendDislocatorMessage(8, e -> e.writeVarInt(index));
-                closeScreen();
+                onClose();
                 return true;
             } else if (mouseOver && button == 0 && !getTarget().isLocked()) {
                 //Edit name on double click
@@ -437,13 +437,13 @@ public class GuiDislocator extends ModularGuiScreen {
 
             RenderMaterial mat = DESprites.get("dislocator/slot");
             RenderMaterial matSelect = DESprites.get("dislocator/slot_selected");
-            IRenderTypeBuffer.Impl getter = minecraft.getRenderTypeBuffers().getBufferSource();
-            drawSprite(getter.getBuffer(BCSprites.GUI_TEX_TYPE), xPos(), yPos(), (selected ? matSelect : mat).getSprite());
+            IRenderTypeBuffer.Impl getter = minecraft.renderBuffers().bufferSource();
+            drawSprite(getter.getBuffer(BCSprites.GUI_TEX_TYPE), xPos(), yPos(), (selected ? matSelect : mat).sprite());
             if ((hovered && !selected)) {
-                getter.finish();
-                drawSprite(getter.getBuffer(BCSprites.GUI_TEX_TYPE), xPos(), yPos(), matSelect.getSprite(), 0x30FFFFFF);
+                getter.endBatch();
+                drawSprite(getter.getBuffer(BCSprites.GUI_TEX_TYPE), xPos(), yPos(), matSelect.sprite(), 0x30FFFFFF);
             }
-            getter.finish();
+            getter.endBatch();
             super.renderElement(minecraft, mouseX, mouseY, partialTicks);
 
             if (lock.isMouseOver(mouseX, mouseY) || (delete.isEnabled() && delete.isMouseOver(mouseX, mouseY))) {
@@ -455,17 +455,17 @@ public class GuiDislocator extends ModularGuiScreen {
         public boolean renderOverlayLayer(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
             if (dragging) {
                 int yPos = MathHelper.clip(mouseY - 6, getParent().yPos(), getParent().maxYPos() - 12);
-                IRenderTypeBuffer.Impl getter = minecraft.getRenderTypeBuffers().getBufferSource();
+                IRenderTypeBuffer.Impl getter = minecraft.renderBuffers().bufferSource();
 
                 TargetElement hovered = getHovered(mouseX, mouseY);
                 if (hovered != null) {
                     int y = mouseY > hovered.yPos() + (hovered.ySize() / 2) ? hovered.maxYPos() : hovered.yPos() - 1;
                     drawColouredRect(getter, xPos(), y, xSize(), 3, 0x6000FF00);
-                    getter.finish();
+                    getter.endBatch();
                 }
 
-                drawSprite(getter.getBuffer(BCSprites.GUI_TEX_TYPE), xPos(), yPos, DESprites.get("dislocator/slot_selected").getSprite(), 0x60FFFFFF);
-                getter.finish();
+                drawSprite(getter.getBuffer(BCSprites.GUI_TEX_TYPE), xPos(), yPos, DESprites.get("dislocator/slot_selected").sprite(), 0x60FFFFFF);
+                getter.endBatch();
 
 
                 return true;

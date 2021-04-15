@@ -20,12 +20,12 @@ import net.minecraft.world.IBlockReader;
  */
 public class ChaosShardAtmos extends BlockBCore {
     public ChaosShardAtmos() {
-        super(Properties.create(Material.AIR).tickRandomly().doesNotBlockMovement());
+        super(Properties.of(Material.AIR).randomTicks().noCollission());
 
     }
 
     @Override
-    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {}
+    public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> items) {}
 
 //    @Override
 //    public void updateTick(World world, BlockPos pos, BlockState state, Random rand) {
@@ -63,7 +63,7 @@ public class ChaosShardAtmos extends BlockBCore {
 
 
     @Override
-    public BlockRenderType getRenderType(BlockState state) {
+    public BlockRenderType getRenderShape(BlockState state) {
         return BlockRenderType.INVISIBLE;
     }
 
@@ -78,7 +78,7 @@ public class ChaosShardAtmos extends BlockBCore {
     }
 
     @Override
-    public boolean isReplaceable(BlockState state, BlockItemUseContext useContext) {
+    public boolean canBeReplaced(BlockState state, BlockItemUseContext useContext) {
         return true;
     }
 

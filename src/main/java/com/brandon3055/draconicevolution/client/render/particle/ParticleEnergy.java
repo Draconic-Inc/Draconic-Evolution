@@ -22,8 +22,8 @@ public class ParticleEnergy extends SpriteTexturedParticle {
         super(world, xPos, yPos, zPos);
         this.targetPos = targetPos;
         this.spriteSet = spriteSet;
-        setSprite(spriteSet.get(world.rand));
-        canCollide = false;
+        setSprite(spriteSet.get(world.random));
+        hasPhysics = false;
     }
 
     @Override
@@ -50,20 +50,20 @@ public class ParticleEnergy extends SpriteTexturedParticle {
 
     @Override
     public void tick() {
-        this.prevPosX = this.posX;
-        this.prevPosY = this.posY;
-        this.prevPosZ = this.posZ;
-        setSprite(spriteSet.get(world.rand));
+        this.xo = this.x;
+        this.yo = this.y;
+        this.zo = this.z;
+        setSprite(spriteSet.get(level.random));
 
-        Vec3D dir = Vec3D.getDirectionVec(new Vec3D(posX, posY, posZ), targetPos);
+        Vec3D dir = Vec3D.getDirectionVec(new Vec3D(x, y, z), targetPos);
         double speed = 0.5D;
-        motionX = dir.x * speed;
-        motionY = dir.y * speed;
-        motionZ = dir.z * speed;
-        this.move(this.motionX, this.motionY, this.motionZ);
+        xd = dir.x * speed;
+        yd = dir.y * speed;
+        zd = dir.z * speed;
+        this.move(this.xd, this.yd, this.zd);
 
-        if (age++ > maxAge || Utils.getDistanceAtoB(posX, posY, posZ, targetPos.x, targetPos.y, targetPos.z) < 0.5) {
-            setExpired();
+        if (age++ > lifetime || Utils.getDistanceAtoB(x, y, z, targetPos.x, targetPos.y, targetPos.z) < 0.5) {
+            remove();
         }
     }
 
@@ -119,7 +119,7 @@ public class ParticleEnergy extends SpriteTexturedParticle {
         }
 
         @Override
-        public Particle makeParticle(IntParticleType.IntParticleData data, ClientWorld world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public Particle createParticle(IntParticleType.IntParticleData data, ClientWorld world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
             ParticleEnergy particleEnergy = new ParticleEnergy(world, x, y, z, new Vec3D(xSpeed, ySpeed, zSpeed), spriteSet);
 
             if (data.get().length >= 3) {
@@ -127,7 +127,7 @@ public class ParticleEnergy extends SpriteTexturedParticle {
             }
 
             if (data.get().length >= 4) {
-                particleEnergy.multiplyParticleScaleBy(data.get()[3] / 100F);
+                particleEnergy.scale(data.get()[3] / 100F);
             }
 
             return particleEnergy;

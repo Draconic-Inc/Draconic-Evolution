@@ -18,9 +18,11 @@ import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.IPacket;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.network.datasync.IDataSerializer;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Potion;
@@ -38,9 +40,24 @@ import net.minecraftforge.fml.network.NetworkHooks;
  * But on top of that it has support for all my custom damage and effects.
  */
 public class DraconicProjectileEntity extends AbstractArrowEntity {
-    private static final DataParameter<Integer> COLOR = EntityDataManager.createKey(DraconicProjectileEntity.class, DataSerializers.VARINT);
-    private static final DataParameter<Boolean> ENERGY_PROJECTILE = EntityDataManager.createKey(DraconicProjectileEntity.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Optional<Module<?>>> DAMAGE_MODIFIER = EntityDataManager.createKey(DraconicProjectileEntity.class, DEModules.OPTIONAL_SERIALIZER);
+    private static final IDataSerializer<Optional<Module<?>>> OPTIONAL_SERIALIZER = new IDataSerializer<Optional<Module<?>>>() {
+        public void write(PacketBuffer buf, Optional<Module<?>> value) {
+            buf.writeBoolean(value.isPresent());
+            value.ifPresent(module -> buf.writeResourceLocation(module.getRegistryName()));
+        }
+
+        public Optional<Module<?>> read(PacketBuffer buf) {
+            Module<?> module = DEModules.MODULE_REGISTRY.getValue(buf.readResourceLocation());
+            return !buf.readBoolean() || module == null ? Optional.empty() : Optional.of(module);
+        }
+
+        public Optional<Module<?>> copy(Optional<Module<?>> value) {
+            return value;
+        }
+    };
+    private static final DataParameter<Integer> COLOR = EntityDataManager.defineId(DraconicProjectileEntity.class, DataSerializers.INT);
+    private static final DataParameter<Boolean> ENERGY_PROJECTILE = EntityDataManager.defineId(DraconicProjectileEntity.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Optional<Module<?>>> DAMAGE_MODIFIER = EntityDataManager.defineId(DraconicProjectileEntity.class, OPTIONAL_SERIALIZER);
     private Potion potion = Potions.EMPTY;
     private final Set<EffectInstance> customPotionEffects = Sets.newHashSet();
     private boolean fixedColor;
@@ -60,8 +77,8 @@ public class DraconicProjectileEntity extends AbstractArrowEntity {
 
     public void setPotionEffect(ItemStack stack) {
         if (stack.getItem() == Items.TIPPED_ARROW) {
-            this.potion = PotionUtils.getPotionFromItem(stack);
-            Collection<EffectInstance> collection = PotionUtils.getFullEffectsFromItem(stack);
+            this.potion = PotionUtils.getPotion(stack);
+            Collection<EffectInstance> collection = PotionUtils.getCustomEffects(stack);
             if (!collection.isEmpty()) {
                 for (EffectInstance effectinstance : collection) {
                     this.customPotionEffects.add(new EffectInstance(effectinstance));
@@ -77,14 +94,14 @@ public class DraconicProjectileEntity extends AbstractArrowEntity {
         } else if (stack.getItem() == Items.ARROW) {
             this.potion = Potions.EMPTY;
             this.customPotionEffects.clear();
-            this.dataManager.set(COLOR, -1);
+            this.entityData.set(COLOR, -1);
         }
 
     }
 
     @Override
-    public boolean attackEntityFrom(DamageSource source, float amount) {
-        return super.attackEntityFrom(source, amount);
+    public boolean hurt(DamageSource source, float amount) {
+        return super.hurt(source, amount);
     }
 
     public static int getCustomColor(ItemStack colour) {
@@ -95,41 +112,41 @@ public class DraconicProjectileEntity extends AbstractArrowEntity {
     private void refreshColor() {
         this.fixedColor = false;
         if (this.potion == Potions.EMPTY && this.customPotionEffects.isEmpty()) {
-            this.dataManager.set(COLOR, -1);
+            this.entityData.set(COLOR, -1);
         } else {
-            this.dataManager.set(COLOR, PotionUtils.getPotionColorFromEffectList(PotionUtils.mergeEffects(this.potion, this.customPotionEffects)));
+            this.entityData.set(COLOR, PotionUtils.getColor(PotionUtils.getAllEffects(this.potion, this.customPotionEffects)));
         }
     }
 
     public void addEffect(EffectInstance effect) {
         this.customPotionEffects.add(effect);
-        this.getDataManager().set(COLOR, PotionUtils.getPotionColorFromEffectList(PotionUtils.mergeEffects(this.potion, this.customPotionEffects)));
+        this.getEntityData().set(COLOR, PotionUtils.getColor(PotionUtils.getAllEffects(this.potion, this.customPotionEffects)));
     }
 
-    protected void registerData() {
-        super.registerData();
-        this.dataManager.register(COLOR, -1);
-        this.dataManager.register(ENERGY_PROJECTILE, false);
-        this.dataManager.register(DAMAGE_MODIFIER, Optional.empty());
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(COLOR, -1);
+        this.entityData.define(ENERGY_PROJECTILE, false);
+        this.entityData.define(DAMAGE_MODIFIER, Optional.empty());
     }
 
     public void tick() {
         setNoGravity(true);
-        ticksExisted = 0;
+        tickCount = 0;
         super.tick();
-        if (this.world.isRemote) {
+        if (this.level.isClientSide) {
             if (this.inGround) {
-                if (this.timeInGround % 5 == 0) {
+                if (this.inGroundTime % 5 == 0) {
                     this.spawnPotionParticles(1);
                 }
             } else {
                 this.spawnPotionParticles(2);
             }
-        } else if (this.inGround && this.timeInGround != 0 && !this.customPotionEffects.isEmpty() && this.timeInGround >= 600) {
-            this.world.setEntityState(this, (byte) 0);
+        } else if (this.inGround && this.inGroundTime != 0 && !this.customPotionEffects.isEmpty() && this.inGroundTime >= 600) {
+            this.level.broadcastEntityEvent(this, (byte) 0);
             this.potion = Potions.EMPTY;
             this.customPotionEffects.clear();
-            this.dataManager.set(COLOR, -1);
+            this.entityData.set(COLOR, -1);
         }
 
     }
@@ -142,23 +159,23 @@ public class DraconicProjectileEntity extends AbstractArrowEntity {
             double d2 = (double) (i >> 0 & 255) / 255.0D;
 
             for (int j = 0; j < particleCount; ++j) {
-                this.world.addParticle(ParticleTypes.ENTITY_EFFECT, this.getPosXRandom(0.5D), this.getPosYRandom(), this.getPosZRandom(0.5D), d0, d1, d2);
+                this.level.addParticle(ParticleTypes.ENTITY_EFFECT, this.getRandomX(0.5D), this.getRandomY(), this.getRandomZ(0.5D), d0, d1, d2);
             }
 
         }
     }
 
     public int getColor() {
-        return this.dataManager.get(COLOR);
+        return this.entityData.get(COLOR);
     }
 
     private void setFixedColor(int colour) {
         this.fixedColor = true;
-        this.dataManager.set(COLOR, colour);
+        this.entityData.set(COLOR, colour);
     }
 
-    public void writeAdditional(CompoundNBT compound) {
-        super.writeAdditional(compound);
+    public void addAdditionalSaveData(CompoundNBT compound) {
+        super.addAdditionalSaveData(compound);
         if (this.potion != Potions.EMPTY && this.potion != null) {
             compound.putString("Potion", Registry.POTION.getKey(this.potion).toString());
         }
@@ -171,7 +188,7 @@ public class DraconicProjectileEntity extends AbstractArrowEntity {
             ListNBT listnbt = new ListNBT();
 
             for (EffectInstance effectinstance : this.customPotionEffects) {
-                listnbt.add(effectinstance.write(new CompoundNBT()));
+                listnbt.add(effectinstance.save(new CompoundNBT()));
             }
 
             compound.put("CustomPotionEffects", listnbt);
@@ -179,13 +196,13 @@ public class DraconicProjectileEntity extends AbstractArrowEntity {
 
     }
 
-    public void readAdditional(CompoundNBT compound) {
-        super.readAdditional(compound);
+    public void readAdditionalSaveData(CompoundNBT compound) {
+        super.readAdditionalSaveData(compound);
         if (compound.contains("Potion", 8)) {
-            this.potion = PotionUtils.getPotionTypeFromNBT(compound);
+            this.potion = PotionUtils.getPotion(compound);
         }
 
-        for (EffectInstance effectinstance : PotionUtils.getFullEffectsFromTag(compound)) {
+        for (EffectInstance effectinstance : PotionUtils.getCustomEffects(compound)) {
             this.addEffect(effectinstance);
         }
 
@@ -197,27 +214,27 @@ public class DraconicProjectileEntity extends AbstractArrowEntity {
 
     }
 
-    protected void arrowHit(LivingEntity living) {
-        super.arrowHit(living);
+    protected void doPostHurtEffects(LivingEntity living) {
+        super.doPostHurtEffects(living);
 
         for (EffectInstance effectinstance : this.potion.getEffects()) {
-            living.addPotionEffect(new EffectInstance(effectinstance.getPotion(), Math.max(effectinstance.getDuration() / 8, 1), effectinstance.getAmplifier(), effectinstance.isAmbient(), effectinstance.doesShowParticles()));
+            living.addEffect(new EffectInstance(effectinstance.getEffect(), Math.max(effectinstance.getDuration() / 8, 1), effectinstance.getAmplifier(), effectinstance.isAmbient(), effectinstance.isVisible()));
         }
 
         if (!this.customPotionEffects.isEmpty()) {
             for (EffectInstance effectinstance1 : this.customPotionEffects) {
-                living.addPotionEffect(effectinstance1);
+                living.addEffect(effectinstance1);
             }
         }
     }
 
-    protected ItemStack getArrowStack() {
+    protected ItemStack getPickupItem() {
         if (this.customPotionEffects.isEmpty() && this.potion == Potions.EMPTY) {
             return new ItemStack(Items.ARROW);
         } else {
             ItemStack itemstack = new ItemStack(Items.TIPPED_ARROW);
-            PotionUtils.addPotionToItemStack(itemstack, this.potion);
-            PotionUtils.appendEffects(itemstack, this.customPotionEffects);
+            PotionUtils.setPotion(itemstack, this.potion);
+            PotionUtils.setCustomEffects(itemstack, this.customPotionEffects);
             if (this.fixedColor) {
                 itemstack.getOrCreateTag().putInt("CustomPotionColor", this.getColor());
             }
@@ -227,7 +244,7 @@ public class DraconicProjectileEntity extends AbstractArrowEntity {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void handleStatusUpdate(byte id) {
+    public void handleEntityEvent(byte id) {
         if (id == 0) {
             int i = this.getColor();
             if (i != -1) {
@@ -236,16 +253,16 @@ public class DraconicProjectileEntity extends AbstractArrowEntity {
                 double d2 = (double) (i >> 0 & 255) / 255.0D;
 
                 for (int j = 0; j < 20; ++j) {
-                    this.world.addParticle(ParticleTypes.ENTITY_EFFECT, this.getPosXRandom(0.5D), this.getPosYRandom(), this.getPosZRandom(0.5D), d0, d1, d2);
+                    this.level.addParticle(ParticleTypes.ENTITY_EFFECT, this.getRandomX(0.5D), this.getRandomY(), this.getRandomZ(0.5D), d0, d1, d2);
                 }
             }
         } else {
-            super.handleStatusUpdate(id);
+            super.handleEntityEvent(id);
         }
     }
 
     @Override
-    public IPacket<?> createSpawnPacket() {
+    public IPacket<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 }

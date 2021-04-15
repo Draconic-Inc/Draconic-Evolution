@@ -114,13 +114,13 @@ public interface IModularItem extends IForgeItem {
     @OnlyIn(Dist.CLIENT)
     default void addModularItemInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         if (!Screen.hasShiftDown()) {
-            tooltip.add(new TranslationTextComponent("[Modular Item]").mergeStyle(TextFormatting.BLUE));
+            tooltip.add(new TranslationTextComponent("[Modular Item]").withStyle(TextFormatting.BLUE));
         }
         EnergyUtils.addEnergyInfo(stack, tooltip);
         if (EnergyUtils.isEnergyItem(stack) && EnergyUtils.getMaxEnergyStored(stack) == 0) {
-            tooltip.add(new TranslationTextComponent("modular_item.draconicevolution.requires_energy").mergeStyle(TextFormatting.RED));
-            if (KeyBindings.toolModules != null && KeyBindings.toolModules.func_238171_j_() != null){
-                tooltip.add(new TranslationTextComponent("modular_item.draconicevolution.requires_energy_press", KeyBindings.toolModules.func_238171_j_().getString()).mergeStyle(TextFormatting.BLUE));
+            tooltip.add(new TranslationTextComponent("modular_item.draconicevolution.requires_energy").withStyle(TextFormatting.RED));
+            if (KeyBindings.toolModules != null && KeyBindings.toolModules.getTranslatedKeyMessage() != null){
+                tooltip.add(new TranslationTextComponent("modular_item.draconicevolution.requires_energy_press", KeyBindings.toolModules.getTranslatedKeyMessage().getString()).withStyle(TextFormatting.BLUE));
             }
         }
     }
@@ -151,7 +151,7 @@ public interface IModularItem extends IForgeItem {
      * @return true if this stack is in a valid slot.
      */
     default boolean isEquipped(ItemStack stack, @Nullable EquipmentSlotType slot, boolean inEquipSlot) {
-        if (this instanceof IModularArmor) return (slot != null && slot.getSlotType() == EquipmentSlotType.Group.ARMOR) || inEquipSlot;
+        if (this instanceof IModularArmor) return (slot != null && slot.getType() == EquipmentSlotType.Group.ARMOR) || inEquipSlot;
         return true;
     }
 
@@ -231,7 +231,7 @@ public interface IModularItem extends IForgeItem {
     }
 
     default long extractEnergy(PlayerEntity player, ItemStack stack, long amount) {
-        if (player != null && player.abilities.isCreativeMode) {
+        if (player != null && player.abilities.instabuild) {
             return amount;
         }
         IOPStorage storage = EnergyUtils.getStorage(stack);

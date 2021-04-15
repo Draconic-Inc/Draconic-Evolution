@@ -30,7 +30,7 @@ public class ENetFXHandlerClient<T extends TileEntity & IENetEffectTile> extends
         if (tile.hasStaticFX()) {
             if (staticFX == null || !staticFX.isAlive()) {
                 staticFX = tile.createStaticFX();
-                DEParticles.addParticleDirect(tile.getWorld(), staticFX);
+                DEParticles.addParticleDirect(tile.getLevel(), staticFX);
             }
             staticFX.updateFX(0.5F);
         }
@@ -79,13 +79,13 @@ public class ENetFXHandlerClient<T extends TileEntity & IENetEffectTile> extends
         beamFXList.clear();
 
         for (BlockPos pos : tile.getLinks()) {
-            TileEntity target = tile.getWorld().getTileEntity(pos);
+            TileEntity target = tile.getLevel().getBlockEntity(pos);
             if (!(target instanceof ICrystalLink)) {
                 continue;
             }
-            CrystalFXBeam beam = new CrystalFXBeam(tile.getWorld(), tile, (ICrystalLink) target);
+            CrystalFXBeam beam = new CrystalFXBeam(tile.getLevel(), tile, (ICrystalLink) target);
             beamFXList.add(beam);
-            DEParticles.addParticleDirect(tile.getWorld(), beam);
+            DEParticles.addParticleDirect(tile.getLevel(), beam);
         }
 
     }

@@ -18,7 +18,7 @@ import java.util.List;
 public interface IFusionRecipe extends IRecipe<IFusionInventory> {
 
     @Override
-    default ItemStack getIcon() {
+    default ItemStack getToastSymbol() {
         if (DraconicAPI.CRAFTING_CORE != null) {
             return new ItemStack(DraconicAPI.CRAFTING_CORE);
         } else {
@@ -71,7 +71,7 @@ public interface IFusionRecipe extends IRecipe<IFusionInventory> {
 
 
     @Override
-    default boolean canFit(int width, int height) {
+    default boolean canCraftInDimensions(int width, int height) {
         return true;
     }
 

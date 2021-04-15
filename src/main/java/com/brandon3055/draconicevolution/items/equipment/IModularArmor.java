@@ -47,7 +47,7 @@ public interface IModularArmor extends IModularItem {
             ModuleHost host = stack.getCapability(MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new);
             SpeedData speed = host.getModuleData(ModuleTypes.SPEED);
             if (speed != null && speed.getSpeedMultiplier() > DEConfig.armorSpeedLimit) {
-                tooltip.add(new StringTextComponent("Speed limit on this server is +" + (int) (DEConfig.armorSpeedLimit * 100) + "%").mergeStyle(TextFormatting.RED));
+                tooltip.add(new StringTextComponent("Speed limit on this server is +" + (int) (DEConfig.armorSpeedLimit * 100) + "%").withStyle(TextFormatting.RED));
             }
         }
     }
@@ -57,8 +57,8 @@ public interface IModularArmor extends IModularItem {
         LazyOptional<IOPStorage> power = stack.getCapability(OP_STORAGE);
         power.ifPresent(storage -> {
             if (storage.getOPStored() < 512) {
-                Vector3d motion = entity.getMotion();
-                entity.setMotion(motion.x * 0.95, motion.y > 0 ? motion.y * 0.95 : motion.y, motion.z * 0.95);
+                Vector3d motion = entity.getDeltaMovement();
+                entity.setDeltaMovement(motion.x * 0.95, motion.y > 0 ? motion.y * 0.95 : motion.y, motion.z * 0.95);
 
             } else if (storage instanceof IOPStorageModifiable) {
                 int energy = EquipCfg.elytraFlightEnergy;
@@ -69,9 +69,9 @@ public interface IModularArmor extends IModularItem {
                     if (flightSpeed > 0) {
                         double speed = 1.5D * flightSpeed;
                         double accel = 0.01 * flightSpeed;
-                        Vector3d look = entity.getLookVec();
-                        Vector3d motion = entity.getMotion();
-                        entity.setMotion(motion.add(
+                        Vector3d look = entity.getLookAngle();
+                        Vector3d motion = entity.getDeltaMovement();
+                        entity.setDeltaMovement(motion.add(
                                 look.x * accel + (look.x * speed - motion.x) * accel,
                                 look.y * accel + (look.y * speed - motion.y) * accel,
                                 look.z * accel + (look.z * speed - motion.z) * accel
@@ -80,7 +80,7 @@ public interface IModularArmor extends IModularItem {
                     }
                 }
 
-                if (!entity.world.isRemote) {
+                if (!entity.level.isClientSide) {
                     ((IOPStorageModifiable) storage).modifyEnergyStored(-energy);
                 }
             }

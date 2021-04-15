@@ -66,7 +66,7 @@ public class ModularArmorModel extends VBOBipedModel<LivingEntity> {
                     .uniform("baseColour", UniformType.VEC4)
                     .uniform("tier", UniformType.INT)
             )
-            .whenUsed(cache -> cache.glUniform1f("time", (BCClientEventHandler.elapsedTicks + Minecraft.getInstance().getRenderPartialTicks()) / 20))
+            .whenUsed(cache -> cache.glUniform1f("time", (BCClientEventHandler.elapsedTicks + Minecraft.getInstance().getFrameTime()) / 20))
             .build();
 
     private CCModel baseModel;
@@ -107,29 +107,29 @@ public class ModularArmorModel extends VBOBipedModel<LivingEntity> {
         }
 
         String levelName = techLevel.name().toLowerCase();
-        modelType = RenderType.makeType("modelType", DefaultVertexFormats.BLOCK, GL11.GL_TRIANGLES, 256, true, false, RenderType.State.getBuilder()
-                .texture(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/item/equipment/" + levelName + "_chestpeice.png"), false, false))
-                .diffuseLighting(DIFFUSE_LIGHTING_ENABLED)
-                .lightmap(LIGHTMAP_ENABLED)
-                .build(true));
-        chaosType = RenderType.makeType("chaosShaderType", DefaultVertexFormats.BLOCK, GL11.GL_TRIANGLES, 256, RenderType.State.getBuilder()
-                .texture(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/item/equipment/chaos_shader.png"), true, false))
-                .lightmap(LIGHTMAP_ENABLED)
-                .overlay(OVERLAY_ENABLED)
-                .build(false));
-        shaderParentType = RenderType.makeType("shaderGemType", DefaultVertexFormats.BLOCK, GL11.GL_TRIANGLES, 256, RenderType.State.getBuilder()
-                .diffuseLighting(DIFFUSE_LIGHTING_ENABLED)
-                .texture(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/item/equipment/shader_fallback_" + levelName + ".png"), false, false))
-                .lightmap(LIGHTMAP_ENABLED)
-                .overlay(OVERLAY_ENABLED)
-                .build(false));
-        shieldType = RenderType.makeType("shieldType", DefaultVertexFormats.POSITION_COLOR_LIGHTMAP, GL11.GL_TRIANGLES, 256, RenderType.State.getBuilder()
-                .diffuseLighting(DIFFUSE_LIGHTING_ENABLED)
-                .transparency(TRANSLUCENT_TRANSPARENCY)
-                .texturing(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
-                .lightmap(LIGHTMAP_ENABLED)
-                .cull(CULL_DISABLED)
-                .build(false));
+        modelType = RenderType.create("modelType", DefaultVertexFormats.BLOCK, GL11.GL_TRIANGLES, 256, true, false, RenderType.State.builder()
+                .setTextureState(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/item/equipment/" + levelName + "_chestpeice.png"), false, false))
+                .setDiffuseLightingState(DIFFUSE_LIGHTING)
+                .setLightmapState(LIGHTMAP)
+                .createCompositeState(true));
+        chaosType = RenderType.create("chaosShaderType", DefaultVertexFormats.BLOCK, GL11.GL_TRIANGLES, 256, RenderType.State.builder()
+                .setTextureState(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/item/equipment/chaos_shader.png"), true, false))
+                .setLightmapState(LIGHTMAP)
+                .setOverlayState(OVERLAY)
+                .createCompositeState(false));
+        shaderParentType = RenderType.create("shaderGemType", DefaultVertexFormats.BLOCK, GL11.GL_TRIANGLES, 256, RenderType.State.builder()
+                .setDiffuseLightingState(DIFFUSE_LIGHTING)
+                .setTextureState(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/item/equipment/shader_fallback_" + levelName + ".png"), false, false))
+                .setLightmapState(LIGHTMAP)
+                .setOverlayState(OVERLAY)
+                .createCompositeState(false));
+        shieldType = RenderType.create("shieldType", DefaultVertexFormats.POSITION_COLOR_LIGHTMAP, GL11.GL_TRIANGLES, 256, RenderType.State.builder()
+                .setDiffuseLightingState(DIFFUSE_LIGHTING)
+                .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+                .setTexturingState(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
+                .setLightmapState(LIGHTMAP)
+                .setCullState(NO_CULL)
+                .createCompositeState(false));
 
         baseVBOType = new VBORenderType(modelType, DefaultVertexFormats.POSITION_TEX_COLOR_NORMAL, (format, builder) -> {
             if (!onArmor) {
@@ -214,7 +214,7 @@ public class ModularArmorModel extends VBOBipedModel<LivingEntity> {
         });
 
         bipedBody = new VBOModelRender(this, baseVBOType);
-        bipedBody.setRotationPoint(0.0F, 0.0F + yOffsetIn, 0.0F);
+        bipedBody.setPos(0.0F, 0.0F + yOffsetIn, 0.0F);
         VBOModelRender matRender = new VBOModelRender(this, techLevel == TechLevel.CHAOTIC ? materialChaosVBOType : materialVBOType);
         if (techLevel == TechLevel.CHAOTIC) {
             matRender.setShader(() -> RenderModularChestpeice.getShaderType(chaosType, RenderModularChestpeice.chaosShader));
@@ -225,21 +225,21 @@ public class ModularArmorModel extends VBOBipedModel<LivingEntity> {
         bipedBody.addChild(new VBOModelRender(this, shieldBodyVBO, () -> shieldState > 0).setShader(() -> getShaderType(shieldType, techLevel, shieldState, shieldColour, shieldShader)));
 
         this.bipedHead = new VBOModelRender(this, shieldHeadVBO, () -> shieldState > 0).setShader(() -> getShaderType(shieldType, techLevel, shieldState, shieldColour, shieldShader));
-        this.bipedHead.setRotationPoint(0.0F, 0.0F + yOffsetIn, 0.0F);
+        this.bipedHead.setPos(0.0F, 0.0F + yOffsetIn, 0.0F);
 
         this.bipedRightArm = new VBOModelRender(this, shieldRightArmVBO, () -> shieldState > 0).setShader(() -> getShaderType(shieldType, techLevel, shieldState, shieldColour, shieldShader));
-        this.bipedRightArm.setRotationPoint(-5.0F, 2.0F + yOffsetIn, 0.0F);
+        this.bipedRightArm.setPos(-5.0F, 2.0F + yOffsetIn, 0.0F);
 
         this.bipedLeftArm = new VBOModelRender(this, shieldLeftArmVBO, () -> shieldState > 0).setShader(() -> getShaderType(shieldType, techLevel, shieldState, shieldColour, shieldShader));
         this.bipedLeftArm.mirror = true;
-        this.bipedLeftArm.setRotationPoint(5.0F, 2.0F + yOffsetIn, 0.0F);
+        this.bipedLeftArm.setPos(5.0F, 2.0F + yOffsetIn, 0.0F);
 
         this.bipedRightLeg = new VBOModelRender(this, shieldRightLegVBO, () -> shieldState > 0).setShader(() -> getShaderType(shieldType, techLevel, shieldState, shieldColour, shieldShader));
-        this.bipedRightLeg.setRotationPoint(-1.9F, 12.0F + yOffsetIn, 0.0F);
+        this.bipedRightLeg.setPos(-1.9F, 12.0F + yOffsetIn, 0.0F);
 
         this.bipedLeftLeg = new VBOModelRender(this, shieldLeftLegVBO, () -> shieldState > 0).setShader(() -> getShaderType(shieldType, techLevel, shieldState, shieldColour, shieldShader));
         this.bipedLeftLeg.mirror = true;
-        this.bipedLeftLeg.setRotationPoint(1.9F, 12.0F + yOffsetIn, 0.0F);
+        this.bipedLeftLeg.setPos(1.9F, 12.0F + yOffsetIn, 0.0F);
     }
 
     @Override
@@ -262,25 +262,25 @@ public class ModularArmorModel extends VBOBipedModel<LivingEntity> {
         }
 
 
-        if (this.isChild) {
-            mStack.push();
-            if (this.isChildHeadScaled) {
-                float f = 1.5F / this.childHeadScale;
+        if (this.young) {
+            mStack.pushPose();
+            if (this.scaleHead) {
+                float f = 1.5F / this.babyHeadScale;
                 mStack.scale(f, f, f);
             }
-            mStack.translate(0.0D, this.childHeadOffsetY / 16.0F, this.childHeadOffsetZ / 16.0F);
+            mStack.translate(0.0D, this.yHeadOffset / 16.0F, this.zHeadOffset / 16.0F);
             bipedHead.render(mStack, getter, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            mStack.pop();
-            mStack.push();
-            float f1 = 1.0F / this.childBodyScale;
+            mStack.popPose();
+            mStack.pushPose();
+            float f1 = 1.0F / this.babyBodyScale;
             mStack.scale(f1, f1, f1);
-            mStack.translate(0.0D, this.childBodyOffsetY / 16.0F, 0.0D);
+            mStack.translate(0.0D, this.bodyYOffset / 16.0F, 0.0D);
             bipedBody.render(mStack, getter, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             bipedLeftArm.render(mStack, getter, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             bipedRightArm.render(mStack, getter, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             bipedLeftLeg.render(mStack, getter, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             bipedRightLeg.render(mStack, getter, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            mStack.pop();
+            mStack.popPose();
         } else {
             bipedBody.render(mStack, getter, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             bipedHead.render(mStack, getter, packedLightIn, packedOverlayIn, red, green, blue, alpha);

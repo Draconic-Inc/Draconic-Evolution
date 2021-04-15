@@ -42,38 +42,38 @@ public class EnergyCoreBuilder implements IProcess {
     public EnergyCoreBuilder(TileEnergyCore core, PlayerEntity player) {
         this.core = core;
         this.player = player;
-        this.world = core.getWorld();
+        this.world = core.getLevel();
         buildWorkList();
     }
 
     private void buildWorkList() {
         EnergyCoreStructure structure = core.coreStructure;
         MultiBlockStorage storage = structure.getStorageForTier(core.tier.get());
-        BlockPos start = core.getPos().add(structure.getCoreOffset(core.tier.get()));
+        BlockPos start = core.getBlockPos().offset(structure.getCoreOffset(core.tier.get()));
         Map<BlockPos, Block> structureBlocks = new HashMap<>();
         storage.forEachBlock(start, (key1, value) -> {
             Map<String, Block> blockCache = new HashMap<>();
             structureBlocks.put(key1, blockCache.computeIfAbsent(value, s -> ForgeRegistries.BLOCKS.getValue(new ResourceLocation(value))));
         });
 
-        World world = core.getWorld();
+        World world = core.getLevel();
         for (BlockPos key : structureBlocks.keySet()) {
             Block targetBlock = structureBlocks.get(key);
             if (targetBlock == null) continue;
-            if (world.isAirBlock(key)) {
-                workList.put(key, targetBlock.getDefaultState());
+            if (world.isEmptyBlock(key)) {
+                workList.put(key, targetBlock.defaultBlockState());
                 continue;
             }
             BlockState state = world.getBlockState(key);
             if (state.getBlock() != targetBlock) {
                 isDead = true;
-                player.sendMessage(new TranslationTextComponent("ecore.de.assemble_found_invalid.txt", state.getBlock().getTranslationKey(), key.toString()).mergeStyle(TextFormatting.RED), Util.DUMMY_UUID);
+                player.sendMessage(new TranslationTextComponent("ecore.de.assemble_found_invalid.txt", state.getBlock().getDescriptionId(), key.toString()).withStyle(TextFormatting.RED), Util.NIL_UUID);
                 return;
             }
         }
 
         workOrder.addAll(workList.keySet());
-        workOrder.sort(Comparator.comparingInt(value -> (int) value.distanceSq(core.getPos())));
+        workOrder.sort(Comparator.comparingInt(value -> (int) value.distSqr(core.getBlockPos())));
     }
 
     @Override
@@ -85,23 +85,23 @@ public class EnergyCoreBuilder implements IProcess {
 
         BlockPos pos = workOrder.poll();
         BlockState state = workList.get(pos);
-        if (!world.isAirBlock(pos)) {
+        if (!world.isEmptyBlock(pos)) {
             if (world.getBlockState(pos).getBlock() == state.getBlock()) {
                 return;
             }
-            player.sendMessage(new TranslationTextComponent("ecore.de.assemble_error_expected_air.txt", pos.toString()).mergeStyle(TextFormatting.RED), Util.DUMMY_UUID);
+            player.sendMessage(new TranslationTextComponent("ecore.de.assemble_error_expected_air.txt", pos.toString()).withStyle(TextFormatting.RED), Util.NIL_UUID);
             isDead = true;
             return;
         }
 
         ItemStack required = new ItemStack(state.getBlock());
-        if (player.abilities.isCreativeMode || extractItem(required)) {
-            world.setBlockState(pos, state);
+        if (player.abilities.instabuild || extractItem(required)) {
+            world.setBlockAndUpdate(pos, state);
             SoundType soundtype = state.getBlock().getSoundType(state, world, pos, player);
             world.playSound(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, soundtype.getPlaceSound(), SoundCategory.BLOCKS, (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
         }
         else {
-            player.sendMessage(new TranslationTextComponent("ecore.de.assemble_missing_required.txt", state.getBlock().getTranslationKey()).mergeStyle(TextFormatting.RED), Util.DUMMY_UUID);
+            player.sendMessage(new TranslationTextComponent("ecore.de.assemble_missing_required.txt", state.getBlock().getDescriptionId()).withStyle(TextFormatting.RED), Util.NIL_UUID);
             isDead = true;
         }
     }

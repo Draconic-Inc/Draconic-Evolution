@@ -1,14 +1,10 @@
 package com.brandon3055.draconicevolution.client.render.shaders;
 
-//import codechicken.lib.render.shader.ShaderHelper;
 import codechicken.lib.render.shader.ShaderObject;
 
 import java.io.IOException;
 
-//import static codechicken.lib.render.shader.ShaderHelper.getStream;
-//import static codechicken.lib.render.shader.ShaderHelper.readShader;
-//import static codechicken.lib.render.shader.ShaderObject.ShaderType.FRAGMENT;
-//import static codechicken.lib.render.shader.ShaderObject.ShaderType.VERTEX;
+
 
 /**
  * Created by brandon3055 on 6/11/2016.

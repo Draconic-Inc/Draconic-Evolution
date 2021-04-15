@@ -59,7 +59,7 @@ public class LastStandEntity extends ModuleEntity {
             if (moduleContext instanceof StackModuleContext) {
                 LivingEntity entity = ((StackModuleContext) moduleContext).getEntity();
                 if (entity instanceof PlayerEntity) {
-                    ((PlayerEntity) entity).sendStatusMessage(new TranslationTextComponent("module.draconicevolution.last_stand.invuln.active", MathUtils.round(invulnerableTime / 20D, 10)).mergeStyle(TextFormatting.GOLD), true);
+                    ((PlayerEntity) entity).displayClientMessage(new TranslationTextComponent("module.draconicevolution.last_stand.invuln.active", MathUtils.round(invulnerableTime / 20D, 10)).withStyle(TextFormatting.GOLD), true);
                 }
             }
         }
@@ -102,7 +102,7 @@ public class LastStandEntity extends ModuleEntity {
         if (charge >= data.getChargeTime()) {
             LivingEntity entity = event.getEntityLiving();
             entity.setHealth(entity.getHealth() + data.getHealthBoost());
-            ItemStack stack = entity.getItemStackFromSlot(EquipmentSlotType.CHEST);
+            ItemStack stack = entity.getItemBySlot(EquipmentSlotType.CHEST);
             if (!stack.isEmpty()) {
                 LazyOptional<ModuleHost> optionalHost = stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
                 optionalHost.ifPresent(stackHost -> {
@@ -113,19 +113,19 @@ public class LastStandEntity extends ModuleEntity {
                 });
             }
             if (module.getModuleTechLevel().index >= 2) {
-                entity.extinguish();
-                Iterator<EffectInstance> iterator = entity.getActivePotionMap().values().iterator();
+                entity.clearFire();
+                Iterator<EffectInstance> iterator = entity.getActiveEffectsMap().values().iterator();
                 while (iterator.hasNext()) {
                     EffectInstance effect = iterator.next();
-                    if (!effect.getPotion().isBeneficial()) {
-                        entity.onFinishedPotionEffect(effect);
+                    if (!effect.getEffect().isBeneficial()) {
+                        entity.onEffectRemoved(effect);
                         iterator.remove();
                     }
                 }
             }
             charge = 0;
             DraconicNetwork.sendLastStandActivation(entity, module.getItem());
-            entity.world.playSound(null, entity.getPosition(), SoundEvents.ITEM_TOTEM_USE, SoundCategory.PLAYERS, 5F, (0.95F + (entity.world.rand.nextFloat() * 0.1F)));
+            entity.level.playSound(null, entity.blockPosition(), SoundEvents.TOTEM_USE, SoundCategory.PLAYERS, 5F, (0.95F + (entity.level.random.nextFloat() * 0.1F)));
             invulnerableTime = data.getInvulnerableTime();
             return true;
         }
@@ -142,21 +142,21 @@ public class LastStandEntity extends ModuleEntity {
 
         GuiHelper.drawColouredRect(getter.getBuffer(GuiHelper.TRANS_TYPE), x, y, width, height, 0x20FF0000, 0);
         IVertexBuilder builder = getter.getBuffer(GuiHelper.FAN_TYPE);
-        builder.pos(x + (width / 2D), y + (height / 2D), 0).color(0, 255, 255, 64).endVertex();
+        builder.vertex(x + (width / 2D), y + (height / 2D), 0).color(0, 255, 255, 64).endVertex();
         for (double d = 0; d <= 1; d += 1D / 30D) {
             double angle = (d * progress) + 0.5 - progress;
             double vertX = x + (width / 2D) + Math.sin(angle * (Math.PI * 2)) * diameter;
             double vertY = y + (height / 2D) + Math.cos(angle * (Math.PI * 2)) * diameter;
-            builder.pos(vertX, vertY, 0).color(255, 255, 255, 64).endVertex();
+            builder.vertex(vertX, vertY, 0).color(255, 255, 255, 64).endVertex();
         }
         if (getter instanceof IRenderTypeBuffer.Impl) {
-            ((IRenderTypeBuffer.Impl) getter).finish();
+            ((IRenderTypeBuffer.Impl) getter).endBatch();
         }
 
         String pText = (int) (progress * 100) + "%";
         String tText = ((data.getChargeTime() - charge) / 20) + "s";
-        GuiHelper.drawBackgroundString(getter.getBuffer(GuiHelper.TRANS_TYPE), mc.fontRenderer, pText, x + width / 2F, y + height / 2F - 8, 0, 0x4000FF00, 1, false, true);
-        GuiHelper.drawBackgroundString(getter.getBuffer(GuiHelper.TRANS_TYPE), mc.fontRenderer, tText, x + width / 2F, y + height / 2F + 1, 0, 0x4000FF00, 1, false, true);
+        GuiHelper.drawBackgroundString(getter.getBuffer(GuiHelper.TRANS_TYPE), mc.font, pText, x + width / 2F, y + height / 2F - 8, 0, 0x4000FF00, 1, false, true);
+        GuiHelper.drawBackgroundString(getter.getBuffer(GuiHelper.TRANS_TYPE), mc.font, tText, x + width / 2F, y + height / 2F + 1, 0, 0x4000FF00, 1, false, true);
     }
 
 

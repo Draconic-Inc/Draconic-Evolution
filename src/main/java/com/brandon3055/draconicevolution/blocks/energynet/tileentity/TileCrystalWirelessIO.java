@@ -70,7 +70,7 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
 
     @Override
     public void tick() {
-        if (!world.isRemote) {
+        if (!level.isClientSide) {
             updateEnergyFlow();
         }
 
@@ -120,7 +120,7 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
             fastList.removeAll(moveToSlow);
         }
 
-        if (!world.isRemote && DEEventHandler.serverTicks % 10 == 0) {
+        if (!level.isClientSide && DEEventHandler.serverTicks % 10 == 0) {
             receiverFlowRates.clear();
             for (int i = 0; i < linkedReceivers.size(); i++) {
                 receiverFlowRates.add(flowConversion(receiverTransfer(i)));
@@ -130,7 +130,7 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
 
     @Override
     public boolean onBlockActivated(BlockState state, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
-        if (player.isSneaking()) {
+        if (player.isShiftKeyDown()) {
             inputMode.invert();
             return true;
         }
@@ -141,7 +141,7 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
      * Attempts to send energy to this receiver. Returns false if the receiver is nolonger valid.
      */
     protected boolean updateDevice(LinkedDevice receiver) {
-        if (!receiver.isLinkValid(world)) {
+        if (!receiver.isLinkValid(level)) {
             return receiver.invalidTime++ < 100;
         }
         receiver.invalidTime = 0;
@@ -211,12 +211,12 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
 
     @Override
     public boolean binderUsed(PlayerEntity player, BlockPos linkTarget, Direction sideClicked) {
-        TileEntity tile = world.getTileEntity(linkTarget);
+        TileEntity tile = level.getBlockEntity(linkTarget);
         if (tile == null || tile instanceof ICrystalLink) {
             return super.binderUsed(player, linkTarget, sideClicked);
         }
 
-        if (world.isRemote) {
+        if (level.isClientSide) {
             return true;
         }
 
@@ -224,14 +224,14 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
 
         if (linkedReceivers.contains(offset)) {
             removeReceiver(linkTarget);
-            ChatHelper.sendIndexed(player, new TranslationTextComponent("gui.draconicevolution.energy_net.link_broken").mergeStyle(TextFormatting.GREEN), 99);
+            ChatHelper.sendIndexed(player, new TranslationTextComponent("gui.draconicevolution.energy_net.link_broken").withStyle(TextFormatting.GREEN), 99);
             return true;
         }
 
         if (inputMode.get()) {
             if (!EnergyUtils.canExtractEnergy(tile, sideClicked)) {
                 if (EnergyUtils.getStorage(tile, sideClicked) != null) {
-                    ChatHelper.sendIndexed(player, new TranslationTextComponent("gui.draconicevolution.energy_net.side_can_not_extract").mergeStyle(TextFormatting.RED), 99);
+                    ChatHelper.sendIndexed(player, new TranslationTextComponent("gui.draconicevolution.energy_net.side_can_not_extract").withStyle(TextFormatting.RED), 99);
                     return false;
                 }
                 return super.binderUsed(player, linkTarget, sideClicked);
@@ -240,7 +240,7 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
         else {
             if (!EnergyUtils.canReceiveEnergy(tile, sideClicked)) {
                 if (EnergyUtils.getStorage(tile, sideClicked) != null) {
-                    ChatHelper.sendIndexed(player, new TranslationTextComponent("gui.draconicevolution.energy_net.side_can_not_receive").mergeStyle(TextFormatting.RED), 99);
+                    ChatHelper.sendIndexed(player, new TranslationTextComponent("gui.draconicevolution.energy_net.side_can_not_receive").withStyle(TextFormatting.RED), 99);
                     return false;
                 }
                 return super.binderUsed(player, linkTarget, sideClicked);
@@ -248,12 +248,12 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
         }
 
         if (linkedReceivers.size() >= getMaxReceivers()) {
-            ChatHelper.sendIndexed(player, new TranslationTextComponent("gui.draconicevolution.energy_net.max_receivers").mergeStyle(TextFormatting.RED), 99);
+            ChatHelper.sendIndexed(player, new TranslationTextComponent("gui.draconicevolution.energy_net.max_receivers").withStyle(TextFormatting.RED), 99);
             return false;
         }
 
         addReceiver(linkTarget, sideClicked);
-        ChatHelper.sendIndexed(player, new TranslationTextComponent("gui.draconicevolution.energy_net.devices_linked").mergeStyle(TextFormatting.GREEN), 99);
+        ChatHelper.sendIndexed(player, new TranslationTextComponent("gui.draconicevolution.energy_net.devices_linked").withStyle(TextFormatting.GREEN), 99);
 
         return true;
     }
@@ -302,18 +302,18 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
     @OnlyIn(Dist.CLIENT)
     @Override
     public CrystalFXBase createStaticFX() {
-        return new CrystalFXRing((ClientWorld)world, this);
+        return new CrystalFXRing((ClientWorld)level, this);
     }
 
     @Override
     public Vec3D getBeamLinkPos(BlockPos linkTo) {
-        Vec3D thisVec = Vec3D.getCenter(pos);
+        Vec3D thisVec = Vec3D.getCenter(worldPosition);
         Vec3D targVec = Vec3D.getCenter(linkTo);
         double dist = thisVec.distXZ(targVec);
         double offM = 0.4D;
 
         if (dist == 0) {
-            if (pos.getY() > linkTo.getY()) {
+            if (worldPosition.getY() > linkTo.getY()) {
                 return thisVec.subtract(0, 0.4, 0);
             }
             else {
@@ -349,9 +349,9 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
     @OnlyIn(Dist.CLIENT)
     public void addDisplayData(List<String> displayList) {
         super.addDisplayData(displayList);
-        displayList.add(TextFormatting.GREEN + I18n.format("gui.draconicevolution.energy_net.hud_wireless_links") + ": " + getReceivers().size() + " / " + getMaxReceivers());
+        displayList.add(TextFormatting.GREEN + I18n.get("gui.draconicevolution.energy_net.hud_wireless_links") + ": " + getReceivers().size() + " / " + getMaxReceivers());
         TextFormatting colour = !inputMode.get() ? TextFormatting.GOLD : TextFormatting.DARK_AQUA;
-        displayList.add(I18n.format("gui.draconicevolution.energy_net.io_output_" + !inputMode.get(), colour));
+        displayList.add(I18n.get("gui.draconicevolution.energy_net.io_output_" + !inputMode.get(), colour));
     }
 
     //endregion
@@ -381,7 +381,7 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
         for (Vec3B vec : linkedReceivers) {
             CompoundNBT receiver = new CompoundNBT();
             receiver.putByteArray("offset", new byte[]{vec.x, vec.y, vec.z});
-            receiver.putByte("side", (byte) receiverSideMap.get(vec).getIndex());
+            receiver.putByte("side", (byte) receiverSideMap.get(vec).get3DDataValue());
             list.add(receiver);
         }
         compound.put("linked_receivers", list);
@@ -398,7 +398,7 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
             byte[] offset = receiver.getByteArray("offset");
             Vec3B vec = new Vec3B(offset[0], offset[1], offset[2]);
             linkedReceivers.add(vec);
-            receiverSideMap.put(vec, Direction.byIndex(receiver.getByte("side")));
+            receiverSideMap.put(vec, Direction.from3DDataValue(receiver.getByte("side")));
         }
 
         receiverCache = null;
@@ -414,7 +414,7 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
     @Override
     public void detectAndSendContainerChanges(List<IContainerListener> listeners) {
         super.detectAndSendContainerChanges(listeners);
-        if (linkedReceivers.size() != receiverTransferRates.size() && !world.isRemote) {
+        if (linkedReceivers.size() != receiverTransferRates.size() && !level.isClientSide) {
             rebuildReceiverTransferList();
         }
 
@@ -497,7 +497,7 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
         }
 
         public boolean isLinkValid(World world) {
-            tileCache = world.getTileEntity(pos);
+            tileCache = world.getBlockEntity(pos);
 
             if ((tileCache == null || EnergyUtils.getStorage(tileCache, side) == null) && Utils.isAreaLoaded(world, pos, ChunkHolder.LocationType.TICKING)) {
                 return false;

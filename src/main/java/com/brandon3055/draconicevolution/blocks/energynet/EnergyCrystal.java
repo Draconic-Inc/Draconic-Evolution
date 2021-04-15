@@ -45,8 +45,8 @@ public class EnergyCrystal extends BlockBCore implements IHudDisplay {
     static {
         for (Direction dir : Direction.values()) {
             Cuboid6 c = new Cuboid6(0.35, 0, 0.35, 0.65, 0.425, 0.65);
-            c.apply(Rotation.sideRotations[dir.getIndex()].at(Vector3.CENTER));
-            IO_CRYSTAL_SHAPES[dir.getIndex()] = VoxelShapes.create(c.aabb());
+            c.apply(Rotation.sideRotations[dir.get3DDataValue()].at(Vector3.CENTER));
+            IO_CRYSTAL_SHAPES[dir.get3DDataValue()] = VoxelShapes.create(c.aabb());
         }
     }
 
@@ -64,16 +64,16 @@ public class EnergyCrystal extends BlockBCore implements IHudDisplay {
     }
 
     @Override
-    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-        super.fillItemGroup(group, items);
+    public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> items) {
+        super.fillItemCategory(group, items);
     }
 
     @Override
     public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
         if (crystalType == CrystalType.CRYSTAL_IO) {
-            TileEntity tile = world.getTileEntity(pos);
+            TileEntity tile = world.getBlockEntity(pos);
             Direction facing = tile instanceof TileCrystalDirectIO ? ((TileCrystalDirectIO) tile).facing.get() : Direction.DOWN;
-            return IO_CRYSTAL_SHAPES[facing.getIndex()];
+            return IO_CRYSTAL_SHAPES[facing.get3DDataValue()];
         }
         return CRYSTAL_SHAPE; //Crystal
     }
@@ -91,7 +91,7 @@ public class EnergyCrystal extends BlockBCore implements IHudDisplay {
 //    }
 
     @Override
-    public BlockRenderType getRenderType(BlockState state) {
+    public BlockRenderType getRenderShape(BlockState state) {
         return BlockRenderType.INVISIBLE;
     }
 
@@ -118,13 +118,13 @@ public class EnergyCrystal extends BlockBCore implements IHudDisplay {
     @OnlyIn(Dist.CLIENT)
     @Override
     public void addDisplayData(@Nullable ItemStack stack, World world, @Nullable BlockPos pos, List<String> displayList) {
-        TileEntity te = world.getTileEntity(pos);
+        TileEntity te = world.getBlockEntity(pos);
 
         if (!(te instanceof TileCrystalBase)) {
             return;
         }
 
-        displayList.add(InfoHelper.HITC() + asItem().getName().getString());
+        displayList.add(InfoHelper.HITC() + asItem().getDescription().getString());
         TileCrystalBase tile = (TileCrystalBase) te;
         tile.addDisplayData(displayList);
     }
@@ -176,7 +176,7 @@ public class EnergyCrystal extends BlockBCore implements IHudDisplay {
         }
 
         @Override
-        public String getString() {
+        public String getSerializedName() {
             return name().toLowerCase();
         }
 

@@ -28,24 +28,24 @@ public class RenderTileCraftingInjector extends TileEntityRenderer<TileCraftingI
         }
 
         if (!te.itemHandler.getStackInSlot(0).isEmpty()) {
-            BlockState state = te.getWorld().getBlockState(te.getPos());
-            Direction facing = state.get(CraftingInjector.FACING);
-            mStack.translate(0.5 + (facing.getXOffset() * 0.45), 0.5 + (facing.getYOffset() * 0.45), 0.5 + (facing.getZOffset() * 0.45));
+            BlockState state = te.getLevel().getBlockState(te.getBlockPos());
+            Direction facing = state.getValue(CraftingInjector.FACING);
+            mStack.translate(0.5 + (facing.getStepX() * 0.45), 0.5 + (facing.getStepY() * 0.45), 0.5 + (facing.getStepZ() * 0.45));
             mStack.scale(0.5F, 0.5F, 0.5F);
 
             if (facing.getAxis() == Direction.Axis.Y) {
                 if (facing == Direction.DOWN) {
-                    mStack.rotate(new Quaternion(180, 0, 0, true));
+                    mStack.mulPose(new Quaternion(180, 0, 0, true));
                 }
             }
             else {
-                mStack.rotate(new Quaternion(facing.getZOffset() * 90, 0, facing.getXOffset() * -90, true));
+                mStack.mulPose(new Quaternion(facing.getStepZ() * 90, 0, facing.getStepX() * -90, true));
             }
 
-            mStack.rotate(new Quaternion(0, (ClientEventHandler.elapsedTicks + partialTicks) * -0.8F, 0, true));
+            mStack.mulPose(new Quaternion(0, (ClientEventHandler.elapsedTicks + partialTicks) * -0.8F, 0, true));
 
             ItemStack stack = te.itemHandler.getStackInSlot(0);
-            Minecraft.getInstance().getItemRenderer().renderItem(stack, FIXED, packetLight, packetOverlay, mStack, getter);
+            Minecraft.getInstance().getItemRenderer().renderStatic(stack, FIXED, packetLight, packetOverlay, mStack, getter);
         }
     }
 }

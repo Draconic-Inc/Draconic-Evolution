@@ -36,13 +36,13 @@ public class BombardPlayerPhase extends Phase {
             guardian.getPhaseManager().setPhase(PhaseType.START);
             LOGGER.info("Ending bombardment, Timed out");
         } else {
-            double distance = targetPlayer.getDistance(guardian);
-            targetLocation = targetPlayer.getPositionVec();
+            double distance = targetPlayer.distanceTo(guardian);
+            targetLocation = targetPlayer.position();
             //Wait for alignment with player before starting bombardment
             if (!bombarding) {
-                double tRelX = targetLocation.x - guardian.getPosX();
-                double tRelZ = targetLocation.z - guardian.getPosZ();
-                double relTargetAngle = MathHelper.clamp(MathHelper.wrapDegrees(180.0D - MathHelper.atan2(tRelX, tRelZ) * (double) (180F / (float) Math.PI) - (double) guardian.rotationYaw), -50.0D, 50.0D);
+                double tRelX = targetLocation.x - guardian.getX();
+                double tRelZ = targetLocation.z - guardian.getZ();
+                double relTargetAngle = MathHelper.clamp(MathHelper.wrapDegrees(180.0D - MathHelper.atan2(tRelX, tRelZ) * (double) (180F / (float) Math.PI) - (double) guardian.yRot), -50.0D, 50.0D);
                 bombarding = Math.abs(relTargetAngle) < 1;
                 if (bombarding) {
                     LOGGER.debug("Bombs Away!");
@@ -55,21 +55,21 @@ public class BombardPlayerPhase extends Phase {
                 guardian.getPhaseManager().setPhase(PhaseType.START);
                 LOGGER.info("Ending bombardment, To close");
             } else if (bombarding && distance <= maxAttackRange && timeSinceStart % 2 == 0) {
-                Vector3d vector3d2 = guardian.getLook(1.0F);
-                double headX = guardian.dragonPartHead.getPosX() - vector3d2.x * 1.0D;
-                double headY = guardian.dragonPartHead.getPosYHeight(0.5D) + 0.5D;
-                double headZ = guardian.dragonPartHead.getPosZ() - vector3d2.z * 1.0D;
-                Vector3d targetPos = targetPlayer.getPositionVec().add(targetPlayer.getMotion().mul(5, 5, 5));
-                targetPos = targetPos.add(guardian.getRNG().nextGaussian() * 10, guardian.getRNG().nextGaussian() * 10, guardian.getRNG().nextGaussian() * 10);
+                Vector3d vector3d2 = guardian.getViewVector(1.0F);
+                double headX = guardian.dragonPartHead.getX() - vector3d2.x * 1.0D;
+                double headY = guardian.dragonPartHead.getY(0.5D) + 0.5D;
+                double headZ = guardian.dragonPartHead.getZ() - vector3d2.z * 1.0D;
+                Vector3d targetPos = targetPlayer.position().add(targetPlayer.getDeltaMovement().multiply(5, 5, 5));
+                targetPos = targetPos.add(guardian.getRandom().nextGaussian() * 10, guardian.getRandom().nextGaussian() * 10, guardian.getRandom().nextGaussian() * 10);
                 double targetRelX = targetPos.x - headX;
                 double targetRelY = targetPos.y - headY;
                 double targetRelZ = targetPos.z - headZ;
                 if (!guardian.isSilent()) {
-                    guardian.world.playEvent(null, 1017, guardian.getPosition(), 0);
+                    guardian.level.levelEvent(null, 1017, guardian.blockPosition(), 0);
                 }
-                GuardianProjectileEntity projectile = new GuardianProjectileEntity(this.guardian.world, this.guardian, targetRelX, targetRelY, targetRelZ, targetPos, 25, GuardianFightManager.PROJECTILE_POWER);
-                projectile.setLocationAndAngles(headX, headY, headZ, 0.0F, 0.0F);
-                guardian.world.addEntity(projectile);
+                GuardianProjectileEntity projectile = new GuardianProjectileEntity(this.guardian.level, this.guardian, targetRelX, targetRelY, targetRelZ, targetPos, 25, GuardianFightManager.PROJECTILE_POWER);
+                projectile.moveTo(headX, headY, headZ, 0.0F, 0.0F);
+                guardian.level.addFreshEntity(projectile);
             }
         }
 
@@ -77,7 +77,7 @@ public class BombardPlayerPhase extends Phase {
             guardian.getPhaseManager().setPhase(PhaseType.START);
             LOGGER.info("Aborting charge, Master timed out");
         } else if (bombarding && timeSinceStart < 20 && timeSinceStart % 5 == 0) {
-            guardian.playSound(SoundEvents.ENTITY_ENDER_DRAGON_GROWL, 20, 0.95F + (guardian.getRNG().nextFloat() * 0.2F));
+            guardian.playSound(SoundEvents.ENDER_DRAGON_GROWL, 20, 0.95F + (guardian.getRandom().nextFloat() * 0.2F));
         }
 
         tick++;
@@ -112,7 +112,7 @@ public class BombardPlayerPhase extends Phase {
     public double getGuardianSpeed() {
         double speed = 1;
         if (targetPlayer != null) {
-            double distance = targetPlayer.getDistance(guardian);
+            double distance = targetPlayer.distanceTo(guardian);
             double sweetSpot = minAttackRange + ((maxAttackRange - minAttackRange) / 2D);
             speed = MathHelper.clamp((distance - sweetSpot) / 10, 0.5, 3);
         }

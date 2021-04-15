@@ -43,7 +43,7 @@ public interface IModularMelee extends IModularTieredItem {
             aoe = ((PropertyProvider) host).getDecimal("attack_aoe").getValue();
         }
 
-        float attackStrength = player.getCooledAttackStrength(0.5F);
+        float attackStrength = player.getAttackStrengthScale(0.5F);
         if (aoe > 0 && attackStrength > 0.9) {
             damage = damage * (0.2F + (attackStrength * attackStrength * 0.8F));
             dealAOEDamage(player, target, stack, energyPerHit, damage, aoe);
@@ -52,45 +52,45 @@ public interface IModularMelee extends IModularTieredItem {
     }
 
     default void dealAOEDamage(PlayerEntity player, Entity target, ItemStack stack, long energyPerHit, float damage, double aoe) {
-        List<LivingEntity> entities = player.world.getEntitiesWithinAABB(LivingEntity.class, target.getBoundingBox().grow(aoe, 0.25D, aoe));
+        List<LivingEntity> entities = player.level.getEntitiesOfClass(LivingEntity.class, target.getBoundingBox().inflate(aoe, 0.25D, aoe));
         double aoeAngle = 100;
-        double yaw = player.rotationYaw - 180;
-        int fireAspect = EnchantmentHelper.getFireAspectModifier(player);
+        double yaw = player.yRot - 180;
+        int fireAspect = EnchantmentHelper.getFireAspect(player);
 
         for (LivingEntity entity : entities) {
-            if (getEnergyStored(stack) < energyPerHit && !player.abilities.isCreativeMode) break;
-            float distance = player.getDistance(entity);
-            if (entity == player || entity == target || player.isOnSameTeam(entity) || distance < 1 || entity.getDistance(target) > aoe) continue;
-            double angle = Math.atan2(player.getPosX() - entity.getPosX(), player.getPosZ() - entity.getPosZ()) * MathHelper.todeg;
+            if (getEnergyStored(stack) < energyPerHit && !player.abilities.instabuild) break;
+            float distance = player.distanceTo(entity);
+            if (entity == player || entity == target || player.isAlliedTo(entity) || distance < 1 || entity.distanceTo(target) > aoe) continue;
+            double angle = Math.atan2(player.getX() - entity.getX(), player.getZ() - entity.getZ()) * MathHelper.todeg;
             double relativeAngle = Math.abs((angle + yaw) % 360);
             if (relativeAngle <= aoeAngle / 2 || relativeAngle > 360 - (aoeAngle / 2)) {
                 boolean lit = false;
                 float health = entity.getHealth();
-                if (fireAspect > 0 && !entity.isBurning()) {
+                if (fireAspect > 0 && !entity.isOnFire()) {
                     lit = true;
-                    entity.setFire(1);
+                    entity.setSecondsOnFire(1);
                 }
 
-                if (entity.attackEntityFrom(DamageSource.causePlayerDamage(player), damage)) {
+                if (entity.hurt(DamageSource.playerAttack(player), damage)) {
                     float damageDealt = health - entity.getHealth();
-                    entity.applyKnockback(0.4F, MathHelper.sin(player.rotationYaw * MathHelper.torad), (-MathHelper.cos(player.rotationYaw * MathHelper.torad)));
+                    entity.knockback(0.4F, MathHelper.sin(player.yRot * MathHelper.torad), (-MathHelper.cos(player.yRot * MathHelper.torad)));
 
                     if (fireAspect > 0) {
-                        entity.setFire(fireAspect * 4);
+                        entity.setSecondsOnFire(fireAspect * 4);
                     }
 
-                    if (player.world instanceof ServerWorld && damageDealt > 2.0F) {
+                    if (player.level instanceof ServerWorld && damageDealt > 2.0F) {
                         int k = (int)((double)damage * 0.5D);
-                        ((ServerWorld)player.world).spawnParticle(ParticleTypes.DAMAGE_INDICATOR, entity.getPosX(), entity.getPosYHeight(0.5D), entity.getPosZ(), k, 0.1D, 0.0D, 0.1D, 0.2D);
+                        ((ServerWorld)player.level).sendParticles(ParticleTypes.DAMAGE_INDICATOR, entity.getX(), entity.getY(0.5D), entity.getZ(), k, 0.1D, 0.0D, 0.1D, 0.2D);
                     }
 
-                    player.addStat(Stats.DAMAGE_DEALT, Math.round(damageDealt * 10.0F));
-                    if (player.world instanceof ServerWorld && damageDealt > 2.0F) {
+                    player.awardStat(Stats.DAMAGE_DEALT, Math.round(damageDealt * 10.0F));
+                    if (player.level instanceof ServerWorld && damageDealt > 2.0F) {
                         int k = (int) ((double) damageDealt * 0.5D);
-                        ((ServerWorld) player.world).spawnParticle(ParticleTypes.DAMAGE_INDICATOR, entity.getPosX(), entity.getPosYHeight(0.5D), entity.getPosZ(), k, 0.1D, 0.0D, 0.1D, 0.2D);
+                        ((ServerWorld) player.level).sendParticles(ParticleTypes.DAMAGE_INDICATOR, entity.getX(), entity.getY(0.5D), entity.getZ(), k, 0.1D, 0.0D, 0.1D, 0.2D);
                     }
                 } else if (lit) {
-                    entity.extinguish();
+                    entity.clearFire();
                 }
             }
             extractEnergy(player, stack, energyPerHit);

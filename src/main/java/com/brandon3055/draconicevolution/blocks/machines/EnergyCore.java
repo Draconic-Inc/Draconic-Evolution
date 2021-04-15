@@ -29,24 +29,24 @@ public class EnergyCore extends BlockBCore {
 
     public EnergyCore(Properties properties) {
         super(properties);
-        this.setDefaultState(stateContainer.getBaseState().with(ACTIVE, false));
+        this.registerDefaultState(stateDefinition.any().setValue(ACTIVE, false));
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
         builder.add(ACTIVE);
     }
 
     @Override
-    public BlockRenderType getRenderType(BlockState state) {
-        return state.get(ACTIVE) ? BlockRenderType.INVISIBLE : BlockRenderType.MODEL;
+    public BlockRenderType getRenderShape(BlockState state) {
+        return state.getValue(ACTIVE) ? BlockRenderType.INVISIBLE : BlockRenderType.MODEL;
     }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
-        TileEntity core = world.getTileEntity(pos);
+    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+        TileEntity core = world.getBlockEntity(pos);
 
-        if (core instanceof TileEnergyCore && !world.isRemote) {
+        if (core instanceof TileEnergyCore && !world.isClientSide) {
             ((TileEnergyCore) core).onStructureClicked(world, pos, state, player);
         }
 

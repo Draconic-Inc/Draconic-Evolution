@@ -30,7 +30,7 @@ public class UpgradeHelper {
             return 0;
         }
 
-        CompoundNBT upgradeTag = stack.getOrCreateChildTag(UPGRADE_TAG);
+        CompoundNBT upgradeTag = stack.getOrCreateTagElement(UPGRADE_TAG);
         return upgradeTag.getByte(upgrade);
     }
 
@@ -43,7 +43,7 @@ public class UpgradeHelper {
      * @param level   the level
      */
     public static void setUpgradeLevel(ItemStack stack, String upgrade, int level) {
-        CompoundNBT upgradeTag = stack.getOrCreateChildTag(UPGRADE_TAG);
+        CompoundNBT upgradeTag = stack.getOrCreateTagElement(UPGRADE_TAG);
         upgradeTag.putByte(upgrade, (byte) level);
     }
 
@@ -59,9 +59,9 @@ public class UpgradeHelper {
             return upgrades;
         }
 
-        CompoundNBT upgradeTag = stack.getOrCreateChildTag(UPGRADE_TAG);
+        CompoundNBT upgradeTag = stack.getOrCreateTagElement(UPGRADE_TAG);
 
-        for (String upgrade : upgradeTag.keySet()) {
+        for (String upgrade : upgradeTag.getAllKeys()) {
             if (upgradeTag.contains(upgrade, 1)) {
                 upgrades.put(upgrade, (int) upgradeTag.getByte(upgrade));
             }
@@ -97,7 +97,7 @@ public class UpgradeHelper {
 
         if (stack.getItem() instanceof IUpgradableItem) {
             for (String upgrade : ((IUpgradableItem) stack.getItem()).getValidUpgrades(stack)) {
-                list.add(InfoHelper.ITC() + I18n.format("upgrade.de." + upgrade + ".name") + " " + InfoHelper.HITC() + I18n.format("upgrade.level." + getUpgradeLevel(stack, upgrade)));
+                list.add(InfoHelper.ITC() + I18n.get("upgrade.de." + upgrade + ".name") + " " + InfoHelper.HITC() + I18n.get("upgrade.level." + getUpgradeLevel(stack, upgrade)));
             }
         }
 

@@ -23,7 +23,7 @@ import javax.annotation.Nullable;
  */
 public class DraconiumChest extends BlockBCore/* implements ITileEntityProvider, IRenderOverride*/ {
 
-    protected static final VoxelShape SHAPE = Block.makeCuboidShape(1.0, 0.0D, 1.0, 15.0, 14.0, 15.0);
+    protected static final VoxelShape SHAPE = Block.box(1.0, 0.0D, 1.0, 15.0, 14.0, 15.0);
 
     public DraconiumChest(Properties properties) {
         super(properties);
@@ -54,11 +54,11 @@ public class DraconiumChest extends BlockBCore/* implements ITileEntityProvider,
 //    }
 
     public static boolean isStackValid(ItemStack stack) {
-        if (stack.getItem() == Item.getItemFromBlock(DEContent.draconium_chest)) {
+        if (stack.getItem() == Item.byBlock(DEContent.draconium_chest)) {
             return false;
         }
         else if (!stack.isEmpty()) {
-            String name = stack.getTranslationKey().toLowerCase();
+            String name = stack.getDescriptionId().toLowerCase();
             if (name.contains("pouch") || name.contains("bag") || name.contains("strongbox") || name.contains("shulker_box")) {
                 return false;
             }
@@ -68,7 +68,7 @@ public class DraconiumChest extends BlockBCore/* implements ITileEntityProvider,
 
 
     @Override
-    public BlockRenderType getRenderType(BlockState state) {
+    public BlockRenderType getRenderShape(BlockState state) {
         return BlockRenderType.INVISIBLE;
     }
 

@@ -29,7 +29,7 @@ public class EntityEnderEnergyManipulator extends LivingEntity {
     public EnderDragonEntity dragon = null;
     private DragonFightManager fightManager = null;
     private LinkedList<BlockPos> deadCrystals = new LinkedList<>();
-    public static final DataParameter<Integer> STAGE = EntityDataManager.createKey(EntityEnderEnergyManipulator.class, DataSerializers.VARINT);
+    public static final DataParameter<Integer> STAGE = EntityDataManager.defineId(EntityEnderEnergyManipulator.class, DataSerializers.INT);
     private BlockPos exitPortalLocation = null;
 
     public EntityEnderEnergyManipulator(EntityType<? extends LivingEntity> type, World p_i48577_2_) {
@@ -49,11 +49,11 @@ public class EntityEnderEnergyManipulator extends LivingEntity {
 //    }
 
     public Stage getStage() {
-        return Stage.getStageByID(dataManager.get(STAGE));
+        return Stage.getStageByID(entityData.get(STAGE));
     }
 
     public void setStage(Stage stage) {
-        dataManager.set(STAGE, stage.getStageID());
+        entityData.set(STAGE, stage.getStageID());
     }
 
 //    @Override
@@ -364,54 +364,54 @@ public class EntityEnderEnergyManipulator extends LivingEntity {
 
 
     @Override
-    public void readAdditional(CompoundNBT compound) {
-        super.readAdditional(compound);
+    public void readAdditionalSaveData(CompoundNBT compound) {
+        super.readAdditionalSaveData(compound);
         soulsCollected = compound.getInt("SoulsCollected");
     }
 
     @Override
-    public void writeAdditional(CompoundNBT compound) {
-        super.writeAdditional(compound);
+    public void addAdditionalSaveData(CompoundNBT compound) {
+        super.addAdditionalSaveData(compound);
         compound.putInt("SoulsCollected", soulsCollected);
     }
 
     //region Entity Inventory
 
     @Override
-    public Iterable<ItemStack> getArmorInventoryList() {
+    public Iterable<ItemStack> getArmorSlots() {
         return Collections.emptyList();
     }
 
     @Nullable
     @Override
-    public ItemStack getItemStackFromSlot(EquipmentSlotType slotIn) {
+    public ItemStack getItemBySlot(EquipmentSlotType slotIn) {
         return ItemStack.EMPTY;
     }
 
     @Override
-    public void setItemStackToSlot(EquipmentSlotType slotIn, @Nullable ItemStack stack) {
+    public void setItemSlot(EquipmentSlotType slotIn, @Nullable ItemStack stack) {
 
     }
 
     //endregion
 
     @Override
-    public HandSide getPrimaryHand() {
+    public HandSide getMainArm() {
         return HandSide.RIGHT;
     }
 
     @Override
-    protected boolean isMovementBlocked() {
+    protected boolean isImmobile() {
         return true;
     }
 
     @Override
-    public boolean canBeCollidedWith() {
+    public boolean isPickable() {
         return false;
     }
 
     @Override
-    public boolean canBePushed() {
+    public boolean isPushable() {
         return false;
     }
 

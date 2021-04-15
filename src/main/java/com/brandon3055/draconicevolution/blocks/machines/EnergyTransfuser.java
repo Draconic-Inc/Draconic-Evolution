@@ -38,7 +38,7 @@ public class EnergyTransfuser extends BlockBCore {
         Direction[] dirs = {Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST};
         int i = 0;
         for (Direction dir : dirs) {
-            Transformation rotation = Rotation.quarterRotations[dir.getHorizontalIndex() ^ 2].at(CENTER);
+            Transformation rotation = Rotation.quarterRotations[dir.get2DDataValue() ^ 2].at(CENTER);
             cuboids.add(new IndexedCuboid6(i, interactFace.copy().apply(rotation)));
             i++;
         }

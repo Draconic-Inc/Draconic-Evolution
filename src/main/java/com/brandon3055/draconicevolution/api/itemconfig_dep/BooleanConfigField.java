@@ -28,7 +28,7 @@ public class BooleanConfigField extends IntegerConfigField {
     @OnlyIn(Dist.CLIENT)
     @Override
     public String getReadableValue() {
-        return getValue() == 1 ? I18n.format(onTxt) : I18n.format(offTxt);
+        return getValue() == 1 ? I18n.get(onTxt) : I18n.get(offTxt);
     }
 
     @Override

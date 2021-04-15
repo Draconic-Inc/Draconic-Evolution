@@ -23,9 +23,9 @@ public class ParticleSoulExtraction extends BCParticle {
 //        this.particleScale = 3F;
 //        this.particleTextureIndexY = 1;
         this.setColour(0, 0, 0);
-        this.motionX = (rand.nextFloat() - 0.5F) * 0.4F;
-        this.motionY = (rand.nextFloat() - 0.5F) * 0.4F;
-        this.motionZ = (rand.nextFloat() - 0.5F) * 0.4F;
+        this.xd = (random.nextFloat() - 0.5F) * 0.4F;
+        this.yd = (random.nextFloat() - 0.5F) * 0.4F;
+        this.zd = (random.nextFloat() - 0.5F) * 0.4F;
     }
 
 //    @Override

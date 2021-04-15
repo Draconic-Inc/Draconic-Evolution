@@ -30,14 +30,14 @@ public class TestRenderLayer extends LayerRenderer<LivingEntity, EntityModel<Liv
     ModelRenderer renderOn;
     ModelRenderer.ModelBox box;
 
-    private static RenderType modelType = RenderType.getEntitySolid(new ResourceLocation(DraconicEvolution.MODID, "textures/models/block/pylon_sphere_texture.png"));
+    private static RenderType modelType = RenderType.entitySolid(new ResourceLocation(DraconicEvolution.MODID, "textures/models/block/pylon_sphere_texture.png"));
     private CCModel trackerModel;
 
     public TestRenderLayer(IEntityRenderer<LivingEntity, EntityModel<LivingEntity>> entityRenderer) {
         super(entityRenderer);
         Random rand = new Random();
 
-        model = entityRenderer.getEntityModel();
+        model = entityRenderer.getModel();
         List<ModelRenderer> rendererList = null;
 
         //Pretty sure "AgeableModel" is actually "LivingModel" because it seems to apply to all living entities regardless of whether or not that entity is actually ageable
@@ -46,12 +46,12 @@ public class TestRenderLayer extends LayerRenderer<LivingEntity, EntityModel<Liv
 //            rendererList = Lists.newArrayList(((AgeableModel<LivingEntity>)model).getBodyParts());
 //            rendererList = Lists.newArrayList(((AgeableModel<LivingEntity>) model).getHeadParts());
         } else if (model instanceof SegmentedModel) { //Because parrots have to be special...
-            rendererList = Lists.newArrayList(((SegmentedModel<LivingEntity>) model).getParts());
+            rendererList = Lists.newArrayList(((SegmentedModel<LivingEntity>) model).parts());
         }
         if (rendererList != null && !rendererList.isEmpty()) {
             renderOn = rendererList.get(rand.nextInt(rendererList.size()));
-            if (!renderOn.cubeList.isEmpty()) {
-                box = renderOn.cubeList.get(rand.nextInt(renderOn.cubeList.size()));
+            if (!renderOn.cubes.isEmpty()) {
+                box = renderOn.cubes.get(rand.nextInt(renderOn.cubes.size()));
             }
         }
 

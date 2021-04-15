@@ -27,11 +27,11 @@ public class ParticleEnergyCoreFX extends SpriteTexturedParticle {
         super(world, xPos, yPos, zPos);
         this.targetPos = targetPos;
         this.spriteSet = spriteSet;
-        setSprite(spriteSet.get(world.rand));
-        canCollide = false;
+        setSprite(spriteSet.get(world.random));
+        hasPhysics = false;
         Vec3D dir = Vec3D.getDirectionVec(new Vec3D(xPos, yPos, zPos), targetPos);
-        this.direction = Direction.getFacingFromVector((float) dir.x, (float) dir.y, (float) dir.z).getAxis();
-        maxAge = 20;
+        this.direction = Direction.getNearest((float) dir.x, (float) dir.y, (float) dir.z).getAxis();
+        lifetime = 20;
     }
 
     @Override
@@ -42,12 +42,12 @@ public class ParticleEnergyCoreFX extends SpriteTexturedParticle {
     @Override
     public void tick() {
         BCProfiler.TICK.start("core_fx_update");
-        this.prevPosX = this.posX;
-        this.prevPosY = this.posY;
-        this.prevPosZ = this.posZ;
+        this.xo = this.x;
+        this.yo = this.y;
+        this.zo = this.z;
 
         Vec3D tPos = this.targetPos.copy();
-        setSprite(spriteSet.get(world.rand));
+        setSprite(spriteSet.get(level.random));
 
         if (toCore) {
             double rotation = ClientEventHandler.elapsedTicks;
@@ -66,15 +66,15 @@ public class ParticleEnergyCoreFX extends SpriteTexturedParticle {
             }
         }
 
-        Vec3D dir = Vec3D.getDirectionVec(new Vec3D(posX, posY, posZ), tPos);
+        Vec3D dir = Vec3D.getDirectionVec(new Vec3D(x, y, z), tPos);
         double speed = (toCore ? 0.5D : 0.25D);
-        motionX = dir.x * speed;
-        motionY = dir.y * speed;
-        motionZ = dir.z * speed;
-        move(motionX, motionY, motionZ);
+        xd = dir.x * speed;
+        yd = dir.y * speed;
+        zd = dir.z * speed;
+        move(xd, yd, zd);
 
-        if (age++ > maxAge || Utils.getDistanceAtoB(posX, posY, posZ, tPos.x, tPos.y, tPos.z) < 0.2) {
-            setExpired();
+        if (age++ > lifetime || Utils.getDistanceAtoB(x, y, z, tPos.x, tPos.y, tPos.z) < 0.2) {
+            remove();
         }
         BCProfiler.TICK.stop();
     }
@@ -87,12 +87,12 @@ public class ParticleEnergyCoreFX extends SpriteTexturedParticle {
         }
 
         @Override
-        public Particle makeParticle(IntParticleType.IntParticleData data, ClientWorld world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public Particle createParticle(IntParticleType.IntParticleData data, ClientWorld world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
             ParticleEnergyCoreFX particle = new ParticleEnergyCoreFX(world, x, y, z, new Vec3D(xSpeed, ySpeed, zSpeed), spriteSet);
             particle.toCore = data.get().length >= 1 && data.get()[0] == 1;
             particle.startRotation = data.get().length >= 2 ? data.get()[1] : 0;
             particle.isLargeStabilizer = data.get().length >= 3 && data.get()[2] == 1;
-            particle.multiplyParticleScaleBy(particle.isLargeStabilizer ? 2 : 1);
+            particle.scale(particle.isLargeStabilizer ? 2 : 1);
             return particle;
         }
     }

@@ -86,7 +86,7 @@ public class GuiGrinder extends ModularGuiContainer<ContainerBCTile<TileGrinder>
         PopoutDialog popOutDialog = new PopoutDialog(bg);
         popOutDialog.onReload(e -> e.setPosAndSize(bg));
         popOutDialog.addChild(filterUI);
-        popOutDialog.addChild(new GuiLabel(I18n.format("gui_tkt.brandonscore.click_out_close")).onReload(e -> e.setYPos(bg.maxYPos()).setXPos(bg.xPos()).setSize(200, 12)).setAlignment(GuiAlign.LEFT));
+        popOutDialog.addChild(new GuiLabel(I18n.get("gui_tkt.brandonscore.click_out_close")).onReload(e -> e.setYPos(bg.maxYPos()).setXPos(bg.xPos()).setSize(200, 12)).setAlignment(GuiAlign.LEFT));
 
         GuiButton largeView = toolkit.createResizeButton(bg);
         largeView.setPos(filterBG.maxXPos() + 1, filterBG.maxYPos() - 12);
@@ -109,8 +109,8 @@ public class GuiGrinder extends ModularGuiContainer<ContainerBCTile<TileGrinder>
 
         //UI Buttons
         GuiButton aoeSize = toolkit.createButton("", bg);
-        aoeSize.setHoverText(I18n.format("gui.draconicevolution.grinder.aoe.info"));
-        aoeSize.setDisplaySupplier(() -> I18n.format("gui.draconicevolution.grinder.aoe") + " " + getAOEString());
+        aoeSize.setHoverText(I18n.get("gui.draconicevolution.grinder.aoe.info"));
+        aoeSize.setDisplaySupplier(() -> I18n.get("gui.draconicevolution.grinder.aoe") + " " + getAOEString());
         aoeSize.onButtonPressed((bitton) -> modifyAOE(bitton == 1 || hasShiftDown()));
         aoeSize.setPos(template.powerSlot.xPos(), invBG.yPos()).setYSize(14).setMaxXPos(invBG.xPos() - 2, true);
 
@@ -120,42 +120,42 @@ public class GuiGrinder extends ModularGuiContainer<ContainerBCTile<TileGrinder>
         showAOE.setPos(template.powerSlot.xPos(), aoeSize.maxYPos() + 2).setSize(aoeSize);
 
         GuiButton collectItems = toolkit.createButton("gui.draconicevolution.grinder.collect.items", bg);
-        collectItems.setHoverText(I18n.format("gui.draconicevolution.grinder.collect.items.info"));
+        collectItems.setHoverText(I18n.get("gui.draconicevolution.grinder.collect.items.info"));
         collectItems.onPressed(tile.collectItems::invert);
         collectItems.setToggleMode(true).setToggleStateSupplier(tile.collectItems::get);
         collectItems.setPos(template.powerSlot.xPos(), showAOE.maxYPos() + 2).setSize(aoeSize);
 
         GuiButton collectXP = toolkit.createButton("gui.draconicevolution.grinder.collect.xp", bg);
-        collectXP.setHoverText(I18n.format("gui.draconicevolution.grinder.collect.xp.info"));
+        collectXP.setHoverText(I18n.get("gui.draconicevolution.grinder.collect.xp.info"));
         collectXP.onPressed(tile.collectXP::invert);
         collectXP.setToggleMode(true).setToggleStateSupplier(tile.collectXP::get);
         collectXP.setPos(template.powerSlot.xPos(), collectItems.maxYPos() + 2).setSize(aoeSize);
 
         GuiButton claimXP = toolkit.createButton("gui.draconicevolution.grinder.claim.xp", bg);
         claimXP.onPressed(() -> tile.sendPacketToServer(output -> output.writeByte(0), 1));
-        claimXP.setHoverText(I18n.format("gui.draconicevolution.grinder.claim.xp.info"));
+        claimXP.setHoverText(I18n.get("gui.draconicevolution.grinder.claim.xp.info"));
         claimXP.setPos(template.powerSlot.xPos(), collectXP.maxYPos() + 2).setSize(aoeSize).setYSize(14);
 
         GuiButton level = toolkit.createButton("1L", bg);
         level.onPressed(() -> tile.sendPacketToServer(output -> output.writeByte(1), 1));
         level.setSize(claimXP.xSize() / 3, 12).setTrim(false);
-        level.setHoverText(I18n.format("gui.draconicevolution.grinder.claim.xp.level.info"));
+        level.setHoverText(I18n.get("gui.draconicevolution.grinder.claim.xp.level.info"));
         toolkit.placeOutside(level, claimXP, GuiToolkit.LayoutPos.BOTTOM_LEFT, level.xSize(), 0);
 
         GuiButton level5 = toolkit.createButton("5L", bg);
         level5.onPressed(() -> tile.sendPacketToServer(output -> output.writeByte(2), 1));
         level5.setSize(claimXP.xSize() / 3, 12).setTrim(false);
-        level5.setHoverText(I18n.format("gui.draconicevolution.grinder.claim.xp.levels.info", "5"));
+        level5.setHoverText(I18n.get("gui.draconicevolution.grinder.claim.xp.levels.info", "5"));
         toolkit.placeOutside(level5, claimXP, GuiToolkit.LayoutPos.BOTTOM_CENTER, 0, 0);
 
         GuiButton level10 = toolkit.createButton("10L", bg);
         level10.onPressed(() -> tile.sendPacketToServer(output -> output.writeByte(3), 1));
         level10.setSize(claimXP.xSize() / 3, 12).setTrim(false);
-        level10.setHoverText(I18n.format("gui.draconicevolution.grinder.claim.xp.levels.info", "10"));
+        level10.setHoverText(I18n.get("gui.draconicevolution.grinder.claim.xp.levels.info", "10"));
         toolkit.placeOutside(level10, claimXP, GuiToolkit.LayoutPos.BOTTOM_RIGHT, -level10.xSize(), 0);
 
         //Info Panel
-        template.infoPanel.addLabeledValue(GOLD + I18n.format("gui.draconicevolution.grinder.stored_xp"), 6, 11, () -> GRAY + "" + tile.storedXP.get() + " " + I18n.format("gui.draconicevolution.grinder.stored_xp.raw"), true);
+        template.infoPanel.addLabeledValue(GOLD + I18n.get("gui.draconicevolution.grinder.stored_xp"), 6, 11, () -> GRAY + "" + tile.storedXP.get() + " " + I18n.get("gui.draconicevolution.grinder.stored_xp.raw"), true);
     }
 
     private String getAOEString() {

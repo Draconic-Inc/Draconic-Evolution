@@ -27,40 +27,40 @@ public class ModelContributorWings extends Model {
 
     public ModelContributorWings(Function<ResourceLocation, RenderType> renderTypeIn) {
         super(renderTypeIn);
-        this.textureWidth = 32;
-        this.textureHeight = 32;
+        this.texWidth = 32;
+        this.texHeight = 32;
         this.leftWingOuter = new ModelRenderer(this, 0, 18);
         this.leftWingOuter.mirror = true;
-        this.leftWingOuter.setRotationPoint(0.5F, 0.0F, 0.0F);
+        this.leftWingOuter.setPos(0.5F, 0.0F, 0.0F);
 //        this.leftWingOuter.addBox(-0.5F, 0.5F, 0.0F, 15, 14, 0, 0.0F);
 //        this.leftWingOuter.cubeList.add(new ModelBoxFace(leftWingOuter, leftWingOuter.textureOffsetX, leftWingOuter.textureOffsetY, -0.5F, 0.5F, 0.0F, 15, 14, 0, 5));
         this.rightOuterStem = new ModelRenderer(this, 0, 2);
-        this.rightOuterStem.setRotationPoint(-12.5F, 0.0F, 0.0F);
+        this.rightOuterStem.setPos(-12.5F, 0.0F, 0.0F);
         this.rightOuterStem.addBox(-15.0F, -0.5F, -0.5F, 15, 1, 1, 0.0F);
         this.setRotateAngle(rightOuterStem, 0.0F, -0.6108652381980153F, 0.0F);
         this.leftWingInner = new ModelRenderer(this, 0, 4);
-        this.leftWingInner.setRotationPoint(0.0F, 0.0F, 0.0F);
+        this.leftWingInner.setPos(0.0F, 0.0F, 0.0F);
 //        this.leftWingInner.addBox(-0.5F, 0.5F, 0.0F, 13, 14, 0, 0.0F);
 //        this.leftWingInner.cubeList.add(new ModelBoxFace(leftWingInner, leftWingInner.textureOffsetX, leftWingInner.textureOffsetY, -0.5F, 0.5F, 0.0F, 13, 14, 0, 4));
         this.rightWingInner = new ModelRenderer(this, 0, 4);
         this.rightWingInner.mirror = true;
-        this.rightWingInner.setRotationPoint(0.0F, 0.0F, 0.0F);
+        this.rightWingInner.setPos(0.0F, 0.0F, 0.0F);
 //        this.rightWingInner.addBox(-12.5F, 0.5F, 0.0F, 13, 14, 0, 0.0F);
 //        this.rightWingInner.cubeList.add(new ModelBoxFace(rightWingInner, rightWingInner.textureOffsetX, rightWingInner.textureOffsetY, -12.5F, 0.5F, 0.0F, 13, 14, 0, 4));
         this.rightWingOuter = new ModelRenderer(this, 0, 18);
-        this.rightWingOuter.setRotationPoint(-0.5F, 0.0F, 0.0F);
+        this.rightWingOuter.setPos(-0.5F, 0.0F, 0.0F);
 //        this.rightWingOuter.addBox(-14.5F, 0.5F, 0.0F, 15, 14, 0, 0.0F);
 //        this.rightWingOuter.cubeList.add(new ModelBoxFace(rightWingOuter, rightWingOuter.textureOffsetX, rightWingOuter.textureOffsetY, -14.5F, 0.5F, 0.0F, 15, 14, 0, 5));
         this.leftBaseStem = new ModelRenderer(this, 0, 0);
-        this.leftBaseStem.setRotationPoint(0.5F, 1.0F, 2.0F);
+        this.leftBaseStem.setPos(0.5F, 1.0F, 2.0F);
         this.leftBaseStem.addBox(-0.5F, -0.5F, -0.5F, 13, 1, 1, 0.0F);
         this.setRotateAngle(leftBaseStem, 0.0F, -0.3490658503988659F, 0.0F);
         this.leftOuterStem = new ModelRenderer(this, 0, 2);
-        this.leftOuterStem.setRotationPoint(12.5F, 0.0F, 0.0F);
+        this.leftOuterStem.setPos(12.5F, 0.0F, 0.0F);
         this.leftOuterStem.addBox(0.0F, -0.5F, -0.5F, 15, 1, 1, 0.0F);
         this.setRotateAngle(leftOuterStem, 0.0F, 0.6108652381980153F, 0.0F);
         this.rightBaseStem = new ModelRenderer(this, 0, 0);
-        this.rightBaseStem.setRotationPoint(-0.5F, 1.0F, 2.0F);
+        this.rightBaseStem.setPos(-0.5F, 1.0F, 2.0F);
         this.rightBaseStem.addBox(-12.5F, -0.5F, -0.5F, 13, 1, 1, 0.0F);
         this.setRotateAngle(rightBaseStem, 0.0F, 0.3490658503988659F, 0.0F);
         this.leftOuterStem.addChild(this.leftWingOuter);
@@ -113,7 +113,7 @@ public class ModelContributorWings extends Model {
 //    }
 
     @Override
-    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+    public void renderToBuffer(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
 
     }
 
@@ -121,9 +121,9 @@ public class ModelContributorWings extends Model {
      * This is a helper function from Tabula to set the rotation of model parts
      */
     public void setRotateAngle(ModelRenderer ModelRenderer, float x, float y, float z) {
-        ModelRenderer.rotateAngleX = x;
-        ModelRenderer.rotateAngleY = y;
-        ModelRenderer.rotateAngleZ = z;
+        ModelRenderer.xRot = x;
+        ModelRenderer.yRot = y;
+        ModelRenderer.zRot = z;
     }
 
 }

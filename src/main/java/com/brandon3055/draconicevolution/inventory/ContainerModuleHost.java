@@ -45,11 +45,11 @@ public abstract class ContainerModuleHost<T> extends ContainerBCore<T> {
     public abstract ModuleHost getModuleHost();
 
     @Override
-    public ItemStack transferStackInSlot(PlayerEntity player, int i) {
+    public ItemStack quickMoveStack(PlayerEntity player, int i) {
         Slot slot = getSlot(i);
 
-        if (slot != null && slot.getHasStack()) {
-            ItemStack stack = slot.getStack();
+        if (slot != null && slot.hasItem()) {
+            ItemStack stack = slot.getItem();
             Module<?> module = ModuleItem.getModule(stack);
             if (module != null) {
                 ModuleEntity entity = module.createEntity();
@@ -61,7 +61,7 @@ public abstract class ContainerModuleHost<T> extends ContainerBCore<T> {
             }
         }
 
-        return super.transferStackInSlot(player, i);
+        return super.quickMoveStack(player, i);
     }
 
     @OnlyIn(Dist.CLIENT)

@@ -43,7 +43,7 @@ public class EnergyCoreStructureBlock extends BlockBCore/* implements IRenderOve
 //    }
 
     @Override
-    public BlockRenderType getRenderType(BlockState state) {
+    public BlockRenderType getRenderShape(BlockState state) {
         return BlockRenderType.INVISIBLE;
     }
 
@@ -53,7 +53,7 @@ public class EnergyCoreStructureBlock extends BlockBCore/* implements IRenderOve
 //    }
 
     @Override
-    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {}
+    public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> items) {}
 
     @Override
     public boolean hasTileEntity(BlockState state) {
@@ -77,7 +77,7 @@ public class EnergyCoreStructureBlock extends BlockBCore/* implements IRenderOve
             return;
         }
 
-        TileEntity tile = world.getTileEntity(pos);
+        TileEntity tile = world.getBlockEntity(pos);
         if (tile instanceof TileCoreStructure && ((TileCoreStructure) tile).getController() == null) {
             ((TileCoreStructure) tile).revert();
         }
@@ -89,7 +89,7 @@ public class EnergyCoreStructureBlock extends BlockBCore/* implements IRenderOve
             return;
         }
 
-        TileEntity tile = world.getTileEntity(pos);
+        TileEntity tile = world.getBlockEntity(pos);
         if (tile instanceof TileCoreStructure && ((TileCoreStructure) tile).getController() == null) {
             ((TileCoreStructure) tile).revert();
         }
@@ -106,7 +106,7 @@ public class EnergyCoreStructureBlock extends BlockBCore/* implements IRenderOve
 
     @Override
     public boolean removedByPlayer(BlockState state, World world, BlockPos pos, PlayerEntity player, boolean willHarvest, FluidState fluid) {
-        TileEntity tile = world.getTileEntity(pos);
+        TileEntity tile = world.getBlockEntity(pos);
 
         if (tile instanceof TileCoreStructure) {
             Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(((TileCoreStructure) tile).blockName.get()));
@@ -115,8 +115,8 @@ public class EnergyCoreStructureBlock extends BlockBCore/* implements IRenderOve
             if (master != null) {
                 world.removeBlock(pos, false);
                 master.validateStructure();
-                if (block != Blocks.AIR && !player.abilities.isCreativeMode) {
-                    spawnAsEntity(world, pos, new ItemStack(block));
+                if (block != Blocks.AIR && !player.abilities.instabuild) {
+                    popResource(world, pos, new ItemStack(block));
 //                    world.setBlockState(pos, block.getDefaultState());
                 }
             }
@@ -188,7 +188,7 @@ public class EnergyCoreStructureBlock extends BlockBCore/* implements IRenderOve
 
     @Override
     public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader world, BlockPos pos, PlayerEntity player) {
-        TileEntity tile = world.getTileEntity(pos);
+        TileEntity tile = world.getBlockEntity(pos);
         if (tile instanceof TileCoreStructure) {
             if (((TileCoreStructure) tile).blockName.get().equals("draconicevolution:block_draconium")) {
                 return new ItemStack(DEContent.block_draconium);
@@ -217,7 +217,7 @@ public class EnergyCoreStructureBlock extends BlockBCore/* implements IRenderOve
 
     @Override
     public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
-        TileEntity tile = world.getTileEntity(pos);
+        TileEntity tile = world.getBlockEntity(pos);
 
         if (tile instanceof TileCoreStructure && ((TileCoreStructure) tile).blockName.get().equals("draconicevolution:energy_core_stabilizer")) {
             IMultiBlockPart controller = ((TileCoreStructure) tile).getController();
@@ -226,14 +226,14 @@ public class EnergyCoreStructureBlock extends BlockBCore/* implements IRenderOve
 //                ((TileCoreStructure) tile).getDataManager().forceSync();
                 TileEnergyCoreStabilizer stabilizer = (TileEnergyCoreStabilizer) controller;
                 if (stabilizer.isValidMultiBlock.get()) {
-                    BlockState stabState = world.getBlockState(stabilizer.getPos());
-                    BlockPos offset = stabilizer.getPos().subtract(pos);
-                    return stabState.getBlock().getShape(stabState, world, stabilizer.getPos(), context).withOffset(offset.getX(), offset.getY(), offset.getZ());
+                    BlockState stabState = world.getBlockState(stabilizer.getBlockPos());
+                    BlockPos offset = stabilizer.getBlockPos().subtract(pos);
+                    return stabState.getBlock().getShape(stabState, world, stabilizer.getBlockPos(), context).move(offset.getX(), offset.getY(), offset.getZ());
                 }
             }
         }
 
-        return VoxelShapes.fullCube();
+        return VoxelShapes.block();
     }
 
 //    @Override

@@ -20,7 +20,7 @@ public class RenderCustomArrow extends EntityRenderer<EntityCustomArrow> {
     }
 
     @Override
-    public ResourceLocation getEntityTexture(EntityCustomArrow entity) {
+    public ResourceLocation getTextureLocation(EntityCustomArrow entity) {
         return entity.bowProperties.energyBolt ? ResourceHelperDE.getResource(DETextures.REACTOR_CORE) : ResourceHelperDE.getResource("items/tools/obj/arrow_common");
     }
 

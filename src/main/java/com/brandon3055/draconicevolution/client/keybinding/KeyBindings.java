@@ -98,7 +98,7 @@ public class KeyBindings {
             }
 
             KeyBinding otherBind = ((CustomContext) other).binding.get();
-            return otherBind.getKey().getKeyCode() == binding.get().getKey().getKeyCode() && otherBind.getKeyModifier() == binding.get().getKeyModifier();
+            return otherBind.getKey().getValue() == binding.get().getKey().getValue() && otherBind.getKeyModifier() == binding.get().getKeyModifier();
         }
     }
 }

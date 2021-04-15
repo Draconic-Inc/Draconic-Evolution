@@ -70,7 +70,7 @@ public class RenderModularPickaxe extends ToolRenderBase {
     }
 
     @Override
-    public boolean isSideLit() {
+    public boolean usesBlockLight() {
         return false;
     }
 }

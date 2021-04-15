@@ -43,25 +43,25 @@ public class CrystalFXWireless extends CrystalFXBase<TileCrystalWirelessIO> {
 
     public CrystalFXWireless(ClientWorld worldIn, TileCrystalWirelessIO tile, BlockPos linkTarget) {
         super(worldIn, tile);
-        this.age = worldIn.rand.nextInt(1024);
+        this.age = worldIn.random.nextInt(1024);
         this.setPosition(tile.getBeamLinkPos(linkTarget));
         this.linkTarget = linkTarget;
         BlockState state = worldIn.getBlockState(linkTarget);
         VoxelShape shape = state.getShape(worldIn, linkTarget);
-        if (shape.isEmpty()) shape = VoxelShapes.fullCube();
-        targetBB = shape.getBoundingBox();
-        targetBB.shrink(0.05);
-        setBoundingBox(new AxisAlignedBB(posX, posY, posZ, this.linkTarget.getX(), this.linkTarget.getY(), this.linkTarget.getZ()));
+        if (shape.isEmpty()) shape = VoxelShapes.block();
+        targetBB = shape.bounds();
+        targetBB.deflate(0.05);
+        setBoundingBox(new AxisAlignedBB(x, y, z, this.linkTarget.getX(), this.linkTarget.getY(), this.linkTarget.getZ()));
     }
 
     @Override
     public void tick() {
         super.tick();
         if (ticksTillDeath-- <= 0) {
-            setExpired();
+            remove();
         }
 
-        particleRed = particleGreen = particleBlue = particleAlpha = 1;
+        rCol = gCol = bCol = alpha = 1;
         powerLevel = (float) MathHelper.approachExp(powerLevel, fxState, 0.05);
 
         Iterator<PTracker> i = trackers.iterator();
@@ -74,31 +74,31 @@ public class CrystalFXWireless extends CrystalFXBase<TileCrystalWirelessIO> {
             }
         }
 
-        int ps = Minecraft.getInstance().gameSettings.particles.getId();
-        if (age % 2 == 0 && powerLevel > rand.nextFloat() && (ps == 0 || (ps == 1 && rand.nextInt(3) == 0) || (ps == 2 && rand.nextInt(10) == 0))) {
-            double travel = 50 + rand.nextInt(50);
+        int ps = Minecraft.getInstance().options.particles.getId();
+        if (age % 2 == 0 && powerLevel > random.nextFloat() && (ps == 0 || (ps == 1 && random.nextInt(3) == 0) || (ps == 2 && random.nextInt(10) == 0))) {
+            double travel = 50 + random.nextInt(50);
             travel *= (1.4F - powerLevel);
-            trackers.add(new PTracker((int) travel, new Vector3(targetBB.minX + (rand.nextDouble() * (targetBB.maxX - targetBB.minX)), targetBB.minY + (rand.nextDouble() * (targetBB.maxY - targetBB.minY)), targetBB.minZ + (rand.nextDouble() * (targetBB.maxZ - targetBB.minZ)))));
+            trackers.add(new PTracker((int) travel, new Vector3(targetBB.minX + (random.nextDouble() * (targetBB.maxX - targetBB.minX)), targetBB.minY + (random.nextDouble() * (targetBB.maxY - targetBB.minY)), targetBB.minZ + (random.nextDouble() * (targetBB.maxZ - targetBB.minZ)))));
         }
 
         age++;
     }
 
     @Override
-    public void renderParticle(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks) {
+    public void render(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks) {
         int texIndex = (ClientEventHandler.elapsedTicks) % DETextures.ENERGY_PARTICLE.length;
         TextureAtlasSprite sprite = DETextures.ENERGY_PARTICLE[texIndex];
         if (sprite == null) return;
-        float minU = sprite.getMinU();
-        float maxU = sprite.getMaxU();
-        float minV = sprite.getMinV();
-        float maxV = sprite.getMaxV();
+        float minU = sprite.getU0();
+        float maxU = sprite.getU1();
+        float minV = sprite.getV0();
+        float maxV = sprite.getV1();
 
         float scale = 0.08F;
         boolean output = !tile.inputMode.get();
 
-        Vector3d view = renderInfo.getProjectedView();
-        Vector3 source = new Vector3(posX - view.x, posY - view.y, posZ - view.z);
+        Vector3d view = renderInfo.getPosition();
+        Vector3 source = new Vector3(x - view.x, y - view.y, z - view.z);
         Vector3 target = Vector3.fromBlockPos(linkTarget).subtract(view.x, view.y, view.z);
 
         for (PTracker tracker : trackers) {
@@ -113,10 +113,10 @@ public class CrystalFXWireless extends CrystalFXBase<TileCrystalWirelessIO> {
             pathVec.add(source);
 
             Vector3f[] renderVector = getRenderVectors(renderInfo, (float) pathVec.x, (float) pathVec.y, (float) pathVec.z, scale);
-            buffer.pos(renderVector[0].getX(), renderVector[0].getY(), renderVector[0].getZ()).tex(maxU, maxV).endVertex();
-            buffer.pos(renderVector[1].getX(), renderVector[1].getY(), renderVector[1].getZ()).tex(maxU, minV).endVertex();
-            buffer.pos(renderVector[2].getX(), renderVector[2].getY(), renderVector[2].getZ()).tex(minU, minV).endVertex();
-            buffer.pos(renderVector[3].getX(), renderVector[3].getY(), renderVector[3].getZ()).tex(minU, maxV).endVertex();
+            buffer.vertex(renderVector[0].x(), renderVector[0].y(), renderVector[0].z()).uv(maxU, maxV).endVertex();
+            buffer.vertex(renderVector[1].x(), renderVector[1].y(), renderVector[1].z()).uv(maxU, minV).endVertex();
+            buffer.vertex(renderVector[2].x(), renderVector[2].y(), renderVector[2].z()).uv(minU, minV).endVertex();
+            buffer.vertex(renderVector[3].x(), renderVector[3].y(), renderVector[3].z()).uv(minU, maxV).endVertex();
         }
     }
 
@@ -138,9 +138,9 @@ public class CrystalFXWireless extends CrystalFXBase<TileCrystalWirelessIO> {
         }
 
         @Override
-        public void beginRender(BufferBuilder builder, TextureManager textureManager) {
+        public void begin(BufferBuilder builder, TextureManager textureManager) {
             RenderSystem.color4f(0.0F, 1.0F, 1.0F, 1.0F);
-            textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+            textureManager.bind(AtlasTexture.LOCATION_BLOCKS);
 
             RenderSystem.depthMask(false);
             RenderSystem.alphaFunc(516, 0.003921569F);
@@ -152,8 +152,8 @@ public class CrystalFXWireless extends CrystalFXBase<TileCrystalWirelessIO> {
         }
 
         @Override
-        public void finishRender(Tessellator tessellator) {
-            tessellator.draw();
+        public void end(Tessellator tessellator) {
+            tessellator.end();
             RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
         }
     }

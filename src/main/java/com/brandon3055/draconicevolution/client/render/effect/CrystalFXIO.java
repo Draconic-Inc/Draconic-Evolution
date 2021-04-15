@@ -26,41 +26,41 @@ public class CrystalFXIO extends CrystalFXBase<TileCrystalBase> {
 
     public CrystalFXIO(ClientWorld worldIn, TileCrystalBase tile) {
         super(worldIn, tile);
-        this.age = worldIn.rand.nextInt(1024);
-        this.rSeed = tile.getPos().toLong();
+        this.age = worldIn.random.nextInt(1024);
+        this.rSeed = tile.getBlockPos().asLong();
     }
 
     @Override
     public void tick() {
         super.tick();
         if (ticksTillDeath-- <= 0) {
-            setExpired();
+            remove();
         }
 
         float[] r = {0.0F, 0.8F, 1.0F};
         float[] g = {0.8F, 0.1F, 0.7F};
         float[] b = {1F, 1F, 0.2F};
 
-        particleRed = r[tile.getTier()];
-        particleGreen = g[tile.getTier()];
-        particleBlue = b[tile.getTier()];
+        rCol = r[tile.getTier()];
+        gCol = g[tile.getTier()];
+        bCol = b[tile.getTier()];
     }
 
     @Override
-    public void renderParticle(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks) {
+    public void render(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks) {
         if (!renderEnabled) {
             return;
         }
 
-        Vector3d viewVec = renderInfo.getProjectedView();
-        float viewX = (float) (this.posX - viewVec.getX());
-        float viewY = (float) (this.posY - viewVec.getY());
-        float viewZ = (float) (this.posZ - viewVec.getZ());
+        Vector3d viewVec = renderInfo.getPosition();
+        float viewX = (float) (this.x - viewVec.x());
+        float viewY = (float) (this.y - viewVec.y());
+        float viewZ = (float) (this.z - viewVec.z());
         Vector3f[] renderVector = getRenderVectors(renderInfo, viewX, viewY, viewZ, 0.2F);
-        buffer.pos(renderVector[0].getX(), renderVector[0].getY(), renderVector[0].getZ()).tex(0.5F, 0.5F).endVertex();
-        buffer.pos(renderVector[1].getX(), renderVector[1].getY(), renderVector[1].getZ()).tex(0.5F, 0.0F).endVertex();
-        buffer.pos(renderVector[2].getX(), renderVector[2].getY(), renderVector[2].getZ()).tex(0.0F, 0.0F).endVertex();
-        buffer.pos(renderVector[3].getX(), renderVector[3].getY(), renderVector[3].getZ()).tex(0.0F, 0.5F).endVertex();
+        buffer.vertex(renderVector[0].x(), renderVector[0].y(), renderVector[0].z()).uv(0.5F, 0.5F).endVertex();
+        buffer.vertex(renderVector[1].x(), renderVector[1].y(), renderVector[1].z()).uv(0.5F, 0.0F).endVertex();
+        buffer.vertex(renderVector[2].x(), renderVector[2].y(), renderVector[2].z()).uv(0.0F, 0.0F).endVertex();
+        buffer.vertex(renderVector[3].x(), renderVector[3].y(), renderVector[3].z()).uv(0.0F, 0.5F).endVertex();
     }
 
     @Override
@@ -81,7 +81,7 @@ public class CrystalFXIO extends CrystalFXBase<TileCrystalBase> {
         }
 
         @Override
-        public void beginRender(BufferBuilder builder, TextureManager textureManager) {
+        public void begin(BufferBuilder builder, TextureManager textureManager) {
             RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
             ResourceHelperDE.bindTexture(texture);
 
@@ -95,8 +95,8 @@ public class CrystalFXIO extends CrystalFXBase<TileCrystalBase> {
         }
 
         @Override
-        public void finishRender(Tessellator tessellator) {
-            tessellator.draw();
+        public void end(Tessellator tessellator) {
+            tessellator.end();
         }
     }
 }

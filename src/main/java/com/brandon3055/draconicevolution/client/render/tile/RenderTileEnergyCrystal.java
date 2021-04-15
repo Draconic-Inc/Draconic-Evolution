@@ -62,17 +62,17 @@ public class RenderTileEnergyCrystal extends TileEntityRenderer<TileCrystalBase>
                     .uniform("type", UniformType.INT)
                     .uniform("angle", UniformType.VEC2)
             )
-            .whenUsed(cache -> cache.glUniform1f("time", (ClientEventHandler.elapsedTicks + Minecraft.getInstance().getRenderPartialTicks()) / 50))
+            .whenUsed(cache -> cache.glUniform1f("time", (ClientEventHandler.elapsedTicks + Minecraft.getInstance().getFrameTime()) / 50))
             .build();
 
 
-    private static final RenderType fallBackType = RenderType.makeType("fall_back_type", DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP, GL11.GL_QUADS, 256, RenderType.State.getBuilder()
-            .texture(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/models/crystal_no_shader.png"), false, false))
-            .texturing(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
-            .build(false)
+    private static final RenderType fallBackType = RenderType.create("fall_back_type", DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP, GL11.GL_QUADS, 256, RenderType.State.builder()
+            .setTextureState(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/models/crystal_no_shader.png"), false, false))
+            .setTexturingState(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
+            .createCompositeState(false)
     );
-    private static final RenderType fallBackOverlayType = RenderType.getEntityTranslucent(new ResourceLocation(DraconicEvolution.MODID, "textures/models/crystal_base.png"));
-    private static final RenderType crystalBaseType = RenderType.getEntitySolid(new ResourceLocation(DraconicEvolution.MODID, "textures/models/crystal_base.png"));
+    private static final RenderType fallBackOverlayType = RenderType.entityTranslucent(new ResourceLocation(DraconicEvolution.MODID, "textures/models/crystal_base.png"));
+    private static final RenderType crystalBaseType = RenderType.entitySolid(new ResourceLocation(DraconicEvolution.MODID, "textures/models/crystal_base.png"));
 
     private final CCModel crystalFull;
     private final CCModel crystalHalf;
@@ -98,20 +98,20 @@ public class RenderTileEnergyCrystal extends TileEntityRenderer<TileCrystalBase>
         ccrs.overlay = packedOverlay;
 
         PlayerEntity player = Minecraft.getInstance().player;
-        double x = player.getPosX() - (te.getPos().getX() + 0.5);
-        double y = player.getPosY() - (te.getPos().getY() + 0.5);
-        double z = player.getPosZ() - (te.getPos().getZ() + 0.5);
-        BlockPos pos = te.getPos();
+        double x = player.getX() - (te.getBlockPos().getX() + 0.5);
+        double y = player.getY() - (te.getBlockPos().getY() + 0.5);
+        double z = player.getZ() - (te.getBlockPos().getZ() + 0.5);
+        BlockPos pos = te.getBlockPos();
         double mm = MathHelper.clip((((x * x) + (y * y) + (z * z) - 5) / 512), 0, 1);
         float xrot = (float) Math.atan2(x + 0.5, z + 0.5);
-        float dist = (float) Utils.getDistanceAtoB(Vec3D.getCenter(pos).x, Vec3D.getCenter(pos).z, Minecraft.getInstance().player.getPosX(), Minecraft.getInstance().player.getPosZ());
+        float dist = (float) Utils.getDistanceAtoB(Vec3D.getCenter(pos).x, Vec3D.getCenter(pos).z, Minecraft.getInstance().player.getX(), Minecraft.getInstance().player.getZ());
         float yrot = (float) net.minecraft.util.math.MathHelper.atan2(dist, y + 0.5);
 
         if (te instanceof TileCrystalDirectIO) {
             ccrs.bind(crystalBaseType, getter);
             mat.translate(0.5, 1, 0.5);
             mat.scale(-0.5);
-            mat.apply(Rotation.sideOrientation(((TileCrystalDirectIO) te).facing.get().getOpposite().getIndex(), 0).at(new Vector3(0, 1, 0)));
+            mat.apply(Rotation.sideOrientation(((TileCrystalDirectIO) te).facing.get().getOpposite().get3DDataValue(), 0).at(new Vector3(0, 1, 0)));
             crystalBase.render(ccrs, mat);
 
             mat.rotate((ClientEventHandler.elapsedTicks + partialTicks) / 400F, new Vector3(0, 1, 0));
@@ -153,7 +153,7 @@ public class RenderTileEnergyCrystal extends TileEntityRenderer<TileCrystalBase>
         }
 
         if (getter instanceof IRenderTypeBuffer.Impl) {
-            ((IRenderTypeBuffer.Impl) getter).finish();
+            ((IRenderTypeBuffer.Impl) getter).endBatch();
         }
     }
 

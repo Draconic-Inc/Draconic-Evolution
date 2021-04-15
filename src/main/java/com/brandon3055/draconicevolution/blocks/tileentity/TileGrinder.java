@@ -97,7 +97,7 @@ public class TileGrinder extends TileBCore implements ITickableTileEntity, IRSSw
         setupPowerSlot(itemHandler, 0, opStorage, false);
 
         entityFilter = new EntityFilter(true, HOSTILE, TAMED, ADULTS, ENTITY_TYPE, FILTER_GROUP, PLAYER);
-        entityFilter.setDirtyHandler(this::markDirty);
+        entityFilter.setDirtyHandler(this::setChanged);
         entityFilter.setTypePredicate(e -> e != PLAYER || DEOldConfig.allowGrindingPlayers);
         entityFilter.setupServerPacketHandling(() -> createClientBoundPacket(0), packet -> sendPacketToClients(getAccessingPlayers(), packet));
         entityFilter.setupClientPacketHandling(() -> createServerBoundPacket(0), packetCustom -> BrandonsCore.proxy.sendToServer(packetCustom));
@@ -126,7 +126,7 @@ public class TileGrinder extends TileBCore implements ITickableTileEntity, IRSSw
     public void tick() {
         super.tick();
 
-        if (world.isRemote) {
+        if (level.isClientSide) {
             if (animA < 1) animA += getAnimSpeed();
             else targetA = null;
             if (animB < 1) animB += getAnimSpeed();
@@ -174,20 +174,20 @@ public class TileGrinder extends TileBCore implements ITickableTileEntity, IRSSw
             isActive = false;
         }
 
-        world.setBlockState(pos, world.getBlockState(pos).with(Grinder.ACTIVE, isActive));
+        level.setBlockAndUpdate(worldPosition, level.getBlockState(worldPosition).setValue(Grinder.ACTIVE, isActive));
         return active.set(isActive);
     }
 
     public void validateKillZone(boolean forceReCalc) {
         if (forceReCalc || killZone == null) {
-            BlockState state = world.getBlockState(pos);
-            Direction facing = state.get(Grinder.FACING);
+            BlockState state = level.getBlockState(worldPosition);
+            Direction facing = state.getValue(Grinder.FACING);
 //            LogHelper.dev("Update Kill Zone: " + facing);
             int aoe = this.aoe.get();
-            BlockPos pos1 = pos.add(-(aoe - 1), -(aoe - 1), -(aoe - 1));
-            BlockPos pos2 = pos.add(aoe, aoe, aoe);
-            pos1 = pos1.add(facing.getXOffset() * aoe, 0, facing.getZOffset() * aoe);
-            pos2 = pos2.add(facing.getXOffset() * aoe, 0, facing.getZOffset() * aoe);
+            BlockPos pos1 = worldPosition.offset(-(aoe - 1), -(aoe - 1), -(aoe - 1));
+            BlockPos pos2 = worldPosition.offset(aoe, aoe, aoe);
+            pos1 = pos1.offset(facing.getStepX() * aoe, 0, facing.getStepZ() * aoe);
+            pos2 = pos2.offset(facing.getStepX() * aoe, 0, facing.getStepZ() * aoe);
             killZone = new AxisAlignedBB(pos1, pos2);
         }
     }
@@ -198,10 +198,10 @@ public class TileGrinder extends TileBCore implements ITickableTileEntity, IRSSw
         }
 
         ItemStack weapon = itemHandler.getStackInSlot(1);
-        if (weapon.isEmpty() || weapon.getDamage() >= weapon.getMaxDamage() - 1) {
+        if (weapon.isEmpty() || weapon.getDamageValue() >= weapon.getMaxDamage() - 1) {
             weapon = ItemStack.EMPTY;
         }
-        getFakePlayer().setHeldItem(Hand.MAIN_HAND, weapon);
+        getFakePlayer().setItemInHand(Hand.MAIN_HAND, weapon);
 
         int eph = DEOldConfig.grinderEnergyPerHeart;
         float health = nextTarget.getHealth();
@@ -224,14 +224,14 @@ public class TileGrinder extends TileBCore implements ITickableTileEntity, IRSSw
 
         //Dont mess around. If we know the mob should die lets just make it die!
         float damage = willKill ? Float.MAX_VALUE : ((float) cost / (float) eph) * 1.1F;
-        DamageSource source = DamageSource.causePlayerDamage(getFakePlayer());
+        DamageSource source = DamageSource.playerAttack(getFakePlayer());
 
         //Attack the mob and enter cooldown mode for 5 ticks if successful. Else cooldown for 3 ticks.
-        if (nextTarget.attackEntityFrom(source, damage)) {
+        if (nextTarget.hurt(source, damage)) {
             if (!weapon.isEmpty()) {
                 ItemStack justInCase = weapon.copy();
-                justInCase.setDamage(justInCase.getMaxDamage() - 1);
-                weapon.damageItem(1, getFakePlayer(), fakePlayer -> itemHandler.setStackInSlot(1, justInCase));
+                justInCase.setDamageValue(justInCase.getMaxDamage() - 1);
+                weapon.hurtAndBreak(1, getFakePlayer(), fakePlayer -> itemHandler.setStackInSlot(1, justInCase));
             }
 
             LogHelper.dev("Grinder: Dealt " + damage + " damage to entity: " + nextTarget);
@@ -239,7 +239,7 @@ public class TileGrinder extends TileBCore implements ITickableTileEntity, IRSSw
             opStorage.modifyEnergyStored(-cost);
             return true;
         }
-        LogHelper.dev("Grinder: Failed to deal damage to entity: " + nextTarget.getType().getName().getString() + " Waiting 3 ticks...");
+        LogHelper.dev("Grinder: Failed to deal damage to entity: " + nextTarget.getType().getDescription().getString() + " Waiting 3 ticks...");
         if (!killZone.intersects(nextTarget.getBoundingBox())) {
             nextTarget = null;
         }
@@ -248,11 +248,11 @@ public class TileGrinder extends TileBCore implements ITickableTileEntity, IRSSw
     }
 
     private void queNextTarget() {
-        List<LivingEntity> entitiesInRange = world.getEntitiesWithinAABB(LivingEntity.class, killZone, entityFilter.predicate());
+        List<LivingEntity> entitiesInRange = level.getEntitiesOfClass(LivingEntity.class, killZone, entityFilter.predicate());
         boolean foundInvulnerable = false;
 
         while (!entitiesInRange.isEmpty()) {
-            LivingEntity randEntity = entitiesInRange.remove(world.rand.nextInt(entitiesInRange.size()));
+            LivingEntity randEntity = entitiesInRange.remove(level.random.nextInt(entitiesInRange.size()));
             if (isValidEntity(randEntity)) {
                 LogHelper.dev("Grinder: Found next target: " + randEntity);
                 if (randEntity.isInvulnerable()) {
@@ -261,8 +261,8 @@ public class TileGrinder extends TileBCore implements ITickableTileEntity, IRSSw
                 } else {
                     nextTarget = randEntity;
                     //Throw the sword!
-                    sendPacketToChunk(output -> output.writeInt(nextTarget.getEntityId()), 1);
-                    world.playSound(null, pos, SoundEvents.ITEM_TRIDENT_THROW, SoundCategory.BLOCKS, 1, 0.55F + (world.rand.nextFloat() * 0.1F));
+                    sendPacketToChunk(output -> output.writeInt(nextTarget.getId()), 1);
+                    level.playSound(null, worldPosition, SoundEvents.TRIDENT_THROW, SoundCategory.BLOCKS, 1, 0.55F + (level.random.nextFloat() * 0.1F));
                     coolDown = killRate;
                     return;
                 }
@@ -282,21 +282,21 @@ public class TileGrinder extends TileBCore implements ITickableTileEntity, IRSSw
     }
 
     private void handleLootCollection() {
-        List<ExperienceOrbEntity> xp = world.getEntitiesWithinAABB(ExperienceOrbEntity.class, killZone.grow(4, 4, 4));
+        List<ExperienceOrbEntity> xp = level.getEntitiesOfClass(ExperienceOrbEntity.class, killZone.inflate(4, 4, 4));
         for (ExperienceOrbEntity orb : xp) {
             if (!orb.isAlive()) continue;
-            if (collectXP.get() && storedXP.get() + orb.xpValue <= getXPStorageCapacity()) {
-                storedXP.add(orb.xpValue);
+            if (collectXP.get() && storedXP.get() + orb.value <= getXPStorageCapacity()) {
+                storedXP.add(orb.value);
                 orb.remove();
-            } else if (orb.xpOrbAge < 5400) {
-                orb.xpOrbAge = 5700;
+            } else if (orb.age < 5400) {
+                orb.age = 5700;
             }
         }
 
         if (collectItems.get()) {
-            List<ItemEntity> items = world.getEntitiesWithinAABB(ItemEntity.class, killZone.grow(1, 1, 1));
+            List<ItemEntity> items = level.getEntitiesOfClass(ItemEntity.class, killZone.inflate(1, 1, 1));
             for (Direction dir : Direction.values()) {
-                TileEntity target = world.getTileEntity(pos.offset(dir));
+                TileEntity target = level.getBlockEntity(worldPosition.relative(dir));
                 if (target != null) {
                     LazyOptional<IItemHandler> opCap = target.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, dir.getOpposite());
                     opCap.ifPresent(iItemHandler -> {
@@ -339,7 +339,7 @@ public class TileGrinder extends TileBCore implements ITickableTileEntity, IRSSw
                     break;
             }
             for (int i = 0; i < levels; i++) {
-                int xp = Math.min(client.xpBarCap(), storedXP.get());
+                int xp = Math.min(client.getXpNeededForNextLevel(), storedXP.get());
                 storedXP.subtract(xp);
                 client.giveExperiencePoints(xp);
             }
@@ -351,7 +351,7 @@ public class TileGrinder extends TileBCore implements ITickableTileEntity, IRSSw
     public void receivePacketFromServer(MCDataInput data, int id) {
         super.receivePacketFromServer(data, id);
         if (id == 1) {
-            Entity target = world.getEntityByID(data.readInt());
+            Entity target = level.getEntity(data.readInt());
             if (target != null) {
                 if (swordFlipFlop) {
                     targetA = target;
@@ -379,7 +379,7 @@ public class TileGrinder extends TileBCore implements ITickableTileEntity, IRSSw
 
     public FakePlayer getFakePlayer() {
         if (cachedFakePlayer == null) {
-            cachedFakePlayer = FakePlayerFactory.get((ServerWorld) world, new GameProfile(UUID.fromString("5b5689b9-e43d-4282-a42a-dc916f3616b7"), "Draconic Evolution Grinder"));
+            cachedFakePlayer = FakePlayerFactory.get((ServerWorld) level, new GameProfile(UUID.fromString("5b5689b9-e43d-4282-a42a-dc916f3616b7"), "Draconic Evolution Grinder"));
         }
         return cachedFakePlayer;
     }
@@ -404,7 +404,7 @@ public class TileGrinder extends TileBCore implements ITickableTileEntity, IRSSw
     @Override
     public boolean onBlockActivated(BlockState state, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
         if (player instanceof ServerPlayerEntity) {
-            NetworkHooks.openGui((ServerPlayerEntity) player, this, pos);
+            NetworkHooks.openGui((ServerPlayerEntity) player, this, worldPosition);
         }
         return true;
     }

@@ -29,24 +29,24 @@ public class RenderTileReactorComponent extends TileEntityRenderer<TileReactorCo
     public static final ResourceLocation REACTOR_STABILIZER_RING = new ResourceLocation(DraconicEvolution.MODID, "textures/block/reactor/reactor_stabilizer_ring.png");
     public static final ResourceLocation REACTOR_INJECTOR = new ResourceLocation(DraconicEvolution.MODID, "textures/block/reactor/model_reactor_power_injector.png");
 
-    public static ModelReactorStabilizerCore stabilizerModel = new ModelReactorStabilizerCore(RenderType::getEntitySolid);
-    public static ModelReactorStabilizerRing stabilizerRingModel = new ModelReactorStabilizerRing(RenderType::getEntitySolid);
-    public static ModelReactorEnergyInjector injectorModel = new ModelReactorEnergyInjector(RenderType::getEntitySolid);
+    public static ModelReactorStabilizerCore stabilizerModel = new ModelReactorStabilizerCore(RenderType::entitySolid);
+    public static ModelReactorStabilizerRing stabilizerRingModel = new ModelReactorStabilizerRing(RenderType::entitySolid);
+    public static ModelReactorEnergyInjector injectorModel = new ModelReactorEnergyInjector(RenderType::entitySolid);
 
     @Override
     public void render(TileReactorComponent te, float partialTicks, MatrixStack matrix, IRenderTypeBuffer getter, int packedLight, int packedOverlay) {
         matrix.translate(0.5, 0.5, 0.5);
 
         if (te.facing.get() == Direction.SOUTH) {
-            matrix.rotate(new Quaternion(0, 180, 0, true));
+            matrix.mulPose(new Quaternion(0, 180, 0, true));
         } else if (te.facing.get() == Direction.EAST) {
-            matrix.rotate(new Quaternion(0, -90, 0, true));
+            matrix.mulPose(new Quaternion(0, -90, 0, true));
         } else if (te.facing.get() == Direction.WEST) {
-            matrix.rotate(new Quaternion(0, 90, 0, true));
+            matrix.mulPose(new Quaternion(0, 90, 0, true));
         } else if (te.facing.get() == Direction.UP) {
-            matrix.rotate(new Quaternion(90, 0, 0, true));
+            matrix.mulPose(new Quaternion(90, 0, 0, true));
         } else if (te.facing.get() == Direction.DOWN) {
-            matrix.rotate(new Quaternion(-90, 0, 0, true));
+            matrix.mulPose(new Quaternion(-90, 0, 0, true));
         }
 
         if (te instanceof TileReactorStabilizer) {
@@ -62,19 +62,19 @@ public class RenderTileReactorComponent extends TileEntityRenderer<TileReactorCo
         float ringRotation = coreRotation * -0.5F;//Remember Partial Ticks here
         stabilizerModel.brightness = brightness;
         stabilizerModel.rotation = coreRotation;
-        stabilizerModel.render(matrix, getter.getBuffer(stabilizerModel.getRenderType(REACTOR_STABILIZER)), packedLight, packedOverlay, 1F, 1F, 1F, 1F);
-        matrix.rotate(new Quaternion(90, 0, 0, true));
+        stabilizerModel.renderToBuffer(matrix, getter.getBuffer(stabilizerModel.renderType(REACTOR_STABILIZER)), packedLight, packedOverlay, 1F, 1F, 1F, 1F);
+        matrix.mulPose(new Quaternion(90, 0, 0, true));
         matrix.translate(0, -0.58, 0);
 //        matrix.scale(0.95F, 0.95F, 0.95F);
-        matrix.rotate(new Quaternion(0, ringRotation, 0, true));
+        matrix.mulPose(new Quaternion(0, ringRotation, 0, true));
         stabilizerRingModel.brightness = brightness;
         stabilizerRingModel.embitterRotation = 70F;
-        stabilizerRingModel.render(matrix, getter.getBuffer(stabilizerModel.getRenderType(REACTOR_STABILIZER_RING)), packedLight, packedOverlay, 1F, 1F, 1F, 1F);
+        stabilizerRingModel.renderToBuffer(matrix, getter.getBuffer(stabilizerModel.renderType(REACTOR_STABILIZER_RING)), packedLight, packedOverlay, 1F, 1F, 1F, 1F);
     }
 
     public static void renderInjector(MatrixStack matrix, IRenderTypeBuffer getter, float brightness, int packedLight, int packedOverlay) {
         injectorModel.brightness = brightness;
-        injectorModel.render(matrix, getter.getBuffer(injectorModel.getRenderType(REACTOR_INJECTOR)), packedLight, packedOverlay, 1F, 1F, 1F, 1F);
+        injectorModel.renderToBuffer(matrix, getter.getBuffer(injectorModel.renderType(REACTOR_INJECTOR)), packedLight, packedOverlay, 1F, 1F, 1F, 1F);
     }
 
 }

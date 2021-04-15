@@ -29,12 +29,12 @@ import static net.minecraft.util.Direction.*;
  */
 public class RenderTileEnergyTransfuser extends TileEntityRenderer<TileEnergyTransfuser> {
 
-    private static final Style GALACTIC_STYLE = Style.EMPTY.setFontId(Minecraft.standardGalacticFontRenderer);
+    private static final Style GALACTIC_STYLE = Style.EMPTY.withFont(Minecraft.ALT_FONT);
     public static final ITextComponent[] TEXT = {
-            new StringTextComponent("N").mergeStyle(GALACTIC_STYLE),
-            new StringTextComponent("E").mergeStyle(GALACTIC_STYLE),
-            new StringTextComponent("S").mergeStyle(GALACTIC_STYLE),
-            new StringTextComponent("W").mergeStyle(GALACTIC_STYLE)
+            new StringTextComponent("N").withStyle(GALACTIC_STYLE),
+            new StringTextComponent("E").withStyle(GALACTIC_STYLE),
+            new StringTextComponent("S").withStyle(GALACTIC_STYLE),
+            new StringTextComponent("W").withStyle(GALACTIC_STYLE)
     };
     private static final Direction[] DIR_MAP = {NORTH, EAST, SOUTH, WEST};
 
@@ -49,27 +49,27 @@ public class RenderTileEnergyTransfuser extends TileEntityRenderer<TileEnergyTra
         mStack.translate(0.5, 0.5, 0.5);
         for (int i = 0; i < 4; i++) {
             Direction dir = DIR_MAP[i];
-            mStack.push();
-            mStack.translate(0.5 * dir.getXOffset(), 0, 0.5 * dir.getZOffset());
-            mStack.rotate(dir.getRotation());
+            mStack.pushPose();
+            mStack.translate(0.5 * dir.getStepX(), 0, 0.5 * dir.getStepZ());
+            mStack.mulPose(dir.getRotation());
 
-            mStack.push();
-            mStack.rotate(new Quaternion(90, 0, 0, true));
+            mStack.pushPose();
+            mStack.mulPose(new Quaternion(90, 0, 0, true));
             double xOffset = dir == NORTH ? 2 : dir == SOUTH ? 1 : 2.5;
             mStack.translate(0.0625 * -xOffset, 0.0625 * -3.5, 0.0625 * 1.375);
             mStack.scale(0.0625F, 0.0625F, 0.0625F);
-            mc.fontRenderer.func_238422_b_(mStack, TEXT[i].func_241878_f(), 0, 0, tile.ioModes[i].get().getColour());
-            mStack.pop();
+            mc.font.draw(mStack, TEXT[i].getVisualOrderText(), 0, 0, tile.ioModes[i].get().getColour());
+            mStack.popPose();
 
             ItemStack stack = tile.itemsCombined.getStackInSlot(i);
             if (!stack.isEmpty()) {
-                mStack.rotate(new Quaternion(90, 0, 180, true));
+                mStack.mulPose(new Quaternion(90, 0, 180, true));
                 mStack.translate(0, 0, 0.0625 * (1.5 / 2));
                 mStack.scale(0.5F, 0.5F, 0.5F);
-                Minecraft.getInstance().getItemRenderer().renderItem(stack, FIXED, packedLight, OverlayTexture.NO_OVERLAY, mStack, getter);
+                Minecraft.getInstance().getItemRenderer().renderStatic(stack, FIXED, packedLight, OverlayTexture.NO_OVERLAY, mStack, getter);
             }
 
-            mStack.pop();
+            mStack.popPose();
         }
     }
 }

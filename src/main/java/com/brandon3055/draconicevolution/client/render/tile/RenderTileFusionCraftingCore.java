@@ -27,12 +27,12 @@ public class RenderTileFusionCraftingCore extends TileEntityRenderer<TileCraftin
         ItemStack stack = !te.getStackInCore(1).isEmpty() ? te.getStackInCore(1) : te.getStackInCore(0);
         Minecraft mc = Minecraft.getInstance();
         if (!stack.isEmpty()) {
-            mStack.push();
+            mStack.pushPose();
             mStack.translate(0.5, 0.5, 0.5);
             mStack.scale(0.5F, 0.5F, 0.5F);
-            mStack.rotate(new Quaternion(0, (ClientEventHandler.elapsedTicks + partialTicks) * 0.8F, 0, true));
-            mc.getItemRenderer().renderItem(stack, FIXED, packetLight, packetOverlay, mStack, getter);
-            mStack.pop();
+            mStack.mulPose(new Quaternion(0, (ClientEventHandler.elapsedTicks + partialTicks) * 0.8F, 0, true));
+            mc.getItemRenderer().renderStatic(stack, FIXED, packetLight, packetOverlay, mStack, getter);
+            mStack.popPose();
         }
 
         ClientPlayerEntity player = mc.player;
@@ -43,9 +43,9 @@ public class RenderTileFusionCraftingCore extends TileEntityRenderer<TileCraftin
         mStack.translate(0.5, -1, 0.5);
         RenderSystem.pushMatrix();
         new Matrix4(mStack).glApply();
-        EffectTrackerFusionCrafting.interpPosX = player.lastTickPosX + (player.getPosX() - player.lastTickPosX) * (double) partialTicks;
-        EffectTrackerFusionCrafting.interpPosY = player.lastTickPosY + (player.getPosY() - player.lastTickPosY) * (double) partialTicks;
-        EffectTrackerFusionCrafting.interpPosZ = player.lastTickPosZ + (player.getPosZ() - player.lastTickPosZ) * (double) partialTicks;
+        EffectTrackerFusionCrafting.interpPosX = player.xOld + (player.getX() - player.xOld) * (double) partialTicks;
+        EffectTrackerFusionCrafting.interpPosY = player.yOld + (player.getY() - player.yOld) * (double) partialTicks;
+        EffectTrackerFusionCrafting.interpPosZ = player.zOld + (player.getZ() - player.zOld) * (double) partialTicks;
 //        te.renderEffects(partialTicks);
         RenderSystem.popMatrix();
     }

@@ -27,8 +27,8 @@ import javax.annotation.Nullable;
  */
 public class ReactorCore extends BlockBCore /*implements ITileEntityProvider, IRenderOverride*/ {
 
-    private static final VoxelShape NO_AABB = VoxelShapes.create(0.5, 0.5, 0.5, 0.5, 0.5, 0.5);
-    private static final VoxelShape AABB = VoxelShapes.create(0.25, 0.25, 0.25, 0.75, 0.75, 0.75);
+    private static final VoxelShape NO_AABB = VoxelShapes.box(0.5, 0.5, 0.5, 0.5, 0.5, 0.5);
+    private static final VoxelShape AABB = VoxelShapes.box(0.25, 0.25, 0.25, 0.75, 0.75, 0.75);
 
     public ReactorCore(Properties properties) {
         super(properties);
@@ -52,7 +52,7 @@ public class ReactorCore extends BlockBCore /*implements ITileEntityProvider, IR
 
     @Override
     public float getExplosionResistance(BlockState state, IBlockReader world, BlockPos pos, Explosion explosion) {
-        TileEntity tile = world.getTileEntity(pos);
+        TileEntity tile = world.getBlockEntity(pos);
         if (tile instanceof TileReactorCore) {
             return ((TileReactorCore) tile).reactorState.get().isShieldActive() ? 6000000.0F : super.getExplosionResistance(state, world, pos, explosion);
         }
@@ -61,24 +61,24 @@ public class ReactorCore extends BlockBCore /*implements ITileEntityProvider, IR
     }
 
     @Override
-    public float getPlayerRelativeBlockHardness(BlockState state, PlayerEntity player, IBlockReader world, BlockPos pos) {
-        TileEntity tile = world.getTileEntity(pos);
+    public float getDestroyProgress(BlockState state, PlayerEntity player, IBlockReader world, BlockPos pos) {
+        TileEntity tile = world.getBlockEntity(pos);
         if (tile instanceof TileReactorCore) {
-            return ((TileReactorCore) tile).reactorState.get().isShieldActive() ? -1F : super.getPlayerRelativeBlockHardness(state, player, world, pos);
+            return ((TileReactorCore) tile).reactorState.get().isShieldActive() ? -1F : super.getDestroyProgress(state, player, world, pos);
         }
-        return super.getPlayerRelativeBlockHardness(state, player, world, pos);
+        return super.getDestroyProgress(state, player, world, pos);
     }
 
     //region Rendering
 
     @Override
-    public BlockRenderType getRenderType(BlockState state) {
+    public BlockRenderType getRenderShape(BlockState state) {
         return BlockRenderType.INVISIBLE;
     }
 
     @Override
     public void onBlockExploded(BlockState state, World world, BlockPos pos, Explosion explosion) {
-        TileEntity tile = world.getTileEntity(pos);
+        TileEntity tile = world.getBlockEntity(pos);
         if (tile instanceof TileReactorCore && ((TileReactorCore) tile).reactorState.get().isShieldActive()) {
             return;
         }
@@ -86,18 +86,18 @@ public class ReactorCore extends BlockBCore /*implements ITileEntityProvider, IR
     }
 
     @Override
-    public VoxelShape getRenderShape(BlockState state, IBlockReader worldIn, BlockPos pos) {
-        return VoxelShapes.fullCube();
+    public VoxelShape getOcclusionShape(BlockState state, IBlockReader worldIn, BlockPos pos) {
+        return VoxelShapes.block();
     }
 
     @Override
-    public VoxelShape getRaytraceShape(BlockState state, IBlockReader worldIn, BlockPos pos) {
-        return VoxelShapes.fullCube();
+    public VoxelShape getInteractionShape(BlockState state, IBlockReader worldIn, BlockPos pos) {
+        return VoxelShapes.block();
     }
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
-        return VoxelShapes.fullCube();
+        return VoxelShapes.block();
     }
 
     @Override

@@ -22,14 +22,14 @@ public class TileReactorStabilizer extends TileReactorComponent /*implements*/ /
     public void tick() {
         super.tick();
 
-        if (world.isRemote) {
+        if (level.isClientSide) {
             return;
         }
 
         TileReactorCore tile = getCachedCore();
 
         if (tile != null && tile.reactorState.get() == TileReactorCore.ReactorState.RUNNING) {
-            TileEntity output = world.getTileEntity(pos.offset(facing.get().getOpposite()));
+            TileEntity output = level.getBlockEntity(worldPosition.relative(facing.get().getOpposite()));
             if (output != null && EnergyUtils.canReceiveEnergy(output, facing.get())) {
                 long sent = EnergyUtils.insertEnergy(output, tile.saturation.get(), facing.get(), false);
                 tile.saturation.subtract(sent);

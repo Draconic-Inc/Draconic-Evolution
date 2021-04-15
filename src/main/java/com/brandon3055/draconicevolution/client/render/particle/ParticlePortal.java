@@ -22,10 +22,10 @@ public class ParticlePortal extends BCParticle {
         super(worldIn, pos, new Vec3D(0, 0, 0));
         this.start = pos;
         this.target = target;
-        float speed = 0.12F + (rand.nextFloat() * 0.2F);
-        this.motionX = (target.x - start.x) * speed;
-        this.motionY = (target.y - start.y) * speed;
-        this.motionZ = (target.z - start.z) * speed;
+        float speed = 0.12F + (random.nextFloat() * 0.2F);
+        this.xd = (target.x - start.x) * speed;
+        this.yd = (target.y - start.y) * speed;
+        this.zd = (target.z - start.z) * speed;
 //        this.particleMaxAge = 120;
 //        this.particleRed = this.particleGreen = this.particleBlue = 1.0f;
 //        float baseSize = 0.05F + ((float) Minecraft.getInstance().player.getDistance(pos.x, pos.y, pos.z)) * 0.007F;

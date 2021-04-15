@@ -30,21 +30,21 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class GuardianCrystalEntity extends Entity {
-   private static final DataParameter<Optional<BlockPos>> BEAM_TARGET = EntityDataManager.createKey(GuardianCrystalEntity.class, DataSerializers.OPTIONAL_BLOCK_POS);
-   private static final DataParameter<Boolean> SHOW_BOTTOM = EntityDataManager.createKey(GuardianCrystalEntity.class, DataSerializers.BOOLEAN);
+   private static final DataParameter<Optional<BlockPos>> BEAM_TARGET = EntityDataManager.defineId(GuardianCrystalEntity.class, DataSerializers.OPTIONAL_BLOCK_POS);
+   private static final DataParameter<Boolean> SHOW_BOTTOM = EntityDataManager.defineId(GuardianCrystalEntity.class, DataSerializers.BOOLEAN);
    private UUID managerId;
    public int innerRotation;
 
    public GuardianCrystalEntity(EntityType<?> type, World world) {
       super(type, world);
-      this.preventEntitySpawning = true;
-      this.innerRotation = this.rand.nextInt(100000);
+      this.blocksBuilding = true;
+      this.innerRotation = this.random.nextInt(100000);
    }
 
    public GuardianCrystalEntity(World worldIn, double x, double y, double z, UUID managerId) {
       this(DEContent.guardianCrystal, worldIn);
       this.managerId = managerId;
-      this.setPosition(x, y, z);
+      this.setPos(x, y, z);
    }
 
    public UUID getManagerId() {
@@ -56,39 +56,39 @@ public class GuardianCrystalEntity extends Entity {
    }
 
    @Override
-   protected boolean canTriggerWalking() {
+   protected boolean isMovementNoisy() {
       return false;
    }
 
    @Override
-   protected void registerData() {
-      this.getDataManager().register(BEAM_TARGET, Optional.empty());
-      this.getDataManager().register(SHOW_BOTTOM, true);
+   protected void defineSynchedData() {
+      this.getEntityData().define(BEAM_TARGET, Optional.empty());
+      this.getEntityData().define(SHOW_BOTTOM, true);
    }
 
    @Override
    public void tick() {
       ++this.innerRotation;
-      if (this.world instanceof ServerWorld) {
-         BlockPos blockpos = this.getPosition();
-         if (((ServerWorld)this.world).func_241110_C_() != null && this.world.getBlockState(blockpos).isAir()) {
-            this.world.setBlockState(blockpos, AbstractFireBlock.getFireForPlacement(this.world, blockpos));
+      if (this.level instanceof ServerWorld) {
+         BlockPos blockpos = this.blockPosition();
+         if (((ServerWorld)this.level).dragonFight() != null && this.level.getBlockState(blockpos).isAir()) {
+            this.level.setBlockAndUpdate(blockpos, AbstractFireBlock.getState(this.level, blockpos));
          }
       }
    }
 
    @Override
-   protected void writeAdditional(CompoundNBT compound) {
+   protected void addAdditionalSaveData(CompoundNBT compound) {
       if (this.getBeamTarget() != null) {
          compound.put("BeamTarget", NBTUtil.writeBlockPos(this.getBeamTarget()));
       }
 
       compound.putBoolean("ShowBottom", this.shouldShowBottom());
-      compound.putUniqueId("manager_id", managerId);
+      compound.putUUID("manager_id", managerId);
    }
 
    @Override
-   protected void readAdditional(CompoundNBT compound) {
+   protected void readAdditionalSaveData(CompoundNBT compound) {
       if (compound.contains("BeamTarget", 10)) {
          this.setBeamTarget(NBTUtil.readBlockPos(compound.getCompound("BeamTarget")));
       }
@@ -96,25 +96,25 @@ public class GuardianCrystalEntity extends Entity {
       if (compound.contains("ShowBottom", 1)) {
          this.setShowBottom(compound.getBoolean("ShowBottom"));
       }
-      managerId = compound.getUniqueId("manager_id");
+      managerId = compound.getUUID("manager_id");
    }
 
    @Override
-   public boolean canBeCollidedWith() {
+   public boolean isPickable() {
       return true;
    }
 
    @Override
-   public boolean attackEntityFrom(DamageSource source, float amount) {
+   public boolean hurt(DamageSource source, float amount) {
       if (this.isInvulnerableTo(source)) {
          return false;
-      } else if (source.getTrueSource() instanceof EnderDragonEntity) {
+      } else if (source.getEntity() instanceof EnderDragonEntity) {
          return false;
       } else {
-         if (!this.removed && !this.world.isRemote) {
+         if (!this.removed && !this.level.isClientSide) {
             this.remove();
             if (!source.isExplosion()) {
-               this.world.createExplosion((Entity)null, this.getPosX(), this.getPosY(), this.getPosZ(), 10.0F, Explosion.Mode.DESTROY);
+               this.level.explode((Entity)null, this.getX(), this.getY(), this.getZ(), 10.0F, Explosion.Mode.DESTROY);
             }
 
             this.onCrystalDestroyed(source);
@@ -125,14 +125,14 @@ public class GuardianCrystalEntity extends Entity {
    }
 
    @Override
-   public void onKillCommand() {
+   public void kill() {
       this.onCrystalDestroyed(DamageSource.GENERIC);
-      super.onKillCommand();
+      super.kill();
    }
 
    private void onCrystalDestroyed(DamageSource source) {
-      if (world instanceof ServerWorld && managerId != null) {
-         WorldEntity worldEntity = WorldEntityHandler.getWorldEntity(world, managerId);
+      if (level instanceof ServerWorld && managerId != null) {
+         WorldEntity worldEntity = WorldEntityHandler.getWorldEntity(level, managerId);
          if (worldEntity instanceof GuardianFightManager) {
             ((GuardianFightManager) worldEntity).onCrystalDestroyed(this, source);
          }
@@ -141,30 +141,30 @@ public class GuardianCrystalEntity extends Entity {
    }
 
    public void setBeamTarget(@Nullable BlockPos beamTarget) {
-      this.getDataManager().set(BEAM_TARGET, Optional.ofNullable(beamTarget));
+      this.getEntityData().set(BEAM_TARGET, Optional.ofNullable(beamTarget));
    }
 
    @Nullable
    public BlockPos getBeamTarget() {
-      return this.getDataManager().get(BEAM_TARGET).orElse((BlockPos)null);
+      return this.getEntityData().get(BEAM_TARGET).orElse((BlockPos)null);
    }
 
    public void setShowBottom(boolean showBottom) {
-      this.getDataManager().set(SHOW_BOTTOM, showBottom);
+      this.getEntityData().set(SHOW_BOTTOM, showBottom);
    }
 
    public boolean shouldShowBottom() {
-      return this.getDataManager().get(SHOW_BOTTOM);
+      return this.getEntityData().get(SHOW_BOTTOM);
    }
 
    @Override
    @OnlyIn(Dist.CLIENT)
-   public boolean isInRangeToRenderDist(double distance) {
-      return super.isInRangeToRenderDist(distance) || this.getBeamTarget() != null;
+   public boolean shouldRenderAtSqrDistance(double distance) {
+      return super.shouldRenderAtSqrDistance(distance) || this.getBeamTarget() != null;
    }
 
    @Override
-   public IPacket<?> createSpawnPacket() {
+   public IPacket<?> getAddEntityPacket() {
       return NetworkHooks.getEntitySpawningPacket(this);
    }
 }

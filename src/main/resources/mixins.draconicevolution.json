@@ -6,13 +6,8 @@
 	"target": "@env(DEFAULT)",
 	"compatibilityLevel": "JAVA_8",
 	"mixins" : [
-		"PlayerEntityMixin",
-		"ChunkMixin",
-		"ChunkManagerMixin",
-		"ServerWorldMixin"
 	],
 	"client" : [
-		"ClientPlayNetHandlerMixin",
 		"PlayerModelMixin"
 	]
 }

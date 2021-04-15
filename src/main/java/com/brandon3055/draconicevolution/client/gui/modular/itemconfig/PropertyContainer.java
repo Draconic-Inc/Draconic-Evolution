@@ -100,15 +100,15 @@ public class PropertyContainer extends GuiManipulable {
             toggleHidden.setPos(xPos() + 2, yPos() + 2);
             toggleHidden.onPressed(this::toggleCollapsed);
             toggleHidden.setHoverText(e -> {
-                if (isPreset) return I18n.format("gui.draconicevolution.item_config.edit_preset.info");
-                else return I18n.format("gui.draconicevolution.item_config." + (collapsed ? "expand_group" : "collapse_group") + ".info");
+                if (isPreset) return I18n.get("gui.draconicevolution.item_config.edit_preset.info");
+                else return I18n.get("gui.draconicevolution.item_config." + (collapsed ? "expand_group" : "collapse_group") + ".info");
             });
 
             GuiElement<?> dragZone = gui.toolkit.createHighlightIcon(this, 8, 8, 2, 2, () -> {
                 return Screen.hasShiftDown() ? BCSprites.getThemed("copy") : Screen.hasControlDown() ? BCSprites.get("delete") : BCSprites.getThemed("reposition");
             }, e -> e.getHoverTime() > 0 || dragPos);
             dragZone.setHoverText(e -> {
-                return dragPos ? Collections.emptyList() : I18n.format(Screen.hasShiftDown() ? "gui.draconicevolution.item_config.copy_group.info" : Screen.hasControlDown() ? "gui.draconicevolution.item_config.delete_group.info" : "gui.draconicevolution.item_config.move_group.info");
+                return dragPos ? Collections.emptyList() : I18n.get(Screen.hasShiftDown() ? "gui.draconicevolution.item_config.copy_group.info" : Screen.hasControlDown() ? "gui.draconicevolution.item_config.delete_group.info" : "gui.draconicevolution.item_config.move_group.info");
             });
             dragZone.setHoverTextDelay(10);
             dragZone.onReload(e -> e.setMaxXPos(maxXPos() - 2, false).setYPos(yPos() + 2));
@@ -116,14 +116,14 @@ public class PropertyContainer extends GuiManipulable {
 
             GuiButton togglePreset = gui.toolkit.createIconButton(this, 8, BCSprites.themedGetter("preset_icon"));
             GuiElement<?> hoverRect = GuiToolkit.addHoverHighlight(togglePreset, 2, 2);
-            togglePreset.setHoverText(I18n.format("gui.draconicevolution.item_config.toggle_preset.info"));
+            togglePreset.setHoverText(I18n.get("gui.draconicevolution.item_config.toggle_preset.info"));
             togglePreset.onReload(e -> e.setMaxXPos(dragZone.xPos() - 2, false).setYPos(yPos() + 2));
             togglePreset.onPressed(this::togglePreset);
             togglePreset.addChild(new ThemedElements.ShadedRect(true, false).setPosAndSize(hoverRect).setEnabledCallback(() -> isPreset));
 
             GuiButton globalBinding = gui.toolkit.createIconButton(this, 8, BCSprites.themedGetter("global_key_icon"));
             hoverRect = GuiToolkit.addHoverHighlight(globalBinding, 2, 2);
-            globalBinding.setHoverText(I18n.format("gui.draconicevolution.item_config.toggle_global_binding.info"));
+            globalBinding.setHoverText(I18n.get("gui.draconicevolution.item_config.toggle_global_binding.info"));
             globalBinding.onReload(e -> e.setMaxXPos(togglePreset.xPos() - 2, false).setYPos(yPos() + 2));
             globalBinding.onPressed(() -> {
                 globalKeyBind = !globalKeyBind;
@@ -146,12 +146,12 @@ public class PropertyContainer extends GuiManipulable {
             addChild(groupName);
 
             GuiButton bindButton = gui.toolkit.createBorderlessButton(this, "");
-            bindButton.setHoverText(I18n.format("gui.draconicevolution.item_config.set_key_bind.info"));
+            bindButton.setHoverText(I18n.get("gui.draconicevolution.item_config.set_key_bind.info"));
             bindButton.setHoverTextDelay(10);
             bindButton.setYSize(12).setYPos(yPos() + 11);
             bindButton.onReload(e -> e
                     .setText(getBindingName())
-                    .setXSize(Math.min((xSize() - 3) / 2, fontRenderer.getStringWidth(bindButton.getDisplayString()) + 6))
+                    .setXSize(Math.min((xSize() - 3) / 2, fontRenderer.width(bindButton.getDisplayString()) + 6))
                     .setMaxXPos(maxXPos() - 2, false)
             );
 
@@ -198,7 +198,7 @@ public class PropertyContainer extends GuiManipulable {
             }
 
             KeyModifier activeMod = KeyModifier.getActiveModifier();
-            InputMappings.Input input = InputMappings.getInputByCode(keyCode, scanCode);
+            InputMappings.Input input = InputMappings.getKey(keyCode, scanCode);
             boundKey = input.toString();
             if (activeMod.matches(input)) {
                 reloadElement();
@@ -216,10 +216,10 @@ public class PropertyContainer extends GuiManipulable {
     }
 
     private String getBindingName() {
-        if (binding) return ">" + (boundKey.isEmpty() ? "   " : I18n.format(InputMappings.getInputByName(boundKey).getTranslationKey())) + "<";
-        else if (boundKey.isEmpty()) return I18n.format("gui.draconicevolution.item_config.not_bound");
-        InputMappings.Input keyCode = InputMappings.getInputByName(boundKey);
-        return modifier.getCombinedName(keyCode, keyCode::func_237520_d_).getString();
+        if (binding) return ">" + (boundKey.isEmpty() ? "   " : I18n.get(InputMappings.getKey(boundKey).getName())) + "<";
+        else if (boundKey.isEmpty()) return I18n.get("gui.draconicevolution.item_config.not_bound");
+        InputMappings.Input keyCode = InputMappings.getKey(boundKey);
+        return modifier.getCombinedName(keyCode, keyCode::getDisplayName).getString();
     }
 
     @Override
@@ -298,7 +298,7 @@ public class PropertyContainer extends GuiManipulable {
 
         GuiButton dragZone = gui.toolkit.createIconButton(element, 8, 8, () -> Screen.hasShiftDown() ? BCSprites.get("dark/copy") : Screen.hasControlDown() ? BCSprites.get("delete") : BCSprites.get("reposition_gray"));
         element.dragZone = dragZone;
-        dragZone.setHoverText(e -> dragPos ? Collections.emptyList() : I18n.format(Screen.hasShiftDown() ? "gui.draconicevolution.item_config.copy_group.info" : Screen.hasControlDown() ? "gui.draconicevolution.item_config.delete_group.info" : "gui.draconicevolution.item_config.move_group.info"));
+        dragZone.setHoverText(e -> dragPos ? Collections.emptyList() : I18n.get(Screen.hasShiftDown() ? "gui.draconicevolution.item_config.copy_group.info" : Screen.hasControlDown() ? "gui.draconicevolution.item_config.delete_group.info" : "gui.draconicevolution.item_config.move_group.info"));
 
         dragZone.onReload(e -> e.setMaxXPos(element.maxXPos() - 1, false).setYPos(element.yPos() + 1));
         if (!isGroup) {
@@ -343,7 +343,7 @@ public class PropertyContainer extends GuiManipulable {
     }
 
     public void inventoryUpdate() {
-        dataElementMap.keySet().forEach(e -> e.pullData(gui.getContainer(), !isPreset && !e.isGlobal));
+        dataElementMap.keySet().forEach(e -> e.pullData(gui.getMenu(), !isPreset && !e.isGlobal));
     }
 
     boolean isCopy = false;
@@ -534,14 +534,14 @@ public class PropertyContainer extends GuiManipulable {
     public boolean renderOverlayLayer(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
         if (dropTarget != null && timeSinceMove > 10) {
             if (!dropTarget.isGroup) {
-                drawHoveringTextString(Collections.singletonList(I18n.format("gui.draconicevolution.item_config.drop_create_group.info")), mouseX, mouseY, fontRenderer);
+                drawHoveringTextString(Collections.singletonList(I18n.get("gui.draconicevolution.item_config.drop_create_group.info")), mouseX, mouseY, fontRenderer);
             } else {
-                drawHoveringTextString(Collections.singletonList(I18n.format("gui.draconicevolution.item_config.add_to_group.info")), mouseX, mouseY, fontRenderer);
+                drawHoveringTextString(Collections.singletonList(I18n.get("gui.draconicevolution.item_config.add_to_group.info")), mouseX, mouseY, fontRenderer);
             }
             return true;
         }
         if (dragPos && gui.deleteZone.isMouseOver(mouseX, mouseY)) {
-            drawHoveringTextString(Collections.singletonList(I18n.format("gui.draconicevolution.item_config.drop_to_delete.info")), mouseX, mouseY, fontRenderer);
+            drawHoveringTextString(Collections.singletonList(I18n.get("gui.draconicevolution.item_config.drop_to_delete.info")), mouseX, mouseY, fontRenderer);
         }
 
         return super.renderOverlayLayer(minecraft, mouseX, mouseY, partialTicks);
@@ -573,7 +573,7 @@ public class PropertyContainer extends GuiManipulable {
             animDistance = 0;
         }
 
-        IRenderTypeBuffer.Impl getter = minecraft.getRenderTypeBuffers().getBufferSource();
+        IRenderTypeBuffer.Impl getter = minecraft.renderBuffers().bufferSource();
 
         if (dropTarget != null) {
             double zLevel = getRenderZLevel() - 10;
@@ -594,7 +594,7 @@ public class PropertyContainer extends GuiManipulable {
 
         int alpha = semiTrans ? 0x60000000 : 0xFF000000;
         RenderMaterial mat = BCSprites.getThemed("borderless_bg_dynamic_small");
-        drawDynamicSprite(mat.getBuffer(getter, e -> BCSprites.GUI_TEX_TYPE), mat.getSprite(), xPos(), yPos(), xSize(), ySize(), 2, 2, 2, 2, 0xFFFFFF | alpha);
+        drawDynamicSprite(mat.buffer(getter, e -> BCSprites.GUI_TEX_TYPE), mat.sprite(), xPos(), yPos(), xSize(), ySize(), 2, 2, 2, 2, 0xFFFFFF | alpha);
 
         int contentPos = yPos() + 2 + 9;
         int contentHeight = ySize() - 4 - 9;
@@ -608,16 +608,16 @@ public class PropertyContainer extends GuiManipulable {
             drawShadedRect(getter, xPos() + 2, contentPos, xSize() - 4, contentHeight, 1, 0, dark, light, midColour(light, dark));
 //            }
             if (dataList.isEmpty()) {
-                drawCustomString(fontRenderer, I18n.format("gui.draconicevolution.item_config.drop_prop_here"), xPos() + 3, yPos() + 13, xSize() - 6, GuiToolkit.Palette.BG.text(), CENTER, NORMAL, false, true, darkMode);
+                drawCustomString(fontRenderer, I18n.get("gui.draconicevolution.item_config.drop_prop_here"), xPos() + 3, yPos() + 13, xSize() - 6, GuiToolkit.Palette.BG.text(), CENTER, NORMAL, false, true, darkMode);
             }
         }
 
-        getter.finish();
+        getter.endBatch();
         super.renderElement(minecraft, mouseX, mouseY, partialTicks);
 
         if (dragPos && gui.deleteZone.isMouseOver(mouseX, mouseY)) {
             drawColouredRect(getter, xPos() + 1, yPos() + 1, xSize() - 2, ySize() - 3, 0x80FF8080);
-            getter.finish();
+            getter.endBatch();
         }
     }
 

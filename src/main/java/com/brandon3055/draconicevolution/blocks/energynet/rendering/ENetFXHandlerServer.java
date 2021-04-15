@@ -56,10 +56,10 @@ public class ENetFXHandlerServer<T extends TileEntity & IENetEffectTile> extends
     }
 
     private void queUpdate() {
-        ServerWorld serverWorld = ((ServerWorld) tile.getWorld());
+        ServerWorld serverWorld = ((ServerWorld) tile.getLevel());
 
         if (serverWorld != null){
-            serverWorld.getChunkProvider().chunkManager.getTrackingPlayers(new ChunkPos(tile.getPos()), false).forEach(player -> CrystalUpdateBatcher.queData(batchedUpdate, player));
+            serverWorld.getChunkSource().chunkMap.getPlayers(new ChunkPos(tile.getBlockPos()), false).forEach(player -> CrystalUpdateBatcher.queData(batchedUpdate, player));
         }
 
         batchedUpdate = null;

@@ -37,9 +37,9 @@ public class ReactorEffectHandler {
 
 //        reactorSound.donePlaying = true;
 //        reactorSound = null;;
-        if ((reactorSound == null || reactorSound.isDonePlaying() || !Minecraft.getInstance().getSoundHandler().isPlaying(reactorSound)) && reactor.reactorState.get().isShieldActive() && reactor.shieldCharge.get() > 0) {
+        if ((reactorSound == null || reactorSound.isStopped() || !Minecraft.getInstance().getSoundManager().isActive(reactorSound)) && reactor.reactorState.get().isShieldActive() && reactor.shieldCharge.get() > 0) {
             reactorSound = new ReactorSound(reactor);
-            Minecraft.getInstance().getSoundHandler().play(reactorSound);
+            Minecraft.getInstance().getSoundManager().play(reactorSound);
         }
         else if (reactorSound != null && (!reactor.reactorState.get().isShieldActive() || reactor.shieldCharge.get() <= 0)) {
             reactorSound.donePlaying = true;
@@ -50,12 +50,12 @@ public class ReactorEffectHandler {
         }
 
         for (Direction facing : Direction.values()) {
-            int index = facing.getIndex();
+            int index = facing.get3DDataValue();
             TileReactorComponent component = reactor.getComponent(facing);
 
             if (component == null) {
                 if (effects[index] != null) {
-                    effects[index].setExpired();
+                    effects[index].remove();
                     effects[index] = null;
                 }
                 continue;
@@ -66,9 +66,9 @@ public class ReactorEffectHandler {
                 continue;
             }
 
-            ReactorBeamFX beamFX = new ReactorBeamFX((ClientWorld) reactor.getWorld(), Vec3D.getCenter(component.getPos()), component.facing.get(), reactor, component instanceof TileReactorInjector);
+            ReactorBeamFX beamFX = new ReactorBeamFX((ClientWorld) reactor.getLevel(), Vec3D.getCenter(component.getBlockPos()), component.facing.get(), reactor, component instanceof TileReactorInjector);
             effects[index] = beamFX;
-            DEParticles.addParticleDirect(reactor.getWorld(), beamFX);
+            DEParticles.addParticleDirect(reactor.getLevel(), beamFX);
         }
     }
 

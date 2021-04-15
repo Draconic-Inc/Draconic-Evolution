@@ -25,7 +25,7 @@ import javax.annotation.Nullable;
  * Created by brandon3055 on 25/09/2016.
  */
 public class DislocatorPedestal extends BlockBCore/* implements ITileEntityProvider, IRenderOverride*/ {
-    protected static final VoxelShape SHAPE = Block.makeCuboidShape(5.6f, 0f, 5.6f, 10.4f, 12.8f, 10.4f);
+    protected static final VoxelShape SHAPE = Block.box(5.6f, 0f, 5.6f, 10.4f, 12.8f, 10.4f);
 
     public DislocatorPedestal(Properties properties) {
         super(properties);
@@ -37,16 +37,16 @@ public class DislocatorPedestal extends BlockBCore/* implements ITileEntityProvi
     }
 
     @Override
-    public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
-        TileEntity tile = world.getTileEntity(pos);
+    public void setPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+        TileEntity tile = world.getBlockEntity(pos);
         if (tile instanceof TileDislocatorPedestal) {
-            float f = (float) MathHelper.floor((MathHelper.wrapDegrees(placer.rotationYaw - 180.0F) + 11.25F) / 22.5F);
+            float f = (float) MathHelper.floor((MathHelper.wrapDegrees(placer.yRot - 180.0F) + 11.25F) / 22.5F);
             ((TileDislocatorPedestal) tile).rotation.set((int) f);
-            if (!world.isRemote) {
+            if (!world.isClientSide) {
                 ((TileDislocatorPedestal) tile).getDataManager().forceSync();
             }
         }
-        super.onBlockPlacedBy(world, pos, state, placer, stack);
+        super.setPlacedBy(world, pos, state, placer, stack);
     }
 
     @Override
@@ -61,13 +61,13 @@ public class DislocatorPedestal extends BlockBCore/* implements ITileEntityProvi
     }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+    public ActionResultType use(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
 //        TileEntity tileEntity = worldIn.getTileEntity(pos);
 
 //        if (tileEntity instanceof TileDislocatorPedestal) {//TODO switch to tile interface
 //            return ((TileDislocatorPedestal) tileEntity).onBlockActivated(player);
 //        }
-        return super.onBlockActivated(state, worldIn, pos, player, handIn, hit);
+        return super.use(state, worldIn, pos, player, handIn, hit);
     }
 
 
@@ -80,7 +80,7 @@ public class DislocatorPedestal extends BlockBCore/* implements ITileEntityProvi
     }
 
     @Override
-    public BlockRenderType getRenderType(BlockState state) {
+    public BlockRenderType getRenderShape(BlockState state) {
         return BlockRenderType.INVISIBLE;
     }
 //

@@ -20,6 +20,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderState;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.model.IModelTransform;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
@@ -55,9 +56,9 @@ public abstract class ToolRenderBase implements IItemRenderer {
             .whenUsed(cache -> {
                 cache.glUniform1f("alpha", 0.7F);
                 Minecraft mc = Minecraft.getInstance();
-                cache.glUniform1f("yaw", (float) ((mc.player.rotationYaw * 2 * Math.PI) / 360.0));
-                cache.glUniform1f("pitch", -(float) ((mc.player.rotationPitch * 2 * Math.PI) / 360.0));
-                cache.glUniform1f("time", (BCClientEventHandler.elapsedTicks + Minecraft.getInstance().getRenderPartialTicks()) / 1);
+                cache.glUniform1f("yaw", (float) ((mc.player.yRot * 2 * Math.PI) / 360.0));
+                cache.glUniform1f("pitch", -(float) ((mc.player.xRot * 2 * Math.PI) / 360.0));
+                cache.glUniform1f("time", (BCClientEventHandler.elapsedTicks + Minecraft.getInstance().getFrameTime()) / 1);
             })
             .build();
 
@@ -72,7 +73,7 @@ public abstract class ToolRenderBase implements IItemRenderer {
                     .uniform("time", UniformType.FLOAT)
                     .uniform("baseColour", UniformType.VEC4)
             )
-            .whenUsed(cache -> cache.glUniform1f("time", (BCClientEventHandler.elapsedTicks + Minecraft.getInstance().getRenderPartialTicks()) / 20))
+            .whenUsed(cache -> cache.glUniform1f("time", (BCClientEventHandler.elapsedTicks + Minecraft.getInstance().getFrameTime()) / 20))
             .build();
 
     public static ShaderProgram bladeShader = ShaderProgramBuilder.builder()
@@ -86,7 +87,7 @@ public abstract class ToolRenderBase implements IItemRenderer {
                     .uniform("time", UniformType.FLOAT)
                     .uniform("baseColour", UniformType.VEC4)
             )
-            .whenUsed(cache -> cache.glUniform1f("time", (BCClientEventHandler.elapsedTicks + Minecraft.getInstance().getRenderPartialTicks()) / 20))
+            .whenUsed(cache -> cache.glUniform1f("time", (BCClientEventHandler.elapsedTicks + Minecraft.getInstance().getFrameTime()) / 20))
             .build();
 
     public static ShaderProgram traceShader = ShaderProgramBuilder.builder()
@@ -100,7 +101,7 @@ public abstract class ToolRenderBase implements IItemRenderer {
                     .uniform("time", UniformType.FLOAT)
                     .uniform("baseColour", UniformType.VEC4)
             )
-            .whenUsed(cache -> cache.glUniform1f("time", (BCClientEventHandler.elapsedTicks + Minecraft.getInstance().getRenderPartialTicks()) / 20))
+            .whenUsed(cache -> cache.glUniform1f("time", (BCClientEventHandler.elapsedTicks + Minecraft.getInstance().getFrameTime()) / 20))
             .build();
 
 
@@ -129,33 +130,33 @@ public abstract class ToolRenderBase implements IItemRenderer {
     public ToolRenderBase(TechLevel techLevel, String tool) {
         this.techLevel = techLevel;
         String levelName = techLevel.name().toLowerCase();
-        modelType = RenderType.makeType("modelType", DefaultVertexFormats.BLOCK, GL11.GL_TRIANGLES, 256, true, false, RenderType.State.getBuilder()
-                .texture(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/item/equipment/" + levelName + "_" + tool + ".png"), false, false))
-                .diffuseLighting(DIFFUSE_LIGHTING_ENABLED)
-                .lightmap(LIGHTMAP_ENABLED)
+        modelType = RenderType.create("modelType", DefaultVertexFormats.BLOCK, GL11.GL_TRIANGLES, 256, true, false, RenderType.State.builder()
+                .setTextureState(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/item/equipment/" + levelName + "_" + tool + ".png"), false, false))
+                .setDiffuseLightingState(DIFFUSE_LIGHTING)
+                .setLightmapState(LIGHTMAP)
 //                .texturing(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
-                .build(true));
+                .createCompositeState(true));
 
-        modelGuiType = RenderType.makeType("modelGuiType", DefaultVertexFormats.BLOCK, GL11.GL_TRIANGLES, 256, RenderType.State.getBuilder()
-                .texture(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/item/equipment/" + levelName + "_" + tool + ".png"), false, false))
-                .lightmap(LIGHTMAP_ENABLED)
-                .overlay(OVERLAY_DISABLED)
+        modelGuiType = RenderType.create("modelGuiType", DefaultVertexFormats.BLOCK, GL11.GL_TRIANGLES, 256, RenderType.State.builder()
+                .setTextureState(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/item/equipment/" + levelName + "_" + tool + ".png"), false, false))
+                .setLightmapState(LIGHTMAP)
+                .setOverlayState(NO_OVERLAY)
 //                .texturing(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
-                .build(false)
+                .createCompositeState(false)
         );
 
-        chaosType = RenderType.makeType("chaosShaderType", DefaultVertexFormats.BLOCK, GL11.GL_TRIANGLES, 256, RenderType.State.getBuilder()
-                .texture(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/item/equipment/chaos_shader.png"), true, false))
-                .lightmap(LIGHTMAP_ENABLED)
-                .overlay(OVERLAY_ENABLED)
-                .build(false)
+        chaosType = RenderType.create("chaosShaderType", DefaultVertexFormats.BLOCK, GL11.GL_TRIANGLES, 256, RenderType.State.builder()
+                .setTextureState(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/item/equipment/chaos_shader.png"), true, false))
+                .setLightmapState(LIGHTMAP)
+                .setOverlayState(OVERLAY)
+                .createCompositeState(false)
         );
 
-        shaderParentType = RenderType.makeType("shaderGemType", DefaultVertexFormats.BLOCK, GL11.GL_TRIANGLES, 256, RenderType.State.getBuilder()
-                .texture(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/item/equipment/shader_fallback_" + levelName + ".png"), false, false))
-                .lightmap(LIGHTMAP_ENABLED)
-                .overlay(OVERLAY_ENABLED)
-                .build(false)
+        shaderParentType = RenderType.create("shaderGemType", DefaultVertexFormats.BLOCK, GL11.GL_TRIANGLES, 256, RenderType.State.builder()
+                .setTextureState(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/item/equipment/shader_fallback_" + levelName + ".png"), false, false))
+                .setLightmapState(LIGHTMAP)
+                .setOverlayState(OVERLAY)
+                .createCompositeState(false)
         );
     }
 
@@ -179,12 +180,12 @@ public abstract class ToolRenderBase implements IItemRenderer {
     }
 
     @Override
-    public ImmutableMap<TransformType, TransformationMatrix> getTransforms() {
+    public IModelTransform getModelTransform() {
         return DEFAULT_TOOL;
     }
 
     @Override
-    public boolean isAmbientOcclusion() {
+    public boolean useAmbientOcclusion() {
         return false;
     }
 
@@ -194,7 +195,7 @@ public abstract class ToolRenderBase implements IItemRenderer {
     }
 
     @Override
-    public boolean isSideLit() {
+    public boolean usesBlockLight() {
         return false;
     }
 

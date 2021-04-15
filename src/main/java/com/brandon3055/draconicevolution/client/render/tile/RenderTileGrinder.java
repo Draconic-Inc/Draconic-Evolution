@@ -36,22 +36,22 @@ import java.util.OptionalDouble;
  */
 public class RenderTileGrinder extends TileEntityRenderer<TileGrinder> {
     private static final double[] ROTATION_MAP = new double[]{0, 180, 90, -90};
-    private static final RenderType swordType = RenderType.getEntitySolid(new ResourceLocation(DraconicEvolution.MODID, "textures/block/grinder.png"));
-    private static final RenderType fanType = RenderType.getEntitySolid(new ResourceLocation(DraconicEvolution.MODID, "textures/block/parts/machine_fan.png"));
-    private static final RenderType aoeOutlineType = RenderType.makeType("aoe", DefaultVertexFormats.POSITION_COLOR, GL11.GL_LINES, 256, RenderType.State.getBuilder()
-            .transparency(RenderState.TRANSLUCENT_TRANSPARENCY)
-            .cull(RenderState.CULL_DISABLED)
-            .writeMask(RenderState.COLOR_WRITE)
-            .line(new RenderState.LineState(OptionalDouble.of(4.0)))
-            .texturing(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
-            .build(false)
+    private static final RenderType swordType = RenderType.entitySolid(new ResourceLocation(DraconicEvolution.MODID, "textures/block/grinder.png"));
+    private static final RenderType fanType = RenderType.entitySolid(new ResourceLocation(DraconicEvolution.MODID, "textures/block/parts/machine_fan.png"));
+    private static final RenderType aoeOutlineType = RenderType.create("aoe", DefaultVertexFormats.POSITION_COLOR, GL11.GL_LINES, 256, RenderType.State.builder()
+            .setTransparencyState(RenderState.TRANSLUCENT_TRANSPARENCY)
+            .setCullState(RenderState.NO_CULL)
+            .setWriteMaskState(RenderState.COLOR_WRITE)
+            .setLineState(new RenderState.LineState(OptionalDouble.of(4.0)))
+            .setTexturingState(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
+            .createCompositeState(false)
     );
-    private static final RenderType aoeSolidType = RenderType.makeType("aoe_solid", DefaultVertexFormats.POSITION_COLOR, GL11.GL_QUADS, 256, RenderType.State.getBuilder()
-            .transparency(RenderState.TRANSLUCENT_TRANSPARENCY)
-            .cull(RenderState.CULL_DISABLED)
-            .writeMask(RenderState.COLOR_WRITE)
-            .texturing(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
-            .build(false)
+    private static final RenderType aoeSolidType = RenderType.create("aoe_solid", DefaultVertexFormats.POSITION_COLOR, GL11.GL_QUADS, 256, RenderType.State.builder()
+            .setTransparencyState(RenderState.TRANSLUCENT_TRANSPARENCY)
+            .setCullState(RenderState.NO_CULL)
+            .setWriteMaskState(RenderState.COLOR_WRITE)
+            .setTexturingState(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
+            .createCompositeState(false)
     );
 
 
@@ -74,9 +74,9 @@ public class RenderTileGrinder extends TileEntityRenderer<TileGrinder> {
 
     @Override
     public void render(TileGrinder tile, float partialTicks, MatrixStack mStack, IRenderTypeBuffer getter, int packedLight, int packedOverlay) {
-        BlockState state = tile.getWorld().getBlockState(tile.getPos());
+        BlockState state = tile.getLevel().getBlockState(tile.getBlockPos());
         if (state.getBlock() != DEContent.grinder) return;
-        Direction facing = state.get(Grinder.FACING);
+        Direction facing = state.getValue(Grinder.FACING);
 
         Matrix4 mat = new Matrix4(mStack);
         CCRenderState ccrs = CCRenderState.instance();
@@ -97,7 +97,7 @@ public class RenderTileGrinder extends TileEntityRenderer<TileGrinder> {
         ccrs.bind(fanType, getter);
         Matrix4 fanMat = mat.copy();
         fanMat.translate(Vector3.CENTER);
-        fanMat.apply(new Rotation(facing.getHorizontalAngle() * -MathHelper.torad, 0, 1, 0));
+        fanMat.apply(new Rotation(facing.toYRot() * -MathHelper.torad, 0, 1, 0));
         fanMat.apply(new Scale(-0.0625));
         fanMat.apply(new Rotation((tile.fanRotation + (tile.fanSpeed * partialTicks)), 0, 0, 1));
         fanModel.render(ccrs, fanMat);
@@ -105,7 +105,7 @@ public class RenderTileGrinder extends TileEntityRenderer<TileGrinder> {
         if (tile.aoeDisplay > 0.51) {
             tile.validateKillZone(true);
             IVertexBuilder builder = new TransformingVertexBuilder(getter.getBuffer(aoeOutlineType), mat);
-            Cuboid6 box = new Cuboid6(tile.killZone.offset(Vector3.fromTile(tile).multiply(-1).pos()).shrink(0.01).shrink(tile.aoe.get() - tile.aoeDisplay));
+            Cuboid6 box = new Cuboid6(tile.killZone.move(Vector3.fromTile(tile).multiply(-1).pos()).deflate(0.01).deflate(tile.aoe.get() - tile.aoeDisplay));
             RenderUtils.bufferCuboidOutline(builder, box, 0F, 0F, 0F, 1F);
             builder = new TransformingVertexBuilder(getter.getBuffer(aoeSolidType), mat);
             RenderUtils.bufferCuboidSolid(builder, box, 0F, 1F, 1F, 0.2F);
@@ -145,7 +145,7 @@ public class RenderTileGrinder extends TileEntityRenderer<TileGrinder> {
         attackAnimTime *= 2;
         double yoyo = attackAnimTime > 1D ? 1D - (attackAnimTime - 1D) : attackAnimTime;
         sideOffset *= 1D - yoyo;
-        double sideAngle = ROTATION_MAP[tileFacing.getIndex() - 2] * MathHelper.torad;
+        double sideAngle = ROTATION_MAP[tileFacing.get3DDataValue() - 2] * MathHelper.torad;
 
         Transformation rotation = new Rotation(yoyo * Math.PI * -2.8, 1, 0, 0).at(new Vector3(0, -0.2, 0));
         Vector3 handPos = new Vector3(0.4975 + sideOffset, 0.5, 0.125 + (yoyo * (0.375)));
@@ -166,8 +166,8 @@ public class RenderTileGrinder extends TileEntityRenderer<TileGrinder> {
     }
 
     private Vector3 getEntityMovingVec(Entity entity, float partialTicks) {
-        Vector3 vec = new Vector3(entity.lastTickPosX, entity.lastTickPosY - entity.getYOffset() + (double) (entity.getHeight() / 2.0F), entity.lastTickPosZ);
-        vec.add(Vector3.fromEntityCenter(entity).subtract(entity.lastTickPosX, entity.lastTickPosY - entity.getYOffset() + (double) (entity.getHeight() / 2.0F), entity.lastTickPosZ).multiply(partialTicks));
+        Vector3 vec = new Vector3(entity.xOld, entity.yOld - entity.getMyRidingOffset() + (double) (entity.getBbHeight() / 2.0F), entity.zOld);
+        vec.add(Vector3.fromEntityCenter(entity).subtract(entity.xOld, entity.yOld - entity.getMyRidingOffset() + (double) (entity.getBbHeight() / 2.0F), entity.zOld).multiply(partialTicks));
         return vec;
     }
 }

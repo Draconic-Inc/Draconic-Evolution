@@ -42,7 +42,7 @@ public class FusionRecipeCategory implements IRecipeCategory<IFusionRecipe> {
 
     public FusionRecipeCategory(IGuiHelper guiHelper) {
         background = guiHelper.createDrawable(ResourceHelperDE.getResource(DETextures.GUI_JEI_FUSION), 0, 0, xSize, ySize);
-        localizedName = I18n.format(DEContent.crafting_core.getTranslationKey());
+        localizedName = I18n.get(DEContent.crafting_core.getDescriptionId());
 
         icon = guiHelper.createDrawableIngredient(new ItemStack(DEContent.crafting_core));
 //        craftingGridHelper = guiHelper.createCraftingGridHelper(craftInputSlot1);
@@ -79,13 +79,13 @@ public class FusionRecipeCategory implements IRecipeCategory<IFusionRecipe> {
     @Override
     public void draw(IFusionRecipe recipe, MatrixStack matrixStack, double mouseX, double mouseY) {
         Minecraft mc = Minecraft.getInstance();
-        if (mc.fontRenderer != null) {
+        if (mc.font != null) {
             TechLevel tier = recipe.getRecipeTier();
             int colour = tier.index == 0 ? 5263615 : (tier.index == 1 ? 8388863 : (tier.index == 2 ? 16737792 : 5263440));
 
-            GuiHelper.drawCenteredString(mc.fontRenderer, matrixStack, I18n.format("gui.de.tier." + recipe.getRecipeTier().name(), new Object[0]), this.xSize / 2, 5, colour, false);
-            GuiHelper.drawCenteredString(mc.fontRenderer, matrixStack, I18n.format("gui.de.energyCost.txt"), this.xSize / 2, this.ySize - 20, 4474111, false);
-            GuiHelper.drawCenteredString(mc.fontRenderer, matrixStack, Utils.addCommas(recipe.getEnergyCost()) + " OP", this.xSize / 2, this.ySize - 10, 4500223, false);
+            GuiHelper.drawCenteredString(mc.font, matrixStack, I18n.get("gui.de.tier." + recipe.getRecipeTier().name(), new Object[0]), this.xSize / 2, 5, colour, false);
+            GuiHelper.drawCenteredString(mc.font, matrixStack, I18n.get("gui.de.energyCost.txt"), this.xSize / 2, this.ySize - 20, 4474111, false);
+            GuiHelper.drawCenteredString(mc.font, matrixStack, Utils.addCommas(recipe.getEnergyCost()) + " OP", this.xSize / 2, this.ySize - 10, 4500223, false);
         }
     }
 
@@ -95,7 +95,7 @@ public class FusionRecipeCategory implements IRecipeCategory<IFusionRecipe> {
         recipeIngredients.add(recipe.getCatalyst());
         recipeIngredients.addAll(recipe.getIngredients());
         ingredients.setInputIngredients(recipeIngredients);
-        ingredients.setOutput(VanillaTypes.ITEM, recipe.getRecipeOutput());
+        ingredients.setOutput(VanillaTypes.ITEM, recipe.getResultItem());
     }
 
     @Override

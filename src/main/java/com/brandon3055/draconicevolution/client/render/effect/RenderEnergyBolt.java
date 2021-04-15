@@ -167,7 +167,7 @@ public class RenderEnergyBolt {
 
     @Deprecated
     private static void drawBoltSegment(Tessellator tessellator, Vec3D p1, Vec3D p2, float scale) {
-        BufferBuilder buffer = tessellator.getBuffer();
+        BufferBuilder buffer = tessellator.getBuilder();
 
         RenderSystem.pushMatrix();
         RenderSystem.translated(p1.x, p1.y, p1.z);
@@ -190,10 +190,10 @@ public class RenderEnergyBolt {
             float verX = MathHelper.sin((float) (i % 3) * (float) Math.PI * 2F / (float) 3) * f * scale;
             float verZ = MathHelper.cos((float) (i % 3) * (float) Math.PI * 2F / (float) 3) * f * scale;
 
-            buffer.pos(verX, dist, verZ).color(0.35F, 0.65F, 0.9F, 0.3F).endVertex();
-            buffer.pos(verX, 0, verZ).color(0.35F, 0.65F, 0.9F, 0.3F).endVertex();
+            buffer.vertex(verX, dist, verZ).color(0.35F, 0.65F, 0.9F, 0.3F).endVertex();
+            buffer.vertex(verX, 0, verZ).color(0.35F, 0.65F, 0.9F, 0.3F).endVertex();
         }
-        tessellator.draw();
+        tessellator.end();
 
         RenderSystem.popMatrix();
     }
@@ -225,8 +225,8 @@ public class RenderEnergyBolt {
             cumulativeZ += (float)(random.nextInt(11) - 5);
         }
 
-        IVertexBuilder builder = getter.getBuffer(RenderType.getLightning());
-        Matrix4f matrix4f = mStack.getLast().getMatrix();
+        IVertexBuilder builder = getter.getBuffer(RenderType.lightning());
+        Matrix4f matrix4f = mStack.last().pose();
 
         //Render each bolt layer
         for(int layer = 0; layer < 4; ++layer) {
@@ -284,9 +284,9 @@ public class RenderEnergyBolt {
 
     private static void addVanillaSegmentQuad(Matrix4f matrix4f, IVertexBuilder builder, float x1, float z1, int segIndex, float x2, float z2, float red, float green, float blue, float offsetA, float offsetB, boolean invA, boolean invB, boolean invC, boolean invD) {
         float segHeight = 16F;
-        builder.pos(matrix4f, x1 + (invA ? offsetB : -offsetB), segIndex * segHeight,          z1 + (invB ? offsetB : -offsetB)).color(red, green, blue, 0.3F).endVertex();
-        builder.pos(matrix4f, x2 + (invA ? offsetA : -offsetA), (segIndex + 1F) * segHeight,   z2 + (invB ? offsetA : -offsetA)).color(red, green, blue, 0.3F).endVertex();
-        builder.pos(matrix4f, x2 + (invC ? offsetA : -offsetA), (segIndex + 1F) * segHeight,   z2 + (invD ? offsetA : -offsetA)).color(red, green, blue, 0.3F).endVertex();
-        builder.pos(matrix4f, x1 + (invC ? offsetB : -offsetB), segIndex * segHeight,          z1 + (invD ? offsetB : -offsetB)).color(red, green, blue, 0.3F).endVertex();
+        builder.vertex(matrix4f, x1 + (invA ? offsetB : -offsetB), segIndex * segHeight,          z1 + (invB ? offsetB : -offsetB)).color(red, green, blue, 0.3F).endVertex();
+        builder.vertex(matrix4f, x2 + (invA ? offsetA : -offsetA), (segIndex + 1F) * segHeight,   z2 + (invB ? offsetA : -offsetA)).color(red, green, blue, 0.3F).endVertex();
+        builder.vertex(matrix4f, x2 + (invC ? offsetA : -offsetA), (segIndex + 1F) * segHeight,   z2 + (invD ? offsetA : -offsetA)).color(red, green, blue, 0.3F).endVertex();
+        builder.vertex(matrix4f, x1 + (invC ? offsetB : -offsetB), segIndex * segHeight,          z1 + (invD ? offsetB : -offsetB)).color(red, green, blue, 0.3F).endVertex();
     }
 }
