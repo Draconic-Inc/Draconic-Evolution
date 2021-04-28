@@ -1,8 +1,8 @@
 buildscript {
     repositories {
         mavenLocal()
-        jcenter()
-        maven { url = "https://files.minecraftforge.net/maven" }
+        mavenCentral()
+        maven { url = "https://maven.minecraftforge.net/" }
         maven { url = "https://repo.spongepowered.org/maven" }
     }
     dependencies {
@@ -23,8 +23,7 @@ apply plugin: "org.spongepowered.mixin"
 group = "com.brandon3055.draconicevolution"
 archivesBaseName = "Draconic-Evolution"
 
-targetCompatibility = "1.8"
-sourceCompatibility = "1.8"
+java.toolchain.languageVersion = JavaLanguageVersion.of(8)
 
 //Add generated resources to main resources.
 sourceSets.main.resources.srcDirs += "src/generated/resources"
@@ -55,7 +54,6 @@ if (System.getenv("KEY_STORE")) {
 }
 
 config.mod_version = "${config.mod_version}." + (System.getenv("BUILD_NUMBER") ?: "1")
-version = "${config.mc_version}-${config.mod_version}"
 println "Starting build of ${archivesBaseName}, Version: ${config.mod_version}"
 println "Using Forge: ${config.forge_version}, for Minecraft: ${config.mc_version}, with Mappings: ${config.mappings}"
 
@@ -85,7 +83,7 @@ mixin {
 
 repositories {
     mavenLocal()
-    maven { url = "http://chickenbones.net/maven" }
+    maven { url = "https://maven.covers1624.net/" }
     maven { url = "https://dvs1.progwml6.com/files/maven" }
     maven { url = "http://maven.cil.li/" }
     maven { url = "https://maven.theillusivec4.top/" }
