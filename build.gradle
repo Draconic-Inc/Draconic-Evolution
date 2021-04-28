@@ -2,7 +2,7 @@ buildscript {
     repositories {
         mavenLocal()
         jcenter()
-        maven { url = "http://files.minecraftforge.net/maven" }
+        maven { url = "https://files.minecraftforge.net/maven" }
         maven { url = "https://repo.spongepowered.org/maven" }
     }
     dependencies {
@@ -73,7 +73,7 @@ minecraft {
         }
         data {
             workingDirectory file('run')
-            args '--mod', 'draconicevolution', '--all', '--output', file("src/generated/resources")
+            args '--mod', 'draconicevolution', '--all', '--output', file("src/generated/resources"), '--existing', file("src/main/resources")
             mods { draconicevolution { source sourceSets.main } }
         }
     }
