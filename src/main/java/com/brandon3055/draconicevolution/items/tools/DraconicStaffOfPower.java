@@ -15,12 +15,18 @@ import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformT
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnumEnchantmentType;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.model.IModelState;
 import net.minecraftforge.fml.relauncher.Side;
@@ -94,6 +100,34 @@ public class DraconicStaffOfPower extends MiningToolBase implements IAOEWeapon, 
             return false;
         }
         return super.canApplyAtEnchantingTable(stack, enchantment) || enchantment.type == EnumEnchantmentType.WEAPON;
+    }
+
+    @Override
+    public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity) {
+        if (((IAOEWeapon) this).getWeaponAOE(stack) > 0) {
+
+            List<EntityLivingBase> entities = player.world.getEntitiesWithinAABB(EntityLivingBase.class, entity.getEntityBoundingBox().grow(((IAOEWeapon) this).getWeaponAOE(stack), 0.25D, ((IAOEWeapon) this).getWeaponAOE(stack)));
+
+            for (EntityLivingBase aoeEntity : entities) {
+                if (aoeEntity != player && !player.isOnSameTeam(entity) && extractAttackEnergy(stack, aoeEntity, player)) {
+                    aoeEntity.knockBack(player, 0.4F, (double) MathHelper.sin(player.rotationYaw * 0.017453292F), (double) (-MathHelper.cos(player.rotationYaw * 0.017453292F)));
+                    if (player.getCooledAttackStrength(0.5F) < 0.95F){
+                        aoeEntity.attackEntityFrom(DamageSource.causePlayerDamage(player), getAttackDamage(stack));
+                    }else {
+                        float healthBefore = aoeEntity.getHealth();
+                        aoeEntity.attackEntityFrom(DamageSource.causePlayerDamage(player), healthBefore*0.3f+getAttackDamage(stack));
+                        if (aoeEntity.getHealth()!=0){
+                            aoeEntity.setHealth(Math.max( 1 , healthBefore-(healthBefore*0.3f+getAttackDamage(stack))));
+                        }
+                    }
+                }
+            }
+            player.world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_PLAYER_ATTACK_SWEEP, player.getSoundCategory(), 1.0F, 1.0F);
+            player.spawnSweepParticles();
+        }
+
+        extractAttackEnergy(stack, entity, player);
+        return true;
     }
 
     @Override

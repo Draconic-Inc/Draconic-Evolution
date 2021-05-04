@@ -29,6 +29,7 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.relauncher.Side;
 
 import java.util.*;
 
@@ -37,13 +38,16 @@ import java.util.*;
  */
 public class CustomArmorHandler {
     public static final UUID WALK_SPEED_UUID = UUID.fromString("0ea6ce8e-d2e8-11e5-ab30-625662870761");
-    private static final DamageSource ADMIN_KILL = new DamageSource("administrative.kill").setDamageAllowedInCreativeMode().setDamageBypassesArmor().setDamageIsAbsolute();
+ //   private static final DamageSource ADMIN_KILL = new DamageSource("administrative.kill").setDamageAllowedInCreativeMode().setDamageBypassesArmor().setDamageIsAbsolute();
     public static Map<EntityPlayer, Boolean> playersWithFlight = new WeakHashMap<EntityPlayer, Boolean>();
     public static List<String> playersWithUphillStep = new ArrayList<String>();  //TODO Switch to UUID
 
     @SubscribeEvent(priority = EventPriority.LOW)
     public void onPlayerAttacked(LivingAttackEvent event) {
-        if (!(event.getEntityLiving() instanceof EntityPlayer) || event.isCanceled() || event.getAmount() <= 0 || event.getSource() == ADMIN_KILL) {
+//        if (!(event.getEntityLiving() instanceof EntityPlayer) || event.isCanceled() || event.getAmount() <= 0 || event.getSource() == ADMIN_KILL) {
+//            return;
+//        }
+        if (!(event.getEntityLiving() instanceof EntityPlayer) || event.isCanceled() || event.getAmount() <= 0) {
             return;
         }
 
@@ -64,11 +68,11 @@ public class CustomArmorHandler {
             return;
         }
         event.setCanceled(true);
-        //Ensure that the /kill command can still kill the player
-        if (hitAmount == Float.MAX_VALUE && !event.getSource().damageType.equals(ADMIN_KILL.damageType)) {
-            player.attackEntityFrom(ADMIN_KILL, Float.MAX_VALUE);
-            return;
-        }
+//        //Ensure that the /kill command can still kill the player
+//        if (hitAmount == Float.MAX_VALUE && !event.getSource().damageType.equals(ADMIN_KILL.damageType)) {
+//            player.attackEntityFrom(ADMIN_KILL, Float.MAX_VALUE);
+//            return;
+//        }
         if ((float) player.hurtResistantTime > (float) player.maxHurtResistantTime - 4) return;
 
         float newEntropy = Math.min(summery.entropy + 1 + (hitAmount / 20), 100F);
@@ -116,7 +120,11 @@ public class CustomArmorHandler {
 
         ArmorSummery summery = new ArmorSummery().getSummery(player);
 
-        if (summery == null || event.getSource() == ADMIN_KILL) {
+//        if (summery == null || event.getSource() == ADMIN_KILL) {
+//            return;
+//        }
+
+        if (summery == null) {
             return;
         }
 
@@ -159,12 +167,45 @@ public class CustomArmorHandler {
     @SubscribeEvent
     public void onPlayerTick(TickEvent.PlayerTickEvent event) {
         if (event.phase != TickEvent.Phase.START) return;
-
         EntityPlayer player = event.player;
         ArmorSummery summery = new ArmorSummery().getSummery(player);
 
         tickShield(summery, player);
         tickArmorEffects(summery, player);
+
+        if (player.getHealth() == 0){
+            if (summery == null) {
+                return;
+            }
+            if (!summery.hasDraconic) {
+                return;
+            }
+
+            int[] charge = new int[summery.armorStacks.size()];
+            long totalCharge = 0;
+            for (int i = 0; i < summery.armorStacks.size(); i++) {
+                if (!summery.armorStacks.get(i).isEmpty()) {
+                    charge[i] = ((ICustomArmor) summery.armorStacks.get(i).getItem()).getEnergyStored(summery.armorStacks.get(i));
+                    totalCharge += charge[i];
+                }
+            }
+
+            if (totalCharge < ToolStats.LAST_STAND_ENERGY) {
+                return;
+            }
+
+            for (int i = 0; i < summery.armorStacks.size(); i++) {
+                if (!summery.armorStacks.get(i).isEmpty()) {
+                    ((ICustomArmor) summery.armorStacks.get(i).getItem()).modifyEnergy(summery.armorStacks.get(i), -(int) ((charge[i] / (double) totalCharge) * 10000000L));
+                }
+            }
+
+            summery.saveStacks(player);
+            if (event.side == Side.SERVER){
+                player.sendMessage(new TextComponentTranslation("msg.de.shieldDepleted.txt").setStyle(new Style().setColor(TextFormatting.DARK_GRAY)));
+            }
+            player.setHealth(1);
+        }
     }
 
     @SubscribeEvent
