@@ -1,5 +1,7 @@
 package com.brandon3055.draconicevolution.network;
 
+import codechicken.lib.data.MCDataInput;
+import codechicken.lib.data.MCDataOutput;
 import codechicken.lib.packet.ICustomPacketHandler;
 import codechicken.lib.packet.PacketCustom;
 import com.brandon3055.brandonscore.BrandonsCore;
@@ -8,11 +10,13 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.client.render.effect.ExplosionFX;
 import com.brandon3055.draconicevolution.init.DEModules;
+import com.brandon3055.draconicevolution.items.equipment.damage.DefaultStaffDmgMod;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.play.IClientPlayNetHandler;
 import net.minecraft.client.particle.FireworkParticle;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particles.ParticleTypes;
@@ -47,7 +51,9 @@ public class ClientPacketHandler implements ICustomPacketHandler.IClientPacketHa
             case DraconicNetwork.C_BLINK:
                 handleBlinkEffect(mc, packet.readVarInt(), packet.readFloat());
                 break;
-
+            case DraconicNetwork.C_STAFF_EFFECT:
+                handleStaffEffect(mc, packet);
+                break;
         }
     }
 
@@ -126,6 +132,29 @@ public class ClientPacketHandler implements ICustomPacketHandler.IClientPacketHa
             double z = spawnPos.z + (mc.level.random.nextGaussian() - 0.5) * offset;
 
             mc.level.addParticle(DEParticles.blink, x, y, z, vec.x * speed, vec.y * speed, vec.z * speed);
+        }
+    }
+
+    private static void handleStaffEffect(Minecraft mc, MCDataInput data) {
+        int type = data.readByte();
+        int entityID = data.readVarInt();
+        if (mc.level != null) {
+            Entity entity = mc.level.getEntity(entityID);
+            if (entity instanceof LivingEntity) {
+                switch (type) {
+                    case 0:
+                        DefaultStaffDmgMod.handleEffect((LivingEntity) entity, data);
+                        break;
+                    case 1:
+                        break;
+                    case 2:
+                        break;
+                    case 3:
+                        break;
+                    case 4:
+                        break;
+                }
+            }
         }
     }
 }

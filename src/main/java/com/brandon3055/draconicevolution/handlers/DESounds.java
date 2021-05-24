@@ -55,6 +55,14 @@ public class DESounds {
     public static SoundEvent generator3;
     @ObjectHolder("blink")
     public static SoundEvent blink;
+    @ObjectHolder("staff_charge_electric")
+    public static SoundEvent staffChargeElectric;
+    @ObjectHolder("staff_charge_fire")
+    public static SoundEvent staffChargeFire;
+    @ObjectHolder("staff_hit_default")
+    public static SoundEvent staffHitDefault;
+    @ObjectHolder("staff_hit_electric")
+    public static SoundEvent staffHitElectric;
 
     @SubscribeEvent
     public static void registerSounds(RegistryEvent.Register<SoundEvent> event) {
@@ -77,5 +85,9 @@ public class DESounds {
         event.getRegistry().register(new SoundEvent(new ResourceLocation(DraconicEvolution.MODID, "generator2")).setRegistryName("generator2"));
         event.getRegistry().register(new SoundEvent(new ResourceLocation(DraconicEvolution.MODID, "generator3")).setRegistryName("generator3"));
         event.getRegistry().register(new SoundEvent(new ResourceLocation(DraconicEvolution.MODID, "blink")).setRegistryName("blink"));
+        event.getRegistry().register(new SoundEvent(new ResourceLocation(DraconicEvolution.MODID, "staff_charge_electric")).setRegistryName("staff_charge_electric"));
+        event.getRegistry().register(new SoundEvent(new ResourceLocation(DraconicEvolution.MODID, "staff_charge_fire")).setRegistryName("staff_charge_fire"));
+        event.getRegistry().register(new SoundEvent(new ResourceLocation(DraconicEvolution.MODID, "staff_hit_default")).setRegistryName("staff_hit_default"));
+        event.getRegistry().register(new SoundEvent(new ResourceLocation(DraconicEvolution.MODID, "staff_hit_electric")).setRegistryName("staff_hit_electric"));
     }
 }

@@ -42,7 +42,6 @@ public class ModularBow extends BowItem implements IReaperItem, IModularItem {
     @Override
     public ModuleHostImpl createHost(ItemStack stack) {
         ModuleHostImpl host = new ModuleHostImpl(techLevel, toolWidth(techLevel), toolHeight(techLevel), "bow", removeInvalidModules);
-        host.addAdditionalType(ModuleTypes.DAMAGE_MOD);
         return host;
     }
 

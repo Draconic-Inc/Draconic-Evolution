@@ -4,6 +4,7 @@ import com.brandon3055.draconicevolution.api.modules.lib.IDamageModifier;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
@@ -15,6 +16,12 @@ import java.util.Map;
  * Created by brandon3055 on 11/4/21
  */
 public class LightningDmgMod implements IDamageModifier {
+
+    @Override
+    public EffectType getType() {
+        return EffectType.LIGHTNING;
+    }
+
     @Override
     public void addInformation(Map<ITextComponent, ITextComponent> map, @Nullable ModuleContext context, boolean stack) {
 
@@ -36,7 +43,7 @@ public class LightningDmgMod implements IDamageModifier {
     }
 
     @Override
-    public void doDamageAndEffects(World world, Vector3d pos, @Nullable LivingEntity entityHit, LivingEntity source, float baseDamage, float secondaryCharge, boolean isProjectile) {
+    public void doDamageAndEffects(World world, Vector3d pos, @Nullable RayTraceResult traceResult, LivingEntity source, float baseDamage, float secondaryCharge, boolean isProjectile) {
 
     }
 }

@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.client.render.modelfx;
 
 import codechicken.lib.math.MathHelper;
 import codechicken.lib.util.SneakyUtils;
+import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.api.TimeKeeper;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -19,13 +20,13 @@ import java.awt.*;
  */
 public class ToolModelEffect extends ModelEffect {
     private RenderType renderType = RenderType.create("modelEffectType", DefaultVertexFormats.POSITION_COLOR_TEX, GL11.GL_QUADS, 256, RenderType.State.builder()
-                    .setTextureState(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/particle/white_orb.png"), false, false))
-                    .setTransparencyState(RenderState.LIGHTNING_TRANSPARENCY)
-                    .setAlphaState(RenderState.NO_ALPHA)
-                    .setCullState(RenderState.NO_CULL)
-                    .setWriteMaskState(RenderState.COLOR_WRITE)
-                    .setTexturingState(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
-                    .createCompositeState(false)
+            .setTextureState(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/particle/white_orb.png"), false, false))
+            .setTransparencyState(RenderState.LIGHTNING_TRANSPARENCY)
+            .setAlphaState(RenderState.NO_ALPHA)
+            .setCullState(RenderState.NO_CULL)
+            .setWriteMaskState(RenderState.COLOR_WRITE)
+            .setTexturingState(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
+            .createCompositeState(false)
     );
 //    private RenderType renderType2 = RenderType.makeType("modelEffectType2", DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP, GL11.GL_QUADS, 256, RenderType.State.getBuilder()
 //                    .texture(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/particle/orb2.png"), false, false))
@@ -62,7 +63,7 @@ public class ToolModelEffect extends ModelEffect {
     private int lastProfile = 0;
 
     @Override
-    protected void doRender(IVertexBuilder builder, float partialTicks) {
+    protected void doRender(IVertexBuilder builder, float partialTicks, TechLevel techLevel) {
 //        long profileTime = System.nanoTime();
 
 
@@ -72,10 +73,11 @@ public class ToolModelEffect extends ModelEffect {
         int pCount = 4;//4 + (int)(charge * 60);
 
 
+        Color color = techLevel == TechLevel.CHAOTIC ? new Color(0xFF2203) : new Color(0xFF4403);
 
 
-        drawCrystalParticles(builder, 64, time, 1F, idle);
-        drawFeedInParticles(builder, 64, time, 1F, idle);
+//        drawCrystalParticles(builder, 8, time, 1F, idle);
+        drawFeedInParticles(builder, 16, time, 1F, idle, color);
 
 
 //        profileTime = System.nanoTime() - profileTime;
@@ -89,7 +91,7 @@ public class ToolModelEffect extends ModelEffect {
     }
 
     private void drawCrystalParticles(IVertexBuilder builder, int pCount, float time, float scaleMod, boolean idle) {
-        setRandSeed((int)time / 30);
+        setRandSeed((int) time / 30);
         double gemHeight = 0.4;
         int sCount = 6;
         for (int ci = 0; ci < pCount; ci++) {
@@ -134,12 +136,12 @@ public class ToolModelEffect extends ModelEffect {
             float r = color.getRed();
             float g = color.getGreen();
             float b = color.getBlue();
-            drawParticle(builder, x, y, z, scale, r/255F, g/255F, b/255F, 1F);
+            drawParticle(builder, x, y, z, scale, r / 255F, g / 255F, b / 255F, 1F);
         }
     }
 
-    private void drawFeedInParticles(IVertexBuilder builder, int pCount, float time, float scaleMod, boolean idle) {
-        double gemHeight = 0.35;
+    private void drawFeedInParticles(IVertexBuilder builder, int pCount, float time, float scaleMod, boolean idle, Color color) {
+        double gemHeight = 0;//0.35; TODO Temp to make particles target crystal center
         double minY = -0.15625f;
         double maxY = (0.03125F * 11);
         for (int ci = 0; ci < pCount; ci++) {
@@ -161,7 +163,7 @@ public class ToolModelEffect extends ModelEffect {
             float scale;
             if (idle) {
                 scale = 0.0078125f + ((0.5F - Math.abs(age - 0.5F)) * 0.03125F);
-            }else  {
+            } else {
                 scale = 0.0078125f + (age * 0.03125F);
             }
 
@@ -170,15 +172,14 @@ public class ToolModelEffect extends ModelEffect {
             double targetY = (age * gemHeight) - (gemHeight / 2);
             y = MathHelper.interpolate(y, targetY, age);
 
-            Color color = new Color(0xFF2203);
+//            Color color = new Color(0xFF2203);
             float r = color.getRed();
             float g = color.getGreen();
             float b = color.getBlue();
-            drawParticle(builder, 0, y, z, scale, r/255F, g/255F, b/255F, 1F);
+            drawParticle(builder, 0, y, z, scale, r / 255F, g / 255F, b / 255F, 1F);
         }
     }
 }
-
 
 
 //    private void drawCrystalParticlesRandom(IVertexBuilder builder, int pCount, float time) {

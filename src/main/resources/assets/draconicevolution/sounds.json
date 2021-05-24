@@ -169,6 +169,42 @@
         "stream": false
       }
     ]
+  },
+  "staff_charge_electric": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "draconicevolution:staff_charge_electric",
+        "stream": false
+      }
+    ]
+  },
+  "staff_charge_fire": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "draconicevolution:staff_charge_fire",
+        "stream": false
+      }
+    ]
+  },
+  "staff_hit_default": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "draconicevolution:staff_hit_default",
+        "stream": false
+      }
+    ]
+  },
+  "staff_hit_electric": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "draconicevolution:staff_hit_electric",
+        "stream": false
+      }
+    ]
   }
 }
 

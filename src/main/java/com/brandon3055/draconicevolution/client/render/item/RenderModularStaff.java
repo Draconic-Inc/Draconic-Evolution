@@ -232,7 +232,7 @@ public class RenderModularStaff extends ToolRenderBase {
         Minecraft mc = Minecraft.getInstance();
         mat.rotate(torad(90), Vector3.X_NEG);
         mat.translate(-0.5, 0.1, -0.5);
-        effectRenderer.renderEffect(mat, getter, mc.getFrameTime());
+        effectRenderer.renderEffect(mat, getter, mc.getFrameTime(), techLevel);
 //        new ModelEffect.DebugEffect().renderEffect(mat, getter, mc.getRenderPartialTicks());
 
 //        testParticleRender(ccrs, stack, transform, mat, mStack, getter, gui);

@@ -146,14 +146,14 @@ public class DEModules {
 
         register(new ModuleImpl<>(JUNK_FILTER,          WYVERN,         noData()),                          "wyvern_junk_filter");
 
-        register(new ModuleImpl<>(DAMAGE_MOD,           DRACONIC,       dmgModData(new FireDmgMod())),      "draconic_fire_mod");
-        register(new ModuleImpl<>(DAMAGE_MOD,           CHAOTIC,        dmgModData(new FireDmgMod())),      "chaotic_fire_mod");
-
-        register(new ModuleImpl<>(DAMAGE_MOD,           DRACONIC,       dmgModData(new LightningDmgMod())), "draconic_lightning_mod");
-        register(new ModuleImpl<>(DAMAGE_MOD,           CHAOTIC,        dmgModData(new LightningDmgMod())), "chaotic_lightning_mod");
-
-        register(new ModuleImpl<>(DAMAGE_MOD,           DRACONIC,       dmgModData(new IceDmgMod())),       "draconic_ice_mod");
-        register(new ModuleImpl<>(DAMAGE_MOD,           CHAOTIC,        dmgModData(new IceDmgMod())),       "chaotic_ice_mod");
+//        register(new ModuleImpl<>(DAMAGE_MOD,           DRACONIC,       dmgModData(new FireDmgMod())),      "draconic_fire_mod");
+//        register(new ModuleImpl<>(DAMAGE_MOD,           CHAOTIC,        dmgModData(new FireDmgMod())),      "chaotic_fire_mod");
+//
+//        register(new ModuleImpl<>(DAMAGE_MOD,           DRACONIC,       dmgModData(new LightningDmgMod())), "draconic_lightning_mod");
+//        register(new ModuleImpl<>(DAMAGE_MOD,           CHAOTIC,        dmgModData(new LightningDmgMod())), "chaotic_lightning_mod");
+//
+//        register(new ModuleImpl<>(DAMAGE_MOD,           DRACONIC,       dmgModData(new IceDmgMod())),       "draconic_ice_mod");
+//        register(new ModuleImpl<>(DAMAGE_MOD,           CHAOTIC,        dmgModData(new IceDmgMod())),       "chaotic_ice_mod");
 
         //Armor
         register(new ModuleImpl<>(SHIELD_CONTROLLER,    WYVERN,         shieldControl(20.0)),               "wyvern_shield_control");

@@ -6,11 +6,13 @@ import codechicken.lib.packet.PacketCustomChannelBuilder;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleGrid;
 import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.PropertyData;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.ClickType;
 import net.minecraft.item.Item;
+import net.minecraft.network.IPacket;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -46,7 +48,7 @@ public class DraconicNetwork {
     public static final int C_IMPACT_EFFECT =           4;
     public static final int C_LAST_STAND_ACTIVATION =   5;
     public static final int C_BLINK =                   6;
-
+    public static final int C_STAFF_EFFECT =            7;
 
     //@formatter:on
 
@@ -133,6 +135,14 @@ public class DraconicNetwork {
         packet.writeVarInt(player.getId());
         packet.writeFloat(distance);
         packet.sendToChunk(player.level, player.blockPosition());
+    }
+
+    public static void sendStaffEffect(LivingEntity source, int damageType, Consumer<MCDataOutput> callback) {
+        PacketCustom packet = new PacketCustom(CHANNEL, C_STAFF_EFFECT);
+        packet.writeByte(damageType);
+        packet.writeVarInt(source.getId());
+        callback.accept(packet);
+        packet.sendToChunk(source.level, source.blockPosition());
     }
 
     public static void init() {

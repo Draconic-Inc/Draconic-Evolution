@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.api.modules.lib;
 
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
@@ -13,6 +14,8 @@ import java.util.Map;
  * Created by brandon3055 on 8/4/21
  */
 public interface IDamageModifier {
+
+    EffectType getType();
 
     void addInformation(Map<ITextComponent, ITextComponent> map, @Nullable ModuleContext context, boolean stack);
 
@@ -44,20 +47,24 @@ public interface IDamageModifier {
      * For effects keep in mind this is called server side only so packets go Brrr!
      * @param world The world.
      * @param pos The position of the damage source or the entity being damaged.
-     * @param entityHit The entity that was hit if an entity was hit.
+     * @param traceResult The trace result for the block or entity that was hit.
      * @param source The entity responsible for causing the damage.
      * @param baseDamage The damage that would normally be applied without this effect.
      * @param secondaryCharge The charge of the secondary effect (range 0 -> 1).
      * @param isProjectile Will be true if damage is caused by a projectile weapon.
      */
-    void doDamageAndEffects(World world, Vector3d pos, @Nullable LivingEntity entityHit, LivingEntity source, float baseDamage, float secondaryCharge, boolean isProjectile);
+    void doDamageAndEffects(World world, Vector3d pos, @Nullable RayTraceResult traceResult, @Nullable LivingEntity source, float baseDamage, float secondaryCharge, boolean isProjectile);
 
     /**
      * This controls how the projectile renders during the draw / charge stage and while in flight.
+     * Can also have other effects but that's up to the implementor.
+     * For example LIGHTNING on the staff causes projectiles to travel at extreme speed for almost instantaneous travel to target.
      * */
     enum EffectType {
         FIRE,
         LIGHTNING,
+        /** Special type for the staff only */
+        STAFF_BEAM,
         GENERIC
     }
 }

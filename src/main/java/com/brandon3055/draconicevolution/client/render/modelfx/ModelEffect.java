@@ -5,6 +5,7 @@ import codechicken.lib.render.buffer.TransformingVertexBuilder;
 import codechicken.lib.util.SneakyUtils;
 import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Vector3;
+import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
@@ -49,11 +50,11 @@ public abstract class ModelEffect {
 
     public abstract RenderType getRenderType();
 
-    protected abstract void doRender(IVertexBuilder builder, float partialTicks);
+    protected abstract void doRender(IVertexBuilder builder, float partialTicks, TechLevel techLevel);
 
-    public void renderEffect(Matrix4 mat, IRenderTypeBuffer getter, float partialTicks) {
+    public void renderEffect(Matrix4 mat, IRenderTypeBuffer getter, float partialTicks, TechLevel techLevel) {
         IVertexBuilder builder = new TransformingVertexBuilder(getter.getBuffer(getRenderType()), mat);
-        doRender(builder, partialTicks);
+        doRender(builder, partialTicks, techLevel);
     }
 
     protected void drawParticle(IVertexBuilder builder, double x, double y, double z, double scale, float red, float green, float blue, float alpha) {
@@ -157,7 +158,7 @@ public abstract class ModelEffect {
         }
 
         @Override
-        protected void doRender(IVertexBuilder builder, float partialTicks) {
+        protected void doRender(IVertexBuilder builder, float partialTicks, TechLevel techLevel) {
             //By default draws an alignment helper.
             //White 0,0,0
             drawParticle(builder, pos.x, pos.y, pos.z, 0.5, 1F, 1F, 1F, 0.5F);
