@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "IPG",
+    "ABA",
+    "GPI"
+  ],
+  "key": {
+    "I": {
+      "tag": "forge:ingots/iron"
+    },
+    "P": {
+      "item": "minecraft:golden_apple"
+    },
+    "G": {
+      "item": "minecraft:diamond"
+    },
+    "A": {
+      "item": "minecraft:bow"
+    },
+    "B": {
+      "item": "draconicevolution:module_core"
+    }
+  },
+  "result": {
+    "item": "draconicevolution:draconium_draw_speed_module"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "III",
+    "ABA",
+    "III"
+  ],
+  "key": {
+    "I": {
+      "tag": "forge:nuggets/draconium_awakened"
+    },
+    "A": {
+      "item": "draconicevolution:wyvern_arrow_speed_module"
+    },
+    "B": {
+      "item": "draconicevolution:wyvern_core"
+    }
+  },
+  "result": {
+    "item": "draconicevolution:draconic_arrow_speed_module"
+  }
+}

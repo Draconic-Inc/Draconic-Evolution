@@ -192,6 +192,21 @@ public class LangGenerator extends LanguageProvider {
         //helper.add("charge_baubles.info",                                       "");
         helper.add("charge_curios",                                             "Charge Curios");
         helper.add("charge_curios.info",                                        "Charge items in curios equipment slots.");
+
+        helper.add("auto_fire", "Auto Fire");
+        helper.add("auto_fire.info", "Enable/Disable Auto Fire");
+
+        helper.add("arrow_speed", "Arrow Speed");
+        helper.add("arrow_speed.info", "Adjust the Arrow Speed");
+
+        helper.add("arrow_damage", "Arrow Base Damage");
+        helper.add("arrow_damage.info", "Adjust the Arrow Base Damage");
+
+        helper.add("draw_speed", "Draw Speed");
+        helper.add("draw_speed.info", "Adjust the Draw Speed");
+
+        helper.add("energy_arrow", "Arrow of Draconic Fire");
+        helper.add("energy_arrow.info", "Allows you to shoot an arrow out of pure energy");
     }
 
     private void modules(PrefixHelper helper) {
@@ -333,6 +348,28 @@ public class LangGenerator extends LanguageProvider {
         helper.add(DEModules.wyvernAquaAdapt,                                   "Aqua Adapt Module");
 
         helper.add(DEModules.wyvernHillStep,                                    "Hill Step Module");
+
+        helper.add(DEModules.draconiumArrowSpeed,                            "Draconium Arrow Speed Module");
+        helper.add(DEModules.wyvernArrowSpeed,                               "Wyvern Arrow Speed Module");
+        helper.add(DEModules.draconicArrowSpeed,                             "Draconic Arrow Speed Module");
+        helper.add(DEModules.chaoticArrowSpeed,                              "Chaotic Arrow Speed Module");
+        helper.add("arrow_speed.name",                                 "Arrow Speed");
+        helper.add(ModuleTypes.ARROW_SPEED, "Arrow Speed");
+
+        helper.add(DEModules.draconiumArrowDamage,                            "Draconium Arrow Damage Module");
+        helper.add(DEModules.wyvernArrowDamage,                               "Wyvern Arrow Damage Module");
+        helper.add(DEModules.draconicArrowDamage,                             "Draconic Arrow Damage Module");
+        helper.add(DEModules.chaoticArrowDamage,                              "Chaotic Arrow Damage Module");
+        helper.add("arrow_damage.name",                                 "Arrow Base Damage");
+        helper.add("arrow_damage.value",                                 "+%s");
+        helper.add(ModuleTypes.ARROW_DAMAGE, "Arrow Damage");
+
+        helper.add(DEModules.draconiumDrawSpeed,                            "Draconium Draw Speed Module");
+        helper.add(DEModules.wyvernDrawSpeed,                               "Wyvern Draw Speed Module");
+        helper.add(DEModules.draconicDrawSpeed,                             "Draconic Draw Speed Module");
+        helper.add(DEModules.chaoticDrawSpeed,                              "Chaotic Draw Speed Module");
+        helper.add("draw_speed.name",                                 "Draw Speed");
+        helper.add(ModuleTypes.DRAW_SPEED, "Draw Speed");
 
         helper.add("module_type",                                               "Module Type");
         helper.add("grid_size",                                                 "Module Size");
@@ -622,6 +659,11 @@ public class LangGenerator extends LanguageProvider {
 
         //Temporary
         add("gui.de.energyStorageCore.name",                                    "Tier %s Energy Core");
+        add("gui.de.energyCost.txt",                                            "Energy Cost");
+        add("gui.de.tier.DRACONIUM",                                            "Basic Tier");
+        add("gui.de.tier.WYVERN",                                               "Wyvern Tier");
+        add("gui.de.tier.DRACONIC",                                             "Draconic Tier");
+        add("gui.de.tier.CHAOTIC",                                              "Chaotic Tier");
         add("button.de.buildGuide.txt",                                         "Build Guide:");
         add("button.de.assembleCore.txt",                                       "Assemble Core");
         add("button.de.tierUp.txt",                                             "Tier Up");

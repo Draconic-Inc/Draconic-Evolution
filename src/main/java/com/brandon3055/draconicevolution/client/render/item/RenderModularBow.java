@@ -14,6 +14,7 @@ import com.brandon3055.brandonscore.client.BCClientEventHandler;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DEConfig;
+import com.brandon3055.draconicevolution.items.equipment.ModularBow;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
@@ -35,6 +36,7 @@ import java.util.Map;
 
 import static codechicken.lib.render.shader.ShaderObject.StandardShaderType.FRAGMENT;
 import static codechicken.lib.render.shader.ShaderObject.StandardShaderType.VERTEX;
+import static com.brandon3055.brandonscore.utils.EnergyUtils.getEnergyStored;
 import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
 
 /**
@@ -107,9 +109,7 @@ public class RenderModularBow extends ToolRenderBase {
                 getter.getBuffer(materialVBOType.withMatrix(bottomMat).withLightMap(packedLight));
             }
         }
-
-        drawStrings(ccrs, mat, bottomMat, getter, drawAngle, packedLight);
-
+        drawStrings(ccrs, mat, bottomMat, getter, drawAngle, packedLight, getEnergyStored(stack) != 0);
 
 //        if (gui) {
 //            getter.getBuffer(guiBaseVBOType.withMatrix(mat).withLightMap(packedLight));
@@ -134,7 +134,7 @@ public class RenderModularBow extends ToolRenderBase {
 //        }
     }
 
-    private void drawStrings(CCRenderState ccrs, Matrix4 topMat, Matrix4 bottomMat, IRenderTypeBuffer getter, double drawAngle, int packedLight) {
+    private void drawStrings(CCRenderState ccrs, Matrix4 topMat, Matrix4 bottomMat, IRenderTypeBuffer getter, double drawAngle, int packedLight, boolean isCharged) {
         RenderType bowStringType = this.bowStringType;
         if (DEConfig.toolShaders) {
             UniformCache uniforms = stringShader.pushCache();
@@ -149,12 +149,14 @@ public class RenderModularBow extends ToolRenderBase {
         double A = 180 - 90 - drawAngle;
         double c = crystalY * (Math.sin(drawAngle * MathHelper.torad) / Math.sin(A * MathHelper.torad));
 
-        float[] r = {0.0F, 0.55F, 1.0F, 0.5F};
-        float[] g = {0.35F, 0.3F, 0.572F, 0F};
-        float[] b = {0.65F, 0.9F, 0.172F, 0F};
+        if (isCharged) {
+            float[] r = {0.0F, 0.55F, 1.0F, 0.5F};
+            float[] g = {0.35F, 0.3F, 0.572F, 0F};
+            float[] b = {0.65F, 0.9F, 0.172F, 0F};
 
-        renderBeam(builder, new Vector3(0, -crystalX, crystalY), new Vector3(0, -(crystalX + c), 0), r[techLevel.index], g[techLevel.index], b[techLevel.index]);
-        renderBeam(builder, new Vector3(0, -crystalX, -crystalY), new Vector3(0, -(crystalX + c), 0), r[techLevel.index], g[techLevel.index], b[techLevel.index]);
+            renderBeam(builder, new Vector3(0, -crystalX, crystalY), new Vector3(0, -(crystalX + c), 0), r[techLevel.index], g[techLevel.index], b[techLevel.index]);
+            renderBeam(builder, new Vector3(0, -crystalX, -crystalY), new Vector3(0, -(crystalX + c), 0), r[techLevel.index], g[techLevel.index], b[techLevel.index]);
+        }
 
         if (drawAngle > 0) {
             Matrix4 arrowMat = topMat.copy();
@@ -165,7 +167,7 @@ public class RenderModularBow extends ToolRenderBase {
 
         topMat.apply(new Rotation(drawAngle * MathHelper.torad, 1, 0, 0).at(new Vector3(0, -crystalX, -crystalY)));
         bottomMat.apply(new Rotation(drawAngle * MathHelper.torad, 1, 0, 0).at(new Vector3(0, -crystalX, -crystalY)));
-        if (DEConfig.toolShaders) {
+        if (DEConfig.toolShaders && isCharged) {
             getter.getBuffer(gemVBOType.withMatrix(topMat).withLightMap(packedLight).withState(getShaderType(shaderParentType, techLevel, gemShader)));
             getter.getBuffer(gemVBOType.withMatrix(bottomMat).withLightMap(packedLight).withState(getShaderType(shaderParentType, techLevel, gemShader)));
         } else {
@@ -266,8 +268,8 @@ public class RenderModularBow extends ToolRenderBase {
     private double getDrawAngle(ItemStack stack) {
         PlayerEntity player = Minecraft.getInstance().player;
         if (player != null && player.getUseItem() == stack) {
-            int maxCount = player.getTicksUsingItem();
-            return BowItem.getPowerForTime(maxCount) * 45F;
+            float maxCount = player.getTicksUsingItem();
+            return Math.min(maxCount/((ModularBow)stack.getItem()).getDrawTicks(stack), 1) * 45F;
         }
         return 0;
     }

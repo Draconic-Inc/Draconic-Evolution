@@ -47,6 +47,10 @@ public class ModuleTypes {
     public static final ModuleType<NoData>              ITEM_TRANSLOCATION  = new ModuleTypeImpl<>("item_translocation",1, 1, MINING_TOOL, MELEE_WEAPON, RANGED_WEAPON);
     public static final ModuleType<DamageModData>       DAMAGE_MOD          = new ModuleTypeImpl<>("damage_mod",        3, 3).setMaxInstallable(1);
 
+    public static final ModuleType<ArrowSpeedData>      ARROW_SPEED         = new ModuleTypeImpl<>("arrow_speed", 1, 1, BOW).setMaxInstallable(1);
+    public static final ModuleType<ArrowDamageData>     ARROW_DAMAGE        = new ModuleTypeImpl<>("arrow_damage", 1, 1, BOW);
+    public static final ModuleType<DrawSpeedData>       DRAW_SPEED          = new ModuleTypeImpl<>("draw_speed", 1, 1, BOW).setMaxInstallable(1);
+
     //@formatter:on
 
     //Vacuum upgrade (for chest and maybe grinder )

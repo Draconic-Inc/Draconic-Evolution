@@ -1544,6 +1544,143 @@ public class RecipeGenerator extends RecipeProvider {
                 .define('D', PISTON)
                 .unlockedBy("has_module_core", has(module_core))
                 .save(consumer, folder("modules", DEModules.wyvernHillStep));
+
+        // Arrow Speed
+        ShapedRecipeBuilder.shaped(DEModules.draconiumArrowSpeed.getItem())
+                .pattern("IPG")
+                .pattern("ABA")
+                .pattern("GPI")
+                .define('I', INGOTS_IRON)
+                .define('P', new NBTIngredient(PotionUtils.setPotion(new ItemStack(POTION), Potions.SWIFTNESS)))
+                .define('G', INGOTS_GOLD)
+                .define('A', SUGAR)
+                .define('B', module_core)
+                .unlockedBy("has_module_core", has(module_core))
+                .save(consumer, folder("modules", DEModules.draconiumArrowSpeed));
+
+        ShapedRecipeBuilder.shaped(DEModules.wyvernArrowSpeed.getItem())
+                .pattern("IPI")
+                .pattern("ABA")
+                .pattern("IPI")
+                .define('I', INGOTS_DRACONIUM)
+                .define('P', new NBTIngredient(PotionUtils.setPotion(new ItemStack(POTION), Potions.STRONG_SWIFTNESS)))
+                .define('A', DEModules.draconiumArrowSpeed.getItem())
+                .define('B', core_draconium)
+                .unlockedBy("has_module_core", has(module_core))
+                .save(consumer, folder("modules", DEModules.wyvernArrowSpeed));
+
+        ShapedRecipeBuilder.shaped(DEModules.draconicArrowSpeed.getItem())
+                .pattern("III")
+                .pattern("ABA")
+                .pattern("III")
+                .define('I', NUGGETS_DRACONIUM_AWAKENED)
+                .define('A', DEModules.wyvernArrowSpeed.getItem())
+                .define('B', core_wyvern)
+                .unlockedBy("has_module_core", has(module_core))
+                .save(consumer, folder("modules", DEModules.draconicArrowSpeed));
+
+        ShapedRecipeBuilder.shaped(DEModules.chaoticArrowSpeed.getItem())
+                .pattern("IPI")
+                .pattern("ABA")
+                .pattern("IPI")
+                .define('I', chaos_frag_small)
+                .define('P', chaos_frag_medium)
+                .define('A', DEModules.draconicArrowSpeed.getItem())
+                .define('B', core_awakened)
+                .unlockedBy("has_module_core", has(module_core))
+                .save(consumer, folder("modules", DEModules.chaoticArrowSpeed));
+
+        // Arrow Damage
+        ShapedRecipeBuilder.shaped(DEModules.draconiumArrowDamage.getItem())
+                .pattern("IPG")
+                .pattern("ABA")
+                .pattern("GPI")
+                .define('I', INGOTS_IRON)
+                .define('P', new NBTIngredient(PotionUtils.setPotion(new ItemStack(POTION), Potions.STRENGTH)))
+                .define('G', INGOTS_GOLD)
+                .define('A', ARROW)
+                .define('B', module_core)
+                .unlockedBy("has_module_core", has(module_core))
+                .save(consumer, folder("modules", DEModules.draconiumArrowDamage));
+
+        ShapedRecipeBuilder.shaped(DEModules.wyvernArrowDamage.getItem())
+                .pattern("IPI")
+                .pattern("ABA")
+                .pattern("IPI")
+                .define('I', INGOTS_DRACONIUM)
+                .define('P', new NBTIngredient(PotionUtils.setPotion(new ItemStack(POTION), Potions.STRONG_STRENGTH)))
+                .define('A', DEModules.draconiumArrowDamage.getItem())
+                .define('B', core_draconium)
+                .unlockedBy("has_module_core", has(module_core))
+                .save(consumer, folder("modules", DEModules.wyvernArrowDamage));
+
+        ShapedRecipeBuilder.shaped(DEModules.draconicArrowDamage.getItem())
+                .pattern("IPI")
+                .pattern("ABA")
+                .pattern("IPI")
+                .define('I', NUGGETS_DRACONIUM_AWAKENED)
+                .define('P', DRAGON_BREATH)
+                .define('A', DEModules.wyvernArrowDamage.getItem())
+                .define('B', core_wyvern)
+                .unlockedBy("has_module_core", has(module_core))
+                .save(consumer, folder("modules", DEModules.draconicArrowDamage));
+
+        ShapedRecipeBuilder.shaped(DEModules.chaoticArrowDamage.getItem())
+                .pattern("IPI")
+                .pattern("ABA")
+                .pattern("IPI")
+                .define('I', chaos_frag_small)
+                .define('P', chaos_frag_medium)
+                .define('A', DEModules.draconicArrowDamage.getItem())
+                .define('B', core_awakened)
+                .unlockedBy("has_module_core", has(module_core))
+                .save(consumer, folder("modules", DEModules.chaoticArrowDamage));
+        
+        // Draw Speed
+        ShapedRecipeBuilder.shaped(DEModules.draconiumDrawSpeed.getItem())
+                .pattern("IPG")
+                .pattern("ABA")
+                .pattern("GPI")
+                .define('I', INGOTS_IRON)
+                .define('P', GOLDEN_APPLE)
+                .define('G', DIAMOND)
+                .define('A', BOW)
+                .define('B', module_core)
+                .unlockedBy("has_module_core", has(module_core))
+                .save(consumer, folder("modules", DEModules.draconiumDrawSpeed));
+
+        ShapedRecipeBuilder.shaped(DEModules.wyvernDrawSpeed.getItem())
+                .pattern("IPI")
+                .pattern("ABA")
+                .pattern("IPI")
+                .define('I', INGOTS_DRACONIUM)
+                .define('P', BOW)
+                .define('A', DEModules.draconiumDrawSpeed.getItem())
+                .define('B', core_wyvern)
+                .unlockedBy("has_module_core", has(module_core))
+                .save(consumer, folder("modules", DEModules.wyvernDrawSpeed));
+
+        ShapedRecipeBuilder.shaped(DEModules.draconicDrawSpeed.getItem())
+                .pattern("IPI")
+                .pattern("ABA")
+                .pattern("IPI")
+                .define('I', INGOTS_DRACONIUM_AWAKENED)
+                .define('P', NETHERITE_INGOT)
+                .define('A', DEModules.wyvernDrawSpeed.getItem())
+                .define('B', core_awakened)
+                .unlockedBy("has_module_core", has(module_core))
+                .save(consumer, folder("modules", DEModules.draconicDrawSpeed));
+
+        ShapedRecipeBuilder.shaped(DEModules.chaoticDrawSpeed.getItem())
+                .pattern("IPI")
+                .pattern("ABA")
+                .pattern("IPI")
+                .define('I', chaos_frag_small)
+                .define('P', chaos_frag_medium)
+                .define('A', DEModules.draconicDrawSpeed.getItem())
+                .define('B', core_awakened)
+                .unlockedBy("has_module_core", has(module_core))
+                .save(consumer, folder("modules", DEModules.chaoticDrawSpeed));
     }
 
     private static void unsorted(Consumer<IFinishedRecipe> consumer) {

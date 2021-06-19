@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "draconicevolution:modules/wyvern_draw_speed"
+    ]
+  },
+  "criteria": {
+    "has_module_core": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "draconicevolution:module_core"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "draconicevolution:modules/wyvern_draw_speed"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_module_core",
+      "has_the_recipe"
+    ]
+  ]
+}

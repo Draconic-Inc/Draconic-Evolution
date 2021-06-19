@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "IPI",
+    "ABA",
+    "IPI"
+  ],
+  "key": {
+    "I": {
+      "tag": "forge:ingots/draconium"
+    },
+    "P": {
+      "item": "minecraft:bow"
+    },
+    "A": {
+      "item": "draconicevolution:draconium_draw_speed_module"
+    },
+    "B": {
+      "item": "draconicevolution:wyvern_core"
+    }
+  },
+  "result": {
+    "item": "draconicevolution:wyvern_draw_speed_module"
+  }
+}

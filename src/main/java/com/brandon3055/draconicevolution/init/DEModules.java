@@ -7,19 +7,13 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.modules.data.*;
 import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.lib.*;
-import com.brandon3055.draconicevolution.items.equipment.damage.FireDmgMod;
-import com.brandon3055.draconicevolution.items.equipment.damage.IceDmgMod;
-import com.brandon3055.draconicevolution.items.equipment.damage.LightningDmgMod;
 import net.minecraft.item.Item;
 import net.minecraft.item.Item.Properties;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.datasync.IDataSerializer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ForgeRegistry;
-import net.minecraftforge.registries.IForgeRegistryEntry;
 import net.minecraftforge.registries.ObjectHolder;
 import net.minecraftforge.registries.RegistryBuilder;
 
@@ -113,6 +107,21 @@ public class DEModules {
 
     @ObjectHolder("wyvern_hill_step")               public static Module<NoData>        wyvernHillStep;
 
+    @ObjectHolder("draconium_arrow_speed")       public static Module<ArrowSpeedData>        draconiumArrowSpeed;
+    @ObjectHolder("wyvern_arrow_speed")          public static Module<ArrowSpeedData>        wyvernArrowSpeed;
+    @ObjectHolder("draconic_arrow_speed")        public static Module<ArrowSpeedData>        draconicArrowSpeed;
+    @ObjectHolder("chaotic_arrow_speed")         public static Module<ArrowSpeedData>        chaoticArrowSpeed;
+
+    @ObjectHolder("draconium_arrow_damage")       public static Module<ArrowDamageData>        draconiumArrowDamage;
+    @ObjectHolder("wyvern_arrow_damage")          public static Module<ArrowDamageData>        wyvernArrowDamage;
+    @ObjectHolder("draconic_arrow_damage")        public static Module<ArrowDamageData>        draconicArrowDamage;
+    @ObjectHolder("chaotic_arrow_damage")         public static Module<ArrowDamageData>        chaoticArrowDamage;
+
+    @ObjectHolder("draconium_draw_speed")       public static Module<DrawSpeedData>        draconiumDrawSpeed;
+    @ObjectHolder("wyvern_draw_speed")          public static Module<DrawSpeedData>        wyvernDrawSpeed;
+    @ObjectHolder("draconic_draw_speed")        public static Module<DrawSpeedData>        draconicDrawSpeed;
+    @ObjectHolder("chaotic_draw_speed")         public static Module<DrawSpeedData>        chaoticDrawSpeed;
+
     //@formatter:on
 
 
@@ -194,6 +203,21 @@ public class DEModules {
         register(new ModuleImpl<>(JUMP_BOOST,           CHAOTIC,        jumpData(4.00)),                    "chaotic_jump");
 
         register(new ModuleImpl<>(AQUA_ADAPT,           WYVERN,         noData()),                          "wyvern_aqua_adapt");
+
+        register(new ModuleImpl<>(ARROW_SPEED, DRACONIUM,               arrowSpeedData(0.2f)), "draconium_arrow_speed");
+        register(new ModuleImpl<>(ARROW_SPEED, WYVERN,                  arrowSpeedData(0.3f)), "wyvern_arrow_speed");
+        register(new ModuleImpl<>(ARROW_SPEED, DRACONIC,                arrowSpeedData(0.5f)), "draconic_arrow_speed");
+        register(new ModuleImpl<>(ARROW_SPEED, CHAOTIC,                 arrowSpeedData(0.8f)), "chaotic_arrow_speed");
+
+        register(new ModuleImpl<>(ARROW_DAMAGE, DRACONIUM,              arrowDamageData(1f)), "draconium_arrow_damage");
+        register(new ModuleImpl<>(ARROW_DAMAGE, WYVERN,                 arrowDamageData(2f)), "wyvern_arrow_damage");
+        register(new ModuleImpl<>(ARROW_DAMAGE, DRACONIC,               arrowDamageData(5f)), "draconic_arrow_damage");
+        register(new ModuleImpl<>(ARROW_DAMAGE, CHAOTIC,                arrowDamageData(10f)), "chaotic_arrow_damage");
+
+        register(new ModuleImpl<>(DRAW_SPEED, DRACONIUM,                drawTimeReductionData(0.5f)), "draconium_draw_speed");
+        register(new ModuleImpl<>(DRAW_SPEED, WYVERN,                   drawTimeReductionData(1)), "wyvern_draw_speed");
+        register(new ModuleImpl<>(DRAW_SPEED, DRACONIC,                 drawTimeReductionData(4)), "draconic_draw_speed");
+        register(new ModuleImpl<>(DRAW_SPEED, CHAOTIC,                  drawTimeReductionData(9)), "chaotic_draw_speed");
         //@formatter:on
     }
 
@@ -269,6 +293,18 @@ public class DEModules {
         return e -> {
             return new DamageModData(modifier);
         };
+    }
+
+    private static Function<Module<ArrowSpeedData>, ArrowSpeedData> arrowSpeedData(float defSpeed) {
+        return e -> new ArrowSpeedData((float) ModuleCfg.getModuleDouble(e, "arrow_speed", defSpeed));
+    }
+
+    private static Function<Module<ArrowDamageData>, ArrowDamageData> arrowDamageData(float defDamage) {
+        return e -> new ArrowDamageData((float) ModuleCfg.getModuleDouble(e, "arrow_damage", defDamage));
+    }
+
+    private static Function<Module<DrawSpeedData>, DrawSpeedData> drawTimeReductionData(float defSpeed) {
+        return e -> new DrawSpeedData((float) ModuleCfg.getModuleDouble(e, "draw_speed", defSpeed));
     }
 
     private static Function<Module<NoData>, NoData> noData() {

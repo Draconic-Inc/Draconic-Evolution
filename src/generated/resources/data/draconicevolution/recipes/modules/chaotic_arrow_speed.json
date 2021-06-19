@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "IPI",
+    "ABA",
+    "IPI"
+  ],
+  "key": {
+    "I": {
+      "item": "draconicevolution:small_chaos_frag"
+    },
+    "P": {
+      "item": "draconicevolution:medium_chaos_frag"
+    },
+    "A": {
+      "item": "draconicevolution:draconic_arrow_speed_module"
+    },
+    "B": {
+      "item": "draconicevolution:awakened_core"
+    }
+  },
+  "result": {
+    "item": "draconicevolution:chaotic_arrow_speed_module"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "IPG",
+    "ABA",
+    "GPI"
+  ],
+  "key": {
+    "I": {
+      "tag": "forge:ingots/iron"
+    },
+    "P": {
+      "type": "forge:nbt",
+      "item": "minecraft:potion",
+      "count": 1,
+      "nbt": "{Potion:\"minecraft:swiftness\"}"
+    },
+    "G": {
+      "tag": "forge:ingots/gold"
+    },
+    "A": {
+      "item": "minecraft:sugar"
+    },
+    "B": {
+      "item": "draconicevolution:module_core"
+    }
+  },
+  "result": {
+    "item": "draconicevolution:draconium_arrow_speed_module"
+  }
+}

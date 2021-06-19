@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "IPI",
+    "ABA",
+    "IPI"
+  ],
+  "key": {
+    "I": {
+      "tag": "forge:ingots/draconium_awakened"
+    },
+    "P": {
+      "item": "minecraft:netherite_ingot"
+    },
+    "A": {
+      "item": "draconicevolution:wyvern_draw_speed_module"
+    },
+    "B": {
+      "item": "draconicevolution:awakened_core"
+    }
+  },
+  "result": {
+    "item": "draconicevolution:draconic_draw_speed_module"
+  }
+}
