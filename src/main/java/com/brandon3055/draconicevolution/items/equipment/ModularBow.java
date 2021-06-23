@@ -75,7 +75,7 @@ public class ModularBow extends BowItem implements IReaperItem, IModularItem {
             }
             ArrowDamageData add = host.getModuleData(ModuleTypes.ARROW_DAMAGE);
             if (add != null) {
-                props.add(new DecimalProperty("arrow_damage", add.getArrowDamage()).range(2, add.getArrowDamage()).setFormatter(ConfigProperty.DecimalFormatter.RAW_0));
+                props.add(new DecimalProperty("arrow_damage", add.getArrowDamage()).range(0, add.getArrowDamage()).setFormatter(ConfigProperty.DecimalFormatter.RAW_0));
             }
             DrawSpeedData dsd = host.getModuleData(ModuleTypes.DRAW_SPEED);
             if (dsd != null) {
@@ -121,24 +121,20 @@ public class ModularBow extends BowItem implements IReaperItem, IModularItem {
                     if (host instanceof PropertyProvider && ((PropertyProvider) host).hasDecimal("arrow_speed")) {
                         speed += ((PropertyProvider) host).getDecimal("arrow_speed").getValue();
                     }
-                    float velocity = (float) (speed * drawArrowSpeedModifier);
+                    float velocity = (float) (speed * drawArrowSpeedModifier) * 3;
 
                     if (!world.isClientSide) {
                         DEArrowItem deArrowItem = new DEArrowItem(new Properties());
                         deArrowItem.setEnergyArrow(isEnergyArrow);
                         DEArrowEntity deArrowEntity = deArrowItem.createArrow(world, itemstack, playerentity);
-                        deArrowEntity.shootFromRotation(playerentity, playerentity.xRot, playerentity.yRot, 0.0F, velocity * 3.0F, 1.0F);
-
-                        if (drawArrowSpeedModifier >= 1.0F) {
-                            deArrowEntity.setCritArrow(true);
-                        }
+                        deArrowEntity.shootFromRotation(playerentity, playerentity.xRot, playerentity.yRot, 0.0F, velocity, 1.0F);
 
                         int extraDamage = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
                         if (host instanceof PropertyProvider && ((PropertyProvider) host).hasDecimal("arrow_damage")) {
                             double moduleDamage = ((PropertyProvider) host).getDecimal("arrow_damage").getValue();
                             deArrowEntity.setBaseDamage(moduleDamage);
                         }
-                        if (extraDamage > 0) {
+                        if (extraDamage > 0 && deArrowEntity.getBaseDamage() != 0) {
                             deArrowEntity.setBaseDamage(deArrowEntity.getBaseDamage() + (double)extraDamage * 0.5D + 0.5D);
                         }
 

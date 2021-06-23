@@ -199,8 +199,8 @@ public class LangGenerator extends LanguageProvider {
         helper.add("arrow_speed", "Arrow Speed");
         helper.add("arrow_speed.info", "Adjust the Arrow Speed");
 
-        helper.add("arrow_damage", "Arrow Base Damage");
-        helper.add("arrow_damage.info", "Adjust the Arrow Base Damage");
+        helper.add("arrow_damage", "Arrow Damage");
+        helper.add("arrow_damage.info", "Adjust the Arrow Damage");
 
         helper.add("draw_speed", "Draw Speed");
         helper.add("draw_speed.info", "Adjust the Draw Speed");
@@ -360,8 +360,8 @@ public class LangGenerator extends LanguageProvider {
         helper.add(DEModules.wyvernArrowDamage,                               "Wyvern Arrow Damage Module");
         helper.add(DEModules.draconicArrowDamage,                             "Draconic Arrow Damage Module");
         helper.add(DEModules.chaoticArrowDamage,                              "Chaotic Arrow Damage Module");
-        helper.add("arrow_damage.name",                                 "Arrow Base Damage");
-        helper.add("arrow_damage.value",                                 "+%s");
+        helper.add("arrow_damage.name",                                 "Arrow Damage");
+        helper.add("arrow_damage.value",                                 "+%s Damage");
         helper.add(ModuleTypes.ARROW_DAMAGE, "Arrow Damage");
 
         helper.add(DEModules.draconiumDrawSpeed,                            "Draconium Draw Speed Module");

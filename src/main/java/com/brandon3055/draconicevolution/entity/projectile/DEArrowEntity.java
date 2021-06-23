@@ -15,8 +15,6 @@ import net.minecraft.entity.projectile.ArrowEntity;
 import net.minecraft.network.play.server.SChangeGameStatePacket;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
@@ -40,11 +38,8 @@ public class DEArrowEntity extends ArrowEntity {
     }
 
     @Override
-    protected void onHitEntity(EntityRayTraceResult rayTraceResult) {
-        super.onHitEntity(rayTraceResult);
-        Entity entity = rayTraceResult.getEntity();
-        float f = (float)this.getDeltaMovement().length();
-        int i = MathHelper.ceil(MathHelper.clamp((double)f * this.baseDamage, 0.0D, 2.147483647E9D));
+    protected void onHitEntity(EntityRayTraceResult p_213868_1_) {
+        Entity entity = p_213868_1_.getEntity();
         if (this.getPierceLevel() > 0) {
             if (this.piercingIgnoreEntityIds == null) {
                 this.piercingIgnoreEntityIds = new IntOpenHashSet(5);
@@ -60,11 +55,6 @@ public class DEArrowEntity extends ArrowEntity {
             }
 
             this.piercingIgnoreEntityIds.add(entity.getId());
-        }
-
-        if (this.isCritArrow()) {
-            long j = this.random.nextInt(i / 2 + 2);
-            i = (int)Math.min(j + (long)i, 2147483647L);
         }
 
         Entity entity1 = this.getOwner();
@@ -84,7 +74,7 @@ public class DEArrowEntity extends ArrowEntity {
             entity.setSecondsOnFire(5);
         }
 
-        if (entity.hurt(damagesource, (float)i)) {
+        if (entity.hurt(damagesource, (float) baseDamage)) {
             if (flag) {
                 return;
             }
@@ -143,20 +133,20 @@ public class DEArrowEntity extends ArrowEntity {
                 this.remove();
             }
         }
-
     }
 
     @Override
-    public void shoot(double x, double y, double z, float scale, float p_70186_8_) {
-        Vector3d vector3d = (new Vector3d(x, y, z)).normalize().scale(scale);
+    public void shoot(double p_70186_1_, double p_70186_3_, double p_70186_5_, float p_70186_7_, float p_70186_8_) {
+        Vector3d vector3d = (new Vector3d(p_70186_1_, p_70186_3_, p_70186_5_)).normalize().scale(p_70186_7_);
         this.setDeltaMovement(vector3d);
         float f = MathHelper.sqrt(getHorizontalDistanceSqr(vector3d));
         this.yRot = (float)(MathHelper.atan2(vector3d.x, vector3d.z) * (double)(180F / (float)Math.PI));
-        this.xRot = (float)(MathHelper.atan2(vector3d.y, f) * (double)(180F / (float)Math.PI));
+        this.xRot = (float)(MathHelper.atan2(vector3d.y, (double)f) * (double)(180F / (float)Math.PI));
         this.yRotO = this.yRot;
         this.xRotO = this.xRot;
     }
 
+    // WARNING! BaseDamage is total damage
     @Override
     public void setBaseDamage(double baseDamage) {
         this.baseDamage = baseDamage;
@@ -167,14 +157,4 @@ public class DEArrowEntity extends ArrowEntity {
         this.knockback = knockback;
     }
 
-    private void resetPiercedEntities() {
-        if (this.piercedAndKilledEntities != null) {
-            this.piercedAndKilledEntities.clear();
-        }
-
-        if (this.piercingIgnoreEntityIds != null) {
-            this.piercingIgnoreEntityIds.clear();
-        }
-
-    }
 }
