@@ -8,6 +8,10 @@ import net.minecraft.util.text.TranslationTextComponent;
 import javax.annotation.Nullable;
 import java.util.Map;
 
+/**
+ * Created by Werechang on 15/6/21
+ */
+
 public class DrawSpeedData implements ModuleData<DrawSpeedData> {
     public final float drawTimeReduction;
 

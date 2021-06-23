@@ -23,6 +23,10 @@ import net.minecraft.world.World;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Created by Werechang on 16/6/21
+ */
+
 public class DEArrowEntity extends ArrowEntity {
 
     private BlockState lastState;
@@ -141,7 +145,7 @@ public class DEArrowEntity extends ArrowEntity {
         this.setDeltaMovement(vector3d);
         float f = MathHelper.sqrt(getHorizontalDistanceSqr(vector3d));
         this.yRot = (float)(MathHelper.atan2(vector3d.x, vector3d.z) * (double)(180F / (float)Math.PI));
-        this.xRot = (float)(MathHelper.atan2(vector3d.y, (double)f) * (double)(180F / (float)Math.PI));
+        this.xRot = (float)(MathHelper.atan2(vector3d.y, f) * (double)(180F / (float)Math.PI));
         this.yRotO = this.yRot;
         this.xRotO = this.xRot;
     }

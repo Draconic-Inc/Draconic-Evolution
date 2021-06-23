@@ -8,6 +8,10 @@ import net.minecraft.util.text.TranslationTextComponent;
 import javax.annotation.Nullable;
 import java.util.Map;
 
+/**
+ * Created by Werechang on 13/6/21
+ */
+
 public class ArrowSpeedData implements ModuleData<ArrowSpeedData> {
     public final float arrowSpeed;
 
