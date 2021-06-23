@@ -131,7 +131,7 @@ public class ItemModelGenerator extends ItemModelProvider {
         //endregion
 
         //region Modules (Dont mind this. This is just me being to lazy to go copy paste some images)
-        File textures = new File("C:\\Users\\tom\\Desktop\\Java Applications\\Draconic-Evolution\\src\\main\\resources\\assets\\draconicevolution\\textures");
+        File textures = new File("/home/brandon3055/Development/WorkSpaces/1.16/BrandonsMods/Draconic-Evolution/src/main/resources/assets/draconicevolution/textures");
         DEModules.moduleItemMap.forEach((module, item) -> {
             String name = Objects.requireNonNull(module.getRegistryName()).getPath();
             File itemTexture = new File(textures, "item/modules/" + name + ".png");
