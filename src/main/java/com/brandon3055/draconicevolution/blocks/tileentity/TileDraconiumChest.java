@@ -5,9 +5,11 @@ import codechicken.lib.inventory.InventoryUtils;
 import com.brandon3055.brandonscore.api.power.OPStorage;
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.capability.CapabilityOP;
+import com.brandon3055.brandonscore.inventory.ContainerBCTile;
 import com.brandon3055.brandonscore.inventory.ItemHandlerIOControl;
 import com.brandon3055.brandonscore.inventory.ItemHandlerSlotWrapper;
 import com.brandon3055.brandonscore.inventory.TileItemStackHandler;
+import com.brandon3055.brandonscore.lib.IActivatableTile;
 import com.brandon3055.brandonscore.lib.datamanager.*;
 import com.brandon3055.brandonscore.utils.DataUtils;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
@@ -15,22 +17,27 @@ import com.brandon3055.draconicevolution.DEOldConfig;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.blocks.DraconiumChest;
 import com.brandon3055.draconicevolution.inventory.ContainerDraconiumChest;
+import com.brandon3055.draconicevolution.inventory.GuiLayoutFactories;
 import com.brandon3055.draconicevolution.items.ItemCore;
 import com.brandon3055.draconicevolution.init.OreDoublingRegistry;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
+import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -42,7 +49,7 @@ import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.*;
 /**
  * Created by brandon3055 on 28/09/2016.
  */
-public class TileDraconiumChest extends TileBCore implements ITickableTileEntity {
+public class TileDraconiumChest extends TileBCore implements ITickableTileEntity, INamedContainerProvider, IActivatableTile {
 
     private NonNullList<ItemStack> craftingStacks = NonNullList.withSize(10, ItemStack.EMPTY);
     public ManagedEnum<AutoSmeltMode> autoSmeltMode = register(new ManagedEnum<>("auto_smelt_mode", AutoSmeltMode.OFF, SAVE_BOTH_SYNC_CONTAINER));
@@ -282,34 +289,34 @@ public class TileDraconiumChest extends TileBCore implements ITickableTileEntity
             if (!stack.isEmpty() && !getSmeltResult(stack).isEmpty()) {
                 int fullStacks = 0;
                 for (int f = FIRST_FURNACE_SLOT; f <= LAST_FURNACE_SLOT; f++) {
-                    ItemStack stackInFernace = itemHandler.getStackInSlot(f);
+                    ItemStack stackInFurnace = itemHandler.getStackInSlot(f);
 
                     switch (autoSmeltMode.get()) {
                         case FILL:
                         case LOCK:
-                            if (ItemStack.isSame(stackInFernace, stack) && ItemStack.tagMatches(stackInFernace, stack) && stackInFernace.getCount() < stackInFernace.getMaxStackSize()) {
-                                int count = Math.min(stack.getCount(), stackInFernace.getMaxStackSize() - stackInFernace.getCount());
-                                stackInFernace.grow(count);
+                            if (ItemStack.isSame(stackInFurnace, stack) && ItemStack.tagMatches(stackInFurnace, stack) && stackInFurnace.getCount() < stackInFurnace.getMaxStackSize()) {
+                                int count = Math.min(stack.getCount(), stackInFurnace.getMaxStackSize() - stackInFurnace.getCount());
+                                stackInFurnace.grow(count);
                                 stack.shrink(count);
                                 stacksInserted = true;
                             }
                             break;
                         case ALL:
-                            if (stackInFernace.isEmpty()) {
+                            if (stackInFurnace.isEmpty()) {
                                 itemHandler.setStackInSlot(f, stack.copy());
                                 stack = ItemStack.EMPTY;
                                 stacksInserted = true;
-                            } else if (ItemStack.isSame(stackInFernace, stack) && ItemStack.tagMatches(stackInFernace, stack) && stackInFernace.getCount() < stackInFernace.getMaxStackSize()) {
-                                int count = Math.min(stack.getCount(), stackInFernace.getMaxStackSize() - stackInFernace.getCount());
-                                stackInFernace.grow(count);
+                            } else if (ItemStack.isSame(stackInFurnace, stack) && ItemStack.tagMatches(stackInFurnace, stack) && stackInFurnace.getCount() < stackInFurnace.getMaxStackSize()) {
+                                int count = Math.min(stack.getCount(), stackInFurnace.getMaxStackSize() - stackInFurnace.getCount());
+                                stackInFurnace.grow(count);
                                 stack.shrink(count);
                                 stacksInserted = true;
                             }
                             break;
                     }
 
-                    stackInFernace = itemHandler.getStackInSlot(f);
-                    if (!stackInFernace.isEmpty() && stackInFernace.getCount() == stackInFernace.getMaxStackSize()) {
+                    stackInFurnace = itemHandler.getStackInSlot(f);
+                    if (!stackInFurnace.isEmpty() && stackInFurnace.getCount() == stackInFurnace.getMaxStackSize()) {
                         fullStacks++;
                     }
 
@@ -705,6 +712,20 @@ public class TileDraconiumChest extends TileBCore implements ITickableTileEntity
         if (!player.isSpectator()) {
             numPlayersUsing.dec();
         }
+    }
+
+    @Override
+    public boolean onBlockActivated(BlockState state, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+        if (player instanceof ServerPlayerEntity) {
+            NetworkHooks.openGui((ServerPlayerEntity) player, this, worldPosition);
+        }
+        return true;
+    }
+
+    @Nullable
+    @Override
+    public Container createMenu(int currentWindowIndex, PlayerInventory playerInventory, PlayerEntity player) {
+        return new ContainerBCTile<>(DEContent.container_draconium_chest, currentWindowIndex, player.inventory, this, GuiLayoutFactories.DRACONIUM_CHEST_LAYOUT);
     }
 
     //endregion

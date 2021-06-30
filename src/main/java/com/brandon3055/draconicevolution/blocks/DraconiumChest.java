@@ -1,32 +1,47 @@
 package com.brandon3055.draconicevolution.blocks;
 
 import com.brandon3055.brandonscore.blocks.BlockBCore;
+import com.brandon3055.brandonscore.lib.IActivatableTile;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
+import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileDraconiumChest;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockRenderType;
-import net.minecraft.block.BlockState;
+import net.minecraft.block.*;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.state.BooleanProperty;
+import net.minecraft.state.DirectionProperty;
+import net.minecraft.state.StateContainer;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 
 /**
  * Created by brandon3055 on 25/09/2016.
  */
-public class DraconiumChest extends BlockBCore/* implements ITileEntityProvider, IRenderOverride*/ {
+public class DraconiumChest extends BlockBCore {
+
+    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+    public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
 
     protected static final VoxelShape SHAPE = Block.box(1.0, 0.0D, 1.0, 15.0, 14.0, 15.0);
 
     public DraconiumChest(Properties properties) {
         super(properties);
+        this.registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(ACTIVE, false));
     }
 
     @Override
@@ -39,19 +54,16 @@ public class DraconiumChest extends BlockBCore/* implements ITileEntityProvider,
         return true;
     }
 
+    @Override
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+        builder.add(FACING, ACTIVE);
+    }
+
     @Nullable
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {
         return new TileDraconiumChest();
     }
-
-//    @Override
-//    public boolean onBlockActivated(World worldIn, BlockPos pos, BlockState state, PlayerEntity playerIn, Hand hand, Direction side, float hitX, float hitY, float hitZ) {
-//        if (!worldIn.isRemote) {
-//            playerIn.openGui(DraconicEvolution.instance, GuiHandler.GUIID_DRACONIUM_CHEST, worldIn, pos.getX(), pos.getY(), pos.getZ());
-//        }
-//        return true;//super.onBlockActivated(worldIn, pos, state, playerIn, hand, heldItem, side, hitX, hitY, hitZ);
-//    }
 
     public static boolean isStackValid(ItemStack stack) {
         if (stack.getItem() == Item.byBlock(DEContent.draconium_chest)) {
@@ -64,17 +76,6 @@ public class DraconiumChest extends BlockBCore/* implements ITileEntityProvider,
             }
         }
         return true;
-    }
-
-
-    @Override
-    public BlockRenderType getRenderShape(BlockState state) {
-        return BlockRenderType.INVISIBLE;
-    }
-
-    @Override
-    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
-        return SHAPE;
     }
 
 //    @Override
@@ -124,6 +125,21 @@ public class DraconiumChest extends BlockBCore/* implements ITileEntityProvider,
 
 
     //endregion
+
+    @Override
+    public BlockState getStateForPlacement(BlockItemUseContext context) {
+        return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
+    }
+
+    @Override
+    public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
+        return SHAPE;
+    }
+
+    @Override
+    public BlockRenderType getRenderShape(BlockState state) {
+        return BlockRenderType.INVISIBLE;
+    }
 
     @Override
     public boolean overrideShareTag() {

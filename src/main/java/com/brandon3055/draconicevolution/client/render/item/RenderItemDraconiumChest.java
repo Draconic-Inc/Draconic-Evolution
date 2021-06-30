@@ -1,18 +1,23 @@
 package com.brandon3055.draconicevolution.client.render.item;
 
+import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.item.IItemRenderer;
 import codechicken.lib.texture.TextureUtils;
 import codechicken.lib.util.TransformUtils;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.client.model.ModelDraconiumChest;
 import com.brandon3055.draconicevolution.client.render.tile.RenderTileDraconiumChest;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.IModelTransform;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.TransformationMatrix;
 
 /**
@@ -44,9 +49,8 @@ public class RenderItemDraconiumChest implements IItemRenderer {
 
     @Override
     public void renderItem(ItemStack stack, ItemCameraTransforms.TransformType transformType, MatrixStack mStack, IRenderTypeBuffer getter, int packedLight, int packedOverlay) {
-        int colour = ItemNBTHelper.getInteger(stack, "ChestColour", 0x640096);
-//        LogHelperBC.logNBT(stack);
-        RenderTileDraconiumChest.render(Direction.NORTH, colour, 0, 0, 0, 0, 0, -1);
+        ModelDraconiumChest chest = new ModelDraconiumChest(RenderType::entitySolid);
+        chest.renderToBuffer(mStack, getter.getBuffer(chest.renderType(new ResourceLocation(DraconicEvolution.MODID, "textures/block/draconium_chest.png"))), packedLight, packedOverlay, 1F, 1F, 1F, 1F);
     }
 
     @Override
