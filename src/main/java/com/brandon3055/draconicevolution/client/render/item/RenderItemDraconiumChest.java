@@ -4,6 +4,7 @@ import codechicken.lib.render.item.IItemRenderer;
 import codechicken.lib.texture.TextureUtils;
 import codechicken.lib.util.TransformUtils;
 import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.client.DETextures;
 import com.brandon3055.draconicevolution.client.model.ModelDraconiumChest;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -44,7 +45,7 @@ public class RenderItemDraconiumChest implements IItemRenderer {
     @Override
     public void renderItem(ItemStack stack, ItemCameraTransforms.TransformType transformType, MatrixStack mStack, IRenderTypeBuffer getter, int packedLight, int packedOverlay) {
         ModelDraconiumChest chest = new ModelDraconiumChest(RenderType::entitySolid);
-        chest.renderToBuffer(mStack, getter.getBuffer(chest.renderType(new ResourceLocation(DraconicEvolution.MODID, "textures/block/draconium_chest.png"))), packedLight, packedOverlay, 1F, 1F, 1F, 1F);
+        chest.renderToBuffer(mStack, getter.getBuffer(chest.renderType(new ResourceLocation(DraconicEvolution.MODID, DETextures.DRACONIUM_CHEST))), packedLight, packedOverlay, 1F, 1F, 1F, 1F);
     }
 
     @Override

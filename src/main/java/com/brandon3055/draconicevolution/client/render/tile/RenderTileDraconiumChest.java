@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.client.render.tile;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.DraconiumChest;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileDraconiumChest;
+import com.brandon3055.draconicevolution.client.DETextures;
 import com.brandon3055.draconicevolution.client.model.ModelDraconiumChest;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -18,7 +19,7 @@ import java.util.Objects;
 
 public class RenderTileDraconiumChest extends TileEntityRenderer<TileDraconiumChest> {
 
-    public static final ResourceLocation DRACONIUM_CHEST = new ResourceLocation(DraconicEvolution.MODID, "textures/block/draconium_chest.png");
+    public static final ResourceLocation DRACONIUM_CHEST = new ResourceLocation(DraconicEvolution.MODID, DETextures.DRACONIUM_CHEST);
 
     private final ModelDraconiumChest chestModel = new ModelDraconiumChest(RenderType::entitySolid);
 

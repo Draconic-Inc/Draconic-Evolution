@@ -64,7 +64,7 @@ public class ContainerDraconiumChest extends ContainerBCTile<TileDraconiumChest>
         }
 
         //Capacitor Slot 265
-        addSlot(new SlotRFCapacitor(tile.itemHandler, slotIndex++, 8, 245));
+        addSlot(new SlotRFCapacitor(tile.itemHandler, slotIndex++, 11, 265));
         //Core Slot 266
         addSlot(new SlotCore(tile.itemHandler, slotIndex, 17, 207));
 
@@ -76,12 +76,12 @@ public class ContainerDraconiumChest extends ContainerBCTile<TileDraconiumChest>
         this.craftResult = new InventoryCraftingChestResult(tile);
 
 //        LogHelper.dev(inventorySlots.size());
-        addSlot(new CraftingResultSlot(playerInv.player, craftMatrix, craftResult, 0, 428, 216));
+        addSlot(new CraftingResultSlot(playerInv.player, craftMatrix, craftResult, 0, 428, 225));
 
         for (int y = 0; y < 3; y++) {
             for (int x = 0; x < 3; x++) {
 //                LogHelper.dev(inventorySlots.size());
-                addSlot(new SlotCheckValid.IInv(craftMatrix, x + (y * 3), 334 + (x * 18), 198 + (y * 18)));
+                addSlot(new SlotCheckValid.IInv(craftMatrix, x + (y * 3), 334 + (x * 18), 207 + (y * 18)));
             }
         }
 
