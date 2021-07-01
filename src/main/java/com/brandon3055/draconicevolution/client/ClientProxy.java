@@ -27,6 +27,7 @@ import com.brandon3055.draconicevolution.client.render.item.*;
 import com.brandon3055.draconicevolution.client.render.tile.*;
 import com.brandon3055.draconicevolution.client.sound.GeneratorSoundHandler;
 import com.brandon3055.draconicevolution.init.DEContent;
+import com.brandon3055.draconicevolution.inventory.ContainerDraconiumChest;
 import com.brandon3055.draconicevolution.items.equipment.IModularArmor;
 import com.brandon3055.draconicevolution.lib.ISidedTileHandler;
 import net.minecraft.client.Minecraft;
@@ -137,7 +138,6 @@ public class ClientProxy extends CommonProxy {
 
 //        ScreenManager.registerFactory(DEContent.container_celestial_manipulator, GuiCelestialManipulator::new);
 //        ScreenManager.registerFactory(DEContent.container_dissenchanter, ::new);
-//        ScreenManager.registerFactory(DEContent.container_draconium_chest, ContainerDraconiumChest::new);
 //        ScreenManager.registerFactory(DEContent.container_energy_crystal, ContainerEnergyCrystal::new);
 //        ScreenManager.registerFactory(DEContent.container_energy_infuser, ContainerEnergyInfuser::new);
         ScreenManager.register(DEContent.container_fusion_crafting_core, GuiFusionCraftingCore::new);

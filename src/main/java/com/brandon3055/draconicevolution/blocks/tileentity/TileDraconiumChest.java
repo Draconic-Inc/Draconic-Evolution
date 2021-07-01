@@ -14,13 +14,15 @@ import com.brandon3055.brandonscore.lib.datamanager.*;
 import com.brandon3055.brandonscore.utils.DataUtils;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
 import com.brandon3055.draconicevolution.DEOldConfig;
-import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.blocks.DraconiumChest;
+import com.brandon3055.draconicevolution.client.gui.GuiDraconiumChest;
+import com.brandon3055.draconicevolution.init.DEContent;
+import com.brandon3055.draconicevolution.init.OreDoublingRegistry;
 import com.brandon3055.draconicevolution.inventory.ContainerDraconiumChest;
 import com.brandon3055.draconicevolution.inventory.GuiLayoutFactories;
 import com.brandon3055.draconicevolution.items.ItemCore;
-import com.brandon3055.draconicevolution.init.OreDoublingRegistry;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -33,6 +35,8 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
 
@@ -725,7 +729,7 @@ public class TileDraconiumChest extends TileBCore implements ITickableTileEntity
     @Nullable
     @Override
     public Container createMenu(int currentWindowIndex, PlayerInventory playerInventory, PlayerEntity player) {
-        return new ContainerBCTile<>(DEContent.container_draconium_chest, currentWindowIndex, player.inventory, this, GuiLayoutFactories.DRACONIUM_CHEST_LAYOUT);
+        return new ContainerDraconiumChest(DEContent.container_draconium_chest, currentWindowIndex, playerInventory, this);
     }
 
     //endregion

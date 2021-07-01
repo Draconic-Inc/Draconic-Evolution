@@ -14,6 +14,8 @@ import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 
+import java.util.Objects;
+
 public class RenderTileDraconiumChest extends TileEntityRenderer<TileDraconiumChest> {
 
     public static final ResourceLocation DRACONIUM_CHEST = new ResourceLocation(DraconicEvolution.MODID, "textures/block/draconium_chest.png");
@@ -26,11 +28,7 @@ public class RenderTileDraconiumChest extends TileEntityRenderer<TileDraconiumCh
 
     @Override
     public void render(TileDraconiumChest tile, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer getter, int packedLight, int packedOverlay) {
-        float red = (float) (50 + ((tile.colour.get() >> 16) & 0xFF)) / 255f;
-        float green = (float) (50 + ((tile.colour.get() >> 8) & 0xFF)) / 255f;
-        float blue = (float) (50 + (tile.colour.get() & 0xFF)) / 255f;
-
-        BlockState state = tile.getLevel().getBlockState(tile.getBlockPos());
+        BlockState state = Objects.requireNonNull(tile.getLevel()).getBlockState(tile.getBlockPos());
         if (state.getBlock() != DEContent.draconium_chest) return;
 
         Direction facing = state.getValue(DraconiumChest.FACING);
@@ -53,6 +51,6 @@ public class RenderTileDraconiumChest extends TileEntityRenderer<TileDraconiumCh
 
         chestModel.setLidAngle(lidAngle);
         chestModel.setFacingDirection(facingRotationAngle);
-        chestModel.renderToBuffer(matrixStack, getter.getBuffer(chestModel.renderType(DRACONIUM_CHEST)), packedLight, packedOverlay, red, green, blue, 1F);
+        chestModel.renderToBuffer(matrixStack, getter.getBuffer(chestModel.renderType(DRACONIUM_CHEST)), packedLight, packedOverlay, 1, 1, 1, 1F);
     }
 }

@@ -166,7 +166,7 @@ public class DEContent {
     @ObjectHolder("grinder")                public static ContainerType<ContainerBCTile<TileGrinder>>               container_grinder;
     @ObjectHolder("energy_core")            public static ContainerType<ContainerBCTile<TileEnergyCore>>            container_energy_core;
     @ObjectHolder("dissenchanter")          public static ContainerType<ContainerDissEnchanter>                     container_dissenchanter;
-    @ObjectHolder("draconium_chest")        public static ContainerType<ContainerBCTile<TileDraconiumChest>>        container_draconium_chest;
+    @ObjectHolder("draconium_chest")        public static ContainerType<ContainerDraconiumChest>                    container_draconium_chest;
     @ObjectHolder("celestial_manipulator")  public static ContainerType<ContainerDummy<TileCelestialManipulator>>   container_celestial_manipulator;
     @ObjectHolder("energy_crystal")         public static ContainerType<ContainerEnergyCrystal>                     container_energy_crystal;
     @ObjectHolder("energy_transfuser")      public static ContainerType<ContainerBCTile<TileEnergyTransfuser>>      container_energy_transfuser;
@@ -182,7 +182,7 @@ public class DEContent {
         event.getRegistry().register(IForgeContainerType.create((id, playerInv, extraData) -> new ContainerBCTile<>(container_generator, id, playerInv, extraData, GENERATOR_LAYOUT)).setRegistryName("generator"));
         event.getRegistry().register(IForgeContainerType.create((id, playerInv, extraData) -> new ContainerBCTile<>(container_grinder, id, playerInv, extraData, GRINDER_LAYOUT)).setRegistryName("grinder"));
 
-        event.getRegistry().register(IForgeContainerType.create((id, playerInv, extraData) -> new ContainerBCTile<>(container_draconium_chest, id, playerInv, extraData, DRACONIUM_CHEST_LAYOUT)).setRegistryName("draconium_chest"));
+        event.getRegistry().register(IForgeContainerType.create(ContainerDraconiumChest::new).setRegistryName("draconium_chest"));
 
         event.getRegistry().register(IForgeContainerType.create((id, playerInv, extraData) -> new ContainerBCTile<>(container_energy_core, id, playerInv, extraData, ENERGY_CORE_LAYOUT)).setRegistryName("energy_core"));
 

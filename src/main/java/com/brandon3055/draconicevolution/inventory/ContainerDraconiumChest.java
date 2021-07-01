@@ -18,6 +18,7 @@ import net.minecraft.inventory.container.CraftingResultSlot;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
@@ -51,7 +52,7 @@ public class ContainerDraconiumChest extends ContainerBCTile<TileDraconiumChest>
         //Slots 0 -> 259 Main Inventory
         for (int y = 0; y < 10; y++) {
             for (int x = 0; x < 26; x++) {
-                Slot slot = new SlotCheckValid(tile.itemHandler, slotIndex++, 7 + (x * 18), 7 + (y * 18));
+                Slot slot = new SlotCheckValid(tile.itemHandler, slotIndex++, 11 + (x * 18), 15 + (y * 18));
                 mainInventorySlots.add(slot);
                 addSlot(slot);
             }
@@ -85,8 +86,8 @@ public class ContainerDraconiumChest extends ContainerBCTile<TileDraconiumChest>
         }
 
         //endregion
-
-        addPlayerSlots(161, 189, 2);
+        // Player inventory
+        addPlayerSlots(164, 207, 3);
     }
 
     @Override

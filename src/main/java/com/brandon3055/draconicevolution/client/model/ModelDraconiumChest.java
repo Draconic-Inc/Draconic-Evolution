@@ -57,7 +57,6 @@ public class ModelDraconiumChest extends Model {
         matrix.mulPose(new Quaternion(0, 0, 180, true));
         matrix.translate(-0.5, -0.5, 0.5);
         matrix.mulPose(Vector3f.YN.rotationDegrees(directionRotation));
-        buffer.color(100, 0, 12, 0);
         chest.render(matrix, buffer, packedLightIn, packedOverlayIn);
     }
 
