@@ -18,7 +18,7 @@ import java.awt.*;
 /**
  * Created by brandon3055 on 28/2/21
  */
-public class ToolModelEffect extends ModelEffect {
+public class StaffModelEffect extends ModelEffect {
     private RenderType renderType = RenderType.create("modelEffectType", DefaultVertexFormats.POSITION_COLOR_TEX, GL11.GL_QUADS, 256, RenderType.State.builder()
             .setTextureState(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/particle/white_orb.png"), false, false))
             .setTransparencyState(RenderState.LIGHTNING_TRANSPARENCY)
@@ -53,7 +53,7 @@ public class ToolModelEffect extends ModelEffect {
             .createCompositeState(false)
     );
 
-    public ToolModelEffect() {}
+    public StaffModelEffect() {}
 
     @Override
     public RenderType getRenderType() {

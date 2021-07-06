@@ -14,27 +14,42 @@ import com.brandon3055.brandonscore.client.BCClientEventHandler;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DEConfig;
+import com.brandon3055.draconicevolution.client.render.modelfx.BowModelEffect;
+import com.brandon3055.draconicevolution.client.render.modelfx.ModelEffect;
+import com.brandon3055.draconicevolution.client.render.modelfx.StaffModelEffect;
+import com.brandon3055.draconicevolution.items.equipment.ModularBow;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.entity.TippedArrowRenderer;
+import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.IModelTransform;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
+import net.minecraft.client.renderer.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.world.ClientWorld;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ArrowItem;
 import net.minecraft.item.BowItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionUtils;
+import net.minecraft.potion.Potions;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.TransformationMatrix;
 import org.lwjgl.opengl.GL11;
 
+import javax.annotation.Nullable;
 import java.util.Map;
 
 import static codechicken.lib.render.shader.ShaderObject.StandardShaderType.FRAGMENT;
 import static codechicken.lib.render.shader.ShaderObject.StandardShaderType.VERTEX;
+import static com.brandon3055.draconicevolution.DraconicEvolution.LOGGER;
 import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
 
 /**
@@ -59,6 +74,12 @@ public class RenderModularBow extends ToolRenderBase {
             .build();
 
     private RenderType bowStringType;
+    @Nullable
+    protected LivingEntity entity;
+    @Nullable
+    protected ClientWorld world;
+
+    private BowModelEffect effectRenderer = new BowModelEffect();
 
     public RenderModularBow(TechLevel techLevel) {
         super(techLevel, "bow");
@@ -81,10 +102,25 @@ public class RenderModularBow extends ToolRenderBase {
         initGemVBO();
     }
 
+    private final ItemOverrideList overrideList = new ItemOverrideList() {
+        @Override
+        public IBakedModel resolve(IBakedModel originalModel, ItemStack stack, @Nullable ClientWorld world, @Nullable LivingEntity entity) {
+            RenderModularBow.this.entity = entity;
+            RenderModularBow.this.world = world == null ? entity == null ? null : (ClientWorld) entity.level : null;
+            return originalModel;
+        }
+    };
+
+    @Override
+    public ItemOverrideList getOverrides() {
+        return overrideList;
+    }
+
+
     @Override
     public void renderTool(CCRenderState ccrs, ItemStack stack, TransformType transform, Matrix4 mat, MatrixStack mStack, IRenderTypeBuffer getter, boolean gui, int packedLight) {
         transform(mat, 0.46, 0.54, 0.5, gui ? 0.9 : 1.125);
-        double drawAngle = getDrawAngle(stack);
+        double drawAngle = getDrawAngle(stack, Minecraft.getInstance().getDeltaFrameTime());
 
         if (gui) {
             getter.getBuffer(guiBaseVBOType.withMatrix(mat).withLightMap(packedLight));
@@ -108,8 +144,22 @@ public class RenderModularBow extends ToolRenderBase {
             }
         }
 
+        Matrix4 effectMat = mat.copy();
         drawStrings(ccrs, mat, bottomMat, getter, drawAngle, packedLight);
 
+        Minecraft mc = Minecraft.getInstance();
+        if (entity != null) {
+            effectMat.rotate(torad(entity.xRot + 75), Vector3.X_NEG);
+        } else {
+            effectMat.rotate(torad(90), Vector3.X_NEG);
+        }
+//        if (entity != null)LOGGER.info(entity.Rot);
+        effectMat.translate(-0.45, -0.5, -0.5);
+//        mat.translate(-0.5, 0.1, -0.5);
+        effectRenderer.animTime = getSpecialChargeTicks(stack, mc.getDeltaFrameTime());
+        effectRenderer.colour = getProjectileColour(stack);
+        effectRenderer.renderEffect(effectMat, getter, mc.getDeltaFrameTime(), techLevel);
+//        new ModelEffect.DebugEffect().renderEffect(effectMat, getter, mc.getFrameTime(), techLevel);
 
 //        if (gui) {
 //            getter.getBuffer(guiBaseVBOType.withMatrix(mat).withLightMap(packedLight));
@@ -263,12 +313,39 @@ public class RenderModularBow extends ToolRenderBase {
         return TransformUtils.DEFAULT_BOW;
     }
 
-    private double getDrawAngle(ItemStack stack) {
-        PlayerEntity player = Minecraft.getInstance().player;
-        if (player != null && player.getUseItem() == stack) {
-            int maxCount = player.getTicksUsingItem();
-            return BowItem.getPowerForTime(maxCount) * 45F;
+    private double getDrawAngle(ItemStack stack, float partialTicks) {
+        if (entity != null && entity.getUseItem() == stack) {
+            float maxCount = entity.getTicksUsingItem() - partialTicks;
+            return ModularBow.getPowerForTime((int)(maxCount), stack) * 45F;
         }
         return 0;
+    }
+
+    private float getSpecialChargeTicks(ItemStack stack, float partialTicks) {
+        if (entity != null && entity.getUseItem() == stack) {
+            float maxCount = entity.getTicksUsingItem() + partialTicks;
+            return Math.max(0, maxCount - (ModularBow.getChargeTicks(stack) * 2));
+        }
+        return 0;
+    }
+
+    private int getProjectileColour(ItemStack stack) {
+        if (entity != null && entity.getUseItem() == stack) {
+            ItemStack ammo = entity.getProjectile(stack);
+            if (!ammo.isEmpty() && ammo.getItem() instanceof ArrowItem) {
+                Potion potion = PotionUtils.getPotion(ammo);
+                if (potion == Potions.EMPTY) {
+                    return 0xFFFFFF;
+                } else {
+                    return PotionUtils.getColor(PotionUtils.getAllEffects(potion,  PotionUtils.getCustomEffects(ammo)));
+                }
+            }
+        }
+        return 0xFFFFFF;
+
+    }
+
+    public static float torad(double degrees) {
+        return (float) (degrees * MathHelper.torad);
     }
 }

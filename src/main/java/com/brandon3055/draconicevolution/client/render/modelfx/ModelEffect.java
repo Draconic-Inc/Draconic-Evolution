@@ -152,6 +152,8 @@ public abstract class ModelEffect {
                 .createCompositeState(false)
         );
 
+        public DebugEffect() {}
+
         @Override
         public RenderType getRenderType() {
             return alignRenderType;

@@ -14,7 +14,7 @@ import com.brandon3055.brandonscore.client.utils.GuiHelper;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.render.modelfx.ModelEffect;
-import com.brandon3055.draconicevolution.client.render.modelfx.ToolModelEffect;
+import com.brandon3055.draconicevolution.client.render.modelfx.StaffModelEffect;
 import com.brandon3055.draconicevolution.items.equipment.ModularStaff;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -86,7 +86,7 @@ public class RenderModularStaff extends ToolRenderBase {
     @Nullable
     protected ClientWorld world;
 
-    private ToolModelEffect effectRenderer = new ToolModelEffect();
+    private StaffModelEffect effectRenderer = new StaffModelEffect();
 
     public RenderModularStaff(TechLevel techLevel) {
         super(techLevel, "staff");
@@ -233,7 +233,7 @@ public class RenderModularStaff extends ToolRenderBase {
         mat.rotate(torad(90), Vector3.X_NEG);
         mat.translate(-0.5, 0.1, -0.5);
         effectRenderer.renderEffect(mat, getter, mc.getFrameTime(), techLevel);
-//        new ModelEffect.DebugEffect().renderEffect(mat, getter, mc.getRenderPartialTicks());
+//        new ModelEffect.DebugEffect().renderEffect(mat, getter, mc.getFrameTime(), techLevel);
 
 //        testParticleRender(ccrs, stack, transform, mat, mStack, getter, gui);
 //        if (true) return;
