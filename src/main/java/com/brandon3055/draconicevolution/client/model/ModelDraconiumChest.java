@@ -57,7 +57,7 @@ public class ModelDraconiumChest extends Model {
         matrix.mulPose(new Quaternion(0, 0, 180, true));
         matrix.translate(-0.5, -0.5, 0.5);
         matrix.mulPose(Vector3f.YN.rotationDegrees(directionRotation));
-        chest.render(matrix, buffer, packedLightIn, packedOverlayIn);
+        chest.render(matrix, buffer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
     }
 
     public void setLidAngle(float angle) {

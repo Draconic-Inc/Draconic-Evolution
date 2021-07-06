@@ -5,24 +5,22 @@ import codechicken.lib.inventory.InventoryUtils;
 import com.brandon3055.brandonscore.api.power.OPStorage;
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.capability.CapabilityOP;
-import com.brandon3055.brandonscore.inventory.ContainerBCTile;
 import com.brandon3055.brandonscore.inventory.ItemHandlerIOControl;
 import com.brandon3055.brandonscore.inventory.ItemHandlerSlotWrapper;
 import com.brandon3055.brandonscore.inventory.TileItemStackHandler;
 import com.brandon3055.brandonscore.lib.IActivatableTile;
+import com.brandon3055.brandonscore.lib.IRSSwitchable;
 import com.brandon3055.brandonscore.lib.datamanager.*;
 import com.brandon3055.brandonscore.utils.DataUtils;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
 import com.brandon3055.draconicevolution.DEOldConfig;
 import com.brandon3055.draconicevolution.blocks.DraconiumChest;
-import com.brandon3055.draconicevolution.client.gui.GuiDraconiumChest;
+import com.brandon3055.draconicevolution.blocks.machines.Generator;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.init.OreDoublingRegistry;
 import com.brandon3055.draconicevolution.inventory.ContainerDraconiumChest;
-import com.brandon3055.draconicevolution.inventory.GuiLayoutFactories;
 import com.brandon3055.draconicevolution.items.ItemCore;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -35,8 +33,6 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
 
@@ -53,7 +49,7 @@ import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.*;
 /**
  * Created by brandon3055 on 28/09/2016.
  */
-public class TileDraconiumChest extends TileBCore implements ITickableTileEntity, INamedContainerProvider, IActivatableTile {
+public class TileDraconiumChest extends TileBCore implements ITickableTileEntity, IRSSwitchable, INamedContainerProvider, IActivatableTile {
 
     private NonNullList<ItemStack> craftingStacks = NonNullList.withSize(10, ItemStack.EMPTY);
     public ManagedEnum<AutoSmeltMode> autoSmeltMode = register(new ManagedEnum<>("auto_smelt_mode", AutoSmeltMode.OFF, SAVE_BOTH_SYNC_CONTAINER));
@@ -65,6 +61,7 @@ public class TileDraconiumChest extends TileBCore implements ITickableTileEntity
     public ManagedInt smeltEnergyPerTick = register(new ManagedInt("smelt_energy_per_tick", 256, SAVE_BOTH_SYNC_CONTAINER));
     public ManagedInt colour = register(new ManagedInt("colour", 0x640096, SAVE_BOTH_SYNC_TILE));
     public ManagedShort numPlayersUsing = register(new ManagedShort("num_players_using", SYNC_TILE));
+    public final ManagedBool active = register(new ManagedBool("active", false, SAVE_BOTH_SYNC_TILE, TRIGGER_UPDATE));
     /**
      * The number of ticks it takes to complete 1 smelting operation.
      */
@@ -113,6 +110,12 @@ public class TileDraconiumChest extends TileBCore implements ITickableTileEntity
     public void tick() {
         super.tick();
         autoFeedRun = false;
+
+        boolean lastActive = active.get();
+        active.set(isTileEnabled());
+        if (active.get() != lastActive) {
+            level.setBlockAndUpdate(worldPosition, level.getBlockState(worldPosition).setValue(DraconiumChest.ACTIVE, active.get()));
+        }
         if (!level.isClientSide) {
             updateEnergy();
             updateSmelting();
@@ -214,7 +217,7 @@ public class TileDraconiumChest extends TileBCore implements ITickableTileEntity
     private boolean canSmelt() {
         for (int i = FIRST_FURNACE_SLOT; i <= LAST_FURNACE_SLOT; i++) {
             ItemStack stack = itemHandler.getStackInSlot(i);
-            if (!getSmeltResult(stack).isEmpty() && (!autoSmeltMode.get().keep1Item || stack.getCount() > 1)) {
+            if (!getSmeltResult(stack).isEmpty() && (!autoSmeltMode.get().keep1Item || stack.getCount() > 1) && active.get()) {
                 return true;
             }
         }
@@ -277,7 +280,7 @@ public class TileDraconiumChest extends TileBCore implements ITickableTileEntity
     }
 
     public boolean attemptAutoFeed() {
-        if (autoSmeltMode.get() == AutoSmeltMode.OFF || autoFeedRun) {
+        if ((autoSmeltMode.get() == AutoSmeltMode.OFF || autoFeedRun) && active.get()) {
             return false;
         }
         checkIOCache();
@@ -735,15 +738,28 @@ public class TileDraconiumChest extends TileBCore implements ITickableTileEntity
     //endregion
 
     public enum AutoSmeltMode {
-        OFF(false),
-        FILL(false),
-        LOCK(true),
-        ALL(false);
+        OFF(false, 0),
+        FILL(false, 1),
+        LOCK(true, 2),
+        ALL(false, 3);
 
         public final boolean keep1Item;
+        public final int index;
 
-        AutoSmeltMode(boolean keep1Item) {
+        AutoSmeltMode(boolean keep1Item, int index) {
             this.keep1Item = keep1Item;
+            this.index = index;
+        }
+
+        public AutoSmeltMode next(boolean prev) {
+            if (prev) {
+                return values()[index - 1 < 0 ? values().length - 1 : index - 1];
+            }
+            return values()[index + 1 == values().length ? 0 : index + 1];
+        }
+
+        public String unlocalizedName() {
+            return "gui.draconicevolution.draconium_chest.autofill_" + name().toLowerCase();
         }
     }
 

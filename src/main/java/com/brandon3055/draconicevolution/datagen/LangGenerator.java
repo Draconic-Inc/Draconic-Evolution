@@ -441,6 +441,19 @@ public class LangGenerator extends LanguageProvider {
         helper.add("stored_xp.raw",                                             "(Raw XP)");
         helper.add("weapon_slot",                                               "Optional weapon to use when attacking.");
 
+        //Draconium Chest
+        helper.setPrefix("gui.draconicevolution.draconium_chest");
+        helper.add("smelt_energy",                                              "Smelt Energy");
+        helper.add("smelting_speed",                                            "Smelting Speed");
+        helper.add("autofill_off.info",                                         "Autofill Off");
+        helper.add("autofill_fill.info",                                        "Autofill Fill");
+        helper.add("autofill_lock.info",                                        "Autofill Lock");
+        helper.add("autofill_all.info",                                         "Autofill All");
+        helper.add("autofill_off",                                              "Autofill Off");
+        helper.add("autofill_fill",                                             "Autofill Fill");
+        helper.add("autofill_lock",                                             "Autofill Lock");
+        helper.add("autofill_all",                                              "Autofill All");
+
         //Reactor
         helper.setPrefix("gui.draconicevolution.reactor");
         helper.add("title",                                                     "Draconic Reactor");

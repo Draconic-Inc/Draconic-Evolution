@@ -52,7 +52,7 @@ public class ContainerDraconiumChest extends ContainerBCTile<TileDraconiumChest>
         //Slots 0 -> 259 Main Inventory
         for (int y = 0; y < 10; y++) {
             for (int x = 0; x < 26; x++) {
-                Slot slot = new SlotCheckValid(tile.itemHandler, slotIndex++, 11 + (x * 18), 15 + (y * 18));
+                Slot slot = new SlotCheckValid(tile.itemHandler, slotIndex++, 17 + (x * 18), 15 + (y * 18));
                 mainInventorySlots.add(slot);
                 addSlot(slot);
             }
@@ -60,13 +60,13 @@ public class ContainerDraconiumChest extends ContainerBCTile<TileDraconiumChest>
 
         //Slots 260 -> 264 Furnace Inventory
         for (int x = 0; x < 5; x++) {
-            addSlot(new SlotSmeltable(tile.itemHandler, slotIndex++, 45 + (x * 18), 207));
+            addSlot(new SlotSmeltable(tile.itemHandler, slotIndex++, 51 + (x * 18), 207));
         }
 
         //Capacitor Slot 265
-        addSlot(new SlotRFCapacitor(tile.itemHandler, slotIndex++, 11, 265));
+        addSlot(new SlotRFCapacitor(tile.itemHandler, slotIndex++, 17, 265));
         //Core Slot 266
-        addSlot(new SlotCore(tile.itemHandler, slotIndex, 17, 207));
+        addSlot(new SlotCore(tile.itemHandler, slotIndex, 23, 207));
 
         //endregion
 
@@ -76,18 +76,18 @@ public class ContainerDraconiumChest extends ContainerBCTile<TileDraconiumChest>
         this.craftResult = new InventoryCraftingChestResult(tile);
 
 //        LogHelper.dev(inventorySlots.size());
-        addSlot(new CraftingResultSlot(playerInv.player, craftMatrix, craftResult, 0, 428, 225));
+        addSlot(new CraftingResultSlot(playerInv.player, craftMatrix, craftResult, 0, 434, 225));
 
         for (int y = 0; y < 3; y++) {
             for (int x = 0; x < 3; x++) {
 //                LogHelper.dev(inventorySlots.size());
-                addSlot(new SlotCheckValid.IInv(craftMatrix, x + (y * 3), 334 + (x * 18), 207 + (y * 18)));
+                addSlot(new SlotCheckValid.IInv(craftMatrix, x + (y * 3), 340 + (x * 18), 207 + (y * 18)));
             }
         }
 
         //endregion
         // Player inventory
-        addPlayerSlots(164, 207, 3);
+        addPlayerSlots(170, 207, 3);
     }
 
     @Override
