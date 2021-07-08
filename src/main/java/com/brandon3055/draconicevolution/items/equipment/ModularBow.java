@@ -2,14 +2,20 @@ package com.brandon3055.draconicevolution.items.equipment;
 
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.lib.TechPropBuilder;
+import com.brandon3055.brandonscore.utils.EnergyUtils;
+import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.IReaperItem;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.modules.ModuleCategory;
 import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
+import com.brandon3055.draconicevolution.api.modules.data.AOEData;
+import com.brandon3055.draconicevolution.api.modules.data.DamageData;
+import com.brandon3055.draconicevolution.api.modules.data.ProjectileData;
 import com.brandon3055.draconicevolution.api.modules.data.SpeedData;
 import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleHostImpl;
+import com.brandon3055.draconicevolution.entity.projectile.DraconicArrowEntity;
 import com.brandon3055.draconicevolution.handlers.DESounds;
 import com.brandon3055.draconicevolution.init.EquipCfg;
 import net.minecraft.client.util.ITooltipFlag;
@@ -18,6 +24,7 @@ import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
+import net.minecraft.entity.projectile.SpectralArrowEntity;
 import net.minecraft.item.ArrowItem;
 import net.minecraft.item.BowItem;
 import net.minecraft.item.ItemStack;
@@ -30,6 +37,7 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -86,25 +94,27 @@ public class ModularBow extends BowItem implements IReaperItem, IModularItem {
 
     //###### Draw & Charge time stuff ######
 
-
     @Override
     public void onUsingTick(ItemStack stack, LivingEntity player, int count) {
-        int drawTime = (this.getUseDuration(stack) - count) + 1;
-        if (drawTime == getChargeTicks(stack) * 2 && player.level.isClientSide) {
-            player.level.playLocalSound(player.getX(), player.getY(), player.getZ(), DESounds.bowSecondCharge, SoundCategory.PLAYERS, 1.0F, 1.F, false);
-            DraconicEvolution.LOGGER.info("SoundA " + System.currentTimeMillis());
-        }
+//        int drawTime = (this.getUseDuration(stack) - count) + 1;
+//        if (drawTime == getChargeTicks(stack) * 2 && player.level.isClientSide) {
+//            player.level.playLocalSound(player.getX(), player.getY(), player.getZ(), DESounds.bowSecondCharge, SoundCategory.PLAYERS, 1.0F, 1.F, false);
+//        }
     }
 
     @Override
     public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
         ItemStack stack = player.getItemInHand(hand);
-        boolean flag = !player.getProjectile(stack).isEmpty();
+        boolean hasAmmo = !player.getProjectile(stack).isEmpty();
 
-        ActionResult<ItemStack> ret = ForgeEventFactory.onArrowNock(stack, world, player, hand, flag);
+        ActionResult<ItemStack> ret = ForgeEventFactory.onArrowNock(stack, world, player, hand, hasAmmo);
         if (ret != null) return ret;
 
-        if (!player.abilities.instabuild && !flag) {
+        if (EnergyUtils.getEnergyStored(stack) < calculateShotEnergy(stack)) {
+            hasAmmo = false;
+        }
+
+        if (!player.abilities.instabuild && !hasAmmo) {
             return ActionResult.fail(stack);
         } else {
             player.startUsingItem(hand);
@@ -128,44 +138,56 @@ public class ModularBow extends BowItem implements IReaperItem, IModularItem {
                     ammoStack = new ItemStack(Items.ARROW);
                 }
 
-                float powerForTime = getPowerForTime(drawTime, stack);
-                if (!((double)powerForTime < 0.1D)) {
-                    boolean flag1 = player.abilities.instabuild || (ammoStack.getItem() instanceof ArrowItem && ((ArrowItem)ammoStack.getItem()).isInfinite(ammoStack, stack, player));
+                ModuleHost host = stack.getCapability(MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new);
+                ProjectileData projData = host.getModuleData(ModuleTypes.PROJ_MODIFIER, new ProjectileData(0, 0, 0, 0, 0));
+
+                float powerForTime = getPowerForTime(drawTime, stack) * (projData.getVelocity() + 1);
+                if (powerForTime >= 0.1D) {
+                    boolean infiniteAmmo = player.abilities.instabuild || (ammoStack.getItem() instanceof ArrowItem && ((ArrowItem)ammoStack.getItem()).isInfinite(ammoStack, stack, player));
+
                     if (!world.isClientSide) {
                         ArrowItem arrowitem = (ArrowItem)(ammoStack.getItem() instanceof ArrowItem ? ammoStack.getItem() : Items.ARROW);
-                        AbstractArrowEntity abstractarrowentity = arrowitem.createArrow(world, ammoStack, player);
-                        abstractarrowentity = customArrow(abstractarrowentity);
-                        abstractarrowentity.shootFromRotation(player, player.xRot, player.yRot, 0.0F, powerForTime * 3.0F, 1.0F);
+                        DraconicArrowEntity arrowEntity = customArrow(arrowitem.createArrow(world, ammoStack, player));
+                        arrowEntity.setEffectsFromItem(ammoStack);
+                        arrowEntity.shootFromRotation(player, player.xRot, player.yRot, 0.0F, powerForTime * 3.0F, 1 - projData.getAccuracy());
+                        arrowEntity.setTechLevel(techLevel);
+                        arrowEntity.setPenetration(projData.getPenetration());
+                        arrowEntity.setGravComp(projData.getAntiGrav());
+
                         if (powerForTime == 1.0F) {
-                            abstractarrowentity.setCritArrow(true);
+                            arrowEntity.setCritArrow(true);
                         }
+
+                        arrowEntity.setBaseDamage(arrowEntity.getBaseDamage() * (projData.getDamage() + 1));
 
                         int j = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
                         if (j > 0) {
-                            abstractarrowentity.setBaseDamage(abstractarrowentity.getBaseDamage() + (double)j * 0.5D + 0.5D);
+                            arrowEntity.setBaseDamage(arrowEntity.getBaseDamage() + (double)j * 0.5D + 0.5D);
+                        }
+
+                        long energyRequired = (long) (EquipCfg.bowBaseEnergy * arrowEntity.getBaseDamage() * powerForTime * 3);
+                        if (extractEnergy(player, stack, energyRequired) < energyRequired) {
+                            return;
                         }
 
                         int k = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.PUNCH_ARROWS, stack);
                         if (k > 0) {
-                            abstractarrowentity.setKnockback(k);
+                            arrowEntity.setKnockback(k);
                         }
 
                         if (EnchantmentHelper.getItemEnchantmentLevel(Enchantments.FLAMING_ARROWS, stack) > 0) {
-                            abstractarrowentity.setSecondsOnFire(100);
+                            arrowEntity.setSecondsOnFire(100);
                         }
 
-                        stack.hurtAndBreak(1, player, (p_220009_1_) -> {
-                            p_220009_1_.broadcastBreakEvent(player.getUsedItemHand());
-                        });
-                        if (flag1 || player.abilities.instabuild && (ammoStack.getItem() == Items.SPECTRAL_ARROW || ammoStack.getItem() == Items.TIPPED_ARROW)) {
-                            abstractarrowentity.pickup = AbstractArrowEntity.PickupStatus.CREATIVE_ONLY;
+                        if (infiniteAmmo /*|| (player.abilities.instabuild && ((ammoStack.getItem() == Items.SPECTRAL_ARROW) || (ammoStack.getItem() == Items.TIPPED_ARROW))) <Unreachable>*/) {
+                            arrowEntity.pickup = AbstractArrowEntity.PickupStatus.CREATIVE_ONLY;
                         }
 
-                        world.addFreshEntity(abstractarrowentity);
+                        world.addFreshEntity(arrowEntity);
                     }
 
                     world.playSound((PlayerEntity)null, player.getX(), player.getY(), player.getZ(), SoundEvents.ARROW_SHOOT, SoundCategory.PLAYERS, 1.0F, 1.0F / (random.nextFloat() * 0.4F + 1.2F) + powerForTime * 0.5F);
-                    if (!flag1 && !player.abilities.instabuild) {
+                    if (!infiniteAmmo && !player.abilities.instabuild) {
                         ammoStack.shrink(1);
                         if (ammoStack.isEmpty()) {
                             player.inventory.removeItem(ammoStack);
@@ -178,15 +200,40 @@ public class ModularBow extends BowItem implements IReaperItem, IModularItem {
         }
     }
 
+    @Override
+    public DraconicArrowEntity customArrow(AbstractArrowEntity arrow) {
+        DraconicArrowEntity newArrow = new DraconicArrowEntity(arrow.level, (LivingEntity) arrow.getOwner());
+        if (arrow instanceof SpectralArrowEntity) {
+            newArrow.setSpectral(((SpectralArrowEntity) arrow).duration);
+        }
+        return newArrow;
+    }
+
+    public static float calculateDamage(ItemStack stack) {
+        ModuleHost host = stack.getCapability(MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new);
+        ProjectileData projData = host.getModuleData(ModuleTypes.PROJ_MODIFIER, new ProjectileData(0, 0, 0, 0, 0));
+
+        float baseDamage = 2;
+        baseDamage *= (1 + projData.getDamage());
+        baseDamage *= (3 * (1 + projData.getVelocity()));
+        int j = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
+        if (j > 0) {
+            baseDamage += (double)j * 0.5D + 0.5D;
+        }
+        return baseDamage;
+    }
+
+    public static long calculateShotEnergy(ItemStack stack) {
+        float damage = calculateDamage(stack);
+        //TODO add some energy usage for other modules
+        return (long) (damage * EquipCfg.bowBaseEnergy);
+    }
+
     public static float getPowerForTime(int time, ItemStack stack) {
         float fullChargeTime = getChargeTicks(stack);
         float power = (float)time / fullChargeTime;
         power = ((power * power) + (power * 2.0F)) / 3.0F;
         if (power > 1.0F) {
-//            if (time >= fullChargeTime * 2) {
-//                DraconicEvolution.LOGGER.info("SoundB " + System.currentTimeMillis());
-//                return 1.05F;
-//            }
             power = 1.0F;
         }
         return power;
@@ -200,4 +247,12 @@ public class ModularBow extends BowItem implements IReaperItem, IModularItem {
         return (int)Math.ceil(20.0F / speedModifier);
     }
 
+    @Override
+    public void addModularItemInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+        IModularItem.super.addModularItemInformation(stack, worldIn, tooltip, flagIn);
+        if (worldIn != null){
+            tooltip.add(new TranslationTextComponent("tooltip.draconicevolution.bow.damage", Math.round(calculateDamage(stack) * 10) / 10F).withStyle(TextFormatting.DARK_GREEN));
+            tooltip.add(new TranslationTextComponent("tooltip.draconicevolution.bow.energy_per_shot", Utils.addCommas(calculateShotEnergy(stack))).withStyle(TextFormatting.DARK_GREEN));
+        }
+    }
 }

@@ -87,6 +87,12 @@ public class ModuleProperties<T extends ModuleData<T>> {
 
         Map<ITextComponent, ITextComponent> map = new HashMap<>();
         getData().addInformation(map, null, true);
-        map.forEach((name, value) -> toolTip.add(name.plainCopy().withStyle(GRAY).append(": ").append(value.plainCopy().withStyle(DARK_GREEN).getString().replace("\n", " "))));
+        map.forEach((name, value) -> {
+            if (value == null) {
+                toolTip.add(name.plainCopy().withStyle(GRAY));
+            } else {
+                toolTip.add(name.plainCopy().withStyle(GRAY).append(": ").append(value.plainCopy().withStyle(DARK_GREEN).getString().replace("\n", " ")));
+            }
+        });
     }
 }

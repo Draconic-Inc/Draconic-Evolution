@@ -268,7 +268,7 @@ public class DislocatorAdvanced extends Dislocator implements IHudDisplay {
         int action = input.readByte();
         int selectIndex = getSelectedIndex(stack);
         LinkedList<DislocatorTarget> list = new LinkedList<>(getTargetList(stack));
-        if (list.size() <= 1) return;
+        //if (list.size() <= 1 && action != 6 && action != 0) return;
         DislocatorTarget selected = selectIndex >= 0 && selectIndex < list.size() ? list.get(selectIndex) : null;
 
         switch (action) {

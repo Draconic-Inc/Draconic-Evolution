@@ -150,34 +150,9 @@ public interface ModuleHost extends INBTSerializable<CompoundNBT> {
         getInstalledTypes().map(this::getModuleData).forEach(data -> getDataInformation(SneakyUtils.unsafeCast(data), map, context, stack));
     }
 
-    default InstallResult checkAddModule(Module<?> newModule) {
-        Collection<Module<?>> view = Collections.unmodifiableList(getModules().collect(Collectors.toList()));
-        Optional<InstallResult> opt = view.stream()//
-                .map(other -> newModule.areModulesCompatible(other).getBlockingResult(other.areModulesCompatible(newModule)))//
-                .filter(e -> e.resultType == NO || e.resultType == ONLY_WHEN_OVERRIDEN)//
-                .findFirst();
-        if (opt.isPresent()) {
-            return opt.get();
-        }
-
-        Iterable<Module<?>> newModules = Iterables.concat(view, Collections.singleton(newModule));
-        opt = Streams.stream(newModules).parallel()//
-                .map(module -> {
-                    int max = module.maxInstallable();
-                    if (max == -1) {
-                        return null;
-                    }
-                    int installed = (int) Streams.stream(newModules)//
-                            .filter(e -> e.getType() == module.getType() && e.getModuleTechLevel().index <= module.getModuleTechLevel().index)//
-                            .count();
-                    if (installed > max) {
-                        return new InstallResult(InstallResult.InstallResultType.NO, module, null, new TranslationTextComponent("too_complex"));//TODO Localize
-                    }
-                    return null;
-                })//
-                .filter(Objects::nonNull)//
-                .findFirst();
-        return opt.orElseGet(() -> new InstallResult(InstallResult.InstallResultType.YES, newModule, null, null));
+    static InstallResult checkAddModule(ModuleHost host, Module<?> newModule) {
+        return newModule.doInstallationCheck(host.getModules());
+        //Moved this check to the module because i needed more control in cases like the arrow velocity module where specific modules within a module type have a module installation limit.
     }
 
     void getAttributeModifiers(EquipmentSlotType slot, ItemStack stack, Multimap<Attribute, AttributeModifier> map);

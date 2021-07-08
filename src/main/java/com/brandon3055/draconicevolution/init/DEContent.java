@@ -29,6 +29,7 @@ import com.brandon3055.draconicevolution.entity.PersistentItemEntity;
 import com.brandon3055.draconicevolution.entity.guardian.DraconicGuardianEntity;
 import com.brandon3055.draconicevolution.entity.guardian.GuardianFightManager;
 import com.brandon3055.draconicevolution.entity.GuardianProjectileEntity;
+import com.brandon3055.draconicevolution.entity.projectile.DraconicArrowEntity;
 import com.brandon3055.draconicevolution.entity.projectile.DraconicProjectileEntity;
 import com.brandon3055.draconicevolution.inventory.*;
 import com.brandon3055.draconicevolution.items.EnderEnergyManipulator;
@@ -563,8 +564,8 @@ public class DEContent {
     public static EntityType<GuardianCrystalEntity> guardianCrystal;
     @ObjectHolder("persistent_item")
     public static EntityType<PersistentItemEntity> persistentItem;
-    @ObjectHolder("draconic_projectile")
-    public static EntityType<DraconicProjectileEntity> draconicProjectile;
+    @ObjectHolder("draconic_arrow")
+    public static EntityType<DraconicArrowEntity> draconicArrow;
 
     @SuppressWarnings("unchecked")
     @SubscribeEvent
@@ -574,7 +575,7 @@ public class DEContent {
         event.getRegistry().register(EntityType.Builder.of(GuardianProjectileEntity::new, EntityClassification.MISC).fireImmune().sized(2F, 2F).clientTrackingRange(20)/*.updateInterval(10)*/.build("guardian_projectile").setRegistryName("guardian_projectile"));
         event.getRegistry().register(EntityType.Builder.of(GuardianCrystalEntity::new, EntityClassification.MISC).fireImmune().sized(2F, 2F).clientTrackingRange(20).updateInterval(100).build("guardian_crystal").setRegistryName("guardian_crystal"));
         event.getRegistry().register(EntityType.Builder.<PersistentItemEntity>of(PersistentItemEntity::new, EntityClassification.MISC).sized(0.25F, 0.25F).clientTrackingRange(6).updateInterval(20).build("persistent_item").setRegistryName("persistent_item"));
-        event.getRegistry().register(EntityType.Builder.<DraconicProjectileEntity>of(DraconicProjectileEntity::new, EntityClassification.MISC).sized(0.5F, 0.5F).clientTrackingRange(4).updateInterval(20).build("draconic_projectile").setRegistryName("draconic_projectile"));
+        event.getRegistry().register(EntityType.Builder.<DraconicArrowEntity>of(DraconicArrowEntity::new, EntityClassification.MISC).sized(0.5F, 0.5F).clientTrackingRange(4).updateInterval(20).build("draconic_arrow").setRegistryName("draconic_arrow"));
     }
 
 

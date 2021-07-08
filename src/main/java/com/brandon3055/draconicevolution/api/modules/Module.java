@@ -5,6 +5,8 @@ import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.brandon3055.draconicevolution.api.modules.data.ModuleData;
 import com.brandon3055.draconicevolution.api.modules.data.ModuleProperties;
 import com.brandon3055.draconicevolution.api.modules.lib.InstallResult;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Streams;
 import net.minecraft.item.Item;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -12,8 +14,12 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static com.brandon3055.draconicevolution.api.modules.lib.InstallResult.InstallResultType.NO;
+import static com.brandon3055.draconicevolution.api.modules.lib.InstallResult.InstallResultType.ONLY_WHEN_OVERRIDEN;
 
 /**
  * Created by brandon3055 and covers1624 on 4/16/20.
@@ -90,5 +96,35 @@ public interface Module<T extends ModuleData<T>> extends IForgeRegistryEntry<Mod
                     .append(new StringTextComponent(String.valueOf(maxInstallable())) //
                             .withStyle(TextFormatting.DARK_GREEN)));
         }
+    }
+
+    default InstallResult doInstallationCheck(Stream<Module<?>> moduleStream) {
+        Collection<Module<?>> view = Collections.unmodifiableList(moduleStream.collect(Collectors.toList()));
+        Optional<InstallResult> opt = view.stream()//
+                .map(other -> this.areModulesCompatible(other).getBlockingResult(other.areModulesCompatible(this)))//
+                .filter(e -> e.resultType == NO || e.resultType == ONLY_WHEN_OVERRIDEN)//
+                .findFirst();
+        if (opt.isPresent()) {
+            return opt.get();
+        }
+
+        Iterable<Module<?>> newModules = Iterables.concat(view, Collections.singleton(this));
+        opt = Streams.stream(newModules).parallel()//
+                .map(module -> {
+                    int max = module.maxInstallable();
+                    if (max == -1) {
+                        return null;
+                    }
+                    int installed = (int) Streams.stream(newModules)//
+                            .filter(e -> e.getType() == module.getType() && e.getModuleTechLevel().index <= module.getModuleTechLevel().index)//
+                            .count();
+                    if (installed > max) {
+                        return new InstallResult(InstallResult.InstallResultType.NO, module, null, new TranslationTextComponent("too_complex"));//TODO Localize
+                    }
+                    return null;
+                })//
+                .filter(Objects::nonNull)//
+                .findFirst();
+        return opt.orElseGet(() -> new InstallResult(InstallResult.InstallResultType.YES, this, null, null));
     }
 }

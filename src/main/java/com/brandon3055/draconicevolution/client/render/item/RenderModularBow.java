@@ -147,18 +147,18 @@ public class RenderModularBow extends ToolRenderBase {
         Matrix4 effectMat = mat.copy();
         drawStrings(ccrs, mat, bottomMat, getter, drawAngle, packedLight);
 
-        Minecraft mc = Minecraft.getInstance();
-        if (entity != null) {
-            effectMat.rotate(torad(entity.xRot + 75), Vector3.X_NEG);
-        } else {
-            effectMat.rotate(torad(90), Vector3.X_NEG);
-        }
-//        if (entity != null)LOGGER.info(entity.Rot);
-        effectMat.translate(-0.45, -0.5, -0.5);
-//        mat.translate(-0.5, 0.1, -0.5);
-        effectRenderer.animTime = getSpecialChargeTicks(stack, mc.getDeltaFrameTime());
-        effectRenderer.colour = getProjectileColour(stack);
-        effectRenderer.renderEffect(effectMat, getter, mc.getDeltaFrameTime(), techLevel);
+//        Minecraft mc = Minecraft.getInstance();
+//        if (entity != null) {
+//            effectMat.rotate(torad(entity.xRot + 75), Vector3.X_NEG);
+//        } else {
+//            effectMat.rotate(torad(90), Vector3.X_NEG);
+//        }
+////        if (entity != null)LOGGER.info(entity.Rot);
+//        effectMat.translate(-0.45, -0.5, -0.5);
+////        mat.translate(-0.5, 0.1, -0.5);
+//        effectRenderer.animTime = getSpecialChargeTicks(stack, mc.getDeltaFrameTime());
+//        effectRenderer.colour = getProjectileColour(stack);
+//        effectRenderer.renderEffect(effectMat, getter, mc.getDeltaFrameTime(), techLevel);
 //        new ModelEffect.DebugEffect().renderEffect(effectMat, getter, mc.getFrameTime(), techLevel);
 
 //        if (gui) {
