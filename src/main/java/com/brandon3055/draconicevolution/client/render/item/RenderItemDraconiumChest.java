@@ -17,8 +17,11 @@ import net.minecraft.client.renderer.model.IModelTransform;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ToolType;
+
+import java.nio.charset.StandardCharsets;
 
 import static net.minecraft.block.material.Material.METAL;
 import static net.minecraft.block.material.MaterialColor.COLOR_GRAY;
@@ -53,7 +56,10 @@ public class RenderItemDraconiumChest implements IItemRenderer {
     @Override
     public void renderItem(ItemStack stack, ItemCameraTransforms.TransformType transformType, MatrixStack mStack, IRenderTypeBuffer getter, int packedLight, int packedOverlay) {
         ModelDraconiumChest chest = new ModelDraconiumChest(RenderType::entitySolid);
-        int color = stack.getTag().getInt("ChestColour");
+        int color = 0x640096;
+        if (stack.getTag() != null) {
+            color = ((CompoundNBT)stack.getTag().get("bc_tile_data")).getInt("ChestColour");
+        }
         float red = (float) ((color >> 16) & 0xFF) / 255f;
         float green = (float) ((color >> 8) & 0xFF) / 255f;
         float blue = (float) (color & 0xFF) / 255f;
