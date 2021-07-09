@@ -11,6 +11,7 @@ import com.brandon3055.draconicevolution.blocks.reactor.ReactorEffectHandler;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileGenerator;
 import com.brandon3055.draconicevolution.client.gui.*;
+import com.brandon3055.draconicevolution.client.gui.GuiDraconiumChest;
 import com.brandon3055.draconicevolution.client.gui.modular.GuiModularItem;
 import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.GuiConfigurableItem;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
@@ -26,6 +27,7 @@ import com.brandon3055.draconicevolution.client.render.item.*;
 import com.brandon3055.draconicevolution.client.render.tile.*;
 import com.brandon3055.draconicevolution.client.sound.GeneratorSoundHandler;
 import com.brandon3055.draconicevolution.init.DEContent;
+import com.brandon3055.draconicevolution.inventory.ContainerDraconiumChest;
 import com.brandon3055.draconicevolution.items.equipment.IModularArmor;
 import com.brandon3055.draconicevolution.lib.ISidedTileHandler;
 import net.minecraft.client.Minecraft;
@@ -128,6 +130,7 @@ public class ClientProxy extends CommonProxy {
     private void registerGuiFactories() {
         ScreenManager.register(DEContent.container_generator, GuiGenerator::new);
         ScreenManager.register(DEContent.container_grinder, GuiGrinder::new);
+        ScreenManager.register(DEContent.container_draconium_chest, GuiDraconiumChest::new);
         ScreenManager.register(DEContent.container_energy_core, GuiEnergyCore::new);
         ScreenManager.register(DEContent.container_modular_item, GuiModularItem::new);
         ScreenManager.register(DEContent.container_configurable_item, GuiConfigurableItem::new);
@@ -135,7 +138,6 @@ public class ClientProxy extends CommonProxy {
 
 //        ScreenManager.registerFactory(DEContent.container_celestial_manipulator, GuiCelestialManipulator::new);
 //        ScreenManager.registerFactory(DEContent.container_dissenchanter, ::new);
-//        ScreenManager.registerFactory(DEContent.container_draconium_chest, ContainerDraconiumChest::new);
 //        ScreenManager.registerFactory(DEContent.container_energy_crystal, ContainerEnergyCrystal::new);
 //        ScreenManager.registerFactory(DEContent.container_energy_infuser, ContainerEnergyInfuser::new);
         ScreenManager.register(DEContent.container_fusion_crafting_core, GuiFusionCraftingCore::new);
@@ -146,6 +148,7 @@ public class ClientProxy extends CommonProxy {
 
     private void registerTileRenderers() {
         ClientRegistry.bindTileEntityRenderer(DEContent.tile_grinder, RenderTileGrinder::new);
+        ClientRegistry.bindTileEntityRenderer(DEContent.tile_draconium_chest, RenderTileDraconiumChest::new);
         ClientRegistry.bindTileEntityRenderer(DEContent.tile_storage_core, RenderTileEnergyCore::new);
         ClientRegistry.bindTileEntityRenderer(DEContent.tile_energy_pylon, RenderTileEnergyPylon::new);
         ClientRegistry.bindTileEntityRenderer(DEContent.tile_core_stabilizer, RenderTileECStabilizer::new);
@@ -183,6 +186,8 @@ public class ClientProxy extends CommonProxy {
         modelHelper.register(new ModelResourceLocation(DEContent.crystal_wireless_wyvern.getRegistryName(), "inventory"), new RenderItemEnergyCrystal(WIRELESS, WYVERN));
         modelHelper.register(new ModelResourceLocation(DEContent.crystal_wireless_draconic.getRegistryName(), "inventory"), new RenderItemEnergyCrystal(WIRELESS, DRACONIC));
 //        modelHelper.register(new ModelResourceLocation(DEContent.crystal_wireless_chaotic.getRegistryName(), "inventory"), new RenderItemEnergyCrystal(WIRELESS, CHAOTIC));
+
+        modelHelper.register(new ModelResourceLocation(DEContent.draconium_chest.getRegistryName(), "inventory"), new RenderItemDraconiumChest());
 
         modelHelper.register(new ModelResourceLocation(DEContent.reactor_core.getRegistryName(), "inventory"), new RenderItemReactorComponent(0));
         modelHelper.register(new ModelResourceLocation(DEContent.reactor_stabilizer.getRegistryName(), "inventory"), new RenderItemReactorComponent(1));

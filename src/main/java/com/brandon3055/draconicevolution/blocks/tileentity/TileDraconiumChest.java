@@ -8,29 +8,37 @@ import com.brandon3055.brandonscore.capability.CapabilityOP;
 import com.brandon3055.brandonscore.inventory.ItemHandlerIOControl;
 import com.brandon3055.brandonscore.inventory.ItemHandlerSlotWrapper;
 import com.brandon3055.brandonscore.inventory.TileItemStackHandler;
+import com.brandon3055.brandonscore.lib.IActivatableTile;
+import com.brandon3055.brandonscore.lib.IRSSwitchable;
 import com.brandon3055.brandonscore.lib.datamanager.*;
 import com.brandon3055.brandonscore.utils.DataUtils;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
 import com.brandon3055.draconicevolution.DEOldConfig;
-import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.blocks.DraconiumChest;
+import com.brandon3055.draconicevolution.blocks.machines.Generator;
+import com.brandon3055.draconicevolution.init.DEContent;
+import com.brandon3055.draconicevolution.init.OreDoublingRegistry;
 import com.brandon3055.draconicevolution.inventory.ContainerDraconiumChest;
 import com.brandon3055.draconicevolution.items.ItemCore;
-import com.brandon3055.draconicevolution.init.OreDoublingRegistry;
+import com.brandon3055.draconicevolution.utils.LogHelper;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
+import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -42,7 +50,7 @@ import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.*;
 /**
  * Created by brandon3055 on 28/09/2016.
  */
-public class TileDraconiumChest extends TileBCore implements ITickableTileEntity {
+public class TileDraconiumChest extends TileBCore implements ITickableTileEntity, IRSSwitchable, INamedContainerProvider, IActivatableTile {
 
     private NonNullList<ItemStack> craftingStacks = NonNullList.withSize(10, ItemStack.EMPTY);
     public ManagedEnum<AutoSmeltMode> autoSmeltMode = register(new ManagedEnum<>("auto_smelt_mode", AutoSmeltMode.OFF, SAVE_BOTH_SYNC_CONTAINER));
@@ -54,6 +62,7 @@ public class TileDraconiumChest extends TileBCore implements ITickableTileEntity
     public ManagedInt smeltEnergyPerTick = register(new ManagedInt("smelt_energy_per_tick", 256, SAVE_BOTH_SYNC_CONTAINER));
     public ManagedInt colour = register(new ManagedInt("colour", 0x640096, SAVE_BOTH_SYNC_TILE));
     public ManagedShort numPlayersUsing = register(new ManagedShort("num_players_using", SYNC_TILE));
+    public final ManagedBool active = register(new ManagedBool("active", false, SAVE_BOTH_SYNC_TILE, TRIGGER_UPDATE));
     /**
      * The number of ticks it takes to complete 1 smelting operation.
      */
@@ -102,6 +111,14 @@ public class TileDraconiumChest extends TileBCore implements ITickableTileEntity
     public void tick() {
         super.tick();
         autoFeedRun = false;
+
+        boolean lastActive = active.get();
+        boolean tileEnabled = isTileEnabled();
+        if (tileEnabled != lastActive) {
+            level.setBlockAndUpdate(worldPosition, level.getBlockState(worldPosition).setValue(DraconiumChest.ACTIVE, tileEnabled));
+            active.set(tileEnabled);
+            isSmelting.set(tileEnabled);
+        }
         if (!level.isClientSide) {
             updateEnergy();
             updateSmelting();
@@ -203,7 +220,7 @@ public class TileDraconiumChest extends TileBCore implements ITickableTileEntity
     private boolean canSmelt() {
         for (int i = FIRST_FURNACE_SLOT; i <= LAST_FURNACE_SLOT; i++) {
             ItemStack stack = itemHandler.getStackInSlot(i);
-            if (!getSmeltResult(stack).isEmpty() && (!autoSmeltMode.get().keep1Item || stack.getCount() > 1)) {
+            if (!getSmeltResult(stack).isEmpty() && (!autoSmeltMode.get().keep1Item || stack.getCount() > 1) && active.get()) {
                 return true;
             }
         }
@@ -266,7 +283,7 @@ public class TileDraconiumChest extends TileBCore implements ITickableTileEntity
     }
 
     public boolean attemptAutoFeed() {
-        if (autoSmeltMode.get() == AutoSmeltMode.OFF || autoFeedRun) {
+        if ((autoSmeltMode.get() == AutoSmeltMode.OFF || autoFeedRun) && active.get()) {
             return false;
         }
         checkIOCache();
@@ -282,34 +299,34 @@ public class TileDraconiumChest extends TileBCore implements ITickableTileEntity
             if (!stack.isEmpty() && !getSmeltResult(stack).isEmpty()) {
                 int fullStacks = 0;
                 for (int f = FIRST_FURNACE_SLOT; f <= LAST_FURNACE_SLOT; f++) {
-                    ItemStack stackInFernace = itemHandler.getStackInSlot(f);
+                    ItemStack stackInFurnace = itemHandler.getStackInSlot(f);
 
                     switch (autoSmeltMode.get()) {
                         case FILL:
                         case LOCK:
-                            if (ItemStack.isSame(stackInFernace, stack) && ItemStack.tagMatches(stackInFernace, stack) && stackInFernace.getCount() < stackInFernace.getMaxStackSize()) {
-                                int count = Math.min(stack.getCount(), stackInFernace.getMaxStackSize() - stackInFernace.getCount());
-                                stackInFernace.grow(count);
+                            if (ItemStack.isSame(stackInFurnace, stack) && ItemStack.tagMatches(stackInFurnace, stack) && stackInFurnace.getCount() < stackInFurnace.getMaxStackSize()) {
+                                int count = Math.min(stack.getCount(), stackInFurnace.getMaxStackSize() - stackInFurnace.getCount());
+                                stackInFurnace.grow(count);
                                 stack.shrink(count);
                                 stacksInserted = true;
                             }
                             break;
                         case ALL:
-                            if (stackInFernace.isEmpty()) {
+                            if (stackInFurnace.isEmpty()) {
                                 itemHandler.setStackInSlot(f, stack.copy());
                                 stack = ItemStack.EMPTY;
                                 stacksInserted = true;
-                            } else if (ItemStack.isSame(stackInFernace, stack) && ItemStack.tagMatches(stackInFernace, stack) && stackInFernace.getCount() < stackInFernace.getMaxStackSize()) {
-                                int count = Math.min(stack.getCount(), stackInFernace.getMaxStackSize() - stackInFernace.getCount());
-                                stackInFernace.grow(count);
+                            } else if (ItemStack.isSame(stackInFurnace, stack) && ItemStack.tagMatches(stackInFurnace, stack) && stackInFurnace.getCount() < stackInFurnace.getMaxStackSize()) {
+                                int count = Math.min(stack.getCount(), stackInFurnace.getMaxStackSize() - stackInFurnace.getCount());
+                                stackInFurnace.grow(count);
                                 stack.shrink(count);
                                 stacksInserted = true;
                             }
                             break;
                     }
 
-                    stackInFernace = itemHandler.getStackInSlot(f);
-                    if (!stackInFernace.isEmpty() && stackInFernace.getCount() == stackInFernace.getMaxStackSize()) {
+                    stackInFurnace = itemHandler.getStackInSlot(f);
+                    if (!stackInFurnace.isEmpty() && stackInFurnace.getCount() == stackInFurnace.getMaxStackSize()) {
                         fullStacks++;
                     }
 
@@ -707,18 +724,45 @@ public class TileDraconiumChest extends TileBCore implements ITickableTileEntity
         }
     }
 
+    @Override
+    public boolean onBlockActivated(BlockState state, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+        if (player instanceof ServerPlayerEntity) {
+            NetworkHooks.openGui((ServerPlayerEntity) player, this, worldPosition);
+        }
+        return true;
+    }
+
+    @Nullable
+    @Override
+    public Container createMenu(int currentWindowIndex, PlayerInventory playerInventory, PlayerEntity player) {
+        return new ContainerDraconiumChest(DEContent.container_draconium_chest, currentWindowIndex, playerInventory, this);
+    }
+
     //endregion
 
     public enum AutoSmeltMode {
-        OFF(false),
-        FILL(false),
-        LOCK(true),
-        ALL(false);
+        OFF(false, 0),
+        FILL(false, 1),
+        LOCK(true, 2),
+        ALL(false, 3);
 
         public final boolean keep1Item;
+        public final int index;
 
-        AutoSmeltMode(boolean keep1Item) {
+        AutoSmeltMode(boolean keep1Item, int index) {
             this.keep1Item = keep1Item;
+            this.index = index;
+        }
+
+        public AutoSmeltMode next(boolean prev) {
+            if (prev) {
+                return values()[index - 1 < 0 ? values().length - 1 : index - 1];
+            }
+            return values()[index + 1 == values().length ? 0 : index + 1];
+        }
+
+        public String unlocalizedName() {
+            return "gui.draconicevolution.draconium_chest.autofill_" + name().toLowerCase();
         }
     }
 

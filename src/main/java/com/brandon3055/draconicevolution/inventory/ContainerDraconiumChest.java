@@ -1,15 +1,15 @@
 package com.brandon3055.draconicevolution.inventory;
 
 import com.brandon3055.brandonscore.inventory.ContainerBCTile;
-import com.brandon3055.brandonscore.inventory.ContainerBCore;
 import com.brandon3055.brandonscore.inventory.SlotCheckValid;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
-import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.blocks.DraconiumChest;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileDraconiumChest;
+import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.items.ItemCore;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.ClickType;
@@ -17,23 +17,27 @@ import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.CraftingResultSlot;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.ICraftingRecipe;
+import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.play.server.SSetSlotPacket;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Created by brandon3055 on 4/06/2017.
  */
 public class ContainerDraconiumChest extends ContainerBCTile<TileDraconiumChest> {
 
-    public CraftingInventory craftMatrix;
-    public IInventory craftResult;
+    public InventoryCraftingChest craftMatrix;
+    public InventoryCraftingChestResult craftResult;
     private List<Slot> mainInventorySlots = new ArrayList<>();
 
     public ContainerDraconiumChest(int windowId, PlayerInventory playerInv, PacketBuffer extraData) {
@@ -51,7 +55,7 @@ public class ContainerDraconiumChest extends ContainerBCTile<TileDraconiumChest>
         //Slots 0 -> 259 Main Inventory
         for (int y = 0; y < 10; y++) {
             for (int x = 0; x < 26; x++) {
-                Slot slot = new SlotCheckValid(tile.itemHandler, slotIndex++, 7 + (x * 18), 7 + (y * 18));
+                Slot slot = new SlotCheckValid(tile.itemHandler, slotIndex++, 17 + (x * 18), 15 + (y * 18));
                 mainInventorySlots.add(slot);
                 addSlot(slot);
             }
@@ -59,13 +63,13 @@ public class ContainerDraconiumChest extends ContainerBCTile<TileDraconiumChest>
 
         //Slots 260 -> 264 Furnace Inventory
         for (int x = 0; x < 5; x++) {
-            addSlot(new SlotSmeltable(tile.itemHandler, slotIndex++, 45 + (x * 18), 207));
+            addSlot(new SlotSmeltable(tile.itemHandler, slotIndex++, 51 + (x * 18), 207));
         }
 
         //Capacitor Slot 265
-        addSlot(new SlotRFCapacitor(tile.itemHandler, slotIndex++, 8, 245));
+        addSlot(new SlotRFCapacitor(tile.itemHandler, slotIndex++, 17, 265));
         //Core Slot 266
-        addSlot(new SlotCore(tile.itemHandler, slotIndex, 17, 207));
+        addSlot(new SlotCore(tile.itemHandler, slotIndex, 23, 207));
 
         //endregion
 
@@ -75,23 +79,35 @@ public class ContainerDraconiumChest extends ContainerBCTile<TileDraconiumChest>
         this.craftResult = new InventoryCraftingChestResult(tile);
 
 //        LogHelper.dev(inventorySlots.size());
-        addSlot(new CraftingResultSlot(playerInv.player, craftMatrix, craftResult, 0, 428, 216));
+        addSlot(new CraftingResultSlot(playerInv.player, craftMatrix, craftResult, 0, 434, 225));
 
         for (int y = 0; y < 3; y++) {
             for (int x = 0; x < 3; x++) {
 //                LogHelper.dev(inventorySlots.size());
-                addSlot(new SlotCheckValid.IInv(craftMatrix, x + (y * 3), 334 + (x * 18), 198 + (y * 18)));
+                addSlot(new SlotCheckValid.IInv(craftMatrix, x + (y * 3), 340 + (x * 18), 207 + (y * 18)));
             }
         }
 
         //endregion
-
-        addPlayerSlots(161, 189, 2);
+        // Player inventory
+        addPlayerSlots(170, 207, 3);
     }
 
     @Override
-    public void slotsChanged(IInventory inventory) {
-//        craftResult.setInventorySlotContents(0, RecipeMatcher.findMatches(craftMatrix, tile.getWorld()));
+    public void slotsChanged(@Nonnull IInventory inventory) {
+        if (!Objects.requireNonNull(tile.getLevel()).isClientSide()) {
+            ItemStack stack = ItemStack.EMPTY;
+            Optional<ICraftingRecipe> optional = Objects.requireNonNull(tile.getLevel().getServer()).getRecipeManager().getRecipeFor(IRecipeType.CRAFTING, craftMatrix, tile.getLevel());
+            if (optional.isPresent()) {
+                ICraftingRecipe recipe = optional.get();
+                if (craftResult.setRecipeUsed(tile.getLevel(), (ServerPlayerEntity) this.player, recipe)) {
+                    stack = recipe.assemble(craftMatrix);
+                }
+            }
+            craftResult.setItem(1, stack);
+            super.slotsChanged(inventory);
+            ((ServerPlayerEntity)this.player).connection.send(new SSetSlotPacket(containerId, 267, stack));
+        }
     }
 
     @Nullable

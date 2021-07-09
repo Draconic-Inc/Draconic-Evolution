@@ -134,7 +134,7 @@ public class DEContent {
         event.getRegistry().register(TileEntityType.Builder.of(TileStabilizedSpawner::new,      stabilized_spawner      ).build(null).setRegistryName("stabilized_spawner"));
         event.getRegistry().register(TileEntityType.Builder.of(TilePotentiometer::new,          potentiometer           ).build(null).setRegistryName("potentiometer"));
 //        event.getRegistry().register(TileEntityType.Builder.create(TileCelestialManipulator::new, celestial_manipulator   ).build(null).setRegistryName("celestial_manipulator"));
-//        event.getRegistry().register(TileEntityType.Builder.create(TileDraconiumChest::new,       draconium_chest         ).build(null).setRegistryName("draconium_chest"));
+        event.getRegistry().register(TileEntityType.Builder.of(TileDraconiumChest::new,       draconium_chest         ).build(null).setRegistryName("draconium_chest"));
 //        event.getRegistry().register(TileEntityType.Builder.create(TileParticleGenerator::new,    particle_generator      ).build(null).setRegistryName("particle_generator"));
 //        event.getRegistry().register(TileEntityType.Builder.create(TilePlacedItem::new,           placed_item             ).build(null).setRegistryName("placed_item"));
 //        event.getRegistry().register(TileEntityType.Builder.create(TilePortal::new,               portal                  ).build(null).setRegistryName("portal"));
@@ -183,11 +183,12 @@ public class DEContent {
         event.getRegistry().register(IForgeContainerType.create((id, playerInv, extraData) -> new ContainerBCTile<>(container_generator, id, playerInv, extraData, GENERATOR_LAYOUT)).setRegistryName("generator"));
         event.getRegistry().register(IForgeContainerType.create((id, playerInv, extraData) -> new ContainerBCTile<>(container_grinder, id, playerInv, extraData, GRINDER_LAYOUT)).setRegistryName("grinder"));
 
+        event.getRegistry().register(IForgeContainerType.create(ContainerDraconiumChest::new).setRegistryName("draconium_chest"));
+
         event.getRegistry().register(IForgeContainerType.create((id, playerInv, extraData) -> new ContainerBCTile<>(container_energy_core, id, playerInv, extraData, ENERGY_CORE_LAYOUT)).setRegistryName("energy_core"));
 
         event.getRegistry().register(IForgeContainerType.create(ContainerDissEnchanter::new).setRegistryName("dissenchanter"));
         event.getRegistry().register(IForgeContainerType.create((windowId, inv, data) -> new ContainerDummy<TileCelestialManipulator>(container_celestial_manipulator, windowId, inv, data)).setRegistryName("celestial_manipulator"));
-        event.getRegistry().register(IForgeContainerType.create(ContainerDraconiumChest::new).setRegistryName("draconium_chest"));
         event.getRegistry().register(IForgeContainerType.create(ContainerEnergyCrystal::new).setRegistryName("energy_crystal"));
         event.getRegistry().register(IForgeContainerType.create(ContainerFusionCraftingCore::new).setRegistryName("fusion_crafting_core"));
         event.getRegistry().register(IForgeContainerType.create(ContainerReactor::new).setRegistryName("reactor"));
@@ -278,7 +279,7 @@ public class DEContent {
 //        event.getRegistry().register(new EntityDetector(machine).setRegistryName("entity_detector"));
 //        event.getRegistry().register(new EntityDetector(machine).setRegistryName("advanced_entity_detector"));
         event.getRegistry().register(new StabilizedSpawner(machine).setRegistryName("stabilized_spawner"));
-//        event.getRegistry().register(new DraconiumChest(machine).setRegistryName("draconium_chest"));
+        event.getRegistry().register(new DraconiumChest(machine).setRegistryName("draconium_chest"));
         event.getRegistry().register(new ParticleGenerator(machine).setRegistryName("particle_generator"));
         event.getRegistry().register(new DislocationInhibitor(machine).setRegistryName("dislocation_inhibitor"));
         //Stone Type
@@ -435,7 +436,7 @@ public class DEContent {
         registerItem(event, new ItemBlockBCore(stabilized_spawner,          new Item.Properties().tab(blockGroup)).setRegistryName(Objects.requireNonNull(stabilized_spawner.getRegistryName())));
         registerItem(event, new ItemBlockBCore(potentiometer,               new Item.Properties().tab(blockGroup)).setRegistryName(Objects.requireNonNull(potentiometer.getRegistryName())));
 //        registerItem(event, new ItemBlockBCore(celestial_manipulator,       new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(celestial_manipulator.getRegistryName())));
-//        registerItem(event, new ItemBlockBCore(draconium_chest,             new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(draconium_chest.getRegistryName())));
+        registerItem(event, new ItemBlockBCore(draconium_chest,             new Item.Properties().tab(blockGroup)).setRegistryName(Objects.requireNonNull(draconium_chest.getRegistryName())));
         registerItem(event, new ItemBlockBCore(particle_generator,          new Item.Properties().tab(blockGroup)).setRegistryName(Objects.requireNonNull(particle_generator.getRegistryName())));
         registerItem(event, new ItemBlockBCore(dislocation_inhibitor,       new Item.Properties().tab(blockGroup)).setRegistryName(Objects.requireNonNull(dislocation_inhibitor.getRegistryName())));
 //        registerItem(event, new ItemBlockBCore(placed_item,                 new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(placed_item.getRegistryName())));

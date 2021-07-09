@@ -176,7 +176,6 @@ public class DETextures implements IIconRegister, ISelectiveResourceReloadListen
     public static final String GUI_JEI_FUSION = "textures/gui/jei_fusion_background.png";
     public static final String GUI_WIDGETS = "textures/gui/widgets.png";
     public static final String GUI_REACTOR = "textures/gui/reactor.png";
-    public static final String GUI_DRACONIUM_CHEST = "textures/gui/draconium_chest.png";
     public static final String GUI_PARTICLE_GENERATOR = "textures/gui/particle_generator.png";
     public static final String DRAGON_HEART = "textures/items/components/dragon_heart.png";
     public static final String REACTOR_CORE = "textures/models/reactor_core.png";

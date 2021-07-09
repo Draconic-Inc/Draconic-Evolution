@@ -67,7 +67,7 @@ public class LootTableGenerator extends LootTableProvider {
             dropSelf(DEContent.stabilized_spawner);
             dropSelf(DEContent.potentiometer);
 //            registerDropSelfLootTable(DEContent.celestial_manipulator);
-//            registerDropSelfLootTable(DEContent.draconium_chest);
+            dropSelf(DEContent.draconium_chest);
             dropSelf(DEContent.particle_generator);
             dropSelf(DEContent.crafting_injector_basic);
             dropSelf(DEContent.crafting_injector_wyvern);
