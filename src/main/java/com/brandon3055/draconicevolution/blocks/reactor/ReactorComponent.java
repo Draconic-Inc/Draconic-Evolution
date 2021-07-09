@@ -9,7 +9,9 @@ import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorSt
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -21,6 +23,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
@@ -29,6 +32,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -150,5 +154,25 @@ public class ReactorComponent extends BlockBCore {
         }
 
         return 0;
+    }
+
+    @Override
+    public boolean addDestroyEffects(BlockState state, World world, BlockPos pos, ParticleManager manager) {
+        return true;
+    }
+
+    @Override
+    public boolean addLandingEffects(BlockState state1, ServerWorld worldserver, BlockPos pos, BlockState state2, LivingEntity entity, int numberOfParticles) {
+        return true;
+    }
+
+    @Override
+    public boolean addHitEffects(BlockState state, World worldObj, RayTraceResult target, ParticleManager manager) {
+        return true;
+    }
+
+    @Override
+    public boolean addRunningEffects(BlockState state, World world, BlockPos pos, Entity entity) {
+        return true;
     }
 }
