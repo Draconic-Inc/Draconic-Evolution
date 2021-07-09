@@ -235,7 +235,7 @@ public class GuiDraconiumChest extends ModularGuiContainer<ContainerDraconiumChe
             this.addChild(icon);
 
             colorPicker.setColourSelectListener(color -> {
-                tile.colour.set(color);
+                tile.setColour(color);
                 colorPicker.setColour(color);
             });
             this.onButtonPressed(pressed -> {

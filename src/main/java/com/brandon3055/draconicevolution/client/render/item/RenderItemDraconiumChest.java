@@ -3,10 +3,12 @@ package com.brandon3055.draconicevolution.client.render.item;
 import codechicken.lib.render.item.IItemRenderer;
 import codechicken.lib.texture.TextureUtils;
 import codechicken.lib.util.TransformUtils;
+import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.DraconiumChest;
 import com.brandon3055.draconicevolution.client.DETextures;
 import com.brandon3055.draconicevolution.client.model.ModelDraconiumChest;
+import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -51,11 +53,10 @@ public class RenderItemDraconiumChest implements IItemRenderer {
     @Override
     public void renderItem(ItemStack stack, ItemCameraTransforms.TransformType transformType, MatrixStack mStack, IRenderTypeBuffer getter, int packedLight, int packedOverlay) {
         ModelDraconiumChest chest = new ModelDraconiumChest(RenderType::entitySolid);
-        DraconiumChest d = new DraconiumChest(AbstractBlock.Properties.of(METAL, COLOR_GRAY).strength(3.0F, 8F).noOcclusion().harvestTool(ToolType.PICKAXE).harvestLevel(1));
-        int color = d.getNBTShareTag(stack).getInt("ChestColour");
-        float red = (float) (50 + ((color >> 16) & 0xFF)) / 255f;
-        float green = (float) (50 + ((color >> 8) & 0xFF)) / 255f;
-        float blue = (float) (50 + (color & 0xFF)) / 255f;
+        int color = stack.getTag().getInt("ChestColour");
+        float red = (float) ((color >> 16) & 0xFF) / 255f;
+        float green = (float) ((color >> 8) & 0xFF) / 255f;
+        float blue = (float) (color & 0xFF) / 255f;
         chest.renderToBuffer(mStack, getter.getBuffer(chest.renderType(new ResourceLocation(DraconicEvolution.MODID, DETextures.DRACONIUM_CHEST))), packedLight, packedOverlay, red, green, blue, 1F);
     }
 
