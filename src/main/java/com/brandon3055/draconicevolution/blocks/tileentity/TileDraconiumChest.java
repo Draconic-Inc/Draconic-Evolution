@@ -20,6 +20,7 @@ import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.init.OreDoublingRegistry;
 import com.brandon3055.draconicevolution.inventory.ContainerDraconiumChest;
 import com.brandon3055.draconicevolution.items.ItemCore;
+import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -112,9 +113,11 @@ public class TileDraconiumChest extends TileBCore implements ITickableTileEntity
         autoFeedRun = false;
 
         boolean lastActive = active.get();
-        active.set(isTileEnabled());
-        if (active.get() != lastActive) {
-            level.setBlockAndUpdate(worldPosition, level.getBlockState(worldPosition).setValue(DraconiumChest.ACTIVE, active.get()));
+        boolean tileEnabled = isTileEnabled();
+        if (tileEnabled != lastActive) {
+            level.setBlockAndUpdate(worldPosition, level.getBlockState(worldPosition).setValue(DraconiumChest.ACTIVE, tileEnabled));
+            active.set(tileEnabled);
+            isSmelting.set(tileEnabled);
         }
         if (!level.isClientSide) {
             updateEnergy();

@@ -46,7 +46,7 @@ public class DESprites {
         register(MODID, "draconium_chest/autofill_fill");
         register(MODID, "draconium_chest/autofill_lock");
         register(MODID, "draconium_chest/autofill_all");
-
+        register(MODID, "draconium_chest/color_picker");
     }
 
 

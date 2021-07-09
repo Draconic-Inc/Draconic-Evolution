@@ -1,15 +1,15 @@
 package com.brandon3055.draconicevolution.inventory;
 
 import com.brandon3055.brandonscore.inventory.ContainerBCTile;
-import com.brandon3055.brandonscore.inventory.ContainerBCore;
 import com.brandon3055.brandonscore.inventory.SlotCheckValid;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
-import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.blocks.DraconiumChest;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileDraconiumChest;
+import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.items.ItemCore;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.ClickType;
@@ -17,24 +17,27 @@ import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.CraftingResultSlot;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.ICraftingRecipe;
+import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.play.server.SSetSlotPacket;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Created by brandon3055 on 4/06/2017.
  */
 public class ContainerDraconiumChest extends ContainerBCTile<TileDraconiumChest> {
 
-    public CraftingInventory craftMatrix;
-    public IInventory craftResult;
+    public InventoryCraftingChest craftMatrix;
+    public InventoryCraftingChestResult craftResult;
     private List<Slot> mainInventorySlots = new ArrayList<>();
 
     public ContainerDraconiumChest(int windowId, PlayerInventory playerInv, PacketBuffer extraData) {
@@ -91,8 +94,20 @@ public class ContainerDraconiumChest extends ContainerBCTile<TileDraconiumChest>
     }
 
     @Override
-    public void slotsChanged(IInventory inventory) {
-//        craftResult.setInventorySlotContents(0, RecipeMatcher.findMatches(craftMatrix, tile.getWorld()));
+    public void slotsChanged(@Nonnull IInventory inventory) {
+        if (!Objects.requireNonNull(tile.getLevel()).isClientSide()) {
+            ItemStack stack = ItemStack.EMPTY;
+            Optional<ICraftingRecipe> optional = Objects.requireNonNull(tile.getLevel().getServer()).getRecipeManager().getRecipeFor(IRecipeType.CRAFTING, craftMatrix, tile.getLevel());
+            if (optional.isPresent()) {
+                ICraftingRecipe recipe = optional.get();
+                if (craftResult.setRecipeUsed(tile.getLevel(), (ServerPlayerEntity) this.player, recipe)) {
+                    stack = recipe.assemble(craftMatrix);
+                }
+            }
+            craftResult.setItem(1, stack);
+            super.slotsChanged(inventory);
+            ((ServerPlayerEntity)this.player).connection.send(new SSetSlotPacket(containerId, 267, stack));
+        }
     }
 
     @Nullable
