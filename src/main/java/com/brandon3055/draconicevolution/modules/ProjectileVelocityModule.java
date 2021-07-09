@@ -9,12 +9,12 @@ import com.brandon3055.draconicevolution.api.modules.lib.ModuleImpl;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Streams;
 import net.minecraft.item.Item;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -81,5 +81,15 @@ public class ProjectileVelocityModule extends ModuleImpl<ProjectileData> {
                 .filter(Objects::nonNull)//
                 .findFirst();
         return opt.orElseGet(() -> new InstallResult(InstallResult.InstallResultType.YES, this, null, null));
+    }
+
+    @Override
+    public void addInformation(List<ITextComponent> toolTip) {
+        super.addInformation(toolTip);
+        toolTip.add(new TranslationTextComponent("module.draconicevolution.max_installable")
+                .withStyle(TextFormatting.GRAY)
+                .append(": ")
+                .append(new StringTextComponent(String.valueOf(maxInstall))
+                        .withStyle(TextFormatting.DARK_GREEN)));
     }
 }
