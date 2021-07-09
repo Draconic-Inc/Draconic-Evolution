@@ -169,7 +169,7 @@ public class ModuleGrid {
         if (entity.getMaxGridX() > host.getGridWidth() || entity.getMaxGridY() > getModuleHost().getGridHeight()) {
             return new InstallResult(InstallResultType.NO, entity.module, null, new StringTextComponent("//Module out of bounds"));
         }
-        InstallResult result = host.checkAddModule(entity.module);
+        InstallResult result = ModuleHost.checkAddModule(host, entity.module);
         if (result.resultType == InstallResultType.YES || result.resultType == InstallResultType.OVERRIDE) {
             return new InstallResult(InstallResultType.YES, entity.module, null, null);
         }

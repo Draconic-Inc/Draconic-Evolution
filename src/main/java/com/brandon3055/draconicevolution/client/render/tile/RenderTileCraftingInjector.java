@@ -29,6 +29,7 @@ public class RenderTileCraftingInjector extends TileEntityRenderer<TileCraftingI
 
         if (!te.itemHandler.getStackInSlot(0).isEmpty()) {
             BlockState state = te.getLevel().getBlockState(te.getBlockPos());
+            if (state.isAir()) return; //Turns out this may be an optifine issue???
             Direction facing = state.getValue(CraftingInjector.FACING);
             mStack.translate(0.5 + (facing.getStepX() * 0.45), 0.5 + (facing.getStepY() * 0.45), 0.5 + (facing.getStepZ() * 0.45));
             mStack.scale(0.5F, 0.5F, 0.5F);

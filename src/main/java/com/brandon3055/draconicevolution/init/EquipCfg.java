@@ -73,6 +73,8 @@ public class EquipCfg {
     private static int ELYTRA_DRACONIC_ENERGY       = 1024;
     private static int ELYTRA_CHAOTIC_ENERGY        = 2048;
 
+    private static int BOW_BASE_ENERGY              = 768; //Energy per calculated damage point
+
     //Static Access values
     public static double draconiumEfficiency;
     public static double wyvernEfficiency;
@@ -136,6 +138,8 @@ public class EquipCfg {
     public static int elytraWyvernEnergy;
     public static int elytraDraconicEnergy;
     public static int elytraChaoticEnergy;
+
+    public static int bowBaseEnergy;
 
     //@formatter:on
 
@@ -356,6 +360,11 @@ public class EquipCfg {
                 .setComment("Elytra boost energy per tick, Internal Default Value: " + ELYTRA_CHAOTIC_ENERGY)
                 .setDefaultInt(-99)
                 .setSyncCallback((tag, type) -> elytraChaoticEnergy = tag.getInt() != -99 ? tag.getInt() : ELYTRA_CHAOTIC_ENERGY);
+
+        equipTag.getTag("bowBaseEnergy")
+                .setComment("Bow base energy per calculated damage point, per shot, Internal Default Value: " + BOW_BASE_ENERGY)
+                .setDefaultInt(-99)
+                .setSyncCallback((tag, type) -> bowBaseEnergy = tag.getInt() != -99 ? tag.getInt() : BOW_BASE_ENERGY);
 
         equipTag.setSyncToClient();
     }

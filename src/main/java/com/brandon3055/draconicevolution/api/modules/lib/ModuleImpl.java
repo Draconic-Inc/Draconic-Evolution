@@ -16,7 +16,7 @@ import java.util.function.Supplier;
 public class ModuleImpl<T extends ModuleData<T>> extends BaseModule<T> {
 
     private Item moduleItem;
-    private int maxInstall = -1;
+    protected int maxInstall = -1;
 
     public ModuleImpl(ModuleType<T> moduleType, TechLevel techLevel, Function<Module<T>, T> dataGenerator, Item moduleItem) {
         super(moduleType, new ModuleProperties<>(techLevel, dataGenerator));

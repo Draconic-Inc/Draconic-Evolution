@@ -63,6 +63,10 @@ public class DESounds {
     public static SoundEvent staffHitDefault;
     @ObjectHolder("staff_hit_electric")
     public static SoundEvent staffHitElectric;
+    @ObjectHolder("bow_second_charge")
+    public static SoundEvent bowSecondCharge;
+    @ObjectHolder("bow_charge_shot")
+    public static SoundEvent bowChargeShot;
 
     @SubscribeEvent
     public static void registerSounds(RegistryEvent.Register<SoundEvent> event) {
@@ -89,5 +93,7 @@ public class DESounds {
         event.getRegistry().register(new SoundEvent(new ResourceLocation(DraconicEvolution.MODID, "staff_charge_fire")).setRegistryName("staff_charge_fire"));
         event.getRegistry().register(new SoundEvent(new ResourceLocation(DraconicEvolution.MODID, "staff_hit_default")).setRegistryName("staff_hit_default"));
         event.getRegistry().register(new SoundEvent(new ResourceLocation(DraconicEvolution.MODID, "staff_hit_electric")).setRegistryName("staff_hit_electric"));
+        event.getRegistry().register(new SoundEvent(new ResourceLocation(DraconicEvolution.MODID, "bow_second_charge")).setRegistryName("bow_second_charge"));
+        event.getRegistry().register(new SoundEvent(new ResourceLocation(DraconicEvolution.MODID, "bow_charge_shot")).setRegistryName("bow_charge_shot"));
     }
 }

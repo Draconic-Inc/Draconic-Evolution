@@ -61,7 +61,7 @@ public class EntityCustomArrow extends ArrowEntity {
 //    }
 
     @Override
-    public void shoot(double par1, double par3, double par5, float par7, float par8) {
+    public void shoot(double par1, double par3, double par5, float speed, float par8) {
         float f2 = MathHelper.sqrt(par1 * par1 + par3 * par3 + par5 * par5);
         par1 /= f2;
         par3 /= f2;
@@ -69,9 +69,9 @@ public class EntityCustomArrow extends ArrowEntity {
         par1 += this.random.nextGaussian() * (this.random.nextBoolean() ? -1 : 1) * 0.0007499999832361937D * par8;
         par3 += this.random.nextGaussian() * (this.random.nextBoolean() ? -1 : 1) * 0.0007499999832361937D * par8;
         par5 += this.random.nextGaussian() * (this.random.nextBoolean() ? -1 : 1) * 0.0007499999832361937D * par8;
-        par1 *= par7;
-        par3 *= par7;
-        par5 *= par7;
+        par1 *= speed;
+        par3 *= speed;
+        par5 *= speed;
 //        this.motionX = par1;
 //        this.motionY = par3;
 //        this.motionZ = par5;

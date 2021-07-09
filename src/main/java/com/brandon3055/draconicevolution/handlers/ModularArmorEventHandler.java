@@ -24,11 +24,15 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -74,7 +78,7 @@ public class ModularArmorEventHandler {
 
         ModuleHost host = optionalHost.orElseThrow(IllegalStateException::new);
 
-        if (host.getEntitiesByType(ModuleTypes.LAST_STAND).anyMatch(module -> ((LastStandEntity)module).tryBlockDamage(event))) {
+        if (host.getEntitiesByType(ModuleTypes.LAST_STAND).anyMatch(module -> ((LastStandEntity) module).tryBlockDamage(event))) {
             return;
         }
 
@@ -102,7 +106,7 @@ public class ModularArmorEventHandler {
 
         ModuleHost host = optionalHost.orElseThrow(IllegalStateException::new);
 
-        if (host.getEntitiesByType(ModuleTypes.LAST_STAND).anyMatch(module -> ((LastStandEntity)module).tryBlockDamage(event))) {
+        if (host.getEntitiesByType(ModuleTypes.LAST_STAND).anyMatch(module -> ((LastStandEntity) module).tryBlockDamage(event))) {
             return;
         }
 
@@ -312,6 +316,48 @@ public class ModularArmorEventHandler {
                     }
                 }
             }
+
+            // Elytra Flight (PR Testing)
+            // If i end up using something like this i think the best option would be to clear the attribute in livingTick then
+            // optionally re apply the attribute and my acceleration code in the module entity.
+//            if (player instanceof ServerPlayerEntity) {
+//                int flightEnchantmentLevel = armorAbilities.elytraFlight ? 1 : 0;
+//
+//                ModifiableAttributeInstance fallFlyingAttribute = entity.getAttribute(ForgeMod.FALL_FLIGHT.get());
+//                if (fallFlyingAttribute != null) {
+//                    if (fallFlyingAttribute.getModifier(FlightEntity.FLIGHT_UUID) != null) {
+//                        fallFlyingAttribute.removeModifier(FlightEntity.FLIGHT_UUID);
+//                    }
+//                    if (flightEnchantmentLevel > 0) {
+//                        fallFlyingAttribute.addTransientModifier(FlightEntity.FLIGHT_MODIFIER);
+//                    }
+//                }
+//
+//                int flightSpeedEnchantmentLevel = 1;//EnchantmentHelper.getEnchantmentLevel(FLIGHT_SPEED_ENCHANTMENT.get(), entity);
+//                ModifiableAttributeInstance fallFlyingSpeedAttribute = entity.getAttribute(ForgeMod.FALL_FLYING_SPEED.get());
+//                if (fallFlyingSpeedAttribute != null) {
+//                    if (fallFlyingSpeedAttribute.getModifier(FlightEntity.FLIGHT_SPEED_UUID) != null) {
+//                        fallFlyingSpeedAttribute.removeModifier(FlightEntity.FLIGHT_SPEED_UUID);
+//                    }
+//                    if (flightSpeedEnchantmentLevel > 0) {
+////                        fallFlyingSpeedAttribute.addTransientModifier(new AttributeModifier(FlightEntity.FLIGHT_SPEED_UUID, "Flight Speed Enchantment", 0.5, AttributeModifier.Operation.ADDITION));
+//                    }
+//                }
+//            } else {
+//                double flightSpeed = 1; //flightModule == null ? 0 : flightModule.getElytraBoost();
+//                if (flightSpeed > 0 && player.isFallFlying() && entity.isSprinting()) {
+//                    double speed = 1.5D * flightSpeed;
+//                    double accel = 0.01 * flightSpeed;
+//                    Vector3d look = entity.getLookAngle();
+//                    Vector3d motion = entity.getDeltaMovement();
+//                    entity.setDeltaMovement(motion.add(
+//                            look.x * accel + (look.x * speed - motion.x) * accel,
+//                            look.y * accel + (look.y * speed - motion.y) * accel,
+//                            look.z * accel + (look.z * speed - motion.z) * accel
+//                    ));
+//                }
+//            }
+
         }
         //endregion
     }

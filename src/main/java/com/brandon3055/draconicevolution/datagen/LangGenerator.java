@@ -198,6 +198,7 @@ public class LangGenerator extends LanguageProvider {
         helper.setPrefix("module.draconicevolution");
         helper.add(ModuleTypes.ENERGY_STORAGE,                                  "Energy Capacity");
 
+        helper.add("energy.stored_energy",                                      "Stored Energy");
         helper.add("energy.capacity",                                           "Energy Capacity");
         helper.add("energy.capacity.value",                                     "+%s OP");
         helper.add("energy.transfer",                                           "Energy Transfer");
@@ -270,11 +271,35 @@ public class LangGenerator extends LanguageProvider {
 
         helper.add(ModuleTypes.JUNK_FILTER,                                     "Junk Filter");
 
+        helper.add(ModuleTypes.PROJ_MODIFIER,                                   "Projectile Modifier");
+//        helper.add(ModuleTypes.PROJ_VELOCITY,                                   "Projectile Velocity");
+        helper.add("proj_velocity.name",                                        "Velocity");
+        helper.add("proj_velocity.value",                                       "%s%% (~%s m/s)");
+
+//        helper.add(ModuleTypes.PROJ_ACCURACY,                                   "Projectile Accuracy");
+        helper.add("proj_accuracy.name",                                        "Inaccuracy");
+        helper.add("proj_accuracy.value",                                       "%s%%");
+
+//        helper.add(ModuleTypes.PROJ_GRAV_COMP,                                  "Projectile Gravity Compensation");
+        helper.add("proj_grav_comp.name",                                       "Gravity Cancellation");
+        helper.add("proj_grav_comp.value",                                      "%s%%");
+
+//        helper.add(ModuleTypes.PROJ_PENETRATION,                                "Projectile Penetration");
+        helper.add("proj_penetration.name",                                     "Penetration Chance");
+        helper.add("proj_penetration.value",                                    "%s%%");
+        helper.add("proj_penetration.info",                                     "Increases the chance a projectile will pass through a target and potentially hit additional targets.");
+        helper.add("proj_penetration.info2",                                    "Decreases by 25%% for every subsequent target.");
+
+        helper.add("proj_damage.name",                                          "Base Damage");
+        helper.add("proj_damage.value",                                         "%s%%");
+
+
+
+
         helper.add(DEModules.draconiumEnergy,                                   "Energy Module");
         helper.add(DEModules.wyvernEnergy,                                      "Wyvern Energy Module");
         helper.add(DEModules.draconicEnergy,                                    "Draconic Energy Module");
         helper.add(DEModules.chaoticEnergy,                                     "Chaotic Energy Module");
-        helper.add("energy.stored_energy",                                      "Stored Energy");
 
         helper.add(DEModules.draconiumSpeed,                                    "Speed Module");
         helper.add(DEModules.wyvernSpeed,                                       "Wyvern Speed Module");
@@ -294,6 +319,26 @@ public class LangGenerator extends LanguageProvider {
         helper.add(DEModules.wyvernMiningStability,                             "Mining Stability Module");
 
         helper.add(DEModules.wyvernJunkFilter,                                  "Junk Filter Module");
+
+        helper.add(DEModules.wyvernProjVelocity,                               "Wyvern Projectile Velocity Module");
+        helper.add(DEModules.draconicProjVelocity,                             "Draconic Projectile Velocity Module");
+        helper.add(DEModules.chaoticProjVelocity,                              "Chaotic Projectile Velocity Module");
+
+        helper.add(DEModules.wyvernProjAccuracy,                               "Wyvern Projectile Accuracy Module");
+        helper.add(DEModules.draconicProjAccuracy,                             "Draconic Projectile Accuracy Module");
+        helper.add(DEModules.chaoticProjAccuracy,                              "Chaotic Projectile Accuracy Module");
+
+        helper.add(DEModules.wyvernProjGravComp,                               "Wyvern Projectile Gravity Compensation Module");
+        helper.add(DEModules.draconicProjGravComp,                             "Draconic Projectile Gravity Compensation Module");
+        helper.add(DEModules.chaoticProjGravComp,                              "Chaotic Projectile Gravity Compensation Module");
+
+        helper.add(DEModules.wyvernProjPenetration,                            "Wyvern Projectile Penetration Module");
+        helper.add(DEModules.draconicProjPenetration,                          "Draconic Projectile Penetration Module");
+        helper.add(DEModules.chaoticProjPenetration,                           "Chaotic Projectile Penetration Module");
+
+        helper.add(DEModules.wyvernProjDamage,                                  "Wyvern Projectile Damage Module");
+        helper.add(DEModules.draconicProjDamage,                                "Draconic Projectile Damage Module");
+        helper.add(DEModules.chaoticProjDamage,                                 "Chaotic Projectile Damage Module");
 
         helper.add(DEModules.wyvernShieldControl,                               "Wyvern Shield Control Module");
         helper.add(DEModules.draconicShieldControl,                             "Draconic Shield Control Module");
@@ -333,6 +378,7 @@ public class LangGenerator extends LanguageProvider {
         helper.add(DEModules.wyvernAquaAdapt,                                   "Aqua Adapt Module");
 
         helper.add(DEModules.wyvernHillStep,                                    "Hill Step Module");
+
 
         helper.add("module_type",                                               "Module Type");
         helper.add("grid_size",                                                 "Module Size");
@@ -623,6 +669,15 @@ public class LangGenerator extends LanguageProvider {
         helper.add("deactivate",                                                "Item Dislocator Deactivated");
     }
 
+    private void toolTips(PrefixHelper helper) {
+        helper.setPrefix("tooltip.draconicevolution");
+
+        //Bows
+        helper.add("bow.damage",                    "%s Max Attack Damage");
+        helper.add("bow.energy_per_shot",           "%s OP/shot");
+
+    }
+
     private void misc(PrefixHelper helper) {
         add("itemGroup.draconicevolution.blocks",                               "Draconic Evolution Blocks");
         add("itemGroup.draconicevolution.items",                                "Draconic Evolution Items");
@@ -633,7 +688,7 @@ public class LangGenerator extends LanguageProvider {
         add("tech_level.draconicevolution.chaotic",                             "Chaotic");
         add("entity.draconicevolution.draconic_guardian",                       "Chaos Guardian");
         add("death.attack.draconicevolution.draconic_guardian",                 "%1$s was torn apart by %2$s");
-        add("death.attack.draconicevolution.guardian_projectile",               "%1$s was obliterated %2$s");
+        add("death.attack.draconicevolution.guardian_projectile",               "%1$s was obliterated by %2$s");
 
         //Temporary
         add("gui.de.energyStorageCore.name",                                    "Tier %s Energy Core");
@@ -681,6 +736,7 @@ public class LangGenerator extends LanguageProvider {
         itemProps(helper);
         guis(helper);
         modules(helper);
+        toolTips(helper);
         misc(helper);
         hudAndMessages(helper);
     }

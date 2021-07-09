@@ -254,7 +254,7 @@ public class ClientProxy extends CommonProxy {
         RenderingRegistry.registerEntityRenderingHandler(DEContent.guardianProjectile, GuardianProjectileRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(DEContent.guardianCrystal, GuardianCrystalRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(DEContent.persistentItem, manager -> new ItemRenderer(manager, Minecraft.getInstance().getItemRenderer()));
-        RenderingRegistry.registerEntityRenderingHandler(DEContent.draconicProjectile, DraconicArrowRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(DEContent.draconicArrow, DraconicArrowRenderer::new);
 
         //Entities
 //        RenderingRegistry.registerEntityRenderingHandler(EntityChaosGuardian.class, RenderChaosGuardian::new);

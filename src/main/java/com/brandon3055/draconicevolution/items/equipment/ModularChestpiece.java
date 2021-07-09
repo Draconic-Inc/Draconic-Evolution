@@ -130,15 +130,7 @@ public class ModularChestpiece extends ArmorItem implements IModularArmor, IDEEq
     public <A extends BipedModel<?>> A getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlotType armorSlot, A _default) {
         if (model == null) {
             model = new ModularArmorModel(1F, techLevel, false);
-//            model = new ModelTestArmor(1F); //Armor
-//            model = new ModelBiped(0.5F); //Leggings
         }
-
-//        model.leftArmPose = _default.leftArmPose;
-//        model.bipedLeftArm.rotateAngleX = _default.bipedLeftArm.rotateAngleX;
-//        model.bipedLeftArm.rotateAngleY = _default.bipedLeftArm.rotateAngleY;
-//        model.bipedLeftArm.rotateAngleZ = _default.bipedLeftArm.rotateAngleZ;
-
         return SneakyUtils.unsafeCast(model);
     }
 

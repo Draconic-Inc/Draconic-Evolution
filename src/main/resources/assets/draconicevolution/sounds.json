@@ -205,6 +205,24 @@
         "stream": false
       }
     ]
+  },
+  "bow_second_charge": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "draconicevolution:bow_second_charge",
+        "stream": false
+      }
+    ]
+  },
+  "bow_charge_shot": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "draconicevolution:bow_charge_shot",
+        "stream": false
+      }
+    ]
   }
 }
 

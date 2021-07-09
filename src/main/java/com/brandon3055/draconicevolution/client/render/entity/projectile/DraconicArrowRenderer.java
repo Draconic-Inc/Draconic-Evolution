@@ -4,6 +4,7 @@ import codechicken.lib.render.buffer.TransformingVertexBuilder;
 import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.api.TimeKeeper;
+import com.brandon3055.draconicevolution.entity.projectile.DraconicArrowEntity;
 import com.brandon3055.draconicevolution.entity.projectile.DraconicProjectileEntity;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
@@ -23,7 +24,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import java.util.Random;
 
 @OnlyIn(Dist.CLIENT)
-public class DraconicArrowRenderer extends EntityRenderer<DraconicProjectileEntity> {
+public class DraconicArrowRenderer extends EntityRenderer<DraconicArrowEntity> {
     public static final ResourceLocation RES_ARROW = new ResourceLocation("textures/entity/projectiles/arrow.png");
     public static final ResourceLocation RES_TIPPED_ARROW = new ResourceLocation("textures/entity/projectiles/tipped_arrow.png");
 
@@ -31,7 +32,7 @@ public class DraconicArrowRenderer extends EntityRenderer<DraconicProjectileEnti
         super(renderManagerIn);
     }
 
-    public void render(DraconicProjectileEntity arrowEntity, float entityYaw, float partialTicks, MatrixStack mStack, IRenderTypeBuffer getter, int packedLightIn) {
+    public void render(DraconicArrowEntity arrowEntity, float entityYaw, float partialTicks, MatrixStack mStack, IRenderTypeBuffer getter, int packedLightIn) {
         mStack.pushPose();
         mStack.mulPose(Vector3f.YP.rotationDegrees(MathHelper.lerp(partialTicks, arrowEntity.yRotO, arrowEntity.yRot) - 90.0F));
         mStack.mulPose(Vector3f.ZP.rotationDegrees(MathHelper.lerp(partialTicks, arrowEntity.xRotO, arrowEntity.xRot)));
@@ -69,25 +70,25 @@ public class DraconicArrowRenderer extends EntityRenderer<DraconicProjectileEnti
 
 //        mStack.rotate(new Quaternion(new Vector3f(0, 0, 1), (TimeKeeper.getClientTick() + partialTicks) * 100F, true));
         super.render(arrowEntity, entityYaw, partialTicks, mStack, getter, packedLightIn);
+//
+//        Vector3 startPos = new Vector3(0, 0, 0); //Bottom
+//        Vector3 endPos = new Vector3(0, 1, 0); //Top
+//        int segCount = 8;
+//        long randSeed = (TimeKeeper.getClientTick() / 2);
+//        float scaleMod = 2;
+//        float deflectMod = 1;
+//        boolean autoScale = true;
+//        float segTaper = 0.125F;
+//        int colour = 0x6300BD;
 
-        Vector3 startPos = new Vector3(0, 0, 0); //Bottom
-        Vector3 endPos = new Vector3(0, 1, 0); //Top
-        int segCount = 8;
-        long randSeed = (TimeKeeper.getClientTick() / 2);
-        float scaleMod = 2;
-        float deflectMod = 1;
-        boolean autoScale = true;
-        float segTaper = 0.125F;
-        int colour = 0x6300BD;
-
-        rendeArcP2P(mStack, getter, startPos ,endPos ,segCount ,randSeed ,scaleMod ,deflectMod ,autoScale ,segTaper ,colour);
+//        rendeArcP2P(mStack, getter, startPos ,endPos ,segCount ,randSeed ,scaleMod ,deflectMod ,autoScale ,segTaper ,colour);
     }
 
     public void drawVertex(Matrix4f matrix, Matrix3f normals, IVertexBuilder vertexBuilder, int offsetX, int offsetY, int offsetZ, float textureX, float textureY, int p_229039_9_, int p_229039_10_, int p_229039_11_, int packedLightIn) {
         vertexBuilder.vertex(matrix, (float) offsetX, (float) offsetY, (float) offsetZ).color(255, 255, 255, 255).uv(textureX, textureY).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLightIn).normal(normals, (float) p_229039_9_, (float) p_229039_11_, (float) p_229039_10_).endVertex();
     }
 
-    public ResourceLocation getTextureLocation(DraconicProjectileEntity entity) {
+    public ResourceLocation getTextureLocation(DraconicArrowEntity entity) {
         return entity.getColor() > 0 ? RES_TIPPED_ARROW : RES_ARROW;
     }
 

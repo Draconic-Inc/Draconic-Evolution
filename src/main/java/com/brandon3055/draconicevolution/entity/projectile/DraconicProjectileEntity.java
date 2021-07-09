@@ -77,11 +77,11 @@ public class DraconicProjectileEntity extends AbstractArrowEntity {
     }
 
     public DraconicProjectileEntity(World worldIn, double x, double y, double z) {
-        super(DEContent.draconicProjectile, x, y, z, worldIn);
+        super(DEContent.draconicArrow, x, y, z, worldIn);
     }
 
     public DraconicProjectileEntity(World worldIn, LivingEntity shooter) {
-        super(DEContent.draconicProjectile, shooter, worldIn);
+        super(DEContent.draconicArrow, shooter, worldIn);
     }
 
     @Override
