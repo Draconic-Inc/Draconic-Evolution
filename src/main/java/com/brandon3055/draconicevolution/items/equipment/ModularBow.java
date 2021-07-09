@@ -99,15 +99,15 @@ public class ModularBow extends BowItem implements IReaperItem, IModularItem {
     //###### Draw & Charge time stuff ######
 
     @Override
-    public void onUseTick(World world, LivingEntity player,ItemStack bow, int count) {
+    public void onUseTick(World world, LivingEntity player, ItemStack stack, int count) {
         // count: from 72000 (start) over 71980 (max tension) to negative
-        if (getUseDuration(bow) - count >= getChargeTicks(bow)) {
-            ModuleHost host = bow.getCapability(MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new);
+        if (getUseDuration(stack) - count >= getChargeTicks(stack)) {
+            ModuleHost host = stack.getCapability(MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new);
             if (host instanceof PropertyProvider && ((PropertyProvider) host).hasBool("auto_fire")) {
                 if (((PropertyProvider) host).getBool("auto_fire").getValue()) {
                     // auto fire
                     player.stopUsingItem();
-                    bow.releaseUsing(world, player, 0);
+                    stack.releaseUsing(world, player, 0);
                 }
             }
         }
