@@ -187,34 +187,6 @@ public class GuiDraconiumChest extends ModularGuiContainer<ContainerDraconiumChe
         }
     }
 
-    // Currently unused, may be implemented later
-    /*private static class ChestRenderer extends GuiElement<ChestRenderer> {
-
-        public float r, g, b;
-
-        public ChestRenderer(GuiPickColourDialog parent) {
-            parent.addChild(this);
-        }
-
-        @Override
-        public void renderElement(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
-            IRenderTypeBuffer.Impl getter = Minecraft.getInstance().renderBuffers().bufferSource();
-            MatrixStack matrixStack = new MatrixStack();
-            matrixStack.scale(1, 1, 1);
-            matrixStack.mulPose(new Quaternion(0, 0, 0, true));
-            matrixStack.translate(Objects.requireNonNull(this.getParent()).xPos() + 500, this.getParent().yPos(), 0);
-            chest.renderToBuffer(matrixStack, getter.getBuffer(chest.renderType(DRACONIUM_CHEST)), 15728640, 655360, r, g, b, 1);
-            getter.endBatch();
-            super.renderElement(minecraft, mouseX, mouseY, partialTicks);
-        }
-
-        public void setColor(int color) {
-            r = (float) ((color >> 16) & 0xFF) / 255f;
-            g = (float) ((color >> 8) & 0xFF) / 255f;
-            b = (float) (color & 0xFF) / 255f;
-        }
-    }*/
-
     public class GuiColorPicker extends GuiButton {
         public GuiColorPicker(TGuiBase template, int xPos, int yPos, TileDraconiumChest tile) {
             super(xPos, yPos);
