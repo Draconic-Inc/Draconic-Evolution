@@ -192,6 +192,8 @@ public class LangGenerator extends LanguageProvider {
         //helper.add("charge_baubles.info",                                       "");
         helper.add("charge_curios",                                             "Charge Curios");
         helper.add("charge_curios.info",                                        "Charge items in curios equipment slots.");
+
+        helper.add("auto_fire",                                                 "Auto Fire");
     }
 
     private void modules(PrefixHelper helper) {
@@ -726,6 +728,8 @@ public class LangGenerator extends LanguageProvider {
         add("key.draconicevolution.dislocator_gui",                             "Advanced Dislocator GUI");
         add("key.draconicevolution.dislocator_up",                              "Advanced Dislocator Select Up");
         add("key.draconicevolution.dislocator_down",                            "Advanced Dislocator Select Down");
+
+        add("info.de.hasSavedData.txt",                                         "Contents saved!");
     }
 
     @Override

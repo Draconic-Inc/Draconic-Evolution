@@ -7,6 +7,9 @@ import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.IReaperItem;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
+import com.brandon3055.draconicevolution.api.capability.PropertyProvider;
+import com.brandon3055.draconicevolution.api.config.BooleanProperty;
+import com.brandon3055.draconicevolution.api.config.ConfigProperty;
 import com.brandon3055.draconicevolution.api.modules.ModuleCategory;
 import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
 import com.brandon3055.draconicevolution.api.modules.data.AOEData;
@@ -72,6 +75,7 @@ public class ModularBow extends BowItem implements IReaperItem, IModularItem {
     public ModuleHostImpl createHost(ItemStack stack) {
         ModuleHostImpl host = new ModuleHostImpl(techLevel, toolWidth(techLevel), toolHeight(techLevel), "bow", removeInvalidModules);
         host.addCategories(ModuleCategory.RANGED_WEAPON);
+        host.addPropertyBuilder(props -> props.add(new BooleanProperty("auto_fire", false).setFormatter(ConfigProperty.BooleanFormatter.ENABLED_DISABLED)));
         return host;
     }
 
@@ -95,7 +99,18 @@ public class ModularBow extends BowItem implements IReaperItem, IModularItem {
     //###### Draw & Charge time stuff ######
 
     @Override
-    public void onUsingTick(ItemStack stack, LivingEntity player, int count) {
+    public void onUseTick(World world, LivingEntity player,ItemStack bow, int count) {
+        // count: from 72000 (start) over 71980 (max tension) to negative
+        if (getUseDuration(bow) - count >= getChargeTicks(bow)) {
+            ModuleHost host = bow.getCapability(MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new);
+            if (host instanceof PropertyProvider && ((PropertyProvider) host).hasBool("auto_fire")) {
+                if (((PropertyProvider) host).getBool("auto_fire").getValue()) {
+                    // auto fire
+                    player.stopUsingItem();
+                    bow.releaseUsing(world, player, 0);
+                }
+            }
+        }
 //        int drawTime = (this.getUseDuration(stack) - count) + 1;
 //        if (drawTime == getChargeTicks(stack) * 2 && player.level.isClientSide) {
 //            player.level.playLocalSound(player.getX(), player.getY(), player.getZ(), DESounds.bowSecondCharge, SoundCategory.PLAYERS, 1.0F, 1.F, false);
