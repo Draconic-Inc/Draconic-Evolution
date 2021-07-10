@@ -273,6 +273,10 @@ public class LangGenerator extends LanguageProvider {
 
         helper.add(ModuleTypes.JUNK_FILTER,                                     "Junk Filter");
 
+        helper.add("auto_fire_mod.enable",                        "Auto Fire");
+        helper.add("auto_fire_mod.enable.info",                                  "Automatically fire bow at full draw.");
+
+
         helper.add(ModuleTypes.PROJ_MODIFIER,                                   "Projectile Modifier");
 //        helper.add(ModuleTypes.PROJ_VELOCITY,                                   "Projectile Velocity");
         helper.add("proj_velocity.name",                                        "Velocity");
