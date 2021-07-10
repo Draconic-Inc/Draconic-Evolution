@@ -12,13 +12,10 @@ import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiStackIc
 import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiTexture;
 import com.brandon3055.brandonscore.client.gui.modulargui.lib.GuiAlign;
 import com.brandon3055.brandonscore.client.gui.modulargui.templates.TBasicMachine;
-import com.brandon3055.brandonscore.lib.StackReference;
 import com.brandon3055.draconicevolution.api.DraconicAPI;
 import com.brandon3055.draconicevolution.api.crafting.IFusionRecipe;
-import com.brandon3055.draconicevolution.api.fusioncrafting.IFusionRecipeOld;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileCraftingCore;
 import com.brandon3055.draconicevolution.inventory.ContainerFusionCraftingCore;
-import com.brandon3055.draconicevolution.inventory.ContainerReactor;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -28,7 +25,6 @@ import net.minecraft.util.text.TextFormatting;
 
 import java.util.Random;
 
-import static com.brandon3055.brandonscore.client.gui.GuiToolkit.GuiLayout.DEFAULT;
 import static com.brandon3055.brandonscore.client.gui.GuiToolkit.LayoutPos.BOTTOM_CENTER;
 
 public class GuiFusionCraftingCore extends ModularGuiContainer<ContainerFusionCraftingCore> {
@@ -68,15 +64,15 @@ public class GuiFusionCraftingCore extends ModularGuiContainer<ContainerFusionCr
         template.background.addChild(new GuiButton("Craft")
                 .setPosAndSize(width / 2 - 40, topPos + 93, 80, 14)
                 .setVanillaButtonRender(true)
-                .setEnabledCallback(() -> currentRecipe != null && !tile.isCrafting.get())
+                .setEnabledCallback(() -> currentRecipe != null && !tile.isCrafting())
                 .onPressed(() -> tile.sendPacketToServer(output -> {}, 0)));
 
         template.background.addChild(new GuiLabel()
                 .setPosAndSize(width / 2 - 40, topPos + 93, 80, 14)
                 .setAlignment(GuiAlign.CENTER)
-                .setEnabledCallback(() -> currentRecipe != null && tile.isCrafting.get())
+                .setEnabledCallback(() -> currentRecipe != null && tile.isCrafting())
                 .setDisplaySupplier(() -> {
-                    int state = tile.craftingStage.get();
+                    int state = 0;//tile.craftingStage.get();
                     String status = state > 1000 ? "Crafting" : "Charging";
                     double d = state > 1000 ? (state - 1000F) / 1000D : state / 1000D;
                     String progress = ((int) (d * 100) + "%");

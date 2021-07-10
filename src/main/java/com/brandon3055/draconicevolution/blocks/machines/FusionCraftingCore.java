@@ -80,7 +80,7 @@ public class FusionCraftingCore extends BlockBCore /*implements IRenderOverride,
             if (isBlockPowered(world, pos)) {
                 TileEntity tile = world.getBlockEntity(pos);
                 if (tile instanceof TileCraftingCore) {
-                    ((TileCraftingCore) tile).attemptStartCrafting();
+                    ((TileCraftingCore) tile).startCraft();
                 }
             }
         }

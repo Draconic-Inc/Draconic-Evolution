@@ -23,7 +23,7 @@ public class RenderTileCraftingInjector extends TileEntityRenderer<TileCraftingI
 
     @Override
     public void render(TileCraftingInjector te, float partialTicks, MatrixStack mStack, IRenderTypeBuffer getter, int packetLight, int packetOverlay) {
-        if (te.currentCraftingInventory != null && te.currentCraftingInventory.getCraftingStage() > 1000) {
+        if (te.getCore() != null && te.getCore().isCrafting() && te.getCore().getFusionState().ordinal() > 1) {
             return;
         }
 

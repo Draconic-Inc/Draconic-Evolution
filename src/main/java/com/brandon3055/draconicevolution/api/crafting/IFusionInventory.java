@@ -1,81 +1,46 @@
 package com.brandon3055.draconicevolution.api.crafting;
 
-import com.brandon3055.draconicevolution.api.fusioncrafting.ICraftingInjector;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
  * Created by brandon3055 on 26/11/20
+ * This is simplified for 1.16+
+ * Its now simply and way to access and consume the crafting ingredients (including power) and nothing more.
+ * So only what is needed by IFusionRecipe
  */
-//TODO a lot of this will need to be re written
 public interface IFusionInventory extends IInventory {
 
-//Will use seperate methods when i re write
-//    /**
-//     * Gets the stack in the catalyst slot of the core<br>
-//     */
-//    @Nonnull
-//    ItemStack getCatalystStack();
-//
-//    /**
-//     * Gets the stack in the output slot of the core<br>
-//     */
-//    @Nonnull
-//    ItemStack getOutputStack();
-//
-//
-//    /**
-//     * Sets the stack in the catalyst slot of the core<br>
-//     */
-//    void setCatalystStack(@Nonnull ItemStack stack);
-//
-//    /**
-//     * Sets the stack in the output slot of the core<br>
-//     */
-//    void setOutputStack(@Nonnull ItemStack stack);
-
     /**
-     * Gets the stack in the fusion crafting core. Also known as the crafting catalyst.<br>
-     * slot 0 = Input Slot<br>
-     * slot 1 == output slot
+     * Gets the stack in the catalyst slot of the core<br>
      */
     @Nonnull
-    ItemStack getStackInCore(int slot);
+    ItemStack getCatalystStack();
 
     /**
-     * Sets the stack in the specified slot.<br>
-     * slot 0 = Input Slot<br>
-     * slot 1 == output slot
+     * Gets the stack in the output slot of the core<br>
      */
-    void setStackInCore(int slot, @Nonnull ItemStack stack);
+    @Nonnull
+    ItemStack getOutputStack();
 
     /**
-     * @return The required =er ingredient energy for the current crafting recipe or 0 if there is no active recipe.
+     * Sets the stack in the catalyst slot of the core<br>
      */
-    long getIngredientEnergyCost();
+    void setCatalystStack(@Nonnull ItemStack stack);
+
+    /**
+     * Sets the stack in the output slot of the core<br>
+     */
+    void setOutputStack(@Nonnull ItemStack stack);
 
     /**
      * Returns a list of all valid crafting injectors.
      */
-    List<ICraftingInjector> getInjectors();
-
-
-    /**
-     * @return true if currently crafting an item.
-     */
-    boolean craftingInProgress();
-
-    /**
-     * @return The current crafting stage (0 -> 1000 = charging, 1000 -> 2000 = crafting)
-     */
-    int getCraftingStage();
-
-    BlockPos getCorePos();
+    List<IFusionInjector> getInjectors();
 
     //@formatter:off
     @Override default int getContainerSize() { return 0; }

@@ -3,10 +3,6 @@ package com.brandon3055.draconicevolution.api.crafting;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.draconicevolution.api.DraconicAPI;
 import com.brandon3055.draconicevolution.api.OreDictHelper;
-import com.brandon3055.draconicevolution.api.fusioncrafting.ICraftingInjector;
-import com.brandon3055.draconicevolution.api.fusioncrafting.IFusionCraftingInventory;
-import com.brandon3055.draconicevolution.init.DEContent;
-import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -18,8 +14,8 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.registries.ForgeRegistryEntry;
@@ -82,11 +78,10 @@ public class FusionRecipe implements IFusionRecipe {
 
     @Override
     public boolean matches(IFusionInventory inv, World worldIn) {
-        List<ICraftingInjector> pedestals = new ArrayList<ICraftingInjector>();
-        pedestals.addAll(inv.getInjectors());
+        List<IFusionInjector> injectors = new ArrayList<>(inv.getInjectors());
 
         //Check the catalyst for this recipe
-        if (inv.getStackInCore(0).isEmpty() || !getCatalyst().test(inv.getStackInCore(0))) {// || inv.getStackInCore(0).getCount() < catalyst.getCount()) {
+        if (inv.getCatalystStack().isEmpty() || !getCatalyst().test(inv.getCatalystStack())) {// || inv.getStackInCore(0).getCount() < catalyst.getCount()) {
             return false;
         }
 
@@ -97,22 +92,22 @@ public class FusionRecipe implements IFusionRecipe {
 
         //Check that all of the ingredients are available.
         //TODO when i re write i want to abstract this out
-        //I should not be iterating over pedestals. I just need a list off something like IFusionIngredient
+        //I should not be iterating over injectors. I just need a list off something like IFusionIngredient
         //That just that an ingredient and a pedestal tier.
         //In fact i dont even need that. The FusionInventory can just have a method that returns the lowest tier
         //pedestal that is holding an item.
         for (Ingredient ingredient : getIngredients()) {
             boolean foundIngredient = false;
 
-            for (ICraftingInjector pedestal : pedestals) {
-                if (!pedestal.getStackInPedestal().isEmpty() && ingredient.test(pedestal.getStackInPedestal())) {
+            for (IFusionInjector injector : injectors) {
+                if (!injector.getInjectorStack().isEmpty() && ingredient.test(injector.getInjectorStack())) {
                     ItemStack i = OreDictHelper.resolveObject(ingredient);
-                    if (i.hasTag() && !ItemStack.tagMatches(i, pedestal.getStackInPedestal())) {
+                    if (i.hasTag() && !ItemStack.tagMatches(i, injector.getInjectorStack())) {
                         continue;
                     }
 
                     foundIngredient = true;
-                    pedestals.remove(pedestal);
+                    injectors.remove(injector);
                     break;
                 }
             }
@@ -123,8 +118,8 @@ public class FusionRecipe implements IFusionRecipe {
         }
 
         //Check that there are no extra items that are not part of the recipe.
-        for (ICraftingInjector pedestal : pedestals) {
-            if (!pedestal.getStackInPedestal().isEmpty()) {
+        for (IFusionInjector pedestal : injectors) {
+            if (!pedestal.getInjectorStack().isEmpty()) {
                 return false;
             }
         }
@@ -134,15 +129,14 @@ public class FusionRecipe implements IFusionRecipe {
 
     //Temporary Hack
     private boolean canCraft_(IFusionInventory inventory, World world) {
-        if (!inventory.getStackInCore(1).isEmpty()) {
+        if (!inventory.getOutputStack().isEmpty()) {
             return false;
         }
 
-        List<ICraftingInjector> pedestals = new ArrayList<ICraftingInjector>();
-        pedestals.addAll(inventory.getInjectors());
+        List<IFusionInjector> pedestals = new ArrayList<>(inventory.getInjectors());
 
-        for (ICraftingInjector pedestal : pedestals) {
-            if (!pedestal.getStackInPedestal().isEmpty() && pedestal.getPedestalTier() < getRecipeTier().index) {
+        for (IFusionInjector pedestal : pedestals) {
+            if (!pedestal.getInjectorStack().isEmpty() && pedestal.getInjectorTier().index < getRecipeTier().index) {
                 return false;
             }
         }

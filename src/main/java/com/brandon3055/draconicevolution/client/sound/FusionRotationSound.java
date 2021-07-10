@@ -20,11 +20,11 @@ public class FusionRotationSound extends SimpleSound implements ITickableSound {
 
     @Override
     public boolean isStopped() {
-        return tile.isRemoved() || !tile.craftingInProgress();
+        return tile.isRemoved() || !tile.isCrafting();
     }
 
     @Override
     public void tick() {
-        pitch = 0.1F + (((tile.getCraftingStage() - 1000) / 1000F) * 1.9F);
+//        pitch = 0.1F + (((tile.getCraftingStage() - 1000) / 1000F) * 1.9F);
     }
 }

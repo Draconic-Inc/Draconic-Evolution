@@ -11,6 +11,7 @@ import com.brandon3055.draconicevolution.blocks.tileentity.TileCraftingInjector;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
@@ -29,6 +30,7 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -50,11 +52,14 @@ public class CraftingInjector extends BlockBCore implements IHudDisplay {
     private static VoxelShape SHAPE_EAST = VoxelShapes.box(0, 0.0625, 0.0625, 0.625, 0.9375, 0.9375);
     private final TechLevel techLevel;
 
-
     public CraftingInjector(Properties properties, TechLevel techLevel) {
         super(properties);
         this.techLevel = techLevel;
         this.registerDefaultState(stateDefinition.any().setValue(FACING, Direction.UP));
+    }
+
+    public TechLevel getTechLevel() {
+        return techLevel;
     }
 
     @Override
@@ -67,28 +72,10 @@ public class CraftingInjector extends BlockBCore implements IHudDisplay {
         builder.add(FACING);
     }
 
-
-//    @Override
-//    public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
-//        world.setBlockState(pos, state.withProperty(TIER, TIER.fromMeta(stack.getItemDamage())));
-//        super.onBlockPlacedBy(world, pos, state, placer, stack);
-//
-//        TileEntity tile = world.getTileEntity(pos);
-//
-//        if (tile instanceof TileCraftingInjector) {
-//            ((TileCraftingInjector) tile).facing.set((byte) Direction.getDirectionFromEntityLiving(pos, placer).getIndex());
-//        }
-//    }
-
-    //endregion
-
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context) {
         return this.defaultBlockState().setValue(FACING, context.getNearestLookingDirection().getOpposite());
     }
-
-    //region Block
-
 
     @Override
     public boolean hasTileEntity(BlockState state) {
@@ -98,7 +85,21 @@ public class CraftingInjector extends BlockBCore implements IHudDisplay {
     @Nullable
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        return new TileCraftingInjector(techLevel);
+        return new TileCraftingInjector();
+    }
+
+    @Override
+    public void destroy(IWorld p_176206_1_, BlockPos p_176206_2_, BlockState p_176206_3_) {
+        super.destroy(p_176206_1_, p_176206_2_, p_176206_3_);
+    }
+
+    @Override
+    public void onRemove(BlockState p_196243_1_, World world, BlockPos pos, BlockState p_196243_4_, boolean p_196243_5_) {
+        TileEntity tile = world.getBlockEntity(pos);
+        if (tile instanceof TileCraftingInjector) {
+            ((TileCraftingInjector) tile).onDestroyed();
+        }
+        super.onRemove(p_196243_1_, world, pos, p_196243_4_, p_196243_5_);
     }
 
     @Override
@@ -117,7 +118,7 @@ public class CraftingInjector extends BlockBCore implements IHudDisplay {
 
         if (player.isShiftKeyDown()) {
             craftingPedestal.singleItem.set(!craftingPedestal.singleItem.get());
-            ChatHelper.sendIndexed(player, new TranslationTextComponent("msg.craftingInjector.singleItem" + (craftingPedestal.singleItem.get() ? "On" : "Off") + ".txt"), 98);
+            ChatHelper.sendIndexed(player, new TranslationTextComponent("fusion_inj.draconicevolution." + (craftingPedestal.singleItem.get() ? "single_item" : "multi_item")), 98);
             craftingPedestal.getDataManager().detectAndSendChanges();
             return ActionResultType.SUCCESS;
         }
@@ -125,10 +126,10 @@ public class CraftingInjector extends BlockBCore implements IHudDisplay {
         if (!craftingPedestal.itemHandler.getStackInSlot(0).isEmpty()) {
             if (player.getMainHandItem().isEmpty()) {
                 player.setItemInHand(Hand.MAIN_HAND, craftingPedestal.itemHandler.getStackInSlot(0));
-                craftingPedestal.setStackInPedestal(ItemStack.EMPTY);
+                craftingPedestal.setInjectorStack(ItemStack.EMPTY);
             } else {
                 world.addFreshEntity(new ItemEntity(world, player.getX(), player.getY(), player.getZ(), craftingPedestal.itemHandler.getStackInSlot(0)));
-                craftingPedestal.setStackInPedestal(ItemStack.EMPTY);
+                craftingPedestal.setInjectorStack(ItemStack.EMPTY);
             }
         } else {
             ItemStack stack = player.getMainHandItem();
@@ -137,10 +138,6 @@ public class CraftingInjector extends BlockBCore implements IHudDisplay {
 
         return ActionResultType.SUCCESS;
     }
-
-    //endregion
-
-    //region Rendering
 
     @Override
     public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
@@ -162,50 +159,13 @@ public class CraftingInjector extends BlockBCore implements IHudDisplay {
         return super.getShape(state, worldIn, pos, context);
     }
 
-    //    @Override
-//    public AxisAlignedBB getBoundingBox(BlockState state, IBlockAccess source, BlockPos pos) {
-//        Direction facing = getActualState(state, source, pos).getValue(FACING);
-//
-//        switch (facing) {
-//            case DOWN:
-//                return new AxisAlignedBB();
-//            case UP:
-//                return new AxisAlignedBB();
-//            case NORTH:
-//                return new AxisAlignedBB();
-//            case SOUTH:
-//                return new AxisAlignedBB();
-//            case WEST:
-//                return new AxisAlignedBB();
-//            case EAST:
-//                return new AxisAlignedBB();
-//        }
-//
-//        return super.getBoundingBox(state, source, pos);
-//    }
-//
-//    @OnlyIn(Dist.CLIENT)
-//    @Override
-//    public void registerRenderer(Feature feature) {
-//        ClientRegistry.bindTileEntitySpecialRenderer(TileCraftingInjector.class, new RenderTileCraftingInjector());
-//    }
-//
-//    @Override
-//    public boolean registerNormal(Feature feature) {
-//        return true;
-//    }
-//
     @OnlyIn(Dist.CLIENT)
     @Override
     public void addDisplayData(@Nullable ItemStack stack, World world, @Nullable BlockPos pos, List<String> displayList) {
         TileEntity te = world.getBlockEntity(pos);
 
-        if (!(te instanceof TileCraftingInjector)) {
-            return;
+        if (te instanceof TileCraftingInjector) {
+            displayList.add(InfoHelper.HITC() + I18n.get("fusion_inj.draconicevolution." + (((TileCraftingInjector) te).singleItem.get() ? "single_item" : "multi_item")));
         }
-
-        displayList.add(InfoHelper.HITC() + I18n.get("msg.craftingInjector.singleItem" + (((TileCraftingInjector) te).singleItem.get() ? "On" : "Off") + ".txt"));
     }
-
-    //endregion
 }

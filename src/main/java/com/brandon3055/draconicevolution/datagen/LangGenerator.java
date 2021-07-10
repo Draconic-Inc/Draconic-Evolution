@@ -659,14 +659,21 @@ public class LangGenerator extends LanguageProvider {
         helper.add("fuel",                                                      "Fuel:");
         helper.add("teleport_fuel",                                             "Teleport Fuel:");
         helper.add("to_open_gui",                                               "Sneak + Right click to open GUI");
-        //helper.add("",                                                          "");
-        //helper.add("",                                                          "");
-
 
         //Item Dislocator
         helper.setPrefix("item_dislocate.draconicevolution");
         helper.add("activate",                                                  "Item Dislocator Activated");
         helper.add("deactivate",                                                "Item Dislocator Deactivated");
+
+        //Fusion Crafting
+        helper.setPrefix("fusion_inj.draconicevolution");
+        helper.add("single_item",                                               "Single item mode");
+        helper.add("multi_item",                                                "Stack mode");
+        helper.setPrefix("fusion_state.draconicevolution");
+        helper.add("charging",                                                  "Charging...");
+        helper.add("crafting",                                                  "Crafting...");
+//        helper.add("",                                                          "");
+
     }
 
     private void toolTips(PrefixHelper helper) {

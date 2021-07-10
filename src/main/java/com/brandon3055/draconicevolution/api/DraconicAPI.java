@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.api;
 
 import com.brandon3055.draconicevolution.api.crafting.FusionRecipe;
+import com.brandon3055.draconicevolution.api.crafting.IFusionRecipe;
 import net.minecraft.block.Block;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.ResourceLocation;
@@ -20,7 +21,7 @@ public class DraconicAPI {
     /**
      * Assigned by Draconic Evolution during mod construction.
      */
-    public static IRecipeType<FusionRecipe> FUSION_RECIPE_TYPE;
+    public static IRecipeType<IFusionRecipe> FUSION_RECIPE_TYPE;
 
     @ObjectHolder("draconicevolution:crafting_core")
     public static Block CRAFTING_CORE;

@@ -4,9 +4,11 @@ import codechicken.lib.config.ConfigTag;
 import codechicken.lib.config.StandardConfigFile;
 import com.brandon3055.draconicevolution.init.EquipCfg;
 import com.brandon3055.draconicevolution.init.ModuleCfg;
+import com.google.common.collect.Lists;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
 
@@ -40,6 +42,11 @@ public class DEConfig {
     public static boolean enableOreNether;
     public static int dislocatorBlinkRange;
     public static int dislocatorBlinksPerPearl;
+    public static int fusionInjectorRange;
+    public static int fusionInjectorRadius;
+    public static int fusionInjectorMinDist;
+    public static List<Integer> fusionChargeTime;
+    public static List<Integer> fusionCraftTime;
 
     private static void loadServer() {
         serverTag = config.getTag("Server");
@@ -94,6 +101,32 @@ public class DEConfig {
                 .setComment("Sets the blinks to regular fuel ratio. Default 1 regular fuel (1 pearl) allows 4 blinks.")
                 .setDefaultInt(4)
                 .setSyncCallback((tag, type) -> dislocatorBlinksPerPearl = tag.getInt());
+
+        serverTag.getTag("fusionInjectorRange")
+                .setSyncToClient()
+                .setComment("Sets how far fusion crafting injectors can be from the fusion crafting core")
+                .setDefaultInt(16)
+                .setSyncCallback((tag, type) -> fusionInjectorRange = tag.getInt());
+        serverTag.getTag("fusionInjectorRadius")
+                .setSyncToClient()
+                .setComment("Sets the injector search radius for each of the 6 search directions. Default 1 = 3x3, 2 would be 5x5 etc.")
+                .setDefaultInt(1)
+                .setSyncCallback((tag, type) -> fusionInjectorRadius = tag.getInt());
+        serverTag.getTag("fusionInjectorMinDist")
+                .setSyncToClient()
+                .setComment("Sets the minimum distance a fusion injector must be from the fusion crafting core.")
+                .setDefaultInt(2)
+                .setSyncCallback((tag, type) -> fusionInjectorMinDist = tag.getInt());
+        serverTag.getTag("fusionChargeTime")
+                .setSyncToClient()
+                .setComment("Time in ticks required for charging phase of fusion crafting with each injector tier. Draconium, Wyvern, Draconic, Chaotic")
+                .setDefaultIntList(Lists.newArrayList(300, 220, 140, 60))
+                .setSyncCallback((tag, type) -> fusionChargeTime = tag.getIntList());
+        serverTag.getTag("fusionCraftTime")
+                .setSyncToClient()
+                .setComment("Time in ticks required for crafting phase of fusion crafting with each injector tier. Draconium, Wyvern, Draconic, Chaotic\nThe time selected is based on the lowest tier injector used in the craft.")
+                .setDefaultIntList(Lists.newArrayList(300, 220, 140, 60))
+                .setSyncCallback((tag, type) -> fusionCraftTime = tag.getIntList());
     }
 
 
