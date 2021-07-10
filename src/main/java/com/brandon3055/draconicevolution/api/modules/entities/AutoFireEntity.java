@@ -9,17 +9,15 @@ import static com.brandon3055.draconicevolution.api.config.ConfigProperty.Boolea
 
 public class AutoFireEntity extends ModuleEntity {
 
-    private BooleanProperty autoFireEnabled = null;
+    private BooleanProperty autoFireEnabled;
 
     public AutoFireEntity(Module<NoData> module) {
         super(module);
-        if (module.getData() != null) {
-            addProperty(autoFireEnabled = new BooleanProperty("auto_fire", true).setFormatter(ENABLED_DISABLED));
-        }
+        addProperty(autoFireEnabled = new BooleanProperty("auto_fire_mod.enable", true).setFormatter(ENABLED_DISABLED));
         this.savePropertiesToItem = true;
     }
 
     public boolean getAutoFireEnabled() {
-        return autoFireEnabled != null && autoFireEnabled.getValue();
+        return autoFireEnabled.getValue();
     }
 }
