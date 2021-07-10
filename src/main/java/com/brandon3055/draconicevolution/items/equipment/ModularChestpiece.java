@@ -58,7 +58,11 @@ public class ModularChestpiece extends ArmorItem implements IModularArmor, IDEEq
     }
 
     @Override
-    public boolean canEquip(LivingEntity livingEntity) {
+    public boolean canEquip(LivingEntity livingEntity, String identifier) {
+        if (!identifier.equals("body") || !EquipmentManager.findItem(e -> e.getItem() instanceof ModularChestpiece, livingEntity).isEmpty()) {
+            return false;
+        }
+
         return !(livingEntity.getItemBySlot(EquipmentSlotType.CHEST).getItem() instanceof ModularChestpiece);
     }
 

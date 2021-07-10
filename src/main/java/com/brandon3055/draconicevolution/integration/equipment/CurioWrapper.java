@@ -41,7 +41,7 @@ public class CurioWrapper implements ICurio {
 
     @Override
     public boolean canEquip(String identifier, LivingEntity livingEntity) {
-        return item.canEquip(livingEntity);
+        return item.canEquip(livingEntity, identifier);
     }
 
     @Override

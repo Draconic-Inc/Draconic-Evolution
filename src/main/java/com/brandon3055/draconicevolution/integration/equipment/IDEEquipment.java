@@ -1,6 +1,5 @@
 package com.brandon3055.draconicevolution.integration.equipment;
 
-import com.brandon3055.draconicevolution.DraconicEvolution;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
@@ -22,7 +21,7 @@ public interface IDEEquipment {
         return false;
     }
 
-    default boolean canEquip(LivingEntity livingEntity) {
+    default boolean canEquip(LivingEntity livingEntity, String slotID) {
         return true;
     }
 }
