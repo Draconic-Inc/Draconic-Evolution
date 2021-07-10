@@ -728,8 +728,6 @@ public class LangGenerator extends LanguageProvider {
         add("key.draconicevolution.dislocator_gui",                             "Advanced Dislocator GUI");
         add("key.draconicevolution.dislocator_up",                              "Advanced Dislocator Select Up");
         add("key.draconicevolution.dislocator_down",                            "Advanced Dislocator Select Down");
-
-        add("info.de.hasSavedData.txt",                                         "Contents saved!");
     }
 
     @Override

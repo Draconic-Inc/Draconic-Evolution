@@ -49,6 +49,7 @@ import java.util.Map;
 
 import static codechicken.lib.render.shader.ShaderObject.StandardShaderType.FRAGMENT;
 import static codechicken.lib.render.shader.ShaderObject.StandardShaderType.VERTEX;
+import static com.brandon3055.brandonscore.utils.EnergyUtils.getEnergyStored;
 import static com.brandon3055.draconicevolution.DraconicEvolution.LOGGER;
 import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
 
@@ -145,7 +146,7 @@ public class RenderModularBow extends ToolRenderBase {
         }
 
         Matrix4 effectMat = mat.copy();
-        drawStrings(ccrs, mat, bottomMat, getter, drawAngle, packedLight);
+        drawStrings(ccrs, mat, bottomMat, getter, drawAngle, packedLight, getEnergyStored(stack) > 0);
 
 //        Minecraft mc = Minecraft.getInstance();
 //        if (entity != null) {
@@ -184,7 +185,7 @@ public class RenderModularBow extends ToolRenderBase {
 //        }
     }
 
-    private void drawStrings(CCRenderState ccrs, Matrix4 topMat, Matrix4 bottomMat, IRenderTypeBuffer getter, double drawAngle, int packedLight) {
+    private void drawStrings(CCRenderState ccrs, Matrix4 topMat, Matrix4 bottomMat, IRenderTypeBuffer getter, double drawAngle, int packedLight, boolean isCharged) {
         RenderType bowStringType = this.bowStringType;
         if (DEConfig.toolShaders) {
             UniformCache uniforms = stringShader.pushCache();
@@ -198,13 +199,14 @@ public class RenderModularBow extends ToolRenderBase {
         double crystalY = 67.844D * 0.01D;
         double A = 180 - 90 - drawAngle;
         double c = crystalY * (Math.sin(drawAngle * MathHelper.torad) / Math.sin(A * MathHelper.torad));
+        if (isCharged) {
+            float[] r = {0.0F, 0.55F, 1.0F, 0.5F};
+            float[] g = {0.35F, 0.3F, 0.572F, 0F};
+            float[] b = {0.65F, 0.9F, 0.172F, 0F};
 
-        float[] r = {0.0F, 0.55F, 1.0F, 0.5F};
-        float[] g = {0.35F, 0.3F, 0.572F, 0F};
-        float[] b = {0.65F, 0.9F, 0.172F, 0F};
-
-        renderBeam(builder, new Vector3(0, -crystalX, crystalY), new Vector3(0, -(crystalX + c), 0), r[techLevel.index], g[techLevel.index], b[techLevel.index]);
-        renderBeam(builder, new Vector3(0, -crystalX, -crystalY), new Vector3(0, -(crystalX + c), 0), r[techLevel.index], g[techLevel.index], b[techLevel.index]);
+            renderBeam(builder, new Vector3(0, -crystalX, crystalY), new Vector3(0, -(crystalX + c), 0), r[techLevel.index], g[techLevel.index], b[techLevel.index]);
+            renderBeam(builder, new Vector3(0, -crystalX, -crystalY), new Vector3(0, -(crystalX + c), 0), r[techLevel.index], g[techLevel.index], b[techLevel.index]);
+        }
 
         if (drawAngle > 0) {
             Matrix4 arrowMat = topMat.copy();

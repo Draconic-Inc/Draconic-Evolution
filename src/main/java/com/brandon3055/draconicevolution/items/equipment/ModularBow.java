@@ -12,15 +12,15 @@ import com.brandon3055.draconicevolution.api.config.BooleanProperty;
 import com.brandon3055.draconicevolution.api.config.ConfigProperty;
 import com.brandon3055.draconicevolution.api.modules.ModuleCategory;
 import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
-import com.brandon3055.draconicevolution.api.modules.data.AOEData;
-import com.brandon3055.draconicevolution.api.modules.data.DamageData;
-import com.brandon3055.draconicevolution.api.modules.data.ProjectileData;
-import com.brandon3055.draconicevolution.api.modules.data.SpeedData;
+import com.brandon3055.draconicevolution.api.modules.data.*;
+import com.brandon3055.draconicevolution.api.modules.entities.AutoFireEntity;
+import com.brandon3055.draconicevolution.api.modules.entities.FlightEntity;
 import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleHostImpl;
 import com.brandon3055.draconicevolution.entity.projectile.DraconicArrowEntity;
 import com.brandon3055.draconicevolution.handlers.DESounds;
 import com.brandon3055.draconicevolution.init.EquipCfg;
+import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
@@ -75,7 +75,6 @@ public class ModularBow extends BowItem implements IReaperItem, IModularItem {
     public ModuleHostImpl createHost(ItemStack stack) {
         ModuleHostImpl host = new ModuleHostImpl(techLevel, toolWidth(techLevel), toolHeight(techLevel), "bow", removeInvalidModules);
         host.addCategories(ModuleCategory.RANGED_WEAPON);
-        host.addPropertyBuilder(props -> props.add(new BooleanProperty("auto_fire", false).setFormatter(ConfigProperty.BooleanFormatter.ENABLED_DISABLED)));
         return host;
     }
 
@@ -100,15 +99,12 @@ public class ModularBow extends BowItem implements IReaperItem, IModularItem {
 
     @Override
     public void onUseTick(World world, LivingEntity player, ItemStack stack, int count) {
-        // count: from 72000 (start) over 71980 (max tension) to negative
-        if (getUseDuration(stack) - count >= getChargeTicks(stack)) {
-            ModuleHost host = stack.getCapability(MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new);
-            if (host instanceof PropertyProvider && ((PropertyProvider) host).hasBool("auto_fire")) {
-                if (((PropertyProvider) host).getBool("auto_fire").getValue()) {
-                    // auto fire
-                    player.stopUsingItem();
-                    stack.releaseUsing(world, player, 0);
-                }
+        if (getUseDuration(stack) - count > getChargeTicks(stack)) {
+            AutoFireEntity entity = stack.getCapability(MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new).getEntitiesByType(ModuleTypes.AUTO_FIRE).map(e -> (AutoFireEntity) e).findAny().orElse(null);
+            if (entity != null && entity.getAutoFireEnabled()) {
+                // auto fire
+                player.stopUsingItem();
+                stack.releaseUsing(world, player, 0);
             }
         }
 //        int drawTime = (this.getUseDuration(stack) - count) + 1;

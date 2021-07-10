@@ -35,6 +35,8 @@ public class ModuleTypes {
 
     //Tool Specific
     public static final ModuleType<NoData>               MINING_STABILITY    = new ModuleTypeImpl<>("mining_stability",  1, 1, MINING_TOOL);
+    //Shootables
+    public static final ModuleType<AutoFireData>         AUTO_FIRE           = new ModuleTypeImpl<>("auto_fire",         2, 1, AutoFireEntity::new, RANGED_WEAPON).setMaxInstallable(1);
     //Projectiles
     public static final ModuleType<ProjectileData>       PROJ_MODIFIER       = new ModuleTypeImpl<>("proj_modifier",     1, 1, RANGED_WEAPON);
 //    public static final ModuleType<ProjectileData>       PROJ_ACCURACY       = new ModuleTypeImpl<>("proj_accuracy",     1, 1, RANGED_WEAPON);

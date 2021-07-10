@@ -1545,7 +1545,18 @@ public class RecipeGenerator extends RecipeProvider {
                 .define('D', PISTON)
                 .unlockedBy("has_module_core", has(module_core))
                 .save(consumer, folder("modules", DEModules.wyvernHillStep));
-
+        // Auto Fire
+        ShapedRecipeBuilder.shaped(DEModules.wyvernAutoFire.getItem())
+                .pattern("#P#")
+                .pattern("ABA")
+                .pattern("#C#")
+                .define('#', INGOTS_DRACONIUM)
+                .define('C', BOW)
+                .define('B', module_core)
+                .define('A', core_draconium)
+                .define('P', CLOCK)
+                .unlockedBy("has_module_core", has(module_core))
+                .save(consumer, folder("modules", DEModules.wyvernAutoFire));
         //Arrow Velocity
         ShapedRecipeBuilder.shaped(DEModules.wyvernProjVelocity.getItem())
                 .pattern("#P#")
