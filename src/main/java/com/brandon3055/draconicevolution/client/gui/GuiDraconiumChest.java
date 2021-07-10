@@ -17,23 +17,15 @@ import com.brandon3055.draconicevolution.client.DESprites;
 import com.brandon3055.draconicevolution.client.DETextures;
 import com.brandon3055.draconicevolution.client.model.ModelDraconiumChest;
 import com.brandon3055.draconicevolution.inventory.ContainerDraconiumChest;
-import com.brandon3055.draconicevolution.utils.LogHelper;
-import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.RenderMaterial;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
-import sun.rmi.log.LogHandler;
 
 import java.awt.*;
-import java.util.Objects;
 
 import static net.minecraft.util.text.TextFormatting.GOLD;
 import static net.minecraft.util.text.TextFormatting.GRAY;

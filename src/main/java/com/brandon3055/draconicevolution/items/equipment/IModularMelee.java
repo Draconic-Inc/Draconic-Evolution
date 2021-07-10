@@ -1,17 +1,11 @@
 package com.brandon3055.draconicevolution.items.equipment;
 
 import codechicken.lib.math.MathHelper;
-import com.brandon3055.brandonscore.api.power.IOPStorage;
-import com.brandon3055.brandonscore.utils.EnergyUtils;
-import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.capability.PropertyProvider;
 import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
 import com.brandon3055.draconicevolution.api.modules.data.AOEData;
-import com.brandon3055.draconicevolution.api.modules.data.SpeedData;
 import com.brandon3055.draconicevolution.init.EquipCfg;
-import com.brandon3055.draconicevolution.items.tools.old.IAOEWeapon;
-import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;

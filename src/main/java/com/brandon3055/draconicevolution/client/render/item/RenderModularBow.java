@@ -316,7 +316,7 @@ public class RenderModularBow extends ToolRenderBase {
     private double getDrawAngle(ItemStack stack, float partialTicks) {
         if (entity != null && entity.getUseItem() == stack) {
             float maxCount = entity.getTicksUsingItem() - partialTicks;
-            return ModularBow.getPowerForTime((int)(maxCount), stack) * 45F;
+            return Math.max(0, ModularBow.getPowerForTime((int)(maxCount), stack) * 45F);
         }
         return 0;
     }
