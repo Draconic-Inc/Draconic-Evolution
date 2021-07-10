@@ -22,7 +22,6 @@ import com.brandon3055.draconicevolution.api.itemconfig_dep.ToolConfigHelper;
 import com.brandon3055.draconicevolution.handlers.BinderHandler;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.items.tools.CreativeExchanger;
-import com.brandon3055.draconicevolution.items.tools.old.MiningToolBase;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -273,92 +272,92 @@ public class ClientEventHandler {
             RenderSystem.disableBlend();
         }
 
-        if (stack.isEmpty() || !(stack.getItem() instanceof MiningToolBase) || !ToolConfigHelper.getBooleanField("showDigAOE", stack)) {
-            return;
-        }
+//        if (stack.isEmpty() || !(stack.getItem() instanceof MiningToolBase) || !ToolConfigHelper.getBooleanField("showDigAOE", stack)) {
+//            return;
+//        }
+//
+//        BlockPos pos = ((BlockRayTraceResult) mc.hitResult).getBlockPos();
+//        BlockState state = world.getBlockState(pos);
+//        MiningToolBase tool = (MiningToolBase) stack.getItem();
+//
+//        if (!tool.isToolEffective(stack, state)) {
+//            return;
+//        }
 
-        BlockPos pos = ((BlockRayTraceResult) mc.hitResult).getBlockPos();
-        BlockState state = world.getBlockState(pos);
-        MiningToolBase tool = (MiningToolBase) stack.getItem();
-
-        if (!tool.isToolEffective(stack, state)) {
-            return;
-        }
-
-        renderMiningAOE(world, stack, pos, player, partialTicks);
+//        renderMiningAOE(world, stack, pos, player, partialTicks);
     }
 
-    private void renderMiningAOE(World world, ItemStack stack, BlockPos pos, ClientPlayerEntity player, float partialTicks) {
-        MiningToolBase tool = (MiningToolBase) stack.getItem();
-        Pair<BlockPos, BlockPos> aoe = tool.getMiningArea(pos, player, tool.getDigAOE(stack), tool.getDigDepth(stack));
-        List<BlockPos> blocks = Lists.newArrayList(BlockPos.betweenClosed(aoe.key(), aoe.value()));
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBuilder();
-
-        double offsetX = player.xo + (player.getX() - player.xo) * (double) partialTicks;
-        double offsetY = player.yo + (player.getY() - player.yo) * (double) partialTicks;
-        double offsetZ = player.zo + (player.getZ() - player.zo) * (double) partialTicks;
-
-        RenderSystem.enableBlend();
-        RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-        RenderSystem.color4f(1F, 1F, 1F, 1F);
-        RenderSystem.lineWidth(2.0F);
-        RenderSystem.disableTexture();
-        RenderSystem.disableDepthTest();
-
-
-        buffer.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
-
-        for (BlockPos block : blocks) {
-            BlockState state = world.getBlockState(block);
-
-            if (!tool.isToolEffective(stack, state)) {
-                continue;
-            }
-
-            double renderX = block.getX() - offsetX;
-            double renderY = block.getY() - offsetY;
-            double renderZ = block.getZ() - offsetZ;
-
-            AxisAlignedBB box = new AxisAlignedBB(renderX, renderY, renderZ, renderX + 1, renderY + 1, renderZ + 1).deflate(0.49D);
-
-            double rDist = Utils.getDistanceSq(pos.getX(), pos.getY(), pos.getZ(), block.getX(), block.getY(), block.getZ());
-
-
-            float colour = 1F - (float) rDist / 100F;
-            if (colour < 0.1F) {
-                colour = 0.1F;
-            }
-            float alpha = colour;
-            if (alpha < 0.15) {
-                alpha = 0.15F;
-            }
-
-            float r = 0F;
-            float g = 1F;
-            float b = 1F;
-
-
-            buffer.vertex(box.minX, box.minY, box.minZ).color(r * colour, g * colour, b * colour, alpha).endVertex();
-            buffer.vertex(box.maxX, box.maxY, box.maxZ).color(r * colour, g * colour, b * colour, alpha).endVertex();
-
-            buffer.vertex(box.maxX, box.minY, box.minZ).color(r * colour, g * colour, b * colour, alpha).endVertex();
-            buffer.vertex(box.minX, box.maxY, box.maxZ).color(r * colour, g * colour, b * colour, alpha).endVertex();
-
-            buffer.vertex(box.minX, box.minY, box.maxZ).color(r * colour, g * colour, b * colour, alpha).endVertex();
-            buffer.vertex(box.maxX, box.maxY, box.minZ).color(r * colour, g * colour, b * colour, alpha).endVertex();
-
-            buffer.vertex(box.maxX, box.minY, box.maxZ).color(r * colour, g * colour, b * colour, alpha).endVertex();
-            buffer.vertex(box.minX, box.maxY, box.minZ).color(r * colour, g * colour, b * colour, alpha).endVertex();
-
-        }
-
-        tessellator.end();
-
-        RenderSystem.enableDepthTest();
-        RenderSystem.enableTexture();
-        RenderSystem.disableBlend();
-    }
+//    private void renderMiningAOE(World world, ItemStack stack, BlockPos pos, ClientPlayerEntity player, float partialTicks) {
+//        MiningToolBase tool = (MiningToolBase) stack.getItem();
+//        Pair<BlockPos, BlockPos> aoe = tool.getMiningArea(pos, player, tool.getDigAOE(stack), tool.getDigDepth(stack));
+//        List<BlockPos> blocks = Lists.newArrayList(BlockPos.betweenClosed(aoe.key(), aoe.value()));
+//        Tessellator tessellator = Tessellator.getInstance();
+//        BufferBuilder buffer = tessellator.getBuilder();
+//
+//        double offsetX = player.xo + (player.getX() - player.xo) * (double) partialTicks;
+//        double offsetY = player.yo + (player.getY() - player.yo) * (double) partialTicks;
+//        double offsetZ = player.zo + (player.getZ() - player.zo) * (double) partialTicks;
+//
+//        RenderSystem.enableBlend();
+//        RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+//        RenderSystem.color4f(1F, 1F, 1F, 1F);
+//        RenderSystem.lineWidth(2.0F);
+//        RenderSystem.disableTexture();
+//        RenderSystem.disableDepthTest();
+//
+//
+//        buffer.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
+//
+//        for (BlockPos block : blocks) {
+//            BlockState state = world.getBlockState(block);
+//
+//            if (!tool.isToolEffective(stack, state)) {
+//                continue;
+//            }
+//
+//            double renderX = block.getX() - offsetX;
+//            double renderY = block.getY() - offsetY;
+//            double renderZ = block.getZ() - offsetZ;
+//
+//            AxisAlignedBB box = new AxisAlignedBB(renderX, renderY, renderZ, renderX + 1, renderY + 1, renderZ + 1).deflate(0.49D);
+//
+//            double rDist = Utils.getDistanceSq(pos.getX(), pos.getY(), pos.getZ(), block.getX(), block.getY(), block.getZ());
+//
+//
+//            float colour = 1F - (float) rDist / 100F;
+//            if (colour < 0.1F) {
+//                colour = 0.1F;
+//            }
+//            float alpha = colour;
+//            if (alpha < 0.15) {
+//                alpha = 0.15F;
+//            }
+//
+//            float r = 0F;
+//            float g = 1F;
+//            float b = 1F;
+//
+//
+//            buffer.vertex(box.minX, box.minY, box.minZ).color(r * colour, g * colour, b * colour, alpha).endVertex();
+//            buffer.vertex(box.maxX, box.maxY, box.maxZ).color(r * colour, g * colour, b * colour, alpha).endVertex();
+//
+//            buffer.vertex(box.maxX, box.minY, box.minZ).color(r * colour, g * colour, b * colour, alpha).endVertex();
+//            buffer.vertex(box.minX, box.maxY, box.maxZ).color(r * colour, g * colour, b * colour, alpha).endVertex();
+//
+//            buffer.vertex(box.minX, box.minY, box.maxZ).color(r * colour, g * colour, b * colour, alpha).endVertex();
+//            buffer.vertex(box.maxX, box.maxY, box.minZ).color(r * colour, g * colour, b * colour, alpha).endVertex();
+//
+//            buffer.vertex(box.maxX, box.minY, box.maxZ).color(r * colour, g * colour, b * colour, alpha).endVertex();
+//            buffer.vertex(box.minX, box.maxY, box.minZ).color(r * colour, g * colour, b * colour, alpha).endVertex();
+//
+//        }
+//
+//        tessellator.end();
+//
+//        RenderSystem.enableDepthTest();
+//        RenderSystem.enableTexture();
+//        RenderSystem.disableBlend();
+//    }
 
     public static void triggerExplosionEffect(BlockPos pos) {
         explosionPos = pos;

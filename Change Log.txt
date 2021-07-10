@@ -1,3 +1,6 @@
+######## 3.0.2 (minor version reset) ########
+- Initial Modular Bow implementation
+
 ######## 3.5.0-alpha5.0 ########
 - Fixed minor issue where its possible to break ore with no tool.
 - Fixed Draconium capacitors not accepting enchantments like soulbound.
@@ -26,3 +29,4 @@
 - Added invulnerable timer to undying module.
 - Added Energy core charge / discharge ETA.
 - Adjusted magnet pickup logic to improve reliability while maintaining efficiency.
+
