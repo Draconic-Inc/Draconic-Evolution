@@ -68,6 +68,8 @@ public class DEModules {
 
     @ObjectHolder("wyvern_junk_filter")             public static Module<NoData>            wyvernJunkFilter;
 
+    @ObjectHolder("wyvern_auto_fire")               public static Module<NoData>            wyvernAutoFire;
+
     @ObjectHolder("wyvern_proj_velocity")           public static Module<ProjectileData>    wyvernProjVelocity;
     @ObjectHolder("draconic_proj_velocity")         public static Module<ProjectileData>    draconicProjVelocity;
     @ObjectHolder("chaotic_proj_velocity")          public static Module<ProjectileData>    chaoticProjVelocity;
@@ -187,6 +189,8 @@ public class DEModules {
         register(new ModuleImpl<>(PROJ_MODIFIER,        WYVERN,         projDamageData(0.25F, 2.0F)),               "wyvern_proj_damage");
         register(new ModuleImpl<>(PROJ_MODIFIER,        DRACONIC,       projDamageData(0.50F, 1.0F)),               "draconic_proj_damage");
         register(new ModuleImpl<>(PROJ_MODIFIER,        CHAOTIC,        projDamageData(0.75F, 0.0F)),               "chaotic_proj_damage");
+
+        register(new ModuleImpl<>(AUTO_FIRE,            WYVERN,         noData()), "wyvern_auto_fire");
 
 //        register(new ModuleImpl<>(DAMAGE_MOD,           DRACONIC,       dmgModData(new FireDmgMod())),      "draconic_fire_mod");
 //        register(new ModuleImpl<>(DAMAGE_MOD,           CHAOTIC,        dmgModData(new FireDmgMod())),      "chaotic_fire_mod");

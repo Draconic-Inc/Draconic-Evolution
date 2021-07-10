@@ -192,6 +192,8 @@ public class LangGenerator extends LanguageProvider {
         //helper.add("charge_baubles.info",                                       "");
         helper.add("charge_curios",                                             "Charge Curios");
         helper.add("charge_curios.info",                                        "Charge items in curios equipment slots.");
+
+        helper.add("auto_fire",                                                 "Auto Fire");
     }
 
     private void modules(PrefixHelper helper) {
@@ -270,6 +272,10 @@ public class LangGenerator extends LanguageProvider {
         helper.add(ModuleTypes.HILL_STEP,                                       "Step Assist");
 
         helper.add(ModuleTypes.JUNK_FILTER,                                     "Junk Filter");
+
+        helper.add("auto_fire_mod.enable",                        "Auto Fire");
+        helper.add("auto_fire_mod.enable.info",                                  "Automatically fire bow at full draw.");
+
 
         helper.add(ModuleTypes.PROJ_MODIFIER,                                   "Projectile Modifier");
 //        helper.add(ModuleTypes.PROJ_VELOCITY,                                   "Projectile Velocity");
