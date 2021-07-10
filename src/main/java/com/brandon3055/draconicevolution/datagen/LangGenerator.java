@@ -180,6 +180,9 @@ public class LangGenerator extends LanguageProvider {
         helper.add("flight_mod.elytra_boost",                                   "Elytra Boost");
         helper.add("flight_mod.elytra_boost.info",                              "Allows you to adjust the power of Elytra speed boost.\nSpeed boost can be activated by pressing Forward + Sprint while flying.");
 
+        helper.add("auto_fire_mod.enable",                                      "Auto Fire");
+        helper.add("auto_fire_mod.enable.info",                                 "Automatically fire bow at full draw.");
+
         helper.add("charge_held_item",                                          "Charge Held Item");
         //helper.add("charge_held_item.info",                                     "");
         helper.add("charge_armor",                                              "Charge Armor");
@@ -193,7 +196,7 @@ public class LangGenerator extends LanguageProvider {
         helper.add("charge_curios",                                             "Charge Curios");
         helper.add("charge_curios.info",                                        "Charge items in curios equipment slots.");
 
-        helper.add("auto_fire",                                                 "Auto Fire");
+
     }
 
     private void modules(PrefixHelper helper) {
@@ -273,9 +276,7 @@ public class LangGenerator extends LanguageProvider {
 
         helper.add(ModuleTypes.JUNK_FILTER,                                     "Junk Filter");
 
-        helper.add("auto_fire_mod.enable",                        "Auto Fire");
-        helper.add("auto_fire_mod.enable.info",                                  "Automatically fire bow at full draw.");
-
+        helper.add(ModuleTypes.AUTO_FIRE,                                       "Auto Fire");
 
         helper.add(ModuleTypes.PROJ_MODIFIER,                                   "Projectile Modifier");
 //        helper.add(ModuleTypes.PROJ_VELOCITY,                                   "Projectile Velocity");
@@ -325,6 +326,8 @@ public class LangGenerator extends LanguageProvider {
         helper.add(DEModules.wyvernMiningStability,                             "Mining Stability Module");
 
         helper.add(DEModules.wyvernJunkFilter,                                  "Junk Filter Module");
+
+        helper.add(DEModules.wyvernAutoFire,                                    "Auto Fire Module");
 
         helper.add(DEModules.wyvernProjVelocity,                               "Wyvern Projectile Velocity Module");
         helper.add(DEModules.draconicProjVelocity,                             "Draconic Projectile Velocity Module");

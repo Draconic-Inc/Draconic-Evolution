@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#P#",
+    "ABA",
+    "#C#"
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:ingots/draconium"
+    },
+    "C": {
+      "item": "minecraft:bow"
+    },
+    "B": {
+      "item": "draconicevolution:module_core"
+    },
+    "A": {
+      "item": "draconicevolution:draconium_core"
+    },
+    "P": {
+      "item": "minecraft:clock"
+    }
+  },
+  "result": {
+    "item": "draconicevolution:wyvern_auto_fire_module"
+  }
+}
