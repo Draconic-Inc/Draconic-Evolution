@@ -146,7 +146,7 @@ public class RenderModularBow extends ToolRenderBase {
         }
 
         Matrix4 effectMat = mat.copy();
-        drawStrings(ccrs, mat, bottomMat, getter, drawAngle, packedLight, getEnergyStored(stack) > 0);
+        drawStrings(ccrs, mat, bottomMat, getter, drawAngle, packedLight, ModularBow.calculateShotEnergy(stack) <= getEnergyStored(stack));
 
 //        Minecraft mc = Minecraft.getInstance();
 //        if (entity != null) {
