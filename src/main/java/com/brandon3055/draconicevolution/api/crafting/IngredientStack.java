@@ -45,7 +45,7 @@ public class IngredientStack extends Ingredient {
                 return stack.isEmpty();
             } else {
                 for (ItemStack itemstack : this.itemStacks) {
-                    if (itemstack.getItem() == stack.getItem() && itemstack.getCount() >= count) {
+                    if (itemstack.getItem() == stack.getItem() && stack.getCount() >= count) {
                         return true;
                     }
                 }

@@ -57,8 +57,8 @@ public class RenderItemDraconiumChest implements IItemRenderer {
     public void renderItem(ItemStack stack, ItemCameraTransforms.TransformType transformType, MatrixStack mStack, IRenderTypeBuffer getter, int packedLight, int packedOverlay) {
         ModelDraconiumChest chest = new ModelDraconiumChest(RenderType::entitySolid);
         int color = 0x640096;
-        if (stack.getTag() != null) {
-            color = ((CompoundNBT)stack.getTag().get("bc_tile_data")).getInt("ChestColour");
+        if (stack.getTag() != null && stack.getTag().contains("bc_tile_data")) {
+            color = stack.getTag().getCompound("bc_tile_data").getInt("ChestColour");
         }
         float red = (float) ((color >> 16) & 0xFF) / 255f;
         float green = (float) ((color >> 8) & 0xFF) / 255f;

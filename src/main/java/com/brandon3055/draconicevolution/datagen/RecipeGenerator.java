@@ -276,21 +276,22 @@ public class RecipeGenerator extends RecipeProvider {
                 .unlockedBy("has_core_draconium", has(core_draconium))
                 .save(consumer);
 
-        FusionRecipeBuilder.fusionRecipe(draconium_chest)
-                .catalyst(CHEST)
-                .energy(2000000)
-                .techLevel(TechLevel.DRACONIUM)
-                .ingredient(FURNACE)
-                .ingredient(core_draconium)
-                .ingredient(FURNACE)
-                .ingredient(core_draconium)
-                .ingredient(FURNACE)
-                .ingredient(CRAFTING_TABLE)
-                .ingredient(FURNACE)
-                .ingredient(STORAGE_BLOCKS_DRACONIUM)
-                .ingredient(FURNACE)
-                .ingredient(CRAFTING_TABLE)
-                .build(consumer);
+        //Disabled until i can finish the re write
+//        FusionRecipeBuilder.fusionRecipe(draconium_chest)
+//                .catalyst(CHEST)
+//                .energy(2000000)
+//                .techLevel(TechLevel.DRACONIUM)
+//                .ingredient(FURNACE)
+//                .ingredient(core_draconium)
+//                .ingredient(FURNACE)
+//                .ingredient(core_draconium)
+//                .ingredient(FURNACE)
+//                .ingredient(CRAFTING_TABLE)
+//                .ingredient(FURNACE)
+//                .ingredient(STORAGE_BLOCKS_DRACONIUM)
+//                .ingredient(FURNACE)
+//                .ingredient(CRAFTING_TABLE)
+//                .build(consumer);
 
         ShapedRecipeBuilder.shaped(potentiometer)
                 .pattern(" A ")

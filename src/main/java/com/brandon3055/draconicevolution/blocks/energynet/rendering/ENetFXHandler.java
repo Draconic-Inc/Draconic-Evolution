@@ -11,6 +11,7 @@ import net.minecraft.tileentity.TileEntity;
  * The server side is responsible for monitoring the crystal and sending any needed updates to the client via {@link com.brandon3055.draconicevolution.network.CrystalUpdateBatcher}
  * The client side is responsible for creating and updating the render FX.
  */
+@Deprecated //Want to switch to ITileFXHandler
 public abstract class ENetFXHandler<T extends TileEntity & IENetEffectTile> {
 
     protected final T tile;
