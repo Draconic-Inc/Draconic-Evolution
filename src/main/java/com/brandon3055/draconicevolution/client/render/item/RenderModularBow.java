@@ -14,6 +14,7 @@ import com.brandon3055.brandonscore.client.BCClientEventHandler;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DEConfig;
+import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.client.render.modelfx.BowModelEffect;
 import com.brandon3055.draconicevolution.client.render.modelfx.ModelEffect;
 import com.brandon3055.draconicevolution.client.render.modelfx.StaffModelEffect;
@@ -146,7 +147,9 @@ public class RenderModularBow extends ToolRenderBase {
         }
 
         Matrix4 effectMat = mat.copy();
-        drawStrings(ccrs, mat, bottomMat, getter, drawAngle, packedLight, ModularBow.calculateShotEnergy(stack) <= getEnergyStored(stack));
+        if (stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).isPresent()){
+            drawStrings(ccrs, mat, bottomMat, getter, drawAngle, packedLight, ModularBow.calculateShotEnergy(stack) <= getEnergyStored(stack));
+        }
 
 //        Minecraft mc = Minecraft.getInstance();
 //        if (entity != null) {

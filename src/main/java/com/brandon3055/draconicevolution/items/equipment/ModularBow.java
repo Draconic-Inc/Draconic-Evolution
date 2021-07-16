@@ -259,7 +259,7 @@ public class ModularBow extends BowItem implements IReaperItem, IModularItem {
     @Override
     public void addModularItemInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         IModularItem.super.addModularItemInformation(stack, worldIn, tooltip, flagIn);
-        if (worldIn != null){
+        if (worldIn != null && stack.getCapability(MODULE_HOST_CAPABILITY).isPresent()){
             tooltip.add(new TranslationTextComponent("tooltip.draconicevolution.bow.damage", Math.round(calculateDamage(stack) * 10) / 10F).withStyle(TextFormatting.DARK_GREEN));
             tooltip.add(new TranslationTextComponent("tooltip.draconicevolution.bow.energy_per_shot", Utils.addCommas(calculateShotEnergy(stack))).withStyle(TextFormatting.DARK_GREEN));
         }
