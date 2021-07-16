@@ -9,7 +9,6 @@ import com.brandon3055.brandonscore.lib.Vec3I;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedLong;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedVec3I;
-import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.api.crafting.IFusionInjector;
 import com.brandon3055.draconicevolution.blocks.machines.CraftingInjector;
 import com.brandon3055.draconicevolution.init.DEContent;
@@ -22,23 +21,22 @@ import net.minecraftforge.items.CapabilityItemHandler;
 
 import javax.annotation.Nullable;
 
-import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.SAVE_NBT;
-import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.SAVE_NBT_SYNC_TILE;
+import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.*;
 
 /**
  * Created by brandon3055 on 10/06/2016.
  */
-public class TileCraftingInjector extends TileBCore implements IFusionInjector {
+public class TileFusionCraftingInjector extends TileBCore implements IFusionInjector {
 
-    public final ManagedLong energy = register(new ManagedLong("energy", SAVE_NBT_SYNC_TILE));
-    public final ManagedLong energyRequired = register(new ManagedLong("energy_required", SAVE_NBT));
+    public final ManagedLong energy = register(new ManagedLong("energy", SAVE_NBT_SYNC_TILE, SYNC_ON_SET));
+    public final ManagedLong energyRequired = register(new ManagedLong("energy_required", SAVE_NBT_SYNC_TILE, SYNC_ON_SET));
     public final ManagedLong chargeRate = register(new ManagedLong("charge_rate", SAVE_NBT));
-    public final ManagedBool singleItem = register(new ManagedBool("single_item", SAVE_NBT_SYNC_TILE));
-    public final ManagedVec3I corePos = register(new ManagedVec3I("core_pos", new Vec3I(0, -9999, 0), SAVE_NBT_SYNC_TILE));
+    public final ManagedBool singleItem = register(new ManagedBool("single_item", SAVE_NBT_SYNC_TILE, SYNC_ON_SET));
+    public final ManagedVec3I corePos = register(new ManagedVec3I("core_pos", new Vec3I(0, -9999, 0), SAVE_NBT_SYNC_TILE, SYNC_ON_SET));
     public TileItemStackHandler itemHandler = new TileItemStackHandler(1);
     private TechLevel techLevelCache = null;
 
-    public TileCraftingInjector() {
+    public TileFusionCraftingInjector() {
         super(DEContent.tile_crafting_injector);
         capManager.setManaged("inventory", CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, itemHandler).saveBoth().syncTile();
         itemHandler.setPerSlotLimit(() -> singleItem.get() ? 1 : 64);
@@ -47,9 +45,9 @@ public class TileCraftingInjector extends TileBCore implements IFusionInjector {
             @Override
             public long receiveOP(long maxReceive, boolean simulate) {
                 long opStored = getOPStored();
-                long received = Math.min(getMaxOPStored() - opStored, Math.min(maxReceive, chargeRate.get()));
+                long received = Math.max(Math.min(getMaxOPStored() - opStored, Math.min(maxReceive, chargeRate.get())), 0);
                 if (!simulate) {
-                    TileCraftingInjector.this.energy.add(received);
+                    TileFusionCraftingInjector.this.energy.add(received);
                 }
                 return received;
             }
@@ -61,17 +59,17 @@ public class TileCraftingInjector extends TileBCore implements IFusionInjector {
 
             @Override
             public long getOPStored() {
-                return TileCraftingInjector.this.energy.get();
+                return TileFusionCraftingInjector.this.energy.get();
             }
 
             @Override
             public long getMaxOPStored() {
-                return TileCraftingInjector.this.energyRequired.get();
+                return TileFusionCraftingInjector.this.energyRequired.get();
             }
         });
     }
 
-    public boolean setCore(@Nullable TileCraftingCore core) {
+    public boolean setCore(@Nullable TileFusionCraftingCore core) {
         //TODO add some validation or at least let any existing core know we have left the party.
         if (core == null) {
             corePos.set(new Vec3I(0, -9999, 0));
@@ -83,12 +81,12 @@ public class TileCraftingInjector extends TileBCore implements IFusionInjector {
     }
 
     @Nullable
-    public TileCraftingCore getCore() {
+    public TileFusionCraftingCore getCore() {
         if (corePos.get().y == -9999 || level == null) {
             return null;
         }
         TileEntity tile = level.getBlockEntity(corePos.get().getPos());
-        return tile instanceof TileCraftingCore ? (TileCraftingCore) tile : null;
+        return tile instanceof TileFusionCraftingCore ? (TileFusionCraftingCore) tile : null;
     }
 
     @Override
@@ -127,18 +125,23 @@ public class TileCraftingInjector extends TileBCore implements IFusionInjector {
     }
 
     @Override
+    public long getEnergyRequirement() {
+        return energyRequired.get();
+    }
+
+    @Override
     public boolean validate() {
         // the isRemoved check is probably really all i need but better safe than sorry.
         return !isRemoved() && level != null && level.getBlockEntity(worldPosition) == this;
     }
 
-    public Direction getDirection() {
+    public Direction getRotation() {
         BlockState state = getBlockState();
         return state.getBlock() instanceof CraftingInjector ? state.getValue(CraftingInjector.FACING) : Direction.UP;
     }
 
     private void inventoryChange() {
-        TileCraftingCore core = getCore();
+        TileFusionCraftingCore core = getCore();
         if (core != null) {
             core.inventoryChanged();
         }
@@ -146,7 +149,7 @@ public class TileCraftingInjector extends TileBCore implements IFusionInjector {
     }
 
     public void onDestroyed() {
-        TileCraftingCore core = getCore();
+        TileFusionCraftingCore core = getCore();
         if (!getInjectorStack().isEmpty() && core != null) {
             core.cancelCraft();
         }

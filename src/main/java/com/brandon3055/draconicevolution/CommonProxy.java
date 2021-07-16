@@ -4,7 +4,9 @@ import com.brandon3055.draconicevolution.api.energy.IENetEffectTile;
 import com.brandon3055.draconicevolution.blocks.energynet.rendering.ENetFXHandler;
 import com.brandon3055.draconicevolution.blocks.reactor.ReactorEffectHandler;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
+import com.brandon3055.draconicevolution.blocks.tileentity.TileFusionCraftingCore;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileGenerator;
+import com.brandon3055.draconicevolution.client.render.tile.fxhandlers.ITileFXHandler;
 import com.brandon3055.draconicevolution.handlers.DEEventHandler;
 import com.brandon3055.draconicevolution.init.DETags;
 import com.brandon3055.draconicevolution.init.ModCapabilities;
@@ -137,6 +139,10 @@ public class CommonProxy {
     }
 
     public ISound playISound(ISound sound) {
+        return null;
+    }
+
+    public ITileFXHandler createFusionFXHandler(TileFusionCraftingCore tile) {
         return null;
     }
 }

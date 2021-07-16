@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.api.crafting;
 
+import com.brandon3055.brandonscore.api.TechLevel;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -41,6 +42,11 @@ public interface IFusionInventory extends IInventory {
      * Returns a list of all valid crafting injectors.
      */
     List<IFusionInjector> getInjectors();
+
+    /**
+     * @return the {@link TechLevel} of the lowest tier injector that is currently holding an item.
+     */
+    TechLevel getMinimumTier();
 
     //@formatter:off
     @Override default int getContainerSize() { return 0; }

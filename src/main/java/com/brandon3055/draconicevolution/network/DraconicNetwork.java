@@ -4,6 +4,7 @@ import codechicken.lib.data.MCDataOutput;
 import codechicken.lib.packet.PacketCustom;
 import codechicken.lib.packet.PacketCustomChannelBuilder;
 import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.api.crafting.IFusionRecipe;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleGrid;
 import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.PropertyData;
 import net.minecraft.entity.Entity;
@@ -40,6 +41,7 @@ public class DraconicNetwork {
     public static final int S_ITEM_CONFIG_GUI =         7;
     public static final int S_MODULE_CONFIG_GUI =       8;
     public static final int S_DISLOCATOR_MESSAGE =      9;
+    public static final int S_JEI_FUSION_TRANSFER =     10;
 
     //Server to client
     public static final int C_CRYSTAL_UPDATE =          1;
@@ -143,6 +145,13 @@ public class DraconicNetwork {
         packet.writeVarInt(source.getId());
         callback.accept(packet);
         packet.sendToChunk(source.level, source.blockPosition());
+    }
+
+    public static void sendFusionRecipeMove(IFusionRecipe recipe, boolean maxTransfer) {
+        PacketCustom packet = new PacketCustom(CHANNEL, S_JEI_FUSION_TRANSFER);
+        packet.writeResourceLocation(recipe.getId());
+        packet.writeBoolean(maxTransfer);
+        packet.sendToServer();
     }
 
     public static void init() {

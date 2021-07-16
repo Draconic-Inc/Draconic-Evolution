@@ -11,12 +11,15 @@ import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
@@ -75,7 +78,26 @@ public interface IFusionRecipe extends IRecipe<IFusionInventory> {
      * @param world the world
      */
     @Override
-    boolean matches(IFusionInventory inv, World world);
+    default boolean matches(IFusionInventory inv, World world) {
+        if (!getCatalyst().test(inv.getCatalystStack())) {
+            return false;
+        }
+
+        List<IFusionInjector> injectors = new ArrayList<>(inv.getInjectors());
+        for (Ingredient ingredient : getIngredients()) {
+            IFusionInjector match = injectors.stream()
+                    .filter(e -> ingredient.test(e.getInjectorStack()))
+                    .findFirst()
+                    .orElse(null);
+
+            if (match == null) {
+                return false;
+            }
+            injectors.remove(match);
+        }
+
+        return injectors.stream().allMatch(e -> e.getInjectorStack().isEmpty());
+    }
 
     /**
      * So this is where the fusion magic happens! Fusion recipes are now much more powerful in 1.16+ because the
@@ -105,36 +127,39 @@ public interface IFusionRecipe extends IRecipe<IFusionInventory> {
                         .filter(e -> !e.getInjectorStack().isEmpty())
                         .forEach(e -> e.setEnergyRequirement(itemEnergy, itemEnergy / DEConfig.fusionChargeTime.get(e.getInjectorTier().index)));
                 //Update Progress
-                stateMachine.setStateProgress(0, new TranslationTextComponent("fusion_state.draconicevolution.charging"));
+                stateMachine.setFusionStatus(0, new TranslationTextComponent("fusion_status.draconicevolution.charging", 0).withStyle(TextFormatting.GREEN));
                 //Progress to next state
                 stateMachine.setFusionState(FusionState.CHARGING);
+                stateMachine.setCraftAnimation(0, 0);
                 break;
             case CHARGING:
                 long totalCharge = inv.getInjectors()
                         .stream()
                         .mapToLong(IFusionInjector::getInjectorEnergy)
                         .sum();
-                stateMachine.setStateProgress((double) totalCharge / getEnergyCost(), new TranslationTextComponent("fusion_state.draconicevolution.charging"));
+                stateMachine.setFusionStatus((double) totalCharge / getEnergyCost(), new TranslationTextComponent("fusion_status.draconicevolution.charging", Math.round(((double) totalCharge / getEnergyCost()) * 1000) / 10D).withStyle(TextFormatting.GREEN));
                 if (totalCharge >= getEnergyCost()) {
-                    stateMachine.setStateProgress(0, new TranslationTextComponent("fusion_state.draconicevolution.crafting"));
+                    stateMachine.setFusionStatus(0, new TranslationTextComponent("fusion_status.draconicevolution.crafting", 0).withStyle(TextFormatting.GREEN));
                     stateMachine.setCounter(0);
                     //Proceed to next step
+                    int craftTime = DEConfig.fusionCraftTime.get(inv.getMinimumTier().index);
+                    stateMachine.setCraftAnimation(0, craftTime); //Craft time needs to be set before state transition for rendering consistency.
                     stateMachine.setFusionState(FusionState.CRAFTING);
                 }
                 break;
             case CRAFTING:
-                TechLevel minInjector = inv.getInjectors().stream()
-                        .filter(e -> !e.getInjectorStack().isEmpty())
-                        .sorted(Comparator.comparing(e -> e.getInjectorTier().index))
-                        .map(IFusionInjector::getInjectorTier)
-                        .findFirst()
-                        .orElse(TechLevel.DRACONIUM);
-                int craftTime = DEConfig.fusionCraftTime.get(minInjector.index);
+                int craftTime = DEConfig.fusionCraftTime.get(inv.getMinimumTier().index);
                 int counter = stateMachine.getCounter();
+                stateMachine.setCraftAnimation(counter / (float)craftTime, craftTime);
                 stateMachine.setCounter(counter + 1);
-                stateMachine.setStateProgress((double) counter / (double) craftTime, new TranslationTextComponent("fusion_state.draconicevolution.crafting"));
+                stateMachine.setFusionStatus((double) counter / (double) craftTime, new TranslationTextComponent("fusion_status.draconicevolution.crafting", Math.round(((double) counter / (double) craftTime) * 1000) / 10D).withStyle(TextFormatting.GREEN));
+
                 if (counter >= craftTime) {
-                    if (!matches(inv, world) || !canCraft(inv, world)) {
+                    if (inv.getInjectors().stream().anyMatch(e -> !e.validate())) {
+                        stateMachine.cancelCraft();
+                        return;
+                    }
+                    if (!matches(inv, world) || !canStartCraft(inv, world, null)) {
                         stateMachine.cancelCraft();
                         return;
                     }
@@ -146,7 +171,6 @@ public interface IFusionRecipe extends IRecipe<IFusionInventory> {
     }
 
     static void completeCraft(IFusionInventory inv, World world, IFusionRecipe recipe) {
-        //Use Ingredients
         List<IFusionInjector> injectors = new ArrayList<>(inv.getInjectors());
         for (IFusionIngredient ingredient : recipe.fusionIngredients()) {
             for (IFusionInjector injector : injectors) {
@@ -177,36 +201,52 @@ public interface IFusionRecipe extends IRecipe<IFusionInventory> {
         ItemStack result = recipe.assemble(inv);
         catalyst.shrink(catCount);
         inv.setCatalystStack(catalyst);
-        inv.setOutputStack(result.copy());
+        ItemStack outputStack = inv.getOutputStack();
+        if (outputStack.isEmpty()) {
+            inv.setOutputStack(result.copy());
+        } else {
+            outputStack.grow(result.getCount());
+        }
     }
 
-
     /**
-     * Returns the "pre-craft" status to display in the gui for the current recipe. For example:
+     * Called before starting the fusion crafting operation. Used this to check things like injector tiers
+     * and any other special requirements that must be met before crafting can begin.
+     *
+     * The userStatus Consumer (if supplied) will be given a short status message that can be displayed to the user
+     * via the GUI for example. SOme examples of possible status messages may be...
      * "Ready to craft"
      * "Pedestal tier too low"
      * "Output obstructed"
      * etc.
      *
-     * @param inv   The fusion crafting inventory.
-     * @param world the world
-     * @return the current recipe status
+     * @param inv    The fusion crafting inventory.
+     * @param world  The world
+     * @param userStatus Give this the reason this recipe can not start crafting (if there is one)
      */
-    default ITextComponent getRecipeStatus(IFusionInventory inv, World world) {
-        return null;
-    }
+    default boolean canStartCraft(IFusionInventory inv, World world, @Nullable Consumer<ITextComponent> userStatus) {
+        ItemStack output = inv.getOutputStack();
+        if (!output.isEmpty()) {
+            ItemStack result = assemble(inv);
+            if (!ItemStack.isSame(output, result) || !ItemStack.tagMatches(output, result) || output.getCount() + result.getCount() > result.getItem().getItemStackLimit(result)) {
+                if (userStatus != null) {
+                    userStatus.accept(new TranslationTextComponent("fusion_status.draconicevolution.output_obstructed").withStyle(TextFormatting.RED));
+                }
+                return false;
+            }
+        }
 
-    /**
-     * Used to apply secondary checks such as crafting tier, and any "special" crafting requirements.
-     * Does not care about energy because the final decision to craft is now controlled bu the recipe
-     * via {@link #tickFusionState(IFusionStateMachine, IFusionInventory, World)}
-     * If this is true then the crafting operation can be started.
-     *
-     * @param inv   The fusion crafting inventory.
-     * @param world the world
-     */
-    default boolean canCraft(IFusionInventory inv, World world) {
-        return matches(inv, world);//TODO
+        if (inv.getMinimumTier().index < getRecipeTier().index) {
+            if (userStatus != null) {
+                userStatus.accept(new TranslationTextComponent("fusion_status.draconicevolution.tier_low").withStyle(TextFormatting.RED));
+            }
+            return false;
+        }
+
+        if (userStatus != null) {
+            userStatus.accept(new TranslationTextComponent("fusion_status.draconicevolution.ready").withStyle(TextFormatting.GREEN));
+        }
+        return true;
     }
 
     interface IFusionIngredient {

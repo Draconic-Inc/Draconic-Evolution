@@ -7,11 +7,10 @@ import com.brandon3055.brandonscore.lib.ChatHelper;
 import com.brandon3055.brandonscore.utils.InfoHelper;
 import com.brandon3055.draconicevolution.api.IHudDisplay;
 import com.brandon3055.brandonscore.api.TechLevel;
-import com.brandon3055.draconicevolution.blocks.tileentity.TileCraftingInjector;
+import com.brandon3055.draconicevolution.blocks.tileentity.TileFusionCraftingInjector;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
@@ -85,7 +84,7 @@ public class CraftingInjector extends BlockBCore implements IHudDisplay {
     @Nullable
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        return new TileCraftingInjector();
+        return new TileFusionCraftingInjector();
     }
 
     @Override
@@ -96,8 +95,8 @@ public class CraftingInjector extends BlockBCore implements IHudDisplay {
     @Override
     public void onRemove(BlockState p_196243_1_, World world, BlockPos pos, BlockState p_196243_4_, boolean p_196243_5_) {
         TileEntity tile = world.getBlockEntity(pos);
-        if (tile instanceof TileCraftingInjector) {
-            ((TileCraftingInjector) tile).onDestroyed();
+        if (tile instanceof TileFusionCraftingInjector) {
+            ((TileFusionCraftingInjector) tile).onDestroyed();
         }
         super.onRemove(p_196243_1_, world, pos, p_196243_4_, p_196243_5_);
     }
@@ -110,11 +109,11 @@ public class CraftingInjector extends BlockBCore implements IHudDisplay {
 
         TileEntity tile = world.getBlockEntity(pos);
 
-        if (!(tile instanceof TileCraftingInjector)) {
+        if (!(tile instanceof TileFusionCraftingInjector)) {
             return ActionResultType.FAIL;
         }
 
-        TileCraftingInjector craftingPedestal = (TileCraftingInjector) tile;
+        TileFusionCraftingInjector craftingPedestal = (TileFusionCraftingInjector) tile;
 
         if (player.isShiftKeyDown()) {
             craftingPedestal.singleItem.set(!craftingPedestal.singleItem.get());
@@ -164,8 +163,8 @@ public class CraftingInjector extends BlockBCore implements IHudDisplay {
     public void addDisplayData(@Nullable ItemStack stack, World world, @Nullable BlockPos pos, List<String> displayList) {
         TileEntity te = world.getBlockEntity(pos);
 
-        if (te instanceof TileCraftingInjector) {
-            displayList.add(InfoHelper.HITC() + I18n.get("fusion_inj.draconicevolution." + (((TileCraftingInjector) te).singleItem.get() ? "single_item" : "multi_item")));
+        if (te instanceof TileFusionCraftingInjector) {
+            displayList.add(InfoHelper.HITC() + I18n.get("fusion_inj.draconicevolution." + (((TileFusionCraftingInjector) te).singleItem.get() ? "single_item" : "multi_item")));
         }
     }
 }

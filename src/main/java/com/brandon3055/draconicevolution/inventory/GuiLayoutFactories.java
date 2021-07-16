@@ -15,6 +15,7 @@ public class GuiLayoutFactories {
     public static final ContainerSlotLayout.LayoutFactory<TileBCore>                MODULAR_ITEM_LAYOUT         = (player, noOp) -> new ContainerSlotLayout().playerMain(player).playerArmor(player).playerOffHand(player).playerEquipMod(player);
     public static final ContainerSlotLayout.LayoutFactory<Object>                   CONFIGURABLE_ITEM_LAYOUT    = (player, noOp) -> new ContainerSlotLayout().playerMain(player).playerArmor(player).playerOffHand(player).playerEquipMod(player);
     public static final ContainerSlotLayout.LayoutFactory<TileEnergyTransfuser>     TRANSFUSER_LAYOUT           = (player, tile) -> new ContainerSlotLayout().playerMain(player).playerArmor(player).playerOffHand(player).allTile(tile.itemsCombined);
+    public static final ContainerSlotLayout.LayoutFactory<TileFusionCraftingCore>   FUSION_CRAFTING_CORE        = (player, tile) -> new ContainerSlotLayout().playerMain(player).playerArmor(player).playerOffHand(player).allTile(tile.itemHandler);
 
 
 

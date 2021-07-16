@@ -30,7 +30,6 @@ import com.brandon3055.draconicevolution.entity.guardian.DraconicGuardianEntity;
 import com.brandon3055.draconicevolution.entity.guardian.GuardianFightManager;
 import com.brandon3055.draconicevolution.entity.GuardianProjectileEntity;
 import com.brandon3055.draconicevolution.entity.projectile.DraconicArrowEntity;
-import com.brandon3055.draconicevolution.entity.projectile.DraconicProjectileEntity;
 import com.brandon3055.draconicevolution.inventory.*;
 import com.brandon3055.draconicevolution.items.EnderEnergyManipulator;
 import com.brandon3055.draconicevolution.items.InfoTablet;
@@ -102,8 +101,8 @@ public class DEContent {
     @ObjectHolder("portal")                     public static TileEntityType<TilePortal>                tile_portal;
     @ObjectHolder("portal_client")              public static TileEntityType<TilePortalClient>          tile_portal_client;//TODO?
     @ObjectHolder("chaos_crystal")              public static TileEntityType<TileChaosCrystal>          tile_chaos_crystal;
-    @ObjectHolder("crafting_injector")          public static TileEntityType<TileCraftingInjector>      tile_crafting_injector;
-    @ObjectHolder("crafting_core")              public static TileEntityType<TileCraftingCore>          tile_crafting_core;
+    @ObjectHolder("crafting_injector")          public static TileEntityType<TileFusionCraftingInjector>      tile_crafting_injector;
+    @ObjectHolder("crafting_core")              public static TileEntityType<TileFusionCraftingCore>          tile_crafting_core;
     @ObjectHolder("storage_core")               public static TileEntityType<TileEnergyCore>            tile_storage_core;
     @ObjectHolder("core_stabilizer")            public static TileEntityType<TileEnergyCoreStabilizer>  tile_core_stabilizer;
     @ObjectHolder("energy_pylon")               public static TileEntityType<TileEnergyPylon>           tile_energy_pylon;
@@ -140,8 +139,8 @@ public class DEContent {
 //        event.getRegistry().register(TileEntityType.Builder.create(TilePortal::new,               portal                  ).build(null).setRegistryName("portal"));
 //        event.getRegistry().register(TileEntityType.Builder.create(TilePortalClient::new,         portal                  ).build(null).setRegistryName("portal_client"));
         event.getRegistry().register(TileEntityType.Builder.of(TileChaosCrystal::new,           chaos_crystal, chaos_crystal_part           ).build(null).setRegistryName("chaos_crystal"));
-        event.getRegistry().register(TileEntityType.Builder.of(TileCraftingInjector::new,       craftInjectors          ).build(null).setRegistryName("crafting_injector"));
-        event.getRegistry().register(TileEntityType.Builder.of(TileCraftingCore::new,           crafting_core           ).build(null).setRegistryName("crafting_core"));
+        event.getRegistry().register(TileEntityType.Builder.of(TileFusionCraftingInjector::new,       craftInjectors          ).build(null).setRegistryName("crafting_injector"));
+        event.getRegistry().register(TileEntityType.Builder.of(TileFusionCraftingCore::new,           crafting_core           ).build(null).setRegistryName("crafting_core"));
         event.getRegistry().register(TileEntityType.Builder.of(TileEnergyCore::new,             energy_core             ).build(null).setRegistryName("storage_core"));
         event.getRegistry().register(TileEntityType.Builder.of(TileEnergyCoreStabilizer::new,   energy_core_stabilizer  ).build(null).setRegistryName("core_stabilizer"));
         event.getRegistry().register(TileEntityType.Builder.of(TileEnergyPylon::new,            energy_pylon            ).build(null).setRegistryName("energy_pylon"));
@@ -190,7 +189,7 @@ public class DEContent {
         event.getRegistry().register(IForgeContainerType.create(ContainerDissEnchanter::new).setRegistryName("dissenchanter"));
         event.getRegistry().register(IForgeContainerType.create((windowId, inv, data) -> new ContainerDummy<TileCelestialManipulator>(container_celestial_manipulator, windowId, inv, data)).setRegistryName("celestial_manipulator"));
         event.getRegistry().register(IForgeContainerType.create(ContainerEnergyCrystal::new).setRegistryName("energy_crystal"));
-        event.getRegistry().register(IForgeContainerType.create(ContainerFusionCraftingCore::new).setRegistryName("fusion_crafting_core"));
+        event.getRegistry().register(IForgeContainerType.create((windowId, inv, data) -> new ContainerFusionCraftingCore(windowId, inv, data, FUSION_CRAFTING_CORE)).setRegistryName("fusion_crafting_core"));
         event.getRegistry().register(IForgeContainerType.create(ContainerReactor::new).setRegistryName("reactor"));
         event.getRegistry().register(IForgeContainerType.create((windowId, playerInv, extraData) -> new ContainerModularItem(windowId, playerInv, extraData, MODULAR_ITEM_LAYOUT)).setRegistryName("modular_item"));
         event.getRegistry().register(IForgeContainerType.create((windowId, playerInv, extraData) -> new ContainerConfigurableItem(windowId, playerInv, extraData, CONFIGURABLE_ITEM_LAYOUT)).setRegistryName("configurable_item"));

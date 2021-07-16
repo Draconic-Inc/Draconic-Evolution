@@ -43,7 +43,6 @@ public class DEConfig {
     public static int dislocatorBlinkRange;
     public static int dislocatorBlinksPerPearl;
     public static int fusionInjectorRange;
-    public static int fusionInjectorRadius;
     public static int fusionInjectorMinDist;
     public static List<Integer> fusionChargeTime;
     public static List<Integer> fusionCraftTime;
@@ -107,11 +106,6 @@ public class DEConfig {
                 .setComment("Sets how far fusion crafting injectors can be from the fusion crafting core")
                 .setDefaultInt(16)
                 .setSyncCallback((tag, type) -> fusionInjectorRange = tag.getInt());
-        serverTag.getTag("fusionInjectorRadius")
-                .setSyncToClient()
-                .setComment("Sets the injector search radius for each of the 6 search directions. Default 1 = 3x3, 2 would be 5x5 etc.")
-                .setDefaultInt(1)
-                .setSyncCallback((tag, type) -> fusionInjectorRadius = tag.getInt());
         serverTag.getTag("fusionInjectorMinDist")
                 .setSyncToClient()
                 .setComment("Sets the minimum distance a fusion injector must be from the fusion crafting core.")
@@ -124,7 +118,7 @@ public class DEConfig {
                 .setSyncCallback((tag, type) -> fusionChargeTime = tag.getIntList());
         serverTag.getTag("fusionCraftTime")
                 .setSyncToClient()
-                .setComment("Time in ticks required for crafting phase of fusion crafting with each injector tier. Draconium, Wyvern, Draconic, Chaotic\nThe time selected is based on the lowest tier injector used in the craft.")
+                .setComment("Time in ticks required for crafting phase of fusion crafting with each injector tier. Draconium, Wyvern, Draconic, Chaotic\nThe time selected is based on the lowest tier injector used in the craft.\nMax value for any of these is 32,767 (27.3 minutes)")
                 .setDefaultIntList(Lists.newArrayList(300, 220, 140, 60))
                 .setSyncCallback((tag, type) -> fusionCraftTime = tag.getIntList());
     }

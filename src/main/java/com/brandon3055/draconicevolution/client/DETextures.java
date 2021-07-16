@@ -21,36 +21,15 @@ import java.util.function.Predicate;
  */
 public class DETextures implements IIconRegister, ISelectiveResourceReloadListener {
 
-//    private static final String ITEMS_ = "draconicevolution:items/";
     private static final String PARTICLES_ = "draconicevolution:particle/";
-//    private static final String TOOLS_ = ITEMS_ + "tools/";
-//    private static final String TOOLS_OBJ_ = TOOLS_ + "obj/";
-
+    private static final String MC_PARTICLES_ = "minecraft:particle/";
     private static AtlasRegistrar map;
-//    private static HashMap<ResourceLocation, TextureAtlasSprite> textureCache = new HashMap<ResourceLocation, TextureAtlasSprite>();
-//    private static ArrayList<ResourceLocation> locations = new ArrayList<ResourceLocation>();
-
-    static {
-//        locations.add(new ResourceLocation(DraconicEvolution.MODID, "models/pylon_sphere_texture"));
-//        locations.add(new ResourceLocation(DraconicEvolution.MODID, "models/energy_core_base"));
-//        locations.add(new ResourceLocation(DraconicEvolution.MODID, "models/energy_core_overlay"));
-//        locations.add(new ResourceLocation(DraconicEvolution.MODID, "models/stabilizer_sphere"));
-//        locations.add(new ResourceLocation(DraconicEvolution.MODID, "items/tools/obj/arrow_common"));
-//        locations.add(new ResourceLocation(DraconicEvolution.MODID, "models/block/generator/generator_2"));
-//        locations.add(new ResourceLocation(DraconicEvolution.MODID, "models/block/grinder"));
-    }
-
-//    public static TextureAtlasSprite getDETexture(String texture) {
-//        return textureCache.get(new ResourceLocation(DraconicEvolution.MODID, texture));
-//    }
 
     @Override
     public void onResourceManagerReload(IResourceManager resourceManager, Predicate<IResourceType> resourcePredicate) {
-//        GlassParticleDummyModel.INSTANCE.sprite = null;
     }
 
     public static TextureAtlasSprite GENERATOR;
-
 
     @Override
     public void registerIcons(AtlasRegistrar registrar) {
@@ -58,68 +37,27 @@ public class DETextures implements IIconRegister, ISelectiveResourceReloadListen
 
         registerDE("block/generator/generator_2", e -> GENERATOR = e);
 
-//        //@formatter:off
-//        register(TOOLS_ + "wyvern_axe", e -> WYVERN_AXE = e);
-//        register(TOOLS_ + "wyvern_bow00", e -> WYVERN_BOW00 = e);
-//        register(TOOLS_ + "wyvern_bow01", e -> WYVERN_BOW01 = e);
-//        register(TOOLS_ + "wyvern_bow02", e -> WYVERN_BOW02 = e);
-//        register(TOOLS_ + "wyvern_bow03", e -> WYVERN_BOW03 = e);
-//        register(TOOLS_ + "wyvern_pickaxe", e -> WYVERN_PICKAXE = e);
-//        register(TOOLS_ + "wyvern_shovel", e -> WYVERN_SHOVEL = e);
-//        register(TOOLS_ + "wyvern_sword", e -> WYVERN_SWORD = e);
-//        register(TOOLS_ + "draconic_axe", e -> DRACONIC_AXE = e);
-//        register(TOOLS_ + "draconic_bow00", e -> DRACONIC_BOW00 = e);
-//        register(TOOLS_ + "draconic_bow01", e -> DRACONIC_BOW01 = e);
-//        register(TOOLS_ + "draconic_bow02", e -> DRACONIC_BOW02 = e);
-//        register(TOOLS_ + "draconic_bow03", e -> DRACONIC_BOW03 = e);
-//        register(TOOLS_ + "draconic_hoe", e -> DRACONIC_HOE = e);
-//        register(TOOLS_ + "draconic_pickaxe", e -> DRACONIC_PICKAXE = e);
-//        register(TOOLS_ + "draconic_shovel", e -> DRACONIC_SHOVEL = e);
-//        register(TOOLS_ + "draconic_staff_of_power", e -> DRACONIC_STAFF_OF_POWER = e);
-//        register(TOOLS_ + "draconic_sword", e -> DRACONIC_SWORD = e);
-//
-//        //OBJ textures. Just need to be registered, never accessed by us through here.
-//        register(TOOLS_OBJ_ + "wyvern_axe", e -> {});
-//        register(TOOLS_OBJ_ + "wyvern_bow00", e -> {});
-//        register(TOOLS_OBJ_ + "wyvern_bow01", e -> {});
-//        register(TOOLS_OBJ_ + "wyvern_bow02", e -> {});
-//        register(TOOLS_OBJ_ + "wyvern_bow03", e -> {});
-//        register(TOOLS_OBJ_ + "wyvern_pickaxe", e -> {});
-//        register(TOOLS_OBJ_ + "wyvern_shovel", e -> {});
-//        register(TOOLS_OBJ_ + "wyvern_sword", e -> {});
-//        register(TOOLS_OBJ_ + "draconic_axe", e -> {});
-//        register(TOOLS_OBJ_ + "draconic_bow00", e -> {});
-//        register(TOOLS_OBJ_ + "draconic_bow01", e -> {});
-//        register(TOOLS_OBJ_ + "draconic_bow02", e -> {});
-//        register(TOOLS_OBJ_ + "draconic_bow03", e -> {});
-//        register(TOOLS_OBJ_ + "draconic_hoe", e -> {});
-//        register(TOOLS_OBJ_ + "draconic_pickaxe", e -> {});
-//        register(TOOLS_OBJ_ + "draconic_shovel", e -> {});
-//        register(TOOLS_OBJ_ + "draconic_staff_of_power", e -> {});
-//        register(TOOLS_OBJ_ + "draconic_sword", e -> {});
-//
-//        WYVERN_BOW = new TextureAtlasSprite[] {
-//                WYVERN_BOW00,
-//                WYVERN_BOW01,
-//                WYVERN_BOW02,
-//                WYVERN_BOW03
-//        };
-//        DRACONIC_BOW = new TextureAtlasSprite[] {
-//                DRACONIC_BOW00,
-//                DRACONIC_BOW01,
-//                DRACONIC_BOW02,
-//                DRACONIC_BOW03
-//        };
-//        //@formatter:on
-
-//        for (ResourceLocation location : locations) {
-//            registrar.registerSprite(location, sprite -> textureCache.put(location, sprite));
-//        }
-
         ENERGY_PARTICLE = new TextureAtlasSprite[5];
         for (int i = 0; i < ENERGY_PARTICLE.length; i++) {
             int finalI = i;
             register(PARTICLES_ + "energy_" + i, sprite -> ENERGY_PARTICLE[finalI] = sprite);
+        }
+        MIXED_PARTICLE= new TextureAtlasSprite[14];
+        SPARK_PARTICLE = new TextureAtlasSprite[7];
+        for (int i = 0; i < SPARK_PARTICLE.length; i++) {
+            int finalI = i;
+            register(PARTICLES_ + "spark_" + i, sprite -> {
+                SPARK_PARTICLE[finalI] = sprite;
+                MIXED_PARTICLE[finalI] = sprite;
+            });
+        }
+        SPELL_PARTICLE = new TextureAtlasSprite[7];
+        for (int i = 0; i < SPELL_PARTICLE.length; i++) {
+            int finalI = i;
+            register(PARTICLES_ + "spell_" + i, sprite -> {
+                SPELL_PARTICLE[finalI] = sprite;
+                MIXED_PARTICLE[finalI + 7] = sprite;
+            });
         }
         register(PARTICLES_ + "white_orb", sprite -> ORB_PARTICLE = sprite);
     }
@@ -132,30 +70,18 @@ public class DETextures implements IIconRegister, ISelectiveResourceReloadListen
         map.registerSprite(new ResourceLocation(DraconicEvolution.MODID, sprite), onReady);
     }
 
-    public static TextureAtlasSprite WYVERN_AXE;
-    public static TextureAtlasSprite WYVERN_BOW00;
-    public static TextureAtlasSprite WYVERN_BOW01;
-    public static TextureAtlasSprite WYVERN_BOW02;
-    public static TextureAtlasSprite WYVERN_BOW03;
-    public static TextureAtlasSprite WYVERN_PICKAXE;
-    public static TextureAtlasSprite WYVERN_SHOVEL;
-    public static TextureAtlasSprite WYVERN_SWORD;
-    public static TextureAtlasSprite DRACONIC_AXE;
-    public static TextureAtlasSprite DRACONIC_BOW00;
-    public static TextureAtlasSprite DRACONIC_BOW01;
-    public static TextureAtlasSprite DRACONIC_BOW02;
-    public static TextureAtlasSprite DRACONIC_BOW03;
-    public static TextureAtlasSprite DRACONIC_HOE;
-    public static TextureAtlasSprite DRACONIC_PICKAXE;
-    public static TextureAtlasSprite DRACONIC_SHOVEL;
-    public static TextureAtlasSprite DRACONIC_STAFF_OF_POWER;
-    public static TextureAtlasSprite DRACONIC_SWORD;
-
-    public static TextureAtlasSprite[] WYVERN_BOW;
-    public static TextureAtlasSprite[] DRACONIC_BOW;
-
     public static TextureAtlasSprite[] ENERGY_PARTICLE;
+    public static TextureAtlasSprite[] SPARK_PARTICLE;
+    public static TextureAtlasSprite[] SPELL_PARTICLE;
+    public static TextureAtlasSprite[] MIXED_PARTICLE;
     public static TextureAtlasSprite ORB_PARTICLE;
+
+
+
+
+
+
+
 
     //TODO in 1.11 or 1.12 make there full names with mod prefix and ether remove texture cache or have it auto detect when the modid is already present.
     public static final String ENERGY_INFUSER_DECORATION = "textures/block/energy_infuser/energy_infuser_decoration.png";

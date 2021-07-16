@@ -34,6 +34,8 @@ public class DEParticles {
     public static IntParticleType line_indicator;
     @ObjectHolder("energy")
     public static IntParticleType energy;
+    @ObjectHolder("energy_basic")
+    public static IntParticleType energy_basic;
     @ObjectHolder("energy_core")
     public static IntParticleType energy_core;
     @ObjectHolder("guardian_projectile")
@@ -46,6 +48,7 @@ public class DEParticles {
         event.getRegistry().register(new IntParticleType(false).setRegistryName("flame"));
         event.getRegistry().register(new IntParticleType(false).setRegistryName("line_indicator"));
         event.getRegistry().register(new IntParticleType(false).setRegistryName("energy"));
+        event.getRegistry().register(new IntParticleType(false).setRegistryName("energy_basic"));
         event.getRegistry().register(new IntParticleType(false).setRegistryName("energy_core"));
         event.getRegistry().register(new BasicParticleType(false).setRegistryName("guardian_projectile"));
         event.getRegistry().register(new BasicParticleType(false).setRegistryName("blink"));
@@ -58,6 +61,7 @@ public class DEParticles {
         manager.register(flame, CustomFlameParticle.Factory::new);
         manager.register(line_indicator, ParticleLineIndicator.Factory::new);
         manager.register(energy, ParticleEnergy.Factory::new);
+        manager.register(energy_basic, ParticleEnergyBasic.Factory::new);
         manager.register(energy_core, ParticleEnergyCoreFX.Factory::new);
         manager.register(guardian_projectile, GuardianProjectileParticle.Factory::new);
         manager.register(blink, BlinkParticle.Factory::new);

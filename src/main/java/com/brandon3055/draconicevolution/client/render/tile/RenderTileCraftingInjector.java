@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.client.render.tile;
 
 import com.brandon3055.draconicevolution.blocks.machines.CraftingInjector;
-import com.brandon3055.draconicevolution.blocks.tileentity.TileCraftingInjector;
+import com.brandon3055.draconicevolution.blocks.tileentity.TileFusionCraftingInjector;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.block.BlockState;
@@ -15,14 +15,14 @@ import net.minecraft.util.math.vector.Quaternion;
 
 import static net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType.FIXED;
 
-public class RenderTileCraftingInjector extends TileEntityRenderer<TileCraftingInjector> {
+public class RenderTileCraftingInjector extends TileEntityRenderer<TileFusionCraftingInjector> {
 
     public RenderTileCraftingInjector(TileEntityRendererDispatcher rendererDispatcherIn) {
         super(rendererDispatcherIn);
     }
 
     @Override
-    public void render(TileCraftingInjector te, float partialTicks, MatrixStack mStack, IRenderTypeBuffer getter, int packetLight, int packetOverlay) {
+    public void render(TileFusionCraftingInjector te, float partialTicks, MatrixStack mStack, IRenderTypeBuffer getter, int packetLight, int packetOverlay) {
         if (te.getCore() != null && te.getCore().isCrafting() && te.getCore().getFusionState().ordinal() > 1) {
             return;
         }

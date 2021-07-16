@@ -63,15 +63,15 @@ public class DraconiumCapacitor extends Item implements IInvCharge, IModularItem
     public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> items) {
         if (this.allowdedIn(group)) {
             items.add(new ItemStack(this));
-            if (this != DEContent.capacitor_creative) {
-                ItemStack stack = new ItemStack(this);
-                stack.getCapability(DECapabilities.OP_STORAGE).ifPresent(storage -> {
-                    if (storage instanceof IOPStorageModifiable) {
-                        ((IOPStorageModifiable) storage).modifyEnergyStored(storage.getMaxOPStored());
-                        items.add(stack);
-                    }
-                });
-            }
+//            if (this != DEContent.capacitor_creative) {
+//                ItemStack stack = new ItemStack(this);
+//                stack.getCapability(DECapabilities.OP_STORAGE).ifPresent(storage -> {
+//                    if (storage instanceof IOPStorageModifiable) {
+//                        ((IOPStorageModifiable) storage).modifyEnergyStored(storage.getMaxOPStored());
+//                        items.add(stack);
+//                    }
+//                });
+//            }
         }
     }
 

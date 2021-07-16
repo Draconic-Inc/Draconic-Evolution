@@ -610,6 +610,17 @@ public class LangGenerator extends LanguageProvider {
         helper.add("mode_blink",                                                "Use Mode:\nBlink");
         helper.add("mode_tp",                                                   "Use Mode:\nTeleport");
 
+        //Fusion Crafting Core
+        helper.setPrefix("gui.draconicevolution.fusion_craft");
+        helper.add("craft",                                                     "Craft");
+        //JEI
+        helper.add("tier.draconium",                                            "Tier: Draconium");
+        helper.add("tier.wyvern",                                               "Tier: Wyvern");
+        helper.add("tier.draconic",                                             "Tier: Draconic");
+        helper.add("tier.chaotic",                                              "Tier: Chaotic");
+        helper.add("energy_cost",                                               "Energy Cost");
+        helper.add("ne_tier_injectors",                                         "Not enough %s tier injectors.");
+
     }
 
     private void hudAndMessages(PrefixHelper helper) {
@@ -678,9 +689,14 @@ public class LangGenerator extends LanguageProvider {
         helper.setPrefix("fusion_inj.draconicevolution");
         helper.add("single_item",                                               "Single item mode");
         helper.add("multi_item",                                                "Stack mode");
-        helper.setPrefix("fusion_state.draconicevolution");
-        helper.add("charging",                                                  "Charging...");
-        helper.add("crafting",                                                  "Crafting...");
+        helper.setPrefix("fusion_status.draconicevolution");
+        helper.add("charging",                                                  "Charging: %s%%");
+        helper.add("crafting",                                                  "Crafting: %s%%");
+        helper.add("output_obstructed",                                         "Output Obstructed");
+        helper.add("tier_low",                                                  "Injector tier too low");
+        helper.add("no_recipe",                                                 "No Valid Recipe");
+        helper.add("canceled",                                                  "Craft Canceled");
+        helper.add("ready",                                                     "Ready to craft");
 //        helper.add("",                                                          "");
 
     }

@@ -9,6 +9,7 @@ import com.brandon3055.draconicevolution.api.energy.IENetEffectTile;
 import com.brandon3055.draconicevolution.blocks.energynet.rendering.ENetFXHandler;
 import com.brandon3055.draconicevolution.blocks.reactor.ReactorEffectHandler;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
+import com.brandon3055.draconicevolution.blocks.tileentity.TileFusionCraftingCore;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileGenerator;
 import com.brandon3055.draconicevolution.client.gui.*;
 import com.brandon3055.draconicevolution.client.gui.GuiDraconiumChest;
@@ -25,9 +26,10 @@ import com.brandon3055.draconicevolution.client.render.entity.GuardianProjectile
 import com.brandon3055.draconicevolution.client.render.entity.projectile.DraconicArrowRenderer;
 import com.brandon3055.draconicevolution.client.render.item.*;
 import com.brandon3055.draconicevolution.client.render.tile.*;
+import com.brandon3055.draconicevolution.client.render.tile.fxhandlers.FusionTileFXHandler;
+import com.brandon3055.draconicevolution.client.render.tile.fxhandlers.ITileFXHandler;
 import com.brandon3055.draconicevolution.client.sound.GeneratorSoundHandler;
 import com.brandon3055.draconicevolution.init.DEContent;
-import com.brandon3055.draconicevolution.inventory.ContainerDraconiumChest;
 import com.brandon3055.draconicevolution.items.equipment.IModularArmor;
 import com.brandon3055.draconicevolution.lib.ISidedTileHandler;
 import net.minecraft.client.Minecraft;
@@ -349,6 +351,11 @@ public class ClientProxy extends CommonProxy {
     @Override
     public ISidedTileHandler createGeneratorSoundHandler(TileGenerator tile) {
         return new GeneratorSoundHandler(tile);
+    }
+
+    @Override
+    public ITileFXHandler createFusionFXHandler(TileFusionCraftingCore tile) {
+        return new FusionTileFXHandler(tile);
     }
 
     //    @Override

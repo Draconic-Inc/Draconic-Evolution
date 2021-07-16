@@ -35,6 +35,7 @@ public interface IFusionStateMachine {
 
     /**
      * This is a general purpose counter field used to track the fusion crafting process.
+     * And also to control the animation for the current state.
      *
      * @return the current counter value.
      */
@@ -53,9 +54,18 @@ public interface IFusionStateMachine {
      * @param progress The current progress 0 to 1 or -1 to disable progress display.
      * @param stateText Text to display in gui for current state.
      */
-    void setStateProgress(double progress, ITextComponent stateText);
+    void setFusionStatus(double progress, ITextComponent stateText);
 
-    //TODO set animation state
+    /**
+     * Used to update the crafting animation.
+     * Note: in order for the animation to run smoothly time must progress at a rate of (1/length) per tick and length must be constant.
+     * But if you want the animation stop progressing and run continuously at a specific progress state then set a fixed progress value
+     * and set length to -1.
+     *
+     * @param progress The animation progress.
+     * @param length The The total length of the animation.
+     */
+    void setCraftAnimation(float progress, int length);
 
     enum FusionState {
         START,
@@ -68,4 +78,6 @@ public interface IFusionStateMachine {
         STATE7,
         STATE8
     }
+
+
 }

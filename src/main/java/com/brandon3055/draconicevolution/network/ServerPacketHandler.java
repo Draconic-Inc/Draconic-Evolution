@@ -3,11 +3,14 @@ package com.brandon3055.draconicevolution.network;
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.packet.ICustomPacketHandler;
 import codechicken.lib.packet.PacketCustom;
+import com.brandon3055.draconicevolution.api.crafting.IFusionRecipe;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleGrid;
 import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.PropertyData;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.integration.equipment.EquipmentManager;
+import com.brandon3055.draconicevolution.integration.jei.FusionRecipeTransferHelper;
 import com.brandon3055.draconicevolution.inventory.ContainerConfigurableItem;
+import com.brandon3055.draconicevolution.inventory.ContainerFusionCraftingCore;
 import com.brandon3055.draconicevolution.inventory.ContainerModularItem;
 import com.brandon3055.draconicevolution.inventory.ContainerModuleHost;
 import com.brandon3055.draconicevolution.items.tools.DislocatorAdvanced;
@@ -16,7 +19,10 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.ClickType;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.RecipeManager;
 import net.minecraft.network.play.IServerPlayNetHandler;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 
@@ -58,6 +64,9 @@ public class ServerPacketHandler implements ICustomPacketHandler.IServerPacketHa
                 break;
             case DraconicNetwork.S_DISLOCATOR_MESSAGE:
                 dislocatorMessage(sender, packet);
+                break;
+            case DraconicNetwork.S_JEI_FUSION_TRANSFER:
+                jeiFusionTransfer(sender, packet);
                 break;
         }
     }
@@ -173,6 +182,15 @@ public class ServerPacketHandler implements ICustomPacketHandler.IServerPacketHa
         ItemStack stack = DislocatorAdvanced.findDislocator(sender);
         if (!stack.isEmpty()) {
             DEContent.dislocator_advanced.handleClientAction(sender, stack, packet);
+        }
+    }
+
+    private void jeiFusionTransfer(ServerPlayerEntity sender, PacketCustom packet) {
+        ResourceLocation id = packet.readResourceLocation();
+        boolean maxTransfer = packet.readBoolean();
+        IRecipe<?> recipe = sender.level.getRecipeManager().byKey(id).orElse(null);
+        if (recipe instanceof IFusionRecipe && sender.containerMenu instanceof ContainerFusionCraftingCore) {
+            FusionRecipeTransferHelper.doServerSideTransfer(sender, (ContainerFusionCraftingCore) sender.containerMenu, (IFusionRecipe) recipe, maxTransfer);
         }
     }
 }

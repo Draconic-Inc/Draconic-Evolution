@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.blocks.machines;
 
 import com.brandon3055.brandonscore.blocks.BlockBCore;
-import com.brandon3055.draconicevolution.blocks.tileentity.TileCraftingCore;
+import com.brandon3055.draconicevolution.blocks.tileentity.TileFusionCraftingCore;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.tileentity.TileEntity;
@@ -10,7 +10,6 @@ import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -39,7 +38,7 @@ public class FusionCraftingCore extends BlockBCore /*implements IRenderOverride,
     @Nullable
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        return new TileCraftingCore();
+        return new TileFusionCraftingCore();
     }
 
 //    @Override
@@ -79,8 +78,8 @@ public class FusionCraftingCore extends BlockBCore /*implements IRenderOverride,
         if (!world.isClientSide()) {
             if (isBlockPowered(world, pos)) {
                 TileEntity tile = world.getBlockEntity(pos);
-                if (tile instanceof TileCraftingCore) {
-                    ((TileCraftingCore) tile).startCraft();
+                if (tile instanceof TileFusionCraftingCore) {
+                    ((TileFusionCraftingCore) tile).startCraft();
                 }
             }
         }
@@ -94,8 +93,8 @@ public class FusionCraftingCore extends BlockBCore /*implements IRenderOverride,
     @Override
     public int getAnalogOutputSignal(BlockState blockState, World worldIn, BlockPos pos) {
         TileEntity tile = worldIn.getBlockEntity(pos);
-        if (tile instanceof TileCraftingCore) {
-            return ((TileCraftingCore) tile).getComparatorOutput();
+        if (tile instanceof TileFusionCraftingCore) {
+            return ((TileFusionCraftingCore) tile).getComparatorOutput();
         }
         return super.getAnalogOutputSignal(blockState, worldIn, pos);
     }

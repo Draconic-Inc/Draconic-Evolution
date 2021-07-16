@@ -141,7 +141,7 @@ public class ModularChestpiece extends ArmorItem implements IModularArmor, IDEEq
 
     @OnlyIn(Dist.CLIENT)
     public <A extends BipedModel<?>> A getChestPieceModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlotType armorSlot, boolean onArmor) {
-        if (model == null) {
+        if (model == null || model_on_armor == null) {
             model = new ModularArmorModel(1F, techLevel, false);
             model_on_armor = new ModularArmorModel(1F, techLevel, true);
         }

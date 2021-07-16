@@ -1,9 +1,12 @@
 package com.brandon3055.draconicevolution.inventory;
 
+import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.inventory.ContainerBCTile;
-import com.brandon3055.brandonscore.inventory.ContainerBCore;
+import com.brandon3055.brandonscore.inventory.ContainerSlotLayout;
+import com.brandon3055.brandonscore.inventory.PlayerSlot;
+import com.brandon3055.draconicevolution.api.modules.lib.ModuleGrid;
 import com.brandon3055.draconicevolution.init.DEContent;
-import com.brandon3055.draconicevolution.blocks.tileentity.TileCraftingCore;
+import com.brandon3055.draconicevolution.blocks.tileentity.TileFusionCraftingCore;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
@@ -18,67 +21,13 @@ import javax.annotation.Nullable;
 /**
  * Created by brandon3055 on 30/3/2016.
  */
-public class ContainerFusionCraftingCore extends ContainerBCTile<TileCraftingCore> {
+public class ContainerFusionCraftingCore extends ContainerBCTile<TileFusionCraftingCore> {
 
-    public ContainerFusionCraftingCore(int windowId, PlayerInventory playerInv, PacketBuffer extraData) {
-        this(DEContent.container_fusion_crafting_core, windowId, playerInv, getClientTile(extraData));
+    public ContainerFusionCraftingCore(int windowId, PlayerInventory player, PacketBuffer extraData, ContainerSlotLayout.LayoutFactory<TileFusionCraftingCore> factory) {
+        super(DEContent.container_fusion_crafting_core, windowId, player, extraData, factory);
     }
 
-    public ContainerFusionCraftingCore(@Nullable ContainerType<?> type, int windowId, PlayerInventory player, TileCraftingCore tile) {
-        super(type, windowId, player, tile);
-
-        addPlayerSlots(10, 119);
-        addSlot(new SlotItemHandler(tile.itemHandler, 0, 82, 26));
-        addSlot(new OutputSlot(tile.itemHandler, 1, 82, 70));
-    }
-
-
-    @Override
-    public boolean stillValid(PlayerEntity player) {
-        return true;//tile.isUsableByPlayer(player);
-    }
-
-    @Override
-    public ItemStack quickMoveStack(PlayerEntity player, int i) {
-        Slot slot = getSlot(i);
-
-        if (slot != null && slot.hasItem()) {
-            ItemStack stack = slot.getItem();
-            ItemStack result = stack.copy();
-
-            if (i >= 36) {
-                if (!moveItemStackTo(stack, 0, 36, false)) {
-                    return ItemStack.EMPTY;
-                }
-            }
-            else if (!tile.itemHandler.isItemValid(0, stack) || !moveItemStackTo(stack, 36, 36 + tile.itemHandler.getSlots(), false)) {
-                return ItemStack.EMPTY;
-            }
-
-            if (stack.getCount() == 0) {
-                slot.set(ItemStack.EMPTY);
-            }
-            else {
-                slot.setChanged();
-            }
-
-            slot.onTake(player, stack);
-
-            return result;
-        }
-
-        return ItemStack.EMPTY;
-    }
-
-    public class OutputSlot extends SlotItemHandler {
-
-        public OutputSlot(IItemHandler inventoryIn, int index, int xPosition, int yPosition) {
-            super(inventoryIn, index, xPosition, yPosition);
-        }
-
-        @Override
-        public boolean mayPlace(@Nullable ItemStack stack) {
-            return false;
-        }
+    public ContainerFusionCraftingCore(int windowId, PlayerInventory player, TileFusionCraftingCore tile, ContainerSlotLayout.LayoutFactory<TileFusionCraftingCore> factory) {
+        super(DEContent.container_fusion_crafting_core, windowId, player, tile, factory);
     }
 }

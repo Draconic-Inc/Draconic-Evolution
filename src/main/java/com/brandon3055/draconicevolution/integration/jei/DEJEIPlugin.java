@@ -5,10 +5,16 @@ import com.brandon3055.draconicevolution.api.DraconicAPI;
 import com.brandon3055.draconicevolution.api.crafting.IFusionRecipe;
 import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.GuiConfigurableItem;
 import com.brandon3055.draconicevolution.init.DEContent;
+import com.brandon3055.draconicevolution.inventory.ContainerFusionCraftingCore;
 import mezz.jei.api.*;
 import mezz.jei.api.constants.VanillaRecipeCategoryUid;
+import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.helpers.IJeiHelpers;
+import mezz.jei.api.helpers.IStackHelper;
+import mezz.jei.api.recipe.transfer.IRecipeTransferError;
+import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
+import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 import mezz.jei.api.registration.*;
 import mezz.jei.api.runtime.IJeiRuntime;
 import mezz.jei.plugins.vanilla.cooking.CampfireCategory;
@@ -16,6 +22,8 @@ import mezz.jei.util.ErrorUtil;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -32,15 +40,12 @@ public class DEJEIPlugin implements IModPlugin {
 
     public static IJeiHelpers jeiHelpers = null;
     public static IJeiRuntime jeiRuntime = null;
-    public static List<ItemStack> iUpgradables = new ArrayList<>();
 
     @Nullable
     private FusionRecipeCategory fusionRecipeCategory;
 
     public DEJEIPlugin() {
     }
-
-/**    Phone   */
 
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration registration) {
@@ -60,8 +65,7 @@ public class DEJEIPlugin implements IModPlugin {
     public void registerCategories(IRecipeCategoryRegistration registration) {
         IJeiHelpers jeiHelpers = registration.getJeiHelpers();
         IGuiHelper guiHelper = jeiHelpers.getGuiHelper();
-        fusionRecipeCategory = new FusionRecipeCategory(guiHelper);
-        registration.addRecipeCategories(fusionRecipeCategory);
+        registration.addRecipeCategories(fusionRecipeCategory = new FusionRecipeCategory(guiHelper));
     }
 
     @Override
@@ -69,17 +73,17 @@ public class DEJEIPlugin implements IModPlugin {
         ErrorUtil.checkNotNull(fusionRecipeCategory, "fusionRecipeCategory");
         jeiHelpers = registration.getJeiHelpers();
 
-        //            this.recipeLayout = DEJEIPlugin.jeiRuntime.getRecipeRegistry().createRecipeLayoutDrawable(category, wrapper, f);
-
-
-//        registry.handleRecipes(EIOSpawnerRecipesWrapper.class, recipe -> recipe, VanillaRecipeCategoryUid.CRAFTING);
-
         ClientWorld world = Minecraft.getInstance().level;
         registration.addRecipes(world.getRecipeManager().getAllRecipesFor(DraconicAPI.FUSION_RECIPE_TYPE), RecipeCategoryUids.FUSION_CRAFTING);
-
-
     }
 
+    @Override
+    public void registerRecipeTransferHandlers(IRecipeTransferRegistration registration) {
+        IJeiHelpers jeiHelpers = registration.getJeiHelpers();
+        IRecipeTransferHandlerHelper transferHelper = registration.getTransferHelper();
+        IStackHelper stackHelper = jeiHelpers.getStackHelper();
+        registration.addRecipeTransferHandler(new FusionRecipeTransferHelper(stackHelper, transferHelper), RecipeCategoryUids.FUSION_CRAFTING);
+    }
 
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {

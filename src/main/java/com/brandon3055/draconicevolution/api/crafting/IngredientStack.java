@@ -54,6 +54,24 @@ public class IngredientStack extends Ingredient {
         }
     }
 
+    public boolean itemTest(@Nullable ItemStack stack) {
+        if (stack == null) {
+            return false;
+        } else {
+            this.dissolve();
+            if (this.itemStacks.length == 0) {
+                return stack.isEmpty();
+            } else {
+                for(ItemStack itemstack : this.itemStacks) {
+                    if (itemstack.getItem() == stack.getItem()) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }
+    }
+
     @Override
     protected void dissolve() {
         if (this.itemStacks == null) {
