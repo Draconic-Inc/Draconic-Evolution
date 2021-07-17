@@ -146,46 +146,8 @@ public class RenderModularBow extends ToolRenderBase {
             }
         }
 
-        Matrix4 effectMat = mat.copy();
-        if (stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).isPresent()){
-            drawStrings(ccrs, mat, bottomMat, getter, drawAngle, packedLight, ModularBow.calculateShotEnergy(stack) <= getEnergyStored(stack));
-        }
-
-//        Minecraft mc = Minecraft.getInstance();
-//        if (entity != null) {
-//            effectMat.rotate(torad(entity.xRot + 75), Vector3.X_NEG);
-//        } else {
-//            effectMat.rotate(torad(90), Vector3.X_NEG);
-//        }
-////        if (entity != null)LOGGER.info(entity.Rot);
-//        effectMat.translate(-0.45, -0.5, -0.5);
-////        mat.translate(-0.5, 0.1, -0.5);
-//        effectRenderer.animTime = getSpecialChargeTicks(stack, mc.getDeltaFrameTime());
-//        effectRenderer.colour = getProjectileColour(stack);
-//        effectRenderer.renderEffect(effectMat, getter, mc.getDeltaFrameTime(), techLevel);
-//        new ModelEffect.DebugEffect().renderEffect(effectMat, getter, mc.getFrameTime(), techLevel);
-
-//        if (gui) {
-//            getter.getBuffer(guiBaseVBOType.withMatrix(mat).withLightMap(packedLight));
-//        } else {
-//            getter.getBuffer(baseVBOType.withMatrix(mat).withLightMap(packedLight));
-//        }
-//
-//        if (techLevel == TechLevel.CHAOTIC && DEConfig.toolShaders) {
-//            getter.getBuffer(materialChaosVBOType.withMatrix(mat).withLightMap(packedLight).withShader(getShaderType(chaosType, chaosShader)));
-//        } else {
-//            getter.getBuffer(materialVBOType.withMatrix(mat).withLightMap(packedLight));
-//        }
-//
-//        if (DEConfig.toolShaders) {
-//            getter.getBuffer(traceVBOType.withMatrix(mat).withLightMap(packedLight).withShader(getShaderType(shaderParentType, techLevel, traceShader)));
-//            getter.getBuffer(bladeVBOType.withMatrix(mat).withLightMap(packedLight).withShader(getShaderType(shaderParentType, techLevel, bladeShader)));
-//            getter.getBuffer(gemVBOType.withMatrix(mat).withLightMap(packedLight).withShader(getShaderType(shaderParentType, techLevel, gemShader)));
-//        } else {
-//            getter.getBuffer(traceVBOType.withMatrix(mat).withLightMap(packedLight));
-//            getter.getBuffer(bladeVBOType.withMatrix(mat).withLightMap(packedLight));
-//            getter.getBuffer(gemVBOType.withMatrix(mat).withLightMap(packedLight));
-//        }
+        boolean hasPower = isCreative(entity) || (stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).isPresent() && ModularBow.calculateShotEnergy(stack) <= getEnergyStored(stack));
+        drawStrings(ccrs, mat, bottomMat, getter, drawAngle, packedLight, hasPower);
     }
 
     private void drawStrings(CCRenderState ccrs, Matrix4 topMat, Matrix4 bottomMat, IRenderTypeBuffer getter, double drawAngle, int packedLight, boolean isCharged) {
@@ -196,7 +158,6 @@ public class RenderModularBow extends ToolRenderBase {
             bowStringType = new ShaderRenderType(bowStringType, stringShader, uniforms);
         }
         IVertexBuilder builder = new TransformingVertexBuilder(getter.getBuffer(bowStringType), topMat);
-//        drawAngle = Math.abs(Math.sin(ClientEventHandler.elapsedTicks / 100F)) * 45;
 
         double crystalX = 12.508D * 0.01D;
         double crystalY = 67.844D * 0.01D;
@@ -321,7 +282,7 @@ public class RenderModularBow extends ToolRenderBase {
     private double getDrawAngle(ItemStack stack, float partialTicks) {
         if (entity != null && entity.getUseItem() == stack) {
             float maxCount = entity.getTicksUsingItem() - partialTicks;
-            return Math.max(0, ModularBow.getPowerForTime((int)(maxCount), stack) * 45F);
+            return Math.max(0, ModularBow.getPowerForTime((int) (maxCount), stack) * 45F);
         }
         return 0;
     }
@@ -342,12 +303,16 @@ public class RenderModularBow extends ToolRenderBase {
                 if (potion == Potions.EMPTY) {
                     return 0xFFFFFF;
                 } else {
-                    return PotionUtils.getColor(PotionUtils.getAllEffects(potion,  PotionUtils.getCustomEffects(ammo)));
+                    return PotionUtils.getColor(PotionUtils.getAllEffects(potion, PotionUtils.getCustomEffects(ammo)));
                 }
             }
         }
         return 0xFFFFFF;
 
+    }
+
+    private boolean isCreative(LivingEntity entity) {
+        return entity instanceof PlayerEntity && ((PlayerEntity) entity).abilities.instabuild;
     }
 
     public static float torad(double degrees) {
