@@ -114,7 +114,7 @@ public class ModularBow extends BowItem implements IReaperItem, IModularItem {
     @Override
     public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
         ItemStack stack = player.getItemInHand(hand);
-        boolean hasAmmo = !player.getProjectile(stack).isEmpty();
+        boolean hasAmmo = !player.getProjectile(stack).isEmpty() || EnchantmentHelper.getItemEnchantmentLevel(Enchantments.INFINITY_ARROWS, stack) > 0;
 
         ActionResult<ItemStack> ret = ForgeEventFactory.onArrowNock(stack, world, player, hand, hasAmmo);
         if (ret != null) return ret;
