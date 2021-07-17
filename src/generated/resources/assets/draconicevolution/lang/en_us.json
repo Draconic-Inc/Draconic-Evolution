@@ -73,6 +73,7 @@
   "fusion_status.draconicevolution.canceled": "Craft Canceled",
   "fusion_status.draconicevolution.charging": "Charging: %s%%",
   "fusion_status.draconicevolution.crafting": "Crafting: %s%%",
+  "fusion_status.draconicevolution.injector_close": "One or more injectors are too close!",
   "fusion_status.draconicevolution.no_recipe": "No Valid Recipe",
   "fusion_status.draconicevolution.output_obstructed": "Output Obstructed",
   "fusion_status.draconicevolution.ready": "Ready to craft",

@@ -689,6 +689,7 @@ public class LangGenerator extends LanguageProvider {
         helper.setPrefix("fusion_inj.draconicevolution");
         helper.add("single_item",                                               "Single item mode");
         helper.add("multi_item",                                                "Stack mode");
+
         helper.setPrefix("fusion_status.draconicevolution");
         helper.add("charging",                                                  "Charging: %s%%");
         helper.add("crafting",                                                  "Crafting: %s%%");
@@ -697,6 +698,7 @@ public class LangGenerator extends LanguageProvider {
         helper.add("no_recipe",                                                 "No Valid Recipe");
         helper.add("canceled",                                                  "Craft Canceled");
         helper.add("ready",                                                     "Ready to craft");
+        helper.add("injector_close",                                            "One or more injectors are too close!");
 //        helper.add("",                                                          "");
 
     }
