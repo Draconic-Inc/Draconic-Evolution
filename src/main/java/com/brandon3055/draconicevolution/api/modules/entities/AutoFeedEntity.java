@@ -69,15 +69,21 @@ public class AutoFeedEntity extends ModuleEntity {
                 if (storedFood > 0 && (foodStats.getFoodLevel() < 20 || foodStats.getSaturationLevel() < 20)) {
                     //Feed player
                     TechLevel tech = module.getModuleTechLevel();
-                    double maxSat = entity.tickCount % 20 == 0 && tech == TechLevel.DRACONIUM? 4 : 0.1;//tech == TechLevel.DRACONIUM ? 1 : tech == TechLevel.WYVERN ? 2 : 4; //Problem is i'm not sure if i want this to essentially be a "Regeneration module"
+                    double maxSat = entity.tickCount % 20 == 0 && tech == TechLevel.DRACONIC ? 20 : 1;//tech == TechLevel.DRACONIUM ? 1 : tech == TechLevel.WYVERN ? 2 : 4; //Problem is i'm not sure if i want this to essentially be a "Regeneration module"
                     if (foodStats.needsFood() && storedFood > 1) {
-                        foodStats.eat((int)Math.min(Math.min(storedFood, 1), 20 - foodStats.getFoodLevel()), 0);
+                        foodStats.eat((int)consumeFood(Math.min(1, 20 - foodStats.getFoodLevel())), 0);
                     }else if (foodStats.getSaturationLevel() < maxSat && storedFood > 0) {
-                        foodStats.saturationLevel += Math.min(storedFood, maxSat - foodStats.getSaturationLevel());
+                        foodStats.saturationLevel += consumeFood(Math.min(1, maxSat - foodStats.getSaturationLevel()));
                     }
                 }
             }
         }
+    }
+
+    private double consumeFood(double amount) {
+        amount = Math.min(amount, storedFood);
+        storedFood -= amount;
+        return amount;
     }
 
     @Override

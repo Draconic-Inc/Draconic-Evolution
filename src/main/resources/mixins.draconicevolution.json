@@ -1,13 +1,14 @@
 {
-	"required": true,
-	"minVersion": "0.8",
-	"package": "com.brandon3055.draconicevolution.mixin",
-	"refmap": "mixins.draconicevolution.refmap.json",
-	"target": "@env(DEFAULT)",
-	"compatibilityLevel": "JAVA_8",
-	"mixins" : [
-	],
-	"client" : [
-		"PlayerModelMixin"
+    "required":           true,
+    "minVersion":         "0.8",
+    "package":            "com.brandon3055.draconicevolution.mixin",
+    "refmap":             "mixins.draconicevolution.refmap.json",
+    "target":             "@env(DEFAULT)",
+    "compatibilityLevel": "JAVA_8",
+    "mixins":             [
+        "TrackedEntityMixin"
+    ],
+    "client":             [
+        "PlayerModelMixin"
 	]
 }

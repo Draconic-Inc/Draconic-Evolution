@@ -39,6 +39,7 @@ public class ModuleTypes {
     public static final ModuleType<NoData>               AUTO_FIRE           = new ModuleTypeImpl<>("auto_fire",         2, 1, AutoFireEntity::new, RANGED_WEAPON).setMaxInstallable(1);
     //Projectiles
     public static final ModuleType<ProjectileData>       PROJ_MODIFIER       = new ModuleTypeImpl<>("proj_modifier",     1, 1, RANGED_WEAPON);
+    public static final ModuleType<NoData>               PROJ_ANTI_IMMUNE    = new ModuleTypeImpl<>("proj_anti_immune",  2, 2, RANGED_WEAPON).setMaxInstallable(1);
 //    public static final ModuleType<ProjectileData>       PROJ_ACCURACY       = new ModuleTypeImpl<>("proj_accuracy",     1, 1, RANGED_WEAPON);
 //    public static final ModuleType<ProjectileData>       PROJ_VELOCITY       = new ModuleTypeImpl<>("proj_velocity",     2, 1, RANGED_WEAPON).setMaxInstallable(8);
 //    public static final ModuleType<ProjectileData>       PROJ_GRAV_COMP      = new ModuleTypeImpl<>("proj_grav_comp",    2, 1, RANGED_WEAPON);

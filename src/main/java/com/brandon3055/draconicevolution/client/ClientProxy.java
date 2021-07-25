@@ -23,6 +23,7 @@ import com.brandon3055.draconicevolution.client.model.VBOArmorLayer;
 import com.brandon3055.draconicevolution.client.render.entity.DraconicGuardianRenderer;
 import com.brandon3055.draconicevolution.client.render.entity.GuardianCrystalRenderer;
 import com.brandon3055.draconicevolution.client.render.entity.GuardianProjectileRenderer;
+import com.brandon3055.draconicevolution.client.render.entity.GuardianWitherRenderer;
 import com.brandon3055.draconicevolution.client.render.entity.projectile.DraconicArrowRenderer;
 import com.brandon3055.draconicevolution.client.render.item.*;
 import com.brandon3055.draconicevolution.client.render.tile.*;
@@ -75,6 +76,7 @@ public class ClientProxy extends CommonProxy {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(DESprites::initialize);
 
         StaffRenderEventHandler.init();
+        CustomBossInfoHandler.init();
     }
 
     @Override
@@ -257,6 +259,7 @@ public class ClientProxy extends CommonProxy {
         RenderingRegistry.registerEntityRenderingHandler(DEContent.guardianCrystal, GuardianCrystalRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(DEContent.persistentItem, manager -> new ItemRenderer(manager, Minecraft.getInstance().getItemRenderer()));
         RenderingRegistry.registerEntityRenderingHandler(DEContent.draconicArrow, DraconicArrowRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(DEContent.guardianWither, GuardianWitherRenderer::new);
 
         //Entities
 //        RenderingRegistry.registerEntityRenderingHandler(EntityChaosGuardian.class, RenderChaosGuardian::new);

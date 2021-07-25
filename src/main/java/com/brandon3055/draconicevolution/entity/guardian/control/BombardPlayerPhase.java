@@ -1,11 +1,13 @@
 package com.brandon3055.draconicevolution.entity.guardian.control;
 
+import com.brandon3055.brandonscore.network.BCoreNetwork;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.entity.guardian.DraconicGuardianEntity;
 import com.brandon3055.draconicevolution.entity.GuardianProjectileEntity;
 import com.brandon3055.draconicevolution.entity.guardian.GuardianFightManager;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
@@ -29,12 +31,12 @@ public class BombardPlayerPhase extends Phase {
     }
 
     public void serverTick() {
-        if (targetPlayer == null || !targetPlayer.isAlive()) {
-            LOGGER.warn("Aborting bombardment as no target is available.");
-            guardian.getPhaseManager().setPhase(PhaseType.START);
+        if (targetPlayer == null || !isValidTarget(targetPlayer)) {
+            debug("Aborting bombardment as no target is available. or target is dead.");
+            guardian.getPhaseManager().setPhase(PhaseType.START).prevAttackFailed();
         } else if (timeSinceStart > 0 && timeSinceStart >= 20 * 8) {
             guardian.getPhaseManager().setPhase(PhaseType.START);
-            LOGGER.info("Ending bombardment, Timed out");
+            debug("Ending bombardment, Timed out");
         } else {
             double distance = targetPlayer.distanceTo(guardian);
             targetLocation = targetPlayer.position();
@@ -45,27 +47,27 @@ public class BombardPlayerPhase extends Phase {
                 double relTargetAngle = MathHelper.clamp(MathHelper.wrapDegrees(180.0D - MathHelper.atan2(tRelX, tRelZ) * (double) (180F / (float) Math.PI) - (double) guardian.yRot), -50.0D, 50.0D);
                 bombarding = Math.abs(relTargetAngle) < 1;
                 if (bombarding) {
-                    LOGGER.debug("Bombs Away!");
+                    debug("Bombs Away!");
                 }
             } else {
                 timeSinceStart++;
             }
 
             if (distance < minAttackRange) {
-                guardian.getPhaseManager().setPhase(PhaseType.START);
-                LOGGER.info("Ending bombardment, To close");
+                guardian.getPhaseManager().setPhase(PhaseType.START).prevAttackFailed();
+                debug("Ending bombardment, To close");
             } else if (bombarding && distance <= maxAttackRange && timeSinceStart % 2 == 0) {
                 Vector3d vector3d2 = guardian.getViewVector(1.0F);
-                double headX = guardian.dragonPartHead.getX() - vector3d2.x * 1.0D;
+                double headX = guardian.dragonPartHead.getX() - vector3d2.x;
                 double headY = guardian.dragonPartHead.getY(0.5D) + 0.5D;
-                double headZ = guardian.dragonPartHead.getZ() - vector3d2.z * 1.0D;
+                double headZ = guardian.dragonPartHead.getZ() - vector3d2.z;
                 Vector3d targetPos = targetPlayer.position().add(targetPlayer.getDeltaMovement().multiply(5, 5, 5));
                 targetPos = targetPos.add(guardian.getRandom().nextGaussian() * 10, guardian.getRandom().nextGaussian() * 10, guardian.getRandom().nextGaussian() * 10);
                 double targetRelX = targetPos.x - headX;
                 double targetRelY = targetPos.y - headY;
                 double targetRelZ = targetPos.z - headZ;
                 if (!guardian.isSilent()) {
-                    guardian.level.levelEvent(null, 1017, guardian.blockPosition(), 0);
+                    BCoreNetwork.sendSound(guardian.level, guardian, SoundEvents.ENDER_DRAGON_SHOOT, SoundCategory.HOSTILE, 32.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F, false);
                 }
                 GuardianProjectileEntity projectile = new GuardianProjectileEntity(this.guardian.level, this.guardian, targetRelX, targetRelY, targetRelZ, targetPos, 25, GuardianFightManager.PROJECTILE_POWER);
                 projectile.moveTo(headX, headY, headZ, 0.0F, 0.0F);
@@ -73,9 +75,9 @@ public class BombardPlayerPhase extends Phase {
             }
         }
 
-        if (tick > 10 * 20) {
-            guardian.getPhaseManager().setPhase(PhaseType.START);
-            LOGGER.info("Aborting charge, Master timed out");
+        if (tick > 5 * 20) {
+            guardian.getPhaseManager().setPhase(PhaseType.START).prevAttackFailed();
+            debug("Aborting charge, Master timed out");
         } else if (bombarding && timeSinceStart < 20 && timeSinceStart % 5 == 0) {
             guardian.playSound(SoundEvents.ENDER_DRAGON_GROWL, 20, 0.95F + (guardian.getRandom().nextFloat() * 0.2F));
         }
@@ -91,8 +93,9 @@ public class BombardPlayerPhase extends Phase {
         damageTaken = 0;
     }
 
-    public void setTarget(PlayerEntity targetPlayer) {
-        this.targetPlayer = targetPlayer;
+    @Override
+    public void targetPlayer(PlayerEntity player) {
+        targetPlayer = player;
     }
 
     public float getMaxRiseOrFall() {
@@ -131,12 +134,13 @@ public class BombardPlayerPhase extends Phase {
     }
 
     @Override
-    public float onAttacked(DamageSource source, float damage) {
+    public float onAttacked(DamageSource source, float damage, float shield, boolean effective) {
         damageTaken += damage;
-        if (damageTaken > 80) {
-            guardian.getPhaseManager().setPhase(PhaseType.START);
-            LOGGER.info("Aborting bombardment, Damage Taken");
+        float abortThreshold = shield > damage ? 512 : 128;
+        if (damageTaken > abortThreshold && !bombarding && tick > 80) {
+            guardian.getPhaseManager().setPhase(PhaseType.START).prevAttackFailed();
+            debug("Aborting bombardment, Damage Taken");
         }
-        return super.onAttacked(source, damage);
+        return super.onAttacked(source, damage, shield, effective);
     }
 }

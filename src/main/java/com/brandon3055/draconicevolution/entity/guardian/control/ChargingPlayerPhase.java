@@ -1,12 +1,14 @@
 package com.brandon3055.draconicevolution.entity.guardian.control;
 
+import com.brandon3055.brandonscore.api.TechLevel;
+import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.entity.guardian.DraconicGuardianEntity;
+import com.brandon3055.draconicevolution.api.damage.DraconicDamage;
 import com.brandon3055.draconicevolution.entity.guardian.GuardianFightManager;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EntityDamageSource;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
@@ -19,6 +21,7 @@ public class ChargingPlayerPhase extends Phase {
     private int timeSinceCharge;
     private int tick;
     private float damageTaken;
+    private float abortDamageThreshold = 0.05F;
     private double closestApproach;
     private boolean charging = false;
     private Vector3d targetLocation;
@@ -29,17 +32,17 @@ public class ChargingPlayerPhase extends Phase {
     }
 
     public void serverTick() {
-        if (targetPlayer == null || !targetPlayer.isAlive()) {
-            LOGGER.warn("Aborting charge player as no target was set.");
-            guardian.getPhaseManager().setPhase(PhaseType.START);
+        if (targetPlayer == null || isValidTarget(targetPlayer)) {
+            debug("Aborting charge player as no target was set or target is dead");
+            guardian.getPhaseManager().setPhase(PhaseType.START).prevAttackFailed();
         } else if (timeSinceCharge > 0 && timeSinceCharge >= 20 * 5) {
-            guardian.getPhaseManager().setPhase(PhaseType.START);
-            LOGGER.debug("Aborting charge, Timed out");
+            guardian.getPhaseManager().setPhase(PhaseType.START).prevAttackFailed().prevAttackFailed();
+            debug("Aborting charge, Timed out");
         } else {
             double distance = targetPlayer.distanceTo(guardian);
             if (distance - closestApproach > 16 && timeSinceCharge > 10) {
-                guardian.getPhaseManager().setPhase(PhaseType.START);
-                LOGGER.debug("Aborting charge, Player got away");
+                guardian.getPhaseManager().setPhase(PhaseType.START).prevAttackFailed().prevAttackFailed();
+                debug("Aborting charge, Player got away");
             } else {
                 closestApproach = Math.min(distance, closestApproach);
                 targetLocation = targetPlayer.position();
@@ -49,7 +52,7 @@ public class ChargingPlayerPhase extends Phase {
                     double relTargetAngle = MathHelper.clamp(MathHelper.wrapDegrees(180.0D - MathHelper.atan2(tRelX, tRelZ) * (double) (180F / (float) Math.PI) - (double) guardian.yRot), -50.0D, 50.0D);
                     charging = Math.abs(relTargetAngle) < 1;
                     if (charging) {
-                        LOGGER.debug("CHARGE!");
+                        debug("CHARGE!");
                     }
                 }
                 else {
@@ -58,8 +61,8 @@ public class ChargingPlayerPhase extends Phase {
 
                 if (distance <= 5) {
                     guardian.getPhaseManager().setPhase(PhaseType.START);
-                    LOGGER.debug("Charge Successful");
-                    targetPlayer.hurt(new EntityDamageSource(DraconicEvolution.MODID + ".draconic_guardian", guardian).bypassMagic().bypassArmor(), GuardianFightManager.CHARGE_DAMAGE);
+                    debug("Charge Successful");
+                    targetPlayer.hurt(new DraconicDamage(DraconicEvolution.MODID + ".draconic_guardian", guardian, TechLevel.CHAOTIC).bypassMagic().bypassArmor(), GuardianFightManager.CHARGE_DAMAGE);
                     guardian.playSound(SoundEvents.GENERIC_EAT, 20, 0.95F + (guardian.getRandom().nextFloat() * 0.2F));
                     guardian.playSound(SoundEvents.GENERIC_EAT, 20, 0.95F + (guardian.getRandom().nextFloat() * 0.2F));
                     DraconicNetwork.sendImpactEffect(guardian.level, targetPlayer.blockPosition(), 0);
@@ -68,8 +71,8 @@ public class ChargingPlayerPhase extends Phase {
         }
 
         if (tick > 10*20) {
-            guardian.getPhaseManager().setPhase(PhaseType.START);
-            LOGGER.debug("Aborting charge, Master timed out");
+            guardian.getPhaseManager().setPhase(PhaseType.START).prevAttackFailed().prevAttackFailed();
+            debug("Aborting charge, Master timed out");
         }
         else if (charging && timeSinceCharge < 20 && timeSinceCharge % 5 == 0) {
             guardian.playSound(SoundEvents.ENDER_DRAGON_GROWL, 20, 0.95F + (guardian.getRandom().nextFloat() * 0.2F));
@@ -87,8 +90,9 @@ public class ChargingPlayerPhase extends Phase {
         damageTaken = 0;
     }
 
-    public void setTarget(PlayerEntity targetPlayer) {
-        this.targetPlayer = targetPlayer;
+    @Override
+    public void targetPlayer(PlayerEntity player) {
+        targetPlayer = player;
     }
 
     public float getMaxRiseOrFall() {
@@ -120,12 +124,12 @@ public class ChargingPlayerPhase extends Phase {
     }
 
     @Override
-    public float onAttacked(DamageSource source, float damage) {
+    public float onAttacked(DamageSource source, float damage, float shield, boolean effective) {
         damageTaken += damage;
-        if (damageTaken > 20) {
+        if (damageTaken > (shield > 0 ? DEConfig.guardianShield * abortDamageThreshold : DEConfig.guardianHealth * abortDamageThreshold)) {
             guardian.getPhaseManager().setPhase(PhaseType.START);
-            LOGGER.info("Aborting charge, Damage Taken");
+            debug("Aborting charge, Damage Taken");
         }
-        return super.onAttacked(source, damage);
+        return super.onAttacked(source, damage, shield, effective);
     }
 }

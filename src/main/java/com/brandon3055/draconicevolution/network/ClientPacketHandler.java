@@ -4,11 +4,18 @@ import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
 import codechicken.lib.packet.ICustomPacketHandler;
 import codechicken.lib.packet.PacketCustom;
+import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.lib.Vec3D;
+import com.brandon3055.brandonscore.utils.MathUtils;
 import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.client.CustomBossInfoHandler;
 import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.client.render.effect.ExplosionFX;
+import com.brandon3055.draconicevolution.entity.guardian.DraconicGuardianEntity;
+import com.brandon3055.draconicevolution.entity.guardian.control.ChargeUpPhase;
+import com.brandon3055.draconicevolution.entity.guardian.control.IPhase;
+import com.brandon3055.draconicevolution.entity.guardian.control.PhaseManager;
 import com.brandon3055.draconicevolution.init.DEModules;
 import com.brandon3055.draconicevolution.items.equipment.damage.DefaultStaffDmgMod;
 import net.minecraft.client.Minecraft;
@@ -53,6 +60,15 @@ public class ClientPacketHandler implements ICustomPacketHandler.IClientPacketHa
                 break;
             case DraconicNetwork.C_STAFF_EFFECT:
                 handleStaffEffect(mc, packet);
+                break;
+            case DraconicNetwork.C_GUARDIAN_BEAM:
+                handleGuardianBeam(mc, packet);
+                break;
+            case DraconicNetwork.C_GUARDIAN_PACKET:
+                handleGuardianPacket(mc, packet);
+                break;
+            case DraconicNetwork.C_BOSS_SHIELD_INFO:
+                CustomBossInfoHandler.handlePacket(packet);
                 break;
         }
     }
@@ -110,6 +126,7 @@ public class ClientPacketHandler implements ICustomPacketHandler.IClientPacketHa
             mc.particleEngine.createTrackingEmitter(entity, ParticleTypes.TOTEM_OF_UNDYING, 30);
             if (entity == mc.player) {
                 Minecraft.getInstance().gameRenderer.displayItemActivation(new ItemStack(item));
+                Minecraft.getInstance().gameRenderer.itemActivationOffY += 10;
             }
         }
     }
@@ -156,6 +173,31 @@ public class ClientPacketHandler implements ICustomPacketHandler.IClientPacketHa
                 }
             }
         }
+    }
+
+    private static void handleGuardianBeam(Minecraft mc, MCDataInput data) {
+        Vector3 source = data.readVector();
+        Vector3 target = data.readVector();
+        float power = data.readFloat();
+        double dist = MathUtils.distance(source, target);
+        if (mc.level == null) return;
+        for (double d = 0; d < dist; d += 2) {
+            Vector3 pos = MathUtils.interpolateVec3(source, target, ((d - 1) + mc.level.random.nextDouble() * 2) / dist);
+            mc.level.addParticle(DEParticles.guardian_beam, true, pos.x, pos.y, pos.z, power, 0, 0);
+        }
+    }
+
+    private static void handleGuardianPacket(Minecraft mc, MCDataInput data) {
+        if (mc.level == null) return;
+        Entity e = mc.level.getEntity(data.readInt());
+        if (!(e instanceof DraconicGuardianEntity)) return;;
+        DraconicGuardianEntity guardian = (DraconicGuardianEntity) e;
+        int phaseID = data.readByte();
+        PhaseManager phaseManager = guardian.getPhaseManager();
+        IPhase phase = phaseManager.getCurrentPhase();
+        if (phase.getType().getId() != phaseID) return;
+        int function = data.readByte();
+        phase.handlePacket(data, function);
     }
 }
 

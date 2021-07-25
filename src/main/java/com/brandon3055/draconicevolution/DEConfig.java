@@ -46,6 +46,12 @@ public class DEConfig {
     public static int fusionInjectorMinDist;
     public static List<Integer> fusionChargeTime;
     public static List<Integer> fusionCraftTime;
+    public static int guardianCrystalShield;
+    public static int guardianCrystalUnstableWindow;
+    public static boolean chaoticBypassCrystalShield;
+    public static int guardianHealth;
+    public static int guardianShield;
+    public static List<String> projectileAntiImmuneEntities;
 
     private static void loadServer() {
         serverTag = config.getTag("Server");
@@ -121,6 +127,42 @@ public class DEConfig {
                 .setComment("Time in ticks required for crafting phase of fusion crafting with each injector tier. Draconium, Wyvern, Draconic, Chaotic\nThe time selected is based on the lowest tier injector used in the craft.\nMax value for any of these is 32,767 (27.3 minutes)")
                 .setDefaultIntList(Lists.newArrayList(300, 220, 140, 60))
                 .setSyncCallback((tag, type) -> fusionCraftTime = tag.getIntList());
+
+        serverTag.getTag("projectileAntiImmuneEntities")
+                .setSyncToClient()
+                .setComment("This is a list of entities that the \"Projectile Immunity Cancellation\" module will work on. Add additional entities as required. (Let me know if i missed any)")
+                .setDefaultStringList(Lists.newArrayList("minecraft:enderman", "minecraft:wither", "minecraft:ender_dragon", "draconicevolution:guardian_wither"))
+                .setSyncCallback((tag, type) -> projectileAntiImmuneEntities = tag.getStringList());
+
+        {
+            ConfigTag guardianFight = serverTag.getTag("Guardian Fight");
+            guardianFight.setComment("Config values related to the chaos guardian fight.\nThe default values of -99 are markers indicating the internal hard coded value should be used.\nThis allows these values to be updated between mod versions for balance adjustments. Setting them to anything other than -99 will override the internal values.");
+            guardianFight.getTag("guardianCrystalShield")
+                    .setSyncToClient()
+                    .setComment("Sets the base shield strength for chaos guardian crystals.\nDefault: 512")
+                    .setDefaultInt(-99)
+                    .setSyncCallback((tag, type) -> guardianCrystalShield = tag.getInt() == -99 ? 512 : tag.getInt());
+            guardianFight.getTag("guardianCrystalUnstableWindow")
+                    .setSyncToClient()
+                    .setComment("Sets how long the guarian crystal's shield will be unstable after receiving damage from the chaos guardian\nDefault: 200 (10 seconds)")
+                    .setDefaultInt(-99)
+                    .setSyncCallback((tag, type) -> guardianCrystalUnstableWindow = tag.getInt() == -99 ? 200 : tag.getInt());
+            guardianFight.getTag("guardianHealth")
+                    .setSyncToClient()
+                    .setComment("Sets the guardians base health value (After you break through the guardians shield)\nDefault: 1000")
+                    .setDefaultInt(-99)
+                    .setSyncCallback((tag, type) -> guardianHealth = tag.getInt() == -99 ? 1000 : tag.getInt());
+            guardianFight.getTag("guardianShield")
+                    .setSyncToClient()
+                    .setComment("Sets the guardians shield capacity (You will need to break through this after disabling the guardian crystals)\nKeep in mind there is no limit to how fast you can hit the guardians shield so this will melt with a high damage rapid fire bow.\nDefault: 16000")
+                    .setDefaultInt(-99)
+                    .setSyncCallback((tag, type) -> guardianShield = tag.getInt() == -99 ? 16000 : tag.getInt());
+            guardianFight.getTag("chaoticBypassCrystalShield")
+                    .setSyncToClient()
+                    .setComment("Allows chaotic weapons to destabilize the guardian crystal shields.\nThis makes it much easier to farm the guardian but only after you have chaos tier weapons.")
+                    .setDefaultBoolean(true)
+                    .setSyncCallback((tag, type) -> chaoticBypassCrystalShield = tag.getBoolean());
+        }
     }
 
 

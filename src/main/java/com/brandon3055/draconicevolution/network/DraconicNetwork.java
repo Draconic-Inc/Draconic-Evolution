@@ -3,10 +3,13 @@ package com.brandon3055.draconicevolution.network;
 import codechicken.lib.data.MCDataOutput;
 import codechicken.lib.packet.PacketCustom;
 import codechicken.lib.packet.PacketCustomChannelBuilder;
+import codechicken.lib.vec.Vector3;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.crafting.IFusionRecipe;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleGrid;
 import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.PropertyData;
+import com.brandon3055.draconicevolution.entity.guardian.DraconicGuardianEntity;
+import com.brandon3055.draconicevolution.entity.guardian.control.IPhase;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -20,6 +23,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.event.EventNetworkChannel;
 
+import java.util.UUID;
 import java.util.function.Consumer;
 
 /**
@@ -51,6 +55,9 @@ public class DraconicNetwork {
     public static final int C_LAST_STAND_ACTIVATION =   5;
     public static final int C_BLINK =                   6;
     public static final int C_STAFF_EFFECT =            7;
+    public static final int C_GUARDIAN_BEAM =           8;
+    public static final int C_GUARDIAN_PACKET =         9;
+    public static final int C_BOSS_SHIELD_INFO =        10;
 
     //@formatter:on
 
@@ -152,6 +159,31 @@ public class DraconicNetwork {
         packet.writeResourceLocation(recipe.getId());
         packet.writeBoolean(maxTransfer);
         packet.sendToServer();
+    }
+
+    public static void sendGuardianBeam(World world, Vector3 source, Vector3 target, float power) {
+        PacketCustom packet = new PacketCustom(CHANNEL, C_GUARDIAN_BEAM);
+        packet.writeVector(source);
+        packet.writeVector(target);
+        packet.writeFloat(power);
+        packet.sendToChunk(world, source.pos());
+    }
+
+    public static void sendGuardianPhasePacket(DraconicGuardianEntity entity, IPhase phase, int func, Consumer<MCDataOutput> callBack) {
+        PacketCustom packet = new PacketCustom(CHANNEL, C_GUARDIAN_PACKET);
+        packet.writeInt(entity.getId());
+        packet.writeByte(phase.getType().getId());
+        packet.writeByte(func);
+        if (callBack != null) callBack.accept(packet);
+        packet.sendToChunk(entity.level, entity.blockPosition());
+    }
+
+    public static void sendBossShieldPacket(ServerPlayerEntity player, UUID id, int operation, Consumer<MCDataOutput> callBack) {
+        PacketCustom packet = new PacketCustom(CHANNEL, C_BOSS_SHIELD_INFO);
+        packet.writeUUID(id);
+        packet.writeByte(operation);
+        if (callBack != null) callBack.accept(packet);
+        packet.sendToPlayer(player);
     }
 
     public static void init() {

@@ -3,8 +3,11 @@ package com.brandon3055.draconicevolution.client.render.entity;
 import codechicken.lib.render.shader.*;
 import codechicken.lib.util.SneakyUtils;
 import com.brandon3055.brandonscore.client.BCClientEventHandler;
+import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.entity.guardian.DraconicGuardianEntity;
+import com.brandon3055.draconicevolution.entity.guardian.control.ChargeUpPhase;
+import com.brandon3055.draconicevolution.entity.guardian.control.IPhase;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
@@ -19,6 +22,7 @@ import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Matrix3f;
 import net.minecraft.util.math.vector.Matrix4f;
@@ -38,7 +42,7 @@ import static net.minecraft.client.renderer.RenderState.*;
 
 @OnlyIn(Dist.CLIENT)
 public class DraconicGuardianRenderer extends EntityRenderer<DraconicGuardianEntity> {
-    public static final ResourceLocation ENDERCRYSTAL_BEAM_TEXTURES = new ResourceLocation("textures/entity/end_crystal/end_crystal_beam.png");
+    public static final ResourceLocation ENDERCRYSTAL_BEAM_TEXTURES = new ResourceLocation(DraconicEvolution.MODID, "textures/entity/guardian_crystal_beam.png");
     private static final ResourceLocation DRAGON_EXPLODING_TEXTURES = new ResourceLocation("textures/entity/enderdragon/dragon_exploding.png");
     private static final ResourceLocation DRAGON_TEXTURE = new ResourceLocation("textures/entity/enderdragon/dragon.png");
     private static final ResourceLocation GUARDIAN_TEXTURE = new ResourceLocation(DraconicEvolution.MODID, "textures/entity/chaos_guardian.png");
@@ -47,7 +51,14 @@ public class DraconicGuardianRenderer extends EntityRenderer<DraconicGuardianEnt
     private static final RenderType dragonDeathType = RenderType.entityDecal(GUARDIAN_TEXTURE);
     private static final RenderType eyesType = RenderType.eyes(EYES_TEXTURE);
     private static final RenderType beamType = RenderType.entitySmoothCutout(ENDERCRYSTAL_BEAM_TEXTURES);
-    private static final RenderType shieldType = RenderType.create("shield_type", DefaultVertexFormats.POSITION_COLOR_TEX, GL11.GL_QUADS, 256, RenderType.State.builder()
+    private static RenderType beamType2 = RenderType.create("beam_type_2", DefaultVertexFormats.NEW_ENTITY, GL11.GL_QUADS, 256, false, true, RenderType.State.builder()
+            .setTextureState(new RenderState.TextureState(ENDERCRYSTAL_BEAM_TEXTURES, false, false))
+            .setTransparencyState(RenderState.TRANSLUCENT_TRANSPARENCY)
+            .setCullState(NO_CULL)
+            .setTexturingState(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
+            .createCompositeState(false));
+
+    public static final RenderType shieldType = RenderType.create("shield_type", DefaultVertexFormats.POSITION_COLOR_TEX, GL11.GL_QUADS, 256, RenderType.State.builder()
             .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
             .setTexturingState(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
             .setDiffuseLightingState(DIFFUSE_LIGHTING)
@@ -55,6 +66,14 @@ public class DraconicGuardianRenderer extends EntityRenderer<DraconicGuardianEnt
             .setAlphaState(DEFAULT_ALPHA)
             .setDepthTestState(EQUAL_DEPTH_TEST)
             .createCompositeState(false));
+
+    public static RenderType beamShaderType = RenderType.create("beam_shader_type", DefaultVertexFormats.BLOCK, GL11.GL_QUADS, 256, RenderType.State.builder()
+            .setTextureState(new RenderState.TextureState(ENDERCRYSTAL_BEAM_TEXTURES, true, false))
+            .setLightmapState(LIGHTMAP)
+            .setOverlayState(OVERLAY)
+            .createCompositeState(false)
+    );
+
 
     public static ShaderProgram shieldShader = ShaderProgramBuilder.builder()
             .addShader("vert", shader -> shader
@@ -66,8 +85,13 @@ public class DraconicGuardianRenderer extends EntityRenderer<DraconicGuardianEnt
                     .source(new ResourceLocation(MODID, "shaders/guardian_shield.frag"))
                     .uniform("time", UniformType.FLOAT)
                     .uniform("baseColour", UniformType.VEC4)
+                    .uniform("activation", UniformType.FLOAT)
+
             )
-            .whenUsed(cache -> cache.glUniform1f("time", (BCClientEventHandler.elapsedTicks + Minecraft.getInstance().getFrameTime()) / 20))
+            .whenUsed(cache -> {
+                cache.glUniform1f("time", (BCClientEventHandler.elapsedTicks + Minecraft.getInstance().getFrameTime()) / 20);
+                cache.glUniform1f("activation", 1F);
+            })
             .build();
 
     private static final float sqrt3div2 = (float) (Math.sqrt(3.0D) / 2.0D);
@@ -104,13 +128,15 @@ public class DraconicGuardianRenderer extends EntityRenderer<DraconicGuardianEnt
         }
         IVertexBuilder builder;
 
-        int shieldState = guardian.getEntityData().get(DraconicGuardianEntity.SHIELD_STATE);
-        if (shieldState > 0) {
-            float hit = (shieldState / 500F) - 1F;
-            Color color = Color.getHSBColor(hit / 8F, 1, 1);
-            //Render Shield //TODO this could sue some work
+        boolean isImmune = guardian.getPhaseManager().getCurrentPhase() instanceof ChargeUpPhase;
+        float shieldState = guardian.getEntityData().get(DraconicGuardianEntity.SHIELD_POWER) / (float) DEConfig.guardianShield;
+        if (shieldState > 0 || isImmune) {
             UniformCache uniforms = shieldShader.pushCache();
-            uniforms.glUniform4f("baseColour", color.getRed() / 255F, color.getGreen() / 255F, color.getBlue() / 255F, 1.5F * (shieldState / 500F));
+            if (isImmune) {
+                uniforms.glUniform4f("baseColour", 0F, 1F, 1F, 2);
+            } else {
+                uniforms.glUniform4f("baseColour", 1F, 0F, 0F, 1.5F * shieldState);
+            }
             builder = getter.getBuffer(new ShaderRenderType(shieldType, shieldShader, uniforms));
             this.model.renderToBuffer(mStack, builder, packedLight, OverlayTexture.pack(0.0F, flag), 1.0F, 1.0F, 1.0F, 1.0F);
         }
@@ -160,16 +186,32 @@ public class DraconicGuardianRenderer extends EntityRenderer<DraconicGuardianEnt
             mStack.popPose();
         }
 
+        IPhase iPhase = guardian.getPhaseManager().getCurrentPhase();
+        if (iPhase instanceof ChargeUpPhase && guardian.getArenaOrigin() != null) {
+            ChargeUpPhase phase = (ChargeUpPhase) iPhase;
+            if (phase.animState() != 0) {
+                BlockPos origin = guardian.getArenaOrigin();
+//                float beamSin = MathHelper.sin((Math.min(1, phase.animState() + 0.3F)) * (float) Math.PI);
+                float beamSin = MathHelper.sin(phase.animState() * (float) Math.PI);
+                mStack.pushPose();
+                float relX = (float) ((origin.getX() + 0.5) - MathHelper.lerp(partialTicks, guardian.xo, guardian.getX()));
+                float relY = (float) ((origin.getY() + 0.5) - MathHelper.lerp(partialTicks, guardian.yo, guardian.getY()));
+                float relZ = (float) ((origin.getZ() + 0.5) - MathHelper.lerp(partialTicks, guardian.zo, guardian.getZ()));
+                renderChargingBeam(relX, relY, relZ, partialTicks, guardian.tickCount, mStack, getter, packedLight, beamSin);
+                mStack.popPose();
+            }
+        }
+
         super.render(guardian, entityYaw, partialTicks, mStack, getter, packedLight);
     }
 
     private static void deathAnimA(IVertexBuilder builder, Matrix4f mat, int alpha) {
-        builder.vertex(mat, 0.0F, 0.0F, 0.0F).color(255, 255, 255, alpha).endVertex();
-        builder.vertex(mat, 0.0F, 0.0F, 0.0F).color(255, 255, 255, alpha).endVertex();
+        builder.vertex(mat, 0.0F, 0.0F, 0.0F).color(255, 0, 0, alpha).endVertex();
+        builder.vertex(mat, 0.0F, 0.0F, 0.0F).color(255, 0, 0, alpha).endVertex();
     }
 
     private static void deathAnimB(IVertexBuilder builder, Matrix4f mat, float p_229060_2_, float p_229060_3_) {
-        builder.vertex(mat, -sqrt3div2 * p_229060_3_, p_229060_2_, -0.5F * p_229060_3_).color(255, 0, 255, 0).endVertex();
+        builder.vertex(mat, -sqrt3div2 * p_229060_3_, p_229060_2_, -0.5F * p_229060_3_).color(255, 0, 0, 0).endVertex();
     }
 
     private static void deathAnimC(IVertexBuilder builder, Matrix4f mat, float p_229062_2_, float p_229062_3_) {
@@ -177,7 +219,7 @@ public class DraconicGuardianRenderer extends EntityRenderer<DraconicGuardianEnt
     }
 
     private static void deathAnimD(IVertexBuilder builder, Matrix4f mat, float p_229063_2_, float p_229063_3_) {
-        builder.vertex(mat, 0.0F, p_229063_2_, 1.0F * p_229063_3_).color(255, 0, 255, 0).endVertex();
+        builder.vertex(mat, 0.0F, p_229063_2_, 1.0F * p_229063_3_).color(255, 0, 0, 0).endVertex();
     }
 
     public static void renderBeam(float crystalRelX, float crystalRelY, float crystalRelZ, float partialTicks, int animTicks, MatrixStack mStack, IRenderTypeBuffer getter, int packedLight) {
@@ -187,10 +229,9 @@ public class DraconicGuardianRenderer extends EntityRenderer<DraconicGuardianEnt
         mStack.translate(0.0D, 2.0D, 0.0D);
         mStack.mulPose(Vector3f.YP.rotation((float) (-Math.atan2(crystalRelZ, crystalRelX)) - ((float) Math.PI / 2F)));
         mStack.mulPose(Vector3f.XP.rotation((float) (-Math.atan2(xzDistance, crystalRelY)) - ((float) Math.PI / 2F)));
-        IVertexBuilder ivertexbuilder = getter.getBuffer(beamType);
+        IVertexBuilder builder = getter.getBuffer(beamType);
         float f2 = 0.0F - ((float) animTicks + partialTicks) * 0.01F;
         float f3 = MathHelper.sqrt(crystalRelX * crystalRelX + crystalRelY * crystalRelY + crystalRelZ * crystalRelZ) / 32.0F - ((float) animTicks + partialTicks) * 0.01F;
-        int i = 8;
         float f4 = 0.0F;
         float f5 = 0.75F;
         float f6 = 0.0F;
@@ -202,10 +243,154 @@ public class DraconicGuardianRenderer extends EntityRenderer<DraconicGuardianEnt
             float rSin = MathHelper.sin((float) j * ((float) Math.PI * 2F) / 8.0F) * 0.75F;
             float rCos = MathHelper.cos((float) j * ((float) Math.PI * 2F) / 8.0F) * 0.75F;
             float indexDecimal = (float) j / 8.0F;
-            ivertexbuilder.vertex(lastMatrix, f4 * 0.2F, f5 * 0.2F, 0.0F).color(0, 0, 0, 255).uv(f6, f2).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(lastNormal, 0.0F, -1.0F, 0.0F).endVertex();
-            ivertexbuilder.vertex(lastMatrix, f4, f5, distance).color(255, 255, 255, 255).uv(f6, f3).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(lastNormal, 0.0F, -1.0F, 0.0F).endVertex();
-            ivertexbuilder.vertex(lastMatrix, rSin, rCos, distance).color(255, 255, 255, 255).uv(indexDecimal, f3).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(lastNormal, 0.0F, -1.0F, 0.0F).endVertex();
-            ivertexbuilder.vertex(lastMatrix, rSin * 0.2F, rCos * 0.2F, 0.0F).color(0, 0, 0, 255).uv(indexDecimal, f2).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(lastNormal, 0.0F, -1.0F, 0.0F).endVertex();
+            builder.vertex(lastMatrix, f4 * 0.2F, f5 * 0.2F, 0.0F).color(0, 0, 0, 255).uv(f6, f2).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(lastNormal, 0.0F, -1.0F, 0.0F).endVertex();
+            builder.vertex(lastMatrix, f4, f5, distance).color(255, 255, 255, 255).uv(f6, f3).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(lastNormal, 0.0F, -1.0F, 0.0F).endVertex();
+            builder.vertex(lastMatrix, rSin, rCos, distance).color(255, 255, 255, 255).uv(indexDecimal, f3).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(lastNormal, 0.0F, -1.0F, 0.0F).endVertex();
+            builder.vertex(lastMatrix, rSin * 0.2F, rCos * 0.2F, 0.0F).color(0, 0, 0, 255).uv(indexDecimal, f2).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(lastNormal, 0.0F, -1.0F, 0.0F).endVertex();
+            f4 = rSin;
+            f5 = rCos;
+            f6 = indexDecimal;
+        }
+
+        mStack.popPose();
+//
+//        int shieldState = 500;//guardian.getEntityData().get(DraconicGuardianEntity.SHIELD_STATE);
+//        float hit = (shieldState / 500F) - 1F;
+//        Color color = Color.getHSBColor(hit / 8F, 1, 1);
+//        UniformCache uniforms = DraconicGuardianRenderer.shieldShader.pushCache();
+//        uniforms.glUniform4f("baseColour", color.getRed() / 255F, color.getGreen() / 255F, color.getBlue() / 255F, 1.5F * (shieldState / 500F));
+//        builder = getter.getBuffer(new ShaderRenderType(DraconicGuardianRenderer.shieldType, DraconicGuardianRenderer.shieldShader, uniforms));
+//
+//        xzDistance = MathHelper.sqrt(crystalRelX * crystalRelX + crystalRelZ * crystalRelZ);
+//        distance = MathHelper.sqrt(crystalRelX * crystalRelX + crystalRelY * crystalRelY + crystalRelZ * crystalRelZ);
+//        mStack.pushPose();
+//        mStack.translate(0.0D, 2.0D, 0.0D);
+//        mStack.mulPose(Vector3f.YP.rotation((float) (-Math.atan2(crystalRelZ, crystalRelX)) - ((float) Math.PI / 2F)));
+//        mStack.mulPose(Vector3f.XP.rotation((float) (-Math.atan2(xzDistance, crystalRelY)) - ((float) Math.PI / 2F)));
+//        f2 = 0;//0.0F - ((float) animTicks + partialTicks) * 0.01F;
+//        f3 = MathHelper.sqrt(crystalRelX * crystalRelX + crystalRelY * crystalRelY + crystalRelZ * crystalRelZ);//MathHelper.sqrt(crystalRelX * crystalRelX + crystalRelY * crystalRelY + crystalRelZ * crystalRelZ) / 32.0F - ((float) animTicks + partialTicks) * 0.01F;
+//        f4 = 0.0F;
+//        f5 = 0.75F;
+//        f6 = 0.0F;
+//        stackLast = mStack.last();
+//        lastMatrix = stackLast.pose();
+//        lastNormal = stackLast.normal();
+//
+//        for (int j = 1; j <= 8; ++j) {
+//            float rSin = MathHelper.sin((float) j * ((float) Math.PI * 2F) / 8.0F) * 0.75F;
+//            float rCos = MathHelper.cos((float) j * ((float) Math.PI * 2F) / 8.0F) * 0.75F;
+//            float indexDecimal = (float) j / 8.0F;
+////            builder.vertex(lastMatrix, f4 * 0.2F, f5 * 0.2F, 0.0F).color(0, 0, 0, 255).uv(f6, f2).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(lastNormal, 0.0F, -1.0F, 0.0F).endVertex();
+////            builder.vertex(lastMatrix, f4, f5, distance).color(255, 255, 255, 255).uv(f6, f3).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(lastNormal, 0.0F, -1.0F, 0.0F).endVertex();
+////            builder.vertex(lastMatrix, rSin, rCos, distance).color(255, 255, 255, 255).uv(indexDecimal, f3).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(lastNormal, 0.0F, -1.0F, 0.0F).endVertex();
+////            builder.vertex(lastMatrix, rSin * 0.2F, rCos * 0.2F, 0.0F).color(0, 0, 0, 255).uv(indexDecimal, f2).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(lastNormal, 0.0F, -1.0F, 0.0F).endVertex();
+//            builder.vertex(lastMatrix, f4 * 0.2F, f5 * 0.2F, 0.0F).color(0, 0, 0, 255).uv(f6, f2).endVertex();
+//            builder.vertex(lastMatrix, f4, f5, distance).color(255, 255, 255, 255).uv(f6, f3).endVertex();
+//            builder.vertex(lastMatrix, rSin, rCos, distance).color(255, 255, 255, 255).uv(indexDecimal, f3).endVertex();
+//            builder.vertex(lastMatrix, rSin * 0.2F, rCos * 0.2F, 0.0F).color(0, 0, 0, 255).uv(indexDecimal, f2).endVertex();
+//            f4 = rSin;
+//            f5 = rCos;
+//            f6 = indexDecimal;
+//        }
+//
+//        mStack.popPose();
+    }
+
+    public static void renderBeam(float crystalRelX, float crystalRelY, float crystalRelZ, float partialTicks, int animTicks, MatrixStack mStack, IRenderTypeBuffer getter, int packedLight, float alpha) {
+        float xzDistance = MathHelper.sqrt(crystalRelX * crystalRelX + crystalRelZ * crystalRelZ);
+        float distance = MathHelper.sqrt(crystalRelX * crystalRelX + crystalRelY * crystalRelY + crystalRelZ * crystalRelZ);
+        mStack.pushPose();
+        mStack.translate(0.0D, 2.0D, 0.0D);
+        mStack.mulPose(Vector3f.YP.rotation((float) (-Math.atan2(crystalRelZ, crystalRelX)) - ((float) Math.PI / 2F)));
+        mStack.mulPose(Vector3f.XP.rotation((float) (-Math.atan2(xzDistance, crystalRelY)) - ((float) Math.PI / 2F)));
+        IVertexBuilder builder = getter.getBuffer(beamType2);
+        float f2 = 0.0F - ((float) animTicks + partialTicks) * 0.01F;
+        float f3 = MathHelper.sqrt(crystalRelX * crystalRelX + crystalRelY * crystalRelY + crystalRelZ * crystalRelZ) / 32.0F - ((float) animTicks + partialTicks) * 0.01F;
+        float f4 = 0.0F;
+        float f5 = 0.75F;
+        float f6 = 0.0F;
+        MatrixStack.Entry stackLast = mStack.last();
+        Matrix4f lastMatrix = stackLast.pose();
+        Matrix3f lastNormal = stackLast.normal();
+
+        for (int j = 1; j <= 8; ++j) {
+            float rSin = MathHelper.sin((float) j * ((float) Math.PI * 2F) / 8.0F) * 0.75F;
+            float rCos = MathHelper.cos((float) j * ((float) Math.PI * 2F) / 8.0F) * 0.75F;
+            float indexDecimal = (float) j / 8.0F;
+            builder.vertex(lastMatrix, f4 * 0.2F, f5 * 0.2F, 0.0F).color(1F, 1F, 1F, alpha).uv(f6, f2).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(lastNormal, 0.0F, -1.0F, 0.0F).endVertex();
+            builder.vertex(lastMatrix, f4, f5, distance).color(1F, 1F, 1F, alpha).uv(f6, f3).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(lastNormal, 0.0F, -1.0F, 0.0F).endVertex();
+            builder.vertex(lastMatrix, rSin, rCos, distance).color(1F, 1F, 1F, alpha).uv(indexDecimal, f3).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(lastNormal, 0.0F, -1.0F, 0.0F).endVertex();
+            builder.vertex(lastMatrix, rSin * 0.2F, rCos * 0.2F, 0.0F).color(1F, 1F, 1F, alpha).uv(indexDecimal, f2).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(lastNormal, 0.0F, -1.0F, 0.0F).endVertex();
+            f4 = rSin;
+            f5 = rCos;
+            f6 = indexDecimal;
+        }
+
+        mStack.popPose();
+    }
+
+    public static void renderChargingBeam(float crystalRelX, float crystalRelY, float crystalRelZ, float partialTicks, int animTicks, MatrixStack mStack, IRenderTypeBuffer getter, int packedLight, float alpha) {
+        float xzDistance = MathHelper.sqrt(crystalRelX * crystalRelX + crystalRelZ * crystalRelZ);
+        float distance = MathHelper.sqrt(crystalRelX * crystalRelX + crystalRelY * crystalRelY + crystalRelZ * crystalRelZ);
+        mStack.pushPose();
+        mStack.translate(0.0D, 2.0D, 0.0D);
+        mStack.mulPose(Vector3f.YP.rotation((float) (-Math.atan2(crystalRelZ, crystalRelX)) - ((float) Math.PI / 2F)));
+        mStack.mulPose(Vector3f.XP.rotation((float) (-Math.atan2(xzDistance, crystalRelY)) - ((float) Math.PI / 2F)));
+        IVertexBuilder builder = getter.getBuffer(beamType2);
+        float vMin =  ((float) animTicks + partialTicks) * 0.01F;
+        float vMax = (MathHelper.sqrt(crystalRelX * crystalRelX + crystalRelY * crystalRelY + crystalRelZ * crystalRelZ) / 32.0F) + (((float) animTicks + partialTicks) * 0.01F);
+        float f4 = 0.0F;
+        float f5 = 0.1F;
+        float texU = 0.0F;
+        MatrixStack.Entry stackLast = mStack.last();
+        Matrix4f lastMatrix = stackLast.pose();
+        Matrix3f lastNormal = stackLast.normal();
+
+        float taperOffset = 10F;//0.2F;
+
+        for (int j = 1; j <= 8; ++j) {
+//            int shell = j / 8;
+            float rSin = MathHelper.sin((float) j * ((float) Math.PI * 2F) / 8.0F) * 0.1F;
+            float rCos = MathHelper.cos((float) j * ((float) Math.PI * 2F) / 8.0F) * 0.1F;
+            float indexDecimal = (float) j / 8.0F;
+            builder.vertex(lastMatrix, f4 * taperOffset, f5 * taperOffset, 0.0F).color(1F, 1F, 1F, alpha).uv(texU, vMin).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(lastNormal, 0.0F, -1.0F, 0.0F).endVertex();
+            builder.vertex(lastMatrix, f4, f5, distance).color(1F, 1F, 1F, alpha).uv(texU, vMax).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(lastNormal, 0.0F, -1.0F, 0.0F).endVertex();
+            builder.vertex(lastMatrix, rSin, rCos, distance).color(1F, 1F, 1F, alpha).uv(indexDecimal, vMax).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(lastNormal, 0.0F, -1.0F, 0.0F).endVertex();
+            builder.vertex(lastMatrix, rSin * taperOffset, rCos * taperOffset, 0.0F).color(1F, 1F, 1F, alpha).uv(indexDecimal, vMin).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(lastNormal, 0.0F, -1.0F, 0.0F).endVertex();
+            f4 = rSin;
+            f5 = rCos;
+            texU = indexDecimal;
+        }
+
+        mStack.popPose();
+    }
+
+    //Original
+    public static void renderShaderBeam(float crystalRelX, float crystalRelY, float crystalRelZ, float partialTicks, int animTicks, MatrixStack mStack, IRenderTypeBuffer getter, int packedLight) {
+        float xzDistance = MathHelper.sqrt(crystalRelX * crystalRelX + crystalRelZ * crystalRelZ);
+        float distance = MathHelper.sqrt(crystalRelX * crystalRelX + crystalRelY * crystalRelY + crystalRelZ * crystalRelZ);
+        mStack.pushPose();
+        mStack.translate(0.0D, 2.0D, 0.0D);
+        mStack.mulPose(Vector3f.YP.rotation((float) (-Math.atan2(crystalRelZ, crystalRelX)) - ((float) Math.PI / 2F)));
+        mStack.mulPose(Vector3f.XP.rotation((float) (-Math.atan2(xzDistance, crystalRelY)) - ((float) Math.PI / 2F)));
+        IVertexBuilder builder = getter.getBuffer(beamType);
+        float f2 = 0.0F - ((float) animTicks + partialTicks) * 0.01F;
+        float f3 = MathHelper.sqrt(crystalRelX * crystalRelX + crystalRelY * crystalRelY + crystalRelZ * crystalRelZ) / 32.0F - ((float) animTicks + partialTicks) * 0.01F;
+        float f4 = 0.0F;
+        float f5 = 0.75F;
+        float f6 = 0.0F;
+        MatrixStack.Entry stackLast = mStack.last();
+        Matrix4f lastMatrix = stackLast.pose();
+        Matrix3f lastNormal = stackLast.normal();
+
+        for (int j = 1; j <= 8; ++j) {
+            float rSin = MathHelper.sin((float) j * ((float) Math.PI * 2F) / 8.0F) * 0.75F;
+            float rCos = MathHelper.cos((float) j * ((float) Math.PI * 2F) / 8.0F) * 0.75F;
+            float indexDecimal = (float) j / 8.0F;
+            builder.vertex(lastMatrix, f4 * 0.2F, f5 * 0.2F, 0.0F).color(0, 0, 0, 255).uv(f6, f2).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(lastNormal, 0.0F, -1.0F, 0.0F).endVertex();
+            builder.vertex(lastMatrix, f4, f5, distance).color(255, 255, 255, 255).uv(f6, f3).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(lastNormal, 0.0F, -1.0F, 0.0F).endVertex();
+            builder.vertex(lastMatrix, rSin, rCos, distance).color(255, 255, 255, 255).uv(indexDecimal, f3).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(lastNormal, 0.0F, -1.0F, 0.0F).endVertex();
+            builder.vertex(lastMatrix, rSin * 0.2F, rCos * 0.2F, 0.0F).color(0, 0, 0, 255).uv(indexDecimal, f2).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(lastNormal, 0.0F, -1.0F, 0.0F).endVertex();
             f4 = rSin;
             f5 = rCos;
             f6 = indexDecimal;

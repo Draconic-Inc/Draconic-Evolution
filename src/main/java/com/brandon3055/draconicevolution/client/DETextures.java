@@ -5,7 +5,15 @@ import codechicken.lib.texture.IIconRegister;
 import com.brandon3055.brandonscore.BCConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.utils.LogHelper;
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.particle.IParticleRenderType;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.resource.IResourceType;
@@ -24,6 +32,25 @@ public class DETextures implements IIconRegister, ISelectiveResourceReloadListen
     private static final String PARTICLES_ = "draconicevolution:particle/";
     private static final String MC_PARTICLES_ = "minecraft:particle/";
     private static AtlasRegistrar map;
+
+    public static IParticleRenderType PARTICLE_SHEET_TRANSLUCENT = new IParticleRenderType() {
+        public void begin(BufferBuilder builder, TextureManager manager) {
+            RenderSystem.depthMask(false);
+            manager.bind(AtlasTexture.LOCATION_BLOCKS);
+            RenderSystem.enableBlend();
+            RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+            RenderSystem.alphaFunc(516, 0.003921569F);
+            builder.begin(7, DefaultVertexFormats.PARTICLE);
+        }
+
+        public void end(Tessellator tessellator) {
+            tessellator.end();
+        }
+
+        public String toString() {
+            return "TERRAIN_SHEET_TRANSLUCENT";
+        }
+    };
 
     @Override
     public void onResourceManagerReload(IResourceManager resourceManager, Predicate<IResourceType> resourcePredicate) {

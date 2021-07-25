@@ -67,6 +67,17 @@ public class DESounds {
     public static SoundEvent bowSecondCharge;
     @ObjectHolder("bow_charge_shot")
     public static SoundEvent bowChargeShot;
+    @ObjectHolder("crystal_unstable")
+    public static SoundEvent crystalUnstable;
+    @ObjectHolder("crystal_beam")
+    public static SoundEvent crystalBeam;
+    @ObjectHolder("crystal_destabilize")
+    public static SoundEvent crystalDestabilize;
+    @ObjectHolder("crystal_restore")
+    public static SoundEvent crystalRestore;
+    @ObjectHolder("guardian_thonk")
+    public static SoundEvent guardianThonk;
+
 
     @SubscribeEvent
     public static void registerSounds(RegistryEvent.Register<SoundEvent> event) {
@@ -95,5 +106,10 @@ public class DESounds {
         event.getRegistry().register(new SoundEvent(new ResourceLocation(DraconicEvolution.MODID, "staff_hit_electric")).setRegistryName("staff_hit_electric"));
         event.getRegistry().register(new SoundEvent(new ResourceLocation(DraconicEvolution.MODID, "bow_second_charge")).setRegistryName("bow_second_charge"));
         event.getRegistry().register(new SoundEvent(new ResourceLocation(DraconicEvolution.MODID, "bow_charge_shot")).setRegistryName("bow_charge_shot"));
+        event.getRegistry().register(new SoundEvent(new ResourceLocation(DraconicEvolution.MODID, "crystal_unstable")).setRegistryName("crystal_unstable"));
+        event.getRegistry().register(new SoundEvent(new ResourceLocation(DraconicEvolution.MODID, "crystal_beam")).setRegistryName("crystal_beam"));
+        event.getRegistry().register(new SoundEvent(new ResourceLocation(DraconicEvolution.MODID, "crystal_destabilize")).setRegistryName("crystal_destabilize"));
+        event.getRegistry().register(new SoundEvent(new ResourceLocation(DraconicEvolution.MODID, "crystal_restore")).setRegistryName("crystal_restore"));
+        event.getRegistry().register(new SoundEvent(new ResourceLocation(DraconicEvolution.MODID, "guardian_thonk")).setRegistryName("guardian_thonk"));
     }
 }

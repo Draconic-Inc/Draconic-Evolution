@@ -223,6 +223,50 @@
         "stream": false
       }
     ]
+  },
+  "crystal_unstable": {
+    "category": "hostile",
+    "sounds": [
+      {
+        "name": "draconicevolution:crystal_unstable",
+        "stream": false
+      }
+    ]
+  },
+  "crystal_beam": {
+    "category": "hostile",
+    "sounds": [
+      {
+        "name": "draconicevolution:crystal_beam",
+        "stream": false
+      }
+    ]
+  },
+  "crystal_destabilize": {
+    "category": "hostile",
+    "sounds": [
+      {
+        "name": "draconicevolution:crystal_destabilize",
+        "stream": false
+      }
+    ]
+  },
+  "crystal_restore": {
+    "category": "hostile",
+    "sounds": [
+      {
+        "name": "draconicevolution:crystal_restore",
+        "stream": false
+      }
+    ]
+  },
+  "guardian_thonk": {
+    "category": "hostile",
+    "sounds": [
+      {
+        "name": "draconicevolution:guardian_thonk",
+        "stream": false
+      }
+    ]
   }
 }
-

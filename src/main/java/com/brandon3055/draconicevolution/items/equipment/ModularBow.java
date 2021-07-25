@@ -19,11 +19,13 @@ import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleHostImpl;
 import com.brandon3055.draconicevolution.entity.projectile.DraconicArrowEntity;
 import com.brandon3055.draconicevolution.handlers.DESounds;
+import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.init.EquipCfg;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
@@ -163,6 +165,10 @@ public class ModularBow extends BowItem implements IReaperItem, IModularItem {
                         arrowEntity.setPenetration(projData.getPenetration());
                         arrowEntity.setGravComp(projData.getAntiGrav());
 
+                        if (host.getEntitiesByType(ModuleTypes.PROJ_ANTI_IMMUNE).findAny().isPresent()) {
+                            arrowEntity.setProjectileImmuneOverride(true);
+                        }
+
                         if (powerForTime == 1.0F) {
                             arrowEntity.setCritArrow(true);
                         }
@@ -211,6 +217,10 @@ public class ModularBow extends BowItem implements IReaperItem, IModularItem {
 
     @Override
     public DraconicArrowEntity customArrow(AbstractArrowEntity arrow) {
+        Entity owner = arrow.getOwner();
+        if(!(owner instanceof LivingEntity)) { //Because it seems there is an edge case where owner may be null hear.
+            return new DraconicArrowEntity(DEContent.draconicArrow, arrow.level);
+        }
         DraconicArrowEntity newArrow = new DraconicArrowEntity(arrow.level, (LivingEntity) arrow.getOwner());
         if (arrow instanceof SpectralArrowEntity) {
             newArrow.setSpectral(((SpectralArrowEntity) arrow).duration);

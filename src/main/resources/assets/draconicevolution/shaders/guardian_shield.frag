@@ -3,8 +3,8 @@
 uniform float time;
 uniform vec4 baseColour;
 varying vec3 position;
+uniform float activation;
 
-float activation = 1;
 
 float snoise(vec3 uv, float res){
     const vec3 s = vec3(1e0, 1e2, 1e3);
@@ -31,8 +31,9 @@ void main() {
     vec3 coord = vec3(gl_TexCoord[0]);
     float colour = 0;
 
+    //Less than 0 disables pixel
     float rad = (distance(coord.xy, vec2(0.5, 0.34375)) * 5);
-    float level = max(0, (rad - (activation * 5)) * 1024);
+    float level = clamp((coord.x - activation) * 1024, 0, 1);
 
     float density = 8;
     float noise = 0;

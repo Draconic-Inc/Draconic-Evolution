@@ -8,6 +8,7 @@ import com.google.common.collect.Sets;
 import com.google.gson.*;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.data.*;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -93,6 +94,7 @@ public class DataGenEventHandler {
 
             tag(DETags.Blocks.ORES_DRACONIUM).add(DEContent.ore_draconium_end, DEContent.ore_draconium_nether, DEContent.ore_draconium_overworld);
             tag(Tags.Blocks.ORES).add(DEContent.ore_draconium_end, DEContent.ore_draconium_nether, DEContent.ore_draconium_overworld);
+            tag(BlockTags.SOUL_FIRE_BASE_BLOCKS).add(DEContent.infused_obsidian);
         }
     }
 

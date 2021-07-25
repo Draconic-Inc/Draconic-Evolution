@@ -64,7 +64,6 @@ public class ModularArmorModel extends VBOBipedModel<LivingEntity> {
                     .uniform("time", UniformType.FLOAT)
                     .uniform("activation", UniformType.FLOAT)
                     .uniform("baseColour", UniformType.VEC4)
-                    .uniform("tier", UniformType.INT)
             )
             .whenUsed(cache -> cache.glUniform1f("time", (BCClientEventHandler.elapsedTicks + Minecraft.getInstance().getFrameTime()) / 20))
             .build();
@@ -293,7 +292,6 @@ public class ModularArmorModel extends VBOBipedModel<LivingEntity> {
 
     public static ShaderRenderType getShaderType(RenderType parent, TechLevel techLevel, float activation, int colour, ShaderProgram shader) {
         UniformCache uniforms = shader.pushCache();
-        uniforms.glUniform1i("tier", techLevel.index);
         uniforms.glUniform1f("activation", activation);
         uniforms.glUniform4f("baseColour", ((colour >> 16) & 0xFF) / 255F, ((colour >> 8) & 0xFF) / 255F, (colour & 0xFF) / 255F, ((colour >> 24) & 0xFF) / 63F);
         return new ShaderRenderType(parent, shader, uniforms);

@@ -19,6 +19,8 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.*;
 
@@ -142,6 +144,12 @@ public class TileChaosCrystal extends TileBCore implements ITickableTileEntity {
     @Override
     public AxisAlignedBB getRenderBoundingBox() {
         return new AxisAlignedBB(worldPosition, worldPosition.offset(1, 1, 1)).inflate(3, 3, 3);
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public double getViewDistance() {
+        return 512;
     }
 
     @Override

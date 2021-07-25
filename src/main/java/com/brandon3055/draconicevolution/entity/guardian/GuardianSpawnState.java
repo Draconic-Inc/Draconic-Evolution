@@ -58,8 +58,8 @@ public enum GuardianSpawnState {
                     GuardianCrystalEntity crystal = new GuardianCrystalEntity(world.getLevel(), nextSpawn.getX() + 0.5, nextSpawn.getY() + 1, nextSpawn.getZ() + 0.5, manager.getUniqueID());
                     crystal.setInvulnerable(true);
                     world.addFreshEntity(crystal);
-
                     crystal.setBeamTarget(pos.offset(0, 80, 0));
+                    manager.crystalSpawned();
                 } else {
                     manager.setRespawnState(SUMMONING_GUARDIAN);
                     DraconicEvolution.LOGGER.info("Guardian spawn progressing to SUMMONING_GUARDIAN");

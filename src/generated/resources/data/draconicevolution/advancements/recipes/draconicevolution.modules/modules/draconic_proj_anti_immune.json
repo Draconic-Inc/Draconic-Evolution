@@ -2,7 +2,7 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "draconicevolution:modules/wyvern_night_vision"
+      "draconicevolution:modules/draconic_proj_anti_immune"
     ]
   },
   "criteria": {
@@ -19,7 +19,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "draconicevolution:modules/wyvern_night_vision"
+        "recipe": "draconicevolution:modules/draconic_proj_anti_immune"
       }
     }
   },

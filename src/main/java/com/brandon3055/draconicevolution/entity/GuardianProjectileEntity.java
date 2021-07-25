@@ -1,6 +1,10 @@
 package com.brandon3055.draconicevolution.entity;
 
+import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.network.BCoreNetwork;
+import com.brandon3055.draconicevolution.api.damage.DraconicIndirectEntityDamage;
+import com.brandon3055.draconicevolution.entity.guardian.DraconicGuardianEntity;
+import com.brandon3055.draconicevolution.entity.guardian.GuardianFightManager;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import net.minecraft.entity.Entity;
@@ -12,15 +16,12 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.*;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.network.NetworkHooks;
 
@@ -43,7 +44,7 @@ public class GuardianProjectileEntity extends DamagingProjectileEntity implement
         this.target = target;
         this.splashRange = splashRange;
         this.power = power;
-        this.damageSource = new IndirectEntityDamageSource("draconicevolution.guardian_projectile", this, shooter).bypassMagic().bypassArmor().setMagic().setExplosion();
+        this.damageSource = new DraconicIndirectEntityDamage("draconicevolution.guardian_projectile", this, shooter, TechLevel.CHAOTIC).bypassMagic().bypassArmor().setMagic().setExplosion();
         if (target != null) {
             closestApproach = distanceToSqr(target);
         }
@@ -75,7 +76,7 @@ public class GuardianProjectileEntity extends DamagingProjectileEntity implement
                 detonate();
             } else if (distSq < closestApproach) {
                 closestApproach = distSq;
-            } else if (tickCount > 5){
+            } else if (tickCount > 5) {
                 detonate();
             }
         }
@@ -95,8 +96,17 @@ public class GuardianProjectileEntity extends DamagingProjectileEntity implement
             float damage = (float) ((int) ((df * df + df) / 2.0D * 6.0D * power + 1.0D));
             entity.hurt(damageSource, damage);
         }
+        boolean destroy = false;
+        if (shooter instanceof DraconicGuardianEntity) {
+            GuardianFightManager manager = ((DraconicGuardianEntity) shooter).getFightManager();
+            if (manager != null && blockPosition().getY() > (manager.getArenaOrigin().getY() + (GuardianFightManager.CRYSTAL_HEIGHT_FROM_ORIGIN - 20))) {
+                destroy = true;
+            }
+        }
+//                BCoreNetwork.sendSound(level, blockPosition(), SoundEvents.GENERIC_EXPLODE, SoundCategory.HOSTILE, 10, random.nextFloat() * 0.1F + 0.9F, false);
+        level.explode(shooter, blockPosition().getX(), blockPosition().getY(), blockPosition().getZ(), 8, destroy ? Explosion.Mode.DESTROY : Explosion.Mode.NONE);
         DraconicNetwork.sendImpactEffect(level, blockPosition(), 0);
-        BCoreNetwork.sendSound(level, blockPosition(), SoundEvents.GENERIC_EXPLODE, SoundCategory.HOSTILE, 10, random.nextFloat() * 0.1F + 0.9F, false);
+
         this.remove();
     }
 

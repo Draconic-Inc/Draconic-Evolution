@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.entity.guardian.control;
 
 import com.brandon3055.draconicevolution.entity.guardian.DraconicGuardianEntity;
+import com.brandon3055.draconicevolution.entity.guardian.GuardianFightManager;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
@@ -9,7 +10,6 @@ import net.minecraft.world.gen.feature.EndPodiumFeature;
 
 import javax.annotation.Nullable;
 
-@Deprecated //Old vanilla phase
 public class DyingPhase extends Phase {
    private Vector3d targetLocation;
    private int time;
@@ -25,14 +25,17 @@ public class DyingPhase extends Phase {
          float f2 = (this.guardian.getRandom().nextFloat() - 0.5F) * 8.0F;
          this.guardian.level.addParticle(ParticleTypes.EXPLOSION_EMITTER, this.guardian.getX() + (double)f, this.guardian.getY() + 2.0D + (double)f1, this.guardian.getZ() + (double)f2, 0.0D, 0.0D, 0.0D);
       }
-
    }
 
    public void serverTick() {
       ++this.time;
       if (this.targetLocation == null) {
-         BlockPos blockpos = this.guardian.level.getHeightmapPos(Heightmap.Type.MOTION_BLOCKING, EndPodiumFeature.END_PODIUM_LOCATION);
-         this.targetLocation = Vector3d.atBottomCenterOf(blockpos);
+         GuardianFightManager manager = guardian.getFightManager();
+         if (manager != null) {
+            targetLocation = Vector3d.atBottomCenterOf(manager.getArenaOrigin().above(15));
+         } else {
+            this.targetLocation = Vector3d.atBottomCenterOf(guardian.blockPosition());
+         }
       }
 
       double d0 = this.targetLocation.distanceToSqr(this.guardian.getX(), this.guardian.getY(), this.guardian.getZ());
@@ -41,7 +44,6 @@ public class DyingPhase extends Phase {
       } else {
          this.guardian.setHealth(0.0F);
       }
-
    }
 
    public void initPhase() {
@@ -49,6 +51,12 @@ public class DyingPhase extends Phase {
       this.time = 0;
    }
 
+   @Override
+   public boolean highVerticalAgility() {
+      return true;
+   }
+
+   @Override
    public float getMaxRiseOrFall() {
       return 3.0F;
    }

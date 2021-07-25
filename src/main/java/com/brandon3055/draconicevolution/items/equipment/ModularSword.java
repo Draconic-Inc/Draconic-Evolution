@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.items.equipment;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.lib.TechPropBuilder;
 import com.brandon3055.draconicevolution.api.IReaperItem;
+import com.brandon3055.draconicevolution.api.damage.IDraconicDamage;
 import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleHostImpl;
 import com.brandon3055.draconicevolution.init.EquipCfg;
@@ -29,7 +30,7 @@ import static com.brandon3055.draconicevolution.init.ModuleCfg.*;
 /**
  * Created by brandon3055 on 21/5/20.
  */
-public class ModularSword extends SwordItem implements IReaperItem, IModularMelee {
+public class ModularSword extends SwordItem implements IReaperItem, IModularMelee, IDraconicDamage {
     private final TechLevel techLevel;
     private final DEItemTier itemTier;
 
@@ -47,6 +48,11 @@ public class ModularSword extends SwordItem implements IReaperItem, IModularMele
     @Override
     public DEItemTier getItemTier() {
         return itemTier;
+    }
+
+    @Override
+    public TechLevel getTechLevel(@Nullable ItemStack stack) {
+        return techLevel;
     }
 
     @Override

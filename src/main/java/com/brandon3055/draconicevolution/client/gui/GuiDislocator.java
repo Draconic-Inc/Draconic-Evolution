@@ -146,7 +146,7 @@ public class GuiDislocator extends ModularGuiScreen {
                 .setPos(posBG.maxXPos() + 2, infoBG.maxYPos() + 2)
                 .setMaxXPos(temp.background.maxXPos() - bgPad, true)
                 .setYSize(15)
-                .onPressed(() -> DraconicNetwork.sendDislocatorMessage(7, output -> output.writeVarInt(lastAdded)))
+                .onPressed(() -> DraconicNetwork.sendDislocatorMessage(7, output -> output.writeVarInt(selectedIndex)))
                 .setDisabledStateSupplier(() -> !hasTarget() || getTarget().isLocked());
 
         //Fuel Add

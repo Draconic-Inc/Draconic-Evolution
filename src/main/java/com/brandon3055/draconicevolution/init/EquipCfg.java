@@ -57,23 +57,19 @@ public class EquipCfg {
     private static double CHESTPIECE_ENERGY_MULT    = 2D;
 
     private static int ENERGY_HARVEST               = 256;
-    private static int ENERGY_ATTACK                = 256;
-    private static int ENERGY_SHIELD_CHG            = 1024;
+    private static int ENERGY_ATTACK                = 1024;
+    private static int ENERGY_SHIELD_CHG            = 8192;
 
     private static double SHIELD_PASSIVE_MODIFIER   = 0.0005;
 
-    private static int WYVERN_SHIELD_COOL_DOWN      = 15 * 20;
-    private static int DRACONIC_SHIELD_COOL_DOWN    = 8 * 20;
-    private static int CHAOTIC_SHIELD_COOL_DOWN     = 5 * 20;
+    private static int ELYTRA_FLIGHT_ENERGY         = 1024;
+    private static int CREATIVE_FLIGHT_ENERGY       = 4096;
 
-    private static int ELYTRA_FLIGHT_ENERGY         = 256;
-    private static int CREATIVE_FLIGHT_ENERGY       = 512;
+    private static int ELYTRA_WYVERN_ENERGY         = 1024;
+    private static int ELYTRA_DRACONIC_ENERGY       = 2048;
+    private static int ELYTRA_CHAOTIC_ENERGY        = 8192;
 
-    private static int ELYTRA_WYVERN_ENERGY         = 512;
-    private static int ELYTRA_DRACONIC_ENERGY       = 1024;
-    private static int ELYTRA_CHAOTIC_ENERGY        = 2048;
-
-    private static int BOW_BASE_ENERGY              = 768; //Energy per calculated damage point
+    private static int BOW_BASE_ENERGY              = 1024; //Energy per calculated damage point
 
     //Static Access values
     public static double draconiumEfficiency;
@@ -127,10 +123,6 @@ public class EquipCfg {
     public static int energyShieldChg;
 
     public static double shieldPassiveModifier;
-
-//    public static int wyvernShieldCoolDown;
-//    public static int draconicShieldCoolDown;
-//    public static int chaoticShieldCoolDown;
 
     public static int elytraFlightEnergy;
     public static int creativeFlightEnergy;
@@ -320,7 +312,7 @@ public class EquipCfg {
                 .setSyncCallback((tag, type) -> energyShieldChg = tag.getInt() != -99 ? tag.getInt() : ENERGY_SHIELD_CHG);
 
         equipTag.getTag("shieldPassiveModifier")
-                .setComment("This controls the shield's passive power usage. The formula is: passiveDraw = (shieldPoints * shieldPoints * shieldPassiveModifier) OP/t\nInternal Default Value: " + SHIELD_PASSIVE_MODIFIER)
+                .setComment("This controls the shield's passive power usage. The formula is: passiveDraw = (shieldPoints^2 * shieldPassiveModifier) OP/t\nInternal Default Value: " + SHIELD_PASSIVE_MODIFIER)
                 .setDefaultDouble(-99)
                 .setSyncCallback((tag, type) -> shieldPassiveModifier = tag.getDouble() != -99 ? tag.getDouble() : SHIELD_PASSIVE_MODIFIER);
 

@@ -1,9 +1,17 @@
 package com.brandon3055.draconicevolution.entity.guardian.control;
 
 import com.brandon3055.draconicevolution.entity.guardian.DraconicGuardianEntity;
+import com.brandon3055.draconicevolution.entity.guardian.GuardianFightManager;
+import net.minecraft.util.Util;
+import net.minecraft.util.text.ChatType;
+import net.minecraft.util.text.StringTextComponent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * Reminder. There are a fixed number of {@link PhaseType}'s but those types will create a new instance of their associated phase for each guardian entity.
+ * Meaning all dater in a phase is "per-guardian" and not "global" so you dont need to worry about the possibility of simultaneous fights conflicting with each other.
+ * */
 public class PhaseManager {
    private static final Logger LOGGER = LogManager.getLogger();
    private final DraconicGuardianEntity dragon;
@@ -24,9 +32,14 @@ public class PhaseManager {
          phase = getPhase(phaseIn);
          if (!dragon.level.isClientSide) {
             dragon.getEntityData().set(DraconicGuardianEntity.PHASE, phaseIn.getId());
+            GuardianFightManager manager = dragon.getFightManager();
+            if (manager != null) {
+               manager.guardianUpdate(dragon);
+            }
+//            dragon.level.getServer().getPlayerList().broadcastMessage(new StringTextComponent("Start Phase: " + phaseIn), ChatType.CHAT, Util.NIL_UUID);
          }
 
-         LOGGER.debug("Dragon is now in phase {} on the {}", phaseIn, dragon.level.isClientSide ? "client" : "server");
+//         LOGGER.info("Dragon is now in phase {} on the {}", phaseIn, dragon.level.isClientSide ? "client" : "server");
          phase.initPhase();
          return (T) phase;
       }
@@ -44,5 +57,13 @@ public class PhaseManager {
       }
 
       return (T)phases[i];
+   }
+
+   public void globalServerTick() {
+      for (IPhase phase : phases) {
+         if (phase != null) {
+            phase.globalServerTick();
+         }
+      }
    }
 }

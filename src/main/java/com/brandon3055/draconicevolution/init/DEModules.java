@@ -70,6 +70,8 @@ public class DEModules {
 
     @ObjectHolder("wyvern_auto_fire")               public static Module<NoData>            wyvernAutoFire;
 
+    @ObjectHolder("draconic_proj_anti_immune")      public static Module<NoData>            draconicProjAntiImmune;
+
     @ObjectHolder("wyvern_proj_velocity")           public static Module<ProjectileData>    wyvernProjVelocity;
     @ObjectHolder("draconic_proj_velocity")         public static Module<ProjectileData>    draconicProjVelocity;
     @ObjectHolder("chaotic_proj_velocity")          public static Module<ProjectileData>    chaoticProjVelocity;
@@ -165,9 +167,9 @@ public class DEModules {
         register(new ModuleImpl<>(AOE,                  DRACONIC,       aoeData(3)),                                "draconic_aoe");
         register(new ModuleImpl<>(AOE,                  CHAOTIC,        aoeData(5)),                                "chaotic_aoe");
 
-        register(new ModuleImpl<>(MINING_STABILITY,     WYVERN,         noData()),                                  "wyvern_mining_stability");
+//        register(new ModuleImpl<>(MINING_STABILITY,     WYVERN,         noData()),                                  "wyvern_mining_stability");
 
-        register(new ModuleImpl<>(JUNK_FILTER,          WYVERN,         noData()),                                  "wyvern_junk_filter");
+//        register(new ModuleImpl<>(JUNK_FILTER,          WYVERN,         noData()),                                  "wyvern_junk_filter");
 
         //Arrow base velocity is 60 m/s
         register(new ProjectileVelocityModule(PROJ_MODIFIER,        WYVERN,         projVelocityData(0.15F, 1.0F)).setMaxInstall(8),   "wyvern_proj_velocity");   // (1 + (0.15 * 8) * 60) = 132 m/s max
@@ -191,6 +193,8 @@ public class DEModules {
         register(new ModuleImpl<>(PROJ_MODIFIER,        CHAOTIC,        projDamageData(0.75F, 0.0F)),               "chaotic_proj_damage");
 
         register(new ModuleImpl<>(AUTO_FIRE,            WYVERN,         noData()), "wyvern_auto_fire");
+
+        register(new ModuleImpl<>(PROJ_ANTI_IMMUNE,     DRACONIC,       noData()), "draconic_proj_anti_immune");
 
 //        register(new ModuleImpl<>(DAMAGE_MOD,           DRACONIC,       dmgModData(new FireDmgMod())),      "draconic_fire_mod");
 //        register(new ModuleImpl<>(DAMAGE_MOD,           CHAOTIC,        dmgModData(new FireDmgMod())),      "chaotic_fire_mod");
@@ -223,13 +227,13 @@ public class DEModules {
 
         register(new ModuleImpl<>(LAST_STAND,           WYVERN,         lastStandData(6F,  25F, 15*20,  4*30*20, 5000000, 2)),                       "wyvern_last_stand");
         register(new ModuleImpl<>(LAST_STAND,           DRACONIC,       lastStandData(12F, 50F, 30*20,  2*30*20, 10000000, 3)).setMaxInstall(2),     "draconic_last_stand");
-        register(new ModuleImpl<>(LAST_STAND,           CHAOTIC,        lastStandData(20F, 100F,120*20, 1*30*20, 20000000, 4)).setMaxInstall(3),     "chaotic_last_stand");
+        register(new ModuleImpl<>(LAST_STAND,           CHAOTIC,        lastStandData(20F, 100F,120*20, 45*20, 20000000, 3)).setMaxInstall(3),     "chaotic_last_stand");
 
         register(new ModuleImpl<>(AUTO_FEED,            DRACONIUM,      autoFeedData(40)),                          "draconium_auto_feed");
         register(new ModuleImpl<>(AUTO_FEED,            WYVERN,         autoFeedData(150)),                         "wyvern_auto_feed");
         register(new ModuleImpl<>(AUTO_FEED,            DRACONIC,       autoFeedData(400)),                         "draconic_auto_feed");
 
-        register(new ModuleImpl<>(NIGHT_VISION,         WYVERN,         noData()),                                  "wyvern_night_vision");
+//        register(new ModuleImpl<>(NIGHT_VISION,         WYVERN,         noData()),                                  "wyvern_night_vision");
 
         register(new ModuleImpl<>(HILL_STEP,            WYVERN,         noData()),                                  "wyvern_hill_step");
 //        register(new ModuleImpl<>(HILL_STEP,            DRACONIC,       noData()),                                  "draconic_hill_step");
@@ -239,7 +243,7 @@ public class DEModules {
         register(new ModuleImpl<>(JUMP_BOOST,           DRACONIC,       jumpData(1.25)),                            "draconic_jump");
         register(new ModuleImpl<>(JUMP_BOOST,           CHAOTIC,        jumpData(4.00)),                            "chaotic_jump");
 
-        register(new ModuleImpl<>(AQUA_ADAPT,           WYVERN,         noData()),                                  "wyvern_aqua_adapt");
+//        register(new ModuleImpl<>(AQUA_ADAPT,           WYVERN,         noData()),                                  "wyvern_aqua_adapt");
         //@formatter:on
     }
 

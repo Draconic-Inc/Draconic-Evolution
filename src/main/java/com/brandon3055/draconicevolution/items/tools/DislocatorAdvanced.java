@@ -312,6 +312,7 @@ public class DislocatorAdvanced extends Dislocator implements IHudDisplay {
             case 9: //Scroll
                 break;
             case 10: //Move
+                if (list.size() == 0) return;
                 if (selected == null) return;
 //                boolean up = input.readBoolean();
                 int newIndex = input.readVarInt();
@@ -324,12 +325,14 @@ public class DislocatorAdvanced extends Dislocator implements IHudDisplay {
 //                list.set(selectIndex, swapWith);
                 break;
             case 11: //Teleport to selected
+                if (list.size() == 0) return;
                 handleTeleport(player, stack, selected, true);
                 break;
             case 12: //Blink
                 handleBlink(player, stack, true);
                 break;
             case 13: //Select Next / Previous
+                if (list.size() == 0) return;
                 selected = DataUtils.safeGet(list, Math.floorMod(selectIndex += input.readBoolean() ? 1 : -1, list.size()));
                 if (selected != null) {
                     DislocatorTarget up = DataUtils.safeGet(list, Math.floorMod(selectIndex - 1, list.size()));

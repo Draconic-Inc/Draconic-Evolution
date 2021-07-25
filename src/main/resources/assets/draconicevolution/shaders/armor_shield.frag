@@ -2,7 +2,7 @@
 
 uniform float time;
 uniform float activation;
-uniform int tier;
+
 uniform vec4 baseColour;
 varying vec3 position;
 

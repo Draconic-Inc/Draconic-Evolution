@@ -7,6 +7,7 @@ import net.minecraft.util.EntityDamageSource;
 /**
  * Created by brandon3055 on 5/07/2016.
  */
+@Deprecated
 public class DEDamageSources {
 
     public static final DamageSource CHAOS_ISLAND_IMPLOSION = new DamageSource("de.islandImplode").bypassArmor().bypassMagic();

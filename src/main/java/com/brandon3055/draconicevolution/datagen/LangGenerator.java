@@ -278,6 +278,8 @@ public class LangGenerator extends LanguageProvider {
 
         helper.add(ModuleTypes.AUTO_FIRE,                                       "Auto Fire");
 
+        helper.add(ModuleTypes.PROJ_ANTI_IMMUNE,                                "Projectile Immunity Cancellation");
+
         helper.add(ModuleTypes.PROJ_MODIFIER,                                   "Projectile Modifier");
 //        helper.add(ModuleTypes.PROJ_VELOCITY,                                   "Projectile Velocity");
         helper.add("proj_velocity.name",                                        "Velocity");
@@ -323,11 +325,13 @@ public class LangGenerator extends LanguageProvider {
         helper.add(DEModules.draconicAOE,                                       "Draconic AOE Module");
         helper.add(DEModules.chaoticAOE,                                        "Chaotic AOE Module");
 
-        helper.add(DEModules.wyvernMiningStability,                             "Mining Stability Module");
+//        helper.add(DEModules.wyvernMiningStability,                             "Mining Stability Module");
 
-        helper.add(DEModules.wyvernJunkFilter,                                  "Junk Filter Module");
+//        helper.add(DEModules.wyvernJunkFilter,                                  "Junk Filter Module");
 
         helper.add(DEModules.wyvernAutoFire,                                    "Auto Fire Module");
+
+        helper.add(DEModules.draconicProjAntiImmune,                            "Projectile Immunity Cancellation Module");
 
         helper.add(DEModules.wyvernProjVelocity,                               "Wyvern Projectile Velocity Module");
         helper.add(DEModules.draconicProjVelocity,                             "Draconic Projectile Velocity Module");
@@ -377,14 +381,14 @@ public class LangGenerator extends LanguageProvider {
         helper.add(DEModules.wyvernAutoFeed,                                    "Wyvern Auto Feed Module");
         helper.add(DEModules.draconicAutoFeed,                                  "Draconic Auto Feed Module");
 
-        helper.add(DEModules.wyvernNightVision,                                 "Night Vision Module");
+//        helper.add(DEModules.wyvernNightVision,                                 "Night Vision Module");
 
         helper.add(DEModules.draconiumJump,                                     "Jump Module");
         helper.add(DEModules.wyvernJump,                                        "Wyvern Jump Module");
         helper.add(DEModules.draconicJump,                                      "Draconic Jump Module");
         helper.add(DEModules.chaoticJump,                                       "Chaotic Jump Module");
 
-        helper.add(DEModules.wyvernAquaAdapt,                                   "Aqua Adapt Module");
+//        helper.add(DEModules.wyvernAquaAdapt,                                   "Aqua Adapt Module");
 
         helper.add(DEModules.wyvernHillStep,                                    "Hill Step Module");
 
@@ -720,9 +724,12 @@ public class LangGenerator extends LanguageProvider {
         add("tech_level.draconicevolution.wyvern",                              "Wyvern");
         add("tech_level.draconicevolution.draconic",                            "Draconic");
         add("tech_level.draconicevolution.chaotic",                             "Chaotic");
+
         add("entity.draconicevolution.draconic_guardian",                       "Chaos Guardian");
         add("death.attack.draconicevolution.draconic_guardian",                 "%1$s was torn apart by %2$s");
         add("death.attack.draconicevolution.guardian_projectile",               "%1$s was obliterated by %2$s");
+        add("death.attack.draconicevolution.guardian_laser",                    "%1$s was vaporized by %2$s using a frickin laser beam!");
+        add("entity.draconicevolution.guardian_wither",                         "Guardian Wither");
 
         //Temporary
         add("gui.de.energyStorageCore.name",                                    "Tier %s Energy Core");

@@ -1,17 +1,25 @@
 package com.brandon3055.draconicevolution.entity.guardian;
 
+import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.worldentity.ITickableWorldEntity;
 import com.brandon3055.brandonscore.worldentity.WorldEntity;
+import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.api.damage.IDraconicDamage;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileChaosCrystal;
 import com.brandon3055.draconicevolution.entity.GuardianCrystalEntity;
+import com.brandon3055.draconicevolution.entity.guardian.control.ChargeUpPhase;
 import com.brandon3055.draconicevolution.entity.guardian.control.PhaseType;
 import com.brandon3055.draconicevolution.init.DEContent;
+import com.brandon3055.draconicevolution.world.ShieldedServerBossInfo;
 import com.google.common.collect.Sets;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.EnderCrystalEntity;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.tileentity.TileEntity;
@@ -26,6 +34,8 @@ import net.minecraft.world.BossInfo;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.chunk.IChunk;
+import net.minecraft.world.gen.Heightmap;
+import net.minecraft.world.gen.feature.EndPodiumFeature;
 import net.minecraft.world.server.ChunkHolder;
 import net.minecraft.world.server.ServerBossInfo;
 import net.minecraft.world.server.ServerWorld;
@@ -49,7 +59,7 @@ public class GuardianFightManager extends WorldEntity implements ITickableWorldE
     public static final float COVER_FIRE_POWER = 15;
 
     private Predicate<Entity> validPlayer;
-    private final ServerBossInfo bossInfo = (ServerBossInfo) (new ServerBossInfo(new TranslationTextComponent("entity.draconicevolution.draconic_guardian"), BossInfo.Color.RED, BossInfo.Overlay.PROGRESS)).setPlayBossMusic(true).setCreateWorldFog(true);
+    private final ShieldedServerBossInfo bossInfo = (ShieldedServerBossInfo) (new ShieldedServerBossInfo(new TranslationTextComponent("entity.draconicevolution.draconic_guardian"), BossInfo.Color.RED, BossInfo.Overlay.PROGRESS)).setPlayBossMusic(true).setCreateWorldFog(true);
     private int ticksSinceGuardianSeen;
     private int aliveCrystals;
     private int ticksSinceCrystalsScanned;
@@ -57,9 +67,8 @@ public class GuardianFightManager extends WorldEntity implements ITickableWorldE
     private boolean guardianKilled;
     private UUID guardianUniqueId;
     private BlockPos arenaOrigin; //For now this can be the chaos crystal position
-    private GuardianSpawnState respawnState;
+    public GuardianSpawnState respawnState;
     private int respawnStateTicks;
-    private List<EnderCrystalEntity> crystals;
     private List<BlockPos> crystalsPosCache;
 
     public GuardianFightManager() {
@@ -69,16 +78,15 @@ public class GuardianFightManager extends WorldEntity implements ITickableWorldE
     public GuardianFightManager(BlockPos origin) {
         super(DEContent.guardianManagerType);
         this.arenaOrigin = origin;
-        this.validPlayer = EntityPredicates.ENTITY_STILL_ALIVE.and(EntityPredicates.withinDistance(origin.getX(), origin.getY(), origin.getZ(), 192.0D));
+        this.validPlayer = EntityPredicates.ENTITY_STILL_ALIVE.and(EntityPredicates.withinDistance(origin.getX(), origin.getY(), origin.getZ(), 250.0D)); //Had to increase this range because it was still possible to cheese the guardian
         this.respawnState = GuardianSpawnState.START_WAIT_FOR_PLAYER;
         this.bossInfo.setPercent(0);
+        this.bossInfo.setShieldPower(0);
     }
 
     @Override
     public void tick() {
-//        bossInfo.setCreateFog(false);
         ServerWorld world = (ServerWorld) this.world;
-
         //Update Boss Info
         this.bossInfo.setVisible(!this.guardianKilled && (respawnState != GuardianSpawnState.START_WAIT_FOR_PLAYER));
         if (++this.ticksSinceLastPlayerScan >= 20) {
@@ -88,12 +96,11 @@ public class GuardianFightManager extends WorldEntity implements ITickableWorldE
 
         //This is just using the player list in boss info to check if there are any players in the area.
         if (!this.bossInfo.getPlayers().isEmpty()) {
-//            testGenPath();
             world.getChunkSource().addRegionTicket(TicketType.DRAGON, new ChunkPos(arenaOrigin), 12, Unit.INSTANCE); //Is this chunk loading?
             boolean areaLoaded = this.isFightAreaLoaded();
 
             if (this.respawnState != null) {
-                this.respawnState.process(world, this, this.crystals, this.respawnStateTicks++, this.arenaOrigin);
+                this.respawnState.process(world, this, null, this.respawnStateTicks++, this.arenaOrigin);
             }
 
             if (!this.guardianKilled && respawnState == null) {
@@ -111,7 +118,6 @@ public class GuardianFightManager extends WorldEntity implements ITickableWorldE
             world.getChunkSource().removeRegionTicket(TicketType.DRAGON, new ChunkPos(arenaOrigin), 12, Unit.INSTANCE);
         }
     }
-
 
     private void findOrCreateGuardian() {
         ServerWorld world = (ServerWorld) this.world;
@@ -134,6 +140,7 @@ public class GuardianFightManager extends WorldEntity implements ITickableWorldE
             if (state == GuardianSpawnState.END) {
                 this.respawnState = null;
                 this.guardianKilled = false;
+                findAliveCrystals();
                 DraconicGuardianEntity guardian = this.createNewGuardian();
                 for (ServerPlayerEntity serverplayerentity : this.bossInfo.getPlayers()) {
                     CriteriaTriggers.SUMMONED_ENTITY.trigger(serverplayerentity, guardian);
@@ -169,26 +176,38 @@ public class GuardianFightManager extends WorldEntity implements ITickableWorldE
         for (ServerPlayerEntity player : world.getPlayers(validPlayer)) {
             this.bossInfo.addPlayer(player);
             validPlayers.add(player);
-//            ChatHelper.sendMessage(player, new StringTextComponent("You are now being tracked"));
         }
 
         Set<ServerPlayerEntity> invalidPlayers = Sets.newHashSet(this.bossInfo.getPlayers());
         invalidPlayers.removeAll(validPlayers);
         for (ServerPlayerEntity player : invalidPlayers) {
             this.bossInfo.removePlayer(player);
-//            ChatHelper.sendMessage(player, new StringTextComponent("You are no longer tracked"));
         }
     }
 
     public void processDragonDeath(DraconicGuardianEntity guardian) {
         this.bossInfo.setPercent(0.0F);
+        this.bossInfo.setShieldPower(0);
         this.bossInfo.setVisible(false);
-//            this.generatePortal(true); //Unlock Crystal?
         this.guardianKilled = true;
         TileEntity tile = world.getBlockEntity(arenaOrigin);
         if (tile instanceof TileChaosCrystal) {
             ((TileChaosCrystal) tile).setDefeated();
         }
+
+        GuardianFightManager manager = guardian.getFightManager();
+        ItemEntity item = EntityType.ITEM.create(guardian.level);
+        if (manager != null && item != null) {
+            item.setItem(new ItemStack(DEContent.dragon_heart));
+            BlockPos podiumPos = manager.getArenaOrigin().above(20);
+            item.moveTo(podiumPos.getX() + 0.5, podiumPos.getY(), podiumPos.getZ() + 0.5, 0, 0);
+            item.setDeltaMovement(0, 0, 0);
+            item.age = -32767;
+            item.setInvulnerable(true);
+            item.setNoGravity(true);
+            guardian.level.addFreshEntity(item);
+        }
+
         cleanUpAndDispose();
     }
 
@@ -196,8 +215,8 @@ public class GuardianFightManager extends WorldEntity implements ITickableWorldE
         ServerWorld world = (ServerWorld) this.world;
         world.getChunkAt(guardianSpawnPos());
         DraconicGuardianEntity guardian = DEContent.draconicGuardian.create(world);
+        assert guardian != null;
         guardian.getPhaseManager().setPhase(PhaseType.START);
-//        guardian.getPhaseManager().setPhase(PhaseType.HOVER);
         guardian.moveTo(guardianSpawnPos().getX(), guardianSpawnPos().getY(), guardianSpawnPos().getZ(), this.world.random.nextFloat() * 360.0F, 0.0F);
         guardian.setFightManager(this);
         guardian.setArenaOrigin(arenaOrigin);
@@ -209,6 +228,9 @@ public class GuardianFightManager extends WorldEntity implements ITickableWorldE
     public void guardianUpdate(DraconicGuardianEntity guardian) {
         if (guardian.getUUID().equals(this.guardianUniqueId)) {
             this.bossInfo.setPercent(guardian.getHealth() / guardian.getMaxHealth());
+            this.bossInfo.setShieldPower(guardian.getShieldPower() / (float) DEConfig.guardianShield);
+            this.bossInfo.setImmune(guardian.getPhaseManager().getCurrentPhase() instanceof ChargeUpPhase);
+            bossInfo.setColor(guardian.getShieldPower() > 0 ? BossInfo.Color.PURPLE : BossInfo.Color.RED);
             this.ticksSinceGuardianSeen = 0;
             if (!arenaOrigin.equals(guardian.getArenaOrigin())) {
                 guardian.setArenaOrigin(arenaOrigin);
@@ -241,27 +263,54 @@ public class GuardianFightManager extends WorldEntity implements ITickableWorldE
         for (BlockPos pos : getCrystalPositions()) {
             List<GuardianCrystalEntity> list = this.world.getEntitiesOfClass(GuardianCrystalEntity.class, new AxisAlignedBB(pos.offset(-3, -3, -3), pos.offset(4, 4, 4)));
             for (GuardianCrystalEntity crystal : list) {
-                if (!crystal.getManagerId().equals(getUniqueID())) {
+                if (!crystal.isAlive()) continue;
+                if (crystal.getManagerId() == null || !crystal.getManagerId().equals(getUniqueID())) {
                     crystal.setManagerId(getUniqueID());
                 }
+                this.aliveCrystals++;
             }
-            this.aliveCrystals += list.size();
         }
+        this.bossInfo.setCrystals(getNumAliveCrystals());
 
         LOGGER.debug("Found {} end crystals still alive", (int) this.aliveCrystals);
+    }
+
+    public void crystalSpawned() {
+        aliveCrystals++;
+        this.bossInfo.setCrystals(getNumAliveCrystals());
     }
 
     public int getNumAliveCrystals() {
         return this.aliveCrystals;
     }
 
-    public void onCrystalDestroyed(GuardianCrystalEntity crystal, DamageSource dmgSrc) {
+    public void onCrystalAttacked(GuardianCrystalEntity crystal, DamageSource dmgSrc, float damage, boolean destroyed) {
         ServerWorld world = (ServerWorld) this.world;
-        this.findAliveCrystals();
+        if (destroyed) {
+            this.findAliveCrystals();
+        }
         Entity entity = world.getEntity(this.guardianUniqueId);
         if (entity instanceof DraconicGuardianEntity) {
-            ((DraconicGuardianEntity) entity).onCrystalDestroyed(crystal, crystal.blockPosition(), dmgSrc);
+            ((DraconicGuardianEntity) entity).onCrystalAttacked(crystal, crystal.blockPosition(), dmgSrc, damage, destroyed);
         }
+    }
+
+    public float getCrystalDamageModifier(GuardianCrystalEntity crystal, DamageSource dmgSrc) {
+        if (dmgSrc.getEntity() instanceof DraconicGuardianEntity) {
+            crystal.destabilize();
+            return 0.1F; //Still want the player to have to do some work here
+        } else if (IDraconicDamage.getDamageLevel(dmgSrc) == TechLevel.CHAOTIC && DEConfig.chaoticBypassCrystalShield) {
+            crystal.destabilize();
+            return 1F;
+        }
+        return crystal.getUnstableTime() > 0 ? 1F : 0F;
+    }
+
+    /**
+     * @return false to block the damage (There are still crystals alive)
+     * */
+    public boolean onGuardianAttacked(DraconicGuardianEntity guardian, DamageSource source, float damage) {
+        return getNumAliveCrystals() == 0;
     }
 
     public void resetCrystals() {
@@ -310,7 +359,6 @@ public class GuardianFightManager extends WorldEntity implements ITickableWorldE
         return arenaOrigin.offset(0, 80, 0);
     }
 
-
     public BlockPos getArenaOrigin() {
         return arenaOrigin;
     }
@@ -343,70 +391,3 @@ public class GuardianFightManager extends WorldEntity implements ITickableWorldE
         }
     }
 }
-
-
-
-
-
-//    int tick = 0;
-//        tick++;
-//        int i = tick % 360;
-//
-////        for (int i = 0; i < 28; i++) {
-//            float loopPos = i / 360F;
-//            float angle = loopPos * 360;
-//            int pointX = (20 * MathHelper.cos(angle * MathHelper.torad));
-//            int pointZ = (20 * MathHelper.sin(angle * MathHelper.torad));
-//            world.playEvent(4000, new BlockPos(arenaOrigin.getX() + pointX, arenaOrigin.getY() + 30, arenaOrigin.getZ() + pointZ), 0);
-////        }
-//    private void testGenPath() {
-////        tick = 0;
-////        if (true) return;
-//        List<PathPoint> points = new ArrayList<>();
-//
-//        //Outer Circle
-//        PathPoint lastPoint = null;
-//        for (int i = 0; i < 28; i++) {
-//            float loopPos = i / 28F;
-//            float angle = loopPos * 360;
-//            int pointX = MathHelper.floor((CRYSTAL_DIST_FROM_CENTER - 20) * Math.cos(angle * MathHelper.torad));
-//            int pointZ = MathHelper.floor((CRYSTAL_DIST_FROM_CENTER - 20) * Math.sin(angle * MathHelper.torad));
-//            int pointY = Math.max(arenaOrigin.getY() + CRYSTAL_HEIGHT_FROM_ORIGIN, this.world.getHeight(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, new BlockPos(pointX, 0, pointZ)).getY());
-//            points.add(lastPoint = new PathPoint(arenaOrigin.getX() + pointX, pointY, arenaOrigin.getZ() + pointZ));
-//        }
-//
-//        for (int i = 0; i < 5; i++) {
-//            double angle = (i + 1) * 144;
-//            int pointX = MathHelper.floor((CRYSTAL_DIST_FROM_CENTER - 20) * Math.cos(angle * MathHelper.torad));
-//            int pointZ = MathHelper.floor((CRYSTAL_DIST_FROM_CENTER - 20) * Math.sin(angle * MathHelper.torad));
-//            int pointY = Math.max(arenaOrigin.getY() + CRYSTAL_HEIGHT_FROM_ORIGIN, this.world.getHeight(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, new BlockPos(pointX, 0, pointZ)).getY());
-//            PathPoint next = new PathPoint(arenaOrigin.getX() + pointX, pointY, arenaOrigin.getZ() + pointZ);
-//
-//            for (int j = 0; j < 7; j++) {
-//                float loopPos = j / 7F;
-//                double x = lastPoint.x + ((next.x - lastPoint.x) * loopPos);
-//                double y = lastPoint.y + ((next.y - lastPoint.y) * loopPos);
-//                double z = lastPoint.z + ((next.z - lastPoint.z) * loopPos);
-//                points.add(lastPoint = new PathPoint(MathHelper.floor(x), MathHelper.floor(y), MathHelper.floor(z)));
-//            }
-//        }
-//
-//
-//        int shiftTime = 10;
-//        for (int i = 0; i < shiftTime / 2; i++) {
-//            tick++;
-//            int pointIdx = (tick / shiftTime) % points.size();
-//            int nextPointIdx = (pointIdx + 1) % points.size();
-//            double pos = (tick % shiftTime) / (double) shiftTime;
-//            PathPoint point = points.get(pointIdx);
-//            PathPoint nextPoint = points.get(nextPointIdx);
-//
-//            double x = point.x + ((nextPoint.x - point.x) * pos);
-//            double y = point.y + ((nextPoint.y - point.y) * pos);
-//            double z = point.z + ((nextPoint.z - point.z) * pos);
-//
-//            world.playEvent(4000, new BlockPos(x, y, z), 0);
-//        }
-//
-//
-//    }

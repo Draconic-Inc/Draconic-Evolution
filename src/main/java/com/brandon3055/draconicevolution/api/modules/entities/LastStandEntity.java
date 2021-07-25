@@ -59,7 +59,11 @@ public class LastStandEntity extends ModuleEntity {
             if (moduleContext instanceof StackModuleContext) {
                 LivingEntity entity = ((StackModuleContext) moduleContext).getEntity();
                 if (entity instanceof PlayerEntity) {
-                    ((PlayerEntity) entity).displayClientMessage(new TranslationTextComponent("module.draconicevolution.last_stand.invuln.active", MathUtils.round(invulnerableTime / 20D, 10)).withStyle(TextFormatting.GOLD), true);
+                    if (invulnerableTime == 0){
+                        ((PlayerEntity) entity).displayClientMessage(new StringTextComponent(""), true);
+                    } else {
+                        ((PlayerEntity) entity).displayClientMessage(new TranslationTextComponent("module.draconicevolution.last_stand.invuln.active", MathUtils.round(invulnerableTime / 20D, 10)).withStyle(TextFormatting.GOLD), true);
+                    }
                 }
             }
         }
@@ -95,6 +99,11 @@ public class LastStandEntity extends ModuleEntity {
             return true;
         }
         return false;
+    }
+
+    public boolean isCharged() {
+        LastStandData data = (LastStandData) module.getData();
+        return charge >= data.getChargeTime();
     }
 
     public boolean tryBlockDeath(LivingDeathEvent event) {

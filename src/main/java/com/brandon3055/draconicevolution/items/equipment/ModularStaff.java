@@ -4,6 +4,7 @@ import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.lib.TechPropBuilder;
 import com.brandon3055.draconicevolution.api.IReaperItem;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
+import com.brandon3055.draconicevolution.api.damage.IDraconicDamage;
 import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.ModuleCategory;
 import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
@@ -38,7 +39,7 @@ import static com.brandon3055.draconicevolution.init.ModuleCfg.*;
 /**
  * Created by brandon3055 on 21/5/20.
  */
-public class ModularStaff extends ToolItem implements IReaperItem, IModularMiningTool, IModularMelee {
+public class ModularStaff extends ToolItem implements IReaperItem, IModularMiningTool, IModularMelee, IDraconicDamage {
     private final TechLevel techLevel;
     private final DEItemTier itemTier;
 
@@ -57,6 +58,11 @@ public class ModularStaff extends ToolItem implements IReaperItem, IModularMinin
     @Override
     public DEItemTier getItemTier() {
         return itemTier;
+    }
+
+    @Override
+    public TechLevel getTechLevel(@Nullable ItemStack stack) {
+        return techLevel;
     }
 
     @Override

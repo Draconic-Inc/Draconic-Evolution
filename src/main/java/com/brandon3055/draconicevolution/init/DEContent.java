@@ -29,6 +29,7 @@ import com.brandon3055.draconicevolution.entity.PersistentItemEntity;
 import com.brandon3055.draconicevolution.entity.guardian.DraconicGuardianEntity;
 import com.brandon3055.draconicevolution.entity.guardian.GuardianFightManager;
 import com.brandon3055.draconicevolution.entity.GuardianProjectileEntity;
+import com.brandon3055.draconicevolution.entity.guardian.GuardianWither;
 import com.brandon3055.draconicevolution.entity.projectile.DraconicArrowEntity;
 import com.brandon3055.draconicevolution.inventory.*;
 import com.brandon3055.draconicevolution.items.EnderEnergyManipulator;
@@ -39,6 +40,7 @@ import com.brandon3055.draconicevolution.items.equipment.*;
 import com.brandon3055.draconicevolution.items.tools.*;
 import net.minecraft.block.AbstractBlock.Properties;
 import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
 import net.minecraft.entity.EntityClassification;
@@ -46,6 +48,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
+import net.minecraft.entity.boss.WitherEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.*;
 import net.minecraft.item.crafting.IRecipeSerializer;
@@ -54,6 +57,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ObjectHolder;
@@ -566,18 +570,26 @@ public class DEContent {
     public static EntityType<PersistentItemEntity> persistentItem;
     @ObjectHolder("draconic_arrow")
     public static EntityType<DraconicArrowEntity> draconicArrow;
+    @ObjectHolder("guardian_wither")
+    public static EntityType<GuardianWither> guardianWither;
 
     @SuppressWarnings("unchecked")
     @SubscribeEvent
     public static void registerEntities(RegistryEvent.Register<EntityType<?>> event) {
-        event.getRegistry().register(draconicGuardian = (EntityType<DraconicGuardianEntity>)EntityType.Builder.of(DraconicGuardianEntity::new, EntityClassification.MONSTER).fireImmune().sized(16.0F, 8.0F).clientTrackingRange(20).build("draconic_guardian").setRegistryName("draconic_guardian"));
-        GlobalEntityTypeAttributes.put(draconicGuardian, MobEntity.createMobAttributes().add(Attributes.MAX_HEALTH, 1000.0D).build());
+        event.getRegistry().register(EntityType.Builder.of(DraconicGuardianEntity::new, EntityClassification.MONSTER).fireImmune().sized(16.0F, 8.0F).clientTrackingRange(20).build("draconic_guardian").setRegistryName("draconic_guardian"));
+        event.getRegistry().register(EntityType.Builder.of(GuardianWither::new, EntityClassification.MONSTER).fireImmune().immuneTo(Blocks.WITHER_ROSE).sized(0.9F, 3.5F).clientTrackingRange(10).build("guardian_wither").setRegistryName("guardian_wither"));
+
         event.getRegistry().register(EntityType.Builder.of(GuardianProjectileEntity::new, EntityClassification.MISC).fireImmune().sized(2F, 2F).clientTrackingRange(20)/*.updateInterval(10)*/.build("guardian_projectile").setRegistryName("guardian_projectile"));
         event.getRegistry().register(EntityType.Builder.of(GuardianCrystalEntity::new, EntityClassification.MISC).fireImmune().sized(2F, 2F).clientTrackingRange(20).updateInterval(100).build("guardian_crystal").setRegistryName("guardian_crystal"));
         event.getRegistry().register(EntityType.Builder.<PersistentItemEntity>of(PersistentItemEntity::new, EntityClassification.MISC).sized(0.25F, 0.25F).clientTrackingRange(6).updateInterval(20).build("persistent_item").setRegistryName("persistent_item"));
         event.getRegistry().register(EntityType.Builder.<DraconicArrowEntity>of(DraconicArrowEntity::new, EntityClassification.MISC).sized(0.5F, 0.5F).clientTrackingRange(4).updateInterval(20).build("draconic_arrow").setRegistryName("draconic_arrow"));
     }
 
+    @SubscribeEvent
+    public static void registerAttributes(EntityAttributeCreationEvent event) {
+        event.put(draconicGuardian, DraconicGuardianEntity.registerAttributes().build());
+        event.put(guardianWither, GuardianWither.createAttributes().build());
+    }
 
     @SubscribeEvent
     public static void registerRecipeType(RegistryEvent.Register<IRecipeSerializer<?>> event) {

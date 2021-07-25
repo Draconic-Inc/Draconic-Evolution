@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.items.equipment;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.lib.TechPropBuilder;
 import com.brandon3055.draconicevolution.api.IReaperItem;
+import com.brandon3055.draconicevolution.api.damage.IDraconicDamage;
 import com.brandon3055.draconicevolution.api.modules.ModuleCategory;
 import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleHostImpl;
@@ -29,7 +30,7 @@ import static com.brandon3055.draconicevolution.init.ModuleCfg.*;
 /**
  * Created by brandon3055 on 21/5/20.
  */
-public class ModularAxe extends AxeItem implements IReaperItem, IModularMiningTool {
+public class ModularAxe extends AxeItem implements IReaperItem, IModularMiningTool, IDraconicDamage {
     public static final Set<Material> EFFECTIVE_MATS = ImmutableSet.of(Material.WOOD, Material.PLANT, Material.REPLACEABLE_PLANT, Material.BAMBOO, Material.LEAVES);
     private final TechLevel techLevel;
     private final DEItemTier itemTier;
@@ -48,6 +49,11 @@ public class ModularAxe extends AxeItem implements IReaperItem, IModularMiningTo
     @Override
     public DEItemTier getItemTier() {
         return itemTier;
+    }
+
+    @Override
+    public TechLevel getTechLevel(@Nullable ItemStack stack) {
+        return techLevel;
     }
 
     @Override

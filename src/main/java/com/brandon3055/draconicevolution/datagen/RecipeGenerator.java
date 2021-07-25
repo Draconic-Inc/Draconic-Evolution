@@ -1181,30 +1181,30 @@ public class RecipeGenerator extends RecipeProvider {
                 .unlockedBy("has_module_core", has(module_core))
                 .save(consumer, folder("modules", DEModules.chaoticAOE));
 
-        //Mining Stability
-        ShapedRecipeBuilder.shaped(DEModules.wyvernMiningStability.getItem())
-                .pattern("#C#")
-                .pattern("ABA")
-                .pattern("#D#")
-                .define('#', INGOTS_DRACONIUM)
-                .define('A', core_draconium)
-                .define('B', module_core)
-                .define('C', PHANTOM_MEMBRANE)
-                .define('D', GOLDEN_PICKAXE)
-                .unlockedBy("has_module_core", has(module_core))
-                .save(consumer, folder("modules", DEModules.wyvernMiningStability));
-
-        ShapedRecipeBuilder.shaped(DEModules.wyvernJunkFilter.getItem())
-                .pattern("#C#")
-                .pattern("ABA")
-                .pattern("#D#")
-                .define('#', INGOTS_DRACONIUM)
-                .define('A', core_draconium)
-                .define('B', module_core)
-                .define('C', LAVA_BUCKET)
-                .define('D', DUSTS_REDSTONE)
-                .unlockedBy("has_module_core", has(module_core))
-                .save(consumer, folder("modules", DEModules.wyvernJunkFilter));
+//        //Mining Stability
+//        ShapedRecipeBuilder.shaped(DEModules.wyvernMiningStability.getItem())
+//                .pattern("#C#")
+//                .pattern("ABA")
+//                .pattern("#D#")
+//                .define('#', INGOTS_DRACONIUM)
+//                .define('A', core_draconium)
+//                .define('B', module_core)
+//                .define('C', PHANTOM_MEMBRANE)
+//                .define('D', GOLDEN_PICKAXE)
+//                .unlockedBy("has_module_core", has(module_core))
+//                .save(consumer, folder("modules", DEModules.wyvernMiningStability));
+//
+//        ShapedRecipeBuilder.shaped(DEModules.wyvernJunkFilter.getItem())
+//                .pattern("#C#")
+//                .pattern("ABA")
+//                .pattern("#D#")
+//                .define('#', INGOTS_DRACONIUM)
+//                .define('A', core_draconium)
+//                .define('B', module_core)
+//                .define('C', LAVA_BUCKET)
+//                .define('D', DUSTS_REDSTONE)
+//                .unlockedBy("has_module_core", has(module_core))
+//                .save(consumer, folder("modules", DEModules.wyvernJunkFilter));
 
         //Shield Controller
         ShapedRecipeBuilder.shaped(DEModules.wyvernShieldControl.getItem())
@@ -1464,17 +1464,17 @@ public class RecipeGenerator extends RecipeProvider {
                 .unlockedBy("has_module_core", has(module_core))
                 .save(consumer, folder("modules", DEModules.draconicAutoFeed));
 
-        //Night Vision
-        ShapedRecipeBuilder.shaped(DEModules.wyvernNightVision.getItem())
-                .pattern("#P#")
-                .pattern("ABA")
-                .pattern("#P#")
-                .define('#', INGOTS_DRACONIUM)
-                .define('A', core_draconium)
-                .define('B', module_core)
-                .define('P', new NBTIngredient(PotionUtils.setPotion(new ItemStack(POTION), Potions.NIGHT_VISION)))
-                .unlockedBy("has_module_core", has(module_core))
-                .save(consumer, folder("modules", DEModules.wyvernNightVision));
+//        //Night Vision
+//        ShapedRecipeBuilder.shaped(DEModules.wyvernNightVision.getItem())
+//                .pattern("#P#")
+//                .pattern("ABA")
+//                .pattern("#P#")
+//                .define('#', INGOTS_DRACONIUM)
+//                .define('A', core_draconium)
+//                .define('B', module_core)
+//                .define('P', new NBTIngredient(PotionUtils.setPotion(new ItemStack(POTION), Potions.NIGHT_VISION)))
+//                .unlockedBy("has_module_core", has(module_core))
+//                .save(consumer, folder("modules", DEModules.wyvernNightVision));
 
         //Jump Boost
         ShapedRecipeBuilder.shaped(DEModules.draconiumJump.getItem())
@@ -1521,18 +1521,18 @@ public class RecipeGenerator extends RecipeProvider {
                 .unlockedBy("has_module_core", has(module_core))
                 .save(consumer, folder("modules", DEModules.chaoticJump));
 
-        //Aqua
-        ShapedRecipeBuilder.shaped(DEModules.wyvernAquaAdapt.getItem())
-                .pattern("#C#")
-                .pattern("ABA")
-                .pattern("#D#")
-                .define('#', INGOTS_DRACONIUM)
-                .define('A', core_draconium)
-                .define('B', module_core)
-                .define('C', HEART_OF_THE_SEA)
-                .define('D', IRON_PICKAXE)
-                .unlockedBy("has_module_core", has(module_core))
-                .save(consumer, folder("modules", DEModules.wyvernAquaAdapt));
+//        //Aqua
+//        ShapedRecipeBuilder.shaped(DEModules.wyvernAquaAdapt.getItem())
+//                .pattern("#C#")
+//                .pattern("ABA")
+//                .pattern("#D#")
+//                .define('#', INGOTS_DRACONIUM)
+//                .define('A', core_draconium)
+//                .define('B', module_core)
+//                .define('C', HEART_OF_THE_SEA)
+//                .define('D', IRON_PICKAXE)
+//                .unlockedBy("has_module_core", has(module_core))
+//                .save(consumer, folder("modules", DEModules.wyvernAquaAdapt));
 
         //Hill Step
         ShapedRecipeBuilder.shaped(DEModules.wyvernHillStep.getItem())
@@ -1546,18 +1546,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .define('D', PISTON)
                 .unlockedBy("has_module_core", has(module_core))
                 .save(consumer, folder("modules", DEModules.wyvernHillStep));
-        // Auto Fire
-        ShapedRecipeBuilder.shaped(DEModules.wyvernAutoFire.getItem())
-                .pattern("#P#")
-                .pattern("ABA")
-                .pattern("#C#")
-                .define('#', INGOTS_DRACONIUM)
-                .define('C', BOW)
-                .define('B', module_core)
-                .define('A', core_draconium)
-                .define('P', CLOCK)
-                .unlockedBy("has_module_core", has(module_core))
-                .save(consumer, folder("modules", DEModules.wyvernAutoFire));
+
         //Arrow Velocity
         ShapedRecipeBuilder.shaped(DEModules.wyvernProjVelocity.getItem())
                 .pattern("#P#")
@@ -1727,6 +1716,32 @@ public class RecipeGenerator extends RecipeProvider {
                 .define('C', chaos_frag_medium)
                 .unlockedBy("has_module_core", has(module_core))
                 .save(consumer, folder("modules", DEModules.chaoticProjGravComp));
+
+        // Auto Fire
+        ShapedRecipeBuilder.shaped(DEModules.wyvernAutoFire.getItem())
+                .pattern("#P#")
+                .pattern("ABA")
+                .pattern("#C#")
+                .define('#', INGOTS_DRACONIUM)
+                .define('C', BOW)
+                .define('B', module_core)
+                .define('A', core_draconium)
+                .define('P', CLOCK)
+                .unlockedBy("has_module_core", has(module_core))
+                .save(consumer, folder("modules", DEModules.wyvernAutoFire));
+
+        // Projectile Anti Immunity
+        ShapedRecipeBuilder.shaped(DEModules.draconicProjAntiImmune.getItem())
+                .pattern("#P#")
+                .pattern("ABA")
+                .pattern("#C#")
+                .define('#', NUGGETS_DRACONIUM_AWAKENED)
+                .define('C', ENDER_PEARLS)
+                .define('B', module_core)
+                .define('A', core_wyvern)
+                .define('P', WITHER_SKELETON_SKULL)
+                .unlockedBy("has_module_core", has(module_core))
+                .save(consumer, folder("modules", DEModules.draconicProjAntiImmune));
     }
 
 

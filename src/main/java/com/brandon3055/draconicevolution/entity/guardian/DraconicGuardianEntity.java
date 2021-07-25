@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.entity.guardian;
 
 import com.brandon3055.brandonscore.network.BCoreNetwork;
 import com.brandon3055.brandonscore.worldentity.WorldEntityHandler;
+import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.entity.GuardianCrystalEntity;
 import com.brandon3055.draconicevolution.entity.guardian.control.IPhase;
@@ -15,6 +16,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.*;
+import net.minecraft.entity.ai.attributes.AttributeModifierManager;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.item.ExperienceOrbEntity;
@@ -37,6 +39,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.Heightmap;
@@ -49,12 +52,14 @@ import org.apache.logging.log4j.Logger;
 import javax.annotation.Nullable;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 public class DraconicGuardianEntity extends MobEntity implements IMob {
     private static final Logger LOGGER = DraconicEvolution.LOGGER;
     public static final DataParameter<Integer> PHASE = EntityDataManager.defineId(DraconicGuardianEntity.class, DataSerializers.INT);
     public static final DataParameter<Integer> CRYSTAL_ID = EntityDataManager.defineId(DraconicGuardianEntity.class, DataSerializers.INT);
-    public static final DataParameter<Integer> SHIELD_STATE = EntityDataManager.defineId(DraconicGuardianEntity.class, DataSerializers.INT);
+    public static final DataParameter<Float> SHIELD_POWER = EntityDataManager.defineId(DraconicGuardianEntity.class, DataSerializers.FLOAT);
+    public static final DataParameter<Optional<BlockPos>> ORIGIN = EntityDataManager.defineId(DraconicGuardianEntity.class, DataSerializers.OPTIONAL_BLOCK_POS);
     private static final EntityPredicate PLAYER_INVADER_CONDITION = (new EntityPredicate()).range(64.0D);
     public final double[][] ringBuffer = new double[64][3];
     public int ringBufferIndex = -1;
@@ -78,12 +83,12 @@ public class DraconicGuardianEntity extends MobEntity implements IMob {
     private GuardianFightManager fightManager;
     private final PhaseManager phaseManager;
     private int growlTime = 100;
-    private int sittingDamageReceived;
     private PathPoint[] pathPoints = new PathPoint[24];
-    //    private int[] neighbors = new int[24];
     private final PathHeap pathFindQueue = new PathHeap();
-    private BlockPos arenaOrigin = null;
     private double speedMult = 1;
+    public float dpm = 0;
+    private float lastDamage;
+    private int hitCoolDown;
 
     public DraconicGuardianEntity(EntityType<?> type, World world) {
         super(DEContent.draconicGuardian, world);
@@ -112,15 +117,32 @@ public class DraconicGuardianEntity extends MobEntity implements IMob {
     }
 
     public void setArenaOrigin(BlockPos arenaOrigin) {
-        this.arenaOrigin = arenaOrigin;
+        entityData.set(ORIGIN, Optional.ofNullable(arenaOrigin));
     }
 
     public BlockPos getArenaOrigin() {
-        return arenaOrigin;
+        return entityData.get(ORIGIN).orElse(null);
+    }
+
+    @Override
+    public AttributeModifierManager getAttributes() {
+        return super.getAttributes();
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        return MobEntity.createMobAttributes().add(Attributes.MAX_HEALTH, 200.0D);
+        return MobEntity.createMobAttributes().add(Attributes.MAX_HEALTH, DEConfig.guardianHealth);
+    }
+
+    public float getShieldPower() {
+        return entityData.get(SHIELD_POWER);
+    }
+
+    public void setShieldPower(float shieldPower) {
+        entityData.set(SHIELD_POWER, shieldPower);
+        GuardianFightManager manager = getFightManager();
+        if (manager != null) {
+            manager.guardianUpdate(this);
+        }
     }
 
     @Override
@@ -128,7 +150,22 @@ public class DraconicGuardianEntity extends MobEntity implements IMob {
         super.defineSynchedData();
         this.getEntityData().define(PHASE, PhaseType.HOVER.getId());
         this.getEntityData().define(CRYSTAL_ID, -1);
-        this.getEntityData().define(SHIELD_STATE, 500);
+        this.getEntityData().define(SHIELD_POWER, (float) 0);
+        this.getEntityData().define(ORIGIN, Optional.empty());
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (!level.isClientSide && getShieldPower() < DEConfig.guardianShield) {
+            GuardianFightManager manager = getFightManager();
+            if (manager != null && manager.getNumAliveCrystals() > 0) {
+                setShieldPower(Math.min(DEConfig.guardianShield, getShieldPower() + (DEConfig.guardianShield / (20F * 10F))));
+            }
+        }
+        if (hitCoolDown > 0) {
+            hitCoolDown--;
+        }
     }
 
     public double[] getMovementOffsets(int index, float partialTicks) {
@@ -169,7 +206,7 @@ public class DraconicGuardianEntity extends MobEntity implements IMob {
                 }
             }
         } else {
-            updateShieldState();
+//            updateShieldState();
         }
 
         this.prevAnimTime = this.animTime;
@@ -229,6 +266,8 @@ public class DraconicGuardianEntity extends MobEntity implements IMob {
                         iphase = this.phaseManager.getCurrentPhase();
                         iphase.serverTick();
                     }
+
+                    phaseManager.globalServerTick();
 
                     Vector3d targetLocation = iphase.getTargetLocation();
                     if (targetLocation != null) {
@@ -352,16 +391,6 @@ public class DraconicGuardianEntity extends MobEntity implements IMob {
         }
     }
 
-    private void updateShieldState() {
-        int target = 0;
-        if (isDeadOrDying()) {
-            target = 0;
-        } else if (fightManager != null && fightManager.getNumAliveCrystals() > 0) {
-            target = 500;
-        }
-        getEntityData().set(SHIELD_STATE, (int)Math.floor(codechicken.lib.math.MathHelper.approachLinear(getEntityData().get(SHIELD_STATE), target, 10)));
-    }
-
     private void setPartPosition(DraconicGuardianPartEntity part, double offsetX, double offsetY, double offsetZ) {
         part.setPos(this.getX() + offsetX, this.getY() + offsetY, this.getZ() + offsetZ);
     }
@@ -478,13 +507,36 @@ public class DraconicGuardianEntity extends MobEntity implements IMob {
         if (this.phaseManager.getCurrentPhase().getType() == PhaseType.DYING) {
             return false;
         } else {
-            if (fightManager != null && fightManager.getNumAliveCrystals() > 0) {
-                getEntityData().set(SHIELD_STATE, 1000);
+            float shieldPower = getShieldPower();
+            if (shieldPower > 0) {
                 BCoreNetwork.sendSound(level, blockPosition(), DESounds.shieldStrike, SoundCategory.HOSTILE, 20, random.nextFloat() * 0.2F + 0.9F, false);
+            }
+
+            if (hitCoolDown > 0 && damage < lastDamage * 1.1F) {
+                lastDamage = damage;
+                return false;
+            }
+            lastDamage = damage;
+            hitCoolDown = 5;
+
+            if (fightManager != null && !fightManager.onGuardianAttacked(this, source, damage)) {
+                this.phaseManager.getCurrentPhase().onAttacked(source, damage, shieldPower, false);
                 return false;
             }
 
-            damage = this.phaseManager.getCurrentPhase().onAttacked(source, damage);
+            damage = this.phaseManager.getCurrentPhase().onAttacked(source, damage, shieldPower, true);
+            if (damage > 500) damage = 500;
+            shieldPower -= Math.min(shieldPower, damage);
+            if (shieldPower > 0) {
+                setShieldPower(shieldPower);
+                return true;
+            }else {
+                damage -= getShieldPower();
+                setShieldPower(0);
+            }
+
+            if (damage > 100) damage = 100;
+
             if (part != this.dragonPartHead) {
                 damage = damage / 4.0F + Math.min(damage, 1.0F);
             }
@@ -524,7 +576,6 @@ public class DraconicGuardianEntity extends MobEntity implements IMob {
             this.fightManager.guardianUpdate(this);
             this.fightManager.processDragonDeath(this);
         }
-
     }
 
     @Override
@@ -542,11 +593,7 @@ public class DraconicGuardianEntity extends MobEntity implements IMob {
         }
 
         boolean flag = this.level.getGameRules().getBoolean(GameRules.RULE_DOMOBLOOT);
-        int xpAmount = 500;
-//      if (this.fightManager != null && !this.fightManager.hasPreviouslyKilledDragon()) {
-//         xpAmount = 12000;
-        xpAmount = 24000; //Todo make this fight tier dependent
-//      }
+        int xpAmount = 24000;
 
         if (!this.level.isClientSide) {
             if (this.deathTicks > 150 && this.deathTicks % 5 == 0 && flag) {
@@ -587,9 +634,10 @@ public class DraconicGuardianEntity extends MobEntity implements IMob {
     //Path finding fo the chaos island can be much simpler because the pillar ring is much bigger and the guardian never needs to fly beyond its parimeter.
     public int initPathPoints(boolean regenerate) {
         if (this.pathPoints[0] == null || regenerate) {
-            if (arenaOrigin == null) {
-                arenaOrigin = blockPosition();
+            if (getArenaOrigin() == null) {
+                setArenaOrigin(blockPosition());
             }
+            BlockPos arenaOrigin = getArenaOrigin();
 
             //Circle
             for (int i = 0; i < 24; i++) {
@@ -732,9 +780,10 @@ public class DraconicGuardianEntity extends MobEntity implements IMob {
     public void addAdditionalSaveData(CompoundNBT compound) {
         super.addAdditionalSaveData(compound);
         compound.putInt("dragon_phase", phaseManager.getCurrentPhase().getType().getId());
-        if (arenaOrigin != null) {
-            compound.put("arena_origin", NBTUtil.writeBlockPos(arenaOrigin));
+        if (getArenaOrigin() != null) {
+            compound.put("arena_origin", NBTUtil.writeBlockPos(getArenaOrigin()));
         }
+        compound.putFloat("shield_power", getShieldPower());
     }
 
     @Override
@@ -744,7 +793,7 @@ public class DraconicGuardianEntity extends MobEntity implements IMob {
             phaseManager.setPhase(PhaseType.getById(compound.getInt("dragon_phase")));
         }
         if (compound.contains("arena_origin")) {
-            arenaOrigin = NBTUtil.readBlockPos(compound.getCompound("arena_origin"));
+            setArenaOrigin(NBTUtil.readBlockPos(compound.getCompound("arena_origin")));
         }
         if (level instanceof ServerWorld) {
             fightManager = WorldEntityHandler.getWorldEntities()
@@ -756,12 +805,14 @@ public class DraconicGuardianEntity extends MobEntity implements IMob {
                     .orElse(null);
 
             if (fightManager != null) {
-                arenaOrigin = fightManager.getArenaOrigin();
+                setArenaOrigin(fightManager.getArenaOrigin());
             }
         } else {
             fightManager = null;
         }
-
+        if (compound.contains("shield_power", 5)) {
+            setShieldPower(compound.getFloat("shield_power"));
+        }
     }
 
     @Override
@@ -802,7 +853,7 @@ public class DraconicGuardianEntity extends MobEntity implements IMob {
         IPhase iphase = this.phaseManager.getCurrentPhase();
         PhaseType<? extends IPhase> phasetype = iphase.getType();
         double d0;
-        if (phasetype != PhaseType.LANDING && phasetype != PhaseType.TAKEOFF) {
+//        if (phasetype != PhaseType.LANDING && phasetype != PhaseType.TAKEOFF) {
             if (iphase.getIsStationary()) {
                 d0 = p_184667_1_;
             } else if (p_184667_1_ == 6) {
@@ -810,11 +861,11 @@ public class DraconicGuardianEntity extends MobEntity implements IMob {
             } else {
                 d0 = headPartOffsets[1] - spineEndOffsets[1];
             }
-        } else {
-            BlockPos blockpos = this.level.getHeightmapPos(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, EndPodiumFeature.END_PODIUM_LOCATION);
-            float f = Math.max(MathHelper.sqrt(blockpos.distSqr(this.position(), true)) / 4.0F, 1.0F);
-            d0 = (float) p_184667_1_ / f;
-        }
+//        } else {
+//            BlockPos blockpos = this.level.getHeightmapPos(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, EndPodiumFeature.END_PODIUM_LOCATION);
+//            float f = Math.max(MathHelper.sqrt(blockpos.distSqr(this.position(), true)) / 4.0F, 1.0F);
+//            d0 = (float) p_184667_1_ / f;
+//        }
 
         return (float) d0;
     }
@@ -823,7 +874,7 @@ public class DraconicGuardianEntity extends MobEntity implements IMob {
         IPhase iphase = this.phaseManager.getCurrentPhase();
         PhaseType<? extends IPhase> phasetype = iphase.getType();
         Vector3d vector3d;
-        if (phasetype != PhaseType.LANDING && phasetype != PhaseType.TAKEOFF) {
+//        if (phasetype != PhaseType.LANDING && phasetype != PhaseType.TAKEOFF) {
             if (iphase.getIsStationary()) {
                 float f4 = this.xRot;
                 float f5 = 1.5F;
@@ -833,21 +884,21 @@ public class DraconicGuardianEntity extends MobEntity implements IMob {
             } else {
                 vector3d = this.getViewVector(partialTicks);
             }
-        } else {
-            BlockPos blockpos = this.level.getHeightmapPos(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, EndPodiumFeature.END_PODIUM_LOCATION);
-            float f = Math.max(MathHelper.sqrt(blockpos.distSqr(this.position(), true)) / 4.0F, 1.0F);
-            float f1 = 6.0F / f;
-            float f2 = this.xRot;
-            float f3 = 1.5F;
-            this.xRot = -f1 * 1.5F * 5.0F;
-            vector3d = this.getViewVector(partialTicks);
-            this.xRot = f2;
-        }
+//        } else {
+//            BlockPos blockpos = this.level.getHeightmapPos(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, EndPodiumFeature.END_PODIUM_LOCATION);
+//            float f = Math.max(MathHelper.sqrt(blockpos.distSqr(this.position(), true)) / 4.0F, 1.0F);
+//            float f1 = 6.0F / f;
+//            float f2 = this.xRot;
+//            float f3 = 1.5F;
+//            this.xRot = -f1 * 1.5F * 5.0F;
+//            vector3d = this.getViewVector(partialTicks);
+//            this.xRot = f2;
+//        }
 
         return vector3d;
     }
 
-    public void onCrystalDestroyed(GuardianCrystalEntity crystal, BlockPos pos, DamageSource dmgSrc) {
+    public void onCrystalAttacked(GuardianCrystalEntity crystal, BlockPos pos, DamageSource dmgSrc, float damage, boolean destroyed) {
         PlayerEntity playerentity;
         if (dmgSrc.getEntity() instanceof PlayerEntity) {
             playerentity = (PlayerEntity) dmgSrc.getEntity();
@@ -855,11 +906,11 @@ public class DraconicGuardianEntity extends MobEntity implements IMob {
             playerentity = this.level.getNearestPlayer(PLAYER_INVADER_CONDITION, pos.getX(), pos.getY(), pos.getZ());
         }
 
-        if (crystal == this.closestGuardianCrystal) {
+        if (crystal == this.closestGuardianCrystal && destroyed) {
             this.attackEntityPartFrom(this.dragonPartHead, DamageSource.explosion(playerentity), 10.0F);
         }
 
-        this.phaseManager.getCurrentPhase().onCrystalDestroyed(crystal, pos, dmgSrc, playerentity);
+        this.phaseManager.getCurrentPhase().onCrystalAttacked(crystal, pos, dmgSrc, playerentity, damage, destroyed);
     }
 
     @Override
@@ -890,6 +941,10 @@ public class DraconicGuardianEntity extends MobEntity implements IMob {
 
     @Override
     public boolean addEffect(EffectInstance effectInstanceIn) {
+        if (effectInstanceIn.getEffect().isBeneficial()) {
+            //This is mostly for testing purposes
+            return super.addEffect(effectInstanceIn);
+        }
         return false;
     }
 

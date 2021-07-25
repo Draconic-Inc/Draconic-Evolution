@@ -50,12 +50,16 @@ public class CoverFirePhase extends Phase {
 
       double distanceFromTarget = targetLocation == null ? 0.0D : targetLocation.distanceToSqr(guardian.getX(), guardian.getY(), guardian.getZ());
       if (currentPath != null && currentPath.isDone() && distanceFromTarget < 100) {
-         guardian.getPhaseManager().setPhase(PhaseType.START).immediateAttack();
+         guardian.getPhaseManager().setPhase(PhaseType.START).immediateAttack(null);
          return;
       }
 
       if (distanceFromTarget < 100){
          updatePathing();
+      }
+
+      if (tick++ > 60) {
+         guardian.getPhaseManager().setPhase(PhaseType.START).immediateAttack(null);
       }
    }
 

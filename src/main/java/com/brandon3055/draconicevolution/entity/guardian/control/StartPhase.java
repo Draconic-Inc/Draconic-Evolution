@@ -1,33 +1,69 @@
 package com.brandon3055.draconicevolution.entity.guardian.control;
 
+import com.brandon3055.brandonscore.api.TimeKeeper;
+import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.entity.GuardianCrystalEntity;
 import com.brandon3055.draconicevolution.entity.guardian.DraconicGuardianEntity;
+import com.brandon3055.draconicevolution.entity.guardian.GuardianFightManager;
 import net.minecraft.entity.EntityPredicate;
-import net.minecraft.entity.item.EnderCrystalEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Items;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.Util;
+import net.minecraft.util.WeightedRandom;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3i;
+import net.minecraft.util.text.ChatType;
+import net.minecraft.util.text.StringTextComponent;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nullable;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * This is where it all starts. This can be thought of as the "planning" phase. This phase assesses the situation and decides on the next new phase to execute.
  * And all other phases directly or indirectly lead back here when they are done.
+ * <p>
+ * Reminder. There are a fixed number of {@link PhaseType}'s but those types will create a new instance of their associated phase for each guardian entity.
+ * Meaning all dater in a phase is "per-guardian" and not "global" so you dont need to worry about the possibility of simultaneous fights conflicting with each other.
  */
 public class StartPhase extends Phase {
     private static final Logger LOGGER = DraconicEvolution.LOGGER;
-    private static final EntityPredicate playerSelector = new EntityPredicate();
+    public static final EntityPredicate AGRO_TARGETS = new EntityPredicate().allowUnseeable().range(300).selector(e -> e instanceof PlayerEntity);
     private Path currentPath;
     private Vector3d targetLocation;
     private boolean clockwise;
-    private int ticksSinceTargetUpdate = 0;
-    private int ticksUntilNextAttack = 0;
-    private boolean immediateAttack = false;
+//    private int ticksSinceTargetUpdate = 0;
+//    private int ticksUntilNextAttack = 0;
+//    private boolean immediateAttack = false;
+
+    /**
+     * Controls when the guardian will attack next. Every tick this value increases by x where x is the number of nearby players.
+     * This value also increases by various amounts every time the guardian or its crystals are attacked.
+     * The amount it increases will depend on damage dealt and destroying a crustal will instantly push it past maximum.
+     * <p>
+     * The way the logic works is whenever the start phase is entered we pick a random "target agro" between {@link #minAgroLevel} and {@link #maxAgroLevel}.
+     * Once agroLevel is equal to or greater than this target the next attack will begin.
+     */
+    private float agroLevel = 0;
+    private float minAgroLevel = 20 * 5; //Minimum 5 seconds before agro (Unless attached or multiple players)
+    private float maxAgroLevel = 20 * 15; //Maximum 15 seconds before agro
+    private float targetAgroLevel = 0;
+
+    /**
+     * This is an additional modifier that increases (up to a maximum of {@link #maxAgroModifier}) when the guardian or its crystals are attacked.
+     * This then reduces by 1 every tick the guardian is not under attack. This is also a persistent value that does not reset on phase init.
+     * As this value increases the {@link #minAgroLevel} and {@link #maxAgroLevel} will decrease by as much as 75% when agroModifier reaches maxAgroModifier
+     * Each time the guardian takes damage agroModifier will increase by 10% of maxAgroModifier.
+     */
+    private int agroModifier = 0;
+    private int maxAgroModifier = 2 * 60 * 20; //2 minutes
+
+    private int failedAttacks = 0;
 
     public StartPhase(DraconicGuardianEntity guardisn) {
         super(guardisn);
@@ -40,23 +76,47 @@ public class StartPhase extends Phase {
 
     @Override
     public void serverTick() {
-        if (ticksUntilNextAttack > 0) {
-            ticksUntilNextAttack--;
+        agroLevel += getPlayerCount();
+        if (TimeKeeper.getServerTick() % 10 == 0) {
+            debug("Start Phase, Target Agro: " + (targetAgroLevel / 20F) + ", Agro: " + (agroLevel / 20F));
+//            guardian.level.getServer().getPlayerList().broadcastMessage(new StringTextComponent("Start Phase, Target Agro: " + (targetAgroLevel/20F) +", Agro: " + (agroLevel/20F)), ChatType.CHAT, Util.NIL_UUID);
+        }
+
+        if (agroLevel >= targetAgroLevel / Math.max(failedAttacks, 1) && startNextAttack()) {
+            return;
         }
 
         double distanceFromTarget = targetLocation == null ? 0.0D : targetLocation.distanceToSqr(guardian.getX(), guardian.getY(), guardian.getZ());
-        if (distanceFromTarget < 100.0D || distanceFromTarget > 22500.0D || guardian.horizontalCollision || guardian.verticalCollision || ticksSinceTargetUpdate++ > (20 * 3)) {
-            ticksSinceTargetUpdate = 0;
-            findNewTarget();
+        if (distanceFromTarget < 100.0D || distanceFromTarget > 22500.0D || guardian.horizontalCollision || guardian.verticalCollision) {
+            resumePathing();
+        }
+    }
+
+    @Override
+    public void globalServerTick() {
+        if (agroModifier > 0) {
+            agroModifier--;
         }
     }
 
     @Override
     public void initPhase() {
+        minAgroLevel = 20 * 10;
+        maxAgroLevel = 20 * 30;
+        if (agroModifier > maxAgroModifier) {
+            agroModifier = maxAgroModifier;
+        }
+
         currentPath = null;
         targetLocation = null;
-        ticksUntilNextAttack = 5 * 20;
-        immediateAttack = false;
+        float agroMod = 1F - (((float) agroModifier / maxAgroModifier) * 0.75F);
+        float minAgro = minAgroLevel * agroMod;
+        float maxAgro = maxAgroLevel * agroMod;
+        targetAgroLevel = minAgro + (random.nextFloat() * (maxAgro - minAgro));
+        agroLevel = 0;
+        if (guardian.level.getServer() != null) {
+            debug("Start Phase, Target Agro: " + (targetAgroLevel / 20F) + ", Agro: " + (agroLevel / 20F));
+        }
     }
 
     @Override
@@ -65,47 +125,54 @@ public class StartPhase extends Phase {
         return targetLocation;
     }
 
-    private void findNewTarget() {
-        if (ticksUntilNextAttack > 0) {
-            resumePathing();
-            return;
-        }
+    private boolean startNextAttack() {
+//        PlayerEntity testTarget = guardian.level.getNearestPlayer(guardian.getX(), guardian.getY(), guardian.getZ(), 200, true);
+//        GuardianFightManager manager = guardian.getFightManager();
+//        if (testTarget != null && manager != null && testTarget.getMainHandItem().getItem() == Items.STICK){
+//            guardian.getPhaseManager().setPhase(PhaseType.APPROACH_POSITION)
+//                    .setTargetLocation(Vector3d.atCenterOf(manager.getArenaOrigin().above(48)))
+//                    .setNextPhase(PhaseType.GROUND_EFFECTS);
+//            return true;
+//        }
 
-        //Check if there is anyone harassing us.
-        PlayerEntity closestToGuardian = guardian.level.getNearestPlayer(guardian.getX(), guardian.getY(), guardian.getZ(), 30, true);
-        if (closestToGuardian != null && guardian.getRandom().nextFloat() < 0.25) { //25% chance we retaliate
+        PlayerEntity closeTarget = guardian.level.getNearestPlayer(guardian.getX(), guardian.getY(), guardian.getZ(), 30, true);
+
+        //Do close range / evasion strat (25% chance)
+        if (closeTarget != null && ((guardian.getShieldPower() < DEConfig.guardianShield) || random.nextFloat() < 0.25F)) {
             guardian.getPhaseManager().setPhase(PhaseType.COVER_FIRE);
-            LOGGER.info("Cover Fire!!!");
-            return;
+            return true;
         }
 
-        //Check if we can / should enter an attack phase.
-        BlockPos focus = guardian.getArenaOrigin();
-        PlayerEntity player = guardian.level.getNearestPlayer(focus.getX(), focus.getY(), focus.getZ(), 192, true);
-        double distanceSq;
-        if (player == null || (distanceSq = guardian.distanceToSqr(player)) > 180 * 180) {
-            resumePathing();
-            return;
+        boolean aggressive = agroModifier > maxAgroModifier * 0.75 || failedAttacks > 3;
+
+        List<PhaseType.WeightedPhase> phases = aggressive ? PhaseType.AGGRESSIVE_WEIGHTED : PhaseType.NORMAL_WEIGHTED;
+
+        Vector3d focus = Vector3d.atCenterOf(guardian.getArenaOrigin());
+        List<PlayerEntity> targetOptions = guardian.level.players()
+                .stream()
+                .filter(e -> e.distanceToSqr(focus) <= 200 * 200)
+                .filter(e -> AGRO_TARGETS.test(guardian, e))
+                .collect(Collectors.toList());
+
+        if (targetOptions.isEmpty()) {
+            return false;
+        }
+        GuardianFightManager manager = guardian.getFightManager();
+        if (manager == null) return false;
+
+        PhaseType.WeightedPhase phaseType = WeightedRandom.getRandomItem(random, phases);
+        IPhase phase = guardian.getPhaseManager().getPhase(phaseType.phase);
+        if (phase instanceof ChargeUpPhase) {
+            failedAttacks = 0;
+//            if (guardian.level.getServer() != null) {
+//                guardian.level.getServer().getPlayerList().broadcastMessage(new StringTextComponent("Aggressive Mode: " + aggressive), ChatType.CHAT, Util.NIL_UUID);
+//            }
+            guardian.getPhaseManager().setPhase(PhaseType.APPROACH_POSITION).setTargetLocation(Vector3d.atCenterOf(manager.getArenaOrigin().above(48))).setNextPhase(phaseType.phase);
+        } else {
+            guardian.getPhaseManager().setPhase(phaseType.phase).targetPlayer(targetOptions.get(random.nextInt(targetOptions.size())));
         }
 
-        if (immediateAttack || guardian.getRandom().nextFloat() > 0.75) {
-            if (guardian.getRandom().nextFloat() < 0.75) {
-                if (distanceSq > 45 * 45) {
-                    guardian.getPhaseManager().setPhase(PhaseType.BOMBARD_PLAYER).setTarget(player);
-                    LOGGER.info("Bombarding player");
-                    return;
-                }
-            } else {
-                if (distanceSq > 45 * 45) {
-                    guardian.getPhaseManager().setPhase(PhaseType.CHARGE_PLAYER).setTarget(player);
-                    LOGGER.info("Charge player");
-                    return;
-                }
-            }
-        }
-
-
-        resumePathing();
+        return false;
     }
 
     private void resumePathing() {
@@ -133,18 +200,19 @@ public class StartPhase extends Phase {
         this.navigateToNextPathNode();
     }
 
-    public void immediateAttack() {
-        ticksUntilNextAttack = 0;
-        immediateAttack = true;
+    public void immediateAttack(@Nullable PlayerEntity target) {
+        if (target != null) {
+            attackPlayer(target);
+        } else {
+            agroLevel = targetAgroLevel;
+        }
     }
 
     private void attackPlayer(PlayerEntity player) {
         if (guardian.getRandom().nextFloat() > 0.5F && guardian.distanceToSqr(player) >= 40) {
-            guardian.getPhaseManager().setPhase(PhaseType.BOMBARD_PLAYER);
-            guardian.getPhaseManager().getPhase(PhaseType.BOMBARD_PLAYER).setTarget(player);
+            guardian.getPhaseManager().setPhase(PhaseType.BOMBARD_PLAYER).targetPlayer(player);
         } else {
-            guardian.getPhaseManager().setPhase(PhaseType.CHARGE_PLAYER);
-            guardian.getPhaseManager().getPhase(PhaseType.CHARGE_PLAYER).setTarget(player);
+            guardian.getPhaseManager().setPhase(PhaseType.CHARGE_PLAYER).targetPlayer(player);
         }
     }
 
@@ -160,9 +228,49 @@ public class StartPhase extends Phase {
     }
 
     @Override
-    public void onCrystalDestroyed(GuardianCrystalEntity crystal, BlockPos pos, DamageSource dmgSrc, @Nullable PlayerEntity plyr) {
-        if (plyr != null && !plyr.abilities.invulnerable) {
-            attackPlayer(plyr);
+    public float onAttacked(DamageSource source, float damage, float shield, boolean effective) {
+        if (!effective) {
+            agroLevel += (targetAgroLevel * 0.5F) * (damage / 50F);
         }
+        if (shield - damage > 0) {
+            agroLevel += (targetAgroLevel * 0.5F) * (damage / (DEConfig.guardianShield / 10F));
+        } else {
+            agroLevel += (targetAgroLevel * 0.5F) * (damage / (DEConfig.guardianHealth / 10F));
+        }
+        agroModifier += maxAgroModifier * 0.1F;
+        if (guardian.level.getServer() != null) {
+            debug("Agro: " + agroLevel + ", Agro Target: " + targetAgroLevel + ", Modifier: " + agroModifier + " " + ((agroModifier / (float) maxAgroModifier) * 100) + "%");
+        }
+        return damage;
+    }
+
+    @Override
+    public void onCrystalAttacked(GuardianCrystalEntity crystal, BlockPos pos, DamageSource dmgSrc, @Nullable PlayerEntity plyr, float damage, boolean destroyed) {
+        if (destroyed) {
+            if (plyr != null && !plyr.abilities.invulnerable) {
+                attackPlayer(plyr);
+            } else {
+                agroLevel = targetAgroLevel;
+            }
+        } else {
+            agroLevel += (targetAgroLevel * 0.25F) * (damage / 10F);
+            agroModifier += (maxAgroModifier * 0.05F) * (damage / 10F);
+            if (guardian.level.getServer() != null) {
+                debug("Agro: " + agroLevel + ", Agro Target: " + targetAgroLevel + ", Modifier: " + agroModifier + " " + ((agroModifier / (float) maxAgroModifier) * 100) + "%");
+            }
+        }
+    }
+
+    private int getPlayerCount() {
+        GuardianFightManager manager = guardian.getFightManager();
+        if (manager != null) {
+            return manager.getTrackedPlayers().size();
+        }
+        return guardian.level.getNearbyPlayers(AGRO_TARGETS, guardian, guardian.getBoundingBox().inflate(244)).size();
+    }
+
+    public StartPhase prevAttackFailed() {
+        failedAttacks++;
+        return this;
     }
 }
