@@ -74,7 +74,7 @@ public class LaserBeamPhase extends ChargeUpPhase {
         boolean hit = true;
         RayTraceResult result = guardian.level.clip(new RayTraceContext(headPos.vec3(), beamPos.vec3(), RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, guardian));
         if (result.getType() != RayTraceResult.Type.MISS) {
-            beamPos = new Vector3(result.location);
+            beamPos = new Vector3(result.getLocation());
             hit = false;
         }
 
