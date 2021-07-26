@@ -1,6 +1,8 @@
 package com.brandon3055.draconicevolution.client;
 
 import codechicken.lib.data.MCDataInput;
+import codechicken.lib.render.CCRenderState;
+import codechicken.lib.render.OpenGLUtils;
 import codechicken.lib.render.buffer.TransformingVertexBuilder;
 import codechicken.lib.render.shader.*;
 import com.brandon3055.brandonscore.api.TimeKeeper;
@@ -9,6 +11,7 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.render.entity.DraconicGuardianRenderer;
 import com.google.common.collect.Maps;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.Minecraft;
@@ -16,7 +19,9 @@ import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.ClientBossInfo;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
@@ -93,6 +98,8 @@ public class CustomBossInfoHandler extends AbstractGui {
         Minecraft mc = Minecraft.getInstance();
         MatrixStack matrixStack = event.getMatrixStack();
 
+        RenderSystem.enableDepthTest();
+
         int width = event.getWindow().getGuiScaledWidth();
         int x = event.getX();
         int y = event.getY();
@@ -101,8 +108,8 @@ public class CustomBossInfoHandler extends AbstractGui {
         drawBar(matrixStack, x, y, info);
 
         float shield = shieldInfo.isImmune() ? 1 : shieldInfo.getShield();
+        IRenderTypeBuffer.Impl getter = Minecraft.getInstance().renderBuffers().bufferSource();//IRenderTypeBuffer.immediate(Tessellator.getInstance().getBuilder());
 
-        IRenderTypeBuffer.Impl getter = IRenderTypeBuffer.immediate(Tessellator.getInstance().getBuilder());
         UniformCache uniforms = shieldShader.pushCache();
         if (shieldInfo.isImmune()) {
             uniforms.glUniform4f("baseColour", 0F, 1F, 1F, 2F);
