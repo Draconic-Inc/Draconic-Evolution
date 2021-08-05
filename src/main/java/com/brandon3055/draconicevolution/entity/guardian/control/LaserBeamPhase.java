@@ -14,6 +14,8 @@ import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.Explosion;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -97,6 +99,7 @@ public class LaserBeamPhase extends ChargeUpPhase {
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public void clientTick() {
         super.clientTick();
         if (isCharged() && !soundInitialized) {

@@ -6,7 +6,6 @@ import com.brandon3055.brandonscore.network.BCoreNetwork;
 import com.brandon3055.draconicevolution.entity.GuardianProjectileEntity;
 import com.brandon3055.draconicevolution.entity.guardian.DraconicGuardianEntity;
 import com.brandon3055.draconicevolution.entity.guardian.GuardianFightManager;
-import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
