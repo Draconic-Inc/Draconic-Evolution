@@ -2,7 +2,14 @@ package com.brandon3055.draconicevolution.client.render.particle;
 
 import com.brandon3055.brandonscore.client.ClientProxy;
 import com.brandon3055.brandonscore.client.particle.IntParticleType;
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.particle.*;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.world.World;
 
@@ -11,6 +18,25 @@ import net.minecraft.world.World;
  * The particle used to render the beams on the Energy Core
  */
 public class ParticleLineIndicator extends SpriteTexturedParticle {
+    public static final IParticleRenderType PARTICLE_NO_DEPTH_NO_LIGHT = new IParticleRenderType() {
+        public void begin(BufferBuilder builder, TextureManager manager) {
+            RenderSystem.depthMask(false);
+            manager.bind(AtlasTexture.LOCATION_PARTICLES);
+            RenderSystem.enableBlend();
+            RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+            RenderSystem.alphaFunc(516, 0.003921569F);
+            builder.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
+        }
+
+        public void end(Tessellator tesselator) {
+            tesselator.end();
+        }
+
+        public String toString() {
+            return "PARTICLE_NO_DEPTH_NO_LIGHT";
+        }
+    };
+
     public ParticleLineIndicator(World worldIn, double xCoordIn, double yCoordIn, double zCoordIn, double xSpeedIn, double ySpeedIn, double zSpeedIn) {
         super((ClientWorld)worldIn, xCoordIn, yCoordIn, zCoordIn, xSpeedIn, ySpeedIn, zSpeedIn);
         this.xd = xSpeedIn;
@@ -20,7 +46,7 @@ public class ParticleLineIndicator extends SpriteTexturedParticle {
 
     @Override
     public IParticleRenderType getRenderType() {
-        return ClientProxy.PARTICLE_NO_DEPTH_NO_LIGHT;
+        return PARTICLE_NO_DEPTH_NO_LIGHT;
     }
 
     public static class Factory implements IParticleFactory<IntParticleType.IntParticleData> {

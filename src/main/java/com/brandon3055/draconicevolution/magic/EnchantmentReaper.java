@@ -11,16 +11,8 @@ import net.minecraftforge.registries.ForgeRegistries;
  */
 public class EnchantmentReaper extends Enchantment {
 
-    public static EnchantmentReaper instance;
-
     public EnchantmentReaper() {
         super(Rarity.RARE, EnchantmentType.WEAPON, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND});
-        this.setRegistryName(new ResourceLocation("draconicevolution", "enchant_reaper"));
-    }
-
-    public static void init() {
-        instance = new EnchantmentReaper();
-        ForgeRegistries.ENCHANTMENTS.register(instance);
     }
 
     @Override

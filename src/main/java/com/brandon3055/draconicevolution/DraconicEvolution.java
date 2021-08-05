@@ -22,7 +22,7 @@ import org.apache.logging.log4j.Logger;
 
 @Mod(DraconicEvolution.MODID)
 public class DraconicEvolution {
-    public static final Logger LOGGER = LogManager.getLogger("DraconicEvolution"); //TODO going to slowly transition everything to this.
+    public static final Logger LOGGER = LogManager.getLogger("DraconicEvolution");
     public static final String MODID = "draconicevolution";
     public static final String MODNAME = "Draconic Evolution";
 

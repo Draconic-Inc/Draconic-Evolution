@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.client.render.entity;
 
-import com.brandon3055.draconicevolution.entity.GuardianProjectileEntity;
+import com.brandon3055.draconicevolution.entity.guardian.GuardianProjectileEntity;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.renderer.IRenderTypeBuffer;

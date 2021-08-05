@@ -74,7 +74,7 @@ public class ProjectileVelocityModule extends ModuleImpl<ProjectileData> {
                             .filter(e -> e instanceof ProjectileVelocityModule && e.getModuleTechLevel().index <= module.getModuleTechLevel().index)//
                             .count();
                     if (installed > max) {
-                        return new InstallResult(InstallResult.InstallResultType.NO, module, null, new TranslationTextComponent("too_complex"));//TODO Localize
+                        return new InstallResult(InstallResult.InstallResultType.NO, module, null, new TranslationTextComponent("modular_item.draconicevolution.error.module_install_limit"));
                     }
                     return null;
                 })//

@@ -210,7 +210,6 @@ public class DEModules {
         register(new ModuleImpl<>(SHIELD_CONTROLLER,    DRACONIC,       shieldControl(10.0)),                       "draconic_shield_control");
         register(new ModuleImpl<>(SHIELD_CONTROLLER,    CHAOTIC,        shieldControl(5.0)),                        "chaotic_shield_control");
 
-        //TODO i want to tweak these a bit more. I may want to reduce recovery rate a little
         register(new ModuleImpl<>(SHIELD_BOOST,         WYVERN,         shieldData(25,  0.1)),                      "wyvern_shield_capacity");
         register(new ModuleImpl<>(SHIELD_BOOST,         DRACONIC,       shieldData(50,  0.25)),                     "draconic_shield_capacity");
         register(new ModuleImpl<>(SHIELD_BOOST,         CHAOTIC,        shieldData(100, 0.5)),                      "chaotic_shield_capacity");

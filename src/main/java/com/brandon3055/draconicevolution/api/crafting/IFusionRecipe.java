@@ -266,4 +266,10 @@ public interface IFusionRecipe extends IRecipe<IFusionInventory> {
     default boolean canCraftInDimensions(int width, int height) {
         return true;
     }
+
+    @Override
+    default boolean isSpecial() {
+        return true; //TODO i may want to implement proper support for hard mode (recipes must be unlocked) fusion recipes at some point.
+                     // But i would need to actually plan out recipe progression properly
+    }
 }

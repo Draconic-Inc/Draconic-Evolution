@@ -3,7 +3,7 @@ package com.brandon3055.draconicevolution.entity.guardian.control;
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.network.BCoreNetwork;
-import com.brandon3055.draconicevolution.entity.GuardianProjectileEntity;
+import com.brandon3055.draconicevolution.entity.guardian.GuardianProjectileEntity;
 import com.brandon3055.draconicevolution.entity.guardian.DraconicGuardianEntity;
 import com.brandon3055.draconicevolution.entity.guardian.GuardianFightManager;
 import net.minecraft.entity.player.PlayerEntity;

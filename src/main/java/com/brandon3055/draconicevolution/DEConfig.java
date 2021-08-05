@@ -52,6 +52,7 @@ public class DEConfig {
     public static int guardianHealth;
     public static int guardianShield;
     public static List<String> projectileAntiImmuneEntities;
+    public static int dislocatorMaxFuel;
 
     private static void loadServer() {
         serverTag = config.getTag("Server");
@@ -163,6 +164,12 @@ public class DEConfig {
                     .setDefaultBoolean(true)
                     .setSyncCallback((tag, type) -> chaoticBypassCrystalShield = tag.getBoolean());
         }
+
+        serverTag.getTag("dislocatorMaxFuel")
+                .setSyncToClient()
+                .setComment("Sets the maximum fuel that can be added to an Advanced Dislocator.")
+                .setDefaultInt(1024)
+                .setSyncCallback((tag, type) -> dislocatorMaxFuel = tag.getInt());
     }
 
 

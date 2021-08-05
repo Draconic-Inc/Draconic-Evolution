@@ -359,7 +359,7 @@ public class DislocatorAdvanced extends Dislocator implements IHudDisplay {
     }
 
     public void addFuel(ItemStack dislocator, PlayerEntity player, boolean fullStack, boolean allStacks) {
-        int max = 1024 - getFuel(dislocator); //TODO config for max fuel
+        int max = DEConfig.dislocatorMaxFuel - getFuel(dislocator);
         int wanted = allStacks ? max : Math.min(max, fullStack ? 16 : 1);
         int added = 0;
         for (int i = 0; i < player.inventory.getContainerSize() && wanted > 0; i++) {

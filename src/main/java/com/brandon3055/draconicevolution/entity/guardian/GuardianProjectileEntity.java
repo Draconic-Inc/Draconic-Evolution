@@ -1,4 +1,4 @@
-package com.brandon3055.draconicevolution.entity;
+package com.brandon3055.draconicevolution.entity.guardian;
 
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.network.BCoreNetwork;
@@ -27,7 +27,6 @@ import net.minecraftforge.fml.network.NetworkHooks;
 
 import java.util.List;
 
-//TODO move to guardian package
 public class GuardianProjectileEntity extends DamagingProjectileEntity implements IEntityAdditionalSpawnData {
     private Vector3d target;
     private double splashRange = 15;

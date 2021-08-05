@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.entity.guardian.control;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.entity.guardian.DraconicGuardianEntity;
-import com.brandon3055.draconicevolution.entity.GuardianProjectileEntity;
+import com.brandon3055.draconicevolution.entity.guardian.GuardianProjectileEntity;
 import com.brandon3055.draconicevolution.entity.guardian.GuardianFightManager;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.util.math.vector.Vector3d;

@@ -28,7 +28,7 @@ import com.brandon3055.draconicevolution.entity.GuardianCrystalEntity;
 import com.brandon3055.draconicevolution.entity.PersistentItemEntity;
 import com.brandon3055.draconicevolution.entity.guardian.DraconicGuardianEntity;
 import com.brandon3055.draconicevolution.entity.guardian.GuardianFightManager;
-import com.brandon3055.draconicevolution.entity.GuardianProjectileEntity;
+import com.brandon3055.draconicevolution.entity.guardian.GuardianProjectileEntity;
 import com.brandon3055.draconicevolution.entity.guardian.GuardianWither;
 import com.brandon3055.draconicevolution.entity.projectile.DraconicArrowEntity;
 import com.brandon3055.draconicevolution.inventory.*;
@@ -38,17 +38,15 @@ import com.brandon3055.draconicevolution.items.ItemCore;
 import com.brandon3055.draconicevolution.items.MobSoul;
 import com.brandon3055.draconicevolution.items.equipment.*;
 import com.brandon3055.draconicevolution.items.tools.*;
+import com.brandon3055.draconicevolution.magic.EnchantmentReaper;
 import net.minecraft.block.AbstractBlock.Properties;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
-import net.minecraft.entity.boss.WitherEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.*;
 import net.minecraft.item.crafting.IRecipeSerializer;
@@ -383,7 +381,7 @@ public class DEContent {
     @ObjectHolder("crystal_binder")             public static CrystalBinder             crystal_binder;
     @ObjectHolder("info_tablet")                public static InfoTablet                info_tablet;
     @ObjectHolder("ender_energy_manipulator")   public static EnderEnergyManipulator    ender_energy_manipulator;
-    @ObjectHolder("creative_exchanger")         public static CreativeExchanger         creative_exchanger;
+//    @ObjectHolder("creative_exchanger")         public static CreativeExchanger         creative_exchanger;
     @ObjectHolder("mob_soul")                   public static MobSoul                   mob_soul;
     //Tools
     @ObjectHolder("wyvern_capacitor")           public static DraconiumCapacitor        capacitor_wyvern;
@@ -585,7 +583,15 @@ public class DEContent {
         event.getRegistry().register(EntityType.Builder.<DraconicArrowEntity>of(DraconicArrowEntity::new, EntityClassification.MISC).sized(0.5F, 0.5F).clientTrackingRange(4).updateInterval(20).build("draconic_arrow").setRegistryName("draconic_arrow"));
     }
 
+    @ObjectHolder("reaper_enchantment")
+    public static EnchantmentReaper reaperEnchant;
+
     @SubscribeEvent
+    public static void registerEnchantments(RegistryEvent.Register<Enchantment> event) {
+        event.getRegistry().register(new EnchantmentReaper().setRegistryName("reaper_enchantment"));
+    }
+
+        @SubscribeEvent
     public static void registerAttributes(EntityAttributeCreationEvent event) {
         event.put(draconicGuardian, DraconicGuardianEntity.registerAttributes().build());
         event.put(guardianWither, GuardianWither.createAttributes().build());

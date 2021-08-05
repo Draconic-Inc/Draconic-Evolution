@@ -77,6 +77,6 @@ public class StackModuleContext extends ModuleContext {
     }
 
     public boolean isEquipped() {
-        return getItem().isEquipped(getStack(), getSlot(), false) || inEquipModSlot;
+        return getItem().isEquipped(getStack(), getSlot(), inEquipModSlot);
     }
 }

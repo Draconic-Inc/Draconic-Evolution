@@ -49,7 +49,7 @@ public class DESprites {
         register(MODID, "draconium_chest/color_picker");
 
         // Fusion Crafting
-        register(MODID, "fusion_slot");
+//        register(MODID, "fusion_slot");
     }
 
 

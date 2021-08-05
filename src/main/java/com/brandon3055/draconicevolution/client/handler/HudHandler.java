@@ -40,6 +40,7 @@ import java.util.List;
 /**
  * Created by brandon3055 on 4/07/2016.
  */
+@Deprecated
 public class HudHandler {
 
     private static List<String> hudList = null;

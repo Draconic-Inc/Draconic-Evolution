@@ -7,6 +7,7 @@ import com.brandon3055.brandonscore.network.BCoreNetwork;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.brandonscore.utils.TargetPos;
 import com.brandon3055.draconicevolution.api.IHudDisplay;
+import com.brandon3055.draconicevolution.entity.PersistentItemEntity;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.handlers.DESounds;
 import net.minecraft.client.resources.I18n;
@@ -182,13 +183,9 @@ public class Dislocator extends Item implements IHudDisplay {
     }
 
     @Nullable
-    @Override //Todo waiting on forge to fix shit
+    @Override
     public Entity createEntity(World world, Entity location, ItemStack itemstack) {
-//        return new PersistentItemEntity(world, location, itemstack);
-        if (location instanceof ItemEntity) {
-            ((ItemEntity) location).age = -32767; //extra 27 minute despawn delay
-        }
-        return null;
+        return new PersistentItemEntity(world, location, itemstack);
     }
 
     @Override

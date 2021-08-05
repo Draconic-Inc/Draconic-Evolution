@@ -143,7 +143,6 @@ public interface IModularItem extends IForgeItem {
 
     /**
      * This is used to determine if a modular item is in a valid slot for its modules to operate.
-     * //TODO this is not currently implemented by some modules such as the shield modules
      *
      * @param stack        The stack
      * @param slot         The equipment slot or null if this item is in the players general main inventory.
@@ -256,16 +255,12 @@ public interface IModularItem extends IForgeItem {
 
     @Override
     default boolean hasCustomEntity(ItemStack stack) {
-        return true; //Waiting for forge to not be broken
+        return true;
     }
 
     @Nullable
-    @Override //Todo waiting on forge to fix shit
+    @Override
     default Entity createEntity(World world, Entity location, ItemStack itemstack) {
-//        return new PersistentItemEntity(world, location, itemstack);
-        if (location instanceof ItemEntity) {
-            ((ItemEntity) location).age = -32767; //extra 27 minute despawn delay
-        }
-        return null;
+        return new PersistentItemEntity(world, location, itemstack);
     }
 }

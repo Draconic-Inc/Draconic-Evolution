@@ -44,15 +44,6 @@
       }
     ]
   },
-  "shield_up": {
-    "category": "master",
-    "sounds": [
-      {
-        "name": "draconicevolution:shield_up",
-        "stream": false
-      }
-    ]
-  },
   "fusion_explosion": {
     "category": "master",
     "sounds": [
@@ -202,24 +193,6 @@
     "sounds": [
       {
         "name": "draconicevolution:staff_hit_electric",
-        "stream": false
-      }
-    ]
-  },
-  "bow_second_charge": {
-    "category": "player",
-    "sounds": [
-      {
-        "name": "draconicevolution:bow_second_charge",
-        "stream": false
-      }
-    ]
-  },
-  "bow_charge_shot": {
-    "category": "player",
-    "sounds": [
-      {
-        "name": "draconicevolution:bow_charge_shot",
         "stream": false
       }
     ]

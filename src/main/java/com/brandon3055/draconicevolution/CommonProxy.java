@@ -106,7 +106,7 @@ public class CommonProxy {
 //    }
 //
 //    //@Callback
-//    public void registerEntities() {//TODO 1.14 fix naming and localizations
+//    public void registerEntities() {//
 ////		EntityRegistry.registerModEntity(EntityCustomDragon.class, "EnderDragon", 0, DraconicEvolution.instance, 256, 3, true);
 //        EntityRegistry.registerModEntity(new ResourceLocation(DraconicEvolution.MODID, "PersistentItem"), EntityPersistentItem.class, "draconicevolution:PersistentItem", 1, DraconicEvolution.instance, 64, 5, true);
 ////		EntityRegistry.registerModEntity(EntityDraconicArrow.class, "Arrow", 2, DraconicEvolution.instance, 32, 5, true);

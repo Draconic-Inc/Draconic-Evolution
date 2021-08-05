@@ -111,7 +111,7 @@ public class LangGenerator extends LanguageProvider {
         helper.add(DEContent.crystal_binder,                                    "Crystal Binder");
         helper.add(DEContent.info_tablet,                                       "Information Tablet");
         helper.add(DEContent.ender_energy_manipulator,                          "Ender energy manipulator");
-        helper.add(DEContent.creative_exchanger,                                "Creative Exchanger");
+//        helper.add(DEContent.creative_exchanger,                                "Creative Exchanger");
         helper.add(DEContent.mob_soul,                                          "Mob Soul");
         //Tools
         helper.add(DEContent.capacitor_wyvern,                                  "Wyvern Capacitor");
@@ -662,6 +662,8 @@ public class LangGenerator extends LanguageProvider {
         helper.setPrefix("modular_item.draconicevolution");
         helper.add("requires_energy",                                           "This item requires energy modules to function.");
         helper.add("requires_energy_press",                                     "Press %s to open module config.");
+        helper.add("error.no_modular_items",                                    "You dont have any modular items in your inventory!");
+        helper.add("error.module_install_limit",                                "Install limit reached for this module.");
 
         //Dislocator
         helper.setPrefix("dislocate.draconicevolution");

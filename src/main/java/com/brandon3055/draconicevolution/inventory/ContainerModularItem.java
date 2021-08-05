@@ -80,7 +80,7 @@ public class ContainerModularItem extends ContainerModuleHost<TileBCore> {
             }
         }
 
-        sender.sendMessage(new TranslationTextComponent("msg.draconicevolution.modular_item.no_module_hosts").withStyle(TextFormatting.RED), Util.NIL_UUID);
+        sender.sendMessage(new TranslationTextComponent("modular_item.draconicevolution.error.no_modular_items").withStyle(TextFormatting.RED), Util.NIL_UUID);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.handlers;
 
 import codechicken.lib.raytracer.RayTracer;
+import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DEOldConfig;
 import com.brandon3055.draconicevolution.entity.EntityDragonHeart;
 import com.brandon3055.draconicevolution.entity.GuardianCrystalEntity;
@@ -187,7 +188,7 @@ public class DEEventHandler {
             chance = ((IReaperItem) stack.getItem()).getReaperLevel(stack);
         }
 
-        chance += EnchantmentHelper.getItemEnchantmentLevel(EnchantmentReaper.instance, stack);
+        chance += EnchantmentHelper.getItemEnchantmentLevel(DEContent.reaperEnchant, stack);
         return chance;
     }
 

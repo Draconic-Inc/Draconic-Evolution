@@ -73,7 +73,7 @@ public class FusionRecipeTransferHelper implements IRecipeTransferHandler<Contai
         //Do... Pretty much everything else
         Map<Integer, Slot> inventorySlots = new HashMap<>();
         for (Slot slot : container.slots) {
-            if (slot.index < 36) { //TODO Check This
+            if (slot.index < 36) {
                 inventorySlots.put(slot.index, slot);
             }
         }
