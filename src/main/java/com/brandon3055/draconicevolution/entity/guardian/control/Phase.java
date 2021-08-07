@@ -82,7 +82,7 @@ public abstract class Phase implements IPhase {
    }
 
    public boolean isEnded() {
-      return guardian.getPhaseManager().getCurrentPhase() != this;
+      return guardian.getPhaseManager().getCurrentPhase() != this || !guardian.isAlive();
    }
 
    @Override

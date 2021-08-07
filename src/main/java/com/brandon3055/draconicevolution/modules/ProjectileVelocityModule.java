@@ -62,12 +62,11 @@ public class ProjectileVelocityModule extends ModuleImpl<ProjectileData> {
         Iterable<Module<?>> newModules = Iterables.concat(view, Collections.singleton(this));
         opt = Streams.stream(newModules).parallel()//
                 .map(module -> {
-                    int max = module.maxInstallable();
+                    int max;
                     //This is a nasty hack.... Dont do this!
                     if (module instanceof ProjectileVelocityModule) {
                         max = this.maxInstall;
-                    }
-                    if (max == -1) {
+                    } else {
                         return null;
                     }
                     int installed = (int) Streams.stream(newModules)//

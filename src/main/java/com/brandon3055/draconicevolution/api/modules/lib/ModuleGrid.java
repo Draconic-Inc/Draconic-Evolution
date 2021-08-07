@@ -10,6 +10,7 @@ import net.minecraft.inventory.container.ClickType;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.Iterator;
 import java.util.Objects;
@@ -158,16 +159,16 @@ public class ModuleGrid {
     public InstallResult checkInstall(ModuleEntity entity) {
         ModuleHost host = getModuleHost();
         if (host.getHostTechLevel().index < entity.module.getModuleTechLevel().index) {
-            return new InstallResult(InstallResultType.NO, entity.module, null, new StringTextComponent("//Module tech level too high"));
+            return new InstallResult(InstallResultType.NO, entity.module, null, new TranslationTextComponent("modular_item.draconicevolution.cant_install.level_high"));
         }
         if (!host.isModuleSupported(entity)) {
-            return new InstallResult(InstallResultType.NO, entity.module, null, new StringTextComponent("//Module not supported"));
+            return new InstallResult(InstallResultType.NO, entity.module, null, new TranslationTextComponent("modular_item.draconicevolution.cant_install.not_supported"));
         }
         if (host.getModuleEntities().stream().anyMatch(entity::intersects)) {
-            return new InstallResult(InstallResultType.NO, entity.module, null, new StringTextComponent("//Module does not fit in this space"));
+            return new InstallResult(InstallResultType.NO, entity.module, null, new TranslationTextComponent("modular_item.draconicevolution.cant_install.wont_fit"));
         }
         if (entity.getMaxGridX() > host.getGridWidth() || entity.getMaxGridY() > getModuleHost().getGridHeight()) {
-            return new InstallResult(InstallResultType.NO, entity.module, null, new StringTextComponent("//Module out of bounds"));
+            return new InstallResult(InstallResultType.NO, entity.module, null, new TranslationTextComponent("modular_item.draconicevolution.cant_install.wont_fit"));
         }
         InstallResult result = ModuleHost.checkAddModule(host, entity.module);
         if (result.resultType == InstallResultType.YES || result.resultType == InstallResultType.OVERRIDE) {

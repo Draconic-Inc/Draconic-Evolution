@@ -96,8 +96,8 @@ public class GroundEffectPhase extends ChargeUpPhase {
     }
 
     private void updateWithers() {
-        withersKilled += summoned.stream().filter(LivingEntity::isDeadOrDying).count();
-        summoned.removeIf(LivingEntity::isDeadOrDying);
+        withersKilled += summoned.stream().filter(e -> !e.isAlive()).count();
+        summoned.removeIf(e -> !e.isAlive());
 
         if (nextWither > 0) {
             nextWither--;

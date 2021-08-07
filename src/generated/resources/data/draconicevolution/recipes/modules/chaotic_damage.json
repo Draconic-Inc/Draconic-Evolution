@@ -1,15 +1,12 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "IPI",
+    "CCC",
     "ABA",
-    "IPI"
+    "CCC"
   ],
   "key": {
-    "I": {
-      "item": "draconicevolution:small_chaos_frag"
-    },
-    "P": {
+    "C": {
       "item": "draconicevolution:medium_chaos_frag"
     },
     "A": {

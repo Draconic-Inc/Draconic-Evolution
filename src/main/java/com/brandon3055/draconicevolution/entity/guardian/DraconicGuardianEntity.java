@@ -538,7 +538,7 @@ public class DraconicGuardianEntity extends MobEntity implements IMob {
             if (damage > 100) damage = 100;
 
             if (part != this.dragonPartHead) {
-                damage = damage / 4.0F + Math.min(damage, 1.0F);
+                damage = (damage / 4.0F) + Math.min(damage, 1.0F);
             }
 
             if (damage < 0.01F) {

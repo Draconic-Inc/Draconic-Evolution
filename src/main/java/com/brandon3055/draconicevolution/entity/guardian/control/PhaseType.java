@@ -34,13 +34,13 @@ public class PhaseType<T extends IPhase> {
       NORMAL_WEIGHTED.add(new WeightedPhase(CHARGE_PLAYER,  100));
       NORMAL_WEIGHTED.add(new WeightedPhase(BOMBARD_PLAYER, 200));
       NORMAL_WEIGHTED.add(new WeightedPhase(LASER_BEAM,     60));
-      NORMAL_WEIGHTED.add(new WeightedPhase(GROUND_EFFECTS, 60));
+      NORMAL_WEIGHTED.add(new WeightedPhase(GROUND_EFFECTS, 50));
       NORMAL_WEIGHTED.add(new WeightedPhase(ARIAL_BOMBARD,  70));
 
       AGGRESSIVE_WEIGHTED.clear();
       AGGRESSIVE_WEIGHTED.add(new WeightedPhase(BOMBARD_PLAYER,   50));
       AGGRESSIVE_WEIGHTED.add(new WeightedPhase(LASER_BEAM,       150));
-      AGGRESSIVE_WEIGHTED.add(new WeightedPhase(GROUND_EFFECTS,   90));
+      AGGRESSIVE_WEIGHTED.add(new WeightedPhase(GROUND_EFFECTS,   50));
       AGGRESSIVE_WEIGHTED.add(new WeightedPhase(ARIAL_BOMBARD,    150));
    }
 

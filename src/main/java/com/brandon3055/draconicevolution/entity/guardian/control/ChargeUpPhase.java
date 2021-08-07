@@ -126,7 +126,7 @@ public abstract class ChargeUpPhase extends Phase {
             Vector3 center = new Vector3(guardian.getX(), guardian.getY() - 32, guardian.getZ());
             int threshold = 85;
 
-            if (player != null) {
+            if (!player.abilities.instabuild) {
                 if (player.distanceToSqr(center.vec3()) > threshold * threshold) {
                     double distanceOver = Math.sqrt(player.distanceToSqr(center.vec3())) - threshold;
                     Vector3 forceVec = center.copy().subtract(player.getX(), player.getY(), player.getZ()).normalize().multiply((1 * (distanceOver / 10)) * getChargeProgress());
@@ -139,7 +139,7 @@ public abstract class ChargeUpPhase extends Phase {
             }
         }
 
-        if (disableFlight && player != null && getChargeProgress() > 0.5) {
+        if (disableFlight && player != null && !player.abilities.instabuild && getChargeProgress() > 0.5) {
             if (player.getY() > origin.getY() + 8) {
                 if (player.abilities.flying) {
                     player.abilities.flying = false;
@@ -183,8 +183,10 @@ public abstract class ChargeUpPhase extends Phase {
     }
 
     public float onAttacked(DamageSource source, float damage, float shield, boolean effective) {
-        if (source.getDirectEntity() instanceof AbstractArrowEntity) {
-            source.getDirectEntity().setSecondsOnFire(1);
+        if (isInvulnerable()) {
+            if (source.getDirectEntity() instanceof AbstractArrowEntity) {
+                source.getDirectEntity().setSecondsOnFire(1);
+            }
             return 0.0F;
         } else {
             return super.onAttacked(source, damage, shield, effective);
@@ -196,5 +198,10 @@ public abstract class ChargeUpPhase extends Phase {
         if (func == 0) {
             resetCharge();
         }
+    }
+
+    @Override
+    public boolean isInvulnerable() {
+        return true;
     }
 }

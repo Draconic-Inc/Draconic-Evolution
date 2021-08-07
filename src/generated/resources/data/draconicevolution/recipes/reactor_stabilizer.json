@@ -29,6 +29,9 @@
     },
     {
       "tag": "forge:ingots/draconium_awakened"
+    },
+    {
+      "item": "draconicevolution:large_chaos_frag"
     }
   ]
 }

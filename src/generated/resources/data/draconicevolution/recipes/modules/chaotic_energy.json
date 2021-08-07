@@ -1,14 +1,11 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "#C#",
+    "CCC",
     "ABA",
-    "#C#"
+    "CCC"
   ],
   "key": {
-    "#": {
-      "item": "draconicevolution:small_chaos_frag"
-    },
     "A": {
       "item": "draconicevolution:draconic_energy_module"
     },

@@ -4,7 +4,7 @@
     "item": "draconicevolution:chaotic_capacitor"
   },
   "catalyst": {
-    "item": "draconicevolution:chaotic_core"
+    "item": "draconicevolution:chaotic_capacitor"
   },
   "total_energy": 128000000,
   "tier": "CHAOTIC",
@@ -13,7 +13,7 @@
       "tag": "forge:ingots/draconium_awakened"
     },
     {
-      "item": "draconicevolution:draconic_capacitor"
+      "item": "draconicevolution:chaotic_core"
     },
     {
       "tag": "forge:ingots/draconium_awakened"

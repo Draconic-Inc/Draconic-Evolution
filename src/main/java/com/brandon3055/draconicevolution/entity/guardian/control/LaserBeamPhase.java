@@ -5,6 +5,7 @@ import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.draconicevolution.api.damage.DraconicIndirectEntityDamage;
 import com.brandon3055.draconicevolution.client.sound.GuardianLaserSound;
 import com.brandon3055.draconicevolution.entity.guardian.DraconicGuardianEntity;
+import com.brandon3055.draconicevolution.entity.guardian.GuardianFightManager;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
@@ -89,6 +90,12 @@ public class LaserBeamPhase extends ChargeUpPhase {
                 attackTarget.hurt(damage, beamPower * 20F);
             }
             if (getBeamCharge() >= 1) {
+                if (laserTime == 0) {
+                    GuardianFightManager manager = guardian.getFightManager();
+                    if (manager != null) {
+                        manager.guardianUpdate(guardian);
+                    }
+                }
                 laserTime++;
             }
         }
@@ -122,6 +129,11 @@ public class LaserBeamPhase extends ChargeUpPhase {
 
     public float getSoundPitch() {
         return 0.5F + (getBeamCharge() * 1.5F);
+    }
+
+    @Override
+    public boolean isInvulnerable() {
+        return getBeamCharge() < 0.5;
     }
 
     @Override

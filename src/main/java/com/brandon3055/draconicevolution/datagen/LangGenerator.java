@@ -448,6 +448,7 @@ public class LangGenerator extends LanguageProvider {
         helper.add("toggle_global_binding.info",                                "Global Binding\nWill allow you to use this keybind when this GUI is closed.\nThis will work with any key regardless of weather or not it conflicts with another keybinding.");
         helper.add("set_key_bind.info",                                         "Click to set a keybind for this preset.");
         helper.add("open_modules.info",                                         "Open Module Configuration GUI");
+        helper.add("no_configurable_items",                                     "You do not have any configurable items in your inventory!");
 
         helper.setPrefix("gui.draconicevolution.boolean_property");
         helper.add("true",                                                      "True");
@@ -664,6 +665,10 @@ public class LangGenerator extends LanguageProvider {
         helper.add("requires_energy_press",                                     "Press %s to open module config.");
         helper.add("error.no_modular_items",                                    "You dont have any modular items in your inventory!");
         helper.add("error.module_install_limit",                                "Install limit reached for this module.");
+
+        helper.add("cant_install.level_high",                                   "The module tier is to high for this modular item.");
+        helper.add("cant_install.not_supported",                                "This module is not supported by this modular item.");
+        helper.add("cant_install.wont_fit",                                     "The module wont fit in that position.");
 
         //Dislocator
         helper.setPrefix("dislocate.draconicevolution");

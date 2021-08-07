@@ -128,7 +128,7 @@ public class DraconicGuardianRenderer extends EntityRenderer<DraconicGuardianEnt
         }
         IVertexBuilder builder;
 
-        boolean isImmune = guardian.getPhaseManager().getCurrentPhase() instanceof ChargeUpPhase;
+        boolean isImmune = guardian.getPhaseManager().getCurrentPhase().isInvulnerable();
         float shieldState = guardian.getEntityData().get(DraconicGuardianEntity.SHIELD_POWER) / (float) DEConfig.guardianShield;
         if (shieldState > 0 || isImmune) {
             UniformCache uniforms = shieldShader.pushCache();

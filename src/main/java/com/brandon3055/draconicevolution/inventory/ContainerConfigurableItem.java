@@ -231,7 +231,7 @@ public class ContainerConfigurableItem extends ContainerBCore<Object> {
             }
         }
 
-        sender.sendMessage(new TranslationTextComponent("msg.draconicevolution.configure_item.no_configurabel_item").withStyle(TextFormatting.RED), Util.NIL_UUID);
+        sender.sendMessage(new TranslationTextComponent("gui.draconicevolution.item_config.no_configurable_items").withStyle(TextFormatting.RED), Util.NIL_UUID);
     }
 
     public static class Provider implements INamedContainerProvider {
@@ -243,7 +243,7 @@ public class ContainerConfigurableItem extends ContainerBCore<Object> {
 
         @Override
         public ITextComponent getDisplayName() {
-            return new TranslationTextComponent("gui.draconicevolution.configure_item.name");
+            return new TranslationTextComponent("gui.draconicevolution.item_config.name");
         }
 
         @Nullable

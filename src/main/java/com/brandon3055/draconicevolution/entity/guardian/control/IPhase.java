@@ -64,4 +64,8 @@ public interface IPhase {
     * @param player Optional player to target. Some phases will use this and some will not.
     */
    default void targetPlayer(PlayerEntity player) {}
+
+   default boolean isInvulnerable() {
+      return false;
+   }
 }
