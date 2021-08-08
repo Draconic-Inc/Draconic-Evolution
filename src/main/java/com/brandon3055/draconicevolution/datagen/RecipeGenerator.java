@@ -653,7 +653,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .build(consumer, folder("tools", DEContent.capacitor_draconic));
 
         FusionRecipeBuilder.fusionRecipe(DEContent.capacitor_chaotic)
-                .catalyst(DEContent.capacitor_chaotic)
+                .catalyst(capacitor_draconic)
                 .energy(128000000)
                 .techLevel(TechLevel.CHAOTIC)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)

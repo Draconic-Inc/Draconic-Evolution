@@ -70,9 +70,7 @@ public interface IModularItem extends IForgeItem {
 
     @Override
     default MultiCapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundNBT nbt) {
-        if (MODULE_HOST_CAPABILITY == null || PROPERTY_PROVIDER_CAPABILITY == null) {
-            DraconicEvolution.LOGGER.error("Someone tried to init item capabilities too early! [Dumping stacktrace for debugging purposes]");
-            Thread.dumpStack();
+        if (MODULE_HOST_CAPABILITY == null || PROPERTY_PROVIDER_CAPABILITY == null || OP_STORAGE == null) {
             return null;
         }
         MultiCapabilityProvider provider = new MultiCapabilityProvider();
