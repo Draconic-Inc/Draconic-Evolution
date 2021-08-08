@@ -6,6 +6,7 @@ import com.brandon3055.brandonscore.api.power.IOPStorage;
 import com.brandon3055.brandonscore.api.power.IOPStorageModifiable;
 import com.brandon3055.brandonscore.capability.MultiCapabilityProvider;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
+import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.capability.PropertyProvider;
@@ -69,6 +70,11 @@ public interface IModularItem extends IForgeItem {
 
     @Override
     default MultiCapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundNBT nbt) {
+        if (MODULE_HOST_CAPABILITY == null || PROPERTY_PROVIDER_CAPABILITY == null) {
+            DraconicEvolution.LOGGER.error("Someone tried to init item capabilities too early! [Dumping stacktrace for debugging purposes]");
+            Thread.dumpStack();
+            return null;
+        }
         MultiCapabilityProvider provider = new MultiCapabilityProvider();
         ModuleHostImpl host = createHost(stack);
         provider.addCapability(host, "module_host", MODULE_HOST_CAPABILITY, PROPERTY_PROVIDER_CAPABILITY);
