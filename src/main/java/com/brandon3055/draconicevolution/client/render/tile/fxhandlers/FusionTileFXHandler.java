@@ -111,6 +111,7 @@ public class FusionTileFXHandler implements ITileFXHandler {
             coreDischarge = -1;
         } else if (rand.nextFloat() < arcChance) {
             List<IngredFX> ingreds = getIngredients(0);
+            if (ingreds.isEmpty()) return;
             coreDischarge = rand.nextInt(ingreds.size());
             Vector3 pos = Vector3.fromTileCenter(core).add(ingreds.get(coreDischarge).pos);
             core.getLevel().playLocalSound(pos.x, pos.y, pos.z, DESounds.energyBolt, SoundCategory.BLOCKS, 2F, 1F, false);
