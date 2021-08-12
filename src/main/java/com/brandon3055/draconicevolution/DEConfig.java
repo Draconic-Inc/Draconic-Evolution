@@ -184,6 +184,7 @@ public class DEConfig {
     public static boolean toolShaders;
     public static boolean crystalShaders;
     public static boolean reactorShaders;
+    public static boolean guardianShaders;
     public static boolean otherShaders;
     public static boolean itemDislocatorSound;
 
@@ -204,9 +205,13 @@ public class DEConfig {
                 .setDefaultBoolean(true)
                 .setSyncCallback((tag, type) -> crystalShaders = tag.getBoolean());
         clientTag.getTag("reactorShaders")
-                .setComment("Set this to false to disable reactorShaders shaders.")
+                .setComment("Set this to false to disable reactor shaders.")
                 .setDefaultBoolean(true)
                 .setSyncCallback((tag, type) -> reactorShaders = tag.getBoolean());
+        clientTag.getTag("guardianShaders")
+                .setComment("Set this to false to disable chaos guardian shaders. (May visually break some stuff but could be useful if you are experiencing gl crashes.)")
+                .setDefaultBoolean(true)
+                .setSyncCallback((tag, type) -> guardianShaders = tag.getBoolean());
         clientTag.getTag("otherShaders")
                 .setComment("Set this to false to disable all other shaders.")
                 .setDefaultBoolean(true)

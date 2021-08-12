@@ -11,6 +11,7 @@ import codechicken.lib.vec.Rotation;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.client.BCClientEventHandler;
 import com.brandon3055.brandonscore.client.render.TESRBase;
+import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileChaosCrystal;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
@@ -124,8 +125,10 @@ public class RenderTileChaosCrystal extends TileEntityRenderer<TileChaosCrystal>
         mat.rotate((ClientEventHandler.elapsedTicks + partialTicks) / 180F, Vector3.Y_POS);
         mat.scale(0.75F);
 
-        ccrs.bind(new ShaderRenderType(chaosType, chaosShader, chaosShader.pushCache()), getter);
-        model.render(ccrs, mat);
+        if (DEConfig.otherShaders) {
+            ccrs.bind(new ShaderRenderType(chaosType, chaosShader, chaosShader.pushCache()), getter);
+            model.render(ccrs, mat);
+        }
 
         ccrs.baseColour = 0xFFFFFFF0;
         ccrs.bind(crystalType, getter);

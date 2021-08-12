@@ -7,6 +7,7 @@ import codechicken.lib.render.buffer.TransformingVertexBuilder;
 import codechicken.lib.render.shader.*;
 import com.brandon3055.brandonscore.api.TimeKeeper;
 import com.brandon3055.brandonscore.client.BCClientEventHandler;
+import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.render.entity.DraconicGuardianRenderer;
 import com.google.common.collect.Maps;
@@ -109,17 +110,20 @@ public class CustomBossInfoHandler extends AbstractGui {
 
         float shield = shieldInfo.isImmune() ? 1 : shieldInfo.getShield();
         IRenderTypeBuffer.Impl getter = Minecraft.getInstance().renderBuffers().bufferSource();//IRenderTypeBuffer.immediate(Tessellator.getInstance().getBuilder());
+        UniformCache uniforms;
 
-        UniformCache uniforms = shieldShader.pushCache();
-        if (shieldInfo.isImmune()) {
-            uniforms.glUniform4f("baseColour", 0F, 1F, 1F, 2F);
-        } else {
-            uniforms.glUniform4f("baseColour", 1F, 0F, 0F, 2F);
+        if (DEConfig.guardianShaders) {
+            uniforms = shieldShader.pushCache();
+            if (shieldInfo.isImmune()) {
+                uniforms.glUniform4f("baseColour", 0F, 1F, 1F, 2F);
+            } else {
+                uniforms.glUniform4f("baseColour", 1F, 0F, 0F, 2F);
+            }
+            uniforms.glUniform1f("activation", shield);
+            IVertexBuilder builder = new TransformingVertexBuilder(getter.getBuffer(new ShaderRenderType(DraconicGuardianRenderer.shieldType, shieldShader, uniforms)), matrixStack);
+            drawShieldRect(builder, x, y, 0, 0, 182, 182);
+            getter.endBatch();
         }
-        uniforms.glUniform1f("activation", shield);
-        IVertexBuilder builder = new TransformingVertexBuilder(getter.getBuffer(new ShaderRenderType(DraconicGuardianRenderer.shieldType, shieldShader, uniforms)), matrixStack);
-        drawShieldRect(builder, x, y, 0, 0, 182, 182);
-        getter.endBatch();
 
         if (shieldInfo.crystals > 0) {
             ITextComponent countText = new StringTextComponent("x" + shieldInfo.crystals);
@@ -145,25 +149,27 @@ public class CustomBossInfoHandler extends AbstractGui {
             matrixStack.popPose();
             getter.endBatch();
 
-            uniforms = DraconicGuardianRenderer.shieldShader.pushCache();
-            uniforms.glUniform4f("baseColour", 1F, 0F, 0F, 1.5F);
-            IVertexBuilder shaderBuilder = getter.getBuffer(new ShaderRenderType(DraconicGuardianRenderer.shieldType, DraconicGuardianRenderer.shieldShader, uniforms));
-            matrixStack.pushPose();
-            matrixStack.translate(x + 182 - countWidth - 8, y - 6, 0.0D);
-            matrixStack.scale(14.0F, 14.0F, 14.0F);
-            matrixStack.mulPose(Vector3f.YP.rotationDegrees(anim));
-            matrixStack.mulPose(new Quaternion(new Vector3f(SIN_45, 0.0F, SIN_45), 60.0F, true));
-            glass.render(matrixStack, ivertexbuilder, 240, i);
-            matrixStack.scale(0.875F, 0.875F, 0.875F);
-            matrixStack.mulPose(new Quaternion(new Vector3f(SIN_45, 0.0F, SIN_45), 60.0F, true));
-            matrixStack.mulPose(Vector3f.YP.rotationDegrees(anim));
-            glass.render(matrixStack, ivertexbuilder, 240, i);
-            matrixStack.scale(0.875F, 0.875F, 0.875F);
-            matrixStack.mulPose(new Quaternion(new Vector3f(SIN_45, 0.0F, SIN_45), 60.0F, true));
-            matrixStack.mulPose(Vector3f.YP.rotationDegrees(anim));
-            cube.render(matrixStack, ivertexbuilder, 240, i);
-            matrixStack.popPose();
-            getter.endBatch();
+            if (DEConfig.guardianShaders) {
+                uniforms = DraconicGuardianRenderer.shieldShader.pushCache();
+                uniforms.glUniform4f("baseColour", 1F, 0F, 0F, 1.5F);
+                IVertexBuilder shaderBuilder = getter.getBuffer(new ShaderRenderType(DraconicGuardianRenderer.shieldType, DraconicGuardianRenderer.shieldShader, uniforms));
+                matrixStack.pushPose();
+                matrixStack.translate(x + 182 - countWidth - 8, y - 6, 0.0D);
+                matrixStack.scale(14.0F, 14.0F, 14.0F);
+                matrixStack.mulPose(Vector3f.YP.rotationDegrees(anim));
+                matrixStack.mulPose(new Quaternion(new Vector3f(SIN_45, 0.0F, SIN_45), 60.0F, true));
+                glass.render(matrixStack, ivertexbuilder, 240, i);
+                matrixStack.scale(0.875F, 0.875F, 0.875F);
+                matrixStack.mulPose(new Quaternion(new Vector3f(SIN_45, 0.0F, SIN_45), 60.0F, true));
+                matrixStack.mulPose(Vector3f.YP.rotationDegrees(anim));
+                glass.render(matrixStack, ivertexbuilder, 240, i);
+                matrixStack.scale(0.875F, 0.875F, 0.875F);
+                matrixStack.mulPose(new Quaternion(new Vector3f(SIN_45, 0.0F, SIN_45), 60.0F, true));
+                matrixStack.mulPose(Vector3f.YP.rotationDegrees(anim));
+                cube.render(matrixStack, ivertexbuilder, 240, i);
+                matrixStack.popPose();
+                getter.endBatch();
+            }
 
             mc.font.drawShadow(matrixStack, new StringTextComponent("x" + shieldInfo.crystals), x + 182 - countWidth, (float) y - 9, 0xffFFFF);
         }
