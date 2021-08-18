@@ -106,8 +106,8 @@ public class LangGenerator extends LanguageProvider {
         helper.add(DEContent.magnet_advanced,                                   "Awakened Item Dislocator");
         helper.add(DEContent.dislocator,                                        "Dislocator");
         helper.add(DEContent.dislocator_advanced,                               "Advanced Dislocator");
-        helper.add(DEContent.dislocator_p2p,                                    "Bound Dislocator (Player)");
-        helper.add(DEContent.dislocator_player,                                 "Bound Dislocator (Point to Point)");
+//        helper.add(DEContent.dislocator_p2p,                                    "Bound Dislocator (Player)");
+//        helper.add(DEContent.dislocator_player,                                 "Bound Dislocator (Point to Point)");
         helper.add(DEContent.crystal_binder,                                    "Crystal Binder");
         helper.add(DEContent.info_tablet,                                       "Information Tablet");
         helper.add(DEContent.ender_energy_manipulator,                          "Ender energy manipulator");
@@ -712,6 +712,11 @@ public class LangGenerator extends LanguageProvider {
         helper.add("injector_close",                                            "One or more injectors are too close!");
 //        helper.add("",                                                          "");
 
+        //Armor Hud
+        add("hud.draconicevolution.shield_hud.name",                            "Shield Hud");
+        helper.setPrefix("hud_armor.draconicevolution");
+        helper.add("no_shield",                                                 "No Shield Installed");
+        helper.add("shield_disabled",                                           "Shield Disabled");
     }
 
     private void toolTips(PrefixHelper helper) {
@@ -732,11 +737,18 @@ public class LangGenerator extends LanguageProvider {
         add("tech_level.draconicevolution.draconic",                            "Draconic");
         add("tech_level.draconicevolution.chaotic",                             "Chaotic");
 
+        //Entities
         add("entity.draconicevolution.draconic_guardian",                       "Chaos Guardian");
+        add("entity.draconicevolution.guardian_wither",                         "Guardian Wither");
+        add("entity.draconicevolution.guardian_crystal",                        "Guardian Crystal");
+        add("entity.draconicevolution.guardian_projectile",                     "Guardian Projectile");
+        add("entity.draconicevolution.persistent_item",                         "Persistent Item");
+        add("entity.draconicevolution.draconic_arrow",                          "Draconic Arrow");
+
+        //Death messages
         add("death.attack.draconicevolution.draconic_guardian",                 "%1$s was torn apart by %2$s");
         add("death.attack.draconicevolution.guardian_projectile",               "%1$s was obliterated by %2$s");
         add("death.attack.draconicevolution.guardian_laser",                    "%1$s was vaporized by %2$s using a frickin laser beam!");
-        add("entity.draconicevolution.guardian_wither",                         "Guardian Wither");
 
         //Temporary
         add("gui.de.energyStorageCore.name",                                    "Tier %s Energy Core");

@@ -584,20 +584,20 @@ public class RecipeGenerator extends RecipeProvider {
                 .ingredient(INGOTS_DRACONIUM)
                 .build(consumer);
 
-        ShapelessRecipeBuilder.shapeless(dislocator_p2p)
-                .requires(dislocator)
-                .requires(core_draconium)
-                .requires(dislocator)
-                .requires(GHAST_TEAR)
-                .unlockedBy("has_core_draconium", has(core_draconium))
-                .save(consumer);
-
-        ShapelessRecipeBuilder.shapeless(dislocator_player)
-                .requires(dislocator)
-                .requires(core_draconium)
-                .requires(GHAST_TEAR)
-                .unlockedBy("has_core_draconium", has(core_draconium))
-                .save(consumer);
+//        ShapelessRecipeBuilder.shapeless(dislocator_p2p)
+//                .requires(dislocator)
+//                .requires(core_draconium)
+//                .requires(dislocator)
+//                .requires(GHAST_TEAR)
+//                .unlockedBy("has_core_draconium", has(core_draconium))
+//                .save(consumer);
+//
+//        ShapelessRecipeBuilder.shapeless(dislocator_player)
+//                .requires(dislocator)
+//                .requires(core_draconium)
+//                .requires(GHAST_TEAR)
+//                .unlockedBy("has_core_draconium", has(core_draconium))
+//                .save(consumer);
 
         ShapedRecipeBuilder.shaped(magnet)
                 .pattern("A A")

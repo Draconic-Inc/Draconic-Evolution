@@ -505,8 +505,8 @@ public class DEContent {
         registerItem(event, new Magnet(new Item.Properties().stacksTo(1).tab(itemGroup), 32).setRegistryName("advanced_magnet"));
         registerItem(event, new Dislocator(new Item.Properties().stacksTo(1).durability(31).tab(itemGroup)).setRegistryName("dislocator"));
         registerItem(event, new DislocatorAdvanced(new Item.Properties().stacksTo(1).tab(itemGroup)).setRegistryName("advanced_dislocator"));
-        registerItem(event, new DislocatorBound(new Item.Properties().stacksTo(1).tab(itemGroup)).setRegistryName("p2p_dislocator"));
-        registerItem(event, new DislocatorBound(new Item.Properties().stacksTo(1).tab(itemGroup)).setRegistryName("player_dislocator"));
+//        registerItem(event, new DislocatorBound(new Item.Properties().stacksTo(1).tab(itemGroup)).setRegistryName("p2p_dislocator"));
+//        registerItem(event, new DislocatorBound(new Item.Properties().stacksTo(1).tab(itemGroup)).setRegistryName("player_dislocator"));
         registerItem(event, new CrystalBinder(new Item.Properties().stacksTo(1).tab(itemGroup)).setRegistryName("crystal_binder"));
         registerItem(event, new InfoTablet(new Item.Properties().stacksTo(1).tab(itemGroup)).setRegistryName("info_tablet"));
 //        registerItem(event, new EnderEnergyManipulator(new Item.Properties().group(itemGroup)).setRegistryName("ender_energy_manipulator"));

@@ -75,7 +75,7 @@ public class DislocatorBound extends Dislocator /*implements IRenderOverride*/ {
 
     @Override
     public boolean onEntityItemUpdate(ItemStack stack, ItemEntity entity) {
-        if (entity.getAge() % 20 == 0) {
+        if (entity.age % 20 == 0) {
             if (!entity.level.isClientSide && isValid(stack) && !isPlayer(stack)) {
                 DislocatorLinkHandler.updateLink(entity.level, stack, entity.blockPosition(), entity.level.dimension());
             }
