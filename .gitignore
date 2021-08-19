@@ -14,6 +14,7 @@
 
 # Git Stuff
 !.gitignore
+!.github/
 
 # Other Important Files
 !LICENSE
@@ -24,3 +25,4 @@
 
 # Other Important Folders
 !src/
+src/generated/resources/.cache

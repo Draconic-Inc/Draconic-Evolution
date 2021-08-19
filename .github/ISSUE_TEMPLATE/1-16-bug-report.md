@@ -13,16 +13,20 @@ assignees: ''
 * Minecraft Forge version:
 * Mod Pack: (if applicable)
 
-## Crash report
+### Crash report
 (If applicable)
 
-<!--- Please note assuming the issue is a crash something like this
+### Description / steps to reproduce
 
-```Error: net.minecraftforge.fml.common.LoaderExceptionModCrash: Caught exception from Some Mod```
+<!---
+Please note assuming the issue is a crash something like this
 
-Is NOT a crash report!</br>
-Attach the crash report as a txt file to your issue or use a link service like pastebin.</br>
+'Error: net.minecraftforge.fml.common.LoaderExceptionModCrash: Caught exception from Some Mod'
 
-I need the full crash report which you can find in the crash-reports folder in the minecraft folder.</br>
-Failing that please give me your entire minecraft log from the session when the crash occurred.</br>
-If you do not provide these your issue will be insta-closed. -->
+Is NOT a crash report!
+Attach the crash report as a txt file to your issue or use a link service like pastebin.
+
+I need the full crash report which you can find in the crash-reports folder in the minecraft folder.
+Failing that please give me your entire minecraft log from the session when the crash occurred.
+If you do not provide these your issue will be insta-closed. 
+-->
