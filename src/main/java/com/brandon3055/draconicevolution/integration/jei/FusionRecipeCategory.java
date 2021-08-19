@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.integration.jei;
 
 import codechicken.lib.render.buffer.TransformingVertexBuilder;
 import com.brandon3055.brandonscore.api.TechLevel;
-import com.brandon3055.brandonscore.client.utils.GuiHelper;
+import com.brandon3055.brandonscore.client.utils.GuiHelperOld;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.api.crafting.IFusionRecipe;
 import com.brandon3055.draconicevolution.init.DEContent;
@@ -11,7 +11,6 @@ import com.brandon3055.draconicevolution.client.DETextures;
 
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -83,23 +82,23 @@ public class FusionRecipeCategory implements IRecipeCategory<IFusionRecipe> {
         if (mc.font != null) {
             TechLevel tier = recipe.getRecipeTier();
             int colour = tier.index == 0 ? 5263615 : (tier.index == 1 ? 8388863 : (tier.index == 2 ? 16737792 : 5263440));
-            GuiHelper.drawCenteredString(mc.font, matrixStack, I18n.get("gui.draconicevolution.fusion_craft.tier." + recipe.getRecipeTier().name().toLowerCase()), this.xSize / 2, 5, colour, false);
-            GuiHelper.drawCenteredString(mc.font, matrixStack, I18n.get("gui.draconicevolution.fusion_craft.energy_cost"), this.xSize / 2, this.ySize - 20, 4474111, false);
-            GuiHelper.drawCenteredString(mc.font, matrixStack, Utils.addCommas(recipe.getEnergyCost()) + " OP", this.xSize / 2, this.ySize - 10, 4500223, false);
+            GuiHelperOld.drawCenteredString(mc.font, matrixStack, I18n.get("gui.draconicevolution.fusion_craft.tier." + recipe.getRecipeTier().name().toLowerCase()), this.xSize / 2, 5, colour, false);
+            GuiHelperOld.drawCenteredString(mc.font, matrixStack, I18n.get("gui.draconicevolution.fusion_craft.energy_cost"), this.xSize / 2, this.ySize - 20, 4474111, false);
+            GuiHelperOld.drawCenteredString(mc.font, matrixStack, Utils.addCommas(recipe.getEnergyCost()) + " OP", this.xSize / 2, this.ySize - 10, 4500223, false);
         }
 
         IRenderTypeBuffer.Impl buffer = IRenderTypeBuffer.immediate(Tessellator.getInstance().getBuilder());
-        TransformingVertexBuilder builder = new TransformingVertexBuilder(buffer.getBuffer(GuiHelper.TRANS_TYPE), matrixStack);
-        GuiHelper.drawBorderedRect(builder, (xSize / 2D) - 10, 22, 20, 66, 1, 0x40FFFFFF, 0xFF00FFFF, 0);
+        TransformingVertexBuilder builder = new TransformingVertexBuilder(buffer.getBuffer(GuiHelperOld.TRANS_TYPE), matrixStack);
+        GuiHelperOld.drawBorderedRect(builder, (xSize / 2D) - 10, 22, 20, 66, 1, 0x40FFFFFF, 0xFF00FFFF, 0);
         if (recipe.getIngredients().size() > 16) {
-            GuiHelper.drawBorderedRect(builder, 3, 3, 18, 106, 1, 0x40FFFFFF, 0xFFAA00FF, 0);
-            GuiHelper.drawBorderedRect(builder, 23, 3, 18, 106, 1, 0x40FFFFFF, 0xFFAA00FF, 0);
-            GuiHelper.drawBorderedRect(builder, xSize - 21, 3, 18, 106, 1, 0x40FFFFFF, 0xFFAA00FF, 0);
-            GuiHelper.drawBorderedRect(builder, xSize - 41, 3, 18, 106, 1, 0x40FFFFFF, 0xFFAA00FF, 0);
+            GuiHelperOld.drawBorderedRect(builder, 3, 3, 18, 106, 1, 0x40FFFFFF, 0xFFAA00FF, 0);
+            GuiHelperOld.drawBorderedRect(builder, 23, 3, 18, 106, 1, 0x40FFFFFF, 0xFFAA00FF, 0);
+            GuiHelperOld.drawBorderedRect(builder, xSize - 21, 3, 18, 106, 1, 0x40FFFFFF, 0xFFAA00FF, 0);
+            GuiHelperOld.drawBorderedRect(builder, xSize - 41, 3, 18, 106, 1, 0x40FFFFFF, 0xFFAA00FF, 0);
         }
         else {
-            GuiHelper.drawBorderedRect(builder, 12, 3, 20, 106, 1, 0x40FFFFFF, 0xFFAA00FF, 0);
-            GuiHelper.drawBorderedRect(builder, xSize - 32, 3, 20, 106, 1, 0x40FFFFFF, 0xFFAA00FF, 0);
+            GuiHelperOld.drawBorderedRect(builder, 12, 3, 20, 106, 1, 0x40FFFFFF, 0xFFAA00FF, 0);
+            GuiHelperOld.drawBorderedRect(builder, xSize - 32, 3, 20, 106, 1, 0x40FFFFFF, 0xFFAA00FF, 0);
         }
         buffer.endBatch();
     }

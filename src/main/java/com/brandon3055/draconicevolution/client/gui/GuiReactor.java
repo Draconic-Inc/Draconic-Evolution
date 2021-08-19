@@ -2,15 +2,13 @@ package com.brandon3055.draconicevolution.client.gui;
 
 import codechicken.lib.math.MathHelper;
 import com.brandon3055.brandonscore.client.BCSprites;
-import com.brandon3055.brandonscore.client.ResourceHelperBC;
-import com.brandon3055.brandonscore.client.gui.GuiToolkit;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElementManager;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
 import com.brandon3055.brandonscore.client.gui.modulargui.ModularGuiContainer;
 import com.brandon3055.brandonscore.client.gui.modulargui.baseelements.GuiButton;
 import com.brandon3055.brandonscore.client.gui.modulargui.guielements.*;
 import com.brandon3055.brandonscore.client.gui.modulargui.lib.GuiAlign;
-import com.brandon3055.brandonscore.client.utils.GuiHelper;
+import com.brandon3055.brandonscore.client.utils.GuiHelperOld;
 import com.brandon3055.brandonscore.utils.InfoHelper;
 import com.brandon3055.brandonscore.utils.MathUtils;
 import com.brandon3055.brandonscore.utils.Utils;
@@ -162,7 +160,7 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> {
                     RenderMaterial mat = BCSprites.getThemed("slot");
                     bindTexture(mat.atlasLocation());
                     IRenderTypeBuffer.Impl getter = minecraft.renderBuffers().bufferSource();
-                    GuiHelper.drawPlayerSlots(GuiReactor.this, leftPos + 43 - 31, topPos + 139, false);
+                    GuiHelperOld.drawPlayerSlots(GuiReactor.this, leftPos + 43 - 31, topPos + 139, false);
                     for (int x = 0; x < 3; x++) {
                         drawSprite(mat.buffer(getter, BCSprites::makeType), leftPos + 182 + (x * 18), topPos + 148, 18, 18, mat.sprite());
                     }

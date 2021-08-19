@@ -4,10 +4,8 @@ import codechicken.lib.math.MathHelper;
 import com.brandon3055.brandonscore.client.gui.GuiButtonAHeight;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElementManager;
 import com.brandon3055.brandonscore.client.gui.modulargui.ModularGuiContainer;
-import com.brandon3055.brandonscore.client.utils.GuiHelper;
+import com.brandon3055.brandonscore.client.utils.GuiHelperOld;
 import com.brandon3055.brandonscore.inventory.ContainerBCTile;
-import com.brandon3055.brandonscore.inventory.ContainerBCore;
-import com.brandon3055.brandonscore.lib.datamanager.ManagedStack;
 import com.brandon3055.brandonscore.utils.InfoHelper;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyCore;
@@ -17,13 +15,9 @@ import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.IReorderingProcessor;
-import net.minecraft.util.Util;
 import net.minecraft.util.text.*;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by brandon3055 on 7/4/2016.
@@ -94,24 +88,24 @@ public class GuiEnergyCore extends ModularGuiContainer<ContainerBCTile<TileEnerg
 
     @Override
     protected void renderBg(MatrixStack mStack, float partialTicks, int mouseX, int mouseY) {
-        GuiHelper.drawGuiBaseBackground(this, leftPos, topPos, imageWidth, imageHeight);
-        GuiHelper.drawPlayerSlots(this, leftPos + (imageWidth / 2), topPos + 115, true);
+        GuiHelperOld.drawGuiBaseBackground(this, leftPos, topPos, imageWidth, imageHeight);
+        GuiHelperOld.drawPlayerSlots(this, leftPos + (imageWidth / 2), topPos + 115, true);
         drawCenteredString(mStack, font, I18n.get("gui.de.energyStorageCore.name", tile.tier.get()), leftPos + (imageWidth / 2), topPos + 5, InfoHelper.GUI_TITLE);
 
         if (tile.active.get()) {
-            GuiHelper.drawCenteredString(font, I18n.get("gui.de.capacity.txt"), leftPos + imageWidth / 2, topPos + 16, 0xFFAA00, true);
+            GuiHelperOld.drawCenteredString(font, I18n.get("gui.de.capacity.txt"), leftPos + imageWidth / 2, topPos + 16, 0xFFAA00, true);
             String capText = tile.tier.get() == 8 ? I18n.get("gui.de.almostInfinite.txt") : Utils.formatNumber(tile.getExtendedCapacity());
-            GuiHelper.drawCenteredString(font, capText, leftPos + imageWidth / 2, topPos + 27, 0x555555, false);
+            GuiHelperOld.drawCenteredString(font, capText, leftPos + imageWidth / 2, topPos + 27, 0x555555, false);
 
             DecimalFormat energyValue = new DecimalFormat("###.###");
             double percent = (double) tile.getExtendedStorage() / (double) tile.getExtendedCapacity() * 100D;
-            GuiHelper.drawCenteredString(font, I18n.get("info.bc.charge.txt"), leftPos + imageWidth / 2, topPos + 38, 0xFFAA00, true);
-            GuiHelper.drawCenteredString(font, Utils.formatNumber(tile.getExtendedStorage()) + " OP [" + energyValue.format(percent) + "%]", leftPos + imageWidth / 2, topPos + 49, 0x555555, false);
+            GuiHelperOld.drawCenteredString(font, I18n.get("info.bc.charge.txt"), leftPos + imageWidth / 2, topPos + 38, 0xFFAA00, true);
+            GuiHelperOld.drawCenteredString(font, Utils.formatNumber(tile.getExtendedStorage()) + " OP [" + energyValue.format(percent) + "%]", leftPos + imageWidth / 2, topPos + 49, 0x555555, false);
 
             int coreColour = tile.transferRate.get() > 0 ? 0x00FF00 : tile.transferRate.get() < 0 ? 0xFF0000 : 0x222222;
             String transfer = (tile.transferRate.get() > 0 ? "+" : tile.transferRate.get() < 0 ? "-" : "") + Utils.formatNumber(Math.abs(tile.transferRate.get())) + " OP/t";
-            GuiHelper.drawCenteredString(font, I18n.get("gui.de.transfer.txt"), leftPos + imageWidth / 2, topPos + 59, 0xFFAA00, true);
-            GuiHelper.drawCenteredString(font, transfer, leftPos + imageWidth / 2, topPos + 70, coreColour, tile.transferRate.get() > 0);
+            GuiHelperOld.drawCenteredString(font, I18n.get("gui.de.transfer.txt"), leftPos + imageWidth / 2, topPos + 59, 0xFFAA00, true);
+            GuiHelperOld.drawCenteredString(font, transfer, leftPos + imageWidth / 2, topPos + 70, coreColour, tile.transferRate.get() > 0);
 
 
             if (tile.transferRate.get() != 0) {
@@ -130,19 +124,19 @@ public class GuiEnergyCore extends ModularGuiContainer<ContainerBCTile<TileEnerg
                     time += (seconds % 60 < 10 ? "0" : "") + seconds % 60 + "." + (ticks % 20 < 10 ? "0" : "") + ticks % 20;
                 }
 
-                GuiHelper.drawCenteredString(font, time, leftPos + imageWidth / 2, topPos + 70 + 10, 0x555555, false);
+                GuiHelperOld.drawCenteredString(font, time, leftPos + imageWidth / 2, topPos + 70 + 10, 0x555555, false);
             }
         } else {
             int stabColour = tile.stabilizersOK.get() ? 0x00FF00 : 0xFF0000;
             String stabText = I18n.get("gui.de.stabilizers.txt") + ": " + (tile.stabilizersOK.get() ? I18n.get("gui.de.valid.txt") : I18n.get("gui.de.invalid.txt"));
-            GuiHelper.drawCenteredString(font, stabText, leftPos + imageWidth / 2, topPos + 18, stabColour, tile.stabilizersOK.get());
+            GuiHelperOld.drawCenteredString(font, stabText, leftPos + imageWidth / 2, topPos + 18, stabColour, tile.stabilizersOK.get());
             if (tile.tier.get() >= 5) {
-                GuiHelper.drawCenteredString(font, I18n.get("gui.de.advancedStabilizersRequired.txt"), leftPos + imageWidth / 2, topPos + 28, 0x777777, false);
+                GuiHelperOld.drawCenteredString(font, I18n.get("gui.de.advancedStabilizersRequired.txt"), leftPos + imageWidth / 2, topPos + 28, 0x777777, false);
             }
 
             int coreColour = tile.coreValid.get() ? 0x00FF00 : 0xFF0000;
             String coreText = I18n.get("gui.de.core.txt") + ": " + (tile.coreValid.get() ? I18n.get("gui.de.valid.txt") : I18n.get("gui.de.invalid.txt"));
-            GuiHelper.drawCenteredString(font, coreText, leftPos + imageWidth / 2, topPos + 36, coreColour, tile.coreValid.get());
+            GuiHelperOld.drawCenteredString(font, coreText, leftPos + imageWidth / 2, topPos + 36, coreColour, tile.coreValid.get());
             if (!tile.coreValid.get()) {
 //                GuiHelper.drawCenteredSplitString(font, tile.invalidMessage.get(), guiLeft + xSize / 2, guiTop + 46, 180, coreColour, tile.coreValid.get());
             }
@@ -157,11 +151,11 @@ public class GuiEnergyCore extends ModularGuiContainer<ContainerBCTile<TileEnerg
         if (tile.active.get()) {
 //            GuiHelper.drawEnergyBar(this, guiLeft + 5, guiTop + 82, 170, true, tile.getExtendedStorage(), tile.getExtendedCapacity(), true, mouseX, mouseY);
 
-            if (GuiHelper.isInRect(leftPos + 40, topPos + 27, imageWidth - 80, 8, mouseX, mouseY)) {
+            if (GuiHelperOld.isInRect(leftPos + 40, topPos + 27, imageWidth - 80, 8, mouseX, mouseY)) {
                 renderTooltip(mStack, new StringTextComponent(TextFormatting.GRAY + "[" + Utils.addCommas(tile.getExtendedCapacity()) + " OP]"), mouseX, mouseY);
             }
 
-            if (GuiHelper.isInRect(leftPos + 40, topPos + 48, imageWidth - 80, 8, mouseX, mouseY)) {
+            if (GuiHelperOld.isInRect(leftPos + 40, topPos + 48, imageWidth - 80, 8, mouseX, mouseY)) {
                 renderTooltip(mStack, new StringTextComponent(TextFormatting.GRAY + "[" + Utils.addCommas(tile.getExtendedStorage()) + " OP]"), mouseX, mouseY);
             }
         }

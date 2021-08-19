@@ -3,7 +3,8 @@ package com.brandon3055.draconicevolution.client.gui.modular.itemconfig;
 import codechicken.lib.math.MathHelper;
 import com.brandon3055.brandonscore.client.BCSprites;
 import com.brandon3055.brandonscore.client.gui.GuiToolkit;
-import com.brandon3055.brandonscore.client.gui.StandardDialog;
+import com.brandon3055.brandonscore.client.gui.HudConfigGui;
+import com.brandon3055.brandonscore.client.gui.modulargui.StandardDialog;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElementManager;
 import com.brandon3055.brandonscore.client.gui.modulargui.ModularGuiContainer;
@@ -12,15 +13,13 @@ import com.brandon3055.brandonscore.client.gui.modulargui.ThemedElements.ScrollB
 import com.brandon3055.brandonscore.client.gui.modulargui.baseelements.GuiButton;
 import com.brandon3055.brandonscore.client.gui.modulargui.baseelements.GuiScrollElement;
 import com.brandon3055.brandonscore.client.gui.modulargui.guielements.*;
-import com.brandon3055.brandonscore.client.utils.GuiHelper;
-import com.brandon3055.brandonscore.inventory.ContainerSlotLayout;
+import com.brandon3055.brandonscore.client.utils.GuiHelperOld;
 import com.brandon3055.brandonscore.lib.Tripple;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.capability.PropertyProvider;
 import com.brandon3055.draconicevolution.api.config.ConfigProperty;
 import com.brandon3055.draconicevolution.client.keybinding.KeyBindings;
-import com.brandon3055.draconicevolution.integration.equipment.EquipmentManager;
 import com.brandon3055.draconicevolution.inventory.ContainerConfigurableItem;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -36,19 +35,15 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.IItemHandlerModifiable;
 
 import java.util.*;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import static com.brandon3055.brandonscore.BrandonsCore.equipmentManager;
 import static com.brandon3055.brandonscore.client.gui.GuiToolkit.LayoutPos.BOTTOM_CENTER;
 import static com.brandon3055.brandonscore.client.gui.modulargui.baseelements.GuiScrollElement.ListMode.VERT_LOCK_POS_WIDTH;
 import static com.brandon3055.brandonscore.client.gui.modulargui.lib.GuiAlign.CENTER;
-import static com.brandon3055.brandonscore.inventory.ContainerSlotLayout.SlotType.PLAYER_ARMOR;
-import static com.brandon3055.brandonscore.inventory.ContainerSlotLayout.SlotType.PLAYER_EQUIPMENT;
 import static com.brandon3055.draconicevolution.DEConfig.*;
 import static com.brandon3055.draconicevolution.api.capability.DECapabilities.PROPERTY_PROVIDER_CAPABILITY;
 
@@ -105,14 +100,14 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
 
                 IRenderTypeBuffer.Impl getter = minecraft.renderBuffers().bufferSource();
                 setZLevel(mainUI.displayZLevel);
-                GuiHelper.drawShadedRect(getter.getBuffer(GuiHelper.TRANS_TYPE), x - 1, y - 1, 18, 18, 1, 0, dark, light, GuiElement.midColour(light, dark), mainUI.getRenderZLevel());
+                GuiHelperOld.drawShadedRect(getter.getBuffer(GuiHelperOld.TRANS_TYPE), x - 1, y - 1, 18, 18, 1, 0, dark, light, GuiElement.midColour(light, dark), mainUI.getRenderZLevel());
 
                 if (!advancedUI && provider.getProviderID().equals(selectedItem)) {
-                    GuiHelper.drawColouredRect(getter.getBuffer(GuiHelper.TRANS_TYPE), x, y, 16, 16, 0x80FF0000, mainUI.displayZLevel);
+                    GuiHelperOld.drawColouredRect(getter.getBuffer(GuiHelperOld.TRANS_TYPE), x, y, 16, 16, 0x80FF0000, mainUI.displayZLevel);
                 } else if (DEConfig.configUiEnableVisualization && hoveredData != null) {
                     ConfigProperty prop = hoveredData.getPropIfApplicable(provider);
                     if (prop != null) {
-                        GuiHelper.drawColouredRect(getter.getBuffer(GuiHelper.TRANS_TYPE), x, y, 16, 16, hoveredData.doesDataMatch(prop) ? 0x8000FF00 : 0x80ff9100, 0);
+                        GuiHelperOld.drawColouredRect(getter.getBuffer(GuiHelperOld.TRANS_TYPE), x, y, 16, 16, hoveredData.doesDataMatch(prop) ? 0x8000FF00 : 0x80ff9100, 0);
                     }
                 }
                 if (DEConfig.configUiEnableVisualization && !updateAnimations.isEmpty()) {
@@ -130,7 +125,7 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
         RenderSystem.colorMask(true, true, true, false);
         if (occluded) RenderSystem.enableDepthTest();
         else RenderSystem.disableDepthTest();
-        GuiHelper.drawGradientRect(x, y, x + 16, y + 16, colour, colour, 1F, 300);
+        GuiHelperOld.drawGradientRect(x, y, x + 16, y + 16, colour, colour, 1F, 300);
         RenderSystem.colorMask(true, true, true, true);
         if (!occluded) RenderSystem.enableDepthTest();
     }
@@ -192,20 +187,18 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
         getStarted.setEnabledCallback(() -> (advancedUI && propertyContainers.isEmpty()) || (!advancedUI && simpleViewList.getScrollingElements().isEmpty()));
         mainUI.addChild(getStarted);
 
-        createOptionsButton();
+        GuiButton options = createOptionsButton();
 
-        GuiButton modulesSmall = toolkit.createThemedIconButton(mainUI, "grid_small");
-        modulesSmall.onReload(() -> modulesSmall.setPos(hideButton.isEnabled() ? hideButton.xPos() - 12 : themeButton.xPos() - 12, mainUI.yPos() + 3));
-//        modulesSmall.setEnabledCallback(() -> hideUI);
-        modulesSmall.setHoverText(I18n.get("gui.draconicevolution.item_config.open_modules.info"));
-        modulesSmall.onPressed(this::openModulesGui);
+        GuiButton moduleConfig = toolkit.createThemedIconButton(mainUI, "grid_small");
+        moduleConfig.onReload(() -> moduleConfig.setPos(hideButton.isEnabled() ? hideButton.xPos() - 12 : themeButton.xPos() - 12, mainUI.yPos() + 3));
+        moduleConfig.setHoverText(I18n.get("gui.draconicevolution.item_config.open_modules.info"));
+        moduleConfig.onPressed(this::openModulesGui);
 
-//        I think the small one looks better regardless
-//        GuiButton modulesLarge = toolkit.createThemedIconButton(mainUI, 18, "grid_large");
-//        modulesLarge.onReload(() -> modulesLarge.setPos(playerSlots.maxXPos() - 17, playerSlots.yPos() + 1));
-//        modulesLarge.setEnabledCallback(() -> !hideUI);
-//        modulesLarge.setHoverText(I18n.format("gui.draconicevolution.item_config.open_modules.info"));
-//        modulesLarge.onPressed(this::openModulesGui);
+        GuiButton hudConfig = toolkit.createIconButton(mainUI, 16, 9, 16, 8, BCSprites.themedGetter("hud_button"));
+        hudConfig.onReload(e -> e.setPos((options.isEnabled() ? options : toggleAdvanced).maxXPos() + 1, moduleConfig.yPos() + 1));
+        hudConfig.setHoverText(I18n.get("hud.draconicevolution.open_hud_config"));
+        hudConfig.onPressed(() -> minecraft.setScreen(new HudConfigGui()));
+
 
         mainUI.onReload(this::updateUIGeometry);
         selectedItem = container.getSelectedId();
@@ -249,7 +242,7 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
 //        advancedContainer.addChild(new ThemedElements.TestDialog());
     }
 
-    private void createOptionsButton() {
+    private GuiButton createOptionsButton() {
         List<Tripple<Supplier<String>, Supplier<String>, Runnable>> options = new ArrayList<>();
         options.add(new Tripple<>(
                 () -> configUiShowUnavailable ? "hide_unavailable" : "show_unavailable",
@@ -309,6 +302,7 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
             dialog.show();
             dialog.normalizePosition();
         });
+        return optionsButton;
     }
 
     protected static GuiScrollElement createPropertyList() {
@@ -589,7 +583,7 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
                 float offset = (tick / 10F) * 8;
                 RenderSystem.colorMask(true, true, true, false);
                 RenderSystem.disableDepthTest();
-                GuiHelper.drawGradientRect(x + offset, y + offset, x + 16 - offset, y + 16 - offset, 0x8000FFFF, 0x8000FFFF, 1F, 300);
+                GuiHelperOld.drawGradientRect(x + offset, y + offset, x + 16 - offset, y + 16 - offset, 0x8000FFFF, 0x8000FFFF, 1F, 300);
                 RenderSystem.colorMask(true, true, true, true);
                 RenderSystem.enableDepthTest();
             }

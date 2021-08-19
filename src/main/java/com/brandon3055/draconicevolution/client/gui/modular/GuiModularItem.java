@@ -3,18 +3,17 @@ package com.brandon3055.draconicevolution.client.gui.modular;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.client.BCSprites;
 import com.brandon3055.brandonscore.client.gui.GuiToolkit;
+import com.brandon3055.brandonscore.client.gui.HudConfigGui;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElementManager;
 import com.brandon3055.brandonscore.client.gui.modulargui.ModularGuiContainer;
 import com.brandon3055.brandonscore.client.gui.modulargui.baseelements.GuiButton;
 import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiTexture;
 import com.brandon3055.brandonscore.client.gui.modulargui.templates.TGuiBase;
-import com.brandon3055.brandonscore.client.utils.GuiHelper;
-import com.brandon3055.brandonscore.inventory.ContainerSlotLayout;
+import com.brandon3055.brandonscore.client.utils.GuiHelperOld;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleGrid;
 import com.brandon3055.draconicevolution.client.gui.ModuleGridRenderer;
-import com.brandon3055.draconicevolution.integration.equipment.EquipmentManager;
 import com.brandon3055.draconicevolution.inventory.ContainerModularItem;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -24,15 +23,10 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.IItemHandlerModifiable;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import static com.brandon3055.brandonscore.BrandonsCore.equipmentManager;
-import static com.brandon3055.brandonscore.inventory.ContainerSlotLayout.SlotType.PLAYER_EQUIPMENT;
 
 
 /**
@@ -87,6 +81,11 @@ public class GuiModularItem extends ModularGuiContainer<ContainerModularItem> {
         itemConfig.setHoverText(I18n.get("gui.draconicevolution.modular_item.open_item_config.info"));
         itemConfig.onPressed(() -> DraconicNetwork.sendOpenItemConfig(false));
 
+        GuiButton hudConfig = toolkit.createIconButton(template.background, 16, 9, 16, 8, BCSprites.themedGetter("hud_button"));
+        hudConfig.onReload(e -> e.setPos(itemConfig.maxXPos() + 1, itemConfig.yPos()));
+        hudConfig.setHoverText(I18n.get("hud.draconicevolution.open_hud_config"));
+        hudConfig.onPressed(() -> minecraft.setScreen(new HudConfigGui()));
+
         updateInfoPanel();
     }
 
@@ -107,7 +106,7 @@ public class GuiModularItem extends ModularGuiContainer<ContainerModularItem> {
         for (ITextComponent name : nameStatMap.keySet()) {
             infoPanel.addLabeledValue(TextFormatting.GOLD + name.getString(), 6, 10, () -> TextFormatting.GRAY + nameStatMap.get(name).getString(), true);
         }
-//        infoPanel.setEnabled(!nameStatMap.isEmpty());
+
         reloadGui();
     }
 
@@ -128,16 +127,10 @@ public class GuiModularItem extends ModularGuiContainer<ContainerModularItem> {
             int dark = 0xFFf45905;
 
             IRenderTypeBuffer.Impl getter = minecraft.renderBuffers().bufferSource();
-            GuiHelper.drawShadedRect(getter.getBuffer(GuiHelper.TRANS_TYPE), x - 1, y - 1, 18, 18, 1, 0, dark, light, GuiElement.midColour(light, dark), 0);
+            GuiHelperOld.drawShadedRect(getter.getBuffer(GuiHelperOld.TRANS_TYPE), x - 1, y - 1, 18, 18, 1, 0, dark, light, GuiElement.midColour(light, dark), 0);
 
             if (slot.getItem() == container.hostStack) {
-//                RenderSystem.colorMask(true, true, true, false);
-//                GuiHelper.drawGradientRect(x, y, x + 16, y + 16, 0x80FF0000, 0x80FF0000, 1F, 300);
-//                RenderSystem.colorMask(true, true, true, true);
-//                RenderSystem.depthMask(true);
-//                RenderSystem.enableBlend();
-
-                GuiHelper.drawBorderedRect(getter.getBuffer(GuiHelper.TRANS_TYPE), x, y, 16, 16, 1, 0x50FF0000, 0xFFFF0000, 0);
+                GuiHelperOld.drawBorderedRect(getter.getBuffer(GuiHelperOld.TRANS_TYPE), x, y, 16, 16, 1, 0x50FF0000, 0xFFFF0000, 0);
             }
             getter.endBatch();
         }

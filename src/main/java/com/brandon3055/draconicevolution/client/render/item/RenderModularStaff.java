@@ -10,10 +10,9 @@ import codechicken.lib.util.TransformUtils;
 import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.api.TechLevel;
-import com.brandon3055.brandonscore.client.utils.GuiHelper;
+import com.brandon3055.brandonscore.client.utils.GuiHelperOld;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.client.render.modelfx.ModelEffect;
 import com.brandon3055.draconicevolution.client.render.modelfx.StaffModelEffect;
 import com.brandon3055.draconicevolution.items.equipment.ModularStaff;
 import com.google.common.collect.ImmutableMap;
@@ -350,7 +349,7 @@ public class RenderModularStaff extends ToolRenderBase {
 //        matrix4f.invert();
 //        matrix4f(vec);
 
-        IVertexBuilder builder = new TransformingVertexBuilder(getter.getBuffer(GuiHelper.TRANS_TYPE), mat);
+        IVertexBuilder builder = new TransformingVertexBuilder(getter.getBuffer(GuiHelperOld.TRANS_TYPE), mat);
 
 
         float x = 0;

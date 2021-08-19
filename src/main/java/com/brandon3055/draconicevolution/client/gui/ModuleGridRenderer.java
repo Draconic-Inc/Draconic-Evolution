@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.client.gui;
 
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
 import com.brandon3055.brandonscore.client.gui.modulargui.ThemedElements;
-import com.brandon3055.brandonscore.client.utils.GuiHelper;
+import com.brandon3055.brandonscore.client.utils.GuiHelperOld;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.lib.InstallResult;
@@ -81,7 +81,7 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> {
             for (int y = 0; y < grid.getHeight(); y++) {
                 int xPos = xPos() + (x * s);
                 int yPos = yPos() + (y * s);
-                renderCell(getter, xPos, yPos, s, x, y, mouseX, mouseY, GuiHelper.isInRect(xPos, yPos, s, s, mouseX, mouseY), partialTicks);
+                renderCell(getter, xPos, yPos, s, x, y, mouseX, mouseY, GuiHelperOld.isInRect(xPos, yPos, s, s, mouseX, mouseY), partialTicks);
             }
         }
         getter.endBatch();

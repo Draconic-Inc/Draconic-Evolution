@@ -16,10 +16,7 @@ import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.client.render.modelfx.BowModelEffect;
-import com.brandon3055.draconicevolution.client.render.modelfx.ModelEffect;
-import com.brandon3055.draconicevolution.client.render.modelfx.StaffModelEffect;
 import com.brandon3055.draconicevolution.items.equipment.ModularBow;
-import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.Minecraft;
@@ -35,14 +32,11 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ArrowItem;
-import net.minecraft.item.BowItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.potion.Potions;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.TransformationMatrix;
 import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
@@ -51,7 +45,6 @@ import java.util.Map;
 import static codechicken.lib.render.shader.ShaderObject.StandardShaderType.FRAGMENT;
 import static codechicken.lib.render.shader.ShaderObject.StandardShaderType.VERTEX;
 import static com.brandon3055.brandonscore.utils.EnergyUtils.getEnergyStored;
-import static com.brandon3055.draconicevolution.DraconicEvolution.LOGGER;
 import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
 
 /**
@@ -252,25 +245,25 @@ public class RenderModularBow extends ToolRenderBase {
     private void renderArrow(Matrix4 mat, IRenderTypeBuffer getter, int packedLight) {
         mat.scale(0.05625F, 0.05625F, 0.05625F);
         IVertexBuilder builder = new TransformingVertexBuilder(getter.getBuffer(RenderType.entityCutout(TippedArrowRenderer.NORMAL_ARROW_LOCATION)), mat);
-        this.buggerVertex(builder, -7, -2, -2, 0.0F, 0.15625F, -1, 0, 0, packedLight);
-        this.buggerVertex(builder, -7, -2, 2, 0.15625F, 0.15625F, -1, 0, 0, packedLight);
-        this.buggerVertex(builder, -7, 2, 2, 0.15625F, 0.3125F, -1, 0, 0, packedLight);
-        this.buggerVertex(builder, -7, 2, -2, 0.0F, 0.3125F, -1, 0, 0, packedLight);
-        this.buggerVertex(builder, -7, 2, -2, 0.0F, 0.15625F, 1, 0, 0, packedLight);
-        this.buggerVertex(builder, -7, 2, 2, 0.15625F, 0.15625F, 1, 0, 0, packedLight);
-        this.buggerVertex(builder, -7, -2, 2, 0.15625F, 0.3125F, 1, 0, 0, packedLight);
-        this.buggerVertex(builder, -7, -2, -2, 0.0F, 0.3125F, 1, 0, 0, packedLight);
+        this.bufferVertex(builder, -7, -2, -2, 0.0F, 0.15625F, -1, 0, 0, packedLight);
+        this.bufferVertex(builder, -7, -2, 2, 0.15625F, 0.15625F, -1, 0, 0, packedLight);
+        this.bufferVertex(builder, -7, 2, 2, 0.15625F, 0.3125F, -1, 0, 0, packedLight);
+        this.bufferVertex(builder, -7, 2, -2, 0.0F, 0.3125F, -1, 0, 0, packedLight);
+        this.bufferVertex(builder, -7, 2, -2, 0.0F, 0.15625F, 1, 0, 0, packedLight);
+        this.bufferVertex(builder, -7, 2, 2, 0.15625F, 0.15625F, 1, 0, 0, packedLight);
+        this.bufferVertex(builder, -7, -2, 2, 0.15625F, 0.3125F, 1, 0, 0, packedLight);
+        this.bufferVertex(builder, -7, -2, -2, 0.0F, 0.3125F, 1, 0, 0, packedLight);
 
         for (int j = 0; j < 4; ++j) {
             mat.rotate(90 * MathHelper.torad, Vector3.X_POS);//Vector3f.XP.rotationDegrees(90.0F));
-            this.buggerVertex(builder, -8.5F, -2, 0, 0.0F, 0.0F, 0, 1, 0, packedLight);
-            this.buggerVertex(builder, 8.5F, -2, 0, 0.5F, 0.0F, 0, 1, 0, packedLight);
-            this.buggerVertex(builder, 8.5F, 2, 0, 0.5F, 0.15625F, 0, 1, 0, packedLight);
-            this.buggerVertex(builder, -8.5F, 2, 0, 0.0F, 0.15625F, 0, 1, 0, packedLight);
+            this.bufferVertex(builder, -8.5F, -2, 0, 0.0F, 0.0F, 0, 1, 0, packedLight);
+            this.bufferVertex(builder, 8.5F, -2, 0, 0.5F, 0.0F, 0, 1, 0, packedLight);
+            this.bufferVertex(builder, 8.5F, 2, 0, 0.5F, 0.15625F, 0, 1, 0, packedLight);
+            this.bufferVertex(builder, -8.5F, 2, 0, 0.0F, 0.15625F, 0, 1, 0, packedLight);
         }
     }
 
-    public void buggerVertex(IVertexBuilder builder, float x, float y, float z, float u, float v, int normX, int normZ, int normY, int light) {
+    public void bufferVertex(IVertexBuilder builder, float x, float y, float z, float u, float v, int normX, int normZ, int normY, int light) {
         builder.vertex(x, y, z).color(255, 255, 255, 255).uv(u, v).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal((float) normX, (float) normY, (float) normZ).endVertex();
     }
 

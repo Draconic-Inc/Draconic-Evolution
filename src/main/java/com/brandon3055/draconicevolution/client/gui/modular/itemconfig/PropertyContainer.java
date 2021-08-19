@@ -8,7 +8,7 @@ import com.brandon3055.brandonscore.client.gui.modulargui.baseelements.GuiButton
 import com.brandon3055.brandonscore.client.gui.modulargui.baseelements.GuiScrollElement;
 import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiManipulable;
 import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiTextField;
-import com.brandon3055.brandonscore.client.utils.GuiHelper;
+import com.brandon3055.brandonscore.client.utils.GuiHelperOld;
 import com.brandon3055.brandonscore.client.gui.modulargui.ThemedElements;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.GuiConfigurableItem.UpdateAnim;
@@ -417,7 +417,7 @@ public class PropertyContainer extends GuiManipulable {
             for (PropertyContainer element : gui.propertyContainers) {
                 if (element == this) continue;
                 Rectangle other = element.getRect();
-                if (!isGroup && GuiHelper.isInRect(other.x + 8, other.y + 8, other.width - 16, other.height - 16, mouseX, mouseY)) {
+                if (!isGroup && GuiHelperOld.isInRect(other.x + 8, other.y + 8, other.width - 16, other.height - 16, mouseX, mouseY)) {
                     dropTarget = element;
                     dropTargetElement = element.dataElementMap.values().stream()
                             .filter(e -> e.isMouseOver(mouseX, mouseY))
@@ -499,7 +499,7 @@ public class PropertyContainer extends GuiManipulable {
             if (element == this) continue;
             Rectangle other = element.getRect();
             if (newPos.intersects(other) && !previous.intersects(other)) {
-                if (!isGroup && GuiHelper.isInRect(other.x + 8, other.y + 8, other.width - 16, other.height - 16, mouseX, mouseY)) {
+                if (!isGroup && GuiHelperOld.isInRect(other.x + 8, other.y + 8, other.width - 16, other.height - 16, mouseX, mouseY)) {
                     setPos(originalPos.x, originalPos.y);
                     return;
                 }
@@ -594,7 +594,7 @@ public class PropertyContainer extends GuiManipulable {
 
         int alpha = semiTrans ? 0x60000000 : 0xFF000000;
         RenderMaterial mat = BCSprites.getThemed("borderless_bg_dynamic_small");
-        drawDynamicSprite(mat.buffer(getter, e -> BCSprites.GUI_TEX_TYPE), mat.sprite(), xPos(), yPos(), xSize(), ySize(), 2, 2, 2, 2, 0xFFFFFF | alpha);
+        drawDynamicSprite(mat.buffer(getter, e -> BCSprites.GUI_TYPE), mat.sprite(), xPos(), yPos(), xSize(), ySize(), 2, 2, 2, 2, 0xFFFFFF | alpha);
 
         int contentPos = yPos() + 2 + 9;
         int contentHeight = ySize() - 4 - 9;

@@ -16,9 +16,7 @@ import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiTextFie
 import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiTexture;
 import com.brandon3055.brandonscore.client.gui.modulargui.lib.GuiAlign;
 import com.brandon3055.brandonscore.client.gui.modulargui.templates.TGuiBase;
-import com.brandon3055.brandonscore.handlers.HandHelper;
 import com.brandon3055.brandonscore.utils.DataUtils;
-import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.DESprites;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.items.tools.DislocatorAdvanced;
@@ -438,10 +436,10 @@ public class GuiDislocator extends ModularGuiScreen {
             RenderMaterial mat = DESprites.get("dislocator/slot");
             RenderMaterial matSelect = DESprites.get("dislocator/slot_selected");
             IRenderTypeBuffer.Impl getter = minecraft.renderBuffers().bufferSource();
-            drawSprite(getter.getBuffer(BCSprites.GUI_TEX_TYPE), xPos(), yPos(), (selected ? matSelect : mat).sprite());
+            drawSprite(getter.getBuffer(BCSprites.GUI_TYPE), xPos(), yPos(), (selected ? matSelect : mat).sprite());
             if ((hovered && !selected)) {
                 getter.endBatch();
-                drawSprite(getter.getBuffer(BCSprites.GUI_TEX_TYPE), xPos(), yPos(), matSelect.sprite(), 0x30FFFFFF);
+                drawSprite(getter.getBuffer(BCSprites.GUI_TYPE), xPos(), yPos(), matSelect.sprite(), 0x30FFFFFF);
             }
             getter.endBatch();
             super.renderElement(minecraft, mouseX, mouseY, partialTicks);
@@ -464,7 +462,7 @@ public class GuiDislocator extends ModularGuiScreen {
                     getter.endBatch();
                 }
 
-                drawSprite(getter.getBuffer(BCSprites.GUI_TEX_TYPE), xPos(), yPos, DESprites.get("dislocator/slot_selected").sprite(), 0x60FFFFFF);
+                drawSprite(getter.getBuffer(BCSprites.GUI_TYPE), xPos(), yPos, DESprites.get("dislocator/slot_selected").sprite(), 0x60FFFFFF);
                 getter.endBatch();
 
 
