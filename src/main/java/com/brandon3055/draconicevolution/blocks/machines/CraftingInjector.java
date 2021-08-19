@@ -1,11 +1,12 @@
 package com.brandon3055.draconicevolution.blocks.machines;
 
 import codechicken.lib.inventory.InventoryUtils;
+import com.brandon3055.brandonscore.api.hud.IHudBlock;
 import com.brandon3055.brandonscore.blocks.BlockBCore;
 import com.brandon3055.brandonscore.lib.ChatHelper;
 
 import com.brandon3055.brandonscore.utils.InfoHelper;
-import com.brandon3055.draconicevolution.api.IHudDisplay;
+import com.brandon3055.brandonscore.api.hud.IHudDisplay;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileFusionCraftingInjector;
 import net.minecraft.block.Block;
@@ -27,6 +28,8 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
@@ -40,7 +43,7 @@ import java.util.List;
 /**
  * Created by brandon3055 on 10/06/2016.
  */
-public class CraftingInjector extends BlockBCore implements IHudDisplay {
+public class CraftingInjector extends BlockBCore implements IHudBlock {
 
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
     private static VoxelShape SHAPE_DOWN = VoxelShapes.box(0.0625, 0.375, 0.0625, 0.9375, 1, 0.9375);
@@ -158,13 +161,12 @@ public class CraftingInjector extends BlockBCore implements IHudDisplay {
         return super.getShape(state, worldIn, pos, context);
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Override
-    public void addDisplayData(@Nullable ItemStack stack, World world, @Nullable BlockPos pos, List<String> displayList) {
+    public void generateHudText(World world, BlockPos pos, PlayerEntity player, List<ITextComponent> displayList) {
         TileEntity te = world.getBlockEntity(pos);
-
         if (te instanceof TileFusionCraftingInjector) {
-            displayList.add(InfoHelper.HITC() + I18n.get("fusion_inj.draconicevolution." + (((TileFusionCraftingInjector) te).singleItem.get() ? "single_item" : "multi_item")));
+            boolean single = ((TileFusionCraftingInjector) te).singleItem.get();
+            displayList.add(new TranslationTextComponent("fusion_inj.draconicevolution." + (single ? "single_item" : "multi_item")).withStyle(TextFormatting.ITALIC, TextFormatting.GOLD));
         }
     }
 }

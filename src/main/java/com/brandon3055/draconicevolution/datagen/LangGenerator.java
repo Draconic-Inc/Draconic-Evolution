@@ -714,9 +714,25 @@ public class LangGenerator extends LanguageProvider {
 
         //Armor Hud
         add("hud.draconicevolution.shield_hud.name",                            "Shield Hud");
+        add("hud.draconicevolution.shield_hud.info",                            "This hud displays the current status or your draconic shield as well as you energy reserves and Undying modules.");
         helper.setPrefix("hud_armor.draconicevolution");
         helper.add("no_shield",                                                 "No Shield Installed");
         helper.add("shield_disabled",                                           "Shield Disabled");
+        helper.add("numeric.true",                                              "Numeric Energy? Enabled");
+        helper.add("numeric.false",                                             "Numeric Energy? Disabled");
+        helper.add("numeric.info",                                              "Enable / Disable numeric energy value display.");
+        helper.add("undying.true",                                              "Undying: Enabled");
+        helper.add("undying.false",                                             "Undying: Disabled");
+        helper.add("undying.info",                                              "Enable / Disable undying module display.");
+        helper.add("energy.0",                                                  "Energy Display: Armor");
+        helper.add("energy.1",                                                  "Energy Display: Capacitors");
+        helper.add("energy.2",                                                  "Energy Display: Combined");
+        helper.add("energy.info",                                               "Cycle between displaying energy stored in Armor, Capacitors or both combined.");
+        helper.add("scale",                                                     "Scale");
+        helper.add("scale.info",                                                "Change hud element scale.");
+
+        add("hud.draconicevolution.open_hud_config",                            "Open hud configuration GUI");
+
     }
 
     private void toolTips(PrefixHelper helper) {

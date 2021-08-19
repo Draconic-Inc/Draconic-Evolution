@@ -3,16 +3,19 @@ package com.brandon3055.draconicevolution.blocks.energynet;
 import codechicken.lib.vec.Cuboid6;
 import codechicken.lib.vec.Rotation;
 import codechicken.lib.vec.Vector3;
+import com.brandon3055.brandonscore.api.hud.IHudBlock;
 import com.brandon3055.brandonscore.blocks.BlockBCore;
 import com.brandon3055.brandonscore.utils.InfoHelper;
-import com.brandon3055.draconicevolution.api.IHudDisplay;
+import com.brandon3055.brandonscore.api.hud.IHudDisplay;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalBase;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalDirectIO;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalRelay;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalWirelessIO;
+import com.brandon3055.draconicevolution.blocks.tileentity.TileFusionCraftingInjector;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -25,6 +28,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -36,7 +42,7 @@ import java.util.List;
 /**
  * Created by brandon3055 on 19/11/2016.
  */
-public class EnergyCrystal extends BlockBCore implements IHudDisplay {
+public class EnergyCrystal extends BlockBCore implements IHudBlock {
     private final TechLevel techLevel;
     private final CrystalType crystalType;
     private static VoxelShape CRYSTAL_SHAPE = VoxelShapes.create(new AxisAlignedBB(0.375, 0.125, 0.375, 0.625, 0.875, 0.625));
@@ -115,16 +121,12 @@ public class EnergyCrystal extends BlockBCore implements IHudDisplay {
 
     //region Info
 
-    @OnlyIn(Dist.CLIENT)
     @Override
-    public void addDisplayData(@Nullable ItemStack stack, World world, @Nullable BlockPos pos, List<String> displayList) {
+    public void generateHudText(World world, BlockPos pos, PlayerEntity player, List<ITextComponent> displayList) {
         TileEntity te = world.getBlockEntity(pos);
+        if (!(te instanceof TileCrystalBase)) return;
 
-        if (!(te instanceof TileCrystalBase)) {
-            return;
-        }
-
-        displayList.add(InfoHelper.HITC() + asItem().getDescription().getString());
+        displayList.add(new TranslationTextComponent(asItem().getDescriptionId()).withStyle(TextFormatting.ITALIC, TextFormatting.GOLD));
         TileCrystalBase tile = (TileCrystalBase) te;
         tile.addDisplayData(displayList);
     }

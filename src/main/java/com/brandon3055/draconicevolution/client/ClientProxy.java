@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.client;
 import codechicken.lib.model.ModelRegistryHelper;
 import codechicken.lib.texture.SpriteRegistryHelper;
 import codechicken.lib.util.ResourceUtils;
+import com.brandon3055.brandonscore.api.hud.AbstractHudElement;
 import com.brandon3055.draconicevolution.CommonProxy;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.api.energy.IENetEffectTile;
@@ -25,6 +26,7 @@ import com.brandon3055.draconicevolution.client.render.entity.GuardianCrystalRen
 import com.brandon3055.draconicevolution.client.render.entity.GuardianProjectileRenderer;
 import com.brandon3055.draconicevolution.client.render.entity.GuardianWitherRenderer;
 import com.brandon3055.draconicevolution.client.render.entity.projectile.DraconicArrowRenderer;
+import com.brandon3055.draconicevolution.client.render.hud.ShieldHudElement;
 import com.brandon3055.draconicevolution.client.render.item.*;
 import com.brandon3055.draconicevolution.client.render.tile.*;
 import com.brandon3055.draconicevolution.client.render.tile.fxhandlers.FusionTileFXHandler;
@@ -49,6 +51,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.thread.EffectiveSide;
@@ -65,6 +68,7 @@ public class ClientProxy extends CommonProxy {
     public static SpriteRegistryHelper spriteHelper = new SpriteRegistryHelper();
     public static ModelRegistryHelper modelHelper = new ModelRegistryHelper();
     public static ModuleSpriteUploader moduleSpriteUploader;
+    public static ShieldHudElement hudElement = null;
 //    public static LayerContributorPerkRenderer layerWings;
 
 
@@ -77,13 +81,13 @@ public class ClientProxy extends CommonProxy {
 
         StaffRenderEventHandler.init();
         CustomBossInfoHandler.init();
+        FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(AbstractHudElement.class, this::registerHudElements);
     }
 
     @Override
     public void commonSetup(FMLCommonSetupEvent event) {
         super.commonSetup(event);
     }
-
 
     @Override
     public void clientSetup(FMLClientSetupEvent event) {
@@ -129,7 +133,6 @@ public class ClientProxy extends CommonProxy {
             });
         }
     }
-
 
     private void registerGuiFactories() {
         ScreenManager.register(DEContent.container_generator, GuiGenerator::new);
@@ -237,7 +240,6 @@ public class ClientProxy extends CommonProxy {
         }
     }
 
-
     private void setupRenderLayers() {
         RenderTypeLookup.setRenderLayer(DEContent.grinder, RenderType.cutoutMipped());
         RenderTypeLookup.setRenderLayer(DEContent.generator, RenderType.cutoutMipped());
@@ -250,7 +252,6 @@ public class ClientProxy extends CommonProxy {
     public void serverSetup(FMLDedicatedServerSetupEvent event) {
         super.serverSetup(event);
     }
-
 
     public void registerEntityRendering() {
 
@@ -284,6 +285,10 @@ public class ClientProxy extends CommonProxy {
 //        RenderingRegistry.registerEntityRenderingHandler(EntityEnderEnergyManipulator.class, RenderEntityEnderEnergyManipulator::new);
     }
 
+
+    public void registerHudElements(RegistryEvent.Register<AbstractHudElement> event) {
+        event.getRegistry().register((hudElement = new ShieldHudElement()).setRegistryName("shield_hud"));
+    }
 
 //    @Override
 //    public void preInit(FMLPreInitializationEvent event) {

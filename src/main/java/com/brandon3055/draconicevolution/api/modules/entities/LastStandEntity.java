@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.api.modules.entities;
 
 import com.brandon3055.brandonscore.api.power.IOPStorageModifiable;
-import com.brandon3055.brandonscore.client.utils.GuiHelper;
+import com.brandon3055.brandonscore.client.utils.GuiHelperOld;
 import com.brandon3055.brandonscore.utils.MathUtils;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
@@ -23,7 +23,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
-import net.minecraft.util.Util;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -106,6 +105,11 @@ public class LastStandEntity extends ModuleEntity {
         return charge >= data.getChargeTime();
     }
 
+    public double getCharge() {
+        LastStandData data = (LastStandData) module.getData();
+        return charge / (double)data.getChargeTime();
+    }
+
     public boolean tryBlockDeath(LivingDeathEvent event) {
         LastStandData data = (LastStandData) module.getData();
         if (charge >= data.getChargeTime()) {
@@ -149,8 +153,8 @@ public class LastStandEntity extends ModuleEntity {
         double diameter = Math.min(width, height) * 0.425;
         double progress = charge / Math.max(1D, data.getChargeTime());
 
-        GuiHelper.drawColouredRect(getter.getBuffer(GuiHelper.TRANS_TYPE), x, y, width, height, 0x20FF0000, 0);
-        IVertexBuilder builder = getter.getBuffer(GuiHelper.FAN_TYPE);
+        GuiHelperOld.drawColouredRect(getter.getBuffer(GuiHelperOld.TRANS_TYPE), x, y, width, height, 0x20FF0000, 0);
+        IVertexBuilder builder = getter.getBuffer(GuiHelperOld.FAN_TYPE);
         builder.vertex(x + (width / 2D), y + (height / 2D), 0).color(0, 255, 255, 64).endVertex();
         for (double d = 0; d <= 1; d += 1D / 30D) {
             double angle = (d * progress) + 0.5 - progress;
@@ -164,8 +168,8 @@ public class LastStandEntity extends ModuleEntity {
 
         String pText = (int) (progress * 100) + "%";
         String tText = ((data.getChargeTime() - charge) / 20) + "s";
-        GuiHelper.drawBackgroundString(getter.getBuffer(GuiHelper.TRANS_TYPE), mc.font, pText, x + width / 2F, y + height / 2F - 8, 0, 0x4000FF00, 1, false, true);
-        GuiHelper.drawBackgroundString(getter.getBuffer(GuiHelper.TRANS_TYPE), mc.font, tText, x + width / 2F, y + height / 2F + 1, 0, 0x4000FF00, 1, false, true);
+        GuiHelperOld.drawBackgroundString(getter.getBuffer(GuiHelperOld.TRANS_TYPE), mc.font, pText, x + width / 2F, y + height / 2F - 8, 0, 0x4000FF00, 1, false, true);
+        GuiHelperOld.drawBackgroundString(getter.getBuffer(GuiHelperOld.TRANS_TYPE), mc.font, tText, x + width / 2F, y + height / 2F + 1, 0, 0x4000FF00, 1, false, true);
     }
 
 

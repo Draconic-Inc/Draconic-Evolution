@@ -9,7 +9,7 @@ import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.utils.DataUtils;
 import com.brandon3055.brandonscore.utils.TargetPos;
 import com.brandon3055.draconicevolution.DEConfig;
-import com.brandon3055.draconicevolution.api.IHudDisplay;
+import com.brandon3055.brandonscore.api.hud.IHudDisplay;
 import com.brandon3055.draconicevolution.client.gui.GuiDislocator;
 import com.brandon3055.draconicevolution.handlers.DESounds;
 import com.brandon3055.draconicevolution.init.DEContent;
@@ -49,7 +49,7 @@ import java.util.*;
 /**
  * Created by brandon3055 on 16/07/2016.
  */
-public class DislocatorAdvanced extends Dislocator implements IHudDisplay {
+public class DislocatorAdvanced extends Dislocator {
     public DislocatorAdvanced(Properties properties) {
         super(properties);
     }
@@ -199,12 +199,12 @@ public class DislocatorAdvanced extends Dislocator implements IHudDisplay {
     }
 
     @Override
-    public void addDisplayData(ItemStack stack, World world, @Nullable BlockPos pos, List<String> displayData) {
-        DislocatorTarget location = getTargetPos(stack, world);
+    public void generateHudText(ItemStack stack, PlayerEntity player, List<ITextComponent> displayList) {
+        DislocatorTarget location = getTargetPos(stack, player.level);
         if (location != null) {
-            displayData.add(location.getName());
+            displayList.add(new StringTextComponent(location.getName()));
         }
-        displayData.add(I18n.get("dislocate.draconicevolution.fuel") + " " + getFuel(stack));
+        displayList.add(new TranslationTextComponent("dislocate.draconicevolution.fuel").append(" " + getFuel(stack)));
     }
 
     @Override

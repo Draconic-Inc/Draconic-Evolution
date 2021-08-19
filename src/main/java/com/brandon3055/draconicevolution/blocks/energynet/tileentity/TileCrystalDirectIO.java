@@ -21,7 +21,9 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -117,12 +119,11 @@ public class TileCrystalDirectIO extends TileCrystalBase   {
         return false;
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Override
-    public void addDisplayData(List<String> displayList) {
+    public void addDisplayData(List<ITextComponent> displayList) {
         super.addDisplayData(displayList);
         TextFormatting colour = outputMode.get() ? TextFormatting.GOLD : TextFormatting.DARK_AQUA;
-        displayList.add(I18n.get("gui.draconicevolution.energy_net.io_output_" + outputMode.get(), colour));
+        displayList.add(new TranslationTextComponent("gui.draconicevolution.energy_net.io_output_" + outputMode.get(), colour));
     }
 
     //endregion

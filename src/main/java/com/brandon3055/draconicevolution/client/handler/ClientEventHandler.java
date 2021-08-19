@@ -7,11 +7,10 @@ import codechicken.lib.render.shader.ShaderProgram;
 import codechicken.lib.render.shader.ShaderProgramBuilder;
 import codechicken.lib.render.shader.UniformCache;
 import codechicken.lib.render.shader.UniformType;
-import codechicken.lib.vec.Cuboid6;
 import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.client.ProcessHandlerClient;
-import com.brandon3055.brandonscore.client.utils.GuiHelper;
+import com.brandon3055.brandonscore.client.utils.GuiHelperOld;
 import com.brandon3055.brandonscore.lib.DelayedExecutor;
 import com.brandon3055.brandonscore.lib.Pair;
 import com.brandon3055.brandonscore.utils.Utils;
@@ -19,17 +18,13 @@ import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DEOldConfig;
 import com.brandon3055.draconicevolution.api.energy.ICrystalBinder;
 import com.brandon3055.draconicevolution.handlers.BinderHandler;
-import com.brandon3055.draconicevolution.init.DEContent;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.screen.MainMenuScreen;
-import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GLAllocation;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -51,7 +46,6 @@ import org.lwjgl.opengl.GL11;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -87,8 +81,6 @@ public class ClientEventHandler {
 
     @SubscribeEvent
     public void renderGameOverlay(RenderGameOverlayEvent.Post event) {
-        HudHandler.drawHUD(event);
-
         if (explosionPos != null && event.getType() == RenderGameOverlayEvent.ElementType.ALL) {
             mc = Minecraft.getInstance();
             updateExplosionAnimation(mc, mc.level, event.getWindow(), mc.getFrameTime());
@@ -102,7 +94,6 @@ public class ClientEventHandler {
         }
 
         elapsedTicks++;
-        HudHandler.clientTick();
 
         if (explosionPos != null) {
             updateExplosion();
@@ -420,7 +411,7 @@ public class ClientEventHandler {
             } else {
                 alpha = (float) explosionAnimation + (partialTick * 0.2F);
             }
-            GuiHelper.drawColouredRect(0, 0, resolution.getGuiScaledWidth(), resolution.getGuiScaledHeight(), 0x00FFFFFF | (int) (alpha * 255F) << 24);
+            GuiHelperOld.drawColouredRect(0, 0, resolution.getGuiScaledWidth(), resolution.getGuiScaledHeight(), 0x00FFFFFF | (int) (alpha * 255F) << 24);
         } else {
 
             UniformCache uniforms = explosionShader.pushCache();
@@ -430,7 +421,7 @@ public class ClientEventHandler {
 
             explosionShader.use();
             explosionShader.popCache(uniforms);
-            GuiHelper.drawColouredRect(0, 0, resolution.getGuiScaledWidth(), resolution.getGuiScaledHeight(), 0xFFFFFFFF);
+            GuiHelperOld.drawColouredRect(0, 0, resolution.getGuiScaledWidth(), resolution.getGuiScaledHeight(), 0xFFFFFFFF);
             explosionShader.release();
         }
     }

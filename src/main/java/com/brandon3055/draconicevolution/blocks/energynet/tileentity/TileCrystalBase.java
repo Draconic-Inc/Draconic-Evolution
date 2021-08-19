@@ -40,6 +40,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
@@ -461,16 +462,10 @@ public abstract class TileCrystalBase extends TileBCore implements ITilePlaceLis
         return new AxisAlignedBB(worldPosition, worldPosition.offset(1, 1, 1));
     }
 
-    @OnlyIn(Dist.CLIENT)
-    public void addDisplayData(List<String> displayList) {
+    public void addDisplayData(List<ITextComponent> displayList) {
         double charge = MathUtils.round(((double) getEnergyStored() / (double) getMaxEnergyStored()) * 100D, 100);
-        displayList.add(TextFormatting.BLUE + I18n.get("gui.draconicevolution.energy_net.hud_charge") + ": " + Utils.formatNumber(getEnergyStored()) + " / " + Utils.formatNumber(getMaxEnergyStored()) + " RF [" + charge + "%]");
-        displayList.add(TextFormatting.GREEN + I18n.get("gui.draconicevolution.energy_net.hud_links") + ": " + getLinks().size() + " / " + maxLinks() + "");
-//        if (BrandonsCore.proxy.getClientPlayer().isShiftKeyDown()) {
-//            for (BlockPos lPos : getLinks()) {
-//                displayList.add(TextFormatting.GRAY + " " + String.format("[x:%s, y:%s, z:%s]", lPos.getX(), lPos.getY(), lPos.getZ()));
-//            }
-//        }
+        displayList.add(new TranslationTextComponent("gui.draconicevolution.energy_net.hud_charge").append(": " + Utils.formatNumber(getEnergyStored()) + " / " + Utils.formatNumber(getMaxEnergyStored()) + " RF [" + charge + "%]").withStyle(TextFormatting.BLUE));
+        displayList.add(new TranslationTextComponent("gui.draconicevolution.energy_net.hud_links").append(": " + getLinks().size() + " / " + maxLinks()).withStyle(TextFormatting.GREEN));
     }
 
     @Override

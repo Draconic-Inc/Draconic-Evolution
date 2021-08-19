@@ -30,6 +30,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
@@ -346,12 +347,13 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
-    public void addDisplayData(List<String> displayList) {
+    public void addDisplayData(List<ITextComponent> displayList) {
         super.addDisplayData(displayList);
-        displayList.add(TextFormatting.GREEN + I18n.get("gui.draconicevolution.energy_net.hud_wireless_links") + ": " + getReceivers().size() + " / " + getMaxReceivers());
+        displayList.add(new TranslationTextComponent("gui.draconicevolution.energy_net.hud_wireless_links").append(": " + getReceivers().size() + " / " + getMaxReceivers()).withStyle(TextFormatting.GREEN));
+
+        //TODO. I dont think i need to tell myself to stop this shit when i re write but... I need to stop this shit when i re write! (Injecting colours into translations like this)
         TextFormatting colour = !inputMode.get() ? TextFormatting.GOLD : TextFormatting.DARK_AQUA;
-        displayList.add(I18n.get("gui.draconicevolution.energy_net.io_output_" + !inputMode.get(), colour));
+        displayList.add(new TranslationTextComponent("gui.draconicevolution.energy_net.io_output_" + !inputMode.get(), colour));
     }
 
     //endregion

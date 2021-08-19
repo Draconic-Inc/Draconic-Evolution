@@ -9,6 +9,7 @@ import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.utils.MathUtils;
 import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.client.ClientProxy;
 import com.brandon3055.draconicevolution.client.CustomBossInfoHandler;
 import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.client.render.effect.ExplosionFX;
@@ -125,8 +126,7 @@ public class ClientPacketHandler implements ICustomPacketHandler.IClientPacketHa
         if (entity != null) {
             mc.particleEngine.createTrackingEmitter(entity, ParticleTypes.TOTEM_OF_UNDYING, 30);
             if (entity == mc.player) {
-                Minecraft.getInstance().gameRenderer.displayItemActivation(new ItemStack(item));
-                Minecraft.getInstance().gameRenderer.itemActivationOffY += 10;
+                ClientProxy.hudElement.popTotem();
             }
         }
     }

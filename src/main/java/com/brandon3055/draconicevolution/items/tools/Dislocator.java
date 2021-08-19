@@ -1,12 +1,9 @@
 package com.brandon3055.draconicevolution.items.tools;
 
-import codechicken.lib.data.MCDataInput;
-import codechicken.lib.data.MCDataOutput;
-import com.brandon3055.brandonscore.lib.ChatHelper;
+import com.brandon3055.brandonscore.api.hud.IHudItem;
 import com.brandon3055.brandonscore.network.BCoreNetwork;
-import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.brandonscore.utils.TargetPos;
-import com.brandon3055.draconicevolution.api.IHudDisplay;
+import com.brandon3055.brandonscore.api.hud.IHudDisplay;
 import com.brandon3055.draconicevolution.entity.PersistentItemEntity;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.handlers.DESounds;
@@ -14,7 +11,6 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -29,13 +25,12 @@ import net.minecraftforge.event.AnvilUpdateEvent;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Comparator;
 import java.util.List;
 
 /**
  * Created by brandon3055 on 16/07/2016.
  */
-public class Dislocator extends Item implements IHudDisplay {
+public class Dislocator extends Item implements IHudItem {
 
     public Dislocator(Properties properties) {
         super(properties.fireResistant());
@@ -199,11 +194,11 @@ public class Dislocator extends Item implements IHudDisplay {
     }
 
     @Override
-    public void addDisplayData(ItemStack stack, World world, @Nullable BlockPos pos, List<String> displayData) {
-        TargetPos location = getTargetPos(stack, world);
+    public void generateHudText(ItemStack stack, PlayerEntity player, List<ITextComponent> displayList) {
+        TargetPos location = getTargetPos(stack, player.level);
         if (location != null) {
-            displayData.add(stack.getHoverName().getString());
-            displayData.add("{" + location.getReadableName(false) + ")");
+            displayList.add(stack.getHoverName());
+            displayList.add(new StringTextComponent("{" + location.getReadableName(false) + ")"));
         }
     }
 
