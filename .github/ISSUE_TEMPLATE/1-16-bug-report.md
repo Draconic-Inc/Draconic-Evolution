@@ -1,8 +1,8 @@
 ---
-name: 1.12 Bug report
-about: 'Use this for 1.12 bug reports. '
-title: "[1.12] <Title>"
-labels: 1.12, bug
+name: 1.16 Bug report
+about: Use this for 1.16 bug reports.
+title: "[1.16] <Title>"
+labels: 1.16, bug
 assignees: ''
 
 ---
