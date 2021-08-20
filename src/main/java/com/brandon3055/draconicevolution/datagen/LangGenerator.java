@@ -46,6 +46,7 @@ public class LangGenerator extends LanguageProvider {
         helper.add(DEContent.celestial_manipulator,                             "Celestial Manipulator");
         helper.add(DEContent.disenchanter,                                      "Disenchanter");
         helper.add(DEContent.dislocation_inhibitor,                             "Dislocation Normalization Field Projector");
+        add("tile.draconicevolution.dislocation_inhibitor.info",                "Prevents items dropped within 5 block from being collected by Item Dislocators.");
         helper.add(DEContent.dislocator_pedestal,                               "Dislocator Pedestal");
         helper.add(DEContent.dislocator_receptacle,                             "Dislocator Receptacle");
         helper.add(DEContent.draconium_chest,                                   "Draconium Chest");

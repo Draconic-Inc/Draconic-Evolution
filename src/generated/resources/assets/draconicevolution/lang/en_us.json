@@ -588,6 +588,7 @@
   "tech_level.draconicevolution.draconic": "Draconic",
   "tech_level.draconicevolution.draconium": "Draconium",
   "tech_level.draconicevolution.wyvern": "Wyvern",
+  "tile.draconicevolution.dislocation_inhibitor.info": "Prevents items dropped within 5 block from being collected by Item Dislocators.",
   "tooltip.draconicevolution.bow.damage": "%s Max Attack Damage",
   "tooltip.draconicevolution.bow.energy_per_shot": "%s OP/shot"
 }

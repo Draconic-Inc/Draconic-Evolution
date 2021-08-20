@@ -195,7 +195,7 @@ public class DislocatorAdvanced extends Dislocator {
         }
         tooltip.add(new TranslationTextComponent("dislocate.draconicevolution.fuel").append(" " + fuel).withStyle(TextFormatting.WHITE));
         tooltip.add(new TranslationTextComponent("dislocate.draconicevolution.to_open_gui").withStyle(TextFormatting.DARK_PURPLE, TextFormatting.ITALIC));
-        tooltip.add(new TranslationTextComponent("dislocate.draconicevolution.scroll_change_select").withStyle(TextFormatting.DARK_PURPLE, TextFormatting.ITALIC));
+//        tooltip.add(new TranslationTextComponent("dislocate.draconicevolution.scroll_change_select").withStyle(TextFormatting.DARK_PURPLE, TextFormatting.ITALIC));
     }
 
     @Override

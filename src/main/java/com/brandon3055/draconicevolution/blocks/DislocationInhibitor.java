@@ -21,7 +21,7 @@ public class DislocationInhibitor extends BlockBCore {
 
     @Override
     public void appendHoverText(ItemStack stack, @Nullable IBlockReader worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        tooltip.add(new TranslationTextComponent("info.de.itemDislocationInhibitor.txt"));
+        tooltip.add(new TranslationTextComponent("tile.draconicevolution.dislocation_inhibitor.info"));
         super.appendHoverText(stack, worldIn, tooltip, flagIn);
     }
 }

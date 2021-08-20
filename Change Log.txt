@@ -1,4 +1,7 @@
-######## 3.0.8.x ########
+######## 3.0.9.x ########
+- Fixed dilsocation inhibitor localisation. (aka: Dislocation Normalization Field Projector)
+
+######## 3.0.8.390 ########
 - Fixed reaper enchant localization
 - Fixed staff Enchantability.
 - Fixed jump boost modules not respecting the power setting specified by the user.
