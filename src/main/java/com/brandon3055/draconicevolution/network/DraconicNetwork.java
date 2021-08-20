@@ -10,13 +10,10 @@ import com.brandon3055.draconicevolution.api.modules.lib.ModuleGrid;
 import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.PropertyData;
 import com.brandon3055.draconicevolution.entity.guardian.DraconicGuardianEntity;
 import com.brandon3055.draconicevolution.entity.guardian.control.IPhase;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.ClickType;
 import net.minecraft.item.Item;
-import net.minecraft.network.IPacket;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -52,7 +49,7 @@ public class DraconicNetwork {
     public static final int C_SHIELD_HIT =              2;
     public static final int C_EXPLOSION_EFFECT =        3;
     public static final int C_IMPACT_EFFECT =           4;
-    public static final int C_LAST_STAND_ACTIVATION =   5;
+    public static final int C_UNDYING_ACTIVATION =   5;
     public static final int C_BLINK =                   6;
     public static final int C_STAFF_EFFECT =            7;
     public static final int C_GUARDIAN_BEAM =           8;
@@ -125,8 +122,8 @@ public class DraconicNetwork {
         packet.sendToChunk(world, position);
     }
 
-    public static void sendLastStandActivation(LivingEntity target, Item item) {
-        PacketCustom packet = new PacketCustom(CHANNEL, C_LAST_STAND_ACTIVATION);
+    public static void sendUndyingActivation(LivingEntity target, Item item) {
+        PacketCustom packet = new PacketCustom(CHANNEL, C_UNDYING_ACTIVATION);
         packet.writeVarInt(target.getId());
         packet.writeRegistryId(item);
         packet.sendToChunk(target.level, target.blockPosition());

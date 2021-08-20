@@ -2,12 +2,9 @@ package com.brandon3055.draconicevolution.datagen;
 
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.api.crafting.IngredientStack;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.init.DEModules;
 import com.brandon3055.draconicevolution.init.DETags;
-import net.minecraft.advancements.criterion.ItemPredicate;
-import net.minecraft.client.gui.recipebook.RecipeOverlayGui;
 import net.minecraft.data.*;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -16,11 +13,9 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.potion.Potions;
 import net.minecraft.tags.ITag;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.Tags;
-import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import java.io.IOException;
@@ -1403,7 +1398,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .save(consumer, folder("modules", DEModules.chaoticFlight));
 
         //Last Stand
-        ShapedRecipeBuilder.shaped(DEModules.wyvernLastStand.getItem())
+        ShapedRecipeBuilder.shaped(DEModules.wyvernUndying.getItem())
                 .pattern("#C#")
                 .pattern("ABA")
                 .pattern("#D#")
@@ -1413,31 +1408,31 @@ public class RecipeGenerator extends RecipeProvider {
                 .define('C', TOTEM_OF_UNDYING)
                 .define('D', DEModules.wyvernShieldCapacity.getItem())
                 .unlockedBy("has_module_core", has(module_core))
-                .save(consumer, folder("modules", DEModules.wyvernLastStand));
+                .save(consumer, folder("modules", DEModules.wyvernUndying));
 
-        ShapedRecipeBuilder.shaped(DEModules.draconicLastStand.getItem())
+        ShapedRecipeBuilder.shaped(DEModules.draconicUndying.getItem())
                 .pattern("#C#")
                 .pattern("ABA")
                 .pattern("#D#")
                 .define('#', INGOTS_DRACONIUM_AWAKENED)
                 .define('A', core_wyvern)
-                .define('B', DEModules.wyvernLastStand.getItem())
+                .define('B', DEModules.wyvernUndying.getItem())
                 .define('C', new NBTIngredient(PotionUtils.setPotion(new ItemStack(POTION), Potions.STRONG_HEALING)))
                 .define('D', DEModules.draconicShieldCapacity.getItem())
                 .unlockedBy("has_module_core", has(module_core))
-                .save(consumer, folder("modules", DEModules.draconicLastStand));
+                .save(consumer, folder("modules", DEModules.draconicUndying));
 
-        ShapedRecipeBuilder.shaped(DEModules.chaoticLastStand.getItem())
+        ShapedRecipeBuilder.shaped(DEModules.chaoticUndying.getItem())
                 .pattern("#C#")
                 .pattern("ABA")
                 .pattern("#D#")
                 .define('#', chaos_frag_medium)
                 .define('A', core_awakened)
-                .define('B', DEModules.draconicLastStand.getItem())
+                .define('B', DEModules.draconicUndying.getItem())
                 .define('C', ENCHANTED_GOLDEN_APPLE)
                 .define('D', DEModules.chaoticShieldCapacity.getItem())
                 .unlockedBy("has_module_core", has(module_core))
-                .save(consumer, folder("modules", DEModules.chaoticLastStand));
+                .save(consumer, folder("modules", DEModules.chaoticUndying));
 
         //Auto Feed
         ShapedRecipeBuilder.shaped(DEModules.draconiumAutoFeed.getItem())

@@ -2,7 +2,7 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "draconicevolution:modules/wyvern_last_stand"
+      "draconicevolution:modules/draconic_undying"
     ]
   },
   "criteria": {
@@ -19,7 +19,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "draconicevolution:modules/wyvern_last_stand"
+        "recipe": "draconicevolution:modules/draconic_undying"
       }
     }
   },

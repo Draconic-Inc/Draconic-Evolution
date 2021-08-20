@@ -13,7 +13,7 @@
       "item": "draconicevolution:awakened_core"
     },
     "B": {
-      "item": "draconicevolution:draconic_last_stand_module"
+      "item": "draconicevolution:draconic_undying_module"
     },
     "C": {
       "item": "minecraft:enchanted_golden_apple"
@@ -23,6 +23,6 @@
     }
   },
   "result": {
-    "item": "draconicevolution:chaotic_last_stand_module"
+    "item": "draconicevolution:chaotic_undying_module"
   }
 }

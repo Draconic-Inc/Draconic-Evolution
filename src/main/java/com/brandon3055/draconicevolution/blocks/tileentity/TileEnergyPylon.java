@@ -357,7 +357,7 @@ public class TileEnergyPylon extends TileBCore implements ITickableTileEntity, I
             return sphereOnTop.get() ? new Vec3D(worldPosition).add(0.5, 1.5, 0.5) : new Vec3D(worldPosition).add(0.5, -0.5, 0.5);
         } else {
             double range = getCore().tier.get() / 2D;
-            return new Vec3D(getCore().getBlockPos()).add((random.nextFloat() - 0.5F) * range, (random.nextFloat() - 0.5F) * range, (random.nextFloat() - 0.5F) * range);
+            return new Vec3D(getCore().getBlockPos()).add(0.5, 0.5, 0.5).add((random.nextFloat() - 0.5F) * range, (random.nextFloat() - 0.5F) * range, (random.nextFloat() - 0.5F) * range);
         }
     }
 

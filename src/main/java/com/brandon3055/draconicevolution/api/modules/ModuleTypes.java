@@ -25,7 +25,7 @@ public class ModuleTypes {
     public static final ModuleType<ShieldControlData>    SHIELD_CONTROLLER   = new ModuleTypeImpl<>("shield_control",    2, 2, ShieldControlEntity::new, CHESTPIECE).setMaxInstallable(1);
     public static final ModuleType<ShieldData>           SHIELD_BOOST        = new ModuleTypeImpl<>("shield_boost",      1, 1, CHESTPIECE);
     public static final ModuleType<FlightData>           FLIGHT              = new ModuleTypeImpl<>("flight",            3, 3, FlightEntity::new, CHESTPIECE, ARMOR_CHEST).setMaxInstallable(1);
-    public static final ModuleType<LastStandData>        LAST_STAND          = new ModuleTypeImpl<>("last_stand",        2, 2, LastStandEntity::new, CHESTPIECE, ARMOR_CHEST).setMaxInstallable(1);
+    public static final ModuleType<UndyingData>          UNDYING             = new ModuleTypeImpl<>("undying",           2, 2, UndyingEntity::new, CHESTPIECE, ARMOR_CHEST).setMaxInstallable(1);
     public static final ModuleType<AutoFeedData>         AUTO_FEED           = new ModuleTypeImpl<>("auto_feed",         2, 1, AutoFeedEntity::new, CHESTPIECE, ARMOR_HEAD).setMaxInstallable(1);           //Different tiers could make it smaller? Maybe chaotic removes need for food?
     public static final ModuleType<NoData>               NIGHT_VISION        = new ModuleTypeImpl<>("night_vision",      2, 1, CHESTPIECE, ARMOR_HEAD).setMaxInstallable(1);
     public static final JumpType                         JUMP_BOOST          = new JumpType("jump_boost",                1, 1, CHESTPIECE, ARMOR_FEET).setMaxInstallable(3);

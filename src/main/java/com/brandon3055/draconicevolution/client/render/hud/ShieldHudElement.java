@@ -11,7 +11,7 @@ import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
-import com.brandon3055.draconicevolution.api.modules.entities.LastStandEntity;
+import com.brandon3055.draconicevolution.api.modules.entities.UndyingEntity;
 import com.brandon3055.draconicevolution.api.modules.entities.ShieldControlEntity;
 import com.brandon3055.draconicevolution.client.DESprites;
 import com.brandon3055.draconicevolution.integration.equipment.EquipmentManager;
@@ -190,15 +190,15 @@ public class ShieldHudElement extends AbstractHudElement {
 
         //Totems
         if (showUndying) {
-            List<LastStandEntity> totems = host.getEntitiesByType(ModuleTypes.LAST_STAND)
-                    .map(e -> (LastStandEntity) e)
+            List<UndyingEntity> totems = host.getEntitiesByType(ModuleTypes.UNDYING)
+                    .map(e -> (UndyingEntity) e)
 //                    .sorted(Comparator.comparing(e -> e.isCharged() ? -1 : e.getCharge()))
                     .sorted(Comparator.comparing(e -> e.getModule().getModuleTechLevel().index))
                     .collect(Collectors.toList());
             int chargedTotems = 0;
             totemStatus = new double[totems.size()];
             for (int i = 0; i < totems.size(); i++) {
-                LastStandEntity entity = totems.get(i);
+                UndyingEntity entity = totems.get(i);
                 if (entity.isCharged()) {
                     chargedTotems++;
                 }

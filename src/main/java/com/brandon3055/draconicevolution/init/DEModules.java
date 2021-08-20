@@ -7,20 +7,14 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.modules.data.*;
 import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.lib.*;
-import com.brandon3055.draconicevolution.items.equipment.damage.FireDmgMod;
-import com.brandon3055.draconicevolution.items.equipment.damage.IceDmgMod;
-import com.brandon3055.draconicevolution.items.equipment.damage.LightningDmgMod;
 import com.brandon3055.draconicevolution.modules.ProjectileVelocityModule;
 import net.minecraft.item.Item;
 import net.minecraft.item.Item.Properties;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.datasync.IDataSerializer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ForgeRegistry;
-import net.minecraftforge.registries.IForgeRegistryEntry;
 import net.minecraftforge.registries.ObjectHolder;
 import net.minecraftforge.registries.RegistryBuilder;
 
@@ -119,9 +113,9 @@ public class DEModules {
     @ObjectHolder("draconic_flight")                public static Module<FlightData>        draconicFlight;
     @ObjectHolder("chaotic_flight")                 public static Module<FlightData>        chaoticFlight;
 
-    @ObjectHolder("wyvern_last_stand")              public static Module<NoData>            wyvernLastStand;
-    @ObjectHolder("draconic_last_stand")            public static Module<NoData>            draconicLastStand;
-    @ObjectHolder("chaotic_last_stand")             public static Module<NoData>            chaoticLastStand;
+    @ObjectHolder("wyvern_undying")                 public static Module<NoData>            wyvernUndying;
+    @ObjectHolder("draconic_undying")               public static Module<NoData>            draconicUndying;
+    @ObjectHolder("chaotic_undying")                public static Module<NoData>            chaoticUndying;
 
     @ObjectHolder("draconium_auto_feed")            public static Module<NoData>            draconiumAutoFeed;
     @ObjectHolder("wyvern_auto_feed")               public static Module<NoData>            wyvernAutoFeed;
@@ -224,9 +218,9 @@ public class DEModules {
         register(new ModuleImpl<>(FLIGHT,               DRACONIC,       flightData(true, true, 2)),                 "draconic_flight");
         register(new ModuleImpl<>(FLIGHT,               CHAOTIC,        flightData(true, true, 3.5)),               "chaotic_flight");
 
-        register(new ModuleImpl<>(LAST_STAND,           WYVERN,         lastStandData(6F,  25F, 15*20,  4*30*20, 5000000, 2)),                       "wyvern_last_stand");
-        register(new ModuleImpl<>(LAST_STAND,           DRACONIC,       lastStandData(12F, 50F, 30*20,  2*30*20, 10000000, 3)).setMaxInstall(2),     "draconic_last_stand");
-        register(new ModuleImpl<>(LAST_STAND,           CHAOTIC,        lastStandData(20F, 100F,120*20, 45*20, 20000000, 3)).setMaxInstall(3),     "chaotic_last_stand");
+        register(new ModuleImpl<>(UNDYING,              WYVERN,         undyingData(6F,  25F, 15*20,  4*30*20, 5000000, 2)),                       "wyvern_undying");
+        register(new ModuleImpl<>(UNDYING,              DRACONIC,       undyingData(12F, 50F, 30*20,  2*30*20, 10000000, 3)).setMaxInstall(2),     "draconic_undying");
+        register(new ModuleImpl<>(UNDYING,              CHAOTIC,        undyingData(20F, 100F,120*20, 45*20, 20000000, 3)).setMaxInstall(3),     "chaotic_undying");
 
         register(new ModuleImpl<>(AUTO_FEED,            DRACONIUM,      autoFeedData(40)),                          "draconium_auto_feed");
         register(new ModuleImpl<>(AUTO_FEED,            WYVERN,         autoFeedData(150)),                         "wyvern_auto_feed");
@@ -295,7 +289,7 @@ public class DEModules {
         };
     }
 
-    private static Function<Module<LastStandData>, LastStandData> lastStandData(float defHealthBoost, float defShieldBoost, int shieldBoostTime, int defChargeTime, long defChargeEnergy, double defInvulnSeconds) {
+    private static Function<Module<UndyingData>, UndyingData> undyingData(float defHealthBoost, float defShieldBoost, int shieldBoostTime, int defChargeTime, long defChargeEnergy, double defInvulnSeconds) {
         return e -> {
             float health = (float) ModuleCfg.getModuleDouble(e, "health_boost", defHealthBoost);
             float shield = (float) ModuleCfg.getModuleDouble(e, "shield_boost", defShieldBoost);
@@ -303,7 +297,7 @@ public class DEModules {
             int charge = ModuleCfg.getModuleInt(e, "charge_ticks", defChargeTime);
             long energy = ModuleCfg.getModuleLong(e, "charge_energy", defChargeEnergy);
             double invuln = ModuleCfg.getModuleDouble(e, "invulnerable_time", defInvulnSeconds);
-            return new LastStandData(health, shield, shieldTime, charge, energy, (int) (invuln * 20));
+            return new UndyingData(health, shield, shieldTime, charge, energy, (int) (invuln * 20));
         };
     }
 

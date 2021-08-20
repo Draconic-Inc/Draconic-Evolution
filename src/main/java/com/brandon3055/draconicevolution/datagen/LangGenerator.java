@@ -230,18 +230,18 @@ public class LangGenerator extends LanguageProvider {
         helper.add("flight.boost.name",                                         "Elytra Boost");
         //add("module.draconicevolution.flight.boost.value",                      "%s%");
 
-        helper.add(ModuleTypes.LAST_STAND,                                      "Undying");
-        helper.add("last_stand.health.name",                                    "Health Boost");
-        helper.add("last_stand.health.value",                                   "%s Health points");
-        helper.add("last_stand.shield.name",                                    "Shield Boost");
-        helper.add("last_stand.shield.value",                                   "%s for %s seconds");
-        helper.add("last_stand.charge.name",                                    "Charge Time");
-        helper.add("last_stand.charge.value",                                   "%s Seconds");
-        helper.add("last_stand.energy.name",                                    "Charge Energy");
-        helper.add("last_stand.energy.value",                                   "%sOP @%s OP/t");
-        helper.add("last_stand.invuln.name",                                    "Invulnerable Time");
-        helper.add("last_stand.invuln.value",                                   "%s Seconds");
-        helper.add("last_stand.invuln.active",                                  "Invulnerable for %s Seconds");
+        helper.add(ModuleTypes.UNDYING,                                         "Undying");
+        helper.add("undying.health.name",                                       "Health Boost");
+        helper.add("undying.health.value",                                      "%s Health points");
+        helper.add("undying.shield.name",                                       "Shield Boost");
+        helper.add("undying.shield.value",                                      "%s for %s seconds");
+        helper.add("undying.charge.name",                                       "Charge Time");
+        helper.add("undying.charge.value",                                      "%s Seconds");
+        helper.add("undying.energy.name",                                       "Charge Energy");
+        helper.add("undying.energy.value",                                      "%sOP @%s OP/t");
+        helper.add("undying.invuln.name",                                       "Invulnerable Time");
+        helper.add("undying.invuln.value",                                      "%s Seconds");
+        helper.add("undying.invuln.active",                                     "Invulnerable for %s Seconds");
 
         helper.add(ModuleTypes.AUTO_FEED,                                       "Auto Feed");
         helper.add("auto_feed.name",                                            "Food Storage");
@@ -373,9 +373,9 @@ public class LangGenerator extends LanguageProvider {
         helper.add(DEModules.draconicFlight,                                    "Draconic Flight Module");
         helper.add(DEModules.chaoticFlight,                                     "Chaotic Flight Module");
 
-        helper.add(DEModules.wyvernLastStand,                                   "Wyvern Undying Module");
-        helper.add(DEModules.draconicLastStand,                                 "Draconic Undying Module");
-        helper.add(DEModules.chaoticLastStand,                                  "Chaotic Undying Module");
+        helper.add(DEModules.wyvernUndying,                                     "Wyvern Undying Module");
+        helper.add(DEModules.draconicUndying,                                   "Draconic Undying Module");
+        helper.add(DEModules.chaoticUndying,                                    "Chaotic Undying Module");
 
         helper.add(DEModules.draconiumAutoFeed,                                 "Auto Feed Module");
         helper.add(DEModules.wyvernAutoFeed,                                    "Wyvern Auto Feed Module");

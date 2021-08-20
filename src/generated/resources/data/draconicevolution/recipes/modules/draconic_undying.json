@@ -13,7 +13,7 @@
       "item": "draconicevolution:wyvern_core"
     },
     "B": {
-      "item": "draconicevolution:wyvern_last_stand_module"
+      "item": "draconicevolution:wyvern_undying_module"
     },
     "C": {
       "type": "forge:nbt",
@@ -26,6 +26,6 @@
     }
   },
   "result": {
-    "item": "draconicevolution:draconic_last_stand_module"
+    "item": "draconicevolution:draconic_undying_module"
   }
 }

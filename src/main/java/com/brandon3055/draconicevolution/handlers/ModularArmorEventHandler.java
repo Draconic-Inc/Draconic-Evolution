@@ -1,6 +1,5 @@
 package com.brandon3055.draconicevolution.handlers;
 
-import com.brandon3055.brandonscore.api.TimeKeeper;
 import com.brandon3055.brandonscore.api.power.IOPStorage;
 import com.brandon3055.brandonscore.api.power.IOPStorageModifiable;
 import com.brandon3055.draconicevolution.DraconicEvolution;
@@ -11,34 +10,26 @@ import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
 import com.brandon3055.draconicevolution.api.modules.data.JumpData;
 import com.brandon3055.draconicevolution.api.modules.data.SpeedData;
 import com.brandon3055.draconicevolution.api.modules.entities.FlightEntity;
-import com.brandon3055.draconicevolution.api.modules.entities.LastStandEntity;
+import com.brandon3055.draconicevolution.api.modules.entities.UndyingEntity;
 import com.brandon3055.draconicevolution.api.modules.entities.ShieldControlEntity;
-import com.brandon3055.draconicevolution.init.DEContent;
-import com.brandon3055.draconicevolution.init.DEModules;
 import com.brandon3055.draconicevolution.init.EquipCfg;
 import com.brandon3055.draconicevolution.integration.equipment.EquipmentManager;
 import com.brandon3055.draconicevolution.items.equipment.IModularItem;
 import com.brandon3055.draconicevolution.items.equipment.ModularChestpiece;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.thread.EffectiveSide;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -78,7 +69,7 @@ public class ModularArmorEventHandler {
 
         ModuleHost host = optionalHost.orElseThrow(IllegalStateException::new);
 
-        if (host.getEntitiesByType(ModuleTypes.LAST_STAND).anyMatch(module -> ((LastStandEntity) module).tryBlockDamage(event))) {
+        if (host.getEntitiesByType(ModuleTypes.UNDYING).anyMatch(module -> ((UndyingEntity) module).tryBlockDamage(event))) {
             return;
         }
 
@@ -106,7 +97,7 @@ public class ModularArmorEventHandler {
 
         ModuleHost host = optionalHost.orElseThrow(IllegalStateException::new);
 
-        if (host.getEntitiesByType(ModuleTypes.LAST_STAND).anyMatch(module -> ((LastStandEntity) module).tryBlockDamage(event))) {
+        if (host.getEntitiesByType(ModuleTypes.UNDYING).anyMatch(module -> ((UndyingEntity) module).tryBlockDamage(event))) {
             return;
         }
 
@@ -135,36 +126,36 @@ public class ModularArmorEventHandler {
         }
 
         LivingEntity entity = event.getEntityLiving();
-        List<LastStandEntity> lastStandModules = new ArrayList<>();
+        List<UndyingEntity> undyingModules = new ArrayList<>();
 
         if (entity instanceof PlayerEntity) {
             PlayerEntity player = (PlayerEntity) entity;
             NonNullList<ItemStack> stacks = player.inventory.items;
             for (int i = 0; i < stacks.size(); ++i) {
-                getLastStandEntities(stacks.get(i), lastStandModules, player.inventory.selected == i ? EquipmentSlotType.MAINHAND : null, false);
+                getUndyingEntities(stacks.get(i), undyingModules, player.inventory.selected == i ? EquipmentSlotType.MAINHAND : null, false);
             }
             for (EquipmentSlotType slot : ARMOR_SLOTS) {
-                getLastStandEntities(player.inventory.armor.get(slot.getIndex()), lastStandModules, slot, false);
+                getUndyingEntities(player.inventory.armor.get(slot.getIndex()), undyingModules, slot, false);
             }
             for (ItemStack stack : player.inventory.offhand) {
-                getLastStandEntities(stack, lastStandModules, EquipmentSlotType.OFFHAND, false);
+                getUndyingEntities(stack, undyingModules, EquipmentSlotType.OFFHAND, false);
             }
             for (ItemStack stack : EquipmentManager.getAllItems(entity)) {
-                getLastStandEntities(stack, lastStandModules, null, true);
+                getUndyingEntities(stack, undyingModules, null, true);
             }
         } else {
             if (EquipmentManager.equipModLoaded()) {
                 for (EquipmentSlotType slot : EquipmentSlotType.values()) {
-                    getLastStandEntities(entity.getItemBySlot(slot), lastStandModules, slot, true);
+                    getUndyingEntities(entity.getItemBySlot(slot), undyingModules, slot, true);
                 }
             }
         }
 
-        if (lastStandModules.isEmpty() || event.getSource() == KILL_COMMAND) {
+        if (undyingModules.isEmpty() || event.getSource() == KILL_COMMAND) {
             return;
         }
 
-        boolean blocked = lastStandModules.stream()
+        boolean blocked = undyingModules.stream()
                 .sorted(Comparator.comparing(e -> e.getModule().getModuleTechLevel().index))
                 .anyMatch(e -> e.tryBlockDeath(event));
 
@@ -173,14 +164,14 @@ public class ModularArmorEventHandler {
         }
     }
 
-    private static void getLastStandEntities(ItemStack stack, List<LastStandEntity> entities, EquipmentSlotType slot, boolean inEquipModSlot) {
+    private static void getUndyingEntities(ItemStack stack, List<UndyingEntity> entities, EquipmentSlotType slot, boolean inEquipModSlot) {
         LazyOptional<ModuleHost> optional = stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
         if (!stack.isEmpty() && stack.getItem() instanceof IModularItem && ((IModularItem) stack.getItem()).isEquipped(stack, slot, inEquipModSlot)) {
             optional.ifPresent(host -> {
                 entities.addAll(host.getModuleEntities()
                         .stream()
-                        .filter(e -> e instanceof LastStandEntity)
-                        .map(e -> (LastStandEntity) e)
+                        .filter(e -> e instanceof UndyingEntity)
+                        .map(e -> (UndyingEntity) e)
                         .collect(Collectors.toList())
                 );
             });

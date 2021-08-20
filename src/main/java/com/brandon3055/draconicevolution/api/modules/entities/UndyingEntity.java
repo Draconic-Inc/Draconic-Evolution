@@ -7,7 +7,7 @@ import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
-import com.brandon3055.draconicevolution.api.modules.data.LastStandData;
+import com.brandon3055.draconicevolution.api.modules.data.UndyingData;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.brandon3055.draconicevolution.api.modules.lib.StackModuleContext;
@@ -36,12 +36,12 @@ import net.minecraftforge.fml.common.thread.EffectiveSide;
 
 import java.util.Iterator;
 
-public class LastStandEntity extends ModuleEntity {
+public class UndyingEntity extends ModuleEntity {
 
     private int charge;
     private int invulnerableTime = 0;
 
-    public LastStandEntity(Module<LastStandData> module) {
+    public UndyingEntity(Module<UndyingData> module) {
         super(module);
     }
 
@@ -61,7 +61,7 @@ public class LastStandEntity extends ModuleEntity {
                     if (invulnerableTime == 0){
                         ((PlayerEntity) entity).displayClientMessage(new StringTextComponent(""), true);
                     } else {
-                        ((PlayerEntity) entity).displayClientMessage(new TranslationTextComponent("module.draconicevolution.last_stand.invuln.active", MathUtils.round(invulnerableTime / 20D, 10)).withStyle(TextFormatting.GOLD), true);
+                        ((PlayerEntity) entity).displayClientMessage(new TranslationTextComponent("module.draconicevolution.undying.invuln.active", MathUtils.round(invulnerableTime / 20D, 10)).withStyle(TextFormatting.GOLD), true);
                     }
                 }
             }
@@ -73,7 +73,7 @@ public class LastStandEntity extends ModuleEntity {
         }
 
         StackModuleContext context = (StackModuleContext) moduleContext;
-        LastStandData data = (LastStandData) module.getData();
+        UndyingData data = (UndyingData) module.getData();
         if (!context.isEquipped() || charge >= data.getChargeTime()) {
             return;
         }
@@ -101,17 +101,17 @@ public class LastStandEntity extends ModuleEntity {
     }
 
     public boolean isCharged() {
-        LastStandData data = (LastStandData) module.getData();
+        UndyingData data = (UndyingData) module.getData();
         return charge >= data.getChargeTime();
     }
 
     public double getCharge() {
-        LastStandData data = (LastStandData) module.getData();
+        UndyingData data = (UndyingData) module.getData();
         return charge / (double)data.getChargeTime();
     }
 
     public boolean tryBlockDeath(LivingDeathEvent event) {
-        LastStandData data = (LastStandData) module.getData();
+        UndyingData data = (UndyingData) module.getData();
         if (charge >= data.getChargeTime()) {
             LivingEntity entity = event.getEntityLiving();
             entity.setHealth(entity.getHealth() + data.getHealthBoost());
@@ -137,7 +137,7 @@ public class LastStandEntity extends ModuleEntity {
                 }
             }
             charge = 0;
-            DraconicNetwork.sendLastStandActivation(entity, module.getItem());
+            DraconicNetwork.sendUndyingActivation(entity, module.getItem());
             entity.level.playSound(null, entity.blockPosition(), SoundEvents.TOTEM_USE, SoundCategory.PLAYERS, 5F, (0.95F + (entity.level.random.nextFloat() * 0.1F)));
             invulnerableTime = data.getInvulnerableTime();
             return true;
@@ -148,7 +148,7 @@ public class LastStandEntity extends ModuleEntity {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void renderSlotOverlay(IRenderTypeBuffer getter, Minecraft mc, int x, int y, int width, int height, double mouseX, double mouseY, boolean mouseOver, float partialTicks) {
-        LastStandData data = (LastStandData) module.getData();
+        UndyingData data = (UndyingData) module.getData();
         if (charge >= data.getChargeTime()) return;
         double diameter = Math.min(width, height) * 0.425;
         double progress = charge / Math.max(1D, data.getChargeTime());

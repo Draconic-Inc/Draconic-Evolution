@@ -1,34 +1,27 @@
 package com.brandon3055.draconicevolution.network;
 
 import codechicken.lib.data.MCDataInput;
-import codechicken.lib.data.MCDataOutput;
 import codechicken.lib.packet.ICustomPacketHandler;
 import codechicken.lib.packet.PacketCustom;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.utils.MathUtils;
-import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.ClientProxy;
 import com.brandon3055.draconicevolution.client.CustomBossInfoHandler;
 import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.client.render.effect.ExplosionFX;
 import com.brandon3055.draconicevolution.entity.guardian.DraconicGuardianEntity;
-import com.brandon3055.draconicevolution.entity.guardian.control.ChargeUpPhase;
 import com.brandon3055.draconicevolution.entity.guardian.control.IPhase;
 import com.brandon3055.draconicevolution.entity.guardian.control.PhaseManager;
-import com.brandon3055.draconicevolution.init.DEModules;
 import com.brandon3055.draconicevolution.items.equipment.damage.DefaultStaffDmgMod;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.play.IClientPlayNetHandler;
-import net.minecraft.client.particle.FireworkParticle;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
@@ -53,8 +46,8 @@ public class ClientPacketHandler implements ICustomPacketHandler.IClientPacketHa
             case DraconicNetwork.C_IMPACT_EFFECT:
                 handleImpactEffect(mc, packet.readPos(), packet.readByte());
                 break;
-            case DraconicNetwork.C_LAST_STAND_ACTIVATION:
-                handleLastStandActivation(mc, packet.readVarInt(), packet.readRegistryId());
+            case DraconicNetwork.C_UNDYING_ACTIVATION:
+                handleUndyingActivation(mc, packet.readVarInt(), packet.readRegistryId());
                 break;
             case DraconicNetwork.C_BLINK:
                 handleBlinkEffect(mc, packet.readVarInt(), packet.readFloat());
@@ -120,7 +113,7 @@ public class ClientPacketHandler implements ICustomPacketHandler.IClientPacketHa
 //        particle.setColor(1F, 0.6F * ci, 0.06F * ci);
     }
 
-    private static void handleLastStandActivation(Minecraft mc, int id, Item item) {
+    private static void handleUndyingActivation(Minecraft mc, int id, Item item) {
         if (mc.level == null) return;;
         Entity entity = mc.level.getEntity(id);
         if (entity != null) {

@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.client.render.entity;
 
+import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.entity.guardian.GuardianProjectileEntity;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
@@ -18,7 +19,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class GuardianProjectileRenderer extends EntityRenderer<GuardianProjectileEntity> {
-   private static final ResourceLocation DRAGON_FIREBALL_TEXTURE = new ResourceLocation("textures/entity/enderdragon/dragon_fireball.png");
+   private static final ResourceLocation DRAGON_FIREBALL_TEXTURE = new ResourceLocation(DraconicEvolution.MODID, "textures/entity/guardian_fireball.png");
    private static final RenderType RENDER_TYPE = RenderType.entityCutoutNoCull(DRAGON_FIREBALL_TEXTURE);
 
    public GuardianProjectileRenderer(EntityRendererManager renderManagerIn) {
