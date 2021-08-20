@@ -68,6 +68,7 @@
   "ecore.de.assemble_error_expected_air.txt": "ERROR: Expected air block at %s",
   "ecore.de.assemble_found_invalid.txt": "ERROR: Found invalid block \"%s\" at %s.",
   "ecore.de.assemble_missing_required.txt": "ERROR: Unable to complete structure! Missing required block(s) \"%s\".",
+  "enchantment.draconicevolution.reaper_enchantment": "Reaper",
   "entity.draconicevolution.draconic_arrow": "Draconic Arrow",
   "entity.draconicevolution.draconic_guardian": "Chaos Guardian",
   "entity.draconicevolution.guardian_crystal": "Guardian Crystal",

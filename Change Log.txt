@@ -1,32 +1,7 @@
-######## 3.0.2 (minor version reset) ########
-- Initial Modular Bow implementation
+######## 3.0.8.x ########
+- Fixed reaper enchant localization
+- Fixed staff Enchantability.
+- Fixed jump boost modules not respecting the power setting specified by the user.
 
-######## 3.5.0-alpha5.0 ########
-- Fixed minor issue where its possible to break ore with no tool.
-- Fixed Draconium capacitors not accepting enchantments like soulbound.
-- Fixed issue with guardian applying negative attack damage.
-- Fixed grinder entity type filter crashing client when you try to enter an invalid character.
-- Fixed entity selector in mob grinder filter.
-
-######## 3.5.0-alpha4.0 ########
-- Fixed Reactor GUI resize issue.
-- Fixed reactor gui closing when you are close to the stabilizer.
-- tpx <dimension> now places you in a safe position if possible (This is a BrandonsCore change)
-- Fixed issue where opening Energy core GUI while holding a block would place that block.
-- Fixed issue where dragon heart would get knocked into the end portal bu the egg the first time you kill the dragon.
-- Fixed missing Brandons Core dependency.
-
-######## 3.5.0-alpha3.6 ########
-- Fixed a bunch of random bugs.
-- Added Curios support.
-- Re implemented dislocators and re wrote advanced dislocator.
-- Fixed smelting recipes for draconium.
-- Fixed draconium not dropping XP.
-- Re implemented Dislocation Inhibitor.
-- Fixed issue where fusion crafting gets stuck at 99%.
-- Made the chestpiece a curio.
-- Added an optional weapon slot to the grinder (Primary use is applying enchants like fortune).
-- Added invulnerable timer to undying module.
-- Added Energy core charge / discharge ETA.
-- Adjusted magnet pickup logic to improve reliability while maintaining efficiency.
-
+######## 3.0.7.389 ########
+- Initial public 1.16.5 release

@@ -802,6 +802,8 @@ public class LangGenerator extends LanguageProvider {
         add("key.draconicevolution.dislocator_gui",                             "Advanced Dislocator GUI");
         add("key.draconicevolution.dislocator_up",                              "Advanced Dislocator Select Up");
         add("key.draconicevolution.dislocator_down",                            "Advanced Dislocator Select Down");
+
+        add("enchantment.draconicevolution.reaper_enchantment",                 "Reaper");
     }
 
     @Override
