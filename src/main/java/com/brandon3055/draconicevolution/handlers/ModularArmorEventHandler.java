@@ -363,12 +363,12 @@ public class ModularArmorEventHandler {
                 double jump = jumpData.getMultiplier();
                 if (max) return (float) jump;
                 if (entity.isSprinting()) {
-                    if (host instanceof PropertyProvider && ((PropertyProvider) host).hasDecimal("de.module.jump_boost_run.prop")) {
-                        jump = Math.min(jump, ((PropertyProvider) host).getDecimal("de.module.jump_boost_run.prop").getValue());
+                    if (host instanceof PropertyProvider && ((PropertyProvider) host).hasDecimal("jump_boost_run")) {
+                        jump = Math.min(jump, ((PropertyProvider) host).getDecimal("jump_boost_run").getValue());
                     }
                 } else {
-                    if (host instanceof PropertyProvider && ((PropertyProvider) host).hasDecimal("de.module.jump_boost.prop")) {
-                        jump = Math.min(jump, ((PropertyProvider) host).getDecimal("de.module.jump_boost.prop").getValue());
+                    if (host instanceof PropertyProvider && ((PropertyProvider) host).hasDecimal("jump_boost")) {
+                        jump = Math.min(jump, ((PropertyProvider) host).getDecimal("jump_boost").getValue());
                     }
                 }
                 return (float) jump;
