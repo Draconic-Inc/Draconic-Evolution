@@ -19,6 +19,8 @@ import com.brandon3055.draconicevolution.init.EquipCfg;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
@@ -108,6 +110,11 @@ public class ModularStaff extends ToolItem implements IReaperItem, IModularMinin
     @Override
     public int getReaperLevel(ItemStack stack) {
         return techLevel.index + 1;
+    }
+
+    @Override
+    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
+        return enchantment.category == EnchantmentType.DIGGER || enchantment.category == EnchantmentType.WEAPON || super.canApplyAtEnchantingTable(stack, enchantment);
     }
 
     //Projectile Attack Handling
