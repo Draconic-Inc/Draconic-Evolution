@@ -82,7 +82,7 @@ public class FusionRecipeCategory implements IRecipeCategory<IFusionRecipe> {
         if (mc.font != null) {
             TechLevel tier = recipe.getRecipeTier();
             int colour = tier.index == 0 ? 5263615 : (tier.index == 1 ? 8388863 : (tier.index == 2 ? 16737792 : 5263440));
-            GuiHelperOld.drawCenteredString(mc.font, matrixStack, I18n.get("gui.draconicevolution.fusion_craft.tier." + recipe.getRecipeTier().name().toLowerCase()), this.xSize / 2, 5, colour, false);
+            GuiHelperOld.drawCenteredString(mc.font, matrixStack, I18n.get("gui.draconicevolution.fusion_craft.tier." + recipe.getRecipeTier().name().toLowerCase(Locale.ENGLISH)), this.xSize / 2, 5, colour, false);
             GuiHelperOld.drawCenteredString(mc.font, matrixStack, I18n.get("gui.draconicevolution.fusion_craft.energy_cost"), this.xSize / 2, this.ySize - 20, 4474111, false);
             GuiHelperOld.drawCenteredString(mc.font, matrixStack, Utils.addCommas(recipe.getEnergyCost()) + " OP", this.xSize / 2, this.ySize - 10, 4500223, false);
         }

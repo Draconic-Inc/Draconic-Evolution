@@ -17,7 +17,7 @@ public class ResourceHelperDE {
 
     private static ResourceLocation vanillaParticles;
     private static Map<String, ResourceLocation> cachedResources = new HashMap<String, ResourceLocation>();
-    public static final String RESOURCE_PREFIX = DraconicEvolution.MODID.toLowerCase() + ":";
+    public static final String RESOURCE_PREFIX = DraconicEvolution.MODID.toLowerCase(Locale.ENGLISH) + ":";
 
     public static void bindTexture(ResourceLocation texture) {
         Minecraft.getInstance().getTextureManager().bind(texture);

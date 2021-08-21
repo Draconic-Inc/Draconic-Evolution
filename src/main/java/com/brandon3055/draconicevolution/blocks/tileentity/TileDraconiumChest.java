@@ -762,7 +762,7 @@ public class TileDraconiumChest extends TileBCore implements ITickableTileEntity
         }
 
         public String unlocalizedName() {
-            return "gui.draconicevolution.draconium_chest.autofill_" + name().toLowerCase();
+            return "gui.draconicevolution.draconium_chest.autofill_" + name().toLowerCase(Locale.ENGLISH);
         }
     }
 

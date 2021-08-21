@@ -105,7 +105,7 @@ public class ModularArmorModel extends VBOBipedModel<LivingEntity> {
             centralGemModel.apply(new Translation(0, 0, -0.0625 / 2));
         }
 
-        String levelName = techLevel.name().toLowerCase();
+        String levelName = techLevel.name().toLowerCase(Locale.ENGLISH);
         modelType = RenderType.create("modelType", DefaultVertexFormats.BLOCK, GL11.GL_TRIANGLES, 256, true, false, RenderType.State.builder()
                 .setTextureState(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/item/equipment/" + levelName + "_chestpeice.png"), false, false))
                 .setDiffuseLightingState(DIFFUSE_LIGHTING)

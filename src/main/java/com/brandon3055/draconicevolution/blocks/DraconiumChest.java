@@ -79,7 +79,7 @@ public class DraconiumChest extends BlockBCore {
             return false;
         }
         else if (!stack.isEmpty()) {
-            String name = stack.getDescriptionId().toLowerCase();
+            String name = stack.getDescriptionId().toLowerCase(Locale.ENGLISH);
             if (name.contains("pouch") || name.contains("bag") || name.contains("strongbox") || name.contains("shulker_box")) {
                 return false;
             }

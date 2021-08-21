@@ -279,7 +279,7 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> {
 
         y = 0;
         for (RSMode mode : RSMode.values()) {
-            background.addChild(new GuiButton(leftPos + imageWidth + 2, topPos + 127 + y, 66, 10, I18n.get("gui.draconicevolution.reactor.rs_mode_" + mode.name().toLowerCase()))
+            background.addChild(new GuiButton(leftPos + imageWidth + 2, topPos + 127 + y, 66, 10, I18n.get("gui.draconicevolution.reactor.rs_mode_" + mode.name().toLowerCase(Locale.ENGLISH)))
                     .setEnabledCallback(() -> compPanelAnim == 1 && component != null)
                     .setRectFillColourGetter((hovering, disabled) -> {
                         if (component != null && component.rsMode.get() == mode) {
@@ -302,7 +302,7 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> {
                             component.setRSMode(player, mode);
                         }
                     })
-                    .setHoverText("gui.draconicevolution.reactor.rs_mode_" + mode.name().toLowerCase() + ".info")
+                    .setHoverText("gui.draconicevolution.reactor.rs_mode_" + mode.name().toLowerCase(Locale.ENGLISH) + ".info")
                     .setTrim(false));
             y += 11;
         }

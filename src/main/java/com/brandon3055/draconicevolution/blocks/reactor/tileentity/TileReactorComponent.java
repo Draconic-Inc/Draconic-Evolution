@@ -307,7 +307,7 @@ public abstract class TileReactorComponent extends TileBCore implements ITickabl
             map.put("generationRate", (int)reactor.generationRate.get());
             map.put("fieldDrainRate", reactor.fieldDrain.get());
             map.put("fuelConversionRate", (int) Math.round(reactor.fuelUseRate.get() * 1000000D));
-            map.put("status", reactor.reactorState.get().name().toLowerCase());//reactor.reactorState.value == TileReactorCore.ReactorState.COLD ? "offline" : reactor.reactorState == 1 && !reactor.canStart() ? "charging" : reactor.reactorState == 1 && reactor.canStart() ? "charged" : reactor.reactorState == 2 ? "online" : reactor.reactorState == 3 ? "stopping" : "invalid");
+            map.put("status", reactor.reactorState.get().name().toLowerCase(Locale.ENGLISH));//reactor.reactorState.value == TileReactorCore.ReactorState.COLD ? "offline" : reactor.reactorState == 1 && !reactor.canStart() ? "charging" : reactor.reactorState == 1 && reactor.canStart() ? "charged" : reactor.reactorState == 2 ? "online" : reactor.reactorState == 3 ? "stopping" : "invalid");
             map.put("failSafe", reactor.failSafeMode.get());
             return new Object[]{map};
         }

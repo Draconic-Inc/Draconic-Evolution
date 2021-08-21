@@ -179,7 +179,7 @@ public class EnergyCrystal extends BlockBCore implements IHudBlock {
 
         @Override
         public String getSerializedName() {
-            return name().toLowerCase();
+            return name().toLowerCase(Locale.ENGLISH);
         }
 
         public abstract TileEntity createTile(TechLevel techLevel);

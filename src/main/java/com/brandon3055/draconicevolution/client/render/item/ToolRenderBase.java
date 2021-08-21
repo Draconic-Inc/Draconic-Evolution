@@ -28,6 +28,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.TransformationMatrix;
 import org.lwjgl.opengl.GL11;
 
+import java.util.Locale;
+
 import static codechicken.lib.render.shader.ShaderObject.StandardShaderType.FRAGMENT;
 import static codechicken.lib.render.shader.ShaderObject.StandardShaderType.VERTEX;
 import static codechicken.lib.util.TransformUtils.DEFAULT_TOOL;
@@ -129,7 +131,7 @@ public abstract class ToolRenderBase implements IItemRenderer {
 
     public ToolRenderBase(TechLevel techLevel, String tool) {
         this.techLevel = techLevel;
-        String levelName = techLevel.name().toLowerCase();
+        String levelName = techLevel.name().toLowerCase(Locale.ENGLISH);
         modelType = RenderType.create("modelType", DefaultVertexFormats.BLOCK, GL11.GL_TRIANGLES, 256, true, false, RenderType.State.builder()
                 .setTextureState(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/item/equipment/" + levelName + "_" + tool + ".png"), false, false))
                 .setDiffuseLightingState(DIFFUSE_LIGHTING)

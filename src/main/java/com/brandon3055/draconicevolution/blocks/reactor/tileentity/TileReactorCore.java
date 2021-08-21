@@ -1141,7 +1141,7 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
         @OnlyIn(Dist.CLIENT)
         public String localize() {
             TextFormatting[] colours = {TextFormatting.RED, TextFormatting.DARK_AQUA, TextFormatting.LIGHT_PURPLE, TextFormatting.GREEN, TextFormatting.LIGHT_PURPLE, TextFormatting.LIGHT_PURPLE, TextFormatting.DARK_RED};
-            return colours[ordinal()] + I18n.get("gui.reactor.status." + name().toLowerCase() + ".info");
+            return colours[ordinal()] + I18n.get("gui.reactor.status." + name().toLowerCase(Locale.ENGLISH) + ".info");
         }
     }
 }

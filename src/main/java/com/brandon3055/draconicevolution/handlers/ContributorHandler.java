@@ -279,17 +279,17 @@ public class ContributorHandler {
         public void setContribution(String contribution) {
             this.contribution = contribution;
 
-            if (contribution.toLowerCase().contains("lolnet")) {
+            if (contribution.toLowerCase(Locale.ENGLISH).contains("lolnet")) {
                 isLolnetContributor = true;
             }
-            if (contribution.toLowerCase().contains("patreon")) {
+            if (contribution.toLowerCase(Locale.ENGLISH).contains("patreon")) {
                 isPatreonSupporter = true;
             }
         }
 
         public void setDetails(String details) {
             this.details = details;
-            if (details.toLowerCase().contains("lolnet")) {
+            if (details.toLowerCase(Locale.ENGLISH).contains("lolnet")) {
                 isLolnetContributor = true;
             }
         }

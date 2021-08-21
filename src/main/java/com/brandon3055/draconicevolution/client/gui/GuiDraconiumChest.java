@@ -129,7 +129,7 @@ public class GuiDraconiumChest extends ModularGuiContainer<ContainerDraconiumChe
             this.setHoverTextDelay(10);
             this.setSize(12, 12);
 
-            GuiTexture icon = new GuiTexture(12, 12, () -> DESprites.get("draconium_chest/autofill_" + tile.autoSmeltMode.get().toString().toLowerCase())).setPos(xPos, yPos);
+            GuiTexture icon = new GuiTexture(12, 12, () -> DESprites.get("draconium_chest/autofill_" + tile.autoSmeltMode.get().toString().toLowerCase(Locale.ENGLISH))).setPos(xPos, yPos);
             icon.setYPosMod(this::yPos);
 
             this.setHoverText(element -> TextFormatting.WHITE + I18n.get(tile.autoSmeltMode.get().unlocalizedName() + ".info"));

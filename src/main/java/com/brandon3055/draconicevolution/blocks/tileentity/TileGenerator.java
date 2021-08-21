@@ -288,7 +288,7 @@ public class TileGenerator extends TileBCore implements ITickableTileEntity, IRS
         }
 
         public String unlocalizedName() {
-            return "gui.draconicevolution.generator.mode_" + name().toLowerCase();
+            return "gui.draconicevolution.generator.mode_" + name().toLowerCase(Locale.ENGLISH);
         }
 
     }
