@@ -1,5 +1,7 @@
 ######## 3.0.9.x ########
 - Fixed dilsocation inhibitor localisation. (aka: Dislocation Normalization Field Projector)
+- Fixed broken undying module texture (caused by previous update)
+- Fixed issue where blocks that  require a tool to harvest could still be collected by hand.
 
 ######## 3.0.8.390 ########
 - Fixed reaper enchant localization

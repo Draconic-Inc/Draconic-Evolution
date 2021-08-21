@@ -265,11 +265,11 @@ public class DEContent {
 
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> event) {
-        Properties machine = Properties.of(METAL, COLOR_GRAY).strength(3.0F, 8F).noOcclusion().harvestTool(ToolType.PICKAXE).harvestLevel(1);
-        Properties hardenedMachine = Properties.of(METAL, COLOR_GRAY).strength(5.0F, 12F).noOcclusion().harvestTool(ToolType.PICKAXE).harvestLevel(1);
-        Properties storageBlock = Properties.of(METAL, COLOR_GRAY).strength(30.0F, 600F).harvestTool(ToolType.PICKAXE).harvestLevel(3);
-        Properties stoneProp = Properties.of(Material.STONE, COLOR_GRAY).strength(1.5F, 6F).harvestTool(ToolType.PICKAXE).harvestLevel(2);
-        Properties ore = Properties.of(Material.STONE, COLOR_GRAY).strength(6.0F, 16F).harvestTool(ToolType.PICKAXE).harvestLevel(2);
+        Properties machine = Properties.of(METAL, COLOR_GRAY).strength(3.0F, 8F).noOcclusion().harvestTool(ToolType.PICKAXE).requiresCorrectToolForDrops().harvestLevel(1);
+        Properties hardenedMachine = Properties.of(METAL, COLOR_GRAY).strength(5.0F, 12F).noOcclusion().harvestTool(ToolType.PICKAXE).requiresCorrectToolForDrops().harvestLevel(1);
+        Properties storageBlock = Properties.of(METAL, COLOR_GRAY).strength(30.0F, 600F).harvestTool(ToolType.PICKAXE).requiresCorrectToolForDrops().harvestLevel(3);
+        Properties stoneProp = Properties.of(Material.STONE, COLOR_GRAY).strength(1.5F, 6F).harvestTool(ToolType.PICKAXE).requiresCorrectToolForDrops().harvestLevel(2);
+        Properties ore = Properties.of(Material.STONE, COLOR_GRAY).strength(6.0F, 16F).harvestTool(ToolType.PICKAXE).requiresCorrectToolForDrops().harvestLevel(2);
 
         //Machines
         event.getRegistry().register(new Generator(machine).setRegistryName("generator"));
