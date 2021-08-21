@@ -24,6 +24,7 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.server.ChunkHolder;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.*;

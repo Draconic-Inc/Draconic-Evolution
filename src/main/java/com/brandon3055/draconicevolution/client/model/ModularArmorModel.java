@@ -41,6 +41,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import org.lwjgl.opengl.GL11;
 
 import java.util.Collections;
+import java.util.Locale;
 import java.util.Map;
 
 import static codechicken.lib.render.shader.ShaderObject.StandardShaderType.FRAGMENT;

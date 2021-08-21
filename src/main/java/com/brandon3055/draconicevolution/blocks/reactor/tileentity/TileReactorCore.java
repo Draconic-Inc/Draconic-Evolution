@@ -54,6 +54,7 @@ import net.minecraftforge.fml.network.NetworkHooks;
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map;
 
 import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.*;

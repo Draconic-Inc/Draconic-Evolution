@@ -41,6 +41,7 @@ import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 import javax.annotation.Nullable;
+import java.util.Locale;
 import java.util.Random;
 
 import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.*;

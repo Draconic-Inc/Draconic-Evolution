@@ -38,6 +38,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by brandon3055 on 19/11/2016.

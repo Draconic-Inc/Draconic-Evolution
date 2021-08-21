@@ -26,6 +26,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 
 import java.awt.*;
+import java.util.Locale;
 
 import static net.minecraft.util.text.TextFormatting.GOLD;
 import static net.minecraft.util.text.TextFormatting.GRAY;
