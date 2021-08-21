@@ -11,6 +11,7 @@ import com.brandon3055.draconicevolution.api.modules.data.UndyingData;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.brandon3055.draconicevolution.api.modules.lib.StackModuleContext;
+import com.brandon3055.draconicevolution.client.render.item.ToolRenderBase;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.Minecraft;
@@ -162,9 +163,7 @@ public class UndyingEntity extends ModuleEntity {
             double vertY = y + (height / 2D) + Math.cos(angle * (Math.PI * 2)) * diameter;
             builder.vertex(vertX, vertY, 0).color(255, 255, 255, 64).endVertex();
         }
-        if (getter instanceof IRenderTypeBuffer.Impl) {
-            ((IRenderTypeBuffer.Impl) getter).endBatch();
-        }
+        ToolRenderBase.endBatch(getter);
 
         String pText = (int) (progress * 100) + "%";
         String tText = ((data.getChargeTime() - charge) / 20) + "s";

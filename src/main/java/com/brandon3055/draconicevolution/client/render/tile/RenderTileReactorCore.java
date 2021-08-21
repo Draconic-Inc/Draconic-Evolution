@@ -14,6 +14,7 @@ import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
+import com.brandon3055.draconicevolution.client.render.item.ToolRenderBase;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
@@ -151,9 +152,7 @@ public class RenderTileReactorCore extends TileEntityRenderer<TileReactorCore> {
         } else {
             ccrs.bind(fallBackType, getter);
             model_no_shade.render(ccrs, mat);
-            if (getter instanceof IRenderTypeBuffer.Impl) {
-                ((IRenderTypeBuffer.Impl) getter).endBatch();
-            }
+            ToolRenderBase.endBatch(getter);
 
             mat.scale(1.05);
             mat.rotate((ClientEventHandler.elapsedTicks + partialTicks) / 400F, Vector3.X_NEG);

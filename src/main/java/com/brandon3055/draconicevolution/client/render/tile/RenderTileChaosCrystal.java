@@ -16,6 +16,7 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileChaosCrystal;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.client.model.ModularArmorModel;
+import com.brandon3055.draconicevolution.client.render.item.ToolRenderBase;
 import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
 import com.brandon3055.draconicevolution.client.DETextures;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -141,9 +142,7 @@ public class RenderTileChaosCrystal extends TileEntityRenderer<TileChaosCrystal>
             uniforms.glUniform4f("baseColour", 1F, 0F, 0F, 1F);
             ccrs.bind(new ShaderRenderType(shieldType, shieldShader, uniforms), getter);
             model.render(ccrs, mat);
-            if (getter instanceof IRenderTypeBuffer.Impl) {
-                ((IRenderTypeBuffer.Impl) getter).endBatch();
-            }
+            ToolRenderBase.endBatch(getter);
         }
     }
 }

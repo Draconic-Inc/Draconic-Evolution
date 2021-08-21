@@ -226,7 +226,8 @@ public class RenderModularStaff extends ToolRenderBase {
             getter.getBuffer(bladeVBOType.withMatrix(mat).withLightMap(packedLight));
             getter.getBuffer(gemVBOType.withMatrix(mat).withLightMap(packedLight));
         }
-        ((IRenderTypeBuffer.Impl) getter).endBatch();
+
+        ToolRenderBase.endBatch(getter);
 
         Minecraft mc = Minecraft.getInstance();
         mat.rotate(torad(90), Vector3.X_NEG);
@@ -388,9 +389,7 @@ public class RenderModularStaff extends ToolRenderBase {
 //
 
 
-        if (getter instanceof IRenderTypeBuffer.Impl) {
-            ((IRenderTypeBuffer.Impl) getter).endBatch();
-        }
+        ToolRenderBase.endBatch(getter);
         RenderSystem.popMatrix();
     }
 

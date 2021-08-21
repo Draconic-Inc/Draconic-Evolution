@@ -17,6 +17,7 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalBase;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalDirectIO;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
+import com.brandon3055.draconicevolution.client.render.item.ToolRenderBase;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
@@ -145,9 +146,7 @@ public class RenderTileEnergyCrystal extends TileEntityRenderer<TileCrystalBase>
             }
         }
 
-        if (getter instanceof IRenderTypeBuffer.Impl) {
-            ((IRenderTypeBuffer.Impl) getter).endBatch();
-        }
+        ToolRenderBase.endBatch(getter);
     }
 
     private static float[] r = {0.0F, 0.55F, 1.0F};

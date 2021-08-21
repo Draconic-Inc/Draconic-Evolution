@@ -18,6 +18,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.OutlineLayerBuffer;
 import net.minecraft.client.renderer.RenderState;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.IModelTransform;
@@ -325,5 +326,12 @@ public abstract class ToolRenderBase implements IItemRenderer {
             ccrs.bind(builder, format);
             gemModel.render(ccrs);
         });
+    }
+
+    @Deprecated //TODO move to BCore RenderUtils
+    public static void endBatch(IRenderTypeBuffer getter) {
+        if (getter instanceof IRenderTypeBuffer.Impl) {
+            ((IRenderTypeBuffer.Impl) getter).endBatch();
+        }
     }
 }
