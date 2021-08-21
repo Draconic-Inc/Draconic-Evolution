@@ -80,6 +80,11 @@ public class BlockStateGenerator extends BlockStateProvider {
         dummyBlock(DEContent.chaos_crystal);
         dummyBlock(DEContent.chaos_crystal_part);
 
+        dummyBlock(DEContent.draconium_chest);
+        dummyBlock(DEContent.reactor_core);
+        dummyBlock(DEContent.reactor_stabilizer);
+        dummyBlock(DEContent.reactor_injector);
+
 
         getVariantBuilder(DEContent.energy_pylon).forAllStates(state -> ConfiguredModel.builder().modelFile(models().cubeBottomTop(state.getValue(EnergyPylon.OUTPUT) ? "energy_pylon_output" : "energy_pylon_input", modLoc("block/energy_pylon/energy_pylon_" + (state.getValue(EnergyPylon.OUTPUT) ? "output" : "input")), modLoc("block/energy_pylon/energy_pylon_active_face"), modLoc("block/energy_pylon/energy_pylon_active_face"))).build());
 

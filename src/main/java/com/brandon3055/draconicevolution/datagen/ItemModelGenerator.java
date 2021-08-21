@@ -116,6 +116,10 @@ public class ItemModelGenerator extends ItemModelProvider {
         dummyModel(DEContent.reactor_prt_out_rotor);
         dummyModel(DEContent.reactor_prt_rotor_full);
         dummyModel(DEContent.reactor_prt_focus_ring);
+        dummyModel(DEContent.draconium_chest);
+        dummyModel(DEContent.reactor_core);
+        dummyModel(DEContent.reactor_stabilizer);
+        dummyModel(DEContent.reactor_injector);
         //endregion
 
         //region Misc
@@ -153,6 +157,9 @@ public class ItemModelGenerator extends ItemModelProvider {
         simpleItem(DEContent.pickaxe_wyvern, "item/tools");
         simpleItem(DEContent.pickaxe_draconic, "item/tools");
         simpleItem(DEContent.pickaxe_chaotic, "item/tools");
+        simpleItem(DEContent.hoe_wyvern, "item/tools");
+        simpleItem(DEContent.hoe_draconic, "item/tools");
+        simpleItem(DEContent.hoe_chaotic, "item/tools");
         simpleItem(DEContent.axe_wyvern, "item/tools");
         simpleItem(DEContent.axe_draconic, "item/tools");
         simpleItem(DEContent.axe_chaotic, "item/tools");
