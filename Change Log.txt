@@ -1,4 +1,4 @@
-######## 3.0.9.x ########
+######## 3.0.9.392 ########
 - Fixed dilsocation inhibitor localisation. (aka: Dislocation Normalization Field Projector)
 - Fixed broken undying module texture (caused by previous update)
 - Fixed issue where blocks that  require a tool to harvest could still be collected by hand.
