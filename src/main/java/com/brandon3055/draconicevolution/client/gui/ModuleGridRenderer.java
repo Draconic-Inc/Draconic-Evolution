@@ -20,6 +20,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderState;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.util.InputMappings;
@@ -68,7 +69,7 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> {
     @Override
     public void renderElement(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
         super.renderElement(minecraft, mouseX, mouseY, partialTicks);
-        IRenderTypeBuffer.Impl getter = minecraft.renderBuffers().bufferSource();
+        IRenderTypeBuffer.Impl getter = IRenderTypeBuffer.immediate(Tessellator.getInstance().getBuilder());
 
         int light = ThemedElements.getBgLight();
         int dark = ThemedElements.getBgDark();
@@ -142,7 +143,7 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> {
                 int cs = grid.getCellSize();
                 int mw = module.getProperties().getWidth() * cs;
                 int mh = module.getProperties().getHeight() * cs;
-                IRenderTypeBuffer.Impl getter = Minecraft.getInstance().renderBuffers().bufferSource();
+                IRenderTypeBuffer.Impl getter = IRenderTypeBuffer.immediate(Tessellator.getInstance().getBuilder());
                 drawModule(getter, x - (mw / 2), y - (mh / 2), module);
                 getter.endBatch();
                 if (stack.getCount() > 1 || altText != null) {

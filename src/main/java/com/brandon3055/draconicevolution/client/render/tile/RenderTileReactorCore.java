@@ -21,6 +21,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderState;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -175,7 +176,7 @@ public class RenderTileReactorCore extends TileEntityRenderer<TileReactorCore> {
         float shieldPower = (float) (te.maxShieldCharge.get() > 0 ? te.shieldCharge.get() / te.maxShieldCharge.get() : 0);
         MatrixStack stack = new MatrixStack();
         Minecraft mc = Minecraft.getInstance();
-        IRenderTypeBuffer.Impl getter = mc.renderBuffers().bufferSource();
+        IRenderTypeBuffer.Impl getter = IRenderTypeBuffer.immediate(Tessellator.getInstance().getBuilder());
         Matrix4 mat = new Matrix4(stack);
         mat.scale(diameter);
         mat.rotate((ClientEventHandler.elapsedTicks + mc.getFrameTime()) / 400F, Vector3.Y_POS);

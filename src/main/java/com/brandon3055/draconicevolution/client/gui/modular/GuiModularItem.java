@@ -17,6 +17,7 @@ import com.brandon3055.draconicevolution.client.gui.ModuleGridRenderer;
 import com.brandon3055.draconicevolution.inventory.ContainerModularItem;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
@@ -126,7 +127,7 @@ public class GuiModularItem extends ModularGuiContainer<ContainerModularItem> {
             int light = 0xFFfbe555;
             int dark = 0xFFf45905;
 
-            IRenderTypeBuffer.Impl getter = minecraft.renderBuffers().bufferSource();
+            IRenderTypeBuffer.Impl getter = IRenderTypeBuffer.immediate(Tessellator.getInstance().getBuilder());
             GuiHelperOld.drawShadedRect(getter.getBuffer(GuiHelperOld.TRANS_TYPE), x - 1, y - 1, 18, 18, 1, 0, dark, light, GuiElement.midColour(light, dark), 0);
 
             if (slot.getItem() == container.hostStack) {

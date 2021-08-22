@@ -20,6 +20,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -97,7 +98,7 @@ public class GuiGenerator extends ModularGuiContainer<ContainerBCTile<TileGenera
             ccrs.reset();
 
             MatrixStack mStack = new MatrixStack();
-            IRenderTypeBuffer.Impl getter = Minecraft.getInstance().renderBuffers().bufferSource();
+            IRenderTypeBuffer.Impl getter = IRenderTypeBuffer.immediate(Tessellator.getInstance().getBuilder());
             ccrs.bind(modelType, getter);
 
             Matrix4 mat = new Matrix4(mStack);

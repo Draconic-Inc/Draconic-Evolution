@@ -23,6 +23,7 @@ import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.model.RenderMaterial;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
@@ -160,7 +161,7 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> {
                     RenderSystem.color4f(1F, 1F, 1F, 1F);
                     RenderMaterial mat = BCSprites.getThemed("slot");
                     bindTexture(mat.atlasLocation());
-                    IRenderTypeBuffer.Impl getter = minecraft.renderBuffers().bufferSource();
+                    IRenderTypeBuffer.Impl getter = IRenderTypeBuffer.immediate(Tessellator.getInstance().getBuilder());
                     GuiHelperOld.drawPlayerSlots(GuiReactor.this, leftPos + 43 - 31, topPos + 139, false);
                     for (int x = 0; x < 3; x++) {
                         drawSprite(mat.buffer(getter, BCSprites::makeType), leftPos + 182 + (x * 18), topPos + 148, 18, 18, mat.sprite());

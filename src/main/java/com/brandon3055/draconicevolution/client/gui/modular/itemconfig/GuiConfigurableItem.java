@@ -26,6 +26,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
@@ -98,7 +99,7 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
                 int light = 0xFFfbe555;
                 int dark = 0xFFf45905;
 
-                IRenderTypeBuffer.Impl getter = minecraft.renderBuffers().bufferSource();
+                IRenderTypeBuffer.Impl getter = IRenderTypeBuffer.immediate(Tessellator.getInstance().getBuilder());
                 setZLevel(mainUI.displayZLevel);
                 GuiHelperOld.drawShadedRect(getter.getBuffer(GuiHelperOld.TRANS_TYPE), x - 1, y - 1, 18, 18, 1, 0, dark, light, GuiElement.midColour(light, dark), mainUI.getRenderZLevel());
 

@@ -25,6 +25,7 @@ import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.model.RenderMaterial;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -435,7 +436,7 @@ public class GuiDislocator extends ModularGuiScreen {
 
             RenderMaterial mat = DESprites.get("dislocator/slot");
             RenderMaterial matSelect = DESprites.get("dislocator/slot_selected");
-            IRenderTypeBuffer.Impl getter = minecraft.renderBuffers().bufferSource();
+            IRenderTypeBuffer.Impl getter = IRenderTypeBuffer.immediate(Tessellator.getInstance().getBuilder());
             drawSprite(getter.getBuffer(BCSprites.GUI_TYPE), xPos(), yPos(), (selected ? matSelect : mat).sprite());
             if ((hovered && !selected)) {
                 getter.endBatch();
@@ -453,7 +454,7 @@ public class GuiDislocator extends ModularGuiScreen {
         public boolean renderOverlayLayer(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
             if (dragging) {
                 int yPos = MathHelper.clip(mouseY - 6, getParent().yPos(), getParent().maxYPos() - 12);
-                IRenderTypeBuffer.Impl getter = minecraft.renderBuffers().bufferSource();
+                IRenderTypeBuffer.Impl getter = IRenderTypeBuffer.immediate(Tessellator.getInstance().getBuilder());
 
                 TargetElement hovered = getHovered(mouseX, mouseY);
                 if (hovered != null) {

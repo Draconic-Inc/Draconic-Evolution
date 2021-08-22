@@ -15,6 +15,7 @@ import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.GuiConfig
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.model.RenderMaterial;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.InputMappings;
@@ -573,7 +574,7 @@ public class PropertyContainer extends GuiManipulable {
             animDistance = 0;
         }
 
-        IRenderTypeBuffer.Impl getter = minecraft.renderBuffers().bufferSource();
+        IRenderTypeBuffer.Impl getter = IRenderTypeBuffer.immediate(Tessellator.getInstance().getBuilder());
 
         if (dropTarget != null) {
             double zLevel = getRenderZLevel() - 10;

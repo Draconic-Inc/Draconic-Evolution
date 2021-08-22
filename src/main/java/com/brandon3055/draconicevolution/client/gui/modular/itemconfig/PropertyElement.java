@@ -13,6 +13,7 @@ import com.brandon3055.brandonscore.client.gui.modulargui.ThemedElements;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.resources.I18n;
 
 import java.util.Collections;
@@ -165,7 +166,7 @@ public class PropertyElement extends GuiElement<PropertyElement> {
 
     @Override
     public void renderElement(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
-        IRenderTypeBuffer.Impl getter = minecraft.renderBuffers().bufferSource();
+        IRenderTypeBuffer.Impl getter = IRenderTypeBuffer.immediate(Tessellator.getInstance().getBuilder());
         drawColouredRect(getter, xPos(), yPos(), xSize(), ySize(), (index % 2 == 0 ? 0x202020 : 0x101010) | opacitySupplier.get());
 
         if (advanced && gui.hoveredProvider != null && gui.hoveredProvider.getProviderName().equals(data.providerName)) {
@@ -228,7 +229,7 @@ public class PropertyElement extends GuiElement<PropertyElement> {
     private class SliderBackground extends GuiElement<SliderBackground> {
         @Override
         public void renderElement(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
-            IRenderTypeBuffer.Impl getter = minecraft.renderBuffers().bufferSource();
+            IRenderTypeBuffer.Impl getter = IRenderTypeBuffer.immediate(Tessellator.getInstance().getBuilder());
             if (isMouseOver(mouseX, mouseY) || slider.isDragging()) {
                 drawColouredRect(getter, xPos(), yPos(), xSize(), ySize(), 0x60475b6a);
             }
