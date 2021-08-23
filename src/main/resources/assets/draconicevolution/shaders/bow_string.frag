@@ -29,10 +29,8 @@ void main() {
 
     float xDist = coord.x = abs(coord.x - 0.5) * 0.8;
 
-//    float ov = max(0, (1 - xDist) - 0.9);
     float brightness = (0.4 - xDist) * 8;
 
-//    float flair = 1 - (distance(yPos, 0.8) * 6);
     float flair = (snoise(vec3(0, (coord.y * 0.05) + (time * -0.2), 0), 20) * 0.5);
     brightness *= max(1, 1 + flair);
     brightness = max(brightness, 1);

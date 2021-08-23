@@ -4,9 +4,6 @@ uniform float time;
 uniform int tier;
 varying vec3 position;
 
-//vec4 types[4] = vec4[](vec4(0.0, 0.2, 0.3, 1), vec4(0.47, 0.0, 0.58, 1), vec4(1.0 ,0.4 ,0.1, 1), vec4(1.0 ,0.0 ,0.0, 0.2))[tier];
-//vec4 type = vec4[](vec4(0.0, 0.2, 0.3, 1), vec4(0.47, 0.0, 0.58, 1), vec4(1.0 ,0.4 ,0.1, 1), vec4(1.0 ,0.0 ,0.0, 0.2))[tier];
-
 vec4 type = vec4[](vec4(0.0, 0.5, 0.8, 1), vec4(0.55, 0.0, 0.65, 1), vec4(0.8 ,0.5 ,0.1, 1), vec4(0.75 ,0.05 ,0.05, 0.2))[tier];
 
 float snoise(vec3 uv, float res){
@@ -40,6 +37,5 @@ void main() {
     brightness = max(brightness, 0);
 
     vec4 colour = vec4(pow(brightness * type.r, 3 * (1.0-type.r)), pow(brightness * type.g, 3*(1.0-type.g)), pow(brightness * type.b, 3*(1.0-type.b)), 1.0);
-//    vec4 colour = vec4(brightness * type.r, pow(brightness, 2.0) * type.g, pow(brightness ,3.0) * type.b, 1.0);
 	gl_FragColor = colour;
 }
