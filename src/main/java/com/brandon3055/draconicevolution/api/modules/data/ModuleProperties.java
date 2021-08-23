@@ -74,9 +74,6 @@ public class ModuleProperties<T extends ModuleData<T>> {
         toolTip.add(new TranslationTextComponent("module.draconicevolution.module_type")
                 .withStyle(GRAY)
                 .append(": ")
-                .append(techLevel.getDisplayName()
-                        .withStyle(techLevel.getTextColour()))
-                .append(" ")
                 .append(module.getType().getDisplayName()
                         .withStyle(techLevel.getTextColour())));
         toolTip.add(new TranslationTextComponent("module.draconicevolution.grid_size")
