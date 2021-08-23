@@ -54,7 +54,7 @@ public class GuiDislocator extends ModularGuiScreen {
     private boolean draggingTarget = false;
     private boolean blinkMode = false;
 
-    protected GuiToolkit<GuiDislocator> toolkit = new GuiToolkit<>(this, 220, 177).setTranslationPrefix("gui.draconicevolution.dislocator");
+    protected GuiToolkit<GuiDislocator> toolkit = new GuiToolkit<>(this, 240, 177).setTranslationPrefix("gui.draconicevolution.dislocator");
 
     public GuiDislocator(ITextComponent title, PlayerEntity player) {
         super(title);
@@ -149,20 +149,20 @@ public class GuiDislocator extends ModularGuiScreen {
                 .setDisabledStateSupplier(() -> !hasTarget() || getTarget().isLocked());
 
         //Fuel Add
-        GuiButton fuel1 = toolkit.createButton("+1", temp.background, true, 0)
+        GuiButton fuel1 = toolkit.createButton(toolkit.i18n("add_1"), temp.background, true, 0)
                 .setHoverText(toolkit.i18n("fuel_add_1.info"))
                 .setXPos(posBG.maxXPos() + 2)
-                .setSize(18, 13)
+                .setSize(20, 13)
                 .setMaxYPos(temp.background.maxYPos() - bgPad - 1, false)
                 .onPressed(() -> DraconicNetwork.sendDislocatorMessage(6, output -> output.writeBoolean(false).writeBoolean(false)));
 
-        GuiButton fuel16 = toolkit.createButton("+16", temp.background, true, 0)
+        GuiButton fuel16 = toolkit.createButton(toolkit.i18n("add_16"), temp.background, true, 0)
                 .setHoverText(toolkit.i18n("fuel_add_16.info"))
-                .setSize(24, 13)
+                .setSize(28, 13)
                 .setPos(fuel1.maxXPos() + 1, fuel1.yPos())
                 .onPressed(() -> DraconicNetwork.sendDislocatorMessage(6, output -> output.writeBoolean(true).writeBoolean(false)));
 
-        GuiButton fuelAll = toolkit.createButton("All", temp.background, true, 0)
+        GuiButton fuelAll = toolkit.createButton(toolkit.i18n("add_all"), temp.background, true, 0)
                 .setHoverText(toolkit.i18n("fuel_add_all.info"))
                 .setYSize(13)
                 .setPos(fuel16.maxXPos() + 1, fuel16.yPos())

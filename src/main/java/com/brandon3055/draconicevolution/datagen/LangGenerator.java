@@ -593,7 +593,7 @@ public class LangGenerator extends LanguageProvider {
         helper.add("sequential_charge",                                         "Sequential Input Priority\nThe left most item will receive charging priority.\nOnce that item is full the next will receive priority.");
         helper.add("balanced_charge",                                           "Balanced Input Priority\nPower input will be balanced between all 4 slots\nbut each slot will be limited to 1/4 of the total input rate.");
 
-        //Energy Dislocator
+        //Dislocator
         helper.setPrefix("gui.draconicevolution.dislocator");
         helper.add("add",                                                       "Add New");
         helper.add("add.info",                                                  "Add current position\n- insert below selected");
@@ -615,6 +615,9 @@ public class LangGenerator extends LanguageProvider {
         helper.add("right_click_mode.info",                                     "Switch between \"Teleport to Selected\" and \"Blink\" on right click.\\nYou can also configure keybindings.");
         helper.add("mode_blink",                                                "Use Mode:\nBlink");
         helper.add("mode_tp",                                                   "Use Mode:\nTeleport");
+        helper.add("add_1",                                                     "+1");
+        helper.add("add_16",                                                    "+16");
+        helper.add("add_all",                                                   "All");
 
         //Fusion Crafting Core
         helper.setPrefix("gui.draconicevolution.fusion_craft");

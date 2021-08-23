@@ -14,6 +14,7 @@ import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiLabel;
 import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiTexture;
 import com.brandon3055.brandonscore.client.gui.modulargui.lib.GuiAlign;
 import com.brandon3055.brandonscore.client.gui.modulargui.templates.TBasicMachine;
+import com.brandon3055.brandonscore.client.gui.modulargui.templates.TGuiBase;
 import com.brandon3055.brandonscore.inventory.ContainerBCTile;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileGrinder;
 import net.minecraft.client.resources.I18n;
@@ -33,7 +34,7 @@ public class GuiGrinder extends ModularGuiContainer<ContainerBCTile<TileGrinder>
 
     private TileGrinder tile;
 
-    protected GuiToolkit<GuiGrinder> toolkit = new GuiToolkit<>(this, EXTRA_WIDE_TALL);
+    protected GuiToolkit<GuiGrinder> toolkit = new GuiToolkit<>(this, 270, 200);
 
     public GuiGrinder(ContainerBCTile<TileGrinder> container, PlayerInventory playerInventory, ITextComponent title) {
         super(container, playerInventory, title);
@@ -42,7 +43,10 @@ public class GuiGrinder extends ModularGuiContainer<ContainerBCTile<TileGrinder>
 
     @Override
     public void addElements(GuiElementManager manager) {
-        TBasicMachine template = toolkit.loadTemplate(new TBasicMachine(this, tile, container.getSlotLayout()));
+        TBasicMachine template = new TBasicMachine(this, tile, container.getSlotLayout());
+        template.background = GuiTexture.newDynamicTexture(xSize(), ySize(), () -> BCSprites.getThemed("background_dynamic"));
+        template.background.onReload(guiTex -> guiTex.setPos(guiLeft(), guiTop()));
+        toolkit.loadTemplate(template);
         GuiElement bg = template.background;
 
         GuiEntityFilter filterUI = new GuiEntityFilter(tile.entityFilter);

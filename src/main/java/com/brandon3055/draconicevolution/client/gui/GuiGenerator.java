@@ -78,10 +78,11 @@ public class GuiGenerator extends ModularGuiContainer<ContainerBCTile<TileGenera
         modeButton.setDisplaySupplier(() -> I18n.get(tile.mode.get().unlocalizedName()));
         modeButton.setHoverText(element -> TextFormatting.BLUE + I18n.get(tile.mode.get().unlocalizedName() + ".info"));
         modeButton.onButtonPressed((pressed) -> tile.mode.set(tile.mode.get().next(hasShiftDown() || pressed == 1)));
-        modeButton.setSize(80, 14);
+        modeButton.setSize(100, 14);
         modeButton.zOffset += 100;
         modeButton.getChildElements().forEach(e -> e.zOffset += 100);
         modeButton.setPos(template.playerSlots.maxXPos() - modeButton.xSize(), template.playerSlots.yPos() - modeButton.ySize() + 8);
+        modeButton.setResetHoverOnClick(true);
 
         //Info Panel
         template.infoPanel.addLabeledValue(GOLD + toolkit.i18n("fuel_efficiency"), 6, 11, () -> GRAY + (tile.mode.get().getEfficiency() + "%"), true);
