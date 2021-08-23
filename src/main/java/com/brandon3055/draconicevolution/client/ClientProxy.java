@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.client;
 
 import codechicken.lib.model.ModelRegistryHelper;
+import codechicken.lib.render.RenderUtils;
 import codechicken.lib.texture.SpriteRegistryHelper;
 import codechicken.lib.util.ResourceUtils;
 import com.brandon3055.brandonscore.api.hud.AbstractHudElement;
@@ -20,7 +21,10 @@ import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.client.handler.StaffRenderEventHandler;
 import com.brandon3055.draconicevolution.client.keybinding.KeyBindings;
 import com.brandon3055.draconicevolution.client.keybinding.KeyInputHandler;
+import com.brandon3055.draconicevolution.client.model.ModularArmorModel;
 import com.brandon3055.draconicevolution.client.model.VBOArmorLayer;
+import com.brandon3055.draconicevolution.client.render.effect.ExplosionFX;
+import com.brandon3055.draconicevolution.client.render.effect.ReactorBeamFX;
 import com.brandon3055.draconicevolution.client.render.entity.DraconicGuardianRenderer;
 import com.brandon3055.draconicevolution.client.render.entity.GuardianCrystalRenderer;
 import com.brandon3055.draconicevolution.client.render.entity.GuardianProjectileRenderer;
@@ -82,6 +86,8 @@ public class ClientProxy extends CommonProxy {
         StaffRenderEventHandler.init();
         CustomBossInfoHandler.init();
         FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(AbstractHudElement.class, this::registerHudElements);
+
+        registerShaderReloadListeners();
     }
 
     @Override
@@ -102,7 +108,6 @@ public class ClientProxy extends CommonProxy {
         MinecraftForge.EVENT_BUS.register(new KeyInputHandler());
         MinecraftForge.EVENT_BUS.register(new ClientEventHandler());
         KeyBindings.init();
-
 
         ResourceUtils.registerReloadListener(new DETextures());
 
@@ -132,6 +137,31 @@ public class ClientProxy extends CommonProxy {
                 }
             });
         }
+    }
+
+    private void registerShaderReloadListeners() {
+        ResourceUtils.registerReloadListener(RenderModularBow.stringShader);
+        ResourceUtils.registerReloadListener(CustomBossInfoHandler.shieldShader);
+        ResourceUtils.registerReloadListener(ClientEventHandler.explosionShader);
+        ResourceUtils.registerReloadListener(ModularArmorModel.shieldShader);
+        ResourceUtils.registerReloadListener(ExplosionFX.blastWaveProgram);
+        ResourceUtils.registerReloadListener(ExplosionFX.coreEffectProgram);
+        ResourceUtils.registerReloadListener(ExplosionFX.leadingWaveProgram);
+        ResourceUtils.registerReloadListener(ReactorBeamFX.beamShaderE);
+        ResourceUtils.registerReloadListener(ReactorBeamFX.beamShaderI);
+        ResourceUtils.registerReloadListener(ReactorBeamFX.beamShaderO);
+        ResourceUtils.registerReloadListener(DraconicGuardianRenderer.shieldShader);
+        ResourceUtils.registerReloadListener(RenderItemEnergyCrystal.crystalShader);
+        ResourceUtils.registerReloadListener(RenderModularChestpeice.coreShader);
+        ResourceUtils.registerReloadListener(ToolRenderBase.chaosShader);
+        ResourceUtils.registerReloadListener(ToolRenderBase.gemShader);
+        ResourceUtils.registerReloadListener(ToolRenderBase.bladeShader);
+        ResourceUtils.registerReloadListener(ToolRenderBase.traceShader);
+        ResourceUtils.registerReloadListener(RenderTileChaosCrystal.chaosShader);
+        ResourceUtils.registerReloadListener(RenderTileChaosCrystal.shieldShader);
+        ResourceUtils.registerReloadListener(RenderTileEnergyCrystal.crystalShader);
+        ResourceUtils.registerReloadListener(RenderTileReactorCore.coreShader);
+        ResourceUtils.registerReloadListener(RenderTileReactorCore.shieldShader);
     }
 
     private void registerGuiFactories() {
