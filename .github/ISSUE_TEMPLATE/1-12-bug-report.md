@@ -24,14 +24,17 @@ Please note 1.12 is no longer in active development. Please dont post issues for
 ### Description / steps to reproduce
 
 <!---
-Please note assuming the issue is a crash something like this
+(Regarding crash reports)
+If your new to this you can find your crash reports in "<minecraft directory>/crash-reports/crash-<date and time of crash>.txt"
+If there are multiple just select the latest one. 
+It may also help if you include the latest client log which will be located at "<minecraft directory>/logs/latest.log"
 
-'Error: net.minecraftforge.fml.common.LoaderExceptionModCrash: Caught exception from Some Mod'
+Once you have the files please **DO NOT** copy their contents into this issue. 
+Instead use a paste service to such as pastebin.com (Or what ever you prefer)
 
-Is NOT a crash report!
-Attach the crash report as a txt file to your issue or use a link service like pastebin.
-
-I need the full crash report which you can find in the crash-reports folder in the minecraft folder.
-Failing that please give me your entire minecraft log from the session when the crash occurred.
-If you do not provide these your issue will be insta-closed. 
+If you have never used pastebin before its pretty simple and does not require an account or anything.
+Just go to pastebin.com,
+Copy the *entire* contents of the crash report into the "New Paste" text box  
+Then press "Create New Paste", This will create and open a new paste in your browser.
+Now simply copy the URL from your browser and paste it into this issue.
 -->
