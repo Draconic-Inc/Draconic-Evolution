@@ -51,10 +51,10 @@ public class GuiFlowGate extends ModularGuiContainer<ContainerBCTile<TileFlowGat
         GuiTextField highField = toolkit.createTextField(template.background)
                 .setHoverText(toolkit.i18n("redstone_high.info"))
                 .setValidator(toolkit.catchyValidator(s -> s.equals("") || Long.parseLong(s) >= 0))
-                .setSize(template.playerSlots.xSize() - 40, 14)
+                .setSize(template.playerSlots.xSize() - 60, 14)
                 .setPos(highLabel.xPos(), highLabel.maxYPos() + 2);
 
-        toolkit.createButton(toolkit.i18n("apply"), template.background, false)
+        toolkit.createButton(toolkit.i18n("apply"), template.background)
                 .setPos(highField.maxXPos() + 1, highField.yPos())
                 .setYSize(highField.ySize())
                 .setMaxXPos(template.playerSlots.maxXPos(), true)
@@ -69,10 +69,10 @@ public class GuiFlowGate extends ModularGuiContainer<ContainerBCTile<TileFlowGat
         GuiTextField lowField = toolkit.createTextField(template.background)
                 .setHoverText(toolkit.i18n("redstone_low.info"))
                 .setValidator(toolkit.catchyValidator(s -> s.equals("") || Long.parseLong(s) >= 0))
-                .setSize(template.playerSlots.xSize() - 40, 14)
+                .setSize(template.playerSlots.xSize() - 60, 14)
                 .setPos(lowLabel.xPos(), lowLabel.maxYPos() + 2);
 
-        toolkit.createButton(toolkit.i18n("apply"), template.background, false)
+        toolkit.createButton(toolkit.i18n("apply"), template.background)
                 .setPos(lowField.maxXPos() + 1, lowField.yPos())
                 .setYSize(lowField.ySize())
                 .setMaxXPos(template.playerSlots.maxXPos(), true)

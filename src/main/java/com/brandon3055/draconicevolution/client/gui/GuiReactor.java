@@ -233,28 +233,28 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> {
 
         //region Buttons
 
-        background.addChild(new GuiButton(leftPos + 182, topPos + 199, 54, 14, I18n.get("gui.draconicevolution.reactor.charge"))
+        background.addChild(new GuiButton(leftPos + 177, topPos + 199, 64, 14, I18n.get("gui.draconicevolution.reactor.charge"))
                 .setEnabledCallback(tile::canCharge)
                 .setBorderColours(0xFF555555, 0xFF777777)
                 .setFillColour(0xFF000000)
                 .setTrim(false)
                 .onPressed(tile::chargeReactor));
 
-        background.addChild(new GuiButton(leftPos + 182, topPos + 182, 54, 14, I18n.get("gui.draconicevolution.reactor.activate"))
+        background.addChild(new GuiButton(leftPos + 177, topPos + 182, 64, 14, I18n.get("gui.draconicevolution.reactor.activate"))
                 .setEnabledCallback(tile::canActivate)
                 .setBorderColours(0xFF555555, 0xFF777777)
                 .setFillColour(0xFF000000)
                 .setTrim(false)
                 .onPressed(tile::activateReactor));
 
-        background.addChild(new GuiButton(leftPos + 182, topPos + 199, 54, 14, I18n.get("gui.draconicevolution.reactor.shutdown"))
+        background.addChild(new GuiButton(leftPos + 177, topPos + 199, 64, 14, I18n.get("gui.draconicevolution.reactor.shutdown"))
                 .setEnabledCallback(tile::canStop)
                 .setBorderColours(0xFF555555, 0xFF777777)
                 .setFillColour(0xFF000000)
                 .setTrim(false)
                 .onPressed(tile::shutdownReactor));
 
-        background.addChild(new GuiButton(leftPos + 182, topPos + 165, 54, 14, I18n.get("gui.draconicevolution.reactor.sas"))
+        background.addChild(new GuiButton(leftPos + 177, topPos + 165, 64, 14, I18n.get("gui.draconicevolution.reactor.sas"))
                 .setEnabledCallback(() -> tile.reactorState.get() != TileReactorCore.ReactorState.COLD && tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE)
                 .setBorderColours(0xFF555555, 0xFF777777)
                 .setRectFillColourGetter((hovering, disabled) -> tile.failSafeMode.get() ? 0xFF4040FF : 0xFF000000)
@@ -262,7 +262,7 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> {
                 .onPressed(tile::toggleFailSafe)
                 .setHoverText(I18n.get("gui.draconicevolution.reactor.sas.info")));
 
-        background.addChild(new GuiButton(leftPos + 182, topPos + 138, 54, 24, I18n.get("gui.draconicevolution.reactor.rs_mode").replaceAll("\\\\n", "\n"))
+        background.addChild(new GuiButton(leftPos + 177, topPos + 138, 64, 24, I18n.get("gui.draconicevolution.reactor.rs_mode").replaceAll("\\\\n", "\n"))
                 .setEnabledCallback(() -> tile.reactorState.get() != TileReactorCore.ReactorState.COLD && component != null && tile.reactorState.get() != TileReactorCore.ReactorState.BEYOND_HOPE)
                 .setWrap(true)
                 .setBorderColours(0xFF555555, 0xFF777777)
@@ -278,10 +278,9 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> {
                 .setShadow(false)
                 .setTextColour(0xFF0000));
 
-
         y = 0;
         for (RSMode mode : RSMode.values()) {
-            background.addChild(new GuiButton(leftPos + imageWidth + 2, topPos + 127 + y, 66, 10, I18n.get("gui.draconicevolution.reactor.rs_mode_" + mode.name().toLowerCase(Locale.ENGLISH)))
+            background.addChild(new GuiButton(leftPos + imageWidth + 2, topPos + 127 + y, 76, 10, I18n.get("gui.draconicevolution.reactor.rs_mode_" + mode.name().toLowerCase(Locale.ENGLISH)))
                     .setEnabledCallback(() -> compPanelAnim == 1 && component != null)
                     .setRectFillColourGetter((hovering, disabled) -> {
                         if (component != null && component.rsMode.get() == mode) {
@@ -304,7 +303,7 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> {
                             component.setRSMode(player, mode);
                         }
                     })
-                    .setHoverText("gui.draconicevolution.reactor.rs_mode_" + mode.name().toLowerCase(Locale.ENGLISH) + ".info")
+                    .setHoverText(I18n.get("gui.draconicevolution.reactor.rs_mode_" + mode.name().toLowerCase(Locale.ENGLISH) + ".info"))
                     .setTrim(false));
             y += 11;
         }
@@ -357,18 +356,18 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> {
             container.setSlotState();
         }
 
-        if (compPanelExtended && (compPanelAnim < 1 || compPanel.xSize() != 70)) {
+        if (compPanelExtended && (compPanelAnim < 1 || compPanel.xSize() != 80)) {
             compPanelAnim += 0.1;
             if (compPanelAnim > 1) {
                 compPanelAnim = 1;
             }
-            compPanel.setXSize((int) (compPanelAnim * 70));
+            compPanel.setXSize((int) (compPanelAnim * 80));
         } else if (!compPanelExtended && compPanelAnim > 0) {
             compPanelAnim -= 0.1;
             if (compPanelAnim < 0) {
                 compPanelAnim = 0;
             }
-            compPanel.setXSize((int) (compPanelAnim * 70));
+            compPanel.setXSize((int) (compPanelAnim * 80));
         }
 
         if (compPanel.isEnabled() && compPanelAnim == 0) {

@@ -54,6 +54,7 @@ import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.ColorHandlerEvent;
+import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -86,8 +87,7 @@ public class ClientProxy extends CommonProxy {
         StaffRenderEventHandler.init();
         CustomBossInfoHandler.init();
         FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(AbstractHudElement.class, this::registerHudElements);
-
-        registerShaderReloadListeners();
+        MinecraftForge.EVENT_BUS.addListener(this::registerShaderReloads);
     }
 
     @Override
@@ -138,30 +138,46 @@ public class ClientProxy extends CommonProxy {
             });
         }
     }
+    private void registerShaderReloads(ParticleFactoryRegisterEvent event) {
+        if (Minecraft.getInstance() == null) return;
 
-    private void registerShaderReloadListeners() {
-        ResourceUtils.registerReloadListener(RenderModularBow.stringShader);
-        ResourceUtils.registerReloadListener(CustomBossInfoHandler.shieldShader);
-        ResourceUtils.registerReloadListener(ClientEventHandler.explosionShader);
-        ResourceUtils.registerReloadListener(ModularArmorModel.shieldShader);
-        ResourceUtils.registerReloadListener(ExplosionFX.blastWaveProgram);
-        ResourceUtils.registerReloadListener(ExplosionFX.coreEffectProgram);
-        ResourceUtils.registerReloadListener(ExplosionFX.leadingWaveProgram);
-        ResourceUtils.registerReloadListener(ReactorBeamFX.beamShaderE);
-        ResourceUtils.registerReloadListener(ReactorBeamFX.beamShaderI);
-        ResourceUtils.registerReloadListener(ReactorBeamFX.beamShaderO);
-        ResourceUtils.registerReloadListener(DraconicGuardianRenderer.shieldShader);
-        ResourceUtils.registerReloadListener(RenderItemEnergyCrystal.crystalShader);
-        ResourceUtils.registerReloadListener(RenderModularChestpeice.coreShader);
-        ResourceUtils.registerReloadListener(ToolRenderBase.chaosShader);
-        ResourceUtils.registerReloadListener(ToolRenderBase.gemShader);
-        ResourceUtils.registerReloadListener(ToolRenderBase.bladeShader);
-        ResourceUtils.registerReloadListener(ToolRenderBase.traceShader);
-        ResourceUtils.registerReloadListener(RenderTileChaosCrystal.chaosShader);
-        ResourceUtils.registerReloadListener(RenderTileChaosCrystal.shieldShader);
-        ResourceUtils.registerReloadListener(RenderTileEnergyCrystal.crystalShader);
-        ResourceUtils.registerReloadListener(RenderTileReactorCore.coreShader);
-        ResourceUtils.registerReloadListener(RenderTileReactorCore.shieldShader);
+        if (DEConfig.guardianShaders) {
+            ResourceUtils.registerReloadListener(CustomBossInfoHandler.shieldShader);
+            ResourceUtils.registerReloadListener(DraconicGuardianRenderer.shieldShader);
+        }
+
+        if (DEConfig.crystalShaders) {
+            ResourceUtils.registerReloadListener(RenderItemEnergyCrystal.crystalShader);
+            ResourceUtils.registerReloadListener(RenderTileEnergyCrystal.crystalShader);
+        }
+
+        if (DEConfig.toolShaders) {
+            ResourceUtils.registerReloadListener(RenderModularBow.stringShader);
+            ResourceUtils.registerReloadListener(ModularArmorModel.shieldShader);
+            ResourceUtils.registerReloadListener(RenderModularChestpeice.coreShader);
+            ResourceUtils.registerReloadListener(ToolRenderBase.chaosShader);
+            ResourceUtils.registerReloadListener(ToolRenderBase.gemShader);
+            ResourceUtils.registerReloadListener(ToolRenderBase.bladeShader);
+            ResourceUtils.registerReloadListener(ToolRenderBase.traceShader);
+        }
+
+        if (DEConfig.reactorShaders) {
+            ResourceUtils.registerReloadListener(ExplosionFX.blastWaveProgram);
+            ResourceUtils.registerReloadListener(ExplosionFX.coreEffectProgram);
+            ResourceUtils.registerReloadListener(ExplosionFX.leadingWaveProgram);
+            ResourceUtils.registerReloadListener(ReactorBeamFX.beamShaderE);
+            ResourceUtils.registerReloadListener(ReactorBeamFX.beamShaderI);
+            ResourceUtils.registerReloadListener(ReactorBeamFX.beamShaderO);
+            ResourceUtils.registerReloadListener(ClientEventHandler.explosionShader);
+            ResourceUtils.registerReloadListener(RenderTileReactorCore.coreShader);
+            ResourceUtils.registerReloadListener(RenderTileReactorCore.shieldShader);
+        }
+
+        if (DEConfig.otherShaders) {
+            ResourceUtils.registerReloadListener(RenderTileChaosCrystal.chaosShader);
+            ResourceUtils.registerReloadListener(RenderTileChaosCrystal.shieldShader);
+        }
+
     }
 
     private void registerGuiFactories() {
