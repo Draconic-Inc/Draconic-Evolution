@@ -111,12 +111,13 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
                         GuiHelperOld.drawColouredRect(getter.getBuffer(GuiHelperOld.TRANS_TYPE), x, y, 16, 16, hoveredData.doesDataMatch(prop) ? 0x8000FF00 : 0x80ff9100, 0);
                     }
                 }
+                getter.endBatch();
+
                 if (DEConfig.configUiEnableVisualization && !updateAnimations.isEmpty()) {
                     updateAnimations.stream()
                             .filter(e -> e.data.getPropIfApplicable(provider) != null)
                             .forEach(e -> e.render(x, y));
                 }
-                getter.endBatch();
             });
         }
     }
