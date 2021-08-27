@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.blocks.tileentity;
 
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.lib.ChatHelper;
-import com.brandon3055.brandonscore.lib.IActivatableTile;
+import com.brandon3055.brandonscore.lib.IInteractTile;
 import com.brandon3055.brandonscore.lib.IRedstoneEmitter;
 import com.brandon3055.brandonscore.lib.datamanager.DataFlags;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedByte;
@@ -18,7 +18,7 @@ import net.minecraft.util.text.StringTextComponent;
 /**
  * Created by brandon3055 on 28/09/2016.
  */
-public class TilePotentiometer extends TileBCore implements IRedstoneEmitter, IActivatableTile {
+public class TilePotentiometer extends TileBCore implements IRedstoneEmitter, IInteractTile {
 
     public final ManagedEnum<Direction> rotation = register(new ManagedEnum<>("rotation", Direction.NORTH, DataFlags.SAVE_NBT_SYNC_TILE));
     public final ManagedByte power = register(new ManagedByte("power", DataFlags.SAVE_NBT_SYNC_TILE));

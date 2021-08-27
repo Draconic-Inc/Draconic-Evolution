@@ -1766,8 +1766,27 @@ public class RecipeGenerator extends RecipeProvider {
 //        FusionRecipeBuilder.fusionRecipe(ender_energy_manipulator).catalyst(SKELETON_SKULL).energy(12000000).techLevel(WYVERN).ingredient(ENDER_EYE).ingredient(ENDER_EYE).ingredient(ENDER_EYE).ingredient(ENDER_EYE).ingredient(ENDER_EYE).ingredient(ENDER_EYE).ingredient(core_draconium).ingredient(core_wyvern).ingredient(core_draconium).ingredient(ENDER_EYE).build(consumer);
 
 
-//        ShapedRecipeBuilder.shapedRecipe(dislocator_receptacle).patternLine("ABA").patternLine(" C ").patternLine("A A").key('A', INGOTS_IRON).key('B', core_draconium).key('C', infused_obsidian).build(consumer);
-//        ShapedRecipeBuilder.shapedRecipe(dislocator_pedestal).patternLine(" A ").patternLine(" B ").patternLine("CDC").key('A', STONE_PRESSURE_PLATE).key('B', Tags.Items.STONE).key('C', STONE_SLAB).key('D', BLAZE_POWDER).build(consumer);
+        ShapedRecipeBuilder.shaped(dislocator_receptacle)
+                .pattern("ABA")
+                .pattern(" C ")
+                .pattern("A A")
+                .define('A', INGOTS_IRON)
+                .define('B', core_draconium)
+                .define('C', infused_obsidian)
+                .unlockedBy("has_dust_draconium", has(dislocator))
+                .save(consumer);
+
+
+        ShapedRecipeBuilder.shaped(dislocator_pedestal)
+                .pattern(" A ")
+                .pattern(" B ")
+                .pattern("CDC")
+                .define('A', STONE_PRESSURE_PLATE)
+                .define('B', Tags.Items.STONE)
+                .define('C', STONE_SLAB)
+                .define('D', BLAZE_POWDER)
+                .unlockedBy("has_dust_draconium", has(dislocator))
+                .save(consumer);
 
 
 //        ShapedRecipeBuilder.shapedRecipe(rain_sensor).patternLine(" A ").patternLine("BCB").patternLine("DDD").key('A', BUCKET).key('B', DUSTS_REDSTONE).key('C', STONE_PRESSURE_PLATE).key('D', STONE_SLAB).build(consumer);

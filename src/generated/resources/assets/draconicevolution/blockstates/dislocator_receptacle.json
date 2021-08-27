@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "active=false,camo=false": {
+      "model": "draconicevolution:block/dislocator_receptacle_inactive"
+    },
+    "active=true,camo=false": {
+      "model": "draconicevolution:block/dislocator_receptacle_active"
+    },
+    "camo=true": {
+      "model": "draconicevolution:block/infused_obsidian"
+    }
+  }
+}

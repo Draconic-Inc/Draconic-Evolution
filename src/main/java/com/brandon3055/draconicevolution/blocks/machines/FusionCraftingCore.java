@@ -17,7 +17,7 @@ import javax.annotation.Nullable;
 /**
  * Created by brandon3055 on 11/06/2016.
  */
-public class FusionCraftingCore extends BlockBCore /*implements IRenderOverride, ITileEntityProvider*/ {
+public class FusionCraftingCore extends BlockBCore {
 
     private static final VoxelShape SHAPE = VoxelShapes.box(0.0625, 0.0625, 0.0625, 0.9375, 0.9375, 0.9375);
 
@@ -41,37 +41,10 @@ public class FusionCraftingCore extends BlockBCore /*implements IRenderOverride,
         return new TileFusionCraftingCore();
     }
 
-//    @Override
-//    public boolean onBlockActivated(World world, BlockPos pos, BlockState state, PlayerEntity player, Hand hand, Direction side, float hitX, float hitY, float hitZ) {
-//        TileEntity tile = world.getTileEntity(pos);
-//
-//        if (tile instanceof TileFusionCraftingCore) {
-//            ((TileFusionCraftingCore) tile).updateInjectors();
-//        }
-//
-//        if (!world.isRemote) {
-//            FMLNetworkHandler.openGui(player, DraconicEvolution.instance, GuiHandler.GUIID_FUSION_CRAFTING, world, pos.getX(), pos.getY(), pos.getZ());
-//        }
-//        return true;
-//    }
-//
-//    @OnlyIn(Dist.CLIENT)
-//    @Override
-//    public void registerRenderer(Feature feature) {
-//        ClientRegistry.bindTileEntitySpecialRenderer(TileFusionCraftingCore.class, new RenderTileFusionCraftingCore());
-//    }
-//
-//    @Override
-//    public boolean registerNormal(Feature feature) {
-//        return true;
-//    }
-
-
     @Override
     public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
         return SHAPE;
     }
-
 
     @Override
     public void neighborChanged(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {

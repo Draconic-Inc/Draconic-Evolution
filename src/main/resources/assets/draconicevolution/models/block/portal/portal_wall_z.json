@@ -1,0 +1,16 @@
+{
+	"textures": {
+		"particle": "draconicevolution:block/portal",
+		"all": "draconicevolution:block/portal"
+	},
+	"elements": [
+		{
+			"name": "Cube",
+			"from": [12, -0.05, 0.05],
+			"to": [4, 16.05, 15.95],
+			"faces": {
+				"north": {"uv": [0, 0, 16, 8], "rotation": 90, "texture": "#all"}
+			}
+		}
+	]
+}

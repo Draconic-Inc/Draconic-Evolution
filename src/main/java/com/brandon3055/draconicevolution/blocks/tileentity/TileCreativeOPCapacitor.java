@@ -4,15 +4,13 @@ import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.api.power.IOPStorage;
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.capability.CapabilityOP;
-import com.brandon3055.brandonscore.lib.ChatHelper;
-import com.brandon3055.brandonscore.lib.IActivatableTile;
+import com.brandon3055.brandonscore.lib.IInteractTile;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedLong;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -23,7 +21,7 @@ import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.SAVE_NBT;
 /**
  * Created by brandon3055 on 19/07/2016.
  */
-public class TileCreativeOPCapacitor extends TileBCore implements ITickableTileEntity, IActivatableTile {
+public class TileCreativeOPCapacitor extends TileBCore implements ITickableTileEntity, IInteractTile {
 
     private final ManagedLong powerRate = register(new ManagedLong("power_rate", 1000000000, SAVE_NBT));
 

@@ -32,11 +32,6 @@ public class DislocatorPedestal extends BlockBCore/* implements ITileEntityProvi
     }
 
     @Override
-    public boolean isBlockFullCube() {
-        return false;
-    }
-
-    @Override
     public void setPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
         TileEntity tile = world.getBlockEntity(pos);
         if (tile instanceof TileDislocatorPedestal) {
@@ -61,20 +56,6 @@ public class DislocatorPedestal extends BlockBCore/* implements ITileEntityProvi
     }
 
     @Override
-    public ActionResultType use(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
-//        TileEntity tileEntity = worldIn.getTileEntity(pos);
-
-//        if (tileEntity instanceof TileDislocatorPedestal) {//TODO switch to tile interface
-//            return ((TileDislocatorPedestal) tileEntity).onBlockActivated(player);
-//        }
-        return super.use(state, worldIn, pos, player, handIn, hit);
-    }
-
-
-    //region Render
-
-
-    @Override
     public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
         return SHAPE;
     }
@@ -83,17 +64,4 @@ public class DislocatorPedestal extends BlockBCore/* implements ITileEntityProvi
     public BlockRenderType getRenderShape(BlockState state) {
         return BlockRenderType.INVISIBLE;
     }
-//
-//    @OnlyIn(Dist.CLIENT)
-//    @Override
-//    public void registerRenderer(Feature feature) {
-//        ClientRegistry.bindTileEntitySpecialRenderer(TileDislocatorPedestal.class, new RenderTileDislocatorPedestal());
-//    }
-//
-//    @Override
-//    public boolean registerNormal(Feature feature) {
-//        return true;
-//    }
-
-    //endregion
 }

@@ -128,8 +128,8 @@ public class DEContent {
         event.getRegistry().register(TileEntityType.Builder.of(TileGrinder::new,                grinder                 ).build(null).setRegistryName("grinder"));
 //        event.getRegistry().register(TileEntityType.Builder.create(TileDissEnchanter::new,        disenchanter            ).build(null).setRegistryName("disenchanter"));
         event.getRegistry().register(TileEntityType.Builder.of(TileEnergyTransfuser::new,       energy_transfuser       ).build(null).setRegistryName("energy_transfuser"));
-//        event.getRegistry().register(TileEntityType.Builder.create(TileDislocatorPedestal::new,   dislocator_pedestal     ).build(null).setRegistryName("dislocator_pedestal"));
-//        event.getRegistry().register(TileEntityType.Builder.create(TileDislocatorReceptacle::new, dislocator_receptacle   ).build(null).setRegistryName("dislocator_receptacle"));
+        event.getRegistry().register(TileEntityType.Builder.of(TileDislocatorPedestal::new,   dislocator_pedestal     ).build(null).setRegistryName("dislocator_pedestal"));
+        event.getRegistry().register(TileEntityType.Builder.of(TileDislocatorReceptacle::new, dislocator_receptacle   ).build(null).setRegistryName("dislocator_receptacle"));
         event.getRegistry().register(TileEntityType.Builder.of(TileCreativeOPCapacitor::new,    creative_op_capacitor   ).build(null).setRegistryName("creative_op_capacitor"));
 //        event.getRegistry().register(TileEntityType.Builder.create(TileEntityDetector::new,       entityDetectors         ).build(null).setRegistryName("entity_detector"));
         event.getRegistry().register(TileEntityType.Builder.of(TileStabilizedSpawner::new,      stabilized_spawner      ).build(null).setRegistryName("stabilized_spawner"));
@@ -138,8 +138,8 @@ public class DEContent {
         event.getRegistry().register(TileEntityType.Builder.of(TileDraconiumChest::new,       draconium_chest         ).build(null).setRegistryName("draconium_chest"));
 //        event.getRegistry().register(TileEntityType.Builder.create(TileParticleGenerator::new,    particle_generator      ).build(null).setRegistryName("particle_generator"));
 //        event.getRegistry().register(TileEntityType.Builder.create(TilePlacedItem::new,           placed_item             ).build(null).setRegistryName("placed_item"));
-//        event.getRegistry().register(TileEntityType.Builder.create(TilePortal::new,               portal                  ).build(null).setRegistryName("portal"));
-//        event.getRegistry().register(TileEntityType.Builder.create(TilePortalClient::new,         portal                  ).build(null).setRegistryName("portal_client"));
+        event.getRegistry().register(TileEntityType.Builder.of(TilePortal::new,               portal                  ).build(null).setRegistryName("portal"));
+        event.getRegistry().register(TileEntityType.Builder.of(TilePortalClient::new,         portal                  ).build(null).setRegistryName("portal_client"));
         event.getRegistry().register(TileEntityType.Builder.of(TileChaosCrystal::new,           chaos_crystal, chaos_crystal_part           ).build(null).setRegistryName("chaos_crystal"));
         event.getRegistry().register(TileEntityType.Builder.of(TileFusionCraftingInjector::new,       craftInjectors          ).build(null).setRegistryName("crafting_injector"));
         event.getRegistry().register(TileEntityType.Builder.of(TileFusionCraftingCore::new,           crafting_core           ).build(null).setRegistryName("crafting_core"));
@@ -274,8 +274,8 @@ public class DEContent {
         //Machines
         event.getRegistry().register(new Generator(machine).setRegistryName("generator"));
         event.getRegistry().register(new EnergyTransfuser(machine).setRegistryName("energy_transfuser"));
-//        event.getRegistry().register(new DislocatorPedestal(machine).setRegistryName("dislocator_pedestal"));
-//        event.getRegistry().register(new DislocatorReceptacle(machine).setRegistryName("dislocator_receptacle"));
+        event.getRegistry().register(new DislocatorPedestal(machine).setRegistryName("dislocator_pedestal"));
+        event.getRegistry().register(new DislocatorReceptacle(machine).setRegistryName("dislocator_receptacle"));
         event.getRegistry().register(new CreativeOPSource(machine).setRegistryName("creative_op_capacitor"));
 //        event.getRegistry().register(new EntityDetector(machine).setRegistryName("entity_detector"));
 //        event.getRegistry().register(new EntityDetector(machine).setRegistryName("advanced_entity_detector"));
@@ -316,7 +316,7 @@ public class DEContent {
         event.getRegistry().register(new DraconiumBlock(storageBlock).setRegistryName("draconium_block"));
         event.getRegistry().register(new DraconiumBlock(storageBlock).setRegistryName("awakened_draconium_block"));
 //        //Special
-//        event.getRegistry().register(new Portal(Properties.create(Material.GLASS).hardnessAndResistance(-1F)).setRegistryName("portal"));
+        event.getRegistry().register(new Portal(Properties.of(Material.GLASS).noOcclusion().noCollission().noDrops().strength(-1F)).setRegistryName("portal"));
         event.getRegistry().register(new ChaosCrystal(Properties.of(Material.GLASS).strength(100, 4000)).setRegistryName("chaos_crystal"));
         event.getRegistry().register(new ChaosCrystal(Properties.of(Material.GLASS).strength(100, 4000)).setRegistryName("chaos_crystal_part"));
         event.getRegistry().register(new BlockBCore(Block.Properties.of(Material.STONE, MaterialColor.COLOR_BLACK).strength(100.0F, 2400.0F)).setMobResistant().setRegistryName("infused_obsidian"));
@@ -429,8 +429,8 @@ public class DEContent {
         registerItem(event, new ItemBlockBCore(grinder,                     new Item.Properties().tab(blockGroup)).setRegistryName(Objects.requireNonNull(grinder.getRegistryName())));
 //        registerItem(event, new ItemBlockBCore(disenchanter,                new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(disenchanter.getRegistryName())));
         registerItem(event, new ItemBlockBCore(energy_transfuser,              new Item.Properties().tab(blockGroup)).setRegistryName(Objects.requireNonNull(energy_transfuser.getRegistryName())));
-//        registerItem(event, new ItemBlockBCore(dislocator_pedestal,         new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(dislocator_pedestal.getRegistryName())));
-//        registerItem(event, new ItemBlockBCore(dislocator_receptacle,       new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(dislocator_receptacle.getRegistryName())));
+        registerItem(event, new ItemBlockBCore(dislocator_pedestal,         new Item.Properties().tab(blockGroup)).setRegistryName(Objects.requireNonNull(dislocator_pedestal.getRegistryName())));
+        registerItem(event, new ItemBlockBCore(dislocator_receptacle,       new Item.Properties().tab(blockGroup)).setRegistryName(Objects.requireNonNull(dislocator_receptacle.getRegistryName())));
         registerItem(event, new ItemBlockBCore(creative_op_capacitor,       new Item.Properties().tab(blockGroup)).setRegistryName(Objects.requireNonNull(creative_op_capacitor.getRegistryName())));
 //        registerItem(event, new ItemBlockBCore(entityDetectors[0],          new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(entityDetectors[0].getRegistryName())));
 //        registerItem(event, new ItemBlockBCore(entityDetectors[1],          new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(entityDetectors[1].getRegistryName())));

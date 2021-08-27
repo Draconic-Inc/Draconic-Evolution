@@ -1,0 +1,151 @@
+{
+  "multipart": [
+    {
+      "when": {
+        "visible": "true",
+        "axis": "x"
+      },
+      "apply": {
+        "model": "draconicevolution:block/portal/portal",
+        "x": 90,
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "drawup": "true",
+        "axis": "x"
+      },
+      "apply": {
+        "model": "draconicevolution:block/portal/portal_wall_z",
+        "x": -90
+      }
+    },
+    {
+      "when": {
+        "drawdown": "true",
+        "axis": "x"
+      },
+      "apply": {
+        "model": "draconicevolution:block/portal/portal_wall_z",
+        "x": 90
+      }
+    },
+    {
+      "when": {
+        "drawwest": "true",
+        "axis": "x"
+      },
+      "apply": {
+        "model": "draconicevolution:block/portal/portal_wall_z"
+      }
+    },
+    {
+      "when": {
+        "draweast": "true",
+        "axis": "x"
+      },
+      "apply": {
+        "model": "draconicevolution:block/portal/portal_wall_z",
+        "x": 180
+      }
+    },
+    {
+      "when": {
+        "visible": "true",
+        "axis": "y"
+      },
+      "apply": {
+        "model": "draconicevolution:block/portal/portal"
+      }
+    },
+    {
+      "when": {
+        "drawup": "true",
+        "axis": "y"
+      },
+      "apply": {
+        "model": "draconicevolution:block/portal/portal_wall_y"
+      }
+    },
+    {
+      "when": {
+        "drawdown": "true",
+        "axis": "y"
+      },
+      "apply": {
+        "model": "draconicevolution:block/portal/portal_wall_y",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "drawwest": "true",
+        "axis": "y"
+      },
+      "apply": {
+        "model": "draconicevolution:block/portal/portal_wall_y",
+        "y": -90
+      }
+    },
+    {
+      "when": {
+        "draweast": "true",
+        "axis": "y"
+      },
+      "apply": {
+        "model": "draconicevolution:block/portal/portal_wall_y",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "visible": "true",
+        "axis": "z"
+      },
+      "apply": {
+        "model": "draconicevolution:block/portal/portal",
+        "x": 90
+      }
+    },
+    {
+      "when": {
+        "drawup": "true",
+        "axis": "z"
+      },
+      "apply": {
+        "model": "draconicevolution:block/portal/portal_wall_y",
+        "x": -90
+      }
+    },
+    {
+      "when": {
+        "drawdown": "true",
+        "axis": "z"
+      },
+      "apply": {
+        "model": "draconicevolution:block/portal/portal_wall_y",
+        "x": 90
+      }
+    },
+    {
+      "when": {
+        "drawwest": "true",
+        "axis": "z"
+      },
+      "apply": {
+        "model": "draconicevolution:block/portal/portal_wall_x",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "draweast": "true",
+        "axis": "z"
+      },
+      "apply": {
+        "model": "draconicevolution:block/portal/portal_wall_x"
+      }
+    }
+  ]
+}

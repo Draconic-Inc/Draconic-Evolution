@@ -59,8 +59,8 @@ public class LootTableGenerator extends LootTableProvider {
             dropSelf(DEContent.grinder);
 //            registerDropSelfLootTable(DEContent.disenchanter);
             dropSelf(DEContent.energy_transfuser);
-//            registerDropSelfLootTable(DEContent.dislocator_pedestal);
-//            registerDropSelfLootTable(DEContent.dislocator_receptacle);
+            dropSelf(DEContent.dislocator_pedestal);
+            dropSelf(DEContent.dislocator_receptacle);
             dropSelf(DEContent.creative_op_capacitor);
 //            registerDropSelfLootTable(DEContent.entity_detector);
 //            registerDropSelfLootTable(DEContent.entity_detector_advanced);
@@ -99,11 +99,13 @@ public class LootTableGenerator extends LootTableProvider {
             dropSelf(DEContent.crystal_wireless_draconic);
 
 
+
             //Special Stuff
 //            registerDropSelfLootTable(DEContent.energy_core_structure);
 //            registerDropSelfLootTable(DEContent.placed_item);
             add(DEContent.chaos_crystal, block -> createSingleItemTable(DEContent.chaos_shard).apply(SetCount.setCount(ConstantRange.exactly(5))));
             add(DEContent.chaos_crystal_part, noDrop());
+//            add(DEContent.portal, noDrop());
 
             //Fortune
             add(DEContent.ore_draconium_overworld, (block) -> createSilkTouchDispatchTable(block, applyExplosionDecay(block, ItemLootEntry.lootTableItem(DEContent.dust_draconium).apply(SetCount.setCount(RandomValueRange.between(2.0F, 4.0F))).apply(ApplyBonus.addUniformBonusCount(Enchantments.BLOCK_FORTUNE)))));

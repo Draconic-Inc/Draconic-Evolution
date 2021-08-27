@@ -1,26 +1,20 @@
 package com.brandon3055.draconicevolution.blocks.tileentity;
 
-import codechicken.lib.colour.EnumColour;
 import codechicken.lib.raytracer.RayTracer;
-import codechicken.lib.util.ItemUtils;
 import com.brandon3055.brandonscore.api.power.IOPStorage;
 import com.brandon3055.brandonscore.api.power.IOPStorageModifiable;
-import com.brandon3055.brandonscore.api.power.OPStorage;
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.capability.CapabilityOP;
 import com.brandon3055.brandonscore.inventory.ContainerBCTile;
 import com.brandon3055.brandonscore.inventory.TileItemStackHandler;
-import com.brandon3055.brandonscore.lib.IActivatableTile;
+import com.brandon3055.brandonscore.lib.IInteractTile;
 import com.brandon3055.brandonscore.lib.IRSSwitchable;
-import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedEnum;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
-import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.inventory.GuiLayoutFactories;
 import com.brandon3055.draconicevolution.utils.ItemCapMerger;
-import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -29,14 +23,10 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -45,14 +35,12 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import java.util.Collections;
-
 import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.*;
 
 /**
  * Created by brandon3055 on 12/12/2020.
  */
-public class TileEnergyTransfuser extends TileBCore implements ITickableTileEntity, IActivatableTile, INamedContainerProvider, IRSSwitchable {
+public class TileEnergyTransfuser extends TileBCore implements ITickableTileEntity, IInteractTile, INamedContainerProvider, IRSSwitchable {
 
     public TileItemStackHandler itemNorth = new TileItemStackHandler(1).setSlotLimit(1).setStackValidator(EnergyUtils::isEnergyItem);
     public TileItemStackHandler itemEast = new TileItemStackHandler(1).setSlotLimit(1).setStackValidator(EnergyUtils::isEnergyItem);

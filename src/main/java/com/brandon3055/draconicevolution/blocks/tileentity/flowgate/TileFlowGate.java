@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.blocks.tileentity.flowgate;
 
 import codechicken.lib.data.MCDataInput;
 import com.brandon3055.brandonscore.blocks.TileBCore;
-import com.brandon3055.brandonscore.lib.IActivatableTile;
+import com.brandon3055.brandonscore.lib.IInteractTile;
 import com.brandon3055.brandonscore.lib.IChangeListener;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedByte;
@@ -10,7 +10,6 @@ import com.brandon3055.brandonscore.lib.datamanager.ManagedLong;
 import com.brandon3055.draconicevolution.blocks.machines.FlowGate;
 import com.brandon3055.draconicevolution.integration.computers.ArgHelper;
 import com.brandon3055.draconicevolution.integration.computers.IDEPeripheral;
-import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.tileentity.ITickableTileEntity;
@@ -18,8 +17,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -29,7 +26,7 @@ import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.SAVE_NBT_SY
 /**
  * Created by brandon3055 on 15/11/2016.
  */
-public abstract class TileFlowGate extends TileBCore implements ITickableTileEntity, IChangeListener, IDEPeripheral, INamedContainerProvider, IActivatableTile {
+public abstract class TileFlowGate extends TileBCore implements ITickableTileEntity, IChangeListener, IDEPeripheral, INamedContainerProvider, IInteractTile {
 
     protected long transferThisTick = 0;
 

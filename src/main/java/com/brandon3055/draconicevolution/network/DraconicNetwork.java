@@ -55,6 +55,7 @@ public class DraconicNetwork {
     public static final int C_GUARDIAN_BEAM =           8;
     public static final int C_GUARDIAN_PACKET =         9;
     public static final int C_BOSS_SHIELD_INFO =        10;
+    public static final int C_DISLOCATOR_TELEPORTED =   11;
 
     //@formatter:on
 
@@ -180,6 +181,11 @@ public class DraconicNetwork {
         packet.writeUUID(id);
         packet.writeByte(operation);
         if (callBack != null) callBack.accept(packet);
+        packet.sendToPlayer(player);
+    }
+
+    public static void sendDislocatorTeleported(ServerPlayerEntity player) {
+        PacketCustom packet = new PacketCustom(CHANNEL, C_DISLOCATOR_TELEPORTED);
         packet.sendToPlayer(player);
     }
 

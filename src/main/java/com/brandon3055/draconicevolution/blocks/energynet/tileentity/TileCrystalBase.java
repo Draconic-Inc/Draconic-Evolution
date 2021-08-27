@@ -6,7 +6,7 @@ import com.brandon3055.brandonscore.api.power.OPStorage;
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.capability.CapabilityOP;
 import com.brandon3055.brandonscore.lib.ChatHelper;
-import com.brandon3055.brandonscore.lib.IActivatableTile;
+import com.brandon3055.brandonscore.lib.IInteractTile;
 import com.brandon3055.brandonscore.lib.ITilePlaceListener;
 import com.brandon3055.brandonscore.lib.Vec3B;
 import com.brandon3055.brandonscore.utils.MathUtils;
@@ -24,7 +24,6 @@ import com.brandon3055.draconicevolution.handlers.DEEventHandler;
 import com.brandon3055.draconicevolution.network.CrystalUpdateBatcher.BatchedCrystalUpdate;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.IContainerListener;
@@ -55,7 +54,7 @@ import static com.brandon3055.draconicevolution.network.CrystalUpdateBatcher.ID_
 /**
  * Created by brandon3055 on 21/11/2016.
  */
-public abstract class TileCrystalBase extends TileBCore implements ITilePlaceListener, ICrystalLink, ITickableTileEntity, IActivatableTile, IENetEffectTile {
+public abstract class TileCrystalBase extends TileBCore implements ITilePlaceListener, ICrystalLink, ITickableTileEntity, IInteractTile, IENetEffectTile {
 
     //region Stats
 

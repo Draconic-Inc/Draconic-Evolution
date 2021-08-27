@@ -1,5 +1,7 @@
 package com.brandon3055.draconicevolution.datagen;
 
+import com.brandon3055.draconicevolution.blocks.DislocatorReceptacle;
+import com.brandon3055.draconicevolution.blocks.Portal;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.blocks.machines.EnergyPylon;
 import com.brandon3055.draconicevolution.blocks.machines.Generator;
@@ -86,7 +88,71 @@ public class BlockStateGenerator extends BlockStateProvider {
         dummyBlock(DEContent.reactor_injector);
 
 
-        getVariantBuilder(DEContent.energy_pylon).forAllStates(state -> ConfiguredModel.builder().modelFile(models().cubeBottomTop(state.getValue(EnergyPylon.OUTPUT) ? "energy_pylon_output" : "energy_pylon_input", modLoc("block/energy_pylon/energy_pylon_" + (state.getValue(EnergyPylon.OUTPUT) ? "output" : "input")), modLoc("block/energy_pylon/energy_pylon_active_face"), modLoc("block/energy_pylon/energy_pylon_active_face"))).build());
+        getVariantBuilder(DEContent.energy_pylon)
+                .forAllStates(state -> ConfiguredModel.builder()
+                        .modelFile(models().cubeBottomTop(state.getValue(EnergyPylon.OUTPUT) ? "energy_pylon_output" : "energy_pylon_input", modLoc("block/energy_pylon/energy_pylon_" + (state.getValue(EnergyPylon.OUTPUT) ? "output" : "input")), modLoc("block/energy_pylon/energy_pylon_active_face"), modLoc("block/energy_pylon/energy_pylon_active_face"))).build());
+
+        simpleBlock(DEContent.dislocator_pedestal, models().getExistingFile(modLoc("block/dislocator_pedestal")));
+
+        VariantBlockStateBuilder receptacleBuilder = getVariantBuilder(DEContent.dislocator_receptacle);
+        receptacleBuilder.addModels(receptacleBuilder.partialState().with(DislocatorReceptacle.CAMO, true), ConfiguredModel.builder().modelFile(models().cubeAll("infused_obsidian", modLoc("block/infused_obsidian"))).build());
+        receptacleBuilder.addModels(receptacleBuilder.partialState().with(DislocatorReceptacle.ACTIVE, false).with(DislocatorReceptacle.CAMO, false), ConfiguredModel.builder().modelFile(models().cubeAll("dislocator_receptacle_inactive", modLoc("block/dislocator_receptacle_inactive"))).build());
+        receptacleBuilder.addModels(receptacleBuilder.partialState().with(DislocatorReceptacle.ACTIVE, true).with(DislocatorReceptacle.CAMO, false), ConfiguredModel.builder().modelFile(models().cubeAll("dislocator_receptacle_active", modLoc("block/dislocator_receptacle_active"))).build());
+
+        //Generate portal block state
+        ModelFile portalModel = models().getExistingFile(modLoc("block/portal/portal"));
+        ModelFile portalWallX = models().getExistingFile(modLoc("block/portal/portal_wall_x"));
+        ModelFile portalWallY = models().getExistingFile(modLoc("block/portal/portal_wall_y"));
+        ModelFile portalWallZ = models().getExistingFile(modLoc("block/portal/portal_wall_z"));
+        MultiPartBlockStateBuilder portalBuilder = getMultipartBuilder(DEContent.portal);
+        for (Direction.Axis axis : Direction.Axis.values()) {
+            ModelFile wallWestEast = axis == Direction.Axis.Z ? portalWallX : axis == Direction.Axis.Y ? portalWallY : portalWallZ;
+            ModelFile wallUpDown = axis == Direction.Axis.Z || axis == Direction.Axis.Y ? portalWallY : portalWallZ;
+            portalBuilder.part()
+                    .modelFile(portalModel)
+                    .rotationX(axis != Direction.Axis.Y ? 90 : 0)
+                    .rotationY(axis == Direction.Axis.X ? 90 : 0)
+                    .addModel()
+                    .condition(Portal.VISIBLE, true)
+                    .condition(Portal.AXIS, axis)
+                    .end()
+                    //Up
+                    .part()
+                    .modelFile(wallUpDown)
+                    .rotationX(axis == Direction.Axis.X || axis == Direction.Axis.Z ? -90 : 0)
+                    .addModel()
+                    .condition(Portal.DRAW_UP, true)
+                    .condition(Portal.AXIS, axis)
+                    .end()
+                    //Down
+                    .part()
+                    .modelFile(wallUpDown)
+                    .rotationX(axis == Direction.Axis.X || axis == Direction.Axis.Z ? 90 : 0)
+                    .rotationY(axis == Direction.Axis.Y ? 180 : 0)
+                    .addModel()
+                    .condition(Portal.DRAW_DOWN, true)
+                    .condition(Portal.AXIS, axis)
+                    .end()
+                    //West
+                    .part()
+                    .modelFile(wallWestEast)
+                    .rotationY(axis == Direction.Axis.Z ? 180 : axis == Direction.Axis.Y ? -90 : 0)
+                    .addModel()
+                    .condition(Portal.DRAW_WEST, true)
+                    .condition(Portal.AXIS, axis)
+                    .end()
+                    //East
+                    .part()
+                    .modelFile(wallWestEast)
+                    .rotationY(axis == Direction.Axis.Y ? 90 : 0)
+                    .rotationX(axis == Direction.Axis.X ? 180 : 0)
+                    .addModel()
+                    .condition(Portal.DRAW_EAST, true)
+                    .condition(Portal.AXIS, axis)
+                    .end();
+        }
+
+
 
 
         //Generator
@@ -95,8 +161,20 @@ public class BlockStateGenerator extends BlockStateProvider {
         MultiPartBlockStateBuilder generatorBuilder = getMultipartBuilder(DEContent.generator);
         for (Direction dir : FenceGateBlock.FACING.getPossibleValues()) {
             int angle = (int) dir.getOpposite().toYRot();
-            generatorBuilder.part().modelFile(modelGenerator).rotationY(angle).addModel().condition(Generator.FACING, dir).end()
-                    .part().modelFile(modelGeneratorFlame).rotationY(angle).addModel().condition(Generator.FACING, dir).condition(Generator.ACTIVE, true).end();
+            generatorBuilder.part()
+                    .modelFile(modelGenerator)
+                    .rotationY(angle)
+                    .addModel()
+                    .condition(Generator.FACING, dir)
+                    .end()
+
+                    .part()
+                    .modelFile(modelGeneratorFlame)
+                    .rotationY(angle)
+                    .addModel()
+                    .condition(Generator.FACING, dir)
+                    .condition(Generator.ACTIVE, true)
+                    .end();
         }
 
         //Grinder

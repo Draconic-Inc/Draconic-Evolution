@@ -7,6 +7,7 @@ import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.utils.MathUtils;
+import com.brandon3055.draconicevolution.blocks.tileentity.TilePortalClient;
 import com.brandon3055.draconicevolution.client.ClientProxy;
 import com.brandon3055.draconicevolution.client.CustomBossInfoHandler;
 import com.brandon3055.draconicevolution.client.DEParticles;
@@ -20,8 +21,10 @@ import net.minecraft.client.network.play.IClientPlayNetHandler;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.particles.ParticleTypes;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
@@ -63,6 +66,9 @@ public class ClientPacketHandler implements ICustomPacketHandler.IClientPacketHa
                 break;
             case DraconicNetwork.C_BOSS_SHIELD_INFO:
                 CustomBossInfoHandler.handlePacket(packet);
+                break;
+            case DraconicNetwork.C_DISLOCATOR_TELEPORTED:
+                handleDislocatorTeleported(mc);
                 break;
         }
     }
@@ -191,6 +197,18 @@ public class ClientPacketHandler implements ICustomPacketHandler.IClientPacketHa
         if (phase.getType().getId() != phaseID) return;
         int function = data.readByte();
         phase.handlePacket(data, function);
+    }
+
+    private void handleDislocatorTeleported(Minecraft mc) {
+        PlayerEntity player = mc.player;
+        if (player == null) return;;
+        BlockPos playerPos = player.blockPosition();
+        for (BlockPos pos : BlockPos.betweenClosed(playerPos.offset(-1, -1, -1), playerPos.offset(1, 1, 1))) {
+            TileEntity tile = player.level.getBlockEntity(pos);
+            if (tile instanceof TilePortalClient) {
+                ((TilePortalClient)tile).clientArrived(player);
+            }
+        }
     }
 }
 

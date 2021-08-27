@@ -53,6 +53,8 @@ public class DEConfig {
     public static int guardianShield;
     public static List<String> projectileAntiImmuneEntities;
     public static int dislocatorMaxFuel;
+    public static int portalMaxArea;
+    public static int portalMaxDistanceSq;
 
     private static void loadServer() {
         serverTag = config.getTag("Server");
@@ -170,6 +172,18 @@ public class DEConfig {
                 .setComment("Sets the maximum fuel that can be added to an Advanced Dislocator.")
                 .setDefaultInt(1024)
                 .setSyncCallback((tag, type) -> dislocatorMaxFuel = tag.getInt());
+
+        serverTag.getTag("portalMaxArea")
+                .setSyncToClient()
+                .setComment("Sets maximum area (in blocks) for a DE portal, The default value 65536 is equivalent to a 256x256 portal")
+                .setDefaultInt(65536)
+                .setSyncCallback((tag, type) -> portalMaxArea = tag.getInt());
+
+        serverTag.getTag("portalMaxDistance")
+                .setSyncToClient()
+                .setComment("This is more for sanity than actually limiting portal size. Sets the max distance a portal block can be from the receptacle")
+                .setDefaultInt(256)
+                .setSyncCallback((tag, type) -> portalMaxDistanceSq = tag.getInt() * tag.getInt());
     }
 
 

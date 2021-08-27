@@ -6,6 +6,7 @@ import net.minecraft.util.math.BlockPos;
 /**
  * Created by brandon3055 on 2/26/2018.
  */
+@Deprecated //I may want to re write this. Or it could be fine...
 public interface ITeleportEndPoint {
 
 

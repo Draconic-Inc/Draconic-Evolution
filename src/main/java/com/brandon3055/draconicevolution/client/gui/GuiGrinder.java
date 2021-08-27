@@ -168,7 +168,7 @@ public class GuiGrinder extends ModularGuiContainer<ContainerBCTile<TileGrinder>
     }
 
     private void modifyAOE(boolean dec) {
-        byte aoe = tile.aoe.get();
+        int aoe = tile.aoe.get();
         tile.aoe.set((byte) (dec ? aoe == 1 ? tile.getMaxAOE() : aoe - 1 : aoe == tile.getMaxAOE() ? 1 : aoe + 1));
     }
 }

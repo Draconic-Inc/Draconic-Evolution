@@ -198,7 +198,7 @@ public class ChaosWorldGenHandler {
                     world.setBlock(new BlockPos(x, yi, z), Blocks.OBSIDIAN.defaultBlockState(), 3);
                 } else if (!fillIn && (int) Utils.getDistanceAtoB(x, z, xi, zi) <= ringRadius) {
                     Block b = world.getBlockState(new BlockPos(x, yi, z)).getBlock();
-                    if (b == Blocks.AIR || b == Blocks.END_STONE || b == Blocks.OBSIDIAN) world.setBlock(new BlockPos(x, yi, z), /*DEContent.chaosShardAtmos*/Blocks.CAVE_AIR.defaultBlockState(), 3);
+                    if (b == Blocks.AIR || b == Blocks.END_STONE || b == Blocks.OBSIDIAN) world.setBlock(new BlockPos(x, yi, z), /*TODO DEContent.chaosShardAtmos*/Blocks.CAVE_AIR.defaultBlockState(), 3);
                 }
 
             }
@@ -210,29 +210,7 @@ public class ChaosWorldGenHandler {
         return new PairXZ<>(MathUtils.getNearestMultiple(pos.x * 16, DEOldConfig.chaosIslandSeparation), MathUtils.getNearestMultiple(pos.z * 16, DEOldConfig.chaosIslandSeparation));
     }
 
-    private static void generateObelisks(ISeedReader world, PairXZ<Integer, Integer> islandCenter, Random rand) {
-
-//        for (int i = 0; i < 7; i++) {
-//            double rotation = i * 0.9D;
-//            int sX = islandCenter.x + (int) (Math.sin(rotation) * 45D);
-//            int sZ = islandCenter.z + (int) (Math.cos(rotation) * 45D);
-//            generateObelisk(world, sX, 90 + DEOldConfig.chaosIslandYOffset, sZ, false, rand);
-//        }
-//
-//        for (int i = 0; i < 14; i++) {
-//            double rotation = i * 0.45D;
-//            int sX = islandCenter.x + (int) (Math.sin(rotation) * 90D);
-//            int sZ = islandCenter.z + (int) (Math.cos(rotation) * 90D);
-//            generateObelisk(world, sX, 90 + DEOldConfig.chaosIslandYOffset, sZ, true, rand);
-//        }
-
-    }
-
     public static void generateObelisk(ServerWorld world, BlockPos genPos, Random rand) {
-//        for (int i = 0; i < 20; i+=5) {
-//            world.createExplosion(null, (float) genPos.getX() + 0.5F, genPos.getY() - i, (float) genPos.getZ() + 0.5F, 5.0F, Explosion.Mode.DESTROY);
-//        }
-
         for (int i = 0; i < 20; i+=3) {
             LightningBoltEntity entity = new LightningBoltEntity(EntityType.LIGHTNING_BOLT, world);
             entity.setPos(genPos.getX() - 2 + rand.nextInt(5), genPos.getY() - rand.nextInt(20), genPos.getZ() - 2 + rand.nextInt(5));
@@ -270,6 +248,5 @@ public class ChaosWorldGenHandler {
             }
 
         });
-        return;
     }
 }

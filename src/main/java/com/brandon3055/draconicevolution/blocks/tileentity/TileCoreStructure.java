@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.blocks.tileentity;
 
 
 import com.brandon3055.brandonscore.blocks.TileBCore;
-import com.brandon3055.brandonscore.lib.IActivatableTile;
+import com.brandon3055.brandonscore.lib.IInteractTile;
 import com.brandon3055.brandonscore.lib.Vec3I;
 import com.brandon3055.brandonscore.lib.datamanager.DataFlags;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedString;
@@ -13,7 +13,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -23,7 +22,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 /**
  * Created by brandon3055 on 13/4/2016.
  */
-public class TileCoreStructure extends TileBCore implements IMultiBlockPart, IActivatableTile {
+public class TileCoreStructure extends TileBCore implements IMultiBlockPart, IInteractTile {
 
     public final ManagedVec3I coreOffset = register(new ManagedVec3I("core_offset", new Vec3I(0, -1, 0), DataFlags.SAVE_NBT_SYNC_TILE, DataFlags.SYNC_ON_SET));
     public final ManagedString blockName = register(new ManagedString("block_name", DataFlags.SAVE_NBT_SYNC_TILE, DataFlags.SYNC_ON_SET));

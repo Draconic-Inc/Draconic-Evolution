@@ -3,14 +3,13 @@ package com.brandon3055.draconicevolution.blocks.tileentity;
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.inventory.InventoryUtils;
 import codechicken.lib.math.MathHelper;
-import codechicken.lib.packet.PacketCustom;
 import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.api.power.OPStorage;
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.capability.CapabilityOP;
 import com.brandon3055.brandonscore.inventory.ContainerBCTile;
 import com.brandon3055.brandonscore.inventory.TileItemStackHandler;
-import com.brandon3055.brandonscore.lib.IActivatableTile;
+import com.brandon3055.brandonscore.lib.IInteractTile;
 import com.brandon3055.brandonscore.lib.IRSSwitchable;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedByte;
@@ -56,7 +55,7 @@ import java.util.UUID;
 import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.*;
 import static com.brandon3055.brandonscore.lib.entityfilter.FilterType.*;
 
-public class TileGrinder extends TileBCore implements ITickableTileEntity, IRSSwitchable, INamedContainerProvider, IActivatableTile {
+public class TileGrinder extends TileBCore implements ITickableTileEntity, IRSSwitchable, INamedContainerProvider, IInteractTile {
 
     private static FakePlayer cachedFakePlayer;
     public final ManagedBool active = register(new ManagedBool("active", SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE));

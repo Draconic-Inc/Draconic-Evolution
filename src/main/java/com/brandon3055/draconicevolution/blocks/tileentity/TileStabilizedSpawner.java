@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.blocks.tileentity;
 
 import com.brandon3055.brandonscore.blocks.TileBCore;
-import com.brandon3055.brandonscore.lib.IActivatableTile;
+import com.brandon3055.brandonscore.lib.IInteractTile;
 import com.brandon3055.brandonscore.lib.IChangeListener;
 import com.brandon3055.brandonscore.lib.datamanager.*;
 import com.brandon3055.brandonscore.utils.InventoryUtils;
@@ -30,7 +30,7 @@ import static com.brandon3055.draconicevolution.blocks.tileentity.TileStabilized
 /**
  * Created by brandon3055 on 28/09/2016.
  */
-public class TileStabilizedSpawner extends TileBCore implements ITickableTileEntity, IActivatableTile, IChangeListener {
+public class TileStabilizedSpawner extends TileBCore implements ITickableTileEntity, IInteractTile, IChangeListener {
 
     public ManagedEnum<SpawnerTier> spawnerTier = register(new ManagedEnum<>("spawner_tier", BASIC, SAVE_BOTH_SYNC_TILE));
     public ManagedStack mobSoul = register(new ManagedStack("mob_soul", SAVE_BOTH_SYNC_TILE));

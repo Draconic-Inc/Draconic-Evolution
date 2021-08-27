@@ -460,11 +460,6 @@ public class TileEnergyCore extends TileBCore implements ITickableTileEntity, IE
         return Colour.packRGBA(1F, colour * 0.3f, colour * 0.7f, 1F);
     }
 
-//    @Override
-//    public boolean shouldRenderInPass(int pass) {
-//        return true;
-//    }
-
     //endregion
 }
 

@@ -1,17 +1,19 @@
 package com.brandon3055.draconicevolution.blocks.tileentity;
 
 import codechicken.lib.vec.Vector3;
-import com.brandon3055.brandonscore.network.BCoreNetwork;
 import com.brandon3055.brandonscore.utils.FacingUtils;
 import com.brandon3055.draconicevolution.DEConfig;
+import com.brandon3055.draconicevolution.blocks.Portal;
 import com.brandon3055.draconicevolution.init.DEContent;
-import net.minecraft.particles.ParticleTypes;
+import net.minecraft.block.BlockState;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by brandon3055 on 23/8/21
@@ -19,20 +21,18 @@ import java.util.*;
 public class PortalHelper {
 
     private TileDislocatorReceptacle tile;
-    private boolean running = false;
-    /**
-     * The current axis being scanned.
-     */
-    private Axis scanAxis = null;
+    private boolean scanning = false;
+    private boolean building = false;
+
     /**
      * List of air blocks that are part of a previous failed scan pass on the current axis.
      * If we hit one of these then we know this pass will fail.
      */
-    private Set<BlockPos> invalidBlocks = null;
+    private Map<Axis, Set<BlockPos>> invalidBlocks = null;
     /**
      * List of valid portal positions found in the current scan pass.
      */
-    private Set<BlockPos> scanResult = null;
+    private Map<Axis, Set<BlockPos>> scanResult = null;
 
     /**
      * This method starts at a known valid portal position (air block) and proceeds to scan all of the blocks around that position.
@@ -40,12 +40,12 @@ public class PortalHelper {
      * If it finds an already scanned block it is skipped.
      * If it finds anything that isn't an air block or a valid part of the portal frame the scan is aborted because this isn't a valid portal.
      */
-    private List<BlockPos> scanQue = null;
+    private Map<Axis, List<BlockPos>> scanQue = null;
 
     /**
      * List of possible scan start positions for the current axis
      */
-    private LinkedList<BlockPos> originQue = null;
+    private Map<Axis, LinkedList<BlockPos>> originQue = null;
 
 
     public PortalHelper(TileDislocatorReceptacle tile) {
@@ -55,50 +55,52 @@ public class PortalHelper {
     public int scanIndex = -1;
 
     public void startScan() {
-        if (running) return;
-        scanAxis = null;
-        scanQue = new ArrayList<>();
-        originQue = new LinkedList<>();
-        invalidBlocks = new HashSet<>();
-        running = true;
+        if (scanning) return;
+        scanQue = new HashMap<>();
+        originQue = new HashMap<>();
+        invalidBlocks = new HashMap<>();
+        scanResult = new HashMap<>();
+        scanning = true;
         scanIndex++;
+        initScan();
     }
 
     public void updateTick() {
-        if (!running || !preScanCheck()) return;
+        if (scanning) {
+            boolean hasWork = false;
+            for (Axis axis : Axis.values()) {
+                if (scanning) {
+                    updateAxis(axis);
+                    if (scanResult != null && scanResult.get(axis) != null) {
+                        hasWork = true;
+                    }
+                }
+            }
+
+            if (scanning && !hasWork) {
+                endScan(false, null, null);
+            }
+        } else if (building) {
+            updateBuildTick();
+        }
+    }
+
+    private void updateAxis(Axis axis) {
+        if (!preScanCheck(axis)) return;
+
+        Set<BlockPos> invalidBlocks = this.invalidBlocks.get(axis);
+        Set<BlockPos> scanResult = this.scanResult.get(axis);
+        List<BlockPos> scanQue = this.scanQue.get(axis);
 
         if (scanQue.isEmpty()) {
-            endScan(true);
+            endScan(true, scanResult, axis);
             return;
         }
-        BlockPos pos;
-//        switch (scanIndex) {
-//            case 0:
-//                pos = scanQue.pollFirst(); //Plane spread
-//                break;
-//            case 1:
-                pos = scanQue.remove(tile.getLevel().random.nextInt(scanQue.size())); //Random Spread
-//                break;
-//            case 2:
-//                pos = scanQue.pollLast(); //Funky player spread
-//                break;
-//            case 3:
-//                scanQue.sort(Comparator.comparing(e -> e.distSqr(tile.getBlockPos())));
-//                pos = scanQue.pollFirst();
-//                break;
-//            case 4:
-//                scanQue.sort(Comparator.comparing(e -> e.distSqr(tile.getBlockPos())));
-//                pos = scanQue.pollLast();
-//                break;
-//            default:
-//                scanIndex = 0;
-//                return;
-//        }
+        BlockPos pos = scanQue.remove(tile.getLevel().random.nextInt(scanQue.size()));
 
         tile.onScanBlock(pos);
-        BCoreNetwork.sendParticle(tile.getLevel(), ParticleTypes.CLOUD, Vector3.fromBlockPosCenter(pos), Vector3.ZERO, true);
 
-        for (Direction dir : FacingUtils.getFacingsAroundAxis(scanAxis)) {
+        for (Direction dir : FacingUtils.getFacingsAroundAxis(axis)) {
             BlockPos newPos = pos.relative(dir);
 
             //If we have already scanned this position then skip it.
@@ -108,12 +110,12 @@ public class PortalHelper {
 
             //If this is part of a previous failed scan then we know this scan will also fail.
             if (invalidBlocks.contains(newPos) || newPos.distSqr(tile.getBlockPos()) > DEConfig.portalMaxDistanceSq) {
-                endPass();
+                endPass(axis);
                 return;
             }
 
             if (!tile.getLevel().isLoaded(newPos)) {
-                endPass();
+                endPass(axis);
                 return;
             }
 
@@ -121,25 +123,27 @@ public class PortalHelper {
                 scanQue.add(newPos);
                 scanResult.add(newPos);
                 if (scanResult.size() > DEConfig.portalMaxArea) {
-                    endPass();
+                    endPass(axis);
                     return;
                 }
             } else if (!isFrame(newPos)) {
-                endPass();
+                endPass(axis);
                 return;
             }
         }
     }
 
-    private boolean preScanCheck() {
+    private boolean preScanCheck(Axis axis) {
+        Set<BlockPos> invalidBlocks = this.invalidBlocks.get(axis);
+        Set<BlockPos> scanResult = this.scanResult.get(axis);
+        List<BlockPos> scanQue = this.scanQue.get(axis);
+        LinkedList<BlockPos> originQue = this.originQue.get(axis);
+
         //The previous scan on this axis has failed
         if (scanResult == null) {
             //We have scanned all possible start positions on this axis
             if (originQue.isEmpty()) {
-                startNextAxis();
-                if (!running || originQue.isEmpty()) {
-                    return false;
-                }
+                return false;
             }
 
             BlockPos scanOrigin = originQue.pollFirst();
@@ -150,6 +154,7 @@ public class PortalHelper {
             scanQue.clear();
             scanQue.add(scanOrigin);
             scanResult.add(scanOrigin);
+            this.scanResult.put(axis, scanResult);
         }
         return true;
     }
@@ -158,134 +163,123 @@ public class PortalHelper {
      * Called to start scanning on the next scan axis
      * Updates the list of possible scan origins for the current axis and clears junk from previous axis.
      */
-    private void startNextAxis() {
-        if (scanAxis == null) {
-            scanAxis = Axis.X;
-        } else if (scanAxis == Axis.Z) {
-            endScan(false);
-            return;
-        } else {
-            scanAxis = Axis.values()[scanAxis.ordinal() + 1];
-        }
+    private void initScan() {
+        for (Axis axis : Axis.values()) {
+            invalidBlocks.put(axis, new HashSet<>());
+            scanQue.put(axis, new ArrayList<>());
+            originQue.put(axis, new LinkedList<>());
+            LinkedList<BlockPos> originQue = this.originQue.get(axis);
 
-        originQue.clear();
-        invalidBlocks.clear();
-
-        BlockPos[] offsets = FacingUtils.getAroundAxis(scanAxis);
-        for (BlockPos offset : offsets) {
-            BlockPos pos = tile.getBlockPos().offset(offset);
-            if (isAir(pos)) {
-                originQue.add(pos);
+            BlockPos[] offsets = FacingUtils.getAroundAxis(axis);
+            for (BlockPos offset : offsets) {
+                BlockPos pos = tile.getBlockPos().offset(offset);
+                if (isAir(pos)) {
+                    originQue.add(pos);
+                }
             }
         }
     }
 
-    private void endPass() {
-        invalidBlocks.addAll(scanResult);
-        scanResult = null;
+    private void endPass(Axis axis) {
+        invalidBlocks.get(axis).addAll(scanResult.get(axis));
+        scanResult.put(axis, null);
     }
 
-    public void endScan(boolean successful) {
-        running = false;
+    private void endScan(boolean successful, Set<BlockPos> result, Axis axis) {
+        scanning = false;
         scanQue = null;
         originQue = null;
         invalidBlocks = null;
-        tile.onScanComplete(successful ? scanResult : null);
+        tile.onScanComplete(successful ? result : null, axis);
         scanResult = null;
     }
 
     public boolean isRunning() {
-        return running;
+        return scanning || building;
     }
 
-    //    @Nullable
-//    public Set<BlockPos> scanPortal() {
-//
-////        Do some profiling and attempt optimisation if needed
-////                Also figure out max size constraints
-//
-//        Set<BlockPos> result = null;
-//        for (Axis axis : Axis.values()) {
-//            result = scanAxis(axis);
-//            if (result != null) break;
-//        }
-//
-//        result = scanAxis(Axis.X);
-//
-//        return result;
-//    }
-//
-//    private Set<BlockPos> scanAxis(Axis axis) {
-//        BlockPos[] startOffsets = FacingUtils.getAroundAxis(axis);
-//        Set<BlockPos> result = null;
-//        HashSet<BlockPos> invalidArea = new HashSet<>();
-//
-//        for (BlockPos offset : startOffsets) {
-//            BlockPos pos = tile.getBlockPos().offset(offset);
-//            if (isAir(pos) && !invalidArea.contains(pos)) {
-//                result = scanFromOrigin(pos, axis, invalidArea);
-//                if (result != null) break;
-//            }
-//        }
-//
-//        return result;
-//    }
-//
-//    private Set<BlockPos> scanFromOrigin(BlockPos origin, Axis axis, HashSet<BlockPos> failedCache) {
-//        Set<BlockPos> result = new HashSet<>();
-//
-//        /*
-//        * This method starts at a known valid portal position (air block) and proceeds to scan all of the blocks around that position.
-//        * If it finds more air blocks those are added to the que to be scanned next.
-//        * If it finds an already scanned block it is skipped.
-//        * If it finds anything that isn't an air block or a valid part of the portal frame the scan is aborted because this isn't a valid portal.
-//        * */
-//
-//        LinkedList<BlockPos> scanQue = new LinkedList<>();
-//        scanQue.add(origin);
-//        result.add(origin);
-//
-//        int scanCount = 0;
-//        while (!scanQue.isEmpty()) {
-//            //This pos should always be a valid portal position (so air)
-//            BlockPos pos = scanQue.pollFirst();
-//
-//            for (Direction dir : FacingUtils.getFacingsAroundAxis(axis)) {
-//                BlockPos newPos = pos.relative(dir);
-//
-//                //If we have already scanned this position then skip it.
-//                if (result.contains(newPos) || World.isOutsideBuildHeight(newPos)) {
-//                    continue;
-//                }
-//
-//                //If this is part of a previous failed scan then we know this scan will also fail.
-//                if (failedCache.contains(newPos)) {
-//                    failedCache.addAll(result);
-//                    return null;
-//                }
-//
-//                if (isAir(newPos)) {
-//                    scanQue.add(newPos);
-//                    result.add(newPos);
-//                } else if (!isFrame(newPos)) {
-//                    failedCache.addAll(result);
-//                    return null;
-//                }
-//            }
-//
-//            if (++scanCount > 65536) return null;
-//        }
-//
-//        return result;
-//    }
-
-
     private boolean isAir(BlockPos pos) {
-        //Is air or portal block that belongs to this and is decaying
-        return tile.getLevel().isEmptyBlock(pos);
+        if (tile.getLevel().isEmptyBlock(pos)) {
+            return true;
+        }
+        TileEntity te = tile.getLevel().getBlockEntity(pos);
+        return te instanceof TilePortal && ((TilePortal) te).getControllerPos().equals(tile.getBlockPos());
     }
 
     private boolean isFrame(BlockPos pos) {
         return pos.equals(tile.getBlockPos()) || tile.getLevel().getBlockState(pos).getBlock() == DEContent.infused_obsidian;
+    }
+
+    public void abort() {
+        if (scanning) endScan(false, null, null);
+        if (building) endBuild(false);
+    }
+
+    private LinkedList<BlockPos> buildList = null;
+    private Set<BlockPos> builtList = null;
+    private Axis buildAxis = null;
+
+    public void buildPortal(Set<BlockPos> portalShape, Axis axis) {
+        building = true;
+        buildList = new LinkedList<>();
+        builtList = new HashSet<>();
+        buildAxis = axis;
+        Vector3 min = new Vector3().set(60000000);
+        Vector3 max = new Vector3().set(-60000000);
+        for (BlockPos pos : portalShape) {
+            if (pos.getX() < min.x) min.x = pos.getX();
+            if (pos.getY() < min.y) min.y = pos.getY();
+            if (pos.getZ() < min.z) min.z = pos.getZ();
+            if (pos.getX() > max.x) max.x = pos.getX();
+            if (pos.getY() > max.y) max.y = pos.getY();
+            if (pos.getZ() > max.z) max.z = pos.getZ();
+        }
+        BlockPos mid = min.copy().add(max.subtract(min).divide(2)).pos();
+        buildList.addAll(portalShape.stream().parallel().sorted(Comparator.comparing(pos -> pos.distSqr(mid))).collect(Collectors.toList()));
+    }
+
+    private void updateBuildTick() {
+        if (buildList.isEmpty()) {
+            endBuild(true);
+            return;
+        }
+
+        BlockPos nextPos = buildList.pollLast();
+        if (!isAir(nextPos)) {
+            endBuild(false);
+            return;
+        }
+
+        BlockState portalState = DEContent.portal.defaultBlockState().setValue(Portal.AXIS, buildAxis);
+        tile.getLevel().setBlockAndUpdate(nextPos, Portal.getPlacementState(portalState, tile.getLevel(), nextPos));
+        builtList.add(nextPos);
+        TileEntity placedTile = tile.getLevel().getBlockEntity(nextPos);
+        if (placedTile instanceof TilePortal) {
+            ((TilePortal) placedTile).setControllerPos(tile.getBlockPos());
+        } else {
+            endBuild(false);
+            return;
+        }
+    }
+
+    private void endBuild(boolean successful) {
+        building = false;
+        buildList = null;
+        if (successful) {
+            tile.onBuildSuccess(new ArrayList<>(builtList));
+        } else {
+            tile.onBuildFail();
+            for (BlockPos pos : builtList) {
+                BlockState state = tile.getLevel().getBlockState(pos);
+                if (state.getBlock() == DEContent.portal) {
+                    tile.getLevel().removeBlock(pos, false);
+                }
+            }
+        }
+        builtList = null;
+    }
+
+    public boolean isBuilding() {
+        return building;
     }
 }

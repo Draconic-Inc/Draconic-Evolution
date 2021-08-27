@@ -87,6 +87,7 @@ public class DETextures implements IIconRegister, ISelectiveResourceReloadListen
             });
         }
         register(PARTICLES_ + "white_orb", sprite -> ORB_PARTICLE = sprite);
+        register(PARTICLES_ + "portal", sprite -> PORTAL_PARTICLE = sprite);
     }
 
     private static void register(String sprite, Consumer<TextureAtlasSprite> onReady) {
@@ -102,6 +103,7 @@ public class DETextures implements IIconRegister, ISelectiveResourceReloadListen
     public static TextureAtlasSprite[] SPELL_PARTICLE;
     public static TextureAtlasSprite[] MIXED_PARTICLE;
     public static TextureAtlasSprite ORB_PARTICLE;
+    public static TextureAtlasSprite PORTAL_PARTICLE;
 
 
 

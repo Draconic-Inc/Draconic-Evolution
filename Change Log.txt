@@ -1,5 +1,7 @@
 ######## 3.0.11.x ########
-- Fixed config gui crash related to the visualisation setting. 
+- Fixed config gui crash related to the visualisation setting.
+- Fixed issue where creative flight is disabled when teleporting across dimensions.
+- Updated and overhauled portals!
 
 ######## 3.0.10.395 ########
 - Fixed some startup warnings

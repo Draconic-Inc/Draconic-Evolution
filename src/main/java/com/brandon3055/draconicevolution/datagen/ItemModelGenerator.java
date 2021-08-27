@@ -52,7 +52,7 @@ public class ItemModelGenerator extends ItemModelProvider {
         blockItem(DEContent.disenchanter);
         blockItem(DEContent.energy_transfuser, modLoc("block/energy_transfuser"));
         blockItem(DEContent.dislocator_pedestal);
-        blockItem(DEContent.dislocator_receptacle);
+        blockItem(DEContent.dislocator_receptacle, modLoc("block/dislocator_receptacle_inactive"));
         blockItem(DEContent.creative_op_capacitor);
         blockItem(DEContent.entity_detector);
         blockItem(DEContent.entity_detector_advanced);

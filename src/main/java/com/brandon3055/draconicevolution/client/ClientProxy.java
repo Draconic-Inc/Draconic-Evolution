@@ -218,6 +218,7 @@ public class ClientProxy extends CommonProxy {
         ClientRegistry.bindTileEntityRenderer(DEContent.tile_potentiometer, RenderTilePotentiometer::new);
         ClientRegistry.bindTileEntityRenderer(DEContent.tile_energy_transfuser, RenderTileEnergyTransfuser::new);
         ClientRegistry.bindTileEntityRenderer(DEContent.tile_chaos_crystal, RenderTileChaosCrystal::new);
+        ClientRegistry.bindTileEntityRenderer(DEContent.tile_dislocator_pedestal, RenderTileDislocatorPedestal::new);
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -290,6 +291,7 @@ public class ClientProxy extends CommonProxy {
         RenderTypeLookup.setRenderLayer(DEContent.grinder, RenderType.cutoutMipped());
         RenderTypeLookup.setRenderLayer(DEContent.generator, RenderType.cutoutMipped());
         RenderTypeLookup.setRenderLayer(DEContent.energy_transfuser, RenderType.cutoutMipped());
+        RenderTypeLookup.setRenderLayer(DEContent.portal, RenderType.cutout());
 //        RenderTypeLookup.setRenderLayer(DEContent.chaos_crystal, RenderType.getCutout());
 //        RenderTypeLookup.setRenderLayer(DEContent.chaos_crystal_part, RenderType.getCutout());
     }
