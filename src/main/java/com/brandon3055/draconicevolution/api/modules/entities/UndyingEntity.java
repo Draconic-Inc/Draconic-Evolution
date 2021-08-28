@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.api.modules.entities;
 
 import com.brandon3055.brandonscore.api.power.IOPStorageModifiable;
+import com.brandon3055.brandonscore.api.render.GuiHelper;
 import com.brandon3055.brandonscore.client.utils.GuiHelperOld;
 import com.brandon3055.brandonscore.utils.MathUtils;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
@@ -13,8 +14,10 @@ import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.brandon3055.draconicevolution.api.modules.lib.StackModuleContext;
 import com.brandon3055.draconicevolution.client.render.item.ToolRenderBase;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -153,8 +156,9 @@ public class UndyingEntity extends ModuleEntity {
         if (charge >= data.getChargeTime()) return;
         double diameter = Math.min(width, height) * 0.425;
         double progress = charge / Math.max(1D, data.getChargeTime());
+        MatrixStack mStack = new MatrixStack();
 
-        GuiHelperOld.drawColouredRect(getter.getBuffer(GuiHelperOld.TRANS_TYPE), x, y, width, height, 0x20FF0000, 0);
+        GuiHelper.drawRect(getter, mStack, x, y, width, height, 0x20FF0000);
         IVertexBuilder builder = getter.getBuffer(GuiHelperOld.FAN_TYPE);
         builder.vertex(x + (width / 2D), y + (height / 2D), 0).color(0, 255, 255, 64).endVertex();
         for (double d = 0; d <= 1; d += 1D / 30D) {
@@ -167,8 +171,17 @@ public class UndyingEntity extends ModuleEntity {
 
         String pText = (int) (progress * 100) + "%";
         String tText = ((data.getChargeTime() - charge) / 20) + "s";
-        GuiHelperOld.drawBackgroundString(getter.getBuffer(GuiHelperOld.TRANS_TYPE), mc.font, pText, x + width / 2F, y + height / 2F - 8, 0, 0x4000FF00, 1, false, true);
-        GuiHelperOld.drawBackgroundString(getter.getBuffer(GuiHelperOld.TRANS_TYPE), mc.font, tText, x + width / 2F, y + height / 2F + 1, 0, 0x4000FF00, 1, false, true);
+        drawBackgroundString(getter, mStack, mc.font, pText, x + width / 2F, y + height / 2F - 8, 0, 0x4000FF00, 1, false, true);
+        drawBackgroundString(getter, mStack, mc.font, tText, x + width / 2F, y + height / 2F + 1, 0, 0x4000FF00, 1, false, true);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public static void drawBackgroundString(IRenderTypeBuffer getter, MatrixStack mStack, FontRenderer font, String text, float x, float y, int colour, int background, int padding, boolean shadow, boolean centered) {
+        MatrixStack matrixstack = new MatrixStack();
+        int width = font.width(text);
+        x = centered ? x - width / 2F : x;
+        GuiHelper.drawRect(getter, mStack, x - padding, y - padding, width + padding * 2, font.lineHeight - 2 + padding * 2, background);
+        font.drawInBatch(text, x, y, colour, shadow, matrixstack.last().pose(), getter, false, 0, 15728880);
     }
 
 
