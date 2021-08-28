@@ -659,7 +659,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
                 .ingredient(DEContent.energy_core_chaotic)
                 .ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
-                .build(consumer, folder("tools", DEContent.core_chaotic));
+                .build(consumer, folder("tools", DEContent.capacitor_chaotic));
 
         //Shovel
         FusionRecipeBuilder.fusionRecipe(DEContent.shovel_wyvern)

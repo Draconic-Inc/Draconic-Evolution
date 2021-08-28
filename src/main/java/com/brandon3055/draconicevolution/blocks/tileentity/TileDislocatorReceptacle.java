@@ -166,7 +166,7 @@ public class TileDislocatorReceptacle extends TileBCore implements ITickableTile
     //#################################################################################
 
     public void onScanBlock(BlockPos pos) {
-        BCoreNetwork.sendParticle(getLevel(), ParticleTypes.CLOUD, Vector3.fromBlockPosCenter(pos), Vector3.ZERO, true);
+//        BCoreNetwork.sendParticle(getLevel(), ParticleTypes.CLOUD, Vector3.fromBlockPosCenter(pos), Vector3.ZERO, true);
     }
 
     public void onScanComplete(@Nullable Set<BlockPos> result, @Nullable Direction.Axis resultAxis) {
