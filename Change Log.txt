@@ -1,8 +1,8 @@
 ######## 3.0.11.x ########
 - Fixed config gui crash related to the visualisation setting.
 - Fixed issue where creative flight is disabled when teleporting across dimensions.
-- Updated and overhauled portals!
-- Fixed text rendering crash with undying module
+- Updated and overhauled portals! (Bound dislocators will be returning in the next update)
+- Fixed text rendering crash with undying module.
 
 ######## 3.0.10.395 ########
 - Fixed some startup warnings

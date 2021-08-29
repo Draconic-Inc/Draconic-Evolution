@@ -1,24 +1,16 @@
 package com.brandon3055.draconicevolution.blocks.tileentity;
 
 import codechicken.lib.vec.Vector3;
-import com.brandon3055.brandonscore.BrandonsCore;
-import com.brandon3055.brandonscore.utils.FacingUtils;
 import com.brandon3055.brandonscore.utils.Utils;
-import com.brandon3055.draconicevolution.client.DEParticles;
+import com.brandon3055.draconicevolution.blocks.Portal;
 import com.brandon3055.draconicevolution.client.render.particle.ParticlePortal;
 import com.brandon3055.draconicevolution.init.DEContent;
-import com.brandon3055.draconicevolution.blocks.Portal;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-
-import java.util.Random;
 
 import static net.minecraft.util.Direction.Axis.*;
 
@@ -30,7 +22,7 @@ public class TilePortalClient extends TilePortal implements ITickableTileEntity 
     private boolean hidden = false;
     private PlayerEntity player = null;
     public TilePortalClient() {
-        super(DEContent.tile_portal_client);
+        super(DEContent.tile_portal);
     }
 
     @Override

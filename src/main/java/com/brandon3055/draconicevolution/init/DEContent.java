@@ -52,11 +52,13 @@ import net.minecraft.item.*;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ObjectHolder;
 
@@ -139,7 +141,6 @@ public class DEContent {
 //        event.getRegistry().register(TileEntityType.Builder.create(TileParticleGenerator::new,    particle_generator      ).build(null).setRegistryName("particle_generator"));
 //        event.getRegistry().register(TileEntityType.Builder.create(TilePlacedItem::new,           placed_item             ).build(null).setRegistryName("placed_item"));
         event.getRegistry().register(TileEntityType.Builder.of(TilePortal::new,               portal                  ).build(null).setRegistryName("portal"));
-        event.getRegistry().register(TileEntityType.Builder.of(TilePortalClient::new,         portal                  ).build(null).setRegistryName("portal_client"));
         event.getRegistry().register(TileEntityType.Builder.of(TileChaosCrystal::new,           chaos_crystal, chaos_crystal_part           ).build(null).setRegistryName("chaos_crystal"));
         event.getRegistry().register(TileEntityType.Builder.of(TileFusionCraftingInjector::new,       craftInjectors          ).build(null).setRegistryName("crafting_injector"));
         event.getRegistry().register(TileEntityType.Builder.of(TileFusionCraftingCore::new,           crafting_core           ).build(null).setRegistryName("crafting_core"));
