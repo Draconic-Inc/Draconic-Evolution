@@ -28,6 +28,8 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -158,6 +160,7 @@ public class DraconiumChest extends BlockBCore {
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public boolean addDestroyEffects(BlockState state, World world, BlockPos pos, ParticleManager manager) {
         return true;
     }
@@ -168,6 +171,7 @@ public class DraconiumChest extends BlockBCore {
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public boolean addHitEffects(BlockState state, World worldObj, RayTraceResult target, ParticleManager manager) {
         return true;
     }
@@ -178,6 +182,7 @@ public class DraconiumChest extends BlockBCore {
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public void appendHoverText(ItemStack stack, @Nullable IBlockReader worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         super.appendHoverText(stack, worldIn, tooltip, flagIn);
         tooltip.add(new StringTextComponent("//WIP"));

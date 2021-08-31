@@ -19,6 +19,8 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 
@@ -106,6 +108,7 @@ public class ReactorCore extends BlockBCore /*implements ITileEntityProvider, IR
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public boolean addDestroyEffects(BlockState state, World world, BlockPos pos, ParticleManager manager) {
         return true;
     }
@@ -116,6 +119,7 @@ public class ReactorCore extends BlockBCore /*implements ITileEntityProvider, IR
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public boolean addHitEffects(BlockState state, World worldObj, RayTraceResult target, ParticleManager manager) {
         return true;
     }

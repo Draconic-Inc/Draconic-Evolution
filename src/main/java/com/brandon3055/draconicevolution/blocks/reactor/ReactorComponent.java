@@ -157,6 +157,7 @@ public class ReactorComponent extends BlockBCore {
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public boolean addDestroyEffects(BlockState state, World world, BlockPos pos, ParticleManager manager) {
         return true;
     }
@@ -167,6 +168,7 @@ public class ReactorComponent extends BlockBCore {
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public boolean addHitEffects(BlockState state, World worldObj, RayTraceResult target, ParticleManager manager) {
         return true;
     }
