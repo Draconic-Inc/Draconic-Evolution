@@ -63,6 +63,7 @@ import net.minecraftforge.fml.common.thread.EffectiveSide;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLDedicatedServerSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import static com.brandon3055.brandonscore.api.TechLevel.*;
@@ -110,6 +111,11 @@ public class ClientProxy extends CommonProxy {
         KeyBindings.init();
 
         ResourceUtils.registerReloadListener(new DETextures());
+    }
+
+    @Override
+    public void loadComplete(FMLLoadCompleteEvent event) {
+        super.loadComplete(event);
 
         //Because i want this to render on bipedal mobs.
         for (EntityRenderer<?> e : Minecraft.getInstance().getEntityRenderDispatcher().renderers.values()) {
@@ -138,6 +144,7 @@ public class ClientProxy extends CommonProxy {
             });
         }
     }
+
     private void registerShaderReloads(ParticleFactoryRegisterEvent event) {
         if (Minecraft.getInstance() == null) return;
 
