@@ -1,13 +1,20 @@
-######## 3.0.11.x ########
-- Fixed config gui crash related to the visualisation setting.
+######## 3.0.13.408 ########
+- Fixed a shader rendering crash related to modular armor.
+
+######## 3.0.12.406 ########
+- Fixed config GUI crash related to the visualization setting.
 - Fixed issue where creative flight is disabled when teleporting across dimensions.
 - Updated and overhauled portals! (Bound dislocators will be returning in the next update)
-- Fixed text rendering crash with undying module.
+- Fixed text rendering crash with the undying module.
+- Fixed random ConcurrentModificationException related to mod load order and timing.
+- Fixed broken error with DE GUI controls when certain mods are installed.
 
-######## 3.0.10.395 ########
+######## 3.0.11.395 ########
 - Fixed some startup warnings
 - Fixed crash with certain system languages
 - Fixed crash when rendering the staff with the 'glowing' effect
+
+//Where did .10 go? ¯\_(ツ)_/¯
 
 ######## 3.0.9.392 ########
 - Fixed dislocation inhibitor localization. (aka: Dislocation Normalization Field Projector)
