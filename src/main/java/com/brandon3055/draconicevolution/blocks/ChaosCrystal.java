@@ -21,7 +21,10 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.common.ToolType;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -105,17 +108,17 @@ public class ChaosCrystal extends BlockBCore/*, IRenderOverride*/ {
 
     private static DamageSource punishment = new DamageSource("chrystalMoved").bypassInvul().bypassArmor().bypassMagic();
 
-    @Override
-    public void onPlace(BlockState state, World world, BlockPos pos, BlockState oldState, boolean isMoving) {
-        List<PlayerEntity> players = world.getEntitiesOfClass(PlayerEntity.class, new AxisAlignedBB(pos, pos.offset(1, 1, 1)).inflate(15, 15, 15));
-
-        for (PlayerEntity player : players) {
-            if (player.abilities.instabuild) {
-                return;
-            }
-            player.hurt(punishment, Float.MAX_VALUE);
-        }
-    }
+//    @Override
+//    public void onPlace(BlockState state, World world, BlockPos pos, BlockState oldState, boolean isMoving) {
+//        List<PlayerEntity> players = world.getEntitiesOfClass(PlayerEntity.class, new AxisAlignedBB(pos, pos.offset(1, 1, 1)).inflate(15, 15, 15));
+//
+//        for (PlayerEntity player : players) {
+//            if (player.abilities.instabuild) {
+//                return;
+//            }
+//            player.hurt(punishment, Float.MAX_VALUE);
+//        }
+//    }
 
     //region Rendering
 
