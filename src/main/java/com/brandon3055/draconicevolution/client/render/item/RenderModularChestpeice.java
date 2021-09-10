@@ -46,7 +46,7 @@ public class RenderModularChestpeice extends ToolRenderBase {
     public static ShaderProgram coreShader = ShaderProgramBuilder.builder()
             .addShader("vert", shader -> shader
                     .type(VERTEX)
-                    .source(new ResourceLocation(MODID, "shaders/common.vert"))
+                    .source(new ResourceLocation(MODID, "shaders/crystal_core.vert"))
             )
             .addShader("frag", shader -> shader
                     .type(FRAGMENT)

@@ -4,13 +4,16 @@ import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.lib.datamanager.*;
 import com.brandon3055.brandonscore.network.BCoreNetwork;
+import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DEOldConfig;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.handlers.DESounds;
+import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.effect.LightningBoltEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -105,8 +108,11 @@ public class TileChaosCrystal extends TileBCore implements ITickableTileEntity {
         level.setBlockAndUpdate(worldPosition.below(), Blocks.AIR.defaultBlockState());
         level.setBlockAndUpdate(worldPosition.below(2), Blocks.AIR.defaultBlockState());
 
+        Block.popResource(level, worldPosition, new ItemStack(DEContent.chaos_shard, DEConfig.chaosDropCount));
+        level.removeBlock(worldPosition, false);
+
         if (DEOldConfig.disableChaosIslandExplosion || hasBeenMoved()) {
-            level.removeBlock(worldPosition, false);
+//            level.removeBlock(worldPosition, false);
         } else {
 //            EntityChaosImplosion vortex = new EntityChaosImplosion(world); TODO Implosion
 //            vortex.setPosition(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);

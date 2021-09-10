@@ -318,8 +318,8 @@ public class DEContent {
         event.getRegistry().register(new DraconiumBlock(storageBlock).setRegistryName("awakened_draconium_block"));
 //        //Special
         event.getRegistry().register(new Portal(Properties.of(Material.GLASS).noOcclusion().noCollission().noDrops().strength(-1F)).setRegistryName("portal"));
-        event.getRegistry().register(new ChaosCrystal(Properties.of(Material.GLASS).strength(100, 4000)).setRegistryName("chaos_crystal"));
-        event.getRegistry().register(new ChaosCrystal(Properties.of(Material.GLASS).strength(100, 4000)).setRegistryName("chaos_crystal_part"));
+        event.getRegistry().register(new ChaosCrystal(Properties.of(Material.GLASS).strength(100, 4000).noDrops()).setRegistryName("chaos_crystal"));
+        event.getRegistry().register(new ChaosCrystal(Properties.of(Material.GLASS).strength(100, 4000).noDrops()).setRegistryName("chaos_crystal_part"));
         event.getRegistry().register(new BlockBCore(Block.Properties.of(Material.STONE, MaterialColor.COLOR_BLACK).strength(100.0F, 2400.0F)).setMobResistant().setRegistryName("infused_obsidian"));
 
         //Energy Crystals

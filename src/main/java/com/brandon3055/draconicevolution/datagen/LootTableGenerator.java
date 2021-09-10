@@ -103,8 +103,8 @@ public class LootTableGenerator extends LootTableProvider {
             //Special Stuff
 //            registerDropSelfLootTable(DEContent.energy_core_structure);
 //            registerDropSelfLootTable(DEContent.placed_item);
-            add(DEContent.chaos_crystal, block -> createSingleItemTable(DEContent.chaos_shard).apply(SetCount.setCount(ConstantRange.exactly(5))));
-            add(DEContent.chaos_crystal_part, noDrop());
+//            add(DEContent.chaos_crystal, block -> createSingleItemTable(DEContent.chaos_shard).apply(SetCount.setCount(ConstantRange.exactly(5))));
+//            add(DEContent.chaos_crystal_part, noDrop());
 //            add(DEContent.portal, noDrop());
 
             //Fortune

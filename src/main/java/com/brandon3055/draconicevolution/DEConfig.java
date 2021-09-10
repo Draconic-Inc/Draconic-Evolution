@@ -55,6 +55,7 @@ public class DEConfig {
     public static int dislocatorMaxFuel;
     public static int portalMaxArea;
     public static int portalMaxDistanceSq;
+    public static int chaosDropCount;
 
     private static void loadServer() {
         serverTag = config.getTag("Server");
@@ -165,6 +166,11 @@ public class DEConfig {
                     .setComment("Allows chaotic weapons to destabilize the guardian crystal shields.\nThis makes it much easier to farm the guardian but only after you have chaos tier weapons.")
                     .setDefaultBoolean(true)
                     .setSyncCallback((tag, type) -> chaoticBypassCrystalShield = tag.getBoolean());
+            guardianFight.getTag("chaosDropCount")
+                    .setSyncToClient()
+                    .setComment("Number of chaos shards dropped by the chaos crystal when broken by a player")
+                    .setDefaultInt(5)
+                    .setSyncCallback((tag, type) -> chaosDropCount = tag.getInt());
         }
 
         serverTag.getTag("dislocatorMaxFuel")

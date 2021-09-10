@@ -1,3 +1,8 @@
+######## 3.0.14.x ########
+- Fixed mobs spawning on energy core.
+- Fixed issue where chaos crystal could drop shards when guardian has not been defeated.
+- Fixed some more shader related issues.
+
 ######## 3.0.13.408 ########
 - Fixed a shader rendering crash related to modular armor.
 

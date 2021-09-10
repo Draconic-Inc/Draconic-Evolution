@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.blocks;
 import com.brandon3055.brandonscore.blocks.BlockBCore;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileChaosCrystal;
 import com.brandon3055.draconicevolution.init.DEContent;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -10,6 +11,10 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.loot.LootContext;
+import net.minecraft.loot.LootParameter;
+import net.minecraft.loot.LootParameters;
+import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
 
 import net.minecraft.util.DamageSource;
@@ -27,6 +32,7 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.ToolType;
 
 import javax.annotation.Nullable;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -58,7 +64,7 @@ public class ChaosCrystal extends BlockBCore/*, IRenderOverride*/ {
     public float getDestroyProgress(BlockState state, PlayerEntity player, IBlockReader world, BlockPos pos) {
         TileChaosCrystal tile = world.getBlockEntity(pos) instanceof TileChaosCrystal ? (TileChaosCrystal) world.getBlockEntity(pos) : null;
         if (tile != null) return tile.canBreak() ? super.getDestroyProgress(state, player, world, pos) : -1F;
-        return super.getDestroyProgress(state, player, world, pos);
+        return -1;
     }
 
 

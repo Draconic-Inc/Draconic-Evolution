@@ -5,6 +5,8 @@ import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyCore;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.EntitySpawnPlacementRegistry;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.IntegerProperty;
@@ -30,6 +32,11 @@ public class EnergyCore extends BlockBCore {
     public EnergyCore(Properties properties) {
         super(properties);
         this.registerDefaultState(stateDefinition.any().setValue(ACTIVE, false));
+    }
+
+    @Override
+    public boolean canCreatureSpawn(BlockState state, IBlockReader world, BlockPos pos, EntitySpawnPlacementRegistry.PlacementType type, @Nullable EntityType<?> entityType) {
+        return false;
     }
 
     @Override
