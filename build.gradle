@@ -125,7 +125,7 @@ processResources { task ->
         task.doFirst {
             spec.expand 'version': config.mod_version,
                     'mc_version': config.mc_version,
-                    'ccl_version': resolve("CodeChickenLib"),
+                    'ccl_version': "[${config.ccl_version.replace('.+', '')},${config.ccl_version_max})",
                     'bcore_version': resolve("BrandonsCore")
         }
     }
