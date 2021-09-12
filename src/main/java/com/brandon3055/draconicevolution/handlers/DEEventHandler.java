@@ -3,14 +3,12 @@ package com.brandon3055.draconicevolution.handlers;
 import codechicken.lib.raytracer.RayTracer;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DEOldConfig;
-import com.brandon3055.draconicevolution.entity.EntityDragonHeart;
+import com.brandon3055.draconicevolution.achievements.Achievements;
+import com.brandon3055.draconicevolution.api.IReaperItem;
+import com.brandon3055.draconicevolution.api.energy.ICrystalBinder;
 import com.brandon3055.draconicevolution.entity.GuardianCrystalEntity;
 import com.brandon3055.draconicevolution.entity.guardian.DraconicGuardianEntity;
 import com.brandon3055.draconicevolution.init.DEContent;
-import com.brandon3055.draconicevolution.achievements.Achievements;
-import com.brandon3055.draconicevolution.api.energy.ICrystalBinder;
-import com.brandon3055.draconicevolution.api.IReaperItem;
-import com.brandon3055.draconicevolution.magic.EnchantmentReaper;
 import com.brandon3055.draconicevolution.network.CrystalUpdateBatcher;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.block.Blocks;
@@ -167,8 +165,8 @@ public class DEEventHandler {
         }
 
         World world = entity.level;
-        int rand = random.nextInt(Math.max(DEOldConfig.soulDropChance / dropChanceModifier, 1));
-        int rand2 = random.nextInt(Math.max(DEOldConfig.passiveSoulDropChance / dropChanceModifier, 1));
+        int rand = random.nextInt(Math.max(DEConfig.soulDropChance / dropChanceModifier, 1));
+        int rand2 = random.nextInt(Math.max(DEConfig.passiveSoulDropChance / dropChanceModifier, 1));
         boolean isAnimal = entity instanceof AnimalEntity;
 
         if ((rand == 0 && !isAnimal) || (rand2 == 0 && isAnimal)) {
@@ -193,17 +191,17 @@ public class DEEventHandler {
     }
 
     private boolean isValidEntity(LivingEntity entity) {
-        if (!entity.canChangeDimensions() && !DEOldConfig.allowBossSouls) {
+        if (!entity.canChangeDimensions() && !DEConfig.allowBossSouls) {
             return false;
         }
-        for (int i = 0; i < DEOldConfig.spawnerList.length; i++) {
-            if (DEOldConfig.spawnerList[i].equals(entity.getName()) && DEOldConfig.spawnerListWhiteList) {
+        for (int i = 0; i < DEConfig.spawnerList.length; i++) {
+            if (DEConfig.spawnerList[i].equals(entity.getName()) && DEConfig.spawnerListWhiteList) {
                 return true;
-            } else if (DEOldConfig.spawnerList[i].equals(entity.getName()) && !DEOldConfig.spawnerListWhiteList) {
+            } else if (DEConfig.spawnerList[i].equals(entity.getName()) && !DEConfig.spawnerListWhiteList) {
                 return false;
             }
         }
-        return !DEOldConfig.spawnerListWhiteList;
+        return !DEConfig.spawnerListWhiteList;
     }
 
     //endregion

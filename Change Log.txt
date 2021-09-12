@@ -1,5 +1,9 @@
+######## 3.0.15.413 ########
+- Fixed DE portal crashing servers.
+- Re implemented configs for Stabilized Spawner.
+
 ######## 3.0.14.412 ########
-- Fixed CCL dependency version issue.
+- Fixed CCL dependency issue.
 
 ######## 3.0.14.411 ########
 - Fixed mobs spawning on energy core.

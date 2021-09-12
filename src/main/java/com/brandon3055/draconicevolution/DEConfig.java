@@ -8,6 +8,7 @@ import com.google.common.collect.Lists;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -56,6 +57,19 @@ public class DEConfig {
     public static int portalMaxArea;
     public static int portalMaxDistanceSq;
     public static int chaosDropCount;
+
+    //    @ModConfigProperty(category = "Tweaks", name = "soulDropChance", comment = "")
+    public static int soulDropChance = 1000;
+    //    @ModConfigProperty(category = "Tweaks", name = "passiveSoulDropChance", comment = "")
+    public static int passiveSoulDropChance = 800;
+    //    @ModConfigProperty(category = "Tweaks", name = "spawnerList", comment = "", autoSync = true)
+    public static String[] spawnerList = {};
+    //    @ModConfigProperty(category = "Tweaks", name = "spawnerListWhiteList", comment = "", autoSync = true)
+    public static boolean spawnerListWhiteList = false;
+    //    @ModConfigProperty(category = "Tweaks", name = "allowBossSouls", comment = "")
+    public static boolean allowBossSouls = false;
+    //    @ModConfigProperty(category = "Tweaks", name = "spawnerDelays", comment = "")
+    public static Integer[] spawnerDelays = new Integer[]{200, 800, 100, 400, 50, 200, 25, 100};
 
     private static void loadServer() {
         serverTag = config.getTag("Server");
@@ -173,6 +187,41 @@ public class DEConfig {
                     .setSyncCallback((tag, type) -> chaosDropCount = tag.getInt());
         }
 
+        {
+            ConfigTag deSpawner = serverTag.getTag("Stabilized Spawner");
+            deSpawner.setComment("These are all config fields related to the Stabilized Spawner and mob souls");
+            deSpawner.getTag("soulDropChance")
+                    .setSyncToClient()
+                    .setComment("Mobs have a 1 in {this number} chance to drop a soul when killed with the Reaper enchantment.  Note: This is the base value; higher enchantment levels increase this chance.")
+                    .setDefaultInt(1000)
+                    .setSyncCallback((tag, type) -> soulDropChance = tag.getInt());
+            deSpawner.getTag("passiveSoulDropChance")
+                    .setSyncToClient()
+                    .setComment("Passive (Animals) Mobs have a 1 in {this number} chance to drop a soul when killed with the Reaper enchantment.  Note: This is the base value; higher enchantment levels increase this chance.")
+                    .setDefaultInt(800)
+                    .setSyncCallback((tag, type) -> passiveSoulDropChance = tag.getInt());
+            deSpawner.getTag("spawnerList")
+                    .setSyncToClient()
+                    .setComment("By default, any entities added to this list will not drop their souls and will not be spawnable by the Stabilized Spawner.")
+                    .setDefaultStringList(Collections.emptyList())
+                    .setSyncCallback((tag, type) -> spawnerList = tag.getStringList().toArray(new String[0]));
+            deSpawner.getTag("spawnerListWhiteList")
+                    .setSyncToClient()
+                    .setComment("Changes the spawner list to a whitelist instead of a blacklist.")
+                    .setDefaultBoolean(false)
+                    .setSyncCallback((tag, type) -> spawnerListWhiteList = tag.getBoolean());
+            deSpawner.getTag("allowBossSouls")
+                    .setSyncToClient()
+                    .setComment("Enabling this allows boss souls to drop. Use with caution!")
+                    .setDefaultBoolean(false)
+                    .setSyncCallback((tag, type) -> allowBossSouls = tag.getBoolean());
+            deSpawner.getTag("spawnerDelays")
+                    .setSyncToClient()
+                    .setComment("Sets the min and max spawn delay in ticks for each spawner tier. Order is as follows.\\nBasic MIN, MAX, Wyvern MIN, MAX, Draconic MIN, MAX, Chaotic MIN MAX")
+                    .setDefaultIntList(Lists.newArrayList(200, 800, 100, 400, 50, 200, 25, 100))
+                    .setSyncCallback((tag, type) -> spawnerDelays = tag.getIntList().toArray(new Integer[0]));
+        }
+
         serverTag.getTag("dislocatorMaxFuel")
                 .setSyncToClient()
                 .setComment("Sets the maximum fuel that can be added to an Advanced Dislocator.")
@@ -191,7 +240,6 @@ public class DEConfig {
                 .setDefaultInt(256)
                 .setSyncCallback((tag, type) -> portalMaxDistanceSq = tag.getInt() * tag.getInt());
     }
-
 
     //Client properties
     public static boolean configUiShowUnavailable;
