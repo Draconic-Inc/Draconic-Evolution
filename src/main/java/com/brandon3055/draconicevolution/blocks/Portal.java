@@ -8,7 +8,6 @@ import com.brandon3055.draconicevolution.blocks.tileentity.TilePortalClient;
 import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.EnumProperty;
@@ -25,7 +24,6 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 
 import javax.annotation.Nullable;
-
 import java.util.Random;
 
 import static net.minecraft.util.Direction.Axis.X;
@@ -66,7 +64,7 @@ public class Portal extends BlockBCore {
     @Nullable
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        return world instanceof ClientWorld ? new TilePortalClient() : new TilePortal();
+        return world instanceof ServerWorld ? new TilePortal() : new TilePortalClient();
     }
 
     @Override
