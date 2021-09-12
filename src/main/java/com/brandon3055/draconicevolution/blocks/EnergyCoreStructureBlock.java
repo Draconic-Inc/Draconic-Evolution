@@ -9,6 +9,8 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.entity.EntitySpawnPlacementRegistry;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.item.ItemGroup;
@@ -31,26 +33,21 @@ import javax.annotation.Nullable;
 /**
  * Created by brandon3055 on 13/4/2016.
  */
-public class EnergyCoreStructureBlock extends BlockBCore/* implements IRenderOverride, ITileEntityProvider*/ {
+public class EnergyCoreStructureBlock extends BlockBCore {
 
     public EnergyCoreStructureBlock(Block.Properties properties) {
         super(properties);
     }
 
-//    @Override
-//    public boolean isSolid(BlockState state) {
-//        return false;
-//    }
+    @Override
+    public boolean canCreatureSpawn(BlockState state, IBlockReader world, BlockPos pos, EntitySpawnPlacementRegistry.PlacementType type, @Nullable EntityType<?> entityType) {
+        return false;
+    }
 
     @Override
     public BlockRenderType getRenderShape(BlockState state) {
         return BlockRenderType.INVISIBLE;
     }
-
-//    @Override
-//    public BlockRenderLayer getRenderLayer() {
-//        return BlockRenderLayer.CUTOUT;
-//    }
 
     @Override
     public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> items) {}
@@ -95,15 +92,6 @@ public class EnergyCoreStructureBlock extends BlockBCore/* implements IRenderOve
         }
     }
 
-
-//    @Override
-//    public Item getItemDropped(BlockState state, Random rand, int fortune) {
-//        return null;
-//    }
-
-
-
-
     @Override
     public boolean removedByPlayer(BlockState state, World world, BlockPos pos, PlayerEntity player, boolean willHarvest, FluidState fluid) {
         TileEntity tile = world.getBlockEntity(pos);
@@ -117,74 +105,11 @@ public class EnergyCoreStructureBlock extends BlockBCore/* implements IRenderOve
                 master.validateStructure();
                 if (block != Blocks.AIR && !player.abilities.instabuild) {
                     popResource(world, pos, new ItemStack(block));
-//                    world.setBlockState(pos, block.getDefaultState());
                 }
             }
         }
         return true;
     }
-
-
-//    @Override
-//    public void onBlockHarvested(World world, BlockPos pos, BlockState state, PlayerEntity player) {
-//        TileEntity tile = world.getTileEntity(pos);
-//
-//        if (tile instanceof TileCoreStructure) {
-//            Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(((TileCoreStructure) tile).blockName.get()));
-//
-//            IMultiBlockPart master = ((TileCoreStructure) tile).getController();
-//            if (master != null) {
-//                world.removeBlock(pos, false);
-//                master.validateStructure();
-//                if (block != Blocks.AIR) {
-//                    world.setBlockState(pos, block.getDefaultState());
-//                }
-//            }
-
-//
-//            if (!((TileCoreStructure) tile).blockName.get().isEmpty() && !player.abilities.isCreativeMode) {
-//
-//                if (block != Blocks.AIR) {
-////                    world.setBlockState(pos, block.getDefaultState());
-////                    if (((TileCoreStructure) tile).blockName.equals("draconicevolution:particle_generator")) {
-////                        spawnAsEntity(world, pos, new ItemStack(block, 1));
-////                    } else {
-////                        spawnAsEntity(world, pos, new ItemStack(block));
-////                    }
-//                }
-//            }
-//
-//            IMultiBlockPart master = ((TileCoreStructure) tile).getController();
-//            if (master != null) {
-//                world.removeBlock(pos, false);
-//                master.validateStructure();
-//                if (block != Blocks.AIR) {
-//                    world.setBlockState(pos, block.getDefaultState());
-//                }
-//            }
-//        }
-//    }
-
-//    @Override
-//    public ItemStack getPickBlock(BlockState state, RayTraceResult target, World world, BlockPos pos, PlayerEntity player) {
-//        TileEntity tile = world.getTileEntity(pos);
-//
-//        if (tile instanceof TileInvisECoreBlock) {
-//            if (((TileInvisECoreBlock) tile).blockName.equals("draconicevolution:draconium_block")) {
-//                return new ItemStack(DEFeatures.draconiumBlock);
-//            } else if (((TileInvisECoreBlock) tile).blockName.equals("draconicevolution:draconic_block")) {
-//                return new ItemStack(DEFeatures.draconicBlock);
-//            } else if (((TileInvisECoreBlock) tile).blockName.equals("draconicevolution:particle_generator")) {
-//                return new ItemStack(DEFeatures.particleGenerator, 1, 2);
-//            } else if (((TileInvisECoreBlock) tile).blockName.equals("minecraft:glass")) {
-//                return new ItemStack(Blocks.GLASS);
-//            } else if (((TileInvisECoreBlock) tile).blockName.equals("minecraft:redstone_block")) {
-//                return new ItemStack(Blocks.REDSTONE_BLOCK);
-//            }
-//        }
-//
-//        return ItemStack.EMPTY;
-//    }
 
     @Override
     public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader world, BlockPos pos, PlayerEntity player) {
@@ -206,15 +131,6 @@ public class EnergyCoreStructureBlock extends BlockBCore/* implements IRenderOve
         return ItemStack.EMPTY;
     }
 
-
-    //endregion
-
-    //region Rendering
-
-//    public boolean isFullCube(BlockState state) {
-//        return false;
-//    }
-
     @Override
     public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
         TileEntity tile = world.getBlockEntity(pos);
@@ -223,7 +139,6 @@ public class EnergyCoreStructureBlock extends BlockBCore/* implements IRenderOve
             IMultiBlockPart controller = ((TileCoreStructure) tile).getController();
 
             if (controller instanceof TileEnergyCoreStabilizer) {
-//                ((TileCoreStructure) tile).getDataManager().forceSync();
                 TileEnergyCoreStabilizer stabilizer = (TileEnergyCoreStabilizer) controller;
                 if (stabilizer.isValidMultiBlock.get()) {
                     BlockState stabState = world.getBlockState(stabilizer.getBlockPos());
@@ -235,21 +150,4 @@ public class EnergyCoreStructureBlock extends BlockBCore/* implements IRenderOve
 
         return VoxelShapes.block();
     }
-
-//    @Override
-//    public VoxelShape getRaytraceShape(BlockState state, IBlockReader worldIn, BlockPos pos) {
-//        return VoxelShapes.fullCube();
-//    }
-//
-//    @Override
-//    public VoxelShape getRenderShape(BlockState state, IBlockReader worldIn, BlockPos pos) {
-//        return VoxelShapes.fullCube();
-//    }
-//
-//    @Override
-//    public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
-//        return VoxelShapes.fullCube();
-//    }
-
-    //endregion
 }
