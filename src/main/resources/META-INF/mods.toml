@@ -24,7 +24,7 @@ license="CoFH \"Don't Be a Jerk\" License"
 [[dependencies.draconicevolution]]
 	modId="codechickenlib"
 	mandatory=true
-	versionRange="[${ccl_version},)"
+	versionRange="${ccl_version}"
 	ordering="AFTER"
 	side="BOTH"
 [[dependencies.draconicevolution]]
