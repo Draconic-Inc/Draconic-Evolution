@@ -2,6 +2,8 @@ package com.brandon3055.draconicevolution.blocks.tileentity;
 
 import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.blocks.TileBCore;
+import com.brandon3055.brandonscore.handlers.ProcessHandler;
+import com.brandon3055.brandonscore.lib.DelayedTask;
 import com.brandon3055.brandonscore.lib.datamanager.*;
 import com.brandon3055.brandonscore.network.BCoreNetwork;
 import com.brandon3055.draconicevolution.DEConfig;
@@ -20,6 +22,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
@@ -107,6 +110,17 @@ public class TileChaosCrystal extends TileBCore implements ITickableTileEntity {
         level.setBlockAndUpdate(worldPosition.above(2), Blocks.AIR.defaultBlockState());
         level.setBlockAndUpdate(worldPosition.below(), Blocks.AIR.defaultBlockState());
         level.setBlockAndUpdate(worldPosition.below(2), Blocks.AIR.defaultBlockState());
+
+        if (!guardianDefeated.get()) {
+            World world = level;
+            BlockPos pos = worldPosition;
+            ProcessHandler.addProcess(new DelayedTask.Task(1, () -> {
+                world.setBlock(pos, DEContent.chaos_crystal.defaultBlockState(), 3);
+                TileChaosCrystal tileChaosShard = (TileChaosCrystal) world.getBlockEntity(pos);
+                tileChaosShard.onValidPlacement();
+            }));
+            return;
+        }
 
         Block.popResource(level, worldPosition, new ItemStack(DEContent.chaos_shard, DEConfig.chaosDropCount));
         level.removeBlock(worldPosition, false);

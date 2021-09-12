@@ -1,4 +1,4 @@
-######## 3.0.15.413 ########
+######## 3.0.15.414 ########
 - Fixed DE portal crashing servers.
 - Re implemented configs for Stabilized Spawner.
 
