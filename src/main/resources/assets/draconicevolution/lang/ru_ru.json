@@ -510,7 +510,7 @@
   "modular_item.draconicevolution.cant_install.level_high": "Уровень модуля слишком высок для этого модульного предмета.",
   "modular_item.draconicevolution.cant_install.not_supported": "Этот модуль не поддерживается данным модульным предметом.",
   "modular_item.draconicevolution.cant_install.wont_fit": "Модуль не вмещается в этом положении.",
-  "modular_item.draconicevolution.error.module_install_limit": "Достигнут предел установки для этого модуля.",
+  "modular_item.draconicevolution.error.module_install_limit": "Достигнут предел для установки этого модуля.",
   "modular_item.draconicevolution.error.no_modular_items": "У вас нет модульных предметов в инвентаре!",
   "modular_item.draconicevolution.requires_energy": "Для работы этого предмета требуются энергетические модули.",
   "modular_item.draconicevolution.requires_energy_press": "Нажмите %s чтобы открыть меню настройки модулей.",
