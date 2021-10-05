@@ -16,10 +16,7 @@ import com.brandon3055.draconicevolution.lib.ISidedTileHandler;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import net.minecraft.client.audio.ISound;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLDedicatedServerSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
+import net.minecraftforge.fml.event.lifecycle.*;
 
 public class CommonProxy {
 
@@ -46,10 +43,6 @@ public class CommonProxy {
     }
 
     public void serverSetup(FMLDedicatedServerSetupEvent event) {
-    }
-
-    public void loadComplete(FMLLoadCompleteEvent event) {
-
     }
 
 //    public void preInit(FMLPreInitializationEvent event) {

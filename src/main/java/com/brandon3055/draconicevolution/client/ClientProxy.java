@@ -1,7 +1,6 @@
 package com.brandon3055.draconicevolution.client;
 
 import codechicken.lib.model.ModelRegistryHelper;
-import codechicken.lib.render.RenderUtils;
 import codechicken.lib.texture.SpriteRegistryHelper;
 import codechicken.lib.util.ResourceUtils;
 import com.brandon3055.brandonscore.api.hud.AbstractHudElement;
@@ -60,10 +59,7 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.thread.EffectiveSide;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLDedicatedServerSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
+import net.minecraftforge.fml.event.lifecycle.*;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import static com.brandon3055.brandonscore.api.TechLevel.*;
@@ -111,38 +107,35 @@ public class ClientProxy extends CommonProxy {
         KeyBindings.init();
 
         ResourceUtils.registerReloadListener(new DETextures());
-    }
 
-    @Override
-    public void loadComplete(FMLLoadCompleteEvent event) {
-        super.loadComplete(event);
-
-        //Because i want this to render on bipedal mobs.
-        for (EntityRenderer<?> e : Minecraft.getInstance().getEntityRenderDispatcher().renderers.values()) {
-            if (e instanceof LivingRenderer && ((LivingRenderer) e).getModel() instanceof BipedModel) {
-                boolean foundArmor = false;
-                for (Object layer : ((LivingRenderer) e).layers) {
-                    if (layer instanceof BipedArmorLayer) {
-                        ((LivingRenderer<?, ?>) e).addLayer(new VBOArmorLayer((LivingRenderer<?, ?>) e, (BipedArmorLayer) layer));
-                        foundArmor = true;
-                        break;
+        event.enqueueWork(() -> {
+            //Because i want this to render on bipedal mobs.
+            for (EntityRenderer<?> e : Minecraft.getInstance().getEntityRenderDispatcher().renderers.values()) {
+                if (e instanceof LivingRenderer && ((LivingRenderer) e).getModel() instanceof BipedModel) {
+                    boolean foundArmor = false;
+                    for (Object layer : ((LivingRenderer) e).layers) {
+                        if (layer instanceof BipedArmorLayer) {
+                            ((LivingRenderer<?, ?>) e).addLayer(new VBOArmorLayer((LivingRenderer<?, ?>) e, (BipedArmorLayer) layer));
+                            foundArmor = true;
+                            break;
+                        }
+                    }
+                    if (!foundArmor){
+                        ((LivingRenderer<?, ?>) e).addLayer(new VBOArmorLayer((LivingRenderer<?, ?>) e, null));
                     }
                 }
-                if (!foundArmor){
-                    ((LivingRenderer<?, ?>) e).addLayer(new VBOArmorLayer((LivingRenderer<?, ?>) e, null));
-                }
             }
-        }
 
-        for (PlayerRenderer renderPlayer : Minecraft.getInstance().getEntityRenderDispatcher().getSkinMap().values()) {
-            renderPlayer.addLayer(new VBOArmorLayer<>(renderPlayer, null));
-            renderPlayer.addLayer(new ElytraLayer(renderPlayer){
-                @Override
-                public boolean shouldRender(ItemStack stack, LivingEntity entity) {
-                    return stack.getItem() instanceof IModularArmor && stack.canElytraFly(entity);
-                }
-            });
-        }
+            for (PlayerRenderer renderPlayer : Minecraft.getInstance().getEntityRenderDispatcher().getSkinMap().values()) {
+                renderPlayer.addLayer(new VBOArmorLayer<>(renderPlayer, null));
+                renderPlayer.addLayer(new ElytraLayer(renderPlayer){
+                    @Override
+                    public boolean shouldRender(ItemStack stack, LivingEntity entity) {
+                        return stack.getItem() instanceof IModularArmor && stack.canElytraFly(entity);
+                    }
+                });
+            }
+        });
     }
 
     private void registerShaderReloads(ParticleFactoryRegisterEvent event) {
