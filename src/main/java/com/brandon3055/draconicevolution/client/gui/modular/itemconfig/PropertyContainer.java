@@ -608,12 +608,13 @@ public class PropertyContainer extends GuiManipulable {
             int dark = (darkMode ? 0x282828 : 0x505050) | alpha;
             drawShadedRect(getter, xPos() + 2, contentPos, xSize() - 4, contentHeight, 1, 0, dark, light, midColour(light, dark));
 //            }
+            getter.endBatch();
             if (dataList.isEmpty()) {
                 drawCustomString(fontRenderer, I18n.get("gui.draconicevolution.item_config.drop_prop_here"), xPos() + 3, yPos() + 13, xSize() - 6, GuiToolkit.Palette.BG.text(), CENTER, NORMAL, false, true, darkMode);
             }
+        } else {
+            getter.endBatch();
         }
-
-        getter.endBatch();
         super.renderElement(minecraft, mouseX, mouseY, partialTicks);
 
         if (dragPos && gui.deleteZone.isMouseOver(mouseX, mouseY)) {
