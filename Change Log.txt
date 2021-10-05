@@ -1,3 +1,11 @@
+######## 3.0.16.x ########
+- Fixed random crash caused by other mods adding/removing entity renderers during concurrent mod loading events.
+- Fixed a random tool config crash.
+- Fixed broken ore gen configs.
+
+######## 3.0.15.415 ########
+- *Actually* Fixed CCL dependency issue. (Previous fix resulted in a new issue that did not show up in dev)
+
 ######## 3.0.15.414 ########
 - Fixed DE portal crashing servers.
 - Re implemented configs for Stabilized Spawner.
