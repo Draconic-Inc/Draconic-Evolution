@@ -198,13 +198,13 @@ public class DEOldConfig {
     public static boolean enableRetroGen = true;
 
     //    @ModConfigProperty(category = "World", name = "disableOreSpawnOverworld", comment = "Disables draconium ore generation in the overworld.")
-    public static boolean disableOreSpawnOverworld = false;
+//    public static boolean disableOreSpawnOverworld = false;
 
     //    @ModConfigProperty(category = "World", name = "disableOreSpawnEnd", comment = "Disables draconium ore generation in the end.")
-    public static boolean disableOreSpawnEnd = false;
+//    public static boolean disableOreSpawnEnd = false;
 
     //    @ModConfigProperty(category = "World", name = "disableOreSpawnNether", comment = "Disables draconium ore generation in the nether.")
-    public static boolean disableOreSpawnNether = false;
+//    public static boolean disableOreSpawnNether = false;
 
     //    @ModConfigProperty(category = "World", name = "generateEnderComets", comment = "Set to false to disable the generation of Ender Comets.")
     public static boolean generateEnderComets = true;
@@ -370,7 +370,7 @@ public class DEOldConfig {
     public static boolean chaosGuardianLoading = true;
 
     public static Map<String, Integer> itemDislocatorBlacklistMap = new HashMap<String, Integer>();
-    public static Set<String> oreBlacklist = new HashSet<>();
+//    public static Set<String> oreBlacklist = new HashSet<>();
     public static Set<String> grinderBlacklist = new HashSet<>();
     public static Set<String> chestBlacklist = new HashSet<>();
 

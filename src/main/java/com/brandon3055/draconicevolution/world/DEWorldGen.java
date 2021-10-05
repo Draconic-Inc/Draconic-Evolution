@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.world;
 
+import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.utils.LogHelper;
@@ -43,13 +44,7 @@ public class DEWorldGen {
 
     @SubscribeEvent
     public static void biomeLoading(BiomeLoadingEvent event) {
-
-        /*if (event.getName().toString().equals("minecraft:small_end_islands")) {
-            event.getGeneration().withFeature(UNDERGROUND_ORES, Feature.ORE.withConfiguration(new OreFeatureConfig(BASE_STONE_END, DEContent.ore_draconium_end.getDefaultState(), 32))
-                    .withPlacement(Placement.RANGE.configure(new TopSolidRangeConfig(0, 0, 80)))
-                    .square()
-                    .count(6));
-        } else */if (event.getCategory() == Biome.Category.THEEND) {
+        if (event.getCategory() == Biome.Category.THEEND && DEConfig.enableOreEnd) {
             event.getGeneration().addFeature(UNDERGROUND_ORES, Feature.ORE.configured(new OreFeatureConfig(BASE_STONE_END, DEContent.ore_draconium_end.defaultBlockState(), 8))
                     .decorated(Placement.RANGE.configured(new TopSolidRangeConfig(0, 0, 80)))
                     .squared()
@@ -63,11 +58,11 @@ public class DEWorldGen {
             }, NoFeatureConfig.NONE));
 
 
-        } else if (event.getCategory() == Biome.Category.NETHER) {
+        } else if (event.getCategory() == Biome.Category.NETHER && DEConfig.enableOreNether) {
             event.getGeneration().addFeature(UNDERGROUND_ORES, Feature.ORE.configured(new OreFeatureConfig(NETHER_ORE_REPLACEABLES, DEContent.ore_draconium_nether.defaultBlockState(), 16))
                     .chance(10)
                     .decorated(Placement.RANGE.configured(new TopSolidRangeConfig(4, 4, 16))));
-        } else {
+        } else if (DEConfig.enableOreOverworld) {
             event.getGeneration().addFeature(UNDERGROUND_ORES, Feature.ORE.configured(new OreFeatureConfig(NATURAL_STONE, DEContent.ore_draconium_overworld.defaultBlockState(), 8))
                     .chance(10)
                     .decorated(Placement.RANGE.configured(new TopSolidRangeConfig(4, 4, 16))));

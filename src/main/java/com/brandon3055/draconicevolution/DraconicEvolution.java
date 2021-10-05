@@ -53,11 +53,6 @@ public class DraconicEvolution {
         proxy.serverSetup(event);
     }
 
-    @SubscribeEvent
-    public void onLoadComplete(FMLLoadCompleteEvent event) {
-        proxy.loadComplete(event);
-    }
-
     public static void registerCommands(RegisterCommandsEvent event) {
         CommandKaboom.register(event.getDispatcher());
         CommandMakeRecipe.register(event.getDispatcher());

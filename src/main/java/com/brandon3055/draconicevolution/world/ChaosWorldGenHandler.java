@@ -157,28 +157,28 @@ public class ChaosWorldGenHandler {
 //        guardian.homeY = shardY;
 //        reader.addEntity(guardian);
 
-        //Gen Ring
-        int rings = 4;
-        int width = 20;
-        int spacing = 8;
-        for (int x = islandCenter.x - outerRadius; x <= islandCenter.x + outerRadius; x++) {
-            for (int z = islandCenter.z - outerRadius; z <= islandCenter.z + outerRadius; z++) {
-                int dist = (int) (Utils.getDistanceAtoB(x, z, islandCenter.x, islandCenter.z));
-                for (int i = 0; i < rings; i++) {
-                    //if (dist < outerRadius1 && dist >= innerRadius1 || dist < outerRadius2 && dist >= innerRadius2)
-                    if (dist < (outerRadius - ((width + spacing) * i)) && dist >= (outerRadius - width - ((width + spacing) * i))) {
-                        int y = 90 + (int) ((double) (islandCenter.x - x) * 0.1D) + (random.nextInt(10) - 5);
-                        BlockPos pos = new BlockPos(x, y + DEOldConfig.chaosIslandYOffset, z);
-                        if (0.1F > random.nextFloat()) {
-//                            reader.setBlockState(pos, Blocks.END_STONE.getDefaultState(), 3);
-                        }
-                        if (0.001F > random.nextFloat() && !DEOldConfig.disableOreSpawnEnd) {
-//                            reader.setBlockState(pos, DEContent.ore_draconium_end.getDefaultState(), 3);
-                        }
-                    }
-                }
-            }
-        }
+//        //Gen Ring
+//        int rings = 4;
+//        int width = 20;
+//        int spacing = 8;
+//        for (int x = islandCenter.x - outerRadius; x <= islandCenter.x + outerRadius; x++) {
+//            for (int z = islandCenter.z - outerRadius; z <= islandCenter.z + outerRadius; z++) {
+//                int dist = (int) (Utils.getDistanceAtoB(x, z, islandCenter.x, islandCenter.z));
+//                for (int i = 0; i < rings; i++) {
+//                    //if (dist < outerRadius1 && dist >= innerRadius1 || dist < outerRadius2 && dist >= innerRadius2)
+//                    if (dist < (outerRadius - ((width + spacing) * i)) && dist >= (outerRadius - width - ((width + spacing) * i))) {
+//                        int y = 90 + (int) ((double) (islandCenter.x - x) * 0.1D) + (random.nextInt(10) - 5);
+//                        BlockPos pos = new BlockPos(x, y + DEOldConfig.chaosIslandYOffset, z);
+//                        if (0.1F > random.nextFloat()) {
+////                            reader.setBlockState(pos, Blocks.END_STONE.getDefaultState(), 3);
+//                        }
+////                        if (0.001F > random.nextFloat() && !DEOldConfig.disableOreSpawnEnd) {
+////                            reader.setBlockState(pos, DEContent.ore_draconium_end.getDefaultState(), 3);
+////                        }
+//                    }
+//                }
+//            }
+//        }
 //        generateObelisks(reader, islandCenter, random);
     }
 

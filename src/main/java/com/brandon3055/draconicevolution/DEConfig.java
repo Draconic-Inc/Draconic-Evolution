@@ -58,17 +58,11 @@ public class DEConfig {
     public static int portalMaxDistanceSq;
     public static int chaosDropCount;
 
-    //    @ModConfigProperty(category = "Tweaks", name = "soulDropChance", comment = "")
     public static int soulDropChance = 1000;
-    //    @ModConfigProperty(category = "Tweaks", name = "passiveSoulDropChance", comment = "")
     public static int passiveSoulDropChance = 800;
-    //    @ModConfigProperty(category = "Tweaks", name = "spawnerList", comment = "", autoSync = true)
     public static String[] spawnerList = {};
-    //    @ModConfigProperty(category = "Tweaks", name = "spawnerListWhiteList", comment = "", autoSync = true)
     public static boolean spawnerListWhiteList = false;
-    //    @ModConfigProperty(category = "Tweaks", name = "allowBossSouls", comment = "")
     public static boolean allowBossSouls = false;
-    //    @ModConfigProperty(category = "Tweaks", name = "spawnerDelays", comment = "")
     public static Integer[] spawnerDelays = new Integer[]{200, 800, 100, 400, 50, 200, 25, 100};
 
     private static void loadServer() {
