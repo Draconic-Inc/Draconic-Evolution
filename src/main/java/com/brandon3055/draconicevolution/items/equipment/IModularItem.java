@@ -16,6 +16,7 @@ import com.brandon3055.draconicevolution.api.config.ConfigProperty.DecimalFormat
 import com.brandon3055.draconicevolution.api.config.ConfigProperty.IntegerFormatter;
 import com.brandon3055.draconicevolution.api.config.DecimalProperty;
 import com.brandon3055.draconicevolution.api.config.IntegerProperty;
+import com.brandon3055.draconicevolution.api.crafting.IFusionDataTransfer;
 import com.brandon3055.draconicevolution.api.modules.ModuleCategory;
 import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
 import com.brandon3055.draconicevolution.api.modules.data.AOEData;
@@ -64,7 +65,7 @@ import static com.brandon3055.draconicevolution.api.capability.DECapabilities.*;
 /**
  * Created by brandon3055 on 16/6/20
  */
-public interface IModularItem extends IForgeItem {
+public interface IModularItem extends IForgeItem, IFusionDataTransfer {
 
     TechLevel getTechLevel();
 

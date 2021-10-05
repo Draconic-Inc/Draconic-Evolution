@@ -14,16 +14,12 @@ import net.minecraft.util.JSONUtils;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
@@ -74,8 +70,11 @@ public class FusionRecipe implements IFusionRecipe {
 
     @Override
     public ItemStack assemble(IFusionInventory inv) {
-        //TODO Apply any required data transfer
-        return result.copy();
+        ItemStack stack = result.copy();
+        if (stack.getItem() instanceof IFusionDataTransfer){
+            ((IFusionDataTransfer) stack.getItem()).transferIngredientData(stack, inv);
+        }
+        return stack;
     }
 
     @Override

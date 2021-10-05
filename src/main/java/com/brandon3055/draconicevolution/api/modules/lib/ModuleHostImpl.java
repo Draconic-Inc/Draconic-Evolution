@@ -2,6 +2,8 @@ package com.brandon3055.draconicevolution.api.modules.lib;
 
 import codechicken.lib.util.SneakyUtils;
 import com.brandon3055.brandonscore.api.TechLevel;
+import com.brandon3055.brandonscore.api.power.IOPStorageModifiable;
+import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.capability.PropertyProvider;
 import com.brandon3055.draconicevolution.api.config.ConfigProperty;
 import com.brandon3055.draconicevolution.api.modules.*;
@@ -87,6 +89,18 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
         clearCaches();
         entity.onRemoved(context);
         gatherProperties();
+    }
+
+    public void transferModules(ModuleHostImpl source) {
+        if (getGridWidth() >= source.getGridWidth() && getGridHeight() >= source.getGridHeight()) {
+            moduleEntities.addAll(source.getModuleEntities());
+            source.moduleEntities.clear();
+            moduleEntities.forEach(moduleEntity -> moduleEntity.setHost(this));
+            clearCaches();
+            gatherProperties();
+        } else {
+            logger.warn("Cant transfer modules to smaller grid");
+        }
     }
 
     @Override

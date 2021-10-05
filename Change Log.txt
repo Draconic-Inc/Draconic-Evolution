@@ -1,7 +1,8 @@
-######## 3.0.16.x ########
+######## 3.0.16.416 ########
 - Fixed random crash caused by other mods adding/removing entity renderers during concurrent mod loading events.
 - Fixed a random tool config crash.
 - Fixed broken ore gen configs.
+- Tools and armor will now keep their modules and enchantments when upgraded.  
 
 ######## 3.0.15.415 ########
 - *Actually* Fixed CCL dependency issue. (Previous fix resulted in a new issue that did not show up in dev)
