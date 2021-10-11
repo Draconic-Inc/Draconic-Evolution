@@ -71,7 +71,7 @@ public class PortalHelper {
             for (Axis axis : Axis.values()) {
                 if (scanning) {
                     updateAxis(axis);
-                    if (scanResult != null && scanResult.get(axis) != null) {
+                    if ((scanResult != null && scanResult.get(axis) != null) || (scanQue != null && !scanQue.isEmpty())) {
                         hasWork = true;
                     }
                 }
