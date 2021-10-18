@@ -12,6 +12,7 @@ import com.brandon3055.brandonscore.utils.FacingUtils;
 import com.brandon3055.brandonscore.utils.HolidayHelper;
 import com.brandon3055.brandonscore.utils.MathUtils;
 import com.brandon3055.brandonscore.utils.Utils;
+import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DEOldConfig;
 import com.brandon3055.draconicevolution.client.gui.GuiReactor;
 import com.brandon3055.draconicevolution.init.DEContent;
@@ -390,7 +391,7 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
 
         //region ============= Energy Calculation =============
 
-        int baseMaxRFt = (int) ((maxSaturation.get() / 1000D) * DEOldConfig.reactorOutputMultiplier * 1.5D);
+        int baseMaxRFt = (int) ((maxSaturation.get() / 1000D) * DEConfig.reactorOutputMultiplier * 1.5D * 10);
         int maxRFt = (int) (baseMaxRFt * (1D + (convLVL * 2)));
         generationRate.set((1D - coreSat) * maxRFt);
         saturation.add((int) generationRate.get());
@@ -411,7 +412,7 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
 
         //region ============== Fuel Calculation ==============
 
-        fuelUseRate.set(tempDrainFactor.get() * (1D - coreSat) * (0.001 * DEOldConfig.reactorFuelUsageMultiplier)); //<Last number is base fuel usage rate
+        fuelUseRate.set(tempDrainFactor.get() * (1D - coreSat) * (0.001 * DEConfig.reactorFuelUsageMultiplier * 5)); //<Last number is base fuel usage rate
         if (reactableFuel.get() > 0) {
             convertedFuel.add(fuelUseRate.get());
             reactableFuel.subtract(fuelUseRate.get());
@@ -447,7 +448,7 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
         animExtractState.set(1D);
         temperature.set(MathHelper.approachExp(temperature.get(), MAX_TEMPERATURE * 1.2, 0.0005));
 
-        if (DEOldConfig.disableLargeReactorBoom) {
+        if (DEConfig.disableLargeReactorBoom) {
             if (explosionCountdown.get() == -1) {
                 explosionCountdown.set(1200 + level.random.nextInt(2400));
             }
@@ -465,7 +466,7 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
 //        LogHelper.dev("");
 
         if (explosionProcess == null) {
-            double radius = MathUtils.map(convertedFuel.get() + reactableFuel.get(), 144, 10368, 50D, 350D) * DEOldConfig.reactorExplosionScale;
+            double radius = MathUtils.map(convertedFuel.get() + reactableFuel.get(), 144, 10368, 50D, 350D) * DEConfig.reactorExplosionScale;
             explosionProcess = new ProcessExplosion(worldPosition, (int) radius, (ServerWorld) level, -1);
             ProcessHandler.addProcess(explosionProcess);
             explosionCountdown.set(-1);

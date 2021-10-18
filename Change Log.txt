@@ -1,8 +1,13 @@
-######## 3.0.16.416 ########
+######## 3.0.17.x ########
+- Re implemented portal redstone control.
+- Fixed issue where portal will sometimes fail to activate in certain configurations.
+- Re implemented reactor config settings.
+
+######## 3.0.16.417 ########
 - Fixed random crash caused by other mods adding/removing entity renderers during concurrent mod loading events.
 - Fixed a random tool config crash.
 - Fixed broken ore gen configs.
-- Tools and armor will now keep their modules and enchantments when upgraded.  
+- Tools and armor will now keep their modules and enchantments when upgraded.
 
 ######## 3.0.15.415 ########
 - *Actually* Fixed CCL dependency issue. (Previous fix resulted in a new issue that did not show up in dev)

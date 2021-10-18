@@ -259,17 +259,9 @@ public class DEOldConfig {
     //    @ModConfigProperty(category = "Tweaks", name = "itemDislocatorBlacklist", comment = "A list of items of items that should be ignored by the item dislocator. Use the item's registry name (e.g. minecraft:apple) You can also add a meta value after the name (e.g. minecraft:wool|4).", autoSync = true)
     public static String[] itemDislocatorBlacklist = new String[]{"appliedenergistics2:crystal_seed"};
 
-    //    @ModConfigProperty(category = "Tweaks", name = "reactorOutputMultiplier", comment = "Adjusts the energy output multiplier of the reactor.")
-    public static double reactorOutputMultiplier = 10;
-
-    //    @ModConfigProperty(category = "Tweaks", name = "reactorFuelUsageMultiplier", comment = "Adjusts the fuel usage multiplier of the reactor.")
-    public static double reactorFuelUsageMultiplier = 5;
 
     //    @ModConfigProperty(category = "Tweaks", name = "dragonDustLootModifier", comment = "This can be used to adjust the amount of Draconium Dust the Ender Dragon drops when killed.\nThe amount dropped will be this number +/- 10%")
     public static int dragonDustLootModifier = 64;
-
-    //    @ModConfigProperty(category = "Tweaks", name = "disableLargeReactorBoom", comment = "If true, this will disable the massive reactor explosion and replace it with a much smaller one.")
-    public static boolean disableLargeReactorBoom = false;
 
     //    @ModConfigProperty(category = "Tweaks", name = "disableChaosIslandExplosion", comment = "If true, this will disable the destruction of chaos islands after the chaos crystal is broken.")
     public static boolean disableChaosIslandExplosion = false;
@@ -277,8 +269,7 @@ public class DEOldConfig {
     //    @ModConfigProperty(category = "Tweaks", name = "disableLootCores", comment = "This will disable loot cores (The \"Blobs\" of items dropped by the tools.).")
     public static boolean disableLootCores = false;
 
-    //    @ModConfigProperty(category = "Tweaks", name = "reactorExplosionScale", comment = "Allows you to adjust the overall scale of the reactor explosion. Use \"disableLargeReactorBoom\" to disable explosion completely.")
-    public static double reactorExplosionScale = 1;
+
 
 
     //    @ModConfigProperty(category = "Tweaks", name = "oreDoublingBlacklist", comment = "Add ore names (e.g. oreIron) to this list to prevent them from being doubled by the DE chest.", autoSync = true)
@@ -339,12 +330,12 @@ public class DEOldConfig {
 
     //    @ModConfigProperty(category = "Client Settings", name = "invertDPDSB", comment = "Invert Dislocator Pedestal display name shift behavior.")
     public static boolean invertDPDSB = false;
-
-    //    @ModConfigProperty(category = "Client Settings", name = "useCrystalShaders", comment = "This allows you to disable just the Energy Crystal shader. This shader can be a lot lagier than the reactor's shader since there are usually a lot more of them (The fallback crystal texture is not soooo bad...).")
-    public static boolean useCrystalShaders = true;
-
-    //    @ModConfigProperty(category = "Client Settings", name = "useReactorBeamShaders", comment = "Set this to false if you prefer the original look of the reactor beams.")
-    public static boolean useReactorBeamShaders = true;
+//
+//    //    @ModConfigProperty(category = "Client Settings", name = "useCrystalShaders", comment = "This allows you to disable just the Energy Crystal shader. This shader can be a lot lagier than the reactor's shader since there are usually a lot more of them (The fallback crystal texture is not soooo bad...).")
+//    public static boolean useCrystalShaders = true;
+//
+//    //    @ModConfigProperty(category = "Client Settings", name = "useReactorBeamShaders", comment = "Set this to false if you prefer the original look of the reactor beams.")
+//    public static boolean useReactorBeamShaders = true;
 
     //    @ModConfigProperty(category = "Client Settings", name = "disableLoudCelestialManipulator", comment = "If true, the range of the Celestial Manipulator's sound effect will be significantly reduced.")
     public static boolean disableLoudCelestialManipulator = false;

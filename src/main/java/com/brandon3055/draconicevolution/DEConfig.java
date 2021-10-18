@@ -58,6 +58,11 @@ public class DEConfig {
     public static int portalMaxDistanceSq;
     public static int chaosDropCount;
 
+    public static double reactorOutputMultiplier = 10;
+    public static double reactorFuelUsageMultiplier = 5;
+    public static double reactorExplosionScale = 1;
+    public static boolean disableLargeReactorBoom = false;
+
     public static int soulDropChance = 1000;
     public static int passiveSoulDropChance = 800;
     public static String[] spawnerList = {};
@@ -233,6 +238,33 @@ public class DEConfig {
                 .setComment("This is more for sanity than actually limiting portal size. Sets the max distance a portal block can be from the receptacle")
                 .setDefaultInt(256)
                 .setSyncCallback((tag, type) -> portalMaxDistanceSq = tag.getInt() * tag.getInt());
+
+        {
+            ConfigTag reactor = serverTag.getTag("Reactor");
+            reactor.setComment("These are all (server side) config fields related to the reactor");
+
+            reactor.getTag("reactorOutputMultiplier")
+                    .setSyncToClient()
+                    .setComment("Adjusts the energy output multiplier of the reactor.")
+                    .setDefaultDouble(1)
+                    .setSyncCallback((tag, type) -> reactorOutputMultiplier = tag.getDouble());
+            reactor.getTag("reactorFuelUsageMultiplier")
+                    .setSyncToClient()
+                    .setComment("Adjusts the fuel usage multiplier of the reactor.")
+                    .setDefaultDouble(1)
+                    .setSyncCallback((tag, type) -> reactorFuelUsageMultiplier = tag.getDouble());
+            reactor.getTag("reactorExplosionScale")
+                    .setSyncToClient()
+                    .setComment("Allows you to adjust the overall scale of the reactor explosion. Use \\\"disableLargeReactorBoom\\\" to disable explosion completely.")
+                    .setDefaultDouble(1)
+                    .setSyncCallback((tag, type) -> reactorExplosionScale = tag.getDouble());
+            reactor.getTag("disableLargeReactorBoom")
+                    .setSyncToClient()
+                    .setComment("If true, this will disable the massive reactor explosion and replace it with a much smaller one.")
+                    .setDefaultBoolean(false)
+                    .setSyncCallback((tag, type) -> disableLargeReactorBoom = tag.getBoolean());
+        }
+
     }
 
     //Client properties
