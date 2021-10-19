@@ -54,7 +54,6 @@ public class DEJEIPlugin implements IModPlugin {
 
     @Override
     public void registerAdvanced(IAdvancedRegistration registration) {
-
     }
 
     @Override
@@ -98,7 +97,8 @@ public class DEJEIPlugin implements IModPlugin {
 //        }
     }
 
-//    @Override
+
+    //    @Override
 //    public void register(IModRegistry registry) {
 //        LogHelper.dev("Register JEI");
 

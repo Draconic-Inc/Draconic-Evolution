@@ -62,27 +62,5 @@ public class DislocatorReceptacle extends BlockBCore {
         }
     }
 
-//    @Override
-//    public void neighborChanged(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
-//        TileEntity t = world.getBlockEntity(pos);
-//
-//        if (t instanceof TileDislocatorReceptacle) {
-//            TileDislocatorReceptacle tile = (TileDislocatorReceptacle) t;
-//
-//            boolean powered = world.hasNeighborSignal(pos);
-//
-//            if (!powered && tile.ltRedstone.get()) {
-//                tile.ltRedstone.set(false);
-//                tile.deactivate();
-//            } else if (powered && !tile.ltRedstone.get()) {
-//                tile.ltRedstone.set(true);
-//                tile.updateBlock();
-//                if (!tile.active.get()) {
-//                    tile.attemptIgnition();
-//                }
-//            }
-//        }
-//    }
-
     //endregion
 }

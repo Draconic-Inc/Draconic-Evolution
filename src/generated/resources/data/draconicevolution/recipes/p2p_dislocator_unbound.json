@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "draconicevolution:dislocator"
+    },
+    {
+      "item": "draconicevolution:draconium_core"
+    },
+    {
+      "item": "draconicevolution:dislocator"
+    },
+    {
+      "item": "minecraft:ghast_tear"
+    }
+  ],
+  "result": {
+    "item": "draconicevolution:p2p_dislocator_unbound"
+  }
+}

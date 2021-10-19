@@ -280,9 +280,9 @@ public class DEEventHandler {
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public void itemTooltipEvent(ItemTooltipEvent event) {
-        if (DEOldConfig.expensiveDragonRitual && !event.getItemStack().isEmpty() && event.getItemStack().getItem() == Items.END_CRYSTAL) {
-            event.getToolTip().add(new StringTextComponent(TextFormatting.DARK_GRAY + "Recipe tweaked by Draconic Evolution."));
-        }
+//        if (DEOldConfig.expensiveDragonRitual && !event.getItemStack().isEmpty() && event.getItemStack().getItem() == Items.END_CRYSTAL) {
+//            event.getToolTip().add(new StringTextComponent(TextFormatting.DARK_GRAY + "Recipe tweaked by Draconic Evolution."));
+//        }
 
 //        ItemStack stack = event.getItemStack();
 //        if (stack != null) {

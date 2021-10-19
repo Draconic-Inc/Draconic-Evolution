@@ -107,8 +107,10 @@ public class LangGenerator extends LanguageProvider {
         helper.add(DEContent.magnet_advanced,                                   "Awakened Item Dislocator");
         helper.add(DEContent.dislocator,                                        "Dislocator");
         helper.add(DEContent.dislocator_advanced,                               "Advanced Dislocator");
-//        helper.add(DEContent.dislocator_p2p,                                    "Bound Dislocator (Player)");
-//        helper.add(DEContent.dislocator_player,                                 "Bound Dislocator (Point to Point)");
+        helper.add(DEContent.dislocator_p2p,                                    "Bound Dislocator (Point to Point)");
+        helper.add(DEContent.dislocator_p2p_unbound,                            "Un-Bound Dislocator (Point to Point)");
+        helper.add(DEContent.dislocator_player,                                 "Bound Dislocator (Player)");
+        helper.add(DEContent.dislocator_player_unbound,                         "Un-Bound Dislocator (Player)");
         helper.add(DEContent.crystal_binder,                                    "Crystal Binder");
         helper.add(DEContent.info_tablet,                                       "Information Tablet");
         helper.add(DEContent.ender_energy_manipulator,                          "Ender energy manipulator");
@@ -695,6 +697,18 @@ public class LangGenerator extends LanguageProvider {
         helper.add("teleport_fuel",                                             "Teleport Fuel:");
         helper.add("to_open_gui",                                               "Sneak + Right click to open GUI");
 
+        helper.add("bound.click_to_link",                                       "Right click to create bound pair");
+        helper.add("bound.click_to_link_self",                                  "Right click to bind to yourself");
+        helper.add("bound.player_link",                                         "Bound to player");
+        helper.add("bound.key",                                                 "Unique Key");
+        helper.add("bound.bound_to",                                            "Bound To");
+        helper.add("bound.in_player_inventory",                                 "The bound dislocator is in a players inventory. Will teleport to player.");
+        helper.add("bound.unknown_link",                                        "Unknown Location");
+        helper.add("bound.cant_find_player",                                    "The bound player is not online!");
+        helper.add("bound.cant_find_target",                                    "Could not find the bound dislocator!");
+        helper.add("bound.link_id",                                             "Link ID");
+
+
         //Item Dislocator
         helper.setPrefix("item_dislocate.draconicevolution");
         helper.add("activate",                                                  "Item Dislocator Activated");
@@ -745,6 +759,7 @@ public class LangGenerator extends LanguageProvider {
         //Bows
         helper.add("bow.damage",                    "%s Max Attack Damage");
         helper.add("bow.energy_per_shot",           "%s OP/shot");
+
 
     }
 

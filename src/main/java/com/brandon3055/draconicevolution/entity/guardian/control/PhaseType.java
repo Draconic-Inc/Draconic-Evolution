@@ -31,11 +31,14 @@ public class PhaseType<T extends IPhase> {
 
    public static void initPhaseWeights() {
       NORMAL_WEIGHTED.clear();
-      NORMAL_WEIGHTED.add(new WeightedPhase(CHARGE_PLAYER,  100));
-      NORMAL_WEIGHTED.add(new WeightedPhase(BOMBARD_PLAYER, 200));
-      NORMAL_WEIGHTED.add(new WeightedPhase(LASER_BEAM,     60));
-      NORMAL_WEIGHTED.add(new WeightedPhase(GROUND_EFFECTS, 50));
-      NORMAL_WEIGHTED.add(new WeightedPhase(ARIAL_BOMBARD,  70));
+      NORMAL_WEIGHTED.add(new WeightedPhase(CHARGE_PLAYER,  100));   //Guardian "Melee" attack. Has to make contact with the player to "take a bite out of them"
+      NORMAL_WEIGHTED.add(new WeightedPhase(BOMBARD_PLAYER, 200));   //Standard fireball attack
+      NORMAL_WEIGHTED.add(new WeightedPhase(LASER_BEAM,     60));    //Self-explanatory
+      NORMAL_WEIGHTED.add(new WeightedPhase(GROUND_EFFECTS, 50));    //This is the long charge attack with the withers and the stuff and things.
+      NORMAL_WEIGHTED.add(new WeightedPhase(ARIAL_BOMBARD,  70));    //This is the short charge attack where it just fires volleys of fireballs at you.
+
+      //Attacking the guardian increases an "aggression level" Once this level reaches maximum (usually after 5-10 minutes of fighting)
+      //The guardian switches to these weights.
 
       AGGRESSIVE_WEIGHTED.clear();
       AGGRESSIVE_WEIGHTED.add(new WeightedPhase(BOMBARD_PLAYER,   50));

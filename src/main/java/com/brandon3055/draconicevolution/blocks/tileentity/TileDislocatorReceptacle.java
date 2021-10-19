@@ -10,11 +10,17 @@ import com.brandon3055.brandonscore.network.BCoreNetwork;
 import com.brandon3055.brandonscore.utils.InventoryUtils;
 import com.brandon3055.brandonscore.utils.TargetPos;
 import com.brandon3055.brandonscore.utils.Utils;
+import com.brandon3055.draconicevolution.api.DislocatorEndPoint;
 import com.brandon3055.draconicevolution.blocks.DislocatorReceptacle;
 import com.brandon3055.draconicevolution.handlers.DESounds;
+import com.brandon3055.draconicevolution.handlers.dislocator.DislocatorSaveData;
+import com.brandon3055.draconicevolution.handlers.dislocator.PlayerTarget;
+import com.brandon3055.draconicevolution.handlers.dislocator.TileTarget;
 import com.brandon3055.draconicevolution.init.DEContent;
+import com.brandon3055.draconicevolution.items.tools.BoundDislocator;
 import com.brandon3055.draconicevolution.items.tools.Dislocator;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -27,10 +33,12 @@ import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 import javax.annotation.Nullable;
@@ -42,7 +50,7 @@ import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.SYNC_TILE;
 /**
  * Created by brandon3055 on 16/07/2016.
  */
-public class TileDislocatorReceptacle extends TileBCore implements ITickableTileEntity, IInteractTile, IHudBlock/*, ITeleportEndPoint, ICrystalLink, IENetEffectTile*/ {
+public class TileDislocatorReceptacle extends TileBCore implements ITickableTileEntity, IInteractTile, IHudBlock, IRSSwitchable, DislocatorEndPoint {
 
     public final ManagedPos arrivalPos = register(new ManagedPos("arrival_pos", (BlockPos) null, SAVE_NBT_SYNC_TILE));
     public final ManagedByte ignitionStage = register(new ManagedByte("ignition_stage", (byte) 0, SYNC_TILE));
@@ -60,6 +68,15 @@ public class TileDislocatorReceptacle extends TileBCore implements ITickableTile
     }
 
     @Override
+    public void onSignalChange(boolean newSignal) {
+        if (newSignal) {
+            attemptActivation();
+        } else {
+            deactivate();
+        }
+    }
+
+    @Override
     public ActionResultType onBlockUse(BlockState state, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
         ItemStack stack = player.getItemInHand(hand);
         if (hasRSSignal()) {
@@ -72,7 +89,14 @@ public class TileDislocatorReceptacle extends TileBCore implements ITickableTile
         }
 
         if (!level.isClientSide) {
+            ItemStack previousInstalled = itemHandler.getStackInSlot(0);
             InventoryUtils.handleHeldStackTransfer(0, itemHandler, player);
+            //Transfer the dislocator that was in the pedestal to the players inventory
+            if (BoundDislocator.isValid(previousInstalled) && BoundDislocator.isP2P(previousInstalled) && itemHandler.getStackInSlot(0).isEmpty()) {
+                DislocatorSaveData.updateLinkTarget(level, previousInstalled, new PlayerTarget(player));
+            }
+
+            checkIn();
         }
 
         return ActionResultType.SUCCESS;
@@ -152,7 +176,7 @@ public class TileDislocatorReceptacle extends TileBCore implements ITickableTile
                     //This is a hack. I need to find a better solution.
                     DelayedTask.run(10, () -> DraconicNetwork.sendDislocatorTeleported((ServerPlayerEntity) entity));
                     DelayedTask.run(20, () -> DraconicNetwork.sendDislocatorTeleported((ServerPlayerEntity) entity));
-                    DelayedTask.run(30, () -> DraconicNetwork.sendDislocatorTeleported((ServerPlayerEntity) entity));
+                    DelayedTask.run(60, () -> DraconicNetwork.sendDislocatorTeleported((ServerPlayerEntity) entity));
                 }
                 entity.setPortalCooldown();
                 BCoreNetwork.sendSound(entity.level, entity.blockPosition(), DESounds.portal, SoundCategory.PLAYERS, 0.1F, entity.level.random.nextFloat() * 0.1F + 0.9F, false);
@@ -258,5 +282,38 @@ public class TileDislocatorReceptacle extends TileBCore implements ITickableTile
     @Override
     public boolean shouldDisplayHudText(World world, BlockPos pos, PlayerEntity player) {
         return ignitionStage.get() > 0;
+    }
+
+    public void checkIn() {
+        ItemStack stack = itemHandler.getStackInSlot(0);
+        if (BoundDislocator.isValid(stack) && BoundDislocator.isP2P(stack)) {
+            DislocatorSaveData.updateLinkTarget(level, stack, new TileTarget(this));
+        }
+    }
+
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        if (level instanceof ServerWorld) {
+            checkIn();
+        }
+    }
+
+    @Nullable
+    @Override
+    public Vector3d getArrivalPos(UUID linkID) {
+        BlockPos ap = arrivalPos.get();
+        return isActive() && ap != null ? new Vector3d(ap.getX() + 0.5, ap.getY() + 0.25, ap.getZ()) : null;
+    }
+
+    @Override
+    public void entityArriving(Entity entity) {
+        entity.setPortalCooldown();
+        if (entity instanceof ServerPlayerEntity) {
+            //This is a hack. I need to find a better solution.
+            DelayedTask.run(10, () -> DraconicNetwork.sendDislocatorTeleported((ServerPlayerEntity) entity));
+            DelayedTask.run(20, () -> DraconicNetwork.sendDislocatorTeleported((ServerPlayerEntity) entity));
+            DelayedTask.run(60, () -> DraconicNetwork.sendDislocatorTeleported((ServerPlayerEntity) entity));
+        }
     }
 }

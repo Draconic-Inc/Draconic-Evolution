@@ -121,7 +121,7 @@ public class CustomBossInfoHandler extends AbstractGui {
             }
             uniforms.glUniform1f("activation", shield);
             IVertexBuilder builder = new TransformingVertexBuilder(getter.getBuffer(new ShaderRenderType(DraconicGuardianRenderer.shieldType, shieldShader, uniforms)), matrixStack);
-            drawShieldRect(builder, x, y, 0, 0, 182, 182);
+            drawShieldRect(builder, x, y, 182, 6);
             getter.endBatch();
         }
 
@@ -228,7 +228,8 @@ public class CustomBossInfoHandler extends AbstractGui {
         blit(stack, x, y, 0, (float) u, (float) v, width, height, 256, 256);
     }
 
-    public static void drawShieldRect(IVertexBuilder builder, int x, int y, int u, int v, int width, int height) {
+    public static void
+    drawShieldRect(IVertexBuilder builder, int x, int y, int width, int height) {
         drawQuad(builder, x, x + width, y, y + height, 0, 0F, 1F, 0F, 1F);
     }
 

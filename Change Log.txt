@@ -2,6 +2,7 @@
 - Re implemented portal redstone control.
 - Fixed issue where portal will sometimes fail to activate in certain configurations.
 - Re implemented reactor config settings.
+- Ported bound dislocators.
 
 ######## 3.0.16.417 ########
 - Fixed random crash caused by other mods adding/removing entity renderers during concurrent mod loading events.

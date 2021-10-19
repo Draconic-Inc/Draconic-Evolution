@@ -128,8 +128,10 @@ public class ItemModelGenerator extends ItemModelProvider {
         simpleItem(DEContent.magnet_advanced);
         simpleItem(DEContent.dislocator);
         simpleItem(DEContent.dislocator_advanced);
-//        simpleItem(DEContent.dislocator_p2p, modLoc("item/bound_dislocator"));
-//        simpleItem(DEContent.dislocator_player, modLoc("item/bound_dislocator"));
+        simpleItem(DEContent.dislocator_p2p, modLoc("item/bound_dislocator"));
+        simpleItem(DEContent.dislocator_p2p_unbound, modLoc("item/un_bound_dislocator"));
+        simpleItem(DEContent.dislocator_player, modLoc("item/bound_dislocator"));
+        simpleItem(DEContent.dislocator_player_unbound, modLoc("item/bound_dislocator"));
         simpleItem(DEContent.crystal_binder);
         simpleItem(DEContent.info_tablet);
         //endregion
