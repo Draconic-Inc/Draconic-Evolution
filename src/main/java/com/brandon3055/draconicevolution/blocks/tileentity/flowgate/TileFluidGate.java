@@ -1,8 +1,12 @@
 package com.brandon3055.draconicevolution.blocks.tileentity.flowgate;
 
 import codechicken.lib.util.SneakyUtils;
+import dan200.computercraft.shared.Capabilities;
+
 import com.brandon3055.brandonscore.inventory.ContainerBCTile;
 import com.brandon3055.draconicevolution.init.DEContent;
+import com.brandon3055.draconicevolution.integration.computers.PeripheralFlowGate;
+import com.brandon3055.draconicevolution.integration.computers.PeripheralFluidGate;
 import com.brandon3055.draconicevolution.inventory.GuiLayoutFactories;
 import com.brandon3055.draconicevolution.lib.WTFException;
 import net.minecraft.block.BlockState;
@@ -31,6 +35,7 @@ public class TileFluidGate extends TileFlowGate implements IFluidHandler {
 
     public TileFluidGate() {
         super(DEContent.tile_fluid_gate);
+        capManager.set(Capabilities.CAPABILITY_PERIPHERAL, new PeripheralFluidGate(this));
     }
 
     //region Gate
@@ -133,11 +138,6 @@ public class TileFluidGate extends TileFlowGate implements IFluidHandler {
 //
 //        return super.getCapability(capability, facing);
 //    }
-
-    @Override
-    public String getPeripheralName() {
-        return "fluid_gate";
-    }
 
     @Override
     public Container createMenu(int id, PlayerInventory inventory, PlayerEntity player) {

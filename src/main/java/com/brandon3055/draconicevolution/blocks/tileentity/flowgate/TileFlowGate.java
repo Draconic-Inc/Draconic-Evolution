@@ -1,6 +1,8 @@
 package com.brandon3055.draconicevolution.blocks.tileentity.flowgate;
 
 import codechicken.lib.data.MCDataInput;
+import dan200.computercraft.shared.Capabilities;
+
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.lib.IInteractTile;
 import com.brandon3055.brandonscore.lib.IChangeListener;
@@ -8,8 +10,8 @@ import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedByte;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedLong;
 import com.brandon3055.draconicevolution.blocks.machines.FlowGate;
-import com.brandon3055.draconicevolution.integration.computers.ArgHelper;
-import com.brandon3055.draconicevolution.integration.computers.IDEPeripheral;
+import com.brandon3055.draconicevolution.integration.computers.PeripheralFlowGate;
+
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.tileentity.ITickableTileEntity;
@@ -26,7 +28,7 @@ import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.SAVE_NBT_SY
 /**
  * Created by brandon3055 on 15/11/2016.
  */
-public abstract class TileFlowGate extends TileBCore implements ITickableTileEntity, IChangeListener, IDEPeripheral, INamedContainerProvider, IInteractTile {
+public abstract class TileFlowGate extends TileBCore implements ITickableTileEntity, IChangeListener, INamedContainerProvider, IInteractTile {
 
     protected long transferThisTick = 0;
 
@@ -40,6 +42,7 @@ public abstract class TileFlowGate extends TileBCore implements ITickableTileEnt
 
     public TileFlowGate(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
+        capManager.set(Capabilities.CAPABILITY_PERIPHERAL, new PeripheralFlowGate(this));
     }
 
     @Override
@@ -127,41 +130,4 @@ public abstract class TileFlowGate extends TileBCore implements ITickableTileEnt
     public void onNeighborChange(BlockPos neighbor) {
         rsSignal.set((byte) level.getBestNeighborSignal(worldPosition));
     }
-
-    //region Peripheral
-
-    @Override
-    public String[] getMethodNames() {
-        return new String[]{"getFlow", "setOverrideEnabled", "getOverrideEnabled", "setFlowOverride", "setSignalHighFlow", "getSignalHighFlow", "setSignalLowFlow", "getSignalLowFlow"};
-    }
-
-    @Override
-    public Object[] callMethod(String method, ArgHelper args) {
-        switch (method) {
-            case "getFlow":
-                return new Object[]{getFlow()};
-            case "setOverrideEnabled":
-                flowOverridden.set(args.checkBoolean(0));
-                break;
-            case "getOverrideEnabled":
-                return new Object[]{flowOverridden};
-            case "setFlowOverride":
-                flowOverride.set(args.checkLong(0));
-                break;
-            case "setSignalHighFlow":
-                maxFlow.set(args.checkLong(0));
-                break;
-            case "getSignalHighFlow":
-                return new Object[]{maxFlow.get()};
-            case "setSignalLowFlow":
-                minFlow.set(args.checkLong(0));
-                break;
-            case "getSignalLowFlow":
-                return new Object[]{minFlow.get()};
-        }
-
-        return new Object[0];
-    }
-
-    //endregion
 }

@@ -2,12 +2,16 @@ package com.brandon3055.draconicevolution.blocks.tileentity.flowgate;
 
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.util.SneakyUtils;
+import dan200.computercraft.shared.Capabilities;
+
 import com.brandon3055.brandonscore.api.power.IOPStorage;
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.capability.CapabilityOP;
 import com.brandon3055.brandonscore.inventory.ContainerBCTile;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
 import com.brandon3055.draconicevolution.init.DEContent;
+import com.brandon3055.draconicevolution.integration.computers.PeripheralFlowGate;
+import com.brandon3055.draconicevolution.integration.computers.PeripheralFluxGate;
 import com.brandon3055.draconicevolution.inventory.GuiLayoutFactories;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -36,6 +40,7 @@ public class TileFluxGate extends TileFlowGate {
 
     public TileFluxGate() {
         super(DEContent.tile_flux_gate);
+        capManager.set(Capabilities.CAPABILITY_PERIPHERAL, new PeripheralFluxGate(this));
     }
 
     @Override
@@ -67,11 +72,6 @@ public class TileFluxGate extends TileFlowGate {
             capsLoaded = true;
         }
         return super.getCapability(capability, side);
-    }
-
-    @Override
-    public String getPeripheralName() {
-        return "flux_gate";
     }
 
     @Override

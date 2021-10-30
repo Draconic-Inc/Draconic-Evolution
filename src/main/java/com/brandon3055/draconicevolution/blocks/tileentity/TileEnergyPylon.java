@@ -1,5 +1,13 @@
 package com.brandon3055.draconicevolution.blocks.tileentity;
 
+import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.SAVE_NBT_SYNC_TILE;
+import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.TRIGGER_UPDATE;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Random;
+
+import com.brandon3055.brandonscore.api.power.IExtendedRFStorage;
 import com.brandon3055.brandonscore.api.power.IOPStorage;
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.capability.CapabilityOP;
@@ -10,12 +18,13 @@ import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedByte;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedVec3I;
 import com.brandon3055.brandonscore.utils.Utils;
-import com.brandon3055.draconicevolution.init.DEContent;
-import com.brandon3055.brandonscore.api.power.IExtendedRFStorage;
 import com.brandon3055.draconicevolution.blocks.machines.EnergyPylon;
 import com.brandon3055.draconicevolution.client.DEParticles;
-import com.brandon3055.draconicevolution.integration.computers.ArgHelper;
-import com.brandon3055.draconicevolution.integration.computers.IDEPeripheral;
+import com.brandon3055.draconicevolution.init.DEContent;
+import com.brandon3055.draconicevolution.integration.computers.PeripheralEnergyPylon;
+
+import dan200.computercraft.api.peripheral.IPeripheral;
+import dan200.computercraft.shared.Capabilities;
 import net.minecraft.block.Blocks;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -24,22 +33,15 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
-
-import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.SAVE_NBT_SYNC_TILE;
-import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.TRIGGER_UPDATE;
-
 /**
  * Created by brandon3055 on 30/3/2016.
  */
-public class TileEnergyPylon extends TileBCore implements ITickableTileEntity, IMultiBlockPart, IExtendedRFStorage, IDEPeripheral {
+public class TileEnergyPylon extends TileBCore implements ITickableTileEntity, IMultiBlockPart, IExtendedRFStorage {
     public final ManagedBool isOutputMode = register(new ManagedBool("is_output_mode", SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE));
     public final ManagedBool structureValid = register(new ManagedBool("structure_valid", SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE));
     public final ManagedVec3I coreOffset = register(new ManagedVec3I("core_offset", new Vec3I(0, -1, 0), SAVE_NBT_SYNC_TILE));
     public final ManagedBool sphereOnTop = register(new ManagedBool("sphere_on_top", true, SAVE_NBT_SYNC_TILE));
-    private final ManagedBool hasCoreLock = register(new ManagedBool("has_core_lock", SAVE_NBT_SYNC_TILE));
+    public final ManagedBool hasCoreLock = register(new ManagedBool("has_core_lock", SAVE_NBT_SYNC_TILE));
     private final ManagedByte particleRate = register(new ManagedByte("particle_rate", SAVE_NBT_SYNC_TILE));
     private TileEnergyCore core = null;
     private int coreSelection = 0;
@@ -121,6 +123,7 @@ public class TileEnergyPylon extends TileBCore implements ITickableTileEntity, I
     public TileEnergyPylon() {
         super(DEContent.tile_energy_pylon);
         capManager.set(CapabilityOP.OP, opAdapter);
+        capManager.set(Capabilities.CAPABILITY_PERIPHERAL, new PeripheralEnergyPylon(this));
     }
 
     @Override
@@ -165,7 +168,7 @@ public class TileEnergyPylon extends TileBCore implements ITickableTileEntity, I
         level.setBlockAndUpdate(worldPosition, level.getBlockState(worldPosition).setValue(EnergyPylon.OUTPUT, isOutputMode.get()));
     }
 
-    private TileEnergyCore getCore() {
+    public TileEnergyCore getCore() {
         if (hasCoreLock.get()) {
             BlockPos corePos = worldPosition.subtract(coreOffset.get().getPos());
             Chunk coreChunk = level.getChunkAt(corePos);
@@ -392,35 +395,6 @@ public class TileEnergyPylon extends TileBCore implements ITickableTileEntity, I
         }
         return getCore().getExtendedCapacity();
     }
-
-    //region IDEPeripheral
-
-    @Override
-    public String getPeripheralName() {
-        return "draconic_rf_storage";
-    }
-
-    @Override
-    public String[] getMethodNames() {
-        return new String[]{"getEnergyStored", "getMaxEnergyStored", "getTransferPerTick"};
-    }
-
-    @Override
-    public Object[] callMethod(String method, ArgHelper args) {
-        if (method.equals("getEnergyStored")) {
-            return new Object[]{getExtendedStorage()};
-        } else if (method.equals("getMaxEnergyStored")) {
-            return new Object[]{getExtendedCapacity()};
-        } else if (method.equals("getTransferPerTick")) {
-            if (!hasCoreLock.get() || getCore() == null) {
-                return new Object[0];
-            }
-            return new Object[]{getCore().transferRate.get()};
-        }
-        return new Object[0];
-    }
-
-    //endregion
 
 //    @Override
 //    public Iterable<BlockPos> getBlocksForFrameMove() {

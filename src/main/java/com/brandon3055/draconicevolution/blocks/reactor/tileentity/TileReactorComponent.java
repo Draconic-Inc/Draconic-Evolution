@@ -1,6 +1,8 @@
 package com.brandon3055.draconicevolution.blocks.reactor.tileentity;
 
 import codechicken.lib.data.MCDataInput;
+import dan200.computercraft.shared.Capabilities;
+
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.lib.Vec3I;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
@@ -9,8 +11,7 @@ import com.brandon3055.brandonscore.lib.datamanager.ManagedInt;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedVec3I;
 import com.brandon3055.brandonscore.utils.MathUtils;
 import com.brandon3055.brandonscore.utils.Utils;
-import com.brandon3055.draconicevolution.integration.computers.ArgHelper;
-import com.brandon3055.draconicevolution.integration.computers.IDEPeripheral;
+import com.brandon3055.draconicevolution.integration.computers.PeripheralReactorComponent;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -34,7 +35,7 @@ import static com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileRe
 /**
  * Created by brandon3055 on 20/01/2017.
  */
-public abstract class TileReactorComponent extends TileBCore implements ITickableTileEntity, IDEPeripheral {
+public abstract class TileReactorComponent extends TileBCore implements ITickableTileEntity {
 
     private final ManagedVec3I coreOffset       = register(new ManagedVec3I("core_offset", SAVE_NBT_SYNC_TILE));
     public final ManagedEnum<Direction> facing  = register(new ManagedEnum<>("facing", Direction.UP, SAVE_NBT_SYNC_TILE));
@@ -49,6 +50,7 @@ public abstract class TileReactorComponent extends TileBCore implements ITickabl
 
     public TileReactorComponent(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
+        capManager.set(Capabilities.CAPABILITY_PERIPHERAL, new PeripheralReactorComponent(this));
     }
 
     @Override
@@ -243,7 +245,7 @@ public abstract class TileReactorComponent extends TileBCore implements ITickabl
         return null;
     }
 
-    protected TileReactorCore getCachedCore() {
+    public TileReactorCore getCachedCore() {
         if (isBound.get()) {
             BlockPos corePos = getCorePos();
             Chunk coreChunk = level.getChunkAt(corePos);
@@ -275,72 +277,6 @@ public abstract class TileReactorComponent extends TileBCore implements ITickabl
 //    public boolean canConnectEnergy(Direction from) {
 //        return from == facing.get().getOpposite();
 //    }
-
-    //region Peripheral
-
-    @Override
-    public String getPeripheralName() {
-        return "draconic_reactor";
-    }
-
-    @Override
-    public String[] getMethodNames() {
-        return new String[]{"getReactorInfo", "chargeReactor", "activateReactor", "stopReactor", "setFailSafe"};
-    }
-
-    @Override
-    public Object[] callMethod(String method, ArgHelper args) {
-        TileReactorCore reactor = getCachedCore();
-
-        if (reactor == null) {
-            return null;
-        }
-
-        if (method.equals("getReactorInfo")) {
-            Map<Object, Object> map = new HashMap<Object, Object>();
-            map.put("temperature", MathUtils.round(reactor.temperature.get(), 100));
-            map.put("fieldStrength", MathUtils.round(reactor.shieldCharge.get(), 100));
-            map.put("maxFieldStrength", MathUtils.round(reactor.maxShieldCharge.get(), 100));
-            map.put("energySaturation", reactor.saturation.get());
-            map.put("maxEnergySaturation", reactor.maxSaturation.get());
-            map.put("fuelConversion", MathUtils.round(reactor.convertedFuel.get(), 1000));
-            map.put("maxFuelConversion", reactor.reactableFuel.get() + reactor.convertedFuel.get());
-            map.put("generationRate", (int)reactor.generationRate.get());
-            map.put("fieldDrainRate", reactor.fieldDrain.get());
-            map.put("fuelConversionRate", (int) Math.round(reactor.fuelUseRate.get() * 1000000D));
-            map.put("status", reactor.reactorState.get().name().toLowerCase(Locale.ENGLISH));//reactor.reactorState.value == TileReactorCore.ReactorState.COLD ? "offline" : reactor.reactorState == 1 && !reactor.canStart() ? "charging" : reactor.reactorState == 1 && reactor.canStart() ? "charged" : reactor.reactorState == 2 ? "online" : reactor.reactorState == 3 ? "stopping" : "invalid");
-            map.put("failSafe", reactor.failSafeMode.get());
-            return new Object[]{map};
-        }
-        else if (method.equals("chargeReactor")) {
-            if (reactor.canCharge()) {
-                reactor.chargeReactor();
-                return new Object[]{true};
-            }
-            else return new Object[]{false};
-        }
-        else if (method.equals("activateReactor")) {
-            if (reactor.canActivate()) {
-                reactor.activateReactor();
-                return new Object[]{true};
-            }
-            else return new Object[]{false};
-        }
-        else if (method.equals("stopReactor")) {
-            if (reactor.canStop()) {
-                reactor.shutdownReactor();
-                return new Object[]{true};
-            }
-            else return new Object[]{false};
-        }
-        else if (method.equals("setFailSafe")) {
-            reactor.failSafeMode.set(args.checkBoolean(0));
-            return new Object[]{true};
-        }
-        return new Object[]{};
-    }
-
-    //endregion
 
     public enum RSMode {
         TEMP {

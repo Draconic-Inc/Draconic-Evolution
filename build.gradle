@@ -88,6 +88,7 @@ repositories {
     maven { url = "https://dvs1.progwml6.com/files/maven" }
     maven { url = "http://maven.cil.li/" }
     maven { url = "https://maven.theillusivec4.top/" }
+    maven { url = "https://squiddev.cc/maven/" }
 }
 
 dependencies {
@@ -98,6 +99,8 @@ dependencies {
     compile fg.deobf("mezz.jei:jei-${config.mc_version}:${config.jei_version}")
 
     compile fg.deobf("top.theillusivec4.curios:curios-forge:${config.mc_version}-${config.curios_version}")
+
+    implementation fg.deobf("org.squiddev:cc-tweaked-${config.mc_version}:${config.cct_version}")
 
     annotationProcessor("org.spongepowered:mixin:0.8.2:processor")
 }
@@ -126,7 +129,8 @@ processResources { task ->
             spec.expand 'version': config.mod_version,
                     'mc_version': config.mc_version,
                     'ccl_version': "[${config.ccl_version.replace('.+', '')},${config.ccl_version_max})",
-                    'bcore_version': resolve("BrandonsCore")
+                    'bcore_version': resolve("BrandonsCore"),
+                    'cct_version': config.cct_version
         }
     }
 }
