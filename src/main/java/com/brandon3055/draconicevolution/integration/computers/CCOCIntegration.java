@@ -1,5 +1,18 @@
 package com.brandon3055.draconicevolution.integration.computers;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import dan200.computercraft.api.ComputerCraftAPI;
+import dan200.computercraft.api.peripheral.IPeripheral;
+import dan200.computercraft.api.peripheral.IPeripheralProvider;
+import dan200.computercraft.shared.Capabilities;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.ModList;
 
 /**
@@ -18,7 +31,7 @@ public class CCOCIntegration {
 
 //    @Optional.Method(modid = "computercraft")
     public static void initCC() {
-//        ComputerCraftAPI.registerPeripheralProvider(new DEPeripheralProvider());
+        ComputerCraftAPI.registerPeripheralProvider(new DEPeripheralProvider());
     }
 
 //    @Optional.Method(modid = "opencomputers")
@@ -53,26 +66,34 @@ public class CCOCIntegration {
 //        }
 //    }
 //
-//    //Computercraft
-//	public static class DEPeripheralProvider implements IPeripheralProvider {
-//        /**
-//         * Produce an peripheral implementation from a block location.
-//         *
-//         * @param world The world the block is in.
-//         * @param pos   The position the block is at.
-//         * @param side  The side to get the peripheral from.
-//         * @return A peripheral, or {@code null} if there is not a peripheral here you'd like to handle.
-//         * @see ComputerCraftAPI#registerPeripheralProvider(IPeripheralProvider)
-//         */
-//        @Nullable
-//        @Override
-//        public IPeripheral getPeripheral(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull Direction side) {
-//            TileEntity tile = world.getTileEntity(pos);
-//            if (tile instanceof IDEPeripheral) {
-//                return new CCAdapter((IDEPeripheral)tile);
-//            }
-//            else return null;
-//        }
-//	}
-
+    //Computercraft
+	public static class DEPeripheralProvider implements IPeripheralProvider {
+		private IPeripheral peripheral;
+		private LazyOptional<IPeripheral> holderPeripheral;
+		
+        /**
+         * Produce an peripheral implementation from a block location.
+         *
+         * @param world The world the block is in.
+         * @param pos   The position the block is at.
+         * @param side  The side to get the peripheral from.
+         * @return A peripheral, or {@code null} if there is not a peripheral here you'd like to handle.
+         * @see ComputerCraftAPI#registerPeripheralProvider(IPeripheralProvider)
+         */
+        @Nullable
+        @Override
+        public LazyOptional<IPeripheral> getPeripheral(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull Direction side) {
+            TileEntity tile = world.getBlockEntity(pos);
+            if (tile instanceof IPeripheral) {
+            	setPeripheral((IPeripheral)tile);
+                return holderPeripheral;
+            }
+            else return null;
+        }
+        
+        protected void setPeripheral(IPeripheral peripheral) {
+            this.peripheral = peripheral;
+            this.holderPeripheral = LazyOptional.of(() -> peripheral);
+        }
+	}
 }

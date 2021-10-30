@@ -8,7 +8,6 @@ license="CoFH \"Don't Be a Jerk\" License"
 	version="${version}"
 	authors="brandon3055"
 	description=''''''
-
 [[dependencies.draconicevolution]]
 	modId="forge"
 	mandatory=true
@@ -20,6 +19,12 @@ license="CoFH \"Don't Be a Jerk\" License"
     mandatory=true
     versionRange="[1.16,)"
     ordering="NONE"
+    side="BOTH"
+[[dependencies.draconicevolution]]
+    modId="computercraft"
+    mandatory=false
+    versionRange="[${cct_version},)"
+    ordering="AFTER"
     side="BOTH"
 [[dependencies.draconicevolution]]
 	modId="codechickenlib"
