@@ -25,7 +25,7 @@ public class LangGenerator extends LanguageProvider {
         helper.add(DEContent.block_draconium,                                   "Draconium Block");
         helper.add(DEContent.block_draconium_awakened,                          "Awakened Draconium Block");
         helper.add(DEContent.chaos_crystal,                                     "Chaos Crystal");
-        helper.add(DEContent.crafting_injector_basic,                           "Basic Fusion Crafting Injector");
+        helper.add(DEContent.crafting_injector_basic,                           "Draconium Fusion Crafting Injector");
         helper.add(DEContent.crafting_injector_wyvern,                          "Wyvern Fusion Crafting Injector");
         helper.add(DEContent.crafting_injector_awakened,                        "Draconic Fusion Crafting Injector");
         helper.add(DEContent.crafting_injector_chaotic,                         "Chaotic Fusion Crafting Injector");

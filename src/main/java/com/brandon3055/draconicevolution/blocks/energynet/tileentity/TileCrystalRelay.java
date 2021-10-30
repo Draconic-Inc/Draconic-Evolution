@@ -1,12 +1,14 @@
 package com.brandon3055.draconicevolution.blocks.energynet.tileentity;
 
 import com.brandon3055.brandonscore.lib.Vec3D;
+import com.brandon3055.draconicevolution.blocks.tileentity.TileDislocatorReceptacle;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.draconicevolution.blocks.energynet.EnergyCrystal;
 import com.brandon3055.draconicevolution.client.render.effect.CrystalFXRing;
 import com.brandon3055.draconicevolution.client.render.effect.CrystalFXBase;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -41,6 +43,10 @@ public class TileCrystalRelay extends TileCrystalBase {
     public Vec3D getBeamLinkPos(BlockPos linkTo) {
         Vec3D thisVec = Vec3D.getCenter(worldPosition);
         Vec3D targVec = Vec3D.getCenter(linkTo);
+        TileEntity target = level.getBlockEntity(linkTo);
+        if (target instanceof TileDislocatorReceptacle) {
+            targVec = ((TileDislocatorReceptacle) target).getBeamLinkPos(worldPosition);
+        }
         double dist = thisVec.distXZ(targVec);
         double offM = 0.4D;
 

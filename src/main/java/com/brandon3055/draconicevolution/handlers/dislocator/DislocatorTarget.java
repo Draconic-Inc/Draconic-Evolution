@@ -53,6 +53,10 @@ public abstract class DislocatorTarget {
 
     }
 
+    public RegistryKey<World> getWorldKey() {
+        return worldKey;
+    }
+
     public static DislocatorTarget load(CompoundNBT nbt) {
         try {
             TargetType type = TargetType.values()[nbt.getByte("target_type")];

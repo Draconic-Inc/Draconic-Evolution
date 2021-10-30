@@ -67,7 +67,11 @@ public class TileTarget extends DislocatorTarget {
         }
     }
 
-//    @Override
+    public BlockPos getTilePos() {
+        return tilePos;
+    }
+
+    //    @Override
 //    public void postTeleport(ServerWorld targetWorld, Entity entity) {
 //        DislocatorEndPoint target = getEndPoint(targetWorld);
 //        if (target != null) {

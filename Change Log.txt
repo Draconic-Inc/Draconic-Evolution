@@ -1,4 +1,8 @@
-######## 3.0.17.x ########
+######## 3.0.18.x ########
+- Re implemented lasers through portals!
+- Renamed "Basic crafting injector" to "Draconium crafting injector" to match up with new 1.16 tir naming.
+
+######## 3.0.17.420 ########
 - Re implemented portal redstone control.
 - Fixed issue where portal will sometimes fail to activate in certain configurations.
 - Re implemented reactor config settings.
