@@ -1,7 +1,6 @@
 package com.brandon3055.draconicevolution.blocks.reactor.tileentity;
 
 import codechicken.lib.data.MCDataInput;
-import dan200.computercraft.shared.Capabilities;
 
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.lib.Vec3I;
@@ -50,7 +49,6 @@ public abstract class TileReactorComponent extends TileBCore implements ITickabl
 
     public TileReactorComponent(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
-        capManager.set(Capabilities.CAPABILITY_PERIPHERAL, new PeripheralReactorComponent(this));
     }
 
     @Override

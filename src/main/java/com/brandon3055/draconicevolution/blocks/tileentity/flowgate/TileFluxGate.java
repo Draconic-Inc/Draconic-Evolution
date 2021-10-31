@@ -2,7 +2,6 @@ package com.brandon3055.draconicevolution.blocks.tileentity.flowgate;
 
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.util.SneakyUtils;
-import dan200.computercraft.shared.Capabilities;
 
 import com.brandon3055.brandonscore.api.power.IOPStorage;
 import com.brandon3055.brandonscore.blocks.TileBCore;
@@ -40,7 +39,6 @@ public class TileFluxGate extends TileFlowGate {
 
     public TileFluxGate() {
         super(DEContent.tile_flux_gate);
-        capManager.set(Capabilities.CAPABILITY_PERIPHERAL, new PeripheralFluxGate(this));
     }
 
     @Override

@@ -1,7 +1,6 @@
 package com.brandon3055.draconicevolution.blocks.tileentity.flowgate;
 
 import codechicken.lib.data.MCDataInput;
-import dan200.computercraft.shared.Capabilities;
 
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.lib.IInteractTile;
@@ -42,7 +41,6 @@ public abstract class TileFlowGate extends TileBCore implements ITickableTileEnt
 
     public TileFlowGate(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
-        capManager.set(Capabilities.CAPABILITY_PERIPHERAL, new PeripheralFlowGate(this));
     }
 
     @Override

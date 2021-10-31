@@ -10,12 +10,14 @@ import com.brandon3055.draconicevolution.client.render.tile.fxhandlers.ITileFXHa
 import com.brandon3055.draconicevolution.handlers.DEEventHandler;
 import com.brandon3055.draconicevolution.init.DETags;
 import com.brandon3055.draconicevolution.init.ModCapabilities;
+import com.brandon3055.draconicevolution.integration.computers.ComputerCraftCompatEventHandler;
 import com.brandon3055.draconicevolution.integration.equipment.EquipmentManager;
 import com.brandon3055.draconicevolution.items.tools.Dislocator;
 import com.brandon3055.draconicevolution.lib.ISidedTileHandler;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import net.minecraft.client.audio.ISound;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.OptionalMod;
 import net.minecraftforge.fml.event.lifecycle.*;
 
 public class CommonProxy {
@@ -30,6 +32,7 @@ public class CommonProxy {
         MinecraftForge.EVENT_BUS.addListener(Dislocator::onAnvilUpdate); //TODO move this to an event handler before covers yells at me
 
         MinecraftForge.EVENT_BUS.register(new DEEventHandler());
+		OptionalMod.of("computercraft").ifPresent(e -> MinecraftForge.EVENT_BUS.register(new ComputerCraftCompatEventHandler()));
 
         EquipmentManager.initialize();
     }
