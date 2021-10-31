@@ -23,8 +23,6 @@ import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.integration.computers.PeripheralEnergyPylon;
 
-import dan200.computercraft.api.peripheral.IPeripheral;
-import dan200.computercraft.shared.Capabilities;
 import net.minecraft.block.Blocks;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -123,7 +121,6 @@ public class TileEnergyPylon extends TileBCore implements ITickableTileEntity, I
     public TileEnergyPylon() {
         super(DEContent.tile_energy_pylon);
         capManager.set(CapabilityOP.OP, opAdapter);
-        capManager.set(Capabilities.CAPABILITY_PERIPHERAL, new PeripheralEnergyPylon(this));
     }
 
     @Override

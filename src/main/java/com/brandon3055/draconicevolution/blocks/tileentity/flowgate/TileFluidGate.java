@@ -1,7 +1,6 @@
 package com.brandon3055.draconicevolution.blocks.tileentity.flowgate;
 
 import codechicken.lib.util.SneakyUtils;
-import dan200.computercraft.shared.Capabilities;
 
 import com.brandon3055.brandonscore.inventory.ContainerBCTile;
 import com.brandon3055.draconicevolution.init.DEContent;
@@ -35,7 +34,6 @@ public class TileFluidGate extends TileFlowGate implements IFluidHandler {
 
     public TileFluidGate() {
         super(DEContent.tile_fluid_gate);
-        capManager.set(Capabilities.CAPABILITY_PERIPHERAL, new PeripheralFluidGate(this));
     }
 
     //region Gate

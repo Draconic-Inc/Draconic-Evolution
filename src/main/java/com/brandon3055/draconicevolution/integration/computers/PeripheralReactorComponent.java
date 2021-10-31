@@ -1,5 +1,7 @@
 package com.brandon3055.draconicevolution.integration.computers;
 
+import static dan200.computercraft.shared.Capabilities.CAPABILITY_PERIPHERAL;
+
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -10,11 +12,18 @@ import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCo
 
 import dan200.computercraft.api.lua.LuaFunction;
 import dan200.computercraft.api.peripheral.IPeripheral;
+import dan200.computercraft.shared.util.CapabilityUtil;
+import net.minecraft.util.Direction;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.LazyOptional;
 
-public class PeripheralReactorComponent implements IPeripheral {
+public class PeripheralReactorComponent implements IPeripheral, ICapabilityProvider {
 	
 	TileReactorComponent tile;
 	TileReactorCore reactor;
+	private LazyOptional<IPeripheral> self;
+	
 	public PeripheralReactorComponent(TileReactorComponent tile) {
         this.tile = tile;
     }
@@ -89,4 +98,17 @@ public class PeripheralReactorComponent implements IPeripheral {
 	public final void setFailSafe(boolean state) {
 		reactor.failSafeMode.set(state);
 	}
+	
+	@Override
+	public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
+		if (cap == CAPABILITY_PERIPHERAL) {
+            if (self == null) self = LazyOptional.of(() -> this);
+            return self.cast();
+        }
+        return LazyOptional.empty();
+	}
+	
+	public void invalidate() {
+        self = CapabilityUtil.invalidate(self);
+    }
 }
