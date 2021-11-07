@@ -44,11 +44,13 @@ public class DEWorldGen {
 
     @SubscribeEvent
     public static void biomeLoading(BiomeLoadingEvent event) {
-        if (event.getCategory() == Biome.Category.THEEND && DEConfig.enableOreEnd) {
-            event.getGeneration().addFeature(UNDERGROUND_ORES, Feature.ORE.configured(new OreFeatureConfig(BASE_STONE_END, DEContent.ore_draconium_end.defaultBlockState(), 8))
-                    .decorated(Placement.RANGE.configured(new TopSolidRangeConfig(0, 0, 80)))
-                    .squared()
-                    .count(2));
+        if (event.getCategory() == Biome.Category.THEEND) {
+            if (DEConfig.enableOreEnd) {
+                event.getGeneration().addFeature(UNDERGROUND_ORES, Feature.ORE.configured(new OreFeatureConfig(BASE_STONE_END, DEContent.ore_draconium_end.defaultBlockState(), 8))
+                        .decorated(Placement.RANGE.configured(new TopSolidRangeConfig(0, 0, 80)))
+                        .squared()
+                        .count(2));
+            }
 
             event.getGeneration().addFeature(GenerationStage.Decoration.RAW_GENERATION, new ConfiguredFeature<>(new Feature<NoFeatureConfig>(NoFeatureConfig.CODEC) {
                 @Override
@@ -56,7 +58,6 @@ public class DEWorldGen {
                     return ChaosWorldGenHandler.generateChunk(this, reader, generator, rand, pos);
                 }
             }, NoFeatureConfig.NONE));
-
 
         } else if (event.getCategory() == Biome.Category.NETHER && DEConfig.enableOreNether) {
             event.getGeneration().addFeature(UNDERGROUND_ORES, Feature.ORE.configured(new OreFeatureConfig(NETHER_ORE_REPLACEABLES, DEContent.ore_draconium_nether.defaultBlockState(), 16))

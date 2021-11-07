@@ -111,11 +111,11 @@ public class ClientProxy extends CommonProxy {
         event.enqueueWork(() -> {
             //Because i want this to render on bipedal mobs.
             for (EntityRenderer<?> e : Minecraft.getInstance().getEntityRenderDispatcher().renderers.values()) {
-                if (e instanceof LivingRenderer && ((LivingRenderer) e).getModel() instanceof BipedModel) {
+                if (e instanceof LivingRenderer && ((LivingRenderer<?, ?>) e).getModel() instanceof BipedModel) {
                     boolean foundArmor = false;
-                    for (Object layer : ((LivingRenderer) e).layers) {
+                    for (Object layer : ((LivingRenderer<?, ?>) e).layers) {
                         if (layer instanceof BipedArmorLayer) {
-                            ((LivingRenderer<?, ?>) e).addLayer(new VBOArmorLayer((LivingRenderer<?, ?>) e, (BipedArmorLayer) layer));
+                            ((LivingRenderer<?, ?>) e).addLayer(new VBOArmorLayer((LivingRenderer<?, ?>) e, (BipedArmorLayer<?, ?, ?>) layer));
                             foundArmor = true;
                             break;
                         }

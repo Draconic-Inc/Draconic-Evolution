@@ -1,6 +1,8 @@
 ######## 3.0.18.x ########
 - Re implemented lasers through portals!
 - Renamed "Basic crafting injector" to "Draconium crafting injector" to match up with new 1.16 tir naming.
+- Re implemented computer craft integration (Thanks to FoxMcloud5655)
+- Fixed chaos islands not generating when end ore is disabled.
 
 ######## 3.0.17.420 ########
 - Re implemented portal redstone control.
