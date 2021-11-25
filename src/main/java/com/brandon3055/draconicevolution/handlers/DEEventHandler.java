@@ -1,6 +1,8 @@
 package com.brandon3055.draconicevolution.handlers;
 
 import codechicken.lib.raytracer.RayTracer;
+import codechicken.lib.util.ServerUtils;
+import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DEOldConfig;
 import com.brandon3055.draconicevolution.achievements.Achievements;
@@ -12,6 +14,7 @@ import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.network.CrystalUpdateBatcher;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.block.Blocks;
+import net.minecraft.client.Minecraft;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -24,17 +27,20 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.GameType;
 import net.minecraft.world.World;
 import net.minecraft.world.end.DragonFightManager;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.gen.feature.EndPodiumFeature;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.ClientPlayerChangeGameModeEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
@@ -55,6 +61,15 @@ public class DEEventHandler {
 
 
     //region Ticking
+
+    @OnlyIn(Dist.CLIENT)
+    @SubscribeEvent
+    public void changeGameMode(ClientPlayerChangeGameModeEvent event) {
+//        Minecraft.getInstance().getCurrentSnooperAction()
+        if (event.getNewGameMode() == GameType.CREATIVE && Minecraft.getInstance().player != null && !Minecraft.getInstance().isLocalServer()) {
+            Minecraft.getInstance().player.sendMessage(new StringTextComponent("[Draconic Evolution]: ").withStyle(TextFormatting.YELLOW).append(new StringTextComponent("Warning! Using creative inventory on a server will delete all module data on DE tools and armor. This is due a fundamental issue with the creative menu.").withStyle(TextFormatting.RED)), Util.NIL_UUID);
+        }
+    }
 
     @SubscribeEvent
     public void serverTick(TickEvent.ServerTickEvent event) {
