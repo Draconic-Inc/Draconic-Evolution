@@ -89,6 +89,7 @@ repositories {
     maven { url = "http://maven.cil.li/" }
     maven { url = "https://maven.theillusivec4.top/" }
     maven { url = "https://squiddev.cc/maven/" }
+    maven { url = "https://maven.blamejared.com/" }
 }
 
 dependencies {
@@ -101,6 +102,8 @@ dependencies {
     compile fg.deobf("top.theillusivec4.curios:curios-forge:${config.mc_version}-${config.curios_version}")
 
     implementation fg.deobf("org.squiddev:cc-tweaked-${config.mc_version}:${config.cct_version}")
+
+    compileOnly fg.deobf("com.blamejared.crafttweaker:CraftTweaker-${config.mc_version}:${config.crt_version}")
 
     annotationProcessor("org.spongepowered:mixin:0.8.2:processor")
 }
