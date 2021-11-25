@@ -4,6 +4,7 @@
 - Re implemented computer craft integration (Thanks to FoxMcloud5655)
 - Fixed chaos islands not generating when end ore is disabled.
 - Added warning when using creative mode on a server as this will delete module data due to dumb creative inventory logic.
+- Fixed fusion core claiming ownership of injectors for an adjacent crafting setup.
 
 ######## 3.0.17.420 ########
 - Re implemented portal redstone control.

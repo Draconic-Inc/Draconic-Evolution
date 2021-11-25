@@ -183,19 +183,18 @@ public class TileFusionCraftingCore extends TileBCore implements IFusionInventor
                 return false;
             }
 
-            if (Direction.getNearest((int) dirVec.x, (int) dirVec.y, (int) dirVec.z) == tile.getRotation().getOpposite() && tile.setCore(this)) {
+            if (Direction.getNearest((int) dirVec.x, (int) dirVec.y, (int) dirVec.z) == tile.getRotation().getOpposite()) {
                 BlockPos pos = tile.getBlockPos();
                 Direction facing = tile.getRotation();
-                List<BlockPos> checkList = Lists.newArrayList(BlockPos.betweenClosed(pos.relative(facing), pos.relative(facing, FacingUtils.distanceInDirection(pos, worldPosition, facing) - 1)));
                 boolean obstructed = false;
-                for (BlockPos bp : checkList) {
+                for (BlockPos bp : BlockPos.betweenClosed(pos.relative(facing), pos.relative(facing, FacingUtils.distanceInDirection(pos, worldPosition, facing) - 1))) {
                     if (!level.isEmptyBlock(bp) && (level.getBlockState(bp).canOcclude() || level.getBlockEntity(bp) instanceof TileFusionCraftingInjector)) {
                         obstructed = true;
                         tile.setCore(null);
                         break;
                     }
                 }
-                if (!obstructed) {
+                if (!obstructed && tile.setCore(this)) {
                     injectorPositions.add(tile.getBlockPos());
                 }
             }
