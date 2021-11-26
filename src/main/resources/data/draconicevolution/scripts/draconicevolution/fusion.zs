@@ -1,5 +1,7 @@
 import mods.draconicevolution.TechLevel;
 import mods.draconicevolution.FusionIngredient;
+import crafttweaker.api.recipe.Replacer;
+
 /*
     The following lines will do the following:
     1) Add a WYVERN Fusion recipe that will use 50000 energy to output Dirt when Glass is used as a catalyst and a Diamond and any item from the Wool tag is used as an input. Both inputs are consumed when crafting.
@@ -11,3 +13,14 @@ import mods.draconicevolution.FusionIngredient;
 
 // Removes the recipe for a Chaotic Capacitor.
 <recipetype:draconicevolution:fusion_crafting>.removeRecipe(<item:draconicevolution:chaotic_capacitor>);
+
+/*
+    The following lines will do the following:
+    1) Replaces all Fusion Recipes that use Draconium Ingots, making the Ingot not get consumed by the recipe.
+    1) Replaces all Fusion Recipes that use a Netherite Ingot, replacing the Ingot with a Nether Star that will be consumed.
+*/
+
+Replacer.forEverything()
+    .replaceFusion(FusionIngredient.of(<item:draconicevolution:draconium_ingot>, true), FusionIngredient.of(<item:draconicevolution:draconium_ingot>, false))
+    .replaceFusion(<item:minecraft:netherite_ingot>, <item:minecraft:nether_star>)
+    .execute();
