@@ -7,7 +7,7 @@ import com.blamejared.crafttweaker.api.recipes.IReplacementRule;
 import com.blamejared.crafttweaker.api.recipes.ReplacementHandlerHelper;
 import com.blamejared.crafttweaker.api.util.StringUtils;
 import com.blamejared.crafttweaker.impl.helper.IngredientHelper;
-import com.blamejared.crafttweaker.impl.item.MCItemStackMutable;
+import com.blamejared.crafttweaker.impl.item.MCItemStack;
 import com.brandon3055.draconicevolution.api.crafting.FusionRecipe;
 import com.brandon3055.draconicevolution.api.crafting.IFusionRecipe;
 import net.minecraft.item.crafting.IRecipe;
@@ -30,7 +30,7 @@ public class FusionRecipeHandler implements IRecipeHandler<FusionRecipe> {
         for(IFusionRecipe.IFusionIngredient fusionIngredient : recipe.fusionIngredients()) {
             ingredientJoiner.add("FusionIngredient.of(" + IIngredient.fromIngredient(fusionIngredient.get()).getCommandString() + ", " + fusionIngredient.consume() + ")");
         }
-        return String.format(outputStr, StringUtils.quoteAndEscape(recipe.getId()), new MCItemStackMutable(recipe.getResultItem()).getCommandString(), IIngredient.fromIngredient(recipe.getCatalyst()).getCommandString(), recipe.getEnergyCost(), recipe.getRecipeTier().name(), ingredientJoiner);
+        return String.format(outputStr, StringUtils.quoteAndEscape(recipe.getId()), new MCItemStack(recipe.getResultItem()).getCommandString(), IIngredient.fromIngredient(recipe.getCatalyst()).getCommandString(), recipe.getEnergyCost(), recipe.getRecipeTier().name(), ingredientJoiner);
     }
     
     @Override
