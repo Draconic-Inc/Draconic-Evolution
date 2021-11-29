@@ -6,7 +6,7 @@
 - Added warning when using creative mode on a server as this will delete module data due to dumb creative inventory logic.
 - Fixed fusion core claiming ownership of injectors for an adjacent crafting setup.
 - Added Craft Tweaker support thanks to a PR from jaredlll08.
-- Basic dislocator no-longer consumes player health on teleport.    
+- Basic dislocator no-longer consumes player health on teleport.
 
 ######## 3.0.17.420 ########
 - Re implemented portal redstone control.

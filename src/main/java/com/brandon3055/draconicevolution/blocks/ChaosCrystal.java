@@ -112,7 +112,7 @@ public class ChaosCrystal extends BlockBCore/*, IRenderOverride*/ {
         }
     }
 
-    private static DamageSource punishment = new DamageSource("chrystalMoved").bypassInvul().bypassArmor().bypassMagic();
+    private static DamageSource punishment = new DamageSource("crystalMoved").bypassInvul().bypassArmor().bypassMagic();
 
 //    @Override
 //    public void onPlace(BlockState state, World world, BlockPos pos, BlockState oldState, boolean isMoving) {
