@@ -681,7 +681,6 @@ public class LangGenerator extends LanguageProvider {
         helper.add("not_set",                                                   "You must first set the destination before you can teleport (Sneak + Right click).");
         helper.add("player_need_advanced",                                      "You need a more powerful dislocator to do that.");
         helper.add("entity_sent_to",                                            "The entity has been sent to");
-        helper.add("low_health",                                                "You are too low on health!");
         helper.add("already_bound",                                             "ERROR: This charm can only be bound to one location.");
         helper.add("un_set_info1",                                              "Unbound");
         helper.add("un_set_info2",                                              "Sneak + Right click to bind your current");

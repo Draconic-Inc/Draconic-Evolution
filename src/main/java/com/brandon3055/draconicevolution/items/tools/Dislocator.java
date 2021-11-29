@@ -80,21 +80,12 @@ public class Dislocator extends Item implements IHudItem {
             return true;
         }
 
-        if (player.getHealth() > 2 || player.abilities.instabuild) {
-            if (!player.abilities.instabuild) {
-                player.setHealth(player.getHealth() - 2);
-            }
-
-            TargetPos location = getTargetPos(stack, player.level);
-            player.getCooldowns().addCooldown(this, 20);
-            dislocateEntity(stack, player, entity, location);
-            stack.hurtAndBreak(1, player, e -> {});
-            if (location != null){
-                messageUser(player, new StringTextComponent(I18n.get("dislocate.draconicevolution.entity_sent_to") + " "+ location.getReadableName(false)).withStyle(TextFormatting.GREEN));
-            }
-
-        } else if (player.level.isClientSide) {
-            messageUser(player, new TranslationTextComponent("dislocate.draconicevolution.low_health").withStyle(TextFormatting.RED));
+        TargetPos location = getTargetPos(stack, player.level);
+        player.getCooldowns().addCooldown(this, 20);
+        dislocateEntity(stack, player, entity, location);
+        stack.hurtAndBreak(1, player, e -> {});
+        if (location != null) {
+            messageUser(player, new StringTextComponent(I18n.get("dislocate.draconicevolution.entity_sent_to") + " " + location.getReadableName(false)).withStyle(TextFormatting.GREEN));
         }
 
         return true;
