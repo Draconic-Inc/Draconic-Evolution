@@ -7,6 +7,7 @@
 - Fixed fusion core claiming ownership of injectors for an adjacent crafting setup.
 - Added Craft Tweaker support thanks to a PR from jaredlll08.
 - Basic dislocator no-longer consumes player health on teleport.
+- Fixed fluid gates not working.
 
 ######## 3.0.17.420 ########
 - Re implemented portal redstone control.
