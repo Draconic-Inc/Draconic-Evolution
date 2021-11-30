@@ -81,7 +81,6 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
         synchronized (moduleEntities) {
             moduleEntities.add(entity);
         }
-        DraconicEvolution.LOGGER.info("addModule");
         entity.setHost(this);
         clearCaches();
         entity.onInstalled(context);
