@@ -8,6 +8,7 @@
 - Added Craft Tweaker support thanks to a PR from jaredlll08.
 - Basic dislocator no-longer consumes player health on teleport.
 - Fixed fluid gates not working.
+- Fixed random concurrent modification exceptions when multiple players have DE gear in the same area.
 
 ######## 3.0.17.420 ########
 - Re implemented portal redstone control.

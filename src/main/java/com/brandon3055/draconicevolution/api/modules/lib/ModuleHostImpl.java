@@ -44,7 +44,7 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
     private EnergyData energyCache = null;
     private ModuleData energyLinkCache = null;
     private EnergyShareData energyShareCache = null;
-    private List<ModuleEntity> moduleEntities = new ArrayList<>();
+    private final List<ModuleEntity> moduleEntities = new ArrayList<>();
     private Set<ModuleType<?>> additionalTypeList = new HashSet<>();
     private Set<ModuleType<?>> typeBlackList = new HashSet<>();
     private Set<ModuleCategory> categories = new HashSet<>();
@@ -71,12 +71,17 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
 
     @Override
     public List<ModuleEntity> getModuleEntities() {
-        return Collections.unmodifiableList(moduleEntities);
+        synchronized (moduleEntities) {
+            return Collections.unmodifiableList(moduleEntities);
+        }
     }
 
     @Override
     public void addModule(ModuleEntity entity, ModuleContext context) {
-        moduleEntities.add(entity);
+        synchronized (moduleEntities) {
+            moduleEntities.add(entity);
+        }
+        DraconicEvolution.LOGGER.info("addModule");
         entity.setHost(this);
         clearCaches();
         entity.onInstalled(context);
@@ -85,7 +90,9 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
 
     @Override
     public void removeModule(ModuleEntity entity, ModuleContext context) {
-        moduleEntities.remove(entity);
+        synchronized (moduleEntities) {
+            moduleEntities.remove(entity);
+        }
         clearCaches();
         entity.onRemoved(context);
         gatherProperties();
@@ -93,9 +100,11 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
 
     public void transferModules(ModuleHostImpl source) {
         if (getGridWidth() >= source.getGridWidth() && getGridHeight() >= source.getGridHeight()) {
-            moduleEntities.addAll(source.getModuleEntities());
-            source.moduleEntities.clear();
-            moduleEntities.forEach(moduleEntity -> moduleEntity.setHost(this));
+            synchronized (moduleEntities) {
+                moduleEntities.addAll(source.getModuleEntities());
+                source.moduleEntities.clear();
+                moduleEntities.forEach(moduleEntity -> moduleEntity.setHost(this));
+            }
             clearCaches();
             gatherProperties();
         } else {
@@ -209,49 +218,51 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
     }
 
     private void gatherProperties() {
-        //TODO there are issues with this. It does not update properties when modules change
-        List<ConfigProperty> gathered = new ArrayList<>();
-        if (propertyBuilder != null) {
-            propertyBuilder.accept(gathered);
+        synchronized (moduleEntities) {
+            //TODO there are issues with this. It does not update properties when modules change
+            List<ConfigProperty> gathered = new ArrayList<>();
+            if (propertyBuilder != null) {
+                propertyBuilder.accept(gathered);
+            }
+
+            Set<ModuleType<?>> installedTypes = getInstalledTypes().collect(Collectors.toSet());
+            propertyValidators.entrySet().removeIf(e -> !installedTypes.contains(e.getKey()));
+
+            installedTypes.forEach(type -> {
+                Map<ConfigProperty, Consumer<?>> map = new HashMap<>();
+                type.getTypeProperties(SneakyUtils.unsafeCast(getModuleData(type)), SneakyUtils.unsafeCast(map));
+                gathered.addAll(map.keySet());
+                if (propertyValidators.containsKey(type)) {
+                    propertyValidators.get(type).accept(SneakyUtils.unsafeCast(getModuleData(type)));
+                } else {
+                    map.forEach((property, consumer) -> {
+                        if (consumer != null) {
+                            propertyValidators.put(type, consumer);
+                        }
+                    });
+                }
+            });
+
+            //Gather is not just called on load but also when a property is added or removed so we need to avoid overwriting existing loaded properties.
+            Set<String> gatheredNames = gathered.stream().map(ConfigProperty::getName).collect(Collectors.toSet());
+            //Remove properties that no longer exist
+            providedProperties.removeIf(e -> !gatheredNames.contains(e.getName()));
+
+            Set<String> installedNames = providedProperties.stream().map(ConfigProperty::getName).collect(Collectors.toSet());
+            //Add new properties
+            providedProperties.addAll(gathered.stream().filter(e -> !installedNames.contains(e.getName())).collect(Collectors.toList()));
+
+            //Repopulate the property map.
+            propertyMap.clear();
+            providedProperties.forEach(e -> propertyMap.put(e.getName(), e));
+
+            getModuleEntities().forEach(e -> e.getEntityProperties().forEach(p -> {
+                if (propertyMap.containsKey(p.getName())) {
+                    p.generateUnique(); //This avoids duplicate names due to creative duped items.
+                }
+                propertyMap.put(p.getName(), p);
+            }));
         }
-
-        Set<ModuleType<?>> installedTypes = getInstalledTypes().collect(Collectors.toSet());
-        propertyValidators.entrySet().removeIf(e -> !installedTypes.contains(e.getKey()));
-
-        installedTypes.forEach(type -> {
-            Map<ConfigProperty, Consumer<?>> map = new HashMap<>();
-            type.getTypeProperties(SneakyUtils.unsafeCast(getModuleData(type)), SneakyUtils.unsafeCast(map));
-            gathered.addAll(map.keySet());
-            if (propertyValidators.containsKey(type)) {
-                propertyValidators.get(type).accept(SneakyUtils.unsafeCast(getModuleData(type)));
-            } else {
-                map.forEach((property, consumer) -> {
-                    if (consumer != null) {
-                        propertyValidators.put(type, consumer);
-                    }
-                });
-            }
-        });
-
-        //Gather is not just called on load but also when a property is added or removed so we need to avoid overwriting existing loaded properties.
-        Set<String> gatheredNames = gathered.stream().map(ConfigProperty::getName).collect(Collectors.toSet());
-        //Remove properties that no longer exist
-        providedProperties.removeIf(e -> !gatheredNames.contains(e.getName()));
-
-        Set<String> installedNames = providedProperties.stream().map(ConfigProperty::getName).collect(Collectors.toSet());
-        //Add new properties
-        providedProperties.addAll(gathered.stream().filter(e -> !installedNames.contains(e.getName())).collect(Collectors.toList()));
-
-        //Repopulate the property map.
-        propertyMap.clear();
-        providedProperties.forEach(e -> propertyMap.put(e.getName(), e));
-
-        getModuleEntities().forEach(e -> e.getEntityProperties().forEach(p -> {
-            if (propertyMap.containsKey(p.getName())) {
-                p.generateUnique(); //This avoids duplicate names due to creative duped items.
-            }
-            propertyMap.put(p.getName(), p);
-        }));
     }
 
     //endregion
@@ -290,11 +301,13 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
         CompoundNBT nbt = new CompoundNBT();
         //Serialize Modules
         ListNBT modules = new ListNBT();
-        for (ModuleEntity entity : moduleEntities) {
-            CompoundNBT entityNBT = new CompoundNBT();
-            entityNBT.putString("id", entity.module.getRegistryName().toString());
-            entity.writeToNBT(entityNBT);
-            modules.add(entityNBT);
+        synchronized (moduleEntities) {
+            for (ModuleEntity entity : moduleEntities) {
+                CompoundNBT entityNBT = new CompoundNBT();
+                entityNBT.putString("id", entity.module.getRegistryName().toString());
+                entity.writeToNBT(entityNBT);
+                modules.add(entityNBT);
+            }
         }
         nbt.put("modules", modules);
 
@@ -308,33 +321,35 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
 
     @Override
     public void deserializeNBT(CompoundNBT nbt) {
-        clearCaches();
-        //Deserialize modules first
-        moduleEntities.clear();
-        ListNBT modules = nbt.getList("modules", 10);
-        modules.stream().map(inbt -> (CompoundNBT) inbt).forEach(compound -> {
-            ResourceLocation id = new ResourceLocation(compound.getString("id"));
-            Module<?> module = ModuleRegistry.getRegistry().getValue(id);
-            if (module == null) {
-                logger.warn("Failed to load unregistered module: " + id + " Skipping...");
-            } else {
-                ModuleEntity entity = module.createEntity();
-                entity.readFromNBT(compound);
-                if (deleteInvalidModules && !entity.isPosValid(gridWidth, gridHeight)) {
-                    logger.warn("Deleting module from invalid grid position: " + entity.toString());
+        synchronized (moduleEntities) {
+            clearCaches();
+            //Deserialize modules first
+            moduleEntities.clear();
+            ListNBT modules = nbt.getList("modules", 10);
+            modules.stream().map(inbt -> (CompoundNBT) inbt).forEach(compound -> {
+                ResourceLocation id = new ResourceLocation(compound.getString("id"));
+                Module<?> module = ModuleRegistry.getRegistry().getValue(id);
+                if (module == null) {
+                    logger.warn("Failed to load unregistered module: " + id + " Skipping...");
                 } else {
-                    moduleEntities.add(entity);
-                    entity.setHost(this);
+                    ModuleEntity entity = module.createEntity();
+                    entity.readFromNBT(compound);
+                    if (deleteInvalidModules && !entity.isPosValid(gridWidth, gridHeight)) {
+                        logger.warn("Deleting module from invalid grid position: " + entity.toString());
+                    } else {
+                        moduleEntities.add(entity);
+                        entity.setHost(this);
+                    }
                 }
-            }
-        });
+            });
 
-        //So that we can gather properties which may depend on installed modules.
-        gatherProperties();
-        if (nbt.hasUUID("provider_id")) {
-            providerID = nbt.getUUID("provider_id");
+            //So that we can gather properties which may depend on installed modules.
+            gatherProperties();
+            if (nbt.hasUUID("provider_id")) {
+                providerID = nbt.getUUID("provider_id");
+            }
+            CompoundNBT properties = nbt.getCompound("properties");
+            providedProperties.forEach(e -> e.deserializeNBT(properties.getCompound(e.getName())));
         }
-        CompoundNBT properties = nbt.getCompound("properties");
-        providedProperties.forEach(e -> e.deserializeNBT(properties.getCompound(e.getName())));
     }
 }
