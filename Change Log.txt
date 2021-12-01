@@ -1,3 +1,6 @@
+######## 3.0.19.x ########
+- Fixed fusion crafting not updating comparator state when result is removed.
+
 ######## 3.0.18.428 ########
 - Removed a debug line from previous module work.
 

@@ -211,6 +211,7 @@ public class TileFusionCraftingCore extends TileBCore implements IFusionInventor
     }
 
     public void inventoryChanged() {
+        setChanged();
         if (!updateInjectors()) {
             return;
         }
@@ -312,6 +313,7 @@ public class TileFusionCraftingCore extends TileBCore implements IFusionInventor
     @Override
     public void setFusionState(FusionState state) {
         fusionState.set(state);
+        setChanged();
     }
 
     @Override
