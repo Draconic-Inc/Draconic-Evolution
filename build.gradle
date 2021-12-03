@@ -4,23 +4,39 @@ buildscript {
         mavenCentral()
         maven {
             name = "forge"
-            url = "http://files.minecraftforge.net/maven"
+            url = "https://maven.minecraftforge.net"
+        }
+        maven {
+            name = "Scala CI dependencies"
+            url = "https://repo1.maven.org/maven2/"
         }
         maven {
             name = "sonatype"
             url = "https://oss.sonatype.org/content/repositories/snapshots/"
         }
+        maven {
+            name = "jitpack"
+            url = "https://jitpack.io"
+        }
     }
 
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
+        classpath 'com.github.GTNewHorizons:ForgeGradle:1.2.4'
     }
 }
 
 repositories {
     maven {
-        name 'CB Maven FS'
-        url "http://chickenbones.net/maven/"
+        name "chickenbones"
+        url "https://chickenbones.net/maven"
+    }
+    maven {
+        name "Overmind forge repo mirror"
+        url "https://gregtech.overminddl1.com"
+    }
+    maven {
+        name = "jitpack"
+        url = "https://jitpack.io"
     }
 }
 
@@ -49,9 +65,9 @@ minecraft {
 
 
 dependencies {
-    compile "codechicken:CodeChickenLib:${config.minecraft_version}-${config.CCLIB_version}:dev"
-    compile "codechicken:CodeChickenCore:${config.minecraft_version}-${config.ccc_version}:dev"
-    compile "codechicken:NotEnoughItems:${config.minecraft_version}-${config.NEI_version}:dev"
+    implementation "com.github.GTNewHorizons:CodeChickenLib:master-SNAPSHOT:dev"
+    implementation "com.github.GTNewHorizons:CodeChickenCore:master-SNAPSHOT:dev"
+    implementation "com.github.GTNewHorizons:NotEnoughItems:master-SNAPSHOT:dev"
 
     if (file('../BrandonsCore/').exists()) compile project('../BrandonsCore')
 }

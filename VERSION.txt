@@ -1,3 +1,0 @@
-Version:1.0.2h
-Snapshot:0
-ReleaseNote:Fixed issue with charging bows.

@@ -107,7 +107,7 @@ public class Magnet extends ItemDE {
 
             for (EntityXPOrb orb : xp) {
                 if (!world.isRemote) {
-                    if (orb.field_70532_c == 0) {
+                    if (orb.field_70532_c == 0 && orb.isEntityAlive()) {
                         if (MinecraftForge.EVENT_BUS.post(new PlayerPickupXpEvent(player, orb))) continue;
                         world.playSoundAtEntity(player, "random.orb", 0.1F, 0.5F * ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7F + 1.8F));
                         player.onItemPickup(orb, 1);
