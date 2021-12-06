@@ -251,7 +251,7 @@ public class DEOldConfig {
     public static int grinderEnergyPerHeart = 80;
 
     //    @ModConfigProperty(category = "Tweaks", name = "dragonEggSpawnOverride", comment = "By default, the dragon egg only ever spawns once. This forces it to spawn every time the dragon is killed.")
-    public static boolean dragonEggSpawnOverride = true;
+//    public static boolean dragonEggSpawnOverride = true;
 
     //    @ModConfigProperty(category = "Tweaks", name = "expensiveDragonRitual", comment = "Lets face it. The biggest issue with the new dragon ritual is it is too darn cheap! This modifies the recipe to make it a bit more expensive.")
     public static boolean expensiveDragonRitual = true;
@@ -261,7 +261,7 @@ public class DEOldConfig {
 
 
     //    @ModConfigProperty(category = "Tweaks", name = "dragonDustLootModifier", comment = "This can be used to adjust the amount of Draconium Dust the Ender Dragon drops when killed.\nThe amount dropped will be this number +/- 10%")
-    public static int dragonDustLootModifier = 64;
+//    public static int dragonDustLootModifier = 64;
 
     //    @ModConfigProperty(category = "Tweaks", name = "disableChaosIslandExplosion", comment = "If true, this will disable the destruction of chaos islands after the chaos crystal is broken.")
     public static boolean disableChaosIslandExplosion = false;

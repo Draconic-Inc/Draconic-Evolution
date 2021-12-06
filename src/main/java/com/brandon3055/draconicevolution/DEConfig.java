@@ -57,6 +57,8 @@ public class DEConfig {
     public static int portalMaxArea;
     public static int portalMaxDistanceSq;
     public static int chaosDropCount;
+    public static int dragonDustLootModifier;
+    public static boolean dragonEggSpawnOverride;
 
     public static double reactorOutputMultiplier = 10;
     public static double reactorFuelUsageMultiplier = 5;
@@ -265,6 +267,16 @@ public class DEConfig {
                     .setSyncCallback((tag, type) -> disableLargeReactorBoom = tag.getBoolean());
         }
 
+        serverTag.getTag("dragonDustLootModifier")
+                .setSyncToClient()
+                .setComment("This can be used to adjust the amount of Draconium Dust the Ender Dragon drops when killed.\nThe amount dropped will be this number +/- 10%")
+                .setDefaultInt(64)
+                .setSyncCallback((tag, type) -> dragonDustLootModifier = tag.getInt());
+        serverTag.getTag("dragonEggSpawnOverride")
+                .setSyncToClient()
+                .setComment("By default, the dragon egg only ever spawns once. This forces it to spawn every time the dragon is killed.")
+                .setDefaultBoolean(true)
+                .setSyncCallback((tag, type) -> dragonEggSpawnOverride = tag.getBoolean());
     }
 
     //Client properties

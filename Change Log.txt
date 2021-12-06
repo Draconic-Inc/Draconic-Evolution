@@ -1,5 +1,6 @@
 ######## 3.0.19.x ########
 - Fixed fusion crafting not updating comparator state when result is removed.
+- Re implemented dragon draconium dust drop count config.
 
 ######## 3.0.18.428 ########
 - Removed a debug line from previous module work.

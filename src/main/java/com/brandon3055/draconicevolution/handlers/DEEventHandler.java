@@ -140,13 +140,13 @@ public class DEEventHandler {
 
             if (entity instanceof EnderDragonEntity) {
                 DragonFightManager manager = ((EnderDragonEntity) entity).getDragonFight();
-                if (DEOldConfig.dragonEggSpawnOverride && manager != null && manager.hasPreviouslyKilledDragon()) {
+                if (DEConfig.dragonEggSpawnOverride && manager != null && manager.hasPreviouslyKilledDragon()) {
                     entity.level.setBlockAndUpdate(entity.level.getHeightmapPos(Heightmap.Type.WORLD_SURFACE, EndPodiumFeature.END_PODIUM_LOCATION).offset(0, 0, -4), Blocks.DRAGON_EGG.defaultBlockState());
                 }
             }
 
-            if (DEOldConfig.dragonDustLootModifier > 0) {
-                double count = (DEOldConfig.dragonDustLootModifier * 0.9D) + (entity.level.random.nextDouble() * (DEOldConfig.dragonDustLootModifier * 0.2));
+            if (DEConfig.dragonDustLootModifier > 0) {
+                double count = (DEConfig.dragonDustLootModifier * 0.9D) + (entity.level.random.nextDouble() * (DEConfig.dragonDustLootModifier * 0.2));
                 for (int i = 0; i < (int) count; i++) {
                     float mm = 0.3F;
                     ItemEntity dust = new ItemEntity(entity.level, entity.getX() - 2 + entity.level.random.nextInt(4), entity.getY() - 2 + entity.level.random.nextInt(4), entity.getZ() - 2 + entity.level.random.nextInt(4), new ItemStack(DEContent.dust_draconium));
