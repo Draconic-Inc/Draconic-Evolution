@@ -276,7 +276,7 @@
   "gui.draconicevolution.modular_item.no_module_hosts": "您的背包中没有任何模块物品！",
   "gui.draconicevolution.modular_item.open_item_config.info": "打开项目配置GUI",
   "gui.draconicevolution.reactor.activate": "激活",
-  "gui.draconicevolution.reactor.chaos_out": "混沌 ( 输出)",
+  "gui.draconicevolution.reactor.chaos_out": "混沌 (输出)",
   "gui.draconicevolution.reactor.charge": "充电",
   "gui.draconicevolution.reactor.convert_rate": "燃料转化率",
   "gui.draconicevolution.reactor.convert_rate.info": "这是反应堆目前使用燃料的速度。 随着反应器能量饱和度的增加，这将下降。",
