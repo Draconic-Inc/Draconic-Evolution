@@ -1,0 +1,28 @@
+// Add your dependencies here
+
+dependencies {
+    compile("curse.maven:brandons-core-231382:2297163")
+
+    compileOnly("com.github.GTNewHorizons:ForestryMC:master-SNAPSHOT:api") {
+        transitive = false
+    }
+    compileOnly("com.github.GTNewHorizons:OpenComputers:master-SNAPSHOT:api") {
+        transitive = false
+    }
+    compileOnly("com.github.GTNewHorizons:NotEnoughItems:master-SNAPSHOT:dev") {
+        transitive = false
+    }
+    compileOnly("com.github.GTNewHorizons:CodeChickenLib:master-SNAPSHOT:dev") {
+        transitive = false
+    }
+
+    compileOnly("thaumcraft:Thaumcraft:1.7.10-4.2.3.5:dev") {
+        transitive = false
+    }
+    compileOnly("curse.maven:computercraft-67504:2269339") {
+        transitive = false
+    }
+    compileOnly("curse.maven:cofh-lib-220333:2388748") {
+        transitive = false
+    }
+}

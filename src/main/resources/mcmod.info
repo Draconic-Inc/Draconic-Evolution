@@ -1,10 +1,10 @@
 [
 {
-  "modid": "DraconicEvolution",
-  "name": "Draconic Evolution",
+  "modid": "${modId}",
+  "name": "${modName}",
   "description": "This is a mod that was originally made for the Tolkiencraft mod pack but it has since evolved way beyond that. This mod adds a lot of extremely expensive and powerful end game items as well as a lot of random useful bits and pieces.",
-  "version": "${version}",
-  "mcversion": "${mcversion}",
+  "version": "${modVersion}",
+  "mcversion": "${minecraftVersion}",
   "url": "http://www.brandon3055.com/",
   "updateUrl": "",
   "authorList": ["brandon3055"],

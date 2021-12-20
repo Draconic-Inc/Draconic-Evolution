@@ -4,7 +4,7 @@ package com.brandon3055.draconicevolution.common.lib;
  * Created by Brandon on 24/02/2015.
  */
 public class VersionHandler {
-    public static final String VERSION = "1.0.2h";
+    public static final String VERSION = "GRADLETOKEN_VERSION";
 
 
     public static final int SNAPSHOT = 0;
