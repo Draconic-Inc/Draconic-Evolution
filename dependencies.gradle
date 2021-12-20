@@ -15,6 +15,9 @@ dependencies {
     compileOnly("com.github.GTNewHorizons:CodeChickenLib:master-SNAPSHOT:dev") {
         transitive = false
     }
+    compileOnly("com.github.GTNewHorizons:inventory-tweaks:master-SNAPSHOT:dev") {
+        transitive = false
+    }
 
     compileOnly("thaumcraft:Thaumcraft:1.7.10-4.2.3.5:dev") {
         transitive = false
