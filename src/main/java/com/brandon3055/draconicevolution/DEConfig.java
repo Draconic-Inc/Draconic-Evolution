@@ -269,7 +269,7 @@ public class DEConfig {
 
         serverTag.getTag("dragonDustLootModifier")
                 .setSyncToClient()
-                .setComment("This can be used to adjust the amount of Draconium Dust the Ender Dragon drops when killed.\nThe amount dropped will be this number +/- 10%")
+                .setComment("This can be used to adjust the amount of Draconium Dust the Ender Dragon drops when killed.\nThe amount dropped will be this number +/- 10%%")
                 .setDefaultInt(64)
                 .setSyncCallback((tag, type) -> dragonDustLootModifier = tag.getInt());
         serverTag.getTag("dragonEggSpawnOverride")
