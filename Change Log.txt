@@ -1,6 +1,7 @@
 ######## 3.0.19.x ########
 - Fixed fusion crafting not updating comparator state when result is removed.
 - Re implemented dragon draconium dust drop count config.
+- Ensured creative mode warning is only sent to the player changing their game mode.
 
 ######## 3.0.18.428 ########
 - Removed a debug line from previous module work.

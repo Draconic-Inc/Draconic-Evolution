@@ -51,9 +51,9 @@ public interface IFusionInventory extends IInventory {
     //@formatter:off
     @Override default int getContainerSize() { return 0; }
     @Override default boolean isEmpty() { return false; }
-    @Override default ItemStack getItem(int index) { return null; }
-    @Override default ItemStack removeItem(int index, int count) { return null; }
-    @Override default ItemStack removeItemNoUpdate(int index) { return null; }
+    @Override default ItemStack getItem(int index) { return ItemStack.EMPTY; }
+    @Override default ItemStack removeItem(int index, int count) { return ItemStack.EMPTY; }
+    @Override default ItemStack removeItemNoUpdate(int index) { return ItemStack.EMPTY; }
     @Override default void setItem(int index, ItemStack stack) { }
     @Override default void setChanged() { }
     @Override default boolean stillValid(PlayerEntity player) { return false; }
