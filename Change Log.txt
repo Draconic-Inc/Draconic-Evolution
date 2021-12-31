@@ -2,6 +2,8 @@
 - Fixed fusion crafting not updating comparator state when result is removed.
 - Re implemented dragon draconium dust drop count config.
 - Ensured creative mode warning is only sent to the player changing their game mode.
+- Prevented energy module installation in creative capacitor (It breaks)
+- Added support for other mods custom arrows. But many DE arrow effects will not work on custom arrows.
 
 ######## 3.0.18.428 ########
 - Removed a debug line from previous module work.

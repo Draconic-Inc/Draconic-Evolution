@@ -8,7 +8,9 @@ import com.brandon3055.brandonscore.utils.DataUtils;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
 import com.brandon3055.draconicevolution.api.IInvCharge;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
+import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.config.BooleanProperty;
+import com.brandon3055.draconicevolution.api.modules.ModuleCategory;
 import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleHostImpl;
 import com.brandon3055.draconicevolution.init.DEContent;
@@ -18,6 +20,7 @@ import com.brandon3055.draconicevolution.integration.equipment.EquipmentManager;
 import com.brandon3055.draconicevolution.integration.equipment.IDEEquipment;
 import com.brandon3055.draconicevolution.items.equipment.DEItemTier;
 import com.brandon3055.draconicevolution.items.equipment.IModularItem;
+import com.brandon3055.draconicevolution.lib.WTFException;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.LivingEntity;
@@ -26,6 +29,7 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
@@ -36,6 +40,8 @@ import net.minecraftforge.fml.ModList;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.brandon3055.draconicevolution.api.capability.DECapabilities.MODULE_HOST_CAPABILITY;
 
 /**
  * Created by brandon3055 on 31/05/2016.
@@ -60,22 +66,6 @@ public class DraconiumCapacitor extends Item implements IInvCharge, IModularItem
     }
 
     @Override
-    public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> items) {
-        if (this.allowdedIn(group)) {
-            items.add(new ItemStack(this));
-//            if (this != DEContent.capacitor_creative) {
-//                ItemStack stack = new ItemStack(this);
-//                stack.getCapability(DECapabilities.OP_STORAGE).ifPresent(storage -> {
-//                    if (storage instanceof IOPStorageModifiable) {
-//                        ((IOPStorageModifiable) storage).modifyEnergyStored(storage.getMaxOPStored());
-//                        items.add(stack);
-//                    }
-//                });
-//            }
-        }
-    }
-
-    @Override
     public ModuleHostImpl createHost(ItemStack stack) {
         ModuleHostImpl host;
         if (this == DEContent.capacitor_creative) {
@@ -93,6 +83,16 @@ public class DraconiumCapacitor extends Item implements IInvCharge, IModularItem
             }
         });
         return host;
+    }
+
+    @Override
+    public MultiCapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundNBT nbt) {
+        MultiCapabilityProvider prov = IModularItem.super.initCapabilities(stack, nbt);
+        if (this == DEContent.capacitor_creative && prov != null) {
+            ModuleHost host = prov.getCapability(MODULE_HOST_CAPABILITY).orElseThrow(WTFException::new);
+            host.getModuleCategories().remove(ModuleCategory.ENERGY);
+        }
+        return prov;
     }
 
     @Nullable

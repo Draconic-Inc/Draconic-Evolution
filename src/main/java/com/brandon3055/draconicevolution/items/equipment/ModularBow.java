@@ -26,9 +26,11 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
+import net.minecraft.entity.projectile.ArrowEntity;
 import net.minecraft.entity.projectile.SpectralArrowEntity;
 import net.minecraft.item.ArrowItem;
 import net.minecraft.item.BowItem;
@@ -158,15 +160,22 @@ public class ModularBow extends BowItem implements IReaperItem, IModularItem {
 
                     if (!world.isClientSide) {
                         ArrowItem arrowitem = (ArrowItem)(ammoStack.getItem() instanceof ArrowItem ? ammoStack.getItem() : Items.ARROW);
-                        DraconicArrowEntity arrowEntity = customArrow(arrowitem.createArrow(world, ammoStack, player));
-                        arrowEntity.setEffectsFromItem(ammoStack);
+                        AbstractArrowEntity arrowEntity = customArrow(arrowitem.createArrow(world, ammoStack, player));
+                        if (arrowEntity instanceof ArrowEntity) {
+                            ((ArrowEntity)arrowEntity).setEffectsFromItem(ammoStack);
+                        } else if (arrowEntity instanceof DraconicArrowEntity) {
+                            ((DraconicArrowEntity)arrowEntity).setEffectsFromItem(ammoStack);
+                        }
                         arrowEntity.shootFromRotation(player, player.xRot, player.yRot, 0.0F, powerForTime * 3.0F, 1 - projData.getAccuracy());
-                        arrowEntity.setTechLevel(techLevel);
-                        arrowEntity.setPenetration(projData.getPenetration());
-                        arrowEntity.setGravComp(projData.getAntiGrav());
+                        if (arrowEntity instanceof DraconicArrowEntity) {
+                            DraconicArrowEntity deArrow = (DraconicArrowEntity) arrowEntity;
+                            deArrow.setTechLevel(techLevel);
+                            deArrow.setPenetration(projData.getPenetration());
+                            deArrow.setGravComp(projData.getAntiGrav());
 
-                        if (host.getEntitiesByType(ModuleTypes.PROJ_ANTI_IMMUNE).findAny().isPresent()) {
-                            arrowEntity.setProjectileImmuneOverride(true);
+                            if (host.getEntitiesByType(ModuleTypes.PROJ_ANTI_IMMUNE).findAny().isPresent()) {
+                                deArrow.setProjectileImmuneOverride(true);
+                            }
                         }
 
                         if (powerForTime == 1.0F) {
@@ -216,7 +225,11 @@ public class ModularBow extends BowItem implements IReaperItem, IModularItem {
     }
 
     @Override
-    public DraconicArrowEntity customArrow(AbstractArrowEntity arrow) {
+    public AbstractArrowEntity customArrow(AbstractArrowEntity arrow) {
+        if (arrow.getType() != EntityType.ARROW && arrow.getType() != EntityType.SPECTRAL_ARROW) {
+            return arrow;
+        }
+
         Entity owner = arrow.getOwner();
         if(!(owner instanceof LivingEntity)) { //Because it seems there is an edge case where owner may be null hear.
             return new DraconicArrowEntity(DEContent.draconicArrow, arrow.level);
