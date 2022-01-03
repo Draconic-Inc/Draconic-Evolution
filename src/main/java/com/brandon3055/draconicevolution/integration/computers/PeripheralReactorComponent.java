@@ -69,34 +69,38 @@ public class PeripheralReactorComponent implements IPeripheral, ICapabilityProvi
 	
 	@LuaFunction
 	public final boolean chargeReactor() {
-		if (reactor.canCharge()) {
-            reactor.chargeReactor();
+		if (refreshCoreStatus()) {
+            reactor.sendPacketToServer(output -> output.writeByte(TileReactorCore.ID_CHARGE), 0);
             return true;
         }
-        else return false;
+        return false;
 	}
 	
 	@LuaFunction
 	public final boolean activateReactor() {
-		if (reactor.canActivate()) {
-            reactor.activateReactor();
+		if (refreshCoreStatus()) {
+			reactor.sendPacketToServer(output -> output.writeByte(TileReactorCore.ID_ACTIVATE), 0);
             return true;
         }
-        else return false;
+        return false;
 	}
 	
 	@LuaFunction
 	public final boolean stopReactor() {
-		if (reactor.canStop()) {
-            reactor.shutdownReactor();
+		if (refreshCoreStatus()) {
+			reactor.sendPacketToServer(output -> output.writeByte(TileReactorCore.ID_SHUTDOWN), 0);
             return true;
         }
-        else return false;
+        return false;
 	}
 	
 	@LuaFunction
-	public final void setFailSafe(boolean state) {
-		reactor.failSafeMode.set(state);
+	public final boolean toggleFailSafe() {
+		if (refreshCoreStatus()) {
+			reactor.sendPacketToServer(output -> output.writeByte(TileReactorCore.ID_FAIL_SAFE), 0);
+			return true;
+		}
+		return false;
 	}
 	
 	@Override
