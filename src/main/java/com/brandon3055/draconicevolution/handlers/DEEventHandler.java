@@ -169,7 +169,7 @@ public class DEEventHandler {
         LivingEntity entity = event.getEntityLiving();
         Entity attacker = event.getSource().getEntity();
 
-        if (attacker == null || !(attacker instanceof PlayerEntity)) {
+        if (attacker == null || !(attacker instanceof PlayerEntity) || entity instanceof PlayerEntity) {
             return;
         }
 

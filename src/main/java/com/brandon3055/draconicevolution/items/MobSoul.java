@@ -220,6 +220,9 @@ public class MobSoul extends ItemBCore {
                 EntityType type = ForgeRegistries.ENTITIES.getValue(getCachedRegName(name));
                 if (type != null) {
                     entity = type.create(world);
+                    if (entity == null) {
+                        entity = EntityType.PIG.create(world);
+                    }
                 }
                 else {
                     entity = EntityType.PIG.create(world);

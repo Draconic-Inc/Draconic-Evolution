@@ -1,4 +1,7 @@
-######## 3.0.19.x ########
+######## 3.0.20.x ########
+- Prevented players from dropping souls which was causing issues.
+
+######## 3.0.19.432 ########
 - Fixed fusion crafting not updating comparator state when result is removed.
 - Re implemented dragon draconium dust drop count config.
 - Ensured creative mode warning is only sent to the player changing their game mode.
