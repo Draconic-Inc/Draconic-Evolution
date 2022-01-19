@@ -1,5 +1,6 @@
 ######## 3.0.20.x ########
 - Prevented players from dropping souls which was causing issues.
+- Added config for creative warning.
 
 ######## 3.0.19.432 ########
 - Fixed fusion crafting not updating comparator state when result is removed.

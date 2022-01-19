@@ -66,7 +66,7 @@ public class DEEventHandler {
     @SubscribeEvent
     public void changeGameMode(ClientPlayerChangeGameModeEvent event) {
         PlayerEntity player = Minecraft.getInstance().player;
-        if (event.getNewGameMode() == GameType.CREATIVE && player != null && !Minecraft.getInstance().isLocalServer() && player.getGameProfile().equals(event.getInfo().getProfile())) {
+        if (DEConfig.creativeWarning && event.getNewGameMode() == GameType.CREATIVE && player != null && !Minecraft.getInstance().isLocalServer() && player.getGameProfile().equals(event.getInfo().getProfile())) {
             player.sendMessage(new StringTextComponent("[Draconic Evolution]: ").withStyle(TextFormatting.YELLOW).append(new StringTextComponent("Warning! Using creative inventory on a server will delete all module data on DE tools and armor. This is due a fundamental issue with the creative menu.").withStyle(TextFormatting.RED)), Util.NIL_UUID);
         }
     }
