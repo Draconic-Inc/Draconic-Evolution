@@ -155,6 +155,9 @@ public class MobSoul extends ItemBCore {
             }
             else {
                 entity = type.create(world);
+                if (entity == null) {
+                    return EntityType.PIG.create(world);
+                }
                 if (entityData != null) {
                     entity.load(entityData);
                 }
