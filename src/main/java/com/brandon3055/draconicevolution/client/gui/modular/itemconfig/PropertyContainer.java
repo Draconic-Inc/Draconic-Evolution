@@ -136,7 +136,7 @@ public class PropertyContainer extends GuiManipulable {
             groupName = new GuiTextField();
             groupName.setPos(xPos() + 12, yPos() + 2);
             groupName.onReload(e -> e.setMaxPos(globalBinding.isEnabled() ? globalBinding.xPos() - 2 : togglePreset.xPos() - 2, e.yPos() + 8, true));
-            groupName.setText(defaultName);
+            groupName.setTextAndNotify(defaultName);
             groupName.setChangeListener(gui::savePropertyConfig);
             groupName.setEnableBackgroundDrawing(false);
             groupName.setBlinkingCursor(true);
@@ -364,7 +364,7 @@ public class PropertyContainer extends GuiManipulable {
                 newGroup.collapsed = collapsed;
                 newGroup.globalKeyBind = globalKeyBind;
                 if (isGroup){
-                    newGroup.groupName.setText(groupName.getText());
+                    newGroup.groupName.setTextAndNotify(groupName.getText());
                 }
                 newGroup.setSize(this);
                 newGroup.setMaxXPos((int) mouseX + 5, false).setYPos((int) mouseY - 5);
