@@ -92,17 +92,17 @@ public class GuiFlowGate extends ModularGuiContainer<ContainerBCTile<TileFlowGat
         manager.onTick(() -> {
             if (tile.minFlow.get() != ltMin) {
                 ltMin = tile.minFlow.get();
-                lowField.setTextAndNotify(String.valueOf(ltMin));
+                lowField.setText(String.valueOf(ltMin));
             }
             if (tile.maxFlow.get() != ltMax) {
                 ltMax = tile.maxFlow.get();
-                highField.setTextAndNotify(String.valueOf(ltMax));
+                highField.setText(String.valueOf(ltMax));
             }
             if (!highField.isFocused() && highField.getText().equals("")) {
-                highField.setTextAndNotify("0");
+                highField.setText("0");
             }
             if (!lowField.isFocused() && lowField.getText().equals("")) {
-                lowField.setTextAndNotify("0");
+                lowField.setText("0");
             }
         });
     }
