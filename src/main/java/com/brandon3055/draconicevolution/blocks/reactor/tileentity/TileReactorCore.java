@@ -543,10 +543,10 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
 
     //region ############## User Interaction ###############
 
-    private static final byte ID_CHARGE = 0;
-    private static final byte ID_ACTIVATE = 1;
-    private static final byte ID_SHUTDOWN = 2;
-    private static final byte ID_FAIL_SAFE = 3;
+    public static final byte ID_CHARGE = 0;
+    public static final byte ID_ACTIVATE = 1;
+    public static final byte ID_SHUTDOWN = 2;
+    public static final byte ID_FAIL_SAFE = 3;
 
     public void chargeReactor() {
         if (level.isClientSide) {
