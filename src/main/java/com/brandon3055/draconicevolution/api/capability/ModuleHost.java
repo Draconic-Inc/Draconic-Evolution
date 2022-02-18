@@ -105,13 +105,16 @@ public interface ModuleHost extends INBTSerializable<CompoundNBT> {
      */
     @Nullable
     default <T extends ModuleData<T>> T getModuleData(ModuleType<T> moduleType) {
-        // No that can not be replaced with a method reference. Doing so causes a BootstrapMethodError
-        // noinspection unchecked,Convert2MethodRef
+        //brandon-moment
+        try
+        {
         return (T) getModules() //
                 .filter(module -> module.getType() == moduleType) //
                 .map(Module::getData) //
                 .reduce((o1, other) -> o1.combine(other)) //
                 .orElse(null);
+        }
+        catch(Exception e){}
     }
 
     default <T extends ModuleData<T>> T getModuleData(ModuleType<T> moduleType, T fallback) {
