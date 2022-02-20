@@ -21,20 +21,20 @@ public class ModuleCfg {
 
     //@formatter:off
     //Default Values
-    private static Integer[] WYVERN_TOOLS            = new Integer[] {4, 4};
-    private static Integer[] DRACONIC_TOOLS          = new Integer[] {6, 5};
-    private static Integer[] CHAOTIC_TOOLS           = new Integer[] {8, 6};
+    private static Integer[] WYVERN_TOOLS            = new Integer[] {4, 4};    // 4 x 4, 16 slots total
+    private static Integer[] DRACONIC_TOOLS          = new Integer[] {6, 5};    // 6 x 5, 30 slots total
+    private static Integer[] CHAOTIC_TOOLS           = new Integer[] {8, 6};    // 8 x 6, 48 slots total
 
-    private static Integer[] DRACONIC_STAFF          = new Integer[] {8, 6};
-    private static Integer[] CHAOTIC_STAFF           = new Integer[] {10, 8};
+    private static Integer[] DRACONIC_STAFF          = new Integer[] {8, 6};    // 8 x 6, 48 slots total
+    private static Integer[] CHAOTIC_STAFF           = new Integer[] {10, 8};   // 10 x 8, 80 slots total
 
-    private static Integer[] WYVERN_CHESTPIECE       = new Integer[] {6, 5};  // 6 * 5 = 30
-    private static Integer[] DRACONIC_CHESTPIECE     = new Integer[] {8, 6};  // 8 * 6 = 48
-    private static Integer[] CHAOTIC_CHESTPIECE      = new Integer[] {10, 8}; // 10 * 8 = 80
+    private static Integer[] WYVERN_CHESTPIECE       = new Integer[] {6, 5};    // 6 x 5, 30 slots total
+    private static Integer[] DRACONIC_CHESTPIECE     = new Integer[] {8, 6};    // 8 x 6, 48 slots total
+    private static Integer[] CHAOTIC_CHESTPIECE      = new Integer[] {10, 8};   // 10 x 8, 80 slots total
 
-    private static Integer[] WYVERN_CAPACITOR        = new Integer[] {4, 4};
-    private static Integer[] DRACONIC_CAPACITOR      = new Integer[] {5, 5};
-    private static Integer[] CHAOTIC_CAPACITOR       = new Integer[] {8, 6};
+    private static Integer[] WYVERN_CAPACITOR        = new Integer[] {4, 4};    // 4 x 4, 16 slots total
+    private static Integer[] DRACONIC_CAPACITOR      = new Integer[] {5, 5};    // 5 x 5, 25 slots total
+    private static Integer[] CHAOTIC_CAPACITOR       = new Integer[] {8, 6};    // 8 x 6, 48 slots total
 
 
     public static int[] wyvernTools;
@@ -231,8 +231,8 @@ public class ModuleCfg {
         moduleStats = new StandardConfigFile(Paths.get("./config/brandon3055/ModuleStats.cfg")).load();
         moduleStats.setSyncToClient();
         moduleStats.setSyncCallback((configTag, syncType) -> DEModules.moduleItemMap.keySet().forEach(BaseModule::reloadData));
-//        moduleStats.setComment("All of the values in this file are the defaults as of the time the file was generated.",
-//                "If you wish to ");
+        moduleStats.setComment("All of the values in this file are the defaults as of the time the file was generated.",
+                "If you wish to set custom values you must set the \"override\" field to true then specify your custom values.");
 
     }
 

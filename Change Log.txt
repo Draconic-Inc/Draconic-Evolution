@@ -1,6 +1,9 @@
 ######## 3.0.20.x ########
 - Prevented players from dropping souls which was causing issues.
 - Added config for creative warning.
+- Fixed a possible mob soul crash.
+- Merged PR from FoxMcloud5655 that fixes some some issues with computercraft integration.
+- Merged PR from YarinQuapi that adds more config options for world gen.
 
 ######## 3.0.19.432 ########
 - Fixed fusion crafting not updating comparator state when result is removed.
