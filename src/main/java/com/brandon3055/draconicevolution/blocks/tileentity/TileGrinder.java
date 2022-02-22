@@ -302,13 +302,16 @@ public class TileGrinder extends TileBCore implements ITickableTileEntity, IRSSw
                         Iterator<ItemEntity> i = items.iterator();
                         while (i.hasNext()) {
                             ItemEntity next = i.next();
-                            ItemStack stack = next.getItem();
-                            stack = InventoryUtils.insertItem(iItemHandler, stack, false);
-                            if (stack.isEmpty()) {
-                                next.remove();
-                                i.remove();
-                            } else {
-                                next.setItem(stack);
+                            if (next.isAlive()) {
+                                ItemStack stack = next.getItem();
+                                stack = InventoryUtils.insertItem(iItemHandler, stack, false);
+                                if (stack.isEmpty()) {
+                                    next.setItem(ItemStack.EMPTY);
+                                    next.remove();
+                                    i.remove();
+                                } else {
+                                    next.setItem(stack);
+                                }
                             }
                         }
                     });
