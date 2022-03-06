@@ -42,7 +42,7 @@ public class PeripheralEnergyPylon implements IPeripheral, ICapabilityProvider {
 	}
 	
 	@LuaFunction
-	public final long getTransferPerTick(boolean state) {
+	public final long getTransferPerTick() {
 		if (!tile.hasCoreLock.get() || tile.getCore() == null) {
             return 0;
         }
