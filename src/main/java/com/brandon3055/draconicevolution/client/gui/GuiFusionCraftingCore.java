@@ -72,7 +72,7 @@ public class GuiFusionCraftingCore extends ModularGuiContainer<ContainerFusionCr
                 .setEnabledCallback(() -> tile.getActiveRecipe() != null && !tile.isCrafting())
                 .onButtonReleased((b) -> tile.sendPacketToServer(output -> {}, 0));
         //Result Display
-        template.background.addChild(stackIcon = new GuiStackIcon(null));
+        template.background.addChild(stackIcon = new GuiStackIcon(ItemStack.EMPTY));
         toolkit.center(stackIcon, craftArea, 0, 3);
         template.background.addChild(new IngredRenderer(tile).setPosAndSize(craftArea));
     }

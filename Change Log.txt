@@ -1,4 +1,7 @@
-######## 3.0.20.x ########
+######## 3.0.21.441 ########
+- Re implemented Project Intelligence support.
+
+######## 3.0.20.440 ########
 - Prevented players from dropping souls which was causing issues.
 - Added config for creative warning.
 - Fixed a possible mob soul crash.
