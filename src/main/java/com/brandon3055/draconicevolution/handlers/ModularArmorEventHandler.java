@@ -52,18 +52,18 @@ public class ModularArmorEventHandler {
             return;
         }
 
-        //Allows /kill to completely bypass all protections
-        if (event.getAmount() == Float.MAX_VALUE && event.getSource() == DamageSource.OUT_OF_WORLD) {
-            event.setCanceled(true);
-            event.getEntityLiving().hurt(KILL_COMMAND, Float.MAX_VALUE);
-            return;
-        }
-
         LivingEntity entity = event.getEntityLiving();
         ItemStack chestStack = ModularChestpiece.getChestpiece(entity);
         LazyOptional<ModuleHost> optionalHost = chestStack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
 
         if (chestStack.isEmpty() || !optionalHost.isPresent()) {
+            return;
+        }
+
+        //Allows /kill to completely bypass all protections
+        if (event.getAmount() == Float.MAX_VALUE && event.getSource() == DamageSource.OUT_OF_WORLD) {
+            event.setCanceled(true);
+            event.getEntityLiving().hurt(KILL_COMMAND, Float.MAX_VALUE);
             return;
         }
 
