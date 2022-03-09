@@ -14,7 +14,6 @@ import java.util.Map;
  */
 public class ENetFXHandlerServerWireless extends ENetFXHandler<TileCrystalWirelessIO> {
 
-    private BatchedCrystalUpdate batchedUpdate;
     private Map<Byte, Byte> lastTickIndexToFlow = new HashMap<>();
     private Map<Byte, Byte> lastTickIndexToRFlow = new HashMap<>();
     private long lastTickEnergy = -1;
@@ -50,11 +49,7 @@ public class ENetFXHandlerServerWireless extends ENetFXHandler<TileCrystalWirele
 
         if (update.indexToFlowMap.size() > 0 || Math.abs(lastTickEnergy - tile.getEnergyStored()) > 100) {
             lastTickEnergy = tile.getEnergyStored();
-            batchedUpdate = update;
-        }
-
-        if (batchedUpdate != null) {
-            queUpdate();
+            queUpdate(update);
         }
     }
 
@@ -63,13 +58,11 @@ public class ENetFXHandlerServerWireless extends ENetFXHandler<TileCrystalWirele
         lastTickIndexToFlow.clear();
     }
 
-    private void queUpdate() {
+    private void queUpdate(BatchedCrystalUpdate update) {
         ServerWorld serverWorld = ((ServerWorld) tile.getLevel());
 
         if (serverWorld != null) {
-            serverWorld.getChunkSource().chunkMap.getPlayers(new ChunkPos(tile.getBlockPos()), false).forEach(player -> CrystalUpdateBatcher.queData(batchedUpdate, player));
+            serverWorld.getChunkSource().chunkMap.getPlayers(new ChunkPos(tile.getBlockPos()), false).forEach(player -> CrystalUpdateBatcher.queData(update, player));
         }
-
-        batchedUpdate = null;
     }
 }

@@ -26,11 +26,7 @@ public class CrystalUpdateBatcher {
     public CrystalUpdateBatcher() {}
 
     public static void queData(BatchedCrystalUpdate update, ServerPlayerEntity target) {
-        if (!batchQue.containsKey(target)) {
-            batchQue.put(target, new ArrayList<>());
-        }
-
-        batchQue.get(target).add(update);
+        batchQue.computeIfAbsent(target, e -> new ArrayList<>()).add(update);
     }
 
     public static void tickEnd() {
