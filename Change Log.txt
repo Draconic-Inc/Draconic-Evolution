@@ -1,6 +1,8 @@
 ######## 3.0.21.442 ########
 - Re implemented Project Intelligence support.
 - Fixed a conflict with FlashNpc
+- Fixed an impossible crash... i think.
+- Fixed high velocity arrows not syncing properly when on fire.
 
 ######## 3.0.20.440 ########
 - Prevented players from dropping souls which was causing issues.

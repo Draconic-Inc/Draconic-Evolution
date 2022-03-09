@@ -695,6 +695,10 @@ public class DraconicArrowEntity extends AbstractArrowEntity {
     @Override
     public IPacket<?> getAddEntityPacket() {
         return BCoreNetwork.getEntitySpawnPacket(this);
-//        return NetworkHooks.getEntitySpawningPacket(this);
+    }
+
+    @Override
+    public boolean isInvulnerableTo(DamageSource source) {
+        return source.isFire() || super.isInvulnerableTo(source);
     }
 }
