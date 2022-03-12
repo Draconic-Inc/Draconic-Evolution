@@ -2,92 +2,67 @@ package com.brandon3055.draconicevolution.world;
 
 import codechicken.lib.reflect.ObfMapping;
 import codechicken.lib.reflect.ReflectionManager;
+import com.brandon3055.draconicevolution.init.DEContent;
+import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.World;
+import net.minecraft.world.ISeedReader;
+import net.minecraft.world.gen.ChunkGenerator;
+import net.minecraft.world.gen.feature.NoFeatureConfig;
 
 import java.util.Random;
 
 /**
  * Created by Brandon on 28/08/2014.
  */
-public class WorldGenEnderComet /*extends WorldGenerator*/ {
+public class WorldGenEnderComet
+{
+    public static boolean place(ISeedReader seed, ChunkGenerator chunk, Random rand, BlockPos pos, NoFeatureConfig config) {
 
-    private int spawnX;
-    private int spawnY;
-    private int spawnZ;
-    private int tailX;
-    private int tailY;
-    private int tailZ;
-    private int size;
-
-    public WorldGenEnderComet() {
-//        super(false);
-    }
-
-    private void initialize(Random rand, int x, int y, int z) {
-        spawnX = x;
-        spawnY = y;
-        spawnZ = z;
         double rotation = rand.nextInt();
         double xmod = Math.sin(rotation);
         double zmod = Math.cos(rotation);
         int distMod = 150 + rand.nextInt(50);
-        tailX = x + (int) (xmod * distMod);
-        tailY = y + 40 + rand.nextInt(40);
-        tailZ = z + (int) (zmod * distMod);
-        size = 2 + rand.nextInt(8);
-    }
+        int tailX = pos.getX() + (int) (xmod * distMod);
+        int tailY = pos.getY() + 40 + rand.nextInt(40);
+        int tailZ = pos.getZ() + (int) (zmod * distMod);
+        int size = 2 + rand.nextInt(8);
 
-//    @Override
-    public boolean generate(World world, Random random, BlockPos pos) {
-        initialize(random, pos.getX(), pos.getY(), pos.getZ());
-//        Cuboid6 bb = new Cuboid6(Math.min(spawnX, tailX), Math.min(spawnY, tailY), Math.min(spawnZ, tailZ), Math.max(spawnX, tailX), Math.max(spawnY, tailY), Math.max(spawnZ, tailZ));
-//        bb.expand(size + 5);
-//        for (int x = (int) bb.min.x; x <= bb.max.x; x++) {
-//            for (int y = (int) bb.min.y; y <= bb.max.y; y++) {
-//                for (int z = (int) bb.min.z; z <= bb.max.z; z++) {
-//                    int sm = ((x == bb.min.x || x == bb.max.x) ? 1 : 0) + ((y == bb.min.y || y == bb.max.y) ? 1 : 0) + ((z == bb.min.z || z == bb.max.z) ? 1 : 0);
-//                    if (sm > 1) {
-//                        setBlockAndNotifyAdequately(world, new BlockPos(x, y, z), Blocks.GLOWSTONE.getDefaultState());
-////                        world.setBlockState();
-//                    }
-//                }
-//            }
-//        }
 
         setCascadingWarningEnabled(false);
 
-        generateCore(world, random, size);
-        generateTrail(world, random);
+        generateCore(seed, rand, size, pos.getX(), pos.getY(), pos.getZ());
+        //generateTrail(seed, rand, pos.getX(), pos.getY(), pos.getZ(), tailX, tailY, tailZ, size); // Todo: fix trail sphere generation
 
         setCascadingWarningEnabled(true);
+
         return true;
+
     }
 
-    private void generateCore(World world, Random rand, int r) {
-//        for (int x = spawnX - r; x <= spawnX + r; x++) {
-//            for (int z = spawnZ - r; z <= spawnZ + r; z++) {
-//                for (int y = spawnY - r; y <= spawnY + r; y++) {
-//                    if ((int) (getDistance(x, y, z, spawnX, spawnY, spawnZ)) <= r) {
-//                        float genP = rand.nextFloat();
-//                        BlockPos pos = new BlockPos(x, y, z);
-//                        if (0.1F > genP) {
-//                            setBlockAndNotifyAdequately(world, pos, DraconiumOre.getEnd());
-//                        }
-//                        else if (0.4F > genP) {
-//                            setBlockAndNotifyAdequately(world, pos, Blocks.OBSIDIAN.getDefaultState());
-//                        }
-//                        else {
-//                            setBlockAndNotifyAdequately(world, pos, Blocks.OBSIDIAN.getDefaultState());
-//                        }
-//                    }
-//                }
-//            }
-//        }
+    private static void generateCore(ISeedReader seed, Random rand, int r, int spawnX, int spawnY, int spawnZ) {
+        for (int x = spawnX - r; x <= spawnX + r; x++) {
+            for (int z = spawnZ - r; z <= spawnZ + r; z++) {
+                for (int y = spawnY - r; y <= spawnY + r; y++) {
+                    if ((int) (getDistance(x, y, z, spawnX, spawnY, spawnZ)) <= r) {
+                        float genP = rand.nextFloat();
+                        BlockPos pos = new BlockPos(x, y, z);
+                        if (0.2F > genP) {
+                            seed.setBlock(pos, DEContent.ore_draconium_end.defaultBlockState(), 3);
+                        }
+                        else if (0.4F > genP) {
+                            seed.setBlock(pos, Blocks.OBSIDIAN.defaultBlockState(), 3);
+                        }
+                        else {
+                            seed.setBlock(pos, Blocks.OBSIDIAN.defaultBlockState(), 3);
+                        }
+                    }
+                }
+            }
+        }
     }
 
-    private void generateTrail(World world, Random rand) {
+    private static void generateTrail(ISeedReader seedReader, Random rand, int tailX, int tailY, int tailZ, int spawnX, int spawnY, int spawnZ, int size) {
         int xDiff = tailX - spawnX;
         int yDiff = tailY - spawnY;
         int zDiff = tailZ - spawnZ;
@@ -100,35 +75,39 @@ public class WorldGenEnderComet /*extends WorldGenerator*/ {
 
             int density = 500 - (int) (pc * 550);
             if (density < 20) density = 20;
-            generateTrailSphere(world, cX, cY, cZ, (size + 3) - (int) (pc * (size - 2)), density, rand);
+            generateTrailSphere(seedReader, cX, cY, cZ, (size + 3) - (int) (pc * (size - 2)), density, rand);
 
             density = 1000 - (int) (pc * 10000);
-            generateTrailSphere(world, cX, cY, cZ, (size + 3) - (int) (pc * (size - 2)), density, rand);
+            generateTrailSphere(seedReader, cX, cY, cZ, (size + 3) - (int) (pc * (size - 2)), density, rand);
 
         }
     }
 
-    public void generateTrailSphere(World world, int xi, int yi, int zi, int r, int density, Random rand) {
-//        if (density <= 0) return;
-//        if (density > 10000) density = 10000;
-//        for (int x = xi - r; x <= xi + r; x++) {
-//            for (int z = zi - r; z <= zi + r; z++) {
-//                for (int y = yi - r; y <= yi + r; y++) {
-//                    BlockPos pos = new BlockPos(x, y, z);
-//                    if ((density >= rand.nextInt(10000)) && world.isAirBlock(pos) && (int) (getDistance(x, y, z, xi, yi, zi)) == r) {
-//                        if (0.9F >= rand.nextFloat()) {
-//                            setBlockAndNotifyAdequately(world, pos, Blocks.END_STONE.getDefaultState());
-//                        }
-//                        else if (rand.nextBoolean()) {
-//                            setBlockAndNotifyAdequately(world, pos, Blocks.OBSIDIAN.getDefaultState());
-//                        }
-//                        else {
-//                            setBlockAndNotifyAdequately(world, pos, DraconiumOre.getEnd());
-//                        }
-//                    }
-//                }
-//            }
-//        }
+
+    //Todo: Figure out how to make this work
+    // Error message: "We are asking a region for a chunk out of bound"
+    public static void generateTrailSphere(ISeedReader seedReader, int xi, int yi, int zi, int r, int density, Random rand) {
+        if (density <= 0) return;
+        if (density > 10000) density = 10000;
+        for (int x = xi - r; x <= xi + r; x++) {
+            for (int z = zi - r; z <= zi + r; z++) {
+                for (int y = yi - r; y <= yi + r; y++) {
+                    BlockPos pos = new BlockPos(x, y, z);
+
+                    if (density >= rand.nextInt(10000) && (int) (getDistance(x, y, z, xi, yi, zi)) == r) {
+                        if (0.9F >= rand.nextFloat()) {
+                            seedReader.setBlock(pos, Blocks.END_STONE.defaultBlockState(), 1);
+                        }
+                        else if (rand.nextBoolean()) {
+                            seedReader.setBlock(pos, Blocks.OBSIDIAN.defaultBlockState(), 1);
+                        }
+                        else {
+                            seedReader.setBlock(pos, DEContent.ore_draconium_end.defaultBlockState(), 1);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public static double getDistance(int x1, int y1, int z1, int x2, int y2, int z2) {
@@ -157,5 +136,7 @@ public class WorldGenEnderComet /*extends WorldGenerator*/ {
             //oops
         }
     }
+
+
 }
 

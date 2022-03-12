@@ -39,6 +39,7 @@ import com.brandon3055.draconicevolution.items.MobSoul;
 import com.brandon3055.draconicevolution.items.equipment.*;
 import com.brandon3055.draconicevolution.items.tools.*;
 import com.brandon3055.draconicevolution.magic.EnchantmentReaper;
+import com.brandon3055.draconicevolution.world.WorldGenEnderComet;
 import net.minecraft.block.AbstractBlock.Properties;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -52,12 +53,18 @@ import net.minecraft.item.*;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.WorldGenRegistries;
+import net.minecraft.world.gen.feature.*;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ObjectHolder;
 
 import java.util.ArrayList;
@@ -555,7 +562,6 @@ public class DEContent {
         event.getRegistry().register(item);
         ITEM_REGISTRY_ORDER.add(item.getRegistryName());
     }
-
 
     //#################################################################
     // Entities
