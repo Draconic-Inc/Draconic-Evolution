@@ -177,12 +177,12 @@ public class DEConfig {
                     .setSyncToClient()
                     .setComment("Maximum vein size in the overworld")
                     .setDefaultInt(8)
-                    .setSyncCallback((tag, type) -> veinSizeEnd = tag.getInt());
+                    .setSyncCallback((tag, type) -> veinSizeOverworld = tag.getInt());
             oreGeneration.getTag("veinSizeNether")
                     .setSyncToClient()
                     .setComment("Maximum vein size in the nether")
                     .setDefaultInt(16)
-                    .setSyncCallback((tag, type) -> veinSizeEnd = tag.getInt());
+                    .setSyncCallback((tag, type) -> veinSizeNether = tag.getInt());
             oreGeneration.getTag("overworldMaxOreHeight")
                     .setSyncToClient()
                     .setComment("Maximum ore generation height in the overworld")
