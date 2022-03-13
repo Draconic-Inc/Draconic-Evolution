@@ -45,6 +45,21 @@ public class DEWorldGen {
     @SubscribeEvent
     public static void biomeLoading(BiomeLoadingEvent event) {
         if (event.getCategory() == Biome.Category.THEEND) {
+            if (DEConfig.enderCometChance > 0) {
+                event.getGeneration().addFeature(GenerationStage.Decoration.RAW_GENERATION, new ConfiguredFeature<>(new Feature<NoFeatureConfig>(NoFeatureConfig.CODEC) {
+                    @Override
+                    public boolean place(ISeedReader reader, ChunkGenerator generator, Random rand, BlockPos pos, NoFeatureConfig config) {
+                        int chance = new Random().nextInt(1500);
+
+                        if (chance <= DEConfig.enderCometChance) {
+                            return WorldGenEnderComet.place(reader, generator, rand, pos, config);
+                        } else {
+                            return false;
+                        }
+                    }
+                }, new NoFeatureConfig()).decorated(Placement.RANGE_VERY_BIASED.configured(new TopSolidRangeConfig(30,30,120)).count(1).squared()));
+            }
+
             if (DEConfig.enableOreEnd) {
                 event.getGeneration().addFeature(UNDERGROUND_ORES, Feature.ORE.configured(new OreFeatureConfig(BASE_STONE_END, DEContent.ore_draconium_end.defaultBlockState(), DEConfig.veinSizeEnd))
                         .decorated(Placement.RANGE.configured(new TopSolidRangeConfig(0, 0, 80)))
@@ -63,6 +78,7 @@ public class DEWorldGen {
             event.getGeneration().addFeature(UNDERGROUND_ORES, Feature.ORE.configured(new OreFeatureConfig(NETHER_ORE_REPLACEABLES, DEContent.ore_draconium_nether.defaultBlockState(), DEConfig.veinSizeNether))
                     .chance(10)
                     .decorated(Placement.RANGE.configured(new TopSolidRangeConfig(4, 4, DEConfig.maxOreHeightNether))));
+
         } else if (DEConfig.enableOreOverworld) {
             event.getGeneration().addFeature(UNDERGROUND_ORES, Feature.ORE.configured(new OreFeatureConfig(NATURAL_STONE, DEContent.ore_draconium_overworld.defaultBlockState(), DEConfig.veinSizeOverworld))
                     .chance(10)
