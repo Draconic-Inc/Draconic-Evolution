@@ -105,6 +105,9 @@ public class TileChaosCrystal extends TileBCore implements ITickableTileEntity {
             return;
         }
 
+        if (removing) {
+            return;
+        }
         removing = true;
         level.setBlockAndUpdate(worldPosition.above(), Blocks.AIR.defaultBlockState());
         level.setBlockAndUpdate(worldPosition.above(2), Blocks.AIR.defaultBlockState());

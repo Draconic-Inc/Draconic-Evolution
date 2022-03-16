@@ -1,5 +1,6 @@
 ######## 3.0.22.x ########
 - Fixed broken ore gen caused by a recent PR to add some ore gen configurability.
+- Fixed chaos crystal not dropping configured number of shards.
 
 ######## 3.0.21.443 ########
 - Re implemented Project Intelligence support.
