@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.blocks.tileentity;
 
 import codechicken.lib.colour.Colour;
 import codechicken.lib.data.MCDataInput;
+import codechicken.lib.math.MathHelper;
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.inventory.ContainerBCTile;
 import com.brandon3055.brandonscore.lib.Vec3D;
@@ -79,12 +80,16 @@ public class TileEnergyCore extends TileBCore implements ITickableTileEntity, IE
     public final ManagedLong energy = register(new ManagedLong("energy", SAVE_NBT_SYNC_TILE));
     public final ManagedVec3I[] stabOffsets = new ManagedVec3I[4];
     public final ManagedLong transferRate = register(new ManagedLong("transfer_rate", SYNC_CONTAINER));
+    public final ManagedDouble inputRate = register(new ManagedDouble("input_rate", SYNC_CONTAINER));
+    public final ManagedDouble outputRate = register(new ManagedDouble("output_rate", SYNC_CONTAINER));
 
     private int ticksElapsed = 0;
     private long[] flowArray = new long[20];
     private EnergyCoreBuilder activeBuilder = null;
     public float rotation = 0;
     private long lastTickEnergy = 0;
+    private long lastTickInput = 0;
+    private long lastTickOutput = 0;
 
     public TileEnergyCore() {
         super(DEContent.tile_storage_core);
@@ -127,6 +132,13 @@ public class TileEnergyCore extends TileBCore implements ITickableTileEntity, IE
             if (ticksElapsed % 500 == 0) {
                 validateStructure();
             }
+
+            double diff = lastTickInput - inputRate.get();
+            inputRate.add(diff / 10);
+            diff = lastTickOutput - outputRate.get();
+            outputRate.add(diff / 10);
+
+            lastTickInput = lastTickOutput = 0;
         }
         else {
             rotation++;
@@ -393,6 +405,7 @@ public class TileEnergyCore extends TileBCore implements ITickableTileEntity, IE
 
         if (!simulate) {
             energy.add(energyReceived);
+            lastTickInput += energyReceived;
             setChanged();
         }
         return energyReceived;
@@ -406,6 +419,7 @@ public class TileEnergyCore extends TileBCore implements ITickableTileEntity, IE
 
         if (!simulate) {
             energy.subtract(energyExtracted);
+            lastTickOutput += energyExtracted;
             setChanged();
         }
         return energyExtracted;

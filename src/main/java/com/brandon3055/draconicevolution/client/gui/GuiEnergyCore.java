@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.client.gui;
 
 import codechicken.lib.math.MathHelper;
+import com.brandon3055.brandonscore.api.render.GuiHelper;
 import com.brandon3055.brandonscore.client.gui.GuiButtonAHeight;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElementManager;
 import com.brandon3055.brandonscore.client.gui.modulargui.ModularGuiContainer;
@@ -8,7 +9,9 @@ import com.brandon3055.brandonscore.client.utils.GuiHelperOld;
 import com.brandon3055.brandonscore.inventory.ContainerBCTile;
 import com.brandon3055.brandonscore.utils.InfoHelper;
 import com.brandon3055.brandonscore.utils.Utils;
+import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyCore;
+import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.button.Button;
@@ -102,10 +105,10 @@ public class GuiEnergyCore extends ModularGuiContainer<ContainerBCTile<TileEnerg
             GuiHelperOld.drawCenteredString(font, I18n.get("info.bc.charge.txt"), leftPos + imageWidth / 2, topPos + 38, 0xFFAA00, true);
             GuiHelperOld.drawCenteredString(font, Utils.formatNumber(tile.getExtendedStorage()) + " OP [" + energyValue.format(percent) + "%]", leftPos + imageWidth / 2, topPos + 49, 0x555555, false);
 
-            int coreColour = tile.transferRate.get() > 0 ? 0x00FF00 : tile.transferRate.get() < 0 ? 0xFF0000 : 0x222222;
+            int transferColour = tile.transferRate.get() > 0 ? 0x00FF00 : tile.transferRate.get() < 0 ? 0xFF0000 : 0x222222;
             String transfer = (tile.transferRate.get() > 0 ? "+" : tile.transferRate.get() < 0 ? "-" : "") + Utils.formatNumber(Math.abs(tile.transferRate.get())) + " OP/t";
             GuiHelperOld.drawCenteredString(font, I18n.get("gui.de.transfer.txt"), leftPos + imageWidth / 2, topPos + 59, 0xFFAA00, true);
-            GuiHelperOld.drawCenteredString(font, transfer, leftPos + imageWidth / 2, topPos + 70, coreColour, tile.transferRate.get() > 0);
+            GuiHelperOld.drawCenteredString(font, transfer, leftPos + imageWidth / 2, topPos + 70, transferColour, tile.transferRate.get() > 0);
 
 
             if (tile.transferRate.get() != 0) {
@@ -164,7 +167,15 @@ public class GuiEnergyCore extends ModularGuiContainer<ContainerBCTile<TileEnerg
             drawCenteredString(mStack, font, layer == -1 ? "All" : layer + "", leftPos + (imageWidth / 2), topPos - 10, 0xFFFFFF);
         }
 
-        this.renderTooltip(mStack, mouseX, mouseY);
+        if (GuiHelper.isInRect(guiLeft(), guiTop() + 59, xSize(), 24, mouseX, mouseY) && tile.active.get()){
+            IFormattableTextComponent input = new StringTextComponent("IN: ").withStyle(TextFormatting.GREEN).append(new StringTextComponent(Utils.formatNumber(Math.round(tile.inputRate.get())) + " OP/t").withStyle(TextFormatting.GRAY));
+            IFormattableTextComponent out = new StringTextComponent("OUT: ").withStyle(TextFormatting.DARK_RED).append(new StringTextComponent(Utils.formatNumber(Math.round(tile.outputRate.get())) + " OP/t").withStyle(TextFormatting.GRAY));
+
+            renderTooltip(mStack, Lists.newArrayList(input.getVisualOrderText(), out.getVisualOrderText()), mouseX, mouseY);
+        } else {
+            this.renderTooltip(mStack, mouseX, mouseY);
+        }
+
     }
 
     @Override
