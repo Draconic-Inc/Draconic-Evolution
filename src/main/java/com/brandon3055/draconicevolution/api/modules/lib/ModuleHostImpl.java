@@ -162,11 +162,11 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
         return gridHeight;
     }
 
-    @Override
-    public void getAttributeModifiers(EquipmentSlotType slot, ItemStack stack, Multimap<Attribute, AttributeModifier> map) {
-        getInstalledTypes().forEach(t -> t.getAttributeModifiers(SneakyUtils.unsafeCast(getModuleData(t)), slot, stack, map));
-        getModuleEntities().forEach(e -> e.getAttributeModifiers(slot, stack, map));
-    }
+//    @Override
+//    public void getAttributeModifiers(EquipmentSlotType slot, ItemStack stack, Multimap<Attribute, AttributeModifier> map) {
+//        getInstalledTypes().forEach(t -> t.getAttributeModifiers(SneakyUtils.unsafeCast(getModuleData(t)), slot, stack, map));
+//        getModuleEntities().forEach(e -> e.getAttributeModifiers(slot, stack, map));
+//    }
 
     public void handleTick(ModuleContext context) {
         getModuleEntities().forEach(e -> e.tick(context));

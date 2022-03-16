@@ -155,7 +155,7 @@ public interface ModuleHost extends INBTSerializable<CompoundNBT> {
         //Moved this check to the module because i needed more control in cases like the arrow velocity module where specific modules within a module type have a module installation limit.
     }
 
-    void getAttributeModifiers(EquipmentSlotType slot, ItemStack stack, Multimap<Attribute, AttributeModifier> map);
+//    void getAttributeModifiers(EquipmentSlotType slot, ItemStack stack, Multimap<Attribute, AttributeModifier> map);
 
 //    /**
 //     * This will be balled by module entities when they dynamically update their attributes.

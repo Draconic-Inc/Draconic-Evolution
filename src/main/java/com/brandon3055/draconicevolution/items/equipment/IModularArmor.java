@@ -34,11 +34,11 @@ import static com.brandon3055.draconicevolution.api.capability.DECapabilities.OP
  */
 public interface IModularArmor extends IModularItem {
 
-    @Override
-    default Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlotType slot, ItemStack stack) {
-        Multimap<Attribute, AttributeModifier> map = IModularItem.super.getAttributeModifiers(slot, stack);
-        return map;
-    }
+//    @Override
+//    default Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlotType slot, ItemStack stack) {
+//        Multimap<Attribute, AttributeModifier> map = IModularItem.super.getAttributeModifiers(slot, stack);
+//        return map;
+//    }
 
     @Override
     default void addModularItemInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
