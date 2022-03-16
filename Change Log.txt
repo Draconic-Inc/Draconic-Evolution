@@ -1,6 +1,9 @@
-######## 3.0.21.442 ########
+######## 3.0.22.x ########
+- Fixed broken ore gen caused by a recent PR to add some ore gen configurability.
+
+######## 3.0.21.443 ########
 - Re implemented Project Intelligence support.
-- Fixed a conflict with FlashNpc
+- Fixed a conflict with FlashNpc.
 - Fixed an impossible crash... i think.
 - Fixed high velocity arrows not syncing properly when on fire.
 

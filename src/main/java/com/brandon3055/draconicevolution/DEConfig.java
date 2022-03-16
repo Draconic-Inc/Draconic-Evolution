@@ -120,6 +120,43 @@ public class DEConfig {
                 .setDefaultBoolean(true)
                 .setSyncCallback((tag, type) -> enableOreNether = tag.getBoolean());
 
+        {
+            ConfigTag oreGeneration = serverTag.getTag("Ore Generation");
+            oreGeneration.setComment("Config values related to ore generation.");
+
+            oreGeneration.getTag("veinsPerChunkEnd")
+                    .setSyncToClient()
+                    .setComment("How many veins per chunk in the end")
+                    .setDefaultInt(2)
+                    .setSyncCallback((tag, type) -> veinsPerChunkEnd = tag.getInt());
+            oreGeneration.getTag("veinSizeEnd")
+                    .setSyncToClient()
+                    .setComment("Maximum vein size in the end")
+                    .setDefaultInt(8)
+                    .setSyncCallback((tag, type) -> veinSizeEnd = tag.getInt());
+            oreGeneration.getTag("veinSizeOverworld")
+                    .setSyncToClient()
+                    .setComment("Maximum vein size in the overworld")
+                    .setDefaultInt(8)
+                    .setSyncCallback((tag, type) -> veinSizeOverworld = tag.getInt());
+            oreGeneration.getTag("veinSizeNether")
+                    .setSyncToClient()
+                    .setComment("Maximum vein size in the nether")
+                    .setDefaultInt(16)
+                    .setSyncCallback((tag, type) -> veinSizeNether = tag.getInt());
+            oreGeneration.getTag("overworldMaxOreHeight")
+                    .setSyncToClient()
+                    .setComment("Maximum ore generation height in the overworld")
+                    .setDefaultInt(16)
+                    .setSyncCallback((tag, type) -> maxOreHeightOverworld = tag.getInt());
+            oreGeneration.getTag("netherMaxOreHeight")
+                    .setSyncToClient()
+                    .setComment("Maximum ore generation height in the nether")
+                    .setDefaultInt(16)
+                    .setSyncCallback((tag, type) -> maxOreHeightNether = tag.getInt());
+        }
+
+
         serverTag.getTag("dislocatorBlinkRange")
                 .setSyncToClient()
                 .setComment("Sets the maximum blink range for the Advanced Dislocator")
@@ -158,42 +195,6 @@ public class DEConfig {
                 .setComment("This is a list of entities that the \"Projectile Immunity Cancellation\" module will work on. Add additional entities as required. (Let me know if i missed any)")
                 .setDefaultStringList(Lists.newArrayList("minecraft:enderman", "minecraft:wither", "minecraft:ender_dragon", "draconicevolution:guardian_wither"))
                 .setSyncCallback((tag, type) -> projectileAntiImmuneEntities = tag.getStringList());
-
-        {
-            ConfigTag oreGeneration = serverTag.getTag("Ore Generation");
-            oreGeneration.setComment("Config values related to ore generation.");
-
-            oreGeneration.getTag("veinsPerChunkEnd")
-                    .setSyncToClient()
-                    .setComment("How many veins per chunk in the end")
-                    .setDefaultInt(2)
-                    .setSyncCallback((tag, type) -> veinsPerChunkEnd = tag.getInt());
-            oreGeneration.getTag("veinSizeEnd")
-                    .setSyncToClient()
-                    .setComment("Maximum vein size in the end")
-                    .setDefaultInt(8)
-                    .setSyncCallback((tag, type) -> veinSizeEnd = tag.getInt());
-            oreGeneration.getTag("veinSizeOverworld")
-                    .setSyncToClient()
-                    .setComment("Maximum vein size in the overworld")
-                    .setDefaultInt(8)
-                    .setSyncCallback((tag, type) -> veinSizeEnd = tag.getInt());
-            oreGeneration.getTag("veinSizeNether")
-                    .setSyncToClient()
-                    .setComment("Maximum vein size in the nether")
-                    .setDefaultInt(16)
-                    .setSyncCallback((tag, type) -> veinSizeEnd = tag.getInt());
-            oreGeneration.getTag("overworldMaxOreHeight")
-                    .setSyncToClient()
-                    .setComment("Maximum ore generation height in the overworld")
-                    .setDefaultInt(16)
-                    .setSyncCallback((tag, type) -> maxOreHeightOverworld = tag.getInt());
-            oreGeneration.getTag("netherMaxOreHeight")
-                    .setSyncToClient()
-                    .setComment("Maximum ore generation height in the nether")
-                    .setDefaultInt(16)
-                    .setSyncCallback((tag, type) -> maxOreHeightNether = tag.getInt());
-        }
 
         {
             ConfigTag guardianFight = serverTag.getTag("Guardian Fight");

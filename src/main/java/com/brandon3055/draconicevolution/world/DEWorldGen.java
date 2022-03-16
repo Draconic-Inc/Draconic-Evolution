@@ -36,9 +36,6 @@ import static net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus.FORGE;
  */
 @Mod.EventBusSubscriber(modid = DraconicEvolution.MODID, bus = FORGE)
 public class DEWorldGen {
-    private static Logger LOGGER = DraconicEvolution.LOGGER;
-
-    //    public static final ConfiguredFeature<?, ?> ORE_IRON = register("ore_iron", Feature.ORE.withConfiguration(new OreFeatureConfig(OreFeatureConfig.FillerBlockType.BASE_STONE_OVERWORLD, Features.States.IRON_ORE, 9)).range(64).square().count(20));
     public static final RuleTest BASE_STONE_END = new BlockMatchRuleTest(Blocks.END_STONE);
 
 
