@@ -1,6 +1,6 @@
 ######## 3.0.22.444 ########
 - Fixed broken ore gen caused by a recent PR to add some ore gen configurability.
-- Fixed chaos crystal not dropping configured number of shards.
+- Fixed chaos crystal not dropping the configured number of shards.
 - Added Input / Output details to energy core UI when you mouse-over the transfer rate.
 
 ######## 3.0.21.443 ########
