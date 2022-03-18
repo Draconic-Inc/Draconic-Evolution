@@ -552,6 +552,8 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
         if (level.isClientSide) {
             LogHelper.dev("Reactor: Start Charging");
             sendPacketToServer(output -> output.writeByte(ID_CHARGE), 0);
+        } else if (!level.getServer().isSameThread()) {
+            level.getServer().executeBlocking(this::chargeReactor);
         } else if (canCharge()) {
             LogHelper.dev("Reactor: Start Charging");
             reactorState.set(ReactorState.WARMING_UP);
@@ -562,6 +564,8 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
         if (level.isClientSide) {
             LogHelper.dev("Reactor: Activate");
             sendPacketToServer(output -> output.writeByte(ID_ACTIVATE), 0);
+        } else if (!level.getServer().isSameThread()) {
+            level.getServer().executeBlocking(this::activateReactor);
         } else if (canActivate()) {
             LogHelper.dev("Reactor: Activate");
             reactorState.set(ReactorState.RUNNING);
@@ -885,7 +889,6 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
             if (!Utils.isAreaLoaded(level, pos, LocationType.TICKING)) {
                 return true;
             }
-
 
             TileEntity tile = level.getBlockEntity(pos);
             LogHelper.dev("Reactor: Validate Stabilizer: " + tile);
