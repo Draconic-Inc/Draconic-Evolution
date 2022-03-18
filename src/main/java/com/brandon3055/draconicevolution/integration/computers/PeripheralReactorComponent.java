@@ -70,7 +70,7 @@ public class PeripheralReactorComponent implements IPeripheral, ICapabilityProvi
 	@LuaFunction
 	public final boolean chargeReactor() {
 		if (refreshCoreStatus()) {
-            reactor.sendPacketToServer(output -> output.writeByte(TileReactorCore.ID_CHARGE), 0);
+			reactor.chargeReactor();
             return true;
         }
         return false;
@@ -79,7 +79,7 @@ public class PeripheralReactorComponent implements IPeripheral, ICapabilityProvi
 	@LuaFunction
 	public final boolean activateReactor() {
 		if (refreshCoreStatus()) {
-			reactor.sendPacketToServer(output -> output.writeByte(TileReactorCore.ID_ACTIVATE), 0);
+			reactor.activateReactor();
             return true;
         }
         return false;
@@ -88,7 +88,7 @@ public class PeripheralReactorComponent implements IPeripheral, ICapabilityProvi
 	@LuaFunction
 	public final boolean stopReactor() {
 		if (refreshCoreStatus()) {
-			reactor.sendPacketToServer(output -> output.writeByte(TileReactorCore.ID_SHUTDOWN), 0);
+			reactor.shutdownReactor();
             return true;
         }
         return false;
@@ -97,7 +97,7 @@ public class PeripheralReactorComponent implements IPeripheral, ICapabilityProvi
 	@LuaFunction
 	public final boolean toggleFailSafe() {
 		if (refreshCoreStatus()) {
-			reactor.sendPacketToServer(output -> output.writeByte(TileReactorCore.ID_FAIL_SAFE), 0);
+			reactor.toggleFailSafe();
 			return true;
 		}
 		return false;
