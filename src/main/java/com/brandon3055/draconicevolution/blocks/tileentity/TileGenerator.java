@@ -164,7 +164,7 @@ public class TileGenerator extends TileBCore implements ITickableTileEntity, IRS
     }
 
     private boolean canExtractItem(int slot, ItemStack stack) {
-        return slot == 3 && EnergyUtils.isFullyOrInvalid(stack);
+        return (slot == 3 && EnergyUtils.isFullyOrInvalid(stack)) || (slot != 3 && ForgeHooks.getBurnTime(stack) <= 0);
     }
 
     //Render Stuff
