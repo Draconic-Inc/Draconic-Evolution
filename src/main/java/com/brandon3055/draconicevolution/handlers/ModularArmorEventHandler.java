@@ -212,7 +212,7 @@ public class ModularArmorEventHandler {
             LazyOptional<ModuleHost> optional = chestStack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
             boolean hasHost = !chestStack.isEmpty() && optional.isPresent();
             boolean highStepListed = playersWithUphillStep.contains(entity.getUUID()) && entity.maxUpStep >= 1f;
-            boolean hasHighStep = hasHost && optional.orElseThrow(IllegalStateException::new).getEntitiesByType(ModuleTypes.HILL_STEP).findAny().isPresent();
+            boolean hasHighStep = hasHost && optional.orElseThrow(IllegalStateException::new).getEntitiesByType(ModuleTypes.HILL_STEP).findAny().isPresent() && !entity.isShiftKeyDown();
 
             if (hasHighStep && !highStepListed) {
                 playersWithUphillStep.add(entity.getUUID());
