@@ -11,6 +11,7 @@ import com.brandon3055.draconicevolution.api.energy.ICrystalBinder;
 import com.brandon3055.draconicevolution.entity.GuardianCrystalEntity;
 import com.brandon3055.draconicevolution.entity.guardian.DraconicGuardianEntity;
 import com.brandon3055.draconicevolution.init.DEContent;
+import com.brandon3055.draconicevolution.items.MobSoul;
 import com.brandon3055.draconicevolution.network.CrystalUpdateBatcher;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.block.Blocks;
@@ -27,6 +28,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.Hand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -162,7 +164,7 @@ public class DEEventHandler {
     }
 
     private void handleSoulDrops(LivingDropsEvent event) {
-        if (event.getEntity().level.isClientSide || !(event.getSource().msgId.equals("player") || event.getSource().msgId.equals("arrow")) || !isValidEntity(event.getEntityLiving())) {
+        if (event.getEntity().level.isClientSide || !(event.getSource().msgId.equals("player") || event.getSource().msgId.equals("arrow")) || !MobSoul.isValidEntity(event.getEntityLiving())) {
             return;
         }
 
@@ -203,20 +205,6 @@ public class DEEventHandler {
 
         chance += EnchantmentHelper.getItemEnchantmentLevel(DEContent.reaperEnchant, stack);
         return chance;
-    }
-
-    private boolean isValidEntity(LivingEntity entity) {
-        if (!entity.canChangeDimensions() && !DEConfig.allowBossSouls) {
-            return false;
-        }
-        for (int i = 0; i < DEConfig.spawnerList.length; i++) {
-            if (DEConfig.spawnerList[i].equals(entity.getName()) && DEConfig.spawnerListWhiteList) {
-                return true;
-            } else if (DEConfig.spawnerList[i].equals(entity.getName()) && !DEConfig.spawnerListWhiteList) {
-                return false;
-            }
-        }
-        return !DEConfig.spawnerListWhiteList;
     }
 
     //endregion
