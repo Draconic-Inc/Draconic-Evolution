@@ -80,6 +80,7 @@ public class BlockStateGenerator extends BlockStateProvider {
 //        dummyBlock(DEContent.  crystal_wireless_chaotic);
         dummyBlock(DEContent.energy_core_structure);
         dummyBlock(DEContent.chaos_crystal);
+        dummyBlock(DEContent.placed_item);
         dummyBlock(DEContent.chaos_crystal_part);
 
         dummyBlock(DEContent.draconium_chest);

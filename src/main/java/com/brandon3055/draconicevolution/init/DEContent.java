@@ -137,7 +137,7 @@ public class DEContent {
 //        event.getRegistry().register(TileEntityType.Builder.create(TileCelestialManipulator::new, celestial_manipulator   ).build(null).setRegistryName("celestial_manipulator"));
         event.getRegistry().register(TileEntityType.Builder.of(TileDraconiumChest::new,       draconium_chest         ).build(null).setRegistryName("draconium_chest"));
 //        event.getRegistry().register(TileEntityType.Builder.create(TileParticleGenerator::new,    particle_generator      ).build(null).setRegistryName("particle_generator"));
-//        event.getRegistry().register(TileEntityType.Builder.create(TilePlacedItem::new,           placed_item             ).build(null).setRegistryName("placed_item"));
+        event.getRegistry().register(TileEntityType.Builder.of(TilePlacedItem::new,           placed_item             ).build(null).setRegistryName("placed_item"));
         event.getRegistry().register(TileEntityType.Builder.of(TilePortal::new,               portal                  ).build(null).setRegistryName("portal"));
         event.getRegistry().register(TileEntityType.Builder.of(TileChaosCrystal::new,           chaos_crystal, chaos_crystal_part           ).build(null).setRegistryName("chaos_crystal"));
         event.getRegistry().register(TileEntityType.Builder.of(TileFusionCraftingInjector::new,       craftInjectors          ).build(null).setRegistryName("crafting_injector"));
@@ -289,7 +289,6 @@ public class DEContent {
         event.getRegistry().register(new Grinder(hardenedMachine).setRegistryName("grinder"));
 //        event.getRegistry().register(new DissEnchanter(hardenedMachine).setRegistryName("disenchanter"));
 //        event.getRegistry().register(new CelestialManipulator(hardenedMachine).setRegistryName("celestial_manipulator"));
-//        event.getRegistry().register(new PlacedItem(hardenedMachine).setRegistryName("placed_item"));
         event.getRegistry().register(new FlowGate(hardenedMachine, true).setRegistryName("flux_gate"));
         event.getRegistry().register(new FlowGate(hardenedMachine, false).setRegistryName("fluid_gate"));
         //Fusion Crafting
@@ -319,6 +318,8 @@ public class DEContent {
         event.getRegistry().register(new ChaosCrystal(Properties.of(Material.GLASS).strength(100, 4000).noDrops()).setRegistryName("chaos_crystal"));
         event.getRegistry().register(new ChaosCrystal(Properties.of(Material.GLASS).strength(100, 4000).noDrops()).setRegistryName("chaos_crystal_part"));
         event.getRegistry().register(new BlockBCore(Block.Properties.of(Material.STONE, MaterialColor.COLOR_BLACK).strength(100.0F, 2400.0F)).setMobResistant().setRegistryName("infused_obsidian"));
+
+        event.getRegistry().register(new PlacedItem(Properties.of(GLASS).strength(5F, 12F).noOcclusion().noDrops()).setRegistryName("placed_item"));
 
         //Energy Crystals
         Properties crystalB = Properties.of(GLASS, DyeColor.BLUE).strength(3.0F, 8F);      //TODO may want to tweak these after testing
@@ -441,7 +442,7 @@ public class DEContent {
         registerItem(event, new ItemBlockBCore(draconium_chest,             new Item.Properties().tab(blockGroup)).setRegistryName(Objects.requireNonNull(draconium_chest.getRegistryName())));
         registerItem(event, new ItemBlockBCore(particle_generator,          new Item.Properties().tab(blockGroup)).setRegistryName(Objects.requireNonNull(particle_generator.getRegistryName())));
         registerItem(event, new ItemBlockBCore(dislocation_inhibitor,       new Item.Properties().tab(blockGroup)).setRegistryName(Objects.requireNonNull(dislocation_inhibitor.getRegistryName())));
-//        registerItem(event, new ItemBlockBCore(placed_item,                 new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(placed_item.getRegistryName())));
+        registerItem(event, new ItemBlockBCore(placed_item,                 new Item.Properties()).setRegistryName(Objects.requireNonNull(placed_item.getRegistryName())));
         registerItem(event, new ItemBlockBCore(flux_gate,                   new Item.Properties().tab(blockGroup)).setRegistryName(Objects.requireNonNull(flux_gate.getRegistryName())));
         registerItem(event, new ItemBlockBCore(fluid_gate,                  new Item.Properties().tab(blockGroup)).setRegistryName(Objects.requireNonNull(fluid_gate.getRegistryName())));
         registerItem(event, new ItemBlockBCore(infused_obsidian,            new Item.Properties().tab(blockGroup)).setRegistryName(Objects.requireNonNull(infused_obsidian.getRegistryName())));

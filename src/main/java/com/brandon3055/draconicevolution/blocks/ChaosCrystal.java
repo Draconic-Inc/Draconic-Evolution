@@ -38,17 +38,12 @@ import java.util.List;
 /**
  * Created by brandon3055 on 24/9/2015.
  */
-public class ChaosCrystal extends BlockBCore/*, IRenderOverride*/ {
+public class ChaosCrystal extends BlockBCore {
 
     private static VoxelShape SHAPE = VoxelShapes.box(0, -2, 0, 1, 3, 1);
 
     public ChaosCrystal(Properties properties) {
         super(properties);
-    }
-
-    @Override
-    public boolean isBlockFullCube() {
-        return false;
     }
 
     @Override

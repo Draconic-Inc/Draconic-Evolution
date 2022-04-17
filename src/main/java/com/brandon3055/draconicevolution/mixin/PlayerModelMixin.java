@@ -21,7 +21,10 @@ public class PlayerModelMixin {
         return SneakyUtils.unsafeCast(this);
     }
 
-    @Inject(method = "setupAnim", at = @At("RETURN"))
+    @Inject(
+            method = "setupAnim(Lnet/minecraft/entity/LivingEntity;FFFFF)V",
+            at = @At("RETURN")
+    )
     public void afterSetupAnim(LivingEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, CallbackInfo ci) {
         RenderModularStaff.doMixinStuff(entity, getThis());
     }

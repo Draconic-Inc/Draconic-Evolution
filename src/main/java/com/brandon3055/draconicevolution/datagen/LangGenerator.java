@@ -67,7 +67,7 @@ public class LangGenerator extends LanguageProvider {
         helper.add(DEContent.ore_draconium_end,                                 "Ender Draconium Ore");
         helper.add(DEContent.potentiometer,                                     "Potentiometer");
         helper.add(DEContent.particle_generator,                                "Particle Generator");
-        helper.add(DEContent.placed_item,                                       "");
+        helper.add(DEContent.placed_item,                                       "Placed Item");
         helper.add(DEContent.portal,                                            "Portal");
         helper.add(DEContent.reactor_core,                                      "Draconic Reactor Core");
         helper.add(DEContent.reactor_stabilizer,                                "Reactor Stabilizer");

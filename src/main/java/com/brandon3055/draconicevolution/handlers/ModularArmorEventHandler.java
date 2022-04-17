@@ -181,6 +181,8 @@ public class ModularArmorEventHandler {
     @SubscribeEvent
     public static void livingTick(LivingEvent.LivingUpdateEvent event) {
         LivingEntity entity = event.getEntityLiving();
+//        if (!(entity instanceof PlayerEntity)) return;
+
         ArmorAbilities armorAbilities = new ArmorAbilities();
         if (entity instanceof PlayerEntity) {
             PlayerEntity player = (PlayerEntity) entity;

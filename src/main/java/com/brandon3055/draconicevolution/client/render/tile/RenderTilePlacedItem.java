@@ -1,98 +1,80 @@
 package com.brandon3055.draconicevolution.client.render.tile;
 
-import codechicken.lib.raytracer.IndexedCuboid6;
-import codechicken.lib.vec.Vector3;
-import com.brandon3055.brandonscore.client.render.TESRBase;
+import com.brandon3055.draconicevolution.blocks.PlacedItem;
 import com.brandon3055.draconicevolution.blocks.tileentity.TilePlacedItem;
-import com.brandon3055.draconicevolution.utils.LogHelper;
-import com.google.common.base.Joiner;
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.vector.Quaternion;
 
 import java.util.List;
 
 /**
  * Created by brandon3055 on 25/07/2016.
  */
-public class RenderTilePlacedItem extends TESRBase<TilePlacedItem> {
+public class RenderTilePlacedItem extends TileEntityRenderer<TilePlacedItem> {
 
     public RenderTilePlacedItem(TileEntityRendererDispatcher rendererDispatcherIn) {
         super(rendererDispatcherIn);
     }
 
-//    @Override
-    public void render(TilePlacedItem te, double x, double y, double z, float partialTicks, int destroyStage) {
-        RenderSystem.pushMatrix();
-//        GlStateTracker.pushState();
-        RenderSystem.translated(x + 0.5, y + 0.5, z + 0.5);
+    @Override
+    public void render(TilePlacedItem tile, float partialTicks, MatrixStack mStack, IRenderTypeBuffer getter, int packedLight, int packedOverlay) {
+        Minecraft mc = Minecraft.getInstance();
 
-        ItemStack[] stacks = new ItemStack[]{te.inventory.getItem(0), te.inventory.getItem(1), te.inventory.getItem(2), te.inventory.getItem(3)};
-        int index = 0;
+        List<ItemStack> stackList = tile.getStacksInOrder();
+        float scale = stackList.size() == 1 && tile.toolMode.get() ? 14 / 16F : 7 / 16F;
 
-        List<IndexedCuboid6> cuboids = te.getCachedRenderCuboids();
-        for (IndexedCuboid6 cuboid : cuboids) {
-            if (index == 4) {
-                LogHelper.bigError("Detected illegal render state for placed item at " + te.getBlockPos() + " Index: " + index);
-                LogHelper.error("Tile NBT Dump: " + te.save(new CompoundNBT()));
-                LogHelper.error("Cuboid List: " + cuboids.size() + " " + Joiner.on(", ").join(cuboids));
-                LogHelper.error("Thread: " + Thread.currentThread().getName());
-                index = 3;
+        mStack.pushPose();
+        mStack.translate(0.5, 0.5, 0.5);
+        Direction direction = tile.getBlockState().getValue(PlacedItem.FACING);
+        rotateToSide(direction, mStack);
+
+        for (int i = 0; i < stackList.size(); i++) {
+            ItemStack stack = stackList.get(i);
+            mStack.pushPose();
+            if (stack.getItem() instanceof BlockItem) {
+                mStack.translate(PlacedItem.getXOffset(i, stackList.size()), -0.5 + ((3 / 16D)), PlacedItem.getZOffset(i, stackList.size()));
+                mStack.mulPose(new Quaternion(0, tile.rotation[i].get() * -22.5F, 0, true));
+                mStack.mulPose(new Quaternion(90, 0, 0, true));
+                mStack.scale(6/8F, 6/8F, 6/8F);
+            } else {
+                mStack.translate(PlacedItem.getXOffset(i, stackList.size()), -0.5 + ((0.55 / 16D) * scale), PlacedItem.getZOffset(i, stackList.size()));
+                mStack.mulPose(new Quaternion(0, tile.rotation[i].get() * -22.5F, 0, true));
+                mStack.mulPose(new Quaternion(90, 0, 0, true));
+                mStack.scale(scale, scale, scale);
             }
-
-            ItemStack stack = stacks[(Integer) cuboid.data - 1];
-            if (!stack.isEmpty()) {
-                RenderSystem.pushMatrix();
-                Vector3 center = cuboid.center();//.copy().sub(new Vector3(te.getPos()));
-                RenderSystem.translated(center.x - 0.5, center.y - 0.5, center.z - 0.5);
-
-                if (te.facing.getAxis() == Direction.Axis.Y) {
-                    RenderSystem.rotatef(90, te.facing.getStepY(), 0, 0);
-                }
-                else if (te.facing.getAxis() == Direction.Axis.X) {
-                    RenderSystem.rotatef(90, 0, -te.facing.getStepX(), 0);
-                }
-                else if (te.facing == Direction.SOUTH) {
-                    RenderSystem.rotatef(180, 0, 1, 0);
-                }
-
-                RenderSystem.rotatef((float) te.rotation[index].get() * 22.5F, 0F, 0F, -1F);
-
-                if ((stack.getItem().isEnchantable(stack) || (te.altRenderMode.get() && !(stack.getItem() instanceof BlockItem))) && cuboids.size() == 1) {
-                    RenderSystem.scalef(0.8F, 0.8F, 0.8F);
-                    RenderSystem.rotatef(180, 0, 1, 0);
-//                    Minecraft.getInstance().getItemRenderer().renderItem(stack, ItemCameraTransforms.TransformType.FIXED);
-                }
-                else if (stack.getItem() instanceof BlockItem) {
-                    float f = 0.72F;
-                    RenderSystem.scalef(f, f, f);
-                    if (te.altRenderMode.get()) {
-//                        RenderSystem.rotate(90, 1, 0, 0);
-                        RenderSystem.translated(0, 0, -0.2);
-                    }
-                    else {
-                        RenderSystem.rotatef(90, 1, 0, 0);
-                    }
-//                    Minecraft.getInstance().getItemRenderer().renderItem(stack, ItemCameraTransforms.TransformType.FIXED);
-                }
-                else {
-                    RenderSystem.scalef(0.45F, 0.45F, 0.45F);
-                    RenderSystem.rotatef(180, 0, 1, 0);
-//                    Minecraft.getInstance().getItemRenderer().renderItem(stack, ItemCameraTransforms.TransformType.FIXED);
-                }
-
-                RenderSystem.popMatrix();
-            }
-
-            index++;
+            mc.getItemRenderer().renderStatic(stack, ItemCameraTransforms.TransformType.FIXED, packedLight, packedOverlay, mStack, getter);
+            mStack.popPose();
+            mStack.translate(0, 0.00005F, 0); //Adds a slight offset to avoid z-fighting when items overlap
         }
 
-//        GlStateTracker.popState();
-        RenderSystem.popMatrix();
+        mStack.popPose();
+    }
+
+    private void rotateToSide(Direction direction, MatrixStack mStack) {
+        switch (direction) {
+            case DOWN:
+                mStack.mulPose(new Quaternion(180, 0, 0, true));
+                break;
+            case NORTH:
+                mStack.mulPose(new Quaternion(-90, 0, 0, true));
+                break;
+            case SOUTH:
+                mStack.mulPose(new Quaternion(-90, 0, 180, true));
+                break;
+            case WEST:
+                mStack.mulPose(new Quaternion(-90, 0, 90, true));
+                break;
+            case EAST:
+                mStack.mulPose(new Quaternion(-90, 0, -90, true));
+                break;
+        }
     }
 }

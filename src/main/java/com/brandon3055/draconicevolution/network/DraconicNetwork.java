@@ -43,6 +43,7 @@ public class DraconicNetwork {
     public static final int S_MODULE_CONFIG_GUI =       8;
     public static final int S_DISLOCATOR_MESSAGE =      9;
     public static final int S_JEI_FUSION_TRANSFER =     10;
+    public static final int S_PLACE_ITEM =              11;
 
     //Server to client
     public static final int C_CRYSTAL_UPDATE =          1;
@@ -60,8 +61,7 @@ public class DraconicNetwork {
     //@formatter:on
 
     public static void sendToggleMagnets() {
-        PacketCustom packet = new PacketCustom(CHANNEL, S_TOGGLE_DISLOCATORS);
-        packet.sendToServer();
+        new PacketCustom(CHANNEL, S_TOGGLE_DISLOCATORS).sendToServer();
     }
 
     public static void sendToolProfileChange(boolean armor) {
@@ -104,8 +104,7 @@ public class DraconicNetwork {
     }
 
     public static void sendOpenModuleConfig() {
-        PacketCustom packet = new PacketCustom(CHANNEL, S_MODULE_CONFIG_GUI);
-        packet.sendToServer();
+        new PacketCustom(CHANNEL, S_MODULE_CONFIG_GUI).sendToServer();
     }
 
     public static void sendExplosionEffect(RegistryKey<World> dimension, BlockPos pos, int radius, boolean reload) {
@@ -185,8 +184,10 @@ public class DraconicNetwork {
     }
 
     public static void sendDislocatorTeleported(ServerPlayerEntity player) {
-        PacketCustom packet = new PacketCustom(CHANNEL, C_DISLOCATOR_TELEPORTED);
-        packet.sendToPlayer(player);
+        new PacketCustom(CHANNEL, C_DISLOCATOR_TELEPORTED).sendToPlayer(player);
+    }
+    public static void sendPlaceItem() {
+        new PacketCustom(CHANNEL, S_PLACE_ITEM).sendToServer();
     }
 
     public static void init() {

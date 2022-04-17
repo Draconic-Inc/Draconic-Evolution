@@ -1,13 +1,22 @@
 package com.brandon3055.draconicevolution.blocks;
 
-import codechicken.lib.raytracer.RayTracer;
+import codechicken.lib.math.MathHelper;
+import codechicken.lib.raytracer.IndexedVoxelShape;
+import codechicken.lib.raytracer.MultiIndexedVoxelShape;
+import codechicken.lib.raytracer.VoxelShapeCache;
+import codechicken.lib.vec.Cuboid6;
+import codechicken.lib.vec.Rotation;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.blocks.BlockBCore;
 import com.brandon3055.draconicevolution.blocks.tileentity.TilePlacedItem;
+import com.google.common.collect.ImmutableSet;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.material.Material;
+import net.minecraft.client.particle.ParticleManager;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -15,23 +24,29 @@ import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by brandon3055 on 25/07/2016.
  */
-public class PlacedItem extends BlockBCore /*implements ITileEntityProvider, IRenderOverride*/ {
-
+public class PlacedItem extends BlockBCore {
+    private static final VoxelShape FALLBACK_SHAPE = VoxelShapes.box(0.1, 0.1, 0.1, 0.9, 0.9, 0.9);
+    private static Int2ObjectMap<VoxelShape> SHAPE_CACHE = new Int2ObjectOpenHashMap<>();
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
 
     public PlacedItem(Properties properties) {
@@ -39,48 +54,108 @@ public class PlacedItem extends BlockBCore /*implements ITileEntityProvider, IRe
         this.registerDefaultState(stateDefinition.any().setValue(FACING, Direction.UP));
     }
 
+    private static VoxelShape computeShape(int stackCount, boolean tool, boolean[] isBlock, Direction facing, boolean getCollisionShape) {
+        int shapeConfig = 0b0;
+        shapeConfig |= facing.ordinal() & 0b111; // Bits 1,2,3 are rotation
+        shapeConfig |= (tool ? 1 : 0) << 3; // Bit 4 is tool mode
+        shapeConfig |= (getCollisionShape ? 1 : 0) << 4; // Bit 5 is collision mode
+        for (int i = 0; i < stackCount; i++) {
+            shapeConfig |= (0b10 | (isBlock[i] ? 0b01 : 0b00)) << (5 + (i * 2));
+        }
+
+        return SHAPE_CACHE.computeIfAbsent(shapeConfig, integer -> {
+            Cuboid6 baseCuboid = new Cuboid6(8 / 16D, 0, 8 / 16D, 8 / 16D, 0 / 16D, 8 / 16D);
+            List<Cuboid6> stackCuboids = new ArrayList<>();
+            boolean toolSize = tool && stackCount == 1;
+
+            for (int i = 0; i < stackCount; i++) {
+                double xOffset = getXOffset(i, stackCount);
+                double zOffset = getZOffset(i, stackCount);
+                double xzSize = 7 / 2D;
+                double ySize = (1 / 16D) * (7.5 / 16D);
+                if (isBlock[i]) {
+                    xzSize = 6 / 2D;
+                    ySize = 6 / 16D;
+                } else if (toolSize) {
+                    xzSize = 14 / 2D;
+                    ySize = (1 / 16D) * (14.5 / 16D);
+                }
+
+                Cuboid6 stackBox = new Cuboid6(((8 - xzSize) / 16D) + xOffset, 0, ((8 - xzSize) / 16D) + zOffset, ((8 + xzSize) / 16D) + xOffset, ySize, ((8 + xzSize) / 16D) + zOffset);
+                baseCuboid.enclose(stackBox);
+                stackCuboids.add(stackBox);
+            }
+
+            if (getCollisionShape) {
+                rotateCuboid(baseCuboid, facing);
+                return VoxelShapeCache.getShape(baseCuboid);
+            }
+
+            baseCuboid.expand(0.25 / 16D);
+            baseCuboid.max.y = 0.1 / 16D;
+            baseCuboid.min.y = 0;
+            rotateCuboid(baseCuboid, facing);
+
+            ImmutableSet.Builder<IndexedVoxelShape> cuboids = ImmutableSet.builder();
+            IndexedVoxelShape baseShape = new IndexedVoxelShape(VoxelShapeCache.getShape(baseCuboid), 0);
+            cuboids.add(baseShape);
+            for (int i = 0; i < stackCuboids.size(); i++) {
+                rotateCuboid(stackCuboids.get(i), facing);
+                cuboids.add(new IndexedVoxelShape(VoxelShapeCache.getShape(stackCuboids.get(i)), 1 + i));
+            }
+
+            return new MultiIndexedVoxelShape(baseShape, cuboids.build());
+        });
+    }
+
+    private static void rotateCuboid(Cuboid6 cuboid, Direction rotation) {
+        switch (rotation) {
+            case DOWN:
+                cuboid.apply(new Rotation(180 * MathHelper.torad, Vector3.X_POS).at(new Vector3(0.5, 0.5, 0.5)));
+                break;
+            case NORTH:
+                cuboid.apply(new Rotation(-90 * MathHelper.torad, Vector3.X_POS).at(new Vector3(0.5, 0.5, 0.5)));
+                break;
+            case SOUTH:
+                cuboid.apply(new Rotation(-90 * MathHelper.torad, Vector3.X_POS).at(new Vector3(0.5, 0.5, 0.5)));
+                cuboid.apply(new Rotation(180 * MathHelper.torad, Vector3.Y_POS).at(new Vector3(0.5, 0.5, 0.5)));
+                break;
+            case WEST:
+                cuboid.apply(new Rotation(-90 * MathHelper.torad, Vector3.X_POS).at(new Vector3(0.5, 0.5, 0.5)));
+                cuboid.apply(new Rotation(90 * MathHelper.torad, Vector3.Y_POS).at(new Vector3(0.5, 0.5, 0.5)));
+                break;
+            case EAST:
+                cuboid.apply(new Rotation(-90 * MathHelper.torad, Vector3.X_POS).at(new Vector3(0.5, 0.5, 0.5)));
+                cuboid.apply(new Rotation(-90 * MathHelper.torad, Vector3.Y_POS).at(new Vector3(0.5, 0.5, 0.5)));
+                break;
+        }
+    }
+
+    public static double getXOffset(int index, int count) {
+        double spacing = 0.25;
+        double lowerVal = 3.5 + spacing;
+        double upperVal = 7 + (spacing * 2);
+
+        if (count == 1) return 0;
+        else if (count == 2) return -(lowerVal / 16D) + (index * (upperVal / 16D));
+        else if (count == 3) return index == 2 ? 0 : -(lowerVal / 16D) + (index * (upperVal / 16D));
+        return -(lowerVal / 16D) + ((index % 2) * (upperVal / 16D));
+    }
+
+    public static double getZOffset(int index, int count) {
+        if (count <= 2) return 0;
+        double spacing = 0.25;
+        double lowerVal = 3.5 + spacing;
+        return index <= 1 ? -(lowerVal / 16D) : (lowerVal / 16D);
+    }
+
     @Override
     protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
         builder.add(FACING);
     }
 
-    //region Block state and stuff...
-
-    @Override
-    public boolean isBlockFullCube() {
-        return false;
-    }
-
     @Override
     public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> items) {}
-
-
-//    @Override
-//    protected BlockStateContainer createBlockState() {
-//        return new BlockStateContainer(this, FACING);
-//    }
-//
-//    @Override
-//    public BlockState getStateFromMeta(int meta) {
-//        Direction enumfacing = Direction.getFront(meta);
-//        return this.getDefaultState().withProperty(FACING, enumfacing);
-//    }
-//
-//    @Override
-//    public int getMetaFromState(BlockState state) {
-//        return state.getValue(FACING).getIndex();
-//    }
-//
-//    @Override
-//    public BlockState withRotation(BlockState state, Rotation rot) {
-//        return state.withProperty(FACING, rot.rotate(state.getValue(FACING)));
-//    }
-//
-//    @Override
-//    public BlockState withMirror(BlockState state, Mirror mirrorIn) {
-//        return state.withRotation(mirrorIn.toRotation(state.getValue(FACING)));
-//    }
-
 
     @Override
     public boolean hasTileEntity(BlockState state) {
@@ -93,109 +168,41 @@ public class PlacedItem extends BlockBCore /*implements ITileEntityProvider, IRe
         return new TilePlacedItem();
     }
 
-    //endregion
-
-    //region Render
-
-
     @Override
-    public BlockRenderType getRenderShape(BlockState state) {
-        return BlockRenderType.INVISIBLE;
+    public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos) {
+        return state.getFluidState().isEmpty();
     }
 
-//    @Override
-//    public boolean registerNormal(Feature feature) {
-//        return false;
-//    }
-//
-//    @OnlyIn(Dist.CLIENT)
-//    @Override
-//    public void registerRenderer(Feature feature) {
-//        ClientRegistry.bindTileEntitySpecialRenderer(TilePlacedItem.class, new RenderTilePlacedItem());
-//    }
-
-    //endregion
-
-    //region Interact
-
     @Override
-    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hitIIn) {
-        if (world.isClientSide) {
-            return ActionResultType.SUCCESS;
+    public VoxelShape getShape(BlockState state, IBlockReader reader, BlockPos pos, ISelectionContext context) {
+        TileEntity te = reader.getBlockEntity(pos);
+        if (te instanceof TilePlacedItem) {
+            TilePlacedItem tile = (TilePlacedItem) te;
+            return computeShape(tile.stackCount.get(), tile.toolMode.get(), tile.getBlockArray(), state.getValue(FACING), false);
         }
-
-        TileEntity tile = world.getBlockEntity(pos);
-        if (tile instanceof TilePlacedItem) {
-
-            RayTraceResult hit = RayTracer.retraceBlock(world, player, pos);
-            RayTraceResult subHitResult = null;//TODO RayTracer.rayTraceCuboidsClosest(new Vector3(RayTracer.getStartVec(player)), new Vector3(RayTracer.getEndVec(player)), pos, ((TilePlacedItem) tile).getIndexedCuboids());
-
-            if (subHitResult != null) {
-                hit = subHitResult;
-            }
-            else if (hit == null) {
-                return ActionResultType.SUCCESS;
-            }
-
-            ((TilePlacedItem) tile).handleClick(hit.subHit, player);
-        }
-        return ActionResultType.SUCCESS;
+        return FALLBACK_SHAPE;
     }
 
-//    @Override
-//    public AxisAlignedBB getBoundingBox(BlockState state, IBlockAccess source, BlockPos pos) {
-//        if (!(source instanceof World)) {
-//            return FULL_BLOCK_AABB;
-//        }
-//
-//        TileEntity tile = source.getTileEntity(pos);
-//
-//        if (tile instanceof ICuboidProvider) {
-//            return ((ICuboidProvider) tile).getIndexedCuboids().get(0).aabb();
-////            return ((TilePlacedItem) tile).getBlockBounds().aabb();
-//        }
-//
-//        return super.getBoundingBox(state, source, pos);
-//    }
-
-//    public RayTraceResult collisionRayTrace(BlockState state, World world, BlockPos pos, Vec3d start, Vec3d end) {
-//        TileEntity tile = world.getTileEntity(pos);
-//        if (tile instanceof ICuboidProvider) {
-//            return RayTracer.rayTraceCuboidsClosest(start, end, pos, ((ICuboidProvider) tile).getIndexedCuboids());
-//        }
-//        return super.collisionRayTrace(state, world, pos, start, end);
-//    }
-
-//    @Override
-//    public boolean rotateBlock(World world, BlockPos pos, Direction axis) {
-//        return false;
-//    }
-
-    //endregion
-
-    //region Harvest
-
+    @Override
+    public VoxelShape getCollisionShape(BlockState state, IBlockReader reader, BlockPos pos, ISelectionContext context) {
+        TileEntity te = reader.getBlockEntity(pos);
+        if (te instanceof TilePlacedItem) {
+            TilePlacedItem tile = (TilePlacedItem) te;
+            return computeShape(tile.stackCount.get(), tile.toolMode.get(), tile.getBlockArray(), state.getValue(FACING), true);
+        }
+        return FALLBACK_SHAPE;
+    }
 
     @Override
     public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader world, BlockPos pos, PlayerEntity player) {
         TileEntity tile = world.getBlockEntity(pos);
         if (tile instanceof TilePlacedItem) {
+            List<ItemStack> stacks = ((TilePlacedItem) tile).getStacksInOrder();
+            int index = target.subHit - 1;
 
-            RayTraceResult hit = target;
-            RayTraceResult subHitResult = null;//TODO RayTracer.rayTraceCuboidsClosest(new Vector3(RayTracer.getStartVec(player)), new Vector3(RayTracer.getEndVec(player)), pos, ((TilePlacedItem) tile).getIndexedCuboids());
-
-            if (subHitResult != null) {
-                hit = subHitResult;
-            }
-            else if (hit == null) {
-                return ItemStack.EMPTY;
-            }
-
-            if (hit.subHit > 0 && ((TilePlacedItem) tile).inventory.getItem(hit.subHit - 1) != null) {
-                ItemStack stack = ((TilePlacedItem) tile).inventory.getItem(hit.subHit - 1).copy();
-                if (stack.hasTag()) {
-                    stack.getTag().remove("BlockEntityTag");
-                }
+            if (index >= 0 && index < stacks.size()) {
+                ItemStack stack = stacks.get(index).copy();
+                stack.setCount(1);
                 return stack;
             }
         }
@@ -204,18 +211,35 @@ public class PlacedItem extends BlockBCore /*implements ITileEntityProvider, IRe
     }
 
     @Override
-    public void playerDestroy(World world, PlayerEntity player, BlockPos pos, BlockState state, TileEntity te, ItemStack heldStack) {
-    }
-
-    @Override
     public void onRemove(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving) {
         TileEntity tile = world.getBlockEntity(pos);
-
         if (tile instanceof TilePlacedItem) {
-            ((TilePlacedItem) tile).breakBlock();
+            ((TilePlacedItem) tile).onBroken(Vector3.fromTileCenter(tile), false);
         }
         super.onRemove(state, world, pos, newState, isMoving);
     }
 
-    //endregion
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public boolean addHitEffects(BlockState state, World world, RayTraceResult target, ParticleManager manager) {
+        return true;
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public boolean addDestroyEffects(BlockState state, World world, BlockPos pos, ParticleManager manager) {
+        return true;
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public boolean addLandingEffects(BlockState state1, ServerWorld worldserver, BlockPos pos, BlockState state2, LivingEntity entity, int numberOfParticles) {
+        return true;
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public boolean addRunningEffects(BlockState state, World world, BlockPos pos, Entity entity) {
+        return true;
+    }
 }

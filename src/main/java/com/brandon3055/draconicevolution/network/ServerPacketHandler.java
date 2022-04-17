@@ -1,10 +1,14 @@
 package com.brandon3055.draconicevolution.network;
 
 import codechicken.lib.data.MCDataInput;
+import codechicken.lib.inventory.InventoryUtils;
 import codechicken.lib.packet.ICustomPacketHandler;
 import codechicken.lib.packet.PacketCustom;
+import com.brandon3055.brandonscore.handlers.HandHelper;
 import com.brandon3055.draconicevolution.api.crafting.IFusionRecipe;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleGrid;
+import com.brandon3055.draconicevolution.blocks.PlacedItem;
+import com.brandon3055.draconicevolution.blocks.tileentity.TilePlacedItem;
 import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.PropertyData;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.integration.equipment.EquipmentManager;
@@ -22,9 +26,18 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.RecipeManager;
 import net.minecraft.network.play.IServerPlayNetHandler;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.BlockSnapshot;
+import net.minecraftforge.event.ForgeEventFactory;
+import net.minecraftforge.event.world.BlockEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,6 +81,9 @@ public class ServerPacketHandler implements ICustomPacketHandler.IServerPacketHa
             case DraconicNetwork.S_JEI_FUSION_TRANSFER:
                 jeiFusionTransfer(sender, packet);
                 break;
+            case DraconicNetwork.S_PLACE_ITEM:
+                placeItem(sender, packet);
+                break;
         }
     }
 
@@ -81,7 +97,7 @@ public class ServerPacketHandler implements ICustomPacketHandler.IServerPacketHa
             }
         }
 
-        for (ItemStack stack :  EquipmentManager.getAllItems(player)) {
+        for (ItemStack stack : EquipmentManager.getAllItems(player)) {
             if (stack.getItem() instanceof Magnet) {
                 dislocators.add(stack);
             }
@@ -191,6 +207,47 @@ public class ServerPacketHandler implements ICustomPacketHandler.IServerPacketHa
         IRecipe<?> recipe = sender.level.getRecipeManager().byKey(id).orElse(null);
         if (recipe instanceof IFusionRecipe && sender.containerMenu instanceof ContainerFusionCraftingCore) {
             FusionRecipeTransferHelper.doServerSideTransfer(sender, (ContainerFusionCraftingCore) sender.containerMenu, (IFusionRecipe) recipe, maxTransfer);
+        }
+    }
+
+    private void placeItem(ServerPlayerEntity player, PacketCustom packet) {
+        ItemStack stack = HandHelper.getMainFirst(player);
+        if (stack.isEmpty()) {
+            return;
+        }
+
+        RayTraceResult traceResult = player.pick(4, 0, false);
+        if (traceResult instanceof BlockRayTraceResult) {
+            World world = player.level;
+            BlockRayTraceResult blockTrace = (BlockRayTraceResult) traceResult;
+            BlockPos posHit = blockTrace.getBlockPos();
+            if (!com.brandon3055.brandonscore.network.ServerPacketHandler.verifyPlayerPermission(player, posHit)) {
+                return;
+            }
+
+            TileEntity tileHit = world.getBlockEntity(posHit);
+            BlockPos posOnSide = posHit.relative(blockTrace.getDirection());
+            TileEntity tileOnSide = world.getBlockEntity(posOnSide);
+
+            if (tileHit instanceof TilePlacedItem && InventoryUtils.insertItem(((TilePlacedItem) tileHit).itemHandler, stack, true).isEmpty()) {
+                InventoryUtils.insertItem(((TilePlacedItem) tileHit).itemHandler, stack, false);
+                player.inventory.removeItem(stack);
+
+            } else if (tileOnSide instanceof TilePlacedItem && InventoryUtils.insertItem(((TilePlacedItem) tileOnSide).itemHandler, stack, true).isEmpty()) {
+                InventoryUtils.insertItem(((TilePlacedItem) tileOnSide).itemHandler, stack, false);
+                player.inventory.removeItem(stack);
+
+            } else if (world.isEmptyBlock(posOnSide)) {
+                if (!ForgeEventFactory.onBlockPlace(player, BlockSnapshot.create(player.level.dimension(), world, posHit), blockTrace.getDirection())) {
+                    world.setBlockAndUpdate(posOnSide, DEContent.placed_item.defaultBlockState().setValue(PlacedItem.FACING, blockTrace.getDirection()));
+                    TileEntity tile = world.getBlockEntity(posOnSide);
+
+                    if (tile instanceof TilePlacedItem) {
+                        ((TilePlacedItem) tile).itemHandler.setStackInSlot(0, stack);
+                        player.inventory.removeItem(stack);
+                    }
+                }
+            }
         }
     }
 }

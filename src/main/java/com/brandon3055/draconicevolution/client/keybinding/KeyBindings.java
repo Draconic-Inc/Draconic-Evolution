@@ -22,7 +22,7 @@ import static net.minecraftforge.client.settings.KeyConflictContext.IN_GAME;
 public class KeyBindings {
 
 
-//    public static KeyBinding placeItem;
+    public static KeyBinding placeItem;
     public static KeyBinding toolConfig;
     public static KeyBinding toolModules;
     public static KeyBinding toggleFlight;
@@ -37,7 +37,7 @@ public class KeyBindings {
 //    public static KeyBinding cycleAttackAOE;
 
     public static void init() {
-//        placeItem          = new KeyBinding("key.draconicevolution.place_item",          new CustomContext(IN_GAME, () -> placeItem),          InputMappings.Type.KEYSYM, GLFW.GLFW_KEY_P,         DraconicEvolution.MODNAME);
+        placeItem           = new KeyBinding("key.draconicevolution.place_item",            new CustomContext(IN_GAME, () -> placeItem),                InputMappings.Type.KEYSYM, GLFW.GLFW_KEY_P,         DraconicEvolution.MODNAME);
         toolConfig          = new KeyBinding("key.draconicevolution.tool_config",           new CustomContext(IN_GAME, () -> toolConfig),               InputMappings.Type.KEYSYM, GLFW.GLFW_KEY_C,         DraconicEvolution.MODNAME);
         toggleFlight        = new KeyBinding("key.draconicevolution.toggle_flight",         new CustomContext(IN_GAME, () -> toggleFlight),             InputMappings.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN,   DraconicEvolution.MODNAME);
         toggleMagnet        = new KeyBinding("key.draconicevolution.toggle_magnet",         new CustomContext(IN_GAME, () -> toggleMagnet),             InputMappings.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN,   DraconicEvolution.MODNAME);
@@ -52,7 +52,7 @@ public class KeyBindings {
         toolModules         = new KeyBinding("key.draconicevolution.tool_modules",          new CustomContext(IN_GAME, () -> toolModules),          KeyModifier.SHIFT, InputMappings.Type.KEYSYM, GLFW.GLFW_KEY_C,         DraconicEvolution.MODNAME);
 //        hudConfig         = new KeyBinding("key.tool_config",         new CustomContext(IN_GAME, () -> hudConfig),           InputMappings.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN,         DraconicEvolution.MODNAME);
 
-//        ClientRegistry.registerKeyBinding(placeItem);
+        ClientRegistry.registerKeyBinding(placeItem);
         ClientRegistry.registerKeyBinding(toolConfig);
         ClientRegistry.registerKeyBinding(toolModules);
         ClientRegistry.registerKeyBinding(toggleFlight);

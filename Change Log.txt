@@ -1,6 +1,8 @@
 ######## 3.0.23.x ########
 - Generator now allows you to pull non fuel items out of fuel slots (e.g. empty buckets)
-- Fixed edge case crash with energy core
+- Fixed edge case crash with energy core.
+- Fixed sneaking not disabling hill step module.
+- Updated placed items.
 
 ######## 3.0.22.444 ########
 - Fixed broken ore gen caused by a recent PR to add some ore gen configurability.

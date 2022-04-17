@@ -30,16 +30,6 @@ public class KeyInputHandler {
 
         onInput(player);
     }
-
-
-    private void handlePlaceItemKey() {
-        RayTraceResult mop = Minecraft.getInstance().hitResult;
-        if (mop != null && mop instanceof BlockRayTraceResult) {
-            //TODO Packet stuff
-//            DraconicEvolution.network.sendToServer(new PacketPlaceItem());
-        }
-    }
-
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public void onMouseInput(InputEvent.MouseInputEvent event) {
@@ -61,9 +51,7 @@ public class KeyInputHandler {
     }
 
     private void onInput(PlayerEntity player) {
-//        if (KeyBindings.placeItem.isPressed()) {
-//            handlePlaceItemKey();
-//        }
+
         if (KeyBindings.toolConfig.consumeClick()) {
             DraconicNetwork.sendOpenItemConfig(false);
         }
@@ -91,26 +79,24 @@ public class KeyInputHandler {
                     player.onUpdateAbilities();
                 }
             }
-        }
-        else if (KeyBindings.toggleMagnet.consumeClick()) {
+        } else if (KeyBindings.toggleMagnet.consumeClick()) {
             DraconicNetwork.sendToggleMagnets();
-        }
-        else if (KeyBindings.dislocatorTeleport.consumeClick()) {
+        } else if (KeyBindings.dislocatorTeleport.consumeClick()) {
             DraconicNetwork.sendDislocatorMessage(11, output -> {});
-        }
-        else if (KeyBindings.dislocatorBlink.consumeClick()) {
+        } else if (KeyBindings.dislocatorBlink.consumeClick()) {
             DraconicNetwork.sendDislocatorMessage(12, output -> {});
-        }
-        else if (KeyBindings.dislocatorUp.consumeClick()) {
+        } else if (KeyBindings.dislocatorUp.consumeClick()) {
             DraconicNetwork.sendDislocatorMessage(13, output -> output.writeBoolean(false));
-        }
-        else if (KeyBindings.dislocatorDown.consumeClick()) {
+        } else if (KeyBindings.dislocatorDown.consumeClick()) {
             DraconicNetwork.sendDislocatorMessage(13, output -> output.writeBoolean(true));
-        }
-        else if (KeyBindings.dislocatorGui.consumeClick()) {
+        } else if (KeyBindings.dislocatorGui.consumeClick()) {
             ItemStack stack = DislocatorAdvanced.findDislocator(player);
             if (!stack.isEmpty()) {
                 Minecraft.getInstance().setScreen(new GuiDislocator(stack.getHoverName(), player));
+            }
+        } else if (KeyBindings.placeItem.consumeClick()) {
+            if (Minecraft.getInstance().hitResult instanceof BlockRayTraceResult) {
+                DraconicNetwork.sendPlaceItem();
             }
         }
 //        else if (KeyBindings.armorProfileChange.isPressed()) {
