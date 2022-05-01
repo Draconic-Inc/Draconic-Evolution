@@ -164,10 +164,10 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> {
                     IRenderTypeBuffer.Impl getter = IRenderTypeBuffer.immediate(Tessellator.getInstance().getBuilder());
                     GuiHelperOld.drawPlayerSlots(GuiReactor.this, leftPos + 43 - 31, topPos + 139, false);
                     for (int x = 0; x < 3; x++) {
-                        drawSprite(mat.buffer(getter, BCSprites::makeType), leftPos + 182 + (x * 18), topPos + 148, 18, 18, mat.sprite());
+                        drawSprite(getter.getBuffer(mat.renderType(BCSprites::makeType)), leftPos + 182 + (x * 18), topPos + 148, 18, 18, mat.sprite());
                     }
                     for (int x = 0; x < 3; x++) {
-                        drawSprite(mat.buffer(getter, BCSprites::makeType), leftPos + 182 + (x * 18), topPos + 179, 18, 18, mat.sprite());
+                        drawSprite(getter.getBuffer(mat.renderType(BCSprites::makeType)), leftPos + 182 + (x * 18), topPos + 179, 18, 18, mat.sprite());
                     }
                     getter.endBatch();
                 }

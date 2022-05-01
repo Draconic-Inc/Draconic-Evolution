@@ -447,7 +447,6 @@ public class DEContent {
         registerItem(event, new ItemBlockBCore(flux_gate,                   new Item.Properties().tab(blockGroup)).setRegistryName(Objects.requireNonNull(flux_gate.getRegistryName())));
         registerItem(event, new ItemBlockBCore(fluid_gate,                  new Item.Properties().tab(blockGroup)).setRegistryName(Objects.requireNonNull(fluid_gate.getRegistryName())));
         registerItem(event, new ItemBlockBCore(infused_obsidian,            new Item.Properties().tab(blockGroup)).setRegistryName(Objects.requireNonNull(infused_obsidian.getRegistryName())));
-//        registerItem(event, new ItemBlockBCore(portal,                      new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(portal.getRegistryName())));
 //        registerItem(event, new ItemBlockBCore(chaos_crystal,               new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(chaos_crystal.getRegistryName())));
         registerItem(event, new ItemBlockBCore(crafting_injector_basic,     new Item.Properties().tab(blockGroup)).setRegistryName(Objects.requireNonNull(crafting_injector_basic.getRegistryName())));
         registerItem(event, new ItemBlockBCore(crafting_injector_wyvern,    new Item.Properties().tab(blockGroup)).setRegistryName(Objects.requireNonNull(crafting_injector_wyvern.getRegistryName())));

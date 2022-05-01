@@ -2,8 +2,9 @@ package com.brandon3055.draconicevolution.blocks;
 
 import com.brandon3055.brandonscore.blocks.BlockBCore;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
+import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.init.DEContent;
-import com.brandon3055.draconicevolution.blocks.tileentity.TileDraconiumChest;
+import com.brandon3055.draconicevolution.blocks.tileentity.chest.TileDraconiumChest;
 import net.minecraft.block.*;
 import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.client.util.ITooltipFlag;
@@ -19,6 +20,7 @@ import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
@@ -41,13 +43,12 @@ import java.util.Locale;
 public class DraconiumChest extends BlockBCore {
 
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
-    public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
 
     protected static final VoxelShape SHAPE = Block.box(1.0, 0.0D, 1.0, 15.0, 14.0, 15.0);
 
     public DraconiumChest(Properties properties) {
         super(properties);
-        this.registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(ACTIVE, false));
+        this.registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH));
     }
 
     @Override
@@ -62,7 +63,7 @@ public class DraconiumChest extends BlockBCore {
 
     @Override
     protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
-        builder.add(FACING, ACTIVE);
+        builder.add(FACING);
     }
 
     @Nullable
@@ -72,63 +73,16 @@ public class DraconiumChest extends BlockBCore {
     }
 
     public static boolean isStackValid(ItemStack stack) {
-        if (stack.getItem() == Item.byBlock(DEContent.draconium_chest)) {
-            return false;
-        }
-        else if (!stack.isEmpty()) {
-            String name = stack.getDescriptionId().toLowerCase(Locale.ENGLISH);
-            if (name.contains("pouch") || name.contains("bag") || name.contains("strongbox") || name.contains("shulker_box")) {
-                return false;
+        if (!stack.isEmpty()) {
+            ResourceLocation name = stack.getItem().getRegistryName();
+            for (String key : DEConfig.chestBlacklist) {
+                if (key.contains(":") ? name.toString().contains(key) : name.getPath().contains(key)) {
+                    return false;
+                }
             }
         }
         return true;
     }
-
-//    @Override
-//    public void onBlockPlacedBy(World worldIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
-//        Direction enumfacing = Direction.getHorizontal(MathHelper.floor((double) (placer.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3).getOpposite();
-//        TileEntity tile = worldIn.getTileEntity(pos);
-//
-//        if (tile instanceof TileDraconiumChest) {
-//            ((TileDraconiumChest) tile).facing.set(enumfacing);
-//        }
-//
-//        super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
-//    }
-
-//    @Override
-//    public boolean rotateBlock(World world, BlockPos pos, Direction axis) {
-//        TileEntity tile = world.getTileEntity(pos);
-//
-//        if (tile instanceof TileDraconiumChest) {
-//            ((TileDraconiumChest) tile).facing.set(((TileDraconiumChest) tile).facing.get().rotateY());
-//            ((TileDraconiumChest) tile).ioCacheValid = false;
-//        }
-//
-//        return true;
-//    }
-
-    //region Rendering
-
-//    @Override
-//    @OnlyIn(Dist.CLIENT)
-//    public void registerRenderer(Feature feature) {
-//        ClientRegistry.bindTileEntitySpecialRenderer(TileDraconiumChest.class, new RenderTileDraconiumChest());
-////        ModelRegistryHelper.registerItemRenderer(Item.getItemFromBlock(this), new RenderItemDraconiumChest());
-//
-//        ModelResourceLocation modelLocation = new ModelResourceLocation(DraconicEvolution.MOD_PREFIX + feature.getName() + "#normal");
-//        ModelLoader.registerItemVariants(Item.getItemFromBlock(this), modelLocation);
-//        IBakedModel bakedModel = new RenderItemDraconiumChest();
-//        ModelRegistryHelper.register(modelLocation, bakedModel);
-//        ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(this), (ItemStack stack) -> modelLocation);
-//
-//    }
-//
-//    @Override
-//    public boolean registerNormal(Feature feature) {
-//        return false;
-//    }
-
 
     //endregion
 
@@ -185,6 +139,5 @@ public class DraconiumChest extends BlockBCore {
     @OnlyIn(Dist.CLIENT)
     public void appendHoverText(ItemStack stack, @Nullable IBlockReader worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         super.appendHoverText(stack, worldIn, tooltip, flagIn);
-        tooltip.add(new StringTextComponent("//WIP"));
     }
 }

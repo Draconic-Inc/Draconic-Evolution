@@ -595,7 +595,7 @@ public class PropertyContainer extends GuiManipulable {
 
         int alpha = semiTrans ? 0x60000000 : 0xFF000000;
         RenderMaterial mat = BCSprites.getThemed("borderless_bg_dynamic_small");
-        drawDynamicSprite(mat.buffer(getter, e -> BCSprites.GUI_TYPE), mat.sprite(), xPos(), yPos(), xSize(), ySize(), 2, 2, 2, 2, 0xFFFFFF | alpha);
+        drawDynamicSprite(getter.getBuffer(mat.renderType(e -> BCSprites.GUI_TYPE)), mat.sprite(), xPos(), yPos(), xSize(), ySize(), 2, 2, 2, 2, 0xFFFFFF | alpha);
 
         int contentPos = yPos() + 2 + 9;
         int contentHeight = ySize() - 4 - 9;
