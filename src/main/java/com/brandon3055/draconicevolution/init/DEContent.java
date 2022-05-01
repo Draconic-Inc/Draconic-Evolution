@@ -21,6 +21,7 @@ import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCo
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorInjector;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorStabilizer;
 import com.brandon3055.draconicevolution.blocks.tileentity.*;
+import com.brandon3055.draconicevolution.blocks.tileentity.chest.TileDraconiumChest;
 import com.brandon3055.draconicevolution.blocks.tileentity.flowgate.TileFlowGate;
 import com.brandon3055.draconicevolution.blocks.tileentity.flowgate.TileFluidGate;
 import com.brandon3055.draconicevolution.blocks.tileentity.flowgate.TileFluxGate;
@@ -265,7 +266,7 @@ public class DEContent {
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> event) {
         Properties machine = Properties.of(METAL, COLOR_GRAY).strength(3.0F, 8F).noOcclusion().harvestTool(ToolType.PICKAXE).requiresCorrectToolForDrops().harvestLevel(1);
-        Properties hardenedMachine = Properties.of(METAL, COLOR_GRAY).strength(5.0F, 12F).noOcclusion().harvestTool(ToolType.PICKAXE).requiresCorrectToolForDrops().harvestLevel(1);
+        Properties hardenedMachine = Properties.of(METAL, COLOR_GRAY).strength(20.0F, 600F).noOcclusion().harvestTool(ToolType.PICKAXE).requiresCorrectToolForDrops().harvestLevel(1);
         Properties storageBlock = Properties.of(METAL, COLOR_GRAY).strength(30.0F, 600F).harvestTool(ToolType.PICKAXE).requiresCorrectToolForDrops().harvestLevel(3);
         Properties stoneProp = Properties.of(Material.STONE, COLOR_GRAY).strength(1.5F, 6F).harvestTool(ToolType.PICKAXE).requiresCorrectToolForDrops().harvestLevel(2);
         Properties ore = Properties.of(Material.STONE, COLOR_GRAY).strength(6.0F, 16F).harvestTool(ToolType.PICKAXE).requiresCorrectToolForDrops().harvestLevel(2);
@@ -279,7 +280,7 @@ public class DEContent {
 //        event.getRegistry().register(new EntityDetector(machine).setRegistryName("entity_detector"));
 //        event.getRegistry().register(new EntityDetector(machine).setRegistryName("advanced_entity_detector"));
         event.getRegistry().register(new StabilizedSpawner(machine).setRegistryName("stabilized_spawner"));
-        event.getRegistry().register(new DraconiumChest(machine).setRegistryName("draconium_chest"));
+        event.getRegistry().register(new DraconiumChest(hardenedMachine).setRegistryName("draconium_chest"));
         event.getRegistry().register(new ParticleGenerator(machine).setRegistryName("particle_generator"));
         event.getRegistry().register(new DislocationInhibitor(machine).setRegistryName("dislocation_inhibitor"));
         //Stone Type
@@ -439,7 +440,7 @@ public class DEContent {
         registerItem(event, new ItemBlockBCore(stabilized_spawner,          new Item.Properties().tab(blockGroup)).setRegistryName(Objects.requireNonNull(stabilized_spawner.getRegistryName())));
         registerItem(event, new ItemBlockBCore(potentiometer,               new Item.Properties().tab(blockGroup)).setRegistryName(Objects.requireNonNull(potentiometer.getRegistryName())));
 //        registerItem(event, new ItemBlockBCore(celestial_manipulator,       new Item.Properties().group(blockGroup)).setRegistryName(Objects.requireNonNull(celestial_manipulator.getRegistryName())));
-        registerItem(event, new ItemBlockBCore(draconium_chest,             new Item.Properties().tab(blockGroup)).setRegistryName(Objects.requireNonNull(draconium_chest.getRegistryName())));
+        registerItem(event, new ItemBlockBCore(draconium_chest,             new Item.Properties().tab(blockGroup).rarity(Rarity.RARE)).setRegistryName(Objects.requireNonNull(draconium_chest.getRegistryName())));
         registerItem(event, new ItemBlockBCore(particle_generator,          new Item.Properties().tab(blockGroup)).setRegistryName(Objects.requireNonNull(particle_generator.getRegistryName())));
         registerItem(event, new ItemBlockBCore(dislocation_inhibitor,       new Item.Properties().tab(blockGroup)).setRegistryName(Objects.requireNonNull(dislocation_inhibitor.getRegistryName())));
         registerItem(event, new ItemBlockBCore(placed_item,                 new Item.Properties()).setRegistryName(Objects.requireNonNull(placed_item.getRegistryName())));

@@ -19,7 +19,7 @@ public class AE2Compat {
             InterModComms.sendTo("appliedenergistics2", "whitelist-spatial", () -> "com.brandon3055.draconicevolution.blocks.tileentity.TileDislocatorPedestal");
             InterModComms.sendTo("appliedenergistics2", "whitelist-spatial", () -> "com.brandon3055.draconicevolution.blocks.tileentity.TileDislocatorReceptacle");
             InterModComms.sendTo("appliedenergistics2", "whitelist-spatial", () -> "com.brandon3055.draconicevolution.blocks.tileentity.TileDissEnchanter");
-            InterModComms.sendTo("appliedenergistics2", "whitelist-spatial", () -> "com.brandon3055.draconicevolution.blocks.tileentity.TileDraconiumChest");
+            InterModComms.sendTo("appliedenergistics2", "whitelist-spatial", () -> "com.brandon3055.draconicevolution.blocks.tileentity.chest.TileDraconiumChest");
             InterModComms.sendTo("appliedenergistics2", "whitelist-spatial", () -> "com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyCoreStabilizer");
             InterModComms.sendTo("appliedenergistics2", "whitelist-spatial", () -> "com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyInfuser");
             InterModComms.sendTo("appliedenergistics2", "whitelist-spatial", () -> "com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyPylon");

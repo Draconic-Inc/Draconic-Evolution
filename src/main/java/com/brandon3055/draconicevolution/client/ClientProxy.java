@@ -201,7 +201,7 @@ public class ClientProxy extends CommonProxy {
 
     private void registerTileRenderers() {
         ClientRegistry.bindTileEntityRenderer(DEContent.tile_grinder, RenderTileGrinder::new);
-        ClientRegistry.bindTileEntityRenderer(DEContent.tile_draconium_chest, RenderTileDraconiumChest::new);
+        ClientRegistry.bindTileEntityRenderer(DEContent.tile_draconium_chest, DraconiumChestTileRenderer::new);
         ClientRegistry.bindTileEntityRenderer(DEContent.tile_storage_core, RenderTileEnergyCore::new);
         ClientRegistry.bindTileEntityRenderer(DEContent.tile_energy_pylon, RenderTileEnergyPylon::new);
         ClientRegistry.bindTileEntityRenderer(DEContent.tile_core_stabilizer, RenderTileECStabilizer::new);

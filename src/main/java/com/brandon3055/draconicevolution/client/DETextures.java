@@ -146,7 +146,7 @@ public class DETextures implements IIconRegister, ISelectiveResourceReloadListen
     public static final String REACTOR_ENERGY_BEAM = "textures/particle/reactor_energy_beam.png";
 
 
-    public static final String DRACONIUM_CHEST = "textures/block/draconium_chest.png";
+//    public static final String DRACONIUM_CHEST = "textures/block/draconium_chest.png";
 
     //Added / updated / still used in 1.14+
 //

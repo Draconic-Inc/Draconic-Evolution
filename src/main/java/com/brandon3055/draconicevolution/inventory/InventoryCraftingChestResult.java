@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.inventory;
 
-import com.brandon3055.draconicevolution.blocks.tileentity.TileDraconiumChest;
+import com.brandon3055.draconicevolution.blocks.tileentity.chest.TileDraconiumChest;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.CraftResultInventory;
 
@@ -29,7 +29,7 @@ public class InventoryCraftingChestResult extends CraftResultInventory {
      */
     @Override
     public ItemStack getItem(int par1) {
-        return tile.getStackInCraftingSlot(0);// this.stackResult[0];
+        return ItemStack.EMPTY;//tile.getStackInCraftingSlot(0);// this.stackResult[0];
     }
 
     /**
@@ -54,14 +54,14 @@ public class InventoryCraftingChestResult extends CraftResultInventory {
      */
     @Override
     public ItemStack removeItem(int par1, int par2) {
-        ItemStack stack = tile.getStackInCraftingSlot(0);
-        if (!stack.isEmpty()) {
-            tile.setInventoryCraftingSlotContents(0, ItemStack.EMPTY);
-            return stack;
-        }
-        else {
+//        ItemStack stack = tile.getStackInCraftingSlot(0);
+//        if (!stack.isEmpty()) {
+//            tile.setInventoryCraftingSlotContents(0, ItemStack.EMPTY);
+//            return stack;
+//        }
+//        else {
             return ItemStack.EMPTY;
-        }
+//        }
     }
 
     /**
@@ -80,7 +80,7 @@ public class InventoryCraftingChestResult extends CraftResultInventory {
      */
     @Override
     public void setItem(int par1, ItemStack par2ItemStack) {
-        tile.setInventoryCraftingSlotContents(0, par2ItemStack);
+//        tile.setInventoryCraftingSlotContents(0, par2ItemStack);
     }
 
     /**

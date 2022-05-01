@@ -3,12 +3,16 @@ package com.brandon3055.draconicevolution.datagen;
 import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.ModuleType;
 import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
+import com.brandon3055.draconicevolution.blocks.tileentity.chest.SmeltingLogic;
+import com.brandon3055.draconicevolution.blocks.tileentity.chest.SmeltingLogic.FeedMode;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.init.DEModules;
 import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.data.LanguageProvider;
+
+import java.util.Locale;
 
 import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
 
@@ -506,18 +510,11 @@ public class LangGenerator extends LanguageProvider {
 
         //Draconium Chest
         helper.setPrefix("gui.draconicevolution.draconium_chest");
-        helper.add("smelt_energy",                                              "Smelt Energy");
-        helper.add("smelt_speed",                                               "Smelt Speed");
-        helper.add("autofill_off.info",                                         "Autofill Off");
-        helper.add("autofill_fill.info",                                        "Autofill Fill");
-        helper.add("autofill_lock.info",                                        "Autofill Lock");
-        helper.add("autofill_all.info",                                         "Autofill All");
-        helper.add("autofill_off",                                              "Autofill Off");
-        helper.add("autofill_fill",                                             "Autofill Fill");
-        helper.add("autofill_lock",                                             "Autofill Lock");
-        helper.add("autofill_all",                                              "Autofill All");
-        helper.add("color_picker.info",                                         "Change Color");
-        helper.add("color_picker",                                              "Change Color");
+        helper.add("feed." + FeedMode.OFF.localKey() + ".info",                 "Feed Off");
+        helper.add("feed." + FeedMode.ALL.localKey() + ".info",                 "Feed All\nFeed all smeltable items into the furnace.");
+        helper.add("feed." + FeedMode.FILTER.localKey() + ".info",              "Feed Filtered\nFeed any items that are already being smelted.");
+        helper.add("feed." + FeedMode.STiCKY.localKey() + ".info",              "Feed Filtered (Sticky)\nThe same as Filtered but will keep one item so the filter persists.");
+        helper.add("color_picker",                                              "Change Chest Color");
 
         //Reactor
         helper.setPrefix("gui.draconicevolution.reactor");

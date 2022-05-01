@@ -1,20 +1,29 @@
 package com.brandon3055.draconicevolution.integration.jei;
 
+import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
+import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiTexture;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.DraconicAPI;
 import com.brandon3055.draconicevolution.api.crafting.IFusionRecipe;
+import com.brandon3055.draconicevolution.client.gui.GuiDraconiumChest;
 import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.GuiConfigurableItem;
 import com.brandon3055.draconicevolution.init.DEContent;
+import com.brandon3055.draconicevolution.inventory.ContainerDraconiumChest;
 import com.brandon3055.draconicevolution.inventory.ContainerFusionCraftingCore;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import mezz.jei.api.*;
 import mezz.jei.api.constants.VanillaRecipeCategoryUid;
 import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.gui.handlers.IGuiClickableArea;
+import mezz.jei.api.gui.handlers.IGuiContainerHandler;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.helpers.IJeiHelpers;
 import mezz.jei.api.helpers.IStackHelper;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
+import mezz.jei.api.recipe.transfer.IRecipeTransferInfo;
 import mezz.jei.api.registration.*;
 import mezz.jei.api.runtime.IJeiRuntime;
 import mezz.jei.plugins.vanilla.cooking.CampfireCategory;
@@ -24,13 +33,18 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Created by brandon3055 on 24/07/2016.
@@ -50,6 +64,17 @@ public class DEJEIPlugin implements IModPlugin {
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration registration) {
         registration.addGuiScreenHandler(GuiConfigurableItem.class, (gui) -> null);
+        registration.addGuiContainerHandler(GuiDraconiumChest.class, new IGuiContainerHandler<GuiDraconiumChest>() {
+            @Override
+            public Collection<IGuiClickableArea> getGuiClickableAreas(GuiDraconiumChest gui, double mouseX, double mouseY) {
+                if (gui.colourDialog.isVisible()) return Collections.emptyList();
+                GuiElement<?> craftIcon = gui.craftIcon;
+                GuiElement<?> smeltArrow = gui.furnaceProgress;
+                IGuiClickableArea craftingArea = IGuiClickableArea.createBasic(craftIcon.xPos() - gui.guiLeft(), craftIcon.yPos() - gui.guiTop(), craftIcon.xSize(), craftIcon.ySize(), VanillaRecipeCategoryUid.CRAFTING);
+                IGuiClickableArea smeltingArea = IGuiClickableArea.createBasic(smeltArrow.xPos() - gui.guiLeft(), smeltArrow.yPos() - gui.guiTop(), smeltArrow.xSize(), smeltArrow.ySize(), VanillaRecipeCategoryUid.FURNACE);
+                return Lists.newArrayList(craftingArea, smeltingArea);
+            }
+        });
     }
 
     @Override
@@ -82,11 +107,69 @@ public class DEJEIPlugin implements IModPlugin {
         IRecipeTransferHandlerHelper transferHelper = registration.getTransferHelper();
         IStackHelper stackHelper = jeiHelpers.getStackHelper();
         registration.addRecipeTransferHandler(new FusionRecipeTransferHelper(stackHelper, transferHelper), RecipeCategoryUids.FUSION_CRAFTING);
+
+        //Draconium chest recipe movers
+        registration.addRecipeTransferHandler(new IRecipeTransferInfo<ContainerDraconiumChest>() {
+            @Override
+            public Class<ContainerDraconiumChest> getContainerClass() {
+                return ContainerDraconiumChest.class;
+            }
+
+            @Override
+            public ResourceLocation getRecipeCategoryUid() {
+                return VanillaRecipeCategoryUid.CRAFTING;
+            }
+
+            @Override
+            public boolean canHandle(ContainerDraconiumChest container) {
+                return true;
+            }
+
+            @Override
+            public List<Slot> getRecipeSlots(ContainerDraconiumChest container) {
+                return container.craftInputSlots;
+            }
+
+            @Override
+            public List<Slot> getInventorySlots(ContainerDraconiumChest container) {
+                return Stream.of(container.mainSlots, container.playerSlots).flatMap(Collection::stream).collect(Collectors.toList());
+            }
+        });
+
+        //TODO Look into adding a custom transfer helper that utilizes all of the furnace slots.
+        registration.addRecipeTransferHandler(new IRecipeTransferInfo<ContainerDraconiumChest>() {
+            @Override
+            public Class<ContainerDraconiumChest> getContainerClass() {
+                return ContainerDraconiumChest.class;
+            }
+
+            @Override
+            public ResourceLocation getRecipeCategoryUid() {
+                return VanillaRecipeCategoryUid.FURNACE;
+            }
+
+            @Override
+            public boolean canHandle(ContainerDraconiumChest container) {
+                return true;
+            }
+
+            @Override
+            public List<Slot> getRecipeSlots(ContainerDraconiumChest container) {
+                return container.furnaceInputSlots;
+            }
+
+            @Override
+            public List<Slot> getInventorySlots(ContainerDraconiumChest container) {
+                return Stream.of(container.mainSlots, container.playerSlots).flatMap(Collection::stream).collect(Collectors.toList());
+            }
+        });
+
     }
 
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
         registration.addRecipeCatalyst(new ItemStack(DEContent.crafting_core), RecipeCategoryUids.FUSION_CRAFTING);
+        registration.addRecipeCatalyst(new ItemStack(DEContent.draconium_chest), VanillaRecipeCategoryUid.CRAFTING, VanillaRecipeCategoryUid.FURNACE);
 
 //        if (DEContent.crafting_core.isBlockEnabled()){
 //            registration.addRecipeCatalyst(new ItemStack(DEContent.crafting_core), RecipeCategoryUids.FUSION_CRAFTING);

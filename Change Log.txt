@@ -3,6 +3,7 @@
 - Fixed edge case crash with energy core.
 - Fixed sneaking not disabling hill step module.
 - Updated placed items.
+- Re wrote Draconium Chest (Have not yet re implemented I/O regions or upgrades)
 
 ######## 3.0.22.444 ########
 - Fixed broken ore gen caused by a recent PR to add some ore gen configurability.

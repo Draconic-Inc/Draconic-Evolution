@@ -5,12 +5,11 @@ import codechicken.lib.config.StandardConfigFile;
 import com.brandon3055.draconicevolution.init.EquipCfg;
 import com.brandon3055.draconicevolution.init.ModuleCfg;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.nio.file.Paths;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Consumer;
 
 /**
@@ -77,6 +76,7 @@ public class DEConfig {
     public static boolean spawnerListWhiteList = false;
     public static boolean allowBossSouls = false;
     public static Integer[] spawnerDelays = new Integer[]{200, 800, 100, 400, 50, 200, 25, 100};
+    public static Set<String> chestBlacklist = new HashSet<>();
 
     private static void loadServer() {
         serverTag = config.getTag("Server");
@@ -320,6 +320,12 @@ public class DEConfig {
                 .setComment("By default, the dragon egg only ever spawns once. This forces it to spawn every time the dragon is killed.")
                 .setDefaultBoolean(true)
                 .setSyncCallback((tag, type) -> dragonEggSpawnOverride = tag.getBoolean());
+
+        serverTag.getTag("chestBlacklist")
+                .setSyncToClient()
+                .setComment("This is a blacklist of key words that can be used to prevent certain storage items from being stored in a draconium chest.\nIf the items registry name contains any or these strings it will not be allowed")
+                .setDefaultStringList(Lists.newArrayList("draconium_chest", "shulker_box", "pouch", "bag", "strongbox"))
+                .setSyncCallback((tag, type) -> chestBlacklist = Sets.newHashSet(tag.getStringList()));
     }
 
     //Client properties

@@ -48,18 +48,13 @@ public class DESprites {
         register(MODID, "dislocator/add_bottom");
 
         // Gui Draconium chest
-        register(MODID, "draconium_chest/core");
-        register(MODID, "draconium_chest/furnace_off");
-        register(MODID, "draconium_chest/furnace_on");
-        register(MODID, "draconium_chest/crafting_field_dark");
-        register(MODID, "draconium_chest/crafting_field_light");
-        register(MODID, "draconium_chest/crafting_arrow_dark");
-        register(MODID, "draconium_chest/crafting_arrow_light");
-        register(MODID, "draconium_chest/autofill_off");
-        register(MODID, "draconium_chest/autofill_fill");
-        register(MODID, "draconium_chest/autofill_lock");
-        register(MODID, "draconium_chest/autofill_all");
-        register(MODID, "draconium_chest/color_picker");
+        register(MODID, "chest/fire_over");
+        register(MODID, "chest/fire_base");
+        register(MODID, "chest/feed_off");
+        register(MODID, "chest/feed_all");
+        register(MODID, "chest/feed_filter");
+        register(MODID, "chest/feed_filter_sticky");
+        register(MODID, "chest/color_picker");
 
         // Hud
         register(MODID, "hud/ryg_bar");
