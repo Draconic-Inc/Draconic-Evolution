@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.blocks.tileentity.chest;
 
+import codechicken.lib.inventory.InventoryUtils;
 import codechicken.lib.math.MathHelper;
 import com.brandon3055.brandonscore.api.power.OPStorage;
 import com.brandon3055.brandonscore.blocks.TileBCore;
@@ -10,6 +11,7 @@ import com.brandon3055.brandonscore.lib.IRSSwitchable;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedInt;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedShort;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
+import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.DraconiumChest;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.inventory.ContainerDraconiumChest;
@@ -19,7 +21,9 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
@@ -51,6 +55,9 @@ public class TileDraconiumChest extends TileBCore implements ITickableTileEntity
 
     public SmeltingLogic smeltingLogic = new SmeltingLogic(this, furnaceItems, mainInventory, opStorage);
 
+    @Deprecated //TODO remove in a few versions
+    public TileItemStackHandler old_item_handler = new TileItemStackHandler(267);
+
     public TileDraconiumChest() {
         super(DEContent.tile_draconium_chest);
         capManager.setManaged("energy", CapabilityOP.OP, opStorage).saveBoth().syncContainer();
@@ -67,6 +74,8 @@ public class TileDraconiumChest extends TileBCore implements ITickableTileEntity
 
         smeltingLogic.setFeedSourceInv(mainInventory);
         installIOTracker(opStorage);
+
+        capManager.setInternalManaged("inventory", CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, old_item_handler).saveBoth();
 
         /*
          * Ok so the plan for IO control
@@ -118,11 +127,47 @@ public class TileDraconiumChest extends TileBCore implements ITickableTileEntity
     @Override
     public void writeExtraTileAndStack(CompoundNBT compound) {
         smeltingLogic.saveAdditionalNBT(compound);
+        compound.putBoolean("inv_migrated", true);
     }
 
     @Override
     public void readExtraTileAndStack(CompoundNBT compound) {
         smeltingLogic.loadAdditionalNBT(compound);
+        DraconicEvolution.LOGGER.info("readExtraTileAndStack");
+        if (!compound.contains("inv_migrated")) {
+            DraconicEvolution.LOGGER.info("Chest Not Migrated!");
+            DraconicEvolution.LOGGER.info(compound);
+            for (int i = 0; i < old_item_handler.getSlots(); i++) {
+                ItemStack stack = old_item_handler.getStackInSlot(i);
+                if (stack.isEmpty()) {
+                    continue;
+                }
+                if (i <= 259) {
+                    mainInventory.setStackInSlot(i, stack);
+                }else if (i <= 264) {
+                    furnaceItems.setStackInSlot(i - 260, stack);
+                } else if (i == 265) {
+                    capacitorInv.setStackInSlot(0, stack);
+                } else if (i == 266) {
+                    InventoryUtils.insertItem(mainInventory, stack, false);
+                }
+                old_item_handler.setStackInSlot(i, ItemStack.EMPTY);
+            }
+
+            if (compound.contains("CraftingItems", 9)) {
+                DraconicEvolution.LOGGER.info("Migrating Crafting Items");
+                ListNBT nbttaglist = compound.getList("CraftingItems", 10);
+                DraconicEvolution.LOGGER.info(nbttaglist);
+                for (int i = 1; i < nbttaglist.size(); ++i) {
+                    CompoundNBT nbttagcompound = nbttaglist.getCompound(i);
+                    DraconicEvolution.LOGGER.info(nbttagcompound);
+//                    int j = nbttagcompound.getByte("Slot") & 255;
+                    if (i < craftingItems.getSlots()) {
+                        craftingItems.setStackInSlot(i - 1, ItemStack.of(nbttagcompound));
+                    }
+                }
+            }
+        }
     }
 }
 
