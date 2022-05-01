@@ -1,8 +1,9 @@
-######## 3.0.23.x ########
+######## 3.0.23.449 ########
 - Generator now allows you to pull non fuel items out of fuel slots (e.g. empty buckets)
 - Fixed edge case crash with energy core.
 - Fixed sneaking not disabling hill step module.
 - Updated placed items.
+- Fixed sneaking not disabling hill step.
 - Re wrote Draconium Chest (Have not yet re implemented I/O regions or upgrades)
 
 ######## 3.0.22.444 ########
