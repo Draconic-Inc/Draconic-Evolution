@@ -1,13 +1,13 @@
 buildscript {
     repositories {
         mavenLocal()
-        mavenCentral()
+        jcenter()
         maven { url = "https://maven.minecraftforge.net/" }
         maven { url = "https://repo.spongepowered.org/maven" }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:4.1.+'
-        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:5.1.+'
+//        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
     }
 }
 
@@ -17,16 +17,17 @@ plugins {
     id "net.covers1624.signing" version '1.1.4'
 }
 
+
 apply plugin: 'net.minecraftforge.gradle'
-apply plugin: "org.spongepowered.mixin"
+//apply plugin: "org.spongepowered.mixin"
+apply from: 'https://raw.githubusercontent.com/SizableShrimp/Forge-Class-Remapper/main/classremapper.gradle'
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(8)
 
 group = "com.brandon3055.draconicevolution"
 archivesBaseName = "Draconic-Evolution"
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(8)
-
-//Add generated resources to main resources.
-sourceSets.main.resources.srcDirs += "src/generated/resources"
+sourceSets.main.resources.srcDirs += "src/main/generated"
 
 file('build.properties').withReader {
     def prop = new Properties()
@@ -53,10 +54,10 @@ if (System.getenv("KEY_STORE")) {
     println 'No signing secrets found, build will not be signed.'
 }
 
-config.mod_version = "${config.mod_version}." + (System.getenv("BUILD_NUMBER") ?: "1")
+config.mod_version = "${config.mod_version}." + (System.getenv("BUILD_NUMBER") ?: "9999")
 version = "${config.mc_version}-${config.mod_version}"
 println "Starting build of ${archivesBaseName}, Version: ${config.mod_version}"
-println "Using Forge: ${config.forge_version}, for Minecraft: ${config.mc_version}, with Mappings: ${config.mappings}"
+println "Using Forge: ${config.forge_version}, for Minecraft: ${config.mc_version}, with Mappings: 'official'"
 
 minecraft {
     mappings channel: 'official', version: config.mc_version
@@ -72,21 +73,62 @@ minecraft {
         }
         data {
             workingDirectory file('run')
-            args '--mod', 'draconicevolution', '--all', '--output', file("src/generated/resources"), '--existing', file("src/main/resources")
+            args '--mod', 'draconicevolution', '--all', '--output', file("src/main/generated"), '--existing', file("src/main/resources")
             mods { draconicevolution { source sourceSets.main } }
         }
     }
 }
 
-mixin {
-    add (sourceSets.main, "mixins.draconicevolution.refmap.json")
+//mixin {
+//    add(sourceSets.main, "mixins.codechickenlib.refmap.json")
+//}
+
+processResources {
+    inputs.property 'mod_version', config.mod_version
+    inputs.property 'mc_version', config.mc_version
+    inputs.property 'ccl_version', config.ccl_version
+    inputs.property 'bcore_version', config.bcore_version
+
+    filesMatching('META-INF/mods.toml') {
+        expand 'file': ['jarVersion': config.mod_version],
+                'mc_version': config.mc_version,
+                'forge_version': config.forge_version,
+                'pi_version': config.pi_version,
+                'bcore_version': config.bcore_version,
+                'cct_version': config.cct_version,
+                'lang_version': config.forge_version.split('\\.')[0],
+                'ccl_version': "[${config.ccl_version.replace(".+", "")},${config.ccl_version_max})"
+    }
 }
+
+//configurations {
+////    shadow
+////    implementation.extendsFrom shadow
+//    annotationProcessor.extendsFrom minecraft
+//}
+
+
+//processResources { task ->
+//    inputs.property 'mod_version', config.mod_version
+//    inputs.property 'mc_version', config.mc_version
+//
+//    from(sourceSets.main.resources.srcDirs) { spec ->
+//        spec.include 'META-INF/mods.toml'
+//        task.doFirst {
+//            spec.expand 'version': config.mod_version,
+//                    'mc_version': config.mc_version,
+//                    'ccl_version': "[${config.ccl_version.replace('.+', '')},${config.ccl_version_max})",
+//                    'bcore_version': resolve("BrandonsCore"),
+//                    'cct_version': config.cct_version
+//        }
+//    }
+//}
 
 repositories {
     mavenLocal()
     maven { url = "https://maven.covers1624.net/" }
     maven { url = "https://dvs1.progwml6.com/files/maven" }
-    maven { url = "http://maven.cil.li/" }
+    maven { url = "https://maven.cil.li/" }
     maven { url = "https://maven.theillusivec4.top/" }
     maven { url = "https://squiddev.cc/maven/" }
     maven { url = "https://maven.blamejared.com/" }
@@ -94,18 +136,18 @@ repositories {
 
 dependencies {
     minecraft "net.minecraftforge:forge:${config.mc_version}-${config.forge_version}"
-    compile "com.brandon3055.brandonscore:BrandonsCore:${config.mc_version}-${config.bcore_version}:deobf"
-//    compile "com.brandon3055.projectintelligence:ProjectIntelligence:${config.mc_version}-${config.pi_version}:deobf"
-    compile "codechicken:CodeChickenLib:${config.mc_version}-${config.ccl_version}:deobf"
-    compile fg.deobf("mezz.jei:jei-${config.mc_version}:${config.jei_version}")
 
-    compile fg.deobf("top.theillusivec4.curios:curios-forge:${config.mc_version}-${config.curios_version}")
+    implementation fg.deobf("com.brandon3055.brandonscore:BrandonsCore:${config.mc_version}-${config.bcore_version}:universal")
+    implementation fg.deobf("codechicken:CodeChickenLib:${config.mc_version}-${config.ccl_version}:universal")
+    implementation fg.deobf("mezz.jei:jei-${config.mc_version}:${config.jei_version}")
+
+    implementation fg.deobf("top.theillusivec4.curios:curios-forge:${config.mc_version}-${config.curios_version}")
 
     implementation fg.deobf("org.squiddev:cc-tweaked-${config.mc_version}:${config.cct_version}")
 
-    compileOnly fg.deobf("com.blamejared.crafttweaker:CraftTweaker-${config.mc_version}:${config.crt_version}")
+    implementation fg.deobf("com.blamejared.crafttweaker:CraftTweaker-${config.mc_version}:${config.crt_version}")
 
-    annotationProcessor("org.spongepowered:mixin:0.8.2:processor")
+//    annotationProcessor("org.spongepowered:mixin:0.8.2:processor")
 }
 
 signing {
@@ -122,21 +164,7 @@ signing {
     }
 }
 
-processResources { task ->
-    inputs.property 'mod_version', config.mod_version
-    inputs.property 'mc_version', config.mc_version
 
-    from(sourceSets.main.resources.srcDirs) { spec ->
-        spec.include 'META-INF/mods.toml'
-        task.doFirst {
-            spec.expand 'version': config.mod_version,
-                    'mc_version': config.mc_version,
-                    'ccl_version': "[${config.ccl_version.replace('.+', '')},${config.ccl_version_max})",
-                    'bcore_version': resolve("BrandonsCore"),
-                    'cct_version': config.cct_version
-        }
-    }
-}
 
 jar {
     finalizedBy 'reobfJar'
