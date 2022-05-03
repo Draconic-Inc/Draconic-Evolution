@@ -352,11 +352,13 @@ public class TileEnergyCore extends TileBCore implements ITickableTileEntity, IE
                     for (int dist = 0; dist < 16; dist++) {
                         BlockPos pos1 = worldPosition.offset(facing.getStepX() * dist, facing.getStepY() * dist, facing.getStepZ() * dist);
                         TileEntity tile = level.getBlockEntity(pos1);
-
-                        if (!(tile instanceof TileEnergyCoreStabilizer)) continue;
+                        if (!(tile instanceof TileEnergyCoreStabilizer)) {
+                            continue;
+                        }
                         TileEnergyCoreStabilizer stabilizer = (TileEnergyCoreStabilizer) tile;
 
-                        if (stabilizer.getCore() == this && stabilizer.isStabilizerValid(tier.get(), this)) {
+                        TileEnergyCore currentCore = stabilizer.getCore();
+                        if ((currentCore == null || stabilizer.getCore() == this) && stabilizer.isStabilizerValid(tier.get(), this)) {
                             stabsFound.add(stabilizer);
                             break;
                         }
