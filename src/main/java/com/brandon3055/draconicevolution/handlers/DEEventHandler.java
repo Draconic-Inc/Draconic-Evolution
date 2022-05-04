@@ -1,8 +1,6 @@
 package com.brandon3055.draconicevolution.handlers;
 
 import codechicken.lib.raytracer.RayTracer;
-import codechicken.lib.util.ServerUtils;
-import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DEOldConfig;
 import com.brandon3055.draconicevolution.achievements.Achievements;
@@ -25,7 +23,6 @@ import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;

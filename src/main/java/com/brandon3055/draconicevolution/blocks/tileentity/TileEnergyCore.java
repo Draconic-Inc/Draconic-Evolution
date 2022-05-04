@@ -2,16 +2,15 @@ package com.brandon3055.draconicevolution.blocks.tileentity;
 
 import codechicken.lib.colour.Colour;
 import codechicken.lib.data.MCDataInput;
-import codechicken.lib.math.MathHelper;
+import com.brandon3055.brandonscore.api.power.IExtendedRFStorage;
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.inventory.ContainerBCTile;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.lib.Vec3I;
 import com.brandon3055.brandonscore.lib.datamanager.*;
 import com.brandon3055.draconicevolution.DEOldConfig;
-import com.brandon3055.draconicevolution.init.DEContent;
-import com.brandon3055.brandonscore.api.power.IExtendedRFStorage;
 import com.brandon3055.draconicevolution.blocks.machines.EnergyCore;
+import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.inventory.GuiLayoutFactories;
 import com.brandon3055.draconicevolution.lib.EnergyCoreBuilder;
 import com.brandon3055.draconicevolution.utils.LogHelper;
@@ -30,7 +29,7 @@ import net.minecraft.util.Util;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -40,9 +39,6 @@ import net.minecraftforge.fml.network.NetworkHooks;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.*;
-import static net.minecraft.util.text.TextFormatting.RED;
 
 /**
  * Created by brandon3055 on 30/3/2016.
@@ -70,18 +66,18 @@ public class TileEnergyCore extends TileBCore implements ITickableTileEntity, IE
     //endregion
 
     public final EnergyCoreStructure coreStructure = new EnergyCoreStructure().initialize(this);
-    public final ManagedBool active = register(new ManagedBool("active", SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE));
-    public final ManagedBool structureValid = register(new ManagedBool("structure_valid", SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE));
-    public final ManagedBool coreValid = register(new ManagedBool("core_valid", SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE));
-    public final ManagedString invalidMessage = register(new ManagedString("invalid_message", SAVE_NBT));
-    public final ManagedBool buildGuide = register(new ManagedBool("build_guide", SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE));
-    public final ManagedBool stabilizersOK = register(new ManagedBool("stabilizers_ok", SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE));
-    public final ManagedByte tier = register(new ManagedByte("tier", (byte)1, SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE));
-    public final ManagedLong energy = register(new ManagedLong("energy", SAVE_NBT_SYNC_TILE));
+    public final ManagedBool active = register(new ManagedBool("active", DataFlags.SAVE_NBT_SYNC_TILE, DataFlags.TRIGGER_UPDATE));
+    public final ManagedBool structureValid = register(new ManagedBool("structure_valid", DataFlags.SAVE_NBT_SYNC_TILE, DataFlags.TRIGGER_UPDATE));
+    public final ManagedBool coreValid = register(new ManagedBool("core_valid", DataFlags.SAVE_NBT_SYNC_TILE, DataFlags.TRIGGER_UPDATE));
+    public final ManagedString invalidMessage = register(new ManagedString("invalid_message", DataFlags.SAVE_NBT));
+    public final ManagedBool buildGuide = register(new ManagedBool("build_guide", DataFlags.SAVE_NBT_SYNC_TILE, DataFlags.TRIGGER_UPDATE));
+    public final ManagedBool stabilizersOK = register(new ManagedBool("stabilizers_ok", DataFlags.SAVE_NBT_SYNC_TILE, DataFlags.TRIGGER_UPDATE));
+    public final ManagedByte tier = register(new ManagedByte("tier", (byte)1, DataFlags.SAVE_NBT_SYNC_TILE, DataFlags.TRIGGER_UPDATE));
+    public final ManagedLong energy = register(new ManagedLong("energy", DataFlags.SAVE_NBT_SYNC_TILE));
     public final ManagedVec3I[] stabOffsets = new ManagedVec3I[4];
-    public final ManagedLong transferRate = register(new ManagedLong("transfer_rate", SYNC_CONTAINER));
-    public final ManagedDouble inputRate = register(new ManagedDouble("input_rate", SYNC_CONTAINER));
-    public final ManagedDouble outputRate = register(new ManagedDouble("output_rate", SYNC_CONTAINER));
+    public final ManagedLong transferRate = register(new ManagedLong("transfer_rate", DataFlags.SYNC_CONTAINER));
+    public final ManagedDouble inputRate = register(new ManagedDouble("input_rate", DataFlags.SYNC_CONTAINER));
+    public final ManagedDouble outputRate = register(new ManagedDouble("output_rate", DataFlags.SYNC_CONTAINER));
 
     private int ticksElapsed = 0;
     private long[] flowArray = new long[20];
@@ -95,7 +91,7 @@ public class TileEnergyCore extends TileBCore implements ITickableTileEntity, IE
         super(DEContent.tile_storage_core);
 
         for (int i = 0; i < stabOffsets.length; i++) {
-            stabOffsets[i] = register(new ManagedVec3I("stab_offset" + i, new Vec3I(0, -1, 0), SAVE_NBT_SYNC_TILE));
+            stabOffsets[i] = register(new ManagedVec3I("stab_offset" + i, new Vec3I(0, -1, 0), DataFlags.SAVE_NBT_SYNC_TILE));
         }
 
         active.addValueListener(active -> {
@@ -264,7 +260,7 @@ public class TileEnergyCore extends TileBCore implements ITickableTileEntity, IE
 
     private void startBuilder(PlayerEntity player) {
         if (activeBuilder != null && !activeBuilder.isDead()) {
-            player.sendMessage(new TranslationTextComponent("ecore.de.already_assembling.txt").withStyle(RED), Util.NIL_UUID);
+            player.sendMessage(new TranslationTextComponent("ecore.de.already_assembling.txt").withStyle(TextFormatting.RED), Util.NIL_UUID);
         }
         else {
             activeBuilder = new EnergyCoreBuilder(this, player);

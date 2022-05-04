@@ -1,9 +1,6 @@
 package com.brandon3055.draconicevolution.api.modules;
 
-import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.registries.ForgeRegistry;
 import net.minecraftforge.registries.RegistryManager;
 

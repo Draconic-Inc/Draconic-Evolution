@@ -17,7 +17,6 @@ import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
 import com.brandon3055.draconicevolution.api.modules.entities.ShieldControlEntity;
-import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -27,16 +26,11 @@ import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.TransformationMatrix;
 import net.minecraftforge.common.util.LazyOptional;
 import org.lwjgl.opengl.GL11;
 
 import java.util.Collections;
 import java.util.Map;
-
-import static codechicken.lib.render.shader.ShaderObject.StandardShaderType.FRAGMENT;
-import static codechicken.lib.render.shader.ShaderObject.StandardShaderType.VERTEX;
-import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
 
 /**
  * Created by brandon3055 on 22/5/20.
@@ -45,12 +39,12 @@ public class RenderModularChestpeice extends ToolRenderBase {
 
     public static ShaderProgram coreShader = ShaderProgramBuilder.builder()
             .addShader("vert", shader -> shader
-                    .type(VERTEX)
-                    .source(new ResourceLocation(MODID, "shaders/crystal_core.vert"))
+                    .type(ShaderObject.StandardShaderType.VERTEX)
+                    .source(new ResourceLocation(DraconicEvolution.MODID, "shaders/crystal_core.vert"))
             )
             .addShader("frag", shader -> shader
-                    .type(FRAGMENT)
-                    .source(new ResourceLocation(MODID, "shaders/crystal_core.frag"))
+                    .type(ShaderObject.StandardShaderType.FRAGMENT)
+                    .source(new ResourceLocation(DraconicEvolution.MODID, "shaders/crystal_core.frag"))
                     .uniform("time", UniformType.FLOAT)
                     .uniform("baseColour", UniformType.VEC3)
                     .uniform("tier", UniformType.INT)

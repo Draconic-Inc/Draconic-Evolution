@@ -1,10 +1,10 @@
 package com.brandon3055.draconicevolution.api.modules.lib;
 
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
+import com.brandon3055.draconicevolution.api.capability.ModuleProvider;
 import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
 import com.brandon3055.draconicevolution.api.modules.data.ModuleData;
-import com.brandon3055.draconicevolution.api.capability.ModuleProvider;
 import com.brandon3055.draconicevolution.integration.equipment.EquipmentManager;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;

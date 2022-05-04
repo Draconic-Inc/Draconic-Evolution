@@ -14,6 +14,7 @@ import java.util.Random;
  */
 public class DraconiumOre extends BlockBCore {
 
+
     public DraconiumOre(Properties properties) {
         super(properties);
     }

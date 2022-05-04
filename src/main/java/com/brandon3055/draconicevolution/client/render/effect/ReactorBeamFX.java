@@ -4,10 +4,7 @@ import codechicken.lib.colour.Colour;
 import codechicken.lib.colour.ColourARGB;
 import codechicken.lib.math.MathHelper;
 import codechicken.lib.render.CCRenderState;
-import codechicken.lib.render.shader.ShaderProgram;
-import codechicken.lib.render.shader.ShaderProgramBuilder;
-import codechicken.lib.render.shader.UniformCache;
-import codechicken.lib.render.shader.UniformType;
+import codechicken.lib.render.shader.*;
 import codechicken.lib.util.SneakyUtils;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.utils.Utils;
@@ -31,9 +28,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.vector.Vector3d;
 import org.lwjgl.opengl.GL11;
-
-import static codechicken.lib.render.shader.ShaderObject.StandardShaderType.FRAGMENT;
-import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
 
 /**
  * Created by brandon3055 on 12/02/2017.
@@ -61,8 +55,8 @@ public class ReactorBeamFX extends Particle {
 
     public static ShaderProgram beamShaderI = ShaderProgramBuilder.builder()
             .addShader("frag", shader -> shader
-                    .type(FRAGMENT)
-                    .source(new ResourceLocation(MODID, "shaders/reactor_beam_i.frag"))
+                    .type(ShaderObject.StandardShaderType.FRAGMENT)
+                    .source(new ResourceLocation(DraconicEvolution.MODID, "shaders/reactor_beam_i.frag"))
                     .uniform("time", UniformType.FLOAT)
                     .uniform("fade", UniformType.FLOAT)
                     .uniform("power", UniformType.FLOAT)
@@ -72,8 +66,8 @@ public class ReactorBeamFX extends Particle {
 
     public static ShaderProgram beamShaderO = ShaderProgramBuilder.builder()
             .addShader("frag", shader -> shader
-                    .type(FRAGMENT)
-                    .source(new ResourceLocation(MODID, "shaders/reactor_beam_o.frag"))
+                    .type(ShaderObject.StandardShaderType.FRAGMENT)
+                    .source(new ResourceLocation(DraconicEvolution.MODID, "shaders/reactor_beam_o.frag"))
                     .uniform("time", UniformType.FLOAT)
                     .uniform("fade", UniformType.FLOAT)
                     .uniform("power", UniformType.FLOAT)
@@ -83,8 +77,8 @@ public class ReactorBeamFX extends Particle {
 
     public static ShaderProgram beamShaderE = ShaderProgramBuilder.builder()
             .addShader("frag", shader -> shader
-                    .type(FRAGMENT)
-                    .source(new ResourceLocation(MODID, "shaders/reactor_beam_e.frag"))
+                    .type(ShaderObject.StandardShaderType.FRAGMENT)
+                    .source(new ResourceLocation(DraconicEvolution.MODID, "shaders/reactor_beam_e.frag"))
                     .uniform("time", UniformType.FLOAT)
                     .uniform("fade", UniformType.FLOAT)
                     .uniform("power", UniformType.FLOAT)

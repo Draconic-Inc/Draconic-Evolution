@@ -1,11 +1,8 @@
 package com.brandon3055.draconicevolution.integration.equipment;
 
 import com.brandon3055.brandonscore.capability.MultiCapabilityProvider;
-import com.brandon3055.brandonscore.inventory.PlayerSlot;
-import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.lib.WTFException;
-import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.data.TagsProvider;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;

@@ -1,23 +1,12 @@
 package com.brandon3055.draconicevolution.client.render.particle;
 
 import codechicken.lib.vec.Vector3;
-import com.brandon3055.brandonscore.client.BCSprites;
-import com.brandon3055.brandonscore.client.particle.BCParticle;
-import com.brandon3055.brandonscore.client.particle.IBCParticleFactory;
-import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.utils.MathUtils;
-import com.brandon3055.brandonscore.utils.Utils;
-import com.brandon3055.draconicevolution.client.DESprites;
 import com.brandon3055.draconicevolution.client.DETextures;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.*;
-import net.minecraft.client.renderer.ActiveRenderInfo;
+import net.minecraft.client.particle.IParticleRenderType;
+import net.minecraft.client.particle.SpriteTexturedParticle;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.particles.BasicParticleType;
-import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
  * Created by brandon3055 on 17/07/2016.

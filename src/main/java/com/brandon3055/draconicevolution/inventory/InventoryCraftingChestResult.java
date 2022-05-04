@@ -3,7 +3,6 @@ package com.brandon3055.draconicevolution.inventory;
 import com.brandon3055.draconicevolution.blocks.tileentity.chest.TileDraconiumChest;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.CraftResultInventory;
-
 import net.minecraft.item.ItemStack;
 
 /**

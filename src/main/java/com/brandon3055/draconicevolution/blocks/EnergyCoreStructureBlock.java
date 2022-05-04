@@ -35,6 +35,7 @@ import javax.annotation.Nullable;
  */
 public class EnergyCoreStructureBlock extends BlockBCore {
 
+    
     public EnergyCoreStructureBlock(Block.Properties properties) {
         super(properties);
     }

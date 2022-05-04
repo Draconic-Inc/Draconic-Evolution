@@ -5,6 +5,7 @@ import com.brandon3055.brandonscore.lib.TechPropBuilder;
 import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleHostImpl;
 import com.brandon3055.draconicevolution.init.EquipCfg;
+import com.brandon3055.draconicevolution.init.ModuleCfg;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
@@ -18,8 +19,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Set;
-
-import static com.brandon3055.draconicevolution.init.ModuleCfg.*;
 
 /**
  * Created by brandon3055 on 21/5/20.
@@ -46,7 +45,7 @@ public class ModularShovel extends ShovelItem implements IModularMiningTool {
 
     @Override
     public ModuleHostImpl createHost(ItemStack stack) {
-        return new ModuleHostImpl(techLevel, toolWidth(techLevel), toolHeight(techLevel), "shovel", removeInvalidModules);
+        return new ModuleHostImpl(techLevel, ModuleCfg.toolWidth(techLevel), ModuleCfg.toolHeight(techLevel), "shovel", ModuleCfg.removeInvalidModules);
     }
 
     @Nullable

@@ -13,12 +13,11 @@ import com.brandon3055.brandonscore.utils.HolidayHelper;
 import com.brandon3055.brandonscore.utils.MathUtils;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DEConfig;
-import com.brandon3055.draconicevolution.DEOldConfig;
-import com.brandon3055.draconicevolution.client.gui.GuiReactor;
-import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.reactor.ProcessExplosion;
 import com.brandon3055.draconicevolution.blocks.reactor.ReactorEffectHandler;
+import com.brandon3055.draconicevolution.client.gui.GuiReactor;
+import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.inventory.ContainerReactor;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.block.Block;
@@ -45,7 +44,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
-import net.minecraft.world.server.ChunkHolder;
 import net.minecraft.world.server.ChunkHolder.LocationType;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
@@ -57,8 +55,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
-
-import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.*;
 
 /**
  * Created by brandon3055 on 6/11/2016.
@@ -73,9 +69,9 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
 
     public static final int COMPONENT_MAX_DISTANCE = 8;
     public final ManagedVec3I[] componentPositions = new ManagedVec3I[6]; //Invalid position is 0, 0, 0
-    private final ManagedEnum<Axis> stabilizerAxis = register(new ManagedEnum<>("stabilizer_axis", Axis.Y, SAVE_NBT_SYNC_TILE));
-    public final ManagedBool structureValid = register(new ManagedBool("structure_valid", false, SAVE_NBT_SYNC_TILE));
-    public final ManagedString structureError = register(new ManagedString("structure_error", "", SAVE_NBT_SYNC_TILE));
+    private final ManagedEnum<Axis> stabilizerAxis = register(new ManagedEnum<>("stabilizer_axis", Axis.Y, DataFlags.SAVE_NBT_SYNC_TILE));
+    public final ManagedBool structureValid = register(new ManagedBool("structure_valid", false, DataFlags.SAVE_NBT_SYNC_TILE));
+    public final ManagedString structureError = register(new ManagedString("structure_error", "", DataFlags.SAVE_NBT_SYNC_TILE));
 
     private int tick = 0;
     private Map<BlockPos, Integer> blockIntrusions = new HashMap<>();
@@ -87,41 +83,41 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
     /**
      * This is the current operational state of the reactor.
      */
-    public final ManagedEnum<ReactorState> reactorState = register(new ManagedEnum<>("reactor_state", ReactorState.INVALID, SAVE_NBT_SYNC_TILE));
+    public final ManagedEnum<ReactorState> reactorState = register(new ManagedEnum<>("reactor_state", ReactorState.INVALID, DataFlags.SAVE_NBT_SYNC_TILE));
 
     /**
      * Remaining fuel that is yet to be consumed by the reaction.
      */
-    public final ManagedDouble reactableFuel = register(new ManagedDouble("reactable_fuel", SAVE_BOTH_SYNC_TILE));
+    public final ManagedDouble reactableFuel = register(new ManagedDouble("reactable_fuel", DataFlags.SAVE_BOTH_SYNC_TILE));
     /**
      * Fuel that has been converted to chaos by the reaction.
      */
-    public final ManagedDouble convertedFuel = register(new ManagedDouble("converted_fuel", SAVE_BOTH_SYNC_TILE));
-    public final ManagedDouble temperature = register(new ManagedDouble("temperature", 20D, SAVE_NBT_SYNC_TILE));
+    public final ManagedDouble convertedFuel = register(new ManagedDouble("converted_fuel", DataFlags.SAVE_BOTH_SYNC_TILE));
+    public final ManagedDouble temperature = register(new ManagedDouble("temperature", 20D, DataFlags.SAVE_NBT_SYNC_TILE));
     public static final double MAX_TEMPERATURE = 10000;
 
-    public final ManagedDouble shieldCharge = register(new ManagedDouble("shield_charge", SAVE_NBT_SYNC_TILE));
-    public final ManagedDouble maxShieldCharge = register(new ManagedDouble("max_shield_charge", SAVE_NBT_SYNC_TILE));
+    public final ManagedDouble shieldCharge = register(new ManagedDouble("shield_charge", DataFlags.SAVE_NBT_SYNC_TILE));
+    public final ManagedDouble maxShieldCharge = register(new ManagedDouble("max_shield_charge", DataFlags.SAVE_NBT_SYNC_TILE));
 
     /**
      * This is how saturated the core is with energy.
      */
-    public final ManagedLong saturation = register(new ManagedLong("saturation", SAVE_NBT_SYNC_CONTAINER));
-    public final ManagedLong maxSaturation = register(new ManagedLong("max_saturation", SAVE_NBT_SYNC_CONTAINER));
+    public final ManagedLong saturation = register(new ManagedLong("saturation", DataFlags.SAVE_NBT_SYNC_CONTAINER));
+    public final ManagedLong maxSaturation = register(new ManagedLong("max_saturation", DataFlags.SAVE_NBT_SYNC_CONTAINER));
 
 
-    public final ManagedDouble tempDrainFactor = register(new ManagedDouble("temp_drain_factor", SAVE_NBT_SYNC_CONTAINER));
-    public final ManagedDouble generationRate = register(new ManagedDouble("generation_rate", SAVE_NBT_SYNC_CONTAINER));
-    public final ManagedInt fieldDrain = register(new ManagedInt("field_drain", SAVE_NBT_SYNC_CONTAINER));
-    public final ManagedDouble fieldInputRate = register(new ManagedDouble("field_input_rate", SAVE_NBT_SYNC_CONTAINER));
-    public final ManagedDouble fuelUseRate = register(new ManagedDouble("fuel_use_rate", SAVE_NBT_SYNC_CONTAINER));
+    public final ManagedDouble tempDrainFactor = register(new ManagedDouble("temp_drain_factor", DataFlags.SAVE_NBT_SYNC_CONTAINER));
+    public final ManagedDouble generationRate = register(new ManagedDouble("generation_rate", DataFlags.SAVE_NBT_SYNC_CONTAINER));
+    public final ManagedInt fieldDrain = register(new ManagedInt("field_drain", DataFlags.SAVE_NBT_SYNC_CONTAINER));
+    public final ManagedDouble fieldInputRate = register(new ManagedDouble("field_input_rate", DataFlags.SAVE_NBT_SYNC_CONTAINER));
+    public final ManagedDouble fuelUseRate = register(new ManagedDouble("fuel_use_rate", DataFlags.SAVE_NBT_SYNC_CONTAINER));
 
-    public final ManagedBool startupInitialized = register(new ManagedBool("startup_initialized", SAVE_NBT_SYNC_CONTAINER));
-    public final ManagedBool failSafeMode = register(new ManagedBool("fail_safe_mode", SAVE_NBT_SYNC_TILE));
+    public final ManagedBool startupInitialized = register(new ManagedBool("startup_initialized", DataFlags.SAVE_NBT_SYNC_CONTAINER));
+    public final ManagedBool failSafeMode = register(new ManagedBool("fail_safe_mode", DataFlags.SAVE_NBT_SYNC_TILE));
 
     //Explody Stuff!
     private ProcessExplosion explosionProcess = null;
-    public final ManagedInt explosionCountdown = register(new ManagedInt("explosion_countdown", -1, SAVE_NBT_SYNC_CONTAINER));
+    public final ManagedInt explosionCountdown = register(new ManagedInt("explosion_countdown", -1, DataFlags.SAVE_NBT_SYNC_CONTAINER));
     private int minExplosionDelay = 0;
 
     //endregion ======================================
@@ -134,8 +130,8 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
     /**
      * This controls the activation (fade in/fade out) of the beam and stabilizer animations.
      */
-    public final ManagedDouble shaderAnimationState = register(new ManagedDouble("shader_animation_state", 0D, SAVE_NBT_SYNC_TILE));
-    public final ManagedDouble animExtractState = register(new ManagedDouble("anim_extract_state", 0D, SAVE_NBT_SYNC_TILE));
+    public final ManagedDouble shaderAnimationState = register(new ManagedDouble("shader_animation_state", 0D, DataFlags.SAVE_NBT_SYNC_TILE));
+    public final ManagedDouble animExtractState = register(new ManagedDouble("anim_extract_state", 0D, DataFlags.SAVE_NBT_SYNC_TILE));
     private final ReactorEffectHandler effectHandler;
 
     //endregion ======================================
@@ -143,7 +139,7 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
     public TileReactorCore() {
         super(DEContent.tile_reactor_core);
         for (int i = 0; i < componentPositions.length; i++) {
-            componentPositions[i] = register(new ManagedVec3I("component_position" + i, new Vec3I(0, 0, 0), SAVE_NBT_SYNC_TILE));
+            componentPositions[i] = register(new ManagedVec3I("component_position" + i, new Vec3I(0, 0, 0), DataFlags.SAVE_NBT_SYNC_TILE));
         }
 
         effectHandler = DraconicEvolution.proxy.createReactorFXHandler(this);

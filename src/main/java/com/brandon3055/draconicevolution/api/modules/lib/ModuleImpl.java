@@ -8,7 +8,6 @@ import com.brandon3055.draconicevolution.api.modules.data.ModuleProperties;
 import net.minecraft.item.Item;
 
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 /**
  * Created by brandon3055 on 4/16/20.

@@ -11,8 +11,6 @@ import net.minecraft.util.math.BlockPos;
 
 import java.util.*;
 
-import static com.brandon3055.draconicevolution.network.DraconicNetwork.CHANNEL;
-
 
 /**
  * Created by brandon3055 on 29/11/2016.
@@ -34,7 +32,7 @@ public class CrystalUpdateBatcher {
             for (ServerPlayerEntity playerMP : batchQue.keySet()) {
                 List<BatchedCrystalUpdate> playerData = batchQue.get(playerMP);
                 if (!playerData.isEmpty()) {
-                    PacketCustom packet = new PacketCustom(CHANNEL, DraconicNetwork.C_CRYSTAL_UPDATE);
+                    PacketCustom packet = new PacketCustom(DraconicNetwork.CHANNEL, DraconicNetwork.C_CRYSTAL_UPDATE);
                     packet.writeVarInt(playerData.size());
                     playerData.forEach(update -> update.writeData(packet));
                     packet.sendToPlayer(playerMP);

@@ -9,6 +9,7 @@ import com.brandon3055.brandonscore.inventory.ContainerBCTile;
 import com.brandon3055.brandonscore.inventory.TileItemStackHandler;
 import com.brandon3055.brandonscore.lib.IInteractTile;
 import com.brandon3055.brandonscore.lib.IRSSwitchable;
+import com.brandon3055.brandonscore.lib.datamanager.DataFlags;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedEnum;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
@@ -35,8 +36,6 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.*;
-
 /**
  * Created by brandon3055 on 12/12/2020.
  */
@@ -51,7 +50,7 @@ public class TileEnergyTransfuser extends TileBCore implements ITickableTileEnti
     public IOPStorage opStorage = new OPIOAdapter();
     @SuppressWarnings("unchecked")
     public ManagedEnum<ItemIOMode>[] ioModes = new ManagedEnum[4]; //North, East, South, West
-    public ManagedBool balancedMode = register(new ManagedBool("balance_mode", SAVE_NBT_SYNC_CONTAINER, CLIENT_CONTROL));
+    public ManagedBool balancedMode = register(new ManagedBool("balance_mode", DataFlags.SAVE_NBT_SYNC_CONTAINER, DataFlags.CLIENT_CONTROL));
 
     public TileEnergyTransfuser() {
         super(DEContent.tile_energy_transfuser);
@@ -68,7 +67,7 @@ public class TileEnergyTransfuser extends TileBCore implements ITickableTileEnti
         capManager.set(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, new ItemIOAdapter(-1, itemsCombined), Direction.UP, Direction.DOWN, null);
 
         for (int i = 0; i < 4; i++) {
-            ioModes[i] = register(new ManagedEnum<>("item_mode_" + i, ItemIOMode.CHARGE, SAVE_BOTH_SYNC_TILE, CLIENT_CONTROL));
+            ioModes[i] = register(new ManagedEnum<>("item_mode_" + i, ItemIOMode.CHARGE, DataFlags.SAVE_BOTH_SYNC_TILE, DataFlags.CLIENT_CONTROL));
         }
     }
 

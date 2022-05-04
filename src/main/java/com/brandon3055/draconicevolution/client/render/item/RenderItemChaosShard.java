@@ -9,13 +9,11 @@ import codechicken.lib.util.SneakyUtils;
 import codechicken.lib.util.TransformUtils;
 import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Scale;
-import codechicken.lib.vec.Translation;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.render.tile.RenderTileChaosCrystal;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
-import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -27,12 +25,9 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.TransformationMatrix;
 import org.lwjgl.opengl.GL11;
 
 import java.util.Map;
-
-import static net.minecraft.client.renderer.RenderState.TRANSLUCENT_TRANSPARENCY;
 
 /**
  * Created by brandon3055 on 27/2/20.
@@ -44,7 +39,7 @@ public class RenderItemChaosShard implements IItemRenderer {
 
     private static RenderType crystalType = RenderType.create("crystal_type", DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP, GL11.GL_QUADS, 256, RenderType.State.builder()
             .setTextureState(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/item/chaos_crystal.png"), false, false))
-            .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+            .setTransparencyState(RenderState.TRANSLUCENT_TRANSPARENCY)
             .setTexturingState(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
             .createCompositeState(false));
 

@@ -12,9 +12,6 @@ public class ParticleGenerator extends BlockBCore {
 
     public ParticleGenerator(Block.Properties properties) {
         super(properties);
-//        this.setDefaultState(blockState.getBaseState().withProperty(TYPE, "normal"));
-//        this.addName(0, "particle_generator");
-//        this.addName(2, "energy_core_stabilizer");
     }
 
     @Override

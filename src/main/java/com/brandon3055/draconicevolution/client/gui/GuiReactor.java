@@ -2,11 +2,14 @@ package com.brandon3055.draconicevolution.client.gui;
 
 import codechicken.lib.math.MathHelper;
 import com.brandon3055.brandonscore.client.BCSprites;
-import com.brandon3055.brandonscore.client.gui.modulargui.GuiElementManager;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
+import com.brandon3055.brandonscore.client.gui.modulargui.GuiElementManager;
 import com.brandon3055.brandonscore.client.gui.modulargui.ModularGuiContainer;
 import com.brandon3055.brandonscore.client.gui.modulargui.baseelements.GuiButton;
-import com.brandon3055.brandonscore.client.gui.modulargui.guielements.*;
+import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiBorderedRect;
+import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiLabel;
+import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiTexture;
+import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiTexturedPointer;
 import com.brandon3055.brandonscore.client.gui.modulargui.lib.GuiAlign;
 import com.brandon3055.brandonscore.client.utils.GuiHelperOld;
 import com.brandon3055.brandonscore.utils.InfoHelper;

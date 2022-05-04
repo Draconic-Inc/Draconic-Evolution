@@ -5,7 +5,8 @@ import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.init.DETags;
 import com.brandon3055.draconicevolution.integration.equipment.CuriosIntegration;
 import com.google.common.collect.Sets;
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.data.*;
 import net.minecraft.tags.BlockTags;
@@ -20,7 +21,7 @@ import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.Set;
 import java.util.function.Consumer;
 
 /**

@@ -4,8 +4,14 @@ import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.api.hud.IHudBlock;
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.inventory.TileItemStackHandler;
-import com.brandon3055.brandonscore.lib.*;
-import com.brandon3055.brandonscore.lib.datamanager.*;
+import com.brandon3055.brandonscore.lib.DelayedTask;
+import com.brandon3055.brandonscore.lib.IInteractTile;
+import com.brandon3055.brandonscore.lib.IRSSwitchable;
+import com.brandon3055.brandonscore.lib.Vec3D;
+import com.brandon3055.brandonscore.lib.datamanager.DataFlags;
+import com.brandon3055.brandonscore.lib.datamanager.ManagedByte;
+import com.brandon3055.brandonscore.lib.datamanager.ManagedEnum;
+import com.brandon3055.brandonscore.lib.datamanager.ManagedPos;
 import com.brandon3055.brandonscore.network.BCoreNetwork;
 import com.brandon3055.brandonscore.utils.*;
 import com.brandon3055.draconicevolution.DraconicEvolution;
@@ -39,9 +45,7 @@ import net.minecraft.util.*;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
@@ -54,21 +58,18 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
-import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.SAVE_NBT_SYNC_TILE;
-import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.SYNC_TILE;
-
 /**
  * Created by brandon3055 on 16/07/2016.
  */
 public class TileDislocatorReceptacle extends TileBCore implements ITickableTileEntity, IInteractTile, IHudBlock, IRSSwitchable, DislocatorEndPoint, ICrystalLink, IENetEffectTile {
 
-    public final ManagedPos arrivalPos = register(new ManagedPos("arrival_pos", (BlockPos) null, SAVE_NBT_SYNC_TILE));
-    public final ManagedByte ignitionStage = register(new ManagedByte("ignition_stage", (byte) 0, SYNC_TILE));
-    public final ManagedEnum<Axis> activeAxis = register(new ManagedEnum<>("active_axis", Axis.X, SAVE_NBT_SYNC_TILE));
-    public final ManagedPos linkedCrystal = register(new ManagedPos("crystal_pos", (BlockPos) null, SAVE_NBT_SYNC_TILE));
-    public final ManagedByte remoteCrystalTier = register(new ManagedByte("crystal_pos_tier", 0, SAVE_NBT_SYNC_TILE));
-    public final ManagedByte linkedFlowRate = register(new ManagedByte("linked_flow_rate", 0, SYNC_TILE));
-    public final ManagedPos crystalLinkPos = register(new ManagedPos("crystal_link_pos", (BlockPos) null, SAVE_NBT_SYNC_TILE));
+    public final ManagedPos arrivalPos = register(new ManagedPos("arrival_pos", (BlockPos) null, DataFlags.SAVE_NBT_SYNC_TILE));
+    public final ManagedByte ignitionStage = register(new ManagedByte("ignition_stage", (byte) 0, DataFlags.SYNC_TILE));
+    public final ManagedEnum<Axis> activeAxis = register(new ManagedEnum<>("active_axis", Axis.X, DataFlags.SAVE_NBT_SYNC_TILE));
+    public final ManagedPos linkedCrystal = register(new ManagedPos("crystal_pos", (BlockPos) null, DataFlags.SAVE_NBT_SYNC_TILE));
+    public final ManagedByte remoteCrystalTier = register(new ManagedByte("crystal_pos_tier", 0, DataFlags.SAVE_NBT_SYNC_TILE));
+    public final ManagedByte linkedFlowRate = register(new ManagedByte("linked_flow_rate", 0, DataFlags.SYNC_TILE));
+    public final ManagedPos crystalLinkPos = register(new ManagedPos("crystal_link_pos", (BlockPos) null, DataFlags.SAVE_NBT_SYNC_TILE));
 
     public TileItemStackHandler itemHandler = new TileItemStackHandler(1);
     private PortalHelper portalHelper = new PortalHelper(this);

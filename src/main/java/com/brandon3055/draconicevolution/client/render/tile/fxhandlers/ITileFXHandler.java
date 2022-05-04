@@ -1,7 +1,5 @@
 package com.brandon3055.draconicevolution.client.render.tile.fxhandlers;
 
-import net.minecraft.tileentity.TileEntity;
-
 /**
  * Created by brandon3055 on 12/7/21
  *

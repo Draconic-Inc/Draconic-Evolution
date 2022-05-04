@@ -7,11 +7,14 @@ import com.brandon3055.brandonscore.lib.IRedstoneEmitter;
 import com.brandon3055.brandonscore.lib.datamanager.DataFlags;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedByte;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedEnum;
-import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.blocks.Potentiometer;
+import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.*;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.text.StringTextComponent;
 

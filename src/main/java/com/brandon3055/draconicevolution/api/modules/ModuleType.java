@@ -2,24 +2,21 @@ package com.brandon3055.draconicevolution.api.modules;
 
 import codechicken.lib.util.SneakyUtils;
 import com.brandon3055.draconicevolution.api.config.ConfigProperty;
+import com.brandon3055.draconicevolution.api.modules.data.ModuleData;
 import com.brandon3055.draconicevolution.api.modules.lib.InstallResult;
 import com.brandon3055.draconicevolution.api.modules.lib.InstallResult.InstallResultType;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
-import com.brandon3055.draconicevolution.api.modules.data.ModuleData;
 import com.google.common.collect.Multimap;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.function.Consumer;
 
 /**

@@ -8,14 +8,12 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ObjectHolder;
 
-import static net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus.MOD;
-
 /**
  * Created by brandon3055 on 25/3/2016.
  * This stores all sound events for Brandon's Core
  */
 @ObjectHolder(DraconicEvolution.MODID)
-@Mod.EventBusSubscriber(modid = DraconicEvolution.MODID, bus = MOD)
+@Mod.EventBusSubscriber(modid = DraconicEvolution.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class DESounds {
     @ObjectHolder("energy_bolt")
     public static SoundEvent energyBolt;

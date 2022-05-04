@@ -7,7 +7,6 @@ import codechicken.lib.vec.Matrix4;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.client.render.tile.RenderTileReactorComponent;
 import com.brandon3055.draconicevolution.client.render.tile.RenderTileReactorCore;
-import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -15,7 +14,6 @@ import net.minecraft.client.renderer.model.IModelTransform;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.util.math.vector.TransformationMatrix;
 
 /**
  * Created by brandon3055 on 21/11/2016.

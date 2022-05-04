@@ -1,11 +1,5 @@
 package com.brandon3055.draconicevolution.client.model;
 
-import codechicken.lib.render.CCModel;
-import codechicken.lib.render.CCRenderState;
-import codechicken.lib.render.OBJParser;
-import codechicken.lib.render.buffer.VBORenderType;
-import com.brandon3055.brandonscore.api.TechLevel;
-import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.model.tool.VBOModelRender;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
@@ -13,22 +7,15 @@ import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ArmorStandEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.CrossbowItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
-import org.lwjgl.opengl.GL11;
 
-import java.util.Collections;
-import java.util.Map;
 import java.util.function.Function;
-
-import static net.minecraft.client.renderer.RenderState.*;
 
 /**
  * Created by brandon3055 on 29/6/20

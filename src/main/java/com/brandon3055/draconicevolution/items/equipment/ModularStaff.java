@@ -3,29 +3,26 @@ package com.brandon3055.draconicevolution.items.equipment;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.lib.TechPropBuilder;
 import com.brandon3055.draconicevolution.api.IReaperItem;
+import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.damage.IDraconicDamage;
 import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.ModuleCategory;
 import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
-import com.brandon3055.draconicevolution.api.modules.data.AOEData;
 import com.brandon3055.draconicevolution.api.modules.data.DamageModData;
-import com.brandon3055.draconicevolution.api.modules.lib.IDamageModifier;
 import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleHostImpl;
-import com.brandon3055.draconicevolution.entity.projectile.DraconicProjectileEntity;
 import com.brandon3055.draconicevolution.init.EquipCfg;
+import com.brandon3055.draconicevolution.init.ModuleCfg;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.*;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.ToolItem;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -34,9 +31,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
-
-import static com.brandon3055.draconicevolution.api.capability.DECapabilities.MODULE_HOST_CAPABILITY;
-import static com.brandon3055.draconicevolution.init.ModuleCfg.*;
 
 /**
  * Created by brandon3055 on 21/5/20.
@@ -69,7 +63,7 @@ public class ModularStaff extends ToolItem implements IReaperItem, IModularMinin
 
     @Override
     public ModuleHostImpl createHost(ItemStack stack) {
-        ModuleHostImpl host = new ModuleHostImpl(techLevel, staffWidth(techLevel), staffHeight(techLevel), "staff", removeInvalidModules);
+        ModuleHostImpl host = new ModuleHostImpl(techLevel, ModuleCfg.staffWidth(techLevel), ModuleCfg.staffHeight(techLevel), "staff", ModuleCfg.removeInvalidModules);
         host.addCategories(ModuleCategory.RANGED_WEAPON);
 //        host.addAdditionalType(ModuleTypes.DAMAGE_MOD);
         return host;
@@ -224,7 +218,7 @@ public class ModularStaff extends ToolItem implements IReaperItem, IModularMinin
     @SuppressWarnings("unchecked")
     @Nullable
     public static Module<DamageModData> getDamageModule(ItemStack stack) {
-        ModuleHost host = stack.getCapability(MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new);
+        ModuleHost host = stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new);
         ModuleEntity entity = host.getEntitiesByType(ModuleTypes.DAMAGE_MOD).findAny().orElse(null);
         return entity != null && entity.getModule().getData() instanceof DamageModData ? (Module<DamageModData>)entity.getModule() : null;
     }

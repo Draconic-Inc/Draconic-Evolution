@@ -1,27 +1,23 @@
 package com.brandon3055.draconicevolution.client.gui;
 
 import com.brandon3055.brandonscore.client.gui.GuiToolkit;
-import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElementManager;
 import com.brandon3055.brandonscore.client.gui.modulargui.ModularGuiScreen;
 import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiLabel;
 import com.brandon3055.brandonscore.client.gui.modulargui.lib.GuiAlign;
 import com.brandon3055.brandonscore.client.gui.modulargui.templates.TGuiBase;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.brandon3055.brandonscore.client.gui.GuiToolkit.GuiLayout.*;
-
 /**
  * Created by brandon3055 on 24/12/20
  */
 public class WhatsBrokenGui extends ModularGuiScreen {
 
-    protected GuiToolkit<WhatsBrokenGui> toolkit = new GuiToolkit<>(this, EXTRA_WIDE_EXTRA_TALL);
+    protected GuiToolkit<WhatsBrokenGui> toolkit = new GuiToolkit<>(this, GuiToolkit.GuiLayout.EXTRA_WIDE_EXTRA_TALL);
 
     public WhatsBrokenGui() {
         super(new StringTextComponent("Whats Broken? (Besides this info tablet)"));

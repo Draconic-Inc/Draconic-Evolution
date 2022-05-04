@@ -1,17 +1,17 @@
 package com.brandon3055.draconicevolution.blocks.energynet.tileentity;
 
+import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.capability.CapabilityOP;
 import com.brandon3055.brandonscore.lib.Vec3D;
+import com.brandon3055.brandonscore.lib.datamanager.DataFlags;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedEnum;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
-import com.brandon3055.draconicevolution.init.DEContent;
-import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.draconicevolution.blocks.energynet.EnergyCrystal;
-import com.brandon3055.draconicevolution.client.render.effect.CrystalFXIO;
 import com.brandon3055.draconicevolution.client.render.effect.CrystalFXBase;
+import com.brandon3055.draconicevolution.client.render.effect.CrystalFXIO;
+import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
@@ -29,16 +29,13 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.List;
 
-import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.SAVE_BOTH_SYNC_TILE;
-import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.SAVE_NBT_SYNC_TILE;
-
 /**
  * Created by brandon3055 on 19/11/2016.
  */
 public class TileCrystalDirectIO extends TileCrystalBase   {
 
-    public final ManagedEnum<Direction> facing = dataManager.register(new ManagedEnum<>("facing", Direction.DOWN, SAVE_NBT_SYNC_TILE));
-    public final ManagedBool outputMode = dataManager.register(new ManagedBool("outputMode", SAVE_BOTH_SYNC_TILE));
+    public final ManagedEnum<Direction> facing = dataManager.register(new ManagedEnum<>("facing", Direction.DOWN, DataFlags.SAVE_NBT_SYNC_TILE));
+    public final ManagedBool outputMode = dataManager.register(new ManagedBool("outputMode", DataFlags.SAVE_BOTH_SYNC_TILE));
 
     public TileCrystalDirectIO() {
         super(DEContent.tile_crystal_io);

@@ -6,8 +6,8 @@ import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.client.particle.IntParticleType;
 import com.brandon3055.brandonscore.inventory.ItemHandlerIOControl;
 import com.brandon3055.brandonscore.inventory.TileItemStackHandler;
-import com.brandon3055.brandonscore.lib.IInteractTile;
 import com.brandon3055.brandonscore.lib.IChangeListener;
+import com.brandon3055.brandonscore.lib.IInteractTile;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.lib.datamanager.*;
 import com.brandon3055.brandonscore.utils.FacingUtils;
@@ -15,14 +15,16 @@ import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.DraconicAPI;
-import com.brandon3055.draconicevolution.api.crafting.*;
+import com.brandon3055.draconicevolution.api.crafting.IFusionInjector;
+import com.brandon3055.draconicevolution.api.crafting.IFusionInventory;
+import com.brandon3055.draconicevolution.api.crafting.IFusionRecipe;
+import com.brandon3055.draconicevolution.api.crafting.IFusionStateMachine;
 import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.client.render.tile.fxhandlers.ITileFXHandler;
 import com.brandon3055.draconicevolution.handlers.DESounds;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.inventory.ContainerFusionCraftingCore;
 import com.brandon3055.draconicevolution.inventory.GuiLayoutFactories;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Streams;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -51,25 +53,26 @@ import net.minecraftforge.items.CapabilityItemHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Collectors;
-
-import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.*;
 
 /**
  * Created by brandon3055 on 11/06/2016.
  */
 public class TileFusionCraftingCore extends TileBCore implements IFusionInventory, IFusionStateMachine, ITickableTileEntity, INamedContainerProvider, IInteractTile, IChangeListener {
 
-    private final ManagedEnum<FusionState> fusionState = register(new ManagedEnum<>("fusion_state", FusionState.START, SAVE_NBT_SYNC_TILE));
-    private final ManagedResource activeRecipe = register(new ManagedResource("active_recipe", SAVE_NBT_SYNC_TILE));
-    private final ManagedBool crafting = register(new ManagedBool("is_crafting", SAVE_NBT_SYNC_TILE));
-    private final ManagedInt fusionCounter = register(new ManagedInt("fusion_counter", SAVE_NBT));
+    private final ManagedEnum<FusionState> fusionState = register(new ManagedEnum<>("fusion_state", FusionState.START, DataFlags.SAVE_NBT_SYNC_TILE));
+    private final ManagedResource activeRecipe = register(new ManagedResource("active_recipe", DataFlags.SAVE_NBT_SYNC_TILE));
+    private final ManagedBool crafting = register(new ManagedBool("is_crafting", DataFlags.SAVE_NBT_SYNC_TILE));
+    private final ManagedInt fusionCounter = register(new ManagedInt("fusion_counter", DataFlags.SAVE_NBT));
 
-    public final ManagedTextComponent userStatus = register(new ManagedTextComponent("user_status", SAVE_NBT_SYNC_CONTAINER));
-    public final ManagedFloat craftAnimProgress = register(new ManagedFloat("craft_anim_progress", SYNC_TILE));
-    public final ManagedShort craftAnimLength = register(new ManagedShort("craft_anim_length", SYNC_TILE));
-    public final ManagedFloat progress = register(new ManagedFloat("progress", -1, SAVE_NBT_SYNC_CONTAINER));
+    public final ManagedTextComponent userStatus = register(new ManagedTextComponent("user_status", DataFlags.SAVE_NBT_SYNC_CONTAINER));
+    public final ManagedFloat craftAnimProgress = register(new ManagedFloat("craft_anim_progress", DataFlags.SYNC_TILE));
+    public final ManagedShort craftAnimLength = register(new ManagedShort("craft_anim_length", DataFlags.SYNC_TILE));
+    public final ManagedFloat progress = register(new ManagedFloat("progress", -1, DataFlags.SAVE_NBT_SYNC_CONTAINER));
 
     public TileItemStackHandler itemHandler = new TileItemStackHandler(2);
     public ITileFXHandler fxHandler;

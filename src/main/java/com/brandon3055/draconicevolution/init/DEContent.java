@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.init;
 
 import codechicken.lib.util.SneakyUtils;
+import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.blocks.BlockBCore;
 import com.brandon3055.brandonscore.blocks.ItemBlockBCore;
 import com.brandon3055.brandonscore.client.utils.CyclingItemGroup;
@@ -49,7 +50,9 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.*;
+import net.minecraft.item.DyeColor;
+import net.minecraft.item.Item;
+import net.minecraft.item.Rarity;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
@@ -65,19 +68,11 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.function.Supplier;
 
-import static com.brandon3055.brandonscore.api.TechLevel.*;
-import static com.brandon3055.draconicevolution.blocks.energynet.EnergyCrystal.CrystalType.*;
-import static com.brandon3055.draconicevolution.inventory.GuiLayoutFactories.*;
-import static net.minecraft.block.material.Material.GLASS;
-import static net.minecraft.block.material.Material.METAL;
-import static net.minecraft.block.material.MaterialColor.COLOR_GRAY;
-import static net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus.MOD;
-
 /**
  * Created by brandon3055 on 18/3/2016.
  * This class contains a reference to all blocks and items in Draconic Evolution
  */
-@Mod.EventBusSubscriber(modid = DraconicEvolution.MODID, bus = MOD)
+@Mod.EventBusSubscriber(modid = DraconicEvolution.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 @ObjectHolder(DraconicEvolution.MODID)
 public class DEContent {
 
@@ -181,25 +176,25 @@ public class DEContent {
 
     @SubscribeEvent
     public static void registerContainers(RegistryEvent.Register<ContainerType<?>> event) {
-        event.getRegistry().register(IForgeContainerType.create((id, playerInv, extraData) -> new ContainerBCTile<>(container_generator, id, playerInv, extraData, GENERATOR_LAYOUT)).setRegistryName("generator"));
-        event.getRegistry().register(IForgeContainerType.create((id, playerInv, extraData) -> new ContainerBCTile<>(container_grinder, id, playerInv, extraData, GRINDER_LAYOUT)).setRegistryName("grinder"));
+        event.getRegistry().register(IForgeContainerType.create((id, playerInv, extraData) -> new ContainerBCTile<>(container_generator, id, playerInv, extraData, GuiLayoutFactories.GENERATOR_LAYOUT)).setRegistryName("generator"));
+        event.getRegistry().register(IForgeContainerType.create((id, playerInv, extraData) -> new ContainerBCTile<>(container_grinder, id, playerInv, extraData, GuiLayoutFactories.GRINDER_LAYOUT)).setRegistryName("grinder"));
 
         event.getRegistry().register(IForgeContainerType.create(ContainerDraconiumChest::new).setRegistryName("draconium_chest"));
 
-        event.getRegistry().register(IForgeContainerType.create((id, playerInv, extraData) -> new ContainerBCTile<>(container_energy_core, id, playerInv, extraData, ENERGY_CORE_LAYOUT)).setRegistryName("energy_core"));
+        event.getRegistry().register(IForgeContainerType.create((id, playerInv, extraData) -> new ContainerBCTile<>(container_energy_core, id, playerInv, extraData, GuiLayoutFactories.ENERGY_CORE_LAYOUT)).setRegistryName("energy_core"));
 
         event.getRegistry().register(IForgeContainerType.create(ContainerDissEnchanter::new).setRegistryName("dissenchanter"));
         event.getRegistry().register(IForgeContainerType.create((windowId, inv, data) -> new ContainerDummy<TileCelestialManipulator>(container_celestial_manipulator, windowId, inv, data)).setRegistryName("celestial_manipulator"));
         event.getRegistry().register(IForgeContainerType.create(ContainerEnergyCrystal::new).setRegistryName("energy_crystal"));
-        event.getRegistry().register(IForgeContainerType.create((windowId, inv, data) -> new ContainerFusionCraftingCore(windowId, inv, data, FUSION_CRAFTING_CORE)).setRegistryName("fusion_crafting_core"));
+        event.getRegistry().register(IForgeContainerType.create((windowId, inv, data) -> new ContainerFusionCraftingCore(windowId, inv, data, GuiLayoutFactories.FUSION_CRAFTING_CORE)).setRegistryName("fusion_crafting_core"));
         event.getRegistry().register(IForgeContainerType.create(ContainerReactor::new).setRegistryName("reactor"));
-        event.getRegistry().register(IForgeContainerType.create((windowId, playerInv, extraData) -> new ContainerModularItem(windowId, playerInv, extraData, MODULAR_ITEM_LAYOUT)).setRegistryName("modular_item"));
-        event.getRegistry().register(IForgeContainerType.create((windowId, playerInv, extraData) -> new ContainerConfigurableItem(windowId, playerInv, extraData, CONFIGURABLE_ITEM_LAYOUT)).setRegistryName("configurable_item"));
+        event.getRegistry().register(IForgeContainerType.create((windowId, playerInv, extraData) -> new ContainerModularItem(windowId, playerInv, extraData, GuiLayoutFactories.MODULAR_ITEM_LAYOUT)).setRegistryName("modular_item"));
+        event.getRegistry().register(IForgeContainerType.create((windowId, playerInv, extraData) -> new ContainerConfigurableItem(windowId, playerInv, extraData, GuiLayoutFactories.CONFIGURABLE_ITEM_LAYOUT)).setRegistryName("configurable_item"));
 //        event.getRegistry().register(IForgeContainerType.create(ContainerDummy::new).setRegistryName("container_dummy"));
 //        event.getRegistry().register(IForgeContainerType.create(ContainerJunkFilter::new).setRegistryName("container_junk_filter"));
 //        event.getRegistry().register(IForgeContainerType.create(ContainerRecipeBuilder::new).setRegistryName("container_recipe_builder"));
-        event.getRegistry().register(IForgeContainerType.create((windowId, inv, data) -> new ContainerBCTile<TileFlowGate>(container_flow_gate, windowId, inv, data, SneakyUtils.unsafeCast(PLAYER_ONLY_LAYOUT))).setRegistryName("flow_gate"));
-        event.getRegistry().register(IForgeContainerType.create((windowId, inv, data) -> new ContainerBCTile<>(container_energy_transfuser, windowId, inv, data, TRANSFUSER_LAYOUT)).setRegistryName("energy_transfuser"));
+        event.getRegistry().register(IForgeContainerType.create((windowId, inv, data) -> new ContainerBCTile<TileFlowGate>(container_flow_gate, windowId, inv, data, SneakyUtils.unsafeCast(GuiLayoutFactories.PLAYER_ONLY_LAYOUT))).setRegistryName("flow_gate"));
+        event.getRegistry().register(IForgeContainerType.create((windowId, inv, data) -> new ContainerBCTile<>(container_energy_transfuser, windowId, inv, data, GuiLayoutFactories.TRANSFUSER_LAYOUT)).setRegistryName("energy_transfuser"));
     }
 
 
@@ -265,11 +260,11 @@ public class DEContent {
 
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> event) {
-        Properties machine = Properties.of(METAL, COLOR_GRAY).strength(3.0F, 8F).noOcclusion().harvestTool(ToolType.PICKAXE).requiresCorrectToolForDrops().harvestLevel(1);
-        Properties hardenedMachine = Properties.of(METAL, COLOR_GRAY).strength(20.0F, 600F).noOcclusion().harvestTool(ToolType.PICKAXE).requiresCorrectToolForDrops().harvestLevel(1);
-        Properties storageBlock = Properties.of(METAL, COLOR_GRAY).strength(30.0F, 600F).harvestTool(ToolType.PICKAXE).requiresCorrectToolForDrops().harvestLevel(3);
-        Properties stoneProp = Properties.of(Material.STONE, COLOR_GRAY).strength(1.5F, 6F).harvestTool(ToolType.PICKAXE).requiresCorrectToolForDrops().harvestLevel(2);
-        Properties ore = Properties.of(Material.STONE, COLOR_GRAY).strength(6.0F, 16F).harvestTool(ToolType.PICKAXE).requiresCorrectToolForDrops().harvestLevel(2);
+        Properties machine = Properties.of(Material.METAL, MaterialColor.COLOR_GRAY).strength(3.0F, 8F).noOcclusion().harvestTool(ToolType.PICKAXE).requiresCorrectToolForDrops().harvestLevel(1);
+        Properties hardenedMachine = Properties.of(Material.METAL, MaterialColor.COLOR_GRAY).strength(20.0F, 600F).noOcclusion().harvestTool(ToolType.PICKAXE).requiresCorrectToolForDrops().harvestLevel(1);
+        Properties storageBlock = Properties.of(Material.METAL, MaterialColor.COLOR_GRAY).strength(30.0F, 600F).harvestTool(ToolType.PICKAXE).requiresCorrectToolForDrops().harvestLevel(3);
+        Properties stoneProp = Properties.of(Material.STONE, MaterialColor.COLOR_GRAY).strength(1.5F, 6F).harvestTool(ToolType.PICKAXE).requiresCorrectToolForDrops().harvestLevel(2);
+        Properties ore = Properties.of(Material.STONE, MaterialColor.COLOR_GRAY).strength(6.0F, 16F).harvestTool(ToolType.PICKAXE).requiresCorrectToolForDrops().harvestLevel(2);
 
         //Machines
         event.getRegistry().register(new Generator(machine).setRegistryName("generator"));
@@ -294,19 +289,19 @@ public class DEContent {
         event.getRegistry().register(new FlowGate(hardenedMachine, false).setRegistryName("fluid_gate"));
         //Fusion Crafting
         event.getRegistry().register(new FusionCraftingCore(hardenedMachine).setRegistryName("crafting_core"));
-        event.getRegistry().register(new CraftingInjector(hardenedMachine, DRACONIUM).setRegistryName("basic_crafting_injector"));
-        event.getRegistry().register(new CraftingInjector(hardenedMachine, WYVERN).setRegistryName("wyvern_crafting_injector"));
-        event.getRegistry().register(new CraftingInjector(hardenedMachine, DRACONIC).setRegistryName("awakened_crafting_injector"));
-        event.getRegistry().register(new CraftingInjector(hardenedMachine, CHAOTIC).setRegistryName("chaotic_crafting_injector"));
+        event.getRegistry().register(new CraftingInjector(hardenedMachine, TechLevel.DRACONIUM).setRegistryName("basic_crafting_injector"));
+        event.getRegistry().register(new CraftingInjector(hardenedMachine, TechLevel.WYVERN).setRegistryName("wyvern_crafting_injector"));
+        event.getRegistry().register(new CraftingInjector(hardenedMachine, TechLevel.DRACONIC).setRegistryName("awakened_crafting_injector"));
+        event.getRegistry().register(new CraftingInjector(hardenedMachine, TechLevel.CHAOTIC).setRegistryName("chaotic_crafting_injector"));
         //Energy Core
         event.getRegistry().register(new EnergyCore(hardenedMachine).setRegistryName("energy_core"));
         event.getRegistry().register(new EnergyCoreStabilizer(hardenedMachine).setRegistryName("energy_core_stabilizer"));
         event.getRegistry().register(new EnergyPylon(hardenedMachine).setRegistryName("energy_pylon"));
-        event.getRegistry().register(new EnergyCoreStructureBlock(Properties.of(METAL, COLOR_GRAY).strength(5.0F, 12F).noDrops().noOcclusion()).setRegistryName("energy_core_structure"));
+        event.getRegistry().register(new EnergyCoreStructureBlock(Properties.of(Material.METAL, MaterialColor.COLOR_GRAY).strength(5.0F, 12F).noDrops().noOcclusion()).setRegistryName("energy_core_structure"));
         //Reactor
         event.getRegistry().register(new ReactorCore(hardenedMachine).setRegistryName("reactor_core"));
-        event.getRegistry().register(new ReactorComponent(Properties.of(METAL, COLOR_GRAY).strength(5.0F, 6000F).noOcclusion(), false).setRegistryName("reactor_stabilizer"));
-        event.getRegistry().register(new ReactorComponent(Properties.of(METAL, COLOR_GRAY).strength(5.0F, 6000F).noOcclusion(), true).setRegistryName("reactor_injector"));
+        event.getRegistry().register(new ReactorComponent(Properties.of(Material.METAL, MaterialColor.COLOR_GRAY).strength(5.0F, 6000F).noOcclusion(), false).setRegistryName("reactor_stabilizer"));
+        event.getRegistry().register(new ReactorComponent(Properties.of(Material.METAL, MaterialColor.COLOR_GRAY).strength(5.0F, 6000F).noOcclusion(), true).setRegistryName("reactor_injector"));
         //Ore
         event.getRegistry().register(new DraconiumOre(ore).setRegistryName("overworld_draconium_ore"));
         event.getRegistry().register(new DraconiumOre(ore).setRegistryName("nether_draconium_ore"));
@@ -320,24 +315,24 @@ public class DEContent {
         event.getRegistry().register(new ChaosCrystal(Properties.of(Material.GLASS).strength(100, 4000).noDrops()).setRegistryName("chaos_crystal_part"));
         event.getRegistry().register(new BlockBCore(Block.Properties.of(Material.STONE, MaterialColor.COLOR_BLACK).strength(100.0F, 2400.0F)).setMobResistant().setRegistryName("infused_obsidian"));
 
-        event.getRegistry().register(new PlacedItem(Properties.of(GLASS).strength(5F, 12F).noOcclusion().noDrops()).setRegistryName("placed_item"));
+        event.getRegistry().register(new PlacedItem(Properties.of(Material.GLASS).strength(5F, 12F).noOcclusion().noDrops()).setRegistryName("placed_item"));
 
         //Energy Crystals
-        Properties crystalB = Properties.of(GLASS, DyeColor.BLUE).strength(3.0F, 8F);      //TODO may want to tweak these after testing
-        Properties crystalW = Properties.of(GLASS, DyeColor.PURPLE).strength(5.0F, 16F);
-        Properties crystalD = Properties.of(GLASS, DyeColor.ORANGE).strength(8.0F, 32F);
-        Properties crystalC = Properties.of(GLASS, DyeColor.BLACK).strength(16.0F, 64F);
-        event.getRegistry().register(new EnergyCrystal(crystalB, DRACONIUM, CRYSTAL_IO).setRegistryName("basic_io_crystal"));
-        event.getRegistry().register(new EnergyCrystal(crystalW, WYVERN, CRYSTAL_IO).setRegistryName("wyvern_io_crystal"));
-        event.getRegistry().register(new EnergyCrystal(crystalD, DRACONIC, CRYSTAL_IO).setRegistryName("draconic_io_crystal"));
+        Properties crystalB = Properties.of(Material.GLASS, DyeColor.BLUE).strength(3.0F, 8F);      //TODO may want to tweak these after testing
+        Properties crystalW = Properties.of(Material.GLASS, DyeColor.PURPLE).strength(5.0F, 16F);
+        Properties crystalD = Properties.of(Material.GLASS, DyeColor.ORANGE).strength(8.0F, 32F);
+        Properties crystalC = Properties.of(Material.GLASS, DyeColor.BLACK).strength(16.0F, 64F);
+        event.getRegistry().register(new EnergyCrystal(crystalB, TechLevel.DRACONIUM, EnergyCrystal.CrystalType.CRYSTAL_IO).setRegistryName("basic_io_crystal"));
+        event.getRegistry().register(new EnergyCrystal(crystalW, TechLevel.WYVERN, EnergyCrystal.CrystalType.CRYSTAL_IO).setRegistryName("wyvern_io_crystal"));
+        event.getRegistry().register(new EnergyCrystal(crystalD, TechLevel.DRACONIC, EnergyCrystal.CrystalType.CRYSTAL_IO).setRegistryName("draconic_io_crystal"));
 //        event.getRegistry().register(new EnergyCrystal(crystalC, CHAOTIC,   CRYSTAL_IO).setRegistryName("chaotic_io_crystal"));
-        event.getRegistry().register(new EnergyCrystal(crystalB, DRACONIUM, RELAY).setRegistryName("basic_relay_crystal"));
-        event.getRegistry().register(new EnergyCrystal(crystalW, WYVERN, RELAY).setRegistryName("wyvern_relay_crystal"));
-        event.getRegistry().register(new EnergyCrystal(crystalD, DRACONIC, RELAY).setRegistryName("draconic_relay_crystal"));
+        event.getRegistry().register(new EnergyCrystal(crystalB, TechLevel.DRACONIUM, EnergyCrystal.CrystalType.RELAY).setRegistryName("basic_relay_crystal"));
+        event.getRegistry().register(new EnergyCrystal(crystalW, TechLevel.WYVERN, EnergyCrystal.CrystalType.RELAY).setRegistryName("wyvern_relay_crystal"));
+        event.getRegistry().register(new EnergyCrystal(crystalD, TechLevel.DRACONIC, EnergyCrystal.CrystalType.RELAY).setRegistryName("draconic_relay_crystal"));
 //        event.getRegistry().register(new EnergyCrystal(crystalC, CHAOTIC,   RELAY).setRegistryName("chaotic_relay_crystal"));
-        event.getRegistry().register(new EnergyCrystal(crystalB, DRACONIUM, WIRELESS).setRegistryName("basic_wireless_crystal"));
-        event.getRegistry().register(new EnergyCrystal(crystalW, WYVERN, WIRELESS).setRegistryName("wyvern_wireless_crystal"));
-        event.getRegistry().register(new EnergyCrystal(crystalD, DRACONIC, WIRELESS).setRegistryName("draconic_wireless_crystal"));
+        event.getRegistry().register(new EnergyCrystal(crystalB, TechLevel.DRACONIUM, EnergyCrystal.CrystalType.WIRELESS).setRegistryName("basic_wireless_crystal"));
+        event.getRegistry().register(new EnergyCrystal(crystalW, TechLevel.WYVERN, EnergyCrystal.CrystalType.WIRELESS).setRegistryName("wyvern_wireless_crystal"));
+        event.getRegistry().register(new EnergyCrystal(crystalD, TechLevel.DRACONIC, EnergyCrystal.CrystalType.WIRELESS).setRegistryName("draconic_wireless_crystal"));
 //        event.getRegistry().register(new EnergyCrystal(crystalC, CHAOTIC,   WIRELESS).setRegistryName("chaotic_wireless_crystal"));
     }
 
@@ -518,9 +513,9 @@ public class DEContent {
         registerItem(event, new MobSoul(new Item.Properties().tab(itemGroup)).setRegistryName("mob_soul"));
 
 //        //Tools
-        TechPropBuilder wyvernTools = new TechPropBuilder(WYVERN).maxStackSize(1).group(itemGroup).rarity(Rarity.UNCOMMON).maxDamage(-1);
-        TechPropBuilder draconicTools = new TechPropBuilder(DRACONIC).maxStackSize(1).group(itemGroup).rarity(Rarity.RARE).maxDamage(-1);
-        TechPropBuilder chaoticTools = new TechPropBuilder(CHAOTIC).maxStackSize(1).group(itemGroup).rarity(Rarity.EPIC).maxDamage(-1);
+        TechPropBuilder wyvernTools = new TechPropBuilder(TechLevel.WYVERN).maxStackSize(1).group(itemGroup).rarity(Rarity.UNCOMMON).maxDamage(-1);
+        TechPropBuilder draconicTools = new TechPropBuilder(TechLevel.DRACONIC).maxStackSize(1).group(itemGroup).rarity(Rarity.RARE).maxDamage(-1);
+        TechPropBuilder chaoticTools = new TechPropBuilder(TechLevel.CHAOTIC).maxStackSize(1).group(itemGroup).rarity(Rarity.EPIC).maxDamage(-1);
         registerItem(event, new DraconiumCapacitor(wyvernTools).setRegistryName("wyvern_capacitor"));
         registerItem(event, new DraconiumCapacitor(draconicTools).setRegistryName("draconic_capacitor"));
         registerItem(event, new DraconiumCapacitor(chaoticTools).setRegistryName("chaotic_capacitor"));

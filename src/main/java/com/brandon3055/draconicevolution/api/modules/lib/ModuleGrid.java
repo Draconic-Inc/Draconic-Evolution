@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.api.modules.lib;
 
-import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
+import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.lib.InstallResult.InstallResultType;
 import com.brandon3055.draconicevolution.inventory.ContainerModuleHost;
 import com.google.common.collect.ImmutableList;
@@ -9,10 +9,8 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ClickType;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 
-import java.util.Iterator;
 import java.util.Objects;
 
 /**

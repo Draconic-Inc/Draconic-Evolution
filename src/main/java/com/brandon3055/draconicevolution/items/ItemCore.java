@@ -1,10 +1,9 @@
 package com.brandon3055.draconicevolution.items;
 
 import com.brandon3055.brandonscore.blocks.BlockBCore;
-import com.brandon3055.brandonscore.items.ItemBCore;
 import com.brandon3055.brandonscore.utils.InventoryUtils;
-import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileStabilizedSpawner.SpawnerTier;
+import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

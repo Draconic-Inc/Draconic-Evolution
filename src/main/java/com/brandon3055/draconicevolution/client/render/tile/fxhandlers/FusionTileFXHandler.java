@@ -1,14 +1,10 @@
 package com.brandon3055.draconicevolution.client.render.tile.fxhandlers;
 
 import codechicken.lib.vec.Vector3;
-import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.api.TimeKeeper;
 import com.brandon3055.brandonscore.utils.MathUtils;
-import com.brandon3055.brandonscore.utils.Utils;
-import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.crafting.IFusionInjector;
 import com.brandon3055.draconicevolution.api.crafting.IFusionRecipe;
-import com.brandon3055.draconicevolution.api.crafting.IFusionStateMachine;
 import com.brandon3055.draconicevolution.api.crafting.IFusionStateMachine.FusionState;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileFusionCraftingCore;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileFusionCraftingInjector;
@@ -16,7 +12,6 @@ import com.brandon3055.draconicevolution.client.sound.FusionRotationSound;
 import com.brandon3055.draconicevolution.handlers.DESounds;
 import net.minecraft.client.Minecraft;
 import net.minecraft.particles.ParticleTypes;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.MathHelper;
 

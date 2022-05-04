@@ -5,6 +5,7 @@ import com.brandon3055.brandonscore.lib.TechPropBuilder;
 import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleHostImpl;
 import com.brandon3055.draconicevolution.init.EquipCfg;
+import com.brandon3055.draconicevolution.init.ModuleCfg;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.HoeItem;
@@ -15,10 +16,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
-
 import java.util.List;
-
-import static com.brandon3055.draconicevolution.init.ModuleCfg.*;
 
 /**
  * Created by brandon3055 on 21/5/20.
@@ -45,7 +43,7 @@ public class ModularHoe extends HoeItem implements IModularTieredItem {
 
     @Override
     public ModuleHostImpl createHost(ItemStack stack) {
-        return new ModuleHostImpl(techLevel, toolWidth(techLevel), toolHeight(techLevel), "hoe", removeInvalidModules);
+        return new ModuleHostImpl(techLevel, ModuleCfg.toolWidth(techLevel), ModuleCfg.toolHeight(techLevel), "hoe", ModuleCfg.removeInvalidModules);
     }
 
     @Nullable

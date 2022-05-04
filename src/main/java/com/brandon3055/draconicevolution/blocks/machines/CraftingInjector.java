@@ -1,17 +1,13 @@
 package com.brandon3055.draconicevolution.blocks.machines;
 
 import codechicken.lib.inventory.InventoryUtils;
+import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.api.hud.IHudBlock;
 import com.brandon3055.brandonscore.blocks.BlockBCore;
 import com.brandon3055.brandonscore.lib.ChatHelper;
-
-import com.brandon3055.brandonscore.utils.InfoHelper;
-import com.brandon3055.brandonscore.api.hud.IHudDisplay;
-import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileFusionCraftingInjector;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
@@ -34,8 +30,6 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.List;

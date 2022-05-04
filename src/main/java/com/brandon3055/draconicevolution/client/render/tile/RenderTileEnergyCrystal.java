@@ -34,10 +34,6 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.Map;
 
-import static codechicken.lib.render.shader.ShaderObject.StandardShaderType.FRAGMENT;
-import static codechicken.lib.render.shader.ShaderObject.StandardShaderType.VERTEX;
-import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
-
 /**
  * Created by brandon3055 on 6/11/2016.
  */
@@ -45,12 +41,12 @@ public class RenderTileEnergyCrystal extends TileEntityRenderer<TileCrystalBase>
 
     public static ShaderProgram crystalShader = ShaderProgramBuilder.builder()
             .addShader("vert", shader -> shader
-                    .type(VERTEX)
-                    .source(new ResourceLocation(MODID, "shaders/energy_crystal.vert"))
+                    .type(ShaderObject.StandardShaderType.VERTEX)
+                    .source(new ResourceLocation(DraconicEvolution.MODID, "shaders/energy_crystal.vert"))
             )
             .addShader("frag", shader -> shader
-                    .type(FRAGMENT)
-                    .source(new ResourceLocation(MODID, "shaders/energy_crystal.frag"))
+                    .type(ShaderObject.StandardShaderType.FRAGMENT)
+                    .source(new ResourceLocation(DraconicEvolution.MODID, "shaders/energy_crystal.frag"))
                     .uniform("time", UniformType.FLOAT)
                     .uniform("mipmap", UniformType.FLOAT)
                     .uniform("type", UniformType.INT)

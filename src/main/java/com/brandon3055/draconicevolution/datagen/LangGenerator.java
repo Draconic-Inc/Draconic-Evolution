@@ -1,9 +1,9 @@
 package com.brandon3055.draconicevolution.datagen;
 
+import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.ModuleType;
 import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
-import com.brandon3055.draconicevolution.blocks.tileentity.chest.SmeltingLogic;
 import com.brandon3055.draconicevolution.blocks.tileentity.chest.SmeltingLogic.FeedMode;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.init.DEModules;
@@ -12,17 +12,13 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.data.LanguageProvider;
 
-import java.util.Locale;
-
-import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
-
 /**
  * Created by brandon3055 on 21/5/20.
  */
 //@formatter:off
 public class LangGenerator extends LanguageProvider {
     public LangGenerator(DataGenerator gen) {
-        super(gen, MODID, "en_us");
+        super(gen, DraconicEvolution.MODID, "en_us");
     }
 
     private void blocks(PrefixHelper helper) {
@@ -847,7 +843,7 @@ public class LangGenerator extends LanguageProvider {
     }
 
     public void add(ModuleType<?> key, String name) {
-        super.add("module_type." + MODID + "." + key.getName() + ".name", name);
+        super.add("module_type." + DraconicEvolution.MODID + "." + key.getName() + ".name", name);
     }
 
     public void add(Module<?> key, String name) {
@@ -879,7 +875,7 @@ public class LangGenerator extends LanguageProvider {
         }
 
         public void add(ModuleType<?> key, String name) {
-            generator.add("module_type." + MODID + "." + key.getName() + ".name", name);
+            generator.add("module_type." + DraconicEvolution.MODID + "." + key.getName() + ".name", name);
         }
 
         public void add(Module<?> key, String name) {

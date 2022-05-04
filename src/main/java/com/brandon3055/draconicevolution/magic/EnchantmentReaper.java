@@ -3,8 +3,6 @@ package com.brandon3055.draconicevolution.magic;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.registries.ForgeRegistries;
 
 /**
  * Created by Brandon on 17/11/2014.

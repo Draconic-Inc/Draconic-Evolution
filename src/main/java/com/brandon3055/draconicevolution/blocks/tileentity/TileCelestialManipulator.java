@@ -6,17 +6,17 @@ import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.capability.CapabilityOP;
 import com.brandon3055.brandonscore.lib.IChangeListener;
 import com.brandon3055.brandonscore.lib.Vec3D;
+import com.brandon3055.brandonscore.lib.datamanager.DataFlags;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedByte;
 import com.brandon3055.draconicevolution.DEOldConfig;
-import com.brandon3055.draconicevolution.init.DEContent;
-import com.brandon3055.draconicevolution.client.render.effect.EffectTrackerCelestialManipulator;
-
-import com.brandon3055.draconicevolution.client.sound.CelestialModifierSound;
-import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
-import com.brandon3055.draconicevolution.handlers.DESounds;
 import com.brandon3055.draconicevolution.client.DETextures;
+import com.brandon3055.draconicevolution.client.render.effect.EffectTrackerCelestialManipulator;
+import com.brandon3055.draconicevolution.client.sound.CelestialModifierSound;
+import com.brandon3055.draconicevolution.handlers.DESounds;
+import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.utils.LogHelper;
+import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
@@ -37,20 +37,18 @@ import org.lwjgl.opengl.GL11;
 import java.util.LinkedList;
 import java.util.List;
 
-import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.*;
-
 /**
  * Created by brandon3055 on 28/09/2016.
  */
 public class TileCelestialManipulator extends TileBCore implements ITickableTileEntity, IChangeListener {
 
-    public final ManagedBool weatherMode = register(new ManagedBool("weather_mode", true, SAVE_NBT_SYNC_TILE));
-    public final ManagedBool active = register(new ManagedBool("active", SAVE_NBT_SYNC_TILE));
-    public final ManagedBool weatherToggleRunning = register(new ManagedBool("weather_toggle_running", SYNC_TILE));
-    public final ManagedBool timeWarpRunning = register(new ManagedBool("time_warp_running", SYNC_TILE));
-    public final ManagedBool timeWarpStopping = register(new ManagedBool("time_warp_stopping", SYNC_TILE));
-    public final ManagedBool redstoneSignal = register(new ManagedBool("redstone_signal", SAVE_NBT_SYNC_TILE));
-    public final ManagedByte rsMode = register(new ManagedByte("rs_mode", SAVE_NBT_SYNC_CONTAINER));
+    public final ManagedBool weatherMode = register(new ManagedBool("weather_mode", true, DataFlags.SAVE_NBT_SYNC_TILE));
+    public final ManagedBool active = register(new ManagedBool("active", DataFlags.SAVE_NBT_SYNC_TILE));
+    public final ManagedBool weatherToggleRunning = register(new ManagedBool("weather_toggle_running", DataFlags.SYNC_TILE));
+    public final ManagedBool timeWarpRunning = register(new ManagedBool("time_warp_running", DataFlags.SYNC_TILE));
+    public final ManagedBool timeWarpStopping = register(new ManagedBool("time_warp_stopping", DataFlags.SYNC_TILE));
+    public final ManagedBool redstoneSignal = register(new ManagedBool("redstone_signal", DataFlags.SAVE_NBT_SYNC_TILE));
+    public final ManagedByte rsMode = register(new ManagedByte("rs_mode", DataFlags.SAVE_NBT_SYNC_CONTAINER));
     public int timer = 0;
     public boolean storm = false;
     public boolean rain = false;

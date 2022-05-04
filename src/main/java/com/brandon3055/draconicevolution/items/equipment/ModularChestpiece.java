@@ -5,6 +5,7 @@ import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.capability.MultiCapabilityProvider;
 import com.brandon3055.brandonscore.lib.TechPropBuilder;
 import com.brandon3055.draconicevolution.DEConfig;
+import com.brandon3055.draconicevolution.api.config.ConfigProperty;
 import com.brandon3055.draconicevolution.api.config.DecimalProperty;
 import com.brandon3055.draconicevolution.api.modules.ModuleCategory;
 import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
@@ -14,6 +15,7 @@ import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleHostImpl;
 import com.brandon3055.draconicevolution.client.model.ModularArmorModel;
 import com.brandon3055.draconicevolution.init.EquipCfg;
+import com.brandon3055.draconicevolution.init.ModuleCfg;
 import com.brandon3055.draconicevolution.integration.equipment.EquipmentManager;
 import com.brandon3055.draconicevolution.integration.equipment.IDEEquipment;
 import net.minecraft.client.renderer.entity.model.BipedModel;
@@ -31,12 +33,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
-
 import java.util.List;
 import java.util.function.Supplier;
-
-import static com.brandon3055.draconicevolution.api.config.ConfigProperty.DecimalFormatter.PLUS_PERCENT_0;
-import static com.brandon3055.draconicevolution.init.ModuleCfg.*;
 
 /**
  * Created by brandon3055 on 21/5/20.
@@ -73,7 +71,7 @@ public class ModularChestpiece extends ArmorItem implements IModularArmor, IDEEq
 
     @Override
     public ModuleHostImpl createHost(ItemStack stack) {
-        ModuleHostImpl host = new ModuleHostImpl(techLevel, chestpieceWidth(techLevel), chestpieceHeight(techLevel), "chestpiece", removeInvalidModules);
+        ModuleHostImpl host = new ModuleHostImpl(techLevel, ModuleCfg.chestpieceWidth(techLevel), ModuleCfg.chestpieceHeight(techLevel), "chestpiece", ModuleCfg.removeInvalidModules);
         host.addCategories(ModuleCategory.CHESTPIECE);
         host.addPropertyBuilder(props -> {
             SpeedData speed = host.getModuleData(ModuleTypes.SPEED);
@@ -87,8 +85,8 @@ public class ModularChestpiece extends ArmorItem implements IModularArmor, IDEEq
                     return maxSpeed;
                 };
 
-                props.add(new DecimalProperty("walk_speed", 0).min(0).max(speedGetter).setFormatter(PLUS_PERCENT_0));
-                props.add(new DecimalProperty("run_speed", speedGetter.get()).min(0).max(speedGetter).setFormatter(PLUS_PERCENT_0));
+                props.add(new DecimalProperty("walk_speed", 0).min(0).max(speedGetter).setFormatter(ConfigProperty.DecimalFormatter.PLUS_PERCENT_0));
+                props.add(new DecimalProperty("run_speed", speedGetter.get()).min(0).max(speedGetter).setFormatter(ConfigProperty.DecimalFormatter.PLUS_PERCENT_0));
             }
 
             JumpData jump = host.getModuleData(ModuleTypes.JUMP_BOOST);
@@ -98,8 +96,8 @@ public class ModularChestpiece extends ArmorItem implements IModularArmor, IDEEq
                     return data == null ? 0 : data.getMultiplier();
                 };
 
-                props.add(new DecimalProperty("jump_boost_run", 0).min(0).max(jumpGetter).setFormatter(PLUS_PERCENT_0));
-                props.add(new DecimalProperty("jump_boost", jumpGetter.get()).min(0).max(jumpGetter).setFormatter(PLUS_PERCENT_0));
+                props.add(new DecimalProperty("jump_boost_run", 0).min(0).max(jumpGetter).setFormatter(ConfigProperty.DecimalFormatter.PLUS_PERCENT_0));
+                props.add(new DecimalProperty("jump_boost", jumpGetter.get()).min(0).max(jumpGetter).setFormatter(ConfigProperty.DecimalFormatter.PLUS_PERCENT_0));
             }
         });
         return host;

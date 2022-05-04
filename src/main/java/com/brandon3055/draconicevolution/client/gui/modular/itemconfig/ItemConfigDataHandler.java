@@ -1,19 +1,17 @@
 package com.brandon3055.draconicevolution.client.gui.modular.itemconfig;
 
-import codechicken.lib.util.ResourceUtils;
 import codechicken.lib.util.SneakyUtils;
 import com.brandon3055.draconicevolution.DEConfig;
-import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.scoreboard.ScoreboardSaveData;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.WorldSavedData;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;

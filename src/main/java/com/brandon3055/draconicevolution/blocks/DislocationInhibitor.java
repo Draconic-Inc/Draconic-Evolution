@@ -15,6 +15,7 @@ import java.util.List;
  */
 public class DislocationInhibitor extends BlockBCore {
 
+
     public DislocationInhibitor(Properties properties) {
         super(properties);
     }

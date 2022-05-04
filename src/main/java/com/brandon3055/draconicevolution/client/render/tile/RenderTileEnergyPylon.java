@@ -11,7 +11,6 @@ import codechicken.lib.vec.Scale;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyPylon;
-
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;

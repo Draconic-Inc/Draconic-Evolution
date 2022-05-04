@@ -15,7 +15,6 @@ import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.energynet.EnergyCrystal.CrystalType;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
-import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
@@ -27,14 +26,9 @@ import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.TransformationMatrix;
 import org.lwjgl.opengl.GL11;
 
 import java.util.Map;
-
-import static codechicken.lib.render.shader.ShaderObject.StandardShaderType.FRAGMENT;
-import static codechicken.lib.render.shader.ShaderObject.StandardShaderType.VERTEX;
-import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
 
 /**
  * Created by brandon3055 on 21/11/2016.
@@ -43,12 +37,12 @@ public class RenderItemEnergyCrystal implements IItemRenderer {
 
     public static ShaderProgram crystalShader = ShaderProgramBuilder.builder()
             .addShader("vert", shader -> shader
-                    .type(VERTEX)
-                    .source(new ResourceLocation(MODID, "shaders/energy_crystal.vert"))
+                    .type(ShaderObject.StandardShaderType.VERTEX)
+                    .source(new ResourceLocation(DraconicEvolution.MODID, "shaders/energy_crystal.vert"))
             )
             .addShader("frag", shader -> shader
-                    .type(FRAGMENT)
-                    .source(new ResourceLocation(MODID, "shaders/energy_crystal.frag"))
+                    .type(ShaderObject.StandardShaderType.FRAGMENT)
+                    .source(new ResourceLocation(DraconicEvolution.MODID, "shaders/energy_crystal.frag"))
                     .uniform("time", UniformType.FLOAT)
                     .uniform("mipmap", UniformType.FLOAT)
                     .uniform("type", UniformType.INT)

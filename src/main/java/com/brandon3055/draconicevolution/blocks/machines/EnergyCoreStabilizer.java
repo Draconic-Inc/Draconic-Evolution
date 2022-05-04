@@ -3,24 +3,19 @@ package com.brandon3055.draconicevolution.blocks.machines;
 import com.brandon3055.brandonscore.blocks.BlockBCore;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyCore;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyCoreStabilizer;
-import it.unimi.dsi.fastutil.doubles.DoubleList;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.IWaterLoggable;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
-import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
-
-import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.*;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 
 /**

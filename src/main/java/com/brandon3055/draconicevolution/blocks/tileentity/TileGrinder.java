@@ -11,14 +11,16 @@ import com.brandon3055.brandonscore.inventory.ContainerBCTile;
 import com.brandon3055.brandonscore.inventory.TileItemStackHandler;
 import com.brandon3055.brandonscore.lib.IInteractTile;
 import com.brandon3055.brandonscore.lib.IRSSwitchable;
+import com.brandon3055.brandonscore.lib.datamanager.DataFlags;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedByte;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedInt;
 import com.brandon3055.brandonscore.lib.entityfilter.EntityFilter;
+import com.brandon3055.brandonscore.lib.entityfilter.FilterType;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
 import com.brandon3055.draconicevolution.DEOldConfig;
-import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.blocks.machines.Grinder;
+import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.inventory.GuiLayoutFactories;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.mojang.authlib.GameProfile;
@@ -52,18 +54,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
-import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.*;
-import static com.brandon3055.brandonscore.lib.entityfilter.FilterType.*;
-
 public class TileGrinder extends TileBCore implements ITickableTileEntity, IRSSwitchable, INamedContainerProvider, IInteractTile {
 
     private static FakePlayer cachedFakePlayer;
-    public final ManagedBool active = register(new ManagedBool("active", SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE));
-    public final ManagedByte aoe = register(new ManagedByte("aoe", (byte) getMaxAOE(), SAVE_BOTH_SYNC_TILE, CLIENT_CONTROL));
-    public final ManagedBool showAOE = register(new ManagedBool("show_aoe", SAVE_NBT_SYNC_TILE, CLIENT_CONTROL));
-    public final ManagedBool collectItems = register(new ManagedBool("collect_items", true, SAVE_NBT_SYNC_CONTAINER, CLIENT_CONTROL));
-    public final ManagedBool collectXP = register(new ManagedBool("collect_xp", true, SAVE_NBT_SYNC_CONTAINER, CLIENT_CONTROL));
-    public final ManagedInt storedXP = register(new ManagedInt("stored_xp", SAVE_BOTH_SYNC_CONTAINER));
+    public final ManagedBool active = register(new ManagedBool("active", DataFlags.SAVE_NBT_SYNC_TILE, DataFlags.TRIGGER_UPDATE));
+    public final ManagedByte aoe = register(new ManagedByte("aoe", (byte) getMaxAOE(), DataFlags.SAVE_BOTH_SYNC_TILE, DataFlags.CLIENT_CONTROL));
+    public final ManagedBool showAOE = register(new ManagedBool("show_aoe", DataFlags.SAVE_NBT_SYNC_TILE, DataFlags.CLIENT_CONTROL));
+    public final ManagedBool collectItems = register(new ManagedBool("collect_items", true, DataFlags.SAVE_NBT_SYNC_CONTAINER, DataFlags.CLIENT_CONTROL));
+    public final ManagedBool collectXP = register(new ManagedBool("collect_xp", true, DataFlags.SAVE_NBT_SYNC_CONTAINER, DataFlags.CLIENT_CONTROL));
+    public final ManagedInt storedXP = register(new ManagedInt("stored_xp", DataFlags.SAVE_BOTH_SYNC_CONTAINER));
     public TileItemStackHandler itemHandler = new TileItemStackHandler(2);
     public EntityFilter entityFilter;
     public OPStorage opStorage = new OPStorage(1000000, 128000, 0);
@@ -95,9 +94,9 @@ public class TileGrinder extends TileBCore implements ITickableTileEntity, IRSSw
         capManager.setInternalManaged("inventory", CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, itemHandler).saveBoth();
         setupPowerSlot(itemHandler, 0, opStorage, false);
 
-        entityFilter = new EntityFilter(true, HOSTILE, TAMED, ADULTS, ENTITY_TYPE, FILTER_GROUP, PLAYER);
+        entityFilter = new EntityFilter(true, FilterType.HOSTILE, FilterType.TAMED, FilterType.ADULTS, FilterType.ENTITY_TYPE, FilterType.FILTER_GROUP, FilterType.PLAYER);
         entityFilter.setDirtyHandler(this::setChanged);
-        entityFilter.setTypePredicate(e -> e != PLAYER || DEOldConfig.allowGrindingPlayers);
+        entityFilter.setTypePredicate(e -> e != FilterType.PLAYER || DEOldConfig.allowGrindingPlayers);
         entityFilter.setupServerPacketHandling(() -> createClientBoundPacket(0), packet -> sendPacketToClients(getAccessingPlayers(), packet));
         entityFilter.setupClientPacketHandling(() -> createServerBoundPacket(0), packetCustom -> BrandonsCore.proxy.sendToServer(packetCustom));
         setClientSidePacketHandler(0, input -> entityFilter.receivePacketFromServer(input));

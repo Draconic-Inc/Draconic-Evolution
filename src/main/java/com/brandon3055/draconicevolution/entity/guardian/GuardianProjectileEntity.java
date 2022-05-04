@@ -1,10 +1,7 @@
 package com.brandon3055.draconicevolution.entity.guardian;
 
 import com.brandon3055.brandonscore.api.TechLevel;
-import com.brandon3055.brandonscore.network.BCoreNetwork;
 import com.brandon3055.draconicevolution.api.damage.DraconicIndirectEntityDamage;
-import com.brandon3055.draconicevolution.entity.guardian.DraconicGuardianEntity;
-import com.brandon3055.draconicevolution.entity.guardian.GuardianFightManager;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import net.minecraft.entity.Entity;
@@ -15,7 +12,8 @@ import net.minecraft.network.IPacket;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.*;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.EntityPredicates;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;

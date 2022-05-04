@@ -19,8 +19,6 @@ import com.google.common.collect.Lists;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
-import static com.brandon3055.brandonscore.client.gui.GuiToolkit.LayoutPos.*;
-
 /**
  * Created by Werechang on 27/6/21
  */
@@ -65,7 +63,7 @@ public class GuiDraconiumChest extends ModularGuiContainer<ContainerDraconiumChe
         colourDialog.setIncludeAlpha(false);
         colourPicker.onPressed(() -> {
             colourDialog.setColour(tile.colour.get());
-            toolkit.placeOutside(colourDialog, colourPicker, BOTTOM_LEFT, -3, -20);
+            toolkit.placeOutside(colourDialog, colourPicker, GuiToolkit.LayoutPos.BOTTOM_LEFT, -3, -20);
             colourDialog.show(200);
         });
 
@@ -100,25 +98,25 @@ public class GuiDraconiumChest extends ModularGuiContainer<ContainerDraconiumChe
         // Furnace Flames
         GuiProgressIcon furnaceFlame = furnaceContainer.addChild(new GuiProgressIcon(DESprites.getter("chest/fire_base"), DESprites.getter("chest/fire_over"), GuiProgressIcon.Direction.UP).setSize(88, 15));
         furnaceFlame.setProgressSupplier(() -> (double) tile.smeltingLogic.smeltingPower.get());
-        toolkit.placeOutside(furnaceFlame, furnaceSlots, BOTTOM_CENTER, 0, 4);
+        toolkit.placeOutside(furnaceFlame, furnaceSlots, GuiToolkit.LayoutPos.BOTTOM_CENTER, 0, 4);
 
         // Furnace Progress
         furnaceProgress = furnaceContainer.addChild(new GuiProgressIcon(BCSprites.themedGetter("prog_arrow_up_tall"), BCSprites.themedGetter("prog_arrow_up_tall_over"), GuiProgressIcon.Direction.UP).setSize(16, 32));
         furnaceProgress.setProgressSupplier(() -> (double) tile.smeltingLogic.smeltProgress.get());
-        toolkit.placeOutside(furnaceProgress, furnaceSlots, BOTTOM_RIGHT, 6, -16);
+        toolkit.placeOutside(furnaceProgress, furnaceSlots, GuiToolkit.LayoutPos.BOTTOM_RIGHT, 6, -16);
 
         // Energy Bar and
         GuiEnergyBar energyBar = toolkit.createEnergyBar(furnaceContainer, tile.opStorage)
                 .setHorizontal(true)
                 .setSize(furnaceSlots.xSize(), 14);
-        toolkit.placeOutside(energyBar, furnaceSlots, BOTTOM_CENTER, 0, 5 + 19);
+        toolkit.placeOutside(energyBar, furnaceSlots, GuiToolkit.LayoutPos.BOTTOM_CENTER, 0, 5 + 19);
 
         // Capacitor Slot
         GuiElement<?> capSlot = toolkit.createSlot(furnaceContainer, new SlotMover(container.capacitorSlot), BCSprites.getter("slots/energy"), false);
-        toolkit.placeOutside(capSlot, furnaceFlame, MIDDLE_LEFT, -4, 0);
+        toolkit.placeOutside(capSlot, furnaceFlame, GuiToolkit.LayoutPos.MIDDLE_LEFT, -4, 0);
         GuiTexture chargeArrow = furnaceContainer.addChild(new GuiTexture(16, 16, BCSprites.get("item_charge/right_discharge")));
         chargeArrow.flipX().flipY();
-        toolkit.placeOutside(chargeArrow, capSlot, BOTTOM_CENTER, 2, 0);
+        toolkit.placeOutside(chargeArrow, capSlot, GuiToolkit.LayoutPos.BOTTOM_CENTER, 2, 0);
 
         ManagedEnum<FeedMode> feedMode = tile.smeltingLogic.feedMode;
 
@@ -128,7 +126,7 @@ public class GuiDraconiumChest extends ModularGuiContainer<ContainerDraconiumChe
                 .setHoverTextDelay(5)
                 .setHoverText(e -> toolkit.i18n("feed." + feedMode.get().localKey() + ".info"));
         feedButton.addChild(new GuiTexture(1, 1, 16, 16, () -> DESprites.get(feedMode.get().getSprite())));
-        toolkit.placeOutside(feedButton, furnaceSlots, MIDDLE_LEFT, -3, 0);
+        toolkit.placeOutside(feedButton, furnaceSlots, GuiToolkit.LayoutPos.MIDDLE_LEFT, -3, 0);
 
         GuiSelectDialog<FeedMode> dialog = new GuiSelectDialog<FeedMode>(furnaceContainer)
                 .setSize(18+6, 72+6)
@@ -155,6 +153,6 @@ public class GuiDraconiumChest extends ModularGuiContainer<ContainerDraconiumChe
 
         // Furnace container bounds and position
         furnaceContainer.setBoundsToChildren(4, 4, 4, 4);
-        toolkit.placeOutside(furnaceContainer, template.playerSlots, MIDDLE_LEFT, -7, 1);
+        toolkit.placeOutside(furnaceContainer, template.playerSlots, GuiToolkit.LayoutPos.MIDDLE_LEFT, -7, 1);
     }
 }

@@ -1,7 +1,5 @@
 package com.brandon3055.draconicevolution.client.model;
 
-import codechicken.lib.colour.ColourARGB;
-import codechicken.lib.colour.ColourRGBA;
 import codechicken.lib.render.CCModel;
 import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.OBJParser;
@@ -11,7 +9,6 @@ import codechicken.lib.util.SneakyUtils;
 import codechicken.lib.vec.Translation;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.client.BCClientEventHandler;
-import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
@@ -19,35 +16,22 @@ import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
 import com.brandon3055.draconicevolution.api.modules.entities.ShieldControlEntity;
 import com.brandon3055.draconicevolution.client.model.tool.VBOModelRender;
 import com.brandon3055.draconicevolution.client.render.item.RenderModularChestpeice;
-import com.brandon3055.draconicevolution.client.render.item.ToolRenderBase;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderState;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.entity.model.BipedModel;
-import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.CrossbowItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.HandSide;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.util.LazyOptional;
 import org.lwjgl.opengl.GL11;
 
 import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
-
-import static codechicken.lib.render.shader.ShaderObject.StandardShaderType.FRAGMENT;
-import static codechicken.lib.render.shader.ShaderObject.StandardShaderType.VERTEX;
-import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
-import static net.minecraft.client.renderer.RenderState.*;
 
 /**
  * Created by brandon3055 on 29/6/20
@@ -56,12 +40,12 @@ public class ModularArmorModel extends VBOBipedModel<LivingEntity> {
 
     public static ShaderProgram shieldShader = ShaderProgramBuilder.builder()
             .addShader("vert", shader -> shader
-                    .type(VERTEX)
-                    .source(new ResourceLocation(MODID, "shaders/armor_shield.vert"))
+                    .type(ShaderObject.StandardShaderType.VERTEX)
+                    .source(new ResourceLocation(DraconicEvolution.MODID, "shaders/armor_shield.vert"))
             )
             .addShader("frag", shader -> shader
-                    .type(FRAGMENT)
-                    .source(new ResourceLocation(MODID, "shaders/armor_shield.frag"))
+                    .type(ShaderObject.StandardShaderType.FRAGMENT)
+                    .source(new ResourceLocation(DraconicEvolution.MODID, "shaders/armor_shield.frag"))
                     .uniform("time", UniformType.FLOAT)
                     .uniform("activation", UniformType.FLOAT)
                     .uniform("baseColour", UniformType.VEC4)
@@ -109,26 +93,26 @@ public class ModularArmorModel extends VBOBipedModel<LivingEntity> {
         String levelName = techLevel.name().toLowerCase(Locale.ENGLISH);
         modelType = RenderType.create("modelType", DefaultVertexFormats.BLOCK, GL11.GL_TRIANGLES, 256, true, false, RenderType.State.builder()
                 .setTextureState(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/item/equipment/" + levelName + "_chestpeice.png"), false, false))
-                .setDiffuseLightingState(DIFFUSE_LIGHTING)
-                .setLightmapState(LIGHTMAP)
+                .setDiffuseLightingState(RenderState.DIFFUSE_LIGHTING)
+                .setLightmapState(RenderState.LIGHTMAP)
                 .createCompositeState(true));
         chaosType = RenderType.create("chaosShaderType", DefaultVertexFormats.BLOCK, GL11.GL_TRIANGLES, 256, RenderType.State.builder()
                 .setTextureState(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/item/equipment/chaos_shader.png"), true, false))
-                .setLightmapState(LIGHTMAP)
-                .setOverlayState(OVERLAY)
+                .setLightmapState(RenderState.LIGHTMAP)
+                .setOverlayState(RenderState.OVERLAY)
                 .createCompositeState(false));
         shaderParentType = RenderType.create("shaderGemType", DefaultVertexFormats.BLOCK, GL11.GL_TRIANGLES, 256, RenderType.State.builder()
-                .setDiffuseLightingState(DIFFUSE_LIGHTING)
+                .setDiffuseLightingState(RenderState.DIFFUSE_LIGHTING)
                 .setTextureState(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/item/equipment/shader_fallback_" + levelName + ".png"), false, false))
-                .setLightmapState(LIGHTMAP)
-                .setOverlayState(OVERLAY)
+                .setLightmapState(RenderState.LIGHTMAP)
+                .setOverlayState(RenderState.OVERLAY)
                 .createCompositeState(false));
         shieldType = RenderType.create("shieldType", DefaultVertexFormats.POSITION_COLOR_LIGHTMAP, GL11.GL_TRIANGLES, 256, RenderType.State.builder()
-                .setDiffuseLightingState(DIFFUSE_LIGHTING)
-                .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+                .setDiffuseLightingState(RenderState.DIFFUSE_LIGHTING)
+                .setTransparencyState(RenderState.TRANSLUCENT_TRANSPARENCY)
                 .setTexturingState(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
-                .setLightmapState(LIGHTMAP)
-                .setCullState(NO_CULL)
+                .setLightmapState(RenderState.LIGHTMAP)
+                .setCullState(RenderState.NO_CULL)
                 .createCompositeState(false));
 
         baseVBOType = new VBORenderType(modelType, DefaultVertexFormats.POSITION_TEX_COLOR_NORMAL, (format, builder) -> {

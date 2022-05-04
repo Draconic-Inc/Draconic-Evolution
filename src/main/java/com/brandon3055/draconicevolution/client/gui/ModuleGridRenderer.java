@@ -1,9 +1,10 @@
 package com.brandon3055.draconicevolution.client.gui;
 
+import com.brandon3055.brandonscore.BCConfig;
+import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
 import com.brandon3055.brandonscore.client.gui.modulargui.ThemedElements;
 import com.brandon3055.brandonscore.client.utils.GuiHelperOld;
-import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.lib.InstallResult;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
@@ -34,10 +35,6 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.Collections;
 import java.util.List;
-
-import static com.brandon3055.brandonscore.BCConfig.darkMode;
-import static com.brandon3055.draconicevolution.api.modules.lib.InstallResult.InstallResultType.*;
-import static com.brandon3055.draconicevolution.api.modules.lib.InstallResult.InstallResultType.YES;
 
 /**
  * Created by brandon3055 on 26/4/20.
@@ -114,7 +111,7 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> {
             }
             entity.renderSlotOverlay(getter, mc, xPos() + (entity.getGridX() * cs), yPos() + (entity.getGridY() * cs), cell.getEntity().getWidth() * cs, cell.getEntity().getHeight() * cs, mouseX, mouseY, mouseOver, partialTicks);
         } else {
-            drawColouredRect(getter, x + 1, y + 1, size - 2, size - 2, darkMode ? 0xFF808080 : 0xFF505050);
+            drawColouredRect(getter, x + 1, y + 1, size - 2, size - 2, BCConfig.darkMode ? 0xFF808080 : 0xFF505050);
             if (mouseOver) {
                 drawColouredRect(getter, x, y, size, size, 0x50FFFFFF);
             }
@@ -214,7 +211,7 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> {
     protected void handleGridClick(ModuleGrid.GridPos cell, int mouseButton, ClickType type) {
         DraconicNetwork.sendModuleContainerClick(cell, mouseButton, type);
         InstallResult result = grid.cellClicked(cell, mouseButton, type);
-        if (result != null && result.resultType != YES && result.resultType != OVERRIDE) {
+        if (result != null && result.resultType != InstallResult.InstallResultType.YES && result.resultType != InstallResult.InstallResultType.OVERRIDE) {
             lastError = result.reason;
             lastErrorTime = 0;
         }

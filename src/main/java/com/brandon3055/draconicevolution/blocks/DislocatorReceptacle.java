@@ -61,6 +61,4 @@ public class DislocatorReceptacle extends BlockBCore {
             ((TileDislocatorReceptacle) tile).attemptActivation();
         }
     }
-
-    //endregion
 }

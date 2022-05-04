@@ -1,6 +1,5 @@
 package com.brandon3055.draconicevolution.client.render.particle;
 
-import com.brandon3055.brandonscore.client.ClientProxy;
 import com.brandon3055.brandonscore.client.particle.IntParticleType;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;

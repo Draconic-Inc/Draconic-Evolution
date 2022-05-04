@@ -1,8 +1,6 @@
 package com.brandon3055.draconicevolution.client;
 
 import codechicken.lib.data.MCDataInput;
-import codechicken.lib.render.CCRenderState;
-import codechicken.lib.render.OpenGLUtils;
 import codechicken.lib.render.buffer.TransformingVertexBuilder;
 import codechicken.lib.render.shader.*;
 import com.brandon3055.brandonscore.api.TimeKeeper;
@@ -12,23 +10,18 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.render.entity.DraconicGuardianRenderer;
 import com.google.common.collect.Maps;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.ClientBossInfo;
-import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.util.text.ITextComponent;
@@ -37,15 +30,9 @@ import net.minecraft.world.BossInfo;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.world.WorldEvent;
 
 import java.util.Map;
 import java.util.UUID;
-
-import static codechicken.lib.render.shader.ShaderObject.StandardShaderType.FRAGMENT;
-import static codechicken.lib.render.shader.ShaderObject.StandardShaderType.VERTEX;
-import static com.brandon3055.draconicevolution.DraconicEvolution.LOGGER;
-import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
 
 /**
  * Created by brandon3055 on 24/7/21
@@ -71,12 +58,12 @@ public class CustomBossInfoHandler extends AbstractGui {
 
     public static ShaderProgram shieldShader = ShaderProgramBuilder.builder()
             .addShader("vert", shader -> shader
-                    .type(VERTEX)
-                    .source(new ResourceLocation(MODID, "shaders/guardian_shield.vert"))
+                    .type(ShaderObject.StandardShaderType.VERTEX)
+                    .source(new ResourceLocation(DraconicEvolution.MODID, "shaders/guardian_shield.vert"))
             )
             .addShader("frag", shader -> shader
-                    .type(FRAGMENT)
-                    .source(new ResourceLocation(MODID, "shaders/guardian_shield.frag"))
+                    .type(ShaderObject.StandardShaderType.FRAGMENT)
+                    .source(new ResourceLocation(DraconicEvolution.MODID, "shaders/guardian_shield.frag"))
                     .uniform("time", UniformType.FLOAT)
                     .uniform("baseColour", UniformType.VEC4)
                     .uniform("activation", UniformType.FLOAT)

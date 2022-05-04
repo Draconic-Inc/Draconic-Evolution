@@ -1,22 +1,16 @@
 package com.brandon3055.draconicevolution.api.modules.entities;
 
 import com.brandon3055.draconicevolution.api.config.BooleanProperty;
+import com.brandon3055.draconicevolution.api.config.ConfigProperty;
 import com.brandon3055.draconicevolution.api.config.ConfigProperty.DecimalFormatter;
 import com.brandon3055.draconicevolution.api.config.DecimalProperty;
 import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.data.FlightData;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
-import com.brandon3055.draconicevolution.api.modules.lib.StackModuleContext;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
-import net.minecraftforge.common.ForgeMod;
-import net.minecraftforge.fml.common.thread.EffectiveSide;
 
 import java.util.UUID;
-
-import static com.brandon3055.draconicevolution.api.config.ConfigProperty.BooleanFormatter.ENABLED_DISABLED;
 
 public class FlightEntity extends ModuleEntity {
 
@@ -27,11 +21,11 @@ public class FlightEntity extends ModuleEntity {
     public FlightEntity(Module<FlightData> module) {
         super(module);
         if (module.getData().elytra()) {
-            addProperty(elytraEnabled = new BooleanProperty("flight_mod.elytra", true).setFormatter(ENABLED_DISABLED));
+            addProperty(elytraEnabled = new BooleanProperty("flight_mod.elytra", true).setFormatter(ConfigProperty.BooleanFormatter.ENABLED_DISABLED));
             addProperty(elytraBoost = new DecimalProperty("flight_mod.elytra_boost", module.getData().getElytraSpeed()).setFormatter(DecimalFormatter.PERCENT_0).range(0, module.getData().getElytraSpeed()));
         }
         if (module.getData().creative()) {
-            addProperty(creativeEnabled = new BooleanProperty("flight_mod.creative", true).setFormatter(ENABLED_DISABLED));
+            addProperty(creativeEnabled = new BooleanProperty("flight_mod.creative", true).setFormatter(ConfigProperty.BooleanFormatter.ENABLED_DISABLED));
         }
         this.savePropertiesToItem = true;
     }

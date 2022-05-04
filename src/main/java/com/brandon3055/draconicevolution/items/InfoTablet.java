@@ -1,15 +1,8 @@
 package com.brandon3055.draconicevolution.items;
 
-import codechicken.lib.reflect.ObfMapping;
-import codechicken.lib.reflect.ReflectionManager;
-import com.brandon3055.brandonscore.api.render.GuiHelper;
 import com.brandon3055.brandonscore.integration.PIHelper;
-import com.brandon3055.brandonscore.items.ItemBCore;
-import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.client.gui.WhatsBrokenGui;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -17,7 +10,6 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Util;
 import net.minecraft.util.text.IFormattableTextComponent;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.ClickEvent;
@@ -25,10 +17,6 @@ import net.minecraft.util.text.event.HoverEvent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-import net.minecraft.item.Item.Properties;
-
-import java.net.URI;
 
 /**
  * Created by brandon3055 on 22/09/2016.

@@ -1,7 +1,6 @@
 package com.brandon3055.draconicevolution.entity;
 
 import com.brandon3055.brandonscore.handlers.ProcessHandler;
-import com.brandon3055.brandonscore.lib.Vec3D;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MoverType;

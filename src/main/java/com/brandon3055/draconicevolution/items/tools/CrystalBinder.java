@@ -1,13 +1,12 @@
 package com.brandon3055.draconicevolution.items.tools;
 
-import com.brandon3055.brandonscore.items.ItemBCore;
 import com.brandon3055.draconicevolution.api.energy.ICrystalBinder;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
-import net.minecraft.util.*;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 

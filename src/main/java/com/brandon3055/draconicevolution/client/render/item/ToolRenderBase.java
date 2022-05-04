@@ -6,19 +6,15 @@ import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.buffer.VBORenderType;
 import codechicken.lib.render.item.IItemRenderer;
 import codechicken.lib.render.shader.*;
-import codechicken.lib.util.SneakyUtils;
+import codechicken.lib.util.TransformUtils;
 import codechicken.lib.vec.Matrix4;
-import codechicken.lib.vec.RedundantTransformation;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.client.BCClientEventHandler;
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.OutlineLayerBuffer;
 import net.minecraft.client.renderer.RenderState;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.IModelTransform;
@@ -26,17 +22,9 @@ import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.TransformationMatrix;
 import org.lwjgl.opengl.GL11;
 
 import java.util.Locale;
-
-import static codechicken.lib.render.shader.ShaderObject.StandardShaderType.FRAGMENT;
-import static codechicken.lib.render.shader.ShaderObject.StandardShaderType.VERTEX;
-import static codechicken.lib.util.TransformUtils.DEFAULT_TOOL;
-import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
-import static net.minecraft.client.renderer.RenderState.*;
-import static net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType.GUI;
 
 /**
  * Created by brandon3055 on 22/5/20.
@@ -45,12 +33,12 @@ public abstract class ToolRenderBase implements IItemRenderer {
 
     public static ShaderProgram chaosShader = ShaderProgramBuilder.builder()
             .addShader("vert", shader -> shader
-                    .type(VERTEX)
-                    .source(new ResourceLocation(MODID, "shaders/chaos.vert"))
+                    .type(ShaderObject.StandardShaderType.VERTEX)
+                    .source(new ResourceLocation(DraconicEvolution.MODID, "shaders/chaos.vert"))
             )
             .addShader("frag", shader -> shader
-                    .type(FRAGMENT)
-                    .source(new ResourceLocation(MODID, "shaders/chaos.frag"))
+                    .type(ShaderObject.StandardShaderType.FRAGMENT)
+                    .source(new ResourceLocation(DraconicEvolution.MODID, "shaders/chaos.frag"))
                     .uniform("alpha", UniformType.FLOAT)
                     .uniform("yaw", UniformType.FLOAT)
                     .uniform("pitch", UniformType.FLOAT)
@@ -67,12 +55,12 @@ public abstract class ToolRenderBase implements IItemRenderer {
 
     public static ShaderProgram gemShader = ShaderProgramBuilder.builder()
             .addShader("vert", shader -> shader
-                    .type(VERTEX)
-                    .source(new ResourceLocation(MODID, "shaders/common.vert"))
+                    .type(ShaderObject.StandardShaderType.VERTEX)
+                    .source(new ResourceLocation(DraconicEvolution.MODID, "shaders/common.vert"))
             )
             .addShader("frag", shader -> shader
-                    .type(FRAGMENT)
-                    .source(new ResourceLocation(MODID, "shaders/tool_gem.frag"))
+                    .type(ShaderObject.StandardShaderType.FRAGMENT)
+                    .source(new ResourceLocation(DraconicEvolution.MODID, "shaders/tool_gem.frag"))
                     .uniform("time", UniformType.FLOAT)
                     .uniform("baseColour", UniformType.VEC4)
             )
@@ -81,12 +69,12 @@ public abstract class ToolRenderBase implements IItemRenderer {
 
     public static ShaderProgram bladeShader = ShaderProgramBuilder.builder()
             .addShader("vert", shader -> shader
-                    .type(VERTEX)
-                    .source(new ResourceLocation(MODID, "shaders/common.vert"))
+                    .type(ShaderObject.StandardShaderType.VERTEX)
+                    .source(new ResourceLocation(DraconicEvolution.MODID, "shaders/common.vert"))
             )
             .addShader("frag", shader -> shader
-                    .type(FRAGMENT)
-                    .source(new ResourceLocation(MODID, "shaders/tool_blade.frag"))
+                    .type(ShaderObject.StandardShaderType.FRAGMENT)
+                    .source(new ResourceLocation(DraconicEvolution.MODID, "shaders/tool_blade.frag"))
                     .uniform("time", UniformType.FLOAT)
                     .uniform("baseColour", UniformType.VEC4)
             )
@@ -95,12 +83,12 @@ public abstract class ToolRenderBase implements IItemRenderer {
 
     public static ShaderProgram traceShader = ShaderProgramBuilder.builder()
             .addShader("vert", shader -> shader
-                    .type(VERTEX)
-                    .source(new ResourceLocation(MODID, "shaders/common.vert"))
+                    .type(ShaderObject.StandardShaderType.VERTEX)
+                    .source(new ResourceLocation(DraconicEvolution.MODID, "shaders/common.vert"))
             )
             .addShader("frag", shader -> shader
-                    .type(FRAGMENT)
-                    .source(new ResourceLocation(MODID, "shaders/tool_trace.frag"))
+                    .type(ShaderObject.StandardShaderType.FRAGMENT)
+                    .source(new ResourceLocation(DraconicEvolution.MODID, "shaders/tool_trace.frag"))
                     .uniform("time", UniformType.FLOAT)
                     .uniform("baseColour", UniformType.VEC4)
             )
@@ -135,30 +123,30 @@ public abstract class ToolRenderBase implements IItemRenderer {
         String levelName = techLevel.name().toLowerCase(Locale.ENGLISH);
         modelType = RenderType.create("modelType", DefaultVertexFormats.BLOCK, GL11.GL_TRIANGLES, 256, true, false, RenderType.State.builder()
                 .setTextureState(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/item/equipment/" + levelName + "_" + tool + ".png"), false, false))
-                .setDiffuseLightingState(DIFFUSE_LIGHTING)
-                .setLightmapState(LIGHTMAP)
+                .setDiffuseLightingState(RenderState.DIFFUSE_LIGHTING)
+                .setLightmapState(RenderState.LIGHTMAP)
 //                .texturing(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
                 .createCompositeState(true));
 
         modelGuiType = RenderType.create("modelGuiType", DefaultVertexFormats.BLOCK, GL11.GL_TRIANGLES, 256, RenderType.State.builder()
                 .setTextureState(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/item/equipment/" + levelName + "_" + tool + ".png"), false, false))
-                .setLightmapState(LIGHTMAP)
-                .setOverlayState(NO_OVERLAY)
+                .setLightmapState(RenderState.LIGHTMAP)
+                .setOverlayState(RenderState.NO_OVERLAY)
 //                .texturing(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
                 .createCompositeState(false)
         );
 
         chaosType = RenderType.create("chaosShaderType", DefaultVertexFormats.BLOCK, GL11.GL_TRIANGLES, 256, RenderType.State.builder()
                 .setTextureState(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/item/equipment/chaos_shader.png"), true, false))
-                .setLightmapState(LIGHTMAP)
-                .setOverlayState(OVERLAY)
+                .setLightmapState(RenderState.LIGHTMAP)
+                .setOverlayState(RenderState.OVERLAY)
                 .createCompositeState(false)
         );
 
         shaderParentType = RenderType.create("shaderGemType", DefaultVertexFormats.BLOCK, GL11.GL_TRIANGLES, 256, RenderType.State.builder()
                 .setTextureState(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/item/equipment/shader_fallback_" + levelName + ".png"), false, false))
-                .setLightmapState(LIGHTMAP)
-                .setOverlayState(OVERLAY)
+                .setLightmapState(RenderState.LIGHTMAP)
+                .setOverlayState(RenderState.OVERLAY)
                 .createCompositeState(false)
         );
     }
@@ -170,7 +158,7 @@ public abstract class ToolRenderBase implements IItemRenderer {
         ccrs.reset();
         ccrs.brightness = 240;//packedLight;
         ccrs.overlay = packedOverlay;
-        renderTool(ccrs, stack, transformType, mat, mStack, getter, transformType == GUI, packedLight);
+        renderTool(ccrs, stack, transformType, mat, mStack, getter, transformType == TransformType.GUI, packedLight);
     }
 
     public abstract void renderTool(CCRenderState ccrs, ItemStack stack, TransformType transform, Matrix4 mat, MatrixStack mStack, IRenderTypeBuffer getter, boolean gui, int packedLight);
@@ -184,7 +172,7 @@ public abstract class ToolRenderBase implements IItemRenderer {
 
     @Override
     public IModelTransform getModelTransform() {
-        return DEFAULT_TOOL;
+        return TransformUtils.DEFAULT_TOOL;
     }
 
     @Override

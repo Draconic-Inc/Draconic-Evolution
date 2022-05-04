@@ -13,14 +13,12 @@ import com.brandon3055.draconicevolution.blocks.tileentity.flowgate.TileFlowGate
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
-import static com.brandon3055.brandonscore.client.gui.GuiToolkit.GuiLayout.DEFAULT;
-
 /**
  * Created by brandon3055 on 15/11/2016.
  */
 public class GuiFlowGate extends ModularGuiContainer<ContainerBCTile<TileFlowGate>> {
 
-    private GuiToolkit<GuiFlowGate> toolkit = new GuiToolkit<>(this, DEFAULT).setTranslationPrefix("gui.draconicevolution.flow_gate");
+    private GuiToolkit<GuiFlowGate> toolkit = new GuiToolkit<>(this, GuiToolkit.GuiLayout.DEFAULT).setTranslationPrefix("gui.draconicevolution.flow_gate");
     private TileFlowGate tile;
     private long ltMin = -1;
     private long ltMax = -1;

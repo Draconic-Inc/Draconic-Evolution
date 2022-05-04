@@ -6,12 +6,9 @@ import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.utils.DataUtils;
 import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.lib.BaseModule;
-import com.brandon3055.draconicevolution.utils.LogHelper;
-import com.google.common.collect.Lists;
 import net.minecraft.util.ResourceLocation;
 
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;

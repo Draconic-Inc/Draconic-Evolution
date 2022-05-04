@@ -1,10 +1,8 @@
 package com.brandon3055.draconicevolution.items;
 
-import com.brandon3055.brandonscore.items.ItemBCore;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.utils.InventoryUtils;
 import com.brandon3055.brandonscore.utils.Utils;
-import com.brandon3055.draconicevolution.entity.EntityEnderEnergyManipulator;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.util.ITooltipFlag;

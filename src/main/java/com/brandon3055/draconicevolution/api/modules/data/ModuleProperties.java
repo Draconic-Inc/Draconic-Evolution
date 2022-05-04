@@ -3,15 +3,15 @@ package com.brandon3055.draconicevolution.api.modules.data;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.ModuleType;
-import net.minecraft.util.text.*;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.function.Supplier;
-
-import static net.minecraft.util.text.TextFormatting.*;
 
 /**
  * Created by brandon3055 on 3/5/20.
@@ -72,23 +72,23 @@ public class ModuleProperties<T extends ModuleData<T>> {
      */
     public void addStats(List<ITextComponent> toolTip, Module<?> module) {
         toolTip.add(new TranslationTextComponent("module.draconicevolution.module_type")
-                .withStyle(GRAY)
+                .withStyle(TextFormatting.GRAY)
                 .append(": ")
                 .append(module.getType().getDisplayName()
                         .withStyle(techLevel.getTextColour())));
         toolTip.add(new TranslationTextComponent("module.draconicevolution.grid_size")
-                .withStyle(GRAY)
+                .withStyle(TextFormatting.GRAY)
                 .append(": ")
                 .append(new StringTextComponent(getWidth() + "x" + getHeight())
-                        .withStyle(DARK_GREEN)));
+                        .withStyle(TextFormatting.DARK_GREEN)));
 
         Map<ITextComponent, ITextComponent> map = new HashMap<>();
         getData().addInformation(map, null, true);
         map.forEach((name, value) -> {
             if (value == null) {
-                toolTip.add(name.plainCopy().withStyle(GRAY));
+                toolTip.add(name.plainCopy().withStyle(TextFormatting.GRAY));
             } else {
-                toolTip.add(name.plainCopy().withStyle(GRAY).append(": ").append(value.plainCopy().withStyle(DARK_GREEN).getString().replace("\n", " ")));
+                toolTip.add(name.plainCopy().withStyle(TextFormatting.GRAY).append(": ").append(value.plainCopy().withStyle(TextFormatting.DARK_GREEN).getString().replace("\n", " ")));
             }
         });
     }

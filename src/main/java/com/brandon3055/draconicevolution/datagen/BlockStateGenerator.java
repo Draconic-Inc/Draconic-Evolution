@@ -1,11 +1,12 @@
 package com.brandon3055.draconicevolution.datagen;
 
+import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.DislocatorReceptacle;
 import com.brandon3055.draconicevolution.blocks.Portal;
-import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.blocks.machines.EnergyPylon;
 import com.brandon3055.draconicevolution.blocks.machines.Generator;
 import com.brandon3055.draconicevolution.blocks.machines.Grinder;
+import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.block.*;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.state.properties.BlockStateProperties;
@@ -13,18 +14,10 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.generators.*;
 import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.RegistryObject;
-import net.minecraftforge.registries.ForgeRegistryEntry;
-import net.minecraftforge.registries.IForgeRegistryEntry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Function;
-
-import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
 
 /**
  * Created by brandon3055 on 28/2/20.
@@ -33,7 +26,7 @@ public class BlockStateGenerator extends BlockStateProvider {
     private static final Logger LOGGER = LogManager.getLogger();
 
     public BlockStateGenerator(DataGenerator gen, ExistingFileHelper exFileHelper) {
-        super(gen, MODID, exFileHelper);
+        super(gen, DraconicEvolution.MODID, exFileHelper);
     }
 
     @Override

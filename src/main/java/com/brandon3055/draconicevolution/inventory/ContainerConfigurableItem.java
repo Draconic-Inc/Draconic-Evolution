@@ -14,7 +14,10 @@ import com.google.common.collect.Streams;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.*;
+import net.minecraft.inventory.container.ClickType;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.INamedContainerProvider;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Hand;
@@ -32,9 +35,6 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
-
-import static com.brandon3055.draconicevolution.api.capability.DECapabilities.MODULE_HOST_CAPABILITY;
-import static com.brandon3055.draconicevolution.api.capability.DECapabilities.PROPERTY_PROVIDER_CAPABILITY;
 
 /**
  * Created by brandon3055 on 19/4/20.
@@ -85,7 +85,7 @@ public class ContainerConfigurableItem extends ContainerBCore<Object> {
 
     public static Stream<PropertyProvider> getProviders(Stream<ItemStack> stacks) {
         return stacks
-                .map(e -> e.getCapability(PROPERTY_PROVIDER_CAPABILITY))
+                .map(e -> e.getCapability(DECapabilities.PROPERTY_PROVIDER_CAPABILITY))
                 .filter(LazyOptional::isPresent)
                 .map(e -> e.orElseThrow(WTFException::new));
     }
@@ -109,7 +109,7 @@ public class ContainerConfigurableItem extends ContainerBCore<Object> {
         if (slotId >= 0 && slotId < slots.size()) {
             Slot slot = this.slots.get(slotId);
             if (slot != null && !slot.getItem().isEmpty()) {
-                LazyOptional<PropertyProvider> optionalCap = slot.getItem().getCapability(PROPERTY_PROVIDER_CAPABILITY);
+                LazyOptional<PropertyProvider> optionalCap = slot.getItem().getCapability(DECapabilities.PROPERTY_PROVIDER_CAPABILITY);
                 if (optionalCap.isPresent()) {
                     PropertyProvider provider = optionalCap.orElseThrow(WTFException::new);
                     if (clickTypeIn == ClickType.PICKUP && button == 0 && player.inventory.getCarried().isEmpty()) {
@@ -138,7 +138,7 @@ public class ContainerConfigurableItem extends ContainerBCore<Object> {
     }
 
     private UUID getProviderID(ItemStack stack) {
-        LazyOptional<PropertyProvider> optionalCap = stack.getCapability(PROPERTY_PROVIDER_CAPABILITY);
+        LazyOptional<PropertyProvider> optionalCap = stack.getCapability(DECapabilities.PROPERTY_PROVIDER_CAPABILITY);
         if (!stack.isEmpty() && optionalCap.isPresent()) {
             return optionalCap.orElseThrow(WTFException::new).getProviderID();
         }
@@ -151,7 +151,7 @@ public class ContainerConfigurableItem extends ContainerBCore<Object> {
 
     public static Stream<Pair<ItemStack, PropertyProvider>> getStackProviders(Stream<ItemStack> stacks) {
         return stacks
-                .map(e -> Pair.of(e, e.getCapability(PROPERTY_PROVIDER_CAPABILITY)))
+                .map(e -> Pair.of(e, e.getCapability(DECapabilities.PROPERTY_PROVIDER_CAPABILITY)))
                 .filter(e -> e.value().isPresent())
                 .map(e -> Pair.of(e.key(), e.value().orElseThrow(WTFException::new)));
     }
@@ -219,12 +219,12 @@ public class ContainerConfigurableItem extends ContainerBCore<Object> {
 
     public static void tryOpenGui(ServerPlayerEntity sender) {
         ItemStack stack = sender.getMainHandItem();
-        if (!stack.isEmpty() && stack.getCapability(PROPERTY_PROVIDER_CAPABILITY).isPresent()) {
+        if (!stack.isEmpty() && stack.getCapability(DECapabilities.PROPERTY_PROVIDER_CAPABILITY).isPresent()) {
             PlayerSlot slot = new PlayerSlot(sender, Hand.MAIN_HAND);
             NetworkHooks.openGui(sender, new ContainerConfigurableItem.Provider(slot), slot::toBuff);
             return;
         } else {
-            PlayerSlot slot = PlayerSlot.findStackActiveFirst(sender.inventory, e -> e.getCapability(PROPERTY_PROVIDER_CAPABILITY).isPresent());
+            PlayerSlot slot = PlayerSlot.findStackActiveFirst(sender.inventory, e -> e.getCapability(DECapabilities.PROPERTY_PROVIDER_CAPABILITY).isPresent());
             if (slot != null) {
                 NetworkHooks.openGui(sender, new ContainerConfigurableItem.Provider(slot), slot::toBuff);
                 return;

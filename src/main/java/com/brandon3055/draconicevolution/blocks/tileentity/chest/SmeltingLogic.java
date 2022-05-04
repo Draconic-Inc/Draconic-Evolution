@@ -5,6 +5,7 @@ import codechicken.lib.inventory.InventoryUtils;
 import codechicken.lib.math.MathHelper;
 import com.brandon3055.brandonscore.api.power.OPStorage;
 import com.brandon3055.brandonscore.blocks.TileBCore;
+import com.brandon3055.brandonscore.lib.datamanager.DataFlags;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedEnum;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedFloat;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
@@ -20,8 +21,6 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
 import java.util.Locale;
-
-import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.*;
 
 /**
  * Created by brandon3055 on 19/04/2022
@@ -65,9 +64,9 @@ public class SmeltingLogic {
             wrappedSlots[i] = new InventorySlotMapper(inputInv, i);
         }
 
-        feedMode = tile.register(new ManagedEnum<>("feed_mode", FeedMode.OFF, SAVE_BOTH_SYNC_CONTAINER, CLIENT_CONTROL));
-        smeltProgress = tile.register(new ManagedFloat("smelt_progress", 0F, SAVE_NBT_SYNC_CONTAINER));
-        smeltingPower = tile.register(new ManagedFloat("smelt_speed", 0F, SAVE_NBT_SYNC_CONTAINER));
+        feedMode = tile.register(new ManagedEnum<>("feed_mode", FeedMode.OFF, DataFlags.SAVE_BOTH_SYNC_CONTAINER, DataFlags.CLIENT_CONTROL));
+        smeltProgress = tile.register(new ManagedFloat("smelt_progress", 0F, DataFlags.SAVE_NBT_SYNC_CONTAINER));
+        smeltingPower = tile.register(new ManagedFloat("smelt_speed", 0F, DataFlags.SAVE_NBT_SYNC_CONTAINER));
         feedMode.addValueListener(e -> inputInventoryChanged().attemptAutoFeed());
     }
 

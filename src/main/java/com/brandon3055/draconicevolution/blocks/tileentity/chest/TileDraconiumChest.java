@@ -8,6 +8,7 @@ import com.brandon3055.brandonscore.capability.CapabilityOP;
 import com.brandon3055.brandonscore.inventory.TileItemStackHandler;
 import com.brandon3055.brandonscore.lib.IInteractTile;
 import com.brandon3055.brandonscore.lib.IRSSwitchable;
+import com.brandon3055.brandonscore.lib.datamanager.DataFlags;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedInt;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedShort;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
@@ -28,21 +29,18 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
-
-import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.*;
-import static net.minecraft.util.SoundEvents.CHEST_CLOSE;
-import static net.minecraft.util.SoundEvents.CHEST_OPEN;
 
 /**
  * Created by brandon3055 on 28/09/2016.
  */
 public class TileDraconiumChest extends TileBCore implements ITickableTileEntity, IRSSwitchable, INamedContainerProvider, IInteractTile {
 
-    public final ManagedInt colour = register(new ManagedInt("colour", 0x640096, SAVE_BOTH_SYNC_TILE, CLIENT_CONTROL));
-    public final ManagedShort numPlayersUsing = register(new ManagedShort("num_players_using", SYNC_TILE));
+    public final ManagedInt colour = register(new ManagedInt("colour", 0x640096, DataFlags.SAVE_BOTH_SYNC_TILE, DataFlags.CLIENT_CONTROL));
+    public final ManagedShort numPlayersUsing = register(new ManagedShort("num_players_using", DataFlags.SYNC_TILE));
 
     public float prevLidAngle;
     public float lidAngle;
@@ -105,9 +103,9 @@ public class TileDraconiumChest extends TileBCore implements ITickableTileEntity
         prevLidAngle = lidAngle;
         lidAngle = (float) MathHelper.approachLinear(lidAngle, numPlayersUsing.get() > 0 ? 1 : 0, 0.1);
         if (prevLidAngle >= 0.5 && lidAngle < 0.5) {
-            level.playSound(null, getBlockPos(), CHEST_CLOSE, SoundCategory.BLOCKS, 0.5F, level.random.nextFloat() * 0.1F + 0.9F);
+            level.playSound(null, getBlockPos(), SoundEvents.CHEST_CLOSE, SoundCategory.BLOCKS, 0.5F, level.random.nextFloat() * 0.1F + 0.9F);
         } else if (prevLidAngle == 0 && lidAngle > 0) {
-            level.playSound(null, getBlockPos(), CHEST_OPEN, SoundCategory.BLOCKS, 0.5F, level.random.nextFloat() * 0.1F + 0.9F);
+            level.playSound(null, getBlockPos(), SoundEvents.CHEST_OPEN, SoundCategory.BLOCKS, 0.5F, level.random.nextFloat() * 0.1F + 0.9F);
         }
     }
 

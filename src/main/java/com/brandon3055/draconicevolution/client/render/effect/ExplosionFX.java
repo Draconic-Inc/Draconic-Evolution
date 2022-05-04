@@ -4,10 +4,7 @@ import codechicken.lib.render.CCModel;
 import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.OBJParser;
 import codechicken.lib.render.RenderUtils;
-import codechicken.lib.render.shader.ShaderProgram;
-import codechicken.lib.render.shader.ShaderProgramBuilder;
-import codechicken.lib.render.shader.UniformCache;
-import codechicken.lib.render.shader.UniformType;
+import codechicken.lib.render.shader.*;
 import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Rotation;
 import codechicken.lib.vec.Scale;
@@ -37,9 +34,6 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Random;
 
-import static codechicken.lib.render.shader.ShaderObject.StandardShaderType.FRAGMENT;
-import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
-
 /**
  * Created by brandon3055 on 12/02/2017.
  */
@@ -52,8 +46,8 @@ public class ExplosionFX extends Particle {
 
     public static ShaderProgram leadingWaveProgram = ShaderProgramBuilder.builder()
             .addShader("frag", shader -> shader
-                    .type(FRAGMENT)
-                    .source(new ResourceLocation(MODID, "shaders/explosion_leading_wave.frag"))
+                    .type(ShaderObject.StandardShaderType.FRAGMENT)
+                    .source(new ResourceLocation(DraconicEvolution.MODID, "shaders/explosion_leading_wave.frag"))
                     .uniform("time", UniformType.FLOAT)
                     .uniform("scale", UniformType.FLOAT)
                     .uniform("alpha", UniformType.FLOAT)
@@ -62,8 +56,8 @@ public class ExplosionFX extends Particle {
 
     public static ShaderProgram blastWaveProgram = ShaderProgramBuilder.builder()
             .addShader("frag", shader -> shader
-                    .type(FRAGMENT)
-                    .source(new ResourceLocation(MODID, "shaders/explosion_blast_wave.frag"))
+                    .type(ShaderObject.StandardShaderType.FRAGMENT)
+                    .source(new ResourceLocation(DraconicEvolution.MODID, "shaders/explosion_blast_wave.frag"))
                     .uniform("time", UniformType.FLOAT)
                     .uniform("scale", UniformType.FLOAT)
                     .uniform("alpha", UniformType.FLOAT)
@@ -72,8 +66,8 @@ public class ExplosionFX extends Particle {
 
     public static ShaderProgram coreEffectProgram = ShaderProgramBuilder.builder()
             .addShader("frag", shader -> shader
-                    .type(FRAGMENT)
-                    .source(new ResourceLocation(MODID, "shaders/explosion_core_effect.frag"))
+                    .type(ShaderObject.StandardShaderType.FRAGMENT)
+                    .source(new ResourceLocation(DraconicEvolution.MODID, "shaders/explosion_core_effect.frag"))
                     .uniform("time", UniformType.FLOAT)
                     .uniform("scale", UniformType.FLOAT)
                     .uniform("alpha", UniformType.FLOAT)

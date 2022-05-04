@@ -4,15 +4,17 @@ import codechicken.lib.math.MathHelper;
 import com.brandon3055.brandonscore.client.BCSprites;
 import com.brandon3055.brandonscore.client.gui.GuiToolkit;
 import com.brandon3055.brandonscore.client.gui.HudConfigGui;
-import com.brandon3055.brandonscore.client.gui.modulargui.StandardDialog;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElementManager;
 import com.brandon3055.brandonscore.client.gui.modulargui.ModularGuiContainer;
+import com.brandon3055.brandonscore.client.gui.modulargui.StandardDialog;
 import com.brandon3055.brandonscore.client.gui.modulargui.ThemedElements.ContentRect;
 import com.brandon3055.brandonscore.client.gui.modulargui.ThemedElements.ScrollBar;
 import com.brandon3055.brandonscore.client.gui.modulargui.baseelements.GuiButton;
 import com.brandon3055.brandonscore.client.gui.modulargui.baseelements.GuiScrollElement;
-import com.brandon3055.brandonscore.client.gui.modulargui.guielements.*;
+import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiLabel;
+import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiTexture;
+import com.brandon3055.brandonscore.client.gui.modulargui.lib.GuiAlign;
 import com.brandon3055.brandonscore.client.utils.GuiHelperOld;
 import com.brandon3055.brandonscore.lib.Tripple;
 import com.brandon3055.draconicevolution.DEConfig;
@@ -37,16 +39,12 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.util.LazyOptional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-
-import static com.brandon3055.brandonscore.client.gui.GuiToolkit.LayoutPos.BOTTOM_CENTER;
-import static com.brandon3055.brandonscore.client.gui.modulargui.baseelements.GuiScrollElement.ListMode.VERT_LOCK_POS_WIDTH;
-import static com.brandon3055.brandonscore.client.gui.modulargui.lib.GuiAlign.CENTER;
-import static com.brandon3055.draconicevolution.DEConfig.*;
-import static com.brandon3055.draconicevolution.api.capability.DECapabilities.PROPERTY_PROVIDER_CAPABILITY;
 
 
 /**
@@ -155,7 +153,7 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
                 return prefix + name;
             }
         });
-        title.setAlignment(CENTER);
+        title.setAlignment(GuiAlign.CENTER);
         title.setSize(mainUI.xSize() - 48, 8);
         title.setPos(mainUI.xPos() + 24, mainUI.yPos() + 4);
 
@@ -172,7 +170,7 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
 
         playerSlots = toolkit.createPlayerSlots(mainUI, false, true, true);
 
-        GuiElement<?> equipModSlots = toolkit.createEquipModSlots(mainUI, inventory.player, true, e -> e.getCapability(PROPERTY_PROVIDER_CAPABILITY).isPresent());
+        GuiElement<?> equipModSlots = toolkit.createEquipModSlots(mainUI, inventory.player, true, e -> e.getCapability(DECapabilities.PROPERTY_PROVIDER_CAPABILITY).isPresent());
         equipModSlots.setPos(mainUI.xPos() - 28, mainUI.yPos());
 
         simpleViewList = createPropertyList();
@@ -216,12 +214,12 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
 
     private void addAdvancedUIElements(GuiElementManager manager) {
         advancedContainer = new GuiElement<>();
-        advancedContainer.setEnabledCallback(() -> advancedUI || configUiEnableAdvancedXOver);
+        advancedContainer.setEnabledCallback(() -> advancedUI || DEConfig.configUiEnableAdvancedXOver);
         advancedContainer.onReload(() -> advancedContainer.setPosAndSize(0, 0, width, height));
         manager.addChild(advancedContainer);
 
         deleteZone = new GuiTexture(16, 16, () -> BCSprites.get("delete"));
-        deleteZone.setEnabledCallback(() -> advancedUI && configUiEnableDeleteZone);
+        deleteZone.setEnabledCallback(() -> advancedUI && DEConfig.configUiEnableDeleteZone);
         deleteZone.setYPos(0).setXPosMod(() -> advancedContainer.maxXPos() - 16);
         deleteZone.setHoverText(I18n.get("gui.draconicevolution.item_config.delete_zone.info"));
         GuiToolkit.addHoverHighlight(deleteZone, 0, 0, true);
@@ -229,7 +227,7 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
 
         GuiButton addGroup = toolkit.createIconButton(advancedContainer, 16, BCSprites.getter("new_group"));
         GuiToolkit.addHoverHighlight(addGroup, 0, 0, true);
-        addGroup.setEnabledCallback(() -> advancedUI && configUiEnableAddGroupButton);
+        addGroup.setEnabledCallback(() -> advancedUI && DEConfig.configUiEnableAddGroupButton);
         addGroup.setHoverText(I18n.get("gui.draconicevolution.item_config.add_group.info"));
         addGroup.onReload(e -> e.setMaxXPos(width, false).setYPos(deleteZone.isEnabled() ? deleteZone.maxYPos() + 1 : 0));
         addGroup.onPressed(() -> {
@@ -247,40 +245,40 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
     private GuiButton createOptionsButton() {
         List<Tripple<Supplier<String>, Supplier<String>, Runnable>> options = new ArrayList<>();
         options.add(new Tripple<>(
-                () -> configUiShowUnavailable ? "hide_unavailable" : "show_unavailable",
-                () -> configUiShowUnavailable ? "hide_unavailable" : "show_unavailable",
+                () -> DEConfig.configUiShowUnavailable ? "hide_unavailable" : "show_unavailable",
+                () -> DEConfig.configUiShowUnavailable ? "hide_unavailable" : "show_unavailable",
                 () -> {
-                    DEConfig.modifyClientProperty("showUnavailable", tag -> tag.setBoolean(!configUiShowUnavailable), "itemConfigGUI");
+                    DEConfig.modifyClientProperty("showUnavailable", tag -> tag.setBoolean(!DEConfig.configUiShowUnavailable), "itemConfigGUI");
                     advancedContainer.reloadElement();
                     advancedContainer.reloadElement(); //Avoids some annoying reload issues.
                 })
         );
         options.add(new Tripple<>(
-                () -> configUiEnableSnapping ? "disable_snapping" : "enable_snapping",
+                () -> DEConfig.configUiEnableSnapping ? "disable_snapping" : "enable_snapping",
                 () -> "disable_snapping",
-                () -> DEConfig.modifyClientProperty("enableSnapping", tag -> tag.setBoolean(!configUiEnableSnapping), "itemConfigGUI"))
+                () -> DEConfig.modifyClientProperty("enableSnapping", tag -> tag.setBoolean(!DEConfig.configUiEnableSnapping), "itemConfigGUI"))
         );
         options.add(new Tripple<>(
-                () -> configUiEnableVisualization ? "disable_visualization" : "enable_visualization",
+                () -> DEConfig.configUiEnableVisualization ? "disable_visualization" : "enable_visualization",
                 () -> "disable_visualization",
-                () -> DEConfig.modifyClientProperty("enableVisualization", tag -> tag.setBoolean(!configUiEnableVisualization), "itemConfigGUI"))
+                () -> DEConfig.modifyClientProperty("enableVisualization", tag -> tag.setBoolean(!DEConfig.configUiEnableVisualization), "itemConfigGUI"))
         );
         options.add(new Tripple<>(
-                () -> configUiEnableAddGroupButton ? "hide_group_button" : "show_group_button", null,
-                () -> DEConfig.modifyClientProperty("enableAddGroupButton", tag -> tag.setBoolean(!configUiEnableAddGroupButton), "itemConfigGUI"))
+                () -> DEConfig.configUiEnableAddGroupButton ? "hide_group_button" : "show_group_button", null,
+                () -> DEConfig.modifyClientProperty("enableAddGroupButton", tag -> tag.setBoolean(!DEConfig.configUiEnableAddGroupButton), "itemConfigGUI"))
         );
         options.add(new Tripple<>(
-                () -> configUiEnableDeleteZone ? "hide_delete_zone" : "show_delete_zone", null,
+                () -> DEConfig.configUiEnableDeleteZone ? "hide_delete_zone" : "show_delete_zone", null,
                 () -> {
-                    DEConfig.modifyClientProperty("enableDeleteZone", tag -> tag.setBoolean(!configUiEnableDeleteZone), "itemConfigGUI");
+                    DEConfig.modifyClientProperty("enableDeleteZone", tag -> tag.setBoolean(!DEConfig.configUiEnableDeleteZone), "itemConfigGUI");
                     advancedContainer.reloadElement();
                 })
         );
         options.add(new Tripple<>(
-                () -> configUiEnableAdvancedXOver ? "disable_adv_xover" : "enable_adv_xover",
-                () -> configUiEnableAdvancedXOver ? "disable_adv_xover" : "enable_adv_xover",
+                () -> DEConfig.configUiEnableAdvancedXOver ? "disable_adv_xover" : "enable_adv_xover",
+                () -> DEConfig.configUiEnableAdvancedXOver ? "disable_adv_xover" : "enable_adv_xover",
                 () -> {
-                    DEConfig.modifyClientProperty("enableAdvancedXOver", tag -> tag.setBoolean(!configUiEnableAdvancedXOver), "itemConfigGUI");
+                    DEConfig.modifyClientProperty("enableAdvancedXOver", tag -> tag.setBoolean(!DEConfig.configUiEnableAdvancedXOver), "itemConfigGUI");
                     advancedContainer.reloadElement();
                 })
         );
@@ -309,7 +307,7 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
 
     protected static GuiScrollElement createPropertyList() {
         GuiScrollElement element = new GuiScrollElement();
-        element.setListMode(VERT_LOCK_POS_WIDTH);
+        element.setListMode(GuiScrollElement.ListMode.VERT_LOCK_POS_WIDTH);
         element.setStandardScrollBehavior();
         element.setReloadOnUpdate(true);
         element.getVerticalScrollBar().setBackgroundElement(new ScrollBar(true));
@@ -398,7 +396,7 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
         float centerAnim = MathHelper.map(rePosAnim, 0, 1, bottomYPos, centerYPos);
         float actualPos = MathHelper.map(hideAnim, 0, 1, centerAnim, height - HIDDEN_SIZE);
         mainUI.setYPos((int) actualPos);
-        toolkit.placeInside(playerSlots, mainUI, BOTTOM_CENTER, 0, -7);
+        toolkit.placeInside(playerSlots, mainUI, GuiToolkit.LayoutPos.BOTTOM_CENTER, 0, -7);
         simpleViewList.setMaxYPos(playerSlots.yPos() - 5, true);
         simpleViewList.updateScrollElement();
         simpleViewList.resetScrollPositions();
@@ -422,13 +420,13 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
     public void tick() {
         hoveredData = null;
         hoveredProvider = null;
-        if (configUiEnableVisualization) {
+        if (DEConfig.configUiEnableVisualization) {
             Slot hovered = container.slots.stream()
                     .filter(slot -> isHovering(slot, getMouseX(), getMouseY()))
                     .findAny()
                     .orElse(null);
             if (hovered != null) {
-                LazyOptional<PropertyProvider> optionalCap = hovered.getItem().getCapability(PROPERTY_PROVIDER_CAPABILITY);
+                LazyOptional<PropertyProvider> optionalCap = hovered.getItem().getCapability(DECapabilities.PROPERTY_PROVIDER_CAPABILITY);
                 optionalCap.ifPresent(e -> hoveredProvider = e);
             }
         }

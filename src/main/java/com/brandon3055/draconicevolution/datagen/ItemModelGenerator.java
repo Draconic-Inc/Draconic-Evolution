@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.datagen;
 
 import codechicken.lib.util.SneakyUtils;
+import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.init.DEModules;
 import net.minecraft.block.Block;
@@ -11,13 +12,9 @@ import net.minecraftforge.client.model.generators.ItemModelProvider;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import org.apache.commons.io.FileUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.util.Objects;
-
-import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
 
 /**
  * Created by brandon3055 on 28/2/20.
@@ -25,7 +22,7 @@ import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
 public class ItemModelGenerator extends ItemModelProvider {
 
     public ItemModelGenerator(DataGenerator generator, ExistingFileHelper existingFileHelper) {
-        super(generator, MODID, existingFileHelper);
+        super(generator, DraconicEvolution.MODID, existingFileHelper);
     }
 
     @Override
@@ -144,7 +141,7 @@ public class ItemModelGenerator extends ItemModelProvider {
             File moduleTexture = new File(textures, "module/" + name + ".png");
             if (!itemTexture.exists()) SneakyUtils.sneaky(() -> FileUtils.copyFile(new File(textures, "item/modules/blank_" + name.substring(0, name.indexOf("_")) + ".png"), itemTexture));
             if (!moduleTexture.exists()) SneakyUtils.sneaky(() -> FileUtils.copyFile(itemTexture, moduleTexture));
-            simpleItem(item, new ResourceLocation(MODID, "item/modules/" + name));
+            simpleItem(item, new ResourceLocation(DraconicEvolution.MODID, "item/modules/" + name));
         });
         //endregion
 

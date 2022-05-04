@@ -13,8 +13,10 @@ import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.client.BCClientEventHandler;
 import com.brandon3055.brandonscore.lib.Vec3D;
+import com.brandon3055.brandonscore.utils.EnergyUtils;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DEConfig;
+import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.client.render.modelfx.BowModelEffect;
 import com.brandon3055.draconicevolution.items.equipment.ModularBow;
@@ -45,11 +47,6 @@ import org.lwjgl.opengl.GL11;
 import javax.annotation.Nullable;
 import java.util.Map;
 
-import static codechicken.lib.render.shader.ShaderObject.StandardShaderType.FRAGMENT;
-import static codechicken.lib.render.shader.ShaderObject.StandardShaderType.VERTEX;
-import static com.brandon3055.brandonscore.utils.EnergyUtils.getEnergyStored;
-import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
-
 /**
  * Created by brandon3055 on 22/5/20.
  */
@@ -57,12 +54,12 @@ public class RenderModularBow extends ToolRenderBase {
 
     public static ShaderProgram stringShader = ShaderProgramBuilder.builder()
             .addShader("vert", shader -> shader
-                    .type(VERTEX)
-                    .source(new ResourceLocation(MODID, "shaders/common.vert"))
+                    .type(ShaderObject.StandardShaderType.VERTEX)
+                    .source(new ResourceLocation(DraconicEvolution.MODID, "shaders/common.vert"))
             )
             .addShader("frag", shader -> shader
-                    .type(FRAGMENT)
-                    .source(new ResourceLocation(MODID, "shaders/bow_string.frag"))
+                    .type(ShaderObject.StandardShaderType.FRAGMENT)
+                    .source(new ResourceLocation(DraconicEvolution.MODID, "shaders/bow_string.frag"))
                     .uniform("time", UniformType.FLOAT)
                     .uniform("tier", UniformType.INT)
             )
@@ -81,13 +78,13 @@ public class RenderModularBow extends ToolRenderBase {
 
     public RenderModularBow(TechLevel techLevel) {
         super(techLevel, "bow");
-        Map<String, CCModel> model = OBJParser.parseModels(new ResourceLocation(MODID, "models/item/equipment/bow.obj"), GL11.GL_TRIANGLES, null);
+        Map<String, CCModel> model = OBJParser.parseModels(new ResourceLocation(DraconicEvolution.MODID, "models/item/equipment/bow.obj"), GL11.GL_TRIANGLES, null);
         baseModel = model.get("bow_handle").backfacedCopy();
         materialModel = model.get("bow_arm").backfacedCopy();
         gemModel = model.get("bow_gem").backfacedCopy();
 
         bowStringType = RenderType.create("shaderStringType", DefaultVertexFormats.POSITION_COLOR_TEX, GL11.GL_QUADS, 256, RenderType.State.builder()
-                .setTextureState(new RenderState.TextureState(new ResourceLocation(MODID, "textures/item/equipment/bow_string.png"), true, false))
+                .setTextureState(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/item/equipment/bow_string.png"), true, false))
                 .setTransparencyState(RenderState.LIGHTNING_TRANSPARENCY)
                 .setCullState(RenderState.NO_CULL)
                 .setWriteMaskState(RenderState.WriteMaskState.COLOR_WRITE)
@@ -142,7 +139,7 @@ public class RenderModularBow extends ToolRenderBase {
             }
         }
 
-        boolean hasPower = isCreative(entity) || (stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).isPresent() && ModularBow.calculateShotEnergy(stack) <= getEnergyStored(stack));
+        boolean hasPower = isCreative(entity) || (stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).isPresent() && ModularBow.calculateShotEnergy(stack) <= EnergyUtils.getEnergyStored(stack));
         drawStrings(ccrs, mat, bottomMat, getter, drawAngle, packedLight, hasPower);
     }
 

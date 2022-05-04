@@ -1,12 +1,10 @@
 package com.brandon3055.draconicevolution.client.render.modelfx;
 
-import codechicken.lib.math.MathHelper;
 import codechicken.lib.render.buffer.TransformingVertexBuilder;
 import codechicken.lib.util.SneakyUtils;
 import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.api.TechLevel;
-import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -15,8 +13,6 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import org.lwjgl.opengl.GL11;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 /**

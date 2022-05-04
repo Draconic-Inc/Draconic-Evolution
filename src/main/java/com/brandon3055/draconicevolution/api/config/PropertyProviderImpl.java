@@ -2,10 +2,12 @@ package com.brandon3055.draconicevolution.api.config;
 
 import com.brandon3055.draconicevolution.api.capability.PropertyProvider;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * Created by brandon3055 on 2/5/20.

@@ -1,9 +1,7 @@
 package com.brandon3055.draconicevolution.mixin;
 
 import codechicken.lib.util.SneakyUtils;
-import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.render.item.RenderModularStaff;
-import net.minecraft.client.network.play.ClientPlayNetHandler;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.entity.LivingEntity;
 import org.spongepowered.asm.mixin.Mixin;

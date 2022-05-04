@@ -10,14 +10,15 @@ import com.brandon3055.brandonscore.inventory.TileItemStackHandler;
 import com.brandon3055.brandonscore.lib.IInteractTile;
 import com.brandon3055.brandonscore.lib.IRSSwitchable;
 import com.brandon3055.brandonscore.lib.Vec3D;
+import com.brandon3055.brandonscore.lib.datamanager.DataFlags;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedEnum;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedInt;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.blocks.machines.Generator;
 import com.brandon3055.draconicevolution.client.DEParticles;
+import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.inventory.GuiLayoutFactories;
 import com.brandon3055.draconicevolution.lib.ISidedTileHandler;
 import net.minecraft.block.BlockState;
@@ -43,8 +44,6 @@ import javax.annotation.Nullable;
 import java.util.Locale;
 import java.util.Random;
 
-import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.*;
-
 public class TileGenerator extends TileBCore implements ITickableTileEntity, IRSSwitchable, INamedContainerProvider, IInteractTile {
 
     private ISidedTileHandler soundHandler = DraconicEvolution.proxy.createGeneratorSoundHandler(this);
@@ -52,14 +51,14 @@ public class TileGenerator extends TileBCore implements ITickableTileEntity, IRS
     /**
      * The fuel value of the last item that was consumed.
      */
-    public final ManagedInt fuelValue = register(new ManagedInt("fuel_value", 1, SAVE_BOTH_SYNC_CONTAINER));
+    public final ManagedInt fuelValue = register(new ManagedInt("fuel_value", 1, DataFlags.SAVE_BOTH_SYNC_CONTAINER));
     /**
      * The remaining fuel value from the last item that was consumed.
      */
-    public final ManagedInt fuelRemaining = register(new ManagedInt("fuel_remaining", 0, SAVE_BOTH_SYNC_CONTAINER));
-    public final ManagedInt productionRate = register(new ManagedInt("prod_rate", 0, SYNC_CONTAINER));
-    public final ManagedEnum<Mode> mode = register(new ManagedEnum<>("mode", Mode.NORMAL, SAVE_BOTH_SYNC_TILE, CLIENT_CONTROL));
-    public final ManagedBool active = register(new ManagedBool("active", false, SAVE_BOTH_SYNC_TILE, TRIGGER_UPDATE));
+    public final ManagedInt fuelRemaining = register(new ManagedInt("fuel_remaining", 0, DataFlags.SAVE_BOTH_SYNC_CONTAINER));
+    public final ManagedInt productionRate = register(new ManagedInt("prod_rate", 0, DataFlags.SYNC_CONTAINER));
+    public final ManagedEnum<Mode> mode = register(new ManagedEnum<>("mode", Mode.NORMAL, DataFlags.SAVE_BOTH_SYNC_TILE, DataFlags.CLIENT_CONTROL));
+    public final ManagedBool active = register(new ManagedBool("active", false, DataFlags.SAVE_BOTH_SYNC_TILE, DataFlags.TRIGGER_UPDATE));
 
     //These are buffers for floating point to integer conversion.
     //I dont bother saving these because worst case you loose 0.99OP or 0.99fuel

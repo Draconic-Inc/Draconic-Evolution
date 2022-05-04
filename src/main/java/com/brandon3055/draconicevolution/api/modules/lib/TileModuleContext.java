@@ -3,7 +3,6 @@ package com.brandon3055.draconicevolution.api.modules.lib;
 import com.brandon3055.brandonscore.api.power.IOPStorage;
 import com.brandon3055.brandonscore.api.power.IOPStorageModifiable;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
-import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.LazyOptional;
 

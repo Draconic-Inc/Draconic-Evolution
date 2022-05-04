@@ -1,6 +1,5 @@
 package com.brandon3055.draconicevolution.utils;
 
-import codechicken.lib.texture.TextureUtils;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;

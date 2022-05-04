@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.items.equipment;
 
 import codechicken.lib.math.MathHelper;
+import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.capability.PropertyProvider;
 import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
@@ -18,8 +19,6 @@ import net.minecraft.world.server.ServerWorld;
 
 import java.util.List;
 
-import static com.brandon3055.draconicevolution.api.capability.DECapabilities.MODULE_HOST_CAPABILITY;
-
 /**
  * Created by brandon3055 on 5/7/20
  */
@@ -27,7 +26,7 @@ public interface IModularMelee extends IModularTieredItem {
 
     @Override
     default boolean onLeftClickEntity(ItemStack stack, PlayerEntity player, Entity target) {
-        ModuleHost host = stack.getCapability(MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new);
+        ModuleHost host = stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new);
         float damage = (float) getAttackDamage(host, stack);
         long energyPerHit = (long) (EquipCfg.energyAttack * damage);
         extractEnergy(player, stack, energyPerHit);

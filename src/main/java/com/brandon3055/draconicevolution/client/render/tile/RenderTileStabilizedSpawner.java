@@ -1,31 +1,18 @@
 package com.brandon3055.draconicevolution.client.render.tile;
 
-import codechicken.lib.texture.TextureUtils;
-import com.brandon3055.brandonscore.client.render.TESRBase;
-import com.brandon3055.brandonscore.utils.ModelUtils;
-import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.blocks.tileentity.StabilizedSpawnerLogic;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileStabilizedSpawner;
-import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
+import com.brandon3055.draconicevolution.init.DEContent;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Util;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.world.spawner.AbstractSpawner;
-
-import java.util.List;
-
-import static net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType.FIXED;
 
 /**
  * Created by brandon3055 on 20/05/2016.
@@ -70,6 +57,6 @@ public class RenderTileStabilizedSpawner extends TileEntityRenderer<TileStabiliz
         mStack.mulPose(Vector3f.XP.rotationDegrees(90.0F));
 
         ItemStack stack = CORE_RENDER_ITEMS[tile.spawnerTier.get().ordinal()];
-        Minecraft.getInstance().getItemRenderer().renderStatic(stack, FIXED, packedLight, packedOverlay, mStack, getter);
+        Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemCameraTransforms.TransformType.FIXED, packedLight, packedOverlay, mStack, getter);
     }
 }

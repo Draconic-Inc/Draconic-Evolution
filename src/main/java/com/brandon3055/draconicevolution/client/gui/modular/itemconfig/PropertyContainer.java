@@ -1,15 +1,17 @@
 package com.brandon3055.draconicevolution.client.gui.modular.itemconfig;
 
 import codechicken.lib.math.MathHelper;
+import com.brandon3055.brandonscore.BCConfig;
 import com.brandon3055.brandonscore.client.BCSprites;
 import com.brandon3055.brandonscore.client.gui.GuiToolkit;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
+import com.brandon3055.brandonscore.client.gui.modulargui.ThemedElements;
 import com.brandon3055.brandonscore.client.gui.modulargui.baseelements.GuiButton;
 import com.brandon3055.brandonscore.client.gui.modulargui.baseelements.GuiScrollElement;
 import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiManipulable;
 import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiTextField;
+import com.brandon3055.brandonscore.client.gui.modulargui.lib.GuiAlign;
 import com.brandon3055.brandonscore.client.utils.GuiHelperOld;
-import com.brandon3055.brandonscore.client.gui.modulargui.ThemedElements;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.GuiConfigurableItem.UpdateAnim;
 import net.minecraft.client.Minecraft;
@@ -32,11 +34,6 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Objects;
 import java.util.stream.Collectors;
-
-import static com.brandon3055.brandonscore.BCConfig.darkMode;
-import static com.brandon3055.brandonscore.client.gui.GuiToolkit.LayoutPos.TOP_RIGHT;
-import static com.brandon3055.brandonscore.client.gui.modulargui.lib.GuiAlign.CENTER;
-import static com.brandon3055.brandonscore.client.gui.modulargui.lib.GuiAlign.TextRotation.NORMAL;
 
 /**
  * Created by brandon3055 on 15/5/20.
@@ -141,7 +138,7 @@ public class PropertyContainer extends GuiManipulable {
             groupName.setEnableBackgroundDrawing(false);
             groupName.setBlinkingCursor(true);
             groupName.setTextColor(GuiToolkit.Palette.BG::text);
-            groupName.setShadowSupplier(() -> darkMode);
+            groupName.setShadowSupplier(() -> BCConfig.darkMode);
             groupName.setCursorColor(0xFFFFFFFF);
             groupName.onFinishEdit(gui::savePropertyConfig);
             addChild(groupName);
@@ -325,7 +322,7 @@ public class PropertyContainer extends GuiManipulable {
                 if (!Screen.hasControlDown()) {
                     PropertyContainer newContainer = new PropertyContainer(gui, false);
                     newContainer.setXSize(Math.max(element.xSize(), newContainer.getMinSize().width));
-                    gui.toolkit.placeInside(newContainer, element, TOP_RIGHT, 0, 0);
+                    gui.toolkit.placeInside(newContainer, element, GuiToolkit.LayoutPos.TOP_RIGHT, 0, 0);
                     newContainer.updatePosition();
                     parent.addChild(newContainer);
                     newContainer.addProperty(data.copy());
@@ -604,13 +601,13 @@ public class PropertyContainer extends GuiManipulable {
 //                mat = BCSprites.getThemed("button_borderless" + (applyPreset.isPressed() ? "_invert" : ""));
 //                drawDynamicSprite(mat.getBuffer(getter, e -> BCSprites.guiTexType), mat.getSprite(), xPos() + 2, contentPos, xSize() - 4, contentHeight, 2, 2, 2, 2, 0xFFFFFF | alpha);
 //            } else {
-            int light = (darkMode ? 0x5b5b5b : 0xFFFFFF) | alpha;
-            int dark = (darkMode ? 0x282828 : 0x505050) | alpha;
+            int light = (BCConfig.darkMode ? 0x5b5b5b : 0xFFFFFF) | alpha;
+            int dark = (BCConfig.darkMode ? 0x282828 : 0x505050) | alpha;
             drawShadedRect(getter, xPos() + 2, contentPos, xSize() - 4, contentHeight, 1, 0, dark, light, midColour(light, dark));
 //            }
             getter.endBatch();
             if (dataList.isEmpty()) {
-                drawCustomString(fontRenderer, I18n.get("gui.draconicevolution.item_config.drop_prop_here"), xPos() + 3, yPos() + 13, xSize() - 6, GuiToolkit.Palette.BG.text(), CENTER, NORMAL, false, true, darkMode);
+                drawCustomString(fontRenderer, I18n.get("gui.draconicevolution.item_config.drop_prop_here"), xPos() + 3, yPos() + 13, xSize() - 6, GuiToolkit.Palette.BG.text(), GuiAlign.CENTER, GuiAlign.TextRotation.NORMAL, false, true, BCConfig.darkMode);
             }
         } else {
             getter.endBatch();

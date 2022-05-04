@@ -1,8 +1,6 @@
 package com.brandon3055.draconicevolution.api;
 
-import com.brandon3055.brandonscore.api.math.Vector2;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector2f;
 import net.minecraft.util.math.vector.Vector3d;
 

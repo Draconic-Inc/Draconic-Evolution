@@ -1,11 +1,8 @@
 package com.brandon3055.draconicevolution.blocks.tileentity.flowgate;
 
 import codechicken.lib.util.SneakyUtils;
-
 import com.brandon3055.brandonscore.inventory.ContainerBCTile;
 import com.brandon3055.draconicevolution.init.DEContent;
-import com.brandon3055.draconicevolution.integration.computers.PeripheralFlowGate;
-import com.brandon3055.draconicevolution.integration.computers.PeripheralFluidGate;
 import com.brandon3055.draconicevolution.inventory.GuiLayoutFactories;
 import com.brandon3055.draconicevolution.lib.WTFException;
 import net.minecraft.block.BlockState;
@@ -27,8 +24,6 @@ import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
 /**
  * Created by brandon3055 on 15/11/2016.

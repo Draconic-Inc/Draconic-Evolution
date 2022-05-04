@@ -2,8 +2,8 @@ package com.brandon3055.draconicevolution.inventory;
 
 import com.brandon3055.brandonscore.inventory.ContainerBCore;
 import com.brandon3055.brandonscore.inventory.ContainerSlotLayout;
-import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
+import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleGrid;

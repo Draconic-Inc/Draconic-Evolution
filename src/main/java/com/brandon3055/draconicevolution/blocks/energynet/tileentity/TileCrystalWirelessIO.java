@@ -1,24 +1,24 @@
 package com.brandon3055.draconicevolution.blocks.energynet.tileentity;
 
 import codechicken.lib.data.MCDataInput;
+import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.lib.ChatHelper;
 import com.brandon3055.brandonscore.lib.Vec3B;
 import com.brandon3055.brandonscore.lib.Vec3D;
+import com.brandon3055.brandonscore.lib.datamanager.DataFlags;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
 import com.brandon3055.brandonscore.utils.Utils;
-import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.api.energy.ICrystalLink;
-import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.draconicevolution.blocks.energynet.EnergyCrystal;
 import com.brandon3055.draconicevolution.blocks.energynet.rendering.ENetFXHandler;
 import com.brandon3055.draconicevolution.blocks.energynet.rendering.ENetFXHandlerClientWireless;
 import com.brandon3055.draconicevolution.blocks.energynet.rendering.ENetFXHandlerServerWireless;
-import com.brandon3055.draconicevolution.client.render.effect.CrystalFXRing;
 import com.brandon3055.draconicevolution.client.render.effect.CrystalFXBase;
+import com.brandon3055.draconicevolution.client.render.effect.CrystalFXRing;
 import com.brandon3055.draconicevolution.handlers.DEEventHandler;
+import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -40,9 +40,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.*;
 
-import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.SAVE_BOTH_SYNC_CONTAINER;
-import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.SAVE_BOTH_SYNC_TILE;
-
 /**
  * Created by brandon3055 on 19/11/2016.
  */
@@ -56,8 +53,8 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
     protected List<LinkedDevice> slowList = new ArrayList<>();
     public LinkedList<int[]> receiverTransferRates = new LinkedList<>();
     public LinkedList<Byte> receiverFlowRates = new LinkedList<>();
-    public final ManagedBool useUpdateOptimisation = dataManager.register(new ManagedBool("transport_state", true, SAVE_BOTH_SYNC_CONTAINER));
-    public final ManagedBool inputMode = dataManager.register(new ManagedBool("input_mode", SAVE_BOTH_SYNC_TILE));
+    public final ManagedBool useUpdateOptimisation = dataManager.register(new ManagedBool("transport_state", true, DataFlags.SAVE_BOTH_SYNC_CONTAINER));
+    public final ManagedBool inputMode = dataManager.register(new ManagedBool("input_mode", DataFlags.SAVE_BOTH_SYNC_TILE));
 
     public TileCrystalWirelessIO() {
         super(DEContent.tile_crystal_wireless);

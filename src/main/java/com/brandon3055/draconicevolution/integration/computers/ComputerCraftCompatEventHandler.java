@@ -7,7 +7,6 @@ import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyPylon;
 import com.brandon3055.draconicevolution.blocks.tileentity.flowgate.TileFlowGate;
 import com.brandon3055.draconicevolution.blocks.tileentity.flowgate.TileFluidGate;
 import com.brandon3055.draconicevolution.blocks.tileentity.flowgate.TileFluxGate;
-
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.AttachCapabilitiesEvent;

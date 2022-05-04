@@ -1,9 +1,8 @@
 package com.brandon3055.draconicevolution.inventory;
 
 import com.brandon3055.brandonscore.inventory.ContainerBCTile;
-import com.brandon3055.brandonscore.inventory.ContainerBCore;
-import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalBase;
+import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.network.PacketBuffer;

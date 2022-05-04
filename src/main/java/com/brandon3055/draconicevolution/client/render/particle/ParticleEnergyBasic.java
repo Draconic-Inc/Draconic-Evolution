@@ -1,8 +1,6 @@
 package com.brandon3055.draconicevolution.client.render.particle;
 
 import com.brandon3055.brandonscore.client.particle.IntParticleType;
-import com.brandon3055.brandonscore.lib.Vec3D;
-import com.brandon3055.brandonscore.utils.Utils;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.world.ClientWorld;
 

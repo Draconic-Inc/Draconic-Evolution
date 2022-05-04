@@ -2,7 +2,6 @@ package com.brandon3055.draconicevolution.integration.equipment;
 
 import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.capability.MultiCapabilityProvider;
-import com.brandon3055.brandonscore.inventory.PlayerSlot;
 import com.brandon3055.brandonscore.lib.IEquipmentManager;
 import com.brandon3055.draconicevolution.lib.WTFException;
 import com.google.common.collect.ImmutableList;

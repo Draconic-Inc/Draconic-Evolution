@@ -4,7 +4,8 @@ import com.brandon3055.brandonscore.client.particle.IntParticleType;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.render.particle.*;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.*;
+import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.particles.BasicParticleType;
@@ -18,13 +19,11 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ObjectHolder;
 
-import static net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus.MOD;
-
 /**
  * Created by brandon3055 on 23/4/2016.
  * A list of all of DE's particles
  */
-@Mod.EventBusSubscriber(modid = DraconicEvolution.MODID, bus = MOD)
+@Mod.EventBusSubscriber(modid = DraconicEvolution.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 @ObjectHolder(DraconicEvolution.MODID)
 public class DEParticles {
 

@@ -1,12 +1,5 @@
 package com.brandon3055.draconicevolution.blocks.tileentity;
 
-import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.SAVE_NBT_SYNC_TILE;
-import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.TRIGGER_UPDATE;
-
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
-
 import com.brandon3055.brandonscore.api.power.IExtendedRFStorage;
 import com.brandon3055.brandonscore.api.power.IOPStorage;
 import com.brandon3055.brandonscore.blocks.TileBCore;
@@ -14,6 +7,7 @@ import com.brandon3055.brandonscore.capability.CapabilityOP;
 import com.brandon3055.brandonscore.client.particle.IntParticleType;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.lib.Vec3I;
+import com.brandon3055.brandonscore.lib.datamanager.DataFlags;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedByte;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedVec3I;
@@ -21,8 +15,6 @@ import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.blocks.machines.EnergyPylon;
 import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.init.DEContent;
-import com.brandon3055.draconicevolution.integration.computers.PeripheralEnergyPylon;
-
 import net.minecraft.block.Blocks;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -31,16 +23,20 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Random;
+
 /**
  * Created by brandon3055 on 30/3/2016.
  */
 public class TileEnergyPylon extends TileBCore implements ITickableTileEntity, IMultiBlockPart, IExtendedRFStorage {
-    public final ManagedBool isOutputMode = register(new ManagedBool("is_output_mode", SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE));
-    public final ManagedBool structureValid = register(new ManagedBool("structure_valid", SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE));
-    public final ManagedVec3I coreOffset = register(new ManagedVec3I("core_offset", new Vec3I(0, -1, 0), SAVE_NBT_SYNC_TILE));
-    public final ManagedBool sphereOnTop = register(new ManagedBool("sphere_on_top", true, SAVE_NBT_SYNC_TILE));
-    public final ManagedBool hasCoreLock = register(new ManagedBool("has_core_lock", SAVE_NBT_SYNC_TILE));
-    private final ManagedByte particleRate = register(new ManagedByte("particle_rate", SAVE_NBT_SYNC_TILE));
+    public final ManagedBool isOutputMode = register(new ManagedBool("is_output_mode", DataFlags.SAVE_NBT_SYNC_TILE, DataFlags.TRIGGER_UPDATE));
+    public final ManagedBool structureValid = register(new ManagedBool("structure_valid", DataFlags.SAVE_NBT_SYNC_TILE, DataFlags.TRIGGER_UPDATE));
+    public final ManagedVec3I coreOffset = register(new ManagedVec3I("core_offset", new Vec3I(0, -1, 0), DataFlags.SAVE_NBT_SYNC_TILE));
+    public final ManagedBool sphereOnTop = register(new ManagedBool("sphere_on_top", true, DataFlags.SAVE_NBT_SYNC_TILE));
+    public final ManagedBool hasCoreLock = register(new ManagedBool("has_core_lock", DataFlags.SAVE_NBT_SYNC_TILE));
+    private final ManagedByte particleRate = register(new ManagedByte("particle_rate", DataFlags.SAVE_NBT_SYNC_TILE));
     private TileEnergyCore core = null;
     private int coreSelection = 0;
     private int tick = 0;

@@ -2,15 +2,11 @@ package com.brandon3055.draconicevolution.blocks.tileentity.flowgate;
 
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.util.SneakyUtils;
-
 import com.brandon3055.brandonscore.api.power.IOPStorage;
-import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.capability.CapabilityOP;
 import com.brandon3055.brandonscore.inventory.ContainerBCTile;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
 import com.brandon3055.draconicevolution.init.DEContent;
-import com.brandon3055.draconicevolution.integration.computers.PeripheralFlowGate;
-import com.brandon3055.draconicevolution.integration.computers.PeripheralFluxGate;
 import com.brandon3055.draconicevolution.inventory.GuiLayoutFactories;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -20,14 +16,10 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.network.NetworkHooks;
-
-import javax.annotation.Nonnull;
 
 /**
  * Created by brandon3055 on 15/11/2016.

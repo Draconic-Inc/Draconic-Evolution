@@ -1,9 +1,7 @@
 package com.brandon3055.draconicevolution.api.modules.data;
 
-import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.Map;

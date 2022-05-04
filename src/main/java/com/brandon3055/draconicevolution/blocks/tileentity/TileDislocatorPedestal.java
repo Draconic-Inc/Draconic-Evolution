@@ -8,16 +8,15 @@ import com.brandon3055.brandonscore.lib.datamanager.ManagedInt;
 import com.brandon3055.brandonscore.network.BCoreNetwork;
 import com.brandon3055.brandonscore.utils.InventoryUtils;
 import com.brandon3055.brandonscore.utils.TargetPos;
+import com.brandon3055.draconicevolution.api.DislocatorEndPoint;
+import com.brandon3055.draconicevolution.handlers.DESounds;
 import com.brandon3055.draconicevolution.handlers.dislocator.DislocatorSaveData;
 import com.brandon3055.draconicevolution.handlers.dislocator.PlayerTarget;
 import com.brandon3055.draconicevolution.handlers.dislocator.TileTarget;
 import com.brandon3055.draconicevolution.init.DEContent;
-import com.brandon3055.draconicevolution.api.DislocatorEndPoint;
 import com.brandon3055.draconicevolution.items.tools.BoundDislocator;
 import com.brandon3055.draconicevolution.items.tools.Dislocator;
-import com.brandon3055.draconicevolution.handlers.DESounds;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.*;
@@ -32,8 +31,6 @@ import net.minecraftforge.items.CapabilityItemHandler;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
-
-import static com.brandon3055.draconicevolution.init.DEContent.dislocator_p2p;
 
 /**
  * Created by brandon3055 on 27/09/2016.

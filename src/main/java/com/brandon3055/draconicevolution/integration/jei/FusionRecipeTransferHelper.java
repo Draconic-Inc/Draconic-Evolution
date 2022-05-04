@@ -2,8 +2,11 @@ package com.brandon3055.draconicevolution.integration.jei;
 
 import codechicken.lib.inventory.InventoryUtils;
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.api.crafting.*;
+import com.brandon3055.draconicevolution.api.crafting.IFusionInjector;
+import com.brandon3055.draconicevolution.api.crafting.IFusionInventory;
+import com.brandon3055.draconicevolution.api.crafting.IFusionRecipe;
 import com.brandon3055.draconicevolution.api.crafting.IFusionRecipe.IFusionIngredient;
+import com.brandon3055.draconicevolution.api.crafting.IngredientStack;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileFusionCraftingCore;
 import com.brandon3055.draconicevolution.inventory.ContainerFusionCraftingCore;
 import com.brandon3055.draconicevolution.lib.WTFException;

@@ -5,7 +5,6 @@ import com.brandon3055.brandonscore.BCConfig;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import org.apache.commons.lang3.tuple.Pair;
 

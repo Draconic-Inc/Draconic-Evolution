@@ -3,10 +3,7 @@ package com.brandon3055.draconicevolution.client.handler;
 
 import codechicken.lib.reflect.ObfMapping;
 import codechicken.lib.reflect.ReflectionManager;
-import codechicken.lib.render.shader.ShaderProgram;
-import codechicken.lib.render.shader.ShaderProgramBuilder;
-import codechicken.lib.render.shader.UniformCache;
-import codechicken.lib.render.shader.UniformType;
+import codechicken.lib.render.shader.*;
 import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.client.ProcessHandlerClient;
@@ -16,9 +13,9 @@ import com.brandon3055.brandonscore.lib.Pair;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DEOldConfig;
+import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.energy.ICrystalBinder;
 import com.brandon3055.draconicevolution.handlers.BinderHandler;
-
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
@@ -49,9 +46,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import static codechicken.lib.render.shader.ShaderObject.StandardShaderType.FRAGMENT;
-import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
-
 /**
  * Created by Brandon on 28/10/2014.
  */
@@ -71,8 +65,8 @@ public class ClientEventHandler {
 
     public static ShaderProgram explosionShader = ShaderProgramBuilder.builder()
             .addShader("frag", shader -> shader
-                    .type(FRAGMENT)
-                    .source(new ResourceLocation(MODID, "shaders/explosion_overlay.frag"))
+                    .type(ShaderObject.StandardShaderType.FRAGMENT)
+                    .source(new ResourceLocation(DraconicEvolution.MODID, "shaders/explosion_overlay.frag"))
                     .uniform("screenPos", UniformType.VEC2)
                     .uniform("intensity", UniformType.FLOAT)
                     .uniform("screenSize", UniformType.VEC2)

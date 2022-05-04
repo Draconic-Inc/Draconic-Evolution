@@ -1,9 +1,9 @@
 package com.brandon3055.draconicevolution.client.render.entity;
 
+import com.brandon3055.draconicevolution.client.DETextures;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.entity.EntityDragonHeart;
 import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
-import com.brandon3055.draconicevolution.client.DETextures;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;

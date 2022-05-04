@@ -4,7 +4,6 @@ import com.brandon3055.brandonscore.api.TechLevel;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.IndirectEntityDamageSource;
 
 import javax.annotation.Nullable;

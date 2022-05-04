@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.blocks.tileentity;
 
-import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.handlers.DEEventHandler;
+import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.*;
 import net.minecraft.nbt.CompoundNBT;

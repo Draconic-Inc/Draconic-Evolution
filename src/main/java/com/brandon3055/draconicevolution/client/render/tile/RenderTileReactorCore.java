@@ -30,10 +30,6 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.Map;
 
-import static codechicken.lib.render.shader.ShaderObject.StandardShaderType.FRAGMENT;
-import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
-import static com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore.MAX_TEMPERATURE;
-
 /**
  * Created by brandon3055 on 6/11/2016.
  */
@@ -44,8 +40,8 @@ public class RenderTileReactorCore extends TileEntityRenderer<TileReactorCore> {
 
     public static ShaderProgram coreShader = ShaderProgramBuilder.builder()
             .addShader("frag", shader -> shader
-                    .type(FRAGMENT)
-                    .source(new ResourceLocation(MODID, "shaders/reactor.frag"))
+                    .type(ShaderObject.StandardShaderType.FRAGMENT)
+                    .source(new ResourceLocation(DraconicEvolution.MODID, "shaders/reactor.frag"))
                     .uniform("time", UniformType.FLOAT)
                     .uniform("intensity", UniformType.FLOAT)
             )
@@ -53,8 +49,8 @@ public class RenderTileReactorCore extends TileEntityRenderer<TileReactorCore> {
 
     public static ShaderProgram shieldShader = ShaderProgramBuilder.builder()
             .addShader("frag", shader -> shader
-                    .type(FRAGMENT)
-                    .source(new ResourceLocation(MODID, "shaders/reactor_shield.frag"))
+                    .type(ShaderObject.StandardShaderType.FRAGMENT)
+                    .source(new ResourceLocation(DraconicEvolution.MODID, "shaders/reactor_shield.frag"))
                     .uniform("time", UniformType.FLOAT)
                     .uniform("intensity", UniformType.FLOAT)
             )
@@ -123,7 +119,7 @@ public class RenderTileReactorCore extends TileEntityRenderer<TileReactorCore> {
 //        }
 
         double diameter = te.getCoreDiameter();
-        float t = (float) (te.temperature.get() / MAX_TEMPERATURE);
+        float t = (float) (te.temperature.get() / TileReactorCore.MAX_TEMPERATURE);
         float intensity = t <= 0.2 ? (float) MathUtils.map(t, 0, 0.2, 0, 0.3) : t <= 0.8 ? (float) MathUtils.map(t, 0.2, 0.8, 0.3, 1) : (float) MathUtils.map(t, 0.8, 1, 1, 1.3);
         float shieldPower = (float) (te.maxShieldCharge.get() > 0 ? te.shieldCharge.get() / te.maxShieldCharge.get() : 0);
         float animation = (te.coreAnimation + (partialTicks * (float) te.shaderAnimationState.get())) / 20F;
@@ -170,7 +166,7 @@ public class RenderTileReactorCore extends TileEntityRenderer<TileReactorCore> {
     public static void renderGUI(TileReactorCore te, int x, int y) {
         RenderSystem.pushMatrix();
         double diameter = 100;
-        float t = (float) (te.temperature.get() / MAX_TEMPERATURE);
+        float t = (float) (te.temperature.get() / TileReactorCore.MAX_TEMPERATURE);
         float intensity = t <= 0.2 ? (float) MathUtils.map(t, 0, 0.2, 0, 0.3) : t <= 0.8 ? (float) MathUtils.map(t, 0.2, 0.8, 0.3, 1) : (float) MathUtils.map(t, 0.8, 1, 1, 1.3);
         float animation = (te.coreAnimation + (0 * (float) te.shaderAnimationState.get())) / 20F;
         float shieldPower = (float) (te.maxShieldCharge.get() > 0 ? te.shieldCharge.get() / te.maxShieldCharge.get() : 0);

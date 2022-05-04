@@ -10,10 +10,7 @@ import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleGrid;
 import com.brandon3055.draconicevolution.api.modules.lib.StackModuleContext;
 import com.brandon3055.draconicevolution.init.DEContent;
-import com.brandon3055.draconicevolution.init.ModCapabilities;
-import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.google.common.collect.Streams;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -23,7 +20,6 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Util;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
@@ -35,8 +31,6 @@ import net.minecraftforge.fml.network.NetworkHooks;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.stream.Stream;
-
-import static com.brandon3055.draconicevolution.api.capability.DECapabilities.MODULE_HOST_CAPABILITY;
 
 /**
  * Created by brandon3055 on 19/4/20.
@@ -68,12 +62,12 @@ public class ContainerModularItem extends ContainerModuleHost<TileBCore> {
 
     public static void tryOpenGui(ServerPlayerEntity sender) {
         ItemStack stack = sender.getMainHandItem();
-        if (!stack.isEmpty() && stack.getCapability(MODULE_HOST_CAPABILITY).isPresent()) {
+        if (!stack.isEmpty() && stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).isPresent()) {
             PlayerSlot slot = new PlayerSlot(sender, Hand.MAIN_HAND);
             NetworkHooks.openGui(sender, new ContainerModularItem.Provider(stack, slot), slot::toBuff);
             return;
         } else {
-            PlayerSlot slot = PlayerSlot.findStackActiveFirst(sender.inventory, e -> e.getCapability(MODULE_HOST_CAPABILITY).isPresent());
+            PlayerSlot slot = PlayerSlot.findStackActiveFirst(sender.inventory, e -> e.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).isPresent());
             if (slot != null) {
                 NetworkHooks.openGui(sender, new ContainerModularItem.Provider(slot.getStackInSlot(sender), slot), slot::toBuff);
                 return;
@@ -86,7 +80,7 @@ public class ContainerModularItem extends ContainerModuleHost<TileBCore> {
     @Override
     public ModuleHost getModuleHost() {
         if (moduleHost == null || EffectiveSide.get().isClient()) {
-            LazyOptional<ModuleHost> optional = hostStack.getCapability(MODULE_HOST_CAPABILITY);
+            LazyOptional<ModuleHost> optional = hostStack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
             if (optional.isPresent()) {
                 moduleHost = optional.orElseThrow(RuntimeException::new);
             }
@@ -126,7 +120,7 @@ public class ContainerModularItem extends ContainerModuleHost<TileBCore> {
         if (moduleHost == null || hostStack != slot.getStackInSlot(player)) {
             return false;
         }
-        if (moduleHost != hostStack.getCapability(MODULE_HOST_CAPABILITY).orElse(null)) {
+        if (moduleHost != hostStack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).orElse(null)) {
             return false; //I dont think this is actually possible... But just in case.
         }
         return true;//moduleHost != null && hostStack == slot.getStackInSlot(player);
@@ -141,7 +135,7 @@ public class ContainerModularItem extends ContainerModuleHost<TileBCore> {
     @OnlyIn(Dist.CLIENT)
     public void clientTick() {
         ItemStack stack = slot.getStackInSlot(player);
-        if (stack != hostStack && !stack.isEmpty() && stack.getCapability(MODULE_HOST_CAPABILITY).isPresent()) {
+        if (stack != hostStack && !stack.isEmpty() && stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).isPresent()) {
             hostStack = stack; //Because the client side stack is invalidated every time the server sends an update.
         }
     }
@@ -150,7 +144,7 @@ public class ContainerModularItem extends ContainerModuleHost<TileBCore> {
     public void setAll(List<ItemStack> stacks) {
         super.setAll(stacks);
         ItemStack stack = slot.getStackInSlot(player);
-        if (stack != hostStack && !stack.isEmpty() && stack.getCapability(MODULE_HOST_CAPABILITY).isPresent()) {
+        if (stack != hostStack && !stack.isEmpty() && stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).isPresent()) {
             hostStack = stack; //Because the client side stack is invalidated every time the server sends an update.
         }
     }
@@ -159,7 +153,7 @@ public class ContainerModularItem extends ContainerModuleHost<TileBCore> {
     public void setItem(int slotID, ItemStack stack) {
         super.setItem(slotID, stack);
         stack = slot.getStackInSlot(player);
-        if (stack != hostStack && !stack.isEmpty() && stack.getCapability(MODULE_HOST_CAPABILITY).isPresent()) {
+        if (stack != hostStack && !stack.isEmpty() && stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).isPresent()) {
             hostStack = stack; //Because the client side stack is invalidated every time the server sends an update.
         }
     }
@@ -172,7 +166,7 @@ public class ContainerModularItem extends ContainerModuleHost<TileBCore> {
                 if (slot.getItem() == hostStack) {
                     return ItemStack.EMPTY;
                 } else if (clickTypeIn == ClickType.PICKUP && button == 0 && player.inventory.getCarried().isEmpty()) {
-                    if (slot.getItem().getCapability(MODULE_HOST_CAPABILITY).isPresent()) {
+                    if (slot.getItem().getCapability(DECapabilities.MODULE_HOST_CAPABILITY).isPresent()) {
                         if (player instanceof ServerPlayerEntity) {
                             PlayerSlot playerSlot;
                             if (slotId >= 41) playerSlot = new PlayerSlot(slotId - 41, PlayerSlot.EnumInvCategory.EQUIPMENT);

@@ -21,6 +21,7 @@ import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderState;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
@@ -33,8 +34,6 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.List;
 import java.util.Random;
-
-import static net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType.FIXED;
 
 public class RenderTileFusionCraftingCore extends TileEntityRenderer<TileFusionCraftingCore> {
 
@@ -69,7 +68,7 @@ public class RenderTileFusionCraftingCore extends TileEntityRenderer<TileFusionC
             mStack.translate(0.5, 0.5, 0.5);
             mStack.scale(0.5F, 0.5F, 0.5F);
             mStack.mulPose(new Quaternion(0, (ClientEventHandler.elapsedTicks + partialTicks) * 0.8F, 0, true));
-            mc.getItemRenderer().renderStatic(stack, FIXED, packetLight, packetOverlay, mStack, getter);
+            mc.getItemRenderer().renderStatic(stack, ItemCameraTransforms.TransformType.FIXED, packetLight, packetOverlay, mStack, getter);
             mStack.popPose();
         }
     }

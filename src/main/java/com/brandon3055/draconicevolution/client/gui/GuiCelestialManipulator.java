@@ -3,7 +3,6 @@ package com.brandon3055.draconicevolution.client.gui;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElementManager;
 import com.brandon3055.brandonscore.client.gui.modulargui.ModularGuiContainer;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileCelestialManipulator;
-import com.brandon3055.draconicevolution.inventory.ContainerDissEnchanter;
 import com.brandon3055.draconicevolution.inventory.ContainerDummy;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;

@@ -5,6 +5,7 @@ import codechicken.lib.raytracer.SubHitVoxelShape;
 import codechicken.lib.vec.Cuboid6;
 import codechicken.lib.vec.Rotation;
 import codechicken.lib.vec.Transformation;
+import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.blocks.BlockBCore;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyTransfuser;
 import net.minecraft.block.BlockState;
@@ -18,10 +19,7 @@ import net.minecraft.world.IBlockReader;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-
-import static codechicken.lib.vec.Vector3.CENTER;
 
 /**
  * Created by brandon3055 on 12/12/2020.
@@ -38,7 +36,7 @@ public class EnergyTransfuser extends BlockBCore {
         Direction[] dirs = {Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST};
         int i = 0;
         for (Direction dir : dirs) {
-            Transformation rotation = Rotation.quarterRotations[dir.get2DDataValue() ^ 2].at(CENTER);
+            Transformation rotation = Rotation.quarterRotations[dir.get2DDataValue() ^ 2].at(Vector3.CENTER);
             cuboids.add(new IndexedCuboid6(i, interactFace.copy().apply(rotation)));
             i++;
         }

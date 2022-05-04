@@ -6,7 +6,6 @@ import com.brandon3055.brandonscore.api.power.IOPStorage;
 import com.brandon3055.brandonscore.api.power.IOPStorageModifiable;
 import com.brandon3055.brandonscore.capability.MultiCapabilityProvider;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
-import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.capability.PropertyProvider;
@@ -38,12 +37,10 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -53,14 +50,11 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.common.extensions.IForgeItem;
 import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.energy.EnergyStorage;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-
-import static com.brandon3055.draconicevolution.api.capability.DECapabilities.*;
 
 /**
  * Created by brandon3055 on 16/6/20
@@ -71,15 +65,15 @@ public interface IModularItem extends IForgeItem, IFusionDataTransfer {
 
     @Override
     default MultiCapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundNBT nbt) {
-        if (MODULE_HOST_CAPABILITY == null || PROPERTY_PROVIDER_CAPABILITY == null || OP_STORAGE == null) {
+        if (DECapabilities.MODULE_HOST_CAPABILITY == null || DECapabilities.PROPERTY_PROVIDER_CAPABILITY == null || DECapabilities.OP_STORAGE == null) {
             return null;
         }
         MultiCapabilityProvider provider = new MultiCapabilityProvider();
         ModuleHostImpl host = createHost(stack);
-        provider.addCapability(host, "module_host", MODULE_HOST_CAPABILITY, PROPERTY_PROVIDER_CAPABILITY);
+        provider.addCapability(host, "module_host", DECapabilities.MODULE_HOST_CAPABILITY, DECapabilities.PROPERTY_PROVIDER_CAPABILITY);
         ModularOPStorage opStorage = createOPStorage(stack, host);
         if (opStorage != null) {
-            provider.addCapability(opStorage, "energy", OP_STORAGE, CapabilityEnergy.ENERGY);
+            provider.addCapability(opStorage, "energy", DECapabilities.OP_STORAGE, CapabilityEnergy.ENERGY);
             host.addCategories(ModuleCategory.ENERGY);
         }
 
@@ -141,7 +135,7 @@ public interface IModularItem extends IForgeItem, IFusionDataTransfer {
     }
 
     default void handleTick(ItemStack stack, LivingEntity entity, @Nullable EquipmentSlotType slot, boolean inEquipModSlot) {
-        ModuleHost host = stack.getCapability(MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new);
+        ModuleHost host = stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new);
         StackModuleContext context = new StackModuleContext(stack, entity, slot).setInEquipModSlot(inEquipModSlot);
         host.handleTick(context);
     }
@@ -160,7 +154,7 @@ public interface IModularItem extends IForgeItem, IFusionDataTransfer {
     }
 
     default float getDestroySpeed(ItemStack stack, BlockState state) {
-        ModuleHost host = stack.getCapability(MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new);
+        ModuleHost host = stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new);
         SpeedData data = host.getModuleData(ModuleTypes.SPEED);
         float moduleValue = data == null ? 0 : (float) data.getSpeedMultiplier();
         //The way vanilla handles efficiency is kinda dumb. So this is far from perfect but its kinda close... ish.

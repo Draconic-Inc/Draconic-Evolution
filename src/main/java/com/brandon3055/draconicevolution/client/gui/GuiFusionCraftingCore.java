@@ -2,35 +2,27 @@ package com.brandon3055.draconicevolution.client.gui;
 
 import com.brandon3055.brandonscore.client.BCSprites;
 import com.brandon3055.brandonscore.client.gui.GuiToolkit;
-import com.brandon3055.brandonscore.client.gui.effects.GuiEffectRenderer;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElementManager;
 import com.brandon3055.brandonscore.client.gui.modulargui.ModularGuiContainer;
-import com.brandon3055.brandonscore.client.gui.modulargui.baseelements.GuiButton;
-import com.brandon3055.brandonscore.client.gui.modulargui.guielements.*;
+import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiStackIcon;
+import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiTextCompLabel;
+import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiTexture;
 import com.brandon3055.brandonscore.client.gui.modulargui.lib.GuiAlign;
 import com.brandon3055.brandonscore.client.gui.modulargui.templates.TBasicMachine;
+import com.brandon3055.brandonscore.inventory.ContainerSlotLayout;
 import com.brandon3055.draconicevolution.api.DraconicAPI;
 import com.brandon3055.draconicevolution.api.crafting.IFusionInjector;
 import com.brandon3055.draconicevolution.api.crafting.IFusionRecipe;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileFusionCraftingCore;
 import com.brandon3055.draconicevolution.inventory.ContainerFusionCraftingCore;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.stream.Collectors;
-
-import static com.brandon3055.brandonscore.client.gui.GuiToolkit.LayoutPos.BOTTOM_CENTER;
-import static com.brandon3055.brandonscore.inventory.ContainerSlotLayout.SlotType.TILE_INV;
 
 public class GuiFusionCraftingCore extends ModularGuiContainer<ContainerFusionCraftingCore> {
 
@@ -58,7 +50,7 @@ public class GuiFusionCraftingCore extends ModularGuiContainer<ContainerFusionCr
         craftArea.setPos(template.background.xPos() + 17, template.title.maxYPos() + 3);
         craftArea.setMaxPos(template.background.maxXPos() - 17, template.playerSlots.yPos() - 3, true);
         //Input/OOutput Slots
-        GuiElement<?> slots = toolkit.createSlots(template.background, 1, 2, 26, (x, y) -> container.getSlotLayout().getSlotData(TILE_INV, y), null);
+        GuiElement<?> slots = toolkit.createSlots(template.background, 1, 2, 26, (x, y) -> container.getSlotLayout().getSlotData(ContainerSlotLayout.SlotType.TILE_INV, y), null);
         toolkit.center(slots, craftArea, 0, 3);
         //Status Label
         template.background.addChild(new GuiTextCompLabel()

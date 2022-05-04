@@ -32,13 +32,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
-import java.awt.*;
 import java.util.Random;
-
-import static codechicken.lib.render.shader.ShaderObject.StandardShaderType.FRAGMENT;
-import static codechicken.lib.render.shader.ShaderObject.StandardShaderType.VERTEX;
-import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
-import static net.minecraft.client.renderer.RenderState.*;
 
 @OnlyIn(Dist.CLIENT)
 public class DraconicGuardianRenderer extends EntityRenderer<DraconicGuardianEntity> {
@@ -54,35 +48,35 @@ public class DraconicGuardianRenderer extends EntityRenderer<DraconicGuardianEnt
     private static RenderType beamType2 = RenderType.create("beam_type_2", DefaultVertexFormats.NEW_ENTITY, GL11.GL_QUADS, 256, false, true, RenderType.State.builder()
             .setTextureState(new RenderState.TextureState(ENDERCRYSTAL_BEAM_TEXTURES, false, false))
             .setTransparencyState(RenderState.TRANSLUCENT_TRANSPARENCY)
-            .setCullState(NO_CULL)
+            .setCullState(RenderState.NO_CULL)
             .setTexturingState(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
             .createCompositeState(false));
 
     public static final RenderType shieldType = RenderType.create("shield_type", DefaultVertexFormats.POSITION_COLOR_TEX, GL11.GL_QUADS, 256, RenderType.State.builder()
-            .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+            .setTransparencyState(RenderState.TRANSLUCENT_TRANSPARENCY)
             .setTexturingState(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
-            .setDiffuseLightingState(DIFFUSE_LIGHTING)
-            .setCullState(NO_CULL)
-            .setAlphaState(DEFAULT_ALPHA)
-            .setDepthTestState(EQUAL_DEPTH_TEST)
+            .setDiffuseLightingState(RenderState.DIFFUSE_LIGHTING)
+            .setCullState(RenderState.NO_CULL)
+            .setAlphaState(RenderState.DEFAULT_ALPHA)
+            .setDepthTestState(RenderState.EQUAL_DEPTH_TEST)
             .createCompositeState(false));
 
     public static RenderType beamShaderType = RenderType.create("beam_shader_type", DefaultVertexFormats.BLOCK, GL11.GL_QUADS, 256, RenderType.State.builder()
             .setTextureState(new RenderState.TextureState(ENDERCRYSTAL_BEAM_TEXTURES, true, false))
-            .setLightmapState(LIGHTMAP)
-            .setOverlayState(OVERLAY)
+            .setLightmapState(RenderState.LIGHTMAP)
+            .setOverlayState(RenderState.OVERLAY)
             .createCompositeState(false)
     );
 
 
     public static ShaderProgram shieldShader = ShaderProgramBuilder.builder()
             .addShader("vert", shader -> shader
-                    .type(VERTEX)
-                    .source(new ResourceLocation(MODID, "shaders/guardian_shield.vert"))
+                    .type(ShaderObject.StandardShaderType.VERTEX)
+                    .source(new ResourceLocation(DraconicEvolution.MODID, "shaders/guardian_shield.vert"))
             )
             .addShader("frag", shader -> shader
-                    .type(FRAGMENT)
-                    .source(new ResourceLocation(MODID, "shaders/guardian_shield.frag"))
+                    .type(ShaderObject.StandardShaderType.FRAGMENT)
+                    .source(new ResourceLocation(DraconicEvolution.MODID, "shaders/guardian_shield.frag"))
                     .uniform("time", UniformType.FLOAT)
                     .uniform("baseColour", UniformType.VEC4)
                     .uniform("activation", UniformType.FLOAT)

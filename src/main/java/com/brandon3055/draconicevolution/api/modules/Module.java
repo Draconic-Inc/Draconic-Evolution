@@ -1,10 +1,10 @@
 package com.brandon3055.draconicevolution.api.modules;
 
 import com.brandon3055.brandonscore.api.TechLevel;
-import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.brandon3055.draconicevolution.api.modules.data.ModuleData;
 import com.brandon3055.draconicevolution.api.modules.data.ModuleProperties;
 import com.brandon3055.draconicevolution.api.modules.lib.InstallResult;
+import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Streams;
 import net.minecraft.item.Item;
@@ -17,9 +17,6 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import static com.brandon3055.draconicevolution.api.modules.lib.InstallResult.InstallResultType.NO;
-import static com.brandon3055.draconicevolution.api.modules.lib.InstallResult.InstallResultType.ONLY_WHEN_OVERRIDEN;
 
 /**
  * Created by brandon3055 and covers1624 on 4/16/20.
@@ -102,7 +99,7 @@ public interface Module<T extends ModuleData<T>> extends IForgeRegistryEntry<Mod
         Collection<Module<?>> view = Collections.unmodifiableList(moduleStream.collect(Collectors.toList()));
         Optional<InstallResult> opt = view.stream()//
                 .map(other -> this.areModulesCompatible(other).getBlockingResult(other.areModulesCompatible(this)))//
-                .filter(e -> e.resultType == NO || e.resultType == ONLY_WHEN_OVERRIDEN)//
+                .filter(e -> e.resultType == InstallResult.InstallResultType.NO || e.resultType == InstallResult.InstallResultType.ONLY_WHEN_OVERRIDEN)//
                 .findFirst();
         if (opt.isPresent()) {
             return opt.get();

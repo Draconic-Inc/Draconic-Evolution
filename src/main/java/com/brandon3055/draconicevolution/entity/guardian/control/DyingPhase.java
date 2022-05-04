@@ -3,10 +3,7 @@ package com.brandon3055.draconicevolution.entity.guardian.control;
 import com.brandon3055.draconicevolution.entity.guardian.DraconicGuardianEntity;
 import com.brandon3055.draconicevolution.entity.guardian.GuardianFightManager;
 import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.gen.Heightmap;
-import net.minecraft.world.gen.feature.EndPodiumFeature;
 
 import javax.annotation.Nullable;
 

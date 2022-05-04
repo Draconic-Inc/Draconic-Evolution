@@ -5,11 +5,9 @@ import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.client.utils.GuiHelperOld;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.api.crafting.IFusionRecipe;
+import com.brandon3055.draconicevolution.client.DETextures;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
-import com.brandon3055.draconicevolution.client.DETextures;
-
-
 import com.mojang.blaze3d.matrix.MatrixStack;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
@@ -17,7 +15,6 @@ import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
-
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;

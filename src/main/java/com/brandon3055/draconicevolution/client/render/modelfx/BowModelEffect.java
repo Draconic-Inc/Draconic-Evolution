@@ -1,9 +1,7 @@
 package com.brandon3055.draconicevolution.client.render.modelfx;
 
-import codechicken.lib.math.MathHelper;
 import codechicken.lib.util.SneakyUtils;
 import com.brandon3055.brandonscore.api.TechLevel;
-import com.brandon3055.brandonscore.api.TimeKeeper;
 import com.brandon3055.brandonscore.utils.MathUtils;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -13,8 +11,6 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
-
-import java.awt.*;
 
 /**
  * Created by brandon3055 on 28/2/21

@@ -26,8 +26,6 @@ import net.minecraft.world.server.ServerWorld;
 import javax.annotation.Nullable;
 import java.util.Random;
 
-import static net.minecraft.util.Direction.Axis.X;
-
 /**
  * Created by brandon3055 on 16/07/2016.
  */
@@ -43,7 +41,7 @@ public class Portal extends BlockBCore {
     public Portal(Block.Properties properties) {
         super(properties);
         this.registerDefaultState(stateDefinition.any()
-                .setValue(AXIS, X)
+                .setValue(AXIS, Direction.Axis.X)
                 .setValue(DRAW_UP, true)
                 .setValue(DRAW_DOWN, true)
                 .setValue(DRAW_EAST, true)

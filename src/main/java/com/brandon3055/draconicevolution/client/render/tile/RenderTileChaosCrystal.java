@@ -3,39 +3,29 @@ package com.brandon3055.draconicevolution.client.render.tile;
 import codechicken.lib.render.CCModel;
 import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.OBJParser;
-import codechicken.lib.render.RenderUtils;
 import codechicken.lib.render.shader.*;
 import codechicken.lib.util.SneakyUtils;
 import codechicken.lib.vec.Matrix4;
-import codechicken.lib.vec.Rotation;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.client.BCClientEventHandler;
-import com.brandon3055.brandonscore.client.render.TESRBase;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileChaosCrystal;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
-import com.brandon3055.draconicevolution.client.model.ModularArmorModel;
 import com.brandon3055.draconicevolution.client.render.item.ToolRenderBase;
-import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
-import com.brandon3055.draconicevolution.client.DETextures;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.RenderState;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
 import org.lwjgl.opengl.GL11;
 
 import java.util.Map;
-
-import static codechicken.lib.render.shader.ShaderObject.StandardShaderType.FRAGMENT;
-import static codechicken.lib.render.shader.ShaderObject.StandardShaderType.VERTEX;
-import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
-import static net.minecraft.client.renderer.RenderState.*;
 
 /**
  * Created by brandon3055 on 24/9/2015.
@@ -45,12 +35,12 @@ public class RenderTileChaosCrystal extends TileEntityRenderer<TileChaosCrystal>
 
     public static ShaderProgram shieldShader = ShaderProgramBuilder.builder()
             .addShader("vert", shader -> shader
-                    .type(VERTEX)
-                    .source(new ResourceLocation(MODID, "shaders/armor_shield.vert"))
+                    .type(ShaderObject.StandardShaderType.VERTEX)
+                    .source(new ResourceLocation(DraconicEvolution.MODID, "shaders/armor_shield.vert"))
             )
             .addShader("frag", shader -> shader
-                    .type(FRAGMENT)
-                    .source(new ResourceLocation(MODID, "shaders/armor_shield.frag"))
+                    .type(ShaderObject.StandardShaderType.FRAGMENT)
+                    .source(new ResourceLocation(DraconicEvolution.MODID, "shaders/armor_shield.frag"))
                     .uniform("time", UniformType.FLOAT)
                     .uniform("activation", UniformType.FLOAT)
                     .uniform("baseColour", UniformType.VEC4)
@@ -61,12 +51,12 @@ public class RenderTileChaosCrystal extends TileEntityRenderer<TileChaosCrystal>
 
     public static ShaderProgram chaosShader = ShaderProgramBuilder.builder()
             .addShader("vert", shader -> shader
-                    .type(VERTEX)
-                    .source(new ResourceLocation(MODID, "shaders/chaos.vert"))
+                    .type(ShaderObject.StandardShaderType.VERTEX)
+                    .source(new ResourceLocation(DraconicEvolution.MODID, "shaders/chaos.vert"))
             )
             .addShader("frag", shader -> shader
-                    .type(FRAGMENT)
-                    .source(new ResourceLocation(MODID, "shaders/chaos.frag"))
+                    .type(ShaderObject.StandardShaderType.FRAGMENT)
+                    .source(new ResourceLocation(DraconicEvolution.MODID, "shaders/chaos.frag"))
                     .uniform("alpha", UniformType.FLOAT)
                     .uniform("yaw", UniformType.FLOAT)
                     .uniform("pitch", UniformType.FLOAT)
@@ -84,25 +74,25 @@ public class RenderTileChaosCrystal extends TileEntityRenderer<TileChaosCrystal>
 
     private static RenderType crystalType = RenderType.create("crystal_type", DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP, GL11.GL_QUADS, 256, RenderType.State.builder()
             .setTextureState(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/block/chaos_crystal.png"), false, false))
-            .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+            .setTransparencyState(RenderState.TRANSLUCENT_TRANSPARENCY)
             .setTexturingState(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
             .createCompositeState(false));
 
     private static RenderType shieldType = RenderType.create("shieldTypse", DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP, GL11.GL_QUADS, 256, RenderType.State.builder()
-            .setDiffuseLightingState(DIFFUSE_LIGHTING)
-            .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+            .setDiffuseLightingState(RenderState.DIFFUSE_LIGHTING)
+            .setTransparencyState(RenderState.TRANSLUCENT_TRANSPARENCY)
             .setTexturingState(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
-            .setLightmapState(LIGHTMAP)
-            .setCullState(NO_CULL)
+            .setLightmapState(RenderState.LIGHTMAP)
+            .setCullState(RenderState.NO_CULL)
             .createCompositeState(false));
 
     public static RenderType chaosType = RenderType.create("chaosShaderType", DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP, GL11.GL_QUADS, 256, RenderType.State.builder()
             .setTextureState(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/item/equipment/chaos_shader.png"), true, false))
-            .setDiffuseLightingState(DIFFUSE_LIGHTING)
-            .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+            .setDiffuseLightingState(RenderState.DIFFUSE_LIGHTING)
+            .setTransparencyState(RenderState.TRANSLUCENT_TRANSPARENCY)
             .setTexturingState(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
-            .setLightmapState(LIGHTMAP)
-            .setCullState(NO_CULL)
+            .setLightmapState(RenderState.LIGHTMAP)
+            .setCullState(RenderState.NO_CULL)
             .createCompositeState(false));
 
 

@@ -2,7 +2,6 @@ package com.brandon3055.draconicevolution.items.equipment.damage;
 
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.vec.Vector3;
-import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.modules.lib.IDamageModifier;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
 import com.brandon3055.draconicevolution.client.render.effect.StaffBeamEffect;
@@ -15,7 +14,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;

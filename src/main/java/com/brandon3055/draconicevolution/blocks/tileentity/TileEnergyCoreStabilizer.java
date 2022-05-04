@@ -6,14 +6,15 @@ import com.brandon3055.brandonscore.client.particle.IntParticleType;
 import com.brandon3055.brandonscore.lib.IInteractTile;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.lib.Vec3I;
+import com.brandon3055.brandonscore.lib.datamanager.DataFlags;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedEnum;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedVec3I;
 import com.brandon3055.brandonscore.utils.FacingUtils;
-import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.blocks.machines.EnergyCoreStabilizer;
 import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
+import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.ITickableTileEntity;
@@ -29,21 +30,18 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.SAVE_NBT_SYNC_TILE;
-import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.TRIGGER_UPDATE;
-
 /**
  * Created by brandon3055 on 30/3/2016.
  */
 public class TileEnergyCoreStabilizer extends TileBCore implements ITickableTileEntity, IMultiBlockPart, IInteractTile {
 
-    public final ManagedVec3I coreOffset = register(new ManagedVec3I("core_offset", new Vec3I(0, -1, 0), SAVE_NBT_SYNC_TILE));
+    public final ManagedVec3I coreOffset = register(new ManagedVec3I("core_offset", new Vec3I(0, -1, 0), DataFlags.SAVE_NBT_SYNC_TILE));
 
-    public final ManagedBool hasCoreLock = register(new ManagedBool("has_core_lock", SAVE_NBT_SYNC_TILE));
-    public final ManagedBool isCoreActive = register(new ManagedBool("is_core_active", SAVE_NBT_SYNC_TILE));
-    public final ManagedBool isValidMultiBlock = register(new ManagedBool("is_valid_multi_block", SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE));
-    public final ManagedEnum<Direction.Axis> multiBlockAxis = register(new ManagedEnum<>("multi_block_axis", Direction.Axis.Y, SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE));
-    public final ManagedEnum<Direction> coreDirection = register(new ManagedEnum<>("core_direction", Direction.DOWN, SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE));
+    public final ManagedBool hasCoreLock = register(new ManagedBool("has_core_lock", DataFlags.SAVE_NBT_SYNC_TILE));
+    public final ManagedBool isCoreActive = register(new ManagedBool("is_core_active", DataFlags.SAVE_NBT_SYNC_TILE));
+    public final ManagedBool isValidMultiBlock = register(new ManagedBool("is_valid_multi_block", DataFlags.SAVE_NBT_SYNC_TILE, DataFlags.TRIGGER_UPDATE));
+    public final ManagedEnum<Direction.Axis> multiBlockAxis = register(new ManagedEnum<>("multi_block_axis", Direction.Axis.Y, DataFlags.SAVE_NBT_SYNC_TILE, DataFlags.TRIGGER_UPDATE));
+    public final ManagedEnum<Direction> coreDirection = register(new ManagedEnum<>("core_direction", Direction.DOWN, DataFlags.SAVE_NBT_SYNC_TILE, DataFlags.TRIGGER_UPDATE));
     public float rotation = 0;
     public float rotationSpeed = 0;
     private boolean moveCheckComplete = false;

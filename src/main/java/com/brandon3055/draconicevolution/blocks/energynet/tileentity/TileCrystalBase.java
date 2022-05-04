@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.blocks.energynet.tileentity;
 
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.packet.PacketCustom;
+import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.api.power.OPStorage;
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.capability.CapabilityOP;
@@ -14,13 +15,13 @@ import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.energy.ICrystalLink;
 import com.brandon3055.draconicevolution.api.energy.IENetEffectTile;
-import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.draconicevolution.blocks.energynet.EnergyCrystal.CrystalType;
 import com.brandon3055.draconicevolution.blocks.energynet.rendering.ENetFXHandler;
 import com.brandon3055.draconicevolution.blocks.energynet.rendering.ENetFXHandlerClient;
 import com.brandon3055.draconicevolution.blocks.energynet.rendering.ENetFXHandlerServer;
 import com.brandon3055.draconicevolution.client.render.effect.CrystalFXBase;
 import com.brandon3055.draconicevolution.handlers.DEEventHandler;
+import com.brandon3055.draconicevolution.network.CrystalUpdateBatcher;
 import com.brandon3055.draconicevolution.network.CrystalUpdateBatcher.BatchedCrystalUpdate;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.BlockState;
@@ -48,8 +49,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
-
-import static com.brandon3055.draconicevolution.network.CrystalUpdateBatcher.ID_CRYSTAL_MAP;
 
 /**
  * Created by brandon3055 on 21/11/2016.
@@ -558,15 +557,15 @@ public abstract class TileCrystalBase extends TileBCore implements ITilePlaceLis
     @Override
     public void onLoad() {
         super.onLoad();
-        if (!ID_CRYSTAL_MAP.containsKey(getIDHash())) {
-            ID_CRYSTAL_MAP.put(getIDHash(), worldPosition);
+        if (!CrystalUpdateBatcher.ID_CRYSTAL_MAP.containsKey(getIDHash())) {
+            CrystalUpdateBatcher.ID_CRYSTAL_MAP.put(getIDHash(), worldPosition);
         }
     }
 
     @Override
     public void onChunkUnloaded() {
-        if (ID_CRYSTAL_MAP.containsKey(getIDHash())) {
-            ID_CRYSTAL_MAP.remove(getIDHash());
+        if (CrystalUpdateBatcher.ID_CRYSTAL_MAP.containsKey(getIDHash())) {
+            CrystalUpdateBatcher.ID_CRYSTAL_MAP.remove(getIDHash());
         }
         fxHandler.tileUnload();
     }

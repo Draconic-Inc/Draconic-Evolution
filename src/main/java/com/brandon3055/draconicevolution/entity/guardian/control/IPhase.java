@@ -3,7 +3,6 @@ package com.brandon3055.draconicevolution.entity.guardian.control;
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
 import com.brandon3055.draconicevolution.entity.GuardianCrystalEntity;
-import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockPos;

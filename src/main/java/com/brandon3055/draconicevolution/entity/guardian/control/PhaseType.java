@@ -1,7 +1,6 @@
 package com.brandon3055.draconicevolution.entity.guardian.control;
 
 import com.brandon3055.draconicevolution.entity.guardian.DraconicGuardianEntity;
-import com.google.common.collect.Lists;
 import net.minecraft.util.WeightedRandom;
 
 import java.lang.reflect.Constructor;

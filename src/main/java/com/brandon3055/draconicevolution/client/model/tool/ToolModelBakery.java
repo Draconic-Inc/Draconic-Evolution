@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.client.model.tool;
 import codechicken.lib.model.ItemQuadBakery;
 import codechicken.lib.model.bakedmodels.ModelProperties;
 import codechicken.lib.model.bakedmodels.PerspectiveAwareBakedModel;
+import codechicken.lib.model.bakery.ModelBakery;
 import codechicken.lib.model.bakery.key.IItemStackKeyGenerator;
 import codechicken.lib.util.ResourceUtils;
 import codechicken.lib.util.TransformUtils;
@@ -16,8 +17,6 @@ import net.minecraft.item.ItemStack;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static codechicken.lib.model.bakery.ModelBakery.defaultItemKeyGenerator;
 
 /**
  * Created by brandon3055 on 21/06/2017.
@@ -35,7 +34,7 @@ public class ToolModelBakery {
         if (itemKeyGeneratorMap.containsKey(item)) {
             return itemKeyGeneratorMap.get(item);
         }
-        return defaultItemKeyGenerator;
+        return ModelBakery.defaultItemKeyGenerator;
     }
 
     public static void registerItemKeyGenerator(Item item, IItemStackKeyGenerator generator) {

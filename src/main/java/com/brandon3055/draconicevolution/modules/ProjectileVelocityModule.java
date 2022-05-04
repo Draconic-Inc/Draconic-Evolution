@@ -19,9 +19,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.brandon3055.draconicevolution.api.modules.lib.InstallResult.InstallResultType.NO;
-import static com.brandon3055.draconicevolution.api.modules.lib.InstallResult.InstallResultType.ONLY_WHEN_OVERRIDEN;
-
 /**
  * Created by brandon3055 on 8/7/21
  */
@@ -53,7 +50,7 @@ public class ProjectileVelocityModule extends ModuleImpl<ProjectileData> {
         Collection<Module<?>> view = Collections.unmodifiableList(moduleStream.collect(Collectors.toList()));
         Optional<InstallResult> opt = view.stream()//
                 .map(other -> this.areModulesCompatible(other).getBlockingResult(other.areModulesCompatible(this)))//
-                .filter(e -> e.resultType == NO || e.resultType == ONLY_WHEN_OVERRIDEN)//
+                .filter(e -> e.resultType == InstallResult.InstallResultType.NO || e.resultType == InstallResult.InstallResultType.ONLY_WHEN_OVERRIDEN)//
                 .findFirst();
         if (opt.isPresent()) {
             return opt.get();

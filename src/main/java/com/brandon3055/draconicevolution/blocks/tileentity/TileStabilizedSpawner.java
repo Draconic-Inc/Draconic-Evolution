@@ -23,20 +23,16 @@ import net.minecraft.util.math.BlockRayTraceResult;
 
 import java.util.Random;
 
-import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.SAVE_BOTH_SYNC_TILE;
-import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.SAVE_NBT_SYNC_TILE;
-import static com.brandon3055.draconicevolution.blocks.tileentity.TileStabilizedSpawner.SpawnerTier.BASIC;
-
 /**
  * Created by brandon3055 on 28/09/2016.
  */
 public class TileStabilizedSpawner extends TileBCore implements ITickableTileEntity, IInteractTile, IChangeListener {
 
-    public ManagedEnum<SpawnerTier> spawnerTier = register(new ManagedEnum<>("spawner_tier", BASIC, SAVE_BOTH_SYNC_TILE));
-    public ManagedStack mobSoul = register(new ManagedStack("mob_soul", SAVE_BOTH_SYNC_TILE));
-    public ManagedBool isPowered = register(new ManagedBool("is_powered", SAVE_NBT_SYNC_TILE));
-    public ManagedShort spawnDelay = register(new ManagedShort("spawn_delay", (short) 100, SAVE_NBT_SYNC_TILE));
-    public ManagedInt startSpawnDelay = register(new ManagedInt("start_spawn_delay", 100, SAVE_NBT_SYNC_TILE));
+    public ManagedEnum<SpawnerTier> spawnerTier = register(new ManagedEnum<>("spawner_tier", SpawnerTier.BASIC, DataFlags.SAVE_BOTH_SYNC_TILE));
+    public ManagedStack mobSoul = register(new ManagedStack("mob_soul", DataFlags.SAVE_BOTH_SYNC_TILE));
+    public ManagedBool isPowered = register(new ManagedBool("is_powered", DataFlags.SAVE_NBT_SYNC_TILE));
+    public ManagedShort spawnDelay = register(new ManagedShort("spawn_delay", (short) 100, DataFlags.SAVE_NBT_SYNC_TILE));
+    public ManagedInt startSpawnDelay = register(new ManagedInt("start_spawn_delay", 100, DataFlags.SAVE_NBT_SYNC_TILE));
     public StabilizedSpawnerLogic spawnerLogic = new StabilizedSpawnerLogic(this);
 
     private int activatingRangeFromPlayer = 24;
@@ -97,8 +93,8 @@ public class TileStabilizedSpawner extends TileBCore implements ITickableTileEnt
         } else if (!stack.isEmpty()) {
             SpawnerTier prevTier = spawnerTier.get();
             if (stack.getItem() == DEContent.core_draconium) {
-                if (spawnerTier.get() == BASIC) return false;
-                spawnerTier.set(BASIC);
+                if (spawnerTier.get() == SpawnerTier.BASIC) return false;
+                spawnerTier.set(SpawnerTier.BASIC);
             } else if (stack.getItem() == DEContent.core_wyvern) {
                 if (spawnerTier.get() == SpawnerTier.WYVERN) return false;
                 spawnerTier.set(SpawnerTier.WYVERN);
@@ -211,7 +207,7 @@ public class TileStabilizedSpawner extends TileBCore implements ITickableTileEnt
         }
 
         public static SpawnerTier getTierFromCore(ItemCore core) {
-            return core == DEContent.core_chaotic ? CHAOTIC : core == DEContent.core_wyvern ? WYVERN : core == DEContent.core_awakened ? DRACONIC : BASIC;
+            return core == DEContent.core_chaotic ? CHAOTIC : core == DEContent.core_wyvern ? WYVERN : core == DEContent.core_awakened ? DRACONIC : SpawnerTier.BASIC;
         }
     }
     //endregion

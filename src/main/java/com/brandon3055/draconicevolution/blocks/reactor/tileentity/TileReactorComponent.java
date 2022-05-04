@@ -1,16 +1,11 @@
 package com.brandon3055.draconicevolution.blocks.reactor.tileentity;
 
 import codechicken.lib.data.MCDataInput;
-
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.lib.Vec3I;
-import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
-import com.brandon3055.brandonscore.lib.datamanager.ManagedEnum;
-import com.brandon3055.brandonscore.lib.datamanager.ManagedInt;
-import com.brandon3055.brandonscore.lib.datamanager.ManagedVec3I;
+import com.brandon3055.brandonscore.lib.datamanager.*;
 import com.brandon3055.brandonscore.utils.MathUtils;
 import com.brandon3055.brandonscore.utils.Utils;
-import com.brandon3055.draconicevolution.integration.computers.PeripheralReactorComponent;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -23,24 +18,16 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.server.ChunkHolder;
 
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-
-import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.*;
-import static com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore.COMPONENT_MAX_DISTANCE;
-import static com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore.MAX_TEMPERATURE;
-
 /**
  * Created by brandon3055 on 20/01/2017.
  */
 public abstract class TileReactorComponent extends TileBCore implements ITickableTileEntity {
 
-    private final ManagedVec3I coreOffset       = register(new ManagedVec3I("core_offset", SAVE_NBT_SYNC_TILE));
-    public final ManagedEnum<Direction> facing  = register(new ManagedEnum<>("facing", Direction.UP, SAVE_NBT_SYNC_TILE));
-    public final ManagedBool isBound            = register(new ManagedBool("is_bound", SAVE_NBT_SYNC_TILE));
-    public final ManagedEnum<RSMode> rsMode     = register(new ManagedEnum<>("rs_mode", RSMode.TEMP, SAVE_NBT_SYNC_TILE));
-    public final ManagedInt rsPower             = register(new ManagedInt("rs_power", SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE));
+    private final ManagedVec3I coreOffset       = register(new ManagedVec3I("core_offset", DataFlags.SAVE_NBT_SYNC_TILE));
+    public final ManagedEnum<Direction> facing  = register(new ManagedEnum<>("facing", Direction.UP, DataFlags.SAVE_NBT_SYNC_TILE));
+    public final ManagedBool isBound            = register(new ManagedBool("is_bound", DataFlags.SAVE_NBT_SYNC_TILE));
+    public final ManagedEnum<RSMode> rsMode     = register(new ManagedEnum<>("rs_mode", RSMode.TEMP, DataFlags.SAVE_NBT_SYNC_TILE));
+    public final ManagedInt rsPower             = register(new ManagedInt("rs_power", DataFlags.SAVE_NBT_SYNC_TILE, DataFlags.TRIGGER_UPDATE));
     public float animRotation = 0;
     public float animRotationSpeed = 0;
     private TileReactorCore cachedCore = null;
@@ -127,7 +114,7 @@ public abstract class TileReactorComponent extends TileBCore implements ITickabl
         }
 
         LogHelper.dev("Reactor-Comp: Try Poke Core | Find");
-        for (int i = 1; i < COMPONENT_MAX_DISTANCE; i++) {
+        for (int i = 1; i < TileReactorCore.COMPONENT_MAX_DISTANCE; i++) {
             BlockPos searchPos = worldPosition.relative(facing.get(), i);
             if (!level.isEmptyBlock(searchPos)) {
                 TileEntity tile = level.getBlockEntity(searchPos);
@@ -280,7 +267,7 @@ public abstract class TileReactorComponent extends TileBCore implements ITickabl
         TEMP {
             @Override
             public int getRSSignal(TileReactorCore tile) {
-                return (int) ((tile.temperature.get() / MAX_TEMPERATURE) * 15D);
+                return (int) ((tile.temperature.get() / TileReactorCore.MAX_TEMPERATURE) * 15D);
             }
         },
         TEMP_INV {

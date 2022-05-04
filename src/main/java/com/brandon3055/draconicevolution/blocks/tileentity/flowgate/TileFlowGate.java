@@ -1,16 +1,14 @@
 package com.brandon3055.draconicevolution.blocks.tileentity.flowgate;
 
 import codechicken.lib.data.MCDataInput;
-
 import com.brandon3055.brandonscore.blocks.TileBCore;
-import com.brandon3055.brandonscore.lib.IInteractTile;
 import com.brandon3055.brandonscore.lib.IChangeListener;
+import com.brandon3055.brandonscore.lib.IInteractTile;
+import com.brandon3055.brandonscore.lib.datamanager.DataFlags;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedByte;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedLong;
 import com.brandon3055.draconicevolution.blocks.machines.FlowGate;
-import com.brandon3055.draconicevolution.integration.computers.PeripheralFlowGate;
-
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.tileentity.ITickableTileEntity;
@@ -21,9 +19,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.SAVE_BOTH_SYNC_TILE;
-import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.SAVE_NBT_SYNC_TILE;
-
 /**
  * Created by brandon3055 on 15/11/2016.
  */
@@ -31,11 +26,11 @@ public abstract class TileFlowGate extends TileBCore implements ITickableTileEnt
 
     protected long transferThisTick = 0;
 
-    public final ManagedLong minFlow = register(new ManagedLong("min_flow", SAVE_BOTH_SYNC_TILE ));
-    public final ManagedLong maxFlow = register(new ManagedLong("max_flow", SAVE_BOTH_SYNC_TILE));
-    public final ManagedLong flowOverride = register(new ManagedLong("flow_override", SAVE_NBT_SYNC_TILE));
-    public final ManagedBool flowOverridden = register(new ManagedBool("flow_overridden", SAVE_NBT_SYNC_TILE));
-    public final ManagedByte rsSignal = register(new ManagedByte("rs_signal", (byte) -1, SAVE_NBT_SYNC_TILE));
+    public final ManagedLong minFlow = register(new ManagedLong("min_flow", DataFlags.SAVE_BOTH_SYNC_TILE));
+    public final ManagedLong maxFlow = register(new ManagedLong("max_flow", DataFlags.SAVE_BOTH_SYNC_TILE));
+    public final ManagedLong flowOverride = register(new ManagedLong("flow_override", DataFlags.SAVE_NBT_SYNC_TILE));
+    public final ManagedBool flowOverridden = register(new ManagedBool("flow_overridden", DataFlags.SAVE_NBT_SYNC_TILE));
+    public final ManagedByte rsSignal = register(new ManagedByte("rs_signal", (byte) -1, DataFlags.SAVE_NBT_SYNC_TILE));
 
     private Direction rotationCache = null;
 

@@ -10,8 +10,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.vector.Vector3d;
 
-import static com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore.ReactorState.BEYOND_HOPE;
-
 /**
  * Created by brandon3055 on 4/10/2015.
  */
@@ -23,7 +21,7 @@ public class ReactorSound extends SimpleSound implements ITickableSound {
     private int stopTimer = 0;
 
     public ReactorSound(TileReactorCore tile) {
-        super(DESounds.coreSound, SoundCategory.BLOCKS, tile.reactorState.get() == BEYOND_HOPE ? 10F : 1.5F, 1, tile.getBlockPos());
+        super(DESounds.coreSound, SoundCategory.BLOCKS, tile.reactorState.get() == TileReactorCore.ReactorState.BEYOND_HOPE ? 10F : 1.5F, 1, tile.getBlockPos());
         this.tile = tile;
         this.looping = true;
         this.targetPitch = 1F;
@@ -55,7 +53,7 @@ public class ReactorSound extends SimpleSound implements ITickableSound {
         else if (tile.reactorState.get() == TileReactorCore.ReactorState.RUNNING) {
             targetPitch = 1F + (float) Math.max(0, Math.min(0.5, 1 - ((tile.shieldCharge.get() / tile.maxShieldCharge.get()) * 10)));
         }
-        else if (tile.reactorState.get() == BEYOND_HOPE) {
+        else if (tile.reactorState.get() == TileReactorCore.ReactorState.BEYOND_HOPE) {
             if (volume == 1.5F) {
                 donePlaying = true;
             }

@@ -3,26 +3,22 @@ package com.brandon3055.draconicevolution.client.gui.modular.itemconfig;
 import com.brandon3055.brandonscore.client.BCSprites;
 import com.brandon3055.brandonscore.client.gui.GuiToolkit;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
+import com.brandon3055.brandonscore.client.gui.modulargui.ThemedElements;
 import com.brandon3055.brandonscore.client.gui.modulargui.baseelements.GuiButton;
 import com.brandon3055.brandonscore.client.gui.modulargui.baseelements.GuiSlideControl;
 import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiBorderedRect;
 import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiLabel;
 import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiSelectDialog;
 import com.brandon3055.draconicevolution.api.config.ConfigProperty;
-import com.brandon3055.brandonscore.client.gui.modulargui.ThemedElements;
-import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.util.text.TextFormatting;
 
 import java.util.Collections;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-
-import static com.brandon3055.brandonscore.client.gui.GuiToolkit.LayoutPos.BOTTOM_CENTER;
-import static com.brandon3055.brandonscore.client.gui.modulargui.baseelements.GuiSlideControl.SliderRotation.VERTICAL;
-import static net.minecraft.util.text.TextFormatting.*;
 
 /**
  * Created by brandon3055 on 10/5/20.
@@ -63,7 +59,7 @@ public class PropertyElement extends GuiElement<PropertyElement> {
     public void addChildElements() {
         label = addChild(new GuiLabel(data.displayName));
 //        label.setMidTrim(true);
-        label.setTextColour(GOLD);
+        label.setTextColour(TextFormatting.GOLD);
         label.setShadow(false);
         label.setYSize(10).setPos(xPos() + 10, yPos());
         label.onReload(e -> e.setMaxXPos(maxXPos() - 10, true));
@@ -73,7 +69,7 @@ public class PropertyElement extends GuiElement<PropertyElement> {
         valueButton = addChild(new GuiButton());
         valueButton.setYSize(10).setYPos(10).setXSizeMod(this::xSize);
         valueButton.setInsets(0, 4, 0, 0);
-        valueButton.setTextColour(DARK_AQUA, AQUA);
+        valueButton.setTextColour(TextFormatting.DARK_AQUA, TextFormatting.AQUA);
         valueButton.setEnabled(data.type == ConfigProperty.Type.BOOLEAN || data.type == ConfigProperty.Type.ENUM);
         valueButton.onPressed(this::valueClicked);
         valueButton.setClickEnabled(false);
@@ -100,7 +96,7 @@ public class PropertyElement extends GuiElement<PropertyElement> {
         valueLabel = addChild(new GuiLabel());
         valueLabel.setDisplaySupplier(() -> data.displayValue);
         valueLabel.setYSize(10).setYPos(10).setXSizeMod(this::xSize);
-        valueLabel.setTextColour(DARK_AQUA, AQUA);
+        valueLabel.setTextColour(TextFormatting.DARK_AQUA, TextFormatting.AQUA);
         valueLabel.setMidTrim(true);
 
         if (advanced && data.propUniqueName == null) {
@@ -134,7 +130,7 @@ public class PropertyElement extends GuiElement<PropertyElement> {
         } else if (data.type == ConfigProperty.Type.ENUM && data.enumValueOptions.size() > 1) {
             GuiSelectDialog<Integer> dialog = new GuiSelectDialog<>(this);
             dialog.setRendererBuilder(e -> {
-                GuiLabel label = new GuiLabel(data.getEnumDisplayName(e)).setYSize(10).setTextColour(DARK_AQUA, AQUA);
+                GuiLabel label = new GuiLabel(data.getEnumDisplayName(e)).setYSize(10).setTextColour(TextFormatting.DARK_AQUA, TextFormatting.AQUA);
                 GuiToolkit.addHoverHighlight(label, 16, 0);
                 return label;
             });
@@ -143,7 +139,7 @@ public class PropertyElement extends GuiElement<PropertyElement> {
             dialog.setInsets(1, 1, 1, 1);
             dialog.setSize(increment.xPos() - decrement.maxXPos(), Math.min(120, (data.enumValueOptions.size() * 10) + 3));
 
-            dialog.getScrollElement().setVerticalScrollBar(new GuiSlideControl(VERTICAL)
+            dialog.getScrollElement().setVerticalScrollBar(new GuiSlideControl(GuiSlideControl.SliderRotation.VERTICAL)
                     .setPos(dialog.maxXPos() - 7, dialog.yPos() + 1)
                     .setSize(7, dialog.ySize() - 2)
                     .setInsets(0, 0, 0, 0)
@@ -151,8 +147,8 @@ public class PropertyElement extends GuiElement<PropertyElement> {
                     .setBackgroundElement(new GuiBorderedRect().setFillColours(mixColours(ThemedElements.getBgFill(), 0xE0101010, true), mixColours(ThemedElements.getBgFill(), 0xB0101010, true)).setBorderColour(0))
                     .setSliderElement(new ThemedElements.ScrollBar(false)));
 
-            dialog.addBackGroundChild(new GuiBorderedRect().setSize(dialog).setBorderColour(0xFF000000 | DARK_AQUA.getColor()).setFillColour(0xFF101010));
-            gui.toolkit.placeOutside(dialog, this, BOTTOM_CENTER, 0, -13);
+            dialog.addBackGroundChild(new GuiBorderedRect().setSize(dialog).setBorderColour(0xFF000000 | TextFormatting.DARK_AQUA.getColor()).setFillColour(0xFF101010));
+            gui.toolkit.placeOutside(dialog, this, GuiToolkit.LayoutPos.BOTTOM_CENTER, 0, -13);
             dialog.setBlockOutsideClicks(true);
             dialog.normalizePosition();
             dialog.setSelectionListener(newIndex -> {

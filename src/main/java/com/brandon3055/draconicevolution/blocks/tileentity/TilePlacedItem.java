@@ -4,6 +4,7 @@ import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.inventory.TileItemStackHandler;
 import com.brandon3055.brandonscore.lib.IInteractTile;
+import com.brandon3055.brandonscore.lib.datamanager.DataFlags;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedByte;
 import com.brandon3055.brandonscore.network.BCoreNetwork;
@@ -30,8 +31,6 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.SAVE_NBT_SYNC_TILE;
-
 /**
  * Created by brandon3055 on 25/07/2016.
  */
@@ -39,10 +38,10 @@ public class TilePlacedItem extends TileBCore implements IInteractTile {
     public static int MAX_STACKS = 4;
 
     /** The number of separate item stacks on display */
-    public final ManagedByte stackCount = register(new ManagedByte("stack_count", (byte) 1, SAVE_NBT_SYNC_TILE));
+    public final ManagedByte stackCount = register(new ManagedByte("stack_count", (byte) 1, DataFlags.SAVE_NBT_SYNC_TILE));
 
     /** For large tool type items. Displays the item larger / closer to actual size when held. Only applicable when there is a single stack in the placed item. */
-    public final ManagedBool toolMode = register(new ManagedBool("tool_mode", SAVE_NBT_SYNC_TILE));
+    public final ManagedBool toolMode = register(new ManagedBool("tool_mode", DataFlags.SAVE_NBT_SYNC_TILE));
 
     /** Stores the rotation of each individual stack in this placed item */
     public final ManagedByte[] rotation = new ManagedByte[MAX_STACKS];
@@ -56,8 +55,8 @@ public class TilePlacedItem extends TileBCore implements IInteractTile {
     public TilePlacedItem() {
         super(DEContent.tile_placed_item);
         for (int i = 0; i < MAX_STACKS; i++) {
-            rotation[i] = register(new ManagedByte("rotation_" + i, SAVE_NBT_SYNC_TILE));
-            isBlock[i] = register(new ManagedBool("is_block_" + i, SAVE_NBT_SYNC_TILE));
+            rotation[i] = register(new ManagedByte("rotation_" + i, DataFlags.SAVE_NBT_SYNC_TILE));
+            isBlock[i] = register(new ManagedBool("is_block_" + i, DataFlags.SAVE_NBT_SYNC_TILE));
         }
 
         capManager.setInternalManaged("inventory", CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, itemHandler).saveBoth().syncTile();

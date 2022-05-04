@@ -9,11 +9,6 @@ import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.items.equipment.damage.DefaultStaffDmgMod;
 import com.brandon3055.draconicevolution.lib.Serializers;
 import com.google.common.collect.Sets;
-
-import java.util.Collection;
-import java.util.Optional;
-import java.util.Set;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -45,6 +40,9 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
+import java.util.Collection;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * This is effectively a complete re implementation of the vanilla arrow supporting all of the vanilla features.

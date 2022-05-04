@@ -7,7 +7,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 import top.theillusivec4.curios.api.type.capability.ICurio;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 
 /**

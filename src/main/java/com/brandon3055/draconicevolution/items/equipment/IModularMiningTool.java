@@ -5,6 +5,7 @@ import codechicken.lib.raytracer.RayTracer;
 import com.brandon3055.brandonscore.inventory.BlockToStackHelper;
 import com.brandon3055.brandonscore.inventory.InventoryDynamic;
 import com.brandon3055.brandonscore.lib.Pair;
+import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.capability.PropertyProvider;
 import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
@@ -33,8 +34,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-import static com.brandon3055.draconicevolution.api.capability.DECapabilities.MODULE_HOST_CAPABILITY;
-
 /**
  * Created by brandon3055 on 16/6/20
  */
@@ -48,7 +47,7 @@ public interface IModularMiningTool extends IModularTieredItem {
             return false;
         }
 
-        ModuleHost host = stack.getCapability(MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new);
+        ModuleHost host = stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new);
         int aoe = host.getModuleData(ModuleTypes.AOE, new AOEData(0)).getAOE();
         boolean aoeSafe = false;
         if (host instanceof PropertyProvider) {

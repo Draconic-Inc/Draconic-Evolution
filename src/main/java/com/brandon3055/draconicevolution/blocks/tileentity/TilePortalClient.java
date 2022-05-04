@@ -14,8 +14,6 @@ import net.minecraft.util.Direction;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import static net.minecraft.util.Direction.Axis.*;
-
 /**
  * Created by brandon3055 on 16/07/2016.
  */
@@ -41,7 +39,7 @@ public class TilePortalClient extends TilePortal implements ITickableTileEntity 
             }
             Direction.Axis axis = state.getValue(Portal.AXIS);
             Vector3 vec = Vector3.fromTileCenter(this).subtract(Vector3.fromEntity(player));
-            double dist = Math.abs(axis == X ? vec.x : axis == Y ? vec.y : vec.z);
+            double dist = Math.abs(axis == Direction.Axis.X ? vec.x : axis == Direction.Axis.Y ? vec.y : vec.z);
             if (dist > 1.5) {
                 hidden = false;
                 player = null;
@@ -65,17 +63,17 @@ public class TilePortalClient extends TilePortal implements ITickableTileEntity 
             double rO1 = -0.1 + level.random.nextDouble() * 0.2;
             double rO2 = -0.1 + level.random.nextDouble() * 0.2;
 
-            if (axis == Z && player.getZ() < worldPosition.getZ() + 0.5) {
+            if (axis == Direction.Axis.Z && player.getZ() < worldPosition.getZ() + 0.5) {
                 mc.particleEngine.add(new ParticlePortal((ClientWorld) level, Vector3.fromTile(this).add(rD1, rD2, 0), Vector3.fromTile(this).add(rD1 + rO1, rD2 + rO2, 0.75)));
-            } else if (axis == Z && player.getZ() > worldPosition.getZ() + 0.5) {
+            } else if (axis == Direction.Axis.Z && player.getZ() > worldPosition.getZ() + 0.5) {
                 mc.particleEngine.add(new ParticlePortal((ClientWorld) level, Vector3.fromTile(this).add(rD1, rD2, 1), Vector3.fromTile(this).add(rD1 + rO1, rD2 + rO2, 0.25)));
-            } else if (axis == X && player.getX() < worldPosition.getX() + 0.5) {
+            } else if (axis == Direction.Axis.X && player.getX() < worldPosition.getX() + 0.5) {
                 mc.particleEngine.add(new ParticlePortal((ClientWorld) level, Vector3.fromTile(this).add(0, rD1, rD2), Vector3.fromTile(this).add(0.75, rD1 + rO1, rD2 + rO2)));
-            } else if (axis == X && player.getX() > worldPosition.getX() + 0.5) {
+            } else if (axis == Direction.Axis.X && player.getX() > worldPosition.getX() + 0.5) {
                 mc.particleEngine.add(new ParticlePortal((ClientWorld) level, Vector3.fromTile(this).add(1, rD1, rD2), Vector3.fromTile(this).add(0.25, rD1 + rO1, rD2 + rO2)));
-            } else if (axis == Y && player.getY() + player.getEyeHeight() > worldPosition.getY() + 0.5) {
+            } else if (axis == Direction.Axis.Y && player.getY() + player.getEyeHeight() > worldPosition.getY() + 0.5) {
                 mc.particleEngine.add(new ParticlePortal((ClientWorld) level, Vector3.fromTile(this).add(rD1, 1, rD2), Vector3.fromTile(this).add(rD1 + rO1, 0.25, rD2 + rO2)));
-            } else if (axis == Y && player.getY() + player.getEyeHeight() < worldPosition.getY() + 0.5) {
+            } else if (axis == Direction.Axis.Y && player.getY() + player.getEyeHeight() < worldPosition.getY() + 0.5) {
                 mc.particleEngine.add(new ParticlePortal((ClientWorld) level, Vector3.fromTile(this).add(rD1, 0, rD2), Vector3.fromTile(this).add(rD1 + rO1, 0.75, rD2 + rO2)));
             }
         }

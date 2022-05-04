@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.items.equipment;
 
+import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
 import com.brandon3055.draconicevolution.api.modules.data.DamageData;
@@ -13,8 +14,6 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
-import static com.brandon3055.draconicevolution.api.capability.DECapabilities.MODULE_HOST_CAPABILITY;
-
 /**
  * Created by brandon3055 on 16/6/20
  * <p>
@@ -27,10 +26,10 @@ public interface IModularTieredItem extends IModularItem {
     @Override
     default Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlotType slot, ItemStack stack) {
         Multimap<Attribute, AttributeModifier> map = IModularItem.super.getAttributeModifiers(slot, stack);
-        if (stack.getCapability(MODULE_HOST_CAPABILITY).isPresent()) {
+        if (stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).isPresent()) {
             DEItemTier tier = getItemTier();
             if (slot == EquipmentSlotType.MAINHAND) {
-                ModuleHost host = stack.getCapability(MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new);
+                ModuleHost host = stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new);
                 double damage = getAttackDamage(host, stack);
                 double speed = 1 + host.getModuleData(ModuleTypes.SPEED, new SpeedData(0)).getSpeedMultiplier();
 

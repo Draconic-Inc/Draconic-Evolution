@@ -1,10 +1,9 @@
 package com.brandon3055.draconicevolution.inventory;
 
 import com.brandon3055.brandonscore.inventory.ContainerBCTile;
-import com.brandon3055.brandonscore.inventory.ContainerBCore;
 import com.brandon3055.brandonscore.inventory.SlotCheckValid;
-import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileDissEnchanter;
+import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;

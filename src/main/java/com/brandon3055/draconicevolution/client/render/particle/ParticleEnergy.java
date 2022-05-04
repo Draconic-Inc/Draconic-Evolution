@@ -1,17 +1,10 @@
 package com.brandon3055.draconicevolution.client.render.particle;
 
-import com.brandon3055.brandonscore.client.particle.BCParticle;
-import com.brandon3055.brandonscore.client.particle.IBCParticleFactory;
 import com.brandon3055.brandonscore.client.particle.IntParticleType;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.utils.Utils;
 import net.minecraft.client.particle.*;
-import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.Entity;
-import net.minecraft.world.World;
-
-import javax.annotation.Nullable;
 
 public class ParticleEnergy extends SpriteTexturedParticle {
 

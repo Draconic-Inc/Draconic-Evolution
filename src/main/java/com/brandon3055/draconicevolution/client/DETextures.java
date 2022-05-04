@@ -2,9 +2,7 @@ package com.brandon3055.draconicevolution.client;
 
 import codechicken.lib.texture.AtlasRegistrar;
 import codechicken.lib.texture.IIconRegister;
-import com.brandon3055.brandonscore.BCConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.particle.IParticleRenderType;
@@ -19,8 +17,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.resource.IResourceType;
 import net.minecraftforge.resource.ISelectiveResourceReloadListener;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 

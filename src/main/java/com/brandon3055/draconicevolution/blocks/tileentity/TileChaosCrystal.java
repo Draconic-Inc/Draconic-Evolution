@@ -1,6 +1,5 @@
 package com.brandon3055.draconicevolution.blocks.tileentity;
 
-import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.handlers.ProcessHandler;
 import com.brandon3055.brandonscore.lib.DelayedTask;
@@ -8,8 +7,8 @@ import com.brandon3055.brandonscore.lib.datamanager.*;
 import com.brandon3055.brandonscore.network.BCoreNetwork;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DEOldConfig;
-import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.handlers.DESounds;
+import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
@@ -28,8 +27,6 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.*;
-
 
 /**
  * Created by brandon3055 on 24/9/2015.
@@ -37,13 +34,13 @@ import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.*;
 public class TileChaosCrystal extends TileBCore implements ITickableTileEntity {
 
     public int tick = 0;
-    public final ManagedBool guardianDefeated = register(new ManagedBool("guardian_defeated", SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE));
-    public final ManagedPos parentPos = register(new ManagedPos("parent_pos", new BlockPos(0, -1, 0), SAVE_NBT_SYNC_TILE));
+    public final ManagedBool guardianDefeated = register(new ManagedBool("guardian_defeated", DataFlags.SAVE_NBT_SYNC_TILE, DataFlags.TRIGGER_UPDATE));
+    public final ManagedPos parentPos = register(new ManagedPos("parent_pos", new BlockPos(0, -1, 0), DataFlags.SAVE_NBT_SYNC_TILE));
     /**
      * This is used to store the spawn location of the crystal so the crystal can tell if it gets moved
      */
-    private final ManagedLong posLock = register(new ManagedLong("pos_lock", -1L, SAVE_NBT));
-    private final ManagedString dimLock = register(new ManagedString("dim_lock", "", SAVE_NBT));
+    private final ManagedLong posLock = register(new ManagedLong("pos_lock", -1L, DataFlags.SAVE_NBT));
+    private final ManagedString dimLock = register(new ManagedString("dim_lock", "", DataFlags.SAVE_NBT));
     private boolean validatePlacement = false;
     private int soundTimer;
 

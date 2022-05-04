@@ -1,11 +1,9 @@
 package com.brandon3055.draconicevolution.integration.computers;
 
-import static dan200.computercraft.shared.Capabilities.CAPABILITY_PERIPHERAL;
-
 import com.brandon3055.draconicevolution.blocks.tileentity.flowgate.TileFlowGate;
-
 import dan200.computercraft.api.lua.LuaFunction;
 import dan200.computercraft.api.peripheral.IPeripheral;
+import dan200.computercraft.shared.Capabilities;
 import dan200.computercraft.shared.util.CapabilityUtil;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
@@ -73,7 +71,7 @@ public class PeripheralFlowGate implements IPeripheral, ICapabilityProvider {
 
 	@Override
 	public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
-		if (cap == CAPABILITY_PERIPHERAL) {
+		if (cap == Capabilities.CAPABILITY_PERIPHERAL) {
             if (self == null) self = LazyOptional.of(() -> this);
             return self.cast();
         }

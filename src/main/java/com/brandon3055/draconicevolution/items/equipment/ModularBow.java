@@ -4,24 +4,20 @@ import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.lib.TechPropBuilder;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
 import com.brandon3055.brandonscore.utils.Utils;
-import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.IReaperItem;
+import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
-import com.brandon3055.draconicevolution.api.capability.PropertyProvider;
-import com.brandon3055.draconicevolution.api.config.BooleanProperty;
-import com.brandon3055.draconicevolution.api.config.ConfigProperty;
 import com.brandon3055.draconicevolution.api.modules.ModuleCategory;
 import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
-import com.brandon3055.draconicevolution.api.modules.data.*;
+import com.brandon3055.draconicevolution.api.modules.data.ProjectileData;
+import com.brandon3055.draconicevolution.api.modules.data.SpeedData;
 import com.brandon3055.draconicevolution.api.modules.entities.AutoFireEntity;
-import com.brandon3055.draconicevolution.api.modules.entities.FlightEntity;
 import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleHostImpl;
 import com.brandon3055.draconicevolution.entity.projectile.DraconicArrowEntity;
-import com.brandon3055.draconicevolution.handlers.DESounds;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.init.EquipCfg;
-import com.brandon3055.draconicevolution.utils.LogHelper;
+import com.brandon3055.draconicevolution.init.ModuleCfg;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
@@ -42,7 +38,6 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
@@ -51,11 +46,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.ForgeEventFactory;
 
 import javax.annotation.Nullable;
-
 import java.util.List;
-
-import static com.brandon3055.draconicevolution.api.capability.DECapabilities.MODULE_HOST_CAPABILITY;
-import static com.brandon3055.draconicevolution.init.ModuleCfg.*;
 
 /**
  * Created by brandon3055 on 21/5/20.
@@ -77,7 +68,7 @@ public class ModularBow extends BowItem implements IReaperItem, IModularItem {
 
     @Override
     public ModuleHostImpl createHost(ItemStack stack) {
-        ModuleHostImpl host = new ModuleHostImpl(techLevel, toolWidth(techLevel), toolHeight(techLevel), "bow", removeInvalidModules);
+        ModuleHostImpl host = new ModuleHostImpl(techLevel, ModuleCfg.toolWidth(techLevel), ModuleCfg.toolHeight(techLevel), "bow", ModuleCfg.removeInvalidModules);
         host.addCategories(ModuleCategory.RANGED_WEAPON);
         return host;
     }
@@ -104,7 +95,7 @@ public class ModularBow extends BowItem implements IReaperItem, IModularItem {
     @Override
     public void onUseTick(World world, LivingEntity player, ItemStack stack, int count) {
         if (getUseDuration(stack) - count >= getChargeTicks(stack)) {
-            AutoFireEntity entity = stack.getCapability(MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new).getEntitiesByType(ModuleTypes.AUTO_FIRE).map(e -> (AutoFireEntity) e).findAny().orElse(null);
+            AutoFireEntity entity = stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new).getEntitiesByType(ModuleTypes.AUTO_FIRE).map(e -> (AutoFireEntity) e).findAny().orElse(null);
             if (entity != null && entity.getAutoFireEnabled()) {
                 // auto fire
                 Hand usingHand = player.getUsedItemHand();
@@ -151,7 +142,7 @@ public class ModularBow extends BowItem implements IReaperItem, IModularItem {
                     ammoStack = new ItemStack(Items.ARROW);
                 }
 
-                ModuleHost host = stack.getCapability(MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new);
+                ModuleHost host = stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new);
                 ProjectileData projData = host.getModuleData(ModuleTypes.PROJ_MODIFIER, new ProjectileData(0, 0, 0, 0, 0));
 
                 float powerForTime = getPowerForTime(drawTime, stack) * (projData.getVelocity() + 1);
@@ -242,7 +233,7 @@ public class ModularBow extends BowItem implements IReaperItem, IModularItem {
     }
 
     public static float calculateDamage(ItemStack stack) {
-        ModuleHost host = stack.getCapability(MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new);
+        ModuleHost host = stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new);
         ProjectileData projData = host.getModuleData(ModuleTypes.PROJ_MODIFIER, new ProjectileData(0, 0, 0, 0, 0));
 
         float baseDamage = 2;
@@ -272,7 +263,7 @@ public class ModularBow extends BowItem implements IReaperItem, IModularItem {
     }
 
     public static int getChargeTicks(ItemStack stack) {
-        ModuleHost host = stack.getCapability(MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new);
+        ModuleHost host = stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new);
         SpeedData data = host.getModuleData(ModuleTypes.SPEED);
         float speedModifier = data == null ? 0 : (float) data.getSpeedMultiplier();
         speedModifier++;
@@ -282,7 +273,7 @@ public class ModularBow extends BowItem implements IReaperItem, IModularItem {
     @Override
     public void addModularItemInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         IModularItem.super.addModularItemInformation(stack, worldIn, tooltip, flagIn);
-        if (worldIn != null && stack.getCapability(MODULE_HOST_CAPABILITY).isPresent()){
+        if (worldIn != null && stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).isPresent()){
             tooltip.add(new TranslationTextComponent("tooltip.draconicevolution.bow.damage", Math.round(calculateDamage(stack) * 10) / 10F).withStyle(TextFormatting.DARK_GREEN));
             tooltip.add(new TranslationTextComponent("tooltip.draconicevolution.bow.energy_per_shot", Utils.addCommas(calculateShotEnergy(stack))).withStyle(TextFormatting.DARK_GREEN));
         }

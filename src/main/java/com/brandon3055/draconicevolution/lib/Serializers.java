@@ -4,10 +4,7 @@ import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.init.DEModules;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.IDataSerializer;
-import net.minecraft.util.Direction;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Optional;
 

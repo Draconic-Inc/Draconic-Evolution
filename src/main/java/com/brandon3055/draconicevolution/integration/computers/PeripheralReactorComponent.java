@@ -1,22 +1,20 @@
 package com.brandon3055.draconicevolution.integration.computers;
 
-import static dan200.computercraft.shared.Capabilities.CAPABILITY_PERIPHERAL;
-
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-
 import com.brandon3055.brandonscore.utils.MathUtils;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorComponent;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
-
 import dan200.computercraft.api.lua.LuaFunction;
 import dan200.computercraft.api.peripheral.IPeripheral;
+import dan200.computercraft.shared.Capabilities;
 import dan200.computercraft.shared.util.CapabilityUtil;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
+
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 public class PeripheralReactorComponent implements IPeripheral, ICapabilityProvider {
 	
@@ -105,7 +103,7 @@ public class PeripheralReactorComponent implements IPeripheral, ICapabilityProvi
 	
 	@Override
 	public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
-		if (cap == CAPABILITY_PERIPHERAL) {
+		if (cap == Capabilities.CAPABILITY_PERIPHERAL) {
             if (self == null) self = LazyOptional.of(() -> this);
             return self.cast();
         }

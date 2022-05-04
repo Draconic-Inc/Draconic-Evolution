@@ -6,6 +6,7 @@ import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.capability.CapabilityOP;
 import com.brandon3055.brandonscore.inventory.TileItemStackHandler;
 import com.brandon3055.brandonscore.lib.Vec3I;
+import com.brandon3055.brandonscore.lib.datamanager.DataFlags;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedLong;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedVec3I;
@@ -21,18 +22,16 @@ import net.minecraftforge.items.CapabilityItemHandler;
 
 import javax.annotation.Nullable;
 
-import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.*;
-
 /**
  * Created by brandon3055 on 10/06/2016.
  */
 public class TileFusionCraftingInjector extends TileBCore implements IFusionInjector {
 
-    public final ManagedLong energy = register(new ManagedLong("energy", SAVE_NBT_SYNC_TILE, SYNC_ON_SET));
-    public final ManagedLong energyRequired = register(new ManagedLong("energy_required", SAVE_NBT_SYNC_TILE, SYNC_ON_SET));
-    public final ManagedLong chargeRate = register(new ManagedLong("charge_rate", SAVE_NBT));
-    public final ManagedBool singleItem = register(new ManagedBool("single_item", SAVE_NBT_SYNC_TILE, SYNC_ON_SET));
-    public final ManagedVec3I corePos = register(new ManagedVec3I("core_pos", new Vec3I(0, -9999, 0), SAVE_NBT_SYNC_TILE, SYNC_ON_SET));
+    public final ManagedLong energy = register(new ManagedLong("energy", DataFlags.SAVE_NBT_SYNC_TILE, DataFlags.SYNC_ON_SET));
+    public final ManagedLong energyRequired = register(new ManagedLong("energy_required", DataFlags.SAVE_NBT_SYNC_TILE, DataFlags.SYNC_ON_SET));
+    public final ManagedLong chargeRate = register(new ManagedLong("charge_rate", DataFlags.SAVE_NBT));
+    public final ManagedBool singleItem = register(new ManagedBool("single_item", DataFlags.SAVE_NBT_SYNC_TILE, DataFlags.SYNC_ON_SET));
+    public final ManagedVec3I corePos = register(new ManagedVec3I("core_pos", new Vec3I(0, -9999, 0), DataFlags.SAVE_NBT_SYNC_TILE, DataFlags.SYNC_ON_SET));
     public TileItemStackHandler itemHandler = new TileItemStackHandler(1);
     private TechLevel techLevelCache = null;
 

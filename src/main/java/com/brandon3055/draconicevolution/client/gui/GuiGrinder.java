@@ -14,18 +14,13 @@ import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiLabel;
 import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiTexture;
 import com.brandon3055.brandonscore.client.gui.modulargui.lib.GuiAlign;
 import com.brandon3055.brandonscore.client.gui.modulargui.templates.TBasicMachine;
-import com.brandon3055.brandonscore.client.gui.modulargui.templates.TGuiBase;
 import com.brandon3055.brandonscore.inventory.ContainerBCTile;
+import com.brandon3055.brandonscore.inventory.ContainerSlotLayout;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileGrinder;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
-
-import static com.brandon3055.brandonscore.client.gui.GuiToolkit.GuiLayout.EXTRA_WIDE_TALL;
-import static com.brandon3055.brandonscore.inventory.ContainerSlotLayout.SlotType.PLAYER_EQUIPMENT;
-import static com.brandon3055.brandonscore.inventory.ContainerSlotLayout.SlotType.TILE_INV;
-import static net.minecraft.util.text.TextFormatting.GOLD;
-import static net.minecraft.util.text.TextFormatting.GRAY;
+import net.minecraft.util.text.TextFormatting;
 
 /**
  * Created by brandon3055 on 30/3/2016.
@@ -69,14 +64,14 @@ public class GuiGrinder extends ModularGuiContainer<ContainerBCTile<TileGrinder>
 
         //Power
         template.addEnergyBar(tile.opStorage);
-        template.addEnergyItemSlot(false, true, container.getSlotLayout().getSlotData(TILE_INV, 0));
+        template.addEnergyItemSlot(false, true, container.getSlotLayout().getSlotData(ContainerSlotLayout.SlotType.TILE_INV, 0));
         template.powerSlot.setMaxYPos(filterUI.maxYPos(), false).setXPos(bg.xPos() + 5);
         template.energyBar.setYPos(filterUI.yPos()).setMaxYPos(template.powerSlot.yPos() - 12, true).setXPos(template.powerSlot.xPos() + 2);
 
         //Weapon Slot
         GuiElement toolBg = GuiTexture.newDynamicTexture(() -> BCSprites.getThemed("bg_dynamic_small"));
         toolBg.getInsets().right = 0;
-        GuiElement element = toolkit.createSlots(toolBg, 1, 1, 0, (column, row) -> container.getSlotLayout().getSlotData(TILE_INV, 1), BCSprites.get("slots/sword"));
+        GuiElement element = toolkit.createSlots(toolBg, 1, 1, 0, (column, row) -> container.getSlotLayout().getSlotData(ContainerSlotLayout.SlotType.TILE_INV, 1), BCSprites.get("slots/sword"));
         element.setHoverText(e -> tile.itemHandler.getStackInSlot(1).isEmpty() ? toolkit.i18n("gui.draconicevolution.grinder.weapon_slot") : null);
         element.setPos(3, 3);
         toolBg.setMaxPos(element.maxXPos() + 1, element.maxYPos() + 3, true);
@@ -159,7 +154,7 @@ public class GuiGrinder extends ModularGuiContainer<ContainerBCTile<TileGrinder>
         toolkit.placeOutside(level10, claimXP, GuiToolkit.LayoutPos.BOTTOM_RIGHT, -level10.xSize(), 0);
 
         //Info Panel
-        template.infoPanel.addLabeledValue(GOLD + I18n.get("gui.draconicevolution.grinder.stored_xp"), 6, 11, () -> GRAY + "" + tile.storedXP.get() + " " + I18n.get("gui.draconicevolution.grinder.stored_xp.raw"), true);
+        template.infoPanel.addLabeledValue(TextFormatting.GOLD + I18n.get("gui.draconicevolution.grinder.stored_xp"), 6, 11, () -> TextFormatting.GRAY + "" + tile.storedXP.get() + " " + I18n.get("gui.draconicevolution.grinder.stored_xp.raw"), true);
     }
 
     private String getAOEString() {

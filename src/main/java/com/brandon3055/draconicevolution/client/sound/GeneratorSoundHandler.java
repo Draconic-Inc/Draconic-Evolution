@@ -1,7 +1,6 @@
 package com.brandon3055.draconicevolution.client.sound;
 
 import codechicken.lib.math.MathHelper;
-import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileGenerator;
 import com.brandon3055.draconicevolution.handlers.DESounds;
 import com.brandon3055.draconicevolution.lib.ISidedTileHandler;
@@ -10,9 +9,6 @@ import net.minecraft.client.audio.ITickableSound;
 import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
-import net.minecraft.world.server.ChunkHolder;
-
-import static com.brandon3055.draconicevolution.blocks.tileentity.TileGenerator.Mode.*;
 
 /**
  * Created by brandon3055 on 4/10/2015.
@@ -59,7 +55,7 @@ public class GeneratorSoundHandler implements ISidedTileHandler {
                 startHigh = false;
             }
             else {
-                activeSound.targetPitch = mode == NORMAL ? 0.6F : mode == PERFORMANCE ? 1.3F : 1.6F;
+                activeSound.targetPitch = mode == TileGenerator.Mode.NORMAL ? 0.6F : mode == TileGenerator.Mode.PERFORMANCE ? 1.3F : 1.6F;
             }
         }
         else {
@@ -68,7 +64,7 @@ public class GeneratorSoundHandler implements ISidedTileHandler {
                 startHigh = true;
             }
             else {
-                activeSound.targetPitch = mode == ECO_PLUS ? 0.5F : 0.7F;
+                activeSound.targetPitch = mode == TileGenerator.Mode.ECO_PLUS ? 0.5F : 0.7F;
             }
         }
     }

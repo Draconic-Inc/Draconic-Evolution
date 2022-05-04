@@ -1,15 +1,11 @@
 package com.brandon3055.draconicevolution.api.modules.lib;
 
-import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.api.modules.Module;
-import com.brandon3055.draconicevolution.api.modules.ModuleType;
 import com.brandon3055.draconicevolution.api.modules.data.EnergyData;
-import com.brandon3055.draconicevolution.api.modules.data.ModuleData;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;

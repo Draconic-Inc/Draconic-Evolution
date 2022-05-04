@@ -18,7 +18,9 @@ import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import net.minecraft.client.audio.ISound;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.OptionalMod;
-import net.minecraftforge.fml.event.lifecycle.*;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLDedicatedServerSetupEvent;
 
 public class CommonProxy {
 

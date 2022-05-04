@@ -1,19 +1,12 @@
 package com.brandon3055.draconicevolution.api.modules.types;
 
 import com.brandon3055.draconicevolution.api.config.ConfigProperty;
-import com.brandon3055.draconicevolution.api.config.DecimalProperty;
-import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.ModuleCategory;
-import com.brandon3055.draconicevolution.api.modules.ModuleType;
 import com.brandon3055.draconicevolution.api.modules.data.JumpData;
-import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 
 import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.function.Consumer;
-import java.util.function.Function;
-
-import static com.brandon3055.draconicevolution.api.config.ConfigProperty.DecimalFormatter.PLUS_PERCENT_0;
 
 /**
  * Created by brandon3055 on 2/8/20

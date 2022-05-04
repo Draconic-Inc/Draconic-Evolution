@@ -9,7 +9,6 @@ import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.utils.DataUtils;
 import com.brandon3055.brandonscore.utils.TargetPos;
 import com.brandon3055.draconicevolution.DEConfig;
-import com.brandon3055.brandonscore.api.hud.IHudDisplay;
 import com.brandon3055.draconicevolution.client.gui.GuiDislocator;
 import com.brandon3055.draconicevolution.handlers.DESounds;
 import com.brandon3055.draconicevolution.init.DEContent;
@@ -44,7 +43,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.Tags;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Created by brandon3055 on 16/07/2016.

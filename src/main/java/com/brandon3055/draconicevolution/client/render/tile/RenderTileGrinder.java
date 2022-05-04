@@ -12,7 +12,6 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.machines.Grinder;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileGrinder;
 import com.brandon3055.draconicevolution.init.DEContent;
-import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;

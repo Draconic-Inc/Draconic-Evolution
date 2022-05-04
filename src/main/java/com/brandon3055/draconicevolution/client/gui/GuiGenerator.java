@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.client.gui;
 
+import codechicken.lib.math.MathHelper;
 import codechicken.lib.render.CCModel;
 import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.OBJParser;
@@ -13,9 +14,9 @@ import com.brandon3055.brandonscore.client.gui.modulargui.ModularGuiContainer;
 import com.brandon3055.brandonscore.client.gui.modulargui.baseelements.GuiButton;
 import com.brandon3055.brandonscore.client.gui.modulargui.templates.TBasicMachine;
 import com.brandon3055.brandonscore.inventory.ContainerBCTile;
+import com.brandon3055.brandonscore.inventory.ContainerSlotLayout;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileGenerator;
-import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -31,12 +32,6 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.Map;
 
-import static codechicken.lib.math.MathHelper.torad;
-import static com.brandon3055.brandonscore.client.gui.GuiToolkit.GuiLayout.DEFAULT;
-import static com.brandon3055.brandonscore.inventory.ContainerSlotLayout.SlotType.TILE_INV;
-import static net.minecraft.util.text.TextFormatting.GOLD;
-import static net.minecraft.util.text.TextFormatting.GRAY;
-
 public class GuiGenerator extends ModularGuiContainer<ContainerBCTile<TileGenerator>> {
 
     private static final RenderType modelType = RenderType.entitySolid(new ResourceLocation(DraconicEvolution.MODID, "textures/block/generator/generator_2.png"));
@@ -51,7 +46,7 @@ public class GuiGenerator extends ModularGuiContainer<ContainerBCTile<TileGenera
     public PlayerEntity player;
     private TileGenerator tile;
 
-    protected GuiToolkit<GuiGenerator> toolkit = new GuiToolkit<>(this, DEFAULT).setTranslationPrefix("gui.draconicevolution.generator");
+    protected GuiToolkit<GuiGenerator> toolkit = new GuiToolkit<>(this, GuiToolkit.GuiLayout.DEFAULT).setTranslationPrefix("gui.draconicevolution.generator");
 
     public GuiGenerator(ContainerBCTile<TileGenerator> container, PlayerInventory playerInventory, ITextComponent title) {
         super(container, playerInventory, title);
@@ -65,13 +60,13 @@ public class GuiGenerator extends ModularGuiContainer<ContainerBCTile<TileGenera
 
         //Storage Renderer
         template.background.addChild(new StorageRenderer());
-        GuiElement fuelSlots = toolkit.createSlots(template.background, 3, 1, 0, (x, y) -> container.getSlotLayout().getSlotData(TILE_INV, x), BCSprites.get("slots/fuel"));
+        GuiElement fuelSlots = toolkit.createSlots(template.background, 3, 1, 0, (x, y) -> container.getSlotLayout().getSlotData(ContainerSlotLayout.SlotType.TILE_INV, x), BCSprites.get("slots/fuel"));
         fuelSlots.zOffset += 100;
         fuelSlots.setPos(guiLeft() + 64, guiTop() + 28);
 
         //Power
         template.addEnergyBar(tile.opStorage);
-        template.addEnergyItemSlot(true, container.getSlotLayout().getSlotData(TILE_INV, 3));
+        template.addEnergyItemSlot(true, container.getSlotLayout().getSlotData(ContainerSlotLayout.SlotType.TILE_INV, 3));
 
         //Mode Button
         GuiButton modeButton = toolkit.createButton("", template.background);
@@ -85,9 +80,9 @@ public class GuiGenerator extends ModularGuiContainer<ContainerBCTile<TileGenera
         modeButton.setResetHoverOnClick(true);
 
         //Info Panel
-        template.infoPanel.addLabeledValue(GOLD + toolkit.i18n("fuel_efficiency"), 6, 11, () -> GRAY + (tile.mode.get().getEfficiency() + "%"), true);
-        template.infoPanel.addLabeledValue(GOLD + toolkit.i18n("output_power"), 6, 11, () -> GRAY + (tile.productionRate.get() + " / " + tile.mode.get().powerOutput + " OP/t"), true);
-        template.infoPanel.addLabeledValue(GOLD + toolkit.i18n("current_fuel_value"), 6, 11, () -> GRAY + (tile.fuelRemaining.get() == 0 ? "n/a" : tile.fuelRemaining.get() + " / " + tile.fuelValue.get()), true);
+        template.infoPanel.addLabeledValue(TextFormatting.GOLD + toolkit.i18n("fuel_efficiency"), 6, 11, () -> TextFormatting.GRAY + (tile.mode.get().getEfficiency() + "%"), true);
+        template.infoPanel.addLabeledValue(TextFormatting.GOLD + toolkit.i18n("output_power"), 6, 11, () -> TextFormatting.GRAY + (tile.productionRate.get() + " / " + tile.mode.get().powerOutput + " OP/t"), true);
+        template.infoPanel.addLabeledValue(TextFormatting.GOLD + toolkit.i18n("current_fuel_value"), 6, 11, () -> TextFormatting.GRAY + (tile.fuelRemaining.get() == 0 ? "n/a" : tile.fuelRemaining.get() + " / " + tile.fuelValue.get()), true);
     }
 
 
@@ -106,7 +101,7 @@ public class GuiGenerator extends ModularGuiContainer<ContainerBCTile<TileGenera
             mat.translate(guiLeft() + 90, guiTop() + 45, 50);
             float mx = (((mouseX - guiLeft()) / (float) GuiGenerator.this.xSize()) - 0.5F) * .1F;
             float my = (((mouseY - guiTop()) / (float) GuiGenerator.this.ySize()) - 0.5F) * .1F;
-            mat.apply(new Rotation(150 * torad, 1, 0, 0).with(new Rotation(10 * torad, -my, 1 + mx, 0)));
+            mat.apply(new Rotation(150 * MathHelper.torad, 1, 0, 0).with(new Rotation(10 * MathHelper.torad, -my, 1 + mx, 0)));
             mat.scale(7.5);
             storageModel.render(ccrs, mat);
             getter.endBatch();

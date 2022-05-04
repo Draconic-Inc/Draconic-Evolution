@@ -8,6 +8,7 @@ import com.brandon3055.brandonscore.capability.CapabilityOP;
 import com.brandon3055.brandonscore.lib.IInteractTile;
 import com.brandon3055.brandonscore.lib.IRedstoneEmitter;
 import com.brandon3055.brandonscore.lib.Vec3D;
+import com.brandon3055.brandonscore.lib.datamanager.DataFlags;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedByte;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedShort;
@@ -15,8 +16,8 @@ import com.brandon3055.brandonscore.lib.entityfilter.EntityFilter;
 import com.brandon3055.brandonscore.lib.entityfilter.FilterType;
 import com.brandon3055.brandonscore.utils.MathUtils;
 import com.brandon3055.brandonscore.utils.Utils;
-import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.client.render.particle.ParticleStarSpark;
+import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
@@ -39,8 +40,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.*;
-
 /**
  * Created by brandon3055 on 28/09/2016.
  */
@@ -53,12 +52,12 @@ public class TileEntityDetector extends TileBCore implements IInteractTile, IRed
     public float ltyRot = 0;
 
     //    public final ManagedBool ADVANCED = new ManagedBool(true, true, false, true);
-    public final ManagedShort pulseRate = register(new ManagedShort("pulse_rate", (short) 30, SAVE_BOTH_SYNC_TILE));
-    public final ManagedShort range = register(new ManagedShort("range", (short) 10, SAVE_BOTH_SYNC_TILE));
-    public final ManagedByte rsMinDetection = register(new ManagedByte("rs_min_detection", (byte) 1, SAVE_BOTH_SYNC_TILE));
-    public final ManagedByte rsMaxDetection = register(new ManagedByte("rs_max_detection", (byte) 1, SAVE_BOTH_SYNC_TILE));
-    public final ManagedBool pulseRsMode = register(new ManagedBool("pulse_rs_mode", SAVE_BOTH_SYNC_TILE, TRIGGER_UPDATE));
-    public final ManagedByte outputStrength = register(new ManagedByte("output_strength", SAVE_NBT));
+    public final ManagedShort pulseRate = register(new ManagedShort("pulse_rate", (short) 30, DataFlags.SAVE_BOTH_SYNC_TILE));
+    public final ManagedShort range = register(new ManagedShort("range", (short) 10, DataFlags.SAVE_BOTH_SYNC_TILE));
+    public final ManagedByte rsMinDetection = register(new ManagedByte("rs_min_detection", (byte) 1, DataFlags.SAVE_BOTH_SYNC_TILE));
+    public final ManagedByte rsMaxDetection = register(new ManagedByte("rs_max_detection", (byte) 1, DataFlags.SAVE_BOTH_SYNC_TILE));
+    public final ManagedBool pulseRsMode = register(new ManagedBool("pulse_rs_mode", DataFlags.SAVE_BOTH_SYNC_TILE, DataFlags.TRIGGER_UPDATE));
+    public final ManagedByte outputStrength = register(new ManagedByte("output_strength", DataFlags.SAVE_NBT));
     private int pulseTimer = -1;
     private int pulseDuration = 0;
 

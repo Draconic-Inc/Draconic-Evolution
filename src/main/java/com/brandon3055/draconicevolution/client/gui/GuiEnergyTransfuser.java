@@ -3,22 +3,20 @@ package com.brandon3055.draconicevolution.client.gui;
 import com.brandon3055.brandonscore.capability.CapabilityOP;
 import com.brandon3055.brandonscore.client.BCSprites;
 import com.brandon3055.brandonscore.client.gui.GuiToolkit;
-import com.brandon3055.brandonscore.client.gui.GuiToolkit.Palette;
+import com.brandon3055.brandonscore.client.gui.GuiToolkit.Palette.Ctrl;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElementManager;
 import com.brandon3055.brandonscore.client.gui.modulargui.ModularGuiContainer;
 import com.brandon3055.brandonscore.client.gui.modulargui.baseelements.GuiButton;
 import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiBorderedRect;
-import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiEnergyBar;
 import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiTexture;
 import com.brandon3055.brandonscore.client.gui.modulargui.templates.TBasicMachine;
-import com.brandon3055.brandonscore.client.gui.modulargui.templates.TGuiBase;
 import com.brandon3055.brandonscore.inventory.ContainerBCTile;
+import com.brandon3055.brandonscore.inventory.ContainerSlotLayout;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyTransfuser;
 import com.brandon3055.draconicevolution.client.DESprites;
 import com.brandon3055.draconicevolution.client.render.tile.RenderTileEnergyTransfuser;
-import com.brandon3055.draconicevolution.inventory.GuiLayoutFactories;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
@@ -27,12 +25,6 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
 import java.awt.*;
-
-import static com.brandon3055.brandonscore.client.gui.GuiToolkit.GuiLayout.*;
-import static com.brandon3055.brandonscore.client.gui.GuiToolkit.Palette.*;
-import static com.brandon3055.brandonscore.inventory.ContainerSlotLayout.SlotType.TILE_INV;
-
-import com.brandon3055.brandonscore.client.gui.GuiToolkit.Palette.Ctrl;
 
 /**
  * Created by brandon3055 on 12/12/2020.
@@ -74,7 +66,7 @@ public class GuiEnergyTransfuser extends ModularGuiContainer<ContainerBCTile<Til
                     .setSize(slotWidth, ySpace)
                     .setXPos(xOffset);
 
-            GuiElement<?> slot = toolkit.createSlots(column, 1, 1, 10, (col, row) -> container.getSlotLayout().getSlotData(TILE_INV, fi), null)
+            GuiElement<?> slot = toolkit.createSlots(column, 1, 1, 10, (col, row) -> container.getSlotLayout().getSlotData(ContainerSlotLayout.SlotType.TILE_INV, fi), null)
                     .setXPos(xOffset + (slotWidth - 18) / 2)
                     .setMaxYPos(column.maxYPos() - (slotWidth - 18) / 2, false);
 

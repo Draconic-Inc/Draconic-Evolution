@@ -4,7 +4,6 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorComponent;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorInjector;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorStabilizer;
-import com.brandon3055.draconicevolution.client.DETextures;
 import com.brandon3055.draconicevolution.client.model.ModelReactorEnergyInjector;
 import com.brandon3055.draconicevolution.client.model.ModelReactorStabilizerCore;
 import com.brandon3055.draconicevolution.client.model.ModelReactorStabilizerRing;
