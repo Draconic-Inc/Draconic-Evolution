@@ -1,3 +1,7 @@
+######## 3.0.25.456 ########
+- Accepted a PR to fix custom spawner black list.
+- Fixed edge case chaos island crash when deleting region files.
+
 ######## 3.0.24.452 (hotfix) ########
 - Fixed broken energy core activation caused by a crash fix in previous version.
 
