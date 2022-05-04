@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.blocks.tileentity;
 
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.handlers.DEEventHandler;
+import com.brandon3055.draconicevolution.items.MobSoul;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.*;
 import net.minecraft.nbt.CompoundNBT;
@@ -139,6 +140,10 @@ public class StabilizedSpawnerLogic extends AbstractSpawner {
     }
 
     public boolean canEntitySpawnSpawner(MobEntity entity, World world, float x, float y, float z, AbstractSpawner spawner) {
+        if (!MobSoul.isValidEntity(entity)) {
+            return false;
+        }
+
         Event.Result result = ForgeEventFactory.canEntitySpawn(entity, world, x, y, z, spawner, SpawnReason.SPAWNER);
         if (result == Event.Result.DEFAULT) {
             return (tile.spawnerTier.get().ignoreSpawnReq() || entity.checkSpawnRules(world, SpawnReason.SPAWNER)) && entity.checkSpawnObstruction(world);

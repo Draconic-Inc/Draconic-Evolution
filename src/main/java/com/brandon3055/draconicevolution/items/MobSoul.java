@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.items;
 import com.brandon3055.brandonscore.items.ItemBCore;
 import com.brandon3055.brandonscore.utils.InventoryUtils;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
+import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.utils.LogHelper;
@@ -276,5 +277,22 @@ public class MobSoul extends ItemBCore {
 
     public static ResourceLocation getCachedRegName(String name) {
         return rlCache.computeIfAbsent(name, ResourceLocation::new);
+    }
+
+    public static boolean isValidEntity(LivingEntity entity) {
+        ResourceLocation location = entity.getType().getRegistryName();
+        String registryName = location == null ? null : location.toString();
+
+        if (!entity.canChangeDimensions() && !DEConfig.allowBossSouls) {
+            return false;
+        }
+        for (int i = 0; i < DEConfig.spawnerList.length; i++) {
+            if (DEConfig.spawnerList[i].equals(registryName) && DEConfig.spawnerListWhiteList) {
+                return true;
+            } else if (DEConfig.spawnerList[i].equals(registryName) && !DEConfig.spawnerListWhiteList) {
+                return false;
+            }
+        }
+        return !DEConfig.spawnerListWhiteList;
     }
 }
