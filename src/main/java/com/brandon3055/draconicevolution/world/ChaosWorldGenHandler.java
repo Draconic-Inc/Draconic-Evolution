@@ -149,7 +149,9 @@ public class ChaosWorldGenHandler {
 
         reader.setBlock(center, DEContent.chaos_crystal.defaultBlockState(), 3);
         TileChaosCrystal tileChaosShard = (TileChaosCrystal) reader.getBlockEntity(center);
-        tileChaosShard.onValidPlacement();
+        if (tileChaosShard != null){
+            tileChaosShard.onValidPlacement();
+        }
         WorldEntityHandler.addWorldEntity(reader.getLevel(), new GuardianFightManager(center));
 
 //        EntityChaosGuardian guardian = new EntityChaosGuardian(reader);
