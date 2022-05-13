@@ -1,19 +1,14 @@
 package com.brandon3055.draconicevolution.client.render.particle;
 
 import codechicken.lib.render.CCModel;
-import codechicken.lib.render.OBJParser;
-import codechicken.lib.vec.Scale;
 import com.brandon3055.brandonscore.client.particle.BCParticle;
 import com.brandon3055.brandonscore.client.particle.IBCParticleFactory;
 import com.brandon3055.brandonscore.lib.Vec3D;
-import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.world.World;
-
-import java.util.Map;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.level.Level;
 
 /**
  * Created by brandon3055 on 17/05/2017.
@@ -23,16 +18,16 @@ public class ParticleArrowShockwave extends BCParticle {
     public double size = 0;
     public double maxSize;
 
-    public ParticleArrowShockwave(ClientWorld worldIn, Vec3D pos) {
+    public ParticleArrowShockwave(ClientLevel worldIn, Vec3D pos) {
         super(worldIn, pos);
         if (model == null) {
-            Map<String, CCModel> map = OBJParser.parseModels(ResourceHelperDE.getResource("models/reactor_core_model.obj"));
-            model = CCModel.combine(map.values());
-            model.apply(new Scale(1, 0.5, 1));
+//            Map<String, CCModel> map = OBJParser.parseModels(ResourceHelperDE.getResource("models/reactor_core_model.obj"));
+//            model = CCModel.combine(map.values());
+//            model.apply(new Scale(1, 0.5, 1));
         }
     }
 
-    public ParticleArrowShockwave(ClientWorld worldIn, Vec3D pos, Vec3D speed) {
+    public ParticleArrowShockwave(ClientLevel worldIn, Vec3D pos, Vec3D speed) {
         this(worldIn, pos);
     }
 
@@ -106,14 +101,13 @@ public class ParticleArrowShockwave extends BCParticle {
     public static class Factory implements IBCParticleFactory {
 
         @Override
-        public Particle getEntityFX(int particleID, World world, Vec3D pos, Vec3D speed, int... args) {
-            ParticleArrowShockwave arrowShockwave = new ParticleArrowShockwave((ClientWorld) world, pos, speed);
+        public Particle getEntityFX(int particleID, Level world, Vec3D pos, Vec3D speed, int... args) {
+            ParticleArrowShockwave arrowShockwave = new ParticleArrowShockwave((ClientLevel) world, pos, speed);
 
-            world.playLocalSound(pos.x, pos.y, pos.z, SoundEvents.GENERIC_EXPLODE, SoundCategory.PLAYERS, 10, 0.9F + world.random.nextFloat() * 0.2F, false);
+            world.playLocalSound(pos.x, pos.y, pos.z, SoundEvents.GENERIC_EXPLODE, SoundSource.PLAYERS, 10, 0.9F + world.random.nextFloat() * 0.2F, false);
             if (args.length >= 1) {
                 arrowShockwave.maxSize = args[0] / 100D;
-            }
-            else {
+            } else {
                 arrowShockwave.maxSize = 10;
             }
 

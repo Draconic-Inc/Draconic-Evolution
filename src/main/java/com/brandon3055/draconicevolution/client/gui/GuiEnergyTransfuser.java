@@ -17,12 +17,12 @@ import com.brandon3055.brandonscore.utils.EnergyUtils;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyTransfuser;
 import com.brandon3055.draconicevolution.client.DESprites;
 import com.brandon3055.draconicevolution.client.render.tile.RenderTileEnergyTransfuser;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 
 import java.awt.*;
 
@@ -31,15 +31,15 @@ import java.awt.*;
  */
 public class GuiEnergyTransfuser extends ModularGuiContainer<ContainerBCTile<TileEnergyTransfuser>> {
 
-    public PlayerEntity player;
+    public Player player;
     private TileEnergyTransfuser tile;
 
     protected GuiToolkit<GuiEnergyTransfuser> toolkit = new GuiToolkit<>(this, 218, 215).setTranslationPrefix("gui.draconicevolution.transfuser");
 
-    public GuiEnergyTransfuser(ContainerBCTile<TileEnergyTransfuser> container, PlayerInventory inv, ITextComponent title) {
+    public GuiEnergyTransfuser(ContainerBCTile<TileEnergyTransfuser> container, Inventory inv, Component title) {
         super(container, inv, title);
         this.tile = container.tile;
-        this.player = inventory.player;
+        this.player = inv.player;
     }
 
     @Override
@@ -93,7 +93,7 @@ public class GuiEnergyTransfuser extends ModularGuiContainer<ContainerBCTile<Til
             column.addChild(new GuiElement(){
                 @Override
                 public void renderElement(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
-                    MatrixStack mStack = new MatrixStack();
+                    PoseStack mStack = new PoseStack();
                     mStack.translate(xPos() + (fi == 0 ? 5 : fi == 2 ? 7 : 4)  , yPos() + 2, 0);
                     mStack.scale(2, 2, 2);
                     fontRenderer.draw(mStack, RenderTileEnergyTransfuser.TEXT[fi].getVisualOrderText(), 0, 0, tile.ioModes[fi].get().getColour());

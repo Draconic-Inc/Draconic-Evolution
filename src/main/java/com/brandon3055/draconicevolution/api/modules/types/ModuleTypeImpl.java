@@ -1,11 +1,11 @@
 package com.brandon3055.draconicevolution.api.modules.types;
 
-import codechicken.lib.util.SneakyUtils;
 import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.ModuleCategory;
 import com.brandon3055.draconicevolution.api.modules.ModuleType;
 import com.brandon3055.draconicevolution.api.modules.data.ModuleData;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
+import net.covers1624.quack.util.SneakyUtils;
 
 import java.util.Arrays;
 import java.util.Collection;

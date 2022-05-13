@@ -1,8 +1,8 @@
 package com.brandon3055.draconicevolution.api.modules.data;
 
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 
 import java.util.Map;
 
@@ -26,7 +26,7 @@ public class DamageData implements ModuleData<DamageData> {
     }
 
     @Override
-    public void addInformation(Map<ITextComponent, ITextComponent> map, ModuleContext context, boolean stack) {
-        map.put(new TranslationTextComponent("module.draconicevolution.damage.name"), new TranslationTextComponent("module.draconicevolution.damage.attack", ModuleData.round(damagePoints, 10)));
+    public void addInformation(Map<Component, Component> map, ModuleContext context, boolean stack) {
+        map.put(new TranslatableComponent("module.draconicevolution.damage.name"), new TranslatableComponent("module.draconicevolution.damage.attack", ModuleData.round(damagePoints, 10)));
     }
 }

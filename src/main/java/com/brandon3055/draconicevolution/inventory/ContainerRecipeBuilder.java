@@ -1,10 +1,10 @@
 package com.brandon3055.draconicevolution.inventory;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.ForgeHooks;
 
 import javax.annotation.Nullable;
@@ -14,13 +14,13 @@ import java.util.List;
 /**
  * Created by brandon3055 on 21/07/2016.
  */
-public class ContainerRecipeBuilder extends Container {
+public class ContainerRecipeBuilder extends AbstractContainerMenu {
 
-    private PlayerEntity player;
+    private Player player;
     public InventoryCache inventoryCache = new InventoryCache(20);
     private List<Slot> craftingSlots = new LinkedList<>();
 
-    public ContainerRecipeBuilder(@Nullable ContainerType<?> type, int id, PlayerEntity player) {
+    public ContainerRecipeBuilder(@Nullable MenuType<?> type, int id, Player player) {
         super(type, id);
         this.player = player;
     }
@@ -87,7 +87,7 @@ public class ContainerRecipeBuilder extends Container {
 
     @Nullable
     @Override
-    public ItemStack quickMoveStack(PlayerEntity playerIn, int index) {
+    public ItemStack quickMoveStack(Player playerIn, int index) {
         Slot slot = getSlot(index);
 
         if (slot.hasItem()) {
@@ -99,7 +99,7 @@ public class ContainerRecipeBuilder extends Container {
                     return ItemStack.EMPTY;
                 }
             }
-            else if (ForgeHooks.getBurnTime(stack) == 0 || !moveItemStackTo(stack, 36, 36 + inventoryCache.getContainerSize(), false)) {
+            else if (ForgeHooks.getBurnTime(stack, null) == 0 || !moveItemStackTo(stack, 36, 36 + inventoryCache.getContainerSize(), false)) {
                 return ItemStack.EMPTY;
             }
 
@@ -119,7 +119,7 @@ public class ContainerRecipeBuilder extends Container {
     }
 
     @Override
-    public boolean stillValid(PlayerEntity playerIn) {
+    public boolean stillValid(Player playerIn) {
         return true;
     }
 

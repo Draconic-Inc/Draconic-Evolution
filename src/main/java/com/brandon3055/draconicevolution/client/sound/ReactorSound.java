@@ -4,16 +4,16 @@ import codechicken.lib.math.MathHelper;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
 import com.brandon3055.draconicevolution.handlers.DESounds;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.ITickableSound;
-import net.minecraft.client.audio.SimpleSound;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.client.resources.sounds.TickableSoundInstance;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * Created by brandon3055 on 4/10/2015.
  */
-public class ReactorSound extends SimpleSound implements ITickableSound {
+public class ReactorSound extends SimpleSoundInstance implements TickableSoundInstance {
     public boolean donePlaying = false;
     private TileReactorCore tile;
     private float targetPitch;
@@ -21,7 +21,7 @@ public class ReactorSound extends SimpleSound implements ITickableSound {
     private int stopTimer = 0;
 
     public ReactorSound(TileReactorCore tile) {
-        super(DESounds.coreSound, SoundCategory.BLOCKS, tile.reactorState.get() == TileReactorCore.ReactorState.BEYOND_HOPE ? 10F : 1.5F, 1, tile.getBlockPos());
+        super(DESounds.coreSound, SoundSource.BLOCKS, tile.reactorState.get() == TileReactorCore.ReactorState.BEYOND_HOPE ? 10F : 1.5F, 1, tile.getBlockPos());
         this.tile = tile;
         this.looping = true;
         this.targetPitch = 1F;
@@ -63,8 +63,8 @@ public class ReactorSound extends SimpleSound implements ITickableSound {
         }
 
 
-        PlayerEntity player = Minecraft.getInstance().player;
-        if (tile.isRemoved() || player == null || player.distanceToSqr(Vector3d.atLowerCornerOf(tile.getBlockPos())) > (volume > 1.5F ? 4096 : 512)){
+        Player player = Minecraft.getInstance().player;
+        if (tile.isRemoved() || player == null || player.distanceToSqr(Vec3.atLowerCornerOf(tile.getBlockPos())) > (volume > 1.5F ? 4096 : 512)){
 //            if (stopTimer++ == 60) {
                 donePlaying = true;
                 looping = false;

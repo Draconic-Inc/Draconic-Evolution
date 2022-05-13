@@ -10,8 +10,8 @@ import com.brandon3055.brandonscore.client.gui.modulargui.templates.TBasicMachin
 import com.brandon3055.brandonscore.inventory.ContainerBCTile;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.blocks.tileentity.flowgate.TileFlowGate;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
 
 /**
  * Created by brandon3055 on 15/11/2016.
@@ -23,7 +23,7 @@ public class GuiFlowGate extends ModularGuiContainer<ContainerBCTile<TileFlowGat
     private long ltMin = -1;
     private long ltMax = -1;
 
-    public GuiFlowGate(ContainerBCTile<TileFlowGate> container, PlayerInventory inv, ITextComponent title) {
+    public GuiFlowGate(ContainerBCTile<TileFlowGate> container, Inventory inv, Component title) {
         super(container, inv, title);
         this.tile = container.tile;
     }

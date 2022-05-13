@@ -2,14 +2,14 @@ package com.brandon3055.draconicevolution.handlers.dislocator;
 
 import com.brandon3055.brandonscore.utils.TargetPos;
 import com.brandon3055.draconicevolution.items.tools.BoundDislocator;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 import java.util.UUID;
 
@@ -20,18 +20,18 @@ public class PlayerTarget extends DislocatorTarget {
 
     private UUID playerID;
 
-    public PlayerTarget(PlayerEntity player) {
+    public PlayerTarget(Player player) {
         super(player.level.dimension());
         this.playerID = player.getUUID();
     }
 
-    public PlayerTarget(RegistryKey<World> world) {
+    public PlayerTarget(ResourceKey<Level> world) {
         super(world);
     }
 
     @Override
     public TargetPos getTargetPos(MinecraftServer server, UUID linkID, UUID sourceDislocatorID) {
-        ServerPlayerEntity player = server.getPlayerList().getPlayer(playerID);
+        ServerPlayer player = server.getPlayerList().getPlayer(playerID);
         if (player != null) {
             for (ItemStack stack : player.inventory.items) {
                 if (BoundDislocator.isValid(stack) && !sourceDislocatorID.equals(BoundDislocator.getDislocatorId(stack))) {
@@ -43,22 +43,22 @@ public class PlayerTarget extends DislocatorTarget {
     }
 
     @Override
-    protected ServerWorld getTargetWorld(MinecraftServer server) {
-        ServerPlayerEntity player = server.getPlayerList().getPlayer(playerID);
+    protected ServerLevel getTargetWorld(MinecraftServer server) {
+        ServerPlayer player = server.getPlayerList().getPlayer(playerID);
         if (player != null) {
-            return (ServerWorld) player.level;
+            return (ServerLevel) player.level;
         }
         return super.getTargetWorld(server);
     }
 
     @Override
-    public CompoundNBT save(CompoundNBT nbt) {
+    public CompoundTag save(CompoundTag nbt) {
         nbt.putUUID("player_id", playerID);
         return super.save(nbt);
     }
 
     @Override
-    protected void loadInternal(CompoundNBT nbt) {
+    protected void loadInternal(CompoundTag nbt) {
         super.loadInternal(nbt);
         playerID = nbt.getUUID("player_id");
     }

@@ -1,14 +1,16 @@
 package com.brandon3055.draconicevolution.integration.jei;
 
-import codechicken.lib.render.buffer.TransformingVertexBuilder;
+import codechicken.lib.render.buffer.TransformingVertexConsumer;
 import com.brandon3055.brandonscore.api.TechLevel;
+import com.brandon3055.brandonscore.api.render.GuiHelper;
 import com.brandon3055.brandonscore.client.utils.GuiHelperOld;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.api.crafting.IFusionRecipe;
 import com.brandon3055.draconicevolution.client.DETextures;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -17,12 +19,13 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -36,13 +39,13 @@ public class FusionRecipeCategory implements IRecipeCategory<IFusionRecipe> {
 
     private final IDrawable background;
     private final IDrawable icon;
-    private final String localizedName;
+    private final Component localizedName;
     private int xSize = 164;
     private int ySize = 111;
 
     public FusionRecipeCategory(IGuiHelper guiHelper) {
         background = guiHelper.createDrawable(ResourceHelperDE.getResource(DETextures.GUI_JEI_FUSION), 0, 0, xSize, ySize);
-        localizedName = I18n.get(DEContent.crafting_core.getDescriptionId());
+        localizedName = new TranslatableComponent(DEContent.crafting_core.getDescriptionId());
         icon = guiHelper.createDrawableIngredient(new ItemStack(DEContent.crafting_core));
     }
 
@@ -54,7 +57,7 @@ public class FusionRecipeCategory implements IRecipeCategory<IFusionRecipe> {
 
     @Nonnull
     @Override
-    public String getTitle() {
+    public Component getTitle() {
         return localizedName;
     }
 
@@ -75,7 +78,7 @@ public class FusionRecipeCategory implements IRecipeCategory<IFusionRecipe> {
     }
 
     @Override
-    public void draw(IFusionRecipe recipe, MatrixStack matrixStack, double mouseX, double mouseY) {
+    public void draw(IFusionRecipe recipe, PoseStack matrixStack, double mouseX, double mouseY) {
         Minecraft mc = Minecraft.getInstance();
         if (mc.font != null) {
             TechLevel tier = recipe.getRecipeTier();
@@ -85,16 +88,15 @@ public class FusionRecipeCategory implements IRecipeCategory<IFusionRecipe> {
             GuiHelperOld.drawCenteredString(mc.font, matrixStack, Utils.addCommas(recipe.getEnergyCost()) + " OP", this.xSize / 2, this.ySize - 10, 4500223, false);
         }
 
-        IRenderTypeBuffer.Impl buffer = IRenderTypeBuffer.immediate(Tessellator.getInstance().getBuilder());
-        TransformingVertexBuilder builder = new TransformingVertexBuilder(buffer.getBuffer(GuiHelperOld.TRANS_TYPE), matrixStack);
+        MultiBufferSource.BufferSource buffer = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
+        TransformingVertexConsumer builder = new TransformingVertexConsumer(buffer.getBuffer(GuiHelper.transColourType), matrixStack);
         GuiHelperOld.drawBorderedRect(builder, (xSize / 2D) - 10, 22, 20, 66, 1, 0x40FFFFFF, 0xFF00FFFF, 0);
         if (recipe.getIngredients().size() > 16) {
             GuiHelperOld.drawBorderedRect(builder, 3, 3, 18, 106, 1, 0x40FFFFFF, 0xFFAA00FF, 0);
             GuiHelperOld.drawBorderedRect(builder, 23, 3, 18, 106, 1, 0x40FFFFFF, 0xFFAA00FF, 0);
             GuiHelperOld.drawBorderedRect(builder, xSize - 21, 3, 18, 106, 1, 0x40FFFFFF, 0xFFAA00FF, 0);
             GuiHelperOld.drawBorderedRect(builder, xSize - 41, 3, 18, 106, 1, 0x40FFFFFF, 0xFFAA00FF, 0);
-        }
-        else {
+        } else {
             GuiHelperOld.drawBorderedRect(builder, 12, 3, 20, 106, 1, 0x40FFFFFF, 0xFFAA00FF, 0);
             GuiHelperOld.drawBorderedRect(builder, xSize - 32, 3, 20, 106, 1, 0x40FFFFFF, 0xFFAA00FF, 0);
         }

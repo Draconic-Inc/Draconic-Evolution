@@ -3,16 +3,16 @@ package com.brandon3055.draconicevolution.api.modules.lib;
 import com.brandon3055.brandonscore.api.power.IOPStorage;
 import com.brandon3055.brandonscore.api.power.IOPStorageModifiable;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.util.LazyOptional;
 
 /**
  * Created by brandon3055 on 19/4/20.
  */
 public class TileModuleContext extends ModuleContext {
-    private TileEntity tile;
+    private BlockEntity tile;
 
-    public TileModuleContext(TileEntity tile) {
+    public TileModuleContext(BlockEntity tile) {
         super();
         this.tile = tile;
     }
@@ -34,7 +34,7 @@ public class TileModuleContext extends ModuleContext {
     /**
      * @return the tile entity this module is installed in.
      */
-    public TileEntity getTile() {
+    public BlockEntity getTile() {
         return tile;
     }
 }

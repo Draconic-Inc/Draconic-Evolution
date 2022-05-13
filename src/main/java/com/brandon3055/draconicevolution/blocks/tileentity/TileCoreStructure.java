@@ -8,15 +8,15 @@ import com.brandon3055.brandonscore.lib.datamanager.DataFlags;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedString;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedVec3I;
 import com.brandon3055.draconicevolution.init.DEContent;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.registries.ForgeRegistries;
 
 /**
@@ -27,8 +27,8 @@ public class TileCoreStructure extends TileBCore implements IMultiBlockPart, IIn
     public final ManagedVec3I coreOffset = register(new ManagedVec3I("core_offset", new Vec3I(0, -1, 0), DataFlags.SAVE_NBT_SYNC_TILE, DataFlags.SYNC_ON_SET));
     public final ManagedString blockName = register(new ManagedString("block_name", DataFlags.SAVE_NBT_SYNC_TILE, DataFlags.SYNC_ON_SET));
 
-    public TileCoreStructure() {
-        super(DEContent.tile_core_structure);
+    public TileCoreStructure(BlockPos pos, BlockState state) {
+        super(DEContent.tile_core_structure, pos, state);
     }
 
     //region IMultiBlock
@@ -40,7 +40,7 @@ public class TileCoreStructure extends TileBCore implements IMultiBlockPart, IIn
 //
     @Override
     public IMultiBlockPart getController() {
-        TileEntity tile = level.getBlockEntity(getCorePos());
+        BlockEntity tile = level.getBlockEntity(getCorePos());
         if (tile instanceof IMultiBlockPart) {
             return (IMultiBlockPart) tile;
         }
@@ -65,7 +65,7 @@ public class TileCoreStructure extends TileBCore implements IMultiBlockPart, IIn
 
 
     @Override
-    public boolean onBlockActivated(BlockState state, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+    public boolean onBlockActivated(BlockState state, Player player, InteractionHand handIn, BlockHitResult hit) {
         IMultiBlockPart controller = getController();
 
         if (controller instanceof TileEnergyCoreStabilizer) {
@@ -93,7 +93,7 @@ public class TileCoreStructure extends TileBCore implements IMultiBlockPart, IIn
     }
 
     public void setController(IMultiBlockPart controller) {
-        coreOffset.set(new Vec3I(worldPosition.subtract(((TileEntity) controller).getBlockPos())));
+        coreOffset.set(new Vec3I(worldPosition.subtract(((BlockEntity) controller).getBlockPos())));
 //        DelayedTask.run(100, () -> dataManager.forceSync());
 //        ProcessHandler.addProcess(new DelayedTask.Task(10, () -> dataManager.forceSync()));
     }

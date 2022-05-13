@@ -12,14 +12,14 @@ import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -150,7 +150,7 @@ public class EnergyCoreStructure extends MultiBlockHelper {
     }
 
     @Override
-    public void forBlock(String name, World world, BlockPos pos, BlockPos startPos, int flag) {
+    public void forBlock(String name, Level world, BlockPos pos, BlockPos startPos, int flag) {
         if (name.isEmpty() || name.equals(DEContent.energy_core.getRegistryName().toString())) {
             return;
         }
@@ -169,7 +169,7 @@ public class EnergyCoreStructure extends MultiBlockHelper {
 
         else if (flag == FLAG_FORME) {
             world.setBlockAndUpdate(pos, DEContent.energy_core_structure.defaultBlockState());
-            TileEntity tile = world.getBlockEntity(pos);
+            BlockEntity tile = world.getBlockEntity(pos);
             if (tile instanceof TileCoreStructure) {
                 ((TileCoreStructure) tile).blockName.set(name);
                 ((TileCoreStructure) tile).setController(core);
@@ -181,7 +181,7 @@ public class EnergyCoreStructure extends MultiBlockHelper {
         //region Deactivate
 
         else if (flag == FLAG_REVERT) {
-            TileEntity tile = world.getBlockEntity(pos);
+            BlockEntity tile = world.getBlockEntity(pos);
             if (tile instanceof TileCoreStructure) {
                 ((TileCoreStructure) tile).revert();
             }
@@ -191,67 +191,67 @@ public class EnergyCoreStructure extends MultiBlockHelper {
     }
 
     @OnlyIn(Dist.CLIENT)
-    private void renderBuildGuide(String name, World world, BlockPos pos, BlockPos startPos, int flag) {
-        Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(name));
-
-        Vec3D corePos = Vec3D.getCenter(startPos.subtract(getCoreOffset(core.tier.get())));
-        double dist = Utils.getDistanceAtoB(corePos, Vec3D.getCenter(pos));
-        double pDist = corePos.distance(Minecraft.getInstance().player);
-
-        if (GuiEnergyCore.layer != -1) {
-            pDist = GuiEnergyCore.layer + 2;
-        }
-
-        BlockState atPos = world.getBlockState(pos);
-        boolean invalid = !world.isEmptyBlock(pos) && (atPos.getBlock().getRegistryName() == null || !atPos.getBlock().getRegistryName().toString().equals(name));
-
-        if (dist + 2 > pDist && !invalid) {
-            return;
-        }
-
-        if (name.equals("") || name.equals("air")) {
-            return;
-        }
-
-        BlockPos translation = new BlockPos(pos.getX() - startPos.getX(), pos.getY() - startPos.getY(), pos.getZ() - startPos.getZ());
-        translation = translation.offset(getCoreOffset(core.tier.get()));
-
-        int alpha = 0xFF000000;
-        if (invalid) {
-            alpha = (int) (((Math.sin(ClientEventHandler.elapsedTicks / 20D) + 1D) / 2D) * 255D) << 24;
-        }
-
-        BlockState state = block.defaultBlockState();
-
-        RenderSystem.pushMatrix();
-        RenderSystem.translated(translation.getX(), translation.getY(), translation.getZ());
-        if (invalid) {
-            RenderSystem.disableDepthTest();
-            RenderSystem.alphaFunc(GL11.GL_GREATER, 0F);
-            double s = Math.sin(ClientEventHandler.elapsedTicks / 10D) * 0.1D;
-            RenderSystem.scaled(0.8 + s, 0.8 + s, 0.8 + s);
-            RenderSystem.translated(0.1 - s, 0.1 - s, 0.1 - s);
-        }
-        else {
-            RenderSystem.scaled(0.8, 0.8, 0.8);
-            RenderSystem.translated(0.1, 0.1, 0.1);
-        }
-
-//        float brightnessX = GLX.lastBrightnessX;
-//        float brightnessY = GLX.lastBrightnessY;
-//        GLX.glMultiTexCoord2f(GLX.GL_TEXTURE1, 150f, 150f);
-
-//        List<BakedQuad> blockQuads = ModelUtils.getModelQuads(state);
-
-//        ModelUtils.renderQuadsARGB(blockQuads, (invalid ? 0x00500000 : 0x00404040) | alpha);
-
-        if (invalid) {
-            RenderSystem.enableDepthTest();
-            RenderSystem.alphaFunc(GL11.GL_GREATER, 0.1F);
-        }
-
-//        GLX.glMultiTexCoord2f(GLX.GL_TEXTURE1, brightnessX, brightnessY);
-        RenderSystem.popMatrix();
+    private void renderBuildGuide(String name, Level world, BlockPos pos, BlockPos startPos, int flag) {
+//        Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(name));
+//
+//        Vec3D corePos = Vec3D.getCenter(startPos.subtract(getCoreOffset(core.tier.get())));
+//        double dist = Utils.getDistanceAtoB(corePos, Vec3D.getCenter(pos));
+//        double pDist = corePos.distance(Minecraft.getInstance().player);
+//
+//        if (GuiEnergyCore.layer != -1) {
+//            pDist = GuiEnergyCore.layer + 2;
+//        }
+//
+//        BlockState atPos = world.getBlockState(pos);
+//        boolean invalid = !world.isEmptyBlock(pos) && (atPos.getBlock().getRegistryName() == null || !atPos.getBlock().getRegistryName().toString().equals(name));
+//
+//        if (dist + 2 > pDist && !invalid) {
+//            return;
+//        }
+//
+//        if (name.equals("") || name.equals("air")) {
+//            return;
+//        }
+//
+//        BlockPos translation = new BlockPos(pos.getX() - startPos.getX(), pos.getY() - startPos.getY(), pos.getZ() - startPos.getZ());
+//        translation = translation.offset(getCoreOffset(core.tier.get()));
+//
+//        int alpha = 0xFF000000;
+//        if (invalid) {
+//            alpha = (int) (((Math.sin(ClientEventHandler.elapsedTicks / 20D) + 1D) / 2D) * 255D) << 24;
+//        }
+//
+//        BlockState state = block.defaultBlockState();
+//
+//        RenderSystem.pushMatrix();
+//        RenderSystem.translated(translation.getX(), translation.getY(), translation.getZ());
+//        if (invalid) {
+//            RenderSystem.disableDepthTest();
+//            RenderSystem.alphaFunc(GL11.GL_GREATER, 0F);
+//            double s = Math.sin(ClientEventHandler.elapsedTicks / 10D) * 0.1D;
+//            RenderSystem.scaled(0.8 + s, 0.8 + s, 0.8 + s);
+//            RenderSystem.translated(0.1 - s, 0.1 - s, 0.1 - s);
+//        }
+//        else {
+//            RenderSystem.scaled(0.8, 0.8, 0.8);
+//            RenderSystem.translated(0.1, 0.1, 0.1);
+//        }
+//
+////        float brightnessX = GLX.lastBrightnessX;
+////        float brightnessY = GLX.lastBrightnessY;
+////        GLX.glMultiTexCoord2f(GLX.GL_TEXTURE1, 150f, 150f);
+//
+////        List<BakedQuad> blockQuads = ModelUtils.getModelQuads(state);
+//
+////        ModelUtils.renderQuadsARGB(blockQuads, (invalid ? 0x00500000 : 0x00404040) | alpha);
+//
+//        if (invalid) {
+//            RenderSystem.enableDepthTest();
+//            RenderSystem.alphaFunc(GL11.GL_GREATER, 0.1F);
+//        }
+//
+////        GLX.glMultiTexCoord2f(GLX.GL_TEXTURE1, brightnessX, brightnessY);
+//        RenderSystem.popMatrix();
     }
 
     //region Structure Builders
@@ -1099,8 +1099,8 @@ public class EnergyCoreStructure extends MultiBlockHelper {
     //endregion
 
     @Override
-    public boolean checkBlock(String name, World world, BlockPos pos) {
-        TileEntity tile = world.getBlockEntity(pos);
+    public boolean checkBlock(String name, Level world, BlockPos pos) {
+        BlockEntity tile = world.getBlockEntity(pos);
         if (tile instanceof TileCoreStructure && ((TileCoreStructure) tile).blockName.get().equals(name)) {
             return true;
         }
@@ -1115,7 +1115,7 @@ public class EnergyCoreStructure extends MultiBlockHelper {
     }
 
     @Override
-    public void setBlock(String name, World world, BlockPos pos) {
+    public void setBlock(String name, Level world, BlockPos pos) {
         if (!name.equals(DEContent.energy_core.getRegistryName().toString()) && name.length() > 0) {
             super.setBlock(name, world, pos);
         }

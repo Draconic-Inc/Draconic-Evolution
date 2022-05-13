@@ -11,23 +11,24 @@ import com.brandon3055.draconicevolution.api.capability.PropertyProvider;
 import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
 import com.brandon3055.draconicevolution.api.modules.data.AOEData;
 import com.brandon3055.draconicevolution.init.EquipCfg;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.play.client.CPlayerDiggingPacket;
-import net.minecraft.network.play.server.SChangeBlockPacket;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.protocol.game.ClientboundBlockUpdatePacket;
+import net.minecraft.network.protocol.game.ServerboundPlayerActionPacket;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.common.ForgeHooks;
 
 import java.util.List;
@@ -42,8 +43,8 @@ public interface IModularMiningTool extends IModularTieredItem {
     Random rand = new Random();
 
     @Override
-    default boolean onBlockStartBreak(ItemStack stack, BlockPos pos, PlayerEntity player) {
-        if (getEnergyStored(stack) < EquipCfg.energyHarvest && !player.abilities.instabuild) {
+    default boolean onBlockStartBreak(ItemStack stack, BlockPos pos, Player player) {
+        if (getEnergyStored(stack) < EquipCfg.energyHarvest && !player.getAbilities().instabuild) {
             return false;
         }
 
@@ -67,9 +68,9 @@ public interface IModularMiningTool extends IModularTieredItem {
         return false;
     }
 
-    default boolean breakAOEBlocks(ItemStack stack, BlockPos pos, int breakRadius, int breakDepth, PlayerEntity player, boolean aoeSafe) {
+    default boolean breakAOEBlocks(ItemStack stack, BlockPos pos, int breakRadius, int breakDepth, Player player, boolean aoeSafe) {
         BlockState blockState = player.level.getBlockState(pos);
-        if (!isToolEffective(stack, blockState)) {
+        if (!isCorrectToolForDrops(stack, blockState)) {
             return false;
         }
 
@@ -81,19 +82,19 @@ public interface IModularMiningTool extends IModularTieredItem {
         if (aoeSafe) {
             for (BlockPos block : aoeBlocks) {
                 if (!player.level.isEmptyBlock(block) && player.level.getBlockEntity(block) != null) {
-                    if (player.level.isClientSide) player.sendMessage(new TranslationTextComponent("item_prop.draconicevolution.aoe_safe.blocked"), Util.NIL_UUID);
-                    else ((ServerPlayerEntity) player).connection.send(new SChangeBlockPacket(((ServerPlayerEntity) player).level, block));
+                    if (player.level.isClientSide) player.sendMessage(new TranslatableComponent("item_prop.draconicevolution.aoe_safe.blocked"), Util.NIL_UUID);
+                    else ((ServerPlayer) player).connection.send(new ClientboundBlockUpdatePacket(((ServerPlayer) player).level, block));
                     return true;
                 }
             }
         }
 
         aoeBlocks.forEach(block -> breakAOEBlock(stack, player.level, block, player, refStrength, inventoryDynamic, rand.nextInt(Math.max(5, (breakRadius * breakDepth) / 5)) == 0));
-        List<ItemEntity> items = player.level.getEntitiesOfClass(ItemEntity.class, new AxisAlignedBB(aoe.key(), aoe.value().offset(1, 1, 1)));
+        List<ItemEntity> items = player.level.getEntitiesOfClass(ItemEntity.class, new AABB(aoe.key(), aoe.value().offset(1, 1, 1)));
         for (ItemEntity item : items) {
             if (!player.level.isClientSide && item.isAlive()) {
                 InventoryUtils.insertItem(inventoryDynamic, item.getItem(), false);
-                item.remove();
+                item.discard();
             }
         }
 
@@ -133,22 +134,22 @@ public interface IModularMiningTool extends IModularTieredItem {
         return true;
     }
 
-    static float blockStrength(BlockState state, PlayerEntity player, World world, BlockPos pos) {
+    static float blockStrength(BlockState state, Player player, Level world, BlockPos pos) {
         float hardness = state.getDestroySpeed(world, pos);
         if (hardness < 0.0F) {
             return 0.0F;
         }
 
-        if (!ForgeHooks.canHarvestBlock(state, player, world, pos)) {
+        if (!ForgeHooks.isCorrectToolForDrops(state, player)) {
             return player.getDigSpeed(state, pos) / hardness / 100F;
         } else {
             return player.getDigSpeed(state, pos) / hardness / 30F;
         }
     }
 
-    default Pair<BlockPos, BlockPos> getMiningArea(BlockPos pos, PlayerEntity player, int breakRadius, int breakDepth) {
-        BlockRayTraceResult traceResult = RayTracer.retrace(player);
-        if (traceResult.getType() == RayTraceResult.Type.MISS) {
+    default Pair<BlockPos, BlockPos> getMiningArea(BlockPos pos, Player player, int breakRadius, int breakDepth) {
+        BlockHitResult traceResult = RayTracer.retrace(player);
+        if (traceResult.getType() == HitResult.Type.MISS) {
             return new Pair<>(pos, pos);
         }
 
@@ -206,7 +207,7 @@ public interface IModularMiningTool extends IModularTieredItem {
         return new Pair<>(pos.offset(-xMin, yOffset - yMin, -zMin), pos.offset(xMax, yOffset + yMax, zMax));
     }
 
-    default void breakAOEBlock(ItemStack stack, World world, BlockPos pos, PlayerEntity player, float refStrength, InventoryDynamic inventory, boolean breakFX) {
+    default void breakAOEBlock(ItemStack stack, Level world, BlockPos pos, Player player, float refStrength, InventoryDynamic inventory, boolean breakFX) {
         if (world.isEmptyBlock(pos)) {
             return;
         }
@@ -215,32 +216,32 @@ public interface IModularMiningTool extends IModularTieredItem {
         FluidState fluidState = world.getFluidState(pos);
         Block block = state.getBlock();
 
-        if (!isToolEffective(stack, state)) {
+        if (!isCorrectToolForDrops(stack, state)) {
             return;
         }
 
         float strength = blockStrength(state, player, world, pos);
 
-        if (!ForgeHooks.canHarvestBlock(state, player, world, pos) || refStrength / strength > 10f) {
+        if (!ForgeHooks.isCorrectToolForDrops(state, player) || refStrength / strength > 10f) {
             return;
         }
 
-        if (player.abilities.instabuild) {
-            if (block.removedByPlayer(state, world, pos, player, false, fluidState)) {
+        if (player.getAbilities().instabuild) {
+            if (block.onDestroyedByPlayer(state, world, pos, player, false, fluidState)) {
                 block.destroy(world, pos, state);
             }
 
             if (!world.isClientSide) {
-                ((ServerPlayerEntity) player).connection.send(new SChangeBlockPacket(world, pos));
+                ((ServerPlayer) player).connection.send(new ClientboundBlockUpdatePacket(world, pos));
             }
             return;
         }
 
         if (!world.isClientSide) {
-            int xp = ForgeHooks.onBlockBreakEvent(world, ((ServerPlayerEntity) player).gameMode.getGameModeForPlayer(), (ServerPlayerEntity) player, pos);
+            int xp = ForgeHooks.onBlockBreakEvent(world, ((ServerPlayer) player).gameMode.getGameModeForPlayer(), (ServerPlayer) player, pos);
             if (xp == -1) {
-                ServerPlayerEntity mpPlayer = (ServerPlayerEntity) player;
-                mpPlayer.connection.send(new SChangeBlockPacket(world, pos));
+                ServerPlayer mpPlayer = (ServerPlayer) player;
+                mpPlayer.connection.send(new ClientboundBlockUpdatePacket(world, pos));
                 return;
             }
 
@@ -249,14 +250,14 @@ public interface IModularMiningTool extends IModularTieredItem {
             BlockToStackHelper.breakAndCollectWithPlayer(world, pos, inventory, player, xp);
             extractEnergy(player, stack, EquipCfg.energyHarvest);
         } else {
-            if (block.removedByPlayer(state, world, pos, player, true, fluidState)) {
+            if (block.onDestroyedByPlayer(state, world, pos, player, true, fluidState)) {
                 block.destroy(world, pos, state);
             }
 
             stack.mineBlock(world, state, pos, player);
 
-            if (Minecraft.getInstance().hitResult instanceof BlockRayTraceResult) {
-                Minecraft.getInstance().getConnection().send(new CPlayerDiggingPacket(CPlayerDiggingPacket.Action.STOP_DESTROY_BLOCK, pos, ((BlockRayTraceResult) Minecraft.getInstance().hitResult).getDirection()));
+            if (Minecraft.getInstance().hitResult instanceof BlockHitResult) {
+                Minecraft.getInstance().getConnection().send(new ServerboundPlayerActionPacket(ServerboundPlayerActionPacket.Action.STOP_DESTROY_BLOCK, pos, ((BlockHitResult) Minecraft.getInstance().hitResult).getDirection()));
             }
         }
     }

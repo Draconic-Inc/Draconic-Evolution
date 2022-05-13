@@ -18,22 +18,22 @@ import com.brandon3055.brandonscore.utils.MathUtils;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.client.render.particle.ParticleStarSpark;
 import com.brandon3055.draconicevolution.init.DEContent;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.nbt.StringNBT;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -43,7 +43,7 @@ import java.util.List;
 /**
  * Created by brandon3055 on 28/09/2016.
  */
-public class TileEntityDetector extends TileBCore implements IInteractTile, IRedstoneEmitter, ITickableTileEntity {
+public class TileEntityDetector extends TileBCore implements IInteractTile, IRedstoneEmitter {
 
     private final boolean advanced;
     public float hRot = 0;
@@ -83,13 +83,13 @@ public class TileEntityDetector extends TileBCore implements IInteractTile, IRed
     public List<String> playerNames = new ArrayList<>();//TODO Need this?
 
 
-    public TileEntityDetector() {
-        super(DEContent.tile_entity_detector);
+    public TileEntityDetector(BlockPos pos, BlockState state) {
+        super(DEContent.tile_entity_detector, pos, state);
         this.advanced = false;
     }
 
-    public TileEntityDetector(boolean advanced) {
-        super(DEContent.tile_entity_detector);
+    public TileEntityDetector(boolean advanced, BlockPos pos, BlockState state) {
+        super(DEContent.tile_entity_detector, pos, state);
         this.advanced = advanced;
         capManager.setManaged("energy", CapabilityOP.OP, opStorage).saveBoth().syncContainer();
 
@@ -143,11 +143,11 @@ public class TileEntityDetector extends TileBCore implements IInteractTile, IRed
     private void updateAnimation() {
         //region Targeting
 
-        List<Entity> entities = entityFilter.filterEntities(level.getEntitiesOfClass(Entity.class, new AxisAlignedBB(worldPosition, worldPosition.offset(1, 1, 1)).inflate(range.get(), range.get(), range.get())));
+        List<Entity> entities = entityFilter.filterEntities(level.getEntitiesOfClass(Entity.class, new AABB(worldPosition, worldPosition.offset(1, 1, 1)).inflate(range.get(), range.get(), range.get())));
         Entity closest = null;
         double closestDist = -1;
 
-        Vector3d posVec = new Vector3d(worldPosition.getX(), worldPosition.getY(), worldPosition.getZ());
+        Vec3 posVec = new Vec3(worldPosition.getX(), worldPosition.getY(), worldPosition.getZ());
         for (Entity entity : entities) {
             if (closest == null) {
                 closest = entity;
@@ -170,8 +170,8 @@ public class TileEntityDetector extends TileBCore implements IInteractTile, IRed
             double dist = Utils.getDistanceAtoB(Vec3D.getCenter(worldPosition), new Vec3D(closest));
 
 
-            float thRot = (float) MathHelper.atan2(zDist, xDist);
-            float tyRot = (float) MathHelper.atan2(dist, yDist);
+            float thRot = (float) Mth.atan2(zDist, xDist);
+            float tyRot = (float) Mth.atan2(dist, yDist);
 
             hRot = thRot;
 
@@ -213,7 +213,7 @@ public class TileEntityDetector extends TileBCore implements IInteractTile, IRed
         //region Effects
 
 
-        ParticleStarSpark spark = new ParticleStarSpark((ClientWorld)level, Vec3D.getCenter(worldPosition).add((-0.5 + level.random.nextDouble()) * 0.1, 0.005, (-0.5 + level.random.nextDouble()) * 0.1));
+        ParticleStarSpark spark = new ParticleStarSpark((ClientLevel)level, Vec3D.getCenter(worldPosition).add((-0.5 + level.random.nextDouble()) * 0.1, 0.005, (-0.5 + level.random.nextDouble()) * 0.1));
         spark.setSizeAndRandMotion(0.4F * (level.random.nextFloat() + 0.1), 0.02D, 0, 0.02D);
         spark.setMaxAge(30, 10);
         spark.setGravity(0.0002D);
@@ -226,7 +226,7 @@ public class TileEntityDetector extends TileBCore implements IInteractTile, IRed
         double x = i / 2;
         double z = i % 2;
 
-        spark = new ParticleStarSpark((ClientWorld)level, new Vec3D(worldPosition).add(0.14 + (x * 0.72), 0.17, 0.14 + (z * 0.72)));
+        spark = new ParticleStarSpark((ClientLevel)level, new Vec3D(worldPosition).add(0.14 + (x * 0.72), 0.17, 0.14 + (z * 0.72)));
         spark.setSizeAndRandMotion(0.3F * (level.random.nextFloat() + 0.2), 0.002D, 0, 0.002D);
         spark.setGravity(0.0002D);
         spark.sparkSize = 0.15F;
@@ -244,7 +244,7 @@ public class TileEntityDetector extends TileBCore implements IInteractTile, IRed
     }
 
     public void doScanPulse() {
-        List<Entity> entities = entityFilter.filterEntities(level.getEntitiesOfClass(Entity.class, new AxisAlignedBB(worldPosition, worldPosition.offset(1, 1, 1)).inflate(range.get(), range.get(), range.get())));
+        List<Entity> entities = entityFilter.filterEntities(level.getEntitiesOfClass(Entity.class, new AABB(worldPosition, worldPosition.offset(1, 1, 1)).inflate(range.get(), range.get(), range.get())));
 
         double min = rsMinDetection.get() - 1;
         double max = rsMaxDetection.get();
@@ -296,7 +296,7 @@ public class TileEntityDetector extends TileBCore implements IInteractTile, IRed
     }
 
     @Override
-    public void receivePacketFromClient(MCDataInput data, ServerPlayerEntity client, int id) {
+    public void receivePacketFromClient(MCDataInput data, ServerPlayer client, int id) {
         if (id <= 8) {
             boolean decrement = data.readBoolean();
             boolean shift = id % 2 == 1;
@@ -370,19 +370,19 @@ public class TileEntityDetector extends TileBCore implements IInteractTile, IRed
     //region Interfaces
 
     @Override
-    public boolean onBlockActivated(BlockState state, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+    public boolean onBlockActivated(BlockState state, Player player, InteractionHand handIn, BlockHitResult hit) {
         if (!level.isClientSide) {
 //            FMLNetworkHandler.openGui(player, DraconicEvolution.instance, GuiHandler.GUIID_ENTITY_DETECTOR, world, pos.getX(), pos.getY(), pos.getZ());
 
             MinecraftServer server = player.getServer();
             if (server != null) {
-                ListNBT list = new ListNBT();
+                ListTag list = new ListTag();
                 for (String name : server.getPlayerList().getPlayerNamesArray()) {
-                    list.add(StringNBT.valueOf(name));
+                    list.add(StringTag.valueOf(name));
                 }
-                CompoundNBT compound = new CompoundNBT();
+                CompoundTag compound = new CompoundTag();
                 compound.put("List", list);
-                sendPacketToClient((ServerPlayerEntity) player, output -> output.writeCompoundNBT(compound), 16);
+                sendPacketToClient((ServerPlayer) player, output -> output.writeCompoundNBT(compound), 16);
             }
         }
         return true;
@@ -405,7 +405,7 @@ public class TileEntityDetector extends TileBCore implements IInteractTile, IRed
     @Override
     public void receivePacketFromServer(MCDataInput data, int id) {
         if (id == 16) {
-            ListNBT list = data.readCompoundNBT().getList("List", 8);
+            ListTag list = data.readCompoundNBT().getList("List", 8);
             playerNames.clear();
             for (int i = 0; i < list.size(); i++) {
                 playerNames.add(list.getString(i));
@@ -423,11 +423,11 @@ public class TileEntityDetector extends TileBCore implements IInteractTile, IRed
 
     //endregion
 
-    private AxisAlignedBB AABB = new AxisAlignedBB(0, 0, 0, 1, 1, 1);
+    private AABB AABB = new AABB(0, 0, 0, 1, 1, 1);
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public AxisAlignedBB getRenderBoundingBox() {
-        return new AxisAlignedBB(worldPosition, worldPosition.offset(1, 1, 1));
+    public AABB getRenderBoundingBox() {
+        return new AABB(worldPosition, worldPosition.offset(1, 1, 1));
     }
 }

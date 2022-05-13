@@ -3,13 +3,13 @@ package com.brandon3055.draconicevolution.client.render.item;
 import codechicken.lib.render.item.IItemRenderer;
 import codechicken.lib.render.shader.ShaderProgram;
 import codechicken.lib.util.TransformUtils;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.entity.model.GenericHeadModel;
-import net.minecraft.client.renderer.model.IModelTransform;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.model.SkullModel;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 
 
 /**
@@ -17,7 +17,7 @@ import net.minecraft.util.ResourceLocation;
  */
 public class RenderItemEnderEnergyManipulator implements IItemRenderer {
 
-    private final GenericHeadModel skeletonHead = new GenericHeadModel(0, 0, 64, 32);
+//    private final SkullModel skeletonHead = new SkullModel(0, 0, 64, 32);
     private static final ResourceLocation WITHER_SKELETON_TEXTURES = new ResourceLocation("textures/entity/skeleton/wither_skeleton.png");
 //    private static ItemStack stack = new ItemStack(Items.SKULL, 1, 1);
 
@@ -41,12 +41,12 @@ public class RenderItemEnderEnergyManipulator implements IItemRenderer {
     //endregion
 
     @Override
-    public void renderItem(ItemStack stack, ItemCameraTransforms.TransformType transformType, MatrixStack mStack, IRenderTypeBuffer getter, int packedLight, int packedOverlay) {
+    public void renderItem(ItemStack stack, ItemTransforms.TransformType transformType, PoseStack mStack, MultiBufferSource getter, int packedLight, int packedOverlay) {
 
     }
 
     @Override
-    public IModelTransform getModelTransform() {
+    public ModelState getModelTransform() {
         return TransformUtils.DEFAULT_BLOCK;
     }
 

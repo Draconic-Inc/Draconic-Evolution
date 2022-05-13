@@ -22,10 +22,12 @@ import mezz.jei.api.registration.*;
 import mezz.jei.api.runtime.IJeiRuntime;
 import mezz.jei.util.ErrorUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.SmeltingRecipe;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
@@ -85,7 +87,7 @@ public class DEJEIPlugin implements IModPlugin {
         ErrorUtil.checkNotNull(fusionRecipeCategory, "fusionRecipeCategory");
         jeiHelpers = registration.getJeiHelpers();
 
-        ClientWorld world = Minecraft.getInstance().level;
+        ClientLevel world = Minecraft.getInstance().level;
         registration.addRecipes(world.getRecipeManager().getAllRecipesFor(DraconicAPI.FUSION_RECIPE_TYPE), RecipeCategoryUids.FUSION_CRAFTING);
     }
 
@@ -97,7 +99,7 @@ public class DEJEIPlugin implements IModPlugin {
         registration.addRecipeTransferHandler(new FusionRecipeTransferHelper(stackHelper, transferHelper), RecipeCategoryUids.FUSION_CRAFTING);
 
         //Draconium chest recipe movers
-        registration.addRecipeTransferHandler(new IRecipeTransferInfo<ContainerDraconiumChest>() {
+        registration.addRecipeTransferHandler(new IRecipeTransferInfo<ContainerDraconiumChest, CraftingRecipe>() {
             @Override
             public Class<ContainerDraconiumChest> getContainerClass() {
                 return ContainerDraconiumChest.class;
@@ -109,46 +111,56 @@ public class DEJEIPlugin implements IModPlugin {
             }
 
             @Override
-            public boolean canHandle(ContainerDraconiumChest container) {
+            public boolean canHandle(ContainerDraconiumChest container, CraftingRecipe recipe) {
                 return true;
             }
 
             @Override
-            public List<Slot> getRecipeSlots(ContainerDraconiumChest container) {
+            public List<Slot> getRecipeSlots(ContainerDraconiumChest container, CraftingRecipe recipe) {
                 return container.craftInputSlots;
             }
 
             @Override
-            public List<Slot> getInventorySlots(ContainerDraconiumChest container) {
+            public List<Slot> getInventorySlots(ContainerDraconiumChest container, CraftingRecipe recipe) {
                 return Stream.of(container.mainSlots, container.playerSlots).flatMap(Collection::stream).collect(Collectors.toList());
+            }
+
+            @Override
+            public Class<CraftingRecipe> getRecipeClass() {
+                return CraftingRecipe.class;
             }
         });
 
         //TODO Look into adding a custom transfer helper that utilizes all of the furnace slots.
-        registration.addRecipeTransferHandler(new IRecipeTransferInfo<ContainerDraconiumChest>() {
+        registration.addRecipeTransferHandler(new IRecipeTransferInfo<ContainerDraconiumChest, SmeltingRecipe>() {
             @Override
             public Class<ContainerDraconiumChest> getContainerClass() {
                 return ContainerDraconiumChest.class;
             }
 
             @Override
-            public ResourceLocation getRecipeCategoryUid() {
-                return VanillaRecipeCategoryUid.FURNACE;
-            }
-
-            @Override
-            public boolean canHandle(ContainerDraconiumChest container) {
+            public boolean canHandle(ContainerDraconiumChest container, SmeltingRecipe recipe) {
                 return true;
             }
 
             @Override
-            public List<Slot> getRecipeSlots(ContainerDraconiumChest container) {
+            public List<Slot> getRecipeSlots(ContainerDraconiumChest container, SmeltingRecipe recipe) {
                 return container.furnaceInputSlots;
             }
 
             @Override
-            public List<Slot> getInventorySlots(ContainerDraconiumChest container) {
+            public List<Slot> getInventorySlots(ContainerDraconiumChest container, SmeltingRecipe recipe) {
                 return Stream.of(container.mainSlots, container.playerSlots).flatMap(Collection::stream).collect(Collectors.toList());
+            }
+
+            @Override
+            public Class<SmeltingRecipe> getRecipeClass() {
+                return SmeltingRecipe.class;
+            }
+
+            @Override
+            public ResourceLocation getRecipeCategoryUid() {
+                return VanillaRecipeCategoryUid.FURNACE;
             }
         });
 

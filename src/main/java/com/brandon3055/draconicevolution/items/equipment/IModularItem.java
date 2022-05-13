@@ -24,37 +24,31 @@ import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleHostImpl;
 import com.brandon3055.draconicevolution.api.modules.lib.StackModuleContext;
 import com.brandon3055.draconicevolution.client.keybinding.KeyBindings;
-import com.brandon3055.draconicevolution.entity.PersistentItemEntity;
 import com.brandon3055.draconicevolution.init.EquipCfg;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.material.Material;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.attributes.Attribute;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.ToolType;
 import net.minecraftforge.common.extensions.IForgeItem;
 import net.minecraftforge.energy.CapabilityEnergy;
 
 import javax.annotation.Nullable;
-import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by brandon3055 on 16/6/20
@@ -64,7 +58,7 @@ public interface IModularItem extends IForgeItem, IFusionDataTransfer {
     TechLevel getTechLevel();
 
     @Override
-    default MultiCapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundNBT nbt) {
+    default MultiCapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
         if (DECapabilities.MODULE_HOST_CAPABILITY == null || DECapabilities.PROPERTY_PROVIDER_CAPABILITY == null || DECapabilities.OP_STORAGE == null) {
             return null;
         }
@@ -111,21 +105,21 @@ public interface IModularItem extends IForgeItem, IFusionDataTransfer {
     ModularOPStorage createOPStorage(ItemStack stack, ModuleHostImpl host);
 
     @OnlyIn(Dist.CLIENT)
-    default void addModularItemInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    default void addModularItemInformation(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         if (!Screen.hasShiftDown()) {
-            tooltip.add(new TranslationTextComponent("[Modular Item]").withStyle(TextFormatting.BLUE));
+            tooltip.add(new TranslatableComponent("[Modular Item]").withStyle(ChatFormatting.BLUE));
         }
         EnergyUtils.addEnergyInfo(stack, tooltip);
         if (EnergyUtils.isEnergyItem(stack) && EnergyUtils.getMaxEnergyStored(stack) == 0) {
-            tooltip.add(new TranslationTextComponent("modular_item.draconicevolution.requires_energy").withStyle(TextFormatting.RED));
-            if (KeyBindings.toolModules != null && KeyBindings.toolModules.getTranslatedKeyMessage() != null){
-                tooltip.add(new TranslationTextComponent("modular_item.draconicevolution.requires_energy_press", KeyBindings.toolModules.getTranslatedKeyMessage().getString()).withStyle(TextFormatting.BLUE));
+            tooltip.add(new TranslatableComponent("modular_item.draconicevolution.requires_energy").withStyle(ChatFormatting.RED));
+            if (KeyBindings.toolModules != null && KeyBindings.toolModules.getTranslatedKeyMessage() != null) {
+                tooltip.add(new TranslatableComponent("modular_item.draconicevolution.requires_energy_press", KeyBindings.toolModules.getTranslatedKeyMessage().getString()).withStyle(ChatFormatting.BLUE));
             }
         }
     }
 
     @Override
-    default Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlotType slot, ItemStack stack) {
+    default Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
         Multimap<Attribute, AttributeModifier> map = HashMultimap.create();
 //        if (stack.getCapability(MODULE_HOST_CAPABILITY).isPresent()) { //Because vanilla calls this before capabilities are registered.
 //            ModuleHost host = stack.getCapability(MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new);
@@ -134,7 +128,7 @@ public interface IModularItem extends IForgeItem, IFusionDataTransfer {
         return map;
     }
 
-    default void handleTick(ItemStack stack, LivingEntity entity, @Nullable EquipmentSlotType slot, boolean inEquipModSlot) {
+    default void handleTick(ItemStack stack, LivingEntity entity, @Nullable EquipmentSlot slot, boolean inEquipModSlot) {
         ModuleHost host = stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new);
         StackModuleContext context = new StackModuleContext(stack, entity, slot).setInEquipModSlot(inEquipModSlot);
         host.handleTick(context);
@@ -143,13 +137,13 @@ public interface IModularItem extends IForgeItem, IFusionDataTransfer {
     /**
      * This is used to determine if a modular item is in a valid slot for its modules to operate.
      *
-     * @param stack        The stack
-     * @param slot         The equipment slot or null if this item is in the players general main inventory.
-     * @param inEquipSlot  In equipment slot such as curio
+     * @param stack       The stack
+     * @param slot        The equipment slot or null if this item is in the players general main inventory.
+     * @param inEquipSlot In equipment slot such as curio
      * @return true if this stack is in a valid slot.
      */
-    default boolean isEquipped(ItemStack stack, @Nullable EquipmentSlotType slot, boolean inEquipSlot) {
-        if (this instanceof IModularArmor) return (slot != null && slot.getType() == EquipmentSlotType.Group.ARMOR) || inEquipSlot;
+    default boolean isEquipped(ItemStack stack, @Nullable EquipmentSlot slot, boolean inEquipSlot) {
+        if (this instanceof IModularArmor) return (slot != null && slot.getType() == EquipmentSlot.Type.ARMOR) || inEquipSlot;
         return true;
     }
 
@@ -180,46 +174,30 @@ public interface IModularItem extends IForgeItem, IFusionDataTransfer {
             multiplier *= propVal;
         }
 
-        if (isToolEffective(stack, state) && (multiplier > 0 || propVal == 0)) {
+        if (isCorrectToolForDrops(stack, state) && (multiplier > 0 || propVal == 0)) {
             return getBaseEfficiency() * multiplier;
         } else {
             return propVal == 0 ? 0 : 1F;
         }
     }
 
-    default boolean isToolEffective(ItemStack stack, BlockState state) {
-        return getToolTypes(stack).stream().anyMatch(state::isToolEffective) || overrideEffectivity(state.getMaterial()) || effectiveBlockAdditions().contains(state.getBlock());
+    @Override
+    default boolean isCorrectToolForDrops(ItemStack stack, BlockState state) {
+        return IForgeItem.super.isCorrectToolForDrops(stack, state);
     }
 
     default float getBaseEfficiency() {
         return 1F;
     }
 
-    /**
-     * Returns a list of "additional blocks" that this tool is effective against. This probably isn't required but vanilla does it so why not!
-     * This overrides the default {@link Block#isToolEffective(BlockState, ToolType)} check.
-     */
-    default Set<Block> effectiveBlockAdditions() {
-        return Collections.emptySet();
-    }
-
-    /**
-     * I use this for things like allowing the pickaxe to mine glass at full speed.
-     * And the staff which can mine anything at full speed
-     * This overrides the default {@link Block#isToolEffective(BlockState, ToolType)} check.
-     */
-    default boolean overrideEffectivity(Material material) {
-        return false;
-    }
-
     @Nullable
     @Override
-    default CompoundNBT getShareTag(ItemStack stack) {
+    default CompoundTag getShareTag(ItemStack stack) {
         return DECapabilities.writeToShareTag(stack, stack.getTag());
     }
 
     @Override
-    default void readShareTag(ItemStack stack, @Nullable CompoundNBT nbt) {
+    default void readShareTag(ItemStack stack, @Nullable CompoundTag nbt) {
         stack.setTag(nbt);
         DECapabilities.readFromShareTag(stack, nbt);
     }
@@ -228,8 +206,8 @@ public interface IModularItem extends IForgeItem, IFusionDataTransfer {
         return EnergyUtils.getEnergyStored(stack);
     }
 
-    default long extractEnergy(PlayerEntity player, ItemStack stack, long amount) {
-        if (player != null && player.abilities.instabuild) {
+    default long extractEnergy(Player player, ItemStack stack, long amount) {
+        if (player != null && player.getAbilities().instabuild) {
             return amount;
         }
         IOPStorage storage = EnergyUtils.getStorage(stack);
@@ -241,25 +219,20 @@ public interface IModularItem extends IForgeItem, IFusionDataTransfer {
         return 0;
     }
 
-    @Override
-    default boolean showDurabilityBar(ItemStack stack) {
+    default boolean damageBarVisible(ItemStack stack) {
         long max = EnergyUtils.getMaxEnergyStored(stack);
         return max > 0 && EnergyUtils.getEnergyStored(stack) < max;
     }
 
-    @Override
-    default double getDurabilityForDisplay(ItemStack stack) {
-        return 1D - ((double) EnergyUtils.getEnergyStored(stack) / EnergyUtils.getMaxEnergyStored(stack));
+    default int damageBarWidth(ItemStack stack) {
+        float charge = (float) EnergyUtils.getEnergyStored(stack) / EnergyUtils.getMaxEnergyStored(stack);
+        return Math.round(13.0F * charge);
     }
 
-    @Override
-    default boolean hasCustomEntity(ItemStack stack) {
-        return true;
-    }
-
-    @Nullable
-    @Override
-    default Entity createEntity(World world, Entity location, ItemStack itemstack) {
-        return new PersistentItemEntity(world, location, itemstack);
+    default int damageBarColour(ItemStack stack) {
+        float maxEnergy = EnergyUtils.getMaxEnergyStored(stack);
+        float energy = EnergyUtils.getEnergyStored(stack);
+        float f = Math.max(0.0F, (energy) / maxEnergy);
+        return Mth.hsvToRgb(f / 3.0F, 1.0F, 1.0F);
     }
 }

@@ -2,30 +2,30 @@ package com.brandon3055.draconicevolution.client.render.tile;
 
 import com.brandon3055.draconicevolution.blocks.PlacedItem;
 import com.brandon3055.draconicevolution.blocks.tileentity.TilePlacedItem;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Quaternion;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.vector.Quaternion;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
 
 /**
  * Created by brandon3055 on 25/07/2016.
  */
-public class RenderTilePlacedItem extends TileEntityRenderer<TilePlacedItem> {
+public class RenderTilePlacedItem implements BlockEntityRenderer<TilePlacedItem> {
 
-    public RenderTilePlacedItem(TileEntityRendererDispatcher rendererDispatcherIn) {
-        super(rendererDispatcherIn);
+    public RenderTilePlacedItem(BlockEntityRendererProvider.Context context) {
     }
 
     @Override
-    public void render(TilePlacedItem tile, float partialTicks, MatrixStack mStack, IRenderTypeBuffer getter, int packedLight, int packedOverlay) {
+    public void render(TilePlacedItem tile, float partialTicks, PoseStack mStack, MultiBufferSource getter, int packedLight, int packedOverlay) {
         Minecraft mc = Minecraft.getInstance();
 
         List<ItemStack> stackList = tile.getStacksInOrder();
@@ -36,6 +36,7 @@ public class RenderTilePlacedItem extends TileEntityRenderer<TilePlacedItem> {
         Direction direction = tile.getBlockState().getValue(PlacedItem.FACING);
         rotateToSide(direction, mStack);
 
+        int posLong = (int)tile.getBlockPos().asLong();
         for (int i = 0; i < stackList.size(); i++) {
             ItemStack stack = stackList.get(i);
             mStack.pushPose();
@@ -50,7 +51,7 @@ public class RenderTilePlacedItem extends TileEntityRenderer<TilePlacedItem> {
                 mStack.mulPose(new Quaternion(90, 0, 0, true));
                 mStack.scale(scale, scale, scale);
             }
-            mc.getItemRenderer().renderStatic(stack, ItemCameraTransforms.TransformType.FIXED, packedLight, packedOverlay, mStack, getter);
+            mc.getItemRenderer().renderStatic(stack, ItemTransforms.TransformType.FIXED, packedLight, packedOverlay, mStack, getter, posLong + i);
             mStack.popPose();
             mStack.translate(0, 0.00005F, 0); //Adds a slight offset to avoid z-fighting when items overlap
         }
@@ -58,7 +59,7 @@ public class RenderTilePlacedItem extends TileEntityRenderer<TilePlacedItem> {
         mStack.popPose();
     }
 
-    private void rotateToSide(Direction direction, MatrixStack mStack) {
+    private void rotateToSide(Direction direction, PoseStack mStack) {
         switch (direction) {
             case DOWN:
                 mStack.mulPose(new Quaternion(180, 0, 0, true));

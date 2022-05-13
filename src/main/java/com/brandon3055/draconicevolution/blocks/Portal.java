@@ -1,35 +1,38 @@
 package com.brandon3055.draconicevolution.blocks;
 
 import com.brandon3055.brandonscore.blocks.BlockBCore;
+import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.utils.FacingUtils;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileDislocatorReceptacle;
 import com.brandon3055.draconicevolution.blocks.tileentity.TilePortal;
-import com.brandon3055.draconicevolution.blocks.tileentity.TilePortalClient;
 import com.brandon3055.draconicevolution.init.DEContent;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.EnumProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorldReader;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.Random;
 
 /**
  * Created by brandon3055 on 16/07/2016.
  */
-public class Portal extends BlockBCore {
+public class Portal extends BlockBCore implements EntityBlock {
 
     public static final EnumProperty<Direction.Axis> AXIS = EnumProperty.create("axis", Direction.Axis.class);
     public static final BooleanProperty DRAW_UP = BooleanProperty.create("drawup");
@@ -47,32 +50,31 @@ public class Portal extends BlockBCore {
                 .setValue(DRAW_EAST, true)
                 .setValue(DRAW_WEST, true)
                 .setValue(VISIBLE, true));
-    }
-
-    @Override
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
-        builder.add(AXIS, DRAW_UP, DRAW_DOWN, DRAW_EAST, DRAW_WEST, VISIBLE);
-    }
-
-    @Override
-    public boolean hasTileEntity(BlockState state) {
-        return true;
+        setBlockEntity(() -> DEContent.tile_portal, false);
     }
 
     @Nullable
     @Override
-    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        return world instanceof ServerWorld ? new TilePortal() : new TilePortalClient();
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> entityType) {
+        if (level.isClientSide() && entityType == DEContent.tile_portal) {
+            return (e, e2, e3, tile) -> ((TileBCore) tile).tick();
+        }
+        return null;
     }
 
     @Override
-    public VoxelShape getShape(BlockState p_220053_1_, IBlockReader p_220053_2_, BlockPos p_220053_3_, ISelectionContext p_220053_4_) {
-        return VoxelShapes.empty();
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(AXIS, DRAW_UP, DRAW_DOWN, DRAW_EAST, DRAW_WEST, VISIBLE);
     }
 
     @Override
-    public boolean canSurvive(BlockState state, IWorldReader world, BlockPos pos) {
-        TileEntity tile = world.getBlockEntity(pos);
+    public VoxelShape getShape(BlockState p_220053_1_, BlockGetter p_220053_2_, BlockPos p_220053_3_, CollisionContext p_220053_4_) {
+        return Shapes.empty();
+    }
+
+    @Override
+    public boolean canSurvive(BlockState state, LevelReader world, BlockPos pos) {
+        BlockEntity tile = world.getBlockEntity(pos);
         if (!(tile instanceof TilePortal)) {
             return false;
         }
@@ -96,36 +98,36 @@ public class Portal extends BlockBCore {
     }
 
     @Override
-    public void tick(BlockState state, ServerWorld world, BlockPos pos, Random rand) {
+    public void tick(BlockState state, ServerLevel world, BlockPos pos, Random rand) {
         if (!state.canSurvive(world, pos)) {
             world.removeBlock(pos, false);
         }
     }
 
     @Override
-    public void neighborChanged(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
+    public void neighborChanged(BlockState state, Level world, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
         if (world.isClientSide) return;
 
         if (!canSurvive(state, world, pos)) {
-            TileEntity tile = world.getBlockEntity(pos);
+            BlockEntity tile = world.getBlockEntity(pos);
             if (tile instanceof TileDislocatorReceptacle) {
                 ((TileDislocatorReceptacle) tile).deactivate();
             }
-            world.getBlockTicks().scheduleTick(pos, this, 1);
+            world.scheduleTick(pos, this, 1);
         }
 
         world.setBlockAndUpdate(pos, getPlacementState(state, world, pos));
     }
 
     @Override
-    public void entityInside(BlockState state, World world, BlockPos pos, Entity entity) {
-        TileEntity tile = world.getBlockEntity(pos);
+    public void entityInside(BlockState state, Level world, BlockPos pos, Entity entity) {
+        BlockEntity tile = world.getBlockEntity(pos);
         if (tile instanceof TilePortal && ((TilePortal) tile).getController() != null) {
             ((TilePortal) tile).getController().handleEntityTeleport(entity);
         }
     }
 
-    public static BlockState getPlacementState(BlockState state, World world, BlockPos pos) {
+    public static BlockState getPlacementState(BlockState state, Level world, BlockPos pos) {
         switch (state.getValue(AXIS)) {
             case Z:
                 return state.setValue(DRAW_UP, isFrame(world, pos.above()))
@@ -146,12 +148,12 @@ public class Portal extends BlockBCore {
         return state;
     }
 
-    private static boolean isFrame(IWorldReader world, BlockPos pos) {
+    private static boolean isFrame(LevelReader world, BlockPos pos) {
         BlockState state = world.getBlockState(pos);
         return state.getBlock() == DEContent.infused_obsidian || state.getBlock() == DEContent.dislocator_receptacle;
     }
 
-    private static boolean isPortal(IWorldReader world, BlockPos pos) {
+    private static boolean isPortal(LevelReader world, BlockPos pos) {
         BlockState state = world.getBlockState(pos);
         return state.getBlock() == DEContent.portal;
     }

@@ -9,29 +9,32 @@ import com.brandon3055.draconicevolution.lib.WTFException;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.command.CommandException;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.tags.ITag;
-import net.minecraft.tileentity.ChestTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceContext;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.commands.CommandRuntimeException;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.ChestBlockEntity;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.registries.tags.ITag;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -39,12 +42,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Created by brandon3055 on 23/06/2017.
  */
 public class CommandMakeRecipe {
-    public static void register(CommandDispatcher<CommandSource> dispatcher) {
+    public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(
                 Commands.literal("gen_recipe")
                         .requires(cs -> cs.hasPermission(3))
@@ -55,11 +59,11 @@ public class CommandMakeRecipe {
         );
     }
 
-    private static int genFusion(CommandContext<CommandSource> ctx) throws CommandSyntaxException {
-        ServerPlayerEntity player = ctx.getSource().getPlayerOrException();
-        BlockRayTraceResult result = RayTracer.retrace(player, 10, RayTraceContext.BlockMode.OUTLINE);
-        if (result.getType() != RayTraceResult.Type.BLOCK) {
-            throw new CommandException(new StringTextComponent("No chest found.\nYou must be looking at a single chest with the recipe laid out on the far left and the result in the center slot.\nFor fusion recipes all slots other than center are ingredients except row 2, slot 2 which is the catalyst."));
+    private static int genFusion(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+        ServerPlayer player = ctx.getSource().getPlayerOrException();
+        BlockHitResult result = RayTracer.retrace(player, 10, ClipContext.Block.OUTLINE);
+        if (result.getType() != HitResult.Type.BLOCK) {
+            throw new CommandRuntimeException(new TextComponent("No chest found.\nYou must be looking at a single chest with the recipe laid out on the far left and the result in the center slot.\nFor fusion recipes all slots other than center are ingredients except row 2, slot 2 which is the catalyst."));
         }
 
         BlockPos pos = result.getBlockPos();
@@ -68,7 +72,7 @@ public class CommandMakeRecipe {
 
         while (player.getOffhandItem().getItem() == Items.GOLDEN_APPLE) {
             pos = pos.above();
-            if (player.level.getBlockEntity(pos) instanceof ChestTileEntity) {
+            if (player.level.getBlockEntity(pos) instanceof ChestBlockEntity) {
                 handler = getInventory(player.level, pos);
                 recipe += "\n\n" + getFusionRecipe(handler);
             } else {
@@ -77,12 +81,12 @@ public class CommandMakeRecipe {
         }
 
         BrandonsCore.proxy.setClipboardString(recipe);
-        ChatHelper.sendMessage(player, new StringTextComponent("Recipe copied to clipboard"));
+        ChatHelper.sendMessage(player, new TextComponent("Recipe copied to clipboard"));
         return 0;
     }
 
-    private static int genCrafting(CommandContext<CommandSource> ctx) throws CommandSyntaxException {
-        ServerPlayerEntity player = ctx.getSource().getPlayerOrException();
+    private static int genCrafting(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+        ServerPlayer player = ctx.getSource().getPlayerOrException();
 //        IItemHandler handler = getInventory(player.);
         return 0;
     }
@@ -104,9 +108,9 @@ public class CommandMakeRecipe {
         }
 
         if (result.isEmpty()) {
-            throw new CommandException(new StringTextComponent("Result slot (center of chest) is empty"));
+            throw new CommandRuntimeException(new TextComponent("Result slot (center of chest) is empty"));
         } else if (catalyst.isEmpty()) {
-            throw new CommandException(new StringTextComponent("Catalyst slot (row 2 column 2) is empty"));
+            throw new CommandRuntimeException(new TextComponent("Catalyst slot (row 2 column 2) is empty"));
         }
 
         StringBuilder recipeCode = new StringBuilder();
@@ -158,7 +162,7 @@ public class CommandMakeRecipe {
         }
         catch (Throwable e) {
             e.printStackTrace();
-            throw new CommandException(new StringTextComponent("An error occurred while getting items"));
+            throw new CommandRuntimeException(new TextComponent("An error occurred while getting items"));
         }
         return names;
     }
@@ -167,19 +171,19 @@ public class CommandMakeRecipe {
         Map<ResourceLocation, String> names = new HashMap<>();
         try {
             for (Field field : Tags.Items.class.getFields()) {
-                if (ITag.INamedTag.class.isAssignableFrom(field.getType()) && (field.getModifiers() & (Modifier.PUBLIC | Modifier.STATIC)) != 0) {
-                    names.put(((ITag.INamedTag) field.get(null)).getName(), "Tags.Items." + field.getName());
+                if (TagKey.class.isAssignableFrom(field.getType()) && (field.getModifiers() & (Modifier.PUBLIC | Modifier.STATIC)) != 0) {
+                    names.put(((TagKey) field.get(null)).location(), "Tags.Items." + field.getName());
                 }
             }
             for (Field field : DETags.Items.class.getFields()) {
-                if (ITag.INamedTag.class.isAssignableFrom(field.getType()) && (field.getModifiers() & (Modifier.PUBLIC | Modifier.STATIC)) != 0) {
-                    names.put(((ITag.INamedTag) field.get(null)).getName(), "DETags.Items." + field.getName());
+                if (TagKey.class.isAssignableFrom(field.getType()) && (field.getModifiers() & (Modifier.PUBLIC | Modifier.STATIC)) != 0) {
+                    names.put(((TagKey) field.get(null)).location(), "DETags.Items." + field.getName());
                 }
             }
         }
         catch (Throwable e) {
             e.printStackTrace();
-            throw new CommandException(new StringTextComponent("An error occurred while getting tags"));
+            throw new CommandRuntimeException(new TextComponent("An error occurred while getting tags"));
         }
         List<String> tagPrefixes = new ArrayList<>();
         tagPrefixes.add("forge:dusts/");
@@ -215,7 +219,7 @@ public class CommandMakeRecipe {
                 return fields.get(key);
             }
         }
-        throw new CommandException(new StringTextComponent("Failed to locate item field for key: " + key));
+        throw new CommandRuntimeException(new TextComponent("Failed to locate item field for key: " + key));
     }
 
     public static String getItem(ItemStack stack) {
@@ -224,7 +228,7 @@ public class CommandMakeRecipe {
 
     public static String getIngredient(ItemStack stack, boolean ignoreSize) {
         Map<ResourceLocation, String> tags = getTags();
-        for (ResourceLocation tag : stack.getItem().getTags()) {
+        for (ResourceLocation tag : stack.getTags().map(TagKey::location).toList()) {
             if (tags.containsKey(tag)) {
                 if (stack.getCount() > 1 && !ignoreSize) {
                     return "IngredientStack.fromTag(" + tags.get(tag) + ", " + stack.getCount() + ")";
@@ -248,19 +252,19 @@ public class CommandMakeRecipe {
         return getIngredient(stack, false);
     }
 
-    private static IItemHandler getInventory(World world, BlockPos pos) {
-        TileEntity tile = world.getBlockEntity(pos);
-        if (tile instanceof ChestTileEntity) {
+    private static IItemHandler getInventory(Level world, BlockPos pos) {
+        BlockEntity tile = world.getBlockEntity(pos);
+        if (tile instanceof ChestBlockEntity) {
             LazyOptional<IItemHandler> optional = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
             if (optional.isPresent()) {
                 IItemHandler handler = optional.orElseThrow(WTFException::new);
                 if (handler.getSlots() != 27) {
-                    throw new CommandException(new StringTextComponent("Must be a single chest with result in center slot"));
+                    throw new CommandRuntimeException(new TextComponent("Must be a single chest with result in center slot"));
                 }
                 return handler;
             }
         }
-        throw new CommandException(new StringTextComponent("No chest found.\nYou must be looking at a single chest with the recipe laid out on the far left and the result in the center slot.\nFor fusion recipes all slots other than center are ingredients except row 2, slot 2 which is the catalyst."));
+        throw new CommandRuntimeException(new TextComponent("No chest found.\nYou must be looking at a single chest with the recipe laid out on the far left and the result in the center slot.\nFor fusion recipes all slots other than center are ingredients except row 2, slot 2 which is the catalyst."));
     }
 
 }

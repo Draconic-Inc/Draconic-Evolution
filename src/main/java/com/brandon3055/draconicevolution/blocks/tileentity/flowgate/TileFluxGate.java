@@ -1,25 +1,26 @@
 package com.brandon3055.draconicevolution.blocks.tileentity.flowgate;
 
 import codechicken.lib.data.MCDataInput;
-import codechicken.lib.util.SneakyUtils;
 import com.brandon3055.brandonscore.api.power.IOPStorage;
 import com.brandon3055.brandonscore.capability.CapabilityOP;
 import com.brandon3055.brandonscore.inventory.ContainerBCTile;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.inventory.GuiLayoutFactories;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockRayTraceResult;
+import net.covers1624.quack.util.SneakyUtils;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.network.NetworkHooks;
 
 /**
  * Created by brandon3055 on 15/11/2016.
@@ -29,8 +30,8 @@ public class TileFluxGate extends TileFlowGate {
     private OPRegulator inputReg = new OPRegulator(this, true);
     private OPRegulator outputReg = new OPRegulator(this, false);
 
-    public TileFluxGate() {
-        super(DEContent.tile_flux_gate);
+    public TileFluxGate(BlockPos pos, BlockState state) {
+        super(DEContent.tile_flux_gate, pos, state);
     }
 
     @Override
@@ -45,8 +46,8 @@ public class TileFluxGate extends TileFlowGate {
     }
 
     @Override
-    public void clearCache() {
-        super.clearCache();
+    public void setBlockState(BlockState p_155251_) {
+        super.setBlockState(p_155251_);
         updateCapabilities();
     }
 
@@ -65,20 +66,20 @@ public class TileFluxGate extends TileFlowGate {
     }
 
     @Override
-    public Container createMenu(int id, PlayerInventory inventory, PlayerEntity player) {
+    public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
         return new ContainerBCTile<TileFlowGate>(DEContent.container_flow_gate, id, player.inventory, this, SneakyUtils.unsafeCast(GuiLayoutFactories.PLAYER_ONLY_LAYOUT));
     }
 
     @Override
-    public boolean onBlockActivated(BlockState state, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
-        if (player instanceof ServerPlayerEntity) {
-            NetworkHooks.openGui((ServerPlayerEntity) player, this, worldPosition);
+    public boolean onBlockActivated(BlockState state, Player player, InteractionHand handIn, BlockHitResult hit) {
+        if (player instanceof ServerPlayer) {
+            NetworkHooks.openGui((ServerPlayer) player, this, worldPosition);
         }
         return true;
     }
 
     @Override
-    public void receivePacketFromClient(MCDataInput data, ServerPlayerEntity client, int id) {
+    public void receivePacketFromClient(MCDataInput data, ServerPlayer client, int id) {
         if (flowOverridden.get()) {
             return;
         }
@@ -92,12 +93,10 @@ public class TileFluxGate extends TileFlowGate {
 
             if (id == 0) {
                 minFlow.set(l);
-            }
-            else if (id == 1) {
+            } else if (id == 1) {
                 maxFlow.set(l);
             }
-        }
-        catch (NumberFormatException ignored) {
+        } catch (NumberFormatException ignored) {
         }
     }
 
@@ -114,7 +113,7 @@ public class TileFluxGate extends TileFlowGate {
         @Override
         public long receiveOP(long maxReceive, boolean simulate) {
             if (isInput) {
-                TileEntity target = tile.getTarget();
+                BlockEntity target = tile.getTarget();
 
                 if (target == null) {
                     return 0;
@@ -136,7 +135,7 @@ public class TileFluxGate extends TileFlowGate {
         @Override
         public long extractOP(long maxExtract, boolean simulate) {
             if (!isInput) {
-                TileEntity source = tile.getSource();
+                BlockEntity source = tile.getSource();
 
                 if (source == null) {
                     return 0;
@@ -161,7 +160,7 @@ public class TileFluxGate extends TileFlowGate {
                 return 0;
             }
 
-            TileEntity target = tile.getTarget();
+            BlockEntity target = tile.getTarget();
 
             if (target == null) {
                 return 0;
@@ -176,7 +175,7 @@ public class TileFluxGate extends TileFlowGate {
                 return 0;
             }
 
-            TileEntity target = tile.getTarget();
+            BlockEntity target = tile.getTarget();
 
             if (target == null) {
                 return 0;

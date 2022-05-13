@@ -7,33 +7,34 @@ import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorSt
 import com.brandon3055.draconicevolution.client.model.ModelReactorEnergyInjector;
 import com.brandon3055.draconicevolution.client.model.ModelReactorStabilizerCore;
 import com.brandon3055.draconicevolution.client.model.ModelReactorStabilizerRing;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Quaternion;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Quaternion;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * Created by brandon3055 on 20/01/2017.
  */
-public class RenderTileReactorComponent extends TileEntityRenderer<TileReactorComponent> {
-    public RenderTileReactorComponent(TileEntityRendererDispatcher rendererDispatcherIn) {
-        super(rendererDispatcherIn);
-    }
-
+public class RenderTileReactorComponent implements BlockEntityRenderer<TileReactorComponent> {
     public static final ResourceLocation REACTOR_STABILIZER = new ResourceLocation(DraconicEvolution.MODID, "textures/block/reactor/reactor_stabilizer_core.png");
+
     public static final ResourceLocation REACTOR_STABILIZER_RING = new ResourceLocation(DraconicEvolution.MODID, "textures/block/reactor/reactor_stabilizer_ring.png");
     public static final ResourceLocation REACTOR_INJECTOR = new ResourceLocation(DraconicEvolution.MODID, "textures/block/reactor/model_reactor_power_injector.png");
-
     public static ModelReactorStabilizerCore stabilizerModel = new ModelReactorStabilizerCore(RenderType::entitySolid);
+
     public static ModelReactorStabilizerRing stabilizerRingModel = new ModelReactorStabilizerRing(RenderType::entitySolid);
     public static ModelReactorEnergyInjector injectorModel = new ModelReactorEnergyInjector(RenderType::entitySolid);
 
+    public RenderTileReactorComponent(BlockEntityRendererProvider.Context context) {
+    }
+
     @Override
-    public void render(TileReactorComponent te, float partialTicks, MatrixStack matrix, IRenderTypeBuffer getter, int packedLight, int packedOverlay) {
+    public void render(TileReactorComponent te, float partialTicks, PoseStack matrix, MultiBufferSource getter, int packedLight, int packedOverlay) {
         matrix.translate(0.5, 0.5, 0.5);
 
         if (te.facing.get() == Direction.SOUTH) {
@@ -57,7 +58,7 @@ public class RenderTileReactorComponent extends TileEntityRenderer<TileReactorCo
     }
 
 
-    public static void renderStabilizer(MatrixStack matrix, IRenderTypeBuffer getter, float coreRotation, float brightness, int packedLight, int packedOverlay) {
+    public static void renderStabilizer(PoseStack matrix, MultiBufferSource getter, float coreRotation, float brightness, int packedLight, int packedOverlay) {
         float ringRotation = coreRotation * -0.5F;//Remember Partial Ticks here
         stabilizerModel.brightness = brightness;
         stabilizerModel.rotation = coreRotation;
@@ -71,7 +72,7 @@ public class RenderTileReactorComponent extends TileEntityRenderer<TileReactorCo
         stabilizerRingModel.renderToBuffer(matrix, getter.getBuffer(stabilizerModel.renderType(REACTOR_STABILIZER_RING)), packedLight, packedOverlay, 1F, 1F, 1F, 1F);
     }
 
-    public static void renderInjector(MatrixStack matrix, IRenderTypeBuffer getter, float brightness, int packedLight, int packedOverlay) {
+    public static void renderInjector(PoseStack matrix, MultiBufferSource getter, float brightness, int packedLight, int packedOverlay) {
         injectorModel.brightness = brightness;
         injectorModel.renderToBuffer(matrix, getter.getBuffer(injectorModel.renderType(REACTOR_INJECTOR)), packedLight, packedOverlay, 1F, 1F, 1F, 1F);
     }

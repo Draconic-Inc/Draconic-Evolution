@@ -9,23 +9,23 @@ import com.brandon3055.brandonscore.lib.datamanager.DataFlags;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedLong;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.init.DEContent;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 
 /**
  * Created by brandon3055 on 19/07/2016.
  */
-public class TileCreativeOPCapacitor extends TileBCore implements ITickableTileEntity, IInteractTile {
+public class TileCreativeOPCapacitor extends TileBCore implements IInteractTile {
 
     private final ManagedLong powerRate = register(new ManagedLong("power_rate", 1000000000, DataFlags.SAVE_NBT));
 
-    public TileCreativeOPCapacitor() {
-        super(DEContent.tile_creative_op_capacitor);
+    public TileCreativeOPCapacitor(BlockPos pos, BlockState state) {
+        super(DEContent.tile_creative_op_capacitor, pos, state);
 
         capManager.set(CapabilityOP.OP, new IOPStorage() {
             @Override
@@ -92,7 +92,7 @@ public class TileCreativeOPCapacitor extends TileBCore implements ITickableTileE
     }
 
     @Override
-    public boolean onBlockActivated(BlockState state, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+    public boolean onBlockActivated(BlockState state, Player player, InteractionHand handIn, BlockHitResult hit) {
         if (!level.isClientSide) {
             if (player.isShiftKeyDown()) {
                 powerRate.divide(10);
@@ -107,7 +107,7 @@ public class TileCreativeOPCapacitor extends TileBCore implements ITickableTileE
                 powerRate.set(Long.MAX_VALUE);
             }
 
-            BrandonsCore.proxy.sendIndexedMessage(player, new StringTextComponent("Power Rate: " + Utils.addCommas(powerRate.get()) + " OP/t"), 42);
+            BrandonsCore.proxy.sendIndexedMessage(player, new TextComponent("Power Rate: " + Utils.addCommas(powerRate.get()) + " OP/t"), 42);
 //            player.sendMessage(new StringTextComponent("Power Rate: " + Utils.addCommas(powerRate.get()) + " OP/t"));
         }
         return true;

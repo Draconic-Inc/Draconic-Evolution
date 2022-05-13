@@ -8,11 +8,11 @@ import com.brandon3055.draconicevolution.api.modules.lib.InstallResult;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleImpl;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Streams;
-import net.minecraft.item.Item;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.item.Item;
 
 import java.util.*;
 import java.util.function.Function;
@@ -70,7 +70,7 @@ public class ProjectileVelocityModule extends ModuleImpl<ProjectileData> {
                             .filter(e -> e instanceof ProjectileVelocityModule && e.getModuleTechLevel().index <= module.getModuleTechLevel().index)//
                             .count();
                     if (installed > max) {
-                        return new InstallResult(InstallResult.InstallResultType.NO, module, null, new TranslationTextComponent("modular_item.draconicevolution.error.module_install_limit"));
+                        return new InstallResult(InstallResult.InstallResultType.NO, module, null, new TranslatableComponent("modular_item.draconicevolution.error.module_install_limit"));
                     }
                     return null;
                 })//
@@ -80,12 +80,12 @@ public class ProjectileVelocityModule extends ModuleImpl<ProjectileData> {
     }
 
     @Override
-    public void addInformation(List<ITextComponent> toolTip) {
+    public void addInformation(List<Component> toolTip) {
         super.addInformation(toolTip);
-        toolTip.add(new TranslationTextComponent("module.draconicevolution.max_installable")
-                .withStyle(TextFormatting.GRAY)
+        toolTip.add(new TranslatableComponent("module.draconicevolution.max_installable")
+                .withStyle(ChatFormatting.GRAY)
                 .append(": ")
-                .append(new StringTextComponent(String.valueOf(maxInstall))
-                        .withStyle(TextFormatting.DARK_GREEN)));
+                .append(new TextComponent(String.valueOf(maxInstall))
+                        .withStyle(ChatFormatting.DARK_GREEN)));
     }
 }

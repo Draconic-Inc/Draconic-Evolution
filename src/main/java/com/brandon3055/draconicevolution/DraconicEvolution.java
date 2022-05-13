@@ -1,12 +1,13 @@
 package com.brandon3055.draconicevolution;
 
 import com.brandon3055.draconicevolution.api.DraconicAPI;
+import com.brandon3055.draconicevolution.api.crafting.IFusionRecipe;
 import com.brandon3055.draconicevolution.api.crafting.IngredientStack;
 import com.brandon3055.draconicevolution.client.ClientProxy;
 import com.brandon3055.draconicevolution.command.CommandKaboom;
 import com.brandon3055.draconicevolution.command.CommandMakeRecipe;
 import com.brandon3055.draconicevolution.command.CommandRespawnGuardian;
-import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -33,7 +34,13 @@ public class DraconicEvolution {
         proxy.construct();
         FMLJavaModLoadingContext.get().getModEventBus().register(this);
 
-        DraconicAPI.FUSION_RECIPE_TYPE = IRecipeType.register(MODID + ":fusion_crafting");
+        DraconicAPI.FUSION_RECIPE_TYPE = new RecipeType<>() {
+            @Override
+            public String toString() {
+                return MODID + ":fusion_crafting";
+            }
+        };
+
         CraftingHelper.register(DraconicAPI.INGREDIENT_STACK_TYPE, IngredientStack.SERIALIZER);
     }
 

@@ -4,13 +4,13 @@ import codechicken.lib.math.MathHelper;
 import com.brandon3055.brandonscore.inventory.ContainerBCTile;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
 import com.brandon3055.draconicevolution.init.DEContent;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ClickType;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -22,11 +22,11 @@ public class ContainerReactor extends ContainerBCTile<TileReactorCore> {
 
     public boolean fuelSlots = false;
 
-    public ContainerReactor(int windowId, PlayerInventory playerInv, PacketBuffer extraData) {
+    public ContainerReactor(int windowId, Inventory playerInv, FriendlyByteBuf extraData) {
         this(DEContent.container_reactor, windowId, playerInv, getClientTile(extraData));
     }
 
-    public ContainerReactor(@Nullable ContainerType<?> type, int windowId, PlayerInventory player, TileReactorCore tile) {
+    public ContainerReactor(@Nullable MenuType<?> type, int windowId, Inventory player, TileReactorCore tile) {
         super(type, windowId, player, tile);
     }
 
@@ -69,18 +69,18 @@ public class ContainerReactor extends ContainerBCTile<TileReactorCore> {
         }
     }
 
+
     @Nullable
     @Override
-    public ItemStack clicked(int slotId, int dragType, ClickType clickTypeIn, PlayerEntity player) {
+    public void clicked(int slotId, int dragType, ClickType clickTypeIn, Player player) {
         int maxFuel = 10368 + 15;
         int installedFuel = (int) (tile.reactableFuel.get() + tile.convertedFuel.get());
         int free = maxFuel - installedFuel;
 
         Slot slot = getSlot(slotId);
         if (slot instanceof SlotReactor && clickTypeIn == ClickType.PICKUP) {
-            PlayerInventory inventory = player.inventory;
             ItemStack stackInSlot = slot.getItem();
-            ItemStack heldStack = inventory.getCarried();
+            ItemStack heldStack = player.inventoryMenu.getCarried();
 
             if (!heldStack.isEmpty()) {
                 int value;
@@ -107,21 +107,21 @@ public class ContainerReactor extends ContainerBCTile<TileReactorCore> {
 //                }
 
                 if (heldStack.getCount() <= 0) {
-                    inventory.setCarried(ItemStack.EMPTY);
+                    player.inventoryMenu.setCarried(ItemStack.EMPTY);
                 }
             }
             else if (!stackInSlot.isEmpty()) {
                 tile.reactableFuel.subtract(getFuelValue(stackInSlot));
                 tile.convertedFuel.subtract(getChaosValue(stackInSlot));
-                inventory.setCarried(stackInSlot);
+                player.inventoryMenu.setCarried(stackInSlot);
             }
 
-            return ItemStack.EMPTY;
+            return;
         }
         else if (slotId <= 35) {
-            return super.clicked(slotId, dragType, clickTypeIn, player);
+            super.clicked(slotId, dragType, clickTypeIn, player);
         }
-        return ItemStack.EMPTY;
+        return;
     }
 
     private int getFuelValue(ItemStack stack) {

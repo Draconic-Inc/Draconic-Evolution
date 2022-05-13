@@ -7,11 +7,12 @@ import com.brandon3055.draconicevolution.entity.EntityEnderEnergyManipulator;
 import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 /**
  * Created by Brandon on 21/11/2014.
@@ -22,18 +23,18 @@ public class RenderEntityEnderEnergyManipulator extends EntityRenderer<EntityEnd
 
     private static ShaderProgram shaderProgram;
 
-    public RenderEntityEnderEnergyManipulator(EntityRendererManager renderManager) {
-        super(renderManager);
+    public RenderEntityEnderEnergyManipulator(EntityRendererProvider.Context context) {
+        super(context);
     }
 
 
 //    @Override
     public void doRender(EntityEnderEnergyManipulator entity, double x, double y, double z, float entityYaw, float partialTicks) {
 
-        Minecraft mc = Minecraft.getInstance();
-        RenderSystem.pushMatrix();
-        RenderSystem.translated(x, y + (Math.cos((ClientEventHandler.elapsedTicks + partialTicks) / 20D) * 0.1), z);
-        RenderSystem.rotatef((ClientEventHandler.elapsedTicks + partialTicks), 0, 1, 0);
+//        Minecraft mc = Minecraft.getInstance();
+//        RenderSystem.pushMatrix();
+//        RenderSystem.translated(x, y + (Math.cos((ClientEventHandler.elapsedTicks + partialTicks) / 20D) * 0.1), z);
+//        RenderSystem.rotatef((ClientEventHandler.elapsedTicks + partialTicks), 0, 1, 0);
 
 //        mc.getItemRenderer().renderItem(stack, ItemCameraTransforms.TransformType.FIXED);
 //
@@ -56,7 +57,7 @@ public class RenderEntityEnderEnergyManipulator extends EntityRenderer<EntityEnd
 //            shaderProgram.releaseShader();
 ////        }
 
-        RenderSystem.popMatrix();
+//        RenderSystem.popMatrix();
     }
 
     @Override

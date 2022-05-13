@@ -1,18 +1,19 @@
 package com.brandon3055.draconicevolution.items.equipment;
 
 import com.brandon3055.brandonscore.api.TechLevel;
-import com.brandon3055.brandonscore.lib.TechPropBuilder;
 import com.brandon3055.draconicevolution.api.IReaperItem;
 import com.brandon3055.draconicevolution.api.damage.IDraconicDamage;
 import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleHostImpl;
 import com.brandon3055.draconicevolution.init.EquipCfg;
 import com.brandon3055.draconicevolution.init.ModuleCfg;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.SwordItem;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
+import com.brandon3055.draconicevolution.init.TechProperties;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.SwordItem;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -24,12 +25,12 @@ import java.util.List;
  */
 public class ModularSword extends SwordItem implements IReaperItem, IModularMelee, IDraconicDamage {
     private final TechLevel techLevel;
-    private final DEItemTier itemTier;
+    private final DETier itemTier;
 
-    public ModularSword(TechPropBuilder props) {
-        super(new DEItemTier(props, EquipCfg::getSwordDmgMult, EquipCfg::getSwordSpeedMult), 0, 0, props.build().fireResistant());
-        this.techLevel = props.techLevel;
-        this.itemTier = (DEItemTier) getTier();
+    public ModularSword(DETier tier, TechProperties props) {
+        super(tier, 0, 0, props);
+        this.techLevel = props.getTechLevel();
+        this.itemTier = (DETier) getTier();
     }
 
     @Override
@@ -38,13 +39,23 @@ public class ModularSword extends SwordItem implements IReaperItem, IModularMele
     }
 
     @Override
-    public DEItemTier getItemTier() {
+    public DETier getItemTier() {
         return itemTier;
     }
 
     @Override
     public TechLevel getTechLevel(@Nullable ItemStack stack) {
         return techLevel;
+    }
+
+    @Override
+    public double getSwingSpeedMultiplier() {
+        return EquipCfg.swordSwingSpeedMultiplier;
+    }
+
+    @Override
+    public double getDamageMultiplier() {
+        return EquipCfg.swordDamageMultiplier;
     }
 
     @Override
@@ -61,7 +72,7 @@ public class ModularSword extends SwordItem implements IReaperItem, IModularMele
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         addModularItemInformation(stack, worldIn, tooltip, flagIn);
     }
 
@@ -70,22 +81,28 @@ public class ModularSword extends SwordItem implements IReaperItem, IModularMele
         return techLevel.index;
     }
 
-//    @Override
-//    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity player, Hand handIn) {
-//        if (!worldIn.isRemote && player.isSneaking()) {
-//            for (double x = 0; x < 15; x += 0.5) {
-//                for (double z = 0; z < 15; z += 0.5) {
-//                    CreeperEntity creeper = EntityType.CREEPER.create(worldIn);
-//                    creeper.setNoAI(true);
-//                    creeper.setInvulnerable(true);
-//                    creeper.setPosition(player.getPosX() + x, player.getPosY(), player.getPosZ() + z);
-//                    creeper.getAttribute(Attributes.MAX_HEALTH).applyNonPersistentModifier(new AttributeModifier("Health Boost", 10000, AttributeModifier.Operation.MULTIPLY_TOTAL));
-//                    creeper.setHealth(Float.MAX_VALUE);
-//                    worldIn.addEntity(creeper);
-//                }
-//            }
-//        }
-//
-//        return super.onItemRightClick(worldIn, player, handIn);
-//    }
+    @Override
+    public boolean isBarVisible(ItemStack stack) {
+        return damageBarVisible(stack);
+    }
+
+    @Override
+    public int getBarWidth(ItemStack stack) {
+        return damageBarWidth(stack);
+    }
+
+    @Override
+    public int getBarColor(ItemStack stack) {
+        return damageBarColour(stack);
+    }
+
+    @Override
+    public boolean canBeHurtBy(DamageSource source) {
+        return source == DamageSource.OUT_OF_WORLD;
+    }
+
+    @Override
+    public int getEntityLifespan(ItemStack itemStack, Level level) {
+        return -32768;
+    }
 }

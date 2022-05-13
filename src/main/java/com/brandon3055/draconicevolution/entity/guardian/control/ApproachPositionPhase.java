@@ -1,12 +1,12 @@
 package com.brandon3055.draconicevolution.entity.guardian.control;
 
 import com.brandon3055.draconicevolution.entity.guardian.DraconicGuardianEntity;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
 
 public class ApproachPositionPhase extends Phase {
-   private Vector3d targetLocation;
+   private Vec3 targetLocation;
    private PhaseType<?> nextPhase;
    private int startDistance = 0;
 
@@ -18,7 +18,7 @@ public class ApproachPositionPhase extends Phase {
       return PhaseType.APPROACH_POSITION;
    }
 
-   public ApproachPositionPhase setTargetLocation(Vector3d targetLocation) {
+   public ApproachPositionPhase setTargetLocation(Vec3 targetLocation) {
       this.targetLocation = targetLocation;
       return this;
    }
@@ -57,7 +57,7 @@ public class ApproachPositionPhase extends Phase {
    }
 
    @Nullable
-   public Vector3d getTargetLocation() {
+   public Vec3 getTargetLocation() {
       return this.targetLocation;
    }
 

@@ -6,9 +6,9 @@
     "target":             "@env(DEFAULT)",
     "compatibilityLevel": "JAVA_8",
     "mixins":             [
-        "TrackedEntityMixin"
+//        "TrackedEntityMixin"
     ],
     "client":             [
-        "PlayerModelMixin"
+//        "PlayerModelMixin"
 	]
 }

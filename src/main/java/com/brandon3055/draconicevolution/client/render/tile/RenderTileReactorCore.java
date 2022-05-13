@@ -1,39 +1,31 @@
 package com.brandon3055.draconicevolution.client.render.tile;
 
-import codechicken.lib.colour.ColourRGBA;
 import codechicken.lib.render.CCModel;
 import codechicken.lib.render.CCRenderState;
-import codechicken.lib.render.OBJParser;
-import codechicken.lib.render.shader.*;
-import codechicken.lib.util.SneakyUtils;
+import codechicken.lib.render.shader.ShaderObject;
+import codechicken.lib.render.shader.ShaderProgram;
+import codechicken.lib.render.shader.ShaderProgramBuilder;
+import codechicken.lib.render.shader.UniformType;
 import codechicken.lib.vec.Matrix4;
-import codechicken.lib.vec.Scale;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.utils.MathUtils;
-import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
-import com.brandon3055.draconicevolution.client.render.item.ToolRenderBase;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.RenderState;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexFormat;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
-
-import java.util.Map;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * Created by brandon3055 on 6/11/2016.
  */
-public class RenderTileReactorCore extends TileEntityRenderer<TileReactorCore> {
+public class RenderTileReactorCore implements BlockEntityRenderer<TileReactorCore> {
 
     private static CCModel model = null;
     private static CCModel model_no_shade;
@@ -57,32 +49,31 @@ public class RenderTileReactorCore extends TileEntityRenderer<TileReactorCore> {
             .build();
 
 
-    private static RenderType fallBackType = RenderType.create("fall_back_type", DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP, GL11.GL_QUADS, 256, RenderType.State.builder()
-            .setTextureState(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/block/reactor/reactor_core.png"), false, false))
-            .setTexturingState(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
-            .createCompositeState(false)
+    public static RenderType fallBackType = RenderType.create("fall_back_type", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.QUADS, 256, RenderType.CompositeState.builder()
+                    .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(DraconicEvolution.MODID, "textures/block/reactor/reactor_core.png"), false, false))
+//            .setTexturingState(new RenderStateShard.TexturingStateShard("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
+                    .createCompositeState(false)
     );
 
-    private static RenderType fallBackShieldType = RenderType.create("fall_back_shield_type", DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP, GL11.GL_QUADS, 256, RenderType.State.builder()
-            .setTransparencyState(RenderState.TRANSLUCENT_TRANSPARENCY)
-            .setTextureState(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/block/reactor/reactor_shield.png"), false, false))
-            .setTexturingState(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
-            .createCompositeState(false)
+    public static RenderType fallBackShieldType = RenderType.create("fall_back_shield_type", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.QUADS, 256, RenderType.CompositeState.builder()
+                    .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
+                    .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(DraconicEvolution.MODID, "textures/block/reactor/reactor_shield.png"), false, false))
+//            .setTexturingState(new RenderStateShard.TexturingStateShard("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
+                    .createCompositeState(false)
     );
 
-    public RenderTileReactorCore(TileEntityRendererDispatcher rendererDispatcherIn) {
-        super(rendererDispatcherIn);
+    public RenderTileReactorCore(BlockEntityRendererProvider.Context context) {
         if (model == null) {
-            Map<String, CCModel> map = OBJParser.parseModels(new ResourceLocation(DraconicEvolution.MODID, "models/block/reactor/reactor_core.obj"), GL11.GL_QUADS, null);
-            model = CCModel.combine(map.values());
-            map = OBJParser.parseModels(new ResourceLocation(DraconicEvolution.MODID, "models/block/reactor/reactor_core_model.obj"), GL11.GL_QUADS, null);
-            model_no_shade = CCModel.combine(map.values()).apply(new Scale(-0.5));
+//            Map<String, CCModel> map = OBJParser.parseModels(new ResourceLocation(DraconicEvolution.MODID, "models/block/reactor/reactor_core.obj"), GL11.GL_QUADS, null);
+//            model = CCModel.combine(map.values());
+//            map = OBJParser.parseModels(new ResourceLocation(DraconicEvolution.MODID, "models/block/reactor/reactor_core_model.obj"), GL11.GL_QUADS, null);
+//            model_no_shade = CCModel.combine(map.values()).apply(new Scale(-0.5));
         }
     }
 
 
     @Override
-    public void render(TileReactorCore te, float partialTicks, MatrixStack mStack, IRenderTypeBuffer getter, int packedLight, int packedOverlay) {
+    public void render(TileReactorCore te, float partialTicks, PoseStack mStack, MultiBufferSource getter, int packedLight, int packedOverlay) {
 //        if (true) return;
         Matrix4 mat = new Matrix4(mStack);
         CCRenderState ccrs = CCRenderState.instance();
@@ -131,63 +122,68 @@ public class RenderTileReactorCore extends TileEntityRenderer<TileReactorCore> {
         renderCore(mat, ccrs, animation, te.shaderAnimationState.get(), intensity, shieldPower, partialTicks, getter);
     }
 
-    public static void renderCore(Matrix4 mat, CCRenderState ccrs, float animation, double animState, float intensity, float shieldPower, float partialTicks, IRenderTypeBuffer getter) {
+    public static void renderCore(Matrix4 mat, CCRenderState ccrs, float animation, double animState, float intensity, float shieldPower, float partialTicks, MultiBufferSource getter) {
 //        DEConfig.reactorShaders = true;//System.currentTimeMillis() % 6000 > 3000;
-        if (DEConfig.reactorShaders) {
-            UniformCache uniforms = coreShader.pushCache();
-            uniforms.glUniform1f("time", animation);
-            uniforms.glUniform1f("intensity", intensity);
-            ccrs.bind(new ShaderRenderType(fallBackType, coreShader, uniforms), getter);
-            model.render(ccrs, mat);
-
-            mat.scale(1.05);
-            uniforms = shieldShader.pushCache();
-            uniforms.glUniform1f("time", animation);
-            uniforms.glUniform1f("intensity", (0.7F * shieldPower) - (float) (1 - animState));
-            ccrs.bind(new ShaderRenderType(fallBackShieldType, shieldShader, uniforms), getter);
-            model.render(ccrs, mat);
-        } else {
-            ccrs.bind(fallBackType, getter);
-            model_no_shade.render(ccrs, mat);
-            ToolRenderBase.endBatch(getter);
-
-            mat.scale(1.05);
-            mat.rotate((ClientEventHandler.elapsedTicks + partialTicks) / 400F, Vector3.X_NEG);
-            float r = shieldPower < 0.5F ? 1 - (shieldPower * 2) : 0;
-            float g = shieldPower > 0.5F ? (shieldPower - 0.5F) * 2 : 0;
-            float b = shieldPower * 2;
-            float a = shieldPower < 0.1F ? (shieldPower * 10) : 1;
-            ccrs.baseColour = ColourRGBA.packRGBA(r, g, b, a);
-            ccrs.bind(fallBackShieldType, getter);
-            model_no_shade.render(ccrs, mat);
-        }
+//        if (DEConfig.reactorShaders) {
+//            UniformCache uniforms = coreShader.pushCache();
+//            uniforms.glUniform1f("time", animation);
+//            uniforms.glUniform1f("intensity", intensity);
+//            ccrs.bind(new ShaderRenderType(fallBackType, coreShader, uniforms), getter);
+//            model.render(ccrs, mat);
+//
+//            mat.scale(1.05);
+//            uniforms = shieldShader.pushCache();
+//            uniforms.glUniform1f("time", animation);
+//            uniforms.glUniform1f("intensity", (0.7F * shieldPower) - (float) (1 - animState));
+//            ccrs.bind(new ShaderRenderType(fallBackShieldType, shieldShader, uniforms), getter);
+//            model.render(ccrs, mat);
+//        } else {
+//            ccrs.bind(fallBackType, getter);
+//            model_no_shade.render(ccrs, mat);
+//            ToolRenderBase.endBatch(getter);
+//
+//            mat.scale(1.05);
+//            mat.rotate((ClientEventHandler.elapsedTicks + partialTicks) / 400F, Vector3.X_NEG);
+//            float r = shieldPower < 0.5F ? 1 - (shieldPower * 2) : 0;
+//            float g = shieldPower > 0.5F ? (shieldPower - 0.5F) * 2 : 0;
+//            float b = shieldPower * 2;
+//            float a = shieldPower < 0.1F ? (shieldPower * 10) : 1;
+//            ccrs.baseColour = ColourRGBA.packRGBA(r, g, b, a);
+//            ccrs.bind(fallBackShieldType, getter);
+//            model_no_shade.render(ccrs, mat);
+//        }
     }
 
     public static void renderGUI(TileReactorCore te, int x, int y) {
-        RenderSystem.pushMatrix();
-        double diameter = 100;
-        float t = (float) (te.temperature.get() / TileReactorCore.MAX_TEMPERATURE);
-        float intensity = t <= 0.2 ? (float) MathUtils.map(t, 0, 0.2, 0, 0.3) : t <= 0.8 ? (float) MathUtils.map(t, 0.2, 0.8, 0.3, 1) : (float) MathUtils.map(t, 0.8, 1, 1, 1.3);
-        float animation = (te.coreAnimation + (0 * (float) te.shaderAnimationState.get())) / 20F;
-        float shieldPower = (float) (te.maxShieldCharge.get() > 0 ? te.shieldCharge.get() / te.maxShieldCharge.get() : 0);
-        MatrixStack stack = new MatrixStack();
-        Minecraft mc = Minecraft.getInstance();
-        IRenderTypeBuffer.Impl getter = IRenderTypeBuffer.immediate(Tessellator.getInstance().getBuilder());
-        Matrix4 mat = new Matrix4(stack);
-        mat.scale(diameter);
-        mat.rotate((ClientEventHandler.elapsedTicks + mc.getFrameTime()) / 400F, Vector3.Y_POS);
-        CCRenderState ccrs = CCRenderState.instance();
-        ccrs.reset();
-        RenderSystem.translated(x, y, 100);
-        RenderSystem.depthMask(false);
-        renderCore(mat, ccrs, animation, te.shaderAnimationState.get(), intensity, shieldPower, mc.getFrameTime(), getter);
-        getter.endBatch();
-        RenderSystem.depthMask(true);
-        RenderSystem.popMatrix();
+//        RenderSystem.pushMatrix();
+//        double diameter = 100;
+//        float t = (float) (te.temperature.get() / TileReactorCore.MAX_TEMPERATURE);
+//        float intensity = t <= 0.2 ? (float) MathUtils.map(t, 0, 0.2, 0, 0.3) : t <= 0.8 ? (float) MathUtils.map(t, 0.2, 0.8, 0.3, 1) : (float) MathUtils.map(t, 0.8, 1, 1, 1.3);
+//        float animation = (te.coreAnimation + (0 * (float) te.shaderAnimationState.get())) / 20F;
+//        float shieldPower = (float) (te.maxShieldCharge.get() > 0 ? te.shieldCharge.get() / te.maxShieldCharge.get() : 0);
+//        PoseStack stack = new PoseStack();
+//        Minecraft mc = Minecraft.getInstance();
+//        MultiBufferSource.BufferSource getter = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
+//        Matrix4 mat = new Matrix4(stack);
+//        mat.scale(diameter);
+//        mat.rotate((ClientEventHandler.elapsedTicks + mc.getFrameTime()) / 400F, Vector3.Y_POS);
+//        CCRenderState ccrs = CCRenderState.instance();
+//        ccrs.reset();
+//        RenderSystem.translated(x, y, 100);
+//        RenderSystem.depthMask(false);
+//        renderCore(mat, ccrs, animation, te.shaderAnimationState.get(), intensity, shieldPower, mc.getFrameTime(), getter);
+//        getter.endBatch();
+//        RenderSystem.depthMask(true);
+//        RenderSystem.popMatrix();
     }
 
     @Override
     public boolean shouldRenderOffScreen(TileReactorCore te) {
         return true;
+    }
+
+    @Override
+    public int getViewDistance() {
+        return 256;
     }
 }

@@ -4,9 +4,8 @@ import codechicken.lib.colour.Colour;
 import codechicken.lib.math.MathHelper;
 import codechicken.lib.render.CCModel;
 import codechicken.lib.render.CCRenderState;
-import codechicken.lib.render.OBJParser;
-import codechicken.lib.render.buffer.TransformingVertexBuilder;
-import codechicken.lib.util.SneakyUtils;
+import codechicken.lib.render.buffer.TransformingVertexConsumer;
+import codechicken.lib.render.model.OBJParser;
 import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.lib.Vec3I;
@@ -14,80 +13,78 @@ import com.brandon3055.brandonscore.lib.datamanager.ManagedVec3I;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyCore;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.RenderState;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.vertex.VertexFormat;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.Map;
 
 /**
  * Created by brandon3055 on 2/4/2016.
  */
-public class RenderTileEnergyCore extends TileEntityRenderer<TileEnergyCore> {
+public class RenderTileEnergyCore implements BlockEntityRenderer<TileEnergyCore> {
     private static final double[] SCALES = {1.1, 1.7, 2.3, 3.6, 5.5, 7.1, 8.6, 10.2};
 
     private static final RenderType innerCoreType = RenderType.entitySolid(new ResourceLocation(DraconicEvolution.MODID, "textures/block/core/energy_core_base.png"));
-    private static final RenderType outerCoreType = RenderType.create("outer_core", DefaultVertexFormats.NEW_ENTITY, GL11.GL_QUADS, 256, false, true, RenderType.State.builder()
-            .setTextureState(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/block/core/energy_core_overlay.png"), false, false))
-            .setTransparencyState(RenderState.TRANSLUCENT_TRANSPARENCY)
+    private static final RenderType outerCoreType = RenderType.create("outer_core", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder()
+                    .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(DraconicEvolution.MODID, "textures/block/core/energy_core_overlay.png"), false, false))
+                    .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
 //            .writeMask(RenderState.COLOR_WRITE)
-            .setTexturingState(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
-            .createCompositeState(false)
+//            .setTexturingState(new RenderStateShard.TexturingStateShard("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
+                    .createCompositeState(false)
     );
 
-    private static final RenderType innerStabType = RenderType.create("inner_stab", DefaultVertexFormats.NEW_ENTITY, GL11.GL_QUADS, 256, false, true, RenderType.State.builder()
-                    .setTextureState(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/block/core/stabilizer_sphere.png"), false, false))
-                    .setTransparencyState(RenderState.NO_TRANSPARENCY)
+    private static final RenderType innerStabType = RenderType.create("inner_stab", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder()
+                    .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(DraconicEvolution.MODID, "textures/block/core/stabilizer_sphere.png"), false, false))
+                    .setTransparencyState(RenderStateShard.NO_TRANSPARENCY)
 //            .texturing(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
                     .createCompositeState(false)
     );
-    private static final RenderType outerStabType = RenderType.create("outer_stab", DefaultVertexFormats.NEW_ENTITY, GL11.GL_QUADS, 256, false, true, RenderType.State.builder()
-            .setTextureState(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/block/core/stabilizer_sphere.png"), false, false))
-            .setTransparencyState(RenderState.TRANSLUCENT_TRANSPARENCY)
-            .setTexturingState(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
-            .createCompositeState(false)
+    private static final RenderType outerStabType = RenderType.create("outer_stab", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder()
+                    .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(DraconicEvolution.MODID, "textures/block/core/stabilizer_sphere.png"), false, false))
+                    .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
+//            .setTexturingState(new RenderStateShard.TexturingStateShard("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
+                    .createCompositeState(false)
     );
 
-    private static final RenderType beamType = RenderType.create("inner_beam", DefaultVertexFormats.POSITION_TEX, GL11.GL_QUADS, 256, false, true, RenderType.State.builder()
-            .setTextureState(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/block/core/stabilizer_beam.png"), false, false))
-            .setTransparencyState(RenderState.NO_TRANSPARENCY)
-            .setTexturingState(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
-            .createCompositeState(false)
+    private static final RenderType beamType = RenderType.create("inner_beam", DefaultVertexFormat.POSITION_TEX, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder()
+                    .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(DraconicEvolution.MODID, "textures/block/core/stabilizer_beam.png"), false, false))
+                    .setTransparencyState(RenderStateShard.NO_TRANSPARENCY)
+//            .setTexturingState(new RenderStateShard.TexturingStateShard("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
+                    .createCompositeState(false)
     );
 
-    private static final RenderType outerBeamType = RenderType.create("outer_beam", DefaultVertexFormats.POSITION_COLOR_TEX, GL11.GL_TRIANGLE_STRIP, 256, false, false, RenderType.State.builder()
-            .setTextureState(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/block/core/stabilizer_beam.png"), false, false))
-            .setTransparencyState(RenderState.TRANSLUCENT_TRANSPARENCY)
-            .setWriteMaskState(RenderState.COLOR_WRITE)
-            .setTexturingState(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
-            .createCompositeState(false)
+    private static final RenderType outerBeamType = RenderType.create("outer_beam", DefaultVertexFormat.POSITION_COLOR_TEX, VertexFormat.Mode.TRIANGLE_STRIP, 256, false, false, RenderType.CompositeState.builder()
+                    .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(DraconicEvolution.MODID, "textures/block/core/stabilizer_beam.png"), false, false))
+                    .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
+                    .setWriteMaskState(RenderStateShard.COLOR_WRITE)
+//            .setTexturingState(new RenderStateShard.TexturingStateShard("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
+                    .createCompositeState(false)
     );
 
     private final CCModel modelStabilizerSphere;
     private final CCModel modelEnergyCore;
 
-    public RenderTileEnergyCore(TileEntityRendererDispatcher rendererDispatcherIn) {
-        super(rendererDispatcherIn);
-        Map<String, CCModel> map = OBJParser.parseModels(new ResourceLocation(DraconicEvolution.MODID, "models/block/core/stabilizer_sphere.obj"), GL11.GL_QUADS, null);
+    public RenderTileEnergyCore(BlockEntityRendererProvider.Context context) {
+        Map<String, CCModel> map = new OBJParser(new ResourceLocation(DraconicEvolution.MODID, "models/block/core/stabilizer_sphere.obj")).quads().ignoreMtl().parse();
         modelStabilizerSphere = CCModel.combine(map.values());
         modelStabilizerSphere.computeNormals();
 
-        map = OBJParser.parseModels(new ResourceLocation(DraconicEvolution.MODID, "models/block/core/energy_core_model.obj"), GL11.GL_QUADS, null);
+        map = new OBJParser(new ResourceLocation(DraconicEvolution.MODID, "models/block/core/energy_core_model.obj")).quads().ignoreMtl().parse();
         modelEnergyCore = CCModel.combine(map.values());
         modelEnergyCore.computeNormals();
     }
 
     @Override
-    public void render(TileEnergyCore te, float partialTicks, MatrixStack mStack, IRenderTypeBuffer getter, int packedLight, int packedOverlay) {
+    public void render(TileEnergyCore te, float partialTicks, PoseStack mStack, MultiBufferSource getter, int packedLight, int packedOverlay) {
         if (!te.active.get()) return;
 
         Matrix4 mat = new Matrix4(mStack);
@@ -182,7 +179,7 @@ public class RenderTileEnergyCore extends TileEntityRenderer<TileEnergyCore> {
 //        //endregion
 //    }
 
-    private void renderStabilizers(TileEnergyCore te, CCRenderState ccrs, Matrix4 matrix4, IRenderTypeBuffer getter, float partialTick) {
+    private void renderStabilizers(TileEnergyCore te, CCRenderState ccrs, Matrix4 matrix4, MultiBufferSource getter, float partialTick) {
         if (!te.stabilizersOK.get()) {
             return;
         }
@@ -225,9 +222,9 @@ public class RenderTileEnergyCore extends TileEntityRenderer<TileEnergyCore> {
         }
     }
 
-    private void renderStabilizerBeam(TileEnergyCore te, Matrix4 matrix4, IRenderTypeBuffer getter, Vec3I vec, float partialTick) {
+    private void renderStabilizerBeam(TileEnergyCore te, Matrix4 matrix4, MultiBufferSource getter, Vec3I vec, float partialTick) {
         Matrix4 innerMat = matrix4.copy();
-        IVertexBuilder builder = new TransformingVertexBuilder(getter.getBuffer(beamType), innerMat);
+        VertexConsumer builder = new TransformingVertexConsumer(getter.getBuffer(beamType), innerMat);
         innerMat.rotate(180 * MathHelper.torad, new Vector3(0, 0, 1));
 
         float beamLength = Math.abs(vec.x + vec.y + vec.z) - 0.5F;
@@ -310,7 +307,7 @@ public class RenderTileEnergyCore extends TileEntityRenderer<TileEnergyCore> {
         //endregion
 
         Matrix4 outerMat = matrix4.copy();
-        builder = new TransformingVertexBuilder(getter.getBuffer(outerBeamType), outerMat);
+        builder = new TransformingVertexConsumer(getter.getBuffer(outerBeamType), outerMat);
         outerMat.rotate(180 * MathHelper.torad, new Vector3(0, 0, 1));
 
         //region Render Outer Beam
@@ -334,6 +331,11 @@ public class RenderTileEnergyCore extends TileEntityRenderer<TileEnergyCore> {
             builder.vertex(verX * enlarge, verY * enlarge, beamLength).color(255, 255, 255, 32).uv(i, beamLength + (beamMotion * 2)).endVertex();
         }
 
+    }
+
+    @Override
+    public int getViewDistance() {
+        return 256;
     }
 
     @Override

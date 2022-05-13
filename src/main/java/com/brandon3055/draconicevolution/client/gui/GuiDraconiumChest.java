@@ -16,8 +16,8 @@ import com.brandon3055.draconicevolution.blocks.tileentity.chest.TileDraconiumCh
 import com.brandon3055.draconicevolution.client.DESprites;
 import com.brandon3055.draconicevolution.inventory.ContainerDraconiumChest;
 import com.google.common.collect.Lists;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
 
 /**
  * Created by Werechang on 27/6/21
@@ -30,7 +30,7 @@ public class GuiDraconiumChest extends ModularGuiContainer<ContainerDraconiumChe
     public GuiProgressIcon furnaceProgress;
     public GuiPickColourDialog colourDialog;
 
-    public GuiDraconiumChest(ContainerDraconiumChest container, PlayerInventory inv, ITextComponent titleIn) {
+    public GuiDraconiumChest(ContainerDraconiumChest container, Inventory inv, Component titleIn) {
         super(container, inv, titleIn);
         tile = container.tile;
     }

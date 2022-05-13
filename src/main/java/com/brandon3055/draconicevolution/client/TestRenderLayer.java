@@ -1,20 +1,20 @@
 package com.brandon3055.draconicevolution.client;
 
 import codechicken.lib.render.CCModel;
-import codechicken.lib.render.OBJParser;
+import codechicken.lib.render.model.OBJParser;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.google.common.collect.Lists;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.model.AgeableListModel;
+import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.ListModel;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.entity.IEntityRenderer;
-import net.minecraft.client.renderer.entity.layers.LayerRenderer;
-import net.minecraft.client.renderer.entity.model.AgeableModel;
-import net.minecraft.client.renderer.entity.model.EntityModel;
-import net.minecraft.client.renderer.entity.model.SegmentedModel;
-import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.renderer.entity.RenderLayerParent;
+import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.LivingEntity;
 import org.lwjgl.opengl.GL11;
 
 import java.util.List;
@@ -24,29 +24,29 @@ import java.util.Random;
 /**
  * Created by brandon3055 on 20/5/20.
  */
-public class TestRenderLayer extends LayerRenderer<LivingEntity, EntityModel<LivingEntity>> {
+public class TestRenderLayer extends RenderLayer<LivingEntity, EntityModel<LivingEntity>> {
 
     EntityModel<LivingEntity> model;
-    ModelRenderer renderOn;
-    ModelRenderer.ModelBox box;
+    ModelPart renderOn;
+    ModelPart.Cube box;
 
     private static RenderType modelType = RenderType.entitySolid(new ResourceLocation(DraconicEvolution.MODID, "textures/models/block/pylon_sphere_texture.png"));
     private CCModel trackerModel;
 
-    public TestRenderLayer(IEntityRenderer<LivingEntity, EntityModel<LivingEntity>> entityRenderer) {
+    public TestRenderLayer(RenderLayerParent<LivingEntity, EntityModel<LivingEntity>> entityRenderer) {
         super(entityRenderer);
         Random rand = new Random();
 
         model = entityRenderer.getModel();
-        List<ModelRenderer> rendererList = null;
+        List<ModelPart> rendererList = null;
 
         //Pretty sure "AgeableModel" is actually "LivingModel" because it seems to apply to all living entities regardless of whether or not that entity is actually ageable
-        if (model instanceof AgeableModel) {
+        if (model instanceof AgeableListModel) {
             //This code could be converted to something a little smarter. II just wanted to retrieve a random box from the model to test if its possible to render on a random part of the entity.
 //            rendererList = Lists.newArrayList(((AgeableModel<LivingEntity>)model).getBodyParts());
 //            rendererList = Lists.newArrayList(((AgeableModel<LivingEntity>) model).getHeadParts());
-        } else if (model instanceof SegmentedModel) { //Because parrots have to be special...
-            rendererList = Lists.newArrayList(((SegmentedModel<LivingEntity>) model).parts());
+        } else if (model instanceof ListModel) { //Because parrots have to be special...
+            rendererList = Lists.newArrayList(((ListModel<LivingEntity>) model).parts());
         }
         if (rendererList != null && !rendererList.isEmpty()) {
             renderOn = rendererList.get(rand.nextInt(rendererList.size()));
@@ -56,7 +56,7 @@ public class TestRenderLayer extends LayerRenderer<LivingEntity, EntityModel<Liv
         }
 
         //I just needed something to render
-        Map<String, CCModel> map = OBJParser.parseModels(new ResourceLocation(DraconicEvolution.MODID, "models/pylon_sphere.obj"), GL11.GL_QUADS, null); //Note dont generate the model evey render frame move this to constructor
+        Map<String, CCModel> map = new OBJParser(new ResourceLocation(DraconicEvolution.MODID, "models/pylon_sphere.obj")).quads().ignoreMtl().parse();
         trackerModel = CCModel.combine(map.values()).backfacedCopy();
 //        trackerModel.apply(new Scale(-0.35, -0.35, -0.35));
         trackerModel.computeNormals();
@@ -71,7 +71,7 @@ public class TestRenderLayer extends LayerRenderer<LivingEntity, EntityModel<Liv
     int i = 0;
 
     @Override
-    public void render(MatrixStack mStack, IRenderTypeBuffer getter, int packedLightIn, LivingEntity entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+    public void render(PoseStack mStack, MultiBufferSource getter, int packedLightIn, LivingEntity entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
 //        if (!entity.getPersistentData().contains("wr:trackers")) return;
 //        ListNBT trackers = entity.getPersistentData().getList("wr:trackers", 10);
 

@@ -7,13 +7,13 @@ import com.brandon3055.draconicevolution.api.modules.ModuleType;
 import com.brandon3055.draconicevolution.api.modules.data.ModuleData;
 import com.google.common.collect.Multimap;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.entity.ai.attributes.Attribute;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -96,7 +96,7 @@ public class ModuleEntity {
      * @param stack The ItemStack containing this module/modules
      * @param map The map to which the modifiers must be added.
      */
-    public void getAttributeModifiers(EquipmentSlotType slot, ItemStack stack, Multimap<Attribute, AttributeModifier> map) {
+    public void getAttributeModifiers(EquipmentSlot slot, ItemStack stack, Multimap<Attribute, AttributeModifier> map) {
 
     }
 
@@ -113,20 +113,20 @@ public class ModuleEntity {
 //     */
 //    public void getAttributeIDs(List<UUID> list) {}
 
-    public void writeToNBT(CompoundNBT compound) {
+    public void writeToNBT(CompoundTag compound) {
         compound.putByte("x", (byte) gridX);
         compound.putByte("y", (byte) gridY);
         if (!propertyMap.isEmpty()) {
-            CompoundNBT properties = new CompoundNBT();
+            CompoundTag properties = new CompoundTag();
             propertyMap.forEach((name, property) -> properties.put(name, property.serializeNBT()));
             compound.put("properties", properties);
         }
     }
 
-    public void readFromNBT(CompoundNBT compound) {
+    public void readFromNBT(CompoundTag compound) {
         gridX = compound.getByte("x");
         gridY = compound.getByte("y");
-        CompoundNBT properties = compound.getCompound("properties");
+        CompoundTag properties = compound.getCompound("properties");
         propertyMap.forEach((name, property) -> property.deserializeNBT(properties.getCompound(name)));
     }
 
@@ -139,7 +139,7 @@ public class ModuleEntity {
      */
     public void writeToItemStack(ItemStack stack, ModuleContext context) {
         if (savePropertiesToItem && !propertyMap.isEmpty()) {
-            CompoundNBT properties = stack.getOrCreateTagElement("properties");
+            CompoundTag properties = stack.getOrCreateTagElement("properties");
             propertyMap.forEach((name, property) -> properties.put(name, property.serializeNBT()));
         }
     }
@@ -153,7 +153,7 @@ public class ModuleEntity {
      * @see #writeToItemStack(ItemStack, ModuleContext)
      */
     public void readFromItemStack(ItemStack stack, ModuleContext context) {
-        CompoundNBT properties;
+        CompoundTag properties;
         if (savePropertiesToItem && (properties = stack.getTagElement("properties")) != null) {
             propertyMap.forEach((name, property) -> property.deserializeNBT(properties.getCompound(name)));
         }
@@ -205,7 +205,7 @@ public class ModuleEntity {
     //end
 
     @OnlyIn(Dist.CLIENT)
-    public void renderSlotOverlay(IRenderTypeBuffer getter, Minecraft mc, int x, int y, int width, int height, double mouseX, double mouseY, boolean mouseOver, float partialTicks) {
+    public void renderSlotOverlay(MultiBufferSource getter, Minecraft mc, int x, int y, int width, int height, double mouseX, double mouseY, boolean mouseOver, float partialTicks) {
 
     }
 
@@ -265,5 +265,5 @@ public class ModuleEntity {
                 '}';
     }
 
-    public void addToolTip(List<ITextComponent> list) {}
+    public void addToolTip(List<Component> list) {}
 }

@@ -1,11 +1,11 @@
 package com.brandon3055.draconicevolution.client.model;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.model.Model;
+import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.Model;
-import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.function.Function;
 
@@ -14,77 +14,77 @@ import java.util.function.Function;
  * Created using Tabula 5.0.0
  */
 public class ModelGuardianCrystal extends Model {
-    public ModelRenderer base;
-    public ModelRenderer glass;
-    public ModelRenderer cube;
-    public ModelRenderer ringBase1;
-    public ModelRenderer RingSegment1;
-    public ModelRenderer RingSegment2;
-    public ModelRenderer RingSegment3;
-    public ModelRenderer RingSegment4;
-    public ModelRenderer ringBase2;
-    public ModelRenderer RingSegment1_1;
-    public ModelRenderer RingSegment2_1;
-    public ModelRenderer RingSegment3_1;
-    public ModelRenderer RingSegment4_1;
+    public ModelPart base;
+    public ModelPart glass;
+    public ModelPart cube;
+    public ModelPart ringBase1;
+    public ModelPart RingSegment1;
+    public ModelPart RingSegment2;
+    public ModelPart RingSegment3;
+    public ModelPart RingSegment4;
+    public ModelPart ringBase2;
+    public ModelPart RingSegment1_1;
+    public ModelPart RingSegment2_1;
+    public ModelPart RingSegment3_1;
+    public ModelPart RingSegment4_1;
 
     public ModelGuardianCrystal(Function<ResourceLocation, RenderType> renderTypeIn) {
         super(renderTypeIn);
-        this.texWidth = 64;
-        this.texHeight = 64;
-        this.RingSegment3_1 = new ModelRenderer(this, 12, 38);
-        this.RingSegment3_1.setPos(0.0F, 0.0F, -10.0F);
-        this.RingSegment3_1.addBox(-1.0F, -1.0F, -2.0F, 2, 2, 4, 0.0F);
-        this.setRotateAngle(RingSegment3_1, 0.0F, 1.5707963267948966F, 0.0F);
-        this.RingSegment3 = new ModelRenderer(this, 12, 32);
-        this.RingSegment3.setPos(0.0F, 0.0F, -10.0F);
-        this.RingSegment3.addBox(-1.0F, -1.0F, -2.0F, 2, 2, 4, 0.0F);
-        this.setRotateAngle(RingSegment3, 0.0F, 1.5707963267948966F, 0.0F);
-        this.cube = new ModelRenderer(this, 32, 0);
-        this.cube.setPos(0.0F, 0.0F, 0.0F);
-        this.cube.addBox(-4.0F, -4.0F, -4.0F, 8, 8, 8, 0.0F);
-        this.RingSegment2_1 = new ModelRenderer(this, 24, 38);
-        this.RingSegment2_1.setPos(-10.0F, 0.0F, 0.0F);
-        this.RingSegment2_1.addBox(-1.0F, -1.0F, -2.0F, 2, 2, 4, 0.0F);
-        this.ringBase2 = new ModelRenderer(this, 0, 0);
-        this.ringBase2.setPos(0.0F, 0.0F, 0.0F);
-        this.ringBase2.addBox(-0.5F, -0.5F, -0.5F, 1, 1, 1, 0.0F);
-        this.setRotateAngle(ringBase2, 0.0F, 0.7853981633974483F, 0.0F);
-        this.base = new ModelRenderer(this, 0, 16);
-        this.base.setPos(0.0F, 0.0F, 0.0F);
-        this.base.addBox(-6.0F, 0.0F, -6.0F, 12, 4, 12, 0.0F);
-        this.ringBase1 = new ModelRenderer(this, 0, 0);
-        this.ringBase1.setPos(0.0F, 0.0F, 0.0F);
-        this.ringBase1.addBox(-0.5F, -0.5F, -0.5F, 1, 1, 1, 0.0F);
-        this.RingSegment1 = new ModelRenderer(this, 0, 32);
-        this.RingSegment1.setPos(10.0F, 0.0F, 0.0F);
-        this.RingSegment1.addBox(-1.0F, -1.0F, -2.0F, 2, 2, 4, 0.0F);
-        this.glass = new ModelRenderer(this, 0, 0);
-        this.glass.setPos(0.0F, 0.0F, 0.0F);
-        this.glass.addBox(-4.0F, -4.0F, -4.0F, 8, 8, 8, 0.0F);
-        this.RingSegment4_1 = new ModelRenderer(this, 36, 38);
-        this.RingSegment4_1.setPos(0.0F, 0.0F, 10.0F);
-        this.RingSegment4_1.addBox(-1.0F, -1.0F, -2.0F, 2, 2, 4, 0.0F);
-        this.setRotateAngle(RingSegment4_1, 0.0F, 1.5707963267948966F, 0.0F);
-        this.RingSegment4 = new ModelRenderer(this, 36, 32);
-        this.RingSegment4.setPos(0.0F, 0.0F, 10.0F);
-        this.RingSegment4.addBox(-1.0F, -1.0F, -2.0F, 2, 2, 4, 0.0F);
-        this.setRotateAngle(RingSegment4, 0.0F, 1.5707963267948966F, 0.0F);
-        this.RingSegment2 = new ModelRenderer(this, 24, 32);
-        this.RingSegment2.setPos(-10.0F, 0.0F, 0.0F);
-        this.RingSegment2.addBox(-1.0F, -1.0F, -2.0F, 2, 2, 4, 0.0F);
-        this.RingSegment1_1 = new ModelRenderer(this, 0, 38);
-        this.RingSegment1_1.setPos(10.0F, 0.0F, 0.0F);
-        this.RingSegment1_1.addBox(-1.0F, -1.0F, -2.0F, 2, 2, 4, 0.0F);
-        this.ringBase2.addChild(this.RingSegment3_1);
-        this.ringBase1.addChild(this.RingSegment3);
-        this.ringBase2.addChild(this.RingSegment2_1);
-        this.ringBase1.addChild(this.ringBase2);
-        this.ringBase1.addChild(this.RingSegment1);
-        this.ringBase2.addChild(this.RingSegment4_1);
-        this.ringBase1.addChild(this.RingSegment4);
-        this.ringBase1.addChild(this.RingSegment2);
-        this.ringBase2.addChild(this.RingSegment1_1);
+//        this.texWidth = 64;
+//        this.texHeight = 64;
+//        this.RingSegment3_1 = new ModelPart(this, 12, 38);
+//        this.RingSegment3_1.setPos(0.0F, 0.0F, -10.0F);
+//        this.RingSegment3_1.addBox(-1.0F, -1.0F, -2.0F, 2, 2, 4, 0.0F);
+//        this.setRotateAngle(RingSegment3_1, 0.0F, 1.5707963267948966F, 0.0F);
+//        this.RingSegment3 = new ModelPart(this, 12, 32);
+//        this.RingSegment3.setPos(0.0F, 0.0F, -10.0F);
+//        this.RingSegment3.addBox(-1.0F, -1.0F, -2.0F, 2, 2, 4, 0.0F);
+//        this.setRotateAngle(RingSegment3, 0.0F, 1.5707963267948966F, 0.0F);
+//        this.cube = new ModelPart(this, 32, 0);
+//        this.cube.setPos(0.0F, 0.0F, 0.0F);
+//        this.cube.addBox(-4.0F, -4.0F, -4.0F, 8, 8, 8, 0.0F);
+//        this.RingSegment2_1 = new ModelPart(this, 24, 38);
+//        this.RingSegment2_1.setPos(-10.0F, 0.0F, 0.0F);
+//        this.RingSegment2_1.addBox(-1.0F, -1.0F, -2.0F, 2, 2, 4, 0.0F);
+//        this.ringBase2 = new ModelPart(this, 0, 0);
+//        this.ringBase2.setPos(0.0F, 0.0F, 0.0F);
+//        this.ringBase2.addBox(-0.5F, -0.5F, -0.5F, 1, 1, 1, 0.0F);
+//        this.setRotateAngle(ringBase2, 0.0F, 0.7853981633974483F, 0.0F);
+//        this.base = new ModelPart(this, 0, 16);
+//        this.base.setPos(0.0F, 0.0F, 0.0F);
+//        this.base.addBox(-6.0F, 0.0F, -6.0F, 12, 4, 12, 0.0F);
+//        this.ringBase1 = new ModelPart(this, 0, 0);
+//        this.ringBase1.setPos(0.0F, 0.0F, 0.0F);
+//        this.ringBase1.addBox(-0.5F, -0.5F, -0.5F, 1, 1, 1, 0.0F);
+//        this.RingSegment1 = new ModelPart(this, 0, 32);
+//        this.RingSegment1.setPos(10.0F, 0.0F, 0.0F);
+//        this.RingSegment1.addBox(-1.0F, -1.0F, -2.0F, 2, 2, 4, 0.0F);
+//        this.glass = new ModelPart(this, 0, 0);
+//        this.glass.setPos(0.0F, 0.0F, 0.0F);
+//        this.glass.addBox(-4.0F, -4.0F, -4.0F, 8, 8, 8, 0.0F);
+//        this.RingSegment4_1 = new ModelPart(this, 36, 38);
+//        this.RingSegment4_1.setPos(0.0F, 0.0F, 10.0F);
+//        this.RingSegment4_1.addBox(-1.0F, -1.0F, -2.0F, 2, 2, 4, 0.0F);
+//        this.setRotateAngle(RingSegment4_1, 0.0F, 1.5707963267948966F, 0.0F);
+//        this.RingSegment4 = new ModelPart(this, 36, 32);
+//        this.RingSegment4.setPos(0.0F, 0.0F, 10.0F);
+//        this.RingSegment4.addBox(-1.0F, -1.0F, -2.0F, 2, 2, 4, 0.0F);
+//        this.setRotateAngle(RingSegment4, 0.0F, 1.5707963267948966F, 0.0F);
+//        this.RingSegment2 = new ModelPart(this, 24, 32);
+//        this.RingSegment2.setPos(-10.0F, 0.0F, 0.0F);
+//        this.RingSegment2.addBox(-1.0F, -1.0F, -2.0F, 2, 2, 4, 0.0F);
+//        this.RingSegment1_1 = new ModelPart(this, 0, 38);
+//        this.RingSegment1_1.setPos(10.0F, 0.0F, 0.0F);
+//        this.RingSegment1_1.addBox(-1.0F, -1.0F, -2.0F, 2, 2, 4, 0.0F);
+//        this.ringBase2.addChild(this.RingSegment3_1);
+//        this.ringBase1.addChild(this.RingSegment3);
+//        this.ringBase2.addChild(this.RingSegment2_1);
+//        this.ringBase1.addChild(this.ringBase2);
+//        this.ringBase1.addChild(this.RingSegment1);
+//        this.ringBase2.addChild(this.RingSegment4_1);
+//        this.ringBase1.addChild(this.RingSegment4);
+//        this.ringBase1.addChild(this.RingSegment2);
+//        this.ringBase2.addChild(this.RingSegment1_1);
     }
 
 //    public void render(Entity entity, float f1, float f2, float f3, float deathAnimation, float health, float scale) {
@@ -123,14 +123,14 @@ public class ModelGuardianCrystal extends Model {
     /**
      * This is a helper function from Tabula to set the ROTATION of model parts
      */
-    public void setRotateAngle(ModelRenderer modelRenderer, float x, float y, float z) {
+    public void setRotateAngle(ModelPart modelRenderer, float x, float y, float z) {
         modelRenderer.xRot = x;
         modelRenderer.yRot = y;
         modelRenderer.zRot = z;
     }
 
     @Override
-    public void renderToBuffer(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+    public void renderToBuffer(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
 
     }
 }

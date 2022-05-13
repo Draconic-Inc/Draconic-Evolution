@@ -1,18 +1,18 @@
 package com.brandon3055.draconicevolution.client.render.particle;
 
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.particles.BasicParticleType;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuardianBeamParticle extends SpriteTexturedParticle {
-   private final IAnimatedSprite sprites;
+public class GuardianBeamParticle extends TextureSheetParticle {
+   private final SpriteSet sprites;
 
-   private GuardianBeamParticle(ClientWorld world, double x, double y, double z, double power, double my, double mz, IAnimatedSprite animatedSprite) {
+   private GuardianBeamParticle(ClientLevel world, double x, double y, double z, double power, double my, double mz, SpriteSet animatedSprite) {
       super(world, x, y, z, 0.0D, 0.0D, 0.0D);
       this.sprites = animatedSprite;
       this.xd = 0;//*= (double)0.1F;
@@ -28,13 +28,13 @@ public class GuardianBeamParticle extends SpriteTexturedParticle {
    }
 
    @Override
-   public IParticleRenderType getRenderType() {
-      return IParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
+   public ParticleRenderType getRenderType() {
+      return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
    }
 
    @Override
    public float getQuadSize(float partialTicks) {
-      return this.quadSize * MathHelper.clamp(((float)this.age + partialTicks) / (float)this.lifetime * 32.0F, 0.0F, 1.0F);
+      return this.quadSize * Mth.clamp(((float)this.age + partialTicks) / (float)this.lifetime * 32.0F, 0.0F, 1.0F);
    }
 
    @Override
@@ -50,7 +50,7 @@ public class GuardianBeamParticle extends SpriteTexturedParticle {
          this.xd *= (double)0.96F;
          this.yd *= (double)0.96F;
          this.zd *= (double)0.96F;
-         PlayerEntity playerentity = this.level.getNearestPlayer(this.x, this.y, this.z, 2.0D, false);
+         Player playerentity = this.level.getNearestPlayer(this.x, this.y, this.z, 2.0D, false);
          if (playerentity != null) {
             double d0 = playerentity.getY();
             if (this.y > d0) {
@@ -69,14 +69,14 @@ public class GuardianBeamParticle extends SpriteTexturedParticle {
    }
 
    @OnlyIn(Dist.CLIENT)
-   public static class Factory implements IParticleFactory<BasicParticleType> {
-      private final IAnimatedSprite sprites;
+   public static class Factory implements ParticleProvider<SimpleParticleType> {
+      private final SpriteSet sprites;
 
-      public Factory(IAnimatedSprite p_i50630_1_) {
+      public Factory(SpriteSet p_i50630_1_) {
          this.sprites = p_i50630_1_;
       }
 
-      public Particle createParticle(BasicParticleType type, ClientWorld world, double x, double y, double z, double power, double p_199234_11_, double p_199234_13_) {
+      public Particle createParticle(SimpleParticleType type, ClientLevel world, double x, double y, double z, double power, double p_199234_11_, double p_199234_13_) {
          return new GuardianBeamParticle(world, x, y, z, power, p_199234_11_, p_199234_13_, this.sprites);
       }
    }

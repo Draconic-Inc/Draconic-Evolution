@@ -1,8 +1,8 @@
 package com.brandon3055.draconicevolution.api.modules.data;
 
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 
 import java.util.Map;
 
@@ -50,30 +50,30 @@ public class ProjectileData implements ModuleData<ProjectileData> {
     }
 
     @Override
-    public void addInformation(Map<ITextComponent, ITextComponent> map, ModuleContext context, boolean stack) {
+    public void addInformation(Map<Component, Component> map, ModuleContext context, boolean stack) {
         if (getVelocity() != 0) {
             int vel = Math.round((getVelocity() * 100));
-            map.put(new TranslationTextComponent("module.draconicevolution.proj_velocity.name"), new TranslationTextComponent("module.draconicevolution.proj_velocity.value", vel > 0 ? "+" + vel : vel, Math.round(60 * (getVelocity() + 1))));
+            map.put(new TranslatableComponent("module.draconicevolution.proj_velocity.name"), new TranslatableComponent("module.draconicevolution.proj_velocity.value", vel > 0 ? "+" + vel : vel, Math.round(60 * (getVelocity() + 1))));
         }
         if (getAccuracy() != 0) {
             int acc = Math.round(getAccuracy() * -100);
-            map.put(new TranslationTextComponent("module.draconicevolution.proj_accuracy.name"), new TranslationTextComponent("module.draconicevolution.proj_accuracy.value", acc > 0 ? "+" + acc : acc));
+            map.put(new TranslatableComponent("module.draconicevolution.proj_accuracy.name"), new TranslatableComponent("module.draconicevolution.proj_accuracy.value", acc > 0 ? "+" + acc : acc));
         }
         if (getAntiGrav() != 0) {
             int antiGrav = Math.round(getAntiGrav() * 100);
-            map.put(new TranslationTextComponent("module.draconicevolution.proj_grav_comp.name"), new TranslationTextComponent("module.draconicevolution.proj_grav_comp.value", antiGrav > 0 ? "+" + antiGrav : antiGrav));
+            map.put(new TranslatableComponent("module.draconicevolution.proj_grav_comp.name"), new TranslatableComponent("module.draconicevolution.proj_grav_comp.value", antiGrav > 0 ? "+" + antiGrav : antiGrav));
         }
         if (getPenetration() > 0 && (getPenetration() > getVelocity() || !stack)) {
             int pen = Math.round(getPenetration() * 100);
-            map.put(new TranslationTextComponent("module.draconicevolution.proj_penetration.name"), new TranslationTextComponent("module.draconicevolution.proj_penetration.value", pen > 0 ? "+" + pen : pen));
+            map.put(new TranslatableComponent("module.draconicevolution.proj_penetration.name"), new TranslatableComponent("module.draconicevolution.proj_penetration.value", pen > 0 ? "+" + pen : pen));
             if (stack) {
-                map.put(new TranslationTextComponent("module.draconicevolution.proj_penetration.info"), null);
-                map.put(new TranslationTextComponent("module.draconicevolution.proj_penetration.info2"), null);
+                map.put(new TranslatableComponent("module.draconicevolution.proj_penetration.info"), null);
+                map.put(new TranslatableComponent("module.draconicevolution.proj_penetration.info2"), null);
             }
         }
         if (getDamage() != 0) {
             int damage = Math.round(getDamage() * 100);
-            map.put(new TranslationTextComponent("module.draconicevolution.proj_damage.name"), new TranslationTextComponent("module.draconicevolution.proj_damage.value", damage > 0 ? "+" + damage : damage));
+            map.put(new TranslatableComponent("module.draconicevolution.proj_damage.name"), new TranslatableComponent("module.draconicevolution.proj_damage.value", damage > 0 ? "+" + damage : damage));
         }
     }
 }

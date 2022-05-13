@@ -3,54 +3,51 @@ package com.brandon3055.draconicevolution.client.render.tile;
 import codechicken.lib.math.MathHelper;
 import codechicken.lib.render.CCModel;
 import codechicken.lib.render.CCRenderState;
-import codechicken.lib.render.OBJParser;
 import codechicken.lib.render.RenderUtils;
-import codechicken.lib.render.buffer.TransformingVertexBuilder;
-import codechicken.lib.util.SneakyUtils;
+import codechicken.lib.render.buffer.TransformingVertexConsumer;
+import codechicken.lib.render.model.OBJParser;
 import codechicken.lib.vec.*;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.machines.Grinder;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileGrinder;
 import com.brandon3055.draconicevolution.init.DEContent;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.RenderState;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.vertex.VertexFormat;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.Map;
-import java.util.OptionalDouble;
 
 /**
  * Created by brandon3055 on 3/11/19.
  */
-public class RenderTileGrinder extends TileEntityRenderer<TileGrinder> {
+public class RenderTileGrinder implements BlockEntityRenderer<TileGrinder> {
     private static final double[] ROTATION_MAP = new double[]{0, 180, 90, -90};
     private static final RenderType swordType = RenderType.entitySolid(new ResourceLocation(DraconicEvolution.MODID, "textures/block/grinder.png"));
     private static final RenderType fanType = RenderType.entitySolid(new ResourceLocation(DraconicEvolution.MODID, "textures/block/parts/machine_fan.png"));
-    private static final RenderType aoeOutlineType = RenderType.create("aoe", DefaultVertexFormats.POSITION_COLOR, GL11.GL_LINES, 256, RenderType.State.builder()
-            .setTransparencyState(RenderState.TRANSLUCENT_TRANSPARENCY)
-            .setCullState(RenderState.NO_CULL)
-            .setWriteMaskState(RenderState.COLOR_WRITE)
-            .setLineState(new RenderState.LineState(OptionalDouble.of(4.0)))
-            .setTexturingState(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
-            .createCompositeState(false)
+    private static final RenderType aoeOutlineType = RenderType.create("aoe", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.LINES, 256, RenderType.CompositeState.builder()
+                    .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
+                    .setCullState(RenderStateShard.NO_CULL)
+                    .setWriteMaskState(RenderStateShard.COLOR_WRITE)
+//            .setLineState(new RenderStateShard.LineStateShard(OptionalDouble.of(4.0)))
+//            .setTexturingState(new RenderStateShard.TexturingStateShard("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
+                    .createCompositeState(false)
     );
-    private static final RenderType aoeSolidType = RenderType.create("aoe_solid", DefaultVertexFormats.POSITION_COLOR, GL11.GL_QUADS, 256, RenderType.State.builder()
-            .setTransparencyState(RenderState.TRANSLUCENT_TRANSPARENCY)
-            .setCullState(RenderState.NO_CULL)
-            .setWriteMaskState(RenderState.COLOR_WRITE)
-            .setTexturingState(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
-            .createCompositeState(false)
+    private static final RenderType aoeSolidType = RenderType.create("aoe_solid", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 256, RenderType.CompositeState.builder()
+                    .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
+                    .setCullState(RenderStateShard.NO_CULL)
+                    .setWriteMaskState(RenderStateShard.COLOR_WRITE)
+//            .setTexturingState(new RenderStateShard.TexturingStateShard("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
+                    .createCompositeState(false)
     );
 
 
@@ -58,12 +55,11 @@ public class RenderTileGrinder extends TileEntityRenderer<TileGrinder> {
     private final CCModel fanModel;
 
 
-    public RenderTileGrinder(TileEntityRendererDispatcher rendererDispatcherIn) {
-        super(rendererDispatcherIn);
-        Map<String, CCModel> map = OBJParser.parseModels(new ResourceLocation(DraconicEvolution.MODID, "models/block/grinder/grinder_fan.obj"), GL11.GL_QUADS, null);
+    public RenderTileGrinder(BlockEntityRendererProvider.Context context) {
+        Map<String, CCModel> map = new OBJParser(new ResourceLocation(DraconicEvolution.MODID, "models/block/grinder/grinder_fan.obj")).quads().ignoreMtl().parse();
         fanModel = CCModel.combine(map.values());
 
-        map = OBJParser.parseModels(new ResourceLocation(DraconicEvolution.MODID, "models/block/grinder/grinder_sword.obj"), GL11.GL_QUADS, null);
+        map = new OBJParser(new ResourceLocation(DraconicEvolution.MODID, "models/block/grinder/grinder_sword.obj")).quads().ignoreMtl().parse();
         swordModel = CCModel.combine(map.values());
         swordModel.computeNormals();
         swordModel.apply(new Scale(-1 / 16F));
@@ -72,7 +68,7 @@ public class RenderTileGrinder extends TileEntityRenderer<TileGrinder> {
     }
 
     @Override
-    public void render(TileGrinder tile, float partialTicks, MatrixStack mStack, IRenderTypeBuffer getter, int packedLight, int packedOverlay) {
+    public void render(TileGrinder tile, float partialTicks, PoseStack mStack, MultiBufferSource getter, int packedLight, int packedOverlay) {
         BlockState state = tile.getLevel().getBlockState(tile.getBlockPos());
         if (state.getBlock() != DEContent.grinder) return;
         Direction facing = state.getValue(Grinder.FACING);
@@ -86,7 +82,7 @@ public class RenderTileGrinder extends TileEntityRenderer<TileGrinder> {
         //Note to self: this is the hacky approach. Ideally this should be converted to matrix operations.
         //But it is performant so i am leaving it like this to remind myself that this is possible.
         ccrs.bind(swordType, getter);
-        ccrs.r = new TransformingVertexBuilder(ccrs.r, mat);
+        ccrs.r = new TransformingVertexConsumer(ccrs.r, mat);
         Vector3 tilePos = Vector3.fromTileCenter(tile);
         Vector3 vecA = tile.targetA == null ? null : getEntityMovingVec(tile.targetA, partialTicks);
         Vector3 vecB = tile.targetB == null ? null : getEntityMovingVec(tile.targetB, partialTicks);
@@ -103,10 +99,10 @@ public class RenderTileGrinder extends TileEntityRenderer<TileGrinder> {
 
         if (tile.aoeDisplay > 0.51) {
             tile.validateKillZone(true);
-            IVertexBuilder builder = new TransformingVertexBuilder(getter.getBuffer(aoeOutlineType), mat);
+            VertexConsumer builder = new TransformingVertexConsumer(getter.getBuffer(aoeOutlineType), mat);
             Cuboid6 box = new Cuboid6(tile.killZone.move(Vector3.fromTile(tile).multiply(-1).pos()).deflate(0.01).deflate(tile.aoe.get() - tile.aoeDisplay));
             RenderUtils.bufferCuboidOutline(builder, box, 0F, 0F, 0F, 1F);
-            builder = new TransformingVertexBuilder(getter.getBuffer(aoeSolidType), mat);
+            builder = new TransformingVertexConsumer(getter.getBuffer(aoeSolidType), mat);
             RenderUtils.bufferCuboidSolid(builder, box, 0F, 1F, 1F, 0.2F);
         }
     }

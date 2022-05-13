@@ -1,19 +1,19 @@
 package com.brandon3055.draconicevolution.inventory;
 
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.RecipeItemHelper;
+import net.minecraft.world.entity.player.StackedContents;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
 /**
  * Created by Brandon on 29/10/2014.
  */
-public class CraftingInventoryWrapper extends CraftingInventory {
+public class CraftingInventoryWrapper extends CraftingContainer {
     private IItemHandlerModifiable wrapped;
-    private Container container;
+    private AbstractContainerMenu container;
 
-    public CraftingInventoryWrapper(Container container, int width, int height, IItemHandlerModifiable wrapped) {
+    public CraftingInventoryWrapper(AbstractContainerMenu container, int width, int height, IItemHandlerModifiable wrapped) {
         super(container, width, height);
         this.container = container;
         this.wrapped = wrapped;
@@ -75,7 +75,7 @@ public class CraftingInventoryWrapper extends CraftingInventory {
     }
 
     @Override
-    public void fillStackedContents(RecipeItemHelper itemHelper) {
+    public void fillStackedContents(StackedContents itemHelper) {
         for (int i = 0; i < wrapped.getSlots(); i++) {
             itemHelper.accountSimpleStack(wrapped.getStackInSlot(i));
         }

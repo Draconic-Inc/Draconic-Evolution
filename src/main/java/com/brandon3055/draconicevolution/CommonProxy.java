@@ -15,12 +15,14 @@ import com.brandon3055.draconicevolution.integration.equipment.EquipmentManager;
 import com.brandon3055.draconicevolution.items.tools.Dislocator;
 import com.brandon3055.draconicevolution.lib.ISidedTileHandler;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
-import net.minecraft.client.audio.ISound;
+import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.OptionalMod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLDedicatedServerSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 public class CommonProxy {
 
@@ -32,15 +34,18 @@ public class CommonProxy {
 
         MinecraftForge.EVENT_BUS.addListener(DraconicEvolution::registerCommands);
         MinecraftForge.EVENT_BUS.addListener(Dislocator::onAnvilUpdate); //TODO move this to an event handler before covers yells at me
-
         MinecraftForge.EVENT_BUS.register(new DEEventHandler());
-		OptionalMod.of("computercraft").ifPresent(e -> MinecraftForge.EVENT_BUS.register(new ComputerCraftCompatEventHandler()));
+        OptionalMod.of("computercraft").ifPresent(e -> MinecraftForge.EVENT_BUS.register(new ComputerCraftCompatEventHandler()));
+
+        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        modEventBus.addListener(ModCapabilities::register);
+
 
         EquipmentManager.initialize();
     }
 
     public void commonSetup(FMLCommonSetupEvent event) {
-        ModCapabilities.register();
+
     }
 
     public void clientSetup(FMLClientSetupEvent event) {
@@ -139,7 +144,7 @@ public class CommonProxy {
         return null;
     }
 
-    public ISound playISound(ISound sound) {
+    public SoundInstance playISound(SoundInstance sound) {
         return null;
     }
 

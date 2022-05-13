@@ -4,12 +4,12 @@ import codechicken.lib.render.item.IItemRenderer;
 import codechicken.lib.texture.TextureUtils;
 import codechicken.lib.util.TransformUtils;
 import com.brandon3055.draconicevolution.client.render.tile.DraconiumChestTileRenderer;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.model.IModelTransform;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.item.ItemStack;
+import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * Created by brandon3055 on 18/04/2017.
@@ -35,7 +35,7 @@ public class RenderItemDraconiumChest implements IItemRenderer {
     }
 
     @Override
-    public void renderItem(ItemStack stack, ItemCameraTransforms.TransformType transformType, MatrixStack mStack, IRenderTypeBuffer getter, int packedLight, int packedOverlay) {
+    public void renderItem(ItemStack stack, ItemTransforms.TransformType transformType, PoseStack mStack, MultiBufferSource getter, int packedLight, int packedOverlay) {
         int colour = 0x640096;
         if (stack.getTag() != null && stack.getTag().contains("bc_tile_data")) {
             colour = stack.getTag().getCompound("bc_tile_data").getCompound("bc_managed_data").getInt("colour");
@@ -44,7 +44,7 @@ public class RenderItemDraconiumChest implements IItemRenderer {
     }
 
     @Override
-    public IModelTransform getModelTransform() {
+    public ModelState getModelTransform() {
         return TransformUtils.DEFAULT_BLOCK;
     }
 

@@ -15,26 +15,25 @@ import com.brandon3055.draconicevolution.inventory.GuiLayoutFactories;
 import com.brandon3055.draconicevolution.lib.EnergyCoreBuilder;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.brandon3055.draconicevolution.world.EnergyCoreStructure;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.MoverType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -43,7 +42,7 @@ import java.util.List;
 /**
  * Created by brandon3055 on 30/3/2016.
  */
-public class TileEnergyCore extends TileBCore implements ITickableTileEntity, IExtendedRFStorage, IMultiBlockPart, INamedContainerProvider {
+public class TileEnergyCore extends TileBCore implements IExtendedRFStorage, IMultiBlockPart, MenuProvider {
 
     //Frame Movement
     public int frameMoveContactPoints = 0;
@@ -72,7 +71,7 @@ public class TileEnergyCore extends TileBCore implements ITickableTileEntity, IE
     public final ManagedString invalidMessage = register(new ManagedString("invalid_message", DataFlags.SAVE_NBT));
     public final ManagedBool buildGuide = register(new ManagedBool("build_guide", DataFlags.SAVE_NBT_SYNC_TILE, DataFlags.TRIGGER_UPDATE));
     public final ManagedBool stabilizersOK = register(new ManagedBool("stabilizers_ok", DataFlags.SAVE_NBT_SYNC_TILE, DataFlags.TRIGGER_UPDATE));
-    public final ManagedByte tier = register(new ManagedByte("tier", (byte)1, DataFlags.SAVE_NBT_SYNC_TILE, DataFlags.TRIGGER_UPDATE));
+    public final ManagedByte tier = register(new ManagedByte("tier", (byte) 1, DataFlags.SAVE_NBT_SYNC_TILE, DataFlags.TRIGGER_UPDATE));
     public final ManagedLong energy = register(new ManagedLong("energy", DataFlags.SAVE_NBT_SYNC_TILE));
     public final ManagedVec3I[] stabOffsets = new ManagedVec3I[4];
     public final ManagedLong transferRate = register(new ManagedLong("transfer_rate", DataFlags.SYNC_CONTAINER));
@@ -87,8 +86,8 @@ public class TileEnergyCore extends TileBCore implements ITickableTileEntity, IE
     private long lastTickInput = 0;
     private long lastTickOutput = 0;
 
-    public TileEnergyCore() {
-        super(DEContent.tile_storage_core);
+    public TileEnergyCore(BlockPos pos, BlockState state) {
+        super(DEContent.tile_storage_core, pos, state);
 
         for (int i = 0; i < stabOffsets.length; i++) {
             stabOffsets[i] = register(new ManagedVec3I("stab_offset" + i, new Vec3I(0, -1, 0), DataFlags.SAVE_NBT_SYNC_TILE));
@@ -119,8 +118,7 @@ public class TileEnergyCore extends TileBCore implements ITickableTileEntity, IE
             if (activeBuilder != null) {
                 if (activeBuilder.isDead()) {
                     activeBuilder = null;
-                }
-                else {
+                } else {
                     activeBuilder.updateProcess();
                 }
             }
@@ -135,8 +133,7 @@ public class TileEnergyCore extends TileBCore implements ITickableTileEntity, IE
             outputRate.add(diff / 10);
 
             lastTickInput = lastTickOutput = 0;
-        }
-        else {
+        } else {
             rotation++;
         }
 
@@ -147,8 +144,8 @@ public class TileEnergyCore extends TileBCore implements ITickableTileEntity, IE
         }
 
         if (level.isClientSide && active.get()) {
-            List<PlayerEntity> players = level.getEntitiesOfClass(PlayerEntity.class, new AxisAlignedBB(worldPosition, worldPosition.offset(1, 1, 1)).inflate(10, 10, 10));
-            for (PlayerEntity player : players) {
+            List<Player> players = level.getEntitiesOfClass(Player.class, new AABB(worldPosition, worldPosition.offset(1, 1, 1)).inflate(10, 10, 10));
+            for (Player player : players) {
                 double dist = Vec3D.getCenter(this).distance(new Vec3D(player));
                 double distNext = new Vec3D(player).distance(new Vec3D(worldPosition.getX() + player.getDeltaMovement().x + 0.5, worldPosition.getY() + player.getDeltaMovement().y - 0.4, worldPosition.getZ() + player.getDeltaMovement().z + 0.5));
                 double threshold = tier.get() > 2 ? tier.get() - 0.5 : tier.get() + 0.5;
@@ -157,7 +154,7 @@ public class TileEnergyCore extends TileBCore implements ITickableTileEntity, IE
 
                 if (boundary <= 0) {
                     if (dir < 0) {
-                        player.move(MoverType.PLAYER, new Vector3d(-player.getDeltaMovement().x * 1.5, -player.getDeltaMovement().y * 1.5, -player.getDeltaMovement().z * 1.5));
+                        player.move(MoverType.PLAYER, new Vec3(-player.getDeltaMovement().x * 1.5, -player.getDeltaMovement().y * 1.5, -player.getDeltaMovement().z * 1.5));
                     }
 
                     double multiplier = (threshold - dist) * 0.05;
@@ -166,7 +163,7 @@ public class TileEnergyCore extends TileBCore implements ITickableTileEntity, IE
                     double ym = ((worldPosition.getY() - 0.4 - player.getY()) / distNext) * multiplier;
                     double zm = ((worldPosition.getZ() + 0.5 - player.getZ()) / distNext) * multiplier;
 
-                    player.move(MoverType.PLAYER, new Vector3d(-xm, -ym, -zm));
+                    player.move(MoverType.PLAYER, new Vec3(-xm, -ym, -zm));
                 }
             }
         }
@@ -178,15 +175,15 @@ public class TileEnergyCore extends TileBCore implements ITickableTileEntity, IE
 
     @Nullable
     @Override
-    public Container createMenu(int currentWindowIndex, PlayerInventory playerInventory, PlayerEntity player) {
+    public AbstractContainerMenu createMenu(int currentWindowIndex, Inventory playerInventory, Player player) {
         return new ContainerBCTile<>(DEContent.container_energy_core, currentWindowIndex, player.inventory, this, GuiLayoutFactories.ENERGY_CORE_LAYOUT);
     }
 
-    public void onStructureClicked(World world, BlockPos blockClicked, BlockState state, PlayerEntity player) {
+    public void onStructureClicked(Level world, BlockPos blockClicked, BlockState state, Player player) {
         if (!world.isClientSide) {
             validateStructure();
-            if (player instanceof ServerPlayerEntity) {
-                NetworkHooks.openGui((ServerPlayerEntity) player, this, worldPosition);
+            if (player instanceof ServerPlayer) {
+                NetworkHooks.openGui((ServerPlayer) player, this, worldPosition);
             }
         }
     }
@@ -225,44 +222,38 @@ public class TileEnergyCore extends TileBCore implements ITickableTileEntity, IE
     }
 
     @Override
-    public void receivePacketFromClient(MCDataInput data, ServerPlayerEntity client, int id) {
+    public void receivePacketFromClient(MCDataInput data, ServerPlayer client, int id) {
         if (id == 0) { //Activate
             if (active.get()) {
                 deactivateCore();
-            }
-            else {
+            } else {
                 activateCore();
             }
-        }
-        else if (id == 1) { //Tier Up
+        } else if (id == 1) { //Tier Up
             if (!active.get() && tier.get() < 8) {
                 tier.inc();
                 validateStructure();
             }
-        }
-        else if (id == 2) { //Tier Down
+        } else if (id == 2) { //Tier Down
             if (!active.get() && tier.get() > 1) {
                 tier.dec();
                 validateStructure();
             }
-        }
-        else if (id == 3) { //Toggle Guide
+        } else if (id == 3) { //Toggle Guide
             if (!active.get()) {
                 buildGuide.set(!buildGuide.get());
             }
-        }
-        else if (id == 4) { //Build
+        } else if (id == 4) { //Build
             if (!active.get()) {
                 startBuilder(client);
             }
         }
     }
 
-    private void startBuilder(PlayerEntity player) {
+    private void startBuilder(Player player) {
         if (activeBuilder != null && !activeBuilder.isDead()) {
-            player.sendMessage(new TranslationTextComponent("ecore.de.already_assembling.txt").withStyle(TextFormatting.RED), Util.NIL_UUID);
-        }
-        else {
+            player.sendMessage(new TranslatableComponent("ecore.de.already_assembling.txt").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+        } else {
             activeBuilder = new EnergyCoreBuilder(this, player);
         }
     }
@@ -273,7 +264,7 @@ public class TileEnergyCore extends TileBCore implements ITickableTileEntity, IE
     private void updateStabilizers(boolean coreActive) {
         for (ManagedVec3I offset : stabOffsets) {
             BlockPos tilePos = worldPosition.offset(-offset.get().x, -offset.get().y, -offset.get().z);
-            TileEntity tile = level.getBlockEntity(tilePos);
+            BlockEntity tile = level.getBlockEntity(tilePos);
 
             if (tile instanceof TileEnergyCoreStabilizer) {
                 ((TileEnergyCoreStabilizer) tile).isCoreActive.set(coreActive);
@@ -321,7 +312,7 @@ public class TileEnergyCore extends TileBCore implements ITickableTileEntity, IE
         if (stabilizersOK.get()) {
             for (ManagedVec3I offset : stabOffsets) {
                 BlockPos tilePos = worldPosition.subtract(offset.get().getPos());
-                TileEntity tile = level.getBlockEntity(tilePos);
+                BlockEntity tile = level.getBlockEntity(tilePos);
 
                 if (!(tile instanceof TileEnergyCoreStabilizer) || !((TileEnergyCoreStabilizer) tile).hasCoreLock.get() || ((TileEnergyCoreStabilizer) tile).getCore() != this || !((TileEnergyCoreStabilizer) tile).isStabilizerValid(tier.get(), this)) {
                     flag = false;
@@ -333,8 +324,7 @@ public class TileEnergyCore extends TileBCore implements ITickableTileEntity, IE
                 stabilizersOK.set(false);
                 releaseStabilizers();
             }
-        }
-        else {
+        } else {
 
             //Foe each of the 3 possible axises
             for (int orient = 1; orient < STAB_ORIENTATIONS.length; orient++) {
@@ -347,7 +337,7 @@ public class TileEnergyCore extends TileBCore implements ITickableTileEntity, IE
 
                     for (int dist = 0; dist < 16; dist++) {
                         BlockPos pos1 = worldPosition.offset(facing.getStepX() * dist, facing.getStepY() * dist, facing.getStepZ() * dist);
-                        TileEntity tile = level.getBlockEntity(pos1);
+                        BlockEntity tile = level.getBlockEntity(pos1);
                         if (!(tile instanceof TileEnergyCoreStabilizer)) {
                             continue;
                         }
@@ -384,7 +374,7 @@ public class TileEnergyCore extends TileBCore implements ITickableTileEntity, IE
     private void releaseStabilizers() {
         for (ManagedVec3I offset : stabOffsets) {
             BlockPos tilePos = worldPosition.offset(-offset.get().x, -offset.get().y, -offset.get().z);
-            TileEntity tile = level.getBlockEntity(tilePos);
+            BlockEntity tile = level.getBlockEntity(tilePos);
 
             if (tile instanceof TileEnergyCoreStabilizer) {
                 ((TileEnergyCoreStabilizer) tile).hasCoreLock.set(false);
@@ -457,14 +447,8 @@ public class TileEnergyCore extends TileBCore implements ITickableTileEntity, IE
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public AxisAlignedBB getRenderBoundingBox() {
+    public AABB getRenderBoundingBox() {
         return INFINITE_EXTENT_AABB;
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public double getViewDistance() {
-        return 65536.0D;
     }
 
     public int getColour() {

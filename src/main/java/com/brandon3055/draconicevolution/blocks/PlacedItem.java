@@ -3,55 +3,57 @@ package com.brandon3055.draconicevolution.blocks;
 import codechicken.lib.math.MathHelper;
 import codechicken.lib.raytracer.IndexedVoxelShape;
 import codechicken.lib.raytracer.MultiIndexedVoxelShape;
+import codechicken.lib.raytracer.SubHitBlockHitResult;
 import codechicken.lib.raytracer.VoxelShapeCache;
 import codechicken.lib.vec.Cuboid6;
 import codechicken.lib.vec.Rotation;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.blocks.BlockBCore;
 import com.brandon3055.draconicevolution.blocks.tileentity.TilePlacedItem;
+import com.brandon3055.draconicevolution.init.DEContent;
 import com.google.common.collect.ImmutableSet;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.particle.ParticleManager;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.state.DirectionProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by brandon3055 on 25/07/2016.
  */
-public class PlacedItem extends BlockBCore {
-    private static final VoxelShape FALLBACK_SHAPE = VoxelShapes.box(0.1, 0.1, 0.1, 0.9, 0.9, 0.9);
+public class PlacedItem extends BlockBCore implements EntityBlock {
+    private static final VoxelShape FALLBACK_SHAPE = Shapes.box(0.1, 0.1, 0.1, 0.9, 0.9, 0.9);
     private static Int2ObjectMap<VoxelShape> SHAPE_CACHE = new Int2ObjectOpenHashMap<>();
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
 
     public PlacedItem(Properties properties) {
         super(properties);
         this.registerDefaultState(stateDefinition.any().setValue(FACING, Direction.UP));
+        setBlockEntity(() -> DEContent.tile_placed_item, true);
     }
 
     private static VoxelShape computeShape(int stackCount, boolean tool, boolean[] isBlock, Direction facing, boolean getCollisionShape) {
@@ -150,32 +152,21 @@ public class PlacedItem extends BlockBCore {
     }
 
     @Override
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(FACING);
     }
 
     @Override
-    public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> items) {}
+    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {}
 
     @Override
-    public boolean hasTileEntity(BlockState state) {
-        return true;
-    }
-
-    @Nullable
-    @Override
-    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        return new TilePlacedItem();
-    }
-
-    @Override
-    public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos) {
+    public boolean propagatesSkylightDown(BlockState state, BlockGetter reader, BlockPos pos) {
         return state.getFluidState().isEmpty();
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, IBlockReader reader, BlockPos pos, ISelectionContext context) {
-        TileEntity te = reader.getBlockEntity(pos);
+    public VoxelShape getShape(BlockState state, BlockGetter reader, BlockPos pos, CollisionContext context) {
+        BlockEntity te = reader.getBlockEntity(pos);
         if (te instanceof TilePlacedItem) {
             TilePlacedItem tile = (TilePlacedItem) te;
             return computeShape(tile.stackCount.get(), tile.toolMode.get(), tile.getBlockArray(), state.getValue(FACING), false);
@@ -184,8 +175,8 @@ public class PlacedItem extends BlockBCore {
     }
 
     @Override
-    public VoxelShape getCollisionShape(BlockState state, IBlockReader reader, BlockPos pos, ISelectionContext context) {
-        TileEntity te = reader.getBlockEntity(pos);
+    public VoxelShape getCollisionShape(BlockState state, BlockGetter reader, BlockPos pos, CollisionContext context) {
+        BlockEntity te = reader.getBlockEntity(pos);
         if (te instanceof TilePlacedItem) {
             TilePlacedItem tile = (TilePlacedItem) te;
             return computeShape(tile.stackCount.get(), tile.toolMode.get(), tile.getBlockArray(), state.getValue(FACING), true);
@@ -193,12 +184,14 @@ public class PlacedItem extends BlockBCore {
         return FALLBACK_SHAPE;
     }
 
+
+
     @Override
-    public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader world, BlockPos pos, PlayerEntity player) {
-        TileEntity tile = world.getBlockEntity(pos);
-        if (tile instanceof TilePlacedItem) {
+    public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter level, BlockPos pos, Player player) {
+        BlockEntity tile = level.getBlockEntity(pos);
+        if (tile instanceof TilePlacedItem && target instanceof SubHitBlockHitResult) {
             List<ItemStack> stacks = ((TilePlacedItem) tile).getStacksInOrder();
-            int index = target.subHit - 1;
+            int index = ((SubHitBlockHitResult) target).subHit - 1;
 
             if (index >= 0 && index < stacks.size()) {
                 ItemStack stack = stacks.get(index).copy();
@@ -211,8 +204,8 @@ public class PlacedItem extends BlockBCore {
     }
 
     @Override
-    public void onRemove(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving) {
-        TileEntity tile = world.getBlockEntity(pos);
+    public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
+        BlockEntity tile = world.getBlockEntity(pos);
         if (tile instanceof TilePlacedItem) {
             ((TilePlacedItem) tile).onBroken(Vector3.fromTileCenter(tile), false);
         }
@@ -220,26 +213,17 @@ public class PlacedItem extends BlockBCore {
     }
 
     @Override
+    protected void spawnDestroyParticles(Level p_152422_, Player p_152423_, BlockPos p_152424_, BlockState p_152425_) {}
+
+    @Override
     @OnlyIn(Dist.CLIENT)
-    public boolean addHitEffects(BlockState state, World world, RayTraceResult target, ParticleManager manager) {
+    public boolean addLandingEffects(BlockState state1, ServerLevel worldserver, BlockPos pos, BlockState state2, LivingEntity entity, int numberOfParticles) {
         return true;
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public boolean addDestroyEffects(BlockState state, World world, BlockPos pos, ParticleManager manager) {
-        return true;
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public boolean addLandingEffects(BlockState state1, ServerWorld worldserver, BlockPos pos, BlockState state2, LivingEntity entity, int numberOfParticles) {
-        return true;
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public boolean addRunningEffects(BlockState state, World world, BlockPos pos, Entity entity) {
+    public boolean addRunningEffects(BlockState state, Level world, BlockPos pos, Entity entity) {
         return true;
     }
 }

@@ -11,33 +11,33 @@ import com.brandon3055.draconicevolution.entity.guardian.DraconicGuardianEntity;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.network.CrystalUpdateBatcher;
 import com.brandon3055.draconicevolution.utils.LogHelper;
-import net.minecraft.block.Blocks;
+import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.boss.dragon.EnderDragonEntity;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.passive.AnimalEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.GameType;
-import net.minecraft.world.World;
-import net.minecraft.world.end.DragonFightManager;
-import net.minecraft.world.gen.Heightmap;
-import net.minecraft.world.gen.feature.EndPodiumFeature;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.dimension.end.EndDragonFight;
+import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.levelgen.feature.EndPodiumFeature;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.ClientPlayerChangeGameModeEvent;
+import net.minecraftforge.client.event.ClientPlayerChangeGameTypeEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
@@ -52,7 +52,7 @@ import java.util.*;
 @SuppressWarnings("unused")
 public class DEEventHandler {
 
-    private static WeakHashMap<MobEntity, Long> deSpawnedMobs = new WeakHashMap<>();
+    private static WeakHashMap<Mob, Long> deSpawnedMobs = new WeakHashMap<>();
     private static Random random = new Random();
     public static int serverTicks = 0;
 
@@ -61,10 +61,10 @@ public class DEEventHandler {
 
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
-    public void changeGameMode(ClientPlayerChangeGameModeEvent event) {
-        PlayerEntity player = Minecraft.getInstance().player;
-        if (DEConfig.creativeWarning && event.getNewGameMode() == GameType.CREATIVE && player != null && !Minecraft.getInstance().isLocalServer() && player.getGameProfile().equals(event.getInfo().getProfile())) {
-            player.sendMessage(new StringTextComponent("[Draconic Evolution]: ").withStyle(TextFormatting.YELLOW).append(new StringTextComponent("Warning! Using creative inventory on a server will delete all module data on DE tools and armor. This is due a fundamental issue with the creative menu.").withStyle(TextFormatting.RED)), Util.NIL_UUID);
+    public void changeGameMode(ClientPlayerChangeGameTypeEvent event) {
+        Player player = Minecraft.getInstance().player;
+        if (DEConfig.creativeWarning && event.getNewGameType() == GameType.CREATIVE && player != null && !Minecraft.getInstance().isLocalServer() && player.getGameProfile().equals(event.getInfo().getProfile())) {
+            player.sendMessage(new TextComponent("[Draconic Evolution]: ").withStyle(ChatFormatting.YELLOW).append(new TextComponent("Warning! Using creative inventory on a server will delete all module data on DE tools and armor. This is due a fundamental issue with the creative menu.").withStyle(ChatFormatting.RED)), Util.NIL_UUID);
         }
     }
 
@@ -90,7 +90,7 @@ public class DEEventHandler {
         }
     }
 
-    public static void onMobSpawnedBySpawner(MobEntity entity) {
+    public static void onMobSpawnedBySpawner(Mob entity) {
         deSpawnedMobs.put(entity, System.currentTimeMillis());
     }
 
@@ -121,13 +121,13 @@ public class DEEventHandler {
             event.setCanceled(true);
             return;
         }
-        if (!entity.level.isClientSide && (entity instanceof EnderDragonEntity || entity instanceof DraconicGuardianEntity)) {
+        if (!entity.level.isClientSide && (entity instanceof EnderDragon || entity instanceof DraconicGuardianEntity)) {
             deadDragons.add(entity.getUUID());
 
             ItemEntity item = EntityType.ITEM.create(entity.level);
             if (item != null) {
                 item.setItem(new ItemStack(DEContent.dragon_heart));
-                BlockPos podiumPos = entity.level.getHeightmapPos(Heightmap.Type.WORLD_SURFACE, EndPodiumFeature.END_PODIUM_LOCATION).offset(0, 3, 0);
+                BlockPos podiumPos = entity.level.getHeightmapPos(Heightmap.Types.WORLD_SURFACE, EndPodiumFeature.END_PODIUM_LOCATION).offset(0, 3, 0);
                 item.moveTo(podiumPos.getX() + 0.5, podiumPos.getY(), podiumPos.getZ() + 0.5, 0, 0);
                 item.setDeltaMovement(0, 0, 0);
                 item.age = -32767;
@@ -135,10 +135,10 @@ public class DEEventHandler {
                 entity.level.addFreshEntity(item);
             }
 
-            if (entity instanceof EnderDragonEntity) {
-                DragonFightManager manager = ((EnderDragonEntity) entity).getDragonFight();
+            if (entity instanceof EnderDragon) {
+                EndDragonFight manager = ((EnderDragon) entity).getDragonFight();
                 if (DEConfig.dragonEggSpawnOverride && manager != null && manager.hasPreviouslyKilledDragon()) {
-                    entity.level.setBlockAndUpdate(entity.level.getHeightmapPos(Heightmap.Type.WORLD_SURFACE, EndPodiumFeature.END_PODIUM_LOCATION).offset(0, 0, -4), Blocks.DRAGON_EGG.defaultBlockState());
+                    entity.level.setBlockAndUpdate(entity.level.getHeightmapPos(Heightmap.Types.WORLD_SURFACE, EndPodiumFeature.END_PODIUM_LOCATION).offset(0, 0, -4), Blocks.DRAGON_EGG.defaultBlockState());
                 }
             }
 
@@ -166,25 +166,25 @@ public class DEEventHandler {
         LivingEntity entity = event.getEntityLiving();
         Entity attacker = event.getSource().getEntity();
 
-        if (attacker == null || !(attacker instanceof PlayerEntity) || entity instanceof PlayerEntity) {
+        if (attacker == null || !(attacker instanceof Player) || entity instanceof Player) {
             return;
         }
 
-        int dropChanceModifier = getDropChanceFromItem(((PlayerEntity) attacker).getMainHandItem());
+        int dropChanceModifier = getDropChanceFromItem(((Player) attacker).getMainHandItem());
 
         if (dropChanceModifier == 0) {
             return;
         }
 
-        World world = entity.level;
+        Level world = entity.level;
         int rand = random.nextInt(Math.max(DEConfig.soulDropChance / dropChanceModifier, 1));
         int rand2 = random.nextInt(Math.max(DEConfig.passiveSoulDropChance / dropChanceModifier, 1));
-        boolean isAnimal = entity instanceof AnimalEntity;
+        boolean isAnimal = entity instanceof Animal;
 
         if ((rand == 0 && !isAnimal) || (rand2 == 0 && isAnimal)) {
             ItemStack soul = DEContent.mob_soul.getSoulFromEntity(entity, false);
             world.addFreshEntity(new ItemEntity(world, entity.getX(), entity.getY(), entity.getZ(), soul));
-            Achievements.triggerAchievement((PlayerEntity) attacker, "draconicevolution.soul");
+            Achievements.triggerAchievement((Player) attacker, "draconicevolution.soul");
         }
     }
 
@@ -221,7 +221,7 @@ public class DEEventHandler {
     @SubscribeEvent
     public void itemToss(ItemTossEvent event) {
         ItemEntity item = event.getEntityItem();
-        PlayerEntity player = event.getPlayer();
+        Player player = event.getPlayer();
         if (DEOldConfig.forceDroppedItemOwner && player != null && (item.getThrower() == null)) {
             item.setThrower(player.getUUID());
         }
@@ -235,26 +235,26 @@ public class DEEventHandler {
             return;
         }
 
-        PlayerEntity player = event.getPlayer();
+        Player player = event.getPlayer();
         ItemStack stack = event.getItemStack();
 
         //region Hacky check to compensate for the completely f***ing stupid interact event handling.
         //If you cancel the right click event for one hand the event will still fire for the other hand!
         //This check ensures that if the event was cancels by a binder in the other hand the event for this hand will also be canceled.
         //@Forge THIS IS HOW IT SHOULD WORK BY DEFAULT!!!!!!
-        ItemStack other = player.getItemInHand(event.getHand() == Hand.OFF_HAND ? Hand.MAIN_HAND : Hand.OFF_HAND);
+        ItemStack other = player.getItemInHand(event.getHand() == InteractionHand.OFF_HAND ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND);
         if (stack.getItem() instanceof ICrystalBinder && other.getItem() instanceof ICrystalBinder) {
-            if (event.getHand() == Hand.OFF_HAND) {
+            if (event.getHand() == InteractionHand.OFF_HAND) {
                 event.setCanceled(true);
                 return;
             }
         } else {
-            if (event.getHand() == Hand.OFF_HAND && other.getItem() instanceof ICrystalBinder) {
+            if (event.getHand() == InteractionHand.OFF_HAND && other.getItem() instanceof ICrystalBinder) {
                 event.setCanceled(true);
                 return;
             }
 
-            if (event.getHand() == Hand.MAIN_HAND && other.getItem() instanceof ICrystalBinder) {
+            if (event.getHand() == InteractionHand.MAIN_HAND && other.getItem() instanceof ICrystalBinder) {
                 event.setCanceled(true);
                 return;
             }
@@ -276,9 +276,9 @@ public class DEEventHandler {
             return;
         }
 
-        BlockRayTraceResult traceResult = RayTracer.retrace(event.getPlayer());
+        BlockHitResult traceResult = RayTracer.retrace(event.getPlayer());
 
-        if (traceResult.getType() == RayTraceResult.Type.BLOCK) {
+        if (traceResult.getType() == HitResult.Type.BLOCK) {
             return;
         }
 

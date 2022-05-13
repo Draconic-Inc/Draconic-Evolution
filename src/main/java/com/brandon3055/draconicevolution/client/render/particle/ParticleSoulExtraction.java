@@ -3,20 +3,20 @@ package com.brandon3055.draconicevolution.client.render.particle;
 import com.brandon3055.brandonscore.client.particle.BCParticle;
 import com.brandon3055.brandonscore.client.particle.IBCParticleFactory;
 import com.brandon3055.brandonscore.lib.Vec3D;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 
 public class ParticleSoulExtraction extends BCParticle {
 
     public Vec3D targetPos;
     public int clusterSize = 0;
 
-    public ParticleSoulExtraction(ClientWorld worldIn, Vec3D pos) {
+    public ParticleSoulExtraction(ClientLevel worldIn, Vec3D pos) {
         super(worldIn, pos);
     }
 
-    public ParticleSoulExtraction(ClientWorld worldIn, Vec3D pos, Vec3D targetPos) {
+    public ParticleSoulExtraction(ClientLevel worldIn, Vec3D pos, Vec3D targetPos) {
         super(worldIn, pos, new Vec3D(0, 0, 0));
         this.targetPos = targetPos;
 //        this.particleMaxAge = 3000;
@@ -95,8 +95,8 @@ public class ParticleSoulExtraction extends BCParticle {
     public static class Factory implements IBCParticleFactory {
 
         @Override
-        public Particle getEntityFX(int particleID, World world, Vec3D pos, Vec3D speed, int... args) {
-            ParticleSoulExtraction particleSoulExtraction = new ParticleSoulExtraction((ClientWorld)world, pos, speed);
+        public Particle getEntityFX(int particleID, Level world, Vec3D pos, Vec3D speed, int... args) {
+            ParticleSoulExtraction particleSoulExtraction = new ParticleSoulExtraction((ClientLevel)world, pos, speed);
             if (args.length > 0) {
                 particleSoulExtraction.clusterSize = args[0];
                 if (args.length >= 4) {

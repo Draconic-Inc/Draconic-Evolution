@@ -11,9 +11,9 @@ import com.brandon3055.draconicevolution.blocks.tileentity.TileFusionCraftingInj
 import com.brandon3055.draconicevolution.client.sound.FusionRotationSound;
 import com.brandon3055.draconicevolution.handlers.DESounds;
 import net.minecraft.client.Minecraft;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,7 +69,7 @@ public class FusionTileFXHandler implements ITileFXHandler {
         } else {
             float prevTick = rotationTick;
             if (runTick <= 0) {
-                core.getLevel().playLocalSound(core.getBlockPos().getX() + 0.5, core.getBlockPos().getY() + 0.5, core.getBlockPos().getZ() + 0.5, DESounds.fusionComplete, SoundCategory.BLOCKS, 0.5F, 0.5F, false);
+                core.getLevel().playLocalSound(core.getBlockPos().getX() + 0.5, core.getBlockPos().getY() + 0.5, core.getBlockPos().getZ() + 0.5, DESounds.fusionComplete, SoundSource.BLOCKS, 0.5F, 0.5F, false);
             }
             if (runTick == -1) {
                 Vector3 corePos = Vector3.fromTileCenter(core);
@@ -79,7 +79,7 @@ public class FusionTileFXHandler implements ITileFXHandler {
             runTick++;
             rotationSpeed = ((float) baseCraftTime / Math.max(core.craftAnimLength.get(), 1));
             if (rotationTick + 3 >= rotStartTime && prevTick + 3 < rotStartTime + 3) {
-                core.getLevel().playLocalSound(core.getBlockPos().getX() + 0.5, core.getBlockPos().getY() + 0.5, core.getBlockPos().getZ() + 0.5, DESounds.fusionComplete, SoundCategory.BLOCKS, 2F, 0.5F, false);
+                core.getLevel().playLocalSound(core.getBlockPos().getX() + 0.5, core.getBlockPos().getY() + 0.5, core.getBlockPos().getZ() + 0.5, DESounds.fusionComplete, SoundSource.BLOCKS, 2F, 0.5F, false);
                 if (sound == null) {
                     sound = new FusionRotationSound(core);
                     sound.setPitch(0.5F + (1.5F * (rotationSpeed - 1F)));
@@ -89,7 +89,7 @@ public class FusionTileFXHandler implements ITileFXHandler {
             injectTime = Math.max(0, (rotationTick - beamStartTime) / (float) (baseCraftTime - beamStartTime));
             if (injectTime > 0) {
                 if (TimeKeeper.getClientTick() % 5 == 0) {
-                    core.getLevel().playLocalSound(core.getBlockPos().getX() + 0.5, core.getBlockPos().getY() + 0.5, core.getBlockPos().getZ() + 0.5, DESounds.energyBolt, SoundCategory.BLOCKS, 1F, 1F, false);
+                    core.getLevel().playLocalSound(core.getBlockPos().getX() + 0.5, core.getBlockPos().getY() + 0.5, core.getBlockPos().getZ() + 0.5, DESounds.energyBolt, SoundSource.BLOCKS, 1F, 1F, false);
                 }
             }
         }
@@ -109,7 +109,7 @@ public class FusionTileFXHandler implements ITileFXHandler {
             if (ingreds.isEmpty()) return;
             coreDischarge = rand.nextInt(ingreds.size());
             Vector3 pos = Vector3.fromTileCenter(core).add(ingreds.get(coreDischarge).pos);
-            core.getLevel().playLocalSound(pos.x, pos.y, pos.z, DESounds.energyBolt, SoundCategory.BLOCKS, 2F, 1F, false);
+            core.getLevel().playLocalSound(pos.x, pos.y, pos.z, DESounds.energyBolt, SoundSource.BLOCKS, 2F, 1F, false);
         }
     }
 
@@ -135,8 +135,8 @@ public class FusionTileFXHandler implements ITileFXHandler {
 
             float startAngle = ((i / (float)injCount) * (float)Math.PI * 2F);
             startAngle += (rotateAnim >= rotStartTime ? rotateAnim - rotStartTime : 0) * baseRotateSpeed;
-            double x = MathHelper.cos(startAngle) * animRadius;
-            double z = MathHelper.sin(startAngle) * animRadius;
+            double x = Mth.cos(startAngle) * animRadius;
+            double z = Mth.sin(startAngle) * animRadius;
             Vector3 animPos = new Vector3(x, 0, z);
             if (rotateAnim < rotStartTime) {
                 animPos = MathUtils.interpolateVec3(injPos, animPos, rotationTick - translateStartTime > 0 ? (rotateAnim  - translateStartTime) / (rotStartTime  - translateStartTime) : 0);
@@ -151,7 +151,7 @@ public class FusionTileFXHandler implements ITileFXHandler {
             }
 
             ingredFX.beamAnim = rotateAnim - beamStartTime;
-            ingredFX.dieOut = MathHelper.clamp(1F - ((rotateAnim - dieOutStart) / (baseCraftTime - dieOutStart)), 0F, 1F);
+            ingredFX.dieOut = Mth.clamp(1F - ((rotateAnim - dieOutStart) / (baseCraftTime - dieOutStart)), 0F, 1F);
             ingredFXES.add(ingredFX);
             i++;
         }

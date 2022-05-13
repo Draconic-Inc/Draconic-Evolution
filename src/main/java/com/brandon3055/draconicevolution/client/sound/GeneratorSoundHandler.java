@@ -5,10 +5,10 @@ import com.brandon3055.draconicevolution.blocks.tileentity.TileGenerator;
 import com.brandon3055.draconicevolution.handlers.DESounds;
 import com.brandon3055.draconicevolution.lib.ISidedTileHandler;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.ITickableSound;
-import net.minecraft.client.audio.SimpleSound;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.client.resources.sounds.TickableSoundInstance;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
 
 /**
  * Created by brandon3055 on 4/10/2015.
@@ -69,7 +69,7 @@ public class GeneratorSoundHandler implements ISidedTileHandler {
         }
     }
 
-    public class GeneratorSound extends SimpleSound implements ITickableSound {
+    public class GeneratorSound extends SimpleSoundInstance implements TickableSoundInstance {
         public boolean donePlaying = false;
         private TileGenerator tile;
         private float targetPitch;
@@ -77,7 +77,7 @@ public class GeneratorSoundHandler implements ISidedTileHandler {
         boolean fadeDown = false;
 
         public GeneratorSound(TileGenerator tile, SoundEvent sound, float startPitch) {
-            super(sound, SoundCategory.BLOCKS, 0.3F, 1F, tile.getBlockPos());
+            super(sound, SoundSource.BLOCKS, 0.3F, 1F, tile.getBlockPos());
             this.tile = tile;
             this.looping = true;
             this.pitch = startPitch;

@@ -1,9 +1,9 @@
 package com.brandon3055.draconicevolution.api.damage;
 
 import com.brandon3055.brandonscore.api.TechLevel;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.DamageSource;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nullable;
 

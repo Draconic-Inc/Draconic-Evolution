@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.items.tools;
 
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
 
 /**
  * Created by brandon3055 on 26/08/2016.

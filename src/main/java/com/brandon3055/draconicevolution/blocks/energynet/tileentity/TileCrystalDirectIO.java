@@ -11,19 +11,19 @@ import com.brandon3055.draconicevolution.blocks.energynet.EnergyCrystal;
 import com.brandon3055.draconicevolution.client.render.effect.CrystalFXBase;
 import com.brandon3055.draconicevolution.client.render.effect.CrystalFXIO;
 import com.brandon3055.draconicevolution.init.DEContent;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -37,12 +37,12 @@ public class TileCrystalDirectIO extends TileCrystalBase   {
     public final ManagedEnum<Direction> facing = dataManager.register(new ManagedEnum<>("facing", Direction.DOWN, DataFlags.SAVE_NBT_SYNC_TILE));
     public final ManagedBool outputMode = dataManager.register(new ManagedBool("outputMode", DataFlags.SAVE_BOTH_SYNC_TILE));
 
-    public TileCrystalDirectIO() {
-        super(DEContent.tile_crystal_io);
+    public TileCrystalDirectIO(BlockPos pos, BlockState state) {
+        super(DEContent.tile_crystal_io, pos, state);
     }
 
-    public TileCrystalDirectIO(TechLevel techLevel) {
-        super(DEContent.tile_crystal_io, techLevel);
+    public TileCrystalDirectIO(TechLevel techLevel, BlockPos pos, BlockState state) {
+        super(DEContent.tile_crystal_io, techLevel, pos, state);
     }
 
     //region Update Energy IO
@@ -55,7 +55,7 @@ public class TileCrystalDirectIO extends TileCrystalBase   {
             return;
         }
 
-        TileEntity tile = level.getBlockEntity(worldPosition.relative(facing.get()));
+        BlockEntity tile = level.getBlockEntity(worldPosition.relative(facing.get()));
 
         if (outputMode.get() && tile != null) {
             opStorage.extractOP(EnergyUtils.insertEnergy(tile, opStorage.extractOP(opStorage.getMaxExtract(), true), facing.get().getOpposite(), false), false);
@@ -64,27 +64,9 @@ public class TileCrystalDirectIO extends TileCrystalBase   {
 
     //endregion
 
-    //region EnergyIO
-
-//    @Override
-//    public int receiveEnergy(Direction from, int maxReceive, boolean simulate) {
-//        return from != null && !outputMode.get() && from.equals(facing.get()) ? energyStorage.receiveEnergy(maxReceive, simulate) : 0;
-//    }
-//
-//    @Override
-//    public int extractEnergy(Direction from, int maxExtract, boolean simulate) {
-//        return from != null && outputMode.get() && from.equals(facing.get()) ? energyStorage.extractEnergy(maxExtract, simulate) : 0;
-//    }
-//
-//    @Override
-//    public boolean canConnectEnergy(Direction from) {
-//        return from != null && from.equals(facing.get());
-//    }
-
-    //endregion
 
     @Override
-    public boolean onBlockActivated(BlockState state, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+    public boolean onBlockActivated(BlockState state, Player player, InteractionHand handIn, BlockHitResult hit) {
         if (player.isShiftKeyDown()) {
             outputMode.invert();
             updateRotation(facing.get());
@@ -103,7 +85,7 @@ public class TileCrystalDirectIO extends TileCrystalBase   {
     @OnlyIn(Dist.CLIENT)
     @Override
     public CrystalFXBase createStaticFX() {
-        return new CrystalFXIO((ClientWorld)level, this);
+        return new CrystalFXIO((ClientLevel)level, this);
     }
 
     @Override
@@ -117,16 +99,16 @@ public class TileCrystalDirectIO extends TileCrystalBase   {
     }
 
     @Override
-    public void addDisplayData(List<ITextComponent> displayList) {
+    public void addDisplayData(List<Component> displayList) {
         super.addDisplayData(displayList);
-        TextFormatting colour = outputMode.get() ? TextFormatting.GOLD : TextFormatting.DARK_AQUA;
-        displayList.add(new TranslationTextComponent("gui.draconicevolution.energy_net.io_output_" + outputMode.get(), colour));
+        ChatFormatting colour = outputMode.get() ? ChatFormatting.GOLD : ChatFormatting.DARK_AQUA;
+        displayList.add(new TranslatableComponent("gui.draconicevolution.energy_net.io_output_" + outputMode.get(), colour));
     }
 
     //endregion
 
     @Override
-    public void onTilePlaced(BlockItemUseContext context, BlockState state) {
+    public void onTilePlaced(BlockPlaceContext context, BlockState state) {
         super.onTilePlaced(context, state);
         updateRotation(context.getClickedFace().getOpposite());
     }
@@ -139,7 +121,7 @@ public class TileCrystalDirectIO extends TileCrystalBase   {
     }
 
     @Override
-    public void readExtraNBT(CompoundNBT compound) {
+    public void readExtraNBT(CompoundTag compound) {
         super.readExtraNBT(compound);
         updateRotation(facing.get());
     }

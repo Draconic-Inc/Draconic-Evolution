@@ -1,8 +1,8 @@
 package com.brandon3055.draconicevolution.api.modules.data;
 
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 
 import java.util.Map;
 
@@ -27,10 +27,10 @@ public class ProjPenetrationData implements ModuleData<ProjPenetrationData> {
     }
 
     @Override
-    public void addInformation(Map<ITextComponent, ITextComponent> map, ModuleContext context, boolean stack) {
-        map.put(new TranslationTextComponent("module.draconicevolution.proj_penetration.name"), new TranslationTextComponent("module.draconicevolution.proj_penetration.value", (int)(getPenetration() * 100)));
+    public void addInformation(Map<Component, Component> map, ModuleContext context, boolean stack) {
+        map.put(new TranslatableComponent("module.draconicevolution.proj_penetration.name"), new TranslatableComponent("module.draconicevolution.proj_penetration.value", (int)(getPenetration() * 100)));
         if (stack) {
-            map.put(new TranslationTextComponent("module.draconicevolution.proj_penetration.name"), null);
+            map.put(new TranslatableComponent("module.draconicevolution.proj_penetration.name"), null);
         }
     }
 }

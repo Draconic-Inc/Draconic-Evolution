@@ -1,17 +1,15 @@
 package com.brandon3055.draconicevolution.client.render.modelfx;
 
-import codechicken.lib.render.buffer.TransformingVertexBuilder;
-import codechicken.lib.util.SneakyUtils;
+import codechicken.lib.render.buffer.TransformingVertexConsumer;
 import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.api.TechLevel;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.RenderState;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.vertex.VertexFormat;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import org.lwjgl.opengl.GL11;
 
 import java.util.Random;
 
@@ -46,14 +44,14 @@ public abstract class ModelEffect {
 
     public abstract RenderType getRenderType();
 
-    protected abstract void doRender(IVertexBuilder builder, float partialTicks, TechLevel techLevel);
+    protected abstract void doRender(VertexConsumer builder, float partialTicks, TechLevel techLevel);
 
-    public void renderEffect(Matrix4 mat, IRenderTypeBuffer getter, float partialTicks, TechLevel techLevel) {
-        IVertexBuilder builder = new TransformingVertexBuilder(getter.getBuffer(getRenderType()), mat);
+    public void renderEffect(Matrix4 mat, MultiBufferSource getter, float partialTicks, TechLevel techLevel) {
+        VertexConsumer builder = new TransformingVertexConsumer(getter.getBuffer(getRenderType()), mat);
         doRender(builder, partialTicks, techLevel);
     }
 
-    protected void drawParticle(IVertexBuilder builder, double x, double y, double z, double scale, float red, float green, float blue, float alpha) {
+    protected void drawParticle(VertexConsumer builder, double x, double y, double z, double scale, float red, float green, float blue, float alpha) {
         double min = (1 - scale) * 0.5;
         double max = 0.5 + (scale * 0.5);
         builder.vertex(x + min, y + 0.5, z + min).color(red, green, blue, alpha).uv(0, 0)/*.lightmap(240)*/.endVertex();
@@ -72,7 +70,7 @@ public abstract class ModelEffect {
         builder.vertex(x + 0.5, y + max, z + min).color(red, green, blue, alpha).uv(1, 0)/*.lightmap(240)*/.endVertex();
     }
 
-    protected void drawPolyParticle(IVertexBuilder builder, double x, double y, double z, double scale, float red, float green, float blue, float alpha) {
+    protected void drawPolyParticle(VertexConsumer builder, double x, double y, double z, double scale, float red, float green, float blue, float alpha) {
         double min = (1 - scale) * 0.5;
         double max = 0.5 + (scale * 0.5);
 
@@ -92,7 +90,7 @@ public abstract class ModelEffect {
 //        builder.pos(x + 0.5, y + max, z + min).color(red, green, blue, alpha).lightmap(240).endVertex();
     }
 
-    protected void drawParticle(IVertexBuilder builder, double x, double y, double z) {
+    protected void drawParticle(VertexConsumer builder, double x, double y, double z) {
         drawParticle(builder, x, y, z, scale, red, green, blue, alpha);
     }
 
@@ -105,7 +103,7 @@ public abstract class ModelEffect {
 
     protected static float flicker(float input) {
         input = input % (r.length - 1F);
-        int xMin = (int)input;
+        int xMin = (int) input;
         float t = input - xMin;
         return codechicken.lib.math.MathHelper.interpolate(r[xMin], 0, t);
     }
@@ -125,7 +123,7 @@ public abstract class ModelEffect {
      * This is a 'random' float generator.
      * - It actually juts loops through a set of randSet.length different random floats
      * Much faster than java random and more than sufficient for certain rendering tasks.
-     * */
+     */
     protected static float nextFloat() {
         return randSet[randPos++ % randSet.length];
     }
@@ -134,18 +132,18 @@ public abstract class ModelEffect {
      * Sets the current position for 'random' float generator.
      * Effectively the same function as {@link Random#setSeed(long)} because the floats
      * will always be supplied in the same order.
-     * */
+     */
     protected static void setRandSeed(int i) {
         randPos = i % randSet.length;
     }
 
     public static class DebugEffect extends ModelEffect {
-        private RenderType alignRenderType = RenderType.create("alignRenderType", DefaultVertexFormats.POSITION_COLOR, GL11.GL_QUADS, 256, RenderType.State.builder()
-                .setTransparencyState(RenderState.TRANSLUCENT_TRANSPARENCY)
-                .setAlphaState(RenderState.NO_ALPHA)
-                .setCullState(RenderState.NO_CULL)
-                .setTexturingState(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
-                .createCompositeState(false)
+        private RenderType alignRenderType = RenderType.create("alignRenderType", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 256, RenderType.CompositeState.builder()
+                        .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
+//                .setAlphaState(RenderStateShard.NO_ALPHA)
+                        .setCullState(RenderStateShard.NO_CULL)
+//                .setTexturingState(new RenderStateShard.TexturingStateShard("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
+                        .createCompositeState(false)
         );
 
         public DebugEffect() {}
@@ -156,7 +154,7 @@ public abstract class ModelEffect {
         }
 
         @Override
-        protected void doRender(IVertexBuilder builder, float partialTicks, TechLevel techLevel) {
+        protected void doRender(VertexConsumer builder, float partialTicks, TechLevel techLevel) {
             //By default draws an alignment helper.
             //White 0,0,0
             drawParticle(builder, pos.x, pos.y, pos.z, 0.5, 1F, 1F, 1F, 0.5F);

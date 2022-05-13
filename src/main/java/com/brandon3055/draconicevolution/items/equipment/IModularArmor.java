@@ -9,14 +9,14 @@ import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
 import com.brandon3055.draconicevolution.api.modules.data.SpeedData;
 import com.brandon3055.draconicevolution.api.modules.entities.FlightEntity;
 import com.brandon3055.draconicevolution.init.EquipCfg;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nullable;
@@ -34,13 +34,13 @@ public interface IModularArmor extends IModularItem {
 //    }
 
     @Override
-    default void addModularItemInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    default void addModularItemInformation(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         IModularItem.super.addModularItemInformation(stack, worldIn, tooltip, flagIn);
         if (DEConfig.armorSpeedLimit != -1 && stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).isPresent()) {
             ModuleHost host = stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new);
             SpeedData speed = host.getModuleData(ModuleTypes.SPEED);
             if (speed != null && speed.getSpeedMultiplier() > DEConfig.armorSpeedLimit) {
-                tooltip.add(new StringTextComponent("Speed limit on this server is +" + (int) (DEConfig.armorSpeedLimit * 100) + "%").withStyle(TextFormatting.RED));
+                tooltip.add(new TextComponent("Speed limit on this server is +" + (int) (DEConfig.armorSpeedLimit * 100) + "%").withStyle(ChatFormatting.RED));
             }
         }
     }
@@ -50,7 +50,7 @@ public interface IModularArmor extends IModularItem {
         LazyOptional<IOPStorage> power = stack.getCapability(DECapabilities.OP_STORAGE);
         power.ifPresent(storage -> {
             if (storage.getOPStored() < 512) {
-                Vector3d motion = entity.getDeltaMovement();
+                Vec3 motion = entity.getDeltaMovement();
                 entity.setDeltaMovement(motion.x * 0.95, motion.y > 0 ? motion.y * 0.95 : motion.y, motion.z * 0.95);
 
             } else if (storage instanceof IOPStorageModifiable) {
@@ -62,8 +62,8 @@ public interface IModularArmor extends IModularItem {
                     if (flightSpeed > 0) {
                         double speed = 1.5D * flightSpeed;
                         double accel = 0.01 * flightSpeed;
-                        Vector3d look = entity.getLookAngle();
-                        Vector3d motion = entity.getDeltaMovement();
+                        Vec3 look = entity.getLookAngle();
+                        Vec3 motion = entity.getDeltaMovement();
                         entity.setDeltaMovement(motion.add(
                                 look.x * accel + (look.x * speed - motion.x) * accel,
                                 look.y * accel + (look.y * speed - motion.y) * accel,

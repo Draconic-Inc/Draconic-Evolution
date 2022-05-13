@@ -7,21 +7,21 @@ import com.brandon3055.brandonscore.lib.datamanager.*;
 import com.brandon3055.brandonscore.utils.MathUtils;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.utils.LogHelper;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.server.ChunkHolder;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ChunkHolder;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.LevelChunk;
 
 /**
  * Created by brandon3055 on 20/01/2017.
  */
-public abstract class TileReactorComponent extends TileBCore implements ITickableTileEntity {
+public abstract class TileReactorComponent extends TileBCore {
 
     private final ManagedVec3I coreOffset       = register(new ManagedVec3I("core_offset", DataFlags.SAVE_NBT_SYNC_TILE));
     public final ManagedEnum<Direction> facing  = register(new ManagedEnum<>("facing", Direction.UP, DataFlags.SAVE_NBT_SYNC_TILE));
@@ -34,8 +34,8 @@ public abstract class TileReactorComponent extends TileBCore implements ITickabl
     public boolean coreFalureIminent = false;
     private boolean moveCheckComplete = false;
 
-    public TileReactorComponent(TileEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public TileReactorComponent(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState state) {
+        super(tileEntityTypeIn, pos, state);
     }
 
     @Override
@@ -117,7 +117,7 @@ public abstract class TileReactorComponent extends TileBCore implements ITickabl
         for (int i = 1; i < TileReactorCore.COMPONENT_MAX_DISTANCE; i++) {
             BlockPos searchPos = worldPosition.relative(facing.get(), i);
             if (!level.isEmptyBlock(searchPos)) {
-                TileEntity tile = level.getBlockEntity(searchPos);
+                BlockEntity tile = level.getBlockEntity(searchPos);
                 LogHelper.dev("Reactor-Comp: Check: " + tile);
                 LogHelper.dev("Reactor-Comp: Try Poke Core | Found: " + tile);
 
@@ -156,7 +156,7 @@ public abstract class TileReactorComponent extends TileBCore implements ITickabl
         }
     }
 
-    public void onActivated(PlayerEntity player) {
+    public void onActivated(Player player) {
         if (level.isClientSide) {
             return;
         }
@@ -168,7 +168,7 @@ public abstract class TileReactorComponent extends TileBCore implements ITickabl
         }
     }
 
-    public void setRSMode(PlayerEntity player, RSMode rsMode) {
+    public void setRSMode(Player player, RSMode rsMode) {
         if (level.isClientSide) {
             sendPacketToServer(output -> output.writeString(rsMode.name()), 0);
         }
@@ -178,7 +178,7 @@ public abstract class TileReactorComponent extends TileBCore implements ITickabl
     }
 
     @Override
-    public void receivePacketFromClient(MCDataInput data, ServerPlayerEntity client, int id) {
+    public void receivePacketFromClient(MCDataInput data, ServerPlayer client, int id) {
         if (id == 0) {
             setRSMode(client, RSMode.valueOf(data.readString()));
         }
@@ -205,7 +205,7 @@ public abstract class TileReactorComponent extends TileBCore implements ITickabl
             return null;
         }
 
-        TileEntity tile = level.getBlockEntity(getCorePos());
+        BlockEntity tile = level.getBlockEntity(getCorePos());
         if (tile instanceof TileReactorCore) {
             return (TileReactorCore) tile;
         }
@@ -223,7 +223,7 @@ public abstract class TileReactorComponent extends TileBCore implements ITickabl
             return null;
         }
 
-        TileEntity tile = level.getBlockEntity(getCorePos());
+        BlockEntity tile = level.getBlockEntity(getCorePos());
         if (tile instanceof TileReactorCore) {
             return (TileReactorCore) tile;
         }
@@ -233,16 +233,16 @@ public abstract class TileReactorComponent extends TileBCore implements ITickabl
     public TileReactorCore getCachedCore() {
         if (isBound.get()) {
             BlockPos corePos = getCorePos();
-            Chunk coreChunk = level.getChunkAt(corePos);
+            LevelChunk coreChunk = level.getChunkAt(corePos);
 
-            if (!Utils.isAreaLoaded(level, corePos, ChunkHolder.LocationType.TICKING)) {
+            if (!Utils.isAreaLoaded(level, corePos, ChunkHolder.FullChunkStatus.TICKING)) {
                 cachedCore = null;
                 return null;
             }
 
-            TileEntity tileAtPos = coreChunk.getBlockEntity(corePos, Chunk.CreateEntityType.CHECK);
+            BlockEntity tileAtPos = coreChunk.getBlockEntity(corePos, LevelChunk.EntityCreationType.CHECK);
             if (tileAtPos == null || cachedCore == null || tileAtPos != cachedCore || tileAtPos.isRemoved()) {
-                TileEntity tile = level.getBlockEntity(corePos);
+                BlockEntity tile = level.getBlockEntity(corePos);
 
                 if (tile instanceof TileReactorCore) {
                     cachedCore = (TileReactorCore) tile;

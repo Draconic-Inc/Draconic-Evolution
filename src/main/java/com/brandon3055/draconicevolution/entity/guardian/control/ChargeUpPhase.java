@@ -9,14 +9,14 @@ import com.brandon3055.draconicevolution.entity.guardian.DraconicGuardianEntity;
 import com.brandon3055.draconicevolution.entity.guardian.GuardianFightManager;
 import com.brandon3055.draconicevolution.handlers.DESounds;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.AbstractArrowEntity;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.core.BlockPos;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -59,7 +59,7 @@ public abstract class ChargeUpPhase extends Phase {
         if (trapPlayers && isCharged()) {
             GuardianFightManager manager = guardian.getFightManager();
             if (manager != null) {
-                for (PlayerEntity player : manager.getTrackedPlayers()) {
+                for (Player player : manager.getTrackedPlayers()) {
                     if (isValidTarget(player) && player.getY() < manager.getArenaOrigin().getY() - 10) {
                         TeleportUtils.teleportEntity(player, player.level.dimension(), player.getX(), manager.getArenaOrigin().getY() + 15, player.getZ());
                     }
@@ -72,10 +72,10 @@ public abstract class ChargeUpPhase extends Phase {
         if (disableFlight && getChargeProgress() > 0.5) {
             GuardianFightManager manager = guardian.getFightManager();
             if (manager != null) {
-                for (PlayerEntity player : manager.getTrackedPlayers()) {
+                for (Player player : manager.getTrackedPlayers()) {
                     if (player.getY() > origin.getY() + 8) {
-                        if (player.abilities.flying) {
-                            player.abilities.flying = false;
+                        if (player.getAbilities().flying) {
+                            player.getAbilities().flying = false;
                         }
                     }
                 }
@@ -96,16 +96,16 @@ public abstract class ChargeUpPhase extends Phase {
         }
         BlockPos origin = guardian.getArenaOrigin();
         if (origin == null) return;
-        PlayerEntity player = Minecraft.getInstance().player;
+        Player player = Minecraft.getInstance().player;
         if (player == null || !isValidTarget(player)) return;
 
         if (effectTimer == 0) {
             speedMod = (float) getChargeProgress();
             effectTime = effectTimer = (int) (20F - (speedMod * 10F));
-            guardian.level.playLocalSound(guardian.getX(), guardian.getY(), guardian.getZ(), DESounds.crystalBeam, SoundCategory.HOSTILE, 64, 1F + speedMod, false);
+            guardian.level.playLocalSound(guardian.getX(), guardian.getY(), guardian.getZ(), DESounds.crystalBeam, SoundSource.HOSTILE, 64, 1F + speedMod, false);
             if (origin != null) {
                 for (int i = 0; i < 32; i++) {
-                    Minecraft.getInstance().particleEngine.add(new GuardianChargeParticle((ClientWorld) guardian.level, Vector3.fromBlockPosCenter(origin), Vector3.fromEntity(guardian), i / 32D, effectTime, guardian.getPhaseManager()));
+                    Minecraft.getInstance().particleEngine.add(new GuardianChargeParticle((ClientLevel) guardian.level, Vector3.fromBlockPosCenter(origin), Vector3.fromEntity(guardian), i / 32D, effectTime, guardian.getPhaseManager()));
                 }
             }
         } else {
@@ -116,8 +116,8 @@ public abstract class ChargeUpPhase extends Phase {
             for (int i = 0; i < 4; i++) {
                 float randDir = random.nextFloat() * (float) Math.PI * 2F;
                 int randDist = 95 + random.nextInt(30);
-                double x = guardian.getX() + MathHelper.sin(randDir) * randDist;
-                double z = guardian.getZ() + MathHelper.cos(randDir) * randDist;
+                double x = guardian.getX() + Mth.sin(randDir) * randDist;
+                double z = guardian.getZ() + Mth.cos(randDir) * randDist;
                 double y = guardian.getY() - 8 - random.nextInt(32);
                 Vector3 motion = new Vector3(guardian.getX(), y, guardian.getZ()).subtract(x, y, z).normalize().multiply((1 + random.nextDouble()) * getChargeProgress());
                 guardian.level.addParticle(DEParticles.guardian_cloud, true, x, y, z, motion.x, motion.y, motion.z);
@@ -126,7 +126,7 @@ public abstract class ChargeUpPhase extends Phase {
             Vector3 center = new Vector3(guardian.getX(), guardian.getY() - 32, guardian.getZ());
             int threshold = 85;
 
-            if (!player.abilities.instabuild) {
+            if (!player.getAbilities().instabuild) {
                 if (player.distanceToSqr(center.vec3()) > threshold * threshold) {
                     double distanceOver = Math.sqrt(player.distanceToSqr(center.vec3())) - threshold;
                     Vector3 forceVec = center.copy().subtract(player.getX(), player.getY(), player.getZ()).normalize().multiply((1 * (distanceOver / 10)) * getChargeProgress());
@@ -139,13 +139,13 @@ public abstract class ChargeUpPhase extends Phase {
             }
         }
 
-        if (disableFlight && player != null && !player.abilities.instabuild && getChargeProgress() > 0.5) {
+        if (disableFlight && player != null && !player.getAbilities().instabuild && getChargeProgress() > 0.5) {
             if (player.getY() > origin.getY() + 8) {
-                if (player.abilities.flying) {
-                    player.abilities.flying = false;
+                if (player.getAbilities().flying) {
+                    player.getAbilities().flying = false;
                 }
                 if (player.isFallFlying()) {
-                    Vector3d motion = player.getDeltaMovement();
+                    Vec3 motion = player.getDeltaMovement();
                     player.setDeltaMovement(motion.x * 0.75, motion.y > 0 ? motion.y * 0.75 : motion.y, motion.z * 0.75);
                 }
             }
@@ -184,7 +184,7 @@ public abstract class ChargeUpPhase extends Phase {
 
     public float onAttacked(DamageSource source, float damage, float shield, boolean effective) {
         if (isInvulnerable()) {
-            if (source.getDirectEntity() instanceof AbstractArrowEntity) {
+            if (source.getDirectEntity() instanceof AbstractArrow) {
                 source.getDirectEntity().setSecondsOnFire(1);
             }
             return 0.0F;

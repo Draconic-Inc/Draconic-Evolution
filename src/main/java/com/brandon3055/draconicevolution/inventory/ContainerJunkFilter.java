@@ -2,12 +2,12 @@ package com.brandon3055.draconicevolution.inventory;
 
 import com.brandon3055.brandonscore.inventory.PlayerSlot;
 import com.brandon3055.brandonscore.inventory.SlotCheckValid;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.ClickType;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
@@ -19,10 +19,10 @@ import java.util.List;
 /**
  * Created by brandon3055 on 21/12/2017.
  */
-public class ContainerJunkFilter extends Container {
+public class ContainerJunkFilter extends AbstractContainerMenu {
 
     private final ItemStack stack;
-    private final PlayerEntity player;
+    private final Player player;
     private final PlayerSlot slot;
     private final IItemHandler itemHandler;
 
@@ -30,7 +30,7 @@ public class ContainerJunkFilter extends Container {
 //        this(DEContent.container_junk_filter, windowId, playerInv.player, getClientTile(extraData));
 //    }
 
-    public ContainerJunkFilter(@Nullable ContainerType<?> type, int id, PlayerEntity player, PlayerSlot slot, IItemHandler itemHandler) {
+    public ContainerJunkFilter(@Nullable MenuType<?> type, int id, Player player, PlayerSlot slot, IItemHandler itemHandler) {
         super(type, id);
         this.player = player;
         this.slot = slot;
@@ -58,21 +58,21 @@ public class ContainerJunkFilter extends Container {
     }
 
     @Override
-    public ItemStack clicked(int slotId, int dragType, ClickType clickTypeIn, PlayerEntity player) {
+    public void clicked(int slotId, int dragType, ClickType clickTypeIn, Player player) {
         if (slotId >= 0 && slotId < slots.size() && slots.get(slotId).getItem() == stack) {
-            return ItemStack.EMPTY;
+            return;
         }
-        return super.clicked(slotId, dragType, clickTypeIn, player);
+        super.clicked(slotId, dragType, clickTypeIn, player);
     }
 
     @Override
-    public boolean stillValid(PlayerEntity playerIn) {
+    public boolean stillValid(Player playerIn) {
         return true;
     }
 
     @Nullable
     @Override
-    public ItemStack quickMoveStack(PlayerEntity playerIn, int i) {
+    public ItemStack quickMoveStack(Player playerIn, int i) {
         Slot slot = getSlot(i);
 
         if (slot != null && slot.hasItem()) {
@@ -110,11 +110,12 @@ public class ContainerJunkFilter extends Container {
     //The following are some safety checks to handle conditions vanilla normally does not have to deal with.
 
     @Override
-    public void setItem(int slotID, ItemStack stack) {
+    public void setItem(int slotID, int stateId, ItemStack stack) {
         Slot slot = this.getSlot(slotID);
         if (slot != null) {
             slot.set(stack);
         }
+        this.stateId = stateId;
     }
 
     @Override
@@ -126,14 +127,16 @@ public class ContainerJunkFilter extends Container {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
-    public void setAll(List<ItemStack> stacks) {
+    public void initializeContents(int stateId, List<ItemStack> stacks, ItemStack carried) {
         for (int i = 0; i < stacks.size(); ++i) {
             Slot slot = getSlot(i);
             if (slot != null) {
                 slot.set(stacks.get(i));
             }
         }
+
+        this.carried = carried;
+        this.stateId = stateId;
     }
 
     public void addPlayerSlots(int posX, int posY, int hotbarSpacing) {

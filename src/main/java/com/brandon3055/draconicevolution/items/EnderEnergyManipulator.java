@@ -3,22 +3,23 @@ package com.brandon3055.draconicevolution.items;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.utils.InventoryUtils;
 import com.brandon3055.brandonscore.utils.Utils;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.Util;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.entity.EntityTypeTest;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -30,26 +31,36 @@ import java.util.List;
  */
 public class EnderEnergyManipulator extends Item /*implements IRenderOverride*/ {
 
+    private static final EntityTypeTest<Entity, Entity> ANY_TYPE = new EntityTypeTest<>() {
+        public Entity tryCast(Entity p_175109_) {
+            return p_175109_;
+        }
+
+        public Class<? extends Entity> getBaseClass() {
+            return Entity.class;
+        }
+    };
+
     public EnderEnergyManipulator(Properties properties) {
         super(properties);
 //        this.setMaxStackSize(8);
     }
 
     @Override
-    public ActionResultType useOn(ItemUseContext context) {
+    public InteractionResult useOn(UseOnContext context) {
         assert false; //Not Implemented
-        PlayerEntity player = context.getPlayer();
-        World cWorld = context.getLevel();
-        Hand hand = context.getHand();
+        Player player = context.getPlayer();
+        Level cWorld = context.getLevel();
+        InteractionHand hand = context.getHand();
         BlockPos pos = context.getClickedPos();
 
-        if (cWorld instanceof ServerWorld) {
-            ServerWorld world = (ServerWorld) cWorld;
+        if (cWorld instanceof ServerLevel) {
+            ServerLevel world = (ServerLevel) cWorld;
 
             ItemStack stack = context.getItemInHand();
             BlockState state = world.getBlockState(pos);
-            List<Entity> list = world.getEntities(null, Entity::isAlive);
-            if (world.dimension() == World.END && Utils.getDistanceAtoB(Vec3D.getCenter(pos), new Vec3D(0, pos.getY(), 0)) <= 8 && state.getBlock() == Blocks.BEDROCK && list.isEmpty()) {
+            List<? extends Entity> list = world.getEntities(ANY_TYPE, Entity::isAlive);
+            if (world.dimension() == Level.END && Utils.getDistanceAtoB(Vec3D.getCenter(pos), new Vec3D(0, pos.getY(), 0)) <= 8 && state.getBlock() == Blocks.BEDROCK && list.isEmpty()) {
                 if (!world.isClientSide) {
 //                    EntityEnderEnergyManipulator entity = new EntityEnderEnergyManipulator(world);
 //                    entity.setPosition(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
@@ -57,14 +68,14 @@ public class EnderEnergyManipulator extends Item /*implements IRenderOverride*/ 
                 }
 
                 InventoryUtils.consumeHeldItem(player, stack, hand);
-                return ActionResultType.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
 
             if (!world.isClientSide) {
                 if (!list.isEmpty()) {
-                    player.sendMessage(new TranslationTextComponent("info.de.ender_energy_manipulator.running.msg"), Util.NIL_UUID);
+                    player.sendMessage(new TranslatableComponent("info.de.ender_energy_manipulator.running.msg"), Util.NIL_UUID);
                 } else {
-                    player.sendMessage(new TranslationTextComponent("info.de.ender_energy_manipulator.location.msg"), Util.NIL_UUID);
+                    player.sendMessage(new TranslatableComponent("info.de.ender_energy_manipulator.location.msg"), Util.NIL_UUID);
                 }
             }
         }
@@ -84,9 +95,9 @@ public class EnderEnergyManipulator extends Item /*implements IRenderOverride*/ 
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         super.appendHoverText(stack, worldIn, tooltip, flagIn);
-        tooltip.add(new TranslationTextComponent("info.de.ender_energy_manipulator.info.txt"));
-        tooltip.add(new TranslationTextComponent("info.de.ender_energy_manipulator.info2.txt"));
+        tooltip.add(new TranslatableComponent("info.de.ender_energy_manipulator.info.txt"));
+        tooltip.add(new TranslatableComponent("info.de.ender_energy_manipulator.info2.txt"));
     }
 }

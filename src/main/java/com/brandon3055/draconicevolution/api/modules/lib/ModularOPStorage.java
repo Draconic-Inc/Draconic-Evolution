@@ -2,12 +2,12 @@ package com.brandon3055.draconicevolution.api.modules.lib;
 
 import com.brandon3055.brandonscore.api.power.IOInfo;
 import com.brandon3055.brandonscore.api.power.IOPStorageModifiable;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.util.INBTSerializable;
 
 import javax.annotation.Nullable;
 
-public class ModularOPStorage implements IOPStorageModifiable, INBTSerializable<CompoundNBT> {
+public class ModularOPStorage implements IOPStorageModifiable, INBTSerializable<CompoundTag> {
 
     private boolean canExtract = false;
     private long energy = 0;
@@ -101,14 +101,14 @@ public class ModularOPStorage implements IOPStorageModifiable, INBTSerializable<
     }
 
     @Override
-    public CompoundNBT serializeNBT() {
-        CompoundNBT nbt = new CompoundNBT();
+    public CompoundTag serializeNBT() {
+        CompoundTag nbt = new CompoundTag();
         nbt.putLong("energy", energy);
         return nbt;
     }
 
     @Override
-    public void deserializeNBT(CompoundNBT nbt) {
+    public void deserializeNBT(CompoundTag nbt) {
         energy = nbt.getLong("energy");
     }
 }

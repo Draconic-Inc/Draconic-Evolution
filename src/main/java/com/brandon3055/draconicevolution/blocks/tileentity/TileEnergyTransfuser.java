@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.blocks.tileentity;
 
 import codechicken.lib.raytracer.RayTracer;
+import codechicken.lib.raytracer.SubHitBlockHitResult;
 import com.brandon3055.brandonscore.api.power.IOPStorage;
 import com.brandon3055.brandonscore.api.power.IOPStorageModifiable;
 import com.brandon3055.brandonscore.blocks.TileBCore;
@@ -16,22 +17,22 @@ import com.brandon3055.brandonscore.utils.EnergyUtils;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.inventory.GuiLayoutFactories;
 import com.brandon3055.draconicevolution.utils.ItemCapMerger;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
+import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -39,7 +40,7 @@ import javax.annotation.Nullable;
 /**
  * Created by brandon3055 on 12/12/2020.
  */
-public class TileEnergyTransfuser extends TileBCore implements ITickableTileEntity, IInteractTile, INamedContainerProvider, IRSSwitchable {
+public class TileEnergyTransfuser extends TileBCore implements IInteractTile, MenuProvider, IRSSwitchable {
 
     public TileItemStackHandler itemNorth = new TileItemStackHandler(1).setSlotLimit(1).setStackValidator(EnergyUtils::isEnergyItem);
     public TileItemStackHandler itemEast = new TileItemStackHandler(1).setSlotLimit(1).setStackValidator(EnergyUtils::isEnergyItem);
@@ -52,8 +53,8 @@ public class TileEnergyTransfuser extends TileBCore implements ITickableTileEnti
     public ManagedEnum<ItemIOMode>[] ioModes = new ManagedEnum[4]; //North, East, South, West
     public ManagedBool balancedMode = register(new ManagedBool("balance_mode", DataFlags.SAVE_NBT_SYNC_CONTAINER, DataFlags.CLIENT_CONTROL));
 
-    public TileEnergyTransfuser() {
-        super(DEContent.tile_energy_transfuser);
+    public TileEnergyTransfuser(BlockPos pos, BlockState state) {
+        super(DEContent.tile_energy_transfuser, pos, state);
         capManager.setInternalManaged("item_north", CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, itemNorth).syncTile().saveBoth();
         capManager.setInternalManaged("item_east", CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, itemEast).syncTile().saveBoth();
         capManager.setInternalManaged("item_south", CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, itemSouth).syncTile().saveBoth();
@@ -129,13 +130,13 @@ public class TileEnergyTransfuser extends TileBCore implements ITickableTileEnti
     }
 
     @Override
-    public boolean onBlockActivated(BlockState state, PlayerEntity player, Hand handIn, BlockRayTraceResult trace) {
+    public boolean onBlockActivated(BlockState state, Player player, InteractionHand handIn, BlockHitResult trace) {
         if (level.isClientSide) {
             return true;
         }
 
-        RayTraceResult hit = RayTracer.retrace(player);
-        int slot = hit.subHit;
+        HitResult hit = RayTracer.retrace(player);
+        int slot = hit instanceof SubHitBlockHitResult ? ((SubHitBlockHitResult) hit).subHit : -1;
         if (slot > -1 && slot < 4) {
             ItemStack stack = itemsCombined.getStackInSlot(slot);
             ItemStack heldStack = player.getItemInHand(handIn);
@@ -159,15 +160,15 @@ public class TileEnergyTransfuser extends TileBCore implements ITickableTileEnti
             }
         }
 
-        if (player instanceof ServerPlayerEntity) {
-            NetworkHooks.openGui((ServerPlayerEntity) player, this, worldPosition);
+        if (player instanceof ServerPlayer) {
+            NetworkHooks.openGui((ServerPlayer) player, this, worldPosition);
         }
         return true;
     }
 
     @Nullable
     @Override
-    public Container createMenu(int id, PlayerInventory inv, PlayerEntity player) {
+    public AbstractContainerMenu createMenu(int id, Inventory inv, Player player) {
         return new ContainerBCTile<>(DEContent.container_energy_transfuser, id, player.inventory, this, GuiLayoutFactories.TRANSFUSER_LAYOUT);
     }
 

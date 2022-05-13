@@ -2,18 +2,18 @@ package com.brandon3055.draconicevolution.client.render.particle;
 
 import com.brandon3055.brandonscore.client.particle.BCParticle;
 import com.brandon3055.brandonscore.lib.Vec3D;
-import net.minecraft.client.world.ClientWorld;
+import net.minecraft.client.multiplayer.ClientLevel;
 
 public class ParticleInfuser extends BCParticle {
 
     public Vec3D targetPos;
     public int type = 0;
 
-    public ParticleInfuser(ClientWorld worldIn, Vec3D pos) {
+    public ParticleInfuser(ClientLevel worldIn, Vec3D pos) {
         super(worldIn, pos);
     }
 
-    public ParticleInfuser(ClientWorld worldIn, Vec3D pos, Vec3D targetPos) {
+    public ParticleInfuser(ClientLevel worldIn, Vec3D pos, Vec3D targetPos) {
         super(worldIn, pos, new Vec3D(0, 0, 0));
         this.targetPos = targetPos;
 //        this.particleMaxAge = 60;

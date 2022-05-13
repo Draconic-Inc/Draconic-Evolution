@@ -5,13 +5,13 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.entity.GuardianCrystalEntity;
 import com.brandon3055.draconicevolution.entity.guardian.DraconicGuardianEntity;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
 import java.util.Random;
@@ -43,7 +43,7 @@ public abstract class Phase implements IPhase {
    }
 
    @Override
-   public void onCrystalAttacked(GuardianCrystalEntity crystal, BlockPos pos, DamageSource dmgSrc, @Nullable PlayerEntity plyr, float damage, boolean destroyed) {
+   public void onCrystalAttacked(GuardianCrystalEntity crystal, BlockPos pos, DamageSource dmgSrc, @Nullable Player plyr, float damage, boolean destroyed) {
    }
 
    @Override
@@ -61,7 +61,7 @@ public abstract class Phase implements IPhase {
 
    @Override
    @Nullable
-   public Vector3d getTargetLocation() {
+   public Vec3 getTargetLocation() {
       return null;
    }
 
@@ -72,7 +72,7 @@ public abstract class Phase implements IPhase {
 
    @Override
    public float getYawFactor() {
-      float f = MathHelper.sqrt(Entity.getHorizontalDistanceSqr(this.guardian.getDeltaMovement())) + 1.0F;
+      float f = (float) this.guardian.getDeltaMovement().horizontalDistance() + 1.0F;
       float f1 = Math.min(f, 40.0F);
       return 0.7F / f1 / f;
    }

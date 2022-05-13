@@ -3,9 +3,9 @@ package com.brandon3055.draconicevolution.api.config;
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
 import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.PropertyData;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.Arrays;
 import java.util.List;
@@ -30,7 +30,7 @@ public class EnumProperty<T extends Enum<T>> extends ConfigProperty {
         this.allowedValues = Arrays.asList(value.getDeclaringClass().getEnumConstants());
     }
 
-    public EnumProperty(String name, ITextComponent displayName, T defaultValue) {
+    public EnumProperty(String name, Component displayName, T defaultValue) {
         super(name, displayName);
         this.value = defaultValue;
         this.allowedValues = Arrays.asList(value.getDeclaringClass().getEnumConstants());
@@ -109,14 +109,14 @@ public class EnumProperty<T extends Enum<T>> extends ConfigProperty {
     }
 
     @Override
-    public CompoundNBT serializeNBT() {
-        CompoundNBT nbt = super.serializeNBT();
+    public CompoundTag serializeNBT() {
+        CompoundTag nbt = super.serializeNBT();
         nbt.putByte("value", (byte) value.ordinal());
         return nbt;
     }
 
     @Override
-    public void deserializeNBT(CompoundNBT nbt) {
+    public void deserializeNBT(CompoundTag nbt) {
         try {
             if (nbt.contains("value")) {
                 T newValue = value.getDeclaringClass().getEnumConstants()[nbt.getByte("value")];

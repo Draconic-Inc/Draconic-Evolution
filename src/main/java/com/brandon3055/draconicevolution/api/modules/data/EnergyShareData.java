@@ -1,8 +1,8 @@
 package com.brandon3055.draconicevolution.api.modules.data;
 
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 
 import java.util.Map;
 
@@ -26,7 +26,7 @@ public class EnergyShareData implements ModuleData<EnergyShareData> {
     }
 
     @Override
-    public void addInformation(Map<ITextComponent, ITextComponent> map, ModuleContext context, boolean stack) {
-        map.put(new StringTextComponent("EnergyModule"), new StringTextComponent("TODO"));
+    public void addInformation(Map<Component, Component> map, ModuleContext context, boolean stack) {
+        map.put(new TextComponent("EnergyModule"), new TextComponent("TODO"));
     }
 }

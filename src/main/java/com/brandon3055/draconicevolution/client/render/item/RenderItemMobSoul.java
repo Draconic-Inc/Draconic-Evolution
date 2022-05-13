@@ -4,16 +4,16 @@ import codechicken.lib.render.item.IItemRenderer;
 import codechicken.lib.util.TransformUtils;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.init.DEContent;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Quaternion;
+import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.client.renderer.model.IModelTransform;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
-import net.minecraft.entity.Entity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -91,7 +91,7 @@ public class RenderItemMobSoul implements IItemRenderer {
 //    }
 
     @Override
-    public void renderItem(ItemStack stack, ItemCameraTransforms.TransformType transformType, MatrixStack mStack, IRenderTypeBuffer getter, int packedLight, int packedOverlay) {
+    public void renderItem(ItemStack stack, ItemTransforms.TransformType transformType, PoseStack mStack, MultiBufferSource getter, int packedLight, int packedOverlay) {
         Entity mob = DEContent.mob_soul.getRenderEntity(stack);
         if (brokenMobs.contains(mob)) return;
 
@@ -101,19 +101,19 @@ public class RenderItemMobSoul implements IItemRenderer {
         mStack.translate(0.5, 0, 0.5);
         mStack.scale(scale, scale, scale);
 
-        if (transformType != ItemCameraTransforms.TransformType.GROUND && transformType != ItemCameraTransforms.TransformType.FIXED) {
+        if (transformType != ItemTransforms.TransformType.GROUND && transformType != ItemTransforms.TransformType.FIXED) {
             mStack.mulPose(new Quaternion(new Vector3f(1, 0, -0.5F), (float) Math.sin((ClientEventHandler.elapsedTicks + Minecraft.getInstance().getFrameTime()) / 50F) * 15F, true));
             mStack.mulPose(new Quaternion(new Vector3f(0, 1, 0), (ClientEventHandler.elapsedTicks + Minecraft.getInstance().getFrameTime()) * 3, true));
         }
 
-        EntityRendererManager manager = Minecraft.getInstance().getEntityRenderDispatcher();
+        EntityRenderDispatcher manager = Minecraft.getInstance().getEntityRenderDispatcher();
         manager.render(mob, 0, 0, 0, 0, 0, mStack, getter, packedLight);
 
 
     }
 
     @Override
-    public IModelTransform getModelTransform() {
+    public ModelState getModelTransform() {
         return TransformUtils.DEFAULT_BLOCK;
     }
 

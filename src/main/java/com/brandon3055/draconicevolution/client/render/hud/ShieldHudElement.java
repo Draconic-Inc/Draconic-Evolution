@@ -18,17 +18,17 @@ import com.brandon3055.draconicevolution.integration.equipment.EquipmentManager;
 import com.brandon3055.draconicevolution.items.equipment.ModularChestpiece;
 import com.brandon3055.draconicevolution.items.tools.DraconiumCapacitor;
 import com.brandon3055.draconicevolution.lib.WTFException;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.LazyOptional;
 
 import java.util.ArrayList;
@@ -207,7 +207,7 @@ public class ShieldHudElement extends AbstractHudElement {
             if (lastTotemCount != totems.size()) {
                 lastTotemCount = totems.size();
             } else if (chargedTotems > lastChargedTotemCount && mc.level != null) {
-                mc.level.playLocalSound(mc.player.blockPosition(), SoundEvents.PLAYER_LEVELUP, SoundCategory.PLAYERS, 1, 2, false);
+                mc.level.playLocalSound(mc.player.blockPosition(), SoundEvents.PLAYER_LEVELUP, SoundSource.PLAYERS, 1, 2, false);
             }
             lastChargedTotemCount = chargedTotems;
         } else {
@@ -227,11 +227,11 @@ public class ShieldHudElement extends AbstractHudElement {
     }
 
     @Override
-    public void render(MatrixStack mStack, float partialTicks, boolean configuring) {
+    public void render(PoseStack mStack, float partialTicks, boolean configuring) {
         if (!renderHud) return;
         mStack.translate(xPos(), yPos(), 0);
         mStack.scale(scale, scale, scale);
-        IRenderTypeBuffer.Impl getter = IRenderTypeBuffer.immediate(Tessellator.getInstance().getBuilder());
+        MultiBufferSource.BufferSource getter = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
 
         hudOpacity = 1;
 
@@ -294,7 +294,7 @@ public class ShieldHudElement extends AbstractHudElement {
         }
     }
 
-    public void particleExplosion(IRenderTypeBuffer getter, MatrixStack mStack, double x, double y, float progress, Random rand) {
+    public void particleExplosion(MultiBufferSource getter, PoseStack mStack, double x, double y, float progress, Random rand) {
         rand.setSeed(totemEffectSeed);
         TextureAtlasSprite[] particles = new TextureAtlasSprite[8];
         for (int i = 0; i < 8; i++) {
@@ -305,7 +305,7 @@ public class ShieldHudElement extends AbstractHudElement {
         double scale = 6;
         for (int p = 0; p < pCount; p++) {
             float life = (0.5F + (rand.nextFloat() * 0.5F));
-            float age = MathHelper.clamp(progress / life, 0F, 1F);
+            float age = Mth.clamp(progress / life, 0F, 1F);
             float fadeOut = Math.min(1F, (1F - age) * 10F);
             boolean altColour = rand.nextInt(4) == 0;
             float red = (altColour ? 0.6F : 0.1F) + rand.nextFloat() * 0.2F;
@@ -313,8 +313,8 @@ public class ShieldHudElement extends AbstractHudElement {
             float blue = rand.nextFloat() * 0.2F;
             double dir = rand.nextDouble() * Math.PI * 2;
             double dist = rand.nextGaussian() * size;
-            double pX = x + (MathHelper.sin((float) dir) * dist * progress);
-            double pY = y + (MathHelper.cos((float) dir) * dist * progress);
+            double pX = x + (Mth.sin((float) dir) * dist * progress);
+            double pY = y + (Mth.cos((float) dir) * dist * progress);
             double ps = scale * (0.75 + rand.nextDouble() * 0.5) * fadeOut;
             int index = Math.min((int) (age * 8), 7);
             if (age >= 1) continue; //Still need to do the math above, so we don't throw off the seeded random
@@ -329,7 +329,7 @@ public class ShieldHudElement extends AbstractHudElement {
     }
 
     @Override
-    public void writeNBT(CompoundNBT nbt) {
+    public void writeNBT(CompoundTag nbt) {
         super.writeNBT(nbt);
         nbt.putBoolean("show_numeric", numericEnergy);
         nbt.putBoolean("show_undying", showUndying);
@@ -338,7 +338,7 @@ public class ShieldHudElement extends AbstractHudElement {
     }
 
     @Override
-    public void readNBT(CompoundNBT nbt) {
+    public void readNBT(CompoundTag nbt) {
         super.readNBT(nbt);
         numericEnergy = nbt.getBoolean("show_numeric");
         showUndying = nbt.getBoolean("show_undying");

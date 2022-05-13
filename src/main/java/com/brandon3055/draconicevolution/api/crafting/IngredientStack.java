@@ -5,12 +5,13 @@ import com.google.common.collect.Streams;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tags.ITag;
-import net.minecraft.util.IItemProvider;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.crafting.IIngredientSerializer;
 
 import javax.annotation.Nullable;
@@ -26,7 +27,7 @@ public class IngredientStack extends Ingredient {
 
     private final int count;
 
-    protected IngredientStack(Stream<? extends IItemList> itemLists, int count) {
+    protected IngredientStack(Stream<? extends Value> itemLists, int count) {
         super(itemLists);
         this.count = count;
     }
@@ -93,7 +94,7 @@ public class IngredientStack extends Ingredient {
         JsonObject obj = new JsonObject();
         obj.addProperty("count", count);
         JsonArray jsonarray = new JsonArray();
-        for (Ingredient.IItemList ingredient$iitemlist : this.values) {
+        for (Ingredient.Value ingredient$iitemlist : this.values) {
             jsonarray.add(ingredient$iitemlist.serialize());
         }
         obj.add("items", jsonarray);
@@ -102,12 +103,12 @@ public class IngredientStack extends Ingredient {
     }
 
 
-    public static IngredientStack fromItemListStream(Stream<? extends Ingredient.IItemList> stream, int count) {
+    public static IngredientStack fromItemListStream(Stream<? extends Ingredient.Value> stream, int count) {
         IngredientStack ingredient = new IngredientStack(stream, count);
         return ingredient.values.length == 0 ? EMPTY : ingredient;
     }
 
-    public static IngredientStack fromItems(int count, IItemProvider... itemsIn) {
+    public static IngredientStack fromItems(int count, ItemLike... itemsIn) {
         return fromStacks(Arrays.stream(itemsIn).map(ItemStack::new), count);
     }
 
@@ -116,19 +117,19 @@ public class IngredientStack extends Ingredient {
     }
 
     public static IngredientStack fromStacks(Stream<ItemStack> stacks, int count) {
-        return fromItemListStream(stacks.filter((stack) -> !stack.isEmpty()).map(SingleItemList::new), count);
+        return fromItemListStream(stacks.filter((stack) -> !stack.isEmpty()).map(ItemValue::new), count);
     }
 
-    public static IngredientStack fromTag(ITag<Item> tagIn, int count) {
-        return fromItemListStream(Stream.of(new Ingredient.TagList(tagIn)), count);
+    public static IngredientStack fromTag(TagKey<Item> tagIn, int count) {
+        return fromItemListStream(Stream.of(new Ingredient.TagValue(tagIn)), count);
     }
 
     public static class Serializer implements IIngredientSerializer<IngredientStack> {
 
         @Override
-        public IngredientStack parse(PacketBuffer buffer) {
+        public IngredientStack parse(FriendlyByteBuf buffer) {
             int count = buffer.readShort();
-            return IngredientStack.fromItemListStream(Stream.generate(() -> new Ingredient.SingleItemList(buffer.readItem())).limit(buffer.readVarInt()), count);
+            return IngredientStack.fromItemListStream(Stream.generate(() -> new Ingredient.ItemValue(buffer.readItem())).limit(buffer.readVarInt()), count);
         }
 
         @Override
@@ -139,7 +140,7 @@ public class IngredientStack extends Ingredient {
         }
 
         @Override
-        public void write(PacketBuffer buffer, IngredientStack ingredient) {
+        public void write(FriendlyByteBuf buffer, IngredientStack ingredient) {
             buffer.writeShort(ingredient.getCount());
             ItemStack[] items = ingredient.getItems();
             buffer.writeVarInt(items.length);

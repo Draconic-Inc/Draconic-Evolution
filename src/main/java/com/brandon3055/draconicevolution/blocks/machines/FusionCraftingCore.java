@@ -2,55 +2,40 @@ package com.brandon3055.draconicevolution.blocks.machines;
 
 import com.brandon3055.brandonscore.blocks.BlockBCore;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileFusionCraftingCore;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
-
-import javax.annotation.Nullable;
+import com.brandon3055.draconicevolution.init.DEContent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 /**
  * Created by brandon3055 on 11/06/2016.
  */
-public class FusionCraftingCore extends BlockBCore {
+public class FusionCraftingCore extends BlockBCore implements EntityBlock {
 
-    private static final VoxelShape SHAPE = VoxelShapes.box(0.0625, 0.0625, 0.0625, 0.9375, 0.9375, 0.9375);
+    private static final VoxelShape SHAPE = Shapes.box(0.0625, 0.0625, 0.0625, 0.9375, 0.9375, 0.9375);
 
     public FusionCraftingCore(Properties properties) {
         super(properties);
+        setBlockEntity(() -> DEContent.tile_crafting_core, true);
     }
 
     @Override
-    public boolean isBlockFullCube() {
-        return false;
-    }
-
-    @Override
-    public boolean hasTileEntity(BlockState state) {
-        return true;
-    }
-
-    @Nullable
-    @Override
-    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        return new TileFusionCraftingCore();
-    }
-
-    @Override
-    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+    public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
         return SHAPE;
     }
 
     @Override
-    public void neighborChanged(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
+    public void neighborChanged(BlockState state, Level world, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
         if (!world.isClientSide()) {
             if (isBlockPowered(world, pos)) {
-                TileEntity tile = world.getBlockEntity(pos);
+                BlockEntity tile = world.getBlockEntity(pos);
                 if (tile instanceof TileFusionCraftingCore) {
                     ((TileFusionCraftingCore) tile).startCraft();
                 }
@@ -64,8 +49,8 @@ public class FusionCraftingCore extends BlockBCore {
     }
 
     @Override
-    public int getAnalogOutputSignal(BlockState blockState, World worldIn, BlockPos pos) {
-        TileEntity tile = worldIn.getBlockEntity(pos);
+    public int getAnalogOutputSignal(BlockState blockState, Level worldIn, BlockPos pos) {
+        BlockEntity tile = worldIn.getBlockEntity(pos);
         if (tile instanceof TileFusionCraftingCore) {
             return ((TileFusionCraftingCore) tile).getComparatorOutput();
         }

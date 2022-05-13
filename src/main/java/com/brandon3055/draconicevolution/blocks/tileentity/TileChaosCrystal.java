@@ -9,29 +9,26 @@ import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DEOldConfig;
 import com.brandon3055.draconicevolution.handlers.DESounds;
 import com.brandon3055.draconicevolution.init.DEContent;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.effect.LightningBoltEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.gen.Heightmap;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LightningBolt;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.phys.AABB;
 
 /**
  * Created by brandon3055 on 24/9/2015.
  */
-public class TileChaosCrystal extends TileBCore implements ITickableTileEntity {
+public class TileChaosCrystal extends TileBCore {
 
     public int tick = 0;
     public final ManagedBool guardianDefeated = register(new ManagedBool("guardian_defeated", DataFlags.SAVE_NBT_SYNC_TILE, DataFlags.TRIGGER_UPDATE));
@@ -44,8 +41,8 @@ public class TileChaosCrystal extends TileBCore implements ITickableTileEntity {
     private boolean validatePlacement = false;
     private int soundTimer;
 
-    public TileChaosCrystal() {
-        super(DEContent.tile_chaos_crystal);
+    public TileChaosCrystal(BlockPos pos, BlockState state) {
+        super(DEContent.tile_chaos_crystal, pos, state);
     }
 
     @Override
@@ -56,7 +53,7 @@ public class TileChaosCrystal extends TileBCore implements ITickableTileEntity {
             for (int i = 1; i <= 2; i++) {
                 level.setBlockAndUpdate(worldPosition.above(i), DEContent.chaos_crystal_part.defaultBlockState());
                 level.setBlockAndUpdate(worldPosition.below(i), DEContent.chaos_crystal_part.defaultBlockState());
-                TileEntity tile = level.getBlockEntity(worldPosition.above(i));
+                BlockEntity tile = level.getBlockEntity(worldPosition.above(i));
                 if (tile instanceof TileChaosCrystal) ((TileChaosCrystal) tile).parentPos.set(worldPosition);
                 tile = level.getBlockEntity(worldPosition.below(i));
                 if (tile instanceof TileChaosCrystal) ((TileChaosCrystal) tile).parentPos.set(worldPosition);
@@ -74,27 +71,28 @@ public class TileChaosCrystal extends TileBCore implements ITickableTileEntity {
         if (!level.isClientSide && soundTimer-- <= 0) {
             soundTimer = 3600 + level.random.nextInt(1200);
 //            world.playSound(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, DESounds.chaosChamberAmbient, SoundCategory.AMBIENT, 1F, world.rand.nextFloat() * 0.4F + 0.8F, false);
-            BCoreNetwork.sendSound(level, worldPosition, DESounds.chaosChamberAmbient, SoundCategory.AMBIENT, 1.5F, level.random.nextFloat() * 0.4F + 0.8F, false);
+            BCoreNetwork.sendSound(level, worldPosition, DESounds.chaosChamberAmbient, SoundSource.AMBIENT, 1.5F, level.random.nextFloat() * 0.4F + 0.8F, false);
         }
 
-        if (!level.isClientSide && level instanceof ServerWorld && guardianDefeated.get() && level.random.nextInt(50) == 0) {
+        if (!level.isClientSide && level instanceof ServerLevel && guardianDefeated.get() && level.random.nextInt(50) == 0) {
             int x = 5 - level.random.nextInt(11);
             int z = 5 - level.random.nextInt(11);
-            LightningBoltEntity bolt = new LightningBoltEntity(EntityType.LIGHTNING_BOLT, level);
-            bolt.setPos(worldPosition.getX() + x, level.getHeightmapPos(Heightmap.Type.WORLD_SURFACE, worldPosition).getY(), worldPosition.getZ() + z);
+            LightningBolt bolt = new LightningBolt(EntityType.LIGHTNING_BOLT, level);
+            bolt.setPos(worldPosition.getX() + x, level.getHeightmapPos(Heightmap.Types.WORLD_SURFACE, worldPosition).getY(), worldPosition.getZ() + z);
             bolt.noCulling = true;
             level.addFreshEntity(bolt);
         }
     }
 
     private boolean removing = false;
+
     public void detonate(Entity entity) {
         if (level.isClientSide) {
             return;
         }
 
         if (parentPos.get().getY() != -1) {
-            TileEntity tile = level.getBlockEntity(parentPos.get());
+            BlockEntity tile = level.getBlockEntity(parentPos.get());
             if (tile instanceof TileChaosCrystal && !((TileChaosCrystal) tile).removing) {
                 ((TileChaosCrystal) tile).detonate(entity);
                 level.destroyBlock(tile.getBlockPos(), true, entity);
@@ -112,7 +110,7 @@ public class TileChaosCrystal extends TileBCore implements ITickableTileEntity {
         level.setBlockAndUpdate(worldPosition.below(2), Blocks.AIR.defaultBlockState());
 
         if (!guardianDefeated.get()) {
-            World world = level;
+            Level world = level;
             BlockPos pos = worldPosition;
             ProcessHandler.addProcess(new DelayedTask.Task(1, () -> {
                 world.setBlock(pos, DEContent.chaos_crystal.defaultBlockState(), 3);
@@ -140,7 +138,7 @@ public class TileChaosCrystal extends TileBCore implements ITickableTileEntity {
     }
 
     @Override
-    public void writeExtraNBT(CompoundNBT compound) {
+    public void writeExtraNBT(CompoundTag compound) {
         super.writeExtraNBT(compound);
         if (validatePlacement) {
             compound.putBoolean("validate_placement", true);
@@ -148,7 +146,7 @@ public class TileChaosCrystal extends TileBCore implements ITickableTileEntity {
     }
 
     @Override
-    public void readExtraNBT(CompoundNBT compound) {
+    public void readExtraNBT(CompoundTag compound) {
         super.readExtraNBT(compound);
         validatePlacement = compound.contains("validate_placement") && compound.getBoolean("validate_placement");
     }
@@ -162,14 +160,8 @@ public class TileChaosCrystal extends TileBCore implements ITickableTileEntity {
     }
 
     @Override
-    public AxisAlignedBB getRenderBoundingBox() {
-        return new AxisAlignedBB(worldPosition, worldPosition.offset(1, 1, 1)).inflate(3, 3, 3);
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public double getViewDistance() {
-        return 512;
+    public AABB getRenderBoundingBox() {
+        return new AABB(worldPosition, worldPosition.offset(1, 1, 1)).inflate(3, 3, 3);
     }
 
     @Override
@@ -181,7 +173,7 @@ public class TileChaosCrystal extends TileBCore implements ITickableTileEntity {
         if (parentPos.get().getY() == -1) {
             return guardianDefeated.get();
         }
-        TileEntity tile = level.getBlockEntity(parentPos.get());
+        BlockEntity tile = level.getBlockEntity(parentPos.get());
         if (tile instanceof TileChaosCrystal) {
             return ((TileChaosCrystal) tile).guardianDefeated.get();
         }

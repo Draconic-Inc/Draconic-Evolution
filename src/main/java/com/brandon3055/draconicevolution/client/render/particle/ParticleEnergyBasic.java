@@ -1,14 +1,14 @@
 package com.brandon3055.draconicevolution.client.render.particle;
 
 import com.brandon3055.brandonscore.client.particle.IntParticleType;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
-import net.minecraft.client.world.ClientWorld;
 
-public class ParticleEnergyBasic extends SpriteTexturedParticle {
+public class ParticleEnergyBasic extends TextureSheetParticle {
 
-    private final IAnimatedSprite spriteSet;
+    private final SpriteSet spriteSet;
 
-    public ParticleEnergyBasic(ClientWorld world, double xPos, double yPos, double zPos, IAnimatedSprite spriteSet) {
+    public ParticleEnergyBasic(ClientLevel world, double xPos, double yPos, double zPos, SpriteSet spriteSet) {
         super(world, xPos, yPos, zPos);
         this.spriteSet = spriteSet;
         setSprite(spriteSet.get(world.random));
@@ -16,8 +16,8 @@ public class ParticleEnergyBasic extends SpriteTexturedParticle {
     }
 
     @Override
-    public IParticleRenderType getRenderType() {
-        return IParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
+    public ParticleRenderType getRenderType() {
+        return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
     }
 
     @Override
@@ -25,15 +25,15 @@ public class ParticleEnergyBasic extends SpriteTexturedParticle {
         super.tick();
     }
 
-    public static class Factory implements IParticleFactory<IntParticleType.IntParticleData> {
-        private final IAnimatedSprite spriteSet;
+    public static class Factory implements ParticleProvider<IntParticleType.IntParticleData> {
+        private final SpriteSet spriteSet;
 
-        public Factory(IAnimatedSprite p_i50823_1_) {
+        public Factory(SpriteSet p_i50823_1_) {
             this.spriteSet = p_i50823_1_;
         }
 
         @Override
-        public Particle createParticle(IntParticleType.IntParticleData data, ClientWorld world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public Particle createParticle(IntParticleType.IntParticleData data, ClientLevel world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
             ParticleEnergyBasic particleEnergy = new ParticleEnergyBasic(world, x, y, z, spriteSet);
             particleEnergy.xd = xSpeed;
             particleEnergy.yd = ySpeed;

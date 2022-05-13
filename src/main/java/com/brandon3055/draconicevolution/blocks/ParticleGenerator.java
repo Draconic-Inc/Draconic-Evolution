@@ -1,22 +1,19 @@
 package com.brandon3055.draconicevolution.blocks;
 
 import com.brandon3055.brandonscore.blocks.BlockBCore;
-import net.minecraft.block.Block;
+import com.brandon3055.draconicevolution.init.DEContent;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
 
 /**
  * Created by brandon3055 on 30/3/2016.
  */
-//TODO Split into multiple blocks
-public class ParticleGenerator extends BlockBCore {
+public class ParticleGenerator extends BlockBCore implements EntityBlock {
 //    public static final PropertyString TYPE = new PropertyString("type", "normal", "inverted", "stabilizer", "stabilizer2");
 
     public ParticleGenerator(Block.Properties properties) {
         super(properties);
-    }
-
-    @Override
-    public boolean isBlockFullCube() {
-        return false;
+        setBlockEntity(() -> DEContent.tile_particle_generator, true);
     }
 
     //region BlockState

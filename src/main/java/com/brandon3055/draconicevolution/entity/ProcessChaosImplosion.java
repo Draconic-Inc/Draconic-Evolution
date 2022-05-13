@@ -4,11 +4,11 @@ import com.brandon3055.brandonscore.handlers.IProcess;
 import com.brandon3055.brandonscore.handlers.ProcessHandler;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.lib.DEDamageSources;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 
 import java.util.List;
 import java.util.Random;
@@ -20,7 +20,7 @@ public class ProcessChaosImplosion implements IProcess {
 
     public static DamageSource chaosImplosion = new DamageSource("chaosImplosion").setExplosion().bypassArmor().bypassMagic();
 
-    private World world;
+    private Level world;
     private int xCoord;
     private int yCoord;
     private int zCoord;
@@ -29,7 +29,7 @@ public class ProcessChaosImplosion implements IProcess {
 
     private double expansion = 0;
 
-    public ProcessChaosImplosion(World world, int x, int y, int z) {
+    public ProcessChaosImplosion(Level world, int x, int y, int z) {
         this.world = world;
         this.xCoord = x;
         this.yCoord = y;
@@ -68,14 +68,14 @@ public class ProcessChaosImplosion implements IProcess {
 
     public class ChaosImplosionTrace implements IProcess {
 
-        private World world;
+        private Level world;
         private int xCoord;
         private int yCoord;
         private int zCoord;
         private float power;
         private Random random;
 
-        public ChaosImplosionTrace(World world, int x, int y, int z, float power, Random random) {
+        public ChaosImplosionTrace(Level world, int x, int y, int z, float power, Random random) {
             this.world = world;
             this.xCoord = x;
             this.yCoord = y;
@@ -90,7 +90,7 @@ public class ProcessChaosImplosion implements IProcess {
             float energy = power * 10;
 
             for (int y = yCoord; y >= 0 && energy > 0; y--) {
-                List<Entity> entities = world.getEntitiesOfClass(Entity.class, new AxisAlignedBB(xCoord, y, zCoord, xCoord + 1, y + 1, zCoord + 1));
+                List<Entity> entities = world.getEntitiesOfClass(Entity.class, new AABB(xCoord, y, zCoord, xCoord + 1, y + 1, zCoord + 1));
                 for (Entity entity : entities) entity.hurt(ProcessChaosImplosion.chaosImplosion, power * 100);
 
                 //energy -= block instanceof BlockLiquid ? 10 : block.getExplosionResistance(null);
@@ -102,7 +102,7 @@ public class ProcessChaosImplosion implements IProcess {
             energy = power * 20;
             yCoord++;
             for (int y = yCoord; y < 255 && energy > 0; y++) {
-                List<Entity> entities = world.getEntitiesOfClass(Entity.class, new AxisAlignedBB(xCoord, y, zCoord, xCoord + 1, y + 1, zCoord + 1));
+                List<Entity> entities = world.getEntitiesOfClass(Entity.class, new AABB(xCoord, y, zCoord, xCoord + 1, y + 1, zCoord + 1));
 
                 for (Entity entity : entities) {
                     entity.hurt(DEDamageSources.CHAOS_ISLAND_IMPLOSION, power * 100);

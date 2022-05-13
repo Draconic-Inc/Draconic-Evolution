@@ -2,36 +2,37 @@ package com.brandon3055.draconicevolution.blocks;
 
 import com.brandon3055.brandonscore.blocks.BlockBCore;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileDislocatorPedestal;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockRenderType;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
-
-import javax.annotation.Nullable;
+import com.brandon3055.draconicevolution.init.DEContent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 /**
  * Created by brandon3055 on 25/09/2016.
  */
-public class DislocatorPedestal extends BlockBCore/* implements ITileEntityProvider, IRenderOverride*/ {
+public class DislocatorPedestal extends BlockBCore implements EntityBlock {
     protected static final VoxelShape SHAPE = Block.box(5.6f, 0f, 5.6f, 10.4f, 12.8f, 10.4f);
 
     public DislocatorPedestal(Properties properties) {
         super(properties);
+        setBlockEntity(() -> DEContent.tile_dislocator_pedestal, false);
     }
 
     @Override
-    public void setPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
-        TileEntity tile = world.getBlockEntity(pos);
+    public void setPlacedBy(Level world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+        BlockEntity tile = world.getBlockEntity(pos);
         if (tile instanceof TileDislocatorPedestal) {
-            float f = (float) MathHelper.floor((MathHelper.wrapDegrees(placer.yRot - 180.0F) + 11.25F) / 22.5F);
+            float f = (float) Mth.floor((Mth.wrapDegrees(placer.getYRot() - 180.0F) + 11.25F) / 22.5F);
             ((TileDislocatorPedestal) tile).rotation.set((int) f);
             if (!world.isClientSide) {
                 ((TileDislocatorPedestal) tile).getDataManager().forceSync();
@@ -41,23 +42,12 @@ public class DislocatorPedestal extends BlockBCore/* implements ITileEntityProvi
     }
 
     @Override
-    public boolean hasTileEntity(BlockState state) {
-        return true;
-    }
-
-    @Nullable
-    @Override
-    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        return new TileDislocatorPedestal();
-    }
-
-    @Override
-    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+    public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
         return SHAPE;
     }
 
     @Override
-    public BlockRenderType getRenderShape(BlockState state) {
-        return BlockRenderType.INVISIBLE;
+    public RenderShape getRenderShape(BlockState state) {
+        return RenderShape.INVISIBLE;
     }
 }

@@ -1,17 +1,17 @@
 package com.brandon3055.draconicevolution.entity;
 
 import com.brandon3055.brandonscore.inventory.InventoryDynamic;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.world.World;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.event.ForgeEventFactory;
 
 import java.util.ArrayList;
@@ -35,7 +35,7 @@ public class EntityLootCore extends Entity {
     private int lifespan = 6000;
     private boolean canDespawn = true;
 
-    public EntityLootCore(EntityType<?> entityTypeIn, World worldIn) {
+    public EntityLootCore(EntityType<?> entityTypeIn, Level worldIn) {
         super(entityTypeIn, worldIn);
     }
 
@@ -45,7 +45,7 @@ public class EntityLootCore extends Entity {
     }
 
     @Override
-    public IPacket<?> getAddEntityPacket() {
+    public Packet<?> getAddEntityPacket() {
         return null;
     }
 
@@ -83,7 +83,7 @@ public class EntityLootCore extends Entity {
             }
         }
         else if (canDespawn && despawnTimer++ > lifespan) {
-            remove();
+            discard();
         }
 
         super.tick();
@@ -116,7 +116,7 @@ public class EntityLootCore extends Entity {
 //    }
 
     @Override
-    public void playerTouch(PlayerEntity player) {
+    public void playerTouch(Player player) {
         if (level.isClientSide) {
             return;
         }
@@ -165,14 +165,14 @@ public class EntityLootCore extends Entity {
         }
 
         if (inserted) {
-            this.level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F, ((this.random.nextFloat() - this.random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+            this.level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 0.2F, ((this.random.nextFloat() - this.random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
             updateStored();
         }
 
         pickupDellay = 10;
 
         if (inventory.getContainerSize() == 1 && inventory.getItem(0).isEmpty()) {
-            remove();
+            discard();
         }
     }
 
@@ -203,29 +203,29 @@ public class EntityLootCore extends Entity {
             }
         }
 
-        for (ServerPlayerEntity playerMP : trackingPlayers) {
+        for (ServerPlayer playerMP : trackingPlayers) {
             //TODO Packets
 //            DraconicEvolution.network.sendTo(new PacketLootSync(getEntityId(), displayMap), playerMP);
         }
     }
 
-    private List<ServerPlayerEntity> trackingPlayers = new ArrayList<>();
+    private List<ServerPlayer> trackingPlayers = new ArrayList<>();
 
     @Override
-    public void startSeenByPlayer(ServerPlayerEntity player) {
+    public void startSeenByPlayer(ServerPlayer player) {
         trackingPlayers.add(player);
 //        DraconicEvolution.network.sendTo(new PacketLootSync(getEntityId(), displayMap), player);
         super.startSeenByPlayer(player);
     }
 
     @Override
-    public void stopSeenByPlayer(ServerPlayerEntity player) {
+    public void stopSeenByPlayer(ServerPlayer player) {
         trackingPlayers.remove(player);
         super.stopSeenByPlayer(player);
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundNBT compound) {
+    protected void readAdditionalSaveData(CompoundTag compound) {
         inventory.readFromNBT(compound);
         updateStored();
         despawnTimer = compound.getInt("DespawnTimer");
@@ -234,7 +234,7 @@ public class EntityLootCore extends Entity {
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundNBT compound) {
+    protected void addAdditionalSaveData(CompoundTag compound) {
         inventory.writeToNBT(compound);
         compound.putInt("DespawnTimer", despawnTimer);
         compound.putInt("Lifespan", lifespan);

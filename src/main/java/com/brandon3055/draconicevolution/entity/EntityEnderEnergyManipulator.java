@@ -1,18 +1,18 @@
 package com.brandon3055.draconicevolution.entity;
 
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.boss.dragon.EnderDragonEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.HandSide;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.end.DragonFightManager;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.HumanoidArm;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.dimension.end.EndDragonFight;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
@@ -26,13 +26,13 @@ public class EntityEnderEnergyManipulator extends LivingEntity {
 
     private int soulsCollected = 0;
     private int stageTime = 0;
-    public EnderDragonEntity dragon = null;
-    private DragonFightManager fightManager = null;
+    public EnderDragon dragon = null;
+    private EndDragonFight fightManager = null;
     private LinkedList<BlockPos> deadCrystals = new LinkedList<>();
-    public static final DataParameter<Integer> STAGE = EntityDataManager.defineId(EntityEnderEnergyManipulator.class, DataSerializers.INT);
+    public static final EntityDataAccessor<Integer> STAGE = SynchedEntityData.defineId(EntityEnderEnergyManipulator.class, EntityDataSerializers.INT);
     private BlockPos exitPortalLocation = null;
 
-    public EntityEnderEnergyManipulator(EntityType<? extends LivingEntity> type, World p_i48577_2_) {
+    public EntityEnderEnergyManipulator(EntityType<? extends LivingEntity> type, Level p_i48577_2_) {
         super(type, p_i48577_2_);
     }
 
@@ -364,13 +364,13 @@ public class EntityEnderEnergyManipulator extends LivingEntity {
 
 
     @Override
-    public void readAdditionalSaveData(CompoundNBT compound) {
+    public void readAdditionalSaveData(CompoundTag compound) {
         super.readAdditionalSaveData(compound);
         soulsCollected = compound.getInt("SoulsCollected");
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundNBT compound) {
+    public void addAdditionalSaveData(CompoundTag compound) {
         super.addAdditionalSaveData(compound);
         compound.putInt("SoulsCollected", soulsCollected);
     }
@@ -384,20 +384,20 @@ public class EntityEnderEnergyManipulator extends LivingEntity {
 
     @Nullable
     @Override
-    public ItemStack getItemBySlot(EquipmentSlotType slotIn) {
+    public ItemStack getItemBySlot(EquipmentSlot slotIn) {
         return ItemStack.EMPTY;
     }
 
     @Override
-    public void setItemSlot(EquipmentSlotType slotIn, @Nullable ItemStack stack) {
+    public void setItemSlot(EquipmentSlot slotIn, @Nullable ItemStack stack) {
 
     }
 
     //endregion
 
     @Override
-    public HandSide getMainArm() {
-        return HandSide.RIGHT;
+    public HumanoidArm getMainArm() {
+        return HumanoidArm.RIGHT;
     }
 
     @Override

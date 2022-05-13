@@ -2,13 +2,13 @@ package com.brandon3055.draconicevolution.client.render.particle;
 
 import com.brandon3055.brandonscore.client.particle.BCParticle;
 import com.brandon3055.brandonscore.lib.Vec3D;
-import net.minecraft.client.world.ClientWorld;
+import net.minecraft.client.multiplayer.ClientLevel;
 
 public class ParticleStarSpark extends BCParticle {
 
     public float sparkSize = 0.5F;
 
-    public ParticleStarSpark(ClientWorld worldIn, Vec3D pos) {
+    public ParticleStarSpark(ClientLevel worldIn, Vec3D pos) {
         super(worldIn, pos);
 
         double speed = 0.1;

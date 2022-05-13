@@ -1,17 +1,21 @@
 package com.brandon3055.draconicevolution.api.modules.lib;
 
-import codechicken.lib.util.SneakyUtils;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.capability.PropertyProvider;
 import com.brandon3055.draconicevolution.api.config.ConfigProperty;
-import com.brandon3055.draconicevolution.api.modules.*;
+import com.brandon3055.draconicevolution.api.modules.ModuleCategory;
+import com.brandon3055.draconicevolution.api.modules.ModuleRegistry;
+import com.brandon3055.draconicevolution.api.modules.ModuleType;
+import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
 import com.brandon3055.draconicevolution.api.modules.data.EnergyData;
 import com.brandon3055.draconicevolution.api.modules.data.EnergyShareData;
 import com.brandon3055.draconicevolution.api.modules.data.ModuleData;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.ResourceLocation;
+import com.brandon3055.draconicevolution.api.modules.Module;
+import net.covers1624.quack.util.SneakyUtils;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.resources.ResourceLocation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -289,13 +293,13 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
     }
 
     @Override
-    public CompoundNBT serializeNBT() {
-        CompoundNBT nbt = new CompoundNBT();
+    public CompoundTag serializeNBT() {
+        CompoundTag nbt = new CompoundTag();
         //Serialize Modules
-        ListNBT modules = new ListNBT();
+        ListTag modules = new ListTag();
         synchronized (moduleEntities) {
             for (ModuleEntity entity : moduleEntities) {
-                CompoundNBT entityNBT = new CompoundNBT();
+                CompoundTag entityNBT = new CompoundTag();
                 entityNBT.putString("id", entity.module.getRegistryName().toString());
                 entity.writeToNBT(entityNBT);
                 modules.add(entityNBT);
@@ -305,20 +309,20 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
 
         //Serialize Properties
         nbt.putUUID("provider_id", getProviderID());
-        CompoundNBT properties = new CompoundNBT();
+        CompoundTag properties = new CompoundTag();
         providedProperties.forEach(e -> properties.put(e.getName(), e.serializeNBT()));
         nbt.put("properties", properties);
         return nbt;
     }
 
     @Override
-    public void deserializeNBT(CompoundNBT nbt) {
+    public void deserializeNBT(CompoundTag nbt) {
         synchronized (moduleEntities) {
             clearCaches();
             //Deserialize modules first
             moduleEntities.clear();
-            ListNBT modules = nbt.getList("modules", 10);
-            modules.stream().map(inbt -> (CompoundNBT) inbt).forEach(compound -> {
+            ListTag modules = nbt.getList("modules", 10);
+            modules.stream().map(inbt -> (CompoundTag) inbt).forEach(compound -> {
                 ResourceLocation id = new ResourceLocation(compound.getString("id"));
                 Module<?> module = ModuleRegistry.getRegistry().getValue(id);
                 if (module == null) {
@@ -340,7 +344,7 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
             if (nbt.hasUUID("provider_id")) {
                 providerID = nbt.getUUID("provider_id");
             }
-            CompoundNBT properties = nbt.getCompound("properties");
+            CompoundTag properties = nbt.getCompound("properties");
             providedProperties.forEach(e -> e.deserializeNBT(properties.getCompound(e.getName())));
         }
     }

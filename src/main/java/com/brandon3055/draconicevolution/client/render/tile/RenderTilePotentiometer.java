@@ -11,20 +11,21 @@ import codechicken.lib.vec.uv.UV;
 import codechicken.lib.vec.uv.UVTransformation;
 import com.brandon3055.draconicevolution.blocks.Potentiometer;
 import com.brandon3055.draconicevolution.blocks.tileentity.TilePotentiometer;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 
-public class RenderTilePotentiometer extends TileEntityRenderer<TilePotentiometer> {
+public class RenderTilePotentiometer implements BlockEntityRenderer<TilePotentiometer> {
 
     private static CCModel model;
 
 
-    public RenderTilePotentiometer(TileEntityRendererDispatcher rendererDispatcherIn) {
-        super(rendererDispatcherIn);
+    public RenderTilePotentiometer(BlockEntityRendererProvider.Context context) {
+
         double pxl = 1D / 16D;
         double ls = pxl * 2.5;      //Left Side
         double rs = pxl * 1.5;      //Right Side
@@ -67,7 +68,7 @@ public class RenderTilePotentiometer extends TileEntityRenderer<TilePotentiomete
     }
 
     @Override
-    public void render(TilePotentiometer te, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer buffer, int combinedLightIn, int combinedOverlayIn) {
+    public void render(TilePotentiometer te, float partialTicks, PoseStack matrixStackIn, MultiBufferSource buffer, int combinedLightIn, int combinedOverlayIn) {
         TextureAtlasSprite stoneTex = TextureUtils.getBlockTexture("oak_planks");
         UVTransformation iconTransform = new IconTransformation(stoneTex);
         CCRenderState state = CCRenderState.instance();

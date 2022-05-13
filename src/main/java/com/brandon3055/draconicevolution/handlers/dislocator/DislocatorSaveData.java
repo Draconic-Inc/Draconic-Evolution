@@ -1,13 +1,13 @@
 package com.brandon3055.draconicevolution.handlers.dislocator;
 
 import com.brandon3055.draconicevolution.items.tools.BoundDislocator;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraft.world.storage.WorldSavedData;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.saveddata.SavedData;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -17,14 +17,12 @@ import java.util.UUID;
 /**
  * Created by brandon3055 on 28/8/21
  */
-public class DislocatorSaveData extends WorldSavedData {
-    private static final String SAVE_DATA_NAME = "draconic_dislocator_data";
+public class DislocatorSaveData extends SavedData {
+    private static final String FILE_NAME = "draconic_dislocator_data";
 
     private Map<UUID, Map<UUID, DislocatorTarget>> linkTargetMap = new HashMap<>();
 
-    public DislocatorSaveData(String name) {
-        super(name);
-    }
+    public DislocatorSaveData() {}
 
     /**
      * @param world A server world required to access the save data manager.
@@ -32,7 +30,7 @@ public class DislocatorSaveData extends WorldSavedData {
      * @return The target associated with the other end of this link if it can be found.
      */
     @Nullable
-    public static DislocatorTarget getLinkTarget(World world, ItemStack stack) {
+    public static DislocatorTarget getLinkTarget(Level world, ItemStack stack) {
         if (BoundDislocator.isValid(stack)) {
             DislocatorSaveData saveData = getInstance(world);
             if (saveData != null) {
@@ -57,7 +55,7 @@ public class DislocatorSaveData extends WorldSavedData {
      * @param stack The dislocator stack whose position is being updated.
      * @param target The new location of this dislocator.
      */
-    public static void updateLinkTarget(World world, ItemStack stack, DislocatorTarget target) {
+    public static void updateLinkTarget(Level world, ItemStack stack, DislocatorTarget target) {
         if (BoundDislocator.isValid(stack)) {
             DislocatorSaveData saveData = getInstance(world);
             if (saveData != null) {
@@ -70,46 +68,46 @@ public class DislocatorSaveData extends WorldSavedData {
     }
 
     @Nullable
-    public static DislocatorSaveData getInstance(World world) {
-        if (world instanceof ServerWorld && world.getServer() != null) {
-            ServerWorld level = world.getServer().getLevel(World.OVERWORLD);
+    public static DislocatorSaveData getInstance(Level world) {
+        if (world instanceof ServerLevel && world.getServer() != null) {
+            ServerLevel level = world.getServer().getLevel(Level.OVERWORLD);
             if (level != null) {
-                return level.getDataStorage().computeIfAbsent(() -> new DislocatorSaveData(SAVE_DATA_NAME), SAVE_DATA_NAME);
+                return level.getDataStorage().computeIfAbsent(DislocatorSaveData::load, DislocatorSaveData::new, FILE_NAME);
             }
         }
         return null;
     }
 
-    @Override
-    public void load(CompoundNBT nbt) {
-        linkTargetMap.clear();
-        ListNBT linkList = nbt.getList("link_map", 10);
-        for (INBT lnbt : linkList) {
-            CompoundNBT linkNBT = (CompoundNBT) lnbt;
+    public static DislocatorSaveData load(CompoundTag nbt) {
+        DislocatorSaveData data = new DislocatorSaveData();
+        ListTag linkList = nbt.getList("link_map", 10);
+        for (Tag lnbt : linkList) {
+            CompoundTag linkNBT = (CompoundTag) lnbt;
             UUID linkID = linkNBT.getUUID("link_id");
-            ListNBT targetList = linkNBT.getList("targets", 10);
-            Map<UUID, DislocatorTarget> targetMap = linkTargetMap.computeIfAbsent(linkID, uuid -> new HashMap<>());
-            for (INBT tnbt : targetList) {
-                CompoundNBT targetNBT = (CompoundNBT) tnbt;
+            ListTag targetList = linkNBT.getList("targets", 10);
+            Map<UUID, DislocatorTarget> targetMap = data.linkTargetMap.computeIfAbsent(linkID, uuid -> new HashMap<>());
+            for (Tag tnbt : targetList) {
+                CompoundTag targetNBT = (CompoundTag) tnbt;
                 UUID targetID = targetNBT.getUUID("target_id");
                 DislocatorTarget target = DislocatorTarget.load(targetNBT);
                 targetMap.put(targetID, target);
             }
         }
+        return data;
     }
 
     @Override
-    public CompoundNBT save(CompoundNBT nbt) {
-        ListNBT linkList = new ListNBT();
+    public CompoundTag save(CompoundTag nbt) {
+        ListTag linkList = new ListTag();
         for (UUID linkID : linkTargetMap.keySet()) {
             Map<UUID, DislocatorTarget> targetMap = linkTargetMap.get(linkID);
-            CompoundNBT linkNBT = new CompoundNBT();
+            CompoundTag linkNBT = new CompoundTag();
             linkNBT.putUUID("link_id", linkID);
 
-            ListNBT targetList = new ListNBT();
+            ListTag targetList = new ListTag();
             for (UUID targetID : targetMap.keySet()) {
                 DislocatorTarget target = targetMap.get(targetID);
-                CompoundNBT targetNBT = new CompoundNBT();
+                CompoundTag targetNBT = new CompoundTag();
                 targetNBT.putUUID("target_id", targetID);
                 target.save(targetNBT);
                 targetList.add(targetNBT);

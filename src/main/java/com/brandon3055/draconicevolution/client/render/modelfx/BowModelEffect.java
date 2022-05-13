@@ -1,35 +1,33 @@
 package com.brandon3055.draconicevolution.client.render.modelfx;
 
-import codechicken.lib.util.SneakyUtils;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.utils.MathUtils;
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.client.renderer.RenderState;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.vertex.VertexFormat;
+import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * Created by brandon3055 on 28/2/21
  */
 public class BowModelEffect extends ModelEffect {
-    private RenderType renderType = RenderType.create("modelEffectType", DefaultVertexFormats.POSITION_COLOR_TEX, GL11.GL_QUADS, 256, RenderType.State.builder()
-            .setTextureState(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/particle/white_orb.png"), false, false))
-            .setTransparencyState(RenderState.LIGHTNING_TRANSPARENCY)
-            .setAlphaState(RenderState.NO_ALPHA)
-            .setCullState(RenderState.NO_CULL)
-            .setWriteMaskState(RenderState.COLOR_WRITE)
-            .setTexturingState(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
-            .createCompositeState(false)
+    private RenderType renderType = RenderType.create("modelEffectType", DefaultVertexFormat.POSITION_COLOR_TEX, VertexFormat.Mode.QUADS, 256, RenderType.CompositeState.builder()
+                    .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(DraconicEvolution.MODID, "textures/particle/white_orb.png"), false, false))
+                    .setTransparencyState(RenderStateShard.LIGHTNING_TRANSPARENCY)
+//            .setAlphaState(RenderStateShard.NO_ALPHA)
+                    .setCullState(RenderStateShard.NO_CULL)
+                    .setWriteMaskState(RenderStateShard.COLOR_WRITE)
+//            .setTexturingState(new RenderStateShard.TexturingStateShard("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
+                    .createCompositeState(false)
     );
 
-    private RenderType renderSolidType = RenderType.create("modelEffectType4", DefaultVertexFormats.POSITION_COLOR_LIGHTMAP, GL11.GL_TRIANGLE_FAN, 256, RenderType.State.builder()
-            .setCullState(RenderState.NO_CULL)
-            .setTexturingState(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
-            .createCompositeState(false)
+    private RenderType renderSolidType = RenderType.create("modelEffectType4", DefaultVertexFormat.POSITION_COLOR_LIGHTMAP, VertexFormat.Mode.TRIANGLE_FAN, 256, RenderType.CompositeState.builder()
+                    .setCullState(RenderStateShard.NO_CULL)
+//            .setTexturingState(new RenderStateShard.TexturingStateShard("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
+                    .createCompositeState(false)
     );
 
     public float animTime = 0;
@@ -43,7 +41,7 @@ public class BowModelEffect extends ModelEffect {
     }
 
     @Override
-    protected void doRender(IVertexBuilder builder, float partialTicks, TechLevel techLevel) {
+    protected void doRender(VertexConsumer builder, float partialTicks, TechLevel techLevel) {
         int pCount = 50;
 //        float time = TimeKeeper.getClientTick() + partialTicks;
         float velocity = 0.05F;

@@ -5,12 +5,12 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.entity.guardian.DraconicGuardianEntity;
 import com.brandon3055.draconicevolution.entity.guardian.GuardianFightManager;
 import com.brandon3055.draconicevolution.entity.guardian.GuardianProjectileEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nullable;
@@ -21,8 +21,8 @@ public class BombardPlayerPhase extends Phase {
     private int timeSinceStart;
     private float damageTaken;
     private boolean bombarding = false;
-    private Vector3d targetLocation;
-    private PlayerEntity targetPlayer;
+    private Vec3 targetLocation;
+    private Player targetPlayer;
     private int minAttackRange = 20;
     private int maxAttackRange = 90;
 
@@ -44,7 +44,7 @@ public class BombardPlayerPhase extends Phase {
             if (!bombarding) {
                 double tRelX = targetLocation.x - guardian.getX();
                 double tRelZ = targetLocation.z - guardian.getZ();
-                double relTargetAngle = MathHelper.clamp(MathHelper.wrapDegrees(180.0D - MathHelper.atan2(tRelX, tRelZ) * (double) (180F / (float) Math.PI) - (double) guardian.yRot), -50.0D, 50.0D);
+                double relTargetAngle = Mth.clamp(Mth.wrapDegrees(180.0D - Mth.atan2(tRelX, tRelZ) * (double) (180F / (float) Math.PI) - (double) guardian.getYRot()), -50.0D, 50.0D);
                 bombarding = Math.abs(relTargetAngle) < 1;
                 if (bombarding) {
                     debug("Bombs Away!");
@@ -57,17 +57,17 @@ public class BombardPlayerPhase extends Phase {
                 guardian.getPhaseManager().setPhase(PhaseType.START).prevAttackFailed();
                 debug("Ending bombardment, To close");
             } else if (bombarding && distance <= maxAttackRange && timeSinceStart % 2 == 0) {
-                Vector3d vector3d2 = guardian.getViewVector(1.0F);
+                Vec3 vector3d2 = guardian.getViewVector(1.0F);
                 double headX = guardian.dragonPartHead.getX() - vector3d2.x;
                 double headY = guardian.dragonPartHead.getY(0.5D) + 0.5D;
                 double headZ = guardian.dragonPartHead.getZ() - vector3d2.z;
-                Vector3d targetPos = targetPlayer.position().add(targetPlayer.getDeltaMovement().multiply(5, 5, 5));
+                Vec3 targetPos = targetPlayer.position().add(targetPlayer.getDeltaMovement().multiply(5, 5, 5));
                 targetPos = targetPos.add(guardian.getRandom().nextGaussian() * 10, guardian.getRandom().nextGaussian() * 10, guardian.getRandom().nextGaussian() * 10);
                 double targetRelX = targetPos.x - headX;
                 double targetRelY = targetPos.y - headY;
                 double targetRelZ = targetPos.z - headZ;
                 if (!guardian.isSilent()) {
-                    BCoreNetwork.sendSound(guardian.level, guardian, SoundEvents.ENDER_DRAGON_SHOOT, SoundCategory.HOSTILE, 32.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F, false);
+                    BCoreNetwork.sendSound(guardian.level, guardian, SoundEvents.ENDER_DRAGON_SHOOT, SoundSource.HOSTILE, 32.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F, false);
                 }
                 GuardianProjectileEntity projectile = new GuardianProjectileEntity(this.guardian.level, this.guardian, targetRelX, targetRelY, targetRelZ, targetPos, 25, GuardianFightManager.PROJECTILE_POWER);
                 projectile.moveTo(headX, headY, headZ, 0.0F, 0.0F);
@@ -94,7 +94,7 @@ public class BombardPlayerPhase extends Phase {
     }
 
     @Override
-    public void targetPlayer(PlayerEntity player) {
+    public void targetPlayer(Player player) {
         targetPlayer = player;
     }
 
@@ -103,7 +103,7 @@ public class BombardPlayerPhase extends Phase {
     }
 
     @Nullable
-    public Vector3d getTargetLocation() {
+    public Vec3 getTargetLocation() {
         return targetLocation;
     }
 
@@ -117,7 +117,7 @@ public class BombardPlayerPhase extends Phase {
         if (targetPlayer != null) {
             double distance = targetPlayer.distanceTo(guardian);
             double sweetSpot = minAttackRange + ((maxAttackRange - minAttackRange) / 2D);
-            speed = MathHelper.clamp((distance - sweetSpot) / 10, 0.5, 3);
+            speed = Mth.clamp((distance - sweetSpot) / 10, 0.5, 3);
         }
 
         return bombarding ? speed : 0.5;

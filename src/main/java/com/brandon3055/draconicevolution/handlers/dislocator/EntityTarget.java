@@ -1,9 +1,9 @@
 package com.brandon3055.draconicevolution.handlers.dislocator;
 
 import com.brandon3055.brandonscore.utils.TargetPos;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 
 import java.util.UUID;
 
@@ -13,7 +13,7 @@ import java.util.UUID;
 @Deprecated //May implement this later
 public class EntityTarget extends DislocatorTarget {
 
-    public EntityTarget(RegistryKey<World> world) {
+    public EntityTarget(ResourceKey<Level> world) {
         super(world);
     }
 

@@ -1,21 +1,21 @@
 package com.brandon3055.draconicevolution.world;
 
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.play.server.SUpdateBossInfoPacket;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.server.ServerBossInfo;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundBossEventPacket;
+import net.minecraft.server.level.ServerBossEvent;
+import net.minecraft.server.level.ServerPlayer;
 
 /**
  * Created by brandon3055 on 24/7/21
  */
-public class ShieldedServerBossInfo extends ServerBossInfo {
+public class ShieldedServerBossInfo extends ServerBossEvent {
 
     private float shieldPower = 0;
     private int crystals = 0;
     private boolean immune = false;
 
-    public ShieldedServerBossInfo(ITextComponent name, Color color, Overlay overlay) {
+    public ShieldedServerBossInfo(Component name, BossBarColor color, BossBarOverlay overlay) {
         super(name, color, overlay);
     }
 
@@ -23,7 +23,7 @@ public class ShieldedServerBossInfo extends ServerBossInfo {
         if (this.shieldPower != shieldPower) {
             this.shieldPower = shieldPower;
             if (isVisible()) {
-                for (ServerPlayerEntity player : players) {
+                for (ServerPlayer player : players) {
                     DraconicNetwork.sendBossShieldPacket(player, getId(), 2, e -> e.writeFloat(this.shieldPower));
                 }
             }
@@ -34,7 +34,7 @@ public class ShieldedServerBossInfo extends ServerBossInfo {
         if (this.crystals != crystals) {
             this.crystals = crystals;
             if (isVisible()) {
-                for (ServerPlayerEntity player : players) {
+                for (ServerPlayer player : players) {
                     DraconicNetwork.sendBossShieldPacket(player, getId(), 3, e -> e.writeByte(this.crystals));
                 }
             }
@@ -45,7 +45,7 @@ public class ShieldedServerBossInfo extends ServerBossInfo {
         if (this.immune != immune) {
             this.immune = immune;
             if (isVisible()) {
-                for (ServerPlayerEntity player : players) {
+                for (ServerPlayer player : players) {
                     DraconicNetwork.sendBossShieldPacket(player, getId(), 4, e -> e.writeBoolean(this.immune));
                 }
             }
@@ -57,7 +57,7 @@ public class ShieldedServerBossInfo extends ServerBossInfo {
         boolean prev = isVisible();
         super.setVisible(visible);
         if (prev != visible) {
-            for (ServerPlayerEntity player : players) {
+            for (ServerPlayer player : players) {
                 if (visible) {
                     DraconicNetwork.sendBossShieldPacket(player, getId(), 0, e -> e.writeFloat(shieldPower).writeByte(crystals).writeBoolean(immune));
                 }else {
@@ -68,17 +68,17 @@ public class ShieldedServerBossInfo extends ServerBossInfo {
     }
 
     @Override
-    public void addPlayer(ServerPlayerEntity player) {
+    public void addPlayer(ServerPlayer player) {
         if (players.add(player) && isVisible()) {
-            player.connection.send(new SUpdateBossInfoPacket(SUpdateBossInfoPacket.Operation.ADD, this));
+            player.connection.send(ClientboundBossEventPacket.createAddPacket(this));
             DraconicNetwork.sendBossShieldPacket(player, getId(), 0, e -> e.writeFloat(shieldPower).writeByte(crystals).writeBoolean(immune));
         }
     }
 
     @Override
-    public void removePlayer(ServerPlayerEntity player) {
+    public void removePlayer(ServerPlayer player) {
         if (players.remove(player) && isVisible()) {
-            player.connection.send(new SUpdateBossInfoPacket(SUpdateBossInfoPacket.Operation.REMOVE, this));
+            player.connection.send(ClientboundBossEventPacket.createRemovePacket(this.getId()));
             DraconicNetwork.sendBossShieldPacket(player, getId(), 1, null);
         }
     }

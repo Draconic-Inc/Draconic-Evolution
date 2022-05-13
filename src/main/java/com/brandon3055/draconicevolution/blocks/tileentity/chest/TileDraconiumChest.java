@@ -16,28 +16,28 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.DraconiumChest;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.inventory.ContainerDraconiumChest;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.network.NetworkHooks;
 
 /**
  * Created by brandon3055 on 28/09/2016.
  */
-public class TileDraconiumChest extends TileBCore implements ITickableTileEntity, IRSSwitchable, INamedContainerProvider, IInteractTile {
+public class TileDraconiumChest extends TileBCore implements IRSSwitchable, MenuProvider, IInteractTile {
 
     public final ManagedInt colour = register(new ManagedInt("colour", 0x640096, DataFlags.SAVE_BOTH_SYNC_TILE, DataFlags.CLIENT_CONTROL));
     public final ManagedShort numPlayersUsing = register(new ManagedShort("num_players_using", DataFlags.SYNC_TILE));
@@ -56,8 +56,8 @@ public class TileDraconiumChest extends TileBCore implements ITickableTileEntity
     @Deprecated //TODO remove in a few versions
     public TileItemStackHandler old_item_handler = new TileItemStackHandler(267);
 
-    public TileDraconiumChest() {
-        super(DEContent.tile_draconium_chest);
+    public TileDraconiumChest(BlockPos pos, BlockState state) {
+        super(DEContent.tile_draconium_chest, pos, state);
         capManager.setManaged("energy", CapabilityOP.OP, opStorage).saveBoth().syncContainer();
         capManager.setManaged("main_inv", CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, mainInventory).saveBoth();
         capManager.setInternalManaged("crafting_inv", CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, craftingItems).saveBoth();
@@ -103,33 +103,33 @@ public class TileDraconiumChest extends TileBCore implements ITickableTileEntity
         prevLidAngle = lidAngle;
         lidAngle = (float) MathHelper.approachLinear(lidAngle, numPlayersUsing.get() > 0 ? 1 : 0, 0.1);
         if (prevLidAngle >= 0.5 && lidAngle < 0.5) {
-            level.playSound(null, getBlockPos(), SoundEvents.CHEST_CLOSE, SoundCategory.BLOCKS, 0.5F, level.random.nextFloat() * 0.1F + 0.9F);
+            level.playSound(null, getBlockPos(), SoundEvents.CHEST_CLOSE, SoundSource.BLOCKS, 0.5F, level.random.nextFloat() * 0.1F + 0.9F);
         } else if (prevLidAngle == 0 && lidAngle > 0) {
-            level.playSound(null, getBlockPos(), SoundEvents.CHEST_OPEN, SoundCategory.BLOCKS, 0.5F, level.random.nextFloat() * 0.1F + 0.9F);
+            level.playSound(null, getBlockPos(), SoundEvents.CHEST_OPEN, SoundSource.BLOCKS, 0.5F, level.random.nextFloat() * 0.1F + 0.9F);
         }
     }
 
     @Override
-    public ActionResultType onBlockUse(BlockState state, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
-        if (player instanceof ServerPlayerEntity) {
-            NetworkHooks.openGui((ServerPlayerEntity) player, this, worldPosition);
+    public InteractionResult onBlockUse(BlockState state, Player player, InteractionHand hand, BlockHitResult hit) {
+        if (player instanceof ServerPlayer) {
+            NetworkHooks.openGui((ServerPlayer) player, this, worldPosition);
         }
-        return ActionResultType.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
 
     @Override
-    public Container createMenu(int currentWindowIndex, PlayerInventory playerInventory, PlayerEntity player) {
+    public AbstractContainerMenu createMenu(int currentWindowIndex, Inventory playerInventory, Player player) {
         return new ContainerDraconiumChest(DEContent.container_draconium_chest, currentWindowIndex, playerInventory, this);
     }
 
     @Override
-    public void writeExtraTileAndStack(CompoundNBT compound) {
+    public void writeExtraTileAndStack(CompoundTag compound) {
         smeltingLogic.saveAdditionalNBT(compound);
         compound.putBoolean("inv_migrated", true);
     }
 
     @Override
-    public void readExtraTileAndStack(CompoundNBT compound) {
+    public void readExtraTileAndStack(CompoundTag compound) {
         smeltingLogic.loadAdditionalNBT(compound);
         DraconicEvolution.LOGGER.info("readExtraTileAndStack");
         if (!compound.contains("inv_migrated")) {
@@ -142,7 +142,7 @@ public class TileDraconiumChest extends TileBCore implements ITickableTileEntity
                 }
                 if (i <= 259) {
                     mainInventory.setStackInSlot(i, stack);
-                }else if (i <= 264) {
+                } else if (i <= 264) {
                     furnaceItems.setStackInSlot(i - 260, stack);
                 } else if (i == 265) {
                     capacitorInv.setStackInSlot(0, stack);
@@ -154,10 +154,10 @@ public class TileDraconiumChest extends TileBCore implements ITickableTileEntity
 
             if (compound.contains("CraftingItems", 9)) {
                 DraconicEvolution.LOGGER.info("Migrating Crafting Items");
-                ListNBT nbttaglist = compound.getList("CraftingItems", 10);
+                ListTag nbttaglist = compound.getList("CraftingItems", 10);
                 DraconicEvolution.LOGGER.info(nbttaglist);
                 for (int i = 1; i < nbttaglist.size(); ++i) {
-                    CompoundNBT nbttagcompound = nbttaglist.getCompound(i);
+                    CompoundTag nbttagcompound = nbttaglist.getCompound(i);
                     DraconicEvolution.LOGGER.info(nbttagcompound);
 //                    int j = nbttagcompound.getByte("Slot") & 255;
                     if (i < craftingItems.getSlots()) {

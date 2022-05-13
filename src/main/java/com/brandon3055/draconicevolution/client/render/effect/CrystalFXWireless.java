@@ -2,29 +2,28 @@ package com.brandon3055.draconicevolution.client.render.effect;
 
 import codechicken.lib.math.MathHelper;
 import codechicken.lib.vec.Vector3;
+import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalWirelessIO;
 import com.brandon3055.draconicevolution.client.DETextures;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.block.BlockState;
+import com.mojang.blaze3d.vertex.*;
+import com.mojang.math.Vector3f;
+import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.IParticleRenderType;
-import net.minecraft.client.renderer.ActiveRenderInfo;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.particle.ParticleRenderType;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
@@ -37,21 +36,21 @@ import java.util.List;
 public class CrystalFXWireless extends CrystalFXBase<TileCrystalWirelessIO> {
 
     private final BlockPos linkTarget;
-    private final AxisAlignedBB targetBB;
+    private final AABB targetBB;
     private float powerLevel = 0;
     private List<PTracker> trackers = new ArrayList<>();
 
-    public CrystalFXWireless(ClientWorld worldIn, TileCrystalWirelessIO tile, BlockPos linkTarget) {
+    public CrystalFXWireless(ClientLevel worldIn, TileCrystalWirelessIO tile, BlockPos linkTarget) {
         super(worldIn, tile);
         this.age = worldIn.random.nextInt(1024);
         this.setPosition(tile.getBeamLinkPos(linkTarget));
         this.linkTarget = linkTarget;
         BlockState state = worldIn.getBlockState(linkTarget);
         VoxelShape shape = state.getShape(worldIn, linkTarget);
-        if (shape.isEmpty()) shape = VoxelShapes.block();
+        if (shape.isEmpty()) shape = Shapes.block();
         targetBB = shape.bounds();
         targetBB.deflate(0.05);
-        setBoundingBox(new AxisAlignedBB(x, y, z, this.linkTarget.getX(), this.linkTarget.getY(), this.linkTarget.getZ()));
+        setBoundingBox(new AABB(x, y, z, this.linkTarget.getX(), this.linkTarget.getY(), this.linkTarget.getZ()));
     }
 
     @Override
@@ -85,7 +84,7 @@ public class CrystalFXWireless extends CrystalFXBase<TileCrystalWirelessIO> {
     }
 
     @Override
-    public void render(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks) {
+    public void render(VertexConsumer buffer, Camera renderInfo, float partialTicks) {
         int texIndex = (ClientEventHandler.elapsedTicks) % DETextures.ENERGY_PARTICLE.length;
         TextureAtlasSprite sprite = DETextures.ENERGY_PARTICLE[texIndex];
         if (sprite == null) return;
@@ -97,7 +96,7 @@ public class CrystalFXWireless extends CrystalFXBase<TileCrystalWirelessIO> {
         float scale = 0.08F;
         boolean output = !tile.inputMode.get();
 
-        Vector3d view = renderInfo.getPosition();
+        Vec3 view = renderInfo.getPosition();
         Vector3 source = new Vector3(x - view.x, y - view.y, z - view.z);
         Vector3 target = Vector3.fromBlockPos(linkTarget).subtract(view.x, view.y, view.z);
 
@@ -113,46 +112,46 @@ public class CrystalFXWireless extends CrystalFXBase<TileCrystalWirelessIO> {
             pathVec.add(source);
 
             Vector3f[] renderVector = getRenderVectors(renderInfo, (float) pathVec.x, (float) pathVec.y, (float) pathVec.z, scale);
-            buffer.vertex(renderVector[0].x(), renderVector[0].y(), renderVector[0].z()).uv(maxU, maxV).endVertex();
-            buffer.vertex(renderVector[1].x(), renderVector[1].y(), renderVector[1].z()).uv(maxU, minV).endVertex();
-            buffer.vertex(renderVector[2].x(), renderVector[2].y(), renderVector[2].z()).uv(minU, minV).endVertex();
-            buffer.vertex(renderVector[3].x(), renderVector[3].y(), renderVector[3].z()).uv(minU, maxV).endVertex();
+            buffer.vertex(renderVector[0].x(), renderVector[0].y(), renderVector[0].z()).color(0, 1F, 1F, 1F).uv(maxU, maxV).uv(240, 240).endVertex();
+            buffer.vertex(renderVector[1].x(), renderVector[1].y(), renderVector[1].z()).color(0, 1F, 1F, 1F).uv(maxU, minV).uv(240, 240).endVertex();
+            buffer.vertex(renderVector[2].x(), renderVector[2].y(), renderVector[2].z()).color(0, 1F, 1F, 1F).uv(minU, minV).uv(240, 240).endVertex();
+            buffer.vertex(renderVector[3].x(), renderVector[3].y(), renderVector[3].z()).color(0, 1F, 1F, 1F).uv(minU, maxV).uv(240, 240).endVertex();
         }
     }
 
     @Override
-    public IParticleRenderType getRenderType() {
+    public ParticleRenderType getRenderType() {
         return tile.getTier() == 0 ? BASIC_HANDLER : tile.getTier() == 1 ? WYVERN_HANDLER : DRACONIC_HANDLER;
     }
 
-    private static final IParticleRenderType BASIC_HANDLER = new FXHandler(DETextures.ENERGY_BEAM_BASIC);
-    private static final IParticleRenderType WYVERN_HANDLER = new FXHandler(DETextures.ENERGY_BEAM_WYVERN);
-    private static final IParticleRenderType DRACONIC_HANDLER = new FXHandler(DETextures.ENERGY_BEAM_DRACONIC);
+    private static final ParticleRenderType BASIC_HANDLER = new FXHandler(DETextures.ENERGY_BEAM_BASIC);
+    private static final ParticleRenderType WYVERN_HANDLER = new FXHandler(DETextures.ENERGY_BEAM_WYVERN);
+    private static final ParticleRenderType DRACONIC_HANDLER = new FXHandler(DETextures.ENERGY_BEAM_DRACONIC);
 
-    public static class FXHandler implements IParticleRenderType {
-        private String texture;
+    public static class FXHandler implements ParticleRenderType {
+        private ResourceLocation texture;
         private float green;
 
         public FXHandler(String texture) {
-            this.texture = texture;
+            this.texture = new ResourceLocation(DraconicEvolution.MODID, texture);
         }
 
         @Override
         public void begin(BufferBuilder builder, TextureManager textureManager) {
-            RenderSystem.color4f(0.0F, 1.0F, 1.0F, 1.0F);
-            textureManager.bind(AtlasTexture.LOCATION_BLOCKS);
+//            RenderSystem.color4f(0.0F, 1.0F, 1.0F, 1.0F);
+            textureManager.bindForSetup(TextureAtlas.LOCATION_BLOCKS);
 
             RenderSystem.depthMask(false);
-            RenderSystem.alphaFunc(516, 0.003921569F);
+//            RenderSystem.alphaFunc(516, 0.003921569F);
             RenderSystem.enableBlend();
             RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
-            RenderSystem.glMultiTexCoord2f(0x84c2, 240.0F, 240.0F); //Lightmap
+//            RenderSystem.glMultiTexCoord2f(0x84c2, 240.0F, 240.0F); //Lightmap
 
-            builder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+            builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP);
         }
 
         @Override
-        public void end(Tessellator tessellator) {
+        public void end(Tesselator tessellator) {
             tessellator.end();
             RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
         }

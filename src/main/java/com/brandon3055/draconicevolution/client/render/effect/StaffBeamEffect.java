@@ -6,22 +6,21 @@ import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.utils.BCProfiler;
 import com.brandon3055.brandonscore.utils.MathUtils;
 import com.brandon3055.brandonscore.utils.Utils;
+import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.DETextures;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.client.particle.IParticleRenderType;
+import com.mojang.blaze3d.vertex.*;
+import net.minecraft.client.Camera;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.renderer.ActiveRenderInfo;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.phys.Vec3;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -32,7 +31,7 @@ public class StaffBeamEffect extends Particle {
     private Vector3 origin = null;
     private Vector3 targetPos;
 
-    public StaffBeamEffect(ClientWorld world, LivingEntity shooter, Vector3 targetPos) {
+    public StaffBeamEffect(ClientLevel world, LivingEntity shooter, Vector3 targetPos) {
         super(world, shooter.getX(), shooter.getY(), shooter.getZ());
         this.shooter = shooter;
         this.targetPos = targetPos;
@@ -45,7 +44,7 @@ public class StaffBeamEffect extends Particle {
     }
 
     @Override
-    public IParticleRenderType getRenderType() {
+    public ParticleRenderType getRenderType() {
         return renderType;
     }
 
@@ -57,21 +56,21 @@ public class StaffBeamEffect extends Particle {
     }
 
     @Override
-    public void render(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks) {
+    public void render(VertexConsumer buffer, Camera renderInfo, float partialTicks) {
 //        if (origin == null) {
             boolean firstPerson = shooter == renderInfo.getEntity() && !renderInfo.isDetached();
             Vector3 shooterPos = MathUtils.interpolateVec3(new Vector3(shooter.xOld, shooter.yOld, shooter.zOld), new Vector3(shooter.position()), partialTicks);
             if (firstPerson) {
                 origin = shooterPos.add(0, shooter.getEyeHeight() - 0.1125, 0);
                 double rot = (shooter.getViewYRot(partialTicks) + 120) * MathHelper.torad;
-                double offset = 0.4 * Math.sin((shooter.xRot + 90) * MathHelper.torad);
-                origin.add(Math.cos(rot) * offset, Math.cos((shooter.xRot + 90) * MathHelper.torad) * 0.4, Math.sin(rot) * offset);
+                double offset = 0.4 * Math.sin((shooter.getXRot() + 90) * MathHelper.torad);
+                origin.add(Math.cos(rot) * offset, Math.cos((shooter.getXRot() + 90) * MathHelper.torad) * 0.4, Math.sin(rot) * offset);
             } else {
 //                origin = shooterPos.add(0, shooter.getBbHeight() / 1.8, 0);
                 origin = shooterPos.add(0, shooter.getEyeHeight() - 0.65, 0);
                 double rot = (shooter.getViewYRot(partialTicks) + 104) * MathHelper.torad;
-                double offset = 0.9 * Math.sin((shooter.xRot + 90) * MathHelper.torad);
-                origin.add(Math.cos(rot) * offset, Math.cos((shooter.xRot + 90) * MathHelper.torad) * 0.9, Math.sin(rot) * offset);
+                double offset = 0.9 * Math.sin((shooter.getXRot() + 90) * MathHelper.torad);
+                origin.add(Math.cos(rot) * offset, Math.cos((shooter.getXRot() + 90) * MathHelper.torad) * 0.9, Math.sin(rot) * offset);
             }
 //        }
 
@@ -84,7 +83,7 @@ public class StaffBeamEffect extends Particle {
         Vector3 targetPos = this.targetPos.copy();//MathUtils.interpolateVec3(this.origin, this.targetPos, MathUtils.clampMap(progress, 0, 0.1, 0, 1));
 
 
-        Vector3d viewVec = renderInfo.getPosition();
+        Vec3 viewVec = renderInfo.getPosition();
         Vector3 source = origin.subtract(viewVec);
         Vector3 target = targetPos.subtract(viewVec);
 //        Vector3 source = new Vector3(x - viewVec.x, y - viewVec.y, z - viewVec.z);
@@ -127,7 +126,7 @@ public class StaffBeamEffect extends Particle {
 
     }
 
-    private void bufferQuad(IVertexBuilder buffer, Vector3 p1, Vector3 p2, Vector3 p3, Vector3 p4, float anim, float dist) {
+    private void bufferQuad(VertexConsumer buffer, Vector3 p1, Vector3 p2, Vector3 p3, Vector3 p4, float anim, float dist) {
         BCProfiler.RENDER.start("buffer_quad");
         buffer.vertex(p1.x, p1.y, p1.z).uv(0.5F, anim).endVertex();
         buffer.vertex(p2.x, p2.y, p2.z).uv(0.5F, dist + anim).endVertex();
@@ -136,22 +135,23 @@ public class StaffBeamEffect extends Particle {
         BCProfiler.RENDER.stop();
     }
 
-    private static IParticleRenderType renderType = new IParticleRenderType() {
+    private static ParticleRenderType renderType = new ParticleRenderType() {
+        private static ResourceLocation texture = new ResourceLocation(DraconicEvolution.MODID, DETextures.ENERGY_BEAM_DRACONIC);
         @Override
         public void begin(BufferBuilder builder, TextureManager textureManager) {
-            ResourceHelperDE.bindTexture(DETextures.ENERGY_BEAM_DRACONIC);
-            RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+            textureManager.bindForSetup(texture);
+//            RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
             RenderSystem.disableCull();
             RenderSystem.depthMask(false);
-            RenderSystem.alphaFunc(516, 0.003921569F);
+//            RenderSystem.alphaFunc(516, 0.003921569F);
             RenderSystem.enableBlend();
             RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
-            RenderSystem.glMultiTexCoord2f(0x84c2, 240.0F, 240.0F); //Lightmap
-            builder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+//            RenderSystem.glMultiTexCoord2f(0x84c2, 240.0F, 240.0F); //Lightmap
+            builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
         }
 
         @Override
-        public void end(Tessellator tessellator) {
+        public void end(Tesselator tessellator) {
             tessellator.end();
         }
     };

@@ -4,9 +4,9 @@ import com.brandon3055.brandonscore.api.power.IOPStorage;
 import com.brandon3055.brandonscore.api.power.IOPStorageModifiable;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.items.equipment.IModularItem;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nullable;
@@ -17,10 +17,10 @@ import javax.annotation.Nullable;
 public class StackModuleContext extends ModuleContext {
     private final ItemStack stack;
     private final LivingEntity entity;
-    private final EquipmentSlotType slot;
+    private final EquipmentSlot slot;
     private boolean inEquipModSlot = false;
 
-    public StackModuleContext(/*ModuleHost moduleHost, */ItemStack stack, LivingEntity entity, EquipmentSlotType slot) {
+    public StackModuleContext(/*ModuleHost moduleHost, */ItemStack stack, LivingEntity entity, EquipmentSlot slot) {
         super(/*moduleHost*/);
         this.stack = stack;
         this.entity = entity;
@@ -69,7 +69,7 @@ public class StackModuleContext extends ModuleContext {
     }
 
     @Nullable
-    public EquipmentSlotType getSlot() {
+    public EquipmentSlot getSlot() {
         return slot;
     }
 

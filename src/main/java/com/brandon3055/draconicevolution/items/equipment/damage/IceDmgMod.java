@@ -2,12 +2,12 @@ package com.brandon3055.draconicevolution.items.equipment.damage;
 
 import com.brandon3055.draconicevolution.api.modules.lib.IDamageModifier;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
+import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
 import java.util.Map;
@@ -23,7 +23,7 @@ public class IceDmgMod implements IDamageModifier {
     }
 
     @Override
-    public void addInformation(Map<ITextComponent, ITextComponent> map, @Nullable ModuleContext context, boolean stack) {
+    public void addInformation(Map<Component, Component> map, @Nullable ModuleContext context, boolean stack) {
 
     }
 
@@ -43,7 +43,7 @@ public class IceDmgMod implements IDamageModifier {
     }
 
     @Override
-    public void doDamageAndEffects(World world, Vector3d pos, @Nullable RayTraceResult traceResult, LivingEntity source, float baseDamage, float secondaryCharge, boolean isProjectile) {
+    public void doDamageAndEffects(Level world, Vec3 pos, @Nullable HitResult traceResult, LivingEntity source, float baseDamage, float secondaryCharge, boolean isProjectile) {
 
     }
 }

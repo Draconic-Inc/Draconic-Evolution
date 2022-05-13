@@ -1,17 +1,17 @@
 package com.brandon3055.draconicevolution.entity;
 
 import com.brandon3055.draconicevolution.init.DEContent;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.DamageSource;
-import net.minecraft.world.World;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 /**
  * Created by Brandon on 21/11/2014.
@@ -19,13 +19,13 @@ import net.minecraft.world.World;
  */
 public class EntityDragonHeart extends Entity {
 
-    private static final DataParameter<Integer> AGE = EntityDataManager.<Integer>defineId(EntityDragonHeart.class, DataSerializers.INT);
+    private static final EntityDataAccessor<Integer> AGE = SynchedEntityData.<Integer>defineId(EntityDragonHeart.class, EntityDataSerializers.INT);
     public float rotation = 0f;
     public float rotationInc = 0;
     public ItemStack renderStack = new ItemStack(DEContent.dragon_heart);
     private boolean burstFired = false;
 
-    public EntityDragonHeart(EntityType<?> entityTypeIn, World worldIn) {
+    public EntityDragonHeart(EntityType<?> entityTypeIn, Level worldIn) {
         super(entityTypeIn, worldIn);
     }
 
@@ -54,17 +54,17 @@ public class EntityDragonHeart extends Entity {
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundNBT compound) {
+    protected void readAdditionalSaveData(CompoundTag compound) {
 
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundNBT compound) {
+    protected void addAdditionalSaveData(CompoundTag compound) {
 
     }
 
     @Override
-    public IPacket<?> getAddEntityPacket() {
+    public Packet<?> getAddEntityPacket() {
         return null;
     }
 
@@ -141,7 +141,7 @@ public class EntityDragonHeart extends Entity {
 //    }
 
     @Override
-    public void playerTouch(PlayerEntity player) {
+    public void playerTouch(Player player) {
         if (getAge() < 1200) {
             //setAge(1200);
         }

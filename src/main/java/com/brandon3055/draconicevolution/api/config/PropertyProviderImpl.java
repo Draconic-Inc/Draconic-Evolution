@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.api.config;
 
 import com.brandon3055.draconicevolution.api.capability.PropertyProvider;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
@@ -55,21 +55,21 @@ public class PropertyProviderImpl implements PropertyProvider {
     }
 
     @Override
-    public CompoundNBT serializeNBT() {
-        CompoundNBT nbt = new CompoundNBT();
+    public CompoundTag serializeNBT() {
+        CompoundTag nbt = new CompoundTag();
         nbt.putUUID("provider_id", getProviderID());
-        CompoundNBT properties = new CompoundNBT();
+        CompoundTag properties = new CompoundTag();
         propertyMap.forEach((name, property) -> properties.put(name, property.serializeNBT()));
         nbt.put("properties", properties);
         return nbt;
     }
 
     @Override
-    public void deserializeNBT(CompoundNBT nbt) {
+    public void deserializeNBT(CompoundTag nbt) {
         if (nbt.hasUUID("provider_id")){
             providerID = nbt.getUUID("provider_id");
         }
-        CompoundNBT properties = nbt.getCompound("properties");
+        CompoundTag properties = nbt.getCompound("properties");
         propertyMap.forEach((name, property) -> property.deserializeNBT(properties.getCompound(name)));
     }
 }

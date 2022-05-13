@@ -40,30 +40,33 @@ import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.items.equipment.IModularArmor;
 import com.brandon3055.draconicevolution.lib.ISidedTileHandler;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ScreenManager;
+import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.PlayerModel;
+import net.minecraft.client.model.geom.EntityModelSet;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.ItemRenderer;
-import net.minecraft.client.renderer.entity.LivingRenderer;
-import net.minecraft.client.renderer.entity.PlayerRenderer;
-import net.minecraft.client.renderer.entity.layers.BipedArmorLayer;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.layers.ElytraLayer;
-import net.minecraft.client.renderer.entity.model.BipedModel;
-import net.minecraft.client.renderer.model.ModelResourceLocation;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
+import net.minecraft.client.renderer.entity.player.PlayerRenderer;
+import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.event.ColorHandlerEvent;
+import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.client.registry.RenderingRegistry;
-import net.minecraftforge.fml.common.thread.EffectiveSide;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLDedicatedServerSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.util.thread.EffectiveSide;
 
 public class ClientProxy extends CommonProxy {
 
@@ -77,14 +80,17 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void construct() {
         super.construct();
-        FMLJavaModLoadingContext.get().getModEventBus().addListener((ColorHandlerEvent.Block event) -> moduleSpriteUploader = new ModuleSpriteUploader());
+        IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
+
+        modBus.addListener((ColorHandlerEvent.Block event) -> moduleSpriteUploader = new ModuleSpriteUploader());
         spriteHelper.addIIconRegister(new DETextures());
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(DESprites::initialize);
+        modBus.addListener(DESprites::initialize);
 
         StaffRenderEventHandler.init();
         CustomBossInfoHandler.init();
-        FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(AbstractHudElement.class, this::registerHudElements);
         MinecraftForge.EVENT_BUS.addListener(this::registerShaderReloads);
+        modBus.addGenericListener(AbstractHudElement.class, this::registerHudElements);
+        modBus.addListener(this::registerEntityRenderers);
     }
 
     @Override
@@ -109,31 +115,37 @@ public class ClientProxy extends CommonProxy {
         ResourceUtils.registerReloadListener(new DETextures());
 
         event.enqueueWork(() -> {
+            Minecraft mc = Minecraft.getInstance();
+            EntityModelSet modelSet = mc.getEntityRenderDispatcher().entityModels;
+
             //Because i want this to render on bipedal mobs.
-            for (EntityRenderer<?> e : Minecraft.getInstance().getEntityRenderDispatcher().renderers.values()) {
-                if (e instanceof LivingRenderer && ((LivingRenderer<?, ?>) e).getModel() instanceof BipedModel) {
+            for (EntityRenderer<?> e : mc.getEntityRenderDispatcher().renderers.values()) {
+                if (e instanceof LivingEntityRenderer && ((LivingEntityRenderer<?, ?>) e).getModel() instanceof HumanoidModel) {
                     boolean foundArmor = false;
-                    for (Object layer : ((LivingRenderer<?, ?>) e).layers) {
-                        if (layer instanceof BipedArmorLayer) {
-                            ((LivingRenderer<?, ?>) e).addLayer(new VBOArmorLayer((LivingRenderer<?, ?>) e, (BipedArmorLayer<?, ?, ?>) layer));
+                    for (Object layer : ((LivingEntityRenderer<?, ?>) e).layers) {
+                        if (layer instanceof HumanoidArmorLayer) {
+                            ((LivingEntityRenderer<?, ?>) e).addLayer(new VBOArmorLayer((LivingEntityRenderer<?, ?>) e, (HumanoidArmorLayer<?, ?, ?>) layer));
                             foundArmor = true;
                             break;
                         }
                     }
-                    if (!foundArmor){
-                        ((LivingRenderer<?, ?>) e).addLayer(new VBOArmorLayer((LivingRenderer<?, ?>) e, null));
+                    if (!foundArmor) {
+                        ((LivingEntityRenderer<?, ?>) e).addLayer(new VBOArmorLayer((LivingEntityRenderer<?, ?>) e, modelSet, false));
                     }
                 }
             }
 
-            for (PlayerRenderer renderPlayer : Minecraft.getInstance().getEntityRenderDispatcher().getSkinMap().values()) {
-                renderPlayer.addLayer(new VBOArmorLayer<>(renderPlayer, null));
-                renderPlayer.addLayer(new ElytraLayer(renderPlayer){
-                    @Override
-                    public boolean shouldRender(ItemStack stack, LivingEntity entity) {
-                        return stack.getItem() instanceof IModularArmor && stack.canElytraFly(entity);
-                    }
-                });
+            for (EntityRenderer<? extends Player> renderer : mc.getEntityRenderDispatcher().getSkinMap().values()) {
+                if (renderer instanceof PlayerRenderer) {
+                    PlayerModel<AbstractClientPlayer> model = ((PlayerRenderer) renderer).getModel();
+                    ((PlayerRenderer) renderer).addLayer(new VBOArmorLayer<>((PlayerRenderer) renderer, modelSet, model.slim));
+                    ((PlayerRenderer) renderer).addLayer(new ElytraLayer((PlayerRenderer) renderer, modelSet) {
+                        @Override
+                        public boolean shouldRender(ItemStack stack, LivingEntity entity) {
+                            return stack.getItem() instanceof IModularArmor && stack.canElytraFly(entity);
+                        }
+                    });
+                }
             }
         });
     }
@@ -181,45 +193,45 @@ public class ClientProxy extends CommonProxy {
     }
 
     private void registerGuiFactories() {
-        ScreenManager.register(DEContent.container_generator, GuiGenerator::new);
-        ScreenManager.register(DEContent.container_grinder, GuiGrinder::new);
-        ScreenManager.register(DEContent.container_draconium_chest, GuiDraconiumChest::new);
-        ScreenManager.register(DEContent.container_energy_core, GuiEnergyCore::new);
-        ScreenManager.register(DEContent.container_modular_item, GuiModularItem::new);
-        ScreenManager.register(DEContent.container_configurable_item, GuiConfigurableItem::new);
-        ScreenManager.register(DEContent.container_reactor, GuiReactor::new);
+        MenuScreens.register(DEContent.container_generator, GuiGenerator::new);
+        MenuScreens.register(DEContent.container_grinder, GuiGrinder::new);
+        MenuScreens.register(DEContent.container_draconium_chest, GuiDraconiumChest::new);
+        MenuScreens.register(DEContent.container_energy_core, GuiEnergyCore::new);
+        MenuScreens.register(DEContent.container_modular_item, GuiModularItem::new);
+        MenuScreens.register(DEContent.container_configurable_item, GuiConfigurableItem::new);
+        MenuScreens.register(DEContent.container_reactor, GuiReactor::new);
 
 //        ScreenManager.registerFactory(DEContent.container_celestial_manipulator, GuiCelestialManipulator::new);
 //        ScreenManager.registerFactory(DEContent.container_dissenchanter, ::new);
 //        ScreenManager.registerFactory(DEContent.container_energy_crystal, ContainerEnergyCrystal::new);
 //        ScreenManager.registerFactory(DEContent.container_energy_infuser, ContainerEnergyInfuser::new);
-        ScreenManager.register(DEContent.container_fusion_crafting_core, GuiFusionCraftingCore::new);
+        MenuScreens.register(DEContent.container_fusion_crafting_core, GuiFusionCraftingCore::new);
 //        ScreenManager.registerFactory(DEContent.container_reactor, ContainerReactor::new);
-        ScreenManager.register(DEContent.container_flow_gate, GuiFlowGate::new);
-        ScreenManager.register(DEContent.container_energy_transfuser, GuiEnergyTransfuser::new);
+        MenuScreens.register(DEContent.container_flow_gate, GuiFlowGate::new);
+        MenuScreens.register(DEContent.container_energy_transfuser, GuiEnergyTransfuser::new);
     }
 
     private void registerTileRenderers() {
-        ClientRegistry.bindTileEntityRenderer(DEContent.tile_grinder, RenderTileGrinder::new);
-        ClientRegistry.bindTileEntityRenderer(DEContent.tile_draconium_chest, DraconiumChestTileRenderer::new);
-        ClientRegistry.bindTileEntityRenderer(DEContent.tile_storage_core, RenderTileEnergyCore::new);
-        ClientRegistry.bindTileEntityRenderer(DEContent.tile_energy_pylon, RenderTileEnergyPylon::new);
-        ClientRegistry.bindTileEntityRenderer(DEContent.tile_core_stabilizer, RenderTileECStabilizer::new);
-        ClientRegistry.bindTileEntityRenderer(DEContent.tile_stabilized_spawner, RenderTileStabilizedSpawner::new);
-        ClientRegistry.bindTileEntityRenderer(DEContent.tile_generator, RenderTileGenerator::new);
-        ClientRegistry.bindTileEntityRenderer(DEContent.tile_crystal_io, RenderTileEnergyCrystal::new);
-        ClientRegistry.bindTileEntityRenderer(DEContent.tile_crystal_relay, RenderTileEnergyCrystal::new);
-        ClientRegistry.bindTileEntityRenderer(DEContent.tile_crystal_wireless, RenderTileEnergyCrystal::new);
-        ClientRegistry.bindTileEntityRenderer(DEContent.tile_reactor_core, RenderTileReactorCore::new);
-        ClientRegistry.bindTileEntityRenderer(DEContent.tile_reactor_injector, RenderTileReactorComponent::new);
-        ClientRegistry.bindTileEntityRenderer(DEContent.tile_reactor_stabilizer, RenderTileReactorComponent::new);
-        ClientRegistry.bindTileEntityRenderer(DEContent.tile_crafting_core, RenderTileFusionCraftingCore::new);
-        ClientRegistry.bindTileEntityRenderer(DEContent.tile_crafting_injector, RenderTileCraftingInjector::new);
-        ClientRegistry.bindTileEntityRenderer(DEContent.tile_potentiometer, RenderTilePotentiometer::new);
-        ClientRegistry.bindTileEntityRenderer(DEContent.tile_energy_transfuser, RenderTileEnergyTransfuser::new);
-        ClientRegistry.bindTileEntityRenderer(DEContent.tile_chaos_crystal, RenderTileChaosCrystal::new);
-        ClientRegistry.bindTileEntityRenderer(DEContent.tile_dislocator_pedestal, RenderTileDislocatorPedestal::new);
-        ClientRegistry.bindTileEntityRenderer(DEContent.tile_placed_item, RenderTilePlacedItem::new);
+//        BlockEntityRenderers.register(DEContent.tile_grinder, RenderTileGrinder::new);
+//        BlockEntityRenderers.register(DEContent.tile_draconium_chest, DraconiumChestTileRenderer::new);
+//        BlockEntityRenderers.register(DEContent.tile_storage_core, RenderTileEnergyCore::new);
+//        BlockEntityRenderers.register(DEContent.tile_energy_pylon, RenderTileEnergyPylon::new);
+//        BlockEntityRenderers.register(DEContent.tile_core_stabilizer, RenderTileECStabilizer::new);
+//        BlockEntityRenderers.register(DEContent.tile_stabilized_spawner, RenderTileStabilizedSpawner::new);
+//        BlockEntityRenderers.register(DEContent.tile_generator, RenderTileGenerator::new);
+//        BlockEntityRenderers.register(DEContent.tile_crystal_io, RenderTileEnergyCrystal::new);
+//        BlockEntityRenderers.register(DEContent.tile_crystal_relay, RenderTileEnergyCrystal::new);
+//        BlockEntityRenderers.register(DEContent.tile_crystal_wireless, RenderTileEnergyCrystal::new);
+//        BlockEntityRenderers.register(DEContent.tile_reactor_core, RenderTileReactorCore::new);
+//        BlockEntityRenderers.register(DEContent.tile_reactor_injector, RenderTileReactorComponent::new);
+//        BlockEntityRenderers.register(DEContent.tile_reactor_stabilizer, RenderTileReactorComponent::new);
+//        BlockEntityRenderers.register(DEContent.tile_crafting_core, RenderTileFusionCraftingCore::new);
+//        BlockEntityRenderers.register(DEContent.tile_crafting_injector, RenderTileCraftingInjector::new);
+//        BlockEntityRenderers.register(DEContent.tile_potentiometer, RenderTilePotentiometer::new);
+//        BlockEntityRenderers.register(DEContent.tile_energy_transfuser, RenderTileEnergyTransfuser::new);
+//        BlockEntityRenderers.register(DEContent.tile_chaos_crystal, RenderTileChaosCrystal::new);
+//        BlockEntityRenderers.register(DEContent.tile_dislocator_pedestal, RenderTileDislocatorPedestal::new);
+//        BlockEntityRenderers.register(DEContent.tile_placed_item, RenderTilePlacedItem::new);
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -289,10 +301,10 @@ public class ClientProxy extends CommonProxy {
     }
 
     private void setupRenderLayers() {
-        RenderTypeLookup.setRenderLayer(DEContent.grinder, RenderType.cutoutMipped());
-        RenderTypeLookup.setRenderLayer(DEContent.generator, RenderType.cutoutMipped());
-        RenderTypeLookup.setRenderLayer(DEContent.energy_transfuser, RenderType.cutoutMipped());
-        RenderTypeLookup.setRenderLayer(DEContent.portal, RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(DEContent.grinder, RenderType.cutoutMipped());
+        ItemBlockRenderTypes.setRenderLayer(DEContent.generator, RenderType.cutoutMipped());
+        ItemBlockRenderTypes.setRenderLayer(DEContent.energy_transfuser, RenderType.cutoutMipped());
+        ItemBlockRenderTypes.setRenderLayer(DEContent.portal, RenderType.cutout());
 //        RenderTypeLookup.setRenderLayer(DEContent.chaos_crystal, RenderType.getCutout());
 //        RenderTypeLookup.setRenderLayer(DEContent.chaos_crystal_part, RenderType.getCutout());
     }
@@ -302,14 +314,40 @@ public class ClientProxy extends CommonProxy {
         super.serverSetup(event);
     }
 
+    public void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
+        //Block Entities
+        event.registerBlockEntityRenderer(DEContent.tile_grinder, RenderTileGrinder::new);
+        event.registerBlockEntityRenderer(DEContent.tile_draconium_chest, DraconiumChestTileRenderer::new);
+        event.registerBlockEntityRenderer(DEContent.tile_storage_core, RenderTileEnergyCore::new);
+        event.registerBlockEntityRenderer(DEContent.tile_energy_pylon, RenderTileEnergyPylon::new);
+        event.registerBlockEntityRenderer(DEContent.tile_core_stabilizer, RenderTileECStabilizer::new);
+        event.registerBlockEntityRenderer(DEContent.tile_stabilized_spawner, RenderTileStabilizedSpawner::new);
+        event.registerBlockEntityRenderer(DEContent.tile_generator, RenderTileGenerator::new);
+        event.registerBlockEntityRenderer(DEContent.tile_crystal_io, RenderTileEnergyCrystal::new);
+        event.registerBlockEntityRenderer(DEContent.tile_crystal_relay, RenderTileEnergyCrystal::new);
+        event.registerBlockEntityRenderer(DEContent.tile_crystal_wireless, RenderTileEnergyCrystal::new);
+        event.registerBlockEntityRenderer(DEContent.tile_reactor_core, RenderTileReactorCore::new);
+        event.registerBlockEntityRenderer(DEContent.tile_reactor_injector, RenderTileReactorComponent::new);
+        event.registerBlockEntityRenderer(DEContent.tile_reactor_stabilizer, RenderTileReactorComponent::new);
+        event.registerBlockEntityRenderer(DEContent.tile_crafting_core, RenderTileFusionCraftingCore::new);
+        event.registerBlockEntityRenderer(DEContent.tile_crafting_injector, RenderTileCraftingInjector::new);
+        event.registerBlockEntityRenderer(DEContent.tile_potentiometer, RenderTilePotentiometer::new);
+        event.registerBlockEntityRenderer(DEContent.tile_energy_transfuser, RenderTileEnergyTransfuser::new);
+        event.registerBlockEntityRenderer(DEContent.tile_chaos_crystal, RenderTileChaosCrystal::new);
+        event.registerBlockEntityRenderer(DEContent.tile_dislocator_pedestal, RenderTileDislocatorPedestal::new);
+        event.registerBlockEntityRenderer(DEContent.tile_placed_item, RenderTilePlacedItem::new);
+
+        //Entities
+        event.registerEntityRenderer(DEContent.draconicGuardian, DraconicGuardianRenderer::new);
+        event.registerEntityRenderer(DEContent.guardianProjectile, GuardianProjectileRenderer::new);
+        event.registerEntityRenderer(DEContent.guardianCrystal, GuardianCrystalRenderer::new);
+//        event.registerEntityRenderer(DEContent.persistentItem, manager -> new ItemEntityRenderer(manager, Minecraft.getInstance().getItemRenderer()));
+        event.registerEntityRenderer(DEContent.draconicArrow, DraconicArrowRenderer::new);
+        event.registerEntityRenderer(DEContent.guardianWither, GuardianWitherRenderer::new);
+    }
+
     public void registerEntityRendering() {
 
-        RenderingRegistry.registerEntityRenderingHandler(DEContent.draconicGuardian, DraconicGuardianRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(DEContent.guardianProjectile, GuardianProjectileRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(DEContent.guardianCrystal, GuardianCrystalRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(DEContent.persistentItem, manager -> new ItemRenderer(manager, Minecraft.getInstance().getItemRenderer()));
-        RenderingRegistry.registerEntityRenderingHandler(DEContent.draconicArrow, DraconicArrowRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(DEContent.guardianWither, GuardianWitherRenderer::new);
 
         //Entities
 //        RenderingRegistry.registerEntityRenderingHandler(EntityChaosGuardian.class, RenderChaosGuardian::new);
@@ -379,7 +417,7 @@ public class ClientProxy extends CommonProxy {
 //    }
 //
 
-//
+    //
 //    @Override
 //    public void registerParticles() {
 //        DEParticles.registerClient();

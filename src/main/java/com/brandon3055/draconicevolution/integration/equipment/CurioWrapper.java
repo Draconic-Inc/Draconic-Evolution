@@ -1,10 +1,8 @@
 package com.brandon3055.draconicevolution.integration.equipment;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
 import top.theillusivec4.curios.api.type.capability.ICurio;
 
 import java.util.List;
@@ -44,7 +42,7 @@ public class CurioWrapper implements ICurio {
     }
 
     @Override
-    public List<ITextComponent> getTagsTooltip(List<ITextComponent> tagTooltips) {
+    public List<Component> getTagsTooltip(List<Component> tagTooltips) {
         return item.getTagsTooltip(stack, tagTooltips);
     }
 
@@ -79,8 +77,10 @@ public class CurioWrapper implements ICurio {
 //        return false;
 //    }
 //
+
+
     @Override
-    public void render(String identifier, int index, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light, LivingEntity livingEntity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-//        item.renderEquipment(matrixStack, renderTypeBuffer, light, light, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch);
+    public ItemStack getStack() {
+        return stack;
     }
 }

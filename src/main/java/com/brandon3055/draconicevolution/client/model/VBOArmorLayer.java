@@ -1,31 +1,42 @@
 package com.brandon3055.draconicevolution.client.model;
 
-import codechicken.lib.util.SneakyUtils;
 import com.brandon3055.draconicevolution.integration.equipment.EquipmentManager;
 import com.brandon3055.draconicevolution.items.equipment.ModularChestpiece;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.entity.IEntityRenderer;
-import net.minecraft.client.renderer.entity.layers.BipedArmorLayer;
-import net.minecraft.client.renderer.entity.model.BipedModel;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.covers1624.quack.util.SneakyUtils;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.Model;
+import net.minecraft.client.model.geom.EntityModelSet;
+import net.minecraft.client.model.geom.ModelLayers;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ArmorItem;
-import net.minecraft.item.ItemStack;
-
-import javax.annotation.Nullable;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.DyeableLeatherItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.client.ForgeHooksClient;
 
 /**
  * Created by brandon3055 on 30/6/20
  */
-public class VBOArmorLayer<T extends LivingEntity, M extends BipedModel<T>, A extends BipedModel<T>> extends BipedArmorLayer<T, M, A> {
+public class VBOArmorLayer<T extends LivingEntity, M extends HumanoidModel<T>, A extends HumanoidModel<T>> extends HumanoidArmorLayer<T, M, A> {
 
-    public VBOArmorLayer(IEntityRenderer<T, M> renderer, @Nullable BipedArmorLayer<T, M, A> parent) {
-        super(renderer, parent == null ? SneakyUtils.unsafeCast(new BipedModel<T>(0.5F)) : parent.innerModel, parent == null ? SneakyUtils.unsafeCast(new BipedModel<T>(1.0F)) : parent.outerModel);
+    public VBOArmorLayer(LivingEntityRenderer<T, M> renderer, EntityModelSet modelSet, boolean slim) {
+        super(renderer, (A) new HumanoidModel(modelSet.bakeLayer(slim ? ModelLayers.PLAYER_SLIM_INNER_ARMOR : ModelLayers.PLAYER_INNER_ARMOR)), (A) new HumanoidModel(modelSet.bakeLayer(slim ? ModelLayers.PLAYER_SLIM_OUTER_ARMOR : ModelLayers.PLAYER_OUTER_ARMOR)));
     }
 
-    protected void setPartVisibility(A model, EquipmentSlotType slot) {
+    public VBOArmorLayer(LivingEntityRenderer<T, M> renderer, HumanoidArmorLayer<T, M, A> parent) {
+        super(renderer, parent.innerModel, parent.outerModel);
+    }
+
+    protected void setPartVisibility(A model, EquipmentSlot slot) {
         this.setModelVisible(model);
         switch (slot) {
             case HEAD:
@@ -46,7 +57,6 @@ public class VBOArmorLayer<T extends LivingEntity, M extends BipedModel<T>, A ex
                 model.rightLeg.visible = true;
                 model.leftLeg.visible = true;
         }
-
     }
 
     protected void setModelVisible(A model) {
@@ -54,58 +64,64 @@ public class VBOArmorLayer<T extends LivingEntity, M extends BipedModel<T>, A ex
     }
 
     @Override
-    protected A getArmorModelHook(T entity, net.minecraft.item.ItemStack itemStack, EquipmentSlotType slot, A model) {
-        return net.minecraftforge.client.ForgeHooksClient.getArmorModel(entity, itemStack, slot, model);
+    protected Model getArmorModelHook(T entity, ItemStack itemStack, EquipmentSlot slot, A model) {
+        return ForgeHooksClient.getArmorModel(entity, itemStack, slot, model);
     }
 
-
     @Override
-    public void render(MatrixStack mStack, IRenderTypeBuffer getter, int packedLightIn, T livingEntity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-        this.renderArmorPart(mStack, getter, livingEntity, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, EquipmentSlotType.CHEST, packedLightIn);
-        this.renderArmorPart(mStack, getter, livingEntity, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, EquipmentSlotType.LEGS, packedLightIn);
-        this.renderArmorPart(mStack, getter, livingEntity, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, EquipmentSlotType.FEET, packedLightIn);
-        this.renderArmorPart(mStack, getter, livingEntity, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, EquipmentSlotType.HEAD, packedLightIn);
+    public void render(PoseStack mStack, MultiBufferSource getter, int packedLightIn, T livingEntity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+        this.renderArmorPiece(mStack, getter, livingEntity, EquipmentSlot.CHEST, packedLightIn, this.getArmorModel(EquipmentSlot.CHEST), false);
+        this.renderArmorPiece(mStack, getter, livingEntity, EquipmentSlot.LEGS, packedLightIn, this.getArmorModel(EquipmentSlot.LEGS), false);
+        this.renderArmorPiece(mStack, getter, livingEntity, EquipmentSlot.FEET, packedLightIn, this.getArmorModel(EquipmentSlot.FEET), false);
+        this.renderArmorPiece(mStack, getter, livingEntity, EquipmentSlot.HEAD, packedLightIn, this.getArmorModel(EquipmentSlot.HEAD), false);
 
         ItemStack stack = EquipmentManager.findItem(e -> e.getItem() instanceof ModularChestpiece, livingEntity);
         if (!stack.isEmpty()) {
-            renderArmorPart(mStack, getter, livingEntity, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, EquipmentSlotType.CHEST, stack, packedLightIn, !livingEntity.getItemBySlot(EquipmentSlotType.CHEST).isEmpty());
+            this.renderArmorPiece(mStack, getter, livingEntity, EquipmentSlot.CHEST, packedLightIn, this.getArmorModel(EquipmentSlot.CHEST), !livingEntity.getItemBySlot(EquipmentSlot.CHEST).isEmpty());
         }
     }
 
-    private void renderArmorPart(MatrixStack mStack, IRenderTypeBuffer getter, T livingEntity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, EquipmentSlotType slot, int packedLight) {
-        ItemStack itemstack = livingEntity.getItemBySlot(slot);
-        renderArmorPart(mStack, getter, livingEntity, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, slot, itemstack, packedLight, false);
-    }
+    private void renderArmorPiece(PoseStack poseStack, MultiBufferSource source, T entity, EquipmentSlot slot, int packedlight, A armorModel, boolean onArmor) {
+        ItemStack stack = entity.getItemBySlot(slot);
+        if (stack.getItem() instanceof ArmorItem armorItem) {
+            if (armorItem.getSlot() == slot) {
+                this.getParentModel().copyPropertiesTo(armorModel);
+                this.setPartVisibility(armorModel, slot);
+                boolean innerModel = slot == EquipmentSlot.LEGS;
+                boolean hasFoil = stack.hasFoil();
 
-    private void renderArmorPart(MatrixStack mStack, IRenderTypeBuffer getter, T livingEntity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, EquipmentSlotType slot, ItemStack itemstack, int packedLight, boolean onArmor) {
-        if (itemstack.getItem() instanceof ArmorItem) {
-            ArmorItem armoritem = (ArmorItem) itemstack.getItem();
-            if (armoritem.getSlot() == slot) {
-                A baseModel = this.getArmorModel(slot);
-                A model = baseModel;
-
-                if (armoritem instanceof ModularChestpiece) {
-                    model = ((ModularChestpiece) armoritem).getChestPieceModel(livingEntity, itemstack, slot, onArmor);
+                Model model;
+                if (armorItem instanceof ModularChestpiece) {
+                    model = ((ModularChestpiece) armorItem).getChestPieceModel(entity, stack, slot, onArmor);
                 } else {
-                    model = getArmorModelHook(livingEntity, itemstack, slot, model);
+                    model = getArmorModelHook(entity, stack, slot, armorModel); //This should be my custom armor model with all of its properties, rotations, etc copied from the default armor model
                 }
 
                 if (model instanceof VBOBipedModel) {
                     @SuppressWarnings("unchecked") VBOBipedModel<T> bpModel = (VBOBipedModel<T>) model;
-                    BipedModel<T> entityModel = this.getParentModel();
-                    entityModel.copyPropertiesTo(bpModel);
-                    bpModel.leftArmPose = entityModel.leftArmPose;
-                    bpModel.rightArmPose = entityModel.rightArmPose;
-                    bpModel.crouching = entityModel.crouching;
-                    bpModel.bipedHead.copyFrom(entityModel.head);
-                    bpModel.bipedBody.copyFrom(entityModel.body);
-                    bpModel.bipedRightArm.copyFrom(entityModel.rightArm);
-                    bpModel.bipedLeftArm.copyFrom(entityModel.leftArm);
-                    bpModel.bipedRightLeg.copyFrom(entityModel.rightLeg);
-                    bpModel.bipedLeftLeg.copyFrom(entityModel.leftLeg);
-                    bpModel.render(mStack, getter, livingEntity, itemstack, packedLight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+                    bpModel.render(poseStack, source, entity, stack, packedlight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+                }
+
+                if (armorItem instanceof DyeableLeatherItem) {
+                    int i = ((DyeableLeatherItem) armorItem).getColor(stack);
+                    float f = (float) (i >> 16 & 255) / 255.0F;
+                    float f1 = (float) (i >> 8 & 255) / 255.0F;
+                    float f2 = (float) (i & 255) / 255.0F;
+                    this.renderModel(poseStack, source, entity, stack, packedlight, hasFoil, model, f, f1, f2, this.getArmorResource(entity, stack, slot, null));
+                    this.renderModel(poseStack, source, entity, stack, packedlight, hasFoil, model, 1.0F, 1.0F, 1.0F, this.getArmorResource(entity, stack, slot, "overlay"));
+                } else {
+                    this.renderModel(poseStack, source, entity, stack, packedlight, hasFoil, model, 1.0F, 1.0F, 1.0F, this.getArmorResource(entity, stack, slot, null));
                 }
             }
+        }
+    }
+
+    private void renderModel(PoseStack poseStack, MultiBufferSource source, T entity, ItemStack stack, int light, boolean hasFoil, Model model, float red, float green, float blue, ResourceLocation armorResource) {
+        if (model instanceof VBOBipedModel<?> bpModel) {
+            bpModel.render(poseStack, source, SneakyUtils.unsafeCast(entity), stack, light, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+        } else {
+            VertexConsumer consumer = ItemRenderer.getArmorFoilBuffer(source, RenderType.armorCutoutNoCull(armorResource), false, hasFoil);
+            model.renderToBuffer(poseStack, consumer, light, OverlayTexture.NO_OVERLAY, red, green, blue, 1.0F);
         }
     }
 }

@@ -4,11 +4,11 @@ import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
 import com.brandon3055.draconicevolution.api.capability.PropertyProvider;
 import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.PropertyData;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.INBTSerializable;
 
 import java.util.UUID;
@@ -21,9 +21,9 @@ import java.util.function.Function;
  * Though technically i wont be storing the actual property object just its name and serialized data.
  * When i want to apply the preset i just retrieve the property from the provider and load inject the nbt.
  */
-public abstract class ConfigProperty implements INBTSerializable<CompoundNBT> {
+public abstract class ConfigProperty implements INBTSerializable<CompoundTag> {
     private String name;
-    private ITextComponent displayName;
+    private Component displayName;
     private boolean showOnHud = true;
     private String modid = "draconicevolution";
     private UUID uniqueName = null;
@@ -32,7 +32,7 @@ public abstract class ConfigProperty implements INBTSerializable<CompoundNBT> {
         this.name = name;
     }
 
-    public ConfigProperty(String name, ITextComponent displayName) {
+    public ConfigProperty(String name, Component displayName) {
         this.name = name;
         this.displayName = displayName;
     }
@@ -40,12 +40,12 @@ public abstract class ConfigProperty implements INBTSerializable<CompoundNBT> {
     /**
      * @return the display name for this config property. e.g. Mining AOE
      */
-    public ITextComponent getDisplayName() {
-        return displayName == null ? new TranslationTextComponent("item_prop.draconicevolution." + name) : displayName;
+    public Component getDisplayName() {
+        return displayName == null ? new TranslatableComponent("item_prop.draconicevolution." + name) : displayName;
     }
 
-    public ITextComponent getToolTip() {
-        return new TranslationTextComponent("item_prop.draconicevolution." + name + ".info");
+    public Component getToolTip() {
+        return new TranslatableComponent("item_prop.draconicevolution." + name + ".info");
     }
 
     /**
@@ -100,8 +100,8 @@ public abstract class ConfigProperty implements INBTSerializable<CompoundNBT> {
     }
 
     @Override
-    public CompoundNBT serializeNBT() {
-        CompoundNBT nbt = new CompoundNBT();
+    public CompoundTag serializeNBT() {
+        CompoundTag nbt = new CompoundTag();
         nbt.putBoolean("hud", showOnHud);
         if (uniqueName != null) {
             nbt.putUUID("uni_name", uniqueName);
@@ -110,7 +110,7 @@ public abstract class ConfigProperty implements INBTSerializable<CompoundNBT> {
     }
 
     @Override
-    public void deserializeNBT(CompoundNBT nbt) {
+    public void deserializeNBT(CompoundTag nbt) {
         showOnHud = nbt.getBoolean("hud");
         if (nbt.hasUUID("uni_name")) {
             uniqueName = nbt.getUUID("uni_name");

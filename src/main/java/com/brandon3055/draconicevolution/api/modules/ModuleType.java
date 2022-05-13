@@ -1,18 +1,18 @@
 package com.brandon3055.draconicevolution.api.modules;
 
-import codechicken.lib.util.SneakyUtils;
 import com.brandon3055.draconicevolution.api.config.ConfigProperty;
 import com.brandon3055.draconicevolution.api.modules.data.ModuleData;
 import com.brandon3055.draconicevolution.api.modules.lib.InstallResult;
 import com.brandon3055.draconicevolution.api.modules.lib.InstallResult.InstallResultType;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.google.common.collect.Multimap;
-import net.minecraft.entity.ai.attributes.Attribute;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.TextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.covers1624.quack.util.SneakyUtils;
+import net.minecraft.network.chat.BaseComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
@@ -55,8 +55,8 @@ public interface ModuleType<T extends ModuleData<T>> {
 
     String getName();
 
-    default TextComponent getDisplayName() {
-        return new TranslationTextComponent("module_type.draconicevolution." + getName() + ".name");
+    default BaseComponent getDisplayName() {
+        return new TranslatableComponent("module_type.draconicevolution." + getName() + ".name");
     }
 
     /**
@@ -108,7 +108,7 @@ public interface ModuleType<T extends ModuleData<T>> {
      * @param stack The ItemStack containing this module/modules
      * @param map The map to which the modifiers must be added.
      */
-    default void getAttributeModifiers(@Nullable T moduleData, EquipmentSlotType slot, ItemStack stack, Multimap<Attribute, AttributeModifier> map) {}
+    default void getAttributeModifiers(@Nullable T moduleData, EquipmentSlot slot, ItemStack stack, Multimap<Attribute, AttributeModifier> map) {}
 
     Collection<ModuleCategory> getCategories();
 

@@ -1,10 +1,10 @@
 package com.brandon3055.draconicevolution.api.damage;
 
 import com.brandon3055.brandonscore.api.TechLevel;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.projectile.AbstractArrowEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.IndirectEntityDamageSource;
+import net.minecraft.world.damagesource.IndirectEntityDamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nullable;
 
@@ -25,7 +25,7 @@ public class DraconicIndirectEntityDamage extends IndirectEntityDamageSource imp
         return techLevel;
     }
 
-    public static DraconicIndirectEntityDamage arrow(AbstractArrowEntity arrowEntity, @Nullable Entity shooter, TechLevel techLevel) {
+    public static DraconicIndirectEntityDamage arrow(AbstractArrow arrowEntity, @Nullable Entity shooter, TechLevel techLevel) {
         return (DraconicIndirectEntityDamage) new DraconicIndirectEntityDamage("arrow", arrowEntity, shooter, techLevel).setProjectile();
     }
 }

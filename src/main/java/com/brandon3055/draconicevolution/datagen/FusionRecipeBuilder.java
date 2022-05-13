@@ -7,14 +7,15 @@ import com.brandon3055.draconicevolution.api.crafting.IngredientStack;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.tags.ITag;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.ItemLike;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -34,11 +35,11 @@ public class FusionRecipeBuilder {
         this.result = result;
     }
 
-    public static FusionRecipeBuilder fusionRecipe(IItemProvider resultIn) {
+    public static FusionRecipeBuilder fusionRecipe(ItemLike resultIn) {
         return fusionRecipe(resultIn, 1);
     }
 
-    public static FusionRecipeBuilder fusionRecipe(IItemProvider resultIn, int countIn) {
+    public static FusionRecipeBuilder fusionRecipe(ItemLike resultIn, int countIn) {
         return fusionRecipe(new ItemStack(resultIn, countIn));
     }
 
@@ -46,11 +47,11 @@ public class FusionRecipeBuilder {
         return new FusionRecipeBuilder(result);
     }
 
-    public FusionRecipeBuilder catalyst(ITag<Item> catalyst) {
+    public FusionRecipeBuilder catalyst(TagKey<Item> catalyst) {
         return catalyst(Ingredient.of(catalyst));
     }
 
-    public FusionRecipeBuilder catalyst(IItemProvider... catalyst) {
+    public FusionRecipeBuilder catalyst(ItemLike... catalyst) {
         return catalyst(Ingredient.of(catalyst));
     }
 
@@ -58,11 +59,11 @@ public class FusionRecipeBuilder {
         return catalyst(Ingredient.of(catalyst));
     }
 
-    public FusionRecipeBuilder catalyst(int count, ITag<Item> catalyst) {
+    public FusionRecipeBuilder catalyst(int count, TagKey<Item> catalyst) {
         return catalyst(IngredientStack.fromTag(catalyst, count));
     }
 
-    public FusionRecipeBuilder catalyst(int count, IItemProvider... catalyst) {
+    public FusionRecipeBuilder catalyst(int count, ItemLike... catalyst) {
         return catalyst(IngredientStack.fromItems(count, catalyst));
     }
 
@@ -102,27 +103,27 @@ public class FusionRecipeBuilder {
         return ingredient(true, ingredient);
     }
 
-    public FusionRecipeBuilder ingredient(boolean consume, IItemProvider... ingredient) {
+    public FusionRecipeBuilder ingredient(boolean consume, ItemLike... ingredient) {
         return ingredient(consume, Ingredient.of(ingredient));
     }
 
-    public FusionRecipeBuilder ingredient(IItemProvider... ingredient) {
+    public FusionRecipeBuilder ingredient(ItemLike... ingredient) {
         return ingredient(true, ingredient);
     }
 
-    public FusionRecipeBuilder ingredient(boolean consume, ITag<Item> ingredient) {
+    public FusionRecipeBuilder ingredient(boolean consume, TagKey<Item> ingredient) {
         return ingredient(consume, Ingredient.of(ingredient));
     }
 
-    public FusionRecipeBuilder ingredient(ITag<Item> ingredient) {
+    public FusionRecipeBuilder ingredient(TagKey<Item> ingredient) {
         return ingredient(true, ingredient);
     }
 
-    public void build(Consumer<IFinishedRecipe> consumer) {
+    public void build(Consumer<FinishedRecipe> consumer) {
         build(consumer, result.getItem().getRegistryName());
     }
 
-    public void build(Consumer<IFinishedRecipe> consumer, String save) {
+    public void build(Consumer<FinishedRecipe> consumer, String save) {
         ResourceLocation resourcelocation = result.getItem().getRegistryName();
         if ((new ResourceLocation(save)).equals(resourcelocation)) {
             throw new IllegalStateException("Fusion Recipe " + save + " should remove its 'save' argument");
@@ -131,7 +132,7 @@ public class FusionRecipeBuilder {
         }
     }
 
-    public void build(Consumer<IFinishedRecipe> consumer, ResourceLocation id) {
+    public void build(Consumer<FinishedRecipe> consumer, ResourceLocation id) {
         if (result.isEmpty()) return;
         validate(id);
 //        advancementBuilder.withParentId(new ResourceLocation("recipes/root")).withCriterion("has_the_recipe", new RecipeUnlockedTrigger.Instance(id)).withRewards(AdvancementRewards.Builder.recipe(id)).withRequirementsStrategy(IRequirementsStrategy.OR);
@@ -163,7 +164,7 @@ public class FusionRecipeBuilder {
         return json;
     }
 
-    public static class Result implements IFinishedRecipe {
+    public static class Result implements FinishedRecipe {
         private final ResourceLocation id;
         private final ItemStack result;
         private final Ingredient catalyst;
@@ -201,7 +202,7 @@ public class FusionRecipeBuilder {
             json.add("ingredients", ingredientArray);
         }
 
-        public IRecipeSerializer<?> getType() {
+        public RecipeSerializer<?> getType() {
             return DraconicAPI.FUSION_RECIPE_SERIALIZER;
         }
 

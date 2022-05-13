@@ -6,17 +6,19 @@ import com.brandon3055.brandonscore.inventory.TileItemStackHandler;
 import com.brandon3055.draconicevolution.DEOldConfig;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.integration.ModHelper;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentData;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.EnchantedBookItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.Util;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.EnchantedBookItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentInstance;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 /**
@@ -26,8 +28,8 @@ public class TileDissEnchanter extends TileBCore {
 
     public TileItemStackHandler itemHandler = new TileItemStackHandler(3);
 
-    public TileDissEnchanter() {
-        super(DEContent.tile_disenchanter);
+    public TileDissEnchanter(BlockPos pos, BlockState state) {
+        super(DEContent.tile_disenchanter, pos, state);
         capManager.setManaged("inventory", CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, itemHandler).saveBoth();
         itemHandler.setStackValidator(this::isItemValidForSlot);
     }
@@ -43,7 +45,7 @@ public class TileDissEnchanter extends TileBCore {
     }
 
     @Override
-    public void receivePacketFromClient(MCDataInput data, ServerPlayerEntity client, int pid) {
+    public void receivePacketFromClient(MCDataInput data, ServerPlayer client, int pid) {
         ItemStack input = itemHandler.getStackInSlot(0);
         ItemStack books = itemHandler.getStackInSlot(1);
         ItemStack output = itemHandler.getStackInSlot(2);
@@ -52,7 +54,7 @@ public class TileDissEnchanter extends TileBCore {
             return;
         }
 
-        ListNBT list = input.getEnchantmentTags();
+        ListTag list = input.getEnchantmentTags();
         if (list.isEmpty()) {
             return;
         }
@@ -60,7 +62,7 @@ public class TileDissEnchanter extends TileBCore {
         int targetId = data.readInt();
 
         for (int i = 0; i < list.size(); i++) {
-            CompoundNBT compound = list.getCompound(i);
+            CompoundTag compound = list.getCompound(i);
             int id = compound.getShort("id");
             int lvl = compound.getShort("lvl");
             Enchantment e = Enchantment.byId(id);
@@ -71,16 +73,16 @@ public class TileDissEnchanter extends TileBCore {
 
             int cost = (int) ((((double) lvl / (double) e.getMaxLevel()) * 20) * DEOldConfig.disenchnaterCostMultiplyer);
 
-            if (!client.abilities.instabuild && cost > client.experienceLevel) {
-                client.sendMessage(new TranslationTextComponent("chat.dissEnchanter.notEnoughLevels.msg", cost).withStyle(TextFormatting.RED), Util.NIL_UUID);
+            if (!client.getAbilities().instabuild && cost > client.experienceLevel) {
+                client.sendMessage(new TranslatableComponent("chat.dissEnchanter.notEnoughLevels.msg", cost).withStyle(ChatFormatting.RED), Util.NIL_UUID);
                 return;
             }
 
-            if (!client.abilities.instabuild) {
+            if (!client.getAbilities().instabuild) {
                 client.giveExperienceLevels(-cost);
             }
 
-            CompoundNBT stackCompound = input.getTag();
+            CompoundTag stackCompound = input.getTag();
             if (stackCompound == null) {
                 return;
             }
@@ -95,7 +97,7 @@ public class TileDissEnchanter extends TileBCore {
             stackCompound.putInt("RepairCost", repairCost);
 
             ItemStack book = new ItemStack(Items.ENCHANTED_BOOK);
-            EnchantedBookItem.addEnchantment(book, new EnchantmentData(e, lvl));
+            EnchantedBookItem.addEnchantment(book, new EnchantmentInstance(e, lvl));
             itemHandler.setStackInSlot(2, book);
             list.remove(i);
 

@@ -3,13 +3,14 @@ package com.brandon3055.draconicevolution.integration;
 import com.brandon3055.brandonscore.handlers.HandHelper;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.integration.jei.DEJEIPlugin;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.moddiscovery.ModInfo;
+import net.minecraftforge.forgespi.language.IModInfo;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Collections;
@@ -42,7 +43,7 @@ public class ModHelper {
         isBaublesInstalled = ModList.get().isLoaded("baubles");
     }
 
-    public static boolean isHoldingCleaver(PlayerEntity player) {
+    public static boolean isHoldingCleaver(Player player) {
         if (!isTConInstalled) {
             return false;
         }
@@ -52,7 +53,7 @@ public class ModHelper {
         return cleaver != null && HandHelper.getItem(player, cleaver) != null;
     }
 
-    public static boolean isHoldingAvaritiaSword(PlayerEntity player) {
+    public static boolean isHoldingAvaritiaSword(Player player) {
         if (!isAvaritiaInstalled) {
             return false;
         }
@@ -63,7 +64,7 @@ public class ModHelper {
         return avaritiaSword != null && !player.getMainHandItem().isEmpty() && player.getMainHandItem().getItem().equals(avaritiaSword);
     }
 
-    public static boolean isHoldingBedrockSword(PlayerEntity player) {
+    public static boolean isHoldingBedrockSword(Player player) {
         if (!isRotaryCraftInstalled) {
             return false;
         }
@@ -87,7 +88,7 @@ public class ModHelper {
     }
 
     public static float applyModDamageAdjustments(LivingAttackEvent event, ModuleHost host) {
-        PlayerEntity attacker = event.getSource().getEntity() instanceof PlayerEntity ? (PlayerEntity) event.getSource().getEntity() : null;
+        Player attacker = event.getSource().getEntity() instanceof Player ? (Player) event.getSource().getEntity() : null;
         if (attacker == null) {
             return event.getAmount();
         }
@@ -135,7 +136,7 @@ public class ModHelper {
     public static Map<String, String> getLoadedMods() {
         if (loadedMods == null) {
             loadedMods = Collections.synchronizedMap(new HashMap<>());
-            for (ModInfo mod : ModList.get().getMods()) {
+            for (IModInfo mod : ModList.get().getMods()) {
                 loadedMods.put(mod.getModId(), mod.getDisplayName());
             }
         }

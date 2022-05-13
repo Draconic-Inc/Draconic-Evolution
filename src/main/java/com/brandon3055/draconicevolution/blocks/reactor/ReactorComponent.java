@@ -4,29 +4,28 @@ import codechicken.lib.util.RotationUtils;
 import com.brandon3055.brandonscore.blocks.BlockBCore;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorComponent;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorInjector;
-import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorStabilizer;
-import net.minecraft.block.BlockRenderType;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.particle.ParticleManager;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import com.brandon3055.draconicevolution.init.DEContent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -36,40 +35,25 @@ import java.util.List;
 /**
  * Created by brandon3055 on 18/01/2017.
  */
-public class ReactorComponent extends BlockBCore {
+public class ReactorComponent extends BlockBCore implements EntityBlock {
 
-    private static final VoxelShape SHAPE_INJ_DOWN  = VoxelShapes.box(0F, 0.885F, 0F, 1F, 1F, 1F);
-    private static final VoxelShape SHAPE_INJ_UP    = VoxelShapes.box(0F, 0F, 0F, 1F, 0.125F, 1F);
-    private static final VoxelShape SHAPE_INJ_NORTH = VoxelShapes.box(0F, 0F, 0.885F, 1F, 1F, 1F);
-    private static final VoxelShape SHAPE_INJ_SOUTH = VoxelShapes.box(0F, 0F, 0F, 1F, 1F, 0.125F);
-    private static final VoxelShape SHAPE_INJ_WEST  = VoxelShapes.box(0.885F, 0F, 0F, 1F, 1F, 1F);
-    private static final VoxelShape SHAPE_INJ_EAST  = VoxelShapes.box(0F, 0F, 0F, 0.125F, 1F, 1F);
+    private static final VoxelShape SHAPE_INJ_DOWN  = Shapes.box(0F, 0.885F, 0F, 1F, 1F, 1F);
+    private static final VoxelShape SHAPE_INJ_UP    = Shapes.box(0F, 0F, 0F, 1F, 0.125F, 1F);
+    private static final VoxelShape SHAPE_INJ_NORTH = Shapes.box(0F, 0F, 0.885F, 1F, 1F, 1F);
+    private static final VoxelShape SHAPE_INJ_SOUTH = Shapes.box(0F, 0F, 0F, 1F, 1F, 0.125F);
+    private static final VoxelShape SHAPE_INJ_WEST  = Shapes.box(0.885F, 0F, 0F, 1F, 1F, 1F);
+    private static final VoxelShape SHAPE_INJ_EAST  = Shapes.box(0F, 0F, 0F, 0.125F, 1F, 1F);
     private final boolean injector;
 
     public ReactorComponent(Properties properties, boolean injector) {
         super(properties);
         this.injector = injector;
+        setBlockEntity(() -> injector ? DEContent.tile_reactor_injector : DEContent.tile_reactor_stabilizer, true);
     }
 
     @Override
-    public boolean isBlockFullCube() {
-        return false;
-    }
-
-    @Override
-    public boolean hasTileEntity(BlockState state) {
-        return true;
-    }
-
-    @Nullable
-    @Override
-    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        return injector ? new TileReactorInjector() : new TileReactorStabilizer();
-    }
-
-    @Override
-    public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
-        TileEntity tile = world.getBlockEntity(pos);
+    public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
+        BlockEntity tile = world.getBlockEntity(pos);
 
         if (tile instanceof TileReactorInjector) {
             switch (((TileReactorInjector) tile).facing.get()) {
@@ -91,14 +75,14 @@ public class ReactorComponent extends BlockBCore {
     }
 
     @Override
-    public BlockRenderType getRenderShape(BlockState state) {
-        return BlockRenderType.INVISIBLE;
+    public RenderShape getRenderShape(BlockState state) {
+        return RenderShape.INVISIBLE;
     }
 
     @Override
-    public void setPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+    public void setPlacedBy(Level world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
         super.setPlacedBy(world, pos, state, placer, stack);
-        TileEntity te = world.getBlockEntity(pos);
+        BlockEntity te = world.getBlockEntity(pos);
         Direction facing = RotationUtils.getPlacedRotation(pos, placer).getOpposite();
 
         if (te instanceof TileReactorComponent) {
@@ -108,18 +92,18 @@ public class ReactorComponent extends BlockBCore {
     }
 
     @Override
-    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
-        TileEntity te = world.getBlockEntity(pos);
+    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
+        BlockEntity te = world.getBlockEntity(pos);
 
         if (te instanceof TileReactorComponent) {
             ((TileReactorComponent) te).onActivated(player);
         }
-        return ActionResultType.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
 
     @Override
-    public void onRemove(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
-        TileEntity te = worldIn.getBlockEntity(pos);
+    public void onRemove(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
+        BlockEntity te = worldIn.getBlockEntity(pos);
 
         if (te instanceof TileReactorComponent) {
             ((TileReactorComponent) te).onBroken();
@@ -129,8 +113,7 @@ public class ReactorComponent extends BlockBCore {
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable IBlockReader worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-//        tooltip.add(new TranslationTextComponent("info.de.shiftReversePlaceLogic.txt"));
+    public void appendHoverText(ItemStack stack, @Nullable BlockGetter worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         super.appendHoverText(stack, worldIn, tooltip, flagIn);
     }
 
@@ -140,8 +123,8 @@ public class ReactorComponent extends BlockBCore {
     }
 
     @Override
-    public int getAnalogOutputSignal(BlockState blockState, World worldIn, BlockPos pos) {
-        TileEntity tileEntity = worldIn.getBlockEntity(pos);
+    public int getAnalogOutputSignal(BlockState blockState, Level worldIn, BlockPos pos) {
+        BlockEntity tileEntity = worldIn.getBlockEntity(pos);
 
         if (tileEntity instanceof TileReactorComponent) {
             return ((TileReactorComponent) tileEntity).rsPower.get();
@@ -151,24 +134,15 @@ public class ReactorComponent extends BlockBCore {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
-    public boolean addDestroyEffects(BlockState state, World world, BlockPos pos, ParticleManager manager) {
+    protected void spawnDestroyParticles(Level p_152422_, Player p_152423_, BlockPos p_152424_, BlockState p_152425_) {}
+
+    @Override
+    public boolean addLandingEffects(BlockState state1, ServerLevel worldserver, BlockPos pos, BlockState state2, LivingEntity entity, int numberOfParticles) {
         return true;
     }
 
     @Override
-    public boolean addLandingEffects(BlockState state1, ServerWorld worldserver, BlockPos pos, BlockState state2, LivingEntity entity, int numberOfParticles) {
-        return true;
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public boolean addHitEffects(BlockState state, World worldObj, RayTraceResult target, ParticleManager manager) {
-        return true;
-    }
-
-    @Override
-    public boolean addRunningEffects(BlockState state, World world, BlockPos pos, Entity entity) {
+    public boolean addRunningEffects(BlockState state, Level world, BlockPos pos, Entity entity) {
         return true;
     }
 }

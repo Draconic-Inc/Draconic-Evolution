@@ -8,13 +8,13 @@ import com.brandon3055.draconicevolution.entity.guardian.DraconicGuardianEntity;
 import com.brandon3055.draconicevolution.entity.guardian.GuardianFightManager;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RayTraceContext;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.Explosion;
+import net.minecraft.util.Mth;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.Explosion;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 public class LaserBeamPhase extends ChargeUpPhase {
 
     private boolean soundInitialized = false;
-    private PlayerEntity attackTarget = null;
+    private Player attackTarget = null;
     private Vector3 beamPos = new Vector3();
     private DamageSource damage;
     private int laserTime = 0;
@@ -40,8 +40,8 @@ public class LaserBeamPhase extends ChargeUpPhase {
         super.serverTick();
         //Select Target
         if (attackTarget == null || !isValidTarget(attackTarget)) {
-            Vector3d focus = Vector3d.atCenterOf(guardian.getArenaOrigin());
-            List<PlayerEntity> targetOptions = guardian.level.players()
+            Vec3 focus = Vec3.atCenterOf(guardian.getArenaOrigin());
+            List<Player> targetOptions = guardian.level.players()
                     .stream()
                     .filter(e -> e.distanceToSqr(focus) <= 200 * 200)
                     .filter(e -> StartPhase.AGRO_TARGETS.test(guardian, e))
@@ -65,18 +65,18 @@ public class LaserBeamPhase extends ChargeUpPhase {
         dirVec.subtract(guardianPos);
         dirVec.normalize();
 //        float dirVecXZDist = MathHelper.sqrt(dirVec.x * dirVec.x + dirVec.z * dirVec.z);
-        float targetYaw = (float) (MathHelper.atan2(dirVec.x, dirVec.z) * (double) (180F / (float) Math.PI));
+        float targetYaw = (float) (Mth.atan2(dirVec.x, dirVec.z) * (double) (180F / (float) Math.PI));
 //        float targetPitch = (float) (MathHelper.atan2(dirVec.y, dirVecXZDist) * (double) (180F / (float) Math.PI));
-        guardian.yRot = -targetYaw - 180;
+        guardian.setYRot(-targetYaw - 180);
 //        guardian.xRot = targetPitch + 180;
         Vector3 headPos = guardianPos.copy();
-        float rotation = ((guardian.yRot - 90) / 360) * (float) Math.PI * 2F;
-        headPos.add(MathHelper.cos(rotation) * 7, 0, MathHelper.sin(rotation) * 7);
+        float rotation = ((guardian.getYRot() - 90) / 360) * (float) Math.PI * 2F;
+        headPos.add(Mth.cos(rotation) * 7, 0, Mth.sin(rotation) * 7);
 
         beamPos = Vector3.fromEntityCenter(attackTarget);
         boolean hit = true;
-        RayTraceResult result = guardian.level.clip(new RayTraceContext(headPos.vec3(), beamPos.vec3(), RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, guardian));
-        if (result.getType() != RayTraceResult.Type.MISS) {
+        HitResult result = guardian.level.clip(new ClipContext(headPos.vec3(), beamPos.vec3(), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, guardian));
+        if (result.getType() != HitResult.Type.MISS) {
             beamPos = new Vector3(result.getLocation());
             hit = false;
         }
@@ -85,7 +85,7 @@ public class LaserBeamPhase extends ChargeUpPhase {
             float beamPower = (getBeamCharge() - 0.5F) / 0.5F;
             DraconicNetwork.sendGuardianBeam(guardian.level, headPos, beamPos, beamPower);
             if (!hit & chargedTime % 2 == 0) {
-                guardian.level.explode(null, damage, null, beamPos.x, beamPos.y, beamPos.z, 8, false, Explosion.Mode.DESTROY);
+                guardian.level.explode(null, damage, null, beamPos.x, beamPos.y, beamPos.z, 8, false, Explosion.BlockInteraction.DESTROY);
             }else if (hit){
                 attackTarget.hurt(damage, beamPower * 20F);
             }

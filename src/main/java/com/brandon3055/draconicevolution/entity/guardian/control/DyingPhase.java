@@ -2,13 +2,13 @@ package com.brandon3055.draconicevolution.entity.guardian.control;
 
 import com.brandon3055.draconicevolution.entity.guardian.DraconicGuardianEntity;
 import com.brandon3055.draconicevolution.entity.guardian.GuardianFightManager;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
 
 public class DyingPhase extends Phase {
-   private Vector3d targetLocation;
+   private Vec3 targetLocation;
    private int time;
 
    public DyingPhase(DraconicGuardianEntity guardisn) {
@@ -29,9 +29,9 @@ public class DyingPhase extends Phase {
       if (this.targetLocation == null) {
          GuardianFightManager manager = guardian.getFightManager();
          if (manager != null) {
-            targetLocation = Vector3d.atBottomCenterOf(manager.getArenaOrigin().above(15));
+            targetLocation = Vec3.atBottomCenterOf(manager.getArenaOrigin().above(15));
          } else {
-            this.targetLocation = Vector3d.atBottomCenterOf(guardian.blockPosition());
+            this.targetLocation = Vec3.atBottomCenterOf(guardian.blockPosition());
          }
       }
 
@@ -59,7 +59,7 @@ public class DyingPhase extends Phase {
    }
 
    @Nullable
-   public Vector3d getTargetLocation() {
+   public Vec3 getTargetLocation() {
       return this.targetLocation;
    }
 

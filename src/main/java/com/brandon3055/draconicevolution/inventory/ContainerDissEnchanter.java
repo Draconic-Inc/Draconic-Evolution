@@ -4,13 +4,13 @@ import com.brandon3055.brandonscore.inventory.ContainerBCTile;
 import com.brandon3055.brandonscore.inventory.SlotCheckValid;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileDissEnchanter;
 import com.brandon3055.draconicevolution.init.DEContent;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 import javax.annotation.Nullable;
 
@@ -19,11 +19,11 @@ import javax.annotation.Nullable;
  */
 public class ContainerDissEnchanter extends ContainerBCTile<TileDissEnchanter> {
 
-    public ContainerDissEnchanter(int windowId, PlayerInventory playerInv, PacketBuffer extraData) {
+    public ContainerDissEnchanter(int windowId, Inventory playerInv, FriendlyByteBuf extraData) {
         this(DEContent.container_dissenchanter, windowId, playerInv, getClientTile(extraData));
     }
 
-    public ContainerDissEnchanter(@Nullable ContainerType<?> type, int windowId, PlayerInventory player, TileDissEnchanter tile) {
+    public ContainerDissEnchanter(@Nullable MenuType<?> type, int windowId, Inventory player, TileDissEnchanter tile) {
         super(type, windowId, player, tile);
         addPlayerSlots(8, 60);
 
@@ -33,12 +33,12 @@ public class ContainerDissEnchanter extends ContainerBCTile<TileDissEnchanter> {
     }
 
     @Override
-    public boolean stillValid(PlayerEntity player) {
+    public boolean stillValid(Player player) {
         return true;//tile.isUsableByPlayer(player);
     }
 
     @Override
-    public ItemStack quickMoveStack(PlayerEntity player, int i) {
+    public ItemStack quickMoveStack(Player player, int i) {
         Slot slot = getSlot(i);
 
         if (slot != null && slot.hasItem()) {

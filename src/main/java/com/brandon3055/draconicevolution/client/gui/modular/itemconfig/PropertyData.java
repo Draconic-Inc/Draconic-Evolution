@@ -12,13 +12,13 @@ import com.brandon3055.draconicevolution.api.config.ConfigProperty.IntegerFormat
 import com.brandon3055.draconicevolution.api.config.ConfigProperty.Type;
 import com.brandon3055.draconicevolution.inventory.ContainerConfigurableItem;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.IntNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.IntTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -83,9 +83,9 @@ public class PropertyData {
         isPropertyAvailable = property != null;
         if (isPropertyAvailable) {
             displayName = property.getDisplayName().getString();
-            ITextComponent component = property.getToolTip();
+            Component component = property.getToolTip();
             toolTip = component.getString();
-            if (component instanceof TranslationTextComponent && ((TranslationTextComponent) component).getKey().equals(toolTip)) {
+            if (component instanceof TranslatableComponent && ((TranslatableComponent) component).getKey().equals(toolTip)) {
                 toolTip = "";
             }
 
@@ -243,7 +243,7 @@ public class PropertyData {
     }
 
     public String getEnumDisplayName(int enumIndex) {
-        return enumDisplayValues != null && enumDisplayValues.containsKey(enumIndex) ? enumDisplayValues.get(enumIndex) : TextFormatting.RED + "[Error]";
+        return enumDisplayValues != null && enumDisplayValues.containsKey(enumIndex) ? enumDisplayValues.get(enumIndex) : ChatFormatting.RED + "[Error]";
     }
 
     public void sendToServer() {
@@ -307,8 +307,8 @@ public class PropertyData {
         return copy;
     }
 
-    public CompoundNBT serialize() {
-        CompoundNBT nbt = new CompoundNBT();
+    public CompoundTag serialize() {
+        CompoundTag nbt = new CompoundTag();
         nbt.putByte("type", (byte) type.ordinal());
         nbt.putUUID("prov_id", providerID);
         nbt.putString("prov_name", providerName);
@@ -342,10 +342,10 @@ public class PropertyData {
             case ENUM:
                 nbt.putInt("value", enumValueIndex);
                 if (enumValueOptions != null) {
-                    nbt.put("names", enumValueOptions.stream().map(IntNBT::valueOf).collect(Collectors.toCollection(ListNBT::new)));
+                    nbt.put("names", enumValueOptions.stream().map(IntTag::valueOf).collect(Collectors.toCollection(ListTag::new)));
                 }
                 if (enumDisplayValues != null) {
-                    CompoundNBT nameValues = new CompoundNBT();
+                    CompoundTag nameValues = new CompoundTag();
                     enumDisplayValues.forEach((key, value) -> nameValues.putString(String.valueOf(key), value));
                     nbt.put("name_values", nameValues);
                 }
@@ -355,7 +355,7 @@ public class PropertyData {
     }
 
     @Nullable
-    public static PropertyData deserialize(CompoundNBT nbt) {
+    public static PropertyData deserialize(CompoundTag nbt) {
         if (!nbt.hasUUID("prov_id") || !nbt.contains("prov_name") || (!nbt.contains("prop_name") && !nbt.hasUUID("prop_name")) || !nbt.contains("type")) {
             return null;
         }
@@ -396,10 +396,10 @@ public class PropertyData {
             case ENUM:
                 data.enumValueIndex = nbt.getInt("value");
                 if (nbt.contains("names")) {
-                    data.enumValueOptions = nbt.getList("names", 3).stream().map(inbt -> ((IntNBT) inbt).getAsInt()).collect(Collectors.toList());
+                    data.enumValueOptions = nbt.getList("names", 3).stream().map(inbt -> ((IntTag) inbt).getAsInt()).collect(Collectors.toList());
                 }
                 if (nbt.contains("name_values")) {
-                    CompoundNBT nameValues = nbt.getCompound("name_values");
+                    CompoundTag nameValues = nbt.getCompound("name_values");
                     data.enumDisplayValues = nameValues.getAllKeys().stream().collect(Collectors.toMap(Utils::parseInt, nameValues::getString));
                 }
                 break;

@@ -3,43 +3,37 @@ package com.brandon3055.draconicevolution.client;
 import codechicken.lib.texture.AtlasRegistrar;
 import codechicken.lib.texture.IIconRegister;
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.particle.IParticleRenderType;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.texture.AtlasTexture;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.Tesselator;
+import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.resources.IResourceManager;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.resource.IResourceType;
-import net.minecraftforge.resource.ISelectiveResourceReloadListener;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 /**
  * Created by brandon3055 on 31/08/2016.
  */
-public class DETextures implements IIconRegister, ISelectiveResourceReloadListener {
+public class DETextures implements IIconRegister, ResourceManagerReloadListener {
 
     private static final String PARTICLES_ = "draconicevolution:particle/";
     private static final String MC_PARTICLES_ = "minecraft:particle/";
     private static AtlasRegistrar map;
 
-    public static IParticleRenderType PARTICLE_SHEET_TRANSLUCENT = new IParticleRenderType() {
+    public static ParticleRenderType PARTICLE_SHEET_TRANSLUCENT = new ParticleRenderType() {
         public void begin(BufferBuilder builder, TextureManager manager) {
-            RenderSystem.depthMask(false);
-            manager.bind(AtlasTexture.LOCATION_BLOCKS);
-            RenderSystem.enableBlend();
-            RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-            RenderSystem.alphaFunc(516, 0.003921569F);
-            builder.begin(7, DefaultVertexFormats.PARTICLE);
+//            RenderSystem.depthMask(false);
+//            manager.bind(TextureAtlas.LOCATION_BLOCKS);
+//            RenderSystem.enableBlend();
+//            RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+//            RenderSystem.alphaFunc(516, 0.003921569F);
+//            builder.begin(7, DefaultVertexFormat.PARTICLE);
         }
 
-        public void end(Tessellator tessellator) {
+        public void end(Tesselator tessellator) {
             tessellator.end();
         }
 
@@ -49,7 +43,8 @@ public class DETextures implements IIconRegister, ISelectiveResourceReloadListen
     };
 
     @Override
-    public void onResourceManagerReload(IResourceManager resourceManager, Predicate<IResourceType> resourcePredicate) {
+    public void onResourceManagerReload(ResourceManager p_10758_) {
+
     }
 
     public static TextureAtlasSprite GENERATOR;
@@ -65,7 +60,7 @@ public class DETextures implements IIconRegister, ISelectiveResourceReloadListen
             int finalI = i;
             register(PARTICLES_ + "energy_" + i, sprite -> ENERGY_PARTICLE[finalI] = sprite);
         }
-        MIXED_PARTICLE= new TextureAtlasSprite[14];
+        MIXED_PARTICLE = new TextureAtlasSprite[14];
         SPARK_PARTICLE = new TextureAtlasSprite[7];
         for (int i = 0; i < SPARK_PARTICLE.length; i++) {
             int finalI = i;
@@ -102,12 +97,6 @@ public class DETextures implements IIconRegister, ISelectiveResourceReloadListen
     public static TextureAtlasSprite PORTAL_PARTICLE;
 
 
-
-
-
-
-
-
     //TODO in 1.11 or 1.12 make there full names with mod prefix and ether remove texture cache or have it auto detect when the modid is already present.
     public static final String ENERGY_INFUSER_DECORATION = "textures/block/energy_infuser/energy_infuser_decoration.png";
     public static final String FUSION_PARTICLE = "textures/block/fusion_crafting/fusion_particle.png";
@@ -126,28 +115,17 @@ public class DETextures implements IIconRegister, ISelectiveResourceReloadListen
     public static final String GUI_HUD = "textures/gui/hud.png";
     public static final String GUI_JEI_FUSION = "textures/gui/jei_fusion_background.png";
     public static final String GUI_WIDGETS = "textures/gui/widgets.png";
-    public static final String GUI_REACTOR = "textures/gui/reactor.png";
     public static final String GUI_PARTICLE_GENERATOR = "textures/gui/particle_generator.png";
     public static final String DRAGON_HEART = "textures/items/components/dragon_heart.png";
     public static final String REACTOR_CORE = "textures/models/reactor_core.png";
     public static final String REACTOR_SHIELD = "textures/models/reactor_shield.png";
-//    public static final String STABILIZER_BEAM = "textures/models/stabilizer_beam.png";
+    //    public static final String STABILIZER_BEAM = "textures/models/stabilizer_beam.png";
     public static final String CELESTIAL_PARTICLE = "textures/particle/celestial_manipulator.png";
-//    public static final String ENERGY_CRYSTAL_BASE = "textures/models/crystal_base.png";
+    //    public static final String ENERGY_CRYSTAL_BASE = "textures/models/crystal_base.png";
 //    public static final String ENERGY_CRYSTAL_NO_SHADER = "textures/models/crystal_no_shader.png";
     public static final String ENERGY_BEAM_BASIC = "textures/particle/energy_beam_basic.png";
     public static final String ENERGY_BEAM_WYVERN = "textures/particle/energy_beam_wyvern.png";
     public static final String ENERGY_BEAM_DRACONIC = "textures/particle/energy_beam_draconic.png";
     public static final String REACTOR_BEAM = "textures/particle/reactor_beam.png";
     public static final String REACTOR_ENERGY_BEAM = "textures/particle/reactor_energy_beam.png";
-
-
-//    public static final String DRACONIUM_CHEST = "textures/block/draconium_chest.png";
-
-    //Added / updated / still used in 1.14+
-//
-//    public static final ResourceLocation GUI_BG_DYNAMIC_DARK = new ResourceLocation(DraconicEvolution.MODID, "textures/gui/dark/background_dynamic.png");
-//    public static final ResourceLocation GUI_BG_DYNAMIC_LIGHT = new ResourceLocation(DraconicEvolution.MODID, "textures/gui/light/background_dynamic.png");
-//
-//    public static ResourceLocation getBGDynamic() { return BCConfig.darkMode ? GUI_BG_DYNAMIC_DARK : GUI_BG_DYNAMIC_LIGHT; }
 }

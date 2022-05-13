@@ -1,7 +1,5 @@
 package com.brandon3055.draconicevolution.client.gui;
 
-import codechicken.lib.math.MathHelper;
-import com.brandon3055.brandonscore.client.BCSprites;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElementManager;
 import com.brandon3055.brandonscore.client.gui.modulargui.ModularGuiContainer;
@@ -9,31 +7,23 @@ import com.brandon3055.brandonscore.client.gui.modulargui.baseelements.GuiButton
 import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiBorderedRect;
 import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiLabel;
 import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiTexture;
-import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiTexturedPointer;
 import com.brandon3055.brandonscore.client.gui.modulargui.lib.GuiAlign;
-import com.brandon3055.brandonscore.client.utils.GuiHelperOld;
 import com.brandon3055.brandonscore.utils.InfoHelper;
 import com.brandon3055.brandonscore.utils.MathUtils;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorComponent;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorComponent.RSMode;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
-import com.brandon3055.draconicevolution.client.DETextures;
+import com.brandon3055.draconicevolution.client.DESprites;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.client.render.tile.RenderTileReactorCore;
 import com.brandon3055.draconicevolution.inventory.ContainerReactor;
-import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
-import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.model.RenderMaterial;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,14 +34,14 @@ import java.util.Locale;
  */
 public class GuiReactor extends ModularGuiContainer<ContainerReactor> {
 
-    private PlayerEntity player;
+    private Player player;
     private final TileReactorCore tile;
     public TileReactorComponent component = null;
     private static double compPanelAnim = 0;
     private static boolean compPanelExtended = false;
     private GuiElement<?> compPanel;
 
-    public GuiReactor(ContainerReactor container, PlayerInventory inv, ITextComponent titleIn) {
+    public GuiReactor(ContainerReactor container, Inventory inv, Component titleIn) {
         super(container, inv, titleIn);
         this.player = player;
         this.tile = container.tile;
@@ -67,7 +57,7 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> {
         manager.addChild(compPanel = new GuiBorderedRect(leftPos + imageWidth, topPos + 125, 0, 91));
         exclusions.add(compPanel);
         manager.setJeiExclusions(() -> exclusions);
-        GuiTexture background = manager.addChild(new GuiTexture(leftPos, topPos, 0, 0, imageWidth, imageHeight, new ResourceLocation("draconicevolution:" + DETextures.GUI_REACTOR)) {
+        GuiTexture background = manager.addChild(new GuiTexture(leftPos, topPos, imageWidth, imageHeight, DESprites.get("reactor/background")) {
             @Override
             public void renderElement(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
                 super.renderElement(minecraft, mouseX, mouseY, partialTicks);
@@ -160,20 +150,20 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> {
         background.addChild(new GuiElement() {
             @Override
             public void renderElement(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
-                if (tile.reactorState.get() == TileReactorCore.ReactorState.COLD) {
-                    RenderSystem.color4f(1F, 1F, 1F, 1F);
-                    RenderMaterial mat = BCSprites.getThemed("slot");
-                    bindTexture(mat.atlasLocation());
-                    IRenderTypeBuffer.Impl getter = IRenderTypeBuffer.immediate(Tessellator.getInstance().getBuilder());
-                    GuiHelperOld.drawPlayerSlots(GuiReactor.this, leftPos + 43 - 31, topPos + 139, false);
-                    for (int x = 0; x < 3; x++) {
-                        drawSprite(getter.getBuffer(mat.renderType(BCSprites::makeType)), leftPos + 182 + (x * 18), topPos + 148, 18, 18, mat.sprite());
-                    }
-                    for (int x = 0; x < 3; x++) {
-                        drawSprite(getter.getBuffer(mat.renderType(BCSprites::makeType)), leftPos + 182 + (x * 18), topPos + 179, 18, 18, mat.sprite());
-                    }
-                    getter.endBatch();
-                }
+//                if (tile.reactorState.get() == TileReactorCore.ReactorState.COLD) {
+//                    RenderSystem.color4f(1F, 1F, 1F, 1F);
+//                    Material mat = BCSprites.getThemed("slot");
+//                    bindTexture(mat.atlasLocation());
+//                    MultiBufferSource.BufferSource getter = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
+//                    GuiHelperOld.drawPlayerSlots(GuiReactor.this, leftPos + 43 - 31, topPos + 139, false);
+//                    for (int x = 0; x < 3; x++) {
+//                        drawSprite(getter.getBuffer(mat.renderType(BCSprites::makeType)), leftPos + 182 + (x * 18), topPos + 148, 18, 18, mat.sprite());
+//                    }
+//                    for (int x = 0; x < 3; x++) {
+//                        drawSprite(getter.getBuffer(mat.renderType(BCSprites::makeType)), leftPos + 182 + (x * 18), topPos + 179, 18, 18, mat.sprite());
+//                    }
+//                    getter.endBatch();
+//                }
             }
         });
 
@@ -196,41 +186,41 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> {
                 .setDisplaySupplier(() -> {
                     String s = tile.reactorState.get().localize();
                     if (tile.reactorState.get() == TileReactorCore.ReactorState.BEYOND_HOPE && ClientEventHandler.elapsedTicks % 10 > 5) {
-                        s = TextFormatting.DARK_RED + "**" + s + "**";
+                        s = ChatFormatting.DARK_RED + "**" + s + "**";
                     } else if (tile.reactorState.get() == TileReactorCore.ReactorState.BEYOND_HOPE) {
-                        s = TextFormatting.DARK_RED + "--" + s + "--";
+                        s = ChatFormatting.DARK_RED + "--" + s + "--";
                     }
-                    return TextFormatting.GOLD + I18n.get("gui.draconicevolution.reactor.status") + ": " + s;
+                    return ChatFormatting.GOLD + I18n.get("gui.draconicevolution.reactor.status") + ": " + s;
                 }).setAlignment(GuiAlign.LEFT));
 
 
-        background.addChild(new GuiTexturedPointer(leftPos + 11, topPos + 5, 14, 112, 0, 222, 5, ResourceHelperDE.getResource(DETextures.GUI_REACTOR)) {
-            @Override
-            public double getPos() {
-                return MathHelper.clip(tile.temperature.get() / TileReactorCore.MAX_TEMPERATURE, 0, 1);
-            }
-        }.setHoverText(element -> getTempStats()).setHoverTextDelay(5));
-
-        background.addChild(new GuiTexturedPointer(leftPos + 35, topPos + 5, 14, 112, 0, 222, 5, ResourceHelperDE.getResource(DETextures.GUI_REACTOR)) {
-            @Override
-            public double getPos() {
-                return MathHelper.clip(tile.shieldCharge.get() / Math.max(tile.maxShieldCharge.get(), 1), 0, 1);
-            }
-        }.setHoverText(element -> getShieldStats()).setHoverTextDelay(5));
-
-        background.addChild(new GuiTexturedPointer(leftPos + 199, topPos + 5, 14, 112, 0, 222, 5, ResourceHelperDE.getResource(DETextures.GUI_REACTOR)) {
-            @Override
-            public double getPos() {
-                return MathHelper.clip(tile.saturation.get() / (double) Math.max(tile.maxSaturation.get(), 1), 0, 1);
-            }
-        }.setHoverText(element -> getSaturationStats()).setHoverTextDelay(5));
-
-        background.addChild(new GuiTexturedPointer(leftPos + 223, topPos + 5, 14, 112, 0, 222, 5, ResourceHelperDE.getResource(DETextures.GUI_REACTOR)) {
-            @Override
-            public double getPos() {
-                return MathHelper.clip(tile.convertedFuel.get() / Math.max(tile.reactableFuel.get() + tile.convertedFuel.get(), 1), 0, 1);
-            }
-        }.setHoverText(element -> getFuelStats()).setHoverTextDelay(5));
+//        background.addChild(new GuiTexturedPointer(leftPos + 11, topPos + 5, 14, 112, 0, 222, 5, ResourceHelperDE.getResource(DETextures.GUI_REACTOR)) {
+//            @Override
+//            public double getPos() {
+//                return MathHelper.clip(tile.temperature.get() / TileReactorCore.MAX_TEMPERATURE, 0, 1);
+//            }
+//        }.setHoverText(element -> getTempStats()).setHoverTextDelay(5));
+//
+//        background.addChild(new GuiTexturedPointer(leftPos + 35, topPos + 5, 14, 112, 0, 222, 5, ResourceHelperDE.getResource(DETextures.GUI_REACTOR)) {
+//            @Override
+//            public double getPos() {
+//                return MathHelper.clip(tile.shieldCharge.get() / Math.max(tile.maxShieldCharge.get(), 1), 0, 1);
+//            }
+//        }.setHoverText(element -> getShieldStats()).setHoverTextDelay(5));
+//
+//        background.addChild(new GuiTexturedPointer(leftPos + 199, topPos + 5, 14, 112, 0, 222, 5, ResourceHelperDE.getResource(DETextures.GUI_REACTOR)) {
+//            @Override
+//            public double getPos() {
+//                return MathHelper.clip(tile.saturation.get() / (double) Math.max(tile.maxSaturation.get(), 1), 0, 1);
+//            }
+//        }.setHoverText(element -> getSaturationStats()).setHoverTextDelay(5));
+//
+//        background.addChild(new GuiTexturedPointer(leftPos + 223, topPos + 5, 14, 112, 0, 222, 5, ResourceHelperDE.getResource(DETextures.GUI_REACTOR)) {
+//            @Override
+//            public double getPos() {
+//                return MathHelper.clip(tile.convertedFuel.get() / Math.max(tile.reactableFuel.get() + tile.convertedFuel.get(), 1), 0, 1);
+//            }
+//        }.setHoverText(element -> getFuelStats()).setHoverTextDelay(5));
 
         //endregion
 
@@ -276,7 +266,7 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> {
 
         background.addChild(new GuiLabel(leftPos + 175, topPos + 138, 68, 80, "ETE")
                 .setEnabledCallback(() -> tile.reactorState.get() == TileReactorCore.ReactorState.BEYOND_HOPE)
-                .setDisplaySupplier(() -> "Estimated\nTime\nUntil\nDetonation\n\n" + TextFormatting.UNDERLINE + (tile.explosionCountdown.get() >= 0 ? (tile.explosionCountdown.get() / 20) + "s" : "Calculating.."))
+                .setDisplaySupplier(() -> "Estimated\nTime\nUntil\nDetonation\n\n" + ChatFormatting.UNDERLINE + (tile.explosionCountdown.get() >= 0 ? (tile.explosionCountdown.get() / 20) + "s" : "Calculating.."))
                 .setWrap(true)
                 .setShadow(false)
                 .setTextColour(0xFF0000));
@@ -352,8 +342,8 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> {
     }
 
     @Override
-    public void tick() {
-        super.tick();
+    protected void containerTick() {
+        super.containerTick();
 
         if (tile.reactorState.get() == TileReactorCore.ReactorState.COLD != container.fuelSlots) {
             container.setSlotState();

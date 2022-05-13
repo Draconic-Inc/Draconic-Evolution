@@ -5,29 +5,34 @@ import com.brandon3055.brandonscore.network.BCoreNetwork;
 import com.brandon3055.brandonscore.utils.InventoryUtils;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.brandonscore.utils.TargetPos;
-import com.brandon3055.draconicevolution.entity.PersistentItemEntity;
 import com.brandon3055.draconicevolution.handlers.DESounds;
 import com.brandon3055.draconicevolution.handlers.dislocator.DislocatorSaveData;
 import com.brandon3055.draconicevolution.handlers.dislocator.DislocatorTarget;
 import com.brandon3055.draconicevolution.handlers.dislocator.GroundTarget;
 import com.brandon3055.draconicevolution.handlers.dislocator.PlayerTarget;
 import com.brandon3055.draconicevolution.init.DEContent;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Rarity;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.*;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -44,17 +49,17 @@ public class BoundDislocator extends Dislocator {
     }
 
     @Override
-    public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> list) {
+    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> list) {
         if (this.allowdedIn(group) && (this == DEContent.dislocator_player_unbound || this == DEContent.dislocator_p2p_unbound)) {
             list.add(new ItemStack(this));
         }
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, World world, Entity entity, int itemSlot, boolean isSelected) {
-        if (world instanceof ServerWorld && TimeKeeper.getServerTick() % 20 == 0) {
-            if (isValid(stack) && !isPlayer(stack) && entity instanceof PlayerEntity) {
-                DislocatorSaveData.updateLinkTarget(world, stack, new PlayerTarget((PlayerEntity) entity));
+    public void inventoryTick(ItemStack stack, Level world, Entity entity, int itemSlot, boolean isSelected) {
+        if (world instanceof ServerLevel && TimeKeeper.getServerTick() % 20 == 0) {
+            if (isValid(stack) && !isPlayer(stack) && entity instanceof Player) {
+                DislocatorSaveData.updateLinkTarget(world, stack, new PlayerTarget((Player) entity));
             }
         }
         super.inventoryTick(stack, world, entity, itemSlot, isSelected);
@@ -62,7 +67,7 @@ public class BoundDislocator extends Dislocator {
 
     @Override
     public boolean onEntityItemUpdate(ItemStack stack, ItemEntity entity) {
-        if (entity.level instanceof ServerWorld && TimeKeeper.getServerTick() % 20 == 0) {
+        if (entity.level instanceof ServerLevel && TimeKeeper.getServerTick() % 20 == 0) {
             if (isValid(stack) && !isPlayer(stack)) {
                 DislocatorSaveData.updateLinkTarget(entity.level, stack, new GroundTarget(entity));
             }
@@ -71,16 +76,16 @@ public class BoundDislocator extends Dislocator {
     }
 
     @Override
-    public boolean onLeftClickEntity(ItemStack stack, PlayerEntity player, Entity entity) {
+    public boolean onLeftClickEntity(ItemStack stack, Player player, Entity entity) {
         if (player.level.isClientSide) {
             return true;
         }
         TargetPos location = getTargetPos(stack, player.level);
         if (location == null) {
             if (isPlayer(stack)) {
-                player.sendMessage(new TranslationTextComponent("dislocate.draconicevolution.bound.cant_find_player").withStyle(TextFormatting.RED), Util.NIL_UUID);
+                player.sendMessage(new TranslatableComponent("dislocate.draconicevolution.bound.cant_find_player").withStyle(ChatFormatting.RED), Util.NIL_UUID);
             } else {
-                player.sendMessage(new TranslationTextComponent("dislocate.draconicevolution.bound.cant_find_target").withStyle(TextFormatting.RED), Util.NIL_UUID);
+                player.sendMessage(new TranslatableComponent("dislocate.draconicevolution.bound.cant_find_target").withStyle(ChatFormatting.RED), Util.NIL_UUID);
             }
             return true;
         }
@@ -89,22 +94,22 @@ public class BoundDislocator extends Dislocator {
             return true;
         }
 
-        BCoreNetwork.sendSound(player.level, player.blockPosition(), DESounds.portal, SoundCategory.PLAYERS, 0.1F, player.level.random.nextFloat() * 0.1F + 0.9F, false);
+        BCoreNetwork.sendSound(player.level, player.blockPosition(), DESounds.portal, SoundSource.PLAYERS, 0.1F, player.level.random.nextFloat() * 0.1F + 0.9F, false);
 
-        location.setPitch(player.xRot);
-        location.setYaw(player.yRot);
+        location.setPitch(player.getXRot());
+        location.setYaw(player.getYRot());
         notifyArriving(stack, player.level, entity);
         location.teleport(entity);
 
-        BCoreNetwork.sendSound(player.level, player.blockPosition(), DESounds.portal, SoundCategory.PLAYERS, 0.1F, player.level.random.nextFloat() * 0.1F + 0.9F, false);
+        BCoreNetwork.sendSound(player.level, player.blockPosition(), DESounds.portal, SoundSource.PLAYERS, 0.1F, player.level.random.nextFloat() * 0.1F + 0.9F, false);
         return true;
     }
 
     @Override
-    public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
+    public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (player.level.isClientSide) {
-            return new ActionResult<>(ActionResultType.PASS, stack);
+            return new InteractionResultHolder<>(InteractionResult.PASS, stack);
         }
 
         if (stack.getItem() == DEContent.dislocator_p2p_unbound) {
@@ -114,7 +119,7 @@ public class BoundDislocator extends Dislocator {
             player.setItemInHand(hand, ItemStack.EMPTY);
             InventoryUtils.givePlayerStack(player, boundA);
             InventoryUtils.givePlayerStack(player, boundB);
-            return new ActionResult<>(ActionResultType.SUCCESS, stack);
+            return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
         } else if (stack.getItem() == DEContent.dislocator_player_unbound) {
             ItemStack bound = new ItemStack(DEContent.dislocator_player);
             setPlayerID(bound, player.getUUID());
@@ -122,26 +127,26 @@ public class BoundDislocator extends Dislocator {
             ItemNBTHelper.setString(bound, "player_name", player.getName().getString());
             player.setItemInHand(hand, ItemStack.EMPTY);
             InventoryUtils.givePlayerStack(player, bound);
-            return new ActionResult<>(ActionResultType.SUCCESS, stack);
+            return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
         } else {
             TargetPos location = getTargetPos(stack, world);
             if (location == null) {
                 if (isPlayer(stack)) {
-                    player.sendMessage(new TranslationTextComponent("dislocate.draconicevolution.bound.cant_find_player").withStyle(TextFormatting.RED), Util.NIL_UUID);
+                    player.sendMessage(new TranslatableComponent("dislocate.draconicevolution.bound.cant_find_player").withStyle(ChatFormatting.RED), Util.NIL_UUID);
                 } else {
-                    player.sendMessage(new TranslationTextComponent("dislocate.draconicevolution.bound.cant_find_target").withStyle(TextFormatting.RED), Util.NIL_UUID);
+                    player.sendMessage(new TranslatableComponent("dislocate.draconicevolution.bound.cant_find_target").withStyle(ChatFormatting.RED), Util.NIL_UUID);
                 }
-                return new ActionResult<>(ActionResultType.PASS, stack);
+                return new InteractionResultHolder<>(InteractionResult.PASS, stack);
             }
 
-            BCoreNetwork.sendSound(player.level, player.blockPosition(), DESounds.portal, SoundCategory.PLAYERS, 0.1F, player.level.random.nextFloat() * 0.1F + 0.9F, false);
-            location.setPitch(player.xRot);
-            location.setYaw(player.yRot);
+            BCoreNetwork.sendSound(player.level, player.blockPosition(), DESounds.portal, SoundSource.PLAYERS, 0.1F, player.level.random.nextFloat() * 0.1F + 0.9F, false);
+            location.setPitch(player.getXRot());
+            location.setYaw(player.getYRot());
             notifyArriving(stack, player.level, player);
             location.teleport(player);
-            BCoreNetwork.sendSound(player.level, player.blockPosition(), DESounds.portal, SoundCategory.PLAYERS, 0.1F, player.level.random.nextFloat() * 0.1F + 0.9F, false);
+            BCoreNetwork.sendSound(player.level, player.blockPosition(), DESounds.portal, SoundSource.PLAYERS, 0.1F, player.level.random.nextFloat() * 0.1F + 0.9F, false);
 
-            return new ActionResult<>(ActionResultType.SUCCESS, stack);
+            return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
         }
     }
 
@@ -162,7 +167,7 @@ public class BoundDislocator extends Dislocator {
     }
 
     public static boolean isValid(ItemStack stack) {
-        CompoundNBT compound = stack.getTag();
+        CompoundTag compound = stack.getTag();
         if (stack.getItem() instanceof BoundDislocator) {
             return compound != null && getLinkId(stack) != null && getDislocatorId(stack) != null;
         }
@@ -196,13 +201,13 @@ public class BoundDislocator extends Dislocator {
 
 
     @Override
-    public TargetPos getTargetPos(ItemStack stack, @Nullable World world) {
-        if (world instanceof ServerWorld) {
+    public TargetPos getTargetPos(ItemStack stack, @Nullable Level world) {
+        if (world instanceof ServerLevel) {
             if (isPlayer(stack)) {
                 UUID playerID = getPlayerID(stack);
                 MinecraftServer server = world.getServer();
                 if (playerID != null && server != null) {
-                    PlayerEntity player = server.getPlayerList().getPlayer(playerID);
+                    Player player = server.getPlayerList().getPlayer(playerID);
                     if (player != null) {
                         return new TargetPos(player);
                     }
@@ -218,8 +223,8 @@ public class BoundDislocator extends Dislocator {
         return null;
     }
 
-    public static void notifyArriving(ItemStack stack, World world, Entity entity) {
-        if (world instanceof ServerWorld) {
+    public static void notifyArriving(ItemStack stack, Level world, Entity entity) {
+        if (world instanceof ServerLevel) {
             DislocatorTarget target = DislocatorSaveData.getLinkTarget(world, stack);
             if (target != null) {
                 target.preTeleport(world.getServer(), entity);
@@ -229,16 +234,16 @@ public class BoundDislocator extends Dislocator {
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         if (stack.getItem() == DEContent.dislocator_p2p_unbound) {
-            tooltip.add(new TranslationTextComponent("dislocate.draconicevolution.bound.click_to_link").withStyle(TextFormatting.GREEN));
+            tooltip.add(new TranslatableComponent("dislocate.draconicevolution.bound.click_to_link").withStyle(ChatFormatting.GREEN));
         } else if (stack.getItem() == DEContent.dislocator_player_unbound) {
-            tooltip.add(new TranslationTextComponent("dislocate.draconicevolution.bound.click_to_link_self").withStyle(TextFormatting.GREEN));
+            tooltip.add(new TranslatableComponent("dislocate.draconicevolution.bound.click_to_link_self").withStyle(ChatFormatting.GREEN));
         } else {
             if (isPlayer(stack)) {
-                tooltip.add(new TranslationTextComponent("dislocate.draconicevolution.bound.player_link").append(": ").append(ItemNBTHelper.getString(stack, "player_name", "Unknown Player")).withStyle(TextFormatting.BLUE));
+                tooltip.add(new TranslatableComponent("dislocate.draconicevolution.bound.player_link").append(": ").append(ItemNBTHelper.getString(stack, "player_name", "Unknown Player")).withStyle(ChatFormatting.BLUE));
             } else {
-                tooltip.add(new TranslationTextComponent("dislocate.draconicevolution.bound.link_id").append(": ").append(String.valueOf(getLinkId(stack))).withStyle(TextFormatting.BLUE));
+                tooltip.add(new TranslatableComponent("dislocate.draconicevolution.bound.link_id").append(": ").append(String.valueOf(getLinkId(stack))).withStyle(ChatFormatting.BLUE));
             }
         }
     }
@@ -249,12 +254,17 @@ public class BoundDislocator extends Dislocator {
     }
 
     @Override
-    public Entity createEntity(World world, Entity location, ItemStack itemstack) {
-        return new PersistentItemEntity(world, location, itemstack);
+    public Rarity getRarity(ItemStack stack) {
+        return Rarity.RARE;
     }
 
     @Override
-    public Rarity getRarity(ItemStack stack) {
-        return Rarity.RARE;
+    public boolean canBeHurtBy(DamageSource source) {
+        return source == DamageSource.OUT_OF_WORLD;
+    }
+
+    @Override
+    public int getEntityLifespan(ItemStack itemStack, Level level) {
+        return -32768;
     }
 }

@@ -2,35 +2,33 @@ package com.brandon3055.draconicevolution.client.render.tile;
 
 import codechicken.lib.render.CCModel;
 import codechicken.lib.render.CCRenderState;
-import codechicken.lib.render.OBJParser;
-import codechicken.lib.render.shader.*;
-import codechicken.lib.util.SneakyUtils;
+import codechicken.lib.render.model.OBJParser;
+import codechicken.lib.render.shader.ShaderObject;
+import codechicken.lib.render.shader.ShaderProgram;
+import codechicken.lib.render.shader.ShaderProgramBuilder;
+import codechicken.lib.render.shader.UniformType;
 import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Vector3;
-import com.brandon3055.brandonscore.client.BCClientEventHandler;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileChaosCrystal;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
-import com.brandon3055.draconicevolution.client.render.item.ToolRenderBase;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.RenderState;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexFormat;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.Map;
 
 /**
  * Created by brandon3055 on 24/9/2015.
  */
-public class RenderTileChaosCrystal extends TileEntityRenderer<TileChaosCrystal> {
+public class RenderTileChaosCrystal implements BlockEntityRenderer<TileChaosCrystal> {
     private CCModel model;
 
     public static ShaderProgram shieldShader = ShaderProgramBuilder.builder()
@@ -46,7 +44,7 @@ public class RenderTileChaosCrystal extends TileEntityRenderer<TileChaosCrystal>
                     .uniform("baseColour", UniformType.VEC4)
                     .uniform("tier", UniformType.INT)
             )
-            .whenUsed(cache -> cache.glUniform1f("time", (BCClientEventHandler.elapsedTicks + Minecraft.getInstance().getFrameTime()) / 20))
+//            .whenUsed(cache -> cache.glUniform1f("time", (BCClientEventHandler.elapsedTicks + Minecraft.getInstance().getFrameTime()) / 20))
             .build();
 
     public static ShaderProgram chaosShader = ShaderProgramBuilder.builder()
@@ -62,49 +60,52 @@ public class RenderTileChaosCrystal extends TileEntityRenderer<TileChaosCrystal>
                     .uniform("pitch", UniformType.FLOAT)
                     .uniform("time", UniformType.FLOAT)
             )
-            .whenUsed(cache -> {
-                cache.glUniform1f("alpha", 0.7F);
-                Minecraft mc = Minecraft.getInstance();
-                cache.glUniform1f("yaw", (float) ((mc.player.yRot * 2 * Math.PI) / 360.0));
-                cache.glUniform1f("pitch", -(float) ((mc.player.xRot * 2 * Math.PI) / 360.0));
-                cache.glUniform1f("time", (BCClientEventHandler.elapsedTicks + Minecraft.getInstance().getFrameTime()) / 1);
-            })
+//            .whenUsed(cache -> {
+//                cache.glUniform1f("alpha", 0.7F);
+//                Minecraft mc = Minecraft.getInstance();
+//                cache.glUniform1f("yaw", (float) ((mc.player.yRot * 2 * Math.PI) / 360.0));
+//                cache.glUniform1f("pitch", -(float) ((mc.player.xRot * 2 * Math.PI) / 360.0));
+//                cache.glUniform1f("time", (BCClientEventHandler.elapsedTicks + Minecraft.getInstance().getFrameTime()) / 1);
+//            })
             .build();
 
 
-    private static RenderType crystalType = RenderType.create("crystal_type", DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP, GL11.GL_QUADS, 256, RenderType.State.builder()
-            .setTextureState(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/block/chaos_crystal.png"), false, false))
-            .setTransparencyState(RenderState.TRANSLUCENT_TRANSPARENCY)
-            .setTexturingState(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
+    private static RenderType crystalType = RenderType.create("crystal_type", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.QUADS, 256, RenderType.CompositeState.builder()
+            .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(DraconicEvolution.MODID, "textures/block/chaos_crystal.png"), false, false))
+            .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
+//            .setTexturingState(new RenderStateShard.TexturingStateShard("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
             .createCompositeState(false));
 
-    private static RenderType shieldType = RenderType.create("shieldTypse", DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP, GL11.GL_QUADS, 256, RenderType.State.builder()
-            .setDiffuseLightingState(RenderState.DIFFUSE_LIGHTING)
-            .setTransparencyState(RenderState.TRANSLUCENT_TRANSPARENCY)
-            .setTexturingState(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
-            .setLightmapState(RenderState.LIGHTMAP)
-            .setCullState(RenderState.NO_CULL)
+    private static RenderType shieldType = RenderType.create("shieldTypse", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.QUADS, 256, RenderType.CompositeState.builder()
+//            .setDiffuseLightingState(RenderStateShard.DIFFUSE_LIGHTING)
+            .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
+//            .setTexturingState(new RenderStateShard.TexturingStateShard("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
+            .setLightmapState(RenderStateShard.LIGHTMAP)
+            .setCullState(RenderStateShard.NO_CULL)
             .createCompositeState(false));
 
-    public static RenderType chaosType = RenderType.create("chaosShaderType", DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP, GL11.GL_QUADS, 256, RenderType.State.builder()
-            .setTextureState(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/item/equipment/chaos_shader.png"), true, false))
-            .setDiffuseLightingState(RenderState.DIFFUSE_LIGHTING)
-            .setTransparencyState(RenderState.TRANSLUCENT_TRANSPARENCY)
-            .setTexturingState(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
-            .setLightmapState(RenderState.LIGHTMAP)
-            .setCullState(RenderState.NO_CULL)
+    public static RenderType chaosType = RenderType.create("chaosShaderType", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.QUADS, 256, RenderType.CompositeState.builder()
+            .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(DraconicEvolution.MODID, "textures/item/equipment/chaos_shader.png"), true, false))
+//            .setDiffuseLightingState(RenderStateShard.DIFFUSE_LIGHTING)
+            .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
+//            .setTexturingState(new RenderStateShard.TexturingStateShard("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
+            .setLightmapState(RenderStateShard.LIGHTMAP)
+            .setCullState(RenderStateShard.NO_CULL)
             .createCompositeState(false));
 
 
-    public RenderTileChaosCrystal(TileEntityRendererDispatcher rendererDispatcherIn) {
-        super(rendererDispatcherIn);
-        Map<String, CCModel> map = OBJParser.parseModels(new ResourceLocation(DraconicEvolution.MODID, "models/block/chaos_crystal.obj"), GL11.GL_QUADS, null);
+    public RenderTileChaosCrystal(BlockEntityRendererProvider.Context context) {
+        Map<String, CCModel> map = new OBJParser(new ResourceLocation(DraconicEvolution.MODID, "models/block/chaos_crystal.obj")).quads().ignoreMtl().parse();
         model = CCModel.combine(map.values()).backfacedCopy();
     }
 
+    @Override
+    public int getViewDistance() {
+        return 256;
+    }
 
     @Override
-    public void render(TileChaosCrystal te, float partialTicks, MatrixStack mStack, IRenderTypeBuffer getter, int packedLight, int packedOverlay) {
+    public void render(TileChaosCrystal te, float partialTicks, PoseStack mStack, MultiBufferSource getter, int packedLight, int packedOverlay) {
         if (te.parentPos.get().getY() != -1) return;
         Matrix4 mat = new Matrix4(mStack);
         CCRenderState ccrs = CCRenderState.instance();
@@ -117,7 +118,7 @@ public class RenderTileChaosCrystal extends TileEntityRenderer<TileChaosCrystal>
         mat.scale(0.75F);
 
         if (DEConfig.otherShaders) {
-            ccrs.bind(new ShaderRenderType(chaosType, chaosShader, chaosShader.pushCache()), getter);
+//            ccrs.bind(new ShaderRenderType(chaosType, chaosShader, chaosShader.pushCache()), getter);
             model.render(ccrs, mat);
         }
 
@@ -126,13 +127,13 @@ public class RenderTileChaosCrystal extends TileEntityRenderer<TileChaosCrystal>
         model.render(ccrs, mat);
 
         if (!te.guardianDefeated.get()) {
-            UniformCache uniforms = shieldShader.pushCache();
-            uniforms.glUniform1i("tier", 0);
-            uniforms.glUniform1f("activation", 1F);
-            uniforms.glUniform4f("baseColour", 1F, 0F, 0F, 1F);
-            ccrs.bind(new ShaderRenderType(shieldType, shieldShader, uniforms), getter);
-            model.render(ccrs, mat);
-            ToolRenderBase.endBatch(getter);
+//            UniformCache uniforms = shieldShader.pushCache();
+//            uniforms.glUniform1i("tier", 0);
+//            uniforms.glUniform1f("activation", 1F);
+//            uniforms.glUniform4f("baseColour", 1F, 0F, 0F, 1F);
+//            ccrs.bind(new ShaderRenderType(shieldType, shieldShader, uniforms), getter);
+//            model.render(ccrs, mat);
+//            ToolRenderBase.endBatch(getter);
         }
     }
 }

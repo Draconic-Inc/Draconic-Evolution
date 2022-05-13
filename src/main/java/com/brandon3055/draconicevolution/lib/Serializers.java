@@ -3,8 +3,8 @@ package com.brandon3055.draconicevolution.lib;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.init.DEModules;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.datasync.IDataSerializer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.syncher.EntityDataSerializer;
 
 import java.util.Optional;
 
@@ -14,13 +14,13 @@ import java.util.Optional;
 @Deprecated //These need to be registered to ForgeRegistries.DATA_SERIALIZERS
 public class Serializers {
 
-    public static final IDataSerializer<Optional<Module<?>>> OPT_MODULE_SERIALIZER = new IDataSerializer<Optional<Module<?>>>() {
-        public void write(PacketBuffer buf, Optional<Module<?>> value) {
+    public static final EntityDataSerializer<Optional<Module<?>>> OPT_MODULE_SERIALIZER = new EntityDataSerializer<Optional<Module<?>>>() {
+        public void write(FriendlyByteBuf buf, Optional<Module<?>> value) {
             buf.writeBoolean(value.isPresent());
             value.ifPresent(module -> buf.writeResourceLocation(module.getRegistryName()));
         }
 
-        public Optional<Module<?>> read(PacketBuffer buf) {
+        public Optional<Module<?>> read(FriendlyByteBuf buf) {
             Module<?> module = DEModules.MODULE_REGISTRY.getValue(buf.readResourceLocation());
             return !buf.readBoolean() || module == null ? Optional.empty() : Optional.of(module);
         }
@@ -30,12 +30,12 @@ public class Serializers {
         }
     };
 
-    public static final IDataSerializer<TechLevel> TECH_LEVEL_SERIALIZER = new IDataSerializer<TechLevel>() {
-        public void write(PacketBuffer packetBuffer, TechLevel techLevel) {
+    public static final EntityDataSerializer<TechLevel> TECH_LEVEL_SERIALIZER = new EntityDataSerializer<TechLevel>() {
+        public void write(FriendlyByteBuf packetBuffer, TechLevel techLevel) {
             packetBuffer.writeEnum(techLevel);
         }
 
-        public TechLevel read(PacketBuffer packetBuffer) {
+        public TechLevel read(FriendlyByteBuf packetBuffer) {
             return packetBuffer.readEnum(TechLevel.class);
         }
 

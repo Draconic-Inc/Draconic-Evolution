@@ -1,8 +1,8 @@
 package com.brandon3055.draconicevolution.api.modules.data;
 
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 
 import java.util.Map;
 
@@ -26,8 +26,8 @@ public class ShieldControlData implements ModuleData<ShieldControlData> {
     }
 
     @Override
-    public void addInformation(Map<ITextComponent, ITextComponent> map, ModuleContext context, boolean stack) {
-        map.put(new TranslationTextComponent("module.draconicevolution.shield_control.name"),
-                new TranslationTextComponent("module.draconicevolution.shield_control.value", ModuleData.round((coolDownTicks / 20D), 10)));
+    public void addInformation(Map<Component, Component> map, ModuleContext context, boolean stack) {
+        map.put(new TranslatableComponent("module.draconicevolution.shield_control.name"),
+                new TranslatableComponent("module.draconicevolution.shield_control.value", ModuleData.round((coolDownTicks / 20D), 10)));
     }
 }

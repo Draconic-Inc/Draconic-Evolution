@@ -3,7 +3,6 @@ package com.brandon3055.draconicevolution.items.tools;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.api.power.IOPStorageModifiable;
 import com.brandon3055.brandonscore.capability.MultiCapabilityProvider;
-import com.brandon3055.brandonscore.lib.TechPropBuilder;
 import com.brandon3055.brandonscore.utils.DataUtils;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
 import com.brandon3055.draconicevolution.api.IInvCharge;
@@ -16,19 +15,21 @@ import com.brandon3055.draconicevolution.api.modules.lib.ModuleHostImpl;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.init.EquipCfg;
 import com.brandon3055.draconicevolution.init.ModuleCfg;
+import com.brandon3055.draconicevolution.init.TechProperties;
 import com.brandon3055.draconicevolution.integration.equipment.EquipmentManager;
-import com.brandon3055.draconicevolution.items.equipment.DEItemTier;
+import com.brandon3055.draconicevolution.items.equipment.DETier;
 import com.brandon3055.draconicevolution.items.equipment.IModularItem;
 import com.brandon3055.draconicevolution.lib.WTFException;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -39,13 +40,12 @@ import java.util.List;
 /**
  * Created by brandon3055 on 31/05/2016.
  */
-//@Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
 public class DraconiumCapacitor extends Item implements IInvCharge, IModularItem {
     private TechLevel techLevel;
 
-    public DraconiumCapacitor(TechPropBuilder properties) {
-        super(properties.build());
-        techLevel = properties.techLevel;
+    public DraconiumCapacitor(TechProperties properties) {
+        super(properties);
+        techLevel = properties.getTechLevel();
     }
 
     @Override
@@ -63,7 +63,7 @@ public class DraconiumCapacitor extends Item implements IInvCharge, IModularItem
         ModuleHostImpl host;
         if (this == DEContent.capacitor_creative) {
             host = new ModuleHostImpl(techLevel, 1, 1, "capacitor", ModuleCfg.removeInvalidModules);
-        }else {
+        } else {
             host = new ModuleHostImpl(techLevel, ModuleCfg.capacitorWidth(techLevel), ModuleCfg.capacitorHeight(techLevel), "capacitor", ModuleCfg.removeInvalidModules);
         }
         host.addPropertyBuilder(props -> {
@@ -79,7 +79,7 @@ public class DraconiumCapacitor extends Item implements IInvCharge, IModularItem
     }
 
     @Override
-    public MultiCapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundNBT nbt) {
+    public MultiCapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
         MultiCapabilityProvider prov = IModularItem.super.initCapabilities(stack, nbt);
         if (this == DEContent.capacitor_creative && prov != null) {
             ModuleHost host = prov.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).orElseThrow(WTFException::new);
@@ -118,7 +118,7 @@ public class DraconiumCapacitor extends Item implements IInvCharge, IModularItem
     }
 
     @Override
-    public void handleTick(ItemStack stack, LivingEntity entity, @Nullable EquipmentSlotType slot, boolean inEquipModSlot) {
+    public void handleTick(ItemStack stack, LivingEntity entity, @Nullable EquipmentSlot slot, boolean inEquipModSlot) {
         ArrayList<ItemStack> stacks = new ArrayList<>();
 
         stack.getCapability(DECapabilities.PROPERTY_PROVIDER_CAPABILITY).ifPresent(props -> {
@@ -127,12 +127,12 @@ public class DraconiumCapacitor extends Item implements IInvCharge, IModularItem
             boolean hot_bar = props.getBool("charge_hot_bar").getValue();
             boolean main = props.getBool("charge_main").getValue();
 
-            if (EquipmentManager.equipModLoaded() &&  props.getBool("charge_" + EquipmentManager.equipModID()).getValue()) {
+            if (EquipmentManager.equipModLoaded() && props.getBool("charge_" + EquipmentManager.equipModID()).getValue()) {
                 stacks.addAll(EquipmentManager.getAllItems(entity));
             }
 
-            if (entity instanceof PlayerEntity) {
-                PlayerEntity player = (PlayerEntity) entity;
+            if (entity instanceof Player) {
+                Player player = (Player) entity;
                 if (hot_bar && main) {
                     stacks.addAll(player.inventory.items);
                 } else if (hot_bar) {
@@ -181,27 +181,42 @@ public class DraconiumCapacitor extends Item implements IInvCharge, IModularItem
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         addModularItemInformation(stack, worldIn, tooltip, flagIn);
     }
 
-//    @Override
-//    public boolean hasCustomEntity(ItemStack stack) {
-//        return true;
-//    }
-//
-//    @Override
-//    public Entity createEntity(World world, Entity location, ItemStack itemstack) {
-//        return new EntityPersistentItem(world, location, itemstack);
-//    }
-
     @Override
     public int getEnchantmentValue() {
-        return DEItemTier.getEnchantability(techLevel);
+        return DETier.getEnchantability(techLevel);
     }
 
     @Override
     public boolean isEnchantable(ItemStack stack) {
         return true;
+    }
+
+    @Override
+    public boolean isBarVisible(ItemStack stack) {
+        return damageBarVisible(stack);
+    }
+
+    @Override
+    public int getBarWidth(ItemStack stack) {
+        return damageBarWidth(stack);
+    }
+
+    @Override
+    public int getBarColor(ItemStack stack) {
+        return damageBarColour(stack);
+    }
+
+    @Override
+    public boolean canBeHurtBy(DamageSource source) {
+        return source == DamageSource.OUT_OF_WORLD;
+    }
+
+    @Override
+    public int getEntityLifespan(ItemStack itemStack, Level level) {
+        return -32768;
     }
 }

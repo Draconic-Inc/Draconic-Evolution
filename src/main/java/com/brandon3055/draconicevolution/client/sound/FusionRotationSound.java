@@ -2,18 +2,18 @@ package com.brandon3055.draconicevolution.client.sound;
 
 import com.brandon3055.draconicevolution.blocks.tileentity.TileFusionCraftingCore;
 import com.brandon3055.draconicevolution.handlers.DESounds;
-import net.minecraft.client.audio.ITickableSound;
-import net.minecraft.client.audio.SimpleSound;
-import net.minecraft.util.SoundCategory;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.client.resources.sounds.TickableSoundInstance;
+import net.minecraft.sounds.SoundSource;
 
 /**
  * Created by brandon3055 on 24/06/2016.
  */
-public class FusionRotationSound extends SimpleSound implements ITickableSound {
+public class FusionRotationSound extends SimpleSoundInstance implements TickableSoundInstance {
     private TileFusionCraftingCore tile;
 
     public FusionRotationSound(TileFusionCraftingCore tile) {
-        super(DESounds.fusionRotation, SoundCategory.BLOCKS, 1.5F, 1, tile.getBlockPos());
+        super(DESounds.fusionRotation, SoundSource.BLOCKS, 1.5F, 1, tile.getBlockPos());
         this.tile = tile;
         looping = true;
     }

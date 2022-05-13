@@ -8,25 +8,25 @@ import com.brandon3055.brandonscore.utils.InventoryUtils;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.items.ItemCore;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.SpawnEggItem;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.SpawnEggItem;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 
 import java.util.Random;
 
 /**
  * Created by brandon3055 on 28/09/2016.
  */
-public class TileStabilizedSpawner extends TileBCore implements ITickableTileEntity, IInteractTile, IChangeListener {
+public class TileStabilizedSpawner extends TileBCore implements IInteractTile, IChangeListener {
 
     public ManagedEnum<SpawnerTier> spawnerTier = register(new ManagedEnum<>("spawner_tier", SpawnerTier.BASIC, DataFlags.SAVE_BOTH_SYNC_TILE));
     public ManagedStack mobSoul = register(new ManagedStack("mob_soul", DataFlags.SAVE_BOTH_SYNC_TILE));
@@ -36,23 +36,20 @@ public class TileStabilizedSpawner extends TileBCore implements ITickableTileEnt
     public StabilizedSpawnerLogic spawnerLogic = new StabilizedSpawnerLogic(this);
 
     private int activatingRangeFromPlayer = 24;
-//    private int spawnRange = 4;
 
-    //region Render Fields
-
-    public double mobRotation;
-
-    public TileStabilizedSpawner() {
-        super(DEContent.tile_stabilized_spawner);
+    public TileStabilizedSpawner(BlockPos pos, BlockState state) {
+        super(DEContent.tile_stabilized_spawner, pos, state);
     }
-
-    //endregion
 
 
     @Override
     public void tick() {
         super.tick();
-        spawnerLogic.tick();
+        if (level instanceof ServerLevel){
+            spawnerLogic.serverTick((ServerLevel) level, worldPosition);
+        } else {
+            spawnerLogic.clientTick(level, worldPosition);
+        }
     }
 
 
@@ -71,7 +68,7 @@ public class TileStabilizedSpawner extends TileBCore implements ITickableTileEnt
     }
 
     @Override
-    public boolean onBlockActivated(BlockState state, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+    public boolean onBlockActivated(BlockState state, Player player, InteractionHand hand, BlockHitResult hit) {
         ItemStack stack = player.getItemInHand(hand);
         if (stack.getItem() == DEContent.mob_soul) {
             if (!level.isClientSide) {
@@ -86,7 +83,7 @@ public class TileStabilizedSpawner extends TileBCore implements ITickableTileEnt
             ItemStack soul = new ItemStack(DEContent.mob_soul);
             DEContent.mob_soul.setEntity(type.getRegistryName(), soul);
             mobSoul.set(soul);
-            if (!player.abilities.instabuild) {
+            if (!player.getAbilities().instabuild) {
                 stack.shrink(1);
             }
             return true;
@@ -123,7 +120,7 @@ public class TileStabilizedSpawner extends TileBCore implements ITickableTileEnt
                     dropStack = new ItemStack(DEContent.core_chaotic);
                     break;
             }
-            if (!level.isClientSide && !player.abilities.instabuild) {
+            if (!level.isClientSide && !player.getAbilities().instabuild) {
                 ItemEntity entityItem = new ItemEntity(level, worldPosition.getX() + 0.5, worldPosition.getY() + 1, worldPosition.getZ() + 0.5, dropStack);
                 entityItem.setDeltaMovement(entityItem.getDeltaMovement().x, 0.2, entityItem.getDeltaMovement().z);
                 ;
@@ -136,7 +133,7 @@ public class TileStabilizedSpawner extends TileBCore implements ITickableTileEnt
     }
 
     @Override
-    public void writeToItemStack(CompoundNBT compound, boolean willHarvest) {
+    public void writeToItemStack(CompoundTag compound, boolean willHarvest) {
         if (willHarvest) {
             mobSoul.set(ItemStack.EMPTY);
         }
@@ -151,10 +148,6 @@ public class TileStabilizedSpawner extends TileBCore implements ITickableTileEnt
         }
         return DEContent.mob_soul.getRenderEntity(mobSoul.get());
     }
-
-//    public double getRotationSpeed() {
-//        return isActive() ? 0.5 + (1D - ((double) spawnDelay.value / (double) startSpawnDelay.value)) * 4.5 : 0;
-//    }
 
     //endregion
 

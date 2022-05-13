@@ -24,37 +24,41 @@ import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.inventory.GuiLayoutFactories;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.mojang.authlib.GameProfile;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.item.ExperienceOrbEntity;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.*;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.ExperienceOrb;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
-public class TileGrinder extends TileBCore implements ITickableTileEntity, IRSSwitchable, INamedContainerProvider, IInteractTile {
+public class TileGrinder extends TileBCore implements IRSSwitchable, MenuProvider, IInteractTile {
 
     private static FakePlayer cachedFakePlayer;
     public final ManagedBool active = register(new ManagedBool("active", DataFlags.SAVE_NBT_SYNC_TILE, DataFlags.TRIGGER_UPDATE));
@@ -79,13 +83,13 @@ public class TileGrinder extends TileBCore implements ITickableTileEntity, IRSSw
 
 
     //Grinding logic fields
-    public AxisAlignedBB killZone;
+    public AABB killZone;
     private int coolDown = 0;
     private LivingEntity nextTarget = null;
     private int killRate = 5; //Number of ticks between kills
 
-    public TileGrinder() {
-        super(DEContent.tile_grinder);
+    public TileGrinder(BlockPos pos, BlockState state) {
+        super(DEContent.tile_grinder, pos, state);
         enablePlayerAccessTracking(true);
 
         capManager.setManaged("energy", CapabilityOP.OP, opStorage).saveBoth().syncContainer();
@@ -113,10 +117,10 @@ public class TileGrinder extends TileBCore implements ITickableTileEntity, IRSSw
     }
 
     @Override
-    public void onPlayerOpenContainer(PlayerEntity player) {
+    public void onPlayerOpenContainer(Player player) {
         super.onPlayerOpenContainer(player);
-        if (player instanceof ServerPlayerEntity) {
-            entityFilter.syncClient((ServerPlayerEntity) player);
+        if (player instanceof ServerPlayer) {
+            entityFilter.syncClient((ServerPlayer) player);
         }
     }
 
@@ -186,7 +190,7 @@ public class TileGrinder extends TileBCore implements ITickableTileEntity, IRSSw
             BlockPos pos2 = worldPosition.offset(aoe, aoe, aoe);
             pos1 = pos1.offset(facing.getStepX() * aoe, 0, facing.getStepZ() * aoe);
             pos2 = pos2.offset(facing.getStepX() * aoe, 0, facing.getStepZ() * aoe);
-            killZone = new AxisAlignedBB(pos1, pos2);
+            killZone = new AABB(pos1, pos2);
         }
     }
 
@@ -199,7 +203,7 @@ public class TileGrinder extends TileBCore implements ITickableTileEntity, IRSSw
         if (weapon.isEmpty() || weapon.getDamageValue() >= weapon.getMaxDamage() - 1) {
             weapon = ItemStack.EMPTY;
         }
-        getFakePlayer().setItemInHand(Hand.MAIN_HAND, weapon);
+        getFakePlayer().setItemInHand(InteractionHand.MAIN_HAND, weapon);
 
         int eph = DEOldConfig.grinderEnergyPerHeart;
         float health = nextTarget.getHealth();
@@ -260,7 +264,7 @@ public class TileGrinder extends TileBCore implements ITickableTileEntity, IRSSw
                     nextTarget = randEntity;
                     //Throw the sword!
                     sendPacketToChunk(output -> output.writeInt(nextTarget.getId()), 1);
-                    level.playSound(null, worldPosition, SoundEvents.TRIDENT_THROW, SoundCategory.BLOCKS, 1, 0.55F + (level.random.nextFloat() * 0.1F));
+                    level.playSound(null, worldPosition, SoundEvents.TRIDENT_THROW, SoundSource.BLOCKS, 1, 0.55F + (level.random.nextFloat() * 0.1F));
                     coolDown = killRate;
                     return;
                 }
@@ -273,19 +277,19 @@ public class TileGrinder extends TileBCore implements ITickableTileEntity, IRSSw
 
     private boolean isValidEntity(LivingEntity livingBase) {
         if (!livingBase.isAlive()) return false;
-        if (livingBase instanceof PlayerEntity && !DEOldConfig.allowGrindingPlayers) return false;
+        if (livingBase instanceof Player && !DEOldConfig.allowGrindingPlayers) return false;
         if (DEOldConfig.grinderBlacklist.isEmpty()) return true;
         ResourceLocation reg = livingBase.getType().getRegistryName();
         return !(reg != null && DEOldConfig.grinderBlacklist.contains(reg.toString()));
     }
 
     private void handleLootCollection() {
-        List<ExperienceOrbEntity> xp = level.getEntitiesOfClass(ExperienceOrbEntity.class, killZone.inflate(4, 4, 4));
-        for (ExperienceOrbEntity orb : xp) {
+        List<ExperienceOrb> xp = level.getEntitiesOfClass(ExperienceOrb.class, killZone.inflate(4, 4, 4));
+        for (ExperienceOrb orb : xp) {
             if (!orb.isAlive()) continue;
             if (collectXP.get() && storedXP.get() + orb.value <= getXPStorageCapacity()) {
                 storedXP.add(orb.value);
-                orb.remove();
+                orb.discard();
             } else if (orb.age < 5400) {
                 orb.age = 5700;
             }
@@ -294,7 +298,7 @@ public class TileGrinder extends TileBCore implements ITickableTileEntity, IRSSw
         if (collectItems.get()) {
             List<ItemEntity> items = level.getEntitiesOfClass(ItemEntity.class, killZone.inflate(1, 1, 1));
             for (Direction dir : Direction.values()) {
-                TileEntity target = level.getBlockEntity(worldPosition.relative(dir));
+                BlockEntity target = level.getBlockEntity(worldPosition.relative(dir));
                 if (target != null) {
                     LazyOptional<IItemHandler> opCap = target.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, dir.getOpposite());
                     opCap.ifPresent(iItemHandler -> {
@@ -306,7 +310,7 @@ public class TileGrinder extends TileBCore implements ITickableTileEntity, IRSSw
                                 stack = InventoryUtils.insertItem(iItemHandler, stack, false);
                                 if (stack.isEmpty()) {
                                     next.setItem(ItemStack.EMPTY);
-                                    next.remove();
+                                    next.discard();
                                     i.remove();
                                 } else {
                                     next.setItem(stack);
@@ -320,7 +324,7 @@ public class TileGrinder extends TileBCore implements ITickableTileEntity, IRSSw
     }
 
     @Override
-    public void receivePacketFromClient(MCDataInput data, ServerPlayerEntity client, int id) {
+    public void receivePacketFromClient(MCDataInput data, ServerPlayer client, int id) {
         super.receivePacketFromClient(data, client, id);
         if (id == 1) {
             int levels = 0;
@@ -380,7 +384,7 @@ public class TileGrinder extends TileBCore implements ITickableTileEntity, IRSSw
 
     public FakePlayer getFakePlayer() {
         if (cachedFakePlayer == null) {
-            cachedFakePlayer = FakePlayerFactory.get((ServerWorld) level, new GameProfile(UUID.fromString("5b5689b9-e43d-4282-a42a-dc916f3616b7"), "Draconic Evolution Grinder"));
+            cachedFakePlayer = FakePlayerFactory.get((ServerLevel) level, new GameProfile(UUID.fromString("5b5689b9-e43d-4282-a42a-dc916f3616b7"), "Draconic Evolution Grinder"));
         }
         return cachedFakePlayer;
     }
@@ -398,20 +402,20 @@ public class TileGrinder extends TileBCore implements ITickableTileEntity, IRSSw
 
     @Nullable
     @Override
-    public Container createMenu(int currentWindowIndex, PlayerInventory playerInventory, PlayerEntity player) {
+    public AbstractContainerMenu createMenu(int currentWindowIndex, Inventory playerInventory, Player player) {
         return new ContainerBCTile<>(DEContent.container_grinder, currentWindowIndex, playerInventory, this, GuiLayoutFactories.GRINDER_LAYOUT);
     }
 
     @Override
-    public boolean onBlockActivated(BlockState state, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
-        if (player instanceof ServerPlayerEntity) {
-            NetworkHooks.openGui((ServerPlayerEntity) player, this, worldPosition);
+    public boolean onBlockActivated(BlockState state, Player player, InteractionHand handIn, BlockHitResult hit) {
+        if (player instanceof ServerPlayer) {
+            NetworkHooks.openGui((ServerPlayer) player, this, worldPosition);
         }
         return true;
     }
 
     @Override
-    public AxisAlignedBB getRenderBoundingBox() {
+    public AABB getRenderBoundingBox() {
         if (showAOE.get()) {
             return INFINITE_EXTENT_AABB;
         }

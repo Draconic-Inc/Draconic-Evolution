@@ -10,9 +10,9 @@ import com.brandon3055.draconicevolution.client.render.effect.CrystalFXBeam;
 import com.brandon3055.draconicevolution.client.render.effect.CrystalFXLink;
 import com.brandon3055.draconicevolution.client.render.effect.CrystalFXWireless;
 import com.brandon3055.draconicevolution.network.CrystalUpdateBatcher.BatchedCrystalUpdate;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import java.util.LinkedList;
 import java.util.Map;
@@ -86,7 +86,7 @@ public class ENetFXHandlerClientWireless extends ENetFXHandler<TileCrystalWirele
 
                 linkFX = new LinkedList<>();
                 for (BlockPos receiver : tile.getReceivers()) {
-                    CrystalFXLink link = new CrystalFXLink((ClientWorld)tile.getLevel(), tile, Vec3D.getCenter(receiver));
+                    CrystalFXLink link = new CrystalFXLink((ClientLevel)tile.getLevel(), tile, Vec3D.getCenter(receiver));
                     linkFX.add(link);
                     DEParticles.addParticleDirect(tile.getLevel(), link);
                 }
@@ -131,7 +131,7 @@ public class ENetFXHandlerClientWireless extends ENetFXHandler<TileCrystalWirele
         transferFXList.clear();
 
         for (BlockPos pos : tile.getLinks()) {
-            TileEntity target = tile.getLevel().getBlockEntity(pos);
+            BlockEntity target = tile.getLevel().getBlockEntity(pos);
             if (!(target instanceof ICrystalLink)) {
                 continue;
             }
@@ -141,7 +141,7 @@ public class ENetFXHandlerClientWireless extends ENetFXHandler<TileCrystalWirele
         }
 
         for (BlockPos pos : tile.getReceivers()) {
-            CrystalFXWireless wirelessFX = new CrystalFXWireless((ClientWorld)tile.getLevel(), tile, pos);
+            CrystalFXWireless wirelessFX = new CrystalFXWireless((ClientLevel)tile.getLevel(), tile, pos);
             transferFXList.add(wirelessFX);
             DEParticles.addParticleDirect(tile.getLevel(), wirelessFX);
         }

@@ -6,8 +6,8 @@ import com.brandon3055.brandonscore.client.gui.modulargui.ModularGuiScreen;
 import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiLabel;
 import com.brandon3055.brandonscore.client.gui.modulargui.lib.GuiAlign;
 import com.brandon3055.brandonscore.client.gui.modulargui.templates.TGuiBase;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.TextComponent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +20,7 @@ public class WhatsBrokenGui extends ModularGuiScreen {
     protected GuiToolkit<WhatsBrokenGui> toolkit = new GuiToolkit<>(this, GuiToolkit.GuiLayout.EXTRA_WIDE_EXTRA_TALL);
 
     public WhatsBrokenGui() {
-        super(new StringTextComponent("Whats Broken? (Besides this info tablet)"));
+        super(new TextComponent("Whats Broken? (Besides this info tablet)"));
 
     }
 
@@ -32,7 +32,7 @@ public class WhatsBrokenGui extends ModularGuiScreen {
 
         List<String> brokenList = new ArrayList<>();
 
-        brokenList.add(TextFormatting.BLUE + "Not Implemented / WIP");
+        brokenList.add(ChatFormatting.BLUE + "Not Implemented / WIP");
         brokenList.add("- Dislocators & Portals");
         brokenList.add("- Draconium Chest");
         brokenList.add("- Fusion crafting (Temporarily hacked in so you can craft stuff. Will be re written later)");
@@ -45,10 +45,10 @@ public class WhatsBrokenGui extends ModularGuiScreen {
         brokenList.add("- Modules: Junk filter, Night vision, Mining stability, (bunch of other modules i have planned)");
 
         brokenList.add("");
-        brokenList.add(TextFormatting.BLUE + "Know Issues");
+        brokenList.add(ChatFormatting.BLUE + "Know Issues");
         brokenList.add("- Opening creative inventory nukes all data on my tools and armor (forge capability bug)");
         brokenList.add("");
-        brokenList.add(TextFormatting.BLUE + "See \"known-issues\" channel on discord for up to date list.");
+        brokenList.add(ChatFormatting.BLUE + "See \"known-issues\" channel on discord for up to date list.");
 
         GuiLabel last = null;
         for (String line : brokenList) {

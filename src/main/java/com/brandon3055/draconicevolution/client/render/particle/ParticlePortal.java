@@ -4,20 +4,20 @@ import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.utils.MathUtils;
 import com.brandon3055.draconicevolution.client.DETextures;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.IParticleRenderType;
-import net.minecraft.client.particle.SpriteTexturedParticle;
-import net.minecraft.client.world.ClientWorld;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.particle.ParticleRenderType;
+import net.minecraft.client.particle.TextureSheetParticle;
 
 /**
  * Created by brandon3055 on 17/07/2016.
  */
-public class ParticlePortal extends SpriteTexturedParticle {
+public class ParticlePortal extends TextureSheetParticle {
 
     public Vector3 target;
     public Vector3 start;
     public float baseScale;
 
-    public ParticlePortal(ClientWorld worldIn, Vector3 pos, Vector3 target) {
+    public ParticlePortal(ClientLevel worldIn, Vector3 pos, Vector3 target) {
         super(worldIn, pos.x, pos.y, pos.z);
         this.start = pos;
         this.target = target;
@@ -35,7 +35,7 @@ public class ParticlePortal extends SpriteTexturedParticle {
     }
 
     @Override
-    public IParticleRenderType getRenderType() {
+    public ParticleRenderType getRenderType() {
         return DETextures.PARTICLE_SHEET_TRANSLUCENT;
     }
 

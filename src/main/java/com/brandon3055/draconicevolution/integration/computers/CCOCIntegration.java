@@ -3,10 +3,10 @@ package com.brandon3055.draconicevolution.integration.computers;
 import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.peripheral.IPeripheralProvider;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.ModList;
 
@@ -80,8 +80,8 @@ public class CCOCIntegration {
          */
         @Nullable
         @Override
-        public LazyOptional<IPeripheral> getPeripheral(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull Direction side) {
-            TileEntity tile = world.getBlockEntity(pos);
+        public LazyOptional<IPeripheral> getPeripheral(@Nonnull Level world, @Nonnull BlockPos pos, @Nonnull Direction side) {
+            BlockEntity tile = world.getBlockEntity(pos);
             if (tile instanceof IPeripheral) {
             	setPeripheral((IPeripheral)tile);
                 return holderPeripheral;

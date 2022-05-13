@@ -5,9 +5,9 @@ import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.GuiConfig
 import com.brandon3055.draconicevolution.items.tools.DislocatorAdvanced;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.InputEvent;
@@ -22,7 +22,7 @@ public class KeyInputHandler {
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public void onKeyInput(InputEvent.KeyInputEvent event) {
-        PlayerEntity player = Minecraft.getInstance().player;
+        Player player = Minecraft.getInstance().player;
         if (player == null) {
             return;
         }
@@ -32,7 +32,7 @@ public class KeyInputHandler {
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public void onMouseInput(InputEvent.MouseInputEvent event) {
-        PlayerEntity player = Minecraft.getInstance().player;
+        Player player = Minecraft.getInstance().player;
         if (player == null) {
             return;
         }
@@ -49,7 +49,7 @@ public class KeyInputHandler {
 //        }
     }
 
-    private void onInput(PlayerEntity player) {
+    private void onInput(Player player) {
 
         if (KeyBindings.toolConfig.consumeClick()) {
             DraconicNetwork.sendOpenItemConfig(false);
@@ -65,12 +65,12 @@ public class KeyInputHandler {
 ////            PacketDispatcher.dispatchToolProfileChange(false);
 //        }
         else if (KeyBindings.toggleFlight.consumeClick()) {
-            if (player.abilities.mayfly) {
-                if (player.abilities.flying) {
-                    player.abilities.flying = false;
+            if (player.getAbilities().mayfly) {
+                if (player.getAbilities().flying) {
+                    player.getAbilities().flying = false;
                     player.onUpdateAbilities();
                 } else {
-                    player.abilities.flying = true;
+                    player.getAbilities().flying = true;
                     if (player.isOnGround()) {
                         player.setPos(player.getX(), player.getY() + 0.05D, player.getZ());
                         player.setDeltaMovement(player.getDeltaMovement().x, 0, player.getDeltaMovement().z);
@@ -94,7 +94,7 @@ public class KeyInputHandler {
                 Minecraft.getInstance().setScreen(new GuiDislocator(stack.getHoverName(), player));
             }
         } else if (KeyBindings.placeItem.consumeClick()) {
-            if (Minecraft.getInstance().hitResult instanceof BlockRayTraceResult) {
+            if (Minecraft.getInstance().hitResult instanceof BlockHitResult) {
                 DraconicNetwork.sendPlaceItem();
             }
         }

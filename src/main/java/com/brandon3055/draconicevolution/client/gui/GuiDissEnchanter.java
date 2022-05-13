@@ -3,21 +3,21 @@ package com.brandon3055.draconicevolution.client.gui;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElementManager;
 import com.brandon3055.brandonscore.client.gui.modulargui.ModularGuiContainer;
 import com.brandon3055.draconicevolution.inventory.ContainerDissEnchanter;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 
 /**
  * Created by brandon3055 on 1/10/2016.
  */
 public class GuiDissEnchanter extends ModularGuiContainer<ContainerDissEnchanter> {
-    private final PlayerEntity player;
+    private final Player player;
 //    private MGuiBackground background;
 //    private MGuiButton extractButton;
 //    private MGuiSelectDialog selector;
 
 
-    public GuiDissEnchanter(ContainerDissEnchanter container, PlayerInventory playerInventory, ITextComponent title) {
+    public GuiDissEnchanter(ContainerDissEnchanter container, Inventory playerInventory, Component title) {
         super(container, playerInventory, title);
 //        this.tile = container.tile;
         this.player = playerInventory.player;

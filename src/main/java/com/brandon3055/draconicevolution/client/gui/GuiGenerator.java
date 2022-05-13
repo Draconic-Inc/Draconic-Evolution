@@ -3,7 +3,7 @@ package com.brandon3055.draconicevolution.client.gui;
 import codechicken.lib.math.MathHelper;
 import codechicken.lib.render.CCModel;
 import codechicken.lib.render.CCRenderState;
-import codechicken.lib.render.OBJParser;
+import codechicken.lib.render.model.OBJParser;
 import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Rotation;
 import com.brandon3055.brandonscore.client.BCSprites;
@@ -17,18 +17,17 @@ import com.brandon3055.brandonscore.inventory.ContainerBCTile;
 import com.brandon3055.brandonscore.inventory.ContainerSlotLayout;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileGenerator;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import org.lwjgl.opengl.GL11;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 
 import java.util.Map;
 
@@ -38,17 +37,17 @@ public class GuiGenerator extends ModularGuiContainer<ContainerBCTile<TileGenera
     private static final CCModel storageModel;
 
     static {
-        Map<String, CCModel> map = OBJParser.parseModels(new ResourceLocation(DraconicEvolution.MODID, "models/block/generator/generator_storage.obj"), GL11.GL_QUADS, null);
+        Map<String, CCModel> map = new OBJParser(new ResourceLocation(DraconicEvolution.MODID, "models/block/generator/generator_storage.obj")).quads().ignoreMtl().parse();
         storageModel = CCModel.combine(map.values());
         storageModel.computeNormals();
     }
 
-    public PlayerEntity player;
+    public Player player;
     private TileGenerator tile;
 
     protected GuiToolkit<GuiGenerator> toolkit = new GuiToolkit<>(this, GuiToolkit.GuiLayout.DEFAULT).setTranslationPrefix("gui.draconicevolution.generator");
 
-    public GuiGenerator(ContainerBCTile<TileGenerator> container, PlayerInventory playerInventory, ITextComponent title) {
+    public GuiGenerator(ContainerBCTile<TileGenerator> container, Inventory playerInventory, Component title) {
         super(container, playerInventory, title);
         this.tile = container.tile;
         this.player = playerInventory.player;
@@ -71,7 +70,7 @@ public class GuiGenerator extends ModularGuiContainer<ContainerBCTile<TileGenera
         //Mode Button
         GuiButton modeButton = toolkit.createButton("", template.background);
         modeButton.setDisplaySupplier(() -> I18n.get(tile.mode.get().unlocalizedName()));
-        modeButton.setHoverText(element -> TextFormatting.BLUE + I18n.get(tile.mode.get().unlocalizedName() + ".info"));
+        modeButton.setHoverText(element -> ChatFormatting.BLUE + I18n.get(tile.mode.get().unlocalizedName() + ".info"));
         modeButton.onButtonPressed((pressed) -> tile.mode.set(tile.mode.get().next(hasShiftDown() || pressed == 1)));
         modeButton.setSize(100, 14);
         modeButton.zOffset += 100;
@@ -80,9 +79,9 @@ public class GuiGenerator extends ModularGuiContainer<ContainerBCTile<TileGenera
         modeButton.setResetHoverOnClick(true);
 
         //Info Panel
-        template.infoPanel.addLabeledValue(TextFormatting.GOLD + toolkit.i18n("fuel_efficiency"), 6, 11, () -> TextFormatting.GRAY + (tile.mode.get().getEfficiency() + "%"), true);
-        template.infoPanel.addLabeledValue(TextFormatting.GOLD + toolkit.i18n("output_power"), 6, 11, () -> TextFormatting.GRAY + (tile.productionRate.get() + " / " + tile.mode.get().powerOutput + " OP/t"), true);
-        template.infoPanel.addLabeledValue(TextFormatting.GOLD + toolkit.i18n("current_fuel_value"), 6, 11, () -> TextFormatting.GRAY + (tile.fuelRemaining.get() == 0 ? "n/a" : tile.fuelRemaining.get() + " / " + tile.fuelValue.get()), true);
+        template.infoPanel.addLabeledValue(ChatFormatting.GOLD + toolkit.i18n("fuel_efficiency"), 6, 11, () -> ChatFormatting.GRAY + (tile.mode.get().getEfficiency() + "%"), true);
+        template.infoPanel.addLabeledValue(ChatFormatting.GOLD + toolkit.i18n("output_power"), 6, 11, () -> ChatFormatting.GRAY + (tile.productionRate.get() + " / " + tile.mode.get().powerOutput + " OP/t"), true);
+        template.infoPanel.addLabeledValue(ChatFormatting.GOLD + toolkit.i18n("current_fuel_value"), 6, 11, () -> ChatFormatting.GRAY + (tile.fuelRemaining.get() == 0 ? "n/a" : tile.fuelRemaining.get() + " / " + tile.fuelValue.get()), true);
     }
 
 
@@ -93,8 +92,8 @@ public class GuiGenerator extends ModularGuiContainer<ContainerBCTile<TileGenera
             CCRenderState ccrs = CCRenderState.instance();
             ccrs.reset();
 
-            MatrixStack mStack = new MatrixStack();
-            IRenderTypeBuffer.Impl getter = IRenderTypeBuffer.immediate(Tessellator.getInstance().getBuilder());
+            PoseStack mStack = new PoseStack();
+            MultiBufferSource.BufferSource getter = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
             ccrs.bind(modelType, getter);
 
             Matrix4 mat = new Matrix4(mStack);

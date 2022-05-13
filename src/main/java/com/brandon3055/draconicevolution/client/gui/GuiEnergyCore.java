@@ -2,7 +2,6 @@ package com.brandon3055.draconicevolution.client.gui;
 
 import codechicken.lib.math.MathHelper;
 import com.brandon3055.brandonscore.api.render.GuiHelper;
-import com.brandon3055.brandonscore.client.gui.GuiButtonAHeight;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElementManager;
 import com.brandon3055.brandonscore.client.gui.modulargui.ModularGuiContainer;
 import com.brandon3055.brandonscore.client.utils.GuiHelperOld;
@@ -11,13 +10,16 @@ import com.brandon3055.brandonscore.utils.InfoHelper;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyCore;
 import com.google.common.collect.Lists;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.*;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 
 import java.text.DecimalFormat;
 
@@ -26,7 +28,7 @@ import java.text.DecimalFormat;
  */
 public class GuiEnergyCore extends ModularGuiContainer<ContainerBCTile<TileEnergyCore>> {
 
-    public PlayerEntity player;
+    public Player player;
     public TileEnergyCore tile;
     private Button activate;
     private Button tierUp;
@@ -45,7 +47,7 @@ public class GuiEnergyCore extends ModularGuiContainer<ContainerBCTile<TileEnerg
     private long days;
     private long years;
 
-    public GuiEnergyCore(ContainerBCTile<TileEnergyCore> container, PlayerInventory playerInventory, ITextComponent title) {
+    public GuiEnergyCore(ContainerBCTile<TileEnergyCore> container, Inventory playerInventory, Component title) {
         super(container, playerInventory, title);
         this.tile = container.tile;
         this.imageWidth = 180;
@@ -70,26 +72,26 @@ public class GuiEnergyCore extends ModularGuiContainer<ContainerBCTile<TileEnerg
     }
 
 
+//    @Override
+//    public void init(Minecraft mc, int width, int height) {
+//        super.init(mc, width, height);
+//
+//        addButton(activate = new GuiButtonAHeight(leftPos + 9, topPos + 99, 162, 12, "Activate-L", (b) -> tile.sendPacketToServer(output -> {}, 0)));
+//        addButton(tierUp = new GuiButtonAHeight(leftPos + 91, topPos + 86, 80, 12, I18n.get("button.de.tierUp.txt"), (b) -> tile.sendPacketToServer(output -> {}, 1)));
+//        addButton(tierDown = new GuiButtonAHeight(leftPos + 9, topPos + 86, 80, 12, I18n.get("button.de.tierDown.txt"), (b) -> tile.sendPacketToServer(output -> {}, 2)));
+//        addButton(toggleGuide = new GuiButtonAHeight(leftPos + 9, topPos + 73, 162, 12, I18n.get("button.de.buildGuide.txt"), (b) -> tile.sendPacketToServer(output -> {}, 3)));
+//        addButton(assembleCore = new GuiButtonAHeight(leftPos + 9, topPos + 99, 162, 12, I18n.get("button.de.assembleCore.txt"), (b) -> tile.sendPacketToServer(output -> {}, 4)));
+//
+//        addButton(layerMinus = new GuiButtonAHeight(leftPos + 5, topPos - 13, 70, 12, "Layer-", (b) -> layer(-1)));
+//        addButton(layerPlus = new GuiButtonAHeight(leftPos + 105, topPos - 13, 70, 12, "Layer+", (b) -> layer(1)));
+//        layerPlus.visible = tile.buildGuide.get();
+//        layerMinus.visible = tile.buildGuide.get();
+//
+//        updateButtonStates();
+//    }
+
     @Override
-    public void init(Minecraft mc, int width, int height) {
-        super.init(mc, width, height);
-
-        addButton(activate = new GuiButtonAHeight(leftPos + 9, topPos + 99, 162, 12, "Activate-L", (b) -> tile.sendPacketToServer(output -> {}, 0)));
-        addButton(tierUp = new GuiButtonAHeight(leftPos + 91, topPos + 86, 80, 12, I18n.get("button.de.tierUp.txt"), (b) -> tile.sendPacketToServer(output -> {}, 1)));
-        addButton(tierDown = new GuiButtonAHeight(leftPos + 9, topPos + 86, 80, 12, I18n.get("button.de.tierDown.txt"), (b) -> tile.sendPacketToServer(output -> {}, 2)));
-        addButton(toggleGuide = new GuiButtonAHeight(leftPos + 9, topPos + 73, 162, 12, I18n.get("button.de.buildGuide.txt"), (b) -> tile.sendPacketToServer(output -> {}, 3)));
-        addButton(assembleCore = new GuiButtonAHeight(leftPos + 9, topPos + 99, 162, 12, I18n.get("button.de.assembleCore.txt"), (b) -> tile.sendPacketToServer(output -> {}, 4)));
-
-        addButton(layerMinus = new GuiButtonAHeight(leftPos + 5, topPos - 13, 70, 12, "Layer-", (b) -> layer(-1)));
-        addButton(layerPlus = new GuiButtonAHeight(leftPos + 105, topPos - 13, 70, 12, "Layer+", (b) -> layer(1)));
-        layerPlus.visible = tile.buildGuide.get();
-        layerMinus.visible = tile.buildGuide.get();
-
-        updateButtonStates();
-    }
-
-    @Override
-    protected void renderBg(MatrixStack mStack, float partialTicks, int mouseX, int mouseY) {
+    protected void renderBg(PoseStack mStack, float partialTicks, int mouseX, int mouseY) {
         GuiHelperOld.drawGuiBaseBackground(this, leftPos, topPos, imageWidth, imageHeight);
         GuiHelperOld.drawPlayerSlots(this, leftPos + (imageWidth / 2), topPos + 115, true);
         drawCenteredString(mStack, font, I18n.get("gui.de.energyStorageCore.name", tile.tier.get()), leftPos + (imageWidth / 2), topPos + 5, InfoHelper.GUI_TITLE);
@@ -146,7 +148,7 @@ public class GuiEnergyCore extends ModularGuiContainer<ContainerBCTile<TileEnerg
     }
 
     @Override
-    public void render(MatrixStack mStack, int mouseX, int mouseY, float partialTicks) {
+    public void render(PoseStack mStack, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(mStack);
         super.render(mStack, mouseX, mouseY, partialTicks);
 
@@ -154,11 +156,11 @@ public class GuiEnergyCore extends ModularGuiContainer<ContainerBCTile<TileEnerg
 //            GuiHelper.drawEnergyBar(this, guiLeft + 5, guiTop + 82, 170, true, tile.getExtendedStorage(), tile.getExtendedCapacity(), true, mouseX, mouseY);
 
             if (GuiHelperOld.isInRect(leftPos + 40, topPos + 27, imageWidth - 80, 8, mouseX, mouseY)) {
-                renderTooltip(mStack, new StringTextComponent(TextFormatting.GRAY + "[" + Utils.addCommas(tile.getExtendedCapacity()) + " OP]"), mouseX, mouseY);
+                renderTooltip(mStack, new TextComponent(ChatFormatting.GRAY + "[" + Utils.addCommas(tile.getExtendedCapacity()) + " OP]"), mouseX, mouseY);
             }
 
             if (GuiHelperOld.isInRect(leftPos + 40, topPos + 48, imageWidth - 80, 8, mouseX, mouseY)) {
-                renderTooltip(mStack, new StringTextComponent(TextFormatting.GRAY + "[" + Utils.addCommas(tile.getExtendedStorage()) + " OP]"), mouseX, mouseY);
+                renderTooltip(mStack, new TextComponent(ChatFormatting.GRAY + "[" + Utils.addCommas(tile.getExtendedStorage()) + " OP]"), mouseX, mouseY);
             }
         }
 
@@ -167,8 +169,8 @@ public class GuiEnergyCore extends ModularGuiContainer<ContainerBCTile<TileEnerg
         }
 
         if (GuiHelper.isInRect(guiLeft(), guiTop() + 59, xSize(), 24, mouseX, mouseY) && tile.active.get()){
-            IFormattableTextComponent input = new StringTextComponent("IN: ").withStyle(TextFormatting.GREEN).append(new StringTextComponent(Utils.formatNumber(Math.round(tile.inputRate.get())) + " OP/t").withStyle(TextFormatting.GRAY));
-            IFormattableTextComponent out = new StringTextComponent("OUT: ").withStyle(TextFormatting.DARK_RED).append(new StringTextComponent(Utils.formatNumber(Math.round(tile.outputRate.get())) + " OP/t").withStyle(TextFormatting.GRAY));
+            MutableComponent input = new TextComponent("IN: ").withStyle(ChatFormatting.GREEN).append(new TextComponent(Utils.formatNumber(Math.round(tile.inputRate.get())) + " OP/t").withStyle(ChatFormatting.GRAY));
+            MutableComponent out = new TextComponent("OUT: ").withStyle(ChatFormatting.DARK_RED).append(new TextComponent(Utils.formatNumber(Math.round(tile.outputRate.get())) + " OP/t").withStyle(ChatFormatting.GRAY));
 
             renderTooltip(mStack, Lists.newArrayList(input.getVisualOrderText(), out.getVisualOrderText()), mouseX, mouseY);
         } else {
@@ -177,31 +179,31 @@ public class GuiEnergyCore extends ModularGuiContainer<ContainerBCTile<TileEnerg
 
     }
 
-    @Override
-    public void tick() {
-        super.tick();
-        updateButtonStates();
-
-        if (tile.transferRate.get() != 0) {
-            long space = tile.transferRate.get() > 0 ? tile.getExtendedCapacity() - tile.getExtendedStorage() : tile.getExtendedStorage();
-            ticks = Math.abs(space / tile.transferRate.get());
-        }
-        else {
-            ticks = 0;
-        }
-        seconds = ticks / 20L;
-        minutes = seconds / 60L;
-        hours = minutes / 60L;
-        days = hours / 24L;
-        years = days / 365L;
-    }
+//    @Override
+//    public void tick() {
+//        super.tick();
+//        updateButtonStates();
+//
+//        if (tile.transferRate.get() != 0) {
+//            long space = tile.transferRate.get() > 0 ? tile.getExtendedCapacity() - tile.getExtendedStorage() : tile.getExtendedStorage();
+//            ticks = Math.abs(space / tile.transferRate.get());
+//        }
+//        else {
+//            ticks = 0;
+//        }
+//        seconds = ticks / 20L;
+//        minutes = seconds / 60L;
+//        hours = minutes / 60L;
+//        days = hours / 24L;
+//        years = days / 365L;
+//    }
 
     private void updateButtonStates() {
         if (tile.active.get()) {
-            activate.setMessage(new TranslationTextComponent("button.de.deactivate.txt"));
+            activate.setMessage(new TranslatableComponent("button.de.deactivate.txt"));
         } else {
-            activate.setMessage(new TranslationTextComponent("button.de.activate.txt"));
-            toggleGuide.setMessage(new StringTextComponent(I18n.get("button.de.buildGuide.txt") + " " + (tile.buildGuide.get() ? I18n.get("gui.de.active.txt") : I18n.get("gui.de.inactive.txt"))));
+            activate.setMessage(new TranslatableComponent("button.de.activate.txt"));
+            toggleGuide.setMessage(new TextComponent(I18n.get("button.de.buildGuide.txt") + " " + (tile.buildGuide.get() ? I18n.get("gui.de.active.txt") : I18n.get("gui.de.inactive.txt"))));
             tierUp.active = tile.tier.get() < 8;
             tierDown.active = tile.tier.get() > 1;
         }

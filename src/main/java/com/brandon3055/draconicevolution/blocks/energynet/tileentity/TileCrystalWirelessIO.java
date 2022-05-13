@@ -18,23 +18,23 @@ import com.brandon3055.draconicevolution.client.render.effect.CrystalFXBase;
 import com.brandon3055.draconicevolution.client.render.effect.CrystalFXRing;
 import com.brandon3055.draconicevolution.handlers.DEEventHandler;
 import com.brandon3055.draconicevolution.init.DEContent;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.IContainerListener;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ChunkHolder;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.server.level.ChunkHolder;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.ContainerListener;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -56,12 +56,12 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
     public final ManagedBool useUpdateOptimisation = dataManager.register(new ManagedBool("transport_state", true, DataFlags.SAVE_BOTH_SYNC_CONTAINER));
     public final ManagedBool inputMode = dataManager.register(new ManagedBool("input_mode", DataFlags.SAVE_BOTH_SYNC_TILE));
 
-    public TileCrystalWirelessIO() {
-        super(DEContent.tile_crystal_wireless);
+    public TileCrystalWirelessIO(BlockPos pos, BlockState state) {
+        super(DEContent.tile_crystal_wireless, pos, state);
     }
 
-    public TileCrystalWirelessIO(TechLevel techLevel) {
-        super(DEContent.tile_crystal_wireless, techLevel);
+    public TileCrystalWirelessIO(TechLevel techLevel, BlockPos pos, BlockState state) {
+        super(DEContent.tile_crystal_wireless, techLevel, pos, state);
     }
 
     //region Energy Update
@@ -127,7 +127,7 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
     }
 
     @Override
-    public boolean onBlockActivated(BlockState state, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+    public boolean onBlockActivated(BlockState state, Player player, InteractionHand handIn, BlockHitResult hit) {
         if (player.isShiftKeyDown()) {
             inputMode.invert();
             return true;
@@ -144,7 +144,7 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
         }
         receiver.invalidTime = 0;
 
-        TileEntity tile = receiver.getCachedTile();
+        BlockEntity tile = receiver.getCachedTile();
         if (tile == null) {
             if (receiver.timeOut < 40) {
                 receiver.timeOut = 40;
@@ -208,8 +208,8 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
     //region Linking
 
     @Override
-    public boolean binderUsed(PlayerEntity player, BlockPos linkTarget, Direction sideClicked) {
-        TileEntity tile = level.getBlockEntity(linkTarget);
+    public boolean binderUsed(Player player, BlockPos linkTarget, Direction sideClicked) {
+        BlockEntity tile = level.getBlockEntity(linkTarget);
         if (tile == null || tile instanceof ICrystalLink) {
             return super.binderUsed(player, linkTarget, sideClicked);
         }
@@ -222,14 +222,14 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
 
         if (linkedReceivers.contains(offset)) {
             removeReceiver(linkTarget);
-            ChatHelper.sendIndexed(player, new TranslationTextComponent("gui.draconicevolution.energy_net.link_broken").withStyle(TextFormatting.GREEN), 99);
+            ChatHelper.sendIndexed(player, new TranslatableComponent("gui.draconicevolution.energy_net.link_broken").withStyle(ChatFormatting.GREEN), 99);
             return true;
         }
 
         if (inputMode.get()) {
             if (!EnergyUtils.canExtractEnergy(tile, sideClicked)) {
                 if (EnergyUtils.getStorage(tile, sideClicked) != null) {
-                    ChatHelper.sendIndexed(player, new TranslationTextComponent("gui.draconicevolution.energy_net.side_can_not_extract").withStyle(TextFormatting.RED), 99);
+                    ChatHelper.sendIndexed(player, new TranslatableComponent("gui.draconicevolution.energy_net.side_can_not_extract").withStyle(ChatFormatting.RED), 99);
                     return false;
                 }
                 return super.binderUsed(player, linkTarget, sideClicked);
@@ -238,7 +238,7 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
         else {
             if (!EnergyUtils.canReceiveEnergy(tile, sideClicked)) {
                 if (EnergyUtils.getStorage(tile, sideClicked) != null) {
-                    ChatHelper.sendIndexed(player, new TranslationTextComponent("gui.draconicevolution.energy_net.side_can_not_receive").withStyle(TextFormatting.RED), 99);
+                    ChatHelper.sendIndexed(player, new TranslatableComponent("gui.draconicevolution.energy_net.side_can_not_receive").withStyle(ChatFormatting.RED), 99);
                     return false;
                 }
                 return super.binderUsed(player, linkTarget, sideClicked);
@@ -246,12 +246,12 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
         }
 
         if (linkedReceivers.size() >= getMaxReceivers()) {
-            ChatHelper.sendIndexed(player, new TranslationTextComponent("gui.draconicevolution.energy_net.max_receivers").withStyle(TextFormatting.RED), 99);
+            ChatHelper.sendIndexed(player, new TranslatableComponent("gui.draconicevolution.energy_net.max_receivers").withStyle(ChatFormatting.RED), 99);
             return false;
         }
 
         addReceiver(linkTarget, sideClicked);
-        ChatHelper.sendIndexed(player, new TranslationTextComponent("gui.draconicevolution.energy_net.devices_linked").withStyle(TextFormatting.GREEN), 99);
+        ChatHelper.sendIndexed(player, new TranslatableComponent("gui.draconicevolution.energy_net.devices_linked").withStyle(ChatFormatting.GREEN), 99);
 
         return true;
     }
@@ -300,7 +300,7 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
     @OnlyIn(Dist.CLIENT)
     @Override
     public CrystalFXBase createStaticFX() {
-        return new CrystalFXRing((ClientWorld)level, this);
+        return new CrystalFXRing((ClientLevel)level, this);
     }
 
     @Override
@@ -344,13 +344,13 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
     }
 
     @Override
-    public void addDisplayData(List<ITextComponent> displayList) {
+    public void addDisplayData(List<Component> displayList) {
         super.addDisplayData(displayList);
-        displayList.add(new TranslationTextComponent("gui.draconicevolution.energy_net.hud_wireless_links").append(": " + getReceivers().size() + " / " + getMaxReceivers()).withStyle(TextFormatting.GREEN));
+        displayList.add(new TranslatableComponent("gui.draconicevolution.energy_net.hud_wireless_links").append(": " + getReceivers().size() + " / " + getMaxReceivers()).withStyle(ChatFormatting.GREEN));
 
         //TODO. I dont think i need to tell myself to stop this shit when i re write but... I need to stop this shit when i re write! (Injecting colours into translations like this)
-        TextFormatting colour = !inputMode.get() ? TextFormatting.GOLD : TextFormatting.DARK_AQUA;
-        displayList.add(new TranslationTextComponent("gui.draconicevolution.energy_net.io_output_" + !inputMode.get(), colour));
+        ChatFormatting colour = !inputMode.get() ? ChatFormatting.GOLD : ChatFormatting.DARK_AQUA;
+        displayList.add(new TranslatableComponent("gui.draconicevolution.energy_net.io_output_" + !inputMode.get(), colour));
     }
 
     //endregion
@@ -374,11 +374,11 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
     }
 
     @Override
-    public void writeExtraNBT(CompoundNBT compound) {
+    public void writeExtraNBT(CompoundTag compound) {
         super.writeExtraNBT(compound);
-        ListNBT list = new ListNBT();
+        ListTag list = new ListTag();
         for (Vec3B vec : linkedReceivers) {
-            CompoundNBT receiver = new CompoundNBT();
+            CompoundTag receiver = new CompoundTag();
             receiver.putByteArray("offset", new byte[]{vec.x, vec.y, vec.z});
             receiver.putByte("side", (byte) receiverSideMap.get(vec).get3DDataValue());
             list.add(receiver);
@@ -387,13 +387,13 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
     }
 
     @Override
-    public void readExtraNBT(CompoundNBT compound) {
+    public void readExtraNBT(CompoundTag compound) {
         super.readExtraNBT(compound);
-        ListNBT list = compound.getList("linked_receivers", 10);
+        ListTag list = compound.getList("linked_receivers", 10);
         linkedReceivers.clear();
         receiverSideMap.clear();
         for (int i = 0; i < list.size(); i++) {
-            CompoundNBT receiver = list.getCompound(i);
+            CompoundTag receiver = list.getCompound(i);
             byte[] offset = receiver.getByteArray("offset");
             Vec3B vec = new Vec3B(offset[0], offset[1], offset[2]);
             linkedReceivers.add(vec);
@@ -411,28 +411,28 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
 //    public Map<Integer, String> tileNamesMap = new HashMap<>();
 
     @Override
-    public void detectAndSendContainerChanges(List<IContainerListener> listeners) {
+    public void detectAndSendContainerChanges(List<ContainerListener> listeners) {
         super.detectAndSendContainerChanges(listeners);
         if (linkedReceivers.size() != receiverTransferRates.size() && !level.isClientSide) {
             rebuildReceiverTransferList();
         }
 
         List<BlockPos> positions = getReceivers();
-        ListNBT list = new ListNBT();
+        ListTag list = new ListTag();
 
         for (BlockPos lPos : positions) {
             int index = positions.indexOf(lPos);
 
             if (!containerReceiverFlow.containsKey(index) || containerReceiverFlow.get(index) != receiverTransfer(index)) {
                 containerReceiverFlow.put(index, receiverTransfer(index));
-                CompoundNBT data = new CompoundNBT();
+                CompoundTag data = new CompoundTag();
                 data.putByte("I", (byte) index);
                 data.putInt("E", receiverTransfer(index));
                 list.add(data);
             }
         }
 
-        CompoundNBT compound = new CompoundNBT();
+        CompoundTag compound = new CompoundTag();
         if (!list.isEmpty()) {
             compound.put("L", list);
             sendUpdateToListeners(listeners, sendPacketToClient(output -> output.writeCompoundNBT(compound), 1));
@@ -448,18 +448,18 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
         super.receivePacketFromServer(data, id);
 
         if (id == 1) {
-            CompoundNBT compound = data.readCompoundNBT();
-            ListNBT list = compound.getList("L", 10);
+            CompoundTag compound = data.readCompoundNBT();
+            ListTag list = compound.getList("L", 10);
 
             for (int i = 0; i < list.size(); i++) {
-                CompoundNBT tagData = list.getCompound(i);
+                CompoundTag tagData = list.getCompound(i);
                 containerReceiverFlow.put((int) tagData.getByte("I"), tagData.getInt("E"));
             }
         }
     }
 
     @Override
-    public void receivePacketFromClient(MCDataInput data, ServerPlayerEntity client, int id) {
+    public void receivePacketFromClient(MCDataInput data, ServerPlayer client, int id) {
         super.receivePacketFromClient(data, client, id);
 
         if (id == 11) {
@@ -486,7 +486,7 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
         public final BlockPos pos;
         private Direction side;
         public int timeOut = 0;
-        private TileEntity tileCache = null;
+        private BlockEntity tileCache = null;
         private int invalidTime = 0;
 
         public LinkedDevice(int index, BlockPos pos, Direction side) {
@@ -495,10 +495,10 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
             this.side = side;
         }
 
-        public boolean isLinkValid(World world) {
+        public boolean isLinkValid(Level world) {
             tileCache = world.getBlockEntity(pos);
 
-            if ((tileCache == null || EnergyUtils.getStorage(tileCache, side) == null) && Utils.isAreaLoaded(world, pos, ChunkHolder.LocationType.TICKING)) {
+            if ((tileCache == null || EnergyUtils.getStorage(tileCache, side) == null) && Utils.isAreaLoaded(world, pos, ChunkHolder.FullChunkStatus.TICKING)) {
                 return false;
             }
 
@@ -508,7 +508,7 @@ public class TileCrystalWirelessIO extends TileCrystalBase {
         /**
          * Must be called immediately after isLinkValid
          */
-        public TileEntity getCachedTile() {
+        public BlockEntity getCachedTile() {
             return tileCache;
         }
     }

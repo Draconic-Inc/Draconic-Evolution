@@ -7,8 +7,8 @@ import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyPylon;
 import com.brandon3055.draconicevolution.blocks.tileentity.flowgate.TileFlowGate;
 import com.brandon3055.draconicevolution.blocks.tileentity.flowgate.TileFluidGate;
 import com.brandon3055.draconicevolution.blocks.tileentity.flowgate.TileFluxGate;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -16,7 +16,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 public class ComputerCraftCompatEventHandler {
     
     @SubscribeEvent(priority = EventPriority.LOW)
-    public void onAttachCapabilities(AttachCapabilitiesEvent<TileEntity> event) {
+    public void onAttachCapabilities(AttachCapabilitiesEvent<BlockEntity> event) {
     	if (event.getObject() instanceof TileBCore) {
     		TileBCore tile = (TileBCore)event.getObject();
 	    	if (tile instanceof TileReactorComponent) {

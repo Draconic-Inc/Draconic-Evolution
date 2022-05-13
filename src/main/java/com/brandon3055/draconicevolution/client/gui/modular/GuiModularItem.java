@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.client.gui.modular;
 
 import com.brandon3055.brandonscore.api.TechLevel;
+import com.brandon3055.brandonscore.api.render.GuiHelper;
 import com.brandon3055.brandonscore.client.BCSprites;
 import com.brandon3055.brandonscore.client.gui.GuiToolkit;
 import com.brandon3055.brandonscore.client.gui.HudConfigGui;
@@ -16,14 +17,14 @@ import com.brandon3055.draconicevolution.api.modules.lib.ModuleGrid;
 import com.brandon3055.draconicevolution.client.gui.ModuleGridRenderer;
 import com.brandon3055.draconicevolution.inventory.ContainerModularItem;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
+import com.mojang.blaze3d.vertex.Tesselator;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -37,13 +38,15 @@ public class GuiModularItem extends ModularGuiContainer<ContainerModularItem> {
 
     private static AtomicBoolean infoExpanded = new AtomicBoolean(true);
     private ModuleGrid grid;
+    private Inventory playerInv;
     private GuiToolkit<GuiModularItem> toolkit;
     private ModuleGridRenderer gridRenderer;
     private GuiToolkit.InfoPanel infoPanel;
 
-    public GuiModularItem(ContainerModularItem container, PlayerInventory inv, ITextComponent titleIn) {
+    public GuiModularItem(ContainerModularItem container, Inventory inv, Component titleIn) {
         super(container, inv, titleIn);
         this.grid = container.getGrid();
+        this.playerInv = inv;
         int maxGridWidth = 226;
         int maxGridHeight = 145;
         int minXPadding = 30;
@@ -67,14 +70,14 @@ public class GuiModularItem extends ModularGuiContainer<ContainerModularItem> {
         infoPanel = template.infoPanel;
         infoPanel.setExpandedHolder(infoExpanded);
 
-        gridRenderer = new ModuleGridRenderer(container.getGrid(), inventory);
+        gridRenderer = new ModuleGridRenderer(container.getGrid(), playerInv);
         gridRenderer.setYPos(template.title.maxYPos() + 3);
         toolkit.centerX(gridRenderer, template.background, 0);
         template.background.addChild(gridRenderer);
         grid.setPosition(gridRenderer.xPos() - guiLeft(), gridRenderer.yPos() - guiTop());
         grid.setOnGridChange(this::updateInfoPanel);
 
-        GuiElement<?> equipModSlots = toolkit.createEquipModSlots(template.background, inventory.player, true, e -> e.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).isPresent());
+        GuiElement<?> equipModSlots = toolkit.createEquipModSlots(template.background, playerInv.player, true, e -> e.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).isPresent());
         equipModSlots.setPos(template.background.xPos() - 28, template.background.yPos());
 
         GuiButton itemConfig = toolkit.createThemedIconButton(template.background, "item_config");
@@ -102,10 +105,10 @@ public class GuiModularItem extends ModularGuiContainer<ContainerModularItem> {
         gridName.append(I18n.get("gui.draconicevolution.modular_item.module_grid"));
         infoPanel.addDynamicLabel(gridName::toString, 12);
 
-        Map<ITextComponent, ITextComponent> nameStatMap = new LinkedHashMap<>();
+        Map<Component, Component> nameStatMap = new LinkedHashMap<>();
         grid.getModuleHost().addInformation(nameStatMap, container.getModuleContext(), false);
-        for (ITextComponent name : nameStatMap.keySet()) {
-            infoPanel.addLabeledValue(TextFormatting.GOLD + name.getString(), 6, 10, () -> TextFormatting.GRAY + nameStatMap.get(name).getString(), true);
+        for (Component name : nameStatMap.keySet()) {
+            infoPanel.addLabeledValue(ChatFormatting.GOLD + name.getString(), 6, 10, () -> ChatFormatting.GRAY + nameStatMap.get(name).getString(), true);
         }
 
         reloadGui();
@@ -127,11 +130,11 @@ public class GuiModularItem extends ModularGuiContainer<ContainerModularItem> {
             int light = 0xFFfbe555;
             int dark = 0xFFf45905;
 
-            IRenderTypeBuffer.Impl getter = IRenderTypeBuffer.immediate(Tessellator.getInstance().getBuilder());
-            GuiHelperOld.drawShadedRect(getter.getBuffer(GuiHelperOld.TRANS_TYPE), x - 1, y - 1, 18, 18, 1, 0, dark, light, GuiElement.midColour(light, dark), 0);
+            MultiBufferSource.BufferSource getter = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
+            GuiHelperOld.drawShadedRect(getter.getBuffer(GuiHelper.transColourType), x - 1, y - 1, 18, 18, 1, 0, dark, light, GuiElement.midColour(light, dark), 0);
 
             if (slot.getItem() == container.hostStack) {
-                GuiHelperOld.drawBorderedRect(getter.getBuffer(GuiHelperOld.TRANS_TYPE), x, y, 16, 16, 1, 0x50FF0000, 0xFFFF0000, 0);
+                GuiHelperOld.drawBorderedRect(getter.getBuffer(GuiHelper.transColourType), x, y, 16, 16, 1, 0x50FF0000, 0xFFFF0000, 0);
             }
             getter.endBatch();
         }

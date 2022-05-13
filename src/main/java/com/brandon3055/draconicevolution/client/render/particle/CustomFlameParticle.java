@@ -1,17 +1,17 @@
 package com.brandon3055.draconicevolution.client.render.particle;
 
 import com.brandon3055.brandonscore.client.particle.IntParticleType.IntParticleData;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class CustomFlameParticle extends SpriteTexturedParticle {
+public class CustomFlameParticle extends TextureSheetParticle {
 //    private float drag =
 
-    private CustomFlameParticle(ClientWorld worldIn, double xCoordIn, double yCoordIn, double zCoordIn, double xSpeedIn, double ySpeedIn, double zSpeedIn) {
+    private CustomFlameParticle(ClientLevel worldIn, double xCoordIn, double yCoordIn, double zCoordIn, double xSpeedIn, double ySpeedIn, double zSpeedIn) {
         super(worldIn, xCoordIn, yCoordIn, zCoordIn, xSpeedIn, ySpeedIn, zSpeedIn);
         this.xd = this.xd * (double)0.01F + xSpeedIn;
         this.yd = this.yd * (double)0.01F + ySpeedIn;
@@ -22,8 +22,8 @@ public class CustomFlameParticle extends SpriteTexturedParticle {
         this.lifetime = (int)(8.0D / (Math.random() * 0.8D + 0.2D)) + 4;
     }
 
-    public IParticleRenderType getRenderType() {
-        return IParticleRenderType.PARTICLE_SHEET_OPAQUE;
+    public ParticleRenderType getRenderType() {
+        return ParticleRenderType.PARTICLE_SHEET_OPAQUE;
     }
 
     public void move(double x, double y, double z) {
@@ -38,7 +38,7 @@ public class CustomFlameParticle extends SpriteTexturedParticle {
 
     public int getLightColor(float partialTick) {
         float f = ((float)this.age + partialTick) / (float)this.lifetime;
-        f = MathHelper.clamp(f, 0.0F, 1.0F);
+        f = Mth.clamp(f, 0.0F, 1.0F);
         int i = super.getLightColor(partialTick);
         int j = i & 255;
         int k = i >> 16 & 255;
@@ -71,15 +71,15 @@ public class CustomFlameParticle extends SpriteTexturedParticle {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static class Factory implements IParticleFactory<IntParticleData> {
-        private final IAnimatedSprite spriteSet;
+    public static class Factory implements ParticleProvider<IntParticleData> {
+        private final SpriteSet spriteSet;
 
-        public Factory(IAnimatedSprite p_i50823_1_) {
+        public Factory(SpriteSet p_i50823_1_) {
             this.spriteSet = p_i50823_1_;
         }
 
         @Override
-        public Particle createParticle(IntParticleData data, ClientWorld worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public Particle createParticle(IntParticleData data, ClientLevel worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
             CustomFlameParticle flameparticle = new CustomFlameParticle(worldIn, x, y, z, xSpeed, ySpeed, zSpeed);
             flameparticle.pickSprite(this.spriteSet);
             if (data.get().length >= 1) {

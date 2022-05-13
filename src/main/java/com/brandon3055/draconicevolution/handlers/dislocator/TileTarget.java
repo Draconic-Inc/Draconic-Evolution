@@ -3,16 +3,16 @@ package com.brandon3055.draconicevolution.handlers.dislocator;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.utils.TargetPos;
 import com.brandon3055.draconicevolution.api.DislocatorEndPoint;
-import net.minecraft.entity.Entity;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector2f;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.Vec2;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.UUID;
 
@@ -24,16 +24,16 @@ public class TileTarget extends DislocatorTarget {
     private BlockPos tilePos;
 
     public TileTarget(DislocatorEndPoint endPoint) {
-        super(((TileEntity) endPoint).getLevel().dimension());
-        tilePos = ((TileEntity) endPoint).getBlockPos();
+        super(((BlockEntity) endPoint).getLevel().dimension());
+        tilePos = ((BlockEntity) endPoint).getBlockPos();
     }
 
-    public TileTarget(RegistryKey<World> world) {
+    public TileTarget(ResourceKey<Level> world) {
         super(world);
     }
 
-    private DislocatorEndPoint getEndPoint(ServerWorld world) {
-        TileEntity tile = world.getBlockEntity(tilePos);
+    private DislocatorEndPoint getEndPoint(ServerLevel world) {
+        BlockEntity tile = world.getBlockEntity(tilePos);
         if (tile instanceof DislocatorEndPoint) {
             return (DislocatorEndPoint) tile;
         }
@@ -42,12 +42,12 @@ public class TileTarget extends DislocatorTarget {
 
     @Override
     public TargetPos getTargetPos(MinecraftServer server, UUID linkID, UUID sourceDislocatorID) {
-        ServerWorld targetWorld = getTargetWorld(server);
+        ServerLevel targetWorld = getTargetWorld(server);
         DislocatorEndPoint target = getEndPoint(targetWorld);
         if (target != null) {
-            Vector3d pos = target.getArrivalPos(linkID);
+            Vec3 pos = target.getArrivalPos(linkID);
             if (pos != null) {
-                Vector2f vec = target.getArrivalFacing(linkID);
+                Vec2 vec = target.getArrivalFacing(linkID);
                 if (vec != null) {
                     return new TargetPos(new Vector3(pos), worldKey, vec.x, vec.y);
                 }else {
@@ -60,7 +60,7 @@ public class TileTarget extends DislocatorTarget {
 
     @Override
     public void preTeleport(MinecraftServer server, Entity entity) {
-        ServerWorld targetWorld = getTargetWorld(server);
+        ServerLevel targetWorld = getTargetWorld(server);
         DislocatorEndPoint target = getEndPoint(targetWorld);
         if (target != null) {
             target.entityArriving(entity);
@@ -80,7 +80,7 @@ public class TileTarget extends DislocatorTarget {
 //    }
 
     @Override
-    public CompoundNBT save(CompoundNBT nbt) {
+    public CompoundTag save(CompoundTag nbt) {
         nbt.putInt("x", tilePos.getX());
         nbt.putInt("y", tilePos.getY());
         nbt.putInt("z", tilePos.getZ());
@@ -88,7 +88,7 @@ public class TileTarget extends DislocatorTarget {
     }
 
     @Override
-    protected void loadInternal(CompoundNBT nbt) {
+    protected void loadInternal(CompoundTag nbt) {
         super.loadInternal(nbt);
         tilePos = new BlockPos(nbt.getInt("x"), nbt.getInt("y"), nbt.getInt("z"));
     }

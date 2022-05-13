@@ -3,11 +3,11 @@ package com.brandon3055.draconicevolution.inventory;
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.inventory.ContainerBCTile;
 import com.brandon3055.brandonscore.inventory.ContainerSlotLayout;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.MenuType;
 
 /**
  * Created by brandon3055 on 17/10/2016.
@@ -15,18 +15,18 @@ import net.minecraft.network.PacketBuffer;
 @Deprecated //This does not need to exist. Can just use ContainerBCTile
 public class ContainerDummy<T extends TileBCore> extends ContainerBCTile<T> {
 
-    public ContainerDummy(ContainerType<?> type, int windowId, PlayerInventory playerInv, PacketBuffer extraData) {
+    public ContainerDummy(MenuType<?> type, int windowId, Inventory playerInv, FriendlyByteBuf extraData) {
         super(type, windowId, playerInv, getClientTile(extraData));
     }
 //    public ContainerDummy(ContainerType<?> type, int windowId, PlayerInventory player) {
 //        super(type, windowId, player);
 //    }
 
-    public ContainerDummy(ContainerType<?> type, int windowId, PlayerInventory player, T tile) {
+    public ContainerDummy(MenuType<?> type, int windowId, Inventory player, T tile) {
         super(type, windowId, player, tile);
     }
 
-    public ContainerDummy(ContainerType<?> type, int windowId, PlayerInventory player, T tile, ContainerSlotLayout.LayoutFactory<T> factory) {
+    public ContainerDummy(MenuType<?> type, int windowId, Inventory player, T tile, ContainerSlotLayout.LayoutFactory<T> factory) {
         super(type, windowId, player, tile, factory);
     }
 
@@ -45,7 +45,7 @@ public class ContainerDummy<T extends TileBCore> extends ContainerBCTile<T> {
 //    }
 
     @Override
-    public boolean stillValid(PlayerEntity playerIn) {
-        return tile instanceof IInventory ? ((IInventory) tile).stillValid(playerIn) : tile != null;
+    public boolean stillValid(Player playerIn) {
+        return tile instanceof Container ? ((Container) tile).stillValid(playerIn) : tile != null;
     }
 }

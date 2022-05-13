@@ -24,25 +24,24 @@ import com.brandon3055.draconicevolution.handlers.DEEventHandler;
 import com.brandon3055.draconicevolution.network.CrystalUpdateBatcher;
 import com.brandon3055.draconicevolution.network.CrystalUpdateBatcher.BatchedCrystalUpdate;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.IContainerListener;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.nbt.ByteArrayNBT;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.ByteArrayTag;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.ContainerListener;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -53,7 +52,7 @@ import java.util.*;
 /**
  * Created by brandon3055 on 21/11/2016.
  */
-public abstract class TileCrystalBase extends TileBCore implements ITilePlaceListener, ICrystalLink, ITickableTileEntity, IInteractTile, IENetEffectTile {
+public abstract class TileCrystalBase extends TileBCore implements ITilePlaceListener, ICrystalLink, IInteractTile, IENetEffectTile {
 
     //region Stats
 
@@ -78,12 +77,12 @@ public abstract class TileCrystalBase extends TileBCore implements ITilePlaceLis
     protected ENetFXHandler fxHandler;
     protected TechLevel techLevel;
 
-    public TileCrystalBase(TileEntityType<?> tileEntityTypeIn) {
-        this(tileEntityTypeIn, TechLevel.DRACONIUM);
+    public TileCrystalBase(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState state) {
+        this(tileEntityTypeIn, TechLevel.DRACONIUM, pos, state);
     }
 
-    public TileCrystalBase(TileEntityType<?> tileEntityTypeIn, TechLevel techLevel) {
-        super(tileEntityTypeIn);
+    public TileCrystalBase(BlockEntityType<?> tileEntityTypeIn, TechLevel techLevel, BlockPos pos, BlockState state) {
+        super(tileEntityTypeIn, pos, state);
         this.techLevel = techLevel;
         fxHandler = DraconicEvolution.proxy.createENetFXHandler(this);
 
@@ -118,7 +117,7 @@ public abstract class TileCrystalBase extends TileBCore implements ITilePlaceLis
             return;
         }
         for (BlockPos linkedPos : getLinks()) {
-            TileEntity linkedTile = level.getBlockEntity(linkedPos);
+            BlockEntity linkedTile = level.getBlockEntity(linkedPos);
 
             if (!(linkedTile instanceof ICrystalLink)) {
                 if (level.hasChunkAt(linkedPos)) {
@@ -202,12 +201,12 @@ public abstract class TileCrystalBase extends TileBCore implements ITilePlaceLis
 
     //Remember: This is called when a binder linked to "this" tile is used on another block.
     @Override
-    public boolean binderUsed(PlayerEntity player, BlockPos linkTarget, Direction sideClicked) {
-        TileEntity te = level.getBlockEntity(linkTarget);
+    public boolean binderUsed(Player player, BlockPos linkTarget, Direction sideClicked) {
+        BlockEntity te = level.getBlockEntity(linkTarget);
 
         //region Check if the target device is valid
         if (!(te instanceof ICrystalLink)) {
-            ChatHelper.sendDeDupeIndexed(player, new TranslationTextComponent("gui.draconicevolution.energy_net.device_invalid").withStyle(TextFormatting.RED), 99);
+            ChatHelper.sendDeDupeIndexed(player, new TranslatableComponent("gui.draconicevolution.energy_net.device_invalid").withStyle(ChatFormatting.RED), 99);
             return false;
         }
         //endregion
@@ -218,52 +217,52 @@ public abstract class TileCrystalBase extends TileBCore implements ITilePlaceLis
         if (getLinks().contains(te.getBlockPos())) {
             breakLink(te.getBlockPos());
             target.breakLink(worldPosition);
-            ChatHelper.sendDeDupeIndexed(player, new TranslationTextComponent("gui.draconicevolution.energy_net.link_broken").withStyle(TextFormatting.GREEN), 99);
+            ChatHelper.sendDeDupeIndexed(player, new TranslatableComponent("gui.draconicevolution.energy_net.link_broken").withStyle(ChatFormatting.GREEN), 99);
             return true;
         }
         //endregion
 
         //region Check if both devices to see if ether of them have reached their connection limit.
         if (getLinks().size() >= maxLinks()) {
-            ChatHelper.sendDeDupeIndexed(player, new TranslationTextComponent("gui.draconicevolution.energy_net.link_limit_reached_this").withStyle(TextFormatting.RED), 99);
+            ChatHelper.sendDeDupeIndexed(player, new TranslatableComponent("gui.draconicevolution.energy_net.link_limit_reached_this").withStyle(ChatFormatting.RED), 99);
             return false;
         } else if (target.getLinks().size() >= target.maxLinks()) {
-            ChatHelper.sendDeDupeIndexed(player, new TranslationTextComponent("gui.draconicevolution.energy_net.link_limit_reached_target").withStyle(TextFormatting.RED), 99);
+            ChatHelper.sendDeDupeIndexed(player, new TranslatableComponent("gui.draconicevolution.energy_net.link_limit_reached_target").withStyle(ChatFormatting.RED), 99);
             return false;
         }
         //endregion
 
         //region Check both devices are in range
         if (!Utils.inRangeSphere(worldPosition, linkTarget, maxLinkRange())) {
-            ChatHelper.sendDeDupeIndexed(player, new TranslationTextComponent("gui.draconicevolution.energy_net.this_range_limit").withStyle(TextFormatting.RED), 99);
+            ChatHelper.sendDeDupeIndexed(player, new TranslatableComponent("gui.draconicevolution.energy_net.this_range_limit").withStyle(ChatFormatting.RED), 99);
             return false;
         } else if (!Utils.inRangeSphere(worldPosition, linkTarget, target.maxLinkRange())) {
-            ChatHelper.sendDeDupeIndexed(player, new TranslationTextComponent("gui.draconicevolution.energy_net.target_range_limit").withStyle(TextFormatting.RED), 99);
+            ChatHelper.sendDeDupeIndexed(player, new TranslatableComponent("gui.draconicevolution.energy_net.target_range_limit").withStyle(ChatFormatting.RED), 99);
             return false;
         }
         //endregion
 
         //region All checks have passed. Make the link!
         if (!target.createLink(this)) {
-            ChatHelper.sendDeDupeIndexed(player, new TranslationTextComponent("gui.draconicevolution.energy_net.link_failed_unknown").withStyle(TextFormatting.RED), 99);
+            ChatHelper.sendDeDupeIndexed(player, new TranslatableComponent("gui.draconicevolution.energy_net.link_failed_unknown").withStyle(ChatFormatting.RED), 99);
             return false;
         }
 
         if (!createLink(target)) {
             //Ensure we don't leave a half linked device if this fails.
             target.breakLink(worldPosition);
-            ChatHelper.sendDeDupeIndexed(player, new TranslationTextComponent("gui.draconicevolution.energy_net.link_failed_unknown").withStyle(TextFormatting.RED), 99);
+            ChatHelper.sendDeDupeIndexed(player, new TranslatableComponent("gui.draconicevolution.energy_net.link_failed_unknown").withStyle(ChatFormatting.RED), 99);
             return false;
         }
 
-        ChatHelper.sendDeDupeIndexed(player, new TranslationTextComponent("gui.draconicevolution.energy_net.devices_linked").withStyle(TextFormatting.GREEN), 99);
+        ChatHelper.sendDeDupeIndexed(player, new TranslatableComponent("gui.draconicevolution.energy_net.devices_linked").withStyle(ChatFormatting.GREEN), 99);
         return true;
         //endregion
     }
 
     @Override
     public boolean createLink(ICrystalLink otherCrystal) {
-        Vec3B offset = getOffset(((TileEntity) otherCrystal).getBlockPos());
+        Vec3B offset = getOffset(((BlockEntity) otherCrystal).getBlockPos());
         linkedCrystals.add(offset);
         linkedPosCache = null;
         updateBlock();
@@ -405,7 +404,7 @@ public abstract class TileCrystalBase extends TileBCore implements ITilePlaceLis
 
     public void getLinkData(List<LinkData> data) {
         for (BlockPos target : getLinks()) {
-            TileEntity tile = level.getBlockEntity(target);
+            BlockEntity tile = level.getBlockEntity(target);
             if (tile == null) {
                 continue;
             }
@@ -426,7 +425,7 @@ public abstract class TileCrystalBase extends TileBCore implements ITilePlaceLis
     }
 
     @Override
-    public boolean onBlockActivated(BlockState state, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+    public boolean onBlockActivated(BlockState state, Player player, InteractionHand handIn, BlockHitResult hit) {
 //        if (!world.isRemote) {
 //            player.openGui(DraconicEvolution.instance, GuiHandler.GUIID_ENERGY_CRYSTAL, world, pos.getX(), pos.getY(), pos.getZ());
 //        }
@@ -456,14 +455,14 @@ public abstract class TileCrystalBase extends TileBCore implements ITilePlaceLis
     public abstract CrystalFXBase createStaticFX();
 
     @Override
-    public AxisAlignedBB getRenderBoundingBox() {
-        return new AxisAlignedBB(worldPosition, worldPosition.offset(1, 1, 1));
+    public AABB getRenderBoundingBox() {
+        return new AABB(worldPosition, worldPosition.offset(1, 1, 1));
     }
 
-    public void addDisplayData(List<ITextComponent> displayList) {
+    public void addDisplayData(List<Component> displayList) {
         double charge = MathUtils.round(((double) getEnergyStored() / (double) getMaxEnergyStored()) * 100D, 100);
-        displayList.add(new TranslationTextComponent("gui.draconicevolution.energy_net.hud_charge").append(": " + Utils.formatNumber(getEnergyStored()) + " / " + Utils.formatNumber(getMaxEnergyStored()) + " RF [" + charge + "%]").withStyle(TextFormatting.BLUE));
-        displayList.add(new TranslationTextComponent("gui.draconicevolution.energy_net.hud_links").append(": " + getLinks().size() + " / " + maxLinks()).withStyle(TextFormatting.GREEN));
+        displayList.add(new TranslatableComponent("gui.draconicevolution.energy_net.hud_charge").append(": " + Utils.formatNumber(getEnergyStored()) + " / " + Utils.formatNumber(getMaxEnergyStored()) + " RF [" + charge + "%]").withStyle(ChatFormatting.BLUE));
+        displayList.add(new TranslatableComponent("gui.draconicevolution.energy_net.hud_links").append(": " + getLinks().size() + " / " + maxLinks()).withStyle(ChatFormatting.GREEN));
     }
 
     @Override
@@ -482,11 +481,11 @@ public abstract class TileCrystalBase extends TileBCore implements ITilePlaceLis
     //region Sync/Save
 
     @Override
-    public void writeExtraNBT(CompoundNBT compound) {
+    public void writeExtraNBT(CompoundTag compound) {
         compound.putByte("tech_level", (byte) techLevel.ordinal());
-        ListNBT list = new ListNBT();
+        ListTag list = new ListTag();
         for (Vec3B vec : linkedCrystals) {
-            list.add(new ByteArrayNBT(new byte[]{vec.x, vec.y, vec.z}));
+            list.add(new ByteArrayTag(new byte[]{vec.x, vec.y, vec.z}));
         }
         compound.put("linked_crystals", list);
         fxHandler.writeToNBT(compound);
@@ -500,12 +499,12 @@ public abstract class TileCrystalBase extends TileBCore implements ITilePlaceLis
     }
 
     @Override
-    public void readExtraNBT(CompoundNBT compound) {
+    public void readExtraNBT(CompoundTag compound) {
         techLevel = TechLevel.values()[compound.getInt("tech_level")];
-        ListNBT list = compound.getList("linked_crystals", 7);
+        ListTag list = compound.getList("linked_crystals", 7);
         linkedCrystals.clear();
         for (int i = 0; i < list.size(); i++) {
-            byte[] data = ((ByteArrayNBT) list.get(i)).getAsByteArray();
+            byte[] data = ((ByteArrayTag) list.get(i)).getAsByteArray();
             linkedCrystals.add(new Vec3B(data[0], data[1], data[2]));
         }
         if (linkedPosCache != null) {
@@ -526,18 +525,18 @@ public abstract class TileCrystalBase extends TileBCore implements ITilePlaceLis
     }
 
     @Override
-    public void writeToItemStack(CompoundNBT compound, boolean willHarvest) {
+    public void writeToItemStack(CompoundTag compound, boolean willHarvest) {
         super.writeToItemStack(compound, willHarvest);
     }
 
     @Nullable
     @Override
-    public void readFromItemStack(CompoundNBT compound) {
+    public void readFromItemStack(CompoundTag compound) {
         super.readFromItemStack(compound);
     }
 
     @Override
-    public void onTilePlaced(BlockItemUseContext context, BlockState state) {
+    public void onTilePlaced(BlockPlaceContext context, BlockState state) {
         int cap = getCapacityForTier(getTier());
         opStorage.setCapacity(cap).setMaxTransfer(cap);
     }
@@ -581,20 +580,20 @@ public abstract class TileCrystalBase extends TileBCore implements ITilePlaceLis
     public Map<Integer, Integer> containerEnergyFlow = new HashMap<>();
 //    public Map<Integer, String> tileNamesMap = new HashMap<>();
 
-    public void detectAndSendContainerChanges(List<IContainerListener> listeners) {
+    public void detectAndSendContainerChanges(List<ContainerListener> listeners) {
         if (linkedCrystals.size() != transferRatesArrays.size() && !level.isClientSide) {
             rebuildTransferList();
         }
 
         List<BlockPos> positions = getLinks();
-        ListNBT list = new ListNBT();
+        ListTag list = new ListTag();
 
         for (BlockPos lPos : positions) {
             int index = positions.indexOf(lPos);
 
             if (!containerEnergyFlow.containsKey(index) || containerEnergyFlow.get(index) != getLinkFlow(index)) {
                 containerEnergyFlow.put(index, getLinkFlow(index));
-                CompoundNBT data = new CompoundNBT();
+                CompoundTag data = new CompoundTag();
                 data.putByte("I", (byte) index);
                 data.putInt("E", getLinkFlow(index));
                 list.add(data);
@@ -602,7 +601,7 @@ public abstract class TileCrystalBase extends TileBCore implements ITilePlaceLis
         }
 
         if (!list.isEmpty()) {
-            CompoundNBT compound = new CompoundNBT();
+            CompoundTag compound = new CompoundTag();
             compound.put("L", list);
             sendUpdateToListeners(listeners, sendPacketToClient(output -> output.writeCompoundNBT(compound), 0));
         } else if (containerEnergyFlow.size() > linkedCrystals.size()) {
@@ -612,10 +611,10 @@ public abstract class TileCrystalBase extends TileBCore implements ITilePlaceLis
         }
     }
 
-    public void sendUpdateToListeners(List<IContainerListener> listeners, PacketCustom packet) {
-        for (IContainerListener listener : listeners) {
-            if (listener instanceof ServerPlayerEntity) {
-                packet.sendToPlayer((ServerPlayerEntity) listener);
+    public void sendUpdateToListeners(List<ContainerListener> listeners, PacketCustom packet) {
+        for (ContainerListener listener : listeners) {
+            if (listener instanceof ServerPlayer) {
+                packet.sendToPlayer((ServerPlayer) listener);
             }
         }
     }
@@ -623,11 +622,11 @@ public abstract class TileCrystalBase extends TileBCore implements ITilePlaceLis
     @Override
     public void receivePacketFromServer(MCDataInput data, int id) {
         if (id == 0) {
-            CompoundNBT compound = data.readCompoundNBT();
-            ListNBT list = compound.getList("L", 10);
+            CompoundTag compound = data.readCompoundNBT();
+            ListTag list = compound.getList("L", 10);
 
             for (int i = 0; i < list.size(); i++) {
-                CompoundNBT tagData = list.getCompound(i);
+                CompoundTag tagData = list.getCompound(i);
                 containerEnergyFlow.put((int) tagData.getByte("I"), tagData.getInt("E"));
             }
         }
@@ -636,13 +635,13 @@ public abstract class TileCrystalBase extends TileBCore implements ITilePlaceLis
     }
 
     @Override
-    public void receivePacketFromClient(MCDataInput data, ServerPlayerEntity client, int id) {
+    public void receivePacketFromClient(MCDataInput data, ServerPlayer client, int id) {
         if (id == 10) {
             int intValue = data.readInt();
             if (getLinks().size() > intValue && intValue >= 0) {
                 BlockPos target = getLinks().get(intValue);
                 breakLink(target);
-                TileEntity targetTile = level.getBlockEntity(target);
+                BlockEntity targetTile = level.getBlockEntity(target);
                 if (targetTile instanceof ICrystalLink) {
                     ((ICrystalLink) targetTile).breakLink(worldPosition);
                 }
@@ -651,7 +650,7 @@ public abstract class TileCrystalBase extends TileBCore implements ITilePlaceLis
             List<BlockPos> links = new ArrayList<>(getLinks());
             for (BlockPos target : links) {
                 breakLink(target);
-                TileEntity targetTile = level.getBlockEntity(target);
+                BlockEntity targetTile = level.getBlockEntity(target);
                 if (targetTile instanceof ICrystalLink) {
                     ((ICrystalLink) targetTile).breakLink(worldPosition);
                 }

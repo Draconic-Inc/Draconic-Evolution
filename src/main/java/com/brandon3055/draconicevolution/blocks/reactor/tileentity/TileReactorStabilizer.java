@@ -4,15 +4,17 @@ import com.brandon3055.brandonscore.api.power.IOPStorage;
 import com.brandon3055.brandonscore.capability.CapabilityOP;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
 import com.brandon3055.draconicevolution.init.DEContent;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 
 /**
  * Created by brandon3055 on 18/01/2017.
  */
-public class TileReactorStabilizer extends TileReactorComponent /*implements*/ /*IEnergyProvider,*/ /*IMovableStructure*/ {
+public class TileReactorStabilizer extends TileReactorComponent {
 
-    public TileReactorStabilizer() {
-        super(DEContent.tile_reactor_stabilizer);
+    public TileReactorStabilizer(BlockPos pos, BlockState state) {
+        super(DEContent.tile_reactor_stabilizer, pos, state);
         OPExtractor opExtractor = new OPExtractor(this);
         capManager.set(CapabilityOP.OP, opExtractor);
         capManager.setCapSideValidator(opExtractor, face -> face == this.facing.get().getOpposite());
@@ -29,7 +31,7 @@ public class TileReactorStabilizer extends TileReactorComponent /*implements*/ /
         TileReactorCore tile = getCachedCore();
 
         if (tile != null && tile.reactorState.get() == TileReactorCore.ReactorState.RUNNING) {
-            TileEntity output = level.getBlockEntity(worldPosition.relative(facing.get().getOpposite()));
+            BlockEntity output = level.getBlockEntity(worldPosition.relative(facing.get().getOpposite()));
             if (output != null && EnergyUtils.canReceiveEnergy(output, facing.get())) {
                 long sent = EnergyUtils.insertEnergy(output, tile.saturation.get(), facing.get(), false);
                 tile.saturation.subtract(sent);

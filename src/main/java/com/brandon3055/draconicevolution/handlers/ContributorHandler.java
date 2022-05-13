@@ -9,12 +9,12 @@ import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.google.common.base.Charsets;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.thread.EffectiveSide;
+import net.minecraftforge.fml.util.thread.EffectiveSide;
 
 import java.io.File;
 import java.io.FileReader;
@@ -47,8 +47,7 @@ public class ContributorHandler {
                     successfulLoad = true;
                     loadContributorConfig();
                     LogHelper.dev("Read Contributors File");
-                }
-                else if (thread.isFailed()) {
+                } else if (thread.isFailed()) {
                     thread = null;
                     LogHelper.dev("Contributors File Download Failed");
                 }
@@ -62,19 +61,18 @@ public class ContributorHandler {
 
         if (EffectiveSide.get().isClient()) {
             ProcessHandlerClient.addProcess(process);
-        }
-        else {
+        } else {
             ProcessHandler.addProcess(process);
         }
     }
 
-    public static boolean isPlayerContributor(PlayerEntity player) {
+    public static boolean isPlayerContributor(Player player) {
         return contributors.containsKey(player.getName()) && contributors.get(player.getName()).isUserValid(player);
     }
 
     @SubscribeEvent
     public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
-        if (event.getPlayer() instanceof ServerPlayerEntity) {
+        if (event.getPlayer() instanceof ServerPlayer) {
             for (String contribName : ContributorHandler.contributors.keySet()) {
                 for (String name : BrandonsCore.proxy.getMCServer().getPlayerNames()) {
                     if (name.equals(contribName)) {
@@ -112,20 +110,15 @@ public class ContributorHandler {
 
                     if (name.equals("name")) {
                         contributor.name = reader.nextString();
-                    }
-                    else if (name.equals("ign")) {
+                    } else if (name.equals("ign")) {
                         contributor.ign = reader.nextString();
-                    }
-                    else if (name.equals("contribution")) {
+                    } else if (name.equals("contribution")) {
                         contributor.setContribution(reader.nextString());
-                    }
-                    else if (name.equals("details")) {
+                    } else if (name.equals("details")) {
                         contributor.setDetails(reader.nextString());
-                    }
-                    else if (name.equals("website")) {
+                    } else if (name.equals("website")) {
                         contributor.website = reader.nextString();
-                    }
-                    else if (name.equals("contributionLevel")) {
+                    } else if (name.equals("contributionLevel")) {
                         contributor.setContributionLevel(reader.nextInt());
                     }
                 }
@@ -266,7 +259,7 @@ public class ContributorHandler {
         public Contributor() {
         }
 
-        public boolean isUserValid(PlayerEntity player) {
+        public boolean isUserValid(Player player) {
             if (player == null) {
                 return false;
             }

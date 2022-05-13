@@ -8,15 +8,20 @@ import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.minecraft.advancements.Advancement;
-import net.minecraft.data.*;
+import net.minecraft.data.DataGenerator;
+import net.minecraft.data.DataProvider;
+import net.minecraft.data.HashCache;
+import net.minecraft.data.advancements.AdvancementProvider;
+import net.minecraft.data.tags.BlockTagsProvider;
+import net.minecraft.data.tags.ItemTagsProvider;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
+import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
@@ -117,7 +122,7 @@ public class DataGenEventHandler {
         }
 
         @Override
-        public void run(DirectoryCache cache) throws IOException {
+        public void run(HashCache cache) {
             Path path = this.generator.getOutputFolder();
             Set<ResourceLocation> set = Sets.newHashSet();
             Consumer<Advancement> consumer = (advancement) -> {
@@ -127,8 +132,9 @@ public class DataGenEventHandler {
                     Path path1 = makePath(advancement.getId());
 
                     try {
-                        IDataProvider.save(GSON, cache, advancement.deconstruct().serializeToJson(), path1);
-                    } catch (IOException ioexception) {
+                        DataProvider.save(GSON, cache, advancement.deconstruct().serializeToJson(), path1);
+                    }
+                    catch (IOException ioexception) {
                         DraconicEvolution.LOGGER.error("Couldn't save advancement {}", path1, ioexception);
                     }
 

@@ -33,23 +33,26 @@ import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.items.tools.BoundDislocator;
 import com.brandon3055.draconicevolution.items.tools.Dislocator;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.*;
-import net.minecraft.util.Direction.Axis;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -61,7 +64,7 @@ import java.util.*;
 /**
  * Created by brandon3055 on 16/07/2016.
  */
-public class TileDislocatorReceptacle extends TileBCore implements ITickableTileEntity, IInteractTile, IHudBlock, IRSSwitchable, DislocatorEndPoint, ICrystalLink, IENetEffectTile {
+public class TileDislocatorReceptacle extends TileBCore implements IInteractTile, IHudBlock, IRSSwitchable, DislocatorEndPoint, ICrystalLink, IENetEffectTile {
 
     public final ManagedPos arrivalPos = register(new ManagedPos("arrival_pos", (BlockPos) null, DataFlags.SAVE_NBT_SYNC_TILE));
     public final ManagedByte ignitionStage = register(new ManagedByte("ignition_stage", (byte) 0, DataFlags.SYNC_TILE));
@@ -76,8 +79,8 @@ public class TileDislocatorReceptacle extends TileBCore implements ITickableTile
     //A que is used to get around the issue of an entity touching multiple portal blocks simultaneously and getting teleported more than once.
     private List<Entity> teleportQ = new ArrayList<>();
 
-    public TileDislocatorReceptacle() {
-        super(DEContent.tile_dislocator_receptacle);
+    public TileDislocatorReceptacle(BlockPos pos, BlockState state) {
+        super(DEContent.tile_dislocator_receptacle, pos, state);
         capManager.setManaged("inventory", CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, itemHandler).saveBoth().syncTile();
         itemHandler.setContentsChangeListener(e -> onInventoryChange());
         itemHandler.setSlotValidator(0, (stack) -> stack.getItem() instanceof Dislocator);
@@ -94,15 +97,15 @@ public class TileDislocatorReceptacle extends TileBCore implements ITickableTile
     }
 
     @Override
-    public ActionResultType onBlockUse(BlockState state, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+    public InteractionResult onBlockUse(BlockState state, Player player, InteractionHand hand, BlockHitResult hit) {
         ItemStack stack = player.getItemInHand(hand);
         if (hasRSSignal()) {
-            return ActionResultType.PASS;
+            return InteractionResult.PASS;
         }
 
         if (stack.getItem() == DEContent.infused_obsidian.asItem()) {
             level.setBlockAndUpdate(worldPosition, state.setValue(DislocatorReceptacle.CAMO, !state.getValue(DislocatorReceptacle.CAMO)));
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
         if (!level.isClientSide) {
@@ -116,7 +119,7 @@ public class TileDislocatorReceptacle extends TileBCore implements ITickableTile
             checkIn();
         }
 
-        return ActionResultType.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
 
     private void onInventoryChange() {
@@ -146,7 +149,7 @@ public class TileDislocatorReceptacle extends TileBCore implements ITickableTile
     public void deactivate() {
         setActive(false);
         for (BlockPos pos : BlockPos.betweenClosed(getBlockPos().offset(-1, -1, -1), getBlockPos().offset(1, 1, 1))) {
-            TileEntity tile = level.getBlockEntity(pos);
+            BlockEntity tile = level.getBlockEntity(pos);
             if (tile instanceof TilePortal && ((TilePortal) tile).getControllerPos().equals(getBlockPos())) {
                 level.removeBlock(pos, false);
             }
@@ -187,17 +190,17 @@ public class TileDislocatorReceptacle extends TileBCore implements ITickableTile
                     return;
                 }
 
-                BCoreNetwork.sendSound(entity.level, entity.blockPosition(), DESounds.portal, SoundCategory.PLAYERS, 0.1F, entity.level.random.nextFloat() * 0.1F + 0.9F, false);
+                BCoreNetwork.sendSound(entity.level, entity.blockPosition(), DESounds.portal, SoundSource.PLAYERS, 0.1F, entity.level.random.nextFloat() * 0.1F + 0.9F, false);
                 entity.setPortalCooldown();
                 target.teleport(entity);
-                if (entity instanceof ServerPlayerEntity) {
+                if (entity instanceof ServerPlayer) {
                     //This is a hack. I need to find a better solution.
-                    DelayedTask.run(10, () -> DraconicNetwork.sendDislocatorTeleported((ServerPlayerEntity) entity));
-                    DelayedTask.run(20, () -> DraconicNetwork.sendDislocatorTeleported((ServerPlayerEntity) entity));
-                    DelayedTask.run(60, () -> DraconicNetwork.sendDislocatorTeleported((ServerPlayerEntity) entity));
+                    DelayedTask.run(10, () -> DraconicNetwork.sendDislocatorTeleported((ServerPlayer) entity));
+                    DelayedTask.run(20, () -> DraconicNetwork.sendDislocatorTeleported((ServerPlayer) entity));
+                    DelayedTask.run(60, () -> DraconicNetwork.sendDislocatorTeleported((ServerPlayer) entity));
                 }
                 entity.setPortalCooldown();
-                BCoreNetwork.sendSound(entity.level, entity.blockPosition(), DESounds.portal, SoundCategory.PLAYERS, 0.1F, entity.level.random.nextFloat() * 0.1F + 0.9F, false);
+                BCoreNetwork.sendSound(entity.level, entity.blockPosition(), DESounds.portal, SoundSource.PLAYERS, 0.1F, entity.level.random.nextFloat() * 0.1F + 0.9F, false);
             }
             teleportQ.clear();
         }
@@ -311,12 +314,12 @@ public class TileDislocatorReceptacle extends TileBCore implements ITickableTile
     }
 
     @Override
-    public void generateHudText(World world, BlockPos pos, PlayerEntity player, List<ITextComponent> displayList) {
-        displayList.add(new StringTextComponent(ignitionStage.get() == 1 ? "Scanning..." : "Activating..."));
+    public void generateHudText(Level world, BlockPos pos, Player player, List<Component> displayList) {
+        displayList.add(new TextComponent(ignitionStage.get() == 1 ? "Scanning..." : "Activating..."));
     }
 
     @Override
-    public boolean shouldDisplayHudText(World world, BlockPos pos, PlayerEntity player) {
+    public boolean shouldDisplayHudText(Level world, BlockPos pos, Player player) {
         return ignitionStage.get() > 0;
     }
 
@@ -335,26 +338,26 @@ public class TileDislocatorReceptacle extends TileBCore implements ITickableTile
     @Override
     public void onLoad() {
         super.onLoad();
-        if (level instanceof ServerWorld) {
+        if (level instanceof ServerLevel) {
             checkIn();
         }
     }
 
     @Nullable
     @Override
-    public Vector3d getArrivalPos(UUID linkID) {
+    public Vec3 getArrivalPos(UUID linkID) {
         BlockPos ap = arrivalPos.get();
-        return isActive() && ap != null ? new Vector3d(ap.getX() + 0.5, ap.getY() + 0.25, ap.getZ()) : null;
+        return isActive() && ap != null ? new Vec3(ap.getX() + 0.5, ap.getY() + 0.25, ap.getZ()) : null;
     }
 
     @Override
     public void entityArriving(Entity entity) {
         entity.setPortalCooldown();
-        if (entity instanceof ServerPlayerEntity) {
+        if (entity instanceof ServerPlayer) {
             //This is a hack. I need to find a better solution.
-            DelayedTask.run(10, () -> DraconicNetwork.sendDislocatorTeleported((ServerPlayerEntity) entity));
-            DelayedTask.run(20, () -> DraconicNetwork.sendDislocatorTeleported((ServerPlayerEntity) entity));
-            DelayedTask.run(60, () -> DraconicNetwork.sendDislocatorTeleported((ServerPlayerEntity) entity));
+            DelayedTask.run(10, () -> DraconicNetwork.sendDislocatorTeleported((ServerPlayer) entity));
+            DelayedTask.run(20, () -> DraconicNetwork.sendDislocatorTeleported((ServerPlayer) entity));
+            DelayedTask.run(60, () -> DraconicNetwork.sendDislocatorTeleported((ServerPlayer) entity));
         }
     }
 
@@ -363,7 +366,7 @@ public class TileDislocatorReceptacle extends TileBCore implements ITickableTile
     //#################################################################################
 
     private BlockPos remotePosCache = null;
-    private RegistryKey<World> remoteWorldCache = null;
+    private ResourceKey<Level> remoteWorldCache = null;
     private int invalidLinkTime = 0;
     protected ENetFXHandler fxHandler;
 
@@ -377,7 +380,7 @@ public class TileDislocatorReceptacle extends TileBCore implements ITickableTile
 
         if (!level.isClientSide && boundCrystals) {
             if (DEEventHandler.serverTicks % 10 == 0) {
-                TileEntity remoteTile = getRemoteReceptacle();
+                BlockEntity remoteTile = getRemoteReceptacle();
                 ICrystalLink remote = getRemoteCrystal();
                 if (remoteTile != null && remote instanceof IENetEffectTile) {
                     int i = remote.getLinks().indexOf(remoteTile.getBlockPos());
@@ -448,9 +451,9 @@ public class TileDislocatorReceptacle extends TileBCore implements ITickableTile
 
         MinecraftServer server = level.getServer();
         if (server != null) {
-            World remoteWorld = server.getLevel(remoteWorldCache);
+            Level remoteWorld = server.getLevel(remoteWorldCache);
             if (remoteWorld != null) {
-                TileEntity tile = remoteWorld.getBlockEntity(remotePosCache);
+                BlockEntity tile = remoteWorld.getBlockEntity(remotePosCache);
                 if (tile instanceof TileDislocatorReceptacle) {
                     if (skipRemoteCheck) {
                         return (TileDislocatorReceptacle) tile;
@@ -472,9 +475,9 @@ public class TileDislocatorReceptacle extends TileBCore implements ITickableTile
         if (tile != null) {
             MinecraftServer server = level.getServer();
             if (server != null && tile.linkedCrystal.get() != null) {
-                World remoteWorld = server.getLevel(remoteWorldCache);
+                Level remoteWorld = server.getLevel(remoteWorldCache);
                 if (remoteWorld != null) {
-                    TileEntity crystal = remoteWorld.getBlockEntity(tile.getCrystalPos());
+                    BlockEntity crystal = remoteWorld.getBlockEntity(tile.getCrystalPos());
                     if (crystal instanceof IENetEffectTile) {
                         remoteCrystalTier.set(((IENetEffectTile) crystal).getTier());
                         return (ICrystalLink) crystal;
@@ -498,13 +501,13 @@ public class TileDislocatorReceptacle extends TileBCore implements ITickableTile
     }
 
     @Override
-    public boolean binderUsed(PlayerEntity player, BlockPos linkTarget, Direction sideClicked) {
+    public boolean binderUsed(Player player, BlockPos linkTarget, Direction sideClicked) {
         return false;
     }
 
     @Override
     public boolean createLink(ICrystalLink otherCrystal) {
-        setCrystalPos(((TileEntity) otherCrystal).getBlockPos());
+        setCrystalPos(((BlockEntity) otherCrystal).getBlockPos());
         return true;
     }
 

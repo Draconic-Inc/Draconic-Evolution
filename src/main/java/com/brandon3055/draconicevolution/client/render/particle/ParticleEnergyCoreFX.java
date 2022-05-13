@@ -7,32 +7,33 @@ import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexFormat;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
 
 /**
  * Created by brandon3055 on 2/5/2016.
  * The particle used to render the beams on the Energy Core
  */
-public class ParticleEnergyCoreFX extends SpriteTexturedParticle {
+public class ParticleEnergyCoreFX extends TextureSheetParticle {
 
-    public static final IParticleRenderType PARTICLE_NO_DEPTH_NO_LIGHT = new IParticleRenderType() {
+    public static final ParticleRenderType PARTICLE_NO_DEPTH_NO_LIGHT = new ParticleRenderType() {
         public void begin(BufferBuilder builder, TextureManager manager) {
             RenderSystem.depthMask(false);
-            manager.bind(AtlasTexture.LOCATION_PARTICLES);
+            manager.bindForSetup(TextureAtlas.LOCATION_PARTICLES);
             RenderSystem.enableBlend();
             RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-            RenderSystem.alphaFunc(516, 0.003921569F);
-            builder.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
+//            RenderSystem.setalphaFunc(516, 0.003921569F);
+            builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
         }
 
-        public void end(Tessellator tesselator) {
+        public void end(Tesselator tesselator) {
             tesselator.end();
         }
 
@@ -46,9 +47,9 @@ public class ParticleEnergyCoreFX extends SpriteTexturedParticle {
     public int startRotation = 0;
     private Direction.Axis direction;
     public boolean isLargeStabilizer = false;
-    private final IAnimatedSprite spriteSet;
+    private final SpriteSet spriteSet;
 
-    public ParticleEnergyCoreFX(ClientWorld world, double xPos, double yPos, double zPos, Vec3D targetPos, IAnimatedSprite spriteSet) {
+    public ParticleEnergyCoreFX(ClientLevel world, double xPos, double yPos, double zPos, Vec3D targetPos, SpriteSet spriteSet) {
         super(world, xPos, yPos, zPos);
         this.targetPos = targetPos;
         this.spriteSet = spriteSet;
@@ -60,7 +61,7 @@ public class ParticleEnergyCoreFX extends SpriteTexturedParticle {
     }
 
     @Override
-    public IParticleRenderType getRenderType() {
+    public ParticleRenderType getRenderType() {
         return PARTICLE_NO_DEPTH_NO_LIGHT;
     }
 
@@ -104,15 +105,15 @@ public class ParticleEnergyCoreFX extends SpriteTexturedParticle {
         BCProfiler.TICK.stop();
     }
 
-    public static class Factory implements IParticleFactory<IntParticleType.IntParticleData> {
-        private final IAnimatedSprite spriteSet;
+    public static class Factory implements ParticleProvider<IntParticleType.IntParticleData> {
+        private final SpriteSet spriteSet;
 
-        public Factory(IAnimatedSprite p_i50823_1_) {
+        public Factory(SpriteSet p_i50823_1_) {
             this.spriteSet = p_i50823_1_;
         }
 
         @Override
-        public Particle createParticle(IntParticleType.IntParticleData data, ClientWorld world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public Particle createParticle(IntParticleType.IntParticleData data, ClientLevel world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
             ParticleEnergyCoreFX particle = new ParticleEnergyCoreFX(world, x, y, z, new Vec3D(xSpeed, ySpeed, zSpeed), spriteSet);
             particle.toCore = data.get().length >= 1 && data.get()[0] == 1;
             particle.startRotation = data.get().length >= 2 ? data.get()[1] : 0;

@@ -1,24 +1,18 @@
 package com.brandon3055.draconicevolution.client.render.entity;
 
-import codechicken.lib.render.shader.ShaderRenderType;
-import codechicken.lib.render.shader.UniformCache;
-import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.entity.GuardianCrystalEntity;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.culling.ClippingHelper;
+import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -27,76 +21,76 @@ public class GuardianCrystalRenderer extends EntityRenderer<GuardianCrystalEntit
    private static ResourceLocation ENDER_CRYSTAL_TEXTURES = new ResourceLocation(DraconicEvolution.MODID, "textures/entity/guardian_crystal.png");
    private static RenderType RENDER_TYPE = RenderType.entityCutoutNoCull(ENDER_CRYSTAL_TEXTURES);
    private static final float SIN_45 = (float)Math.sin((Math.PI / 4D));
-   private final ModelRenderer cube;
-   private final ModelRenderer glass;
-   private final ModelRenderer base;
+//   private final ModelPart cube;
+//   private final ModelPart glass;
+//   private final ModelPart base;
 
-   public GuardianCrystalRenderer(EntityRendererManager renderManagerIn) {
-      super(renderManagerIn);
+   public GuardianCrystalRenderer(EntityRendererProvider.Context context) {
+      super(context);
       this.shadowRadius = 0.5F;
-      this.glass = new ModelRenderer(64, 32, 0, 0);
-      this.glass.addBox(-4.0F, -4.0F, -4.0F, 8.0F, 8.0F, 8.0F);
-      this.cube = new ModelRenderer(64, 32, 32, 0);
-      this.cube.addBox(-4.0F, -4.0F, -4.0F, 8.0F, 8.0F, 8.0F);
-      this.base = new ModelRenderer(64, 32, 0, 16);
-      this.base.addBox(-6.0F, 0.0F, -6.0F, 12.0F, 4.0F, 12.0F);
+//      this.glass = new ModelPart(64, 32, 0, 0);
+//      this.glass.addBox(-4.0F, -4.0F, -4.0F, 8.0F, 8.0F, 8.0F);
+//      this.cube = new ModelPart(64, 32, 32, 0);
+//      this.cube.addBox(-4.0F, -4.0F, -4.0F, 8.0F, 8.0F, 8.0F);
+//      this.base = new ModelPart(64, 32, 0, 16);
+//      this.base.addBox(-6.0F, 0.0F, -6.0F, 12.0F, 4.0F, 12.0F);
    }
 
    @Override
-   public void render(GuardianCrystalEntity entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer getter, int packedLightIn) {
+   public void render(GuardianCrystalEntity entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource getter, int packedLightIn) {
       matrixStackIn.pushPose();
       float yBob = getY(entityIn, partialTicks);
       float f1 = ((float)entityIn.innerRotation + partialTicks) * 3.0F;
-      IVertexBuilder ivertexbuilder = getter.getBuffer(RENDER_TYPE);
+      VertexConsumer ivertexbuilder = getter.getBuffer(RENDER_TYPE);
       matrixStackIn.pushPose();
       matrixStackIn.scale(2.0F, 2.0F, 2.0F);
       matrixStackIn.translate(0.0D, -0.5D, 0.0D);
       int i = OverlayTexture.NO_OVERLAY;
-      if (entityIn.shouldShowBottom()) {
-         this.base.render(matrixStackIn, ivertexbuilder, packedLightIn, i);
-      }
-
-      matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(f1));
-      matrixStackIn.translate(0.0D, (double)(1.5F + yBob / 2.0F), 0.0D);
-      matrixStackIn.mulPose(new Quaternion(new Vector3f(SIN_45, 0.0F, SIN_45), 60.0F, true));
-      this.glass.render(matrixStackIn, ivertexbuilder, packedLightIn, i);
-      matrixStackIn.scale(0.875F, 0.875F, 0.875F);
-      matrixStackIn.mulPose(new Quaternion(new Vector3f(SIN_45, 0.0F, SIN_45), 60.0F, true));
-      matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(f1));
-      this.glass.render(matrixStackIn, ivertexbuilder, packedLightIn, i);
-      matrixStackIn.scale(0.875F, 0.875F, 0.875F);
-      matrixStackIn.mulPose(new Quaternion(new Vector3f(SIN_45, 0.0F, SIN_45), 60.0F, true));
-      matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(f1));
-      this.cube.render(matrixStackIn, ivertexbuilder, packedLightIn, i);
-      matrixStackIn.popPose();
-
-      float shieldPower = entityIn.getShieldPower() / (float) Math.max(20, DEConfig.guardianCrystalShield);
-      if (shieldPower > 0) {
-         UniformCache uniforms = DraconicGuardianRenderer.shieldShader.pushCache();
-         uniforms.glUniform4f("baseColour", 1F, 0F, 0F, 1.5F * shieldPower);
-         IVertexBuilder shaderBuilder = getter.getBuffer(new ShaderRenderType(DraconicGuardianRenderer.shieldType, DraconicGuardianRenderer.shieldShader, uniforms));
-
-         matrixStackIn.pushPose();
-         matrixStackIn.scale(2.0F, 2.0F, 2.0F);
-         matrixStackIn.translate(0.0D, -0.5D, 0.0D);
-         if (entityIn.shouldShowBottom()) {
-            this.base.render(matrixStackIn, shaderBuilder, packedLightIn, i);
-         }
-         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(f1));
-         matrixStackIn.translate(0.0D, 1.5F + yBob / 2.0F, 0.0D);
-         matrixStackIn.mulPose(new Quaternion(new Vector3f(SIN_45, 0.0F, SIN_45), 60.0F, true));
-         this.glass.render(matrixStackIn, shaderBuilder, packedLightIn, i);
-         matrixStackIn.scale(0.875F, 0.875F, 0.875F);
-         matrixStackIn.mulPose(new Quaternion(new Vector3f(SIN_45, 0.0F, SIN_45), 60.0F, true));
-         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(f1));
-         this.glass.render(matrixStackIn, shaderBuilder, packedLightIn, i);
-         matrixStackIn.scale(0.875F, 0.875F, 0.875F);
-         matrixStackIn.mulPose(new Quaternion(new Vector3f(SIN_45, 0.0F, SIN_45), 60.0F, true));
-         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(f1));
-         this.cube.render(matrixStackIn, shaderBuilder, packedLightIn, i);
-         matrixStackIn.popPose();
-
-      }
+//      if (entityIn.shouldShowBottom()) {
+//         this.base.render(matrixStackIn, ivertexbuilder, packedLightIn, i);
+//      }
+//
+//      matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(f1));
+//      matrixStackIn.translate(0.0D, (double)(1.5F + yBob / 2.0F), 0.0D);
+//      matrixStackIn.mulPose(new Quaternion(new Vector3f(SIN_45, 0.0F, SIN_45), 60.0F, true));
+//      this.glass.render(matrixStackIn, ivertexbuilder, packedLightIn, i);
+//      matrixStackIn.scale(0.875F, 0.875F, 0.875F);
+//      matrixStackIn.mulPose(new Quaternion(new Vector3f(SIN_45, 0.0F, SIN_45), 60.0F, true));
+//      matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(f1));
+//      this.glass.render(matrixStackIn, ivertexbuilder, packedLightIn, i);
+//      matrixStackIn.scale(0.875F, 0.875F, 0.875F);
+//      matrixStackIn.mulPose(new Quaternion(new Vector3f(SIN_45, 0.0F, SIN_45), 60.0F, true));
+//      matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(f1));
+//      this.cube.render(matrixStackIn, ivertexbuilder, packedLightIn, i);
+//      matrixStackIn.popPose();
+//
+//      float shieldPower = entityIn.getShieldPower() / (float) Math.max(20, DEConfig.guardianCrystalShield);
+//      if (shieldPower > 0) {
+//         UniformCache uniforms = DraconicGuardianRenderer.shieldShader.pushCache();
+//         uniforms.glUniform4f("baseColour", 1F, 0F, 0F, 1.5F * shieldPower);
+//         VertexConsumer shaderBuilder = getter.getBuffer(new ShaderRenderType(DraconicGuardianRenderer.shieldType, DraconicGuardianRenderer.shieldShader, uniforms));
+//
+//         matrixStackIn.pushPose();
+//         matrixStackIn.scale(2.0F, 2.0F, 2.0F);
+//         matrixStackIn.translate(0.0D, -0.5D, 0.0D);
+//         if (entityIn.shouldShowBottom()) {
+//            this.base.render(matrixStackIn, shaderBuilder, packedLightIn, i);
+//         }
+//         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(f1));
+//         matrixStackIn.translate(0.0D, 1.5F + yBob / 2.0F, 0.0D);
+//         matrixStackIn.mulPose(new Quaternion(new Vector3f(SIN_45, 0.0F, SIN_45), 60.0F, true));
+//         this.glass.render(matrixStackIn, shaderBuilder, packedLightIn, i);
+//         matrixStackIn.scale(0.875F, 0.875F, 0.875F);
+//         matrixStackIn.mulPose(new Quaternion(new Vector3f(SIN_45, 0.0F, SIN_45), 60.0F, true));
+//         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(f1));
+//         this.glass.render(matrixStackIn, shaderBuilder, packedLightIn, i);
+//         matrixStackIn.scale(0.875F, 0.875F, 0.875F);
+//         matrixStackIn.mulPose(new Quaternion(new Vector3f(SIN_45, 0.0F, SIN_45), 60.0F, true));
+//         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(f1));
+//         this.cube.render(matrixStackIn, shaderBuilder, packedLightIn, i);
+//         matrixStackIn.popPose();
+//
+//      }
       matrixStackIn.popPose();
 
       BlockPos blockpos = entityIn.getBeamTarget();
@@ -123,7 +117,7 @@ public class GuardianCrystalRenderer extends EntityRenderer<GuardianCrystalEntit
 
    public static float getY(GuardianCrystalEntity p_229051_0_, float p_229051_1_) {
       float f = (float)p_229051_0_.innerRotation + p_229051_1_;
-      float f1 = MathHelper.sin(f * 0.2F) / 2.0F + 0.5F;
+      float f1 = Mth.sin(f * 0.2F) / 2.0F + 0.5F;
       f1 = (f1 * f1 + f1) * 0.4F;
       return f1 - 1.4F;
    }
@@ -134,7 +128,7 @@ public class GuardianCrystalRenderer extends EntityRenderer<GuardianCrystalEntit
    }
 
    @Override
-   public boolean shouldRender(GuardianCrystalEntity livingEntityIn, ClippingHelper camera, double camX, double camY, double camZ) {
+   public boolean shouldRender(GuardianCrystalEntity livingEntityIn, Frustum camera, double camX, double camY, double camZ) {
       return super.shouldRender(livingEntityIn, camera, camX, camY, camZ) || livingEntityIn.getBeamTarget() != null;
    }
 }

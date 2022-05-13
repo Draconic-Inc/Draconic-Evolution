@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.init;
 
-import codechicken.lib.util.SneakyUtils;
+import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.client.utils.CyclingItemGroup;
 import com.brandon3055.draconicevolution.DraconicEvolution;
@@ -9,13 +9,15 @@ import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
 import com.brandon3055.draconicevolution.api.modules.data.*;
 import com.brandon3055.draconicevolution.api.modules.lib.*;
 import com.brandon3055.draconicevolution.modules.ProjectileVelocityModule;
-import net.minecraft.item.Item;
-import net.minecraft.item.Item.Properties;
-import net.minecraft.util.ResourceLocation;
+import net.covers1624.quack.util.SneakyUtils;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Item.Properties;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.ForgeRegistry;
+import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.registries.NewRegistryEvent;
 import net.minecraftforge.registries.ObjectHolder;
 import net.minecraftforge.registries.RegistryBuilder;
 
@@ -34,7 +36,7 @@ public class DEModules {
     private static transient ArrayList<ResourceLocation> ITEM_REGISTRY_ORDER = new ArrayList<>();
     public static transient Map<BaseModule<?>, Item> moduleItemMap = new LinkedHashMap<>();
     private static transient CyclingItemGroup moduleGroup = new CyclingItemGroup("draconicevolution.modules", 20, () -> moduleItemMap.values().toArray(new Item[0]), ITEM_REGISTRY_ORDER);
-    public static ForgeRegistry<Module<?>> MODULE_REGISTRY;
+    public static IForgeRegistry<Module<?>> MODULE_REGISTRY;
 
     //@formatter:off
     @ObjectHolder("draconium_energy")               public static Module<EnergyData>        draconiumEnergy;
@@ -363,13 +365,12 @@ public class DEModules {
     //region Registry
 
     @SubscribeEvent
-    public static void createRegistries(RegistryEvent.NewRegistry event) {
-        MODULE_REGISTRY = SneakyUtils.unsafeCast(new RegistryBuilder<>()//
-                .setName(new ResourceLocation(DraconicEvolution.MODID, "modules"))//
-                .setType(SneakyUtils.unsafeCast(Module.class))//
-                .disableSaving()//
-                .create()//
-        );
+    public static void createRegistries(NewRegistryEvent event) {
+        event.create(new RegistryBuilder<Module<?>>()
+                        .setName(new ResourceLocation(BrandonsCore.MODID, "modules"))
+                        .setType(SneakyUtils.unsafeCast(Module.class))
+                        .disableSaving(),
+                ts -> MODULE_REGISTRY = ts);
     }
 
     private static void register(ModuleImpl<?> module, String name) {

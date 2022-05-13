@@ -13,11 +13,12 @@ import com.brandon3055.brandonscore.lib.datamanager.ManagedVec3I;
 import com.brandon3055.draconicevolution.api.crafting.IFusionInjector;
 import com.brandon3055.draconicevolution.blocks.machines.CraftingInjector;
 import com.brandon3055.draconicevolution.init.DEContent;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 import javax.annotation.Nullable;
@@ -35,8 +36,8 @@ public class TileFusionCraftingInjector extends TileBCore implements IFusionInje
     public TileItemStackHandler itemHandler = new TileItemStackHandler(1);
     private TechLevel techLevelCache = null;
 
-    public TileFusionCraftingInjector() {
-        super(DEContent.tile_crafting_injector);
+    public TileFusionCraftingInjector(BlockPos pos, BlockState state) {
+        super(DEContent.tile_crafting_injector, pos, state);
         capManager.setManaged("inventory", CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, itemHandler).saveBoth().syncTile();
         itemHandler.setPerSlotLimit(() -> singleItem.get() ? 1 : 64);
         itemHandler.setContentsChangeListener(i -> inventoryChange());
@@ -88,7 +89,7 @@ public class TileFusionCraftingInjector extends TileBCore implements IFusionInje
         if (corePos.get().y == -9999 || level == null) {
             return null;
         }
-        TileEntity tile = level.getBlockEntity(corePos.get().getPos());
+        BlockEntity tile = level.getBlockEntity(corePos.get().getPos());
         return tile instanceof TileFusionCraftingCore ? (TileFusionCraftingCore) tile : null;
     }
 

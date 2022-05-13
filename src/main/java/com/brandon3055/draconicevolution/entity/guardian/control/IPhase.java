@@ -3,10 +3,10 @@ package com.brandon3055.draconicevolution.entity.guardian.control;
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
 import com.brandon3055.draconicevolution.entity.GuardianCrystalEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
 import java.util.function.Consumer;
@@ -23,7 +23,7 @@ public interface IPhase {
     * */
    void globalServerTick();
 
-   void onCrystalAttacked(GuardianCrystalEntity crystal, BlockPos pos, DamageSource dmgSrc, @Nullable PlayerEntity plyr, float damage, boolean destroyed);
+   void onCrystalAttacked(GuardianCrystalEntity crystal, BlockPos pos, DamageSource dmgSrc, @Nullable Player plyr, float damage, boolean destroyed);
 
    void initPhase();
 
@@ -36,7 +36,7 @@ public interface IPhase {
    PhaseType<? extends IPhase> getType();
 
    @Nullable
-   Vector3d getTargetLocation();
+   Vec3 getTargetLocation();
 
    /**
     * @param source The source of the damage
@@ -62,7 +62,7 @@ public interface IPhase {
    /**
     * @param player Optional player to target. Some phases will use this and some will not.
     */
-   default void targetPlayer(PlayerEntity player) {}
+   default void targetPlayer(Player player) {}
 
    default boolean isInvulnerable() {
       return false;

@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.api.modules.data;
 
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
 
 import javax.annotation.Nullable;
 import java.util.Map;
@@ -29,7 +29,7 @@ public interface ModuleData<D extends ModuleData<D>> {
      * @param context The current module context.
      * @param stack True when adding information to item tool tip.
      */
-    void addInformation(Map<ITextComponent, ITextComponent> map, @Nullable ModuleContext context, boolean stack);
+    void addInformation(Map<Component, Component> map, @Nullable ModuleContext context, boolean stack);
 
 
     /**

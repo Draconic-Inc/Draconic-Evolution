@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.blocks.tileentity;
 
+import codechicken.lib.raytracer.SubHitBlockHitResult;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.inventory.TileItemStackHandler;
@@ -10,20 +11,22 @@ import com.brandon3055.brandonscore.lib.datamanager.ManagedByte;
 import com.brandon3055.brandonscore.network.BCoreNetwork;
 import com.brandon3055.brandonscore.utils.InventoryUtils;
 import com.brandon3055.draconicevolution.init.DEContent;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.GameRules;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TieredItem;
+import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -52,8 +55,8 @@ public class TilePlacedItem extends TileBCore implements IInteractTile {
     //TODO / Something to think about. I could create a new item handler based dynamic inventory for this but i'm not sure if its needed. It should not take much effort to make this work.
     public TileItemStackHandler itemHandler = new TileItemStackHandler(MAX_STACKS);
 
-    public TilePlacedItem() {
-        super(DEContent.tile_placed_item);
+    public TilePlacedItem(BlockPos pos, BlockState state) {
+        super(DEContent.tile_placed_item, pos, state);
         for (int i = 0; i < MAX_STACKS; i++) {
             rotation[i] = register(new ManagedByte("rotation_" + i, DataFlags.SAVE_NBT_SYNC_TILE));
             isBlock[i] = register(new ManagedBool("is_block_" + i, DataFlags.SAVE_NBT_SYNC_TILE));
@@ -71,7 +74,7 @@ public class TilePlacedItem extends TileBCore implements IInteractTile {
         }
         if (stacks.size() == 1) {
             ItemStack stack = stacks.get(0);
-            toolMode.set(!stack.getToolTypes().isEmpty() || stack.isDamageableItem());
+            toolMode.set(stack.getItem() instanceof TieredItem || stack.isDamageableItem());
         } else {
             toolMode.set(false);
         }
@@ -121,24 +124,28 @@ public class TilePlacedItem extends TileBCore implements IInteractTile {
     }
 
     @Override
-    public ActionResultType onBlockUse(BlockState state, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
-        if (player.level.isClientSide()) return ActionResultType.SUCCESS;
+    public InteractionResult onBlockUse(BlockState state, Player player, InteractionHand hand, BlockHitResult hit) {
+        if (player.level.isClientSide()) return InteractionResult.SUCCESS;
         List<ItemStack> stacks = getStacksInOrder();
-        int index = hit.subHit - 1;
+        if (!(hit instanceof SubHitBlockHitResult)){
+            return InteractionResult.PASS;
+        }
+
+        int index = ((SubHitBlockHitResult) hit).subHit - 1;
 
         if (player.isShiftKeyDown()) {
             if (index >= 0 && index < rotation.length) {
                 rotation[index].inc();
-                BCoreNetwork.sendSound(level, worldPosition, SoundEvents.ITEM_FRAME_ROTATE_ITEM, SoundCategory.PLAYERS, 1.0F, 0.9F + level.random.nextFloat() * 0.2F, false);
+                BCoreNetwork.sendSound(level, worldPosition, SoundEvents.ITEM_FRAME_ROTATE_ITEM, SoundSource.PLAYERS, 1.0F, 0.9F + level.random.nextFloat() * 0.2F, false);
                 tick();
             }
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
         if (index == -1) {
             onBroken(Vector3.fromEntityCenter(player), true);
             level.removeBlock(getBlockPos(), false);
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
         if (index < stacks.size()) {
@@ -149,22 +156,22 @@ public class TilePlacedItem extends TileBCore implements IInteractTile {
             }
         }
 
-        return ActionResultType.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
 
     @Override
-    public void onBlockAttack(BlockState state, PlayerEntity player) {
+    public void onBlockAttack(BlockState state, Player player) {
         if (!player.isShiftKeyDown()) return;
         List<ItemStack> stacks = getStacksInOrder();
         if (stacks.size() == 1 && !(stacks.get(0).getItem() instanceof BlockItem)) {
             toolMode.invert();
-            BCoreNetwork.sendSound(level, worldPosition, SoundEvents.ITEM_FRAME_ROTATE_ITEM, SoundCategory.PLAYERS, 1.0F, 0.9F + level.random.nextFloat() * 0.2F, false);
+            BCoreNetwork.sendSound(level, worldPosition, SoundEvents.ITEM_FRAME_ROTATE_ITEM, SoundSource.PLAYERS, 1.0F, 0.9F + level.random.nextFloat() * 0.2F, false);
             tick();
         } else {
-            RayTraceResult hit = player.pick(4, 0, false);
-            if (hit instanceof BlockRayTraceResult && hit.subHit > 0 && hit.subHit - 1 < rotation.length) {
-                rotation[hit.subHit - 1].dec();
-                BCoreNetwork.sendSound(level, worldPosition, SoundEvents.ITEM_FRAME_ROTATE_ITEM, SoundCategory.PLAYERS, 1.0F, 0.9F + level.random.nextFloat() * 0.2F, false);
+            HitResult hit = player.pick(4, 0, false);
+            if (hit instanceof SubHitBlockHitResult && ((SubHitBlockHitResult) hit).subHit > 0 && ((SubHitBlockHitResult) hit).subHit - 1 < rotation.length) {
+                rotation[((SubHitBlockHitResult) hit).subHit - 1].dec();
+                BCoreNetwork.sendSound(level, worldPosition, SoundEvents.ITEM_FRAME_ROTATE_ITEM, SoundSource.PLAYERS, 1.0F, 0.9F + level.random.nextFloat() * 0.2F, false);
                 tick();
             }
         }
@@ -177,7 +184,7 @@ public class TilePlacedItem extends TileBCore implements IInteractTile {
         }
     }
 
-    public static void popResource(World world, Vector3 pos, ItemStack stack, boolean noPickupDelay) {
+    public static void popResource(Level world, Vector3 pos, ItemStack stack, boolean noPickupDelay) {
         if (!world.isClientSide && !stack.isEmpty() && world.getGameRules().getBoolean(GameRules.RULE_DOBLOCKDROPS) && !world.restoringBlockSnapshots) {
             double d0 = (double) (world.random.nextFloat() * 0.5F) + 0.25D;
             double d1 = (double) (world.random.nextFloat() * 0.5F) + 0.25D;
@@ -199,7 +206,7 @@ public class TilePlacedItem extends TileBCore implements IInteractTile {
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public AxisAlignedBB getRenderBoundingBox() {
-        return new AxisAlignedBB(worldPosition.offset(-1, -1, -1), worldPosition.offset(2, 2, 2));
+    public AABB getRenderBoundingBox() {
+        return new AABB(worldPosition.offset(-1, -1, -1), worldPosition.offset(2, 2, 2));
     }
 }

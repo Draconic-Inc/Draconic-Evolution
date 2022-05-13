@@ -3,9 +3,9 @@ package com.brandon3055.draconicevolution.client.render.particle;
 import com.brandon3055.brandonscore.client.particle.BCParticle;
 import com.brandon3055.brandonscore.client.particle.IBCParticleFactory;
 import com.brandon3055.brandonscore.lib.Vec3D;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 
 /**
  * Created by brandon3055 on 25/08/2016.
@@ -15,7 +15,7 @@ public class ParticleAxeSelection extends BCParticle {
 //    private IBakedModel model;
 //    private BlockState state;
 
-    public ParticleAxeSelection(ClientWorld worldIn, Vec3D pos) {
+    public ParticleAxeSelection(ClientLevel worldIn, Vec3D pos) {
         super(worldIn, pos);
 //        this.particleMaxAge = 50;
 //        state = worldIn.getBlockState(pos.getPos());
@@ -92,8 +92,8 @@ public class ParticleAxeSelection extends BCParticle {
     public static class Factory implements IBCParticleFactory {
 
         @Override
-        public Particle getEntityFX(int particleID, World world, Vec3D pos, Vec3D speed, int... args) {
-            ParticleAxeSelection particle = new ParticleAxeSelection((ClientWorld)world, pos);
+        public Particle getEntityFX(int particleID, Level world, Vec3D pos, Vec3D speed, int... args) {
+            ParticleAxeSelection particle = new ParticleAxeSelection((ClientLevel)world, pos);
             return particle;
         }
     }

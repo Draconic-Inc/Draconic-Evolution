@@ -5,27 +5,27 @@ import com.brandon3055.draconicevolution.blocks.tileentity.IMultiBlockPart;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileCoreStructure;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyCoreStabilizer;
 import com.brandon3055.draconicevolution.init.DEContent;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockRenderType;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.EntitySpawnPlacementRegistry;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorldReader;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.SpawnPlacements;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
@@ -35,67 +35,46 @@ import javax.annotation.Nullable;
  */
 public class EnergyCoreStructureBlock extends BlockBCore {
 
-    
     public EnergyCoreStructureBlock(Block.Properties properties) {
         super(properties);
+        dontSpawnOnMe();
     }
 
     @Override
-    public boolean canCreatureSpawn(BlockState state, IBlockReader world, BlockPos pos, EntitySpawnPlacementRegistry.PlacementType type, @Nullable EntityType<?> entityType) {
-        return false;
+    public RenderShape getRenderShape(BlockState state) {
+        return RenderShape.INVISIBLE;
     }
 
     @Override
-    public BlockRenderType getRenderShape(BlockState state) {
-        return BlockRenderType.INVISIBLE;
-    }
+    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {}
 
     @Override
-    public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> items) {}
-
-    @Override
-    public boolean hasTileEntity(BlockState state) {
-        return true;
-    }
-
-    @Nullable
-    @Override
-    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        return new TileCoreStructure();
-    }
-
-    @Override
-    public void observedNeighborChange(BlockState observerState, World world, BlockPos observerPos, Block changedBlock, BlockPos changedBlockPos) {
-
-    }
-
-    @Override
-    public void onNeighborChange(BlockState state, IWorldReader world, BlockPos pos, BlockPos neighbor) {
+    public void onNeighborChange(BlockState state, LevelReader world, BlockPos pos, BlockPos neighbor) {
         if (com.brandon3055.draconicevolution.world.EnergyCoreStructure.coreForming) {
             return;
         }
 
-        TileEntity tile = world.getBlockEntity(pos);
+        BlockEntity tile = world.getBlockEntity(pos);
         if (tile instanceof TileCoreStructure && ((TileCoreStructure) tile).getController() == null) {
             ((TileCoreStructure) tile).revert();
         }
     }
 
     @Override
-    public void neighborChanged(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
+    public void neighborChanged(BlockState state, Level world, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
         if (com.brandon3055.draconicevolution.world.EnergyCoreStructure.coreForming) {
             return;
         }
 
-        TileEntity tile = world.getBlockEntity(pos);
+        BlockEntity tile = world.getBlockEntity(pos);
         if (tile instanceof TileCoreStructure && ((TileCoreStructure) tile).getController() == null) {
             ((TileCoreStructure) tile).revert();
         }
     }
 
     @Override
-    public boolean removedByPlayer(BlockState state, World world, BlockPos pos, PlayerEntity player, boolean willHarvest, FluidState fluid) {
-        TileEntity tile = world.getBlockEntity(pos);
+    public boolean onDestroyedByPlayer(BlockState state, Level world, BlockPos pos, Player player, boolean willHarvest, FluidState fluid) {
+        BlockEntity tile = world.getBlockEntity(pos);
 
         if (tile instanceof TileCoreStructure) {
             Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(((TileCoreStructure) tile).blockName.get()));
@@ -104,7 +83,7 @@ public class EnergyCoreStructureBlock extends BlockBCore {
             if (master != null) {
                 world.removeBlock(pos, false);
                 master.validateStructure();
-                if (block != Blocks.AIR && !player.abilities.instabuild) {
+                if (block != Blocks.AIR && !player.getAbilities().instabuild) {
                     popResource(world, pos, new ItemStack(block));
                 }
             }
@@ -113,8 +92,8 @@ public class EnergyCoreStructureBlock extends BlockBCore {
     }
 
     @Override
-    public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader world, BlockPos pos, PlayerEntity player) {
-        TileEntity tile = world.getBlockEntity(pos);
+    public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter world, BlockPos pos, Player player) {
+        BlockEntity tile = world.getBlockEntity(pos);
         if (tile instanceof TileCoreStructure) {
             if (((TileCoreStructure) tile).blockName.get().equals("draconicevolution:block_draconium")) {
                 return new ItemStack(DEContent.block_draconium);
@@ -133,8 +112,8 @@ public class EnergyCoreStructureBlock extends BlockBCore {
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
-        TileEntity tile = world.getBlockEntity(pos);
+    public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
+        BlockEntity tile = world.getBlockEntity(pos);
 
         if (tile instanceof TileCoreStructure && ((TileCoreStructure) tile).blockName.get().equals("draconicevolution:energy_core_stabilizer")) {
             IMultiBlockPart controller = ((TileCoreStructure) tile).getController();
@@ -149,6 +128,6 @@ public class EnergyCoreStructureBlock extends BlockBCore {
             }
         }
 
-        return VoxelShapes.block();
+        return Shapes.block();
     }
 }

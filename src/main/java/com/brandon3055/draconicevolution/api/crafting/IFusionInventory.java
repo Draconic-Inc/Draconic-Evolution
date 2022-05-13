@@ -1,9 +1,9 @@
 package com.brandon3055.draconicevolution.api.crafting;
 
 import com.brandon3055.brandonscore.api.TechLevel;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.List;
  * Its now simply and way to access and consume the crafting ingredients (including power) and nothing more.
  * So only what is needed by IFusionRecipe
  */
-public interface IFusionInventory extends IInventory {
+public interface IFusionInventory extends Container {
 
     /**
      * Gets the stack in the catalyst slot of the core<br>
@@ -56,7 +56,7 @@ public interface IFusionInventory extends IInventory {
     @Override default ItemStack removeItemNoUpdate(int index) { return ItemStack.EMPTY; }
     @Override default void setItem(int index, ItemStack stack) { }
     @Override default void setChanged() { }
-    @Override default boolean stillValid(PlayerEntity player) { return false; }
+    @Override default boolean stillValid(Player player) { return false; }
     @Override default void clearContent() { }
     //@formatter:on
 }

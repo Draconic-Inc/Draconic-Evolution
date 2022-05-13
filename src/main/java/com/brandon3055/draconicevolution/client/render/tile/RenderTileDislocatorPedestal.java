@@ -1,44 +1,43 @@
 package com.brandon3055.draconicevolution.client.render.tile;
 
-import com.brandon3055.brandonscore.utils.ModelUtils;
+import com.brandon3055.brandonscore.client.render.RenderUtils;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DEOldConfig;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileDislocatorPedestal;
 import com.brandon3055.draconicevolution.client.render.item.ToolRenderBase;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.items.tools.DislocatorAdvanced;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Quaternion;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.vector.Quaternion;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 
 import java.util.List;
 
 /**
  * Created by brandon3055 on 27/09/2016.
  */
-public class RenderTileDislocatorPedestal extends TileEntityRenderer<TileDislocatorPedestal> {
+public class RenderTileDislocatorPedestal implements BlockEntityRenderer<TileDislocatorPedestal> {
 
     public static List<BakedQuad> modelQuads = null;
 
-    public RenderTileDislocatorPedestal(TileEntityRendererDispatcher rendererDispatcherIn) {
-        super(rendererDispatcherIn);
+    public RenderTileDislocatorPedestal(BlockEntityRendererProvider.Context context) {
     }
 
     @Override
-    public void render(TileDislocatorPedestal tile, float partialTicks, MatrixStack mStack, IRenderTypeBuffer getter, int packedLight, int packedoverlay) {
+    public void render(TileDislocatorPedestal tile, float partialTicks, PoseStack mStack, MultiBufferSource getter, int packedLight, int packedoverlay) {
         if (modelQuads == null) {
-            modelQuads = Minecraft.getInstance().getBlockRenderer().getBlockModel(DEContent.dislocator_pedestal.defaultBlockState()).getQuads(DEContent.dislocator_pedestal.defaultBlockState(), null, ModelUtils.rand);
+            modelQuads = Minecraft.getInstance().getBlockRenderer().getBlockModel(DEContent.dislocator_pedestal.defaultBlockState()).getQuads(DEContent.dislocator_pedestal.defaultBlockState(), null, tile.getLevel().random);
         }
 
         mStack.pushPose();
@@ -46,11 +45,11 @@ public class RenderTileDislocatorPedestal extends TileEntityRenderer<TileDisloca
         mStack.mulPose(new Quaternion(0, -tile.rotation.get() * 22.5F, 0, true));
         mStack.translate(-0.5, -0.5, -0.5);
 
-        IVertexBuilder builder = getter.getBuffer(RenderType.solid());
+        VertexConsumer builder = getter.getBuffer(RenderType.solid());
         int i = 0;
         for (int j = modelQuads.size(); i < j; ++i) {
             BakedQuad bakedquad = modelQuads.get(i);
-            builder.addVertexData(mStack.last(), bakedquad, 1F, 1F, 1F, 1F, packedLight, packedLight);
+            builder.putBulkData(mStack.last(), bakedquad, 1F, 1F, 1F, 1F, packedLight, packedLight);
         }
 
         Minecraft mc = Minecraft.getInstance();
@@ -60,22 +59,22 @@ public class RenderTileDislocatorPedestal extends TileEntityRenderer<TileDisloca
             mStack.translate(0.5, 0.79, 0.52);
             mStack.scale(0.5F, 0.5F, 0.5F);
             mStack.mulPose(new Quaternion(-67.5F, 0, 0, true));
-            mc.getItemRenderer().renderStatic(stack, ItemCameraTransforms.TransformType.FIXED, packedLight, packedoverlay, mStack, getter);
+            mc.getItemRenderer().renderStatic(stack, ItemTransforms.TransformType.FIXED, packedLight, packedoverlay, mStack, getter, tile.posSeed());
             mStack.popPose();
         }
-        ToolRenderBase.endBatch(getter);
+        RenderUtils.endBatch(getter);
         mStack.popPose();
         if (!stack.isEmpty()) {
             drawName(tile, stack, mStack, getter, partialTicks);
         }
     }
 
-    private void drawName(TileDislocatorPedestal tile, ItemStack item, MatrixStack mStack, IRenderTypeBuffer getter, float partialTicks) {
+    private void drawName(TileDislocatorPedestal tile, ItemStack item, PoseStack mStack, MultiBufferSource getter, float partialTicks) {
         Minecraft mc = Minecraft.getInstance();
-        ClientPlayerEntity player = mc.player;
+        LocalPlayer player = mc.player;
 
-        RayTraceResult mop = player.pick(10, partialTicks, true);
-        boolean isCursorOver = mop instanceof BlockRayTraceResult && ((BlockRayTraceResult) mop).getBlockPos().equals(tile.getBlockPos());
+        HitResult mop = player.pick(10, partialTicks, true);
+        boolean isCursorOver = mop instanceof BlockHitResult && ((BlockHitResult) mop).getBlockPos().equals(tile.getBlockPos());
         boolean isSneaking = player.isShiftKeyDown();
 
         if (!isCursorOver && (isSneaking != DEOldConfig.invertDPDSB)) {
@@ -104,12 +103,12 @@ public class RenderTileDislocatorPedestal extends TileEntityRenderer<TileDisloca
         double yawAngle = Math.toDegrees(Math.atan2(zDiff, xDiff));
         double pitchAngle = Math.toDegrees(Math.atan2(yDiff, Utils.getDistanceAtoB(player.getX(), player.getY(), player.getZ(), tile.getBlockPos().getX() + 0.5, tile.getBlockPos().getY() + 0.5, tile.getBlockPos().getZ() + 0.5)));
 
-        mStack.mulPose(new Quaternion(0, (float) yawAngle , 0, true));
+        mStack.mulPose(new Quaternion(0, (float) yawAngle, 0, true));
         mStack.mulPose(new Quaternion((float) -pitchAngle, 0, 0, true));
 
         int textWidth = mc.font.width(name);
         mStack.translate(0, 0, -0.0125);
-        mc.font.drawInBatch(name, -(textWidth/2F), 0, 0xffffff, true, mStack.last().pose(), getter, false, 0, 15728880);
+        mc.font.drawInBatch(name, -(textWidth / 2F), 0, 0xffffff, true, mStack.last().pose(), getter, false, 0, 15728880);
         mStack.popPose();
     }
 }

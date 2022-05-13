@@ -5,6 +5,7 @@ import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.utils.BCProfiler;
 import com.brandon3055.brandonscore.utils.Utils;
+import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.energy.ICrystalLink;
 import com.brandon3055.draconicevolution.api.energy.IENetEffectTile;
 import com.brandon3055.draconicevolution.client.DETextures;
@@ -12,25 +13,23 @@ import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.client.particle.IParticleRenderType;
-import net.minecraft.client.renderer.ActiveRenderInfo;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
+import com.mojang.blaze3d.vertex.*;
+import com.mojang.math.Vector3f;
+import net.minecraft.client.Camera;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.world.World;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import org.lwjgl.opengl.GL11;
 
 /**
  * Created by brandon3055 on 29/11/2016.
  */
-public class CrystalFXBeam<T extends TileEntity & IENetEffectTile> extends CrystalFXBase<T> {
+public class CrystalFXBeam<T extends BlockEntity & IENetEffectTile> extends CrystalFXBase<T> {
 
     private final Vec3D linkTarget;
     private final boolean terminateSource;
@@ -39,14 +38,14 @@ public class CrystalFXBeam<T extends TileEntity & IENetEffectTile> extends Cryst
     private boolean bolt = false;
     private float powerLevel = 0;
 
-    public CrystalFXBeam(World worldIn, T tile, ICrystalLink linkTarget) {
-        super((ClientWorld)worldIn, tile);
+    public CrystalFXBeam(Level worldIn, T tile, ICrystalLink linkTarget) {
+        super((ClientLevel)worldIn, tile);
         this.age = worldIn.random.nextInt(1024);
-        this.setPosition(tile.getBeamLinkPos(((TileEntity) linkTarget).getBlockPos()));
+        this.setPosition(tile.getBeamLinkPos(((BlockEntity) linkTarget).getBlockPos()));
         this.terminateSource = tile.renderBeamTermination();
         this.linkTarget = linkTarget.getBeamLinkPos(tile.getBlockPos());
         this.terminateTarget = linkTarget.renderBeamTermination();
-        setBoundingBox(new AxisAlignedBB(x, y, z, this.linkTarget.x, this.linkTarget.y, this.linkTarget.z));
+        setBoundingBox(new AABB(x, y, z, this.linkTarget.x, this.linkTarget.y, this.linkTarget.z));
     }
 
 
@@ -71,7 +70,7 @@ public class CrystalFXBeam<T extends TileEntity & IENetEffectTile> extends Cryst
     }
 
     @Override
-    public void render(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks) {
+    public void render(VertexConsumer buffer, Camera renderInfo, float partialTicks) {
         if (powerLevel <= 0 && !ClientEventHandler.playerHoldingWrench) {
             return;
         }
@@ -82,7 +81,7 @@ public class CrystalFXBeam<T extends TileEntity & IENetEffectTile> extends Cryst
             scale = 0.1F;
         }
 
-        Vector3d viewVec = renderInfo.getPosition();
+        Vec3 viewVec = renderInfo.getPosition();
         Vector3 source = new Vector3(x - viewVec.x, y - viewVec.y, z - viewVec.z);
         Vector3 target = linkTarget.toVector3().subtract(viewVec.x, viewVec.y, viewVec.z);
         Vector3 dirVec = source.copy().subtract(target).normalize();
@@ -96,30 +95,35 @@ public class CrystalFXBeam<T extends TileEntity & IENetEffectTile> extends Cryst
         planeD.multiply(scale);
         float dist = 0.2F * (float) Utils.getDistanceAtoB(new Vec3D(source), new Vec3D(target));
         float anim = (ClientEventHandler.elapsedTicks + partialTicks) / -15F;
+        float red = 1F;
+        float green = tile.getTier() == 1 ? 0.3F : 1F;
+        if (ClientEventHandler.playerHoldingWrench) {
+            red = green = 0;
+        }
 
         Vector3 p1 = source.copy().add(planeA);
         Vector3 p2 = target.copy().add(planeA);
         Vector3 p3 = source.copy().subtract(planeA);
         Vector3 p4 = target.copy().subtract(planeA);
-        bufferQuad(buffer, p1, p2, p3, p4, anim, dist);
+        bufferQuad(buffer, p1, p2, p3, p4, anim, dist, red, green);
 
         p1 = source.copy().add(planeB);
         p2 = target.copy().add(planeB);
         p3 = source.copy().subtract(planeB);
         p4 = target.copy().subtract(planeB);
-        bufferQuad(buffer, p1, p2, p3, p4, anim, dist);
+        bufferQuad(buffer, p1, p2, p3, p4, anim, dist, red, green);
 
         p1 = source.copy().add(planeC);
         p2 = target.copy().add(planeC);
         p3 = source.copy().subtract(planeC);
         p4 = target.copy().subtract(planeC);
-        bufferQuad(buffer, p1, p2, p3, p4, anim, dist);
+        bufferQuad(buffer, p1, p2, p3, p4, anim, dist, red, green);
 
         p1 = source.copy().add(planeD);
         p2 = target.copy().add(planeD);
         p3 = source.copy().subtract(planeD);
         p4 = target.copy().subtract(planeD);
-        bufferQuad(buffer, p1, p2, p3, p4, anim, dist);
+        bufferQuad(buffer, p1, p2, p3, p4, anim, dist, red, green);
 
         scale *= 2;
         float minU = 0.0F;
@@ -133,10 +137,10 @@ public class CrystalFXBeam<T extends TileEntity & IENetEffectTile> extends Cryst
             float viewY = (float) (this.y - viewVec.y());
             float viewZ = (float) (this.z - viewVec.z());
             Vector3f[] renderVector = getRenderVectors(renderInfo, viewX, viewY, viewZ, scale);
-            buffer.vertex(renderVector[0].x(), renderVector[0].y(), renderVector[0].z()).uv(maxU, maxV).endVertex();
-            buffer.vertex(renderVector[1].x(), renderVector[1].y(), renderVector[1].z()).uv(maxU, minV).endVertex();
-            buffer.vertex(renderVector[2].x(), renderVector[2].y(), renderVector[2].z()).uv(minU, minV).endVertex();
-            buffer.vertex(renderVector[3].x(), renderVector[3].y(), renderVector[3].z()).uv(minU, maxV).endVertex();
+            buffer.vertex(renderVector[0].x(), renderVector[0].y(), renderVector[0].z()).color(red, green, 1F, 1F).uv(maxU, maxV).uv2(240, 240).endVertex();
+            buffer.vertex(renderVector[1].x(), renderVector[1].y(), renderVector[1].z()).color(red, green, 1F, 1F).uv(maxU, minV).uv2(240, 240).endVertex();
+            buffer.vertex(renderVector[2].x(), renderVector[2].y(), renderVector[2].z()).color(red, green, 1F, 1F).uv(minU, minV).uv2(240, 240).endVertex();
+            buffer.vertex(renderVector[3].x(), renderVector[3].y(), renderVector[3].z()).color(red, green, 1F, 1F).uv(minU, maxV).uv2(240, 240).endVertex();
         }
 
         if (terminateTarget) {
@@ -144,63 +148,64 @@ public class CrystalFXBeam<T extends TileEntity & IENetEffectTile> extends Cryst
             float viewY = (float) (this.linkTarget.y - viewVec.y());
             float viewZ = (float) (this.linkTarget.z - viewVec.z());
             Vector3f[] renderVector = getRenderVectors(renderInfo, viewX, viewY, viewZ, scale);
-            buffer.vertex(renderVector[0].x(), renderVector[0].y(), renderVector[0].z()).uv(maxU, maxV).endVertex();
-            buffer.vertex(renderVector[1].x(), renderVector[1].y(), renderVector[1].z()).uv(maxU, minV).endVertex();
-            buffer.vertex(renderVector[2].x(), renderVector[2].y(), renderVector[2].z()).uv(minU, minV).endVertex();
-            buffer.vertex(renderVector[3].x(), renderVector[3].y(), renderVector[3].z()).uv(minU, maxV).endVertex();
+            buffer.vertex(renderVector[0].x(), renderVector[0].y(), renderVector[0].z()).color(red, green, 1F, 1F).uv(maxU, maxV).uv2(240, 240).endVertex();
+            buffer.vertex(renderVector[1].x(), renderVector[1].y(), renderVector[1].z()).color(red, green, 1F, 1F).uv(maxU, minV).uv2(240, 240).endVertex();
+            buffer.vertex(renderVector[2].x(), renderVector[2].y(), renderVector[2].z()).color(red, green, 1F, 1F).uv(minU, minV).uv2(240, 240).endVertex();
+            buffer.vertex(renderVector[3].x(), renderVector[3].y(), renderVector[3].z()).color(red, green, 1F, 1F).uv(minU, maxV).uv2(240, 240).endVertex();
         }
 
         BCProfiler.RENDER.stop();
     }
 
-    private void bufferQuad(IVertexBuilder buffer, Vector3 p1, Vector3 p2, Vector3 p3, Vector3 p4, float anim, float dist) {
+    private void bufferQuad(VertexConsumer buffer, Vector3 p1, Vector3 p2, Vector3 p3, Vector3 p4, float anim, float dist, float red, float green) {
         BCProfiler.RENDER.start("buffer_quad");
-        buffer.vertex(p1.x, p1.y, p1.z).uv(0.5F, anim).endVertex();
-        buffer.vertex(p2.x, p2.y, p2.z).uv(0.5F, dist + anim).endVertex();
-        buffer.vertex(p4.x, p4.y, p4.z).uv(1.0F, dist + anim).endVertex();
-        buffer.vertex(p3.x, p3.y, p3.z).uv(1.0F, anim).endVertex();
+        buffer.vertex(p1.x, p1.y, p1.z).color(red, green, 1F, 1F).uv(0.5F, anim).uv2(240, 240).endVertex();
+        buffer.vertex(p2.x, p2.y, p2.z).color(red, green, 1F, 1F).uv(0.5F, dist + anim).uv2(240, 240).endVertex();
+        buffer.vertex(p4.x, p4.y, p4.z).color(red, green, 1F, 1F).uv(1.0F, dist + anim).uv2(240, 240).endVertex();
+        buffer.vertex(p3.x, p3.y, p3.z).color(red, green, 1F, 1F).uv(1.0F, anim).uv2(240, 240).endVertex();
         BCProfiler.RENDER.stop();
     }
 
     @Override
-    public IParticleRenderType getRenderType() {
+    public ParticleRenderType getRenderType() {
         return tile.getTier() == 0 ? BASIC_HANDLER : tile.getTier() == 1 ? WYVERN_HANDLER : DRACONIC_HANDLER;
     }
 
-    private static final IParticleRenderType BASIC_HANDLER = new FXHandler(DETextures.ENERGY_BEAM_BASIC);
-    private static final IParticleRenderType WYVERN_HANDLER = new FXHandler(DETextures.ENERGY_BEAM_WYVERN);
-    private static final IParticleRenderType DRACONIC_HANDLER = new FXHandler(DETextures.ENERGY_BEAM_DRACONIC);
+    private static final ParticleRenderType BASIC_HANDLER = new FXHandler(DETextures.ENERGY_BEAM_BASIC);
+    private static final ParticleRenderType WYVERN_HANDLER = new FXHandler(DETextures.ENERGY_BEAM_WYVERN);
+    private static final ParticleRenderType DRACONIC_HANDLER = new FXHandler(DETextures.ENERGY_BEAM_DRACONIC);
 
-    public static class FXHandler implements IParticleRenderType {
-        private String texture;
+    public static class FXHandler implements ParticleRenderType {
+        private ResourceLocation texture;
         private float green;
 
         public FXHandler(String texture) {
-            this.texture = texture;
+            this.texture = new ResourceLocation(DraconicEvolution.MODID, texture);
             this.green = texture.endsWith(DETextures.ENERGY_BEAM_WYVERN) ? 0.3F : 1F;
         }
 
         @Override
-        public void begin(BufferBuilder builder, TextureManager p_217600_2_) {
-            ResourceHelperDE.bindTexture(texture);
-            RenderSystem.color4f(1.0F, green, 1.0F, 1.0F);
+        public void begin(BufferBuilder builder, TextureManager textureManager) {
+//            ResourceHelperDE.bindTexture(texture);
+            textureManager.bindForSetup(texture);
+//            RenderSystem.color4f(1.0F, green, 1.0F, 1.0F);
 
             RenderSystem.disableCull();
             RenderSystem.depthMask(false);
-            RenderSystem.alphaFunc(516, 0.003921569F);
+//            RenderSystem.alphaFunc(516, 0.003921569F);
             RenderSystem.enableBlend();
             RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
-            RenderSystem.glMultiTexCoord2f(0x84c2, 240.0F, 240.0F); //Lightmap
+//            RenderSystem.glMultiTexCoord2f(0x84c2, 240.0F, 240.0F); //Lightmap
 
-            if (ClientEventHandler.playerHoldingWrench) {
-                RenderSystem.color4f(0, 0, 1, 1);
-            }
+//            if (ClientEventHandler.playerHoldingWrench) {
+//                RenderSystem.color4f(0, 0, 1, 1);
+//            }
 
-            builder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+            builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP);
         }
 
         @Override
-        public void end(Tessellator tessellator) {
+        public void end(Tesselator tessellator) {
             tessellator.end();
         }
     }

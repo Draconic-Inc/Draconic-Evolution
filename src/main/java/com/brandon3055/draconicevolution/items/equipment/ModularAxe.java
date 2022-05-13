@@ -1,7 +1,6 @@
 package com.brandon3055.draconicevolution.items.equipment;
 
 import com.brandon3055.brandonscore.api.TechLevel;
-import com.brandon3055.brandonscore.lib.TechPropBuilder;
 import com.brandon3055.draconicevolution.api.IReaperItem;
 import com.brandon3055.draconicevolution.api.damage.IDraconicDamage;
 import com.brandon3055.draconicevolution.api.modules.ModuleCategory;
@@ -9,35 +8,31 @@ import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleHostImpl;
 import com.brandon3055.draconicevolution.init.EquipCfg;
 import com.brandon3055.draconicevolution.init.ModuleCfg;
-import com.google.common.collect.ImmutableSet;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.material.Material;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.item.AxeItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
+import com.brandon3055.draconicevolution.init.TechProperties;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.item.AxeItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
-import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by brandon3055 on 21/5/20.
  */
 public class ModularAxe extends AxeItem implements IReaperItem, IModularMiningTool, IDraconicDamage {
-    public static final Set<Material> EFFECTIVE_MATS = ImmutableSet.of(Material.WOOD, Material.PLANT, Material.REPLACEABLE_PLANT, Material.BAMBOO, Material.LEAVES);
     private final TechLevel techLevel;
-    private final DEItemTier itemTier;
+    private final DETier itemTier;
 
-    public ModularAxe(TechPropBuilder props) {
-        super(new DEItemTier(props, EquipCfg::getAxeDmgMult, EquipCfg::getAxeSpeedMult), 0, 0, props.axeProps());
-        this.techLevel = props.techLevel;
-        this.itemTier = (DEItemTier) getTier();
+    public ModularAxe(DETier tier, TechProperties props) {
+        super(tier, 0, 0, props);
+        this.techLevel = props.getTechLevel();
+        this.itemTier = (DETier) getTier();
     }
 
     @Override
@@ -46,13 +41,23 @@ public class ModularAxe extends AxeItem implements IReaperItem, IModularMiningTo
     }
 
     @Override
-    public DEItemTier getItemTier() {
+    public DETier getItemTier() {
         return itemTier;
     }
 
     @Override
     public TechLevel getTechLevel(@Nullable ItemStack stack) {
         return techLevel;
+    }
+
+    @Override
+    public double getSwingSpeedMultiplier() {
+        return EquipCfg.axeSwingSpeedMultiplier;
+    }
+
+    @Override
+    public double getDamageMultiplier() {
+        return EquipCfg.axeDamageMultiplier;
     }
 
     @Override
@@ -79,23 +84,38 @@ public class ModularAxe extends AxeItem implements IReaperItem, IModularMiningTo
     }
 
     @Override
-    public Set<Block> effectiveBlockAdditions() {
-        return Collections.emptySet();
-    }
-
-    @Override
-    public boolean overrideEffectivity(Material material) {
-        return EFFECTIVE_MATS.contains(material);
-    }
-
-    @Override
     @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         addModularItemInformation(stack, worldIn, tooltip, flagIn);
     }
 
     @Override
     public int getReaperLevel(ItemStack stack) {
         return 0;
+    }
+
+    @Override
+    public boolean isBarVisible(ItemStack stack) {
+        return damageBarVisible(stack);
+    }
+
+    @Override
+    public int getBarWidth(ItemStack stack) {
+        return damageBarWidth(stack);
+    }
+
+    @Override
+    public int getBarColor(ItemStack stack) {
+        return damageBarColour(stack);
+    }
+
+    @Override
+    public boolean canBeHurtBy(DamageSource source) {
+        return source == DamageSource.OUT_OF_WORLD;
+    }
+
+    @Override
+    public int getEntityLifespan(ItemStack itemStack, Level level) {
+        return -32768;
     }
 }

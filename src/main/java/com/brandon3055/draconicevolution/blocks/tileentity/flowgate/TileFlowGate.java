@@ -9,20 +9,20 @@ import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedByte;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedLong;
 import com.brandon3055.draconicevolution.blocks.machines.FlowGate;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
  * Created by brandon3055 on 15/11/2016.
  */
-public abstract class TileFlowGate extends TileBCore implements ITickableTileEntity, IChangeListener, INamedContainerProvider, IInteractTile {
+public abstract class TileFlowGate extends TileBCore implements IChangeListener, MenuProvider, IInteractTile {
 
     protected long transferThisTick = 0;
 
@@ -34,8 +34,8 @@ public abstract class TileFlowGate extends TileBCore implements ITickableTileEnt
 
     private Direction rotationCache = null;
 
-    public TileFlowGate(TileEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public TileFlowGate(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState state) {
+        super(tileEntityTypeIn, pos, state);
     }
 
     @Override
@@ -72,7 +72,7 @@ public abstract class TileFlowGate extends TileBCore implements ITickableTileEnt
 
 
     @Override
-    public void receivePacketFromClient(MCDataInput data, ServerPlayerEntity client, int id) {
+    public void receivePacketFromClient(MCDataInput data, ServerPlayer client, int id) {
         if (flowOverridden.get()) {
             return;
         }
@@ -98,17 +98,17 @@ public abstract class TileFlowGate extends TileBCore implements ITickableTileEnt
         }
     }
 
-    public TileEntity getTarget() {
+    public BlockEntity getTarget() {
         return level.getBlockEntity(worldPosition.relative(getDirection()));
     }
 
-    public TileEntity getSource() {
+    public BlockEntity getSource() {
         return level.getBlockEntity(worldPosition.relative(getDirection().getOpposite()));
     }
 
     @Override
-    public void clearCache() {
-        super.clearCache();
+    public void setBlockState(BlockState p_155251_) {
+        super.setBlockState(p_155251_);
         rotationCache = null;
     }
 

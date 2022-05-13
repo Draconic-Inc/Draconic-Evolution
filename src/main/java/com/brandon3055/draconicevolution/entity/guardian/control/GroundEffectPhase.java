@@ -8,23 +8,23 @@ import com.brandon3055.draconicevolution.entity.guardian.GuardianFightManager;
 import com.brandon3055.draconicevolution.entity.guardian.GuardianProjectileEntity;
 import com.brandon3055.draconicevolution.entity.guardian.GuardianWither;
 import com.brandon3055.draconicevolution.init.DEContent;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class GroundEffectPhase extends ChargeUpPhase {
 
-    private List<MobEntity> summoned = new ArrayList<>();
+    private List<Mob> summoned = new ArrayList<>();
     private int initialWithers = 0;
     private int spawnCount = 0;
     private int nextWither = 0;
@@ -43,7 +43,7 @@ public class GroundEffectPhase extends ChargeUpPhase {
     public void serverTick() {
         super.serverTick();
         if (summoned == null) {
-            guardian.level.getEntities(DEContent.guardianWither, guardian.getBoundingBox().inflate(500), e -> true).forEach(Entity::remove);
+            guardian.level.getEntities(DEContent.guardianWither, guardian.getBoundingBox().inflate(500), e -> true).forEach(Entity::discard);
             summoned = new ArrayList<>();
         }
 
@@ -78,7 +78,7 @@ public class GroundEffectPhase extends ChargeUpPhase {
                 updateRandomFire();
                 if (actionTime >= actionDuration) {
                     guardian.getPhaseManager().setPhase(PhaseType.START);
-                    guardian.level.getEntities(DEContent.guardianWither, guardian.getBoundingBox().inflate(500), e -> true).forEach(Entity::remove);
+                    guardian.level.getEntities(DEContent.guardianWither, guardian.getBoundingBox().inflate(500), e -> true).forEach(Entity::discard);
                 }
                 break;
         }
@@ -110,8 +110,8 @@ public class GroundEffectPhase extends ChargeUpPhase {
             nextWither = 80 + random.nextInt(140);
         }
 
-        for (MobEntity wither : summoned) {
-            PlayerEntity closeTarget = guardian.level.getNearestPlayer(wither.getX(), wither.getY(), wither.getZ(), 200, true);
+        for (Mob wither : summoned) {
+            Player closeTarget = guardian.level.getNearestPlayer(wither.getX(), wither.getY(), wither.getZ(), 200, true);
             if (closeTarget != null) {
                 wither.setTarget(closeTarget);
             }
@@ -129,7 +129,7 @@ public class GroundEffectPhase extends ChargeUpPhase {
         }
 
         wither.setPos(spawnPos.x, spawnPos.y - 10, spawnPos.z);
-        wither.setCustomName(new TranslationTextComponent("entity.draconicevolution.guardian_wither"));
+        wither.setCustomName(new TranslatableComponent("entity.draconicevolution.guardian_wither"));
         wither.setInvulnerableTicks(3);
 
         guardian.level.addFreshEntity(wither);
@@ -140,26 +140,26 @@ public class GroundEffectPhase extends ChargeUpPhase {
     private void updateSpinFire() {
         Vector3 headPos = Vector3.fromEntity(guardian);
         float rotation = ((guardian.yRotO - 90 - 55) / 360) * (float) Math.PI * 2F;
-        headPos.add(MathHelper.cos(rotation) * 7, 0, MathHelper.sin(rotation) * 7);
+        headPos.add(Mth.cos(rotation) * 7, 0, Mth.sin(rotation) * 7);
         boolean perimeterHit = attackStage == 1;
 
         rotation += Math.PI / 2;
         BlockPos origin = guardian.getArenaOrigin();
         int range = perimeterHit ? 30 + random.nextInt(40) : random.nextInt(60);
-        double targetX = guardian.getX() + (MathHelper.cos(rotation) * range);
+        double targetX = guardian.getX() + (Mth.cos(rotation) * range);
         double targetY = origin == null ? guardian.getY() - 30 : origin.getY() + 15;
-        double targetZ = guardian.getZ() + (MathHelper.sin(rotation) * range);
+        double targetZ = guardian.getZ() + (Mth.sin(rotation) * range);
         Vector3 aim = new Vector3(targetX, targetY, targetZ).subtract(headPos).normalize();
 
 
         GuardianProjectileEntity projectile = new GuardianProjectileEntity(guardian.level, guardian, aim.x, aim.y, aim.z, null, 25, GuardianFightManager.PROJECTILE_POWER);
         projectile.moveTo(headPos.x, headPos.y, headPos.z, 0.0F, 0.0F);
         guardian.level.addFreshEntity(projectile);
-        BCoreNetwork.sendSound(guardian.level, guardian, SoundEvents.ENDER_DRAGON_SHOOT, SoundCategory.HOSTILE, 32.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F, false);
+        BCoreNetwork.sendSound(guardian.level, guardian, SoundEvents.ENDER_DRAGON_SHOOT, SoundSource.HOSTILE, 32.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F, false);
         BCoreNetwork.sendParticle(guardian.level, ParticleTypes.EXPLOSION, headPos, Vector3.ZERO, true);
 
 
-        guardian.yRot += 1F + (((actionTime / (float) actionDuration)) * 10F);
+        guardian.setYRot(guardian.getYRot() + (1F + (((actionTime / (float) actionDuration)) * 10F)));
 
 
 //        Vector3 headPos = Vector3.fromEntity(guardian);
@@ -179,7 +179,7 @@ public class GroundEffectPhase extends ChargeUpPhase {
     private void updateRandomFire() {
         Vector3 headPos = Vector3.fromEntity(guardian);
         float rotation = ((guardian.yRotO - 90) / 360) * (float) Math.PI * 2F;
-        headPos.add(MathHelper.cos(rotation) * 7, 0, MathHelper.sin(rotation) * 7);
+        headPos.add(Mth.cos(rotation) * 7, 0, Mth.sin(rotation) * 7);
 
         for (int i = 0; i < 2; i++) {
             Vector3 target = Vector3.fromEntity(guardian).add(random.nextInt(160) - 80, -30, random.nextInt(160) - 80);
@@ -194,8 +194,8 @@ public class GroundEffectPhase extends ChargeUpPhase {
         }
 
         BCoreNetwork.sendParticle(guardian.level, ParticleTypes.EXPLOSION, headPos, Vector3.ZERO, true);
-        BCoreNetwork.sendSound(guardian.level, guardian, SoundEvents.ENDER_DRAGON_SHOOT, SoundCategory.HOSTILE, 32.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F, false);
-        guardian.yRot += 1F;
+        BCoreNetwork.sendSound(guardian.level, guardian, SoundEvents.ENDER_DRAGON_SHOOT, SoundSource.HOSTILE, 32.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F, false);
+        guardian.setYRot(guardian.getYRot() + 1F);
     }
 
     @Override
@@ -203,13 +203,13 @@ public class GroundEffectPhase extends ChargeUpPhase {
         return PhaseType.GROUND_EFFECTS;
     }
 
-    protected final Vector3d calculateViewVector(float xRot, float yRot) {
+    protected final Vec3 calculateViewVector(float xRot, float yRot) {
         float f = xRot * ((float) Math.PI / 180F);
         float f1 = -yRot * ((float) Math.PI / 180F);
-        float f2 = MathHelper.cos(f1);
-        float f3 = MathHelper.sin(f1);
-        float f4 = MathHelper.cos(f);
-        float f5 = MathHelper.sin(f);
-        return new Vector3d(f3 * f4, -f5, f2 * f4);
+        float f2 = Mth.cos(f1);
+        float f3 = Mth.sin(f1);
+        float f4 = Mth.cos(f);
+        float f5 = Mth.sin(f);
+        return new Vec3(f3 * f4, -f5, f2 * f4);
     }
 }

@@ -1,12 +1,12 @@
 package com.brandon3055.draconicevolution.client.model;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.model.Model;
+import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.entity.PlayerRenderer;
-import net.minecraft.client.renderer.model.Model;
-import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.renderer.entity.player.PlayerRenderer;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.function.Function;
 
@@ -15,60 +15,60 @@ import java.util.function.Function;
  * Created using Tabula 5.0.0
  */
 public class ModelContributorWings extends Model {
-    public ModelRenderer rightBaseStem;
-    public ModelRenderer leftBaseStem;
-    public ModelRenderer rightOuterStem;
-    public ModelRenderer rightWingInner;
-    public ModelRenderer rightWingOuter;
-    public ModelRenderer leftOuterStem;
-    public ModelRenderer leftWingInner;
-    public ModelRenderer leftWingOuter;
+    public ModelPart rightBaseStem;
+    public ModelPart leftBaseStem;
+    public ModelPart rightOuterStem;
+    public ModelPart rightWingInner;
+    public ModelPart rightWingOuter;
+    public ModelPart leftOuterStem;
+    public ModelPart leftWingInner;
+    public ModelPart leftWingOuter;
     public PlayerRenderer renderPlayer = null;
 
     public ModelContributorWings(Function<ResourceLocation, RenderType> renderTypeIn) {
         super(renderTypeIn);
-        this.texWidth = 32;
-        this.texHeight = 32;
-        this.leftWingOuter = new ModelRenderer(this, 0, 18);
-        this.leftWingOuter.mirror = true;
-        this.leftWingOuter.setPos(0.5F, 0.0F, 0.0F);
-//        this.leftWingOuter.addBox(-0.5F, 0.5F, 0.0F, 15, 14, 0, 0.0F);
-//        this.leftWingOuter.cubeList.add(new ModelBoxFace(leftWingOuter, leftWingOuter.textureOffsetX, leftWingOuter.textureOffsetY, -0.5F, 0.5F, 0.0F, 15, 14, 0, 5));
-        this.rightOuterStem = new ModelRenderer(this, 0, 2);
-        this.rightOuterStem.setPos(-12.5F, 0.0F, 0.0F);
-        this.rightOuterStem.addBox(-15.0F, -0.5F, -0.5F, 15, 1, 1, 0.0F);
-        this.setRotateAngle(rightOuterStem, 0.0F, -0.6108652381980153F, 0.0F);
-        this.leftWingInner = new ModelRenderer(this, 0, 4);
-        this.leftWingInner.setPos(0.0F, 0.0F, 0.0F);
-//        this.leftWingInner.addBox(-0.5F, 0.5F, 0.0F, 13, 14, 0, 0.0F);
-//        this.leftWingInner.cubeList.add(new ModelBoxFace(leftWingInner, leftWingInner.textureOffsetX, leftWingInner.textureOffsetY, -0.5F, 0.5F, 0.0F, 13, 14, 0, 4));
-        this.rightWingInner = new ModelRenderer(this, 0, 4);
-        this.rightWingInner.mirror = true;
-        this.rightWingInner.setPos(0.0F, 0.0F, 0.0F);
-//        this.rightWingInner.addBox(-12.5F, 0.5F, 0.0F, 13, 14, 0, 0.0F);
-//        this.rightWingInner.cubeList.add(new ModelBoxFace(rightWingInner, rightWingInner.textureOffsetX, rightWingInner.textureOffsetY, -12.5F, 0.5F, 0.0F, 13, 14, 0, 4));
-        this.rightWingOuter = new ModelRenderer(this, 0, 18);
-        this.rightWingOuter.setPos(-0.5F, 0.0F, 0.0F);
-//        this.rightWingOuter.addBox(-14.5F, 0.5F, 0.0F, 15, 14, 0, 0.0F);
-//        this.rightWingOuter.cubeList.add(new ModelBoxFace(rightWingOuter, rightWingOuter.textureOffsetX, rightWingOuter.textureOffsetY, -14.5F, 0.5F, 0.0F, 15, 14, 0, 5));
-        this.leftBaseStem = new ModelRenderer(this, 0, 0);
-        this.leftBaseStem.setPos(0.5F, 1.0F, 2.0F);
-        this.leftBaseStem.addBox(-0.5F, -0.5F, -0.5F, 13, 1, 1, 0.0F);
-        this.setRotateAngle(leftBaseStem, 0.0F, -0.3490658503988659F, 0.0F);
-        this.leftOuterStem = new ModelRenderer(this, 0, 2);
-        this.leftOuterStem.setPos(12.5F, 0.0F, 0.0F);
-        this.leftOuterStem.addBox(0.0F, -0.5F, -0.5F, 15, 1, 1, 0.0F);
-        this.setRotateAngle(leftOuterStem, 0.0F, 0.6108652381980153F, 0.0F);
-        this.rightBaseStem = new ModelRenderer(this, 0, 0);
-        this.rightBaseStem.setPos(-0.5F, 1.0F, 2.0F);
-        this.rightBaseStem.addBox(-12.5F, -0.5F, -0.5F, 13, 1, 1, 0.0F);
-        this.setRotateAngle(rightBaseStem, 0.0F, 0.3490658503988659F, 0.0F);
-        this.leftOuterStem.addChild(this.leftWingOuter);
-        this.rightBaseStem.addChild(this.rightOuterStem);
-        this.leftBaseStem.addChild(this.leftWingInner);
-        this.rightBaseStem.addChild(this.rightWingInner);
-        this.rightOuterStem.addChild(this.rightWingOuter);
-        this.leftBaseStem.addChild(this.leftOuterStem);
+//        this.texWidth = 32;
+//        this.texHeight = 32;
+//        this.leftWingOuter = new ModelPart(this, 0, 18);
+//        this.leftWingOuter.mirror = true;
+//        this.leftWingOuter.setPos(0.5F, 0.0F, 0.0F);
+////        this.leftWingOuter.addBox(-0.5F, 0.5F, 0.0F, 15, 14, 0, 0.0F);
+////        this.leftWingOuter.cubeList.add(new ModelBoxFace(leftWingOuter, leftWingOuter.textureOffsetX, leftWingOuter.textureOffsetY, -0.5F, 0.5F, 0.0F, 15, 14, 0, 5));
+//        this.rightOuterStem = new ModelPart(this, 0, 2);
+//        this.rightOuterStem.setPos(-12.5F, 0.0F, 0.0F);
+//        this.rightOuterStem.addBox(-15.0F, -0.5F, -0.5F, 15, 1, 1, 0.0F);
+//        this.setRotateAngle(rightOuterStem, 0.0F, -0.6108652381980153F, 0.0F);
+//        this.leftWingInner = new ModelPart(this, 0, 4);
+//        this.leftWingInner.setPos(0.0F, 0.0F, 0.0F);
+////        this.leftWingInner.addBox(-0.5F, 0.5F, 0.0F, 13, 14, 0, 0.0F);
+////        this.leftWingInner.cubeList.add(new ModelBoxFace(leftWingInner, leftWingInner.textureOffsetX, leftWingInner.textureOffsetY, -0.5F, 0.5F, 0.0F, 13, 14, 0, 4));
+//        this.rightWingInner = new ModelPart(this, 0, 4);
+//        this.rightWingInner.mirror = true;
+//        this.rightWingInner.setPos(0.0F, 0.0F, 0.0F);
+////        this.rightWingInner.addBox(-12.5F, 0.5F, 0.0F, 13, 14, 0, 0.0F);
+////        this.rightWingInner.cubeList.add(new ModelBoxFace(rightWingInner, rightWingInner.textureOffsetX, rightWingInner.textureOffsetY, -12.5F, 0.5F, 0.0F, 13, 14, 0, 4));
+//        this.rightWingOuter = new ModelPart(this, 0, 18);
+//        this.rightWingOuter.setPos(-0.5F, 0.0F, 0.0F);
+////        this.rightWingOuter.addBox(-14.5F, 0.5F, 0.0F, 15, 14, 0, 0.0F);
+////        this.rightWingOuter.cubeList.add(new ModelBoxFace(rightWingOuter, rightWingOuter.textureOffsetX, rightWingOuter.textureOffsetY, -14.5F, 0.5F, 0.0F, 15, 14, 0, 5));
+//        this.leftBaseStem = new ModelPart(this, 0, 0);
+//        this.leftBaseStem.setPos(0.5F, 1.0F, 2.0F);
+//        this.leftBaseStem.addBox(-0.5F, -0.5F, -0.5F, 13, 1, 1, 0.0F);
+//        this.setRotateAngle(leftBaseStem, 0.0F, -0.3490658503988659F, 0.0F);
+//        this.leftOuterStem = new ModelPart(this, 0, 2);
+//        this.leftOuterStem.setPos(12.5F, 0.0F, 0.0F);
+//        this.leftOuterStem.addBox(0.0F, -0.5F, -0.5F, 15, 1, 1, 0.0F);
+//        this.setRotateAngle(leftOuterStem, 0.0F, 0.6108652381980153F, 0.0F);
+//        this.rightBaseStem = new ModelPart(this, 0, 0);
+//        this.rightBaseStem.setPos(-0.5F, 1.0F, 2.0F);
+//        this.rightBaseStem.addBox(-12.5F, -0.5F, -0.5F, 13, 1, 1, 0.0F);
+//        this.setRotateAngle(rightBaseStem, 0.0F, 0.3490658503988659F, 0.0F);
+//        this.leftOuterStem.addChild(this.leftWingOuter);
+//        this.rightBaseStem.addChild(this.rightOuterStem);
+//        this.leftBaseStem.addChild(this.leftWingInner);
+//        this.rightBaseStem.addChild(this.rightWingInner);
+//        this.rightOuterStem.addChild(this.rightWingOuter);
+//        this.leftBaseStem.addChild(this.leftOuterStem);
     }
 
 ////    @Override
@@ -113,14 +113,14 @@ public class ModelContributorWings extends Model {
 //    }
 
     @Override
-    public void renderToBuffer(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+    public void renderToBuffer(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
 
     }
 
     /**
      * This is a helper function from Tabula to set the rotation of model parts
      */
-    public void setRotateAngle(ModelRenderer ModelRenderer, float x, float y, float z) {
+    public void setRotateAngle(ModelPart ModelRenderer, float x, float y, float z) {
         ModelRenderer.xRot = x;
         ModelRenderer.yRot = y;
         ModelRenderer.zRot = z;

@@ -5,19 +5,19 @@ import com.brandon3055.brandonscore.handlers.ProcessHandler;
 import com.brandon3055.brandonscore.lib.ShortPos;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import com.brandon3055.draconicevolution.utils.LogHelper;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.FallingBlock;
-import net.minecraft.network.play.server.SChunkDataPacket;
-import net.minecraft.network.play.server.SUpdateLightPacket;
+import net.minecraft.Util;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.protocol.game.ClientboundLightUpdatePacket;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.ChunkSection;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraft.world.server.ServerWorldLightManager;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ThreadedLevelLightEngine;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.FallingBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.world.level.chunk.LevelChunkSection;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -30,19 +30,19 @@ import java.util.LinkedList;
  */
 public class ExplosionHelper {
 
-    private final ServerWorld serverWorld;
+    private final ServerLevel serverWorld;
     private BlockPos start;
     private ShortPos shortPos;
-    private HashSet<Chunk> modifiedChunks = new HashSet<>();
+    private HashSet<LevelChunk> modifiedChunks = new HashSet<>();
     private HashSet<Integer> blocksToUpdate = new HashSet<>();
     private HashSet<Integer> lightUpdates = new HashSet<>();
     private HashSet<Integer> tilesToRemove = new HashSet<>();
-    private HashMap<ChunkPos, Chunk> chunkCache = new HashMap<>();
+    private HashMap<ChunkPos, LevelChunk> chunkCache = new HashMap<>();
     private static final BlockState AIR = Blocks.AIR.defaultBlockState();
     //    private Map<Integer, LinkedHashList<Integer>> radialRemovalMap = new HashMap<>();
     public LinkedList<HashSet<Integer>> toRemove = new LinkedList<>();
 
-    public ExplosionHelper(ServerWorld serverWorld, BlockPos start, ShortPos shortPos) {
+    public ExplosionHelper(ServerLevel serverWorld, BlockPos start, ShortPos shortPos) {
         this.serverWorld = serverWorld;
         this.start = start;
         this.shortPos = shortPos;
@@ -57,10 +57,10 @@ public class ExplosionHelper {
     }
 
     private void removeBlock(BlockPos pos) {
-        Chunk chunk = getChunk(pos);
+        LevelChunk chunk = getChunk(pos);
         BlockState oldState = chunk.getBlockState(pos);
 
-        if (oldState.getBlock().hasTileEntity(oldState)) {
+        if (oldState.getBlock() instanceof EntityBlock) {
             serverWorld.removeBlock(pos, false);
 
 //            PlayerChunkMap playerChunkMap = serverWorld.getPlayerChunkMap();
@@ -75,7 +75,7 @@ public class ExplosionHelper {
             return;
         }
 
-        ChunkSection storage = getBlockStorage(pos);
+        LevelChunkSection storage = getBlockStorage(pos);
         if (storage != null) {
             storage.setBlockState(pos.getX() & 15, pos.getY() & 15, pos.getZ() & 15, AIR);
         }
@@ -84,15 +84,15 @@ public class ExplosionHelper {
     }
 
     public void setChunkModified(BlockPos blockPos) {
-        Chunk chunk = getChunk(blockPos);
+        LevelChunk chunk = getChunk(blockPos);
         setChunkModified(chunk);
     }
 
-    public void setChunkModified(Chunk chunk) {
+    public void setChunkModified(LevelChunk chunk) {
         modifiedChunks.add(chunk);
     }
 
-    private Chunk getChunk(BlockPos pos) {
+    private LevelChunk getChunk(BlockPos pos) {
         ChunkPos cp = new ChunkPos(pos);
         if (!chunkCache.containsKey(cp)) {
             chunkCache.put(cp, serverWorld.getChunk(pos.getX() >> 4, pos.getZ() >> 4));
@@ -101,8 +101,8 @@ public class ExplosionHelper {
         return chunkCache.get(cp);
     }
 
-    private ChunkSection getBlockStorage(BlockPos pos) {
-        Chunk chunk = getChunk(pos);
+    private LevelChunkSection getBlockStorage(BlockPos pos) {
+        LevelChunk chunk = getChunk(pos);
         return chunk.getSections()[pos.getY() >> 4];
     }
 
@@ -120,7 +120,7 @@ public class ExplosionHelper {
     }
 
     public BlockState getBlockState(BlockPos pos) {
-        ChunkSection storage = getBlockStorage(pos);
+        LevelChunkSection storage = getBlockStorage(pos);
         if (storage == null) {
             return Blocks.AIR.defaultBlockState();
         }
@@ -160,14 +160,14 @@ public class ExplosionHelper {
         }
 
         public void finishChunks() {
-            for (Chunk chunk : helper.modifiedChunks) {
+            for (LevelChunk chunk : helper.modifiedChunks) {
                 chunk.setUnsaved(true);
-                ServerWorldLightManager lightManager = (ServerWorldLightManager) helper.serverWorld.getLightEngine();
-                lightManager.lightChunk(chunk, false)
-                        .thenRun(() -> helper.serverWorld.getChunkSource().chunkMap.getPlayers(chunk.getPos(), false)
-                        .forEach(e -> e.connection.send(new SUpdateLightPacket(chunk.getPos(), helper.serverWorld.getLightEngine(), true))));
+                ThreadedLevelLightEngine lightManager = (ThreadedLevelLightEngine) helper.serverWorld.getLightEngine();
+                lightManager.lightChunk(chunk, false);//todo???
+//                        .thenRun(() -> helper.serverWorld.getChunkSource().chunkMap.getPlayers(chunk.getPos(), false)
+//                        .forEach(e -> e.connection.send(new ClientboundLightUpdatePacket(chunk.getPos(), helper.serverWorld.getLightEngine(), null, null, true))));
 
-                SChunkDataPacket packet = new SChunkDataPacket(chunk, 65535);
+                ClientboundLightUpdatePacket packet = new ClientboundLightUpdatePacket(chunk.getPos(), helper.serverWorld.getLightEngine(), null, null, true);
                 helper.serverWorld.getChunkSource().chunkMap.getPlayers(chunk.getPos(), false).forEach(e -> e.connection.send(packet));
             }
 
@@ -186,8 +186,7 @@ public class ExplosionHelper {
                     }
                     state.neighborChanged(helper.serverWorld, helper.shortPos.getActualPos(pos), Blocks.AIR, helper.shortPos.getActualPos(pos).above(), false);
                 }
-            }
-            catch (Throwable e) {
+            } catch (Throwable e) {
                 e.printStackTrace();
             }
             LogHelper.stopTimer();

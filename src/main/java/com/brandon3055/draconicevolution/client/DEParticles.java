@@ -3,14 +3,14 @@ package com.brandon3055.draconicevolution.client;
 import com.brandon3055.brandonscore.client.particle.IntParticleType;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.render.particle.*;
+import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.ParticleManager;
-import net.minecraft.client.renderer.ActiveRenderInfo;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.particles.BasicParticleType;
-import net.minecraft.particles.ParticleType;
-import net.minecraft.world.World;
+import net.minecraft.client.particle.ParticleEngine;
+import net.minecraft.core.particles.ParticleType;
+import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
@@ -38,13 +38,13 @@ public class DEParticles {
     @ObjectHolder("energy_core")
     public static IntParticleType energy_core;
     @ObjectHolder("guardian_projectile")
-    public static BasicParticleType guardian_projectile;
+    public static SimpleParticleType guardian_projectile;
     @ObjectHolder("blink")
-    public static BasicParticleType blink;
+    public static SimpleParticleType blink;
     @ObjectHolder("guardian_cloud")
-    public static BasicParticleType guardian_cloud;
+    public static SimpleParticleType guardian_cloud;
     @ObjectHolder("guardian_beam")
-    public static BasicParticleType guardian_beam;
+    public static SimpleParticleType guardian_beam;
 
     @SubscribeEvent
     public static void registerParticles(RegistryEvent.Register<ParticleType<?>> event) {
@@ -53,16 +53,16 @@ public class DEParticles {
         event.getRegistry().register(new IntParticleType(false).setRegistryName("energy"));
         event.getRegistry().register(new IntParticleType(false).setRegistryName("energy_basic"));
         event.getRegistry().register(new IntParticleType(false).setRegistryName("energy_core"));
-        event.getRegistry().register(new BasicParticleType(false).setRegistryName("guardian_projectile"));
-        event.getRegistry().register(new BasicParticleType(false).setRegistryName("blink"));
-        event.getRegistry().register(new BasicParticleType(false).setRegistryName("guardian_cloud"));
-        event.getRegistry().register(new BasicParticleType(false).setRegistryName("guardian_beam"));
+        event.getRegistry().register(new SimpleParticleType(false).setRegistryName("guardian_projectile"));
+        event.getRegistry().register(new SimpleParticleType(false).setRegistryName("blink"));
+        event.getRegistry().register(new SimpleParticleType(false).setRegistryName("guardian_cloud"));
+        event.getRegistry().register(new SimpleParticleType(false).setRegistryName("guardian_beam"));
     }
 
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public static void registerFactories(ParticleFactoryRegisterEvent event) {
-        ParticleManager manager = Minecraft.getInstance().particleEngine;
+        ParticleEngine manager = Minecraft.getInstance().particleEngine;
         manager.register(flame, CustomFlameParticle.Factory::new);
         manager.register(line_indicator, ParticleLineIndicator.Factory::new);
         manager.register(energy, ParticleEnergy.Factory::new);
@@ -76,10 +76,10 @@ public class DEParticles {
 
 
     @OnlyIn(Dist.CLIENT)
-    public static Particle addParticleDirect(World world, Particle particle) {
-        if (world instanceof ClientWorld) {
+    public static Particle addParticleDirect(Level world, Particle particle) {
+        if (world instanceof ClientLevel) {
             Minecraft mc = Minecraft.getInstance();
-            ActiveRenderInfo activerenderinfo = mc.gameRenderer.getMainCamera();
+            Camera activerenderinfo = mc.gameRenderer.getMainCamera();
             if (mc != null && activerenderinfo.isInitialized() && mc.particleEngine != null) {
                 mc.particleEngine.add(particle);
                 return particle;

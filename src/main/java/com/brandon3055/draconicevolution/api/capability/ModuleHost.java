@@ -1,6 +1,5 @@
 package com.brandon3055.draconicevolution.api.capability;
 
-import codechicken.lib.util.SneakyUtils;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.ModuleCategory;
@@ -9,9 +8,10 @@ import com.brandon3055.draconicevolution.api.modules.data.ModuleData;
 import com.brandon3055.draconicevolution.api.modules.lib.InstallResult;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.text.ITextComponent;
+import net.covers1624.quack.util.SneakyUtils;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.INBTSerializable;
 
 import javax.annotation.Nullable;
@@ -25,10 +25,10 @@ import java.util.stream.Stream;
  * Created by brandon3055 and covers1624 on 4/16/20.
  * Note any item implementing this MUST also implement the share tag read and write functions from {@link DECapabilities} Or something similar.
  *
- * @see DECapabilities#writeToShareTag(ItemStack, CompoundNBT)
- * @see DECapabilities#readFromShareTag(ItemStack, CompoundNBT)
+ * @see DECapabilities#writeToShareTag(ItemStack, CompoundTag)
+ * @see DECapabilities#readFromShareTag(ItemStack, CompoundTag)
  */
-public interface ModuleHost extends INBTSerializable<CompoundNBT> {
+public interface ModuleHost extends INBTSerializable<CompoundTag> {
 
     /**
      * @return a list of installed modules.
@@ -69,9 +69,9 @@ public interface ModuleHost extends INBTSerializable<CompoundNBT> {
 
     Collection<ModuleCategory> getModuleCategories();
 
-    default Collection<ModuleType<?>> getAdditionalTypes() { return Collections.emptyList(); }
+    default Collection<ModuleType<?>> getAdditionalTypes() {return Collections.emptyList();}
 
-    default Collection<ModuleType<?>> getTypeBlackList() { return Collections.emptyList(); }
+    default Collection<ModuleType<?>> getTypeBlackList() {return Collections.emptyList();}
 
     /**
      * Only modules with this tech level or lower will be accepted by this host.
@@ -126,7 +126,7 @@ public interface ModuleHost extends INBTSerializable<CompoundNBT> {
      * This method exists so that a module host can select which information from a given module will be displayed. <br>
      * This is useful for module types like Speed which have different effects depending on what they are installed in.
      */
-    default <T extends ModuleData<T>> void getDataInformation(T moduleData, Map<ITextComponent, ITextComponent> map, ModuleContext context, boolean stack) {
+    default <T extends ModuleData<T>> void getDataInformation(T moduleData, Map<Component, Component> map, ModuleContext context, boolean stack) {
         if (moduleData == null) return;
         moduleData.addInformation(map, context, stack);
     }
@@ -138,7 +138,7 @@ public interface ModuleHost extends INBTSerializable<CompoundNBT> {
      *
      * @param map the map to which information will be added.
      */
-    default void addInformation(Map<ITextComponent, ITextComponent> map, ModuleContext context, boolean stack) {
+    default void addInformation(Map<Component, Component> map, ModuleContext context, boolean stack) {
         getInstalledTypes().map(this::getModuleData).forEach(data -> getDataInformation(SneakyUtils.unsafeCast(data), map, context, stack));
     }
 

@@ -1,14 +1,14 @@
 package com.brandon3055.draconicevolution.inventory;
 
 import com.brandon3055.draconicevolution.blocks.tileentity.chest.TileDraconiumChest;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.CraftResultInventory;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.ResultContainer;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * Created by Brandon on 29/10/2014.
  */
-public class InventoryCraftingChestResult extends CraftResultInventory {
+public class InventoryCraftingChestResult extends ResultContainer {
     private TileDraconiumChest tile;
 
     public InventoryCraftingChestResult(TileDraconiumChest tile) {
@@ -103,7 +103,7 @@ public class InventoryCraftingChestResult extends CraftResultInventory {
      * with Container
      */
     @Override
-    public boolean stillValid(PlayerEntity par1EntityPlayer) {
+    public boolean stillValid(Player par1EntityPlayer) {
         return true;
     }
 

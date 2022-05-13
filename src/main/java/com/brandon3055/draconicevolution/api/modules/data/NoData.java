@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.api.modules.data;
 
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
 
 import java.util.Map;
 
@@ -19,7 +19,7 @@ public class NoData implements ModuleData<NoData> {
     }
 
     @Override
-    public void addInformation(Map<ITextComponent, ITextComponent> map, ModuleContext context, boolean stack) {
+    public void addInformation(Map<Component, Component> map, ModuleContext context, boolean stack) {
 
     }
 }

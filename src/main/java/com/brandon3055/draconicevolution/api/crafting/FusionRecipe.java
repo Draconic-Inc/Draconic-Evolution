@@ -6,14 +6,14 @@ import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.core.NonNullList;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.util.Mth;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
@@ -88,7 +88,7 @@ public class FusionRecipe implements IFusionRecipe {
     }
 
     @Override
-    public IRecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<?> getSerializer() {
         return DraconicAPI.FUSION_RECIPE_SERIALIZER;
     }
 
@@ -111,26 +111,26 @@ public class FusionRecipe implements IFusionRecipe {
             return consume;
         }
 
-        protected void write(PacketBuffer buffer) {
+        protected void write(FriendlyByteBuf buffer) {
             buffer.writeBoolean(consume);
             ingredient.toNetwork(buffer);
         }
 
-        protected static FusionIngredient read(PacketBuffer buffer) {
+        protected static FusionIngredient read(FriendlyByteBuf buffer) {
             boolean consume = buffer.readBoolean();
             Ingredient ingredient = Ingredient.fromNetwork(buffer);
             return new FusionIngredient(ingredient, consume);
         }
     }
 
-    public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<FusionRecipe> {
+    public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<FusionRecipe> {
         @Override
         public FusionRecipe fromJson(ResourceLocation id, JsonObject json) {
-            ItemStack result = CraftingHelper.getItemStack(JSONUtils.getAsJsonObject(json, "result"), true);
-            Ingredient catalyst = CraftingHelper.getIngredient(JSONUtils.getAsJsonObject(json, "catalyst"));
+            ItemStack result = CraftingHelper.getItemStack(GsonHelper.getAsJsonObject(json, "result"), true);
+            Ingredient catalyst = CraftingHelper.getIngredient(GsonHelper.getAsJsonObject(json, "catalyst"));
 
             List<FusionIngredient> fusionIngredients = new ArrayList<>();
-            JsonArray ingredients = JSONUtils.getAsJsonArray(json, "ingredients");
+            JsonArray ingredients = GsonHelper.getAsJsonArray(json, "ingredients");
             for (JsonElement element : ingredients) {
                 Ingredient ingredient;
                 if (element.isJsonObject() && element.getAsJsonObject().has("ingredient")) {
@@ -138,18 +138,18 @@ public class FusionRecipe implements IFusionRecipe {
                 } else {
                     ingredient = CraftingHelper.getIngredient(element);
                 }
-                boolean isConsumed = !element.isJsonObject() || JSONUtils.getAsBoolean(element.getAsJsonObject(), "consume", true);
+                boolean isConsumed = !element.isJsonObject() || GsonHelper.getAsBoolean(element.getAsJsonObject(), "consume", true);
                 fusionIngredients.add(new FusionIngredient(ingredient, isConsumed));
             }
 
-            long totalEnergy = JSONUtils.getAsLong(json, "total_energy");
-            TechLevel techLevel = TechLevel.valueOf(JSONUtils.getAsString(json, "tier", TechLevel.DRACONIUM.name()));
+            long totalEnergy = GsonHelper.getAsLong(json, "total_energy");
+            TechLevel techLevel = TechLevel.valueOf(GsonHelper.getAsString(json, "tier", TechLevel.DRACONIUM.name()));
 
             return new FusionRecipe(id, result, catalyst, totalEnergy, techLevel, fusionIngredients);
         }
 
         @Override
-        public FusionRecipe fromNetwork(ResourceLocation id, PacketBuffer buffer) {
+        public FusionRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf buffer) {
             ItemStack result = buffer.readItem();
             Ingredient catalyst = Ingredient.fromNetwork(buffer);
 
@@ -160,13 +160,13 @@ public class FusionRecipe implements IFusionRecipe {
             }
 
             long totalEnergy = buffer.readLong();
-            TechLevel techLevel = TechLevel.VALUES[MathHelper.clamp(buffer.readByte(), 0, TechLevel.values().length - 1)];
+            TechLevel techLevel = TechLevel.VALUES[Mth.clamp(buffer.readByte(), 0, TechLevel.values().length - 1)];
 
             return new FusionRecipe(id, result, catalyst, totalEnergy, techLevel, fusionIngredients);
         }
 
         @Override
-        public void toNetwork(PacketBuffer buffer, FusionRecipe recipe) {
+        public void toNetwork(FriendlyByteBuf buffer, FusionRecipe recipe) {
             buffer.writeItemStack(recipe.result, false);
             recipe.catalyst.toNetwork(buffer);
 

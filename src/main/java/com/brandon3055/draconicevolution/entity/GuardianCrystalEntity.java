@@ -8,48 +8,48 @@ import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.entity.guardian.GuardianFightManager;
 import com.brandon3055.draconicevolution.handlers.DESounds;
 import com.brandon3055.draconicevolution.init.DEContent;
-import net.minecraft.block.AbstractFireBlock;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTUtil;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.Explosion;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseFireBlock;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
 import java.util.UUID;
 
 public class GuardianCrystalEntity extends Entity {
-    private static final DataParameter<Optional<BlockPos>> BEAM_TARGET = EntityDataManager.defineId(GuardianCrystalEntity.class, DataSerializers.OPTIONAL_BLOCK_POS);
-    private static final DataParameter<Boolean> SHOW_BOTTOM = EntityDataManager.defineId(GuardianCrystalEntity.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Float> SHIELD_POWER = EntityDataManager.defineId(GuardianCrystalEntity.class, DataSerializers.FLOAT);
-    private static final DataParameter<Float> BEAM_POWER = EntityDataManager.defineId(GuardianCrystalEntity.class, DataSerializers.FLOAT);
-    private static final DataParameter<Integer> UNSTABLE_TIME = EntityDataManager.defineId(GuardianCrystalEntity.class, DataSerializers.INT);
+    private static final EntityDataAccessor<Optional<BlockPos>> BEAM_TARGET = SynchedEntityData.defineId(GuardianCrystalEntity.class, EntityDataSerializers.OPTIONAL_BLOCK_POS);
+    private static final EntityDataAccessor<Boolean> SHOW_BOTTOM = SynchedEntityData.defineId(GuardianCrystalEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Float> SHIELD_POWER = SynchedEntityData.defineId(GuardianCrystalEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> BEAM_POWER = SynchedEntityData.defineId(GuardianCrystalEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Integer> UNSTABLE_TIME = SynchedEntityData.defineId(GuardianCrystalEntity.class, EntityDataSerializers.INT);
     private UUID managerId;
     public int innerRotation;
     private int beamChargeAnim = 0;
 
-    public GuardianCrystalEntity(EntityType<?> type, World world) {
+    public GuardianCrystalEntity(EntityType<?> type, Level world) {
         super(type, world);
         this.blocksBuilding = true;
         this.innerRotation = this.random.nextInt(100000);
     }
 
-    public GuardianCrystalEntity(World worldIn, double x, double y, double z, UUID managerId) {
+    public GuardianCrystalEntity(Level worldIn, double x, double y, double z, UUID managerId) {
         this(DEContent.guardianCrystal, worldIn);
         this.managerId = managerId;
         this.setPos(x, y, z);
@@ -80,11 +80,6 @@ public class GuardianCrystalEntity extends Entity {
     }
 
     @Override
-    protected boolean isMovementNoisy() {
-        return false;
-    }
-
-    @Override
     protected void defineSynchedData() {
         this.getEntityData().define(BEAM_TARGET, Optional.empty());
         this.getEntityData().define(SHOW_BOTTOM, true);
@@ -96,10 +91,10 @@ public class GuardianCrystalEntity extends Entity {
     @Override
     public void tick() {
         ++this.innerRotation;
-        if (this.level instanceof ServerWorld) {
+        if (this.level instanceof ServerLevel) {
             BlockPos blockpos = this.blockPosition();
             if (getManagerId() != null && this.level.getBlockState(blockpos).isAir()) {
-                this.level.setBlockAndUpdate(blockpos, AbstractFireBlock.getState(this.level, blockpos));
+                this.level.setBlockAndUpdate(blockpos, BaseFireBlock.getState(this.level, blockpos));
             }
 
             GuardianFightManager manager = getManager();
@@ -113,10 +108,10 @@ public class GuardianCrystalEntity extends Entity {
                         }
                         if (random.nextInt(3) == 0) {
                             setBeamTarget(manager.getArenaOrigin());
-                            BCoreNetwork.sendSound(level, this, DESounds.crystalUnstable, SoundCategory.HOSTILE, 6F, 0.9F + (random.nextFloat() * 0.2F), false);
+                            BCoreNetwork.sendSound(level, this, DESounds.crystalUnstable, SoundSource.HOSTILE, 6F, 0.9F + (random.nextFloat() * 0.2F), false);
                         }
                     } else {
-                        BCoreNetwork.sendSound(level, this, DESounds.crystalRestore, SoundCategory.HOSTILE, 8, 0.5F + this.level.random.nextFloat() * 0.2F, false);
+                        BCoreNetwork.sendSound(level, this, DESounds.crystalRestore, SoundSource.HOSTILE, 8, 0.5F + this.level.random.nextFloat() * 0.2F, false);
                     }
                 } else if (getShieldPower() < DEConfig.guardianCrystalShield) {
                     setShieldPower(Math.min(DEConfig.guardianCrystalShield, getShieldPower() + (DEConfig.guardianCrystalShield / 1200.0f)));
@@ -125,7 +120,7 @@ public class GuardianCrystalEntity extends Entity {
                     setBeamTarget(null);
                 }
                 if (beamChargeAnim > 0) {
-                    setBeamPower(MathHelper.sin((beamChargeAnim / 20F) * (float) Math.PI));
+                    setBeamPower(Mth.sin((beamChargeAnim / 20F) * (float) Math.PI));
                     beamChargeAnim--;
                     if (beamChargeAnim <= 0) {
                         beamChargeAnim = 0;
@@ -138,9 +133,9 @@ public class GuardianCrystalEntity extends Entity {
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundNBT compound) {
+    protected void addAdditionalSaveData(CompoundTag compound) {
         if (this.getBeamTarget() != null) {
-            compound.put("BeamTarget", NBTUtil.writeBlockPos(this.getBeamTarget()));
+            compound.put("BeamTarget", NbtUtils.writeBlockPos(this.getBeamTarget()));
         }
 
         compound.putBoolean("ShowBottom", this.shouldShowBottom());
@@ -148,9 +143,9 @@ public class GuardianCrystalEntity extends Entity {
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundNBT compound) {
+    protected void readAdditionalSaveData(CompoundTag compound) {
         if (compound.contains("BeamTarget", 10)) {
-            this.setBeamTarget(NBTUtil.readBlockPos(compound.getCompound("BeamTarget")));
+            this.setBeamTarget(NbtUtils.readBlockPos(compound.getCompound("BeamTarget")));
         }
 
         if (compound.contains("ShowBottom", 1)) {
@@ -171,11 +166,11 @@ public class GuardianCrystalEntity extends Entity {
         if (this.isInvulnerableTo(source)) {
             return false;
         } else {
-            if (!this.removed && !this.level.isClientSide) {
+            if (!this.isRemoved() && !this.level.isClientSide) {
                 GuardianFightManager manager = getManager();
                 float shield = getShieldPower() / (float) DEConfig.guardianCrystalShield;
                 if (shield > 0) {
-                    BCoreNetwork.sendSound(level, this, DESounds.shieldStrike, SoundCategory.HOSTILE, 6, 0.5F + shield, false);
+                    BCoreNetwork.sendSound(level, this, DESounds.shieldStrike, SoundSource.HOSTILE, 6, 0.5F + shield, false);
                 }
                 if (manager != null && shield > 0) {
                     float modifier = manager.getCrystalDamageModifier(this, source);
@@ -194,9 +189,9 @@ public class GuardianCrystalEntity extends Entity {
                     }
                 }
 
-                this.remove();
+                this.discard();
                 if (!source.isExplosion()) {
-                    this.level.explode((Entity) null, this.getX(), this.getY(), this.getZ(), 10.0F, Explosion.Mode.DESTROY);
+                    this.level.explode((Entity) null, this.getX(), this.getY(), this.getZ(), 10.0F, Explosion.BlockInteraction.DESTROY);
                 }
                 this.onCrystalAttacked(source, amount, true);
             }
@@ -208,7 +203,7 @@ public class GuardianCrystalEntity extends Entity {
     private void playChargeAnimation() {
         GuardianFightManager manager = getManager();
         if (beamChargeAnim == 0 && manager != null) {
-            BCoreNetwork.sendSound(level, this, DESounds.crystalBeam, SoundCategory.HOSTILE, 6, 1, false);
+            BCoreNetwork.sendSound(level, this, DESounds.crystalBeam, SoundSource.HOSTILE, 6, 1, false);
             beamChargeAnim = 20;
             setBeamTarget(manager.getArenaOrigin());
             setBeamPower(0);
@@ -261,19 +256,19 @@ public class GuardianCrystalEntity extends Entity {
     }
 
     @Override
-    public IPacket<?> getAddEntityPacket() {
+    public Packet<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 
     public void destabilize() {
         if (getUnstableTime() == 0) {
-            BCoreNetwork.sendSound(level, this, DESounds.crystalDestabilize, SoundCategory.HOSTILE, 8, 0.5F + this.level.random.nextFloat() * 0.2F, false);
+            BCoreNetwork.sendSound(level, this, DESounds.crystalDestabilize, SoundSource.HOSTILE, 8, 0.5F + this.level.random.nextFloat() * 0.2F, false);
         }
         setUnstableTime(DEConfig.guardianCrystalUnstableWindow);
     }
 
     public GuardianFightManager getManager() {
-        if (level instanceof ServerWorld && getManagerId() != null) {
+        if (level instanceof ServerLevel && getManagerId() != null) {
             WorldEntity worldEntity = WorldEntityHandler.getWorldEntity(level, managerId);
             if (worldEntity instanceof GuardianFightManager) {
                 return (GuardianFightManager) worldEntity;

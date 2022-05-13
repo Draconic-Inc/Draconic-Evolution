@@ -2,17 +2,13 @@ package com.brandon3055.draconicevolution.client.render.effect;
 
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.utils.Utils;
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import com.mojang.blaze3d.vertex.*;
+import com.mojang.math.Matrix4f;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Matrix4f;
+import net.minecraft.util.Mth;
 import org.lwjgl.opengl.GL11;
 
 import java.util.Random;
@@ -25,11 +21,11 @@ public class RenderEnergyBolt {
 
     @Deprecated
     public static void renderBoltBetween(Vec3D point1, Vec3D point2, double scale, double maxDeflection, int maxSegments, long boltSeed, boolean corona) {
-        Tessellator tessellator = Tessellator.getInstance();
+        Tesselator tessellator = Tesselator.getInstance();
         Random random = new Random(boltSeed);
 
         RenderSystem.disableTexture();
-        RenderSystem.disableLighting();
+//        RenderSystem.disableLighting();
         RenderSystem.enableBlend();
 //        GLX.glMultiTexCoord2f(GLX.GL_TEXTURE1, 200, 200);
         RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
@@ -103,18 +99,18 @@ public class RenderEnergyBolt {
         //endregion
 
         RenderSystem.disableBlend();
-        RenderSystem.enableLighting();
+//        RenderSystem.enableLighting();
         RenderSystem.enableTexture();
     }
 
     //WIP
     @Deprecated
     public static void renderCorona(Vec3D source, Vec3D target, double scale, double maxDeflection, int maxSegments, long boltSeed) {
-        Tessellator tessellator = Tessellator.getInstance();
+        Tesselator tessellator = Tesselator.getInstance();
         Random random = new Random(boltSeed);
 
         RenderSystem.disableTexture();
-        RenderSystem.disableLighting();
+//        RenderSystem.disableLighting();
         RenderSystem.enableBlend();
 //        GLX.glMultiTexCoord2f(GLX.GL_TEXTURE1, 200, 200);
         RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
@@ -160,42 +156,42 @@ public class RenderEnergyBolt {
         //endregion
 
         RenderSystem.disableBlend();
-        RenderSystem.enableLighting();
+//        RenderSystem.enableLighting();
         RenderSystem.enableTexture();
     }
 
 
     @Deprecated
-    private static void drawBoltSegment(Tessellator tessellator, Vec3D p1, Vec3D p2, float scale) {
-        BufferBuilder buffer = tessellator.getBuilder();
-
-        RenderSystem.pushMatrix();
-        RenderSystem.translated(p1.x, p1.y, p1.z);
-
-        double dist = Utils.getDistanceAtoB(p1, p2);
-        float xd = (float) (p1.x - p2.x);
-        float yd = (float) (p1.y - p2.y);
-        float zd = (float) (p1.z - p2.z);
-        double var7 = (double) MathHelper.sqrt((double) (xd * xd + zd * zd));
-        float rotYaw = (float) (Math.atan2((double) xd, (double) zd) * 180.0D / 3.141592653589793D);
-        float rotPitch = (float) (Math.atan2((double) yd, var7) * 180.0D / 3.141592653589793D);
-
-        RenderSystem.rotatef(90.0F, 1.0F, 0.0F, 0.0F);
-        RenderSystem.rotatef(180.0F + rotYaw, 0.0F, 0.0F, -1.0F);
-        RenderSystem.rotatef(rotPitch, 1.0F, 0.0F, 0.0F);
-
-        buffer.begin(GL11.GL_TRIANGLE_STRIP, DefaultVertexFormats.POSITION_COLOR);
-        for (int i = 0; i <= 9; i++) {
-            float f = (i + 1F) / 9F;
-            float verX = MathHelper.sin((float) (i % 3) * (float) Math.PI * 2F / (float) 3) * f * scale;
-            float verZ = MathHelper.cos((float) (i % 3) * (float) Math.PI * 2F / (float) 3) * f * scale;
-
-            buffer.vertex(verX, dist, verZ).color(0.35F, 0.65F, 0.9F, 0.3F).endVertex();
-            buffer.vertex(verX, 0, verZ).color(0.35F, 0.65F, 0.9F, 0.3F).endVertex();
-        }
-        tessellator.end();
-
-        RenderSystem.popMatrix();
+    private static void drawBoltSegment(Tesselator tessellator, Vec3D p1, Vec3D p2, float scale) {
+//        BufferBuilder buffer = tessellator.getBuilder();
+//
+//        RenderSystem.pushMatrix();
+//        RenderSystem.translated(p1.x, p1.y, p1.z);
+//
+//        double dist = Utils.getDistanceAtoB(p1, p2);
+//        float xd = (float) (p1.x - p2.x);
+//        float yd = (float) (p1.y - p2.y);
+//        float zd = (float) (p1.z - p2.z);
+//        double var7 = (double) Mth.sqrt((double) (xd * xd + zd * zd));
+//        float rotYaw = (float) (Math.atan2((double) xd, (double) zd) * 180.0D / 3.141592653589793D);
+//        float rotPitch = (float) (Math.atan2((double) yd, var7) * 180.0D / 3.141592653589793D);
+//
+//        RenderSystem.rotatef(90.0F, 1.0F, 0.0F, 0.0F);
+//        RenderSystem.rotatef(180.0F + rotYaw, 0.0F, 0.0F, -1.0F);
+//        RenderSystem.rotatef(rotPitch, 1.0F, 0.0F, 0.0F);
+//
+//        buffer.begin(GL11.GL_TRIANGLE_STRIP, DefaultVertexFormat.POSITION_COLOR);
+//        for (int i = 0; i <= 9; i++) {
+//            float f = (i + 1F) / 9F;
+//            float verX = Mth.sin((float) (i % 3) * (float) Math.PI * 2F / (float) 3) * f * scale;
+//            float verZ = Mth.cos((float) (i % 3) * (float) Math.PI * 2F / (float) 3) * f * scale;
+//
+//            buffer.vertex(verX, dist, verZ).color(0.35F, 0.65F, 0.9F, 0.3F).endVertex();
+//            buffer.vertex(verX, 0, verZ).color(0.35F, 0.65F, 0.9F, 0.3F).endVertex();
+//        }
+//        tessellator.end();
+//
+//        RenderSystem.popMatrix();
     }
 
 
@@ -207,7 +203,7 @@ public class RenderEnergyBolt {
 
 
     @Deprecated //Currently just for reference
-    public static void renderVanillaLightning(MatrixStack mStack, IRenderTypeBuffer getter) {
+    public static void renderVanillaLightning(PoseStack mStack, MultiBufferSource getter) {
         //This is basically used to pre calculate the segment random positions. The next position is then re calculated using the same random seed.
         float[] segXOffset = new float[8];
         float[] segZOffset = new float[8];
@@ -225,7 +221,7 @@ public class RenderEnergyBolt {
             cumulativeZ += (float)(random.nextInt(11) - 5);
         }
 
-        IVertexBuilder builder = getter.getBuffer(RenderType.lightning());
+        VertexConsumer builder = getter.getBuffer(RenderType.lightning());
         Matrix4f matrix4f = mStack.last().pose();
 
         //Render each bolt layer
@@ -282,7 +278,7 @@ public class RenderEnergyBolt {
         }
     }
 
-    private static void addVanillaSegmentQuad(Matrix4f matrix4f, IVertexBuilder builder, float x1, float z1, int segIndex, float x2, float z2, float red, float green, float blue, float offsetA, float offsetB, boolean invA, boolean invB, boolean invC, boolean invD) {
+    private static void addVanillaSegmentQuad(Matrix4f matrix4f, VertexConsumer builder, float x1, float z1, int segIndex, float x2, float z2, float red, float green, float blue, float offsetA, float offsetB, boolean invA, boolean invB, boolean invC, boolean invD) {
         float segHeight = 16F;
         builder.vertex(matrix4f, x1 + (invA ? offsetB : -offsetB), segIndex * segHeight,          z1 + (invB ? offsetB : -offsetB)).color(red, green, blue, 0.3F).endVertex();
         builder.vertex(matrix4f, x2 + (invA ? offsetA : -offsetA), (segIndex + 1F) * segHeight,   z2 + (invB ? offsetA : -offsetA)).color(red, green, blue, 0.3F).endVertex();

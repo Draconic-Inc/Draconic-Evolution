@@ -10,15 +10,15 @@ import com.brandon3055.draconicevolution.api.modules.lib.ModuleGrid;
 import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.PropertyData;
 import com.brandon3055.draconicevolution.entity.guardian.DraconicGuardianEntity;
 import com.brandon3055.draconicevolution.entity.guardian.control.IPhase;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.ClickType;
-import net.minecraft.item.Item;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.network.event.EventNetworkChannel;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.network.event.EventNetworkChannel;
 
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -107,7 +107,7 @@ public class DraconicNetwork {
         new PacketCustom(CHANNEL, S_MODULE_CONFIG_GUI).sendToServer();
     }
 
-    public static void sendExplosionEffect(RegistryKey<World> dimension, BlockPos pos, int radius, boolean reload) {
+    public static void sendExplosionEffect(ResourceKey<Level> dimension, BlockPos pos, int radius, boolean reload) {
         PacketCustom packet = new PacketCustom(CHANNEL, C_EXPLOSION_EFFECT);
         packet.writePos(pos);
         packet.writeVarInt(radius);
@@ -115,7 +115,7 @@ public class DraconicNetwork {
         packet.sendToDimension(dimension);
     }
 
-    public static void sendImpactEffect(World world, BlockPos position, int i) {
+    public static void sendImpactEffect(Level world, BlockPos position, int i) {
         PacketCustom packet = new PacketCustom(CHANNEL, C_IMPACT_EFFECT);
         packet.writePos(position);
         packet.writeByte(i);
@@ -136,7 +136,7 @@ public class DraconicNetwork {
         packet.sendToServer();
     }
 
-    public static void sendBlinkEffect(ServerPlayerEntity player, float distance) {
+    public static void sendBlinkEffect(ServerPlayer player, float distance) {
         PacketCustom packet = new PacketCustom(CHANNEL, C_BLINK);
         packet.writeVarInt(player.getId());
         packet.writeFloat(distance);
@@ -158,7 +158,7 @@ public class DraconicNetwork {
         packet.sendToServer();
     }
 
-    public static void sendGuardianBeam(World world, Vector3 source, Vector3 target, float power) {
+    public static void sendGuardianBeam(Level world, Vector3 source, Vector3 target, float power) {
         PacketCustom packet = new PacketCustom(CHANNEL, C_GUARDIAN_BEAM);
         packet.writeVector(source);
         packet.writeVector(target);
@@ -175,7 +175,7 @@ public class DraconicNetwork {
         packet.sendToChunk(entity.level, entity.blockPosition());
     }
 
-    public static void sendBossShieldPacket(ServerPlayerEntity player, UUID id, int operation, Consumer<MCDataOutput> callBack) {
+    public static void sendBossShieldPacket(ServerPlayer player, UUID id, int operation, Consumer<MCDataOutput> callBack) {
         PacketCustom packet = new PacketCustom(CHANNEL, C_BOSS_SHIELD_INFO);
         packet.writeUUID(id);
         packet.writeByte(operation);
@@ -183,9 +183,10 @@ public class DraconicNetwork {
         packet.sendToPlayer(player);
     }
 
-    public static void sendDislocatorTeleported(ServerPlayerEntity player) {
+    public static void sendDislocatorTeleported(ServerPlayer player) {
         new PacketCustom(CHANNEL, C_DISLOCATOR_TELEPORTED).sendToPlayer(player);
     }
+
     public static void sendPlaceItem() {
         new PacketCustom(CHANNEL, S_PLACE_ITEM).sendToServer();
     }

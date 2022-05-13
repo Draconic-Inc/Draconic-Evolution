@@ -3,26 +3,26 @@ package com.brandon3055.draconicevolution.items.tools;
 import com.brandon3055.brandonscore.api.hud.IHudItem;
 import com.brandon3055.brandonscore.network.BCoreNetwork;
 import com.brandon3055.brandonscore.utils.TargetPos;
-import com.brandon3055.draconicevolution.entity.PersistentItemEntity;
 import com.brandon3055.draconicevolution.handlers.DESounds;
 import com.brandon3055.draconicevolution.init.DEContent;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.AnvilUpdateEvent;
@@ -56,27 +56,27 @@ public class Dislocator extends Item implements IHudItem {
         }
 
         if (targetPos == null) {
-            messageUser(user, new TranslationTextComponent("dislocate.draconicevolution.not_set").withStyle(TextFormatting.RED));
+            messageUser(user, new TranslatableComponent("dislocate.draconicevolution.not_set").withStyle(ChatFormatting.RED));
             return target;
         }
 
-        BCoreNetwork.sendSound(target.level, target.blockPosition(), DESounds.portal, SoundCategory.PLAYERS, 0.1F, target.level.random.nextFloat() * 0.1F + 0.9F, false);
+        BCoreNetwork.sendSound(target.level, target.blockPosition(), DESounds.portal, SoundSource.PLAYERS, 0.1F, target.level.random.nextFloat() * 0.1F + 0.9F, false);
         target = targetPos.teleport(target);
-        BCoreNetwork.sendSound(target.level, target.blockPosition(), DESounds.portal, SoundCategory.PLAYERS, 0.1F, target.level.random.nextFloat() * 0.1F + 0.9F, false);
+        BCoreNetwork.sendSound(target.level, target.blockPosition(), DESounds.portal, SoundSource.PLAYERS, 0.1F, target.level.random.nextFloat() * 0.1F + 0.9F, false);
         return target;
     }
 
-    public void messageUser(Entity user, ITextComponent message) {
-        if (user instanceof PlayerEntity) {
+    public void messageUser(Entity user, Component message) {
+        if (user instanceof Player) {
 //            ChatHelper.sendIndexed((PlayerEntity) user, message, 576);
-            ((PlayerEntity) user).displayClientMessage(message, true);
+            ((Player) user).displayClientMessage(message, true);
         }
     }
 
     @Override
-    public boolean onLeftClickEntity(ItemStack stack, PlayerEntity player, Entity entity) {
-        if (entity instanceof PlayerEntity && !(this instanceof DislocatorAdvanced)) {
-            messageUser(player, new TranslationTextComponent("dislocate.draconicevolution.player_need_advanced").withStyle(TextFormatting.RED));
+    public boolean onLeftClickEntity(ItemStack stack, Player player, Entity entity) {
+        if (entity instanceof Player && !(this instanceof DislocatorAdvanced)) {
+            messageUser(player, new TranslatableComponent("dislocate.draconicevolution.player_need_advanced").withStyle(ChatFormatting.RED));
             return true;
         }
 
@@ -89,7 +89,7 @@ public class Dislocator extends Item implements IHudItem {
         dislocateEntity(stack, player, entity, location);
         stack.hurtAndBreak(1, player, e -> {});
         if (location != null) {
-            messageUser(player, new StringTextComponent(I18n.get("dislocate.draconicevolution.entity_sent_to") + " " + location.getReadableName(false)).withStyle(TextFormatting.GREEN));
+            messageUser(player, new TextComponent(I18n.get("dislocate.draconicevolution.entity_sent_to") + " " + location.getReadableName(false)).withStyle(ChatFormatting.GREEN));
         }
 
         return true;
@@ -97,10 +97,10 @@ public class Dislocator extends Item implements IHudItem {
 
 
     @Override
-    public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
+    public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (world.isClientSide) {
-            return new ActionResult<>(ActionResultType.PASS, stack);
+            return new InteractionResultHolder<>(InteractionResult.PASS, stack);
         }
 
         TargetPos targetPos = getTargetPos(stack, world);
@@ -108,28 +108,28 @@ public class Dislocator extends Item implements IHudItem {
         if (player.isShiftKeyDown()) {
             if (targetPos == null) {
                 setLocation(stack, targetPos = new TargetPos(player));
-                messageUser(player, new TranslationTextComponent("dislocate.draconicevolution.bound_to").append("{" + targetPos.getReadableName(false) + "}").withStyle(TextFormatting.GREEN));
+                messageUser(player, new TranslatableComponent("dislocate.draconicevolution.bound_to").append("{" + targetPos.getReadableName(false) + "}").withStyle(ChatFormatting.GREEN));
             } else {
-                messageUser(player, new TranslationTextComponent("dislocate.draconicevolution.already_bound").withStyle(TextFormatting.RED));
+                messageUser(player, new TranslatableComponent("dislocate.draconicevolution.already_bound").withStyle(ChatFormatting.RED));
             }
-            return new ActionResult<>(ActionResultType.PASS, stack);
+            return new InteractionResultHolder<>(InteractionResult.PASS, stack);
         } else {
             if (targetPos == null) {
-                messageUser(player, new TranslationTextComponent("dislocate.draconicevolution.not_set").withStyle(TextFormatting.RED));
-                return new ActionResult<>(ActionResultType.PASS, stack);
+                messageUser(player, new TranslatableComponent("dislocate.draconicevolution.not_set").withStyle(ChatFormatting.RED));
+                return new InteractionResultHolder<>(InteractionResult.PASS, stack);
             }
-            if (player.getHealth() > 2 || player.abilities.instabuild) {
+            if (player.getHealth() > 2 || player.getAbilities().instabuild) {
                 player.getCooldowns().addCooldown(this, 20);
                 dislocateEntity(stack, player, player, targetPos);
                 stack.hurtAndBreak(1, player, e -> {});
 
-                if (!player.abilities.instabuild) {
+                if (!player.getAbilities().instabuild) {
                     player.setHealth(player.getHealth() - 2);
                 }
             } else {
-                messageUser(player, new TranslationTextComponent("dislocate.draconicevolution.low_health").withStyle(TextFormatting.RED));
+                messageUser(player, new TranslatableComponent("dislocate.draconicevolution.low_health").withStyle(ChatFormatting.RED));
             }
-            return new ActionResult<>(ActionResultType.PASS, stack);
+            return new InteractionResultHolder<>(InteractionResult.PASS, stack);
         }
     }
 
@@ -140,23 +140,23 @@ public class Dislocator extends Item implements IHudItem {
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void appendHoverText(ItemStack stack, World world, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, Level world, List<Component> tooltip, TooltipFlag flagIn) {
         TargetPos targetPos = getTargetPos(stack, world);
         if (targetPos == null) {
-            tooltip.add(new TranslationTextComponent("dislocate.draconicevolution.un_set_info1").withStyle(TextFormatting.RED));
-            tooltip.add(new TranslationTextComponent("dislocate.draconicevolution.un_set_info2").withStyle(TextFormatting.WHITE));
-            tooltip.add(new TranslationTextComponent("dislocate.draconicevolution.un_set_info3").withStyle(TextFormatting.WHITE));
-            tooltip.add(new TranslationTextComponent("dislocate.draconicevolution.un_set_info4").withStyle(TextFormatting.WHITE));
-            tooltip.add(new TranslationTextComponent("dislocate.draconicevolution.un_set_info5").withStyle(TextFormatting.WHITE));
+            tooltip.add(new TranslatableComponent("dislocate.draconicevolution.un_set_info1").withStyle(ChatFormatting.RED));
+            tooltip.add(new TranslatableComponent("dislocate.draconicevolution.un_set_info2").withStyle(ChatFormatting.WHITE));
+            tooltip.add(new TranslatableComponent("dislocate.draconicevolution.un_set_info3").withStyle(ChatFormatting.WHITE));
+            tooltip.add(new TranslatableComponent("dislocate.draconicevolution.un_set_info4").withStyle(ChatFormatting.WHITE));
+            tooltip.add(new TranslatableComponent("dislocate.draconicevolution.un_set_info5").withStyle(ChatFormatting.WHITE));
         } else {
-            tooltip.add(new TranslationTextComponent("dislocate.draconicevolution.bound_to").withStyle(TextFormatting.GREEN));
-            tooltip.add(new StringTextComponent(TextFormatting.WHITE + "{" + targetPos.getReadableName(flagIn.isAdvanced()) + "}"));
-            tooltip.add(new TranslationTextComponent("dislocate.draconicevolution.uses_remain", stack.getMaxDamage() - stack.getDamageValue() + 1).withStyle(TextFormatting.BLUE));
+            tooltip.add(new TranslatableComponent("dislocate.draconicevolution.bound_to").withStyle(ChatFormatting.GREEN));
+            tooltip.add(new TextComponent(ChatFormatting.WHITE + "{" + targetPos.getReadableName(flagIn.isAdvanced()) + "}"));
+            tooltip.add(new TranslatableComponent("dislocate.draconicevolution.uses_remain", stack.getMaxDamage() - stack.getDamageValue() + 1).withStyle(ChatFormatting.BLUE));
         }
     }
 
-    public TargetPos getTargetPos(ItemStack stack, @Nullable World world) {
-        CompoundNBT targetTag = stack.getTagElement("target");
+    public TargetPos getTargetPos(ItemStack stack, @Nullable Level world) {
+        CompoundTag targetTag = stack.getTagElement("target");
         if (targetTag != null) {
             return new TargetPos(targetTag);
         }
@@ -172,12 +172,6 @@ public class Dislocator extends Item implements IHudItem {
         return true;
     }
 
-    @Nullable
-    @Override
-    public Entity createEntity(World world, Entity location, ItemStack itemstack) {
-        return new PersistentItemEntity(world, location, itemstack);
-    }
-
     @Override
     public boolean isValidRepairItem(ItemStack toRepair, ItemStack repair) {
         return repair.getItem() == DEContent.ingot_draconium;
@@ -189,11 +183,11 @@ public class Dislocator extends Item implements IHudItem {
     }
 
     @Override
-    public void generateHudText(ItemStack stack, PlayerEntity player, List<ITextComponent> displayList) {
+    public void generateHudText(ItemStack stack, Player player, List<Component> displayList) {
         TargetPos location = getTargetPos(stack, player.level);
         if (location != null) {
             displayList.add(stack.getHoverName());
-            displayList.add(new StringTextComponent("{" + location.getReadableName(false) + ")"));
+            displayList.add(new TextComponent("{" + location.getReadableName(false) + ")"));
         }
     }
 
@@ -204,5 +198,15 @@ public class Dislocator extends Item implements IHudItem {
             event.setCost(1);
             event.setMaterialCost(1);
         }
+    }
+
+    @Override
+    public boolean canBeHurtBy(DamageSource source) {
+        return source == DamageSource.OUT_OF_WORLD;
+    }
+
+    @Override
+    public int getEntityLifespan(ItemStack itemStack, Level level) {
+        return -32768;
     }
 }

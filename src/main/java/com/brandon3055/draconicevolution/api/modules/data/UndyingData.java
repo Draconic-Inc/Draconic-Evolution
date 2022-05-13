@@ -1,8 +1,8 @@
 package com.brandon3055.draconicevolution.api.modules.data;
 
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 
 import java.util.Map;
 
@@ -61,13 +61,13 @@ public class UndyingData implements ModuleData<UndyingData> {
     }
 
     @Override
-    public void addInformation(Map<ITextComponent, ITextComponent> map, ModuleContext context, boolean stack) {
+    public void addInformation(Map<Component, Component> map, ModuleContext context, boolean stack) {
         if (stack){
-            map.put(new TranslationTextComponent("module.draconicevolution.undying.health.name"), new TranslationTextComponent("module.draconicevolution.undying.health.value", (int)healthBoost));
-            map.put(new TranslationTextComponent("module.draconicevolution.undying.shield.name"), new TranslationTextComponent("module.draconicevolution.undying.shield.value", (int)shieldBoost, shieldBoostTime / 20));
-            map.put(new TranslationTextComponent("module.draconicevolution.undying.charge.name"), new TranslationTextComponent("module.draconicevolution.undying.charge.value", chargeTime / 20));
-            map.put(new TranslationTextComponent("module.draconicevolution.undying.energy.name"), new TranslationTextComponent("module.draconicevolution.undying.energy.value", ModuleData.formatNumber(chargeEnergy) , getChargeEnergyRate()));
-            map.put(new TranslationTextComponent("module.draconicevolution.undying.invuln.name"), new TranslationTextComponent("module.draconicevolution.undying.invuln.value", invulnerableTime / 20));
+            map.put(new TranslatableComponent("module.draconicevolution.undying.health.name"), new TranslatableComponent("module.draconicevolution.undying.health.value", (int)healthBoost));
+            map.put(new TranslatableComponent("module.draconicevolution.undying.shield.name"), new TranslatableComponent("module.draconicevolution.undying.shield.value", (int)shieldBoost, shieldBoostTime / 20));
+            map.put(new TranslatableComponent("module.draconicevolution.undying.charge.name"), new TranslatableComponent("module.draconicevolution.undying.charge.value", chargeTime / 20));
+            map.put(new TranslatableComponent("module.draconicevolution.undying.energy.name"), new TranslatableComponent("module.draconicevolution.undying.energy.value", ModuleData.formatNumber(chargeEnergy) , getChargeEnergyRate()));
+            map.put(new TranslatableComponent("module.draconicevolution.undying.invuln.name"), new TranslatableComponent("module.draconicevolution.undying.invuln.value", invulnerableTime / 20));
         }
     }
 }

@@ -11,20 +11,20 @@ import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.lib.ExplosionHelper;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import com.brandon3055.draconicevolution.utils.LogHelper;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.FallingBlock;
-import net.minecraft.block.material.Material;
-import net.minecraft.entity.Entity;
-import net.minecraft.fluid.Fluid;
+import net.minecraft.Util;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.FallingBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -45,7 +45,7 @@ public class ProcessExplosion implements IProcess {
      * The origin of the explosion.
      */
     public final Vec3D origin;
-    private final ServerWorld world;
+    private final ServerLevel world;
     private final MinecraftServer server;
     private final int minimumDelay;
     public double[] angularResistance;
@@ -85,7 +85,7 @@ public class ProcessExplosion implements IProcess {
      *                         If the explosion calculation completes before this time is up the process will wait till this amount of time has based before detonating.
      *                         Use -1 for manual detonation.
      */
-    public ProcessExplosion(BlockPos origin, int radius, ServerWorld world, int minimumDelayTime) {
+    public ProcessExplosion(BlockPos origin, int radius, ServerLevel world, int minimumDelayTime) {
         this.origin = Vec3D.getCenter(origin);
         this.shortPos = new ShortPos(origin);
         this.world = world;
@@ -275,7 +275,7 @@ public class ProcessExplosion implements IProcess {
 
         BlockState state = world.getBlockState(pos);
         Block block = state.getBlock();
-        if (!block.isAir(state, world, pos)) {
+        if (!state.isAir()) {
             Material mat = state.getMaterial();
             double effectivePower = (power / 10) * ((double) dist / (dist + travel));
 
@@ -380,7 +380,7 @@ public class ProcessExplosion implements IProcess {
         new DelayedExecutor(30) {
             @Override
             public void execute(Object[] args) {
-                List<Entity> list = world.getEntitiesOfClass(Entity.class, new AxisAlignedBB(pos, pos.offset(1, 1, 1)).inflate(radius * 2.5, radius * 2.5, radius * 2.5));
+                List<Entity> list = world.getEntitiesOfClass(Entity.class, new AABB(pos, pos.offset(1, 1, 1)).inflate(radius * 2.5, radius * 2.5, radius * 2.5));
                 for (Entity e : list) {
                     double dist = Vec3D.getCenter(pos).distance(e);
                     float dmg = 10000F * (1F - (float) (dist / (radius * 1.2D)));

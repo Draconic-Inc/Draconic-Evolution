@@ -1,10 +1,7 @@
 package com.brandon3055.draconicevolution.world;
 
-import codechicken.lib.reflect.ObfMapping;
-import codechicken.lib.reflect.ReflectionManager;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 import java.util.Random;
 
@@ -39,8 +36,8 @@ public class WorldGenEnderComet /*extends WorldGenerator*/ {
         size = 2 + rand.nextInt(8);
     }
 
-//    @Override
-    public boolean generate(World world, Random random, BlockPos pos) {
+    //    @Override
+    public boolean generate(Level world, Random random, BlockPos pos) {
         initialize(random, pos.getX(), pos.getY(), pos.getZ());
 //        Cuboid6 bb = new Cuboid6(Math.min(spawnX, tailX), Math.min(spawnY, tailY), Math.min(spawnZ, tailZ), Math.max(spawnX, tailX), Math.max(spawnY, tailY), Math.max(spawnZ, tailZ));
 //        bb.expand(size + 5);
@@ -56,16 +53,16 @@ public class WorldGenEnderComet /*extends WorldGenerator*/ {
 //            }
 //        }
 
-        setCascadingWarningEnabled(false);
+//        setCascadingWarningEnabled(false);
 
         generateCore(world, random, size);
         generateTrail(world, random);
 
-        setCascadingWarningEnabled(true);
+//        setCascadingWarningEnabled(true);
         return true;
     }
 
-    private void generateCore(World world, Random rand, int r) {
+    private void generateCore(Level world, Random rand, int r) {
 //        for (int x = spawnX - r; x <= spawnX + r; x++) {
 //            for (int z = spawnZ - r; z <= spawnZ + r; z++) {
 //                for (int y = spawnY - r; y <= spawnY + r; y++) {
@@ -87,7 +84,7 @@ public class WorldGenEnderComet /*extends WorldGenerator*/ {
 //        }
     }
 
-    private void generateTrail(World world, Random rand) {
+    private void generateTrail(Level world, Random rand) {
         int xDiff = tailX - spawnX;
         int yDiff = tailY - spawnY;
         int zDiff = tailZ - spawnZ;
@@ -108,7 +105,7 @@ public class WorldGenEnderComet /*extends WorldGenerator*/ {
         }
     }
 
-    public void generateTrailSphere(World world, int xi, int yi, int zi, int r, int density, Random rand) {
+    public void generateTrailSphere(Level world, int xi, int yi, int zi, int r, int density, Random rand) {
 //        if (density <= 0) return;
 //        if (density > 10000) density = 10000;
 //        for (int x = xi - r; x <= xi + r; x++) {
@@ -138,24 +135,24 @@ public class WorldGenEnderComet /*extends WorldGenerator*/ {
         return Math.sqrt((dx * dx + dy * dy + dz * dz));
     }
 
-    private static ChunkPos popPos = null;
-    private static ObfMapping mapping = new ObfMapping("net/minecraft/world/chunk/Chunk", "populating");
-
-    //Given the rarity of the comets i can almost guarantee cascading world gen will never cause any actual problems.
-    //If you dont like it feel free to suggest a working solution.
-    private static void setCascadingWarningEnabled(boolean enabled) {
-        try {
-            if (enabled) {
-                ReflectionManager.setField(mapping, null, popPos);
-                popPos = null;
-            }
-            else {
-                popPos = ReflectionManager.getField(mapping, null);
-                ReflectionManager.setField(mapping, null, null);
-            }
-        } catch (Throwable ignored) {
-            //oops
-        }
-    }
+//    private static ChunkPos popPos = null;
+//    private static ObfMapping mapping = new ObfMapping("net/minecraft/world/chunk/Chunk", "populating");
+//
+//    //Given the rarity of the comets i can almost guarantee cascading world gen will never cause any actual problems.
+//    //If you dont like it feel free to suggest a working solution.
+//    private static void setCascadingWarningEnabled(boolean enabled) {
+//        try {
+//            if (enabled) {
+//                ReflectionManager.setField(mapping, null, popPos);
+//                popPos = null;
+//            }
+//            else {
+//                popPos = ReflectionManager.getField(mapping, null);
+//                ReflectionManager.setField(mapping, null, null);
+//            }
+//        } catch (Throwable ignored) {
+//            //oops
+//        }
+//    }
 }
 

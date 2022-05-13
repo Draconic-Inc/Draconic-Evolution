@@ -5,11 +5,11 @@ import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.lib.InstallResult.InstallResultType;
 import com.brandon3055.draconicevolution.inventory.ContainerModuleHost;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ClickType;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.Objects;
 
@@ -22,11 +22,11 @@ public class ModuleGrid {
     private int xPos = 0;
     private int yPos = 0;
     public ContainerModuleHost<?> container;
-    private PlayerInventory player;
+    private Inventory player;
     private int cellSize = 16;
     private Runnable onGridChange;
 
-    public ModuleGrid(ContainerModuleHost<?> container, PlayerInventory player) {
+    public ModuleGrid(ContainerModuleHost<?> container, Inventory player) {
         this.container = container;
         this.player = player;
     }
@@ -68,7 +68,7 @@ public class ModuleGrid {
     }
 
     public InstallResult cellClicked(GridPos pos, int button, ClickType clickType) {
-        ItemStack stack = player.getCarried();
+        ItemStack stack = player.player.inventoryMenu.getCarried();
         Module<?> module = ModuleItem.getModule(stack);
         boolean holdingStack = !stack.isEmpty();
         ModuleContext context = container.getModuleContext();
@@ -98,7 +98,7 @@ public class ModuleGrid {
                 ItemStack extracted = new ItemStack(entity.getModule().getItem());
                 entity.writeToItemStack(extracted, context);
                 getModuleHost().removeModule(entity, context);
-                player.setCarried(extracted);
+                player.player.inventoryMenu.setCarried(extracted);
                 onGridChange();
             }
         }
@@ -118,7 +118,7 @@ public class ModuleGrid {
                 if (entity.module == module) {
                     ItemStack modStack = new ItemStack(module.getItem());
                     entity.writeToItemStack(modStack, context);
-                    if (Container.consideredTheSameItem(stack, modStack) && stack.getCount() < stack.getMaxStackSize()) {
+                    if (ItemStack.isSameItemSameTags(stack, modStack) && stack.getCount() < stack.getMaxStackSize()) {
                         stack.grow(1);
                         getModuleHost().removeModule(entity, context);
                     }
@@ -127,11 +127,11 @@ public class ModuleGrid {
             }
         }
         else if (clickType == ClickType.CLONE) {
-            if (player.player.abilities.instabuild && player.getCarried().isEmpty() && pos.hasEntity()) {
+            if (player.player.getAbilities().instabuild && player.player.inventoryMenu.getCarried().isEmpty() && pos.hasEntity()) {
                 ModuleEntity entity = pos.getEntity();
                 ItemStack modStack = new ItemStack(entity.module.getItem());
                 entity.writeToItemStack(modStack, context);
-                player.setCarried(modStack);
+                player.player.inventoryMenu.setCarried(modStack);
             }
         }
         return null;
@@ -157,16 +157,16 @@ public class ModuleGrid {
     public InstallResult checkInstall(ModuleEntity entity) {
         ModuleHost host = getModuleHost();
         if (host.getHostTechLevel().index < entity.module.getModuleTechLevel().index) {
-            return new InstallResult(InstallResultType.NO, entity.module, null, new TranslationTextComponent("modular_item.draconicevolution.cant_install.level_high"));
+            return new InstallResult(InstallResultType.NO, entity.module, null, new TranslatableComponent("modular_item.draconicevolution.cant_install.level_high"));
         }
         if (!host.isModuleSupported(entity)) {
-            return new InstallResult(InstallResultType.NO, entity.module, null, new TranslationTextComponent("modular_item.draconicevolution.cant_install.not_supported"));
+            return new InstallResult(InstallResultType.NO, entity.module, null, new TranslatableComponent("modular_item.draconicevolution.cant_install.not_supported"));
         }
         if (host.getModuleEntities().stream().anyMatch(entity::intersects)) {
-            return new InstallResult(InstallResultType.NO, entity.module, null, new TranslationTextComponent("modular_item.draconicevolution.cant_install.wont_fit"));
+            return new InstallResult(InstallResultType.NO, entity.module, null, new TranslatableComponent("modular_item.draconicevolution.cant_install.wont_fit"));
         }
         if (entity.getMaxGridX() > host.getGridWidth() || entity.getMaxGridY() > getModuleHost().getGridHeight()) {
-            return new InstallResult(InstallResultType.NO, entity.module, null, new TranslationTextComponent("modular_item.draconicevolution.cant_install.wont_fit"));
+            return new InstallResult(InstallResultType.NO, entity.module, null, new TranslatableComponent("modular_item.draconicevolution.cant_install.wont_fit"));
         }
         InstallResult result = ModuleHost.checkAddModule(host, entity.module);
         if (result.resultType == InstallResultType.YES || result.resultType == InstallResultType.OVERRIDE) {

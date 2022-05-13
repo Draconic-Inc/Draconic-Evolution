@@ -2,8 +2,8 @@ package com.brandon3055.draconicevolution.blocks.energynet.rendering;
 
 import com.brandon3055.draconicevolution.api.energy.IENetEffectTile;
 import com.brandon3055.draconicevolution.network.CrystalUpdateBatcher.BatchedCrystalUpdate;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 /**
  * Created by brandon3055 on 29/11/2016.
@@ -12,7 +12,7 @@ import net.minecraft.tileentity.TileEntity;
  * The client side is responsible for creating and updating the render FX.
  */
 @Deprecated //Want to switch to ITileFXHandler
-public abstract class ENetFXHandler<T extends TileEntity & IENetEffectTile> {
+public abstract class ENetFXHandler<T extends BlockEntity & IENetEffectTile> {
 
     protected final T tile;
 
@@ -33,11 +33,11 @@ public abstract class ENetFXHandler<T extends TileEntity & IENetEffectTile> {
 
     public abstract void reloadConnections();
 
-    public void writeToNBT(CompoundNBT compound) {
+    public void writeToNBT(CompoundTag compound) {
 
     }
 
-    public void readFromNBT(CompoundNBT compound) {
+    public void readFromNBT(CompoundTag compound) {
 
     }
 }

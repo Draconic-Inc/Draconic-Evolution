@@ -1,35 +1,36 @@
 package com.brandon3055.draconicevolution.api.capability;
 
 import com.brandon3055.brandonscore.api.power.IOPStorage;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.common.capabilities.CapabilityToken;
+import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
-
-import java.util.Objects;
 
 /**
  * Created by brandon3055 on 2/5/20.
  */
 public class DECapabilities {
 
-    @CapabilityInject(ModuleProvider.class)
-    public static Capability<ModuleProvider<?>> MODULE_CAPABILITY = null;
+    public static Capability<ModuleProvider<?>> MODULE_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {
+    });
 
-    @CapabilityInject(ModuleHost.class)
-    public static Capability<ModuleHost> MODULE_HOST_CAPABILITY = null;
+    public static Capability<ModuleHost> MODULE_HOST_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {
+    });
 
-    @CapabilityInject(PropertyProvider.class)
-    public static Capability<PropertyProvider> PROPERTY_PROVIDER_CAPABILITY = null;
+    public static Capability<PropertyProvider> PROPERTY_PROVIDER_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {
+    });
 
     //This belongs to Brandon's Core but i have it here for convenience as its needed in parts of the DE API.
     //And if you have the DE API then you should also have the BC API.
-    @CapabilityInject(IOPStorage.class)
-    public static Capability<IOPStorage> OP_STORAGE = null;
+    public static Capability<IOPStorage> OP_STORAGE = CapabilityManager.get(new CapabilityToken<>() {
+    });
 
     /**
-     * This and {@link #readFromShareTag(ItemStack, CompoundNBT)} must be implemented if your modular / configurable item's {@link net.minecraft.item.Item#getShareTag(ItemStack)} method.<br>
+     * This and {@link #readFromShareTag(ItemStack, CompoundTag)} must be implemented if your modular / configurable item's {@link net.minecraft.world.item.Item#getShareTag(ItemStack)} method.<br>
      * This is required because these capabilities are required by the client side GUI's and by default capabilities are not sent to the client.<br>
      * Example:
      * <pre>
@@ -40,22 +41,25 @@ public class DECapabilities {
      * }
      * <pre/>
      */
-    public static CompoundNBT writeToShareTag(ItemStack stack, CompoundNBT nbt) {
-        CompoundNBT capTags = new CompoundNBT();
+    public static CompoundTag writeToShareTag(ItemStack stack, CompoundTag nbt) {
+        CompoundTag capTags = new CompoundTag();
 
         ModuleHost host = null;
         LazyOptional<ModuleHost> optional = stack.getCapability(MODULE_HOST_CAPABILITY);
         if (optional.isPresent()) {
             host = optional.orElseThrow(RuntimeException::new);
-            capTags.put("modules", Objects.requireNonNull(MODULE_HOST_CAPABILITY.writeNBT(host, null)));
+            capTags.put("modules", host.serializeNBT());
         }
         if (!(host instanceof PropertyProvider)) {
-            stack.getCapability(PROPERTY_PROVIDER_CAPABILITY).ifPresent(provider -> capTags.put("properties", Objects.requireNonNull(PROPERTY_PROVIDER_CAPABILITY.writeNBT(provider, null))));
+            stack.getCapability(PROPERTY_PROVIDER_CAPABILITY).ifPresent(provider -> capTags.put("properties", provider.serializeNBT()));
         }
 
         LazyOptional<IOPStorage> energy = stack.getCapability(OP_STORAGE);
         if (energy.isPresent()) {
-            capTags.put("energy", Objects.requireNonNull(OP_STORAGE.writeNBT(energy.orElseThrow(RuntimeException::new), null)));
+            IOPStorage storage = energy.orElseThrow(RuntimeException::new);
+            if (storage instanceof INBTSerializable<?>) {
+                capTags.put("energy", ((INBTSerializable<?>) storage).serializeNBT());
+            }
         }
 
         if (capTags.isEmpty()) {
@@ -63,7 +67,7 @@ public class DECapabilities {
         }
 
         if (nbt == null) {
-            nbt = new CompoundNBT();
+            nbt = new CompoundTag();
         } else {
             nbt = nbt.copy(); //Because we dont actually want to add this data to the server side ItemStack
         }
@@ -73,7 +77,7 @@ public class DECapabilities {
     }
 
     /**
-     * This and {@link #writeToShareTag(ItemStack, CompoundNBT)} must be implemented if your modular / configurable item's {@link net.minecraft.item.Item#readShareTag(ItemStack, CompoundNBT)} method. <br>
+     * This and {@link #writeToShareTag(ItemStack, CompoundTag)} must be implemented if your modular / configurable item's {@link net.minecraft.world.item.Item#readShareTag(ItemStack, CompoundTag)} method. <br>
      * This is required because these capabilities are required by the client side GUI's and by default capabilities are not sent to the client.<br>
      * Example:
      * <pre>
@@ -84,18 +88,22 @@ public class DECapabilities {
      * }
      * <pre/>
      */
-    public static void readFromShareTag(ItemStack stack, CompoundNBT nbt) {
+    public static void readFromShareTag(ItemStack stack, CompoundTag nbt) {
         if (nbt != null && nbt.contains("share_caps")) {
-            CompoundNBT capTags = nbt.getCompound("share_caps");
+            CompoundTag capTags = nbt.getCompound("share_caps");
 
             if (capTags.contains("modules")) {
-                stack.getCapability(MODULE_HOST_CAPABILITY).ifPresent(host -> MODULE_HOST_CAPABILITY.readNBT(host, null, capTags.get("modules")));
+                stack.getCapability(MODULE_HOST_CAPABILITY).ifPresent(host -> host.deserializeNBT(capTags.getCompound("modules")));
             }
             if (capTags.contains("properties")) {
-                stack.getCapability(PROPERTY_PROVIDER_CAPABILITY).ifPresent(provider -> PROPERTY_PROVIDER_CAPABILITY.readNBT(provider, null, capTags.get("properties")));
+                stack.getCapability(PROPERTY_PROVIDER_CAPABILITY).ifPresent(provider -> provider.deserializeNBT(capTags.getCompound("properties")));
             }
             if (capTags.contains("energy")) {
-                stack.getCapability(OP_STORAGE).ifPresent(provider -> OP_STORAGE.readNBT(provider, null, capTags.get("energy")));
+                stack.getCapability(OP_STORAGE).ifPresent(provider -> {
+                    if (provider instanceof INBTSerializable<?>) {
+                        ((INBTSerializable<Tag>) provider).deserializeNBT(capTags.getCompound("energy"));
+                    }
+                });
             }
 
             nbt.remove("share_caps");

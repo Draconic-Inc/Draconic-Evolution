@@ -8,12 +8,12 @@ import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleGrid;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleItem;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -24,19 +24,19 @@ import javax.annotation.Nullable;
  */
 public abstract class ContainerModuleHost<T> extends ContainerBCore<T> {
 
-    public ContainerModuleHost(@Nullable ContainerType<?> type, int windowId, PlayerInventory playerInv, PacketBuffer extraData) {
+    public ContainerModuleHost(@Nullable MenuType<?> type, int windowId, Inventory playerInv, FriendlyByteBuf extraData) {
         super(type, windowId, playerInv, extraData);
     }
 
-    public ContainerModuleHost(@Nullable ContainerType<?> type, int windowId, PlayerInventory player, PacketBuffer extraData, ContainerSlotLayout.LayoutFactory<T> factory) {
+    public ContainerModuleHost(@Nullable MenuType<?> type, int windowId, Inventory player, FriendlyByteBuf extraData, ContainerSlotLayout.LayoutFactory<T> factory) {
         super(type, windowId, player, extraData, factory);
     }
 
-    public ContainerModuleHost(@Nullable ContainerType<?> type, int windowId, PlayerInventory player) {
+    public ContainerModuleHost(@Nullable MenuType<?> type, int windowId, Inventory player) {
         super(type, windowId, player);
     }
 
-    public ContainerModuleHost(@Nullable ContainerType<?> type, int windowId, PlayerInventory player, ContainerSlotLayout.LayoutFactory<T> factory) {
+    public ContainerModuleHost(@Nullable MenuType<?> type, int windowId, Inventory player, ContainerSlotLayout.LayoutFactory<T> factory) {
         super(type, windowId, player, factory);
     }
 
@@ -45,7 +45,7 @@ public abstract class ContainerModuleHost<T> extends ContainerBCore<T> {
     public abstract ModuleHost getModuleHost();
 
     @Override
-    public ItemStack quickMoveStack(PlayerEntity player, int i) {
+    public ItemStack quickMoveStack(Player player, int i) {
         Slot slot = getSlot(i);
 
         if (slot != null && slot.hasItem()) {

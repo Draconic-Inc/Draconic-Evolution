@@ -1,39 +1,35 @@
 package com.brandon3055.draconicevolution.items.equipment;
 
 import com.brandon3055.brandonscore.api.TechLevel;
-import com.brandon3055.brandonscore.lib.TechPropBuilder;
 import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleHostImpl;
 import com.brandon3055.draconicevolution.init.EquipCfg;
 import com.brandon3055.draconicevolution.init.ModuleCfg;
-import com.google.common.collect.ImmutableSet;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.material.Material;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.PickaxeItem;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
+import com.brandon3055.draconicevolution.init.TechProperties;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.PickaxeItem;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by brandon3055 on 21/5/20.
  */
 public class ModularPickaxe extends PickaxeItem implements IModularMiningTool {
-    public static final Set<Material> EFFECTIVE_MATS = ImmutableSet.of(Material.METAL, Material.HEAVY_METAL, Material.STONE, Material.GLASS);
     private final TechLevel techLevel;
-    private final DEItemTier itemTier;
+    private final DETier itemTier;
 
-    public ModularPickaxe(TechPropBuilder props) {
-        super(new DEItemTier(props, EquipCfg::getPickaxeDmgMult, EquipCfg::getPickaxeSpeedMult), 0, 0, props.pickaxeProps());
-        this.techLevel = props.techLevel;
-        this.itemTier = (DEItemTier) getTier();
+    public ModularPickaxe(DETier tier, TechProperties props) {
+        super(tier, 0, 0, props);
+        this.techLevel = props.getTechLevel();
+        this.itemTier = (DETier) getTier();
     }
 
     @Override
@@ -42,8 +38,18 @@ public class ModularPickaxe extends PickaxeItem implements IModularMiningTool {
     }
 
     @Override
-    public DEItemTier getItemTier() {
+    public DETier getItemTier() {
         return itemTier;
+    }
+
+    @Override
+    public double getSwingSpeedMultiplier() {
+        return EquipCfg.pickaxeSwingSpeedMultiplier;
+    }
+
+    @Override
+    public double getDamageMultiplier() {
+        return EquipCfg.pickaxeDamageMultiplier;
     }
 
     @Override
@@ -68,18 +74,33 @@ public class ModularPickaxe extends PickaxeItem implements IModularMiningTool {
     }
 
     @Override
-    public Set<Block> effectiveBlockAdditions() {
-        return blocks;
-    }
-
-    @Override
-    public boolean overrideEffectivity(Material material) {
-        return EFFECTIVE_MATS.contains(material);
-    }
-
-    @Override
     @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         addModularItemInformation(stack, worldIn, tooltip, flagIn);
+    }
+
+    @Override
+    public boolean isBarVisible(ItemStack stack) {
+        return damageBarVisible(stack);
+    }
+
+    @Override
+    public int getBarWidth(ItemStack stack) {
+        return damageBarWidth(stack);
+    }
+
+    @Override
+    public int getBarColor(ItemStack stack) {
+        return damageBarColour(stack);
+    }
+
+    @Override
+    public boolean canBeHurtBy(DamageSource source) {
+        return source == DamageSource.OUT_OF_WORLD;
+    }
+
+    @Override
+    public int getEntityLifespan(ItemStack itemStack, Level level) {
+        return -32768;
     }
 }

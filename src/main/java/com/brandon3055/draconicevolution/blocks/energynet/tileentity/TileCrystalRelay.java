@@ -7,9 +7,10 @@ import com.brandon3055.draconicevolution.blocks.tileentity.TileDislocatorRecepta
 import com.brandon3055.draconicevolution.client.render.effect.CrystalFXBase;
 import com.brandon3055.draconicevolution.client.render.effect.CrystalFXRing;
 import com.brandon3055.draconicevolution.init.DEContent;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -18,12 +19,12 @@ import net.minecraftforge.api.distmarker.OnlyIn;
  */
 public class TileCrystalRelay extends TileCrystalBase {
 
-    public TileCrystalRelay() {
-        super(DEContent.tile_crystal_relay);
+    public TileCrystalRelay(BlockPos pos, BlockState state) {
+        super(DEContent.tile_crystal_relay, pos, state);
     }
 
-    public TileCrystalRelay(TechLevel techLevel) {
-        super(DEContent.tile_crystal_relay, techLevel);
+    public TileCrystalRelay(TechLevel techLevel, BlockPos pos, BlockState state) {
+        super(DEContent.tile_crystal_relay, techLevel, pos, state);
     }
 
     //region Rendering
@@ -36,14 +37,14 @@ public class TileCrystalRelay extends TileCrystalBase {
     @OnlyIn(Dist.CLIENT)
     @Override
     public CrystalFXBase createStaticFX() {
-        return new CrystalFXRing((ClientWorld)level, this);
+        return new CrystalFXRing((ClientLevel)level, this);
     }
 
     @Override
     public Vec3D getBeamLinkPos(BlockPos linkTo) {
         Vec3D thisVec = Vec3D.getCenter(worldPosition);
         Vec3D targVec = Vec3D.getCenter(linkTo);
-        TileEntity target = level.getBlockEntity(linkTo);
+        BlockEntity target = level.getBlockEntity(linkTo);
         if (target instanceof TileDislocatorReceptacle) {
             targVec = ((TileDislocatorReceptacle) target).getBeamLinkPos(worldPosition);
         }

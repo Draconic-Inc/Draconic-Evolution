@@ -1,14 +1,10 @@
 package com.brandon3055.draconicevolution.client.render.entity;
 
 import codechicken.lib.render.CCModel;
-import codechicken.lib.render.OBJParser;
 import com.brandon3055.draconicevolution.entity.EntityChaosImplosion;
-import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.util.ResourceLocation;
-
-import java.util.Map;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * Created by brandon3055 on 3/10/2015.
@@ -16,10 +12,11 @@ import java.util.Map;
 public class RenderEntityChaosVortex extends EntityRenderer<EntityChaosImplosion> {
     private static CCModel model;
 
-    public RenderEntityChaosVortex(EntityRendererManager manager) {
-        super(manager);
-        Map<String, CCModel> map = OBJParser.parseModels(ResourceHelperDE.getResource("models/reactor_core_model.obj"));
-        model = CCModel.combine(map.values());
+    public RenderEntityChaosVortex(EntityRendererProvider.Context context) {
+        super(context);
+//        super(manager);
+//        Map<String, CCModel> map = OBJParser.parseModels(ResourceHelperDE.getResource("models/reactor_core_model.obj"));
+//        model = CCModel.combine(map.values());
     }
 
     public void doRender(EntityChaosImplosion entity, double x, double y, double z, float f1, float tick) {

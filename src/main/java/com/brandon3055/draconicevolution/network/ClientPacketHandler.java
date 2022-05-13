@@ -7,7 +7,7 @@ import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.utils.MathUtils;
-import com.brandon3055.draconicevolution.blocks.tileentity.TilePortalClient;
+import com.brandon3055.draconicevolution.blocks.tileentity.TilePortal;
 import com.brandon3055.draconicevolution.client.ClientProxy;
 import com.brandon3055.draconicevolution.client.CustomBossInfoHandler;
 import com.brandon3055.draconicevolution.client.DEParticles;
@@ -17,22 +17,23 @@ import com.brandon3055.draconicevolution.entity.guardian.control.IPhase;
 import com.brandon3055.draconicevolution.entity.guardian.control.PhaseManager;
 import com.brandon3055.draconicevolution.items.equipment.damage.DefaultStaffDmgMod;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.network.play.IClientPlayNetHandler;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.Vec3;
 
 public class ClientPacketHandler implements ICustomPacketHandler.IClientPacketHandler {
 
     @Override
-    public void handlePacket(PacketCustom packet, Minecraft mc, IClientPlayNetHandler handler) {
+    public void handlePacket(PacketCustom packet, Minecraft mc, ClientPacketListener handler) {
         switch (packet.getType()) {
 //            case 1: //Portal Arrival
 //                TileEntity tile = mc.world.getTileEntity(packet.readPos());
@@ -78,7 +79,7 @@ public class ClientPacketHandler implements ICustomPacketHandler.IClientPacketHa
         if (reload) {
             mc.levelRenderer.allChanged();
         } else {
-            ExplosionFX explosionFX = new ExplosionFX((ClientWorld) BrandonsCore.proxy.getClientWorld(), Vec3D.getCenter(pos), radius);
+            ExplosionFX explosionFX = new ExplosionFX((ClientLevel) BrandonsCore.proxy.getClientWorld(), Vec3D.getCenter(pos), radius);
             mc.particleEngine.add(explosionFX);
         }
     }
@@ -97,7 +98,7 @@ public class ClientPacketHandler implements ICustomPacketHandler.IClientPacketHa
                         double d3 = (double)j + (mc.level.random.nextDouble() - mc.level.random.nextDouble()) * 0.5D;
                         double d4 = (double)i + (mc.level.random.nextDouble() - mc.level.random.nextDouble()) * 0.5D;
                         double d5 = (double)k + (mc.level.random.nextDouble() - mc.level.random.nextDouble()) * 0.5D;
-                        double d6 = (double) MathHelper.sqrt(d3 * d3 + d4 * d4 + d5 * d5) / speed + mc.level.random.nextGaussian() * 6D;
+                        double d6 = (double) Math.sqrt(d3 * d3 + d4 * d4 + d5 * d5) / speed + mc.level.random.nextGaussian() * 6D;
                         createParticle(mc, x, y, z, d3 / d6, d4 / d6, d5 / d6);
                         if (i != -size && i != size && j != -size && j != size) {
                             k += size * 2 - 1;
@@ -134,14 +135,14 @@ public class ClientPacketHandler implements ICustomPacketHandler.IClientPacketHa
         Entity entity;
         if (mc.level == null || (entity = mc.level.getEntity(id)) == null) return;
 
-        Vector3d vec = entity.getLookAngle();
-        Vector3d pos = entity.getEyePosition(1);
+        Vec3 vec = entity.getLookAngle();
+        Vec3 pos = entity.getEyePosition(1);
 
         for (int i = 0; i < 100; i++) {
             float offset = mc.level.random.nextFloat() ;
             float speed = (1F - offset) * distance;
             speed *= speed;
-            Vector3d spawnPos = pos.add(vec.multiply(speed * 10, speed * 10, speed * 10));
+            Vec3 spawnPos = pos.add(vec.multiply(speed * 10, speed * 10, speed * 10));
 
             double x = spawnPos.x + (mc.level.random.nextGaussian() - 0.5) * offset;
             double y = spawnPos.y + (mc.level.random.nextGaussian() - 0.5) * offset;
@@ -200,13 +201,13 @@ public class ClientPacketHandler implements ICustomPacketHandler.IClientPacketHa
     }
 
     private void handleDislocatorTeleported(Minecraft mc) {
-        PlayerEntity player = mc.player;
+        Player player = mc.player;
         if (player == null) return;;
         BlockPos playerPos = player.blockPosition();
         for (BlockPos pos : BlockPos.betweenClosed(playerPos.offset(-1, -1, -1), playerPos.offset(1, 1, 1))) {
-            TileEntity tile = player.level.getBlockEntity(pos);
-            if (tile instanceof TilePortalClient) {
-                ((TilePortalClient)tile).clientArrived(player);
+            BlockEntity tile = player.level.getBlockEntity(pos);
+            if (tile instanceof TilePortal) {
+                ((TilePortal)tile).clientArrived(player);
             }
         }
     }

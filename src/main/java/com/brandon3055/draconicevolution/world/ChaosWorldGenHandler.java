@@ -9,17 +9,17 @@ import com.brandon3055.draconicevolution.DEOldConfig;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileChaosCrystal;
 import com.brandon3055.draconicevolution.entity.guardian.GuardianFightManager;
 import com.brandon3055.draconicevolution.init.DEContent;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.effect.LightningBoltEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.ISeedReader;
-import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.NoFeatureConfig;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LightningBolt;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 
 import java.util.Random;
 
@@ -36,7 +36,7 @@ public class ChaosWorldGenHandler {
      * //     * @param chunkZ       The Z position of the chunk being generated.
      * //     * @param islandCenter Where to generate the island. If left null the islands will generate in a 10000 by 10000 grid.
      */
-    public static boolean generateChunk(Feature<NoFeatureConfig> feature, ISeedReader reader, ChunkGenerator generator, Random rand, BlockPos featurePos) {
+    public static boolean generateChunk(Feature<NoneFeatureConfiguration> feature, WorldGenLevel reader, ChunkGenerator generator, Random rand, BlockPos featurePos) {
 //    public static void generateChunk(World world, int chunkX, int chunkZ, PairXZ<Integer, Integer> islandCenter, Random random) {
         ChunkPos chunkPos = new ChunkPos(featurePos);
         PairXZ<Integer, Integer> closestSpawn = getClosestChaosSpawn(chunkPos);
@@ -119,7 +119,7 @@ public class ChaosWorldGenHandler {
         return chunkModified;
     }
 
-    public static void generateStructures(ISeedReader reader, PairXZ<Integer, Integer> islandCenter, Random random) {
+    public static void generateStructures(WorldGenLevel reader, PairXZ<Integer, Integer> islandCenter, Random random) {
         int outerRadius = 330;
 
         //Gen Chaos Cavern
@@ -176,7 +176,7 @@ public class ChaosWorldGenHandler {
 //        generateObelisks(reader, islandCenter, random);
     }
 
-    public static void genCoreSlice(ISeedReader world, int xi, int yi, int zi, int ringRadius, int yc, int coreRadious, boolean fillIn, Random rand) {
+    public static void genCoreSlice(WorldGenLevel world, int xi, int yi, int zi, int ringRadius, int yc, int coreRadious, boolean fillIn, Random rand) {
         if (DEOldConfig.chaosIslandVoidMode) return;
         for (int x = xi - coreRadious; x <= xi + coreRadious; x++) {
             for (int z = zi - coreRadious; z <= zi + coreRadious; z++) {
@@ -204,9 +204,9 @@ public class ChaosWorldGenHandler {
         return new PairXZ<>(MathUtils.getNearestMultiple(pos.x * 16, DEOldConfig.chaosIslandSeparation), MathUtils.getNearestMultiple(pos.z * 16, DEOldConfig.chaosIslandSeparation));
     }
 
-    public static void generateObelisk(ServerWorld world, BlockPos genPos, Random rand) {
+    public static void generateObelisk(ServerLevel world, BlockPos genPos, Random rand) {
         for (int i = 0; i < 20; i+=3) {
-            LightningBoltEntity entity = new LightningBoltEntity(EntityType.LIGHTNING_BOLT, world);
+            LightningBolt entity = new LightningBolt(EntityType.LIGHTNING_BOLT, world);
             entity.setPos(genPos.getX() - 2 + rand.nextInt(5), genPos.getY() - rand.nextInt(20), genPos.getZ() - 2 + rand.nextInt(5));
             world.addFreshEntity(entity);
         }

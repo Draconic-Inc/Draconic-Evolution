@@ -3,10 +3,10 @@ package com.brandon3055.draconicevolution.api.modules.data;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.ModuleType;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 
 import java.util.HashMap;
 import java.util.List;
@@ -70,25 +70,25 @@ public class ModuleProperties<T extends ModuleData<T>> {
      *
      * @param toolTip the item tool tip.
      */
-    public void addStats(List<ITextComponent> toolTip, Module<?> module) {
-        toolTip.add(new TranslationTextComponent("module.draconicevolution.module_type")
-                .withStyle(TextFormatting.GRAY)
+    public void addStats(List<Component> toolTip, Module<?> module) {
+        toolTip.add(new TranslatableComponent("module.draconicevolution.module_type")
+                .withStyle(ChatFormatting.GRAY)
                 .append(": ")
                 .append(module.getType().getDisplayName()
                         .withStyle(techLevel.getTextColour())));
-        toolTip.add(new TranslationTextComponent("module.draconicevolution.grid_size")
-                .withStyle(TextFormatting.GRAY)
+        toolTip.add(new TranslatableComponent("module.draconicevolution.grid_size")
+                .withStyle(ChatFormatting.GRAY)
                 .append(": ")
-                .append(new StringTextComponent(getWidth() + "x" + getHeight())
-                        .withStyle(TextFormatting.DARK_GREEN)));
+                .append(new TextComponent(getWidth() + "x" + getHeight())
+                        .withStyle(ChatFormatting.DARK_GREEN)));
 
-        Map<ITextComponent, ITextComponent> map = new HashMap<>();
+        Map<Component, Component> map = new HashMap<>();
         getData().addInformation(map, null, true);
         map.forEach((name, value) -> {
             if (value == null) {
-                toolTip.add(name.plainCopy().withStyle(TextFormatting.GRAY));
+                toolTip.add(name.plainCopy().withStyle(ChatFormatting.GRAY));
             } else {
-                toolTip.add(name.plainCopy().withStyle(TextFormatting.GRAY).append(": ").append(value.plainCopy().withStyle(TextFormatting.DARK_GREEN).getString().replace("\n", " ")));
+                toolTip.add(name.plainCopy().withStyle(ChatFormatting.GRAY).append(": ").append(value.plainCopy().withStyle(ChatFormatting.DARK_GREEN).getString().replace("\n", " ")));
             }
         });
     }

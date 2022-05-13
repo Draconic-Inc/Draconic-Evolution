@@ -19,14 +19,15 @@ import mezz.jei.api.ingredients.subtypes.UidContext;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
-import mezz.jei.util.Translator;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.Direction;
+import mezz.jei.common.util.Translator;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -38,7 +39,7 @@ import java.util.stream.Collectors;
 /**
  * Created by brandon3055 on 15/7/21
  */
-public class FusionRecipeTransferHelper implements IRecipeTransferHandler<ContainerFusionCraftingCore> {
+public class FusionRecipeTransferHelper implements IRecipeTransferHandler<ContainerFusionCraftingCore, IFusionRecipe> {
 
     private final IStackHelper stackHelper;
     private final IRecipeTransferHandlerHelper handlerHelper;
@@ -53,14 +54,14 @@ public class FusionRecipeTransferHelper implements IRecipeTransferHandler<Contai
         return ContainerFusionCraftingCore.class;
     }
 
+    @Override
+    public Class<IFusionRecipe> getRecipeClass() {
+        return IFusionRecipe.class;
+    }
+
     @Nullable
     @Override
-    public IRecipeTransferError transferRecipe(ContainerFusionCraftingCore container, Object recipeObject, IRecipeLayout recipeLayout, PlayerEntity player, boolean maxTransfer, boolean doTransfer) {
-        if (!(recipeObject instanceof IFusionRecipe)) {
-            DraconicEvolution.LOGGER.error("Attempt to use JEI Fusion recipe transfer helper on a non IFusionRecipe");
-            return handlerHelper.createInternalError(); //Should theoretically never need this but just in case.
-        }
-        IFusionRecipe recipe = (IFusionRecipe) recipeObject;
+    public IRecipeTransferError transferRecipe(ContainerFusionCraftingCore container, IFusionRecipe recipe, IRecipeLayout recipeLayout, Player player, boolean maxTransfer, boolean doTransfer) {
         TileFusionCraftingCore core = container.tile;
         core.updateInjectors();
 
@@ -70,7 +71,7 @@ public class FusionRecipeTransferHelper implements IRecipeTransferHandler<Contai
                 .filter(e -> e.getInjectorTier().index >= recipe.getRecipeTier().index)
                 .count();
         if (validInjectors < recipe.fusionIngredients().size()) {
-            return handlerHelper.createUserErrorWithTooltip(I18n.get("gui.draconicevolution.fusion_craft.ne_tier_injectors", recipe.getRecipeTier().getDisplayName().getString()));
+            return handlerHelper.createUserErrorWithTooltip(new TranslatableComponent("gui.draconicevolution.fusion_craft.ne_tier_injectors", recipe.getRecipeTier().getDisplayName().getString()));
         }
 
         //Do... Pretty much everything else
@@ -116,13 +117,13 @@ public class FusionRecipeTransferHelper implements IRecipeTransferHandler<Contai
         // check if we have enough inventory space to shuffle items around to their final locations
         if (filledCraftSlotCount - inputCount > emptySlotCount) {
             String message = Translator.translateToLocal("jei.tooltip.error.recipe.transfer.inventory.full");
-            return handlerHelper.createUserErrorWithTooltip(message);
+            return handlerHelper.createUserErrorWithTooltip(new TextComponent(message));
         }
 
         List<Integer> missingStacks = checkForMissingIngredients(stackHelper, availableItemStacks, itemStackGroup.getGuiIngredients());
         if (missingStacks.size() > 0) {
             String message = Translator.translateToLocal("jei.tooltip.error.recipe.transfer.missing");
-            return handlerHelper.createUserErrorForSlots(message, missingStacks);
+            return handlerHelper.createUserErrorForSlots(new TextComponent(message), missingStacks);
         }
 
         if (doTransfer) {
@@ -183,7 +184,7 @@ public class FusionRecipeTransferHelper implements IRecipeTransferHandler<Contai
         return missing;
     }
 
-    public static void doServerSideTransfer(ServerPlayerEntity player, ContainerFusionCraftingCore container, IFusionRecipe recipe, boolean maxTransfer) {
+    public static void doServerSideTransfer(ServerPlayer player, ContainerFusionCraftingCore container, IFusionRecipe recipe, boolean maxTransfer) {
         TileFusionCraftingCore tile = container.tile;
         LazyOptional<IItemHandler> optionalHandler = player.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.UP);
         if (!optionalHandler.isPresent()) {
@@ -249,10 +250,11 @@ public class FusionRecipeTransferHelper implements IRecipeTransferHandler<Contai
 
         List<IFusionInjector> injectors = fusionInv.getInjectors()
                 .stream()
-                .sorted(Comparator.comparing(e -> ((IFusionInjector)e).getInjectorTier().index).reversed())
+                .sorted(Comparator.comparing(e -> ((IFusionInjector) e).getInjectorTier().index).reversed())
                 .collect(Collectors.toList());
 
-        List<IFusionIngredient> ingredients = recipe.fusionIngredients();;
+        List<IFusionIngredient> ingredients = recipe.fusionIngredients();
+        ;
         if (injectors.size() < ingredients.size()) {
             DraconicEvolution.LOGGER.error("FusionRecipeTransferHelper: Unexpected error while transferring recipe");
             return;

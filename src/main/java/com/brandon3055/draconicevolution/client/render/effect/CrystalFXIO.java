@@ -1,20 +1,19 @@
 package com.brandon3055.draconicevolution.client.render.effect;
 
+import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalBase;
 import com.brandon3055.draconicevolution.client.DETextures;
 import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.client.particle.IParticleRenderType;
-import net.minecraft.client.renderer.ActiveRenderInfo;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
+import com.mojang.blaze3d.vertex.*;
+import com.mojang.math.Vector3f;
+import net.minecraft.client.Camera;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.Vec3;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -24,7 +23,7 @@ public class CrystalFXIO extends CrystalFXBase<TileCrystalBase> {
 
     private long rSeed = 0;
 
-    public CrystalFXIO(ClientWorld worldIn, TileCrystalBase tile) {
+    public CrystalFXIO(ClientLevel worldIn, TileCrystalBase tile) {
         super(worldIn, tile);
         this.age = worldIn.random.nextInt(1024);
         this.rSeed = tile.getBlockPos().asLong();
@@ -47,55 +46,55 @@ public class CrystalFXIO extends CrystalFXBase<TileCrystalBase> {
     }
 
     @Override
-    public void render(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks) {
+    public void render(VertexConsumer buffer, Camera renderInfo, float partialTicks) {
         if (!renderEnabled) {
             return;
         }
 
-        Vector3d viewVec = renderInfo.getPosition();
+        Vec3 viewVec = renderInfo.getPosition();
         float viewX = (float) (this.x - viewVec.x());
         float viewY = (float) (this.y - viewVec.y());
         float viewZ = (float) (this.z - viewVec.z());
         Vector3f[] renderVector = getRenderVectors(renderInfo, viewX, viewY, viewZ, 0.2F);
-        buffer.vertex(renderVector[0].x(), renderVector[0].y(), renderVector[0].z()).uv(0.5F, 0.5F).endVertex();
-        buffer.vertex(renderVector[1].x(), renderVector[1].y(), renderVector[1].z()).uv(0.5F, 0.0F).endVertex();
-        buffer.vertex(renderVector[2].x(), renderVector[2].y(), renderVector[2].z()).uv(0.0F, 0.0F).endVertex();
-        buffer.vertex(renderVector[3].x(), renderVector[3].y(), renderVector[3].z()).uv(0.0F, 0.5F).endVertex();
+        buffer.vertex(renderVector[0].x(), renderVector[0].y(), renderVector[0].z()).color(1F, 1F, 1F, 1F).uv(0.5F, 0.5F).uv2(240, 240).endVertex();
+        buffer.vertex(renderVector[1].x(), renderVector[1].y(), renderVector[1].z()).color(1F, 1F, 1F, 1F).uv(0.5F, 0.0F).uv2(240, 240).endVertex();
+        buffer.vertex(renderVector[2].x(), renderVector[2].y(), renderVector[2].z()).color(1F, 1F, 1F, 1F).uv(0.0F, 0.0F).uv2(240, 240).endVertex();
+        buffer.vertex(renderVector[3].x(), renderVector[3].y(), renderVector[3].z()).color(1F, 1F, 1F, 1F).uv(0.0F, 0.5F).uv2(240, 240).endVertex();
     }
 
     @Override
-    public IParticleRenderType getRenderType() {
+    public ParticleRenderType getRenderType() {
         return tile.getTier() == 0 ? BASIC_HANDLER : tile.getTier() == 1 ? WYVERN_HANDLER : DRACONIC_HANDLER;
     }
 
-    private static final IParticleRenderType BASIC_HANDLER = new FXHandler(DETextures.ENERGY_BEAM_BASIC);
-    private static final IParticleRenderType WYVERN_HANDLER = new FXHandler(DETextures.ENERGY_BEAM_WYVERN);
-    private static final IParticleRenderType DRACONIC_HANDLER = new FXHandler(DETextures.ENERGY_BEAM_DRACONIC);
+    private static final ParticleRenderType BASIC_HANDLER = new FXHandler(DETextures.ENERGY_BEAM_BASIC);
+    private static final ParticleRenderType WYVERN_HANDLER = new FXHandler(DETextures.ENERGY_BEAM_WYVERN);
+    private static final ParticleRenderType DRACONIC_HANDLER = new FXHandler(DETextures.ENERGY_BEAM_DRACONIC);
 
-    public static class FXHandler implements IParticleRenderType {
+    public static class FXHandler implements ParticleRenderType {
 
-        private String texture;
+        private ResourceLocation texture;
 
         public FXHandler(String texture) {
-            this.texture = texture;
+            this.texture = new ResourceLocation(DraconicEvolution.MODID, texture);
         }
 
         @Override
         public void begin(BufferBuilder builder, TextureManager textureManager) {
-            RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-            ResourceHelperDE.bindTexture(texture);
+//            RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+            textureManager.bindForSetup(texture);
 
             RenderSystem.depthMask(false);
-            RenderSystem.alphaFunc(516, 0.003921569F);
+//            RenderSystem.alphaFunc(516, 0.003921569F);
             RenderSystem.enableBlend();
             RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
-            RenderSystem.glMultiTexCoord2f(0x84c2, 240.0F, 240.0F); //Lightmap
+//            RenderSystem.glMultiTexCoord2f(0x84c2, 240.0F, 240.0F); //Lightmap
 
-            builder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+            builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP);
         }
 
         @Override
-        public void end(Tessellator tessellator) {
+        public void end(Tesselator tessellator) {
             tessellator.end();
         }
     }

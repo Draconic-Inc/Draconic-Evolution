@@ -1,8 +1,8 @@
 package com.brandon3055.draconicevolution.integration.equipment;
 
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ public interface IDEEquipment {
 
     default void equipmentTick(ItemStack stack, LivingEntity livingEntity) {}
 
-    default List<ITextComponent> getTagsTooltip(ItemStack stack, List<ITextComponent> tagTooltips) {
+    default List<Component> getTagsTooltip(ItemStack stack, List<Component> tagTooltips) {
         return tagTooltips;
     }
 

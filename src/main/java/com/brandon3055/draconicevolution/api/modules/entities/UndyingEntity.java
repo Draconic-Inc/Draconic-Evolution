@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.api.modules.entities;
 
 import com.brandon3055.brandonscore.api.power.IOPStorageModifiable;
 import com.brandon3055.brandonscore.api.render.GuiHelper;
+import com.brandon3055.brandonscore.client.render.RenderUtils;
 import com.brandon3055.brandonscore.client.utils.GuiHelperOld;
 import com.brandon3055.brandonscore.utils.MathUtils;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
@@ -14,29 +15,29 @@ import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.brandon3055.draconicevolution.api.modules.lib.StackModuleContext;
 import com.brandon3055.draconicevolution.client.render.item.ToolRenderBase;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
-import net.minecraftforge.fml.common.thread.EffectiveSide;
+import net.minecraftforge.fml.util.thread.EffectiveSide;
 
 import java.util.Iterator;
 
@@ -61,11 +62,11 @@ public class UndyingEntity extends ModuleEntity {
             invulnerableTime--;
             if (moduleContext instanceof StackModuleContext) {
                 LivingEntity entity = ((StackModuleContext) moduleContext).getEntity();
-                if (entity instanceof PlayerEntity) {
+                if (entity instanceof Player) {
                     if (invulnerableTime == 0){
-                        ((PlayerEntity) entity).displayClientMessage(new StringTextComponent(""), true);
+                        ((Player) entity).displayClientMessage(new TextComponent(""), true);
                     } else {
-                        ((PlayerEntity) entity).displayClientMessage(new TranslationTextComponent("module.draconicevolution.undying.invuln.active", MathUtils.round(invulnerableTime / 20D, 10)).withStyle(TextFormatting.GOLD), true);
+                        ((Player) entity).displayClientMessage(new TranslatableComponent("module.draconicevolution.undying.invuln.active", MathUtils.round(invulnerableTime / 20D, 10)).withStyle(ChatFormatting.GOLD), true);
                     }
                 }
             }
@@ -119,7 +120,7 @@ public class UndyingEntity extends ModuleEntity {
         if (charge >= data.getChargeTime()) {
             LivingEntity entity = event.getEntityLiving();
             entity.setHealth(entity.getHealth() + data.getHealthBoost());
-            ItemStack stack = entity.getItemBySlot(EquipmentSlotType.CHEST);
+            ItemStack stack = entity.getItemBySlot(EquipmentSlot.CHEST);
             if (!stack.isEmpty()) {
                 LazyOptional<ModuleHost> optionalHost = stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
                 optionalHost.ifPresent(stackHost -> {
@@ -131,9 +132,9 @@ public class UndyingEntity extends ModuleEntity {
             }
             if (module.getModuleTechLevel().index >= 2) {
                 entity.clearFire();
-                Iterator<EffectInstance> iterator = entity.getActiveEffectsMap().values().iterator();
+                Iterator<MobEffectInstance> iterator = entity.getActiveEffectsMap().values().iterator();
                 while (iterator.hasNext()) {
-                    EffectInstance effect = iterator.next();
+                    MobEffectInstance effect = iterator.next();
                     if (!effect.getEffect().isBeneficial()) {
                         entity.onEffectRemoved(effect);
                         iterator.remove();
@@ -142,7 +143,7 @@ public class UndyingEntity extends ModuleEntity {
             }
             charge = 0;
             DraconicNetwork.sendUndyingActivation(entity, module.getItem());
-            entity.level.playSound(null, entity.blockPosition(), SoundEvents.TOTEM_USE, SoundCategory.PLAYERS, 5F, (0.95F + (entity.level.random.nextFloat() * 0.1F)));
+            entity.level.playSound(null, entity.blockPosition(), SoundEvents.TOTEM_USE, SoundSource.PLAYERS, 5F, (0.95F + (entity.level.random.nextFloat() * 0.1F)));
             invulnerableTime = data.getInvulnerableTime();
             return true;
         }
@@ -151,15 +152,15 @@ public class UndyingEntity extends ModuleEntity {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void renderSlotOverlay(IRenderTypeBuffer getter, Minecraft mc, int x, int y, int width, int height, double mouseX, double mouseY, boolean mouseOver, float partialTicks) {
+    public void renderSlotOverlay(MultiBufferSource getter, Minecraft mc, int x, int y, int width, int height, double mouseX, double mouseY, boolean mouseOver, float partialTicks) {
         UndyingData data = (UndyingData) module.getData();
         if (charge >= data.getChargeTime()) return;
         double diameter = Math.min(width, height) * 0.425;
         double progress = charge / Math.max(1D, data.getChargeTime());
-        MatrixStack mStack = new MatrixStack();
+        PoseStack mStack = new PoseStack();
 
         GuiHelper.drawRect(getter, mStack, x, y, width, height, 0x20FF0000);
-        IVertexBuilder builder = getter.getBuffer(GuiHelperOld.FAN_TYPE);
+        VertexConsumer builder = getter.getBuffer(GuiHelperOld.FAN_TYPE);
         builder.vertex(x + (width / 2D), y + (height / 2D), 0).color(0, 255, 255, 64).endVertex();
         for (double d = 0; d <= 1; d += 1D / 30D) {
             double angle = (d * progress) + 0.5 - progress;
@@ -167,7 +168,7 @@ public class UndyingEntity extends ModuleEntity {
             double vertY = y + (height / 2D) + Math.cos(angle * (Math.PI * 2)) * diameter;
             builder.vertex(vertX, vertY, 0).color(255, 255, 255, 64).endVertex();
         }
-        ToolRenderBase.endBatch(getter);
+        RenderUtils.endBatch(getter);
 
         String pText = (int) (progress * 100) + "%";
         String tText = ((data.getChargeTime() - charge) / 20) + "s";
@@ -176,8 +177,8 @@ public class UndyingEntity extends ModuleEntity {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static void drawBackgroundString(IRenderTypeBuffer getter, MatrixStack mStack, FontRenderer font, String text, float x, float y, int colour, int background, int padding, boolean shadow, boolean centered) {
-        MatrixStack matrixstack = new MatrixStack();
+    public static void drawBackgroundString(MultiBufferSource getter, PoseStack mStack, Font font, String text, float x, float y, int colour, int background, int padding, boolean shadow, boolean centered) {
+        PoseStack matrixstack = new PoseStack();
         int width = font.width(text);
         x = centered ? x - width / 2F : x;
         GuiHelper.drawRect(getter, mStack, x - padding, y - padding, width + padding * 2, font.lineHeight - 2 + padding * 2, background);
@@ -200,14 +201,14 @@ public class UndyingEntity extends ModuleEntity {
     }
 
     @Override
-    public void writeToNBT(CompoundNBT compound) {
+    public void writeToNBT(CompoundTag compound) {
         super.writeToNBT(compound);
         compound.putInt("charge", charge);
         compound.putInt("invul", invulnerableTime);
     }
 
     @Override
-    public void readFromNBT(CompoundNBT compound) {
+    public void readFromNBT(CompoundTag compound) {
         super.readFromNBT(compound);
         charge = compound.getInt("charge");
         invulnerableTime = compound.getInt("invul");

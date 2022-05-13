@@ -3,15 +3,15 @@ package com.brandon3055.draconicevolution.handlers.dislocator;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.utils.TargetPos;
 import com.brandon3055.draconicevolution.items.tools.BoundDislocator;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 
 import java.util.List;
 import java.util.UUID;
@@ -30,16 +30,16 @@ public class GroundTarget extends DislocatorTarget {
         this.entityPos = Vector3.fromEntity(entity);
     }
 
-    public GroundTarget(RegistryKey<World> world) {
+    public GroundTarget(ResourceKey<Level> world) {
         super(world);
     }
 
     @Override
     public TargetPos getTargetPos(MinecraftServer server, UUID linkID, UUID sourceDislocatorID) {
-        ServerWorld targetWorld = getTargetWorld(server);
+        ServerLevel targetWorld = getTargetWorld(server);
         Entity entity = targetWorld.getEntity(entityUUID);
         if (!(entity instanceof ItemEntity)) {
-            AxisAlignedBB bb = new AxisAlignedBB(entityPos.pos().offset(-1, -1, -1), entityPos.pos().offset(1, 1, 1));
+            AABB bb = new AABB(entityPos.pos().offset(-1, -1, -1), entityPos.pos().offset(1, 1, 1));
             bb.inflate(5);
             List<ItemEntity> items = targetWorld.getEntitiesOfClass(ItemEntity.class, bb);
             for (ItemEntity item : items) {
@@ -60,14 +60,14 @@ public class GroundTarget extends DislocatorTarget {
     }
 
     @Override
-    protected void loadInternal(CompoundNBT nbt) {
+    protected void loadInternal(CompoundTag nbt) {
         super.loadInternal(nbt);
         entityPos = Vector3.fromNBT(nbt);
         entityUUID = nbt.getUUID("entity_uuid");
     }
 
     @Override
-    public CompoundNBT save(CompoundNBT nbt) {
+    public CompoundTag save(CompoundTag nbt) {
         entityPos.writeToNBT(nbt);
         nbt.putUUID("entity_uuid", entityUUID);
         return super.save(nbt);

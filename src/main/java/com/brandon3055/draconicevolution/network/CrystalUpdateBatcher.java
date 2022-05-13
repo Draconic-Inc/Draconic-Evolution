@@ -5,9 +5,9 @@ import codechicken.lib.data.MCDataOutput;
 import codechicken.lib.packet.PacketCustom;
 import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalBase;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import java.util.*;
 
@@ -19,17 +19,17 @@ import java.util.*;
 public class CrystalUpdateBatcher {
 
     public static final Map<Integer, BlockPos> ID_CRYSTAL_MAP = new HashMap<>();
-    private static final Map<ServerPlayerEntity, List<BatchedCrystalUpdate>> batchQue = new HashMap<>();
+    private static final Map<ServerPlayer, List<BatchedCrystalUpdate>> batchQue = new HashMap<>();
 
     public CrystalUpdateBatcher() {}
 
-    public static void queData(BatchedCrystalUpdate update, ServerPlayerEntity target) {
+    public static void queData(BatchedCrystalUpdate update, ServerPlayer target) {
         batchQue.computeIfAbsent(target, e -> new ArrayList<>()).add(update);
     }
 
     public static void tickEnd() {
         if (!batchQue.isEmpty()) {
-            for (ServerPlayerEntity playerMP : batchQue.keySet()) {
+            for (ServerPlayer playerMP : batchQue.keySet()) {
                 List<BatchedCrystalUpdate> playerData = batchQue.get(playerMP);
                 if (!playerData.isEmpty()) {
                     PacketCustom packet = new PacketCustom(DraconicNetwork.CHANNEL, DraconicNetwork.C_CRYSTAL_UPDATE);
@@ -51,7 +51,7 @@ public class CrystalUpdateBatcher {
                 continue;
             }
 
-            TileEntity tile = BrandonsCore.proxy.getClientWorld().getBlockEntity(ID_CRYSTAL_MAP.get(update.crystalID));
+            BlockEntity tile = BrandonsCore.proxy.getClientWorld().getBlockEntity(ID_CRYSTAL_MAP.get(update.crystalID));
             if (tile instanceof TileCrystalBase && !tile.isRemoved()) {
                 ((TileCrystalBase) tile).receiveBatchedUpdate(update);
             }

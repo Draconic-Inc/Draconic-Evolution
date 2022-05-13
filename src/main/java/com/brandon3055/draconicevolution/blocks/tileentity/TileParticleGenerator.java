@@ -1,19 +1,20 @@
 package com.brandon3055.draconicevolution.blocks.tileentity;
 
-import com.brandon3055.brandonscore.blocks.TileBCBase;
+import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.lib.datamanager.DataFlags;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedDouble;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedInt;
 import com.brandon3055.draconicevolution.init.DEContent;
-import net.minecraft.tileentity.ITickableTileEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.Random;
 
 /**
  * Created by brandon3055 on 30/3/2016.
  */
-public class TileParticleGenerator extends TileBCBase implements ITickableTileEntity {
+public class TileParticleGenerator extends TileBCore {
 
     //@formatter:off
     public final ManagedInt    red           = register(new ManagedInt("red", 0, DataFlags.SAVE_BOTH_SYNC_TILE));
@@ -53,8 +54,8 @@ public class TileParticleGenerator extends TileBCBase implements ITickableTileEn
 
     private int tick = 0;
 
-    public TileParticleGenerator() {
-        super(DEContent.tile_particle_generator);
+    public TileParticleGenerator(BlockPos pos, BlockState state) {
+        super(DEContent.tile_particle_generator, pos, state);
     }
 
     @Override

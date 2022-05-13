@@ -1,21 +1,22 @@
 package com.brandon3055.draconicevolution.client.render.tile;
 
-import com.brandon3055.brandonscore.client.render.TESRBase;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileCelestialManipulator;
 import com.brandon3055.draconicevolution.client.render.effect.EffectTrackerCelestialManipulator;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 
-public class RenderTileCelestialManipulator extends TESRBase<TileCelestialManipulator> {
+public class RenderTileCelestialManipulator implements BlockEntityRenderer<TileCelestialManipulator> {
 
-    public RenderTileCelestialManipulator(TileEntityRendererDispatcher rendererDispatcherIn) {
-        super(rendererDispatcherIn);
+    public RenderTileCelestialManipulator(BlockEntityRendererProvider.Context context) {
     }
 
-//    @Override
+    //    @Override
     public void render(TileCelestialManipulator te, double x, double y, double z, float partialTicks, int destroyStage) {
-        ClientPlayerEntity player = Minecraft.getInstance().player;
+        LocalPlayer player = Minecraft.getInstance().player;
         if (player == null) {
             return;
         }
@@ -24,6 +25,11 @@ public class RenderTileCelestialManipulator extends TESRBase<TileCelestialManipu
         EffectTrackerCelestialManipulator.interpPosZ = player.zOld + (player.getZ() - player.zOld) * (double) partialTicks;
 
         te.renderEffects(partialTicks);
+    }
+
+    @Override
+    public void render(TileCelestialManipulator p_112307_, float p_112308_, PoseStack p_112309_, MultiBufferSource p_112310_, int p_112311_, int p_112312_) {
+
     }
 
     @Override

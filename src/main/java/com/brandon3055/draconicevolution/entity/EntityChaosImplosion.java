@@ -1,17 +1,17 @@
 package com.brandon3055.draconicevolution.entity;
 
 import com.brandon3055.brandonscore.handlers.ProcessHandler;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.MoverType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 
@@ -20,9 +20,9 @@ import java.util.List;
  */
 @Deprecated
 public class EntityChaosImplosion extends Entity {
-    protected static final DataParameter<Integer> TICKS = EntityDataManager.<Integer>defineId(EntityChaosImplosion.class, DataSerializers.INT);
+    protected static final EntityDataAccessor<Integer> TICKS = SynchedEntityData.<Integer>defineId(EntityChaosImplosion.class, EntityDataSerializers.INT);
 
-    public EntityChaosImplosion(EntityType<?> entityTypeIn, World worldIn) {
+    public EntityChaosImplosion(EntityType<?> entityTypeIn, Level worldIn) {
         super(entityTypeIn, worldIn);
     }
 
@@ -32,7 +32,7 @@ public class EntityChaosImplosion extends Entity {
     }
 
     @Override
-    public IPacket<?> getAddEntityPacket() {
+    public Packet<?> getAddEntityPacket() {
         return null;
     }
 
@@ -94,33 +94,33 @@ public class EntityChaosImplosion extends Entity {
         }
 
         if (tickCount > 720) {
-            remove();
+            discard();
         }
     }
 
 
     private void shakeScreen() {
-        double intensity = (tickCount - 130) / 100D;
-        if (intensity > 1D) intensity = 1D;
+        float intensity = (tickCount - 130) / 100F;
+        if (intensity > 1F) intensity = 1F;
 
-        @SuppressWarnings("unchecked") List<PlayerEntity> players = level.getEntitiesOfClass(PlayerEntity.class, getBoundingBox().inflate(200, 200, 200));
+        @SuppressWarnings("unchecked") List<Player> players = level.getEntitiesOfClass(Player.class, getBoundingBox().inflate(200, 200, 200));
 
-        for (PlayerEntity player : players) {
-            double x = (random.nextDouble() - 0.5) * 2 * intensity;
-            double z = (random.nextDouble() - 0.5) * 2 * intensity;
-            player.move(MoverType.SELF, new Vector3d(x / 5D, 0, z / 5D));
-            player.yRot -= x * 2;
-            player.xRot -= z * 2;
+        for (Player player : players) {
+            float x = (random.nextFloat() - 0.5F) * 2 * intensity;
+            float z = (random.nextFloat() - 0.5F) * 2 * intensity;
+            player.move(MoverType.SELF, new Vec3(x / 5D, 0, z / 5D));
+            player.setYRot(player.getYRot() - (x * 2));
+            player.setXRot(player.getXRot() - (z * 2));
         }
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundNBT compound) {
+    protected void readAdditionalSaveData(CompoundTag compound) {
 
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundNBT compound) {
+    protected void addAdditionalSaveData(CompoundTag compound) {
 
     }
 }

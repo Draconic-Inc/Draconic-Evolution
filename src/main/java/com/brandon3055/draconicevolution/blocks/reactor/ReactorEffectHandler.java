@@ -8,8 +8,8 @@ import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.client.render.effect.ReactorBeamFX;
 import com.brandon3055.draconicevolution.client.sound.ReactorSound;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.util.Direction;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.core.Direction;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -66,7 +66,7 @@ public class ReactorEffectHandler {
                 continue;
             }
 
-            ReactorBeamFX beamFX = new ReactorBeamFX((ClientWorld) reactor.getLevel(), Vec3D.getCenter(component.getBlockPos()), component.facing.get(), reactor, component instanceof TileReactorInjector);
+            ReactorBeamFX beamFX = new ReactorBeamFX((ClientLevel) reactor.getLevel(), Vec3D.getCenter(component.getBlockPos()), component.facing.get(), reactor, component instanceof TileReactorInjector);
             effects[index] = beamFX;
             DEParticles.addParticleDirect(reactor.getLevel(), beamFX);
         }

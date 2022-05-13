@@ -1,49 +1,33 @@
 package com.brandon3055.draconicevolution.blocks.machines;
 
 import com.brandon3055.brandonscore.blocks.BlockBCore;
-import com.brandon3055.draconicevolution.blocks.tileentity.TileCelestialManipulator;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.world.IBlockReader;
-
-import javax.annotation.Nullable;
+import com.brandon3055.draconicevolution.init.DEContent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 /**
  * Created by brandon3055 on 25/09/2016.
  */
-public class CelestialManipulator extends BlockBCore /*implements ITileEntityProvider, IRenderOverride*/ {//Replacement For both the weather controller and sun dial
+public class CelestialManipulator extends BlockBCore implements EntityBlock {
 
     private VoxelShape SHAPE = Block.box(1.0, 0, 1.0, 15.0, 13.0, 15.0);
 
     public CelestialManipulator(Properties properties) {
         super(properties);
         canProvidePower = true;
+        setBlockEntity(() -> DEContent.tile_celestial_manipulator, true);
     }
 
     @Override
-    public boolean isBlockFullCube() {
-        return false;
-    }
-
-    @Override
-    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+    public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
         return SHAPE;
     }
 
-    @Override
-    public boolean hasTileEntity(BlockState state) {
-        return true;
-    }
-
-    @Nullable
-    @Override
-    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        return new TileCelestialManipulator();
-    }
 //
 //    @Override
 //    public boolean onBlockActivated(World worldIn, BlockPos pos, BlockState state, PlayerEntity playerIn, Hand hand, Direction side, float hitX, float hitY, float hitZ) {

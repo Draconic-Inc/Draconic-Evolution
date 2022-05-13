@@ -4,16 +4,16 @@ import com.brandon3055.brandonscore.client.gui.modulargui.GuiElementManager;
 import com.brandon3055.brandonscore.client.gui.modulargui.ModularGuiContainer;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileCelestialManipulator;
 import com.brandon3055.draconicevolution.inventory.ContainerDummy;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 
 /**
  * Created by brandon3055 on 17/10/2016.
  */
 public class GuiCelestialManipulator extends ModularGuiContainer<ContainerDummy<TileCelestialManipulator>> {
 
-    private PlayerEntity player;
+    private Player player;
     private TileCelestialManipulator tile;
 //    private MGuiEffectRenderer effectRenderer;
 //    private MGuiButtonSolid weatherMode;
@@ -26,7 +26,7 @@ public class GuiCelestialManipulator extends ModularGuiContainer<ContainerDummy<
 //    private double rsTabAnim = 0;
 //    private boolean rsTabEnabled = false;
 
-    public GuiCelestialManipulator(ContainerDummy<TileCelestialManipulator> container, PlayerInventory playerInventory, ITextComponent title) {
+    public GuiCelestialManipulator(ContainerDummy<TileCelestialManipulator> container, Inventory playerInventory, Component title) {
         super(container, playerInventory, title);
 
         this.imageWidth = 180;

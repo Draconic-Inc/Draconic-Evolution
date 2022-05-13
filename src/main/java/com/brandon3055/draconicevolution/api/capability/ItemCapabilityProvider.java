@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.api.capability;
 
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.INBTSerializable;
@@ -13,7 +13,7 @@ import javax.annotation.Nullable;
 /**
  * Created by brandon3055 on 17/4/20.
  */
-public class ItemCapabilityProvider<T extends INBTSerializable<CompoundNBT>> implements ICapabilitySerializable<CompoundNBT> {
+public class ItemCapabilityProvider<T extends INBTSerializable<CompoundTag>> implements ICapabilitySerializable<CompoundTag> {
 
     private T capability;
 
@@ -31,12 +31,12 @@ public class ItemCapabilityProvider<T extends INBTSerializable<CompoundNBT>> imp
     }
 
     @Override
-    public CompoundNBT serializeNBT() {
+    public CompoundTag serializeNBT() {
         return capability.serializeNBT();
     }
 
     @Override
-    public void deserializeNBT(CompoundNBT nbt) {
+    public void deserializeNBT(CompoundTag nbt) {
         capability.deserializeNBT(nbt);
     }
 }

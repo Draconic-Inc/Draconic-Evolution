@@ -3,15 +3,15 @@ package com.brandon3055.draconicevolution.client.render.particle;
 import com.brandon3055.brandonscore.client.particle.IntParticleType;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.utils.Utils;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
-import net.minecraft.client.world.ClientWorld;
 
-public class ParticleEnergy extends SpriteTexturedParticle {
+public class ParticleEnergy extends TextureSheetParticle {
 
     public Vec3D targetPos;
-    private final IAnimatedSprite spriteSet;
+    private final SpriteSet spriteSet;
 
-    public ParticleEnergy(ClientWorld world, double xPos, double yPos, double zPos, Vec3D targetPos, IAnimatedSprite spriteSet) {
+    public ParticleEnergy(ClientLevel world, double xPos, double yPos, double zPos, Vec3D targetPos, SpriteSet spriteSet) {
         super(world, xPos, yPos, zPos);
         this.targetPos = targetPos;
         this.spriteSet = spriteSet;
@@ -20,8 +20,8 @@ public class ParticleEnergy extends SpriteTexturedParticle {
     }
 
     @Override
-    public IParticleRenderType getRenderType() {
-        return IParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
+    public ParticleRenderType getRenderType() {
+        return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
     }
 
     @Override
@@ -43,15 +43,15 @@ public class ParticleEnergy extends SpriteTexturedParticle {
         }
     }
 
-    public static class Factory implements IParticleFactory<IntParticleType.IntParticleData> {
-        private final IAnimatedSprite spriteSet;
+    public static class Factory implements ParticleProvider<IntParticleType.IntParticleData> {
+        private final SpriteSet spriteSet;
 
-        public Factory(IAnimatedSprite p_i50823_1_) {
+        public Factory(SpriteSet p_i50823_1_) {
             this.spriteSet = p_i50823_1_;
         }
 
         @Override
-        public Particle createParticle(IntParticleType.IntParticleData data, ClientWorld world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public Particle createParticle(IntParticleType.IntParticleData data, ClientLevel world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
             ParticleEnergy particleEnergy = new ParticleEnergy(world, x, y, z, new Vec3D(xSpeed, ySpeed, zSpeed), spriteSet);
 
             if (data.get().length >= 3) {

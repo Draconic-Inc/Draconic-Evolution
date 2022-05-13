@@ -3,42 +3,41 @@ package com.brandon3055.draconicevolution.client.render.tile;
 import codechicken.lib.math.MathHelper;
 import codechicken.lib.render.CCModel;
 import codechicken.lib.render.CCRenderState;
-import codechicken.lib.render.OBJParser;
 import codechicken.lib.render.lighting.LightModel;
+import codechicken.lib.render.model.OBJParser;
 import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Rotation;
 import codechicken.lib.vec.Scale;
 import codechicken.lib.vec.Vector3;
 import codechicken.lib.vec.uv.IconTransformation;
+import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.machines.Generator;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileGenerator;
 import com.brandon3055.draconicevolution.client.DETextures;
-import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import org.lwjgl.opengl.GL11;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.Map;
 
 /**
  * Created by brandon3055 on 1/3/20.
  */
-public class RenderTileGenerator extends TileEntityRenderer<TileGenerator> {
+public class RenderTileGenerator implements BlockEntityRenderer<TileGenerator> {
 
     private static RenderType modelType = RenderType.solid();
     private final CCModel fanModel;
 
-    public RenderTileGenerator(TileEntityRendererDispatcher rendererDispatcherIn) {
-        super(rendererDispatcherIn);
-        Map<String, CCModel> map = OBJParser.parseModels(ResourceHelperDE.getResource("models/block/generator/generator_fan.obj"), GL11.GL_QUADS, null);
+    public RenderTileGenerator(BlockEntityRendererProvider.Context context) {
+        Map<String, CCModel> map = new OBJParser(new ResourceLocation(DraconicEvolution.MODID, "models/block/generator/generator_fan.obj")).quads().ignoreMtl().parse();
         fanModel = CCModel.combine(map.values()).backfacedCopy();
     }
 
     @Override
-    public void render(TileGenerator tile, float partialTicks, MatrixStack mStack, IRenderTypeBuffer getter, int packedLight, int packedOverlay) {
+    public void render(TileGenerator tile, float partialTicks, PoseStack mStack, MultiBufferSource getter, int packedLight, int packedOverlay) {
         IconTransformation icon = new IconTransformation(DETextures.GENERATOR);
         if (icon.icon == null) return;
         Matrix4 mat = new Matrix4(mStack);

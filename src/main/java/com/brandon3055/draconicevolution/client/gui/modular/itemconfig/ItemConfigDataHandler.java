@@ -1,13 +1,13 @@
 package com.brandon3055.draconicevolution.client.gui.modular.itemconfig;
 
-import codechicken.lib.util.SneakyUtils;
 import com.brandon3055.draconicevolution.DEConfig;
+import net.covers1624.quack.util.SneakyUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraft.world.storage.WorldSavedData;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtIo;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.saveddata.SavedData;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,31 +22,30 @@ import java.nio.file.StandardOpenOption;
  */
 public class ItemConfigDataHandler {
 
-    public static CompoundNBT retrieveData() {
+    public static CompoundTag retrieveData() {
         Minecraft mc = Minecraft.getInstance();
         if (mc.hasSingleplayerServer()) {
-            ServerWorld world = mc.getSingleplayerServer().getLevel(World.OVERWORLD);
-            SinglePlayerWorldData data = world.getDataStorage().computeIfAbsent(SinglePlayerWorldData::new, "draconic_item_config");
+            ServerLevel world = mc.getSingleplayerServer().getLevel(Level.OVERWORLD);
+            SinglePlayerWorldData data = world.getDataStorage().computeIfAbsent(SinglePlayerWorldData::load, SinglePlayerWorldData::new, SinglePlayerWorldData.FILE_NAME);
             return data.data;
         } else {
             Path file = Paths.get("./config/brandon3055/servers/" + DEConfig.serverID + ".dat");
             if (Files.exists(file)) {
                 try (InputStream is = Files.newInputStream(file)) {
-                    return CompressedStreamTools.readCompressed(is);
-                }
-                catch (IOException e) {
+                    return NbtIo.readCompressed(is);
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }
-        return new CompoundNBT();
+        return new CompoundTag();
     }
 
-    public static void saveData(CompoundNBT nbt) {
+    public static void saveData(CompoundTag nbt) {
         Minecraft mc = Minecraft.getInstance();
         if (mc.hasSingleplayerServer()) {
-            ServerWorld world = mc.getSingleplayerServer().getLevel(World.OVERWORLD);
-            SinglePlayerWorldData data = world.getDataStorage().computeIfAbsent(SinglePlayerWorldData::new, "draconic_item_config");
+            ServerLevel world = mc.getSingleplayerServer().getLevel(Level.OVERWORLD);
+            SinglePlayerWorldData data = world.getDataStorage().computeIfAbsent(SinglePlayerWorldData::load, SinglePlayerWorldData::new, SinglePlayerWorldData.FILE_NAME);
             data.data = nbt;
             data.setDirty();
         } else {
@@ -58,29 +57,32 @@ public class ItemConfigDataHandler {
             }
 
             try (OutputStream os = Files.newOutputStream(file, StandardOpenOption.CREATE)) {
-                CompressedStreamTools.writeCompressed(nbt, os);
-            }
-            catch (IOException e) {
+                NbtIo.writeCompressed(nbt, os);
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
 
 
-    private static class SinglePlayerWorldData extends WorldSavedData {
-        private CompoundNBT data = new CompoundNBT();
+    private static class SinglePlayerWorldData extends SavedData {
+        private static String FILE_NAME = "draconic_item_config";
+        private CompoundTag data;
 
         public SinglePlayerWorldData() {
-            super("draconic_item_config");
+            data = new CompoundTag();
+        }
+
+        SinglePlayerWorldData(CompoundTag data) {
+            this.data = data;
+        }
+
+        public static SinglePlayerWorldData load(CompoundTag nbt) {
+            return new SinglePlayerWorldData(nbt);
         }
 
         @Override
-        public void load(CompoundNBT nbt) {
-            data = nbt;
-        }
-
-        @Override
-        public CompoundNBT save(CompoundNBT compound) {
+        public CompoundTag save(CompoundTag compound) {
             return data;
         }
     }

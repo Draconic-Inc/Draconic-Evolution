@@ -6,8 +6,8 @@ import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.client.render.effect.CrystalFXBase;
 import com.brandon3055.draconicevolution.client.render.effect.CrystalFXBeam;
 import com.brandon3055.draconicevolution.network.CrystalUpdateBatcher.BatchedCrystalUpdate;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import java.util.LinkedList;
 import java.util.Map;
@@ -15,7 +15,7 @@ import java.util.Map;
 /**
  * Created by brandon3055 on 29/11/2016.
  */
-public class ENetFXHandlerClient<T extends TileEntity & IENetEffectTile> extends ENetFXHandler<T> {
+public class ENetFXHandlerClient<T extends BlockEntity & IENetEffectTile> extends ENetFXHandler<T> {
 
     protected CrystalFXBase staticFX;
     protected LinkedList<CrystalFXBase> beamFXList = new LinkedList<>();
@@ -79,7 +79,7 @@ public class ENetFXHandlerClient<T extends TileEntity & IENetEffectTile> extends
         beamFXList.clear();
 
         for (BlockPos pos : tile.getLinks()) {
-            TileEntity target = tile.getLevel().getBlockEntity(pos);
+            BlockEntity target = tile.getLevel().getBlockEntity(pos);
             if (!(target instanceof ICrystalLink)) {
                 continue;
             }

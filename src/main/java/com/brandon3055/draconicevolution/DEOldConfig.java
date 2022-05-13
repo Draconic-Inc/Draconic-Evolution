@@ -152,21 +152,21 @@ public class DEOldConfig {
     /**
      * This method will be called by Forge when a config changes.
      */
-    @SubscribeEvent
-    public static void onModConfigEvent(final ModConfig.ModConfigEvent event) {
-        final ModConfig config = event.getConfig();
-        // Reassign the configs when they change
-        if (config.getSpec() == CLIENT_SPEC) {
-            CLIENT.accessAssigners.forEach(Runnable::run);
-            LogHelper.debug("Assigned client config");
-        } else if (config.getSpec() == SERVER_SPEC) {
-            SERVER.accessAssigners.forEach(Runnable::run);
-            LogHelper.debug("Assigned server config");
-        } else if (config.getSpec() == COMMON_SPEC) {
-            COMMON.accessAssigners.forEach(Runnable::run);
-            LogHelper.debug("Assigned common config");
-        }
-    }
+//    @SubscribeEvent
+//    public static void onModConfigEvent(final ModConfig.ModConfigEvent event) {
+//        final ModConfig config = event.getConfig();
+//        // Reassign the configs when they change
+//        if (config.getSpec() == CLIENT_SPEC) {
+//            CLIENT.accessAssigners.forEach(Runnable::run);
+//            LogHelper.debug("Assigned client config");
+//        } else if (config.getSpec() == SERVER_SPEC) {
+//            SERVER.accessAssigners.forEach(Runnable::run);
+//            LogHelper.debug("Assigned server config");
+//        } else if (config.getSpec() == COMMON_SPEC) {
+//            COMMON.accessAssigners.forEach(Runnable::run);
+//            LogHelper.debug("Assigned common config");
+//        }
+//    }
 
 
 //    @Override

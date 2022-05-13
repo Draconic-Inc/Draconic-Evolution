@@ -9,33 +9,33 @@ import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.items.equipment.damage.DefaultStaffDmgMod;
 import com.brandon3055.draconicevolution.lib.Serializers;
 import com.google.common.collect.Sets;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.projectile.AbstractArrowEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionUtils;
-import net.minecraft.potion.Potions;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.Explosion;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ChunkHolder;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ChunkHolder;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -49,15 +49,15 @@ import java.util.Set;
  * But on top of that it has support for all my custom damage and effects.
  */
 @Deprecated //Was going to use this for both the staff and the bow but now i'm going to use something simpler for the bow and i'm not sure about the staff at this point.
-public class DraconicProjectileEntity extends AbstractArrowEntity {
-    private static final DataParameter<Integer> COLOR = EntityDataManager.defineId(DraconicProjectileEntity.class, DataSerializers.INT);
-    private static final DataParameter<Boolean> ARROW_PROJECTILE = EntityDataManager.defineId(DraconicProjectileEntity.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Boolean> NO_DRAG = EntityDataManager.defineId(DraconicProjectileEntity.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Integer> EFFECT_COLOR = EntityDataManager.defineId(DraconicProjectileEntity.class, DataSerializers.INT);
-    private static final DataParameter<Optional<Module<?>>> DAMAGE_MODIFIER = EntityDataManager.defineId(DraconicProjectileEntity.class, Serializers.OPT_MODULE_SERIALIZER);
+public class DraconicProjectileEntity extends AbstractArrow {
+    private static final EntityDataAccessor<Integer> COLOR = SynchedEntityData.defineId(DraconicProjectileEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Boolean> ARROW_PROJECTILE = SynchedEntityData.defineId(DraconicProjectileEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> NO_DRAG = SynchedEntityData.defineId(DraconicProjectileEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Integer> EFFECT_COLOR = SynchedEntityData.defineId(DraconicProjectileEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Optional<Module<?>>> DAMAGE_MODIFIER = SynchedEntityData.defineId(DraconicProjectileEntity.class, Serializers.OPT_MODULE_SERIALIZER);
     private static final IDamageModifier defaultStaffModifier = new DefaultStaffDmgMod();
     private Potion potion = Potions.EMPTY;
-    private final Set<EffectInstance> customPotionEffects = Sets.newHashSet();
+    private final Set<MobEffectInstance> customPotionEffects = Sets.newHashSet();
     private boolean fixedColor;
     private int flightTime = 0;
     private int maxFlightTime = -1;
@@ -70,15 +70,15 @@ public class DraconicProjectileEntity extends AbstractArrowEntity {
     private boolean useDefaultStaffModifier = false;
     private boolean pseudoInstantTravel = false;
 
-    public DraconicProjectileEntity(EntityType<? extends DraconicProjectileEntity> type, World worldIn) {
+    public DraconicProjectileEntity(EntityType<? extends DraconicProjectileEntity> type, Level worldIn) {
         super(type, worldIn);
     }
 
-    public DraconicProjectileEntity(World worldIn, double x, double y, double z) {
+    public DraconicProjectileEntity(Level worldIn, double x, double y, double z) {
         super(DEContent.draconicArrow, x, y, z, worldIn);
     }
 
-    public DraconicProjectileEntity(World worldIn, LivingEntity shooter) {
+    public DraconicProjectileEntity(Level worldIn, LivingEntity shooter) {
         super(DEContent.draconicArrow, shooter, worldIn);
     }
 
@@ -197,18 +197,18 @@ public class DraconicProjectileEntity extends AbstractArrowEntity {
      *
      * @return true prevents normal arrow damage processing.
      * */
-    protected boolean activateDamageEffect(@Nullable RayTraceResult traceResult) {
+    protected boolean activateDamageEffect(@Nullable HitResult traceResult) {
         if (level.isClientSide) return true;
         Entity owner = getOwner();
         Module<DamageModData> damageMod = getDamageModifier();
-        Vector3d pos = position();
+        Vec3 pos = position();
         if (traceResult != null) {
-            if (traceResult instanceof EntityRayTraceResult) {
+            if (traceResult instanceof EntityHitResult) {
                 pos = traceResult.getLocation();
             } else {
-                Vector3d hitPos = traceResult.getLocation();
+                Vec3 hitPos = traceResult.getLocation();
                 if (hitPos.distanceTo(pos) > 1) {
-                    Vector3d dirVec = pos.subtract(hitPos).normalize();
+                    Vec3 dirVec = pos.subtract(hitPos).normalize();
                     pos = hitPos.add(dirVec); //Helps ensure the explosion does not occur inside a block which could limit its power.
                 }
             }
@@ -227,9 +227,9 @@ public class DraconicProjectileEntity extends AbstractArrowEntity {
             disableDefault = true;
         } else if (explosivePower > 0) {
             if (owner instanceof LivingEntity) {
-                level.explode(owner, DamageSource.explosion((LivingEntity)owner), null, pos.x, pos.y, pos.z, explosivePower, false, explodeBlocks ? Explosion.Mode.DESTROY : Explosion.Mode.NONE);
+                level.explode(owner, DamageSource.explosion((LivingEntity)owner), null, pos.x, pos.y, pos.z, explosivePower, false, explodeBlocks ? Explosion.BlockInteraction.DESTROY : Explosion.BlockInteraction.NONE);
             }else {
-                level.explode(this, pos.x, pos.y, pos.z, explosivePower, false, explodeBlocks ? Explosion.Mode.DESTROY : Explosion.Mode.NONE);
+                level.explode(this, pos.x, pos.y, pos.z, explosivePower, false, explodeBlocks ? Explosion.BlockInteraction.DESTROY : Explosion.BlockInteraction.NONE);
             }
 
             explosivePower = 0;
@@ -251,7 +251,7 @@ public class DraconicProjectileEntity extends AbstractArrowEntity {
     }
 
     @Override
-    protected void onHitEntity(EntityRayTraceResult entityRayTraceResult) {
+    protected void onHitEntity(EntityHitResult entityRayTraceResult) {
         if (activateDamageEffect(entityRayTraceResult)) {
             return;
         }
@@ -259,7 +259,7 @@ public class DraconicProjectileEntity extends AbstractArrowEntity {
     }
 
     @Override
-    protected void onHitBlock(BlockRayTraceResult blockRayTraceResult) {
+    protected void onHitBlock(BlockHitResult blockRayTraceResult) {
         if (activateDamageEffect(blockRayTraceResult)) {
             return;
         }
@@ -271,10 +271,10 @@ public class DraconicProjectileEntity extends AbstractArrowEntity {
     public void setPotionEffect(ItemStack stack) {
         if (stack.getItem() == Items.TIPPED_ARROW) {
             this.potion = PotionUtils.getPotion(stack);
-            Collection<EffectInstance> collection = PotionUtils.getCustomEffects(stack);
+            Collection<MobEffectInstance> collection = PotionUtils.getCustomEffects(stack);
             if (!collection.isEmpty()) {
-                for (EffectInstance effectinstance : collection) {
-                    this.customPotionEffects.add(new EffectInstance(effectinstance));
+                for (MobEffectInstance effectinstance : collection) {
+                    this.customPotionEffects.add(new MobEffectInstance(effectinstance));
                 }
             }
 
@@ -293,7 +293,7 @@ public class DraconicProjectileEntity extends AbstractArrowEntity {
     }
 
     public static int getCustomColor(ItemStack colour) {
-        CompoundNBT compoundnbt = colour.getTag();
+        CompoundTag compoundnbt = colour.getTag();
         return compoundnbt != null && compoundnbt.contains("CustomPotionColor", 99) ? compoundnbt.getInt("CustomPotionColor") : -1;
     }
 
@@ -306,18 +306,18 @@ public class DraconicProjectileEntity extends AbstractArrowEntity {
         }
     }
 
-    public void addEffect(EffectInstance effect) {
+    public void addEffect(MobEffectInstance effect) {
         this.customPotionEffects.add(effect);
         this.getEntityData().set(COLOR, PotionUtils.getColor(PotionUtils.getAllEffects(this.potion, this.customPotionEffects)));
     }
 
     @Override
     public void tick() {
-        boolean forceActivation = pseudoInstantTravel && !Utils.isAreaLoaded(level, new BlockPos(position().add(getDeltaMovement().multiply(1.1, 1.1, 1.1))), ChunkHolder.LocationType.ENTITY_TICKING);
+        boolean forceActivation = pseudoInstantTravel && !Utils.isAreaLoaded(level, new BlockPos(position().add(getDeltaMovement().multiply(1.1, 1.1, 1.1))), ChunkHolder.FullChunkStatus.ENTITY_TICKING);
 
         //Drag mitigation. This is a little nasty but it works and there really isn't a better way to do it without mixins.
         if (hasNoDrag()) {
-            Vector3d velocity = getDeltaMovement();
+            Vec3 velocity = getDeltaMovement();
             super.tick();
             if (!isNoGravity()) { //This is needed because the drag mitigation disables gravity.
                 velocity = velocity.subtract(0, 0.05, 0);
@@ -378,7 +378,7 @@ public class DraconicProjectileEntity extends AbstractArrowEntity {
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundNBT compound) {
+    public void addAdditionalSaveData(CompoundTag compound) {
         super.addAdditionalSaveData(compound);
         if (this.potion != Potions.EMPTY && this.potion != null) {
             compound.putString("Potion", Registry.POTION.getKey(this.potion).toString());
@@ -389,10 +389,10 @@ public class DraconicProjectileEntity extends AbstractArrowEntity {
         }
 
         if (!this.customPotionEffects.isEmpty()) {
-            ListNBT listnbt = new ListNBT();
+            ListTag listnbt = new ListTag();
 
-            for (EffectInstance effectinstance : this.customPotionEffects) {
-                listnbt.add(effectinstance.save(new CompoundNBT()));
+            for (MobEffectInstance effectinstance : this.customPotionEffects) {
+                listnbt.add(effectinstance.save(new CompoundTag()));
             }
 
             compound.put("CustomPotionEffects", listnbt);
@@ -412,13 +412,13 @@ public class DraconicProjectileEntity extends AbstractArrowEntity {
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundNBT compound) {
+    public void readAdditionalSaveData(CompoundTag compound) {
         super.readAdditionalSaveData(compound);
         if (compound.contains("Potion", 8)) {
             this.potion = PotionUtils.getPotion(compound);
         }
 
-        for (EffectInstance effectinstance : PotionUtils.getCustomEffects(compound)) {
+        for (MobEffectInstance effectinstance : PotionUtils.getCustomEffects(compound)) {
             this.addEffect(effectinstance);
         }
 
@@ -446,12 +446,12 @@ public class DraconicProjectileEntity extends AbstractArrowEntity {
     protected void doPostHurtEffects(LivingEntity living) {
         super.doPostHurtEffects(living);
 
-        for (EffectInstance effectinstance : this.potion.getEffects()) {
-            living.addEffect(new EffectInstance(effectinstance.getEffect(), Math.max(effectinstance.getDuration() / 8, 1), effectinstance.getAmplifier(), effectinstance.isAmbient(), effectinstance.isVisible()));
+        for (MobEffectInstance effectinstance : this.potion.getEffects()) {
+            living.addEffect(new MobEffectInstance(effectinstance.getEffect(), Math.max(effectinstance.getDuration() / 8, 1), effectinstance.getAmplifier(), effectinstance.isAmbient(), effectinstance.isVisible()));
         }
 
         if (!this.customPotionEffects.isEmpty()) {
-            for (EffectInstance effectinstance1 : this.customPotionEffects) {
+            for (MobEffectInstance effectinstance1 : this.customPotionEffects) {
                 living.addEffect(effectinstance1);
             }
         }
@@ -492,7 +492,7 @@ public class DraconicProjectileEntity extends AbstractArrowEntity {
     }
 
     @Override
-    public IPacket<?> getAddEntityPacket() {
+    public Packet<?> getAddEntityPacket() {
         return BCoreNetwork.getEntitySpawnPacket(this);
     }
 }

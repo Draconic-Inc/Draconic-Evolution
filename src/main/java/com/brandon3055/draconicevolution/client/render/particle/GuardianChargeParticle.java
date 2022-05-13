@@ -5,21 +5,21 @@ import com.brandon3055.brandonscore.utils.MathUtils;
 import com.brandon3055.draconicevolution.client.DETextures;
 import com.brandon3055.draconicevolution.entity.guardian.control.ChargeUpPhase;
 import com.brandon3055.draconicevolution.entity.guardian.control.PhaseManager;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.client.particle.IParticleRenderType;
-import net.minecraft.client.particle.TexturedParticle;
-import net.minecraft.client.renderer.ActiveRenderInfo;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Quaternion;
+import com.mojang.math.Vector3f;
+import net.minecraft.client.Camera;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.particle.ParticleRenderType;
+import net.minecraft.client.particle.SingleQuadParticle;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuardianChargeParticle extends TexturedParticle {
+public class GuardianChargeParticle extends SingleQuadParticle {
 
     private Vector3 startPos;
     private Vector3 endPos;
@@ -27,7 +27,7 @@ public class GuardianChargeParticle extends TexturedParticle {
     private PhaseManager phaseManager;
     public TextureAtlasSprite sprite = DETextures.ORB_PARTICLE;
 
-    public GuardianChargeParticle(ClientWorld world, Vector3 startPos, Vector3 endPos, double angularPos, int life, PhaseManager phaseManager) {
+    public GuardianChargeParticle(ClientLevel world, Vector3 startPos, Vector3 endPos, double angularPos, int life, PhaseManager phaseManager) {
         super(world, startPos.x, startPos.y, startPos.z);
         this.startPos = startPos;
         this.endPos = endPos;
@@ -56,21 +56,21 @@ public class GuardianChargeParticle extends TexturedParticle {
     }
 
     @Override
-    public void render(IVertexBuilder builder, ActiveRenderInfo renderInfo, float partialTicks) {
+    public void render(VertexConsumer builder, Camera renderInfo, float partialTicks) {
         if (age + partialTicks > lifetime) return;;
-        Vector3d vector3d = renderInfo.getPosition();
+        Vec3 vector3d = renderInfo.getPosition();
         float anim = (age + partialTicks) / lifetime;
         Vector3 pos = MathUtils.interpolateVec3(startPos, endPos, anim);
-        float radius = (anim * 2) + (MathHelper.sin(anim * (float) Math.PI) * 5);
-        float x = (float)(pos.x - vector3d.x()) + (MathHelper.sin((float) (angularPos * Math.PI * 2) + anim) * radius);
+        float radius = (anim * 2) + (Mth.sin(anim * (float) Math.PI) * 5);
+        float x = (float)(pos.x - vector3d.x()) + (Mth.sin((float) (angularPos * Math.PI * 2) + anim) * radius);
         float y = (float)(pos.y - vector3d.y());
-        float z = (float)(pos.z - vector3d.z()) + (MathHelper.cos((float) (angularPos * Math.PI * 2) + anim) * radius);
+        float z = (float)(pos.z - vector3d.z()) + (Mth.cos((float) (angularPos * Math.PI * 2) + anim) * radius);
         Quaternion quaternion;
         if (this.roll == 0.0F) {
             quaternion = renderInfo.rotation();
         } else {
             quaternion = new Quaternion(renderInfo.rotation());
-            float f3 = MathHelper.lerp(partialTicks, this.oRoll, this.roll);
+            float f3 = Mth.lerp(partialTicks, this.oRoll, this.roll);
             quaternion.mul(Vector3f.ZP.rotation(f3));
         }
 
@@ -98,7 +98,7 @@ public class GuardianChargeParticle extends TexturedParticle {
     }
 
     @Override
-    public IParticleRenderType getRenderType() {
+    public ParticleRenderType getRenderType() {
         return DETextures.PARTICLE_SHEET_TRANSLUCENT;
     }
 

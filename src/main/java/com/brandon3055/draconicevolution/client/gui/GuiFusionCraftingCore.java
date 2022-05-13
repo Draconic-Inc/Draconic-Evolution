@@ -16,9 +16,9 @@ import com.brandon3055.draconicevolution.api.crafting.IFusionInjector;
 import com.brandon3055.draconicevolution.api.crafting.IFusionRecipe;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileFusionCraftingCore;
 import com.brandon3055.draconicevolution.inventory.ContainerFusionCraftingCore;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +33,7 @@ public class GuiFusionCraftingCore extends ModularGuiContainer<ContainerFusionCr
     protected GuiToolkit<GuiFusionCraftingCore> toolkit = new GuiToolkit<>(this, 218/*238*/, /*245*/220).setTranslationPrefix("gui.draconicevolution.fusion_craft");
     private GuiStackIcon stackIcon;
 
-    public GuiFusionCraftingCore(ContainerFusionCraftingCore container, PlayerInventory inv, ITextComponent titleIn) {
+    public GuiFusionCraftingCore(ContainerFusionCraftingCore container, Inventory inv, Component titleIn) {
         super(container, inv, titleIn);
         this.tile = container.tile;
     }
@@ -70,8 +70,8 @@ public class GuiFusionCraftingCore extends ModularGuiContainer<ContainerFusionCr
     }
 
     @Override
-    public void tick() {
-        super.tick();
+    protected void containerTick() {
+        super.containerTick();
         currentRecipe = tile.getLevel().getRecipeManager().getRecipeFor(DraconicAPI.FUSION_RECIPE_TYPE, tile, tile.getLevel()).orElse(null);
         if (currentRecipe == null) {
             stackIcon.setStack(ItemStack.EMPTY);

@@ -5,12 +5,12 @@ import com.brandon3055.brandonscore.utils.FacingUtils;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.blocks.Portal;
 import com.brandon3055.draconicevolution.init.DEContent;
-import net.minecraft.block.BlockState;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Direction.Axis;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -104,7 +104,7 @@ public class PortalHelper {
             BlockPos newPos = pos.relative(dir);
 
             //If we have already scanned this position then skip it.
-            if (scanResult.contains(newPos) || World.isOutsideBuildHeight(newPos)) {
+            if (scanResult.contains(newPos) || tile.getLevel().isOutsideBuildHeight(newPos)) {
                 continue;
             }
 
@@ -202,7 +202,7 @@ public class PortalHelper {
         if (tile.getLevel().isEmptyBlock(pos)) {
             return true;
         }
-        TileEntity te = tile.getLevel().getBlockEntity(pos);
+        BlockEntity te = tile.getLevel().getBlockEntity(pos);
         return te instanceof TilePortal && ((TilePortal) te).getControllerPos().equals(tile.getBlockPos());
     }
 
@@ -253,7 +253,7 @@ public class PortalHelper {
         BlockState portalState = DEContent.portal.defaultBlockState().setValue(Portal.AXIS, buildAxis);
         tile.getLevel().setBlockAndUpdate(nextPos, Portal.getPlacementState(portalState, tile.getLevel(), nextPos));
         builtList.add(nextPos);
-        TileEntity placedTile = tile.getLevel().getBlockEntity(nextPos);
+        BlockEntity placedTile = tile.getLevel().getBlockEntity(nextPos);
         if (placedTile instanceof TilePortal) {
             ((TilePortal) placedTile).setControllerPos(tile.getBlockPos());
         } else {

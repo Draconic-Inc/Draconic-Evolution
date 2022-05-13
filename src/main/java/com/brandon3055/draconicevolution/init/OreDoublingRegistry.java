@@ -1,11 +1,11 @@
 package com.brandon3055.draconicevolution.init;
 
-import net.minecraft.block.Blocks;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.crafting.FurnaceRecipe;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.world.World;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.SmeltingRecipe;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.wrapper.RecipeWrapper;
 
@@ -16,6 +16,7 @@ import java.util.Map;
 /**
  * Created by brandon3055 on 9/06/2017.
  */
+@Deprecated
 public class OreDoublingRegistry {
 //
     public static Map<String, ItemStack> oreRecipes = new HashMap<>();
@@ -76,7 +77,7 @@ public class OreDoublingRegistry {
         stackToStackRecipes.put(input, result);
     }
 
-    public static ItemStack getDoubledSmeltingResult(ItemStack stack, World world) {
+    public static ItemStack getDoubledSmeltingResult(ItemStack stack, Level world) {
         if (stack.isEmpty()) {
             return ItemStack.EMPTY;
         }
@@ -89,12 +90,12 @@ public class OreDoublingRegistry {
             return stackToStackRecipes.get(stack);
         }
 
-        FurnaceRecipe recipe = world.getRecipeManager().getRecipeFor(IRecipeType.SMELTING, new RecipeWrapper(new Wrap(stack)), world).orElse(null);
+        SmeltingRecipe recipe = world.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new RecipeWrapper(new Wrap(stack)), world).orElse(null);
         return recipe == null ? ItemStack.EMPTY : recipe.assemble(new RecipeWrapper(new Wrap(stack)));
     }
 
-    public static ItemStack getSmeltingResult(ItemStack stack, World world) {
-        FurnaceRecipe recipe = world.getRecipeManager().getRecipeFor(IRecipeType.SMELTING, new RecipeWrapper(new Wrap(stack)), world).orElse(null);
+    public static ItemStack getSmeltingResult(ItemStack stack, Level world) {
+        SmeltingRecipe recipe = world.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new RecipeWrapper(new Wrap(stack)), world).orElse(null);
         return recipe == null ? ItemStack.EMPTY : recipe.assemble(new RecipeWrapper(new Wrap(stack)));
     }
 

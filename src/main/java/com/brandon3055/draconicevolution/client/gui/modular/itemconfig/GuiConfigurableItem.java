@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.client.gui.modular.itemconfig;
 
 import codechicken.lib.math.MathHelper;
+import com.brandon3055.brandonscore.api.render.GuiHelper;
 import com.brandon3055.brandonscore.client.BCSprites;
 import com.brandon3055.brandonscore.client.gui.GuiToolkit;
 import com.brandon3055.brandonscore.client.gui.HudConfigGui;
@@ -15,6 +16,7 @@ import com.brandon3055.brandonscore.client.gui.modulargui.baseelements.GuiScroll
 import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiLabel;
 import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiTexture;
 import com.brandon3055.brandonscore.client.gui.modulargui.lib.GuiAlign;
+import com.brandon3055.brandonscore.client.render.RenderUtils;
 import com.brandon3055.brandonscore.client.utils.GuiHelperOld;
 import com.brandon3055.brandonscore.lib.Tripple;
 import com.brandon3055.draconicevolution.DEConfig;
@@ -24,19 +26,19 @@ import com.brandon3055.draconicevolution.api.config.ConfigProperty;
 import com.brandon3055.draconicevolution.client.keybinding.KeyBindings;
 import com.brandon3055.draconicevolution.inventory.ContainerConfigurableItem;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.client.util.InputMappings;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.LazyOptional;
 
 import java.util.ArrayList;
@@ -54,6 +56,7 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
     private static final int HIDDEN_SIZE = 15;
     private static final int EXPANDED_SIZE = 230;
     private static final int COLLAPSED_SIZE = 97;
+    private final Inventory inventory;
 
     private UUID selectedItem = null;
     private static float hideAnim = 0; //Hidden = 1
@@ -79,8 +82,9 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
     protected List<PropertyContainer> propertyContainers = new ArrayList<>();
     protected static List<PropertyContainer> keyBindCache = null;
 
-    public GuiConfigurableItem(ContainerConfigurableItem container, PlayerInventory inv, ITextComponent titleIn) {
+    public GuiConfigurableItem(ContainerConfigurableItem container, Inventory inv, Component titleIn) {
         super(container, inv, titleIn);
+        this.inventory = inv;
         this.toolkit = new GuiToolkit<>(this, 0, 0); //This size is irrelevant
         container.setOnInventoryChange(this::onInventoryUpdate);
         container.setSelectionListener(this::onItemSelected);
@@ -97,16 +101,16 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
                 int light = 0xFFfbe555;
                 int dark = 0xFFf45905;
 
-                IRenderTypeBuffer.Impl getter = IRenderTypeBuffer.immediate(Tessellator.getInstance().getBuilder());
+                MultiBufferSource.BufferSource getter = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
                 setZLevel(mainUI.displayZLevel);
-                GuiHelperOld.drawShadedRect(getter.getBuffer(GuiHelperOld.TRANS_TYPE), x - 1, y - 1, 18, 18, 1, 0, dark, light, GuiElement.midColour(light, dark), mainUI.getRenderZLevel());
+                GuiHelperOld.drawShadedRect(getter.getBuffer(GuiHelper.transColourType), x - 1, y - 1, 18, 18, 1, 0, dark, light, GuiElement.midColour(light, dark), mainUI.getRenderZLevel());
 
                 if (!advancedUI && provider.getProviderID().equals(selectedItem)) {
-                    GuiHelperOld.drawColouredRect(getter.getBuffer(GuiHelperOld.TRANS_TYPE), x, y, 16, 16, 0x80FF0000, mainUI.displayZLevel);
+                    GuiHelperOld.drawColouredRect(getter.getBuffer(GuiHelper.transColourType), x, y, 16, 16, 0x80FF0000, mainUI.displayZLevel);
                 } else if (DEConfig.configUiEnableVisualization && hoveredData != null) {
                     ConfigProperty prop = hoveredData.getPropIfApplicable(provider);
                     if (prop != null) {
-                        GuiHelperOld.drawColouredRect(getter.getBuffer(GuiHelperOld.TRANS_TYPE), x, y, 16, 16, hoveredData.doesDataMatch(prop) ? 0x8000FF00 : 0x80ff9100, 0);
+                        GuiHelperOld.drawColouredRect(getter.getBuffer(GuiHelper.transColourType), x, y, 16, 16, hoveredData.doesDataMatch(prop) ? 0x8000FF00 : 0x80ff9100, 0);
                     }
                 }
                 getter.endBatch();
@@ -120,15 +124,15 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
         }
     }
 
-    private void drawOverlay(int x, int y, int colour, boolean occluded) {
-        occluded = true;
-        RenderSystem.colorMask(true, true, true, false);
-        if (occluded) RenderSystem.enableDepthTest();
-        else RenderSystem.disableDepthTest();
-        GuiHelperOld.drawGradientRect(x, y, x + 16, y + 16, colour, colour, 1F, 300);
-        RenderSystem.colorMask(true, true, true, true);
-        if (!occluded) RenderSystem.enableDepthTest();
-    }
+//    private void drawOverlay(int x, int y, int colour, boolean occluded) {
+//        occluded = true;
+//        RenderSystem.colorMask(true, true, true, false);
+//        if (occluded) RenderSystem.enableDepthTest();
+//        else RenderSystem.disableDepthTest();
+//        GuiHelperOld.drawGradientRect(x, y, x + 16, y + 16, colour, colour, 1F, 300);
+//        RenderSystem.colorMask(true, true, true, true);
+//        if (!occluded) RenderSystem.enableDepthTest();
+//    }
 
     @Override
     public void addElements(GuiElementManager manager) {
@@ -404,7 +408,7 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
     }
 
     @Override
-    public void render(MatrixStack mStack, int mouseX, int mouseY, float partialTicks) {
+    public void render(PoseStack mStack, int mouseX, int mouseY, float partialTicks) {
         if ((isFullSize() ? 1 : 0) != resizeAnim || (advancedUI ? 0 : 1) != rePosAnim || (isUIHidden() ? 1 : 0) != hideAnim) {
             resizeAnim = MathHelper.clip(MathHelper.approachLinear(resizeAnim, (isFullSize() ? 1 : 0), 0.15F * partialTicks), 0, 1);
             hideAnim = MathHelper.clip(MathHelper.approachLinear(hideAnim, (isUIHidden() ? 1 : 0), 0.15F * partialTicks), 0, 1);
@@ -417,7 +421,7 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
     }
 
     @Override
-    public void tick() {
+    public void containerTick() {
         hoveredData = null;
         hoveredProvider = null;
         if (DEConfig.configUiEnableVisualization) {
@@ -432,8 +436,8 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
         }
 
         if (!bindReleased) {
-            InputMappings.Input bind = KeyBindings.toolConfig.getKey();
-            if (!InputMappings.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), bind.getValue())) {
+            InputConstants.Key bind = KeyBindings.toolConfig.getKey();
+            if (!InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), bind.getValue())) {
                 if (closeOnRelease) {
                     minecraft.player.closeContainer();
                     removed();
@@ -446,7 +450,7 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
             holdTimer++;
         }
 
-        super.tick();
+        super.containerTick();
     }
 
     @Override
@@ -473,7 +477,7 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
             return true;
         }
 
-        InputMappings.Input input = InputMappings.getKey(keyCode, scanCode);
+        InputConstants.Key input = InputConstants.getKey(keyCode, scanCode);
         List<PropertyContainer> targets = propertyContainers.stream()
                 .filter(e -> e.isPreset)
                 .filter(e -> !e.boundKey.isEmpty())
@@ -502,13 +506,13 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
         if (Minecraft.getInstance().screen instanceof GuiConfigurableItem) {
             return;
         }
-        InputMappings.Input input = InputMappings.getKey(keyCode, scanCode);
+        InputConstants.Key input = InputConstants.getKey(keyCode, scanCode);
         if (keyBindCache == null) {
             keyBindCache = new ArrayList<>();
-            CompoundNBT nbt = ItemConfigDataHandler.retrieveData();
+            CompoundTag nbt = ItemConfigDataHandler.retrieveData();
             List<PropertyContainer> containers = nbt.getList("property_containers", 10)
                     .stream()
-                    .map(e -> (CompoundNBT) e)
+                    .map(e -> (CompoundTag) e)
                     .map(e -> PropertyContainer.deserialize(null, e))
                     .collect(Collectors.toList());
             containers.stream()
@@ -529,14 +533,14 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
 
 
     private void loadPropertyConfig() {
-        CompoundNBT nbt = ItemConfigDataHandler.retrieveData();
+        CompoundTag nbt = ItemConfigDataHandler.retrieveData();
         advancedUI = nbt.getBoolean("advanced");
         hideUI = nbt.getBoolean("hidden");
         propertyContainers.forEach(advancedContainer::removeChild);
         propertyContainers.clear();
         propertyContainers.addAll(nbt.getList("property_containers", 10)
                 .stream()
-                .map(e -> (CompoundNBT) e)
+                .map(e -> (CompoundTag) e)
                 .map(e -> PropertyContainer.deserialize(this, e))
                 .collect(Collectors.toList())
         );
@@ -550,13 +554,13 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
 
     protected void savePropertyConfig() {
         keyBindCache = null;
-        CompoundNBT nbt = new CompoundNBT();
+        CompoundTag nbt = new CompoundTag();
         nbt.putBoolean("advanced", advancedUI);
         nbt.putBoolean("hidden", hideUI);
         nbt.put("property_containers", propertyContainers
                 .stream()
                 .map(PropertyContainer::serialize)
-                .collect(Collectors.toCollection(ListNBT::new))
+                .collect(Collectors.toCollection(ListTag::new))
         );
         ItemConfigDataHandler.saveData(nbt);
     }
@@ -583,7 +587,10 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
                 float offset = (tick / 10F) * 8;
                 RenderSystem.colorMask(true, true, true, false);
                 RenderSystem.disableDepthTest();
-                GuiHelperOld.drawGradientRect(x + offset, y + offset, x + 16 - offset, y + 16 - offset, 0x8000FFFF, 0x8000FFFF, 1F, 300);
+                MultiBufferSource source = RenderUtils.getTypeBuffer();
+                PoseStack poseStack = new PoseStack();
+                poseStack.translate(0, 0, 300);
+                GuiHelper.drawGradientRect(source, poseStack, x + offset, y + offset, x + 16 - offset, y + 16 - offset, 0x8000FFFF, 0x8000FFFF);
                 RenderSystem.colorMask(true, true, true, true);
                 RenderSystem.enableDepthTest();
             }

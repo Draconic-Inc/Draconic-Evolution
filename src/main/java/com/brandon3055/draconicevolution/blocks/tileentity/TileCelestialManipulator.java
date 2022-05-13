@@ -18,18 +18,18 @@ import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.Tesselator;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.storage.IServerWorldInfo;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ServerLevelData;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.opengl.GL11;
@@ -40,7 +40,7 @@ import java.util.List;
 /**
  * Created by brandon3055 on 28/09/2016.
  */
-public class TileCelestialManipulator extends TileBCore implements ITickableTileEntity, IChangeListener {
+public class TileCelestialManipulator extends TileBCore implements IChangeListener {
 
     public final ManagedBool weatherMode = register(new ManagedBool("weather_mode", true, DataFlags.SAVE_NBT_SYNC_TILE));
     public final ManagedBool active = register(new ManagedBool("active", DataFlags.SAVE_NBT_SYNC_TILE));
@@ -56,8 +56,8 @@ public class TileCelestialManipulator extends TileBCore implements ITickableTile
 
     public OPStorage opStorage = new OPStorage(8000000, 4000000, 4000000);
 
-    public TileCelestialManipulator() {
-        super(DEContent.tile_celestial_manipulator);
+    public TileCelestialManipulator(BlockPos pos, BlockState state) {
+        super(DEContent.tile_celestial_manipulator, pos, state);
         capManager.setManaged("energy", CapabilityOP.OP, opStorage).saveBoth().syncContainer();
     }
 
@@ -69,20 +69,18 @@ public class TileCelestialManipulator extends TileBCore implements ITickableTile
             timer++;
             if (level.isClientSide) {
                 updateWeatherEffects();
-            }
-            else {
+            } else {
                 if (timer >= 230) {
                     timer = 0;
                     weatherToggleRunning.set(false);
                     level.getLevelData().setRaining(rain);
-                    ((IServerWorldInfo)level.getLevelData()).setThundering(storm);
+                    ((ServerLevelData) level.getLevelData()).setThundering(storm);
                     int time = (10 * 60 * 20) + level.random.nextInt(20 * 60 * 20);
-                    ((IServerWorldInfo)level.getLevelData()).setRainTime(rain ? time : 0);
-                    ((IServerWorldInfo)level.getLevelData()).setClearWeatherTime(rain ? 0 : time);
+                    ((ServerLevelData) level.getLevelData()).setRainTime(rain ? time : 0);
+                    ((ServerLevelData) level.getLevelData()).setClearWeatherTime(rain ? 0 : time);
                 }
             }
-        }
-        else if (timeWarpRunning.get()) {
+        } else if (timeWarpRunning.get()) {
             timer++;
             if (level.isClientSide) {
                 updateSunEffect();
@@ -97,7 +95,7 @@ public class TileCelestialManipulator extends TileBCore implements ITickableTile
                     int extracted = opStorage.extractEnergy(16000, true);
                     int ticks = extracted / 320;
                     opStorage.extractEnergy(ticks * 320, false);
-                    ((IServerWorldInfo)level.getLevelData()).setGameTime(level.getGameTime() + ticks); //ToDo test time adjustment. May need world.setDayTime();
+                    ((ServerLevelData) level.getLevelData()).setGameTime(level.getGameTime() + ticks); //ToDo test time adjustment. May need world.setDayTime();
                 }
 
                 if (!level.isClientSide) {
@@ -106,8 +104,7 @@ public class TileCelestialManipulator extends TileBCore implements ITickableTile
                     }
                 }
             }
-        }
-        else if (timeWarpStopping.get()) {
+        } else if (timeWarpStopping.get()) {
             if (timer > 100) {
                 timer = 100;
             }
@@ -119,8 +116,7 @@ public class TileCelestialManipulator extends TileBCore implements ITickableTile
 
             if (level.isClientSide && timer >= 0) {
                 updateSunEffect();
-            }
-            else if (level.isClientSide) {
+            } else if (level.isClientSide) {
                 if (effects != null) {
                     effects.clear();
                 }
@@ -129,11 +125,9 @@ public class TileCelestialManipulator extends TileBCore implements ITickableTile
                     sound = null;
                 }
             }
-        }
-        else if (active.get()) {
+        } else if (active.get()) {
             active.set(false);
-        }
-        else if (level.isClientSide) {
+        } else if (level.isClientSide) {
             standbyParticleEffect();
         }
     }
@@ -169,11 +163,10 @@ public class TileCelestialManipulator extends TileBCore implements ITickableTile
 
 
     @Override
-    public void receivePacketFromClient(MCDataInput data, ServerPlayerEntity client, int id) {
+    public void receivePacketFromClient(MCDataInput data, ServerPlayer client, int id) {
         if (id == 0) {
             handleInteract(data.readString(), client);
-        }
-        else if (id == 1) {
+        } else if (id == 1) {
             int intValue = data.readInt();
             if (intValue >= 0 && intValue <= 9) {
                 rsMode.set((byte) intValue);
@@ -181,14 +174,14 @@ public class TileCelestialManipulator extends TileBCore implements ITickableTile
         }
     }
 
-    public void handleInteract(String action, PlayerEntity player) {
+    public void handleInteract(String action, Player player) {
         if (action.endsWith("STOP") && active.get() && timeWarpRunning.get()) {
             stopTimeWarp();
             return;
         }
 
         if (active.get()) {
-            sendMessage(new TranslationTextComponent("msg.de.alreadyRunning.txt"), player);
+            sendMessage(new TranslatableComponent("msg.de.alreadyRunning.txt"), player);
             return;
         }
 
@@ -201,11 +194,11 @@ public class TileCelestialManipulator extends TileBCore implements ITickableTile
                 return;
             case "STOP_RAIN":
                 if (!level.isRaining()) {
-                    sendMessage(new TranslationTextComponent("msg.de.notRaining.txt"), player);
+                    sendMessage(new TranslatableComponent("msg.de.notRaining.txt"), player);
                     return;
                 }
                 if (opStorage.getEnergyStored() < 256000) {
-                    sendMessage(new TranslationTextComponent("msg.de.insufficientPower.txt").append(" (256000RF)"), player);
+                    sendMessage(new TranslatableComponent("msg.de.insufficientPower.txt").append(" (256000RF)"), player);
                     return;
                 }
                 opStorage.modifyEnergyStored(-256000);
@@ -214,11 +207,11 @@ public class TileCelestialManipulator extends TileBCore implements ITickableTile
                 return;
             case "START_RAIN":
                 if (level.isRaining()) {
-                    sendMessage(new TranslationTextComponent("msg.de.alreadyRaining.txt"), player);
+                    sendMessage(new TranslatableComponent("msg.de.alreadyRaining.txt"), player);
                     return;
                 }
                 if (opStorage.getEnergyStored() < 256000) {
-                    sendMessage(new TranslationTextComponent("msg.de.insufficientPower.txt").append(" (256000RF)"), player);
+                    sendMessage(new TranslatableComponent("msg.de.insufficientPower.txt").append(" (256000RF)"), player);
                     return;
                 }
                 opStorage.modifyEnergyStored(-256000);
@@ -227,11 +220,11 @@ public class TileCelestialManipulator extends TileBCore implements ITickableTile
                 return;
             case "START_STORM":
                 if (level.isRaining() && level.isThundering()) {
-                    sendMessage(new TranslationTextComponent("msg.de.alreadyStorm.txt"), player);
+                    sendMessage(new TranslatableComponent("msg.de.alreadyStorm.txt"), player);
                     return;
                 }
                 if (opStorage.getEnergyStored() < 384000) {
-                    sendMessage(new TranslationTextComponent("msg.de.insufficientPower.txt").append(" (384000RF)"), player);
+                    sendMessage(new TranslatableComponent("msg.de.insufficientPower.txt").append(" (384000RF)"), player);
                     return;
                 }
                 opStorage.modifyEnergyStored(-384000);
@@ -269,7 +262,7 @@ public class TileCelestialManipulator extends TileBCore implements ITickableTile
         }
     }
 
-    private void sendMessage(ITextComponent message, PlayerEntity player) {
+    private void sendMessage(Component message, Player player) {
         if (player != null) {
             player.sendMessage(message, Util.NIL_UUID);
         }
@@ -303,7 +296,7 @@ public class TileCelestialManipulator extends TileBCore implements ITickableTile
         sound = new CelestialModifierSound(DESounds.electricBuzz, worldPosition);
         sound.updateSound(vec, 0.01F, 0.5F);
         Minecraft.getInstance().getSoundManager().play(sound);
-        level.playLocalSound(vec.x, vec.y, vec.z, DESounds.fusionComplete, SoundCategory.BLOCKS, getSoundVolume(), 0.5F, false);
+        level.playLocalSound(vec.x, vec.y, vec.z, DESounds.fusionComplete, SoundSource.BLOCKS, getSoundVolume(), 0.5F, false);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -335,10 +328,9 @@ public class TileCelestialManipulator extends TileBCore implements ITickableTile
         Vec3D effectFocus = Vec3D.getCenter(worldPosition).add(0, height, 0);
 
         if (timer == riseEnd) {
-            level.playLocalSound(effectFocus.x, effectFocus.y, effectFocus.z, DESounds.fusionComplete, SoundCategory.BLOCKS, 1F, 1F, false);
-        }
-        else if (timer == ascendStart) {
-            level.playLocalSound(effectFocus.x, effectFocus.y, effectFocus.z, DESounds.fusionComplete, SoundCategory.BLOCKS, 1F, 2F, false);
+            level.playLocalSound(effectFocus.x, effectFocus.y, effectFocus.z, DESounds.fusionComplete, SoundSource.BLOCKS, 1F, 1F, false);
+        } else if (timer == ascendStart) {
+            level.playLocalSound(effectFocus.x, effectFocus.y, effectFocus.z, DESounds.fusionComplete, SoundSource.BLOCKS, 1F, 2F, false);
             for (int i = 0; i < 100; i++) {
                 try {
 //                    SubParticle particle = new SubParticle(world, effects.get(world.rand.nextInt(effects.size())).pos);
@@ -378,7 +370,7 @@ public class TileCelestialManipulator extends TileBCore implements ITickableTile
         }
 
         if (timer >= 220) {
-            level.playLocalSound(effectFocus.x, effectFocus.y, effectFocus.z, DESounds.boom, SoundCategory.BLOCKS, DEOldConfig.disableLoudCelestialManipulator ? 1 : 100, 1F, false);
+            level.playLocalSound(effectFocus.x, effectFocus.y, effectFocus.z, DESounds.boom, SoundSource.BLOCKS, DEOldConfig.disableLoudCelestialManipulator ? 1 : 100, 1F, false);
             timer = 0;
             weatherToggleRunning.set(false);
             effects.clear();
@@ -479,8 +471,7 @@ public class TileCelestialManipulator extends TileBCore implements ITickableTile
                 effect.red = 0.9F;
                 effect.green = 0.5F;
                 effect.blue = 0.1F;
-            }
-            else {
+            } else {
                 effect.red = 0.3F;
                 effect.green = 0.2F;
                 effect.blue = 1;
@@ -511,35 +502,34 @@ public class TileCelestialManipulator extends TileBCore implements ITickableTile
     public void renderEffects(float partialTicks) {
         if (effects != null) {
             if (weatherToggleRunning.get()) {
-                ResourceHelperDE.bindTexture(DETextures.FUSION_PARTICLE);
-            }
-            else {
-                ResourceHelperDE.bindTexture(DETextures.CELESTIAL_PARTICLE);
-            }
-
-            Tessellator tessellator = Tessellator.getInstance();
-
-            //Pre-Render
-            RenderSystem.enableBlend();
-            RenderSystem.disableLighting();
-            RenderSystem.depthMask(true);
-            RenderSystem.alphaFunc(GL11.GL_GREATER, 0F);
-
-            for (EffectTrackerCelestialManipulator effect : effects) {
-                effect.renderEffect(tessellator, partialTicks);
+//                ResourceHelperDE.bindTexture(DETextures.FUSION_PARTICLE);
+            } else {
+//                ResourceHelperDE.bindTexture(DETextures.CELESTIAL_PARTICLE);
             }
 
-            //Post-Render
-            RenderSystem.disableBlend();
-            RenderSystem.enableLighting();
-            RenderSystem.depthMask(true);
-            RenderSystem.alphaFunc(GL11.GL_GREATER, 0.1F);
+            Tesselator tessellator = Tesselator.getInstance();
+
+//            //Pre-Render
+//            RenderSystem.enableBlend();
+//            RenderSystem.disableLighting();
+//            RenderSystem.depthMask(true);
+//            RenderSystem.alphaFunc(GL11.GL_GREATER, 0F);
+//
+//            for (EffectTrackerCelestialManipulator effect : effects) {
+//                effect.renderEffect(tessellator, partialTicks);
+//            }
+//
+//            //Post-Render
+//            RenderSystem.disableBlend();
+//            RenderSystem.enableLighting();
+//            RenderSystem.depthMask(true);
+//            RenderSystem.alphaFunc(GL11.GL_GREATER, 0.1F);
         }
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public AxisAlignedBB getRenderBoundingBox() {
+    public AABB getRenderBoundingBox() {
         return INFINITE_EXTENT_AABB;
     }
 
@@ -554,8 +544,7 @@ public class TileCelestialManipulator extends TileBCore implements ITickableTile
                 redstoneSignal.set(true);
                 handleInteract(ACTIONS[rsMode.get()], null);
             }
-        }
-        else {
+        } else {
             if (redstoneSignal.get()) {
                 redstoneSignal.set(false);
                 if (timeWarpRunning.get() && rsMode.get() == 9) {

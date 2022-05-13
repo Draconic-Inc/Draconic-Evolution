@@ -15,11 +15,11 @@ import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.blocks.machines.EnergyPylon;
 import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.init.DEContent;
-import net.minecraft.block.Blocks;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.chunk.Chunk;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -30,7 +30,7 @@ import java.util.Random;
 /**
  * Created by brandon3055 on 30/3/2016.
  */
-public class TileEnergyPylon extends TileBCore implements ITickableTileEntity, IMultiBlockPart, IExtendedRFStorage {
+public class TileEnergyPylon extends TileBCore implements IMultiBlockPart, IExtendedRFStorage {
     public final ManagedBool isOutputMode = register(new ManagedBool("is_output_mode", DataFlags.SAVE_NBT_SYNC_TILE, DataFlags.TRIGGER_UPDATE));
     public final ManagedBool structureValid = register(new ManagedBool("structure_valid", DataFlags.SAVE_NBT_SYNC_TILE, DataFlags.TRIGGER_UPDATE));
     public final ManagedVec3I coreOffset = register(new ManagedVec3I("core_offset", new Vec3I(0, -1, 0), DataFlags.SAVE_NBT_SYNC_TILE));
@@ -114,8 +114,8 @@ public class TileEnergyPylon extends TileBCore implements ITickableTileEntity, I
         }
     };
 
-    public TileEnergyPylon() {
-        super(DEContent.tile_energy_pylon);
+    public TileEnergyPylon(BlockPos pos, BlockState state) {
+        super(DEContent.tile_energy_pylon, pos, state);
         capManager.set(CapabilityOP.OP, opAdapter);
     }
 
@@ -164,16 +164,16 @@ public class TileEnergyPylon extends TileBCore implements ITickableTileEntity, I
     public TileEnergyCore getCore() {
         if (hasCoreLock.get()) {
             BlockPos corePos = worldPosition.subtract(coreOffset.get().getPos());
-            Chunk coreChunk = level.getChunkAt(corePos);
+            LevelChunk coreChunk = level.getChunkAt(corePos);
 
             if (!level.isAreaLoaded(corePos, 16)) {
                 core = null;
                 return null;
             }
 
-            TileEntity tileAtPos = coreChunk.getBlockEntity(corePos, Chunk.CreateEntityType.CHECK);
+            BlockEntity tileAtPos = coreChunk.getBlockEntity(corePos, LevelChunk.EntityCreationType.CHECK);
             if (tileAtPos == null || core == null || tileAtPos != core) {
-                TileEntity tile = level.getBlockEntity(corePos);
+                BlockEntity tile = level.getBlockEntity(corePos);
 
                 if (tile instanceof TileEnergyCore) {
                     core = (TileEnergyCore) tile;
@@ -195,7 +195,7 @@ public class TileEnergyPylon extends TileBCore implements ITickableTileEntity, I
 
         for (BlockPos blockPos : positions) {
             if (level.getBlockState(blockPos).getBlock() == DEContent.energy_core) {
-                TileEntity tile = level.getBlockEntity(blockPos);
+                BlockEntity tile = level.getBlockEntity(blockPos);
                 if (tile instanceof TileEnergyCore && ((TileEnergyCore) tile).active.get()) {
                     list.add(((TileEnergyCore) tile));
                 }
@@ -239,7 +239,7 @@ public class TileEnergyPylon extends TileBCore implements ITickableTileEntity, I
         if (!structureValid.get()) {
             if (level.getBlockState(worldPosition.offset(0, 1, 0)).getBlock() == Blocks.GLASS) {
                 level.setBlockAndUpdate(worldPosition.offset(0, 1, 0), DEContent.energy_core_structure.defaultBlockState());
-                TileEntity tile = level.getBlockEntity(worldPosition.offset(0, 1, 0));
+                BlockEntity tile = level.getBlockEntity(worldPosition.offset(0, 1, 0));
                 if (tile instanceof TileCoreStructure) {
                     ((TileCoreStructure) tile).blockName.set("minecraft:glass");
                     ((TileCoreStructure) tile).setController(this);
@@ -248,7 +248,7 @@ public class TileEnergyPylon extends TileBCore implements ITickableTileEntity, I
                 level.setBlockAndUpdate(worldPosition, level.getBlockState(worldPosition).setValue(EnergyPylon.FACING, "up"));
             } else if (level.getBlockState(worldPosition.offset(0, -1, 0)).getBlock() == Blocks.GLASS) {
                 level.setBlockAndUpdate(worldPosition.offset(0, -1, 0), DEContent.energy_core_structure.defaultBlockState());
-                TileEntity tile = level.getBlockEntity(worldPosition.offset(0, -1, 0));
+                BlockEntity tile = level.getBlockEntity(worldPosition.offset(0, -1, 0));
                 if (tile instanceof TileCoreStructure) {
                     ((TileCoreStructure) tile).blockName.set("minecraft:glass");
                     ((TileCoreStructure) tile).setController(this);
@@ -281,7 +281,7 @@ public class TileEnergyPylon extends TileBCore implements ITickableTileEntity, I
     }
 
     private boolean isGlass(BlockPos pos) {
-        TileEntity tile = level.getBlockEntity(pos);
+        BlockEntity tile = level.getBlockEntity(pos);
         return tile instanceof TileCoreStructure && ((TileCoreStructure) tile).blockName.get().equals("minecraft:glass");
     }
 

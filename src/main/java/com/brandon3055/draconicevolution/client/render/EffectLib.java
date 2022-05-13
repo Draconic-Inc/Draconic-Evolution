@@ -5,15 +5,15 @@ import codechicken.lib.vec.Quat;
 import codechicken.lib.vec.Rotation;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.utils.MathUtils;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.client.renderer.ActiveRenderInfo;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Vector3f;
+import net.minecraft.client.Camera;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.util.Mth;
 
 import java.util.Random;
 
@@ -44,7 +44,7 @@ public class EffectLib {
      * @param segTaper   Allows you to apply a positive or negative taper to each arc segment. (Default 0)
      * @param colour     The colour of the arc.
      */
-    public static void renderLightningP2P(MatrixStack mStack, IRenderTypeBuffer getter, Vector3 startPos, Vector3 endPos, int segCount, long randSeed, float scaleMod, float deflectMod, boolean autoScale, float segTaper, int colour) {
+    public static void renderLightningP2P(PoseStack mStack, MultiBufferSource getter, Vector3 startPos, Vector3 endPos, int segCount, long randSeed, float scaleMod, float deflectMod, boolean autoScale, float segTaper, int colour) {
         double height = endPos.y - startPos.y;
         float relScale = autoScale ? (float) height / 128F : 1F; //A scale value calculated by comparing the bolt height to that of vanilla lightning
         float segHeight = (float) height / segCount;
@@ -67,7 +67,7 @@ public class EffectLib {
         xOffSum -= (float) (endPos.x - startPos.x);
         zOffSum -= (float) (endPos.z - startPos.z);
 
-        IVertexBuilder builder = getter.getBuffer(RenderType.lightning());
+        VertexConsumer builder = getter.getBuffer(RenderType.lightning());
         Matrix4f matrix4f = mStack.last().pose();
 
         for (int layer = 0; layer < 4; ++layer) {
@@ -101,23 +101,23 @@ public class EffectLib {
     }
 
     /**
-     * This is the same as {@link #renderLightningP2P(MatrixStack, IRenderTypeBuffer, Vector3, Vector3, int, long, float, float, boolean, float, int)}
+     * This is the same as {@link #renderLightningP2P(PoseStack, MultiBufferSource, Vector3, Vector3, int, long, float, float, boolean, float, int)}
      * Except that it automatically applies the correct transformations in order to render the bolt in an ideal orientation.
      * This means you are free to use this between any two arbitrary points and the bolt will render correctly.
      * But this does come at the cost of increased overhead.
      *
-     * @see #renderLightningP2P(MatrixStack, IRenderTypeBuffer, Vector3, Vector3, int, long, float, float, boolean, float, int)
+     * @see #renderLightningP2P(PoseStack, MultiBufferSource, Vector3, Vector3, int, long, float, float, boolean, float, int)
      */
-    public static void renderLightningP2PRotate(MatrixStack mStack, IRenderTypeBuffer getter, Vector3 startPos, Vector3 endPos, int segCount, long randSeed, float scaleMod, float deflectMod, boolean autoScale, float segTaper, int colour) {
+    public static void renderLightningP2PRotate(PoseStack mStack, MultiBufferSource getter, Vector3 startPos, Vector3 endPos, int segCount, long randSeed, float scaleMod, float deflectMod, boolean autoScale, float segTaper, int colour) {
         mStack.pushPose();
         double length = MathUtils.distance(startPos, endPos);
         Vector3 virtualEndPos = startPos.copy().add(0, length, 0);
         Vector3 dirVec = endPos.copy();
         dirVec.subtract(startPos);
         dirVec.normalize();
-        float dirVecXZDist = MathHelper.sqrt(dirVec.x * dirVec.x + dirVec.z * dirVec.z);
-        float yRot = (float) (MathHelper.atan2(dirVec.x, dirVec.z) * (double) (180F / (float) Math.PI));
-        float xRot = (float) (MathHelper.atan2(dirVec.y, dirVecXZDist) * (double) (180F / (float) Math.PI));
+        double dirVecXZDist = Math.sqrt(dirVec.x * dirVec.x + dirVec.z * dirVec.z);
+        float yRot = (float) (Mth.atan2(dirVec.x, dirVec.z) * (double) (180F / (float) Math.PI));
+        float xRot = (float) (Mth.atan2(dirVec.y, dirVecXZDist) * (double) (180F / (float) Math.PI));
         mStack.translate(startPos.x, startPos.y, startPos.z);
         mStack.mulPose(Vector3f.YP.rotationDegrees(yRot - 90));
         mStack.mulPose(Vector3f.ZP.rotationDegrees(xRot - 90));
@@ -126,14 +126,14 @@ public class EffectLib {
         mStack.popPose();
     }
 
-    private static void addSegmentQuad(Matrix4f matrix4f, IVertexBuilder builder, float x1, float yOffset, float z1, int segIndex, float x2, float z2, float red, float green, float blue, float alpha, float offsetA, float offsetB, boolean invA, boolean invB, boolean invC, boolean invD, float segHeight) {
+    private static void addSegmentQuad(Matrix4f matrix4f, VertexConsumer builder, float x1, float yOffset, float z1, int segIndex, float x2, float z2, float red, float green, float blue, float alpha, float offsetA, float offsetB, boolean invA, boolean invB, boolean invC, boolean invD, float segHeight) {
         builder.vertex(matrix4f, x1 + (invA ? offsetB : -offsetB), yOffset + segIndex * segHeight, z1 + (invB ? offsetB : -offsetB)).color(red, green, blue, alpha).endVertex();
         builder.vertex(matrix4f, x2 + (invA ? offsetA : -offsetA), yOffset + (segIndex + 1F) * segHeight, z2 + (invB ? offsetA : -offsetA)).color(red, green, blue, alpha).endVertex();
         builder.vertex(matrix4f, x2 + (invC ? offsetA : -offsetA), yOffset + (segIndex + 1F) * segHeight, z2 + (invD ? offsetA : -offsetA)).color(red, green, blue, alpha).endVertex();
         builder.vertex(matrix4f, x1 + (invC ? offsetB : -offsetB), yOffset + segIndex * segHeight, z1 + (invD ? offsetB : -offsetB)).color(red, green, blue, alpha).endVertex();
     }
 
-    public static void drawParticle(ActiveRenderInfo renderInfo, IVertexBuilder builder, TextureAtlasSprite sprite, float x, float y, float z, float scale, int light) {
+    public static void drawParticle(Camera renderInfo, VertexConsumer builder, TextureAtlasSprite sprite, float x, float y, float z, float scale, int light) {
         Rotation rot = new Rotation(new Quat(renderInfo.rotation()));
         vectors[0].set(-1.0F, -1.0F, 0.0F).apply(rot).multiply(scale).add(x, y, z);
         vectors[1].set(-1.0F, 1.0F, 0.0F).apply(rot).multiply(scale).add(x, y, z);
@@ -150,7 +150,7 @@ public class EffectLib {
         builder.vertex(vectors[3].x, vectors[3].y, vectors[3].z).color(1F, 1F, 1F, 1F).uv(uMin, vMax).uv2(light).endVertex();
     }
 
-    public static void drawParticle(Rotation rotation, IVertexBuilder builder, TextureAtlasSprite sprite, float r, float g, float b, double x, double y, double z, float scale, int light) {
+    public static void drawParticle(Rotation rotation, VertexConsumer builder, TextureAtlasSprite sprite, float r, float g, float b, double x, double y, double z, float scale, int light) {
         vectors[0].set(-1.0F, -1.0F, 0.0F).apply(rotation).multiply(scale).add(x, y, z);
         vectors[1].set(-1.0F, 1.0F, 0.0F).apply(rotation).multiply(scale).add(x, y, z);
         vectors[2].set(1.0F, 1.0F, 0.0F).apply(rotation).multiply(scale).add(x, y, z);

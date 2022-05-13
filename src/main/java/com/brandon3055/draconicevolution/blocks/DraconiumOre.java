@@ -1,11 +1,11 @@
 package com.brandon3055.draconicevolution.blocks;
 
 import com.brandon3055.brandonscore.blocks.BlockBCore;
-import net.minecraft.block.BlockState;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.IWorldReader;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.Random;
 
@@ -20,8 +20,8 @@ public class DraconiumOre extends BlockBCore {
     }
 
     @Override
-    public int getExpDrop(BlockState state, IWorldReader world, BlockPos pos, int fortune, int silktouch) {
-        Random rand = world instanceof World ? ((World) world).random : new Random();
-        return MathHelper.nextInt(rand, 5, 12) * fortune;
+    public int getExpDrop(BlockState state, LevelReader world, BlockPos pos, int fortune, int silktouch) {
+        Random rand = world instanceof Level ? ((Level) world).random : new Random();
+        return Mth.nextInt(rand, 5, 12) * fortune;
     }
 }

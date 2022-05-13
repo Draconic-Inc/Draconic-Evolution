@@ -1,8 +1,8 @@
 package com.brandon3055.draconicevolution.api;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.util.math.vector.Vector2f;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.Vec2;
+import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
@@ -18,10 +18,10 @@ public interface DislocatorEndPoint {
      * @return The exact position to which an entity should be teleported when traveling to this end point. Or null if teleport can not proceed for some reason.
      */
     @Nullable
-    Vector3d getArrivalPos(UUID linkID);
+    Vec3 getArrivalPos(UUID linkID);
 
     @Nullable
-    default Vector2f getArrivalFacing(UUID linkID) {
+    default Vec2 getArrivalFacing(UUID linkID) {
         return null;
     }
 

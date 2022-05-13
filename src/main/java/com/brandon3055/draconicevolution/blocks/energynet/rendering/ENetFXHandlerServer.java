@@ -3,9 +3,9 @@ package com.brandon3055.draconicevolution.blocks.energynet.rendering;
 import com.brandon3055.draconicevolution.api.energy.IENetEffectTile;
 import com.brandon3055.draconicevolution.network.CrystalUpdateBatcher;
 import com.brandon3055.draconicevolution.network.CrystalUpdateBatcher.BatchedCrystalUpdate;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,7 +13,7 @@ import java.util.Map;
 /**
  * Created by brandon3055 on 29/11/2016.
  */
-public class ENetFXHandlerServer<T extends TileEntity & IENetEffectTile> extends ENetFXHandler<T> {
+public class ENetFXHandlerServer<T extends BlockEntity & IENetEffectTile> extends ENetFXHandler<T> {
 
     private Map<Byte, Byte> lastTickIndexToFlow = new HashMap<>();
     private long lastTickEnergy = -1;
@@ -51,7 +51,7 @@ public class ENetFXHandlerServer<T extends TileEntity & IENetEffectTile> extends
     }
 
     private void queUpdate(BatchedCrystalUpdate update) {
-        ServerWorld serverWorld = ((ServerWorld) tile.getLevel());
+        ServerLevel serverWorld = ((ServerLevel) tile.getLevel());
 
         if (serverWorld != null) {
             serverWorld.getChunkSource().chunkMap.getPlayers(new ChunkPos(tile.getBlockPos()), false).forEach(player -> CrystalUpdateBatcher.queData(update, player));

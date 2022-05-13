@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.api;
 
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * Created by brandon3055 on 31/05/2016.

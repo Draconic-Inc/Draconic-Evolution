@@ -4,9 +4,9 @@ import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
 import codechicken.lib.math.MathHelper;
 import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.PropertyData;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -28,7 +28,7 @@ public class DecimalProperty extends ConfigProperty {
         this.value = this.defaultValue = defaultValue;
     }
 
-    public DecimalProperty(String name, ITextComponent displayName, double defaultValue) {
+    public DecimalProperty(String name, Component displayName, double defaultValue) {
         super(name, displayName);
         this.value = this.defaultValue = defaultValue;
     }
@@ -131,8 +131,8 @@ public class DecimalProperty extends ConfigProperty {
     }
 
     @Override
-    public CompoundNBT serializeNBT() {
-        CompoundNBT nbt = super.serializeNBT();
+    public CompoundTag serializeNBT() {
+        CompoundTag nbt = super.serializeNBT();
 //        if (this.value != this.defaultValue) {
             nbt.putDouble("value", value);
 //        }
@@ -140,7 +140,7 @@ public class DecimalProperty extends ConfigProperty {
     }
 
     @Override
-    public void deserializeNBT(CompoundNBT nbt) {
+    public void deserializeNBT(CompoundTag nbt) {
         if (nbt.contains("value")) {
             value = nbt.getDouble("value");
         }

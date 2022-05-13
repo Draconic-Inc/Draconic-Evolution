@@ -5,21 +5,24 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.init.DEModules;
 import com.brandon3055.draconicevolution.init.DETags;
-import net.minecraft.data.*;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.potion.PotionUtils;
-import net.minecraft.potion.Potions;
-import net.minecraft.tags.ITag;
+import net.minecraft.advancements.critereon.InventoryChangeTrigger;
+import net.minecraft.advancements.critereon.ItemPredicate;
+import net.minecraft.data.DataGenerator;
+import net.minecraft.data.HashCache;
+import net.minecraft.data.recipes.*;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
-import java.io.IOException;
 import java.util.function.Consumer;
 
 /**
@@ -32,7 +35,7 @@ public class RecipeGenerator extends RecipeProvider {
     }
 
     @Override
-    protected void buildShapelessRecipes(Consumer<IFinishedRecipe> consumer) {
+    protected void buildCraftingRecipes(Consumer<FinishedRecipe> consumer) {
         components(consumer);
 
         compressDecompress(consumer);
@@ -57,10 +60,10 @@ public class RecipeGenerator extends RecipeProvider {
                 .build(consumer);
     }
 
-    private static void components(Consumer<IFinishedRecipe> consumer) {
+    private static void components(Consumer<FinishedRecipe> consumer) {
 
-        CookingRecipeBuilder.smelting(Ingredient.of(DETags.Items.DUSTS_DRACONIUM), DEContent.ingot_draconium, 0, 200).unlockedBy("has_draconium_dust", has(DETags.Items.DUSTS_DRACONIUM)).save(consumer, folder("components", DEContent.ingot_draconium));
-        CookingRecipeBuilder.smelting(Ingredient.of(DETags.Items.ORES_DRACONIUM), DEContent.ingot_draconium, 1, 200).unlockedBy("has_draconium_ore", has(DETags.Items.ORES_DRACONIUM)).save(consumer);
+        SimpleCookingRecipeBuilder.smelting(Ingredient.of(DETags.Items.DUSTS_DRACONIUM), DEContent.ingot_draconium, 0, 200).unlockedBy("has_draconium_dust", has(DETags.Items.DUSTS_DRACONIUM)).save(consumer, folder("components", DEContent.ingot_draconium));
+        SimpleCookingRecipeBuilder.smelting(Ingredient.of(DETags.Items.ORES_DRACONIUM), DEContent.ingot_draconium, 1, 200).unlockedBy("has_draconium_ore", has(DETags.Items.ORES_DRACONIUM)).save(consumer);
 
         ShapedRecipeBuilder.shaped(DEContent.core_draconium)
                 .pattern("ABA")
@@ -145,7 +148,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .save(consumer, folder("components", DEContent.energy_core_chaotic));
     }
 
-    private static void compressDecompress(Consumer<IFinishedRecipe> consumer) {
+    private static void compressDecompress(Consumer<FinishedRecipe> consumer) {
         compress3x3(DEContent.ingot_draconium, DETags.Items.NUGGETS_DRACONIUM, "nugget_draconium", consumer);
         compress3x3(DEContent.ingot_draconium_awakened, DETags.Items.NUGGETS_DRACONIUM_AWAKENED, "nugget_draconium_awakened", consumer);
         compress3x3(DEContent.block_draconium, DETags.Items.INGOTS_DRACONIUM, "ingot_draconium", consumer);
@@ -164,7 +167,7 @@ public class RecipeGenerator extends RecipeProvider {
         compress3x3(DEContent.chaos_frag_medium, DEContent.chaos_frag_small, consumer);
     }
 
-    private static void machines(Consumer<IFinishedRecipe> consumer) {
+    private static void machines(Consumer<FinishedRecipe> consumer) {
         ShapedRecipeBuilder.shaped(DEContent.crafting_core)
                 .pattern("ABA")
                 .pattern("BCB")
@@ -300,11 +303,9 @@ public class RecipeGenerator extends RecipeProvider {
                 .save(consumer);
 
 
-
-
     }
 
-    private static void energy(Consumer<IFinishedRecipe> consumer) {
+    private static void energy(Consumer<FinishedRecipe> consumer) {
         ShapedRecipeBuilder.shaped(DEContent.energy_core)
                 .pattern("AAA")
                 .pattern("BCB")
@@ -547,7 +548,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .save(consumer, "draconicevolution:crystal_io_draconic_combine");
     }
 
-    private static void tools(Consumer<IFinishedRecipe> consumer) {
+    private static void tools(Consumer<FinishedRecipe> consumer) {
         ShapedRecipeBuilder.shaped(DEContent.dislocator)
                 .pattern("ABA")
                 .pattern("BCB")
@@ -610,7 +611,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .save(consumer);
     }
 
-    private static void equipment(Consumer<IFinishedRecipe> consumer) {
+    private static void equipment(Consumer<FinishedRecipe> consumer) {
         //Capacitors
         FusionRecipeBuilder.fusionRecipe(DEContent.capacitor_wyvern)
                 .catalyst(DEContent.core_wyvern)
@@ -947,7 +948,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .ingredient(DEContent.energy_core_chaotic)
                 .ingredient(DEContent.chaos_frag_large)
                 .ingredient(DEContent.energy_core_chaotic)
-                .build(consumer, folder("tools", "alt_" + DEContent.staff_chaotic.getItem().getRegistryName().getPath()));
+                .build(consumer, folder("tools", "alt_" + DEContent.staff_chaotic.getRegistryName().getPath()));
 
         //Chestpiece
         FusionRecipeBuilder.fusionRecipe(DEContent.chestpiece_wyvern)
@@ -991,7 +992,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .build(consumer, folder("tools", DEContent.chestpiece_chaotic));
     }
 
-    private static void modules(Consumer<IFinishedRecipe> consumer) {
+    private static void modules(Consumer<FinishedRecipe> consumer) {
         ShapedRecipeBuilder.shaped(DEContent.module_core)
                 .pattern("IRI")
                 .pattern("GDG")
@@ -1743,7 +1744,7 @@ public class RecipeGenerator extends RecipeProvider {
     }
 
 
-    private static void unsorted(Consumer<IFinishedRecipe> consumer) {
+    private static void unsorted(Consumer<FinishedRecipe> consumer) {
 
         ShapedRecipeBuilder.shaped(DEContent.infused_obsidian)
                 .pattern("ABA")
@@ -1828,7 +1829,7 @@ public class RecipeGenerator extends RecipeProvider {
 
     }
 
-    private static void compress3x3(IItemProvider output, IItemProvider input, Consumer<IFinishedRecipe> consumer) {
+    private static void compress3x3(ItemLike output, ItemLike input, Consumer<FinishedRecipe> consumer) {
         ResourceLocation name = output.asItem().getRegistryName();
         ShapedRecipeBuilder.shaped(output)
                 .pattern("###")
@@ -1839,7 +1840,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .save(consumer, new ResourceLocation(name.getNamespace(), "compress/" + name.getPath()));
     }
 
-    private static void compress3x3(IItemProvider output, ITag<Item> input, String inputName, Consumer<IFinishedRecipe> consumer) {
+    private static void compress3x3(ItemLike output, TagKey<Item> input, String inputName, Consumer<FinishedRecipe> consumer) {
         ResourceLocation name = output.asItem().getRegistryName();
         ShapedRecipeBuilder.shaped(output)
                 .pattern("###")
@@ -1850,7 +1851,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .save(consumer, new ResourceLocation(name.getNamespace(), "compress/" + name.getPath()));
     }
 
-    private static void compress2x2(IItemProvider output, IItemProvider input, Consumer<IFinishedRecipe> consumer) {
+    private static void compress2x2(ItemLike output, ItemLike input, Consumer<FinishedRecipe> consumer) {
         ResourceLocation name = output.asItem().getRegistryName();
         ShapedRecipeBuilder.shaped(output)
                 .pattern("###")
@@ -1861,7 +1862,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .save(consumer, new ResourceLocation(name.getNamespace(), "compress/" + name.getPath()));
     }
 
-    private static void deCompress(IItemProvider output, int count, IItemProvider from, Consumer<IFinishedRecipe> consumer) {
+    private static void deCompress(ItemLike output, int count, ItemLike from, Consumer<FinishedRecipe> consumer) {
         ResourceLocation name = output.asItem().getRegistryName();
         ShapelessRecipeBuilder.shapeless(output, count)
                 .requires(from)
@@ -1869,7 +1870,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .save(consumer, new ResourceLocation(name.getNamespace(), "decompress/" + name.getPath()));
     }
 
-    private static void deCompress(IItemProvider output, int count, ITag<Item> from, String hasName, Consumer<IFinishedRecipe> consumer) {
+    private static void deCompress(ItemLike output, int count, TagKey<Item> from, String hasName, Consumer<FinishedRecipe> consumer) {
         ResourceLocation name = output.asItem().getRegistryName();
         ShapelessRecipeBuilder.shapeless(output, count)
                 .requires(from)
@@ -1877,11 +1878,11 @@ public class RecipeGenerator extends RecipeProvider {
                 .save(consumer, new ResourceLocation(name.getNamespace(), "decompress/" + name.getPath()));
     }
 
-    private static void deCompress(IItemProvider output, IItemProvider from, Consumer<IFinishedRecipe> consumer) {
+    private static void deCompress(ItemLike output, ItemLike from, Consumer<FinishedRecipe> consumer) {
         deCompress(output, 9, from, consumer);
     }
 
-    private static void deCompress(IItemProvider output, ITag<Item> from, String hasName, Consumer<IFinishedRecipe> consumer) {
+    private static void deCompress(ItemLike output, TagKey<Item> from, String hasName, Consumer<FinishedRecipe> consumer) {
         deCompress(output, 9, from, hasName, consumer);
     }
 
@@ -1893,8 +1894,12 @@ public class RecipeGenerator extends RecipeProvider {
         return DraconicEvolution.MODID + ":" + folder + "/" + name;
     }
 
+    public static InventoryChangeTrigger.TriggerInstance has(TagKey<Item> p_206407_) {
+        return inventoryTrigger(ItemPredicate.Builder.item().of(p_206407_).build());
+    }
+
     @Override
-    public void run(DirectoryCache cache) throws IOException {
+    public void run(HashCache cache) {
         super.run(cache);
     }
 

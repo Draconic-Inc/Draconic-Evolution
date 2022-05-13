@@ -1,8 +1,8 @@
 package com.brandon3055.draconicevolution.api.modules.data;
 
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 
 import java.util.Map;
 
@@ -32,10 +32,10 @@ public class EnergyData implements ModuleData<EnergyData> {
     }
 
     @Override
-    public void addInformation(Map<ITextComponent, ITextComponent> map, ModuleContext context, boolean stack) {
+    public void addInformation(Map<Component, Component> map, ModuleContext context, boolean stack) {
         long capacity = getCapacity();
         long transfer = getTransfer();
-        map.put(new TranslationTextComponent("module.draconicevolution.energy.capacity"), new TranslationTextComponent("module.draconicevolution.energy.capacity.value", ModuleData.formatNumber(capacity)));
-        map.put(new TranslationTextComponent("module.draconicevolution.energy.transfer"), new TranslationTextComponent("module.draconicevolution.energy.transfer.value", ModuleData.formatNumber(transfer)));
+        map.put(new TranslatableComponent("module.draconicevolution.energy.capacity"), new TranslatableComponent("module.draconicevolution.energy.capacity.value", ModuleData.formatNumber(capacity)));
+        map.put(new TranslatableComponent("module.draconicevolution.energy.transfer"), new TranslatableComponent("module.draconicevolution.energy.transfer.value", ModuleData.formatNumber(transfer)));
     }
 }

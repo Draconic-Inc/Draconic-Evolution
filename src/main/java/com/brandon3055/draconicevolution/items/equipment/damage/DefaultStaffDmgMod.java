@@ -8,17 +8,17 @@ import com.brandon3055.draconicevolution.client.render.effect.StaffBeamEffect;
 import com.brandon3055.draconicevolution.handlers.DESounds;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.SimpleSound;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -37,7 +37,7 @@ public class DefaultStaffDmgMod implements IDamageModifier {
     }
 
     @Override
-    public void addInformation(Map<ITextComponent, ITextComponent> map, @Nullable ModuleContext context, boolean stack) {
+    public void addInformation(Map<Component, Component> map, @Nullable ModuleContext context, boolean stack) {
 
     }
 
@@ -57,23 +57,23 @@ public class DefaultStaffDmgMod implements IDamageModifier {
     }
 
     @Override
-    public void doDamageAndEffects(World world, Vector3d pos, @Nullable RayTraceResult traceResult, LivingEntity source, float baseDamage, float secondaryCharge, boolean isProjectile) {
+    public void doDamageAndEffects(Level world, Vec3 pos, @Nullable HitResult traceResult, LivingEntity source, float baseDamage, float secondaryCharge, boolean isProjectile) {
         if (source == null) return;
-        if (traceResult instanceof EntityRayTraceResult) {
-            pos = pos.add(0, ((EntityRayTraceResult) traceResult).getEntity().getBbHeight()/2, 0);
+        if (traceResult instanceof EntityHitResult) {
+            pos = pos.add(0, ((EntityHitResult) traceResult).getEntity().getBbHeight()/2, 0);
         } else if (traceResult != null) {
             pos = traceResult.getLocation();
         }
-        Vector3d finalPos = pos;
+        Vec3 finalPos = pos;
         DraconicNetwork.sendStaffEffect(source, 0, e -> e.writeVector(new Vector3(finalPos)));
     }
 
     @OnlyIn(Dist.CLIENT)
     public static void handleEffect(LivingEntity source, MCDataInput data) {
         Vector3 pos = data.readVector();
-        ClientWorld world = (ClientWorld) source.level;
+        ClientLevel world = (ClientLevel) source.level;
         Minecraft mc = Minecraft.getInstance();
-        mc.getSoundManager().play(new SimpleSound(DESounds.staffHitDefault, SoundCategory.PLAYERS, 10, 1, pos.pos()));
+        mc.getSoundManager().play(new SimpleSoundInstance(DESounds.staffHitDefault, SoundSource.PLAYERS, 10, 1, pos.pos()));
         mc.particleEngine.add(new StaffBeamEffect(world, source, pos));
     }
 }

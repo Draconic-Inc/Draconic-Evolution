@@ -20,35 +20,34 @@ import com.brandon3055.draconicevolution.client.gui.GuiReactor;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.inventory.ContainerReactor;
 import com.brandon3055.draconicevolution.utils.LogHelper;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.item.FallingBlockEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Direction.Axis;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.Explosion;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ChunkHolder.LocationType;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ChunkHolder.FullChunkStatus;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.item.FallingBlockEntity;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -59,7 +58,7 @@ import java.util.Map;
 /**
  * Created by brandon3055 on 6/11/2016.
  */
-public class TileReactorCore extends TileBCore implements ITickableTileEntity, INamedContainerProvider {
+public class TileReactorCore extends TileBCore implements MenuProvider {
 
     //Frame Movement
     public int frameMoveContactPoints = 0;
@@ -136,8 +135,8 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
 
     //endregion ======================================
 
-    public TileReactorCore() {
-        super(DEContent.tile_reactor_core);
+    public TileReactorCore(BlockPos pos, BlockState state) {
+        super(DEContent.tile_reactor_core, pos, state);
         for (int i = 0; i < componentPositions.length; i++) {
             componentPositions[i] = register(new ManagedVec3I("component_position" + i, new Vec3I(0, 0, 0), DataFlags.SAVE_NBT_SYNC_TILE));
         }
@@ -248,13 +247,6 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
         shaderAnimationState.set(Math.min(1D, (temperature.get() - 20) / 1000D));
         animExtractState.set(0D);
 
-//        shieldCharge.value = 0;
-
-//        convertedFuel.value = 0;
-//        reactableFuel.value = 10000;
-//        temperature.value = 2010;
-//saturation.value = maxSaturation.value;
-
         switch (reactorState.get()) {
             case INVALID:
                 updateOfflineState();
@@ -296,8 +288,6 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
                 updateCriticalState();
                 break;
         }
-
-//        reactorState.value = ReactorState.BEYOND_HOPE;
     }
 
     /**
@@ -343,9 +333,6 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
     }
 
     private void updateOnlineState() {
-////        convertedFuel.value += reactableFuel.value;
-//        reactableFuel.value = 0;
-
         double coreSat = (double) saturation.get() / (double) maxSaturation.get();         //1 = Max Saturation
         double negCSat = (1D - coreSat) * 99D;                                             //99 = Min Saturation. I believe this tops out at 99 because at 100 things would overflow and break.
         double temp50 = Math.min((temperature.get() / MAX_TEMPERATURE) * 50, 99);          //50 = Max Temp. Why? TBD
@@ -423,7 +410,7 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
                 ManagedVec3I v = componentPositions[i];
                 if (v.get().sum() > 0) {
                     BlockPos p = getOffsetPos(v.get()).relative(Direction.from3DDataValue(i).getOpposite());
-                    level.explode(null, p.getX() + 0.5, p.getY() + 0.5, p.getZ() + 0.5, 4, true, Explosion.Mode.DESTROY);
+                    level.explode(null, p.getX() + 0.5, p.getY() + 0.5, p.getZ() + 0.5, 4, true, Explosion.BlockInteraction.DESTROY);
                 }
             }
         }
@@ -436,7 +423,7 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
     }
 
     public void updateCriticalState() {
-        if (!(level instanceof ServerWorld)) {
+        if (!(level instanceof ServerLevel)) {
             return;
         }
 
@@ -456,14 +443,9 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
             return;
         }
 
-//        ProcessHandler.clearHandler();
-//        explosionProcess = null;
-//        if (explosionCountdown.value > 200) explosionCountdown.value = 200;
-//        LogHelper.dev("");
-
         if (explosionProcess == null) {
             double radius = MathUtils.map(convertedFuel.get() + reactableFuel.get(), 144, 10368, 50D, 350D) * DEConfig.reactorExplosionScale;
-            explosionProcess = new ProcessExplosion(worldPosition, (int) radius, (ServerWorld) level, -1);
+            explosionProcess = new ProcessExplosion(worldPosition, (int) radius, (ServerLevel) level, -1);
             ProcessHandler.addProcess(explosionProcess);
             explosionCountdown.set(-1);
             minExplosionDelay = 1200 + level.random.nextInt(2400);
@@ -483,7 +465,6 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
         }
 
         if (explosionCountdown.dec() <= 0) {
-//            explosionProcess = null;
             explosionProcess.detonate();
             level.removeBlock(worldPosition, false);
         }
@@ -586,21 +567,21 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
         }
     }
 
-    public void onComponentClicked(PlayerEntity player, TileReactorComponent component) {
+    public void onComponentClicked(Player player, TileReactorComponent component) {
         if (!level.isClientSide) {
-            NetworkHooks.openGui((ServerPlayerEntity) player, this, worldPosition);
-            sendPacketToClient((ServerPlayerEntity) player, output -> output.writePos(component.getBlockPos()), 1);
+            NetworkHooks.openGui((ServerPlayer) player, this, worldPosition);
+            sendPacketToClient((ServerPlayer) player, output -> output.writePos(component.getBlockPos()), 1);
         }
     }
 
     @Nullable
     @Override
-    public Container createMenu(int currentWindowIndex, PlayerInventory playerInventory, PlayerEntity player) {
+    public AbstractContainerMenu createMenu(int currentWindowIndex, Inventory playerInventory, Player player) {
         return new ContainerReactor(DEContent.container_reactor, currentWindowIndex, player.inventory, this);
     }
 
     @Override
-    public void receivePacketFromClient(MCDataInput data, ServerPlayerEntity client, int id) {
+    public void receivePacketFromClient(MCDataInput data, ServerPlayer client, int id) {
         byte func = data.readByte();
         if (id == 0 && func == ID_CHARGE) {
             chargeReactor();
@@ -618,7 +599,7 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
     public void receivePacketFromServer(MCDataInput data, int id) {
         if (id == 1) {
             BlockPos pos = data.readPos();
-            TileEntity tile = level.getBlockEntity(pos);
+            BlockEntity tile = level.getBlockEntity(pos);
             Screen screen = Minecraft.getInstance().screen;
             if (tile instanceof TileReactorComponent && screen instanceof GuiReactor) {
                 ((GuiReactor) screen).component = (TileReactorComponent) tile;
@@ -627,7 +608,7 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
     }
 
     private void checkPlayerCollision() {
-        PlayerEntity player = BrandonsCore.proxy.getClientPlayer();
+        Player player = BrandonsCore.proxy.getClientPlayer();
         double distance = Math.min(Utils.getDistanceAtoB(new Vec3D(player).add(0, player.getEyeHeight(), 0), Vec3D.getCenter(worldPosition)), Utils.getDistanceAtoB(new Vec3D(player), Vec3D.getCenter(worldPosition)));
         if (distance < (getCoreDiameter() / 2) + 0.5 && !player.isSpectator()) {
             double dMod = 1D - (distance / Math.max(0.1, (getCoreDiameter() / 2) + 0.5));
@@ -657,7 +638,7 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
         if (structureValid.get()) {
             //If the component is an unbound injector and there is no component bound on the same side then bind it.
             if (component instanceof TileReactorInjector && !component.isBound.get()) {
-                TileEntity tile = level.getBlockEntity(getOffsetPos(componentPositions[pokeFrom.get3DDataValue()].get()));
+                BlockEntity tile = level.getBlockEntity(getOffsetPos(componentPositions[pokeFrom.get3DDataValue()].get()));
                 if (tile == this) {
                     componentPositions[pokeFrom.get3DDataValue()].set(getOffsetVec(component.getBlockPos()));
                     component.bindToCore(this);
@@ -684,7 +665,7 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
 
         if (component instanceof TileReactorInjector) {
             LogHelper.dev("Reactor: Component broken! (Injector)");
-            TileEntity tile = level.getBlockEntity(getOffsetPos(componentPositions[componentSide.get3DDataValue()].get()));
+            BlockEntity tile = level.getBlockEntity(getOffsetPos(componentPositions[componentSide.get3DDataValue()].get()));
 
             if (tile == component || tile == null) {
                 LogHelper.dev("Reactor: -Removed");
@@ -708,7 +689,7 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
     }
 
     public void checkBlockIntrusions() {
-        if (!(level instanceof ServerWorld)) {
+        if (!(level instanceof ServerLevel)) {
             return;
         }
 
@@ -735,7 +716,7 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
                 final Vec3D iPos = new Vec3D(entry.getKey());
 
                 if (level.random.nextInt(10) == 0) {
-                    ((ServerWorld) level).sendParticles(ParticleTypes.FLAME, iPos.x + 0.5, iPos.y + 0.5, iPos.z + 0.5, 5, 0.5, 0.5, 0.5, 0.01D);
+                    ((ServerLevel) level).sendParticles(ParticleTypes.FLAME, iPos.x + 0.5, iPos.y + 0.5, iPos.z + 0.5, 5, 0.5, 0.5, 0.5, 0.01D);
                 }
 
                 entry.setValue(entry.getValue() + 1);
@@ -747,7 +728,7 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
             }
 
             if (tick % 20 == 0 || level.random.nextInt(40) == 0) {
-                level.playSound(null, worldPosition, SoundEvents.FIRE_EXTINGUISH, SoundCategory.BLOCKS, 1, 0.9F + level.random.nextFloat() * 0.2F);
+                level.playSound(null, worldPosition, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 1, 0.9F + level.random.nextFloat() * 0.2F);
             }
         }
     }
@@ -800,7 +781,7 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
                 BlockPos searchPos = worldPosition.relative(facing, i);
 
                 if (!level.isEmptyBlock(searchPos)) {
-                    TileEntity searchTile = level.getBlockEntity(searchPos);
+                    BlockEntity searchTile = level.getBlockEntity(searchPos);
                     LogHelper.dev("Reactor: -Found: " + searchTile);
 
                     if (searchTile instanceof TileReactorComponent && ((TileReactorComponent) searchTile).facing.get() == facing.getOpposite()) {
@@ -830,7 +811,7 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
         for (Axis axis : Axis.values()) {
             boolean axisValid = true;
             for (Direction facing : FacingUtils.getFacingsAroundAxis(axis)) {
-                TileEntity tile = level.getBlockEntity(getOffsetPos(componentPositions[facing.get3DDataValue()].get()));
+                BlockEntity tile = level.getBlockEntity(getOffsetPos(componentPositions[facing.get3DDataValue()].get()));
                 //The facing check should not be needed here but does not heart to be to careful.
                 if (!(tile instanceof TileReactorStabilizer && ((TileReactorStabilizer) tile).facing.get() == facing.getOpposite())) {
                     axisValid = false;
@@ -858,7 +839,7 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
         LogHelper.dev("Reactor: Binding Components");
         int stabilizersBound = 0;
         for (int i = 0; i < 6; i++) {
-            TileEntity tile = level.getBlockEntity(getOffsetPos(componentPositions[i].get()));
+            BlockEntity tile = level.getBlockEntity(getOffsetPos(componentPositions[i].get()));
             if (tile instanceof TileReactorComponent) {
                 ((TileReactorComponent) tile).bindToCore(this);
 
@@ -882,11 +863,11 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
         LogHelper.dev("Reactor: Validate Structure");
         for (Direction facing : FacingUtils.getFacingsAroundAxis(stabilizerAxis.get())) {
             BlockPos pos = getOffsetPos(componentPositions[facing.get3DDataValue()].get());
-            if (!Utils.isAreaLoaded(level, pos, LocationType.TICKING)) {
+            if (!Utils.isAreaLoaded(level, pos, FullChunkStatus.TICKING)) {
                 return true;
             }
 
-            TileEntity tile = level.getBlockEntity(pos);
+            BlockEntity tile = level.getBlockEntity(pos);
             LogHelper.dev("Reactor: Validate Stabilizer: " + tile);
             if (!(tile instanceof TileReactorStabilizer) || !((TileReactorStabilizer) tile).getCorePos().equals(this.worldPosition)) {
                 LogHelper.dev("Reactor: Structure Validation Failed!!!");
@@ -927,10 +908,10 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
 
         Vec3D vec = Vec3D.getCenter(worldPosition);
         level.removeBlock(worldPosition, false);
-        level.explode(null, vec.x, vec.y, vec.z, 8, Explosion.Mode.BREAK);
+        level.explode(null, vec.x, vec.y, vec.z, 8, Explosion.BlockInteraction.BREAK);
         int c = 25 + level.random.nextInt(25);
         for (int i = 0; i < c; i++) {
-            FallingBlockEntity entity = new FallingBlockEntity(level, vec.x, vec.y, vec.z, lava);
+            FallingBlockEntity entity = FallingBlockEntity.fall(level, vec.getPos(), lava);
             entity.time = 1;
             entity.dropItem = false;
             double vMod = 0.5 + (2 * level.random.nextDouble());
@@ -950,7 +931,7 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
     }
 
     public TileReactorComponent getComponent(Direction facing) {
-        TileEntity tile = level.getBlockEntity(getOffsetPos(componentPositions[facing.get3DDataValue()].get()));
+        BlockEntity tile = level.getBlockEntity(getOffsetPos(componentPositions[facing.get3DDataValue()].get()));
 
         if (tile instanceof TileReactorComponent && ((TileReactorComponent) tile).facing.get() == facing.getOpposite()) {
             return (TileReactorComponent) tile;
@@ -1009,20 +990,9 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
 
     //region Rendering
 
-
-//    @Override
-//    public boolean shouldRenderInPass(int pass) {
-//        return true;
-//    }
-
     @Override
-    public AxisAlignedBB getRenderBoundingBox() {
+    public AABB getRenderBoundingBox() {
         return INFINITE_EXTENT_AABB;
-    }
-
-    @Override
-    public double getViewDistance() {
-        return 40960.0D;
     }
 
     public double getCoreDiameter() {
@@ -1042,13 +1012,13 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
         public Vec3D pos;
         public Vec3D lastPos;
         public double direction;
-        private World world;
+        private Level world;
         private double diameter;
         public double fallVelocity = 0;
         public double speed = 0;
         public int age = 0;
 
-        public Roller(Vec3D pos, World world, double diameter) {
+        public Roller(Vec3D pos, Level world, double diameter) {
             this.pos = pos;
             this.lastPos = pos.copy();
             this.direction = world.random.nextDouble() * Math.PI * 2;
@@ -1141,7 +1111,7 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
 
         @OnlyIn(Dist.CLIENT)
         public String localize() {
-            TextFormatting[] colours = {TextFormatting.RED, TextFormatting.DARK_AQUA, TextFormatting.LIGHT_PURPLE, TextFormatting.GREEN, TextFormatting.LIGHT_PURPLE, TextFormatting.LIGHT_PURPLE, TextFormatting.DARK_RED};
+            ChatFormatting[] colours = {ChatFormatting.RED, ChatFormatting.DARK_AQUA, ChatFormatting.LIGHT_PURPLE, ChatFormatting.GREEN, ChatFormatting.LIGHT_PURPLE, ChatFormatting.LIGHT_PURPLE, ChatFormatting.DARK_RED};
             return colours[ordinal()] + I18n.get("gui.reactor.status." + name().toLowerCase(Locale.ENGLISH) + ".info");
         }
     }

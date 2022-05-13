@@ -2,91 +2,78 @@ package com.brandon3055.draconicevolution.blocks;
 
 import com.brandon3055.brandonscore.blocks.BlockBCore;
 import com.brandon3055.draconicevolution.blocks.tileentity.TilePotentiometer;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.state.DirectionProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorldReader;
-import net.minecraft.world.World;
+import com.brandon3055.draconicevolution.init.DEContent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 import javax.annotation.Nullable;
 
 /**
  * Created by brandon3055 on 25/09/2016.
  */
-public class Potentiometer extends BlockBCore /*implements ITileEntityProvider, IRenderOverride*/ {
+public class Potentiometer extends BlockBCore implements EntityBlock {
 
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
-    protected static final VoxelShape AABB_DOWN = VoxelShapes.box(0.0625D, 0.9375D, 0.0625D, 0.9375D, 1.0D, 0.9375D);
-    protected static final VoxelShape AABB_UP = VoxelShapes.box(0.0625D, 0.0D, 0.0625D, 0.9375D, 0.0625D, 0.9375D);
-    protected static final VoxelShape AABB_NORTH = VoxelShapes.box(0.0625D, 0.0625D, 0.9375D, 0.9375D, 0.9375D, 1.0D);
-    protected static final VoxelShape AABB_SOUTH = VoxelShapes.box(0.0625D, 0.0625D, 0.0D, 0.9375D, 0.9375D, 0.0625D);
-    protected static final VoxelShape AABB_WEST = VoxelShapes.box(0.9375D, 0.0625D, 0.0625D, 1.0D, 0.9375D, 0.9375D);
-    protected static final VoxelShape AABB_EAST = VoxelShapes.box(0.0D, 0.0625D, 0.0625D, 0.0625D, 0.9375D, 0.9375D);
+    protected static final VoxelShape AABB_DOWN = Shapes.box(0.0625D, 0.9375D, 0.0625D, 0.9375D, 1.0D, 0.9375D);
+    protected static final VoxelShape AABB_UP = Shapes.box(0.0625D, 0.0D, 0.0625D, 0.9375D, 0.0625D, 0.9375D);
+    protected static final VoxelShape AABB_NORTH = Shapes.box(0.0625D, 0.0625D, 0.9375D, 0.9375D, 0.9375D, 1.0D);
+    protected static final VoxelShape AABB_SOUTH = Shapes.box(0.0625D, 0.0625D, 0.0D, 0.9375D, 0.9375D, 0.0625D);
+    protected static final VoxelShape AABB_WEST = Shapes.box(0.9375D, 0.0625D, 0.0625D, 1.0D, 0.9375D, 0.9375D);
+    protected static final VoxelShape AABB_EAST = Shapes.box(0.0D, 0.0625D, 0.0625D, 0.0625D, 0.9375D, 0.9375D);
 
     public Potentiometer(Block.Properties properties) {
         super(properties);
         registerDefaultState(stateDefinition.any().setValue(FACING, Direction.UP));
         this.canProvidePower = true;
+        setBlockEntity(() -> DEContent.tile_potentiometer, false);
     }
 
     @Override
-    public boolean isBlockFullCube() {
-        return false;
-    }
-
-    @Override
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(FACING);
     }
 
-    @Override
-    public boolean hasTileEntity(BlockState state) {
-        return true;
-    }
-
-    @Nullable
-    @Override
-    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        return new TilePotentiometer();
-    }
-
-    protected static boolean canPlaceBlock(World worldIn, BlockPos pos, Direction direction) {
+    protected static boolean canPlaceBlock(Level worldIn, BlockPos pos, Direction direction) {
         BlockPos blockpos = pos.relative(direction);
         return worldIn.getBlockState(blockpos).isFaceSturdy(worldIn, blockpos, direction.getOpposite());
     }
 
     @Override
-    public void setPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+    public void setPlacedBy(Level world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
         super.setPlacedBy(world, pos, state, placer, stack);
     }
 
     @Nullable
     @Override
-    public BlockState getStateForPlacement(BlockItemUseContext context) {
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
         return canPlaceBlock(context.getLevel(), context.getClickedPos(), context.getClickedFace().getOpposite()) ? this.defaultBlockState().setValue(FACING, context.getClickedFace()) : this.defaultBlockState().setValue(FACING, Direction.DOWN);
     }
 
     @Override //TODO make sure this logic is not backwards
-    public boolean canSurvive(BlockState state, IWorldReader worldIn, BlockPos pos) {
+    public boolean canSurvive(BlockState state, LevelReader worldIn, BlockPos pos) {
         return canSupportCenter(worldIn, pos.relative(state.getValue(FACING).getOpposite()), state.getValue(FACING));
     }
 
     @Override
-    public void onRemove(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
+    public void onRemove(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
         if (!isMoving && !state.is(newState.getBlock())) {
-            TileEntity tile = worldIn.getBlockEntity(pos);
+            BlockEntity tile = worldIn.getBlockEntity(pos);
             if (tile instanceof TilePotentiometer && ((TilePotentiometer) tile).power.get() > 0) {
                 this.updateNeighbors(state, worldIn, pos, (TilePotentiometer)tile);
             }
@@ -95,7 +82,7 @@ public class Potentiometer extends BlockBCore /*implements ITileEntityProvider, 
         }
     }
 
-    private void updateNeighbors(BlockState state, World world, BlockPos pos, TilePotentiometer tile) {
+    private void updateNeighbors(BlockState state, Level world, BlockPos pos, TilePotentiometer tile) {
         world.updateNeighborsAt(pos, this);
         world.updateNeighborsAt(pos.relative(state.getValue(FACING).getOpposite()), this);
     }
@@ -138,7 +125,7 @@ public class Potentiometer extends BlockBCore /*implements ITileEntityProvider, 
 
 
     @Override
-    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+    public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
         Direction enumfacing = state.getValue(FACING);
 
         switch (enumfacing) {

@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.api;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * Created by brandon3055 on 21/05/2017.

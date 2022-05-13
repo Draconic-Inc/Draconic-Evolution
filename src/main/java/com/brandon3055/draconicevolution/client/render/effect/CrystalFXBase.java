@@ -2,17 +2,17 @@ package com.brandon3055.draconicevolution.client.render.effect;
 
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.draconicevolution.api.energy.IENetEffectTile;
+import com.mojang.math.Quaternion;
+import com.mojang.math.Vector3f;
+import net.minecraft.client.Camera;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.renderer.ActiveRenderInfo;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 /**
  * Created by brandon3055 on 29/11/2016.
  */
-public abstract class CrystalFXBase<T extends TileEntity & IENetEffectTile> extends Particle {
+public abstract class CrystalFXBase<T extends BlockEntity & IENetEffectTile> extends Particle {
 
     protected final T tile;
     protected int ticksTillDeath = 0;
@@ -20,7 +20,7 @@ public abstract class CrystalFXBase<T extends TileEntity & IENetEffectTile> exte
     public boolean renderEnabled = true;
     private int ttl = 10;
 
-    public CrystalFXBase(ClientWorld worldIn, T tile) {
+    public CrystalFXBase(ClientLevel worldIn, T tile) {
         super(worldIn, tile.getBlockPos().getX() + 0.5, tile.getBlockPos().getY() + 0.5, tile.getBlockPos().getZ() + 0.5);
         this.tile = tile;
     }
@@ -51,7 +51,7 @@ public abstract class CrystalFXBase<T extends TileEntity & IENetEffectTile> exte
         setPos(pos.x, pos.y, pos.z);
     }
 
-    protected Vector3f[] getRenderVectors(ActiveRenderInfo renderInfo, float viewX, float viewY, float viewZ, float scale) {
+    protected Vector3f[] getRenderVectors(Camera renderInfo, float viewX, float viewY, float viewZ, float scale) {
         Quaternion quaternion;
         quaternion = renderInfo.rotation();
         Vector3f vector3f1 = new Vector3f(-1.0F, -1.0F, 0.0F);

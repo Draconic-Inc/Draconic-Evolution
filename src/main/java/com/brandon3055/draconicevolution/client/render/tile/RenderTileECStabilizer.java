@@ -3,30 +3,30 @@ package com.brandon3055.draconicevolution.client.render.tile;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyCoreStabilizer;
 import com.brandon3055.draconicevolution.client.model.ModelLargeECStabilizer;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Quaternion;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Quaternion;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * Created by brandon3055 on 19/4/2016.
  */
-public class RenderTileECStabilizer extends TileEntityRenderer<TileEnergyCoreStabilizer> {
+public class RenderTileECStabilizer implements BlockEntityRenderer<TileEnergyCoreStabilizer> {
 
     private static final RenderType modelType = RenderType.entitySolid(new ResourceLocation(DraconicEvolution.MODID, "textures/block/stabilizer_large.png"));
     private final ModelLargeECStabilizer model;
 
-    public RenderTileECStabilizer(TileEntityRendererDispatcher rendererDispatcherIn) {
-        super(rendererDispatcherIn);
+    public RenderTileECStabilizer(BlockEntityRendererProvider.Context context) {
         model = new ModelLargeECStabilizer();
     }
 
     @Override
-    public void render(TileEnergyCoreStabilizer tile, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer getter, int packedLightIn, int packedOverlayIn) {
+    public void render(TileEnergyCoreStabilizer tile, float partialTicks, PoseStack matrixStack, MultiBufferSource getter, int packedLightIn, int packedOverlayIn) {
         if (!tile.isValidMultiBlock.get()) return;
 
         Direction facing;

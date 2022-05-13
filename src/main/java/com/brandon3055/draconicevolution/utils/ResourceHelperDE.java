@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.utils;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -19,9 +19,10 @@ public class ResourceHelperDE {
     private static Map<String, ResourceLocation> cachedResources = new HashMap<String, ResourceLocation>();
     public static final String RESOURCE_PREFIX = DraconicEvolution.MODID.toLowerCase(Locale.ENGLISH) + ":";
 
-    public static void bindTexture(ResourceLocation texture) {
-        Minecraft.getInstance().getTextureManager().bind(texture);
-    }
+//    public static void bindTexture(ResourceLocation texture) {
+//
+////        Minecraft.getInstance().getTextureManager().bindForSetup(texture);
+//    }
 
     public static ResourceLocation getResource(String rs) {
         if (!cachedResources.containsKey(rs)) {
@@ -37,8 +38,8 @@ public class ResourceHelperDE {
         return cachedResources.get(rs);
     }
 
-    public static void bindTexture(String rs) {
-        bindTexture(getResource(rs));
-    }
+//    public static void bindTexture(String rs) {
+////        bindTexture(getResource(rs));
+//    }
 
 }

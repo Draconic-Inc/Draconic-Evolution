@@ -10,34 +10,40 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.block.BlockState;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.entity.projectile.AbstractArrowEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.ShieldItem;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.network.play.server.SChangeGameStatePacket;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.potion.*;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.EntityDamageSource;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.*;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientboundGameEventPacket;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Mth;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.EntityDamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.ShieldItem;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.*;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -48,28 +54,28 @@ import java.util.Set;
 /**
  * Created by brandon3055 on 8/7/21
  */
-public class DraconicArrowEntity extends AbstractArrowEntity {
-    private static final DataParameter<Integer> ID_EFFECT_COLOR = EntityDataManager.defineId(DraconicArrowEntity.class, DataSerializers.INT);
+public class DraconicArrowEntity extends AbstractArrow {
+    private static final EntityDataAccessor<Integer> ID_EFFECT_COLOR = SynchedEntityData.defineId(DraconicArrowEntity.class, EntityDataSerializers.INT);
     private Potion potion = Potions.EMPTY;
-    private final Set<EffectInstance> effects = Sets.newHashSet();
+    private final Set<MobEffectInstance> effects = Sets.newHashSet();
     private boolean fixedColor;
 
-    private static final DataParameter<Integer> SPECTRAL_TIME = EntityDataManager.defineId(DraconicArrowEntity.class, DataSerializers.INT);
-    private static final DataParameter<Byte> TECH_LEVEL = EntityDataManager.defineId(DraconicArrowEntity.class, DataSerializers.BYTE);
-    private static final DataParameter<Byte> PENETRATION = EntityDataManager.defineId(DraconicArrowEntity.class, DataSerializers.BYTE);
-    private static final DataParameter<Float> GRAV_COMPENSATION = EntityDataManager.defineId(DraconicArrowEntity.class, DataSerializers.FLOAT);
-    private static final DataParameter<Float> INIT_VELOCITY = EntityDataManager.defineId(DraconicArrowEntity.class, DataSerializers.FLOAT); //(Grav comp will deactivate when velocity decreases by say 25%)
-    private static final DataParameter<Boolean> PROJ_ANTI_IMMUNE = EntityDataManager.defineId(DraconicArrowEntity.class, DataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Integer> SPECTRAL_TIME = SynchedEntityData.defineId(DraconicArrowEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Byte> TECH_LEVEL = SynchedEntityData.defineId(DraconicArrowEntity.class, EntityDataSerializers.BYTE);
+    private static final EntityDataAccessor<Byte> PENETRATION = SynchedEntityData.defineId(DraconicArrowEntity.class, EntityDataSerializers.BYTE);
+    private static final EntityDataAccessor<Float> GRAV_COMPENSATION = SynchedEntityData.defineId(DraconicArrowEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> INIT_VELOCITY = SynchedEntityData.defineId(DraconicArrowEntity.class, EntityDataSerializers.FLOAT); //(Grav comp will deactivate when velocity decreases by say 25%)
+    private static final EntityDataAccessor<Boolean> PROJ_ANTI_IMMUNE = SynchedEntityData.defineId(DraconicArrowEntity.class, EntityDataSerializers.BOOLEAN);
 
-    public DraconicArrowEntity(EntityType<? extends DraconicArrowEntity> entityType, World world) {
+    public DraconicArrowEntity(EntityType<? extends DraconicArrowEntity> entityType, Level world) {
         super(entityType, world);
     }
 
-    public DraconicArrowEntity(World world, double xPos, double yPos, double zPos) {
+    public DraconicArrowEntity(Level world, double xPos, double yPos, double zPos) {
         super(DEContent.draconicArrow, xPos, yPos, zPos, world);
     }
 
-    public DraconicArrowEntity(World world, LivingEntity shooter) {
+    public DraconicArrowEntity(Level world, LivingEntity shooter) {
         super(DEContent.draconicArrow, shooter, world);
     }
 
@@ -152,29 +158,29 @@ public class DraconicArrowEntity extends AbstractArrowEntity {
         }
         //Entity Tick
         if (!this.level.isClientSide) {
-            this.setSharedFlag(6, this.isGlowing());
+            this.setSharedFlag(6, this.isCurrentlyGlowing());
         }
         this.baseTick();
 
         //Abstract Arrow Tick
         boolean flag = this.isNoPhysics();
-        Vector3d vector3d = this.getDeltaMovement();
+        Vec3 vector3d = this.getDeltaMovement();
         if (this.xRotO == 0.0F && this.yRotO == 0.0F) {
-            float f = MathHelper.sqrt(getHorizontalDistanceSqr(vector3d));
-            this.yRot = (float) (MathHelper.atan2(vector3d.x, vector3d.z) * (double) (180F / (float) Math.PI));
-            this.xRot = (float) (MathHelper.atan2(vector3d.y, (double) f) * (double) (180F / (float) Math.PI));
-            this.yRotO = this.yRot;
-            this.xRotO = this.xRot;
+            double f = vector3d.horizontalDistance();
+            this.setYRot((float) (Mth.atan2(vector3d.x, vector3d.z) * (double) (180F / (float) Math.PI)));
+            this.setXRot((float) (Mth.atan2(vector3d.y, (double) f) * (double) (180F / (float) Math.PI)));
+            this.yRotO = this.getYRot();
+            this.xRotO = this.getXRot();
         }
 
         BlockPos blockpos = this.blockPosition();
         BlockState blockstate = this.level.getBlockState(blockpos);
-        if (!blockstate.isAir(this.level, blockpos) && !flag) {
+        if (!blockstate.isAir() && !flag) {
             VoxelShape voxelshape = blockstate.getCollisionShape(this.level, blockpos);
             if (!voxelshape.isEmpty()) {
-                Vector3d vector3d1 = this.position();
+                Vec3 vector3d1 = this.position();
 
-                for (AxisAlignedBB axisalignedbb : voxelshape.toAabbs()) {
+                for (AABB axisalignedbb : voxelshape.toAabbs()) {
                     if (axisalignedbb.move(blockpos).contains(vector3d1)) {
                         this.inGround = true;
                         break;
@@ -201,29 +207,29 @@ public class DraconicArrowEntity extends AbstractArrowEntity {
             ++this.inGroundTime;
         } else {
             this.inGroundTime = 0;
-            Vector3d vector3d2 = this.position();
-            Vector3d vector3d3 = vector3d2.add(vector3d);
-            RayTraceResult raytraceresult = this.level.clip(new RayTraceContext(vector3d2, vector3d3, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, this));
-            if (raytraceresult.getType() != RayTraceResult.Type.MISS) {
+            Vec3 vector3d2 = this.position();
+            Vec3 vector3d3 = vector3d2.add(vector3d);
+            HitResult raytraceresult = this.level.clip(new ClipContext(vector3d2, vector3d3, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
+            if (raytraceresult.getType() != HitResult.Type.MISS) {
                 vector3d3 = raytraceresult.getLocation();
             }
 
-            while (!this.removed) {
-                EntityRayTraceResult entityraytraceresult = this.findHitEntity(vector3d2, vector3d3);
+            while (!this.isRemoved()) {
+                EntityHitResult entityraytraceresult = this.findHitEntity(vector3d2, vector3d3);
                 if (entityraytraceresult != null) {
                     raytraceresult = entityraytraceresult;
                 }
 
-                if (raytraceresult != null && raytraceresult.getType() == RayTraceResult.Type.ENTITY) {
-                    Entity entity = ((EntityRayTraceResult) raytraceresult).getEntity();
+                if (raytraceresult != null && raytraceresult.getType() == HitResult.Type.ENTITY) {
+                    Entity entity = ((EntityHitResult) raytraceresult).getEntity();
                     Entity entity1 = this.getOwner();
-                    if (entity instanceof PlayerEntity && entity1 instanceof PlayerEntity && !((PlayerEntity) entity1).canHarmPlayer((PlayerEntity) entity)) {
+                    if (entity instanceof Player && entity1 instanceof Player && !((Player) entity1).canHarmPlayer((Player) entity)) {
                         raytraceresult = null;
                         entityraytraceresult = null;
                     }
                 }
 
-                if (raytraceresult != null && raytraceresult.getType() != RayTraceResult.Type.MISS && !flag && !net.minecraftforge.event.ForgeEventFactory.onProjectileImpact(this, raytraceresult)) {
+                if (raytraceresult != null && raytraceresult.getType() != HitResult.Type.MISS && !flag && !net.minecraftforge.event.ForgeEventFactory.onProjectileImpact(this, raytraceresult)) {
                     this.onHit(raytraceresult);
                     this.hasImpulse = true;
                 }
@@ -248,16 +254,16 @@ public class DraconicArrowEntity extends AbstractArrowEntity {
             double d5 = this.getX() + d3;
             double d1 = this.getY() + d4;
             double d2 = this.getZ() + d0;
-            float f1 = MathHelper.sqrt(getHorizontalDistanceSqr(vector3d));
+            double f1 = vector3d.horizontalDistance();
             if (flag) {
-                this.yRot = (float) (MathHelper.atan2(-d3, -d0) * (double) (180F / (float) Math.PI));
+                this.setYRot((float) (Mth.atan2(-d3, -d0) * (double) (180F / (float) Math.PI)));
             } else {
-                this.yRot = (float) (MathHelper.atan2(d3, d0) * (double) (180F / (float) Math.PI));
+                this.setYRot((float) (Mth.atan2(d3, d0) * (double) (180F / (float) Math.PI)));
             }
 
-            this.xRot = (float) (MathHelper.atan2(d4, (double) f1) * (double) (180F / (float) Math.PI));
-            this.xRot = lerpRotation(this.xRotO, this.xRot);
-            this.yRot = lerpRotation(this.yRotO, this.yRot);
+            this.setXRot((float) (Mth.atan2(d4, (double) f1) * (double) (180F / (float) Math.PI)));
+            this.setXRot(lerpRotation(this.xRotO, this.getXRot()));
+            this.setYRot(lerpRotation(this.yRotO, this.getYRot()));
             float f2 = 0.99F;
             float f3 = 0.05F;
             if (this.isInWater()) {
@@ -271,7 +277,7 @@ public class DraconicArrowEntity extends AbstractArrowEntity {
 
             this.setDeltaMovement(vector3d.scale((double) f2));
             if (!this.isNoGravity() && !flag) {
-                Vector3d vector3d4 = this.getDeltaMovement();
+                Vec3 vector3d4 = this.getDeltaMovement();
                 float antiGrav = entityData.get(GRAV_COMPENSATION);
                 if (antiGrav > 0 && !inGround) {
                     float antiGravActivation = Math.min((float) getDeltaMovement().length() / (Math.max(entityData.get(INIT_VELOCITY) * 0.75F, 2F)), 1);
@@ -287,10 +293,10 @@ public class DraconicArrowEntity extends AbstractArrowEntity {
     }
 
     @Override
-    protected void onHitEntity(EntityRayTraceResult p_213868_1_) {
+    protected void onHitEntity(EntityHitResult p_213868_1_) {
         Entity entity = p_213868_1_.getEntity();
         float f = (float) this.getDeltaMovement().length();
-        int i = MathHelper.ceil(MathHelper.clamp((double) f * this.getBaseDamage(), 0.0D, 2.147483647E9D));
+        int i = Mth.ceil(Mth.clamp((double) f * this.getBaseDamage(), 0.0D, 2.147483647E9D));
         int penetration = entityData.get(PENETRATION);
         if (this.getPierceLevel() > 0 || penetration > 0) {
             if (this.piercingIgnoreEntityIds == null) {
@@ -302,7 +308,7 @@ public class DraconicArrowEntity extends AbstractArrowEntity {
             }
 
             if (this.piercingIgnoreEntityIds.size() >= this.getPierceLevel() + 1 && this.piercingIgnoreEntityIds.size() >= penetration + 1) {
-                this.remove();
+                this.discard();
                 return;
             }
 
@@ -324,8 +330,8 @@ public class DraconicArrowEntity extends AbstractArrowEntity {
         }
 
         //Break shields with penetration
-        if (penetration > 1 && entity instanceof PlayerEntity) {
-            PlayerEntity player = (PlayerEntity) entity;
+        if (penetration > 1 && entity instanceof Player) {
+            Player player = (Player) entity;
             if (player.isUsingItem() && player.getUseItem().getItem() instanceof ShieldItem) {
                 player.getCooldowns().addCooldown(player.getUseItem().getItem(), 100);
                 level.broadcastEntityEvent(player, (byte) 30);
@@ -345,7 +351,7 @@ public class DraconicArrowEntity extends AbstractArrowEntity {
                 }
 
                 if (this.knockback > 0) {
-                    Vector3d vector3d = this.getDeltaMovement().multiply(1.0D, 0.0D, 1.0D).normalize().scale((double) this.knockback * 0.6D);
+                    Vec3 vector3d = this.getDeltaMovement().multiply(1.0D, 0.0D, 1.0D).normalize().scale((double) this.knockback * 0.6D);
                     if (vector3d.lengthSqr() > 0.0D) {
                         livingentity.push(vector3d.x, 0.1D, vector3d.z);
                     }
@@ -357,16 +363,16 @@ public class DraconicArrowEntity extends AbstractArrowEntity {
                 }
 
                 this.doPostHurtEffects(livingentity);
-                if (owner != null && livingentity != owner && livingentity instanceof PlayerEntity && owner instanceof ServerPlayerEntity && !this.isSilent()) {
-                    ((ServerPlayerEntity) owner).connection.send(new SChangeGameStatePacket(SChangeGameStatePacket.ARROW_HIT_PLAYER, 0.0F));
+                if (owner != null && livingentity != owner && livingentity instanceof Player && owner instanceof ServerPlayer && !this.isSilent()) {
+                    ((ServerPlayer) owner).connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.ARROW_HIT_PLAYER, 0.0F));
                 }
 
                 if (!entity.isAlive() && this.piercedAndKilledEntities != null) {
                     this.piercedAndKilledEntities.add(livingentity);
                 }
 
-                if (!this.level.isClientSide && owner instanceof ServerPlayerEntity) {
-                    ServerPlayerEntity serverplayerentity = (ServerPlayerEntity) owner;
+                if (!this.level.isClientSide && owner instanceof ServerPlayer) {
+                    ServerPlayer serverplayerentity = (ServerPlayer) owner;
                     if (this.piercedAndKilledEntities != null && this.shotFromCrossbow()) {
                         CriteriaTriggers.KILLED_BY_CROSSBOW.trigger(serverplayerentity, this.piercedAndKilledEntities);
                     } else if (!entity.isAlive() && this.shotFromCrossbow()) {
@@ -377,19 +383,19 @@ public class DraconicArrowEntity extends AbstractArrowEntity {
 
             this.playSound(this.getHitGroundSoundEvent(), 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
             if (this.getPierceLevel() <= 0 && penetration <= 0) {
-                this.remove();
+                this.discard();
             }
         } else {
             entity.setRemainingFireTicks(k);
             this.setDeltaMovement(this.getDeltaMovement().scale(0));
-            this.yRot += 180.0F;
+            this.setYRot(getYRot() + 180.0F);
             this.yRotO += 180.0F;
             if (!this.level.isClientSide && this.getDeltaMovement().lengthSqr() < 1.0E-7D) {
-                if (this.pickup == AbstractArrowEntity.PickupStatus.ALLOWED) {
+                if (this.pickup == AbstractArrow.Pickup.ALLOWED) {
                     this.spawnAtLocation(this.getPickupItem(), 0.1F);
                 }
 
-                this.remove();
+                this.discard();
             }
         }
     }
@@ -415,7 +421,7 @@ public class DraconicArrowEntity extends AbstractArrowEntity {
     private int blockPenetration = 0;
 
     @Override
-    protected void onHitBlock(BlockRayTraceResult traceResult) {
+    protected void onHitBlock(BlockHitResult traceResult) {
         byte basePenetration = entityData.get(PENETRATION);
         int remainingPenetration = basePenetration - blockPenetration;
         if (piercingIgnoreEntityIds != null) {
@@ -427,13 +433,13 @@ public class DraconicArrowEntity extends AbstractArrowEntity {
             blockPenetration += remainingPenetration;
             BlockPos pos = traceResult.getBlockPos();
             BlockState blockstate = this.level.getBlockState(pos);
-            if (!blockstate.isAir(this.level, pos)) {
+            if (!blockstate.isAir()) {
                 VoxelShape voxelshape = blockstate.getCollisionShape(this.level, pos);
                 if (!voxelshape.isEmpty()) {
                     boolean canPass = true;
-                    Vector3d vector3d1 = traceResult.getLocation().add(getDeltaMovement().normalize().multiply(canPenetrate, canPenetrate, canPenetrate));
+                    Vec3 vector3d1 = traceResult.getLocation().add(getDeltaMovement().normalize().multiply(canPenetrate, canPenetrate, canPenetrate));
 
-                    for (AxisAlignedBB axisalignedbb : voxelshape.toAabbs()) {
+                    for (AABB axisalignedbb : voxelshape.toAabbs()) {
                         if (axisalignedbb.move(pos).contains(vector3d1)) {
                             canPass = false;
                             break;
@@ -442,19 +448,19 @@ public class DraconicArrowEntity extends AbstractArrowEntity {
                     if (canPass) {
                         this.playSound(SoundEvents.ANCIENT_DEBRIS_BREAK, 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
                         for (int i = 0; i < 25; i++) {
-                            Vector3d critPos = traceResult.getLocation().add(getDeltaMovement().normalize().multiply(2, 2, 2).add((-0.5 + random.nextGaussian()) * 0.2, (-0.5 + random.nextGaussian()) * 0.2, (-0.5 + random.nextGaussian()) * 0.2));
-                            Vector3d critVel = getDeltaMovement().normalize().multiply(5, 5, 5);
+                            Vec3 critPos = traceResult.getLocation().add(getDeltaMovement().normalize().multiply(2, 2, 2).add((-0.5 + random.nextGaussian()) * 0.2, (-0.5 + random.nextGaussian()) * 0.2, (-0.5 + random.nextGaussian()) * 0.2));
+                            Vec3 critVel = getDeltaMovement().normalize().multiply(5, 5, 5);
                             level.addParticle(ParticleTypes.CRIT, critPos.x, critPos.y, critPos.z, critVel.x, critVel.y, critVel.z);
                         }
 
                         //Fire Shrapnel
-                        Vector3d shrapnelTravelEnd = traceResult.getLocation().add(getDeltaMovement().normalize().multiply(remainingPenetration, remainingPenetration, remainingPenetration));
-                        EntityRayTraceResult result = findHitEntity(traceResult.getLocation(), shrapnelTravelEnd);
+                        Vec3 shrapnelTravelEnd = traceResult.getLocation().add(getDeltaMovement().normalize().multiply(remainingPenetration, remainingPenetration, remainingPenetration));
+                        EntityHitResult result = findHitEntity(traceResult.getLocation(), shrapnelTravelEnd);
                         if (result != null) {
                             Entity entity = result.getEntity();
                             DamageSource damagesource = getDamageSource(entity);
                             float velocity = (float) this.getDeltaMovement().length();
-                            int damage = MathHelper.ceil(MathHelper.clamp((double) velocity * this.getBaseDamage(), 0.0D, 2.147483647E9D));
+                            int damage = Mth.ceil(Mth.clamp((double) velocity * this.getBaseDamage(), 0.0D, 2.147483647E9D));
                             entity.hurt(damagesource, (float) damage * 0.75F);
                         }
                     }
@@ -465,9 +471,9 @@ public class DraconicArrowEntity extends AbstractArrowEntity {
         this.lastState = this.level.getBlockState(traceResult.getBlockPos());
         BlockState blockstate = this.level.getBlockState(traceResult.getBlockPos());
         blockstate.onProjectileHit(this.level, blockstate, traceResult, this);
-        Vector3d vector3d = traceResult.getLocation().subtract(this.getX(), this.getY(), this.getZ());
+        Vec3 vector3d = traceResult.getLocation().subtract(this.getX(), this.getY(), this.getZ());
         this.setDeltaMovement(vector3d);
-        Vector3d vector3d1 = vector3d.normalize().scale((double) 0.05F);
+        Vec3 vector3d1 = vector3d.normalize().scale((double) 0.05F);
         this.setPosRaw(this.getX() - vector3d1.x, this.getY() - vector3d1.y, this.getZ() - vector3d1.z);
         this.playSound(this.getHitGroundSoundEvent(), 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
         this.inGround = true;
@@ -484,10 +490,10 @@ public class DraconicArrowEntity extends AbstractArrowEntity {
     public void setEffectsFromItem(ItemStack p_184555_1_) {
         if (p_184555_1_.getItem() == Items.TIPPED_ARROW) {
             this.potion = PotionUtils.getPotion(p_184555_1_);
-            Collection<EffectInstance> collection = PotionUtils.getCustomEffects(p_184555_1_);
+            Collection<MobEffectInstance> collection = PotionUtils.getCustomEffects(p_184555_1_);
             if (!collection.isEmpty()) {
-                for (EffectInstance effectinstance : collection) {
-                    this.effects.add(new EffectInstance(effectinstance));
+                for (MobEffectInstance effectinstance : collection) {
+                    this.effects.add(new MobEffectInstance(effectinstance));
                 }
             }
 
@@ -506,7 +512,7 @@ public class DraconicArrowEntity extends AbstractArrowEntity {
     }
 
     public static int getCustomColor(ItemStack p_191508_0_) {
-        CompoundNBT compoundnbt = p_191508_0_.getTag();
+        CompoundTag compoundnbt = p_191508_0_.getTag();
         return compoundnbt != null && compoundnbt.contains("CustomPotionColor", 99) ? compoundnbt.getInt("CustomPotionColor") : -1;
     }
 
@@ -520,7 +526,7 @@ public class DraconicArrowEntity extends AbstractArrowEntity {
 
     }
 
-    public void addEffect(EffectInstance p_184558_1_) {
+    public void addEffect(MobEffectInstance p_184558_1_) {
         this.effects.add(p_184558_1_);
         this.getEntityData().set(ID_EFFECT_COLOR, PotionUtils.getColor(PotionUtils.getAllEffects(this.potion, this.effects)));
     }
@@ -567,7 +573,7 @@ public class DraconicArrowEntity extends AbstractArrowEntity {
 //    private static final DataParameter<Float> INIT_VELOCITY = EntityDataManager.defineId(DraconicArrowEntity.class, DataSerializers.FLOAT); //(Grav comp will deactivate when velocity decreases by say 25%)
 
     @Override
-    public void addAdditionalSaveData(CompoundNBT compound) {
+    public void addAdditionalSaveData(CompoundTag compound) {
         super.addAdditionalSaveData(compound);
         if (this.potion != Potions.EMPTY && this.potion != null) {
             compound.putString("Potion", Registry.POTION.getKey(this.potion).toString());
@@ -578,16 +584,16 @@ public class DraconicArrowEntity extends AbstractArrowEntity {
         }
 
         if (!this.effects.isEmpty()) {
-            ListNBT listnbt = new ListNBT();
+            ListTag listnbt = new ListTag();
 
-            for (EffectInstance effectinstance : this.effects) {
-                listnbt.add(effectinstance.save(new CompoundNBT()));
+            for (MobEffectInstance effectinstance : this.effects) {
+                listnbt.add(effectinstance.save(new CompoundTag()));
             }
 
             compound.put("CustomPotionEffects", listnbt);
         }
 
-        if (getSpectralTime() > 0){
+        if (getSpectralTime() > 0) {
             compound.putInt("spectral_time", entityData.get(SPECTRAL_TIME));
         }
         compound.putByte("tech_level", entityData.get(TECH_LEVEL));
@@ -598,13 +604,13 @@ public class DraconicArrowEntity extends AbstractArrowEntity {
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundNBT compound) {
+    public void readAdditionalSaveData(CompoundTag compound) {
         super.readAdditionalSaveData(compound);
         if (compound.contains("Potion", 8)) {
             this.potion = PotionUtils.getPotion(compound);
         }
 
-        for (EffectInstance effectinstance : PotionUtils.getCustomEffects(compound)) {
+        for (MobEffectInstance effectinstance : PotionUtils.getCustomEffects(compound)) {
             this.addEffect(effectinstance);
         }
 
@@ -617,19 +623,19 @@ public class DraconicArrowEntity extends AbstractArrowEntity {
         if (compound.contains("spectral_time")) {
             setSpectral(compound.getInt("spectral_time"));
         }
-        if (compound.contains("tech_level")){
+        if (compound.contains("tech_level")) {
             entityData.set(TECH_LEVEL, compound.getByte("tech_level"));
         }
-        if (compound.contains("penetration")){
+        if (compound.contains("penetration")) {
             entityData.set(PENETRATION, compound.getByte("penetration"));
         }
-        if (compound.contains("grav_comp")){
+        if (compound.contains("grav_comp")) {
             entityData.set(GRAV_COMPENSATION, compound.getFloat("grav_comp"));
         }
-        if (compound.contains("init_velocity")){
+        if (compound.contains("init_velocity")) {
             entityData.set(INIT_VELOCITY, compound.getFloat("init_velocity"));
         }
-        if (compound.contains("proj_anti_immune")){
+        if (compound.contains("proj_anti_immune")) {
             entityData.set(PROJ_ANTI_IMMUNE, compound.getBoolean("proj_anti_immune"));
         }
 
@@ -639,19 +645,19 @@ public class DraconicArrowEntity extends AbstractArrowEntity {
     protected void doPostHurtEffects(LivingEntity p_184548_1_) {
         super.doPostHurtEffects(p_184548_1_);
 
-        for (EffectInstance effectinstance : this.potion.getEffects()) {
-            p_184548_1_.addEffect(new EffectInstance(effectinstance.getEffect(), Math.max(effectinstance.getDuration() / 8, 1), effectinstance.getAmplifier(), effectinstance.isAmbient(), effectinstance.isVisible()));
+        for (MobEffectInstance effectinstance : this.potion.getEffects()) {
+            p_184548_1_.addEffect(new MobEffectInstance(effectinstance.getEffect(), Math.max(effectinstance.getDuration() / 8, 1), effectinstance.getAmplifier(), effectinstance.isAmbient(), effectinstance.isVisible()));
         }
 
         if (!this.effects.isEmpty()) {
-            for (EffectInstance effectinstance1 : this.effects) {
+            for (MobEffectInstance effectinstance1 : this.effects) {
                 p_184548_1_.addEffect(effectinstance1);
             }
         }
 
         int spectralTime = entityData.get(SPECTRAL_TIME);
         if (spectralTime > 0) {
-            EffectInstance effectinstance = new EffectInstance(Effects.GLOWING, spectralTime, 0);
+            MobEffectInstance effectinstance = new MobEffectInstance(MobEffects.GLOWING, spectralTime, 0);
             p_184548_1_.addEffect(effectinstance);
         }
     }
@@ -692,7 +698,7 @@ public class DraconicArrowEntity extends AbstractArrowEntity {
     }
 
     @Override
-    public IPacket<?> getAddEntityPacket() {
+    public Packet<?> getAddEntityPacket() {
         return BCoreNetwork.getEntitySpawnPacket(this);
     }
 

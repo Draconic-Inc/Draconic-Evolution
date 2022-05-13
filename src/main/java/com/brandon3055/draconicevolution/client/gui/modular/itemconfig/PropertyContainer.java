@@ -14,15 +14,17 @@ import com.brandon3055.brandonscore.client.gui.modulargui.lib.GuiAlign;
 import com.brandon3055.brandonscore.client.utils.GuiHelperOld;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.GuiConfigurableItem.UpdateAnim;
+import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.model.RenderMaterial;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.client.util.InputMappings;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.client.resources.model.Material;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.client.settings.KeyModifier;
 import org.lwjgl.glfw.GLFW;
 
@@ -196,7 +198,7 @@ public class PropertyContainer extends GuiManipulable {
             }
 
             KeyModifier activeMod = KeyModifier.getActiveModifier();
-            InputMappings.Input input = InputMappings.getKey(keyCode, scanCode);
+            InputConstants.Key input = InputConstants.getKey(keyCode, scanCode);
             boundKey = input.toString();
             if (activeMod.matches(input)) {
                 reloadElement();
@@ -214,9 +216,9 @@ public class PropertyContainer extends GuiManipulable {
     }
 
     private String getBindingName() {
-        if (binding) return ">" + (boundKey.isEmpty() ? "   " : I18n.get(InputMappings.getKey(boundKey).getName())) + "<";
+        if (binding) return ">" + (boundKey.isEmpty() ? "   " : I18n.get(InputConstants.getKey(boundKey).getName())) + "<";
         else if (boundKey.isEmpty()) return I18n.get("gui.draconicevolution.item_config.not_bound");
-        InputMappings.Input keyCode = InputMappings.getKey(boundKey);
+        InputConstants.Key keyCode = InputConstants.getKey(boundKey);
         return modifier.getCombinedName(keyCode, keyCode::getDisplayName).getString();
     }
 
@@ -530,16 +532,18 @@ public class PropertyContainer extends GuiManipulable {
 
     @Override
     public boolean renderOverlayLayer(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
+        PoseStack poseStack = new PoseStack();
+        poseStack.translate(0, 0, getRenderZLevel());
         if (dropTarget != null && timeSinceMove > 10) {
             if (!dropTarget.isGroup) {
-                drawHoveringTextString(Collections.singletonList(I18n.get("gui.draconicevolution.item_config.drop_create_group.info")), mouseX, mouseY, fontRenderer);
+                renderTooltip(poseStack, new TranslatableComponent("gui.draconicevolution.item_config.drop_create_group.info"), mouseX, mouseY);
             } else {
-                drawHoveringTextString(Collections.singletonList(I18n.get("gui.draconicevolution.item_config.add_to_group.info")), mouseX, mouseY, fontRenderer);
+                renderTooltip(poseStack, new TranslatableComponent("gui.draconicevolution.item_config.add_to_group.info"), mouseX, mouseY);
             }
             return true;
         }
         if (dragPos && gui.deleteZone.isMouseOver(mouseX, mouseY)) {
-            drawHoveringTextString(Collections.singletonList(I18n.get("gui.draconicevolution.item_config.drop_to_delete.info")), mouseX, mouseY, fontRenderer);
+            renderTooltip(poseStack, new TranslatableComponent("gui.draconicevolution.item_config.drop_to_delete.info"), mouseX, mouseY);
         }
 
         return super.renderOverlayLayer(minecraft, mouseX, mouseY, partialTicks);
@@ -571,7 +575,7 @@ public class PropertyContainer extends GuiManipulable {
             animDistance = 0;
         }
 
-        IRenderTypeBuffer.Impl getter = IRenderTypeBuffer.immediate(Tessellator.getInstance().getBuilder());
+        MultiBufferSource.BufferSource getter = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
 
         if (dropTarget != null) {
             double zLevel = getRenderZLevel() - 10;
@@ -591,7 +595,7 @@ public class PropertyContainer extends GuiManipulable {
         }
 
         int alpha = semiTrans ? 0x60000000 : 0xFF000000;
-        RenderMaterial mat = BCSprites.getThemed("borderless_bg_dynamic_small");
+        Material mat = BCSprites.getThemed("borderless_bg_dynamic_small");
         drawDynamicSprite(getter.getBuffer(mat.renderType(e -> BCSprites.GUI_TYPE)), mat.sprite(), xPos(), yPos(), xSize(), ySize(), 2, 2, 2, 2, 0xFFFFFF | alpha);
 
         int contentPos = yPos() + 2 + 9;
@@ -606,8 +610,8 @@ public class PropertyContainer extends GuiManipulable {
             drawShadedRect(getter, xPos() + 2, contentPos, xSize() - 4, contentHeight, 1, 0, dark, light, midColour(light, dark));
 //            }
             getter.endBatch();
-            if (dataList.isEmpty()) {
-                drawCustomString(fontRenderer, I18n.get("gui.draconicevolution.item_config.drop_prop_here"), xPos() + 3, yPos() + 13, xSize() - 6, GuiToolkit.Palette.BG.text(), GuiAlign.CENTER, GuiAlign.TextRotation.NORMAL, false, true, BCConfig.darkMode);
+            if (dataList.isEmpty()) { //TODO Test this???
+                drawCustomString(fontRenderer, new TranslatableComponent("gui.draconicevolution.item_config.drop_prop_here"), xPos() + 3, yPos() + 13, xSize() - 6, GuiToolkit.Palette.BG.text(), GuiAlign.CENTER, false, false, true, BCConfig.darkMode);
             }
         } else {
             getter.endBatch();
@@ -631,8 +635,8 @@ public class PropertyContainer extends GuiManipulable {
         setYPos = yPos();
     }
 
-    public CompoundNBT serialize() {
-        CompoundNBT nbt = new CompoundNBT();
+    public CompoundTag serialize() {
+        CompoundTag nbt = new CompoundTag();
         nbt.putBoolean("group", isGroup);
         if (isGroup) {
             nbt.putBoolean("preset", isPreset);
@@ -651,12 +655,12 @@ public class PropertyContainer extends GuiManipulable {
         nbt.putInt("y_size", expandedHeight);
         nbt.put("data", dataList.stream()
                 .map(PropertyData::serialize)
-                .collect(Collectors.toCollection(ListNBT::new)));
+                .collect(Collectors.toCollection(ListTag::new)));
 
         return nbt;
     }
 
-    public static PropertyContainer deserialize(GuiConfigurableItem gui, CompoundNBT nbt) {
+    public static PropertyContainer deserialize(GuiConfigurableItem gui, CompoundTag nbt) {
         boolean isGroup = nbt.getBoolean("group");
         PropertyContainer container = new PropertyContainer(gui, isGroup);
         if (isGroup) {
@@ -675,7 +679,7 @@ public class PropertyContainer extends GuiManipulable {
         container.setYSize(container.expandedHeight);
 
         container.dataList.addAll(nbt.getList("data", 10).stream()
-                .map(e -> (CompoundNBT) e)
+                .map(e -> (CompoundTag) e)
                 .map(PropertyData::deserialize)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList())

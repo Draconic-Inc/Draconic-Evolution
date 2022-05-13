@@ -11,22 +11,22 @@ import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.integration.equipment.EquipmentManager;
 import com.brandon3055.draconicevolution.lib.WTFException;
 import com.google.common.collect.Streams;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.ClickType;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Util;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 import java.util.HashSet;
@@ -47,7 +47,7 @@ public class ContainerConfigurableItem extends ContainerBCore<Object> {
     private Consumer<Boolean> onSelectionMade;
     private ItemStack stackCache = ItemStack.EMPTY;
 
-    public ContainerConfigurableItem(int windowId, PlayerInventory player, PacketBuffer extraData, ContainerSlotLayout.LayoutFactory<Object> factory) {
+    public ContainerConfigurableItem(int windowId, Inventory player, FriendlyByteBuf extraData, ContainerSlotLayout.LayoutFactory<Object> factory) {
         super(DEContent.container_configurable_item, windowId, player, extraData, factory);
         PlayerSlot slot = PlayerSlot.fromBuff(extraData);
         UUID found = getProviderID(slot.getStackInSlot(player.player));
@@ -55,7 +55,7 @@ public class ContainerConfigurableItem extends ContainerBCore<Object> {
         this.selectedId = found == null ? DEFAULT_UUID : found;
     }
 
-    public ContainerConfigurableItem(int windowId, PlayerInventory player, PlayerSlot itemSlot, ContainerSlotLayout.LayoutFactory<Object> factory) {
+    public ContainerConfigurableItem(int windowId, Inventory player, PlayerSlot itemSlot, ContainerSlotLayout.LayoutFactory<Object> factory) {
         super(DEContent.container_configurable_item, windowId, player, factory);
         sanitizeProviders();
         UUID found = getProviderID(itemSlot.getStackInSlot(player.player));
@@ -105,33 +105,61 @@ public class ContainerConfigurableItem extends ContainerBCore<Object> {
     }
 
     @Override
-    public ItemStack clicked(int slotId, int button, ClickType clickTypeIn, PlayerEntity player) {
+    public void clicked(int slotId, int button, ClickType clickTypeIn, Player player) {
         if (slotId >= 0 && slotId < slots.size()) {
             Slot slot = this.slots.get(slotId);
             if (slot != null && !slot.getItem().isEmpty()) {
                 LazyOptional<PropertyProvider> optionalCap = slot.getItem().getCapability(DECapabilities.PROPERTY_PROVIDER_CAPABILITY);
                 if (optionalCap.isPresent()) {
                     PropertyProvider provider = optionalCap.orElseThrow(WTFException::new);
-                    if (clickTypeIn == ClickType.PICKUP && button == 0 && player.inventory.getCarried().isEmpty()) {
+                    if (clickTypeIn == ClickType.PICKUP && button == 0 && player.inventoryMenu.getCarried().isEmpty()) {
                         selectedId = provider.getProviderID();
                         if (onSelectionMade != null) {
                             onSelectionMade.accept(false);
                         }
                         stackCache = slot.getItem();
-                        return ItemStack.EMPTY;
+                        return;
                     }
                 }
             }
         }
         if (slotId > 40) {
-            return ItemStack.EMPTY;
+            return;
         }
-        ItemStack ret = super.clicked(slotId, button, clickTypeIn, player);
         if (onInventoryChange != null) {
             onInventoryChange.run();
         }
-        return ret;
+        super.clicked(slotId, button, clickTypeIn, player);
     }
+
+    //    @Override
+//    public ItemStack clicked(int slotId, int button, ClickType clickTypeIn, Player player) {
+//        if (slotId >= 0 && slotId < slots.size()) {
+//            Slot slot = this.slots.get(slotId);
+//            if (slot != null && !slot.getItem().isEmpty()) {
+//                LazyOptional<PropertyProvider> optionalCap = slot.getItem().getCapability(DECapabilities.PROPERTY_PROVIDER_CAPABILITY);
+//                if (optionalCap.isPresent()) {
+//                    PropertyProvider provider = optionalCap.orElseThrow(WTFException::new);
+//                    if (clickTypeIn == ClickType.PICKUP && button == 0 && player.inventoryMenu.getCarried().isEmpty()) {
+//                        selectedId = provider.getProviderID();
+//                        if (onSelectionMade != null) {
+//                            onSelectionMade.accept(false);
+//                        }
+//                        stackCache = slot.getItem();
+//                        return ItemStack.EMPTY;
+//                    }
+//                }
+//            }
+//        }
+//        if (slotId > 40) {
+//            return ItemStack.EMPTY;
+//        }
+//        ItemStack ret = super.clicked(slotId, button, clickTypeIn, player);
+//        if (onInventoryChange != null) {
+//            onInventoryChange.run();
+//        }
+//        return ret;
+//    }
 
     public UUID getSelectedId() {
         return selectedId;
@@ -145,7 +173,7 @@ public class ContainerConfigurableItem extends ContainerBCore<Object> {
         return null;
     }
 
-    private static Stream<ItemStack> getPlayerInventory(PlayerInventory player) {
+    private static Stream<ItemStack> getPlayerInventory(Inventory player) {
         return Streams.concat(player.items.stream(), player.armor.stream(), player.offhand.stream(), EquipmentManager.getAllItems(player.player).stream()).filter(e -> !e.isEmpty());
     }
 
@@ -156,7 +184,7 @@ public class ContainerConfigurableItem extends ContainerBCore<Object> {
                 .map(e -> Pair.of(e.key(), e.value().orElseThrow(WTFException::new)));
     }
 
-    public static void handlePropertyData(PlayerEntity player, PropertyData data) {
+    public static void handlePropertyData(Player player, PropertyData data) {
         if (data.isGlobal) {
             getStackProviders(getPlayerInventory(player.inventory))
                     .filter(e -> e.value().getProviderName().equals(data.providerName))
@@ -176,19 +204,19 @@ public class ContainerConfigurableItem extends ContainerBCore<Object> {
     }
 
     @Override
-    public void setAll(List<ItemStack> stacks) {
-        super.setAll(stacks);
-        onSyncDataReceived();
-    }
-
-    @Override
     public void broadcastChanges() {
         super.broadcastChanges();
     }
 
     @Override
-    public void setItem(int slotID, ItemStack stack) {
-        super.setItem(slotID, stack);
+    public void initializeContents(int stateId, List<ItemStack> stacks, ItemStack carried) {
+        super.initializeContents(stateId, stacks, carried);
+        onSyncDataReceived();
+    }
+
+    @Override
+    public void setItem(int slotID, int stateId, ItemStack stack) {
+        super.setItem(slotID, stateId, stack);
         onSyncDataReceived();
     }
 
@@ -217,10 +245,10 @@ public class ContainerConfigurableItem extends ContainerBCore<Object> {
     }
 
 
-    public static void tryOpenGui(ServerPlayerEntity sender) {
+    public static void tryOpenGui(ServerPlayer sender) {
         ItemStack stack = sender.getMainHandItem();
         if (!stack.isEmpty() && stack.getCapability(DECapabilities.PROPERTY_PROVIDER_CAPABILITY).isPresent()) {
-            PlayerSlot slot = new PlayerSlot(sender, Hand.MAIN_HAND);
+            PlayerSlot slot = new PlayerSlot(sender, InteractionHand.MAIN_HAND);
             NetworkHooks.openGui(sender, new ContainerConfigurableItem.Provider(slot), slot::toBuff);
             return;
         } else {
@@ -231,10 +259,10 @@ public class ContainerConfigurableItem extends ContainerBCore<Object> {
             }
         }
 
-        sender.sendMessage(new TranslationTextComponent("gui.draconicevolution.item_config.no_configurable_items").withStyle(TextFormatting.RED), Util.NIL_UUID);
+        sender.sendMessage(new TranslatableComponent("gui.draconicevolution.item_config.no_configurable_items").withStyle(ChatFormatting.RED), Util.NIL_UUID);
     }
 
-    public static class Provider implements INamedContainerProvider {
+    public static class Provider implements MenuProvider {
         private PlayerSlot slot;
 
         public Provider(PlayerSlot slot) {
@@ -242,13 +270,13 @@ public class ContainerConfigurableItem extends ContainerBCore<Object> {
         }
 
         @Override
-        public ITextComponent getDisplayName() {
-            return new TranslationTextComponent("gui.draconicevolution.item_config.name");
+        public Component getDisplayName() {
+            return new TranslatableComponent("gui.draconicevolution.item_config.name");
         }
 
         @Nullable
         @Override
-        public Container createMenu(int menuID, PlayerInventory playerInventory, PlayerEntity playerEntity) {
+        public AbstractContainerMenu createMenu(int menuID, Inventory playerInventory, Player playerEntity) {
             return new ContainerConfigurableItem(menuID, playerInventory, slot, GuiLayoutFactories.CONFIGURABLE_ITEM_LAYOUT);
         }
     }

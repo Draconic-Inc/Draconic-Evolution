@@ -3,9 +3,9 @@ package com.brandon3055.draconicevolution.api.config;
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
 import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.PropertyData;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -26,7 +26,7 @@ public class BooleanProperty extends ConfigProperty {
         this.value = this.defaultValue = defaultValue;
     }
 
-    public BooleanProperty(String name, ITextComponent displayName, boolean defaultValue) {
+    public BooleanProperty(String name, Component displayName, boolean defaultValue) {
         super(name, displayName);
         this.value = this.defaultValue = defaultValue;
     }
@@ -85,8 +85,8 @@ public class BooleanProperty extends ConfigProperty {
     }
 
     @Override
-    public CompoundNBT serializeNBT() {
-        CompoundNBT nbt = super.serializeNBT();
+    public CompoundTag serializeNBT() {
+        CompoundTag nbt = super.serializeNBT();
         if (this.value != this.defaultValue) {
             nbt.putBoolean("value", value);
         }
@@ -94,7 +94,7 @@ public class BooleanProperty extends ConfigProperty {
     }
 
     @Override
-    public void deserializeNBT(CompoundNBT nbt) {
+    public void deserializeNBT(CompoundTag nbt) {
         if (nbt.contains("value")) {
             value = nbt.getBoolean("value");
         }

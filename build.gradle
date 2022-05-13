@@ -22,7 +22,7 @@ apply plugin: 'net.minecraftforge.gradle'
 //apply plugin: "org.spongepowered.mixin"
 apply from: 'https://raw.githubusercontent.com/SizableShrimp/Forge-Class-Remapper/main/classremapper.gradle'
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(8)
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 group = "com.brandon3055.draconicevolution"
 archivesBaseName = "Draconic-Evolution"
@@ -142,11 +142,10 @@ dependencies {
     implementation fg.deobf("mezz.jei:jei-${config.mc_version}:${config.jei_version}")
 
     implementation fg.deobf("top.theillusivec4.curios:curios-forge:${config.mc_version}-${config.curios_version}")
-
     implementation fg.deobf("org.squiddev:cc-tweaked-${config.mc_version}:${config.cct_version}")
 
-    implementation fg.deobf("com.blamejared.crafttweaker:CraftTweaker-${config.mc_version}:${config.crt_version}")
 
+    compileOnly fg.deobf("com.blamejared.crafttweaker:CraftTweaker-forge-${config.mc_version}:${config.crt_version}")
 //    annotationProcessor("org.spongepowered:mixin:0.8.2:processor")
 }
 

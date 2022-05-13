@@ -4,18 +4,18 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.entity.GuardianCrystalEntity;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.world.ChaosWorldGenHandler;
-import net.minecraft.entity.item.EnderCrystalEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.boss.enderdragon.EndCrystal;
 
 import java.util.List;
 
 public enum GuardianSpawnState {
     START_WAIT_FOR_PLAYER {
-        public void process(ServerWorld world, GuardianFightManager manager, List<EnderCrystalEntity> crystals, int ticks, BlockPos pos) {
+        public void process(ServerLevel world, GuardianFightManager manager, List<EndCrystal> crystals, int ticks, BlockPos pos) {
             if (ticks % 20 == 0) {
-                for (ServerPlayerEntity player : manager.getTrackedPlayers()) {
+                for (ServerPlayer player : manager.getTrackedPlayers()) {
                     if (pos.above(15).distSqr(player.blockPosition()) <= 15*15) {
                         DraconicEvolution.LOGGER.info("Player In Range. Guardian spawn progressing to PREPARING_TO_SUMMON_PILLARS");
                         manager.setRespawnState(PREPARING_TO_SUMMON_PILLARS);
@@ -25,7 +25,7 @@ public enum GuardianSpawnState {
         }
     },
     PREPARING_TO_SUMMON_PILLARS {
-        public void process(ServerWorld world, GuardianFightManager manager, List<EnderCrystalEntity> crystals, int ticks, BlockPos pos) {
+        public void process(ServerLevel world, GuardianFightManager manager, List<EndCrystal> crystals, int ticks, BlockPos pos) {
             if (ticks < 70) {
                 if (ticks == 0 || ticks == 20 || ticks == 21 || ticks == 22 || ticks >= 65) {
                     world.levelEvent(3001, new BlockPos(pos.getX(), 128, pos.getZ()), 0);
@@ -37,7 +37,7 @@ public enum GuardianSpawnState {
         }
     },
     SUMMONING_PILLARS {
-        public void process(ServerWorld world, GuardianFightManager manager, List<EnderCrystalEntity> crystals, int ticks, BlockPos pos) {
+        public void process(ServerLevel world, GuardianFightManager manager, List<EndCrystal> crystals, int ticks, BlockPos pos) {
             int spawnRate = 15;
             boolean spawn = ticks % spawnRate == 0;
 
@@ -64,7 +64,7 @@ public enum GuardianSpawnState {
         }
     },
     SUMMONING_GUARDIAN {
-        public void process(ServerWorld world, GuardianFightManager manager, List<EnderCrystalEntity> crystals, int ticks, BlockPos pos) {
+        public void process(ServerLevel world, GuardianFightManager manager, List<EndCrystal> crystals, int ticks, BlockPos pos) {
             if (ticks >= 50) {
                 manager.setRespawnState(END);
                 manager.resetCrystals();
@@ -76,12 +76,12 @@ public enum GuardianSpawnState {
         }
     },
     END {
-        public void process(ServerWorld world, GuardianFightManager manager, List<EnderCrystalEntity> crystals, int ticks, BlockPos pos) {
+        public void process(ServerLevel world, GuardianFightManager manager, List<EndCrystal> crystals, int ticks, BlockPos pos) {
         }
     };
 
     private GuardianSpawnState() {
     }
 
-    public abstract void process(ServerWorld world, GuardianFightManager manager, List<EnderCrystalEntity> crystals, int ticks, BlockPos pos);
+    public abstract void process(ServerLevel world, GuardianFightManager manager, List<EndCrystal> crystals, int ticks, BlockPos pos);
 }

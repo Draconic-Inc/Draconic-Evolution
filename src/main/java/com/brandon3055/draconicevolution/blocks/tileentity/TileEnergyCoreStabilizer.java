@@ -15,25 +15,24 @@ import com.brandon3055.draconicevolution.blocks.machines.EnergyCoreStabilizer;
 import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.init.DEContent;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
  * Created by brandon3055 on 30/3/2016.
  */
-public class TileEnergyCoreStabilizer extends TileBCore implements ITickableTileEntity, IMultiBlockPart, IInteractTile {
+public class TileEnergyCoreStabilizer extends TileBCore implements IMultiBlockPart, IInteractTile {
 
     public final ManagedVec3I coreOffset = register(new ManagedVec3I("core_offset", new Vec3I(0, -1, 0), DataFlags.SAVE_NBT_SYNC_TILE));
 
@@ -47,8 +46,8 @@ public class TileEnergyCoreStabilizer extends TileBCore implements ITickableTile
     private boolean moveCheckComplete = false;
 
 
-    public TileEnergyCoreStabilizer() {
-        super(DEContent.tile_core_stabilizer);
+    public TileEnergyCoreStabilizer(BlockPos pos, BlockState state) {
+        super(DEContent.tile_core_stabilizer, pos, state);
     }
 
     //    //region Beam
@@ -105,7 +104,7 @@ public class TileEnergyCoreStabilizer extends TileBCore implements ITickableTile
 
 
     @Override
-    public boolean onBlockActivated(BlockState state, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+    public boolean onBlockActivated(BlockState state, Player player, InteractionHand handIn, BlockHitResult hit) {
         if (level.isClientSide) return true;
 
         TileEnergyCore core = getCore();
@@ -116,7 +115,7 @@ public class TileEnergyCoreStabilizer extends TileBCore implements ITickableTile
         if (core != null) {
             core.onStructureClicked(level, worldPosition, state, player);
         } else {
-            player.sendMessage(new TranslationTextComponent("msg.de.coreNotFound.txt").withStyle(TextFormatting.DARK_RED), Util.NIL_UUID);
+            player.sendMessage(new TranslatableComponent("msg.de.coreNotFound.txt").withStyle(ChatFormatting.DARK_RED), Util.NIL_UUID);
         }
         return true;
     }
@@ -144,7 +143,7 @@ public class TileEnergyCoreStabilizer extends TileBCore implements ITickableTile
         for (Direction facing1 : Direction.values()) {
             BlockPos search = worldPosition.offset(facing1.getStepX(), facing1.getStepY(), facing1.getStepZ());
 
-            TileEntity stabilizer = level.getBlockEntity(search);
+            BlockEntity stabilizer = level.getBlockEntity(search);
 
             if (stabilizer instanceof TileEnergyCoreStabilizer && ((TileEnergyCoreStabilizer) stabilizer).checkAndFormMultiBlock()) {
                 return;
@@ -200,18 +199,18 @@ public class TileEnergyCoreStabilizer extends TileBCore implements ITickableTile
      */
     private boolean isAvailable(BlockPos pos) {
         if (isValidMultiBlock.get()) {
-            TileEntity tile = level.getBlockEntity(pos);
+            BlockEntity tile = level.getBlockEntity(pos);
             return tile instanceof TileCoreStructure && ((TileCoreStructure) tile).getController() == this;
         }
 
-        TileEntity stabilizer = level.getBlockEntity(pos);
+        BlockEntity stabilizer = level.getBlockEntity(pos);
         return stabilizer instanceof TileEnergyCoreStabilizer && (!((TileEnergyCoreStabilizer) stabilizer).hasCoreLock.get() || ((TileEnergyCoreStabilizer) stabilizer).getCore() == null || !((TileEnergyCoreStabilizer) stabilizer).getCore().active.get());
     }
 
     private void buildMultiBlock(Direction.Axis axis) {
         for (BlockPos offset : FacingUtils.getAroundAxis(axis)) {
             level.setBlockAndUpdate(worldPosition.offset(offset), DEContent.energy_core_structure.defaultBlockState());
-            TileEntity tile = level.getBlockEntity(worldPosition.offset(offset));
+            BlockEntity tile = level.getBlockEntity(worldPosition.offset(offset));
 
             if (tile instanceof TileCoreStructure) {
                 ((TileCoreStructure) tile).blockName.set("draconicevolution:energy_core_stabilizer");
@@ -235,7 +234,7 @@ public class TileEnergyCoreStabilizer extends TileBCore implements ITickableTile
         }
 
         for (BlockPos offset : FacingUtils.getAroundAxis(multiBlockAxis.get())) {
-            TileEntity tile = level.getBlockEntity(worldPosition.offset(offset));
+            BlockEntity tile = level.getBlockEntity(worldPosition.offset(offset));
             if (tile instanceof TileCoreStructure) {
                 ((TileCoreStructure) tile).revert();
             }
@@ -278,7 +277,7 @@ public class TileEnergyCoreStabilizer extends TileBCore implements ITickableTile
 
         for (Direction facing : Direction.values()) {
             for (int i = 0; i < 16; i++) {
-                TileEntity tile = level.getBlockEntity(worldPosition.offset(facing.getStepX() * i, facing.getStepY() * i, facing.getStepZ() * i));
+                BlockEntity tile = level.getBlockEntity(worldPosition.offset(facing.getStepX() * i, facing.getStepY() * i, facing.getStepZ() * i));
                 if (tile instanceof TileEnergyCore) {
                     TileEnergyCore core = (TileEnergyCore) tile;
                     core.validateStructure();
@@ -295,7 +294,7 @@ public class TileEnergyCoreStabilizer extends TileBCore implements ITickableTile
 //
     public TileEnergyCore getCore() {
         if (hasCoreLock.get()) {
-            TileEntity tile = level.getBlockEntity(getCorePos());
+            BlockEntity tile = level.getBlockEntity(getCorePos());
             if (tile instanceof TileEnergyCore) {
                 return (TileEnergyCore) tile;
             } else {
@@ -318,7 +317,7 @@ public class TileEnergyCoreStabilizer extends TileBCore implements ITickableTile
     }
 
     @Override
-    public AxisAlignedBB getRenderBoundingBox() {
+    public AABB getRenderBoundingBox() {
         return super.getRenderBoundingBox().expandTowards(1, 1, 1);
     }
 

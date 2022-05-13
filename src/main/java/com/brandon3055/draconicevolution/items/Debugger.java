@@ -1,16 +1,20 @@
 package com.brandon3055.draconicevolution.items;
 
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.*;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.Util;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -41,8 +45,8 @@ public class Debugger extends Item {
     }
 
     @Override
-    public boolean onLeftClickEntity(ItemStack stack, PlayerEntity player, Entity entity) {
-        World world = player.level;
+    public boolean onLeftClickEntity(ItemStack stack, Player player, Entity entity) {
+        Level world = player.level;
 //        EntityChaosGuardian guardian = DataUtils.firstMatch(world.getEntitiesWithinAABB(EntityChaosGuardian.class, player.getEntityBoundingBox().grow(300)), entityChaosGuardian -> true);
 //        if (guardian != null) {
 //            guardian.removePassengers();
@@ -59,7 +63,7 @@ public class Debugger extends Item {
 
 
     @Override
-    public void inventoryTick(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
+    public void inventoryTick(ItemStack stack, Level worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
 
 //        if (!worldIn.isRemote % 500 == 0) {
 //            ServerPlayerEntity player = (ServerPlayerEntity) entityIn;
@@ -125,7 +129,7 @@ public class Debugger extends Item {
 //    private
 
     @Override
-    public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
+    public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
         ItemStack itemStack = player.getItemInHand(hand);
         //if (!world.isRemote) {
         double posX = player.getX() - (player.getX() % 16) + 8;
@@ -625,7 +629,7 @@ public class Debugger extends Item {
         return super.use(world, player, hand);
     }
 
-    public ActionResult<ItemStack> handleRightClick(ItemStack stack, World world, PlayerEntity player, Hand hand) {
+    public InteractionResultHolder<ItemStack> handleRightClick(ItemStack stack, Level world, Player player, InteractionHand hand) {
 
 //
 ////
@@ -763,10 +767,10 @@ public class Debugger extends Item {
                 mode = 0;
             }
             if (!world.isClientSide) {
-                player.sendMessage(new StringTextComponent(MODES.get(mode)), Util.NIL_UUID);
+                player.sendMessage(new TextComponent(MODES.get(mode)), Util.NIL_UUID);
             }
             ItemNBTHelper.setInteger(stack, "mode", mode);
-            return new ActionResult<>(ActionResultType.SUCCESS, stack);
+            return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
         }
 
         switch (mode) {
@@ -809,12 +813,12 @@ public class Debugger extends Item {
                 break;
         }
 
-        return new ActionResult<ItemStack>(ActionResultType.PASS, stack);
+        return new InteractionResultHolder<ItemStack>(InteractionResult.PASS, stack);
     }
 
     @Override
-    public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
-        World world = context.getLevel();
+    public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
+        Level world = context.getLevel();
         BlockPos pos = context.getClickedPos();
         Direction side = context.getClickedFace();
 
@@ -883,7 +887,7 @@ public class Debugger extends Item {
 
             case 1:
             case 2:
-                TileEntity tile = world.getBlockEntity(pos);
+                BlockEntity tile = world.getBlockEntity(pos);
 //                if (mode == 1 && tile instanceof IEnergyReceiver) {
 //                    if (!world.isRemote) {
 //                        LogHelper.info(((IEnergyReceiver) tile).receiveEnergy(side, Integer.MAX_VALUE, false));
@@ -900,7 +904,7 @@ public class Debugger extends Item {
         }
 
 //        return miscFunctions(stack, context.getPlayer(), world, pos, side, hitX, hitY, hitZ, hand, mode);
-        return ActionResultType.PASS;
+        return InteractionResult.PASS;
     }
 
     //endregion
@@ -930,7 +934,7 @@ public class Debugger extends Item {
 //        return EnumActionResult.PASS;
 //    }
 
-    private void destroyUniverse(PlayerEntity player) {
+    private void destroyUniverse(Player player) {
         /*
          * == Logic Design ideas ==
          * Zones:

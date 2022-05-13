@@ -2,8 +2,8 @@ package com.brandon3055.draconicevolution.achievements;
 
 
 import net.minecraft.advancements.Advancement;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -39,7 +39,7 @@ public class Achievements {
         return achievementsList.get(name);
     }
 
-    public static void triggerAchievement(PlayerEntity player, String name) {
+    public static void triggerAchievement(Player player, String name) {
 
 //        Achievement ach = getAchievement(name);
 //

@@ -22,16 +22,16 @@ import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.items.tools.DislocatorAdvanced;
 import com.brandon3055.draconicevolution.items.tools.DislocatorAdvanced.DislocatorTarget;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.model.RenderMaterial;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.resources.model.Material;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -41,7 +41,7 @@ import java.util.List;
  * Created by brandon3055 on 4/1/21
  */
 public class GuiDislocator extends ModularGuiScreen {
-    private final PlayerEntity player;
+    private final Player player;
     private List<DislocatorTarget> targetList = new ArrayList<>();
     private LinkedList<TargetElement> targetElements = new LinkedList();
     private GuiScrollElement scrollElement;
@@ -56,7 +56,7 @@ public class GuiDislocator extends ModularGuiScreen {
 
     protected GuiToolkit<GuiDislocator> toolkit = new GuiToolkit<>(this, 240, 177).setTranslationPrefix("gui.draconicevolution.dislocator");
 
-    public GuiDislocator(ITextComponent title, PlayerEntity player) {
+    public GuiDislocator(Component title, Player player) {
         super(title);
         this.player = player;
     }
@@ -100,11 +100,11 @@ public class GuiDislocator extends ModularGuiScreen {
                 .setPos(posBG.maxXPos() + 2, posBG.yPos())
                 .setMaxXPos(temp.background.maxXPos() - bgPad, true)
                 .setHoverText(e -> new String[]{
-                        TextFormatting.AQUA + getTarget().getName(),
-                        TextFormatting.GOLD + "X: " + (int) getTarget().getX(),
-                        TextFormatting.GOLD + "Y: " + (int) getTarget().getY(),
-                        TextFormatting.GOLD + "Z: " + (int) getTarget().getY(),
-                        TextFormatting.GOLD + (hasShiftDown() ? getTarget().getDimension().location().toString() : getTarget().getDimension().location().getPath())});
+                        ChatFormatting.AQUA + getTarget().getName(),
+                        ChatFormatting.GOLD + "X: " + (int) getTarget().getX(),
+                        ChatFormatting.GOLD + "Y: " + (int) getTarget().getY(),
+                        ChatFormatting.GOLD + "Z: " + (int) getTarget().getY(),
+                        ChatFormatting.GOLD + (hasShiftDown() ? getTarget().getDimension().location().toString() : getTarget().getDimension().location().getPath())});
 
         GuiLabel xLabel = infoBG.addChild(new GuiLabel().setAlignment(GuiAlign.LEFT).setShadowStateSupplier(() -> BCConfig.darkMode))
                 .setDisplaySupplier(() -> "X: " + (int) getTarget().getX())
@@ -242,7 +242,7 @@ public class GuiDislocator extends ModularGuiScreen {
     }
 
     private DislocatorTarget getTarget() {
-        return DataUtils.safeGet(targetList, selectedIndex, () -> new DislocatorTarget(0, 0, 0, World.OVERWORLD));
+        return DataUtils.safeGet(targetList, selectedIndex, () -> new DislocatorTarget(0, 0, 0, Level.OVERWORLD));
     }
 
     private void addNew(int mode) {
@@ -297,7 +297,7 @@ public class GuiDislocator extends ModularGuiScreen {
     }
 
     @Override
-    public void render(MatrixStack mStack, int mouseX, int mouseY, float partialTicks) {
+    public void render(PoseStack mStack, int mouseX, int mouseY, float partialTicks) {
         renderBackground(mStack);
         super.render(mStack, mouseX, mouseY, partialTicks);
     }
@@ -315,11 +315,11 @@ public class GuiDislocator extends ModularGuiScreen {
             this.index = index;
             setYSize(12);
             setHoverText(e -> new String[]{
-                    TextFormatting.AQUA + getName(),
-                    TextFormatting.GRAY + toolkit.i18n("right_click_tp"),
-                    TextFormatting.GRAY + toolkit.i18n("double_click_name"),
-                    TextFormatting.GRAY + toolkit.i18n("must_unlock"),
-                    TextFormatting.GRAY + toolkit.i18n("drag_to_move")
+                    ChatFormatting.AQUA + getName(),
+                    ChatFormatting.GRAY + toolkit.i18n("right_click_tp"),
+                    ChatFormatting.GRAY + toolkit.i18n("double_click_name"),
+                    ChatFormatting.GRAY + toolkit.i18n("must_unlock"),
+                    ChatFormatting.GRAY + toolkit.i18n("drag_to_move")
             });
         }
 
@@ -434,9 +434,9 @@ public class GuiDislocator extends ModularGuiScreen {
                 selected = index == selectedIndex;
             }
 
-            RenderMaterial mat = DESprites.get("dislocator/slot");
-            RenderMaterial matSelect = DESprites.get("dislocator/slot_selected");
-            IRenderTypeBuffer.Impl getter = IRenderTypeBuffer.immediate(Tessellator.getInstance().getBuilder());
+            Material mat = DESprites.get("dislocator/slot");
+            Material matSelect = DESprites.get("dislocator/slot_selected");
+            MultiBufferSource.BufferSource getter = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
             drawSprite(getter.getBuffer(BCSprites.GUI_TYPE), xPos(), yPos(), (selected ? matSelect : mat).sprite());
             if ((hovered && !selected)) {
                 getter.endBatch();
@@ -454,7 +454,7 @@ public class GuiDislocator extends ModularGuiScreen {
         public boolean renderOverlayLayer(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
             if (dragging) {
                 int yPos = MathHelper.clip(mouseY - 6, getParent().yPos(), getParent().maxYPos() - 12);
-                IRenderTypeBuffer.Impl getter = IRenderTypeBuffer.immediate(Tessellator.getInstance().getBuilder());
+                MultiBufferSource.BufferSource getter = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
 
                 TargetElement hovered = getHovered(mouseX, mouseY);
                 if (hovered != null) {

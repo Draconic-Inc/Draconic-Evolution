@@ -15,14 +15,14 @@ import com.brandon3055.draconicevolution.handlers.DESounds;
 import com.brandon3055.draconicevolution.init.EquipCfg;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.google.common.collect.Sets;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.SoundCategory;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
-import net.minecraftforge.fml.common.thread.EffectiveSide;
+import net.minecraftforge.fml.util.thread.EffectiveSide;
 
 import java.util.HashMap;
 import java.util.Set;
@@ -213,7 +213,7 @@ public class ShieldControlEntity extends ModuleEntity {
                 shieldCoolDown = getMaxShieldCoolDown();
                 if (envDmgCoolDown == 0) {
                     float hitPitch = 0.7F + (float) (Math.min(1, getShieldPoints() / ((shieldCapacity + getMaxShieldBoost()) * 0.1)) * 0.3);
-                    entity.level.playSound(null, entity.blockPosition(), DESounds.shieldStrike, SoundCategory.PLAYERS, 0.25F, (0.95F + (entity.level.random.nextFloat() * 0.1F)) * hitPitch);
+                    entity.level.playSound(null, entity.blockPosition(), DESounds.shieldStrike, SoundSource.PLAYERS, 0.25F, (0.95F + (entity.level.random.nextFloat() * 0.1F)) * hitPitch);
                     envDmgCoolDown = 40;
                 }
                 return true;
@@ -256,7 +256,7 @@ public class ShieldControlEntity extends ModuleEntity {
         if (damageBlocked && (shieldCapacity + getMaxShieldBoost()) > 0) {
             shieldCoolDown = getMaxShieldCoolDown();
             float hitPitch = 0.7F + (float) (Math.min(1, getShieldPoints() / ((shieldCapacity + getMaxShieldBoost()) * 0.1)) * 0.3);
-            entity.level.playSound(null, entity.blockPosition(), DESounds.shieldStrike, SoundCategory.PLAYERS, 1F, (0.95F + (entity.level.random.nextFloat() * 0.1F)) * hitPitch);
+            entity.level.playSound(null, entity.blockPosition(), DESounds.shieldStrike, SoundSource.PLAYERS, 1F, (0.95F + (entity.level.random.nextFloat() * 0.1F)) * hitPitch);
         }
     }
 
@@ -332,7 +332,7 @@ public class ShieldControlEntity extends ModuleEntity {
     @Override
     public void writeToItemStack(ItemStack stack, ModuleContext context) {
         super.writeToItemStack(stack, context);
-        CompoundNBT nbt = stack.getOrCreateTag();
+        CompoundTag nbt = stack.getOrCreateTag();
         nbt.putInt("cap", shieldCapacity);
         nbt.putDouble("points", shieldPoints);
         nbt.putInt("cooldwn", shieldCoolDown);
@@ -342,7 +342,7 @@ public class ShieldControlEntity extends ModuleEntity {
     public void readFromItemStack(ItemStack stack, ModuleContext context) {
         super.readFromItemStack(stack, context);
         if (stack.hasTag()) {
-            CompoundNBT nbt = stack.getOrCreateTag();
+            CompoundTag nbt = stack.getOrCreateTag();
             shieldCapacity = nbt.getInt("cap");
             shieldPoints = nbt.getDouble("points");
             shieldCoolDown = nbt.getInt("cooldwn");
@@ -350,7 +350,7 @@ public class ShieldControlEntity extends ModuleEntity {
     }
 
     @Override
-    public void writeToNBT(CompoundNBT compound) {
+    public void writeToNBT(CompoundTag compound) {
         super.writeToNBT(compound);
         compound.putInt("cap", shieldCapacity);
         compound.putDouble("points", shieldPoints);
@@ -365,7 +365,7 @@ public class ShieldControlEntity extends ModuleEntity {
     }
 
     @Override
-    public void readFromNBT(CompoundNBT compound) {
+    public void readFromNBT(CompoundTag compound) {
         super.readFromNBT(compound);
         shieldCapacity = compound.getInt("cap");
         shieldPoints = compound.getDouble("points");

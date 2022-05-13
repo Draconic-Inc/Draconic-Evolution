@@ -1,17 +1,15 @@
 package com.brandon3055.draconicevolution.client.render.modelfx;
 
 import codechicken.lib.math.MathHelper;
-import codechicken.lib.util.SneakyUtils;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.api.TimeKeeper;
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.client.renderer.RenderState;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.vertex.VertexFormat;
+import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
+import net.minecraft.resources.ResourceLocation;
 
 import java.awt.*;
 
@@ -19,38 +17,20 @@ import java.awt.*;
  * Created by brandon3055 on 28/2/21
  */
 public class StaffModelEffect extends ModelEffect {
-    private RenderType renderType = RenderType.create("modelEffectType", DefaultVertexFormats.POSITION_COLOR_TEX, GL11.GL_QUADS, 256, RenderType.State.builder()
-            .setTextureState(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/particle/white_orb.png"), false, false))
-            .setTransparencyState(RenderState.LIGHTNING_TRANSPARENCY)
-            .setAlphaState(RenderState.NO_ALPHA)
-            .setCullState(RenderState.NO_CULL)
-            .setWriteMaskState(RenderState.COLOR_WRITE)
-            .setTexturingState(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
-            .createCompositeState(false)
+    private RenderType renderType = RenderType.create("modelEffectType", DefaultVertexFormat.POSITION_COLOR_TEX, VertexFormat.Mode.QUADS, 256, RenderType.CompositeState.builder()
+                    .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(DraconicEvolution.MODID, "textures/particle/white_orb.png"), false, false))
+                    .setTransparencyState(RenderStateShard.LIGHTNING_TRANSPARENCY)
+//            .setAlphaState(RenderStateShard.NO_ALPHA)
+                    .setCullState(RenderStateShard.NO_CULL)
+                    .setWriteMaskState(RenderStateShard.COLOR_WRITE)
+//            .setTexturingState(new RenderStateShard.TexturingStateShard("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
+                    .createCompositeState(false)
     );
-//    private RenderType renderType2 = RenderType.makeType("modelEffectType2", DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP, GL11.GL_QUADS, 256, RenderType.State.getBuilder()
-//                    .texture(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/particle/orb2.png"), false, false))
-//                    .transparency(RenderState.LIGHTNING_TRANSPARENCY)
-//                    .alpha(RenderState.ZERO_ALPHA)
-//                    .cull(RenderState.CULL_DISABLED)
-//                    .writeMask(RenderState.COLOR_WRITE)
-//                    .texturing(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
-//                    .build(false)
-//    );
-//    private RenderType renderType3 = RenderType.makeType("modelEffectType3", DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP, GL11.GL_QUADS, 256, RenderType.State.getBuilder()
-//                    .texture(new RenderState.TextureState(new ResourceLocation(DraconicEvolution.MODID, "textures/particle/orb3.png"), false, false))
-//                    .transparency(RenderState.TRANSLUCENT_TRANSPARENCY)
-//                    .alpha(RenderState.ZERO_ALPHA)
-//                    .cull(RenderState.CULL_DISABLED)
-//                    .writeMask(RenderState.COLOR_WRITE)
-//                    .texturing(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
-//                    .build(false)
-//    );
 
-    private RenderType renderSolidType = RenderType.create("modelEffectType4", DefaultVertexFormats.POSITION_COLOR_LIGHTMAP, GL11.GL_TRIANGLE_FAN, 256, RenderType.State.builder()
-            .setCullState(RenderState.NO_CULL)
-            .setTexturingState(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
-            .createCompositeState(false)
+    private RenderType renderSolidType = RenderType.create("modelEffectType4", DefaultVertexFormat.POSITION_COLOR_LIGHTMAP, VertexFormat.Mode.TRIANGLE_FAN, 256, RenderType.CompositeState.builder()
+                    .setCullState(RenderStateShard.NO_CULL)
+//            .setTexturingState(new RenderStateShard.TexturingStateShard("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
+                    .createCompositeState(false)
     );
 
     public StaffModelEffect() {}
@@ -63,7 +43,7 @@ public class StaffModelEffect extends ModelEffect {
     private int lastProfile = 0;
 
     @Override
-    protected void doRender(IVertexBuilder builder, float partialTicks, TechLevel techLevel) {
+    protected void doRender(VertexConsumer builder, float partialTicks, TechLevel techLevel) {
 //        long profileTime = System.nanoTime();
 
 
@@ -90,7 +70,7 @@ public class StaffModelEffect extends ModelEffect {
 //        }
     }
 
-    private void drawCrystalParticles(IVertexBuilder builder, int pCount, float time, float scaleMod, boolean idle) {
+    private void drawCrystalParticles(VertexConsumer builder, int pCount, float time, float scaleMod, boolean idle) {
         setRandSeed((int) time / 30);
         double gemHeight = 0.4;
         int sCount = 6;
@@ -140,7 +120,7 @@ public class StaffModelEffect extends ModelEffect {
         }
     }
 
-    private void drawFeedInParticles(IVertexBuilder builder, int pCount, float time, float scaleMod, boolean idle, Color color) {
+    private void drawFeedInParticles(VertexConsumer builder, int pCount, float time, float scaleMod, boolean idle, Color color) {
         double gemHeight = 0;//0.35; TODO Temp to make particles target crystal center
         double minY = -0.15625f;
         double maxY = (0.03125F * 11);

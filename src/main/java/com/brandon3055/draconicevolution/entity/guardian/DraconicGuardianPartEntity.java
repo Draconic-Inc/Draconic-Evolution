@@ -1,21 +1,21 @@
 package com.brandon3055.draconicevolution.entity.guardian;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntitySize;
-import net.minecraft.entity.Pose;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
-import net.minecraft.util.DamageSource;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.Pose;
 import net.minecraftforge.entity.PartEntity;
 
 public class DraconicGuardianPartEntity extends PartEntity<DraconicGuardianEntity> {
    public final DraconicGuardianEntity dragon;
    public final String name;
-   private final EntitySize size;
+   private final EntityDimensions size;
 
    public DraconicGuardianPartEntity(DraconicGuardianEntity dragon, String name, float width, float height) {
       super(dragon);
-      this.size = EntitySize.scalable(width, height);
+      this.size = EntityDimensions.scalable(width, height);
       this.refreshDimensions();
       this.dragon = dragon;
       this.name = name;
@@ -24,11 +24,11 @@ public class DraconicGuardianPartEntity extends PartEntity<DraconicGuardianEntit
    protected void defineSynchedData() {
    }
 
-   protected void readAdditionalSaveData(CompoundNBT compound) {
+   protected void readAdditionalSaveData(CompoundTag compound) {
 
    }
 
-   protected void addAdditionalSaveData(CompoundNBT compound) {
+   protected void addAdditionalSaveData(CompoundTag compound) {
 
    }
 
@@ -44,11 +44,11 @@ public class DraconicGuardianPartEntity extends PartEntity<DraconicGuardianEntit
       return this == entityIn || this.dragon == entityIn;
    }
 
-   public IPacket<?> getAddEntityPacket() {
+   public Packet<?> getAddEntityPacket() {
       throw new UnsupportedOperationException();
    }
 
-   public EntitySize getDimensions(Pose poseIn) {
+   public EntityDimensions getDimensions(Pose poseIn) {
       return this.size;
    }
 }

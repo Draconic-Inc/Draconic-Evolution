@@ -7,11 +7,11 @@ import com.brandon3055.draconicevolution.api.damage.DraconicDamage;
 import com.brandon3055.draconicevolution.entity.guardian.DraconicGuardianEntity;
 import com.brandon3055.draconicevolution.entity.guardian.GuardianFightManager;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Mth;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nullable;
@@ -24,8 +24,8 @@ public class ChargingPlayerPhase extends Phase {
     private float abortDamageThreshold = 0.05F;
     private double closestApproach;
     private boolean charging = false;
-    private Vector3d targetLocation;
-    private PlayerEntity targetPlayer;
+    private Vec3 targetLocation;
+    private Player targetPlayer;
 
     public ChargingPlayerPhase(DraconicGuardianEntity guardisn) {
         super(guardisn);
@@ -49,7 +49,7 @@ public class ChargingPlayerPhase extends Phase {
                 if (!charging) {
                     double tRelX = targetLocation.x - guardian.getX();
                     double tRelZ = targetLocation.z - guardian.getZ();
-                    double relTargetAngle = MathHelper.clamp(MathHelper.wrapDegrees(180.0D - MathHelper.atan2(tRelX, tRelZ) * (double) (180F / (float) Math.PI) - (double) guardian.yRot), -50.0D, 50.0D);
+                    double relTargetAngle = Mth.clamp(Mth.wrapDegrees(180.0D - Mth.atan2(tRelX, tRelZ) * (double) (180F / (float) Math.PI) - (double) guardian.getYRot()), -50.0D, 50.0D);
                     charging = Math.abs(relTargetAngle) < 1;
                     if (charging) {
                         debug("CHARGE!");
@@ -91,7 +91,7 @@ public class ChargingPlayerPhase extends Phase {
     }
 
     @Override
-    public void targetPlayer(PlayerEntity player) {
+    public void targetPlayer(Player player) {
         targetPlayer = player;
     }
 
@@ -100,7 +100,7 @@ public class ChargingPlayerPhase extends Phase {
     }
 
     @Nullable
-    public Vector3d getTargetLocation() {
+    public Vec3 getTargetLocation() {
         return targetLocation;
     }
 

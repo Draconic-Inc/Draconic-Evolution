@@ -4,20 +4,20 @@ import com.brandon3055.brandonscore.items.ItemBCore;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.init.DEContent;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.ExperienceOrbEntity;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.ExperienceOrb;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
@@ -45,18 +45,18 @@ public class Magnet extends ItemBCore /*implements IBauble*/ {
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, World worldIn, Entity entity, int itemSlot, boolean isSelected) {
+    public void inventoryTick(ItemStack stack, Level worldIn, Entity entity, int itemSlot, boolean isSelected) {
         updateMagnet(stack, entity);
     }
 
     private void updateMagnet(ItemStack stack, Entity entity) {
-        if (!entity.isShiftKeyDown() && isEnabled(stack) && entity instanceof PlayerEntity) {
-            World world = entity.getCommandSenderWorld();
+        if (!entity.isShiftKeyDown() && isEnabled(stack) && entity instanceof Player) {
+            Level world = entity.getCommandSenderWorld();
             List<ItemEntity> items;
             if (entity.tickCount % 10 == 0) {
-                items = world.getEntitiesOfClass(ItemEntity.class, new AxisAlignedBB(entity.getX(), entity.getY(), entity.getZ(), entity.getX(), entity.getY(), entity.getZ()).inflate(range, range, range));
+                items = world.getEntitiesOfClass(ItemEntity.class, new AABB(entity.getX(), entity.getY(), entity.getZ(), entity.getX(), entity.getY(), entity.getZ()).inflate(range, range, range));
             } else {
-                items = world.getEntitiesOfClass(ItemEntity.class, new AxisAlignedBB(entity.getX(), entity.getY(), entity.getZ(), entity.getX(), entity.getY(), entity.getZ()).inflate(5, 5, 5));
+                items = world.getEntitiesOfClass(ItemEntity.class, new AABB(entity.getX(), entity.getY(), entity.getZ(), entity.getX(), entity.getY(), entity.getZ()).inflate(5, 5, 5));
             }
 
             boolean flag = false;
@@ -69,7 +69,7 @@ public class Magnet extends ItemBCore /*implements IBauble*/ {
                     continue;
                 }
 
-                CompoundNBT itemTag = itemEntity.getPersistentData();
+                CompoundTag itemTag = itemEntity.getPersistentData();
                 if (itemTag != null && itemTag.contains("PreventRemoteMovement")) {
                     continue;
                 }
@@ -78,7 +78,7 @@ public class Magnet extends ItemBCore /*implements IBauble*/ {
                     continue;
                 }
 
-                PlayerEntity closest = world.getNearestPlayer(itemEntity, 4);
+                Player closest = world.getNearestPlayer(itemEntity, 4);
                 if (closest != null && closest != entity) {
                     continue;
                 }
@@ -126,33 +126,31 @@ public class Magnet extends ItemBCore /*implements IBauble*/ {
 //            }
 
             if (flag && DEConfig.itemDislocatorSound) {
-                world.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.1F, 1F + (random.nextFloat() * 0.1F));
+                world.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 1F + (world.random.nextFloat() * 0.1F));
             }
 
-            List<ExperienceOrbEntity> xp = world.getEntitiesOfClass(ExperienceOrbEntity.class, new AxisAlignedBB(entity.getX(), entity.getY(), entity.getZ(), entity.getX(), entity.getY(), entity.getZ()).inflate(4, 4, 4));
+            List<ExperienceOrb> xp = world.getEntitiesOfClass(ExperienceOrb.class, new AABB(entity.getX(), entity.getY(), entity.getZ(), entity.getX(), entity.getY(), entity.getZ()).inflate(4, 4, 4));
 
-            PlayerEntity player = (PlayerEntity) entity;
+            Player player = (Player) entity;
 
-            for (ExperienceOrbEntity orb : xp) {
+            for (ExperienceOrb orb : xp) {
                 if (!world.isClientSide && orb.isAlive()) {
-                    if (orb.throwTime == 0) {
-                        if (MinecraftForge.EVENT_BUS.post(new PlayerXpEvent.PickupXp(player, orb))) {
-                            continue;
-                        }
-                        if (DEConfig.itemDislocatorSound) {
-                            world.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.1F, 0.5F * ((world.random.nextFloat() - world.random.nextFloat()) * 0.7F + 1.8F));
-                        }
-                        player.take(orb, 1);
-                        player.giveExperiencePoints(orb.value);
-                        orb.remove();
+                    if (MinecraftForge.EVENT_BUS.post(new PlayerXpEvent.PickupXp(player, orb))) {
+                        continue;
                     }
+                    if (DEConfig.itemDislocatorSound) {
+                        world.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * ((world.random.nextFloat() - world.random.nextFloat()) * 0.7F + 1.8F));
+                    }
+                    player.take(orb, 1);
+                    player.giveExperiencePoints(orb.value);
+                    orb.discard();
                 }
             }
         }
     }
 
     @Override
-    public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
+    public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (player.isShiftKeyDown()) {
             toggleEnabled(stack, player);
@@ -163,7 +161,7 @@ public class Magnet extends ItemBCore /*implements IBauble*/ {
     @OnlyIn(Dist.CLIENT)
     @SuppressWarnings("unchecked")
     @Override
-    public void appendHoverText(ItemStack stack, World p_77624_2_, List list, ITooltipFlag p_77624_4_) {
+    public void appendHoverText(ItemStack stack, Level p_77624_2_, List list, TooltipFlag p_77624_4_) {
 //        list.add(StatCollector.translateToLocal("info.de.shiftRightClickToActivate.txt"));
 //        int range = stack.getItemDamage() == 0 ? 8 : 32;
 //        list.add(InfoHelper.HITC() + range + InfoHelper.ITC() + " " + StatCollector.translateToLocal("info.de.blockRange.txt"));
@@ -173,9 +171,9 @@ public class Magnet extends ItemBCore /*implements IBauble*/ {
         return ItemNBTHelper.getBoolean(stack, "IsActive", false);
     }
 
-    public static void toggleEnabled(ItemStack stack, PlayerEntity player) {
+    public static void toggleEnabled(ItemStack stack, Player player) {
         ItemNBTHelper.setBoolean(stack, "IsActive", !isEnabled(stack));
-        player.level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.1F, isEnabled(stack) ? 1F : 0.5F);
+        player.level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, isEnabled(stack) ? 1F : 0.5F);
     }
 
 //    @Optional.Method(modid = "baubles")

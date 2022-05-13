@@ -7,21 +7,21 @@ import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.item.SpawnEggItem;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.SpawnEggItem;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -44,11 +44,11 @@ public class MobSoul extends ItemBCore {
     }
 
     @Override
-    public ActionResultType useOn(ItemUseContext context) {
-        World world = context.getLevel();
+    public InteractionResult useOn(UseOnContext context) {
+        Level world = context.getLevel();
         Direction facing = context.getClickedFace();
         BlockPos pos = context.getClickedPos();
-        PlayerEntity player = context.getPlayer();
+        Player player = context.getPlayer();
 
         ItemStack stack = player.getItemInHand(context.getHand());
         if (player.isShiftKeyDown()) {
@@ -61,15 +61,15 @@ public class MobSoul extends ItemBCore {
                 LogHelper.error("Mob Soul bound entity = null");
                 return super.useOn(context);
             }
-            entity.moveTo(sX, sY, sZ, player.yRot, 0F);
+            entity.moveTo(sX, sY, sZ, player.getYRot(), 0F);
 
             if (!world.isClientSide) {
-                CompoundNBT compound = ItemNBTHelper.getCompound(stack);
-                if (!compound.contains("EntityData") && entity instanceof MobEntity) {
-                    ((MobEntity) entity).finalizeSpawn((ServerWorld)world, world.getCurrentDifficultyAt(new BlockPos(0, 0, 0)), SpawnReason.SPAWN_EGG, null, null);
+                CompoundTag compound = ItemNBTHelper.getCompound(stack);
+                if (!compound.contains("EntityData") && entity instanceof Mob) {
+                    ((Mob) entity).finalizeSpawn((ServerLevel)world, world.getCurrentDifficultyAt(new BlockPos(0, 0, 0)), MobSpawnType.SPAWN_EGG, null, null);
                 }
                 world.addFreshEntity(entity);
-                if (!player.abilities.instabuild) {
+                if (!player.getAbilities().instabuild) {
                     InventoryUtils.consumeHeldItem(player, stack, context.getHand());
                 }
             }
@@ -132,24 +132,24 @@ public class MobSoul extends ItemBCore {
     }
 
     @Nullable
-    public CompoundNBT getEntityData(ItemStack stack) {
-        CompoundNBT compound = ItemNBTHelper.getCompound(stack);
+    public CompoundTag getEntityData(ItemStack stack) {
+        CompoundTag compound = ItemNBTHelper.getCompound(stack);
         if (compound.contains("EntityData")) {
             return compound.getCompound("EntityData");
         }
         return null;
     }
 
-    public void setEntityData(CompoundNBT compound, ItemStack stack) {
+    public void setEntityData(CompoundTag compound, ItemStack stack) {
         compound.remove("UUID");
         compound.remove("Motion");
         ItemNBTHelper.getCompound(stack).put("EntityData", compound);
     }
 
-    public Entity createEntity(World world, ItemStack stack) {
+    public Entity createEntity(Level world, ItemStack stack) {
         try {
             String eName = getEntityString(stack);
-            CompoundNBT entityData = getEntityData(stack);
+            CompoundTag entityData = getEntityData(stack);
             EntityType type = ForgeRegistries.ENTITIES.getValue(getCachedRegName(eName));
             Entity entity;
 
@@ -166,8 +166,8 @@ public class MobSoul extends ItemBCore {
                 }
                 else {
                     loadAdditionalEntityInfo(stack, entity);
-                    if (entity instanceof MobEntity) {
-                        ((MobEntity) entity).finalizeSpawn((ServerWorld)world, world.getCurrentDifficultyAt(new BlockPos(0, 0, 0)), SpawnReason.SPAWN_EGG, null, null);
+                    if (entity instanceof Mob) {
+                        ((Mob) entity).finalizeSpawn((ServerLevel)world, world.getCurrentDifficultyAt(new BlockPos(0, 0, 0)), MobSpawnType.SPAWN_EGG, null, null);
 //                        entitytype.spawn(worldIn, itemstack, playerIn, blockpos, SpawnReason.SPAWN_EGG, false, false)
 //                        type.spawn(world, stack, null, new BlockPos(0, 0, 0), SpawnReason.SPAWN_EGG, false, false);
 
@@ -191,7 +191,7 @@ public class MobSoul extends ItemBCore {
         ItemNBTHelper.setString(soul, "EntityName", registryName);
 
         if (saveEntityData) {
-            CompoundNBT compound = new CompoundNBT();
+            CompoundTag compound = new CompoundTag();
             entity.saveWithoutId(compound);
             setEntityData(compound, soul);
         }
@@ -220,7 +220,7 @@ public class MobSoul extends ItemBCore {
         }
 
         if (!renderEntityMap.containsKey(name)) {
-            World world = Minecraft.getInstance().level;
+            Level world = Minecraft.getInstance().level;
             Entity entity;
             try {
                 EntityType type = ForgeRegistries.ENTITIES.getValue(getCachedRegName(name));

@@ -1,13 +1,13 @@
 package com.brandon3055.draconicevolution.entity.guardian.control;
 
 import com.brandon3055.draconicevolution.entity.guardian.DraconicGuardianEntity;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
 
 @Deprecated //Old vanilla phase
 public class HoverPhase extends Phase {
-   private Vector3d targetLocation;
+   private Vec3 targetLocation;
 
    public HoverPhase(DraconicGuardianEntity guardisn) {
       super(guardisn);
@@ -40,7 +40,7 @@ public class HoverPhase extends Phase {
    }
 
    @Nullable
-   public Vector3d getTargetLocation() {
+   public Vec3 getTargetLocation() {
       return this.targetLocation;
    }
 

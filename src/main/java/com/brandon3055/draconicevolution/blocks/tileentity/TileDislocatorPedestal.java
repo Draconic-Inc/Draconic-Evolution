@@ -16,17 +16,23 @@ import com.brandon3055.draconicevolution.handlers.dislocator.TileTarget;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.items.tools.BoundDislocator;
 import com.brandon3055.draconicevolution.items.tools.Dislocator;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.*;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 import javax.annotation.Nullable;
@@ -36,21 +42,21 @@ import java.util.UUID;
  * Created by brandon3055 on 27/09/2016.
  */
 public class TileDislocatorPedestal extends TileBCore implements DislocatorEndPoint, IInteractTile {
-    private static final ResourceLocation WOOL_TAG = new ResourceLocation("forge:wool");
+//    private static final ResourceLocation WOOL_TAG = new ResourceLocation("forge:wool");
 
     public final ManagedInt rotation = register(new ManagedInt("rotation", 0, DataFlags.SAVE_NBT_SYNC_TILE, DataFlags.TRIGGER_UPDATE));
     public TileItemStackHandler itemHandler = new TileItemStackHandler(1);
 
-    public TileDislocatorPedestal() {
-        super(DEContent.tile_dislocator_pedestal);
+    public TileDislocatorPedestal(BlockPos pos, BlockState state) {
+        super(DEContent.tile_dislocator_pedestal, pos, state);
         capManager.setManaged("inventory", CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, itemHandler).saveBoth().syncTile();
         itemHandler.setSlotValidator(0, stack -> stack.getItem() instanceof Dislocator);
     }
 
     @Override
-    public ActionResultType onBlockUse(BlockState state, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+    public InteractionResult onBlockUse(BlockState state, Player player, InteractionHand hand, BlockHitResult hit) {
         if (level.isClientSide) {
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
         ItemStack stack = itemHandler.getStackInSlot(0);
         if (!player.isShiftKeyDown() && !stack.isEmpty()) {
@@ -59,30 +65,30 @@ public class TileDislocatorPedestal extends TileBCore implements DislocatorEndPo
                 if (location == null) {
                     if (BoundDislocator.isValid(stack)) {
                         if (BoundDislocator.isPlayer(stack)) {
-                            player.sendMessage(new TranslationTextComponent("dislocate.draconicevolution.bound.cant_find_player").withStyle(TextFormatting.RED), Util.NIL_UUID);
+                            player.sendMessage(new TranslatableComponent("dislocate.draconicevolution.bound.cant_find_player").withStyle(ChatFormatting.RED), Util.NIL_UUID);
                         } else {
-                            player.sendMessage(new TranslationTextComponent("dislocate.draconicevolution.bound.cant_find_target").withStyle(TextFormatting.RED), Util.NIL_UUID);
+                            player.sendMessage(new TranslatableComponent("dislocate.draconicevolution.bound.cant_find_target").withStyle(ChatFormatting.RED), Util.NIL_UUID);
                         }
                     }
 
-                    return ActionResultType.SUCCESS;
+                    return InteractionResult.SUCCESS;
                 }
 
-                boolean silenced = level.getBlockState(worldPosition.below()).getBlock().getTags().contains(WOOL_TAG);
+                boolean silenced = level.getBlockState(worldPosition.below()).is(BlockTags.WOOL);
 
                 if (!silenced) {
-                    BCoreNetwork.sendSound(player.level, player.blockPosition(), DESounds.portal, SoundCategory.PLAYERS, 0.1F, player.level.random.nextFloat() * 0.1F + 0.9F, false);
+                    BCoreNetwork.sendSound(player.level, player.blockPosition(), DESounds.portal, SoundSource.PLAYERS, 0.1F, player.level.random.nextFloat() * 0.1F + 0.9F, false);
                 }
 
                 BoundDislocator.notifyArriving(stack, player.level, player);
                 location.teleport(player);
 
                 if (!silenced) {
-                    BCoreNetwork.sendSound(player.level, player.blockPosition(), DESounds.portal, SoundCategory.PLAYERS, 0.1F, player.level.random.nextFloat() * 0.1F + 0.9F, false);
+                    BCoreNetwork.sendSound(player.level, player.blockPosition(), DESounds.portal, SoundSource.PLAYERS, 0.1F, player.level.random.nextFloat() * 0.1F + 0.9F, false);
                 }
             }
 
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
         InventoryUtils.handleHeldStackTransfer(0, itemHandler, player);
@@ -98,31 +104,26 @@ public class TileDislocatorPedestal extends TileBCore implements DislocatorEndPo
         setChanged();
         updateBlock();
 
-        return ActionResultType.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
 
     @Override
     public void onLoad() {
         super.onLoad();
-        if (level instanceof ServerWorld) {
+        if (level instanceof ServerLevel) {
             checkIn();
         }
     }
 
-    @Override
-    public void setLevelAndPosition(World world, BlockPos pos) {
-        super.setLevelAndPosition(world, pos);
-    }
-
     @Nullable
     @Override
-    public Vector3d getArrivalPos(UUID linkID) {
+    public Vec3 getArrivalPos(UUID linkID) {
         ItemStack stack = itemHandler.getStackInSlot(0);
         if (!BoundDislocator.isValid(stack) || !linkID.equals(BoundDislocator.getLinkId(stack))) {
             return null;
         }
         BlockPos pos = getBlockPos();
-        return new Vector3d(pos.getX() + 0.5, pos.getY() + 0.25, pos.getZ() + 0.5);
+        return new Vec3(pos.getX() + 0.5, pos.getY() + 0.25, pos.getZ() + 0.5);
     }
 
     public void checkIn() {

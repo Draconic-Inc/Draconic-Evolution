@@ -1,7 +1,6 @@
 package com.brandon3055.draconicevolution.items.equipment;
 
 import com.brandon3055.brandonscore.api.TechLevel;
-import com.brandon3055.brandonscore.lib.TechPropBuilder;
 import com.brandon3055.draconicevolution.api.IReaperItem;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
@@ -15,35 +14,35 @@ import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleHostImpl;
 import com.brandon3055.draconicevolution.init.EquipCfg;
 import com.brandon3055.draconicevolution.init.ModuleCfg;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.material.Material;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ToolItem;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
+import com.brandon3055.draconicevolution.init.TechProperties;
+import net.minecraft.network.chat.Component;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DiggerItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
-import java.util.Collections;
 import java.util.List;
 
 /**
  * Created by brandon3055 on 21/5/20.
  */
-public class ModularStaff extends ToolItem implements IReaperItem, IModularMiningTool, IModularMelee, IDraconicDamage {
+public class ModularStaff extends DiggerItem implements IReaperItem, IModularMiningTool, IModularMelee, IDraconicDamage {
     private final TechLevel techLevel;
-    private final DEItemTier itemTier;
+    private final DETier itemTier;
 
-    public ModularStaff(TechPropBuilder props) {
-        //noinspection unchecked
-        super(0, 0, new DEItemTier(props, EquipCfg::getStaffDmgMult, EquipCfg::getStaffSpeedMult, EquipCfg::getStaffEffMult), Collections.EMPTY_SET, props.staffProps());
-        this.techLevel = props.techLevel;
-        this.itemTier = (DEItemTier) getTier();
+    public ModularStaff(DETier tier, TechProperties props) {
+        super(0, 0, tier, BlockTags.MINEABLE_WITH_PICKAXE, props);
+        this.techLevel = props.getTechLevel();
+        this.itemTier = (DETier) getTier();
     }
 
     @Override
@@ -52,7 +51,7 @@ public class ModularStaff extends ToolItem implements IReaperItem, IModularMinin
     }
 
     @Override
-    public DEItemTier getItemTier() {
+    public DETier getItemTier() {
         return itemTier;
     }
 
@@ -62,11 +61,26 @@ public class ModularStaff extends ToolItem implements IReaperItem, IModularMinin
     }
 
     @Override
+    public double getSwingSpeedMultiplier() {
+        return EquipCfg.staffSwingSpeedMultiplier;
+    }
+
+    @Override
+    public double getDamageMultiplier() {
+        return EquipCfg.staffDamageMultiplier;
+    }
+
+    @Override
     public ModuleHostImpl createHost(ItemStack stack) {
         ModuleHostImpl host = new ModuleHostImpl(techLevel, ModuleCfg.staffWidth(techLevel), ModuleCfg.staffHeight(techLevel), "staff", ModuleCfg.removeInvalidModules);
         host.addCategories(ModuleCategory.RANGED_WEAPON);
 //        host.addAdditionalType(ModuleTypes.DAMAGE_MOD);
         return host;
+    }
+
+    @Override
+    public boolean isCorrectToolForDrops(ItemStack stack, BlockState state) {
+        return true;
     }
 
     @Nullable
@@ -81,23 +95,13 @@ public class ModularStaff extends ToolItem implements IReaperItem, IModularMinin
     }
 
     @Override
-    public boolean isCorrectToolForDrops(BlockState blockIn) {
-        return true;
-    }
-
-    @Override
     public float getBaseEfficiency() {
-        return getTier().getSpeed();
-    }
-
-    @Override
-    public boolean overrideEffectivity(Material material) {
-        return true;
+        return getTier().getSpeed() * EquipCfg.getStaffEffMult();
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         addModularItemInformation(stack, worldIn, tooltip, flagIn);
     }
 
@@ -108,7 +112,32 @@ public class ModularStaff extends ToolItem implements IReaperItem, IModularMinin
 
     @Override
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
-        return enchantment.category == EnchantmentType.DIGGER || enchantment.category == EnchantmentType.WEAPON || super.canApplyAtEnchantingTable(stack, enchantment);
+        return enchantment.category == EnchantmentCategory.DIGGER || enchantment.category == EnchantmentCategory.WEAPON || super.canApplyAtEnchantingTable(stack, enchantment);
+    }
+
+    @Override
+    public boolean isBarVisible(ItemStack stack) {
+        return damageBarVisible(stack);
+    }
+
+    @Override
+    public int getBarWidth(ItemStack stack) {
+        return damageBarWidth(stack);
+    }
+
+    @Override
+    public int getBarColor(ItemStack stack) {
+        return damageBarColour(stack);
+    }
+
+    @Override
+    public boolean canBeHurtBy(DamageSource source) {
+        return source == DamageSource.OUT_OF_WORLD;
+    }
+
+    @Override
+    public int getEntityLifespan(ItemStack itemStack, Level level) {
+        return -32768;
     }
 
     //Projectile Attack Handling
@@ -211,7 +240,7 @@ public class ModularStaff extends ToolItem implements IReaperItem, IModularMinin
         return Math.min(drawProgress, 1F);
     }
 
-    private boolean canFire(ItemStack stack, PlayerEntity player) {
+    private boolean canFire(ItemStack stack, Player player) {
         return true;
     }
 
@@ -220,6 +249,6 @@ public class ModularStaff extends ToolItem implements IReaperItem, IModularMinin
     public static Module<DamageModData> getDamageModule(ItemStack stack) {
         ModuleHost host = stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new);
         ModuleEntity entity = host.getEntitiesByType(ModuleTypes.DAMAGE_MOD).findAny().orElse(null);
-        return entity != null && entity.getModule().getData() instanceof DamageModData ? (Module<DamageModData>)entity.getModule() : null;
+        return entity != null && entity.getModule().getData() instanceof DamageModData ? (Module<DamageModData>) entity.getModule() : null;
     }
 }

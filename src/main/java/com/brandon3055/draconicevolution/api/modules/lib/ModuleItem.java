@@ -6,15 +6,15 @@ import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
 import com.brandon3055.draconicevolution.api.modules.data.ModuleData;
 import com.brandon3055.draconicevolution.integration.equipment.EquipmentManager;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Rarity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
@@ -64,7 +64,7 @@ public class ModuleItem<P extends ModuleData<P>> extends Item implements ModuleP
 
     @Nullable
     @Override
-    public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundNBT nbt) {
+    public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
         return new ICapabilityProvider() {
             @Override
             public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
@@ -85,7 +85,7 @@ public class ModuleItem<P extends ModuleData<P>> extends Item implements ModuleP
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         super.appendHoverText(stack, worldIn, tooltip, flagIn);
         getModule().addInformation(tooltip);
         ModuleEntity entity = getModule().createEntity();
@@ -94,7 +94,7 @@ public class ModuleItem<P extends ModuleData<P>> extends Item implements ModuleP
 //        tooltip.add(new StringTextComponent("//Module textures are wip"));
 
         if (getModule().getType() == ModuleTypes.FLIGHT && EquipmentManager.equipModLoaded()) {
-            tooltip.add(new StringTextComponent("//Elytra does not currently work when chestpiece is in a curio slot."));
+            tooltip.add(new TextComponent("//Elytra does not currently work when chestpiece is in a curio slot."));
         }
     }
 

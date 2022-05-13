@@ -1,17 +1,12 @@
 package com.brandon3055.draconicevolution.client.render.particle;
 
 import codechicken.lib.render.CCModel;
-import codechicken.lib.render.OBJParser;
-import codechicken.lib.vec.Scale;
 import com.brandon3055.brandonscore.client.particle.BCParticle;
 import com.brandon3055.brandonscore.client.particle.IBCParticleFactory;
 import com.brandon3055.brandonscore.lib.Vec3D;
-import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.world.World;
-
-import java.util.Map;
+import net.minecraft.world.level.Level;
 
 /**
  * Created by brandon3055 on 6/07/2016.
@@ -25,7 +20,7 @@ public class ParticleChaosImplosion extends BCParticle {
     public boolean contract = false;
     public boolean explosion = false;
 
-    public ParticleChaosImplosion(ClientWorld worldIn, Vec3D pos, Vec3D target) {
+    public ParticleChaosImplosion(ClientLevel worldIn, Vec3D pos, Vec3D target) {
         super(worldIn, pos, new Vec3D(0, 0, 0));
         this.texturesPerRow = 8F;
         this.target = target;
@@ -33,9 +28,9 @@ public class ParticleChaosImplosion extends BCParticle {
         this.xd = this.yd = this.zd = 0;
 
         if (model == null) {
-            Map<String, CCModel> map = OBJParser.parseModels(ResourceHelperDE.getResource("models/reactor_core_model.obj"));
-            model = CCModel.combine(map.values());
-            model.apply(new Scale(1, 0.5, 1));
+//            Map<String, CCModel> map = OBJParser.parseModels(ResourceHelperDE.getResource("models/reactor_core_model.obj"));
+//            model = CCModel.combine(map.values());
+//            model.apply(new Scale(1, 0.5, 1));
         }
     }
 
@@ -160,30 +155,25 @@ public class ParticleChaosImplosion extends BCParticle {
     public static class Factory implements IBCParticleFactory {
 
         @Override
-        public Particle getEntityFX(int particleID, World world, Vec3D pos, Vec3D speed, int... args) {
-            ParticleChaosImplosion particle = new ParticleChaosImplosion((ClientWorld)world, pos, speed);
+        public Particle getEntityFX(int particleID, Level world, Vec3D pos, Vec3D speed, int... args) {
+            ParticleChaosImplosion particle = new ParticleChaosImplosion((ClientLevel) world, pos, speed);
 
             if (args.length > 0) {
                 if (args[0] == 0) {              //0 Tracer
                     particle.isTracer = true;
-                }
-                else if (args[0] == 1) {         //1 Origin Expand
+                } else if (args[0] == 1) {         //1 Origin Expand
                     particle.isOrigin = true;
                     particle.isTracer = false;
-                }
-                else if (args[0] == 2) {         //2 Origin Contract
+                } else if (args[0] == 2) {         //2 Origin Contract
                     particle.isOrigin = true;
                     particle.contract = true;
                     particle.isTracer = false;
-                }
-                else if (args[0] == 3) {         //3 Expanding Wave
+                } else if (args[0] == 3) {         //3 Expanding Wave
                     particle.isTracer = false;
-                }
-                else if (args[0] == 4) {         //4 Contracting Wave
+                } else if (args[0] == 4) {         //4 Contracting Wave
                     particle.contract = true;
                     particle.isTracer = false;
-                }
-                else if (args[0] == 5) {         //5 The final boom!
+                } else if (args[0] == 5) {         //5 The final boom!
                     particle.isTracer = false;
                     particle.explosion = true;
                 }

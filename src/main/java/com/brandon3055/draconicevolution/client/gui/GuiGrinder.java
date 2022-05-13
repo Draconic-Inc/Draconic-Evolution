@@ -17,10 +17,10 @@ import com.brandon3055.brandonscore.client.gui.modulargui.templates.TBasicMachin
 import com.brandon3055.brandonscore.inventory.ContainerBCTile;
 import com.brandon3055.brandonscore.inventory.ContainerSlotLayout;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileGrinder;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
 
 /**
  * Created by brandon3055 on 30/3/2016.
@@ -31,7 +31,7 @@ public class GuiGrinder extends ModularGuiContainer<ContainerBCTile<TileGrinder>
 
     protected GuiToolkit<GuiGrinder> toolkit = new GuiToolkit<>(this, 270, 200);
 
-    public GuiGrinder(ContainerBCTile<TileGrinder> container, PlayerInventory playerInventory, ITextComponent title) {
+    public GuiGrinder(ContainerBCTile<TileGrinder> container, Inventory playerInventory, Component title) {
         super(container, playerInventory, title);
         this.tile = container.tile;
     }
@@ -154,7 +154,7 @@ public class GuiGrinder extends ModularGuiContainer<ContainerBCTile<TileGrinder>
         toolkit.placeOutside(level10, claimXP, GuiToolkit.LayoutPos.BOTTOM_RIGHT, -level10.xSize(), 0);
 
         //Info Panel
-        template.infoPanel.addLabeledValue(TextFormatting.GOLD + I18n.get("gui.draconicevolution.grinder.stored_xp"), 6, 11, () -> TextFormatting.GRAY + "" + tile.storedXP.get() + " " + I18n.get("gui.draconicevolution.grinder.stored_xp.raw"), true);
+        template.infoPanel.addLabeledValue(ChatFormatting.GOLD + I18n.get("gui.draconicevolution.grinder.stored_xp"), 6, 11, () -> ChatFormatting.GRAY + "" + tile.storedXP.get() + " " + I18n.get("gui.draconicevolution.grinder.stored_xp.raw"), true);
     }
 
     private String getAOEString() {

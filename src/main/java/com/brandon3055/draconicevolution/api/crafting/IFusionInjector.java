@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.api.crafting;
 
 import com.brandon3055.brandonscore.api.TechLevel;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * Created by brandon3055 on 9/7/21

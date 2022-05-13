@@ -4,9 +4,9 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.entity.guardian.DraconicGuardianEntity;
 import com.brandon3055.draconicevolution.entity.guardian.GuardianFightManager;
 import com.brandon3055.draconicevolution.entity.guardian.GuardianProjectileEntity;
-import net.minecraft.pathfinding.Path;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3i;
+import net.minecraft.core.Vec3i;
+import net.minecraft.world.level.pathfinder.Path;
+import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nullable;
@@ -17,7 +17,7 @@ import javax.annotation.Nullable;
 public class CoverFirePhase extends Phase {
    private static final Logger LOGGER = DraconicEvolution.LOGGER;
    private Path currentPath;
-   private Vector3d targetLocation;
+   private Vec3 targetLocation;
    private boolean clockwise;
    private int tick;
 
@@ -31,11 +31,11 @@ public class CoverFirePhase extends Phase {
 
    @Override
    public void serverTick() {
-      Vector3d vector3d2 = guardian.getViewVector(1.0F);
+      Vec3 vector3d2 = guardian.getViewVector(1.0F);
       double headX = guardian.dragonPartHead.getX() - vector3d2.x * 1.0D;
       double headY = guardian.dragonPartHead.getY(0.5D) + 0.5D;
       double headZ = guardian.dragonPartHead.getZ() - vector3d2.z * 1.0D;
-      Vector3d targetPos = guardian.position();
+      Vec3 targetPos = guardian.position();
       targetPos = targetPos.add((guardian.getRandom().nextDouble() - 0.5) * 50, (guardian.getRandom().nextDouble() - 0.5) * 50, (guardian.getRandom().nextDouble() - 0.5) * 50);
 //      targetPos = targetPos.add(0, 20, 0);
       double targetRelX = targetPos.x - headX;
@@ -97,12 +97,12 @@ public class CoverFirePhase extends Phase {
 
    private void navigateToNextPathNode() {
       if (currentPath != null && !currentPath.isDone()) {
-         Vector3i nextPos = currentPath.getNextNodePos();
+         Vec3i nextPos = currentPath.getNextNodePos();
          currentPath.advance();
          double x = nextPos.getX();
          double z = nextPos.getZ();
          double y = (float) nextPos.getY() + guardian.getRandom().nextFloat() * 20.0F;
-         targetLocation = new Vector3d(x, y, z);
+         targetLocation = new Vec3(x, y, z);
       }
    }
 
@@ -112,7 +112,7 @@ public class CoverFirePhase extends Phase {
    }
 
    @Nullable
-   public Vector3d getTargetLocation() {
+   public Vec3 getTargetLocation() {
       return this.targetLocation;
    }
 }

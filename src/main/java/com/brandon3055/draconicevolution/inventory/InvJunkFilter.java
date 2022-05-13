@@ -2,11 +2,11 @@ package com.brandon3055.draconicevolution.inventory;
 
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.brandonscore.utils.LogHelperBC;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.NonNullList;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
 import javax.annotation.Nonnull;
@@ -130,12 +130,12 @@ public class InvJunkFilter implements IItemHandlerModifiable {
             return;
         }
 
-        CompoundNBT compound = ItemNBTHelper.getCompound(stack);
-        ListNBT list = new ListNBT();
+        CompoundTag compound = ItemNBTHelper.getCompound(stack);
+        ListTag list = new ListTag();
 
         for (ItemStack stack : stacks) {
             if (stack != null && stack.getCount() > 0) {
-                CompoundNBT tag = new CompoundNBT();
+                CompoundTag tag = new CompoundTag();
                 stack.save(tag);
                 list.add(tag);
             }
@@ -150,8 +150,8 @@ public class InvJunkFilter implements IItemHandlerModifiable {
             return;
         }
 
-        CompoundNBT compound = ItemNBTHelper.getCompound(stack);
-        ListNBT list = compound.getList("InvItems", 10);
+        CompoundTag compound = ItemNBTHelper.getCompound(stack);
+        ListTag list = compound.getList("InvItems", 10);
         stacks.clear();
 
         for (int i = 0; i < list.size(); i++) {

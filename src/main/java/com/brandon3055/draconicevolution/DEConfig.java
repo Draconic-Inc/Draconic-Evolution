@@ -64,6 +64,7 @@ public class DEConfig {
     public static int chaosDropCount;
     public static int dragonDustLootModifier;
     public static boolean dragonEggSpawnOverride;
+    public static boolean useToolTierTags;
 
     public static double reactorOutputMultiplier = 10;
     public static double reactorFuelUsageMultiplier = 5;
@@ -326,6 +327,14 @@ public class DEConfig {
                 .setComment("This is a blacklist of key words that can be used to prevent certain storage items from being stored in a draconium chest.\nIf the items registry name contains any or these strings it will not be allowed")
                 .setDefaultStringList(Lists.newArrayList("draconium_chest", "shulker_box", "pouch", "bag", "strongbox"))
                 .setSyncCallback((tag, type) -> chestBlacklist = Sets.newHashSet(tag.getStringList()));
+
+        serverTag.getTag("useToolTierTags")
+                .setSyncToClient()
+                .setComment("The new tag based tool tier system makes it incredibly difficult to add over powered tools that can mine blocks of any harvest level. So for Draconic and Chaotic tier i simply dont use it.\n" +
+                        "This means they can mine pretty much any minable block. Setting this to true will enable the tag system on these tiers and by default put them right along side wyvern at netherite tier.\n" +
+                        "This may be useful for people like pack developers who want to add custom tool tier progression.")
+                .setDefaultBoolean(false)
+                .setSyncCallback((tag, type) -> useToolTierTags = tag.getBoolean());
     }
 
     //Client properties

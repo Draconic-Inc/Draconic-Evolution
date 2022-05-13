@@ -9,14 +9,14 @@ import com.brandon3055.brandonscore.lib.datamanager.DataFlags;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedEnum;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedFloat;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.FurnaceRecipe;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.SmeltingRecipe;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
@@ -102,7 +102,7 @@ public class SmeltingLogic {
     }
 
     private void updateSmelting(float speedModifier) {
-        World world = tile.getLevel();
+        Level world = tile.getLevel();
         int validRecipes = 0;
         int completedSmelts = 0;
         int slowestRecipe = 0;
@@ -116,7 +116,7 @@ public class SmeltingLogic {
                 continue;
             }
 
-            FurnaceRecipe recipe = world.getRecipeManager().getRecipeFor(IRecipeType.SMELTING, slot, world).orElse(null);
+            SmeltingRecipe recipe = world.getRecipeManager().getRecipeFor(RecipeType.SMELTING, slot, world).orElse(null);
             if (recipe == null) {
                 continue;
             }
@@ -238,14 +238,14 @@ public class SmeltingLogic {
         return this;
     }
 
-    public void saveAdditionalNBT(CompoundNBT nbt) {
-        CompoundNBT compound = new CompoundNBT();
+    public void saveAdditionalNBT(CompoundTag nbt) {
+        CompoundTag compound = new CompoundTag();
         this.recipesUsed.forEach((recipe, count) -> compound.putInt(recipe.toString(), count));
         nbt.put("recipes_used", compound);
     }
 
-    public void loadAdditionalNBT(CompoundNBT nbt) {
-        CompoundNBT compound = nbt.getCompound("recipes_used");
+    public void loadAdditionalNBT(CompoundTag nbt) {
+        CompoundTag compound = nbt.getCompound("recipes_used");
         for (String s : compound.getAllKeys()) {
             this.recipesUsed.put(new ResourceLocation(s), compound.getInt(s));
         }
@@ -255,7 +255,7 @@ public class SmeltingLogic {
 
     public boolean isSmeltable(ItemStack stack) {
         smeltTestInv.setItem(0, stack);
-        boolean ret = tile.getLevel().getRecipeManager().getRecipeFor(IRecipeType.SMELTING, smeltTestInv, tile.getLevel()).isPresent();
+        boolean ret = tile.getLevel().getRecipeManager().getRecipeFor(RecipeType.SMELTING, smeltTestInv, tile.getLevel()).isPresent();
         smeltTestInv.setItem(0, ItemStack.EMPTY);
         return ret;
     }
@@ -281,7 +281,7 @@ public class SmeltingLogic {
         }
     }
 
-    private static class InventorySlotMapper implements IInventory {
+    private static class InventorySlotMapper implements Container {
         private final IItemHandlerModifiable itemHandler;
         private final int slot;
 
@@ -338,6 +338,6 @@ public class SmeltingLogic {
         public void setChanged() {}
 
         @Override
-        public boolean stillValid(PlayerEntity player) {return true;}
+        public boolean stillValid(Player player) {return true;}
     }
 }

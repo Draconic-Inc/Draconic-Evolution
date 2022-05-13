@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.api.crafting;
 
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
 
 /**
  * Created by brandon3055 on 10/7/21
@@ -54,7 +54,7 @@ public interface IFusionStateMachine {
      * @param progress The current progress 0 to 1 or -1 to disable progress display.
      * @param stateText Text to display in gui for current state.
      */
-    void setFusionStatus(double progress, ITextComponent stateText);
+    void setFusionStatus(double progress, Component stateText);
 
     /**
      * Used to update the crafting animation.

@@ -26,30 +26,29 @@ import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.inventory.ContainerFusionCraftingCore;
 import com.brandon3055.draconicevolution.inventory.GuiLayoutFactories;
 import com.google.common.collect.Streams;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -62,7 +61,7 @@ import java.util.stream.Collectors;
 /**
  * Created by brandon3055 on 11/06/2016.
  */
-public class TileFusionCraftingCore extends TileBCore implements IFusionInventory, IFusionStateMachine, ITickableTileEntity, INamedContainerProvider, IInteractTile, IChangeListener {
+public class TileFusionCraftingCore extends TileBCore implements IFusionInventory, IFusionStateMachine, MenuProvider, IInteractTile, IChangeListener {
 
     private final ManagedEnum<FusionState> fusionState = register(new ManagedEnum<>("fusion_state", FusionState.START, DataFlags.SAVE_NBT_SYNC_TILE));
     private final ManagedResource activeRecipe = register(new ManagedResource("active_recipe", DataFlags.SAVE_NBT_SYNC_TILE));
@@ -82,8 +81,8 @@ public class TileFusionCraftingCore extends TileBCore implements IFusionInventor
     private IFusionRecipe recipeCache = null;
     private TechLevel minTierCache = null;
 
-    public TileFusionCraftingCore() {
-        super(DEContent.tile_crafting_core);
+    public TileFusionCraftingCore(BlockPos pos, BlockState state) {
+        super(DEContent.tile_crafting_core, pos, state);
         capManager.setInternalManaged("inventory", CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, itemHandler).saveBoth();
         capManager.set(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, new ItemHandlerIOControl(itemHandler).setInsertCheck((slot, stack) -> slot == 0).setExtractCheck((slot, stack) -> slot == 1));
         itemHandler.setContentsChangeListener(i -> localInventoryChange());
@@ -111,7 +110,7 @@ public class TileFusionCraftingCore extends TileBCore implements IFusionInventor
     }
 
     @Override
-    public void receivePacketFromClient(MCDataInput data, ServerPlayerEntity client, int id) {
+    public void receivePacketFromClient(MCDataInput data, ServerPlayer client, int id) {
         startCraft();
     }
 
@@ -127,7 +126,7 @@ public class TileFusionCraftingCore extends TileBCore implements IFusionInventor
         } else if (id == 1) {// Craft Complete
             level.addParticle(ParticleTypes.EXPLOSION, getBlockPos().getX() + 0.5, getBlockPos().getY() + 0.5, getBlockPos().getZ() + 0.5, 1.0D, 0.0D, 0.0D);
 //            level.playLocalSound(getBlockPos().getX() + 0.5, getBlockPos().getY() + 0.5, getBlockPos().getZ() + 0.5, SoundEvents.GENERIC_EXPLODE, SoundCategory.BLOCKS, 4.0F, (1.0F + (this.level.random.nextFloat() - this.level.random.nextFloat()) * 0.2F) * 0.7F, false);
-            level.playLocalSound(getBlockPos().getX() + 0.5, getBlockPos().getY() + 0.5, getBlockPos().getZ() + 0.5, DESounds.fusionComplete, SoundCategory.BLOCKS, 4.0F, (1.0F + (this.level.random.nextFloat() - this.level.random.nextFloat()) * 0.2F) * 0.7F, false);
+            level.playLocalSound(getBlockPos().getX() + 0.5, getBlockPos().getY() + 0.5, getBlockPos().getZ() + 0.5, DESounds.fusionComplete, SoundSource.BLOCKS, 4.0F, (1.0F + (this.level.random.nextFloat() - this.level.random.nextFloat()) * 0.2F) * 0.7F, false);
 
             for (int i = 0; i < 100; i++) {
                 double velX = (level.random.nextDouble() - 0.5) * 0.1;
@@ -167,10 +166,10 @@ public class TileFusionCraftingCore extends TileBCore implements IFusionInventor
         int range = DEConfig.fusionInjectorRange;
         int radius = 1;
         List<TileFusionCraftingInjector> searchTiles = Streams.concat(
-                BlockPos.betweenClosedStream(worldPosition.offset(-range, -radius, -radius), worldPosition.offset(range, radius, radius)), //X
-                BlockPos.betweenClosedStream(worldPosition.offset(-radius, -range, -radius), worldPosition.offset(radius, range, radius)), //Y
-                BlockPos.betweenClosedStream(worldPosition.offset(-radius, -radius, -range), worldPosition.offset(radius, radius, range))  //Z
-        )
+                        BlockPos.betweenClosedStream(worldPosition.offset(-range, -radius, -radius), worldPosition.offset(range, radius, radius)), //X
+                        BlockPos.betweenClosedStream(worldPosition.offset(-radius, -range, -radius), worldPosition.offset(radius, range, radius)), //Y
+                        BlockPos.betweenClosedStream(worldPosition.offset(-radius, -radius, -range), worldPosition.offset(radius, radius, range))  //Z
+                )
                 .map(level::getBlockEntity)
                 .filter(e -> e instanceof TileFusionCraftingInjector)
                 .map(e -> (TileFusionCraftingInjector) e)
@@ -181,7 +180,7 @@ public class TileFusionCraftingCore extends TileBCore implements IFusionInventor
             double dist = Utils.getCardinalDistance(tile.getBlockPos(), worldPosition);
 
             if (dist <= DEConfig.fusionInjectorMinDist) {
-                setFusionStatus(-1, new TranslationTextComponent("fusion_status.draconicevolution.injector_close").withStyle(TextFormatting.RED));
+                setFusionStatus(-1, new TranslatableComponent("fusion_status.draconicevolution.injector_close").withStyle(ChatFormatting.RED));
                 injectorPositions.clear();
                 return false;
             }
@@ -228,7 +227,7 @@ public class TileFusionCraftingCore extends TileBCore implements IFusionInventor
             if (recipe != null) {
                 recipe.canStartCraft(this, level, e -> setFusionStatus(-1, e));
             } else {
-                setFusionStatus(-1, new TranslationTextComponent("fusion_status.draconicevolution.no_recipe"));
+                setFusionStatus(-1, new TranslatableComponent("fusion_status.draconicevolution.no_recipe"));
             }
             setActiveRecipe(recipe);
         }
@@ -240,17 +239,17 @@ public class TileFusionCraftingCore extends TileBCore implements IFusionInventor
     }
 
     @Override
-    public boolean onBlockActivated(BlockState state, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
-        if (player instanceof ServerPlayerEntity) {
+    public boolean onBlockActivated(BlockState state, Player player, InteractionHand handIn, BlockHitResult hit) {
+        if (player instanceof ServerPlayer) {
             updateInjectors(); //TODO just have the injectors poke the core when placed so i dont need this
-            NetworkHooks.openGui((ServerPlayerEntity) player, this, worldPosition);
+            NetworkHooks.openGui((ServerPlayer) player, this, worldPosition);
         }
         return true;
     }
 
     @Nullable
     @Override
-    public Container createMenu(int currentWindowIndex, PlayerInventory playerInventory, PlayerEntity player) {
+    public AbstractContainerMenu createMenu(int currentWindowIndex, Inventory playerInventory, Player player) {
         return new ContainerFusionCraftingCore(currentWindowIndex, player.inventory, this, GuiLayoutFactories.FUSION_CRAFTING_CORE);
     }
 
@@ -330,8 +329,8 @@ public class TileFusionCraftingCore extends TileBCore implements IFusionInventor
     public void cancelCraft() {
         crafting.set(false);
         getInjectors().forEach(e -> e.setEnergyRequirement(0, 0));
-        setFusionStatus(-1, new TranslationTextComponent("fusion_status.draconicevolution.canceled"));
-        level.playSound(null, getBlockPos(), DESounds.fusionComplete, SoundCategory.BLOCKS, 4.0F, (1.0F + (this.level.random.nextFloat() - this.level.random.nextFloat()) * 0.2F) * 0.7F);
+        setFusionStatus(-1, new TranslatableComponent("fusion_status.draconicevolution.canceled"));
+        level.playSound(null, getBlockPos(), DESounds.fusionComplete, SoundSource.BLOCKS, 4.0F, (1.0F + (this.level.random.nextFloat() - this.level.random.nextFloat()) * 0.2F) * 0.7F);
         inventoryChanged();
     }
 
@@ -346,7 +345,7 @@ public class TileFusionCraftingCore extends TileBCore implements IFusionInventor
     }
 
     @Override
-    public void setFusionStatus(double progress, ITextComponent stateText) {
+    public void setFusionStatus(double progress, Component stateText) {
         this.progress.set((float) progress);
         userStatus.set(stateText);
     }
@@ -365,7 +364,7 @@ public class TileFusionCraftingCore extends TileBCore implements IFusionInventor
     public IFusionRecipe getActiveRecipe() {
         if (recipeCache == null) {
             if (activeRecipe.get() != null) {
-                IRecipe<?> recipe = level.getRecipeManager().byKey(activeRecipe.get()).orElse(null);
+                Recipe<?> recipe = level.getRecipeManager().byKey(activeRecipe.get()).orElse(null);
                 if (recipe instanceof IFusionRecipe) {
                     recipeCache = (IFusionRecipe) recipe;
                 }
@@ -394,13 +393,13 @@ public class TileFusionCraftingCore extends TileBCore implements IFusionInventor
     }
 
     @Override
-    public void writeExtraNBT(CompoundNBT compound) {
+    public void writeExtraNBT(CompoundTag compound) {
         super.writeExtraNBT(compound);
         compound.putLongArray("injector_positions", injectorPositions.stream().mapToLong(BlockPos::asLong).toArray());
     }
 
     @Override
-    public void readExtraNBT(CompoundNBT compound) {
+    public void readExtraNBT(CompoundTag compound) {
         super.readExtraNBT(compound);
         injectorPositions = Arrays.stream(compound.getLongArray("injector_positions")).mapToObj(BlockPos::of).collect(Collectors.toList());
         injectorCache = null;
@@ -408,8 +407,8 @@ public class TileFusionCraftingCore extends TileBCore implements IFusionInventor
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public AxisAlignedBB getRenderBoundingBox() {
-        return new AxisAlignedBB(worldPosition.offset(-16, -16, -16), worldPosition.offset(17, 17, 17));
+    public AABB getRenderBoundingBox() {
+        return new AABB(worldPosition.offset(-16, -16, -16), worldPosition.offset(17, 17, 17));
     }
 }
 

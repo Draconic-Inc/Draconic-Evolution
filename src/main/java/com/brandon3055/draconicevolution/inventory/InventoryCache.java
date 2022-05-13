@@ -1,9 +1,9 @@
 package com.brandon3055.draconicevolution.inventory;
 
 import codechicken.lib.util.ArrayUtils;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -12,7 +12,7 @@ import javax.annotation.Nullable;
  * Created by brandon3055 on 21/07/2016.
  * A simple item cache in the form of an IInventory. Currently only used by the Debugger
  */
-public class InventoryCache implements IInventory {
+public class InventoryCache implements Container {
 
     //public ItemStackHandler Maby useful for something? But not this
     private ItemStack[] inventoryStacks;
@@ -92,17 +92,17 @@ public class InventoryCache implements IInventory {
     }
 
     @Override
-    public boolean stillValid(PlayerEntity player) {
+    public boolean stillValid(Player player) {
         return true;
     }
 
     @Override
-    public void startOpen(PlayerEntity player) {
+    public void startOpen(Player player) {
 
     }
 
     @Override
-    public void stopOpen(PlayerEntity player) {
+    public void stopOpen(Player player) {
 
     }
 

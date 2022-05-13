@@ -3,8 +3,8 @@ package com.brandon3055.draconicevolution.blocks.energynet.rendering;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalWirelessIO;
 import com.brandon3055.draconicevolution.network.CrystalUpdateBatcher;
 import com.brandon3055.draconicevolution.network.CrystalUpdateBatcher.BatchedCrystalUpdate;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.ChunkPos;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -59,7 +59,7 @@ public class ENetFXHandlerServerWireless extends ENetFXHandler<TileCrystalWirele
     }
 
     private void queUpdate(BatchedCrystalUpdate update) {
-        ServerWorld serverWorld = ((ServerWorld) tile.getLevel());
+        ServerLevel serverWorld = ((ServerLevel) tile.getLevel());
 
         if (serverWorld != null) {
             serverWorld.getChunkSource().chunkMap.getPlayers(new ChunkPos(tile.getBlockPos()), false).forEach(player -> CrystalUpdateBatcher.queData(update, player));

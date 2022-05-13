@@ -1,22 +1,22 @@
 package com.brandon3055.draconicevolution.client.sound;
 
 import com.brandon3055.brandonscore.lib.Vec3D;
-import net.minecraft.client.audio.ITickableSound;
-import net.minecraft.client.audio.SimpleSound;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.client.resources.sounds.TickableSoundInstance;
+import net.minecraft.core.BlockPos;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
 
 /**
  * Created by brandon3055 on 24/06/2016.
  */
-public class CelestialModifierSound extends SimpleSound implements ITickableSound {
+public class CelestialModifierSound extends SimpleSoundInstance implements TickableSoundInstance {
 
     private int timer = 0;
     private boolean done = false;
 
     public CelestialModifierSound(SoundEvent soundEvent, BlockPos pos) {
-        super(soundEvent, SoundCategory.BLOCKS, 1, 1, pos);
+        super(soundEvent, SoundSource.BLOCKS, 1, 1, pos);
         looping = true;
     }
 

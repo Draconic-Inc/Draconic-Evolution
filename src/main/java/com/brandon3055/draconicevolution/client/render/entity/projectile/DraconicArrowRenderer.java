@@ -1,21 +1,21 @@
 package com.brandon3055.draconicevolution.client.render.entity.projectile;
 
-import codechicken.lib.render.buffer.TransformingVertexBuilder;
+import codechicken.lib.render.buffer.TransformingVertexConsumer;
 import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.draconicevolution.entity.projectile.DraconicArrowEntity;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Matrix3f;
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Vector3f;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Matrix3f;
-import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -26,25 +26,25 @@ public class DraconicArrowRenderer extends EntityRenderer<DraconicArrowEntity> {
     public static final ResourceLocation RES_ARROW = new ResourceLocation("textures/entity/projectiles/arrow.png");
     public static final ResourceLocation RES_TIPPED_ARROW = new ResourceLocation("textures/entity/projectiles/tipped_arrow.png");
 
-    public DraconicArrowRenderer(EntityRendererManager renderManagerIn) {
-        super(renderManagerIn);
+    public DraconicArrowRenderer(EntityRendererProvider.Context context) {
+        super(context);
     }
 
-    public void render(DraconicArrowEntity arrowEntity, float entityYaw, float partialTicks, MatrixStack mStack, IRenderTypeBuffer getter, int packedLightIn) {
+    public void render(DraconicArrowEntity arrowEntity, float entityYaw, float partialTicks, PoseStack mStack, MultiBufferSource getter, int packedLightIn) {
         mStack.pushPose();
-        mStack.mulPose(Vector3f.YP.rotationDegrees(MathHelper.lerp(partialTicks, arrowEntity.yRotO, arrowEntity.yRot) - 90.0F));
-        mStack.mulPose(Vector3f.ZP.rotationDegrees(MathHelper.lerp(partialTicks, arrowEntity.xRotO, arrowEntity.xRot)));
+        mStack.mulPose(Vector3f.YP.rotationDegrees(Mth.lerp(partialTicks, arrowEntity.yRotO, arrowEntity.getYRot()) - 90.0F));
+        mStack.mulPose(Vector3f.ZP.rotationDegrees(Mth.lerp(partialTicks, arrowEntity.xRotO, arrowEntity.getXRot())));
         float f9 = (float) arrowEntity.shakeTime - partialTicks;
         if (f9 > 0.0F) {
-            float f10 = -MathHelper.sin(f9 * 3.0F) * f9;
+            float f10 = -Mth.sin(f9 * 3.0F) * f9;
             mStack.mulPose(Vector3f.ZP.rotationDegrees(f10));
         }
 
         mStack.mulPose(Vector3f.XP.rotationDegrees(45.0F));
         mStack.scale(0.05625F, 0.05625F, 0.05625F);
         mStack.translate(-4.0D, 0.0D, 0.0D);
-        IVertexBuilder ivertexbuilder = getter.getBuffer(RenderType.entityCutout(this.getTextureLocation(arrowEntity)));
-        MatrixStack.Entry matrixstack$entry = mStack.last();
+        VertexConsumer ivertexbuilder = getter.getBuffer(RenderType.entityCutout(this.getTextureLocation(arrowEntity)));
+        PoseStack.Pose matrixstack$entry = mStack.last();
         Matrix4f matrix4f = matrixstack$entry.pose();
         Matrix3f matrix3f = matrixstack$entry.normal();
         this.drawVertex(matrix4f, matrix3f, ivertexbuilder, -7, -2, -2, 0.0F, 0.15625F, -1, 0, 0, packedLightIn);
@@ -82,7 +82,7 @@ public class DraconicArrowRenderer extends EntityRenderer<DraconicArrowEntity> {
 //        rendeArcP2P(mStack, getter, startPos ,endPos ,segCount ,randSeed ,scaleMod ,deflectMod ,autoScale ,segTaper ,colour);
     }
 
-    public void drawVertex(Matrix4f matrix, Matrix3f normals, IVertexBuilder vertexBuilder, int offsetX, int offsetY, int offsetZ, float textureX, float textureY, int p_229039_9_, int p_229039_10_, int p_229039_11_, int packedLightIn) {
+    public void drawVertex(Matrix4f matrix, Matrix3f normals, VertexConsumer vertexBuilder, int offsetX, int offsetY, int offsetZ, float textureX, float textureY, int p_229039_9_, int p_229039_10_, int p_229039_11_, int packedLightIn) {
         vertexBuilder.vertex(matrix, (float) offsetX, (float) offsetY, (float) offsetZ).color(255, 255, 255, 255).uv(textureX, textureY).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLightIn).normal(normals, (float) p_229039_9_, (float) p_229039_11_, (float) p_229039_10_).endVertex();
     }
 
@@ -90,8 +90,8 @@ public class DraconicArrowRenderer extends EntityRenderer<DraconicArrowEntity> {
         return entity.getColor() > 0 ? RES_TIPPED_ARROW : RES_ARROW;
     }
 
-    public static void renderEnergyBolt(Vector3 startPos, Vector3 endPos, Matrix4 mat, IRenderTypeBuffer getter, float partialTicks) {
-        IVertexBuilder builder = new TransformingVertexBuilder(getter.getBuffer(RenderType.lightning()), mat);
+    public static void renderEnergyBolt(Vector3 startPos, Vector3 endPos, Matrix4 mat, MultiBufferSource getter, float partialTicks) {
+        VertexConsumer builder = new TransformingVertexConsumer(getter.getBuffer(RenderType.lightning()), mat);
     }
 
 
@@ -102,19 +102,19 @@ public class DraconicArrowRenderer extends EntityRenderer<DraconicArrowEntity> {
      * Keep in mind you are free to apply any operations you want to the supplied matrix stack.
      * Any rotation or translation operations will be relative to the startPos.
      *
-     * @param mStack The matrix stack that will be applied when rendering the effect.
-     * @param getter an IRenderTypeBuffer.
-     * @param startPos The start position for rendering the arc (The bottom in terms of Y).
-     * @param endPos The end position for rendering the arc (The top in terms of Y).
-     * @param segCount The number of arc segments. (Default 8)
-     * @param randSeed The random seed for the arc.
-     * @param scaleMod Modifier that applies to the diameter of the arc. (Default 1)
+     * @param mStack     The matrix stack that will be applied when rendering the effect.
+     * @param getter     an IRenderTypeBuffer.
+     * @param startPos   The start position for rendering the arc (The bottom in terms of Y).
+     * @param endPos     The end position for rendering the arc (The top in terms of Y).
+     * @param segCount   The number of arc segments. (Default 8)
+     * @param randSeed   The random seed for the arc.
+     * @param scaleMod   Modifier that applies to the diameter of the arc. (Default 1)
      * @param deflectMod Modifies the segment offsets (Makes it more zigzaggy)(Default 1)
-     * @param autoScale If true automatically adjusts the overall scale based on the length of the arc.
-     * @param segTaper Allows you to apply a positive or negative taper to each arc segment. (Default 0)
-     * @param colour The colour of the arc.
+     * @param autoScale  If true automatically adjusts the overall scale based on the length of the arc.
+     * @param segTaper   Allows you to apply a positive or negative taper to each arc segment. (Default 0)
+     * @param colour     The colour of the arc.
      */
-    public static void rendeArcP2P(MatrixStack mStack, IRenderTypeBuffer getter, Vector3 startPos, Vector3 endPos, int segCount, long randSeed, float scaleMod, float deflectMod, boolean autoScale, float segTaper, int colour) {
+    public static void rendeArcP2P(PoseStack mStack, MultiBufferSource getter, Vector3 startPos, Vector3 endPos, int segCount, long randSeed, float scaleMod, float deflectMod, boolean autoScale, float segTaper, int colour) {
 //        Vector3 startPos = new Vector3(0, 0, 0); //Bottom
 //        Vector3 endPos = new Vector3(0, 4, 0); //Top
 //        int segCount = 8;
@@ -147,7 +147,7 @@ public class DraconicArrowRenderer extends EntityRenderer<DraconicArrowEntity> {
         xOffSum -= (float) (endPos.x - startPos.x);
         zOffSum -= (float) (endPos.z - startPos.z);
 
-        IVertexBuilder builder = getter.getBuffer(RenderType.lightning());
+        VertexConsumer builder = getter.getBuffer(RenderType.lightning());
         Matrix4f matrix4f = mStack.last().pose();
 
         for (int layer = 0; layer < 4; ++layer) {
@@ -160,13 +160,13 @@ public class DraconicArrowRenderer extends EntityRenderer<DraconicArrowEntity> {
             }
 
             for (int seg = 0; seg < segCount; seg++) {
-                float pos = seg / (float)(segCount);
+                float pos = seg / (float) (segCount);
                 float x = segXOffset[seg] - (xOffSum * pos);
                 float z = segZOffset[seg] - (zOffSum * pos);
 
-                float nextPos = (seg + 1) / (float)(segCount);
-                float nextX = segXOffset[seg+1] - (xOffSum * nextPos);
-                float nextZ = segZOffset[seg+1] - (zOffSum * nextPos);
+                float nextPos = (seg + 1) / (float) (segCount);
+                float nextX = segXOffset[seg + 1] - (xOffSum * nextPos);
+                float nextZ = segZOffset[seg + 1] - (zOffSum * nextPos);
 
                 //The size of each shell
                 float layerOffsetA = (0.1F + (layer * 0.2F * (1F + segTaper))) * relScale * scaleMod;
@@ -180,7 +180,7 @@ public class DraconicArrowRenderer extends EntityRenderer<DraconicArrowEntity> {
         }
     }
 
-    private static void addSegmentQuad(Matrix4f matrix4f, IVertexBuilder builder, float x1, float yOffset, float z1, int segIndex, float x2, float z2, float red, float green, float blue, float alpha, float offsetA, float offsetB, boolean invA, boolean invB, boolean invC, boolean invD, float segHeight) {
+    private static void addSegmentQuad(Matrix4f matrix4f, VertexConsumer builder, float x1, float yOffset, float z1, int segIndex, float x2, float z2, float red, float green, float blue, float alpha, float offsetA, float offsetB, boolean invA, boolean invB, boolean invC, boolean invD, float segHeight) {
         builder.vertex(matrix4f, x1 + (invA ? offsetB : -offsetB), yOffset + segIndex * segHeight, z1 + (invB ? offsetB : -offsetB)).color(red, green, blue, alpha).endVertex();
         builder.vertex(matrix4f, x2 + (invA ? offsetA : -offsetA), yOffset + (segIndex + 1F) * segHeight, z2 + (invB ? offsetA : -offsetA)).color(red, green, blue, alpha).endVertex();
         builder.vertex(matrix4f, x2 + (invC ? offsetA : -offsetA), yOffset + (segIndex + 1F) * segHeight, z2 + (invD ? offsetA : -offsetA)).color(red, green, blue, alpha).endVertex();

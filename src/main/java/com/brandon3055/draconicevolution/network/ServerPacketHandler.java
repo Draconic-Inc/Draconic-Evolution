@@ -19,20 +19,20 @@ import com.brandon3055.draconicevolution.inventory.ContainerModularItem;
 import com.brandon3055.draconicevolution.inventory.ContainerModuleHost;
 import com.brandon3055.draconicevolution.items.tools.DislocatorAdvanced;
 import com.brandon3055.draconicevolution.items.tools.Magnet;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.ClickType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.network.play.IServerPlayNetHandler;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.common.util.BlockSnapshot;
 import net.minecraftforge.event.ForgeEventFactory;
 
@@ -41,9 +41,8 @@ import java.util.List;
 
 public class ServerPacketHandler implements ICustomPacketHandler.IServerPacketHandler {
 
-
     @Override
-    public void handlePacket(PacketCustom packet, ServerPlayerEntity sender, IServerPlayNetHandler handler) {
+    public void handlePacket(PacketCustom packet, ServerPlayer sender, ServerGamePacketListenerImpl handler) {
         switch (packet.getType()) {
             case DraconicNetwork.S_TOGGLE_DISLOCATORS:
                 toggleDislocators(sender);
@@ -84,7 +83,7 @@ public class ServerPacketHandler implements ICustomPacketHandler.IServerPacketHa
         }
     }
 
-    private void toggleDislocators(PlayerEntity player) {
+    private void toggleDislocators(Player player) {
         List<ItemStack> dislocators = new ArrayList<>();
 
         for (int i = 0; i < player.inventory.getContainerSize(); i++) {
@@ -104,7 +103,7 @@ public class ServerPacketHandler implements ICustomPacketHandler.IServerPacketHa
             Magnet.toggleEnabled(stack, player);
             boolean enabled = Magnet.isEnabled(stack);
 //            ChatHelper.sendIndexed(player, new TranslationTextComponent("item_dislocate.draconicevolution." + (enabled ? "activate" : "deactivate")), 567);
-            player.displayClientMessage(new TranslationTextComponent("item_dislocate.draconicevolution." + (enabled ? "activate" : "deactivate")).withStyle(enabled ? TextFormatting.GREEN : TextFormatting.RED), true);
+            player.displayClientMessage(new TranslatableComponent("item_dislocate.draconicevolution." + (enabled ? "activate" : "deactivate")).withStyle(enabled ? ChatFormatting.GREEN : ChatFormatting.RED), true);
         }
     }
 
@@ -176,7 +175,7 @@ public class ServerPacketHandler implements ICustomPacketHandler.IServerPacketHa
 //
 //    }
 
-    private void moduleSlotClick(PlayerEntity player, MCDataInput input) {
+    private void moduleSlotClick(Player player, MCDataInput input) {
         if (player.containerMenu instanceof ContainerModuleHost) {
             ModuleGrid grid = ((ContainerModuleHost<?>) player.containerMenu).getGrid();
             if (grid != null) {
@@ -186,45 +185,45 @@ public class ServerPacketHandler implements ICustomPacketHandler.IServerPacketHa
         }
     }
 
-    private void propertyData(ServerPlayerEntity sender, PacketCustom packet) {
+    private void propertyData(ServerPlayer sender, PacketCustom packet) {
         PropertyData data = PropertyData.read(packet);
         ContainerConfigurableItem.handlePropertyData(sender, data);
     }
 
-    private void dislocatorMessage(ServerPlayerEntity sender, PacketCustom packet) {
+    private void dislocatorMessage(ServerPlayer sender, PacketCustom packet) {
         ItemStack stack = DislocatorAdvanced.findDislocator(sender);
         if (!stack.isEmpty()) {
             DEContent.dislocator_advanced.handleClientAction(sender, stack, packet);
         }
     }
 
-    private void jeiFusionTransfer(ServerPlayerEntity sender, PacketCustom packet) {
+    private void jeiFusionTransfer(ServerPlayer sender, PacketCustom packet) {
         ResourceLocation id = packet.readResourceLocation();
         boolean maxTransfer = packet.readBoolean();
-        IRecipe<?> recipe = sender.level.getRecipeManager().byKey(id).orElse(null);
+        Recipe<?> recipe = sender.level.getRecipeManager().byKey(id).orElse(null);
         if (recipe instanceof IFusionRecipe && sender.containerMenu instanceof ContainerFusionCraftingCore) {
             FusionRecipeTransferHelper.doServerSideTransfer(sender, (ContainerFusionCraftingCore) sender.containerMenu, (IFusionRecipe) recipe, maxTransfer);
         }
     }
 
-    private void placeItem(ServerPlayerEntity player, PacketCustom packet) {
+    private void placeItem(ServerPlayer player, PacketCustom packet) {
         ItemStack stack = HandHelper.getMainFirst(player);
         if (stack.isEmpty()) {
             return;
         }
 
-        RayTraceResult traceResult = player.pick(4, 0, false);
-        if (traceResult instanceof BlockRayTraceResult) {
-            World world = player.level;
-            BlockRayTraceResult blockTrace = (BlockRayTraceResult) traceResult;
+        HitResult traceResult = player.pick(4, 0, false);
+        if (traceResult instanceof BlockHitResult) {
+            Level world = player.level;
+            BlockHitResult blockTrace = (BlockHitResult) traceResult;
             BlockPos posHit = blockTrace.getBlockPos();
             if (!com.brandon3055.brandonscore.network.ServerPacketHandler.verifyPlayerPermission(player, posHit)) {
                 return;
             }
 
-            TileEntity tileHit = world.getBlockEntity(posHit);
+            BlockEntity tileHit = world.getBlockEntity(posHit);
             BlockPos posOnSide = posHit.relative(blockTrace.getDirection());
-            TileEntity tileOnSide = world.getBlockEntity(posOnSide);
+            BlockEntity tileOnSide = world.getBlockEntity(posOnSide);
 
             if (tileHit instanceof TilePlacedItem && InventoryUtils.insertItem(((TilePlacedItem) tileHit).itemHandler, stack, true).isEmpty()) {
                 InventoryUtils.insertItem(((TilePlacedItem) tileHit).itemHandler, stack, false);
@@ -237,7 +236,7 @@ public class ServerPacketHandler implements ICustomPacketHandler.IServerPacketHa
             } else if (world.isEmptyBlock(posOnSide)) {
                 if (!ForgeEventFactory.onBlockPlace(player, BlockSnapshot.create(player.level.dimension(), world, posHit), blockTrace.getDirection())) {
                     world.setBlockAndUpdate(posOnSide, DEContent.placed_item.defaultBlockState().setValue(PlacedItem.FACING, blockTrace.getDirection()));
-                    TileEntity tile = world.getBlockEntity(posOnSide);
+                    BlockEntity tile = world.getBlockEntity(posOnSide);
 
                     if (tile instanceof TilePlacedItem) {
                         ((TilePlacedItem) tile).itemHandler.setStackInSlot(0, stack);

@@ -1,14 +1,14 @@
 package com.brandon3055.draconicevolution.handlers.dislocator;
 
 import com.brandon3055.brandonscore.utils.TargetPos;
-import net.minecraft.entity.Entity;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.core.Registry;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
@@ -19,9 +19,9 @@ import java.util.function.Function;
  */
 public abstract class DislocatorTarget {
 
-    protected RegistryKey<World> worldKey;
+    protected ResourceKey<Level> worldKey;
 
-    public DislocatorTarget(RegistryKey<World> worldKey) {
+    public DislocatorTarget(ResourceKey<Level> worldKey) {
         this.worldKey = worldKey;
     }
 
@@ -39,28 +39,28 @@ public abstract class DislocatorTarget {
 //
 //    }
 
-    protected ServerWorld getTargetWorld(MinecraftServer server) {
+    protected ServerLevel getTargetWorld(MinecraftServer server) {
         return server.getLevel(worldKey);
     }
 
-    public CompoundNBT save(CompoundNBT nbt) {
+    public CompoundTag save(CompoundTag nbt) {
         nbt.putByte("target_type", (byte) getType().ordinal());
         nbt.putString("world_key", worldKey.location().toString());
         return nbt;
     }
 
-    protected void loadInternal(CompoundNBT nbt) {
+    protected void loadInternal(CompoundTag nbt) {
 
     }
 
-    public RegistryKey<World> getWorldKey() {
+    public ResourceKey<Level> getWorldKey() {
         return worldKey;
     }
 
-    public static DislocatorTarget load(CompoundNBT nbt) {
+    public static DislocatorTarget load(CompoundTag nbt) {
         try {
             TargetType type = TargetType.values()[nbt.getByte("target_type")];
-            RegistryKey<World> worldKey = RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(nbt.getString("world_key")));
+            ResourceKey<Level> worldKey = ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(nbt.getString("world_key")));
             DislocatorTarget target = type.createInstance(worldKey);
             target.loadInternal(nbt);
             return target;
@@ -79,12 +79,12 @@ public abstract class DislocatorTarget {
         ENTITY_INVENTORY(EntityTarget::new),
         ON_GROUND(GroundTarget::new);
 
-        private Function<RegistryKey<World>, DislocatorTarget> factory;
-        TargetType(Function<RegistryKey<World>, DislocatorTarget> factory) {
+        private Function<ResourceKey<Level>, DislocatorTarget> factory;
+        TargetType(Function<ResourceKey<Level>, DislocatorTarget> factory) {
             this.factory = factory;
         }
 
-        public DislocatorTarget createInstance(RegistryKey<World> worldKey) {
+        public DislocatorTarget createInstance(ResourceKey<Level> worldKey) {
             return factory.apply(worldKey);
         }
     }

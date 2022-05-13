@@ -1,8 +1,8 @@
 package com.brandon3055.draconicevolution.lib;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.EntityDamageSource;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.EntityDamageSource;
+import net.minecraft.world.entity.Entity;
 
 /**
  * Created by brandon3055 on 5/07/2016.

@@ -6,19 +6,18 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.entity.GuardianCrystalEntity;
 import com.brandon3055.draconicevolution.entity.guardian.DraconicGuardianEntity;
 import com.brandon3055.draconicevolution.entity.guardian.GuardianFightManager;
-import net.minecraft.entity.EntityPredicate;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.pathfinding.Path;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.WeightedRandom;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3i;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
+import net.minecraft.util.random.SimpleWeightedRandomList;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.pathfinder.Path;
+import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * This is where it all starts. This can be thought of as the "planning" phase. This phase assesses the situation and decides on the next new phase to execute.
@@ -29,9 +28,9 @@ import java.util.stream.Collectors;
  */
 public class StartPhase extends Phase {
     private static final Logger LOGGER = DraconicEvolution.LOGGER;
-    public static final EntityPredicate AGRO_TARGETS = new EntityPredicate().allowUnseeable().range(300).selector(e -> e instanceof PlayerEntity);
+    public static final TargetingConditions AGRO_TARGETS = TargetingConditions.forCombat().ignoreLineOfSight().range(300).selector(e -> e instanceof Player);
     private Path currentPath;
-    private Vector3d targetLocation;
+    private Vec3 targetLocation;
     private boolean clockwise;
 //    private int ticksSinceTargetUpdate = 0;
 //    private int ticksUntilNextAttack = 0;
@@ -117,7 +116,7 @@ public class StartPhase extends Phase {
 
     @Override
     @Nullable
-    public Vector3d getTargetLocation() {
+    public Vec3 getTargetLocation() {
         return targetLocation;
     }
 
@@ -131,7 +130,7 @@ public class StartPhase extends Phase {
 //            return true;
 //        }
 
-        PlayerEntity closeTarget = guardian.level.getNearestPlayer(guardian.getX(), guardian.getY(), guardian.getZ(), 30, true);
+        Player closeTarget = guardian.level.getNearestPlayer(guardian.getX(), guardian.getY(), guardian.getZ(), 30, true);
 
         //Do close range / evasion strat (25% chance)
         if (closeTarget != null && ((guardian.getShieldPower() < DEConfig.guardianShield) || random.nextFloat() < 0.25F)) {
@@ -141,14 +140,15 @@ public class StartPhase extends Phase {
 
         boolean aggressive = agroModifier > maxAgroModifier * 0.75 || failedAttacks > 3;
 
-        List<PhaseType.WeightedPhase> phases = aggressive ? PhaseType.AGGRESSIVE_WEIGHTED : PhaseType.NORMAL_WEIGHTED;
+        SimpleWeightedRandomList<PhaseType<?>> phases = aggressive ? PhaseType.AGGRESSIVE_WEIGHTED : PhaseType.NORMAL_WEIGHTED;
 
-        Vector3d focus = Vector3d.atCenterOf(guardian.getArenaOrigin());
-        List<PlayerEntity> targetOptions = guardian.level.players()
+        Vec3 focus = Vec3.atCenterOf(guardian.getArenaOrigin());
+        List<Player> targetOptions = guardian.level.players()
                 .stream()
                 .filter(e -> e.distanceToSqr(focus) <= 200 * 200)
                 .filter(e -> AGRO_TARGETS.test(guardian, e))
-                .collect(Collectors.toList());
+                .map(e -> (Player) e)
+                .toList();
 
         if (targetOptions.isEmpty()) {
             return false;
@@ -156,16 +156,16 @@ public class StartPhase extends Phase {
         GuardianFightManager manager = guardian.getFightManager();
         if (manager == null) return false;
 
-        PhaseType.WeightedPhase phaseType = WeightedRandom.getRandomItem(random, phases);
-        IPhase phase = guardian.getPhaseManager().getPhase(phaseType.phase);
+        PhaseType phaseType = phases.getRandomValue(random).get();
+        IPhase phase = guardian.getPhaseManager().getPhase(phaseType);
         if (phase instanceof ChargeUpPhase) {
             failedAttacks = 0;
 //            if (guardian.level.getServer() != null) {
 //                guardian.level.getServer().getPlayerList().broadcastMessage(new StringTextComponent("Aggressive Mode: " + aggressive), ChatType.CHAT, Util.NIL_UUID);
 //            }
-            guardian.getPhaseManager().setPhase(PhaseType.APPROACH_POSITION).setTargetLocation(Vector3d.atCenterOf(manager.getArenaOrigin().above(48))).setNextPhase(phaseType.phase);
+            guardian.getPhaseManager().setPhase(PhaseType.APPROACH_POSITION).setTargetLocation(Vec3.atCenterOf(manager.getArenaOrigin().above(48))).setNextPhase(phaseType);
         } else {
-            guardian.getPhaseManager().setPhase(phaseType.phase).targetPlayer(targetOptions.get(random.nextInt(targetOptions.size())));
+            guardian.getPhaseManager().setPhase(phaseType).targetPlayer(targetOptions.get(random.nextInt(targetOptions.size())));
         }
 
         return false;
@@ -196,7 +196,7 @@ public class StartPhase extends Phase {
         this.navigateToNextPathNode();
     }
 
-    public void immediateAttack(@Nullable PlayerEntity target) {
+    public void immediateAttack(@Nullable Player target) {
         if (target != null) {
             attackPlayer(target);
         } else {
@@ -204,7 +204,7 @@ public class StartPhase extends Phase {
         }
     }
 
-    private void attackPlayer(PlayerEntity player) {
+    private void attackPlayer(Player player) {
         if (guardian.getRandom().nextFloat() > 0.5F && guardian.distanceToSqr(player) >= 40) {
             guardian.getPhaseManager().setPhase(PhaseType.BOMBARD_PLAYER).targetPlayer(player);
         } else {
@@ -214,12 +214,12 @@ public class StartPhase extends Phase {
 
     private void navigateToNextPathNode() {
         if (currentPath != null && !currentPath.isDone()) {
-            Vector3i nextPos = currentPath.getNextNodePos();
+            Vec3i nextPos = currentPath.getNextNodePos();
             currentPath.advance();
             double x = nextPos.getX();
             double z = nextPos.getZ();
             double y = (float) nextPos.getY() + guardian.getRandom().nextFloat() * 20.0F;
-            targetLocation = new Vector3d(x, y, z);
+            targetLocation = new Vec3(x, y, z);
         }
     }
 
@@ -241,9 +241,9 @@ public class StartPhase extends Phase {
     }
 
     @Override
-    public void onCrystalAttacked(GuardianCrystalEntity crystal, BlockPos pos, DamageSource dmgSrc, @Nullable PlayerEntity plyr, float damage, boolean destroyed) {
+    public void onCrystalAttacked(GuardianCrystalEntity crystal, BlockPos pos, DamageSource dmgSrc, @Nullable Player plyr, float damage, boolean destroyed) {
         if (destroyed) {
-            if (plyr != null && !plyr.abilities.invulnerable) {
+            if (plyr != null && !plyr.getAbilities().invulnerable) {
                 attackPlayer(plyr);
             } else {
                 agroLevel = targetAgroLevel;
