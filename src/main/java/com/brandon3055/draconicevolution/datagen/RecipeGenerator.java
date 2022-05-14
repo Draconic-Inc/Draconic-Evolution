@@ -249,8 +249,8 @@ public class RecipeGenerator extends RecipeProvider {
                 .define('A', Tags.Items.INGOTS_IRON)
                 .define('B', DETags.Items.INGOTS_DRACONIUM)
                 .define('C', Items.DIAMOND_SWORD)
-                .define('D', DEContent.core_draconium)
-                .define('E', Items.FURNACE)
+                .define('D', DEContent.energy_core_wyvern)
+                .define('E', Tags.Items.HEADS)
                 .unlockedBy("has_core_draconium", has(DEContent.core_draconium))
                 .save(consumer);
 

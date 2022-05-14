@@ -408,7 +408,7 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
     }
 
     @Override
-    public void render(PoseStack mStack, int mouseX, int mouseY, float partialTicks) {
+    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
         if ((isFullSize() ? 1 : 0) != resizeAnim || (advancedUI ? 0 : 1) != rePosAnim || (isUIHidden() ? 1 : 0) != hideAnim) {
             resizeAnim = MathHelper.clip(MathHelper.approachLinear(resizeAnim, (isFullSize() ? 1 : 0), 0.15F * partialTicks), 0, 1);
             hideAnim = MathHelper.clip(MathHelper.approachLinear(hideAnim, (isUIHidden() ? 1 : 0), 0.15F * partialTicks), 0, 1);
@@ -417,7 +417,7 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
         }
         updateAnimations.removeIf(UpdateAnim::isFinished);
         updateAnimations.forEach(e -> e.tick(partialTicks));
-        super.render(mStack, mouseX, mouseY, partialTicks);
+        super.render(poseStack, mouseX, mouseY, partialTicks);
     }
 
     @Override

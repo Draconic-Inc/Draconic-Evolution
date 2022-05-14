@@ -148,33 +148,33 @@ public class GuiEnergyCore extends ModularGuiContainer<ContainerBCTile<TileEnerg
     }
 
     @Override
-    public void render(PoseStack mStack, int mouseX, int mouseY, float partialTicks) {
-        this.renderBackground(mStack);
-        super.render(mStack, mouseX, mouseY, partialTicks);
+    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
+        this.renderBackground(poseStack);
+        super.render(poseStack, mouseX, mouseY, partialTicks);
 
         if (tile.active.get()) {
 //            GuiHelper.drawEnergyBar(this, guiLeft + 5, guiTop + 82, 170, true, tile.getExtendedStorage(), tile.getExtendedCapacity(), true, mouseX, mouseY);
 
             if (GuiHelperOld.isInRect(leftPos + 40, topPos + 27, imageWidth - 80, 8, mouseX, mouseY)) {
-                renderTooltip(mStack, new TextComponent(ChatFormatting.GRAY + "[" + Utils.addCommas(tile.getExtendedCapacity()) + " OP]"), mouseX, mouseY);
+                renderTooltip(poseStack, new TextComponent(ChatFormatting.GRAY + "[" + Utils.addCommas(tile.getExtendedCapacity()) + " OP]"), mouseX, mouseY);
             }
 
             if (GuiHelperOld.isInRect(leftPos + 40, topPos + 48, imageWidth - 80, 8, mouseX, mouseY)) {
-                renderTooltip(mStack, new TextComponent(ChatFormatting.GRAY + "[" + Utils.addCommas(tile.getExtendedStorage()) + " OP]"), mouseX, mouseY);
+                renderTooltip(poseStack, new TextComponent(ChatFormatting.GRAY + "[" + Utils.addCommas(tile.getExtendedStorage()) + " OP]"), mouseX, mouseY);
             }
         }
 
         if (tile.buildGuide.get()) {
-            drawCenteredString(mStack, font, layer == -1 ? "All" : layer + "", leftPos + (imageWidth / 2), topPos - 10, 0xFFFFFF);
+            drawCenteredString(poseStack, font, layer == -1 ? "All" : layer + "", leftPos + (imageWidth / 2), topPos - 10, 0xFFFFFF);
         }
 
         if (GuiHelper.isInRect(guiLeft(), guiTop() + 59, xSize(), 24, mouseX, mouseY) && tile.active.get()){
             MutableComponent input = new TextComponent("IN: ").withStyle(ChatFormatting.GREEN).append(new TextComponent(Utils.formatNumber(Math.round(tile.inputRate.get())) + " OP/t").withStyle(ChatFormatting.GRAY));
             MutableComponent out = new TextComponent("OUT: ").withStyle(ChatFormatting.DARK_RED).append(new TextComponent(Utils.formatNumber(Math.round(tile.outputRate.get())) + " OP/t").withStyle(ChatFormatting.GRAY));
 
-            renderTooltip(mStack, Lists.newArrayList(input.getVisualOrderText(), out.getVisualOrderText()), mouseX, mouseY);
+            renderTooltip(poseStack, Lists.newArrayList(input.getVisualOrderText(), out.getVisualOrderText()), mouseX, mouseY);
         } else {
-            this.renderTooltip(mStack, mouseX, mouseY);
+            this.renderTooltip(poseStack, mouseX, mouseY);
         }
 
     }
