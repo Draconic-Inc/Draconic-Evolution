@@ -29,6 +29,7 @@ import java.util.Map;
 public class RenderTileEnergyPylon implements BlockEntityRenderer<TileEnergyPylon> {
 
     private static RenderType modelType = RenderType.entitySolid(new ResourceLocation(DraconicEvolution.MODID, "textures/block/pylon_sphere_texture.png"));
+
     private static RenderType shelType = RenderType.create("pylon_sphere22", DefaultVertexFormat.POSITION_COLOR_TEX, VertexFormat.Mode.QUADS, 256, RenderType.CompositeState.builder()
                     .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(DraconicEvolution.MODID, "textures/block/pylon_sphere_texture.png"), false, false))
                     .setTransparencyState(RenderStateShard.LIGHTNING_TRANSPARENCY)

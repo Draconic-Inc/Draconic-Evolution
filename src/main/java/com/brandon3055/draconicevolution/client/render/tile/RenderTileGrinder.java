@@ -15,6 +15,7 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
@@ -26,6 +27,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.Map;
+import java.util.OptionalDouble;
 
 /**
  * Created by brandon3055 on 3/11/19.
@@ -34,20 +36,20 @@ public class RenderTileGrinder implements BlockEntityRenderer<TileGrinder> {
     private static final double[] ROTATION_MAP = new double[]{0, 180, 90, -90};
     private static final RenderType swordType = RenderType.entitySolid(new ResourceLocation(DraconicEvolution.MODID, "textures/block/grinder.png"));
     private static final RenderType fanType = RenderType.entitySolid(new ResourceLocation(DraconicEvolution.MODID, "textures/block/parts/machine_fan.png"));
-    private static final RenderType aoeOutlineType = RenderType.create("aoe", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.LINES, 256, RenderType.CompositeState.builder()
-                    .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
-                    .setCullState(RenderStateShard.NO_CULL)
-                    .setWriteMaskState(RenderStateShard.COLOR_WRITE)
-//            .setLineState(new RenderStateShard.LineStateShard(OptionalDouble.of(4.0)))
-//            .setTexturingState(new RenderStateShard.TexturingStateShard("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
-                    .createCompositeState(false)
+    private static final RenderType aoeOutlineType = RenderType.create("aoe", DefaultVertexFormat.POSITION_COLOR_NORMAL, VertexFormat.Mode.LINES, 256, RenderType.CompositeState.builder()
+            .setShaderState(RenderStateShard.RENDERTYPE_LINES_SHADER)
+            .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
+            .setCullState(RenderStateShard.NO_CULL)
+            .setWriteMaskState(RenderStateShard.COLOR_WRITE)
+            .setLineState(new RenderStateShard.LineStateShard(OptionalDouble.of(4.0)))
+            .createCompositeState(false)
     );
     private static final RenderType aoeSolidType = RenderType.create("aoe_solid", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 256, RenderType.CompositeState.builder()
-                    .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
-                    .setCullState(RenderStateShard.NO_CULL)
-                    .setWriteMaskState(RenderStateShard.COLOR_WRITE)
-//            .setTexturingState(new RenderStateShard.TexturingStateShard("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
-                    .createCompositeState(false)
+            .setShaderState(new RenderStateShard.ShaderStateShard(GameRenderer::getPositionColorShader))
+            .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
+            .setCullState(RenderStateShard.NO_CULL)
+            .setWriteMaskState(RenderStateShard.COLOR_WRITE)
+            .createCompositeState(false)
     );
 
 
@@ -72,6 +74,7 @@ public class RenderTileGrinder implements BlockEntityRenderer<TileGrinder> {
         BlockState state = tile.getLevel().getBlockState(tile.getBlockPos());
         if (state.getBlock() != DEContent.grinder) return;
         Direction facing = state.getValue(Grinder.FACING);
+
 
         Matrix4 mat = new Matrix4(mStack);
         CCRenderState ccrs = CCRenderState.instance();
@@ -106,35 +109,6 @@ public class RenderTileGrinder implements BlockEntityRenderer<TileGrinder> {
             RenderUtils.bufferCuboidSolid(builder, box, 0F, 1F, 1F, 0.2F);
         }
     }
-
-////    @Override
-//    public void render(TileGrinder te, double x, double y, double z, float partialTicks, int destroyStage) {
-//        BlockState state = te.getWorld().getBlockState(te.getPos());
-//        if (state.getBlock() == DEContent.grinder) {
-//
-//            if (te.aoeDisplay > 0.51) {
-//                te.validateKillZone(true);
-//                RenderSystem.enableBlend(); //RenderState.TRANSLUCENT_TRANSPARENCY
-//                RenderSystem.color4f(0F, 1F, 1F, 0.2F); //On the VF
-//                RenderSystem.disableTexture();
-//                RenderSystem.disableCull(); //RenderState.CULL_DISABLED
-//                RenderSystem.depthMask(false); //RenderState.COLOR_WRITE //writeState
-//                RenderSystem.lineWidth(4); //
-//                RenderSystem.disableLighting();
-//                Cuboid6 box = new Cuboid6(te.killZone.offset(Vector3.fromTile(te).multiply(-1).pos()).shrink(0.01).shrink(te.aoe.get() - te.aoeDisplay));
-//                RenderUtils.drawCuboidSolid(box);
-//                RenderSystem.color4f(0F, 0F, 0F, 1F);
-//                RenderUtils.drawCuboidOutline(box);
-//                RenderSystem.enableLighting();
-//                RenderSystem.depthMask(true);
-//                RenderSystem.enableCull();
-//                RenderSystem.enableTexture();
-//                RenderSystem.disableBlend();
-//            }
-//
-//            RenderSystem.translated(-x, -y, -z);
-//        }
-//    }
 
     private void renderSword(CCRenderState ccrs, Direction tileFacing, double sideOffset, Vector3 tilePos, Vector3 targetPos, double attackAnimTime, float partialTicks) {
         attackAnimTime *= 2;

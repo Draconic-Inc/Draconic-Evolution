@@ -92,7 +92,7 @@ public class TileDislocatorPedestal extends TileBCore implements DislocatorEndPo
         }
 
         InventoryUtils.handleHeldStackTransfer(0, itemHandler, player);
-        detectAndSendChanges();
+        detectAndSendChanges(false);
 
         //Transfer the dislocator that was in the pedestal to the players inventory
         if (BoundDislocator.isValid(stack) && BoundDislocator.isP2P(stack) && itemHandler.getStackInSlot(0).isEmpty()) {

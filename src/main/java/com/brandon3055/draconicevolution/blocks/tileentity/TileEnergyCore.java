@@ -94,7 +94,7 @@ public class TileEnergyCore extends TileBCore implements IExtendedRFStorage, IMu
         }
 
         active.addValueListener(active -> {
-            if (level != null) level.setBlockAndUpdate(worldPosition, level.getBlockState(worldPosition).setValue(EnergyCore.ACTIVE, active));
+            if (level != null && level.getBlockState(worldPosition).getBlock() == DEContent.energy_core) level.setBlockAndUpdate(worldPosition, level.getBlockState(worldPosition).setValue(EnergyCore.ACTIVE, active));
         });
     }
 
