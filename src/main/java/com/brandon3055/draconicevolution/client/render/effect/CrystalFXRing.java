@@ -1,9 +1,8 @@
 package com.brandon3055.draconicevolution.client.render.effect;
 
-import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.energynet.EnergyCrystal;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalBase;
-import com.brandon3055.draconicevolution.client.DETextures;
+import com.brandon3055.draconicevolution.client.DEMiscSprites;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -12,12 +11,11 @@ import com.mojang.math.Vector3f;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.ParticleRenderType;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
-import org.lwjgl.opengl.GL11;
 
 /**
  * Created by brandon3055 on 29/11/2016.
@@ -49,8 +47,8 @@ public class CrystalFXRing extends CrystalFXBase<TileCrystalBase> {
     }
 
     @Override
-    public void render(VertexConsumer buffer, Camera renderInfo, float partialTicks) {
-        if (!renderEnabled || DETextures.ENERGY_PARTICLE == null || DETextures.ENERGY_PARTICLE[0] == null) {
+    public void render(VertexConsumer buffer, Camera camera, float partialTicks) {
+        if (!renderEnabled || DEMiscSprites.ENERGY_PARTICLE == null || DEMiscSprites.ENERGY_PARTICLE[0] == null) {
             return;
         }
 
@@ -61,11 +59,11 @@ public class CrystalFXRing extends CrystalFXBase<TileCrystalBase> {
 
         //region variables
 
-        Vec3 view = renderInfo.getPosition();
+        Vec3 view = camera.getPosition();
         float viewX = (float) (this.x - view.x());
         float viewY = (float) (this.y - view.y());
         float viewZ = (float) (this.z - view.z());
-        double mipLevel = Math.max(0, Math.min(1, (renderInfo.getBlockPosition().distToCenterSqr(x, y, z) - 20) / 600D));
+        double mipLevel = Math.max(0, Math.min(1, (camera.getBlockPosition().distToCenterSqr(x, y, z) - 20) / 600D));
 
         //endregion
 
@@ -107,18 +105,18 @@ public class CrystalFXRing extends CrystalFXBase<TileCrystalBase> {
             float drawZ = viewZ + (float) oz;
             //endregion
 
-            int texIndex = (ClientEventHandler.elapsedTicks) % DETextures.ENERGY_PARTICLE.length;
-            TextureAtlasSprite sprite = DETextures.ENERGY_PARTICLE[texIndex];
+            int texIndex = (ClientEventHandler.elapsedTicks) % DEMiscSprites.ENERGY_PARTICLE.length;
+            TextureAtlasSprite sprite = DEMiscSprites.ENERGY_PARTICLE[texIndex];
             float minU = sprite.getU0();
             float maxU = sprite.getU1();
             float minV = sprite.getV0();
             float maxV = sprite.getV1();
 
-            Vector3f[] renderVector = getRenderVectors(renderInfo, drawX, drawY, drawZ, scale);
-            buffer.vertex(renderVector[0].x(), renderVector[0].y(), renderVector[0].z()).color(r, g, b, a).uv(maxU, maxV).endVertex();
-            buffer.vertex(renderVector[1].x(), renderVector[1].y(), renderVector[1].z()).color(r, g, b, a).uv(maxU, minV).endVertex();
-            buffer.vertex(renderVector[2].x(), renderVector[2].y(), renderVector[2].z()).color(r, g, b, a).uv(minU, minV).endVertex();
-            buffer.vertex(renderVector[3].x(), renderVector[3].y(), renderVector[3].z()).color(r, g, b, a).uv(minU, maxV).endVertex();
+            Vector3f[] renderVector = getRenderVectors(camera, drawX, drawY, drawZ, scale);
+            buffer.vertex(renderVector[0].x(), renderVector[0].y(), renderVector[0].z()).color(r, g, b, a).uv(maxU, maxV).uv2(240, 240).endVertex();
+            buffer.vertex(renderVector[1].x(), renderVector[1].y(), renderVector[1].z()).color(r, g, b, a).uv(maxU, minV).uv2(240, 240).endVertex();
+            buffer.vertex(renderVector[2].x(), renderVector[2].y(), renderVector[2].z()).color(r, g, b, a).uv(minU, minV).uv2(240, 240).endVertex();
+            buffer.vertex(renderVector[3].x(), renderVector[3].y(), renderVector[3].z()).color(r, g, b, a).uv(minU, maxV).uv2(240, 240).endVertex();
 
             //region Inner
             scale = 0.01F + (rFloat4 * 0.04F) * (float) Math.sin((animTime + i) / 30) + ((float) mipLevel * 0.05F);
@@ -136,21 +134,18 @@ public class CrystalFXRing extends CrystalFXBase<TileCrystalBase> {
             g = wierless ? 0 : 1;
             b = wierless ? 0 : 1;
 
-            minU = DETextures.ORB_PARTICLE.getU0();
-            maxU = DETextures.ORB_PARTICLE.getU1();
-            minV = DETextures.ORB_PARTICLE.getV0();
-            maxV = DETextures.ORB_PARTICLE.getV1();
-            renderVector = getRenderVectors(renderInfo, drawX, drawY, drawZ, scale);
+            minU = DEMiscSprites.ORB_PARTICLE.getU0();
+            maxU = DEMiscSprites.ORB_PARTICLE.getU1();
+            minV = DEMiscSprites.ORB_PARTICLE.getV0();
+            maxV = DEMiscSprites.ORB_PARTICLE.getV1();
+            renderVector = getRenderVectors(camera, drawX, drawY, drawZ, scale);
             buffer.vertex(renderVector[0].x(), renderVector[0].y(), renderVector[0].z()).color(r, g, b, a).uv(maxU, maxV).uv2(240, 240).endVertex();
             buffer.vertex(renderVector[1].x(), renderVector[1].y(), renderVector[1].z()).color(r, g, b, a).uv(maxU, minV).uv2(240, 240).endVertex();
             buffer.vertex(renderVector[2].x(), renderVector[2].y(), renderVector[2].z()).color(r, g, b, a).uv(minU, minV).uv2(240, 240).endVertex();
             buffer.vertex(renderVector[3].x(), renderVector[3].y(), renderVector[3].z()).color(r, g, b, a).uv(minU, maxV).uv2(240, 240).endVertex();
         }
-
 //        endregion
-
     }
-
 
     @Override
     public ParticleRenderType getRenderType() {
@@ -158,17 +153,13 @@ public class CrystalFXRing extends CrystalFXBase<TileCrystalBase> {
     }
 
     public static final ParticleRenderType RENDER_TYPE = new ParticleRenderType() {
-//        private static ResourceLocation texture = new ResourceLocation(DraconicEvolution.MODID, )
         @Override
         public void begin(BufferBuilder builder, TextureManager textureManager) {
             RenderSystem.depthMask(false);
-//            RenderSystem.alphaFunc(516, 0.003921569F);
             RenderSystem.enableBlend();
             RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
-//            RenderSystem.glMultiTexCoord2f(0x84c2, 240.0F, 240.0F); //Lightmap
-
-//            RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-            textureManager.bindForSetup(TextureAtlas.LOCATION_BLOCKS);
+            RenderSystem.setShader(GameRenderer::getPositionColorTexLightmapShader);
+            RenderSystem.setShaderTexture(0, DEMiscSprites.ATLAS_LOCATION);
             builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP);
         }
 

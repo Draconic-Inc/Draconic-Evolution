@@ -32,6 +32,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -184,8 +185,6 @@ public class PlacedItem extends BlockBCore implements EntityBlock {
         return FALLBACK_SHAPE;
     }
 
-
-
     @Override
     public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter level, BlockPos pos, Player player) {
         BlockEntity tile = level.getBlockEntity(pos);
@@ -205,15 +204,22 @@ public class PlacedItem extends BlockBCore implements EntityBlock {
 
     @Override
     public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
-        BlockEntity tile = world.getBlockEntity(pos);
-        if (tile instanceof TilePlacedItem) {
-            ((TilePlacedItem) tile).onBroken(Vector3.fromTileCenter(tile), false);
-        }
         super.onRemove(state, world, pos, newState, isMoving);
     }
 
     @Override
-    protected void spawnDestroyParticles(Level p_152422_, Player p_152423_, BlockPos p_152424_, BlockState p_152425_) {}
+    public boolean onDestroyedByPlayer(BlockState state, Level level, BlockPos pos, Player player, boolean willHarvest, FluidState fluid) {
+        BlockEntity tile = level.getBlockEntity(pos);
+        if (tile instanceof TilePlacedItem) {
+            ((TilePlacedItem) tile).onBroken(player, Vector3.fromTileCenter(tile), false);
+        }
+        return super.onDestroyedByPlayer(state, level, pos, player, willHarvest, fluid);
+    }
+
+    @Override
+    protected void spawnDestroyParticles(Level level, Player player, BlockPos blockPos, BlockState state) {
+        level.levelEvent(player, 2001, blockPos, getId(state));
+    }
 
     @Override
     @OnlyIn(Dist.CLIENT)

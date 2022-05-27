@@ -10,6 +10,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
@@ -77,54 +79,18 @@ public class MobSoul extends ItemBCore {
         return super.useOn(context);
     }
 
-//    @Override
-//    public String getItemStackDisplayName(ItemStack stack) {
-//        String eString = getEntityString(stack);
-//
-//        if (eString.equals("[Random-Display]")) {
-//            return "Mob " + I18n.translateToLocal(this.getUnlocalizedNameInefficiently(stack) + ".name");
-//        }
-//
-//        String eModifier = "";
-//        if (ItemNBTHelper.verifyExistance(stack, "ZombieVillagerType")) {
-//            eModifier = "-" + ItemNBTHelper.getString(stack, "ZombieVillagerType", "minecraft:farmer");
-//        }
-//        else if (ItemNBTHelper.verifyExistance(stack, "ZombieTypeHusk")) {
-//            eModifier = "-Husk";
-//        }
-//
-//        String localizedName = entityNameCache.computeIfAbsent(eString + eModifier, s -> {
-//            try {
-//                Entity entity = EntityList.createEntityByIDFromName(getCachedRegName(eString), null);
-//                if (entity == null) {
-//                    return I18n.translateToLocal("entity." + EntityList.getTranslationName(getCachedRegName(eString)) + ".name");
-//                }
-//
-//                loadAdditionalEntityInfo(stack, entity);
-//                return entity.getName();
-//            }
-//            catch (Throwable e) {
-//                return "Name-Error";
-//            }
-//        });
-//
-//
-//        return localizedName + " " + I18n.translateToLocal(this.getUnlocalizedNameInefficiently(stack) + ".name");
-//    }
-
-//    @OnlyIn(Dist.CLIENT)
-//    @Override
-//    public void registerRenderer(Feature feature) {
-//        ModelRegistryHelper.registerItemRenderer(this, new RenderItemMobSoul());
-//    }
-//
-//    @Override
-//    public boolean registerNormal(Feature feature) {
-//        return false;
-//    }
+    @Override
+    public Component getName(ItemStack stack) {
+        String eName = getEntityString(stack);
+        EntityType<?> type = ForgeRegistries.ENTITIES.getValue(getCachedRegName(eName));
+        if (type == null){
+            return super.getName(stack);
+        }
+        return new TranslatableComponent(type.getDescriptionId()).append(" ").append(super.getName(stack));
+    }
 
     public String getEntityString(ItemStack stack) {
-        return ItemNBTHelper.getString(stack, "EntityName", "Pig");
+        return ItemNBTHelper.getString(stack, "EntityName", "pig");
     }
 
     public void setEntity(ResourceLocation entityName, ItemStack stack) {
@@ -165,15 +131,8 @@ public class MobSoul extends ItemBCore {
                     entity.load(entityData);
                 }
                 else {
-                    loadAdditionalEntityInfo(stack, entity);
                     if (entity instanceof Mob) {
                         ((Mob) entity).finalizeSpawn((ServerLevel)world, world.getCurrentDifficultyAt(new BlockPos(0, 0, 0)), MobSpawnType.SPAWN_EGG, null, null);
-//                        entitytype.spawn(worldIn, itemstack, playerIn, blockpos, SpawnReason.SPAWN_EGG, false, false)
-//                        type.spawn(world, stack, null, new BlockPos(0, 0, 0), SpawnReason.SPAWN_EGG, false, false);
-
-//                        if (!ForgeEventFactory.doSpecialSpawn((MobEntity) entity, world, (float) entity.getPosX(), (float) entity.getPosY(), (float) entity.getPosZ())) {
-//                            ((LivingEntity) entity).onInitialSpawn(world.getDifficultyForLocation(new BlockPos(entity)), null);
-//                        }
                     }
                 }
             }
@@ -194,9 +153,6 @@ public class MobSoul extends ItemBCore {
             CompoundTag compound = new CompoundTag();
             entity.saveWithoutId(compound);
             setEntityData(compound, soul);
-        }
-        else {
-            saveAditionalEntityInfo(entity, soul);
         }
 
         return soul;
@@ -241,40 +197,6 @@ public class MobSoul extends ItemBCore {
         }
 
         return renderEntityMap.get(name);
-    }
-
-    private void saveAditionalEntityInfo(Entity entity, ItemStack stack) {
-//        if (entity instanceof EntitySkeleton) {TODO Is this not needed now? Mojang? Did you do a good thing?
-//            ItemNBTHelper.setInteger(stack, "EntityTypeID", ((EntitySkeleton) entity).getSkeletonType().getId());
-//        }
-//        else if (entity instanceof EntityZombie) {
-//            VillagerRegistry.VillagerProfession prof = ((EntityZombie) entity).getVillagerTypeForge();
-//            if (prof != null && prof.getRegistryName() != null) {
-//                ItemNBTHelper.setString(stack, "ZombieVillagerType", prof.getRegistryName().toString());
-//            }
-//            else if (((EntityZombie) entity).getZombieType() == ZombieType.HUSK) {
-//                ItemNBTHelper.setBoolean(stack, "ZombieTypeHusk", true);
-//            }
-//        }
-    }
-
-    private void loadAdditionalEntityInfo(ItemStack stack, Entity entity) {
-//        if (entity instanceof EntitySkeleton && ItemNBTHelper.verifyExistance(stack, "EntityTypeID")) {
-//            ((EntitySkeleton) entity).setSkeletonType(SkeletonType.getByOrdinal(ItemNBTHelper.getInteger(stack, "EntityTypeID", ((EntitySkeleton) entity).getSkeletonType().getId())));
-//        }
-//        else if (entity instanceof EntityZombie) {
-//            if (ItemNBTHelper.verifyExistance(stack, "ZombieVillagerType")) {
-//                String name = ItemNBTHelper.getString(stack, "ZombieVillagerType", "minecraft:farmer");
-//                VillagerRegistry.VillagerProfession p = ForgeRegistries.VILLAGER_PROFESSIONS.getValue(new ResourceLocation(name));
-//                if (p == null) {
-//                    p = ForgeRegistries.VILLAGER_PROFESSIONS.getValue(new ResourceLocation("minecraft:farmer"));
-//                }
-//                ((EntityZombie) entity).setVillagerType(p);
-//            }
-//            else if (ItemNBTHelper.verifyExistance(stack, "ZombieTypeHusk")) {
-//                ((EntityZombie) entity).setZombieType(ZombieType.HUSK);
-//            }
-//        }
     }
 
     public static ResourceLocation getCachedRegName(String name) {

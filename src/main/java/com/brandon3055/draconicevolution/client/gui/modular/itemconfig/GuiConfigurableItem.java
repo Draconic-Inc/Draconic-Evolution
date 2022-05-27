@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.client.gui.modular.itemconfig;
 
 import codechicken.lib.math.MathHelper;
 import com.brandon3055.brandonscore.api.render.GuiHelper;
-import com.brandon3055.brandonscore.client.BCSprites;
+import com.brandon3055.brandonscore.client.BCGuiSprites;
 import com.brandon3055.brandonscore.client.gui.GuiToolkit;
 import com.brandon3055.brandonscore.client.gui.HudConfigGui;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
@@ -138,7 +138,7 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
     public void addElements(GuiElementManager manager) {
         addAdvancedUIElements(manager);
 
-        mainUI = GuiTexture.newDynamicTexture(() -> BCSprites.getThemed("background_dynamic"));
+        mainUI = GuiTexture.newDynamicTexture(() -> BCGuiSprites.getThemed("background_dynamic"));
         mainUI.setSize((11 * 18) + 6 + 14, 230);
         manager.addChild(mainUI, 90, false);
 
@@ -198,7 +198,7 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
         moduleConfig.setHoverText(I18n.get("gui.draconicevolution.item_config.open_modules.info"));
         moduleConfig.onPressed(this::openModulesGui);
 
-        GuiButton hudConfig = toolkit.createIconButton(mainUI, 16, 9, 16, 8, BCSprites.themedGetter("hud_button"));
+        GuiButton hudConfig = toolkit.createIconButton(mainUI, 16, 9, 16, 8, BCGuiSprites.themedGetter("hud_button"));
         hudConfig.onReload(e -> e.setPos((options.isEnabled() ? options : toggleAdvanced).maxXPos() + 1, moduleConfig.yPos() + 1));
         hudConfig.setHoverText(I18n.get("hud.draconicevolution.open_hud_config"));
         hudConfig.onPressed(() -> minecraft.setScreen(new HudConfigGui()));
@@ -222,14 +222,14 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
         advancedContainer.onReload(() -> advancedContainer.setPosAndSize(0, 0, width, height));
         manager.addChild(advancedContainer);
 
-        deleteZone = new GuiTexture(16, 16, () -> BCSprites.get("delete"));
+        deleteZone = new GuiTexture(16, 16, () -> BCGuiSprites.get("delete"));
         deleteZone.setEnabledCallback(() -> advancedUI && DEConfig.configUiEnableDeleteZone);
         deleteZone.setYPos(0).setXPosMod(() -> advancedContainer.maxXPos() - 16);
         deleteZone.setHoverText(I18n.get("gui.draconicevolution.item_config.delete_zone.info"));
         GuiToolkit.addHoverHighlight(deleteZone, 0, 0, true);
         advancedContainer.addChild(deleteZone);
 
-        GuiButton addGroup = toolkit.createIconButton(advancedContainer, 16, BCSprites.getter("new_group"));
+        GuiButton addGroup = toolkit.createIconButton(advancedContainer, 16, BCGuiSprites.getter("new_group"));
         GuiToolkit.addHoverHighlight(addGroup, 0, 0, true);
         addGroup.setEnabledCallback(() -> advancedUI && DEConfig.configUiEnableAddGroupButton);
         addGroup.setHoverText(I18n.get("gui.draconicevolution.item_config.add_group.info"));

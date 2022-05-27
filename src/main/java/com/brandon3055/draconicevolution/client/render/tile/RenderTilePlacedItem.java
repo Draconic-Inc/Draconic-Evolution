@@ -43,7 +43,11 @@ public class RenderTilePlacedItem implements BlockEntityRenderer<TilePlacedItem>
             if (stack.getItem() instanceof BlockItem) {
                 mStack.translate(PlacedItem.getXOffset(i, stackList.size()), -0.5 + ((3 / 16D)), PlacedItem.getZOffset(i, stackList.size()));
                 mStack.mulPose(new Quaternion(0, tile.rotation[i].get() * -22.5F, 0, true));
-                mStack.mulPose(new Quaternion(90, 0, 0, true));
+                if(direction.getAxis() != Direction.Axis.Y){
+                    mStack.mulPose(new Quaternion(90, 0, 0, true));
+                }/*else if (direction == Direction.DOWN) {
+                    mStack.mulPose(new Quaternion(0, 0, 180, true));
+                }*/
                 mStack.scale(6/8F, 6/8F, 6/8F);
             } else {
                 mStack.translate(PlacedItem.getXOffset(i, stackList.size()), -0.5 + ((0.55 / 16D) * scale), PlacedItem.getZOffset(i, stackList.size()));

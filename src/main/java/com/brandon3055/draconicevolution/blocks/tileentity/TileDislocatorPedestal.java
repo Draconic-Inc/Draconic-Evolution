@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.blocks.tileentity;
 
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.inventory.TileItemStackHandler;
+import com.brandon3055.brandonscore.lib.DelayedTask;
 import com.brandon3055.brandonscore.lib.IInteractTile;
 import com.brandon3055.brandonscore.lib.datamanager.DataFlags;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedInt;
@@ -84,7 +85,7 @@ public class TileDislocatorPedestal extends TileBCore implements DislocatorEndPo
                 location.teleport(player);
 
                 if (!silenced) {
-                    BCoreNetwork.sendSound(player.level, player.blockPosition(), DESounds.portal, SoundSource.PLAYERS, 0.1F, player.level.random.nextFloat() * 0.1F + 0.9F, false);
+                    DelayedTask.run(1, () -> BCoreNetwork.sendSound(player.level, player.blockPosition(), DESounds.portal, SoundSource.PLAYERS, 0.1F, player.level.random.nextFloat() * 0.1F + 0.9F, false));
                 }
             }
 

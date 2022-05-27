@@ -38,7 +38,7 @@ public class ItemCore extends Item {
 
         if (tile instanceof SpawnerBlockEntity) {
             if (!world.isClientSide) {
-                SpawnData data = ((SpawnerBlockEntity) tile).getSpawner().spawnPotentials.getRandomValue(world.random).orElse(null);
+                SpawnData data = ((SpawnerBlockEntity) tile).getSpawner().nextSpawnData;
                 if (data == null) {
                     return InteractionResult.FAIL;
                 }
@@ -61,7 +61,7 @@ public class ItemCore extends Item {
                 world.addFreshEntity(new ItemEntity(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, spawner));
                 InventoryUtils.consumeHeldItem(context.getPlayer(), context.getPlayer().getItemInHand(hand), hand);
             }
-            return InteractionResult.SUCCESS;
+            return InteractionResult.PASS;
         }
         return super.useOn(context);
     }

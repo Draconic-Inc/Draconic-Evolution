@@ -39,6 +39,8 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.*;
+
 /**
  * Created by brandon3055 on 30/3/2016.
  */
@@ -65,14 +67,14 @@ public class TileEnergyCore extends TileBCore implements IExtendedRFStorage, IMu
     //endregion
 
     public final EnergyCoreStructure coreStructure = new EnergyCoreStructure().initialize(this);
-    public final ManagedBool active = register(new ManagedBool("active", DataFlags.SAVE_NBT_SYNC_TILE, DataFlags.TRIGGER_UPDATE));
-    public final ManagedBool structureValid = register(new ManagedBool("structure_valid", DataFlags.SAVE_NBT_SYNC_TILE, DataFlags.TRIGGER_UPDATE));
-    public final ManagedBool coreValid = register(new ManagedBool("core_valid", DataFlags.SAVE_NBT_SYNC_TILE, DataFlags.TRIGGER_UPDATE));
+    public final ManagedBool active = register(new ManagedBool("active", SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE));
+    public final ManagedBool structureValid = register(new ManagedBool("structure_valid", SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE));
+    public final ManagedBool coreValid = register(new ManagedBool("core_valid", SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE));
     public final ManagedString invalidMessage = register(new ManagedString("invalid_message", DataFlags.SAVE_NBT));
-    public final ManagedBool buildGuide = register(new ManagedBool("build_guide", DataFlags.SAVE_NBT_SYNC_TILE, DataFlags.TRIGGER_UPDATE));
-    public final ManagedBool stabilizersOK = register(new ManagedBool("stabilizers_ok", DataFlags.SAVE_NBT_SYNC_TILE, DataFlags.TRIGGER_UPDATE));
-    public final ManagedByte tier = register(new ManagedByte("tier", (byte) 1, DataFlags.SAVE_NBT_SYNC_TILE, DataFlags.TRIGGER_UPDATE));
-    public final ManagedLong energy = register(new ManagedLong("energy", DataFlags.SAVE_NBT_SYNC_TILE));
+    public final ManagedBool buildGuide = register(new ManagedBool("build_guide", SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE, CLIENT_CONTROL));
+    public final ManagedBool stabilizersOK = register(new ManagedBool("stabilizers_ok", SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE));
+    public final ManagedByte tier = register(new ManagedByte("tier", (byte) 1, SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE, CLIENT_CONTROL));
+    public final ManagedLong energy = register(new ManagedLong("energy", SAVE_NBT_SYNC_TILE));
     public final ManagedVec3I[] stabOffsets = new ManagedVec3I[4];
     public final ManagedLong transferRate = register(new ManagedLong("transfer_rate", DataFlags.SYNC_CONTAINER));
     public final ManagedDouble inputRate = register(new ManagedDouble("input_rate", DataFlags.SYNC_CONTAINER));
@@ -90,7 +92,7 @@ public class TileEnergyCore extends TileBCore implements IExtendedRFStorage, IMu
         super(DEContent.tile_storage_core, pos, state);
 
         for (int i = 0; i < stabOffsets.length; i++) {
-            stabOffsets[i] = register(new ManagedVec3I("stab_offset" + i, new Vec3I(0, -1, 0), DataFlags.SAVE_NBT_SYNC_TILE));
+            stabOffsets[i] = register(new ManagedVec3I("stab_offset" + i, new Vec3I(0, -1, 0), SAVE_NBT_SYNC_TILE));
         }
 
         active.addValueListener(active -> {

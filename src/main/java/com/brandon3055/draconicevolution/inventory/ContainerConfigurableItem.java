@@ -112,7 +112,7 @@ public class ContainerConfigurableItem extends ContainerBCore<Object> {
                 LazyOptional<PropertyProvider> optionalCap = slot.getItem().getCapability(DECapabilities.PROPERTY_PROVIDER_CAPABILITY);
                 if (optionalCap.isPresent()) {
                     PropertyProvider provider = optionalCap.orElseThrow(WTFException::new);
-                    if (clickTypeIn == ClickType.PICKUP && button == 0 && player.inventoryMenu.getCarried().isEmpty()) {
+                    if (clickTypeIn == ClickType.PICKUP && button == 0 && player.containerMenu.getCarried().isEmpty()) {
                         selectedId = provider.getProviderID();
                         if (onSelectionMade != null) {
                             onSelectionMade.accept(false);
@@ -140,7 +140,7 @@ public class ContainerConfigurableItem extends ContainerBCore<Object> {
 //                LazyOptional<PropertyProvider> optionalCap = slot.getItem().getCapability(DECapabilities.PROPERTY_PROVIDER_CAPABILITY);
 //                if (optionalCap.isPresent()) {
 //                    PropertyProvider provider = optionalCap.orElseThrow(WTFException::new);
-//                    if (clickTypeIn == ClickType.PICKUP && button == 0 && player.inventoryMenu.getCarried().isEmpty()) {
+//                    if (clickTypeIn == ClickType.PICKUP && button == 0 && player.containerMenu.getCarried().isEmpty()) {
 //                        selectedId = provider.getProviderID();
 //                        if (onSelectionMade != null) {
 //                            onSelectionMade.accept(false);

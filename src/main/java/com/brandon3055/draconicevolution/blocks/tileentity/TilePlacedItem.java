@@ -143,7 +143,7 @@ public class TilePlacedItem extends TileBCore implements IInteractTile {
         }
 
         if (index == -1) {
-            onBroken(Vector3.fromEntityCenter(player), true);
+            onBroken(player, Vector3.fromEntityCenter(player), true);
             level.removeBlock(getBlockPos(), false);
             return InteractionResult.SUCCESS;
         }
@@ -169,7 +169,7 @@ public class TilePlacedItem extends TileBCore implements IInteractTile {
             tick();
         } else {
             HitResult hit = player.pick(4, 0, false);
-            if (hit instanceof SubHitBlockHitResult && ((SubHitBlockHitResult) hit).subHit > 0 && ((SubHitBlockHitResult) hit).subHit - 1 < rotation.length) {
+            if (hit instanceof SubHitBlockHitResult && hit.getType() == HitResult.Type.BLOCK && ((SubHitBlockHitResult) hit).subHit > 0 && ((SubHitBlockHitResult) hit).subHit - 1 < rotation.length) {
                 rotation[((SubHitBlockHitResult) hit).subHit - 1].dec();
                 BCoreNetwork.sendSound(level, worldPosition, SoundEvents.ITEM_FRAME_ROTATE_ITEM, SoundSource.PLAYERS, 1.0F, 0.9F + level.random.nextFloat() * 0.2F, false);
                 tick();
@@ -177,9 +177,11 @@ public class TilePlacedItem extends TileBCore implements IInteractTile {
         }
     }
 
-    public void onBroken(Vector3 dropPos, boolean noPickupDelay) {
+    public void onBroken(Player player, Vector3 dropPos, boolean noPickupDelay) {
         for (int i = 0; i < itemHandler.getSlots(); i++) {
-            popResource(level, dropPos, itemHandler.getStackInSlot(i), noPickupDelay);
+            if (!player.getAbilities().instabuild) {
+                popResource(level, dropPos, itemHandler.getStackInSlot(i), noPickupDelay);
+            }
             itemHandler.setStackInSlot(i, ItemStack.EMPTY);
         }
     }

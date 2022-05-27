@@ -318,7 +318,7 @@ public class TileEnergyCoreStabilizer extends TileBCore implements IMultiBlockPa
 
     @Override
     public AABB getRenderBoundingBox() {
-        return super.getRenderBoundingBox().expandTowards(1, 1, 1);
+        return super.getRenderBoundingBox().inflate(1, 1, 1);
     }
 
     //    //endregion

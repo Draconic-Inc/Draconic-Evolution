@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.api.modules.entities;
 
 import com.brandon3055.brandonscore.api.TechLevel;
-import com.brandon3055.brandonscore.client.BCSprites;
+import com.brandon3055.brandonscore.client.BCGuiSprites;
 import com.brandon3055.brandonscore.client.utils.GuiHelperOld;
 import com.brandon3055.draconicevolution.api.config.BooleanProperty;
 import com.brandon3055.draconicevolution.api.config.ConfigProperty;
@@ -89,19 +89,19 @@ public class AutoFeedEntity extends ModuleEntity {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void renderSlotOverlay(MultiBufferSource getter, Minecraft mc, int x, int y, int width, int height, double mouseX, double mouseY, boolean mouseOver, float partialTicks) {
-        VertexConsumer builder = getter.getBuffer(BCSprites.GUI_TYPE);
+        VertexConsumer builder = getter.getBuffer(BCGuiSprites.GUI_TYPE);
         AutoFeedData data = (AutoFeedData) module.getData();
         double progress = storedFood / data.getFoodStorage();
         progress = (int) (progress * 21F);
         progress = (20 - progress) - 1;
         for (int i = 0; i < 10; i++){
             float size = (width - 3) / 10F;
-            GuiHelperOld.drawSprite(builder, x + 1 + i * size, y + height - size - 2, size + 1, size + 1, BCSprites.get("bars/food_empty").sprite(), 0);
+            GuiHelperOld.drawSprite(builder, x + 1 + i * size, y + height - size - 2, size + 1, size + 1, BCGuiSprites.get("bars/food_empty").sprite(), 0);
             if (progress / 2F <= i){
                 if (progress / 2F < i){
-                    GuiHelperOld.drawSprite(builder, x + 1 + i * size, y + height - size - 2, size + 1, size + 1, BCSprites.get("bars/food_full").sprite(), 0);
+                    GuiHelperOld.drawSprite(builder, x + 1 + i * size, y + height - size - 2, size + 1, size + 1, BCGuiSprites.get("bars/food_full").sprite(), 0);
                 } else {
-                    GuiHelperOld.drawSprite(builder, x + 1 + i * size, y + height - size - 2, size + 1, size + 1, BCSprites.get("bars/food_half").sprite(), 0);
+                    GuiHelperOld.drawSprite(builder, x + 1 + i * size, y + height - size - 2, size + 1, size + 1, BCGuiSprites.get("bars/food_half").sprite(), 0);
                 }
             }
         }

@@ -8,6 +8,11 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.model.geom.builders.CubeListBuilder;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.model.geom.builders.MeshDefinition;
+import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
@@ -21,11 +26,16 @@ import net.minecraft.world.level.block.state.BlockState;
  */
 public class DraconiumChestTileRenderer implements BlockEntityRenderer<TileDraconiumChest> {
     private static final RenderType renderType = RenderType.entityCutout(new ResourceLocation(DraconicEvolution.MODID, "textures/block/draconium_chest.png"));
-//    private final ModelPart lid;
-//    private final ModelPart bottom;
-//    private final ModelPart lock;
+    private final ModelPart lid;
+    private final ModelPart bottom;
+    private final ModelPart lock;
 
     public DraconiumChestTileRenderer(BlockEntityRendererProvider.Context context) {
+        ModelPart chestRoot = createChestLayer().bakeRoot();
+        bottom = chestRoot.getChild("bottom");
+        lid = chestRoot.getChild("lid");
+        lock = chestRoot.getChild("lock");
+
 //        this.bottom = new ModelPart(64, 64, 0, 19);
 //        this.bottom.addBox(1.0F, 0.0F, 1.0F, 14.0F, 10.0F, 14.0F, 0.0F);
 //        this.lid = new ModelPart(64, 64, 0, 0);
@@ -35,6 +45,15 @@ public class DraconiumChestTileRenderer implements BlockEntityRenderer<TileDraco
 //        this.lock = new ModelPart(64, 64, 0, 0);
 //        this.lock.addBox(7.0F, -1.0F, 15.0F, 2.0F, 4.0F, 1.0F, 0.0F);
 //        this.lock.y = 8.0F;
+    }
+
+    public static LayerDefinition createChestLayer() {
+        MeshDefinition mesh = new MeshDefinition();
+        PartDefinition root = mesh.getRoot();
+        root.addOrReplaceChild("bottom", CubeListBuilder.create().texOffs(0, 19).addBox(1.0F, 0.0F, 1.0F, 14.0F, 10.0F, 14.0F), PartPose.ZERO);
+        root.addOrReplaceChild("lid", CubeListBuilder.create().texOffs(0, 0).addBox(1.0F, 0.0F, 0.0F, 14.0F, 5.0F, 14.0F), PartPose.offset(0.0F, 9.0F, 1.0F));
+        root.addOrReplaceChild("lock", CubeListBuilder.create().texOffs(0, 0).addBox(7.0F, -1.0F, 15.0F, 2.0F, 4.0F, 1.0F), PartPose.offset(0.0F, 8.0F, 0.0F));
+        return LayerDefinition.create(mesh, 64, 64);
     }
 
     @Override
@@ -54,7 +73,7 @@ public class DraconiumChestTileRenderer implements BlockEntityRenderer<TileDraco
         mStack.mulPose(Vector3f.YP.rotationDegrees(-rotation));
         mStack.translate(-0.5D, -0.5D, -0.5D);
         VertexConsumer buffer = getter.getBuffer(renderType);
-//        this.render(mStack, buffer, this.lid, this.lock, this.bottom, lidAngle, packedLight, packedOverlay, colour);
+        this.render(mStack, buffer, this.lid, this.lock, this.bottom, lidAngle, packedLight, packedOverlay, colour);
         mStack.popPose();
     }
 

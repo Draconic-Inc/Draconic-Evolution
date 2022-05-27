@@ -68,7 +68,7 @@ public class ModuleGrid {
     }
 
     public InstallResult cellClicked(GridPos pos, int button, ClickType clickType) {
-        ItemStack stack = player.player.inventoryMenu.getCarried();
+        ItemStack stack = player.player.containerMenu.getCarried();
         Module<?> module = ModuleItem.getModule(stack);
         boolean holdingStack = !stack.isEmpty();
         ModuleContext context = container.getModuleContext();
@@ -98,7 +98,7 @@ public class ModuleGrid {
                 ItemStack extracted = new ItemStack(entity.getModule().getItem());
                 entity.writeToItemStack(extracted, context);
                 getModuleHost().removeModule(entity, context);
-                player.player.inventoryMenu.setCarried(extracted);
+                player.player.containerMenu.setCarried(extracted);
                 onGridChange();
             }
         }
@@ -131,7 +131,7 @@ public class ModuleGrid {
                 ModuleEntity entity = pos.getEntity();
                 ItemStack modStack = new ItemStack(entity.module.getItem());
                 entity.writeToItemStack(modStack, context);
-                player.player.inventoryMenu.setCarried(modStack);
+                player.player.containerMenu.setCarried(modStack);
             }
         }
         return null;

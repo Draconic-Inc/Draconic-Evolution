@@ -4,6 +4,7 @@ uniform float time;
 uniform int type;
 uniform float mipmap;
 uniform vec2 angle;
+
 varying vec3 position;
 
 vec3 types[3] = vec3[](vec3(0.0, 0.2, 0.3), vec3(0.47, 0.0, 0.58), vec3(1.0 ,0.4 ,0.1));

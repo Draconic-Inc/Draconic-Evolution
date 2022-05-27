@@ -115,7 +115,7 @@ public class LangGenerator extends LanguageProvider {
         helper.add(DEContent.info_tablet,                                       "Information Tablet");
         helper.add(DEContent.ender_energy_manipulator,                          "Ender energy manipulator");
 //        helper.add(DEContent.creative_exchanger,                                "Creative Exchanger");
-        helper.add(DEContent.mob_soul,                                          "Mob Soul");
+        helper.add(DEContent.mob_soul,                                          "Soul");
         //Tools
         helper.add(DEContent.capacitor_wyvern,                                  "Wyvern Capacitor");
         helper.add(DEContent.capacitor_draconic,                                "Draconic Capacitor");
@@ -625,6 +625,37 @@ public class LangGenerator extends LanguageProvider {
         helper.add("energy_cost",                                               "Energy Cost");
         helper.add("ne_tier_injectors",                                         "Not enough %s tier injectors.");
 
+        //Energy Core
+        helper.setPrefix("gui.draconicevolution.energy_core");
+        helper.add("activate",                                                   "Activate");
+        helper.add("deactivate",                                                 "Deactivate");
+        helper.add("tier_down",                                                  "Tier Down");
+        helper.add("tier_up",                                                    "Tier Up");
+        helper.add("build_guide",                                                "Toggle Build Guide");
+        helper.add("assemble",                                                   "Assemble Core");
+        helper.add("tier",                                                       "Tier: %s");
+        helper.add("",                                                           "");
+
+//        add("gui.de.energyStorageCore.name",                                    "Tier %s Energy Core");
+//        add("button.de.buildGuide.txt",                                         "Build Guide:");
+//        add("ecore.de.already_assembling.txt",                                  "Assembly already in progress!");
+//        add("ecore.de.assemble_found_invalid.txt",                              "ERROR: Found invalid block \"%s\" at %s.");
+//        add("ecore.de.assemble_error_expected_air.txt",                         "ERROR: Expected air block at %s");
+//        add("ecore.de.assemble_missing_required.txt",                           "ERROR: Unable to complete structure! Missing required block(s) \"%s\".");
+//        add("gui.de.transfer.txt",                                              "Transfer");
+//        add("gui.de.capacity.txt",                                              "Capacity");
+//        add("gui.de.maxStorage.txt",                                            ">> Max Storage <<");
+//        add("info.bc.charge.txt",                                               "Charge");
+//        add("gui.de.almostInfinite.txt",                                        "Almost Infinite!");
+//
+//        add("gui.de.stabilizers.txt",                                           "Stabilizers");
+//        add("gui.de.invalid.txt",                                               "Invalid");
+//        add("gui.de.valid.txt",                                                 "Valid");
+//        add("gui.de.advancedStabilizersRequired.txt",                           "Advanced Stabilizers Required");
+//        add("gui.de.core.txt",                                                  "Core");
+//        add("gui.de.inactive.txt",                                              "Inactive");
+//        add("gui.de.active.txt",                                                "Active");
+
     }
 
     private void hudAndMessages(PrefixHelper helper) {
@@ -776,32 +807,6 @@ public class LangGenerator extends LanguageProvider {
         add("death.attack.draconicevolution.draconic_guardian",                 "%1$s was torn apart by %2$s");
         add("death.attack.draconicevolution.guardian_projectile",               "%1$s was obliterated by %2$s");
         add("death.attack.draconicevolution.guardian_laser",                    "%1$s was vaporized by %2$s using a frickin laser beam!");
-
-        //Temporary
-        add("gui.de.energyStorageCore.name",                                    "Tier %s Energy Core");
-        add("button.de.buildGuide.txt",                                         "Build Guide:");
-        add("button.de.assembleCore.txt",                                       "Assemble Core");
-        add("button.de.tierUp.txt",                                             "Tier Up");
-        add("button.de.tierDown.txt",                                           "Tier Down");
-        add("button.de.activate.txt",                                           "Activate");
-        add("button.de.deactivate.txt",                                         "Deactivate");
-        add("ecore.de.already_assembling.txt",                                  "Assembly already in progress!");
-        add("ecore.de.assemble_found_invalid.txt",                              "ERROR: Found invalid block \"%s\" at %s.");
-        add("ecore.de.assemble_error_expected_air.txt",                         "ERROR: Expected air block at %s");
-        add("ecore.de.assemble_missing_required.txt",                           "ERROR: Unable to complete structure! Missing required block(s) \"%s\".");
-        add("gui.de.transfer.txt",                                              "Transfer");
-        add("gui.de.capacity.txt",                                              "Capacity");
-        add("gui.de.maxStorage.txt",                                            ">> Max Storage <<");
-        add("info.bc.charge.txt",                                               "Charge");
-        add("gui.de.almostInfinite.txt",                                        "Almost Infinite!");
-
-        add("gui.de.stabilizers.txt",                                           "Stabilizers");
-        add("gui.de.invalid.txt",                                               "Invalid");
-        add("gui.de.valid.txt",                                                 "Valid");
-        add("gui.de.advancedStabilizersRequired.txt",                           "Advanced Stabilizers Required");
-        add("gui.de.core.txt",                                                  "Core");
-        add("gui.de.inactive.txt",                                              "Inactive");
-        add("gui.de.active.txt",                                                "Active");
 
         add("key.draconicevolution.place_item",                                 "Place Item");
         add("key.draconicevolution.tool_config",                                "Tool Config");

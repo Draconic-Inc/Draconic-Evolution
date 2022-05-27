@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.client.render.tile.fxhandlers;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.api.TimeKeeper;
 import com.brandon3055.brandonscore.utils.MathUtils;
+import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.crafting.IFusionInjector;
 import com.brandon3055.draconicevolution.api.crafting.IFusionRecipe;
 import com.brandon3055.draconicevolution.api.crafting.IFusionStateMachine.FusionState;
@@ -118,7 +119,13 @@ public class FusionTileFXHandler implements ITileFXHandler {
         Vector3 corePos = Vector3.fromTileCenter(core);
         int injCount = (int) core.getInjectors().stream().filter(e -> !e.getInjectorStack().isEmpty()).count();
 
-        double baseRotateSpeed = 8; //Rotations per minute
+        double baseRotateSpeed = 16; //Rotations per minute
+        int animLen = core.craftAnimLength.get();
+        if (animLen != 0) {
+            double multiplier = 300D / animLen;
+            baseRotateSpeed *= multiplier;
+        }
+
         baseRotateSpeed /= 1200; //Convert to rotations per tick
         baseRotateSpeed *= Math.PI * 2; //Convert to Radians per tick
 

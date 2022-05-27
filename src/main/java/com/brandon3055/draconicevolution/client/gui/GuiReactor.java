@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.client.gui;
 
+import com.brandon3055.brandonscore.client.gui.GuiToolkit;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElementManager;
 import com.brandon3055.brandonscore.client.gui.modulargui.ModularGuiContainer;
@@ -14,7 +15,7 @@ import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorComponent;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorComponent.RSMode;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
-import com.brandon3055.draconicevolution.client.DESprites;
+import com.brandon3055.draconicevolution.client.DEGuiSprites;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.client.render.tile.RenderTileReactorCore;
 import com.brandon3055.draconicevolution.inventory.ContainerReactor;
@@ -41,12 +42,12 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> {
     private static boolean compPanelExtended = false;
     private GuiElement<?> compPanel;
 
+    protected GuiToolkit<GuiReactor> toolkit = new GuiToolkit<>(this, 248, 222);
+
     public GuiReactor(ContainerReactor container, Inventory inv, Component titleIn) {
         super(container, inv, titleIn);
-        this.player = player;
+        this.player = inv.player;
         this.tile = container.tile;
-        this.imageWidth = 248;
-        this.imageHeight = 222;
     }
 
     @Override
@@ -57,7 +58,7 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> {
         manager.addChild(compPanel = new GuiBorderedRect(leftPos + imageWidth, topPos + 125, 0, 91));
         exclusions.add(compPanel);
         manager.setJeiExclusions(() -> exclusions);
-        GuiTexture background = manager.addChild(new GuiTexture(leftPos, topPos, imageWidth, imageHeight, DESprites.get("reactor/background")) {
+        GuiTexture background = manager.addChild(new GuiTexture(leftPos, topPos, imageWidth, imageHeight, DEGuiSprites.get("reactor/background")) {
             @Override
             public void renderElement(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
                 super.renderElement(minecraft, mouseX, mouseY, partialTicks);
@@ -68,7 +69,7 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> {
 
         background.addChild(new GuiBorderedRect(leftPos + 12, topPos + 138, 162, 77)
                 .setEnabledCallback(() -> tile.reactorState.get() != TileReactorCore.ReactorState.COLD)
-                .setShadeColours(0xFF000000, 0xFFFFFFFF));
+                .setColours(0xFF000000, 0xFFFFFFFF));
         //endregion
 
         //region Status Labels
@@ -146,6 +147,8 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> {
         //endregion
 
         //region Slots, Misc labels and gauges
+
+
 
         background.addChild(new GuiElement() {
             @Override

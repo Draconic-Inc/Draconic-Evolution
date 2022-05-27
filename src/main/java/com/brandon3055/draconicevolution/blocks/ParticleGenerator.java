@@ -8,12 +8,12 @@ import net.minecraft.world.level.block.EntityBlock;
 /**
  * Created by brandon3055 on 30/3/2016.
  */
-public class ParticleGenerator extends BlockBCore implements EntityBlock {
+public class ParticleGenerator extends BlockBCore /*implements EntityBlock*/ {
 //    public static final PropertyString TYPE = new PropertyString("type", "normal", "inverted", "stabilizer", "stabilizer2");
 
     public ParticleGenerator(Block.Properties properties) {
         super(properties);
-        setBlockEntity(() -> DEContent.tile_particle_generator, true);
+//        setBlockEntity(() -> DEContent.tile_particle_generator, true);
     }
 
     //region BlockState

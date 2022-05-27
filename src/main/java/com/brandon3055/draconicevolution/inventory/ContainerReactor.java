@@ -5,6 +5,8 @@ import com.brandon3055.brandonscore.inventory.ContainerBCTile;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
 import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.Container;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickType;
@@ -80,7 +82,7 @@ public class ContainerReactor extends ContainerBCTile<TileReactorCore> {
         Slot slot = getSlot(slotId);
         if (slot instanceof SlotReactor && clickTypeIn == ClickType.PICKUP) {
             ItemStack stackInSlot = slot.getItem();
-            ItemStack heldStack = player.inventoryMenu.getCarried();
+            ItemStack heldStack = player.containerMenu.getCarried();
 
             if (!heldStack.isEmpty()) {
                 int value;
@@ -99,21 +101,14 @@ public class ContainerReactor extends ContainerBCTile<TileReactorCore> {
                     tile.convertedFuel.add(insert * value);
                     heldStack.shrink(insert);
                 }
-//                else if ((value = getChaosValue(copy)) > 0) {
-//                    int maxInsert = free / value;
-//                    int insert = Math.min(Math.min(heldStack.stackSize, maxInsert), dragType == 1 ? 1 : 64);
-//                    tile.convertedFuel.value += insert * value;
-//                    heldStack.stackSize -= insert;
-//                }
-
                 if (heldStack.getCount() <= 0) {
-                    player.inventoryMenu.setCarried(ItemStack.EMPTY);
+                    player.containerMenu.setCarried(ItemStack.EMPTY);
                 }
             }
             else if (!stackInSlot.isEmpty()) {
                 tile.reactableFuel.subtract(getFuelValue(stackInSlot));
                 tile.convertedFuel.subtract(getChaosValue(stackInSlot));
-                player.inventoryMenu.setCarried(stackInSlot);
+                player.containerMenu.setCarried(stackInSlot);
             }
 
             return;
@@ -156,11 +151,11 @@ public class ContainerReactor extends ContainerBCTile<TileReactorCore> {
         return 0;
     }
     public static class SlotReactor extends Slot {
-
+        private static Container emptyInventory = new SimpleContainer(0);
         private final TileReactorCore tile;
 
         public SlotReactor(TileReactorCore tile, int index, int xPosition, int yPosition) {
-            super(null, index, xPosition, yPosition);
+            super(emptyInventory, index, xPosition, yPosition);
             this.tile = tile;
         }
 
@@ -224,7 +219,6 @@ public class ContainerReactor extends ContainerBCTile<TileReactorCore> {
 
         @Override
         public void set(@Nonnull ItemStack stack) {
-            //this.inventory.setInventorySlotContents(this.slotIndex, stack);
             this.setChanged();
         }
 
@@ -235,17 +229,12 @@ public class ContainerReactor extends ContainerBCTile<TileReactorCore> {
 
         @Override
         public int getMaxStackSize() {
-            return 64;//this.inventory.getInventoryStackLimit();
+            return 64;
         }
 
         @Override
         public ItemStack remove(int amount) {
-            return ItemStack.EMPTY;//this.inventory.decrStackSize(this.getSlotIndex, amount);
+            return ItemStack.EMPTY;
         }
-
-//        @Override
-//        public boolean isHere(IInventory inv, int slotIn) {
-//            return false;//inv == this.inventory && slotIn == this.getSlotIndex();
-//        }
     }
 }

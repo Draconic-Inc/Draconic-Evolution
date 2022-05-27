@@ -73,8 +73,8 @@ public class RenderTileDislocatorPedestal implements BlockEntityRenderer<TileDis
         Minecraft mc = Minecraft.getInstance();
         LocalPlayer player = mc.player;
 
-        HitResult mop = player.pick(10, partialTicks, true);
-        boolean isCursorOver = mop instanceof BlockHitResult && ((BlockHitResult) mop).getBlockPos().equals(tile.getBlockPos());
+        HitResult hitResult = player.pick(10, partialTicks, true);
+        boolean isCursorOver = hitResult.getType() == HitResult.Type.BLOCK && ((BlockHitResult) hitResult).getBlockPos().equals(tile.getBlockPos());
         boolean isSneaking = player.isShiftKeyDown();
 
         if (!isCursorOver && (isSneaking != DEOldConfig.invertDPDSB)) {

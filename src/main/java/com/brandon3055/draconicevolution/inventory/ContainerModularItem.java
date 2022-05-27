@@ -169,7 +169,7 @@ public class ContainerModularItem extends ContainerModuleHost<TileBCore> {
             if (slot != null && !slot.getItem().isEmpty()) {
                 if (slot.getItem() == hostStack) {
                     return;
-                } else if (clickTypeIn == ClickType.PICKUP && button == 0 && player.inventoryMenu.getCarried().isEmpty()) {
+                } else if (clickTypeIn == ClickType.PICKUP && button == 0 && player.containerMenu.getCarried().isEmpty()) {
                     if (slot.getItem().getCapability(DECapabilities.MODULE_HOST_CAPABILITY).isPresent()) {
                         if (player instanceof ServerPlayer) {
                             PlayerSlot playerSlot;

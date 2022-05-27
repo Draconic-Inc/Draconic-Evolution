@@ -20,6 +20,7 @@ import com.mojang.blaze3d.vertex.*;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
@@ -40,6 +41,7 @@ import java.util.List;
 public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> {
     //Does this work?
     private static final RenderType moduleType = RenderType.create("module_type", DefaultVertexFormat.POSITION_TEX, VertexFormat.Mode.QUADS, 256, RenderType.CompositeState.builder()
+            .setShaderState(new RenderStateShard.ShaderStateShard(GameRenderer::getPositionTexShader))
             .setTextureState(new RenderStateShard.TextureStateShard(ModuleSpriteUploader.LOCATION_MODULE_TEXTURE, false, false))
             .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
             .createCompositeState(false)
@@ -88,7 +90,7 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> {
     @Override
     public boolean renderOverlayLayer(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
         if (isMouseOver(mouseX, mouseY)) {
-            if (player.player.inventoryMenu.getCarried().isEmpty()) {
+            if (player.player.containerMenu.getCarried().isEmpty()) {
                 renderCellOverlay(mouseX, mouseY);
             } else if (lastError != null) {
                 PoseStack poseStack = new PoseStack();
@@ -170,7 +172,7 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> {
             doubleClick = i - lastClickTime < 250L && lastClickButton == button && getCellAtPos(mouseX, mouseY, false).equals(lastClickPos);
 
             if ((button == 0 || pickBlock) && cell.isValidCell()) {
-                if (player.player.inventoryMenu.getCarried().isEmpty()) {
+                if (player.player.containerMenu.getCarried().isEmpty()) {
                     if (pickBlock) {
                         handleGridClick(cell, button, ClickType.CLONE); //Creative Clone
                     } else {
@@ -227,7 +229,7 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> {
         int cs = grid.getCellSize();
         int x = (int) ((xPos - xPos()) / cs);
         int y = (int) ((yPos - yPos()) / cs);
-        Module<?> module = ModuleItem.getModule(player.player.inventoryMenu.getCarried());
+        Module<?> module = ModuleItem.getModule(player.player.containerMenu.getCarried());
         if (module != null && withPlaceOffset) {
             int mw = module.getProperties().getWidth() * cs;
             int mh = module.getProperties().getHeight() * cs;

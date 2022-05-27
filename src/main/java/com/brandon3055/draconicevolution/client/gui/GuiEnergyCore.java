@@ -1,74 +1,73 @@
 package com.brandon3055.draconicevolution.client.gui;
 
-import codechicken.lib.math.MathHelper;
-import com.brandon3055.brandonscore.api.render.GuiHelper;
+import com.brandon3055.brandonscore.client.BCGuiSprites;
+import com.brandon3055.brandonscore.client.gui.GuiToolkit;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElementManager;
 import com.brandon3055.brandonscore.client.gui.modulargui.ModularGuiContainer;
-import com.brandon3055.brandonscore.client.utils.GuiHelperOld;
+import com.brandon3055.brandonscore.client.gui.modulargui.baseelements.GuiButton;
+import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiTexture;
+import com.brandon3055.brandonscore.client.gui.modulargui.templates.TBasicMachine;
 import com.brandon3055.brandonscore.inventory.ContainerBCTile;
-import com.brandon3055.brandonscore.utils.InfoHelper;
-import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyCore;
-import com.google.common.collect.Lists;
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-
-import java.text.DecimalFormat;
 
 /**
  * Created by brandon3055 on 7/4/2016.
  */
 public class GuiEnergyCore extends ModularGuiContainer<ContainerBCTile<TileEnergyCore>> {
+    private GuiToolkit<GuiEnergyCore> toolkit = new GuiToolkit<>(this, 180, 200).setTranslationPrefix("gui.draconicevolution.energy_core");
 
     public Player player;
     public TileEnergyCore tile;
-    private Button activate;
-    private Button tierUp;
-    private Button tierDown;
-    private Button toggleGuide;
-    private Button assembleCore;
-    private Button layerPlus;
-    private Button layerMinus;
-    public static int layer = -1;
-
-    //Charge/Discharge time
-    private long ticks;
-    private long seconds;
-    private long minutes;
-    private long hours;
-    private long days;
-    private long years;
 
     public GuiEnergyCore(ContainerBCTile<TileEnergyCore> container, Inventory playerInventory, Component title) {
         super(container, playerInventory, title);
         this.tile = container.tile;
-        this.imageWidth = 180;
-        this.imageHeight = 200;
         this.player = playerInventory.player;
-        dumbGui = true;
+
+        /*
+        * Plans
+        * Overhaul the structure system and maybe make it data driven
+        * Try to update and improve the rendering. Maybe test out some transparency alternatives?
+        * Ether make this a basic screen or add charging slots
+        *
+        * */
+
     }
 
     @Override
     public void addElements(GuiElementManager manager) {
-        //TODO
-        container.slots.forEach(slot -> {
-            if (slot.index < 9) {
-                slot.x += 10;
-                slot.y += 174;
-            }
-            else {
-                slot.x += 10;
-                slot.y += 98;
-            }
-        });
+        TBasicMachine temp = new TBasicMachine(this, tile);
+        temp.background = GuiTexture.newDynamicTexture(xSize(), ySize(), () -> BCGuiSprites.getThemed("background_dynamic"));
+        temp.background.onReload(guiTex -> guiTex.setPos(guiLeft(), guiTop()));
+        toolkit.loadTemplate(temp);
+
+        GuiButton activate = toolkit.createButton(() -> tile.active.get() ? "deactivate" : "activate", temp.background)
+                .setSize(temp.playerSlots.xSize(), 14);
+        toolkit.placeOutside(activate, temp.playerSlots, GuiToolkit.LayoutPos.TOP_CENTER, 0, -3);
+
+        GuiButton tierDown = toolkit.createButton("tier_down", temp.background)
+                .setSize((temp.playerSlots.xSize() / 2) - 1, 14)
+                .setXPos(activate.xPos())
+                .setMaxYPos(activate.yPos() - 1, false);
+
+        GuiButton tierUp = toolkit.createButton("tier_up", temp.background)
+                .setSize((temp.playerSlots.xSize() / 2) - 1, 14)
+                .setMaxXPos(activate.maxXPos(), false)
+                .setMaxYPos(activate.yPos() - 1, false);
+
+        GuiButton buildGuide = toolkit.createButton("build_guide", temp.background)
+                .setToggleStateSupplier(() -> tile.buildGuide.get())
+                .onPressed(() -> tile.buildGuide.invert())
+                .setSize(temp.playerSlots.xSize(), 14)
+                .setXPos(tierDown.xPos())
+                .setMaxYPos(tierDown.yPos() - 1, false);
+
+        GuiButton assemble = toolkit.createButton("assemble", temp.background)
+                .setSize(temp.playerSlots.xSize(), 14)
+                .setPos(activate);
     }
 
 
@@ -90,94 +89,94 @@ public class GuiEnergyCore extends ModularGuiContainer<ContainerBCTile<TileEnerg
 //        updateButtonStates();
 //    }
 
-    @Override
-    protected void renderBg(PoseStack mStack, float partialTicks, int mouseX, int mouseY) {
-        GuiHelperOld.drawGuiBaseBackground(this, leftPos, topPos, imageWidth, imageHeight);
-        GuiHelperOld.drawPlayerSlots(this, leftPos + (imageWidth / 2), topPos + 115, true);
-        drawCenteredString(mStack, font, I18n.get("gui.de.energyStorageCore.name", tile.tier.get()), leftPos + (imageWidth / 2), topPos + 5, InfoHelper.GUI_TITLE);
+//    @Override
+//    protected void renderBg(PoseStack mStack, float partialTicks, int mouseX, int mouseY) {
+//        GuiHelperOld.drawGuiBaseBackground(this, leftPos, topPos, imageWidth, imageHeight);
+//        GuiHelperOld.drawPlayerSlots(this, leftPos + (imageWidth / 2), topPos + 115, true);
+//        drawCenteredString(mStack, font, I18n.get("gui.de.energyStorageCore.name", tile.tier.get()), leftPos + (imageWidth / 2), topPos + 5, InfoHelper.GUI_TITLE);
+//
+//        if (tile.active.get()) {
+//            GuiHelperOld.drawCenteredString(font, I18n.get("gui.de.capacity.txt"), leftPos + imageWidth / 2, topPos + 16, 0xFFAA00, true);
+//            String capText = tile.tier.get() == 8 ? I18n.get("gui.de.almostInfinite.txt") : Utils.formatNumber(tile.getExtendedCapacity());
+//            GuiHelperOld.drawCenteredString(font, capText, leftPos + imageWidth / 2, topPos + 27, 0x555555, false);
+//
+//            DecimalFormat energyValue = new DecimalFormat("###.###");
+//            double percent = (double) tile.getExtendedStorage() / (double) tile.getExtendedCapacity() * 100D;
+//            GuiHelperOld.drawCenteredString(font, I18n.get("info.bc.charge.txt"), leftPos + imageWidth / 2, topPos + 38, 0xFFAA00, true);
+//            GuiHelperOld.drawCenteredString(font, Utils.formatNumber(tile.getExtendedStorage()) + " OP [" + energyValue.format(percent) + "%]", leftPos + imageWidth / 2, topPos + 49, 0x555555, false);
+//
+//            int transferColour = tile.transferRate.get() > 0 ? 0x00FF00 : tile.transferRate.get() < 0 ? 0xFF0000 : 0x222222;
+//            String transfer = (tile.transferRate.get() > 0 ? "+" : tile.transferRate.get() < 0 ? "-" : "") + Utils.formatNumber(Math.abs(tile.transferRate.get())) + " OP/t";
+//            GuiHelperOld.drawCenteredString(font, I18n.get("gui.de.transfer.txt"), leftPos + imageWidth / 2, topPos + 59, 0xFFAA00, true);
+//            GuiHelperOld.drawCenteredString(font, transfer, leftPos + imageWidth / 2, topPos + 70, transferColour, tile.transferRate.get() > 0);
+//
+//
+//            if (tile.transferRate.get() != 0) {
+//                String time = "";
+//                if (years > 0) {
+//                    time += formatYear(years) + ", ";
+//                    time += days % 365 + " Days";
+//                } else if (days > 0) {
+//                    time += days % 365 + " Days, ";
+//                    time += (hours % 24 < 10 ? "0" : "") + hours % 24 + ":";
+//                    time += (minutes % 60 < 10 ? "0" : "") + minutes % 60 + ":";
+//                    time += (seconds % 60 < 10 ? "0" : "") + seconds % 60 + "." + (ticks % 20 < 10 ? "0" : "") + ticks % 20;
+//                } else {
+//                    time += (hours % 24 < 10 ? "0" : "") + hours % 24 + ":";
+//                    time += (minutes % 60 < 10 ? "0" : "") + minutes % 60 + ":";
+//                    time += (seconds % 60 < 10 ? "0" : "") + seconds % 60 + "." + (ticks % 20 < 10 ? "0" : "") + ticks % 20;
+//                }
+//
+//                GuiHelperOld.drawCenteredString(font, time, leftPos + imageWidth / 2, topPos + 70 + 10, 0x555555, false);
+//            }
+//        } else {
+//            int stabColour = tile.stabilizersOK.get() ? 0x00FF00 : 0xFF0000;
+//            String stabText = I18n.get("gui.de.stabilizers.txt") + ": " + (tile.stabilizersOK.get() ? I18n.get("gui.de.valid.txt") : I18n.get("gui.de.invalid.txt"));
+//            GuiHelperOld.drawCenteredString(font, stabText, leftPos + imageWidth / 2, topPos + 18, stabColour, tile.stabilizersOK.get());
+//            if (tile.tier.get() >= 5) {
+//                GuiHelperOld.drawCenteredString(font, I18n.get("gui.de.advancedStabilizersRequired.txt"), leftPos + imageWidth / 2, topPos + 28, 0x777777, false);
+//            }
+//
+//            int coreColour = tile.coreValid.get() ? 0x00FF00 : 0xFF0000;
+//            String coreText = I18n.get("gui.de.core.txt") + ": " + (tile.coreValid.get() ? I18n.get("gui.de.valid.txt") : I18n.get("gui.de.invalid.txt"));
+//            GuiHelperOld.drawCenteredString(font, coreText, leftPos + imageWidth / 2, topPos + 36, coreColour, tile.coreValid.get());
+//            if (!tile.coreValid.get()) {
+////                GuiHelper.drawCenteredSplitString(font, tile.invalidMessage.get(), guiLeft + xSize / 2, guiTop + 46, 180, coreColour, tile.coreValid.get());
+//            }
+//        }
+//    }
 
-        if (tile.active.get()) {
-            GuiHelperOld.drawCenteredString(font, I18n.get("gui.de.capacity.txt"), leftPos + imageWidth / 2, topPos + 16, 0xFFAA00, true);
-            String capText = tile.tier.get() == 8 ? I18n.get("gui.de.almostInfinite.txt") : Utils.formatNumber(tile.getExtendedCapacity());
-            GuiHelperOld.drawCenteredString(font, capText, leftPos + imageWidth / 2, topPos + 27, 0x555555, false);
-
-            DecimalFormat energyValue = new DecimalFormat("###.###");
-            double percent = (double) tile.getExtendedStorage() / (double) tile.getExtendedCapacity() * 100D;
-            GuiHelperOld.drawCenteredString(font, I18n.get("info.bc.charge.txt"), leftPos + imageWidth / 2, topPos + 38, 0xFFAA00, true);
-            GuiHelperOld.drawCenteredString(font, Utils.formatNumber(tile.getExtendedStorage()) + " OP [" + energyValue.format(percent) + "%]", leftPos + imageWidth / 2, topPos + 49, 0x555555, false);
-
-            int transferColour = tile.transferRate.get() > 0 ? 0x00FF00 : tile.transferRate.get() < 0 ? 0xFF0000 : 0x222222;
-            String transfer = (tile.transferRate.get() > 0 ? "+" : tile.transferRate.get() < 0 ? "-" : "") + Utils.formatNumber(Math.abs(tile.transferRate.get())) + " OP/t";
-            GuiHelperOld.drawCenteredString(font, I18n.get("gui.de.transfer.txt"), leftPos + imageWidth / 2, topPos + 59, 0xFFAA00, true);
-            GuiHelperOld.drawCenteredString(font, transfer, leftPos + imageWidth / 2, topPos + 70, transferColour, tile.transferRate.get() > 0);
-
-
-            if (tile.transferRate.get() != 0) {
-                String time = "";
-                if (years > 0) {
-                    time += formatYear(years) + ", ";
-                    time += days % 365 + " Days";
-                } else if (days > 0) {
-                    time += days % 365 + " Days, ";
-                    time += (hours % 24 < 10 ? "0" : "") + hours % 24 + ":";
-                    time += (minutes % 60 < 10 ? "0" : "") + minutes % 60 + ":";
-                    time += (seconds % 60 < 10 ? "0" : "") + seconds % 60 + "." + (ticks % 20 < 10 ? "0" : "") + ticks % 20;
-                } else {
-                    time += (hours % 24 < 10 ? "0" : "") + hours % 24 + ":";
-                    time += (minutes % 60 < 10 ? "0" : "") + minutes % 60 + ":";
-                    time += (seconds % 60 < 10 ? "0" : "") + seconds % 60 + "." + (ticks % 20 < 10 ? "0" : "") + ticks % 20;
-                }
-
-                GuiHelperOld.drawCenteredString(font, time, leftPos + imageWidth / 2, topPos + 70 + 10, 0x555555, false);
-            }
-        } else {
-            int stabColour = tile.stabilizersOK.get() ? 0x00FF00 : 0xFF0000;
-            String stabText = I18n.get("gui.de.stabilizers.txt") + ": " + (tile.stabilizersOK.get() ? I18n.get("gui.de.valid.txt") : I18n.get("gui.de.invalid.txt"));
-            GuiHelperOld.drawCenteredString(font, stabText, leftPos + imageWidth / 2, topPos + 18, stabColour, tile.stabilizersOK.get());
-            if (tile.tier.get() >= 5) {
-                GuiHelperOld.drawCenteredString(font, I18n.get("gui.de.advancedStabilizersRequired.txt"), leftPos + imageWidth / 2, topPos + 28, 0x777777, false);
-            }
-
-            int coreColour = tile.coreValid.get() ? 0x00FF00 : 0xFF0000;
-            String coreText = I18n.get("gui.de.core.txt") + ": " + (tile.coreValid.get() ? I18n.get("gui.de.valid.txt") : I18n.get("gui.de.invalid.txt"));
-            GuiHelperOld.drawCenteredString(font, coreText, leftPos + imageWidth / 2, topPos + 36, coreColour, tile.coreValid.get());
-            if (!tile.coreValid.get()) {
-//                GuiHelper.drawCenteredSplitString(font, tile.invalidMessage.get(), guiLeft + xSize / 2, guiTop + 46, 180, coreColour, tile.coreValid.get());
-            }
-        }
-    }
-
-    @Override
-    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
-        this.renderBackground(poseStack);
-        super.render(poseStack, mouseX, mouseY, partialTicks);
-
-        if (tile.active.get()) {
-//            GuiHelper.drawEnergyBar(this, guiLeft + 5, guiTop + 82, 170, true, tile.getExtendedStorage(), tile.getExtendedCapacity(), true, mouseX, mouseY);
-
-            if (GuiHelperOld.isInRect(leftPos + 40, topPos + 27, imageWidth - 80, 8, mouseX, mouseY)) {
-                renderTooltip(poseStack, new TextComponent(ChatFormatting.GRAY + "[" + Utils.addCommas(tile.getExtendedCapacity()) + " OP]"), mouseX, mouseY);
-            }
-
-            if (GuiHelperOld.isInRect(leftPos + 40, topPos + 48, imageWidth - 80, 8, mouseX, mouseY)) {
-                renderTooltip(poseStack, new TextComponent(ChatFormatting.GRAY + "[" + Utils.addCommas(tile.getExtendedStorage()) + " OP]"), mouseX, mouseY);
-            }
-        }
-
-        if (tile.buildGuide.get()) {
-            drawCenteredString(poseStack, font, layer == -1 ? "All" : layer + "", leftPos + (imageWidth / 2), topPos - 10, 0xFFFFFF);
-        }
-
-        if (GuiHelper.isInRect(guiLeft(), guiTop() + 59, xSize(), 24, mouseX, mouseY) && tile.active.get()){
-            MutableComponent input = new TextComponent("IN: ").withStyle(ChatFormatting.GREEN).append(new TextComponent(Utils.formatNumber(Math.round(tile.inputRate.get())) + " OP/t").withStyle(ChatFormatting.GRAY));
-            MutableComponent out = new TextComponent("OUT: ").withStyle(ChatFormatting.DARK_RED).append(new TextComponent(Utils.formatNumber(Math.round(tile.outputRate.get())) + " OP/t").withStyle(ChatFormatting.GRAY));
-
-            renderTooltip(poseStack, Lists.newArrayList(input.getVisualOrderText(), out.getVisualOrderText()), mouseX, mouseY);
-        } else {
-            this.renderTooltip(poseStack, mouseX, mouseY);
-        }
-
-    }
+//    @Override
+//    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
+//        this.renderBackground(poseStack);
+//        super.render(poseStack, mouseX, mouseY, partialTicks);
+//
+//        if (tile.active.get()) {
+////            GuiHelper.drawEnergyBar(this, guiLeft + 5, guiTop + 82, 170, true, tile.getExtendedStorage(), tile.getExtendedCapacity(), true, mouseX, mouseY);
+//
+//            if (GuiHelperOld.isInRect(leftPos + 40, topPos + 27, imageWidth - 80, 8, mouseX, mouseY)) {
+//                renderTooltip(poseStack, new TextComponent(ChatFormatting.GRAY + "[" + Utils.addCommas(tile.getExtendedCapacity()) + " OP]"), mouseX, mouseY);
+//            }
+//
+//            if (GuiHelperOld.isInRect(leftPos + 40, topPos + 48, imageWidth - 80, 8, mouseX, mouseY)) {
+//                renderTooltip(poseStack, new TextComponent(ChatFormatting.GRAY + "[" + Utils.addCommas(tile.getExtendedStorage()) + " OP]"), mouseX, mouseY);
+//            }
+//        }
+//
+//        if (tile.buildGuide.get()) {
+//            drawCenteredString(poseStack, font, layer == -1 ? "All" : layer + "", leftPos + (imageWidth / 2), topPos - 10, 0xFFFFFF);
+//        }
+//
+//        if (GuiHelper.isInRect(guiLeft(), guiTop() + 59, xSize(), 24, mouseX, mouseY) && tile.active.get()){
+//            MutableComponent input = new TextComponent("IN: ").withStyle(ChatFormatting.GREEN).append(new TextComponent(Utils.formatNumber(Math.round(tile.inputRate.get())) + " OP/t").withStyle(ChatFormatting.GRAY));
+//            MutableComponent out = new TextComponent("OUT: ").withStyle(ChatFormatting.DARK_RED).append(new TextComponent(Utils.formatNumber(Math.round(tile.outputRate.get())) + " OP/t").withStyle(ChatFormatting.GRAY));
+//
+//            renderTooltip(poseStack, Lists.newArrayList(input.getVisualOrderText(), out.getVisualOrderText()), mouseX, mouseY);
+//        } else {
+//            this.renderTooltip(poseStack, mouseX, mouseY);
+//        }
+//
+//    }
 
 //    @Override
 //    public void tick() {
@@ -198,37 +197,37 @@ public class GuiEnergyCore extends ModularGuiContainer<ContainerBCTile<TileEnerg
 //        years = days / 365L;
 //    }
 
-    private void updateButtonStates() {
-        if (tile.active.get()) {
-            activate.setMessage(new TranslatableComponent("button.de.deactivate.txt"));
-        } else {
-            activate.setMessage(new TranslatableComponent("button.de.activate.txt"));
-            toggleGuide.setMessage(new TextComponent(I18n.get("button.de.buildGuide.txt") + " " + (tile.buildGuide.get() ? I18n.get("gui.de.active.txt") : I18n.get("gui.de.inactive.txt"))));
-            tierUp.active = tile.tier.get() < 8;
-            tierDown.active = tile.tier.get() > 1;
-        }
-
-
-        tierUp.visible = tierDown.visible = toggleGuide.visible = !tile.active.get();
-        assembleCore.visible = !tile.coreValid.get();
-        activate.visible = tile.coreValid.get();
-
-        layerPlus.visible = tile.buildGuide.get();
-        layerMinus.visible = tile.buildGuide.get();
-    }
-
-    public static String formatYear(long value) {
-        if (value < 1000L) return value + " Years";
-        else if (value < 1000000L) return Math.round(value / 10D) / 100D + " Thousand Years";
-        else if (value < 1000000000L) return Math.round(value / 10000D) / 100D + " Million Years";
-        else if (value < 1000000000000L) return Math.round(value / 10000000D) / 100D + " Billion Years";
-        else if (value < 1000000000000000L) return Math.round(value / 10000000000D) / 100D + " Trillion Years";
-        else if (value < 1000000000000000000L) return Math.round(value / 10000000000000D) / 100D + " Quadrillion Years";
-        else if (value <= Long.MAX_VALUE) return Math.round(value / 10000000000000000D) / 100D + " Quintillion Years";
-        else return "Something is very broken!!!!";
-    }
-
-    protected void layer(int add) {
-        layer = MathHelper.clip(layer + add, -1, 6);
-    }
+//    private void updateButtonStates() {
+//        if (tile.active.get()) {
+//            activate.setMessage(new TranslatableComponent("button.de.deactivate.txt"));
+//        } else {
+//            activate.setMessage(new TranslatableComponent("button.de.activate.txt"));
+//            toggleGuide.setMessage(new TextComponent(I18n.get("button.de.buildGuide.txt") + " " + (tile.buildGuide.get() ? I18n.get("gui.de.active.txt") : I18n.get("gui.de.inactive.txt"))));
+//            tierUp.active = tile.tier.get() < 8;
+//            tierDown.active = tile.tier.get() > 1;
+//        }
+//
+//
+//        tierUp.visible = tierDown.visible = toggleGuide.visible = !tile.active.get();
+//        assembleCore.visible = !tile.coreValid.get();
+//        activate.visible = tile.coreValid.get();
+//
+//        layerPlus.visible = tile.buildGuide.get();
+//        layerMinus.visible = tile.buildGuide.get();
+//    }
+//
+//    public static String formatYear(long value) {
+//        if (value < 1000L) return value + " Years";
+//        else if (value < 1000000L) return Math.round(value / 10D) / 100D + " Thousand Years";
+//        else if (value < 1000000000L) return Math.round(value / 10000D) / 100D + " Million Years";
+//        else if (value < 1000000000000L) return Math.round(value / 10000000D) / 100D + " Billion Years";
+//        else if (value < 1000000000000000L) return Math.round(value / 10000000000D) / 100D + " Trillion Years";
+//        else if (value < 1000000000000000000L) return Math.round(value / 10000000000000D) / 100D + " Quadrillion Years";
+//        else if (value <= Long.MAX_VALUE) return Math.round(value / 10000000000000000D) / 100D + " Quintillion Years";
+//        else return "Something is very broken!!!!";
+//    }
+//
+//    protected void layer(int add) {
+//        layer = MathHelper.clip(layer + add, -1, 6);
+//    }
 }

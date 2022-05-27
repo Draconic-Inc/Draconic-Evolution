@@ -13,7 +13,7 @@ import codechicken.lib.vec.uv.IconTransformation;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.machines.Generator;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileGenerator;
-import com.brandon3055.draconicevolution.client.DETextures;
+import com.brandon3055.draconicevolution.client.DEMiscSprites;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -28,7 +28,7 @@ import java.util.Map;
  */
 public class RenderTileGenerator implements BlockEntityRenderer<TileGenerator> {
 
-    private static RenderType modelType = RenderType.solid();
+    private static RenderType modelType = DEMiscSprites.SOLID;
     private final CCModel fanModel;
 
     public RenderTileGenerator(BlockEntityRendererProvider.Context context) {
@@ -38,7 +38,7 @@ public class RenderTileGenerator implements BlockEntityRenderer<TileGenerator> {
 
     @Override
     public void render(TileGenerator tile, float partialTicks, PoseStack mStack, MultiBufferSource getter, int packedLight, int packedOverlay) {
-        IconTransformation icon = new IconTransformation(DETextures.GENERATOR);
+        IconTransformation icon = new IconTransformation(DEMiscSprites.GENERATOR);
         if (icon.icon == null) return;
         Matrix4 mat = new Matrix4(mStack);
         CCRenderState ccrs = CCRenderState.instance();

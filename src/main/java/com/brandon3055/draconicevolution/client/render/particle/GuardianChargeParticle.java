@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.client.render.particle;
 
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.utils.MathUtils;
+import com.brandon3055.draconicevolution.client.DEMiscSprites;
 import com.brandon3055.draconicevolution.client.DETextures;
 import com.brandon3055.draconicevolution.entity.guardian.control.ChargeUpPhase;
 import com.brandon3055.draconicevolution.entity.guardian.control.PhaseManager;
@@ -25,7 +26,7 @@ public class GuardianChargeParticle extends SingleQuadParticle {
     private Vector3 endPos;
     private double angularPos;
     private PhaseManager phaseManager;
-    public TextureAtlasSprite sprite = DETextures.ORB_PARTICLE;
+    public TextureAtlasSprite sprite = DEMiscSprites.ORB_PARTICLE;
 
     public GuardianChargeParticle(ClientLevel world, Vector3 startPos, Vector3 endPos, double angularPos, int life, PhaseManager phaseManager) {
         super(world, startPos.x, startPos.y, startPos.z);
@@ -56,20 +57,21 @@ public class GuardianChargeParticle extends SingleQuadParticle {
     }
 
     @Override
-    public void render(VertexConsumer builder, Camera renderInfo, float partialTicks) {
-        if (age + partialTicks > lifetime) return;;
-        Vec3 vector3d = renderInfo.getPosition();
+    public void render(VertexConsumer buffer, Camera camera, float partialTicks) {
+        if (age + partialTicks > lifetime) return;
+        ;
+        Vec3 vector3d = camera.getPosition();
         float anim = (age + partialTicks) / lifetime;
         Vector3 pos = MathUtils.interpolateVec3(startPos, endPos, anim);
         float radius = (anim * 2) + (Mth.sin(anim * (float) Math.PI) * 5);
-        float x = (float)(pos.x - vector3d.x()) + (Mth.sin((float) (angularPos * Math.PI * 2) + anim) * radius);
-        float y = (float)(pos.y - vector3d.y());
-        float z = (float)(pos.z - vector3d.z()) + (Mth.cos((float) (angularPos * Math.PI * 2) + anim) * radius);
+        float x = (float) (pos.x - vector3d.x()) + (Mth.sin((float) (angularPos * Math.PI * 2) + anim) * radius);
+        float y = (float) (pos.y - vector3d.y());
+        float z = (float) (pos.z - vector3d.z()) + (Mth.cos((float) (angularPos * Math.PI * 2) + anim) * radius);
         Quaternion quaternion;
         if (this.roll == 0.0F) {
-            quaternion = renderInfo.rotation();
+            quaternion = camera.rotation();
         } else {
-            quaternion = new Quaternion(renderInfo.rotation());
+            quaternion = new Quaternion(camera.rotation());
             float f3 = Mth.lerp(partialTicks, this.oRoll, this.roll);
             quaternion.mul(Vector3f.ZP.rotation(f3));
         }
@@ -79,7 +81,7 @@ public class GuardianChargeParticle extends SingleQuadParticle {
         Vector3f[] avector3f = new Vector3f[]{new Vector3f(-1.0F, -1.0F, 0.0F), new Vector3f(-1.0F, 1.0F, 0.0F), new Vector3f(1.0F, 1.0F, 0.0F), new Vector3f(1.0F, -1.0F, 0.0F)};
         float f4 = this.getQuadSize(partialTicks);
 
-        for(int i = 0; i < 4; ++i) {
+        for (int i = 0; i < 4; ++i) {
             Vector3f vector3f = avector3f[i];
             vector3f.transform(quaternion);
             vector3f.mul(f4);
@@ -91,15 +93,15 @@ public class GuardianChargeParticle extends SingleQuadParticle {
         float vMin = this.getV0();
         float vMax = this.getV1();
         int j = 240;//this.getLightColor(partialTicks);
-        builder.vertex(avector3f[0].x(), avector3f[0].y(), avector3f[0].z()).uv(uMax, vMax).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(j).endVertex();
-        builder.vertex(avector3f[1].x(), avector3f[1].y(), avector3f[1].z()).uv(uMax, vMin).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(j).endVertex();
-        builder.vertex(avector3f[2].x(), avector3f[2].y(), avector3f[2].z()).uv(uMin, vMin).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(j).endVertex();
-        builder.vertex(avector3f[3].x(), avector3f[3].y(), avector3f[3].z()).uv(uMin, vMax).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(j).endVertex();
+        buffer.vertex(avector3f[0].x(), avector3f[0].y(), avector3f[0].z()).uv(uMax, vMax).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(j).endVertex();
+        buffer.vertex(avector3f[1].x(), avector3f[1].y(), avector3f[1].z()).uv(uMax, vMin).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(j).endVertex();
+        buffer.vertex(avector3f[2].x(), avector3f[2].y(), avector3f[2].z()).uv(uMin, vMin).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(j).endVertex();
+        buffer.vertex(avector3f[3].x(), avector3f[3].y(), avector3f[3].z()).uv(uMin, vMax).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(j).endVertex();
     }
 
     @Override
     public ParticleRenderType getRenderType() {
-        return DETextures.PARTICLE_SHEET_TRANSLUCENT;
+        return DEMiscSprites.PARTICLE_SHEET_TRANSLUCENT;
     }
 
     @Override

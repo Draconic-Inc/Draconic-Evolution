@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.client.render.particle;
 
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.utils.MathUtils;
+import com.brandon3055.draconicevolution.client.DEMiscSprites;
 import com.brandon3055.draconicevolution.client.DETextures;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -25,7 +26,7 @@ public class ParticlePortal extends TextureSheetParticle {
         this.xd = (target.x - start.x) * speed;
         this.yd = (target.y - start.y) * speed;
         this.zd = (target.z - start.z) * speed;
-        sprite = DETextures.PORTAL_PARTICLE;
+        sprite = DEMiscSprites.PORTAL_PARTICLE;
         this.lifetime = 120;
         this.rCol = this.gCol = this.bCol = 1.0f;
         float baseSize = 0.05F + ((float) Math.sqrt(Minecraft.getInstance().player.distanceToSqr(pos.x, pos.y, pos.z))) * 0.007F;
@@ -36,7 +37,7 @@ public class ParticlePortal extends TextureSheetParticle {
 
     @Override
     public ParticleRenderType getRenderType() {
-        return DETextures.PARTICLE_SHEET_TRANSLUCENT;
+        return DEMiscSprites.PARTICLE_SHEET_TRANSLUCENT;
     }
 
     @Override

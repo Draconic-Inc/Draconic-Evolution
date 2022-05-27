@@ -33,10 +33,10 @@ import java.util.Map;
 public class RenderTileEnergyCore implements BlockEntityRenderer<TileEnergyCore> {
     private static final double[] SCALES = {1.1, 1.7, 2.3, 3.6, 5.5, 7.1, 8.6, 10.2};
 
-    private static final RenderType innerCoreType = RenderType.entitySolid(new ResourceLocation(DraconicEvolution.MODID, "textures/block/core/energy_core_base.png"));
+    private static final RenderType innerCoreType = RenderType.entitySolid(new ResourceLocation(DraconicEvolution.MODID, "textures/block/energy_core/energy_core_base.png"));
 
     private static final RenderType outerCoreType = RenderType.create("outer_core", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder()
-                    .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(DraconicEvolution.MODID, "textures/block/core/energy_core_overlay.png"), false, false))
+                    .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(DraconicEvolution.MODID, "textures/block/energy_core/energy_core_overlay.png"), false, false))
                     .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
 //            .writeMask(RenderState.COLOR_WRITE)
 //            .setTexturingState(new RenderStateShard.TexturingStateShard("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
@@ -44,27 +44,27 @@ public class RenderTileEnergyCore implements BlockEntityRenderer<TileEnergyCore>
     );
 
     private static final RenderType innerStabType = RenderType.create("inner_stab", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder()
-                    .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(DraconicEvolution.MODID, "textures/block/core/stabilizer_sphere.png"), false, false))
+                    .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(DraconicEvolution.MODID, "textures/block/energy_core/stabilizer_sphere.png"), false, false))
                     .setTransparencyState(RenderStateShard.NO_TRANSPARENCY)
 //            .texturing(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
                     .createCompositeState(false)
     );
     private static final RenderType outerStabType = RenderType.create("outer_stab", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder()
-                    .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(DraconicEvolution.MODID, "textures/block/core/stabilizer_sphere.png"), false, false))
+                    .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(DraconicEvolution.MODID, "textures/block/energy_core/stabilizer_sphere.png"), false, false))
                     .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
 //            .setTexturingState(new RenderStateShard.TexturingStateShard("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
                     .createCompositeState(false)
     );
 
     private static final RenderType beamType = RenderType.create("inner_beam", DefaultVertexFormat.POSITION_TEX, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder()
-                    .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(DraconicEvolution.MODID, "textures/block/core/stabilizer_beam.png"), false, false))
+                    .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(DraconicEvolution.MODID, "textures/block/energy_core/stabilizer_beam.png"), false, false))
                     .setTransparencyState(RenderStateShard.NO_TRANSPARENCY)
 //            .setTexturingState(new RenderStateShard.TexturingStateShard("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
                     .createCompositeState(false)
     );
 
     private static final RenderType outerBeamType = RenderType.create("outer_beam", DefaultVertexFormat.POSITION_COLOR_TEX, VertexFormat.Mode.TRIANGLE_STRIP, 256, false, false, RenderType.CompositeState.builder()
-                    .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(DraconicEvolution.MODID, "textures/block/core/stabilizer_beam.png"), false, false))
+                    .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(DraconicEvolution.MODID, "textures/block/energy_core/stabilizer_beam.png"), false, false))
                     .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
                     .setWriteMaskState(RenderStateShard.COLOR_WRITE)
 //            .setTexturingState(new RenderStateShard.TexturingStateShard("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
@@ -75,11 +75,11 @@ public class RenderTileEnergyCore implements BlockEntityRenderer<TileEnergyCore>
     private final CCModel modelEnergyCore;
 
     public RenderTileEnergyCore(BlockEntityRendererProvider.Context context) {
-        Map<String, CCModel> map = new OBJParser(new ResourceLocation(DraconicEvolution.MODID, "models/block/core/stabilizer_sphere.obj")).quads().ignoreMtl().parse();
+        Map<String, CCModel> map = new OBJParser(new ResourceLocation(DraconicEvolution.MODID, "models/block/energy_core/stabilizer_sphere.obj")).quads().ignoreMtl().parse();
         modelStabilizerSphere = CCModel.combine(map.values());
         modelStabilizerSphere.computeNormals();
 
-        map = new OBJParser(new ResourceLocation(DraconicEvolution.MODID, "models/block/core/energy_core_model.obj")).quads().ignoreMtl().parse();
+        map = new OBJParser(new ResourceLocation(DraconicEvolution.MODID, "models/block/energy_core/energy_core_model.obj")).quads().ignoreMtl().parse();
         modelEnergyCore = CCModel.combine(map.values());
         modelEnergyCore.computeNormals();
     }

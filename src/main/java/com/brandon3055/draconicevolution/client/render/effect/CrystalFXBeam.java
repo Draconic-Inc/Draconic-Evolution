@@ -18,6 +18,7 @@ import com.mojang.math.Vector3f;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.ParticleRenderType;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
@@ -186,21 +187,12 @@ public class CrystalFXBeam<T extends BlockEntity & IENetEffectTile> extends Crys
 
         @Override
         public void begin(BufferBuilder builder, TextureManager textureManager) {
-//            ResourceHelperDE.bindTexture(texture);
-            textureManager.bindForSetup(texture);
-//            RenderSystem.color4f(1.0F, green, 1.0F, 1.0F);
-
             RenderSystem.disableCull();
             RenderSystem.depthMask(false);
-//            RenderSystem.alphaFunc(516, 0.003921569F);
             RenderSystem.enableBlend();
             RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
-//            RenderSystem.glMultiTexCoord2f(0x84c2, 240.0F, 240.0F); //Lightmap
-
-//            if (ClientEventHandler.playerHoldingWrench) {
-//                RenderSystem.color4f(0, 0, 1, 1);
-//            }
-
+            RenderSystem.setShader(GameRenderer::getPositionColorTexLightmapShader);
+            RenderSystem.setShaderTexture(0, texture);
             builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP);
         }
 

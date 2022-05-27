@@ -48,15 +48,15 @@ public class GuiFlowGate extends ModularGuiContainer<ContainerBCTile<TileFlowGat
 
         GuiTextField highField = toolkit.createTextField(template.background)
                 .setHoverText(toolkit.i18n("redstone_high.info"))
-                .setValidator(toolkit.catchyValidator(s -> s.equals("") || Long.parseLong(s) >= 0))
+                .setFilter(toolkit.catchyValidator(s -> s.equals("") || Long.parseLong(s) >= 0))
                 .setSize(template.playerSlots.xSize() - 60, 14)
                 .setPos(highLabel.xPos(), highLabel.maxYPos() + 2);
 
-        toolkit.createButton(toolkit.i18n("apply"), template.background)
+        toolkit.createButton_old(toolkit.i18n("apply"), template.background)
                 .setPos(highField.maxXPos() + 1, highField.yPos())
                 .setYSize(highField.ySize())
                 .setMaxXPos(template.playerSlots.maxXPos(), true)
-                .onPressed(() -> tile.setMax(highField.getText()));
+                .onPressed(() -> tile.setMax(highField.getValue()));
 
         GuiLabel lowLabel = template.background.addChild(new GuiLabel(toolkit.i18n("redstone_low")))
                 .setSize(xSize(), 8)
@@ -66,15 +66,15 @@ public class GuiFlowGate extends ModularGuiContainer<ContainerBCTile<TileFlowGat
 
         GuiTextField lowField = toolkit.createTextField(template.background)
                 .setHoverText(toolkit.i18n("redstone_low.info"))
-                .setValidator(toolkit.catchyValidator(s -> s.equals("") || Long.parseLong(s) >= 0))
+                .setFilter(toolkit.catchyValidator(s -> s.equals("") || Long.parseLong(s) >= 0))
                 .setSize(template.playerSlots.xSize() - 60, 14)
                 .setPos(lowLabel.xPos(), lowLabel.maxYPos() + 2);
 
-        toolkit.createButton(toolkit.i18n("apply"), template.background)
+        toolkit.createButton_old(toolkit.i18n("apply"), template.background)
                 .setPos(lowField.maxXPos() + 1, lowField.yPos())
                 .setYSize(lowField.ySize())
                 .setMaxXPos(template.playerSlots.maxXPos(), true)
-                .onPressed(() -> tile.setMin(lowField.getText()));
+                .onPressed(() -> tile.setMin(lowField.getValue()));
 
         template.background.addChild(new GuiLabel())
                 .setHoverText(toolkit.i18n("flow.info"))
@@ -90,17 +90,17 @@ public class GuiFlowGate extends ModularGuiContainer<ContainerBCTile<TileFlowGat
         manager.onTick(() -> {
             if (tile.minFlow.get() != ltMin) {
                 ltMin = tile.minFlow.get();
-                lowField.setText(String.valueOf(ltMin));
+                lowField.setValue(String.valueOf(ltMin));
             }
             if (tile.maxFlow.get() != ltMax) {
                 ltMax = tile.maxFlow.get();
-                highField.setText(String.valueOf(ltMax));
+                highField.setValue(String.valueOf(ltMax));
             }
-            if (!highField.isFocused() && highField.getText().equals("")) {
-                highField.setText("0");
+            if (!highField.isFocused() && highField.getValue().equals("")) {
+                highField.setValue("0");
             }
-            if (!lowField.isFocused() && lowField.getText().equals("")) {
-                lowField.setText("0");
+            if (!lowField.isFocused() && lowField.getValue().equals("")) {
+                lowField.setValue("0");
             }
         });
     }

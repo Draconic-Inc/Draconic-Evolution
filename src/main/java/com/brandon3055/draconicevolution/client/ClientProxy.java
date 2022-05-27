@@ -21,10 +21,7 @@ import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.client.handler.StaffRenderEventHandler;
 import com.brandon3055.draconicevolution.client.keybinding.KeyBindings;
 import com.brandon3055.draconicevolution.client.keybinding.KeyInputHandler;
-import com.brandon3055.draconicevolution.client.model.ModularArmorModel;
 import com.brandon3055.draconicevolution.client.model.VBOArmorLayer;
-import com.brandon3055.draconicevolution.client.render.effect.ExplosionFX;
-import com.brandon3055.draconicevolution.client.render.effect.ReactorBeamFX;
 import com.brandon3055.draconicevolution.client.render.entity.DraconicGuardianRenderer;
 import com.brandon3055.draconicevolution.client.render.entity.GuardianCrystalRenderer;
 import com.brandon3055.draconicevolution.client.render.entity.GuardianProjectileRenderer;
@@ -84,13 +81,16 @@ public class ClientProxy extends CommonProxy {
 
         modBus.addListener((ColorHandlerEvent.Block event) -> moduleSpriteUploader = new ModuleSpriteUploader());
         spriteHelper.addIIconRegister(new DETextures());
-        modBus.addListener(DESprites::initialize);
+        modBus.addListener(DEGuiSprites::initialize);
+        modBus.addListener(DEMiscSprites::initialize);
 
         StaffRenderEventHandler.init();
         CustomBossInfoHandler.init();
         MinecraftForge.EVENT_BUS.addListener(this::registerShaderReloads);
         modBus.addGenericListener(AbstractHudElement.class, this::registerHudElements);
         modBus.addListener(this::registerEntityRenderers);
+
+        DEShaders.init();
     }
 
     @Override
@@ -153,42 +153,42 @@ public class ClientProxy extends CommonProxy {
     private void registerShaderReloads(ParticleFactoryRegisterEvent event) {
         if (Minecraft.getInstance() == null) return;
 
-        if (DEConfig.guardianShaders) {
-            ResourceUtils.registerReloadListener(CustomBossInfoHandler.shieldShader);
-            ResourceUtils.registerReloadListener(DraconicGuardianRenderer.shieldShader);
-        }
-
-        if (DEConfig.crystalShaders) {
-            ResourceUtils.registerReloadListener(RenderItemEnergyCrystal.crystalShader);
-            ResourceUtils.registerReloadListener(RenderTileEnergyCrystal.crystalShader);
-        }
-
-        if (DEConfig.toolShaders) {
-            ResourceUtils.registerReloadListener(RenderModularBow.stringShader);
-            ResourceUtils.registerReloadListener(ModularArmorModel.shieldShader);
-            ResourceUtils.registerReloadListener(RenderModularChestpeice.coreShader);
-            ResourceUtils.registerReloadListener(ToolRenderBase.chaosShader);
-            ResourceUtils.registerReloadListener(ToolRenderBase.gemShader);
-            ResourceUtils.registerReloadListener(ToolRenderBase.bladeShader);
-            ResourceUtils.registerReloadListener(ToolRenderBase.traceShader);
-        }
-
-        if (DEConfig.reactorShaders) {
-            ResourceUtils.registerReloadListener(ExplosionFX.blastWaveProgram);
-            ResourceUtils.registerReloadListener(ExplosionFX.coreEffectProgram);
-            ResourceUtils.registerReloadListener(ExplosionFX.leadingWaveProgram);
-            ResourceUtils.registerReloadListener(ReactorBeamFX.beamShaderE);
-            ResourceUtils.registerReloadListener(ReactorBeamFX.beamShaderI);
-            ResourceUtils.registerReloadListener(ReactorBeamFX.beamShaderO);
-            ResourceUtils.registerReloadListener(ClientEventHandler.explosionShader);
-            ResourceUtils.registerReloadListener(RenderTileReactorCore.coreShader);
-            ResourceUtils.registerReloadListener(RenderTileReactorCore.shieldShader);
-        }
-
-        if (DEConfig.otherShaders) {
-            ResourceUtils.registerReloadListener(RenderTileChaosCrystal.chaosShader);
-            ResourceUtils.registerReloadListener(RenderTileChaosCrystal.shieldShader);
-        }
+//        if (DEConfig.guardianShaders) {
+//            ResourceUtils.registerReloadListener(CustomBossInfoHandler.shieldShader);
+//            ResourceUtils.registerReloadListener(DraconicGuardianRenderer.shieldShader);
+//        }
+//
+//        if (DEConfig.crystalShaders) {
+//            ResourceUtils.registerReloadListener(RenderItemEnergyCrystal.crystalShader);
+//            ResourceUtils.registerReloadListener(RenderTileEnergyCrystal.crystalShader);
+//        }
+//
+//        if (DEConfig.toolShaders) {
+//            ResourceUtils.registerReloadListener(RenderModularBow.stringShader);
+//            ResourceUtils.registerReloadListener(ModularArmorModel.shieldShader);
+//            ResourceUtils.registerReloadListener(RenderModularChestpeice.coreShader);
+//            ResourceUtils.registerReloadListener(ToolRenderBase.chaosShader);
+//            ResourceUtils.registerReloadListener(ToolRenderBase.gemShader);
+//            ResourceUtils.registerReloadListener(ToolRenderBase.bladeShader);
+//            ResourceUtils.registerReloadListener(ToolRenderBase.traceShader);
+//        }
+//
+//        if (DEConfig.reactorShaders) {
+//            ResourceUtils.registerReloadListener(ExplosionFX.blastWaveProgram);
+//            ResourceUtils.registerReloadListener(ExplosionFX.coreEffectProgram);
+//            ResourceUtils.registerReloadListener(ExplosionFX.leadingWaveProgram);
+//            ResourceUtils.registerReloadListener(ReactorBeamFX.beamShaderE);
+//            ResourceUtils.registerReloadListener(ReactorBeamFX.beamShaderI);
+//            ResourceUtils.registerReloadListener(ReactorBeamFX.beamShaderO);
+//            ResourceUtils.registerReloadListener(ClientEventHandler.explosionShader);
+//            ResourceUtils.registerReloadListener(RenderTileReactorCore.coreShader);
+//            ResourceUtils.registerReloadListener(RenderTileReactorCore.shieldShader);
+//        }
+//
+//        if (DEConfig.otherShaders) {
+//            ResourceUtils.registerReloadListener(RenderTileChaosCrystal.chaosShader);
+//            ResourceUtils.registerReloadListener(RenderTileChaosCrystal.shieldShader);
+//        }
 
     }
 
@@ -320,7 +320,7 @@ public class ClientProxy extends CommonProxy {
         event.registerBlockEntityRenderer(DEContent.tile_draconium_chest, DraconiumChestTileRenderer::new);
         event.registerBlockEntityRenderer(DEContent.tile_storage_core, RenderTileEnergyCore::new);
         event.registerBlockEntityRenderer(DEContent.tile_energy_pylon, RenderTileEnergyPylon::new);
-        event.registerBlockEntityRenderer(DEContent.tile_core_stabilizer, RenderTileECStabilizer::new);
+        event.registerBlockEntityRenderer(DEContent.tile_core_stabilizer, RenderEnergyCoreStabilizer::new);
         event.registerBlockEntityRenderer(DEContent.tile_stabilized_spawner, RenderTileStabilizedSpawner::new);
         event.registerBlockEntityRenderer(DEContent.tile_generator, RenderTileGenerator::new);
         event.registerBlockEntityRenderer(DEContent.tile_crystal_io, RenderTileEnergyCrystal::new);

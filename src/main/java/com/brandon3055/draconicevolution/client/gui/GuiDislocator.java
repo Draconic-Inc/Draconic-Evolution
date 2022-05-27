@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.client.gui;
 
 import codechicken.lib.math.MathHelper;
 import com.brandon3055.brandonscore.BCConfig;
-import com.brandon3055.brandonscore.client.BCSprites;
+import com.brandon3055.brandonscore.client.BCGuiSprites;
 import com.brandon3055.brandonscore.client.gui.GuiToolkit;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElementManager;
@@ -17,7 +17,7 @@ import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiTexture
 import com.brandon3055.brandonscore.client.gui.modulargui.lib.GuiAlign;
 import com.brandon3055.brandonscore.client.gui.modulargui.templates.TGuiBase;
 import com.brandon3055.brandonscore.utils.DataUtils;
-import com.brandon3055.draconicevolution.client.DESprites;
+import com.brandon3055.draconicevolution.client.DEGuiSprites;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.items.tools.DislocatorAdvanced;
 import com.brandon3055.draconicevolution.items.tools.DislocatorAdvanced.DislocatorTarget;
@@ -64,7 +64,7 @@ public class GuiDislocator extends ModularGuiScreen {
     @Override
     public void addElements(GuiElementManager manager) {
         TGuiBase temp = new TGuiBase(this);
-        temp.background = GuiTexture.newDynamicTexture(xSize(), ySize(), () -> BCSprites.getThemed("background_dynamic"));
+        temp.background = GuiTexture.newDynamicTexture(xSize(), ySize(), () -> BCGuiSprites.getThemed("background_dynamic"));
         temp.background.onReload(guiTex -> guiTex.setPos(guiLeft(), guiTop()));
         toolkit.loadTemplate(temp);
         int bgPad = 5;
@@ -140,7 +140,7 @@ public class GuiDislocator extends ModularGuiScreen {
 
         infoBG.setMaxYPos(dimLabel.maxYPos() + 2, true);
 
-        GuiButton setHere = toolkit.createButton(toolkit.i18n("update"), temp.background, true)
+        GuiButton setHere = toolkit.createButton_old(toolkit.i18n("update"), temp.background, true)
                 .setHoverText(toolkit.i18n("update.info"))
                 .setPos(posBG.maxXPos() + 2, infoBG.maxYPos() + 2)
                 .setMaxXPos(temp.background.maxXPos() - bgPad, true)
@@ -149,20 +149,20 @@ public class GuiDislocator extends ModularGuiScreen {
                 .setDisabledStateSupplier(() -> !hasTarget() || getTarget().isLocked());
 
         //Fuel Add
-        GuiButton fuel1 = toolkit.createButton(toolkit.i18n("add_1"), temp.background, true, 0)
+        GuiButton fuel1 = toolkit.createButton_old(toolkit.i18n("add_1"), temp.background, true, 0)
                 .setHoverText(toolkit.i18n("fuel_add_1.info"))
                 .setXPos(posBG.maxXPos() + 2)
                 .setSize(20, 13)
                 .setMaxYPos(temp.background.maxYPos() - bgPad - 1, false)
                 .onPressed(() -> DraconicNetwork.sendDislocatorMessage(6, output -> output.writeBoolean(false).writeBoolean(false)));
 
-        GuiButton fuel16 = toolkit.createButton(toolkit.i18n("add_16"), temp.background, true, 0)
+        GuiButton fuel16 = toolkit.createButton_old(toolkit.i18n("add_16"), temp.background, true, 0)
                 .setHoverText(toolkit.i18n("fuel_add_16.info"))
                 .setSize(28, 13)
                 .setPos(fuel1.maxXPos() + 1, fuel1.yPos())
                 .onPressed(() -> DraconicNetwork.sendDislocatorMessage(6, output -> output.writeBoolean(true).writeBoolean(false)));
 
-        GuiButton fuelAll = toolkit.createButton(toolkit.i18n("add_all"), temp.background, true, 0)
+        GuiButton fuelAll = toolkit.createButton_old(toolkit.i18n("add_all"), temp.background, true, 0)
                 .setHoverText(toolkit.i18n("fuel_add_all.info"))
                 .setYSize(13)
                 .setPos(fuel16.maxXPos() + 1, fuel16.yPos())
@@ -193,7 +193,7 @@ public class GuiDislocator extends ModularGuiScreen {
 
         //Add New
         int subWidth = 18;
-        GuiButton addButton = toolkit.createButton(toolkit.i18n("add"), temp.background, true)
+        GuiButton addButton = toolkit.createButton_old(toolkit.i18n("add"), temp.background, true)
                 .setHoverText(toolkit.i18n("add.info"))
                 .setYSize(15)
                 .setXPos(posBG.maxXPos() + 2)
@@ -206,25 +206,25 @@ public class GuiDislocator extends ModularGuiScreen {
                 .setPos(addButton.maxXPos(), addButton.yPos())
                 .setSize(subWidth, addButton.ySize()));
 
-        toolkit.createButton("", addButton, true, 0)
+        toolkit.createButton_old("", addButton, true, 0)
                 .setHoverText(toolkit.i18n("add_top.info"))
                 .setSize(subWidth - 1, 6)
                 .setXPos(addButton.maxXPos())
                 .setYPos(addButton.yPos() + 1)
                 .onPressed(() -> addNew(1))
-                .addChild(new GuiTexture(8, 8, DESprites.get("dislocator/add_top"))
+                .addChild(new GuiTexture(8, 8, DEGuiSprites.get("dislocator/add_top"))
                         .onReload(GuiTexture::centerOnParent));
 
-        toolkit.createButton("", addButton, true, 0)
+        toolkit.createButton_old("", addButton, true, 0)
                 .setHoverText(toolkit.i18n("add_bottom.info"))
                 .setSize(subWidth - 1, 6)
                 .setXPos(addButton.maxXPos())
                 .setMaxYPos(addButton.maxYPos() - 1, false)
                 .onPressed(() -> addNew(2))
-                .addChild(new GuiTexture(8, 8, DESprites.get("dislocator/add_bottom"))
+                .addChild(new GuiTexture(8, 8, DEGuiSprites.get("dislocator/add_bottom"))
                         .onReload(GuiTexture::centerOnParent));
 
-        toolkit.createButton("", addButton, true)
+        toolkit.createButton_old("", addButton, true)
                 .setHoverText(toolkit.i18n("right_click_mode.info"))
                 .setDisplaySupplier(() -> toolkit.i18n("mode_" + (blinkMode ? "blink" : "tp")))
                 .setWrap(true)
@@ -345,14 +345,14 @@ public class GuiDislocator extends ModularGuiScreen {
 
         @Override
         public void addChildElements() {
-            lock = toolkit.createIconButton(this, 8, 8, () -> DESprites.get("dislocator/" + (isLocked() ? "locked" : "unlocked")))
+            lock = toolkit.createIconButton(this, 8, 8, () -> DEGuiSprites.get("dislocator/" + (isLocked() ? "locked" : "unlocked")))
                     .setHoverText(toolkit.i18n("edit_lock.info"))
                     .setXPosMod(() -> maxXPos() - 9)
                     .setYPosMod(() -> yPos() + 2)
                     .onPressed(() -> DraconicNetwork.sendDislocatorMessage(3, e -> e.writeVarInt(index).writeBoolean(!isLocked())))
                     .setEnabledCallback(this::hasTarget);
 
-            delete = toolkit.createIconButton(this, 8, 8, DESprites.getter("dislocator/delete"))
+            delete = toolkit.createIconButton(this, 8, 8, DEGuiSprites.getter("dislocator/delete"))
                     .setHoverText(toolkit.i18n("delete.info"))
                     .setXPosMod(() -> lock.xPos() - 9)
                     .setYPosMod(() -> yPos() + 2)
@@ -360,12 +360,12 @@ public class GuiDislocator extends ModularGuiScreen {
                     .setEnabledCallback(() -> hasTarget() && !isLocked());
 
             field = toolkit.createTextField(this, false)
-                    .setChangeListener(this::setName)
+                    .onValueChanged(this::setName)
                     .setPos(xPos() + 1, yPos() + 2)
                     .setYSize(10)
                     .setXSize(100)
-                    .setCanFocus(false)
-                    .setReturnListener(() -> field.setFocused(false))
+                    .setFocusable(false)
+                    .onReturnPressed(e -> field.setFocus(false))
                     .setEnabledCallback(this::hasTarget);
         }
 
@@ -383,7 +383,7 @@ public class GuiDislocator extends ModularGuiScreen {
             } else if (mouseOver && button == 0 && !getTarget().isLocked()) {
                 //Edit name on double click
                 if (clickTime <= 10) {
-                    field.setFocused(true);
+                    field.setFocus(true);
                     ret = true;
                 } else {
                     clickTime = 0;
@@ -412,7 +412,7 @@ public class GuiDislocator extends ModularGuiScreen {
         @Override
         public boolean mouseReleased(double mouseX, double mouseY, int button) {
             if (dragging) {
-                TargetElement hovered = getHovered((int)mouseX, (int)mouseY);
+                TargetElement hovered = getHovered((int) mouseX, (int) mouseY);
                 if (hovered != null) {
                     int moveIndex = mouseY > hovered.yPos() + (hovered.ySize() / 2D) ? hovered.index + 1 : hovered.index;
                     DraconicNetwork.sendDislocatorMessage(10, e -> e.writeVarInt(moveIndex));
@@ -434,13 +434,13 @@ public class GuiDislocator extends ModularGuiScreen {
                 selected = index == selectedIndex;
             }
 
-            Material mat = DESprites.get("dislocator/slot");
-            Material matSelect = DESprites.get("dislocator/slot_selected");
+            Material mat = DEGuiSprites.get("dislocator/slot");
+            Material matSelect = DEGuiSprites.get("dislocator/slot_selected");
             MultiBufferSource.BufferSource getter = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
-            drawSprite(getter.getBuffer(BCSprites.GUI_TYPE), xPos(), yPos(), (selected ? matSelect : mat).sprite());
+            drawSprite(getter.getBuffer(BCGuiSprites.GUI_TYPE), xPos(), yPos(), (selected ? matSelect : mat).sprite());
             if ((hovered && !selected)) {
                 getter.endBatch();
-                drawSprite(getter.getBuffer(BCSprites.GUI_TYPE), xPos(), yPos(), matSelect.sprite(), 0x30FFFFFF);
+                drawSprite(getter.getBuffer(BCGuiSprites.GUI_TYPE), xPos(), yPos(), matSelect.sprite(), 0x30FFFFFF);
             }
             getter.endBatch();
             super.renderElement(minecraft, mouseX, mouseY, partialTicks);
@@ -463,7 +463,7 @@ public class GuiDislocator extends ModularGuiScreen {
                     getter.endBatch();
                 }
 
-                drawSprite(getter.getBuffer(BCSprites.GUI_TYPE), xPos(), yPos, DESprites.get("dislocator/slot_selected").sprite(), 0x60FFFFFF);
+                drawSprite(getter.getBuffer(BCGuiSprites.GUI_TYPE), xPos(), yPos, DEGuiSprites.get("dislocator/slot_selected").sprite(), 0x60FFFFFF);
                 getter.endBatch();
 
 
@@ -490,11 +490,11 @@ public class GuiDislocator extends ModularGuiScreen {
         public boolean onUpdate() {
             boolean hasTarget = hasTarget();
             if (hasTarget) {
-                if (!field.isFocused()) {
-                    field.setTextQuietly(getTarget().getName());
+                if (!field.isFocused() || (lastAdded == index && editAdded)) {
+                    field.setValueQuietly(getTarget().getName());
                 }
             } else {
-                field.setTextQuietly("");
+                field.setValueQuietly("");
             }
             clickTime++;
             lastTickTarget = hasTarget;
@@ -502,9 +502,9 @@ public class GuiDislocator extends ModularGuiScreen {
             if (lastAdded == index && editAdded) {
                 lastAdded = -1;
                 editAdded = false;
-                field.setFocused(true);
-                field.setCursorPositionEnd();
-                field.setSelectionPos(0);
+                field.setFocus(true);
+                field.moveCursorToEnd(false); //TODO Test
+                field.setHighlightPos(0);
             }
 
             return super.onUpdate();

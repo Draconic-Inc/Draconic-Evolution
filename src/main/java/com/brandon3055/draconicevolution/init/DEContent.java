@@ -100,8 +100,8 @@ public class DEContent {
     @ObjectHolder("placed_item")                public static BlockEntityType<TilePlacedItem>            tile_placed_item;
     @ObjectHolder("portal")                     public static BlockEntityType<TilePortal>                tile_portal;
     @ObjectHolder("chaos_crystal")              public static BlockEntityType<TileChaosCrystal>          tile_chaos_crystal;
-    @ObjectHolder("crafting_injector")          public static BlockEntityType<TileFusionCraftingInjector>      tile_crafting_injector;
-    @ObjectHolder("crafting_core")              public static BlockEntityType<TileFusionCraftingCore>          tile_crafting_core;
+    @ObjectHolder("crafting_injector")          public static BlockEntityType<TileFusionCraftingInjector>tile_crafting_injector;
+    @ObjectHolder("crafting_core")              public static BlockEntityType<TileFusionCraftingCore>    tile_crafting_core;
     @ObjectHolder("storage_core")               public static BlockEntityType<TileEnergyCore>            tile_storage_core;
     @ObjectHolder("core_stabilizer")            public static BlockEntityType<TileEnergyCoreStabilizer>  tile_core_stabilizer;
     @ObjectHolder("energy_pylon")               public static BlockEntityType<TileEnergyPylon>           tile_energy_pylon;
@@ -308,12 +308,12 @@ public class DEContent {
         event.getRegistry().register(new DraconiumOre(ore).setRegistryName("nether_draconium_ore"));
         event.getRegistry().register(new DraconiumOre(ore).setRegistryName("end_draconium_ore"));
         //Storage Blocks
-        event.getRegistry().register(new DraconiumBlock(storageBlock).setRegistryName("draconium_block"));
-        event.getRegistry().register(new DraconiumBlock(storageBlock).setRegistryName("awakened_draconium_block"));
+        event.getRegistry().register(new DraconiumBlock(storageBlock).setMobResistant().setRegistryName("draconium_block"));
+        event.getRegistry().register(new DraconiumBlock(storageBlock).setMobResistant().setRegistryName("awakened_draconium_block"));
 //        //Special
         event.getRegistry().register(new Portal(Properties.of(Material.GLASS).noOcclusion().noCollission().noDrops().strength(-1F)).setRegistryName("portal"));
-        event.getRegistry().register(new ChaosCrystal(Properties.of(Material.GLASS).strength(100, 4000).noDrops()).setRegistryName("chaos_crystal"));
-        event.getRegistry().register(new ChaosCrystal(Properties.of(Material.GLASS).strength(100, 4000).noDrops()).setRegistryName("chaos_crystal_part"));
+        event.getRegistry().register(new ChaosCrystal(Properties.of(Material.GLASS).strength(100, 4000).noOcclusion().noDrops()).setRegistryName("chaos_crystal"));
+        event.getRegistry().register(new ChaosCrystal(Properties.of(Material.GLASS).strength(100, 4000).noOcclusion().noDrops()).setRegistryName("chaos_crystal_part"));
         event.getRegistry().register(new BlockBCore(Block.Properties.of(Material.STONE, MaterialColor.COLOR_BLACK).strength(100.0F, 2400.0F)).setMobResistant().setRegistryName("infused_obsidian"));
 
         event.getRegistry().register(new PlacedItem(Properties.of(Material.GLASS).strength(5F, 12F).noOcclusion().noDrops()).setRegistryName("placed_item"));

@@ -212,8 +212,8 @@ public class ServerPacketHandler implements ICustomPacketHandler.IServerPacketHa
             return;
         }
 
-        HitResult traceResult = player.pick(4, 0, false);
-        if (traceResult instanceof BlockHitResult) {
+        HitResult traceResult = player.pick(5, 0, false);
+        if (traceResult.getType() == HitResult.Type.BLOCK) {
             Level world = player.level;
             BlockHitResult blockTrace = (BlockHitResult) traceResult;
             BlockPos posHit = blockTrace.getBlockPos();

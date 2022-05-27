@@ -200,7 +200,7 @@ public class TileDislocatorReceptacle extends TileBCore implements IInteractTile
                     DelayedTask.run(60, () -> DraconicNetwork.sendDislocatorTeleported((ServerPlayer) entity));
                 }
                 entity.setPortalCooldown();
-                BCoreNetwork.sendSound(entity.level, entity.blockPosition(), DESounds.portal, SoundSource.PLAYERS, 0.1F, entity.level.random.nextFloat() * 0.1F + 0.9F, false);
+                DelayedTask.run(1, () -> BCoreNetwork.sendSound(entity.level, entity.blockPosition(), DESounds.portal, SoundSource.PLAYERS, 0.1F, entity.level.random.nextFloat() * 0.1F + 0.9F, false));
             }
             teleportQ.clear();
         }

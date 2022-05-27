@@ -8,6 +8,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.InputEvent;
@@ -94,9 +95,7 @@ public class KeyInputHandler {
                 Minecraft.getInstance().setScreen(new GuiDislocator(stack.getHoverName(), player));
             }
         } else if (KeyBindings.placeItem.consumeClick()) {
-            if (Minecraft.getInstance().hitResult instanceof BlockHitResult) {
-                DraconicNetwork.sendPlaceItem();
-            }
+            DraconicNetwork.sendPlaceItem();
         }
 //        else if (KeyBindings.armorProfileChange.isPressed()) {
 ////            PacketDispatcher.dispatchToolProfileChange(true);

@@ -17,6 +17,7 @@ import com.mojang.math.Vector3f;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.ParticleRenderType;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -154,14 +155,10 @@ public class CrystalFXLink extends CrystalFXBase<TileCrystalBase> {
         public void begin(BufferBuilder builder, TextureManager textureManager) {
             RenderSystem.disableCull();
             RenderSystem.depthMask(false);
-//            RenderSystem.alphaFunc(516, 0.003921569F);
             RenderSystem.enableBlend();
             RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
-//            RenderSystem.glMultiTexCoord2f(0x84c2, 240.0F, 240.0F); //Lightmap
-
-            textureManager.bindForSetup(texture);
-//            RenderSystem.color4f(1, 0, 0, 1);
-
+            RenderSystem.setShader(GameRenderer::getPositionColorTexLightmapShader);
+            RenderSystem.setShaderTexture(0, texture);
             builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP);
         }
 
@@ -169,7 +166,6 @@ public class CrystalFXLink extends CrystalFXBase<TileCrystalBase> {
         public void end(Tesselator tessellator) {
             tessellator.end();
             RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-//            RenderSystem.enableTexture2D();
         }
     }
 }

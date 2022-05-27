@@ -1,6 +1,6 @@
 package com.brandon3055.draconicevolution.client.gui;
 
-import com.brandon3055.brandonscore.client.BCSprites;
+import com.brandon3055.brandonscore.client.BCGuiSprites;
 import com.brandon3055.brandonscore.client.gui.GuiToolkit;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElementManager;
@@ -41,7 +41,7 @@ public class GuiFusionCraftingCore extends ModularGuiContainer<ContainerFusionCr
     @Override
     public void addElements(GuiElementManager manager) {
         TBasicMachine template = new TBasicMachine(this, tile, false);
-        template.background = GuiTexture.newDynamicTexture(xSize(), ySize(), () -> BCSprites.getThemed("background_dynamic"));
+        template.background = GuiTexture.newDynamicTexture(xSize(), ySize(), () -> BCGuiSprites.getThemed("background_dynamic"));
         template.background.onReload((guiTex) -> guiTex.setPos(guiLeft(), guiTop()));
         toolkit.loadTemplate(template);
         template.addPlayerSlots(true, true, true);
@@ -59,7 +59,7 @@ public class GuiFusionCraftingCore extends ModularGuiContainer<ContainerFusionCr
                 .setEnabledCallback(() -> tile.userStatus.get() != null)
                 .setTextSupplier(tile.userStatus::get));
         //Craft Button
-        toolkit.createButton("gui.draconicevolution.fusion_craft.craft", template.background)
+        toolkit.createButton_old("gui.draconicevolution.fusion_craft.craft", template.background)
                 .setPosAndSize(width / 2 - 40, template.playerSlots.yPos() - 17, 80, 14)
                 .setEnabledCallback(() -> tile.getActiveRecipe() != null && !tile.isCrafting())
                 .onButtonReleased((b) -> tile.sendPacketToServer(output -> {}, 0));

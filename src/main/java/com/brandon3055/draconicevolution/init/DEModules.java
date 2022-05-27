@@ -26,12 +26,14 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
+
 /**
  * Created by brandon3055 on 18/4/20.
  * This class contains a reference to all blocks and items in Draconic Evolution
  */
-@Mod.EventBusSubscriber(modid = DraconicEvolution.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
-@ObjectHolder(DraconicEvolution.MODID)
+@Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
+@ObjectHolder(MODID)
 public class DEModules {
     private static transient ArrayList<ResourceLocation> ITEM_REGISTRY_ORDER = new ArrayList<>();
     public static transient Map<BaseModule<?>, Item> moduleItemMap = new LinkedHashMap<>();
@@ -367,7 +369,7 @@ public class DEModules {
     @SubscribeEvent
     public static void createRegistries(NewRegistryEvent event) {
         event.create(new RegistryBuilder<Module<?>>()
-                        .setName(new ResourceLocation(BrandonsCore.MODID, "modules"))
+                        .setName(new ResourceLocation(MODID, "modules"))
                         .setType(SneakyUtils.unsafeCast(Module.class))
                         .disableSaving(),
                 ts -> MODULE_REGISTRY = ts);

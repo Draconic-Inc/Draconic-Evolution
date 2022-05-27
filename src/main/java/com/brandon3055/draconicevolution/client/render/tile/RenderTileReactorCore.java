@@ -2,15 +2,19 @@ package com.brandon3055.draconicevolution.client.render.tile;
 
 import codechicken.lib.render.CCModel;
 import codechicken.lib.render.CCRenderState;
+import codechicken.lib.render.model.OBJParser;
 import codechicken.lib.render.shader.ShaderObject;
 import codechicken.lib.render.shader.ShaderProgram;
 import codechicken.lib.render.shader.ShaderProgramBuilder;
 import codechicken.lib.render.shader.UniformType;
 import codechicken.lib.vec.Matrix4;
+import codechicken.lib.vec.Scale;
 import codechicken.lib.vec.Vector3;
+import com.brandon3055.brandonscore.api.TimeKeeper;
 import com.brandon3055.brandonscore.utils.MathUtils;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
+import com.brandon3055.draconicevolution.client.DEShaders;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -21,6 +25,9 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
+
+import java.util.Map;
 
 /**
  * Created by brandon3055 on 6/11/2016.
@@ -28,46 +35,24 @@ import net.minecraft.resources.ResourceLocation;
 public class RenderTileReactorCore implements BlockEntityRenderer<TileReactorCore> {
 
     private static CCModel model = null;
-    private static CCModel model_no_shade;
-
-    public static ShaderProgram coreShader = ShaderProgramBuilder.builder()
-            .addShader("frag", shader -> shader
-                    .type(ShaderObject.StandardShaderType.FRAGMENT)
-                    .source(new ResourceLocation(DraconicEvolution.MODID, "shaders/reactor.frag"))
-                    .uniform("time", UniformType.FLOAT)
-                    .uniform("intensity", UniformType.FLOAT)
-            )
-            .build();
-
-    public static ShaderProgram shieldShader = ShaderProgramBuilder.builder()
-            .addShader("frag", shader -> shader
-                    .type(ShaderObject.StandardShaderType.FRAGMENT)
-                    .source(new ResourceLocation(DraconicEvolution.MODID, "shaders/reactor_shield.frag"))
-                    .uniform("time", UniformType.FLOAT)
-                    .uniform("intensity", UniformType.FLOAT)
-            )
-            .build();
 
 
-    public static RenderType fallBackType = RenderType.create("fall_back_type", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.QUADS, 256, RenderType.CompositeState.builder()
-                    .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(DraconicEvolution.MODID, "textures/block/reactor/reactor_core.png"), false, false))
-//            .setTexturingState(new RenderStateShard.TexturingStateShard("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
+    public static RenderType REACTOR_CORE_TYPE = RenderType.create("reactor_type", DefaultVertexFormat.POSITION_TEX, VertexFormat.Mode.QUADS, 256, RenderType.CompositeState.builder()
+                    .setShaderState(new RenderStateShard.ShaderStateShard(() -> DEShaders.reactorShader))
                     .createCompositeState(false)
     );
 
-    public static RenderType fallBackShieldType = RenderType.create("fall_back_shield_type", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.QUADS, 256, RenderType.CompositeState.builder()
+    public static RenderType REACTOR_SHIELD_TYPE = RenderType.create("shield_type", DefaultVertexFormat.POSITION_TEX, VertexFormat.Mode.QUADS, 256, RenderType.CompositeState.builder()
                     .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
-                    .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(DraconicEvolution.MODID, "textures/block/reactor/reactor_shield.png"), false, false))
-//            .setTexturingState(new RenderStateShard.TexturingStateShard("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
+                    .setShaderState(new RenderStateShard.ShaderStateShard(() -> DEShaders.reactorShieldShader))
                     .createCompositeState(false)
     );
+
 
     public RenderTileReactorCore(BlockEntityRendererProvider.Context context) {
         if (model == null) {
-//            Map<String, CCModel> map = OBJParser.parseModels(new ResourceLocation(DraconicEvolution.MODID, "models/block/reactor/reactor_core.obj"), GL11.GL_QUADS, null);
-//            model = CCModel.combine(map.values());
-//            map = OBJParser.parseModels(new ResourceLocation(DraconicEvolution.MODID, "models/block/reactor/reactor_core_model.obj"), GL11.GL_QUADS, null);
-//            model_no_shade = CCModel.combine(map.values()).apply(new Scale(-0.5));
+            Map<String, CCModel> map = new OBJParser(new ResourceLocation(DraconicEvolution.MODID, "models/block/reactor/reactor_core.obj")).quads().ignoreMtl().parse();
+            model = CCModel.combine(map.values());
         }
     }
 
@@ -123,35 +108,17 @@ public class RenderTileReactorCore implements BlockEntityRenderer<TileReactorCor
     }
 
     public static void renderCore(Matrix4 mat, CCRenderState ccrs, float animation, double animState, float intensity, float shieldPower, float partialTicks, MultiBufferSource getter) {
-//        DEConfig.reactorShaders = true;//System.currentTimeMillis() % 6000 > 3000;
-//        if (DEConfig.reactorShaders) {
-//            UniformCache uniforms = coreShader.pushCache();
-//            uniforms.glUniform1f("time", animation);
-//            uniforms.glUniform1f("intensity", intensity);
-//            ccrs.bind(new ShaderRenderType(fallBackType, coreShader, uniforms), getter);
-//            model.render(ccrs, mat);
-//
-//            mat.scale(1.05);
-//            uniforms = shieldShader.pushCache();
-//            uniforms.glUniform1f("time", animation);
-//            uniforms.glUniform1f("intensity", (0.7F * shieldPower) - (float) (1 - animState));
-//            ccrs.bind(new ShaderRenderType(fallBackShieldType, shieldShader, uniforms), getter);
-//            model.render(ccrs, mat);
-//        } else {
-//            ccrs.bind(fallBackType, getter);
-//            model_no_shade.render(ccrs, mat);
-//            ToolRenderBase.endBatch(getter);
-//
-//            mat.scale(1.05);
-//            mat.rotate((ClientEventHandler.elapsedTicks + partialTicks) / 400F, Vector3.X_NEG);
-//            float r = shieldPower < 0.5F ? 1 - (shieldPower * 2) : 0;
-//            float g = shieldPower > 0.5F ? (shieldPower - 0.5F) * 2 : 0;
-//            float b = shieldPower * 2;
-//            float a = shieldPower < 0.1F ? (shieldPower * 10) : 1;
-//            ccrs.baseColour = ColourRGBA.packRGBA(r, g, b, a);
-//            ccrs.bind(fallBackShieldType, getter);
-//            model_no_shade.render(ccrs, mat);
-//        }
+        DEShaders.reactorTime.glUniform1f(animation);
+        DEShaders.reactorIntensity.glUniform1f(intensity);
+        ccrs.bind(REACTOR_CORE_TYPE, getter);
+        model.render(ccrs, mat);
+
+        mat.scale(1.05);
+
+        DEShaders.reactorShieldTime.glUniform1f(animation);
+        DEShaders.reactorShieldIntensity.glUniform1f((0.7F * shieldPower) - (float) (1 - animState));
+        ccrs.bind(REACTOR_SHIELD_TYPE, getter);
+        model.render(ccrs, mat);
     }
 
     public static void renderGUI(TileReactorCore te, int x, int y) {

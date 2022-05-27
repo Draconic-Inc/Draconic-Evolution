@@ -2,9 +2,8 @@ package com.brandon3055.draconicevolution.client.render.effect;
 
 import codechicken.lib.math.MathHelper;
 import codechicken.lib.vec.Vector3;
-import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalWirelessIO;
-import com.brandon3055.draconicevolution.client.DETextures;
+import com.brandon3055.draconicevolution.client.DEMiscSprites;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -14,17 +13,16 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.ParticleRenderType;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -85,8 +83,8 @@ public class CrystalFXWireless extends CrystalFXBase<TileCrystalWirelessIO> {
 
     @Override
     public void render(VertexConsumer buffer, Camera renderInfo, float partialTicks) {
-        int texIndex = (ClientEventHandler.elapsedTicks) % DETextures.ENERGY_PARTICLE.length;
-        TextureAtlasSprite sprite = DETextures.ENERGY_PARTICLE[texIndex];
+        int texIndex = (ClientEventHandler.elapsedTicks) % DEMiscSprites.ENERGY_PARTICLE.length;
+        TextureAtlasSprite sprite = DEMiscSprites.ENERGY_PARTICLE[texIndex];
         if (sprite == null) return;
         float minU = sprite.getU0();
         float maxU = sprite.getU1();
@@ -124,29 +122,18 @@ public class CrystalFXWireless extends CrystalFXBase<TileCrystalWirelessIO> {
         return tile.getTier() == 0 ? BASIC_HANDLER : tile.getTier() == 1 ? WYVERN_HANDLER : DRACONIC_HANDLER;
     }
 
-    private static final ParticleRenderType BASIC_HANDLER = new FXHandler(DETextures.ENERGY_BEAM_BASIC);
-    private static final ParticleRenderType WYVERN_HANDLER = new FXHandler(DETextures.ENERGY_BEAM_WYVERN);
-    private static final ParticleRenderType DRACONIC_HANDLER = new FXHandler(DETextures.ENERGY_BEAM_DRACONIC);
+    private static final ParticleRenderType BASIC_HANDLER = new FXHandler();
+    private static final ParticleRenderType WYVERN_HANDLER = new FXHandler();
+    private static final ParticleRenderType DRACONIC_HANDLER = new FXHandler();
 
     public static class FXHandler implements ParticleRenderType {
-        private ResourceLocation texture;
-        private float green;
-
-        public FXHandler(String texture) {
-            this.texture = new ResourceLocation(DraconicEvolution.MODID, texture);
-        }
-
         @Override
         public void begin(BufferBuilder builder, TextureManager textureManager) {
-//            RenderSystem.color4f(0.0F, 1.0F, 1.0F, 1.0F);
-            textureManager.bindForSetup(TextureAtlas.LOCATION_BLOCKS);
-
             RenderSystem.depthMask(false);
-//            RenderSystem.alphaFunc(516, 0.003921569F);
             RenderSystem.enableBlend();
             RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
-//            RenderSystem.glMultiTexCoord2f(0x84c2, 240.0F, 240.0F); //Lightmap
-
+            RenderSystem.setShader(GameRenderer::getPositionColorTexLightmapShader);
+            RenderSystem.setShaderTexture(0, DEMiscSprites.ATLAS_LOCATION);
             builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP);
         }
 

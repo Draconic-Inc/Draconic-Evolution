@@ -18,6 +18,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -33,10 +34,11 @@ import javax.annotation.Nullable;
 /**
  * Created by brandon3055 on 13/4/2016.
  */
-public class EnergyCoreStructureBlock extends BlockBCore {
+public class EnergyCoreStructureBlock extends BlockBCore implements EntityBlock {
 
     public EnergyCoreStructureBlock(Block.Properties properties) {
         super(properties);
+        setBlockEntity(() -> DEContent.tile_core_structure, false);
         dontSpawnOnMe();
     }
 

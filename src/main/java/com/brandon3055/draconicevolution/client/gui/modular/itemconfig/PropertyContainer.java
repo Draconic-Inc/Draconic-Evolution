@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.client.gui.modular.itemconfig;
 
 import codechicken.lib.math.MathHelper;
 import com.brandon3055.brandonscore.BCConfig;
-import com.brandon3055.brandonscore.client.BCSprites;
+import com.brandon3055.brandonscore.client.BCGuiSprites;
 import com.brandon3055.brandonscore.client.gui.GuiToolkit;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
 import com.brandon3055.brandonscore.client.gui.modulargui.ThemedElements;
@@ -96,7 +96,7 @@ public class PropertyContainer extends GuiManipulable {
             scrollElement.onReload(e -> e.setMaxPos(maxXPos() - 3, maxYPos() - 3, true));
             scrollElement.setEnabledCallback(() -> scrollElement.ySize() > 10 && !applyPreset.isEnabled());
 
-            GuiButton toggleHidden = gui.toolkit.createIconButton(this, 8, () -> BCSprites.getThemed(collapsed ? "expand_content" : "collapse_content"));
+            GuiButton toggleHidden = gui.toolkit.createIconButton(this, 8, () -> BCGuiSprites.getThemed(collapsed ? "expand_content" : "collapse_content"));
             toggleHidden.setPos(xPos() + 2, yPos() + 2);
             toggleHidden.onPressed(this::toggleCollapsed);
             toggleHidden.setHoverText(e -> {
@@ -105,7 +105,7 @@ public class PropertyContainer extends GuiManipulable {
             });
 
             GuiElement<?> dragZone = gui.toolkit.createHighlightIcon(this, 8, 8, 2, 2, () -> {
-                return Screen.hasShiftDown() ? BCSprites.getThemed("copy") : Screen.hasControlDown() ? BCSprites.get("delete") : BCSprites.getThemed("reposition");
+                return Screen.hasShiftDown() ? BCGuiSprites.getThemed("copy") : Screen.hasControlDown() ? BCGuiSprites.get("delete") : BCGuiSprites.getThemed("reposition");
             }, e -> e.getHoverTime() > 0 || dragPos);
             dragZone.setHoverText(e -> {
                 return dragPos ? Collections.emptyList() : I18n.get(Screen.hasShiftDown() ? "gui.draconicevolution.item_config.copy_group.info" : Screen.hasControlDown() ? "gui.draconicevolution.item_config.delete_group.info" : "gui.draconicevolution.item_config.move_group.info");
@@ -114,14 +114,14 @@ public class PropertyContainer extends GuiManipulable {
             dragZone.onReload(e -> e.setMaxXPos(maxXPos() - 2, false).setYPos(yPos() + 2));
             setDragZone(dragZone::isMouseOver);
 
-            GuiButton togglePreset = gui.toolkit.createIconButton(this, 8, BCSprites.themedGetter("preset_icon"));
+            GuiButton togglePreset = gui.toolkit.createIconButton(this, 8, BCGuiSprites.themedGetter("preset_icon"));
             GuiElement<?> hoverRect = GuiToolkit.addHoverHighlight(togglePreset, 2, 2);
             togglePreset.setHoverText(I18n.get("gui.draconicevolution.item_config.toggle_preset.info"));
             togglePreset.onReload(e -> e.setMaxXPos(dragZone.xPos() - 2, false).setYPos(yPos() + 2));
             togglePreset.onPressed(this::togglePreset);
             togglePreset.addChild(new ThemedElements.ShadedRect(true, false).setPosAndSize(hoverRect).setEnabledCallback(() -> isPreset));
 
-            GuiButton globalBinding = gui.toolkit.createIconButton(this, 8, BCSprites.themedGetter("global_key_icon"));
+            GuiButton globalBinding = gui.toolkit.createIconButton(this, 8, BCGuiSprites.themedGetter("global_key_icon"));
             hoverRect = GuiToolkit.addHoverHighlight(globalBinding, 2, 2);
             globalBinding.setHoverText(I18n.get("gui.draconicevolution.item_config.toggle_global_binding.info"));
             globalBinding.onReload(e -> e.setMaxXPos(togglePreset.xPos() - 2, false).setYPos(yPos() + 2));
@@ -135,13 +135,11 @@ public class PropertyContainer extends GuiManipulable {
             groupName = new GuiTextField();
             groupName.setPos(xPos() + 12, yPos() + 2);
             groupName.onReload(e -> e.setMaxPos(globalBinding.isEnabled() ? globalBinding.xPos() - 2 : togglePreset.xPos() - 2, e.yPos() + 8, true));
-            groupName.setText(defaultName);
-            groupName.setChangeListener(gui::savePropertyConfig);
-            groupName.setEnableBackgroundDrawing(false);
-            groupName.setBlinkingCursor(true);
+            groupName.setValue(defaultName);
+            groupName.onValueChanged(gui::savePropertyConfig);
             groupName.setTextColor(GuiToolkit.Palette.BG::text);
-            groupName.setShadowSupplier(() -> BCConfig.darkMode);
-            groupName.setCursorColor(0xFFFFFFFF);
+            groupName.setShadow(() -> BCConfig.darkMode);
+//            groupName.setCursorColor(0xFFFFFFFF);
             groupName.onFinishEdit(gui::savePropertyConfig);
             addChild(groupName);
 
@@ -296,7 +294,7 @@ public class PropertyContainer extends GuiManipulable {
             }
         });
 
-        GuiButton dragZone = gui.toolkit.createIconButton(element, 8, 8, () -> Screen.hasShiftDown() ? BCSprites.get("dark/copy") : Screen.hasControlDown() ? BCSprites.get("delete") : BCSprites.get("reposition_gray"));
+        GuiButton dragZone = gui.toolkit.createIconButton(element, 8, 8, () -> Screen.hasShiftDown() ? BCGuiSprites.get("dark/copy") : Screen.hasControlDown() ? BCGuiSprites.get("delete") : BCGuiSprites.get("reposition_gray"));
         element.dragZone = dragZone;
         dragZone.setHoverText(e -> dragPos ? Collections.emptyList() : I18n.get(Screen.hasShiftDown() ? "gui.draconicevolution.item_config.copy_group.info" : Screen.hasControlDown() ? "gui.draconicevolution.item_config.delete_group.info" : "gui.draconicevolution.item_config.move_group.info"));
 
@@ -363,7 +361,7 @@ public class PropertyContainer extends GuiManipulable {
                 newGroup.collapsed = collapsed;
                 newGroup.globalKeyBind = globalKeyBind;
                 if (isGroup){
-                    newGroup.groupName.setText(groupName.getText());
+                    newGroup.groupName.setValue(groupName.getValue());
                 }
                 newGroup.setSize(this);
                 newGroup.setMaxXPos((int) mouseX + 5, false).setYPos((int) mouseY - 5);
@@ -595,8 +593,8 @@ public class PropertyContainer extends GuiManipulable {
         }
 
         int alpha = semiTrans ? 0x60000000 : 0xFF000000;
-        Material mat = BCSprites.getThemed("borderless_bg_dynamic_small");
-        drawDynamicSprite(getter.getBuffer(mat.renderType(e -> BCSprites.GUI_TYPE)), mat.sprite(), xPos(), yPos(), xSize(), ySize(), 2, 2, 2, 2, 0xFFFFFF | alpha);
+        Material mat = BCGuiSprites.getThemed("borderless_bg_dynamic_small");
+        drawDynamicSprite(getter.getBuffer(mat.renderType(e -> BCGuiSprites.GUI_TYPE)), mat.sprite(), xPos(), yPos(), xSize(), ySize(), 2, 2, 2, 2, 0xFFFFFF | alpha);
 
         int contentPos = yPos() + 2 + 9;
         int contentHeight = ySize() - 4 - 9;
@@ -641,7 +639,7 @@ public class PropertyContainer extends GuiManipulable {
         if (isGroup) {
             nbt.putBoolean("preset", isPreset);
             nbt.putBoolean("collapsed", collapsed);
-            nbt.putString("name", groupName.getText());
+            nbt.putString("name", groupName.getValue());
             nbt.putInt("user_height", prevUserHeight);
             nbt.putBoolean("global_key", globalKeyBind);
             if (!boundKey.isEmpty()) {

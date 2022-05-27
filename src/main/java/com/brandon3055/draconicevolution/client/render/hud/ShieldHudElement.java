@@ -5,7 +5,7 @@ import com.brandon3055.brandonscore.api.math.Vector2;
 import com.brandon3055.brandonscore.api.power.IOPStorage;
 import com.brandon3055.brandonscore.api.render.GuiHelper;
 import com.brandon3055.brandonscore.capability.CapabilityOP;
-import com.brandon3055.brandonscore.client.BCSprites;
+import com.brandon3055.brandonscore.client.BCGuiSprites;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
@@ -13,7 +13,7 @@ import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
 import com.brandon3055.draconicevolution.api.modules.entities.ShieldControlEntity;
 import com.brandon3055.draconicevolution.api.modules.entities.UndyingEntity;
-import com.brandon3055.draconicevolution.client.DESprites;
+import com.brandon3055.draconicevolution.client.DEGuiSprites;
 import com.brandon3055.draconicevolution.integration.equipment.EquipmentManager;
 import com.brandon3055.draconicevolution.items.equipment.ModularChestpiece;
 import com.brandon3055.draconicevolution.items.tools.DraconiumCapacitor;
@@ -238,7 +238,7 @@ public class ShieldHudElement extends AbstractHudElement {
         double width = width() - (16 * scale);
         double height = height() - (extended() ? (10 * scale) : 0);
         double iconSize = height - 2;
-        GuiHelper.drawSprite(BCSprites.builder(getter, mStack), 0, (height / 2) - (iconSize / 2), iconSize, iconSize, DESprites.getSprite("hud/shield_icon"), 1F, 1F, 1F, hudOpacity);
+        GuiHelper.drawSprite(BCGuiSprites.builder(getter, mStack), 0, (height / 2) - (iconSize / 2), iconSize, iconSize, DEGuiSprites.getSprite("hud/shield_icon"), 1F, 1F, 1F, hudOpacity);
         mStack.translate(iconSize, 0, 0);
 
         boolean xl = false; //size == 2;
@@ -252,7 +252,7 @@ public class ShieldHudElement extends AbstractHudElement {
         //Draw Shield
         double charge = shieldCharge >= 0 ? shieldCharge : 0;
         double bw = width - 4;
-        GuiHelper.drawPartialSprite(BCSprites.builder(getter, mStack), 2, 2, bw * charge, shH, DESprites.getSprite("hud/ryg_bar"), 0, 0, charge, 1, 1F, 1F, 1F, hudOpacity);
+        GuiHelper.drawPartialSprite(BCGuiSprites.builder(getter, mStack), 2, 2, bw * charge, shH, DEGuiSprites.getSprite("hud/ryg_bar"), 0, 0, charge, 1, 1F, 1F, 1F, hudOpacity);
         GuiHelper.drawRect(getter, mStack, 2D + (bw * charge), 2, bw * (1D - charge), shH, scaleAlpha(0xFF01001b));
 
         GuiHelper.drawRect(getter, mStack, 2, 2 + shH, width - 4, divH, scaleAlpha(0xff22072b));
@@ -271,7 +271,7 @@ public class ShieldHudElement extends AbstractHudElement {
         if (totemStatus.length > 0) {
             double x = width - 8;
             for (double state : totemStatus) {
-                GuiHelper.drawSprite(BCSprites.builder(getter, mStack), x, height + 1, 8, 8, DESprites.getSprite("hud/undying"), scaleAlpha(state != -1 ? 0xFFFF0000 : 0xFFFFFFFF));
+                GuiHelper.drawSprite(BCGuiSprites.builder(getter, mStack), x, height + 1, 8, 8, DEGuiSprites.getSprite("hud/undying"), scaleAlpha(state != -1 ? 0xFFFF0000 : 0xFFFFFFFF));
                 if (state != -1) {
                     GuiHelper.drawPieProgress(getter, mStack, x, height + 1, 8, state, 0, 0x80FFFFFF);
                 }
@@ -298,7 +298,7 @@ public class ShieldHudElement extends AbstractHudElement {
         rand.setSeed(totemEffectSeed);
         TextureAtlasSprite[] particles = new TextureAtlasSprite[8];
         for (int i = 0; i < 8; i++) {
-            particles[i] = DESprites.getSprite("effect/glitter_" + i);
+            particles[i] = DEGuiSprites.getSprite("effect/glitter_" + i);
         }
         int pCount = 128;
         int size = 100;
@@ -318,7 +318,7 @@ public class ShieldHudElement extends AbstractHudElement {
             double ps = scale * (0.75 + rand.nextDouble() * 0.5) * fadeOut;
             int index = Math.min((int) (age * 8), 7);
             if (age >= 1) continue; //Still need to do the math above, so we don't throw off the seeded random
-            GuiHelper.drawSprite(DESprites.builder(getter, mStack), pX - (ps/2), pY-(ps/2), ps, ps, particles[index], red, green, blue, 1F);
+            GuiHelper.drawSprite(BCGuiSprites.builder(getter, mStack), pX - (ps/2), pY-(ps/2), ps, ps, particles[index], red, green, blue, 1F);
         }
     }
 

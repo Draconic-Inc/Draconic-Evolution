@@ -6,7 +6,7 @@ import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.model.OBJParser;
 import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Rotation;
-import com.brandon3055.brandonscore.client.BCSprites;
+import com.brandon3055.brandonscore.client.BCGuiSprites;
 import com.brandon3055.brandonscore.client.gui.GuiToolkit;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElementManager;
@@ -59,7 +59,7 @@ public class GuiGenerator extends ModularGuiContainer<ContainerBCTile<TileGenera
 
         //Storage Renderer
         template.background.addChild(new StorageRenderer());
-        GuiElement fuelSlots = toolkit.createSlots(template.background, 3, 1, 0, (x, y) -> container.getSlotLayout().getSlotData(ContainerSlotLayout.SlotType.TILE_INV, x), BCSprites.get("slots/fuel"));
+        GuiElement fuelSlots = toolkit.createSlots(template.background, 3, 1, 0, (x, y) -> container.getSlotLayout().getSlotData(ContainerSlotLayout.SlotType.TILE_INV, x), BCGuiSprites.get("slots/fuel"));
         fuelSlots.zOffset += 100;
         fuelSlots.setPos(guiLeft() + 64, guiTop() + 28);
 
@@ -68,7 +68,7 @@ public class GuiGenerator extends ModularGuiContainer<ContainerBCTile<TileGenera
         template.addEnergyItemSlot(true, container.getSlotLayout().getSlotData(ContainerSlotLayout.SlotType.TILE_INV, 3));
 
         //Mode Button
-        GuiButton modeButton = toolkit.createButton("", template.background);
+        GuiButton modeButton = toolkit.createButton_old("", template.background);
         modeButton.setDisplaySupplier(() -> I18n.get(tile.mode.get().unlocalizedName()));
         modeButton.setHoverText(element -> ChatFormatting.BLUE + I18n.get(tile.mode.get().unlocalizedName() + ".info"));
         modeButton.onButtonPressed((pressed) -> tile.mode.set(tile.mode.get().next(hasShiftDown() || pressed == 1)));

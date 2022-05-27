@@ -10,13 +10,13 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.level.BaseSpawner;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.eventbus.api.Event;
-
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Created by brandon3055 on 7/2/20.
@@ -163,19 +163,39 @@ public class StabilizedSpawnerLogic extends BaseSpawner {
         return prevMobRotation;
     }
 
-    @Nullable
-    @Override
-    public Entity getSpawnerEntity() {
-        return super.getSpawnerEntity();
-    }
-
     @Override
     public CompoundTag save(CompoundTag compound) {
         return compound;
     }
 
     @Override
+    public void load(@Nullable Level level, BlockPos pos, CompoundTag tag) {
+    }
+
+    @Nullable
+    @Override
+    public BlockEntity getSpawnerBlockEntity() {
+        return tile;
+    }
+
+    @Override
+    public boolean onEventTriggered(Level level, int delay) {
+        return false;
+    }
+
+    @Nullable
+    @Override
+    public Entity getOrCreateDisplayEntity(Level level) {
+        return tile.getRenderEntity();
+    }
+
+    @Override
     public void broadcastEvent(Level level, BlockPos blockPos, int event) {
         level.blockEvent(blockPos, Blocks.SPAWNER, event, 0);
+    }
+
+    @Override
+    public boolean isNearPlayer(Level p_151344_, BlockPos p_151345_) {
+        return tile.isActive();
     }
 }

@@ -15,19 +15,15 @@ import net.minecraftforge.common.util.LazyOptional;
  */
 public class DECapabilities {
 
-    public static Capability<ModuleProvider<?>> MODULE_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {
-    });
+    public static Capability<ModuleProvider<?>> MODULE_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
 
-    public static Capability<ModuleHost> MODULE_HOST_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {
-    });
+    public static Capability<ModuleHost> MODULE_HOST_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
 
-    public static Capability<PropertyProvider> PROPERTY_PROVIDER_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {
-    });
+    public static Capability<PropertyProvider> PROPERTY_PROVIDER_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
 
     //This belongs to Brandon's Core but i have it here for convenience as its needed in parts of the DE API.
     //And if you have the DE API then you should also have the BC API.
-    public static Capability<IOPStorage> OP_STORAGE = CapabilityManager.get(new CapabilityToken<>() {
-    });
+    public static Capability<IOPStorage> OP_STORAGE = CapabilityManager.get(new CapabilityToken<>() {});
 
     /**
      * This and {@link #readFromShareTag(ItemStack, CompoundTag)} must be implemented if your modular / configurable item's {@link net.minecraft.world.item.Item#getShareTag(ItemStack)} method.<br>

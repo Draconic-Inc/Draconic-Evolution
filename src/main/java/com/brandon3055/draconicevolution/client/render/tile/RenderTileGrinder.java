@@ -44,7 +44,7 @@ public class RenderTileGrinder implements BlockEntityRenderer<TileGrinder> {
             .setLineState(new RenderStateShard.LineStateShard(OptionalDouble.of(4.0)))
             .createCompositeState(false)
     );
-    private static final RenderType aoeSolidType = RenderType.create("aoe_solid", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 256, RenderType.CompositeState.builder()
+    private static RenderType aoeSolidType = RenderType.create("aoe_solid", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 256, RenderType.CompositeState.builder()
             .setShaderState(new RenderStateShard.ShaderStateShard(GameRenderer::getPositionColorShader))
             .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
             .setCullState(RenderStateShard.NO_CULL)
@@ -74,7 +74,6 @@ public class RenderTileGrinder implements BlockEntityRenderer<TileGrinder> {
         BlockState state = tile.getLevel().getBlockState(tile.getBlockPos());
         if (state.getBlock() != DEContent.grinder) return;
         Direction facing = state.getValue(Grinder.FACING);
-
 
         Matrix4 mat = new Matrix4(mStack);
         CCRenderState ccrs = CCRenderState.instance();
@@ -107,6 +106,7 @@ public class RenderTileGrinder implements BlockEntityRenderer<TileGrinder> {
             RenderUtils.bufferCuboidOutline(builder, box, 0F, 0F, 0F, 1F);
             builder = new TransformingVertexConsumer(getter.getBuffer(aoeSolidType), mat);
             RenderUtils.bufferCuboidSolid(builder, box, 0F, 1F, 1F, 0.2F);
+            com.brandon3055.brandonscore.client.render.RenderUtils.endBatch(getter);
         }
     }
 

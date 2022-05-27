@@ -13,54 +13,28 @@ import codechicken.lib.util.TransformUtils;
 import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Rotation;
 import com.brandon3055.brandonscore.api.TechLevel;
-import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.energynet.EnergyCrystal.CrystalType;
+import com.brandon3055.draconicevolution.client.DEShaders;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.brandon3055.draconicevolution.client.render.tile.RenderTileEnergyCrystal;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import org.lwjgl.opengl.GL11;
 
 import java.util.Map;
+
+import static com.brandon3055.draconicevolution.client.render.tile.RenderTileEnergyCrystal.COLOURS;
 
 /**
  * Created by brandon3055 on 21/11/2016.
  */
 public class RenderItemEnergyCrystal implements IItemRenderer {
-
-    public static ShaderProgram crystalShader = ShaderProgramBuilder.builder()
-            .addShader("vert", shader -> shader
-                    .type(ShaderObject.StandardShaderType.VERTEX)
-                    .source(new ResourceLocation(DraconicEvolution.MODID, "shaders/energy_crystal.vert"))
-            )
-            .addShader("frag", shader -> shader
-                    .type(ShaderObject.StandardShaderType.FRAGMENT)
-                    .source(new ResourceLocation(DraconicEvolution.MODID, "shaders/energy_crystal.frag"))
-                    .uniform("time", UniformType.FLOAT)
-                    .uniform("mipmap", UniformType.FLOAT)
-                    .uniform("type", UniformType.INT)
-                    .uniform("angle", UniformType.VEC2)
-            )
-//            .whenUsed(cache -> cache.glUniform1f("time", (ClientEventHandler.elapsedTicks + Minecraft.getInstance().getFrameTime()) / 50))
-            .build();
-
-//    public static final RenderType fallBackType = RenderType.create("fall_back_type", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, GL11.GL_QUADS, 256, RenderType.CompositeState.builder()
-//            .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(DraconicEvolution.MODID, "textures/models/crystal_no_shader.png"), false, false))
-//            .setTexturingState(new RenderStateShard.TexturingStateShard("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
-//            .setCullState(RenderStateShard.NO_CULL)
-//            .createCompositeState(false)
-//    );
     public static final RenderType crystalBaseType = RenderType.entitySolid(new ResourceLocation(DraconicEvolution.MODID, "textures/models/crystal_base.png"));
-    public static final RenderType fallBackOverlayType = RenderType.entityTranslucent(new ResourceLocation(DraconicEvolution.MODID, "textures/models/crystal_base.png"));
 
     private final CrystalType type;
     private final TechLevel techLevel;
@@ -68,15 +42,14 @@ public class RenderItemEnergyCrystal implements IItemRenderer {
     private final CCModel crystalHalf;
     private final CCModel crystalBase;
 
-
     public RenderItemEnergyCrystal(CrystalType type, TechLevel techLevel) {
         this.type = type;
         this.techLevel = techLevel;
         Map<String, CCModel> map = new OBJParser(new ResourceLocation(DraconicEvolution.MODID, "models/block/crystal.obj")).quads().ignoreMtl().parse();
-        crystalFull = CCModel.combine(map.values());
+        crystalFull = CCModel.combine(map.values()).backfacedCopy();
         map = new OBJParser(new ResourceLocation(DraconicEvolution.MODID, "models/block/crystal_half.obj")).quads().ignoreMtl().parse();
-        crystalHalf = map.get("Crystal");
-        crystalBase = map.get("Base");
+        crystalHalf = map.get("Crystal").backfacedCopy();
+        crystalBase = map.get("Base").backfacedCopy();
     }
 
     //region Unused
@@ -98,58 +71,31 @@ public class RenderItemEnergyCrystal implements IItemRenderer {
 
     //endregion
 
-
     @Override
     public void renderItem(ItemStack stack, ItemTransforms.TransformType transformType, PoseStack mStack, MultiBufferSource getter, int packedLight, int packedOverlay) {
-//        int tier = techLevel.index;
-//
-//        Matrix4 mat = new Matrix4(mStack);
-//        CCRenderState ccrs = CCRenderState.instance();
-//        ccrs.reset();
-//        ccrs.brightness = packedLight;
-//        ccrs.overlay = packedOverlay;
-//
-//        mat.translate(0.5, type == CrystalType.CRYSTAL_IO ? 0 : 0.5, 0.5);
-//
-//
-//        if (type == CrystalType.CRYSTAL_IO) {
-//            ccrs.bind(crystalBaseType, getter);
-//            crystalBase.render(ccrs, mat);
-//
-//            mat.apply(new Rotation((ClientEventHandler.elapsedTicks) / 400F, 0, 1, 0));
-//            ccrs.baseColour = Colour.packRGBA(r[tier], g[tier], b[tier], 1F);
-//            if (DEConfig.crystalShaders) {
-//                UniformCache uniforms = crystalShader.pushCache();
-//                uniforms.glUniform1f("mipmap", 0);
-//                uniforms.glUniform1i("type", tier);
-//                uniforms.glUniform2f("angle", 0, 0);
-//                ccrs.bind(new ShaderRenderType(fallBackType, crystalShader, uniforms), getter);
-//                crystalHalf.render(ccrs, mat);
-//            } else {
-//                ccrs.bind(fallBackType, getter);
-//                crystalHalf.render(ccrs, mat);
-//                ccrs.baseColour = -1;
-//                ccrs.bind(fallBackOverlayType, getter);
-//                crystalHalf.render(ccrs, mat);
-//            }
-//        } else {
-//            ccrs.baseColour = Colour.packRGBA(r[tier], g[tier], b[tier], 1F);
-//            mat.apply(new Rotation((ClientEventHandler.elapsedTicks) / 400F, 0, 1, 0));
-//            if (DEConfig.crystalShaders) {
-//                UniformCache uniforms = crystalShader.pushCache();
-//                uniforms.glUniform1f("mipmap", 0);
-//                uniforms.glUniform1i("type", tier);
-//                uniforms.glUniform2f("angle", 0, 0);
-//                ccrs.bind(new ShaderRenderType(fallBackType, crystalShader, uniforms), getter);
-//                crystalFull.render(ccrs, mat);
-//            } else {
-//                ccrs.bind(fallBackType, getter);
-//                crystalFull.render(ccrs, mat);
-//                ccrs.baseColour = -1;
-//                ccrs.bind(fallBackOverlayType, getter);
-//                crystalFull.render(ccrs, mat);
-//            }
-//        }
+        int tier = techLevel.index;
+        Matrix4 mat = new Matrix4(mStack);
+        CCRenderState ccrs = CCRenderState.instance();
+        ccrs.reset();
+        ccrs.brightness = packedLight;
+        ccrs.overlay = packedOverlay;
+        mat.translate(0.5, type == CrystalType.CRYSTAL_IO ? 0 : 0.5, 0.5);
+        DEShaders.energyCrystalMipmap.glUniform1f(0);
+        DEShaders.energyCrystalColour.glUniform3f(COLOURS[tier][0], COLOURS[tier][1], COLOURS[tier][2]);
+
+        if (type == CrystalType.CRYSTAL_IO) {
+            ccrs.bind(crystalBaseType, getter);
+            crystalBase.render(ccrs, mat);
+            mat.apply(new Rotation((ClientEventHandler.elapsedTicks) / 400F, 0, 1, 0));
+            ccrs.baseColour = Colour.packRGBA(r[tier], g[tier], b[tier], 1F);
+            ccrs.bind(RenderTileEnergyCrystal.crystalType, getter);
+            crystalHalf.render(ccrs, mat);
+        } else {
+            ccrs.baseColour = Colour.packRGBA(r[tier], g[tier], b[tier], 1F);
+            mat.apply(new Rotation((ClientEventHandler.elapsedTicks) / 400F, 0, 1, 0));
+            ccrs.bind(RenderTileEnergyCrystal.crystalType, getter);
+            crystalFull.render(ccrs, mat);
+        }
     }
 
     @Override
@@ -160,5 +106,4 @@ public class RenderItemEnergyCrystal implements IItemRenderer {
     private static float[] r = {0.0F, 0.47F, 1.0F};
     private static float[] g = {0.2F, 0.0F, 0.4F};
     private static float[] b = {0.3F, 0.58F, 0.1F};
-
 }

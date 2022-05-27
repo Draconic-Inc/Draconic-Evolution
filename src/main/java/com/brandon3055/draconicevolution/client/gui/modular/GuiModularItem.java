@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.client.gui.modular;
 
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.api.render.GuiHelper;
-import com.brandon3055.brandonscore.client.BCSprites;
+import com.brandon3055.brandonscore.client.BCGuiSprites;
 import com.brandon3055.brandonscore.client.gui.GuiToolkit;
 import com.brandon3055.brandonscore.client.gui.HudConfigGui;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
@@ -62,7 +62,7 @@ public class GuiModularItem extends ModularGuiContainer<ContainerModularItem> {
     public void addElements(GuiElementManager manager) {
         TGuiBase template = new TGuiBase(this);
         //Custom background must be set before template is loaded.
-        template.background = GuiTexture.newDynamicTexture(xSize(), ySize(), () -> BCSprites.getThemed("background_dynamic"));
+        template.background = GuiTexture.newDynamicTexture(xSize(), ySize(), () -> BCGuiSprites.getThemed("background_dynamic"));
         template.background.onReload(guiTex -> guiTex.setPos(guiLeft(), guiTop()));
         toolkit.loadTemplate(template);
         template.title.setInsets(0, 14, 0, 12);
@@ -85,7 +85,7 @@ public class GuiModularItem extends ModularGuiContainer<ContainerModularItem> {
         itemConfig.setHoverText(I18n.get("gui.draconicevolution.modular_item.open_item_config.info"));
         itemConfig.onPressed(() -> DraconicNetwork.sendOpenItemConfig(false));
 
-        GuiButton hudConfig = toolkit.createIconButton(template.background, 16, 9, 16, 8, BCSprites.themedGetter("hud_button"));
+        GuiButton hudConfig = toolkit.createIconButton(template.background, 16, 9, 16, 8, BCGuiSprites.themedGetter("hud_button"));
         hudConfig.onReload(e -> e.setPos(itemConfig.maxXPos() + 1, itemConfig.yPos()));
         hudConfig.setHoverText(I18n.get("hud.draconicevolution.open_hud_config"));
         hudConfig.onPressed(() -> minecraft.setScreen(new HudConfigGui()));

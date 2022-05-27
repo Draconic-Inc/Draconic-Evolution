@@ -6,7 +6,7 @@ import com.brandon3055.draconicevolution.api.crafting.FusionRecipe;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
-@ZenCodeType.Expansion("crafttweaker.api.item.IIngredient")
+@ZenCodeType.Expansion("crafttweaker.api.ingredient.IIngredient")
 public class ExpandIIngredient {
 
     // Makes sure that users can provide an IIngredient to a method asking for a FusionIngredient.

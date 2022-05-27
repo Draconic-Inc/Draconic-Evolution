@@ -8,7 +8,7 @@ import net.minecraft.world.item.Item;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
-@ZenCodeType.Expansion("crafttweaker.api.tag.MCTag<crafttweaker.api.item.MCItemDefinition>")
+@ZenCodeType.Expansion("crafttweaker.api.tag.type.KnownTag<crafttweaker.api.item.MCItemDefinition>")
 public class ExpandMCItemTag {
 
     // Makes sure that users can provide a tag to a method asking for a FusionIngredient.

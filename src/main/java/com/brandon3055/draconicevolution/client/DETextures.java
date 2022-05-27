@@ -3,9 +3,14 @@ package com.brandon3055.draconicevolution.client;
 import codechicken.lib.texture.AtlasRegistrar;
 import codechicken.lib.texture.IIconRegister;
 import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.particle.ParticleRenderType;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.resources.ResourceLocation;
@@ -17,68 +22,68 @@ import java.util.function.Consumer;
 /**
  * Created by brandon3055 on 31/08/2016.
  */
+@Deprecated
 public class DETextures implements IIconRegister, ResourceManagerReloadListener {
 
-    private static final String PARTICLES_ = "draconicevolution:particle/";
-    private static final String MC_PARTICLES_ = "minecraft:particle/";
+//    private static final String PARTICLES_ = "draconicevolution:particle/";
+//    private static final String MC_PARTICLES_ = "minecraft:particle/";
     private static AtlasRegistrar map;
 
-    public static ParticleRenderType PARTICLE_SHEET_TRANSLUCENT = new ParticleRenderType() {
-        public void begin(BufferBuilder builder, TextureManager manager) {
+//    public static ParticleRenderType PARTICLE_SHEET_TRANSLUCENT = new ParticleRenderType() {
+//        public void begin(BufferBuilder builder, TextureManager manager) {
 //            RenderSystem.depthMask(false);
-//            manager.bind(TextureAtlas.LOCATION_BLOCKS);
 //            RenderSystem.enableBlend();
-//            RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-//            RenderSystem.alphaFunc(516, 0.003921569F);
-//            builder.begin(7, DefaultVertexFormat.PARTICLE);
-        }
-
-        public void end(Tesselator tessellator) {
-            tessellator.end();
-        }
-
-        public String toString() {
-            return "TERRAIN_SHEET_TRANSLUCENT";
-        }
-    };
+//            RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+//            RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_BLOCKS);
+//            builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.PARTICLE);
+//        }
+//
+//        public void end(Tesselator tessellator) {
+//            tessellator.end();
+//        }
+//
+//        public String toString() {
+//            return "TERRAIN_SHEET_TRANSLUCENT";
+//        }
+//    };
 
     @Override
     public void onResourceManagerReload(ResourceManager p_10758_) {
 
     }
 
-    public static TextureAtlasSprite GENERATOR;
+//    public static TextureAtlasSprite GENERATOR;
 
     @Override
     public void registerIcons(AtlasRegistrar registrar) {
         map = registrar;
 
-        registerDE("block/generator/generator_2", e -> GENERATOR = e);
-
-        ENERGY_PARTICLE = new TextureAtlasSprite[5];
-        for (int i = 0; i < ENERGY_PARTICLE.length; i++) {
-            int finalI = i;
-            register(PARTICLES_ + "energy_" + i, sprite -> ENERGY_PARTICLE[finalI] = sprite);
-        }
-        MIXED_PARTICLE = new TextureAtlasSprite[14];
-        SPARK_PARTICLE = new TextureAtlasSprite[7];
-        for (int i = 0; i < SPARK_PARTICLE.length; i++) {
-            int finalI = i;
-            register(PARTICLES_ + "spark_" + i, sprite -> {
-                SPARK_PARTICLE[finalI] = sprite;
-                MIXED_PARTICLE[finalI] = sprite;
-            });
-        }
-        SPELL_PARTICLE = new TextureAtlasSprite[7];
-        for (int i = 0; i < SPELL_PARTICLE.length; i++) {
-            int finalI = i;
-            register(PARTICLES_ + "spell_" + i, sprite -> {
-                SPELL_PARTICLE[finalI] = sprite;
-                MIXED_PARTICLE[finalI + 7] = sprite;
-            });
-        }
-        register(PARTICLES_ + "white_orb", sprite -> ORB_PARTICLE = sprite);
-        register(PARTICLES_ + "portal", sprite -> PORTAL_PARTICLE = sprite);
+//        registerDE("block/generator/generator_2", e -> GENERATOR = e);
+//
+//        ENERGY_PARTICLE = new TextureAtlasSprite[5];
+//        for (int i = 0; i < ENERGY_PARTICLE.length; i++) {
+//            int finalI = i;
+//            register(PARTICLES_ + "energy_" + i, sprite -> ENERGY_PARTICLE[finalI] = sprite);
+//        }
+//        MIXED_PARTICLE = new TextureAtlasSprite[14];
+//        SPARK_PARTICLE = new TextureAtlasSprite[7];
+//        for (int i = 0; i < SPARK_PARTICLE.length; i++) {
+//            int finalI = i;
+//            register(PARTICLES_ + "spark_" + i, sprite -> {
+//                SPARK_PARTICLE[finalI] = sprite;
+//                MIXED_PARTICLE[finalI] = sprite;
+//            });
+//        }
+//        SPELL_PARTICLE = new TextureAtlasSprite[7];
+//        for (int i = 0; i < SPELL_PARTICLE.length; i++) {
+//            int finalI = i;
+//            register(PARTICLES_ + "spell_" + i, sprite -> {
+//                SPELL_PARTICLE[finalI] = sprite;
+//                MIXED_PARTICLE[finalI + 7] = sprite;
+//            });
+//        }
+//        register(PARTICLES_ + "white_orb", sprite -> ORB_PARTICLE = sprite);
+//        register(PARTICLES_ + "portal", sprite -> PORTAL_PARTICLE = sprite);
     }
 
     private static void register(String sprite, Consumer<TextureAtlasSprite> onReady) {
@@ -89,12 +94,12 @@ public class DETextures implements IIconRegister, ResourceManagerReloadListener 
         map.registerSprite(new ResourceLocation(DraconicEvolution.MODID, sprite), onReady);
     }
 
-    public static TextureAtlasSprite[] ENERGY_PARTICLE;
-    public static TextureAtlasSprite[] SPARK_PARTICLE;
-    public static TextureAtlasSprite[] SPELL_PARTICLE;
-    public static TextureAtlasSprite[] MIXED_PARTICLE;
-    public static TextureAtlasSprite ORB_PARTICLE;
-    public static TextureAtlasSprite PORTAL_PARTICLE;
+//    public static TextureAtlasSprite[] ENERGY_PARTICLE;
+//    public static TextureAtlasSprite[] SPARK_PARTICLE;
+//    public static TextureAtlasSprite[] SPELL_PARTICLE;
+//    public static TextureAtlasSprite[] MIXED_PARTICLE;
+//    public static TextureAtlasSprite ORB_PARTICLE;
+//    public static TextureAtlasSprite PORTAL_PARTICLE;
 
 
     //TODO in 1.11 or 1.12 make there full names with mod prefix and ether remove texture cache or have it auto detect when the modid is already present.

@@ -26,9 +26,9 @@ public class GuardianProjectileParticle extends SimpleAnimatedParticle {
         this.setSpriteFromAge(spriteWithAge);
     }
 
-    public void render(VertexConsumer builder, Camera renderInfo, float partialTicks) {
+    public void render(VertexConsumer buffer, Camera camera, float partialTicks) {
         if (this.age < this.lifetime / 3 || (this.age + this.lifetime) / 3 % 2 == 0) {
-            super.render(builder, renderInfo, partialTicks);
+            super.render(buffer, camera, partialTicks);
         }
     }
 
