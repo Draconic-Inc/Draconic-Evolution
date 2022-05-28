@@ -95,7 +95,8 @@ public class KeyInputHandler {
                 Minecraft.getInstance().setScreen(new GuiDislocator(stack.getHoverName(), player));
             }
         } else if (KeyBindings.placeItem.consumeClick()) {
-            if (Minecraft.getInstance().hitResult instanceof BlockRayTraceResult) {
+            RayTraceResult result = Minecraft.getInstance().hitResult;
+            if (result != null && result.getType() == RayTraceResult.Type.BLOCK) {
                 DraconicNetwork.sendPlaceItem();
             }
         }

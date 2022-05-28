@@ -217,7 +217,7 @@ public class ServerPacketHandler implements ICustomPacketHandler.IServerPacketHa
         }
 
         RayTraceResult traceResult = player.pick(4, 0, false);
-        if (traceResult instanceof BlockRayTraceResult) {
+        if (traceResult.getType() == RayTraceResult.Type.BLOCK) {
             World world = player.level;
             BlockRayTraceResult blockTrace = (BlockRayTraceResult) traceResult;
             BlockPos posHit = blockTrace.getBlockPos();

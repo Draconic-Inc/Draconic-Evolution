@@ -196,6 +196,7 @@ public class TileGrinder extends TileBCore implements ITickableTileEntity, IRSSw
             return true;
         }
 
+        //TODO add support for powered weapons
         ItemStack weapon = itemHandler.getStackInSlot(1);
         if (weapon.isEmpty() || weapon.getDamageValue() >= weapon.getMaxDamage() - 1) {
             weapon = ItemStack.EMPTY;
@@ -253,9 +254,9 @@ public class TileGrinder extends TileBCore implements ITickableTileEntity, IRSSw
         while (!entitiesInRange.isEmpty()) {
             LivingEntity randEntity = entitiesInRange.remove(level.random.nextInt(entitiesInRange.size()));
             if (isValidEntity(randEntity)) {
-                LogHelper.dev("Grinder: Found next target: " + randEntity);
+//                LogHelper.dev("Grinder: Found next target: " + randEntity);
                 if (randEntity.isInvulnerable()) {
-                    LogHelper.dev("Grinder: Target is invulnerable! searching for softer target...");
+//                    LogHelper.dev("Grinder: Target is invulnerable! searching for softer target...");
                     foundInvulnerable = true;
                 } else {
                     nextTarget = randEntity;

@@ -1,3 +1,7 @@
+######## 3.0.26.x ########
+- Fixed issue with bugged entities crashing the mob grinder.
+
+
 ######## 3.0.25.456 ########
 - Accepted a PR to fix custom spawner black list.
 - Fixed edge case chaos island crash when deleting region files.

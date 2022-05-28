@@ -158,7 +158,6 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
 
     @Override
     public void tick() {
-        if (worldPosition.getX() > 1000)LogHelper.dev(worldPosition);
 //        if (explosionProcess != null) {
 //            explosionProcess.isDead = true;
 //            explosionProcess = null;
