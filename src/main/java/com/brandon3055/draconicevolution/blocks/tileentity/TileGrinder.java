@@ -234,12 +234,12 @@ public class TileGrinder extends TileBCore implements ITickableTileEntity, IRSSw
                 weapon.hurtAndBreak(1, getFakePlayer(), fakePlayer -> itemHandler.setStackInSlot(1, justInCase));
             }
 
-            LogHelper.dev("Grinder: Dealt " + damage + " damage to entity: " + nextTarget);
+//            LogHelper.dev("Grinder: Dealt " + damage + " damage to entity: " + nextTarget);
             nextTarget = null;
             opStorage.modifyEnergyStored(-cost);
             return true;
         }
-        LogHelper.dev("Grinder: Failed to deal damage to entity: " + nextTarget.getType().getDescription().getString() + " Waiting 3 ticks...");
+//        LogHelper.dev("Grinder: Failed to deal damage to entity: " + nextTarget.getType().getDescription().getString() + " Waiting 3 ticks...");
         if (!killZone.intersects(nextTarget.getBoundingBox())) {
             nextTarget = null;
         }
