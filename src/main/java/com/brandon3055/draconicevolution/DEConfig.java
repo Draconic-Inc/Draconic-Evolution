@@ -64,6 +64,7 @@ public class DEConfig {
     public static int chaosDropCount;
     public static int dragonDustLootModifier;
     public static boolean dragonEggSpawnOverride;
+    public static int grinderItemSlotEnergy;
 
     public static double reactorOutputMultiplier = 10;
     public static double reactorFuelUsageMultiplier = 5;
@@ -77,6 +78,7 @@ public class DEConfig {
     public static boolean allowBossSouls = false;
     public static Integer[] spawnerDelays = new Integer[]{200, 800, 100, 400, 50, 200, 25, 100};
     public static Set<String> chestBlacklist = new HashSet<>();
+
 
     private static void loadServer() {
         serverTag = config.getTag("Server");
@@ -326,6 +328,12 @@ public class DEConfig {
                 .setComment("This is a blacklist of key words that can be used to prevent certain storage items from being stored in a draconium chest.\nIf the items registry name contains any or these strings it will not be allowed")
                 .setDefaultStringList(Lists.newArrayList("draconium_chest", "shulker_box", "pouch", "bag", "strongbox"))
                 .setSyncCallback((tag, type) -> chestBlacklist = Sets.newHashSet(tag.getStringList()));
+
+        serverTag.getTag("grinderItemSlotEnergy")
+                .setSyncToClient()
+                .setComment("For the weapon slot in the mob grinder. If the item is a powered weapon this is the energy that will be extracted per enemy killed.\nNote: not all energy items allow energy to be extracted. If energy can not be extracted from a weapon it will not be used.")
+                .setDefaultInt(1024)
+                .setSyncCallback((tag, type) -> grinderItemSlotEnergy = tag.getInt());
     }
 
     //Client properties

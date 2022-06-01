@@ -4,6 +4,8 @@ import codechicken.lib.data.MCDataInput;
 import codechicken.lib.inventory.InventoryUtils;
 import codechicken.lib.math.MathHelper;
 import com.brandon3055.brandonscore.BrandonsCore;
+import com.brandon3055.brandonscore.api.power.IOPStorage;
+import com.brandon3055.brandonscore.api.power.IOPStorageModifiable;
 import com.brandon3055.brandonscore.api.power.OPStorage;
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.capability.CapabilityOP;
@@ -16,10 +18,14 @@ import com.brandon3055.brandonscore.lib.datamanager.ManagedByte;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedInt;
 import com.brandon3055.brandonscore.lib.entityfilter.EntityFilter;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
+import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DEOldConfig;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.blocks.machines.Grinder;
+import com.brandon3055.draconicevolution.init.EquipCfg;
 import com.brandon3055.draconicevolution.inventory.GuiLayoutFactories;
+import com.brandon3055.draconicevolution.items.equipment.IModularMelee;
+import com.brandon3055.draconicevolution.lib.WTFException;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.block.BlockState;
@@ -43,6 +49,8 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -50,6 +58,7 @@ import net.minecraftforge.items.IItemHandler;
 import javax.annotation.Nullable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.*;
@@ -181,7 +190,6 @@ public class TileGrinder extends TileBCore implements ITickableTileEntity, IRSSw
         if (forceReCalc || killZone == null) {
             BlockState state = level.getBlockState(worldPosition);
             Direction facing = state.getValue(Grinder.FACING);
-//            LogHelper.dev("Update Kill Zone: " + facing);
             int aoe = this.aoe.get();
             BlockPos pos1 = worldPosition.offset(-(aoe - 1), -(aoe - 1), -(aoe - 1));
             BlockPos pos2 = worldPosition.offset(aoe, aoe, aoe);
@@ -196,11 +204,25 @@ public class TileGrinder extends TileBCore implements ITickableTileEntity, IRSSw
             return true;
         }
 
-        //TODO add support for powered weapons
         ItemStack weapon = itemHandler.getStackInSlot(1);
-        if (weapon.isEmpty() || weapon.getDamageValue() >= weapon.getMaxDamage() - 1) {
+        IOPStorage weaponEnergy = null;
+        if (weapon.isEmpty()) {
             weapon = ItemStack.EMPTY;
+        } else {
+            weaponEnergy = EnergyUtils.getStorage(weapon);
+            if (weaponEnergy instanceof IOPStorageModifiable) {
+                if (weaponEnergy.getEnergyStored() < DEConfig.grinderItemSlotEnergy) {
+                    weapon = ItemStack.EMPTY;
+                }
+            } else if (weaponEnergy != null) {
+                if (weaponEnergy.extractEnergy(DEConfig.grinderItemSlotEnergy, true) != DEConfig.grinderItemSlotEnergy) {
+                    weapon = ItemStack.EMPTY;
+                }
+            } else if (weapon.getDamageValue() >= weapon.getMaxDamage() - 1) {
+                weapon = ItemStack.EMPTY;
+            }
         }
+
         getFakePlayer().setItemInHand(Hand.MAIN_HAND, weapon);
 
         int eph = DEOldConfig.grinderEnergyPerHeart;
@@ -229,17 +251,22 @@ public class TileGrinder extends TileBCore implements ITickableTileEntity, IRSSw
         //Attack the mob and enter cooldown mode for 5 ticks if successful. Else cooldown for 3 ticks.
         if (nextTarget.hurt(source, damage)) {
             if (!weapon.isEmpty()) {
-                ItemStack justInCase = weapon.copy();
-                justInCase.setDamageValue(justInCase.getMaxDamage() - 1);
-                weapon.hurtAndBreak(1, getFakePlayer(), fakePlayer -> itemHandler.setStackInSlot(1, justInCase));
+                if (weaponEnergy instanceof IOPStorageModifiable){
+                    ((IOPStorageModifiable) weaponEnergy).modifyEnergyStored(-DEConfig.grinderItemSlotEnergy);
+                } else if (weaponEnergy != null) {
+                    weaponEnergy.extractEnergy(DEConfig.grinderItemSlotEnergy, false);
+                } else {
+                    ItemStack justInCase = weapon.copy();
+                    justInCase.setDamageValue(justInCase.getMaxDamage() - 1);
+                    weapon.hurtAndBreak(1, getFakePlayer(), fakePlayer -> itemHandler.setStackInSlot(1, justInCase));
+                }
             }
 
-//            LogHelper.dev("Grinder: Dealt " + damage + " damage to entity: " + nextTarget);
             nextTarget = null;
             opStorage.modifyEnergyStored(-cost);
             return true;
         }
-//        LogHelper.dev("Grinder: Failed to deal damage to entity: " + nextTarget.getType().getDescription().getString() + " Waiting 3 ticks...");
+
         if (!killZone.intersects(nextTarget.getBoundingBox())) {
             nextTarget = null;
         }
@@ -254,9 +281,7 @@ public class TileGrinder extends TileBCore implements ITickableTileEntity, IRSSw
         while (!entitiesInRange.isEmpty()) {
             LivingEntity randEntity = entitiesInRange.remove(level.random.nextInt(entitiesInRange.size()));
             if (isValidEntity(randEntity)) {
-//                LogHelper.dev("Grinder: Found next target: " + randEntity);
                 if (randEntity.isInvulnerable()) {
-//                    LogHelper.dev("Grinder: Target is invulnerable! searching for softer target...");
                     foundInvulnerable = true;
                 } else {
                     nextTarget = randEntity;

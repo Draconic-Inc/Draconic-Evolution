@@ -1,6 +1,6 @@
 ######## 3.0.26.x ########
 - Fixed issue with bugged entities crashing the mob grinder.
-
+- Mob Grinder can now use DE weapons in its weapon slot as well as any other powered weapon that supports energy extraction.
 
 ######## 3.0.25.456 ########
 - Accepted a PR to fix custom spawner black list.
