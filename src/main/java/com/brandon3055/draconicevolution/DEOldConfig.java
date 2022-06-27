@@ -209,10 +209,10 @@ public class DEOldConfig {
     public static boolean generateEnderComets = true;
 
     //    @ModConfigProperty(category = "World", name = "generateChaosIslands", comment = "Set to false to disable the generation of Chaos Islands.")
-    public static boolean generateChaosIslands = true;
+//    public static boolean generateChaosIslands = true;
 
     //    @ModConfigProperty(category = "World", name = "chaosIslandVoidMode", comment = "If true, the Chaos Guardian, Crystals, and Healing Crystals will still spawn, but NO other blocks will be placed. (This only exists because someone wanted it for some reason).")
-    public static boolean chaosIslandVoidMode = false;
+//    public static boolean chaosIslandVoidMode = false;
 
     //    @ModConfigProperty(category = "World", name = "cometRarity", comment = "Ender Comets have a 1 in {this number} chance to spawn in each chunk.")
 //    @ModConfigProperty.MinMax(min = "500", max = "1000000")
@@ -220,11 +220,11 @@ public class DEOldConfig {
 
     //    @ModConfigProperty(category = "World", name = "chaosIslandSeparation", comment = "This is the distance between Chaos Islands.")
 //    @ModConfigProperty.MinMax(min = "500", max = "1000000")
-    public static int chaosIslandSeparation = 10000;
+//    public static int chaosIslandSeparation = 10000;
 
     //    @ModConfigProperty(category = "World", name = "chaosIslandYOffset", comment = "This allows you to offset the y position of Chaos Islands.")
 //    @ModConfigProperty.MinMax(min = "-50", max = "150")
-    public static int chaosIslandYOffset = 0;
+//    public static int chaosIslandYOffset = 0;
 
     //    @ModConfigProperty(category = "World", name = "oreGenDimensionBlacklist", comment = "Add the ID of any mod's dimensions that you don't want Draconium Ore generated in.")
     public static String[] oreGenDimentionBlacklist = new String[0];
