@@ -68,6 +68,7 @@ public class DEConfig {
     public static int chaosDropCount;
     public static int dragonDustLootModifier;
     public static boolean dragonEggSpawnOverride;
+    public static int enderCometChance;
 
     public static double reactorOutputMultiplier = 10;
     public static double reactorFuelUsageMultiplier = 5;
@@ -224,6 +225,12 @@ public class DEConfig {
                 .setComment("This is a list of entities that the \"Projectile Immunity Cancellation\" module will work on. Add additional entities as required. (Let me know if i missed any)")
                 .setDefaultStringList(Lists.newArrayList("minecraft:enderman", "minecraft:wither", "minecraft:ender_dragon", "draconicevolution:guardian_wither"))
                 .setSyncCallback((tag, type) -> projectileAntiImmuneEntities = tag.getStringList());
+
+        serverTag.getTag("enderCometChance")
+                .setSyncToClient()
+                .setComment("Sets the chance for an ender comet to spawn in each chunk. Default is 1 in 1500")
+                .setDefaultInt(1)
+                .setSyncCallback((tag, type) -> enderCometChance = tag.getInt());
 
         {
             ConfigTag guardianFight = serverTag.getTag("Guardian Fight");
