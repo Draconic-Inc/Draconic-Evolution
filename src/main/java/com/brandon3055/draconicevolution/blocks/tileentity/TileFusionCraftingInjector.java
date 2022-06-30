@@ -70,7 +70,6 @@ public class TileFusionCraftingInjector extends TileBCore implements IFusionInje
     }
 
     public boolean setCore(@Nullable TileFusionCraftingCore core) {
-        //TODO add some validation or at least let any existing core know we have left the party.
         TileFusionCraftingCore oldCore = getCore();
         if (oldCore != null && oldCore != core && oldCore.isCrafting()) {
             oldCore.cancelCraft();

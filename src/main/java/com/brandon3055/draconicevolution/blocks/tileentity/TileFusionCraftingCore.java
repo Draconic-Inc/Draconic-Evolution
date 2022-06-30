@@ -188,9 +188,11 @@ public class TileFusionCraftingCore extends TileBCore implements IFusionInventor
                 Direction facing = tile.getRotation();
                 boolean obstructed = false;
                 for (BlockPos bp : BlockPos.betweenClosed(pos.relative(facing), pos.relative(facing, FacingUtils.distanceInDirection(pos, worldPosition, facing) - 1))) {
-                    if (!level.isEmptyBlock(bp) && (level.getBlockState(bp).canOcclude() || level.getBlockEntity(bp) instanceof TileFusionCraftingInjector)) {
+                    if ((!level.isEmptyBlock(bp) && (level.getBlockState(bp).canOcclude()) || level.getBlockEntity(bp) instanceof TileFusionCraftingInjector || level.getBlockEntity(bp) instanceof TileFusionCraftingCore)) {
                         obstructed = true;
-                        tile.setCore(null);
+                        if (tile.getCore() == this){
+                            tile.setCore(null);
+                        }
                         break;
                     }
                 }

@@ -1,4 +1,9 @@
-######## 3.0.26.x ########
+######## 3.0.27.x ########
+- Re implemented chaos island configs (Thanks to FoxMcloud5655 for the PR)
+- Fixed broke redstone mode controls in reactor. (Cause by last BCore update)
+- Fixed nearby fusion crafting setups interfering with each other.
+
+######## 3.0.26.459 ########
 - Fixed issue with bugged entities crashing the mob grinder.
 - Mob Grinder can now use DE weapons in its weapon slot as well as any other powered weapon that supports energy extraction.
 
