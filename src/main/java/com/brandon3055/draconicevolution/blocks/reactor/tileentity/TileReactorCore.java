@@ -13,7 +13,6 @@ import com.brandon3055.brandonscore.utils.HolidayHelper;
 import com.brandon3055.brandonscore.utils.MathUtils;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DEConfig;
-import com.brandon3055.draconicevolution.DEOldConfig;
 import com.brandon3055.draconicevolution.client.gui.GuiReactor;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.DraconicEvolution;
@@ -151,7 +150,7 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
 
     @Override
     public int getAccessDistanceSq() {
-        return 16*16;
+        return 16 * 16;
     }
 
     //region Update Logic
@@ -181,7 +180,6 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
 ////                reactorState.set(ReactorState.COOLING);
 ////            }
 //        }
-
 
 
 //        reactorState.set(ReactorState.COLD);
@@ -604,6 +602,17 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
 
     @Override
     public void receivePacketFromClient(MCDataInput data, ServerPlayerEntity client, int id) {
+        //Quick work around for the fact that due to recent changes to packet security in BCore client>server packets must go through the container for the tile the player is accessing.
+        if (id == 99) {
+            TileReactorComponent.RSMode mode = TileReactorComponent.RSMode.valueOf(data.readString());
+            BlockPos pos = data.readPos();
+            TileEntity tile = level.getBlockEntity(pos);
+            if (tile instanceof TileReactorComponent && ((TileReactorComponent) tile).tryGetCore() == this) {
+                ((TileReactorComponent) tile).setRSMode(client, mode);
+            }
+            return;
+        }
+
         byte func = data.readByte();
         if (id == 0 && func == ID_CHARGE) {
             chargeReactor();
@@ -641,7 +650,6 @@ public class TileReactorCore extends TileBCore implements ITickableTileEntity, I
             player.push(offsetX * m, offsetY * m, offsetZ * m);
         }
     }
-
 
 
     //endregion ############################################

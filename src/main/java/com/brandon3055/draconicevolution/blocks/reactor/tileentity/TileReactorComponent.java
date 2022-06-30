@@ -1,7 +1,6 @@
 package com.brandon3055.draconicevolution.blocks.reactor.tileentity;
 
 import codechicken.lib.data.MCDataInput;
-
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.lib.Vec3I;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
@@ -10,7 +9,6 @@ import com.brandon3055.brandonscore.lib.datamanager.ManagedInt;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedVec3I;
 import com.brandon3055.brandonscore.utils.MathUtils;
 import com.brandon3055.brandonscore.utils.Utils;
-import com.brandon3055.draconicevolution.integration.computers.PeripheralReactorComponent;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -23,11 +21,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.server.ChunkHolder;
 
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-
-import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.*;
+import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.SAVE_NBT_SYNC_TILE;
+import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.TRIGGER_UPDATE;
 import static com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore.COMPONENT_MAX_DISTANCE;
 import static com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore.MAX_TEMPERATURE;
 
@@ -183,7 +178,10 @@ public abstract class TileReactorComponent extends TileBCore implements ITickabl
 
     public void setRSMode(PlayerEntity player, RSMode rsMode) {
         if (level.isClientSide) {
-            sendPacketToServer(output -> output.writeString(rsMode.name()), 0);
+            TileReactorCore core = tryGetCore();
+            if (core != null) {
+                core.sendPacketToServer(output -> output.writeString(rsMode.name()).writePos(getBlockPos()), 99);
+            }
         }
         else {
             this.rsMode.set(rsMode);
