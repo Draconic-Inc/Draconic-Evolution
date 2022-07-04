@@ -46,6 +46,10 @@ public class DEConfig {
     public static int veinSizeNether;
     public static int maxOreHeightOverworld;
     public static int maxOreHeightNether;
+    public static boolean generateChaosIslands;
+    public static boolean chaosIslandVoidMode;
+    public static int chaosIslandSeparation;
+    public static int chaosIslandYOffset;
     public static int dislocatorBlinkRange;
     public static int dislocatorBlinksPerPearl;
     public static int fusionInjectorRange;
@@ -158,6 +162,31 @@ public class DEConfig {
                     .setSyncCallback((tag, type) -> maxOreHeightNether = tag.getInt());
         }
 
+        {
+            ConfigTag chaosIsland = serverTag.getTag("Chaos Island Generator");
+            chaosIsland.setComment("Config values related to chaos island generation.");
+
+            chaosIsland.getTag("generateChaosIslands")
+                    .setSyncToClient()
+                    .setComment("Toggles whether chaos islands should generate.")
+                    .setDefaultBoolean(true)
+                    .setSyncCallback((tag, type) -> generateChaosIslands = tag.getBoolean());
+            chaosIsland.getTag("chaosIslandVoidMode")
+                    .setSyncToClient()
+                    .setComment("Toggles whether the full chaos island should spawn or just the guardian crystals, the chaos crystal, and the guardian.")
+                    .setDefaultBoolean(false)
+                    .setSyncCallback((tag, type) -> chaosIslandVoidMode = tag.getBoolean());
+            chaosIsland.getTag("chaosIslandSeparation")
+                    .setSyncToClient()
+                    .setComment("Sets how far apart the chaos islands should be.")
+                    .setDefaultInt(10000)
+                    .setSyncCallback((tag, type) -> chaosIslandSeparation = tag.getInt());
+            chaosIsland.getTag("chaosIslandYOffset")
+                    .setSyncToClient()
+                    .setComment("Changes the Y coord that the chaos island generates at.  The crystal generates at Y = 80 + chaosIslandYOffset")
+                    .setDefaultInt(0)
+                    .setSyncCallback((tag, type) -> chaosIslandYOffset = tag.getInt());
+        }
 
         serverTag.getTag("dislocatorBlinkRange")
                 .setSyncToClient()
