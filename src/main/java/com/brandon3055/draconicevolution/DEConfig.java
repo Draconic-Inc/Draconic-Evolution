@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution;
 
-import codechicken.lib.config.ConfigTag;
-import codechicken.lib.config.StandardConfigFile;
+import codechicken.lib.config.*;
+import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.draconicevolution.init.EquipCfg;
 import com.brandon3055.draconicevolution.init.ModuleCfg;
 import com.google.common.collect.Lists;
@@ -17,17 +17,19 @@ import java.util.function.Consumer;
  */
 public class DEConfig {
 
-    private static ConfigTag config;
-    private static ConfigTag clientTag;
-    private static ConfigTag serverTag;
+    private static ConfigCategory config;
+    private static ConfigCategory clientTag;
+    private static ConfigCategory serverTag;
 
     public static void load() {
-        config = new StandardConfigFile(Paths.get("./config/brandon3055/DraconicEvolution.cfg")).load();
+        config = new ConfigFile(DraconicEvolution.MODID)
+                .path(Paths.get("./config/brandon3055/DraconicEvolution.cfg"))
+                .load();
         loadServer();
         loadClient();
         EquipCfg.loadConfig(config);
         ModuleCfg.loadConfig(config);
-        config.runSync();
+        config.runSync(ConfigCallback.Reason.MANUAL);
         config.save();
     }
 
@@ -80,261 +82,261 @@ public class DEConfig {
     public static Set<String> chestBlacklist = new HashSet<>();
 
     private static void loadServer() {
-        serverTag = config.getTag("Server");
-        ConfigTag serverIDTag = serverTag.getTag("serverID")
-                .setSyncToClient()
+        serverTag = config.getCategory("Server");
+        ConfigValue serverIDTag = serverTag.getValue("serverID")
+                .syncTagToClient()
                 .setComment("This is a randomly generated id that clients will use to map their tool config settings to this server.")
                 .setDefaultString(UUID.randomUUID().toString());
-        serverIDTag.setSyncCallback((tag, type) -> serverID = tag.getString());
+        serverIDTag.onSync((tag, type) -> serverID = tag.getString());
 
-        serverTag.getTag("armorSpeedLimit")
-                .setSyncToClient()
+        serverTag.getValue("armorSpeedLimit")
+                .syncTagToClient()
                 .setComment("This can be used to limit the maximum speed boost allowed by the modular armor.", "A value of for example 1 means a maximum boost of +100%% over default character speed.", "Set to -1 for no limit, Default: 16 (+1600%%)")
                 .setDefaultDouble(16)
-                .setSyncCallback((tag, type) -> armorSpeedLimit = tag.getDouble());
+                .onSync((tag, type) -> armorSpeedLimit = tag.getDouble());
 
-        serverTag.getTag("enableElytraFlight")
-                .setSyncToClient()
+        serverTag.getValue("enableElytraFlight")
+                .syncTagToClient()
                 .setComment("Allows you to disable elytra flight supplied by DE's armor")
                 .setDefaultBoolean(true)
-                .setSyncCallback((tag, type) -> enableElytraFlight = tag.getBoolean());
+                .onSync((tag, type) -> enableElytraFlight = tag.getBoolean());
 
-        serverTag.getTag("enableCreativeFlight")
-                .setSyncToClient()
+        serverTag.getValue("enableCreativeFlight")
+                .syncTagToClient()
                 .setComment("Allows you to disable creative flight supplied by DE's armor")
                 .setDefaultBoolean(true)
-                .setSyncCallback((tag, type) -> enableCreativeFlight = tag.getBoolean());
+                .onSync((tag, type) -> enableCreativeFlight = tag.getBoolean());
 
-        serverTag.getTag("enableOreEnd")
-                .setSyncToClient()
+        serverTag.getValue("enableOreEnd")
+                .syncTagToClient()
                 .setComment("Allows you to disable draconium ore generation in the End")
                 .setDefaultBoolean(true)
-                .setSyncCallback((tag, type) -> enableOreEnd = tag.getBoolean());
-        serverTag.getTag("enableOreOverworld")
-                .setSyncToClient()
+                .onSync((tag, type) -> enableOreEnd = tag.getBoolean());
+        serverTag.getValue("enableOreOverworld")
+                .syncTagToClient()
                 .setComment("Allows you to disable draconium ore generation in the Overworld")
                 .setDefaultBoolean(true)
-                .setSyncCallback((tag, type) -> enableOreOverworld = tag.getBoolean());
-        serverTag.getTag("enableOreNether")
-                .setSyncToClient()
+                .onSync((tag, type) -> enableOreOverworld = tag.getBoolean());
+        serverTag.getValue("enableOreNether")
+                .syncTagToClient()
                 .setComment("Allows you to disable draconium ore generation in the Nether")
                 .setDefaultBoolean(true)
-                .setSyncCallback((tag, type) -> enableOreNether = tag.getBoolean());
+                .onSync((tag, type) -> enableOreNether = tag.getBoolean());
 
         {
-            ConfigTag oreGeneration = serverTag.getTag("Ore Generation");
+            ConfigCategory oreGeneration = serverTag.getCategory("Ore Generation");
             oreGeneration.setComment("Config values related to ore generation.");
 
-            oreGeneration.getTag("veinsPerChunkEnd")
-                    .setSyncToClient()
+            oreGeneration.getValue("veinsPerChunkEnd")
+                    .syncTagToClient()
                     .setComment("How many veins per chunk in the end")
                     .setDefaultInt(2)
-                    .setSyncCallback((tag, type) -> veinsPerChunkEnd = tag.getInt());
-            oreGeneration.getTag("veinSizeEnd")
-                    .setSyncToClient()
+                    .onSync((tag, type) -> veinsPerChunkEnd = tag.getInt());
+            oreGeneration.getValue("veinSizeEnd")
+                    .syncTagToClient()
                     .setComment("Maximum vein size in the end")
                     .setDefaultInt(8)
-                    .setSyncCallback((tag, type) -> veinSizeEnd = tag.getInt());
-            oreGeneration.getTag("veinSizeOverworld")
-                    .setSyncToClient()
+                    .onSync((tag, type) -> veinSizeEnd = tag.getInt());
+            oreGeneration.getValue("veinSizeOverworld")
+                    .syncTagToClient()
                     .setComment("Maximum vein size in the overworld")
                     .setDefaultInt(8)
-                    .setSyncCallback((tag, type) -> veinSizeOverworld = tag.getInt());
-            oreGeneration.getTag("veinSizeNether")
-                    .setSyncToClient()
+                    .onSync((tag, type) -> veinSizeOverworld = tag.getInt());
+            oreGeneration.getValue("veinSizeNether")
+                    .syncTagToClient()
                     .setComment("Maximum vein size in the nether")
                     .setDefaultInt(16)
-                    .setSyncCallback((tag, type) -> veinSizeNether = tag.getInt());
-            oreGeneration.getTag("overworldMaxOreHeight")
-                    .setSyncToClient()
+                    .onSync((tag, type) -> veinSizeNether = tag.getInt());
+            oreGeneration.getValue("overworldMaxOreHeight")
+                    .syncTagToClient()
                     .setComment("Maximum ore generation height in the overworld")
                     .setDefaultInt(16)
-                    .setSyncCallback((tag, type) -> maxOreHeightOverworld = tag.getInt());
-            oreGeneration.getTag("netherMaxOreHeight")
-                    .setSyncToClient()
+                    .onSync((tag, type) -> maxOreHeightOverworld = tag.getInt());
+            oreGeneration.getValue("netherMaxOreHeight")
+                    .syncTagToClient()
                     .setComment("Maximum ore generation height in the nether")
                     .setDefaultInt(16)
-                    .setSyncCallback((tag, type) -> maxOreHeightNether = tag.getInt());
+                    .onSync((tag, type) -> maxOreHeightNether = tag.getInt());
         }
 
 
-        serverTag.getTag("dislocatorBlinkRange")
-                .setSyncToClient()
+        serverTag.getValue("dislocatorBlinkRange")
+                .syncTagToClient()
                 .setComment("Sets the maximum blink range for the Advanced Dislocator")
                 .setDefaultInt(32)
-                .setSyncCallback((tag, type) -> dislocatorBlinkRange = tag.getInt());
+                .onSync((tag, type) -> dislocatorBlinkRange = tag.getInt());
 
-        serverTag.getTag("dislocatorBlinksPerPearl")
-                .setSyncToClient()
+        serverTag.getValue("dislocatorBlinksPerPearl")
+                .syncTagToClient()
                 .setComment("Sets the blinks to regular fuel ratio. Default 1 regular fuel (1 pearl) allows 4 blinks.")
                 .setDefaultInt(4)
-                .setSyncCallback((tag, type) -> dislocatorBlinksPerPearl = tag.getInt());
+                .onSync((tag, type) -> dislocatorBlinksPerPearl = tag.getInt());
 
-        serverTag.getTag("fusionInjectorRange")
-                .setSyncToClient()
+        serverTag.getValue("fusionInjectorRange")
+                .syncTagToClient()
                 .setComment("Sets how far fusion crafting injectors can be from the fusion crafting core")
                 .setDefaultInt(16)
-                .setSyncCallback((tag, type) -> fusionInjectorRange = tag.getInt());
-        serverTag.getTag("fusionInjectorMinDist")
-                .setSyncToClient()
+                .onSync((tag, type) -> fusionInjectorRange = tag.getInt());
+        serverTag.getValue("fusionInjectorMinDist")
+                .syncTagToClient()
                 .setComment("Sets the minimum distance a fusion injector must be from the fusion crafting core.")
                 .setDefaultInt(2)
-                .setSyncCallback((tag, type) -> fusionInjectorMinDist = tag.getInt());
-        serverTag.getTag("fusionChargeTime")
-                .setSyncToClient()
+                .onSync((tag, type) -> fusionInjectorMinDist = tag.getInt());
+        serverTag.getValueList("fusionChargeTime")
+                .syncTagToClient()
                 .setComment("Time in ticks required for charging phase of fusion crafting with each injector tier. Draconium, Wyvern, Draconic, Chaotic")
-                .setDefaultIntList(Lists.newArrayList(300, 220, 140, 60))
-                .setSyncCallback((tag, type) -> fusionChargeTime = tag.getIntList());
-        serverTag.getTag("fusionCraftTime")
-                .setSyncToClient()
+                .setDefaultInts(Lists.newArrayList(300, 220, 140, 60))
+                .onSync((tag, type) -> fusionChargeTime = tag.getInts());
+        serverTag.getValueList("fusionCraftTime")
+                .syncTagToClient()
                 .setComment("Time in ticks required for crafting phase of fusion crafting with each injector tier. Draconium, Wyvern, Draconic, Chaotic\nThe time selected is based on the lowest tier injector used in the craft.\nMax value for any of these is 32,767 (27.3 minutes)")
-                .setDefaultIntList(Lists.newArrayList(300, 220, 140, 60))
-                .setSyncCallback((tag, type) -> fusionCraftTime = tag.getIntList());
+                .setDefaultInts(Lists.newArrayList(300, 220, 140, 60))
+                .onSync((tag, type) -> fusionCraftTime = tag.getInts());
 
-        serverTag.getTag("projectileAntiImmuneEntities")
-                .setSyncToClient()
+        serverTag.getValueList("projectileAntiImmuneEntities")
+                .syncTagToClient()
                 .setComment("This is a list of entities that the \"Projectile Immunity Cancellation\" module will work on. Add additional entities as required. (Let me know if i missed any)")
-                .setDefaultStringList(Lists.newArrayList("minecraft:enderman", "minecraft:wither", "minecraft:ender_dragon", "draconicevolution:guardian_wither"))
-                .setSyncCallback((tag, type) -> projectileAntiImmuneEntities = tag.getStringList());
+                .setDefaultStrings(Lists.newArrayList("minecraft:enderman", "minecraft:wither", "minecraft:ender_dragon", "draconicevolution:guardian_wither"))
+                .onSync((tag, type) -> projectileAntiImmuneEntities = tag.getStrings());
 
         {
-            ConfigTag guardianFight = serverTag.getTag("Guardian Fight");
+            ConfigCategory guardianFight = serverTag.getCategory("Guardian Fight");
             guardianFight.setComment("Config values related to the chaos guardian fight.\nThe default values of -99 are markers indicating the internal hard coded value should be used.\nThis allows these values to be updated between mod versions for balance adjustments. Setting them to anything other than -99 will override the internal values.");
-            guardianFight.getTag("guardianCrystalShield")
-                    .setSyncToClient()
+            guardianFight.getValue("guardianCrystalShield")
+                    .syncTagToClient()
                     .setComment("Sets the base shield strength for chaos guardian crystals.\nDefault: 512")
                     .setDefaultInt(-99)
-                    .setSyncCallback((tag, type) -> guardianCrystalShield = tag.getInt() == -99 ? 512 : tag.getInt());
-            guardianFight.getTag("guardianCrystalUnstableWindow")
-                    .setSyncToClient()
+                    .onSync((tag, type) -> guardianCrystalShield = tag.getInt() == -99 ? 512 : tag.getInt());
+            guardianFight.getValue("guardianCrystalUnstableWindow")
+                    .syncTagToClient()
                     .setComment("Sets how long the guarian crystal's shield will be unstable after receiving damage from the chaos guardian\nDefault: 200 (10 seconds)")
                     .setDefaultInt(-99)
-                    .setSyncCallback((tag, type) -> guardianCrystalUnstableWindow = tag.getInt() == -99 ? 200 : tag.getInt());
-            guardianFight.getTag("guardianHealth")
-                    .setSyncToClient()
+                    .onSync((tag, type) -> guardianCrystalUnstableWindow = tag.getInt() == -99 ? 200 : tag.getInt());
+            guardianFight.getValue("guardianHealth")
+                    .syncTagToClient()
                     .setComment("Sets the guardians base health value (After you break through the guardians shield)\nDefault: 1000")
                     .setDefaultInt(-99)
-                    .setSyncCallback((tag, type) -> guardianHealth = tag.getInt() == -99 ? 1000 : tag.getInt());
-            guardianFight.getTag("guardianShield")
-                    .setSyncToClient()
+                    .onSync((tag, type) -> guardianHealth = tag.getInt() == -99 ? 1000 : tag.getInt());
+            guardianFight.getValue("guardianShield")
+                    .syncTagToClient()
                     .setComment("Sets the guardians shield capacity (You will need to break through this after disabling the guardian crystals)\nKeep in mind there is no limit to how fast you can hit the guardians shield so this will melt with a high damage rapid fire bow.\nDefault: 16000")
                     .setDefaultInt(-99)
-                    .setSyncCallback((tag, type) -> guardianShield = tag.getInt() == -99 ? 16000 : tag.getInt());
-            guardianFight.getTag("chaoticBypassCrystalShield")
-                    .setSyncToClient()
+                    .onSync((tag, type) -> guardianShield = tag.getInt() == -99 ? 16000 : tag.getInt());
+            guardianFight.getValue("chaoticBypassCrystalShield")
+                    .syncTagToClient()
                     .setComment("Allows chaotic weapons to destabilize the guardian crystal shields.\nThis makes it much easier to farm the guardian but only after you have chaos tier weapons.")
                     .setDefaultBoolean(true)
-                    .setSyncCallback((tag, type) -> chaoticBypassCrystalShield = tag.getBoolean());
-            guardianFight.getTag("chaosDropCount")
-                    .setSyncToClient()
+                    .onSync((tag, type) -> chaoticBypassCrystalShield = tag.getBoolean());
+            guardianFight.getValue("chaosDropCount")
+                    .syncTagToClient()
                     .setComment("Number of chaos shards dropped by the chaos crystal when broken by a player")
                     .setDefaultInt(5)
-                    .setSyncCallback((tag, type) -> chaosDropCount = tag.getInt());
+                    .onSync((tag, type) -> chaosDropCount = tag.getInt());
         }
 
         {
-            ConfigTag deSpawner = serverTag.getTag("Stabilized Spawner");
+            ConfigCategory deSpawner = serverTag.getCategory("Stabilized Spawner");
             deSpawner.setComment("These are all config fields related to the Stabilized Spawner and mob souls");
-            deSpawner.getTag("soulDropChance")
-                    .setSyncToClient()
+            deSpawner.getValue("soulDropChance")
+                    .syncTagToClient()
                     .setComment("Mobs have a 1 in {this number} chance to drop a soul when killed with the Reaper enchantment.  Note: This is the base value; higher enchantment levels increase this chance.")
                     .setDefaultInt(1000)
-                    .setSyncCallback((tag, type) -> soulDropChance = tag.getInt());
-            deSpawner.getTag("passiveSoulDropChance")
-                    .setSyncToClient()
+                    .onSync((tag, type) -> soulDropChance = tag.getInt());
+            deSpawner.getValue("passiveSoulDropChance")
+                    .syncTagToClient()
                     .setComment("Passive (Animals) Mobs have a 1 in {this number} chance to drop a soul when killed with the Reaper enchantment.  Note: This is the base value; higher enchantment levels increase this chance.")
                     .setDefaultInt(800)
-                    .setSyncCallback((tag, type) -> passiveSoulDropChance = tag.getInt());
-            deSpawner.getTag("spawnerList")
-                    .setSyncToClient()
+                    .onSync((tag, type) -> passiveSoulDropChance = tag.getInt());
+            deSpawner.getValueList("spawnerList")
+                    .syncTagToClient()
                     .setComment("By default, any entities added to this list will not drop their souls and will not be spawnable by the Stabilized Spawner.")
-                    .setDefaultStringList(Collections.emptyList())
-                    .setSyncCallback((tag, type) -> spawnerList = tag.getStringList().toArray(new String[0]));
-            deSpawner.getTag("spawnerListWhiteList")
-                    .setSyncToClient()
+                    .setDefaultStrings(Collections.emptyList())
+                    .onSync((tag, type) -> spawnerList = tag.getStrings().toArray(new String[0]));
+            deSpawner.getValue("spawnerListWhiteList")
+                    .syncTagToClient()
                     .setComment("Changes the spawner list to a whitelist instead of a blacklist.")
                     .setDefaultBoolean(false)
-                    .setSyncCallback((tag, type) -> spawnerListWhiteList = tag.getBoolean());
-            deSpawner.getTag("allowBossSouls")
-                    .setSyncToClient()
+                    .onSync((tag, type) -> spawnerListWhiteList = tag.getBoolean());
+            deSpawner.getValue("allowBossSouls")
+                    .syncTagToClient()
                     .setComment("Enabling this allows boss souls to drop. Use with caution!")
                     .setDefaultBoolean(false)
-                    .setSyncCallback((tag, type) -> allowBossSouls = tag.getBoolean());
-            deSpawner.getTag("spawnerDelays")
-                    .setSyncToClient()
+                    .onSync((tag, type) -> allowBossSouls = tag.getBoolean());
+            deSpawner.getValueList("spawnerDelays")
+                    .syncTagToClient()
                     .setComment("Sets the min and max spawn delay in ticks for each spawner tier. Order is as follows.\\nBasic MIN, MAX, Wyvern MIN, MAX, Draconic MIN, MAX, Chaotic MIN MAX")
-                    .setDefaultIntList(Lists.newArrayList(200, 800, 100, 400, 50, 200, 25, 100))
-                    .setSyncCallback((tag, type) -> spawnerDelays = tag.getIntList().toArray(new Integer[0]));
+                    .setDefaultInts(Lists.newArrayList(200, 800, 100, 400, 50, 200, 25, 100))
+                    .onSync((tag, type) -> spawnerDelays = tag.getInts().toArray(new Integer[0]));
         }
 
-        serverTag.getTag("dislocatorMaxFuel")
-                .setSyncToClient()
+        serverTag.getValue("dislocatorMaxFuel")
+                .syncTagToClient()
                 .setComment("Sets the maximum fuel that can be added to an Advanced Dislocator.")
                 .setDefaultInt(1024)
-                .setSyncCallback((tag, type) -> dislocatorMaxFuel = tag.getInt());
+                .onSync((tag, type) -> dislocatorMaxFuel = tag.getInt());
 
-        serverTag.getTag("portalMaxArea")
-                .setSyncToClient()
+        serverTag.getValue("portalMaxArea")
+                .syncTagToClient()
                 .setComment("Sets maximum area (in blocks) for a DE portal, The default value 65536 is equivalent to a 256x256 portal")
                 .setDefaultInt(65536)
-                .setSyncCallback((tag, type) -> portalMaxArea = tag.getInt());
+                .onSync((tag, type) -> portalMaxArea = tag.getInt());
 
-        serverTag.getTag("portalMaxDistance")
-                .setSyncToClient()
+        serverTag.getValue("portalMaxDistance")
+                .syncTagToClient()
                 .setComment("This is more for sanity than actually limiting portal size. Sets the max distance a portal block can be from the receptacle")
                 .setDefaultInt(256)
-                .setSyncCallback((tag, type) -> portalMaxDistanceSq = tag.getInt() * tag.getInt());
+                .onSync((tag, type) -> portalMaxDistanceSq = tag.getInt() * tag.getInt());
 
         {
-            ConfigTag reactor = serverTag.getTag("Reactor");
+            ConfigCategory reactor = serverTag.getCategory("Reactor");
             reactor.setComment("These are all (server side) config fields related to the reactor");
 
-            reactor.getTag("reactorOutputMultiplier")
-                    .setSyncToClient()
+            reactor.getValue("reactorOutputMultiplier")
+                    .syncTagToClient()
                     .setComment("Adjusts the energy output multiplier of the reactor.")
                     .setDefaultDouble(1)
-                    .setSyncCallback((tag, type) -> reactorOutputMultiplier = tag.getDouble());
-            reactor.getTag("reactorFuelUsageMultiplier")
-                    .setSyncToClient()
+                    .onSync((tag, type) -> reactorOutputMultiplier = tag.getDouble());
+            reactor.getValue("reactorFuelUsageMultiplier")
+                    .syncTagToClient()
                     .setComment("Adjusts the fuel usage multiplier of the reactor.")
                     .setDefaultDouble(1)
-                    .setSyncCallback((tag, type) -> reactorFuelUsageMultiplier = tag.getDouble());
-            reactor.getTag("reactorExplosionScale")
-                    .setSyncToClient()
+                    .onSync((tag, type) -> reactorFuelUsageMultiplier = tag.getDouble());
+            reactor.getValue("reactorExplosionScale")
+                    .syncTagToClient()
                     .setComment("Allows you to adjust the overall scale of the reactor explosion. Use \\\"disableLargeReactorBoom\\\" to disable explosion completely.")
                     .setDefaultDouble(1)
-                    .setSyncCallback((tag, type) -> reactorExplosionScale = tag.getDouble());
-            reactor.getTag("disableLargeReactorBoom")
-                    .setSyncToClient()
+                    .onSync((tag, type) -> reactorExplosionScale = tag.getDouble());
+            reactor.getValue("disableLargeReactorBoom")
+                    .syncTagToClient()
                     .setComment("If true, this will disable the massive reactor explosion and replace it with a much smaller one.")
                     .setDefaultBoolean(false)
-                    .setSyncCallback((tag, type) -> disableLargeReactorBoom = tag.getBoolean());
+                    .onSync((tag, type) -> disableLargeReactorBoom = tag.getBoolean());
         }
 
-        serverTag.getTag("dragonDustLootModifier")
-                .setSyncToClient()
+        serverTag.getValue("dragonDustLootModifier")
+                .syncTagToClient()
                 .setComment("This can be used to adjust the amount of Draconium Dust the Ender Dragon drops when killed.\nThe amount dropped will be this number +/- 10%%")
                 .setDefaultInt(64)
-                .setSyncCallback((tag, type) -> dragonDustLootModifier = tag.getInt());
-        serverTag.getTag("dragonEggSpawnOverride")
-                .setSyncToClient()
+                .onSync((tag, type) -> dragonDustLootModifier = tag.getInt());
+        serverTag.getValue("dragonEggSpawnOverride")
+                .syncTagToClient()
                 .setComment("By default, the dragon egg only ever spawns once. This forces it to spawn every time the dragon is killed.")
                 .setDefaultBoolean(true)
-                .setSyncCallback((tag, type) -> dragonEggSpawnOverride = tag.getBoolean());
+                .onSync((tag, type) -> dragonEggSpawnOverride = tag.getBoolean());
 
-        serverTag.getTag("chestBlacklist")
-                .setSyncToClient()
+        serverTag.getValueList("chestBlacklist")
+                .syncTagToClient()
                 .setComment("This is a blacklist of key words that can be used to prevent certain storage items from being stored in a draconium chest.\nIf the items registry name contains any or these strings it will not be allowed")
-                .setDefaultStringList(Lists.newArrayList("draconium_chest", "shulker_box", "pouch", "bag", "strongbox"))
-                .setSyncCallback((tag, type) -> chestBlacklist = Sets.newHashSet(tag.getStringList()));
+                .setDefaultStrings(Lists.newArrayList("draconium_chest", "shulker_box", "pouch", "bag", "strongbox"))
+                .onSync((tag, type) -> chestBlacklist = Sets.newHashSet(tag.getStrings()));
 
-        serverTag.getTag("useToolTierTags")
-                .setSyncToClient()
+        serverTag.getValue("useToolTierTags")
+                .syncTagToClient()
                 .setComment("The new tag based tool tier system makes it incredibly difficult to add over powered tools that can mine blocks of any harvest level. So for Draconic and Chaotic tier i simply dont use it.\n" +
                         "This means they can mine pretty much any minable block. Setting this to true will enable the tag system on these tiers and by default put them right along side wyvern at netherite tier.\n" +
                         "This may be useful for people like pack developers who want to add custom tool tier progression.")
                 .setDefaultBoolean(false)
-                .setSyncCallback((tag, type) -> useToolTierTags = tag.getBoolean());
+                .onSync((tag, type) -> useToolTierTags = tag.getBoolean());
     }
 
     //Client properties
@@ -354,94 +356,94 @@ public class DEConfig {
     public static boolean creativeWarning;
 
     private static void loadClient() {
-        clientTag = config.getTag("Client");
+        clientTag = config.getCategory("Client");
         clientTag.setComment("These are client side config properties.");
 
-        clientTag.getTag("fancyToolModels")
+        clientTag.getValue("fancyToolModels")
                 .setComment("Set this to false to disable the fancy 3D tool models. (Requires restart)")
                 .setDefaultBoolean(true)
-                .setSyncCallback((tag, type) -> fancyToolModels = tag.getBoolean());
-        clientTag.getTag("toolShaders")
+                .onSync((tag, type) -> fancyToolModels = tag.getBoolean());
+        clientTag.getValue("toolShaders")
                 .setComment("Set this to false to disable tool shaders.")
                 .setDefaultBoolean(true)
-                .setSyncCallback((tag, type) -> toolShaders = tag.getBoolean());
-        clientTag.getTag("crystalShaders")
+                .onSync((tag, type) -> toolShaders = tag.getBoolean());
+        clientTag.getValue("crystalShaders")
                 .setComment("Set this to false to disable crystal shaders.")
                 .setDefaultBoolean(true)
-                .setSyncCallback((tag, type) -> crystalShaders = tag.getBoolean());
-        clientTag.getTag("reactorShaders")
+                .onSync((tag, type) -> crystalShaders = tag.getBoolean());
+        clientTag.getValue("reactorShaders")
                 .setComment("Set this to false to disable reactor shaders.")
                 .setDefaultBoolean(true)
-                .setSyncCallback((tag, type) -> reactorShaders = tag.getBoolean());
-        clientTag.getTag("guardianShaders")
+                .onSync((tag, type) -> reactorShaders = tag.getBoolean());
+        clientTag.getValue("guardianShaders")
                 .setComment("Set this to false to disable chaos guardian shaders. (May visually break some stuff but could be useful if you are experiencing gl crashes.)")
                 .setDefaultBoolean(true)
-                .setSyncCallback((tag, type) -> guardianShaders = tag.getBoolean());
-        clientTag.getTag("otherShaders")
+                .onSync((tag, type) -> guardianShaders = tag.getBoolean());
+        clientTag.getValue("otherShaders")
                 .setComment("Set this to false to disable all other shaders.")
                 .setDefaultBoolean(true)
-                .setSyncCallback((tag, type) -> otherShaders = tag.getBoolean());
+                .onSync((tag, type) -> otherShaders = tag.getBoolean());
 
-        ConfigTag itemConfigGui = clientTag.getTag("itemConfigGUI");
+        ConfigCategory itemConfigGui = clientTag.getCategory("itemConfigGUI");
         itemConfigGui.setComment("These settings is accessible in game via the \"Configure Equipment\" gui.");
-        itemConfigGui.getTag("showUnavailable")
+        itemConfigGui.getValue("showUnavailable")
                 .setComment("Setting this to false will prevent properties from being displayed if their associated item is not in your inventory.")
                 .setDefaultBoolean(true)
-                .setSyncCallback((tag, type) -> configUiShowUnavailable = tag.getBoolean());
-        itemConfigGui.getTag("enableSnapping")
+                .onSync((tag, type) -> configUiShowUnavailable = tag.getBoolean());
+        itemConfigGui.getValue("enableSnapping")
                 .setComment("Setting this to false will disable property window snapping.")
                 .setDefaultBoolean(true)
-                .setSyncCallback((tag, type) -> configUiEnableSnapping = tag.getBoolean());
-        itemConfigGui.getTag("enableVisualization")
+                .onSync((tag, type) -> configUiEnableSnapping = tag.getBoolean());
+        itemConfigGui.getValue("enableVisualization")
                 .setComment("Setting this to false will disable the highlight/animation that occurs over a properties associated item when hovering over or editing a property.")
                 .setDefaultBoolean(true)
-                .setSyncCallback((tag, type) -> configUiEnableVisualization = tag.getBoolean());
-        itemConfigGui.getTag("enableAddGroupButton")
+                .onSync((tag, type) -> configUiEnableVisualization = tag.getBoolean());
+        itemConfigGui.getValue("enableAddGroupButton")
                 .setComment("Setting this to false will hide the \"Add Group\" button.")
                 .setDefaultBoolean(true)
-                .setSyncCallback((tag, type) -> configUiEnableAddGroupButton = tag.getBoolean());
-        itemConfigGui.getTag("enableDeleteZone")
+                .onSync((tag, type) -> configUiEnableAddGroupButton = tag.getBoolean());
+        itemConfigGui.getValue("enableDeleteZone")
                 .setComment("Setting this to false will hide the \"Delete Zone\"")
                 .setDefaultBoolean(true)
-                .setSyncCallback((tag, type) -> configUiEnableDeleteZone = tag.getBoolean());
-        itemConfigGui.getTag("enableAdvancedXOver")
+                .onSync((tag, type) -> configUiEnableDeleteZone = tag.getBoolean());
+        itemConfigGui.getValue("enableAdvancedXOver")
                 .setComment("If enabled your configured properties, property groups and presets will still be accessible when in the simple configuration mode.")
                 .setDefaultBoolean(false)
-                .setSyncCallback((tag, type) -> configUiEnableAdvancedXOver = tag.getBoolean());
+                .onSync((tag, type) -> configUiEnableAdvancedXOver = tag.getBoolean());
 
-        clientTag.getTag("itemDislocatorSound")
+        clientTag.getValue("itemDislocatorSound")
                 .setComment("Enable / Disable item dislocator pickup sound")
                 .setDefaultBoolean(true)
-                .setSyncCallback((tag, type) -> itemDislocatorSound = tag.getBoolean());
+                .onSync((tag, type) -> itemDislocatorSound = tag.getBoolean());
 
-        clientTag.getTag("creativeWarning")
+        clientTag.getValue("creativeWarning")
                 .setComment("Set to false to disable the warning that is displayed when you switch to creative mode.")
                 .setDefaultBoolean(true)
-                .setSyncCallback((tag, type) -> creativeWarning = tag.getBoolean());
+                .onSync((tag, type) -> creativeWarning = tag.getBoolean());
     }
 
     //Common properties
 
-    private static void modifyProperty(String name, Consumer<ConfigTag> modifyCallback, String... groupPath) {
-        ConfigTag parent = config;
+    private static void modifyProperty(String name, Consumer<ConfigValue> modifyCallback, String... groupPath) {
+        ConfigCategory parent = config;
         for (String group : groupPath) {
-            parent = parent.getTag(group);
+            parent = parent.getCategory(group);
         }
-        ConfigTag tag = parent.getTag(name);
+        ConfigValue tag = parent.getValue(name);
         modifyCallback.accept(tag);
-        tag.runSync();
+        tag.runSync(ConfigCallback.Reason.MANUAL);
         tag.save();
     }
 
-    public static void modifyClientProperty(String name, Consumer<ConfigTag> modifyCallback, String... groupPath) {
+    public static void modifyClientProperty(String name, Consumer<ConfigValue> modifyCallback, String... groupPath) {
         modifyProperty(name, modifyCallback, ArrayUtils.addAll(new String[]{"Client"}, groupPath));
     }
 
-    public static void modifyServerProperty(String name, Consumer<ConfigTag> modifyCallback, String... groupPath) {
+    public static void modifyServerProperty(String name, Consumer<ConfigValue> modifyCallback, String... groupPath) {
         modifyProperty(name, modifyCallback, ArrayUtils.addAll(new String[]{"Server"}, groupPath));
     }
 
-    public static void modifyCommonProperty(String name, Consumer<ConfigTag> modifyCallback, String... groupPath) {
+    public static void modifyCommonProperty(String name, Consumer<ConfigValue> modifyCallback, String... groupPath) {
         modifyProperty(name, modifyCallback, ArrayUtils.addAll(new String[]{"Common"}, groupPath));
     }
 }

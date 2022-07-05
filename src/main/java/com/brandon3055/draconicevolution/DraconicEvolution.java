@@ -41,16 +41,8 @@ public class DraconicEvolution {
 
     public static CommonProxy proxy;
 
-//    The Plan.
-//     - Poke covers about VBO render type.....
-//     - Look into getting the reactor shader working
-//     - Work on converting to the new fucky model format for stuff and things
-//     - Build the new energy core GUI or at least a base that i can work with when i actually redo the energy core
-//     - Fix up the reactor GUI and get the reactor working.
-//     - crystal shaders
-
     public DraconicEvolution() {
-        proxy = DistExecutor.safeRunForDist(() -> ClientProxy::new, () -> CommonProxy::new);
+        proxy = DistExecutor.unsafeRunForDist(() -> ClientProxy::new, () -> CommonProxy::new);
         proxy.construct();
         FMLJavaModLoadingContext.get().getModEventBus().register(this);
 

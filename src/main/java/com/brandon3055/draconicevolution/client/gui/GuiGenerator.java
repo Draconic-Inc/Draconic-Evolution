@@ -60,7 +60,7 @@ public class GuiGenerator extends ModularGuiContainer<ContainerBCTile<TileGenera
         //Storage Renderer
         template.background.addChild(new StorageRenderer());
         GuiElement fuelSlots = toolkit.createSlots(template.background, 3, 1, 0, (x, y) -> container.getSlotLayout().getSlotData(ContainerSlotLayout.SlotType.TILE_INV, x), BCGuiSprites.get("slots/fuel"));
-        fuelSlots.zOffset += 100;
+        fuelSlots.zOffset += 100; //Offset so that this element renders above the chest model in the background
         fuelSlots.setPos(guiLeft() + 64, guiTop() + 28);
 
         //Power
@@ -73,7 +73,7 @@ public class GuiGenerator extends ModularGuiContainer<ContainerBCTile<TileGenera
         modeButton.setHoverText(element -> ChatFormatting.BLUE + I18n.get(tile.mode.get().unlocalizedName() + ".info"));
         modeButton.onButtonPressed((pressed) -> tile.mode.set(tile.mode.get().next(hasShiftDown() || pressed == 1)));
         modeButton.setSize(100, 14);
-        modeButton.zOffset += 100;
+        modeButton.zOffset += 100; //Offset so that this element renders above the chest model in the background
         modeButton.getChildElements().forEach(e -> e.zOffset += 100);
         modeButton.setPos(template.playerSlots.maxXPos() - modeButton.xSize(), template.playerSlots.yPos() - modeButton.ySize() + 8);
         modeButton.setResetHoverOnClick(true);
