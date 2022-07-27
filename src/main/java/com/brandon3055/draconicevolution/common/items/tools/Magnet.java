@@ -25,6 +25,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerPickupXpEvent;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by brandon3055 on 9/3/2016.
@@ -80,10 +81,11 @@ public class Magnet extends ItemDE {
             int range = stack.getItemDamage() == 0 ? 8 : 32;
 
             List<EntityItem> items = world.getEntitiesWithinAABB(EntityItem.class, AxisAlignedBB.getBoundingBox(entity.posX, entity.posY, entity.posZ, entity.posX, entity.posY, entity.posZ).expand(range, range, range));
+            List<EntityItem> nearestItems = items.stream().limit(ConfigHandler.magnetStackLimit).collect(Collectors.toList());
 
             boolean flag = false;
 
-            for (EntityItem item : items) {
+            for (EntityItem item : nearestItems) {
                 if (item.getEntityItem() == null) {
                     continue;
                 }

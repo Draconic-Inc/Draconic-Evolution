@@ -50,6 +50,7 @@ public class ConfigHandler {
     public static boolean enableFlight;
     private static String[] itemDislocatorBlacklist;
     public static Map<String, Integer> itemDislocatorBlacklistMap = new HashMap<String, Integer>();
+    public static int magnetStackLimit;
 
     //spawner
     public static String[] spawnerList;
@@ -125,7 +126,7 @@ public class ConfigHandler {
             itemDislocatorBlacklist = config.getStringList("Item Dislocator Blacklist", Configuration.CATEGORY_GENERAL, new String[]{"appliedenergistics2:item.ItemCrystalSeed"}, "A list of items of items that should be ignored by the item dislocator. Use the items registry name e.g. minecraft:apple you can also add a meta value like so minecraft:wool|4");
             disableLog = config.get(Configuration.CATEGORY_GENERAL, "Disable Log", false, "If you are having issued with console spam that you cant fix setting this to true will disable all log output from Draconic Evolution (Not recommended)").getBoolean(false);
             enableFlight = config.get(Configuration.CATEGORY_GENERAL, "Enable Flight", true, "Set this to false to disable flight given by draconic armor.").getBoolean(true);
-
+            magnetStackLimit = config.get(Configuration.CATEGORY_GENERAL, "Magnet Stack Limit", 30, "Limit how much stacks might be attracted at the same time, high values can cause both server and client lag").getInt();
 
             //Spawner
             spawnerListType = config.get("spawner", "listType", false, "Sets weather the spawner list is a white list or a black list (true = white list false = black list)").getBoolean(false);
