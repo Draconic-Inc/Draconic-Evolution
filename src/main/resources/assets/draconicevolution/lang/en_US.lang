@@ -424,6 +424,7 @@ key.placeItem=Place Item in world
 key.toolConfig=Tool & Armor Config GUI
 key.toolProfileChange=Change Tool Config Profile
 key.toggleFlight=Toggle Creative Flight
+key.toggleMagnet=Toggle Magnet
 
 //Damage ----------------------------------------------------------------------------------------------------------------------------------------
 death.attack.chaos=%1$s was torn apart by a Chaos Guardian

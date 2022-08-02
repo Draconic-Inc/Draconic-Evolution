@@ -127,7 +127,8 @@ public class CommonProxy {
         DraconicEvolution.network.registerMessage(ShieldHitPacket.Handler.class, ShieldHitPacket.class, 16, Side.CLIENT);
         DraconicEvolution.network.registerMessage(ContributorPacket.Handler.class, ContributorPacket.class, 17, Side.CLIENT);
         DraconicEvolution.network.registerMessage(ContributorPacket.Handler.class, ContributorPacket.class, 18, Side.SERVER);
-
+        DraconicEvolution.network.registerMessage(MagnetTogglePacket.Handler.class, MagnetTogglePacket.class, 19, Side.SERVER);
+        DraconicEvolution.network.registerMessage(MagnetToggleAckPacket.Handler.class, MagnetToggleAckPacket.class, 20, Side.CLIENT);
     }
 
     public void registerTileEntities() {

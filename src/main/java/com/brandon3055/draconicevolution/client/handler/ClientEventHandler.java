@@ -17,18 +17,24 @@ import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBiped;
+import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemArmor;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.FOVUpdateEvent;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.client.model.AdvancedModelLoader;
 import net.minecraftforge.client.model.IModelCustom;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -47,6 +53,7 @@ public class ClientEventHandler {
     public static boolean bowZoom = false;
     public static boolean lastTickBowZoom = false;
     public static int tickSet = 0;
+    public static ItemDisplayManager statusDisplayManager = new ItemDisplayManager(60);
     private static int remountTicksRemaining = 0;
     private static int remountEntityID = 0;
     public static float energyCrystalAlphaValue = 0f;
@@ -95,6 +102,16 @@ public class ClientEventHandler {
             playerHoldingWrench = mc.thePlayer.getHeldItem() != null && mc.thePlayer.getHeldItem().getItem() == ModItems.wrench;
 
             searchForPlayerMount();
+        }
+
+        statusDisplayManager.tick();
+    }
+
+    @SubscribeEvent
+    @SideOnly(Side.CLIENT)
+    public void renderGameOverlayEvent (final RenderGameOverlayEvent.Post event) {
+        if (event.type == RenderGameOverlayEvent.ElementType.ALL) {
+            statusDisplayManager.drawItemStack();
         }
     }
 

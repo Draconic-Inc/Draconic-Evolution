@@ -5,6 +5,7 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.items.tools.baseclasses.ToolHandler;
 import com.brandon3055.draconicevolution.common.network.ButtonPacket;
+import com.brandon3055.draconicevolution.common.network.MagnetTogglePacket;
 import com.brandon3055.draconicevolution.common.network.PlacedItemPacket;
 import com.brandon3055.draconicevolution.common.network.TeleporterPacket;
 import com.brandon3055.draconicevolution.common.utills.IConfigurableItem;
@@ -54,6 +55,12 @@ public class KeyInputHandler {
                     }
                     player.sendPlayerAbilities();
                 }
+            }
+        } else if (KeyBindings.toggleMagnet.isPressed()) {
+            EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+
+            if (player.inventory.hasItem(ModItems.magnet)) {
+                DraconicEvolution.network.sendToServer(new MagnetTogglePacket());
             }
         }
     }
