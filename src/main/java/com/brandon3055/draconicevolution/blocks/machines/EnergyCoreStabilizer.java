@@ -103,29 +103,28 @@ public class EnergyCoreStabilizer extends BlockBCore implements EntityBlock {
     public void setPlacedBy(Level world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
         BlockEntity tile = world.getBlockEntity(pos);
 
-        if (tile instanceof TileEnergyCoreStabilizer) {
-            ((TileEnergyCoreStabilizer) tile).onPlaced();
-        } else {
-            super.setPlacedBy(world, pos, state, placer, stack);
-        }
+//        if (tile instanceof TileEnergyCoreStabilizer) {
+//            ((TileEnergyCoreStabilizer) tile).onPlaced();
+//        } else {
+//            super.setPlacedBy(world, pos, state, placer, stack);
+//        }
     }
 
     @Override
     public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
         BlockEntity tile = world.getBlockEntity(pos);
 
-        if (tile instanceof TileEnergyCoreStabilizer) {
-            if (((TileEnergyCoreStabilizer) tile).isValidMultiBlock.get()) {
-                ((TileEnergyCoreStabilizer) tile).deFormStructure();
-            }
-            TileEnergyCore core = ((TileEnergyCoreStabilizer) tile).getCore();
-
-            if (core != null) {
-                world.removeBlockEntity(pos);
-                ((TileEnergyCoreStabilizer) tile).validateStructure();
-            }
-
-        }
+//        if (tile instanceof TileEnergyCoreStabilizer) {
+//            if (((TileEnergyCoreStabilizer) tile).isValidMultiBlock.get()) {
+//                ((TileEnergyCoreStabilizer) tile).deFormStructure();
+//            }
+//            TileEnergyCore core = ((TileEnergyCoreStabilizer) tile).getCore();
+//
+//            if (core != null) {
+//                world.removeBlockEntity(pos);
+//                ((TileEnergyCoreStabilizer) tile).validateStructure();
+//            }
+//        }
         super.onRemove(state, world, pos, newState, isMoving);
     }
 

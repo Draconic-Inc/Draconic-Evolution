@@ -1,0 +1,25 @@
+{
+    "blend": {
+        "func": "add",
+        "srcrgb": "srcalpha",
+        "dstrgb": "1-srcalpha"
+    },
+    "vertex": "draconicevolution:energy_core",
+    "fragment": "draconicevolution:energy_core",
+    "attributes": [
+        "Color",
+        "UV0",
+        "UV2"
+    ],
+    "samplers": [
+    ],
+    "uniforms": [
+        { "name": "ModelViewMat", "type": "matrix4x4", "count": 16, "values": [ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 ] },
+        { "name": "ProjMat", "type": "matrix4x4", "count": 16, "values": [ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 ] },
+        { "name": "Time", "type": "float", "count": 1, "values": [ 0.0 ] },
+        { "name": "Activation", "type": "float", "count": 1, "values": [ 0.0 ] },
+        { "name": "EffectColour", "type": "vec3", "count": 3, "values": [ 0.0, 0.0, 0.0 ] },
+        { "name": "FrameColour", "type": "vec3", "count": 3, "values": [ 0.0, 0.0, 0.0 ] },
+        { "name": "InnerTriColour", "type": "vec3", "count": 3, "values": [ 0.0, 0.0, 0.0 ] }
+    ]
+}

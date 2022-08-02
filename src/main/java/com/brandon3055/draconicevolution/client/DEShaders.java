@@ -3,11 +3,11 @@ package com.brandon3055.draconicevolution.client;
 import codechicken.lib.render.shader.CCShaderInstance;
 import codechicken.lib.render.shader.CCUniform;
 import com.brandon3055.brandonscore.api.TimeKeeper;
-import com.brandon3055.brandonscore.client.BCClientEventHandler;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import net.covers1624.quack.util.CrashLock;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.event.RegisterShadersEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -42,6 +42,23 @@ public class DEShaders {
     public static CCUniform energyCrystalColour;
     public static CCUniform energyCrystalMipmap;
     public static CCUniform energyCrystalAngle;
+
+    public static CCShaderInstance testShader;
+    public static CCUniform testTime;
+    public static CCUniform testColour;
+    public static CCUniform testInB;
+    public static CCUniform testInC;
+    public static CCUniform testInD;
+
+    public static CCShaderInstance customBlockShader;
+    public static CCUniform modelMat;
+
+    public static CCShaderInstance energyCoreShader;
+    public static CCUniform energyCoreTime;
+    public static CCUniform energyCoreActivation;
+    public static CCUniform energyCoreEffectColour;
+    public static CCUniform energyCoreFrameColour;
+    public static CCUniform energyCoreRotTriColour;
 
 
     public static void init() {
@@ -87,6 +104,42 @@ public class DEShaders {
             energyCrystalShader.onApply(() -> energyCrystalTime.glUniform1f((TimeKeeper.getClientTick() + Minecraft.getInstance().getFrameTime()) / 50F));
         });
 
+        try {
+            event.registerShader(CCShaderInstance.create(event.getResourceManager(), new ResourceLocation(DraconicEvolution.MODID, "test"), DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP), e -> {
+                testShader = (CCShaderInstance) e;
+                testTime = testShader.getUniform("Time");
+                testColour = testShader.getUniform("TestColour");
+                testInB = testShader.getUniform("TestInB");
+                testInC = testShader.getUniform("TestInC");
+                testInD = testShader.getUniform("TestInD");
+                testShader.onApply(() -> {
+                    try {
+                        testTime.glUniform1f((TimeKeeper.getClientTick() + Minecraft.getInstance().getFrameTime()) / 20F);
+                    } catch (Throwable e2) {
+                        e2.printStackTrace();
+                    }
+                });
+            });
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+
+        event.registerShader(CCShaderInstance.create(event.getResourceManager(), new ResourceLocation(DraconicEvolution.MODID, "block"), DefaultVertexFormat.BLOCK), e -> {
+            customBlockShader = (CCShaderInstance) e;
+            modelMat = customBlockShader.getUniform("ModelMat");
+        });
+
+        event.registerShader(CCShaderInstance.create(event.getResourceManager(), new ResourceLocation(DraconicEvolution.MODID, "energy_core"), DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP), e -> {
+            energyCoreShader = (CCShaderInstance) e;
+            energyCoreTime = energyCoreShader.getUniform("Time");
+            energyCoreActivation = energyCoreShader.getUniform("Activation");
+            energyCoreEffectColour = energyCoreShader.getUniform("EffectColour");
+            energyCoreFrameColour = energyCoreShader.getUniform("FrameColour");
+            energyCoreRotTriColour = energyCoreShader.getUniform("InnerTriColour");
+            energyCoreShader.onApply(() -> {
+                energyCoreTime.glUniform1f((TimeKeeper.getClientTick() + Minecraft.getInstance().getFrameTime()) / 20F);
+            });
+        });
     }
 
 

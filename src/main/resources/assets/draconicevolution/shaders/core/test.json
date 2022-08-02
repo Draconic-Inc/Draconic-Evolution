@@ -1,0 +1,26 @@
+{
+    "blend": {
+        "func": "add",
+        "srcrgb": "srcalpha",
+        "dstrgb": "1-srcalpha"
+    },
+    "vertex": "draconicevolution:test",
+    "fragment": "draconicevolution:test",
+    "attributes": [
+        "Color",
+        "UV0",
+        "UV2"
+    ],
+    "samplers": [
+        { "name": "Sampler0" }
+    ],
+    "uniforms": [
+        { "name": "ModelViewMat", "type": "matrix4x4", "count": 16, "values": [ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 ] },
+        { "name": "ProjMat", "type": "matrix4x4", "count": 16, "values": [ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 ] },
+        { "name": "Time", "type": "float", "count": 1, "values": [ 0.0 ] },
+        { "name": "TestColour", "type": "VEC4", "count": 4, "values": [ 0.0, 0.0, 0.0, 0.0 ] },
+        { "name": "TestInB", "type": "float", "count": 1, "values": [ 0.0 ] },
+        { "name": "TestInC", "type": "float", "count": 1, "values": [ 0.0 ] },
+        { "name": "TestInD", "type": "float", "count": 1, "values": [ 0.0 ] }
+    ]
+}

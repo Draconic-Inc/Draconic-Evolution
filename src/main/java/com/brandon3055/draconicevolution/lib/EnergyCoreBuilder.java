@@ -46,33 +46,33 @@ public class EnergyCoreBuilder implements IProcess {
     }
 
     private void buildWorkList() {
-        EnergyCoreStructure structure = core.coreStructure;
-        MultiBlockStorage storage = structure.getStorageForTier(core.tier.get());
-        BlockPos start = core.getBlockPos().offset(structure.getCoreOffset(core.tier.get()));
-        Map<BlockPos, Block> structureBlocks = new HashMap<>();
-        storage.forEachBlock(start, (key1, value) -> {
-            Map<String, Block> blockCache = new HashMap<>();
-            structureBlocks.put(key1, blockCache.computeIfAbsent(value, s -> ForgeRegistries.BLOCKS.getValue(new ResourceLocation(value))));
-        });
-
-        Level world = core.getLevel();
-        for (BlockPos key : structureBlocks.keySet()) {
-            Block targetBlock = structureBlocks.get(key);
-            if (targetBlock == null) continue;
-            if (world.isEmptyBlock(key)) {
-                workList.put(key, targetBlock.defaultBlockState());
-                continue;
-            }
-            BlockState state = world.getBlockState(key);
-            if (state.getBlock() != targetBlock) {
-                isDead = true;
-                player.sendMessage(new TranslatableComponent("ecore.de.assemble_found_invalid.txt", state.getBlock().getDescriptionId(), key.toString()).withStyle(ChatFormatting.RED), Util.NIL_UUID);
-                return;
-            }
-        }
-
-        workOrder.addAll(workList.keySet());
-        workOrder.sort(Comparator.comparingInt(value -> (int) value.distSqr(core.getBlockPos())));
+//        EnergyCoreStructure structure = core.coreStructure;
+//        MultiBlockStorage storage = structure.getStorageForTier(core.tier.get());
+//        BlockPos start = core.getBlockPos().offset(structure.getCoreOffset(core.tier.get()));
+//        Map<BlockPos, Block> structureBlocks = new HashMap<>();
+//        storage.forEachBlock(start, (key1, value) -> {
+//            Map<String, Block> blockCache = new HashMap<>();
+//            structureBlocks.put(key1, blockCache.computeIfAbsent(value, s -> ForgeRegistries.BLOCKS.getValue(new ResourceLocation(value))));
+//        });
+//
+//        Level world = core.getLevel();
+//        for (BlockPos key : structureBlocks.keySet()) {
+//            Block targetBlock = structureBlocks.get(key);
+//            if (targetBlock == null) continue;
+//            if (world.isEmptyBlock(key)) {
+//                workList.put(key, targetBlock.defaultBlockState());
+//                continue;
+//            }
+//            BlockState state = world.getBlockState(key);
+//            if (state.getBlock() != targetBlock) {
+//                isDead = true;
+//                player.sendMessage(new TranslatableComponent("ecore.de.assemble_found_invalid.txt", state.getBlock().getDescriptionId(), key.toString()).withStyle(ChatFormatting.RED), Util.NIL_UUID);
+//                return;
+//            }
+//        }
+//
+//        workOrder.addAll(workList.keySet());
+//        workOrder.sort(Comparator.comparingInt(value -> (int) value.distSqr(core.getBlockPos())));
     }
 
     @Override

@@ -72,7 +72,7 @@ public class TileCoreStructure extends TileBCore implements IMultiBlockPart, IIn
             ((TileEnergyCoreStabilizer) controller).onBlockActivated(state, player, handIn, hit);
         }
         else if (controller instanceof TileEnergyCore) {
-            ((TileEnergyCore) controller).onStructureClicked(level, worldPosition, state, player);
+//            ((TileEnergyCore) controller).onStructureClicked(level, worldPosition, state, player);
         }
         else if (controller instanceof TileEnergyPylon) {
             ((TileEnergyPylon) controller).invertIO();

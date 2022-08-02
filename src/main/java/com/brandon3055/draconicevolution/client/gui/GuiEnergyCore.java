@@ -10,6 +10,7 @@ import com.brandon3055.brandonscore.client.gui.modulargui.templates.TBasicMachin
 import com.brandon3055.brandonscore.inventory.ContainerBCTile;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyCore;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 
@@ -35,6 +36,19 @@ public class GuiEnergyCore extends ModularGuiContainer<ContainerBCTile<TileEnerg
         *
         * */
 
+
+//        Ok. So.
+//                I'm thinking the re write will be driven by the gui.
+//            So implement features in the Gui then actualloy add their associated functionality.
+        /*
+        * Next Steps...
+        * - Re implement tier selection
+        * - Structure validation
+        * - Renderer that can handle the build guide and invalid block display
+        * - Implement build guide
+        * - Implement auto build function, Maybe some generic system that can work with the new structure system?
+        * - next steps...
+        * */
     }
 
     @Override
@@ -43,31 +57,42 @@ public class GuiEnergyCore extends ModularGuiContainer<ContainerBCTile<TileEnerg
         temp.background = GuiTexture.newDynamicTexture(xSize(), ySize(), () -> BCGuiSprites.getThemed("background_dynamic"));
         temp.background.onReload(guiTex -> guiTex.setPos(guiLeft(), guiTop()));
         toolkit.loadTemplate(temp);
+        temp.title.setDisplaySupplier(() -> toolkit.i18n("title", tile.tier.get()));
 
         GuiButton activate = toolkit.createButton(() -> tile.active.get() ? "deactivate" : "activate", temp.background)
-                .setSize(temp.playerSlots.xSize(), 14);
+                .setSize(temp.playerSlots.xSize(), 14)
+                .setEnabledCallback(() -> tile.active.get() || tile.canActivate.get())
+                .onPressed(() -> tile.sendPacketToServer(e -> {}, TileEnergyCore.MSG_TOGGLE_ACTIVATION));
         toolkit.placeOutside(activate, temp.playerSlots, GuiToolkit.LayoutPos.TOP_CENTER, 0, -3);
 
         GuiButton tierDown = toolkit.createButton("tier_down", temp.background)
                 .setSize((temp.playerSlots.xSize() / 2) - 1, 14)
                 .setXPos(activate.xPos())
-                .setMaxYPos(activate.yPos() - 1, false);
+                .setMaxYPos(activate.yPos() - 1, false)
+                .setEnabledCallback(() -> !tile.active.get())
+                .setDisabledStateSupplier(() -> tile.tier.get() <= 1)
+                .onPressed(() -> tile.tier.dec());
 
         GuiButton tierUp = toolkit.createButton("tier_up", temp.background)
                 .setSize((temp.playerSlots.xSize() / 2) - 1, 14)
                 .setMaxXPos(activate.maxXPos(), false)
-                .setMaxYPos(activate.yPos() - 1, false);
+                .setMaxYPos(activate.yPos() - 1, false)
+                .setEnabledCallback(() -> !tile.active.get())
+                .setDisabledStateSupplier(() -> tile.tier.get() >= TileEnergyCore.MAX_TIER)
+                .onPressed(() -> tile.tier.inc());
 
         GuiButton buildGuide = toolkit.createButton("build_guide", temp.background)
                 .setToggleStateSupplier(() -> tile.buildGuide.get())
                 .onPressed(() -> tile.buildGuide.invert())
+                .setEnabledCallback(() -> !tile.active.get())
                 .setSize(temp.playerSlots.xSize(), 14)
                 .setXPos(tierDown.xPos())
                 .setMaxYPos(tierDown.yPos() - 1, false);
 
         GuiButton assemble = toolkit.createButton("assemble", temp.background)
-                .setSize(temp.playerSlots.xSize(), 14)
-                .setPos(activate);
+                .setPosAndSize(activate)
+                .setEnabledCallback(() -> !activate.isDisabled())
+                .onPressed(() -> tile.sendPacketToServer(e -> {}, TileEnergyCore.MSG_BUILD_CORE));
     }
 
 

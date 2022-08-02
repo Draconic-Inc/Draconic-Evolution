@@ -4,28 +4,45 @@ import codechicken.lib.colour.Colour;
 import codechicken.lib.math.MathHelper;
 import codechicken.lib.render.CCModel;
 import codechicken.lib.render.CCRenderState;
+import codechicken.lib.render.RenderUtils;
 import codechicken.lib.render.buffer.TransformingVertexConsumer;
 import codechicken.lib.render.model.OBJParser;
+import codechicken.lib.vec.Cuboid6;
 import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Vector3;
+import com.brandon3055.brandonscore.api.TimeKeeper;
+import com.brandon3055.brandonscore.client.render.MultiBlockRenderers;
 import com.brandon3055.brandonscore.lib.Vec3I;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedVec3I;
+import com.brandon3055.brandonscore.multiblock.MultiBlockDefinition;
+import com.brandon3055.brandonscore.multiblock.MultiBlockPart;
+import com.brandon3055.brandonscore.utils.MathUtils;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyCore;
+import com.brandon3055.draconicevolution.client.DEShaders;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
+import com.brandon3055.draconicevolution.init.DEContent;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.client.model.data.EmptyModelData;
 
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by brandon3055 on 2/4/2016.
@@ -35,40 +52,48 @@ public class RenderTileEnergyCore implements BlockEntityRenderer<TileEnergyCore>
 
     private static final RenderType innerCoreType = RenderType.entitySolid(new ResourceLocation(DraconicEvolution.MODID, "textures/block/energy_core/energy_core_base.png"));
 
+
     private static final RenderType outerCoreType = RenderType.create("outer_core", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder()
-                    .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(DraconicEvolution.MODID, "textures/block/energy_core/energy_core_overlay.png"), false, false))
-                    .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
-//            .writeMask(RenderState.COLOR_WRITE)
-//            .setTexturingState(new RenderStateShard.TexturingStateShard("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
-                    .createCompositeState(false)
+            .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(DraconicEvolution.MODID, "textures/block/energy_core/energy_core_overlay.png"), false, false))
+            .setShaderState(new RenderStateShard.ShaderStateShard(GameRenderer::getNewEntityShader))
+            .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
+            .createCompositeState(false)
     );
 
     private static final RenderType innerStabType = RenderType.create("inner_stab", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder()
-                    .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(DraconicEvolution.MODID, "textures/block/energy_core/stabilizer_sphere.png"), false, false))
-                    .setTransparencyState(RenderStateShard.NO_TRANSPARENCY)
-//            .texturing(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
-                    .createCompositeState(false)
+            .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(DraconicEvolution.MODID, "textures/block/energy_core/stabilizer_sphere.png"), false, false))
+            .setShaderState(new RenderStateShard.ShaderStateShard(GameRenderer::getNewEntityShader))
+            .setTransparencyState(RenderStateShard.NO_TRANSPARENCY)
+            .createCompositeState(false)
     );
     private static final RenderType outerStabType = RenderType.create("outer_stab", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder()
-                    .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(DraconicEvolution.MODID, "textures/block/energy_core/stabilizer_sphere.png"), false, false))
-                    .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
-//            .setTexturingState(new RenderStateShard.TexturingStateShard("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
-                    .createCompositeState(false)
+            .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(DraconicEvolution.MODID, "textures/block/energy_core/stabilizer_sphere.png"), false, false))
+            .setShaderState(new RenderStateShard.ShaderStateShard(GameRenderer::getNewEntityShader))
+            .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
+            .createCompositeState(false)
     );
 
     private static final RenderType beamType = RenderType.create("inner_beam", DefaultVertexFormat.POSITION_TEX, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder()
-                    .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(DraconicEvolution.MODID, "textures/block/energy_core/stabilizer_beam.png"), false, false))
-                    .setTransparencyState(RenderStateShard.NO_TRANSPARENCY)
-//            .setTexturingState(new RenderStateShard.TexturingStateShard("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
-                    .createCompositeState(false)
+            .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(DraconicEvolution.MODID, "textures/block/energy_core/stabilizer_beam.png"), false, false))
+            .setShaderState(new RenderStateShard.ShaderStateShard(GameRenderer::getPositionTexShader))
+            .setTransparencyState(RenderStateShard.NO_TRANSPARENCY)
+            .createCompositeState(false)
     );
 
     private static final RenderType outerBeamType = RenderType.create("outer_beam", DefaultVertexFormat.POSITION_COLOR_TEX, VertexFormat.Mode.TRIANGLE_STRIP, 256, false, false, RenderType.CompositeState.builder()
-                    .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(DraconicEvolution.MODID, "textures/block/energy_core/stabilizer_beam.png"), false, false))
-                    .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
-                    .setWriteMaskState(RenderStateShard.COLOR_WRITE)
-//            .setTexturingState(new RenderStateShard.TexturingStateShard("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
-                    .createCompositeState(false)
+            .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(DraconicEvolution.MODID, "textures/block/energy_core/stabilizer_beam.png"), false, false))
+            .setShaderState(new RenderStateShard.ShaderStateShard(GameRenderer::getPositionColorTexShader))
+            .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
+            .setWriteMaskState(RenderStateShard.COLOR_WRITE)
+            .createCompositeState(false)
+    );
+
+    private static RenderType coreShaderType = RenderType.create("test_shader", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder()
+            .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(DraconicEvolution.MODID, "textures/block/energy_core/energy_core_overlay.png"), false, false))
+            .setShaderState(new RenderStateShard.ShaderStateShard(() -> DEShaders.energyCoreShader))
+            .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
+            .setCullState(RenderStateShard.NO_CULL)
+            .createCompositeState(false)
     );
 
     private final CCModel modelStabilizerSphere;
@@ -84,144 +109,154 @@ public class RenderTileEnergyCore implements BlockEntityRenderer<TileEnergyCore>
         modelEnergyCore.computeNormals();
     }
 
+
     @Override
-    public void render(TileEnergyCore te, float partialTicks, PoseStack mStack, MultiBufferSource getter, int packedLight, int packedOverlay) {
-        if (!te.active.get()) return;
-
-        Matrix4 mat = new Matrix4(mStack);
-        CCRenderState ccrs = CCRenderState.instance();
-        ccrs.reset();
-        ccrs.brightness = packedLight;
-        ccrs.overlay = packedOverlay;
-
-        //region Do Calculations
-        float rotation = (ClientEventHandler.elapsedTicks + partialTicks) / 2F;
-        int brightness = (int) Math.abs(Math.sin((float) ClientEventHandler.elapsedTicks / 100f) * 100f);
-        double scale = SCALES[te.tier.get() - 1];
-
-        ccrs.baseColour = te.getColour();
-        ccrs.brightness = 140 + brightness;
-        ccrs.bind(innerCoreType, getter);
-        Matrix4 coreMat = mat.copy();
-        coreMat.translate(Vector3.CENTER);
-        coreMat.scale(scale * -0.65, scale * -0.65, scale * -0.65);
-        coreMat.rotate(rotation * MathHelper.torad, new Vector3(0F, 1F, 0.5F).normalize());
-        modelEnergyCore.render(ccrs, coreMat);
-
-        if (te.tier.get() == 8) {
-            ccrs.baseColour = Colour.packRGBA(0.95F, 0.45F, 0F, 1F);
-        } else {
-            ccrs.baseColour = Colour.packRGBA(0.2F, 1F, 1F, 1F);
+    public void render(TileEnergyCore te, float partialTicks, PoseStack poseStack, MultiBufferSource getter, int packedLight, int packedOverlay) {
+        if (te.buildGuide.get()) {
+            MultiBlockDefinition def = te.getMultiBlockDef();
+            if (def != null) {
+                MultiBlockRenderers.renderBuildGuide(te.getLevel(), te.getBlockPos(), poseStack, getter, def, 200, partialTicks);
+            }
         }
 
-        ccrs.bind(outerCoreType, getter);
-        Matrix4 overlayMat = mat.copy();
-        overlayMat.translate(Vector3.CENTER);
-        overlayMat.scale(scale * -0.7, scale * -0.7, scale * -0.7);
-        overlayMat.rotate(rotation * 0.5F * MathHelper.torad, new Vector3(0F, -1F, -0.5F).normalize());
-        modelEnergyCore.render(ccrs, overlayMat);
-
-        renderStabilizers(te, ccrs, mat, getter, partialTicks);
-    }
 
 
-    //    @Override
-//    public void render(TileEnergyCore te, double x, double y, double z, float partialTicks, int destroyStage) {
-//        //region Build Guide
-//
-//        if (te.buildGuide.get() /*&& MinecraftForgeClient.getRenderPass() == 0*/) {
-//            RenderSystem.bindTexture(Minecraft.getInstance().getTextureMap().getGlTextureId());
-//            RenderSystem.pushMatrix();
-//            RenderSystem.translated(x, y, z);
-//            te.coreStructure.renderTier(te.tier.get());
-//            RenderSystem.popMatrix();
-//        }
+//        renderStructure();
+
+//        BlockState state = DEContent.generator.defaultBlockState();
+//        Minecraft.getInstance().getBlockRenderer().renderSingleBlock(state, poseStack, getter, packedLight, OverlayTexture.NO_OVERLAY);
+
+
 //        if (!te.active.get()) return;
 //
-//        RenderSystem.popMatrix();
-//        RenderSystem.color4f(1F, 1F, 1F, 1F);
-//        setLighting(200F);
-//        renderStabilizers(te, false, partialTicks);
+////        coreShaderType = RenderType.create("test_shaders", DefaultVertexFormat.POSITION_COLOR_TEX, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder()
+//////                .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(DraconicEvolution.MODID, "textures/block/energy_core/energy_core_overlay.png"), false, false))
+////                        .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(DraconicEvolution.MODID, "textures/item/equipment/chaos_shader.png"), true, false))
+////                        .setShaderState(new RenderStateShard.ShaderStateShard(() -> DEShaders.testShader))
+////                        .setTransparencyState(RenderStateShard.NO_TRANSPARENCY)
+//////                .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
+////                        .setCullState(RenderStateShard.NO_CULL)
+////                        .createCompositeState(false)
+////        );
+//
+////        Player player = Minecraft.getInstance().player;
+////        DEShaders.testInB.glUniform1f((float) (player.getYRot() * MathHelper.torad));
+////        DEShaders.testInC.glUniform1f((float) -(player.getXRot() * MathHelper.torad));
+//
+//        Matrix4 mat = new Matrix4(poseStack);
+//        CCRenderState ccrs = CCRenderState.instance();
+//        ccrs.reset();
+//        ccrs.brightness = packedLight;
+//        ccrs.overlay = packedOverlay;
+//
+//        poseStack.pushPose();
+//        try {
+//            poseStack.translate(-1, -1, -6);
+//            TransformingVertexConsumer consumer = new TransformingVertexConsumer(getter.getBuffer(coreShaderType), poseStack);
+//
+//            consumer.vertex(0, 3, 0).color(1F, 1F, 1F, 1F).uv(0, 1).uv2(240, 240).endVertex();
+//            consumer.vertex(3, 3, 0).color(1F, 1F, 1F, 1F).uv(1, 1).uv2(240, 240).endVertex();
+//            consumer.vertex(3, 0, 0).color(1F, 1F, 1F, 1F).uv(1, 0).uv2(240, 240).endVertex();
+//            consumer.vertex(0, 0, 0).color(1F, 1F, 1F, 1F).uv(0, 0).uv2(240, 240).endVertex();
+//
+//            RenderUtils.endBatch(getter);
+//
+//        } catch (Throwable e) {
+//            e.printStackTrace();
+//        }
+//        poseStack.popPose();
+//
+////        if (true) return;
 //
 //
-//        //Render Transparent Layer
-//        RenderSystem.enableBlend();
-//        RenderSystem.blendFuncSeparate(RenderSystem.SourceFactor.SRC_ALPHA, RenderSystem.DestFactor.ONE_MINUS_SRC_ALPHA, RenderSystem.SourceFactor.ONE, RenderSystem.DestFactor.ZERO);
+//        //region Do Calculations
+//        float rotation = (ClientEventHandler.elapsedTicks + partialTicks) / 2F;
+//        int brightness = (int) Math.abs(Math.sin((float) ClientEventHandler.elapsedTicks / 100f) * 100f);
+//        double scale = 5;//SCALES[te.tier.get() - 1];
 //
-//        RenderSystem.bindTexture(Minecraft.getInstance().getTextureMap().getGlTextureId());
+//        ccrs.baseColour = te.getColour();
+//        ccrs.brightness = 140 + brightness;
+//        ccrs.bind(innerCoreType, getter);
+//        Matrix4 coreMat = mat.copy();
+//        coreMat.translate(Vector3.CENTER);
+//        coreMat.scale(scale * -0.65, scale * -0.65, scale * -0.65);
+//        coreMat.rotate(rotation * MathHelper.torad, new Vector3(0F, 1F, 0.5F).normalize());
+//        modelEnergyCore.render(ccrs, coreMat);
+//
 //        if (te.tier.get() == 8) {
-//            RenderSystem.color4f(0.95F, 0.45F, 0F, 1F);
+//            ccrs.baseColour = Colour.packRGBA(0.95F, 0.45F, 0F, 1F);
 //        } else {
-//            RenderSystem.color4f(0.2F, 1F, 1F, 1F);
+//            ccrs.baseColour = Colour.packRGBA(0.2F, 1F, 1F, 1F);
 //        }
 //
-//        RenderSystem.pushMatrix();
-//        RenderSystem.translated(0.5, 0.5, 0.5);
-//        RenderSystem.scaled(scale * 0.7, scale * 0.7, scale * 0.7);
-//        RenderSystem.rotated(rotation * 0.5F, 0F, -1F, -0.5F);
+////        DEShaders.energyCoreActivation.glUniform1f(-0.2F + (((TimeKeeper.getClientTick() + partialTicks) / 100F) % 1.4F));
+//        DEShaders.energyCoreActivation.glUniform1f(1);
 //
-//        iconTransform = new IconTransformation(DETextures.getDETexture("models/energy_core_overlay"));
-//        ccrs.startDrawing(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX_NORMAL);
-//        modelEnergyCore.render(ccrs, iconTransform, new Scale(-1));
-//        ccrs.draw();
-//        RenderSystem.popMatrix();
+//        DEShaders.energyCoreFrameColour.glUniform3f(0.1F, 0.1F, 0.1F);
+//        DEShaders.energyCoreRotTriColour.glUniform3f(0.4F, 0F, 0.6F);
+//        DEShaders.energyCoreEffectColour.glUniform3f(0.0F, 0.95F, 0.95F);
 //
-////        }
+////        ccrs.bind(outerCoreType, getter);
+//        ccrs.bind(coreShaderType, getter);
+//        Matrix4 overlayMat = mat.copy();
+//        overlayMat.translate(Vector3.CENTER);
+//        overlayMat.scale(scale * -0.7, scale * -0.7, scale * -0.7);
+//        overlayMat.rotate(rotation * 0.5F * MathHelper.torad, new Vector3(0F, -1F, -0.5F).normalize());
+//        modelEnergyCore.render(ccrs, overlayMat);
 //
-////        RenderSystem.enableTexture();
-////        RenderSystem.depthMask(true);
-//        renderStabilizers(te, true, partialTicks);
-//        RenderSystem.disableBlend();
+//        ccrs.bind(outerCoreType, getter);
+//        Matrix4 overlayMatRef = mat.copy();
+//        overlayMatRef.translate(6.5, 0.5, 0.5);
+//        overlayMatRef.scale(scale * -0.7, scale * -0.7, scale * -0.7);
+//        overlayMatRef.rotate(rotation * 0.5F * MathHelper.torad, new Vector3(0F, -1F, -0.5F).normalize());
+//        modelEnergyCore.render(ccrs, overlayMatRef);
 //
-//        resetLighting();
-//        RenderSystem.popMatrix();
-//
-//
-//        //endregion
-//    }
-
-    private void renderStabilizers(TileEnergyCore te, CCRenderState ccrs, Matrix4 matrix4, MultiBufferSource getter, float partialTick) {
-        if (!te.stabilizersOK.get()) {
-            return;
-        }
-
-        for (ManagedVec3I vec3I : te.stabOffsets) {
-            Matrix4 mat = matrix4.copy();
-            mat.translate(-vec3I.get().x + 0.5, -vec3I.get().y + 0.5, -vec3I.get().z + 0.5);
-
-            Direction facing = Direction.getNearest(vec3I.get().x, vec3I.get().y, vec3I.get().z);//Direction.getFacingFromAxis(Direction.AxisDirection.POSITIVE, te.multiBlockAxis);
-            if (facing.getAxis() == Direction.Axis.X || facing.getAxis() == Direction.Axis.Y) {
-                mat.rotate(-90F * MathHelper.torad, new Vector3(-facing.getStepY(), facing.getStepX(), 0).normalize());
-            } else if (facing == Direction.SOUTH) {
-                mat.rotate(180F * MathHelper.torad, new Vector3(0, 1, 0).normalize());
-            }
-
-            mat.rotate(90F * MathHelper.torad, new Vector3(1, 0, 0).normalize());
-
-            ccrs.baseColour = 0xFFFFFFFF;
-            renderStabilizerBeam(te, mat, getter, vec3I.get(), partialTick);
-            if (te.tier.get() >= 5) {
-                mat.scale(-1.2F, -0.5F, -1.2F);
-            } else {
-                mat.scale(-0.45, -0.45, -0.45);
-            }
-
-            Matrix4 innerMat = mat.copy();
-            innerMat.scale(0.9F, 0.9F, 0.9F);
-            ccrs.baseColour = 0x00FFFFFF;
-            ccrs.brightness = 240;
-            innerMat.rotate((ClientEventHandler.elapsedTicks + partialTick) * MathHelper.torad, new Vector3(0, -1, 0));
-            ccrs.bind(innerStabType, getter);
-            modelStabilizerSphere.render(ccrs, innerMat);
-
-            mat.scale(1.1F, 1.1F, 1.1F);
-            ccrs.baseColour = 0x00FFFF7F;
-            ccrs.brightness = 240;
-            mat.rotate((ClientEventHandler.elapsedTicks + partialTick) * 0.5F * MathHelper.torad, new Vector3(0, 1, 0));
-            ccrs.bind(outerStabType, getter);
-            modelStabilizerSphere.render(ccrs, mat);
-        }
+//        renderStabilizers(te, ccrs, mat, getter, partialTicks);
     }
+
+
+//    private void renderStabilizers(TileEnergyCore te, CCRenderState ccrs, Matrix4 matrix4, MultiBufferSource getter, float partialTick) {
+//        if (!te.stabilizersOK.get()) {
+//            return;
+//        }
+//
+//        for (ManagedVec3I vec3I : te.stabOffsets) {
+//            Matrix4 mat = matrix4.copy();
+//            mat.translate(-vec3I.get().x + 0.5, -vec3I.get().y + 0.5, -vec3I.get().z + 0.5);
+//
+//            Direction facing = Direction.getNearest(vec3I.get().x, vec3I.get().y, vec3I.get().z);//Direction.getFacingFromAxis(Direction.AxisDirection.POSITIVE, te.multiBlockAxis);
+//            if (facing.getAxis() == Direction.Axis.X || facing.getAxis() == Direction.Axis.Y) {
+//                mat.rotate(-90F * MathHelper.torad, new Vector3(-facing.getStepY(), facing.getStepX(), 0).normalize());
+//            } else if (facing == Direction.SOUTH) {
+//                mat.rotate(180F * MathHelper.torad, new Vector3(0, 1, 0).normalize());
+//            }
+//
+//            mat.rotate(90F * MathHelper.torad, new Vector3(1, 0, 0).normalize());
+//
+//            ccrs.baseColour = 0xFFFFFFFF;
+//            renderStabilizerBeam(te, mat, getter, vec3I.get(), partialTick);
+//            if (te.tier.get() >= 5) {
+//                mat.scale(-1.2F, -0.5F, -1.2F);
+//            } else {
+//                mat.scale(-0.45, -0.45, -0.45);
+//            }
+//
+//            Matrix4 innerMat = mat.copy();
+//            innerMat.scale(0.9F, 0.9F, 0.9F);
+//            ccrs.baseColour = 0x00FFFFFF;
+//            ccrs.brightness = 240;
+//            innerMat.rotate((ClientEventHandler.elapsedTicks + partialTick) * MathHelper.torad, new Vector3(0, -1, 0));
+//            ccrs.bind(innerStabType, getter);
+//            modelStabilizerSphere.render(ccrs, innerMat);
+//
+//            mat.scale(1.1F, 1.1F, 1.1F);
+//            ccrs.baseColour = 0x00FFFF7F;
+//            ccrs.brightness = 240;
+//            mat.rotate((ClientEventHandler.elapsedTicks + partialTick) * 0.5F * MathHelper.torad, new Vector3(0, 1, 0));
+//            ccrs.bind(outerStabType, getter);
+//            modelStabilizerSphere.render(ccrs, mat);
+//        }
+//    }
 
     private void renderStabilizerBeam(TileEnergyCore te, Matrix4 matrix4, MultiBufferSource getter, Vec3I vec, float partialTick) {
         Matrix4 innerMat = matrix4.copy();
@@ -331,7 +366,6 @@ public class RenderTileEnergyCore implements BlockEntityRenderer<TileEnergyCore>
             builder.vertex(verX * 0.35F, verY * 0.35F, 0.0D).color(255, 255, 255, 32).uv(i, (beamMotion * 2)).endVertex();
             builder.vertex(verX * enlarge, verY * enlarge, beamLength).color(255, 255, 255, 32).uv(i, beamLength + (beamMotion * 2)).endVertex();
         }
-
     }
 
     @Override

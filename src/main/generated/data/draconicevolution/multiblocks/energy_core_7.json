@@ -1,0 +1,163 @@
+{
+  "keys": {
+    "X": {
+      "block": "draconicevolution:energy_core"
+    },
+    "D": {
+      "tag": "forge:storage_blocks/draconium"
+    },
+    "R": {
+      "tag": "forge:storage_blocks/redstone"
+    }
+  },
+  "origin": {
+    "x": 5,
+    "y": 5,
+    "z": 5
+  },
+  "structure": [
+    [
+      "           ",
+      "           ",
+      "           ",
+      "           ",
+      "    DDD    ",
+      "    DDD    ",
+      "    DDD    ",
+      "           ",
+      "           ",
+      "           ",
+      "           "
+    ],
+    [
+      "           ",
+      "           ",
+      "           ",
+      "   DDDDD   ",
+      "   DRRRD   ",
+      "   DRRRD   ",
+      "   DRRRD   ",
+      "   DDDDD   ",
+      "           ",
+      "           ",
+      "           "
+    ],
+    [
+      "           ",
+      "           ",
+      "   DDDDD   ",
+      "  DRRRRRD  ",
+      "  DRRRRRD  ",
+      "  DRRRRRD  ",
+      "  DRRRRRD  ",
+      "  DRRRRRD  ",
+      "   DDDDD   ",
+      "           ",
+      "           "
+    ],
+    [
+      "           ",
+      "   DDDDD   ",
+      "  DRRRRRD  ",
+      " DRRRRRRRD ",
+      " DRRRRRRRD ",
+      " DRRRRRRRD ",
+      " DRRRRRRRD ",
+      " DRRRRRRRD ",
+      "  DRRRRRD  ",
+      "   DDDDD   ",
+      "           "
+    ],
+    [
+      "    DDD    ",
+      "   DRRRD   ",
+      "  DRRRRRD  ",
+      " DRRRRRRRD ",
+      "DRRRRRRRRRD",
+      "DRRRRRRRRRD",
+      "DRRRRRRRRRD",
+      " DRRRRRRRD ",
+      "  DRRRRRD  ",
+      "   DRRRD   ",
+      "    DDD    "
+    ],
+    [
+      "    DDD    ",
+      "   DRRRD   ",
+      "  DRRRRRD  ",
+      " DRRRRRRRD ",
+      "DRRRRRRRRRD",
+      "DRRRRXRRRRD",
+      "DRRRRRRRRRD",
+      " DRRRRRRRD ",
+      "  DRRRRRD  ",
+      "   DRRRD   ",
+      "    DDD    "
+    ],
+    [
+      "    DDD    ",
+      "   DRRRD   ",
+      "  DRRRRRD  ",
+      " DRRRRRRRD ",
+      "DRRRRRRRRRD",
+      "DRRRRRRRRRD",
+      "DRRRRRRRRRD",
+      " DRRRRRRRD ",
+      "  DRRRRRD  ",
+      "   DRRRD   ",
+      "    DDD    "
+    ],
+    [
+      "           ",
+      "   DDDDD   ",
+      "  DRRRRRD  ",
+      " DRRRRRRRD ",
+      " DRRRRRRRD ",
+      " DRRRRRRRD ",
+      " DRRRRRRRD ",
+      " DRRRRRRRD ",
+      "  DRRRRRD  ",
+      "   DDDDD   ",
+      "           "
+    ],
+    [
+      "           ",
+      "           ",
+      "   DDDDD   ",
+      "  DRRRRRD  ",
+      "  DRRRRRD  ",
+      "  DRRRRRD  ",
+      "  DRRRRRD  ",
+      "  DRRRRRD  ",
+      "   DDDDD   ",
+      "           ",
+      "           "
+    ],
+    [
+      "           ",
+      "           ",
+      "           ",
+      "   DDDDD   ",
+      "   DRRRD   ",
+      "   DRRRD   ",
+      "   DRRRD   ",
+      "   DDDDD   ",
+      "           ",
+      "           ",
+      "           "
+    ],
+    [
+      "           ",
+      "           ",
+      "           ",
+      "           ",
+      "    DDD    ",
+      "    DDD    ",
+      "    DDD    ",
+      "           ",
+      "           ",
+      "           ",
+      "           "
+    ]
+  ]
+}

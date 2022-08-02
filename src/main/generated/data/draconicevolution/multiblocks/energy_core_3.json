@@ -1,0 +1,32 @@
+{
+  "keys": {
+    "X": {
+      "block": "draconicevolution:energy_core"
+    },
+    "D": {
+      "tag": "forge:storage_blocks/draconium"
+    }
+  },
+  "origin": {
+    "x": 1,
+    "y": 1,
+    "z": 1
+  },
+  "structure": [
+    [
+      "DDD",
+      "DDD",
+      "DDD"
+    ],
+    [
+      "DDD",
+      "DXD",
+      "DDD"
+    ],
+    [
+      "DDD",
+      "DDD",
+      "DDD"
+    ]
+  ]
+}

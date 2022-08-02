@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.client.render.item;
 import codechicken.lib.math.MathHelper;
 import codechicken.lib.render.CCModel;
 import codechicken.lib.render.CCRenderState;
+import codechicken.lib.render.buffer.VBORenderType;
 import codechicken.lib.render.item.IItemRenderer;
 import codechicken.lib.render.shader.ShaderObject;
 import codechicken.lib.render.shader.ShaderProgram;
@@ -13,9 +14,11 @@ import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.client.DEShaders;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
@@ -31,69 +34,69 @@ import java.util.Locale;
  */
 public abstract class ToolRenderBase implements IItemRenderer {
 
-    public static ShaderProgram chaosShader = ShaderProgramBuilder.builder()
-            .addShader("vert", shader -> shader
-                    .type(ShaderObject.StandardShaderType.VERTEX)
-                    .source(new ResourceLocation(DraconicEvolution.MODID, "shaders/chaos.vert"))
-            )
-            .addShader("frag", shader -> shader
-                    .type(ShaderObject.StandardShaderType.FRAGMENT)
-                    .source(new ResourceLocation(DraconicEvolution.MODID, "shaders/chaos.frag"))
-                    .uniform("alpha", UniformType.FLOAT)
-                    .uniform("yaw", UniformType.FLOAT)
-                    .uniform("pitch", UniformType.FLOAT)
-                    .uniform("time", UniformType.FLOAT)
-            )
-//            .whenUsed(cache -> {
-//                cache.glUniform1f("alpha", 0.7F);
-//                Minecraft mc = Minecraft.getInstance();
-//                cache.glUniform1f("yaw", (float) ((mc.player.yRot * 2 * Math.PI) / 360.0));
-//                cache.glUniform1f("pitch", -(float) ((mc.player.xRot * 2 * Math.PI) / 360.0));
-//                cache.glUniform1f("time", (BCClientEventHandler.elapsedTicks + Minecraft.getInstance().getFrameTime()) / 1);
-//            })
-            .build();
-
-    public static ShaderProgram gemShader = ShaderProgramBuilder.builder()
-            .addShader("vert", shader -> shader
-                    .type(ShaderObject.StandardShaderType.VERTEX)
-                    .source(new ResourceLocation(DraconicEvolution.MODID, "shaders/common.vert"))
-            )
-            .addShader("frag", shader -> shader
-                    .type(ShaderObject.StandardShaderType.FRAGMENT)
-                    .source(new ResourceLocation(DraconicEvolution.MODID, "shaders/tool_gem.frag"))
-                    .uniform("time", UniformType.FLOAT)
-                    .uniform("baseColour", UniformType.VEC4)
-            )
-//            .whenUsed(cache -> cache.glUniform1f("time", (BCClientEventHandler.elapsedTicks + Minecraft.getInstance().getFrameTime()) / 20))
-            .build();
-
-    public static ShaderProgram bladeShader = ShaderProgramBuilder.builder()
-            .addShader("vert", shader -> shader
-                    .type(ShaderObject.StandardShaderType.VERTEX)
-                    .source(new ResourceLocation(DraconicEvolution.MODID, "shaders/common.vert"))
-            )
-            .addShader("frag", shader -> shader
-                    .type(ShaderObject.StandardShaderType.FRAGMENT)
-                    .source(new ResourceLocation(DraconicEvolution.MODID, "shaders/tool_blade.frag"))
-                    .uniform("time", UniformType.FLOAT)
-                    .uniform("baseColour", UniformType.VEC4)
-            )
-//            .whenUsed(cache -> cache.glUniform1f("time", (BCClientEventHandler.elapsedTicks + Minecraft.getInstance().getFrameTime()) / 20))
-            .build();
-
-    public static ShaderProgram traceShader = ShaderProgramBuilder.builder()
-            .addShader("vert", shader -> shader
-                    .type(ShaderObject.StandardShaderType.VERTEX)
-                    .source(new ResourceLocation(DraconicEvolution.MODID, "shaders/common.vert"))
-            )
-            .addShader("frag", shader -> shader
-                    .type(ShaderObject.StandardShaderType.FRAGMENT)
-                    .source(new ResourceLocation(DraconicEvolution.MODID, "shaders/tool_trace.frag"))
-                    .uniform("time", UniformType.FLOAT)
-                    .uniform("baseColour", UniformType.VEC4)
-            )
-//            .whenUsed(cache -> cache.glUniform1f("time", (BCClientEventHandler.elapsedTicks + Minecraft.getInstance().getFrameTime()) / 20))
-            .build();
+//    public static ShaderProgram chaosShader = ShaderProgramBuilder.builder()
+//            .addShader("vert", shader -> shader
+//                    .type(ShaderObject.StandardShaderType.VERTEX)
+//                    .source(new ResourceLocation(DraconicEvolution.MODID, "shaders/chaos.vert"))
+//            )
+//            .addShader("frag", shader -> shader
+//                    .type(ShaderObject.StandardShaderType.FRAGMENT)
+//                    .source(new ResourceLocation(DraconicEvolution.MODID, "shaders/chaos.frag"))
+//                    .uniform("alpha", UniformType.FLOAT)
+//                    .uniform("yaw", UniformType.FLOAT)
+//                    .uniform("pitch", UniformType.FLOAT)
+//                    .uniform("time", UniformType.FLOAT)
+//            )
+////            .whenUsed(cache -> {
+////                cache.glUniform1f("alpha", 0.7F);
+////                Minecraft mc = Minecraft.getInstance();
+////                cache.glUniform1f("yaw", (float) ((mc.player.yRot * 2 * Math.PI) / 360.0));
+////                cache.glUniform1f("pitch", -(float) ((mc.player.xRot * 2 * Math.PI) / 360.0));
+////                cache.glUniform1f("time", (BCClientEventHandler.elapsedTicks + Minecraft.getInstance().getFrameTime()) / 1);
+////            })
+//            .build();
+//
+//    public static ShaderProgram gemShader = ShaderProgramBuilder.builder()
+//            .addShader("vert", shader -> shader
+//                    .type(ShaderObject.StandardShaderType.VERTEX)
+//                    .source(new ResourceLocation(DraconicEvolution.MODID, "shaders/common.vert"))
+//            )
+//            .addShader("frag", shader -> shader
+//                    .type(ShaderObject.StandardShaderType.FRAGMENT)
+//                    .source(new ResourceLocation(DraconicEvolution.MODID, "shaders/tool_gem.frag"))
+//                    .uniform("time", UniformType.FLOAT)
+//                    .uniform("baseColour", UniformType.VEC4)
+//            )
+////            .whenUsed(cache -> cache.glUniform1f("time", (BCClientEventHandler.elapsedTicks + Minecraft.getInstance().getFrameTime()) / 20))
+//            .build();
+//
+//    public static ShaderProgram bladeShader = ShaderProgramBuilder.builder()
+//            .addShader("vert", shader -> shader
+//                    .type(ShaderObject.StandardShaderType.VERTEX)
+//                    .source(new ResourceLocation(DraconicEvolution.MODID, "shaders/common.vert"))
+//            )
+//            .addShader("frag", shader -> shader
+//                    .type(ShaderObject.StandardShaderType.FRAGMENT)
+//                    .source(new ResourceLocation(DraconicEvolution.MODID, "shaders/tool_blade.frag"))
+//                    .uniform("time", UniformType.FLOAT)
+//                    .uniform("baseColour", UniformType.VEC4)
+//            )
+////            .whenUsed(cache -> cache.glUniform1f("time", (BCClientEventHandler.elapsedTicks + Minecraft.getInstance().getFrameTime()) / 20))
+//            .build();
+//
+//    public static ShaderProgram traceShader = ShaderProgramBuilder.builder()
+//            .addShader("vert", shader -> shader
+//                    .type(ShaderObject.StandardShaderType.VERTEX)
+//                    .source(new ResourceLocation(DraconicEvolution.MODID, "shaders/common.vert"))
+//            )
+//            .addShader("frag", shader -> shader
+//                    .type(ShaderObject.StandardShaderType.FRAGMENT)
+//                    .source(new ResourceLocation(DraconicEvolution.MODID, "shaders/tool_trace.frag"))
+//                    .uniform("time", UniformType.FLOAT)
+//                    .uniform("baseColour", UniformType.VEC4)
+//            )
+////            .whenUsed(cache -> cache.glUniform1f("time", (BCClientEventHandler.elapsedTicks + Minecraft.getInstance().getFrameTime()) / 20))
+//            .build();
 
 
     public RenderType modelType;
@@ -107,14 +110,14 @@ public abstract class ToolRenderBase implements IItemRenderer {
     public CCModel bladeModel;
     public CCModel gemModel;
 
-//    public VBORenderType baseVBOType;
-//    public VBORenderType guiBaseVBOType;
-//    public VBORenderType materialVBOType;
-//    public VBORenderType materialChaosVBOType;
-//    public VBORenderType guiMaterialVBOType;
-//    public VBORenderType traceVBOType;
-//    public VBORenderType bladeVBOType;
-//    public VBORenderType gemVBOType;
+    public VBORenderType baseVBOType;
+    public VBORenderType guiBaseVBOType;
+    public VBORenderType materialVBOType;
+    public VBORenderType materialChaosVBOType;
+    public VBORenderType guiMaterialVBOType;
+    public VBORenderType traceVBOType;
+    public VBORenderType bladeVBOType;
+    public VBORenderType gemVBOType;
 
     public TechLevel techLevel;
 
@@ -122,21 +125,21 @@ public abstract class ToolRenderBase implements IItemRenderer {
         this.techLevel = techLevel;
         String levelName = techLevel.name().toLowerCase(Locale.ENGLISH);
         modelType = RenderType.create("modelType", DefaultVertexFormat.BLOCK, VertexFormat.Mode.TRIANGLES, 256, true, false, RenderType.CompositeState.builder()
+                .setShaderState(new RenderStateShard.ShaderStateShard(() -> DEShaders.customBlockShader))
                 .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(DraconicEvolution.MODID, "textures/item/equipment/" + levelName + "_" + tool + ".png"), false, false))
-//                .setDiffuseLightingState(RenderStateShard.DIFFUSE_LIGHTING)
                 .setLightmapState(RenderStateShard.LIGHTMAP)
-//                .texturing(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
                 .createCompositeState(true));
 
         modelGuiType = RenderType.create("modelGuiType", DefaultVertexFormat.BLOCK, VertexFormat.Mode.TRIANGLES, 256, RenderType.CompositeState.builder()
+                        .setShaderState(new RenderStateShard.ShaderStateShard(() -> DEShaders.customBlockShader))
                         .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(DraconicEvolution.MODID, "textures/item/equipment/" + levelName + "_" + tool + ".png"), false, false))
                         .setLightmapState(RenderStateShard.LIGHTMAP)
                         .setOverlayState(RenderStateShard.NO_OVERLAY)
-//                .texturing(new RenderState.TexturingState("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
                         .createCompositeState(false)
         );
 
         chaosType = RenderType.create("chaosShaderType", DefaultVertexFormat.BLOCK, VertexFormat.Mode.TRIANGLES, 256, RenderType.CompositeState.builder()
+                .setShaderState(new RenderStateShard.ShaderStateShard(() -> DEShaders.customBlockShader))
                 .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(DraconicEvolution.MODID, "textures/item/equipment/chaos_shader.png"), true, false))
                 .setLightmapState(RenderStateShard.LIGHTMAP)
                 .setOverlayState(RenderStateShard.OVERLAY)
@@ -144,6 +147,7 @@ public abstract class ToolRenderBase implements IItemRenderer {
         );
 
         shaderParentType = RenderType.create("shaderGemType", DefaultVertexFormat.BLOCK, VertexFormat.Mode.TRIANGLES, 256, RenderType.CompositeState.builder()
+                .setShaderState(new RenderStateShard.ShaderStateShard(() -> DEShaders.customBlockShader))
                 .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(DraconicEvolution.MODID, "textures/item/equipment/shader_fallback_" + levelName + ".png"), false, false))
                 .setLightmapState(RenderStateShard.LIGHTMAP)
                 .setOverlayState(RenderStateShard.OVERLAY)
@@ -190,12 +194,12 @@ public abstract class ToolRenderBase implements IItemRenderer {
         return false;
     }
 
-    protected static float[][] baseColours = {
-            {0.0F, 0.5F, 0.8F, 1F},
-            {0.55F, 0.0F, 0.65F, 1F},
-            {0.8F, 0.5F, 0.1F, 1F},
-            {0.75F, 0.05F, 0.05F, 0.2F}};
-
+//    protected static float[][] baseColours = {
+//            {0.0F, 0.5F, 0.8F, 1F},
+//            {0.55F, 0.0F, 0.65F, 1F},
+//            {0.8F, 0.5F, 0.1F, 1F},
+//            {0.75F, 0.05F, 0.05F, 0.2F}};
+//
 //    public static ShaderRenderType getShaderType(RenderType parent, TechLevel techLevel, ShaderProgram shader) {
 //        return getShaderType(parent, techLevel, shader, 1F);
 //    }
@@ -233,69 +237,69 @@ public abstract class ToolRenderBase implements IItemRenderer {
 //    }
 //
 
-//    public void initBaseVBO() {
-//        baseVBOType = new VBORenderType(modelType, DefaultVertexFormat.POSITION_TEX_COLOR_NORMAL, (format, builder) -> {
-//            CCRenderState ccrs = CCRenderState.instance();
-//            ccrs.reset();
-//            ccrs.bind(builder, format);
-//            baseModel.render(ccrs);
-//        });
-//
-//        guiBaseVBOType = new VBORenderType(modelGuiType, DefaultVertexFormat.POSITION_TEX_COLOR_NORMAL, (format, builder) -> {
-//            CCRenderState ccrs = CCRenderState.instance();
-//            ccrs.reset();
-//            ccrs.bind(builder, format);
-//            baseModel.render(ccrs);
-//        });
-//    }
-//
-//    public void initMaterialVBO() {
-//        materialVBOType = new VBORenderType(modelType, DefaultVertexFormat.POSITION_TEX_COLOR_NORMAL, (format, builder) -> {
-//            CCRenderState ccrs = CCRenderState.instance();
-//            ccrs.reset();
-//            ccrs.bind(builder, format);
-//            materialModel.render(ccrs);
-//        });
-//
-//        guiMaterialVBOType = new VBORenderType(modelGuiType, DefaultVertexFormat.POSITION_TEX_COLOR_NORMAL, (format, builder) -> {
-//            CCRenderState ccrs = CCRenderState.instance();
-//            ccrs.reset();
-//            ccrs.bind(builder, format);
-//            materialModel.render(ccrs);
-//        });
-//
-//        materialChaosVBOType = new VBORenderType(chaosType, DefaultVertexFormat.POSITION_TEX_COLOR_NORMAL, (format, builder) -> {
-//            CCRenderState ccrs = CCRenderState.instance();
-//            ccrs.reset();
-//            ccrs.bind(builder, format);
-//            materialModel.render(ccrs);
-//        });
-//    }
-//
-//    public void initTraceVBO() {
-//        traceVBOType = new VBORenderType(shaderParentType, DefaultVertexFormat.POSITION_TEX_COLOR_NORMAL, (format, builder) -> {
-//            CCRenderState ccrs = CCRenderState.instance();
-//            ccrs.reset();
-//            ccrs.bind(builder, format);
-//            traceModel.render(ccrs);
-//        });
-//    }
-//
-//    public void initBladeVBO() {
-//        bladeVBOType = new VBORenderType(shaderParentType, DefaultVertexFormat.POSITION_TEX_COLOR_NORMAL, (format, builder) -> {
-//            CCRenderState ccrs = CCRenderState.instance();
-//            ccrs.reset();
-//            ccrs.bind(builder, format);
-//            bladeModel.render(ccrs);
-//        });
-//    }
-//
-//    public void initGemVBO() {
-//        gemVBOType = new VBORenderType(shaderParentType, DefaultVertexFormat.POSITION_TEX_COLOR_NORMAL, (format, builder) -> {
-//            CCRenderState ccrs = CCRenderState.instance();
-//            ccrs.reset();
-//            ccrs.bind(builder, format);
-//            gemModel.render(ccrs);
-//        });
-//    }
+    public void initBaseVBO() {
+        baseVBOType = new VBORenderType(modelType, DefaultVertexFormat.POSITION_TEX_COLOR_NORMAL, (format, builder) -> {
+            CCRenderState ccrs = CCRenderState.instance();
+            ccrs.reset();
+            ccrs.bind(builder, format);
+            baseModel.render(ccrs);
+        });
+
+        guiBaseVBOType = new VBORenderType(modelGuiType, DefaultVertexFormat.POSITION_TEX_COLOR_NORMAL, (format, builder) -> {
+            CCRenderState ccrs = CCRenderState.instance();
+            ccrs.reset();
+            ccrs.bind(builder, format);
+            baseModel.render(ccrs);
+        });
+    }
+
+    public void initMaterialVBO() {
+        materialVBOType = new VBORenderType(modelType, DefaultVertexFormat.POSITION_TEX_COLOR_NORMAL, (format, builder) -> {
+            CCRenderState ccrs = CCRenderState.instance();
+            ccrs.reset();
+            ccrs.bind(builder, format);
+            materialModel.render(ccrs);
+        });
+
+        guiMaterialVBOType = new VBORenderType(modelGuiType, DefaultVertexFormat.POSITION_TEX_COLOR_NORMAL, (format, builder) -> {
+            CCRenderState ccrs = CCRenderState.instance();
+            ccrs.reset();
+            ccrs.bind(builder, format);
+            materialModel.render(ccrs);
+        });
+
+        materialChaosVBOType = new VBORenderType(chaosType, DefaultVertexFormat.POSITION_TEX_COLOR_NORMAL, (format, builder) -> {
+            CCRenderState ccrs = CCRenderState.instance();
+            ccrs.reset();
+            ccrs.bind(builder, format);
+            materialModel.render(ccrs);
+        });
+    }
+
+    public void initTraceVBO() {
+        traceVBOType = new VBORenderType(shaderParentType, DefaultVertexFormat.POSITION_TEX_COLOR_NORMAL, (format, builder) -> {
+            CCRenderState ccrs = CCRenderState.instance();
+            ccrs.reset();
+            ccrs.bind(builder, format);
+            traceModel.render(ccrs);
+        });
+    }
+
+    public void initBladeVBO() {
+        bladeVBOType = new VBORenderType(shaderParentType, DefaultVertexFormat.POSITION_TEX_COLOR_NORMAL, (format, builder) -> {
+            CCRenderState ccrs = CCRenderState.instance();
+            ccrs.reset();
+            ccrs.bind(builder, format);
+            bladeModel.render(ccrs);
+        });
+    }
+
+    public void initGemVBO() {
+        gemVBOType = new VBORenderType(shaderParentType, DefaultVertexFormat.POSITION_TEX_COLOR_NORMAL, (format, builder) -> {
+            CCRenderState ccrs = CCRenderState.instance();
+            ccrs.reset();
+            ccrs.bind(builder, format);
+            gemModel.render(ccrs);
+        });
+    }
 }

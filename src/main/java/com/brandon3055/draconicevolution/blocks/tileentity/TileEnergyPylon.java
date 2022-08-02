@@ -1,6 +1,5 @@
 package com.brandon3055.draconicevolution.blocks.tileentity;
 
-import com.brandon3055.brandonscore.api.power.IExtendedRFStorage;
 import com.brandon3055.brandonscore.api.power.IOPStorage;
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.capability.CapabilityOP;
@@ -30,7 +29,7 @@ import java.util.Random;
 /**
  * Created by brandon3055 on 30/3/2016.
  */
-public class TileEnergyPylon extends TileBCore implements IMultiBlockPart, IExtendedRFStorage {
+public class TileEnergyPylon extends TileBCore implements IMultiBlockPart {
     public final ManagedBool isOutputMode = register(new ManagedBool("is_output_mode", DataFlags.SAVE_NBT_SYNC_TILE, DataFlags.TRIGGER_UPDATE));
     public final ManagedBool structureValid = register(new ManagedBool("structure_valid", DataFlags.SAVE_NBT_SYNC_TILE, DataFlags.TRIGGER_UPDATE));
     public final ManagedVec3I coreOffset = register(new ManagedVec3I("core_offset", new Vec3I(0, -1, 0), DataFlags.SAVE_NBT_SYNC_TILE));
@@ -45,52 +44,56 @@ public class TileEnergyPylon extends TileBCore implements IMultiBlockPart, IExte
     private IOPStorage opAdapter = new IOPStorage() {
         @Override
         public boolean canExtract() {
-            return getExtendedStorage() > 0;
+//            return getExtendedStorage() > 0;
+            return true;
         }
 
         @Override
         public boolean canReceive() {
-            return getExtendedStorage() < getExtendedCapacity();
+//            return getExtendedStorage() < getExtendedCapacity();
+            return true;
         }
 
         @Override
         public long receiveOP(long maxReceive, boolean simulate) {
-            if (!hasCoreLock.get() || isOutputMode.get() || getCore() == null || !getCore().active.get()) {
-                return 0;
-            }
-
-            long received = getCore().receiveEnergy(maxReceive, simulate);
-
-            if (!simulate && received > 0) {
-                particleRate.set((byte) Math.min(20, received < 500 ? 1 : received / 500));
-            }
-
-            return received;
+//            if (!hasCoreLock.get() || isOutputMode.get() || getCore() == null || !getCore().active.get()) {
+//                return 0;
+//            }
+//
+//            long received = getCore().receiveEnergy(maxReceive, simulate);
+//
+//            if (!simulate && received > 0) {
+//                particleRate.set((byte) Math.min(20, received < 500 ? 1 : received / 500));
+//            }
+//
+//            return received;
+            return 0;
         }
 
         @Override
         public long extractOP(long maxExtract, boolean simulate) {
-            if (!hasCoreLock.get() || !isOutputMode.get() || getCore() == null || !getCore().active.get()) {
-                return 0;
-            }
-
-            long extracted = getCore().extractEnergy(maxExtract, simulate);
-
-            if (!simulate && extracted > 0) {
-                particleRate.set((byte) Math.min(20, extracted < 500 && extracted > 0 ? 1 : extracted / 500));
-            }
-
-            return extracted;
+//            if (!hasCoreLock.get() || !isOutputMode.get() || getCore() == null || !getCore().active.get()) {
+//                return 0;
+//            }
+//
+//            long extracted = getCore().extractEnergy(maxExtract, simulate);
+//
+//            if (!simulate && extracted > 0) {
+//                particleRate.set((byte) Math.min(20, extracted < 500 && extracted > 0 ? 1 : extracted / 500));
+//            }
+//
+//            return extracted;
+            return 0;
         }
 
         @Override
         public long getOPStored() {
-            return getExtendedStorage();
+            return 0;
         }
 
         @Override
         public long getMaxOPStored() {
-            return getExtendedCapacity();
+            return 0;
         }
 
         @Override
@@ -121,37 +124,37 @@ public class TileEnergyPylon extends TileBCore implements IMultiBlockPart, IExte
 
     @Override
     public void tick() {
-        super.tick();
-        if (!structureValid.get() || !hasCoreLock.get() || getCore() == null || !getCore().active.get()) {
-            return;
-        }
-
-        if (tick++ % 10 == 0 && getExtendedCapacity() > 0) {
-            updateComparators();
-        }
-
-        if (!level.isClientSide && isOutputMode.get()) {
-            long extracted = getCore().extractEnergy(sendEnergyToAll(opAdapter.getOPStored(), opAdapter.getOPStored()), false);
-            if (extracted > 0) {
-                particleRate.set((byte) Math.min(20, extracted < 500 ? 1 : extracted / 500));
-            }
-        }
-
-        if (level.isClientSide) {
-            spawnParticles();
-        }
-
-        if (!level.isClientSide && (particleRate.get() > 1 || (particleRate.get() > 0 && level.random.nextInt(2) == 0))) {
-            particleRate.subtract((byte) 2);
-        }
+//        super.tick();
+//        if (!structureValid.get() || !hasCoreLock.get() || getCore() == null || !getCore().active.get()) {
+//            return;
+//        }
+//
+//        if (tick++ % 10 == 0 && getExtendedCapacity() > 0) {
+//            updateComparators();
+//        }
+//
+//        if (!level.isClientSide && isOutputMode.get()) {
+//            long extracted = getCore().extractEnergy(sendEnergyToAll(opAdapter.getOPStored(), opAdapter.getOPStored()), false);
+//            if (extracted > 0) {
+//                particleRate.set((byte) Math.min(20, extracted < 500 ? 1 : extracted / 500));
+//            }
+//        }
+//
+//        if (level.isClientSide) {
+//            spawnParticles();
+//        }
+//
+//        if (!level.isClientSide && (particleRate.get() > 1 || (particleRate.get() > 0 && level.random.nextInt(2) == 0))) {
+//            particleRate.subtract((byte) 2);
+//        }
     }
 
     public void updateComparators() {
-        int cOut = (int) (((double) getExtendedStorage() / getExtendedCapacity()) * 15D);
-        if (cOut != lastCompOverride) {
-            lastCompOverride = cOut;
-            level.updateNeighborsAt(worldPosition, getBlockState().getBlock());
-        }
+//        int cOut = (int) (((double) getExtendedStorage() / getExtendedCapacity()) * 15D);
+//        if (cOut != lastCompOverride) {
+//            lastCompOverride = cOut;
+//            level.updateNeighborsAt(worldPosition, getBlockState().getBlock());
+//        }
     }
 
     //region MultiBlock Handling
@@ -188,19 +191,19 @@ public class TileEnergyPylon extends TileBCore implements IMultiBlockPart, IExte
 
     private List<TileEnergyCore> findActiveCores() {
         List<TileEnergyCore> list = new LinkedList<>();
-        int yMod = sphereOnTop.get() ? 18 : -18;
-        int range = 18;
-
-        Iterable<BlockPos> positions = BlockPos.betweenClosed(worldPosition.offset(-range, -range + yMod, -range), worldPosition.offset(range, range + yMod, range));
-
-        for (BlockPos blockPos : positions) {
-            if (level.getBlockState(blockPos).getBlock() == DEContent.energy_core) {
-                BlockEntity tile = level.getBlockEntity(blockPos);
-                if (tile instanceof TileEnergyCore && ((TileEnergyCore) tile).active.get()) {
-                    list.add(((TileEnergyCore) tile));
-                }
-            }
-        }
+//        int yMod = sphereOnTop.get() ? 18 : -18;
+//        int range = 18;
+//
+//        Iterable<BlockPos> positions = BlockPos.betweenClosed(worldPosition.offset(-range, -range + yMod, -range), worldPosition.offset(range, range + yMod, range));
+//
+//        for (BlockPos blockPos : positions) {
+//            if (level.getBlockState(blockPos).getBlock() == DEContent.energy_core) {
+//                BlockEntity tile = level.getBlockEntity(blockPos);
+//                if (tile instanceof TileEnergyCore && ((TileEnergyCore) tile).active.get()) {
+//                    list.add(((TileEnergyCore) tile));
+//                }
+//            }
+//        }
 
         return list;
     }
@@ -373,20 +376,20 @@ public class TileEnergyPylon extends TileBCore implements IMultiBlockPart, IExte
 
     //endregion
 
-    @Override
+//    @Override
     public long getExtendedStorage() {
-        if (!hasCoreLock.get() || getCore() == null) {
+//        if (!hasCoreLock.get() || getCore() == null) {
             return 0;
-        }
-        return getCore().getExtendedStorage();
+//        }
+//        return getCore().getExtendedStorage();
     }
-
-    @Override
+//
+//    @Override
     public long getExtendedCapacity() {
-        if (!hasCoreLock.get() || getCore() == null) {
+//        if (!hasCoreLock.get() || getCore() == null) {
             return 0;
-        }
-        return getCore().getExtendedCapacity();
+//        }
+//        return getCore().getExtendedCapacity();
     }
 
 //    @Override

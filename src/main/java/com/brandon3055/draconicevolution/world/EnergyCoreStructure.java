@@ -28,6 +28,7 @@ import org.lwjgl.opengl.GL11;
 /**
  * Created by brandon3055 on 1/4/2016.
  */
+@Deprecated
 public class EnergyCoreStructure extends MultiBlockHelper {
     private final int FLAG_RENDER = 0;
     private final int FLAG_FORME = 1;
@@ -171,8 +172,8 @@ public class EnergyCoreStructure extends MultiBlockHelper {
             world.setBlockAndUpdate(pos, DEContent.energy_core_structure.defaultBlockState());
             BlockEntity tile = world.getBlockEntity(pos);
             if (tile instanceof TileCoreStructure) {
-                ((TileCoreStructure) tile).blockName.set(name);
-                ((TileCoreStructure) tile).setController(core);
+//                ((TileCoreStructure) tile).blockName.set(name);
+//                ((TileCoreStructure) tile).setController(core);
             }
         }
 

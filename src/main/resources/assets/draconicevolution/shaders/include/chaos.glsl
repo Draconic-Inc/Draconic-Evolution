@@ -1,22 +1,4 @@
-#version 150
-
-#define M_PI 3.1415926535897932384626433832795
-
-uniform sampler2D Sampler0;
-uniform float Time;
-
-uniform float Yaw;
-uniform float Pitch;
-
-uniform float Alpha;
-
-in vec4 Color;
-in vec3 fPos;
-in vec2 FaceMod;
-
-out vec4 fragColor;
-
-mat4 rotationMatrix(vec3 axis, float angle) {
+mat4 c_rotationMatrix(vec3 axis, float angle) {
 
     axis = normalize(axis);
     float s = sin(angle);
@@ -29,19 +11,19 @@ mat4 rotationMatrix(vec3 axis, float angle) {
     0.0,                                0.0,                                0.0,                                1.0);
 }
 
-vec3 mod289(vec3 x) {
+vec3 c_mod289(vec3 x) {
     return x - floor(x * (1.0 / 289.0)) * 289.0;
 }
 
-vec2 mod289(vec2 x) {
+vec2 c_mod289(vec2 x) {
     return x - floor(x * (1.0 / 289.0)) * 289.0;
 }
 
-vec3 permute(vec3 x) {
-    return mod289(((x*34.0)+1.0)*x);
+vec3 c_permute(vec3 x) {
+    return c_mod289(((x*34.0)+1.0)*x);
 }
 
-float snoise2(vec2 v) {
+float c_snoise2(vec2 v) {
     const vec4 C = vec4(0.211324865405187,  // (3.0-sqrt(3.0))/6.0
     0.366025403784439,  // 0.5*(sqrt(3.0)-1.0)
     -0.577350269189626,  // -1.0 + 2.0 * C.x
@@ -57,8 +39,8 @@ float snoise2(vec2 v) {
     x12.xy -= i1;
 
     // Permutations
-    i = mod289(i); // Avoid truncation effects in permutation
-    vec3 p = permute( permute( i.y + vec3(0.0, i1.y, 1.0 ))
+    i = c_mod289(i); // Avoid truncation effects in permutation
+    vec3 p = c_permute( c_permute( i.y + vec3(0.0, i1.y, 1.0 ))
     + i.x + vec3(0.0, i1.x, 1.0 ));
 
     vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy), dot(x12.zw,x12.zw)), 0.0);
@@ -84,22 +66,22 @@ float snoise2(vec2 v) {
     return 130.0 * dot(m, g);
 }
 
-vec3 circle(vec2 uv, vec2 p, float r, float blur, vec3 color) {
+vec3 c_circle(vec2 uv, vec2 p, float r, float blur, vec3 color) {
     float d = length(uv-p);
     float c = smoothstep(r, r-blur, d);
     color = vec3(color*c);
     return color;
 }
 
-float rand(float seed) {
+float c_rand(float seed) {
     return mod(M_PI * seed, 1);
 }
 
-vec2 randVec2(float seed) {
-    return vec2(rand(seed * 134.3243), rand(floor(seed * 322.235)));
+vec2 c_randVec2(float seed) {
+    return vec2(c_rand(seed * 134.3243), c_rand(floor(seed * 322.235)));
 }
 
-vec3 explode(vec2 uv, vec2 pos, float anim, float maxRad) {
+vec3 c_explode(vec2 uv, vec2 pos, float anim, float maxRad) {
     float rad = anim * maxRad;
     vec3 color = vec3(0);
 
@@ -108,32 +90,30 @@ vec3 explode(vec2 uv, vec2 pos, float anim, float maxRad) {
     color = vec3(.45, .05, .02);
 
     //Base Background colour Circle.
-    vec3 c = circle(uv, pos, rad, 0.04 * maxRad, color);
+    vec3 c = c_circle(uv, pos, rad, 0.04 * maxRad, color);
 
     //Inner Circle
-    c -= circle(uv, pos, rad, ir, color);
+    c -= c_circle(uv, pos, rad, ir, color);
     c *= 2.;
 
     //Initial Explosion Flash
-    c += circle(uv, pos, (-maxRad * anim) + (.85 * maxRad), (.8 * maxRad), vec3(1.0, .84, .23));
+    c += c_circle(uv, pos, (-maxRad * anim) + (.85 * maxRad), (.8 * maxRad), vec3(1.0, .84, .23));
     return max(vec3(0), c);
 }
 
-void main() {
-    // background color
-
+vec4 chaos(float time, float yaw, float pitch, float alphaMod, vec2 faceModifier, vec3 fPos, sampler2D Sampler0) {
     vec4 col = vec4(0, 0, 0, 1);//vec4(0.047, 0.035, 0.063, 1) + (snoise(gl_FragCoord.xy) * vec4(0.02, 0.02, 0.02, 1));
 
     // get ray from camera to fragment
     vec4 dir = normalize(vec4( -fPos, 0));
 
     // rotate the ray to show the right bit of the sphere for the angle
-    float sb = sin(Pitch);
-    float cb = cos(Pitch);
+    float sb = sin(pitch);
+    float cb = cos(pitch);
     dir = normalize(vec4(dir.x, dir.y * cb - dir.z * sb, dir.y * sb + dir.z * cb, 0));
 
-    float sa = sin(-Yaw);
-    float ca = cos(-Yaw);
+    float sa = sin(-yaw);
+    float ca = cos(-yaw);
     dir = normalize(vec4(dir.z * sa + dir.x * ca, dir.y, dir.z * ca - dir.x * sa, 0));
 
     vec4 ray;
@@ -153,15 +133,15 @@ void main() {
         vec3 axis = normalize(vec3(sin(mod(rand1, 2*M_PI)), sin(mod(rand2, 2*M_PI)) , cos(mod(rand3, 2*M_PI))));
 
         // apply
-        ray = dir * rotationMatrix(axis, mod(rand3, 2*M_PI));
+        ray = dir * c_rotationMatrix(axis, mod(rand3, 2*M_PI));
 
         // calcuate the UVs from the final ray
-        float u = 0.5 + (atan(ray.z,ray.x)/(2*M_PI)) + FaceMod.x;
-        float v = 0.5 + (asin(ray.y)/M_PI) + FaceMod.y;
+        float u = 0.5 + (atan(ray.z,ray.x)/(2*M_PI)) + faceModifier.x;
+        float v = 0.5 + (asin(ray.y)/M_PI) + faceModifier.y;
 
         // get UV scaled for layers and offset by time;
         float scale = mult*0.5 + 2.75;
-        vec2 tex = vec2( u * scale, (v + Time * 0.00006) * scale * 0.6 );
+        vec2 tex = vec2( u * scale, (v + time * 0.00006) * scale * 0.6 );
 
         // sample the texture
         vec4 tcol = texture2D(Sampler0, tex);
@@ -176,11 +156,11 @@ void main() {
 
         // add Splosions!
         for (int i2 = 1; i2 < 4; i2++) {
-            float t = mod(Time + (mult * 234.234), 2000);
+            float t = mod(time + (mult * 234.234), 2000);
             float expTime = (t / 30) + (4.2424242 * i * i2);
             float expPosRand = floor(expTime) * i2;
 
-            vec3 exc = explode(vec2(u, v), randVec2(expPosRand),  mod(expTime, 1.0), 0.003 * mult);
+            vec3 exc = c_explode(vec2(u, v), c_randVec2(expPosRand),  mod(expTime, 1.0), 0.003 * mult);
             r += exc.r * (32 - mult);
             g += exc.g * (32 - mult);
             b += exc.b * (32 - mult);
@@ -190,14 +170,14 @@ void main() {
         col = col*(1-a) + vec4(r,g,b,1)*a;
     }
 
-    float br = clamp(2.5*gl_FragCoord.w + Alpha,0,1);
+    float br = clamp(2.5*gl_FragCoord.w + alphaMod,0,1);
 
     col = col * br + vec4(0.047, 0.035, 0.063, 1) * (1-br);
 
     // increase the brightness of flashing ducts
-    col.rgb = clamp(col.rgb * (1+Alpha*4),0,1);
+    col.rgb = clamp(col.rgb * (1+alphaMod*4),0,1);
 
     col.a = 1;
 
-    fragColor = col;
+    return col;
 }

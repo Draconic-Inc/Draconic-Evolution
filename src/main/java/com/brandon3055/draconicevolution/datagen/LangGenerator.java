@@ -627,13 +627,14 @@ public class LangGenerator extends LanguageProvider {
 
         //Energy Core
         helper.setPrefix("gui.draconicevolution.energy_core");
+        helper.add("title",                                                      "Tier %s Energy Core");
         helper.add("activate",                                                   "Activate");
         helper.add("deactivate",                                                 "Deactivate");
         helper.add("tier_down",                                                  "Tier Down");
         helper.add("tier_up",                                                    "Tier Up");
         helper.add("build_guide",                                                "Toggle Build Guide");
         helper.add("assemble",                                                   "Assemble Core");
-        helper.add("tier",                                                       "Tier: %s");
+//        helper.add("tier",                                                       "Tier: %s");
         helper.add("",                                                           "");
 
 //        add("gui.de.energyStorageCore.name",                                    "Tier %s Energy Core");
