@@ -19,7 +19,7 @@ public class TileUpgradeModifier extends TileEntity implements ISidedInventory {
     public float rotationSpeed = 0;
     private float targetSpeed = 0;
 
-    //==============================================LOGIC=======================================================//
+    // ==============================================LOGIC=======================================================//
 
     @Override
     public void updateEntity() {
@@ -32,8 +32,7 @@ public class TileUpgradeModifier extends TileEntity implements ISidedInventory {
         rotation += rotationSpeed;
     }
 
-
-    //==========================================SYNCHRONIZATION==================================================//
+    // ==========================================SYNCHRONIZATION==================================================//
 
     @Override
     public Packet getDescriptionPacket() {
@@ -47,7 +46,7 @@ public class TileUpgradeModifier extends TileEntity implements ISidedInventory {
         readFromNBT(pkt.func_148857_g());
     }
 
-    //==============================================INVENTORY====================================================//
+    // ==============================================INVENTORY====================================================//
 
     @Override
     public int getSizeInventory() {
@@ -118,12 +117,10 @@ public class TileUpgradeModifier extends TileEntity implements ISidedInventory {
     }
 
     @Override
-    public void openInventory() {
-    }
+    public void openInventory() {}
 
     @Override
-    public void closeInventory() {
-    }
+    public void closeInventory() {}
 
     @Override
     public boolean isItemValidForSlot(int i, ItemStack itemstack) {
@@ -132,7 +129,7 @@ public class TileUpgradeModifier extends TileEntity implements ISidedInventory {
 
     @Override
     public int[] getAccessibleSlotsFromSide(int var1) {
-        return new int[]{0};
+        return new int[] {0};
     }
 
     @Override
@@ -145,7 +142,7 @@ public class TileUpgradeModifier extends TileEntity implements ISidedInventory {
         return true;
     }
 
-    //===========================================================================================================//
+    // ===========================================================================================================//
 
     @Override
     public void writeToNBT(NBTTagCompound compound) {

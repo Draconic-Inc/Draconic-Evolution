@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.common.tileentities;
 
+import com.brandon3055.draconicevolution.DraconicEvolution;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
@@ -10,14 +11,13 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.storage.WorldInfo;
-import com.brandon3055.draconicevolution.DraconicEvolution;
 
 public class TileWeatherController extends TileEntity implements IInventory {
     int tick = 0;
     boolean running = false;
     public boolean lastTickInput = false;
     public int mode = 0;
-    private final static boolean debug = DraconicEvolution.debug;
+    private static final boolean debug = DraconicEvolution.debug;
 
     private ItemStack[] items;
     public int charges;
@@ -50,7 +50,6 @@ public class TileWeatherController extends TileEntity implements IInventory {
 
             if (fuel.stackSize > 0 && fuel.isItemEqual(new ItemStack(Items.emerald))) {
                 addCharge(10);
-
             }
         }
     }
@@ -69,12 +68,46 @@ public class TileWeatherController extends TileEntity implements IInventory {
                 worldObj.spawnParticle("largesmoke", xCoord + 0.5, yCoord + 1.2, zCoord + 0.5, 0D, -0.3D, 0D);
                 worldObj.spawnParticle("largesmoke", xCoord + 0.5, yCoord + 1.2, zCoord + 0.5, 0D, -0.3D, 0D);
 
-                worldObj.spawnParticle("flame", xCoord + 0.2, yCoord + 1, zCoord + 0.8, (worldObj.rand.nextFloat() - 0.5) * 1.5, 1.7D, (worldObj.rand.nextFloat() - 0.5) * 1.5);
-                worldObj.spawnParticle("flame", xCoord + 0.8, yCoord + 1, zCoord + 0.8, (worldObj.rand.nextFloat() - 0.5) * 1.5, 1.7D, (worldObj.rand.nextFloat() - 0.5) * 1.5);
-                worldObj.spawnParticle("flame", xCoord + 0.2, yCoord + 1, zCoord + 0.2, (worldObj.rand.nextFloat() - 0.5) * 1.5, 1.7D, (worldObj.rand.nextFloat() - 0.5) * 1.5);
-                worldObj.spawnParticle("flame", xCoord + 0.8, yCoord + 1, zCoord + 0.2, (worldObj.rand.nextFloat() - 0.5) * 1.5, 1.7D, (worldObj.rand.nextFloat() - 0.5) * 1.5);
-                worldObj.playSound(xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D, "mob.ghast.fireball", 10F, worldObj.rand.nextFloat() * 0.1F + 0.9F, false);
-
+                worldObj.spawnParticle(
+                        "flame",
+                        xCoord + 0.2,
+                        yCoord + 1,
+                        zCoord + 0.8,
+                        (worldObj.rand.nextFloat() - 0.5) * 1.5,
+                        1.7D,
+                        (worldObj.rand.nextFloat() - 0.5) * 1.5);
+                worldObj.spawnParticle(
+                        "flame",
+                        xCoord + 0.8,
+                        yCoord + 1,
+                        zCoord + 0.8,
+                        (worldObj.rand.nextFloat() - 0.5) * 1.5,
+                        1.7D,
+                        (worldObj.rand.nextFloat() - 0.5) * 1.5);
+                worldObj.spawnParticle(
+                        "flame",
+                        xCoord + 0.2,
+                        yCoord + 1,
+                        zCoord + 0.2,
+                        (worldObj.rand.nextFloat() - 0.5) * 1.5,
+                        1.7D,
+                        (worldObj.rand.nextFloat() - 0.5) * 1.5);
+                worldObj.spawnParticle(
+                        "flame",
+                        xCoord + 0.8,
+                        yCoord + 1,
+                        zCoord + 0.2,
+                        (worldObj.rand.nextFloat() - 0.5) * 1.5,
+                        1.7D,
+                        (worldObj.rand.nextFloat() - 0.5) * 1.5);
+                worldObj.playSound(
+                        xCoord + 0.5D,
+                        yCoord + 0.5D,
+                        zCoord + 0.5D,
+                        "mob.ghast.fireball",
+                        10F,
+                        worldObj.rand.nextFloat() * 0.1F + 0.9F,
+                        false);
             }
             if (tick > 80 && tick < 90) {
                 if (!worldObj.isRemote) {
@@ -85,16 +118,28 @@ public class TileWeatherController extends TileEntity implements IInventory {
                         worldinfo.setThundering(true);
                     }
                 }
-                worldObj.playSoundEffect(xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D, "draconicevolution:boom", 10F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
+                worldObj.playSoundEffect(
+                        xCoord + 0.5D,
+                        yCoord + 0.5D,
+                        zCoord + 0.5D,
+                        "draconicevolution:boom",
+                        10F,
+                        worldObj.rand.nextFloat() * 0.1F + 0.9F);
             }
             if (tick > 110 && worldObj.isRemote) {
 
-                worldObj.playSound(xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D, "random.fizz", 10F, worldObj.rand.nextFloat() * 0.1F + 0.9F, false);
+                worldObj.playSound(
+                        xCoord + 0.5D,
+                        yCoord + 0.5D,
+                        zCoord + 0.5D,
+                        "random.fizz",
+                        10F,
+                        worldObj.rand.nextFloat() * 0.1F + 0.9F,
+                        false);
                 worldObj.spawnParticle("explode", xCoord + 0.5, yCoord + 0, zCoord + 0, 0D, 0D, 0D);
                 worldObj.spawnParticle("explode", xCoord + 0.5, yCoord + 0, zCoord + 1, 0D, 0D, 0D);
                 worldObj.spawnParticle("explode", xCoord + 0, yCoord + 0, zCoord + 0.5, 0D, 0D, 0D);
                 worldObj.spawnParticle("explode", xCoord + 1, yCoord + 0, zCoord + 0.5, 0D, 0D, 0D);
-
             }
             if (tick > 130) {
                 tick = 0;
@@ -103,7 +148,6 @@ public class TileWeatherController extends TileEntity implements IInventory {
             }
             tick++;
         }
-
     }
 
     private void addCharge(int count) {
@@ -131,7 +175,7 @@ public class TileWeatherController extends TileEntity implements IInventory {
         readFromNBT(pkt.func_148857_g());
     }
 
-    //==============================================INVENTORY====================================================//
+    // ==============================================INVENTORY====================================================//
 
     @Override
     public int getSizeInventory() {
@@ -202,19 +246,17 @@ public class TileWeatherController extends TileEntity implements IInventory {
     }
 
     @Override
-    public void openInventory() {
-    }
+    public void openInventory() {}
 
     @Override
-    public void closeInventory() {
-    }
+    public void closeInventory() {}
 
     @Override
     public boolean isItemValidForSlot(int i, ItemStack itemstack) {
         return itemstack.isItemEqual(new ItemStack(Items.emerald));
     }
 
-    //############################################################################################################//
+    // ############################################################################################################//
     @Override
     public void writeToNBT(NBTTagCompound compound) {
         NBTTagCompound[] tag = new NBTTagCompound[items.length];
@@ -261,5 +303,4 @@ public class TileWeatherController extends TileEntity implements IInventory {
         }
         worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
     }
-
 }

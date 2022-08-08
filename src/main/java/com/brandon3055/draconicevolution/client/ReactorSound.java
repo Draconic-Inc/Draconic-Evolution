@@ -36,16 +36,24 @@ public class ReactorSound extends PositionedSound implements ITickableSound {
         if (tile.reactionTemperature > 8000) {
             volume += (float) ((tile.reactionTemperature - 8000D) / 1000D);
         }
-        if (tile.reactionTemperature > 2000 && tile.maxFieldCharge > 0 && tile.fieldCharge < (tile.maxFieldCharge * 0.2D)) {
+        if (tile.reactionTemperature > 2000
+                && tile.maxFieldCharge > 0
+                && tile.fieldCharge < (tile.maxFieldCharge * 0.2D)) {
             volume += 2D - ((tile.fieldCharge / tile.maxFieldCharge) * 10D);
         }
-        if (tile.reactionTemperature > 2000 && tile.reactorFuel + tile.convertedFuel > 0 && tile.reactorFuel < (double) (tile.reactorFuel + tile.convertedFuel) * 0.2D) {
+        if (tile.reactionTemperature > 2000
+                && tile.reactorFuel + tile.convertedFuel > 0
+                && tile.reactorFuel < (double) (tile.reactorFuel + tile.convertedFuel) * 0.2D) {
             volume += 2D - ((tile.reactorFuel / (tile.reactorFuel + tile.convertedFuel)) * 10D);
         }
 
         field_147663_c = 0.5F + volume / 2F;
 
-        if (tile.isInvalid() || !tile.getWorldObj().getChunkFromBlockCoords(tile.xCoord, tile.zCoord).isChunkLoaded) {// || player == null || tile.getDistanceFrom(player.posX, player.posY, player.posZ) > 512){
+        if (tile.isInvalid()
+                || !tile.getWorldObj()
+                        .getChunkFromBlockCoords(tile.xCoord, tile.zCoord)
+                        .isChunkLoaded) { // || player == null || tile.getDistanceFrom(player.posX, player.posY,
+            // player.posZ) > 512){
             donePlaying = true;
             repeat = false;
         }

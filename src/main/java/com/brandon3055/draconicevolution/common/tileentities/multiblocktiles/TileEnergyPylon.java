@@ -13,6 +13,9 @@ import com.brandon3055.draconicevolution.integration.computers.IDEPeripheral;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
@@ -21,17 +24,13 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
 /**
  * Created by Brandon on 28/07/2014.
  */
 public class TileEnergyPylon extends TileObjectSync implements IEnergyHandler, IExtendedRFStorage, IDEPeripheral {
     public boolean active = false;
     public boolean lastTickActive = false;
-    public boolean reciveEnergy = false; //Power Flow to system
+    public boolean reciveEnergy = false; // Power Flow to system
     public boolean lastTickReciveEnergy = false;
     public float modelRotation = 0;
     public float modelScale = 0;
@@ -41,7 +40,6 @@ public class TileEnergyPylon extends TileObjectSync implements IEnergyHandler, I
     private byte lastTickParticleRate = 0;
     private int lastCheckCompOverride = 0;
     private int tick = 0;
-
 
     @Override
     public void updateEntity() {
@@ -59,13 +57,20 @@ public class TileEnergyPylon extends TileObjectSync implements IEnergyHandler, I
         if (tick % 20 == 0) {
             int cOut = (int) (getEnergyStored() / getMaxEnergyStored() * 15D);
             if (cOut != lastCheckCompOverride) {
-                worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, worldObj.getBlock(xCoord, yCoord, zCoord));
-                worldObj.notifyBlocksOfNeighborChange(xCoord - 1, yCoord, zCoord, worldObj.getBlock(xCoord, yCoord, zCoord));
-                worldObj.notifyBlocksOfNeighborChange(xCoord + 1, yCoord, zCoord, worldObj.getBlock(xCoord, yCoord, zCoord));
-                worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord - 1, zCoord, worldObj.getBlock(xCoord, yCoord, zCoord));
-                worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord + 1, zCoord, worldObj.getBlock(xCoord, yCoord, zCoord));
-                worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord - 1, worldObj.getBlock(xCoord, yCoord, zCoord));
-                worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord + 1, worldObj.getBlock(xCoord, yCoord, zCoord));
+                worldObj.notifyBlocksOfNeighborChange(
+                        xCoord, yCoord, zCoord, worldObj.getBlock(xCoord, yCoord, zCoord));
+                worldObj.notifyBlocksOfNeighborChange(
+                        xCoord - 1, yCoord, zCoord, worldObj.getBlock(xCoord, yCoord, zCoord));
+                worldObj.notifyBlocksOfNeighborChange(
+                        xCoord + 1, yCoord, zCoord, worldObj.getBlock(xCoord, yCoord, zCoord));
+                worldObj.notifyBlocksOfNeighborChange(
+                        xCoord, yCoord - 1, zCoord, worldObj.getBlock(xCoord, yCoord, zCoord));
+                worldObj.notifyBlocksOfNeighborChange(
+                        xCoord, yCoord + 1, zCoord, worldObj.getBlock(xCoord, yCoord, zCoord));
+                worldObj.notifyBlocksOfNeighborChange(
+                        xCoord, yCoord, zCoord - 1, worldObj.getBlock(xCoord, yCoord, zCoord));
+                worldObj.notifyBlocksOfNeighborChange(
+                        xCoord, yCoord, zCoord + 1, worldObj.getBlock(xCoord, yCoord, zCoord));
                 lastCheckCompOverride = cOut;
             }
         }
@@ -74,7 +79,11 @@ public class TileEnergyPylon extends TileObjectSync implements IEnergyHandler, I
             for (ForgeDirection d : ForgeDirection.VALID_DIRECTIONS) {
                 TileEntity tile = worldObj.getTileEntity(xCoord + d.offsetX, yCoord + d.offsetY, zCoord + d.offsetZ);
                 if (tile != null && tile instanceof IEnergyReceiver) {
-                    extractEnergy(d, ((IEnergyReceiver) tile).receiveEnergy(d.getOpposite(), extractEnergy(d, Integer.MAX_VALUE, true), false), false);
+                    extractEnergy(
+                            d,
+                            ((IEnergyReceiver) tile)
+                                    .receiveEnergy(d.getOpposite(), extractEnergy(d, Integer.MAX_VALUE, true), false),
+                            false);
                 }
             }
         }
@@ -94,8 +103,9 @@ public class TileEnergyPylon extends TileObjectSync implements IEnergyHandler, I
         if (coreLocatios.isEmpty()) return null;
         if (selectedCore >= coreLocatios.size()) selectedCore = coreLocatios.size() - 1;
         TileLocation core = coreLocatios.get(selectedCore);
-        if (core == null || !(worldObj.getTileEntity(core.getXCoord(), core.getYCoord(), core.getZCoord()) instanceof TileEnergyStorageCore))
-            return null;
+        if (core == null
+                || !(worldObj.getTileEntity(core.getXCoord(), core.getYCoord(), core.getZCoord())
+                        instanceof TileEnergyStorageCore)) return null;
         return (TileEnergyStorageCore) worldObj.getTileEntity(core.getXCoord(), core.getYCoord(), core.getZCoord());
     }
 
@@ -138,7 +148,17 @@ public class TileEnergyPylon extends TileObjectSync implements IEnergyHandler, I
         int z = getMaster().zCoord;
         int cYCoord = worldObj.getBlockMetadata(xCoord, yCoord, zCoord) == 1 ? yCoord + 1 : yCoord - 1;
 
-        float disMod = getMaster().getTier() == 0 ? 0.5F : getMaster().getTier() == 1 ? 1F : getMaster().getTier() == 2 ? 1F : getMaster().getTier() == 3 ? 2F : getMaster().getTier() == 4 ? 2F : getMaster().getTier() == 5 ? 3F : 4F;
+        float disMod = getMaster().getTier() == 0
+                ? 0.5F
+                : getMaster().getTier() == 1
+                        ? 1F
+                        : getMaster().getTier() == 2
+                                ? 1F
+                                : getMaster().getTier() == 3
+                                        ? 2F
+                                        : getMaster().getTier() == 4
+                                                ? 2F
+                                                : getMaster().getTier() == 5 ? 3F : 4F;
         double spawnX;
         double spawnY;
         double spawnZ;
@@ -154,7 +174,8 @@ public class TileEnergyPylon extends TileObjectSync implements IEnergyHandler, I
             targetY = cYCoord + 0.5;
             targetZ = zCoord + 0.5;
             if (rand.nextFloat() < 0.05F) {
-                Particles.EnergyTransferParticle passiveParticle = new Particles.EnergyTransferParticle(worldObj, spawnX, spawnY, spawnZ, targetX, targetY, targetZ, true);
+                Particles.EnergyTransferParticle passiveParticle = new Particles.EnergyTransferParticle(
+                        worldObj, spawnX, spawnY, spawnZ, targetX, targetY, targetZ, true);
                 ParticleHandler.spawnCustomParticle(passiveParticle, 35);
             }
             if (particleRate > 0) {
@@ -163,14 +184,16 @@ public class TileEnergyPylon extends TileObjectSync implements IEnergyHandler, I
                         spawnX = x + 0.5 - disMod + (rand.nextFloat() * (disMod * 2));
                         spawnY = y + 0.5 - disMod + (rand.nextFloat() * (disMod * 2));
                         spawnZ = z + 0.5 - disMod + (rand.nextFloat() * (disMod * 2));
-                        Particles.EnergyTransferParticle passiveParticle = new Particles.EnergyTransferParticle(worldObj, spawnX, spawnY, spawnZ, targetX, targetY, targetZ, false);
+                        Particles.EnergyTransferParticle passiveParticle = new Particles.EnergyTransferParticle(
+                                worldObj, spawnX, spawnY, spawnZ, targetX, targetY, targetZ, false);
                         ParticleHandler.spawnCustomParticle(passiveParticle, 35);
                     }
                 } else if (rand.nextInt(Math.max(1, 10 - particleRate)) == 0) {
                     spawnX = x + 0.5 - disMod + (rand.nextFloat() * (disMod * 2));
                     spawnY = y + 0.5 - disMod + (rand.nextFloat() * (disMod * 2));
                     spawnZ = z + 0.5 - disMod + (rand.nextFloat() * (disMod * 2));
-                    Particles.EnergyTransferParticle passiveParticle = new Particles.EnergyTransferParticle(worldObj, spawnX, spawnY, spawnZ, targetX, targetY, targetZ, false);
+                    Particles.EnergyTransferParticle passiveParticle = new Particles.EnergyTransferParticle(
+                            worldObj, spawnX, spawnY, spawnZ, targetX, targetY, targetZ, false);
                     ParticleHandler.spawnCustomParticle(passiveParticle, 35);
                 }
             }
@@ -183,7 +206,8 @@ public class TileEnergyPylon extends TileObjectSync implements IEnergyHandler, I
             spawnY = cYCoord + 0.5;
             spawnZ = zCoord + 0.5;
             if (rand.nextFloat() < 0.05F) {
-                Particles.EnergyTransferParticle passiveParticle = new Particles.EnergyTransferParticle(worldObj, spawnX, spawnY, spawnZ, targetX, targetY, targetZ, true);
+                Particles.EnergyTransferParticle passiveParticle = new Particles.EnergyTransferParticle(
+                        worldObj, spawnX, spawnY, spawnZ, targetX, targetY, targetZ, true);
                 ParticleHandler.spawnCustomParticle(passiveParticle, 35);
             }
 
@@ -193,14 +217,16 @@ public class TileEnergyPylon extends TileObjectSync implements IEnergyHandler, I
                         targetX = x + 0.5 - disMod + (rand.nextFloat() * (disMod * 2));
                         targetY = y + 0.5 - disMod + (rand.nextFloat() * (disMod * 2));
                         targetZ = z + 0.5 - disMod + (rand.nextFloat() * (disMod * 2));
-                        Particles.EnergyTransferParticle passiveParticle = new Particles.EnergyTransferParticle(worldObj, spawnX, spawnY, spawnZ, targetX, targetY, targetZ, false);
+                        Particles.EnergyTransferParticle passiveParticle = new Particles.EnergyTransferParticle(
+                                worldObj, spawnX, spawnY, spawnZ, targetX, targetY, targetZ, false);
                         ParticleHandler.spawnCustomParticle(passiveParticle, 35);
                     }
                 } else if (rand.nextInt(Math.max(1, 10 - particleRate)) == 0) {
                     targetX = x + 0.5 - disMod + (rand.nextFloat() * (disMod * 2));
                     targetY = y + 0.5 - disMod + (rand.nextFloat() * (disMod * 2));
                     targetZ = z + 0.5 - disMod + (rand.nextFloat() * (disMod * 2));
-                    Particles.EnergyTransferParticle passiveParticle = new Particles.EnergyTransferParticle(worldObj, spawnX, spawnY, spawnZ, targetX, targetY, targetZ, false);
+                    Particles.EnergyTransferParticle passiveParticle = new Particles.EnergyTransferParticle(
+                            worldObj, spawnX, spawnY, spawnZ, targetX, targetY, targetZ, false);
                     ParticleHandler.spawnCustomParticle(passiveParticle, 35);
                 }
             }
@@ -208,7 +234,8 @@ public class TileEnergyPylon extends TileObjectSync implements IEnergyHandler, I
     }
 
     private boolean isValidStructure() {
-        return (isGlass(xCoord, yCoord + 1, zCoord) || isGlass(xCoord, yCoord - 1, zCoord)) && (!isGlass(xCoord, yCoord + 1, zCoord) || !isGlass(xCoord, yCoord - 1, zCoord));
+        return (isGlass(xCoord, yCoord + 1, zCoord) || isGlass(xCoord, yCoord - 1, zCoord))
+                && (!isGlass(xCoord, yCoord + 1, zCoord) || !isGlass(xCoord, yCoord - 1, zCoord));
     }
 
     private boolean isGlass(int x, int y, int z) {
@@ -302,9 +329,17 @@ public class TileEnergyPylon extends TileObjectSync implements IEnergyHandler, I
 
     private void detectAndSendChanges() {
         if (lastTickActive != active)
-            lastTickActive = (Boolean) sendObjectToClient(References.BOOLEAN_ID, 0, active, new NetworkRegistry.TargetPoint(worldObj.provider.dimensionId, xCoord, yCoord, zCoord, 256));
+            lastTickActive = (Boolean) sendObjectToClient(
+                    References.BOOLEAN_ID,
+                    0,
+                    active,
+                    new NetworkRegistry.TargetPoint(worldObj.provider.dimensionId, xCoord, yCoord, zCoord, 256));
         if (lastTickReciveEnergy != reciveEnergy)
-            lastTickReciveEnergy = (Boolean) sendObjectToClient(References.BOOLEAN_ID, 1, reciveEnergy, new NetworkRegistry.TargetPoint(worldObj.provider.dimensionId, xCoord, yCoord, zCoord, 256));
+            lastTickReciveEnergy = (Boolean) sendObjectToClient(
+                    References.BOOLEAN_ID,
+                    1,
+                    reciveEnergy,
+                    new NetworkRegistry.TargetPoint(worldObj.provider.dimensionId, xCoord, yCoord, zCoord, 256));
         if (lastTickParticleRate != particleRate)
             lastTickParticleRate = (Byte) sendObjectToClient(References.BYTE_ID, 2, particleRate);
     }
@@ -352,13 +387,13 @@ public class TileEnergyPylon extends TileObjectSync implements IEnergyHandler, I
 
     @Override
     public String[] getMethodNames() {
-        return new String[]{"getEnergyStored", "getMaxEnergyStored"};
+        return new String[] {"getEnergyStored", "getMaxEnergyStored"};
     }
 
     @Override
     public Object[] callMethod(String method, Object... args) {
-        if (method.equals("getEnergyStored")) return new Object[]{getExtendedStorage()};
-        else if (method.equals("getMaxEnergyStored")) return new Object[]{getExtendedCapacity()};
+        if (method.equals("getEnergyStored")) return new Object[] {getExtendedStorage()};
+        else if (method.equals("getMaxEnergyStored")) return new Object[] {getExtendedCapacity()};
         return new Object[0];
     }
 }

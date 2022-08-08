@@ -155,7 +155,7 @@ public class EnergyStorage implements IEnergyStorage {
         return capacity;
     }
 
-	/* Added By Brandon3055 24/07/2014 */
+    /* Added By Brandon3055 24/07/2014 */
 
     public EnergyStorage readFromNBT(NBTTagCompound nbt, String tag) {
 
@@ -175,5 +175,4 @@ public class EnergyStorage implements IEnergyStorage {
         nbt.setInteger(tag, energy);
         return nbt;
     }
-
 }

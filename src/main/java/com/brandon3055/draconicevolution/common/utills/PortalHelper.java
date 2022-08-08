@@ -43,49 +43,53 @@ public class PortalHelper {
         return null;
     }
 
-    public static PortalStructure traceFrame(World world, int x, int y, int z, ForgeDirection startDir, ForgeDirection plane) {
+    public static PortalStructure traceFrame(
+            World world, int x, int y, int z, ForgeDirection startDir, ForgeDirection plane) {
         int MAX_SIZE = 150;
         int startX = x + startDir.offsetX;
         int startY = y + startDir.offsetY;
         int startZ = z + startDir.offsetZ;
 
-        //Check that the trace is starting from a receptacle
+        // Check that the trace is starting from a receptacle
         if (!world.isAirBlock(startX, startY, startZ)) return null;
 
         int xSize = 0;
         int ySize = 0;
         int yOffset = 0;
 
-        //Get X size
+        // Get X size
         for (int i = 0; i <= MAX_SIZE; i++) {
-            Block block = world.getBlock(startX + i * startDir.offsetX, startY + i * startDir.offsetY, startZ + i * startDir.offsetZ);
+            Block block = world.getBlock(
+                    startX + i * startDir.offsetX, startY + i * startDir.offsetY, startZ + i * startDir.offsetZ);
             if (isFrame(block)) {
                 xSize = i;
                 break;
-            } else if (!world.isAirBlock(startX + i * startDir.offsetX, startY + i * startDir.offsetY, startZ + i * startDir.offsetZ))
+            } else if (!world.isAirBlock(
+                    startX + i * startDir.offsetX, startY + i * startDir.offsetY, startZ + i * startDir.offsetZ))
                 return null;
         }
 
-        //Get Y size above receptacle
+        // Get Y size above receptacle
         for (int i = 0; i <= MAX_SIZE; i++) {
-            Block block = world.getBlock(startX + i * plane.offsetX, startY + i * plane.offsetY, startZ + i * plane.offsetZ);
+            Block block =
+                    world.getBlock(startX + i * plane.offsetX, startY + i * plane.offsetY, startZ + i * plane.offsetZ);
             if (isFrame(block)) {
                 ySize = i;
                 break;
-            } else if (!world.isAirBlock(startX + i * plane.offsetX, startY + i * plane.offsetY, startZ + i * plane.offsetZ))
-                return null;
+            } else if (!world.isAirBlock(
+                    startX + i * plane.offsetX, startY + i * plane.offsetY, startZ + i * plane.offsetZ)) return null;
         }
 
-        //Get Y size below receptacle and get y offset
+        // Get Y size below receptacle and get y offset
         for (int i = 0; i <= MAX_SIZE; i++) {
-            Block block = world.getBlock(startX - i * plane.offsetX, startY - i * plane.offsetY, startZ - i * plane.offsetZ);
+            Block block =
+                    world.getBlock(startX - i * plane.offsetX, startY - i * plane.offsetY, startZ - i * plane.offsetZ);
             if (isFrame(block)) {
                 ySize += i - 1;
                 yOffset = i;
                 break;
-            } else if (!world.isAirBlock(startX - i * plane.offsetX, startY - i * plane.offsetY, startZ - i * plane.offsetZ))
-                return null;
-
+            } else if (!world.isAirBlock(
+                    startX - i * plane.offsetX, startY - i * plane.offsetY, startZ - i * plane.offsetZ)) return null;
         }
 
         if (xSize == 0 || ySize == 0 || ySize > MAX_SIZE) return null;
@@ -94,7 +98,6 @@ public class PortalHelper {
 
         if (!structure.checkFrameIsValid(world, x, y, z) || !structure.scanPortal(world, x, y, z, false, false))
             return null;
-
 
         return structure;
     }
@@ -107,8 +110,7 @@ public class PortalHelper {
         public ForgeDirection startDir;
         public ForgeDirection plane;
 
-        public PortalStructure() {
-        }
+        public PortalStructure() {}
 
         public PortalStructure(int xSize, int ySize, int yOffset, ForgeDirection startDir, ForgeDirection plane) {
             this.xSize = xSize;
@@ -124,7 +126,7 @@ public class PortalHelper {
             int startY = y + startDir.offsetY;
             int startZ = z + startDir.offsetZ;
 
-            //Check structure for y size
+            // Check structure for y size
             for (int y1 = 1; y1 <= ySize; y1++) {
                 int y2 = y1 - yOffset;
 
@@ -140,7 +142,7 @@ public class PortalHelper {
                 if (!isFrame(world.getBlock(outX, outY, outZ))) return false;
             }
 
-            //Check structure for x size
+            // Check structure for x size
             for (int x1 = 0; x1 < xSize; x1++) {
                 int upX = startX + x1 * startDir.offsetX - yOffset * plane.offsetX;
                 int upY = startY + x1 * startDir.offsetY - yOffset * plane.offsetY;
@@ -157,7 +159,8 @@ public class PortalHelper {
             return true;
         }
 
-        public boolean scanPortal(World world, int x, int y, int z, boolean setPortalBlocks, boolean checkPortalBlocks) {
+        public boolean scanPortal(
+                World world, int x, int y, int z, boolean setPortalBlocks, boolean checkPortalBlocks) {
             int startX = x + startDir.offsetX;
             int startY = y + startDir.offsetY;
             int startZ = z + startDir.offsetZ;

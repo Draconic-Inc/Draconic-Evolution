@@ -20,8 +20,7 @@ import org.lwjgl.opengl.GL11;
  */
 public class RenderTilePlacedItem extends TileEntitySpecialRenderer {
 
-    public RenderTilePlacedItem() {
-    }
+    public RenderTilePlacedItem() {}
 
     @Override
     public void renderTileEntityAt(TileEntity te, double x, double y, double z, float timeSinceLastTick) {
@@ -41,7 +40,7 @@ public class RenderTilePlacedItem extends TileEntitySpecialRenderer {
         World world = Minecraft.getMinecraft().theWorld;
         EntityItem itemEntity = new EntityItem(tile.getWorldObj(), 0, 0, 0, stack);
         int meta = world.getBlockMetadata(tile.xCoord, tile.yCoord, tile.zCoord);
-        //itemEntity.getEntityItem().stackSize = 1;
+        // itemEntity.getEntityItem().stackSize = 1;
         itemEntity.hoverStart = 0.0F;
         boolean is3D = stack.getItem().isFull3D();
         boolean isBlock = stack.getItem() instanceof ItemBlock;

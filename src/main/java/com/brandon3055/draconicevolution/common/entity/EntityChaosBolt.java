@@ -17,7 +17,8 @@ public class EntityChaosBolt extends Entity {
     public double shardZ;
     public boolean burst;
     public int ticks = 0;
-    private static DamageSource chaosBurst = new DamageSource("chaosBurst").setDamageBypassesArmor().setDamageIsAbsolute();
+    private static DamageSource chaosBurst =
+            new DamageSource("chaosBurst").setDamageBypassesArmor().setDamageIsAbsolute();
 
     public EntityChaosBolt(World world) {
         this(world, 0, 0, 0, 0, 0, 0);
@@ -60,30 +61,36 @@ public class EntityChaosBolt extends Entity {
 
         if (ticks == 10 && !burst) {
             if (worldObj.isRemote) {
-                DraconicEvolution.proxy.spawnParticle(new Particles.ChaosBoltParticle(worldObj, posX, posY, posZ, shardX, shardY, shardZ, 10), 32);
+                DraconicEvolution.proxy.spawnParticle(
+                        new Particles.ChaosBoltParticle(worldObj, posX, posY, posZ, shardX, shardY, shardZ, 10), 32);
             }
             setDead();
         } else if (ticks > 10) {
             if (ticks < 25) {
                 for (int i = 0; i < 20; i++) {
                     if (worldObj.isRemote)
-                        DraconicEvolution.proxy.spawnParticle(new Particles.ChaosBoltParticle(worldObj, posX, posY, posZ, shardX, shardY, shardZ, 0), 32);
+                        DraconicEvolution.proxy.spawnParticle(
+                                new Particles.ChaosBoltParticle(worldObj, posX, posY, posZ, shardX, shardY, shardZ, 0),
+                                32);
                 }
             }
             if (ticks > 40 && !worldObj.isRemote) {
-//				if (ticks % 5 == 0)
-//				{
-//					double dist = Utills.getDistanceAtoB(posX, posY, posZ, shardX, shardY, shardZ);
-//					Vec3 dir = Vec3.createVectorHelper((shardX - posX) / dist, (shardY - posY) / dist, (shardZ - posZ) / dist);
-//					MovingObjectPosition movingobjectposition = this.worldObj.//func_147447_a(Vec3.createVectorHelper(posX, posY, posZ), dir, false, true, false);
-//					Entity entity = movingobjectposition.entityHit;  //WorldUtil.rayTraceEntities(worldObj, Vec3.createVectorHelper(posX, posY, posZ), dir, 20);
-//
-//					LogHelper.info(movingobjectposition);
-//					if (entity instanceof EntityLivingBase) {
-//						entity.hurtResistantTime = 0;
-//						entity.attackEntityFrom(chaosBurst, 50F);
-//					}
-//				}
+                //				if (ticks % 5 == 0)
+                //				{
+                //					double dist = Utills.getDistanceAtoB(posX, posY, posZ, shardX, shardY, shardZ);
+                //					Vec3 dir = Vec3.createVectorHelper((shardX - posX) / dist, (shardY - posY) / dist, (shardZ -
+                // posZ) / dist);
+                //					MovingObjectPosition movingobjectposition =
+                // this.worldObj.//func_147447_a(Vec3.createVectorHelper(posX, posY, posZ), dir, false, true, false);
+                //					Entity entity = movingobjectposition.entityHit;  //WorldUtil.rayTraceEntities(worldObj,
+                // Vec3.createVectorHelper(posX, posY, posZ), dir, 20);
+                //
+                //					LogHelper.info(movingobjectposition);
+                //					if (entity instanceof EntityLivingBase) {
+                //						entity.hurtResistantTime = 0;
+                //						entity.attackEntityFrom(chaosBurst, 50F);
+                //					}
+                //				}
             }
         }
 
@@ -96,18 +103,18 @@ public class EntityChaosBolt extends Entity {
 
     @Override
     protected void readEntityFromNBT(NBTTagCompound compound) {
-//		if (compound.hasKey("ShardPos")){
-//			int[] pos = compound.getIntArray("ShardPos");
-//			shardX = pos[0];
-//			shardY = pos[1];
-//			shardZ = pos[2];
-//			LogHelper.info("read");
-//		}
+        //		if (compound.hasKey("ShardPos")){
+        //			int[] pos = compound.getIntArray("ShardPos");
+        //			shardX = pos[0];
+        //			shardY = pos[1];
+        //			shardZ = pos[2];
+        //			LogHelper.info("read");
+        //		}
     }
 
     @Override
     protected void writeEntityToNBT(NBTTagCompound compound) {
-//		compound.setIntArray("ShardPos", new int[] {(int)(shardX-0.5D), (int)(shardY-0.5D), (int)(shardZ-0.5D)});
-//		LogHelper.info("write");
+        //		compound.setIntArray("ShardPos", new int[] {(int)(shardX-0.5D), (int)(shardY-0.5D), (int)(shardZ-0.5D)});
+        //		LogHelper.info("write");
     }
 }

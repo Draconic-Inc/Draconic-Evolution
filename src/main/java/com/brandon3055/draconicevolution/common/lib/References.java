@@ -10,11 +10,11 @@ public final class References {
     public static final String GUIFACTORY = "com.brandon3055.draconicevolution.client.gui.DEGUIFactory";
     public static final String RESOURCESPREFIX = MODID.toLowerCase() + ":";
 
-    //======================Render IDs========================//
+    // ======================Render IDs========================//
     public static int idTeleporterStand = -1;
     public static int idPortal = -1;
 
-    //======================Data Types========================//
+    // ======================Data Types========================//
 
     public static final byte BYTE_ID = 0;
     public static final byte SHORT_ID = 1;
@@ -27,7 +27,7 @@ public final class References {
     public static final byte STRING_ID = 8;
     public static final byte INT_PAIR_ID = 9;
 
-    //======================Tags========================//
+    // ======================Tags========================//
 
     public static final String DIG_SPEED_MULTIPLIER = "ToolDigMultiplier";
     public static final String DIG_AOE = "ToolDigAOE";
@@ -36,5 +36,4 @@ public final class References {
     public static final String OBLITERATE = "ToolVoidJunk";
     public static final String TREE_MODE = "AxeTreeMode";
     public static final String BASE_SAFE_AOE = "BaseSafeAOE";
-
 }

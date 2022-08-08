@@ -8,6 +8,7 @@ import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnderResurrection;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import java.util.List;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
@@ -19,8 +20,6 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-
-import java.util.List;
 
 /**
  * Created by Brandon on 25/07/2014.
@@ -46,8 +45,7 @@ public class DraconiumBlock extends BlockDE {
     }
 
     @Override
-    public void onBlockExploded(World world, int x, int y, int z, Explosion explosion) {
-    }
+    public void onBlockExploded(World world, int x, int y, int z, Explosion explosion) {}
 
     @Override
     public boolean canDropFromExplosion(Explosion p_149659_1_) {
@@ -83,11 +81,23 @@ public class DraconiumBlock extends BlockDE {
     }
 
     @Override
-    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int p_149727_6_, float p_149727_7_, float p_149727_8_, float p_149727_9_) {
+    public boolean onBlockActivated(
+            World world,
+            int x,
+            int y,
+            int z,
+            EntityPlayer player,
+            int p_149727_6_,
+            float p_149727_7_,
+            float p_149727_8_,
+            float p_149727_9_) {
         int meta = world.getBlockMetadata(x, y, z);
         if (meta == 0) return false;
         if (meta == 1) {
-            TileEnderResurrection tile = (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TileEnderResurrection) ? (TileEnderResurrection) world.getTileEntity(x, y, z) : null;
+            TileEnderResurrection tile = (world.getTileEntity(x, y, z) != null
+                            && world.getTileEntity(x, y, z) instanceof TileEnderResurrection)
+                    ? (TileEnderResurrection) world.getTileEntity(x, y, z)
+                    : null;
             if (tile != null) return tile.onActivated(player);
         }
         return false;

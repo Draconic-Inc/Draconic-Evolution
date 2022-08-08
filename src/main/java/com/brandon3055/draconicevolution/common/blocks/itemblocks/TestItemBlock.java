@@ -11,7 +11,7 @@ public class TestItemBlock extends ItemBlock {
     public TestItemBlock(Block block) {
         super(block);
         setHasSubtypes(true);
-        //this.hasSubtypes = true;
+        // this.hasSubtypes = true;
     }
 
     @Override

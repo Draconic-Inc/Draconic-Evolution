@@ -19,8 +19,7 @@ public class ChaosShard extends ItemDE {
     }
 
     @Override
-    public void registerIcons(IIconRegister iconRegister) {
-    }
+    public void registerIcons(IIconRegister iconRegister) {}
 
     @Override
     public boolean hasCustomEntity(ItemStack stack) {

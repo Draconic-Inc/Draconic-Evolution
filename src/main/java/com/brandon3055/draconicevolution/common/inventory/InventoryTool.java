@@ -90,7 +90,11 @@ public class InventoryTool implements IInventory {
 
     @Override
     public String getInventoryName() {
-        return inventoryItem != null && inventoryItem.getItem() instanceof IInventoryTool ? !StringUtils.isNullOrEmpty(((IInventoryTool) inventoryItem.getItem()).getInventoryName()) ? ((IInventoryTool) inventoryItem.getItem()).getInventoryName() : "" : "";
+        return inventoryItem != null && inventoryItem.getItem() instanceof IInventoryTool
+                ? !StringUtils.isNullOrEmpty(((IInventoryTool) inventoryItem.getItem()).getInventoryName())
+                        ? ((IInventoryTool) inventoryItem.getItem()).getInventoryName()
+                        : ""
+                : "";
     }
 
     @Override
@@ -119,7 +123,6 @@ public class InventoryTool implements IInventory {
             LogHelper.error("[InventoryItem] storage item == null This is not a good thing...");
         }
 
-
         container.detectAndSendChanges();
     }
 
@@ -129,7 +132,10 @@ public class InventoryTool implements IInventory {
     }
 
     private ItemStack getItem() {
-        if (slot != -1 && player.inventory.getStackInSlot(slot) != null && inventoryItem != null && player.inventory.getStackInSlot(slot).getItem() == inventoryItem.getItem()) {
+        if (slot != -1
+                && player.inventory.getStackInSlot(slot) != null
+                && inventoryItem != null
+                && player.inventory.getStackInSlot(slot).getItem() == inventoryItem.getItem()) {
             return player.inventory.getStackInSlot(slot);
         } else {
             LogHelper.error("Error getting inventory item [InventoryTool#getItem() - " + slot + "]");
@@ -138,12 +144,10 @@ public class InventoryTool implements IInventory {
     }
 
     @Override
-    public void openInventory() {
-    }
+    public void openInventory() {}
 
     @Override
-    public void closeInventory() {
-    }
+    public void closeInventory() {}
 
     @Override
     public boolean isItemValidForSlot(int i, ItemStack itemstack) {
@@ -166,20 +170,24 @@ public class InventoryTool implements IInventory {
             } else if (inventoryStacks[i] != null) {
                 if (inventoryStacks[i].getTagCompound() == null) inventoryStacks[i] = null;
                 else {
-                    enchList.appendTag(inventoryStacks[i].getTagCompound().getTagList("StoredEnchantments", 10).getCompoundTagAt(0));
+                    enchList.appendTag(inventoryStacks[i]
+                            .getTagCompound()
+                            .getTagList("StoredEnchantments", 10)
+                            .getCompoundTagAt(0));
                 }
             }
             compound.setTag("ench", enchList);
         }
 
-//		for (int i = size; i < getSizeInventory(); i++)
-//		{
-//			if (inventoryStacks[i] != null && inventoryStacks[i].getItem() == Items.enchanted_book && inventoryStacks[i].hasTagCompound() && inventoryStacks[i].getTagCompound().hasKey("StoredEnchantments"))
-//			{
-//				NBTTagList enchants = inventoryStacks[i].getTagCompound().getTagList("StoredEnchantments", 10);
-//				compound.setTag("ench", enchants);
-//			}
-//		}
+        //		for (int i = size; i < getSizeInventory(); i++)
+        //		{
+        //			if (inventoryStacks[i] != null && inventoryStacks[i].getItem() == Items.enchanted_book &&
+        // inventoryStacks[i].hasTagCompound() && inventoryStacks[i].getTagCompound().hasKey("StoredEnchantments"))
+        //			{
+        //				NBTTagList enchants = inventoryStacks[i].getTagCompound().getTagList("StoredEnchantments", 10);
+        //				compound.setTag("ench", enchants);
+        //			}
+        //		}
 
         if (compound.hasKey("ench") && compound.getTagList("ench", 10).tagCount() == 0) compound.removeTag("ench");
     }
@@ -203,25 +211,23 @@ public class InventoryTool implements IInventory {
             }
         }
 
-//		if (compound.hasKey("ench"))
-//		{
-//			NBTTagList enchants = compound.getTagList("ench", 10);
-//			for (int i = size; i < getSizeInventory(); i++)
-//			{
-//				if (!enchants.getCompoundTagAt(i - size).hasNoTags())
-//				{
-//					inventoryStacks[i] = new ItemStack(Items.enchanted_book);
-//					NBTTagCompound compound1 = new NBTTagCompound();
-//					NBTTagList list = new NBTTagList();
-//					list.appendTag(enchants.getCompoundTagAt(i - size));
-//					compound1.setTag("StoredEnchantments", list);
-//					inventoryStacks[i].setTagCompound(compound1);
-//				}
-//			}
-//		}
+        //		if (compound.hasKey("ench"))
+        //		{
+        //			NBTTagList enchants = compound.getTagList("ench", 10);
+        //			for (int i = size; i < getSizeInventory(); i++)
+        //			{
+        //				if (!enchants.getCompoundTagAt(i - size).hasNoTags())
+        //				{
+        //					inventoryStacks[i] = new ItemStack(Items.enchanted_book);
+        //					NBTTagCompound compound1 = new NBTTagCompound();
+        //					NBTTagList list = new NBTTagList();
+        //					list.appendTag(enchants.getCompoundTagAt(i - size));
+        //					compound1.setTag("StoredEnchantments", list);
+        //					inventoryStacks[i].setTagCompound(compound1);
+        //				}
+        //			}
+        //		}
 
         if (compound.hasKey("ench") && compound.getTagList("ench", 10).tagCount() == 0) compound.removeTag("ench");
-
     }
-
 }

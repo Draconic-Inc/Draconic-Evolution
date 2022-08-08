@@ -17,7 +17,8 @@ public final class ItemDisplayManager {
     private int ticksCounter;
     private static final RenderItem renderItem = new RenderItem();
     private static final FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
-    private static final TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
+    private static final TextureManager textureManager =
+            Minecraft.getMinecraft().getTextureManager();
 
     public ItemDisplayManager(int ticks) {
         this.ticks = ticks;

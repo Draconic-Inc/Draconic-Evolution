@@ -8,7 +8,7 @@ import net.minecraft.entity.player.EntityPlayer;
  * Created by Brandon on 10/02/2015.
  */
 public interface IRemoteEnergyHandler extends IEnergyHandler {
-    //todo add method for linking
+    // todo add method for linking
 
     /**
      * @param player       The player binding the tiles

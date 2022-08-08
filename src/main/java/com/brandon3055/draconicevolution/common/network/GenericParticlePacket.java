@@ -22,8 +22,7 @@ public class GenericParticlePacket implements IMessage {
     private double posZ;
     private int additionalData;
 
-    public GenericParticlePacket() {
-    }
+    public GenericParticlePacket() {}
 
     public GenericParticlePacket(byte particleId, double posX, double posY, double posZ) {
         this.particleId = particleId;
@@ -73,7 +72,12 @@ public class GenericParticlePacket implements IMessage {
                 case ENERGY_BALL_KILL: {
                     Particles.DragonProjectileParticle particle;
                     for (int i = 0; i < 100; i++) {
-                        particle = new Particles.DragonProjectileParticle(BrandonsCore.proxy.getClientWorld(), message.posX, message.posY, message.posZ, 0x00FFFF);
+                        particle = new Particles.DragonProjectileParticle(
+                                BrandonsCore.proxy.getClientWorld(),
+                                message.posX,
+                                message.posY,
+                                message.posZ,
+                                0x00FFFF);
                         double m = 0.5D;
                         particle.motionX = (particle.worldObj.rand.nextDouble() - 0.5) * m;
                         particle.motionY = (particle.worldObj.rand.nextDouble() - 0.5) * m;
@@ -85,7 +89,12 @@ public class GenericParticlePacket implements IMessage {
                 case CHAOS_BALL_KILL: {
                     Particles.DragonProjectileParticle particle;
                     for (int i = 0; i < 100; i++) {
-                        particle = new Particles.DragonProjectileParticle(BrandonsCore.proxy.getClientWorld(), message.posX, message.posY, message.posZ, 0x440000);
+                        particle = new Particles.DragonProjectileParticle(
+                                BrandonsCore.proxy.getClientWorld(),
+                                message.posX,
+                                message.posY,
+                                message.posZ,
+                                0x440000);
                         double m = 0.5D;
                         particle.motionX = (particle.worldObj.rand.nextDouble() - 0.5) * m;
                         particle.motionY = (particle.worldObj.rand.nextDouble() - 0.5) * m;
@@ -95,23 +104,62 @@ public class GenericParticlePacket implements IMessage {
                     break;
                 }
                 case CHAOS_IMPLOSION: {
-                    ParticleHandler.spawnCustomParticle(new Particles.ChaosImplosionParticle(BrandonsCore.proxy.getClientWorld(), message.posX, message.posY, message.posZ, 200F), 512);
+                    ParticleHandler.spawnCustomParticle(
+                            new Particles.ChaosImplosionParticle(
+                                    BrandonsCore.proxy.getClientWorld(),
+                                    message.posX,
+                                    message.posY,
+                                    message.posZ,
+                                    200F),
+                            512);
                     break;
                 }
                 case ARROW_SHOCK_WAVE: {
-                    ParticleHandler.spawnCustomParticle(new Particles.ArrowShockParticle(BrandonsCore.proxy.getClientWorld(), message.posX, message.posY, message.posZ, message.additionalData), 256);
+                    ParticleHandler.spawnCustomParticle(
+                            new Particles.ArrowShockParticle(
+                                    BrandonsCore.proxy.getClientWorld(),
+                                    message.posX,
+                                    message.posY,
+                                    message.posZ,
+                                    message.additionalData),
+                            256);
                     for (int i = 0; i < 100; i++) {
-                        Particles.ArrowParticle particle = new Particles.ArrowParticle(BrandonsCore.proxy.getClientWorld(), message.posX - 0.25 + BrandonsCore.proxy.getClientWorld().rand.nextDouble() * 0.5, message.posY + BrandonsCore.proxy.getClientWorld().rand.nextDouble() * 0.5, message.posZ - 0.25 + BrandonsCore.proxy.getClientWorld().rand.nextDouble() * 0.5, 0xff6000, 0.2F + BrandonsCore.proxy.getClientWorld().rand.nextFloat() * 10f);
+                        Particles.ArrowParticle particle = new Particles.ArrowParticle(
+                                BrandonsCore.proxy.getClientWorld(),
+                                message.posX
+                                        - 0.25
+                                        + BrandonsCore.proxy
+                                                        .getClientWorld()
+                                                        .rand
+                                                        .nextDouble()
+                                                * 0.5,
+                                message.posY
+                                        + BrandonsCore.proxy
+                                                        .getClientWorld()
+                                                        .rand
+                                                        .nextDouble()
+                                                * 0.5,
+                                message.posZ
+                                        - 0.25
+                                        + BrandonsCore.proxy
+                                                        .getClientWorld()
+                                                        .rand
+                                                        .nextDouble()
+                                                * 0.5,
+                                0xff6000,
+                                0.2F + BrandonsCore.proxy.getClientWorld().rand.nextFloat() * 10f);
 
                         double mm = 2;
-                        particle.motionX = (BrandonsCore.proxy.getClientWorld().rand.nextDouble() - 0.5) * mm;
-                        particle.motionY = (BrandonsCore.proxy.getClientWorld().rand.nextDouble() - 0.5) * mm;
-                        particle.motionZ = (BrandonsCore.proxy.getClientWorld().rand.nextDouble() - 0.5) * mm;
+                        particle.motionX =
+                                (BrandonsCore.proxy.getClientWorld().rand.nextDouble() - 0.5) * mm;
+                        particle.motionY =
+                                (BrandonsCore.proxy.getClientWorld().rand.nextDouble() - 0.5) * mm;
+                        particle.motionZ =
+                                (BrandonsCore.proxy.getClientWorld().rand.nextDouble() - 0.5) * mm;
                         ParticleHandler.spawnCustomParticle(particle, 64);
                     }
                     break;
                 }
-
 
                 default:
                     break;

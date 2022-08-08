@@ -5,7 +5,6 @@ import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 
-
 public class ModelDraconicArmor extends ModelBiped {
 
     public ModelRenderOBJ head;
@@ -45,16 +44,42 @@ public class ModelDraconicArmor extends ModelBiped {
         this.bipedRightLeg.setRotationPoint(-2.0F, 12.0F, 0.0F);
         this.bipedRightLeg.addBox(-2.0F, 0.0F, -2.0F, 4, 12, 4, 0.0F);
 
-
-        this.head = new ModelRenderOBJ(this, ResourceHandler.getResource("models/armor/DraconicHelmet.obj"), ResourceHandler.getResource("textures/models/armor/DraconicHelmet.png"));
-        this.body = new ModelRenderOBJ(this, ResourceHandler.getResource("models/armor/DraconicBody.obj"), ResourceHandler.getResource("textures/models/armor/DraconicBody.png"));
-        this.rightArm = new ModelRenderOBJ(this, ResourceHandler.getResource("models/armor/DraconicRightArm.obj"), ResourceHandler.getResource("textures/models/armor/DraconicRightArm.png"));
-        this.leftArm = new ModelRenderOBJ(this, ResourceHandler.getResource("models/armor/DraconicLeftArm.obj"), ResourceHandler.getResource("textures/models/armor/DraconicLeftArm.png"));
-        this.belt = new ModelRenderOBJ(this, ResourceHandler.getResource("models/armor/DraconicBelt.obj"), ResourceHandler.getResource("textures/models/armor/DraconicBelt.png"));
-        this.rightLeg = new ModelRenderOBJ(this, ResourceHandler.getResource("models/armor/DraconicRightLeg.obj"), ResourceHandler.getResource("textures/models/armor/DraconicRightLeg.png"));
-        this.leftLeg = new ModelRenderOBJ(this, ResourceHandler.getResource("models/armor/DraconicLeftLeg.obj"), ResourceHandler.getResource("textures/models/armor/DraconicLeftLeg.png"));
-        this.rightBoot = new ModelRenderOBJ(this, ResourceHandler.getResource("models/armor/DraconicRightBoot.obj"), ResourceHandler.getResource("textures/models/armor/DraconicRightBoot.png"));
-        this.leftBoot = new ModelRenderOBJ(this, ResourceHandler.getResource("models/armor/DraconicLeftBoot.obj"), ResourceHandler.getResource("textures/models/armor/DraconicLeftBoot.png"));
+        this.head = new ModelRenderOBJ(
+                this,
+                ResourceHandler.getResource("models/armor/DraconicHelmet.obj"),
+                ResourceHandler.getResource("textures/models/armor/DraconicHelmet.png"));
+        this.body = new ModelRenderOBJ(
+                this,
+                ResourceHandler.getResource("models/armor/DraconicBody.obj"),
+                ResourceHandler.getResource("textures/models/armor/DraconicBody.png"));
+        this.rightArm = new ModelRenderOBJ(
+                this,
+                ResourceHandler.getResource("models/armor/DraconicRightArm.obj"),
+                ResourceHandler.getResource("textures/models/armor/DraconicRightArm.png"));
+        this.leftArm = new ModelRenderOBJ(
+                this,
+                ResourceHandler.getResource("models/armor/DraconicLeftArm.obj"),
+                ResourceHandler.getResource("textures/models/armor/DraconicLeftArm.png"));
+        this.belt = new ModelRenderOBJ(
+                this,
+                ResourceHandler.getResource("models/armor/DraconicBelt.obj"),
+                ResourceHandler.getResource("textures/models/armor/DraconicBelt.png"));
+        this.rightLeg = new ModelRenderOBJ(
+                this,
+                ResourceHandler.getResource("models/armor/DraconicRightLeg.obj"),
+                ResourceHandler.getResource("textures/models/armor/DraconicRightLeg.png"));
+        this.leftLeg = new ModelRenderOBJ(
+                this,
+                ResourceHandler.getResource("models/armor/DraconicLeftLeg.obj"),
+                ResourceHandler.getResource("textures/models/armor/DraconicLeftLeg.png"));
+        this.rightBoot = new ModelRenderOBJ(
+                this,
+                ResourceHandler.getResource("models/armor/DraconicRightBoot.obj"),
+                ResourceHandler.getResource("textures/models/armor/DraconicRightBoot.png"));
+        this.leftBoot = new ModelRenderOBJ(
+                this,
+                ResourceHandler.getResource("models/armor/DraconicLeftBoot.obj"),
+                ResourceHandler.getResource("textures/models/armor/DraconicLeftBoot.png"));
 
         this.bipedHead.cubeList.clear();
         this.bipedHeadwear.cubeList.clear();
@@ -113,7 +138,6 @@ public class ModelDraconicArmor extends ModelBiped {
             this.bipedLeftLeg.addChild(leftBoot);
             this.bipedRightLeg.addChild(rightBoot);
         }
-
     }
 
     @Override
@@ -158,7 +182,14 @@ public class ModelDraconicArmor extends ModelBiped {
         this.bipedLeftLeg.render(1F / 16F);
     }
 
-    public void setRotationAngles(float p_78087_1_, float p_78087_2_, float p_78087_3_, float p_78087_4_, float p_78087_5_, float p_78087_6_, Entity p_78087_7_) {
+    public void setRotationAngles(
+            float p_78087_1_,
+            float p_78087_2_,
+            float p_78087_3_,
+            float p_78087_4_,
+            float p_78087_5_,
+            float p_78087_6_,
+            Entity p_78087_7_) {
         this.bipedRightArm.rotateAngleZ = 0.0F;
         this.bipedLeftArm.rotateAngleZ = 0.0F;
         this.bipedRightArm.rotationPointZ = 0.0F;

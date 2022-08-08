@@ -18,7 +18,9 @@ import net.minecraft.inventory.Container;
  */
 public abstract class ContainerDataSync extends Container {
 
-    //TODO WTF? Was i sleep coding when i wrote this? In 1.8 re write this as a common container class for all mod containers and use a dedicated sender/receiver method for each data type i want to send (Unless i think of something better between now and then)
+    // TODO WTF? Was i sleep coding when i wrote this? In 1.8 re write this as a common container class for all mod
+    // containers and use a dedicated sender/receiver method for each data type i want to send (Unless i think of
+    // something better between now and then)
 
     /**
      * Sends two ints to the client-side Container. Normally the first int identifies which variable to update, and the second contains the new
@@ -27,7 +29,8 @@ public abstract class ContainerDataSync extends Container {
      */
     public Object sendObjectToClient(TileObjectSync tile, int index, Object object) {
         for (Object p : crafters) {
-            DraconicEvolution.network.sendTo(new TileObjectPacket(tile, References.INT_ID, index, object), (EntityPlayerMP) p);
+            DraconicEvolution.network.sendTo(
+                    new TileObjectPacket(tile, References.INT_ID, index, object), (EntityPlayerMP) p);
         }
         return object;
     }

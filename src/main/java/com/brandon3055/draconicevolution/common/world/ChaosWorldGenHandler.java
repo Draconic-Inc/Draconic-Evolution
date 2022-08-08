@@ -9,18 +9,16 @@ import com.brandon3055.draconicevolution.common.entity.EntityChaosCrystal;
 import com.brandon3055.draconicevolution.common.entity.EntityChaosGuardian;
 import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
 import com.brandon3055.draconicevolution.common.tileentities.TileChaosShard;
+import java.util.Random;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 
-import java.util.Random;
-
 /**
  * Created by brandon3055 on 9/9/2015.
  */
 public class ChaosWorldGenHandler {
-
 
     /**
      * Used to generate the chaos island chunk by chunk
@@ -30,8 +28,10 @@ public class ChaosWorldGenHandler {
      * @param chunkZ       The Z position of the chunk being generated.
      * @param islandCenter Where to generate the island. If left null the islands will generate in a 10000 by 10000 grid.
      */
-    public static void generateChunk(World world, int chunkX, int chunkZ, DataUtills.XZPair<Integer, Integer> islandCenter, Random random) {
-        DataUtills.XZPair<Integer, Integer> closestSpawn = islandCenter == null ? getClosestChaosSpawn(chunkX, chunkZ) : islandCenter;
+    public static void generateChunk(
+            World world, int chunkX, int chunkZ, DataUtills.XZPair<Integer, Integer> islandCenter, Random random) {
+        DataUtills.XZPair<Integer, Integer> closestSpawn =
+                islandCenter == null ? getClosestChaosSpawn(chunkX, chunkZ) : islandCenter;
 
         if (closestSpawn.x == 0 && closestSpawn.z == 0) return;
         int posX = chunkX * 16;
@@ -40,10 +40,12 @@ public class ChaosWorldGenHandler {
         if (Math.abs(posX - closestSpawn.x) > copyStartDistance || Math.abs(posZ - closestSpawn.z) > copyStartDistance)
             return;
 
-        if (closestSpawn.x > posX && closestSpawn.x <= posX + 16 && closestSpawn.z > posZ && closestSpawn.z <= posZ + 16)
-            generateStructures(world, closestSpawn, random);
+        if (closestSpawn.x > posX
+                && closestSpawn.x <= posX + 16
+                && closestSpawn.z > posZ
+                && closestSpawn.z <= posZ + 16) generateStructures(world, closestSpawn, random);
 
-        //long l = System.nanoTime();
+        // long l = System.nanoTime();
 
         for (int trueX = posX; trueX < posX + 16; trueX++) {
             for (int y = 0; y < 255; y++) {
@@ -59,25 +61,29 @@ public class ChaosWorldGenHandler {
                     yd = (double) y / (32);
                     zd = (double) z / size;
 
-                    //Calculate Center Falloff
+                    // Calculate Center Falloff
                     double diameterScale = 150D;
-                    //centerFalloff = (1D - (dist / diameterScale)) * 1D;
+                    // centerFalloff = (1D - (dist / diameterScale)) * 1D;
                     centerFalloff = 1D / (dist * 0.05D);
                     if (centerFalloff < 0) centerFalloff = 0;
 
-                    //Calculate Plateau Falloff
+                    // Calculate Plateau Falloff
                     if (yd < 0.4D) plateauFalloff = yd * 2.5D;
                     else if (yd <= 0.6D) plateauFalloff = 1D;
                     else if (yd > 0.6D && yd < 1D) plateauFalloff = 1D - (yd - 0.6D) * 2.5D;
                     else plateauFalloff = 0;
 
-                    //Trim Further calculations
+                    // Trim Further calculations
                     if (plateauFalloff == 0 || centerFalloff == 0) continue;
 
-                    //Calculate heightMapFalloff
+                    // Calculate heightMapFalloff
                     heightMapFalloff = 0;
                     for (int octave = 1; octave < 5; octave++)
-                        heightMapFalloff += ((SimplexNoise.noise(xd * octave + closestSpawn.x, zd * octave + closestSpawn.z) + 1) * 0.5D) * 0.01D * (octave * 10D * 1 - (dist * 0.001D));
+                        heightMapFalloff +=
+                                ((SimplexNoise.noise(xd * octave + closestSpawn.x, zd * octave + closestSpawn.z) + 1)
+                                                * 0.5D)
+                                        * 0.01D
+                                        * (octave * 10D * 1 - (dist * 0.001D));
                     if (heightMapFalloff <= 0) heightMapFalloff = 0;
                     heightMapFalloff += ((0.5D - Math.abs(yd - 0.5D)) * 0.15D);
                     if (heightMapFalloff == 0) continue;
@@ -85,22 +91,28 @@ public class ChaosWorldGenHandler {
                     density = centerFalloff * plateauFalloff * heightMapFalloff;
 
                     if (density > 0.1 && world.getBlock(x + closestSpawn.x, y + 64, z + closestSpawn.z) == Blocks.air)
-                        world.setBlock(x + closestSpawn.x, y + 64, z + closestSpawn.z, (dist > 60 || dist > random.nextInt(60)) ? Blocks.end_stone : Blocks.obsidian);
+                        world.setBlock(
+                                x + closestSpawn.x,
+                                y + 64,
+                                z + closestSpawn.z,
+                                (dist > 60 || dist > random.nextInt(60)) ? Blocks.end_stone : Blocks.obsidian);
 
-//					if (density > 0.1 && world.getBlock(x + closestSpawn.x, y + 64, z + closestSpawn.z) == Blocks.air) {
-//						boolean b = dist > 60 || dist > random.nextInt(60);
-//						world.setBlock(x + closestSpawn.x, y + 64, z + closestSpawn.z, (dist > 60 || dist > random.nextInt(60)) ? Blocks.end_stone : Blocks.obsidian);
-//					}
+                    //					if (density > 0.1 && world.getBlock(x + closestSpawn.x, y + 64, z + closestSpawn.z) ==
+                    // Blocks.air) {
+                    //						boolean b = dist > 60 || dist > random.nextInt(60);
+                    //						world.setBlock(x + closestSpawn.x, y + 64, z + closestSpawn.z, (dist > 60 || dist >
+                    // random.nextInt(60)) ? Blocks.end_stone : Blocks.obsidian);
+                    //					}
                 }
             }
         }
     }
 
-    public static void generateStructures(World world, DataUtills.XZPair<Integer, Integer> islandCenter, Random random) {
+    public static void generateStructures(
+            World world, DataUtills.XZPair<Integer, Integer> islandCenter, Random random) {
         int outerRadius = 330;
 
-
-        //Gen Chaos Cavern
+        // Gen Chaos Cavern
         int shardY = 80;
 
         int coreHeight = 10;
@@ -119,14 +131,14 @@ public class ChaosWorldGenHandler {
 
         world.setBlock(islandCenter.x, shardY, islandCenter.z, ModBlocks.chaosCrystal);
         TileChaosShard tileChaosShard = (TileChaosShard) world.getTileEntity(islandCenter.x, shardY, islandCenter.z);
-        tileChaosShard.locationHash = tileChaosShard.getLocationHash(islandCenter.x, shardY, islandCenter.z, world.provider.dimensionId);
+        tileChaosShard.locationHash =
+                tileChaosShard.getLocationHash(islandCenter.x, shardY, islandCenter.z, world.provider.dimensionId);
 
         EntityChaosGuardian guardian = new EntityChaosGuardian(world);
         guardian.setPositionAndUpdate(islandCenter.x, shardY, islandCenter.z);
         world.spawnEntityInWorld(guardian);
 
-
-        //Gen Ring
+        // Gen Ring
         int rings = 4;
         int width = 20;
         int spacing = 8;
@@ -134,8 +146,9 @@ public class ChaosWorldGenHandler {
             for (int z = islandCenter.z - outerRadius; z <= islandCenter.z + outerRadius; z++) {
                 int dist = (int) (Utills.getDistanceAtoB(x, z, islandCenter.x, islandCenter.z));
                 for (int i = 0; i < rings; i++) {
-                    //if (dist < outerRadius1 && dist >= innerRadius1 || dist < outerRadius2 && dist >= innerRadius2)
-                    if (dist < (outerRadius - ((width + spacing) * i)) && dist >= (outerRadius - width - ((width + spacing) * i))) {
+                    // if (dist < outerRadius1 && dist >= innerRadius1 || dist < outerRadius2 && dist >= innerRadius2)
+                    if (dist < (outerRadius - ((width + spacing) * i))
+                            && dist >= (outerRadius - width - ((width + spacing) * i))) {
                         int y = 90 + (int) ((double) (islandCenter.x - x) * 0.1D) + (random.nextInt(10) - 5);
                         if (0.1F > random.nextFloat()) world.setBlock(x, y, z, Blocks.end_stone, 0, 2);
                         if (0.001F > random.nextFloat()) world.setBlock(x, y, z, ModBlocks.draconiumOre, 0, 2);
@@ -146,7 +159,8 @@ public class ChaosWorldGenHandler {
         generateObelisks(world, islandCenter, random);
     }
 
-    public static void genCoreSlice(World world, int xi, int yi, int zi, int ringRadius, int yc, int coreRadious, boolean fillIn, Random rand) {
+    public static void genCoreSlice(
+            World world, int xi, int yi, int zi, int ringRadius, int yc, int coreRadious, boolean fillIn, Random rand) {
         for (int x = xi - coreRadious; x <= xi + coreRadious; x++) {
             for (int z = zi - coreRadious; z <= zi + coreRadious; z++) {
                 double dist = Utills.getDistanceAtoB(x, yi, z, xi, yc, zi);
@@ -164,14 +178,14 @@ public class ChaosWorldGenHandler {
                     if (b == Blocks.air || b == Blocks.end_stone || b == Blocks.obsidian)
                         world.setBlock(x, yi, z, ModBlocks.chaosShardAtmos);
                 }
-
             }
         }
     }
 
-
     public static DataUtills.XZPair<Integer, Integer> getClosestChaosSpawn(int chunkX, int chunkZ) {
-        return new DataUtills.XZPair<Integer, Integer>(Utills.getNearestMultiple(chunkX * 16, ConfigHandler.chaosIslandSeparation), Utills.getNearestMultiple(chunkZ * 16, ConfigHandler.chaosIslandSeparation));
+        return new DataUtills.XZPair<Integer, Integer>(
+                Utills.getNearestMultiple(chunkX * 16, ConfigHandler.chaosIslandSeparation),
+                Utills.getNearestMultiple(chunkZ * 16, ConfigHandler.chaosIslandSeparation));
     }
 
     private static void generateObelisks(World world, DataUtills.XZPair<Integer, Integer> islandCenter, Random rand) {
@@ -189,7 +203,6 @@ public class ChaosWorldGenHandler {
             int sZ = islandCenter.z + (int) (Math.cos(rotation) * 90D);
             generateObelisk(world, sX, 90, sZ, true, rand);
         }
-
     }
 
     private static void generateObelisk(World world, int x1, int y1, int z1, boolean outer, Random rand) {
@@ -250,7 +263,6 @@ public class ChaosWorldGenHandler {
                     if (0.8F > rand.nextFloat()) world.setBlock(x, y1 + 44, z, Blocks.stone_slab, 6, 2);
                 }
             }
-
         }
     }
 

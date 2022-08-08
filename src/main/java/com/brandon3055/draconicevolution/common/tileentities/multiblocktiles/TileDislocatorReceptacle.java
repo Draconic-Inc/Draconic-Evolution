@@ -39,7 +39,8 @@ public class TileDislocatorReceptacle extends TileEntity implements IInventory {
             isActive = false;
             return;
         }
-        isActive = structure.checkFrameIsValid(worldObj, xCoord, yCoord, zCoord) && structure.scanPortal(worldObj, xCoord, yCoord, zCoord, false, true);
+        isActive = structure.checkFrameIsValid(worldObj, xCoord, yCoord, zCoord)
+                && structure.scanPortal(worldObj, xCoord, yCoord, zCoord, false, true);
         worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
     }
 
@@ -161,16 +162,16 @@ public class TileDislocatorReceptacle extends TileEntity implements IInventory {
     }
 
     @Override
-    public void openInventory() {
-    }
+    public void openInventory() {}
 
     @Override
-    public void closeInventory() {
-    }
+    public void closeInventory() {}
 
     @Override
     public boolean isItemValidForSlot(int i, ItemStack itemstack) {
-        return itemstack != null && itemstack.getItem() instanceof TeleporterMKI && ((TeleporterMKI) itemstack.getItem()).getLocation(itemstack) != null;
+        return itemstack != null
+                && itemstack.getItem() instanceof TeleporterMKI
+                && ((TeleporterMKI) itemstack.getItem()).getLocation(itemstack) != null;
     }
 
     @Override

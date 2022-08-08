@@ -28,7 +28,13 @@ public class TilePortalBlock extends TileEntity {
     @SideOnly(Side.CLIENT)
     public void updateEntity() {
         if (!worldObj.isRemote) return;
-        double distanceMod = Utills.getDistanceAtoB(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5, RenderManager.renderPosX, RenderManager.renderPosY, RenderManager.renderPosZ);
+        double distanceMod = Utills.getDistanceAtoB(
+                xCoord + 0.5,
+                yCoord + 0.5,
+                zCoord + 0.5,
+                RenderManager.renderPosX,
+                RenderManager.renderPosY,
+                RenderManager.renderPosZ);
         if (worldObj.rand.nextInt(Math.max((int) (distanceMod * (distanceMod / 5D)), 1)) == 0) {
             if (blockMetadata == -1) blockMetadata = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
 
@@ -37,24 +43,79 @@ public class TilePortalBlock extends TileEntity {
             double rO1 = -0.1 + worldObj.rand.nextDouble() * 0.2;
             double rO2 = -0.1 + worldObj.rand.nextDouble() * 0.2;
 
-
             if (blockMetadata == 1 && RenderManager.renderPosZ < zCoord + 0.5)
-                DraconicEvolution.proxy.spawnParticle(new Particles.PortalParticle(worldObj, xCoord + rD1, yCoord + rD2, zCoord, xCoord + rD1 + rO1, yCoord + rD2 + rO2, zCoord + 0.75), 256);
+                DraconicEvolution.proxy.spawnParticle(
+                        new Particles.PortalParticle(
+                                worldObj,
+                                xCoord + rD1,
+                                yCoord + rD2,
+                                zCoord,
+                                xCoord + rD1 + rO1,
+                                yCoord + rD2 + rO2,
+                                zCoord + 0.75),
+                        256);
             else if (blockMetadata == 1 && RenderManager.renderPosZ > zCoord + 0.5)
-                DraconicEvolution.proxy.spawnParticle(new Particles.PortalParticle(worldObj, xCoord + rD1, yCoord + rD2, zCoord + 1, xCoord + rD1 + rO1, yCoord + rD2 + rO2, zCoord + 0.25), 256);
+                DraconicEvolution.proxy.spawnParticle(
+                        new Particles.PortalParticle(
+                                worldObj,
+                                xCoord + rD1,
+                                yCoord + rD2,
+                                zCoord + 1,
+                                xCoord + rD1 + rO1,
+                                yCoord + rD2 + rO2,
+                                zCoord + 0.25),
+                        256);
             else if (blockMetadata == 2 && RenderManager.renderPosX < xCoord + 0.5)
-                DraconicEvolution.proxy.spawnParticle(new Particles.PortalParticle(worldObj, xCoord, yCoord + rD1, zCoord + rD2, xCoord + 0.75, yCoord + rD1 + rO1, zCoord + rD2 + rO2), 256);
+                DraconicEvolution.proxy.spawnParticle(
+                        new Particles.PortalParticle(
+                                worldObj,
+                                xCoord,
+                                yCoord + rD1,
+                                zCoord + rD2,
+                                xCoord + 0.75,
+                                yCoord + rD1 + rO1,
+                                zCoord + rD2 + rO2),
+                        256);
             else if (blockMetadata == 2 && RenderManager.renderPosX > xCoord + 0.5)
-                DraconicEvolution.proxy.spawnParticle(new Particles.PortalParticle(worldObj, xCoord + 1, yCoord + rD1, zCoord + rD2, xCoord + 0.25, yCoord + rD1 + rO1, zCoord + rD2 + rO2), 256);
+                DraconicEvolution.proxy.spawnParticle(
+                        new Particles.PortalParticle(
+                                worldObj,
+                                xCoord + 1,
+                                yCoord + rD1,
+                                zCoord + rD2,
+                                xCoord + 0.25,
+                                yCoord + rD1 + rO1,
+                                zCoord + rD2 + rO2),
+                        256);
             else if (blockMetadata == 3 && RenderManager.renderPosY > yCoord + 0.5)
-                DraconicEvolution.proxy.spawnParticle(new Particles.PortalParticle(worldObj, xCoord + rD1, yCoord + 1, zCoord + rD2, xCoord + rD1 + rO1, yCoord + 0.25, zCoord + rD2 + rO2), 256);
+                DraconicEvolution.proxy.spawnParticle(
+                        new Particles.PortalParticle(
+                                worldObj,
+                                xCoord + rD1,
+                                yCoord + 1,
+                                zCoord + rD2,
+                                xCoord + rD1 + rO1,
+                                yCoord + 0.25,
+                                zCoord + rD2 + rO2),
+                        256);
             else if (blockMetadata == 3 && RenderManager.renderPosY < yCoord + 0.5)
-                DraconicEvolution.proxy.spawnParticle(new Particles.PortalParticle(worldObj, xCoord + rD1, yCoord, zCoord + rD2, xCoord + rD1 + rO1, yCoord + 0.75, zCoord + rD2 + rO2), 256);
+                DraconicEvolution.proxy.spawnParticle(
+                        new Particles.PortalParticle(
+                                worldObj,
+                                xCoord + rD1,
+                                yCoord,
+                                zCoord + rD2,
+                                xCoord + rD1 + rO1,
+                                yCoord + 0.75,
+                                zCoord + rD2 + rO2),
+                        256);
         }
     }
 
     public TileDislocatorReceptacle getMaster() {
-        return worldObj.getTileEntity(masterX, masterY, masterZ) instanceof TileDislocatorReceptacle ? (TileDislocatorReceptacle) worldObj.getTileEntity(masterX, masterY, masterZ) : null;
+        return worldObj.getTileEntity(masterX, masterY, masterZ) instanceof TileDislocatorReceptacle
+                ? (TileDislocatorReceptacle) worldObj.getTileEntity(masterX, masterY, masterZ)
+                : null;
     }
 
     public boolean isPortalStillValid() {

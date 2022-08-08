@@ -18,33 +18,33 @@ public class RenderTileReactorCore extends TileEntitySpecialRenderer {
     public static IModelCustom reactorModel;
 
     public RenderTileReactorCore() {
-        reactorModel = AdvancedModelLoader.loadModel(new ResourceLocation(References.MODID.toLowerCase(), "models/reactorCoreModel.obj"));
+        reactorModel = AdvancedModelLoader.loadModel(
+                new ResourceLocation(References.MODID.toLowerCase(), "models/reactorCoreModel.obj"));
     }
 
     @Override
     public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick) {
         TileReactorCore tile = (TileReactorCore) tileEntity;
-//		tile.renderList.clear();
+        //		tile.renderList.clear();
 
         GL11.glPushMatrix();
         GL11.glTranslated(x + 0.5, y + 0.5, z + 0.5);
 
         renderReactorCore(tile, partialTick);
-//		for (MultiblockHelper.TileOffset offset : tile.stabilizerLocations){
-//			if (!(offset.getTileEntity(tileEntity) instanceof TileReactorStabilizer)) continue;
-//			GL11.glPushMatrix();
-//
-//			TileReactorStabilizer stabilizer = (TileReactorStabilizer)offset.getTileEntity(tileEntity);
-//			GL11.glTranslated(-offset.offsetX, -offset.offsetY, -offset.offsetZ);
-//			//RenderTileReactorStabilizer.renderCore(stabilizer, partialTick);
-//			//RenderTileReactorStabilizer.renderEffects(stabilizer, partialTick);
-//
-//			GL11.glPopMatrix();
-//		}
+        //		for (MultiblockHelper.TileOffset offset : tile.stabilizerLocations){
+        //			if (!(offset.getTileEntity(tileEntity) instanceof TileReactorStabilizer)) continue;
+        //			GL11.glPushMatrix();
+        //
+        //			TileReactorStabilizer stabilizer = (TileReactorStabilizer)offset.getTileEntity(tileEntity);
+        //			GL11.glTranslated(-offset.offsetX, -offset.offsetY, -offset.offsetZ);
+        //			//RenderTileReactorStabilizer.renderCore(stabilizer, partialTick);
+        //			//RenderTileReactorStabilizer.renderEffects(stabilizer, partialTick);
+        //
+        //			GL11.glPopMatrix();
+        //		}
 
         GL11.glPopMatrix();
     }
-
 
     public void renderReactorCore(TileReactorCore tile, float partialTick) {
         float rotation = (tile.renderRotation * 0.2F) + (partialTick * (tile.renderSpeed * 0.2F));
@@ -54,14 +54,14 @@ public class RenderTileReactorCore extends TileEntitySpecialRenderer {
         double b = ff * 2;
         double a = ff < 0.1 ? (ff * 10) : 1;
 
-        //Pre Render
+        // Pre Render
         GL11.glPushMatrix();
         GL11.glDisable(GL11.GL_LIGHTING);
         float lastBrightnessX = OpenGlHelper.lastBrightnessX;
         float lastBrightnessY = OpenGlHelper.lastBrightnessY;
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 200F, 200F);
 
-        //Render inner
+        // Render inner
         if (tile.reactorFuel + tile.convertedFuel < 144) {
             ResourceHandler.bindResource("textures/blocks/draconic_block_blank.png");
             GL11.glPushMatrix();
@@ -78,7 +78,7 @@ public class RenderTileReactorCore extends TileEntitySpecialRenderer {
         GL11.glScaled(r3, r3, r3);
         reactorModel.renderAll();
 
-        //Mid Render
+        // Mid Render
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         GL11.glEnable(GL11.GL_ALPHA_TEST);
@@ -91,7 +91,7 @@ public class RenderTileReactorCore extends TileEntitySpecialRenderer {
             reactorModel.renderAll();
         }
 
-        //Render Outer
+        // Render Outer
         ResourceHandler.bindResource("textures/models/reactorShieldPlate.png");
         GL11.glColor4d(r, g, b, a);
         GL11.glScaled(1.03F, 1.03F, 1.03F);
@@ -99,12 +99,11 @@ public class RenderTileReactorCore extends TileEntitySpecialRenderer {
         GL11.glRotatef(-rotation * 2, 0.5F, 1F, 0.5F);
         reactorModel.renderAll();
 
-        //Post Render
+        // Post Render
         GL11.glEnable(GL11.GL_LIGHTING);
         GL11.glDisable(GL11.GL_BLEND);
         GL11.glColor4f(1f, 1f, 1f, 1f);
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lastBrightnessX, lastBrightnessY);
         GL11.glPopMatrix();
     }
-
 }

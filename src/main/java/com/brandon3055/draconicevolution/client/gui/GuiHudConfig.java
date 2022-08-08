@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.client.gui;
 import com.brandon3055.brandonscore.client.gui.guicomponents.GUIBase;
 import com.brandon3055.brandonscore.client.utills.GuiHelper;
 import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
+import java.util.ArrayList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -10,8 +11,6 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.util.StatCollector;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
-
-import java.util.ArrayList;
 
 /**
  * Created by brandon3055 on 11/2/2016.
@@ -40,24 +39,36 @@ public class GuiHudConfig extends GuiScreen {
 
         buttonList.add(new GuiButtonAHeight(0, x - 35, y + 95, 70, 15, StatCollector.translateToLocal("gui.back")));
 
-        buttonList.add(new GuiButtonAHeight(1, x + 2, y - 37, 80, 15, StatCollector.translateToLocal("button.de.scaleUp.txt")));
-        buttonList.add(new GuiButtonAHeight(2, x - 81, y - 37, 80, 15, StatCollector.translateToLocal("button.de.scaleDown.txt")));
+        buttonList.add(new GuiButtonAHeight(
+                1, x + 2, y - 37, 80, 15, StatCollector.translateToLocal("button.de.scaleUp.txt")));
+        buttonList.add(new GuiButtonAHeight(
+                2, x - 81, y - 37, 80, 15, StatCollector.translateToLocal("button.de.scaleDown.txt")));
         buttonList.add(buttonHudFade = new GuiButtonAHeight(3, x - 81, y - 20, 163, 15, ""));
-        buttonList.add(new GuiButtonAHeight(9, x - 81, y - 3, 163, 15, StatCollector.translateToLocal("button.de.toggleHidden.txt")));
+        buttonList.add(new GuiButtonAHeight(
+                9, x - 81, y - 3, 163, 15, StatCollector.translateToLocal("button.de.toggleHidden.txt")));
 
-        buttonList.add(new GuiButtonAHeight(4, x + 2, y + 25, 80, 15, StatCollector.translateToLocal("button.de.scaleUp.txt")));
-        buttonList.add(new GuiButtonAHeight(5, x - 81, y + 25, 80, 15, StatCollector.translateToLocal("button.de.scaleDown.txt")));
+        buttonList.add(new GuiButtonAHeight(
+                4, x + 2, y + 25, 80, 15, StatCollector.translateToLocal("button.de.scaleUp.txt")));
+        buttonList.add(new GuiButtonAHeight(
+                5, x - 81, y + 25, 80, 15, StatCollector.translateToLocal("button.de.scaleDown.txt")));
         buttonList.add(buttonArmorFade = new GuiButtonAHeight(6, x - 81, y + 42, 163, 15, ""));
         buttonList.add(buttonArmorNumeric = new GuiButtonAHeight(7, x + 2, y + 59, 80, 15, ""));
-        buttonList.add(new GuiButtonAHeight(8, x - 81, y + 59, 80, 15, StatCollector.translateToLocal("button.de.rotate.txt")));
-        buttonList.add(new GuiButtonAHeight(10, x - 81, y + 76, 163, 15, StatCollector.translateToLocal("button.de.toggleHidden.txt")));
+        buttonList.add(new GuiButtonAHeight(
+                8, x - 81, y + 59, 80, 15, StatCollector.translateToLocal("button.de.rotate.txt")));
+        buttonList.add(new GuiButtonAHeight(
+                10, x - 81, y + 76, 163, 15, StatCollector.translateToLocal("button.de.toggleHidden.txt")));
     }
 
     @Override
     public void updateScreen() {
-        buttonHudFade.displayString = StatCollector.translateToLocal("button.de.fadeMode" + ConfigHandler.hudSettings[6] + ".txt");
-        buttonArmorFade.displayString = StatCollector.translateToLocal("button.de.fadeMode" + ConfigHandler.hudSettings[7] + ".txt");
-        buttonArmorNumeric.displayString = StatCollector.translateToLocal("button.de.numeric.txt") + " " + (ConfigHandler.hudSettings[9] == 0 ? StatCollector.translateToLocal("gui.de.off.txt") : StatCollector.translateToLocal("gui.de.on.txt"));
+        buttonHudFade.displayString =
+                StatCollector.translateToLocal("button.de.fadeMode" + ConfigHandler.hudSettings[6] + ".txt");
+        buttonArmorFade.displayString =
+                StatCollector.translateToLocal("button.de.fadeMode" + ConfigHandler.hudSettings[7] + ".txt");
+        buttonArmorNumeric.displayString = StatCollector.translateToLocal("button.de.numeric.txt") + " "
+                + (ConfigHandler.hudSettings[9] == 0
+                        ? StatCollector.translateToLocal("gui.de.off.txt")
+                        : StatCollector.translateToLocal("gui.de.on.txt"));
     }
 
     @Override
@@ -93,7 +104,17 @@ public class GuiHudConfig extends GuiScreen {
             else ConfigHandler.hudSettings[11] = 0;
         }
 
-        ConfigHandler.config.get("Gui Stuff", "HUD Settings", new int[]{7, 874, 100, 100, 100, 100, 0, 0, 0, 0, 1, 1}, "Used to store the position of the armor ant tool HUD's. This should not be modified", Integer.MIN_VALUE, Integer.MAX_VALUE, true, 12).set(ConfigHandler.hudSettings);
+        ConfigHandler.config
+                .get(
+                        "Gui Stuff",
+                        "HUD Settings",
+                        new int[] {7, 874, 100, 100, 100, 100, 0, 0, 0, 0, 1, 1},
+                        "Used to store the position of the armor ant tool HUD's. This should not be modified",
+                        Integer.MIN_VALUE,
+                        Integer.MAX_VALUE,
+                        true,
+                        12)
+                .set(ConfigHandler.hudSettings);
         ConfigHandler.config.save();
     }
 
@@ -105,13 +126,35 @@ public class GuiHudConfig extends GuiScreen {
         int armorX = (int) ((pos[2] / 1000D) * width);
         int armorY = (int) ((pos[3] / 1000D) * height);
 
-        drawCenteredString(fontRendererObj, StatCollector.translateToLocal("gui.de.configureGuiElements.txt"), width / 2, height / 2 - 90, 0x00FFFF);
-        drawCenteredString(fontRendererObj, StatCollector.translateToLocal("gui.de.hudDisplaySettings.txt"), width / 2, height / 2 - 77, 0xFFFFFF);
-        drawCenteredString(fontRendererObj, StatCollector.translateToLocal("gui.de.shieldDisplaySettings.txt"), width / 2, height / 2 - 15, 0xFFFFFF);
-        drawCenteredString(fontRendererObj, StatCollector.translateToLocal("gui.de.clickAndDragPurpleBoxes.txt"), width / 2, height / 2 + 85, 0xFFFFFF);
+        drawCenteredString(
+                fontRendererObj,
+                StatCollector.translateToLocal("gui.de.configureGuiElements.txt"),
+                width / 2,
+                height / 2 - 90,
+                0x00FFFF);
+        drawCenteredString(
+                fontRendererObj,
+                StatCollector.translateToLocal("gui.de.hudDisplaySettings.txt"),
+                width / 2,
+                height / 2 - 77,
+                0xFFFFFF);
+        drawCenteredString(
+                fontRendererObj,
+                StatCollector.translateToLocal("gui.de.shieldDisplaySettings.txt"),
+                width / 2,
+                height / 2 - 15,
+                0xFFFFFF);
+        drawCenteredString(
+                fontRendererObj,
+                StatCollector.translateToLocal("gui.de.clickAndDragPurpleBoxes.txt"),
+                width / 2,
+                height / 2 + 85,
+                0xFFFFFF);
 
-        drawCenteredString(fontRendererObj, ConfigHandler.hudSettings[4] + "%", width / 2 + 97, height / 2 - 63, 0xFFFFFF);
-        drawCenteredString(fontRendererObj, ConfigHandler.hudSettings[5] + "%", width / 2 + 97, height / 2 - 1, 0xFFFFFF);
+        drawCenteredString(
+                fontRendererObj, ConfigHandler.hudSettings[4] + "%", width / 2 + 97, height / 2 - 63, 0xFFFFFF);
+        drawCenteredString(
+                fontRendererObj, ConfigHandler.hudSettings[5] + "%", width / 2 + 97, height / 2 - 1, 0xFFFFFF);
         super.drawScreen(x, y, partial);
 
         GL11.glDisable(GL12.GL_RESCALE_NORMAL);
@@ -140,12 +183,18 @@ public class GuiHudConfig extends GuiScreen {
         RenderHelper.enableStandardItemLighting();
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 
-        if (GuiHelper.isInRect(armorX - 19, armorY - 19, 39, 39, x, y) || GuiHelper.isInRect(hudX - 19, hudY - 19, 39, 39, x, y)) {
-            drawHoveringText(new ArrayList<String>() {{
-                add(StatCollector.translateToLocal("info.de.hudDisplayConfigTxt2.txt"));
-            }}, x, y, fontRendererObj);
+        if (GuiHelper.isInRect(armorX - 19, armorY - 19, 39, 39, x, y)
+                || GuiHelper.isInRect(hudX - 19, hudY - 19, 39, 39, x, y)) {
+            drawHoveringText(
+                    new ArrayList<String>() {
+                        {
+                            add(StatCollector.translateToLocal("info.de.hudDisplayConfigTxt2.txt"));
+                        }
+                    },
+                    x,
+                    y,
+                    fontRendererObj);
         }
-
     }
 
     @Override
@@ -175,7 +224,17 @@ public class GuiHudConfig extends GuiScreen {
     protected void mouseMovedOrUp(int x, int y, int action) {
         super.mouseMovedOrUp(x, y, action);
         draggingHud = draggingArmor = false;
-        ConfigHandler.config.get("Gui Stuff", "HUD Settings", new int[]{7, 874, 100, 100, 100, 100, 0, 0, 0, 0, 1, 1}, "Used to store the position of the armor ant tool HUD's. This should not be modified", Integer.MIN_VALUE, Integer.MAX_VALUE, true, 12).set(ConfigHandler.hudSettings);
+        ConfigHandler.config
+                .get(
+                        "Gui Stuff",
+                        "HUD Settings",
+                        new int[] {7, 874, 100, 100, 100, 100, 0, 0, 0, 0, 1, 1},
+                        "Used to store the position of the armor ant tool HUD's. This should not be modified",
+                        Integer.MIN_VALUE,
+                        Integer.MAX_VALUE,
+                        true,
+                        12)
+                .set(ConfigHandler.hudSettings);
         ConfigHandler.config.save();
     }
 

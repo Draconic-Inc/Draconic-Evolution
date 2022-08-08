@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.common.container;
 
-import com.brandon3055.draconicevolution.common.inventory.SlotOutput;
 import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
+import com.brandon3055.draconicevolution.common.inventory.SlotOutput;
 import com.brandon3055.draconicevolution.common.tileentities.TileDissEnchanter;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;
@@ -59,7 +59,8 @@ public class ContainerDissEnchanter extends Container {
                 if (!mergeItemStack(stack, 0, 36, false)) {
                     return null;
                 }
-            } else if ((!isStackValidForInventory(stack, 0) || !mergeItemStack(stack, 36, 37, false)) && (!isStackValidForInventory(stack, 1) || !mergeItemStack(stack, 37, 38, false))) {
+            } else if ((!isStackValidForInventory(stack, 0) || !mergeItemStack(stack, 36, 37, false))
+                    && (!isStackValidForInventory(stack, 1) || !mergeItemStack(stack, 37, 38, false))) {
                 return null;
             }
 
@@ -106,7 +107,8 @@ public class ContainerDissEnchanter extends Container {
 
         @Override
         public boolean isItemValid(ItemStack stack) {
-            return EnchantmentHelper.getEnchantments(stack).size() > 0 || ItemNBTHelper.getInteger(stack, "RepairCost", 0) > 0;
+            return EnchantmentHelper.getEnchantments(stack).size() > 0
+                    || ItemNBTHelper.getInteger(stack, "RepairCost", 0) > 0;
         }
 
         @Override

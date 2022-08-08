@@ -22,9 +22,11 @@ public class RenderBowModel implements IItemRenderer {
         this.draconic = draconic;
 
         for (int i = 0; i < 4; i++)
-            wyvernModels[i] = AdvancedModelLoader.loadModel(ResourceHandler.getResource("models/tools/WyvernBow0" + i + ".obj"));
+            wyvernModels[i] =
+                    AdvancedModelLoader.loadModel(ResourceHandler.getResource("models/tools/WyvernBow0" + i + ".obj"));
         for (int i = 0; i < 4; i++)
-            draconicModels[i] = AdvancedModelLoader.loadModel(ResourceHandler.getResource("models/tools/DraconicBow0" + i + ".obj"));
+            draconicModels[i] = AdvancedModelLoader.loadModel(
+                    ResourceHandler.getResource("models/tools/DraconicBow0" + i + ".obj"));
         this.arrow = AdvancedModelLoader.loadModel(ResourceHandler.getResource("models/tools/ArrowCommon.obj"));
     }
 
@@ -35,14 +37,14 @@ public class RenderBowModel implements IItemRenderer {
 
     @Override
     public boolean shouldUseRenderHelper(ItemRenderType type, ItemStack item, ItemRendererHelper helper) {
-        return false;//type == ItemRenderType.ENTITY && helper == ItemRendererHelper.ENTITY_ROTATION;
+        return false; // type == ItemRenderType.ENTITY && helper == ItemRendererHelper.ENTITY_ROTATION;
     }
 
     @Override
     public void renderItem(ItemRenderType type, ItemStack item, Object... data) {
         GL11.glPushMatrix();
 
-        //String currentMode = ItemNBTHelper.getString(item, "mode", "rapidfire");
+        // String currentMode = ItemNBTHelper.getString(item, "mode", "rapidfire");
         float j = 0F;
         int selection = 0;
         BowHandler.BowProperties properties = null;
@@ -65,7 +67,6 @@ public class RenderBowModel implements IItemRenderer {
 
         IModelCustom activeModel;
 
-
         if (draconic) {
             activeModel = draconicModels[selection];
             ResourceHandler.bindResource("textures/models/tools/DraconicBow0" + selection + ".png");
@@ -74,13 +75,13 @@ public class RenderBowModel implements IItemRenderer {
             ResourceHandler.bindResource("textures/models/tools/WyvernBow0" + selection + ".png");
         }
 
-
         if (activeModel != null) doRender(activeModel, type, j > 0 ? selection : -1, properties);
 
         GL11.glPopMatrix();
     }
 
-    private void doRender(IModelCustom modelCustom, ItemRenderType type, int drawState, BowHandler.BowProperties properties) {
+    private void doRender(
+            IModelCustom modelCustom, ItemRenderType type, int drawState, BowHandler.BowProperties properties) {
 
         if (type == ItemRenderType.EQUIPPED) {
             GL11.glScaled(0.8, 0.8, 0.8);
@@ -104,11 +105,11 @@ public class RenderBowModel implements IItemRenderer {
             GL11.glRotatef(-90, 1, 0, 0);
         }
 
-
         modelCustom.renderAll();
 
         if (drawState != -1) {
-            GL11.glTranslated(0.3, 0.151, -0.2 + (drawState == 1 ? 0 : drawState == 2 ? 0.55 : drawState == 3 ? 1 : -0.7));
+            GL11.glTranslated(
+                    0.3, 0.151, -0.2 + (drawState == 1 ? 0 : drawState == 2 ? 0.55 : drawState == 3 ? 1 : -0.7));
             GL11.glRotatef(90, 0, 0, 1);
 
             if (properties != null && properties.energyBolt) {

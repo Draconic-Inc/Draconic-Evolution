@@ -1,5 +1,7 @@
 package com.brandon3055.draconicevolution.common.blocks;
 
+import static net.minecraftforge.common.util.ForgeDirection.*;
+
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.ModBlocks;
 import com.brandon3055.draconicevolution.common.lib.References;
@@ -19,8 +21,6 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import static net.minecraftforge.common.util.ForgeDirection.*;
-
 public class Potentiometer extends BlockDE {
     IIcon icons[] = new IIcon[16];
 
@@ -34,14 +34,14 @@ public class Potentiometer extends BlockDE {
         ModBlocks.register(this);
     }
 
-
     @Override
     public boolean renderAsNormalBlock() {
         return false;
     }
 
     @Override
-    public AxisAlignedBB getCollisionBoundingBoxFromPool(World p_149668_1_, int p_149668_2_, int p_149668_3_, int p_149668_4_) {
+    public AxisAlignedBB getCollisionBoundingBoxFromPool(
+            World p_149668_1_, int p_149668_2_, int p_149668_3_, int p_149668_4_) {
         return null;
     }
 
@@ -77,7 +77,12 @@ public class Potentiometer extends BlockDE {
 
     @Override
     public boolean canPlaceBlockAt(World world, int x, int y, int z) {
-        return (world.isSideSolid(x, y + 1, z, UP)) || (world.isSideSolid(x, y - 1, z, DOWN)) || (world.isSideSolid(x - 1, y, z, EAST)) || (world.isSideSolid(x + 1, y, z, WEST)) || (world.isSideSolid(x, y, z - 1, SOUTH)) || (world.isSideSolid(x, y, z + 1, NORTH));
+        return (world.isSideSolid(x, y + 1, z, UP))
+                || (world.isSideSolid(x, y - 1, z, DOWN))
+                || (world.isSideSolid(x - 1, y, z, EAST))
+                || (world.isSideSolid(x + 1, y, z, WEST))
+                || (world.isSideSolid(x, y, z - 1, SOUTH))
+                || (world.isSideSolid(x, y, z + 1, NORTH));
     }
 
     @Override
@@ -120,7 +125,16 @@ public class Potentiometer extends BlockDE {
     }
 
     @Override
-    public int onBlockPlaced(World world, int x, int y, int z, int side, float p_149660_6_, float p_149660_7_, float p_149660_8_, int p_149660_9_) {
+    public int onBlockPlaced(
+            World world,
+            int x,
+            int y,
+            int z,
+            int side,
+            float p_149660_6_,
+            float p_149660_7_,
+            float p_149660_8_,
+            int p_149660_9_) {
         int j1 = world.getBlockMetadata(x, y, z);
         int k1 = j1 & 8;
         j1 &= 7;
@@ -242,9 +256,18 @@ public class Potentiometer extends BlockDE {
         }
     }
 
-    //#################################LOGIC##################################//
+    // #################################LOGIC##################################//
     @Override
-    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float p_149727_7_, float p_149727_8_, float p_149727_9_) {
+    public boolean onBlockActivated(
+            World world,
+            int x,
+            int y,
+            int z,
+            EntityPlayer player,
+            int side,
+            float p_149727_7_,
+            float p_149727_8_,
+            float p_149727_9_) {
         TilePotentiometer tile = (TilePotentiometer) world.getTileEntity(x, y, z);
 
         if (tile != null && tile instanceof TilePotentiometer) {
@@ -271,5 +294,4 @@ public class Potentiometer extends BlockDE {
         if (tile != null && tile instanceof TilePotentiometer) return ((TilePotentiometer) tile).power;
         else return 0;
     }
-
 }

@@ -29,24 +29,24 @@ public class ManualPage {
     }
 
     public String getImageResourceName(String url) {
-//		try
-//		{
+        //		try
+        //		{
         LogHelper.info(url);
         return FilenameUtils.getName(url);
-        //String fileName = new URL(url).getFile();
-        //return fileName.substring(fileName.indexOf("/") + 1);
-//		}
-//		catch (MalformedURLException e)
-//		{
-//			e.printStackTrace();
-//			return "";
-//		}
+        // String fileName = new URL(url).getFile();
+        // return fileName.substring(fileName.indexOf("/") + 1);
+        //		}
+        //		catch (MalformedURLException e)
+        //		{
+        //			e.printStackTrace();
+        //			return "";
+        //		}
     }
 
     public String getLocalizedName() {
         if (nameL != null) return nameL;
-        return (name.contains("item.") || name.contains("tile.")) ? StatCollector.translateToLocal(name + ".name") : name.contains("info.") ? name.substring(name.indexOf("info.") + 5) : "Invalid Name Data";
+        return (name.contains("item.") || name.contains("tile."))
+                ? StatCollector.translateToLocal(name + ".name")
+                : name.contains("info.") ? name.substring(name.indexOf("info.") + 5) : "Invalid Name Data";
     }
-
-
 }

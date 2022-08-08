@@ -16,8 +16,7 @@ public class ContributorPacket implements IMessage {
     public boolean wings;
     public boolean badge;
 
-    public ContributorPacket() {
-    }
+    public ContributorPacket() {}
 
     public ContributorPacket(String contributor, boolean wings, boolean badge) {
         this.contributor = contributor;
@@ -57,7 +56,8 @@ public class ContributorPacket implements IMessage {
                     DraconicEvolution.network.sendToAll(message);
                 } else {
                     EntityPlayer player = BrandonsCore.proxy.getClientPlayer();
-                    if (!contributor1.isUserValid(player) || message.contributor.equals(player.getCommandSenderName())) {
+                    if (!contributor1.isUserValid(player)
+                            || message.contributor.equals(player.getCommandSenderName())) {
                         return null;
                     }
 

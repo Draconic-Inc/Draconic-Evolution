@@ -21,8 +21,10 @@ import net.minecraftforge.common.util.EnumHelper;
 
 @GameRegistry.ObjectHolder(References.MODID)
 public class ModItems {
-    public static ArmorMaterial WYVERN_ARMOR = EnumHelper.addArmorMaterial("WYVERN_ARMOR", -1, new int[]{3, 8, 6, 3}, 30);
-    public static ArmorMaterial DRACONIC_ARMOR = EnumHelper.addArmorMaterial("DRACONIC_ARMOR", -1, new int[]{3, 8, 6, 3}, 30);
+    public static ArmorMaterial WYVERN_ARMOR =
+            EnumHelper.addArmorMaterial("WYVERN_ARMOR", -1, new int[] {3, 8, 6, 3}, 30);
+    public static ArmorMaterial DRACONIC_ARMOR =
+            EnumHelper.addArmorMaterial("DRACONIC_ARMOR", -1, new int[] {3, 8, 6, 3}, 30);
     public static ToolMaterial WYVERN = EnumHelper.addToolMaterial("WYVERN", 10, -1, 12.0F, 20.0F, 35);
     public static ToolMaterial AWAKENED = EnumHelper.addToolMaterial("AWAKENED", 10, -1, 16.0F, 40.0F, 40);
     public static ToolMaterial CHAOTIC = EnumHelper.addToolMaterial("CHAOTIC", 10, -1, 400.0F, 60.0F, 45);
@@ -147,7 +149,7 @@ public class ModItems {
 
         dezilsMarshmallow = new DezilsMarshmallow();
 
-        //Custom ItemStacks
+        // Custom ItemStacks
         wyvernEnergyCore = new ItemStack(ModItems.draconiumEnergyCore, 1, 0);
         draconicEnergyCore = new ItemStack(ModItems.draconiumEnergyCore, 1, 1);
         wyvernFluxCapacitor = new ItemStack(ModItems.draconiumFluxCapacitor, 1, 0);

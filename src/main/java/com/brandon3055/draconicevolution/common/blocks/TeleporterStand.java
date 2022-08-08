@@ -1,14 +1,15 @@
 package com.brandon3055.draconicevolution.common.blocks;
 
+import com.brandon3055.brandonscore.common.utills.Teleporter;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.ModBlocks;
 import com.brandon3055.draconicevolution.common.items.tools.TeleporterMKI;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.tileentities.TileTeleporterStand;
-import com.brandon3055.brandonscore.common.utills.Teleporter;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -20,8 +21,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
-
-import java.util.List;
 
 /**
  * Created by Brandon on 27/06/2014.
@@ -41,7 +40,7 @@ public class TeleporterStand extends BlockCustomDrop {
     @SideOnly(Side.CLIENT)
     @Override
     public void registerBlockIcons(IIconRegister iconRegister) {
-        //blockIcon = iconRegister.registerIcon(References.RESOURCESPREFIX + "machine_side");
+        // blockIcon = iconRegister.registerIcon(References.RESOURCESPREFIX + "machine_side");
     }
 
     @Override
@@ -50,10 +49,15 @@ public class TeleporterStand extends BlockCustomDrop {
     }
 
     @Override
-    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float prx, float pry, float prz) {
-        TileTeleporterStand tile = world.getTileEntity(x, y, z) instanceof TileTeleporterStand ? (TileTeleporterStand) world.getTileEntity(x, y, z) : null;
+    public boolean onBlockActivated(
+            World world, int x, int y, int z, EntityPlayer player, int side, float prx, float pry, float prz) {
+        TileTeleporterStand tile = world.getTileEntity(x, y, z) instanceof TileTeleporterStand
+                ? (TileTeleporterStand) world.getTileEntity(x, y, z)
+                : null;
         if (tile == null) return false;
-        if (tile.getStackInSlot(0) == null && player.getHeldItem() != null && (player.getHeldItem().getItem() instanceof TeleporterMKI)) {
+        if (tile.getStackInSlot(0) == null
+                && player.getHeldItem() != null
+                && (player.getHeldItem().getItem() instanceof TeleporterMKI)) {
             ItemStack stack = player.getHeldItem();
             tile.setInventorySlotContents(0, stack.copy());
             player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
@@ -62,7 +66,8 @@ public class TeleporterStand extends BlockCustomDrop {
         }
 
         if (tile.getStackInSlot(0) != null && player.isSneaking()) {
-            EntityItem item = new EntityItem(world, x + 0.5, y + 0.9, z + 0.5, tile.getStackInSlot(0).copy());
+            EntityItem item = new EntityItem(
+                    world, x + 0.5, y + 0.9, z + 0.5, tile.getStackInSlot(0).copy());
             item.motionX = 0;
             item.motionY = 0;
             item.motionZ = 0;
@@ -72,8 +77,11 @@ public class TeleporterStand extends BlockCustomDrop {
             return true;
         }
 
-        if (tile.getStackInSlot(0) != null && !player.isSneaking() && tile.getStackInSlot(0).getItem() instanceof TeleporterMKI) {
-            Teleporter.TeleportLocation l = ((TeleporterMKI) tile.getStackInSlot(0).getItem()).getLocation(tile.getStackInSlot(0));
+        if (tile.getStackInSlot(0) != null
+                && !player.isSneaking()
+                && tile.getStackInSlot(0).getItem() instanceof TeleporterMKI) {
+            Teleporter.TeleportLocation l =
+                    ((TeleporterMKI) tile.getStackInSlot(0).getItem()).getLocation(tile.getStackInSlot(0));
             if (l != null) l.sendEntityToCoords(player);
             return true;
         }
@@ -114,14 +122,14 @@ public class TeleporterStand extends BlockCustomDrop {
     }
 
     @Override
-    protected void getCustomTileEntityDrops(TileEntity te, List<ItemStack> droppes) {
-
-    }
+    protected void getCustomTileEntityDrops(TileEntity te, List<ItemStack> droppes) {}
 
     @Override
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entity, ItemStack p_149689_6_) {
         super.onBlockPlacedBy(world, x, y, z, entity, p_149689_6_);
-        TileTeleporterStand tile = world.getTileEntity(x, y, z) instanceof TileTeleporterStand ? (TileTeleporterStand) world.getTileEntity(x, y, z) : null;
+        TileTeleporterStand tile = world.getTileEntity(x, y, z) instanceof TileTeleporterStand
+                ? (TileTeleporterStand) world.getTileEntity(x, y, z)
+                : null;
         if (tile == null) return;
         tile.rotation = (int) entity.rotationYawHead;
     }

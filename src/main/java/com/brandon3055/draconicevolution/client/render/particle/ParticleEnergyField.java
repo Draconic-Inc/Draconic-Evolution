@@ -15,6 +15,7 @@ public class ParticleEnergyField extends EntityFX {
      * Particle Type 0 = Energy Ring, 1 = single particle
      */
     private int type;
+
     private boolean advanced;
     private boolean renderParticle = true;
 
@@ -34,8 +35,7 @@ public class ParticleEnergyField extends EntityFX {
     }
 
     public void update(boolean render) {
-        for (this.renderParticle = render; this.particleMaxAge - this.particleAge < 4; ++this.particleMaxAge) {
-        }
+        for (this.renderParticle = render; this.particleMaxAge - this.particleAge < 4; ++this.particleMaxAge) {}
     }
 
     @Override
@@ -45,30 +45,29 @@ public class ParticleEnergyField extends EntityFX {
         this.prevPosY = this.posY;
         this.prevPosZ = this.posZ;
 
-
         if (this.particleAge++ >= this.particleMaxAge) {
             this.setDead();
         }
     }
 
-
     @Override
-    public void renderParticle(Tessellator tessellator, float partialTick, float rotX, float rotXZ, float rotZ, float rotYZ, float rotXY) {
+    public void renderParticle(
+            Tessellator tessellator, float partialTick, float rotX, float rotXZ, float rotZ, float rotYZ, float rotXY) {
         if (!renderParticle) return;
         tessellator.draw();
         GL11.glPushMatrix();
-        //GL11.glPushAttrib(GL11.GL_ATTRIB_STACK_DEPTH);
+        // GL11.glPushAttrib(GL11.GL_ATTRIB_STACK_DEPTH);
         GL11.glDepthMask(false);
         ResourceHandler.bindParticles();
 
         float minU = 0.0F + 0.125F * (advanced ? 4 : 3);
-        float maxU = 0.0F + 0.125F * (advanced ? 5 : 4);//minU + 0.124F;
+        float maxU = 0.0F + 0.125F * (advanced ? 5 : 4); // minU + 0.124F;
         if (type == 2) {
             minU = 0.0F + 0.125F * 5;
             maxU = 0.0F + 0.125F * 6;
         }
-        float minV = 0F;//(float)this.particleTextureIndexY / 32.0F;
-        float maxV = 0.123F;//minV + 0.124F;
+        float minV = 0F; // (float)this.particleTextureIndexY / 32.0F;
+        float maxV = 0.123F; // minV + 0.124F;
         float drawScale = 0.2f;
 
         if (this.particleIcon != null) {
@@ -82,7 +81,6 @@ public class ParticleEnergyField extends EntityFX {
         float drawY = (float) (this.prevPosY + (this.posY - this.prevPosY) * (double) partialTick - interpPosY);
         float drawZ = (float) (this.prevPosZ + (this.posZ - this.prevPosZ) * (double) partialTick - interpPosZ);
 
-
         if (type == 0 || type == 2) {
             tessellator.startDrawingQuads();
             tessellator.setBrightness(200);
@@ -90,7 +88,7 @@ public class ParticleEnergyField extends EntityFX {
 
             double pCount = Minecraft.getMinecraft().gameSettings.fancyGraphics ? 35 : 15;
             for (int i = 0; i < pCount; i++) {
-                double rot = i / pCount * (3.141 * 2D) + particleAge / 3D;//1D;//i / 10D;
+                double rot = i / pCount * (3.141 * 2D) + particleAge / 3D; // 1D;//i / 10D;
                 double offset = 0.4;
                 double ox = Math.sin(rot) * offset;
                 double oz = Math.cos(rot) * offset;
@@ -98,10 +96,30 @@ public class ParticleEnergyField extends EntityFX {
                 float drawXX = drawX + (float) ox;
                 float drawZZ = drawZ + (float) oz;
 
-                tessellator.addVertexWithUV((double) (drawXX - rotX * drawScale - rotYZ * drawScale), (double) (drawY - rotXZ * drawScale), (double) (drawZZ - rotZ * drawScale - rotXY * drawScale), (double) maxU, (double) maxV);
-                tessellator.addVertexWithUV((double) (drawXX - rotX * drawScale + rotYZ * drawScale), (double) (drawY + rotXZ * drawScale), (double) (drawZZ - rotZ * drawScale + rotXY * drawScale), (double) maxU, (double) minV);
-                tessellator.addVertexWithUV((double) (drawXX + rotX * drawScale + rotYZ * drawScale), (double) (drawY + rotXZ * drawScale), (double) (drawZZ + rotZ * drawScale + rotXY * drawScale), (double) minU, (double) minV);
-                tessellator.addVertexWithUV((double) (drawXX + rotX * drawScale - rotYZ * drawScale), (double) (drawY - rotXZ * drawScale), (double) (drawZZ + rotZ * drawScale - rotXY * drawScale), (double) minU, (double) maxV);
+                tessellator.addVertexWithUV(
+                        (double) (drawXX - rotX * drawScale - rotYZ * drawScale),
+                        (double) (drawY - rotXZ * drawScale),
+                        (double) (drawZZ - rotZ * drawScale - rotXY * drawScale),
+                        (double) maxU,
+                        (double) maxV);
+                tessellator.addVertexWithUV(
+                        (double) (drawXX - rotX * drawScale + rotYZ * drawScale),
+                        (double) (drawY + rotXZ * drawScale),
+                        (double) (drawZZ - rotZ * drawScale + rotXY * drawScale),
+                        (double) maxU,
+                        (double) minV);
+                tessellator.addVertexWithUV(
+                        (double) (drawXX + rotX * drawScale + rotYZ * drawScale),
+                        (double) (drawY + rotXZ * drawScale),
+                        (double) (drawZZ + rotZ * drawScale + rotXY * drawScale),
+                        (double) minU,
+                        (double) minV);
+                tessellator.addVertexWithUV(
+                        (double) (drawXX + rotX * drawScale - rotYZ * drawScale),
+                        (double) (drawY - rotXZ * drawScale),
+                        (double) (drawZZ + rotZ * drawScale - rotXY * drawScale),
+                        (double) minU,
+                        (double) maxV);
             }
 
             tessellator.draw();
@@ -111,17 +129,36 @@ public class ParticleEnergyField extends EntityFX {
             tessellator.setBrightness(200);
             tessellator.setColorRGBA_F(this.particleRed, this.particleGreen, this.particleBlue, 1f);
 
-            tessellator.addVertexWithUV((double) (drawX - rotX * drawScale - rotYZ * drawScale), (double) (drawY - rotXZ * drawScale), (double) (drawZ - rotZ * drawScale - rotXY * drawScale), (double) maxU, (double) maxV);
-            tessellator.addVertexWithUV((double) (drawX - rotX * drawScale + rotYZ * drawScale), (double) (drawY + rotXZ * drawScale), (double) (drawZ - rotZ * drawScale + rotXY * drawScale), (double) maxU, (double) minV);
-            tessellator.addVertexWithUV((double) (drawX + rotX * drawScale + rotYZ * drawScale), (double) (drawY + rotXZ * drawScale), (double) (drawZ + rotZ * drawScale + rotXY * drawScale), (double) minU, (double) minV);
-            tessellator.addVertexWithUV((double) (drawX + rotX * drawScale - rotYZ * drawScale), (double) (drawY - rotXZ * drawScale), (double) (drawZ + rotZ * drawScale - rotXY * drawScale), (double) minU, (double) maxV);
+            tessellator.addVertexWithUV(
+                    (double) (drawX - rotX * drawScale - rotYZ * drawScale),
+                    (double) (drawY - rotXZ * drawScale),
+                    (double) (drawZ - rotZ * drawScale - rotXY * drawScale),
+                    (double) maxU,
+                    (double) maxV);
+            tessellator.addVertexWithUV(
+                    (double) (drawX - rotX * drawScale + rotYZ * drawScale),
+                    (double) (drawY + rotXZ * drawScale),
+                    (double) (drawZ - rotZ * drawScale + rotXY * drawScale),
+                    (double) maxU,
+                    (double) minV);
+            tessellator.addVertexWithUV(
+                    (double) (drawX + rotX * drawScale + rotYZ * drawScale),
+                    (double) (drawY + rotXZ * drawScale),
+                    (double) (drawZ + rotZ * drawScale + rotXY * drawScale),
+                    (double) minU,
+                    (double) minV);
+            tessellator.addVertexWithUV(
+                    (double) (drawX + rotX * drawScale - rotYZ * drawScale),
+                    (double) (drawY - rotXZ * drawScale),
+                    (double) (drawZ + rotZ * drawScale - rotXY * drawScale),
+                    (double) minU,
+                    (double) maxV);
 
             tessellator.draw();
         }
 
-
-//		GL11.glDepthMask(true);
-        //GL11.glPopAttrib();
+        //		GL11.glDepthMask(true);
+        // GL11.glPopAttrib();
         GL11.glPopMatrix();
 
         ResourceHandler.bindDefaultParticles();

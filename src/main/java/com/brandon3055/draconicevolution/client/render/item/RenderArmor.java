@@ -16,9 +16,7 @@ public class RenderArmor implements IItemRenderer {
 
     private ItemArmor armor;
 
-    public RenderArmor() {
-
-    }
+    public RenderArmor() {}
 
     public RenderArmor(ItemArmor armor) {
         this.armor = armor;
@@ -42,13 +40,15 @@ public class RenderArmor implements IItemRenderer {
         }
 
         GL11.glPushMatrix();
-        ResourceHandler.bindResource(armor.getArmorTexture(stack, null, 0, null).replace(References.RESOURCESPREFIX, ""));
+        ResourceHandler.bindResource(
+                armor.getArmorTexture(stack, null, 0, null).replace(References.RESOURCESPREFIX, ""));
 
         if (type == ItemRenderType.EQUIPPED_FIRST_PERSON || type == ItemRenderType.EQUIPPED) {
             GL11.glTranslated(0.5, 0.5, 0.5);
             GL11.glRotated(180, 0, 1, 0);
         }
-        GL11.glTranslated(0, armor.armorType == 0 ? -0.25 : armor.armorType == 1 ? 0.42 : armor.armorType == 2 ? 1.05 : 1.5, 0);
+        GL11.glTranslated(
+                0, armor.armorType == 0 ? -0.25 : armor.armorType == 1 ? 0.42 : armor.armorType == 2 ? 1.05 : 1.5, 0);
         GL11.glRotated(180, -1, 0, 1);
         armor.getArmorModel(null, stack, 0).render(null, 0f, 0f, 0f, 0f, 0f, 0.0625f);
 

@@ -50,7 +50,9 @@ public class ModBlocks {
     public static BlockDE chaosCrystal;
     public static BlockDE upgradeModifier;
     public static Block safetyFlame;
-    public static Block chaosShardAtmos = new ChaosShardAtmos().setBlockName(References.RESOURCESPREFIX + "chaosShardAtmos").setBlockTextureName(References.RESOURCESPREFIX + "transparency");
+    public static Block chaosShardAtmos = new ChaosShardAtmos()
+            .setBlockName(References.RESOURCESPREFIX + "chaosShardAtmos")
+            .setBlockTextureName(References.RESOURCESPREFIX + "transparency");
 
     public static ItemStack resurrectionStone;
 
@@ -113,7 +115,8 @@ public class ModBlocks {
     }
 
     public static void registerOther(Block block) {
-        String name = block.getUnlocalizedName().substring(block.getUnlocalizedName().indexOf(".") + 1);
+        String name =
+                block.getUnlocalizedName().substring(block.getUnlocalizedName().indexOf(".") + 1);
         if (isEnabled(block)) GameRegistry.registerBlock(block, name.substring(name.indexOf(":") + 1));
     }
 

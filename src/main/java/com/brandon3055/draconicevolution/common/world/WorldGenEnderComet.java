@@ -1,11 +1,10 @@
 package com.brandon3055.draconicevolution.common.world;
 
 import com.brandon3055.draconicevolution.common.ModBlocks;
+import java.util.Random;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.WorldGenerator;
-
-import java.util.Random;
 
 /**
  * Created by Brandon on 28/08/2014.
@@ -81,7 +80,6 @@ public class WorldGenEnderComet extends WorldGenerator {
 
             density = 1000 - (int) (pc * 10000);
             generateTrailSphere(world, cX, cY, cZ, (size + 3) - (int) (pc * (size - 2)), density, rand);
-
         }
     }
 
@@ -91,7 +89,9 @@ public class WorldGenEnderComet extends WorldGenerator {
         for (int x = xi - r; x <= xi + r; x++) {
             for (int z = zi - r; z <= zi + r; z++) {
                 for (int y = yi - r; y <= yi + r; y++) {
-                    if ((density >= rand.nextInt(10000)) && world.isAirBlock(x, y, z) && (int) (getDistance(x, y, z, xi, yi, zi)) == r) {
+                    if ((density >= rand.nextInt(10000))
+                            && world.isAirBlock(x, y, z)
+                            && (int) (getDistance(x, y, z, xi, yi, zi)) == r) {
                         if (0.9F >= rand.nextFloat()) world.setBlock(x, y, z, Blocks.end_stone, 0, 2);
                         else if (rand.nextBoolean()) world.setBlock(x, y, z, Blocks.obsidian, 0, 2);
                         else world.setBlock(x, y, z, ModBlocks.draconiumOre, 0, 2);
@@ -108,4 +108,3 @@ public class WorldGenEnderComet extends WorldGenerator {
         return Math.sqrt((dx * dx + dy * dy + dz * dz));
     }
 }
-

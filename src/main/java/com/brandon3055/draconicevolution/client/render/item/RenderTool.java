@@ -16,7 +16,7 @@ public class RenderTool implements IItemRenderer {
     private String toolTexture;
     private IRenderTweak tool;
 
-    //Draconic Sword
+    // Draconic Sword
 
     public RenderTool(String model, String texture, IRenderTweak tool) {
         this.tool = tool;

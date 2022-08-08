@@ -5,9 +5,8 @@ import com.brandon3055.draconicevolution.common.world.ChaosWorldGenHandler;
 import com.brandon3055.draconicevolution.common.world.DraconicWorldGenerator;
 import com.brandon3055.draconicevolution.common.world.WorldGenEnderComet;
 import com.brandon3055.draconicevolution.common.world.WorldGenEnderIsland;
-import net.minecraft.world.World;
-
 import java.util.Random;
+import net.minecraft.world.World;
 
 /**
  * Created by Brandon on 11/7/2015.
@@ -40,8 +39,10 @@ public class GeneratorOverride {
      * @param centerZ this should be the center of the area you are spawning the island it (this is the actual zCoord)
      * @param random  a random
      */
-    public static void generateChaosChunk(World world, int chunkX, int chunkZ, int centerX, int centerZ, Random random) {
-        ChaosWorldGenHandler.generateChunk(world, chunkX, chunkZ, new DataUtills.XZPair<Integer, Integer>(centerX, centerZ), random);
+    public static void generateChaosChunk(
+            World world, int chunkX, int chunkZ, int centerX, int centerZ, Random random) {
+        ChaosWorldGenHandler.generateChunk(
+                world, chunkX, chunkZ, new DataUtills.XZPair<Integer, Integer>(centerX, centerZ), random);
     }
 
     /**

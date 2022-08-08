@@ -2,14 +2,16 @@ package com.brandon3055.draconicevolution.common.blocks.machine;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.gui.GuiHandler;
-import com.brandon3055.draconicevolution.common.blocks.BlockCustomDrop;
 import com.brandon3055.draconicevolution.common.ModBlocks;
+import com.brandon3055.draconicevolution.common.blocks.BlockCustomDrop;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.tileentities.TileDissEnchanter;
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import java.util.List;
+import java.util.Random;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
@@ -18,9 +20,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
-
-import java.util.List;
-import java.util.Random;
 
 /**
  * Created by Brandon on 27/06/2014.
@@ -57,9 +56,11 @@ public class DissEnchanter extends BlockCustomDrop {
     }
 
     @Override
-    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float prx, float pry, float prz) {
+    public boolean onBlockActivated(
+            World world, int x, int y, int z, EntityPlayer player, int side, float prx, float pry, float prz) {
         if (!world.isRemote) {
-            FMLNetworkHandler.openGui(player, DraconicEvolution.instance, GuiHandler.GUIID_DISSENCHANTER, world, x, y, z);
+            FMLNetworkHandler.openGui(
+                    player, DraconicEvolution.instance, GuiHandler.GUIID_DISSENCHANTER, world, x, y, z);
         }
         return true;
     }
@@ -91,9 +92,7 @@ public class DissEnchanter extends BlockCustomDrop {
     }
 
     @Override
-    protected void getCustomTileEntityDrops(TileEntity te, List<ItemStack> droppes) {
-
-    }
+    protected void getCustomTileEntityDrops(TileEntity te, List<ItemStack> droppes) {}
 
     @Override
     @SideOnly(Side.CLIENT)
@@ -113,9 +112,17 @@ public class DissEnchanter extends BlockCustomDrop {
                                 break;
                             }
 
-                            //world.spawnParticle("enchantmenttable", x + 0.5D, y + 2.0D, z + 0.5D, l - x + rand.nextFloat() - 0.5D, j1 - y - rand.nextFloat() - 1.0F, i1 - z	+ rand.nextFloat() - 0.5D);
-                            world.spawnParticle("enchantmenttable", x1 + 0.4 + (rand.nextFloat() * 0.2), y1 + 0.8, z1 + 0.4 + (rand.nextFloat() * 0.2), x - x1 + rand.nextFloat() - 0.5, y - y1 + rand.nextFloat(), z - z1 + rand.nextFloat() - 0.5);
-
+                            // world.spawnParticle("enchantmenttable", x + 0.5D, y + 2.0D, z + 0.5D, l - x +
+                            // rand.nextFloat() - 0.5D, j1 - y - rand.nextFloat() - 1.0F, i1 - z	+ rand.nextFloat() -
+                            // 0.5D);
+                            world.spawnParticle(
+                                    "enchantmenttable",
+                                    x1 + 0.4 + (rand.nextFloat() * 0.2),
+                                    y1 + 0.8,
+                                    z1 + 0.4 + (rand.nextFloat() * 0.2),
+                                    x - x1 + rand.nextFloat() - 0.5,
+                                    y - y1 + rand.nextFloat(),
+                                    z - z1 + rand.nextFloat() - 0.5);
                         }
                     }
                 }

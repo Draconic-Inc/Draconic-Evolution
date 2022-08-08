@@ -17,13 +17,13 @@ public class LinkedEnergyDevice {
      * Energy Flow to this device (range: 0D - 100D)
      */
     public double energyFlow = 0;
+
     public double lastTickEnergyFlow = 0;
     public int xCoord;
     public int yCoord;
     public int zCoord;
 
-    public LinkedEnergyDevice() {
-    }
+    public LinkedEnergyDevice() {}
 
     public LinkedEnergyDevice(int xCoord, int yCoord, int zCoord) {
         this.xCoord = xCoord;
@@ -31,12 +31,12 @@ public class LinkedEnergyDevice {
         this.zCoord = zCoord;
     }
 
-//    public LinkedEnergyDevice(int xCoord, int yCoord, int zCoord, ParticleEnergyBeam beam) {
-//        this.xCoord = xCoord;
-//        this.yCoord = yCoord;
-//        this.zCoord = zCoord;
-//        this.beam = beam;
-//    }
+    //    public LinkedEnergyDevice(int xCoord, int yCoord, int zCoord, ParticleEnergyBeam beam) {
+    //        this.xCoord = xCoord;
+    //        this.yCoord = yCoord;
+    //        this.zCoord = zCoord;
+    //        this.beam = beam;
+    //    }
 
     public TileEntity getTile(World world) {
         return world.getTileEntity(xCoord, yCoord, zCoord);
@@ -54,8 +54,7 @@ public class LinkedEnergyDevice {
             if (beam != null) {
                 compound.setShort("Flow_" + key, (short) beam.getFlow());
             }
-        }
-        catch (Throwable e) {
+        } catch (Throwable e) {
         }
         return this;
     }
@@ -69,8 +68,7 @@ public class LinkedEnergyDevice {
             if (beam != null) {
                 beam.setFlow(compound.getShort("Flow" + key));
             }
-        }
-        catch (Throwable e) {
+        } catch (Throwable e) {
         }
         return this;
     }

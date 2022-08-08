@@ -7,6 +7,7 @@ import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import java.util.Random;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -16,8 +17,6 @@ import net.minecraft.item.Item;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-
-import java.util.Random;
 
 public class DraconiumOre extends BlockDE {
     public IIcon icon;
@@ -66,7 +65,9 @@ public class DraconiumOre extends BlockDE {
 
     @Override
     public int quantityDroppedWithBonus(int fortune, Random random) {
-        return fortune == 0 ? this.quantityDropped(random) : this.quantityDropped(random) + fortune + random.nextInt(fortune * 2);
+        return fortune == 0
+                ? this.quantityDropped(random)
+                : this.quantityDropped(random) + fortune + random.nextInt(fortune * 2);
     }
 
     @Override
@@ -78,5 +79,4 @@ public class DraconiumOre extends BlockDE {
     public Item getItemDropped(int p_149650_1_, Random p_149650_2_, int p_149650_3_) {
         return ModItems.draconiumDust;
     }
-
 }

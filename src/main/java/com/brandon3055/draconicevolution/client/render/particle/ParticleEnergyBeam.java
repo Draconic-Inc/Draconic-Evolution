@@ -1,9 +1,9 @@
 package com.brandon3055.draconicevolution.client.render.particle;
 
+import com.brandon3055.brandonscore.common.utills.Utills;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
-import com.brandon3055.brandonscore.common.utills.Utills;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.renderer.Tessellator;
@@ -38,6 +38,7 @@ public class ParticleEnergyBeam extends EntityFX {
      * Modified Target X
      */
     private boolean advanced;
+
     private boolean renderParticle = true;
     private float length = 0.0F;
     private float rotYaw = 0.0F;
@@ -46,16 +47,28 @@ public class ParticleEnergyBeam extends EntityFX {
     private float prevPitch = 0.0F;
     private EntityPlayer player;
 
-    //todo make sure not dyrectly up or down on y axis, Set dead when player goes out of range, PaRTICLE eNGINE
+    // todo make sure not dyrectly up or down on y axis, Set dead when player goes out of range, PaRTICLE eNGINE
 
-    private static ResourceLocation beamTextureBasic = new ResourceLocation(References.MODID.toLowerCase(), "textures/models/EnergyBeamBlue.png");
-    private static ResourceLocation beamTextureAdvanced = new ResourceLocation(References.MODID.toLowerCase(), "textures/models/EnergyBeamRed.png");
-
+    private static ResourceLocation beamTextureBasic =
+            new ResourceLocation(References.MODID.toLowerCase(), "textures/models/EnergyBeamBlue.png");
+    private static ResourceLocation beamTextureAdvanced =
+            new ResourceLocation(References.MODID.toLowerCase(), "textures/models/EnergyBeamRed.png");
 
     /**
      * @param offsetMode 0 = no offset, 1 = offset target end, 2 = offset start end, 3 offset both ends
      */
-    public ParticleEnergyBeam(World world, double x, double y, double z, double tX, double tY, double tZ, int maxAge, int flow, boolean advanced, int offsetMode) {
+    public ParticleEnergyBeam(
+            World world,
+            double x,
+            double y,
+            double z,
+            double tX,
+            double tY,
+            double tZ,
+            int maxAge,
+            int flow,
+            boolean advanced,
+            int offsetMode) {
         super(world, x, y, z, 0.0D, 0.0D, 0.0D);
         this.particleRed = 1F;
         this.particleGreen = 1F;
@@ -82,7 +95,7 @@ public class ParticleEnergyBeam extends EntityFX {
             double xOff = xDist / dist;
             double zOff = zDist / dist;
             if (xOff == 0 && zOff == 0) xOff = 1;
-            //LogHelper.info(xOff + " " + zOff);
+            // LogHelper.info(xOff + " " + zOff);
             double offM = 0.4D;
 
             if (offsetMode == 2 || offsetMode == 3) setPosition(posX - xOff * offM, posY, posZ - zOff * offM);
@@ -93,20 +106,18 @@ public class ParticleEnergyBeam extends EntityFX {
                 this.tZ = tZ + zOff * offM;
             }
         }
-
     }
 
     public void update(int flow, boolean render) {
         this.renderParticle = render;
-        for (this.flow = flow; this.particleMaxAge - this.particleAge < 4; ++this.particleMaxAge) {
-        }
+        for (this.flow = flow; this.particleMaxAge - this.particleAge < 4; ++this.particleMaxAge) {}
     }
 
     @Override
     public void onUpdate() {
-        //1.570797f
-//		double sin = Math.sin(-1f + (float)(particleAge % 360) / 180f * 1.570797f);
-//		LogHelper.info(sin + " " + particleAge % 360);
+        // 1.570797f
+        //		double sin = Math.sin(-1f + (float)(particleAge % 360) / 180f * 1.570797f);
+        //		LogHelper.info(sin + " " + particleAge % 360);
 
         this.prevPosX = this.posX;
         this.prevPosY = this.posY;
@@ -125,7 +136,6 @@ public class ParticleEnergyBeam extends EntityFX {
         this.prevYaw = this.rotYaw;
         this.prevPitch = this.rotPitch;
 
-
         if (this.particleAge++ >= this.particleMaxAge) {
             this.setDead();
         }
@@ -139,14 +149,15 @@ public class ParticleEnergyBeam extends EntityFX {
     }
 
     @Override
-    public void renderParticle(Tessellator tessellator, float partialTick, float rotX, float rotXZ, float rotZ, float rotYZ, float rotXY) {
+    public void renderParticle(
+            Tessellator tessellator, float partialTick, float rotX, float rotXZ, float rotZ, float rotYZ, float rotXY) {
         if (!renderParticle) return;
         tessellator.draw();
         GL11.glPushMatrix();
-        //GL11.glPushAttrib(GL11.GL_ATTRIB_STACK_DEPTH);
+        // GL11.glPushAttrib(GL11.GL_ATTRIB_STACK_DEPTH);
         float var9 = 1.0F;
         float slide = (float) getPlayer().ticksExisted;
-        float size = (float) flow / 100f * 2f; //0.7F;
+        float size = (float) flow / 100f * 2f; // 0.7F;
         if (advanced) Minecraft.getMinecraft().renderEngine.bindTexture(beamTextureAdvanced);
         else Minecraft.getMinecraft().renderEngine.bindTexture(beamTextureBasic);
         GL11.glTexParameterf(3553, 10242, 10497.0F);
@@ -191,8 +202,8 @@ public class ParticleEnergyBeam extends EntityFX {
             var44 = -0.15D * (double) 1;
             var17 = 0.15D * (double) 1;
 
-            //GL11.glColor4f(1f, 1f, 1f, 1f);
-            //GL11.glTranslated(0.1, 0, 0);
+            // GL11.glColor4f(1f, 1f, 1f, 1f);
+            // GL11.glTranslated(0.1, 0, 0);
             for (int t = 0; t < 2; ++t) {
                 double var29 = (double) (this.length * var9);
                 double var31 = 0D;
@@ -212,13 +223,11 @@ public class ParticleEnergyBeam extends EntityFX {
             }
         }
 
-
-        //GL11.glDepthMask(true);
+        // GL11.glDepthMask(true);
         GL11.glBlendFunc(770, 771);
         GL11.glEnable(GL11.GL_CULL_FACE);
         //	GL11.glPopAttrib();
         GL11.glPopMatrix();
-
 
         ResourceHandler.bindDefaultParticles();
         tessellator.startDrawingQuads();

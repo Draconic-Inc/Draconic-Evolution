@@ -1,5 +1,8 @@
 package com.brandon3055.draconicevolution.common.items.tools;
 
+import com.brandon3055.brandonscore.common.utills.InfoHelper;
+import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
+import com.brandon3055.brandonscore.common.utills.Teleporter.TeleportLocation;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.gui.GuiHandler;
 import com.brandon3055.draconicevolution.common.ModItems;
@@ -7,12 +10,11 @@ import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.utills.IHudDisplayItem;
-import com.brandon3055.brandonscore.common.utills.InfoHelper;
-import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
-import com.brandon3055.brandonscore.common.utills.Teleporter.TeleportLocation;
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import java.util.ArrayList;
+import java.util.List;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -25,9 +27,6 @@ import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class TeleporterMKII extends TeleporterMKI implements IHudDisplayItem {
 
@@ -52,7 +51,14 @@ public class TeleporterMKII extends TeleporterMKI implements IHudDisplayItem {
 
         if (getLocation(stack) == null) {
             if (world.isRemote)
-                FMLNetworkHandler.openGui(player, DraconicEvolution.instance, GuiHandler.GUIID_TELEPORTER, world, (int) player.posX, (int) player.posY, (int) player.posZ);
+                FMLNetworkHandler.openGui(
+                        player,
+                        DraconicEvolution.instance,
+                        GuiHandler.GUIID_TELEPORTER,
+                        world,
+                        (int) player.posX,
+                        (int) player.posY,
+                        (int) player.posZ);
             return true;
         }
 
@@ -84,13 +90,27 @@ public class TeleporterMKII extends TeleporterMKI implements IHudDisplayItem {
 
         if (player.isSneaking()) {
             if (world.isRemote) {
-                FMLNetworkHandler.openGui(player, DraconicEvolution.instance, GuiHandler.GUIID_TELEPORTER, world, (int) player.posX, (int) player.posY, (int) player.posZ);
+                FMLNetworkHandler.openGui(
+                        player,
+                        DraconicEvolution.instance,
+                        GuiHandler.GUIID_TELEPORTER,
+                        world,
+                        (int) player.posX,
+                        (int) player.posY,
+                        (int) player.posZ);
             }
         } else {
 
             if (getLocation(stack) == null) {
                 if (world.isRemote)
-                    FMLNetworkHandler.openGui(player, DraconicEvolution.instance, GuiHandler.GUIID_TELEPORTER, world, (int) player.posX, (int) player.posY, (int) player.posZ);
+                    FMLNetworkHandler.openGui(
+                            player,
+                            DraconicEvolution.instance,
+                            GuiHandler.GUIID_TELEPORTER,
+                            world,
+                            (int) player.posX,
+                            (int) player.posY,
+                            (int) player.posZ);
                 return stack;
             }
 
@@ -107,9 +127,9 @@ public class TeleporterMKII extends TeleporterMKI implements IHudDisplayItem {
         return stack;
     }
 
-
     @Override
-    public void addInformation(final ItemStack teleporter, final EntityPlayer player, final List list2, final boolean extraInformation) {
+    public void addInformation(
+            final ItemStack teleporter, final EntityPlayer player, final List list2, final boolean extraInformation) {
         short selected = ItemNBTHelper.getShort(teleporter, "Selection", (short) 0);
         int selrctionOffset = ItemNBTHelper.getInteger(teleporter, "SelectionOffset", 0);
         NBTTagCompound compound = teleporter.getTagCompound();
@@ -120,9 +140,12 @@ public class TeleporterMKII extends TeleporterMKI implements IHudDisplayItem {
 
         list2.add(EnumChatFormatting.GOLD + "" + selectedDest);
         if (InfoHelper.holdShiftForDetails(list2)) {
-            list2.add(EnumChatFormatting.WHITE + StatCollector.translateToLocal("info.teleporterInfFuel.txt") + " " + ItemNBTHelper.getInteger(teleporter, "Fuel", 0));
-            list2.add(EnumChatFormatting.DARK_PURPLE + "" + EnumChatFormatting.ITALIC + StatCollector.translateToLocal("info.teleporterInfGUI.txt"));
-            list2.add(EnumChatFormatting.DARK_PURPLE + "" + EnumChatFormatting.ITALIC + StatCollector.translateToLocal("info.teleporterInfScroll.txt"));
+            list2.add(EnumChatFormatting.WHITE + StatCollector.translateToLocal("info.teleporterInfFuel.txt") + " "
+                    + ItemNBTHelper.getInteger(teleporter, "Fuel", 0));
+            list2.add(EnumChatFormatting.DARK_PURPLE + "" + EnumChatFormatting.ITALIC
+                    + StatCollector.translateToLocal("info.teleporterInfGUI.txt"));
+            list2.add(EnumChatFormatting.DARK_PURPLE + "" + EnumChatFormatting.ITALIC
+                    + StatCollector.translateToLocal("info.teleporterInfScroll.txt"));
         }
     }
 
@@ -149,9 +172,11 @@ public class TeleporterMKII extends TeleporterMKI implements IHudDisplayItem {
 
     @Override
     public void onUpdate(ItemStack stack, World world, Entity entity, int p_77663_4_, boolean p_77663_5_) {
-//		if (world.isRemote && entity instanceof EntityPlayer && ((EntityPlayer) entity).getHeldItem() != null && ((EntityPlayer) entity).getHeldItem().getItem() instanceof TeleporterMKII){
-//			if (getLocation(((EntityPlayer) entity).getHeldItem()) != null) HudHandler.setTooltip(getLocation(((EntityPlayer) entity).getHeldItem()).getName());
-//		}
+        //		if (world.isRemote && entity instanceof EntityPlayer && ((EntityPlayer) entity).getHeldItem() != null &&
+        // ((EntityPlayer) entity).getHeldItem().getItem() instanceof TeleporterMKII){
+        //			if (getLocation(((EntityPlayer) entity).getHeldItem()) != null)
+        // HudHandler.setTooltip(getLocation(((EntityPlayer) entity).getHeldItem()).getName());
+        //		}
     }
 
     @Override
@@ -177,7 +202,8 @@ public class TeleporterMKII extends TeleporterMKI implements IHudDisplayItem {
         if (location != null) {
             list.add(location.getName());
         }
-        list.add(StatCollector.translateToLocal("info.teleporterInfFuel.txt") + " " + ItemNBTHelper.getInteger(stack, "Fuel", 0));
+        list.add(StatCollector.translateToLocal("info.teleporterInfFuel.txt") + " "
+                + ItemNBTHelper.getInteger(stack, "Fuel", 0));
 
         return list;
     }

@@ -56,5 +56,4 @@ public class CCOCIntegration {
             } else return null;
         }
     }
-
 }

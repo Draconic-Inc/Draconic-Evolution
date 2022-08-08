@@ -15,7 +15,8 @@ import org.lwjgl.opengl.GL11;
 
 public class RenderTileEnergyInfiser extends TileEntitySpecialRenderer {
 
-    private final ResourceLocation texture = new ResourceLocation(References.MODID.toLowerCase(), "textures/models/EnergyInfuserTextureSheet.png");
+    private final ResourceLocation texture =
+            new ResourceLocation(References.MODID.toLowerCase(), "textures/models/EnergyInfuserTextureSheet.png");
 
     private static float pxl = 1F / 256F;
 
@@ -41,7 +42,6 @@ public class RenderTileEnergyInfiser extends TileEntitySpecialRenderer {
         drawBase(tessellator);
         drawWings(tessellator, tile);
         renderChargingItem(tile);
-
     }
 
     private void drawBase(Tessellator tess) {
@@ -58,7 +58,6 @@ public class RenderTileEnergyInfiser extends TileEntitySpecialRenderer {
         tess.addVertexWithUV(1, 0.0005D, 0, srcXMax, srcYMin);
         tess.addVertexWithUV(1, 0.0005D, 1, srcXMax, srcYMax);
         tess.addVertexWithUV(0, 0.0005D, 1, srcXMin, srcYMax);
-
 
         srcXMin = 128D * pxl;
         srcYMin = 0D;
@@ -97,20 +96,18 @@ public class RenderTileEnergyInfiser extends TileEntitySpecialRenderer {
 
         tess.draw();
         GL11.glPopMatrix();
-
     }
 
     private void drawWings(Tessellator tess, TileEnergyInfuser tile) {
         GL11.glPushMatrix();
-        float srcXMin = 0F;        //iicon.getMinU();
-        float srcYMin = 64F * pxl;  //iicon.getMaxU();
-        float srcXMax = 92F * pxl;  //iicon.getMinV();
-        float srcYMax = 115F * pxl; //iicon.getMaxV();
+        float srcXMin = 0F; // iicon.getMinU();
+        float srcYMin = 64F * pxl; // iicon.getMaxU();
+        float srcXMax = 92F * pxl; // iicon.getMinV();
+        float srcYMax = 115F * pxl; // iicon.getMaxV();
 
         GL11.glTranslatef(-0.64F, 0.365F, 0.51F);
         GL11.glScalef(0.7F, 0.7F, 0.7F);
         float xTrans = 0.025F;
-
 
         {
             GL11.glTranslatef(1.62F, 0F, -xTrans);
@@ -137,10 +134,10 @@ public class RenderTileEnergyInfiser extends TileEntitySpecialRenderer {
             render2DWithThicness(tess, srcXMax, srcYMin, srcXMin, srcYMax, 92, 51, 0.0625F);
         }
         {
-            srcXMin = 64F * pxl;        //iicon.getMinU();
-            srcYMin = 24F * pxl;  //iicon.getMaxU();
-            srcXMax = 96F * pxl;  //iicon.getMinV();
-            srcYMax = 56F * pxl; //iicon.getMaxV();
+            srcXMin = 64F * pxl; // iicon.getMinU();
+            srcYMin = 24F * pxl; // iicon.getMaxU();
+            srcXMax = 96F * pxl; // iicon.getMinV();
+            srcYMax = 56F * pxl; // iicon.getMaxV();
             GL11.glTranslatef(1.26F, 0F, 0.31F);
             GL11.glTranslatef(0F, 0F, 0F);
             GL11.glRotatef(90, 0F, 1F, 0F);
@@ -152,7 +149,8 @@ public class RenderTileEnergyInfiser extends TileEntitySpecialRenderer {
         GL11.glPopMatrix();
     }
 
-    public static void render2DWithThicness(Tessellator tess, float maxU, float minV, float minU, float maxV, int width, int height, float thickness) {
+    public static void render2DWithThicness(
+            Tessellator tess, float maxU, float minV, float minU, float maxV, int width, int height, float thickness) {
         double pix = 1D / 64D;
         tess.startDrawingQuads();
         tess.setNormal(0.0F, 0.0F, 1.0F);

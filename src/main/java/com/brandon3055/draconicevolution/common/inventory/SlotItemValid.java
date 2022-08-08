@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.common.inventory;
 
+import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.init.Blocks;
@@ -12,7 +13,6 @@ import net.minecraft.item.ItemHoe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 import net.minecraft.item.ItemTool;
-import cpw.mods.fml.common.registry.GameRegistry;
 
 public class SlotItemValid extends Slot {
 
@@ -59,9 +59,12 @@ public class SlotItemValid extends Slot {
                 }
             }
 
-            if (item instanceof ItemTool && ((ItemTool) item).getToolMaterialName().equals("WOOD")) return 200;
-            if (item instanceof ItemSword && ((ItemSword) item).getToolMaterialName().equals("WOOD")) return 200;
-            if (item instanceof ItemHoe && ((ItemHoe) item).getToolMaterialName().equals("WOOD")) return 200;
+            if (item instanceof ItemTool
+                    && ((ItemTool) item).getToolMaterialName().equals("WOOD")) return 200;
+            if (item instanceof ItemSword
+                    && ((ItemSword) item).getToolMaterialName().equals("WOOD")) return 200;
+            if (item instanceof ItemHoe
+                    && ((ItemHoe) item).getToolMaterialName().equals("WOOD")) return 200;
             if (item == Items.stick) return 100;
             if (item == Items.coal) return 1600;
             if (item == Items.lava_bucket) return 20000;
@@ -71,13 +74,13 @@ public class SlotItemValid extends Slot {
         }
     }
     /*
-	@Override
-	public IIcon getBackgroundIconIndex()
-	{
-		IIcon icon = Items.coal.getIconIndex(new ItemStack(Items.coal));
-		if (false)
-			return icon;
-		else
-			return super.getBackgroundIconIndex();
-	}*/
+    @Override
+    public IIcon getBackgroundIconIndex()
+    {
+    	IIcon icon = Items.coal.getIconIndex(new ItemStack(Items.coal));
+    	if (false)
+    		return icon;
+    	else
+    		return super.getBackgroundIconIndex();
+    }*/
 }

@@ -90,39 +90,52 @@ public abstract class TileGate extends TileObjectSync implements IDEPeripheral {
 
     @Override
     public String[] getMethodNames() {
-        return new String[]{"getFlow", "setOverrideEnabled", "getOverrideEnabled", "setFlowOverride", "setSignalHighFlow", "getSignalHighFlow", "setSignalLowFlow", "getSignalLowFlow"};
+        return new String[] {
+            "getFlow",
+            "setOverrideEnabled",
+            "getOverrideEnabled",
+            "setFlowOverride",
+            "setSignalHighFlow",
+            "getSignalHighFlow",
+            "setSignalLowFlow",
+            "getSignalLowFlow"
+        };
     }
 
     @Override
     public Object[] callMethod(String method, Object... args) {
         if (method.equals("getFlow")) {
-            return new Object[]{getActualFlow()};
+            return new Object[] {getActualFlow()};
         } else if (method.equals("setOverrideEnabled")) {
             if (args.length == 0 || !(args[0] instanceof Boolean))
-                throw new IllegalArgumentException("Expected Boolean got " + (args.length == 0 ? "nil" : args[0].getClass().getSimpleName()));
+                throw new IllegalArgumentException("Expected Boolean got "
+                        + (args.length == 0 ? "nil" : args[0].getClass().getSimpleName()));
             flowOverridden = (Boolean) args[0];
             if (!worldObj.isRemote) sendObjectToClient(References.BOOLEAN_ID, 2, flowOverridden);
         } else if (method.equals("getOverrideEnabled")) {
-            return new Object[]{flowOverridden};
+            return new Object[] {flowOverridden};
         } else if (method.equals("setFlowOverride")) {
             if (args.length == 0 || !(args[0] instanceof Number))
-                throw new IllegalArgumentException("Expected Number got " + (args.length == 0 ? "nil" : args[0].getClass().getSimpleName()));
+                throw new IllegalArgumentException("Expected Number got "
+                        + (args.length == 0 ? "nil" : args[0].getClass().getSimpleName()));
             flowOverride = Utills.toInt((Double) args[0]);
             if (!worldObj.isRemote) sendObjectToClient(References.INT_ID, 3, flowOverride);
         } else if (method.equals("setSignalHighFlow")) {
             if (args.length == 0 || !(args[0] instanceof Number))
-                throw new IllegalArgumentException("Expected Number got " + (args.length == 0 ? "nil" : args[0].getClass().getSimpleName()));
+                throw new IllegalArgumentException("Expected Number got "
+                        + (args.length == 0 ? "nil" : args[0].getClass().getSimpleName()));
             flowRSHigh = Utills.toInt((Double) args[0]);
             if (!worldObj.isRemote) sendObjectToClient(References.INT_ID, 4, flowRSHigh);
         } else if (method.equals("getSignalHighFlow")) {
-            return new Object[]{flowRSHigh};
+            return new Object[] {flowRSHigh};
         } else if (method.equals("setSignalLowFlow")) {
             if (args.length == 0 || !(args[0] instanceof Number))
-                throw new IllegalArgumentException("Expected Number got " + (args.length == 0 ? "nil" : args[0].getClass().getSimpleName()));
+                throw new IllegalArgumentException("Expected Number got "
+                        + (args.length == 0 ? "nil" : args[0].getClass().getSimpleName()));
             flowRSLow = Utills.toInt((Double) args[0]);
             if (!worldObj.isRemote) sendObjectToClient(References.INT_ID, 5, flowRSLow);
         } else if (method.equals("getSignalLowFlow")) {
-            return new Object[]{flowRSLow};
+            return new Object[] {flowRSLow};
         }
 
         return new Object[0];

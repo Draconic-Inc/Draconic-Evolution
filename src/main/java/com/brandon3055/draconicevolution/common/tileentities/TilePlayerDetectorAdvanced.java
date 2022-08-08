@@ -1,6 +1,8 @@
 package com.brandon3055.draconicevolution.common.tileentities;
 
 import com.brandon3055.draconicevolution.common.container.ContainerPlayerDetector;
+import java.util.Iterator;
+import java.util.List;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
@@ -15,9 +17,6 @@ import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 
-import java.util.Iterator;
-import java.util.List;
-
 public class TilePlayerDetectorAdvanced extends TileEntity implements IInventory {
     public String[] names = new String[42];
     private ItemStack[] items;
@@ -30,8 +29,7 @@ public class TilePlayerDetectorAdvanced extends TileEntity implements IInventory
     private List<EntityLiving> EntityList;
 
     public TilePlayerDetectorAdvanced() {
-        for (int i = 0; i < names.length; i++)
-            if (names[i] == null) names[i] = "";
+        for (int i = 0; i < names.length; i++) if (names[i] == null) names[i] = "";
 
         items = new ItemStack[1];
     }
@@ -67,7 +65,6 @@ public class TilePlayerDetectorAdvanced extends TileEntity implements IInventory
             } else {
                 if (!isPlayerListed(name)) return true;
             }
-
         }
         return b;
     }
@@ -80,12 +77,14 @@ public class TilePlayerDetectorAdvanced extends TileEntity implements IInventory
         double y2 = yCoord + 0.5 + range;
         double z2 = zCoord + 0.5 + range;
 
-        //System.out.println(x1 + " " + y1 + " " + z1 + " " + x2 + " " + y2 + " " + z2);
+        // System.out.println(x1 + " " + y1 + " " + z1 + " " + x2 + " " + y2 + " " + z2);
 
-        //ScanBox = AxisAlignedBB.getBoundingBox(x1, y1, z1, x2, y2, z2);
-        //ScanBox = AxisAlignedBB.getAABBPool().getAABB(xCoord + 0.5 - range, yCoord + 0.5 - range, zCoord + 0.5 - range, xCoord + 0.5 + range, yCoord + 0.5 + range, zCoord + 0.5 + range);
-        EntityList = worldObj.getEntitiesWithinAABB(EntityPlayer.class, AxisAlignedBB.getBoundingBox(x1, y1, z1, x2, y2, z2));
-        //System.out.println(EntityList);
+        // ScanBox = AxisAlignedBB.getBoundingBox(x1, y1, z1, x2, y2, z2);
+        // ScanBox = AxisAlignedBB.getAABBPool().getAABB(xCoord + 0.5 - range, yCoord + 0.5 - range, zCoord + 0.5 -
+        // range, xCoord + 0.5 + range, yCoord + 0.5 + range, zCoord + 0.5 + range);
+        EntityList = worldObj.getEntitiesWithinAABB(
+                EntityPlayer.class, AxisAlignedBB.getBoundingBox(x1, y1, z1, x2, y2, z2));
+        // System.out.println(EntityList);
     }
 
     private void setOutput(boolean out) {
@@ -113,7 +112,7 @@ public class TilePlayerDetectorAdvanced extends TileEntity implements IInventory
         return false;
     }
 
-    //###################INVENTORY###########################
+    // ###################INVENTORY###########################
     public int getSizeInventory() {
         return items.length;
     }
@@ -183,19 +182,17 @@ public class TilePlayerDetectorAdvanced extends TileEntity implements IInventory
     }
 
     @Override
-    public void openInventory() {
-    }
+    public void openInventory() {}
 
     @Override
-    public void closeInventory() {
-    }
+    public void closeInventory() {}
 
     @Override
     public boolean isItemValidForSlot(int i, ItemStack itemstack) {
         return false;
     }
 
-    //######################################################
+    // ######################################################
 
     public Packet getDescriptionPacket() {
         NBTTagCompound tagCompound = new NBTTagCompound();
@@ -212,7 +209,6 @@ public class TilePlayerDetectorAdvanced extends TileEntity implements IInventory
     public Container getGuiContainer(InventoryPlayer inventoryplayer) {
         return new ContainerPlayerDetector(inventoryplayer, this);
     }
-
 
     @Override
     public void writeToNBT(NBTTagCompound compound) {
@@ -250,8 +246,7 @@ public class TilePlayerDetectorAdvanced extends TileEntity implements IInventory
             items[i] = ItemStack.loadItemStackFromNBT(tag[i]);
         }
 
-        for (int i = 0; i < names.length; i++)
-            names[i] = compound.getString("Name_" + i);
+        for (int i = 0; i < names.length; i++) names[i] = compound.getString("Name_" + i);
 
         whiteList = compound.getBoolean("WhiteList");
         range = compound.getInteger("Range");
@@ -260,6 +255,4 @@ public class TilePlayerDetectorAdvanced extends TileEntity implements IInventory
 
         super.readFromNBT(compound);
     }
-
-
 }

@@ -6,6 +6,8 @@ import com.brandon3055.draconicevolution.common.blocks.BlockCustomDrop;
 import com.brandon3055.draconicevolution.common.items.tools.TeleporterMKI;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileDislocatorReceptacle;
+import java.util.List;
+import java.util.Random;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -17,9 +19,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-
-import java.util.List;
-import java.util.Random;
 
 /**
  * Created by Brandon on 19/5/2015.
@@ -40,13 +39,16 @@ public class DislocatorReceptacle extends BlockCustomDrop implements ITileEntity
 
     @Override
     public void registerBlockIcons(IIconRegister iconRegister) {
-        textureInactive = iconRegister.registerIcon(References.RESOURCESPREFIX + "animated/dislocatorReceptacle_inactive");
+        textureInactive =
+                iconRegister.registerIcon(References.RESOURCESPREFIX + "animated/dislocatorReceptacle_inactive");
         blockIcon = iconRegister.registerIcon(References.RESOURCESPREFIX + "animated/dislocatorReceptacle_active");
     }
 
     @Override
     public IIcon getIcon(IBlockAccess access, int x, int y, int z, int side) {
-        TileDislocatorReceptacle tile = access.getTileEntity(x, y, z) instanceof TileDislocatorReceptacle ? (TileDislocatorReceptacle) access.getTileEntity(x, y, z) : null;
+        TileDislocatorReceptacle tile = access.getTileEntity(x, y, z) instanceof TileDislocatorReceptacle
+                ? (TileDislocatorReceptacle) access.getTileEntity(x, y, z)
+                : null;
         if (tile != null) return tile.isActive ? blockIcon : textureInactive;
         return blockIcon;
     }
@@ -55,7 +57,6 @@ public class DislocatorReceptacle extends BlockCustomDrop implements ITileEntity
     public void updateTick(World world, int x, int y, int z, Random random) {
         TileDislocatorReceptacle tile = (TileDislocatorReceptacle) world.getTileEntity(x, y, z);
         if (tile != null) tile.updateState();
-
     }
 
     @Override
@@ -79,7 +80,16 @@ public class DislocatorReceptacle extends BlockCustomDrop implements ITileEntity
     }
 
     @Override
-    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float p_149727_7_, float p_149727_8_, float p_149727_9_) {
+    public boolean onBlockActivated(
+            World world,
+            int x,
+            int y,
+            int z,
+            EntityPlayer player,
+            int side,
+            float p_149727_7_,
+            float p_149727_8_,
+            float p_149727_9_) {
         if (world.isRemote) return true;
         TileDislocatorReceptacle tile = (TileDislocatorReceptacle) world.getTileEntity(x, y, z);
         if (tile == null) return false;
@@ -89,7 +99,8 @@ public class DislocatorReceptacle extends BlockCustomDrop implements ITileEntity
                 player.inventory.setInventorySlotContents(player.inventory.currentItem, tile.getStackInSlot(0));
                 tile.setInventorySlotContents(0, null);
             } else {
-                world.spawnEntityInWorld(new EntityItem(world, player.posX, player.posY, player.posZ, tile.getStackInSlot(0)));
+                world.spawnEntityInWorld(
+                        new EntityItem(world, player.posX, player.posY, player.posZ, tile.getStackInSlot(0)));
                 tile.setInventorySlotContents(0, null);
             }
             world.markBlockForUpdate(x, y, z);
@@ -97,13 +108,13 @@ public class DislocatorReceptacle extends BlockCustomDrop implements ITileEntity
 
         } else {
             ItemStack stack = player.getHeldItem();
-            if (stack != null && stack.getItem() instanceof TeleporterMKI && ((TeleporterMKI) stack.getItem()).getLocation(stack) != null) {
+            if (stack != null
+                    && stack.getItem() instanceof TeleporterMKI
+                    && ((TeleporterMKI) stack.getItem()).getLocation(stack) != null) {
                 tile.setInventorySlotContents(0, player.getHeldItem());
                 player.destroyCurrentEquippedItem();
             }
-
         }
-
 
         return true;
     }
@@ -130,7 +141,5 @@ public class DislocatorReceptacle extends BlockCustomDrop implements ITileEntity
     }
 
     @Override
-    protected void getCustomTileEntityDrops(TileEntity te, List<ItemStack> droppes) {
-
-    }
+    protected void getCustomTileEntityDrops(TileEntity te, List<ItemStack> droppes) {}
 }

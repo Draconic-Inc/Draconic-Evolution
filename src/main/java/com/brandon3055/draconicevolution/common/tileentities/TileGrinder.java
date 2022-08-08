@@ -8,10 +8,13 @@ import com.mojang.authlib.GameProfile;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import java.util.List;
+import java.util.UUID;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.IEntityMultiPart;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -29,11 +32,8 @@ import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import java.util.List;
-import java.util.UUID;
-
 public class TileGrinder extends TileObjectSync implements ISidedInventory, IEnergyReceiver {
-    //########### variables #############//
+    // ########### variables #############//
     public int meta = -1;
     List<EntityLiving> killList;
     AxisAlignedBB killBox;
@@ -49,8 +49,10 @@ public class TileGrinder extends TileObjectSync implements ISidedInventory, IEne
     public boolean hasPower = false;
     public boolean hasPowerCach = false;
     private boolean readyNext = false;
-    public EnergyStorage internalGenBuffer = new EnergyStorage(BalanceConfigHandler.grinderInternalEnergyBufferSize, BalanceConfigHandler.grinderMaxReceive, 0);
-    public EnergyStorage externalInputBuffer = new EnergyStorage(BalanceConfigHandler.grinderExternalEnergyBufferSize, BalanceConfigHandler.grinderMaxReceive, 0);
+    public EnergyStorage internalGenBuffer = new EnergyStorage(
+            BalanceConfigHandler.grinderInternalEnergyBufferSize, BalanceConfigHandler.grinderMaxReceive, 0);
+    public EnergyStorage externalInputBuffer = new EnergyStorage(
+            BalanceConfigHandler.grinderExternalEnergyBufferSize, BalanceConfigHandler.grinderMaxReceive, 0);
     public int energyPerKill = BalanceConfigHandler.grinderEnergyPerKill;
     private ItemStack diamondSword;
     public static FakePlayer fakePlayer;
@@ -82,7 +84,7 @@ public class TileGrinder extends TileObjectSync implements ISidedInventory, IEne
             }
         }
     }
-    //##################################//
+    // ##################################//
 
     public TileGrinder() {
         items = new ItemStack[1];
@@ -105,7 +107,10 @@ public class TileGrinder extends TileObjectSync implements ISidedInventory, IEne
 
         if (burnTimeRemaining > 0 && internalGenBuffer.getEnergyStored() < internalGenBuffer.getMaxEnergyStored()) {
             burnTimeRemaining -= burnSpeed;
-            internalGenBuffer.setEnergyStored(internalGenBuffer.getEnergyStored() + Math.min(burnSpeed * EPBT, internalGenBuffer.getMaxEnergyStored() - internalGenBuffer.getEnergyStored()));
+            internalGenBuffer.setEnergyStored(internalGenBuffer.getEnergyStored()
+                    + Math.min(
+                            burnSpeed * EPBT,
+                            internalGenBuffer.getMaxEnergyStored() - internalGenBuffer.getEnergyStored()));
         } else if (burnTimeRemaining <= 0) tryRefuel();
 
         if (readyNext && !disabled && getActiveBuffer().getEnergyStored() >= energyPerKill) {
@@ -115,7 +120,7 @@ public class TileGrinder extends TileObjectSync implements ISidedInventory, IEne
         }
 
         if (tick % 100 == 0) {
-            //checkSignal();
+            // checkSignal();
             readyNext = true;
         }
         detectAndSendChanges(tick % 500 == 0);
@@ -147,16 +152,22 @@ public class TileGrinder extends TileObjectSync implements ISidedInventory, IEne
         }
     }
 
+    @SuppressWarnings("unchecked")
     public boolean killNextEntity() {
         if (worldObj.isRemote) return false;
-        //fakePlayer = null;
+        // fakePlayer = null;
         if (fakePlayer == null) {
-            fakePlayer = FakePlayerFactory.get((WorldServer) worldObj, new GameProfile(UUID.fromString("5b5689b9-e43d-4282-a42a-dc916f3616b7"), "[Draconic-Evolution]"));
+            fakePlayer = FakePlayerFactory.get(
+                    (WorldServer) worldObj,
+                    new GameProfile(UUID.fromString("5b5689b9-e43d-4282-a42a-dc916f3616b7"), "[Draconic-Evolution]"));
         }
-        if (BalanceConfigHandler.grinderShouldUseLooting && (fakePlayer.getHeldItem() == null || !ItemStack.areItemStacksEqual(fakePlayer.getHeldItem(), diamondSword))) {
+        if (BalanceConfigHandler.grinderShouldUseLooting
+                && (fakePlayer.getHeldItem() == null
+                        || !ItemStack.areItemStacksEqual(fakePlayer.getHeldItem(), diamondSword))) {
             fakePlayer.setCurrentItemOrArmor(0, diamondSword);
         }
-        killBox = AxisAlignedBB.getBoundingBox(centreX - 4.5, centreY - 4.5, centreZ - 4.5, centreX + 4.5, centreY + 4.5, centreZ + 4.5);
+        killBox = AxisAlignedBB.getBoundingBox(
+                centreX - 4.5, centreY - 4.5, centreZ - 4.5, centreX + 4.5, centreY + 4.5, centreZ + 4.5);
 
         killList = worldObj.getEntitiesWithinAABB(EntityLiving.class, killBox);
         List<EntityXPOrb> xp = worldObj.getEntitiesWithinAABB(EntityXPOrb.class, killBox.expand(4, 4, 4));
@@ -165,7 +176,12 @@ public class TileGrinder extends TileObjectSync implements ISidedInventory, IEne
         if (killList.size() > 0) {
             EntityLiving mob = killList.get(worldObj.rand.nextInt(killList.size()));
             if (mob.isEntityAlive()) {
-                mob.attackEntityFrom(DamageSource.causePlayerDamage(fakePlayer), 50000F);
+                if (mob instanceof IEntityMultiPart) {
+                    ((IEntityMultiPart) mob)
+                            .attackEntityFromPart(null, DamageSource.causePlayerDamage(fakePlayer), 50000F);
+                } else {
+                    mob.attackEntityFrom(DamageSource.causePlayerDamage(fakePlayer), 50000F);
+                }
                 readyNext = true;
                 return true;
             }
@@ -198,9 +214,12 @@ public class TileGrinder extends TileObjectSync implements ISidedInventory, IEne
                 }
             }
 
-            if (item instanceof ItemTool && ((ItemTool) item).getToolMaterialName().equals("WOOD")) return 200;
-            if (item instanceof ItemSword && ((ItemSword) item).getToolMaterialName().equals("WOOD")) return 200;
-            if (item instanceof ItemHoe && ((ItemHoe) item).getToolMaterialName().equals("WOOD")) return 200;
+            if (item instanceof ItemTool
+                    && ((ItemTool) item).getToolMaterialName().equals("WOOD")) return 200;
+            if (item instanceof ItemSword
+                    && ((ItemSword) item).getToolMaterialName().equals("WOOD")) return 200;
+            if (item instanceof ItemHoe
+                    && ((ItemHoe) item).getToolMaterialName().equals("WOOD")) return 200;
             if (item == Items.stick) return 100;
             if (item == Items.coal) return 1600;
             if (item == Items.lava_bucket) return 20000;
@@ -279,12 +298,10 @@ public class TileGrinder extends TileObjectSync implements ISidedInventory, IEne
     }
 
     @Override
-    public void openInventory() {
-    }
+    public void openInventory() {}
 
     @Override
-    public void closeInventory() {
-    }
+    public void closeInventory() {}
 
     @Override
     public boolean isItemValidForSlot(int i, ItemStack stack) {
@@ -404,5 +421,4 @@ public class TileGrinder extends TileObjectSync implements ISidedInventory, IEne
     public EnergyStorage getInternalBuffer() {
         return internalGenBuffer;
     }
-
 }

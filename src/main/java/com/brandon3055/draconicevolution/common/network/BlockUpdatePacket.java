@@ -9,8 +9,7 @@ import net.minecraft.network.play.server.S23PacketBlockChange;
 public class BlockUpdatePacket implements IMessage {
     int x, y, z;
 
-    public BlockUpdatePacket() {
-    }
+    public BlockUpdatePacket() {}
 
     public BlockUpdatePacket(int x, int y, int z) {
         this.x = x;
@@ -36,7 +35,11 @@ public class BlockUpdatePacket implements IMessage {
 
         @Override
         public IMessage onMessage(BlockUpdatePacket message, MessageContext ctx) {
-            ctx.getServerHandler().playerEntity.playerNetServerHandler.sendPacket(new S23PacketBlockChange(message.x, message.y, message.z, ctx.getServerHandler().playerEntity.worldObj));
+            ctx.getServerHandler()
+                    .playerEntity
+                    .playerNetServerHandler
+                    .sendPacket(new S23PacketBlockChange(
+                            message.x, message.y, message.z, ctx.getServerHandler().playerEntity.worldObj));
             return null;
         }
     }

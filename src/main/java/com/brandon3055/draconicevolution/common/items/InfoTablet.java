@@ -21,7 +21,7 @@ public class InfoTablet extends ItemDE {
         this.setCreativeTab(DraconicEvolution.tabBlocksItems);
         this.setMaxStackSize(1);
         ModItems.register(this);
-        //GameRegistry.registerItem(this, Strings.infoTabletName);
+        // GameRegistry.registerItem(this, Strings.infoTabletName);
     }
 
     @Override
@@ -31,7 +31,14 @@ public class InfoTablet extends ItemDE {
 
     @Override
     public ItemStack onItemRightClick(ItemStack p_77659_1_, World world, EntityPlayer player) {
-        FMLNetworkHandler.openGui(player, DraconicEvolution.instance, GuiHandler.GUIID_MANUAL, world, (int) player.posX, (int) player.posY, (int) player.posZ);
+        FMLNetworkHandler.openGui(
+                player,
+                DraconicEvolution.instance,
+                GuiHandler.GUIID_MANUAL,
+                world,
+                (int) player.posX,
+                (int) player.posY,
+                (int) player.posZ);
         return super.onItemRightClick(p_77659_1_, world, player);
     }
 }

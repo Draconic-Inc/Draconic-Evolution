@@ -14,34 +14,32 @@ public class TileEnergyRelay extends TileRemoteEnergyBase {
     @SideOnly(Side.CLIENT)
     private ParticleEnergyField ring;
 
-    public TileEnergyRelay() {
-    }
+    public TileEnergyRelay() {}
 
     public TileEnergyRelay(int powerTier) {
         this.powerTier = powerTier;
         this.updateStorage();
     }
 
-
     @Override
     public int getCap() {
-        return powerTier == 0 ?
-               BalanceConfigHandler.energyRelayBasicStorage :
-               BalanceConfigHandler.energyRelayAdvancedStorage;
+        return powerTier == 0
+                ? BalanceConfigHandler.energyRelayBasicStorage
+                : BalanceConfigHandler.energyRelayAdvancedStorage;
     }
 
     @Override
     public int getRec() {
-        return powerTier == 0 ?
-               BalanceConfigHandler.energyRelayBasicMaxReceive :
-               BalanceConfigHandler.energyRelayAdvancedMaxReceive;
+        return powerTier == 0
+                ? BalanceConfigHandler.energyRelayBasicMaxReceive
+                : BalanceConfigHandler.energyRelayAdvancedMaxReceive;
     }
 
     @Override
     public int getExt() {
-        return powerTier == 0 ?
-               BalanceConfigHandler.energyRelayBasicMaxExtract :
-               BalanceConfigHandler.energyRelayAdvancedMaxExtract;
+        return powerTier == 0
+                ? BalanceConfigHandler.energyRelayBasicMaxExtract
+                : BalanceConfigHandler.energyRelayAdvancedMaxExtract;
     }
 
     @Override
@@ -49,11 +47,11 @@ public class TileEnergyRelay extends TileRemoteEnergyBase {
         super.updateEntity();
 
         if (worldObj.isRemote) {
-            ring = DraconicEvolution.proxy.energyField(worldObj, xCoord + 0.5, yCoord + 0.5, zCoord + 0.5, 0, powerTier == 1, ring, inView > 0);
+            ring = DraconicEvolution.proxy.energyField(
+                    worldObj, xCoord + 0.5, yCoord + 0.5, zCoord + 0.5, 0, powerTier == 1, ring, inView > 0);
             return;
         }
     }
-
 
     @Override
     public void writeToNBT(NBTTagCompound compound) {
@@ -65,10 +63,11 @@ public class TileEnergyRelay extends TileRemoteEnergyBase {
         super.readFromNBT(compound);
     }
 
-//	@Override
-//	public double getCapacity() {
-//		return ((double) getEnergyStored(ForgeDirection.UNKNOWN) / (double) getMaxEnergyStored(ForgeDirection.UNKNOWN)) * 100D;
-//	}
+    //	@Override
+    //	public double getCapacity() {
+    //		return ((double) getEnergyStored(ForgeDirection.UNKNOWN) / (double) getMaxEnergyStored(ForgeDirection.UNKNOWN))
+    // * 100D;
+    //	}
 
     /**
      * Calculates the energy flow based on the local buffer
@@ -76,7 +75,7 @@ public class TileEnergyRelay extends TileRemoteEnergyBase {
      * return double between 0 to 100
      */
     public double getFlow(double localCap, double remoteCap) {
-        return Math.max(0, Math.min(100, (localCap - remoteCap) * 100D/*Flow Multiplier*/));
+        return Math.max(0, Math.min(100, (localCap - remoteCap) * 100D /*Flow Multiplier*/));
     }
 
     @Override

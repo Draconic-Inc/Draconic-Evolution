@@ -12,6 +12,8 @@ import com.brandon3055.draconicevolution.common.utills.IHudDisplayItem;
 import com.brandon3055.draconicevolution.common.utills.ItemConfigField;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import java.util.ArrayList;
+import java.util.List;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
@@ -20,9 +22,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Brandon on 8/01/2015.
@@ -53,7 +52,7 @@ public class RFItemBase extends ItemDE implements IEnergyContainerItem, IConfigu
         return new EntityPersistentItem(world, location, itemstack);
     }
 
-	/* Energy */
+    /* Energy */
 
     public void setCapacity(int capacity) {
         this.capacity = capacity;
@@ -136,7 +135,7 @@ public class RFItemBase extends ItemDE implements IEnergyContainerItem, IConfigu
         return capacity > 0;
     }
 
-	/* IConfigurableItem */
+    /* IConfigurableItem */
 
     @Override
     public List<ItemConfigField> getFields(ItemStack stack, int slot) {
@@ -148,15 +147,17 @@ public class RFItemBase extends ItemDE implements IEnergyContainerItem, IConfigu
         List<String> list = new ArrayList<String>();
         if (hasProfiles()) {
             int preset = ItemNBTHelper.getInteger(stack, "ConfigProfile", 0);
-            list.add(EnumChatFormatting.DARK_PURPLE + StatCollector.translateToLocal("info.de.capacitorMode.txt") + ": " + ItemNBTHelper.getString(stack, "ProfileName" + preset, "Profile " + preset));
+            list.add(EnumChatFormatting.DARK_PURPLE + StatCollector.translateToLocal("info.de.capacitorMode.txt") + ": "
+                    + ItemNBTHelper.getString(stack, "ProfileName" + preset, "Profile " + preset));
         }
 
-        for (ItemConfigField field : getFields(stack, 0)){
-            list.add(field.getTooltipInfo());//list.add(field.getLocalizedName() + ": " + field.getFormattedValue());
+        for (ItemConfigField field : getFields(stack, 0)) {
+            list.add(field.getTooltipInfo()); // list.add(field.getLocalizedName() + ": " + field.getFormattedValue());
         }
 
         if (getCapacity(stack) > 0) {
-            list.add(InfoHelper.ITC() + StatCollector.translateToLocal("info.de.charge.txt") + ": " + InfoHelper.HITC() + Utills.formatNumber(getEnergyStored(stack)) + " / " + Utills.formatNumber(capacity));
+            list.add(InfoHelper.ITC() + StatCollector.translateToLocal("info.de.charge.txt") + ": " + InfoHelper.HITC()
+                    + Utills.formatNumber(getEnergyStored(stack)) + " / " + Utills.formatNumber(capacity));
         }
 
         return list;

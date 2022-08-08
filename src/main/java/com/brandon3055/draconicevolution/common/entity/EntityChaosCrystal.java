@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.common.entity;
 import com.brandon3055.draconicevolution.common.ModBlocks;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -17,8 +18,6 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProviderEnd;
-
-import java.util.List;
 
 /**
  * Created by brandon3055 on 30/8/2015.
@@ -35,7 +34,7 @@ public class EntityChaosCrystal extends EntityLivingBase {
         super(p_i1698_1_);
         this.preventEntitySpawning = true;
         this.setSize(2.0F, 2.0F);
-        //this.yOffset = -2;
+        // this.yOffset = -2;
         this.innerRotation = this.rand.nextInt(100000);
         this.setHealth(getMaxHealth());
         this.ignoreFrustumCheck = true;
@@ -73,7 +72,7 @@ public class EntityChaosCrystal extends EntityLivingBase {
             shieldTime = (int) dataWatcher.getWatchableObjectShort(20);
             health = dataWatcher.getWatchableObjectFloat(21);
         }
-        //setHealth(0);
+        // setHealth(0);
         if (health > 0) {
             if (shieldTime > 0) shieldTime--;
             if (deathAnimation < 1F) deathAnimation += 0.1F;
@@ -83,7 +82,9 @@ public class EntityChaosCrystal extends EntityLivingBase {
             int j = MathHelper.floor_double(this.posY);
             int k = MathHelper.floor_double(this.posZ);
 
-            if (this.worldObj.provider instanceof WorldProviderEnd && this.worldObj.getBlock(i, j, k).isBlockSolid(this.worldObj, i, j, k, 0) && this.worldObj.getBlock(i, j, k) != Blocks.fire) {
+            if (this.worldObj.provider instanceof WorldProviderEnd
+                    && this.worldObj.getBlock(i, j, k).isBlockSolid(this.worldObj, i, j, k, 0)
+                    && this.worldObj.getBlock(i, j, k) != Blocks.fire) {
                 this.worldObj.setBlock(i, j, k, Blocks.fire);
             }
 
@@ -159,7 +160,13 @@ public class EntityChaosCrystal extends EntityLivingBase {
                 if (getHealth() <= 0) worldObj.createExplosion(null, this.posX, this.posY, this.posZ, 6.0F, false);
                 else {
                     shieldTime = 100 + rand.nextInt(100);
-                    worldObj.playSoundEffect(posX + 0.5D, posY + 0.5D, posZ + 0.5D, "draconicevolution:shieldUp", 10.0F, rand.nextFloat() * 0.1F + 1.055F);
+                    worldObj.playSoundEffect(
+                            posX + 0.5D,
+                            posY + 0.5D,
+                            posZ + 0.5D,
+                            "draconicevolution:shieldUp",
+                            10.0F,
+                            rand.nextFloat() * 0.1F + 1.055F);
                 }
                 if (getGuardian() != null)
                     getGuardian().onCrystalTargeted((EntityPlayer) source.getEntity(), getHealth() <= 0);
@@ -171,7 +178,10 @@ public class EntityChaosCrystal extends EntityLivingBase {
 
     private EntityChaosGuardian getGuardian() {
         if (guardian == null) {
-            List<EntityChaosGuardian> list = worldObj.getEntitiesWithinAABB(EntityChaosGuardian.class, AxisAlignedBB.getBoundingBox(posX, posY, posZ, posX, posY, posZ).expand(512, 512, 512));
+            List<EntityChaosGuardian> list = worldObj.getEntitiesWithinAABB(
+                    EntityChaosGuardian.class,
+                    AxisAlignedBB.getBoundingBox(posX, posY, posZ, posX, posY, posZ)
+                            .expand(512, 512, 512));
             if (list.size() > 0) guardian = list.get(0);
             if (guardian != null && guardian.crystals != null && !guardian.crystals.contains(this)) {
                 guardian.crystals.add(this);
@@ -203,9 +213,7 @@ public class EntityChaosCrystal extends EntityLivingBase {
     }
 
     @Override
-    public void setCurrentItemOrArmor(int p_70062_1_, ItemStack p_70062_2_) {
-
-    }
+    public void setCurrentItemOrArmor(int p_70062_1_, ItemStack p_70062_2_) {}
 
     @Override
     public ItemStack[] getLastActiveItems() {

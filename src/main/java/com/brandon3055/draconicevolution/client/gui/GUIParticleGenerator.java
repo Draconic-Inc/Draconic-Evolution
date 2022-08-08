@@ -16,12 +16,13 @@ import org.lwjgl.opengl.GL11;
 public class GUIParticleGenerator extends GuiScreen {
     private final int xSize = 212;
     private final int ySize = 198;
-    private ResourceLocation guiTexture = new ResourceLocation(References.MODID.toLowerCase(), "textures/gui/ParticleGenerator.png");
+    private ResourceLocation guiTexture =
+            new ResourceLocation(References.MODID.toLowerCase(), "textures/gui/ParticleGenerator.png");
     private int page = 1;
     private int infoPage = 0;
     private boolean hasInitialized = false;
 
-    //Particle variables
+    // Particle variables
     private boolean particles_enabled = true;
 
     private int red = 0;
@@ -53,7 +54,7 @@ public class GUIParticleGenerator extends GuiScreen {
     private int selected_max = 3;
     private float gravity = 0F;
 
-    //Beam variables
+    // Beam variables
     private boolean beam_enabled = false;
     private boolean render_core = false;
 
@@ -66,11 +67,10 @@ public class GUIParticleGenerator extends GuiScreen {
     private float beam_length = 0F;
     private float beam_rotation = 0F;
 
+    // Buttons
 
-    //Buttons
-
-    //Info Page
-    //particle selection
+    // Info Page
+    // particle selection
 
     private TileParticleGenerator tile;
 
@@ -80,9 +80,34 @@ public class GUIParticleGenerator extends GuiScreen {
         syncWithServer();
     }
 
-    String[] InfoText = {"" + "The Particle Generator is a decorative device that allows you to create your own custom particle effects.                                                                 " + "It is fairly easy you use this device you simply adjust the fields (variables) in the interface to change how the generated particles look and behave.                                                                                            " + "This block is a work in progress and new features and particles are likely to be added in future versions.                                                         " + "The following is a list of all of the fields in the interface and what they do.", "The first thing to note is that most fields have a random modifier which will add a random number between 0 and whatever max (or min) value you give it to the field.                                                                                      " + "-The first 3 fields (Red, Green & Blue) control the colour of the particle. Most people should be familiar with this colour system if not google RGB colours. Note: the max value for each colour can not go higher then 255 so the colour field limits the random modifier e.g. if the colour field is set to 255 and the random modifier is set to 20 the result will always be 255", "-The next 3 fields (Motion X, Y & Z) control the direction and speed of the particle                                                                                            " + "-The \"Life\" field sets how long (in ticks) before the particle despawns.                                                       " + "-The \"Size\" field sets the size of the particle.                                                                                           " + "-The next 3 fields (Spawn X, Y & Z) Sets the spawn location of the particle (relative to the location of the particle generator)", "-The \"Delay\" field sets the delay (in ticks) between each particle spawn e.g. 1=20/s, 20=1/s, 100=1/5s                                                                    " + "-The \"Fade\" field sets how long (in ticks) it takes the partile to fade out of existance. Note: This adds to the life of the particle                                                                                  " + "-The \"Gravity\" field sets how the particle is affected by gravity.                                                              " + "-\"Block Collision\" Toggles weather or not the particle will collide with blocks                                                     " + "-\"Particle Selected\" Switches between the different particles available.", EnumChatFormatting.DARK_RED + "              Redstone Control" + EnumChatFormatting.BLACK + "\nBy default a redstone signal is required for the generator to run." + "\n\nHowever if you shift right click the generator with an empty hand it will switch to inverted mode." + "\nThe redstone mode is indicated by the 8 cubes at the corners of the block.", EnumChatFormatting.DARK_RED + "              Computer Control" + EnumChatFormatting.BLACK + "\nThe Generator can be controlled via a computer" + "\nIt exposes a relatively straight forward API:" + "\n\n  setGeneratorProperty(property, value)\n  getGeneratorState()\n  resetGeneratorState()" + "\n\nGenerator state is obtained as a whole from getGeneratorState, whereas properties are modified one at a time using setGeneratorProperty. Property names are strings and mostly correspond to button labels in the GUI."};
+    String[] InfoText = {
+        ""
+                + "The Particle Generator is a decorative device that allows you to create your own custom particle effects.                                                                 "
+                + "It is fairly easy you use this device you simply adjust the fields (variables) in the interface to change how the generated particles look and behave.                                                                                            "
+                + "This block is a work in progress and new features and particles are likely to be added in future versions.                                                         "
+                + "The following is a list of all of the fields in the interface and what they do.",
+        "The first thing to note is that most fields have a random modifier which will add a random number between 0 and whatever max (or min) value you give it to the field.                                                                                      "
+                + "-The first 3 fields (Red, Green & Blue) control the colour of the particle. Most people should be familiar with this colour system if not google RGB colours. Note: the max value for each colour can not go higher then 255 so the colour field limits the random modifier e.g. if the colour field is set to 255 and the random modifier is set to 20 the result will always be 255",
+        "-The next 3 fields (Motion X, Y & Z) control the direction and speed of the particle                                                                                            "
+                + "-The \"Life\" field sets how long (in ticks) before the particle despawns.                                                       "
+                + "-The \"Size\" field sets the size of the particle.                                                                                           "
+                + "-The next 3 fields (Spawn X, Y & Z) Sets the spawn location of the particle (relative to the location of the particle generator)",
+        "-The \"Delay\" field sets the delay (in ticks) between each particle spawn e.g. 1=20/s, 20=1/s, 100=1/5s                                                                    "
+                + "-The \"Fade\" field sets how long (in ticks) it takes the partile to fade out of existance. Note: This adds to the life of the particle                                                                                  "
+                + "-The \"Gravity\" field sets how the particle is affected by gravity.                                                              "
+                + "-\"Block Collision\" Toggles weather or not the particle will collide with blocks                                                     "
+                + "-\"Particle Selected\" Switches between the different particles available.",
+        EnumChatFormatting.DARK_RED + "              Redstone Control" + EnumChatFormatting.BLACK
+                + "\nBy default a redstone signal is required for the generator to run."
+                + "\n\nHowever if you shift right click the generator with an empty hand it will switch to inverted mode."
+                + "\nThe redstone mode is indicated by the 8 cubes at the corners of the block.",
+        EnumChatFormatting.DARK_RED + "              Computer Control" + EnumChatFormatting.BLACK
+                + "\nThe Generator can be controlled via a computer" + "\nIt exposes a relatively straight forward API:"
+                + "\n\n  setGeneratorProperty(property, value)\n  getGeneratorState()\n  resetGeneratorState()"
+                + "\n\nGenerator state is obtained as a whole from getGeneratorState, whereas properties are modified one at a time using setGeneratorProperty. Property names are strings and mostly correspond to button labels in the GUI."
+    };
 
-    //@formatter:off
+    // @formatter:off
     @Override
     public void drawScreen(int x, int y, float f) {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -109,7 +134,7 @@ public class GUIParticleGenerator extends GuiScreen {
 
         super.drawScreen(x, y, f);
     }
-    //@formatter:on
+    // @formatter:on
 
     @Override
     protected void mouseClicked(int x, int y, int button) {
@@ -137,8 +162,6 @@ public class GUIParticleGenerator extends GuiScreen {
 
         if (page < 10) buttonList.add(new GuiButton(54, posX - 21, posY + 3, 20, 20, "i"));
         else buttonList.add(new GuiButton(55, posX - 31, posY + 23, 30, 20, "Back"));
-
-
     }
 
     @Override
@@ -159,251 +182,252 @@ public class GUIParticleGenerator extends GuiScreen {
         value_F = (value) / 1000F;
 
         switch (button.id) {
-            case 0://Red +
+            case 0: // Red +
                 red = (red + value) > 255 ? 255 : red + value;
                 packetValue = (short) red;
                 break;
-            case 1://Green +
+            case 1: // Green +
                 green = (green + value) > 255 ? 255 : green + value;
                 packetValue = (short) green;
                 break;
-            case 2://Blue +
+            case 2: // Blue +
                 blue = (blue + value) > 255 ? 255 : blue + value;
                 packetValue = (short) blue;
                 break;
-            case 3://MX +
+            case 3: // MX +
                 motion_x = (motion_x + value_F) > 5F ? 5F : motion_x + value_F;
                 packetValue = (short) (motion_x * 1000F);
                 break;
-            case 4://MY +
+            case 4: // MY +
                 motion_y = (motion_y + value_F) > 5F ? 5F : motion_y + value_F;
                 packetValue = (short) (motion_y * 1000F);
                 break;
-            case 5://MZ +
+            case 5: // MZ +
                 motion_z = (motion_z + value_F) > 5F ? 5F : motion_z + value_F;
                 packetValue = (short) (motion_z * 1000F);
                 break;
-            case 6://Red -
+            case 6: // Red -
                 red = (red - value) < 0 ? 0 : red - value;
                 packetValue = (short) red;
                 break;
-            case 7://Green -
+            case 7: // Green -
                 green = (green - value) < 0 ? 0 : green - value;
                 packetValue = (short) green;
                 break;
-            case 8://Blue -
+            case 8: // Blue -
                 blue = (blue - value) < 0 ? 0 : blue - value;
                 packetValue = (short) blue;
                 break;
-            case 9://MX -
+            case 9: // MX -
                 motion_x = (motion_x - value_F) < -5F ? -5F : motion_x - value_F;
                 packetValue = (short) (motion_x * 1000F);
                 break;
-            case 10://MY -
+            case 10: // MY -
                 motion_y = (motion_y - value_F) < -5F ? -5F : motion_y - value_F;
                 packetValue = (short) (motion_y * 1000F);
                 break;
-            case 11://MZ -
+            case 11: // MZ -
                 motion_z = (motion_z - value_F) < -5F ? -5F : motion_z - value_F;
                 packetValue = (short) (motion_z * 1000F);
                 break;
-            case 12://RRed +
+            case 12: // RRed +
                 random_red = (random_red + value) > 255 ? 255 : random_red + value;
                 packetValue = (short) random_red;
                 break;
-            case 13://RGreen +
+            case 13: // RGreen +
                 random_green = (random_green + value) > 255 ? 255 : random_green + value;
                 packetValue = (short) random_green;
                 break;
-            case 14://RBlue +
+            case 14: // RBlue +
                 random_blue = (random_blue + value) > 255 ? 255 : random_blue + value;
                 packetValue = (short) random_blue;
                 break;
-            case 15://RMX +
+            case 15: // RMX +
                 random_motion_x = (random_motion_x + value_F) > 5F ? 5F : random_motion_x + value_F;
                 packetValue = (short) (random_motion_x * 1000F);
                 break;
-            case 16://RMY +
+            case 16: // RMY +
                 random_motion_y = (random_motion_y + value_F) > 5F ? 5F : random_motion_y + value_F;
                 packetValue = (short) (random_motion_y * 1000F);
                 break;
-            case 17://RMZ +
+            case 17: // RMZ +
                 random_motion_z = (random_motion_z + value_F) > 5F ? 5F : random_motion_z + value_F;
                 packetValue = (short) (random_motion_z * 1000F);
                 break;
-            case 18://RRed -
+            case 18: // RRed -
                 random_red = (random_red - value) < 0 ? 0 : random_red - value;
                 packetValue = (short) random_red;
                 break;
-            case 19://RGreen -
+            case 19: // RGreen -
                 random_green = (random_green - value) < 0 ? 0 : random_green - value;
                 packetValue = (short) random_green;
                 break;
-            case 20://RBlue -
+            case 20: // RBlue -
                 random_blue = (random_blue - value) < 0 ? 0 : random_blue - value;
                 packetValue = (short) random_blue;
                 break;
-            case 21://RMX -
+            case 21: // RMX -
                 random_motion_x = (random_motion_x - value_F) < -5F ? -5F : random_motion_x - value_F;
                 packetValue = (short) (random_motion_x * 1000F);
                 break;
-            case 22://RMY -
+            case 22: // RMY -
                 random_motion_y = (random_motion_y - value_F) < -5F ? -5F : random_motion_y - value_F;
                 packetValue = (short) (random_motion_y * 1000F);
                 break;
-            case 23://RMZ -
+            case 23: // RMZ -
                 random_motion_z = (random_motion_z - value_F) < -5F ? -5F : random_motion_z - value_F;
                 packetValue = (short) (random_motion_z * 1000F);
                 break;
-            case 24://Life +
+            case 24: // Life +
                 life = (life + value) > 1000 ? 1000 : life + value;
                 packetValue = (short) life;
                 break;
-            case 25://Life -
+            case 25: // Life -
                 life = (life - value) < 0 ? 0 : life - value;
                 packetValue = (short) life;
                 break;
-            case 26://RLife +
+            case 26: // RLife +
                 random_life = (random_life + value) > 1000 ? 1000 : random_life + value;
                 packetValue = (short) random_life;
                 break;
-            case 27://RLife -
+            case 27: // RLife -
                 random_life = (random_life - value) < 0 ? 0 : random_life - value;
                 packetValue = (short) random_life;
                 break;
-            case 28://Size +
+            case 28: // Size +
                 scale = (scale + value_F * 10F) > 50F ? 50F : scale + value_F * 10F;
                 packetValue = (short) (scale * 100F);
                 break;
-            case 29://Size -
+            case 29: // Size -
                 scale = (scale - value_F * 10F) < 0.01F ? 0.01F : scale - value_F * 10F;
                 packetValue = (short) (scale * 100F);
                 break;
-            case 30://RSize +
+            case 30: // RSize +
                 random_scale = (random_scale + value_F * 10F) > 50F ? 50F : random_scale + value_F * 10F;
                 packetValue = (short) (random_scale * 100F);
                 break;
-            case 31://RSize -
+            case 31: // RSize -
                 random_scale = (random_scale - value_F * 10F) < 0.0F ? 0.0F : random_scale - value_F * 10F;
                 packetValue = (short) (random_scale * 100F);
                 break;
-            case 32://Page 2
+            case 32: // Page 2
                 if (page > 1) page--;
                 packetValue = (short) page;
                 initGui();
                 break;
-            case 33://Page 1
+            case 33: // Page 1
                 if (page < 3) page++;
                 initGui();
                 packetValue = (short) page;
                 break;
-            case 34://SX +
+            case 34: // SX +
                 spawn_x = (spawn_x + value_F * 100F) > 50F ? 50F : spawn_x + value_F * 100F;
                 packetValue = (short) (spawn_x * 100F);
                 break;
-            case 35://SX -
+            case 35: // SX -
                 spawn_x = (spawn_x - value_F * 100F) < -50F ? -50F : spawn_x - value_F * 100F;
                 packetValue = (short) (spawn_x * 100F);
                 break;
-            case 36://RSX +
+            case 36: // RSX +
                 random_spawn_x = (random_spawn_x + value_F * 100F) > 50F ? 50F : random_spawn_x + value_F * 100F;
                 packetValue = (short) (random_spawn_x * 100F);
                 break;
-            case 37://RSX -
+            case 37: // RSX -
                 random_spawn_x = (random_spawn_x - value_F * 100F) < -50F ? -50F : random_spawn_x - value_F * 100F;
                 packetValue = (short) (random_spawn_x * 100F);
                 break;
-            case 38://SY +
+            case 38: // SY +
                 spawn_y = (spawn_y + value_F * 100F) > 50F ? 50F : spawn_y + value_F * 100F;
                 packetValue = (short) (spawn_y * 100F);
                 break;
-            case 39://SY -
+            case 39: // SY -
                 spawn_y = (spawn_y - value_F * 100F) < -50F ? -50F : spawn_y - value_F * 100F;
                 packetValue = (short) (spawn_y * 100F);
                 break;
-            case 40://RSY +
+            case 40: // RSY +
                 random_spawn_y = (random_spawn_y + value_F * 100F) > 50F ? 50F : random_spawn_y + value_F * 100F;
                 packetValue = (short) (random_spawn_y * 100F);
                 break;
-            case 41://RSY -
+            case 41: // RSY -
                 random_spawn_y = (random_spawn_y - value_F * 100F) < -50F ? -50F : random_spawn_y - value_F * 100F;
                 packetValue = (short) (random_spawn_y * 100F);
                 break;
-            case 42://SZ +
+            case 42: // SZ +
                 spawn_z = (spawn_z + value_F * 100F) > 50F ? 50F : spawn_z + value_F * 100F;
                 packetValue = (short) (spawn_z * 100F);
                 break;
-            case 43://SZ -
+            case 43: // SZ -
                 spawn_z = (spawn_z - value_F * 100F) < -50F ? -50F : spawn_z - value_F * 100F;
                 packetValue = (short) (spawn_z * 100F);
                 break;
-            case 44://RSZ +
+            case 44: // RSZ +
                 random_spawn_z = (random_spawn_z + value_F * 100F) > 50F ? 50F : random_spawn_z + value_F * 100F;
                 packetValue = (short) (random_spawn_z * 100F);
                 break;
-            case 45://RSZ -
+            case 45: // RSZ -
                 random_spawn_z = (random_spawn_z - value_F * 100F) < -50F ? -50F : random_spawn_z - value_F * 100F;
                 packetValue = (short) (random_spawn_z * 100F);
                 break;
-            case 46://Delay +
+            case 46: // Delay +
                 spawn_rate = (spawn_rate + value) > 200 ? 200 : spawn_rate + value;
                 packetValue = (short) spawn_rate;
                 break;
-            case 47://Delay -
+            case 47: // Delay -
                 spawn_rate = (spawn_rate - value) < 1 ? 1 : spawn_rate - value;
                 packetValue = (short) spawn_rate;
                 break;
-            case 48://Fade +
+            case 48: // Fade +
                 fade = (fade + value) > 100 ? 100 : fade + value;
                 packetValue = (short) fade;
                 break;
-            case 49://Fade -
+            case 49: // Fade -
                 fade = (fade - value) < 0 ? 0 : fade - value;
                 packetValue = (short) fade;
                 break;
-            case 50://Toggle Collision
+            case 50: // Toggle Collision
                 collide = !collide;
                 packetValue = (short) (collide ? 1 : 0);
                 initGui();
                 break;
-            case 51://cycle particle selection
+            case 51: // cycle particle selection
                 selected_particle = selected_particle < selected_max ? selected_particle + 1 : 1;
                 packetValue = (short) selected_particle;
                 initGui();
                 break;
-            case 52://RSZ +
+            case 52: // RSZ +
                 gravity = (gravity + value_F) > 5F ? 5F : gravity + value_F;
                 packetValue = (short) (gravity * 1000F);
                 break;
-            case 53://RSZ -
+            case 53: // RSZ -
                 gravity = (gravity - value_F) < -5F ? -5F : gravity - value_F;
                 packetValue = (short) (gravity * 1000F);
                 break;
-            case 54://Info Page
+            case 54: // Info Page
                 page = 10;
                 initGui();
                 packetValue = (short) page;
                 break;
-            case 55://Back Page
+            case 55: // Back Page
                 page = 1;
                 initGui();
                 packetValue = (short) page;
                 break;
-            case 56://Info Next Page
+            case 56: // Info Next Page
                 if (infoPage < 5) infoPage++;
                 else initGui();
                 break;
-            case 57://Info Previous Page
+            case 57: // Info Previous Page
                 if (infoPage > 0) infoPage--;
                 else initGui();
                 break;
-            case 58://particles Enabled
+            case 58: // particles Enabled
                 particles_enabled = !particles_enabled;
                 packetValue = particles_enabled ? (byte) 1 : (byte) 0;
                 initGui();
                 break;
         }
-        DraconicEvolution.network.sendToServer(new ParticleGenPacket((byte) button.id, packetValue, tile.xCoord, tile.yCoord, tile.zCoord));
+        DraconicEvolution.network.sendToServer(
+                new ParticleGenPacket((byte) button.id, packetValue, tile.xCoord, tile.yCoord, tile.zCoord));
     }
 
     @Override
@@ -415,8 +439,7 @@ public class GUIParticleGenerator extends GuiScreen {
     }
 
     @Override
-    public void updateScreen() {
-    }
+    public void updateScreen() {}
 
     @Override
     public boolean doesGuiPauseGame() {
@@ -466,7 +489,7 @@ public class GUIParticleGenerator extends GuiScreen {
         beam_rotation = tile.beam_rotation;
     }
 
-    //@formatter:off
+    // @formatter:off
     private void page1Txt() {
         int posX = (this.width - xSize) / 2;
         int posY = (this.height - ySize) / 2;
@@ -567,8 +590,6 @@ public class GUIParticleGenerator extends GuiScreen {
         buttonList.add(new GuiButton(23, posX + DX4, posY + y1 + 5 * 22, 20, 20, "-"));
         buttonList.add(new GuiButton(27, posX + DX4, posY + y1 + 6 * 22, 20, 20, "-"));
         buttonList.add(new GuiButton(31, posX + DX4, posY + y1 + 7 * 22, 20, 20, "-"));
-
-
     }
 
     private void page2Txt() {
@@ -611,7 +632,6 @@ public class GUIParticleGenerator extends GuiScreen {
         fontRendererObj.drawString("" + fade, col1, posY + ln2 + 4 * 22, 0x000000, false);
         fontRendererObj.drawString("Gravity:", col1, posY + ln1 + 5 * 22, 0x000000, false);
         fontRendererObj.drawString(Gravity, col1, posY + ln2 + 5 * 22, 0x000000, false);
-
     }
 
     private void page2Buttons() {
@@ -645,10 +665,13 @@ public class GUIParticleGenerator extends GuiScreen {
         buttonList.add(new GuiButton(41, posX + DX4, posY + y1 + 1 * 22, 20, 20, "-"));
         buttonList.add(new GuiButton(45, posX + DX4, posY + y1 + 2 * 22, 20, 20, "-"));
 
-        buttonList.add(new GuiButton(50, posX + DX3 - 11, posY + y1 + 3 * 22, 102, 20, "Block Collision: " + (collide ? "on" : "off")));
-        buttonList.add(new GuiButton(51, posX + DX3 - 11, posY + y1 + 4 * 22, 102, 20, "Particle Selected: " + selected_particle));
+        buttonList.add(new GuiButton(
+                50, posX + DX3 - 11, posY + y1 + 3 * 22, 102, 20, "Block Collision: " + (collide ? "on" : "off")));
+        buttonList.add(new GuiButton(
+                51, posX + DX3 - 11, posY + y1 + 4 * 22, 102, 20, "Particle Selected: " + selected_particle));
 
-        buttonList.add(new GuiButton(58, posX + DX3 - 11, posY + y1 + 5 * 22, 102, 20, "Enabled: " + (particles_enabled ? "on" : "off")));
+        buttonList.add(new GuiButton(
+                58, posX + DX3 - 11, posY + y1 + 5 * 22, 102, 20, "Enabled: " + (particles_enabled ? "on" : "off")));
     }
 
     private void page3Txt() {
@@ -683,13 +706,12 @@ public class GUIParticleGenerator extends GuiScreen {
         fontRendererObj.drawString(rotation, col1, posY + ln2 + 6 * 22, 0x000000, false);
         fontRendererObj.drawString("Scale:", col1, posY + ln1 + 7 * 22, 0x000000, false);
         fontRendererObj.drawString(scale, col1, posY + ln2 + 7 * 22, 0x000000, false);
-
     }
 
     private void page3Buttons() {
         int posX = (this.width - xSize) / 2;
         int posY = (this.height - ySize) / 2;
-        int DX1 = 5;//x pos for row 1,2,3,4
+        int DX1 = 5; // x pos for row 1,2,3,4
         int DX2 = DX1 + 71;
         int DX3 = DX2 + 40;
         int DX4 = DX3 + 71;
@@ -713,9 +735,10 @@ public class GUIParticleGenerator extends GuiScreen {
         buttonList.add(new GuiButton(114, posX + DX2, posY + y1 + 6 * 22, 20, 20, "-"));
         buttonList.add(new GuiButton(115, posX + DX2, posY + y1 + 7 * 22, 20, 20, "-"));
 
-        buttonList.add(new GuiButton(116, posX + DX3 - 11, posY + y1 + 0 * 22, 102, 20, "Enabled: " + (beam_enabled ? "on" : "off")));
-        buttonList.add(new GuiButton(117, posX + DX3 - 11, posY + y1 + 1 * 22, 102, 20, "Render Core: " + (render_core ? "on" : "off")));
-
+        buttonList.add(new GuiButton(
+                116, posX + DX3 - 11, posY + y1 + 0 * 22, 102, 20, "Enabled: " + (beam_enabled ? "on" : "off")));
+        buttonList.add(new GuiButton(
+                117, posX + DX3 - 11, posY + y1 + 1 * 22, 102, 20, "Render Core: " + (render_core ? "on" : "off")));
 
         buttonList.add(new GuiButton(127, posX + DX3 - 11, posY + y1 + 7 * 22, 102, 20, "Take note of values"));
     }
@@ -732,84 +755,84 @@ public class GUIParticleGenerator extends GuiScreen {
         value_F = (value) / 100F;
 
         switch (button.id) {
-            case 100: //beam red +
+            case 100: // beam red +
                 beam_red = (beam_red + value) > 255 ? 255 : beam_red + value;
                 packetValue = (short) beam_red;
                 break;
-            case 101: //beam green +
+            case 101: // beam green +
                 beam_green = (beam_green + value) > 255 ? 255 : beam_green + value;
                 packetValue = (short) beam_green;
                 break;
-            case 102: //beam blue +
+            case 102: // beam blue +
                 beam_blue = (beam_blue + value) > 255 ? 255 : beam_blue + value;
                 packetValue = (short) beam_blue;
                 break;
-            case 103: //beam pitch +
+            case 103: // beam pitch +
                 beam_pitch = (beam_pitch + value_F) > 180F ? 180F : beam_pitch + value_F;
                 packetValue = (short) (beam_pitch * 100F);
                 break;
-            case 104: //beam yaw +
+            case 104: // beam yaw +
                 beam_yaw = (beam_yaw + value_F) > 180F ? 180F : beam_yaw + value_F;
                 packetValue = (short) (beam_yaw * 100F);
                 break;
-            case 105: //beam length +
+            case 105: // beam length +
                 beam_length = (beam_length + value_F) > 320F ? 320F : beam_length + value_F;
                 packetValue = (short) (beam_length * 100F);
                 break;
-            case 106: //beam rotation +
+            case 106: // beam rotation +
                 beam_rotation = (beam_rotation + value_F) > 1F ? 1F : beam_rotation + value_F;
                 packetValue = (short) (beam_rotation * 100F);
                 break;
-            case 107: //beam scale +
+            case 107: // beam scale +
                 beam_scale = (beam_scale + value_F) > 5F ? 5F : beam_scale + value_F;
                 packetValue = (short) (beam_scale * 100F);
                 break;
-            case 108: //beam red -
+            case 108: // beam red -
                 beam_red = (beam_red - value) < 0 ? 0 : beam_red - value;
                 packetValue = (short) beam_red;
                 break;
-            case 109: //beam green -
+            case 109: // beam green -
                 beam_green = (beam_green - value) < 0 ? 0 : beam_green - value;
                 packetValue = (short) beam_green;
                 break;
-            case 110: //beam blue -
+            case 110: // beam blue -
                 beam_blue = (beam_blue - value) < 0 ? 0 : beam_blue - value;
                 packetValue = (short) beam_blue;
                 break;
-            case 111: //beam pitch -
+            case 111: // beam pitch -
                 beam_pitch = (beam_pitch - value_F) < -180F ? -180F : beam_pitch - value_F;
                 packetValue = (short) (beam_pitch * 100F);
                 break;
-            case 112: //beam yaw -
+            case 112: // beam yaw -
                 beam_yaw = (beam_yaw - value_F) < -180F ? -180F : beam_yaw - value_F;
                 packetValue = (short) (beam_yaw * 100F);
                 break;
-            case 113: //beam length -
+            case 113: // beam length -
                 beam_length = (beam_length - value_F) < -0F ? -0F : beam_length - value_F;
                 packetValue = (short) (beam_length * 100F);
                 break;
-            case 114: //beam rotation -
+            case 114: // beam rotation -
                 beam_rotation = (beam_rotation - value_F) < -1F ? -1F : beam_rotation - value_F;
                 packetValue = (short) (beam_rotation * 100F);
                 break;
-            case 115: //beam scale -
+            case 115: // beam scale -
                 beam_scale = (beam_scale - value_F) < -0F ? -0F : beam_scale - value_F;
                 packetValue = (short) (beam_scale * 100F);
                 break;
-            case 116: //beam enabled
+            case 116: // beam enabled
                 beam_enabled = !beam_enabled;
                 packetValue = beam_enabled ? (byte) 1 : (byte) 0;
                 initGui();
                 break;
-            case 117: //beam enabled
+            case 117: // beam enabled
                 render_core = !render_core;
                 packetValue = render_core ? (byte) 1 : (byte) 0;
                 initGui();
                 break;
-
         }
-        DraconicEvolution.network.sendToServer(new ParticleGenPacket((byte) button.id, packetValue, tile.xCoord, tile.yCoord, tile.zCoord));
+        DraconicEvolution.network.sendToServer(
+                new ParticleGenPacket((byte) button.id, packetValue, tile.xCoord, tile.yCoord, tile.zCoord));
     }
-    //@formatter:on
+    // @formatter:on
 
 }

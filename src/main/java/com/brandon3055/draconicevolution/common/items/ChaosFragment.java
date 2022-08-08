@@ -1,11 +1,10 @@
 package com.brandon3055.draconicevolution.common.items;
 
 import com.brandon3055.draconicevolution.common.ModItems;
+import java.util.List;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-
-import java.util.List;
 
 /**
  * Created by brandon3055 on 8/10/2015.

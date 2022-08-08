@@ -1,8 +1,5 @@
 package com.brandon3055.draconicevolution.common.items.tools;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import cofh.api.energy.IEnergyContainerItem;
 import com.brandon3055.brandonscore.common.utills.InfoHelper;
 import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
@@ -20,6 +17,8 @@ import cpw.mods.fml.common.eventhandler.Event.Result;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import java.util.ArrayList;
+import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -38,7 +37,8 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.UseHoeEvent;
 import org.lwjgl.opengl.GL11;
 
-public class DraconicHoe extends ItemHoe implements IEnergyContainerItem, IRenderTweak, IUpgradableItem, IConfigurableItem, IHudDisplayItem {
+public class DraconicHoe extends ItemHoe
+        implements IEnergyContainerItem, IRenderTweak, IUpgradableItem, IConfigurableItem, IHudDisplayItem {
 
     protected int capacity = BalanceConfigHandler.draconicToolsBaseStorage;
     protected int maxReceive = BalanceConfigHandler.draconicToolsMaxTransfer;
@@ -59,7 +59,10 @@ public class DraconicHoe extends ItemHoe implements IEnergyContainerItem, IRende
     @Override
     public List<ItemConfigField> getFields(ItemStack stack, int slot) {
         List<ItemConfigField> list = new ArrayList<ItemConfigField>();
-        list.add(new ItemConfigField(References.INT_ID, slot, References.DIG_AOE).setMinMaxAndIncromente(0, EnumUpgrade.DIG_AOE.getUpgradePoints(stack), 1).readFromItem(stack, 0).setModifier("AOE"));
+        list.add(new ItemConfigField(References.INT_ID, slot, References.DIG_AOE)
+                .setMinMaxAndIncromente(0, EnumUpgrade.DIG_AOE.getUpgradePoints(stack), 1)
+                .readFromItem(stack, 0)
+                .setModifier("AOE"));
         return list;
     }
 
@@ -79,7 +82,10 @@ public class DraconicHoe extends ItemHoe implements IEnergyContainerItem, IRende
     @Override
     public String getUnlocalizedName() {
 
-        return String.format("item.%s%s", References.MODID.toLowerCase() + ":", super.getUnlocalizedName().substring(super.getUnlocalizedName().indexOf(".") + 1));
+        return String.format(
+                "item.%s%s",
+                References.MODID.toLowerCase() + ":",
+                super.getUnlocalizedName().substring(super.getUnlocalizedName().indexOf(".") + 1));
     }
 
     @Override
@@ -94,15 +100,30 @@ public class DraconicHoe extends ItemHoe implements IEnergyContainerItem, IRende
     }
 
     @Override
-    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int par7, float par8, float par9, float par10) {
+    public boolean onItemUse(
+            ItemStack stack,
+            EntityPlayer player,
+            World world,
+            int x,
+            int y,
+            int z,
+            int par7,
+            float par8,
+            float par9,
+            float par10) {
         boolean successfull = false;
         Block clicked = world.getBlock(x, y, z);
-        if (!player.isSneaking() && player.canPlayerEdit(x, y, z, par7, stack) && (clicked == Blocks.dirt || clicked == Blocks.grass || clicked == Blocks.farmland) && par7 == 1) {
+        if (!player.isSneaking()
+                && player.canPlayerEdit(x, y, z, par7, stack)
+                && (clicked == Blocks.dirt || clicked == Blocks.grass || clicked == Blocks.farmland)
+                && par7 == 1) {
             int size = IConfigurableItem.ProfileHelper.getInteger(stack, References.DIG_AOE, 0);
             LogHelper.info(size);
             for (int x1 = -size; x1 <= size; x1++) {
                 for (int z1 = -size; z1 <= size; z1++) {
-                    if (!(stack.getItem() instanceof IEnergyContainerItem) || ((IEnergyContainerItem) stack.getItem()).getEnergyStored(stack) < BalanceConfigHandler.draconicToolsEnergyPerAction) {
+                    if (!(stack.getItem() instanceof IEnergyContainerItem)
+                            || ((IEnergyContainerItem) stack.getItem()).getEnergyStored(stack)
+                                    < BalanceConfigHandler.draconicToolsEnergyPerAction) {
                         if (!player.capabilities.isCreativeMode) return false;
                     }
                     Block topBlock = world.getBlock(x + x1, y + 1, z + z1);
@@ -114,20 +135,31 @@ public class DraconicHoe extends ItemHoe implements IEnergyContainerItem, IRende
                         world.setBlockToAir(x + x1, y + 2, z + z1);
                     }
                     Block block = world.getBlock(x + x1, y, z + z1);
-                    if (block.isReplaceable(world, x + x1, y, z + z1) && !block.getMaterial().equals(Material.water)) {
+                    if (block.isReplaceable(world, x + x1, y, z + z1)
+                            && !block.getMaterial().equals(Material.water)) {
                         world.setBlockToAir(x + x1, y, z + z1);
                     }
 
-                    if (world.getBlock(x + x1, y, z + z1) == Blocks.air && world.getBlock(x + x1, y - 1, z + z1).isBlockSolid(world, x, y, z, 1)) {
-                        if (player.inventory.hasItem(Item.getItemFromBlock(Blocks.dirt)) || player.capabilities.isCreativeMode) {
+                    if (world.getBlock(x + x1, y, z + z1) == Blocks.air
+                            && world.getBlock(x + x1, y - 1, z + z1).isBlockSolid(world, x, y, z, 1)) {
+                        if (player.inventory.hasItem(Item.getItemFromBlock(Blocks.dirt))
+                                || player.capabilities.isCreativeMode) {
                             world.setBlock(x + x1, y, z + z1, Blocks.dirt);
                             player.inventory.consumeInventoryItem(Item.getItemFromBlock(Blocks.dirt));
                         }
                     }
 
-                    if ((world.getBlock(x + x1, y + 1, z + z1) == Blocks.dirt || world.getBlock(x + x1, y + 1, z + z1) == Blocks.grass || world.getBlock(x + x1, y + 1, z + z1) == Blocks.farmland) && world.getBlock(x + x1, y + 2, z + z1) == Blocks.air) {
+                    if ((world.getBlock(x + x1, y + 1, z + z1) == Blocks.dirt
+                                    || world.getBlock(x + x1, y + 1, z + z1) == Blocks.grass
+                                    || world.getBlock(x + x1, y + 1, z + z1) == Blocks.farmland)
+                            && world.getBlock(x + x1, y + 2, z + z1) == Blocks.air) {
                         if (!world.isRemote)
-                            world.spawnEntityInWorld(new EntityItem(world, player.posX, player.posY, player.posZ, new ItemStack(Item.getItemFromBlock(Blocks.dirt))));
+                            world.spawnEntityInWorld(new EntityItem(
+                                    world,
+                                    player.posX,
+                                    player.posY,
+                                    player.posZ,
+                                    new ItemStack(Item.getItemFromBlock(Blocks.dirt))));
                         world.setBlock(x + x1, y + 1, z + z1, Blocks.air);
                     }
 
@@ -137,16 +169,25 @@ public class DraconicHoe extends ItemHoe implements IEnergyContainerItem, IRende
         } else successfull = hoe(stack, player, world, x, y, z, par7);
         Block block1 = Blocks.farmland;
         if (successfull)
-            world.playSoundEffect(x + 0.5F, y + 0.5F, z + 0.5F, block1.stepSound.getStepResourcePath(), (block1.stepSound.getVolume() + 1.0F) / 2.0F, block1.stepSound.getPitch() * 0.8F);
+            world.playSoundEffect(
+                    x + 0.5F,
+                    y + 0.5F,
+                    z + 0.5F,
+                    block1.stepSound.getStepResourcePath(),
+                    (block1.stepSound.getVolume() + 1.0F) / 2.0F,
+                    block1.stepSound.getPitch() * 0.8F);
         return successfull;
     }
 
     private boolean hoe(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int par7) {
-        if (!(stack.getItem() instanceof IEnergyContainerItem) || ((IEnergyContainerItem) stack.getItem()).getEnergyStored(stack) < BalanceConfigHandler.draconicToolsEnergyPerAction) {
+        if (!(stack.getItem() instanceof IEnergyContainerItem)
+                || ((IEnergyContainerItem) stack.getItem()).getEnergyStored(stack)
+                        < BalanceConfigHandler.draconicToolsEnergyPerAction) {
             if (!player.capabilities.isCreativeMode) return false;
         } else {
             if (!player.capabilities.isCreativeMode)
-                ((IEnergyContainerItem) stack.getItem()).extractEnergy(stack, BalanceConfigHandler.draconicToolsEnergyPerAction, false);
+                ((IEnergyContainerItem) stack.getItem())
+                        .extractEnergy(stack, BalanceConfigHandler.draconicToolsEnergyPerAction, false);
         }
         if (!player.canPlayerEdit(x, y, z, par7, stack)) {
             return false;
@@ -163,7 +204,9 @@ public class DraconicHoe extends ItemHoe implements IEnergyContainerItem, IRende
 
             Block block = world.getBlock(x, y, z);
 
-            if (par7 != 0 && world.getBlock(x, y + 1, z).isAir(world, x, y + 1, z) && (block == Blocks.grass || block == Blocks.dirt)) {
+            if (par7 != 0
+                    && world.getBlock(x, y + 1, z).isAir(world, x, y + 1, z)
+                    && (block == Blocks.grass || block == Blocks.dirt)) {
                 Block block1 = Blocks.farmland;
 
                 if (world.isRemote) {
@@ -180,7 +223,8 @@ public class DraconicHoe extends ItemHoe implements IEnergyContainerItem, IRende
     }
 
     @Override
-    public void addInformation(final ItemStack stack, final EntityPlayer player, final List list, final boolean extraInformation) {
+    public void addInformation(
+            final ItemStack stack, final EntityPlayer player, final List list, final boolean extraInformation) {
         InfoHelper.addEnergyInfo(stack, list);
         ToolBase.holdCTRLForUpgrades(list, stack);
         InfoHelper.addLore(stack, list);
@@ -219,7 +263,8 @@ public class DraconicHoe extends ItemHoe implements IEnergyContainerItem, IRende
     @Override
     public int getMaxEnergyStored(ItemStack container) {
         int points = IUpgradableItem.EnumUpgrade.RF_CAPACITY.getUpgradePoints(container);
-        return BalanceConfigHandler.draconicToolsBaseStorage + points * BalanceConfigHandler.draconicToolsStoragePerUpgrade;
+        return BalanceConfigHandler.draconicToolsBaseStorage
+                + points * BalanceConfigHandler.draconicToolsStoragePerUpgrade;
     }
 
     @Override
@@ -262,13 +307,14 @@ public class DraconicHoe extends ItemHoe implements IEnergyContainerItem, IRende
         }
     }
 
-
     @Override
     public List<EnumUpgrade> getUpgrades(ItemStack itemstack) {
-        return new ArrayList<EnumUpgrade>() {{
-            add(EnumUpgrade.RF_CAPACITY);
-            add(EnumUpgrade.DIG_AOE);
-        }};
+        return new ArrayList<EnumUpgrade>() {
+            {
+                add(EnumUpgrade.RF_CAPACITY);
+                add(EnumUpgrade.DIG_AOE);
+            }
+        };
     }
 
     @Override
@@ -313,9 +359,11 @@ public class DraconicHoe extends ItemHoe implements IEnergyContainerItem, IRende
         for (ItemConfigField field : getFields(itemstack, 0))
             if (field.name.equals(References.DIG_AOE)) digaoe = 1 + ((Integer) field.max * 2);
 
-
-        strings.add(InfoHelper.ITC() + StatCollector.translateToLocal("gui.de.RFCapacity.txt") + ": " + InfoHelper.HITC() + Utills.formatNumber(getMaxEnergyStored(itemstack)));
-        strings.add(InfoHelper.ITC() + StatCollector.translateToLocal("gui.de.max.txt") + " " + StatCollector.translateToLocal("gui.de.DigAOE.txt") + ": " + InfoHelper.HITC() + digaoe + "x" + digaoe);
+        strings.add(InfoHelper.ITC() + StatCollector.translateToLocal("gui.de.RFCapacity.txt") + ": "
+                + InfoHelper.HITC() + Utills.formatNumber(getMaxEnergyStored(itemstack)));
+        strings.add(InfoHelper.ITC() + StatCollector.translateToLocal("gui.de.max.txt") + " "
+                + StatCollector.translateToLocal("gui.de.DigAOE.txt") + ": " + InfoHelper.HITC() + digaoe + "x"
+                + digaoe);
 
         return strings;
     }
@@ -330,8 +378,9 @@ public class DraconicHoe extends ItemHoe implements IEnergyContainerItem, IRende
         List<String> list = new ArrayList<String>();
 
         for (ItemConfigField field : getFields(stack, 0))
-            list.add(field.getTooltipInfo());//list.add(field.getLocalizedName() + ": " + field.getFormattedValue());
-        list.add(InfoHelper.ITC() + StatCollector.translateToLocal("info.de.charge.txt") + ": " + InfoHelper.HITC() + Utills.formatNumber(getEnergyStored(stack)) + " / " + Utills.formatNumber(capacity));
+            list.add(field.getTooltipInfo()); // list.add(field.getLocalizedName() + ": " + field.getFormattedValue());
+        list.add(InfoHelper.ITC() + StatCollector.translateToLocal("info.de.charge.txt") + ": " + InfoHelper.HITC()
+                + Utills.formatNumber(getEnergyStored(stack)) + " / " + Utills.formatNumber(capacity));
 
         return list;
     }

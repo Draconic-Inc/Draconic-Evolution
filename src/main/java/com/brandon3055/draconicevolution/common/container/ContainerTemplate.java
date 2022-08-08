@@ -29,7 +29,6 @@ public class ContainerTemplate extends Container {
         for (int x = 0; x < 9; x++) {
             addSlotToContainer(new Slot(tile, x, 8 + 18 * x, 10));
         }
-
     }
 
     @Override
@@ -49,7 +48,8 @@ public class ContainerTemplate extends Container {
                 if (!mergeItemStack(stack, 0, 36, false)) {
                     return null;
                 }
-            } else if (!isStackValidForInventory(stack, 0) || !mergeItemStack(stack, 36, 36 + tile.getSizeInventory(), false)) {
+            } else if (!isStackValidForInventory(stack, 0)
+                    || !mergeItemStack(stack, 36, 36 + tile.getSizeInventory(), false)) {
                 return null;
             }
 
@@ -70,5 +70,4 @@ public class ContainerTemplate extends Container {
     private boolean isStackValidForInventory(ItemStack stack, int slot) {
         return true;
     }
-
 }

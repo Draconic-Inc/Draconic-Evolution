@@ -8,13 +8,13 @@ import net.minecraft.entity.Entity;
  * Draconic Armor.tcn - TechneToTabulaImporter
  * Created using Tabula 5.0.0
  */
-public class ModelDraconicArmorOld extends ModelBiped {//
+public class ModelDraconicArmorOld extends ModelBiped { //
     //    public ModelRenderer bipedHead;
-//    public ModelRenderer bipedBody;
-//    public ModelRenderer bipedRightArm;
-//    public ModelRenderer bipedLeftArm;
-//    public ModelRenderer bipedRightLeg;/
-//    public ModelRenderer bipedLeftLeg;
+    //    public ModelRenderer bipedBody;
+    //    public ModelRenderer bipedRightArm;
+    //    public ModelRenderer bipedLeftArm;
+    //    public ModelRenderer bipedRightLeg;/
+    //    public ModelRenderer bipedLeftLeg;
     public ModelRenderer MainHelmPieceRight1;
     public ModelRenderer MainHelmPieceRight2;
     public ModelRenderer MainHelmPieceLeft1;
@@ -84,7 +84,7 @@ public class ModelDraconicArmorOld extends ModelBiped {//
     public ModelRenderer BootPieceRight4;
     public ModelRenderer LeggsTop;
 
-    //Draconic Specific
+    // Draconic Specific
     public ModelRenderer DrMainChestPieceTop;
     public ModelRenderer DrMainChestPieceMid;
     public ModelRenderer DrChestDecorationPiece1;
@@ -94,7 +94,7 @@ public class ModelDraconicArmorOld extends ModelBiped {//
     public ModelRenderer BeltLeft;
     public ModelRenderer BeltRight;
     public ModelRenderer BeltBuckle;
-    //Wyvern Specific
+    // Wyvern Specific
     public ModelRenderer WyHelmPieceTop1;
     public ModelRenderer WyHelmPieceTop2;
     public ModelRenderer WyHelmPieceTop3;
@@ -108,13 +108,14 @@ public class ModelDraconicArmorOld extends ModelBiped {//
 
     private boolean isDraconic;
 
-    public ModelDraconicArmorOld(float f, boolean isHelmet, boolean isChestPiece, boolean isLeggings, boolean isdBoots, boolean isDraconic) {
+    public ModelDraconicArmorOld(
+            float f, boolean isHelmet, boolean isChestPiece, boolean isLeggings, boolean isdBoots, boolean isDraconic) {
         super(f, 0.0f, 128, 128);
         this.textureWidth = 256;
         this.textureHeight = 128;
         this.isDraconic = isDraconic;
 
-		/* Helm */
+        /* Helm */
         {
             this.bipedHead = new ModelRenderer(this, 0, 0);
             this.bipedHead.setRotationPoint(0.0F, 0.0F, 0.0F);
@@ -178,7 +179,6 @@ public class ModelDraconicArmorOld extends ModelBiped {//
             this.MainHelmPieceFrontTop.setRotationPoint(-4.0F, -8.0F, -5.0F);
             this.MainHelmPieceFrontTop.addBox(0.0F, 0.0F, 0.0F, 8, 2, 1, 0.0F);
 
-
             this.HornPieceLeft1 = new ModelRenderer(this, 182, 40);
             this.HornPieceLeft1.setRotationPoint(4.0F, -7.5F, -1.0F);
             this.HornPieceLeft1.addBox(0.0F, 0.0F, 0.0F, 1, 4, 4, 0.0F);
@@ -238,7 +238,7 @@ public class ModelDraconicArmorOld extends ModelBiped {//
             this.setRotateAngle(WyHelmPieceTop4, -0.20943951023931953F, -0.0F, 0.0F);
         }
 
-		/* Chest */
+        /* Chest */
         {
             this.bipedBody = new ModelRenderer(this, 16, 16);
             this.bipedBody.setRotationPoint(0.0F, 0.0F, 0.0F);
@@ -270,7 +270,8 @@ public class ModelDraconicArmorOld extends ModelBiped {//
             this.DrChestDecorationPiece1 = new ModelRenderer(this, 244, 38);
             this.DrChestDecorationPiece1.setRotationPoint(0.0F, -0.5F, -4.0F);
             this.DrChestDecorationPiece1.addBox(0.0F, 0.0F, -0.5F, 5, 5, 1, 0.0F);
-            this.setRotateAngle(DrChestDecorationPiece1, 0.1426609064282019F, -0.13533507716461618F, 0.7946695004338321F);
+            this.setRotateAngle(
+                    DrChestDecorationPiece1, 0.1426609064282019F, -0.13533507716461618F, 0.7946695004338321F);
 
             this.ChestDecorationPiece2 = new ModelRenderer(this, 229, 38);
             this.ChestDecorationPiece2.setRotationPoint(-3.0F, 7.0F, -3.0F);
@@ -325,7 +326,7 @@ public class ModelDraconicArmorOld extends ModelBiped {//
             this.BeltLeft.setRotationPoint(3.7F, 10.01F, -2.2F);
             this.BeltLeft.addBox(0.0F, 0.0F, -0.3F, 1, 2, 5, 0.0F);
 
-            //Left
+            // Left
             this.bipedLeftArm = new ModelRenderer(this, 40, 16);
             this.bipedLeftArm.setRotationPoint(5.0F, 2.0F, 0.0F);
             this.bipedLeftArm.addBox(-1.0F, -2.0F, -2.0F, 4, 12, 4, 0.0F);
@@ -382,8 +383,7 @@ public class ModelDraconicArmorOld extends ModelBiped {//
             this.ArmStrapLeftBottom.setRotationPoint(-1.5F, 7.0F, -2.5F);
             this.ArmStrapLeftBottom.addBox(0.0F, 0.0F, 0.0F, 2, 1, 5, 0.0F);
 
-
-            //Right
+            // Right
             this.MainArmGuardRight = new ModelRenderer(this, 240, 72);
             this.MainArmGuardRight.setRotationPoint(-3.5F, 3.0F, -2.5F);
             this.MainArmGuardRight.addBox(0.0F, 0.0F, 0.0F, 3, 5, 5, 0.0F);
@@ -440,12 +440,12 @@ public class ModelDraconicArmorOld extends ModelBiped {//
             this.ArmStrapRightBottom.addBox(0.0F, 0.0F, 0.0F, 2, 1, 5, 0.0F);
         }
 
-		/* Leggs */
+        /* Leggs */
         {
             this.LeggsTop = new ModelRenderer(this, 121, 15);
             this.LeggsTop.setRotationPoint(0.5F, 8.0F, -2.4F);
             this.LeggsTop.addBox(-5.0F, 0.0F, 0.0F, 9, 4, 5, 0.0F);
-            //Left
+            // Left
             this.bipedLeftLeg = new ModelRenderer(this, 0, 16);
             this.bipedLeftLeg.setRotationPoint(2.0F, 12.0F, 0.0F);
             this.bipedLeftLeg.addBox(-2.0F, 0.0F, -2.0F, 4, 12, 4, 0.0F);
@@ -471,7 +471,7 @@ public class ModelDraconicArmorOld extends ModelBiped {//
             this.KneePieceLeft1.setRotationPoint(-0.5F, 2.0F, -2.7F);
             this.KneePieceLeft1.addBox(0.0F, 0.0F, 0.0F, 1, 4, 1, 0.0F);
 
-            //Right
+            // Right
             this.bipedRightLeg = new ModelRenderer(this, 0, 16);
             this.bipedRightLeg.setRotationPoint(-2.0F, 12.0F, 0.0F);
             this.bipedRightLeg.addBox(-2.0F, 0.0F, -2.0F, 4, 12, 4, 0.0F);
@@ -496,12 +496,11 @@ public class ModelDraconicArmorOld extends ModelBiped {//
             this.KneePieceRight1 = new ModelRenderer(this, 156, 15);
             this.KneePieceRight1.setRotationPoint(-0.5F, 2.0F, -2.7F);
             this.KneePieceRight1.addBox(0.0F, 0.0F, 0.0F, 1, 4, 1, 0.0F);
-
         }
 
-		/* Boots */
+        /* Boots */
         {
-            //Left
+            // Left
             this.MainBootPieceLeft = new ModelRenderer(this, 119, 0);
             this.MainBootPieceLeft.setRotationPoint(-2.0F, 9.1F, -2.5F);
             this.MainBootPieceLeft.addBox(0.0F, 0.0F, 0.0F, 4, 3, 5, 0.0F);
@@ -523,7 +522,7 @@ public class ModelDraconicArmorOld extends ModelBiped {//
             this.BootPieceLeft4.setRotationPoint(-2.5F, 9.05F, -2.0F);
             this.BootPieceLeft4.addBox(0.0F, 0.0F, 0.0F, 1, 3, 4, 0.0F);
 
-            //Right
+            // Right
             this.MainBootPieceRight = new ModelRenderer(this, 119, 0);
             this.MainBootPieceRight.setRotationPoint(-2.0F, 9.1F, -2.5F);
             this.MainBootPieceRight.addBox(0.0F, 0.0F, 0.0F, 4, 3, 5, 0.0F);
@@ -545,7 +544,6 @@ public class ModelDraconicArmorOld extends ModelBiped {//
             this.BootPieceRight4.setRotationPoint(1.5F, 9.05F, -2.0F);
             this.BootPieceRight4.addBox(0.0F, 0.0F, 0.0F, 1, 3, 4, 0.0F);
         }
-
 
         this.bipedHead.cubeList.clear();
         this.bipedHeadwear.cubeList.clear();
@@ -659,7 +657,6 @@ public class ModelDraconicArmorOld extends ModelBiped {//
             }
         }
 
-
         if (isdBoots) {
             this.bipedLeftLeg.addChild(this.MainBootPieceLeft);
             this.bipedLeftLeg.addChild(this.BootPieceLeft2);
@@ -673,14 +670,13 @@ public class ModelDraconicArmorOld extends ModelBiped {//
             this.bipedRightLeg.addChild(this.BootPieceRight3);
             this.bipedRightLeg.addChild(this.BootPieceRight4);
         }
-
     }
 
     @Override
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
         setRotationAngles(f, f1, f2, f3, f4, f5, entity);
         this.bipedRightLeg.render(f5);
-        this.bipedBody.render(f5 * 1.05F);// * 1.1F);
+        this.bipedBody.render(f5 * 1.05F); // * 1.1F);
         this.bipedLeftArm.render(f5);
         this.bipedRightArm.render(f5);
         this.bipedLeftLeg.render(f5);

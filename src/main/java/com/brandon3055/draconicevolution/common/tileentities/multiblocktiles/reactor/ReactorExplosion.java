@@ -3,17 +3,20 @@ package com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.re
 import com.brandon3055.brandonscore.common.handlers.IProcess;
 import com.brandon3055.brandonscore.common.handlers.ProcessHandler;
 import com.brandon3055.brandonscore.common.utills.Utills;
+import java.util.Random;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
-
-import java.util.Random;
 
 /**
  * Created by brandon3055 on 12/8/2015.
  */
 public class ReactorExplosion implements IProcess {
 
-    public static DamageSource fusionExplosion = new DamageSource("damage.de.fusionExplode").setExplosion().setDamageBypassesArmor().setDamageIsAbsolute().setDamageAllowedInCreativeMode();
+    public static DamageSource fusionExplosion = new DamageSource("damage.de.fusionExplode")
+            .setExplosion()
+            .setDamageBypassesArmor()
+            .setDamageIsAbsolute()
+            .setDamageAllowedInCreativeMode();
 
     private World worldObj;
     private int xCoord;

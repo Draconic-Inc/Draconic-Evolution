@@ -14,7 +14,6 @@ import org.lwjgl.opengl.GL11;
 
 public class RenderTileUpgradeModifier extends TileEntitySpecialRenderer {
 
-
     private static float pxl = 1F / 256F;
 
     @Override
@@ -61,10 +60,8 @@ public class RenderTileUpgradeModifier extends TileEntitySpecialRenderer {
 
         GL11.glPopMatrix();
 
-
         drawBase(tess);
         renderChargingItem(tile, pt);
-
     }
 
     private void drawBase(Tessellator tess) {
@@ -82,7 +79,6 @@ public class RenderTileUpgradeModifier extends TileEntitySpecialRenderer {
         tess.addVertexWithUV(1, 0.0005D, 0, srcXMax, srcYMin);
         tess.addVertexWithUV(1, 0.0005D, 1, srcXMax, srcYMax);
         tess.addVertexWithUV(0, 0.0005D, 1, srcXMin, srcYMax);
-
 
         srcXMin = 128D * pxl;
         srcYMin = 0D;
@@ -121,10 +117,10 @@ public class RenderTileUpgradeModifier extends TileEntitySpecialRenderer {
 
         tess.draw();
         GL11.glPopMatrix();
-
     }
 
-    public static void render2DWithThicness(Tessellator tess, float maxU, float minV, float minU, float maxV, int width, int height, float thickness) {
+    public static void render2DWithThicness(
+            Tessellator tess, float maxU, float minV, float minU, float maxV, int width, int height, float thickness) {
         double pix = 1D / 64D;
         tess.startDrawingQuads();
         tess.setNormal(0.0F, 0.0F, 1.0F);

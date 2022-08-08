@@ -114,7 +114,8 @@ public class ModelReactorStabilizerRing extends ModelBase {
     }
 
     @Override
-    public void render(Entity entity, float embitterRotation, float brightness, float f2, float f3, float f4, float scale) {
+    public void render(
+            Entity entity, float embitterRotation, float brightness, float f2, float f3, float f4, float scale) {
 
         this.ringElement1.render(scale);
         this.ringElement2.render(scale);
@@ -131,84 +132,133 @@ public class ModelReactorStabilizerRing extends ModelBase {
 
         GL11.glPushMatrix();
         GL11.glTranslated(this.hing1.offsetX, this.hing1.offsetY, this.hing1.offsetZ);
-        GL11.glTranslated(this.hing1.rotationPointX * scale, this.hing1.rotationPointY * scale, this.hing1.rotationPointZ * scale);
+        GL11.glTranslated(
+                this.hing1.rotationPointX * scale,
+                this.hing1.rotationPointY * scale,
+                this.hing1.rotationPointZ * scale);
         GL11.glScaled(0.5D, 0.5D, 0.5D);
         GL11.glTranslated(-this.hing1.offsetX, -this.hing1.offsetY, -this.hing1.offsetZ);
-        GL11.glTranslated(-this.hing1.rotationPointX * scale, -this.hing1.rotationPointY * scale, -this.hing1.rotationPointZ * scale);
+        GL11.glTranslated(
+                -this.hing1.rotationPointX * scale,
+                -this.hing1.rotationPointY * scale,
+                -this.hing1.rotationPointZ * scale);
         this.hing1.render(scale);
         GL11.glPopMatrix();
         GL11.glPushMatrix();
         GL11.glTranslated(this.hing2.offsetX, this.hing2.offsetY, this.hing2.offsetZ);
-        GL11.glTranslated(this.hing2.rotationPointX * scale, this.hing2.rotationPointY * scale, this.hing2.rotationPointZ * scale);
+        GL11.glTranslated(
+                this.hing2.rotationPointX * scale,
+                this.hing2.rotationPointY * scale,
+                this.hing2.rotationPointZ * scale);
         GL11.glScaled(0.5D, 0.5D, 0.5D);
         GL11.glTranslated(-this.hing2.offsetX, -this.hing2.offsetY, -this.hing2.offsetZ);
-        GL11.glTranslated(-this.hing2.rotationPointX * scale, -this.hing2.rotationPointY * scale, -this.hing2.rotationPointZ * scale);
+        GL11.glTranslated(
+                -this.hing2.rotationPointX * scale,
+                -this.hing2.rotationPointY * scale,
+                -this.hing2.rotationPointZ * scale);
         this.hing2.render(scale);
         GL11.glPopMatrix();
         GL11.glPushMatrix();
         GL11.glTranslated(this.hing3.offsetX, this.hing3.offsetY, this.hing3.offsetZ);
-        GL11.glTranslated(this.hing3.rotationPointX * scale, this.hing3.rotationPointY * scale, this.hing3.rotationPointZ * scale);
+        GL11.glTranslated(
+                this.hing3.rotationPointX * scale,
+                this.hing3.rotationPointY * scale,
+                this.hing3.rotationPointZ * scale);
         GL11.glScaled(0.5D, 0.5D, 0.5D);
         GL11.glTranslated(-this.hing3.offsetX, -this.hing3.offsetY, -this.hing3.offsetZ);
-        GL11.glTranslated(-this.hing3.rotationPointX * scale, -this.hing3.rotationPointY * scale, -this.hing3.rotationPointZ * scale);
+        GL11.glTranslated(
+                -this.hing3.rotationPointX * scale,
+                -this.hing3.rotationPointY * scale,
+                -this.hing3.rotationPointZ * scale);
         this.hing3.render(scale);
         GL11.glPopMatrix();
         GL11.glPushMatrix();
         GL11.glTranslated(this.hing4.offsetX, this.hing4.offsetY, this.hing4.offsetZ);
-        GL11.glTranslated(this.hing4.rotationPointX * scale, this.hing4.rotationPointY * scale, this.hing4.rotationPointZ * scale);
+        GL11.glTranslated(
+                this.hing4.rotationPointX * scale,
+                this.hing4.rotationPointY * scale,
+                this.hing4.rotationPointZ * scale);
         GL11.glScaled(0.5D, 0.5D, 0.5D);
         GL11.glTranslated(-this.hing4.offsetX, -this.hing4.offsetY, -this.hing4.offsetZ);
-        GL11.glTranslated(-this.hing4.rotationPointX * scale, -this.hing4.rotationPointY * scale, -this.hing4.rotationPointZ * scale);
+        GL11.glTranslated(
+                -this.hing4.rotationPointX * scale,
+                -this.hing4.rotationPointY * scale,
+                -this.hing4.rotationPointZ * scale);
         this.hing4.render(scale);
         GL11.glPopMatrix();
 
-//		float lastBrightnessX = OpenGlHelper.lastBrightnessX;
-//		float lastBrightnessY = OpenGlHelper.lastBrightnessY;
-//		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 200F, 200F);
+        //		float lastBrightnessX = OpenGlHelper.lastBrightnessX;
+        //		float lastBrightnessY = OpenGlHelper.lastBrightnessY;
+        //		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 200F, 200F);
         float lastBrightnessX = OpenGlHelper.lastBrightnessX;
         float lastBrightnessY = OpenGlHelper.lastBrightnessY;
 
         float b = brightness * 200F;
         float colour = Math.min(2F, (brightness * 2F) + 0.1F);
 
-        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, Math.min(200F, lastBrightnessX + b), Math.min(200F, lastBrightnessY + b));
+        OpenGlHelper.setLightmapTextureCoords(
+                OpenGlHelper.lightmapTexUnit, Math.min(200F, lastBrightnessX + b), Math.min(200F, lastBrightnessY + b));
         GL11.glColor4f(colour, colour, colour, 1F);
         if (brightness > 0F) GL11.glDisable(GL11.GL_LIGHTING);
 
         GL11.glPushMatrix();
         GL11.glTranslated(this.emitter1.offsetX, this.emitter1.offsetY, this.emitter1.offsetZ);
-        GL11.glTranslated(this.emitter1.rotationPointX * scale, this.emitter1.rotationPointY * scale, this.emitter1.rotationPointZ * scale);
+        GL11.glTranslated(
+                this.emitter1.rotationPointX * scale,
+                this.emitter1.rotationPointY * scale,
+                this.emitter1.rotationPointZ * scale);
         GL11.glRotatef(embitterRotation, 0, 0, 1);
         GL11.glScaled(0.5D, 0.5D, 0.5D);
         GL11.glTranslated(-this.emitter1.offsetX, -this.emitter1.offsetY, -this.emitter1.offsetZ);
-        GL11.glTranslated(-this.emitter1.rotationPointX * scale, -this.emitter1.rotationPointY * scale, -this.emitter1.rotationPointZ * scale);
+        GL11.glTranslated(
+                -this.emitter1.rotationPointX * scale,
+                -this.emitter1.rotationPointY * scale,
+                -this.emitter1.rotationPointZ * scale);
         this.emitter1.render(scale);
         GL11.glPopMatrix();
         GL11.glPushMatrix();
         GL11.glTranslated(this.emitter2.offsetX, this.emitter2.offsetY, this.emitter2.offsetZ);
-        GL11.glTranslated(this.emitter2.rotationPointX * scale, this.emitter2.rotationPointY * scale, this.emitter2.rotationPointZ * scale);
+        GL11.glTranslated(
+                this.emitter2.rotationPointX * scale,
+                this.emitter2.rotationPointY * scale,
+                this.emitter2.rotationPointZ * scale);
         GL11.glRotatef(embitterRotation, 0, 0, -1);
         GL11.glScaled(0.5D, 0.5D, 0.5D);
         GL11.glTranslated(-this.emitter2.offsetX, -this.emitter2.offsetY, -this.emitter2.offsetZ);
-        GL11.glTranslated(-this.emitter2.rotationPointX * scale, -this.emitter2.rotationPointY * scale, -this.emitter2.rotationPointZ * scale);
+        GL11.glTranslated(
+                -this.emitter2.rotationPointX * scale,
+                -this.emitter2.rotationPointY * scale,
+                -this.emitter2.rotationPointZ * scale);
         this.emitter2.render(scale);
         GL11.glPopMatrix();
         GL11.glPushMatrix();
         GL11.glTranslated(this.emitter3.offsetX, this.emitter3.offsetY, this.emitter3.offsetZ);
-        GL11.glTranslated(this.emitter3.rotationPointX * scale, this.emitter3.rotationPointY * scale, this.emitter3.rotationPointZ * scale);
+        GL11.glTranslated(
+                this.emitter3.rotationPointX * scale,
+                this.emitter3.rotationPointY * scale,
+                this.emitter3.rotationPointZ * scale);
         GL11.glRotatef(embitterRotation, 1, 0, 0);
         GL11.glScaled(0.5D, 0.5D, 0.5D);
         GL11.glTranslated(-this.emitter3.offsetX, -this.emitter3.offsetY, -this.emitter3.offsetZ);
-        GL11.glTranslated(-this.emitter3.rotationPointX * scale, -this.emitter3.rotationPointY * scale, -this.emitter3.rotationPointZ * scale);
+        GL11.glTranslated(
+                -this.emitter3.rotationPointX * scale,
+                -this.emitter3.rotationPointY * scale,
+                -this.emitter3.rotationPointZ * scale);
         this.emitter3.render(scale);
         GL11.glPopMatrix();
         GL11.glPushMatrix();
         GL11.glTranslated(this.emitter4.offsetX, this.emitter4.offsetY, this.emitter4.offsetZ);
-        GL11.glTranslated(this.emitter4.rotationPointX * scale, this.emitter4.rotationPointY * scale, this.emitter4.rotationPointZ * scale);
+        GL11.glTranslated(
+                this.emitter4.rotationPointX * scale,
+                this.emitter4.rotationPointY * scale,
+                this.emitter4.rotationPointZ * scale);
         GL11.glRotatef(embitterRotation, -1, 0, 0);
         GL11.glScaled(0.5D, 0.5D, 0.5D);
         GL11.glTranslated(-this.emitter4.offsetX, -this.emitter4.offsetY, -this.emitter4.offsetZ);
-        GL11.glTranslated(-this.emitter4.rotationPointX * scale, -this.emitter4.rotationPointY * scale, -this.emitter4.rotationPointZ * scale);
+        GL11.glTranslated(
+                -this.emitter4.rotationPointX * scale,
+                -this.emitter4.rotationPointY * scale,
+                -this.emitter4.rotationPointZ * scale);
         this.emitter4.render(scale);
         GL11.glPopMatrix();
 
@@ -226,6 +276,4 @@ public class ModelReactorStabilizerRing extends ModelBase {
         modelRenderer.rotateAngleY = y;
         modelRenderer.rotateAngleZ = z;
     }
-
-
 }

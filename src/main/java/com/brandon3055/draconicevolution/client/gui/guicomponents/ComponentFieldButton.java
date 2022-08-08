@@ -1,26 +1,26 @@
 package com.brandon3055.draconicevolution.client.gui.guicomponents;
 
 import com.brandon3055.brandonscore.client.gui.guicomponents.ComponentBase;
+import com.brandon3055.brandonscore.common.utills.DataUtills;
 import com.brandon3055.draconicevolution.client.gui.componentguis.GUIToolConfig;
 import com.brandon3055.draconicevolution.common.lib.References;
-import com.brandon3055.brandonscore.common.utills.DataUtills;
 import com.brandon3055.draconicevolution.common.utills.IConfigurableItem;
 import com.brandon3055.draconicevolution.common.utills.ItemConfigField;
+import java.util.ArrayList;
+import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by Brandon on 31/12/2014.
  */
 public class ComponentFieldButton extends ComponentBase {
 
-    private static final ResourceLocation widgets = new ResourceLocation(References.RESOURCESPREFIX + "textures/gui/Widgets.png");
+    private static final ResourceLocation widgets =
+            new ResourceLocation(References.RESOURCESPREFIX + "textures/gui/Widgets.png");
 
     public EntityPlayer player;
     public int slot;
@@ -68,7 +68,12 @@ public class ComponentFieldButton extends ComponentBase {
 
     @Override
     public void renderForground(Minecraft minecraft, int offsetX, int offsetY, int mouseX, int mouseY) {
-        drawString(fontRendererObj, field.getLocalizedName(), x + offsetX + 2, y + offsetY + (getHeight() / 2) - (fontRendererObj.FONT_HEIGHT / 2), 0xffffff);
+        drawString(
+                fontRendererObj,
+                field.getLocalizedName(),
+                x + offsetX + 2,
+                y + offsetY + (getHeight() / 2) - (fontRendererObj.FONT_HEIGHT / 2),
+                0xffffff);
     }
 
     @Override
@@ -82,13 +87,19 @@ public class ComponentFieldButton extends ComponentBase {
 
     @Override
     public void mouseClicked(int x, int y, int button) {
-        Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation("gui.button.press"), 1.0F));
+        Minecraft.getMinecraft()
+                .getSoundHandler()
+                .playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation("gui.button.press"), 1.0F));
         if (field.datatype == References.BOOLEAN_ID) {
             field.value = !(Boolean) field.value;
             field.sendChanges();
             ItemStack stack = gui.player.inventory.getStackInSlot(field.slot);
             if (stack != null && stack.getItem() instanceof IConfigurableItem) {
-                DataUtills.writeObjectToCompound(IConfigurableItem.ProfileHelper.getProfileCompound(stack), field.value, field.datatype, field.name);
+                DataUtills.writeObjectToCompound(
+                        IConfigurableItem.ProfileHelper.getProfileCompound(stack),
+                        field.value,
+                        field.datatype,
+                        field.name);
             }
             return;
         }

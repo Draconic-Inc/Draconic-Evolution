@@ -21,9 +21,10 @@ import net.minecraft.world.World;
 /**
  * Created by Brandon on 28/07/2014.
  */
-public class EnergyPylon extends BlockDE {//todo fix sphere renderer
+public class EnergyPylon extends BlockDE { // todo fix sphere renderer
     @SideOnly(Side.CLIENT)
     public IIcon icon_active_face;
+
     public IIcon icon_input;
     public IIcon icon_output;
 
@@ -69,7 +70,10 @@ public class EnergyPylon extends BlockDE {//todo fix sphere renderer
         int meta = world.getBlockMetadata(x, y, z);
         if (meta == 1 && side == 1) return icon_active_face;
         if (meta == 2 && side == 0) return icon_active_face;
-        TileEnergyPylon thisTile = (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TileEnergyPylon) ? (TileEnergyPylon) world.getTileEntity(x, y, z) : null;
+        TileEnergyPylon thisTile =
+                (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TileEnergyPylon)
+                        ? (TileEnergyPylon) world.getTileEntity(x, y, z)
+                        : null;
         if (thisTile == null) return icon_input;
         return !thisTile.reciveEnergy ? icon_output : icon_input;
     }
@@ -86,12 +90,20 @@ public class EnergyPylon extends BlockDE {//todo fix sphere renderer
                 world.setBlock(x, y - 1, z, ModBlocks.invisibleMultiblock, 2, 2);
             }
         } else {
-            TileEnergyPylon thisTile = (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TileEnergyPylon) ? (TileEnergyPylon) world.getTileEntity(x, y, z) : null;
-            if (thisTile == null || (meta == 1 && !isGlass(world, x, y + 1, z)) || (meta == 2 && !isGlass(world, x, y - 1, z))) {
+            TileEnergyPylon thisTile =
+                    (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TileEnergyPylon)
+                            ? (TileEnergyPylon) world.getTileEntity(x, y, z)
+                            : null;
+            if (thisTile == null
+                    || (meta == 1 && !isGlass(world, x, y + 1, z))
+                    || (meta == 2 && !isGlass(world, x, y - 1, z))) {
                 world.setBlockMetadataWithNotify(x, y, z, 0, 2);
             }
         }
-        TileEnergyPylon thisTile = (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TileEnergyPylon) ? (TileEnergyPylon) world.getTileEntity(x, y, z) : null;
+        TileEnergyPylon thisTile =
+                (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TileEnergyPylon)
+                        ? (TileEnergyPylon) world.getTileEntity(x, y, z)
+                        : null;
         if (thisTile != null) {
             thisTile.onActivated();
         }
@@ -104,10 +116,22 @@ public class EnergyPylon extends BlockDE {//todo fix sphere renderer
     }
 
     @Override
-    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int p_149727_6_, float p_149727_7_, float p_149727_8_, float p_149727_9_) {
+    public boolean onBlockActivated(
+            World world,
+            int x,
+            int y,
+            int z,
+            EntityPlayer player,
+            int p_149727_6_,
+            float p_149727_7_,
+            float p_149727_8_,
+            float p_149727_9_) {
         int meta = world.getBlockMetadata(x, y, z);
         if (meta == 0) return false;
-        TileEnergyPylon thisTile = (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TileEnergyPylon) ? (TileEnergyPylon) world.getTileEntity(x, y, z) : null;
+        TileEnergyPylon thisTile =
+                (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TileEnergyPylon)
+                        ? (TileEnergyPylon) world.getTileEntity(x, y, z)
+                        : null;
         if (thisTile != null) {
             if (!player.isSneaking()) thisTile.onActivated();
             else thisTile.nextCore();
@@ -128,12 +152,20 @@ public class EnergyPylon extends BlockDE {//todo fix sphere renderer
                 world.setBlock(x, y - 1, z, ModBlocks.invisibleMultiblock, 2, 2);
             }
         } else {
-            TileEnergyPylon thisTile = (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TileEnergyPylon) ? (TileEnergyPylon) world.getTileEntity(x, y, z) : null;
-            if (thisTile == null || (meta == 1 && !isGlass(world, x, y + 1, z)) || (meta == 2 && !isGlass(world, x, y - 1, z))) {
+            TileEnergyPylon thisTile =
+                    (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TileEnergyPylon)
+                            ? (TileEnergyPylon) world.getTileEntity(x, y, z)
+                            : null;
+            if (thisTile == null
+                    || (meta == 1 && !isGlass(world, x, y + 1, z))
+                    || (meta == 2 && !isGlass(world, x, y - 1, z))) {
                 world.setBlockMetadataWithNotify(x, y, z, 0, 2);
             }
         }
-        TileEnergyPylon thisTile = (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TileEnergyPylon) ? (TileEnergyPylon) world.getTileEntity(x, y, z) : null;
+        TileEnergyPylon thisTile =
+                (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TileEnergyPylon)
+                        ? (TileEnergyPylon) world.getTileEntity(x, y, z)
+                        : null;
         if (thisTile != null) {
             thisTile.onActivated();
         }
@@ -148,7 +180,9 @@ public class EnergyPylon extends BlockDE {//todo fix sphere renderer
 
     @Override
     public int getComparatorInputOverride(World world, int x, int y, int z, int meta) {
-        TileEnergyPylon tile = world.getTileEntity(x, y, z) instanceof TileEnergyPylon ? (TileEnergyPylon) world.getTileEntity(x, y, z) : null;
+        TileEnergyPylon tile = world.getTileEntity(x, y, z) instanceof TileEnergyPylon
+                ? (TileEnergyPylon) world.getTileEntity(x, y, z)
+                : null;
         if (tile != null) return (int) (tile.getEnergyStored() / tile.getMaxEnergyStored() * 15D);
         return 0;
     }

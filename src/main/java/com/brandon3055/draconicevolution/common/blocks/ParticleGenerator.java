@@ -2,9 +2,9 @@ package com.brandon3055.draconicevolution.common.blocks;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.gui.GuiHandler;
+import com.brandon3055.draconicevolution.client.handler.ParticleHandler;
 import com.brandon3055.draconicevolution.client.render.particle.ParticleCustom;
 import com.brandon3055.draconicevolution.common.ModBlocks;
-import com.brandon3055.draconicevolution.client.handler.ParticleHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.tileentities.TileParticleGenerator;
@@ -12,6 +12,7 @@ import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.Til
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import java.util.Random;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
@@ -21,8 +22,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-
-import java.util.Random;
 
 public class ParticleGenerator extends BlockDE {
     public static Block instance;
@@ -42,12 +41,22 @@ public class ParticleGenerator extends BlockDE {
     }
 
     @Override
-    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float p_149727_7_, float p_149727_8_, float p_149727_9_) {
+    public boolean onBlockActivated(
+            World world,
+            int x,
+            int y,
+            int z,
+            EntityPlayer player,
+            int side,
+            float p_149727_7_,
+            float p_149727_8_,
+            float p_149727_9_) {
         if (world.getBlockMetadata(x, y, z) == 1) return false;
 
         if (player.getHeldItem() != null && player.getHeldItem().getItem() == Items.paper) {
             TileEntity tile = world.getTileEntity(x, y, z);
-            TileParticleGenerator gen = (tile != null && tile instanceof TileParticleGenerator) ? (TileParticleGenerator) tile : null;
+            TileParticleGenerator gen =
+                    (tile != null && tile instanceof TileParticleGenerator) ? (TileParticleGenerator) tile : null;
             ItemStack stack = player.getHeldItem();
             if (gen != null && stack.hasTagCompound() && stack.getTagCompound().hasKey("particles_enabled")) {
                 gen.setBlockNBT(stack.getTagCompound());
@@ -58,7 +67,8 @@ public class ParticleGenerator extends BlockDE {
         if (player.isSneaking()) {
             if (activateEnergyStorageCore(world, x, y, z, player)) return true;
             TileEntity tile = world.getTileEntity(x, y, z);
-            TileParticleGenerator gen = (tile != null && tile instanceof TileParticleGenerator) ? (TileParticleGenerator) tile : null;
+            TileParticleGenerator gen =
+                    (tile != null && tile instanceof TileParticleGenerator) ? (TileParticleGenerator) tile : null;
             if (gen != null) {
                 gen.toggleInverted();
             }
@@ -76,7 +86,8 @@ public class ParticleGenerator extends BlockDE {
     @Override
     public void onNeighborBlockChange(final World world, final int x, final int y, final int z, final Block block) {
         TileEntity tile = world.getTileEntity(x, y, z);
-        TileParticleGenerator gen = (tile != null && tile instanceof TileParticleGenerator) ? (TileParticleGenerator) tile : null;
+        TileParticleGenerator gen =
+                (tile != null && tile instanceof TileParticleGenerator) ? (TileParticleGenerator) tile : null;
         if (gen != null) {
             gen.signal = world.isBlockIndirectlyGettingPowered(x, y, z);
             world.markBlockForUpdate(x, y, z);
@@ -104,9 +115,9 @@ public class ParticleGenerator extends BlockDE {
                 float MY = modifier - ((2f * modifier) * rand.nextFloat());
                 float MZ = modifier - ((2f * modifier) * rand.nextFloat());
 
-
                 {
-                    ParticleCustom particle = new ParticleCustom(world, spawnX, spawnY, spawnZ, MX, MY, MZ, SCALE, false, 1);
+                    ParticleCustom particle =
+                            new ParticleCustom(world, spawnX, spawnY, spawnZ, MX, MY, MZ, SCALE, false, 1);
                     particle.red = rand.nextInt(255);
                     particle.green = rand.nextInt(255);
                     particle.blue = rand.nextInt(255);
@@ -127,7 +138,8 @@ public class ParticleGenerator extends BlockDE {
     }
 
     @Override
-    public boolean shouldSideBeRendered(IBlockAccess p_149646_1_, int p_149646_2_, int p_149646_3_, int p_149646_4_, int p_149646_5_) {
+    public boolean shouldSideBeRendered(
+            IBlockAccess p_149646_1_, int p_149646_2_, int p_149646_3_, int p_149646_4_, int p_149646_5_) {
         return false;
     }
 
@@ -149,18 +161,23 @@ public class ParticleGenerator extends BlockDE {
     private boolean activateEnergyStorageCore(World world, int x, int y, int z, EntityPlayer player) {
         for (int x1 = x - 11; x1 <= x + 11; x1++) {
             if (world.getBlock(x1, y, z) == ModBlocks.energyStorageCore) {
-                TileEnergyStorageCore tile = (world.getTileEntity(x1, y, z) != null && world.getTileEntity(x1, y, z) instanceof TileEnergyStorageCore) ? (TileEnergyStorageCore) world.getTileEntity(x1, y, z) : null;
+                TileEnergyStorageCore tile = (world.getTileEntity(x1, y, z) != null
+                                && world.getTileEntity(x1, y, z) instanceof TileEnergyStorageCore)
+                        ? (TileEnergyStorageCore) world.getTileEntity(x1, y, z)
+                        : null;
                 if (tile != null && !tile.isOnline()) {
                     if (player.capabilities.isCreativeMode) {
                         if (!tile.creativeActivate()) {
                             if (world.isRemote)
-                                player.addChatComponentMessage(new ChatComponentTranslation("msg.energyStorageCoreUTA.txt"));
+                                player.addChatComponentMessage(
+                                        new ChatComponentTranslation("msg.energyStorageCoreUTA.txt"));
                             return false;
                         }
                     } else {
                         if (!tile.tryActivate()) {
                             if (world.isRemote)
-                                player.addChatComponentMessage(new ChatComponentTranslation("msg.energyStorageCoreUTA.txt"));
+                                player.addChatComponentMessage(
+                                        new ChatComponentTranslation("msg.energyStorageCoreUTA.txt"));
                             return false;
                         }
                     }
@@ -171,18 +188,23 @@ public class ParticleGenerator extends BlockDE {
 
         for (int z1 = z - 11; z1 <= z + 11; z1++) {
             if (world.getBlock(x, y, z1) == ModBlocks.energyStorageCore) {
-                TileEnergyStorageCore tile = (world.getTileEntity(x, y, z1) != null && world.getTileEntity(x, y, z1) instanceof TileEnergyStorageCore) ? (TileEnergyStorageCore) world.getTileEntity(x, y, z1) : null;
+                TileEnergyStorageCore tile = (world.getTileEntity(x, y, z1) != null
+                                && world.getTileEntity(x, y, z1) instanceof TileEnergyStorageCore)
+                        ? (TileEnergyStorageCore) world.getTileEntity(x, y, z1)
+                        : null;
                 if (tile != null && !tile.isOnline()) {
                     if (player.capabilities.isCreativeMode) {
                         if (!tile.creativeActivate()) {
                             if (world.isRemote)
-                                player.addChatComponentMessage(new ChatComponentTranslation("msg.energyStorageCoreUTA.txt"));
+                                player.addChatComponentMessage(
+                                        new ChatComponentTranslation("msg.energyStorageCoreUTA.txt"));
                             return false;
                         }
                     } else {
                         if (!tile.tryActivate()) {
                             if (world.isRemote)
-                                player.addChatComponentMessage(new ChatComponentTranslation("msg.energyStorageCoreUTA.txt"));
+                                player.addChatComponentMessage(
+                                        new ChatComponentTranslation("msg.energyStorageCoreUTA.txt"));
                             return false;
                         }
                     }
@@ -197,10 +219,11 @@ public class ParticleGenerator extends BlockDE {
     public void breakBlock(World world, int x, int y, int z, Block p_149749_5_, int meta) {
         if (meta == 1) {
             TileEntity tile = world.getTileEntity(x, y, z);
-            TileParticleGenerator gen = (tile != null && tile instanceof TileParticleGenerator) ? (TileParticleGenerator) tile : null;
+            TileParticleGenerator gen =
+                    (tile != null && tile instanceof TileParticleGenerator) ? (TileParticleGenerator) tile : null;
             if (gen != null && gen.getMaster() != null) {
                 world.setBlockMetadataWithNotify(x, y, z, 0, 2);
-                //LogHelper.info("deActivate");
+                // LogHelper.info("deActivate");
                 gen.getMaster().isStructureStillValid(true);
             }
         }

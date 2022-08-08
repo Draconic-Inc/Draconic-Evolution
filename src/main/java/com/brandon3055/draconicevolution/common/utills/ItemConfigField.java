@@ -24,7 +24,6 @@ public class ItemConfigField {
     public Object incroment;
     public String modifier;
 
-
     public ItemConfigField(int datatype, int slot, String name) {
         this.slot = slot;
         this.datatype = datatype;
@@ -49,12 +48,13 @@ public class ItemConfigField {
         return StatCollector.translateToLocal("button.de." + name + ".name");
     }
 
-//	public void writeToItem(ItemStack stack){
-//		DataUtills.writeObjectToItem(stack, value, datatype, name);
-//	}
+    //	public void writeToItem(ItemStack stack){
+    //		DataUtills.writeObjectToItem(stack, value, datatype, name);
+    //	}
 
     public ItemConfigField readFromItem(ItemStack stack, Object defaultExpected) {
-        value = DataUtills.readObjectFromCompound(IConfigurableItem.ProfileHelper.getProfileCompound(stack), datatype, name, defaultExpected);
+        value = DataUtills.readObjectFromCompound(
+                IConfigurableItem.ProfileHelper.getProfileCompound(stack), datatype, name, defaultExpected);
         return this;
     }
 
@@ -69,10 +69,16 @@ public class ItemConfigField {
             i *= 2;
             return String.valueOf((i + 1) + "x" + (i + 1));
         } else if (datatype == References.BOOLEAN_ID) {
-            return (Boolean) value ? StatCollector.translateToLocal("gui.de.on.txt") : StatCollector.translateToLocal("gui.de.off.txt");
-        } else if (datatype == References.FLOAT_ID && !StringUtils.isNullOrEmpty(modifier) && modifier.equals("PERCENT")) {
+            return (Boolean) value
+                    ? StatCollector.translateToLocal("gui.de.on.txt")
+                    : StatCollector.translateToLocal("gui.de.off.txt");
+        } else if (datatype == References.FLOAT_ID
+                && !StringUtils.isNullOrEmpty(modifier)
+                && modifier.equals("PERCENT")) {
             return Math.round((Float) value * 100D) + "%";
-        } else if (datatype == References.FLOAT_ID && !StringUtils.isNullOrEmpty(modifier) && modifier.equals("PLUSPERCENT")) {
+        } else if (datatype == References.FLOAT_ID
+                && !StringUtils.isNullOrEmpty(modifier)
+                && modifier.equals("PLUSPERCENT")) {
             return "+" + Math.round((Float) value * 100D) + "%";
         } else {
             return String.valueOf(value);

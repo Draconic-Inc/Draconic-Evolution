@@ -2,12 +2,13 @@ package com.brandon3055.draconicevolution.client.gui;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.container.ContainerPlayerDetector;
+import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.network.PlayerDetectorButtonPacket;
 import com.brandon3055.draconicevolution.common.network.PlayerDetectorStringPacket;
-import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.tileentities.TilePlayerDetectorAdvanced;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import java.util.ArrayList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
@@ -16,8 +17,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
-
-import java.util.ArrayList;
 
 @SideOnly(Side.CLIENT)
 public class GUIPlayerDetector extends GuiContainer {
@@ -40,8 +39,7 @@ public class GUIPlayerDetector extends GuiContainer {
         super(detector.getGuiContainer(invPlayer));
         this.inventorySlots = new ContainerPlayerDetector(invPlayer, detector, this);
 
-        for (int i = 0; i < names.length; i++)
-            names[i] = "";
+        for (int i = 0; i < names.length; i++) names[i] = "";
 
         xSize = 176;
         ySize = 198;
@@ -51,7 +49,8 @@ public class GUIPlayerDetector extends GuiContainer {
         syncWithServer();
     }
 
-    private static final ResourceLocation texture = new ResourceLocation(References.MODID.toLowerCase(), "textures/gui/PlayerDetector.png");
+    private static final ResourceLocation texture =
+            new ResourceLocation(References.MODID.toLowerCase(), "textures/gui/PlayerDetector.png");
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float f, int x, int y) {
@@ -65,14 +64,11 @@ public class GUIPlayerDetector extends GuiContainer {
         }
 
         if (showInvSlots) drawTexturedModalRect(guiLeft + 142, guiTop + 19, xSize, 0, 23, 41);
-
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int x, int y) {
         drawGuiText(x, y);
-
-
     }
 
     @Override
@@ -107,42 +103,42 @@ public class GUIPlayerDetector extends GuiContainer {
         selectedNameText.setMaxStringLength(40);
         selectedNameText.setVisible(editMode);
 
-        //ID
-        //buttonList.add(new GuiButton(0, guiLeft + 85, guiTop , 85, 20, "sgASGgs"));
+        // ID
+        // buttonList.add(new GuiButton(0, guiLeft + 85, guiTop , 85, 20, "sgASGgs"));
 
-        //syncWithServer();
+        // syncWithServer();
     }
 
     @Override
     protected void actionPerformed(GuiButton button) {
         switch (button.id) {
-            case 0: //Range +
+            case 0: // Range +
                 range = (range < maxRange) ? range + 1 : maxRange;
                 DraconicEvolution.network.sendToServer(new PlayerDetectorButtonPacket((byte) 0, (byte) range));
                 break;
-            case 1: //Range -
+            case 1: // Range -
                 range = (range > 1) ? range - 1 : 1;
                 DraconicEvolution.network.sendToServer(new PlayerDetectorButtonPacket((byte) 0, (byte) range));
                 break;
-            case 3: //White List -
+            case 3: // White List -
                 initScedualed = true;
                 editMode = true;
                 showInvSlots = false;
                 ((ContainerPlayerDetector) this.inventorySlots).updateContainerSlots();
                 break;
-            case 4: //Toggle White List -
+            case 4: // Toggle White List -
                 whitelist = !whitelist;
                 initScedualed = true;
                 byte val = (byte) (whitelist ? 1 : 0);
                 DraconicEvolution.network.sendToServer(new PlayerDetectorButtonPacket((byte) 1, val));
                 break;
-            case 5: //Back -
+            case 5: // Back -
                 editMode = false;
                 showInvSlots = true;
                 ((ContainerPlayerDetector) this.inventorySlots).updateContainerSlots();
                 initScedualed = true;
                 break;
-            case 6: //Back -
+            case 6: // Back -
                 outputInverted = !outputInverted;
                 initScedualed = true;
                 byte val2 = (byte) (outputInverted ? 1 : 0);
@@ -150,7 +146,7 @@ public class GUIPlayerDetector extends GuiContainer {
                 break;
         }
 
-        //DraconicEvolution.channelHandler.sendToServer(new ButtonPacket((byte) 0, true));
+        // DraconicEvolution.channelHandler.sendToServer(new ButtonPacket((byte) 0, true));
 
     }
 
@@ -162,7 +158,8 @@ public class GUIPlayerDetector extends GuiContainer {
                 names[selected] = selectedNameText.getText();
                 selectedNameText.setText("");
                 selectedNameText.setFocused(false);
-                DraconicEvolution.network.sendToServer(new PlayerDetectorStringPacket((byte) selected, names[selected]));
+                DraconicEvolution.network.sendToServer(
+                        new PlayerDetectorStringPacket((byte) selected, names[selected]));
                 selected = -1;
             }
         } else super.keyTyped(par1, par2);
@@ -185,7 +182,7 @@ public class GUIPlayerDetector extends GuiContainer {
 
         if (editMode) selectName(x - guiLeft, y - guiTop);
 
-        //this.selectedNameText.mouseClicked(x - guiLeft, y - guiTop, par3);
+        // this.selectedNameText.mouseClicked(x - guiLeft, y - guiTop, par3);
     }
 
     private void drawGuiText(int rawX, int rawY) {
@@ -223,7 +220,8 @@ public class GUIPlayerDetector extends GuiContainer {
 
         for (int i = 0; i < 21; i++) {
             for (int j = 0; j < 2; j++) {
-                if ((x > 4 + j * 84 && x < (xSize / 2) - 1 + j * 82) && (y > 4 + i * 9 && y < 13 + i * 9) || i + j * 21 == selected)
+                if ((x > 4 + j * 84 && x < (xSize / 2) - 1 + j * 82) && (y > 4 + i * 9 && y < 13 + i * 9)
+                        || i + j * 21 == selected)
                     drawTexturedModalRect(guiLeft + 5 + j * 84, guiTop + 5 + i * 9, 0, ySize + 10, 82, 8);
             }
         }

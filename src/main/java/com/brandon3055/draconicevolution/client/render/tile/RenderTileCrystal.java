@@ -20,19 +20,25 @@ import org.lwjgl.opengl.GL11;
  */
 public class RenderTileCrystal extends TileEntitySpecialRenderer {
 
-    private static ResourceLocation texrure = new ResourceLocation(References.MODID.toLowerCase(), "textures/models/CrystalPurpleTransparent.png");
-    private static ResourceLocation crystalBlue = new ResourceLocation(References.MODID.toLowerCase(), "textures/models/CrystalBlue.png");
-    private static ResourceLocation crystalBlueAlpha = new ResourceLocation(References.MODID.toLowerCase(), "textures/models/CrystalBlueAlpha.png");
-    private static ResourceLocation crystalRed = new ResourceLocation(References.MODID.toLowerCase(), "textures/models/CrystalRed.png");
-    private static ResourceLocation crystalRedAlpha = new ResourceLocation(References.MODID.toLowerCase(), "textures/models/CrystalRedAlpha.png");
-
+    private static ResourceLocation texrure =
+            new ResourceLocation(References.MODID.toLowerCase(), "textures/models/CrystalPurpleTransparent.png");
+    private static ResourceLocation crystalBlue =
+            new ResourceLocation(References.MODID.toLowerCase(), "textures/models/CrystalBlue.png");
+    private static ResourceLocation crystalBlueAlpha =
+            new ResourceLocation(References.MODID.toLowerCase(), "textures/models/CrystalBlueAlpha.png");
+    private static ResourceLocation crystalRed =
+            new ResourceLocation(References.MODID.toLowerCase(), "textures/models/CrystalRed.png");
+    private static ResourceLocation crystalRedAlpha =
+            new ResourceLocation(References.MODID.toLowerCase(), "textures/models/CrystalRedAlpha.png");
 
     private IModelCustom modelCrystal;
     private IModelCustom modelCrystalTransceiver;
 
     public RenderTileCrystal() {
-        modelCrystal = AdvancedModelLoader.loadModel(new ResourceLocation(References.MODID.toLowerCase(), "models/CCrystal.obj"));
-        modelCrystalTransceiver = AdvancedModelLoader.loadModel(new ResourceLocation(References.MODID.toLowerCase(), "models/CrystalTransceiver.obj"));
+        modelCrystal = AdvancedModelLoader.loadModel(
+                new ResourceLocation(References.MODID.toLowerCase(), "models/CCrystal.obj"));
+        modelCrystalTransceiver = AdvancedModelLoader.loadModel(
+                new ResourceLocation(References.MODID.toLowerCase(), "models/CrystalTransceiver.obj"));
     }
 
     @Override
@@ -43,9 +49,8 @@ public class RenderTileCrystal extends TileEntitySpecialRenderer {
             renderTransceiver((TileEnergyTransceiver) tileEntity, x, y, z, partialTick);
     }
 
-
     public void renderEnergyRelay(TileRemoteEnergyBase tileEntity, double x, double y, double z, float partialTick) {
-        //--- Pre Render ---//
+        // --- Pre Render ---//
         tileEntity.inView = 10;
         GL11.glPushMatrix();
         GL11.glTranslated(x + 0.5, y + 0.5, z + 0.5);
@@ -57,14 +62,13 @@ public class RenderTileCrystal extends TileEntitySpecialRenderer {
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, innerLight, innerLight);
         OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
 
-        //--- Render Bottom Layer ---//
+        // --- Render Bottom Layer ---//
         if (tileEntity.getPowerTier() == 0) bindTexture(crystalBlue);
         else bindTexture(crystalRed);
 
         modelCrystal.renderAll();
 
-
-        //--- Render Alpha Overlay ---//
+        // --- Render Alpha Overlay ---//
         if (tileEntity.getPowerTier() == 0) bindTexture(crystalBlueAlpha);
         else bindTexture(crystalRedAlpha);
         GL11.glEnable(GL11.GL_ALPHA_TEST);
@@ -73,26 +77,23 @@ public class RenderTileCrystal extends TileEntitySpecialRenderer {
         modelCrystal.renderAll();
 
         GL11.glAlphaFunc(GL11.GL_GREATER, 0f);
-//		GL11.glDisable(GL11.GL_ALPHA_TEST);
+        //		GL11.glDisable(GL11.GL_ALPHA_TEST);
 
-
-        //--- Render Overlay ---//
+        // --- Render Overlay ---//
         bindTexture(texrure);
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, outerLight, outerLight);
 
         modelCrystal.renderAll();
 
-
-        //--- Post Render ---//
+        // --- Post Render ---//
         GL11.glAlphaFunc(GL11.GL_GREATER, 0.1f);
         GL11.glDisable(GL11.GL_BLEND);
         RenderHelper.enableStandardItemLighting();
         GL11.glPopMatrix();
     }
 
-
     public void renderTransceiver(TileEnergyTransceiver tileEntity, double x, double y, double z, float partialTick) {
-        //--- Pre Render ---//
+        // --- Pre Render ---//
 
         tileEntity.inView = 10;
         GL11.glPushMatrix();
@@ -120,21 +121,20 @@ public class RenderTileCrystal extends TileEntitySpecialRenderer {
         GL11.glTranslated(0, -1, 0);
 
         GL11.glDisable(GL11.GL_LIGHTING);
-//		RenderHelper.disableStandardItemLighting();
+        //		RenderHelper.disableStandardItemLighting();
         GL11.glEnable(GL11.GL_BLEND);
         float innerLight = 100f;
         float outerLight = 140f + ClientEventHandler.energyCrystalAlphaValue * 40F;
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, innerLight, innerLight);
         OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
 
-        //--- Render Bottom Layer ---//
+        // --- Render Bottom Layer ---//
         if (tileEntity.getPowerTier() == 0) bindTexture(crystalBlue);
         else bindTexture(crystalRed);
 
         modelCrystalTransceiver.renderAll();
 
-
-        //--- Render Alpha Overlay ---//
+        // --- Render Alpha Overlay ---//
         if (tileEntity.getPowerTier() == 0) bindTexture(crystalBlueAlpha);
         else bindTexture(crystalRedAlpha);
         GL11.glEnable(GL11.GL_ALPHA_TEST);
@@ -144,17 +144,15 @@ public class RenderTileCrystal extends TileEntitySpecialRenderer {
 
         GL11.glDisable(GL11.GL_ALPHA_TEST);
 
-
-        //--- Render Overlay ---//
+        // --- Render Overlay ---//
         bindTexture(texrure);
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, outerLight, outerLight);
 
         modelCrystalTransceiver.renderAll();
 
-
-        //--- Post Render ---//
+        // --- Post Render ---//
         GL11.glDisable(GL11.GL_BLEND);
-//		RenderHelper.enableStandardItemLighting();
+        //		RenderHelper.enableStandardItemLighting();
         GL11.glEnable(GL11.GL_LIGHTING);
         GL11.glEnable(GL11.GL_ALPHA_TEST);
         GL11.glAlphaFunc(GL11.GL_GREATER, 0.1f);

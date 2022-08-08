@@ -3,6 +3,8 @@ package com.brandon3055.draconicevolution.common.entity;
 import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
 import com.brandon3055.draconicevolution.common.utills.DamageSourceChaos;
 import com.brandon3055.draconicevolution.common.utills.LogHelper;
+import java.util.Iterator;
+import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEndPortal;
 import net.minecraft.entity.Entity;
@@ -23,9 +25,6 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 
-import java.util.Iterator;
-import java.util.List;
-
 /**
  * Created by Brandon on 4/07/2014.
  */
@@ -38,7 +37,6 @@ public class EntityCustomDragon extends EntityDragon {
     private boolean createPortal = true;
     public float attackDamage = 10F;
     protected boolean isUber = false;
-    private boolean needsRenderUpdate = true;
     private boolean initialized = false;
 
     public EntityCustomDragon(World par1World) {
@@ -84,7 +82,14 @@ public class EntityCustomDragon extends EntityDragon {
             f1 = MathHelper.cos(this.prevAnimTime * (float) Math.PI * 2.0F);
 
             if (f1 <= -0.3F && f >= -0.3F) {
-                this.worldObj.playSound(this.posX, this.posY, this.posZ, "mob.enderdragon.wings", 5.0F, 0.8F + this.rand.nextFloat() * 0.3F, false);
+                this.worldObj.playSound(
+                        this.posX,
+                        this.posY,
+                        this.posZ,
+                        "mob.enderdragon.wings",
+                        5.0F,
+                        0.8F + this.rand.nextFloat() * 0.3F,
+                        false);
             }
         }
 
@@ -95,13 +100,24 @@ public class EntityCustomDragon extends EntityDragon {
             f = (this.rand.nextFloat() - 0.5F) * 8.0F;
             f1 = (this.rand.nextFloat() - 0.5F) * 4.0F;
             f2 = (this.rand.nextFloat() - 0.5F) * 8.0F;
-            this.worldObj.spawnParticle("largeexplode", this.posX + (double) f, this.posY + 2.0D + (double) f1, this.posZ + (double) f2, 0.0D, 0.0D, 0.0D);
+            this.worldObj.spawnParticle(
+                    "largeexplode",
+                    this.posX + (double) f,
+                    this.posY + 2.0D + (double) f1,
+                    this.posZ + (double) f2,
+                    0.0D,
+                    0.0D,
+                    0.0D);
         } else {
             this.updateDragonEnderCrystal();
             if (isUber)
-                f = 0.5F / (MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ) * 10.0F + 1.0F); //Wing Speed
+                f = 0.5F
+                        / (MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ) * 10.0F
+                                + 1.0F); // Wing Speed
             else
-                f = 0.2F / (MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ) * 10.0F + 1.0F);
+                f = 0.2F
+                        / (MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ) * 10.0F
+                                + 1.0F);
             f *= (float) Math.pow(2.0D, this.motionY);
 
             if (this.slowed) {
@@ -137,8 +153,11 @@ public class EntityCustomDragon extends EntityDragon {
                     d0 = this.posY + (this.newPosY - this.posY) / (double) this.newPosRotationIncrements;
                     d1 = this.posZ + (this.newPosZ - this.posZ) / (double) this.newPosRotationIncrements;
                     d2 = MathHelper.wrapAngleTo180_double(this.newRotationYaw - (double) this.rotationYaw);
-                    this.rotationYaw = (float) ((double) this.rotationYaw + d2 / (double) this.newPosRotationIncrements);
-                    this.rotationPitch = (float) ((double) this.rotationPitch + (this.newRotationPitch - (double) this.rotationPitch) / (double) this.newPosRotationIncrements);
+                    this.rotationYaw =
+                            (float) ((double) this.rotationYaw + d2 / (double) this.newPosRotationIncrements);
+                    this.rotationPitch = (float) ((double) this.rotationPitch
+                            + (this.newRotationPitch - (double) this.rotationPitch)
+                                    / (double) this.newPosRotationIncrements);
                     --this.newPosRotationIncrements;
                     this.setPosition(d10, d0, d1);
                     this.setRotation(this.rotationYaw, this.rotationPitch);
@@ -167,12 +186,16 @@ public class EntityCustomDragon extends EntityDragon {
                     this.targetZ += this.rand.nextGaussian() * 2.0D;
                 }
 
-                if (this.forceNewTarget || d2 < 100.0D || d2 > 22500.0D || this.isCollidedHorizontally || this.isCollidedVertically) {
+                if (this.forceNewTarget
+                        || d2 < 100.0D
+                        || d2 > 22500.0D
+                        || this.isCollidedHorizontally
+                        || this.isCollidedVertically) {
                     this.setNewTarget();
                 }
 
                 d0 /= (double) MathHelper.sqrt_double(d10 * d10 + d1 * d1);
-                if (isUber) f12 = 1.0F;//Verticle Motion Speed
+                if (isUber) f12 = 1.0F; // Verticle Motion Speed
                 else f12 = 0.6F;
 
                 if (d0 < (double) (-f12)) {
@@ -196,8 +219,14 @@ public class EntityCustomDragon extends EntityDragon {
                     d6 = -50.0D;
                 }
 
-                Vec3 vec3 = Vec3.createVectorHelper(this.targetX - this.posX, this.targetY - this.posY, this.targetZ - this.posZ).normalize();
-                Vec3 vec32 = Vec3.createVectorHelper((double) MathHelper.sin(this.rotationYaw * (float) Math.PI / 180.0F), this.motionY, (double) (-MathHelper.cos(this.rotationYaw * (float) Math.PI / 180.0F))).normalize();
+                Vec3 vec3 = Vec3.createVectorHelper(
+                                this.targetX - this.posX, this.targetY - this.posY, this.targetZ - this.posZ)
+                        .normalize();
+                Vec3 vec32 = Vec3.createVectorHelper(
+                                (double) MathHelper.sin(this.rotationYaw * (float) Math.PI / 180.0F),
+                                this.motionY,
+                                (double) (-MathHelper.cos(this.rotationYaw * (float) Math.PI / 180.0F)))
+                        .normalize();
                 float f5 = (float) (vec32.dotProduct(vec3) + 0.5D) / 1.5F;
 
                 if (f5 < 0.0F) {
@@ -205,28 +234,34 @@ public class EntityCustomDragon extends EntityDragon {
                 }
 
                 this.randomYawVelocity *= 0.8F;
-                float f6 = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ) * 1.0F + 1.0F;
+                float f6 =
+                        MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ) * 1.0F + 1.0F;
                 double d9 = Math.sqrt(this.motionX * this.motionX + this.motionZ * this.motionZ) * 1.0D + 1.0D;
 
                 if (d9 > 40.0D) {
                     d9 = 40.0D;
                 }
 
-                this.randomYawVelocity = (float) ((double) this.randomYawVelocity + d6 * (0.699999988079071D / d9 / (double) f6));
+                this.randomYawVelocity =
+                        (float) ((double) this.randomYawVelocity + d6 * (0.699999988079071D / d9 / (double) f6));
                 this.rotationYaw += this.randomYawVelocity * 0.1F;
                 float f7 = (float) (2.0D / (d9 + 1.0D));
                 float f8 = 0.06F;
                 this.moveFlying(0.0F, -1.0F, f8 * (f5 * f7 + (1.0F - f7)));
 
                 if (this.slowed) {
-                    this.moveEntity(this.motionX * 0.800000011920929D, this.motionY * 0.800000011920929D, this.motionZ * 0.800000011920929D);
+                    this.moveEntity(
+                            this.motionX * 0.800000011920929D,
+                            this.motionY * 0.800000011920929D,
+                            this.motionZ * 0.800000011920929D);
                 } else if (isUber) {
                     this.moveEntity(this.motionX * 2.5D, this.motionY * 1.5D, this.motionZ * 2.5D);
                 } else {
                     this.moveEntity(this.motionX, this.motionY, this.motionZ);
                 }
 
-                Vec3 vec31 = Vec3.createVectorHelper(this.motionX, this.motionY, this.motionZ).normalize();
+                Vec3 vec31 = Vec3.createVectorHelper(this.motionX, this.motionY, this.motionZ)
+                        .normalize();
                 float f9 = (float) (vec31.dotProduct(vec32) + 1.0D) / 2.0F;
                 f9 = 0.8F + 0.15F * f9;
                 this.motionX *= (double) f9;
@@ -245,23 +280,40 @@ public class EntityCustomDragon extends EntityDragon {
             this.dragonPartWing1.width = 4.0F;
             this.dragonPartWing2.height = 3.0F;
             this.dragonPartWing2.width = 4.0F;
-            f1 = (float) (this.getMovementOffsets(5, 1.0F)[1] - this.getMovementOffsets(10, 1.0F)[1]) * 10.0F / 180.0F * (float) Math.PI;
+            f1 = (float) (this.getMovementOffsets(5, 1.0F)[1] - this.getMovementOffsets(10, 1.0F)[1])
+                    * 10.0F
+                    / 180.0F
+                    * (float) Math.PI;
             f2 = MathHelper.cos(f1);
             float f10 = -MathHelper.sin(f1);
             float f3 = this.rotationYaw * (float) Math.PI / 180.0F;
             float f11 = MathHelper.sin(f3);
             float f4 = MathHelper.cos(f3);
             this.dragonPartBody.onUpdate();
-            this.dragonPartBody.setLocationAndAngles(this.posX + (double) (f11 * 0.5F), this.posY, this.posZ - (double) (f4 * 0.5F), 0.0F, 0.0F);
+            this.dragonPartBody.setLocationAndAngles(
+                    this.posX + (double) (f11 * 0.5F), this.posY, this.posZ - (double) (f4 * 0.5F), 0.0F, 0.0F);
             this.dragonPartWing1.onUpdate();
-            this.dragonPartWing1.setLocationAndAngles(this.posX + (double) (f4 * 4.5F), this.posY + 2.0D, this.posZ + (double) (f11 * 4.5F), 0.0F, 0.0F);
+            this.dragonPartWing1.setLocationAndAngles(
+                    this.posX + (double) (f4 * 4.5F), this.posY + 2.0D, this.posZ + (double) (f11 * 4.5F), 0.0F, 0.0F);
             this.dragonPartWing2.onUpdate();
-            this.dragonPartWing2.setLocationAndAngles(this.posX - (double) (f4 * 4.5F), this.posY + 2.0D, this.posZ - (double) (f11 * 4.5F), 0.0F, 0.0F);
+            this.dragonPartWing2.setLocationAndAngles(
+                    this.posX - (double) (f4 * 4.5F), this.posY + 2.0D, this.posZ - (double) (f11 * 4.5F), 0.0F, 0.0F);
 
             if (!this.worldObj.isRemote && this.hurtTime == 0) {
-                this.collideWithEntities(this.worldObj.getEntitiesWithinAABBExcludingEntity(this, this.dragonPartWing1.boundingBox.expand(4.0D, 2.0D, 4.0D).offset(0.0D, -2.0D, 0.0D)));
-                this.collideWithEntities(this.worldObj.getEntitiesWithinAABBExcludingEntity(this, this.dragonPartWing2.boundingBox.expand(4.0D, 2.0D, 4.0D).offset(0.0D, -2.0D, 0.0D)));
-                this.attackEntitiesInList(this.worldObj.getEntitiesWithinAABBExcludingEntity(this, this.dragonPartHead.boundingBox.expand(1.0D, 1.0D, 1.0D)));
+                this.collideWithEntities(this.worldObj.getEntitiesWithinAABBExcludingEntity(
+                        this,
+                        this.dragonPartWing1
+                                .boundingBox
+                                .expand(4.0D, 2.0D, 4.0D)
+                                .offset(0.0D, -2.0D, 0.0D)));
+                this.collideWithEntities(this.worldObj.getEntitiesWithinAABBExcludingEntity(
+                        this,
+                        this.dragonPartWing2
+                                .boundingBox
+                                .expand(4.0D, 2.0D, 4.0D)
+                                .offset(0.0D, -2.0D, 0.0D)));
+                this.attackEntitiesInList(this.worldObj.getEntitiesWithinAABBExcludingEntity(
+                        this, this.dragonPartHead.boundingBox.expand(1.0D, 1.0D, 1.0D)));
             }
 
             double[] adouble1 = this.getMovementOffsets(5, 1.0F);
@@ -269,7 +321,12 @@ public class EntityCustomDragon extends EntityDragon {
             f12 = MathHelper.sin(this.rotationYaw * (float) Math.PI / 180.0F - this.randomYawVelocity * 0.01F);
             float f13 = MathHelper.cos(this.rotationYaw * (float) Math.PI / 180.0F - this.randomYawVelocity * 0.01F);
             this.dragonPartHead.onUpdate();
-            this.dragonPartHead.setLocationAndAngles(this.posX + (double) (f12 * 5.5F * f2), this.posY + (adouble[1] - adouble1[1]) * 1.0D + (double) (f10 * 5.5F), this.posZ - (double) (f13 * 5.5F * f2), 0.0F, 0.0F);
+            this.dragonPartHead.setLocationAndAngles(
+                    this.posX + (double) (f12 * 5.5F * f2),
+                    this.posY + (adouble[1] - adouble1[1]) * 1.0D + (double) (f10 * 5.5F),
+                    this.posZ - (double) (f13 * 5.5F * f2),
+                    0.0F,
+                    0.0F);
 
             for (int j = 0; j < 3; ++j) {
                 EntityDragonPart entitydragonpart = null;
@@ -287,30 +344,36 @@ public class EntityCustomDragon extends EntityDragon {
                 }
 
                 double[] adouble2 = this.getMovementOffsets(12 + j * 2, 1.0F);
-                float f14 = this.rotationYaw * (float) Math.PI / 180.0F + this.simplifyAngle(adouble2[0] - adouble1[0]) * (float) Math.PI / 180.0F * 1.0F;
+                float f14 = this.rotationYaw * (float) Math.PI / 180.0F
+                        + this.simplifyAngle(adouble2[0] - adouble1[0]) * (float) Math.PI / 180.0F * 1.0F;
                 float f15 = MathHelper.sin(f14);
                 float f16 = MathHelper.cos(f14);
                 float f17 = 1.5F;
                 float f18 = (float) (j + 1) * 2.0F;
                 entitydragonpart.onUpdate();
-                entitydragonpart.setLocationAndAngles(this.posX - (double) ((f11 * f17 + f15 * f18) * f2), this.posY + (adouble2[1] - adouble1[1]) * 1.0D - (double) ((f18 + f17) * f10) + 1.5D, this.posZ + (double) ((f4 * f17 + f16 * f18) * f2), 0.0F, 0.0F);
+                entitydragonpart.setLocationAndAngles(
+                        this.posX - (double) ((f11 * f17 + f15 * f18) * f2),
+                        this.posY + (adouble2[1] - adouble1[1]) * 1.0D - (double) ((f18 + f17) * f10) + 1.5D,
+                        this.posZ + (double) ((f4 * f17 + f16 * f18) * f2),
+                        0.0F,
+                        0.0F);
             }
 
             if (!this.worldObj.isRemote) {
-                this.slowed = this.destroyBlocksInAABB(this.dragonPartHead.boundingBox) | this.destroyBlocksInAABB(this.dragonPartBody.boundingBox);
+                this.slowed = this.destroyBlocksInAABB(this.dragonPartHead.boundingBox)
+                        | this.destroyBlocksInAABB(this.dragonPartBody.boundingBox);
             }
         }
-
     }
 
     @Override
     protected void onDeathUpdate() {
 
-
         if (deathTicks == 0 && !isUber) {
             for (int ix = -150; ix < 150; ix++) {
                 for (int iz = -150; iz < 150; iz++) {
-                    if (worldObj.getBlock(ix, portalY, iz) == Blocks.bedrock && worldObj.getBlock(ix, portalY - 1, iz) == Blocks.bedrock) {
+                    if (worldObj.getBlock(ix, portalY, iz) == Blocks.bedrock
+                            && worldObj.getBlock(ix, portalY - 1, iz) == Blocks.bedrock) {
                         portalX = ix;
                         portalZ = iz;
                         createPortal = false;
@@ -318,7 +381,9 @@ public class EntityCustomDragon extends EntityDragon {
                     }
                 }
             }
-            if (ConfigHandler.dragonEggSpawnLocation[0] != 0 || ConfigHandler.dragonEggSpawnLocation[1] != 0 || ConfigHandler.dragonEggSpawnLocation[1] != 0) {
+            if (ConfigHandler.dragonEggSpawnLocation[0] != 0
+                    || ConfigHandler.dragonEggSpawnLocation[1] != 0
+                    || ConfigHandler.dragonEggSpawnLocation[1] != 0) {
                 createPortal = false;
                 portalX = ConfigHandler.dragonEggSpawnLocation[0];
                 portalY = ConfigHandler.dragonEggSpawnLocation[1];
@@ -338,7 +403,14 @@ public class EntityCustomDragon extends EntityDragon {
             float f = (this.rand.nextFloat() - 0.5F) * 8.0F;
             float f1 = (this.rand.nextFloat() - 0.5F) * 4.0F;
             float f2 = (this.rand.nextFloat() - 0.5F) * 8.0F;
-            this.worldObj.spawnParticle("hugeexplosion", this.posX + (double) f, this.posY + 2.0D + (double) f1, this.posZ + (double) f2, 0.0D, 0.0D, 0.0D);
+            this.worldObj.spawnParticle(
+                    "hugeexplosion",
+                    this.posX + (double) f,
+                    this.posY + 2.0D + (double) f1,
+                    this.posZ + (double) f2,
+                    0.0D,
+                    0.0D,
+                    0.0D);
         }
 
         int i;
@@ -351,12 +423,13 @@ public class EntityCustomDragon extends EntityDragon {
                 while (i > 0) {
                     j = EntityXPOrb.getXPSplit(i);
                     i -= j;
-                    this.worldObj.spawnEntityInWorld(new EntityXPOrb(this.worldObj, this.posX, this.posY, this.posZ, j));
+                    this.worldObj.spawnEntityInWorld(
+                            new EntityXPOrb(this.worldObj, this.posX, this.posY, this.posZ, j));
                 }
             }
         } else if (this.deathTicks == 1) {
             this.worldObj.playSound(this.posX, this.posY, this.posZ, "mob.enderdragon.end", 50.0F, 1F, false);
-            //this.worldObj.playBroadcastSound(1018, (int) this.posX, (int) this.posY, (int) this.posZ, 0);
+            // this.worldObj.playBroadcastSound(1018, (int) this.posX, (int) this.posY, (int) this.posZ, 0);
         }
 
         this.moveEntity(0.0D, 0.10000000149011612D, 0.0D);
@@ -376,6 +449,7 @@ public class EntityCustomDragon extends EntityDragon {
         }
     }
 
+    @SuppressWarnings("rawtypes")
     private void collideWithEntities(List par1List) {
         double d0 = (this.dragonPartBody.boundingBox.minX + this.dragonPartBody.boundingBox.maxX) / 2.0D;
         double d1 = (this.dragonPartBody.boundingBox.minZ + this.dragonPartBody.boundingBox.maxZ) / 2.0D;
@@ -400,6 +474,7 @@ public class EntityCustomDragon extends EntityDragon {
         }
     }
 
+    @SuppressWarnings("rawtypes")
     private void attackEntitiesInList(List par1List) {
         for (int i = 0; i < par1List.size(); ++i) {
             Entity entity = (Entity) par1List.get(i);
@@ -415,11 +490,13 @@ public class EntityCustomDragon extends EntityDragon {
         }
     }
 
+    @SuppressWarnings("rawtypes")
     private void updateDragonEnderCrystal() {
         if (this.healingEnderCrystal != null) {
             if (this.healingEnderCrystal.isDead) {
                 if (!this.worldObj.isRemote) {
-                    this.attackEntityFromPart(this.dragonPartHead, DamageSource.setExplosionSource((Explosion) null), 10.0F);
+                    this.attackEntityFromPart(
+                            this.dragonPartHead, DamageSource.setExplosionSource((Explosion) null), 10.0F);
                 }
 
                 this.healingEnderCrystal = null;
@@ -431,7 +508,8 @@ public class EntityCustomDragon extends EntityDragon {
 
         if (this.rand.nextInt(10) == 0) {
             float f = 32.0F;
-            List list = this.worldObj.getEntitiesWithinAABB(EntityEnderCrystal.class, this.boundingBox.expand((double) f, (double) f, (double) f));
+            List list = this.worldObj.getEntitiesWithinAABB(
+                    EntityEnderCrystal.class, this.boundingBox.expand((double) f, (double) f, (double) f));
             EntityEnderCrystal entityendercrystal = null;
             double d0 = Double.MAX_VALUE;
             Iterator iterator = list.iterator();
@@ -453,8 +531,11 @@ public class EntityCustomDragon extends EntityDragon {
     private void setNewTarget() {
         this.forceNewTarget = false;
 
-        if ((isUber || this.rand.nextInt(2) == 0) && (!isUber || 19 > this.rand.nextInt(20)) && !this.worldObj.playerEntities.isEmpty()) {
-            this.target = (Entity) this.worldObj.playerEntities.get(this.rand.nextInt(this.worldObj.playerEntities.size()));
+        if ((isUber || this.rand.nextInt(2) == 0)
+                && (!isUber || 19 > this.rand.nextInt(20))
+                && !this.worldObj.playerEntities.isEmpty()) {
+            this.target =
+                    (Entity) this.worldObj.playerEntities.get(this.rand.nextInt(this.worldObj.playerEntities.size()));
         } else {
             boolean flag = false;
 
@@ -496,7 +577,8 @@ public class EntityCustomDragon extends EntityDragon {
                     Block block = this.worldObj.getBlock(k1, l1, i2);
 
                     if (!block.isAir(worldObj, k1, l1, i2)) {
-                        if (block.canEntityDestroy(worldObj, k1, l1, i2, this) && this.worldObj.getGameRules().getGameRuleBooleanValue("mobGriefing")) {
+                        if (block.canEntityDestroy(worldObj, k1, l1, i2, this)
+                                && this.worldObj.getGameRules().getGameRuleBooleanValue("mobGriefing")) {
                             flag1 = this.worldObj.setBlockToAir(k1, l1, i2) || flag1;
                         } else {
                             flag = true;
@@ -507,9 +589,12 @@ public class EntityCustomDragon extends EntityDragon {
         }
 
         if (flag1) {
-            double d1 = par1AxisAlignedBB.minX + (par1AxisAlignedBB.maxX - par1AxisAlignedBB.minX) * (double) this.rand.nextFloat();
-            double d2 = par1AxisAlignedBB.minY + (par1AxisAlignedBB.maxY - par1AxisAlignedBB.minY) * (double) this.rand.nextFloat();
-            double d0 = par1AxisAlignedBB.minZ + (par1AxisAlignedBB.maxZ - par1AxisAlignedBB.minZ) * (double) this.rand.nextFloat();
+            double d1 = par1AxisAlignedBB.minX
+                    + (par1AxisAlignedBB.maxX - par1AxisAlignedBB.minX) * (double) this.rand.nextFloat();
+            double d2 = par1AxisAlignedBB.minY
+                    + (par1AxisAlignedBB.maxY - par1AxisAlignedBB.minY) * (double) this.rand.nextFloat();
+            double d0 = par1AxisAlignedBB.minZ
+                    + (par1AxisAlignedBB.maxZ - par1AxisAlignedBB.minZ) * (double) this.rand.nextFloat();
             this.worldObj.spawnParticle("largeexplode", d1, d2, d0, 0.0D, 0.0D, 0.0D);
         }
 
@@ -517,7 +602,9 @@ public class EntityCustomDragon extends EntityDragon {
     }
 
     private void spawnEgg() {
-        if (ConfigHandler.dragonEggSpawnLocation[0] != 0 || ConfigHandler.dragonEggSpawnLocation[1] != 0 || ConfigHandler.dragonEggSpawnLocation[1] != 0 && !isUber) {
+        if (ConfigHandler.dragonEggSpawnLocation[0] != 0
+                || ConfigHandler.dragonEggSpawnLocation[1] != 0
+                || ConfigHandler.dragonEggSpawnLocation[1] != 0 && !isUber) {
             portalX = ConfigHandler.dragonEggSpawnLocation[0];
             portalY = ConfigHandler.dragonEggSpawnLocation[1];
             portalZ = ConfigHandler.dragonEggSpawnLocation[2];
@@ -551,12 +638,10 @@ public class EntityCustomDragon extends EntityDragon {
             }
         }
 
-
         worldObj.setBlock(portalX - 1, portalY - 1, portalZ, Blocks.torch);
         worldObj.setBlock(portalX + 1, portalY - 1, portalZ, Blocks.torch);
         worldObj.setBlock(portalX, portalY - 1, portalZ - 1, Blocks.torch);
         worldObj.setBlock(portalX, portalY - 1, portalZ + 1, Blocks.torch);
-
 
         BlockEndPortal.field_149948_a = false;
     }
@@ -626,9 +711,7 @@ public class EntityCustomDragon extends EntityDragon {
     }
 
     @Override
-    protected void despawnEntity() {
-
-    }
+    protected void despawnEntity() {}
 
     public void setUber(boolean b) {
         isUber = b;
@@ -640,24 +723,5 @@ public class EntityCustomDragon extends EntityDragon {
     }
 
     @Override
-    public boolean attackEntityFrom(DamageSource damageSource, float dmg) {
-//		if (damageSource.getEntity() != null && getDistanceToEntity(damageSource.getEntity()) > 100) {
-//			LogHelper.info("cancel attack");
-//			return false;
-//		}
-        return super.attackEntityFrom(damageSource, dmg);
-    }
-
-    @Override
-    public boolean attackEntityFromPart(EntityDragonPart p_70965_1_, DamageSource damageSource, float p_70965_3_) {
-//		if (damageSource.getEntity() != null && Utills.getDistanceAtoB(damageSource.getEntity().posX)getDistanceToEntity(damageSource.getEntity()) > 100) {
-//			LogHelper.info("cancel attack");
-//			return false;
-//		}
-        return super.attackEntityFromPart(p_70965_1_, damageSource, p_70965_3_);
-    }
-
-    @Override
-    public void travelToDimension(int p_71027_1_) {
-    }
+    public void travelToDimension(int p_71027_1_) {}
 }

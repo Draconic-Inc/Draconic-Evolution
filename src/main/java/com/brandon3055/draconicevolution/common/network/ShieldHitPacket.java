@@ -18,8 +18,7 @@ public class ShieldHitPacket implements IMessage {
     public byte shieldPowerB;
     public float shieldPowerF;
 
-    public ShieldHitPacket() {
-    }
+    public ShieldHitPacket() {}
 
     public ShieldHitPacket(EntityPlayer playerHit, float shieldPower) {
         this.playerID = playerHit.getEntityId();
@@ -45,7 +44,9 @@ public class ShieldHitPacket implements IMessage {
         public IMessage onMessage(ShieldHitPacket message, MessageContext ctx) {
             Entity entity = Minecraft.getMinecraft().theWorld.getEntityByID(message.playerID);
             if (entity instanceof EntityPlayer)
-                ClientEventHandler.playerShieldStatus.put((EntityPlayer) entity, new DataUtills.XZPair<Float, Integer>(message.shieldPowerF, ClientEventHandler.elapsedTicks));
+                ClientEventHandler.playerShieldStatus.put(
+                        (EntityPlayer) entity,
+                        new DataUtills.XZPair<Float, Integer>(message.shieldPowerF, ClientEventHandler.elapsedTicks));
             return null;
         }
     }

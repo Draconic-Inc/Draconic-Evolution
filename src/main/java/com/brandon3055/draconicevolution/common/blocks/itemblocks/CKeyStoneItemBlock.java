@@ -1,13 +1,12 @@
 package com.brandon3055.draconicevolution.common.blocks.itemblocks;
 
+import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-
-import java.util.List;
 
 /**
  * Created by Brandon on 27/08/2014.

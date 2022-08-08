@@ -2,15 +2,14 @@ package com.brandon3055.draconicevolution.common.blocks;
 
 import com.brandon3055.brandonscore.common.utills.InventoryUtils;
 import com.google.common.collect.Lists;
+import java.util.ArrayList;
+import java.util.List;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Brandon on 13/11/2014.
@@ -57,8 +56,7 @@ public abstract class BlockCustomDrop extends BlockContainerDE {
             if (result) {
                 List<ItemStack> teDrops = Lists.newArrayList();
                 getCustomDrops(te, teDrops);
-                for (ItemStack drop : teDrops)
-                    dropBlockAsItem(world, x, y, z, drop);
+                for (ItemStack drop : teDrops) dropBlockAsItem(world, x, y, z, drop);
             }
 
             return result;

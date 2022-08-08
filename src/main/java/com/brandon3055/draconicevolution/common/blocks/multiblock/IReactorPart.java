@@ -13,7 +13,6 @@ public interface IReactorPart {
     public static int RMODE_FUEL = 6;
     public static int RMODE_FUEL_INV = 7;
 
-
     public MultiblockHelper.TileLocation getMaster();
 
     public void shutDown();

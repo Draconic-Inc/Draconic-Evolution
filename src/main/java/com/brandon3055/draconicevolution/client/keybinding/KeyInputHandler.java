@@ -32,11 +32,15 @@ public class KeyInputHandler {
         if (KeyBindings.placeItem.isPressed()) handlePlaceItemKey();
         else if (KeyBindings.toolConfig.isPressed()) {
             DraconicEvolution.network.sendToServer(new ButtonPacket(ButtonPacket.ID_TOOLCONFIG, false));
-        } else if (KeyBindings.toolProfileChange.isPressed() && Minecraft.getMinecraft().thePlayer != null && Minecraft.getMinecraft().thePlayer.getItemInUse() == null) {
+        } else if (KeyBindings.toolProfileChange.isPressed()
+                && Minecraft.getMinecraft().thePlayer != null
+                && Minecraft.getMinecraft().thePlayer.getItemInUse() == null) {
             DraconicEvolution.network.sendToServer(new ButtonPacket(ButtonPacket.ID_TOOL_PROFILE_CHANGE, false));
 
             ItemStack stack = Minecraft.getMinecraft().thePlayer.getHeldItem();
-            if (stack != null && stack.getItem() instanceof IConfigurableItem && ((IConfigurableItem) stack.getItem()).hasProfiles()) {
+            if (stack != null
+                    && stack.getItem() instanceof IConfigurableItem
+                    && ((IConfigurableItem) stack.getItem()).hasProfiles()) {
                 int preset = ItemNBTHelper.getInteger(stack, "ConfigProfile", 0);
                 if (++preset >= 5) preset = 0;
                 ItemNBTHelper.setInteger(stack, "ConfigProfile", preset);
@@ -65,13 +69,13 @@ public class KeyInputHandler {
         }
     }
 
-
     private void handlePlaceItemKey() {
         EntityClientPlayerMP player = Minecraft.getMinecraft().thePlayer;
         WorldClient world = Minecraft.getMinecraft().theWorld;
         MovingObjectPosition mop = ToolHandler.raytraceFromEntity(world, player, 4.5D);
         if (mop != null)
-            DraconicEvolution.network.sendToServer(new PlacedItemPacket((byte) mop.sideHit, mop.blockX, mop.blockY, mop.blockZ));
+            DraconicEvolution.network.sendToServer(
+                    new PlacedItemPacket((byte) mop.sideHit, mop.blockX, mop.blockY, mop.blockZ));
     }
 
     @SideOnly(Side.CLIENT)
@@ -84,7 +88,9 @@ public class KeyInputHandler {
             DraconicEvolution.network.sendToServer(new ButtonPacket(ButtonPacket.ID_TOOL_PROFILE_CHANGE, false));
 
             ItemStack stack = Minecraft.getMinecraft().thePlayer.getHeldItem();
-            if (stack != null && stack.getItem() instanceof IConfigurableItem && ((IConfigurableItem) stack.getItem()).hasProfiles()) {
+            if (stack != null
+                    && stack.getItem() instanceof IConfigurableItem
+                    && ((IConfigurableItem) stack.getItem()).hasProfiles()) {
                 int preset = ItemNBTHelper.getInteger(stack, "ConfigProfile", 0);
                 if (++preset >= 5) preset = 0;
                 ItemNBTHelper.setInteger(stack, "ConfigProfile", preset);

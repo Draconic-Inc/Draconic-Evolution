@@ -28,9 +28,22 @@ public class EnergyCrystalItemBlock extends ItemBlock {
     }
 
     @Override
-    public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int metadata) {
+    public boolean placeBlockAt(
+            ItemStack stack,
+            EntityPlayer player,
+            World world,
+            int x,
+            int y,
+            int z,
+            int side,
+            float hitX,
+            float hitY,
+            float hitZ,
+            int metadata) {
         boolean b = super.placeBlockAt(stack, player, world, x, y, z, side, hitX, hitY, hitZ, metadata);
-        TileEnergyTransceiver transceiver = world.getTileEntity(x, y, z) instanceof TileEnergyTransceiver ? (TileEnergyTransceiver) world.getTileEntity(x, y, z) : null;
+        TileEnergyTransceiver transceiver = world.getTileEntity(x, y, z) instanceof TileEnergyTransceiver
+                ? (TileEnergyTransceiver) world.getTileEntity(x, y, z)
+                : null;
         if (transceiver != null) transceiver.facing = side;
         return b;
     }

@@ -14,7 +14,9 @@ public class ItemDE extends Item {
 
     @Override
     public String getUnlocalizedName() {
-        return String.format("item.%s%s", References.MODID.toLowerCase() + ":", getUnwrappedUnlocalizedName(super.getUnlocalizedName()));
+        return String.format(
+                "item.%s%s",
+                References.MODID.toLowerCase() + ":", getUnwrappedUnlocalizedName(super.getUnlocalizedName()));
     }
 
     @Override
@@ -25,7 +27,8 @@ public class ItemDE extends Item {
     @Override
     @SideOnly(Side.CLIENT)
     public void registerIcons(final IIconRegister iconRegister) {
-        this.itemIcon = iconRegister.registerIcon(References.RESOURCESPREFIX + getUnwrappedUnlocalizedName(super.getUnlocalizedName()));
+        this.itemIcon = iconRegister.registerIcon(
+                References.RESOURCESPREFIX + getUnwrappedUnlocalizedName(super.getUnlocalizedName()));
     }
 
     @Override

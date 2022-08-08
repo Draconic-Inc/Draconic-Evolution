@@ -24,7 +24,6 @@ public class ReactorCore extends BlockDE {
         this.setBlockName("reactorCore");
         this.setHardness(100F);
 
-
         ModBlocks.register(this);
     }
 
@@ -61,26 +60,41 @@ public class ReactorCore extends BlockDE {
 
     @Override
     public void onBlockAdded(World world, int x, int y, int z) {
-        TileReactorCore tile = world.getTileEntity(x, y, z) instanceof TileReactorCore ? (TileReactorCore) world.getTileEntity(x, y, z) : null;
+        TileReactorCore tile = world.getTileEntity(x, y, z) instanceof TileReactorCore
+                ? (TileReactorCore) world.getTileEntity(x, y, z)
+                : null;
         if (tile != null) tile.onPlaced();
     }
 
     @Override
     public AxisAlignedBB getSelectedBoundingBoxFromPool(World p_149633_1_, int x, int y, int z) {
 
-        return AxisAlignedBB.getBoundingBox(0, 0, 0, 1, 1, 1);//super.getSelectedBoundingBoxFromPool(p_149633_1_, x, y, z);
+        return AxisAlignedBB.getBoundingBox(
+                0, 0, 0, 1, 1, 1); // super.getSelectedBoundingBoxFromPool(p_149633_1_, x, y, z);
     }
 
     @Override
-    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int p_149727_6_, float p_149727_7_, float p_149727_8_, float p_149727_9_) {
-        //TileReactorCore tile = world.getTileEntity(x, y, z) instanceof TileReactorCore ? (TileReactorCore) world.getTileEntity(x, y, z) : null;
-        //if (tile != null) return tile.onStructureRightClicked(player);
+    public boolean onBlockActivated(
+            World world,
+            int x,
+            int y,
+            int z,
+            EntityPlayer player,
+            int p_149727_6_,
+            float p_149727_7_,
+            float p_149727_8_,
+            float p_149727_9_) {
+        // TileReactorCore tile = world.getTileEntity(x, y, z) instanceof TileReactorCore ? (TileReactorCore)
+        // world.getTileEntity(x, y, z) : null;
+        // if (tile != null) return tile.onStructureRightClicked(player);
         return false;
     }
 
     @Override
     public void breakBlock(World world, int x, int y, int z, Block p_149749_5_, int p_149749_6_) {
-        TileReactorCore tile = world.getTileEntity(x, y, z) instanceof TileReactorCore ? (TileReactorCore) world.getTileEntity(x, y, z) : null;
+        TileReactorCore tile = world.getTileEntity(x, y, z) instanceof TileReactorCore
+                ? (TileReactorCore) world.getTileEntity(x, y, z)
+                : null;
         if (tile != null) tile.onBroken();
         super.breakBlock(world, x, y, z, p_149749_5_, p_149749_6_);
     }

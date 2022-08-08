@@ -7,6 +7,8 @@ import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.tileentities.TileEnergyInfuser;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import java.util.ArrayList;
+import java.util.Random;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -16,9 +18,6 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 import org.lwjgl.opengl.GL11;
-
-import java.util.ArrayList;
-import java.util.Random;
 
 @SideOnly(Side.CLIENT)
 public class GUIEnergyInfuser extends GuiContainer {
@@ -37,7 +36,8 @@ public class GUIEnergyInfuser extends GuiContainer {
         this.player = invPlayer.player;
     }
 
-    private static final ResourceLocation texture = new ResourceLocation(References.MODID.toLowerCase(), "textures/gui/EnergyInfuser.png");
+    private static final ResourceLocation texture =
+            new ResourceLocation(References.MODID.toLowerCase(), "textures/gui/EnergyInfuser.png");
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float f, int x, int y) {
@@ -45,16 +45,33 @@ public class GUIEnergyInfuser extends GuiContainer {
         Minecraft.getMinecraft().getTextureManager().bindTexture(texture);
         drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
         if (tile.getStackInSlot(0) == null)
-            drawTexturedModalRect(guiLeft + 63, guiTop + 34, 36, ySize, 18, 18);//fuel box
-
+            drawTexturedModalRect(guiLeft + 63, guiTop + 34, 36, ySize, 18, 18); // fuel box
 
         float power = (float) tile.energy.getEnergyStored() / (float) tile.energy.getMaxEnergyStored() * -1F + 1F;
-        drawTexturedModalRect(guiLeft + 49, guiTop + 7 + (int) (power * 45), xSize, (int) (power * 45), 8, 45 - (int) (power * 45));//Power bar
+        drawTexturedModalRect(
+                guiLeft + 49,
+                guiTop + 7 + (int) (power * 45),
+                xSize,
+                (int) (power * 45),
+                8,
+                45 - (int) (power * 45)); // Power bar
 
-        if (tile.running && tile.getStackInSlot(0) != null && tile.getStackInSlot(0).getItem() instanceof IEnergyContainerItem) {
-            IEnergyContainerItem item = (IEnergyContainerItem) tile.getStackInSlot(0).getItem();
-            float charge = (float) item.getEnergyStored(tile.getStackInSlot(0)) / (float) item.getMaxEnergyStored(tile.getStackInSlot(0)) * -1F + 1F;
-            drawTexturedModalRect(guiLeft + 119, guiTop + 7 + (int) (charge * 45), xSize, (int) (charge * 45), 8, 45 - (int) (charge * 45));//Item Power bar
+        if (tile.running
+                && tile.getStackInSlot(0) != null
+                && tile.getStackInSlot(0).getItem() instanceof IEnergyContainerItem) {
+            IEnergyContainerItem item =
+                    (IEnergyContainerItem) tile.getStackInSlot(0).getItem();
+            float charge = (float) item.getEnergyStored(tile.getStackInSlot(0))
+                            / (float) item.getMaxEnergyStored(tile.getStackInSlot(0))
+                            * -1F
+                    + 1F;
+            drawTexturedModalRect(
+                    guiLeft + 119,
+                    guiTop + 7 + (int) (charge * 45),
+                    xSize,
+                    (int) (charge * 45),
+                    8,
+                    45 - (int) (charge * 45)); // Item Power bar
         }
 
         drawAnimatedParts();
@@ -64,12 +81,11 @@ public class GUIEnergyInfuser extends GuiContainer {
     protected void drawGuiContainerForegroundLayer(int x, int y) {
         fontRendererObj.drawStringWithShadow("Energy Infuser", 49, -9, 0x00FFFF);
 
+        // bindTexture(texture);
 
-        //bindTexture(texture);
-
-        //fontRendererObj.drawString("Charges: " + charges, 90, 25, 0x000000);
-        //drawCenteredString(fontRendererObj, "Charges: " + charges, 117, 25, 0x000000);
-        //drawCenteredString(fontRendererObj, "Weather Controller", xSize/2, -15, 0x2a4ed0);
+        // fontRendererObj.drawString("Charges: " + charges, 90, 25, 0x000000);
+        // drawCenteredString(fontRendererObj, "Charges: " + charges, 117, 25, 0x000000);
+        // drawCenteredString(fontRendererObj, "Weather Controller", xSize/2, -15, 0x2a4ed0);
 
     }
 
@@ -83,37 +99,39 @@ public class GUIEnergyInfuser extends GuiContainer {
     public void initGui() {
         super.initGui();
 
-        //ID
-        //buttonList.add(new GuiButton(0, guiLeft + 85, guiTop , 85, 20, text));
+        // ID
+        // buttonList.add(new GuiButton(0, guiLeft + 85, guiTop , 85, 20, text));
     }
 
     @Override
-    protected void actionPerformed(GuiButton button) {
-
-
-    }
+    protected void actionPerformed(GuiButton button) {}
 
     @Override
     public void updateScreen() {
         super.updateScreen();
-
     }
 
     private void drawEnergyBarHoverText(int x, int y) {
         if (GuiHelper.isInRect(48, 6, 9, 46, x, y)) {
             ArrayList<String> internal = new ArrayList<String>();
             internal.add(StatCollector.translateToLocal("gui.de.internalStorage.txt"));
-            internal.add("" + EnumChatFormatting.DARK_BLUE + tile.energy.getEnergyStored() + "/" + tile.energy.getMaxEnergyStored());
+            internal.add("" + EnumChatFormatting.DARK_BLUE + tile.energy.getEnergyStored() + "/"
+                    + tile.energy.getMaxEnergyStored());
             GL11.glPushAttrib(GL11.GL_LIGHTING_BIT);
             drawHoveringText(internal, x + guiLeft, y + guiTop, fontRendererObj);
             GL11.glPopAttrib();
         }
 
-        if (GuiHelper.isInRect(118, 6, 10, 46, x, y) && tile.running && tile.getStackInSlot(0) != null && tile.getStackInSlot(0).getItem() instanceof IEnergyContainerItem) {
-            IEnergyContainerItem item = (IEnergyContainerItem) tile.getStackInSlot(0).getItem();
+        if (GuiHelper.isInRect(118, 6, 10, 46, x, y)
+                && tile.running
+                && tile.getStackInSlot(0) != null
+                && tile.getStackInSlot(0).getItem() instanceof IEnergyContainerItem) {
+            IEnergyContainerItem item =
+                    (IEnergyContainerItem) tile.getStackInSlot(0).getItem();
             ArrayList<String> internal = new ArrayList<String>();
             internal.add(StatCollector.translateToLocal("gui.de.itemStorage.txt"));
-            internal.add("" + EnumChatFormatting.DARK_BLUE + item.getEnergyStored(tile.getStackInSlot(0)) + "/" + item.getMaxEnergyStored(tile.getStackInSlot(0)));
+            internal.add("" + EnumChatFormatting.DARK_BLUE + item.getEnergyStored(tile.getStackInSlot(0)) + "/"
+                    + item.getMaxEnergyStored(tile.getStackInSlot(0)));
             GL11.glPushAttrib(GL11.GL_LIGHTING_BIT);
             drawHoveringText(internal, x + guiLeft, y + guiTop, fontRendererObj);
             GL11.glPopAttrib();
@@ -126,7 +144,7 @@ public class GUIEnergyInfuser extends GuiContainer {
         GL11.glPushMatrix();
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glTranslatef(guiLeft + 62, guiTop + 4, 0);
-        {//Draw Ring
+        { // Draw Ring
             GL11.glTranslatef(26, 26, 0);
             GL11.glRotatef(rotation, 0, 0, 1);
             GL11.glTranslatef(-26, -26, 0);
@@ -169,12 +187,9 @@ public class GUIEnergyInfuser extends GuiContainer {
                     drawTexturedModalRect(0, 0, 0, 173, 26, 8);
                 }
             }
-
         }
-
 
         GL11.glDisable(GL11.GL_BLEND);
         GL11.glPopMatrix();
     }
-
 }

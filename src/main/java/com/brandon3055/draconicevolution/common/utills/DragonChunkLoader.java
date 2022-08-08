@@ -2,14 +2,13 @@ package com.brandon3055.draconicevolution.common.utills;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.entity.EntityChaosGuardian;
+import java.util.*;
 import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.ForgeChunkManager.LoadingCallback;
 import net.minecraftforge.common.ForgeChunkManager.Ticket;
 import net.minecraftforge.common.MinecraftForge;
-
-import java.util.*;
 
 /**
  * Created by brandon3055 on 21/10/2015.
@@ -31,7 +30,8 @@ public class DragonChunkLoader implements LoadingCallback {
         if (ticketList.containsKey(guardian)) {
             ticket = ticketList.get(guardian);
         } else {
-            ticket = ForgeChunkManager.requestTicket(DraconicEvolution.instance, guardian.worldObj, ForgeChunkManager.Type.ENTITY);
+            ticket = ForgeChunkManager.requestTicket(
+                    DraconicEvolution.instance, guardian.worldObj, ForgeChunkManager.Type.ENTITY);
 
             if (ticket != null) {
                 ticket.bindEntity(guardian);
@@ -40,12 +40,15 @@ public class DragonChunkLoader implements LoadingCallback {
 
             } else {
                 if (!hasReportedIssue) {
-                    LogHelper.error("##########################################################################################");
+                    LogHelper.error(
+                            "##########################################################################################");
                     LogHelper.error("Could not get ticket for dragon");
-                    LogHelper.error("Fore some reason forge has denied DE's request for a loader ticket for the chaos guardian");
+                    LogHelper.error(
+                            "Fore some reason forge has denied DE's request for a loader ticket for the chaos guardian");
                     LogHelper.error("This means the chaos guardian may not behave as indented");
                     LogHelper.error("This error will not show again.");
-                    LogHelper.error("##########################################################################################");
+                    LogHelper.error(
+                            "##########################################################################################");
                     hasReportedIssue = true;
                 }
                 return;
@@ -92,7 +95,8 @@ public class DragonChunkLoader implements LoadingCallback {
     public void ticketsLoaded(List<ForgeChunkManager.Ticket> tickets, World world) {
         if (!tickets.isEmpty()) {
             for (Ticket ticket : tickets) {
-                if (ticket.getType() == ForgeChunkManager.Type.ENTITY && ticket.getEntity() instanceof EntityChaosGuardian) {
+                if (ticket.getType() == ForgeChunkManager.Type.ENTITY
+                        && ticket.getEntity() instanceof EntityChaosGuardian) {
                     updateLoaded((EntityChaosGuardian) ticket.getEntity());
                 }
             }

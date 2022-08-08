@@ -29,42 +29,37 @@ public class GUIContainerTemplate extends GuiContainer {
         this.player = invPlayer.player;
     }
 
-    private static final ResourceLocation texture = new ResourceLocation(References.MODID.toLowerCase(), "textures/gui/.png");
+    private static final ResourceLocation texture =
+            new ResourceLocation(References.MODID.toLowerCase(), "textures/gui/.png");
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float f, int x, int y) {
         GL11.glColor4f(1F, 1F, 1F, 1F);
         Minecraft.getMinecraft().getTextureManager().bindTexture(texture);
         drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
-
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int x, int y) {
         fontRendererObj.drawStringWithShadow("Energy Infuser", 49, -9, 0x00FFFF);
-        //bindTexture(texture);
+        // bindTexture(texture);
 
-        //fontRendererObj.drawString("Charges: " + charges, 90, 25, 0x000000);
-        //drawCenteredString(fontRendererObj, "Charges: " + charges, 117, 25, 0x000000);
-        //drawCenteredString(fontRendererObj, "Weather Controller", xSize/2, -15, 0x2a4ed0);
+        // fontRendererObj.drawString("Charges: " + charges, 90, 25, 0x000000);
+        // drawCenteredString(fontRendererObj, "Charges: " + charges, 117, 25, 0x000000);
+        // drawCenteredString(fontRendererObj, "Weather Controller", xSize/2, -15, 0x2a4ed0);
 
     }
 
     @Override
     public void initGui() {
         super.initGui();
-
     }
 
     @Override
-    protected void actionPerformed(GuiButton button) {
-
-
-    }
+    protected void actionPerformed(GuiButton button) {}
 
     @Override
     public void updateScreen() {
         super.updateScreen();
-
     }
 }

@@ -3,11 +3,10 @@ package com.brandon3055.draconicevolution.common.world;
 import com.brandon3055.draconicevolution.common.ModBlocks;
 import com.brandon3055.draconicevolution.common.entity.EntityChaosCrystal;
 import com.brandon3055.draconicevolution.common.entity.EntityChaosGuardian;
+import java.util.Random;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.WorldGenerator;
-
-import java.util.Random;
 
 /**
  * Created by Brandon on 29/08/2014.
@@ -23,15 +22,15 @@ public class WorldGenEnderIsland extends WorldGenerator {
         spawnX = x;
         spawnY = y;
         spawnZ = z;
-        size = 150;// + rand.nextInt(8);
+        size = 150; // + rand.nextInt(8);
     }
 
     @Override
     public boolean generate(World world, Random random, int x, int y, int z) {
-        //LogHelper.info("Generate");
+        // LogHelper.info("Generate");
         for (int y1 = y - 10; y1 < y + 10; y1++) {
             if (world.getBlock(x, y1, z) == Blocks.end_stone) {
-                //LogHelper.info("cancel");
+                // LogHelper.info("cancel");
                 return false;
             }
         }
@@ -46,19 +45,23 @@ public class WorldGenEnderIsland extends WorldGenerator {
     }
 
     private void generateCentre(World world, Random rand) {
-        int centreThikness = 10; //multiplied by 2 and + 1
+        int centreThikness = 10; // multiplied by 2 and + 1
         int curve = 2;
-        int diffStart = 20;//(int)((double)size * 0.1D);
+        int diffStart = 20; // (int)((double)size * 0.1D);
         int r = size;
         int offPoint = size * curve;
 
         for (int x = spawnX - r; x <= spawnX + r; x++) {
             for (int z = spawnZ - r; z <= spawnZ + r; z++) {
                 for (int y = spawnY - (r / 2); y <= spawnY + (r / 2); y++) {
-                    if ((int) (getDistance(x, y, z, spawnX, spawnY + offPoint + centreThikness, spawnZ)) >= offPoint && (int) (getDistance(x, y, z, spawnX, spawnY - offPoint - centreThikness, spawnZ)) >= offPoint && (int) (getDistance(x, y, z, spawnX, spawnY, spawnZ)) <= r) {
+                    if ((int) (getDistance(x, y, z, spawnX, spawnY + offPoint + centreThikness, spawnZ)) >= offPoint
+                            && (int) (getDistance(x, y, z, spawnX, spawnY - offPoint - centreThikness, spawnZ))
+                                    >= offPoint
+                            && (int) (getDistance(x, y, z, spawnX, spawnY, spawnZ)) <= r) {
                         int dist = (int) getDistance(x, y, z, spawnX, spawnY, spawnZ);
                         int diffusionPCt = getDiffusionPct(dist - diffStart, size - diffStart);
-                        int yRand = (int) (Math.max(0, getDiffusionPctD(dist - 40, size - 40)) * (double) (40 - rand.nextInt(80)));
+                        int yRand = (int) (Math.max(0, getDiffusionPctD(dist - 40, size - 40))
+                                * (double) (40 - rand.nextInt(80)));
                         if (dist <= diffStart) {
                             if (world.isAirBlock(x, y + yRand, z))
                                 world.setBlock(x, y + yRand, z, Blocks.end_stone, 0, 2);
@@ -137,7 +140,6 @@ public class WorldGenEnderIsland extends WorldGenerator {
             int sZ = spawnZ + (int) (Math.cos(rotation) * 70D);
             generateObelisk(world, sX, spawnY + 10, sZ, true, rand);
         }
-
     }
 
     private void generateObelisk(World world, int x1, int y1, int z1, boolean outer, Random rand) {
@@ -180,7 +182,6 @@ public class WorldGenEnderIsland extends WorldGenerator {
                 }
             }
 
-
             int cageS = 2;
             for (int x = x1 - cageS; x <= x1 + cageS; x++) {
                 for (int y = y1 - cageS; y <= y1 + cageS; y++) {
@@ -199,7 +200,6 @@ public class WorldGenEnderIsland extends WorldGenerator {
                     if (0.8F > rand.nextFloat()) world.setBlock(x, y1 + 44, z, Blocks.stone_slab, 6, 2);
                 }
             }
-
         }
     }
 

@@ -15,7 +15,8 @@ import org.lwjgl.opengl.GL11;
  * Created by brandon3055 on 24/9/2015.
  */
 public class RenderTileChaosShard extends TileEntitySpecialRenderer {
-    public static IModelCustom model = AdvancedModelLoader.loadModel(ResourceHandler.getResource("models/chaosCrystal.obj"));
+    public static IModelCustom model =
+            AdvancedModelLoader.loadModel(ResourceHandler.getResource("models/chaosCrystal.obj"));
 
     @Override
     public void renderTileEntityAt(TileEntity tile, double x, double y, double z, float tick) {
@@ -60,7 +61,7 @@ public class RenderTileChaosShard extends TileEntitySpecialRenderer {
             double d12 = 0.8D + size;
             double d14 = 0.8D + size;
             double d16 = 0.8D + size;
-            double d18 = 10.0D; //Height
+            double d18 = 10.0D; // Height
             double d20 = 0.0D;
             double d22 = 1.0D;
             double d24 = (double) (-1.0F + f3);

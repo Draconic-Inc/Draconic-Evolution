@@ -1,21 +1,19 @@
 package com.brandon3055.draconicevolution.client.gui;
 
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.common.container.ContainerWeatherController;
+import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.network.ButtonPacket;
+import com.brandon3055.draconicevolution.common.tileentities.TileWeatherController;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
-
 import org.lwjgl.opengl.GL11;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.common.container.ContainerWeatherController;
-import com.brandon3055.draconicevolution.common.network.ButtonPacket;
-import com.brandon3055.draconicevolution.common.lib.References;
-import com.brandon3055.draconicevolution.common.tileentities.TileWeatherController;
 
 @SideOnly(Side.CLIENT)
 public class GUIWeatherController extends GuiContainer {
@@ -36,7 +34,8 @@ public class GUIWeatherController extends GuiContainer {
         this.player = invPlayer.player;
     }
 
-    private static final ResourceLocation texture = new ResourceLocation(References.MODID.toLowerCase(), "textures/gui/WeatherController.png");
+    private static final ResourceLocation texture =
+            new ResourceLocation(References.MODID.toLowerCase(), "textures/gui/WeatherController.png");
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float f, int x, int y) {
@@ -51,9 +50,8 @@ public class GUIWeatherController extends GuiContainer {
     @Override
     protected void drawGuiContainerForegroundLayer(int p_146979_1_, int p_146979_2_) {
         fontRendererObj.drawString("Charges: " + charges, 90, 25, 0x000000);
-        //drawCenteredString(fontRendererObj, "Charges: " + charges, 117, 25, 0x000000);
+        // drawCenteredString(fontRendererObj, "Charges: " + charges, 117, 25, 0x000000);
         drawCenteredString(fontRendererObj, "Weather Controller", xSize / 2, -15, 0x2a4ed0);
-
     }
 
     public static final String RAIN_ON_TEXT = "Turn rain on";
@@ -68,7 +66,7 @@ public class GUIWeatherController extends GuiContainer {
         if (tileWC.mode == 0) text = RAIN_OFF_TEXT;
         else if (tileWC.mode == 1) text = RAIN_ON_TEXT;
         else text = STORM_TEXT;
-        //ID
+        // ID
         buttonList.add(new GuiButton(0, guiLeft + 85, guiTop, 85, 20, text));
     }
 
@@ -80,7 +78,6 @@ public class GUIWeatherController extends GuiContainer {
             else if (button.displayString.equals(RAIN_OFF_TEXT)) button.displayString = RAIN_ON_TEXT;
             else button.displayString = STORM_TEXT;
         }
-
     }
 
     @Override
@@ -93,6 +90,4 @@ public class GUIWeatherController extends GuiContainer {
         super.updateScreen();
         this.charges = tileWC.charges;
     }
-
-
 }

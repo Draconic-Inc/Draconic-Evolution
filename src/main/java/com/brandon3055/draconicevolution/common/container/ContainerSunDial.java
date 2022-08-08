@@ -12,14 +12,12 @@ public class ContainerSunDial extends Container {
 
     public ContainerSunDial(InventoryPlayer invPlayer, TileSunDial tile) {
         this.tile = tile;
-
     }
 
     @Override
     public boolean canInteractWith(EntityPlayer player) {
         return tile.isUseableByPlayer(player);
     }
-
 
     @Override
     public ItemStack transferStackInSlot(EntityPlayer par1EntityPlayer, int par2) {
@@ -29,5 +27,4 @@ public class ContainerSunDial extends Container {
     public TileSunDial getTile() {
         return tile;
     }
-
 }

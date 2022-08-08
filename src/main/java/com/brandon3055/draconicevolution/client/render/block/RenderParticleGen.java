@@ -35,6 +35,4 @@ public class RenderParticleGen implements IItemRenderer {
         GL11.glPopAttrib();
         GL11.glPopMatrix();
     }
-
-
 }

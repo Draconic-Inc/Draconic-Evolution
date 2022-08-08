@@ -25,8 +25,7 @@ public class LinkedReceiver {
     private double tBBZMin = -1;
     private double tBBZMax = -1;
 
-    public LinkedReceiver() {
-    }
+    public LinkedReceiver() {}
 
     public LinkedReceiver(int xCoord, int yCoord, int zCoord, int connectionSide) {
         this.xCoord = xCoord;
@@ -37,7 +36,8 @@ public class LinkedReceiver {
 
     public boolean isStillValid(World world) {
         TileEntity tile = world.getTileEntity(xCoord, yCoord, zCoord);
-        return tile instanceof IEnergyReceiver && ((IEnergyReceiver) tile).canConnectEnergy(ForgeDirection.getOrientation(connectionSide));
+        return tile instanceof IEnergyReceiver
+                && ((IEnergyReceiver) tile).canConnectEnergy(ForgeDirection.getOrientation(connectionSide));
     }
 
     public IEnergyReceiver getReceiver(World world) {
@@ -46,7 +46,8 @@ public class LinkedReceiver {
 
     public int receiveEnergy(World world, int maxReceive, boolean simulate) {
         if (isStillValid(world))
-            return getReceiver(world).receiveEnergy(ForgeDirection.getOrientation(connectionSide), maxReceive, simulate);
+            return getReceiver(world)
+                    .receiveEnergy(ForgeDirection.getOrientation(connectionSide), maxReceive, simulate);
         else return 0;
     }
 

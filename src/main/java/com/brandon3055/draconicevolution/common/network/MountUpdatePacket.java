@@ -14,8 +14,7 @@ public class MountUpdatePacket implements IMessage {
 
     public int entityID;
 
-    public MountUpdatePacket() {
-    }
+    public MountUpdatePacket() {}
 
     public MountUpdatePacket(int id) {
         this.entityID = id;
@@ -40,7 +39,8 @@ public class MountUpdatePacket implements IMessage {
                     ctx.getServerHandler().playerEntity.mountEntity(null);
                     return null;
                 } else if (ctx.getServerHandler().playerEntity.ridingEntity != null) {
-                    return new MountUpdatePacket(ctx.getServerHandler().playerEntity.ridingEntity.getEntityId());
+                    return new MountUpdatePacket(
+                            ctx.getServerHandler().playerEntity.ridingEntity.getEntityId());
                 }
                 return null;
             }

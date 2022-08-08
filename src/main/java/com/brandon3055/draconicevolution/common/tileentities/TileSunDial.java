@@ -27,14 +27,26 @@ public class TileSunDial extends TileEntity implements IInventory {
                 tick = 0;
                 tick2 = 0;
                 running = false;
-                worldObj.playSoundEffect(xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D, "draconicevolution:discharge", 5F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
+                worldObj.playSoundEffect(
+                        xCoord + 0.5D,
+                        yCoord + 0.5D,
+                        zCoord + 0.5D,
+                        "draconicevolution:discharge",
+                        5F,
+                        worldObj.rand.nextFloat() * 0.1F + 0.9F);
             }
         }
     }
 
     private void Runn() {
         if (tick == 1) {
-            worldObj.playSoundEffect(xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D, "draconicevolution:charge", 10F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
+            worldObj.playSoundEffect(
+                    xCoord + 0.5D,
+                    yCoord + 0.5D,
+                    zCoord + 0.5D,
+                    "draconicevolution:charge",
+                    10F,
+                    worldObj.rand.nextFloat() * 0.1F + 0.9F);
             worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
         }
         if (tick < 74) {
@@ -44,16 +56,56 @@ public class TileSunDial extends TileEntity implements IInventory {
             worldObj.spawnParticle("explode", xCoord + 1, yCoord + 0.1, zCoord + 0.5, 0.01D, 0D, 0D);
         }
         if (tick > 74 && tick2 == 1) {
-            worldObj.spawnParticle("flame", xCoord + worldObj.rand.nextFloat(), yCoord + worldObj.rand.nextFloat(), zCoord, 0D, 0D, -0.01D);
-            worldObj.spawnParticle("flame", xCoord + worldObj.rand.nextFloat(), yCoord + worldObj.rand.nextFloat(), zCoord + 1, 0D, 0D, 0.01D);
-            worldObj.spawnParticle("flame", xCoord + 0, yCoord + worldObj.rand.nextFloat(), zCoord + worldObj.rand.nextFloat(), -0.01D, 0D, 0D);
-            worldObj.spawnParticle("flame", xCoord + 1, yCoord + worldObj.rand.nextFloat(), zCoord + worldObj.rand.nextFloat(), 0.01D, 0D, 0D);
+            worldObj.spawnParticle(
+                    "flame",
+                    xCoord + worldObj.rand.nextFloat(),
+                    yCoord + worldObj.rand.nextFloat(),
+                    zCoord,
+                    0D,
+                    0D,
+                    -0.01D);
+            worldObj.spawnParticle(
+                    "flame",
+                    xCoord + worldObj.rand.nextFloat(),
+                    yCoord + worldObj.rand.nextFloat(),
+                    zCoord + 1,
+                    0D,
+                    0D,
+                    0.01D);
+            worldObj.spawnParticle(
+                    "flame",
+                    xCoord + 0,
+                    yCoord + worldObj.rand.nextFloat(),
+                    zCoord + worldObj.rand.nextFloat(),
+                    -0.01D,
+                    0D,
+                    0D);
+            worldObj.spawnParticle(
+                    "flame",
+                    xCoord + 1,
+                    yCoord + worldObj.rand.nextFloat(),
+                    zCoord + worldObj.rand.nextFloat(),
+                    0.01D,
+                    0D,
+                    0D);
         }
         if (tick > 74) Track(getTime());
         if (tick > 74)
-            worldObj.playSoundEffect(xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D, "draconicevolution:beam", 5F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
+            worldObj.playSoundEffect(
+                    xCoord + 0.5D,
+                    yCoord + 0.5D,
+                    zCoord + 0.5D,
+                    "draconicevolution:beam",
+                    5F,
+                    worldObj.rand.nextFloat() * 0.1F + 0.9F);
         if (tick > 74)
-            worldObj.playSoundEffect(xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D, "draconicevolution:boom", 20F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
+            worldObj.playSoundEffect(
+                    xCoord + 0.5D,
+                    yCoord + 0.5D,
+                    zCoord + 0.5D,
+                    "draconicevolution:boom",
+                    20F,
+                    worldObj.rand.nextFloat() * 0.1F + 0.9F);
         if (tick2 == 5) tick2 = 0;
     }
 
@@ -125,12 +177,12 @@ public class TileSunDial extends TileEntity implements IInventory {
         return time4;
     }
 
-    private double map(final double x, final double in_min, final double in_max, final double out_min, final double out_max) {
+    private double map(
+            final double x, final double in_min, final double in_max, final double out_min, final double out_max) {
         return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
     }
 
-
-    //###################################Inventory#####################################################//
+    // ###################################Inventory#####################################################//
     @Override
     public int getSizeInventory() {
         return 0;
@@ -152,8 +204,7 @@ public class TileSunDial extends TileEntity implements IInventory {
     }
 
     @Override
-    public void setInventorySlotContents(int i, ItemStack itemstack) {
-    }
+    public void setInventorySlotContents(int i, ItemStack itemstack) {}
 
     @Override
     public String getInventoryName() {
@@ -176,16 +227,13 @@ public class TileSunDial extends TileEntity implements IInventory {
     }
 
     @Override
-    public void openInventory() {
-    }
+    public void openInventory() {}
 
     @Override
-    public void closeInventory() {
-    }
+    public void closeInventory() {}
 
     @Override
     public boolean isItemValidForSlot(int i, ItemStack itemstack) {
         return false;
     }
-
 }

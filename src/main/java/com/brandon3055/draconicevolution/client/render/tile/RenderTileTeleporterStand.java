@@ -1,12 +1,13 @@
 package com.brandon3055.draconicevolution.client.render.tile;
 
+import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
+import com.brandon3055.brandonscore.common.utills.Utills;
 import com.brandon3055.draconicevolution.client.model.ModelTeleporterStand;
 import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
 import com.brandon3055.draconicevolution.common.items.tools.TeleporterMKII;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.tileentities.TileTeleporterStand;
-import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
-import com.brandon3055.brandonscore.common.utills.Utills;
+import java.awt.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.FontRenderer;
@@ -24,17 +25,15 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
-import java.awt.*;
-
 /**
  * Created by Brandon on 25/10/2014.
  */
 public class RenderTileTeleporterStand extends TileEntitySpecialRenderer {
 
-
     ModelTeleporterStand model = new ModelTeleporterStand();
 
-    private final ResourceLocation texture = new ResourceLocation(References.MODID.toLowerCase(), "textures/models/TeleporterStand.png");
+    private final ResourceLocation texture =
+            new ResourceLocation(References.MODID.toLowerCase(), "textures/models/TeleporterStand.png");
 
     @Override
     public void renderTileEntityAt(TileEntity tileentity, double x, double y, double z, float f) {
@@ -64,7 +63,6 @@ public class RenderTileTeleporterStand extends TileEntitySpecialRenderer {
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);
         if (item != null) renderItem(tileentity, item, f);
         GL11.glPopMatrix();
-
     }
 
     public void renderItem(TileEntity tile, ItemStack item, float f) {
@@ -96,11 +94,14 @@ public class RenderTileTeleporterStand extends TileEntitySpecialRenderer {
     private void drawNameString(ItemStack item, float rotation, TileEntity tileentity, float f) {
         EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
         MovingObjectPosition mop = player.rayTrace(10, f);
-        boolean isCursorOver = mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK && mop.blockX == tileentity.xCoord && mop.blockY == tileentity.yCoord && mop.blockZ == tileentity.zCoord;
+        boolean isCursorOver = mop != null
+                && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK
+                && mop.blockX == tileentity.xCoord
+                && mop.blockY == tileentity.yCoord
+                && mop.blockZ == tileentity.zCoord;
         boolean isSneaking = player.isSneaking();
 
         if (!isCursorOver && (isSneaking != ConfigHandler.invertDPDSB)) return;
-
 
         String s = item.hasDisplayName() ? item.getDisplayName() : "";
         if (item.getItem() instanceof TeleporterMKII) {
@@ -114,7 +115,6 @@ public class RenderTileTeleporterStand extends TileEntitySpecialRenderer {
         }
         if (s.isEmpty()) return;
 
-
         FontRenderer fontRenderer = RenderManager.instance.getFontRenderer();
         Tessellator tess = Tessellator.instance;
 
@@ -123,7 +123,6 @@ public class RenderTileTeleporterStand extends TileEntitySpecialRenderer {
         GL11.glRotated(180, 0, 1, 0);
         GL11.glTranslated(0, -40, 0);
 
-
         Point.Double p1 = new Point.Double(tileentity.xCoord + 0.5, tileentity.zCoord + 0.5);
         Point.Double p2 = new Point.Double(player.posX, player.posZ);
 
@@ -131,7 +130,15 @@ public class RenderTileTeleporterStand extends TileEntitySpecialRenderer {
         double yDiff = player.posY - (tileentity.yCoord + 0.5);
         double zDiff = player.posZ - (tileentity.zCoord + 0.5);
         double yawAngle = Math.toDegrees(Math.atan2(zDiff, xDiff));
-        double pitchAngle = Math.toDegrees(Math.atan2(yDiff, Utills.getDistanceAtoB(player.posX, player.posY, player.posZ, tileentity.xCoord + 0.5, tileentity.yCoord + 0.5, tileentity.zCoord + 0.5)));
+        double pitchAngle = Math.toDegrees(Math.atan2(
+                yDiff,
+                Utills.getDistanceAtoB(
+                        player.posX,
+                        player.posY,
+                        player.posZ,
+                        tileentity.xCoord + 0.5,
+                        tileentity.yCoord + 0.5,
+                        tileentity.zCoord + 0.5)));
 
         GL11.glRotated(yawAngle + 90 - rotation, 0, 1, 0);
         GL11.glRotated(-pitchAngle, 1, 0, 0);
@@ -161,6 +168,5 @@ public class RenderTileTeleporterStand extends TileEntitySpecialRenderer {
 
         GL11.glEnable(GL11.GL_LIGHTING);
         GL11.glPopMatrix();
-
     }
 }

@@ -23,25 +23,36 @@ public class TileChaosShard extends TileEntity {
     public void updateEntity() {
         tick++;
 
-        if (tick > 1 && !worldObj.isRemote && locationHash != getLocationHash(xCoord, yCoord, zCoord, worldObj.provider.dimensionId))
+        if (tick > 1
+                && !worldObj.isRemote
+                && locationHash != getLocationHash(xCoord, yCoord, zCoord, worldObj.provider.dimensionId))
             worldObj.setBlockToAir(xCoord, yCoord, zCoord);
 
         if (worldObj.isRemote && soundTimer-- <= 0) {
             soundTimer = 3600 + worldObj.rand.nextInt(1200);
-            worldObj.playSound(xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D, "draconicevolution:chaosChamberAmbient", 1.5F, worldObj.rand.nextFloat() * 0.4F + 0.8F, false);
+            worldObj.playSound(
+                    xCoord + 0.5D,
+                    yCoord + 0.5D,
+                    zCoord + 0.5D,
+                    "draconicevolution:chaosChamberAmbient",
+                    1.5F,
+                    worldObj.rand.nextFloat() * 0.4F + 0.8F,
+                    false);
         }
 
         if (!worldObj.isRemote && guardianDefeated && worldObj.rand.nextInt(50) == 0) {
             int x = 5 - worldObj.rand.nextInt(11);
             int z = 5 - worldObj.rand.nextInt(11);
-            EntityLightningBolt bolt = new EntityLightningBolt(worldObj, xCoord + x, worldObj.getTopSolidOrLiquidBlock(xCoord + x, zCoord + z), zCoord + z);
+            EntityLightningBolt bolt = new EntityLightningBolt(
+                    worldObj, xCoord + x, worldObj.getTopSolidOrLiquidBlock(xCoord + x, zCoord + z), zCoord + z);
             bolt.ignoreFrustumCheck = true;
             worldObj.addWeatherEffect(bolt);
         }
     }
 
     public void detonate() {
-        if (!worldObj.isRemote && locationHash != getLocationHash(xCoord, yCoord, zCoord, worldObj.provider.dimensionId))
+        if (!worldObj.isRemote
+                && locationHash != getLocationHash(xCoord, yCoord, zCoord, worldObj.provider.dimensionId))
             worldObj.setBlockToAir(xCoord, yCoord, zCoord);
         else {
             EntityChaosVortex vortex = new EntityChaosVortex(worldObj);
@@ -87,6 +98,7 @@ public class TileChaosShard extends TileEntity {
     }
 
     public int getLocationHash(int xCoord, int yCoord, int zCoord, int dimension) {
-        return (String.valueOf(xCoord) + String.valueOf(yCoord) + String.valueOf(zCoord) + String.valueOf(dimension)).hashCode();
+        return (String.valueOf(xCoord) + String.valueOf(yCoord) + String.valueOf(zCoord) + String.valueOf(dimension))
+                .hashCode();
     }
 }

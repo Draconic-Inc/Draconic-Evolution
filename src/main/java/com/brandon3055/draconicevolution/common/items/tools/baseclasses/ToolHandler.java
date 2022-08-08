@@ -1,12 +1,11 @@
 package com.brandon3055.draconicevolution.common.items.tools.baseclasses;
 
-import java.util.List;
-
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.entity.EntityDragonProjectile;
 import com.brandon3055.draconicevolution.common.items.weapons.IEnergyContainerWeaponItem;
 import com.brandon3055.draconicevolution.common.utills.IUpgradableItem;
 import com.brandon3055.draconicevolution.common.utills.LogHelper;
+import java.util.List;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
@@ -24,121 +23,132 @@ import net.minecraft.util.*;
 import net.minecraft.world.World;
 
 public class ToolHandler {
-//	public static Block[] destroyList = {Blocks.cobblestone, Blocks.stone, Blocks.dirt, Blocks.gravel, Blocks.sand, Blocks.grass, Blocks.netherrack};
-//
-//	public static boolean isRightMaterial(final Material material, final Material[] materialsListing) {
-//		for (final Material mat : materialsListing) {
-//			if (material == mat) {
-//				return true;
-//			}
-//		}
-//		return false;
-//	}
-//
-//	public static boolean checkDestroyList(Block curBlock) {
-//		for (Block block : destroyList) {
-//			if (curBlock == block) {
-//				return true;
-//			}
-//		}
-//		return false;
-//	}
-//
-//	public static boolean disSquare(int x, int y, int z, final EntityPlayer player, final World world, final boolean silk, final int fortune, Material[] materialsListing, ItemStack stack) {
-//		int size = stack.getItem().equals(ModItems.draconicAxe) ? 2 : ItemNBTHelper.getShort(stack, "size", (short) 0);
-//		MovingObjectPosition mop = raytraceFromEntity(world, player, 4.5D);
-//		if (mop == null) {
-//			updateGhostBlocks(player, world);
-//			return false;
-//		}
-//
-//		int sizeX = size;
-//		int sizeY = size;
-//		int sizeZ = size;
-//		int yOff = (size * -1);
-//		Block targetBlock = world.getBlock(x, y, z);
-//		if (size > 0) yOff++;
-//		//if (size == 0) return false;
-//		int side = (stack.getItem().equals(ModItems.draconicAxe)) ? 6 : mop.sideHit;
-//		switch (side) {
-//			case 0:
-//			case 1:
-//				sizeY = 0;
-//				yOff = 0;
-//				break;
-//			case 2:
-//			case 3:
-//				sizeZ = 0;
-//				break;
-//			case 4:
-//			case 5:
-//				sizeX = 0;
-//				break;
-//		}
-//
-//		for (int x1 = x - sizeX; x1 <= x + sizeX; x1++) {
-//			for (int y1 = y - (sizeY + yOff); y1 <= y + (sizeY - yOff); y1++) {
-//				for (int z1 = z - sizeZ; z1 <= z + sizeZ; z1++) {
-//					mineBlock(x1, y1, z1, player, world, silk, fortune, materialsListing, stack);
-//					//player.worldObj.scheduleBlockUpdate(x1, y1, z1, Blocks.stone, 100);
-//				}
-//			}
-//		}
-//		world.playSoundEffect(x + 0.5F, y + 0.5F, z + 0.5F, targetBlock.stepSound.getStepResourcePath(), (targetBlock.stepSound.getVolume() + 1.0F) / 2.0F, targetBlock.stepSound.getPitch() * 0.8F);
-//		return true;
-//	}
-//
-//	@SuppressWarnings({"rawtypes", "unchecked"})
-//	public static void mineBlock(final int x, final int y, final int z, final EntityPlayer player, final World world, final boolean silk, final int fortune, Material[] materialsListing, ItemStack stack) {
-//		Block block = world.getBlock(x, y, z);
-//		int meta = world.getBlockMetadata(x, y, z);
-//		Material mat = block.getMaterial();
-//		if ((block != null) && (!block.isAir(world, x, y, z)) && (block.getPlayerRelativeBlockHardness(player, world, x, y, z) != 0.0F)) {
-//			List<ItemStack> items = new ArrayList();
-//
-//			if ((!block.canHarvestBlock(player, meta)) || (!isRightMaterial(mat, materialsListing))) {
-//				return;
-//			}
-//
-//			if (!(stack.getItem() instanceof IEnergyContainerItem) || ((IEnergyContainerItem) stack.getItem()).getEnergyStored(stack) < References.ENERGYPERBLOCK) {
-//				if (!player.capabilities.isCreativeMode) return;
-//			} else {
-//				if (!player.capabilities.isCreativeMode)
-//					((IEnergyContainerItem) stack.getItem()).extractEnergy(stack, References.ENERGYPERBLOCK, false);
-//			}
-//
-//			if (checkDestroyList(block) && (IConfigurableItem.ProfileHelper.getBoolean(stack, "obliterate", false))) {
-//				world.setBlockToAir(x, y, z);
-//				return;
-//			}
-//
-//			if ((stack.getItem().equals(ModItems.draconicAxe) ? 2 : ItemNBTHelper.getShort(stack, "size", (short) 0)) == 0) return;
-//
-//			if ((silk) && (block.canSilkHarvest(world, player, x, y, z, meta))) {
-//				if (block == Blocks.lit_redstone_ore)
-//					items.add(new ItemStack(Item.getItemFromBlock(Blocks.redstone_ore)));
-//				else items.add(new ItemStack(block, 1, meta));
-//			} else {
-//				items.addAll(block.getDrops(world, x, y, z, meta, fortune));
-//				//block.dropXpOnBlockBreak(world, (int)player.posX, (int)player.posY, (int)player.posZ, block.getExpDrop(world, meta, fortune));
-//				int xp = block.getExpDrop(world, meta, fortune);
-//				player.addExperience(xp);
-//			}
-//
-//			world.setBlockToAir(x, y, z);
-//
-//			if (!world.isRemote && !player.capabilities.isCreativeMode && world.getGameRules().getGameRuleBooleanValue("doTileDrops")) {
-//				for (ItemStack item : items) {
-//					world.spawnEntityInWorld(new EntityItem(world, player.posX, player.posY, player.posZ, item));
-//				}
-//			}
-//		}
-//	}
+    //	public static Block[] destroyList = {Blocks.cobblestone, Blocks.stone, Blocks.dirt, Blocks.gravel, Blocks.sand,
+    // Blocks.grass, Blocks.netherrack};
+    //
+    //	public static boolean isRightMaterial(final Material material, final Material[] materialsListing) {
+    //		for (final Material mat : materialsListing) {
+    //			if (material == mat) {
+    //				return true;
+    //			}
+    //		}
+    //		return false;
+    //	}
+    //
+    //	public static boolean checkDestroyList(Block curBlock) {
+    //		for (Block block : destroyList) {
+    //			if (curBlock == block) {
+    //				return true;
+    //			}
+    //		}
+    //		return false;
+    //	}
+    //
+    //	public static boolean disSquare(int x, int y, int z, final EntityPlayer player, final World world, final boolean
+    // silk, final int fortune, Material[] materialsListing, ItemStack stack) {
+    //		int size = stack.getItem().equals(ModItems.draconicAxe) ? 2 : ItemNBTHelper.getShort(stack, "size", (short) 0);
+    //		MovingObjectPosition mop = raytraceFromEntity(world, player, 4.5D);
+    //		if (mop == null) {
+    //			updateGhostBlocks(player, world);
+    //			return false;
+    //		}
+    //
+    //		int sizeX = size;
+    //		int sizeY = size;
+    //		int sizeZ = size;
+    //		int yOff = (size * -1);
+    //		Block targetBlock = world.getBlock(x, y, z);
+    //		if (size > 0) yOff++;
+    //		//if (size == 0) return false;
+    //		int side = (stack.getItem().equals(ModItems.draconicAxe)) ? 6 : mop.sideHit;
+    //		switch (side) {
+    //			case 0:
+    //			case 1:
+    //				sizeY = 0;
+    //				yOff = 0;
+    //				break;
+    //			case 2:
+    //			case 3:
+    //				sizeZ = 0;
+    //				break;
+    //			case 4:
+    //			case 5:
+    //				sizeX = 0;
+    //				break;
+    //		}
+    //
+    //		for (int x1 = x - sizeX; x1 <= x + sizeX; x1++) {
+    //			for (int y1 = y - (sizeY + yOff); y1 <= y + (sizeY - yOff); y1++) {
+    //				for (int z1 = z - sizeZ; z1 <= z + sizeZ; z1++) {
+    //					mineBlock(x1, y1, z1, player, world, silk, fortune, materialsListing, stack);
+    //					//player.worldObj.scheduleBlockUpdate(x1, y1, z1, Blocks.stone, 100);
+    //				}
+    //			}
+    //		}
+    //		world.playSoundEffect(x + 0.5F, y + 0.5F, z + 0.5F, targetBlock.stepSound.getStepResourcePath(),
+    // (targetBlock.stepSound.getVolume() + 1.0F) / 2.0F, targetBlock.stepSound.getPitch() * 0.8F);
+    //		return true;
+    //	}
+    //
+    //	@SuppressWarnings({"rawtypes", "unchecked"})
+    //	public static void mineBlock(final int x, final int y, final int z, final EntityPlayer player, final World world,
+    // final boolean silk, final int fortune, Material[] materialsListing, ItemStack stack) {
+    //		Block block = world.getBlock(x, y, z);
+    //		int meta = world.getBlockMetadata(x, y, z);
+    //		Material mat = block.getMaterial();
+    //		if ((block != null) && (!block.isAir(world, x, y, z)) && (block.getPlayerRelativeBlockHardness(player, world, x,
+    // y, z) != 0.0F)) {
+    //			List<ItemStack> items = new ArrayList();
+    //
+    //			if ((!block.canHarvestBlock(player, meta)) || (!isRightMaterial(mat, materialsListing))) {
+    //				return;
+    //			}
+    //
+    //			if (!(stack.getItem() instanceof IEnergyContainerItem) || ((IEnergyContainerItem)
+    // stack.getItem()).getEnergyStored(stack) < References.ENERGYPERBLOCK) {
+    //				if (!player.capabilities.isCreativeMode) return;
+    //			} else {
+    //				if (!player.capabilities.isCreativeMode)
+    //					((IEnergyContainerItem) stack.getItem()).extractEnergy(stack, References.ENERGYPERBLOCK, false);
+    //			}
+    //
+    //			if (checkDestroyList(block) && (IConfigurableItem.ProfileHelper.getBoolean(stack, "obliterate", false))) {
+    //				world.setBlockToAir(x, y, z);
+    //				return;
+    //			}
+    //
+    //			if ((stack.getItem().equals(ModItems.draconicAxe) ? 2 : ItemNBTHelper.getShort(stack, "size", (short) 0)) == 0)
+    // return;
+    //
+    //			if ((silk) && (block.canSilkHarvest(world, player, x, y, z, meta))) {
+    //				if (block == Blocks.lit_redstone_ore)
+    //					items.add(new ItemStack(Item.getItemFromBlock(Blocks.redstone_ore)));
+    //				else items.add(new ItemStack(block, 1, meta));
+    //			} else {
+    //				items.addAll(block.getDrops(world, x, y, z, meta, fortune));
+    //				//block.dropXpOnBlockBreak(world, (int)player.posX, (int)player.posY, (int)player.posZ,
+    // block.getExpDrop(world, meta, fortune));
+    //				int xp = block.getExpDrop(world, meta, fortune);
+    //				player.addExperience(xp);
+    //			}
+    //
+    //			world.setBlockToAir(x, y, z);
+    //
+    //			if (!world.isRemote && !player.capabilities.isCreativeMode &&
+    // world.getGameRules().getGameRuleBooleanValue("doTileDrops")) {
+    //				for (ItemStack item : items) {
+    //					world.spawnEntityInWorld(new EntityItem(world, player.posX, player.posY, player.posZ, item));
+    //				}
+    //			}
+    //		}
+    //	}
 
     public static void damageEntityBasedOnHealth(Entity entity, EntityPlayer player, float dmgMult) {
         ItemStack stack = player.getCurrentEquippedItem();
         if (stack == null || !(stack.getItem() instanceof IEnergyContainerWeaponItem)) {
-            LogHelper.error("[ToolHandler.java:147] WTF? I don't get it... Player " + player.getCommandSenderName() + " whacked something with a DE weapon but that they are not holding? Ok someone is messing with my shit...");
+            LogHelper.error(
+                    "[ToolHandler.java:147] WTF? I don't get it... Player " + player.getCommandSenderName()
+                            + " whacked something with a DE weapon but that they are not holding? Ok someone is messing with my shit...");
             return;
         }
 
@@ -151,7 +161,8 @@ public class ToolHandler {
         }
 
         if (entity instanceof EntityDragonPart) {
-            List<EntityDragon> list = player.worldObj.getEntitiesWithinAABB(EntityDragon.class, entity.boundingBox.expand(10, 10, 10));
+            List<EntityDragon> list =
+                    player.worldObj.getEntitiesWithinAABB(EntityDragon.class, entity.boundingBox.expand(10, 10, 10));
             if (!list.isEmpty() && list.get(0) instanceof EntityDragon) {
                 EntityDragon dragon = list.get(0);
                 float entHealth = dragon.getHealth();
@@ -172,18 +183,23 @@ public class ToolHandler {
 
         if (!player.capabilities.isCreativeMode) item.extractEnergy(stack, rf, false);
 
-
         if (entity instanceof EntityLivingBase) {
             EntityLivingBase entityLivingBase = (EntityLivingBase) entity;
             double d1 = player.posX - entityLivingBase.posX;
             double d0;
 
-            for (d0 = player.posZ - entityLivingBase.posZ; d1 * d1 + d0 * d0 < 1.0E-4D; d0 = (Math.random() - Math.random()) * 0.01D) {
+            for (d0 = player.posZ - entityLivingBase.posZ;
+                    d1 * d1 + d0 * d0 < 1.0E-4D;
+                    d0 = (Math.random() - Math.random()) * 0.01D) {
                 d1 = (Math.random() - Math.random()) * 0.01D;
             }
-            entityLivingBase.attackedAtYaw = (float) (Math.atan2(d0, d1) * 180.0D / Math.PI) - entityLivingBase.rotationYaw;
+            entityLivingBase.attackedAtYaw =
+                    (float) (Math.atan2(d0, d1) * 180.0D / Math.PI) - entityLivingBase.rotationYaw;
 
-            if (entityLivingBase.worldObj.rand.nextDouble() >= entityLivingBase.getEntityAttribute(SharedMonsterAttributes.knockbackResistance).getAttributeValue()) {
+            if (entityLivingBase.worldObj.rand.nextDouble()
+                    >= entityLivingBase
+                            .getEntityAttribute(SharedMonsterAttributes.knockbackResistance)
+                            .getAttributeValue()) {
                 entityLivingBase.isAirBorne = true;
                 float f1 = MathHelper.sqrt_double(d1 * d1 + d0 * d0);
                 float f2 = 0.1F + EnchantmentHelper.getKnockbackModifier(player, entityLivingBase) * 0.4F;
@@ -203,7 +219,14 @@ public class ToolHandler {
 
     public static void AOEAttack(EntityPlayer player, Entity entity, ItemStack stack, int range) {
         World world = player.worldObj;
-        AxisAlignedBB box = AxisAlignedBB.getBoundingBox(entity.posX - range, entity.posY - range, entity.posZ - range, entity.posX + range, entity.posY + range, entity.posZ + range).expand(1.0D, 1.0D, 1.0D);
+        AxisAlignedBB box = AxisAlignedBB.getBoundingBox(
+                        entity.posX - range,
+                        entity.posY - range,
+                        entity.posZ - range,
+                        entity.posX + range,
+                        entity.posY + range,
+                        entity.posZ + range)
+                .expand(1.0D, 1.0D, 1.0D);
         List list = world.getEntitiesWithinAABBExcludingEntity(player, box);
         if (range == 0) return;
         IEnergyContainerWeaponItem item = (IEnergyContainerWeaponItem) stack.getItem();
@@ -224,17 +247,22 @@ public class ToolHandler {
                 entityLivingBase.attackEntityFrom(DamageSource.causePlayerDamage(player), dmg);
                 item.extractEnergy(stack, rf, false);
                 if (EnchantmentHelper.getEnchantmentLevel(Enchantment.fireAspect.effectId, stack) > 0)
-                    entityLivingBase.setFire(EnchantmentHelper.getEnchantmentLevel(Enchantment.fireAspect.effectId, stack) * 15);
-
+                    entityLivingBase.setFire(
+                            EnchantmentHelper.getEnchantmentLevel(Enchantment.fireAspect.effectId, stack) * 15);
 
                 double d1 = player.posX - entityLivingBase.posX;
                 double d0;
 
-                for (d0 = player.posZ - entityLivingBase.posZ; d1 * d1 + d0 * d0 < 1.0E-4D; d0 = (Math.random() - Math.random()) * 0.01D) {
+                for (d0 = player.posZ - entityLivingBase.posZ;
+                        d1 * d1 + d0 * d0 < 1.0E-4D;
+                        d0 = (Math.random() - Math.random()) * 0.01D) {
                     d1 = (Math.random() - Math.random()) * 0.01D;
                 }
 
-                if (entityLivingBase.worldObj.rand.nextDouble() >= entityLivingBase.getEntityAttribute(SharedMonsterAttributes.knockbackResistance).getAttributeValue()) {
+                if (entityLivingBase.worldObj.rand.nextDouble()
+                        >= entityLivingBase
+                                .getEntityAttribute(SharedMonsterAttributes.knockbackResistance)
+                                .getAttributeValue()) {
                     entityLivingBase.isAirBorne = true;
                     float f1 = MathHelper.sqrt_double(d1 * d1 + d0 * d0);
                     float f2 = 0.1F + (EnchantmentHelper.getKnockbackModifier(player, entityLivingBase) * 0.4F);
@@ -262,10 +290,10 @@ public class ToolHandler {
                 item.extractEnergy(stack, rf, false);
             }
         }
-
     }
 
-    public static MovingObjectPosition raytraceFromEntity(World world, Entity player, double range) {//todo move to core and make the range work as expected
+    public static MovingObjectPosition raytraceFromEntity(
+            World world, Entity player, double range) { // todo move to core and make the range work as expected
         float f = 1.0F;
         float f1 = player.prevRotationPitch + (player.rotationPitch - player.prevRotationPitch) * f;
         float f2 = player.prevRotationYaw + (player.rotationYaw - player.prevRotationYaw) * f;
@@ -297,8 +325,9 @@ public class ToolHandler {
         for (int x = xPos - 6; x < xPos + 6; x++) {
             for (int y = yPos - 6; y < yPos + 6; y++) {
                 for (int z = zPos - 6; z < zPos + 6; z++) {
-                    ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new S23PacketBlockChange(x, y, z, world));
-                    //world.markBlockForUpdate(x, y, z);
+                    ((EntityPlayerMP) player)
+                            .playerNetServerHandler.sendPacket(new S23PacketBlockChange(x, y, z, world));
+                    // world.markBlockForUpdate(x, y, z);
                 }
             }
         }

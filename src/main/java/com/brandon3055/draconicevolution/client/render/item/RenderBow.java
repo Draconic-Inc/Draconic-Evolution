@@ -25,16 +25,17 @@ public class RenderBow implements IItemRenderer {
     private Minecraft mc;
 
     public RenderBow() {
-        //this.renderManager = RenderManager.instance;
+        // this.renderManager = RenderManager.instance;
         this.mc = Minecraft.getMinecraft();
-        //this.texturemanager = this.mc.getTextureManager();
+        // this.texturemanager = this.mc.getTextureManager();
     }
 
     @Override
-//HandleRenderType lets forge know if it will renderBackground the item in the requested view.
+    // HandleRenderType lets forge know if it will renderBackground the item in the requested view.
     public boolean handleRenderType(ItemStack item, ItemRenderType type) {
-//You can remove everything after "EQUIPPED" if you only want this class to renderBackground the third person item.
-        return type == ItemRenderType.EQUIPPED;// || type == ItemRenderType.EQUIPPED_FIRST_PERSON;
+        // You can remove everything after "EQUIPPED" if you only want this class to renderBackground the third person
+        // item.
+        return type == ItemRenderType.EQUIPPED; // || type == ItemRenderType.EQUIPPED_FIRST_PERSON;
     }
 
     @Override
@@ -45,23 +46,23 @@ public class RenderBow implements IItemRenderer {
     @Override
     public void renderItem(ItemRenderType type, ItemStack item, Object... data) {
         EntityLivingBase entity = (EntityLivingBase) data[1];
-        //ItemRenderer irInstance = this.mc.entityRenderer.itemRenderer;
+        // ItemRenderer irInstance = this.mc.entityRenderer.itemRenderer;
         GL11.glPushMatrix(); // prevents Forge from pre-translating the item
         if (type == ItemRenderType.EQUIPPED_FIRST_PERSON) {
             this.renderItem(entity, item, 0);
         } else {
             GL11.glPushMatrix();
-// contra-translate the item from it's standard translation
-// also apply some more scale or else the bow is tiny
+            // contra-translate the item from it's standard translation
+            // also apply some more scale or else the bow is tiny
             float f2 = 3F - (1F / 1.3F);
-            GL11.glRotatef(10.0F, 0.0F, 0.0F, 1.0F); //Roll left-right
-            GL11.glRotatef(110.0F, 1.0F, 0.0F, 0.0F);//aim up-down
-            GL11.glRotatef(-10.0F, 0.0F, 0.0F, 1.0F);//aim left-right
+            GL11.glRotatef(10.0F, 0.0F, 0.0F, 1.0F); // Roll left-right
+            GL11.glRotatef(110.0F, 1.0F, 0.0F, 0.0F); // aim up-down
+            GL11.glRotatef(-10.0F, 0.0F, 0.0F, 1.0F); // aim left-right
             GL11.glScalef(f2, f2, f2);
             GL11.glTranslatef(0.15F, -0.1875F, 0.1875F);
 
-// renderBackground the item as 'real' bow
-//This is pulled from RenderBiped
+            // renderBackground the item as 'real' bow
+            // This is pulled from RenderBiped
             float f3 = 0.625F;
             GL11.glTranslatef(0.0F, 0.125F, 0.3125F);
             GL11.glRotatef(-20.0F, 0.0F, 1.0F, 0.0F);
@@ -74,7 +75,6 @@ public class RenderBow implements IItemRenderer {
         }
         GL11.glPopMatrix(); // prevents GL Underflow errors
     }
-
 
     private void renderItem(EntityLivingBase par1EntityLivingBase, ItemStack par2ItemStack, int par3) {
         RenderBlocks renderBlocksIr = new RenderBlocks();
@@ -89,8 +89,11 @@ public class RenderBow implements IItemRenderer {
         IItemRenderer customRenderer = MinecraftForgeClient.getItemRenderer(par2ItemStack, type);
         if (customRenderer != null) {
             texturemanager.bindTexture(texturemanager.getResourceLocation(par2ItemStack.getItemSpriteNumber()));
-            ForgeHooksClient.renderEquippedItem(type, customRenderer, renderBlocksIr, par1EntityLivingBase, par2ItemStack);
-        } else if (par2ItemStack.getItemSpriteNumber() == 0 && item instanceof ItemBlock && RenderBlocks.renderItemIn3d(block.getRenderType())) {
+            ForgeHooksClient.renderEquippedItem(
+                    type, customRenderer, renderBlocksIr, par1EntityLivingBase, par2ItemStack);
+        } else if (par2ItemStack.getItemSpriteNumber() == 0
+                && item instanceof ItemBlock
+                && RenderBlocks.renderItemIn3d(block.getRenderType())) {
             texturemanager.bindTexture(texturemanager.getResourceLocation(0));
 
             if (par2ItemStack != null && par2ItemStack.getItem() instanceof ItemCloth) {
@@ -112,7 +115,7 @@ public class RenderBow implements IItemRenderer {
             }
 
             texturemanager.bindTexture(texturemanager.getResourceLocation(par2ItemStack.getItemSpriteNumber()));
-            //TextureUtil.func_147950_a(false, false);
+            // TextureUtil.func_147950_a(false, false);
             Tessellator tessellator = Tessellator.instance;
             float f = iicon.getMinU();
             float f1 = iicon.getMaxU();
@@ -127,7 +130,8 @@ public class RenderBow implements IItemRenderer {
             GL11.glRotatef(50.0F, 0.0F, 1.0F, 0.0F);
             GL11.glRotatef(335.0F, 0.0F, 0.0F, 1.0F);
             GL11.glTranslatef(-0.9375F, -0.0625F, 0.0F);
-            ItemRenderer.renderItemIn2D(tessellator, f1, f2, f, f3, iicon.getIconWidth(), iicon.getIconHeight(), 0.0625F);
+            ItemRenderer.renderItemIn2D(
+                    tessellator, f1, f2, f, f3, iicon.getIconWidth(), iicon.getIconHeight(), 0.0625F);
 
             if (par2ItemStack.hasEffect(par3)) {
                 ResourceLocation RES_ITEM_GLINT = new ResourceLocation("textures/misc/enchanted_item_glint.png");
@@ -167,6 +171,4 @@ public class RenderBow implements IItemRenderer {
 
         GL11.glPopMatrix();
     }
-
-
 }

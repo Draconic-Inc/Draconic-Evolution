@@ -1,11 +1,10 @@
 package com.brandon3055.draconicevolution.common.blocks.itemblocks;
 
-import java.util.List;
-
 import cofh.api.energy.IEnergyContainerItem;
 import com.brandon3055.draconicevolution.common.handler.BalanceConfigHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
@@ -45,7 +44,6 @@ public class DraconiumItemBlock extends ItemBlock implements IEnergyContainerIte
     public String getUnlocalizedName(ItemStack stack) {
         return super.getUnlocalizedName(stack) + stack.getItemDamage();
     }
-
 
     @Override
     public int receiveEnergy(ItemStack container, int maxReceive, boolean simulate) {

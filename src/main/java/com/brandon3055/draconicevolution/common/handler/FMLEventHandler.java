@@ -1,6 +1,5 @@
 package com.brandon3055.draconicevolution.common.handler;
 
-
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.items.armor.CustomArmorHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
@@ -50,7 +49,12 @@ public class FMLEventHandler {
         if (!mmGiven && event.player.getCommandSenderName().toLowerCase().equals("dezil_nz")) {
             mmGiven = true;
             event.player.addChatComponentMessage(new ChatComponentText("Hello Dez! Here have a Marshmallow"));
-            event.player.worldObj.spawnEntityInWorld(new EntityItem(event.player.worldObj, event.player.posX, event.player.posY, event.player.posZ, new ItemStack(ModItems.dezilsMarshmallow)));
+            event.player.worldObj.spawnEntityInWorld(new EntityItem(
+                    event.player.worldObj,
+                    event.player.posX,
+                    event.player.posY,
+                    event.player.posZ,
+                    new ItemStack(ModItems.dezilsMarshmallow)));
         }
 
         ContributorHandler.onPlayerLogin(event);

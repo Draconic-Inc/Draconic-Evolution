@@ -19,14 +19,14 @@ import net.minecraftforge.common.util.ForgeDirection;
  */
 public class TileEnergyTransceiver extends TileRemoteEnergyBase {
 
-    public int facing = 0;//0=up, 1=down, 3=north, 2=south, 4=east, 5=west
+    public int facing = 0; // 0=up, 1=down, 3=north, 2=south, 4=east, 5=west
     private boolean input = false;
     public boolean transferBoost = false;
+
     @SideOnly(Side.CLIENT)
     private ParticleEnergyField particle;
 
-    public TileEnergyTransceiver() {
-    }
+    public TileEnergyTransceiver() {}
 
     public TileEnergyTransceiver(int powerTier) {
         this.powerTier = powerTier;
@@ -39,26 +39,44 @@ public class TileEnergyTransceiver extends TileRemoteEnergyBase {
 
         if (!worldObj.isRemote) {
             ForgeDirection direction = ForgeDirection.getOrientation(facing).getOpposite();
-            TileEntity adjacentTile = worldObj.getTileEntity(xCoord + direction.offsetX, yCoord + direction.offsetY, zCoord + direction.offsetZ);
+            TileEntity adjacentTile = worldObj.getTileEntity(
+                    xCoord + direction.offsetX, yCoord + direction.offsetY, zCoord + direction.offsetZ);
             if (!input && adjacentTile instanceof IEnergyReceiver) {
                 IEnergyReceiver handler = (IEnergyReceiver) adjacentTile;
-                storage.extractEnergy(handler.receiveEnergy(direction.getOpposite(), storage.extractEnergy(storage.getMaxExtract(), true), false), false);
+                storage.extractEnergy(
+                        handler.receiveEnergy(
+                                direction.getOpposite(), storage.extractEnergy(storage.getMaxExtract(), true), false),
+                        false);
                 if (transferBoost) {
                     for (int i = 0; i < 4; i++)
-                        storage.extractEnergy(handler.receiveEnergy(direction.getOpposite(), storage.extractEnergy(storage.getMaxExtract(), true), false), false);
+                        storage.extractEnergy(
+                                handler.receiveEnergy(
+                                        direction.getOpposite(),
+                                        storage.extractEnergy(storage.getMaxExtract(), true),
+                                        false),
+                                false);
                 }
             } else if (input && adjacentTile instanceof IEnergyProvider) {
                 IEnergyProvider handler = (IEnergyProvider) adjacentTile;
-                storage.receiveEnergy(handler.extractEnergy(direction.getOpposite(), storage.receiveEnergy(storage.getMaxExtract(), true), false), false);
+                storage.receiveEnergy(
+                        handler.extractEnergy(
+                                direction.getOpposite(), storage.receiveEnergy(storage.getMaxExtract(), true), false),
+                        false);
                 if (transferBoost) {
                     for (int i = 0; i < 4; i++)
-                        storage.receiveEnergy(handler.extractEnergy(direction.getOpposite(), storage.receiveEnergy(storage.getMaxExtract(), true), false), false);
+                        storage.receiveEnergy(
+                                handler.extractEnergy(
+                                        direction.getOpposite(),
+                                        storage.receiveEnergy(storage.getMaxExtract(), true),
+                                        false),
+                                false);
                 }
             }
         }
 
         if (worldObj.isRemote)
-            particle = DraconicEvolution.proxy.energyField(worldObj, getBeamX(), getBeamY(), getBeamZ(), 1, powerTier == 1, particle, inView > 0);
+            particle = DraconicEvolution.proxy.energyField(
+                    worldObj, getBeamX(), getBeamY(), getBeamZ(), 1, powerTier == 1, particle, inView > 0);
     }
 
     @Override
@@ -106,23 +124,23 @@ public class TileEnergyTransceiver extends TileRemoteEnergyBase {
 
     @Override
     public int getCap() {
-        return powerTier == 0 ?
-               BalanceConfigHandler.energyTransceiverBasicStorage :
-               BalanceConfigHandler.energyTransceiverAdvancedStorage;
+        return powerTier == 0
+                ? BalanceConfigHandler.energyTransceiverBasicStorage
+                : BalanceConfigHandler.energyTransceiverAdvancedStorage;
     }
 
     @Override
     public int getRec() {
-        return powerTier == 0 ?
-               BalanceConfigHandler.energyTransceiverBasicMaxReceive :
-               BalanceConfigHandler.energyTransceiverAdvancedMaxReceive;
+        return powerTier == 0
+                ? BalanceConfigHandler.energyTransceiverBasicMaxReceive
+                : BalanceConfigHandler.energyTransceiverAdvancedMaxReceive;
     }
 
     @Override
     public int getExt() {
-        return powerTier == 0 ?
-               BalanceConfigHandler.energyTransceiverBasicMaxExtract :
-               BalanceConfigHandler.energyTransceiverAdvancedMaxExtract;
+        return powerTier == 0
+                ? BalanceConfigHandler.energyTransceiverBasicMaxExtract
+                : BalanceConfigHandler.energyTransceiverAdvancedMaxExtract;
     }
 
     @Override
@@ -148,12 +166,16 @@ public class TileEnergyTransceiver extends TileRemoteEnergyBase {
 
     @Override
     public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate) {
-        return from == ForgeDirection.getOrientation(facing).getOpposite() && input ? storage.receiveEnergy(maxReceive, simulate) : 0;
+        return from == ForgeDirection.getOrientation(facing).getOpposite() && input
+                ? storage.receiveEnergy(maxReceive, simulate)
+                : 0;
     }
 
     @Override
     public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate) {
-        return from == ForgeDirection.getOrientation(facing).getOpposite() && !input ? storage.extractEnergy(maxExtract, simulate) : 0;
+        return from == ForgeDirection.getOrientation(facing).getOpposite() && !input
+                ? storage.extractEnergy(maxExtract, simulate)
+                : 0;
     }
 
     @Override

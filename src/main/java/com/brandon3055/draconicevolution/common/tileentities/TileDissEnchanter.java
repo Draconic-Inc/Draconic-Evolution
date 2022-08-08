@@ -1,6 +1,9 @@
 package com.brandon3055.draconicevolution.common.tileentities;
 
 import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -14,10 +17,6 @@ import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeHooks;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
 /**
  * Created by Brandon on 27/06/2014.
  */
@@ -28,13 +27,20 @@ public class TileDissEnchanter extends TileEntity implements ISidedInventory {
     public int timer = 0;
     public float bookPower = 0f;
 
-    //==============================================LOGIC=======================================================//
+    // ==============================================LOGIC=======================================================//
 
     @Override
     public void updateEntity() {
         timer++;
         if (worldObj.isRemote && isValidRecipe && worldObj.rand.nextFloat() > 0.5f) {
-            worldObj.spawnParticle("enchantmenttable", xCoord + 0.3 + (worldObj.rand.nextDouble() * 0.4), yCoord + 0.7 + (worldObj.rand.nextDouble() * 0.5), zCoord + 0.3 + (worldObj.rand.nextDouble() * 0.4), 0D, 0.3D, 0D);
+            worldObj.spawnParticle(
+                    "enchantmenttable",
+                    xCoord + 0.3 + (worldObj.rand.nextDouble() * 0.4),
+                    yCoord + 0.7 + (worldObj.rand.nextDouble() * 0.5),
+                    zCoord + 0.3 + (worldObj.rand.nextDouble() * 0.4),
+                    0D,
+                    0.3D,
+                    0D);
         }
     }
 
@@ -44,12 +50,12 @@ public class TileDissEnchanter extends TileEntity implements ISidedInventory {
             flag = false;
             dissenchantCost = 0;
         } else {
-            if (items[1].getItem() != Items.book || EnchantmentHelper.getEnchantments(items[0]).size() == 0)
-                flag = false;
+            if (items[1].getItem() != Items.book
+                    || EnchantmentHelper.getEnchantments(items[0]).size() == 0) flag = false;
         }
         if (items[0] != null) dissenchantCost = ItemNBTHelper.getInteger(items[0], "RepairCost", 0);
-        //if (flag) dissenchantCost = ItemNBTHelper.getInteger(items[0], "RepairCost", 0);
-        //else dissenchantCost = 0;
+        // if (flag) dissenchantCost = ItemNBTHelper.getInteger(items[0], "RepairCost", 0);
+        // else dissenchantCost = 0;
         isValidRecipe = flag;
 
         if (!this.worldObj.isRemote) {
@@ -58,7 +64,9 @@ public class TileDissEnchanter extends TileEntity implements ISidedInventory {
 
             for (j = -1; j <= 1; ++j) {
                 for (int k = -1; k <= 1; ++k) {
-                    if ((j != 0 || k != 0) && this.worldObj.isAirBlock(this.xCoord + k, this.yCoord, this.zCoord + j) && this.worldObj.isAirBlock(this.xCoord + k, this.yCoord + 1, this.zCoord + j)) {
+                    if ((j != 0 || k != 0)
+                            && this.worldObj.isAirBlock(this.xCoord + k, this.yCoord, this.zCoord + j)
+                            && this.worldObj.isAirBlock(this.xCoord + k, this.yCoord + 1, this.zCoord + j)) {
                         bookPower += ForgeHooks.getEnchantPower(worldObj, xCoord + k * 2, yCoord, zCoord + j * 2);
                         bookPower += ForgeHooks.getEnchantPower(worldObj, xCoord + k * 2, yCoord + 1, zCoord + j * 2);
 
@@ -111,7 +119,11 @@ public class TileDissEnchanter extends TileEntity implements ISidedInventory {
         if (input.getItem() == Items.enchanted_book && list.tagCount() == 0) setInventorySlotContents(0, null);
         if (!player.capabilities.isCreativeMode) player.addExperienceLevel(-dissenchantCost);
         if (items[0] != null && ItemNBTHelper.getInteger(items[0], "RepairCost", 0) > 0)
-            ItemNBTHelper.setInteger(items[0], "RepairCost", ItemNBTHelper.getInteger(items[0], "RepairCost", 0) - Math.min(2, ItemNBTHelper.getInteger(items[0], "RepairCost", 0)));
+            ItemNBTHelper.setInteger(
+                    items[0],
+                    "RepairCost",
+                    ItemNBTHelper.getInteger(items[0], "RepairCost", 0)
+                            - Math.min(2, ItemNBTHelper.getInteger(items[0], "RepairCost", 0)));
         if (!player.capabilities.isCreativeMode) decrStackSize(1, 1);
         int maxDamage = items[0] != null ? items[0].getMaxDamage() : 0;
         float damageF = (40f - bookPower) / 100f;
@@ -126,8 +138,7 @@ public class TileDissEnchanter extends TileEntity implements ISidedInventory {
         onInventoryChanged();
     }
 
-
-    //==========================================SYNCHRONIZATION==============================================e====//
+    // ==========================================SYNCHRONIZATION==============================================e====//
 
     @Override
     public Packet getDescriptionPacket() {
@@ -141,7 +152,7 @@ public class TileDissEnchanter extends TileEntity implements ISidedInventory {
         readFromNBT(pkt.func_148857_g());
     }
 
-    //==============================================INVENTORY====================================================//
+    // ==============================================INVENTORY====================================================//
 
     @Override
     public int getSizeInventory() {
@@ -212,12 +223,10 @@ public class TileDissEnchanter extends TileEntity implements ISidedInventory {
     }
 
     @Override
-    public void openInventory() {
-    }
+    public void openInventory() {}
 
     @Override
-    public void closeInventory() {
-    }
+    public void closeInventory() {}
 
     @Override
     public boolean isItemValidForSlot(int i, ItemStack itemstack) {
@@ -227,7 +236,7 @@ public class TileDissEnchanter extends TileEntity implements ISidedInventory {
 
     @Override
     public int[] getAccessibleSlotsFromSide(int var1) {
-        return new int[]{1};
+        return new int[] {1};
     }
 
     @Override
@@ -240,7 +249,7 @@ public class TileDissEnchanter extends TileEntity implements ISidedInventory {
         return true;
     }
 
-    //===========================================================================================================//
+    // ===========================================================================================================//
 
     @Override
     public void writeToNBT(NBTTagCompound compound) {

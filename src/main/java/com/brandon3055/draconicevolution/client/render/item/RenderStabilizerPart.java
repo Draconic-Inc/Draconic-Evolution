@@ -33,14 +33,14 @@ public class RenderStabilizerPart implements IItemRenderer {
             GL11.glTranslated(0.5, 0.5, 0.5);
 
         switch (item.getItemDamage()) {
-            case 0://frame
+            case 0: // frame
                 ResourceHandler.bindResource("textures/models/reactorStabilizerCore.png");
                 modelBase.basePlate.render(0.0625F);
                 break;
-            case 1://rotor inner
+            case 1: // rotor inner
                 ResourceHandler.bindResource("textures/models/reactorStabilizerCore.png");
-//				GL11.glScaled(2, 2, 2);
-//				GL11.glTranslated(-0.2, 0, 0);
+                //				GL11.glScaled(2, 2, 2);
+                //				GL11.glTranslated(-0.2, 0, 0);
                 modelBaseRotors.rotor1R.childModels.clear();
                 modelBaseRotors.rotor1R.render(0.0625F);
                 modelBaseRotors.rotor1R_1.render(0.0625F);
@@ -48,10 +48,10 @@ public class RenderStabilizerPart implements IItemRenderer {
                 modelBaseRotors.rotor1R_3.render(0.0625F);
                 modelBaseRotors.rotor1R_4.render(0.0625F);
                 break;
-            case 2://rotor outer
+            case 2: // rotor outer
                 ResourceHandler.bindResource("textures/models/reactorStabilizerCore.png");
-//				GL11.glScaled(2, 2, 2);
-//				GL11.glTranslated(-0.3, 0, 0);
+                //				GL11.glScaled(2, 2, 2);
+                //				GL11.glTranslated(-0.3, 0, 0);
                 modelBaseRotors.rotor2R.childModels.clear();
                 modelBaseRotors.rotor2R.render(0.0625F);
                 modelBaseRotors.rotor2R_1.render(0.0625F);
@@ -59,10 +59,10 @@ public class RenderStabilizerPart implements IItemRenderer {
                 modelBaseRotors.rotor2R_3.render(0.0625F);
                 modelBaseRotors.rotor2R_4.render(0.0625F);
                 break;
-            case 3://rotor assembly
+            case 3: // rotor assembly
                 ResourceHandler.bindResource("textures/models/reactorStabilizerCore.png");
-//				GL11.glScaled(1.5, 1.5, 1.5);
-//				GL11.glTranslated(-0.05, 0, 0);
+                //				GL11.glScaled(1.5, 1.5, 1.5);
+                //				GL11.glTranslated(-0.05, 0, 0);
                 GL11.glRotatef(30F, 0F, 0F, 1F);
                 modelBase.rotor1R.render(0.0625F);
                 modelBase.hub1.render(0.0625F);
@@ -70,7 +70,7 @@ public class RenderStabilizerPart implements IItemRenderer {
                 modelBase.hub2.render(0.0625F);
                 modelBase.rotor2R.render(0.0625F);
                 break;
-            case 4://stabilizer ring
+            case 4: // stabilizer ring
                 ResourceHandler.bindResource("textures/models/reactorStabilizerRing.png");
                 GL11.glRotatef(90F, 0F, 0F, 1F);
                 modelRing.render(null, -30, 1, 0, 0, 0, 1F / 16F);

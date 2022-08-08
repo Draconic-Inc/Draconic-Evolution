@@ -15,14 +15,23 @@ import org.lwjgl.opengl.GL12;
  * Created by brandon3055 on 3/3/2016.
  */
 public class RenderEntityCustomArrow extends Render {
-    private IModelCustom arrow = AdvancedModelLoader.loadModel(ResourceHandler.getResource("models/tools/ArrowCommon.obj"));
+    private IModelCustom arrow =
+            AdvancedModelLoader.loadModel(ResourceHandler.getResource("models/tools/ArrowCommon.obj"));
 
     public void doRender(EntityCustomArrow entityArrow, double x, double y, double z, float f1, float f2) {
         this.bindEntityTexture(entityArrow);
         GL11.glPushMatrix();
         GL11.glTranslatef((float) x, (float) y, (float) z);
-        GL11.glRotatef(entityArrow.prevRotationYaw + (entityArrow.rotationYaw - entityArrow.prevRotationYaw) * f2 - 90.0F, 0.0F, 1.0F, 0.0F);
-        GL11.glRotatef(entityArrow.prevRotationPitch + (entityArrow.rotationPitch - entityArrow.prevRotationPitch) * f2, 0.0F, 0.0F, 1.0F);
+        GL11.glRotatef(
+                entityArrow.prevRotationYaw + (entityArrow.rotationYaw - entityArrow.prevRotationYaw) * f2 - 90.0F,
+                0.0F,
+                1.0F,
+                0.0F);
+        GL11.glRotatef(
+                entityArrow.prevRotationPitch + (entityArrow.rotationPitch - entityArrow.prevRotationPitch) * f2,
+                0.0F,
+                0.0F,
+                1.0F);
 
         float f10 = 0.3F;
         float f11 = (float) entityArrow.arrowShake - f2;
@@ -38,8 +47,7 @@ public class RenderEntityCustomArrow extends Render {
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-
-        //arrow.renderAll();
+        // arrow.renderAll();
         if (entityArrow.bowProperties != null && entityArrow.bowProperties.energyBolt) {
             arrow.renderAll();
 
@@ -57,15 +65,15 @@ public class RenderEntityCustomArrow extends Render {
         GL11.glDisable(GL12.GL_RESCALE_NORMAL);
         GL11.glDisable(GL11.GL_BLEND);
         GL11.glPopMatrix();
-
     }
-
 
     /**
      * Returns the location of an entity's texture. Doesn't seem to be called unless you call Render.bindEntityTexture.
      */
     protected ResourceLocation getEntityTexture(EntityCustomArrow arrow) {
-        return arrow.bowProperties.energyBolt ? ResourceHandler.getResource("textures/models/reactorCore.png") : ResourceHandler.getResource("textures/models/tools/ArrowCommon.png");
+        return arrow.bowProperties.energyBolt
+                ? ResourceHandler.getResource("textures/models/reactorCore.png")
+                : ResourceHandler.getResource("textures/models/tools/ArrowCommon.png");
     }
 
     /**
@@ -81,7 +89,13 @@ public class RenderEntityCustomArrow extends Render {
      * (Render<T extends Entity) and this method has signature public void func_76986_a(T entity, double d, double d1,
      * double d2, float f, float f1). But JAD is pre 1.5 so doesn't do that.
      */
-    public void doRender(Entity p_76986_1_, double p_76986_2_, double p_76986_4_, double p_76986_6_, float p_76986_8_, float p_76986_9_) {
+    public void doRender(
+            Entity p_76986_1_,
+            double p_76986_2_,
+            double p_76986_4_,
+            double p_76986_6_,
+            float p_76986_8_,
+            float p_76986_9_) {
         this.doRender((EntityCustomArrow) p_76986_1_, p_76986_2_, p_76986_4_, p_76986_6_, p_76986_8_, p_76986_9_);
     }
 }

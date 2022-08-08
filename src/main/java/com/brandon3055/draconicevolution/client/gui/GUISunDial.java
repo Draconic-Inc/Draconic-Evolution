@@ -1,20 +1,18 @@
 package com.brandon3055.draconicevolution.client.gui;
 
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.common.container.ContainerSunDial;
+import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.network.TeleporterPacket;
+import com.brandon3055.draconicevolution.common.tileentities.TileSunDial;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
-
 import org.lwjgl.opengl.GL11;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.common.container.ContainerSunDial;
-import com.brandon3055.draconicevolution.common.network.TeleporterPacket;
-import com.brandon3055.draconicevolution.common.lib.References;
-import com.brandon3055.draconicevolution.common.tileentities.TileSunDial;
 
 @SideOnly(Side.CLIENT)
 public class GUISunDial extends GuiContainer {
@@ -26,7 +24,6 @@ public class GUISunDial extends GuiContainer {
 
         xSize = 176;
         ySize = 90;
-
     }
 
     private static final ResourceLocation texture = new ResourceLocation(References.MODID, "textures/gui/SunDial.png");
@@ -37,21 +34,20 @@ public class GUISunDial extends GuiContainer {
 
         Minecraft.getMinecraft().getTextureManager().bindTexture(texture);
         drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
-
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int p_146979_1_, int p_146979_2_) {
-        //fontRendererObj.drawString("Charges: " + charges, 90, 25, 0x000000);
-        //drawCenteredString(fontRendererObj, "Charges: " + charges, 117, 25, 0x000000);
-        //drawCenteredString(fontRendererObj, "Weather Controller", xSize/2, -15, 0x2a4ed0);
+        // fontRendererObj.drawString("Charges: " + charges, 90, 25, 0x000000);
+        // drawCenteredString(fontRendererObj, "Charges: " + charges, 117, 25, 0x000000);
+        // drawCenteredString(fontRendererObj, "Weather Controller", xSize/2, -15, 0x2a4ed0);
 
     }
 
     @Override
     public void initGui() {
         super.initGui();
-        //ID
+        // ID
         buttonList.add(new GuiButton(0, guiLeft + 10, guiTop + 10, 85, 20, ""));
     }
 
@@ -60,7 +56,6 @@ public class GUISunDial extends GuiContainer {
         if (button.id == 0) {
             DraconicEvolution.network.sendToServer(new TeleporterPacket());
         }
-
     }
 
     @Override
@@ -72,6 +67,4 @@ public class GUISunDial extends GuiContainer {
         }
         super.updateScreen();
     }
-
-
 }

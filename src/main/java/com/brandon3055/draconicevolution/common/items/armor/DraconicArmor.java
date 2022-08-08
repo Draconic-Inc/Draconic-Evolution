@@ -1,9 +1,5 @@
 package com.brandon3055.draconicevolution.common.items.armor;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.common.utills.InfoHelper;
 import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
@@ -32,6 +28,9 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import forestry.api.apiculture.IArmorApiarist;
 import forestry.api.core.IArmorNaturalist;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -56,24 +55,36 @@ import thaumcraft.api.nodes.IRevealer;
 /**
  * Created by Brandon on 3/07/2014.
  */
-@InterfaceList(value = {
-    @Interface(iface = "thaumcraft.api.IGoggles", modid = "Thaumcraft"),
-    @Interface(iface = "thaumcraft.api.IVisDiscountGear", modid = "Thaumcraft"),
-    @Interface(iface = "thaumcraft.api.nodes.IRevealer", modid = "Thaumcraft"),
-    @Interface(iface = "forestry.api.apiculture.IArmorApiarist", modid = "Forestry"),
-    @Interface(iface = "forestry.api.core.IArmorNaturalist", modid = "Forestry")
-})
-public class DraconicArmor
-    extends ItemArmor
-    implements ISpecialArmor, IConfigurableItem, IInventoryTool, IGoggles, IVisDiscountGear, IRevealer, IUpgradableItem, ICustomArmor, IArmorNaturalist, IArmorApiarist {
+@InterfaceList(
+        value = {
+            @Interface(iface = "thaumcraft.api.IGoggles", modid = "Thaumcraft"),
+            @Interface(iface = "thaumcraft.api.IVisDiscountGear", modid = "Thaumcraft"),
+            @Interface(iface = "thaumcraft.api.nodes.IRevealer", modid = "Thaumcraft"),
+            @Interface(iface = "forestry.api.apiculture.IArmorApiarist", modid = "Forestry"),
+            @Interface(iface = "forestry.api.core.IArmorNaturalist", modid = "Forestry")
+        })
+public class DraconicArmor extends ItemArmor
+        implements ISpecialArmor,
+                IConfigurableItem,
+                IInventoryTool,
+                IGoggles,
+                IVisDiscountGear,
+                IRevealer,
+                IUpgradableItem,
+                ICustomArmor,
+                IArmorNaturalist,
+                IArmorApiarist {
 
-    //TODO Wings
+    // TODO Wings
     @SideOnly(Side.CLIENT)
     private IIcon helmIcon;
+
     @SideOnly(Side.CLIENT)
     private IIcon chestIcon;
+
     @SideOnly(Side.CLIENT)
     private IIcon leggsIcon;
+
     @SideOnly(Side.CLIENT)
     private IIcon bootsIcon;
 
@@ -101,7 +112,10 @@ public class DraconicArmor
     @Override
     public String getUnlocalizedName() {
 
-        return String.format("item.%s%s", References.MODID.toLowerCase() + ":", super.getUnlocalizedName().substring(super.getUnlocalizedName().indexOf(".") + 1));
+        return String.format(
+                "item.%s%s",
+                References.MODID.toLowerCase() + ":",
+                super.getUnlocalizedName().substring(super.getUnlocalizedName().indexOf(".") + 1));
     }
 
     @Override
@@ -141,7 +155,9 @@ public class DraconicArmor
     public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type) {
         if (!ConfigHandler.useOldArmorModel)
             return References.RESOURCESPREFIX + "textures/models/armor/armorDraconic.png";
-        if (stack.getItem() == ModItems.draconicHelm || stack.getItem() == ModItems.draconicChest || stack.getItem() == ModItems.draconicBoots) {
+        if (stack.getItem() == ModItems.draconicHelm
+                || stack.getItem() == ModItems.draconicChest
+                || stack.getItem() == ModItems.draconicBoots) {
             return References.RESOURCESPREFIX + "textures/models/armor/draconic_layer_1.png";
         } else {
             return References.RESOURCESPREFIX + "textures/models/armor/draconic_layer_2.png";
@@ -177,9 +193,10 @@ public class DraconicArmor
         return 0;
     }
 
-    //region ISpecialArmor
+    // region ISpecialArmor
     @Override
-    public ArmorProperties getProperties(EntityLivingBase player, ItemStack armor, DamageSource source, double damage, int slot) {
+    public ArmorProperties getProperties(
+            EntityLivingBase player, ItemStack armor, DamageSource source, double damage, int slot) {
         if (source.isUnblockable() || source.isDamageAbsolute() || source.isMagicDamage())
             return new ArmorProperties(0, damageReduceAmount / 100D, 15);
         return new ArmorProperties(0, damageReduceAmount / 24.5D, 1000);
@@ -191,24 +208,27 @@ public class DraconicArmor
     }
 
     @Override
-    public void damageArmor(EntityLivingBase entity, ItemStack stack, DamageSource source, int damage, int slot) {
-    }
-    //endregion
+    public void damageArmor(EntityLivingBase entity, ItemStack stack, DamageSource source, int damage, int slot) {}
+    // endregion
 
     @Override
     public void onArmorTick(World world, EntityPlayer player, ItemStack stack) {
         if (stack == null) return;
         if (stack.getItem() == ModItems.draconicHelm) {
             if (world.isRemote) return;
-            if (this.getEnergyStored(stack) >= BalanceConfigHandler.draconicArmorEnergyToRemoveEffects && clearNegativeEffects(player)) {
+            if (this.getEnergyStored(stack) >= BalanceConfigHandler.draconicArmorEnergyToRemoveEffects
+                    && clearNegativeEffects(player)) {
                 this.extractEnergy(stack, BalanceConfigHandler.draconicArmorEnergyToRemoveEffects, false);
             }
-            if (player.worldObj.getBlockLightValue((int) Math.floor(player.posX), (int) player.posY + 1, (int) Math.floor(player.posZ)) < 5 && IConfigurableItem.ProfileHelper.getBoolean(stack, "ArmorNVActive", false)) {
+            if (player.worldObj.getBlockLightValue(
+                                    (int) Math.floor(player.posX), (int) player.posY + 1, (int) Math.floor(player.posZ))
+                            < 5
+                    && IConfigurableItem.ProfileHelper.getBoolean(stack, "ArmorNVActive", false)) {
                 player.addPotionEffect(new PotionEffect(Potion.nightVision.id, 419, 0, true));
-            } else if (IConfigurableItem.ProfileHelper.getBoolean(stack, "ArmorNVActive", false) && IConfigurableItem.ProfileHelper.getBoolean(stack, "ArmorNVLock", true))
+            } else if (IConfigurableItem.ProfileHelper.getBoolean(stack, "ArmorNVActive", false)
+                    && IConfigurableItem.ProfileHelper.getBoolean(stack, "ArmorNVLock", true))
                 player.addPotionEffect(new PotionEffect(Potion.nightVision.id, 419, 0, true));
             else if (player.isPotionActive(Potion.nightVision.id)) player.removePotionEffect(Potion.nightVision.id);
-
         }
     }
 
@@ -230,16 +250,20 @@ public class DraconicArmor
                 if (player.isBurning()) {
                     player.extinguish();
                     /*
-					* Wyvern Armor doesn't require energy to extinguish player => Draconic Armor shouldn't require.
-					* See CustomArmorHandler.applyArmorDamageBlocking
-					* */
-                    //flag = false;
+                     * Wyvern Armor doesn't require energy to extinguish player => Draconic Armor shouldn't require.
+                     * See CustomArmorHandler.applyArmorDamageBlocking
+                     * */
+                    // flag = false;
                 }
                 for (PotionEffect potion : potions) {
                     int id = potion.getPotionID();
-                    if ((Boolean) ReflectionHelper.getPrivateValue(Potion.class, Potion.potionTypes[id], new String[]{"isBadEffect", "field_76418_K", "J"})) {
+                    if ((Boolean) ReflectionHelper.getPrivateValue(
+                            Potion.class, Potion.potionTypes[id], new String[] {"isBadEffect", "field_76418_K", "J"})) {
                         if (potion.getPotionID() == Potion.digSlowdown.id && ModHelper.isHoldingCleaver(player)) break;
-                        if ((player.getHeldItem() == null || (player.getHeldItem().getItem() != ModItems.wyvernBow && player.getHeldItem().getItem() != ModItems.draconicBow)) || id != 2) {
+                        if ((player.getHeldItem() == null
+                                        || (player.getHeldItem().getItem() != ModItems.wyvernBow
+                                                && player.getHeldItem().getItem() != ModItems.draconicBow))
+                                || id != 2) {
                             player.removePotionEffect(id);
                             flag = true;
                         }
@@ -282,7 +306,8 @@ public class DraconicArmor
     @Override
     public int getMaxEnergyStored(ItemStack container) {
         int points = IUpgradableItem.EnumUpgrade.RF_CAPACITY.getUpgradePoints(container);
-        return BalanceConfigHandler.draconicArmorBaseStorage + points * BalanceConfigHandler.draconicArmorStoragePerUpgrade;
+        return BalanceConfigHandler.draconicArmorBaseStorage
+                + points * BalanceConfigHandler.draconicArmorStoragePerUpgrade;
     }
 
     /* Misc */
@@ -303,29 +328,43 @@ public class DraconicArmor
             list.add(new ItemConfigField(References.BOOLEAN_ID, slot, "ArmorNVActive").readFromItem(stack, false));
             list.add(new ItemConfigField(References.BOOLEAN_ID, slot, "ArmorNVLock").readFromItem(stack, true));
             if (Loader.isModLoaded("Thaumcraft")) {
-                list.add(new ItemConfigField(References.BOOLEAN_ID, slot, "GogglesOfRevealing").readFromItem(stack, true));
+                list.add(new ItemConfigField(References.BOOLEAN_ID, slot, "GogglesOfRevealing")
+                        .readFromItem(stack, true));
             }
             if (Loader.isModLoaded("Forestry")) {
                 list.add(new ItemConfigField(References.BOOLEAN_ID, slot, "ApiaristArmor").readFromItem(stack, true));
                 list.add(new ItemConfigField(References.BOOLEAN_ID, slot, "NaturalistArmor").readFromItem(stack, true));
             }
         } else if (armorType == 1) {
-            list.add(new ItemConfigField(References.FLOAT_ID, slot, "VerticalAcceleration").setMinMaxAndIncromente(0f, 8f, 0.1f).readFromItem(stack, 0F).setModifier("PLUSPERCENT"));
-            list.add(new ItemConfigField(References.FLOAT_ID, slot, "ArmorFlightSpeedMult").setMinMaxAndIncromente(0f, 6f, 0.1f).readFromItem(stack, 0F).setModifier("PLUSPERCENT"));
+            list.add(new ItemConfigField(References.FLOAT_ID, slot, "VerticalAcceleration")
+                    .setMinMaxAndIncromente(0f, 8f, 0.1f)
+                    .readFromItem(stack, 0F)
+                    .setModifier("PLUSPERCENT"));
+            list.add(new ItemConfigField(References.FLOAT_ID, slot, "ArmorFlightSpeedMult")
+                    .setMinMaxAndIncromente(0f, 6f, 0.1f)
+                    .readFromItem(stack, 0F)
+                    .setModifier("PLUSPERCENT"));
             list.add(new ItemConfigField(References.BOOLEAN_ID, slot, "EffectiveOnSprint").readFromItem(stack, false));
             list.add(new ItemConfigField(References.BOOLEAN_ID, slot, "ArmorFlightLock").readFromItem(stack, false));
-            list.add(new ItemConfigField(References.BOOLEAN_ID, slot, "ArmorInertiaCancellation").readFromItem(stack, false));
+            list.add(new ItemConfigField(References.BOOLEAN_ID, slot, "ArmorInertiaCancellation")
+                    .readFromItem(stack, false));
             if (Loader.isModLoaded("Forestry")) {
                 list.add(new ItemConfigField(References.BOOLEAN_ID, slot, "ApiaristArmor").readFromItem(stack, true));
             }
         } else if (armorType == 2) {
-            list.add(new ItemConfigField(References.FLOAT_ID, slot, "ArmorSpeedMult").setMinMaxAndIncromente(0f, 8f, 0.1f).readFromItem(stack, 0F).setModifier("PLUSPERCENT"));
+            list.add(new ItemConfigField(References.FLOAT_ID, slot, "ArmorSpeedMult")
+                    .setMinMaxAndIncromente(0f, 8f, 0.1f)
+                    .readFromItem(stack, 0F)
+                    .setModifier("PLUSPERCENT"));
             list.add(new ItemConfigField(References.BOOLEAN_ID, slot, "ArmorSprintOnly").readFromItem(stack, false));
             if (Loader.isModLoaded("Forestry")) {
                 list.add(new ItemConfigField(References.BOOLEAN_ID, slot, "ApiaristArmor").readFromItem(stack, true));
             }
         } else if (armorType == 3) {
-            list.add(new ItemConfigField(References.FLOAT_ID, slot, "ArmorJumpMult").setMinMaxAndIncromente(0f, 15f, 0.1f).readFromItem(stack, 0f).setModifier("PLUSPERCENT"));
+            list.add(new ItemConfigField(References.FLOAT_ID, slot, "ArmorJumpMult")
+                    .setMinMaxAndIncromente(0f, 15f, 0.1f)
+                    .readFromItem(stack, 0f)
+                    .setModifier("PLUSPERCENT"));
             list.add(new ItemConfigField(References.BOOLEAN_ID, slot, "ArmorSprintOnly").readFromItem(stack, false));
             list.add(new ItemConfigField(References.BOOLEAN_ID, slot, "ArmorHillStep").readFromItem(stack, true));
             if (Loader.isModLoaded("Forestry")) {
@@ -347,7 +386,11 @@ public class DraconicArmor
 
     @Override
     public boolean isEnchantValid(Enchantment enchant) {
-        return enchant.type == EnumEnchantmentType.armor || (armorType == 0 && enchant.type == EnumEnchantmentType.armor_head) || (armorType == 1 && enchant.type == EnumEnchantmentType.armor_torso) || (armorType == 2 && enchant.type == EnumEnchantmentType.armor_legs) || (armorType == 3 && enchant.type == EnumEnchantmentType.armor_feet);
+        return enchant.type == EnumEnchantmentType.armor
+                || (armorType == 0 && enchant.type == EnumEnchantmentType.armor_head)
+                || (armorType == 1 && enchant.type == EnumEnchantmentType.armor_torso)
+                || (armorType == 2 && enchant.type == EnumEnchantmentType.armor_legs)
+                || (armorType == 3 && enchant.type == EnumEnchantmentType.armor_feet);
     }
 
     @Override
@@ -365,12 +408,12 @@ public class DraconicArmor
     @Override
     @Method(modid = "Thaumcraft")
     public int getVisDiscount(ItemStack itemStack, EntityPlayer entityPlayer, Aspect aspect) {
-        if (itemStack == null || itemStack.getItem() != ModItems.draconicHelm)
-        {
+        if (itemStack == null || itemStack.getItem() != ModItems.draconicHelm) {
             return 0;
         }
         return IConfigurableItem.ProfileHelper.getBoolean(itemStack, "GogglesOfRevealing", true) ? 5 : 0;
     }
+
     @SideOnly(Side.CLIENT)
     public ModelBiped model;
 
@@ -419,7 +462,8 @@ public class DraconicArmor
 
         if ((entityLiving instanceof EntityPlayer)) {
             if (((EntityPlayer) entityLiving).getItemInUseDuration() > 0) {
-                EnumAction enumaction = ((EntityPlayer) entityLiving).getItemInUse().getItemUseAction();
+                EnumAction enumaction =
+                        ((EntityPlayer) entityLiving).getItemInUse().getItemUseAction();
                 if (enumaction == EnumAction.block) {
                     this.model.heldItemRight = 3;
                 } else if (enumaction == EnumAction.bow) {
@@ -428,19 +472,20 @@ public class DraconicArmor
             }
         }
 
-
         return model;
     }
 
     @Override
     public List<EnumUpgrade> getUpgrades(ItemStack itemstack) {
-        return new ArrayList<EnumUpgrade>() {{
-            add(EnumUpgrade.RF_CAPACITY);
-            add(EnumUpgrade.SHIELD_CAPACITY);
-            add(EnumUpgrade.SHIELD_RECOVERY);
-            //	if (armorType == 2) add(EnumUpgrade.MOVE_SPEED);
-            //	if (armorType == 3) add(EnumUpgrade.JUMP_BOOST);
-        }};
+        return new ArrayList<EnumUpgrade>() {
+            {
+                add(EnumUpgrade.RF_CAPACITY);
+                add(EnumUpgrade.SHIELD_CAPACITY);
+                add(EnumUpgrade.SHIELD_RECOVERY);
+                //	if (armorType == 2) add(EnumUpgrade.MOVE_SPEED);
+                //	if (armorType == 3) add(EnumUpgrade.JUMP_BOOST);
+            }
+        };
     }
 
     @Override
@@ -457,9 +502,12 @@ public class DraconicArmor
     public List<String> getUpgradeStats(ItemStack stack) {
         List<String> strings = new ArrayList<String>();
 
-        strings.add(InfoHelper.ITC() + StatCollector.translateToLocal("gui.de.RFCapacity.txt") + ": " + InfoHelper.HITC() + Utills.formatNumber(getMaxEnergyStored(stack)));
-        strings.add(InfoHelper.ITC() + StatCollector.translateToLocal("gui.de.ShieldCapacity.txt") + ": " + InfoHelper.HITC() + (int) getProtectionPoints(stack));
-        strings.add(InfoHelper.ITC() + StatCollector.translateToLocal("gui.de.ShieldRecovery.txt") + ": " + InfoHelper.HITC() + Utills.round(getRecoveryPoints(stack) * 0.2D, 10) + " EPS");
+        strings.add(InfoHelper.ITC() + StatCollector.translateToLocal("gui.de.RFCapacity.txt") + ": "
+                + InfoHelper.HITC() + Utills.formatNumber(getMaxEnergyStored(stack)));
+        strings.add(InfoHelper.ITC() + StatCollector.translateToLocal("gui.de.ShieldCapacity.txt") + ": "
+                + InfoHelper.HITC() + (int) getProtectionPoints(stack));
+        strings.add(InfoHelper.ITC() + StatCollector.translateToLocal("gui.de.ShieldRecovery.txt") + ": "
+                + InfoHelper.HITC() + Utills.round(getRecoveryPoints(stack) * 0.2D, 10) + " EPS");
 
         return strings;
     }
@@ -488,7 +536,7 @@ public class DraconicArmor
         return 0;
     }
 
-    //region//----------------- ICustomArmor Start -----------------//
+    // region//----------------- ICustomArmor Start -----------------//
 
     @Override
     public float getProtectionPoints(ItemStack stack) {
@@ -503,21 +551,26 @@ public class DraconicArmor
     @Override
     public float getSpeedModifier(ItemStack stack, EntityPlayer player) {
         if (IConfigurableItem.ProfileHelper.getBoolean(stack, "ArmorSprintOnly", false)) {
-            return player.isSprinting() ? IConfigurableItem.ProfileHelper.getFloat(stack, "ArmorSpeedMult", 0f) : IConfigurableItem.ProfileHelper.getFloat(stack, "ArmorSpeedMult", 0f) / 5F;
+            return player.isSprinting()
+                    ? IConfigurableItem.ProfileHelper.getFloat(stack, "ArmorSpeedMult", 0f)
+                    : IConfigurableItem.ProfileHelper.getFloat(stack, "ArmorSpeedMult", 0f) / 5F;
         } else return IConfigurableItem.ProfileHelper.getFloat(stack, "ArmorSpeedMult", 0f);
     }
 
     @Override
     public float getJumpModifier(ItemStack stack, EntityPlayer player) {
         if (IConfigurableItem.ProfileHelper.getBoolean(stack, "ArmorSprintOnly", false)) {
-            return player.isSprinting() || BrandonsCore.proxy.isCtrlDown() ? IConfigurableItem.ProfileHelper.getFloat(stack, "ArmorJumpMult", 0f) : IConfigurableItem.ProfileHelper.getFloat(stack, "ArmorJumpMult", 0f) / 5F;
+            return player.isSprinting() || BrandonsCore.proxy.isCtrlDown()
+                    ? IConfigurableItem.ProfileHelper.getFloat(stack, "ArmorJumpMult", 0f)
+                    : IConfigurableItem.ProfileHelper.getFloat(stack, "ArmorJumpMult", 0f) / 5F;
         } else return IConfigurableItem.ProfileHelper.getFloat(stack, "ArmorJumpMult", 0f);
     }
 
     @Override
     public boolean hasHillStep(ItemStack stack, EntityPlayer player) {
         if (IConfigurableItem.ProfileHelper.getBoolean(stack, "ArmorSprintOnly", false)) {
-            return (player.isSprinting() || BrandonsCore.proxy.isCtrlDown()) && IConfigurableItem.ProfileHelper.getBoolean(stack, "ArmorHillStep", true);
+            return (player.isSprinting() || BrandonsCore.proxy.isCtrlDown())
+                    && IConfigurableItem.ProfileHelper.getBoolean(stack, "ArmorHillStep", true);
         } else return IConfigurableItem.ProfileHelper.getBoolean(stack, "ArmorHillStep", true);
     }
 
@@ -528,20 +581,28 @@ public class DraconicArmor
 
     @Override
     public boolean[] hasFlight(ItemStack stack) {
-        return new boolean[]{true, IConfigurableItem.ProfileHelper.getBoolean(stack, "ArmorFlightLock", false), IConfigurableItem.ProfileHelper.getBoolean(stack, "ArmorInertiaCancellation", false)};
+        return new boolean[] {
+            true,
+            IConfigurableItem.ProfileHelper.getBoolean(stack, "ArmorFlightLock", false),
+            IConfigurableItem.ProfileHelper.getBoolean(stack, "ArmorInertiaCancellation", false)
+        };
     }
 
     @Override
     public float getFlightSpeedModifier(ItemStack stack, EntityPlayer player) {
         if (IConfigurableItem.ProfileHelper.getBoolean(stack, "EffectiveOnSprint", false)) {
-            return BrandonsCore.proxy.isCtrlDown() ? IConfigurableItem.ProfileHelper.getFloat(stack, "ArmorFlightSpeedMult", 0f) : 0F;
+            return BrandonsCore.proxy.isCtrlDown()
+                    ? IConfigurableItem.ProfileHelper.getFloat(stack, "ArmorFlightSpeedMult", 0f)
+                    : 0F;
         } else return IConfigurableItem.ProfileHelper.getFloat(stack, "ArmorFlightSpeedMult", 0f);
     }
 
     @Override
     public float getFlightVModifier(ItemStack stack, EntityPlayer player) {
         if (IConfigurableItem.ProfileHelper.getBoolean(stack, "EffectiveOnSprint", false)) {
-            return BrandonsCore.proxy.isCtrlDown() ? IConfigurableItem.ProfileHelper.getFloat(stack, "VerticalAcceleration", 0F) : 0F;
+            return BrandonsCore.proxy.isCtrlDown()
+                    ? IConfigurableItem.ProfileHelper.getFloat(stack, "VerticalAcceleration", 0F)
+                    : 0F;
         } else return IConfigurableItem.ProfileHelper.getFloat(stack, "VerticalAcceleration", 0F);
     }
 
@@ -550,7 +611,7 @@ public class DraconicArmor
         return BalanceConfigHandler.draconicArmorEnergyPerProtectionPoint;
     }
 
-    //endregion
+    // endregion
 
     @Override
     public boolean hasProfiles() {
@@ -559,25 +620,23 @@ public class DraconicArmor
 
     @Override
     @Method(modid = "Forestry")
-    public boolean canSeePollination(EntityPlayer entityPlayer, ItemStack itemStack, boolean flag)
-    {
-        if (itemStack == null || itemStack.getItem() != ModItems.draconicHelm)
-        {
+    public boolean canSeePollination(EntityPlayer entityPlayer, ItemStack itemStack, boolean flag) {
+        if (itemStack == null || itemStack.getItem() != ModItems.draconicHelm) {
             return false;
         }
-        return IConfigurableItem.ProfileHelper.getBoolean(itemStack, "NaturalistArmor", true) ||
-               IConfigurableItem.ProfileHelper.getBoolean(itemStack, "ApiaristArmor", true);
+        return IConfigurableItem.ProfileHelper.getBoolean(itemStack, "NaturalistArmor", true)
+                || IConfigurableItem.ProfileHelper.getBoolean(itemStack, "ApiaristArmor", true);
     }
+
     @Override
     @Method(modid = "Forestry")
-    public boolean protectEntity(EntityLivingBase entityLivingBase, ItemStack itemStack, String s, boolean b)
-    {
+    public boolean protectEntity(EntityLivingBase entityLivingBase, ItemStack itemStack, String s, boolean b) {
         return IConfigurableItem.ProfileHelper.getBoolean(itemStack, "ApiaristArmor", true);
     }
+
     @Override
     @Method(modid = "Forestry")
-    public boolean protectPlayer(EntityPlayer entityPlayer, ItemStack itemStack, String s, boolean b)
-    {
+    public boolean protectPlayer(EntityPlayer entityPlayer, ItemStack itemStack, String s, boolean b) {
         return protectEntity(entityPlayer, itemStack, s, b);
     }
 }

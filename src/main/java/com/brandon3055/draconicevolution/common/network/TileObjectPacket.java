@@ -1,8 +1,8 @@
 package com.brandon3055.draconicevolution.common.network;
 
+import com.brandon3055.brandonscore.common.utills.DataUtills;
 import com.brandon3055.draconicevolution.common.container.ContainerDataSync;
 import com.brandon3055.draconicevolution.common.tileentities.TileObjectSync;
-import com.brandon3055.brandonscore.common.utills.DataUtills;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
@@ -26,8 +26,7 @@ public class TileObjectPacket implements IMessage {
     /**
      * Used for Tile and Container synchronization
      */
-    public TileObjectPacket() {
-    }
+    public TileObjectPacket() {}
 
     public TileObjectPacket(TileObjectSync tile, byte dataType, int index, Object object) {
         this.isContainerPacket = tile == null;
@@ -55,7 +54,6 @@ public class TileObjectPacket implements IMessage {
         bytes.writeShort(index);
 
         DataUtills.instance.writeObjectToBytes(bytes, dataType, object);
-
     }
 
     @Override
@@ -80,23 +78,34 @@ public class TileObjectPacket implements IMessage {
         public IMessage onMessage(TileObjectPacket message, MessageContext ctx) {
             if (ctx.side == Side.CLIENT) {
                 if (message.isContainerPacket) {
-                    ContainerDataSync container = Minecraft.getMinecraft().thePlayer.openContainer instanceof ContainerDataSync ? (ContainerDataSync) Minecraft.getMinecraft().thePlayer.openContainer : null;
+                    ContainerDataSync container =
+                            Minecraft.getMinecraft().thePlayer.openContainer instanceof ContainerDataSync
+                                    ? (ContainerDataSync) Minecraft.getMinecraft().thePlayer.openContainer
+                                    : null;
                     if (container == null) return null;
                     container.receiveSyncData(message.index, (Integer) message.object);
                 } else {
-                    if (!(Minecraft.getMinecraft().theWorld.getTileEntity(message.x, message.y, message.z) instanceof TileObjectSync))
-                        return null;
-                    ((TileObjectSync) Minecraft.getMinecraft().theWorld.getTileEntity(message.x, message.y, message.z)).receiveObjectFromServer(message.index, message.object);
+                    if (!(Minecraft.getMinecraft().theWorld.getTileEntity(message.x, message.y, message.z)
+                            instanceof TileObjectSync)) return null;
+                    ((TileObjectSync) Minecraft.getMinecraft().theWorld.getTileEntity(message.x, message.y, message.z))
+                            .receiveObjectFromServer(message.index, message.object);
                 }
             } else {
                 if (message.isContainerPacket) {
-                    ContainerDataSync container = ctx.getServerHandler().playerEntity.openContainer instanceof ContainerDataSync ? (ContainerDataSync) ctx.getServerHandler().playerEntity.openContainer : null;
+                    ContainerDataSync container =
+                            ctx.getServerHandler().playerEntity.openContainer instanceof ContainerDataSync
+                                    ? (ContainerDataSync) ctx.getServerHandler().playerEntity.openContainer
+                                    : null;
                     if (container == null) return null;
                     container.receiveSyncData(message.index, (Integer) message.object);
                 } else {
-                    if (!(ctx.getServerHandler().playerEntity.worldObj.getTileEntity(message.x, message.y, message.z) instanceof TileObjectSync))
-                        return null;
-                    ((TileObjectSync) ctx.getServerHandler().playerEntity.worldObj.getTileEntity(message.x, message.y, message.z)).receiveObjectFromClient(message.index, message.object);
+                    if (!(ctx.getServerHandler().playerEntity.worldObj.getTileEntity(message.x, message.y, message.z)
+                            instanceof TileObjectSync)) return null;
+                    ((TileObjectSync) ctx.getServerHandler()
+                                    .playerEntity
+                                    .worldObj
+                                    .getTileEntity(message.x, message.y, message.z))
+                            .receiveObjectFromClient(message.index, message.object);
                 }
             }
             return null;

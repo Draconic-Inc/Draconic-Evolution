@@ -25,6 +25,7 @@ public class ContainerDraconiumChest extends Container {
      * The crafting matrix inventory (3x3).
      */
     public InventoryCrafting craftMatrix;
+
     public IInventory craftResult;
     private TileDraconiumChest tile;
     private EntityPlayer player;
@@ -35,6 +36,7 @@ public class ContainerDraconiumChest extends Container {
      * how much energy is stored in the tile
      */
     private int lastEnergyStored;
+
     private int lastBurnSpeed;
     private int lastTickFeedMode;
     private boolean lastTickOutputLock;
@@ -60,16 +62,20 @@ public class ContainerDraconiumChest extends Container {
     private void addContainerSlots() {
         for (int chestRow = 0; chestRow < 9; chestRow++) {
             for (int chestCol = 0; chestCol < 26; chestCol++) {
-                addSlotToContainer(new SlotDChest(tile, chestCol + (chestRow * 26), 8 + chestCol * 18, 15 + chestRow * 18));
+                addSlotToContainer(
+                        new SlotDChest(tile, chestCol + (chestRow * 26), 8 + chestCol * 18, 15 + chestRow * 18));
             }
         }
-
     }
 
     private void addPlayerInventory() {
         for (int playerInvRow = 0; playerInvRow < 3; playerInvRow++) {
             for (int playerInvCol = 0; playerInvCol < 9; playerInvCol++) {
-                addSlotToContainer(new Slot(player.inventory, playerInvCol + (playerInvRow * 9) + 9, 161 + 18 * playerInvCol, 179 + playerInvRow * 18));
+                addSlotToContainer(new Slot(
+                        player.inventory,
+                        playerInvCol + (playerInvRow * 9) + 9,
+                        161 + 18 * playerInvCol,
+                        179 + playerInvRow * 18));
             }
         }
 
@@ -92,14 +98,16 @@ public class ContainerDraconiumChest extends Container {
 
         for (int gridCol = 0; gridCol < 3; ++gridCol) {
             for (int gridRow = 0; gridRow < 3; ++gridRow) {
-                addSlotToContainer(new SlotDChest(craftMatrix, gridRow + (gridCol * 3), xOffset + (gridRow * 18), yOffset + (gridCol * 18)));
+                addSlotToContainer(new SlotDChest(
+                        craftMatrix, gridRow + (gridCol * 3), xOffset + (gridRow * 18), yOffset + (gridCol * 18)));
             }
         }
     }
 
     @Override
     public void onCraftMatrixChanged(IInventory inventory) {
-        craftResult.setInventorySlotContents(0, CraftingManager.getInstance().findMatchingRecipe(craftMatrix, worldObj));
+        craftResult.setInventorySlotContents(
+                0, CraftingManager.getInstance().findMatchingRecipe(craftMatrix, worldObj));
     }
 
     @Override
@@ -114,7 +122,7 @@ public class ContainerDraconiumChest extends Container {
         if (slot != null && slot.getHasStack()) {
             ItemStack itemstack1 = slot.getStack();
             itemstack = itemstack1.copy();
-            if (i < tile.getSizeInventory() + 16 && i != 240)//Transferring from container
+            if (i < tile.getSizeInventory() + 16 && i != 240) // Transferring from container
             {
                 if (!mergeItemStack(itemstack1, tile.getSizeInventory() + 16, inventorySlots.size(), true)) {
                     return null;
@@ -127,7 +135,8 @@ public class ContainerDraconiumChest extends Container {
                     }
                 }
                 slot.onSlotChange(itemstack1, itemstack);
-            } else if (!DraconiumChest.isStackValid(itemstack1) || !mergeItemStack(itemstack1, 0, tile.getSizeInventory(), false))//Transferring from player
+            } else if (!DraconiumChest.isStackValid(itemstack1)
+                    || !mergeItemStack(itemstack1, 0, tile.getSizeInventory(), false)) // Transferring from player
             {
                 return null;
             }
@@ -164,9 +173,9 @@ public class ContainerDraconiumChest extends Container {
     @Override
     public void addCraftingToCrafters(ICrafting iCrafting) {
         super.addCraftingToCrafters(iCrafting);
-//		iCrafting.sendProgressBarUpdate(this, 0, tile.smeltingProgressTime);
-//		iCrafting.sendProgressBarUpdate(this, 1, tile.getEnergyStored(ForgeDirection.DOWN)/32);
-//		iCrafting.sendProgressBarUpdate(this, 2, tile.smeltingBurnSpeed);
+        //		iCrafting.sendProgressBarUpdate(this, 0, tile.smeltingProgressTime);
+        //		iCrafting.sendProgressBarUpdate(this, 1, tile.getEnergyStored(ForgeDirection.DOWN)/32);
+        //		iCrafting.sendProgressBarUpdate(this, 2, tile.smeltingBurnSpeed);
     }
 
     @Override
@@ -190,7 +199,6 @@ public class ContainerDraconiumChest extends Container {
             if (lastTickOutputLock != tile.lockOutputSlots) {
                 icrafting.sendProgressBarUpdate(this, 4, tile.lockOutputSlots ? 1 : 0);
             }
-
         }
 
         lastTickOutputLock = tile.lockOutputSlots;
@@ -222,16 +230,15 @@ public class ContainerDraconiumChest extends Container {
 
         @Override
         public boolean isItemValid(ItemStack stack) {
-            return FurnaceRecipes.smelting().getSmeltingResult(stack) != null || OreDoublingRegistry.getOreResult(stack) != null;
+            return FurnaceRecipes.smelting().getSmeltingResult(stack) != null
+                    || OreDoublingRegistry.getOreResult(stack) != null;
         }
     }
 
     public class SlotChargable extends Slot {
 
-
         public SlotChargable(IInventory inventory, int id, int x, int y) {
             super(inventory, id, x, y);
-
         }
 
         @Override
@@ -250,16 +257,13 @@ public class ContainerDraconiumChest extends Container {
 
     public class SlotDChest extends Slot {
 
-
         public SlotDChest(IInventory inventory, int id, int x, int y) {
             super(inventory, id, x, y);
-
         }
 
         @Override
         public boolean isItemValid(ItemStack stack) {
             return DraconiumChest.isStackValid(stack);
         }
-
     }
 }

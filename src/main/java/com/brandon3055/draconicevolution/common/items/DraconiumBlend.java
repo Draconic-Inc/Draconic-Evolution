@@ -10,5 +10,4 @@ public class DraconiumBlend extends ItemDE {
         this.setCreativeTab(DraconicEvolution.tabBlocksItems);
         ModItems.register(this);
     }
-
 }

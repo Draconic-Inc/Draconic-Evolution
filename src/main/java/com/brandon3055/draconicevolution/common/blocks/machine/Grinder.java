@@ -10,6 +10,7 @@ import com.brandon3055.draconicevolution.common.tileentities.TileGrinder;
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -24,8 +25,6 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-
-import java.util.List;
 
 public class Grinder extends BlockCustomDrop {
     public IIcon icon_front;
@@ -42,7 +41,6 @@ public class Grinder extends BlockCustomDrop {
         this.setStepSound(soundTypeStone);
         this.setResistance(2000.0f);
         ModBlocks.register(this);
-
     }
 
     @Override
@@ -56,12 +54,10 @@ public class Grinder extends BlockCustomDrop {
         for (int i = 0; i < 4; i++) {
             icon_top[i] = iconRegister.registerIcon(References.RESOURCESPREFIX + "machine_top_" + i);
         }
-
     }
 
     @Override
-    public void onBlockExploded(World world, int x, int y, int z, Explosion explosion) {
-    }
+    public void onBlockExploded(World world, int x, int y, int z, Explosion explosion) {}
 
     @SideOnly(Side.CLIENT)
     @Override
@@ -150,7 +146,8 @@ public class Grinder extends BlockCustomDrop {
     }
 
     @Override
-    public boolean onBlockActivated(World world, int X, int Y, int Z, EntityPlayer player, int side, float prx, float pry, float prz) {
+    public boolean onBlockActivated(
+            World world, int X, int Y, int Z, EntityPlayer player, int side, float prx, float pry, float prz) {
         TileEntity tile = world.getTileEntity(X, Y, Z);
         if (!(tile instanceof TileGrinder)) {
             return false;
@@ -209,7 +206,5 @@ public class Grinder extends BlockCustomDrop {
     }
 
     @Override
-    protected void getCustomTileEntityDrops(TileEntity te, List<ItemStack> droppes) {
-
-    }
+    protected void getCustomTileEntityDrops(TileEntity te, List<ItemStack> droppes) {}
 }

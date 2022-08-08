@@ -2,16 +2,18 @@ package com.brandon3055.draconicevolution.common.blocks.machine;
 
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.gui.GuiHandler;
-import com.brandon3055.draconicevolution.common.blocks.BlockCustomDrop;
 import com.brandon3055.draconicevolution.common.ModBlocks;
-import com.brandon3055.draconicevolution.common.utills.LogHelper;
+import com.brandon3055.draconicevolution.common.blocks.BlockCustomDrop;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.tileentities.TileGenerator;
 import com.brandon3055.draconicevolution.common.tileentities.TileGrinder;
+import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import java.util.List;
+import java.util.Random;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -26,9 +28,6 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-
-import java.util.List;
-import java.util.Random;
 
 /**
  * Created by Brandon on 23/07/2014.
@@ -48,7 +47,6 @@ public class Generator extends BlockCustomDrop {
         this.setCreativeTab(DraconicEvolution.tabBlocksItems);
         this.setStepSound(soundTypeStone);
         ModBlocks.register(this);
-
     }
 
     @Override
@@ -62,7 +60,6 @@ public class Generator extends BlockCustomDrop {
         for (int i = 0; i < 4; i++) {
             icon_top[i] = iconRegister.registerIcon(References.RESOURCESPREFIX + "machine_top_" + i);
         }
-
     }
 
     @SideOnly(Side.CLIENT)
@@ -73,7 +70,10 @@ public class Generator extends BlockCustomDrop {
 
     @Override
     public int getLightValue(IBlockAccess world, int x, int y, int z) {
-        TileGenerator tile = (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TileGenerator) ? (TileGenerator) world.getTileEntity(x, y, z) : null;
+        TileGenerator tile =
+                (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TileGenerator)
+                        ? (TileGenerator) world.getTileEntity(x, y, z)
+                        : null;
         if (tile == null) {
             LogHelper.error("Missing Tile Entity (Generator)");
             return 0;
@@ -89,7 +89,10 @@ public class Generator extends BlockCustomDrop {
     @Override
     @SideOnly(Side.CLIENT)
     public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side) {
-        TileGenerator tile = (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TileGenerator) ? (TileGenerator) world.getTileEntity(x, y, z) : null;
+        TileGenerator tile =
+                (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TileGenerator)
+                        ? (TileGenerator) world.getTileEntity(x, y, z)
+                        : null;
         if (tile == null) {
             LogHelper.error("Missing Tile Entity (Generator)");
             return null;
@@ -166,7 +169,8 @@ public class Generator extends BlockCustomDrop {
     }
 
     @Override
-    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float prx, float pry, float prz) {
+    public boolean onBlockActivated(
+            World world, int x, int y, int z, EntityPlayer player, int side, float prx, float pry, float prz) {
         if (!world.isRemote) {
             FMLNetworkHandler.openGui(player, DraconicEvolution.instance, GuiHandler.GUIID_GENERATOR, world, x, y, z);
         }
@@ -213,18 +217,20 @@ public class Generator extends BlockCustomDrop {
     }
 
     @Override
-    protected void getCustomTileEntityDrops(TileEntity te, List<ItemStack> droppes) {
-
-    }
+    protected void getCustomTileEntityDrops(TileEntity te, List<ItemStack> droppes) {}
 
     @Override
     public void randomDisplayTick(World world, int x, int y, int z, Random random) {
-        TileGenerator tile = (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TileGenerator) ? (TileGenerator) world.getTileEntity(x, y, z) : null;
+        TileGenerator tile =
+                (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TileGenerator)
+                        ? (TileGenerator) world.getTileEntity(x, y, z)
+                        : null;
         if (tile == null) {
             LogHelper.error("Missing Tile Entity (Generator)");
             return;
         }
-        if (tile.burnTimeRemaining > 0 && tile.getEnergyStored(ForgeDirection.UP) < tile.getMaxEnergyStored(ForgeDirection.UP)) {
+        if (tile.burnTimeRemaining > 0
+                && tile.getEnergyStored(ForgeDirection.UP) < tile.getMaxEnergyStored(ForgeDirection.UP)) {
             double ox = 0;
             double oz = 0;
             if (world.getBlockMetadata(x, y, z) == 0) oz = -0.5;
@@ -232,10 +238,31 @@ public class Generator extends BlockCustomDrop {
             if (world.getBlockMetadata(x, y, z) == 2) oz = 0.5;
             if (world.getBlockMetadata(x, y, z) == 3) ox = -0.5;
 
-            world.spawnParticle("flame", ox + x + 0.5 + (Math.abs(ox) - 0.5) * ((random.nextDouble() - 0.5) * 1), y + 0.3 + (random.nextDouble() * 0.5), oz + z + 0.5 + (Math.abs(oz) - 0.5) * ((random.nextDouble() - 0.5) * 1), (ox * 0.05) * random.nextDouble(), (random.nextDouble() - 0.2) * 0.03, (oz * 0.05) * random.nextDouble());
-            world.spawnParticle("smoke", ox + x + 0.5 + (Math.abs(ox) - 0.5) * ((random.nextDouble() - 0.5) * 1), y + 0.3 + (random.nextDouble() * 0.5), oz + z + 0.5 + (Math.abs(oz) - 0.5) * ((random.nextDouble() - 0.5) * 1), (ox * 0.05) * random.nextDouble(), (random.nextDouble() - 0.2) * 0.03, (oz * 0.05) * random.nextDouble());
+            world.spawnParticle(
+                    "flame",
+                    ox + x + 0.5 + (Math.abs(ox) - 0.5) * ((random.nextDouble() - 0.5) * 1),
+                    y + 0.3 + (random.nextDouble() * 0.5),
+                    oz + z + 0.5 + (Math.abs(oz) - 0.5) * ((random.nextDouble() - 0.5) * 1),
+                    (ox * 0.05) * random.nextDouble(),
+                    (random.nextDouble() - 0.2) * 0.03,
+                    (oz * 0.05) * random.nextDouble());
+            world.spawnParticle(
+                    "smoke",
+                    ox + x + 0.5 + (Math.abs(ox) - 0.5) * ((random.nextDouble() - 0.5) * 1),
+                    y + 0.3 + (random.nextDouble() * 0.5),
+                    oz + z + 0.5 + (Math.abs(oz) - 0.5) * ((random.nextDouble() - 0.5) * 1),
+                    (ox * 0.05) * random.nextDouble(),
+                    (random.nextDouble() - 0.2) * 0.03,
+                    (oz * 0.05) * random.nextDouble());
 
-            world.playSound((double) ((float) x + 0.5F), (double) ((float) y + 0.5F), (double) ((float) z + 0.5F), "fire.fire", 0.2F + (random.nextFloat() * 0.1F), random.nextFloat() * 0.7F + 0.5F, false);
+            world.playSound(
+                    (double) ((float) x + 0.5F),
+                    (double) ((float) y + 0.5F),
+                    (double) ((float) z + 0.5F),
+                    "fire.fire",
+                    0.2F + (random.nextFloat() * 0.1F),
+                    random.nextFloat() * 0.7F + 0.5F,
+                    false);
         }
     }
 }

@@ -28,7 +28,7 @@ public class InventoryCraftingChestResult extends InventoryCraftResult {
      */
     @Override
     public ItemStack getStackInSlot(int par1) {
-        return tile.getStackInCraftingSlot(0);// this.stackResult[0];
+        return tile.getStackInCraftingSlot(0); // this.stackResult[0];
     }
 
     /**
@@ -95,8 +95,7 @@ public class InventoryCraftingChestResult extends InventoryCraftResult {
      * Called when an the contents of an Inventory change, usually
      */
     @Override
-    public void markDirty() {
-    }
+    public void markDirty() {}
 
     /**
      * Do not make give this method the name canInteractWith because it clashes
@@ -107,11 +106,9 @@ public class InventoryCraftingChestResult extends InventoryCraftResult {
         return true;
     }
 
-    public void openChest() {
-    }
+    public void openChest() {}
 
-    public void closeChest() {
-    }
+    public void closeChest() {}
 
     /**
      * Returns true if automation is allowed to insert the given stack (ignoring

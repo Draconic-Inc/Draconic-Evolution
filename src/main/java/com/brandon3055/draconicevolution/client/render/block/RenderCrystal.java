@@ -32,7 +32,6 @@ public class RenderCrystal implements IItemRenderer {
         transceiver2.facing = 1;
     }
 
-
     @Override
     public boolean handleRenderType(ItemStack item, ItemRenderType type) {
         return true;
@@ -55,7 +54,20 @@ public class RenderCrystal implements IItemRenderer {
             else GL11.glTranslatef(0.0F, -0.6F, 0.0F);
         }
         int meta = item.getItemDamage();
-        TileEntityRendererDispatcher.instance.renderTileEntityAt(meta == 0 ? relay1 : meta == 1 ? relay2 : meta == 2 ? transceiver1 : meta == 3 ? transceiver2 : meta == 4 ? wirelessTransceiver1 : wirelessTransceiver2, 0.0D, 0.0D, 0.0D, 0.0F);
+        TileEntityRendererDispatcher.instance.renderTileEntityAt(
+                meta == 0
+                        ? relay1
+                        : meta == 1
+                                ? relay2
+                                : meta == 2
+                                        ? transceiver1
+                                        : meta == 3
+                                                ? transceiver2
+                                                : meta == 4 ? wirelessTransceiver1 : wirelessTransceiver2,
+                0.0D,
+                0.0D,
+                0.0D,
+                0.0F);
         GL11.glPopMatrix();
         RenderHelper.enableStandardItemLighting();
     }

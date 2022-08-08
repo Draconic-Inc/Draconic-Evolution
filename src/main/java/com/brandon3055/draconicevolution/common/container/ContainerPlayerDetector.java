@@ -3,13 +3,12 @@ package com.brandon3055.draconicevolution.common.container;
 import com.brandon3055.draconicevolution.client.gui.GUIPlayerDetector;
 import com.brandon3055.draconicevolution.common.inventory.SlotOpaqueBlock;
 import com.brandon3055.draconicevolution.common.tileentities.TilePlayerDetectorAdvanced;
+import java.util.Iterator;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-
-import java.util.Iterator;
 
 public class ContainerPlayerDetector extends Container {
 
@@ -22,17 +21,16 @@ public class ContainerPlayerDetector extends Container {
         bindPlayerInventory(invPlayer);
         addContainerSlots(tileDetector);
         updateContainerSlots();
-
     }
 
-    public ContainerPlayerDetector(InventoryPlayer invPlayer, TilePlayerDetectorAdvanced tileDetector, GUIPlayerDetector gui) {
+    public ContainerPlayerDetector(
+            InventoryPlayer invPlayer, TilePlayerDetectorAdvanced tileDetector, GUIPlayerDetector gui) {
         this.tileDetector = tileDetector;
         this.gui = gui;
 
         bindPlayerInventory(invPlayer);
         addContainerSlots(tileDetector);
         updateContainerSlots();
-
     }
 
     private void bindPlayerInventory(InventoryPlayer invPlayer) {
@@ -98,33 +96,34 @@ public class ContainerPlayerDetector extends Container {
 
     @Override
     public ItemStack transferStackInSlot(EntityPlayer player, int i) {
-//		Slot slot = getSlot(i);
-//
-//
-//		if (slot != null && slot.getHasStack())
-//		{
-//			ItemStack stack = slot.getStack();
-//			ItemStack result = stack.copy();
-//			Block block = Block.getBlockFromItem(stack.getItem());
-//
-//			if (i >= 36){
-//				if (!mergeItemStack(stack, 0, 36, false)){
-//					return null;
-//				}
-//			}else if (!(block.isOpaqueCube() && block.renderAsNormalBlock()) || !mergeItemStack(stack, 36, 36 + tileDetector.getSizeInventory(), false)){
-//				return null;
-//			}
-//
-//			if (stack.stackSize == 0) {
-//				slot.putStack(null);
-//			}else{
-//				slot.onSlotChanged();
-//			}
-//
-//			slot.onPickupFromSlot(player, stack);
-//
-//			return result;
-//		}
+        //		Slot slot = getSlot(i);
+        //
+        //
+        //		if (slot != null && slot.getHasStack())
+        //		{
+        //			ItemStack stack = slot.getStack();
+        //			ItemStack result = stack.copy();
+        //			Block block = Block.getBlockFromItem(stack.getItem());
+        //
+        //			if (i >= 36){
+        //				if (!mergeItemStack(stack, 0, 36, false)){
+        //					return null;
+        //				}
+        //			}else if (!(block.isOpaqueCube() && block.renderAsNormalBlock()) || !mergeItemStack(stack, 36, 36 +
+        // tileDetector.getSizeInventory(), false)){
+        //				return null;
+        //			}
+        //
+        //			if (stack.stackSize == 0) {
+        //				slot.putStack(null);
+        //			}else{
+        //				slot.onSlotChanged();
+        //			}
+        //
+        //			slot.onPickupFromSlot(player, stack);
+        //
+        //			return result;
+        //		}
 
         return null;
     }
@@ -136,9 +135,9 @@ public class ContainerPlayerDetector extends Container {
     @Override
     public ItemStack slotClick(int slot, int button, int par3, EntityPlayer par4EntityPlayer) {
         return super.slotClick(slot, button, par3, par4EntityPlayer);
-//		if (par3 == 4)
-//			return super.slotClick(slot, button, 0, par4EntityPlayer);
-//		else
-//			return super.slotClick(slot, button, par3, par4EntityPlayer);
+        //		if (par3 == 4)
+        //			return super.slotClick(slot, button, 0, par4EntityPlayer);
+        //		else
+        //			return super.slotClick(slot, button, par3, par4EntityPlayer);
     }
 }

@@ -14,7 +14,9 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 public class ContainerUpgradeModifier extends ContainerDataSync {
-    private static final Item[] CORES_INDEX = {ModItems.draconicCore, ModItems.wyvernCore, ModItems.awakenedCore, ModItems.chaoticCore};
+    private static final Item[] CORES_INDEX = {
+        ModItems.draconicCore, ModItems.wyvernCore, ModItems.awakenedCore, ModItems.chaoticCore
+    };
     private TileUpgradeModifier tile;
     private EntityPlayer player;
     private boolean slotsActive = true;
@@ -34,7 +36,6 @@ public class ContainerUpgradeModifier extends ContainerDataSync {
         }
 
         addSlotToContainer(new SlotUpgradable(tile, 0, 112, 48));
-
     }
 
     @Override
@@ -54,12 +55,15 @@ public class ContainerUpgradeModifier extends ContainerDataSync {
     }
 
     private void updateSlotState() {
-        if (tile.getStackInSlot(0) != null && tile.getStackInSlot(0).getItem() instanceof IUpgradableItem && slotsActive) {
+        if (tile.getStackInSlot(0) != null
+                && tile.getStackInSlot(0).getItem() instanceof IUpgradableItem
+                && slotsActive) {
             for (Object o : inventorySlots) {
                 if (o instanceof Slot && !(o instanceof SlotUpgradable)) ((Slot) o).xDisplayPosition += 1000;
             }
             slotsActive = false;
-        } else if ((tile.getStackInSlot(0) == null || !(tile.getStackInSlot(0).getItem() instanceof IUpgradableItem)) && !slotsActive) {
+        } else if ((tile.getStackInSlot(0) == null || !(tile.getStackInSlot(0).getItem() instanceof IUpgradableItem))
+                && !slotsActive) {
             for (Object o : inventorySlots) {
                 if (o instanceof Slot && !(o instanceof SlotUpgradable)) ((Slot) o).xDisplayPosition -= 1000;
             }
@@ -84,7 +88,8 @@ public class ContainerUpgradeModifier extends ContainerDataSync {
                 if (!mergeItemStack(stack, 0, 36, false)) {
                     return null;
                 }
-            } else if (!isStackValidForInventory(stack, 0) || !mergeItemStack(stack, 36, 36 + tile.getSizeInventory(), false)) {
+            } else if (!isStackValidForInventory(stack, 0)
+                    || !mergeItemStack(stack, 36, 36 + tile.getSizeInventory(), false)) {
                 return null;
             }
 
@@ -106,27 +111,36 @@ public class ContainerUpgradeModifier extends ContainerDataSync {
         return true;
     }
 
-
     @Override
     public void receiveSyncData(int index, int value) {
         EnumUpgrade upgrade = EnumUpgrade.getUpgradeByIndex(index);
         int coreTier = value / 2;
         boolean addCore = value % 2 == 0;
         ItemStack stack = tile.getStackInSlot(0);
-        if (upgrade == null || stack == null || !(stack.getItem() instanceof IUpgradableItem) || coreTier < 0 || coreTier > 3 || (upgrade.getCoresApplied(stack)[coreTier] <= 0 && !addCore))
-            return;
+        if (upgrade == null
+                || stack == null
+                || !(stack.getItem() instanceof IUpgradableItem)
+                || coreTier < 0
+                || coreTier > 3
+                || (upgrade.getCoresApplied(stack)[coreTier] <= 0 && !addCore)) return;
         handleCoreTransaction(upgrade, coreTier, addCore, (IUpgradableItem) stack.getItem(), stack);
     }
 
-
-    private void handleCoreTransaction(EnumUpgrade upgrade, int coreTier, boolean addCoreElseRemove, IUpgradableItem upgradableItem, ItemStack stack) {
+    private void handleCoreTransaction(
+            EnumUpgrade upgrade,
+            int coreTier,
+            boolean addCoreElseRemove,
+            IUpgradableItem upgradableItem,
+            ItemStack stack) {
         int coreSlots = upgradableItem.getUpgradeCap(stack);
         int totalCores = 0;
         int[] coresApplied = upgrade.getCoresApplied(stack);
         for (EnumUpgrade u : upgradableItem.getUpgrades(stack)) totalCores += u.getCoresApplied(stack)[coreTier];
 
         if (addCoreElseRemove) {
-            if (!player.inventory.hasItem(CORES_INDEX[coreTier]) || totalCores >= coreSlots || upgrade.getUpgradePoints(stack) >= upgradableItem.getMaxUpgradePoints(upgrade.index, stack))
+            if (!player.inventory.hasItem(CORES_INDEX[coreTier])
+                    || totalCores >= coreSlots
+                    || upgrade.getUpgradePoints(stack) >= upgradableItem.getMaxUpgradePoints(upgrade.index, stack))
                 return;
             coresApplied[coreTier]++;
             player.inventory.consumeInventoryItem(CORES_INDEX[coreTier]);
@@ -138,7 +152,8 @@ public class ContainerUpgradeModifier extends ContainerDataSync {
             upgrade.setCoresApplied(stack, coresApplied);
             upgrade.onRemovedFromItem(stack);
             if (!player.inventory.addItemStackToInventory(new ItemStack(CORES_INDEX[coreTier]))) {
-                EntityItem entityItem = new EntityItem(player.worldObj, player.posX, player.posY, player.posZ, new ItemStack(CORES_INDEX[coreTier]));
+                EntityItem entityItem = new EntityItem(
+                        player.worldObj, player.posX, player.posY, player.posZ, new ItemStack(CORES_INDEX[coreTier]));
                 if (!player.worldObj.isRemote) player.worldObj.spawnEntityInWorld(entityItem);
             }
         }
@@ -150,13 +165,11 @@ public class ContainerUpgradeModifier extends ContainerDataSync {
             super(inventory1, slot, x, y);
         }
 
-        //Some people think this block makes a nice display stand... And i cant disagree.
+        // Some people think this block makes a nice display stand... And i cant disagree.
         @Override
         public boolean isItemValid(ItemStack stack) {
             return super.isItemValid(stack);
-            //return stack != null && stack.getItem() instanceof IUpgradableItem;
+            // return stack != null && stack.getItem() instanceof IUpgradableItem;
         }
     }
 }
-
-

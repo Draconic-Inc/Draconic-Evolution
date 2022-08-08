@@ -13,7 +13,8 @@ import org.lwjgl.opengl.GL11;
  */
 public class GUIToolInventory extends GUIBase {
 
-    private static final ResourceLocation inventoryTexture = new ResourceLocation(References.RESOURCESPREFIX + "textures/gui/ToolConfig.png");
+    private static final ResourceLocation inventoryTexture =
+            new ResourceLocation(References.RESOURCESPREFIX + "textures/gui/ToolConfig.png");
 
     private ContainerAdvTool container;
     private String inventoryName;
@@ -37,13 +38,16 @@ public class GUIToolInventory extends GUIBase {
     @Override
     protected ComponentCollection assembleComponents() {
         ComponentCollection c = new ComponentCollection(0, 0, xSize, ySize, this);
-        c.addComponent(new ComponentTexturedRect(0, 130 - 89, 198, 89, inventoryTexture)).setGroup("BACKGROUND");
-        c.addComponent(new ComponentTexturedRect(0, 0, 198, 80, inventoryTexture)).setGroup("BACKGROUND");
+        c.addComponent(new ComponentTexturedRect(0, 130 - 89, 198, 89, inventoryTexture))
+                .setGroup("BACKGROUND");
+        c.addComponent(new ComponentTexturedRect(0, 0, 198, 80, inventoryTexture))
+                .setGroup("BACKGROUND");
         c.addComponent(new ComponentButton(172, 3, 18, 12, 0, this, "<=", "Back"));
 
         for (int i = 0; i < 5; i++) {
             c.addComponent(new ComponentSlotBackground(172, 18 + i * 21)).setGroup("INVENTORY");
-            c.addComponent(new ComponentTexturedRect(173, 20 + i * 21, 0, 89, 16, 14, inventoryTexture, true)).setGroup("INVENTORY");
+            c.addComponent(new ComponentTexturedRect(173, 20 + i * 21, 0, 89, 16, 14, inventoryTexture, true))
+                    .setGroup("INVENTORY");
         }
         return c;
     }
@@ -64,7 +68,9 @@ public class GUIToolInventory extends GUIBase {
             collection.addComponent(new ComponentSlotBackground(7 + x * 18, 18)).setGroup("INVENTORY");
         ComponentSlotBackground.addInventorySlots(collection, 7, 44, container.inventoryItemSlot);
         if (container.inventoryItemSlot > 35)
-            collection.addComponent(new ComponentItemRenderer(6, 18, container.inventoryTool.inventoryItem)).setGroup("INVENTORY");
+            collection
+                    .addComponent(new ComponentItemRenderer(6, 18, container.inventoryTool.inventoryItem))
+                    .setGroup("INVENTORY");
     }
 
     @Override

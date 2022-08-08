@@ -1,8 +1,10 @@
 package com.brandon3055.draconicevolution.common.lib;
 
-import com.brandon3055.draconicevolution.common.items.DraconiumBlend;
 import com.brandon3055.draconicevolution.common.ModItems;
+import com.brandon3055.draconicevolution.common.items.DraconiumBlend;
 import cpw.mods.fml.common.registry.GameRegistry;
+import java.util.HashMap;
+import java.util.Map;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -10,15 +12,26 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraftforge.oredict.OreDictionary;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Created by Brandon on 2/11/2014.
  */
 public class OreDoublingRegistry {
     private static Map<String, ItemStack> oreResults = new HashMap<String, ItemStack>();
-    private static String[] names = {"oreGold", "oreIron", "oreAluminum", "oreCopper", "oreLead", "oreSilver", "oreTin", "oreUranium", "orePlatinum", "oreNickel", "oreMithril", "oreCobalt", "oreArdite"};
+    private static String[] names = {
+        "oreGold",
+        "oreIron",
+        "oreAluminum",
+        "oreCopper",
+        "oreLead",
+        "oreSilver",
+        "oreTin",
+        "oreUranium",
+        "orePlatinum",
+        "oreNickel",
+        "oreMithril",
+        "oreCobalt",
+        "oreArdite"
+    };
     public static Map<String, ItemStack> resultOverrides = new HashMap<String, ItemStack>();
 
     public static void init() {
@@ -33,13 +46,14 @@ public class OreDoublingRegistry {
 
             oreResults.put(oreName, resultIngot);
         }
-
     }
 
     public static ItemStack getOreResult(ItemStack stack) {
         if (stack == null) return null;
         if (resultOverrides.containsKey(stack.getItem().getUnlocalizedName(stack)))
-            return resultOverrides.get(stack.getItem().getUnlocalizedName(stack)).copy();
+            return resultOverrides
+                    .get(stack.getItem().getUnlocalizedName(stack))
+                    .copy();
         if (FurnaceRecipes.smelting().getSmeltingResult(stack) == null) return null;
         if (stack.getItem() instanceof DraconiumBlend) return new ItemStack(ModItems.draconiumIngot, 4);
         else if (stack.getItem() == Item.getItemFromBlock(Blocks.cobblestone)) return new ItemStack(Blocks.stone, 2);

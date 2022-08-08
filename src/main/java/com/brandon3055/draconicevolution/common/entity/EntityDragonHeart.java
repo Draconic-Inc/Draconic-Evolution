@@ -1,14 +1,16 @@
 package com.brandon3055.draconicevolution.common.entity;
 
+import com.brandon3055.brandonscore.common.utills.Utills;
+import com.brandon3055.draconicevolution.client.handler.ParticleHandler;
 import com.brandon3055.draconicevolution.client.render.particle.Particles;
 import com.brandon3055.draconicevolution.common.ModBlocks;
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.blocks.DraconiumBlock;
 import com.brandon3055.draconicevolution.common.blocks.multiblock.MultiblockHelper.TileLocation;
-import com.brandon3055.draconicevolution.client.handler.ParticleHandler;
-import com.brandon3055.brandonscore.common.utills.Utills;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import java.util.ArrayList;
+import java.util.List;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
@@ -18,9 +20,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Brandon on 21/11/2014.
@@ -79,13 +78,12 @@ public class EntityDragonHeart extends Entity {
         motionZ = 0;
         motionY = 0;
 
-
         age++;
         rotation += rotationInc;
         super.onUpdate();
 
         switch (opPhase) {
-            case 0: { //Rises with particle ring
+            case 0: { // Rises with particle ring
                 motionY = 0.01f;
                 rotationInc += 0.1f;
                 if (posY > yStop) {
@@ -94,27 +92,34 @@ public class EntityDragonHeart extends Entity {
                 }
                 break;
             }
-            case 1: { //Particle ring retracts
+            case 1: { // Particle ring retracts
                 opPhase = 2;
                 break;
             }
-            case 2: { //Particle field accepting items
+            case 2: { // Particle field accepting items
                 if (coresConsumed == 16 || age > 1240) {
                     age = 1240;
                     opPhase = 3;
                     if (coresConsumed < 4) {
-                        EntityPersistentItem item = new EntityPersistentItem(worldObj, posX, posY, posZ, new ItemStack(ModItems.dragonHeart));
+                        EntityPersistentItem item = new EntityPersistentItem(
+                                worldObj, posX, posY, posZ, new ItemStack(ModItems.dragonHeart));
                         item.motionX = 0;
                         item.motionY = 0;
                         item.motionZ = 0;
                         item.delayBeforeCanPickup = 0;
                         if (!worldObj.isRemote) worldObj.spawnEntityInWorld(item);
-                        this.worldObj.playSoundAtEntity(this, "random.pop", 0.2F, ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+                        this.worldObj.playSoundAtEntity(
+                                this,
+                                "random.pop",
+                                0.2F,
+                                ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
                         this.setDead();
                     }
                     break;
                 }
-                List<EntityItem> items = worldObj.getEntitiesWithinAABB(EntityItem.class, AxisAlignedBB.getBoundingBox(posX - 5, posY - 5, posZ - 5, posX + 5, posY + 5, posZ + 5));
+                List<EntityItem> items = worldObj.getEntitiesWithinAABB(
+                        EntityItem.class,
+                        AxisAlignedBB.getBoundingBox(posX - 5, posY - 5, posZ - 5, posX + 5, posY + 5, posZ + 5));
                 for (EntityItem item : items) {
                     ItemStack stack = item.getEntityItem();
                     if (Utills.getDistanceAtoB(posX, posY + 0.5, posZ, item.posX, item.posY, item.posZ) < 1) {
@@ -134,7 +139,11 @@ public class EntityDragonHeart extends Entity {
                             stack.stackSize = 0;
                             item.setDead();
                         }
-                        this.worldObj.playSoundAtEntity(this, "random.pop", 0.2F, ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+                        this.worldObj.playSoundAtEntity(
+                                this,
+                                "random.pop",
+                                0.2F,
+                                ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
                     } else {
                         item.motionX = ((posX - item.posX)) * 0.1;
                         item.motionY = ((posY + 0.5 - item.posY)) * 0.1;
@@ -151,7 +160,8 @@ public class EntityDragonHeart extends Entity {
                     for (int x = (int) posX - 5; x <= (int) posX + 5; x++) {
                         for (int y = (int) posY - 5; y <= (int) posY + 5; y++) {
                             for (int z = (int) posZ - 5; z <= (int) posZ + 5; z++) {
-                                if (worldObj.getBlock(x, y, z) instanceof DraconiumBlock && worldObj.getBlockMetadata(x, y, z) == 2) {
+                                if (worldObj.getBlock(x, y, z) instanceof DraconiumBlock
+                                        && worldObj.getBlockMetadata(x, y, z) == 2) {
                                     TileLocation block = new TileLocation(x, y, z);
                                     if (!blocks.contains(block) && blocks.size() < maxBlocks) blocks.add(block);
                                 }
@@ -165,20 +175,26 @@ public class EntityDragonHeart extends Entity {
             case 4: {
                 if (blocks.size() == 0) {
                     if (!worldObj.isRemote) {
-                        EntityPersistentItem item = new EntityPersistentItem(worldObj, posX, posY, posZ, new ItemStack(ModItems.dragonHeart));
+                        EntityPersistentItem item = new EntityPersistentItem(
+                                worldObj, posX, posY, posZ, new ItemStack(ModItems.dragonHeart));
                         item.motionX = 0;
                         item.motionY = 0;
                         item.motionZ = 0;
                         item.delayBeforeCanPickup = 0;
                         worldObj.spawnEntityInWorld(item);
                     }
-                    this.worldObj.playSoundAtEntity(this, "random.pop", 0.2F, ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+                    this.worldObj.playSoundAtEntity(
+                            this,
+                            "random.pop",
+                            0.2F,
+                            ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
                     this.setDead();
                     break;
                 }
                 for (TileLocation tile : blocks) {
                     if (!worldObj.isRemote)
-                        worldObj.setBlock(tile.getXCoord(), tile.getYCoord(), tile.getZCoord(), ModBlocks.draconicBlock, 0, 2);
+                        worldObj.setBlock(
+                                tile.getXCoord(), tile.getYCoord(), tile.getZCoord(), ModBlocks.draconicBlock, 0, 2);
                     worldObj.createExplosion(null, tile.getXCoord(), tile.getYCoord(), tile.getZCoord(), 4, false);
                 }
                 worldObj.createExplosion(null, posX, posY, posZ, 4, false);
@@ -191,7 +207,6 @@ public class EntityDragonHeart extends Entity {
         this.prevPosY = this.posY;
         this.prevPosZ = this.posZ;
         this.moveEntity(this.motionX, this.motionY, this.motionZ);
-
     }
 
     @SideOnly(Side.CLIENT)
@@ -202,7 +217,8 @@ public class EntityDragonHeart extends Entity {
                 int nextFloat = rand.nextInt();
                 double offsetX = Math.sin(nextFloat);
                 double offsetZ = Math.cos(nextFloat);
-                EntityFX particle = new Particles.AdvancedSeekerParticle(worldObj, posX + offsetX, correctY, posZ + offsetZ, posX, correctY, posZ, 1, 1f, 1f, 1f, 10);
+                EntityFX particle = new Particles.AdvancedSeekerParticle(
+                        worldObj, posX + offsetX, correctY, posZ + offsetZ, posX, correctY, posZ, 1, 1f, 1f, 1f, 10);
                 ParticleHandler.spawnCustomParticle(particle, 64);
             }
         }
@@ -212,7 +228,20 @@ public class EntityDragonHeart extends Entity {
                 int nextFloat = rand.nextInt();
                 double offsetX = Math.sin(nextFloat);
                 double offsetZ = Math.cos(nextFloat);
-                EntityFX particle = new Particles.AdvancedSeekerParticle(worldObj, posX + offsetX, correctY, posZ + offsetZ, posX, correctY, posZ, 3, 1f, 1f, 1f, 100, -100);
+                EntityFX particle = new Particles.AdvancedSeekerParticle(
+                        worldObj,
+                        posX + offsetX,
+                        correctY,
+                        posZ + offsetZ,
+                        posX,
+                        correctY,
+                        posZ,
+                        3,
+                        1f,
+                        1f,
+                        1f,
+                        100,
+                        -100);
                 ParticleHandler.spawnCustomParticle(particle, 64);
             }
         }
@@ -222,7 +251,20 @@ public class EntityDragonHeart extends Entity {
                 int nextFloat = rand.nextInt();
                 double offsetX = Math.sin(nextFloat) * (rand.nextFloat() * 10);
                 double offsetZ = Math.cos(nextFloat) * (rand.nextFloat() * 10);
-                EntityFX particle = new Particles.AdvancedSeekerParticle(worldObj, posX + offsetX, correctY, posZ + offsetZ, posX, correctY, posZ, 3, 1f, 1f, 1f, 100, -100);
+                EntityFX particle = new Particles.AdvancedSeekerParticle(
+                        worldObj,
+                        posX + offsetX,
+                        correctY,
+                        posZ + offsetZ,
+                        posX,
+                        correctY,
+                        posZ,
+                        3,
+                        1f,
+                        1f,
+                        1f,
+                        100,
+                        -100);
                 ParticleHandler.spawnCustomParticle(particle, 64);
             }
         }
@@ -233,14 +275,39 @@ public class EntityDragonHeart extends Entity {
             int nextFloat = rand.nextInt();
             double offsetX = Math.sin(nextFloat) * (rand.nextFloat() * 10);
             double offsetZ = Math.cos(nextFloat) * (rand.nextFloat() * 10);
-            EntityFX particle = new Particles.AdvancedSeekerParticle(worldObj, posX, correctY, posZ, posX + offsetX, correctY, posZ + offsetZ, 3, 1f, 1f - colourMod, 1f - colourMod, 100, -100);
+            EntityFX particle = new Particles.AdvancedSeekerParticle(
+                    worldObj,
+                    posX,
+                    correctY,
+                    posZ,
+                    posX + offsetX,
+                    correctY,
+                    posZ + offsetZ,
+                    3,
+                    1f,
+                    1f - colourMod,
+                    1f - colourMod,
+                    100,
+                    -100);
             ParticleHandler.spawnCustomParticle(particle, 64);
 
             for (TileLocation tile : blocks) {
-                particle = new Particles.AdvancedSeekerParticle(worldObj, posX, correctY, posZ, tile.getXCoord() + rand.nextDouble(), tile.getYCoord() + rand.nextDouble(), tile.getZCoord() + rand.nextDouble(), 3, 1f, 1f - (colourMod * 0.5f), 1f - colourMod, 100, -100);
+                particle = new Particles.AdvancedSeekerParticle(
+                        worldObj,
+                        posX,
+                        correctY,
+                        posZ,
+                        tile.getXCoord() + rand.nextDouble(),
+                        tile.getYCoord() + rand.nextDouble(),
+                        tile.getZCoord() + rand.nextDouble(),
+                        3,
+                        1f,
+                        1f - (colourMod * 0.5f),
+                        1f - colourMod,
+                        100,
+                        -100);
                 ParticleHandler.spawnCustomParticle(particle, 64);
             }
-
         }
     }
 
@@ -251,7 +318,6 @@ public class EntityDragonHeart extends Entity {
             opPhase = 2;
         }
     }
-
 
     @Override
     public void writeEntityToNBT(NBTTagCompound compound) {

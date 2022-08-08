@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.common.blocks;
 import com.brandon3055.draconicevolution.common.ModBlocks;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.tileentities.TilePlacedItem;
+import java.util.Random;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -16,8 +17,6 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-
-import java.util.Random;
 
 /**
  * Created by Brandon on 13/08/2014.
@@ -74,38 +73,53 @@ public class PlacedItem extends BlockDE {
 
     @Override
     public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z) {
-        TilePlacedItem tile = (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TilePlacedItem) ? (TilePlacedItem) world.getTileEntity(x, y, z) : null;
+        TilePlacedItem tile =
+                (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TilePlacedItem)
+                        ? (TilePlacedItem) world.getTileEntity(x, y, z)
+                        : null;
         int meta = world.getBlockMetadata(x, y, z);
         if (tile != null && tile.getStack() != null) {
             if (tile.getStack().getItem() instanceof ItemBlock) {
                 switch (meta) {
                     case 0:
-                        return AxisAlignedBB.getBoundingBox(x + 0.25D, y + 0.5D, z + 0.25D, x + 0.75D, y + 1D, z + 0.75D);
+                        return AxisAlignedBB.getBoundingBox(
+                                x + 0.25D, y + 0.5D, z + 0.25D, x + 0.75D, y + 1D, z + 0.75D);
                     case 1:
-                        return AxisAlignedBB.getBoundingBox(x + 0.25D, y + 0D, z + 0.25D, x + 0.75D, y + 0.5D, z + 0.75D);
+                        return AxisAlignedBB.getBoundingBox(
+                                x + 0.25D, y + 0D, z + 0.25D, x + 0.75D, y + 0.5D, z + 0.75D);
                     case 2:
-                        return AxisAlignedBB.getBoundingBox(x + 0.25D, y + 0.25D, z + 0.5D, x + 0.75D, y + 0.75D, z + 1D);
+                        return AxisAlignedBB.getBoundingBox(
+                                x + 0.25D, y + 0.25D, z + 0.5D, x + 0.75D, y + 0.75D, z + 1D);
                     case 3:
-                        return AxisAlignedBB.getBoundingBox(x + 0.25D, y + 0.25D, z + 0D, x + 0.75D, y + 0.75D, z + 0.5D);
+                        return AxisAlignedBB.getBoundingBox(
+                                x + 0.25D, y + 0.25D, z + 0D, x + 0.75D, y + 0.75D, z + 0.5D);
                     case 4:
-                        return AxisAlignedBB.getBoundingBox(x + 0.5D, y + 0.25D, z + 0.25D, x + 1D, y + 0.75D, z + 0.75D);
+                        return AxisAlignedBB.getBoundingBox(
+                                x + 0.5D, y + 0.25D, z + 0.25D, x + 1D, y + 0.75D, z + 0.75D);
                     case 5:
-                        return AxisAlignedBB.getBoundingBox(x + 0D, y + 0.25D, z + 0.25D, x + 0.5D, y + 0.75D, z + 0.75D);
+                        return AxisAlignedBB.getBoundingBox(
+                                x + 0D, y + 0.25D, z + 0.25D, x + 0.5D, y + 0.75D, z + 0.75D);
                 }
             } else {
                 switch (meta) {
                     case 0:
-                        return AxisAlignedBB.getBoundingBox(x + 0.25D, y + 0.9D, z + 0.25D, x + 0.75D, y + 1D, z + 0.75D);
+                        return AxisAlignedBB.getBoundingBox(
+                                x + 0.25D, y + 0.9D, z + 0.25D, x + 0.75D, y + 1D, z + 0.75D);
                     case 1:
-                        return AxisAlignedBB.getBoundingBox(x + 0.25D, y + 0D, z + 0.25D, x + 0.75D, y + 0.1D, z + 0.75D);
+                        return AxisAlignedBB.getBoundingBox(
+                                x + 0.25D, y + 0D, z + 0.25D, x + 0.75D, y + 0.1D, z + 0.75D);
                     case 2:
-                        return AxisAlignedBB.getBoundingBox(x + 0.25D, y + 0.25D, z + 0.9D, x + 0.75D, y + 0.75D, z + 1D);
+                        return AxisAlignedBB.getBoundingBox(
+                                x + 0.25D, y + 0.25D, z + 0.9D, x + 0.75D, y + 0.75D, z + 1D);
                     case 3:
-                        return AxisAlignedBB.getBoundingBox(x + 0.25D, y + 0.25D, z + 0D, x + 0.75D, y + 0.75D, z + 0.1D);
+                        return AxisAlignedBB.getBoundingBox(
+                                x + 0.25D, y + 0.25D, z + 0D, x + 0.75D, y + 0.75D, z + 0.1D);
                     case 4:
-                        return AxisAlignedBB.getBoundingBox(x + 0.9D, y + 0.25D, z + 0.25D, x + 1D, y + 0.75D, z + 0.75D);
+                        return AxisAlignedBB.getBoundingBox(
+                                x + 0.9D, y + 0.25D, z + 0.25D, x + 1D, y + 0.75D, z + 0.75D);
                     case 5:
-                        return AxisAlignedBB.getBoundingBox(x + 0D, y + 0.25D, z + 0.25D, x + 0.1D, y + 0.75D, z + 0.75D);
+                        return AxisAlignedBB.getBoundingBox(
+                                x + 0D, y + 0.25D, z + 0.25D, x + 0.1D, y + 0.75D, z + 0.75D);
                 }
             }
         }
@@ -157,9 +171,21 @@ public class PlacedItem extends BlockDE {
     }
 
     @Override
-    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int p_149727_6_, float p_149727_7_, float p_149727_8_, float p_149727_9_) {
+    public boolean onBlockActivated(
+            World world,
+            int x,
+            int y,
+            int z,
+            EntityPlayer player,
+            int p_149727_6_,
+            float p_149727_7_,
+            float p_149727_8_,
+            float p_149727_9_) {
         if (player.isSneaking()) {
-            TilePlacedItem tile = (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TilePlacedItem) ? (TilePlacedItem) world.getTileEntity(x, y, z) : null;
+            TilePlacedItem tile =
+                    (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TilePlacedItem)
+                            ? (TilePlacedItem) world.getTileEntity(x, y, z)
+                            : null;
             if (tile == null) {
                 world.setBlockToAir(x, y, z);
             }
@@ -175,13 +201,19 @@ public class PlacedItem extends BlockDE {
     @Override
     public void onBlockClicked(World world, int x, int y, int z, EntityPlayer player) {
         if (player.isSneaking()) {
-            TilePlacedItem tile = (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TilePlacedItem) ? (TilePlacedItem) world.getTileEntity(x, y, z) : null;
+            TilePlacedItem tile =
+                    (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TilePlacedItem)
+                            ? (TilePlacedItem) world.getTileEntity(x, y, z)
+                            : null;
             if (tile == null) {
                 world.setBlockToAir(x, y, z);
             }
             tile.rotation += 22.5F;
         } else {
-            TilePlacedItem tile = (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TilePlacedItem) ? (TilePlacedItem) world.getTileEntity(x, y, z) : null;
+            TilePlacedItem tile =
+                    (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TilePlacedItem)
+                            ? (TilePlacedItem) world.getTileEntity(x, y, z)
+                            : null;
             if (tile == null) {
                 world.setBlockToAir(x, y, z);
             }
@@ -210,6 +242,4 @@ public class PlacedItem extends BlockDE {
         }
         return null;
     }
-
-
 }

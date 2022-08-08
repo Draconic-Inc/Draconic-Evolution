@@ -14,7 +14,8 @@ public abstract class TileObjectSync extends TileEntity {
      * Sends a primitive to the client in the form of an object
      */
     public Object sendObjectToClient(byte dataType, int index, Object object) {
-        return sendObjectToClient(dataType, index, object, new TargetPoint(worldObj.provider.dimensionId, xCoord, yCoord, zCoord, 64));
+        return sendObjectToClient(
+                dataType, index, object, new TargetPoint(worldObj.provider.dimensionId, xCoord, yCoord, zCoord, 64));
     }
 
     /**
@@ -33,12 +34,10 @@ public abstract class TileObjectSync extends TileEntity {
     /**
      * Receives an object from the server
      */
-    public void receiveObjectFromClient(int index, Object object) {
-    }
+    public void receiveObjectFromClient(int index, Object object) {}
 
     /**
      * Receives an object from the server
      */
-    public void receiveObjectFromServer(int index, Object object) {
-    }
+    public void receiveObjectFromServer(int index, Object object) {}
 }

@@ -13,6 +13,9 @@ import com.brandon3055.draconicevolution.common.tileentities.TileDraconiumChest;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -25,17 +28,15 @@ import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 import org.lwjgl.opengl.GL11;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 @SideOnly(Side.CLIENT)
 @Optional.Interface(iface = "codechicken.nei.api.INEIGuiHandler", modid = "NotEnoughItems")
 public class GUIDraconiumChest extends GuiContainer implements INEIGuiHandler {
     public EntityPlayer player;
     private TileDraconiumChest tile;
-    private static final ResourceLocation textureLeft = new ResourceLocation(References.MODID.toLowerCase(), "textures/gui/DraconicChestLeft.png");
-    private static final ResourceLocation textureRight = new ResourceLocation(References.MODID.toLowerCase(), "textures/gui/DraconicChestRight.png");
+    private static final ResourceLocation textureLeft =
+            new ResourceLocation(References.MODID.toLowerCase(), "textures/gui/DraconicChestLeft.png");
+    private static final ResourceLocation textureRight =
+            new ResourceLocation(References.MODID.toLowerCase(), "textures/gui/DraconicChestRight.png");
     private int lastAutoFeed = -1;
 
     public GUIDraconiumChest(InventoryPlayer invPlayer, TileDraconiumChest tile) {
@@ -67,24 +68,29 @@ public class GUIDraconiumChest extends GuiContainer implements INEIGuiHandler {
         }
 
         int arrowHight = (int) (((float) tile.smeltingProgressTime / (float) tile.smeltingCompleateTime) * 22f);
-        drawTexturedModalRect(guiLeft + 140, guiTop + 192 + 22 - arrowHight, 140, 216 + 22 - arrowHight, 16, arrowHight);
+        drawTexturedModalRect(
+                guiLeft + 140, guiTop + 192 + 22 - arrowHight, 140, 216 + 22 - arrowHight, 16, arrowHight);
 
         Minecraft.getMinecraft().getTextureManager().bindTexture(textureRight);
-        int energyWidth = (int) (((float) tile.getEnergyStored(ForgeDirection.DOWN) / (float) tile.getMaxEnergyStored(ForgeDirection.DOWN)) * 90f);
+        int energyWidth = (int) (((float) tile.getEnergyStored(ForgeDirection.DOWN)
+                        / (float) tile.getMaxEnergyStored(ForgeDirection.DOWN))
+                * 90f);
         drawTexturedModalRect(guiLeft + 44, guiTop + 235, 131, 236, energyWidth, 16);
 
         int flameHight = (int) (((float) tile.smeltingBurnSpeed / (float) tile.smeltingMaxBurnSpeed) * 13f);
-        //flameHight = tile.smeltingProgressTime <= 0 ? 0 : Math.min(flameHight, 13);
+        // flameHight = tile.smeltingProgressTime <= 0 ? 0 : Math.min(flameHight, 13);
         drawTexturedModalRect(guiLeft + 45, guiTop + 217 + 13 - flameHight, 132, 180 + 13 - flameHight, 88, flameHight);
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int x, int y) {
         fontRendererObj.drawString(tile.getInventoryName(), 4, 4, 0x222222);
-        //fontRendererObj.drawStringWithShadow(StatCollector.translateToLocal("button.de.chestAutoFeed.txt"), 4, 180, 0x00FFFF);
+        // fontRendererObj.drawStringWithShadow(StatCollector.translateToLocal("button.de.chestAutoFeed.txt"), 4, 180,
+        // 0x00FFFF);
 
         ArrayList<String> list = new ArrayList<String>();
-        list.add(String.valueOf(tile.getEnergyStored(ForgeDirection.DOWN)) + "/" + String.valueOf(tile.getMaxEnergyStored(ForgeDirection.DOWN)) + "RF");
+        list.add(String.valueOf(tile.getEnergyStored(ForgeDirection.DOWN)) + "/"
+                + String.valueOf(tile.getMaxEnergyStored(ForgeDirection.DOWN)) + "RF");
         if (GuiHelper.isInRect(44, 235, 90, 16, x - guiLeft, y - guiTop))
             drawHoveringText(list, x - guiLeft, y - guiTop, fontRendererObj);
         list.clear();

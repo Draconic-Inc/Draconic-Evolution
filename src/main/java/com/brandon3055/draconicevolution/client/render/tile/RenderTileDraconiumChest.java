@@ -1,16 +1,15 @@
 package com.brandon3055.draconicevolution.client.render.tile;
 
+import static org.lwjgl.opengl.GL11.*;
+
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.tileentities.TileDraconiumChest;
+import java.util.Random;
 import net.minecraft.client.model.ModelChest;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
-
-import java.util.Random;
-
-import static org.lwjgl.opengl.GL11.*;
 
 /**
  * Created by Brandon on 25/10/2014.
@@ -18,7 +17,8 @@ import static org.lwjgl.opengl.GL11.*;
 public class RenderTileDraconiumChest extends TileEntitySpecialRenderer {
 
     ModelChest model;
-    private final ResourceLocation texture = new ResourceLocation(References.MODID.toLowerCase(), "textures/models/DraconiumChest.png");
+    private final ResourceLocation texture =
+            new ResourceLocation(References.MODID.toLowerCase(), "textures/models/DraconiumChest.png");
     private Random random;
 
     public RenderTileDraconiumChest() {

@@ -12,18 +12,16 @@ import net.minecraft.tileentity.TileEntity;
 /**
  * Created by Brandon on 27/06/2014.
  */
-public class TileTeleporterStand extends TileEntity implements IInventory {//todo Create IRotatable Tile and gui
+public class TileTeleporterStand extends TileEntity implements IInventory { // todo Create IRotatable Tile and gui
     ItemStack[] items = new ItemStack[1];
     public int rotation = 0;
 
-    //==============================================LOGIC=======================================================//
+    // ==============================================LOGIC=======================================================//
 
     @Override
-    public void updateEntity() {
-    }
+    public void updateEntity() {}
 
-
-    //==========================================SYNCHRONIZATION==================================================//
+    // ==========================================SYNCHRONIZATION==================================================//
 
     @Override
     public Packet getDescriptionPacket() {
@@ -37,7 +35,7 @@ public class TileTeleporterStand extends TileEntity implements IInventory {//tod
         readFromNBT(pkt.func_148857_g());
     }
 
-    //==============================================INVENTORY====================================================//
+    // ==============================================INVENTORY====================================================//
 
     @Override
     public int getSizeInventory() {
@@ -102,19 +100,17 @@ public class TileTeleporterStand extends TileEntity implements IInventory {//tod
     }
 
     @Override
-    public void openInventory() {
-    }
+    public void openInventory() {}
 
     @Override
-    public void closeInventory() {
-    }
+    public void closeInventory() {}
 
     @Override
     public boolean isItemValidForSlot(int i, ItemStack itemstack) {
         return true;
     }
 
-    //===========================================================================================================//
+    // ===========================================================================================================//
 
     @Override
     public void writeToNBT(NBTTagCompound compound) {

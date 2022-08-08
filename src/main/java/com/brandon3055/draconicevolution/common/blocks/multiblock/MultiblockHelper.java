@@ -10,13 +10,10 @@ import net.minecraft.world.World;
  */
 public class MultiblockHelper {
 
-
     public static class TileLocation extends ChunkCoordinates {
         public boolean initialized = false;
 
-        public TileLocation() {
-
-        }
+        public TileLocation() {}
 
         public TileLocation(int x, int y, int z) {
             this.posX = x;
@@ -86,8 +83,7 @@ public class MultiblockHelper {
         public int offsetY;
         public int offsetZ;
 
-        public TileOffset() {
-        }
+        public TileOffset() {}
 
         public TileOffset(int x, int y, int z, int offsetX, int offsetY, int offsetZ) {
             this.offsetX = x - offsetX;
@@ -126,7 +122,9 @@ public class MultiblockHelper {
         }
 
         public TileEntity getTileEntity(TileEntity tileEntity) {
-            return tileEntity.getWorldObj().getTileEntity(getXCoord(tileEntity), getYCoord(tileEntity), getZCoord(tileEntity));
+            return tileEntity
+                    .getWorldObj()
+                    .getTileEntity(getXCoord(tileEntity), getYCoord(tileEntity), getZCoord(tileEntity));
         }
 
         public void writeToNBT(NBTTagCompound compound, String key) {
@@ -141,5 +139,4 @@ public class MultiblockHelper {
             offsetZ = compound.getInteger("Z_" + key);
         }
     }
-
 }

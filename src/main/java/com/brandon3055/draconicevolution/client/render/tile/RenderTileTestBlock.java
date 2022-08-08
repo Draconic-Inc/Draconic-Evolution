@@ -16,14 +16,18 @@ import org.lwjgl.opengl.GL11;
  */
 public class RenderTileTestBlock extends TileEntitySpecialRenderer {
 
-    private static final ResourceLocation iner_model_texture = new ResourceLocation(References.MODID.toLowerCase(), "textures/models/power_sphere_layer_1.png");
-    private static final ResourceLocation outer_model_texture = new ResourceLocation(References.MODID.toLowerCase(), "textures/models/power_sphere_layer_2.png");
+    private static final ResourceLocation iner_model_texture =
+            new ResourceLocation(References.MODID.toLowerCase(), "textures/models/power_sphere_layer_1.png");
+    private static final ResourceLocation outer_model_texture =
+            new ResourceLocation(References.MODID.toLowerCase(), "textures/models/power_sphere_layer_2.png");
     private IModelCustom iner_model;
     private IModelCustom outer_model;
 
     public RenderTileTestBlock() {
-        iner_model = AdvancedModelLoader.loadModel(new ResourceLocation(References.MODID.toLowerCase(), "models/power_sphere_layer_1.obj"));
-        //outer_model = AdvancedModelLoader.loadModel(new ResourceLocation(References.MODID.toLowerCase(), "models/power_sphere_layer_2.obj"));
+        iner_model = AdvancedModelLoader.loadModel(
+                new ResourceLocation(References.MODID.toLowerCase(), "models/power_sphere_layer_1.obj"));
+        // outer_model = AdvancedModelLoader.loadModel(new ResourceLocation(References.MODID.toLowerCase(),
+        // "models/power_sphere_layer_2.obj"));
     }
 
     @Override
@@ -34,7 +38,7 @@ public class RenderTileTestBlock extends TileEntitySpecialRenderer {
 
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glDisable(GL11.GL_CULL_FACE);
-        //GL11.glDepthMask(false);
+        // GL11.glDepthMask(false);
 
         GL11.glTranslated(x + 0.5, y + 0.5, z + 0.5);
 
@@ -42,7 +46,7 @@ public class RenderTileTestBlock extends TileEntitySpecialRenderer {
 
         GL11.glPushMatrix();
         GL11.glRotatef(((TileTestBlock) var1).modelRotation, 0F, 1F, 0.5F);
-        //GL11.glColor4f(2F, 2F, 2F, 1F);
+        // GL11.glColor4f(2F, 2F, 2F, 1F);
         iner_model.renderAll();
         GL11.glPopMatrix();
 
@@ -57,7 +61,6 @@ public class RenderTileTestBlock extends TileEntitySpecialRenderer {
         outer_model.renderAll();
         GL11.glDisable(GL11.GL_BLEND);
         GL11.glDepthMask(true);
-
 
         GL11.glPopMatrix();
     }

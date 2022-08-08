@@ -16,19 +16,22 @@ import net.minecraftforge.client.model.AdvancedModelLoader;
 import net.minecraftforge.client.model.IModelCustom;
 import org.lwjgl.opengl.GL11;
 
-
 @SideOnly(Side.CLIENT)
 public class RenderTileParticleGen extends TileEntitySpecialRenderer {
 
-    private final ResourceLocation texture = new ResourceLocation(References.MODID.toLowerCase(), "textures/models/ParticleGenTextureSheet.png");
-    private final ResourceLocation beamTexture = new ResourceLocation(References.MODID.toLowerCase(), "textures/models/stabilizer_beam.png");
-    private static final ResourceLocation modelTexture = new ResourceLocation(References.MODID.toLowerCase(), "textures/models/stabilizer_sphere.png");
+    private final ResourceLocation texture =
+            new ResourceLocation(References.MODID.toLowerCase(), "textures/models/ParticleGenTextureSheet.png");
+    private final ResourceLocation beamTexture =
+            new ResourceLocation(References.MODID.toLowerCase(), "textures/models/stabilizer_beam.png");
+    private static final ResourceLocation modelTexture =
+            new ResourceLocation(References.MODID.toLowerCase(), "textures/models/stabilizer_sphere.png");
     private IModelCustom stabilizerSphereModel;
 
     private float pxl = 1F / 64;
 
     public RenderTileParticleGen() {
-        stabilizerSphereModel = AdvancedModelLoader.loadModel(new ResourceLocation(References.MODID.toLowerCase(), "models/stabilizer_sphere.obj"));
+        stabilizerSphereModel = AdvancedModelLoader.loadModel(
+                new ResourceLocation(References.MODID.toLowerCase(), "models/stabilizer_sphere.obj"));
     }
 
     @Override
@@ -38,7 +41,6 @@ public class RenderTileParticleGen extends TileEntitySpecialRenderer {
         GL11.glTranslatef((float) x, (float) y, (float) z);
         TileParticleGenerator tileEntityGen = (TileParticleGenerator) tileEntity;
         renderBlock(tileEntityGen, f);
-
 
         GL11.glPopMatrix();
     }
@@ -51,14 +53,14 @@ public class RenderTileParticleGen extends TileEntitySpecialRenderer {
 
         GL11.glPushMatrix();
 
-        //GL11.glDisable(GL11.GL_LIGHTING);
+        // GL11.glDisable(GL11.GL_LIGHTING);
         bindTexture(texture);
 
         tessellator.startDrawingQuads();
         tessellator.setNormal(0.0F, 0.0F, 1.0F);
         tessellator.setColorRGBA(255, 255, 255, 255);
 
-        {//Draw Corners
+        { // Draw Corners
             float f = 0.4F;
             drawCornerCube(tessellator, f, f, f, 1F - f, inverted, stabilizerMode);
             drawCornerCube(tessellator, f, -f, f, 1F - f, inverted, stabilizerMode);
@@ -69,7 +71,7 @@ public class RenderTileParticleGen extends TileEntitySpecialRenderer {
             drawCornerCube(tessellator, f, -f, -f, 1F - f, inverted, stabilizerMode);
             drawCornerCube(tessellator, -f, -f, f, 1F - f, inverted, stabilizerMode);
         }
-        {//Draw Beams
+        { // Draw Beams
             float f = 0.45F;
             float f2 = 0.4F;
             drawBeamX(tessellator, 0, f2, f2, 1F - f);
@@ -89,7 +91,7 @@ public class RenderTileParticleGen extends TileEntitySpecialRenderer {
         }
 
         tessellator.draw();
-        //GL11.glEnable(GL11.GL_LIGHTING);
+        // GL11.glEnable(GL11.GL_LIGHTING);
         GL11.glPopMatrix();
 
         if (stabilizerMode) {
@@ -97,7 +99,6 @@ public class RenderTileParticleGen extends TileEntitySpecialRenderer {
         }
 
         if (tl.beam_enabled) preRenderBeam(tessellator, tl, f3);
-
     }
 
     private void drawEnergyBeam(Tessellator tess, TileParticleGenerator gen, float f) {
@@ -133,7 +134,7 @@ public class RenderTileParticleGen extends TileEntitySpecialRenderer {
 
     public void renderStabilizerSphere(TileParticleGenerator tile) {
         GL11.glPushMatrix();
-        //GL11.glColor4f(0.5F, 0.0F, 0.0F, 1F);
+        // GL11.glColor4f(0.5F, 0.0F, 0.0F, 1F);
         GL11.glColor4f(0.0F, 2.0F, 0.0F, 1F);
         GL11.glTranslated(0.5, 0, 0.5);
         GL11.glScalef(0.4F, 0.4F, 0.4F);
@@ -192,22 +193,21 @@ public class RenderTileParticleGen extends TileEntitySpecialRenderer {
         GL11.glDepthMask(true);
         OpenGlHelper.glBlendFunc(770, 1, 1, 0);
 
-        //float time = (float)tile.getWorldObj().getTotalWorldTime() + f;
+        // float time = (float)tile.getWorldObj().getTotalWorldTime() + f;
         float time = tile.rotation + f;
         float upMot = -time * 0.2F - (float) MathHelper.floor_float(-time * 0.1F);
         byte scaleMult = 1;
         double rotation = (double) time * 0.025D * (1.0D - (double) (scaleMult & 1) * 2.5D);
 
-
         tess.startDrawingQuads();
         tess.setColorRGBA(255, 255, 255, 32);
 
         double scale = (double) scaleMult * 0.2D;
-        double d7 = 0.5D + Math.cos(rotation + 2.356194490192345D) * scale;  //x point 1
-        double d9 = 0.5D + Math.sin(rotation + 2.356194490192345D) * scale;  //z point 1
-        double d11 = 0.5D + Math.cos(rotation + (Math.PI / 4D)) * scale;        //x point 2
-        double d13 = 0.5D + Math.sin(rotation + (Math.PI / 4D)) * scale;     //z point 2
-        double d15 = 0.5D + Math.cos(rotation + 3.9269908169872414D) * scale;//Dist from x-3
+        double d7 = 0.5D + Math.cos(rotation + 2.356194490192345D) * scale; // x point 1
+        double d9 = 0.5D + Math.sin(rotation + 2.356194490192345D) * scale; // z point 1
+        double d11 = 0.5D + Math.cos(rotation + (Math.PI / 4D)) * scale; // x point 2
+        double d13 = 0.5D + Math.sin(rotation + (Math.PI / 4D)) * scale; // z point 2
+        double d15 = 0.5D + Math.cos(rotation + 3.9269908169872414D) * scale; // Dist from x-3
         double d17 = 0.5D + Math.sin(rotation + 3.9269908169872414D) * scale;
         double d19 = 0.5D + Math.cos(rotation + 5.497787143782138D) * scale;
         double d21 = 0.5D + Math.sin(rotation + 5.497787143782138D) * scale;
@@ -323,15 +323,15 @@ public class RenderTileParticleGen extends TileEntitySpecialRenderer {
         GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glDisable(GL11.GL_BLEND);
         GL11.glPopMatrix();
-
     }
 
-    private void drawCornerCube(Tessellator tess, float x, float y, float z, float FP, boolean inverted, boolean stabalizerMode) {
+    private void drawCornerCube(
+            Tessellator tess, float x, float y, float z, float FP, boolean inverted, boolean stabalizerMode) {
         float srcXMin = inverted ? 38F * pxl : 32F * pxl;
         float srcYMin = 0F;
         float srcXMax = inverted ? 44F * pxl : 38F * pxl;
         float srcYMax = 6 * pxl;
-        //float FP = 0.6F; //Scale
+        // float FP = 0.6F; //Scale
         float FN = 1F - FP;
 
         if (stabalizerMode) {
@@ -339,37 +339,37 @@ public class RenderTileParticleGen extends TileEntitySpecialRenderer {
             srcXMax = 50F * pxl;
         }
 
-        //X+
+        // X+
         tess.addVertexWithUV(FP + x, FN + y, FN + z, srcXMin, srcYMin);
         tess.addVertexWithUV(FP + x, FP + y, FN + z, srcXMax, srcYMin);
         tess.addVertexWithUV(FP + x, FP + y, FP + z, srcXMax, srcYMax);
         tess.addVertexWithUV(FP + x, FN + y, FP + z, srcXMin, srcYMax);
 
-        //X-
+        // X-
         tess.addVertexWithUV(FN + x, FN + y, FP + z, srcXMin, srcYMin);
         tess.addVertexWithUV(FN + x, FP + y, FP + z, srcXMax, srcYMin);
         tess.addVertexWithUV(FN + x, FP + y, FN + z, srcXMax, srcYMax);
         tess.addVertexWithUV(FN + x, FN + y, FN + z, srcXMin, srcYMax);
 
-        //Y+
+        // Y+
         tess.addVertexWithUV(FN + x, FP + y, FN + z, srcXMin, srcYMin);
         tess.addVertexWithUV(FN + x, FP + y, FP + z, srcXMax, srcYMin);
         tess.addVertexWithUV(FP + x, FP + y, FP + z, srcXMax, srcYMax);
         tess.addVertexWithUV(FP + x, FP + y, FN + z, srcXMin, srcYMax);
 
-        //Y-
+        // Y-
         tess.addVertexWithUV(FN + x, FN + y, FN + z, srcXMin, srcYMin);
         tess.addVertexWithUV(FP + x, FN + y, FN + z, srcXMax, srcYMin);
         tess.addVertexWithUV(FP + x, FN + y, FP + z, srcXMax, srcYMax);
         tess.addVertexWithUV(FN + x, FN + y, FP + z, srcXMin, srcYMax);
 
-        //Z+
+        // Z+
         tess.addVertexWithUV(FP + x, FN + y, FP + z, srcXMin, srcYMin);
         tess.addVertexWithUV(FP + x, FP + y, FP + z, srcXMax, srcYMin);
         tess.addVertexWithUV(FN + x, FP + y, FP + z, srcXMax, srcYMax);
         tess.addVertexWithUV(FN + x, FN + y, FP + z, srcXMin, srcYMax);
 
-        //Z-
+        // Z-
         tess.addVertexWithUV(FN + x, FN + y, FN + z, srcXMin, srcYMin);
         tess.addVertexWithUV(FN + x, FP + y, FN + z, srcXMax, srcYMin);
         tess.addVertexWithUV(FP + x, FP + y, FN + z, srcXMax, srcYMax);
@@ -386,25 +386,25 @@ public class RenderTileParticleGen extends TileEntitySpecialRenderer {
         float XX = 0.9F;
         float XM = 0.1F;
 
-        //Y+
+        // Y+
         tess.addVertexWithUV(XM, FP + y, FN + z, srcXMin, srcYMax);
         tess.addVertexWithUV(XM, FP + y, FP + z, srcXMin, srcYMin);
         tess.addVertexWithUV(XX, FP + y, FP + z, srcXMax, srcYMin);
         tess.addVertexWithUV(XX, FP + y, FN + z, srcXMax, srcYMax);
 
-        //Y-
+        // Y-
         tess.addVertexWithUV(XM, FN + y, FN + z, srcXMin, srcYMin);
         tess.addVertexWithUV(XX, FN + y, FN + z, srcXMax, srcYMin);
         tess.addVertexWithUV(XX, FN + y, FP + z, srcXMax, srcYMax);
         tess.addVertexWithUV(XM, FN + y, FP + z, srcXMin, srcYMax);
 
-        //Z+
+        // Z+
         tess.addVertexWithUV(XX, FN + y, FP + z, srcXMin, srcYMax);
         tess.addVertexWithUV(XX, FP + y, FP + z, srcXMin, srcYMin);
         tess.addVertexWithUV(XM, FP + y, FP + z, srcXMax, srcYMin);
         tess.addVertexWithUV(XM, FN + y, FP + z, srcXMax, srcYMax);
 
-        //Z-
+        // Z-
         tess.addVertexWithUV(XM, FN + y, FN + z, srcXMin, srcYMax);
         tess.addVertexWithUV(XM, FP + y, FN + z, srcXMin, srcYMin);
         tess.addVertexWithUV(XX, FP + y, FN + z, srcXMax, srcYMin);
@@ -421,30 +421,29 @@ public class RenderTileParticleGen extends TileEntitySpecialRenderer {
         float XX = 0.9F;
         float XM = 0.1F;
 
-        //X+
+        // X+
         tess.addVertexWithUV(FP + x, XM, FN + z, srcXMin, srcYMin);
         tess.addVertexWithUV(FP + x, XX, FN + z, srcXMax, srcYMin);
         tess.addVertexWithUV(FP + x, XX, FP + z, srcXMax, srcYMax);
         tess.addVertexWithUV(FP + x, XM, FP + z, srcXMin, srcYMax);
 
-        //X-
+        // X-
         tess.addVertexWithUV(FN + x, XM, FP + z, srcXMin, srcYMin);
         tess.addVertexWithUV(FN + x, XX, FP + z, srcXMax, srcYMin);
         tess.addVertexWithUV(FN + x, XX, FN + z, srcXMax, srcYMax);
         tess.addVertexWithUV(FN + x, XM, FN + z, srcXMin, srcYMax);
 
-        //Z+
+        // Z+
         tess.addVertexWithUV(FP + x, XM, FP + z, srcXMin, srcYMin);
         tess.addVertexWithUV(FP + x, XX, FP + z, srcXMax, srcYMin);
         tess.addVertexWithUV(FN + x, XX, FP + z, srcXMax, srcYMax);
         tess.addVertexWithUV(FN + x, XM, FP + z, srcXMin, srcYMax);
 
-        //Z-
+        // Z-
         tess.addVertexWithUV(FN + x, XM, FN + z, srcXMin, srcYMin);
         tess.addVertexWithUV(FN + x, XX, FN + z, srcXMax, srcYMin);
         tess.addVertexWithUV(FP + x, XX, FN + z, srcXMax, srcYMax);
         tess.addVertexWithUV(FP + x, XM, FN + z, srcXMin, srcYMax);
-
     }
 
     private void drawBeamZ(Tessellator tess, float x, float y, float z, float FP) {
@@ -457,30 +456,29 @@ public class RenderTileParticleGen extends TileEntitySpecialRenderer {
         float XX = 0.9F;
         float XM = 0.1F;
 
-        //X+
+        // X+
         tess.addVertexWithUV(FP + x, FN + y, XM, srcXMin, srcYMax);
         tess.addVertexWithUV(FP + x, FP + y, XM, srcXMin, srcYMin);
         tess.addVertexWithUV(FP + x, FP + y, XX, srcXMax, srcYMin);
         tess.addVertexWithUV(FP + x, FN + y, XX, srcXMax, srcYMax);
 
-        //X-
+        // X-
         tess.addVertexWithUV(FN + x, FN + y, XX, srcXMin, srcYMax);
         tess.addVertexWithUV(FN + x, FP + y, XX, srcXMin, srcYMin);
         tess.addVertexWithUV(FN + x, FP + y, XM, srcXMax, srcYMin);
         tess.addVertexWithUV(FN + x, FN + y, XM, srcXMax, srcYMax);
 
-        //Y+
+        // Y+
         tess.addVertexWithUV(FN + x, FP + y, XM, srcXMin, srcYMin);
         tess.addVertexWithUV(FN + x, FP + y, XX, srcXMax, srcYMin);
         tess.addVertexWithUV(FP + x, FP + y, XX, srcXMax, srcYMax);
         tess.addVertexWithUV(FP + x, FP + y, XM, srcXMin, srcYMax);
 
-        //Y-
+        // Y-
         tess.addVertexWithUV(FN + x, FN + y, XM, srcXMin, srcYMax);
         tess.addVertexWithUV(FP + x, FN + y, XM, srcXMin, srcYMin);
         tess.addVertexWithUV(FP + x, FN + y, XX, srcXMax, srcYMin);
         tess.addVertexWithUV(FN + x, FN + y, XX, srcXMax, srcYMax);
-
     }
 
     private void preRenderBeam(Tessellator tess, TileParticleGenerator gen, float f) {
@@ -526,23 +524,22 @@ public class RenderTileParticleGen extends TileEntitySpecialRenderer {
         GL11.glDepthMask(true);
         OpenGlHelper.glBlendFunc(770, 1, 1, 0);
 
-        //float time = (float)tile.getWorldObj().getTotalWorldTime() + f;
+        // float time = (float)tile.getWorldObj().getTotalWorldTime() + f;
         float time = tile.rotation + f;
         float upMot = -time * 0.2F - (float) MathHelper.floor_float(-time * 0.1F);
         float rotValue = tile.beam_rotation * (tile.rotation + f * 0.5F);
         double rotation = rotValue;
-
 
         tess.startDrawingQuads();
         tess.setBrightness(200);
         tess.setColorRGBA(tile.beam_red, tile.beam_green, tile.beam_blue, 32);
 
         double scale = (double) tile.beam_scale * 0.2D;
-        double d7 = 0.5D + Math.cos(rotation + 2.356194490192345D) * scale;  //x point 1
-        double d9 = 0.5D + Math.sin(rotation + 2.356194490192345D) * scale;  //z point 1
-        double d11 = 0.5D + Math.cos(rotation + (Math.PI / 4D)) * scale;        //x point 2
-        double d13 = 0.5D + Math.sin(rotation + (Math.PI / 4D)) * scale;     //z point 2
-        double d15 = 0.5D + Math.cos(rotation + 3.9269908169872414D) * scale;//Dist from x-3
+        double d7 = 0.5D + Math.cos(rotation + 2.356194490192345D) * scale; // x point 1
+        double d9 = 0.5D + Math.sin(rotation + 2.356194490192345D) * scale; // z point 1
+        double d11 = 0.5D + Math.cos(rotation + (Math.PI / 4D)) * scale; // x point 2
+        double d13 = 0.5D + Math.sin(rotation + (Math.PI / 4D)) * scale; // z point 2
+        double d15 = 0.5D + Math.cos(rotation + 3.9269908169872414D) * scale; // Dist from x-3
         double d17 = 0.5D + Math.sin(rotation + 3.9269908169872414D) * scale;
         double d19 = 0.5D + Math.cos(rotation + 5.497787143782138D) * scale;
         double d21 = 0.5D + Math.sin(rotation + 5.497787143782138D) * scale;
@@ -610,8 +607,8 @@ public class RenderTileParticleGen extends TileEntitySpecialRenderer {
         tess.draw();
         GL11.glPushMatrix();
 
-        //GL11.glTranslated(0, 0.4, 0);
-        //length -= 0.5F;
+        // GL11.glTranslated(0, 0.4, 0);
+        // length -= 0.5F;
 
         GL11.glEnable(GL11.GL_BLEND);
         OpenGlHelper.glBlendFunc(770, 771, 1, 0);
@@ -656,13 +653,10 @@ public class RenderTileParticleGen extends TileEntitySpecialRenderer {
         GL11.glEnable(GL11.GL_LIGHTING);
         GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glDepthMask(true);
-//
-//		GL11.glEnable(GL11.GL_LIGHTING);
-//		GL11.glEnable(GL11.GL_TEXTURE_2D);
+        //
+        //		GL11.glEnable(GL11.GL_LIGHTING);
+        //		GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glDisable(GL11.GL_BLEND);
         GL11.glPopMatrix();
-
     }
-
-
 }

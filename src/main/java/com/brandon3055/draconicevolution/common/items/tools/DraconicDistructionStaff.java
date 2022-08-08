@@ -1,7 +1,5 @@
 package com.brandon3055.draconicevolution.common.items.tools;
 
-import java.util.List;
-
 import com.brandon3055.brandonscore.common.utills.InfoHelper;
 import com.brandon3055.draconicevolution.client.render.IRenderTweak;
 import com.brandon3055.draconicevolution.common.ModItems;
@@ -17,6 +15,7 @@ import com.brandon3055.draconicevolution.common.utills.IUpgradableItem;
 import com.brandon3055.draconicevolution.common.utills.ItemConfigField;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnumEnchantmentType;
@@ -29,7 +28,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.IItemRenderer;
 import org.lwjgl.opengl.GL11;
 
-public class DraconicDistructionStaff extends MiningTool implements IInventoryTool, IRenderTweak, IEnergyContainerWeaponItem {
+public class DraconicDistructionStaff extends MiningTool
+        implements IInventoryTool, IRenderTweak, IEnergyContainerWeaponItem {
 
     public DraconicDistructionStaff() {
         super(ModItems.CHAOTIC);
@@ -37,9 +37,12 @@ public class DraconicDistructionStaff extends MiningTool implements IInventoryTo
         this.setHarvestLevel("pickaxe", 10);
         this.setHarvestLevel("shovel", 10);
         this.setHarvestLevel("axe", 10);
-        this.setCapacity(BalanceConfigHandler.draconicToolsBaseStorage * 2 + BalanceConfigHandler.draconicWeaponsBaseStorage);
-        this.setMaxExtract(BalanceConfigHandler.draconicToolsMaxTransfer * 2 + BalanceConfigHandler.draconicWeaponsMaxTransfer);
-        this.setMaxReceive(BalanceConfigHandler.draconicToolsMaxTransfer * 2 + BalanceConfigHandler.draconicWeaponsMaxTransfer);
+        this.setCapacity(
+                BalanceConfigHandler.draconicToolsBaseStorage * 2 + BalanceConfigHandler.draconicWeaponsBaseStorage);
+        this.setMaxExtract(
+                BalanceConfigHandler.draconicToolsMaxTransfer * 2 + BalanceConfigHandler.draconicWeaponsMaxTransfer);
+        this.setMaxReceive(
+                BalanceConfigHandler.draconicToolsMaxTransfer * 2 + BalanceConfigHandler.draconicWeaponsMaxTransfer);
         this.energyPerOperation = BalanceConfigHandler.draconicToolsEnergyPerAction;
         ModItems.register(this);
     }
@@ -49,13 +52,20 @@ public class DraconicDistructionStaff extends MiningTool implements IInventoryTo
         return this.getEfficiency(stack);
     }
 
-
     @Override
     public List<ItemConfigField> getFields(ItemStack stack, int slot) {
         List<ItemConfigField> list = super.getFields(stack, slot);
-        list.add(new ItemConfigField(References.INT_ID, slot, References.DIG_AOE).setMinMaxAndIncromente(0, EnumUpgrade.DIG_AOE.getUpgradePoints(stack), 1).readFromItem(stack, 0).setModifier("AOE"));
-        list.add(new ItemConfigField(References.INT_ID, slot, References.DIG_DEPTH).setMinMaxAndIncromente(1, EnumUpgrade.DIG_DEPTH.getUpgradePoints(stack), 1).readFromItem(stack, 1));
-        list.add(new ItemConfigField(References.INT_ID, slot, References.ATTACK_AOE).setMinMaxAndIncromente(0, EnumUpgrade.ATTACK_AOE.getUpgradePoints(stack), 1).readFromItem(stack, 1).setModifier("AOE"));
+        list.add(new ItemConfigField(References.INT_ID, slot, References.DIG_AOE)
+                .setMinMaxAndIncromente(0, EnumUpgrade.DIG_AOE.getUpgradePoints(stack), 1)
+                .readFromItem(stack, 0)
+                .setModifier("AOE"));
+        list.add(new ItemConfigField(References.INT_ID, slot, References.DIG_DEPTH)
+                .setMinMaxAndIncromente(1, EnumUpgrade.DIG_DEPTH.getUpgradePoints(stack), 1)
+                .readFromItem(stack, 1));
+        list.add(new ItemConfigField(References.INT_ID, slot, References.ATTACK_AOE)
+                .setMinMaxAndIncromente(0, EnumUpgrade.ATTACK_AOE.getUpgradePoints(stack), 1)
+                .readFromItem(stack, 1)
+                .setModifier("AOE"));
         list.add(new ItemConfigField(References.BOOLEAN_ID, slot, References.OBLITERATE).readFromItem(stack, false));
         return list;
     }
@@ -79,7 +89,8 @@ public class DraconicDistructionStaff extends MiningTool implements IInventoryTo
     public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity) {
         entity.hurtResistantTime = 0;
         ToolHandler.damageEntityBasedOnHealth(entity, player, 0.3F);
-        ToolHandler.AOEAttack(player, entity, stack, IConfigurableItem.ProfileHelper.getInteger(stack, References.ATTACK_AOE, 0));
+        ToolHandler.AOEAttack(
+                player, entity, stack, IConfigurableItem.ProfileHelper.getInteger(stack, References.ATTACK_AOE, 0));
         return true;
     }
 
@@ -94,8 +105,10 @@ public class DraconicDistructionStaff extends MiningTool implements IInventoryTo
         super.addInformation(stack, player, list, extended);
 
         list.add("");
-        list.add(EnumChatFormatting.BLUE + "+" + ToolHandler.getBaseAttackDamage(stack) + " " + StatCollector.translateToLocal("info.de.attackDamage.txt"));
-        list.add(EnumChatFormatting.BLUE + "+30%" + " " + StatCollector.translateToLocal("info.de.bonusHealthDamage.txt"));
+        list.add(EnumChatFormatting.BLUE + "+" + ToolHandler.getBaseAttackDamage(stack) + " "
+                + StatCollector.translateToLocal("info.de.attackDamage.txt"));
+        list.add(EnumChatFormatting.BLUE + "+30%" + " "
+                + StatCollector.translateToLocal("info.de.bonusHealthDamage.txt"));
     }
 
     @Override
@@ -167,8 +180,11 @@ public class DraconicDistructionStaff extends MiningTool implements IInventoryTo
     @Override
     public int getCapacity(ItemStack stack) {
         int points = IUpgradableItem.EnumUpgrade.RF_CAPACITY.getUpgradePoints(stack);
-        return BalanceConfigHandler.draconicToolsBaseStorage * 2 + BalanceConfigHandler.draconicWeaponsBaseStorage +
-                points * (BalanceConfigHandler.draconicToolsStoragePerUpgrade + BalanceConfigHandler.draconicWeaponsStoragePerUpgrade);
+        return BalanceConfigHandler.draconicToolsBaseStorage * 2
+                + BalanceConfigHandler.draconicWeaponsBaseStorage
+                + points
+                        * (BalanceConfigHandler.draconicToolsStoragePerUpgrade
+                                + BalanceConfigHandler.draconicWeaponsStoragePerUpgrade);
     }
 
     @Override
@@ -184,7 +200,8 @@ public class DraconicDistructionStaff extends MiningTool implements IInventoryTo
     @Override
     public List<String> getUpgradeStats(ItemStack stack) {
         List<String> list = super.getUpgradeStats(stack);
-        list.add(InfoHelper.ITC() + StatCollector.translateToLocal("info.de.attackDamage.txt") + ": " + InfoHelper.HITC() + ToolHandler.getBaseAttackDamage(stack));
+        list.add(InfoHelper.ITC() + StatCollector.translateToLocal("info.de.attackDamage.txt") + ": "
+                + InfoHelper.HITC() + ToolHandler.getBaseAttackDamage(stack));
         return list;
     }
 

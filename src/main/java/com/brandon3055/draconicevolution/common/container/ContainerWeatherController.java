@@ -34,7 +34,6 @@ public class ContainerWeatherController extends Container {
         return tileWC.isUseableByPlayer(player);
     }
 
-
     @Override
     public ItemStack transferStackInSlot(EntityPlayer player, int i) {
         Slot slot = getSlot(i);
@@ -47,7 +46,8 @@ public class ContainerWeatherController extends Container {
                 if (!mergeItemStack(stack, 0, 36, false)) {
                     return null;
                 }
-            } else if (!stack.getItem().equals(Items.emerald) || !mergeItemStack(stack, 36, 36 + tileWC.getSizeInventory(), false)) {
+            } else if (!stack.getItem().equals(Items.emerald)
+                    || !mergeItemStack(stack, 36, 36 + tileWC.getSizeInventory(), false)) {
                 return null;
             }
 
@@ -68,5 +68,4 @@ public class ContainerWeatherController extends Container {
     public TileWeatherController getTileWC() {
         return tileWC;
     }
-
 }

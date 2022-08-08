@@ -50,5 +50,4 @@ public class RenderTileReactorEnergyInjector extends TileEntitySpecialRenderer {
 
         GL11.glPopMatrix();
     }
-
 }

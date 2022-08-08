@@ -13,6 +13,9 @@ import com.brandon3055.draconicevolution.common.handler.ContributorHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import com.google.gson.stream.JsonReader;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiConfirmOpenLink;
@@ -26,10 +29,6 @@ import org.apache.commons.io.IOUtils;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
-import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by Brandon on 6/03/2015.
  */
@@ -42,17 +41,21 @@ public class GUIManual extends GUIScrollingBase implements GuiYesNoCallback {
     private int worldUpdateIn = -1;
     private static String lang;
 
-
     public GUIManual() {
         super(new DummyContainer(), 255, 325);
         if (currentPage != null) {
-            collection.addComponent(new ComponentManualPage(0, 0, this, currentPage)).setGroup(GR_PAGE);
-            collection.addComponent(new ComponentButton(102, 314, 50, 12, 1, this, StatCollector.translateToLocal("button.de.back.txt"))).setGroup(GR_PAGE);
+            collection
+                    .addComponent(new ComponentManualPage(0, 0, this, currentPage))
+                    .setGroup(GR_PAGE);
+            collection
+                    .addComponent(new ComponentButton(
+                            102, 314, 50, 12, 1, this, StatCollector.translateToLocal("button.de.back.txt")))
+                    .setGroup(GR_PAGE);
             collection.setOnlyGroupEnabled(GR_BACKGROUND);
             collection.setGroupEnabled(GR_PAGE, true);
         }
 
-        //mc.gameSettings.guiScale
+        // mc.gameSettings.guiScale
     }
 
     @Override
@@ -61,8 +64,11 @@ public class GUIManual extends GUIScrollingBase implements GuiYesNoCallback {
         loadPages();
         if (previousScale == -1) adjustGuiScale();
 
-        if (!Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage().getLanguageCode().equals(lang))
-            loadPages();
+        if (!Minecraft.getMinecraft()
+                .getLanguageManager()
+                .getCurrentLanguage()
+                .getLanguageCode()
+                .equals(lang)) loadPages();
 
         LogHelper.info(ContributorHandler.contributors);
     }
@@ -119,19 +125,69 @@ public class GUIManual extends GUIScrollingBase implements GuiYesNoCallback {
     protected ComponentCollection assembleComponents() {
         collection = new ComponentCollection(0, 0, xSize, ySize, this);
 
-        collection.addComponent(new ComponentTexturedRect(0, 0, 255, 255, ResourceHandler.getResource("textures/gui/manualTop.png"))).setGroup(GR_BACKGROUND);
-        collection.addComponent(new ComponentTexturedRect(0, 255, 255, 69, ResourceHandler.getResource("textures/gui/manualBottom.png"))).setGroup(GR_BACKGROUND);
+        collection
+                .addComponent(new ComponentTexturedRect(
+                        0, 0, 255, 255, ResourceHandler.getResource("textures/gui/manualTop.png")))
+                .setGroup(GR_BACKGROUND);
+        collection
+                .addComponent(new ComponentTexturedRect(
+                        0, 255, 255, 69, ResourceHandler.getResource("textures/gui/manualBottom.png")))
+                .setGroup(GR_BACKGROUND);
 
-        collection.addComponent(new ComponentTexturedRect(7, 100, 0, 0, 255, 255, ResourceHandler.getResource("textures/gui/images/debanner.png"), true)).setGroup(GR_INTRO).setName("BANNER");
+        collection
+                .addComponent(new ComponentTexturedRect(
+                        7, 100, 0, 0, 255, 255, ResourceHandler.getResource("textures/gui/images/debanner.png"), true))
+                .setGroup(GR_INTRO)
+                .setName("BANNER");
 
-        collection.addComponent(new ComponentButton(75, 260, 100, 20, 0, this, StatCollector.translateToLocal("info.de.manual.indexButton.txt"), StatCollector.translateToLocal("info.de.manual.indexButtonTip.txt"))).setGroup(GR_INTRO);
-        collection.addComponent(new ComponentButton(75, 285, 100, 20, 2, this, StatCollector.translateToLocal("info.de.manual.contributorsButton.txt"), StatCollector.translateToLocal("info.de.manual.contributorsButtonInfo.txt"))).setGroup(GR_INTRO);
-        collection.addComponent(new ComponentContributorsPage(0, 0, this)).setGroup(GR_CONTRIBUTORS).setName("CONTRIBUTORS");
+        collection
+                .addComponent(new ComponentButton(
+                        75,
+                        260,
+                        100,
+                        20,
+                        0,
+                        this,
+                        StatCollector.translateToLocal("info.de.manual.indexButton.txt"),
+                        StatCollector.translateToLocal("info.de.manual.indexButtonTip.txt")))
+                .setGroup(GR_INTRO);
+        collection
+                .addComponent(new ComponentButton(
+                        75,
+                        285,
+                        100,
+                        20,
+                        2,
+                        this,
+                        StatCollector.translateToLocal("info.de.manual.contributorsButton.txt"),
+                        StatCollector.translateToLocal("info.de.manual.contributorsButtonInfo.txt")))
+                .setGroup(GR_INTRO);
+        collection
+                .addComponent(new ComponentContributorsPage(0, 0, this))
+                .setGroup(GR_CONTRIBUTORS)
+                .setName("CONTRIBUTORS");
 
-        collection.addComponent(new ComponentTextureButton(140, 290, 0, 0, 100, 30, 10, this, "", "", ResourceHandler.getResource("textures/gui/patreon.png")).forceFullRender()).setGroup(GR_CONTRIBUTORS);
+        collection
+                .addComponent(new ComponentTextureButton(
+                                140,
+                                290,
+                                0,
+                                0,
+                                100,
+                                30,
+                                10,
+                                this,
+                                "",
+                                "",
+                                ResourceHandler.getResource("textures/gui/patreon.png"))
+                        .forceFullRender())
+                .setGroup(GR_CONTRIBUTORS);
 
         for (int i = 0; i < pageList.size(); i++) {
-            collection.addComponent(new ComponentIndexButton(20, 20 + i * 20, this, pageList.get(i))).setGroup(GR_INDEX).setName("INDEX_BUTTON_" + i);
+            collection
+                    .addComponent(new ComponentIndexButton(20, 20 + i * 20, this, pageList.get(i)))
+                    .setGroup(GR_INDEX)
+                    .setName("INDEX_BUTTON_" + i);
             pageLength += 20;
         }
 
@@ -144,7 +200,8 @@ public class GUIManual extends GUIScrollingBase implements GuiYesNoCallback {
 
     @Override
     public void handleScrollInput(int direction) {
-        if (collection.getComponent("INDEX_BUTTON_0") != null && collection.getComponent("INDEX_BUTTON_0").isEnabled()) {
+        if (collection.getComponent("INDEX_BUTTON_0") != null
+                && collection.getComponent("INDEX_BUTTON_0").isEnabled()) {
 
             if (currentPage != null) return;
             scrollOffset += direction * (InfoHelper.isShiftKeyDown() ? 30 : 10);
@@ -153,15 +210,15 @@ public class GUIManual extends GUIScrollingBase implements GuiYesNoCallback {
             if (pageLength + 40 <= ySize) scrollOffset = 0;
 
             barPosition = (int) (((double) scrollOffset / scrollLimit) * 247D);
-        } else if (collection.getComponent("CONTRIBUTORS") != null && collection.getComponent("CONTRIBUTORS").isEnabled()) {
+        } else if (collection.getComponent("CONTRIBUTORS") != null
+                && collection.getComponent("CONTRIBUTORS").isEnabled()) {
             ComponentContributorsPage page = (ComponentContributorsPage) collection.getComponent("CONTRIBUTORS");
             barPosition = (int) (((double) page.scrollOffset / page.scrollLimit) * 247D);
-        } else if (collection.getComponent("OPEN_PAGE") != null && collection.getComponent("OPEN_PAGE").isEnabled()) {
+        } else if (collection.getComponent("OPEN_PAGE") != null
+                && collection.getComponent("OPEN_PAGE").isEnabled()) {
             ComponentManualPage page = (ComponentManualPage) collection.getComponent("OPEN_PAGE");
             barPosition = (int) (((double) page.scrollOffset / page.scrollLimit) * 247D);
         }
-
-
     }
 
     @Override
@@ -169,10 +226,17 @@ public class GUIManual extends GUIScrollingBase implements GuiYesNoCallback {
         super.drawScreen(mouseX, mouseY, par3);
         int posX = (this.width - xSize) / 2;
         int posY = (this.height - ySize) / 2;
-        if (collection.getComponent("BANNER") != null && collection.getComponent("BANNER").isEnabled())
-            fontRendererObj.drawSplitString(StatCollector.translateToLocal("info.de.manual.introTxt.txt"), posX + 20, posY + 190, 150, 0x000000);
+        if (collection.getComponent("BANNER") != null
+                && collection.getComponent("BANNER").isEnabled())
+            fontRendererObj.drawSplitString(
+                    StatCollector.translateToLocal("info.de.manual.introTxt.txt"),
+                    posX + 20,
+                    posY + 190,
+                    150,
+                    0x000000);
 
-        if (collection.getComponent("BANNER") != null && collection.getComponent("BANNER").isEnabled()) return;
+        if (collection.getComponent("BANNER") != null
+                && collection.getComponent("BANNER").isEnabled()) return;
         ResourceHandler.bindResource("textures/gui/Widgets.png");
         GL11.glColor4f(1F, 1F, 1F, 1F);
         drawTexturedModalRect(guiLeft, guiTop, 118, 20, 17, 17);
@@ -191,14 +255,21 @@ public class GUIManual extends GUIScrollingBase implements GuiYesNoCallback {
     public void updateScreen() {
         super.updateScreen();
 
-        disableScrollBar = collection.getComponent("BANNER") != null && collection.getComponent("BANNER").isEnabled();
+        disableScrollBar = collection.getComponent("BANNER") != null
+                && collection.getComponent("BANNER").isEnabled();
 
-        if (!scrollPressed && collection.getComponent("INDEX_BUTTON_0") != null && collection.getComponent("INDEX_BUTTON_0").isEnabled()) {
+        if (!scrollPressed
+                && collection.getComponent("INDEX_BUTTON_0") != null
+                && collection.getComponent("INDEX_BUTTON_0").isEnabled()) {
             barPosition = (int) (((double) scrollOffset / scrollLimit) * 247D);
-        } else if (!scrollPressed && collection.getComponent("CONTRIBUTORS") != null && collection.getComponent("CONTRIBUTORS").isEnabled()) {
+        } else if (!scrollPressed
+                && collection.getComponent("CONTRIBUTORS") != null
+                && collection.getComponent("CONTRIBUTORS").isEnabled()) {
             ComponentContributorsPage page = (ComponentContributorsPage) collection.getComponent("CONTRIBUTORS");
             barPosition = (int) (((double) page.scrollOffset / page.scrollLimit) * 247D);
-        } else if (!scrollPressed && collection.getComponent("OPEN_PAGE") != null && collection.getComponent("OPEN_PAGE").isEnabled()) {
+        } else if (!scrollPressed
+                && collection.getComponent("OPEN_PAGE") != null
+                && collection.getComponent("OPEN_PAGE").isEnabled()) {
             ComponentManualPage page = (ComponentManualPage) collection.getComponent("OPEN_PAGE");
             barPosition = (int) (((double) page.scrollOffset / page.scrollLimit) * 247D);
         }
@@ -228,7 +299,6 @@ public class GUIManual extends GUIScrollingBase implements GuiYesNoCallback {
     protected void drawGuiContainerBackgroundLayer(float f, int mouseX, int mouseY) {
         super.drawGuiContainerBackgroundLayer(f, mouseX, mouseY);
         if (disableScrollBar) return;
-
 
         ResourceHandler.bindResource("textures/gui/manualBottom.png");
         GL11.glColor4f(1F, 1F, 1F, 1F);
@@ -278,15 +348,18 @@ public class GUIManual extends GUIScrollingBase implements GuiYesNoCallback {
     }
 
     public static void loadPages() {
-        lang = Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage().getLanguageCode();
+        lang = Minecraft.getMinecraft()
+                .getLanguageManager()
+                .getCurrentLanguage()
+                .getLanguageCode();
 
-        ResourceLocation rsLocation = new ResourceLocation(References.RESOURCESPREFIX + "manual/manual-" + lang + ".json");
+        ResourceLocation rsLocation =
+                new ResourceLocation(References.RESOURCESPREFIX + "manual/manual-" + lang + ".json");
         IResource resource = null;
 
         try {
             resource = Minecraft.getMinecraft().getResourceManager().getResource(rsLocation);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             LogHelper.warn("##################################################################################");
             LogHelper.warn("");
             LogHelper.warn("Info Tablet language localisation is not available for the selected language: " + lang);
@@ -297,8 +370,7 @@ public class GUIManual extends GUIScrollingBase implements GuiYesNoCallback {
             rsLocation = new ResourceLocation(References.RESOURCESPREFIX + "manual/manual-en_US.json");
             try {
                 resource = Minecraft.getMinecraft().getResourceManager().getResource(rsLocation);
-            }
-            catch (IOException e1) {
+            } catch (IOException e1) {
                 LogHelper.error("Well that didn't work... ");
                 e1.printStackTrace();
             }
@@ -309,7 +381,6 @@ public class GUIManual extends GUIScrollingBase implements GuiYesNoCallback {
             return;
         }
 
-
         try {
             File manualJSON = new File(ResourceHandler.getConfigFolder(), "manual.json");
 
@@ -319,14 +390,14 @@ public class GUIManual extends GUIScrollingBase implements GuiYesNoCallback {
             is.close();
             os.close();
 
-            JsonReader reader = new JsonReader(new InputStreamReader(new FileInputStream(manualJSON),"utf-8"));
+            JsonReader reader = new JsonReader(new InputStreamReader(new FileInputStream(manualJSON), "utf-8"));
 
             List<String> images;
             List<String> content;
 
             reader.beginArray();
-            
-            //Read next page
+
+            // Read next page
             while (reader.hasNext()) {
                 String name;
                 String nameL = null;
@@ -335,18 +406,18 @@ public class GUIManual extends GUIScrollingBase implements GuiYesNoCallback {
                 content = new ArrayList<String>();
 
                 reader.beginObject();
-                
-                //Read page name
+
+                // Read page name
                 String s = reader.nextName();
                 if (s.equals("name")) {
                     name = reader.nextString();
                 } else {
-                	reader.close();
-                	throw new IOException("Error reading manual.json (invalid name in place of \"name\" [Found:\"" + s + "\"])");
+                    reader.close();
+                    throw new IOException(
+                            "Error reading manual.json (invalid name in place of \"name\" [Found:\"" + s + "\"])");
                 }
-                    
 
-                //Read page images
+                // Read page images
                 s = reader.nextName();
                 if (s.equals("nameL")) {
                     nameL = reader.nextString();
@@ -365,11 +436,12 @@ public class GUIManual extends GUIScrollingBase implements GuiYesNoCallback {
                         if (!imageURLs.contains(url)) imageURLs.add(url);
                     }
                     reader.endArray();
-                } else{
-                	reader.close();
-            	throw new IOException("Error reading manual.json (invalid name in place of \"name\" [Found:\"" + s + "\"])");
-            	}
-                //Read page content
+                } else {
+                    reader.close();
+                    throw new IOException(
+                            "Error reading manual.json (invalid name in place of \"name\" [Found:\"" + s + "\"])");
+                }
+                // Read page content
                 s = reader.nextName();
                 if (s.equals("content")) {
                     reader.beginArray();
@@ -377,25 +449,28 @@ public class GUIManual extends GUIScrollingBase implements GuiYesNoCallback {
                         content.add(reader.nextString());
                     }
                     reader.endArray();
-                } else{
-                	reader.close();
-            	throw new IOException("Error reading manual.json (invalid name in place of \"name\" [Found:\"" + s + "\"])");
-            	}
+                } else {
+                    reader.close();
+                    throw new IOException(
+                            "Error reading manual.json (invalid name in place of \"name\" [Found:\"" + s + "\"])");
+                }
                 reader.endObject();
 
                 if (isValidPage(name))
-                    pageList.add(new ManualPage(name, images.toArray(new String[images.size()]), content.toArray(new String[content.size()]), nameL, meta));
+                    pageList.add(new ManualPage(
+                            name,
+                            images.toArray(new String[images.size()]),
+                            content.toArray(new String[content.size()]),
+                            nameL,
+                            meta));
             }
             reader.endArray();
             reader.close();
-        }
-        catch (FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-        
     }
 
     @Override
@@ -404,11 +479,22 @@ public class GUIManual extends GUIScrollingBase implements GuiYesNoCallback {
         if (buttonPressed) return;
 
         for (ComponentBase c : collection.getComponents()) {
-            if (c instanceof ComponentIndexButton && c.isEnabled() && ((ComponentIndexButton) c).isOnScreen() && c.isMouseOver(x - guiLeft, y - guiTop)) {
-                Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation("gui.button.press"), 1.0F));
+            if (c instanceof ComponentIndexButton
+                    && c.isEnabled()
+                    && ((ComponentIndexButton) c).isOnScreen()
+                    && c.isMouseOver(x - guiLeft, y - guiTop)) {
+                Minecraft.getMinecraft()
+                        .getSoundHandler()
+                        .playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation("gui.button.press"), 1.0F));
                 currentPage = ((ComponentIndexButton) c).getPage();
-                collection.addComponent(new ComponentManualPage(0, 0, this, currentPage)).setGroup(GR_PAGE).setName("OPEN_PAGE");
-                collection.addComponent(new ComponentButton(102, 314, 50, 12, 1, this, StatCollector.translateToLocal("button.de.back.txt"))).setGroup(GR_PAGE);
+                collection
+                        .addComponent(new ComponentManualPage(0, 0, this, currentPage))
+                        .setGroup(GR_PAGE)
+                        .setName("OPEN_PAGE");
+                collection
+                        .addComponent(new ComponentButton(
+                                102, 314, 50, 12, 1, this, StatCollector.translateToLocal("button.de.back.txt")))
+                        .setGroup(GR_PAGE);
                 collection.setOnlyGroupEnabled(GR_BACKGROUND);
                 collection.setGroupEnabled(GR_PAGE, true);
                 break;
@@ -418,13 +504,15 @@ public class GUIManual extends GUIScrollingBase implements GuiYesNoCallback {
 
     @Override
     public void barMoved(double position) {
-        if (collection.getComponent("INDEX_BUTTON_0") != null && collection.getComponent("INDEX_BUTTON_0").isEnabled())
-            scrollOffset = (int) (position * scrollLimit);
-        else if (collection.getComponent("CONTRIBUTORS") != null && collection.getComponent("CONTRIBUTORS").isEnabled()) {
+        if (collection.getComponent("INDEX_BUTTON_0") != null
+                && collection.getComponent("INDEX_BUTTON_0").isEnabled()) scrollOffset = (int) (position * scrollLimit);
+        else if (collection.getComponent("CONTRIBUTORS") != null
+                && collection.getComponent("CONTRIBUTORS").isEnabled()) {
             ComponentContributorsPage page = (ComponentContributorsPage) collection.getComponent("CONTRIBUTORS");
             if (page.scrollLimit < 0) return;
             page.scrollOffset = (int) (position * page.scrollLimit);
-        } else if (collection.getComponent("OPEN_PAGE") != null && collection.getComponent("OPEN_PAGE").isEnabled()) {
+        } else if (collection.getComponent("OPEN_PAGE") != null
+                && collection.getComponent("OPEN_PAGE").isEnabled()) {
             ComponentManualPage page = (ComponentManualPage) collection.getComponent("OPEN_PAGE");
             if (page.scrollLimit < 0) return;
             page.scrollOffset = (int) (position * page.scrollLimit);
@@ -443,4 +531,3 @@ public class GUIManual extends GUIScrollingBase implements GuiYesNoCallback {
         mc.displayGuiScreen(this);
     }
 }
-

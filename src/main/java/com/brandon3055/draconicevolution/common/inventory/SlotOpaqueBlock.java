@@ -7,10 +7,8 @@ import net.minecraft.item.ItemStack;
 
 public class SlotOpaqueBlock extends Slot {
 
-
     public SlotOpaqueBlock(IInventory inventory, int id, int x, int y) {
         super(inventory, id, x, y);
-
     }
 
     @Override
@@ -26,6 +24,4 @@ public class SlotOpaqueBlock extends Slot {
     public int getSlotStackLimit() {
         return 1;
     }
-
-
 }

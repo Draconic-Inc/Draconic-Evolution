@@ -40,45 +40,45 @@ public class TileCustomSpawner extends TileEntity {
             spawnerBaseLogic.updateSpawner();
         }
         /*
-		else if (trySet && owner != null){
+        else if (trySet && owner != null){
 
-			if (worldObj.isRemote) spawnParticles(false);
+        	if (worldObj.isRemote) spawnParticles(false);
 
-			if (!foundTarget && setTick > 70 && target == null && setTick % 10 == 0)
-			{
-				foundTarget = findTargetEntity();
-				setTick = 71;
-			}
+        	if (!foundTarget && setTick > 70 && target == null && setTick % 10 == 0)
+        	{
+        		foundTarget = findTargetEntity();
+        		setTick = 71;
+        	}
 
-			if (foundTarget)
-			{
-				target.setHealth(10);
-				if (setTick < 150) {
-					target.setPosition(xCoord + 0.5, yCoord, zCoord + 0.5);
-				} else {
-					target.setPosition(xCoord + 0.5, yCoord - 0.5, zCoord + 0.5);
-				}
-				spawnParticles(true);
-				if (setTick > 151){
-					spawnerBaseLogic.entityName = target.getCommandSenderName();
-					target.setDead();
-					setTick = 0;
-					trySet = false;
-					isSetToSpawn = true;
-				}
+        	if (foundTarget)
+        	{
+        		target.setHealth(10);
+        		if (setTick < 150) {
+        			target.setPosition(xCoord + 0.5, yCoord, zCoord + 0.5);
+        		} else {
+        			target.setPosition(xCoord + 0.5, yCoord - 0.5, zCoord + 0.5);
+        		}
+        		spawnParticles(true);
+        		if (setTick > 151){
+        			spawnerBaseLogic.entityName = target.getCommandSenderName();
+        			target.setDead();
+        			setTick = 0;
+        			trySet = false;
+        			isSetToSpawn = true;
+        		}
 
 
-			}
+        	}
 
-			setTick++;
-			if (setTick > 200){
-				setTick = 0;
-				trySet = false;
-			}
-		} else {
-			trySet = false;
-		}
-		*/
+        	setTick++;
+        	if (setTick > 200){
+        		setTick = 0;
+        		trySet = false;
+        	}
+        } else {
+        	trySet = false;
+        }
+        */
     }
 
     public void writeToNBT(NBTTagCompound tagCompound) {

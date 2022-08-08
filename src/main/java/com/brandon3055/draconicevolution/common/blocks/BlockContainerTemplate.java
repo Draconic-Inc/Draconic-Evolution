@@ -45,9 +45,11 @@ public class BlockContainerTemplate extends BlockContainerDE {
     }
 
     @Override
-    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float prx, float pry, float prz) {
+    public boolean onBlockActivated(
+            World world, int x, int y, int z, EntityPlayer player, int side, float prx, float pry, float prz) {
         if (!world.isRemote) {
-            FMLNetworkHandler.openGui(player, DraconicEvolution.instance, GuiHandler.GUIID_CONTAINER_TEMPLATE, world, x, y, z);
+            FMLNetworkHandler.openGui(
+                    player, DraconicEvolution.instance, GuiHandler.GUIID_CONTAINER_TEMPLATE, world, x, y, z);
         }
         return true;
     }

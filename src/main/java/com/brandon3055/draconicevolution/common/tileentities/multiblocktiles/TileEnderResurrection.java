@@ -1,15 +1,16 @@
 package com.brandon3055.draconicevolution.common.tileentities.multiblocktiles;
 
+import com.brandon3055.draconicevolution.client.handler.ParticleHandler;
 import com.brandon3055.draconicevolution.client.render.particle.Particles.AdvancedSeekerParticle;
 import com.brandon3055.draconicevolution.common.ModBlocks;
 import com.brandon3055.draconicevolution.common.blocks.multiblock.MultiblockHelper;
-import com.brandon3055.draconicevolution.client.handler.ParticleHandler;
-import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
-import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import com.brandon3055.draconicevolution.common.entity.EntityCustomDragon;
 import com.brandon3055.draconicevolution.common.entity.ExtendedPlayer;
+import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
+import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import java.util.Random;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.effect.EntityLightningBolt;
@@ -21,8 +22,6 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentTranslation;
-
-import java.util.Random;
 
 /**
  * Created by Brandon on 8/08/2014.
@@ -49,7 +48,7 @@ public class TileEnderResurrection extends TileEntity {
     @Override
     public void updateEntity() {
         if (spawnInProgress) {
-            //if (timer < 1800) timer = 2200;
+            // if (timer < 1800) timer = 2200;
             if (!arePillarsValid() || !isBaseValid()) spawnInProgress = false;
             effectDrive();
             findAndActivateChrystals(timer - 200, true);
@@ -67,21 +66,34 @@ public class TileEnderResurrection extends TileEntity {
         if (owner == null) return;
         for (int i = 0; i < diamondPillars.length; i++) {
             if (diamondPillars[i] == null) return;
-            worldObj.setBlockToAir(diamondPillars[i].getXCoord(), diamondPillars[i].getYCoord(), diamondPillars[i].getZCoord());
+            worldObj.setBlockToAir(
+                    diamondPillars[i].getXCoord(), diamondPillars[i].getYCoord(), diamondPillars[i].getZCoord());
             if (!worldObj.isRemote)
-                worldObj.createExplosion(owner, diamondPillars[i].getXCoord() + 0.5, diamondPillars[i].getYCoord() + 0.5, diamondPillars[i].getZCoord() + 0.5, 3, true);
+                worldObj.createExplosion(
+                        owner,
+                        diamondPillars[i].getXCoord() + 0.5,
+                        diamondPillars[i].getYCoord() + 0.5,
+                        diamondPillars[i].getZCoord() + 0.5,
+                        3,
+                        true);
         }
         for (int i = 0; i < draconiumPillars.length; i++) {
             if (draconiumPillars[i] == null) return;
-            worldObj.setBlockToAir(draconiumPillars[i].getXCoord(), draconiumPillars[i].getYCoord(), draconiumPillars[i].getZCoord());
+            worldObj.setBlockToAir(
+                    draconiumPillars[i].getXCoord(), draconiumPillars[i].getYCoord(), draconiumPillars[i].getZCoord());
             if (!worldObj.isRemote)
-                worldObj.createExplosion(owner, draconiumPillars[i].getXCoord() + 0.5, draconiumPillars[i].getYCoord() + 0.5, draconiumPillars[i].getZCoord() + 0.5, 3, true);
+                worldObj.createExplosion(
+                        owner,
+                        draconiumPillars[i].getXCoord() + 0.5,
+                        draconiumPillars[i].getYCoord() + 0.5,
+                        draconiumPillars[i].getZCoord() + 0.5,
+                        3,
+                        true);
         }
 
         worldObj.setBlockToAir(xCoord, yCoord, zCoord);
         if (!worldObj.isRemote) worldObj.createExplosion(owner, xCoord + 0.5, yCoord + 0.5, zCoord + 0.5, 3, true);
         if (!worldObj.isRemote) worldObj.createExplosion(null, xCoord + 0.5, yCoord + 1.5, zCoord + 0.5, 10, false);
-
 
         if (level > 10) level = 10;
         EntityCustomDragon dragon = new EntityCustomDragon(worldObj, 200D + level * 50, 10F + (float) level * 5F);
@@ -89,7 +101,6 @@ public class TileEnderResurrection extends TileEntity {
         dragon.onSpawnWithEgg(null);
         if (!worldObj.isRemote) worldObj.spawnEntityInWorld(dragon);
         playerProps.setSpawnCount(playerProps.getSpawnCount() + 1);
-
     }
 
     private void lEffects() {
@@ -103,8 +114,8 @@ public class TileEnderResurrection extends TileEntity {
         float mod = 0.1F;
         yaw += worldObj.rand.nextBoolean() ? mod : -mod;
         pitch += worldObj.rand.nextBoolean() ? mod : -mod;
-        //yaw += (-0.5F+worldObj.rand.nextFloat())*mod;
-        //pitch += (-0.5F+worldObj.rand.nextFloat())*mod;
+        // yaw += (-0.5F+worldObj.rand.nextFloat())*mod;
+        // pitch += (-0.5F+worldObj.rand.nextFloat())*mod;
         if (worldObj.isRemote) p.setLocationAndAngles(p.posX, p.posY - 1.6, p.posZ, yaw, pitch);
     }
 
@@ -121,10 +132,10 @@ public class TileEnderResurrection extends TileEntity {
         findAndActivateChrystals(timer - 50, false);
         findAndActivateChrystals(timer - 100, false);
 
-
-        //if (timer == 1) worldObj.playSoundEffect(xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D, "draconicevolution:boom", 10F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
-        //if (timer == 1 || worldObj.rand.nextInt(50) == 0) worldObj.playSoundEffect(xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D, "ambient.weather.thunder", 10F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
-
+        // if (timer == 1) worldObj.playSoundEffect(xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D,
+        // "draconicevolution:boom", 10F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
+        // if (timer == 1 || worldObj.rand.nextInt(50) == 0) worldObj.playSoundEffect(xCoord + 0.5D, yCoord + 0.5D,
+        // zCoord + 0.5D, "ambient.weather.thunder", 10F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
 
         if (worldObj.rand.nextInt(50) == 0 && timer < 300) centreStrike();
     }
@@ -133,7 +144,11 @@ public class TileEnderResurrection extends TileEntity {
         if (pillar != 1 && pillar != 2 && pillar != 3 && pillar != 4) return;
         pillar--;
         if (draconiumPillars[pillar] == null) return;
-        EntityLightningBolt bolt = new EntityLightningBolt(worldObj, draconiumPillars[pillar].getXCoord(), draconiumPillars[pillar].getYCoord(), draconiumPillars[pillar].getZCoord());
+        EntityLightningBolt bolt = new EntityLightningBolt(
+                worldObj,
+                draconiumPillars[pillar].getXCoord(),
+                draconiumPillars[pillar].getYCoord(),
+                draconiumPillars[pillar].getZCoord());
         if (!worldObj.isRemote) worldObj.addWeatherEffect(bolt);
     }
 
@@ -155,9 +170,9 @@ public class TileEnderResurrection extends TileEntity {
 
                     if (flag && !worldObj.isRemote) {
                         if (spawnCrystal) {
-                            //EntityEnderCrystal crystal = new EntityEnderCrystal(worldObj);
-                            //crystal.setPosition(x + 0.5, y + 1, z + 0.5);
-                            //worldObj.spawnEntityInWorld(crystal);
+                            // EntityEnderCrystal crystal = new EntityEnderCrystal(worldObj);
+                            // crystal.setPosition(x + 0.5, y + 1, z + 0.5);
+                            // worldObj.spawnEntityInWorld(crystal);
 
                             NBTTagCompound nbttagcompound = new NBTTagCompound();
                             nbttagcompound.setString("id", "EnderCrystal");
@@ -201,7 +216,11 @@ public class TileEnderResurrection extends TileEntity {
         if (spawnInProgress) {
             for (int i = 0; i < draconiumPillars.length; i++) {
                 if (draconiumPillars[i] == null || !arePillarsValid()) return false;
-                worldObj.setBlock(draconiumPillars[i].getXCoord(), draconiumPillars[i].getYCoord(), draconiumPillars[i].getZCoord(), ModBlocks.draconiumBlock);
+                worldObj.setBlock(
+                        draconiumPillars[i].getXCoord(),
+                        draconiumPillars[i].getYCoord(),
+                        draconiumPillars[i].getZCoord(),
+                        ModBlocks.draconiumBlock);
             }
             flag = false;
         }
@@ -219,23 +238,53 @@ public class TileEnderResurrection extends TileEntity {
     }
 
     private boolean isBaseValid() {
-        if (worldObj.getBlock(xCoord + 1, yCoord, zCoord) != Blocks.obsidian || worldObj.getBlock(xCoord - 1, yCoord, zCoord) != Blocks.obsidian || worldObj.getBlock(xCoord, yCoord, zCoord + 1) != Blocks.obsidian || worldObj.getBlock(xCoord, yCoord, zCoord - 1) != Blocks.obsidian)
-            return false;
-        if (worldObj.getBlock(xCoord + 1, yCoord, zCoord + 1) != Blocks.glowstone || worldObj.getBlock(xCoord - 1, yCoord, zCoord - 1) != Blocks.glowstone || worldObj.getBlock(xCoord - 1, yCoord, zCoord + 1) != Blocks.glowstone || worldObj.getBlock(xCoord + 1, yCoord, zCoord - 1) != Blocks.glowstone)
-            return false;
+        if (worldObj.getBlock(xCoord + 1, yCoord, zCoord) != Blocks.obsidian
+                || worldObj.getBlock(xCoord - 1, yCoord, zCoord) != Blocks.obsidian
+                || worldObj.getBlock(xCoord, yCoord, zCoord + 1) != Blocks.obsidian
+                || worldObj.getBlock(xCoord, yCoord, zCoord - 1) != Blocks.obsidian) return false;
+        if (worldObj.getBlock(xCoord + 1, yCoord, zCoord + 1) != Blocks.glowstone
+                || worldObj.getBlock(xCoord - 1, yCoord, zCoord - 1) != Blocks.glowstone
+                || worldObj.getBlock(xCoord - 1, yCoord, zCoord + 1) != Blocks.glowstone
+                || worldObj.getBlock(xCoord + 1, yCoord, zCoord - 1) != Blocks.glowstone) return false;
         return true;
     }
 
     private boolean arePillarsValid() {
         for (int i = 0; i < diamondPillars.length; i++) {
             if (diamondPillars[i] == null) return false;
-            if (worldObj.getBlock(diamondPillars[i].getXCoord(), diamondPillars[i].getYCoord(), diamondPillars[i].getZCoord()) != Blocks.diamond_block || worldObj.getBlock(diamondPillars[i].getXCoord(), diamondPillars[i].getYCoord() - 1, diamondPillars[i].getZCoord()) != Blocks.quartz_block)
-                return false;
+            if (worldObj.getBlock(
+                                    diamondPillars[i].getXCoord(),
+                                    diamondPillars[i].getYCoord(),
+                                    diamondPillars[i].getZCoord())
+                            != Blocks.diamond_block
+                    || worldObj.getBlock(
+                                    diamondPillars[i].getXCoord(),
+                                    diamondPillars[i].getYCoord() - 1,
+                                    diamondPillars[i].getZCoord())
+                            != Blocks.quartz_block) return false;
         }
         for (int i = 0; i < draconiumPillars.length; i++) {
             if (draconiumPillars[i] == null) return false;
-            if ((worldObj.getBlock(draconiumPillars[i].getXCoord(), draconiumPillars[i].getYCoord(), draconiumPillars[i].getZCoord()) != ModBlocks.draconiumBlock && worldObj.getBlockMetadata(draconiumPillars[i].getXCoord(), draconiumPillars[i].getYCoord(), draconiumPillars[i].getZCoord()) != 2) || worldObj.getBlock(draconiumPillars[i].getXCoord(), draconiumPillars[i].getYCoord() - 1, draconiumPillars[i].getZCoord()) != Blocks.quartz_block || worldObj.getBlock(draconiumPillars[i].getXCoord(), draconiumPillars[i].getYCoord() - 2, draconiumPillars[i].getZCoord()) != Blocks.quartz_block)
-                return false;
+            if ((worldObj.getBlock(
+                                            draconiumPillars[i].getXCoord(),
+                                            draconiumPillars[i].getYCoord(),
+                                            draconiumPillars[i].getZCoord())
+                                    != ModBlocks.draconiumBlock
+                            && worldObj.getBlockMetadata(
+                                            draconiumPillars[i].getXCoord(),
+                                            draconiumPillars[i].getYCoord(),
+                                            draconiumPillars[i].getZCoord())
+                                    != 2)
+                    || worldObj.getBlock(
+                                    draconiumPillars[i].getXCoord(),
+                                    draconiumPillars[i].getYCoord() - 1,
+                                    draconiumPillars[i].getZCoord())
+                            != Blocks.quartz_block
+                    || worldObj.getBlock(
+                                    draconiumPillars[i].getXCoord(),
+                                    draconiumPillars[i].getYCoord() - 2,
+                                    draconiumPillars[i].getZCoord())
+                            != Blocks.quartz_block) return false;
         }
         return true;
     }
@@ -247,7 +296,10 @@ public class TileEnderResurrection extends TileEntity {
         for (int x = xCoord - xzRange; x < xCoord + xzRange; x++) {
             for (int y = yCoord + 2; y < yCoord + 5; y++) {
                 for (int z = zCoord - xzRange; z < zCoord + xzRange; z++) {
-                    if (worldObj.getBlock(x, y, z) == ModBlocks.draconiumBlock && isPillarValid(0, x, y, z) && worldObj.getBlockMetadata(x, y, z) == 2 && draconiumCount < 4) {
+                    if (worldObj.getBlock(x, y, z) == ModBlocks.draconiumBlock
+                            && isPillarValid(0, x, y, z)
+                            && worldObj.getBlockMetadata(x, y, z) == 2
+                            && draconiumCount < 4) {
                         draconiumPillars[draconiumCount] = new MultiblockHelper.TileLocation(x, y, z);
                         draconiumCount++;
                     }
@@ -258,7 +310,9 @@ public class TileEnderResurrection extends TileEntity {
         for (int x = xCoord - xzRange; x < xCoord + xzRange; x++) {
             for (int y = yCoord + 1; y < yCoord + 4; y++) {
                 for (int z = zCoord - xzRange; z < zCoord + xzRange; z++) {
-                    if (worldObj.getBlock(x, y, z) == Blocks.diamond_block && isPillarValid(1, x, y, z) && diamondCount < 4) {
+                    if (worldObj.getBlock(x, y, z) == Blocks.diamond_block
+                            && isPillarValid(1, x, y, z)
+                            && diamondCount < 4) {
                         diamondPillars[diamondCount] = new MultiblockHelper.TileLocation(x, y, z);
                         diamondCount++;
                     }
@@ -275,22 +329,83 @@ public class TileEnderResurrection extends TileEntity {
             float mM = 0.4F;
             for (int i = 0; i < draconiumPillars.length; i++) {
                 if (draconiumPillars[i] == null) return;
-                AdvancedSeekerParticle particle = new AdvancedSeekerParticle(worldObj, draconiumPillars[i].getXCoord() + 0.5, draconiumPillars[i].getYCoord() + 0.5, draconiumPillars[i].getZCoord() + 0.5, xCoord + 0.5, yCoord + 0.5, zCoord + 0.5, 2, 0F, 1.0F, 1.0F, 100);
+                AdvancedSeekerParticle particle = new AdvancedSeekerParticle(
+                        worldObj,
+                        draconiumPillars[i].getXCoord() + 0.5,
+                        draconiumPillars[i].getYCoord() + 0.5,
+                        draconiumPillars[i].getZCoord() + 0.5,
+                        xCoord + 0.5,
+                        yCoord + 0.5,
+                        zCoord + 0.5,
+                        2,
+                        0F,
+                        1.0F,
+                        1.0F,
+                        100);
                 AdvancedSeekerParticle particle2;
                 if (timer < 300)
-                    particle2 = new AdvancedSeekerParticle(worldObj, draconiumPillars[i].getXCoord() + 0.5, draconiumPillars[i].getYCoord() + 0.5, draconiumPillars[i].getZCoord() + 0.5, xCoord + 0.5, yCoord + 0.5, zCoord + 0.5, 1, 1F, 0.0F, 0F, 40);
+                    particle2 = new AdvancedSeekerParticle(
+                            worldObj,
+                            draconiumPillars[i].getXCoord() + 0.5,
+                            draconiumPillars[i].getYCoord() + 0.5,
+                            draconiumPillars[i].getZCoord() + 0.5,
+                            xCoord + 0.5,
+                            yCoord + 0.5,
+                            zCoord + 0.5,
+                            1,
+                            1F,
+                            0.0F,
+                            0F,
+                            40);
                 else {
-                    particle2 = new AdvancedSeekerParticle(worldObj, draconiumPillars[i].getXCoord() + 0.5, draconiumPillars[i].getYCoord() + 0.5, draconiumPillars[i].getZCoord() + 0.5, xCoord + rand.nextFloat(), yCoord + 3 + rand.nextFloat(), zCoord + rand.nextFloat(), 3, 1F, 0.0F, 0F, 70, timer);
+                    particle2 = new AdvancedSeekerParticle(
+                            worldObj,
+                            draconiumPillars[i].getXCoord() + 0.5,
+                            draconiumPillars[i].getYCoord() + 0.5,
+                            draconiumPillars[i].getZCoord() + 0.5,
+                            xCoord + rand.nextFloat(),
+                            yCoord + 3 + rand.nextFloat(),
+                            zCoord + rand.nextFloat(),
+                            3,
+                            1F,
+                            0.0F,
+                            0F,
+                            70,
+                            timer);
                 }
                 if (timer > 2000) {
-                    AdvancedSeekerParticle toDiamond = new AdvancedSeekerParticle(worldObj, xCoord + 0.5, yCoord + 0.5, zCoord + 0.5, diamondPillars[i].getXCoord() + rand.nextFloat(), diamondPillars[i].getYCoord() + rand.nextFloat(), diamondPillars[i].getZCoord() + rand.nextFloat(), 3, 0, 1, 0, 100);
+                    AdvancedSeekerParticle toDiamond = new AdvancedSeekerParticle(
+                            worldObj,
+                            xCoord + 0.5,
+                            yCoord + 0.5,
+                            zCoord + 0.5,
+                            diamondPillars[i].getXCoord() + rand.nextFloat(),
+                            diamondPillars[i].getYCoord() + rand.nextFloat(),
+                            diamondPillars[i].getZCoord() + rand.nextFloat(),
+                            3,
+                            0,
+                            1,
+                            0,
+                            100);
                     ParticleHandler.spawnCustomParticle(toDiamond, 250);
                     if (timer > 2100) {
-                        AdvancedSeekerParticle toSpawn = new AdvancedSeekerParticle(worldObj, diamondPillars[i].getXCoord() + rand.nextFloat(), diamondPillars[i].getYCoord() + rand.nextFloat(), diamondPillars[i].getZCoord() + rand.nextFloat(), xCoord - 3.5 + (double) (rand.nextFloat() * 7F), yCoord + 60 + rand.nextInt(5), zCoord - 3.5 + (double) (rand.nextFloat() * 7F), 3, 0F, 1F, 0F, 100, timer);
+                        AdvancedSeekerParticle toSpawn = new AdvancedSeekerParticle(
+                                worldObj,
+                                diamondPillars[i].getXCoord() + rand.nextFloat(),
+                                diamondPillars[i].getYCoord() + rand.nextFloat(),
+                                diamondPillars[i].getZCoord() + rand.nextFloat(),
+                                xCoord - 3.5 + (double) (rand.nextFloat() * 7F),
+                                yCoord + 60 + rand.nextInt(5),
+                                zCoord - 3.5 + (double) (rand.nextFloat() * 7F),
+                                3,
+                                0F,
+                                1F,
+                                0F,
+                                100,
+                                timer);
                         ParticleHandler.spawnCustomParticle(toSpawn, 250);
                     }
                 }
-
 
                 particle.motionX = (rand.nextFloat() - 0.5) * mM;
                 particle.motionZ = (rand.nextFloat() - 0.5) * mM;
@@ -304,7 +419,20 @@ public class TileEnderResurrection extends TileEntity {
                 int t;
                 if (timer > 700) t = timer;
                 else t = 700;
-                AdvancedSeekerParticle particle3 = new AdvancedSeekerParticle(worldObj, xCoord + rand.nextFloat(), yCoord + 0.5, zCoord + rand.nextFloat(), xCoord + rand.nextFloat(), yCoord + 3 + rand.nextFloat(), zCoord + rand.nextFloat(), 3, 0F, 1.0F, 1.0F, 70, t);
+                AdvancedSeekerParticle particle3 = new AdvancedSeekerParticle(
+                        worldObj,
+                        xCoord + rand.nextFloat(),
+                        yCoord + 0.5,
+                        zCoord + rand.nextFloat(),
+                        xCoord + rand.nextFloat(),
+                        yCoord + 3 + rand.nextFloat(),
+                        zCoord + rand.nextFloat(),
+                        3,
+                        0F,
+                        1.0F,
+                        1.0F,
+                        70,
+                        t);
                 ParticleHandler.spawnCustomParticle(particle3, 250);
             }
             if (timer > 1000) {
@@ -315,7 +443,19 @@ public class TileEnderResurrection extends TileEntity {
                 red = green = blue = 1.0F * f;
                 green *= 0.3F;
                 red *= 0.9F;
-                AdvancedSeekerParticle particle4 = new AdvancedSeekerParticle(worldObj, xCoord + 0.5, yCoord + 3.5, zCoord + 0.5, xCoord + rand.nextFloat(), yCoord + 3 + rand.nextFloat(), zCoord + rand.nextFloat(), 1, red, green, blue, 100);
+                AdvancedSeekerParticle particle4 = new AdvancedSeekerParticle(
+                        worldObj,
+                        xCoord + 0.5,
+                        yCoord + 3.5,
+                        zCoord + 0.5,
+                        xCoord + rand.nextFloat(),
+                        yCoord + 3 + rand.nextFloat(),
+                        zCoord + rand.nextFloat(),
+                        1,
+                        red,
+                        green,
+                        blue,
+                        100);
                 particle4.motionX = (rand.nextFloat() - 0.5) * mM;
                 particle4.motionZ = (rand.nextFloat() - 0.5) * mM;
                 ParticleHandler.spawnCustomParticle(particle4, 250);
@@ -328,8 +468,10 @@ public class TileEnderResurrection extends TileEntity {
      */
     private boolean isPillarValid(int type, int x, int y, int z) {
         if (type == 0) {
-            if (worldObj.getBlock(x, y - 1, z) == Blocks.quartz_block && worldObj.getBlock(x, y - 2, z) == Blocks.quartz_block && worldObj.getBlockMetadata(x, y - 1, z) == 2 && worldObj.getBlockMetadata(x, y - 2, z) == 2)
-                return true;
+            if (worldObj.getBlock(x, y - 1, z) == Blocks.quartz_block
+                    && worldObj.getBlock(x, y - 2, z) == Blocks.quartz_block
+                    && worldObj.getBlockMetadata(x, y - 1, z) == 2
+                    && worldObj.getBlockMetadata(x, y - 2, z) == 2) return true;
         } else if (type == 1) {
             if (worldObj.getBlock(x, y - 1, z) == Blocks.quartz_block && worldObj.getBlockMetadata(x, y - 1, z) == 2)
                 return true;
@@ -363,7 +505,6 @@ public class TileEnderResurrection extends TileEntity {
         }
     }
 
-
     @Override
     public Packet getDescriptionPacket() {
         NBTTagCompound tagCompound = new NBTTagCompound();
@@ -375,5 +516,4 @@ public class TileEnderResurrection extends TileEntity {
     public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
         readFromNBT(pkt.func_148857_g());
     }
-
 }

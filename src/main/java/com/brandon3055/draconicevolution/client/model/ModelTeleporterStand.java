@@ -55,7 +55,6 @@ public class ModelTeleporterStand extends ModelBase {
         baseBottom.setRotationPoint(-5F, 7F, -5F);
         baseBottom.setTextureSize(64, 64);
         setRotationDegree(baseBottom, 0, 0, 0);
-
     }
 
     public void render() {

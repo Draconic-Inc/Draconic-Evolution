@@ -1,8 +1,5 @@
 package com.brandon3055.draconicevolution.client.gui;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.brandon3055.brandonscore.client.utills.GuiHelper;
 import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
 import com.brandon3055.draconicevolution.common.ModItems;
@@ -12,6 +9,8 @@ import com.brandon3055.draconicevolution.common.utills.IUpgradableItem;
 import com.brandon3055.draconicevolution.common.utills.IUpgradableItem.EnumUpgrade;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import java.util.ArrayList;
+import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiButton;
@@ -35,10 +34,10 @@ public class GUIUpgradeModifier extends GuiContainer {
     private List<EnumUpgrade> itemUpgrades = new ArrayList<EnumUpgrade>();
     private ContainerUpgradeModifier containerEM;
 
-    public GUIUpgradeModifier(InventoryPlayer invPlayer, TileUpgradeModifier tile, ContainerUpgradeModifier containerEM) {
+    public GUIUpgradeModifier(
+            InventoryPlayer invPlayer, TileUpgradeModifier tile, ContainerUpgradeModifier containerEM) {
         super(containerEM);
         this.containerEM = containerEM;
-
 
         xSize = 176;
         ySize = 190;
@@ -46,7 +45,6 @@ public class GUIUpgradeModifier extends GuiContainer {
         this.tile = tile;
         this.player = invPlayer.player;
     }
-
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float f, int x, int y) {
@@ -90,14 +88,10 @@ public class GUIUpgradeModifier extends GuiContainer {
     @Override
     public void initGui() {
         super.initGui();
-
     }
 
     @Override
-    protected void actionPerformed(GuiButton button) {
-
-
-    }
+    protected void actionPerformed(GuiButton button) {}
 
     private int coreSlots = 0;
     private int coreTier = 0;
@@ -159,24 +153,32 @@ public class GUIUpgradeModifier extends GuiContainer {
             int[] appliedCores = upgrade.getCoresApplied(tile.getStackInSlot(0));
 
             for (int i = 0; i <= coreTier; i++) {
-                //Check + buttons
-                if (coreInInventory[i] && coreSlots > usedSlots && GuiHelper.isInRect(xPos, yPos + 33 + i * 18, 8, 8, x, y) && upgrade.getUpgradePoints(stack) < upgradableItem.getMaxUpgradePoints(upgrade.index, stack)) {
+                // Check + buttons
+                if (coreInInventory[i]
+                        && coreSlots > usedSlots
+                        && GuiHelper.isInRect(xPos, yPos + 33 + i * 18, 8, 8, x, y)
+                        && upgrade.getUpgradePoints(stack) < upgradableItem.getMaxUpgradePoints(upgrade.index, stack)) {
                     containerEM.sendObjectToServer(null, upgrade.index, i * 2);
-                    Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(ResourceHandler.getResourceWOP("gui.button.press"), 1.0F));
+                    Minecraft.getMinecraft()
+                            .getSoundHandler()
+                            .playSound(PositionedSoundRecord.func_147674_a(
+                                    ResourceHandler.getResourceWOP("gui.button.press"), 1.0F));
                 }
 
-                //Check - buttons
+                // Check - buttons
                 if (appliedCores[i] > 0 && GuiHelper.isInRect(xPos + 16, yPos + 33 + i * 18, 8, 8, x, y)) {
                     containerEM.sendObjectToServer(null, upgrade.index, 1 + i * 2);
-                    Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(ResourceHandler.getResourceWOP("gui.button.press"), 1.0F));
+                    Minecraft.getMinecraft()
+                            .getSoundHandler()
+                            .playSound(PositionedSoundRecord.func_147674_a(
+                                    ResourceHandler.getResourceWOP("gui.button.press"), 1.0F));
                 }
             }
         }
-
     }
 
     private void renderUpgrades(int x, int y) {
-        //First Draw
+        // First Draw
         for (EnumUpgrade upgrade : itemUpgrades) {
             int xIndex = itemUpgrades.indexOf(upgrade);
             int spacing = (xSize - 6) / itemUpgrades.size();
@@ -202,32 +204,43 @@ public class GUIUpgradeModifier extends GuiContainer {
                 GL11.glColor4f(1F, 1F, 1F, 1F);
                 GL11.glDisable(GL11.GL_BLEND);
 
-                //Draw + buttons
-                if (coreSlots > usedSlots && upgrade.getUpgradePoints(stack) < upgradableItem.getMaxUpgradePoints(upgrade.index, stack)) {
+                // Draw + buttons
+                if (coreSlots > usedSlots
+                        && upgrade.getUpgradePoints(stack) < upgradableItem.getMaxUpgradePoints(upgrade.index, stack)) {
                     boolean hovering = GuiHelper.isInRect(xPos, yPos + 33 + i * 18, 8, 8, x, y);
                     if (!coreInInventory[i]) drawTexturedModalRect(xPos, yPos + 33 + i * 18, 24, 208, 8, 8);
                     else drawTexturedModalRect(xPos, yPos + 33 + i * 18, 32 + (hovering ? 8 : 0), 208, 8, 8);
                 }
 
-                //Draw - buttons
+                // Draw - buttons
                 if (appliedCores[i] > 0) {
                     boolean hovering = GuiHelper.isInRect(xPos + 16, yPos + 33 + i * 18, 8, 8, x, y);
                     drawTexturedModalRect(xPos + 16, yPos + 33 + i * 18, 56 + (hovering ? 8 : 0), 208, 8, 8);
                 }
-
-
             }
             for (int i = 0; i <= coreTier; i++)
-                fontRendererObj.drawString(String.valueOf(appliedCores[i]), xPos + 12 - fontRendererObj.getStringWidth(String.valueOf(appliedCores[i])) / 2, yPos + 29 + i * 18, 0xFFFFFF);
-            fontRendererObj.drawString(String.valueOf(upgrade.getUpgradePoints(stack)), xPos + 12 - fontRendererObj.getStringWidth(String.valueOf(upgrade.getUpgradePoints(stack))) / 2, yPos - 8, 0xFFFFFF);
+                fontRendererObj.drawString(
+                        String.valueOf(appliedCores[i]),
+                        xPos + 12 - fontRendererObj.getStringWidth(String.valueOf(appliedCores[i])) / 2,
+                        yPos + 29 + i * 18,
+                        0xFFFFFF);
+            fontRendererObj.drawString(
+                    String.valueOf(upgrade.getUpgradePoints(stack)),
+                    xPos + 12 - fontRendererObj.getStringWidth(String.valueOf(upgrade.getUpgradePoints(stack))) / 2,
+                    yPos - 8,
+                    0xFFFFFF);
         }
 
-        fontRendererObj.drawStringWithShadow(StatCollector.translateToLocal("gui.de.cores.txt"), guiLeft + 4, guiTop + 4, 0x00ff00);
-        fontRendererObj.drawString(StatCollector.translateToLocal("gui.de.cap.txt"), guiLeft + 4, guiTop + 16, 0x000000);
+        fontRendererObj.drawStringWithShadow(
+                StatCollector.translateToLocal("gui.de.cores.txt"), guiLeft + 4, guiTop + 4, 0x00ff00);
+        fontRendererObj.drawString(
+                StatCollector.translateToLocal("gui.de.cap.txt"), guiLeft + 4, guiTop + 16, 0x000000);
         fontRendererObj.drawString(">" + coreSlots, guiLeft + 4, guiTop + 25, 0x000000);
-        fontRendererObj.drawString(StatCollector.translateToLocal("gui.de.installed.txt"), guiLeft + 4, guiTop + 37, 0x000000);
+        fontRendererObj.drawString(
+                StatCollector.translateToLocal("gui.de.installed.txt"), guiLeft + 4, guiTop + 37, 0x000000);
         fontRendererObj.drawString(">" + usedSlots, guiLeft + 4, guiTop + 46, 0x000000);
-        fontRendererObj.drawString(StatCollector.translateToLocal("gui.de.free.txt"), guiLeft + 4, guiTop + 58, 0x000000);
+        fontRendererObj.drawString(
+                StatCollector.translateToLocal("gui.de.free.txt"), guiLeft + 4, guiTop + 58, 0x000000);
         fontRendererObj.drawString(">" + (coreSlots - usedSlots), guiLeft + 4, guiTop + 67, 0x000000);
     }
 
@@ -236,7 +249,7 @@ public class GUIUpgradeModifier extends GuiContainer {
         super.drawScreen(x, y, f);
 
         if (!inUse) return;
-        //Second Draw
+        // Second Draw
         for (EnumUpgrade upgrade : itemUpgrades) {
             int xIndex = itemUpgrades.indexOf(upgrade);
             int spacing = (xSize - 6) / itemUpgrades.size();
@@ -252,8 +265,10 @@ public class GUIUpgradeModifier extends GuiContainer {
 
             if (GuiHelper.isInRect(xPos + 3, yPos - 9, 18, 8, x, y)) {
                 List list = new ArrayList();
-                list.add(StatCollector.translateToLocal("gui.de.basePoints.txt") + ": " + upgradableItem.getBaseUpgradePoints(upgrade.index));
-                list.add(StatCollector.translateToLocal("gui.de.maxPoints.txt") + ": " + upgradableItem.getMaxUpgradePoints(upgrade.index, stack));
+                list.add(StatCollector.translateToLocal("gui.de.basePoints.txt") + ": "
+                        + upgradableItem.getBaseUpgradePoints(upgrade.index));
+                list.add(StatCollector.translateToLocal("gui.de.maxPoints.txt") + ": "
+                        + upgradableItem.getMaxUpgradePoints(upgrade.index, stack));
                 list.add(StatCollector.translateToLocal("gui.de.pointCost.txt") + ": " + upgrade.pointConversion);
                 drawHoveringText(list, x, y, fontRendererObj);
             }
@@ -262,12 +277,15 @@ public class GUIUpgradeModifier extends GuiContainer {
                 if (GuiHelper.isInRect(xPos + 9, yPos + 25 + i * 18, 6, 15, x, y)) {
                     List list = new ArrayList();
                     double value = Math.pow(2, i) / upgrade.pointConversion;
-                    String string = StatCollector.translateToLocal("gui.de.value.txt") + ": " + value + " " + (value == 1 ? StatCollector.translateToLocal("gui.de.point.txt") : StatCollector.translateToLocal("gui.de.points.txt"));
+                    String string = StatCollector.translateToLocal("gui.de.value.txt") + ": " + value + " "
+                            + (value == 1
+                                    ? StatCollector.translateToLocal("gui.de.point.txt")
+                                    : StatCollector.translateToLocal("gui.de.points.txt"));
                     list.add(string.replace(".0", ""));
                     drawHoveringText(list, x, y, fontRendererObj);
                 }
 
-                //Draw Button Text (add)
+                // Draw Button Text (add)
                 if (coreSlots > usedSlots && GuiHelper.isInRect(xPos, yPos + 33 + i * 18, 8, 8, x, y)) {
                     List list = new ArrayList<String>();
                     if (coreInInventory[i]) list.add(StatCollector.translateToLocal("gui.de.addCore.txt"));
@@ -275,7 +293,7 @@ public class GUIUpgradeModifier extends GuiContainer {
                     drawHoveringText(list, x, y, fontRendererObj);
                 }
 
-                //Draw Button Text (remove)
+                // Draw Button Text (remove)
                 if (appliedCores[i] > 0 && GuiHelper.isInRect(xPos + 16, yPos + 33 + i * 18, 8, 8, x, y)) {
                     List list = new ArrayList<String>();
                     if (coreInInventory[i]) list.add(StatCollector.translateToLocal("gui.de.removeCore.txt"));
@@ -283,7 +301,6 @@ public class GUIUpgradeModifier extends GuiContainer {
                 }
             }
         }
-
     }
 
     public void drawFlippedTexturedModalRect(int xPos, int yPos, int texXPos, int texYPos, int xSize, int ySize) {
@@ -291,10 +308,30 @@ public class GUIUpgradeModifier extends GuiContainer {
         float f1 = 0.00390625F;
         Tessellator tessellator = Tessellator.instance;
         tessellator.startDrawingQuads();
-        tessellator.addVertexWithUV((double) (xPos), (double) (yPos + ySize), (double) this.zLevel, (double) ((float) (texXPos + xSize) * f), (double) ((float) (texYPos + ySize) * f1));
-        tessellator.addVertexWithUV((double) (xPos + xSize), (double) (yPos + ySize), (double) this.zLevel, (double) ((float) (texXPos) * f), (double) ((float) (texYPos + ySize) * f1));
-        tessellator.addVertexWithUV((double) (xPos + xSize), (double) (yPos), (double) this.zLevel, (double) ((float) (texXPos) * f), (double) ((float) (texYPos) * f1));
-        tessellator.addVertexWithUV((double) (xPos), (double) (yPos), (double) this.zLevel, (double) ((float) (texXPos + xSize) * f), (double) ((float) (texYPos) * f1));
+        tessellator.addVertexWithUV(
+                (double) (xPos),
+                (double) (yPos + ySize),
+                (double) this.zLevel,
+                (double) ((float) (texXPos + xSize) * f),
+                (double) ((float) (texYPos + ySize) * f1));
+        tessellator.addVertexWithUV(
+                (double) (xPos + xSize),
+                (double) (yPos + ySize),
+                (double) this.zLevel,
+                (double) ((float) (texXPos) * f),
+                (double) ((float) (texYPos + ySize) * f1));
+        tessellator.addVertexWithUV(
+                (double) (xPos + xSize),
+                (double) (yPos),
+                (double) this.zLevel,
+                (double) ((float) (texXPos) * f),
+                (double) ((float) (texYPos) * f1));
+        tessellator.addVertexWithUV(
+                (double) (xPos),
+                (double) (yPos),
+                (double) this.zLevel,
+                (double) ((float) (texXPos + xSize) * f),
+                (double) ((float) (texYPos) * f1));
         tessellator.draw();
     }
 }

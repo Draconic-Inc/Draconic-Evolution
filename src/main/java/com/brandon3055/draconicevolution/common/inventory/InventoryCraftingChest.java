@@ -19,6 +19,7 @@ public class InventoryCraftingChest extends InventoryCrafting {
      * on_CraftMaxtrixChanged.
      */
     private Container eventHandler;
+
     private TileDraconiumChest tile;
 
     public InventoryCraftingChest(Container par1Container, int size, int height, TileDraconiumChest tile) {
@@ -119,8 +120,7 @@ public class InventoryCraftingChest extends InventoryCrafting {
      * Called when an the contents of an Inventory change, usually
      */
     @Override
-    public void markDirty() {
-    }
+    public void markDirty() {}
 
     /**
      * Do not make give this method the name canInteractWith because it clashes
@@ -131,11 +131,9 @@ public class InventoryCraftingChest extends InventoryCrafting {
         return true;
     }
 
-    public void openChest() {
-    }
+    public void openChest() {}
 
-    public void closeChest() {
-    }
+    public void closeChest() {}
 
     /**
      * Returns true if automation is allowed to insert the given stack (ignoring

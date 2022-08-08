@@ -49,7 +49,7 @@ import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.MinecraftForge;
 
 public class ClientProxy extends CommonProxy {
-    private final static boolean debug = DraconicEvolution.debug;
+    private static final boolean debug = DraconicEvolution.debug;
     public static String downloadLocation;
 
     @Override
@@ -59,52 +59,52 @@ public class ClientProxy extends CommonProxy {
 
         ResourceHandler.init(event);
 
-//		downloadLocation = event.getModConfigurationDirectory().getParentFile().getAbsolutePath() + "/mods/derspack";
-//		downloadLocation = downloadLocation.replaceAll("\\\\", "/");
-//
-//		File rescourcePack = new File(event.getModConfigurationDirectory().getParentFile(), "/mods/derspack");
-//
-//
-//		//File file = new File(downloadLocation);
-//		if (!rescourcePack.exists()) rescourcePack.mkdir();
-//
-//		LogHelper.info("Downloading Images");
-//
-//		try {
-//			URL url = new URL("http://i.imgur.com/oHRx1yQ.jpg");
-//			String fileName = url.getFile();
-//			//String destName = downloadLocation + fileName.substring(fileName.lastIndexOf("/"));
-//			File dll = new File(rescourcePack, fileName.substring(fileName.lastIndexOf("/")));
-//
-//			InputStream is = url.openStream();
-//			OutputStream os = new FileOutputStream(dll);
-//
-//			ByteStreams.copy(is, os);
-//
-//			is.close();
-//			os.close();
-//		}catch (IOException e){
-//			LogHelper.info(e);
-//		}
-//
-//
-//		List defaultResourcePacks = Lists.newArrayList();
-//		Field f = ReflectionHelper.findField(Minecraft.class, "defaultResourcePacks", "field_110449_ao");
-//		f.setAccessible(true);
-//		try {
-//			defaultResourcePacks = (List)f.get(Minecraft.getMinecraft());
-//			defaultResourcePacks.add(new FolderResourcePack(rescourcePack));
-//			for (Object o : defaultResourcePacks){
-//				if (o instanceof FolderResourcePack) LogHelper.info(((FolderResourcePack) o).getPackName());
-//				if (o instanceof FileResourcePack) LogHelper.info(((FileResourcePack)o).getPackName());
-//			}
-//
-//			f.set(Minecraft.getMinecraft(), defaultResourcePacks);
-//		}
-//		catch (IllegalAccessException e) {
-//			e.printStackTrace();
-//		}
-
+        //		downloadLocation = event.getModConfigurationDirectory().getParentFile().getAbsolutePath() +
+        // "/mods/derspack";
+        //		downloadLocation = downloadLocation.replaceAll("\\\\", "/");
+        //
+        //		File rescourcePack = new File(event.getModConfigurationDirectory().getParentFile(), "/mods/derspack");
+        //
+        //
+        //		//File file = new File(downloadLocation);
+        //		if (!rescourcePack.exists()) rescourcePack.mkdir();
+        //
+        //		LogHelper.info("Downloading Images");
+        //
+        //		try {
+        //			URL url = new URL("http://i.imgur.com/oHRx1yQ.jpg");
+        //			String fileName = url.getFile();
+        //			//String destName = downloadLocation + fileName.substring(fileName.lastIndexOf("/"));
+        //			File dll = new File(rescourcePack, fileName.substring(fileName.lastIndexOf("/")));
+        //
+        //			InputStream is = url.openStream();
+        //			OutputStream os = new FileOutputStream(dll);
+        //
+        //			ByteStreams.copy(is, os);
+        //
+        //			is.close();
+        //			os.close();
+        //		}catch (IOException e){
+        //			LogHelper.info(e);
+        //		}
+        //
+        //
+        //		List defaultResourcePacks = Lists.newArrayList();
+        //		Field f = ReflectionHelper.findField(Minecraft.class, "defaultResourcePacks", "field_110449_ao");
+        //		f.setAccessible(true);
+        //		try {
+        //			defaultResourcePacks = (List)f.get(Minecraft.getMinecraft());
+        //			defaultResourcePacks.add(new FolderResourcePack(rescourcePack));
+        //			for (Object o : defaultResourcePacks){
+        //				if (o instanceof FolderResourcePack) LogHelper.info(((FolderResourcePack) o).getPackName());
+        //				if (o instanceof FileResourcePack) LogHelper.info(((FileResourcePack)o).getPackName());
+        //			}
+        //
+        //			f.set(Minecraft.getMinecraft(), defaultResourcePacks);
+        //		}
+        //		catch (IllegalAccessException e) {
+        //			e.printStackTrace();
+        //		}
 
     }
 
@@ -113,7 +113,8 @@ public class ClientProxy extends CommonProxy {
         super.init(event);
         FMLCommonHandler.instance().bus().register(new KeyInputHandler());
         FMLCommonHandler.instance().bus().register(new ClientEventHandler());
-        if (ConfigHandler.enableVersionChecker) FMLCommonHandler.instance().bus().register(new UpdateChecker());
+        if (ConfigHandler.enableVersionChecker)
+            FMLCommonHandler.instance().bus().register(new UpdateChecker());
         MinecraftForge.EVENT_BUS.register(new HudHandler());
         MinecraftForge.EVENT_BUS.register(new ClientEventHandler());
         KeyBindings.init();
@@ -129,7 +130,7 @@ public class ClientProxy extends CommonProxy {
     }
 
     public void registerRendering() {
-        //Item Renderers
+        // Item Renderers
         MinecraftForgeClient.registerItemRenderer(ModItems.wyvernBow, new RenderBow());
         MinecraftForgeClient.registerItemRenderer(ModItems.draconicBow, new RenderBow());
         MinecraftForgeClient.registerItemRenderer(ModItems.mobSoul, new RenderMobSoul());
@@ -149,38 +150,83 @@ public class ClientProxy extends CommonProxy {
         }
 
         if (!ConfigHandler.useOldD2DToolTextures) {
-            MinecraftForgeClient.registerItemRenderer(ModItems.draconicSword, new RenderTool("models/tools/DraconicSword.obj", "textures/models/tools/DraconicSword.png", (IRenderTweak) ModItems.draconicSword));
-            MinecraftForgeClient.registerItemRenderer(ModItems.wyvernPickaxe, new RenderTool("models/tools/Pickaxe.obj", "textures/models/tools/Pickaxe.png", (IRenderTweak) ModItems.wyvernPickaxe));
-            MinecraftForgeClient.registerItemRenderer(ModItems.draconicPickaxe, new RenderTool("models/tools/DraconicPickaxe.obj", "textures/models/tools/DraconicPickaxe.png", (IRenderTweak) ModItems.draconicPickaxe));
-            MinecraftForgeClient.registerItemRenderer(ModItems.draconicAxe, new RenderTool("models/tools/DraconicLumberAxe.obj", "textures/models/tools/DraconicLumberAxe.png", (IRenderTweak) ModItems.draconicAxe));
-            MinecraftForgeClient.registerItemRenderer(ModItems.wyvernShovel, new RenderTool("models/tools/Shovel.obj", "textures/models/tools/Shovel.png", (IRenderTweak) ModItems.wyvernShovel));
-            MinecraftForgeClient.registerItemRenderer(ModItems.draconicShovel, new RenderTool("models/tools/DraconicShovel.obj", "textures/models/tools/DraconicShovel.png", (IRenderTweak) ModItems.draconicShovel));
-            MinecraftForgeClient.registerItemRenderer(ModItems.wyvernSword, new RenderTool("models/tools/Sword.obj", "textures/models/tools/Sword.png", (IRenderTweak) ModItems.wyvernSword));
-            MinecraftForgeClient.registerItemRenderer(ModItems.draconicDestructionStaff, new RenderTool("models/tools/DraconicStaffOfPower.obj", "textures/models/tools/DraconicStaffOfPower.png", (IRenderTweak) ModItems.draconicDestructionStaff));
-            MinecraftForgeClient.registerItemRenderer(ModItems.draconicHoe, new RenderTool("models/tools/DraconicHoe.obj", "textures/models/tools/DraconicHoe.png", (IRenderTweak) ModItems.draconicHoe));
+            MinecraftForgeClient.registerItemRenderer(
+                    ModItems.draconicSword,
+                    new RenderTool(
+                            "models/tools/DraconicSword.obj", "textures/models/tools/DraconicSword.png", (IRenderTweak)
+                                    ModItems.draconicSword));
+            MinecraftForgeClient.registerItemRenderer(
+                    ModItems.wyvernPickaxe,
+                    new RenderTool("models/tools/Pickaxe.obj", "textures/models/tools/Pickaxe.png", (IRenderTweak)
+                            ModItems.wyvernPickaxe));
+            MinecraftForgeClient.registerItemRenderer(
+                    ModItems.draconicPickaxe,
+                    new RenderTool(
+                            "models/tools/DraconicPickaxe.obj",
+                            "textures/models/tools/DraconicPickaxe.png",
+                            (IRenderTweak) ModItems.draconicPickaxe));
+            MinecraftForgeClient.registerItemRenderer(
+                    ModItems.draconicAxe,
+                    new RenderTool(
+                            "models/tools/DraconicLumberAxe.obj",
+                            "textures/models/tools/DraconicLumberAxe.png",
+                            (IRenderTweak) ModItems.draconicAxe));
+            MinecraftForgeClient.registerItemRenderer(
+                    ModItems.wyvernShovel,
+                    new RenderTool("models/tools/Shovel.obj", "textures/models/tools/Shovel.png", (IRenderTweak)
+                            ModItems.wyvernShovel));
+            MinecraftForgeClient.registerItemRenderer(
+                    ModItems.draconicShovel,
+                    new RenderTool(
+                            "models/tools/DraconicShovel.obj",
+                            "textures/models/tools/DraconicShovel.png",
+                            (IRenderTweak) ModItems.draconicShovel));
+            MinecraftForgeClient.registerItemRenderer(
+                    ModItems.wyvernSword,
+                    new RenderTool("models/tools/Sword.obj", "textures/models/tools/Sword.png", (IRenderTweak)
+                            ModItems.wyvernSword));
+            MinecraftForgeClient.registerItemRenderer(
+                    ModItems.draconicDestructionStaff,
+                    new RenderTool(
+                            "models/tools/DraconicStaffOfPower.obj",
+                            "textures/models/tools/DraconicStaffOfPower.png",
+                            (IRenderTweak) ModItems.draconicDestructionStaff));
+            MinecraftForgeClient.registerItemRenderer(
+                    ModItems.draconicHoe,
+                    new RenderTool(
+                            "models/tools/DraconicHoe.obj", "textures/models/tools/DraconicHoe.png", (IRenderTweak)
+                                    ModItems.draconicHoe));
             MinecraftForgeClient.registerItemRenderer(ModItems.draconicBow, new RenderBowModel(true));
             MinecraftForgeClient.registerItemRenderer(ModItems.wyvernBow, new RenderBowModel(false));
         }
 
-        MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.draconiumChest), new RenderDraconiumChest());
-        MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.particleGenerator), new RenderParticleGen());
-        MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.energyInfuser), new RenderEnergyInfuser());
+        MinecraftForgeClient.registerItemRenderer(
+                Item.getItemFromBlock(ModBlocks.draconiumChest), new RenderDraconiumChest());
+        MinecraftForgeClient.registerItemRenderer(
+                Item.getItemFromBlock(ModBlocks.particleGenerator), new RenderParticleGen());
+        MinecraftForgeClient.registerItemRenderer(
+                Item.getItemFromBlock(ModBlocks.energyInfuser), new RenderEnergyInfuser());
         MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.energyCrystal), new RenderCrystal());
-        MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.reactorStabilizer), new RenderReactorStabilizer());
-        MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.reactorEnergyInjector), new RenderReactorEnergyInjector());
-        MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.reactorCore), new RenderReactorCore());
-        MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.chaosCrystal), new RenderChaosShard());
-        MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.upgradeModifier), new RenderUpgradeModifier());
+        MinecraftForgeClient.registerItemRenderer(
+                Item.getItemFromBlock(ModBlocks.reactorStabilizer), new RenderReactorStabilizer());
+        MinecraftForgeClient.registerItemRenderer(
+                Item.getItemFromBlock(ModBlocks.reactorEnergyInjector), new RenderReactorEnergyInjector());
+        MinecraftForgeClient.registerItemRenderer(
+                Item.getItemFromBlock(ModBlocks.reactorCore), new RenderReactorCore());
+        MinecraftForgeClient.registerItemRenderer(
+                Item.getItemFromBlock(ModBlocks.chaosCrystal), new RenderChaosShard());
+        MinecraftForgeClient.registerItemRenderer(
+                Item.getItemFromBlock(ModBlocks.upgradeModifier), new RenderUpgradeModifier());
 
-        //ISimpleBlockRendering
+        // ISimpleBlockRendering
         RenderingRegistry.registerBlockHandler(new RenderTeleporterStand());
         RenderingRegistry.registerBlockHandler(new RenderPortal());
 
-        //TileEntitySpecialRenderers
+        // TileEntitySpecialRenderers
         ClientRegistry.bindTileEntitySpecialRenderer(TileParticleGenerator.class, new RenderTileParticleGen());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEnergyInfuser.class, new RenderTileEnergyInfiser());
         ClientRegistry.bindTileEntitySpecialRenderer(TileCustomSpawner.class, new RenderTileCustomSpawner());
-        //ClientRegistry.bindTileEntitySpecialRenderer(TileTestBlock.class, new RenderTileCrystal());
+        // ClientRegistry.bindTileEntitySpecialRenderer(TileTestBlock.class, new RenderTileCrystal());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEnergyStorageCore.class, new RenderTileEnergyStorageCore());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEnergyPylon.class, new RenderTileEnergyPylon());
         ClientRegistry.bindTileEntitySpecialRenderer(TilePlacedItem.class, new RenderTilePlacedItem());
@@ -192,11 +238,12 @@ public class ClientProxy extends CommonProxy {
         ClientRegistry.bindTileEntitySpecialRenderer(TileWirelessEnergyTransceiver.class, new RenderTileCrystal());
         ClientRegistry.bindTileEntitySpecialRenderer(TileReactorCore.class, new RenderTileReactorCore());
         ClientRegistry.bindTileEntitySpecialRenderer(TileReactorStabilizer.class, new RenderTileReactorStabilizer());
-        ClientRegistry.bindTileEntitySpecialRenderer(TileReactorEnergyInjector.class, new RenderTileReactorEnergyInjector());
+        ClientRegistry.bindTileEntitySpecialRenderer(
+                TileReactorEnergyInjector.class, new RenderTileReactorEnergyInjector());
         ClientRegistry.bindTileEntitySpecialRenderer(TileChaosShard.class, new RenderTileChaosShard());
         ClientRegistry.bindTileEntitySpecialRenderer(TileUpgradeModifier.class, new RenderTileUpgradeModifier());
 
-        //Entitys
+        // Entitys
         RenderingRegistry.registerEntityRenderingHandler(EntityCustomDragon.class, new RenderDragon());
         RenderingRegistry.registerEntityRenderingHandler(EntityChaosGuardian.class, new RenderDragon());
         RenderingRegistry.registerEntityRenderingHandler(EntityDragonHeart.class, new RenderDragonHeart());
@@ -212,7 +259,19 @@ public class ClientProxy extends CommonProxy {
     }
 
     @Override
-    public ParticleEnergyBeam energyBeam(World worldObj, double x, double y, double z, double tx, double ty, double tz, int powerFlow, boolean advanced, ParticleEnergyBeam oldBeam, boolean render, int beamType) {
+    public ParticleEnergyBeam energyBeam(
+            World worldObj,
+            double x,
+            double y,
+            double z,
+            double tx,
+            double ty,
+            double tz,
+            int powerFlow,
+            boolean advanced,
+            ParticleEnergyBeam oldBeam,
+            boolean render,
+            int beamType) {
         if (!worldObj.isRemote) return null;
         ParticleEnergyBeam beam = oldBeam;
         boolean inRange = ParticleHandler.isInRange(x, y, z, 50) || ParticleHandler.isInRange(tx, ty, tz, 50);
@@ -233,7 +292,15 @@ public class ClientProxy extends CommonProxy {
     }
 
     @Override
-    public ParticleEnergyField energyField(World worldObj, double x, double y, double z, int type, boolean advanced, ParticleEnergyField oldBeam, boolean render) {
+    public ParticleEnergyField energyField(
+            World worldObj,
+            double x,
+            double y,
+            double z,
+            int type,
+            boolean advanced,
+            ParticleEnergyField oldBeam,
+            boolean render) {
         if (!worldObj.isRemote) return null;
         ParticleEnergyField beam = oldBeam;
         boolean inRange = ParticleHandler.isInRange(x, y, z, 50);
@@ -273,7 +340,6 @@ public class ClientProxy extends CommonProxy {
         }
         return beam;
     }
-
 
     public boolean isOp(String paramString) {
         return Minecraft.getMinecraft().theWorld.getWorldInfo().getGameType().isCreative();

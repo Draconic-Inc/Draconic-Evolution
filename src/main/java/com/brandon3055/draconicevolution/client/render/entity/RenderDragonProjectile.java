@@ -53,8 +53,8 @@ public class RenderDragonProjectile extends Render {
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         GL11.glAlphaFunc(GL11.GL_GREATER, 0F);
         GL11.glDisable(GL11.GL_LIGHTING);
-//		GL11.glDepthMask(false);
-//		GL11.glEnable(GL11.GL_CULL_FACE);
+        //		GL11.glDepthMask(false);
+        //		GL11.glEnable(GL11.GL_CULL_FACE);
         float f2 = entity.type == EntityDragonProjectile.MINI_CHAOS_CHASER ? entity.power / 10 : entity.power / 5;
         GL11.glScalef(f2 / 1.0F, f2 / 1.0F, f2 / 1.0F);
         Tessellator tessellator = Tessellator.instance;
@@ -90,7 +90,7 @@ public class RenderDragonProjectile extends Render {
         GL11.glEnable(GL11.GL_LIGHTING);
         GL11.glAlphaFunc(GL11.GL_GREATER, 0.1F);
         GL11.glDisable(GL11.GL_BLEND);
-        //GL11.glDepthMask(true);
+        // GL11.glDepthMask(true);
         GL11.glDisable(GL12.GL_RESCALE_NORMAL);
 
         GL11.glPopMatrix();
@@ -100,5 +100,4 @@ public class RenderDragonProjectile extends Render {
     protected ResourceLocation getEntityTexture(Entity entity) {
         return null;
     }
-
 }

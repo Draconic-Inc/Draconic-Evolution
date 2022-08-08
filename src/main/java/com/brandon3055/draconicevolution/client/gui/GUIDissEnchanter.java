@@ -34,19 +34,24 @@ public class GUIDissEnchanter extends GuiContainer {
         this.player = invPlayer.player;
     }
 
-    private static final ResourceLocation texture = new ResourceLocation(References.MODID.toLowerCase(), "textures/gui/DissEnchanter.png");
+    private static final ResourceLocation texture =
+            new ResourceLocation(References.MODID.toLowerCase(), "textures/gui/DissEnchanter.png");
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float f, int x, int y) {
         GL11.glColor4f(1F, 1F, 1F, 1F);
         Minecraft.getMinecraft().getTextureManager().bindTexture(texture);
         drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
-
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int x, int y) {
-        drawCenteredString(fontRendererObj, StatCollector.translateToLocal("tile.draconicevolution:dissEnchanter.name"), 88, 4, 0x00FFFF);
+        drawCenteredString(
+                fontRendererObj,
+                StatCollector.translateToLocal("tile.draconicevolution:dissEnchanter.name"),
+                88,
+                4,
+                0x00FFFF);
 
         fontRendererObj.drawString("Item", 5, 40, 0x0000ff);
         fontRendererObj.drawString("Damage: " + (40 - tile.bookPower) + "%", 5, 49, 0x0000ff);

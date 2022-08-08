@@ -30,15 +30,23 @@ public class TileCKeyStone extends TileEntity {
                 activeTicks = 0;
                 isActivated = false;
                 updateBlocks();
-                worldObj.playSoundEffect((double) xCoord + 0.5D, (double) yCoord + 0.5D, (double) zCoord + 0.5D, "random.click", 0.3F, 0.5F);
+                worldObj.playSoundEffect(
+                        (double) xCoord + 0.5D,
+                        (double) yCoord + 0.5D,
+                        (double) zCoord + 0.5D,
+                        "random.click",
+                        0.3F,
+                        0.5F);
             }
         }
     }
 
     public boolean onActivated(ItemStack stack, EntityPlayer player) {
         if (stack == null || stack.getItem() != ModItems.key) {
-            if (player.capabilities.isCreativeMode && stack == null && player.isSneaking() && (getMeta() == 1 || getMeta() == 3))
-                delay += 5;
+            if (player.capabilities.isCreativeMode
+                    && stack == null
+                    && player.isSneaking()
+                    && (getMeta() == 1 || getMeta() == 3)) delay += 5;
             if (player.capabilities.isCreativeMode && stack == null) giveInformation(player);
             return false;
         }
@@ -47,26 +55,56 @@ public class TileCKeyStone extends TileEntity {
         if (!isKeyValid(stack, player)) return false;
 
         switch (getMeta()) {
-            case 0: //Permanent Activation
+            case 0: // Permanent Activation
                 isActivated = true;
                 player.destroyCurrentEquippedItem();
-                worldObj.playSoundEffect((double) xCoord + 0.5D, (double) yCoord + 0.5D, (double) zCoord + 0.5D, "random.click", 0.3F, 0.6F);
+                worldObj.playSoundEffect(
+                        (double) xCoord + 0.5D,
+                        (double) yCoord + 0.5D,
+                        (double) zCoord + 0.5D,
+                        "random.click",
+                        0.3F,
+                        0.6F);
                 break;
-            case 1: //Button Activation
+            case 1: // Button Activation
                 isActivated = true;
-                worldObj.playSoundEffect((double) xCoord + 0.5D, (double) yCoord + 0.5D, (double) zCoord + 0.5D, "random.click", 0.3F, 0.6F);
+                worldObj.playSoundEffect(
+                        (double) xCoord + 0.5D,
+                        (double) yCoord + 0.5D,
+                        (double) zCoord + 0.5D,
+                        "random.click",
+                        0.3F,
+                        0.6F);
                 break;
-            case 2: //Toggle Activation
+            case 2: // Toggle Activation
                 if (!isActivated)
-                    worldObj.playSoundEffect((double) xCoord + 0.5D, (double) yCoord + 0.5D, (double) zCoord + 0.5D, "random.click", 0.3F, 0.6F);
+                    worldObj.playSoundEffect(
+                            (double) xCoord + 0.5D,
+                            (double) yCoord + 0.5D,
+                            (double) zCoord + 0.5D,
+                            "random.click",
+                            0.3F,
+                            0.6F);
                 else
-                    worldObj.playSoundEffect((double) xCoord + 0.5D, (double) yCoord + 0.5D, (double) zCoord + 0.5D, "random.click", 0.3F, 0.5F);
+                    worldObj.playSoundEffect(
+                            (double) xCoord + 0.5D,
+                            (double) yCoord + 0.5D,
+                            (double) zCoord + 0.5D,
+                            "random.click",
+                            0.3F,
+                            0.5F);
                 isActivated = !isActivated;
                 break;
-            case 3: //Button Activation (Consume Key)
+            case 3: // Button Activation (Consume Key)
                 isActivated = true;
                 player.destroyCurrentEquippedItem();
-                worldObj.playSoundEffect((double) xCoord + 0.5D, (double) yCoord + 0.5D, (double) zCoord + 0.5D, "random.click", 0.3F, 0.6F);
+                worldObj.playSoundEffect(
+                        (double) xCoord + 0.5D,
+                        (double) yCoord + 0.5D,
+                        (double) zCoord + 0.5D,
+                        "random.click",
+                        0.3F,
+                        0.6F);
                 break;
             case 4:
                 break;
@@ -81,16 +119,29 @@ public class TileCKeyStone extends TileEntity {
             player.addChatComponentMessage(new ChatComponentTranslation("msg.cKeyStoneType" + getMeta() + ".txt"));
             player.addChatComponentMessage(new ChatComponentText("Key: " + keyCode));
             if (getMeta() == 1 || getMeta() == 3)
-                player.addChatComponentMessage(new ChatComponentText("Delay: " + delay + "t (" + (((double) delay) / 20D) + "s)"));
+                player.addChatComponentMessage(
+                        new ChatComponentText("Delay: " + delay + "t (" + (((double) delay) / 20D) + "s)"));
         }
     }
 
     private boolean isMasterKey(ItemStack key) {
         if (key.getItemDamage() == 1) {
             if (!isActivated)
-                worldObj.playSoundEffect((double) xCoord + 0.5D, (double) yCoord + 0.5D, (double) zCoord + 0.5D, "random.click", 0.3F, 0.6F);
+                worldObj.playSoundEffect(
+                        (double) xCoord + 0.5D,
+                        (double) yCoord + 0.5D,
+                        (double) zCoord + 0.5D,
+                        "random.click",
+                        0.3F,
+                        0.6F);
             else
-                worldObj.playSoundEffect((double) xCoord + 0.5D, (double) yCoord + 0.5D, (double) zCoord + 0.5D, "random.click", 0.3F, 0.5F);
+                worldObj.playSoundEffect(
+                        (double) xCoord + 0.5D,
+                        (double) yCoord + 0.5D,
+                        (double) zCoord + 0.5D,
+                        "random.click",
+                        0.3F,
+                        0.5F);
             isActivated = !isActivated;
             updateBlocks();
             return true;

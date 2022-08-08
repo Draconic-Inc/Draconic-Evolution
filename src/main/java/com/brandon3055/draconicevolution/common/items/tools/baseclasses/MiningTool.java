@@ -1,10 +1,5 @@
 package com.brandon3055.draconicevolution.common.items.tools.baseclasses;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.brandon3055.brandonscore.common.utills.InfoHelper;
 import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
 import com.brandon3055.brandonscore.common.utills.Utills;
@@ -14,12 +9,13 @@ import com.brandon3055.draconicevolution.common.utills.IConfigurableItem;
 import com.brandon3055.draconicevolution.common.utills.IUpgradableItem;
 import com.brandon3055.draconicevolution.common.utills.ItemConfigField;
 import com.brandon3055.draconicevolution.integration.ModHelper;
-
-import cpw.mods.fml.common.Loader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.MaterialLiquid;
 import net.minecraft.client.Minecraft;
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
@@ -46,7 +42,6 @@ import net.minecraftforge.event.world.BlockEvent;
  * Modified by bartimaeusnek on 23/05/2018
  */
 public abstract class MiningTool extends ToolBase implements IUpgradableItem {
-
 
     public MiningTool(ToolMaterial material) {
         super(0, material, null);
@@ -78,14 +73,24 @@ public abstract class MiningTool extends ToolBase implements IUpgradableItem {
         int radius = IConfigurableItem.ProfileHelper.getInteger(stack, References.DIG_AOE, 0);
         int depth = IConfigurableItem.ProfileHelper.getInteger(stack, References.DIG_DEPTH, 1) - 1;
 
-        return getEnergyStored(stack) >= energyPerOperation && (radius > 0) ? breakAOEBlocks(stack, x, y, z, radius, depth, player) : super.onBlockStartBreak(stack, x, y, z, player);
+        return getEnergyStored(stack) >= energyPerOperation && (radius > 0)
+                ? breakAOEBlocks(stack, x, y, z, radius, depth, player)
+                : super.onBlockStartBreak(stack, x, y, z, player);
     }
 
     @Override
-    public boolean onBlockDestroyed(ItemStack stack, World p_150894_2_, Block p_150894_3_, int p_150894_4_, int p_150894_5_, int p_150894_6_, EntityLivingBase p_150894_7_) {
+    public boolean onBlockDestroyed(
+            ItemStack stack,
+            World p_150894_2_,
+            Block p_150894_3_,
+            int p_150894_4_,
+            int p_150894_5_,
+            int p_150894_6_,
+            EntityLivingBase p_150894_7_) {
         if (IConfigurableItem.ProfileHelper.getInteger(stack, References.DIG_AOE, 0) == 0)
             extractEnergy(stack, energyPerOperation, false);
-        return super.onBlockDestroyed(stack, p_150894_2_, p_150894_3_, p_150894_4_, p_150894_5_, p_150894_6_, p_150894_7_);
+        return super.onBlockDestroyed(
+                stack, p_150894_2_, p_150894_3_, p_150894_4_, p_150894_5_, p_150894_6_, p_150894_7_);
     }
 
     @Override
@@ -94,8 +99,11 @@ public abstract class MiningTool extends ToolBase implements IUpgradableItem {
         return super.onItemRightClick(stack, world, player);
     }
 
-    public boolean breakAOEBlocks(ItemStack stack, int x, int y, int z, int breakRadius, int breakDepth, EntityPlayer player) {
-        Map<Block, Integer> blockMap = IConfigurableItem.ProfileHelper.getBoolean(stack, References.OBLITERATE, false) ? getObliterationList(stack) : new HashMap<Block, Integer>();
+    public boolean breakAOEBlocks(
+            ItemStack stack, int x, int y, int z, int breakRadius, int breakDepth, EntityPlayer player) {
+        Map<Block, Integer> blockMap = IConfigurableItem.ProfileHelper.getBoolean(stack, References.OBLITERATE, false)
+                ? getObliterationList(stack)
+                : new HashMap<Block, Integer>();
         Block block = player.worldObj.getBlock(x, y, z);
         int meta = player.worldObj.getBlockMetadata(x, y, z);
         boolean effective = false;
@@ -109,7 +117,6 @@ public abstract class MiningTool extends ToolBase implements IUpgradableItem {
         if (!effective) return true;
 
         float refStrength = ForgeHooks.blockStrength(block, player, player.worldObj, x, y, z);
-
 
         MovingObjectPosition mop = ToolHandler.raytraceFromEntity(player.worldObj, player, 4.5d);
         if (mop == null) {
@@ -167,12 +174,14 @@ public abstract class MiningTool extends ToolBase implements IUpgradableItem {
             for (int xPos = x - xMin; xPos <= x + xMax; xPos++) {
                 for (int yPos = y + yOffset - yMin; yPos <= y + yOffset + yMax; yPos++) {
                     for (int zPos = z - zMin; zPos <= z + zMax; zPos++) {
-                        TileEntity te = player.worldObj.getTileEntity(xPos, yPos, zPos); 
+                        TileEntity te = player.worldObj.getTileEntity(xPos, yPos, zPos);
                         if (te != null && !ModHelper.isGregTechTileEntityOre(te)) {
                             if (player.worldObj.isRemote) {
                                 player.addChatComponentMessage(new ChatComponentTranslation("msg.de.baseSafeAOW.txt"));
                             } else
-                                ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new S23PacketBlockChange(x, y, z, ((EntityPlayerMP) player).worldObj));
+                                ((EntityPlayerMP) player)
+                                        .playerNetServerHandler.sendPacket(
+                                                new S23PacketBlockChange(x, y, z, ((EntityPlayerMP) player).worldObj));
                             return true;
                         }
                     }
@@ -180,26 +189,37 @@ public abstract class MiningTool extends ToolBase implements IUpgradableItem {
             }
         }
 
-        
-       
         for (int xPos = x - xMin; xPos <= x + xMax; xPos++) {
             for (int yPos = y + yOffset - yMin; yPos <= y + yOffset + yMax; yPos++) {
                 for (int zPos = z - zMin; zPos <= z + zMax; zPos++) {
-                	player.worldObj.getChunkFromBlockCoords(xPos, zPos).sendUpdates=false;
-                    breakExtraBlock(stack, player.worldObj, xPos, yPos, zPos, breakRadius * ((breakDepth / 2) + 1), player, refStrength, Math.abs(x - xPos) <= 1 && Math.abs(y - yPos) <= 1 && Math.abs(z - zPos) <= 1, blockMap);
+                    player.worldObj.getChunkFromBlockCoords(xPos, zPos).sendUpdates = false;
+                    breakExtraBlock(
+                            stack,
+                            player.worldObj,
+                            xPos,
+                            yPos,
+                            zPos,
+                            breakRadius * ((breakDepth / 2) + 1),
+                            player,
+                            refStrength,
+                            Math.abs(x - xPos) <= 1 && Math.abs(y - yPos) <= 1 && Math.abs(z - zPos) <= 1,
+                            blockMap);
                 }
             }
         }
         for (int xPos = x - xMin; xPos <= x + xMax; xPos++) {
             for (int yPos = y + yOffset - yMin; yPos <= y + yOffset + yMax; yPos++) {
                 for (int zPos = z - zMin; zPos <= z + zMax; zPos++) {
-                	player.worldObj.getChunkFromBlockCoords(x, z).sendUpdates=true;
-                	player.worldObj.getChunkFromBlockCoords(x, z).isModified=true;
+                    player.worldObj.getChunkFromBlockCoords(x, z).sendUpdates = true;
+                    player.worldObj.getChunkFromBlockCoords(x, z).isModified = true;
                 }
             }
         }
-        
-        List<EntityItem> items = player.worldObj.getEntitiesWithinAABB(EntityItem.class, AxisAlignedBB.getBoundingBox(x - xMin, y + yOffset - yMin, z - zMin, x + xMax + 1, y + yOffset + yMax + 1, z + zMax + 1));
+
+        List<EntityItem> items = player.worldObj.getEntitiesWithinAABB(
+                EntityItem.class,
+                AxisAlignedBB.getBoundingBox(
+                        x - xMin, y + yOffset - yMin, z - zMin, x + xMax + 1, y + yOffset + yMax + 1, z + zMax + 1));
         for (EntityItem item : items) {
             if (!player.worldObj.isRemote) {
                 item.setLocationAndAngles(player.posX, player.posY, player.posZ, 0, 0);
@@ -211,13 +231,23 @@ public abstract class MiningTool extends ToolBase implements IUpgradableItem {
 
         return true;
     }
-    
-    protected void breakExtraBlock(ItemStack stack, World world, int x, int y, int z, int totalSize, EntityPlayer player, float refStrength, boolean breakSound, Map<Block, Integer> blockMap) {
+
+    protected void breakExtraBlock(
+            ItemStack stack,
+            World world,
+            int x,
+            int y,
+            int z,
+            int totalSize,
+            EntityPlayer player,
+            float refStrength,
+            boolean breakSound,
+            Map<Block, Integer> blockMap) {
         if (world.isAirBlock(x, y, z)) return;
 
         Block block = world.getBlock(x, y, z);
-        if (block.getMaterial() instanceof MaterialLiquid || (block.getBlockHardness(world, x, y, x) == -1 && !player.capabilities.isCreativeMode))
-            return;
+        if (block.getMaterial() instanceof MaterialLiquid
+                || (block.getBlockHardness(world, x, y, x) == -1 && !player.capabilities.isCreativeMode)) return;
 
         int meta = world.getBlockMetadata(x, y, z);
 
@@ -231,11 +261,13 @@ public abstract class MiningTool extends ToolBase implements IUpgradableItem {
 
         float strength = ForgeHooks.blockStrength(block, player, world, x, y, z);
 
-        if (!player.canHarvestBlock(block) || !ForgeHooks.canHarvestBlock(block, player, meta) || refStrength / strength > 10f && !player.capabilities.isCreativeMode)
-            return;
+        if (!player.canHarvestBlock(block)
+                || !ForgeHooks.canHarvestBlock(block, player, meta)
+                || refStrength / strength > 10f && !player.capabilities.isCreativeMode) return;
 
         if (!world.isRemote) {
-            BlockEvent.BreakEvent event = ForgeHooks.onBlockBreakEvent(world, world.getWorldInfo().getGameType(), (EntityPlayerMP) player, x, y, z);
+            BlockEvent.BreakEvent event = ForgeHooks.onBlockBreakEvent(
+                    world, world.getWorldInfo().getGameType(), (EntityPlayerMP) player, x, y, z);
             if (event.isCanceled()) {
                 ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new S23PacketBlockChange(x, y, z, world));
                 return;
@@ -262,49 +294,56 @@ public abstract class MiningTool extends ToolBase implements IUpgradableItem {
         extractEnergy(stack, scaledPower, false);
 
         if (!world.isRemote) {
-        	
+
             block.onBlockHarvested(world, x, y, z, meta, player);
-            
-            ArrayList<ItemStack> drops = block.getDrops(world, x, y, z, meta, EnchantmentHelper.getFortuneModifier(player));
+
+            ArrayList<ItemStack> drops =
+                    block.getDrops(world, x, y, z, meta, EnchantmentHelper.getFortuneModifier(player));
             for (ItemStack is : drops) {
-            	if (!player.inventory.addItemStackToInventory(is)) {
-            			if (world.getGameRules().getGameRuleBooleanValue("doTileDrops") && !world.restoringBlockSnapshots){
-            				float f = 0.7F;
-            				double d0 = (double)(world.rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
-            				double d1 = (double)(world.rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
-            				double d2 = (double)(world.rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
-            				EntityItem entityitem = new EntityItem(world, (double)x + d0, (double)y + d1, (double)z + d2, is);
-            				entityitem.delayBeforeCanPickup = 10;
-            				world.spawnEntityInWorld(entityitem);
-            			}
-            	}
-            }	
+                if (!player.inventory.addItemStackToInventory(is)) {
+                    if (world.getGameRules().getGameRuleBooleanValue("doTileDrops") && !world.restoringBlockSnapshots) {
+                        float f = 0.7F;
+                        double d0 = (double) (world.rand.nextFloat() * f) + (double) (1.0F - f) * 0.5D;
+                        double d1 = (double) (world.rand.nextFloat() * f) + (double) (1.0F - f) * 0.5D;
+                        double d2 = (double) (world.rand.nextFloat() * f) + (double) (1.0F - f) * 0.5D;
+                        EntityItem entityitem =
+                                new EntityItem(world, (double) x + d0, (double) y + d1, (double) z + d2, is);
+                        entityitem.delayBeforeCanPickup = 10;
+                        world.spawnEntityInWorld(entityitem);
+                    }
+                }
+            }
             block.onBlockDestroyedByPlayer(world, x, y, z, meta);
-        	world.setBlock(x, y, z, Blocks.air, 0, 2);
+            world.setBlock(x, y, z, Blocks.air, 0, 2);
             player.addExhaustion(-0.025F);
             if (block.getExpDrop(world, meta, EnchantmentHelper.getFortuneModifier(player)) > 0)
-            	player.addExperience(block.getExpDrop(world, meta, EnchantmentHelper.getFortuneModifier(player)));
+                player.addExperience(block.getExpDrop(world, meta, EnchantmentHelper.getFortuneModifier(player)));
             EntityPlayerMP mpPlayer = (EntityPlayerMP) player;
             mpPlayer.playerNetServerHandler.sendPacket(new S23PacketBlockChange(x, y, z, world));
-            
+
         } else {
             if (breakSound) world.playAuxSFX(2001, x, y, z, Block.getIdFromBlock(block) + (meta << 12));
             if (block.removedByPlayer(world, player, x, y, z, false)) {
-            	block.onBlockDestroyedByPlayer(world, x, y, z, meta);
+                block.onBlockDestroyedByPlayer(world, x, y, z, meta);
             }
 
-            Minecraft.getMinecraft().getNetHandler().addToSendQueue(new C07PacketPlayerDigging(2, x, y, z, Minecraft.getMinecraft().objectMouseOver.sideHit));
+            Minecraft.getMinecraft()
+                    .getNetHandler()
+                    .addToSendQueue(
+                            new C07PacketPlayerDigging(2, x, y, z, Minecraft.getMinecraft().objectMouseOver.sideHit));
         }
     }
 
     @Override
     public List<EnumUpgrade> getUpgrades(ItemStack itemstack) {
-        return new ArrayList<EnumUpgrade>() {{
-            add(EnumUpgrade.RF_CAPACITY);
-            add(EnumUpgrade.DIG_SPEED);
-            add(EnumUpgrade.DIG_AOE);
-            add(EnumUpgrade.DIG_DEPTH);
-        }};
+        return new ArrayList<EnumUpgrade>() {
+            {
+                add(EnumUpgrade.RF_CAPACITY);
+                add(EnumUpgrade.DIG_SPEED);
+                add(EnumUpgrade.DIG_AOE);
+                add(EnumUpgrade.DIG_DEPTH);
+            }
+        };
     }
 
     @Override
@@ -331,16 +370,22 @@ public abstract class MiningTool extends ToolBase implements IUpgradableItem {
             else if (field.name.equals(References.ATTACK_AOE)) attackaoe = 1 + ((Integer) field.max * 2);
         }
 
-        strings.add(InfoHelper.ITC() + StatCollector.translateToLocal("gui.de.RFCapacity.txt") + ": " + InfoHelper.HITC() + Utills.formatNumber(getMaxEnergyStored(stack)));
-        strings.add(InfoHelper.ITC() + StatCollector.translateToLocal("gui.de.max.txt") + " " + StatCollector.translateToLocal("gui.de.DigAOE.txt") + ": " + InfoHelper.HITC() + digaoe + "x" + digaoe);
+        strings.add(InfoHelper.ITC() + StatCollector.translateToLocal("gui.de.RFCapacity.txt") + ": "
+                + InfoHelper.HITC() + Utills.formatNumber(getMaxEnergyStored(stack)));
+        strings.add(InfoHelper.ITC() + StatCollector.translateToLocal("gui.de.max.txt") + " "
+                + StatCollector.translateToLocal("gui.de.DigAOE.txt") + ": " + InfoHelper.HITC() + digaoe + "x"
+                + digaoe);
         if (depth > 0)
-            strings.add(InfoHelper.ITC() + StatCollector.translateToLocal("gui.de.max.txt") + " " + StatCollector.translateToLocal("gui.de.DigDepth.txt") + ": " + InfoHelper.HITC() + depth);
-        strings.add(InfoHelper.ITC() + StatCollector.translateToLocal("gui.de.max.txt") + " " + StatCollector.translateToLocal("gui.de.DigSpeed.txt") + ": " + InfoHelper.HITC() + getEfficiency(stack));
+            strings.add(InfoHelper.ITC() + StatCollector.translateToLocal("gui.de.max.txt") + " "
+                    + StatCollector.translateToLocal("gui.de.DigDepth.txt") + ": " + InfoHelper.HITC() + depth);
+        strings.add(InfoHelper.ITC() + StatCollector.translateToLocal("gui.de.max.txt") + " "
+                + StatCollector.translateToLocal("gui.de.DigSpeed.txt") + ": " + InfoHelper.HITC()
+                + getEfficiency(stack));
         if (attackaoe > 0)
-            strings.add(InfoHelper.ITC() + StatCollector.translateToLocal("gui.de.max.txt") + " " + StatCollector.translateToLocal("gui.de.AttackAOE.txt") + ": " + InfoHelper.HITC() + attackaoe + "x" + attackaoe);
+            strings.add(InfoHelper.ITC() + StatCollector.translateToLocal("gui.de.max.txt") + " "
+                    + StatCollector.translateToLocal("gui.de.AttackAOE.txt") + ": " + InfoHelper.HITC() + attackaoe
+                    + "x" + attackaoe);
 
         return strings;
     }
 }
-
-

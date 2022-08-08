@@ -30,8 +30,7 @@ public class ButtonPacket implements IMessage {
     byte buttonId = 0;
     boolean state = false;
 
-    public ButtonPacket() {
-    }
+    public ButtonPacket() {}
 
     public ButtonPacket(byte buttonId, boolean state) {
         this.buttonId = buttonId;
@@ -112,12 +111,22 @@ public class ButtonPacket implements IMessage {
                     break;
                 }
                 case ID_TOOLCONFIG: {
-                    ctx.getServerHandler().playerEntity.openGui(DraconicEvolution.instance, GuiHandler.GUIID_TOOL_CONFIG, ctx.getServerHandler().playerEntity.worldObj, (int) ctx.getServerHandler().playerEntity.posX, (int) ctx.getServerHandler().playerEntity.posY, (int) ctx.getServerHandler().playerEntity.posZ);
+                    ctx.getServerHandler()
+                            .playerEntity
+                            .openGui(
+                                    DraconicEvolution.instance,
+                                    GuiHandler.GUIID_TOOL_CONFIG,
+                                    ctx.getServerHandler().playerEntity.worldObj,
+                                    (int) ctx.getServerHandler().playerEntity.posX,
+                                    (int) ctx.getServerHandler().playerEntity.posY,
+                                    (int) ctx.getServerHandler().playerEntity.posZ);
                     break;
                 }
                 case ID_TOOL_PROFILE_CHANGE: {
                     ItemStack stack = ctx.getServerHandler().playerEntity.getHeldItem();
-                    if (stack != null && stack.getItem() instanceof IConfigurableItem && ((IConfigurableItem) stack.getItem()).hasProfiles()) {
+                    if (stack != null
+                            && stack.getItem() instanceof IConfigurableItem
+                            && ((IConfigurableItem) stack.getItem()).hasProfiles()) {
                         int preset = ItemNBTHelper.getInteger(stack, "ConfigProfile", 0);
                         if (++preset >= 5) preset = 0;
                         ItemNBTHelper.setInteger(stack, "ConfigProfile", preset);

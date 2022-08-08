@@ -11,7 +11,8 @@ import org.lwjgl.opengl.GL11;
  * Created by brandon3055 on 1/10/2015.
  */
 public class RenderChaosShard implements IItemRenderer {
-    private static IModelCustom model = AdvancedModelLoader.loadModel(ResourceHandler.getResource("models/chaosCrystalShard.obj"));
+    private static IModelCustom model =
+            AdvancedModelLoader.loadModel(ResourceHandler.getResource("models/chaosCrystalShard.obj"));
 
     @Override
     public boolean handleRenderType(ItemStack item, ItemRenderType type) {

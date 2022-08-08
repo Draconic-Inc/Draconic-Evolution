@@ -7,12 +7,11 @@ import codechicken.nei.api.IOverlayHandler;
 import codechicken.nei.recipe.IRecipeHandler;
 import com.brandon3055.draconicevolution.common.tileentities.TileDraconiumChest;
 import com.brandon3055.draconicevolution.common.utills.LogHelper;
+import java.util.*;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-
-import java.util.*;
 
 /**
  * Created by Brandon on 30/10/2014.
@@ -131,13 +130,13 @@ public class CraftingChestOverlayHandler implements IOverlayHandler {
         return quantity;
     }
 
-    private Slot[][] assignIngredSlots(GuiContainer gui, List<PositionedStack> ingredients, List<IngredientDistribution> assignedIngredients) {
-        Slot[][] recipeSlots = mapIngredSlots(gui, ingredients);//setup the slot map
+    private Slot[][] assignIngredSlots(
+            GuiContainer gui, List<PositionedStack> ingredients, List<IngredientDistribution> assignedIngredients) {
+        Slot[][] recipeSlots = mapIngredSlots(gui, ingredients); // setup the slot map
 
         HashMap<Slot, Integer> distribution = new HashMap<Slot, Integer>();
         for (int i = 0; i < recipeSlots.length; i++)
-            for (Slot slot : recipeSlots[i])
-                if (!distribution.containsKey(slot)) distribution.put(slot, -1);
+            for (Slot slot : recipeSlots[i]) if (!distribution.containsKey(slot)) distribution.put(slot, -1);
 
         HashSet<Slot> avaliableSlots = new HashSet<Slot>(distribution.keySet());
         HashSet<Integer> remainingIngreds = new HashSet<Integer>();
@@ -175,9 +174,10 @@ public class CraftingChestOverlayHandler implements IOverlayHandler {
         return recipeSlots;
     }
 
-    private List<IngredientDistribution> assignIngredients(List<PositionedStack> ingredients, List<DistributedIngred> ingredStacks) {
+    private List<IngredientDistribution> assignIngredients(
+            List<PositionedStack> ingredients, List<DistributedIngred> ingredStacks) {
         ArrayList<IngredientDistribution> assignedIngredients = new ArrayList<IngredientDistribution>();
-        for (PositionedStack posstack : ingredients)//assign what we need and have
+        for (PositionedStack posstack : ingredients) // assign what we need and have
         {
             DistributedIngred biggestIngred = null;
             ItemStack permutation = null;
@@ -186,10 +186,12 @@ public class CraftingChestOverlayHandler implements IOverlayHandler {
                 if (pstack.stackSize == 0) continue;
                 for (int j = 0; j < ingredStacks.size(); j++) {
                     DistributedIngred istack = ingredStacks.get(j);
-                    if (!InventoryUtils.canStack(pstack, istack.stack) || istack.invAmount - istack.distributed < pstack.stackSize)
-                        continue;
-                    LogHelper.info(istack.invAmount - istack.invAmount + " " + istack.recipeAmount * istack.distributed + " " + pstack.stackSize);
-                    int relsize = (istack.invAmount - istack.invAmount / istack.recipeAmount * istack.distributed) / pstack.stackSize;
+                    if (!InventoryUtils.canStack(pstack, istack.stack)
+                            || istack.invAmount - istack.distributed < pstack.stackSize) continue;
+                    LogHelper.info(istack.invAmount - istack.invAmount + " " + istack.recipeAmount * istack.distributed
+                            + " " + pstack.stackSize);
+                    int relsize = (istack.invAmount - istack.invAmount / istack.recipeAmount * istack.distributed)
+                            / pstack.stackSize;
                     if (relsize > biggestSize) {
                         biggestSize = relsize;
                         biggestIngred = istack;
@@ -199,9 +201,8 @@ public class CraftingChestOverlayHandler implements IOverlayHandler {
                 }
             }
 
-            if (biggestIngred == null)//not enough ingreds
-                return null;
-
+            if (biggestIngred == null) // not enough ingreds
+            return null;
 
             biggestIngred.distributed += permutation.stackSize;
             assignedIngredients.add(new IngredientDistribution(biggestIngred, permutation));
@@ -211,7 +212,7 @@ public class CraftingChestOverlayHandler implements IOverlayHandler {
     }
 
     private void findInventoryQuantities(GuiContainer gui, List<DistributedIngred> ingredStacks) {
-        for (Slot slot : (List<Slot>) gui.inventorySlots.inventorySlots)//work out how much we have to go round
+        for (Slot slot : (List<Slot>) gui.inventorySlots.inventorySlots) // work out how much we have to go round
         {
             if (slot.getHasStack() && canMoveFrom(slot, gui)) {
                 ItemStack pstack = slot.getStack();
@@ -223,7 +224,7 @@ public class CraftingChestOverlayHandler implements IOverlayHandler {
 
     private List<DistributedIngred> getPermutationIngredients(List<PositionedStack> ingredients) {
         ArrayList<DistributedIngred> ingredStacks = new ArrayList<DistributedIngred>();
-        for (PositionedStack posstack : ingredients)//work out what we need
+        for (PositionedStack posstack : ingredients) // work out what we need
         {
             for (ItemStack pstack : posstack.items) {
                 DistributedIngred istack = findIngred(ingredStacks, pstack);
@@ -242,7 +243,7 @@ public class CraftingChestOverlayHandler implements IOverlayHandler {
         int offsetx = getOffsetX(gui);
         int offsety = getOffsetY(gui);
         Slot[][] recipeSlotList = new Slot[ingredients.size()][];
-        for (int i = 0; i < ingredients.size(); i++)//identify slots
+        for (int i = 0; i < ingredients.size(); i++) // identify slots
         {
             LinkedList<Slot> recipeSlots = new LinkedList<Slot>();
             PositionedStack pstack = ingredients.get(i);
@@ -258,8 +259,7 @@ public class CraftingChestOverlayHandler implements IOverlayHandler {
     }
 
     public DistributedIngred findIngred(List<DistributedIngred> ingredStacks, ItemStack pstack) {
-        for (DistributedIngred istack : ingredStacks)
-            if (InventoryUtils.canStack(pstack, istack.stack)) return istack;
+        for (DistributedIngred istack : ingredStacks) if (InventoryUtils.canStack(pstack, istack.stack)) return istack;
         return null;
     }
 

@@ -57,7 +57,8 @@ public class TileFluidGate extends TileGate implements IFluidHandler {
     }
 
     private IFluidHandler getOutputTarget() {
-        TileEntity tile = worldObj.getTileEntity(xCoord + output.offsetX, yCoord + output.offsetY, zCoord + output.offsetZ);
+        TileEntity tile =
+                worldObj.getTileEntity(xCoord + output.offsetX, yCoord + output.offsetY, zCoord + output.offsetZ);
         return tile instanceof IFluidHandler ? (IFluidHandler) tile : null;
     }
 
@@ -91,5 +92,4 @@ public class TileFluidGate extends TileGate implements IFluidHandler {
     public String getName() {
         return "fluid_gate";
     }
-
 }

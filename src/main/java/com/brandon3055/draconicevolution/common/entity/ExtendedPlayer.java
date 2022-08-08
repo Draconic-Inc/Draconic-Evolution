@@ -11,7 +11,7 @@ import net.minecraftforge.common.IExtendedEntityProperties;
  */
 public class ExtendedPlayer implements IExtendedEntityProperties {
 
-    public final static String EXT_PROP_NAME = "DEPlayerProperties";
+    public static final String EXT_PROP_NAME = "DEPlayerProperties";
 
     private final EntityPlayer player;
     private int spawnCount;
@@ -51,8 +51,7 @@ public class ExtendedPlayer implements IExtendedEntityProperties {
     }
 
     @Override
-    public void init(Entity entity, World world) {
-    }
+    public void init(Entity entity, World world) {}
 
     public int getSpawnCount() {
         return spawnCount;

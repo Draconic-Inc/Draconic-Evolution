@@ -43,5 +43,4 @@ public class NEIDraconicevolutionConfig implements IConfigureNEI {
     public String getVersion() {
         return References.VERSION;
     }
-
 }

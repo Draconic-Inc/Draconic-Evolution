@@ -16,8 +16,7 @@ import io.netty.buffer.ByteBuf;
 public class SpeedRequestPacket implements IMessage {
     double speed = 0F;
 
-    public SpeedRequestPacket() {
-    }
+    public SpeedRequestPacket() {}
 
     public SpeedRequestPacket(double speed) {
         this.speed = speed;
@@ -38,8 +37,10 @@ public class SpeedRequestPacket implements IMessage {
         @Override
         public IMessage onMessage(SpeedRequestPacket message, MessageContext ctx) {
             if (ctx.side == Side.SERVER) {
-                if (ConfigHandler.speedLimitDimList.contains(ctx.getServerHandler().playerEntity.dimension) || (BrandonsCore.proxy.isOp(ctx.getServerHandler().playerEntity.getCommandSenderName()) && !ConfigHandler.speedLimitops))
-                    return new SpeedRequestPacket(20F);
+                if (ConfigHandler.speedLimitDimList.contains(ctx.getServerHandler().playerEntity.dimension)
+                        || (BrandonsCore.proxy.isOp(
+                                        ctx.getServerHandler().playerEntity.getCommandSenderName())
+                                && !ConfigHandler.speedLimitops)) return new SpeedRequestPacket(20F);
                 return new SpeedRequestPacket(ConfigHandler.maxPlayerSpeed);
             } else {
                 MinecraftForgeEventHandler.maxSpeed = message.speed;

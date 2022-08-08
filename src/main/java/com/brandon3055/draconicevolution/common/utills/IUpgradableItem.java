@@ -1,10 +1,9 @@
 package com.brandon3055.draconicevolution.common.utills;
 
-import java.util.List;
-
 import cofh.api.energy.IEnergyContainerItem;
 import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.common.lib.References;
+import java.util.List;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
@@ -46,8 +45,11 @@ public interface IUpgradableItem {
             public void onRemovedFromItem(ItemStack itemStack) {
                 if (itemStack != null && itemStack.getItem() instanceof IEnergyContainerItem) {
                     IEnergyContainerItem item = (IEnergyContainerItem) itemStack.getItem();
-                    for (int i = 0; i < 500 && item.getEnergyStored(itemStack) > item.getMaxEnergyStored(itemStack); i++) {
-                        item.extractEnergy(itemStack, item.getEnergyStored(itemStack) - item.getMaxEnergyStored(itemStack), false);
+                    for (int i = 0;
+                            i < 500 && item.getEnergyStored(itemStack) > item.getMaxEnergyStored(itemStack);
+                            i++) {
+                        item.extractEnergy(
+                                itemStack, item.getEnergyStored(itemStack) - item.getMaxEnergyStored(itemStack), false);
                     }
                 }
             }
@@ -60,8 +62,10 @@ public interface IUpgradableItem {
 
                 for (int i = 0; i < 5; i++) {
                     ItemNBTHelper.setInteger(itemStack, "ConfigProfile", i);
-                    if (IConfigurableItem.ProfileHelper.getInteger(itemStack, References.DIG_AOE, 0) > getUpgradePoints(itemStack))
-                        IConfigurableItem.ProfileHelper.setInteger(itemStack, References.DIG_AOE, getUpgradePoints(itemStack));
+                    if (IConfigurableItem.ProfileHelper.getInteger(itemStack, References.DIG_AOE, 0)
+                            > getUpgradePoints(itemStack))
+                        IConfigurableItem.ProfileHelper.setInteger(
+                                itemStack, References.DIG_AOE, getUpgradePoints(itemStack));
                 }
 
                 ItemNBTHelper.setInteger(itemStack, "ConfigProfile", profile);
@@ -74,8 +78,10 @@ public interface IUpgradableItem {
 
                 for (int i = 0; i < 5; i++) {
                     ItemNBTHelper.setInteger(itemStack, "ConfigProfile", i);
-                    if (IConfigurableItem.ProfileHelper.getInteger(itemStack, References.DIG_DEPTH, 0) > getUpgradePoints(itemStack))
-                        IConfigurableItem.ProfileHelper.setInteger(itemStack, References.DIG_DEPTH, getUpgradePoints(itemStack));
+                    if (IConfigurableItem.ProfileHelper.getInteger(itemStack, References.DIG_DEPTH, 0)
+                            > getUpgradePoints(itemStack))
+                        IConfigurableItem.ProfileHelper.setInteger(
+                                itemStack, References.DIG_DEPTH, getUpgradePoints(itemStack));
                 }
 
                 ItemNBTHelper.setInteger(itemStack, "ConfigProfile", profile);
@@ -89,8 +95,10 @@ public interface IUpgradableItem {
 
                 for (int i = 0; i < 5; i++) {
                     ItemNBTHelper.setInteger(itemStack, "ConfigProfile", i);
-                    if (IConfigurableItem.ProfileHelper.getInteger(itemStack, References.ATTACK_AOE, 0) > getUpgradePoints(itemStack))
-                        IConfigurableItem.ProfileHelper.setInteger(itemStack, References.ATTACK_AOE, getUpgradePoints(itemStack));
+                    if (IConfigurableItem.ProfileHelper.getInteger(itemStack, References.ATTACK_AOE, 0)
+                            > getUpgradePoints(itemStack))
+                        IConfigurableItem.ProfileHelper.setInteger(
+                                itemStack, References.ATTACK_AOE, getUpgradePoints(itemStack));
                 }
 
                 ItemNBTHelper.setInteger(itemStack, "ConfigProfile", profile);
@@ -103,8 +111,10 @@ public interface IUpgradableItem {
 
                 for (int i = 0; i < 5; i++) {
                     ItemNBTHelper.setInteger(itemStack, "ConfigProfile", i);
-                    if (IConfigurableItem.ProfileHelper.getInteger(itemStack, "BowArrowDamage", 0) > getUpgradePoints(itemStack))
-                        IConfigurableItem.ProfileHelper.setInteger(itemStack, "BowArrowDamage", getUpgradePoints(itemStack));
+                    if (IConfigurableItem.ProfileHelper.getInteger(itemStack, "BowArrowDamage", 0)
+                            > getUpgradePoints(itemStack))
+                        IConfigurableItem.ProfileHelper.setInteger(
+                                itemStack, "BowArrowDamage", getUpgradePoints(itemStack));
                 }
 
                 ItemNBTHelper.setInteger(itemStack, "ConfigProfile", profile);
@@ -118,8 +128,10 @@ public interface IUpgradableItem {
 
                 for (int i = 0; i < 5; i++) {
                     ItemNBTHelper.setInteger(itemStack, "ConfigProfile", i);
-                    if (IConfigurableItem.ProfileHelper.getInteger(itemStack, "BowArrowSpeedModifier", 0) > getUpgradePoints(itemStack))
-                        IConfigurableItem.ProfileHelper.setInteger(itemStack, "BowArrowSpeedModifier", getUpgradePoints(itemStack));
+                    if (IConfigurableItem.ProfileHelper.getInteger(itemStack, "BowArrowSpeedModifier", 0)
+                            > getUpgradePoints(itemStack))
+                        IConfigurableItem.ProfileHelper.setInteger(
+                                itemStack, "BowArrowSpeedModifier", getUpgradePoints(itemStack));
                 }
 
                 ItemNBTHelper.setInteger(itemStack, "ConfigProfile", profile);
@@ -135,6 +147,7 @@ public interface IUpgradableItem {
          * How many core points dose it take to add 1 upgrade point
          */
         public int pointConversion;
+
         public String name;
         private final String COMPOUND_NAME = "Upgrades";
 
@@ -152,12 +165,12 @@ public interface IUpgradableItem {
          * with wyvern and awakened in between
          */
         public int[] getCoresApplied(ItemStack stack) {
-            if (stack == null) return new int[]{0, 0, 0, 0};
+            if (stack == null) return new int[] {0, 0, 0, 0};
             NBTTagCompound compound = ItemNBTHelper.getCompound(stack);
-            if (!compound.hasKey(COMPOUND_NAME)) return new int[]{0, 0, 0, 0};
+            if (!compound.hasKey(COMPOUND_NAME)) return new int[] {0, 0, 0, 0};
             NBTTagCompound upgrades = compound.getCompoundTag(COMPOUND_NAME);
             if (upgrades.hasKey(name) && upgrades.getIntArray(name).length == 4) return upgrades.getIntArray(name);
-            return new int[]{0, 0, 0, 0};
+            return new int[] {0, 0, 0, 0};
         }
 
         /**
@@ -196,7 +209,8 @@ public interface IUpgradableItem {
             int[] applied = getCoresApplied(itemStack);
             int totalPoints = applied[0] + (applied[1] * 2) + (applied[2] * 4) + (applied[3] * 8);
             if (itemStack != null && itemStack.getItem() instanceof IUpgradableItem) {
-                int points = ((IUpgradableItem) itemStack.getItem()).getBaseUpgradePoints(index) + (totalPoints / pointConversion);
+                int points = ((IUpgradableItem) itemStack.getItem()).getBaseUpgradePoints(index)
+                        + (totalPoints / pointConversion);
                 return Math.min(points, ((IUpgradableItem) itemStack.getItem()).getMaxUpgradePoints(index, itemStack));
             }
             return 0;
@@ -205,16 +219,11 @@ public interface IUpgradableItem {
         /**
          * Called when this upgrade is applied to an item
          */
-        public void onAppliedToItem(ItemStack itemStack) {
-
-        }
+        public void onAppliedToItem(ItemStack itemStack) {}
 
         /**
          * Called when this upgrade is removed from an item
          */
-        public void onRemovedFromItem(ItemStack itemStack) {
-
-        }
-
+        public void onRemovedFromItem(ItemStack itemStack) {}
     }
 }

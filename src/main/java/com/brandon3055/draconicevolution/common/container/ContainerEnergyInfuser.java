@@ -46,11 +46,13 @@ public class ContainerEnergyInfuser extends ContainerDataSync {
             ItemStack stack = slot.getStack();
             ItemStack result = stack.copy();
 
-            if (i >= 36) { //To player
+            if (i >= 36) { // To player
                 if (!mergeItemStack(stack, 0, 36, false)) {
                     return null;
                 }
-            } else if (stack.stackSize != 1 || !(stack.getItem() instanceof IEnergyContainerItem) || !mergeItemStack(stack, 36, 37, false)) {
+            } else if (stack.stackSize != 1
+                    || !(stack.getItem() instanceof IEnergyContainerItem)
+                    || !mergeItemStack(stack, 36, 37, false)) {
                 return null;
             }
 
@@ -67,7 +69,6 @@ public class ContainerEnergyInfuser extends ContainerDataSync {
 
         return null;
     }
-
 
     @Override
     public void detectAndSendChanges() {

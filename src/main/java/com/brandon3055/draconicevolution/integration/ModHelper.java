@@ -15,12 +15,12 @@ public class ModHelper {
 
     private static boolean isTConInstalled;
     private static boolean isAvaritiaInstalled;
-    //private static boolean isRotaryCraftInstalled;
+    // private static boolean isRotaryCraftInstalled;
     private static boolean isGregTechInstalled;
 
     private static Item cleaver;
     private static Item avaritiaSword;
-    //private static Item bedrockSword;
+    // private static Item bedrockSword;
 
     private static Class bwores;
     private static Class GTores;
@@ -28,43 +28,52 @@ public class ModHelper {
     static {
         isTConInstalled = Loader.isModLoaded("TConstruct");
         isAvaritiaInstalled = Loader.isModLoaded("Avaritia");
-        //isRotaryCraftInstalled = Loader.isModLoaded("RotaryCraft");
+        // isRotaryCraftInstalled = Loader.isModLoaded("RotaryCraft");
         isGregTechInstalled = Loader.isModLoaded("gregtech");
 
         if (isGregTechInstalled)
             try {
                 GTores = Class.forName("gregtech.common.blocks.GT_TileEntity_Ores");
-            } catch (ClassNotFoundException e) {}
+            } catch (ClassNotFoundException e) {
+            }
         if (Loader.isModLoaded("bartworks"))
             try {
                 bwores = Class.forName("com.github.bartimaeusnek.bartworks.system.material.BW_MetaGeneratedOreTE");
-            } catch (ClassNotFoundException e) {}
+            } catch (ClassNotFoundException e) {
+            }
     }
 
     public static boolean isHoldingCleaver(EntityPlayer player) {
         if (!isTConInstalled) return false;
         else if (cleaver == null) cleaver = GameRegistry.findItem("TConstruct", "cleaver");
 
-        return cleaver != null && player.getHeldItem() != null && player.getHeldItem().getItem().equals(cleaver);
+        return cleaver != null
+                && player.getHeldItem() != null
+                && player.getHeldItem().getItem().equals(cleaver);
     }
 
     public static boolean isHoldingAvaritiaSword(EntityPlayer player) {
         if (!isAvaritiaInstalled) return false;
         else if (avaritiaSword == null) avaritiaSword = GameRegistry.findItem("Avaritia", "Infinity_Sword");
 
-        return avaritiaSword != null && player.getHeldItem() != null && player.getHeldItem().getItem().equals(avaritiaSword);
+        return avaritiaSword != null
+                && player.getHeldItem() != null
+                && player.getHeldItem().getItem().equals(avaritiaSword);
     }
 
-//    public static boolean isHoldingBedrockSword(EntityPlayer player) {
-//        if (!isRotaryCraftInstalled) return false;
-//        else if (bedrockSword == null) bedrockSword = GameRegistry.findItem("RotaryCraft", "rotarycraft_item_bedsword");
-//
-//        return bedrockSword != null && player.getHeldItem() != null && player.getHeldItem().getItem().equals(bedrockSword);
-//    }
+    //    public static boolean isHoldingBedrockSword(EntityPlayer player) {
+    //        if (!isRotaryCraftInstalled) return false;
+    //        else if (bedrockSword == null) bedrockSword = GameRegistry.findItem("RotaryCraft",
+    // "rotarycraft_item_bedsword");
+    //
+    //        return bedrockSword != null && player.getHeldItem() != null &&
+    // player.getHeldItem().getItem().equals(bedrockSword);
+    //    }
 
     public static float applyModDamageAdjustments(ArmorSummery summery, LivingAttackEvent event) {
         if (summery == null) return event.ammount;
-        EntityPlayer attacker = event.source.getEntity() instanceof EntityPlayer ? (EntityPlayer) event.source.getEntity() : null;
+        EntityPlayer attacker =
+                event.source.getEntity() instanceof EntityPlayer ? (EntityPlayer) event.source.getEntity() : null;
 
         if (attacker == null) {
             return event.ammount;
@@ -74,15 +83,15 @@ public class ModHelper {
             event.entityLiving.hurtResistantTime = 0;
             return 300F;
         }
-//        else if (isHoldingBedrockSword(attacker)) {
-//            summery.entropy += 10;
-//
-//            if (summery.entropy > 100) {
-//                summery.entropy = 100;
-//            }
-//
-//            return Math.max(event.ammount, Math.min(50F, summery.protectionPoints));
-//        }
+        //        else if (isHoldingBedrockSword(attacker)) {
+        //            summery.entropy += 10;
+        //
+        //            if (summery.entropy > 100) {
+        //                summery.entropy = 100;
+        //            }
+        //
+        //            return Math.max(event.ammount, Math.min(50F, summery.protectionPoints));
+        //        }
         else if (event.source.isUnblockable() || event.source.canHarmInCreative()) {
             summery.entropy += 3;
 
@@ -97,7 +106,7 @@ public class ModHelper {
     }
 
     public static boolean isGregTechTileEntityOre(TileEntity te) {
-        return isGregTechInstalled && GTores.isInstance(te) || isGregTechInstalled && Loader.isModLoaded("bartworks") && bwores.isInstance(te);
+        return isGregTechInstalled && GTores.isInstance(te)
+                || isGregTechInstalled && Loader.isModLoaded("bartworks") && bwores.isInstance(te);
     }
-
 }

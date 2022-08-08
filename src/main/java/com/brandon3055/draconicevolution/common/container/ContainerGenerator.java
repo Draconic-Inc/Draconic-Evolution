@@ -50,7 +50,8 @@ public class ContainerGenerator extends ContainerDataSync {
                 if (!mergeItemStack(stack, 0, 36, false)) {
                     return null;
                 }
-            } else if (TileGenerator.getItemBurnTime(stack) == 0 || !mergeItemStack(stack, 36, 36 + tile.getSizeInventory(), false)) {
+            } else if (TileGenerator.getItemBurnTime(stack) == 0
+                    || !mergeItemStack(stack, 36, 36 + tile.getSizeInventory(), false)) {
                 return null;
             }
 

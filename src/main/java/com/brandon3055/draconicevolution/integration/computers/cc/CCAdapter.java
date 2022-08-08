@@ -27,22 +27,20 @@ public class CCAdapter implements IPeripheral {
     }
 
     @Override
-    public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException {
+    public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments)
+            throws LuaException, InterruptedException {
         try {
             return peripheral.callMethod(peripheral.getMethodNames()[method], arguments);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new LuaException(e.getMessage());
         }
     }
 
     @Override
-    public void attach(IComputerAccess iComputerAccess) {
-    }
+    public void attach(IComputerAccess iComputerAccess) {}
 
     @Override
-    public void detach(IComputerAccess iComputerAccess) {
-    }
+    public void detach(IComputerAccess iComputerAccess) {}
 
     @Override
     public boolean equals(IPeripheral iPeripheral) {

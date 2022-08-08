@@ -1,7 +1,5 @@
 package com.brandon3055.draconicevolution.common.items.weapons;
 
-import java.util.Random;
-
 import cofh.api.energy.IEnergyContainerItem;
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.entity.EntityCustomArrow;
@@ -9,6 +7,7 @@ import com.brandon3055.draconicevolution.common.entity.EntityEnderArrow;
 import com.brandon3055.draconicevolution.common.handler.BalanceConfigHandler;
 import com.brandon3055.draconicevolution.common.utills.IConfigurableItem;
 import com.brandon3055.draconicevolution.common.utills.IUpgradableItem;
+import java.util.Random;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;
@@ -64,7 +63,7 @@ public class BowHandler {
             return;
         }
 
-        float velocity = properties.arrowSpeed * drawArrowSpeedModifier * 2F; //2F is the speed of a vanilla arrow
+        float velocity = properties.arrowSpeed * drawArrowSpeedModifier * 2F; // 2F is the speed of a vanilla arrow
 
         EntityCustomArrow customArrow = new EntityCustomArrow(world, player, velocity);
         customArrow.bowProperties = properties;
@@ -81,10 +80,23 @@ public class BowHandler {
 
         if (!world.isRemote) world.spawnEntityInWorld(customArrow);
 
-        world.playSoundAtEntity(player, "random.bow", 1.0F, (1.0F / (world.rand.nextFloat() * 0.4F + 1.2F) + (drawArrowSpeedModifier + (velocity / 40F)) * 0.5F));
+        world.playSoundAtEntity(
+                player,
+                "random.bow",
+                1.0F,
+                (1.0F / (world.rand.nextFloat() * 0.4F + 1.2F) + (drawArrowSpeedModifier + (velocity / 40F)) * 0.5F));
     }
 
-    public static void enderShot(ItemStack stack, World world, EntityPlayer player, int count, Random itemRand, float pullSpeedModifier, float speedModifier, float soundPitchModifier, int minRelease) {
+    public static void enderShot(
+            ItemStack stack,
+            World world,
+            EntityPlayer player,
+            int count,
+            Random itemRand,
+            float pullSpeedModifier,
+            float speedModifier,
+            float soundPitchModifier,
+            int minRelease) {
         int j = 72000 - count;
         ArrowLooseEvent event = new ArrowLooseEvent(player, stack, j);
         MinecraftForge.EVENT_BUS.post(event);
@@ -105,9 +117,12 @@ public class BowHandler {
 
             EntityEnderArrow entityArrow = new EntityEnderArrow(world, player, f * 2.0F);
 
-
-            stack.damageItem(1, player);                                                                            //
-            world.playSoundAtEntity(player, "random.bow", 1.0F, soundPitchModifier * (1.0F / (itemRand.nextFloat() * 0.4F + 1.2F) + f * 0.3F));
+            stack.damageItem(1, player); //
+            world.playSoundAtEntity(
+                    player,
+                    "random.bow",
+                    1.0F,
+                    soundPitchModifier * (1.0F / (itemRand.nextFloat() * 0.4F + 1.2F) + f * 0.3F));
 
             if (player.inventory.hasItem(ModItems.enderArrow))
                 player.inventory.consumeInventoryItem(ModItems.enderArrow);
@@ -116,10 +131,8 @@ public class BowHandler {
                 world.spawnEntityInWorld(entityArrow);
                 player.mountEntity(entityArrow);
             }
-
         }
     }
-
 
     public static class BowProperties {
         public ItemStack bow;
@@ -149,7 +162,9 @@ public class BowHandler {
 
         public int calculateEnergyCost() {
             updateValues();
-            double rfCost = (bow.getItem() instanceof IEnergyContainerWeaponItem) ? ((IEnergyContainerWeaponItem) bow.getItem()).getEnergyPerAttack() : 80;
+            double rfCost = (bow.getItem() instanceof IEnergyContainerWeaponItem)
+                    ? ((IEnergyContainerWeaponItem) bow.getItem()).getEnergyPerAttack()
+                    : 80;
 
             rfCost *= 1 + arrowDamage;
             rfCost *= (1 + arrowSpeed) * (1 + arrowSpeed) * (1 + arrowSpeed);
@@ -165,7 +180,8 @@ public class BowHandler {
 
             if (player == null) return false;
             if (!(bow.getItem() instanceof IEnergyContainerWeaponItem)) {
-                cantFireMessage = "[Error] This bow is not a valid energy container (This is a bug, Please report on the Draconic Evolution github)";
+                cantFireMessage =
+                        "[Error] This bow is not a valid energy container (This is a bug, Please report on the Draconic Evolution github)";
                 return false;
             } else if (!energyBolt && shockWavePower > 0) {
                 cantFireMessage = "msg.de.shockWaveForEnergyBoltsOnly.txt";
@@ -173,21 +189,25 @@ public class BowHandler {
             } else if (energyBolt && explosionPower > 0) {
                 cantFireMessage = "msg.de.explosiveNotForEnergyBolts.txt";
                 return false;
-            } else if (calculateEnergyCost() > ((IEnergyContainerWeaponItem) bow.getItem()).getEnergyStored(bow) && !player.capabilities.isCreativeMode) {
+            } else if (calculateEnergyCost() > ((IEnergyContainerWeaponItem) bow.getItem()).getEnergyStored(bow)
+                    && !player.capabilities.isCreativeMode) {
                 cantFireMessage = "msg.de.insufficientPowerToFire.txt";
                 return false;
-            } else if (!energyBolt && !player.inventory.hasItem(Items.arrow) && EnchantmentHelper.getEnchantmentLevel(Enchantment.infinity.effectId, bow) == 0 && !player.capabilities.isCreativeMode) {
+            } else if (!energyBolt
+                    && !player.inventory.hasItem(Items.arrow)
+                    && EnchantmentHelper.getEnchantmentLevel(Enchantment.infinity.effectId, bow) == 0
+                    && !player.capabilities.isCreativeMode) {
                 cantFireMessage = "msg.de.outOfArrows.txt";
                 return false;
             }
-
 
             cantFireMessage = null;
             return true;
         }
 
         private void updateValues() {
-            arrowDamage = IConfigurableItem.ProfileHelper.getFloat(bow, "BowArrowDamage", IUpgradableItem.EnumUpgrade.ARROW_DAMAGE.getUpgradePoints(bow));
+            arrowDamage = IConfigurableItem.ProfileHelper.getFloat(
+                    bow, "BowArrowDamage", IUpgradableItem.EnumUpgrade.ARROW_DAMAGE.getUpgradePoints(bow));
             arrowSpeed = 1F + IConfigurableItem.ProfileHelper.getFloat(bow, "BowArrowSpeedModifier", 0F);
             explosionPower = IConfigurableItem.ProfileHelper.getFloat(bow, "BowExplosionPower", 0F);
             shockWavePower = IConfigurableItem.ProfileHelper.getFloat(bow, "BowShockWavePower", 0F);
@@ -210,7 +230,9 @@ public class BowHandler {
             if (!player.capabilities.isCreativeMode)
                 ((IEnergyContainerWeaponItem) bow.getItem()).extractEnergy(bow, calculateEnergyCost(), false);
 
-            if (!energyBolt && EnchantmentHelper.getEnchantmentLevel(Enchantment.infinity.effectId, bow) == 0 && !player.capabilities.isCreativeMode) {
+            if (!energyBolt
+                    && EnchantmentHelper.getEnchantmentLevel(Enchantment.infinity.effectId, bow) == 0
+                    && !player.capabilities.isCreativeMode) {
                 player.inventory.consumeInventoryItem(Items.arrow);
                 return true;
             }

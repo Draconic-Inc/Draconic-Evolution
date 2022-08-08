@@ -269,7 +269,8 @@ public class ModelReactorStabilizerCore extends ModelBase {
         float colour = Math.min(2F, (brightness * 2F) + 0.1F);
         if (brightness > 0F) GL11.glDisable(GL11.GL_LIGHTING);
 
-        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, Math.min(200F, lastBrightnessX + b), Math.min(200F, lastBrightnessY + b));
+        OpenGlHelper.setLightmapTextureCoords(
+                OpenGlHelper.lightmapTexUnit, Math.min(200F, lastBrightnessX + b), Math.min(200F, lastBrightnessY + b));
         GL11.glColor4f(colour, colour, colour, 1F);
         this.rotor2R.render(f5);
         GL11.glRotatef(rotation * 2F, 0F, 0F, 1F);
