@@ -4,18 +4,18 @@ import codechicken.lib.data.MCDataInput;
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.inventory.ContainerBCTile;
 import com.brandon3055.brandonscore.lib.IInteractTile;
-import com.brandon3055.brandonscore.lib.Vec3I;
 import com.brandon3055.brandonscore.lib.datamanager.*;
-import com.brandon3055.brandonscore.multiblock.MultiBlockDefinition;
-import com.brandon3055.brandonscore.multiblock.MultiBlockManager;
+import com.brandon3055.brandonscore.multiblock.*;
+import com.brandon3055.brandonscore.utils.FacingUtils;
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.blocks.machines.EnergyCore;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.inventory.GuiLayoutFactories;
-import com.brandon3055.draconicevolution.lib.EnergyCoreBuilder;
-import com.brandon3055.draconicevolution.world.EnergyCoreStructure;
+import com.brandon3055.draconicevolution.lib.MultiBlockBuilder;
+import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -24,14 +24,22 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.*;
 
@@ -39,33 +47,214 @@ import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.*;
 /**
  * Created by brandon3055 on 30/3/2016.
  */
-public class TileEnergyCore extends TileBCore implements MenuProvider, IInteractTile {
+public class TileEnergyCore extends TileBCore implements MenuProvider, IInteractTile, MultiBlockController {
     public static final int MAX_TIER = 8;
     public static final int MSG_TOGGLE_ACTIVATION = 1;
     public static final int MSG_BUILD_CORE = 2;
+    public static final int ADV_STABILIZER_TIER = 5;
+    public static final int MAX_STABILIZER_DIST = 16;
 
     public final ManagedByte tier = register(new ManagedByte("tier", (byte) 1, SAVE_NBT_SYNC_TILE, CLIENT_CONTROL));
     public final ManagedBool active = register(new ManagedBool("active", SAVE_NBT_SYNC_TILE));
     public final ManagedBool coreValid = register(new ManagedBool("core_valid", SAVE_NBT_SYNC_TILE)); //The core structure is valid
+    public final ManagedBool stabilizersValid = register(new ManagedBool("stabilizers_valid", SAVE_NBT_SYNC_TILE)); //The stabilizer configuration is valid.
     public final ManagedBool buildGuide = register(new ManagedBool("build_guide", SAVE_NBT_SYNC_TILE, CLIENT_CONTROL));
-    public final ManagedBool canActivate = register(new ManagedBool("can_activate", SAVE_NBT_SYNC_TILE)); //The core and the stabilizers are valid, The core can be activated.
+    //    public final ManagedBool canActivate = register(new ManagedBool("can_activate", SAVE_NBT_SYNC_TILE)); //The core and the stabilizers are valid, The core can be activated.
     public final ManagedString invalidMessage = register(new ManagedString("invalid_message", DataFlags.SAVE_NBT));
+    public final ManagedPos[] stabilizerPositions = new ManagedPos[4]; //Relative stabilizer positions
 
     private MultiBlockDefinition definitionCache = null;
+    private MultiBlockBuilder activeBuilder = null;
     private int defCacheLastTier = 1;
 
     public TileEnergyCore(BlockPos pos, BlockState state) {
         super(DEContent.tile_storage_core, pos, state);
-
-        tier.addValueListener(e -> {}); //<- Validate
+        for (int i = 0; i < stabilizerPositions.length; i++) {
+            stabilizerPositions[i] = register(new ManagedPos("stabilizer_pos_" + i, (BlockPos) null, SAVE_NBT_SYNC_TILE));
+        }
+        tier.addValueListener(e -> {
+            stabilizersValid.set(false);
+            validateStructure();
+        });
     }
 
     @Override
     public void tick() {
         super.tick();
+        if (!level.isClientSide) {
+            if (activeBuilder != null) {
+                if (activeBuilder.isDead()) {
+                    activeBuilder = null;
+                } else {
+                    activeBuilder.updateProcess();
+                }
+            }
+        }
     }
 
-    //TODO move
+    // ### Interaction
+
+    @Override
+    public InteractionResult handleRemoteClick(Player player, InteractionHand hand, BlockHitResult hit) {
+        if (player instanceof ServerPlayer) {
+            validateStructure();
+            NetworkHooks.openGui((ServerPlayer) player, this, worldPosition);
+            return InteractionResult.SUCCESS;
+        }
+        return InteractionResult.SUCCESS;
+    }
+
+    @Override
+    public void receivePacketFromClient(MCDataInput data, ServerPlayer client, int id) {
+        super.receivePacketFromClient(data, client, id);
+        switch (id) {
+            case MSG_TOGGLE_ACTIVATION -> toggleActivation();
+            case MSG_BUILD_CORE -> attemptAutoBuild(client);
+        }
+    }
+
+    @Override
+    public InteractionResult onBlockUse(BlockState state, Player player, InteractionHand hand, BlockHitResult hit) {
+        return handleRemoteClick(player, hand, hit);
+    }
+
+    @Nullable
+    @Override
+    public AbstractContainerMenu createMenu(int currentWindowIndex, Inventory playerInventory, Player player) {
+        return new ContainerBCTile<>(DEContent.container_energy_core, currentWindowIndex, player.inventory, this, GuiLayoutFactories.ENERGY_CORE_LAYOUT);
+    }
+
+    @Override
+    public int getAccessDistanceSq() {
+        return 1024;
+    }
+
+
+    // ### Form/Revert Multi-block
+
+    public void toggleActivation() {
+        if (!level.isClientSide) {
+            if (active.get()) {
+                deactivateCore();
+                return;
+            } else if (!validateStructure()) {
+                return;
+            }
+//            if (energy.get() > getCapacity()) {
+//            energy.set(getCapacity());
+//            }
+
+            MultiBlockDefinition definition = getMultiBlockDef();
+            if (definition == null) {
+                return;
+            }
+
+            for (Map.Entry<BlockPos, MultiBlockPart> entry : definition.getBlocksAt(worldPosition).entrySet()) {
+                BlockPos pos = entry.getKey();
+                MultiBlockPart part = entry.getValue();
+                if (pos.equals(worldPosition) || level.isEmptyBlock(pos) || part instanceof EmptyPart) {
+                    continue;
+                }
+
+                BlockState state = level.getBlockState(pos);
+                level.setBlockAndUpdate(pos, DEContent.structure_block.defaultBlockState());
+                BlockEntity tile = level.getBlockEntity(pos);
+                if (tile instanceof TileStructureBlock) {
+                    ((TileStructureBlock) tile).blockName.set(state.getBlock().getRegistryName());
+                    ((TileStructureBlock) tile).setController(this);
+                }
+            }
+
+            buildGuide.set(false);
+            active.set(true);
+            updateStabilizers(true);
+        }
+    }
+
+    /**
+     * Sets the "isCoreActive" value in each of the stabilizers
+     */
+    private void updateStabilizers(boolean coreActive) {
+        for (ManagedPos offset : stabilizerPositions) {
+            if (offset.get() == null) continue;
+            BlockPos tilePos = worldPosition.offset(-offset.get().getX(), -offset.get().getY(), -offset.get().getZ());
+            BlockEntity tile = level.getBlockEntity(tilePos);
+
+            if (tile instanceof TileEnergyCoreStabilizer stabilizer) {
+                stabilizer.isCoreActive.set(coreActive);
+            }
+        }
+    }
+
+    //
+    public void deactivateCore() {
+        if (level.isClientSide) {
+            return;
+        }
+
+        MultiBlockDefinition definition = getMultiBlockDef();
+        if (definition == null) {
+            return;
+        }
+
+        definition.getBlocksAt(worldPosition).keySet().forEach(pos -> {
+            BlockEntity tile = level.getBlockEntity(pos);
+            if (tile instanceof TileStructureBlock) {
+                ((TileStructureBlock) tile).revert();
+            }
+        });
+
+        active.set(false);
+        updateStabilizers(false);
+    }
+
+    /**
+     * Frees any stabilizers that are still linked to the core and clears the offset list
+     */
+    private void releaseStabilizers() {
+        for (ManagedPos offset : stabilizerPositions) {
+            if (offset.get() == null) continue;
+            BlockPos tilePos = worldPosition.offset(-offset.get().getX(), -offset.get().getY(), -offset.get().getZ());
+            BlockEntity tile = level.getBlockEntity(tilePos);
+
+            if (tile instanceof TileEnergyCoreStabilizer stabilizer) {
+                stabilizer.setCore(null);
+            }
+
+            offset.set(null);
+        }
+    }
+
+    // ### Validate Multi-block
+
+    /**
+     * This method will check if the structure is valid.
+     * If the structure has already been validated this method will check that it is still valid.
+     */
+    @Override
+    public boolean validateStructure() {
+        if (level == null) return true;
+        coreValid.set(isCoreValidForTier(tier.get()));
+        checkStabilizers();
+        boolean structureValid = isStructureValid();
+
+        if (!structureValid && active.get()) {
+            active.set(false);
+            deactivateCore();
+        }
+
+        if (structureValid) {
+            invalidMessage.set("");
+        }
+
+        return structureValid;
+    }
+
+    @Override
+    public boolean isStructureValid() {
+        return stabilizersValid.get() && coreValid.get();
+    }
+
     private boolean isCoreValidForTier(int tier) {
         MultiBlockDefinition definition = getMultiBlockDef();
         if (definition == null) {
@@ -74,11 +263,87 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
             return false;
         }
 
-        definition.test(level, worldPosition);
-
-        return true;
+        List<InvalidPart> invalidParts = definition.test(level, worldPosition);
+        //TODO Maybe let the player know which parts are invalid?
+        return invalidParts.isEmpty();
     }
 
+    /**
+     * If stabilizersOK is true this method will check to make sure the stabilisers are still valid.
+     * Otherwise, it will check for a valid stabiliser configuration.
+     */
+    public boolean checkStabilizers() {
+        boolean valid = true;
+        //Check existing stabilizers are still valid.
+        if (stabilizersValid.get()) {
+            for (ManagedPos offset : stabilizerPositions) {
+                if (offset.get() == null) {
+                    valid = false;
+                } else {
+                    BlockPos tilePos = worldPosition.subtract(offset.get());
+                    BlockEntity tile = level.getBlockEntity(tilePos);
+                    if (tile instanceof TileEnergyCoreStabilizer stabilizer) {
+                        if (stabilizer.getCore() != this || (reqAdvStabilizers() && !stabilizer.isStructureValid())) {
+                            valid = false;
+                        }
+                    } else {
+                        valid = false;
+                    }
+                }
+                if (!valid) {
+                    break;
+                }
+            }
+
+            if (!valid) {
+                stabilizersValid.set(false);
+                releaseStabilizers();
+            }
+            //Otherwise look for available valid stabilizers.
+        } else {
+            //For each axis
+            for (Direction.Axis axis : Direction.Axis.VALUES) {
+                Direction[] dirs = FacingUtils.getFacingsAroundAxis(axis);
+                List<TileEnergyCoreStabilizer> found = new ArrayList<>();
+
+                //For each of the 4 possible directions around the axis
+                for (int fIndex = 0; fIndex < dirs.length; fIndex++) {
+                    Direction facing = dirs[fIndex];
+                    for (int dist = 1; dist < MAX_STABILIZER_DIST; dist++) {
+                        BlockPos testPos = worldPosition.offset(facing.getStepX() * dist, facing.getStepY() * dist, facing.getStepZ() * dist);
+                        BlockEntity tile = level.getBlockEntity(testPos);
+                        if (!(tile instanceof TileEnergyCoreStabilizer stabilizer)) {
+                            continue;
+                        }
+                        TileEnergyCore currentCore = stabilizer.getCore();
+                        if ((currentCore == null || stabilizer.getCore() == this) && stabilizer.isSuitableForCore(tier.get(), this)) {
+                            found.add(stabilizer);
+                            break;
+                        }
+                    }
+                }
+
+                if (found.size() == 4) {
+                    for (TileEnergyCoreStabilizer stab : found) {
+                        stabilizerPositions[found.indexOf(stab)].set(new BlockPos(worldPosition.getX() - stab.getBlockPos().getX(), worldPosition.getY() - stab.getBlockPos().getY(), worldPosition.getZ() - stab.getBlockPos().getZ()));
+                        stab.setCore(this);
+                    }
+                    stabilizersValid.set(true);
+                    break;
+                }
+            }
+
+            if (!stabilizersValid.get()) {
+                valid = false;
+            }
+        }
+        return valid;
+    }
+
+
+    public boolean reqAdvStabilizers() {
+        return tier.get() >= ADV_STABILIZER_TIER;
+    }
 
 
 //    //Frame Movement
@@ -103,11 +368,9 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
 //
 //    public final EnergyCoreStructure coreStructure = new EnergyCoreStructure().initialize(this);
 //
-//    public final ManagedBool structureValid = register(new ManagedBool("structure_valid", SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE));
 //    public final ManagedString invalidMessage = register(new ManagedString("invalid_message", DataFlags.SAVE_NBT));
 //    public final ManagedBool stabilizersOK = register(new ManagedBool("stabilizers_ok", SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE));
 //    public final ManagedLong energy = register(new ManagedLong("energy", SAVE_NBT_SYNC_TILE));
-//    public final ManagedVec3I[] stabOffsets = new ManagedVec3I[4];
 
     @Deprecated //Not sure how i'm going to handle this yet
     public final ManagedLong transferRate = register(new ManagedLong("transfer_rate", DataFlags.SYNC_CONTAINER));
@@ -117,7 +380,7 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
 //
 //    private int ticksElapsed = 0;
 //    private long[] flowArray = new long[20];
-//    private EnergyCoreBuilder activeBuilder = null;
+//
 //    public float rotation = 0;
 //    private long lastTickEnergy = 0;
 //    private long lastTickInput = 0;
@@ -126,9 +389,7 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
 //    public TileEnergyCore(BlockPos pos, BlockState state) {
 //        super(DEContent.tile_storage_core, pos, state);
 //
-//        for (int i = 0; i < stabOffsets.length; i++) {
-//            stabOffsets[i] = register(new ManagedVec3I("stab_offset" + i, new Vec3I(0, -1, 0), SAVE_NBT_SYNC_TILE));
-//        }
+
 //
 //        active.addValueListener(active -> {
 //            if (level != null && level.getBlockState(worldPosition).getBlock() == DEContent.energy_core) level.setBlockAndUpdate(worldPosition, level.getBlockState(worldPosition).setValue(EnergyCore.ACTIVE, active));
@@ -202,32 +463,7 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
 //        ticksElapsed++;
 //    }
 //
-//    //region Activation
-//
-//    public void activateCore() {
-//        if (level.isClientSide || !validateStructure()) {
-//            return;
-//        }
-//
-//        if (energy.get() > getCapacity()) {
-//            energy.set(getCapacity());
-//        }
-//
-//        buildGuide.set(false);
-//        coreStructure.formTier(tier.get());
-//        active.set(true);
-//        updateStabilizers(true);
-//    }
-//
-//    public void deactivateCore() {
-//        if (level.isClientSide) {
-//            return;
-//        }
-//
-//        coreStructure.revertTier(tier.get());
-//        active.set(false);
-//        updateStabilizers(false);
-//    }
+
 //
 //    private long getCapacity() {
 //        if (tier.get() <= 0 || tier.get() > 8) {
@@ -265,141 +501,17 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
 //            }
 //        }
 //    }
-//
-//    private void startBuilder(Player player) {
-//        if (activeBuilder != null && !activeBuilder.isDead()) {
-//            player.sendMessage(new TranslatableComponent("ecore.de.already_assembling.txt").withStyle(ChatFormatting.RED), Util.NIL_UUID);
-//        } else {
-//            activeBuilder = new EnergyCoreBuilder(this, player);
-//        }
-//    }
-//
-//    /**
-//     * Sets the "isCoreActive" value in each of the stabilizers
-//     */
-//    private void updateStabilizers(boolean coreActive) {
-//        for (ManagedVec3I offset : stabOffsets) {
-//            BlockPos tilePos = worldPosition.offset(-offset.get().x, -offset.get().y, -offset.get().z);
-//            BlockEntity tile = level.getBlockEntity(tilePos);
-//
-//            if (tile instanceof TileEnergyCoreStabilizer) {
-//                ((TileEnergyCoreStabilizer) tile).isCoreActive.set(coreActive);
-//            }
-//        }
-//    }
+
 //
 //    //endregion
 //
 //    //region Structure
 //
-//    /**
-//     * If the structure has already been validated this method will check that it is still valit.
-//     * Otherwise it will check if the structure is valid.
-//     */
-//    public boolean validateStructure() {
-//        boolean valid = checkStabilizers();
+
 //
-//        if (!(coreValid.set(coreStructure.checkTier(tier.get())))) {
-//            BlockPos pos = coreStructure.invalidBlock;
-//            invalidMessage.set("Error At: " + "x:" + pos.getX() + ", y:" + pos.getY() + ", z:" + pos.getZ() + " Expected: " + coreStructure.expectedBlock);
-//            valid = false;
-//        }
+
 //
-//        if (!valid && active.get()) {
-//            active.set(false);
-//            deactivateCore();
-//        }
-//
-//        structureValid.set(valid);
-//
-//        if (valid) {
-//            invalidMessage.set("");
-//        }
-//
-//        return valid;
-//    }
-//
-//    /**
-//     * If stabilizersOK is true this method will check to make sure the stabilisers are still valid.
-//     * Otherwise it will check for a valid stabilizer configuration.
-//     */
-//    public boolean checkStabilizers() {
-//        boolean flag = true;
-//        if (stabilizersOK.get()) {
-//            for (ManagedVec3I offset : stabOffsets) {
-//                BlockPos tilePos = worldPosition.subtract(offset.get().getPos());
-//                BlockEntity tile = level.getBlockEntity(tilePos);
-//
-//                if (!(tile instanceof TileEnergyCoreStabilizer) || !((TileEnergyCoreStabilizer) tile).hasCoreLock.get() || ((TileEnergyCoreStabilizer) tile).getCore() != this || !((TileEnergyCoreStabilizer) tile).isStabilizerValid(tier.get(), this)) {
-//                    flag = false;
-//                    break;
-//                }
-//            }
-//
-//            if (!flag) {
-//                stabilizersOK.set(false);
-//                releaseStabilizers();
-//            }
-//        } else {
-//
-//            //Foe each of the 3 possible axises
-//            for (int orient = 1; orient < STAB_ORIENTATIONS.length; orient++) {
-//                Direction[] dirs = STAB_ORIENTATIONS[orient];
-//                List<TileEnergyCoreStabilizer> stabsFound = new ArrayList<TileEnergyCoreStabilizer>();
-//
-//                //For each of the 4 possible directions around the axis
-//                for (int fIndex = 0; fIndex < dirs.length; fIndex++) {
-//                    Direction facing = dirs[fIndex];
-//
-//                    for (int dist = 0; dist < 16; dist++) {
-//                        BlockPos pos1 = worldPosition.offset(facing.getStepX() * dist, facing.getStepY() * dist, facing.getStepZ() * dist);
-//                        BlockEntity tile = level.getBlockEntity(pos1);
-//                        if (!(tile instanceof TileEnergyCoreStabilizer)) {
-//                            continue;
-//                        }
-//                        TileEnergyCoreStabilizer stabilizer = (TileEnergyCoreStabilizer) tile;
-//
-//                        TileEnergyCore currentCore = stabilizer.getCore();
-//                        if ((currentCore == null || stabilizer.getCore() == this) && stabilizer.isStabilizerValid(tier.get(), this)) {
-//                            stabsFound.add(stabilizer);
-//                            break;
-//                        }
-//                    }
-//                }
-//
-//                if (stabsFound.size() == 4) {
-//                    for (TileEnergyCoreStabilizer stab : stabsFound) {
-//                        stabOffsets[stabsFound.indexOf(stab)].set(new Vec3I(worldPosition.getX() - stab.getBlockPos().getX(), worldPosition.getY() - stab.getBlockPos().getY(), worldPosition.getZ() - stab.getBlockPos().getZ()));
-//                        stab.setCore(this);
-//                    }
-//                    stabilizersOK.set(true);
-//                    break;
-//                }
-//
-//                //Did not find 4 stabilizers
-//                flag = false;
-//            }
-//        }
-//
-//        return flag;
-//    }
-//
-//    /**
-//     * Frees any stabilizers that are still linked to the core and clears the offset list
-//     */
-//    private void releaseStabilizers() {
-//        for (ManagedVec3I offset : stabOffsets) {
-//            BlockPos tilePos = worldPosition.offset(-offset.get().x, -offset.get().y, -offset.get().z);
-//            BlockEntity tile = level.getBlockEntity(tilePos);
-//
-//            if (tile instanceof TileEnergyCoreStabilizer) {
-//                ((TileEnergyCoreStabilizer) tile).hasCoreLock.set(false);
-//                ((TileEnergyCoreStabilizer) tile).coreOffset.get().y = 0;
-//            }
-//
-//            offset.set(new Vec3I(0, -1, 0));
-//        }
-//    }
+
 //
 //    //endregion
 //
@@ -471,6 +583,7 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
 //
 //    //endregion
 
+
     // MultiBlock
 
     @Nullable
@@ -483,51 +596,27 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
     }
 
     private void attemptAutoBuild(ServerPlayer player) {
-
-    }
-
-    // Interaction & Rendering
-
-
-    @Override
-    public void receivePacketFromClient(MCDataInput data, ServerPlayer client, int id) {
-        super.receivePacketFromClient(data, client, id);
-        switch (id) {
-            case MSG_TOGGLE_ACTIVATION -> attemptAutoBuild(client);
-            case MSG_BUILD_CORE -> attemptAutoBuild(client);
-        }
-    }
-
-    @Override
-    public InteractionResult onBlockUse(BlockState state, Player player, InteractionHand hand, BlockHitResult hit) {
-        openGui(player);
-        return InteractionResult.SUCCESS;
-    }
-
-    public void openGui(Player player) {
-        if (!level.isClientSide) {
-//            validateStructure();
-            if (player instanceof ServerPlayer) {
-                NetworkHooks.openGui((ServerPlayer) player, this, worldPosition);
+        if (activeBuilder != null && !activeBuilder.isDead()) {
+            player.sendMessage(new TranslatableComponent("msg.draconicevolution.energy_core.already_building").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+        } else {
+            MultiBlockDefinition definition = getMultiBlockDef();
+            if (definition != null) {
+                activeBuilder = new MultiBlockBuilder(level, getBlockPos(), definition, player, this);
             }
         }
     }
 
-    @Nullable
-    @Override
-    public AbstractContainerMenu createMenu(int currentWindowIndex, Inventory playerInventory, Player player) {
-        return new ContainerBCTile<>(DEContent.container_energy_core, currentWindowIndex, player.inventory, this, GuiLayoutFactories.ENERGY_CORE_LAYOUT);
-    }
-
-    @Override
-    public int getAccessDistanceSq() {
-        return 1024;
-    }
+    // ### Rendering
 
     @Override
     @OnlyIn(Dist.CLIENT)
     public AABB getRenderBoundingBox() {
         return INFINITE_EXTENT_AABB;
+    }
+
+    @Override
+    public VoxelShape getShapeForPart(BlockPos pos, CollisionContext context) {
+        return Shapes.block();
     }
 }
 

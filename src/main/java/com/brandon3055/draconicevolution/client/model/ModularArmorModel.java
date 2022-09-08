@@ -10,6 +10,7 @@ import codechicken.lib.render.shader.UniformType;
 import codechicken.lib.vec.Translation;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.client.BCClientEventHandler;
+import com.brandon3055.brandonscore.utils.ModelUtils;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
@@ -21,6 +22,8 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.geom.ModelLayers;
+import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
@@ -75,10 +78,11 @@ public class ModularArmorModel extends VBOBipedModel<LivingEntity> {
     private boolean onArmor;
 
     public ModularArmorModel(float size, TechLevel techLevel, boolean onArmor) {
-        super(null);
+        super(ModelUtils.getEntityModel(ModelLayers.PLAYER));
 
         this.onArmor = onArmor;
         float yOffsetIn = 0;
+
 
         Map<String, CCModel> model = new OBJParser(new ResourceLocation(DraconicEvolution.MODID, "models/item/equipment/chestpeice.obj")).ignoreMtl().parse();
         baseModel = CCModel.combine(Collections.singletonList(model.get("base_model"))).backfacedCopy();

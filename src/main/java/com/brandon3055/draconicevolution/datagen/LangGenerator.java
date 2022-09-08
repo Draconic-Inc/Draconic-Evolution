@@ -56,7 +56,7 @@ public class LangGenerator extends LanguageProvider {
         helper.add(DEContent.energy_core,                                       "Energy Core");
         helper.add(DEContent.energy_core_stabilizer,                            "Energy Core Stabilizer");
         helper.add(DEContent.energy_pylon,                                      "Energy Pylon");
-        helper.add(DEContent.energy_core_structure,                             "");
+        helper.add(DEContent.structure_block,                                   "");
         helper.add(DEContent.flux_gate,                                         "Flux Gate");
         helper.add(DEContent.fluid_gate,                                        "Fluid Gate");
         helper.add(DEContent.generator,                                         "Generator");
@@ -627,22 +627,20 @@ public class LangGenerator extends LanguageProvider {
 
         //Energy Core
         helper.setPrefix("gui.draconicevolution.energy_core");
-        helper.add("title",                                                      "Tier %s Energy Core");
-        helper.add("activate",                                                   "Activate");
-        helper.add("deactivate",                                                 "Deactivate");
-        helper.add("tier_down",                                                  "Tier Down");
-        helper.add("tier_up",                                                    "Tier Up");
-        helper.add("build_guide",                                                "Toggle Build Guide");
-        helper.add("assemble",                                                   "Assemble Core");
-//        helper.add("tier",                                                       "Tier: %s");
-        helper.add("",                                                           "");
+        helper.add("title",                                                     "Tier %s Energy Core");
+        helper.add("activate",                                                  "Activate");
+        helper.add("deactivate",                                                "Deactivate");
+        helper.add("tier_down",                                                 "Tier Down");
+        helper.add("tier_up",                                                   "Tier Up");
+        helper.add("build_guide",                                               "Toggle Build Guide");
+        helper.add("assemble",                                                  "Assemble Core");
+        helper.add("",                                                          "");
+        add("msg.draconicevolution.energy_core.already_building",               "Assembly already in progress!");
+        add("msg.draconicevolution.energy_core.core_not_found",                 "404 Core Not Found!!!");
 
 //        add("gui.de.energyStorageCore.name",                                    "Tier %s Energy Core");
 //        add("button.de.buildGuide.txt",                                         "Build Guide:");
 //        add("ecore.de.already_assembling.txt",                                  "Assembly already in progress!");
-//        add("ecore.de.assemble_found_invalid.txt",                              "ERROR: Found invalid block \"%s\" at %s.");
-//        add("ecore.de.assemble_error_expected_air.txt",                         "ERROR: Expected air block at %s");
-//        add("ecore.de.assemble_missing_required.txt",                           "ERROR: Unable to complete structure! Missing required block(s) \"%s\".");
 //        add("gui.de.transfer.txt",                                              "Transfer");
 //        add("gui.de.capacity.txt",                                              "Capacity");
 //        add("gui.de.maxStorage.txt",                                            ">> Max Storage <<");
@@ -774,7 +772,6 @@ public class LangGenerator extends LanguageProvider {
         helper.add("scale.info",                                                "Change hud element scale.");
 
         add("hud.draconicevolution.open_hud_config",                            "Open hud configuration GUI");
-
     }
 
     private void toolTips(PrefixHelper helper) {

@@ -105,7 +105,7 @@ public class DEContent {
     @ObjectHolder("storage_core")               public static BlockEntityType<TileEnergyCore>            tile_storage_core;
     @ObjectHolder("core_stabilizer")            public static BlockEntityType<TileEnergyCoreStabilizer>  tile_core_stabilizer;
     @ObjectHolder("energy_pylon")               public static BlockEntityType<TileEnergyPylon>           tile_energy_pylon;
-    @ObjectHolder("core_structure")             public static BlockEntityType<TileCoreStructure>         tile_core_structure;
+    @ObjectHolder("structure_block")            public static BlockEntityType<TileStructureBlock>        tile_structure_block;
     @ObjectHolder("reactor_core")               public static BlockEntityType<TileReactorCore>           tile_reactor_core;
     @ObjectHolder("reactor_stabilizer")         public static BlockEntityType<TileReactorStabilizer>     tile_reactor_stabilizer;
     @ObjectHolder("reactor_injector")           public static BlockEntityType<TileReactorInjector>       tile_reactor_injector;
@@ -142,7 +142,7 @@ public class DEContent {
         event.getRegistry().register(BlockEntityType.Builder.of(TileEnergyCore::new,             energy_core             ).build(null).setRegistryName("storage_core"));
         event.getRegistry().register(BlockEntityType.Builder.of(TileEnergyCoreStabilizer::new,   energy_core_stabilizer  ).build(null).setRegistryName("core_stabilizer"));
         event.getRegistry().register(BlockEntityType.Builder.of(TileEnergyPylon::new,            energy_pylon            ).build(null).setRegistryName("energy_pylon"));
-        event.getRegistry().register(BlockEntityType.Builder.of(TileCoreStructure::new,          energy_core_structure   ).build(null).setRegistryName("core_structure"));
+        event.getRegistry().register(BlockEntityType.Builder.of(TileStructureBlock::new,         structure_block         ).build(null).setRegistryName("structure_block"));
         event.getRegistry().register(BlockEntityType.Builder.of(TileReactorCore::new,            reactor_core            ).build(null).setRegistryName("reactor_core"));
         event.getRegistry().register(BlockEntityType.Builder.of(TileReactorStabilizer::new,      reactor_stabilizer      ).build(null).setRegistryName("reactor_stabilizer"));
         event.getRegistry().register(BlockEntityType.Builder.of(TileReactorInjector::new,        reactor_injector        ).build(null).setRegistryName("reactor_injector"));
@@ -230,7 +230,7 @@ public class DEContent {
     @ObjectHolder("energy_core")                public static EnergyCore                energy_core;
     @ObjectHolder("energy_core_stabilizer")     public static EnergyCoreStabilizer      energy_core_stabilizer;
     @ObjectHolder("energy_pylon")               public static EnergyPylon               energy_pylon;
-    @ObjectHolder("energy_core_structure")      public static EnergyCoreStructureBlock  energy_core_structure;
+    @ObjectHolder("structure_block")            public static StructureBlock            structure_block;
     @ObjectHolder("reactor_core")               public static ReactorCore               reactor_core;
     @ObjectHolder("reactor_stabilizer")         public static ReactorComponent          reactor_stabilizer;
     @ObjectHolder("reactor_injector")           public static ReactorComponent          reactor_injector;
@@ -298,7 +298,7 @@ public class DEContent {
         event.getRegistry().register(new EnergyCore(hardenedMachine).setRegistryName("energy_core"));
         event.getRegistry().register(new EnergyCoreStabilizer(hardenedMachine).setRegistryName("energy_core_stabilizer"));
         event.getRegistry().register(new EnergyPylon(hardenedMachine).setRegistryName("energy_pylon"));
-        event.getRegistry().register(new EnergyCoreStructureBlock(Properties.of(Material.METAL, MaterialColor.COLOR_GRAY).strength(5.0F, 12F).noDrops().noOcclusion()).setRegistryName("energy_core_structure"));
+        event.getRegistry().register(new StructureBlock(Properties.of(Material.METAL, MaterialColor.COLOR_GRAY).strength(5.0F, 12F).noDrops().noOcclusion()).setRegistryName("structure_block"));
         //Reactor
         event.getRegistry().register(new ReactorCore(hardenedMachine).setRegistryName("reactor_core"));
         event.getRegistry().register(new ReactorComponent(Properties.of(Material.METAL, MaterialColor.COLOR_GRAY).strength(5.0F, 6000F).noOcclusion(), false).setRegistryName("reactor_stabilizer"));

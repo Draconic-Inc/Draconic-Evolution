@@ -36,6 +36,7 @@ public class EnergyCoreStabilizer extends BlockBCore implements EntityBlock {
         this.registerDefaultState(stateDefinition.any().setValue(LARGE, false));
         setBlockEntity(() -> DEContent.tile_core_stabilizer, true);
         dontSpawnOnMe();
+        setLightTransparent();
     }
 
     @Override
@@ -55,30 +56,23 @@ public class EnergyCoreStabilizer extends BlockBCore implements EntityBlock {
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
-        return Shapes.block();//VoxelShapes.empty();//super.getCollisionShape(state, worldIn, pos, context);
+        return SHAPE;//VoxelShapes.empty();//super.getCollisionShape(state, worldIn, pos, context);
     }
 
     @Override
     public VoxelShape getInteractionShape(BlockState state, BlockGetter worldIn, BlockPos pos) {
-        return Shapes.empty();//super.getRaytraceShape(state, worldIn, pos);
+        return SHAPE;//super.getRaytraceShape(state, worldIn, pos);
     }
 
     @Override
     public VoxelShape getOcclusionShape(BlockState state, BlockGetter worldIn, BlockPos pos) {
-        return Shapes.empty();//super.getRenderShape(state, worldIn, pos);
+        return SHAPE;//super.getRenderShape(state, worldIn, pos);
     }
 
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
-        double px = 1 / 16D;
-
-//        SHAPE = makeCuboidShape(0.98, 0.98, 0.98, 15.02, 15.02, 15.02);
-//        SHAPE_X = VoxelShapes.create(0, -1, -1, 1, 2, 2);
-//        SHAPE_Y = VoxelShapes.create(-1, 0, -1, 2, 1, 2);
-//        SHAPE_Z = VoxelShapes.create(-1, -1, 0, 2, 2, 1);
-
         BlockEntity tile = world.getBlockEntity(pos);
-//
+
         if (tile instanceof TileEnergyCoreStabilizer) {
             if (((TileEnergyCoreStabilizer) tile).isValidMultiBlock.get()) {
                 switch (((TileEnergyCoreStabilizer) tile).multiBlockAxis.get()) {
@@ -92,7 +86,7 @@ public class EnergyCoreStabilizer extends BlockBCore implements EntityBlock {
             }
         }
 
-        return SHAPE;//VoxelShapes.empty();//super.getShape(state, worldIn, pos, context);
+        return SHAPE;
     }
 
     //endregion
@@ -103,28 +97,27 @@ public class EnergyCoreStabilizer extends BlockBCore implements EntityBlock {
     public void setPlacedBy(Level world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
         BlockEntity tile = world.getBlockEntity(pos);
 
-//        if (tile instanceof TileEnergyCoreStabilizer) {
-//            ((TileEnergyCoreStabilizer) tile).onPlaced();
-//        } else {
-//            super.setPlacedBy(world, pos, state, placer, stack);
-//        }
+        if (tile instanceof TileEnergyCoreStabilizer) {
+            ((TileEnergyCoreStabilizer) tile).onPlaced();
+        } else {
+            super.setPlacedBy(world, pos, state, placer, stack);
+        }
     }
 
     @Override
     public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
         BlockEntity tile = world.getBlockEntity(pos);
 
-//        if (tile instanceof TileEnergyCoreStabilizer) {
-//            if (((TileEnergyCoreStabilizer) tile).isValidMultiBlock.get()) {
-//                ((TileEnergyCoreStabilizer) tile).deFormStructure();
-//            }
-//            TileEnergyCore core = ((TileEnergyCoreStabilizer) tile).getCore();
-//
-//            if (core != null) {
-//                world.removeBlockEntity(pos);
-//                ((TileEnergyCoreStabilizer) tile).validateStructure();
-//            }
-//        }
+        if (tile instanceof TileEnergyCoreStabilizer) {
+            if (((TileEnergyCoreStabilizer) tile).isValidMultiBlock.get()) {
+                ((TileEnergyCoreStabilizer) tile).revertStructure();
+            }
+            TileEnergyCore core = ((TileEnergyCoreStabilizer) tile).getCore();
+            if (core != null) {
+                world.removeBlockEntity(pos);
+                ((TileEnergyCoreStabilizer) tile).validateStructure();
+            }
+        }
         super.onRemove(state, world, pos, newState, isMoving);
     }
 

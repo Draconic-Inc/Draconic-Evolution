@@ -61,7 +61,7 @@ public class GuiEnergyCore extends ModularGuiContainer<ContainerBCTile<TileEnerg
 
         GuiButton activate = toolkit.createButton(() -> tile.active.get() ? "deactivate" : "activate", temp.background)
                 .setSize(temp.playerSlots.xSize(), 14)
-                .setEnabledCallback(() -> tile.active.get() || tile.canActivate.get())
+                .setEnabledCallback(() -> tile.active.get() || tile.isStructureValid())
                 .onPressed(() -> tile.sendPacketToServer(e -> {}, TileEnergyCore.MSG_TOGGLE_ACTIVATION));
         toolkit.placeOutside(activate, temp.playerSlots, GuiToolkit.LayoutPos.TOP_CENTER, 0, -3);
 
@@ -91,7 +91,7 @@ public class GuiEnergyCore extends ModularGuiContainer<ContainerBCTile<TileEnerg
 
         GuiButton assemble = toolkit.createButton("assemble", temp.background)
                 .setPosAndSize(activate)
-                .setEnabledCallback(() -> !activate.isDisabled())
+                .setEnabledCallback(() -> !activate.isEnabled())
                 .onPressed(() -> tile.sendPacketToServer(e -> {}, TileEnergyCore.MSG_BUILD_CORE));
     }
 

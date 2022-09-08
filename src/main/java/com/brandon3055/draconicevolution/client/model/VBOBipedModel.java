@@ -30,8 +30,8 @@ public abstract class VBOBipedModel<T extends LivingEntity> extends HumanoidMode
     public VBOModelRender bipedLeftLeg;
 
     @Deprecated //Temp constructor for compile
-    public VBOBipedModel(ModelPart p_170677_) {
-        super(p_170677_);
+    public VBOBipedModel(ModelPart modelPart) {
+        super(modelPart);
     }
 
 

@@ -29,7 +29,7 @@ import java.util.Random;
 /**
  * Created by brandon3055 on 30/3/2016.
  */
-public class TileEnergyPylon extends TileBCore implements IMultiBlockPart {
+public class TileEnergyPylon extends TileBCore /*implements */ {
     public final ManagedBool isOutputMode = register(new ManagedBool("is_output_mode", DataFlags.SAVE_NBT_SYNC_TILE, DataFlags.TRIGGER_UPDATE));
     public final ManagedBool structureValid = register(new ManagedBool("structure_valid", DataFlags.SAVE_NBT_SYNC_TILE, DataFlags.TRIGGER_UPDATE));
     public final ManagedVec3I coreOffset = register(new ManagedVec3I("core_offset", new Vec3I(0, -1, 0), DataFlags.SAVE_NBT_SYNC_TILE));
@@ -237,56 +237,56 @@ public class TileEnergyPylon extends TileBCore implements IMultiBlockPart {
         updateBlock();
     }
 
-    @Override
-    public boolean validateStructure() {
-        if (!structureValid.get()) {
-            if (level.getBlockState(worldPosition.offset(0, 1, 0)).getBlock() == Blocks.GLASS) {
-                level.setBlockAndUpdate(worldPosition.offset(0, 1, 0), DEContent.energy_core_structure.defaultBlockState());
-                BlockEntity tile = level.getBlockEntity(worldPosition.offset(0, 1, 0));
-                if (tile instanceof TileCoreStructure) {
-                    ((TileCoreStructure) tile).blockName.set("minecraft:glass");
-                    ((TileCoreStructure) tile).setController(this);
-                }
-                sphereOnTop.set(true);
-                level.setBlockAndUpdate(worldPosition, level.getBlockState(worldPosition).setValue(EnergyPylon.FACING, "up"));
-            } else if (level.getBlockState(worldPosition.offset(0, -1, 0)).getBlock() == Blocks.GLASS) {
-                level.setBlockAndUpdate(worldPosition.offset(0, -1, 0), DEContent.energy_core_structure.defaultBlockState());
-                BlockEntity tile = level.getBlockEntity(worldPosition.offset(0, -1, 0));
-                if (tile instanceof TileCoreStructure) {
-                    ((TileCoreStructure) tile).blockName.set("minecraft:glass");
-                    ((TileCoreStructure) tile).setController(this);
-                }
-                sphereOnTop.set(false);
-                level.setBlockAndUpdate(worldPosition, level.getBlockState(worldPosition).setValue(EnergyPylon.FACING, "down"));
-            } else {
-                level.setBlockAndUpdate(worldPosition, level.getBlockState(worldPosition).setValue(EnergyPylon.FACING, "null"));
-                return false;
-            }
-        }
-
-        structureValid.set(isStructureValid());
-        if (structureValid.get() && !hasCoreLock.get()) {
-            selectNextCore();
-        } else if (!structureValid.get() && hasCoreLock.get()) {
-            hasCoreLock.set(false);
-        }
-
-        if (hasCoreLock.get() && level.isClientSide) {
-            drawParticleBeam();
-        }
-
-        return structureValid.get();
-    }
-
-    @Override
-    public boolean isStructureValid() {
-        return (isGlass(worldPosition.offset(0, 1, 0)) || isGlass(worldPosition.offset(0, -1, 0))) && (!isGlass(worldPosition.offset(0, 1, 0)) || !isGlass(worldPosition.offset(0, -1, 0)));
-    }
-
-    private boolean isGlass(BlockPos pos) {
-        BlockEntity tile = level.getBlockEntity(pos);
-        return tile instanceof TileCoreStructure && ((TileCoreStructure) tile).blockName.get().equals("minecraft:glass");
-    }
+//    @Override
+//    public boolean validateStructure() {
+//        if (!structureValid.get()) {
+//            if (level.getBlockState(worldPosition.offset(0, 1, 0)).getBlock() == Blocks.GLASS) {
+//                level.setBlockAndUpdate(worldPosition.offset(0, 1, 0), DEContent.energy_core_structure.defaultBlockState());
+//                BlockEntity tile = level.getBlockEntity(worldPosition.offset(0, 1, 0));
+//                if (tile instanceof TileCoreStructure) {
+//                    ((TileCoreStructure) tile).blockName.set("minecraft:glass");
+//                    ((TileCoreStructure) tile).setController(this);
+//                }
+//                sphereOnTop.set(true);
+//                level.setBlockAndUpdate(worldPosition, level.getBlockState(worldPosition).setValue(EnergyPylon.FACING, "up"));
+//            } else if (level.getBlockState(worldPosition.offset(0, -1, 0)).getBlock() == Blocks.GLASS) {
+//                level.setBlockAndUpdate(worldPosition.offset(0, -1, 0), DEContent.energy_core_structure.defaultBlockState());
+//                BlockEntity tile = level.getBlockEntity(worldPosition.offset(0, -1, 0));
+//                if (tile instanceof TileCoreStructure) {
+//                    ((TileCoreStructure) tile).blockName.set("minecraft:glass");
+//                    ((TileCoreStructure) tile).setController(this);
+//                }
+//                sphereOnTop.set(false);
+//                level.setBlockAndUpdate(worldPosition, level.getBlockState(worldPosition).setValue(EnergyPylon.FACING, "down"));
+//            } else {
+//                level.setBlockAndUpdate(worldPosition, level.getBlockState(worldPosition).setValue(EnergyPylon.FACING, "null"));
+//                return false;
+//            }
+//        }
+//
+//        structureValid.set(isStructureValid());
+//        if (structureValid.get() && !hasCoreLock.get()) {
+//            selectNextCore();
+//        } else if (!structureValid.get() && hasCoreLock.get()) {
+//            hasCoreLock.set(false);
+//        }
+//
+//        if (hasCoreLock.get() && level.isClientSide) {
+//            drawParticleBeam();
+//        }
+//
+//        return structureValid.get();
+//    }
+//
+//    @Override
+//    public boolean isStructureValid() {
+//        return (isGlass(worldPosition.offset(0, 1, 0)) || isGlass(worldPosition.offset(0, -1, 0))) && (!isGlass(worldPosition.offset(0, 1, 0)) || !isGlass(worldPosition.offset(0, -1, 0)));
+//    }
+//
+//    private boolean isGlass(BlockPos pos) {
+//        BlockEntity tile = level.getBlockEntity(pos);
+//        return tile instanceof TileCoreStructure && ((TileCoreStructure) tile).blockName.get().equals("minecraft:glass");
+//    }
 
     //endregion
 
@@ -369,10 +369,10 @@ public class TileEnergyPylon extends TileBCore implements IMultiBlockPart {
 
     //region Unused IMultiBlock
 
-    @Override
-    public IMultiBlockPart getController() {
-        return this;
-    }
+//    @Override
+//    public IMultiBlockPart getController() {
+//        return this;
+//    }
 
     //endregion
 

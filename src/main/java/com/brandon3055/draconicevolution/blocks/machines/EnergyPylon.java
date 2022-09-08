@@ -36,29 +36,29 @@ public class EnergyPylon extends BlockBCore implements EntityBlock {
         builder.add(OUTPUT, FACING);
     }
 
-    @Override
-    public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
-        BlockEntity tile = worldIn.getBlockEntity(pos);
-        if (tile instanceof TileEnergyPylon) {
-            if (player.isShiftKeyDown()) {
-                ((TileEnergyPylon) tile).selectNextCore();
-            } else {
-                ((TileEnergyPylon) tile).validateStructure();
-            }
-            return ((TileEnergyPylon) tile).structureValid.get() ? InteractionResult.SUCCESS : InteractionResult.FAIL;
-        }
-
-        return InteractionResult.SUCCESS;
-    }
-
-    @Override
-    public void neighborChanged(BlockState state, Level world, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
-        BlockEntity tile = world.getBlockEntity(pos);
-
-        if (tile instanceof TileEnergyPylon) {
-            ((TileEnergyPylon) tile).validateStructure();
-        }
-    }
+//    @Override
+//    public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
+//        BlockEntity tile = worldIn.getBlockEntity(pos);
+//        if (tile instanceof TileEnergyPylon) {
+//            if (player.isShiftKeyDown()) {
+//                ((TileEnergyPylon) tile).selectNextCore();
+//            } else {
+//                ((TileEnergyPylon) tile).validateStructure();
+//            }
+//            return ((TileEnergyPylon) tile).structureValid.get() ? InteractionResult.SUCCESS : InteractionResult.FAIL;
+//        }
+//
+//        return InteractionResult.SUCCESS;
+//    }
+//
+//    @Override
+//    public void neighborChanged(BlockState state, Level world, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
+//        BlockEntity tile = world.getBlockEntity(pos);
+//
+//        if (tile instanceof TileEnergyPylon) {
+//            ((TileEnergyPylon) tile).validateStructure();
+//        }
+//    }
 
     @Override
     public boolean hasAnalogOutputSignal(BlockState state) {

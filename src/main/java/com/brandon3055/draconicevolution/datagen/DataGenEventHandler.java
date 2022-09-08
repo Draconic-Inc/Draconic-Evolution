@@ -15,7 +15,6 @@ import net.minecraft.data.advancements.AdvancementProvider;
 import net.minecraft.data.tags.BlockTagsProvider;
 import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.BlockTags;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -85,23 +84,6 @@ public class DataGenEventHandler {
             if (ModList.get().isLoaded("curios")) {
                 CuriosIntegration.generateTags(this::tag);
             }
-        }
-    }
-
-    private static class BlockTagGenerator extends BlockTagsProvider {
-        public BlockTagGenerator(DataGenerator generatorIn, String modId, @Nullable ExistingFileHelper existingFileHelper) {
-            super(generatorIn, modId, existingFileHelper);
-        }
-
-        @Override
-        protected void addTags() {
-            tag(DETags.Blocks.STORAGE_BLOCKS_DRACONIUM).add(DEContent.block_draconium);
-            tag(DETags.Blocks.STORAGE_BLOCKS_DRACONIUM_AWAKENED).add(DEContent.block_draconium_awakened);
-            tag(Tags.Blocks.STORAGE_BLOCKS).add(DEContent.block_draconium, DEContent.block_draconium_awakened);
-
-            tag(DETags.Blocks.ORES_DRACONIUM).add(DEContent.ore_draconium_end, DEContent.ore_draconium_nether, DEContent.ore_draconium_overworld);
-            tag(Tags.Blocks.ORES).add(DEContent.ore_draconium_end, DEContent.ore_draconium_nether, DEContent.ore_draconium_overworld);
-            tag(BlockTags.SOUL_FIRE_BASE_BLOCKS).add(DEContent.infused_obsidian);
         }
     }
 

@@ -62,7 +62,7 @@ public class ItemModelGenerator extends ItemModelProvider {
         blockItem(DEContent.chaos_crystal);
         blockItem(DEContent.energy_core);
         blockItem(DEContent.energy_core_stabilizer);
-        blockItem(DEContent.energy_core_structure);
+        blockItem(DEContent.structure_block);
         blockItem(DEContent.reactor_core);
         blockItem(DEContent.reactor_stabilizer);
         blockItem(DEContent.reactor_injector);
