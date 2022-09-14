@@ -9,6 +9,7 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 /**
  * Created by Brandon on 29/10/2014.
  */
+@Deprecated //TODO more to BCore
 public class CraftingInventoryWrapper extends CraftingInventory {
     private IItemHandlerModifiable wrapped;
     private Container container;

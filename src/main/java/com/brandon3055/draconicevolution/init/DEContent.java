@@ -323,10 +323,10 @@ public class DEContent {
         event.getRegistry().register(new PlacedItem(Properties.of(GLASS).strength(5F, 12F).noOcclusion().noDrops()).setRegistryName("placed_item"));
 
         //Energy Crystals
-        Properties crystalB = Properties.of(GLASS, DyeColor.BLUE).strength(3.0F, 8F);      //TODO may want to tweak these after testing
-        Properties crystalW = Properties.of(GLASS, DyeColor.PURPLE).strength(5.0F, 16F);
-        Properties crystalD = Properties.of(GLASS, DyeColor.ORANGE).strength(8.0F, 32F);
-        Properties crystalC = Properties.of(GLASS, DyeColor.BLACK).strength(16.0F, 64F);
+        Properties crystalB = Properties.of(GLASS, DyeColor.BLUE).strength(3.0F, 8F).harvestTool(ToolType.PICKAXE).harvestLevel(1);      //TODO may want to tweak these after testing
+        Properties crystalW = Properties.of(GLASS, DyeColor.PURPLE).strength(5.0F, 16F).harvestTool(ToolType.PICKAXE).harvestLevel(1);
+        Properties crystalD = Properties.of(GLASS, DyeColor.ORANGE).strength(8.0F, 32F).harvestTool(ToolType.PICKAXE).harvestLevel(1);
+        Properties crystalC = Properties.of(GLASS, DyeColor.BLACK).strength(16.0F, 64F).harvestTool(ToolType.PICKAXE).harvestLevel(1);
         event.getRegistry().register(new EnergyCrystal(crystalB, DRACONIUM, CRYSTAL_IO).setRegistryName("basic_io_crystal"));
         event.getRegistry().register(new EnergyCrystal(crystalW, WYVERN, CRYSTAL_IO).setRegistryName("wyvern_io_crystal"));
         event.getRegistry().register(new EnergyCrystal(crystalD, DRACONIC, CRYSTAL_IO).setRegistryName("draconic_io_crystal"));
