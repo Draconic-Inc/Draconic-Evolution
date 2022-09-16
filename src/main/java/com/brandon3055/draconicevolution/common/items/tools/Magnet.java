@@ -90,7 +90,7 @@ public class Magnet extends ItemDE {
             List<EntityItem> nearestItems =
                     items.stream().limit(ConfigHandler.magnetStackLimit).collect(Collectors.toList());
 
-            boolean flag = false;
+            boolean playSound = false;
 
             for (EntityItem item : nearestItems) {
                 if (item.getEntityItem() == null) {
@@ -105,32 +105,35 @@ public class Magnet extends ItemDE {
                                         == item.getEntityItem().getItemDamage())) {
                     continue;
                 }
-                flag = true;
+                playSound = true;
 
-                if (item.delayBeforeCanPickup > 0) item.delayBeforeCanPickup = 0;
-                item.motionX = item.motionY = item.motionZ = 0;
+                if (item.delayBeforeCanPickup > 0) {
+                    item.delayBeforeCanPickup = 0;
+                }
+                item.motionX = 0;
+                item.motionY = 0;
+                item.motionZ = 0;
                 item.setPosition(
                         entity.posX - 0.2 + (world.rand.nextDouble() * 0.4),
                         entity.posY - 0.6,
                         entity.posZ - 0.2 + (world.rand.nextDouble() * 0.4));
             }
-            if (flag)
+            if (playSound) {
                 world.playSoundAtEntity(
                         entity,
                         "random.orb",
                         0.1F,
                         0.5F * ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7F + 2F));
+            }
 
-            List<EntityXPOrb> xp = world.getEntitiesWithinAABB(
-                    EntityXPOrb.class,
-                    AxisAlignedBB.getBoundingBox(
-                                    entity.posX, entity.posY, entity.posZ, entity.posX, entity.posY, entity.posZ)
-                            .expand(4, 4, 4));
-
-            EntityPlayer player = (EntityPlayer) entity;
-
-            for (EntityXPOrb orb : xp) {
-                if (!world.isRemote) {
+            if (!world.isRemote) {
+                List<EntityXPOrb> xp = world.getEntitiesWithinAABB(
+                        EntityXPOrb.class,
+                        AxisAlignedBB.getBoundingBox(
+                                        entity.posX, entity.posY, entity.posZ, entity.posX, entity.posY, entity.posZ)
+                                .expand(4, 4, 4));
+                EntityPlayer player = (EntityPlayer) entity;
+                for (EntityXPOrb orb : xp) {
                     if (orb.field_70532_c == 0 && orb.isEntityAlive()) {
                         if (MinecraftForge.EVENT_BUS.post(new PlayerPickupXpEvent(player, orb))) continue;
                         world.playSoundAtEntity(
