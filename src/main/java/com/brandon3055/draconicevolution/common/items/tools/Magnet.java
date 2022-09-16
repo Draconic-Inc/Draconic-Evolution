@@ -10,7 +10,6 @@ import com.brandon3055.draconicevolution.common.lib.References;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import java.util.List;
-import java.util.stream.Collectors;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
@@ -87,12 +86,10 @@ public class Magnet extends ItemDE {
                     AxisAlignedBB.getBoundingBox(
                                     entity.posX, entity.posY, entity.posZ, entity.posX, entity.posY, entity.posZ)
                             .expand(range, range, range));
-            List<EntityItem> nearestItems =
-                    items.stream().limit(ConfigHandler.magnetStackLimit).collect(Collectors.toList());
 
             boolean playSound = false;
 
-            for (EntityItem item : nearestItems) {
+            for (EntityItem item : items) {
                 if (item.getEntityItem() == null) {
                     continue;
                 }

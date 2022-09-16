@@ -49,7 +49,6 @@ public class ConfigHandler {
     public static boolean enableFlight;
     private static String[] itemDislocatorBlacklist;
     public static Map<String, Integer> itemDislocatorBlacklistMap = new HashMap<String, Integer>();
-    public static int magnetStackLimit;
 
     // spawner
     public static String[] spawnerList;
@@ -294,12 +293,6 @@ public class ConfigHandler {
                             true,
                             "Set this to false to disable flight given by draconic armor.")
                     .getBoolean(true);
-            magnetStackLimit = config.get(
-                            Configuration.CATEGORY_GENERAL,
-                            "Magnet Stack Limit",
-                            30,
-                            "Limit how much stacks might be attracted at the same time, high values can cause both server and client lag")
-                    .getInt();
 
             // Spawner
             spawnerListType = config.get(
