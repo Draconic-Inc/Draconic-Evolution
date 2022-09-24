@@ -288,7 +288,7 @@ info.de.connections.txt=连接
 info.de.wirelessConnections.txt=无线连接
 
 
-info.infusedObsidian.txt=这个方块可以抵抗凋零
+info.infusedObsidian.txt=这个方块可以抵抗凋灵
 
 enchantment.draconicevolution.reaperEnchant=收割者
 
@@ -424,6 +424,7 @@ key.placeItem=把物品放置到世界里
 key.toolConfig=工具和装甲配置 GUI
 key.toolProfileChange=更改工具配置
 key.toggleFlight=切换创造飞行模式
+key.toggleMagnet=开关物品错位器
 
 //Damage ----------------------------------------------------------------------------------------------------------------------------------------
 death.attack.chaos=被混沌守卫撕裂
@@ -481,7 +482,7 @@ button.de.BaseSafeAOE.name=范围挖掘安全模式
 button.de.VerticalAcceleration.name=垂直加速度
 button.de.EffectiveOnSprint.name=有效的冲刺
 button.de.GogglesOfRevealing.name=神奇的感觉
-button.de.ApiaristArmor.name=养蜂人护甲
+button.de.ApiaristArmor.name=养蜂员护甲
 button.de.NaturalistArmor.name=自然科学家视角
 button.de.BowArrowSpeedModifier.name=弓箭速率调整器
 button.de.BowAutoFire.name=自动开火
