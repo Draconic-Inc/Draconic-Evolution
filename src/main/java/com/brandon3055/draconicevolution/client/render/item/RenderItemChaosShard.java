@@ -18,6 +18,7 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
@@ -37,11 +38,18 @@ import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
  */
 public class RenderItemChaosShard implements IItemRenderer {
 
-    private static final RenderType chaosEntityType = RenderType.create(MODID + ":chaos_crystal_entity_type", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, RenderType.CompositeState.builder()
+    private static final RenderType CHAOS_CRYSTAL_INNER = RenderType.create(MODID + ":chaos_crystal_inner", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.TRIANGLES, 256, RenderType.CompositeState.builder()
             .setShaderState(new RenderStateShard.ShaderStateShard(() -> DEShaders.chaosEntityShader))
             .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(MODID, "textures/item/equipment/chaos_shader.png"), true, false))
             .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
             .setCullState(RenderStateShard.NO_CULL)
+            .setLightmapState(RenderStateShard.LIGHTMAP)
+            .setOverlayState(RenderStateShard.OVERLAY)
+            .createCompositeState(false));
+    private static final RenderType CHAOS_CRYSTAL = RenderType.create(MODID + ":chaos_crystal", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.TRIANGLES, 256, RenderType.CompositeState.builder()
+            .setShaderState(new RenderStateShard.ShaderStateShard(GameRenderer::getBlockShader))
+            .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(MODID, "textures/block/chaos_crystal.png"), false, false))
+            .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
             .setLightmapState(RenderStateShard.LIGHTMAP)
             .setOverlayState(RenderStateShard.OVERLAY)
             .createCompositeState(false));
@@ -51,7 +59,9 @@ public class RenderItemChaosShard implements IItemRenderer {
 
     public RenderItemChaosShard(Item item) {
         this.item = item;
-        Map<String, CCModel> map = new OBJParser(new ResourceLocation(DraconicEvolution.MODID, "models/item/chaos_shard.obj")).quads().ignoreMtl().parse();
+        Map<String, CCModel> map = new OBJParser(new ResourceLocation(DraconicEvolution.MODID, "models/item/chaos_shard.obj"))
+                .ignoreMtl()
+                .parse();
         shard = CCModel.combine(map.values())
                 .backfacedCopy()
                 .computeNormals();
@@ -72,11 +82,11 @@ public class RenderItemChaosShard implements IItemRenderer {
         DEShaders.chaosEntityTime.glUniform1f((float) ClientUtils.getRenderTime());
         DEShaders.chaosEntityYaw.glUniform1f((float) (player.getYRot() * MathHelper.torad));
         DEShaders.chaosEntityPitch.glUniform1f((float) -(player.getXRot() * MathHelper.torad));
-        ccrs.bind(chaosEntityType, getter);
+        ccrs.bind(CHAOS_CRYSTAL_INNER, getter);
         shard.render(ccrs, mat);
 
         ccrs.baseColour = 0xFFFFFFF0;
-        ccrs.bind(RenderTileChaosCrystal.crystalType, getter);
+        ccrs.bind(CHAOS_CRYSTAL, getter);
         shard.render(ccrs, mat);
     }
 
