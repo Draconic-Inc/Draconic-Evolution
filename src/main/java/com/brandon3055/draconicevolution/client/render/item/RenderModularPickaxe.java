@@ -5,9 +5,7 @@ import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.model.OBJParser;
 import codechicken.lib.vec.Matrix4;
 import com.brandon3055.brandonscore.api.TechLevel;
-import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.resources.ResourceLocation;
@@ -37,7 +35,7 @@ public class RenderModularPickaxe extends ToolRenderBase {
     }
 
     @Override
-    public void renderTool(CCRenderState ccrs, ItemStack stack, TransformType transform, Matrix4 mat, PoseStack mStack, MultiBufferSource getter, boolean gui, int packedLight) {
+    public void renderTool(CCRenderState ccrs, ItemStack stack, TransformType transform, Matrix4 mat, MultiBufferSource buffers, boolean gui) {
         transform(mat, 0.27, 0.27, 0.5, 1.125);
 
 //        if (gui) {

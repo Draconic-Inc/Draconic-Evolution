@@ -75,13 +75,12 @@ public class RenderItemChaosShard implements IItemRenderer {
         ccrs.brightness = packedLight;
         ccrs.overlay = packedOverlay;
         mat.apply(new Scale(item == DEContent.chaos_shard ? 1 : item == DEContent.chaos_frag_large ? 0.75 : item == DEContent.chaos_frag_medium ? 0.5 : 0.25).at(new Vector3(0.5, 0.5, 0.5)));
-        Player player = Minecraft.getInstance().player;
 
         DEShaders.chaosEntityModelMat.glUniformMatrix4f(new Matrix4());
         DEShaders.chaosEntitySimpleLight.glUniform1b(true);
-        DEShaders.chaosEntityTime.glUniform1f((float) ClientUtils.getRenderTime());
-        DEShaders.chaosEntityYaw.glUniform1f((float) (player.getYRot() * MathHelper.torad));
-        DEShaders.chaosEntityPitch.glUniform1f((float) -(player.getXRot() * MathHelper.torad));
+        DEShaders.chaosEntityDisableLight.glUniform1b(false);
+        DEShaders.chaosEntityDisableOverlay.glUniform1b(false);
+
         ccrs.bind(CHAOS_CRYSTAL_INNER, getter);
         shard.render(ccrs, mat);
 

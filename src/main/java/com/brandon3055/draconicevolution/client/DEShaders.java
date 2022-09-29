@@ -1,7 +1,9 @@
 package com.brandon3055.draconicevolution.client;
 
+import codechicken.lib.math.MathHelper;
 import codechicken.lib.render.shader.CCShaderInstance;
 import codechicken.lib.render.shader.CCUniform;
+import codechicken.lib.util.ClientUtils;
 import com.brandon3055.brandonscore.api.TimeKeeper;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
@@ -9,6 +11,7 @@ import net.covers1624.quack.util.CrashLock;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.client.event.RegisterShadersEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
@@ -41,6 +44,28 @@ public class DEShaders {
     public static CCUniform chaosEntityPitch;
     public static CCUniform chaosEntityAlpha;
     public static CCUniform chaosEntitySimpleLight;
+    public static CCUniform chaosEntityDisableLight;
+    public static CCUniform chaosEntityDisableOverlay;
+
+    public static CCShaderInstance toolBaseShader;
+    public static CCUniform toolBaseModelMat;
+    public static CCUniform toolBaseUV1Override;
+    public static CCUniform toolBaseUV2Override;
+
+    public static CCShaderInstance toolGemShader;
+    public static CCUniform toolGemModelMat;
+    public static CCUniform toolGemTime;
+    public static CCUniform toolGemBaseColor;
+
+    public static CCShaderInstance toolTraceShader;
+    public static CCUniform toolTraceModelMat;
+    public static CCUniform toolTraceTime;
+    public static CCUniform toolTraceBaseColor;
+
+    public static CCShaderInstance toolBladeShader;
+    public static CCUniform toolBladeModelMat;
+    public static CCUniform toolBladeTime;
+    public static CCUniform toolBladeBaseColor;
 
     public static CCShaderInstance armorShieldShader;
     public static CCUniform armorShieldTime;
@@ -59,9 +84,6 @@ public class DEShaders {
     public static CCUniform testInB;
     public static CCUniform testInC;
     public static CCUniform testInD;
-
-    public static CCShaderInstance customBlockShader;
-    public static CCUniform modelMat;
 
     public static CCShaderInstance energyCoreShader;
     public static CCUniform energyCoreTime;
@@ -105,6 +127,51 @@ public class DEShaders {
             chaosEntityPitch = chaosEntityShader.getUniform("Pitch");
             chaosEntityAlpha = chaosEntityShader.getUniform("Alpha");
             chaosEntitySimpleLight = chaosEntityShader.getUniform("SimpleLight");
+            chaosEntityDisableLight = chaosEntityShader.getUniform("SimpleLight");
+            chaosEntityDisableOverlay = chaosEntityShader.getUniform("DisableOverlay");
+            chaosEntityShader.onApply(() -> {
+                Player player = Minecraft.getInstance().player;
+                chaosEntityTime.glUniform1f((float) ClientUtils.getRenderTime());
+                chaosEntityYaw.glUniform1f((float) (player.getYRot() * MathHelper.torad));
+                chaosEntityPitch.glUniform1f((float) -(player.getXRot() * MathHelper.torad));
+            });
+        });
+
+        event.registerShader(CCShaderInstance.create(event.getResourceManager(), new ResourceLocation(MODID, "tools/tool_base"), DefaultVertexFormat.NEW_ENTITY), e -> {
+            toolBaseShader = (CCShaderInstance) e;
+            toolBaseModelMat = toolBaseShader.getUniform("ModelMat");
+            toolBaseUV1Override = toolBaseShader.getUniform("UV1Override");
+            toolBaseUV2Override = toolBaseShader.getUniform("UV2Override");
+        });
+
+        event.registerShader(CCShaderInstance.create(event.getResourceManager(), new ResourceLocation(MODID, "tools/tool_gem"), DefaultVertexFormat.NEW_ENTITY), e -> {
+            toolGemShader = (CCShaderInstance) e;
+            toolGemModelMat = toolGemShader.getUniform("ModelMat");
+            toolGemTime = toolGemShader.getUniform("Time");
+            toolGemBaseColor = toolGemShader.getUniform("BaseColor");
+            toolGemShader.onApply(() -> {
+                toolGemTime.glUniform1f((float) (ClientUtils.getRenderTime() / 20));
+            });
+        });
+
+        event.registerShader(CCShaderInstance.create(event.getResourceManager(), new ResourceLocation(MODID, "tools/tool_trace"), DefaultVertexFormat.NEW_ENTITY), e -> {
+            toolTraceShader = (CCShaderInstance) e;
+            toolTraceModelMat = toolTraceShader.getUniform("ModelMat");
+            toolTraceTime = toolTraceShader.getUniform("Time");
+            toolTraceBaseColor = toolTraceShader.getUniform("BaseColor");
+            toolTraceShader.onApply(() -> {
+                toolTraceTime.glUniform1f((float) (ClientUtils.getRenderTime() / 20));
+            });
+        });
+
+        event.registerShader(CCShaderInstance.create(event.getResourceManager(), new ResourceLocation(MODID, "tools/tool_blade"), DefaultVertexFormat.NEW_ENTITY), e -> {
+            toolBladeShader = (CCShaderInstance) e;
+            toolBladeModelMat = toolBladeShader.getUniform("ModelMat");
+            toolBladeTime = toolBladeShader.getUniform("Time");
+            toolBladeBaseColor = toolBladeShader.getUniform("BaseColor");
+            toolBladeShader.onApply(() -> {
+                toolBladeTime.glUniform1f((float) (ClientUtils.getRenderTime() / 20));
+            });
         });
 
         event.registerShader(CCShaderInstance.create(event.getResourceManager(), new ResourceLocation(MODID, "armor_shield"), DefaultVertexFormat.POSITION_TEX), e -> {
@@ -143,11 +210,6 @@ public class DEShaders {
         } catch (Throwable e) {
             e.printStackTrace();
         }
-
-        event.registerShader(CCShaderInstance.create(event.getResourceManager(), new ResourceLocation(MODID, "block"), DefaultVertexFormat.BLOCK), e -> {
-            customBlockShader = (CCShaderInstance) e;
-            modelMat = customBlockShader.getUniform("ModelMat");
-        });
 
         event.registerShader(CCShaderInstance.create(event.getResourceManager(), new ResourceLocation(MODID, "energy_core"), DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP), e -> {
             energyCoreShader = (CCShaderInstance) e;

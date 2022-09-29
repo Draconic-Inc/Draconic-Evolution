@@ -12,7 +12,6 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.render.modelfx.StaffModelEffect;
 import com.brandon3055.draconicevolution.items.equipment.ModularStaff;
 import com.google.common.collect.ImmutableMap;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Transformation;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.ModelPart;
@@ -158,7 +157,7 @@ public class RenderModularStaff extends ToolRenderBase {
 
     //TODO want to combine the swing and equip animation somehow so the 'draw back / return' after a stab corresponds to the equip cooldown
     @Override
-    public void renderTool(CCRenderState ccrs, ItemStack stack, TransformType transform, Matrix4 mat, PoseStack mStack, MultiBufferSource getter, boolean gui, int packedLight) {
+    public void renderTool(CCRenderState ccrs, ItemStack stack, TransformType transform, Matrix4 mat, MultiBufferSource buffers, boolean gui) {
 //        float flair = 0F;
 //        if (entity != null && entity.getMainHandItem() == stack) {
 //            flair = MathHelper.interpolate(entity.oAttackAnim, entity.attackAnim, Minecraft.getInstance().getFrameTime());

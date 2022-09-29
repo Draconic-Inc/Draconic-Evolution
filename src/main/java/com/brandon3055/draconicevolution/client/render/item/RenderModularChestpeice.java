@@ -1,6 +1,5 @@
 package com.brandon3055.draconicevolution.client.render.item;
 
-import codechicken.lib.math.MathHelper;
 import codechicken.lib.render.CCModel;
 import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.model.OBJParser;
@@ -10,25 +9,13 @@ import codechicken.lib.render.shader.ShaderProgramBuilder;
 import codechicken.lib.render.shader.UniformType;
 import codechicken.lib.util.TransformUtils;
 import codechicken.lib.vec.Matrix4;
-import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.api.TechLevel;
-import com.brandon3055.brandonscore.client.BCClientEventHandler;
-import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.api.capability.DECapabilities;
-import com.brandon3055.draconicevolution.api.capability.ModuleHost;
-import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
-import com.brandon3055.draconicevolution.api.modules.entities.ShieldControlEntity;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.util.LazyOptional;
 
 import java.util.Collections;
 import java.util.Map;
@@ -77,7 +64,7 @@ public class RenderModularChestpeice extends ToolRenderBase {
     }
 
     @Override
-    public void renderTool(CCRenderState ccrs, ItemStack stack, TransformType transform, Matrix4 mat, PoseStack mStack, MultiBufferSource getter, boolean gui, int packedLight) {
+    public void renderTool(CCRenderState ccrs, ItemStack stack, TransformType transform, Matrix4 mat, MultiBufferSource buffers, boolean gui) {
 //        mat.translate(0.5, 1.05, 0.5);
 //        mat.rotate(MathHelper.torad * 180, Vector3.Z_POS);
 //        mat.scale(1.95);

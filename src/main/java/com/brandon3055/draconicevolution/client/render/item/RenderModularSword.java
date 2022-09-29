@@ -8,10 +8,9 @@ import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.DEShaders;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
@@ -40,39 +39,47 @@ public class RenderModularSword extends ToolRenderBase {
     }
 
     @Override
-    public void renderTool(CCRenderState ccrs, ItemStack stack, TransformType transform, Matrix4 mat, PoseStack mStack, MultiBufferSource getter, boolean gui, int packedLight) {
+    public void renderTool(CCRenderState ccrs, ItemStack stack, TransformType transform, Matrix4 mat, MultiBufferSource buffers, boolean gui) {
         transform(mat, 0.29, 0.29, 0.5, gui ? 0.875 : 1.125);
+
+        DEShaders.toolBaseUV1Override.glUniform2i(ccrs.overlay & 0xFFFF, (ccrs.overlay >> 16) & 0xFFFF);
+        DEShaders.toolBaseUV2Override.glUniform2i(ccrs.brightness & 0xFFFF, (ccrs.brightness >> 16) & 0xFFFF);
+
+        // Render Hilt, handle and guard.
         if (gui) {
-            getter.getBuffer(guiBaseVBOType.withMatrix(mat).withState(new RenderStateShard("nothing", () -> DEShaders.modelMat.glUniformMatrix4f(mat), () -> {}) {
-            }));//.withLightMap(packedLight));
+            buffers.getBuffer(guiBaseVBOType.withCallback(() -> DEShaders.toolBaseModelMat.glUniformMatrix4f(mat)));
         } else {
-            getter.getBuffer(baseVBOType.withMatrix(mat).withState(new RenderStateShard("nothing", () -> DEShaders.modelMat.glUniformMatrix4f(mat), () -> {}) {
-            }));//.withLightMap(packedLight));
+            buffers.getBuffer(baseVBOType.withCallback(() -> DEShaders.toolBaseModelMat.glUniformMatrix4f(mat)));
         }
 
-//        if (techLevel == TechLevel.CHAOTIC && DEConfig.toolShaders) {
-//            getter.getBuffer(materialChaosVBOType.withMatrix(mat).withLightMap(packedLight).withState(getShaderType(chaosType, chaosShader)));
-//        } else {
-            if (gui) {
-                getter.getBuffer(guiMaterialVBOType.withMatrix(mat).withState(new RenderStateShard("nothing", () -> DEShaders.modelMat.glUniformMatrix4f(mat), () -> {}) {
-                }));//.withLightMap(packedLight));
-            } else {
-                getter.getBuffer(materialVBOType.withMatrix(mat).withState(new RenderStateShard("nothing", () -> DEShaders.modelMat.glUniformMatrix4f(mat), () -> {}) {
-                }));//.withLightMap(packedLight));
-            }
-//        }
+        // Render Sword blade material
+        if (techLevel == TechLevel.CHAOTIC && DEConfig.toolShaders) {
+            buffers.getBuffer(materialChaosVBOType.withCallback(() -> {
+                DEShaders.chaosEntityDisableLight.glUniform1b(true);
+                DEShaders.chaosEntityDisableOverlay.glUniform1b(true);
+                DEShaders.chaosEntityAlpha.glUniform1f(0.7F);
+                DEShaders.chaosEntityModelMat.glUniformMatrix4f(mat);
+            }));
+        } else if (gui) {
+            buffers.getBuffer(guiMaterialVBOType.withCallback(() -> DEShaders.toolBaseModelMat.glUniformMatrix4f(mat)));
+        } else {
+            buffers.getBuffer(materialVBOType.withCallback(() -> DEShaders.toolBaseModelMat.glUniformMatrix4f(mat)));
+        }
 
-//        if (DEConfig.toolShaders) {
-//            getter.getBuffer(traceVBOType.withMatrix(mat).withLightMap(packedLight).withState(getShaderType(shaderParentType, techLevel, traceShader)));
-//            getter.getBuffer(bladeVBOType.withMatrix(mat).withLightMap(packedLight).withState(getShaderType(shaderParentType, techLevel, bladeShader)));
-//            getter.getBuffer(gemVBOType.withMatrix(mat).withLightMap(packedLight).withState(getShaderType(shaderParentType, techLevel, gemShader)));
-//        } else {
-            getter.getBuffer(traceVBOType.withMatrix(mat).withState(new RenderStateShard("nothing", () -> DEShaders.modelMat.glUniformMatrix4f(mat), () -> {}) {
-            }));//.withLightMap(packedLight));
-            getter.getBuffer(bladeVBOType.withMatrix(mat).withState(new RenderStateShard("nothing", () -> DEShaders.modelMat.glUniformMatrix4f(mat), () -> {}) {
-            }));//.withLightMap(packedLight));
-            getter.getBuffer(gemVBOType.withMatrix(mat).withState(new RenderStateShard("nothing", () -> DEShaders.modelMat.glUniformMatrix4f(mat), () -> {}) {
-            }));//.withLightMap(packedLight));
-//        }
+        // Render accent strip
+        buffers.getBuffer(traceVBOType.withCallback(() -> {
+            glUniformBaseColor(DEShaders.toolTraceBaseColor, techLevel);
+            DEShaders.toolTraceModelMat.glUniformMatrix4f(mat);
+        }));
+        // Render blade sides
+        buffers.getBuffer(bladeVBOType.withCallback(() -> {
+            glUniformBaseColor(DEShaders.toolBladeBaseColor, techLevel);
+            DEShaders.toolBladeModelMat.glUniformMatrix4f(mat);
+        }));
+        // Render gem
+        buffers.getBuffer(gemVBOType.withCallback(() -> {
+            glUniformBaseColor(DEShaders.toolGemBaseColor, techLevel);
+            DEShaders.toolGemModelMat.glUniformMatrix4f(mat);
+        }));
     }
 }

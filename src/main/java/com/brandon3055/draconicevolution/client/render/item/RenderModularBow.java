@@ -11,25 +11,19 @@ import codechicken.lib.render.shader.ShaderProgramBuilder;
 import codechicken.lib.render.shader.UniformType;
 import codechicken.lib.util.TransformUtils;
 import codechicken.lib.vec.Matrix4;
-import codechicken.lib.vec.Rotation;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.client.BCClientEventHandler;
 import com.brandon3055.brandonscore.lib.Vec3D;
-import com.brandon3055.brandonscore.utils.EnergyUtils;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.client.render.modelfx.BowModelEffect;
 import com.brandon3055.draconicevolution.items.equipment.ModularBow;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
@@ -45,7 +39,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
-import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
 import java.util.Map;
@@ -116,7 +109,7 @@ public class RenderModularBow extends ToolRenderBase {
 
 
     @Override
-    public void renderTool(CCRenderState ccrs, ItemStack stack, TransformType transform, Matrix4 mat, PoseStack mStack, MultiBufferSource getter, boolean gui, int packedLight) {
+    public void renderTool(CCRenderState ccrs, ItemStack stack, TransformType transform, Matrix4 mat, MultiBufferSource buffers, boolean gui) {
 //        transform(mat, 0.46, 0.54, 0.5, gui ? 0.9 : 1.125);
 //        double drawAngle = getDrawAngle(stack, Minecraft.getInstance().getDeltaFrameTime());
 //

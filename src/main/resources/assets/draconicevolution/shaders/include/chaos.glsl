@@ -1,6 +1,6 @@
 #version 150
 
-#moj_import <draconicevolution:math.glsl>
+#moj_import <brandonscore:math.glsl>
 
 vec3 explode(vec2 uv, vec2 pos, float anim, float maxRad) {
     float rad = anim * maxRad;

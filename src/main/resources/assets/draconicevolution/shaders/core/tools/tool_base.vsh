@@ -26,36 +26,53 @@ uniform vec3 Light1_Direction;
 
 uniform bool DisableOverlay;
 
+uniform ivec2 UV1Override;
+uniform ivec2 UV2Override;
+
 out vec3 fPos;
+out vec3 vPos;
 out float vertexDistance;
 out vec4 vertexColor;
 out vec4 lightMapColor;
 out vec4 overlayColor;
 out vec2 texCoord0;
 out vec4 normal;
-out vec2 posMod;
+out vec3 vNorm;
 
 void main() {
+    vPos = Position;
     fPos = (ModelViewMat * ModelMat * vec4(Position, 1.0)).xyz;
     gl_Position = ProjMat * ModelViewMat * ModelMat * vec4(Position, 1.0);
 
     vertexDistance = fog_distance(ModelViewMat, IViewRotMat * Position, FogShape);
+
+    ivec2 uv1 = UV1;
+    if (UV1Override.x != -1 && UV1Override.y != -1) {
+        uv1 = UV1Override;
+    }
+    ivec2 uv2 = UV2;
+    if (UV2Override.x != -1 && UV2Override.y != -1) {
+        uv2 = UV2Override;
+    }
+
     if (DisableLight) {
         vertexColor = Color;
         lightMapColor = vec4(1.0);
     } else if (SimpleLight) {
-        vertexColor = Color * minecraft_sample_lightmap(Sampler2, UV2);
+        vertexColor = Color * minecraft_sample_lightmap(Sampler2, uv2);
         lightMapColor = vec4(1.0);
     } else {
         vertexColor = minecraft_mix_light(Light0_Direction, Light1_Direction, Normal, Color);
-        lightMapColor = texelFetch(Sampler2, UV2 / 16, 0);
+        lightMapColor = texelFetch(Sampler2, uv2 / 16, 0);
     }
+
     if (DisableOverlay) {
         overlayColor = vec4(1.0);
     } else {
-        overlayColor = texelFetch(Sampler1, UV1, 0);
+        overlayColor = texelFetch(Sampler1, uv1, 0);
     }
+
     texCoord0 = UV0;
     normal = ProjMat * ModelViewMat * ModelMat * vec4(Normal, 0.0);
-    posMod = normalize(normal).xy / 100;
+    vNorm = Normal;
 }
