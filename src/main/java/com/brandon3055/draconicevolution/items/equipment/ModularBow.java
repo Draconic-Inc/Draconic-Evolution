@@ -295,7 +295,9 @@ public class ModularBow extends BowItem implements IReaperItem, IModularItem {
 
     @Override
     public boolean onEntityItemUpdate(ItemStack stack, ItemEntity entity) {
-        entity.setUnlimitedLifetime();
+        if (entity.getAge() >= 0) {
+            entity.setExtendedLifetime();
+        }
         return super.onEntityItemUpdate(stack, entity);
     }
 

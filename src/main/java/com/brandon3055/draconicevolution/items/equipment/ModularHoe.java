@@ -102,7 +102,9 @@ public class ModularHoe extends HoeItem implements IModularTieredItem {
 
     @Override
     public boolean onEntityItemUpdate(ItemStack stack, ItemEntity entity) {
-        entity.setUnlimitedLifetime();
+        if (entity.getAge() >= 0) {
+            entity.setExtendedLifetime();
+        }
         return super.onEntityItemUpdate(stack, entity);
     }
 
