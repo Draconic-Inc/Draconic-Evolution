@@ -4,18 +4,27 @@
         "srcrgb": "srcalpha",
         "dstrgb": "1-srcalpha"
     },
-    "vertex": "draconicevolution:chaos",
-    "fragment": "draconicevolution:chaos",
+    "vertex": "draconicevolution:chaos_block",
+    "fragment": "draconicevolution:chaos_block",
     "attributes": [
+        "Position",
         "Color",
-        "UV2"
+        "UV0",
+        "UV2",
+        "Normal"
     ],
     "samplers": [
-        { "name": "Sampler0" }
+        { "name": "Sampler0" },
+        { "name": "Sampler2" }
     ],
     "uniforms": [
         { "name": "ModelViewMat", "type": "matrix4x4", "count": 16, "values": [ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 ] },
         { "name": "ProjMat", "type": "matrix4x4", "count": 16, "values": [ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 ] },
+        { "name": "ColorModulator", "type": "vec4", "count": 4, "values": [ 1.0, 1.0, 1.0, 1.0 ] },
+        { "name": "FogStart", "type": "float", "count": 1, "values": [ 0.0 ] },
+        { "name": "FogEnd", "type": "float", "count": 1, "values": [ 1.0 ] },
+        { "name": "FogColor", "type": "vec4", "count": 4, "values": [ 0.0, 0.0, 0.0, 0.0 ] },
+        { "name": "FogShape", "type": "int", "count": 1, "values": [ 0 ] },
         { "name": "Time", "type": "float", "count": 1, "values": [ 0.0 ] },
         { "name": "Yaw", "type": "float", "count": 1, "values": [ 0.0 ] },
         { "name": "Pitch", "type": "float", "count": 1, "values": [ 0.0 ] },

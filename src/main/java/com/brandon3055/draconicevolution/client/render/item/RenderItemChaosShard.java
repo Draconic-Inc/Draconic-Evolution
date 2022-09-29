@@ -18,7 +18,6 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
@@ -31,39 +30,32 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.Map;
 
+import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
+
 /**
  * Created by brandon3055 on 27/2/20.
  */
 public class RenderItemChaosShard implements IItemRenderer {
 
-    private CCModel shard;
-    private Item item;
+    private static final RenderType chaosEntityType = RenderType.create(MODID + ":chaos_crystal_entity_type", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, RenderType.CompositeState.builder()
+            .setShaderState(new RenderStateShard.ShaderStateShard(() -> DEShaders.chaosEntityShader))
+            .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(MODID, "textures/item/equipment/chaos_shader.png"), true, false))
+            .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
+            .setCullState(RenderStateShard.NO_CULL)
+            .setLightmapState(RenderStateShard.LIGHTMAP)
+            .setOverlayState(RenderStateShard.OVERLAY)
+            .createCompositeState(false));
 
+    private final CCModel shard;
+    private final Item item;
 
     public RenderItemChaosShard(Item item) {
         this.item = item;
         Map<String, CCModel> map = new OBJParser(new ResourceLocation(DraconicEvolution.MODID, "models/item/chaos_shard.obj")).quads().ignoreMtl().parse();
-        shard = CCModel.combine(map.values()).backfacedCopy();
+        shard = CCModel.combine(map.values())
+                .backfacedCopy()
+                .computeNormals();
     }
-
-    //region Unused
-
-    @Override
-    public boolean useAmbientOcclusion() {
-        return false;
-    }
-
-    @Override
-    public boolean isGui3d() {
-        return false;
-    }
-
-    @Override
-    public boolean usesBlockLight() {
-        return false;
-    }
-
-    //endregion
 
     @Override
     public void renderItem(ItemStack stack, ItemTransforms.TransformType transformType, PoseStack mStack, MultiBufferSource getter, int packedLight, int packedOverlay) {
@@ -74,18 +66,24 @@ public class RenderItemChaosShard implements IItemRenderer {
         ccrs.overlay = packedOverlay;
         mat.apply(new Scale(item == DEContent.chaos_shard ? 1 : item == DEContent.chaos_frag_large ? 0.75 : item == DEContent.chaos_frag_medium ? 0.5 : 0.25).at(new Vector3(0.5, 0.5, 0.5)));
         Player player = Minecraft.getInstance().player;
-        DEShaders.chaosTime.glUniform1f((float) ClientUtils.getRenderTime());
-        DEShaders.chaosYaw.glUniform1f((float) (player.getYRot() * MathHelper.torad));
-        DEShaders.chaosPitch.glUniform1f((float) -(player.getXRot() * MathHelper.torad));
-        ccrs.bind(RenderTileChaosCrystal.chaosType, getter);
+
+        DEShaders.chaosEntityModelMat.glUniformMatrix4f(new Matrix4());
+        DEShaders.chaosEntitySimpleLight.glUniform1b(true);
+        DEShaders.chaosEntityTime.glUniform1f((float) ClientUtils.getRenderTime());
+        DEShaders.chaosEntityYaw.glUniform1f((float) (player.getYRot() * MathHelper.torad));
+        DEShaders.chaosEntityPitch.glUniform1f((float) -(player.getXRot() * MathHelper.torad));
+        ccrs.bind(chaosEntityType, getter);
         shard.render(ccrs, mat);
+
         ccrs.baseColour = 0xFFFFFFF0;
         ccrs.bind(RenderTileChaosCrystal.crystalType, getter);
         shard.render(ccrs, mat);
     }
 
-    @Override
-    public ModelState getModelTransform() {
-        return TransformUtils.DEFAULT_ITEM;
-    }
+    // @formatter:off
+    @Override public ModelState getModelTransform() { return TransformUtils.DEFAULT_ITEM; }
+    @Override public boolean useAmbientOcclusion() { return false; }
+    @Override public boolean isGui3d() { return false; }
+    @Override public boolean usesBlockLight() { return false; }
+    // @formatter:on
 }

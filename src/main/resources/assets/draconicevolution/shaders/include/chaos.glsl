@@ -1,87 +1,8 @@
-mat4 c_rotationMatrix(vec3 axis, float angle) {
+#version 150
 
-    axis = normalize(axis);
-    float s = sin(angle);
-    float c = cos(angle);
-    float oc = 1.0 - c;
+#moj_import <draconicevolution:math.glsl>
 
-    return mat4(oc * axis.x * axis.x + c,           oc * axis.x * axis.y - axis.z * s,  oc * axis.z * axis.x + axis.y * s,  0.0,
-    oc * axis.x * axis.y + axis.z * s,  oc * axis.y * axis.y + c,           oc * axis.y * axis.z - axis.x * s,  0.0,
-    oc * axis.z * axis.x - axis.y * s,  oc * axis.y * axis.z + axis.x * s,  oc * axis.z * axis.z + c,           0.0,
-    0.0,                                0.0,                                0.0,                                1.0);
-}
-
-vec3 c_mod289(vec3 x) {
-    return x - floor(x * (1.0 / 289.0)) * 289.0;
-}
-
-vec2 c_mod289(vec2 x) {
-    return x - floor(x * (1.0 / 289.0)) * 289.0;
-}
-
-vec3 c_permute(vec3 x) {
-    return c_mod289(((x*34.0)+1.0)*x);
-}
-
-float c_snoise2(vec2 v) {
-    const vec4 C = vec4(0.211324865405187,  // (3.0-sqrt(3.0))/6.0
-    0.366025403784439,  // 0.5*(sqrt(3.0)-1.0)
-    -0.577350269189626,  // -1.0 + 2.0 * C.x
-    0.024390243902439); // 1.0 / 41.0
-    // First corner
-    vec2 i  = floor(v + dot(v, C.yy) );
-    vec2 x0 = v -   i + dot(i, C.xx);
-
-    // Other corners
-    vec2 i1;
-    i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
-    vec4 x12 = x0.xyxy + C.xxzz;
-    x12.xy -= i1;
-
-    // Permutations
-    i = c_mod289(i); // Avoid truncation effects in permutation
-    vec3 p = c_permute( c_permute( i.y + vec3(0.0, i1.y, 1.0 ))
-    + i.x + vec3(0.0, i1.x, 1.0 ));
-
-    vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy), dot(x12.zw,x12.zw)), 0.0);
-    m = m*m ;
-    m = m*m ;
-
-    // Gradients: 41 points uniformly over a line, mapped onto a diamond.
-    // The ring size 17*17 = 289 is close to a multiple of 41 (41*7 = 287)
-
-    vec3 x = 2.0 * fract(p * C.www) - 1.0;
-    vec3 h = abs(x) - 0.5;
-    vec3 ox = floor(x + 0.5);
-    vec3 a0 = x - ox;
-
-    // Normalise gradients implicitly by scaling m
-    // Approximation of: m *= inversesqrt( a0*a0 + h*h );
-    m *= 1.79284291400159 - 0.85373472095314 * ( a0*a0 + h*h );
-
-    // Compute final noise value at P
-    vec3 g;
-    g.x  = a0.x  * x0.x  + h.x  * x0.y;
-    g.yz = a0.yz * x12.xz + h.yz * x12.yw;
-    return 130.0 * dot(m, g);
-}
-
-vec3 c_circle(vec2 uv, vec2 p, float r, float blur, vec3 color) {
-    float d = length(uv-p);
-    float c = smoothstep(r, r-blur, d);
-    color = vec3(color*c);
-    return color;
-}
-
-float c_rand(float seed) {
-    return mod(M_PI * seed, 1);
-}
-
-vec2 c_randVec2(float seed) {
-    return vec2(c_rand(seed * 134.3243), c_rand(floor(seed * 322.235)));
-}
-
-vec3 c_explode(vec2 uv, vec2 pos, float anim, float maxRad) {
+vec3 explode(vec2 uv, vec2 pos, float anim, float maxRad) {
     float rad = anim * maxRad;
     vec3 color = vec3(0);
 
@@ -90,22 +11,22 @@ vec3 c_explode(vec2 uv, vec2 pos, float anim, float maxRad) {
     color = vec3(.45, .05, .02);
 
     //Base Background colour Circle.
-    vec3 c = c_circle(uv, pos, rad, 0.04 * maxRad, color);
+    vec3 c = circle(uv, pos, rad, 0.04 * maxRad, color);
 
     //Inner Circle
-    c -= c_circle(uv, pos, rad, ir, color);
+    c -= circle(uv, pos, rad, ir, color);
     c *= 2.;
 
     //Initial Explosion Flash
-    c += c_circle(uv, pos, (-maxRad * anim) + (.85 * maxRad), (.8 * maxRad), vec3(1.0, .84, .23));
+    c += circle(uv, pos, (-maxRad * anim) + (.85 * maxRad), (.8 * maxRad), vec3(1.0, .84, .23));
     return max(vec3(0), c);
 }
 
-vec4 chaos(float time, float yaw, float pitch, float alphaMod, vec2 faceModifier, vec3 fPos, sampler2D Sampler0) {
+vec4 chaos(sampler2D sampler0, float time, float yaw, float pitch, float alpha, vec3 fPos, vec2 posMod) {
     vec4 col = vec4(0, 0, 0, 1);//vec4(0.047, 0.035, 0.063, 1) + (snoise(gl_FragCoord.xy) * vec4(0.02, 0.02, 0.02, 1));
 
     // get ray from camera to fragment
-    vec4 dir = normalize(vec4( -fPos, 0));
+    vec4 dir = normalize(vec4(-fPos, 0));
 
     // rotate the ray to show the right bit of the sphere for the angle
     float sb = sin(pitch);
@@ -130,21 +51,21 @@ vec4 chaos(float time, float yaw, float pitch, float alphaMod, vec2 faceModifier
         float rand3 = rand1 * 347.4 + rand2 * 63.4;
 
         // random rotation matrix by random rotation around random axis
-        vec3 axis = normalize(vec3(sin(mod(rand1, 2*M_PI)), sin(mod(rand2, 2*M_PI)) , cos(mod(rand3, 2*M_PI))));
+        vec3 axis = normalize(vec3(sin(mod(rand1, 2*M_PI)), sin(mod(rand2, 2*M_PI)), cos(mod(rand3, 2*M_PI))));
 
         // apply
-        ray = dir * c_rotationMatrix(axis, mod(rand3, 2*M_PI));
+        ray = dir * rotationMatrix(axis, mod(rand3, 2*M_PI));
 
         // calcuate the UVs from the final ray
-        float u = 0.5 + (atan(ray.z,ray.x)/(2*M_PI)) + faceModifier.x;
-        float v = 0.5 + (asin(ray.y)/M_PI) + faceModifier.y;
+        float u = 0.5 + (atan(ray.z, ray.x)/(2*M_PI)) + posMod.x;
+        float v = 0.5 + (asin(ray.y)/M_PI) + posMod.y;
 
         // get UV scaled for layers and offset by time;
         float scale = mult*0.5 + 2.75;
-        vec2 tex = vec2( u * scale, (v + time * 0.00006) * scale * 0.6 );
+        vec2 tex = vec2(u * scale, (v + time * 0.00006) * scale * 0.6);
 
         // sample the texture
-        vec4 tcol = texture2D(Sampler0, tex);
+        vec4 tcol = texture(sampler0, tex);
 
         // set the alpha, blending out at the bunched ends
         float a = tcol.r * (0.05 + (1.0/mult) * 0.65) * (1-smoothstep(0.15, 0.48, abs(v-0.5)));
@@ -160,22 +81,22 @@ vec4 chaos(float time, float yaw, float pitch, float alphaMod, vec2 faceModifier
             float expTime = (t / 30) + (4.2424242 * i * i2);
             float expPosRand = floor(expTime) * i2;
 
-            vec3 exc = c_explode(vec2(u, v), c_randVec2(expPosRand),  mod(expTime, 1.0), 0.003 * mult);
+            vec3 exc = explode(vec2(u, v), randVec2(expPosRand), mod(expTime, 1.0), 0.003 * mult);
             r += exc.r * (32 - mult);
             g += exc.g * (32 - mult);
             b += exc.b * (32 - mult);
         }
 
         // mix the colors
-        col = col*(1-a) + vec4(r,g,b,1)*a;
+        col = col*(1-a) + vec4(r, g, b, 1)*a;
     }
 
-    float br = clamp(2.5*gl_FragCoord.w + alphaMod,0,1);
+    float br = clamp(2.5*gl_FragCoord.w + alpha, 0, 1);
 
     col = col * br + vec4(0.047, 0.035, 0.063, 1) * (1-br);
 
     // increase the brightness of flashing ducts
-    col.rgb = clamp(col.rgb * (1+alphaMod*4),0,1);
+    col.rgb = clamp(col.rgb * (1+alpha*4), 0, 1);
 
     col.a = 1;
 
