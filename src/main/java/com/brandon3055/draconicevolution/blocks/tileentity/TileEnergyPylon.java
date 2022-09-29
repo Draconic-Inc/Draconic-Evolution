@@ -1,27 +1,40 @@
 package com.brandon3055.draconicevolution.blocks.tileentity;
 
+import codechicken.lib.colour.EnumColour;
+import codechicken.lib.data.MCDataInput;
 import com.brandon3055.brandonscore.api.power.IOPStorage;
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.capability.CapabilityOP;
 import com.brandon3055.brandonscore.client.particle.IntParticleType;
 import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.lib.Vec3I;
-import com.brandon3055.brandonscore.lib.datamanager.DataFlags;
-import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
-import com.brandon3055.brandonscore.lib.datamanager.ManagedByte;
-import com.brandon3055.brandonscore.lib.datamanager.ManagedVec3I;
+import com.brandon3055.brandonscore.lib.datamanager.*;
 import com.brandon3055.brandonscore.utils.Utils;
+import com.brandon3055.draconicevolution.blocks.StructureBlock;
 import com.brandon3055.draconicevolution.blocks.machines.EnergyPylon;
+import com.brandon3055.draconicevolution.blocks.machines.EnergyPylon.Mode;
 import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.block.Blocks;
+import net.minecraft.core.Direction;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.DrawSelectionEvent;
+import net.minecraftforge.common.Tags;
 
+import javax.annotation.Nullable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -29,71 +42,62 @@ import java.util.Random;
 /**
  * Created by brandon3055 on 30/3/2016.
  */
-public class TileEnergyPylon extends TileBCore /*implements */ {
-    public final ManagedBool isOutputMode = register(new ManagedBool("is_output_mode", DataFlags.SAVE_NBT_SYNC_TILE, DataFlags.TRIGGER_UPDATE));
-    public final ManagedBool structureValid = register(new ManagedBool("structure_valid", DataFlags.SAVE_NBT_SYNC_TILE, DataFlags.TRIGGER_UPDATE));
-    public final ManagedVec3I coreOffset = register(new ManagedVec3I("core_offset", new Vec3I(0, -1, 0), DataFlags.SAVE_NBT_SYNC_TILE));
-    public final ManagedBool sphereOnTop = register(new ManagedBool("sphere_on_top", true, DataFlags.SAVE_NBT_SYNC_TILE));
-    public final ManagedBool hasCoreLock = register(new ManagedBool("has_core_lock", DataFlags.SAVE_NBT_SYNC_TILE));
+public class TileEnergyPylon extends TileBCore implements MultiBlockController {
+    public final ManagedEnum<Mode> ioMode = register(new ManagedEnum<>("io_mode", Mode.OUTPUT, DataFlags.SAVE_NBT_SYNC_TILE));
+    public final ManagedEnum<Direction> direction = register(new ManagedEnum<>("io_mode", Direction.UP, DataFlags.SAVE_NBT_SYNC_TILE));
+    public final ManagedEnum<EnumColour> colour = register(new ManagedEnum<>("colour", EnumColour.class, null, DataFlags.SAVE_NBT_SYNC_TILE));
+    public final ManagedBool structureValid = register(new ManagedBool("structure_valid", DataFlags.SAVE_NBT_SYNC_TILE));
+    public final ManagedPos coreOffset = register(new ManagedPos("core_offset", (BlockPos) null, DataFlags.SAVE_NBT_SYNC_TILE));
     private final ManagedByte particleRate = register(new ManagedByte("particle_rate", DataFlags.SAVE_NBT_SYNC_TILE));
+
     private TileEnergyCore core = null;
     private int coreSelection = 0;
     private int tick = 0;
     private int lastCompOverride = 0;
 
-    private IOPStorage opAdapter = new IOPStorage() {
+    public IOPStorage opAdapter = new IOPStorage() {
         @Override
         public boolean canExtract() {
-//            return getExtendedStorage() > 0;
-            return true;
+            return ioMode.get().canExtract();
         }
 
         @Override
         public boolean canReceive() {
-//            return getExtendedStorage() < getExtendedCapacity();
-            return true;
+            return ioMode.get().canReceive();
         }
 
         @Override
         public long receiveOP(long maxReceive, boolean simulate) {
-//            if (!hasCoreLock.get() || isOutputMode.get() || getCore() == null || !getCore().active.get()) {
-//                return 0;
-//            }
-//
-//            long received = getCore().receiveEnergy(maxReceive, simulate);
-//
-//            if (!simulate && received > 0) {
-//                particleRate.set((byte) Math.min(20, received < 500 ? 1 : received / 500));
-//            }
-//
-//            return received;
-            return 0;
+            if (coreOffset.isNull() || !canReceive() || getCore() == null || !getCore().active.get()) {
+                return 0;
+            }
+            long received = getCore().energy.receiveOP(maxReceive, simulate);
+            if (!simulate && received > 0) {
+                particleRate.set((byte) Math.min(20, received < 500 ? 1 : received / 500));
+            }
+            return received;
         }
 
         @Override
         public long extractOP(long maxExtract, boolean simulate) {
-//            if (!hasCoreLock.get() || !isOutputMode.get() || getCore() == null || !getCore().active.get()) {
-//                return 0;
-//            }
-//
-//            long extracted = getCore().extractEnergy(maxExtract, simulate);
-//
-//            if (!simulate && extracted > 0) {
-//                particleRate.set((byte) Math.min(20, extracted < 500 && extracted > 0 ? 1 : extracted / 500));
-//            }
-//
-//            return extracted;
-            return 0;
+            if (coreOffset.isNull() || !canExtract() || getCore() == null || !getCore().active.get()) {
+                return 0;
+            }
+            long extracted = getCore().energy.extractOP(maxExtract, simulate);
+            if (!simulate && extracted > 0) {
+                particleRate.set((byte) Math.min(20, extracted < 500 ? 1 : extracted / 500));
+            }
+            return extracted;
         }
 
         @Override
         public long getOPStored() {
-            return 0;
+            return coreOffset.notNull() && getCore() != null ? getCore().energy.getOPStored() : 0;
         }
 
         @Override
         public long getMaxOPStored() {
-            return 0;
+            return coreOffset.notNull() && getCore() != null ? getCore().energy.getMaxOPStored() : 0;
         }
 
         @Override
@@ -124,49 +128,54 @@ public class TileEnergyPylon extends TileBCore /*implements */ {
 
     @Override
     public void tick() {
-//        super.tick();
-//        if (!structureValid.get() || !hasCoreLock.get() || getCore() == null || !getCore().active.get()) {
-//            return;
-//        }
-//
-//        if (tick++ % 10 == 0 && getExtendedCapacity() > 0) {
-//            updateComparators();
-//        }
-//
-//        if (!level.isClientSide && isOutputMode.get()) {
-//            long extracted = getCore().extractEnergy(sendEnergyToAll(opAdapter.getOPStored(), opAdapter.getOPStored()), false);
-//            if (extracted > 0) {
-//                particleRate.set((byte) Math.min(20, extracted < 500 ? 1 : extracted / 500));
-//            }
-//        }
-//
-//        if (level.isClientSide) {
-//            spawnParticles();
-//        }
-//
-//        if (!level.isClientSide && (particleRate.get() > 1 || (particleRate.get() > 0 && level.random.nextInt(2) == 0))) {
-//            particleRate.subtract((byte) 2);
-//        }
+        super.tick();
+        if (!structureValid.get() || coreOffset.isNull() || getCore() == null || !getCore().active.get()) {
+            return;
+        }
+
+        if (tick++ % 10 == 0 && opAdapter.getMaxOPStored() > 0) {
+            updateComparators();
+        }
+
+        if (!level.isClientSide && ioMode.get().canExtract()) {
+            long extracted = getCore().energy.extractOP(sendEnergyToAll(opAdapter.getOPStored(), opAdapter.getOPStored()), false);
+            if (extracted > 0) {
+                particleRate.set((byte) Math.min(20, extracted < 500 ? 1 : extracted / 500));
+            }
+        }
+
+        if (level.isClientSide) {
+            spawnParticles();
+        }
+
+        if (!level.isClientSide && (particleRate.get() > 1 || (particleRate.get() > 0 && level.random.nextInt(2) == 0))) {
+            particleRate.subtract((byte) 2);
+        }
     }
 
     public void updateComparators() {
-//        int cOut = (int) (((double) getExtendedStorage() / getExtendedCapacity()) * 15D);
-//        if (cOut != lastCompOverride) {
-//            lastCompOverride = cOut;
-//            level.updateNeighborsAt(worldPosition, getBlockState().getBlock());
-//        }
+        int cOut = (int) (((double) opAdapter.getOPStored() / opAdapter.getMaxOPStored()) * 15D);
+        if (cOut != lastCompOverride) {
+            lastCompOverride = cOut;
+            level.updateNeighborsAt(worldPosition, getBlockState().getBlock());
+        }
     }
 
-    //region MultiBlock Handling
+    // ### Core Connection Handling
 
-    public void invertIO() {
-        isOutputMode.invert();
-        level.setBlockAndUpdate(worldPosition, level.getBlockState(worldPosition).setValue(EnergyPylon.OUTPUT, isOutputMode.get()));
+    @Override
+    public InteractionResult handleRemoteClick(Player player, InteractionHand hand, BlockHitResult hit) {
+        if (!level.isClientSide) {
+            ioMode.set(ioMode.get().reverse());
+            level.setBlockAndUpdate(worldPosition, level.getBlockState(worldPosition).setValue(EnergyPylon.MODE, ioMode.get()));
+        }
+        return InteractionResult.SUCCESS;
     }
 
     public TileEnergyCore getCore() {
-        if (hasCoreLock.get()) {
-            BlockPos corePos = worldPosition.subtract(coreOffset.get().getPos());
+        BlockPos pos = coreOffset.get();
+        if (pos != null) {
+            BlockPos corePos = worldPosition.subtract(pos);
             LevelChunk coreChunk = level.getChunkAt(corePos);
 
             if (!level.isAreaLoaded(corePos, 16)) {
@@ -182,7 +191,8 @@ public class TileEnergyPylon extends TileBCore /*implements */ {
                     core = (TileEnergyCore) tile;
                 } else {
                     core = null;
-                    hasCoreLock.set(false);
+                    coreOffset.set(null);
+
                 }
             }
         }
@@ -191,19 +201,19 @@ public class TileEnergyPylon extends TileBCore /*implements */ {
 
     private List<TileEnergyCore> findActiveCores() {
         List<TileEnergyCore> list = new LinkedList<>();
-//        int yMod = sphereOnTop.get() ? 18 : -18;
-//        int range = 18;
-//
-//        Iterable<BlockPos> positions = BlockPos.betweenClosed(worldPosition.offset(-range, -range + yMod, -range), worldPosition.offset(range, range + yMod, range));
-//
-//        for (BlockPos blockPos : positions) {
-//            if (level.getBlockState(blockPos).getBlock() == DEContent.energy_core) {
-//                BlockEntity tile = level.getBlockEntity(blockPos);
-//                if (tile instanceof TileEnergyCore && ((TileEnergyCore) tile).active.get()) {
-//                    list.add(((TileEnergyCore) tile));
-//                }
-//            }
-//        }
+        int range = 18;
+        Direction dir = direction.get();
+        BlockPos offset = new BlockPos(dir.getStepX() * range, dir.getStepY() * range, dir.getStepZ() * range);
+        BlockPos min = worldPosition.offset(-18, -18, -18).offset(offset);
+        BlockPos max = worldPosition.offset(18, 18, 18).offset(offset);
+
+        for (BlockPos blockPos : BlockPos.betweenClosed(min, max)) {
+            if (level.getBlockState(blockPos).getBlock() == DEContent.energy_core) {
+                if (level.getBlockEntity(blockPos) instanceof TileEnergyCore tile && tile.active.get()) {
+                    list.add(tile);
+                }
+            }
+        }
 
         return list;
     }
@@ -215,7 +225,7 @@ public class TileEnergyPylon extends TileBCore /*implements */ {
         List<TileEnergyCore> cores = findActiveCores();
         if (cores.size() == 0) {
             core = null;
-            hasCoreLock.set(false);
+            coreOffset.set(null);
             return;
         }
 
@@ -224,78 +234,79 @@ public class TileEnergyPylon extends TileBCore /*implements */ {
         }
 
         TileEnergyCore selectedCore = cores.get(coreSelection);
-        coreOffset.set(new Vec3I(worldPosition.subtract(selectedCore.getBlockPos())));
+        coreOffset.set(new BlockPos(worldPosition.subtract(selectedCore.getBlockPos())));
         core = selectedCore;
-        hasCoreLock.set(true);
         level.updateNeighborsAt(worldPosition, getBlockState().getBlock());
         coreSelection++;
-
-        if (hasCoreLock.get()) {
-            drawParticleBeam();
-        }
-
-        updateBlock();
+        detectAndSendChanges(false);
+        drawParticleBeam();
     }
 
-//    @Override
-//    public boolean validateStructure() {
-//        if (!structureValid.get()) {
-//            if (level.getBlockState(worldPosition.offset(0, 1, 0)).getBlock() == Blocks.GLASS) {
-//                level.setBlockAndUpdate(worldPosition.offset(0, 1, 0), DEContent.energy_core_structure.defaultBlockState());
-//                BlockEntity tile = level.getBlockEntity(worldPosition.offset(0, 1, 0));
-//                if (tile instanceof TileCoreStructure) {
-//                    ((TileCoreStructure) tile).blockName.set("minecraft:glass");
-//                    ((TileCoreStructure) tile).setController(this);
-//                }
-//                sphereOnTop.set(true);
-//                level.setBlockAndUpdate(worldPosition, level.getBlockState(worldPosition).setValue(EnergyPylon.FACING, "up"));
-//            } else if (level.getBlockState(worldPosition.offset(0, -1, 0)).getBlock() == Blocks.GLASS) {
-//                level.setBlockAndUpdate(worldPosition.offset(0, -1, 0), DEContent.energy_core_structure.defaultBlockState());
-//                BlockEntity tile = level.getBlockEntity(worldPosition.offset(0, -1, 0));
-//                if (tile instanceof TileCoreStructure) {
-//                    ((TileCoreStructure) tile).blockName.set("minecraft:glass");
-//                    ((TileCoreStructure) tile).setController(this);
-//                }
-//                sphereOnTop.set(false);
-//                level.setBlockAndUpdate(worldPosition, level.getBlockState(worldPosition).setValue(EnergyPylon.FACING, "down"));
-//            } else {
-//                level.setBlockAndUpdate(worldPosition, level.getBlockState(worldPosition).setValue(EnergyPylon.FACING, "null"));
-//                return false;
-//            }
-//        }
-//
-//        structureValid.set(isStructureValid());
-//        if (structureValid.get() && !hasCoreLock.get()) {
-//            selectNextCore();
-//        } else if (!structureValid.get() && hasCoreLock.get()) {
-//            hasCoreLock.set(false);
-//        }
-//
-//        if (hasCoreLock.get() && level.isClientSide) {
-//            drawParticleBeam();
-//        }
-//
-//        return structureValid.get();
-//    }
-//
-//    @Override
-//    public boolean isStructureValid() {
-//        return (isGlass(worldPosition.offset(0, 1, 0)) || isGlass(worldPosition.offset(0, -1, 0))) && (!isGlass(worldPosition.offset(0, 1, 0)) || !isGlass(worldPosition.offset(0, -1, 0)));
-//    }
-//
-//    private boolean isGlass(BlockPos pos) {
-//        BlockEntity tile = level.getBlockEntity(pos);
-//        return tile instanceof TileCoreStructure && ((TileCoreStructure) tile).blockName.get().equals("minecraft:glass");
-//    }
+    // ### MultiBlock Handling
 
-    //endregion
+    @Override
+    public boolean validateStructure() {
+        if (!structureValid.get()) {
+            boolean found = false;
+            for (Direction dir : Direction.values()) {
+                BlockPos pos = worldPosition.relative(dir);
+                BlockState testState = level.getBlockState(pos);
+                if (testState.is(Tags.Blocks.GLASS)) {
+                    colour.set(getGlassColour(testState));
+                    StructureBlock.buildingLock = true;
+                    level.setBlockAndUpdate(worldPosition, level.getBlockState(worldPosition).setValue(EnergyPylon.FACING, dir));
+                    level.setBlockAndUpdate(pos, DEContent.structure_block.defaultBlockState());
+                    StructureBlock.buildingLock = false;
+                    if (level.getBlockEntity(pos) instanceof TileStructureBlock tile) {
+                        tile.blockName.set(testState.getBlock().getRegistryName());
+                        tile.setController(this);
+                        direction.set(dir);
+                        found = true;
+                        break;
+                    }
+                }
+            }
 
-    //region Rendering
+            if (!found) {
+                level.setBlockAndUpdate(worldPosition, level.getBlockState(worldPosition).setValue(EnergyPylon.FACING, Direction.UP));
+                colour.set(null);
+            }
+        }
 
-    private void drawParticleBeam() {
+        structureValid.set(isStructureValid());
+        if (structureValid.get() && coreOffset.isNull()) {
+            selectNextCore();
+        } else if (!structureValid.get() && coreOffset.notNull()) {
+            coreOffset.set(null);
+        }
+
+        return structureValid.get();
+    }
+
+    @Override
+    public boolean isStructureValid() {
+        return isGlass(worldPosition.relative(direction.get()));
+    }
+
+    private boolean isGlass(BlockPos pos) {
+        return level.getBlockEntity(pos) instanceof TileStructureBlock tile && tile.getOriginalBlock().defaultBlockState().is(Tags.Blocks.GLASS);
+    }
+
+    @Override
+    public void receivePacketFromServer(MCDataInput data, int id) {
+        if (id == 0) drawParticleBeam();
+    }
+
+    // ### Rendering
+
+    public void drawParticleBeam() {
+        if (!level.isClientSide) {
+            sendPacketToChunk(mcDataOutput -> {}, 0);
+            return;
+        }
         if (getCore() == null) return;
 
-        BlockPos thisPos = worldPosition.offset(0, sphereOnTop.get() ? 1 : -1, 0);
+        BlockPos thisPos = worldPosition.relative(direction.get());
         Vec3D coreVec = Vec3D.getDirectionVec(new Vec3D(thisPos).add(0.5, 0.5, 0.5), new Vec3D(getCore().getBlockPos()).add(0.5, 0.5, 0.5));
         double coreDistance = Utils.getDistanceAtoB(new Vec3D(thisPos).add(0.5, 0.5, 0.5), new Vec3D(getCore().getBlockPos().offset(0.5, 0.5, 0.5)));
 
@@ -328,75 +339,71 @@ public class TileEnergyPylon extends TileBCore /*implements */ {
             for (int i = 0; i <= particleRate.get() / 10; i++) {
                 spawn = getParticleSpawn(rand);
                 dest = getParticleDest(rand);
-//                BCEffectHandler.spawnFX(DEParticles.ENERGY_PARTICLE, world, spawn, dest, 0, 200, 255, 200);
                 level.addParticle(new IntParticleType.IntParticleData(DEParticles.energy, 0, 200, 255, 200), spawn.x, spawn.y, spawn.z, dest.x, dest.y, dest.z);
 
             }
         } else if (rand.nextInt(Math.max(1, 10 - particleRate.get())) == 0) {
             spawn = getParticleSpawn(rand);
             dest = getParticleDest(rand);
-//            BCEffectHandler.spawnFX(DEParticles.ENERGY_PARTICLE, world, spawn, dest, 0, 200, 255, 200);
             level.addParticle(new IntParticleType.IntParticleData(DEParticles.energy, 0, 200, 255, 200), spawn.x, spawn.y, spawn.z, dest.x, dest.y, dest.z);
         }
     }
 
     @OnlyIn(Dist.CLIENT)
     private Vec3D getParticleSpawn(Random random) {
-        if (isOutputMode.get()) {
+        if (ioMode.get().canExtract()) {
             double range = getCore().tier.get();
             return new Vec3D(getCore().getBlockPos()).add((random.nextFloat() - 0.5F) * range, (random.nextFloat() - 0.5F) * range, (random.nextFloat() - 0.5F) * range);
         } else {
-            return sphereOnTop.get() ? new Vec3D(worldPosition).add(0.5, 1.5, 0.5) : new Vec3D(worldPosition).add(0.5, -0.5, 0.5);
+            return Vec3D.getCenter(worldPosition.relative(direction.get()));
         }
     }
 
     @OnlyIn(Dist.CLIENT)
     private Vec3D getParticleDest(Random random) {
-        if (isOutputMode.get()) {
-            return sphereOnTop.get() ? new Vec3D(worldPosition).add(0.5, 1.5, 0.5) : new Vec3D(worldPosition).add(0.5, -0.5, 0.5);
+        if (ioMode.get().canExtract()) {
+            return Vec3D.getCenter(worldPosition.relative(direction.get()));
         } else {
             double range = getCore().tier.get() / 2D;
             return new Vec3D(getCore().getBlockPos()).add(0.5, 0.5, 0.5).add((random.nextFloat() - 0.5F) * range, (random.nextFloat() - 0.5F) * range, (random.nextFloat() - 0.5F) * range);
         }
     }
 
-//    @Override
-//    public boolean shouldRenderInPass(int pass) {
-//        return true;
-//    }
-
-    //endregion
-
-    //region Unused IMultiBlock
-
-//    @Override
-//    public IMultiBlockPart getController() {
-//        return this;
-//    }
-
-    //endregion
-
-//    @Override
-    public long getExtendedStorage() {
-//        if (!hasCoreLock.get() || getCore() == null) {
-            return 0;
-//        }
-//        return getCore().getExtendedStorage();
-    }
-//
-//    @Override
-    public long getExtendedCapacity() {
-//        if (!hasCoreLock.get() || getCore() == null) {
-            return 0;
-//        }
-//        return getCore().getExtendedCapacity();
+    @Override
+    public VoxelShape getShapeForPart(BlockPos pos, CollisionContext context) {
+        return Shapes.block();
     }
 
-//    @Override
-//    public Iterable<BlockPos> getBlocksForFrameMove() {
-//        if (structureValid.get()) {
-//            return Collections.singleton(sphereOnTop.get() ? pos.up() : pos.down());
-//        }
-//        return Collections.emptyList();
-//    }
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public boolean renderSelectionBox(DrawSelectionEvent.HighlightBlock event) {
+        return false;
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public AABB getRenderBoundingBox() {
+        return new AABB(worldPosition.offset(-1, -1, -1), worldPosition.offset(2, 2, 2));
+    }
+
+    @Nullable
+    public static EnumColour getGlassColour(BlockState state) {
+        if (state.is(Tags.Blocks.GLASS_WHITE)) return EnumColour.WHITE;
+        else if (state.is(Tags.Blocks.GLASS_ORANGE)) return EnumColour.ORANGE;
+        else if (state.is(Tags.Blocks.GLASS_MAGENTA)) return EnumColour.MAGENTA;
+        else if (state.is(Tags.Blocks.GLASS_LIGHT_BLUE)) return EnumColour.LIGHT_BLUE;
+        else if (state.is(Tags.Blocks.GLASS_YELLOW)) return EnumColour.YELLOW;
+        else if (state.is(Tags.Blocks.GLASS_LIME)) return EnumColour.LIME;
+        else if (state.is(Tags.Blocks.GLASS_PINK)) return EnumColour.PINK;
+        else if (state.is(Tags.Blocks.GLASS_GRAY)) return EnumColour.GRAY;
+        else if (state.is(Tags.Blocks.GLASS_LIGHT_GRAY)) return EnumColour.LIGHT_GRAY;
+        else if (state.is(Tags.Blocks.GLASS_CYAN)) return EnumColour.CYAN;
+        else if (state.is(Tags.Blocks.GLASS_PURPLE)) return EnumColour.PURPLE;
+        else if (state.is(Tags.Blocks.GLASS_BLUE)) return EnumColour.BLUE;
+        else if (state.is(Tags.Blocks.GLASS_BROWN)) return EnumColour.BROWN;
+        else if (state.is(Tags.Blocks.GLASS_GREEN)) return EnumColour.GREEN;
+        else if (state.is(Tags.Blocks.GLASS_RED)) return EnumColour.RED;
+        else if (state.is(Tags.Blocks.GLASS_BLACK)) return EnumColour.BLACK;
+        return null;
+    }
 }

@@ -1,22 +1,58 @@
 {
   "variants": {
-    "facing=down,output=false": {
-      "model": "draconicevolution:block/energy_pylon_input"
+    "facing=down,mode=output": {
+      "model": "draconicevolution:block/energy_pylon_output",
+      "x": 180
     },
-    "facing=null,output=false": {
-      "model": "draconicevolution:block/energy_pylon_input"
-    },
-    "facing=up,output=false": {
-      "model": "draconicevolution:block/energy_pylon_input"
-    },
-    "facing=down,output=true": {
+    "facing=up,mode=output": {
       "model": "draconicevolution:block/energy_pylon_output"
     },
-    "facing=null,output=true": {
-      "model": "draconicevolution:block/energy_pylon_output"
+    "facing=north,mode=output": {
+      "model": "draconicevolution:block/energy_pylon_output",
+      "x": 90,
+      "y": 360
     },
-    "facing=up,output=true": {
-      "model": "draconicevolution:block/energy_pylon_output"
+    "facing=south,mode=output": {
+      "model": "draconicevolution:block/energy_pylon_output",
+      "x": 90,
+      "y": 180
+    },
+    "facing=west,mode=output": {
+      "model": "draconicevolution:block/energy_pylon_output",
+      "x": 90,
+      "y": 270
+    },
+    "facing=east,mode=output": {
+      "model": "draconicevolution:block/energy_pylon_output",
+      "x": 90,
+      "y": 450
+    },
+    "facing=down,mode=input": {
+      "model": "draconicevolution:block/energy_pylon_input",
+      "x": 180
+    },
+    "facing=up,mode=input": {
+      "model": "draconicevolution:block/energy_pylon_input"
+    },
+    "facing=north,mode=input": {
+      "model": "draconicevolution:block/energy_pylon_input",
+      "x": 90,
+      "y": 360
+    },
+    "facing=south,mode=input": {
+      "model": "draconicevolution:block/energy_pylon_input",
+      "x": 90,
+      "y": 180
+    },
+    "facing=west,mode=input": {
+      "model": "draconicevolution:block/energy_pylon_input",
+      "x": 90,
+      "y": 270
+    },
+    "facing=east,mode=input": {
+      "model": "draconicevolution:block/energy_pylon_input",
+      "x": 90,
+      "y": 450
     }
   }
 }

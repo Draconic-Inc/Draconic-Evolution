@@ -49,7 +49,7 @@ public class AutoFeedEntity extends ModuleEntity {
                 ServerPlayer player = (ServerPlayer) entity;
                 if (storedFood < data.getFoodStorage() && consumeFood.getValue()) {
                     //Do food consumption
-                    for (ItemStack stack : player.inventory.items) {
+                    for (ItemStack stack : player.getInventory().items) {
                         if (!stack.isEmpty() && stack.isEdible()) {
                             FoodProperties food = stack.getItem().getFoodProperties();
                             if (food != null && food.getNutrition() > 0 && food.getEffects().isEmpty()) {

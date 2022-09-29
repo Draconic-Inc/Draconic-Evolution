@@ -378,8 +378,8 @@ public class DislocatorAdvanced extends Dislocator {
         int max = DEConfig.dislocatorMaxFuel - getFuel(dislocator);
         int wanted = allStacks ? max : Math.min(max, fullStack ? 16 : 1);
         int added = 0;
-        for (int i = 0; i < player.inventory.getContainerSize() && wanted > 0; i++) {
-            ItemStack stack = player.inventory.getItem(i);
+        for (int i = 0; i < player.getInventory().getContainerSize() && wanted > 0; i++) {
+            ItemStack stack = player.getInventory().getItem(i);
             if (stack.is(Tags.Items.ENDER_PEARLS)) {
                 while (!stack.isEmpty() && wanted > 0) {
                     wanted--;
@@ -402,8 +402,8 @@ public class DislocatorAdvanced extends Dislocator {
             return stack;
         }
 
-        for (int i = 0; i < player.inventory.getContainerSize() - player.inventory.offhand.size(); i++) {
-            stack = player.inventory.getItem(i);
+        for (int i = 0; i < player.getInventory().getContainerSize() - player.getInventory().offhand.size(); i++) {
+            stack = player.getInventory().getItem(i);
             if (stack.getItem() == DEContent.dislocator_advanced) {
                 return stack;
             }

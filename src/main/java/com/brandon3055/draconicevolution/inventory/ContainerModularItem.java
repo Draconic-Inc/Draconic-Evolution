@@ -71,7 +71,7 @@ public class ContainerModularItem extends ContainerModuleHost<TileBCore> {
             NetworkHooks.openGui(sender, new ContainerModularItem.Provider(stack, slot), slot::toBuff);
             return;
         } else {
-            PlayerSlot slot = PlayerSlot.findStackActiveFirst(sender.inventory, e -> e.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).isPresent());
+            PlayerSlot slot = PlayerSlot.findStackActiveFirst(sender.getInventory(), e -> e.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).isPresent());
             if (slot != null) {
                 NetworkHooks.openGui(sender, new ContainerModularItem.Provider(slot.getStackInSlot(sender), slot), slot::toBuff);
                 return;

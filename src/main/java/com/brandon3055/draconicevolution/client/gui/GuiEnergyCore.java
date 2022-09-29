@@ -96,6 +96,7 @@ public class GuiEnergyCore extends ModularGuiContainer<ContainerBCTile<TileEnerg
     }
 
 
+
 //    @Override
 //    public void init(Minecraft mc, int width, int height) {
 //        super.init(mc, width, height);

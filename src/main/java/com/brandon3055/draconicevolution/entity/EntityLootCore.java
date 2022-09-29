@@ -145,7 +145,7 @@ public class EntityLootCore extends Entity {
                 item.setPos(getX(), getY(), getZ());
                 int result = ForgeEventFactory.onItemPickup(item, player);
 
-                if (result == 1 || stack.getCount() <= 0 || player.inventory.add(stack)) {
+                if (result == 1 || stack.getCount() <= 0 || player.getInventory().add(stack)) {
                     if (!item.isAlive()) {
                         stack.setCount(0);
                     }

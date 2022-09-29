@@ -186,14 +186,14 @@ public class ContainerConfigurableItem extends ContainerBCore<Object> {
 
     public static void handlePropertyData(Player player, PropertyData data) {
         if (data.isGlobal) {
-            getStackProviders(getPlayerInventory(player.inventory))
+            getStackProviders(getPlayerInventory(player.getInventory()))
                     .filter(e -> e.value().getProviderName().equals(data.providerName))
                     .map(e -> Pair.of(e.key(), e.value().getProperty(data.getPropertyName())))
                     .filter(e -> Objects.nonNull(e.value()))
                     .filter(e -> e.value().getType() == data.type)
                     .forEach(e -> e.value().loadData(data, e.key()));
         } else {
-            getStackProviders(getPlayerInventory(player.inventory))
+            getStackProviders(getPlayerInventory(player.getInventory()))
                     .filter(e -> e.value().getProviderID().equals(data.providerID))
                     .map(e -> Pair.of(e.key(), e.value().getProperty(data.getPropertyName())))
                     .filter(e -> Objects.nonNull(e.value()))
@@ -252,7 +252,7 @@ public class ContainerConfigurableItem extends ContainerBCore<Object> {
             NetworkHooks.openGui(sender, new ContainerConfigurableItem.Provider(slot), slot::toBuff);
             return;
         } else {
-            PlayerSlot slot = PlayerSlot.findStackActiveFirst(sender.inventory, e -> e.getCapability(DECapabilities.PROPERTY_PROVIDER_CAPABILITY).isPresent());
+            PlayerSlot slot = PlayerSlot.findStackActiveFirst(sender.getInventory(), e -> e.getCapability(DECapabilities.PROPERTY_PROVIDER_CAPABILITY).isPresent());
             if (slot != null) {
                 NetworkHooks.openGui(sender, new ContainerConfigurableItem.Provider(slot), slot::toBuff);
                 return;

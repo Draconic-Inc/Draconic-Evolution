@@ -169,7 +169,7 @@ public class TileEnergyTransfuser extends TileBCore implements IInteractTile, Me
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int id, Inventory inv, Player player) {
-        return new ContainerBCTile<>(DEContent.container_energy_transfuser, id, player.inventory, this, GuiLayoutFactories.TRANSFUSER_LAYOUT);
+        return new ContainerBCTile<>(DEContent.container_energy_transfuser, id, player.getInventory(), this, GuiLayoutFactories.TRANSFUSER_LAYOUT);
     }
 
     public enum ItemIOMode {

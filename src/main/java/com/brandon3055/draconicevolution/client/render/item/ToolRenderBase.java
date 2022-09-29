@@ -238,14 +238,14 @@ public abstract class ToolRenderBase implements IItemRenderer {
 //
 
     public void initBaseVBO() {
-        baseVBOType = new VBORenderType(modelType, DefaultVertexFormat.POSITION_TEX_COLOR_NORMAL, (format, builder) -> {
+        baseVBOType = new VBORenderType(modelType, (format, builder) -> {
             CCRenderState ccrs = CCRenderState.instance();
             ccrs.reset();
             ccrs.bind(builder, format);
             baseModel.render(ccrs);
         });
 
-        guiBaseVBOType = new VBORenderType(modelGuiType, DefaultVertexFormat.POSITION_TEX_COLOR_NORMAL, (format, builder) -> {
+        guiBaseVBOType = new VBORenderType(modelGuiType, (format, builder) -> {
             CCRenderState ccrs = CCRenderState.instance();
             ccrs.reset();
             ccrs.bind(builder, format);
@@ -254,21 +254,21 @@ public abstract class ToolRenderBase implements IItemRenderer {
     }
 
     public void initMaterialVBO() {
-        materialVBOType = new VBORenderType(modelType, DefaultVertexFormat.POSITION_TEX_COLOR_NORMAL, (format, builder) -> {
+        materialVBOType = new VBORenderType(modelType, (format, builder) -> {
             CCRenderState ccrs = CCRenderState.instance();
             ccrs.reset();
             ccrs.bind(builder, format);
             materialModel.render(ccrs);
         });
 
-        guiMaterialVBOType = new VBORenderType(modelGuiType, DefaultVertexFormat.POSITION_TEX_COLOR_NORMAL, (format, builder) -> {
+        guiMaterialVBOType = new VBORenderType(modelGuiType, (format, builder) -> {
             CCRenderState ccrs = CCRenderState.instance();
             ccrs.reset();
             ccrs.bind(builder, format);
             materialModel.render(ccrs);
         });
 
-        materialChaosVBOType = new VBORenderType(chaosType, DefaultVertexFormat.POSITION_TEX_COLOR_NORMAL, (format, builder) -> {
+        materialChaosVBOType = new VBORenderType(chaosType, (format, builder) -> {
             CCRenderState ccrs = CCRenderState.instance();
             ccrs.reset();
             ccrs.bind(builder, format);
@@ -277,7 +277,7 @@ public abstract class ToolRenderBase implements IItemRenderer {
     }
 
     public void initTraceVBO() {
-        traceVBOType = new VBORenderType(shaderParentType, DefaultVertexFormat.POSITION_TEX_COLOR_NORMAL, (format, builder) -> {
+        traceVBOType = new VBORenderType(shaderParentType, (format, builder) -> {
             CCRenderState ccrs = CCRenderState.instance();
             ccrs.reset();
             ccrs.bind(builder, format);
@@ -286,7 +286,7 @@ public abstract class ToolRenderBase implements IItemRenderer {
     }
 
     public void initBladeVBO() {
-        bladeVBOType = new VBORenderType(shaderParentType, DefaultVertexFormat.POSITION_TEX_COLOR_NORMAL, (format, builder) -> {
+        bladeVBOType = new VBORenderType(shaderParentType, (format, builder) -> {
             CCRenderState ccrs = CCRenderState.instance();
             ccrs.reset();
             ccrs.bind(builder, format);
@@ -295,7 +295,7 @@ public abstract class ToolRenderBase implements IItemRenderer {
     }
 
     public void initGemVBO() {
-        gemVBOType = new VBORenderType(shaderParentType, DefaultVertexFormat.POSITION_TEX_COLOR_NORMAL, (format, builder) -> {
+        gemVBOType = new VBORenderType(shaderParentType, (format, builder) -> {
             CCRenderState ccrs = CCRenderState.instance();
             ccrs.reset();
             ccrs.bind(builder, format);

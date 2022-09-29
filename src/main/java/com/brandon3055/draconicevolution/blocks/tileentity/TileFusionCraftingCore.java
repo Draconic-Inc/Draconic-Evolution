@@ -250,7 +250,7 @@ public class TileFusionCraftingCore extends TileBCore implements IFusionInventor
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int currentWindowIndex, Inventory playerInventory, Player player) {
-        return new ContainerFusionCraftingCore(currentWindowIndex, player.inventory, this, GuiLayoutFactories.FUSION_CRAFTING_CORE);
+        return new ContainerFusionCraftingCore(currentWindowIndex, player.getInventory(), this, GuiLayoutFactories.FUSION_CRAFTING_CORE);
     }
 
     @Nonnull

@@ -27,6 +27,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterials;
 import net.minecraft.world.item.ItemStack;
@@ -171,7 +172,13 @@ public class ModularChestpiece extends ArmorItem implements IModularArmor, IDEEq
     }
 
     @Override
-    public int getEntityLifespan(ItemStack itemStack, Level level) {
-        return -32768;
+    public boolean onEntityItemUpdate(ItemStack stack, ItemEntity entity) {
+        entity.setUnlimitedLifetime();
+        return super.onEntityItemUpdate(stack, entity);
+    }
+
+    @Override
+    public boolean isEnchantable(ItemStack p_41456_) {
+        return true;
     }
 }

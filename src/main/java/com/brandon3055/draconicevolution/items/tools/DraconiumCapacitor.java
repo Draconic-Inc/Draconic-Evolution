@@ -134,11 +134,11 @@ public class DraconiumCapacitor extends Item implements IInvCharge, IModularItem
             if (entity instanceof Player) {
                 Player player = (Player) entity;
                 if (hot_bar && main) {
-                    stacks.addAll(player.inventory.items);
+                    stacks.addAll(player.getInventory().items);
                 } else if (hot_bar) {
-                    stacks.addAll(player.inventory.items.subList(0, 9));
+                    stacks.addAll(player.getInventory().items.subList(0, 9));
                 } else if (main) {
-                    stacks.addAll(player.inventory.items.subList(9, 36));
+                    stacks.addAll(player.getInventory().items.subList(9, 36));
                 }
                 if (held) {
                     if (!hot_bar) {

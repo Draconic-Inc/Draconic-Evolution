@@ -86,8 +86,8 @@ public class ServerPacketHandler implements ICustomPacketHandler.IServerPacketHa
     private void toggleDislocators(Player player) {
         List<ItemStack> dislocators = new ArrayList<>();
 
-        for (int i = 0; i < player.inventory.getContainerSize(); i++) {
-            ItemStack stack = player.inventory.getItem(i);
+        for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+            ItemStack stack = player.getInventory().getItem(i);
             if (stack.getItem() instanceof Magnet) {
                 dislocators.add(stack);
             }
@@ -110,7 +110,7 @@ public class ServerPacketHandler implements ICustomPacketHandler.IServerPacketHa
 //    private void changeToolProfile(PlayerEntity player, boolean armor) {
 //        if (armor) {
 //            int i = 0;
-//            NonNullList<ItemStack> armorInventory = player.inventory.armorInventory;
+//            NonNullList<ItemStack> armorInventory = player.getInventory().armorInventory;
 //            for (int i1 = armorInventory.size() - 1; i1 >= 0; i1--) {
 //                ItemStack stack = armorInventory.get(i1);
 //                if (!stack.isEmpty() && stack.getItem() instanceof IConfigurableItem) {
@@ -227,11 +227,11 @@ public class ServerPacketHandler implements ICustomPacketHandler.IServerPacketHa
 
             if (tileHit instanceof TilePlacedItem && InventoryUtils.insertItem(((TilePlacedItem) tileHit).itemHandler, stack, true).isEmpty()) {
                 InventoryUtils.insertItem(((TilePlacedItem) tileHit).itemHandler, stack, false);
-                player.inventory.removeItem(stack);
+                player.getInventory().removeItem(stack);
 
             } else if (tileOnSide instanceof TilePlacedItem && InventoryUtils.insertItem(((TilePlacedItem) tileOnSide).itemHandler, stack, true).isEmpty()) {
                 InventoryUtils.insertItem(((TilePlacedItem) tileOnSide).itemHandler, stack, false);
-                player.inventory.removeItem(stack);
+                player.getInventory().removeItem(stack);
 
             } else if (world.isEmptyBlock(posOnSide)) {
                 if (!ForgeEventFactory.onBlockPlace(player, BlockSnapshot.create(player.level.dimension(), world, posHit), blockTrace.getDirection())) {
@@ -240,7 +240,7 @@ public class ServerPacketHandler implements ICustomPacketHandler.IServerPacketHa
 
                     if (tile instanceof TilePlacedItem) {
                         ((TilePlacedItem) tile).itemHandler.setStackInSlot(0, stack);
-                        player.inventory.removeItem(stack);
+                        player.getInventory().removeItem(stack);
                     }
                 }
             }

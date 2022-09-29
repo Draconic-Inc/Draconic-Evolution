@@ -245,7 +245,7 @@ public class TileGenerator extends TileBCore implements IRSSwitchable, MenuProvi
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int currentWindowIndex, Inventory playerInventory, Player player) {
-        return new ContainerBCTile<>(DEContent.container_generator, currentWindowIndex, player.inventory, this, GuiLayoutFactories.GENERATOR_LAYOUT);
+        return new ContainerBCTile<>(DEContent.container_generator, currentWindowIndex, player.getInventory(), this, GuiLayoutFactories.GENERATOR_LAYOUT);
     }
 
     @Override

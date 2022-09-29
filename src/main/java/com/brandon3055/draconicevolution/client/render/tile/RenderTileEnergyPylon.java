@@ -14,6 +14,7 @@ import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
@@ -32,17 +33,15 @@ public class RenderTileEnergyPylon implements BlockEntityRenderer<TileEnergyPylo
 
     private static RenderType shelType = RenderType.create("pylon_sphere22", DefaultVertexFormat.POSITION_COLOR_TEX, VertexFormat.Mode.QUADS, 256, RenderType.CompositeState.builder()
                     .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(DraconicEvolution.MODID, "textures/block/pylon_sphere_texture.png"), false, false))
+                    .setShaderState(new RenderStateShard.ShaderStateShard(GameRenderer::getPositionColorTexShader))
                     .setTransparencyState(RenderStateShard.LIGHTNING_TRANSPARENCY)
                     .setWriteMaskState(RenderStateShard.COLOR_WRITE)
-//            .setTexturingState(new RenderStateShard.TexturingStateShard("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
                     .createCompositeState(false)
     );
     private final CCModel model;
 
-
     public RenderTileEnergyPylon(BlockEntityRendererProvider.Context context) {
         Map<String, CCModel> map = new OBJParser(new ResourceLocation(DraconicEvolution.MODID, "models/pylon_sphere.obj")).quads().ignoreMtl().parse();
-
         model = CCModel.combine(map.values());
         model.apply(new Scale(-0.35, -0.35, -0.35));
         model.computeNormals();
@@ -59,12 +58,13 @@ public class RenderTileEnergyPylon implements BlockEntityRenderer<TileEnergyPylo
         ccrs.overlay = packedOverlay;
 
         ccrs.bind(modelType, getter);
-        mat.translate(0.5, (te.sphereOnTop.get() ? 1.5 : -0.5), 0.5);
+        mat.translate(te.direction.get().getNormal());
+        mat.translate(0.5, 0.5, 0.5);
         mat.rotate(((ClientEventHandler.elapsedTicks + partialTicks) * 2F) * MathHelper.torad, new Vector3(0, 1, 0.5).normalize());
         model.render(ccrs, mat);
 
         float f = ((ClientEventHandler.elapsedTicks + partialTicks) % 30F) / 30F;
-        if (te.isOutputMode.get()) {
+        if (te.ioMode.get().canExtract()) {
             f = 1F - f;
         }
 

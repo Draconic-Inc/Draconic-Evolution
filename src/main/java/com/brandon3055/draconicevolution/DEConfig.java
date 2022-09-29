@@ -81,6 +81,8 @@ public class DEConfig {
     public static Integer[] spawnerDelays = new Integer[]{200, 800, 100, 400, 50, 200, 25, 100};
     public static Set<String> chestBlacklist = new HashSet<>();
 
+    public static Long[] coreCapacity = new Long[]{45500000L, 273000000L, 1640000000L, 9880000000L, 59300000000L, 356000000000L, 2140000000000L, -1L};
+
     private static void loadServer() {
         serverTag = config.getCategory("Server");
         ConfigValue serverIDTag = serverTag.getValue("serverID")
@@ -337,6 +339,26 @@ public class DEConfig {
                         "This may be useful for people like pack developers who want to add custom tool tier progression.")
                 .setDefaultBoolean(false)
                 .onSync((tag, type) -> useToolTierTags = tag.getBoolean());
+
+        serverTag.getValueList("coreCapacity")
+                .syncTagToClient()
+                .setComment("Allows you to adjust the capacity of each energy core tier.", "Warning changing the number entries in this list will crash your game.", "For tier 8 -1 = BigInteger.MAX_VALUE * Long.MAX_VALUE, Otherwise the max you can specify is 9223372036854775807")
+                .setDefaultLongs(Lists.newArrayList(coreCapacity))
+                .setRestriction(new ListRestriction() {
+                    @Override
+                    public Optional<Failure> test(ConfigValueList values) {
+                        if (values.getLongs().size() != 8) {
+                            return Optional.of(new Failure(0, values.getLongs().size()));
+                        }
+                        return Optional.empty();
+                    }
+
+                    @Override
+                    public String describe() {
+                        return "[Requires 8 entries]";
+                    }
+                })
+                .onSync((tag, reason) -> coreCapacity = tag.getLongs().toArray(new Long[0]));
     }
 
     //Client properties

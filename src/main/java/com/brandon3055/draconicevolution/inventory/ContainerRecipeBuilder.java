@@ -35,12 +35,12 @@ public class ContainerRecipeBuilder extends AbstractContainerMenu {
         int posX = 20;
         int posY = 145;
         for (int x = 0; x < 9; x++) {
-            addSlot(new Slot(player.inventory, x, posX + 18 * x, posY + 58));
+            addSlot(new Slot(player.getInventory(), x, posX + 18 * x, posY + 58));
         }
 
         for (int y = 0; y < 3; y++) {
             for (int x = 0; x < 9; x++) {
-                addSlot(new Slot(player.inventory, x + y * 9 + 9, posX + 18 * x, posY + y * 18));
+                addSlot(new Slot(player.getInventory(), x + y * 9 + 9, posX + 18 * x, posY + y * 18));
             }
         }
 

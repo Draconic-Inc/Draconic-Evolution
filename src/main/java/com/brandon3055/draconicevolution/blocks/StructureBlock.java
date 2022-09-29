@@ -32,6 +32,9 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.DrawSelectionEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
@@ -78,7 +81,7 @@ public class StructureBlock extends BlockBCore implements EntityBlock, Structure
         }
 
         BlockEntity tile = world.getBlockEntity(pos);
-        if (tile instanceof TileStructureBlock && ((TileStructureBlock) tile).getController() == null) {
+        if (tile instanceof TileStructureBlock && (((TileStructureBlock) tile).getController() == null || !((TileStructureBlock) tile).getController().isStructureValid())) {
             ((TileStructureBlock) tile).revert();
         }
     }
@@ -130,10 +133,8 @@ public class StructureBlock extends BlockBCore implements EntityBlock, Structure
 
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext context) {
-        BlockEntity tile = getter.getBlockEntity(pos);
-
-        if (tile instanceof TileStructureBlock) {
-            return ((TileStructureBlock) tile).getShape(context);
+        if (getter.getBlockEntity(pos) instanceof TileStructureBlock tile) {
+            return tile.getShape(context);
         }
         return super.getShape(state, getter, pos, context);
     }
@@ -164,5 +165,31 @@ public class StructureBlock extends BlockBCore implements EntityBlock, Structure
             }
         }
         return Blocks.AIR;
+    }
+
+    @Override
+    public float getDestroyProgress(BlockState state, Player player, BlockGetter getter, BlockPos pos) {
+        float f = state.getDestroySpeed(getter, pos);
+        if (getter.getBlockEntity(pos) instanceof TileStructureBlock tile) {
+            Block block = tile.getOriginalBlock();
+            if (block != Blocks.AIR) {
+                f = block.defaultBlockState().getDestroySpeed(getter, pos);
+            }
+        }
+        if (f == -1.0F) {
+            return 0.0F;
+        } else {
+            int i = net.minecraftforge.common.ForgeHooks.isCorrectToolForDrops(state, player) ? 30 : 100;
+            return player.getDigSpeed(state, pos) / f / (float)i;
+        }
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public boolean renderSelectionBox(DrawSelectionEvent.HighlightBlock event, Level level) {
+        if (level.getBlockEntity(event.getTarget().getBlockPos()) instanceof TileStructureBlock tile) {
+            return tile.renderSelectionBox(event);
+        }
+        return true;
     }
 }

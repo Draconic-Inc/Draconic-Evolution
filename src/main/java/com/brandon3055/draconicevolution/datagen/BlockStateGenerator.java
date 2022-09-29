@@ -20,6 +20,9 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.function.Function;
 
+import static net.minecraft.core.Direction.DOWN;
+import static net.minecraft.core.Direction.UP;
+
 /**
  * Created by brandon3055 on 28/2/20.
  */
@@ -82,10 +85,22 @@ public class BlockStateGenerator extends BlockStateProvider {
         dummyBlock(DEContent.reactor_stabilizer);
         dummyBlock(DEContent.reactor_injector);
 
+        VariantBlockStateBuilder pylonBuilder = getVariantBuilder(DEContent.energy_pylon);
+        for (EnergyPylon.Mode mode : EnergyPylon.Mode.values()) {
+            String io = mode == EnergyPylon.Mode.OUTPUT ? "output" : "input";
+            ModelFile model = models().cubeBottomTop("energy_pylon_"+io, modLoc("block/energy_pylon/energy_pylon_" + io), modLoc("block/energy_pylon/energy_pylon_" + io), modLoc("block/energy_pylon/energy_pylon_active_face"));
+            for (Direction dir : Direction.values()) {
+                pylonBuilder.partialState()
+                        .with(EnergyPylon.FACING, dir)
+                        .with(EnergyPylon.MODE, mode)
+                        .modelForState()
+                        .modelFile(model)
+                        .rotationY(dir.getAxis() == Direction.Axis.Y ? 0 : 180 + (90 * dir.get2DDataValue()))
+                        .rotationX(dir == UP ? 0 : dir == DOWN ? 180 : 90)
+                        .addModel();
 
-        getVariantBuilder(DEContent.energy_pylon)
-                .forAllStates(state -> ConfiguredModel.builder()
-                        .modelFile(models().cubeBottomTop(state.getValue(EnergyPylon.OUTPUT) ? "energy_pylon_output" : "energy_pylon_input", modLoc("block/energy_pylon/energy_pylon_" + (state.getValue(EnergyPylon.OUTPUT) ? "output" : "input")), modLoc("block/energy_pylon/energy_pylon_active_face"), modLoc("block/energy_pylon/energy_pylon_active_face"))).build());
+            }
+        }
 
         simpleBlock(DEContent.dislocator_pedestal, models().getExistingFile(modLoc("block/dislocator_pedestal")));
 
@@ -148,8 +163,6 @@ public class BlockStateGenerator extends BlockStateProvider {
         }
 
 
-
-
         //Generator
         ModelFile modelGenerator = models().getExistingFile(modLoc("block/generator/generator"));
         ModelFile modelGeneratorFlame = models().getExistingFile(modLoc("block/generator/generator_flame"));
@@ -181,8 +194,6 @@ public class BlockStateGenerator extends BlockStateProvider {
             grinderBuilder.part().modelFile(modelGrinder).rotationY(angle).addModel().condition(Grinder.FACING, dir).end()
                     .part().modelFile(modelGrinderActive).rotationY(angle).addModel().condition(Grinder.FACING, dir).condition(Grinder.ACTIVE, true).end();
         }
-
-
 
 
         if (true) return;
@@ -338,30 +349,11 @@ public class BlockStateGenerator extends BlockStateProvider {
                     Direction dir = state.getValue(BlockStateProperties.FACING);
                     return ConfiguredModel.builder()
                             .modelFile(modelFunc.apply(state))
-                            .rotationX(dir == Direction.DOWN ? 90 : dir == Direction.UP ? -90 : 0)
+                            .rotationX(dir == DOWN ? 90 : dir == UP ? -90 : 0)
                             .rotationY(dir.getAxis().isVertical() ? 0 : (((int) dir.toYRot()) + angleOffset) % 360)
                             .build();
                 });
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     @Override

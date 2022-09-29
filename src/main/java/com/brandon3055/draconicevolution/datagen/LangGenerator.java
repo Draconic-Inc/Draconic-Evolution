@@ -818,6 +818,30 @@ public class LangGenerator extends LanguageProvider {
         add("key.draconicevolution.dislocator_down",                            "Advanced Dislocator Select Down");
 
         add("enchantment.draconicevolution.reaper_enchantment",                 "Reaper");
+
+
+        add("numprefix.draconicevolution.10-3",                                  "Kilo");
+        add("numprefix.draconicevolution.10-6",                                  "Mega");
+        add("numprefix.draconicevolution.10-9",                                  "Giga");
+        add("numprefix.draconicevolution.10-12",                                 "Tera");
+        add("numprefix.draconicevolution.10-15",                                 "Peta");
+        add("numprefix.draconicevolution.10-18",                                 "Exa");
+        add("numprefix.draconicevolution.10-21",                                 "Zetta");
+        add("numprefix.draconicevolution.10-24",                                 "Yotta");
+        add("numprefix.draconicevolution.10-27",                                 "Octillion");
+        add("numprefix.draconicevolution.10-30",                                 "Nonillion");
+        add("numprefix.draconicevolution.10-33",                                 "Decillion");
+        add("numprefix.draconicevolution.10-36",                                 "Undecillion");
+        add("numprefix.draconicevolution.10-39",                                 "Duodecillion");
+        add("numprefix.draconicevolution.10-42",                                 "Tredecillion");
+        add("numprefix.draconicevolution.10-45",                                 "Quattuordecillion");
+        add("numprefix.draconicevolution.10-48",                                 "Quindecillion");
+        add("numprefix.draconicevolution.10-51",                                 "Sexdecillion");
+        add("numprefix.draconicevolution.10-54",                                 "Septendecillion");
+        add("numprefix.draconicevolution.10-57",                                 "Octodecillion");
+        add("numprefix.draconicevolution.10-60",                                 "Novemdecillion");
+        add("numprefix.draconicevolution.10-63",                                 "Vigintillion");
+
     }
 
     @Override

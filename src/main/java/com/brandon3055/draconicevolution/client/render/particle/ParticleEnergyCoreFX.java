@@ -13,6 +13,7 @@ import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.core.Direction;
@@ -26,11 +27,11 @@ public class ParticleEnergyCoreFX extends TextureSheetParticle {
     public static final ParticleRenderType PARTICLE_NO_DEPTH_NO_LIGHT = new ParticleRenderType() {
         public void begin(BufferBuilder builder, TextureManager manager) {
             RenderSystem.depthMask(false);
-            manager.bindForSetup(TextureAtlas.LOCATION_PARTICLES);
+//            RenderSystem.setShader(GameRenderer::getParticleShader);
+            RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_PARTICLES);
             RenderSystem.enableBlend();
             RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-//            RenderSystem.setalphaFunc(516, 0.003921569F);
-            builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
+            builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.PARTICLE);
         }
 
         public void end(Tesselator tesselator) {
@@ -63,6 +64,11 @@ public class ParticleEnergyCoreFX extends TextureSheetParticle {
     @Override
     public ParticleRenderType getRenderType() {
         return PARTICLE_NO_DEPTH_NO_LIGHT;
+    }
+
+    @Override
+    protected int getLightColor(float p_107249_) {
+        return 255;
     }
 
     @Override

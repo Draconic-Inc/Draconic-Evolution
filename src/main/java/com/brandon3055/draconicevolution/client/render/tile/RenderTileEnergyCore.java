@@ -10,6 +10,7 @@ import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.client.render.MultiBlockRenderers;
 import com.brandon3055.brandonscore.lib.Vec3I;
+import com.brandon3055.brandonscore.lib.datamanager.ManagedPos;
 import com.brandon3055.brandonscore.multiblock.MultiBlockDefinition;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyCore;
@@ -25,6 +26,8 @@ import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.*;
@@ -33,7 +36,7 @@ import java.util.*;
  * Created by brandon3055 on 2/4/2016.
  */
 public class RenderTileEnergyCore implements BlockEntityRenderer<TileEnergyCore> {
-    private static final double[] SCALES = {1.1, 1.7, 2.3, 3.6, 5.5, 7.1, 8.6, 10.2};
+    public static final double[] SCALES = {1.1, 1.7, 2.3, 3.6, 5.5, 7.1, 8.6, 10.2};
 
     private static final RenderType innerCoreType = RenderType.entitySolid(new ResourceLocation(DraconicEvolution.MODID, "textures/block/energy_core/energy_core_base.png"));
 
@@ -116,20 +119,18 @@ public class RenderTileEnergyCore implements BlockEntityRenderer<TileEnergyCore>
         ccrs.overlay = packedOverlay;
 
         float rotation = (ClientEventHandler.elapsedTicks + partialTicks) / 2F;
-
         double scale = SCALES[te.tier.get() - 1];
 
         renderInnerCore(te, ccrs, mat, getter, partialTicks, rotation, scale);
-        renderFancyOuterCore(te, ccrs, mat, getter, partialTicks, rotation, scale);
-//        renderLegacyOuterCore(te, ccrs, mat, getter, partialTicks, rotation, scale);
+//        renderFancyOuterCore(te, ccrs, mat, getter, partialTicks, rotation, scale);
+        renderLegacyOuterCore(te, ccrs, mat, getter, partialTicks, rotation, scale);
 
-
-
+        renderStabilizers(te, ccrs, mat, getter, partialTicks);
     }
 
     public void renderInnerCore(TileEnergyCore te, CCRenderState ccrs, Matrix4 mat, MultiBufferSource getter, float partialTicks, float rotation, double scale) {
         int brightness = (int) Math.abs(Math.sin((float) ClientEventHandler.elapsedTicks / 100f) * 100f);
-        ccrs.baseColour = 0xFFFFFFFF;//te.getColour();
+        ccrs.baseColour = 0xFF0000FF;//te.getColour();
         ccrs.brightness = 140 + brightness;
         ccrs.bind(innerCoreType, getter);
         Matrix4 coreMat = mat.copy();
@@ -166,6 +167,56 @@ public class RenderTileEnergyCore implements BlockEntityRenderer<TileEnergyCore>
         overlayMatRef.rotate(rotation * 0.5F * MathHelper.torad, new Vector3(0F, -1F, -0.5F).normalize());
         modelEnergyCore.render(ccrs, overlayMatRef);
     }
+
+
+
+
+    private void renderStabilizers(TileEnergyCore te, CCRenderState ccrs, Matrix4 matrix4, MultiBufferSource getter, float partialTick) {
+        if (!te.stabilizersValid.get()) {
+            return;
+        }
+
+        for (ManagedPos posOffset : te.stabilizerPositions) {
+            Matrix4 mat = matrix4.copy();
+            mat.translate(-posOffset.get().getX() + 0.5, -posOffset.get().getY() + 0.5, -posOffset.get().getZ() + 0.5);
+
+            Direction facing = Direction.getNearest(posOffset.get().getX(), posOffset.get().getY(), posOffset.get().getZ());//Direction.getFacingFromAxis(Direction.AxisDirection.POSITIVE, te.multiBlockAxis);
+            if (facing.getAxis() == Direction.Axis.X || facing.getAxis() == Direction.Axis.Y) {
+                mat.rotate(-90F * MathHelper.torad, new Vector3(-facing.getStepY(), facing.getStepX(), 0).normalize());
+            } else if (facing == Direction.SOUTH) {
+                mat.rotate(180F * MathHelper.torad, new Vector3(0, 1, 0).normalize());
+            }
+
+            mat.rotate(90F * MathHelper.torad, new Vector3(1, 0, 0).normalize());
+
+            ccrs.baseColour = 0xFFFFFFFF;
+            renderStabilizerBeam(te, mat, getter, posOffset.get(), partialTick);
+            if (te.tier.get() >= 5) {
+                mat.scale(-1.2F, -0.5F, -1.2F);
+            } else {
+                mat.scale(-0.45, -0.45, -0.45);
+            }
+
+            Matrix4 innerMat = mat.copy();
+            innerMat.scale(0.9F, 0.9F, 0.9F);
+            ccrs.baseColour = 0x00FFFFFF;
+            ccrs.brightness = 240;
+            innerMat.rotate((ClientEventHandler.elapsedTicks + partialTick) * MathHelper.torad, new Vector3(0, -1, 0));
+            ccrs.bind(innerStabType, getter);
+            modelStabilizerSphere.render(ccrs, innerMat);
+
+            mat.scale(1.1F, 1.1F, 1.1F);
+            ccrs.baseColour = 0x00FFFF7F;
+            ccrs.brightness = 240;
+            mat.rotate((ClientEventHandler.elapsedTicks + partialTick) * 0.5F * MathHelper.torad, new Vector3(0, 1, 0));
+            ccrs.bind(outerStabType, getter);
+            modelStabilizerSphere.render(ccrs, mat);
+        }
+    }
+
+
+
+
 
 
 
@@ -326,12 +377,12 @@ public class RenderTileEnergyCore implements BlockEntityRenderer<TileEnergyCore>
 //        }
 //    }
 
-    private void renderStabilizerBeam(TileEnergyCore te, Matrix4 matrix4, MultiBufferSource getter, Vec3I vec, float partialTick) {
+    private void renderStabilizerBeam(TileEnergyCore te, Matrix4 matrix4, MultiBufferSource getter, BlockPos vec, float partialTick) {
         Matrix4 innerMat = matrix4.copy();
         VertexConsumer builder = new TransformingVertexConsumer(getter.getBuffer(beamType), innerMat);
         innerMat.rotate(180 * MathHelper.torad, new Vector3(0, 0, 1));
 
-        float beamLength = Math.abs(vec.x + vec.y + vec.z) - 0.5F;
+        float beamLength = Math.abs(vec.getX() + vec.getY() + vec.getZ()) - 0.5F;
         float time = ClientEventHandler.elapsedTicks + partialTick;
         double rotation = (double) time * 0.025D * -1.5D;
         float beamMotion = -time * 0.2F - (float) MathHelper.floor(-time * 0.1F);

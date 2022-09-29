@@ -130,14 +130,14 @@ public class ModularArmorEventHandler {
 
         if (entity instanceof Player) {
             Player player = (Player) entity;
-            NonNullList<ItemStack> stacks = player.inventory.items;
+            NonNullList<ItemStack> stacks = player.getInventory().items;
             for (int i = 0; i < stacks.size(); ++i) {
-                getUndyingEntities(stacks.get(i), undyingModules, player.inventory.selected == i ? EquipmentSlot.MAINHAND : null, false);
+                getUndyingEntities(stacks.get(i), undyingModules, player.getInventory().selected == i ? EquipmentSlot.MAINHAND : null, false);
             }
             for (EquipmentSlot slot : ARMOR_SLOTS) {
-                getUndyingEntities(player.inventory.armor.get(slot.getIndex()), undyingModules, slot, false);
+                getUndyingEntities(player.getInventory().armor.get(slot.getIndex()), undyingModules, slot, false);
             }
-            for (ItemStack stack : player.inventory.offhand) {
+            for (ItemStack stack : player.getInventory().offhand) {
                 getUndyingEntities(stack, undyingModules, EquipmentSlot.OFFHAND, false);
             }
             for (ItemStack stack : EquipmentManager.getAllItems(entity)) {
@@ -186,14 +186,14 @@ public class ModularArmorEventHandler {
         ArmorAbilities armorAbilities = new ArmorAbilities();
         if (entity instanceof Player) {
             Player player = (Player) entity;
-            NonNullList<ItemStack> stacks = player.inventory.items;
+            NonNullList<ItemStack> stacks = player.getInventory().items;
             for (int i = 0; i < stacks.size(); ++i) {
-                tryTickStack(stacks.get(i), player, player.inventory.selected == i ? EquipmentSlot.MAINHAND : null, armorAbilities, false);
+                tryTickStack(stacks.get(i), player, player.getInventory().selected == i ? EquipmentSlot.MAINHAND : null, armorAbilities, false);
             }
             for (EquipmentSlot slot : ARMOR_SLOTS) {
-                tryTickStack(player.inventory.armor.get(slot.getIndex()), player, slot, armorAbilities, false);
+                tryTickStack(player.getInventory().armor.get(slot.getIndex()), player, slot, armorAbilities, false);
             }
-            for (ItemStack stack : player.inventory.offhand) {
+            for (ItemStack stack : player.getInventory().offhand) {
                 tryTickStack(stack, player, EquipmentSlot.OFFHAND, armorAbilities, false);
             }
             if (EquipmentManager.equipModLoaded()) {

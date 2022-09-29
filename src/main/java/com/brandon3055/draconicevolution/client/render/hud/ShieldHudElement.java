@@ -157,7 +157,7 @@ public class ShieldHudElement extends AbstractHudElement {
 
         if (energyMode > 0) {
             List<ItemStack> capacitors = new ArrayList<>(EquipmentManager.findItems(e -> e.getItem() instanceof DraconiumCapacitor, mc.player));
-            for (ItemStack stack : mc.player.inventory.items) {
+            for (ItemStack stack : mc.player.getInventory().items) {
                 if (stack.getItem() instanceof DraconiumCapacitor) {
                     capacitors.add(stack);
                 }

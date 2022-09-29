@@ -30,6 +30,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.Arrow;
@@ -198,7 +199,7 @@ public class ModularBow extends BowItem implements IReaperItem, IModularItem {
                     if (!infiniteAmmo && !player.getAbilities().instabuild) {
                         ammoStack.shrink(1);
                         if (ammoStack.isEmpty()) {
-                            player.inventory.removeItem(ammoStack);
+                            player.getInventory().removeItem(ammoStack);
                         }
                     }
 
@@ -293,7 +294,13 @@ public class ModularBow extends BowItem implements IReaperItem, IModularItem {
     }
 
     @Override
-    public int getEntityLifespan(ItemStack itemStack, Level level) {
-        return -32768;
+    public boolean onEntityItemUpdate(ItemStack stack, ItemEntity entity) {
+        entity.setUnlimitedLifetime();
+        return super.onEntityItemUpdate(stack, entity);
+    }
+
+    @Override
+    public boolean isEnchantable(ItemStack p_41456_) {
+        return true;
     }
 }

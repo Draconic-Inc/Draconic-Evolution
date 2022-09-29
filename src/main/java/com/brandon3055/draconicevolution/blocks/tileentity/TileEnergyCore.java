@@ -1,16 +1,24 @@
 package com.brandon3055.draconicevolution.blocks.tileentity;
 
 import codechicken.lib.data.MCDataInput;
+import codechicken.lib.math.MathHelper;
+import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.inventory.ContainerBCTile;
 import com.brandon3055.brandonscore.lib.IInteractTile;
 import com.brandon3055.brandonscore.lib.datamanager.*;
 import com.brandon3055.brandonscore.multiblock.*;
 import com.brandon3055.brandonscore.utils.FacingUtils;
+import com.brandon3055.brandonscore.utils.MathUtils;
+import com.brandon3055.brandonscore.utils.Utils;
+import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.blocks.machines.EnergyCore;
+import com.brandon3055.draconicevolution.client.render.tile.RenderTileEnergyCore;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.inventory.GuiLayoutFactories;
 import com.brandon3055.draconicevolution.lib.MultiBlockBuilder;
+import com.brandon3055.draconicevolution.lib.OPStorageOP;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
@@ -24,6 +32,7 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -34,9 +43,11 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.DrawSelectionEvent;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -59,9 +70,10 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
     public final ManagedBool coreValid = register(new ManagedBool("core_valid", SAVE_NBT_SYNC_TILE)); //The core structure is valid
     public final ManagedBool stabilizersValid = register(new ManagedBool("stabilizers_valid", SAVE_NBT_SYNC_TILE)); //The stabilizer configuration is valid.
     public final ManagedBool buildGuide = register(new ManagedBool("build_guide", SAVE_NBT_SYNC_TILE, CLIENT_CONTROL));
-    //    public final ManagedBool canActivate = register(new ManagedBool("can_activate", SAVE_NBT_SYNC_TILE)); //The core and the stabilizers are valid, The core can be activated.
     public final ManagedString invalidMessage = register(new ManagedString("invalid_message", DataFlags.SAVE_NBT));
     public final ManagedPos[] stabilizerPositions = new ManagedPos[4]; //Relative stabilizer positions
+
+    protected OPStorageOP energy = new OPStorageOP(this::getCapacity);
 
     private MultiBlockDefinition definitionCache = null;
     private MultiBlockBuilder activeBuilder = null;
@@ -101,6 +113,7 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
             NetworkHooks.openGui((ServerPlayer) player, this, worldPosition);
             return InteractionResult.SUCCESS;
         }
+
         return InteractionResult.SUCCESS;
     }
 
@@ -121,7 +134,7 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int currentWindowIndex, Inventory playerInventory, Player player) {
-        return new ContainerBCTile<>(DEContent.container_energy_core, currentWindowIndex, player.inventory, this, GuiLayoutFactories.ENERGY_CORE_LAYOUT);
+        return new ContainerBCTile<>(DEContent.container_energy_core, currentWindowIndex, player.getInventory(), this, GuiLayoutFactories.ENERGY_CORE_LAYOUT);
     }
 
     @Override
@@ -140,9 +153,6 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
             } else if (!validateStructure()) {
                 return;
             }
-//            if (energy.get() > getCapacity()) {
-//            energy.set(getCapacity());
-//            }
 
             MultiBlockDefinition definition = getMultiBlockDef();
             if (definition == null) {
@@ -168,6 +178,8 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
             buildGuide.set(false);
             active.set(true);
             updateStabilizers(true);
+            energy.validateStorage();
+            level.setBlockAndUpdate(worldPosition, level.getBlockState(worldPosition).setValue(EnergyCore.ACTIVE, true));
         }
     }
 
@@ -191,7 +203,7 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
         if (level.isClientSide) {
             return;
         }
-
+        level.setBlockAndUpdate(worldPosition, level.getBlockState(worldPosition).setValue(EnergyCore.ACTIVE, false));
         MultiBlockDefinition definition = getMultiBlockDef();
         if (definition == null) {
             return;
@@ -233,7 +245,7 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
      */
     @Override
     public boolean validateStructure() {
-        if (level == null) return true;
+        if (level == null || level.isClientSide) return true;
         coreValid.set(isCoreValidForTier(tier.get()));
         checkStabilizers();
         boolean structureValid = isStructureValid();
@@ -340,9 +352,18 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
         return valid;
     }
 
-
     public boolean reqAdvStabilizers() {
         return tier.get() >= ADV_STABILIZER_TIER;
+    }
+
+    // ### Energy handling ###
+
+    private long getCapacity() {
+        if (tier.get() <= 0 || tier.get() > 8) {
+            DraconicEvolution.LOGGER.error("Tier not valid! WTF!!!");
+            return 0;
+        }
+        return DEConfig.coreCapacity[tier.get() - 1];
     }
 
 
@@ -463,15 +484,6 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
 //        ticksElapsed++;
 //    }
 //
-
-//
-//    private long getCapacity() {
-//        if (tier.get() <= 0 || tier.get() > 8) {
-//            LogHelper.error("Tier not valid! WTF!!!");
-//            return 0;
-//        }
-//        return (long) DEOldConfig.coreCapacity[tier.get() - 1];
-//    }
 //
 //    @Override
 //    public void receivePacketFromClient(MCDataInput data, ServerPlayer client, int id) {
@@ -615,7 +627,42 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
+    public boolean renderSelectionBox(DrawSelectionEvent.HighlightBlock event) {
+        return false;
+    }
+
+    //    VoxelShape shape = null;
+//    VoxelShape shape2 = null;
+    @Override
     public VoxelShape getShapeForPart(BlockPos pos, CollisionContext context) {
+        //Todo efficiently generate a shape that represents the entire core.
+//        Vector3 offset = Vector3.fromBlockPosCenter(worldPosition);
+//        offset.subtract(pos);
+//
+//        if (shape2 == null || shape == null) {
+//            double resolution = 1;//0.25;
+//            double hr = resolution / 2;
+//            double rad = 3.75;//Math.round((RenderTileEnergyCore.SCALES[tier.get() - 1] / 2) / resolution) * resolution;
+//
+//            shape = Shapes.empty();
+//            List<VoxelShape> shapes = new ArrayList<>();
+//
+//            for (double x = -rad; x < rad; x += resolution) {
+//                for (double y = -rad; y < rad; y += resolution) {
+//                    for (double z = -rad; z < rad; z += resolution) {
+//                        if (MathUtils.distanceSq(new Vector3(0, 0, 0), new Vector3(x, y, z)) <= rad * rad) {
+//                            shapes.add(Shapes.box(x - hr, y - hr, z - hr, x + hr, y + hr, z + hr));
+//                        }
+//                    }
+//                }
+//            }
+//
+//            shape = Shapes.or(shape, shapes.toArray(new VoxelShape[0]));
+//        }
+//
+//        shape2 = shape;
+//        return shape.move(offset.x, offset.y, offset.z);
         return Shapes.block();
     }
 }

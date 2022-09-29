@@ -18,6 +18,7 @@ import com.brandon3055.draconicevolution.init.TechProperties;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DiggerItem;
 import net.minecraft.world.item.ItemStack;
@@ -136,8 +137,14 @@ public class ModularStaff extends DiggerItem implements IReaperItem, IModularMin
     }
 
     @Override
-    public int getEntityLifespan(ItemStack itemStack, Level level) {
-        return -32768;
+    public boolean onEntityItemUpdate(ItemStack stack, ItemEntity entity) {
+        entity.setUnlimitedLifetime();
+        return super.onEntityItemUpdate(stack, entity);
+    }
+
+    @Override
+    public boolean isEnchantable(ItemStack p_41456_) {
+        return true;
     }
 
     //Projectile Attack Handling

@@ -576,7 +576,7 @@ public class TileReactorCore extends TileBCore implements MenuProvider {
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int currentWindowIndex, Inventory playerInventory, Player player) {
-        return new ContainerReactor(DEContent.container_reactor, currentWindowIndex, player.inventory, this);
+        return new ContainerReactor(DEContent.container_reactor, currentWindowIndex, player.getInventory(), this);
     }
 
     @Override

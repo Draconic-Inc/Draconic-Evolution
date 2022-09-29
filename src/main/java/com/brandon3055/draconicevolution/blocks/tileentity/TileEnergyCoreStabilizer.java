@@ -1,12 +1,18 @@
 package com.brandon3055.draconicevolution.blocks.tileentity;
 
 
+import codechicken.lib.vec.Vector3;
+import com.brandon3055.brandonscore.api.TimeKeeper;
 import com.brandon3055.brandonscore.blocks.TileBCore;
+import com.brandon3055.brandonscore.client.particle.IntParticleType;
 import com.brandon3055.brandonscore.lib.IInteractTile;
+import com.brandon3055.brandonscore.lib.Vec3D;
 import com.brandon3055.brandonscore.lib.datamanager.*;
 import com.brandon3055.brandonscore.utils.FacingUtils;
 import com.brandon3055.draconicevolution.blocks.StructureBlock;
 import com.brandon3055.draconicevolution.blocks.machines.EnergyCoreStabilizer;
+import com.brandon3055.draconicevolution.client.DEParticles;
+import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
@@ -23,6 +29,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
@@ -134,11 +142,9 @@ public class TileEnergyCoreStabilizer extends TileBCore implements IInteractTile
         StructureBlock.buildingLock = true;
         for (BlockPos offset : FacingUtils.getAroundAxis(axis)) {
             level.setBlockAndUpdate(worldPosition.offset(offset), DEContent.structure_block.defaultBlockState());
-            BlockEntity tile = level.getBlockEntity(worldPosition.offset(offset));
-
-            if (tile instanceof TileStructureBlock) {
-                ((TileStructureBlock) tile).blockName.set(DEContent.energy_core_stabilizer.getRegistryName());
-                ((TileStructureBlock) tile).setController(this);
+            if (level.getBlockEntity(worldPosition.offset(offset)) instanceof TileStructureBlock tile) {
+                tile.blockName.set(DEContent.energy_core_stabilizer.getRegistryName());
+                tile.setController(this);
             }
         }
 
@@ -147,7 +153,6 @@ public class TileEnergyCoreStabilizer extends TileBCore implements IInteractTile
         multiBlockAxis.set(axis);
         StructureBlock.buildingLock = false;
     }
-
 
     // ### Validate Multi-block
 
@@ -258,7 +263,7 @@ public class TileEnergyCoreStabilizer extends TileBCore implements IInteractTile
         coreDirection.set(Direction.getNearest(offset.getX(), offset.getY(), offset.getZ()).getOpposite());
     }
 
-    // ### Rendering
+    // ### Tick / Rendering
 
     @Override
     public VoxelShape getShapeForPart(BlockPos pos, CollisionContext context) {
@@ -271,53 +276,51 @@ public class TileEnergyCoreStabilizer extends TileBCore implements IInteractTile
     }
 
 
-    //    //    //region Beam
-//
-//    @Override
-//    public void tick() {
-//        super.tick();
-//        if (level.isClientSide && hasCoreLock.get() && isCoreActive.get()) {
-//            rotation = ClientEventHandler.elapsedTicks;
-//            updateVisual();
-//            if (isValidMultiBlock.get()) {
-//                updateVisual();
-//            }
-//        }
-//    }
-//
-//    @OnlyIn(Dist.CLIENT)
-//    private void updateVisual() {
-//        Vec3D spawn = new Vec3D(worldPosition);
-//        spawn.add(0.5, 0.5, 0.5);
-//        double rand = level.random.nextInt(100) / 12D;
-//        double randOffset = rand * (Math.PI * 2D);
-//        double offsetX = Math.sin((ClientEventHandler.elapsedTicks / 180D * Math.PI) + randOffset);
-//        double offsetY = Math.cos((ClientEventHandler.elapsedTicks / 180D * Math.PI) + randOffset);
-//
-//        if (!isValidMultiBlock.get() || level.random.nextBoolean()) {
-//            double d = isValidMultiBlock.get() ? 1.1 : 0.25;
-//            double inset = isValidMultiBlock.get() ? 1 : 0;
-//            if (coreDirection.get().getAxis() == Direction.Axis.Z) {
-//                spawn.add(offsetX * d, offsetY * d, (level.random.nextBoolean() ? -0.38 : 0.38) * inset);
-//            } else if (coreDirection.get().getAxis() == Direction.Axis.Y) {
-//                spawn.add(offsetX * d, (level.random.nextBoolean() ? -0.38 : 0.38) * inset, offsetY * d);
-//            } else if (coreDirection.get().getAxis() == Direction.Axis.X) {
-//                spawn.add((level.random.nextBoolean() ? -0.38 : 0.38) * inset, offsetY * d, offsetX * d);
-//            }
-//            Vec3D target = new Vec3D(worldPosition).subtract(coreOffset.get().getPos()).add(0.5, 0.5, 0.5);
-//            level.addParticle(new IntParticleType.IntParticleData(DEParticles.energy_core, 1, (int) (randOffset * 100D), isValidMultiBlock.get() ? 1 : 0), spawn.x, spawn.y, spawn.z, target.x, target.y, target.z);
-//        } else {
-//            if (coreDirection.get().getAxis() == Direction.Axis.Z) {
-//                spawn.add(offsetX * 1.2, offsetY * 1.2, level.random.nextBoolean() ? -0.38 : 0.38);
-//            } else if (coreDirection.get().getAxis() == Direction.Axis.Y) {
-//                spawn.add(offsetX * 1.2, level.random.nextBoolean() ? -0.38 : 0.38, offsetY * 1.2);
-//            } else if (coreDirection.get().getAxis() == Direction.Axis.X) {
-//                spawn.add(level.random.nextBoolean() ? -0.38 : 0.38, offsetY * 1.2, offsetX * 1.2);
-//            }
-//            Vec3D target = new Vec3D(worldPosition).add(0.5, 0.5, 0.5);
-//            level.addParticle(new IntParticleType.IntParticleData(DEParticles.energy_core, 0), spawn.x, spawn.y, spawn.z, target.x, target.y, target.z);
-//        }
-//    }
+        @Override
+    public void tick() {
+        super.tick();
+        if (level.isClientSide && coreOffset.get() != null && isCoreActive.get()) {
+            rotation = TimeKeeper.getClientTick();
+            updateVisual();
+            if (isValidMultiBlock.get()) {
+                updateVisual();
+            }
+        }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    private void updateVisual() {
+        Vec3D spawn = new Vec3D(worldPosition);
+        spawn.add(0.5, 0.5, 0.5);
+        double rand = level.random.nextInt(100) / 12D;
+        double randOffset = rand * (Math.PI * 2D);
+        double offsetX = Math.sin((ClientEventHandler.elapsedTicks / 180D * Math.PI) + randOffset);
+        double offsetY = Math.cos((ClientEventHandler.elapsedTicks / 180D * Math.PI) + randOffset);
+
+        if (!isValidMultiBlock.get() || level.random.nextBoolean()) {
+            double d = isValidMultiBlock.get() ? 1.1 : 0.25;
+            double inset = isValidMultiBlock.get() ? 1 : 0;
+            if (coreDirection.get().getAxis() == Direction.Axis.Z) {
+                spawn.add(offsetX * d, offsetY * d, (level.random.nextBoolean() ? -0.38 : 0.38) * inset);
+            } else if (coreDirection.get().getAxis() == Direction.Axis.Y) {
+                spawn.add(offsetX * d, (level.random.nextBoolean() ? -0.38 : 0.38) * inset, offsetY * d);
+            } else if (coreDirection.get().getAxis() == Direction.Axis.X) {
+                spawn.add((level.random.nextBoolean() ? -0.38 : 0.38) * inset, offsetY * d, offsetX * d);
+            }
+            Vector3 target = Vector3.fromBlockPosCenter(worldPosition).subtract(coreOffset.get());
+            level.addParticle(new IntParticleType.IntParticleData(DEParticles.energy_core, 1, (int) (randOffset * 100D), isValidMultiBlock.get() ? 1 : 0), spawn.x, spawn.y, spawn.z, target.x, target.y, target.z);
+        } else {
+            if (coreDirection.get().getAxis() == Direction.Axis.Z) {
+                spawn.add(offsetX * 1.2, offsetY * 1.2, level.random.nextBoolean() ? -0.38 : 0.38);
+            } else if (coreDirection.get().getAxis() == Direction.Axis.Y) {
+                spawn.add(offsetX * 1.2, level.random.nextBoolean() ? -0.38 : 0.38, offsetY * 1.2);
+            } else if (coreDirection.get().getAxis() == Direction.Axis.X) {
+                spawn.add(level.random.nextBoolean() ? -0.38 : 0.38, offsetY * 1.2, offsetX * 1.2);
+            }
+            Vector3 target = Vector3.fromBlockPosCenter(worldPosition);
+            level.addParticle(new IntParticleType.IntParticleData(DEParticles.energy_core, 0), spawn.x, spawn.y, spawn.z, target.x, target.y, target.z);
+        }
+    }
 ////
 ////    //endregion
 ////

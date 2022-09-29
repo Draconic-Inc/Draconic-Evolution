@@ -524,86 +524,86 @@ public class DraconicGuardianRenderer extends EntityRenderer<DraconicGuardianEnt
         }
 
         public void renderToBuffer(PoseStack mStack, VertexConsumer getter, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-            mStack.pushPose();
-            float f = Mth.lerp(this.partialTicks, this.dragonInstance.prevAnimTime, this.dragonInstance.animTime);
-            this.jaw.xRot = (float) (Math.sin(f * ((float) Math.PI * 2F)) + 1.0D) * 0.2F;
-            float f1 = (float) (Math.sin(f * ((float) Math.PI * 2F) - 1.0F) + 1.0D);
-            f1 = (f1 * f1 + f1 * 2.0F) * 0.05F;
-            mStack.translate(0.0D, f1 - 2.0F, -3.0D);
-            mStack.mulPose(Vector3f.XP.rotationDegrees(f1 * 2.0F));
-            float f2 = 0.0F;
-            float f3 = 20.0F;
-            float f4 = -12.0F;
-            float f5 = 1.5F;
-            double[] adouble = this.dragonInstance.getMovementOffsets(6, this.partialTicks);
-            float f6 = Mth.rotWrap(this.dragonInstance.getMovementOffsets(5, this.partialTicks)[0] - this.dragonInstance.getMovementOffsets(10, this.partialTicks)[0]);
-            float f7 = Mth.rotWrap(this.dragonInstance.getMovementOffsets(5, this.partialTicks)[0] + (double) (f6 / 2.0F));
-            float f8 = f * ((float) Math.PI * 2F);
-
-            for (int i = 0; i < 5; ++i) {
-                double[] adouble1 = this.dragonInstance.getMovementOffsets(5 - i, this.partialTicks);
-                float f9 = (float) Math.cos((float) i * 0.45F + f8) * 0.15F;
-                this.spine.yRot = Mth.rotWrap(adouble1[0] - adouble[0]) * ((float) Math.PI / 180F) * 1.5F;
-                this.spine.xRot = f9 + this.dragonInstance.getHeadPartYOffset(i, adouble, adouble1) * ((float) Math.PI / 180F) * 1.5F * 5.0F;
-                this.spine.zRot = -Mth.rotWrap(adouble1[0] - (double) f7) * ((float) Math.PI / 180F) * 1.5F;
-                this.spine.y = f3;
-                this.spine.z = f4;
-                this.spine.x = f2;
-                f3 = (float) ((double) f3 + Math.sin(this.spine.xRot) * 10.0D);
-                f4 = (float) ((double) f4 - Math.cos(this.spine.yRot) * Math.cos(this.spine.xRot) * 10.0D);
-                f2 = (float) ((double) f2 - Math.sin(this.spine.yRot) * Math.cos(this.spine.xRot) * 10.0D);
-                this.spine.render(mStack, getter, packedLight, packedOverlay);
-            }
-
-            this.head.y = f3;
-            this.head.z = f4;
-            this.head.x = f2;
-            double[] adouble2 = this.dragonInstance.getMovementOffsets(0, this.partialTicks);
-            this.head.yRot = Mth.rotWrap(adouble2[0] - adouble[0]) * ((float) Math.PI / 180F);
-            this.head.xRot = Mth.rotWrap(this.dragonInstance.getHeadPartYOffset(6, adouble, adouble2)) * ((float) Math.PI / 180F) * 1.5F * 5.0F;
-            this.head.zRot = -Mth.rotWrap(adouble2[0] - (double) f7) * ((float) Math.PI / 180F);
-            this.head.render(mStack, getter, packedLight, packedOverlay);
-            mStack.pushPose();
-            mStack.translate(0.0D, 1.0D, 0.0D);
-            mStack.mulPose(Vector3f.ZP.rotationDegrees(-f6 * 1.5F));
-            mStack.translate(0.0D, -1.0D, 0.0D);
-            this.body.zRot = 0.0F;
-            this.body.render(mStack, getter, packedLight, packedOverlay);
-            float f10 = f * ((float) Math.PI * 2F);
-            this.leftProximalWing.xRot = 0.125F - (float) Math.cos(f10) * 0.2F;
-            this.leftProximalWing.yRot = -0.25F;
-            this.leftProximalWing.zRot = -((float) (Math.sin(f10) + 0.125D)) * 0.8F;
-            this.leftDistalWing.zRot = (float) (Math.sin(f10 + 2.0F) + 0.5D) * 0.75F;
-            this.rightProximalWing.xRot = this.leftProximalWing.xRot;
-            this.rightProximalWing.yRot = -this.leftProximalWing.yRot;
-            this.rightProximalWing.zRot = -this.leftProximalWing.zRot;
-            this.rightDistalWing.zRot = -this.leftDistalWing.zRot;
-            this.renderSide(mStack, getter, packedLight, packedOverlay, f1, this.leftProximalWing, this.leftForeThigh, this.leftForeLeg, this.leftForeFoot, this.leftHindThigh, this.leftHindLeg, this.leftHindFoot);
-            this.renderSide(mStack, getter, packedLight, packedOverlay, f1, this.rightProximalWing, this.rightForeThigh, this.rightForeLeg, this.rightForeFoot, this.rightHindThigh, this.rightHindLeg, this.rightHindFoot);
-            mStack.popPose();
-            float f11 = -((float) Math.sin(f * ((float) Math.PI * 2F))) * 0.0F;
-            f8 = f * ((float) Math.PI * 2F);
-            f3 = 10.0F;
-            f4 = 60.0F;
-            f2 = 0.0F;
-            adouble = this.dragonInstance.getMovementOffsets(11, this.partialTicks);
-
-            for (int j = 0; j < 12; ++j) {
-                adouble2 = this.dragonInstance.getMovementOffsets(12 + j, this.partialTicks);
-                f11 = (float) ((double) f11 + Math.sin((float) j * 0.45F + f8) * (double) 0.05F);
-                this.spine.yRot = (Mth.rotWrap(adouble2[0] - adouble[0]) * 1.5F + 180.0F) * ((float) Math.PI / 180F);
-                this.spine.xRot = f11 + (float) (adouble2[1] - adouble[1]) * ((float) Math.PI / 180F) * 1.5F * 5.0F;
-                this.spine.zRot = Mth.rotWrap(adouble2[0] - (double) f7) * ((float) Math.PI / 180F) * 1.5F;
-                this.spine.y = f3;
-                this.spine.z = f4;
-                this.spine.x = f2;
-                f3 = (float) ((double) f3 + Math.sin(this.spine.xRot) * 10.0D);
-                f4 = (float) ((double) f4 - Math.cos(this.spine.yRot) * Math.cos(this.spine.xRot) * 10.0D);
-                f2 = (float) ((double) f2 - Math.sin(this.spine.yRot) * Math.cos(this.spine.xRot) * 10.0D);
-                this.spine.render(mStack, getter, packedLight, packedOverlay);
-            }
-
-            mStack.popPose();
+//            mStack.pushPose();
+//            float f = Mth.lerp(this.partialTicks, this.dragonInstance.prevAnimTime, this.dragonInstance.animTime);
+//            this.jaw.xRot = (float) (Math.sin(f * ((float) Math.PI * 2F)) + 1.0D) * 0.2F;
+//            float f1 = (float) (Math.sin(f * ((float) Math.PI * 2F) - 1.0F) + 1.0D);
+//            f1 = (f1 * f1 + f1 * 2.0F) * 0.05F;
+//            mStack.translate(0.0D, f1 - 2.0F, -3.0D);
+//            mStack.mulPose(Vector3f.XP.rotationDegrees(f1 * 2.0F));
+//            float f2 = 0.0F;
+//            float f3 = 20.0F;
+//            float f4 = -12.0F;
+//            float f5 = 1.5F;
+//            double[] adouble = this.dragonInstance.getMovementOffsets(6, this.partialTicks);
+//            float f6 = Mth.rotWrap(this.dragonInstance.getMovementOffsets(5, this.partialTicks)[0] - this.dragonInstance.getMovementOffsets(10, this.partialTicks)[0]);
+//            float f7 = Mth.rotWrap(this.dragonInstance.getMovementOffsets(5, this.partialTicks)[0] + (double) (f6 / 2.0F));
+//            float f8 = f * ((float) Math.PI * 2F);
+//
+//            for (int i = 0; i < 5; ++i) {
+//                double[] adouble1 = this.dragonInstance.getMovementOffsets(5 - i, this.partialTicks);
+//                float f9 = (float) Math.cos((float) i * 0.45F + f8) * 0.15F;
+//                this.spine.yRot = Mth.rotWrap(adouble1[0] - adouble[0]) * ((float) Math.PI / 180F) * 1.5F;
+//                this.spine.xRot = f9 + this.dragonInstance.getHeadPartYOffset(i, adouble, adouble1) * ((float) Math.PI / 180F) * 1.5F * 5.0F;
+//                this.spine.zRot = -Mth.rotWrap(adouble1[0] - (double) f7) * ((float) Math.PI / 180F) * 1.5F;
+//                this.spine.y = f3;
+//                this.spine.z = f4;
+//                this.spine.x = f2;
+//                f3 = (float) ((double) f3 + Math.sin(this.spine.xRot) * 10.0D);
+//                f4 = (float) ((double) f4 - Math.cos(this.spine.yRot) * Math.cos(this.spine.xRot) * 10.0D);
+//                f2 = (float) ((double) f2 - Math.sin(this.spine.yRot) * Math.cos(this.spine.xRot) * 10.0D);
+//                this.spine.render(mStack, getter, packedLight, packedOverlay);
+//            }
+//
+//            this.head.y = f3;
+//            this.head.z = f4;
+//            this.head.x = f2;
+//            double[] adouble2 = this.dragonInstance.getMovementOffsets(0, this.partialTicks);
+//            this.head.yRot = Mth.rotWrap(adouble2[0] - adouble[0]) * ((float) Math.PI / 180F);
+//            this.head.xRot = Mth.rotWrap(this.dragonInstance.getHeadPartYOffset(6, adouble, adouble2)) * ((float) Math.PI / 180F) * 1.5F * 5.0F;
+//            this.head.zRot = -Mth.rotWrap(adouble2[0] - (double) f7) * ((float) Math.PI / 180F);
+//            this.head.render(mStack, getter, packedLight, packedOverlay);
+//            mStack.pushPose();
+//            mStack.translate(0.0D, 1.0D, 0.0D);
+//            mStack.mulPose(Vector3f.ZP.rotationDegrees(-f6 * 1.5F));
+//            mStack.translate(0.0D, -1.0D, 0.0D);
+//            this.body.zRot = 0.0F;
+//            this.body.render(mStack, getter, packedLight, packedOverlay);
+//            float f10 = f * ((float) Math.PI * 2F);
+//            this.leftProximalWing.xRot = 0.125F - (float) Math.cos(f10) * 0.2F;
+//            this.leftProximalWing.yRot = -0.25F;
+//            this.leftProximalWing.zRot = -((float) (Math.sin(f10) + 0.125D)) * 0.8F;
+//            this.leftDistalWing.zRot = (float) (Math.sin(f10 + 2.0F) + 0.5D) * 0.75F;
+//            this.rightProximalWing.xRot = this.leftProximalWing.xRot;
+//            this.rightProximalWing.yRot = -this.leftProximalWing.yRot;
+//            this.rightProximalWing.zRot = -this.leftProximalWing.zRot;
+//            this.rightDistalWing.zRot = -this.leftDistalWing.zRot;
+//            this.renderSide(mStack, getter, packedLight, packedOverlay, f1, this.leftProximalWing, this.leftForeThigh, this.leftForeLeg, this.leftForeFoot, this.leftHindThigh, this.leftHindLeg, this.leftHindFoot);
+//            this.renderSide(mStack, getter, packedLight, packedOverlay, f1, this.rightProximalWing, this.rightForeThigh, this.rightForeLeg, this.rightForeFoot, this.rightHindThigh, this.rightHindLeg, this.rightHindFoot);
+//            mStack.popPose();
+//            float f11 = -((float) Math.sin(f * ((float) Math.PI * 2F))) * 0.0F;
+//            f8 = f * ((float) Math.PI * 2F);
+//            f3 = 10.0F;
+//            f4 = 60.0F;
+//            f2 = 0.0F;
+//            adouble = this.dragonInstance.getMovementOffsets(11, this.partialTicks);
+//
+//            for (int j = 0; j < 12; ++j) {
+//                adouble2 = this.dragonInstance.getMovementOffsets(12 + j, this.partialTicks);
+//                f11 = (float) ((double) f11 + Math.sin((float) j * 0.45F + f8) * (double) 0.05F);
+//                this.spine.yRot = (Mth.rotWrap(adouble2[0] - adouble[0]) * 1.5F + 180.0F) * ((float) Math.PI / 180F);
+//                this.spine.xRot = f11 + (float) (adouble2[1] - adouble[1]) * ((float) Math.PI / 180F) * 1.5F * 5.0F;
+//                this.spine.zRot = Mth.rotWrap(adouble2[0] - (double) f7) * ((float) Math.PI / 180F) * 1.5F;
+//                this.spine.y = f3;
+//                this.spine.z = f4;
+//                this.spine.x = f2;
+//                f3 = (float) ((double) f3 + Math.sin(this.spine.xRot) * 10.0D);
+//                f4 = (float) ((double) f4 - Math.cos(this.spine.yRot) * Math.cos(this.spine.xRot) * 10.0D);
+//                f2 = (float) ((double) f2 - Math.sin(this.spine.yRot) * Math.cos(this.spine.xRot) * 10.0D);
+//                this.spine.render(mStack, getter, packedLight, packedOverlay);
+//            }
+//
+//            mStack.popPose();
         }
 
         private void renderSide(PoseStack p_229081_1_, VertexConsumer p_229081_2_, int p_229081_3_, int p_229081_4_, float p_229081_5_, ModelPart p_229081_6_, ModelPart p_229081_7_, ModelPart p_229081_8_, ModelPart p_229081_9_, ModelPart p_229081_10_, ModelPart p_229081_11_, ModelPart p_229081_12_) {

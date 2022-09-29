@@ -8,6 +8,9 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.DrawSelectionEvent;
 
 /**
  * The primary purpose of this class is to allow a TileStructureBlock to check the status of its controller
@@ -35,6 +38,11 @@ public interface MultiBlockController {
     }
 
     default VoxelShape getShapeForPart(BlockPos pos, CollisionContext context) {
-        return Shapes.empty();
+        return Shapes.block();
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    default boolean renderSelectionBox(DrawSelectionEvent.HighlightBlock event) {
+        return true;
     }
 }

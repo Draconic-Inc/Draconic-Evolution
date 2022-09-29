@@ -31,17 +31,17 @@ public class PeripheralEnergyPylon implements IPeripheral, ICapabilityProvider {
 	
 	@LuaFunction
 	public final long getEnergyStored() {
-		return tile.getExtendedStorage();
+		return tile.opAdapter.getOPStored();
 	}
 	
 	@LuaFunction
 	public final long getMaxEnergyStored() {
-		return tile.getExtendedCapacity();
+		return tile.opAdapter.getMaxOPStored();
 	}
 	
 	@LuaFunction
 	public final long getTransferPerTick() {
-		if (!tile.hasCoreLock.get() || tile.getCore() == null) {
+		if (tile.coreOffset.isNull() || tile.getCore() == null) {
             return 0;
         }
         return tile.getCore().transferRate.get();

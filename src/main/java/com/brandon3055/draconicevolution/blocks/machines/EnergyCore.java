@@ -29,6 +29,7 @@ public class EnergyCore extends BlockBCore implements EntityBlock {
         this.registerDefaultState(stateDefinition.any().setValue(ACTIVE, false));
         dontSpawnOnMe();
         setBlockEntity(() -> DEContent.tile_storage_core, true);
+        setLightTransparent();
     }
 
     @Override
@@ -40,15 +41,4 @@ public class EnergyCore extends BlockBCore implements EntityBlock {
     public RenderShape getRenderShape(BlockState state) {
         return state.getValue(ACTIVE) ? RenderShape.INVISIBLE : RenderShape.MODEL;
     }
-
-//    @Override
-//    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
-//        BlockEntity core = world.getBlockEntity(pos);
-//
-////        if (core instanceof TileEnergyCore && !world.isClientSide) {
-////            ((TileEnergyCore) core).onStructureClicked(world, pos, state, player);
-////        }
-//
-//        return InteractionResult.SUCCESS;
-//    }
 }

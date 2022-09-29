@@ -19,6 +19,9 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.DrawSelectionEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 
@@ -32,7 +35,6 @@ public class TileStructureBlock extends TileBCore implements IInteractTile {
     public final ManagedPos controllerOffset = register(new ManagedPos("controller_offset", (BlockPos) null, DataFlags.SAVE_NBT_SYNC_TILE, DataFlags.SYNC_ON_SET));
     public final ManagedResource blockName = register(new ManagedResource("block_name", DataFlags.SAVE_NBT_SYNC_TILE, DataFlags.SYNC_ON_SET));
     public final ManagedBool reverting = register(new ManagedBool("reverting", DataFlags.SAVE_NBT));
-
 
     public TileStructureBlock(BlockPos pos, BlockState state) {
         super(DEContent.tile_structure_block, pos, state);
@@ -61,6 +63,14 @@ public class TileStructureBlock extends TileBCore implements IInteractTile {
         return null;
     }
 
+    public Block getOriginalBlock() {
+        ResourceLocation name = blockName.get();
+        if (name != null) {
+            return ForgeRegistries.BLOCKS.getValue(name);
+        }
+        return Blocks.AIR;
+    }
+
     public void revert() {
         if (level.isClientSide) {
             return;
@@ -74,13 +84,10 @@ public class TileStructureBlock extends TileBCore implements IInteractTile {
 
     public void doRevert() {
         if (reverting.get()) {
-            ResourceLocation name = blockName.get();
-            if (name != null) {
-                Block block = ForgeRegistries.BLOCKS.getValue(name);
-                if (block != null && block != Blocks.AIR) {
-                    level.setBlockAndUpdate(worldPosition, block.defaultBlockState());
-                    return;
-                }
+            Block block = getOriginalBlock();
+            if (block != null && block != Blocks.AIR) {
+                level.setBlockAndUpdate(worldPosition, block.defaultBlockState());
+                return;
             }
 
             level.removeBlock(worldPosition, false);
@@ -99,5 +106,11 @@ public class TileStructureBlock extends TileBCore implements IInteractTile {
     public VoxelShape getShape(CollisionContext context) {
         MultiBlockController controller = getController();
         return controller == null ? Shapes.empty() : controller.getShapeForPart(getBlockPos(), context);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public boolean renderSelectionBox(DrawSelectionEvent.HighlightBlock event) {
+        MultiBlockController controller = getController();
+        return controller == null || controller.renderSelectionBox(event);
     }
 }
