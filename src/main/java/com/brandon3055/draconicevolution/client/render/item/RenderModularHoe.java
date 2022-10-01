@@ -5,9 +5,7 @@ import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.model.OBJParser;
 import codechicken.lib.vec.Matrix4;
 import com.brandon3055.brandonscore.api.TechLevel;
-import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.client.DEShaders;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.resources.ResourceLocation;
@@ -37,9 +35,9 @@ public class RenderModularHoe extends ToolRenderBase {
     @Override
     public void renderTool(CCRenderState ccrs, ItemStack stack, TransformType transform, Matrix4 mat, MultiBufferSource buffers, boolean gui) {
         transform(mat, 0.28, 0.28, 0.5, 1.25);
-        basePart.render(buffers, mat, transform);
-        materialPart.render(buffers, mat, transform);
-        tracePart.render(buffers, mat, transform);
-        gemPart.render(buffers, mat, transform);
+        basePart.render(transform, buffers, mat);
+        materialPart.render(transform, buffers, mat);
+        tracePart.render(transform, buffers, mat);
+        gemPart.render(transform, buffers, mat);
     }
 }

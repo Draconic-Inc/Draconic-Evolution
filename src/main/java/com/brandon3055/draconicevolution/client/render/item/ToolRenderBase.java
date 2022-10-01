@@ -91,10 +91,6 @@ public abstract class ToolRenderBase implements IItemRenderer {
             { 0.75F, 0.05F, 0.05F, 0.2F }
     };
 
-    protected static void glUniformBaseColor(DEShader<?> shader, TechLevel techlevel) {
-        glUniformBaseColor(shader, techlevel, 1F);
-    }
-
     protected static void glUniformBaseColor(DEShader<?> shader, TechLevel techLevel, float pulse) {
         if (!(shader instanceof ToolShader toolShader) || !toolShader.hasBaseColorUniform()) return;
         float[] baseColour = baseColours[techLevel.index];
@@ -196,7 +192,11 @@ public abstract class ToolRenderBase implements IItemRenderer {
             this.shader = shader;
         }
 
-        public abstract void render(MultiBufferSource buffers, Matrix4 mat, TransformType transformType);
+        public final void render(TransformType transformType, MultiBufferSource buffers, Matrix4 mat) {
+            render(transformType, buffers, mat, 1F);
+        }
+
+        public abstract void render(TransformType transformType, MultiBufferSource buffers, Matrix4 mat, float pulse);
     }
 
     protected static class BaseToolPart extends ToolPart {
@@ -221,7 +221,7 @@ public abstract class ToolRenderBase implements IItemRenderer {
         }
 
         @Override
-        public void render(MultiBufferSource buffers, Matrix4 mat, TransformType transformType) {
+        public void render(TransformType transformType, MultiBufferSource buffers, Matrix4 mat, float pulse) {
             if (transformType == TransformType.GUI) {
                 buffers.getBuffer(guiVboType.withCallback(() -> shader.getModelMatUniform().glUniformMatrix4f(mat)));
             } else {
@@ -245,9 +245,9 @@ public abstract class ToolRenderBase implements IItemRenderer {
         }
 
         @Override
-        public void render(MultiBufferSource buffers, Matrix4 mat, TransformType transformType) {
+        public void render(TransformType transformType, MultiBufferSource buffers, Matrix4 mat, float pulse) {
             buffers.getBuffer(vboType.withCallback(() -> {
-                glUniformBaseColor(shader, techLevel);
+                glUniformBaseColor(shader, techLevel, pulse);
                 shader.getModelMatUniform().glUniformMatrix4f(mat);
             }));
         }
@@ -264,7 +264,7 @@ public abstract class ToolRenderBase implements IItemRenderer {
         }
 
         @Override
-        public void render(MultiBufferSource buffers, Matrix4 mat, TransformType transformType) {
+        public void render(TransformType transformType, MultiBufferSource buffers, Matrix4 mat, float pulse) {
             buffers.getBuffer(vboType.withCallback(() -> {
                 shader.getDisableLightUniform().glUniform1b(true);
                 shader.getDisableOverlayUniform().glUniform1b(true);

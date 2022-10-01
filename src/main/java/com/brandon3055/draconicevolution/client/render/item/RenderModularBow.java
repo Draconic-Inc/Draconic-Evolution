@@ -94,13 +94,13 @@ public class RenderModularBow extends ToolRenderBase {
         transform(mat, 0.46, 0.54, 0.5, gui ? 0.9 : 1.125);
         double drawAngle = getDrawAngle(stack, Minecraft.getInstance().getDeltaFrameTime());
 
-        basePart.render(buffers, mat, transform);
+        basePart.render(transform, buffers, mat);
 
         Matrix4 bottomMat = mat.copy();
         bottomMat.rotate(MathHelper.torad * 180, Vector3.Y_POS);
 
-        materialPart.render(buffers, mat, transform);
-        materialPart.render(buffers, bottomMat, transform);
+        materialPart.render(transform, buffers, mat);
+        materialPart.render(transform, buffers, bottomMat);
 
         boolean hasPower = isCreative(entity) || (stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).isPresent() && ModularBow.calculateShotEnergy(stack) <= EnergyUtils.getEnergyStored(stack));
         drawStrings(ccrs, transform, mat, bottomMat, buffers, drawAngle, hasPower);
@@ -128,8 +128,8 @@ public class RenderModularBow extends ToolRenderBase {
 
         topMat = topMat.copy().apply(new Rotation(drawAngle * MathHelper.torad, 1, 0, 0).at(new Vector3(0, -crystalX, -crystalY)));
         bottomMat = bottomMat.copy().apply(new Rotation(drawAngle * MathHelper.torad, 1, 0, 0).at(new Vector3(0, -crystalX, -crystalY)));
-        gemPart.render(buffers, topMat, transform);
-        gemPart.render(buffers, bottomMat, transform);
+        gemPart.render(transform, buffers, topMat);
+        gemPart.render(transform, buffers, bottomMat);
     }
 
     private void renderBeam(VertexConsumer buffer, Vector3 source, Vector3 target, int packedLight) {

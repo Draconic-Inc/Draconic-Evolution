@@ -39,10 +39,10 @@ public class RenderModularSword extends ToolRenderBase {
     public void renderTool(CCRenderState ccrs, ItemStack stack, TransformType transform, Matrix4 mat, MultiBufferSource buffers, boolean gui) {
         transform(mat, 0.29, 0.29, 0.5, gui ? 0.875 : 1.125);
 
-        basePart.render(buffers, mat, transform);
-        materialPart.render(buffers, mat, transform);
-        tracePart.render(buffers, mat, transform);
-        gemPart.render(buffers, mat, transform);
-        bladePart.render(buffers, mat, transform);
+        basePart.render(transform, buffers, mat);
+        materialPart.render(transform, buffers, mat);
+        tracePart.render(transform, buffers, mat);
+        gemPart.render(transform, buffers, mat);
+        bladePart.render(transform, buffers, mat);
     }
 }
