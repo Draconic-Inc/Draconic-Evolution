@@ -54,6 +54,8 @@ public class DEShaders {
             .onShaderApplied(e -> e.getTimeUniform().glUniform1f((float) (ClientUtils.getRenderTime() / 20)));
     public static final ToolShader TOOL_BLADE_SHADER = new ToolShader("tools/tool_blade", DefaultVertexFormat.NEW_ENTITY)
             .onShaderApplied(e -> e.getTimeUniform().glUniform1f((float) (ClientUtils.getRenderTime() / 20)));
+    public static final ToolShader BOW_STRING_SHADER = new ToolShader("tools/bow_string", DefaultVertexFormat.NEW_ENTITY)
+            .onShaderApplied(e -> e.getTimeUniform().glUniform1f((float) (ClientUtils.getRenderTime() / 20)));
 
     public static CCShaderInstance armorShieldShader;
     public static CCUniform armorShieldTime;
@@ -88,6 +90,7 @@ public class DEShaders {
         TOOL_GEM_SHADER.register(bus);
         TOOL_TRACE_SHADER.register(bus);
         TOOL_BLADE_SHADER.register(bus);
+        BOW_STRING_SHADER.register(bus);
         bus.addListener(DEShaders::onRegisterShaders);
     }
 
