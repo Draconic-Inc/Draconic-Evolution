@@ -1,4 +1,4 @@
-package com.brandon3055.draconicevolution.client.model.tool;
+package com.brandon3055.draconicevolution.client.model;
 
 import codechicken.lib.vec.Matrix4;
 import com.brandon3055.draconicevolution.DEConfig;

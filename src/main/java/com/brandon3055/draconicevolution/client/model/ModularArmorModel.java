@@ -1,7 +1,6 @@
 package com.brandon3055.draconicevolution.client.model;
 
 import codechicken.lib.render.CCModel;
-import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.model.OBJParser;
 import codechicken.lib.render.shader.ShaderObject;
 import codechicken.lib.render.shader.ShaderProgram;
@@ -9,32 +8,17 @@ import codechicken.lib.render.shader.ShaderProgramBuilder;
 import codechicken.lib.render.shader.UniformType;
 import codechicken.lib.vec.Translation;
 import com.brandon3055.brandonscore.api.TechLevel;
-import com.brandon3055.brandonscore.client.BCClientEventHandler;
 import com.brandon3055.brandonscore.utils.ModelUtils;
 import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.api.capability.DECapabilities;
-import com.brandon3055.draconicevolution.api.capability.ModuleHost;
-import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
-import com.brandon3055.draconicevolution.api.modules.entities.ShieldControlEntity;
-import com.brandon3055.draconicevolution.client.model.tool.VBOModelRender;
-import com.brandon3055.draconicevolution.client.render.item.RenderModularChestpeice;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelLayers;
-import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.util.LazyOptional;
-import org.lwjgl.opengl.GL11;
 
 import java.util.Collections;
-import java.util.Locale;
 import java.util.Map;
 
 /**
