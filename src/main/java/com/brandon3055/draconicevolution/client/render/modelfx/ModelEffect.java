@@ -70,30 +70,6 @@ public abstract class ModelEffect {
         builder.vertex(x + 0.5, y + max, z + min).color(red, green, blue, alpha).uv(1, 0)/*.lightmap(240)*/.endVertex();
     }
 
-    protected void drawPolyParticle(VertexConsumer builder, double x, double y, double z, double scale, float red, float green, float blue, float alpha) {
-        double min = (1 - scale) * 0.5;
-        double max = 0.5 + (scale * 0.5);
-
-        builder.vertex(x + min, y + 0.5, z + min).color(red, green, blue, alpha).uv2(240).endVertex();
-        builder.vertex(x + min, y + 0.5, z + max).color(red, green, blue, alpha).uv2(240).endVertex();
-        builder.vertex(x + max, y + 0.5, z + max).color(red, green, blue, alpha).uv2(240).endVertex();
-        builder.vertex(x + max, y + 0.5, z + min).color(red, green, blue, alpha).uv2(240).endVertex();
-
-//        builder.pos(x + min, y + min, z + 0.5).color(red, green, blue, alpha).lightmap(240).endVertex();
-//        builder.pos(x + min, y + max, z + 0.5).color(red, green, blue, alpha).lightmap(240).endVertex();
-//        builder.pos(x + max, y + max, z + 0.5).color(red, green, blue, alpha).lightmap(240).endVertex();
-//        builder.pos(x + max, y + min, z + 0.5).color(red, green, blue, alpha).lightmap(240).endVertex();
-
-//        builder.pos(x + 0.5, y + min, z + min).color(red, green, blue, alpha).lightmap(240).endVertex();
-//        builder.pos(x + 0.5, y + min, z + max).color(red, green, blue, alpha).lightmap(240).endVertex();
-//        builder.pos(x + 0.5, y + max, z + max).color(red, green, blue, alpha).lightmap(240).endVertex();
-//        builder.pos(x + 0.5, y + max, z + min).color(red, green, blue, alpha).lightmap(240).endVertex();
-    }
-
-    protected void drawParticle(VertexConsumer builder, double x, double y, double z) {
-        drawParticle(builder, x, y, z, scale, red, green, blue, alpha);
-    }
-
     protected static float noise(float input) {
         input = input % (r.length - 1F);
         int xMin = (int) input;
@@ -135,35 +111,5 @@ public abstract class ModelEffect {
      */
     protected static void setRandSeed(int i) {
         randPos = i % randSet.length;
-    }
-
-    public static class DebugEffect extends ModelEffect {
-        private RenderType alignRenderType = RenderType.create("alignRenderType", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 256, RenderType.CompositeState.builder()
-                        .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
-//                .setAlphaState(RenderStateShard.NO_ALPHA)
-                        .setCullState(RenderStateShard.NO_CULL)
-//                .setTexturingState(new RenderStateShard.TexturingStateShard("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
-                        .createCompositeState(false)
-        );
-
-        public DebugEffect() {}
-
-        @Override
-        public RenderType getRenderType() {
-            return alignRenderType;
-        }
-
-        @Override
-        protected void doRender(VertexConsumer builder, float partialTicks, TechLevel techLevel) {
-            //By default draws an alignment helper.
-            //White 0,0,0
-            drawParticle(builder, pos.x, pos.y, pos.z, 0.5, 1F, 1F, 1F, 0.5F);
-            //Green Y+
-            drawParticle(builder, pos.x, pos.y + 1, pos.z, 0.25, 0F, 1F, 0F, 0.5F);
-            //Red   X+
-            drawParticle(builder, pos.x + 1, pos.y, pos.z, 0.25, 1F, 0F, 0F, 0.5F);
-            //Blue  Z+
-            drawParticle(builder, pos.x, pos.y, pos.z + 1, 0.25, 0F, 0F, 1F, 0.5F);
-        }
     }
 }
