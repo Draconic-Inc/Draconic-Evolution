@@ -369,6 +369,7 @@ public class DEConfig {
     public static boolean configUiEnableDeleteZone;
     public static boolean configUiEnableAdvancedXOver;
     public static boolean fancyToolModels;
+    @Deprecated
     public static boolean toolShaders;
     public static boolean crystalShaders;
     public static boolean reactorShaders;

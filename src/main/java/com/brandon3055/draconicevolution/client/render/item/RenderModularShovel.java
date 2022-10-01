@@ -19,46 +19,27 @@ import java.util.Map;
  */
 public class RenderModularShovel extends ToolRenderBase {
 
+    private final ToolPart basePart;
+    private final ToolPart materialPart;
+    private final ToolPart gemPart;
+    private final ToolPart tracePart;
+
     public RenderModularShovel(TechLevel techLevel) {
         super(techLevel, "shovel");
         Map<String, CCModel> model = new OBJParser(new ResourceLocation(DraconicEvolution.MODID, "models/item/equipment/shovel.obj")).ignoreMtl().parse();
-        baseModel = CCModel.combine(Arrays.asList(model.get("handle"), model.get("gem_holder"))).backfacedCopy();
-        materialModel = model.get("blade").twoFacedCopy();
-        traceModel = model.get("trace").backfacedCopy();
-        gemModel = model.get("gem").backfacedCopy();
 
-//        initBaseVBO();
-//        initMaterialVBO();
-//        initTraceVBO();
-//        initGemVBO();
+        basePart = basePart(CCModel.combine(Arrays.asList(model.get("handle"), model.get("gem_holder"))).backfacedCopy());
+        materialPart = materialPart(model.get("blade").twoFacedCopy());
+        gemPart = gemPart(model.get("gem").backfacedCopy());
+        tracePart = tracePart(model.get("trace").backfacedCopy());
     }
 
     @Override
     public void renderTool(CCRenderState ccrs, ItemStack stack, TransformType transform, Matrix4 mat, MultiBufferSource buffers, boolean gui) {
         transform(mat, 0.27, 0.27, 0.5, gui ? 1.125 : 1.15);
-
-//        if (gui) {
-//            getter.getBuffer(guiBaseVBOType.withMatrix(mat).withLightMap(packedLight));
-//        } else {
-//            getter.getBuffer(baseVBOType.withMatrix(mat).withLightMap(packedLight));
-//        }
-//
-//        if (techLevel == TechLevel.CHAOTIC && DEConfig.toolShaders) {
-//            getter.getBuffer(materialChaosVBOType.withMatrix(mat).withLightMap(packedLight).withState(getShaderType(chaosType, chaosShader)));
-//        } else {
-//            if (gui) {
-//                getter.getBuffer(guiMaterialVBOType.withMatrix(mat).withLightMap(packedLight));
-//            } else {
-//                getter.getBuffer(materialVBOType.withMatrix(mat).withLightMap(packedLight));
-//            }
-//        }
-//
-//        if (DEConfig.toolShaders) {
-//            getter.getBuffer(traceVBOType.withMatrix(mat).withLightMap(packedLight).withState(getShaderType(shaderParentType, techLevel, traceShader)));
-//            getter.getBuffer(gemVBOType.withMatrix(mat).withLightMap(packedLight).withState(getShaderType(shaderParentType, techLevel, gemShader)));
-//        } else {
-//            getter.getBuffer(traceVBOType.withMatrix(mat).withLightMap(packedLight));
-//            getter.getBuffer(gemVBOType.withMatrix(mat).withLightMap(packedLight));
-//        }
+        basePart.render(buffers, mat, transform);
+        materialPart.render(buffers, mat, transform);
+        tracePart.render(buffers, mat, transform);
+        gemPart.render(buffers, mat, transform);
     }
 }

@@ -5,14 +5,15 @@ import codechicken.lib.render.shader.CCShaderInstance;
 import codechicken.lib.render.shader.CCUniform;
 import codechicken.lib.util.ClientUtils;
 import com.brandon3055.brandonscore.api.TimeKeeper;
-import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.client.shader.ChaosEntityShader;
+import com.brandon3055.draconicevolution.client.shader.ToolShader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import net.covers1624.quack.util.CrashLock;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.client.event.RegisterShadersEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
@@ -21,6 +22,7 @@ import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
  * Created by brandon3055 on 15/05/2022
  */
 public class DEShaders {
+
     private static final CrashLock LOCK = new CrashLock("Already Initialized");
 
     public static CCShaderInstance reactorShader;
@@ -37,35 +39,21 @@ public class DEShaders {
     public static CCUniform chaosBlockPitch;
     public static CCUniform chaosBlockAlpha;
 
-    public static CCShaderInstance chaosEntityShader;
-    public static CCUniform chaosEntityModelMat;
-    public static CCUniform chaosEntityTime;
-    public static CCUniform chaosEntityYaw;
-    public static CCUniform chaosEntityPitch;
-    public static CCUniform chaosEntityAlpha;
-    public static CCUniform chaosEntitySimpleLight;
-    public static CCUniform chaosEntityDisableLight;
-    public static CCUniform chaosEntityDisableOverlay;
+    public static final ChaosEntityShader CHAOS_ENTITY_SHADER = new ChaosEntityShader("chaos_entity", DefaultVertexFormat.NEW_ENTITY)
+            .onShaderApplied(e -> {
+                Player player = Minecraft.getInstance().player;
+                e.getTimeUniform().glUniform1f((float) ClientUtils.getRenderTime());
+                e.getYawUniform().glUniform1f((float) (player.getYRot() * MathHelper.torad));
+                e.getPitchUniform().glUniform1f((float) -(player.getXRot() * MathHelper.torad));
+            });
 
-    public static CCShaderInstance toolBaseShader;
-    public static CCUniform toolBaseModelMat;
-    public static CCUniform toolBaseUV1Override;
-    public static CCUniform toolBaseUV2Override;
-
-    public static CCShaderInstance toolGemShader;
-    public static CCUniform toolGemModelMat;
-    public static CCUniform toolGemTime;
-    public static CCUniform toolGemBaseColor;
-
-    public static CCShaderInstance toolTraceShader;
-    public static CCUniform toolTraceModelMat;
-    public static CCUniform toolTraceTime;
-    public static CCUniform toolTraceBaseColor;
-
-    public static CCShaderInstance toolBladeShader;
-    public static CCUniform toolBladeModelMat;
-    public static CCUniform toolBladeTime;
-    public static CCUniform toolBladeBaseColor;
+    public static final ToolShader TOOL_BASE_SHADER = new ToolShader("tools/tool_base", DefaultVertexFormat.NEW_ENTITY);
+    public static final ToolShader TOOL_GEM_SHADER = new ToolShader("tools/tool_gem", DefaultVertexFormat.NEW_ENTITY)
+            .onShaderApplied(e -> e.getTimeUniform().glUniform1f((float) (ClientUtils.getRenderTime() / 20)));
+    public static final ToolShader TOOL_TRACE_SHADER = new ToolShader("tools/tool_trace", DefaultVertexFormat.NEW_ENTITY)
+            .onShaderApplied(e -> e.getTimeUniform().glUniform1f((float) (ClientUtils.getRenderTime() / 20)));
+    public static final ToolShader TOOL_BLADE_SHADER = new ToolShader("tools/tool_blade", DefaultVertexFormat.NEW_ENTITY)
+            .onShaderApplied(e -> e.getTimeUniform().glUniform1f((float) (ClientUtils.getRenderTime() / 20)));
 
     public static CCShaderInstance armorShieldShader;
     public static CCUniform armorShieldTime;
@@ -92,10 +80,15 @@ public class DEShaders {
     public static CCUniform energyCoreFrameColour;
     public static CCUniform energyCoreRotTriColour;
 
-
     public static void init() {
         LOCK.lock();
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(DEShaders::onRegisterShaders);
+        IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+        CHAOS_ENTITY_SHADER.register(bus);
+        TOOL_BASE_SHADER.register(bus);
+        TOOL_GEM_SHADER.register(bus);
+        TOOL_TRACE_SHADER.register(bus);
+        TOOL_BLADE_SHADER.register(bus);
+        bus.addListener(DEShaders::onRegisterShaders);
     }
 
     private static void onRegisterShaders(RegisterShadersEvent event) {
@@ -117,61 +110,6 @@ public class DEShaders {
             chaosBlockYaw = chaosBlockShader.getUniform("Yaw");
             chaosBlockPitch = chaosBlockShader.getUniform("Pitch");
             chaosBlockAlpha = chaosBlockShader.getUniform("Alpha");
-        });
-
-        event.registerShader(CCShaderInstance.create(event.getResourceManager(), new ResourceLocation(MODID, "chaos_entity"), DefaultVertexFormat.NEW_ENTITY), e -> {
-            chaosEntityShader = (CCShaderInstance) e;
-            chaosEntityModelMat = chaosEntityShader.getUniform("ModelMat");
-            chaosEntityTime = chaosEntityShader.getUniform("Time");
-            chaosEntityYaw = chaosEntityShader.getUniform("Yaw");
-            chaosEntityPitch = chaosEntityShader.getUniform("Pitch");
-            chaosEntityAlpha = chaosEntityShader.getUniform("Alpha");
-            chaosEntitySimpleLight = chaosEntityShader.getUniform("SimpleLight");
-            chaosEntityDisableLight = chaosEntityShader.getUniform("SimpleLight");
-            chaosEntityDisableOverlay = chaosEntityShader.getUniform("DisableOverlay");
-            chaosEntityShader.onApply(() -> {
-                Player player = Minecraft.getInstance().player;
-                chaosEntityTime.glUniform1f((float) ClientUtils.getRenderTime());
-                chaosEntityYaw.glUniform1f((float) (player.getYRot() * MathHelper.torad));
-                chaosEntityPitch.glUniform1f((float) -(player.getXRot() * MathHelper.torad));
-            });
-        });
-
-        event.registerShader(CCShaderInstance.create(event.getResourceManager(), new ResourceLocation(MODID, "tools/tool_base"), DefaultVertexFormat.NEW_ENTITY), e -> {
-            toolBaseShader = (CCShaderInstance) e;
-            toolBaseModelMat = toolBaseShader.getUniform("ModelMat");
-            toolBaseUV1Override = toolBaseShader.getUniform("UV1Override");
-            toolBaseUV2Override = toolBaseShader.getUniform("UV2Override");
-        });
-
-        event.registerShader(CCShaderInstance.create(event.getResourceManager(), new ResourceLocation(MODID, "tools/tool_gem"), DefaultVertexFormat.NEW_ENTITY), e -> {
-            toolGemShader = (CCShaderInstance) e;
-            toolGemModelMat = toolGemShader.getUniform("ModelMat");
-            toolGemTime = toolGemShader.getUniform("Time");
-            toolGemBaseColor = toolGemShader.getUniform("BaseColor");
-            toolGemShader.onApply(() -> {
-                toolGemTime.glUniform1f((float) (ClientUtils.getRenderTime() / 20));
-            });
-        });
-
-        event.registerShader(CCShaderInstance.create(event.getResourceManager(), new ResourceLocation(MODID, "tools/tool_trace"), DefaultVertexFormat.NEW_ENTITY), e -> {
-            toolTraceShader = (CCShaderInstance) e;
-            toolTraceModelMat = toolTraceShader.getUniform("ModelMat");
-            toolTraceTime = toolTraceShader.getUniform("Time");
-            toolTraceBaseColor = toolTraceShader.getUniform("BaseColor");
-            toolTraceShader.onApply(() -> {
-                toolTraceTime.glUniform1f((float) (ClientUtils.getRenderTime() / 20));
-            });
-        });
-
-        event.registerShader(CCShaderInstance.create(event.getResourceManager(), new ResourceLocation(MODID, "tools/tool_blade"), DefaultVertexFormat.NEW_ENTITY), e -> {
-            toolBladeShader = (CCShaderInstance) e;
-            toolBladeModelMat = toolBladeShader.getUniform("ModelMat");
-            toolBladeTime = toolBladeShader.getUniform("Time");
-            toolBladeBaseColor = toolBladeShader.getUniform("BaseColor");
-            toolBladeShader.onApply(() -> {
-                toolBladeTime.glUniform1f((float) (ClientUtils.getRenderTime() / 20));
-            });
         });
 
         event.registerShader(CCShaderInstance.create(event.getResourceManager(), new ResourceLocation(MODID, "armor_shield"), DefaultVertexFormat.POSITION_TEX), e -> {
@@ -223,6 +161,5 @@ public class DEShaders {
             });
         });
     }
-
 
 }

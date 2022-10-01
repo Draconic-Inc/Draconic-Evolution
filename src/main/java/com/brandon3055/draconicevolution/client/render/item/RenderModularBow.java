@@ -75,9 +75,9 @@ public class RenderModularBow extends ToolRenderBase {
     public RenderModularBow(TechLevel techLevel) {
         super(techLevel, "bow");
         Map<String, CCModel> model = new OBJParser(new ResourceLocation(DraconicEvolution.MODID, "models/item/equipment/bow.obj")).ignoreMtl().parse();
-        baseModel = model.get("bow_handle").backfacedCopy();
-        materialModel = model.get("bow_arm").backfacedCopy();
-        gemModel = model.get("bow_gem").backfacedCopy();
+//        baseModel = model.get("bow_handle").backfacedCopy();
+//        materialModel = model.get("bow_arm").backfacedCopy();
+//        gemModel = model.get("bow_gem").backfacedCopy();
 
 //        bowStringType = RenderType.create("shaderStringType", DefaultVertexFormat.POSITION_COLOR_TEX, GL11.GL_QUADS, 256, RenderType.CompositeState.builder()
 //                .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(DraconicEvolution.MODID, "textures/item/equipment/bow_string.png"), true, false))

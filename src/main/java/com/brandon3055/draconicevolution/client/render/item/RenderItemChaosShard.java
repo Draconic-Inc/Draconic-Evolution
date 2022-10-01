@@ -39,7 +39,7 @@ import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
 public class RenderItemChaosShard implements IItemRenderer {
 
     private static final RenderType CHAOS_CRYSTAL_INNER = RenderType.create(MODID + ":chaos_crystal_inner", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.TRIANGLES, 256, RenderType.CompositeState.builder()
-            .setShaderState(new RenderStateShard.ShaderStateShard(() -> DEShaders.chaosEntityShader))
+            .setShaderState(new RenderStateShard.ShaderStateShard(DEShaders.CHAOS_ENTITY_SHADER::getShaderInstance))
             .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(MODID, "textures/item/equipment/chaos_shader.png"), true, false))
             .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
             .setCullState(RenderStateShard.NO_CULL)
@@ -76,10 +76,10 @@ public class RenderItemChaosShard implements IItemRenderer {
         ccrs.overlay = packedOverlay;
         mat.apply(new Scale(item == DEContent.chaos_shard ? 1 : item == DEContent.chaos_frag_large ? 0.75 : item == DEContent.chaos_frag_medium ? 0.5 : 0.25).at(new Vector3(0.5, 0.5, 0.5)));
 
-        DEShaders.chaosEntityModelMat.glUniformMatrix4f(new Matrix4());
-        DEShaders.chaosEntitySimpleLight.glUniform1b(true);
-        DEShaders.chaosEntityDisableLight.glUniform1b(false);
-        DEShaders.chaosEntityDisableOverlay.glUniform1b(false);
+        DEShaders.CHAOS_ENTITY_SHADER.getModelMatUniform().glUniformMatrix4f(new Matrix4());
+        DEShaders.CHAOS_ENTITY_SHADER.getSimpleLightUniform().glUniform1b(true);
+        DEShaders.CHAOS_ENTITY_SHADER.getDisableLightUniform().glUniform1b(false);
+        DEShaders.CHAOS_ENTITY_SHADER.getDisableOverlayUniform().glUniform1b(false);
 
         ccrs.bind(CHAOS_CRYSTAL_INNER, getter);
         shard.render(ccrs, mat);

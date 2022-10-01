@@ -46,10 +46,10 @@ public class RenderModularChestpeice extends ToolRenderBase {
     public RenderModularChestpeice(TechLevel techLevel) {
         super(techLevel, "chestpeice");
         Map<String, CCModel> model = new OBJParser(new ResourceLocation(DraconicEvolution.MODID, "models/item/equipment/chestpeice.obj")).ignoreMtl().parse();
-        baseModel = CCModel.combine(Collections.singletonList(model.get("base_model"))).backfacedCopy();
-        materialModel = model.get("chevrons").backfacedCopy();
-        gemModel = model.get("power_crystals").backfacedCopy();
-        centralGemModel = model.get("crystal_core").backfacedCopy();
+//        baseModel = CCModel.combine(Collections.singletonList(model.get("base_model"))).backfacedCopy();
+//        materialModel = model.get("chevrons").backfacedCopy();
+//        gemModel = model.get("power_crystals").backfacedCopy();
+//        centralGemModel = model.get("crystal_core").backfacedCopy();
 
 //        initBaseVBO();
 //        initMaterialVBO();

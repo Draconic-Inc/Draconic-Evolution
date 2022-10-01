@@ -79,11 +79,11 @@ public class RenderModularStaff extends ToolRenderBase {
     public RenderModularStaff(TechLevel techLevel) {
         super(techLevel, "staff");
         Map<String, CCModel> model = new OBJParser(new ResourceLocation(DraconicEvolution.MODID, "models/item/equipment/staff.obj")).ignoreMtl().parse();
-        baseModel = CCModel.combine(Arrays.asList(model.get("handle"), model.get("head_connection"), model.get("cage_connection"))).backfacedCopy();
-        materialModel = CCModel.combine(Arrays.asList(model.get("head"), model.get("crystal_cage"))).backfacedCopy();
-        traceModel = model.get("trace");
-        bladeModel = model.get("blade").backfacedCopy();
-        gemModel = CCModel.combine(Arrays.asList(model.get("focus_gem"), model.get("energy_crystal"))).backfacedCopy();
+//        baseModel = CCModel.combine(Arrays.asList(model.get("handle"), model.get("head_connection"), model.get("cage_connection"))).backfacedCopy();
+//        materialModel = CCModel.combine(Arrays.asList(model.get("head"), model.get("crystal_cage"))).backfacedCopy();
+//        traceModel = model.get("trace");
+//        bladeModel = model.get("blade").backfacedCopy();
+//        gemModel = CCModel.combine(Arrays.asList(model.get("focus_gem"), model.get("energy_crystal"))).backfacedCopy();
 
 //        initBaseVBO();
 //        initMaterialVBO();

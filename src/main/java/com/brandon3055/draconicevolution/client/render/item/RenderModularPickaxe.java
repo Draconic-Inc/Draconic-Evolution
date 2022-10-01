@@ -18,51 +18,31 @@ import java.util.Map;
  */
 public class RenderModularPickaxe extends ToolRenderBase {
 
+    private final ToolPart basePart;
+    private final ToolPart materialPart;
+    private final ToolPart gemPart;
+    private final ToolPart tracePart;
+    private final ToolPart bladePart;
+
     public RenderModularPickaxe(TechLevel techLevel) {
         super(techLevel, "pickaxe");
         Map<String, CCModel> model = new OBJParser(new ResourceLocation(DraconicEvolution.MODID, "models/item/equipment/pickaxe.obj")).ignoreMtl().parse();
-        baseModel = model.get("handle").backfacedCopy();
-        materialModel = model.get("head").backfacedCopy();
-        traceModel = model.get("handle_trace").backfacedCopy();
-        bladeModel = model.get("blade").backfacedCopy();
-        gemModel = model.get("gem").backfacedCopy();
-
-//        initBaseVBO();
-//        initMaterialVBO();
-//        initTraceVBO();
-//        initBladeVBO();
-//        initGemVBO();
+        basePart = basePart(model.get("handle").backfacedCopy());
+        materialPart = materialPart(model.get("head").backfacedCopy());
+        gemPart = gemPart(model.get("gem").backfacedCopy());
+        tracePart = tracePart(model.get("handle_trace").backfacedCopy());
+        bladePart = bladePart(model.get("blade").backfacedCopy());
     }
 
     @Override
     public void renderTool(CCRenderState ccrs, ItemStack stack, TransformType transform, Matrix4 mat, MultiBufferSource buffers, boolean gui) {
         transform(mat, 0.27, 0.27, 0.5, 1.125);
 
-//        if (gui) {
-//            getter.getBuffer(guiBaseVBOType.withMatrix(mat).withLightMap(packedLight));
-//        } else {
-//            getter.getBuffer(baseVBOType.withMatrix(mat).withLightMap(packedLight));
-//        }
-//
-//        if (techLevel == TechLevel.CHAOTIC && DEConfig.toolShaders) {
-//            getter.getBuffer(materialChaosVBOType.withMatrix(mat).withLightMap(packedLight).withState(getShaderType(chaosType, chaosShader)));
-//        } else {
-//            if (gui) {
-//                getter.getBuffer(guiMaterialVBOType.withMatrix(mat).withLightMap(packedLight));
-//            } else {
-//                getter.getBuffer(materialVBOType.withMatrix(mat).withLightMap(packedLight));
-//            }
-//        }
-//
-//        if (DEConfig.toolShaders) {
-//            getter.getBuffer(traceVBOType.withMatrix(mat).withLightMap(packedLight).withState(getShaderType(shaderParentType, techLevel, traceShader)));
-//            getter.getBuffer(bladeVBOType.withMatrix(mat).withLightMap(packedLight).withState(getShaderType(shaderParentType, techLevel, bladeShader)));
-//            getter.getBuffer(gemVBOType.withMatrix(mat).withLightMap(packedLight).withState(getShaderType(shaderParentType, techLevel, gemShader)));
-//        } else {
-//            getter.getBuffer(traceVBOType.withMatrix(mat).withLightMap(packedLight));
-//            getter.getBuffer(bladeVBOType.withMatrix(mat).withLightMap(packedLight));
-//            getter.getBuffer(gemVBOType.withMatrix(mat).withLightMap(packedLight));
-//        }
+        basePart.render(buffers, mat, transform);
+        materialPart.render(buffers, mat, transform);
+        tracePart.render(buffers, mat, transform);
+        gemPart.render(buffers, mat, transform);
+        bladePart.render(buffers, mat, transform);
     }
 
     @Override
