@@ -245,7 +245,6 @@ public interface IModularMiningTool extends IModularTieredItem {
                 return;
             }
 
-            EquipCfg.energyHarvest = 256;
             stack.mineBlock(world, state, pos, player);
             BlockToStackHelper.breakAndCollectWithPlayer(world, pos, inventory, player, xp);
             extractEnergy(player, stack, EquipCfg.energyHarvest);

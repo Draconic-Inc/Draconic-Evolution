@@ -89,7 +89,7 @@ public class ModularArmorModel extends VBOBipedModel<LivingEntity> {
     private int shieldColour = 0x00FF00;
     private boolean onArmor;
 
-    public ModularArmorModel(float size, TechLevel techLevel, boolean onArmor) {
+    public  ModularArmorModel(float size, TechLevel techLevel, boolean onArmor) {
         super(size);
         this.onArmor = onArmor;
         float yOffsetIn = 0;
