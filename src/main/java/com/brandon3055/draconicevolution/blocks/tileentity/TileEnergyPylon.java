@@ -43,6 +43,8 @@ import java.util.Random;
  * Created by brandon3055 on 30/3/2016.
  */
 public class TileEnergyPylon extends TileBCore implements MultiBlockController {
+    private static final VoxelShape SPHERE_SHAPE = Shapes.box(0.2, 0.2, 0.2, 0.8, 0.8, 0.8);
+
     public final ManagedEnum<Mode> ioMode = register(new ManagedEnum<>("io_mode", Mode.OUTPUT, DataFlags.SAVE_NBT_SYNC_TILE));
     public final ManagedEnum<Direction> direction = register(new ManagedEnum<>("io_mode", Direction.UP, DataFlags.SAVE_NBT_SYNC_TILE));
     public final ManagedEnum<EnumColour> colour = register(new ManagedEnum<>("colour", EnumColour.class, null, DataFlags.SAVE_NBT_SYNC_TILE));
@@ -121,6 +123,7 @@ public class TileEnergyPylon extends TileBCore implements MultiBlockController {
         }
     };
 
+
     public TileEnergyPylon(BlockPos pos, BlockState state) {
         super(DEContent.tile_energy_pylon, pos, state);
         capManager.set(CapabilityOP.OP, opAdapter);
@@ -138,7 +141,7 @@ public class TileEnergyPylon extends TileBCore implements MultiBlockController {
         }
 
         if (!level.isClientSide && ioMode.get().canExtract()) {
-            long extracted = getCore().energy.extractOP(sendEnergyToAll(opAdapter.getOPStored(), opAdapter.getOPStored()), false);
+            long extracted = core.energy.extractOP(sendEnergyToAll(core.energy.getUncappedStored(), core.energy.getUncappedStored()), false);
             if (extracted > 0) {
                 particleRate.set((byte) Math.min(20, extracted < 500 ? 1 : extracted / 500));
             }
@@ -154,14 +157,17 @@ public class TileEnergyPylon extends TileBCore implements MultiBlockController {
     }
 
     public void updateComparators() {
-        int cOut = (int) (((double) opAdapter.getOPStored() / opAdapter.getMaxOPStored()) * 15D);
+        int cOut = 0;
+        if (getCore() != null) {
+            cOut = (int) (((double) core.energy.getUncappedStored() / core.energy.getMaxOPStored()) * 15D);
+        }
         if (cOut != lastCompOverride) {
             lastCompOverride = cOut;
             level.updateNeighborsAt(worldPosition, getBlockState().getBlock());
         }
     }
-
     // ### Core Connection Handling
+
 
     @Override
     public InteractionResult handleRemoteClick(Player player, InteractionHand hand, BlockHitResult hit) {
@@ -241,8 +247,8 @@ public class TileEnergyPylon extends TileBCore implements MultiBlockController {
         detectAndSendChanges(false);
         drawParticleBeam();
     }
-
     // ### MultiBlock Handling
+
 
     @Override
     public boolean validateStructure() {
@@ -296,8 +302,8 @@ public class TileEnergyPylon extends TileBCore implements MultiBlockController {
     public void receivePacketFromServer(MCDataInput data, int id) {
         if (id == 0) drawParticleBeam();
     }
-
     // ### Rendering
+
 
     public void drawParticleBeam() {
         if (!level.isClientSide) {
@@ -371,7 +377,7 @@ public class TileEnergyPylon extends TileBCore implements MultiBlockController {
 
     @Override
     public VoxelShape getShapeForPart(BlockPos pos, CollisionContext context) {
-        return Shapes.block();
+        return SPHERE_SHAPE;
     }
 
     @Override

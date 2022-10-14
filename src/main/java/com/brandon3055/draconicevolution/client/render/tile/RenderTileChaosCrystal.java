@@ -72,7 +72,7 @@ public class RenderTileChaosCrystal implements BlockEntityRenderer<TileChaosCrys
 
     @Override
     public void render(TileChaosCrystal te, float partialTicks, PoseStack mStack, MultiBufferSource getter, int packedLight, int packedOverlay) {
-        if (te.parentPos.get().getY() != -1) return;
+        if (te.parentPos.notNull()) return;
         Matrix4 mat = new Matrix4(mStack);
         CCRenderState ccrs = CCRenderState.instance();
         ccrs.reset();

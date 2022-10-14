@@ -45,7 +45,6 @@ public class DEGuiSprites {
         BCGuiSprites.register(MODID, "chest/feed_all");
         BCGuiSprites.register(MODID, "chest/feed_filter");
         BCGuiSprites.register(MODID, "chest/feed_filter_sticky");
-        BCGuiSprites.register(MODID, "chest/color_picker");
 
         // Hud
         BCGuiSprites.register(MODID, "hud/ryg_bar");

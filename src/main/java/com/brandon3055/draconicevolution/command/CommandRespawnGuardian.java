@@ -45,7 +45,7 @@ public class CommandRespawnGuardian {
             throw new CommandRuntimeException(new TextComponent("Chaos crystal not detected! Please run this command within 60 blocks of an islands chaos crystal."));
         }
 
-        if (tile.parentPos.get().getY() != -1) {
+        if (tile.parentPos.notNull()) {
             BlockEntity parent = tile.getLevel().getBlockEntity(tile.parentPos.get());
             if (parent instanceof TileChaosCrystal) {
                 tile = (TileChaosCrystal) parent;

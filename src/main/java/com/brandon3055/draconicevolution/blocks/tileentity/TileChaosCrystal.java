@@ -16,6 +16,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -32,7 +33,7 @@ public class TileChaosCrystal extends TileBCore {
 
     public int tick = 0;
     public final ManagedBool guardianDefeated = register(new ManagedBool("guardian_defeated", DataFlags.SAVE_NBT_SYNC_TILE, DataFlags.TRIGGER_UPDATE));
-    public final ManagedPos parentPos = register(new ManagedPos("parent_pos", new BlockPos(0, -1, 0), DataFlags.SAVE_NBT_SYNC_TILE));
+    public final ManagedPos parentPos = register(new ManagedPos("parent_pos", (BlockPos) null, DataFlags.SAVE_NBT_SYNC_TILE));
     /**
      * This is used to store the spawn location of the crystal so the crystal can tell if it gets moved
      */
@@ -91,7 +92,7 @@ public class TileChaosCrystal extends TileBCore {
             return;
         }
 
-        if (parentPos.get().getY() != -1) {
+        if (parentPos.notNull()) {
             BlockEntity tile = level.getBlockEntity(parentPos.get());
             if (tile instanceof TileChaosCrystal && !((TileChaosCrystal) tile).removing) {
                 ((TileChaosCrystal) tile).detonate(entity);
@@ -169,13 +170,15 @@ public class TileChaosCrystal extends TileBCore {
         return false;
     }
 
-    public boolean canBreak() {
-        if (parentPos.get().getY() == -1) {
+    public boolean attemptingBreak(Player player) {
+        if (parentPos.isNull()) {
+            if (player != null && player.getAbilities().instabuild) {
+                guardianDefeated.set(true);
+            }
             return guardianDefeated.get();
         }
-        BlockEntity tile = level.getBlockEntity(parentPos.get());
-        if (tile instanceof TileChaosCrystal) {
-            return ((TileChaosCrystal) tile).guardianDefeated.get();
+        if (level.getBlockEntity(parentPos.get()) instanceof TileChaosCrystal tile) {
+            return tile.attemptingBreak(player);
         }
         return false;
     }

@@ -1,6 +1,8 @@
 package com.brandon3055.draconicevolution.client.render.tile;
 
 import codechicken.lib.colour.Colour;
+import codechicken.lib.colour.ColourARGB;
+import codechicken.lib.colour.ColourRGBA;
 import codechicken.lib.math.MathHelper;
 import codechicken.lib.render.CCModel;
 import codechicken.lib.render.CCRenderState;
@@ -39,7 +41,6 @@ public class RenderTileEnergyCore implements BlockEntityRenderer<TileEnergyCore>
     public static final double[] SCALES = {1.1, 1.7, 2.3, 3.6, 5.5, 7.1, 8.6, 10.2};
 
     private static final RenderType innerCoreType = RenderType.entitySolid(new ResourceLocation(DraconicEvolution.MODID, "textures/block/energy_core/energy_core_base.png"));
-
 
     private static final RenderType outerCoreType = RenderType.create("outer_core", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder()
             .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(DraconicEvolution.MODID, "textures/block/energy_core/energy_core_overlay.png"), false, false))
@@ -98,7 +99,6 @@ public class RenderTileEnergyCore implements BlockEntityRenderer<TileEnergyCore>
     }
 
 
-
     @Override
     public void render(TileEnergyCore te, float partialTicks, PoseStack poseStack, MultiBufferSource getter, int packedLight, int packedOverlay) {
         if (te.buildGuide.get()) {
@@ -122,15 +122,18 @@ public class RenderTileEnergyCore implements BlockEntityRenderer<TileEnergyCore>
         double scale = SCALES[te.tier.get() - 1];
 
         renderInnerCore(te, ccrs, mat, getter, partialTicks, rotation, scale);
-//        renderFancyOuterCore(te, ccrs, mat, getter, partialTicks, rotation, scale);
-        renderLegacyOuterCore(te, ccrs, mat, getter, partialTicks, rotation, scale);
+        if (te.legacyRender.get()) {
+            renderLegacyOuterCore(te, ccrs, mat, getter, partialTicks, rotation, scale);
+        } else {
+            renderFancyOuterCore(te, ccrs, mat, getter, partialTicks, rotation, scale);
+        }
 
         renderStabilizers(te, ccrs, mat, getter, partialTicks);
     }
 
     public void renderInnerCore(TileEnergyCore te, CCRenderState ccrs, Matrix4 mat, MultiBufferSource getter, float partialTicks, float rotation, double scale) {
         int brightness = (int) Math.abs(Math.sin((float) ClientEventHandler.elapsedTicks / 100f) * 100f);
-        ccrs.baseColour = 0xFF0000FF;//te.getColour();
+        ccrs.baseColour = te.getColour();
         ccrs.brightness = 140 + brightness;
         ccrs.bind(innerCoreType, getter);
         Matrix4 coreMat = mat.copy();
@@ -142,9 +145,34 @@ public class RenderTileEnergyCore implements BlockEntityRenderer<TileEnergyCore>
 
     public void renderFancyOuterCore(TileEnergyCore te, CCRenderState ccrs, Matrix4 mat, MultiBufferSource getter, float partialTicks, float rotation, double scale) {
         DEShaders.energyCoreActivation.glUniform1f(1);
-        DEShaders.energyCoreFrameColour.glUniform3f(0.1F, 0.1F, 0.1F);
-        DEShaders.energyCoreRotTriColour.glUniform3f(0.4F, 0F, 0.6F);
-        DEShaders.energyCoreEffectColour.glUniform3f(0.0F, 0.95F, 0.95F);
+        boolean t8 = te.tier.get() == 8;
+
+        float[] frame;
+        float[] triangle;
+        float[] effect;
+
+        if (te.customColour.get()) {
+            frame = unpack(te.frameColour.get());
+            triangle = unpack(te.innerColour.get());
+            effect = unpack(te.effectColour.get());
+        } else {
+            frame = unpack(t8 ? TileEnergyCore.DEFAULT_FRAME_COLOUR_T8 : TileEnergyCore.DEFAULT_FRAME_COLOUR);
+            triangle = unpack(t8 ? TileEnergyCore.DEFAULT_TRIANGLE_COLOUR_T8 : TileEnergyCore.DEFAULT_TRIANGLE_COLOUR);
+            effect = unpack(t8 ? TileEnergyCore.DEFAULT_EFFECT_COLOUR_T8 : TileEnergyCore.DEFAULT_EFFECT_COLOUR);
+        }
+
+        DEShaders.energyCoreFrameColour.glUniform3f(frame[0], frame[1], frame[2]);
+        DEShaders.energyCoreRotTriColour.glUniform3f(triangle[0], triangle[1], triangle[2]);
+        DEShaders.energyCoreEffectColour.glUniform3f(effect[0], effect[1], effect[2]);
+
+
+//        DEShaders.energyCoreFrameColour.glUniform3f(0.1F, 0.1F, 0.1F);
+//        DEShaders.energyCoreRotTriColour.glUniform3f(0.4F, 0F, 0.6F); //Default
+////        DEShaders.energyCoreRotTriColour.glUniform3f(0.65F, 0.15F, 0F); //Default tier 8
+//        DEShaders.energyCoreEffectColour.glUniform3f(0.0F, 0.95F, 0.95F); //Default
+////        DEShaders.energyCoreEffectColour.glUniform3f(1F, 0.5F, 0F); //Default Tier 8
+////        DEShaders.energyCoreEffectColour.glUniform3f(1F, 1F, 1F);
+
 
         ccrs.bind(coreShaderType, getter);
         Matrix4 overlayMat = mat.copy();
@@ -167,9 +195,6 @@ public class RenderTileEnergyCore implements BlockEntityRenderer<TileEnergyCore>
         overlayMatRef.rotate(rotation * 0.5F * MathHelper.torad, new Vector3(0F, -1F, -0.5F).normalize());
         modelEnergyCore.render(ccrs, overlayMatRef);
     }
-
-
-
 
     private void renderStabilizers(TileEnergyCore te, CCRenderState ccrs, Matrix4 matrix4, MultiBufferSource getter, float partialTick) {
         if (!te.stabilizersValid.get()) {
@@ -213,169 +238,6 @@ public class RenderTileEnergyCore implements BlockEntityRenderer<TileEnergyCore>
             modelStabilizerSphere.render(ccrs, mat);
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    public void oldRender(TileEnergyCore te, float partialTicks, PoseStack poseStack, MultiBufferSource getter, int packedLight, int packedOverlay) {
-//        if (te.buildGuide.get()) {
-//            MultiBlockDefinition def = te.getMultiBlockDef();
-//            if (def != null) {
-//                MultiBlockRenderers.renderBuildGuide(te.getLevel(), te.getBlockPos(), poseStack, getter, def, 200, partialTicks);
-//            }
-//        }
-//
-
-
-//        renderStructure();
-
-//        BlockState state = DEContent.generator.defaultBlockState();
-//        Minecraft.getInstance().getBlockRenderer().renderSingleBlock(state, poseStack, getter, packedLight, OverlayTexture.NO_OVERLAY);
-
-
-//        if (!te.active.get()) return;
-
-//        coreShaderType = RenderType.create("test_shaders", DefaultVertexFormat.POSITION_COLOR_TEX, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder()
-////                .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(DraconicEvolution.MODID, "textures/block/energy_core/energy_core_overlay.png"), false, false))
-//                        .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(DraconicEvolution.MODID, "textures/item/equipment/chaos_shader.png"), true, false))
-//                        .setShaderState(new RenderStateShard.ShaderStateShard(() -> DEShaders.testShader))
-//                        .setTransparencyState(RenderStateShard.NO_TRANSPARENCY)
-////                .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
-//                        .setCullState(RenderStateShard.NO_CULL)
-//                        .createCompositeState(false)
-//        );
-
-//        Player player = Minecraft.getInstance().player;
-//        DEShaders.testInB.glUniform1f((float) (player.getYRot() * MathHelper.torad));
-//        DEShaders.testInC.glUniform1f((float) -(player.getXRot() * MathHelper.torad));
-
-//        Matrix4 mat = new Matrix4(poseStack);
-//        CCRenderState ccrs = CCRenderState.instance();
-//        ccrs.reset();
-//        ccrs.brightness = packedLight;
-//        ccrs.overlay = packedOverlay;
-
-//        poseStack.pushPose();
-//        try {
-//            poseStack.translate(-1, -1, -6);
-//            TransformingVertexConsumer consumer = new TransformingVertexConsumer(getter.getBuffer(coreShaderType), poseStack);
-//
-//            consumer.vertex(0, 3, 0).color(1F, 1F, 1F, 1F).uv(0, 1).uv2(240, 240).endVertex();
-//            consumer.vertex(3, 3, 0).color(1F, 1F, 1F, 1F).uv(1, 1).uv2(240, 240).endVertex();
-//            consumer.vertex(3, 0, 0).color(1F, 1F, 1F, 1F).uv(1, 0).uv2(240, 240).endVertex();
-//            consumer.vertex(0, 0, 0).color(1F, 1F, 1F, 1F).uv(0, 0).uv2(240, 240).endVertex();
-//
-//            RenderUtils.endBatch(getter);
-//
-//        } catch (Throwable e) {
-//            e.printStackTrace();
-//        }
-//        poseStack.popPose();
-
-//        if (true) return;
-
-
-        //region Do Calculations
-//        float rotation = (ClientEventHandler.elapsedTicks + partialTicks) / 2F;
-//        int brightness = (int) Math.abs(Math.sin((float) ClientEventHandler.elapsedTicks / 100f) * 100f);
-//        double scale = 5;//SCALES[te.tier.get() - 1];
-
-//        ccrs.baseColour = 0xFFFFFFFF;//te.getColour();
-//        ccrs.brightness = 140 + brightness;
-//        ccrs.bind(innerCoreType, getter);
-//        Matrix4 coreMat = mat.copy();
-//        coreMat.translate(Vector3.CENTER);
-//        coreMat.scale(scale * -0.65, scale * -0.65, scale * -0.65);
-//        coreMat.rotate(rotation * MathHelper.torad, new Vector3(0F, 1F, 0.5F).normalize());
-//        modelEnergyCore.render(ccrs, coreMat);
-
-//        if (te.tier.get() == 8) {
-//            ccrs.baseColour = Colour.packRGBA(0.95F, 0.45F, 0F, 1F);
-//        } else {
-//            ccrs.baseColour = Colour.packRGBA(0.2F, 1F, 1F, 1F);
-//        }
-
-//        DEShaders.energyCoreActivation.glUniform1f(-0.2F + (((TimeKeeper.getClientTick() + partialTicks) / 100F) % 1.4F));
-//        DEShaders.energyCoreActivation.glUniform1f(1);
-//
-//        DEShaders.energyCoreFrameColour.glUniform3f(0.1F, 0.1F, 0.1F);
-//        DEShaders.energyCoreRotTriColour.glUniform3f(0.4F, 0F, 0.6F);
-//        DEShaders.energyCoreEffectColour.glUniform3f(0.0F, 0.95F, 0.95F);
-//
-////        ccrs.bind(outerCoreType, getter);
-//        ccrs.bind(coreShaderType, getter);
-//        Matrix4 overlayMat = mat.copy();
-//        overlayMat.translate(Vector3.CENTER);
-//        overlayMat.scale(scale * -0.7, scale * -0.7, scale * -0.7);
-//        overlayMat.rotate(rotation * 0.5F * MathHelper.torad, new Vector3(0F, -1F, -0.5F).normalize());
-//        modelEnergyCore.render(ccrs, overlayMat);
-
-//        ccrs.bind(outerCoreType, getter);
-//        Matrix4 overlayMatRef = mat.copy();
-//        overlayMatRef.translate(6.5, 0.5, 0.5);
-//        overlayMatRef.scale(scale * -0.7, scale * -0.7, scale * -0.7);
-//        overlayMatRef.rotate(rotation * 0.5F * MathHelper.torad, new Vector3(0F, -1F, -0.5F).normalize());
-//        modelEnergyCore.render(ccrs, overlayMatRef);
-
-//        renderStabilizers(te, ccrs, mat, getter, partialTicks);
-    }
-
-
-//    private void renderStabilizers(TileEnergyCore te, CCRenderState ccrs, Matrix4 matrix4, MultiBufferSource getter, float partialTick) {
-//        if (!te.stabilizersOK.get()) {
-//            return;
-//        }
-//
-//        for (ManagedVec3I vec3I : te.stabOffsets) {
-//            Matrix4 mat = matrix4.copy();
-//            mat.translate(-vec3I.get().x + 0.5, -vec3I.get().y + 0.5, -vec3I.get().z + 0.5);
-//
-//            Direction facing = Direction.getNearest(vec3I.get().x, vec3I.get().y, vec3I.get().z);//Direction.getFacingFromAxis(Direction.AxisDirection.POSITIVE, te.multiBlockAxis);
-//            if (facing.getAxis() == Direction.Axis.X || facing.getAxis() == Direction.Axis.Y) {
-//                mat.rotate(-90F * MathHelper.torad, new Vector3(-facing.getStepY(), facing.getStepX(), 0).normalize());
-//            } else if (facing == Direction.SOUTH) {
-//                mat.rotate(180F * MathHelper.torad, new Vector3(0, 1, 0).normalize());
-//            }
-//
-//            mat.rotate(90F * MathHelper.torad, new Vector3(1, 0, 0).normalize());
-//
-//            ccrs.baseColour = 0xFFFFFFFF;
-//            renderStabilizerBeam(te, mat, getter, vec3I.get(), partialTick);
-//            if (te.tier.get() >= 5) {
-//                mat.scale(-1.2F, -0.5F, -1.2F);
-//            } else {
-//                mat.scale(-0.45, -0.45, -0.45);
-//            }
-//
-//            Matrix4 innerMat = mat.copy();
-//            innerMat.scale(0.9F, 0.9F, 0.9F);
-//            ccrs.baseColour = 0x00FFFFFF;
-//            ccrs.brightness = 240;
-//            innerMat.rotate((ClientEventHandler.elapsedTicks + partialTick) * MathHelper.torad, new Vector3(0, -1, 0));
-//            ccrs.bind(innerStabType, getter);
-//            modelStabilizerSphere.render(ccrs, innerMat);
-//
-//            mat.scale(1.1F, 1.1F, 1.1F);
-//            ccrs.baseColour = 0x00FFFF7F;
-//            ccrs.brightness = 240;
-//            mat.rotate((ClientEventHandler.elapsedTicks + partialTick) * 0.5F * MathHelper.torad, new Vector3(0, 1, 0));
-//            ccrs.bind(outerStabType, getter);
-//            modelStabilizerSphere.render(ccrs, mat);
-//        }
-//    }
 
     private void renderStabilizerBeam(TileEnergyCore te, Matrix4 matrix4, MultiBufferSource getter, BlockPos vec, float partialTick) {
         Matrix4 innerMat = matrix4.copy();
@@ -495,5 +357,9 @@ public class RenderTileEnergyCore implements BlockEntityRenderer<TileEnergyCore>
     @Override
     public boolean shouldRenderOffScreen(TileEnergyCore p_188185_1_) {
         return true;
+    }
+
+    private static float[] unpack(int colour) {
+        return new float[]{((colour >> 16) & 0xFF) / 255F, ((colour >> 8) & 0xFF) / 255F, (colour & 0xFF) / 255F};
     }
 }

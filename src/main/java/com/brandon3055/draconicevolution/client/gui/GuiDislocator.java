@@ -103,7 +103,7 @@ public class GuiDislocator extends ModularGuiScreen {
                         ChatFormatting.AQUA + getTarget().getName(),
                         ChatFormatting.GOLD + "X: " + (int) getTarget().getX(),
                         ChatFormatting.GOLD + "Y: " + (int) getTarget().getY(),
-                        ChatFormatting.GOLD + "Z: " + (int) getTarget().getY(),
+                        ChatFormatting.GOLD + "Z: " + (int) getTarget().getZ(),
                         ChatFormatting.GOLD + (hasShiftDown() ? getTarget().getDimension().location().toString() : getTarget().getDimension().location().getPath())});
 
         GuiLabel xLabel = infoBG.addChild(new GuiLabel().setAlignment(GuiAlign.LEFT).setShadowStateSupplier(() -> BCConfig.darkMode))
@@ -123,7 +123,7 @@ public class GuiDislocator extends ModularGuiScreen {
                 .setEnabledCallback(() -> selectedIndex >= 0 && selectedIndex < targetList.size());
 
         GuiLabel zLabel = infoBG.addChild(new GuiLabel().setAlignment(GuiAlign.LEFT).setShadowStateSupplier(() -> BCConfig.darkMode))
-                .setDisplaySupplier(() -> "Z: " + (int) getTarget().getY())
+                .setDisplaySupplier(() -> "Z: " + (int) getTarget().getZ())
                 .setPos(infoBG.xPos() + 2, yLabel.maxYPos() + 2)
                 .setYSize(8)
                 .setTextColGetter(GuiToolkit.Palette.Slot::text)

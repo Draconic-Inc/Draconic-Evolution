@@ -52,10 +52,10 @@ float shapeTriangle() {
 
 vec3 shieldEffect(float shapePos) {
     //Render Inner Effect
-    float pos = shapePos / (1.0 - edgeWidth + 0.07); //1 to 0 at center
+    float pos = shapePos / (1.0 - edgeWidth + 0.07);//1 to 0 at center
     float posInv = 1 - pos;
     float spotAnim = Time / 200.0;
-        float value = 1.1;
+    float value = 1.1;
     //    float value = mod(spotAnim, 1.0);
     //        vec2 rand = FaceMod * 100;
     vec2 offsetTc = texCoord0 - center;
@@ -75,7 +75,13 @@ vec3 shieldEffect(float shapePos) {
         float res = 0.5;//0.15;
         if (mod(value, res) > res / 2.0 && value < ((Activation - 0.5) * 2)) {
             float cVal = min((value) * 2, 1);
-            return vec3(min(1, (value-0.5)), cVal, cVal) * EffectColour;
+//            vec3 r = vec3(1) - EffectColour;
+            vec3 c = vec3(cVal, cVal, cVal) * EffectColour;
+            //            c.r += min(r.r, r.r * (value-0.5) * 0.8);
+            //            c.g += min(r.g, r.g * (value-0.5) * 0.8);
+            //            c.b += min(r.b, r.b * (value-0.5) * 0.8);
+//            return vec3(min(1, (value-0.5)), cVal, cVal) * EffectColour;
+                        return c;
         } else {
             discard;
         }
@@ -83,20 +89,20 @@ vec3 shieldEffect(float shapePos) {
         discard;
     }
 
-//    if (value >= 0.50 && posInv > 0.07) {
-//        float res = 0.15;
-//        if (mod(value, res) < res / 2.0) {
-//            float cVal = min((value) * 2, 1);
-//            return vec4(0, cVal, cVal, 1);
-//        } else {
-//            discard;
-//        }
-//    } else {
-//        discard;
-//    }
+    //    if (value >= 0.50 && posInv > 0.07) {
+    //        float res = 0.15;
+    //        if (mod(value, res) < res / 2.0) {
+    //            float cVal = min((value) * 2, 1);
+    //            return vec4(0, cVal, cVal, 1);
+    //        } else {
+    //            discard;
+    //        }
+    //    } else {
+    //        discard;
+    //    }
 
 
-//    return vec4(0, 0, 0, 0);
+    //    return vec4(0, 0, 0, 0);
 }
 
 vec3 rotatingTriEffect(float shapeInv) {
@@ -110,19 +116,18 @@ vec3 rotatingTriEffect(float shapeInv) {
         angle += Time / 100.0;
         float angleStep = floor(angle * edgeSteps) / edgeSteps;
         float colourMod = -0.3 + (random(angleStep * 10) * 0.3);
-//        return vec4(colourMod, 0, 0, 1);
-//        return vec4(vec3(1, 0, 0) + colourMod, 1);
-        return InnerTriColour + colourMod; //Rotating Core Colour
+        //        return vec4(colourMod, 0, 0, 1);
+        //        return vec4(vec3(1, 0, 0) + colourMod, 1);
+        return InnerTriColour + colourMod;//Rotating Core Colour
     } else {
         if (angle > Activation * 2) discard;
         float angleStep = floor(angle * edgeSteps) / edgeSteps;
         float colourMod = -0.1 + (random(angleStep * 10) * 0.2);
-//        return vec4(0, randCol, randCol, 1);
-        return FrameColour + colourMod; //Edge Colours
-//        return vec4(vec3(0, 1, 1) + colourMod, 1);
+        //        return vec4(0, randCol, randCol, 1);
+        return FrameColour + colourMod;//Edge Colours
+        //        return vec4(vec3(0, 1, 1) + colourMod, 1);
     }
 }
-
 
 
 //Triangle top left
@@ -140,38 +145,11 @@ void main() {
     if (shapeInv < edgeWidth) {
         fragColor = vec4(rotatingTriEffect(shapeInv), 1);
     } else {
-//        fragColor = chaos(Time * 20, TestInB, TestInC, 0.5, FaceMod, fPos, Sampler0);
-//        fragColor += shieldEffect(shape);
+        //        fragColor = chaos(Time * 20, TestInB, TestInC, 0.5, FaceMod, fPos, Sampler0);
+        //        fragColor += shieldEffect(shape);
         fragColor = vec4(shieldEffect(shape), 1);
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 //vec4 debugBands(float val, float res) {

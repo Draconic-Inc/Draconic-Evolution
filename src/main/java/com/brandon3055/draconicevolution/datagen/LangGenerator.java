@@ -634,7 +634,16 @@ public class LangGenerator extends LanguageProvider {
         helper.add("tier_up",                                                   "Tier Up");
         helper.add("build_guide",                                               "Toggle Build Guide");
         helper.add("assemble",                                                  "Assemble Core");
-        helper.add("",                                                          "");
+        helper.add("energy_target",                                             "Energy Target");
+        helper.add("energy_target_info",                                        "Use to define an 'energy target'.\nThis is for display purposes.\nYou can use basic numbers or\nscientific notation in the following format,\n'9.223E18' which would translate to\n9223000000000000000");
+        helper.add("legacy_false",                                              "Enable legacy renderer");
+        helper.add("legacy_true",                                               "Disable legacy renderer");
+        helper.add("custom_colour_false",                                       "Enable colour customisation");
+        helper.add("custom_colour_true",                                        "Disable colour customisation");
+        helper.add("config_colour",                                             "Configure Colour");
+        helper.add("reset",                                                     "Reset");
+
+
         add("msg.draconicevolution.energy_core.already_building",               "Assembly already in progress!");
         add("msg.draconicevolution.energy_core.core_not_found",                 "404 Core Not Found!!!");
 

@@ -58,7 +58,7 @@ public class GuiGenerator extends ModularGuiContainer<ContainerBCTile<TileGenera
         TBasicMachine template = toolkit.loadTemplate(new TBasicMachine(this, tile));
 
         //Storage Renderer
-        template.background.addChild(new StorageRenderer());
+        template.background.addChild(new StorageRenderer().setPos(guiLeft(), guiTop()));
         GuiElement fuelSlots = toolkit.createSlots(template.background, 3, 1, 0, (x, y) -> container.getSlotLayout().getSlotData(ContainerSlotLayout.SlotType.TILE_INV, x), BCGuiSprites.get("slots/fuel"));
         fuelSlots.zOffset += 100; //Offset so that this element renders above the chest model in the background
         fuelSlots.setPos(guiLeft() + 64, guiTop() + 28);
@@ -97,7 +97,7 @@ public class GuiGenerator extends ModularGuiContainer<ContainerBCTile<TileGenera
             ccrs.bind(modelType, getter);
 
             Matrix4 mat = new Matrix4(mStack);
-            mat.translate(guiLeft() + 90, guiTop() + 45, 50);
+            mat.translate(xPos() + 90, yPos() + 45, 50);
             float mx = (((mouseX - guiLeft()) / (float) GuiGenerator.this.xSize()) - 0.5F) * .1F;
             float my = (((mouseY - guiTop()) / (float) GuiGenerator.this.ySize()) - 0.5F) * .1F;
             mat.apply(new Rotation(150 * MathHelper.torad, 1, 0, 0).with(new Rotation(10 * MathHelper.torad, -my, 1 + mx, 0)));

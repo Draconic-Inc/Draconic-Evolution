@@ -36,17 +36,19 @@ public class ChaosCrystal extends BlockBCore implements EntityBlock {
 
     @Override
     public boolean onDestroyedByPlayer(BlockState state, Level level, BlockPos pos, Player player, boolean willHarvest, FluidState fluid) {
-        TileChaosCrystal tile = level.getBlockEntity(pos) instanceof TileChaosCrystal ? (TileChaosCrystal) level.getBlockEntity(pos) : null;
-        if (tile == null || !tile.canBreak()) {
-            return false;
+        if (level.getBlockEntity(pos) instanceof TileChaosCrystal tile) {
+            if (!tile.attemptingBreak(player)) {
+                return false;
+            }
         }
+
         return super.onDestroyedByPlayer(state, level, pos, player, willHarvest, fluid);
     }
 
     @Override
     public float getDestroyProgress(BlockState state, Player player, BlockGetter world, BlockPos pos) {
         TileChaosCrystal tile = world.getBlockEntity(pos) instanceof TileChaosCrystal ? (TileChaosCrystal) world.getBlockEntity(pos) : null;
-        if (tile != null) return tile.canBreak() ? super.getDestroyProgress(state, player, world, pos) : -1F;
+        if (tile != null) return tile.attemptingBreak(null) ? super.getDestroyProgress(state, player, world, pos) : -1F;
         return -1;
     }
 

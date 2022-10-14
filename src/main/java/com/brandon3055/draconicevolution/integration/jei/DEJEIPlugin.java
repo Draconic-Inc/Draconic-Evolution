@@ -4,6 +4,7 @@ import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.DraconicAPI;
 import com.brandon3055.draconicevolution.client.gui.GuiDraconiumChest;
+import com.brandon3055.draconicevolution.client.gui.GuiEnergyCore;
 import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.GuiConfigurableItem;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.inventory.ContainerDraconiumChest;
@@ -20,6 +21,7 @@ import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 import mezz.jei.api.recipe.transfer.IRecipeTransferInfo;
 import mezz.jei.api.registration.*;
 import mezz.jei.api.runtime.IJeiRuntime;
+import mezz.jei.gui.overlay.GuiProperties;
 import mezz.jei.util.ErrorUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -53,7 +55,8 @@ public class DEJEIPlugin implements IModPlugin {
 
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration registration) {
-        registration.addGuiScreenHandler(GuiConfigurableItem.class, (gui) -> null);
+        registration.addGuiScreenHandler(GuiConfigurableItem.class, gui -> null);
+        registration.addGuiScreenHandler(GuiEnergyCore.class, gui -> gui.hideJEI != null && gui.hideJEI.get() ? null : GuiProperties.create(gui));
         registration.addGuiContainerHandler(GuiDraconiumChest.class, new IGuiContainerHandler<GuiDraconiumChest>() {
             @Override
             public Collection<IGuiClickableArea> getGuiClickableAreas(GuiDraconiumChest gui, double mouseX, double mouseY) {

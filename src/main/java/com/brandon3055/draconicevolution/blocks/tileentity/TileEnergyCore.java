@@ -1,9 +1,12 @@
 package com.brandon3055.draconicevolution.blocks.tileentity;
 
+import codechicken.lib.colour.Colour;
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.math.MathHelper;
 import codechicken.lib.vec.Vector3;
+import com.brandon3055.brandonscore.api.power.IOTracker;
 import com.brandon3055.brandonscore.blocks.TileBCore;
+import com.brandon3055.brandonscore.capability.CapabilityOP;
 import com.brandon3055.brandonscore.inventory.ContainerBCTile;
 import com.brandon3055.brandonscore.lib.IInteractTile;
 import com.brandon3055.brandonscore.lib.datamanager.*;
@@ -23,6 +26,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -65,15 +69,33 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
     public static final int ADV_STABILIZER_TIER = 5;
     public static final int MAX_STABILIZER_DIST = 16;
 
+    public static final int DEFAULT_FRAME_COLOUR = 0x191919;
+    public static final int DEFAULT_TRIANGLE_COLOUR = 0x660099;
+    public static final int DEFAULT_EFFECT_COLOUR = 0x00f2f2;
+
+    public static final int DEFAULT_FRAME_COLOUR_T8 = 0x191919;
+    public static final int DEFAULT_TRIANGLE_COLOUR_T8 = 0xa52600;
+    public static final int DEFAULT_EFFECT_COLOUR_T8 = 0xff7f00;
+
     public final ManagedByte tier = register(new ManagedByte("tier", (byte) 1, SAVE_NBT_SYNC_TILE, CLIENT_CONTROL));
     public final ManagedBool active = register(new ManagedBool("active", SAVE_NBT_SYNC_TILE));
     public final ManagedBool coreValid = register(new ManagedBool("core_valid", SAVE_NBT_SYNC_TILE)); //The core structure is valid
     public final ManagedBool stabilizersValid = register(new ManagedBool("stabilizers_valid", SAVE_NBT_SYNC_TILE)); //The stabilizer configuration is valid.
-    public final ManagedBool buildGuide = register(new ManagedBool("build_guide", SAVE_NBT_SYNC_TILE, CLIENT_CONTROL));
-    public final ManagedString invalidMessage = register(new ManagedString("invalid_message", DataFlags.SAVE_NBT));
     public final ManagedPos[] stabilizerPositions = new ManagedPos[4]; //Relative stabilizer positions
 
-    protected OPStorageOP energy = new OPStorageOP(this::getCapacity);
+    public final ManagedBool buildGuide = register(new ManagedBool("build_guide", SAVE_NBT_SYNC_TILE, CLIENT_CONTROL));
+    public final ManagedString invalidMessage = register(new ManagedString("invalid_message", SYNC_TILE));
+    public final ManagedFloat fillPercent = register(new ManagedFloat("fill_percent", 0, SYNC_TILE)); //Not saved just for rendering.
+    public final ManagedString energyTarget = register(new ManagedString("user_target", SAVE_NBT_SYNC_CONTAINER, CLIENT_CONTROL));
+
+    //Custom Rendering
+    public final ManagedBool legacyRender = register(new ManagedBool("legacy_render", false, SAVE_NBT_SYNC_TILE, CLIENT_CONTROL));
+    public final ManagedBool customColour = register(new ManagedBool("custom_colour", false, SAVE_NBT_SYNC_TILE, CLIENT_CONTROL));
+    public final ManagedInt frameColour = register(new ManagedInt("frame_colour", DEFAULT_FRAME_COLOUR, SAVE_NBT_SYNC_TILE, CLIENT_CONTROL));
+    public final ManagedInt innerColour = register(new ManagedInt("inner_colour", DEFAULT_TRIANGLE_COLOUR, SAVE_NBT_SYNC_TILE, CLIENT_CONTROL));
+    public final ManagedInt effectColour = register(new ManagedInt("effect_colour", DEFAULT_EFFECT_COLOUR, SAVE_NBT_SYNC_TILE, CLIENT_CONTROL));
+
+    public OPStorageOP energy = new OPStorageOP(this::getCapacity);
 
     private MultiBlockDefinition definitionCache = null;
     private MultiBlockBuilder activeBuilder = null;
@@ -81,6 +103,9 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
 
     public TileEnergyCore(BlockPos pos, BlockState state) {
         super(DEContent.tile_storage_core, pos, state);
+        capManager.setInternalManaged("energy", CapabilityOP.OP, energy).saveTile().syncContainer();
+        energy.setIOTracker(addTickable(new IOTracker()));
+
         for (int i = 0; i < stabilizerPositions.length; i++) {
             stabilizerPositions[i] = register(new ManagedPos("stabilizer_pos_" + i, (BlockPos) null, SAVE_NBT_SYNC_TILE));
         }
@@ -88,6 +113,18 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
             stabilizersValid.set(false);
             validateStructure();
         });
+
+        energyTarget.setCCSCS();
+    }
+
+    @Override
+    public void writeExtraNBT(CompoundTag nbt) {
+        super.writeExtraNBT(nbt);
+    }
+
+    @Override
+    public void readExtraNBT(CompoundTag nbt) {
+        super.readExtraNBT(nbt);
     }
 
     @Override
@@ -100,6 +137,12 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
                 } else {
                     activeBuilder.updateProcess();
                 }
+            }
+
+            if (tier.get() == 8) {
+                fillPercent.set(0F);
+            } else {
+                fillPercent.set(((float) energy.getOPStored() / (float) energy.getMaxOPStored()));
             }
         }
     }
@@ -235,6 +278,10 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
 
             offset.set(null);
         }
+    }
+
+    public void onRemoved() {
+        releaseStabilizers();
     }
 
     // ### Validate Multi-block
@@ -584,14 +631,7 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
 //    //endregion
 //
 //    //region Rendering
-//    public int getColour() {
-//        if (tier.get() == 8) {
-//            return Colour.packRGBA(1F, 0.28F, 0.05F, 1F);
-//        }
-//
-//        float colour = 1F - ((float) getExtendedStorage() / (float) getExtendedCapacity());
-//        return Colour.packRGBA(1F, colour * 0.3f, colour * 0.7f, 1F);
-//    }
+
 //
 //    //endregion
 
@@ -619,6 +659,15 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
     }
 
     // ### Rendering
+
+    public int getColour() {
+        if (tier.get() == 8) {
+            return Colour.packRGBA(1F, 0.28F, 0.05F, 1F);
+        }
+
+        float colour = 1F - fillPercent.get();
+        return Colour.packRGBA(1F, colour * 0.3f, colour * 0.7f, 1F);
+    }
 
     @Override
     @OnlyIn(Dist.CLIENT)

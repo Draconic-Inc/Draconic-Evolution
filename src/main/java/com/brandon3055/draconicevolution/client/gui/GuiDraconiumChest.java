@@ -52,15 +52,15 @@ public class GuiDraconiumChest extends ModularGuiContainer<ContainerDraconiumChe
         GuiElement<?> mainSlots = toolkit.createSlots(template.background, 26, 10, 0, (x, y) -> new SlotMover(container.mainSlots.get(x + (y * 26))), null).setPos(guiLeft() + 5, guiTop() + 5);
         template.themeButton.setYPos(mainSlots.maxYPos() + 1);
 
-        GuiButton colourPicker = toolkit.createIconButton(template.background, 12, 12, DEGuiSprites.getter("chest/color_picker"))
+        GuiButton colourPicker = toolkit.createIconButton(template.background, 12, 12, BCGuiSprites.getter("color_picker"))
                 .setHoverText(toolkit.i18n("color_picker"));
         toolkit.placeOutside(colourPicker, template.themeButton, GuiToolkit.LayoutPos.BOTTOM_CENTER, 0, 0);
 
         colourDialog = new GuiPickColourDialog(template.background);
-        colourDialog.setDragZone(null);
         colourDialog.setBackgroundElement(new GuiTooltipBackground());
         colourDialog.setColourChangeListener(tile.colour::set);
         colourDialog.setIncludeAlpha(false);
+        colourDialog.setDragZone(null);
         colourPicker.onPressed(() -> {
             colourDialog.setColour(tile.colour.get());
             toolkit.placeOutside(colourDialog, colourPicker, GuiToolkit.LayoutPos.BOTTOM_LEFT, -3, -20);

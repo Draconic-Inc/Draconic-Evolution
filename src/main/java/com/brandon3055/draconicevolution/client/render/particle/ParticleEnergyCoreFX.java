@@ -58,7 +58,7 @@ public class ParticleEnergyCoreFX extends TextureSheetParticle {
         hasPhysics = false;
         Vec3D dir = Vec3D.getDirectionVec(new Vec3D(xPos, yPos, zPos), targetPos);
         this.direction = Direction.getNearest((float) dir.x, (float) dir.y, (float) dir.z).getAxis();
-        lifetime = 20;
+        lifetime = 40;
     }
 
     @Override
@@ -105,7 +105,7 @@ public class ParticleEnergyCoreFX extends TextureSheetParticle {
         zd = dir.z * speed;
         move(xd, yd, zd);
 
-        if (age++ > lifetime || Utils.getDistanceAtoB(x, y, z, tPos.x, tPos.y, tPos.z) < 0.2) {
+        if (age++ > lifetime || Utils.getDistanceSq(x, y, z, tPos.x, tPos.y, tPos.z) < 0.01) {
             remove();
         }
         BCProfiler.TICK.stop();
