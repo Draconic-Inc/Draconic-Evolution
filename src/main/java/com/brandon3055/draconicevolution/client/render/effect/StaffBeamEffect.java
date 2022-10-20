@@ -122,8 +122,6 @@ public class StaffBeamEffect extends Particle {
         p3 = source.copy().subtract(planeD);
         p4 = target.copy().subtract(planeD);
         bufferQuad(buffer, p1, p2, p3, p4, anim, dist);
-
-
     }
 
     private void bufferQuad(VertexConsumer buffer, Vector3 p1, Vector3 p2, Vector3 p3, Vector3 p4, float anim, float dist) {
@@ -136,17 +134,14 @@ public class StaffBeamEffect extends Particle {
     }
 
     private static ParticleRenderType renderType = new ParticleRenderType() {
-        private static ResourceLocation texture = new ResourceLocation(DraconicEvolution.MODID, DETextures.ENERGY_BEAM_DRACONIC);
+        private static ResourceLocation texture = new ResourceLocation(DraconicEvolution.MODID, "textures/particle/energy_beam_draconic.png");
         @Override
         public void begin(BufferBuilder builder, TextureManager textureManager) {
             textureManager.bindForSetup(texture);
-//            RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
             RenderSystem.disableCull();
             RenderSystem.depthMask(false);
-//            RenderSystem.alphaFunc(516, 0.003921569F);
             RenderSystem.enableBlend();
             RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
-//            RenderSystem.glMultiTexCoord2f(0x84c2, 240.0F, 240.0F); //Lightmap
             builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
         }
 

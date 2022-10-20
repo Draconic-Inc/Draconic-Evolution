@@ -46,7 +46,7 @@ public class TileEnergyPylon extends TileBCore implements MultiBlockController {
     private static final VoxelShape SPHERE_SHAPE = Shapes.box(0.2, 0.2, 0.2, 0.8, 0.8, 0.8);
 
     public final ManagedEnum<Mode> ioMode = register(new ManagedEnum<>("io_mode", Mode.OUTPUT, DataFlags.SAVE_NBT_SYNC_TILE));
-    public final ManagedEnum<Direction> direction = register(new ManagedEnum<>("io_mode", Direction.UP, DataFlags.SAVE_NBT_SYNC_TILE));
+    public final ManagedEnum<Direction> direction = register(new ManagedEnum<>("direction", Direction.UP, DataFlags.SAVE_NBT_SYNC_TILE));
     public final ManagedEnum<EnumColour> colour = register(new ManagedEnum<>("colour", EnumColour.class, null, DataFlags.SAVE_NBT_SYNC_TILE));
     public final ManagedBool structureValid = register(new ManagedBool("structure_valid", DataFlags.SAVE_NBT_SYNC_TILE));
     public final ManagedPos coreOffset = register(new ManagedPos("core_offset", (BlockPos) null, DataFlags.SAVE_NBT_SYNC_TILE));
@@ -341,17 +341,27 @@ public class TileEnergyPylon extends TileBCore implements MultiBlockController {
         Vec3D spawn;
         Vec3D dest;
 
+        int r = 0;
+        int g = 200;
+        int b = 255;
+
+        if (colour.notNull()) {
+            r = (int) (colour.get().rF() * 255);
+            g = (int) (colour.get().gF() * 255);
+            b = (int) (colour.get().bF() * 255);
+        }
+
         if (particleRate.get() > 10) {
             for (int i = 0; i <= particleRate.get() / 10; i++) {
                 spawn = getParticleSpawn(rand);
                 dest = getParticleDest(rand);
-                level.addParticle(new IntParticleType.IntParticleData(DEParticles.energy, 0, 200, 255, 200), spawn.x, spawn.y, spawn.z, dest.x, dest.y, dest.z);
+                level.addParticle(new IntParticleType.IntParticleData(DEParticles.energy, r, g, b, 200), spawn.x, spawn.y, spawn.z, dest.x, dest.y, dest.z);
 
             }
         } else if (rand.nextInt(Math.max(1, 10 - particleRate.get())) == 0) {
             spawn = getParticleSpawn(rand);
             dest = getParticleDest(rand);
-            level.addParticle(new IntParticleType.IntParticleData(DEParticles.energy, 0, 200, 255, 200), spawn.x, spawn.y, spawn.z, dest.x, dest.y, dest.z);
+            level.addParticle(new IntParticleType.IntParticleData(DEParticles.energy, r, g, b, 200), spawn.x, spawn.y, spawn.z, dest.x, dest.y, dest.z);
         }
     }
 

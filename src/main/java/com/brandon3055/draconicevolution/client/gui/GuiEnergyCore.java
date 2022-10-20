@@ -310,10 +310,19 @@ public class GuiEnergyCore extends ModularGuiContainer<ContainerBCTile<TileEnerg
         return builder.toString();
     }
 
+    /**
+     * This is just limits the target value the user can specify.
+     * Things get incredibly slow when using numbers bigger then this.
+     *
+     * This does not limit the core's capacity.
+     * I think i'm just going to have to accept that after around 10^10^5 years at an input rate of 2^64 * 2^32
+     * things may start to get a bit laggy....
+     * */
+    private static final BigDecimal MAX_BIGINT = new BigDecimal("9999e9999");
     public static boolean validBigInt(String value) {
         try {
             BigDecimal val = new BigDecimal(value);
-            return val.compareTo(BigDecimal.ZERO) >= 0;
+            return val.compareTo(BigDecimal.ZERO) >= 0 && val.compareTo(MAX_BIGINT) <= 0;
         } catch (Throwable e) {
             return false;
         }

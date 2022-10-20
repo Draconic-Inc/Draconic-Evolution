@@ -110,10 +110,10 @@ public class CrystalFXWireless extends CrystalFXBase<TileCrystalWirelessIO> {
             pathVec.add(source);
 
             Vector3f[] renderVector = getRenderVectors(renderInfo, (float) pathVec.x, (float) pathVec.y, (float) pathVec.z, scale);
-            buffer.vertex(renderVector[0].x(), renderVector[0].y(), renderVector[0].z()).color(0, 1F, 1F, 1F).uv(maxU, maxV).uv(240, 240).endVertex();
-            buffer.vertex(renderVector[1].x(), renderVector[1].y(), renderVector[1].z()).color(0, 1F, 1F, 1F).uv(maxU, minV).uv(240, 240).endVertex();
-            buffer.vertex(renderVector[2].x(), renderVector[2].y(), renderVector[2].z()).color(0, 1F, 1F, 1F).uv(minU, minV).uv(240, 240).endVertex();
-            buffer.vertex(renderVector[3].x(), renderVector[3].y(), renderVector[3].z()).color(0, 1F, 1F, 1F).uv(minU, maxV).uv(240, 240).endVertex();
+            buffer.vertex(renderVector[0].x(), renderVector[0].y(), renderVector[0].z()).color(0, 1F, 1F, 1F).uv(maxU, maxV).uv2(240, 240).endVertex();
+            buffer.vertex(renderVector[1].x(), renderVector[1].y(), renderVector[1].z()).color(0, 1F, 1F, 1F).uv(maxU, minV).uv2(240, 240).endVertex();
+            buffer.vertex(renderVector[2].x(), renderVector[2].y(), renderVector[2].z()).color(0, 1F, 1F, 1F).uv(minU, minV).uv2(240, 240).endVertex();
+            buffer.vertex(renderVector[3].x(), renderVector[3].y(), renderVector[3].z()).color(0, 1F, 1F, 1F).uv(minU, maxV).uv2(240, 240).endVertex();
         }
     }
 

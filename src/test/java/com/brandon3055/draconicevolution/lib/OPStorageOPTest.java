@@ -96,7 +96,7 @@ public class OPStorageOPTest {
             int digits = BigIntegerMath.log10(total, RoundingMode.DOWN);
             int prefixStep = (digits / 3) * 3;
             BigDecimal decimal = new BigDecimal(total).divide(BigDecimal.valueOf(10).pow(prefixStep), 3, RoundingMode.DOWN);
-            assertEquals(decimal + " " + "numprefix.draconicevolution.10-" + prefixStep, storageOP.getReadable());
+            assertEquals(decimal.doubleValue() + " " + "numprefix.draconicevolution.10-" + prefixStep, storageOP.getReadable());
         }
 
     }

@@ -66,16 +66,16 @@ public class CrystalFXIO extends CrystalFXBase<TileCrystalBase> {
         return tile.getTier() == 0 ? BASIC_HANDLER : tile.getTier() == 1 ? WYVERN_HANDLER : DRACONIC_HANDLER;
     }
 
-    private static final ParticleRenderType BASIC_HANDLER = new FXHandler(DETextures.ENERGY_BEAM_BASIC);
-    private static final ParticleRenderType WYVERN_HANDLER = new FXHandler(DETextures.ENERGY_BEAM_WYVERN);
-    private static final ParticleRenderType DRACONIC_HANDLER = new FXHandler(DETextures.ENERGY_BEAM_DRACONIC);
+    private static final ParticleRenderType BASIC_HANDLER = new FXHandler(new ResourceLocation(DraconicEvolution.MODID, "textures/particle/energy_beam_basic.png"));
+    private static final ParticleRenderType WYVERN_HANDLER = new FXHandler(new ResourceLocation(DraconicEvolution.MODID, "textures/particle/energy_beam_wyvern.png"));
+    private static final ParticleRenderType DRACONIC_HANDLER = new FXHandler(new ResourceLocation(DraconicEvolution.MODID, "textures/particle/energy_beam_draconic.png"));
 
     public static class FXHandler implements ParticleRenderType {
 
         private ResourceLocation texture;
 
-        public FXHandler(String texture) {
-            this.texture = new ResourceLocation(DraconicEvolution.MODID, texture);
+        public FXHandler(ResourceLocation texture) {
+            this.texture = texture;
         }
 
         @Override

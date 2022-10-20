@@ -1,6 +1,6 @@
 buildscript {
     repositories {
-        mavenLocal()
+//        mavenLocal()
         jcenter()
         maven { url = "https://maven.minecraftforge.net/" }
         maven { url = "https://repo.spongepowered.org/maven" }
@@ -125,7 +125,7 @@ processResources {
 //}
 
 repositories {
-    mavenLocal()
+//    mavenLocal()
     maven { url = "https://maven.covers1624.net/" }
     maven { url = "https://dvs1.progwml6.com/files/maven" }
     maven { url = "https://maven.cil.li/" }

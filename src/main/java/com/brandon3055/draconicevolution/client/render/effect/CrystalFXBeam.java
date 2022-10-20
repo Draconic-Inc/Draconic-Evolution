@@ -172,17 +172,18 @@ public class CrystalFXBeam<T extends BlockEntity & IENetEffectTile> extends Crys
         return tile.getTier() == 0 ? BASIC_HANDLER : tile.getTier() == 1 ? WYVERN_HANDLER : DRACONIC_HANDLER;
     }
 
-    private static final ParticleRenderType BASIC_HANDLER = new FXHandler(DETextures.ENERGY_BEAM_BASIC);
-    private static final ParticleRenderType WYVERN_HANDLER = new FXHandler(DETextures.ENERGY_BEAM_WYVERN);
-    private static final ParticleRenderType DRACONIC_HANDLER = new FXHandler(DETextures.ENERGY_BEAM_DRACONIC);
+    private static final ParticleRenderType BASIC_HANDLER = new FXHandler(new ResourceLocation(DraconicEvolution.MODID, "textures/particle/energy_beam_basic.png"));
+    private static final ParticleRenderType WYVERN_HANDLER = new FXHandler(new ResourceLocation(DraconicEvolution.MODID, "textures/particle/energy_beam_wyvern.png"));
+    private static final ParticleRenderType DRACONIC_HANDLER = new FXHandler(new ResourceLocation(DraconicEvolution.MODID, "textures/particle/energy_beam_draconic.png"));
 
     public static class FXHandler implements ParticleRenderType {
+        private static final ResourceLocation highlightTexture = new ResourceLocation(DraconicEvolution.MODID, "textures/particle/energy_beam_highlight.png");
         private ResourceLocation texture;
         private float green;
 
-        public FXHandler(String texture) {
-            this.texture = new ResourceLocation(DraconicEvolution.MODID, texture);
-            this.green = texture.endsWith(DETextures.ENERGY_BEAM_WYVERN) ? 0.3F : 1F;
+        public FXHandler(ResourceLocation texture) {
+            this.texture = texture;
+            this.green = texture.getPath().contains("energy_beam_wyvern") ? 0.3F : 1F;
         }
 
         @Override
@@ -192,7 +193,11 @@ public class CrystalFXBeam<T extends BlockEntity & IENetEffectTile> extends Crys
             RenderSystem.enableBlend();
             RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
             RenderSystem.setShader(GameRenderer::getPositionColorTexLightmapShader);
-            RenderSystem.setShaderTexture(0, texture);
+            if (ClientEventHandler.playerHoldingWrench) {
+                RenderSystem.setShaderTexture(0, highlightTexture);
+            } else {
+                RenderSystem.setShaderTexture(0, texture);
+            }
             builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP);
         }
 
