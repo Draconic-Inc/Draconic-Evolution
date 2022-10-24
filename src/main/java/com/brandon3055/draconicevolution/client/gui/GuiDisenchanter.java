@@ -63,7 +63,7 @@ public class GuiDisenchanter extends ModularGuiContainer<ContainerBCTile<TileDis
 		toolkit.placeInside(input, temp.background, LayoutPos.TOP_LEFT, 8, 24);
 		toolkit.placeOutside(books, input, LayoutPos.MIDDLE_RIGHT, 20, 0);
 		toolkit.placeOutside(output, input, LayoutPos.BOTTOM_CENTER, (books.xPos() - input.xPos()) / 2, 20);
-		//GuiButton add = toolkit.createIconButton(temp.background, 12, BCGuiSprites.getter("add"));
+		//GuiTexture add = new GuiTexture(BCGuiSprites.getter("add"));
 		//toolkit.placeOutside(add, input, LayoutPos.MIDDLE_RIGHT, (books.xPos() - input.maxXPos()) / 2 - add.xSize() / 2, 0);
 		scrollBar = toolkit.createVanillaScrollBar()
 			.setPos(temp.background.maxXPos() - 12, input.yPos())
@@ -81,23 +81,23 @@ public class GuiDisenchanter extends ModularGuiContainer<ContainerBCTile<TileDis
 			addList();
 		}
 	}
-	
+
 	@Override
 	public void containerTick() {
 		super.containerTick();
 		ItemStack stack = tile.itemHandler.getStackInSlot(0);
- 		if (!stack.equals(prevStack, false)) {
- 			removeList();
- 			if (!stack.isEmpty()) {
- 				addList();
- 			}
- 			prevStack = stack.copy();
- 		}
+		if (!stack.equals(prevStack, false)) {
+			removeList();
+			if (!stack.isEmpty()) {
+				addList();
+			}
+			prevStack = stack.copy();
+		}
 	}
-    
-    private void addList() {
-    	ItemStack slot0 = tile.itemHandler.getStackInSlot(0);
-    	if (!slot0.isEmpty()) {
+
+	private void addList() {
+		ItemStack slot0 = tile.itemHandler.getStackInSlot(0);
+		if (!slot0.isEmpty()) {
 			listElement = new GuiScrollElement().setListMode(GuiScrollElement.ListMode.VERT_LOCK_POS_WIDTH)
 				.setListSpacing(1)
 				.setInsets(1, 1, 2, 1);
@@ -108,7 +108,7 @@ public class GuiDisenchanter extends ModularGuiContainer<ContainerBCTile<TileDis
 				.setStandardScrollBehavior();
 			for (Tag tag : slot0.getEnchantmentTags()) {
 				CompoundTag cTag = (CompoundTag)tag;
-	            int lvl = cTag.getShort("lvl");
+				int lvl = cTag.getShort("lvl");
 				ArrayList<Component> hoverText = new ArrayList<Component>();
 				hoverText.add(new TranslatableComponent("gui." + DraconicEvolution.MODID + ".disenchanter.level", lvl));
 				hoverText.add(new TranslatableComponent("gui." + DraconicEvolution.MODID + ".disenchanter.cost", tile.getCostInLevels(tile.getEnchantmentFromTag(cTag), lvl)));
@@ -119,11 +119,11 @@ public class GuiDisenchanter extends ModularGuiContainer<ContainerBCTile<TileDis
 					.onPressed(() -> tile.sendPacketToServer(output -> output.writeString(cTag.getString("id")), 1));
 				listElement.addElement(button);
 			}
-    	}
-    }
-    
-    private void removeList() {
-    	listBG.removeChild(listElement);
-    	listElement = null;
-    }
+		}
+	}
+
+	private void removeList() {
+		listBG.removeChild(listElement);
+		listElement = null;
+	}
 }

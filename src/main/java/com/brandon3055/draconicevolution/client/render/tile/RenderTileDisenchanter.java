@@ -38,7 +38,7 @@ public class RenderTileDisenchanter implements BlockEntityRenderer<TileDisenchan
         	mStack.pushPose();
         	mStack.translate(0.5, 0.76, 0.5);
         	mStack.scale(0.5F, 0.5F, 0.5F);
-            mStack.mulPose(new Quaternion(270, 0, 0, true));
+            mStack.mulPose(new Quaternion(90, 0, 180, true));
             mc.getItemRenderer().renderStatic(books, ItemTransforms.TransformType.FIXED, packetLight, packetOverlay, mStack, getter, te.posSeed());
         	mStack.popPose();
         }
