@@ -3,7 +3,7 @@
   "values": [
     "draconicevolution:generator",
     "draconicevolution:grinder",
-    "minecraft:air",
+    "draconicevolution:disenchanter",
     "draconicevolution:energy_transfuser",
     "draconicevolution:dislocator_pedestal",
     "draconicevolution:dislocator_receptacle",
@@ -12,7 +12,7 @@
     "minecraft:air",
     "draconicevolution:stabilized_spawner",
     "draconicevolution:potentiometer",
-    "minecraft:air",
+    "draconicevolution:celestial_manipulator",
     "draconicevolution:draconium_chest",
     "draconicevolution:particle_generator",
     "draconicevolution:chaos_crystal",

@@ -411,11 +411,11 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
 
     @OnlyIn(Dist.CLIENT)
     public void stopSunEffect() {
-//        timeWarpRunning.value = false;
-//        timeWarpStopping.value = true;
-//        if (timer > 100) {
-//            timer = 100;
-//        }
+        timeWarpRunning.set(false);
+        timeWarpStopping.set(true);
+        if (timer > 100) {
+            timer = 100;
+        }
     }
 
     @OnlyIn(Dist.CLIENT)

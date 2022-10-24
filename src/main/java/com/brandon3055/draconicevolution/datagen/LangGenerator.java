@@ -504,6 +504,11 @@ public class LangGenerator extends LanguageProvider {
         helper.add("stored_xp.raw",                                             "(Raw XP)");
         helper.add("weapon_slot",                                               "Optional weapon to use when attacking.");
 
+        //Disenchanter
+        helper.setPrefix("gui.draconicevolution.disenchanter");
+        helper.add("level",                                                     "Level of Enchant: %s");
+        helper.add("cost",                                                      "XP Cost in Levels: %s");
+        
         //Draconium Chest
         helper.setPrefix("gui.draconicevolution.draconium_chest");
         helper.add("feed." + FeedMode.OFF.localKey() + ".info",                 "Feed Off");
@@ -617,6 +622,7 @@ public class LangGenerator extends LanguageProvider {
         //Fusion Crafting Core
         helper.setPrefix("gui.draconicevolution.fusion_craft");
         helper.add("craft",                                                     "Craft");
+        
         //JEI
         helper.add("tier.draconium",                                            "Tier: Draconium");
         helper.add("tier.wyvern",                                               "Tier: Wyvern");
@@ -642,20 +648,10 @@ public class LangGenerator extends LanguageProvider {
         helper.add("custom_colour_true",                                        "Disable colour customisation");
         helper.add("config_colour",                                             "Configure Colour");
         helper.add("reset",                                                     "Reset");
-
-
+        
         add("msg.draconicevolution.energy_core.already_building",               "Assembly already in progress!");
         add("msg.draconicevolution.energy_core.core_not_found",                 "404 Core Not Found!!!");
 
-//        add("gui.de.energyStorageCore.name",                                    "Tier %s Energy Core");
-//        add("button.de.buildGuide.txt",                                         "Build Guide:");
-//        add("ecore.de.already_assembling.txt",                                  "Assembly already in progress!");
-//        add("gui.de.transfer.txt",                                              "Transfer");
-//        add("gui.de.capacity.txt",                                              "Capacity");
-//        add("gui.de.maxStorage.txt",                                            ">> Max Storage <<");
-//        add("info.bc.charge.txt",                                               "Charge");
-//        add("gui.de.almostInfinite.txt",                                        "Almost Infinite!");
-//
 //        add("gui.de.stabilizers.txt",                                           "Stabilizers");
 //        add("gui.de.invalid.txt",                                               "Invalid");
 //        add("gui.de.valid.txt",                                                 "Valid");

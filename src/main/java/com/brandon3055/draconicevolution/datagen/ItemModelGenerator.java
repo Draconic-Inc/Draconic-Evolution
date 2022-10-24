@@ -45,7 +45,6 @@ public class ItemModelGenerator extends ItemModelProvider {
         blockItem(DEContent.flux_gate);
         blockItem(DEContent.potentiometer);
 
-
         blockItem(DEContent.disenchanter);
         blockItem(DEContent.energy_transfuser, modLoc("block/energy_transfuser"));
         blockItem(DEContent.dislocator_pedestal);
@@ -133,14 +132,9 @@ public class ItemModelGenerator extends ItemModelProvider {
         simpleItem(DEContent.info_tablet);
         //endregion
 
-        //region Modules (Dont mind this. This is just me being to lazy to go copy paste some images)
-        File textures = new File("/home/brandon3055/Development/WorkSpaces/1.16/BrandonsMods/Draconic-Evolution/src/main/resources/assets/draconicevolution/textures");
+       //region Modules
         DEModules.moduleItemMap.forEach((module, item) -> {
             String name = Objects.requireNonNull(module.getRegistryName()).getPath();
-            File itemTexture = new File(textures, "item/modules/" + name + ".png");
-            File moduleTexture = new File(textures, "module/" + name + ".png");
-            if (!itemTexture.exists()) SneakyUtils.sneaky(() -> FileUtils.copyFile(new File(textures, "item/modules/blank_" + name.substring(0, name.indexOf("_")) + ".png"), itemTexture));
-            if (!moduleTexture.exists()) SneakyUtils.sneaky(() -> FileUtils.copyFile(itemTexture, moduleTexture));
             simpleItem(item, new ResourceLocation(DraconicEvolution.MODID, "item/modules/" + name));
         });
         //endregion

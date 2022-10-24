@@ -62,7 +62,7 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
     //region ModuleHost
 
     @Override
-    public Stream<Module<?>> getModules() {
+    public Stream<com.brandon3055.draconicevolution.api.modules.Module<?>> getModules() {
         return getModuleEntities().stream().map(ModuleEntity::getModule);
     }
 
@@ -324,7 +324,7 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
             ListTag modules = nbt.getList("modules", 10);
             modules.stream().map(inbt -> (CompoundTag) inbt).forEach(compound -> {
                 ResourceLocation id = new ResourceLocation(compound.getString("id"));
-                Module<?> module = ModuleRegistry.getRegistry().getValue(id);
+                com.brandon3055.draconicevolution.api.modules.Module<?> module = ModuleRegistry.getRegistry().getValue(id);
                 if (module == null) {
                     logger.warn("Failed to load unregistered module: " + id + " Skipping...");
                 } else {

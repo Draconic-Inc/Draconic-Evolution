@@ -16,6 +16,7 @@ public class GuiLayoutFactories {
     public static final ContainerSlotLayout.LayoutFactory<TileEnergyTransfuser>     TRANSFUSER_LAYOUT           = (player, tile) -> new ContainerSlotLayout().playerMain(player).playerArmor(player).playerOffHand(player).allTile(tile.itemsCombined);
     public static final ContainerSlotLayout.LayoutFactory<TileFusionCraftingCore>   FUSION_CRAFTING_CORE        = (player, tile) -> new ContainerSlotLayout().playerMain(player).playerArmor(player).playerOffHand(player).allTile(tile.itemHandler);
 //    public static final ContainerSlotLayout.LayoutFactory<TileDraconiumChest>       DRACONIUM_CHEST             = (player, tile) -> new ContainerSlotLayout().playerMain(player).allTile(tile.mainInventory).allTile(tile.craftingItems).allTile(tile.furnaceItems);
+    public static final ContainerSlotLayout.LayoutFactory<TileDisenchanter>            DISENCHANTER_LAYOUT      = (player, tile) -> new ContainerSlotLayout().playerMain(player).allTile(tile.itemHandler);
 
 
 
