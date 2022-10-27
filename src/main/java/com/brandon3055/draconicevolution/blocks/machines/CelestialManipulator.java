@@ -15,7 +15,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
  */
 public class CelestialManipulator extends BlockBCore implements EntityBlock {
 
-    private VoxelShape SHAPE = Block.box(1.0, 0, 1.0, 15.0, 13.0, 15.0);
+	protected static final VoxelShape SHAPE = Block.box(1.0, 0, 1.0, 15.0, 13.0, 15.0);
 
     public CelestialManipulator(Properties properties) {
         super(properties);
@@ -27,24 +27,4 @@ public class CelestialManipulator extends BlockBCore implements EntityBlock {
     public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
         return SHAPE;
     }
-
-//
-//    @Override
-//    public boolean onBlockActivated(World worldIn, BlockPos pos, BlockState state, PlayerEntity playerIn, Hand hand, Direction side, float hitX, float hitY, float hitZ) {
-//        if (!worldIn.isRemote) {
-//            FMLNetworkHandler.openGui(playerIn, DraconicEvolution.instance, GuiHandler.GUIID_CELESTIAL, worldIn, pos.getX(), pos.getY(), pos.getZ());
-//        }
-//        return true;
-//    }
-
-//    @OnlyIn(Dist.CLIENT)
-//    @Override
-//    public void registerRenderer(Feature feature) {
-//        ClientRegistry.bindTileEntitySpecialRenderer(TileCelestialManipulator.class, new RenderTileCelestialManipulator());
-//    }
-//
-//    @Override
-//    public boolean registerNormal(Feature feature) {
-//        return true;
-//    }
 }

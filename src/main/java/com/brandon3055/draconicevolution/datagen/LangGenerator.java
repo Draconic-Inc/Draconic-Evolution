@@ -509,6 +509,12 @@ public class LangGenerator extends LanguageProvider {
         helper.add("level",                                                     "Level of Enchant: %s");
         helper.add("cost",                                                      "XP Cost in Levels: %s");
         
+        //Celestial Manipulator
+        helper.setPrefix("gui.draconicevolution.disenchanter");
+        helper.add("level",                                                     "Level of Enchant: %s");
+        helper.add("cost",                                                      "XP Cost in Levels: %s");
+
+        
         //Draconium Chest
         helper.setPrefix("gui.draconicevolution.draconium_chest");
         helper.add("feed." + FeedMode.OFF.localKey() + ".info",                 "Feed Off");

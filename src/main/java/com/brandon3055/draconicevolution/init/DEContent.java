@@ -165,7 +165,7 @@ public class DEContent {
     @ObjectHolder("energy_core")            public static MenuType<ContainerBCTile<TileEnergyCore>>            container_energy_core;
     @ObjectHolder("disenchanter")           public static MenuType<ContainerBCTile<TileDisenchanter>>          container_disenchanter;
     @ObjectHolder("draconium_chest")        public static MenuType<ContainerDraconiumChest>                    container_draconium_chest;
-    @ObjectHolder("celestial_manipulator")  public static MenuType<ContainerDummy<TileCelestialManipulator>>   container_celestial_manipulator;
+    @ObjectHolder("celestial_manipulator")  public static MenuType<ContainerBCTile<TileCelestialManipulator>>  container_celestial_manipulator;
     @ObjectHolder("energy_crystal")         public static MenuType<ContainerEnergyCrystal>                     container_energy_crystal;
     @ObjectHolder("energy_transfuser")      public static MenuType<ContainerBCTile<TileEnergyTransfuser>>      container_energy_transfuser;
     @ObjectHolder("fusion_crafting_core")   public static MenuType<ContainerFusionCraftingCore>                container_fusion_crafting_core;
