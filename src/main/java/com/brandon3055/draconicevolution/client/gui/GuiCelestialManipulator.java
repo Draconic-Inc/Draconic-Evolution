@@ -70,21 +70,27 @@ public class GuiCelestialManipulator extends ModularGuiContainer<ContainerBCTile
 		temp.playerSlots = toolkit.createPlayerSlots(temp.background, false);
 		toolkit.placeInside(temp.playerSlots, temp.background, GuiToolkit.LayoutPos.BOTTOM_CENTER, 0, -7);
 		//temp.background.addChild(effectRenderer = new MGuiEffectRenderer(this).setParticleTexture(DEParticles.DE_SHEET.toString()));
-		temp.background.addChild(weatherMode = new GuiButton(guiLeft() + 5, guiTop() + 15, 50, 12, toolkit.i18n("weather"))
+		temp.background.addChild(weatherMode = new GuiButton(guiLeft() + 5, guiTop() + 17, 50, 12, toolkit.i18n("weather"))
 			.setFillColours(0x90000000, 0x90111111, 0x90222222)
 			.setTextColour(0x9060FF60, 0x9080FFFF, 0x90600000)
 			.setBorderColours(0x9000FFFF, 0x9000FF00, 0x9000FF00)
-			.onPressed(() -> tile.weatherMode.set(true)));
-		temp.background.addChild(sunMode = new GuiButton(guiLeft() + xSize() - 55, guiTop() + 15, 50, 12, toolkit.i18n("time"))
+			.onPressed(() -> {
+				tile.weatherMode.set(true);
+				updateControls();
+			}));
+		temp.background.addChild(sunMode = new GuiButton(guiLeft() + xSize() - 55, guiTop() + 17, 50, 12, toolkit.i18n("time"))
 			.setFillColours(0x90000000, 0x90111111, 0x90222222)
 			.setTextColour(0x9060FF60, 0x9080FFFF, 0x90600000)
 			.setBorderColours(0x9000FFFF, 0x9000FF00, 0x9000FF00)
-			.onPressed(() -> tile.weatherMode.set(false)));
+			.onPressed(() -> {
+				tile.weatherMode.set(false);
+				updateControls();
+			}));
 		temp.energyBar = toolkit.createEnergyBar(temp.background, tile.opStorage);
-		temp.energyBar.setPos(guiLeft() + 9, guiTop() + 101).setSize(temp.playerSlots.xSize(), 14);
-		temp.background.addChild(new GuiBorderedRect(guiLeft() + 4, guiTop() + 16, xSize() - 8, ySize() - 102).setFillColour(0x40000000).setBorderColour(0x90000000));
+		temp.energyBar.setPos(guiLeft() + 9, guiTop() + 98).setSize(temp.playerSlots.xSize(), 14);
+		temp.background.addChild(new GuiBorderedRect(guiLeft() + 4, guiTop() + 16, xSize() - 8, ySize() - 100).setFillColour(0x40000000).setBorderColour(0x90000000));
 
-		int i = 26;
+		int i = 32;
 		weatherControls.add(new GuiButton(guiLeft() + 4, guiTop() + i, xSize() - 8, 14, toolkit.i18n("stopRain"))
 			.onPressed(() -> tile.sendPacketToServer((output) -> output.writeString("STOP_RAIN"), 0)));
 		weatherControls.add(new GuiButton(guiLeft() + 4, guiTop() + (i += 22), xSize() - 8, 14, toolkit.i18n("startRain"))
@@ -92,9 +98,9 @@ public class GuiCelestialManipulator extends ModularGuiContainer<ContainerBCTile
 		weatherControls.add(new GuiButton(guiLeft() + 4, guiTop() + (i += 22), xSize() - 8, 14, toolkit.i18n("startStorm"))
 			.onPressed(() -> tile.sendPacketToServer((output) -> output.writeString("START_STORM"), 0)));
 
-		i = 20;
+		i = 22;
 		sunControls.add(new GuiLabel(guiLeft(), guiTop() + i, xSize(), 12, toolkit.i18n("skipTo")));
-		i += 12;
+		i += 14;
 		sunControls.add(new GuiButton(guiLeft() + 4, guiTop() + i, xSize() / 3 - 4, 14, toolkit.i18n("sunRise"))
 			.onPressed(() -> tile.sendPacketToServer((output) -> output.writeString("SUN_RISE"), 0)));
 		sunControls.add(new GuiButton(guiLeft() + 4 + xSize() / 3 - 2, guiTop() + i, xSize() / 3 - 4, 14, toolkit.i18n("midDay"))
@@ -117,8 +123,14 @@ public class GuiCelestialManipulator extends ModularGuiContainer<ContainerBCTile
 		updateControls();
 
 		temp.background.addChild(rsBackground = new GuiBorderedRect(guiLeft() + xSize(), guiTop() + 97, 18, 18).setBorderColour(0xFF505050));
-		rsBackground.addChild(new GuiStackIcon(rsBackground.xPos(), rsBackground.yPos(), rsBackground.xSize(), rsBackground.ySize(), "minecraft:redstone"));
-		temp.background.addChild(new GuiButton(rsBackground.xPos(), rsBackground.yPos(), rsBackground.xSize(), rsBackground.ySize(), "").setFillColours(0, 0, 0).setHoverText(new String[]{I18n.get("generic.configureRedstone.txt")}).setHoverTextDelay(2));
+		rsBackground.addChild(new GuiStackIcon(rsBackground.xPos(), rsBackground.yPos(), rsBackground.xSize(), rsBackground.ySize(), "minecraft:redstone")
+			.setToolTip(false));
+		temp.background.addChild(new GuiButton(rsBackground.xPos(), rsBackground.yPos(), rsBackground.xSize(), rsBackground.ySize(), "")
+			.setFillColours(0, 0, 0)
+			.setHoverText(new String[]{I18n.get("generic.configureRedstone")})
+			.setHoverTextDelay(2)
+			.onPressed(() -> rsBackground.setChildGroupEnabled("RS_BUTTON", !rsControlButtons[0].isEnabled())));
+		toolkit.jeiExclude(rsBackground);
 
 		String[] rsButtonNames = {"clear", "rain", "storm", "sunrise", "noon", "sunset", "moonrise", "midnight", "moonset"};
 		for (int ii = 0; ii < rsControlButtons.length; ii++) {
@@ -128,16 +140,18 @@ public class GuiCelestialManipulator extends ModularGuiContainer<ContainerBCTile
 				.setBorderColours(0xFF505050, 0xFF707070, 0xFFF00000)
 				.onPressed(() -> tile.sendPacketToServer((output) -> {output.writeInt(num);}, 1))
 				.setHoverText(new String[]{toolkit.i18n("rs." + num)})
+				.setEnabled(false)
 				.addToGroup("RS_BUTTON");
+			toolkit.jeiExclude(rsControlButtons[num]);
 			if (num == 0) {
-				toolkit.placeOutside(rsBackground, rsControlButtons[num], LayoutPos.TOP_RIGHT, 2, -40);
+				toolkit.placeOutside(rsControlButtons[num], rsBackground, LayoutPos.BOTTOM_CENTER, 0, 2);
 			}
 			else {
 				if (num % 3 != 0) {
-					toolkit.placeOutside(rsControlButtons[num-1], rsControlButtons[num], LayoutPos.MIDDLE_RIGHT, 2, 0);
+					toolkit.placeOutside(rsControlButtons[num], rsControlButtons[num-1], LayoutPos.MIDDLE_RIGHT, 2, 0);
 				}
 				else {
-					toolkit.placeOutside(rsControlButtons[num-3], rsControlButtons[num], LayoutPos.BOTTOM_CENTER, 0, 2);
+					toolkit.placeOutside(rsControlButtons[num], rsControlButtons[num-3], LayoutPos.BOTTOM_CENTER, 0, 2);
 				}
 			}
 		}

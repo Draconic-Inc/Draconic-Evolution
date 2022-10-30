@@ -16,6 +16,7 @@ import com.brandon3055.brandonscore.lib.datamanager.DataFlags;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedByte;
 import com.brandon3055.draconicevolution.DEOldConfig;
+import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.render.effect.EffectTrackerCelestialManipulator;
 import com.brandon3055.draconicevolution.client.sound.CelestialModifierSound;
 import com.brandon3055.draconicevolution.handlers.DESounds;
@@ -69,6 +70,7 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
 	public TileCelestialManipulator(BlockPos pos, BlockState state) {
 		super(DEContent.tile_celestial_manipulator, pos, state);
 		capManager.setManaged("energy", CapabilityOP.OP, opStorage).saveBoth().syncContainer();
+		weatherMode.setCCSCS();
 	}
 
 	@Override
@@ -190,18 +192,18 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
 		}
 
 		if (active.get()) {
-			sendMessage(new TranslatableComponent("msg.de.alreadyRunning.txt"), player);
+			sendMessage(new TranslatableComponent("msg." + DraconicEvolution.MODID + ".celestial_manipulator.alreadyRunning"), player);
 			return;
 		}
 
 		switch (action) {
 		case "STOP_RAIN":
 			if (!level.isRaining()) {
-				sendMessage(new TranslatableComponent("msg.de.notRaining.txt"), player);
+				sendMessage(new TranslatableComponent("msg." + DraconicEvolution.MODID + ".celestial_manipulator.notRaining"), player);
 				return;
 			}
 			if (opStorage.getEnergyStored() < 256000) {
-				sendMessage(new TranslatableComponent("msg.de.insufficientPower.txt").append(" (256000RF)"), player);
+				sendMessage(new TranslatableComponent("msg." + DraconicEvolution.MODID + ".celestial_manipulator.insufficientPower").append(" (256000RF)"), player);
 				return;
 			}
 			opStorage.modifyEnergyStored(-256000);
@@ -210,11 +212,11 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
 			return;
 		case "START_RAIN":
 			if (level.isRaining()) {
-				sendMessage(new TranslatableComponent("msg.de.alreadyRaining.txt"), player);
+				sendMessage(new TranslatableComponent("msg." + DraconicEvolution.MODID + ".celestial_manipulator.alreadyRaining"), player);
 				return;
 			}
 			if (opStorage.getEnergyStored() < 256000) {
-				sendMessage(new TranslatableComponent("msg.de.insufficientPower.txt").append(" (256000RF)"), player);
+				sendMessage(new TranslatableComponent("msg." + DraconicEvolution.MODID + ".celestial_manipulator.insufficientPower").append(" (256000RF)"), player);
 				return;
 			}
 			opStorage.modifyEnergyStored(-256000);
@@ -223,11 +225,11 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
 			return;
 		case "START_STORM":
 			if (level.isRaining() && level.isThundering()) {
-				sendMessage(new TranslatableComponent("msg.de.alreadyStorm.txt"), player);
+				sendMessage(new TranslatableComponent("msg." + DraconicEvolution.MODID + ".celestial_manipulator.alreadyStorming"), player);
 				return;
 			}
 			if (opStorage.getEnergyStored() < 384000) {
-				sendMessage(new TranslatableComponent("msg.de.insufficientPower.txt").append(" (384000RF)"), player);
+				sendMessage(new TranslatableComponent("msg." + DraconicEvolution.MODID + ".celestial_manipulator.insufficientPower").append(" (384000RF)"), player);
 				return;
 			}
 			opStorage.modifyEnergyStored(-384000);
