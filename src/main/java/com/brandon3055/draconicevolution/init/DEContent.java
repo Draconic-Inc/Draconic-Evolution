@@ -82,7 +82,7 @@ public class DEContent {
     // Tile Entities
     //#################################################################
 
-    //@formatter:off
+	//@formatter:off
     @ObjectHolder("generator")                public static BlockEntityType<TileGenerator>              tile_generator;
     @ObjectHolder("grinder")                  public static BlockEntityType<TileGrinder>                tile_grinder;
     @ObjectHolder("disenchanter")             public static BlockEntityType<TileDisenchanter>           tile_disenchanter;
@@ -310,7 +310,7 @@ public class DEContent {
         //Storage Blocks
         event.getRegistry().register(new DraconiumBlock(storageBlock).setMobResistant().setRegistryName("draconium_block"));
         event.getRegistry().register(new DraconiumBlock(storageBlock).setMobResistant().setRegistryName("awakened_draconium_block"));
-//        //Special
+        //Special
         event.getRegistry().register(new Portal(Properties.of(Material.GLASS).noOcclusion().noCollission().noDrops().strength(-1F)).setRegistryName("portal"));
         event.getRegistry().register(new ChaosCrystal(Properties.of(Material.GLASS).strength(100, 4000).noOcclusion().noDrops()).setRegistryName("chaos_crystal"));
         event.getRegistry().register(new ChaosCrystal(Properties.of(Material.GLASS).strength(100, 4000).noOcclusion().noDrops()).setRegistryName("chaos_crystal_part"));
