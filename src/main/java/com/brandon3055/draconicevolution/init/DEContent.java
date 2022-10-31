@@ -91,8 +91,8 @@ public class DEContent {
     @ObjectHolder("dislocator_receptacle")    public static BlockEntityType<TileDislocatorReceptacle>   tile_dislocator_receptacle;
     @ObjectHolder("creative_op_capacitor")    public static BlockEntityType<TileCreativeOPCapacitor>    tile_creative_op_capacitor;
     @ObjectHolder("entity_detector")          public static BlockEntityType<TileEntityDetector>         tile_entity_detector;
-    @ObjectHolder("advanced_entity_detector") public static BlockEntityType<TileEntityDetector>         tile_entity_detector_advanced;
     @ObjectHolder("stabilized_spawner")       public static BlockEntityType<TileStabilizedSpawner>      tile_stabilized_spawner;
+    @ObjectHolder("rain_sensor")              public static BlockEntityType<TileRainSensor>             tile_rain_sensor;
     @ObjectHolder("potentiometer")            public static BlockEntityType<TilePotentiometer>          tile_potentiometer;
     @ObjectHolder("celestial_manipulator")    public static BlockEntityType<TileCelestialManipulator>   tile_celestial_manipulator;
     @ObjectHolder("draconium_chest")          public static BlockEntityType<TileDraconiumChest>         tile_draconium_chest;
@@ -118,7 +118,6 @@ public class DEContent {
 
     @SubscribeEvent
     public static void registerTileEntity(RegistryEvent.Register<BlockEntityType<?>> event) {
-        Block[] entityDetectors = {entity_detector, entity_detector_advanced};
         Block[] craftInjectors = {crafting_injector_basic, crafting_injector_wyvern, crafting_injector_awakened, crafting_injector_chaotic};
         //@formatter:off
         event.getRegistry().register(BlockEntityType.Builder.of(TileGenerator::new,              generator               ).build(null).setRegistryName("generator"));
@@ -128,8 +127,9 @@ public class DEContent {
         event.getRegistry().register(BlockEntityType.Builder.of(TileDislocatorPedestal::new,     dislocator_pedestal     ).build(null).setRegistryName("dislocator_pedestal"));
         event.getRegistry().register(BlockEntityType.Builder.of(TileDislocatorReceptacle::new,   dislocator_receptacle   ).build(null).setRegistryName("dislocator_receptacle"));
         event.getRegistry().register(BlockEntityType.Builder.of(TileCreativeOPCapacitor::new,    creative_op_capacitor   ).build(null).setRegistryName("creative_op_capacitor"));
-//        event.getRegistry().register(BlockEntityType.Builder.of(TileEntityDetector::new,         entityDetectors         ).build(null).setRegistryName("entity_detector"));
+        event.getRegistry().register(BlockEntityType.Builder.of(TileEntityDetector::new,         entity_detector         ).build(null).setRegistryName("entity_detector"));
         event.getRegistry().register(BlockEntityType.Builder.of(TileStabilizedSpawner::new,      stabilized_spawner      ).build(null).setRegistryName("stabilized_spawner"));
+        event.getRegistry().register(BlockEntityType.Builder.of(TileRainSensor::new,             rain_sensor             ).build(null).setRegistryName("rain_sensor"));
         event.getRegistry().register(BlockEntityType.Builder.of(TilePotentiometer::new,          potentiometer           ).build(null).setRegistryName("potentiometer"));
         event.getRegistry().register(BlockEntityType.Builder.of(TileCelestialManipulator::new,   celestial_manipulator   ).build(null).setRegistryName("celestial_manipulator"));
         event.getRegistry().register(BlockEntityType.Builder.of(TileDraconiumChest::new,         draconium_chest         ).build(null).setRegistryName("draconium_chest"));
@@ -164,38 +164,38 @@ public class DEContent {
     @ObjectHolder("grinder")                public static MenuType<ContainerBCTile<TileGrinder>>               container_grinder;
     @ObjectHolder("energy_core")            public static MenuType<ContainerBCTile<TileEnergyCore>>            container_energy_core;
     @ObjectHolder("disenchanter")           public static MenuType<ContainerBCTile<TileDisenchanter>>          container_disenchanter;
-    @ObjectHolder("draconium_chest")        public static MenuType<ContainerDraconiumChest>                    container_draconium_chest;
-    @ObjectHolder("celestial_manipulator")  public static MenuType<ContainerBCTile<TileCelestialManipulator>>  container_celestial_manipulator;
-    @ObjectHolder("energy_crystal")         public static MenuType<ContainerEnergyCrystal>                     container_energy_crystal;
     @ObjectHolder("energy_transfuser")      public static MenuType<ContainerBCTile<TileEnergyTransfuser>>      container_energy_transfuser;
+    @ObjectHolder("flow_gate")              public static MenuType<ContainerBCTile<TileFlowGate>>              container_flow_gate;
+    @ObjectHolder("celestial_manipulator")  public static MenuType<ContainerBCTile<TileCelestialManipulator>>  container_celestial_manipulator;
+    @ObjectHolder("entity_detector")        public static MenuType<ContainerBCTile<TileEntityDetector>>        container_entity_detector;
     @ObjectHolder("fusion_crafting_core")   public static MenuType<ContainerFusionCraftingCore>                container_fusion_crafting_core;
-    @ObjectHolder("reactor")                public static MenuType<ContainerReactor>                           container_reactor;
     @ObjectHolder("modular_item")           public static MenuType<ContainerModularItem>                       container_modular_item;
     @ObjectHolder("configurable_item")      public static MenuType<ContainerConfigurableItem>                  container_configurable_item;
-    @ObjectHolder("flow_gate")              public static MenuType<ContainerBCTile<TileFlowGate>>              container_flow_gate;
+    @ObjectHolder("draconium_chest")        public static MenuType<ContainerDraconiumChest>                    container_draconium_chest;
+    @ObjectHolder("energy_crystal")         public static MenuType<ContainerEnergyCrystal>                     container_energy_crystal;
+    @ObjectHolder("reactor")                public static MenuType<ContainerReactor>                           container_reactor;
+
     //@formatter:on
 
     @SubscribeEvent
     public static void registerContainers(RegistryEvent.Register<MenuType<?>> event) {
-        event.getRegistry().register(IForgeMenuType.create((id, playerInv, extraData) -> new ContainerBCTile<>(container_generator, id, playerInv, extraData, GuiLayoutFactories.GENERATOR_LAYOUT)).setRegistryName("generator"));
-        event.getRegistry().register(IForgeMenuType.create((id, playerInv, extraData) -> new ContainerBCTile<>(container_grinder, id, playerInv, extraData, GuiLayoutFactories.GRINDER_LAYOUT)).setRegistryName("grinder"));
-
+        event.getRegistry().register(IForgeMenuType.create((id, inv, data) -> new ContainerBCTile<>(container_generator,             id, inv, data, GuiLayoutFactories.GENERATOR_LAYOUT)).setRegistryName("generator"));
+        event.getRegistry().register(IForgeMenuType.create((id, inv, data) -> new ContainerBCTile<>(container_grinder,               id, inv, data, GuiLayoutFactories.GRINDER_LAYOUT)).setRegistryName("grinder"));
+        event.getRegistry().register(IForgeMenuType.create((id, inv, data) -> new ContainerBCTile<>(container_energy_core,           id, inv, data, GuiLayoutFactories.ENERGY_CORE_LAYOUT)).setRegistryName("energy_core"));
+        event.getRegistry().register(IForgeMenuType.create((id, inv, data) -> new ContainerBCTile<>(container_disenchanter,          id, inv, data, GuiLayoutFactories.DISENCHANTER_LAYOUT)).setRegistryName("disenchanter"));
+        event.getRegistry().register(IForgeMenuType.create((id, inv, data) -> new ContainerBCTile<>(container_energy_transfuser,     id, inv, data, GuiLayoutFactories.TRANSFUSER_LAYOUT)).setRegistryName("energy_transfuser"));
+        event.getRegistry().register(IForgeMenuType.create((id, inv, data) -> new ContainerBCTile<>(container_flow_gate,             id, inv, data, SneakyUtils.unsafeCast(GuiLayoutFactories.PLAYER_ONLY_LAYOUT))).setRegistryName("flow_gate"));
+        event.getRegistry().register(IForgeMenuType.create((id, inv, data) -> new ContainerBCTile<>(container_celestial_manipulator, id, inv, data)).setRegistryName("celestial_manipulator"));
+        event.getRegistry().register(IForgeMenuType.create((id, inv, data) -> new ContainerBCTile<>(container_entity_detector,       id, inv, data)).setRegistryName("entity_detector"));
+        event.getRegistry().register(IForgeMenuType.create((id, inv, data) -> new ContainerFusionCraftingCore(id, inv, data, GuiLayoutFactories.FUSION_CRAFTING_CORE)).setRegistryName("fusion_crafting_core"));
+        event.getRegistry().register(IForgeMenuType.create((id, inv, data) -> new ContainerModularItem(id, inv, data,        GuiLayoutFactories.MODULAR_ITEM_LAYOUT)).setRegistryName("modular_item"));
+        event.getRegistry().register(IForgeMenuType.create((id, inv, data) -> new ContainerConfigurableItem(id, inv, data,   GuiLayoutFactories.CONFIGURABLE_ITEM_LAYOUT)).setRegistryName("configurable_item"));
         event.getRegistry().register(IForgeMenuType.create(ContainerDraconiumChest::new).setRegistryName("draconium_chest"));
-
-        event.getRegistry().register(IForgeMenuType.create((id, playerInv, extraData) -> new ContainerBCTile<>(container_energy_core, id, playerInv, extraData, GuiLayoutFactories.ENERGY_CORE_LAYOUT)).setRegistryName("energy_core"));
-
-        event.getRegistry().register(IForgeMenuType.create((id, playerInv, extraData) -> new ContainerBCTile<>(container_disenchanter, id, playerInv, extraData, GuiLayoutFactories.DISENCHANTER_LAYOUT)).setRegistryName("disenchanter"));
-        event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> new ContainerDummy<TileCelestialManipulator>(container_celestial_manipulator, windowId, inv, data)).setRegistryName("celestial_manipulator"));
         event.getRegistry().register(IForgeMenuType.create(ContainerEnergyCrystal::new).setRegistryName("energy_crystal"));
-        event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> new ContainerFusionCraftingCore(windowId, inv, data, GuiLayoutFactories.FUSION_CRAFTING_CORE)).setRegistryName("fusion_crafting_core"));
         event.getRegistry().register(IForgeMenuType.create(ContainerReactor::new).setRegistryName("reactor"));
-        event.getRegistry().register(IForgeMenuType.create((windowId, playerInv, extraData) -> new ContainerModularItem(windowId, playerInv, extraData, GuiLayoutFactories.MODULAR_ITEM_LAYOUT)).setRegistryName("modular_item"));
-        event.getRegistry().register(IForgeMenuType.create((windowId, playerInv, extraData) -> new ContainerConfigurableItem(windowId, playerInv, extraData, GuiLayoutFactories.CONFIGURABLE_ITEM_LAYOUT)).setRegistryName("configurable_item"));
-//        event.getRegistry().register(IForgeContainerType.create(ContainerDummy::new).setRegistryName("container_dummy"));
-//        event.getRegistry().register(IForgeContainerType.create(ContainerJunkFilter::new).setRegistryName("container_junk_filter"));
-//        event.getRegistry().register(IForgeContainerType.create(ContainerRecipeBuilder::new).setRegistryName("container_recipe_builder"));
-        event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> new ContainerBCTile<TileFlowGate>(container_flow_gate, windowId, inv, data, SneakyUtils.unsafeCast(GuiLayoutFactories.PLAYER_ONLY_LAYOUT))).setRegistryName("flow_gate"));
-        event.getRegistry().register(IForgeMenuType.create((windowId, inv, data) -> new ContainerBCTile<>(container_energy_transfuser, windowId, inv, data, GuiLayoutFactories.TRANSFUSER_LAYOUT)).setRegistryName("energy_transfuser"));
+//      event.getRegistry().register(IForgeContainerType.create(ContainerDummy::new).setRegistryName("container_dummy"));
+//      event.getRegistry().register(IForgeContainerType.create(ContainerJunkFilter::new).setRegistryName("container_junk_filter"));
+//      event.getRegistry().register(IForgeContainerType.create(ContainerRecipeBuilder::new).setRegistryName("container_recipe_builder"));
     }
 
 
@@ -273,14 +273,14 @@ public class DEContent {
         event.getRegistry().register(new DislocatorPedestal(machine).setRegistryName("dislocator_pedestal"));
         event.getRegistry().register(new DislocatorReceptacle(machine).setRegistryName("dislocator_receptacle"));
         event.getRegistry().register(new CreativeOPSource(machine).setRegistryName("creative_op_capacitor"));
-//        event.getRegistry().register(new EntityDetector(machine).setRegistryName("entity_detector"));
-//        event.getRegistry().register(new EntityDetector(machine).setRegistryName("advanced_entity_detector"));
+        event.getRegistry().register(new EntityDetector(machine, false).setRegistryName("entity_detector"));
+        event.getRegistry().register(new EntityDetector(machine, true).setRegistryName("advanced_entity_detector"));
         event.getRegistry().register(new StabilizedSpawner(machine).setRegistryName("stabilized_spawner"));
         event.getRegistry().register(new DraconiumChest(hardenedMachine).setRegistryName("draconium_chest"));
         event.getRegistry().register(new ParticleGenerator(machine).setRegistryName("particle_generator"));
         event.getRegistry().register(new DislocationInhibitor(machine).setRegistryName("dislocation_inhibitor"));
         //Stone Type
-//        event.getRegistry().register(new RainSensor(stoneProp).setRegistryName("rain_sensor"));
+        event.getRegistry().register(new RainSensor(stoneProp).setRegistryName("rain_sensor"));
         event.getRegistry().register(new Potentiometer(stoneProp).setRegistryName("potentiometer"));
         //Hardened Machine
         event.getRegistry().register(new Grinder(hardenedMachine).setRegistryName("grinder"));
@@ -441,9 +441,10 @@ public class DEContent {
         registerItem(event, new ItemBlockBCore(dislocator_pedestal,         new Item.Properties().tab(blockGroup)).setRegistryName(Objects.requireNonNull(dislocator_pedestal.getRegistryName())));
         registerItem(event, new ItemBlockBCore(dislocator_receptacle,       new Item.Properties().tab(blockGroup)).setRegistryName(Objects.requireNonNull(dislocator_receptacle.getRegistryName())));
         registerItem(event, new ItemBlockBCore(creative_op_capacitor,       new Item.Properties().tab(blockGroup)).setRegistryName(Objects.requireNonNull(creative_op_capacitor.getRegistryName())));
-//        registerItem(event, new ItemBlockBCore(entityDetectors[0],          new Item.Properties().tab(blockGroup)).setRegistryName(Objects.requireNonNull(entityDetectors[0].getRegistryName())));
-//        registerItem(event, new ItemBlockBCore(entityDetectors[1],          new Item.Properties().tab(blockGroup)).setRegistryName(Objects.requireNonNull(entityDetectors[1].getRegistryName())));
+        registerItem(event, new ItemBlockBCore(entityDetectors[0],          new Item.Properties().tab(blockGroup)).setRegistryName(Objects.requireNonNull(entityDetectors[0].getRegistryName())));
+        registerItem(event, new ItemBlockBCore(entityDetectors[1],          new Item.Properties().tab(blockGroup)).setRegistryName(Objects.requireNonNull(entityDetectors[1].getRegistryName())));
         registerItem(event, new ItemBlockBCore(stabilized_spawner,          new Item.Properties().tab(blockGroup)).setRegistryName(Objects.requireNonNull(stabilized_spawner.getRegistryName())));
+        registerItem(event, new ItemBlockBCore(rain_sensor,                 new Item.Properties().tab(blockGroup)).setRegistryName(Objects.requireNonNull(rain_sensor.getRegistryName())));
         registerItem(event, new ItemBlockBCore(potentiometer,               new Item.Properties().tab(blockGroup)).setRegistryName(Objects.requireNonNull(potentiometer.getRegistryName())));
         registerItem(event, new ItemBlockBCore(celestial_manipulator,       new Item.Properties().tab(blockGroup)).setRegistryName(Objects.requireNonNull(celestial_manipulator.getRegistryName())));
         registerItem(event, new ItemBlockBCore(draconium_chest,             new Item.Properties().tab(blockGroup).rarity(Rarity.RARE)).setRegistryName(Objects.requireNonNull(draconium_chest.getRegistryName())));

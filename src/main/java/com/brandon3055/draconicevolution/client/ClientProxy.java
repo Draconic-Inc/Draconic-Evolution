@@ -189,7 +189,6 @@ public class ClientProxy extends CommonProxy {
 //            ResourceUtils.registerReloadListener(RenderTileChaosCrystal.chaosShader);
 //            ResourceUtils.registerReloadListener(RenderTileChaosCrystal.shieldShader);
 //        }
-
     }
 
     private void registerGuiFactories() {
@@ -207,6 +206,7 @@ public class ClientProxy extends CommonProxy {
         MenuScreens.register(DEContent.container_fusion_crafting_core, GuiFusionCraftingCore::new);
 //        MenuScreens.register(DEContent.container_reactor, ContainerReactor::new);
         MenuScreens.register(DEContent.container_flow_gate, GuiFlowGate::new);
+        MenuScreens.register(DEContent.container_entity_detector, GuiEntityDetector::new);
         MenuScreens.register(DEContent.container_energy_transfuser, GuiEnergyTransfuser::new);
     }
 

@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ABA",
+    "CDC",
+    "EFE"
+  ],
+  "key": {
+    "A": {
+      "tag": "forge:storage_blocks/redstone"
+    },
+    "B": {
+      "item": "minecraft:skeleton_skull"
+    },
+    "C": {
+      "tag": "forge:storage_blocks/lapis"
+    },
+    "D": {
+      "tag": "forge:gems/diamond"
+    },
+    "E": {
+      "tag": "forge:ingots/draconium"
+    },
+    "F": {
+      "item": "draconicevolution:entity_detector"
+    }
+  },
+  "result": {
+    "item": "draconicevolution:advanced_entity_detector"
+  }
+}

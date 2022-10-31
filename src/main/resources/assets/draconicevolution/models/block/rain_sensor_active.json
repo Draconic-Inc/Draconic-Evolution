@@ -1,4 +1,9 @@
 {
+    "parent": "block/block",
+    "textures": {
+        "bottom": "draconicevolution:block/rain_sensor_side",
+        "top": "draconicevolution:block/rain_sensor_active"
+    },
     "elements": [
         {
             "name": "rainSensor",

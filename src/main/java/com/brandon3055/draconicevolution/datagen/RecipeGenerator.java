@@ -1782,6 +1782,17 @@ public class RecipeGenerator extends RecipeProvider {
 		.save(consumer);
 
 
+		ShapedRecipeBuilder.shaped(DEContent.rain_sensor)
+		.pattern(" A ")
+		.pattern("BCB")
+		.pattern("DDD")
+		.define('A', Items.BUCKET)
+		.define('B', Tags.Items.DUSTS_REDSTONE)
+		.define('C', Items.STONE_PRESSURE_PLATE)
+		.define('D', Items.STONE_SLAB)
+		.unlockedBy("has_STONE_SLAB", has(Items.STONE_SLAB))
+		.save(consumer);
+
 		ShapedRecipeBuilder.shaped(DEContent.disenchanter)
 		.pattern("ABA")
 		.pattern("CDC")
@@ -1805,6 +1816,32 @@ public class RecipeGenerator extends RecipeProvider {
 		.define('E', Tags.Items.INGOTS_IRON)
 		.define('F', DEContent.core_wyvern)
 		.unlockedBy("has_ingot_draconium", has(DETags.Items.INGOTS_DRACONIUM))
+		.save(consumer);
+
+		ShapedRecipeBuilder.shaped(DEContent.entity_detector)
+		.pattern("ABA")
+		.pattern("CDC")
+		.pattern("EFE")
+		.define('A', Tags.Items.GEMS_LAPIS)
+		.define('B', Items.ENDER_EYE)
+		.define('C', Tags.Items.DUSTS_REDSTONE)
+		.define('D', DETags.Items.INGOTS_DRACONIUM)
+		.define('E', Tags.Items.INGOTS_IRON)
+		.define('F', DEContent.core_draconium)
+		.unlockedBy("has_core_draconium", has(DEContent.core_draconium))
+		.save(consumer);
+
+		ShapedRecipeBuilder.shaped(DEContent.entity_detector_advanced)
+		.pattern("ABA")
+		.pattern("CDC")
+		.pattern("EFE")
+		.define('A', Tags.Items.STORAGE_BLOCKS_REDSTONE)
+		.define('B', Items.SKELETON_SKULL)
+		.define('C', Tags.Items.STORAGE_BLOCKS_LAPIS)
+		.define('D', Tags.Items.GEMS_DIAMOND)
+		.define('E', DETags.Items.INGOTS_DRACONIUM)
+		.define('F', DEContent.entity_detector)
+		.unlockedBy("has_core_draconium", has(DEContent.core_draconium))
 		.save(consumer);
 
 		ShapedRecipeBuilder.shaped(DEContent.fluid_gate)

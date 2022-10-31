@@ -5,6 +5,7 @@ import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.api.power.OPStorage;
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.capability.CapabilityOP;
+import com.brandon3055.brandonscore.inventory.ContainerBCTile;
 import com.brandon3055.brandonscore.lib.IInteractTile;
 import com.brandon3055.brandonscore.lib.IRedstoneEmitter;
 import com.brandon3055.brandonscore.lib.Vec3D;
@@ -18,6 +19,8 @@ import com.brandon3055.brandonscore.utils.MathUtils;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.client.render.particle.ParticleStarSpark;
 import com.brandon3055.draconicevolution.init.DEContent;
+import com.brandon3055.draconicevolution.inventory.GuiLayoutFactories;
+
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -28,24 +31,29 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.network.NetworkHooks;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 /**
  * Created by brandon3055 on 28/09/2016.
  */
-public class TileEntityDetector extends TileBCore implements IInteractTile, IRedstoneEmitter {
+public class TileEntityDetector extends TileBCore implements MenuProvider, IInteractTile, IRedstoneEmitter {
 
-    private final boolean advanced;
     public float hRot = 0;
     public float yRot = (float) Math.PI / 2;
     public float lthRot = 0;
@@ -80,19 +88,11 @@ public class TileEntityDetector extends TileBCore implements IInteractTile, IRed
 //            return true;
 //        }
 //    };
-    public List<String> playerNames = new ArrayList<>();//TODO Need this?
-
+    public List<String> playerNames = new ArrayList<>(); //TODO Need this?
 
     public TileEntityDetector(BlockPos pos, BlockState state) {
         super(DEContent.tile_entity_detector, pos, state);
-        this.advanced = false;
-    }
-
-    public TileEntityDetector(boolean advanced, BlockPos pos, BlockState state) {
-        super(DEContent.tile_entity_detector, pos, state);
-        this.advanced = advanced;
         capManager.setManaged("energy", CapabilityOP.OP, opStorage).saveBoth().syncContainer();
-
         entityFilter = new EntityFilter(true, FilterType.values());
         entityFilter.setDirtyHandler(this::setChanged);
         entityFilter.setupServerPacketHandling(() -> createClientBoundPacket(0), packet -> sendPacketToClients(getAccessingPlayers(), packet));
@@ -102,8 +102,6 @@ public class TileEntityDetector extends TileBCore implements IInteractTile, IRed
         setSavedDataObject("entity_filter", entityFilter);
         setItemSavedDataObject("entity_filter", entityFilter);
     }
-
-
 
     @Override
     public void tick() {
@@ -136,6 +134,14 @@ public class TileEntityDetector extends TileBCore implements IInteractTile, IRed
         }
         else {
             pulseDuration--;
+        }
+    }
+    
+    @Override
+    public void onPlayerOpenContainer(Player player) {
+        super.onPlayerOpenContainer(player);
+        if (player instanceof ServerPlayer) {
+            entityFilter.syncClient((ServerPlayer) player);
         }
     }
 
@@ -297,6 +303,7 @@ public class TileEntityDetector extends TileBCore implements IInteractTile, IRed
 
     @Override
     public void receivePacketFromClient(MCDataInput data, ServerPlayer client, int id) {
+    	super.receivePacketFromClient(data, client, id);
         if (id <= 8) {
             boolean decrement = data.readBoolean();
             boolean shift = id % 2 == 1;
@@ -369,11 +376,16 @@ public class TileEntityDetector extends TileBCore implements IInteractTile, IRed
 
     //region Interfaces
 
+    @Nullable
+    @Override
+    public AbstractContainerMenu createMenu(int currentWindowIndex, Inventory playerInventory, Player player) {
+        return new ContainerBCTile<>(DEContent.container_entity_detector, currentWindowIndex, playerInventory, this);
+    }
+    
     @Override
     public boolean onBlockActivated(BlockState state, Player player, InteractionHand handIn, BlockHitResult hit) {
-        if (!level.isClientSide) {
-//            FMLNetworkHandler.openGui(player, DraconicEvolution.instance, GuiHandler.GUIID_ENTITY_DETECTOR, world, pos.getX(), pos.getY(), pos.getZ());
-
+        if (player instanceof ServerPlayer) {
+        	NetworkHooks.openGui((ServerPlayer) player, this, worldPosition);
             MinecraftServer server = player.getServer();
             if (server != null) {
                 ListTag list = new ListTag();
@@ -404,6 +416,7 @@ public class TileEntityDetector extends TileBCore implements IInteractTile, IRed
 
     @Override
     public void receivePacketFromServer(MCDataInput data, int id) {
+        super.receivePacketFromServer(data, id);
         if (id == 16) {
             ListTag list = data.readCompoundNBT().getList("List", 8);
             playerNames.clear();
@@ -418,7 +431,7 @@ public class TileEntityDetector extends TileBCore implements IInteractTile, IRed
     }
 
     public boolean isAdvanced() {
-        return advanced;
+        return getBlockState().getBlock().getDescriptionId().contains("advanced");
     }
 
     //endregion

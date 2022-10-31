@@ -58,8 +58,8 @@ public class LootTableGenerator extends LootTableProvider {
             dropSelf(DEContent.dislocator_pedestal);
             dropSelf(DEContent.dislocator_receptacle);
             dropSelf(DEContent.creative_op_capacitor);
-//            dropSelf(DEContent.entity_detector);
-//            dropSelf(DEContent.entity_detector_advanced);
+            dropSelf(DEContent.entity_detector);
+            dropSelf(DEContent.entity_detector_advanced);
             dropSelf(DEContent.stabilized_spawner);
             dropSelf(DEContent.potentiometer);
             dropSelf(DEContent.celestial_manipulator);
@@ -76,7 +76,7 @@ public class LootTableGenerator extends LootTableProvider {
             dropSelf(DEContent.reactor_core);
             dropSelf(DEContent.reactor_stabilizer);
             dropSelf(DEContent.reactor_injector);
-//            dropSelf(DEContent.rain_sensor);
+            dropSelf(DEContent.rain_sensor);
             dropSelf(DEContent.dislocation_inhibitor);
             dropSelf(DEContent.block_draconium);
             dropSelf(DEContent.block_draconium_awakened);
