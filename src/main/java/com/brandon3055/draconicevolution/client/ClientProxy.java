@@ -189,7 +189,6 @@ public class ClientProxy extends CommonProxy {
 //            ResourceUtils.registerReloadListener(RenderTileChaosCrystal.chaosShader);
 //            ResourceUtils.registerReloadListener(RenderTileChaosCrystal.shieldShader);
 //        }
-
     }
 
     private void registerGuiFactories() {
@@ -201,13 +200,13 @@ public class ClientProxy extends CommonProxy {
         MenuScreens.register(DEContent.container_configurable_item, GuiConfigurableItem::new);
         MenuScreens.register(DEContent.container_reactor, GuiReactor::new);
 
-//        ScreenManager.registerFactory(DEContent.container_celestial_manipulator, GuiCelestialManipulator::new);
-//        ScreenManager.registerFactory(DEContent.container_dissenchanter, ::new);
-//        ScreenManager.registerFactory(DEContent.container_energy_crystal, ContainerEnergyCrystal::new);
-//        ScreenManager.registerFactory(DEContent.container_energy_infuser, ContainerEnergyInfuser::new);
+        MenuScreens.register(DEContent.container_celestial_manipulator, GuiCelestialManipulator::new);
+        MenuScreens.register(DEContent.container_disenchanter, GuiDisenchanter::new);
+//        MenuScreens.register(DEContent.container_energy_crystal, ContainerEnergyCrystal::new);
         MenuScreens.register(DEContent.container_fusion_crafting_core, GuiFusionCraftingCore::new);
-//        ScreenManager.registerFactory(DEContent.container_reactor, ContainerReactor::new);
+//        MenuScreens.register(DEContent.container_reactor, ContainerReactor::new);
         MenuScreens.register(DEContent.container_flow_gate, GuiFlowGate::new);
+        MenuScreens.register(DEContent.container_entity_detector, GuiEntityDetector::new);
         MenuScreens.register(DEContent.container_energy_transfuser, GuiEnergyTransfuser::new);
     }
 
@@ -336,6 +335,8 @@ public class ClientProxy extends CommonProxy {
         event.registerBlockEntityRenderer(DEContent.tile_chaos_crystal, RenderTileChaosCrystal::new);
         event.registerBlockEntityRenderer(DEContent.tile_dislocator_pedestal, RenderTileDislocatorPedestal::new);
         event.registerBlockEntityRenderer(DEContent.tile_placed_item, RenderTilePlacedItem::new);
+        event.registerBlockEntityRenderer(DEContent.tile_disenchanter, RenderTileDisenchanter::new);
+        event.registerBlockEntityRenderer(DEContent.tile_celestial_manipulator, RenderTileCelestialManipulator::new);
 
         //Entities
         event.registerEntityRenderer(DEContent.draconicGuardian, DraconicGuardianRenderer::new);

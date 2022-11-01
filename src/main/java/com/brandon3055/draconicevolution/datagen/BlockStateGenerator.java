@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.datagen;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.DislocatorReceptacle;
 import com.brandon3055.draconicevolution.blocks.Portal;
+import com.brandon3055.draconicevolution.blocks.RainSensor;
 import com.brandon3055.draconicevolution.blocks.machines.EnergyPylon;
 import com.brandon3055.draconicevolution.blocks.machines.Generator;
 import com.brandon3055.draconicevolution.blocks.machines.Grinder;
@@ -13,6 +14,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraftforge.client.model.generators.*;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import org.apache.logging.log4j.LogManager;
@@ -58,10 +60,15 @@ public class BlockStateGenerator extends BlockStateProvider {
 
         directionalFromNorth(DEContent.fluid_gate, models().getExistingFile(modLoc("block/fluid_gate")));
         directionalFromNorth(DEContent.flux_gate, models().getExistingFile(modLoc("block/flux_gate")));
-
+        
+        activeFromExisting(DEContent.rain_sensor, modLoc("block/rain_sensor_inactive"), modLoc("block/rain_sensor_active"));
+        
         directionalBlock(DEContent.potentiometer, models().getExistingFile(modLoc("block/potentiometer")));
 
         simpleBlock(DEContent.energy_transfuser, models().getExistingFile(modLoc("block/energy_transfuser")));
+        
+        simpleBlock(DEContent.disenchanter, models().getExistingFile(modLoc("block/disenchanter")));
+        simpleBlock(DEContent.celestial_manipulator, models().getExistingFile(modLoc("block/celestial_manipulator")));
 
         dummyBlock(DEContent.crystal_io_basic);
         dummyBlock(DEContent.crystal_io_wyvern);
@@ -162,7 +169,6 @@ public class BlockStateGenerator extends BlockStateProvider {
                     .end();
         }
 
-
         //Generator
         ModelFile modelGenerator = models().getExistingFile(modLoc("block/generator/generator"));
         ModelFile modelGeneratorFlame = models().getExistingFile(modLoc("block/generator/generator_flame"));
@@ -195,9 +201,7 @@ public class BlockStateGenerator extends BlockStateProvider {
                     .part().modelFile(modelGrinderActive).rotationY(angle).addModel().condition(Grinder.FACING, dir).condition(Grinder.ACTIVE, true).end();
         }
 
-
         if (true) return;
-
 
         // Unnecessarily complicated example to showcase how manual building works
         ModelFile birchFenceGate = models().fenceGate("birch_fence_gate", mcLoc("block/birch_planks"));
@@ -354,7 +358,12 @@ public class BlockStateGenerator extends BlockStateProvider {
                             .build();
                 });
     }
-
+    
+    public void activeFromExisting(Block block, ResourceLocation inactiveModel, ResourceLocation activeModel) {
+        getVariantBuilder(block).forAllStates(state -> {
+        	return ConfiguredModel.builder().modelFile(models().getExistingFile(state.getValue(BooleanProperty.create("active")) ? activeModel : inactiveModel)).build();
+        });
+    }
 
     @Override
     public String getName() {

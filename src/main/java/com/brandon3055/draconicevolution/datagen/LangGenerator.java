@@ -46,7 +46,7 @@ public class LangGenerator extends LanguageProvider {
         helper.add(DEContent.celestial_manipulator,                             "Celestial Manipulator");
         helper.add(DEContent.disenchanter,                                      "Disenchanter");
         helper.add(DEContent.dislocation_inhibitor,                             "Dislocation Normalization Field Projector");
-        add("tile.draconicevolution.dislocation_inhibitor.info",                "Prevents items dropped within 5 block from being collected by Item Dislocators.");
+        add("tile." + DraconicEvolution.MODID + ".dislocation_inhibitor.info",                "Prevents items dropped within 5 block from being collected by Item Dislocators.");
         helper.add(DEContent.dislocator_pedestal,                               "Dislocator Pedestal");
         helper.add(DEContent.dislocator_receptacle,                             "Dislocator Receptacle");
         helper.add(DEContent.draconium_chest,                                   "Draconium Chest");
@@ -148,7 +148,7 @@ public class LangGenerator extends LanguageProvider {
     }
 
     private void itemProps(PrefixHelper helper) {
-        helper.setPrefix("item_prop.draconicevolution");
+        helper.setPrefix("item_prop." + DraconicEvolution.MODID);
         helper.add("attack_aoe",                                                "Attack Radius");
         helper.add("attack_aoe.info",                                           "Allows you to adjust the area covered by this weapon's swing.\nThis covers a 100 degree arc in the direction you are looking.");
         helper.add("mining_aoe",                                                "Mining AOE");
@@ -203,7 +203,7 @@ public class LangGenerator extends LanguageProvider {
     }
 
     private void modules(PrefixHelper helper) {
-        helper.setPrefix("module.draconicevolution");
+        helper.setPrefix("module." + DraconicEvolution.MODID);
         helper.add(ModuleTypes.ENERGY_STORAGE,                                  "Energy Capacity");
 
         helper.add("energy.stored_energy",                                      "Stored Energy");
@@ -231,7 +231,7 @@ public class LangGenerator extends LanguageProvider {
         helper.add("flight.false.true",                                         "Creative");
         helper.add("flight.true.true",                                          "Creative & Elytra");
         helper.add("flight.boost.name",                                         "Elytra Boost");
-        //add("module.draconicevolution.flight.boost.value",                      "%s%");
+        //add("module." + DraconicEvolution.MODID + ".flight.boost.value",                      "%s%");
 
         helper.add(ModuleTypes.UNDYING,                                         "Undying");
         helper.add("undying.health.name",                                       "Health Boost");
@@ -403,7 +403,7 @@ public class LangGenerator extends LanguageProvider {
 
     private void guis(PrefixHelper helper) {
         //Item Config
-        helper.setPrefix("gui.draconicevolution.item_config");
+        helper.setPrefix("gui." + DraconicEvolution.MODID + ".item_config");
         helper.add("name",                                                      "Configure Equipment");
         helper.add("configure",                                                 "Configure");
         helper.add("toggle_hidden.info",                                        "Show / Hide Inventory");
@@ -453,7 +453,7 @@ public class LangGenerator extends LanguageProvider {
         helper.add("open_modules.info",                                         "Open Module Configuration GUI");
         helper.add("no_configurable_items",                                     "You do not have any configurable items in your inventory!");
 
-        helper.setPrefix("gui.draconicevolution.boolean_property");
+        helper.setPrefix("gui." + DraconicEvolution.MODID + ".boolean_property");
         helper.add("true",                                                      "True");
         helper.add("false",                                                     "False");
         helper.add("enabled",                                                   "Enabled");
@@ -464,7 +464,7 @@ public class LangGenerator extends LanguageProvider {
         helper.add("no",                                                        "No");
 
         //Module GUI
-        helper.setPrefix("gui.draconicevolution.modular_item");
+        helper.setPrefix("gui." + DraconicEvolution.MODID + ".modular_item");
         helper.add("name",                                                      "Configure Modules");
         helper.add("modules",                                                   "Modules");
         helper.add("open_item_config.info",                                     "Open Item Configuration GUI");
@@ -472,7 +472,7 @@ public class LangGenerator extends LanguageProvider {
         helper.add("module_grid",                                               "Module Grid");
 
         //Generator
-        helper.setPrefix("gui.draconicevolution.generator");
+        helper.setPrefix("gui." + DraconicEvolution.MODID + ".generator");
         helper.add("fuel_efficiency",                                           "Fuel Efficiency:");
         helper.add("output_power",                                              "Output Power:");
         helper.add("current_fuel_value",                                        "Current Fuel Value:");
@@ -488,7 +488,7 @@ public class LangGenerator extends LanguageProvider {
         helper.add("mode_performance_plus.info",                                "Overdrive Mode\nNeed all the power you can get?\nHave plenty of fuel to burn?\nThis is the mode for you!");
 
         //Grinder
-        helper.setPrefix("gui.draconicevolution.grinder");
+        helper.setPrefix("gui." + DraconicEvolution.MODID + ".grinder");
         helper.add("aoe",                                                       "AOE:");
         helper.add("aoe.info",                                                  "Increment's the grinder's Area Of Effect.\n(The area in which it will kill mobs)");
         helper.add("show_aoe",                                                  "Show AOE");
@@ -504,8 +504,56 @@ public class LangGenerator extends LanguageProvider {
         helper.add("stored_xp.raw",                                             "(Raw XP)");
         helper.add("weapon_slot",                                               "Optional weapon to use when attacking.");
 
+        //Disenchanter
+        helper.setPrefix("gui." + DraconicEvolution.MODID + ".disenchanter");
+        helper.add("level",                                                     "Level of Enchant: %s");
+        helper.add("cost",                                                      "XP Cost in Levels: %s");
+        
+        //Celestial Manipulator
+        helper.setPrefix("gui." + DraconicEvolution.MODID + ".celestial_manipulator");
+        helper.add("weather",                                                   "Weather");
+        helper.add("time",                                                      "Time");
+        helper.add("stopRain",                                                  "Clear Skies");
+        helper.add("startRain",                                                 "Create Rain");
+        helper.add("startStorm",                                                "Create Storm");
+        helper.add("skipTo",                                                    "Skip To");
+        helper.add("sunRise",                                                   "Sunrise");
+        helper.add("midDay",                                                    "Noon");
+        helper.add("sunSet",                                                    "Sunset");
+        helper.add("moonRise",                                                  "Moonrise");
+        helper.add("midnight",                                                  "Midnight");
+        helper.add("moonSet",                                                   "Moonset");
+        helper.add("skip24",                                                    "Skip 24 Hours");
+        helper.add("stop",                                                      "Stop Skipping");
+        helper.add("rs.0",                                                      "Clear Skies");
+        helper.add("rs.1",                                                      "Create Rain");
+        helper.add("rs.2",                                                      "Create Storm");
+        helper.add("rs.3",                                                      "Sunrise");
+        helper.add("rs.4",                                                      "Noon");
+        helper.add("rs.5",                                                      "Sunset");
+        helper.add("rs.6",                                                      "Moonrise");
+        helper.add("rs.7",                                                      "Midnight");
+        helper.add("rs.8",                                                      "Moonset");
+        
+        helper.setPrefix("msg." + DraconicEvolution.MODID + ".celestial_manipulator");
+        helper.add("alreadyRunning",    "Celestial Manipulator is currently running...  Please wait!");
+        helper.add("notRaining",        "You can't stop rain that isn't there!");
+        helper.add("insufficientPower", "Not enough energy.");
+        helper.add("alreadyRaining",    "It's already raining!");
+        helper.add("alreadyStorming",   "It's already storming!");
+        
+        //Entity Detector
+        helper.setPrefix("gui." + DraconicEvolution.MODID + ".entity_detector");
+        helper.add("range",                                                     "Range");
+        helper.add("rsmin",                                                     "Min Str.");
+        helper.add("rsmax",                                                     "Max Str.");
+        helper.add("pulse_rate",                                                "Rate");
+        helper.add("pulse_mode",                                                "Mode");
+        helper.add("pulse_mode.on",                                             "Pulse");
+        helper.add("pulse_mode.off",                                            "Constant");
+        
         //Draconium Chest
-        helper.setPrefix("gui.draconicevolution.draconium_chest");
+        helper.setPrefix("gui." + DraconicEvolution.MODID + ".draconium_chest");
         helper.add("feed." + FeedMode.OFF.localKey() + ".info",                 "Feed Off");
         helper.add("feed." + FeedMode.ALL.localKey() + ".info",                 "Feed All\nFeed all smeltable items into the furnace.");
         helper.add("feed." + FeedMode.FILTER.localKey() + ".info",              "Feed Filtered\nFeed any items that are already being smelted.");
@@ -513,7 +561,7 @@ public class LangGenerator extends LanguageProvider {
         helper.add("color_picker",                                              "Change Chest Color");
 
         //Reactor
-        helper.setPrefix("gui.draconicevolution.reactor");
+        helper.setPrefix("gui." + DraconicEvolution.MODID + ".reactor");
         helper.add("title",                                                     "Draconic Reactor");
         helper.add("core_volume",                                               "Core Volume");
         helper.add("core_volume.info",                                          "This shows the total volume of matter within the reactor in cubic meters (Draconium + Chaos). This value will only change when you add or remove fuel.");
@@ -568,7 +616,7 @@ public class LangGenerator extends LanguageProvider {
         helper.add("beyond_hope.info",                                          "Explosion Imminent!!!");
 
         //Flow Gate
-        helper.setPrefix("gui.draconicevolution.flow_gate");
+        helper.setPrefix("gui." + DraconicEvolution.MODID + ".flow_gate");
         helper.add("overridden",                                                "Overridden");
         helper.add("overridden.info",                                           "Default controls have been disabled by a computer.");
         helper.add("redstone_high",                                             "Redstone Signal High");
@@ -580,7 +628,7 @@ public class LangGenerator extends LanguageProvider {
         helper.add("flow.info",                                                 "The actual flow will vary between the two given values depending on the strength of the redstone signal being supplied to the block.");
 
         //Energy Transfuser
-        helper.setPrefix("gui.draconicevolution.transfuser");
+        helper.setPrefix("gui." + DraconicEvolution.MODID + ".transfuser");
         helper.add("mode_charge",                                               "Charge\n - Accepts power from external sources\n - Accepts power from buffer slots\n - Can be extracted when fully charged");
         helper.add("mode_discharge",                                            "Discharge\n - Discharges to external consumers\n - Discharges to buffer slots\n - Can be extracted when fully discharged");
         helper.add("mode_buffer",                                               "Buffer\n - Accepts power from external sources\n - Accepts power from discharge slots\n - Discharges to external consumers\n - Discharges to charge slots");
@@ -589,7 +637,7 @@ public class LangGenerator extends LanguageProvider {
         helper.add("balanced_charge",                                           "Balanced Input Priority\nPower input will be balanced between all 4 slots\nbut each slot will be limited to 1/4 of the total input rate.");
 
         //Dislocator
-        helper.setPrefix("gui.draconicevolution.dislocator");
+        helper.setPrefix("gui." + DraconicEvolution.MODID + ".dislocator");
         helper.add("add",                                                       "Add New");
         helper.add("add.info",                                                  "Add current position\n- insert below selected");
         helper.add("add_top.info",                                              "Add current position\n- add to top of list");
@@ -615,8 +663,9 @@ public class LangGenerator extends LanguageProvider {
         helper.add("add_all",                                                   "All");
 
         //Fusion Crafting Core
-        helper.setPrefix("gui.draconicevolution.fusion_craft");
+        helper.setPrefix("gui." + DraconicEvolution.MODID + ".fusion_craft");
         helper.add("craft",                                                     "Craft");
+        
         //JEI
         helper.add("tier.draconium",                                            "Tier: Draconium");
         helper.add("tier.wyvern",                                               "Tier: Wyvern");
@@ -626,7 +675,7 @@ public class LangGenerator extends LanguageProvider {
         helper.add("ne_tier_injectors",                                         "Not enough %s tier injectors.");
 
         //Energy Core
-        helper.setPrefix("gui.draconicevolution.energy_core");
+        helper.setPrefix("gui." + DraconicEvolution.MODID + ".energy_core");
         helper.add("title",                                                     "Tier %s Energy Core");
         helper.add("activate",                                                  "Activate");
         helper.add("deactivate",                                                "Deactivate");
@@ -642,20 +691,10 @@ public class LangGenerator extends LanguageProvider {
         helper.add("custom_colour_true",                                        "Disable colour customisation");
         helper.add("config_colour",                                             "Configure Colour");
         helper.add("reset",                                                     "Reset");
+        
+        add("msg." + DraconicEvolution.MODID + ".energy_core.already_building",               "Assembly already in progress!");
+        add("msg." + DraconicEvolution.MODID + ".energy_core.core_not_found",                 "404 Core Not Found!!!");
 
-
-        add("msg.draconicevolution.energy_core.already_building",               "Assembly already in progress!");
-        add("msg.draconicevolution.energy_core.core_not_found",                 "404 Core Not Found!!!");
-
-//        add("gui.de.energyStorageCore.name",                                    "Tier %s Energy Core");
-//        add("button.de.buildGuide.txt",                                         "Build Guide:");
-//        add("ecore.de.already_assembling.txt",                                  "Assembly already in progress!");
-//        add("gui.de.transfer.txt",                                              "Transfer");
-//        add("gui.de.capacity.txt",                                              "Capacity");
-//        add("gui.de.maxStorage.txt",                                            ">> Max Storage <<");
-//        add("info.bc.charge.txt",                                               "Charge");
-//        add("gui.de.almostInfinite.txt",                                        "Almost Infinite!");
-//
 //        add("gui.de.stabilizers.txt",                                           "Stabilizers");
 //        add("gui.de.invalid.txt",                                               "Invalid");
 //        add("gui.de.valid.txt",                                                 "Valid");
@@ -663,12 +702,14 @@ public class LangGenerator extends LanguageProvider {
 //        add("gui.de.core.txt",                                                  "Core");
 //        add("gui.de.inactive.txt",                                              "Inactive");
 //        add("gui.de.active.txt",                                                "Active");
+        
+        add("generic.configureRedstone", "Configure Redstone");
 
     }
 
     private void hudAndMessages(PrefixHelper helper) {
         //Energy Network
-        helper.setPrefix("gui.draconicevolution.energy_net");
+        helper.setPrefix("gui." + DraconicEvolution.MODID + ".energy_net");
         helper.add("pos_saved_to_tool",                                         "Block Position saved to tool. (Sneak + Right click air to clear)");
         helper.add("pos_cleared",                                               "Position Cleared");
         helper.add("tool_not_bound",                                            "Tool not bound! Sneak + Right click to bind.");
@@ -698,7 +739,7 @@ public class LangGenerator extends LanguageProvider {
         helper.add("clear_receivers",                                           "Clear Receivers");
 
         //Modular Item
-        helper.setPrefix("modular_item.draconicevolution");
+        helper.setPrefix("modular_item." + DraconicEvolution.MODID);
         helper.add("requires_energy",                                           "This item requires energy modules to function.");
         helper.add("requires_energy_press",                                     "Press %s to open module config.");
         helper.add("error.no_modular_items",                                    "You dont have any modular items in your inventory!");
@@ -709,7 +750,7 @@ public class LangGenerator extends LanguageProvider {
         helper.add("cant_install.wont_fit",                                     "The module wont fit in that position.");
 
         //Dislocator
-        helper.setPrefix("dislocate.draconicevolution");
+        helper.setPrefix("dislocate." + DraconicEvolution.MODID);
         helper.add("not_set",                                                   "You must first set the destination before you can teleport (Sneak + Right click).");
         helper.add("player_need_advanced",                                      "You need a more powerful dislocator to do that.");
         helper.add("entity_sent_to",                                            "The entity has been sent to");
@@ -741,16 +782,16 @@ public class LangGenerator extends LanguageProvider {
 
 
         //Item Dislocator
-        helper.setPrefix("item_dislocate.draconicevolution");
+        helper.setPrefix("item_dislocate." + DraconicEvolution.MODID);
         helper.add("activate",                                                  "Item Dislocator Activated");
         helper.add("deactivate",                                                "Item Dislocator Deactivated");
 
         //Fusion Crafting
-        helper.setPrefix("fusion_inj.draconicevolution");
+        helper.setPrefix("fusion_inj." + DraconicEvolution.MODID);
         helper.add("single_item",                                               "Single item mode");
         helper.add("multi_item",                                                "Stack mode");
 
-        helper.setPrefix("fusion_status.draconicevolution");
+        helper.setPrefix("fusion_status." + DraconicEvolution.MODID);
         helper.add("charging",                                                  "Charging: %s%%");
         helper.add("crafting",                                                  "Crafting: %s%%");
         helper.add("output_obstructed",                                         "Output Obstructed");
@@ -762,9 +803,9 @@ public class LangGenerator extends LanguageProvider {
 //        helper.add("",                                                          "");
 
         //Armor Hud
-        add("hud.draconicevolution.shield_hud.name",                            "Shield Hud");
-        add("hud.draconicevolution.shield_hud.info",                            "This hud displays the current status or your draconic shield as well as you energy reserves and Undying modules.");
-        helper.setPrefix("hud_armor.draconicevolution");
+        add("hud." + DraconicEvolution.MODID + ".shield_hud.name",                            "Shield Hud");
+        add("hud." + DraconicEvolution.MODID + ".shield_hud.info",                            "This hud displays the current status or your draconic shield as well as you energy reserves and Undying modules.");
+        helper.setPrefix("hud_armor." + DraconicEvolution.MODID);
         helper.add("no_shield",                                                 "No Shield Installed");
         helper.add("shield_disabled",                                           "Shield Disabled");
         helper.add("numeric.true",                                              "Numeric Energy? Enabled");
@@ -780,11 +821,11 @@ public class LangGenerator extends LanguageProvider {
         helper.add("scale",                                                     "Scale");
         helper.add("scale.info",                                                "Change hud element scale.");
 
-        add("hud.draconicevolution.open_hud_config",                            "Open hud configuration GUI");
+        add("hud." + DraconicEvolution.MODID + ".open_hud_config",                            "Open hud configuration GUI");
     }
 
     private void toolTips(PrefixHelper helper) {
-        helper.setPrefix("tooltip.draconicevolution");
+        helper.setPrefix("tooltip." + DraconicEvolution.MODID);
 
         //Bows
         helper.add("bow.damage",                    "%s Max Attack Damage");
@@ -794,62 +835,62 @@ public class LangGenerator extends LanguageProvider {
     }
 
     private void misc(PrefixHelper helper) {
-        add("itemGroup.draconicevolution.blocks",                               "Draconic Evolution Blocks");
-        add("itemGroup.draconicevolution.items",                                "Draconic Evolution Items");
-        add("itemGroup.draconicevolution.modules",                              "Draconic Evolution Modules");
-        add("tech_level.draconicevolution.draconium",                           "Draconium");
-        add("tech_level.draconicevolution.wyvern",                              "Wyvern");
-        add("tech_level.draconicevolution.draconic",                            "Draconic");
-        add("tech_level.draconicevolution.chaotic",                             "Chaotic");
+        add("itemGroup." + DraconicEvolution.MODID + ".blocks",                               "Draconic Evolution Blocks");
+        add("itemGroup." + DraconicEvolution.MODID + ".items",                                "Draconic Evolution Items");
+        add("itemGroup." + DraconicEvolution.MODID + ".modules",                              "Draconic Evolution Modules");
+        add("tech_level." + DraconicEvolution.MODID + ".draconium",                           "Draconium");
+        add("tech_level." + DraconicEvolution.MODID + ".wyvern",                              "Wyvern");
+        add("tech_level." + DraconicEvolution.MODID + ".draconic",                            "Draconic");
+        add("tech_level." + DraconicEvolution.MODID + ".chaotic",                             "Chaotic");
 
         //Entities
-        add("entity.draconicevolution.draconic_guardian",                       "Chaos Guardian");
-        add("entity.draconicevolution.guardian_wither",                         "Guardian Wither");
-        add("entity.draconicevolution.guardian_crystal",                        "Guardian Crystal");
-        add("entity.draconicevolution.guardian_projectile",                     "Guardian Projectile");
-        add("entity.draconicevolution.persistent_item",                         "Persistent Item");
-        add("entity.draconicevolution.draconic_arrow",                          "Draconic Arrow");
+        add("entity." + DraconicEvolution.MODID + ".draconic_guardian",                       "Chaos Guardian");
+        add("entity." + DraconicEvolution.MODID + ".guardian_wither",                         "Guardian Wither");
+        add("entity." + DraconicEvolution.MODID + ".guardian_crystal",                        "Guardian Crystal");
+        add("entity." + DraconicEvolution.MODID + ".guardian_projectile",                     "Guardian Projectile");
+        add("entity." + DraconicEvolution.MODID + ".persistent_item",                         "Persistent Item");
+        add("entity." + DraconicEvolution.MODID + ".draconic_arrow",                          "Draconic Arrow");
 
         //Death messages
-        add("death.attack.draconicevolution.draconic_guardian",                 "%1$s was torn apart by %2$s");
-        add("death.attack.draconicevolution.guardian_projectile",               "%1$s was obliterated by %2$s");
-        add("death.attack.draconicevolution.guardian_laser",                    "%1$s was vaporized by %2$s using a frickin laser beam!");
+        add("death.attack." + DraconicEvolution.MODID + ".draconic_guardian",                 "%1$s was torn apart by %2$s");
+        add("death.attack." + DraconicEvolution.MODID + ".guardian_projectile",               "%1$s was obliterated by %2$s");
+        add("death.attack." + DraconicEvolution.MODID + ".guardian_laser",                    "%1$s was vaporized by %2$s using a frickin laser beam!");
 
-        add("key.draconicevolution.place_item",                                 "Place Item");
-        add("key.draconicevolution.tool_config",                                "Tool Config");
-        add("key.draconicevolution.toggle_flight",                              "Toggle Flight");
-        add("key.draconicevolution.tool_modules",                               "Tool Modules");
-        add("key.draconicevolution.toggle_magnet",                              "Toggle Item Dislocator");
-        add("key.draconicevolution.dislocator_teleport",                        "Advanced Dislocator Teleport");
-        add("key.draconicevolution.dislocator_blink",                           "Advanced Dislocator Blink");
-        add("key.draconicevolution.dislocator_gui",                             "Advanced Dislocator GUI");
-        add("key.draconicevolution.dislocator_up",                              "Advanced Dislocator Select Up");
-        add("key.draconicevolution.dislocator_down",                            "Advanced Dislocator Select Down");
+        add("key." + DraconicEvolution.MODID + ".place_item",                                 "Place Item");
+        add("key." + DraconicEvolution.MODID + ".tool_config",                                "Tool Config");
+        add("key." + DraconicEvolution.MODID + ".toggle_flight",                              "Toggle Flight");
+        add("key." + DraconicEvolution.MODID + ".tool_modules",                               "Tool Modules");
+        add("key." + DraconicEvolution.MODID + ".toggle_magnet",                              "Toggle Item Dislocator");
+        add("key." + DraconicEvolution.MODID + ".dislocator_teleport",                        "Advanced Dislocator Teleport");
+        add("key." + DraconicEvolution.MODID + ".dislocator_blink",                           "Advanced Dislocator Blink");
+        add("key." + DraconicEvolution.MODID + ".dislocator_gui",                             "Advanced Dislocator GUI");
+        add("key." + DraconicEvolution.MODID + ".dislocator_up",                              "Advanced Dislocator Select Up");
+        add("key." + DraconicEvolution.MODID + ".dislocator_down",                            "Advanced Dislocator Select Down");
 
-        add("enchantment.draconicevolution.reaper_enchantment",                 "Reaper");
+        add("enchantment." + DraconicEvolution.MODID + ".reaper_enchantment",                 "Reaper");
 
 
-        add("numprefix.draconicevolution.10-3",                                  "Kilo");
-        add("numprefix.draconicevolution.10-6",                                  "Mega");
-        add("numprefix.draconicevolution.10-9",                                  "Giga");
-        add("numprefix.draconicevolution.10-12",                                 "Tera");
-        add("numprefix.draconicevolution.10-15",                                 "Peta");
-        add("numprefix.draconicevolution.10-18",                                 "Exa");
-        add("numprefix.draconicevolution.10-21",                                 "Zetta");
-        add("numprefix.draconicevolution.10-24",                                 "Yotta");
-        add("numprefix.draconicevolution.10-27",                                 "Octillion");
-        add("numprefix.draconicevolution.10-30",                                 "Nonillion");
-        add("numprefix.draconicevolution.10-33",                                 "Decillion");
-        add("numprefix.draconicevolution.10-36",                                 "Undecillion");
-        add("numprefix.draconicevolution.10-39",                                 "Duodecillion");
-        add("numprefix.draconicevolution.10-42",                                 "Tredecillion");
-        add("numprefix.draconicevolution.10-45",                                 "Quattuordecillion");
-        add("numprefix.draconicevolution.10-48",                                 "Quindecillion");
-        add("numprefix.draconicevolution.10-51",                                 "Sexdecillion");
-        add("numprefix.draconicevolution.10-54",                                 "Septendecillion");
-        add("numprefix.draconicevolution.10-57",                                 "Octodecillion");
-        add("numprefix.draconicevolution.10-60",                                 "Novemdecillion");
-        add("numprefix.draconicevolution.10-63",                                 "Vigintillion");
+        add("numprefix." + DraconicEvolution.MODID + ".10-3",                                  "Kilo");
+        add("numprefix." + DraconicEvolution.MODID + ".10-6",                                  "Mega");
+        add("numprefix." + DraconicEvolution.MODID + ".10-9",                                  "Giga");
+        add("numprefix." + DraconicEvolution.MODID + ".10-12",                                 "Tera");
+        add("numprefix." + DraconicEvolution.MODID + ".10-15",                                 "Peta");
+        add("numprefix." + DraconicEvolution.MODID + ".10-18",                                 "Exa");
+        add("numprefix." + DraconicEvolution.MODID + ".10-21",                                 "Zetta");
+        add("numprefix." + DraconicEvolution.MODID + ".10-24",                                 "Yotta");
+        add("numprefix." + DraconicEvolution.MODID + ".10-27",                                 "Octillion");
+        add("numprefix." + DraconicEvolution.MODID + ".10-30",                                 "Nonillion");
+        add("numprefix." + DraconicEvolution.MODID + ".10-33",                                 "Decillion");
+        add("numprefix." + DraconicEvolution.MODID + ".10-36",                                 "Undecillion");
+        add("numprefix." + DraconicEvolution.MODID + ".10-39",                                 "Duodecillion");
+        add("numprefix." + DraconicEvolution.MODID + ".10-42",                                 "Tredecillion");
+        add("numprefix." + DraconicEvolution.MODID + ".10-45",                                 "Quattuordecillion");
+        add("numprefix." + DraconicEvolution.MODID + ".10-48",                                 "Quindecillion");
+        add("numprefix." + DraconicEvolution.MODID + ".10-51",                                 "Sexdecillion");
+        add("numprefix." + DraconicEvolution.MODID + ".10-54",                                 "Septendecillion");
+        add("numprefix." + DraconicEvolution.MODID + ".10-57",                                 "Octodecillion");
+        add("numprefix." + DraconicEvolution.MODID + ".10-60",                                 "Novemdecillion");
+        add("numprefix." + DraconicEvolution.MODID + ".10-63",                                 "Vigintillion");
 
     }
 

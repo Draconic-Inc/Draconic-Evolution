@@ -2,7 +2,7 @@ package com.brandon3055.draconicevolution.inventory;
 
 import com.brandon3055.brandonscore.inventory.ContainerBCTile;
 import com.brandon3055.brandonscore.inventory.SlotCheckValid;
-import com.brandon3055.draconicevolution.blocks.tileentity.TileDissEnchanter;
+import com.brandon3055.draconicevolution.blocks.tileentity.TileDisenchanter;
 import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
@@ -17,13 +17,13 @@ import javax.annotation.Nullable;
 /**
  * Created by brandon3055 on 30/3/2016.
  */
-public class ContainerDissEnchanter extends ContainerBCTile<TileDissEnchanter> {
+public class ContainerDisenchanter extends ContainerBCTile<TileDisenchanter> {
 
-    public ContainerDissEnchanter(int windowId, Inventory playerInv, FriendlyByteBuf extraData) {
-        this(DEContent.container_dissenchanter, windowId, playerInv, getClientTile(extraData));
+    public ContainerDisenchanter(int windowId, Inventory playerInv, FriendlyByteBuf extraData) {
+        this(DEContent.container_disenchanter, windowId, playerInv, getClientTile(extraData));
     }
 
-    public ContainerDissEnchanter(@Nullable MenuType<?> type, int windowId, Inventory player, TileDissEnchanter tile) {
+    public ContainerDisenchanter(@Nullable MenuType<?> type, int windowId, Inventory player, TileDisenchanter tile) {
         super(type, windowId, player, tile);
         addPlayerSlots(8, 60);
 
@@ -51,7 +51,7 @@ public class ContainerDissEnchanter extends ContainerBCTile<TileDissEnchanter> {
                 }
             }
             else {
-                if (stack.getItem() == Items .BOOK) {
+                if (stack.getItem() == Items.BOOK) {
                     if (!moveItemStackTo(stack, 36, 36 + 2, false)) {
                         return ItemStack.EMPTY;
                     }

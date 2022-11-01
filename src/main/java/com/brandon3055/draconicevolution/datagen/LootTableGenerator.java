@@ -53,16 +53,16 @@ public class LootTableGenerator extends LootTableProvider {
         protected void addTables() {
             dropSelf(DEContent.generator);
             dropSelf(DEContent.grinder);
-//            registerDropSelfLootTable(DEContent.disenchanter);
+            dropSelf(DEContent.disenchanter);
             dropSelf(DEContent.energy_transfuser);
             dropSelf(DEContent.dislocator_pedestal);
             dropSelf(DEContent.dislocator_receptacle);
             dropSelf(DEContent.creative_op_capacitor);
-//            registerDropSelfLootTable(DEContent.entity_detector);
-//            registerDropSelfLootTable(DEContent.entity_detector_advanced);
+            dropSelf(DEContent.entity_detector);
+            dropSelf(DEContent.entity_detector_advanced);
             dropSelf(DEContent.stabilized_spawner);
             dropSelf(DEContent.potentiometer);
-//            registerDropSelfLootTable(DEContent.celestial_manipulator);
+            dropSelf(DEContent.celestial_manipulator);
             dropSelf(DEContent.draconium_chest);
             dropSelf(DEContent.particle_generator);
             dropSelf(DEContent.crafting_injector_basic);
@@ -76,7 +76,7 @@ public class LootTableGenerator extends LootTableProvider {
             dropSelf(DEContent.reactor_core);
             dropSelf(DEContent.reactor_stabilizer);
             dropSelf(DEContent.reactor_injector);
-//            registerDropSelfLootTable(DEContent.rain_sensor);
+            dropSelf(DEContent.rain_sensor);
             dropSelf(DEContent.dislocation_inhibitor);
             dropSelf(DEContent.block_draconium);
             dropSelf(DEContent.block_draconium_awakened);
@@ -94,11 +94,9 @@ public class LootTableGenerator extends LootTableProvider {
             dropSelf(DEContent.crystal_wireless_wyvern);
             dropSelf(DEContent.crystal_wireless_draconic);
 
-
-
             //Special Stuff
-//            registerDropSelfLootTable(DEContent.energy_core_structure);
-//            registerDropSelfLootTable(DEContent.placed_item);
+//            dropSelf(DEContent.energy_core_structure);
+//            dropSelf(DEContent.placed_item);
 //            add(DEContent.chaos_crystal, block -> createSingleItemTable(DEContent.chaos_shard).apply(SetCount.setCount(ConstantRange.exactly(5))));
 //            add(DEContent.chaos_crystal_part, noDrop());
 //            add(DEContent.portal, noDrop());
@@ -107,14 +105,11 @@ public class LootTableGenerator extends LootTableProvider {
             add(DEContent.ore_draconium_overworld, (block) -> createSilkTouchDispatchTable(block, applyExplosionDecay(block, LootItem.lootTableItem(DEContent.dust_draconium).apply(SetItemCountFunction.setCount(UniformGenerator.between(2.0F, 4.0F))).apply(ApplyBonusCount.addUniformBonusCount(Enchantments.BLOCK_FORTUNE)))));
             add(DEContent.ore_draconium_nether, (block) -> createSilkTouchDispatchTable(block, applyExplosionDecay(block, LootItem.lootTableItem(DEContent.dust_draconium).apply(SetItemCountFunction.setCount(UniformGenerator.between(2.0F, 4.0F))).apply(ApplyBonusCount.addUniformBonusCount(Enchantments.BLOCK_FORTUNE)))));
             add(DEContent.ore_draconium_end, (block) -> createSilkTouchDispatchTable(block, applyExplosionDecay(block, LootItem.lootTableItem(DEContent.dust_draconium).apply(SetItemCountFunction.setCount(UniformGenerator.between(2.0F, 4.0F))).apply(ApplyBonusCount.addUniformBonusCount(Enchantments.BLOCK_FORTUNE)))));
-
-
         }
 
         @Override
         protected Iterable<Block> getKnownBlocks() {
             return Registry.BLOCK.stream().filter(block -> Objects.requireNonNull(block.getRegistryName()).getNamespace().equals(DraconicEvolution.MODID)).collect(Collectors.toList());
         }
-
     }
 }

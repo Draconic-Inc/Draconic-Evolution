@@ -45,6 +45,17 @@ public class DEGuiSprites {
         BCGuiSprites.register(MODID, "chest/feed_all");
         BCGuiSprites.register(MODID, "chest/feed_filter");
         BCGuiSprites.register(MODID, "chest/feed_filter_sticky");
+        
+        // Celestial Manipulator
+        BCGuiSprites.register(MODID, "celestial_manipulator/clear");
+        BCGuiSprites.register(MODID, "celestial_manipulator/rain");
+        BCGuiSprites.register(MODID, "celestial_manipulator/storm");
+        BCGuiSprites.register(MODID, "celestial_manipulator/sunrise");
+        BCGuiSprites.register(MODID, "celestial_manipulator/noon");
+        BCGuiSprites.register(MODID, "celestial_manipulator/sunset");
+        BCGuiSprites.register(MODID, "celestial_manipulator/moonrise");
+        BCGuiSprites.register(MODID, "celestial_manipulator/midnight");
+        BCGuiSprites.register(MODID, "celestial_manipulator/moonset");
 
         // Hud
         BCGuiSprites.register(MODID, "hud/ryg_bar");

@@ -54,11 +54,6 @@ public class Potentiometer extends BlockBCore implements EntityBlock {
         return worldIn.getBlockState(blockpos).isFaceSturdy(worldIn, blockpos, direction.getOpposite());
     }
 
-    @Override
-    public void setPlacedBy(Level world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
-        super.setPlacedBy(world, pos, state, placer, stack);
-    }
-
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
@@ -75,54 +70,17 @@ public class Potentiometer extends BlockBCore implements EntityBlock {
         if (!isMoving && !state.is(newState.getBlock())) {
             BlockEntity tile = worldIn.getBlockEntity(pos);
             if (tile instanceof TilePotentiometer && ((TilePotentiometer) tile).power.get() > 0) {
-                this.updateNeighbors(state, worldIn, pos, (TilePotentiometer)tile);
+                this.updateNeighbors(state, worldIn, pos);
             }
 
             super.onRemove(state, worldIn, pos, newState, isMoving);
         }
     }
 
-    private void updateNeighbors(BlockState state, Level world, BlockPos pos, TilePotentiometer tile) {
+    private void updateNeighbors(BlockState state, Level world, BlockPos pos) {
         world.updateNeighborsAt(pos, this);
         world.updateNeighborsAt(pos.relative(state.getValue(FACING).getOpposite()), this);
     }
-
-    //    @Override
-//    public void neighborChanged(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
-//        if (this.checkForDrop(world, pos, state) && !canPlaceBlock(world, pos, ((Direction) state.get(FACING)).getOpposite())) {
-//
-//            this.dropBlockAsItem(world, pos, state, 0);
-//            world.setBlockToAir(pos);
-//        }
-//    }
-
-//    private boolean checkForDrop(World worldIn, BlockPos pos, BlockState state) {
-//        if (this.canPlaceBlockAt(worldIn, pos)) {
-//            return true;
-//        }
-//        else {
-//            this.dropBlockAsItem(worldIn, pos, state, 0);
-//            worldIn.setBlockToAir(pos);
-//            return false;
-//        }
-//    }
-
-//    @Override
-//    public boolean canPlaceBlockOnSide(World worldIn, BlockPos pos, Direction side) {
-//        return canPlaceBlock(worldIn, pos, side.getOpposite());
-//    }
-//
-//    @Override
-//    public boolean canPlaceBlockAt(World worldIn, BlockPos pos) {
-//        for (Direction enumfacing : Direction.values()) {
-//            if (canPlaceBlock(worldIn, pos, enumfacing)) {
-//                return true;
-//            }
-//        }
-//
-//        return false;
-//    }
-
 
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
