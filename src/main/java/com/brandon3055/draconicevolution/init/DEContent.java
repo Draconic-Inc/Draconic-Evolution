@@ -118,6 +118,7 @@ public class DEContent {
 
     @SubscribeEvent
     public static void registerTileEntity(RegistryEvent.Register<BlockEntityType<?>> event) {
+    	Block[] entityDetectors = {entity_detector, entity_detector_advanced};
         Block[] craftInjectors = {crafting_injector_basic, crafting_injector_wyvern, crafting_injector_awakened, crafting_injector_chaotic};
         //@formatter:off
         event.getRegistry().register(BlockEntityType.Builder.of(TileGenerator::new,              generator               ).build(null).setRegistryName("generator"));
@@ -127,7 +128,7 @@ public class DEContent {
         event.getRegistry().register(BlockEntityType.Builder.of(TileDislocatorPedestal::new,     dislocator_pedestal     ).build(null).setRegistryName("dislocator_pedestal"));
         event.getRegistry().register(BlockEntityType.Builder.of(TileDislocatorReceptacle::new,   dislocator_receptacle   ).build(null).setRegistryName("dislocator_receptacle"));
         event.getRegistry().register(BlockEntityType.Builder.of(TileCreativeOPCapacitor::new,    creative_op_capacitor   ).build(null).setRegistryName("creative_op_capacitor"));
-        event.getRegistry().register(BlockEntityType.Builder.of(TileEntityDetector::new,         entity_detector         ).build(null).setRegistryName("entity_detector"));
+        event.getRegistry().register(BlockEntityType.Builder.of(TileEntityDetector::new,         entityDetectors         ).build(null).setRegistryName("entity_detector"));
         event.getRegistry().register(BlockEntityType.Builder.of(TileStabilizedSpawner::new,      stabilized_spawner      ).build(null).setRegistryName("stabilized_spawner"));
         event.getRegistry().register(BlockEntityType.Builder.of(TileRainSensor::new,             rain_sensor             ).build(null).setRegistryName("rain_sensor"));
         event.getRegistry().register(BlockEntityType.Builder.of(TilePotentiometer::new,          potentiometer           ).build(null).setRegistryName("potentiometer"));

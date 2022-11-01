@@ -542,6 +542,16 @@ public class LangGenerator extends LanguageProvider {
         helper.add("alreadyRaining",    "It's already raining!");
         helper.add("alreadyStorming",   "It's already storming!");
         
+        //Entity Detector
+        helper.setPrefix("gui." + DraconicEvolution.MODID + ".entity_detector");
+        helper.add("range",                                                     "Range");
+        helper.add("rsmin",                                                     "Min Str.");
+        helper.add("rsmax",                                                     "Max Str.");
+        helper.add("pulse_rate",                                                "Rate");
+        helper.add("pulse_mode",                                                "Mode");
+        helper.add("pulse_mode.on",                                             "Pulse");
+        helper.add("pulse_mode.off",                                            "Constant");
+        
         //Draconium Chest
         helper.setPrefix("gui." + DraconicEvolution.MODID + ".draconium_chest");
         helper.add("feed." + FeedMode.OFF.localKey() + ".info",                 "Feed Off");

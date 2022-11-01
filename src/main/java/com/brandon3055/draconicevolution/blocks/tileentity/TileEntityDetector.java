@@ -64,7 +64,7 @@ public class TileEntityDetector extends TileBCore implements MenuProvider, IInte
     public final ManagedShort range = register(new ManagedShort("range", (short) 10, DataFlags.SAVE_BOTH_SYNC_TILE));
     public final ManagedByte rsMinDetection = register(new ManagedByte("rs_min_detection", (byte) 1, DataFlags.SAVE_BOTH_SYNC_TILE));
     public final ManagedByte rsMaxDetection = register(new ManagedByte("rs_max_detection", (byte) 1, DataFlags.SAVE_BOTH_SYNC_TILE));
-    public final ManagedBool pulseRsMode = register(new ManagedBool("pulse_rs_mode", DataFlags.SAVE_BOTH_SYNC_TILE, DataFlags.TRIGGER_UPDATE));
+    public final ManagedBool pulseRsMode = register(new ManagedBool("pulse_rs_mode", DataFlags.SAVE_BOTH_SYNC_TILE));
     public final ManagedByte outputStrength = register(new ManagedByte("output_strength", DataFlags.SAVE_NBT));
     private int pulseTimer = -1;
     private int pulseDuration = 0;
@@ -93,12 +93,17 @@ public class TileEntityDetector extends TileBCore implements MenuProvider, IInte
     public TileEntityDetector(BlockPos pos, BlockState state) {
         super(DEContent.tile_entity_detector, pos, state);
         capManager.setManaged("energy", CapabilityOP.OP, opStorage).saveBoth().syncContainer();
-        entityFilter = new EntityFilter(true, FilterType.values());
+        if (isAdvanced()) {
+        	entityFilter = new EntityFilter(true, FilterType.values());
+        }
+        else {
+        	entityFilter = new EntityFilter(true, FilterType.PLAYER, FilterType.HOSTILE);
+        }
         entityFilter.setDirtyHandler(this::setChanged);
-        entityFilter.setupServerPacketHandling(() -> createClientBoundPacket(0), packet -> sendPacketToClients(getAccessingPlayers(), packet));
-        entityFilter.setupClientPacketHandling(() -> createServerBoundPacket(0), packetCustom -> BrandonsCore.proxy.sendToServer(packetCustom));
-        setClientSidePacketHandler(0, input -> entityFilter.receivePacketFromServer(input));
-        setServerSidePacketHandler(0, (input, player) -> entityFilter.receivePacketFromClient(input));
+        entityFilter.setupServerPacketHandling(() -> createClientBoundPacket(9), packet -> sendPacketToClients(getAccessingPlayers(), packet));
+        entityFilter.setupClientPacketHandling(() -> createServerBoundPacket(9), packetCustom -> BrandonsCore.proxy.sendToServer(packetCustom));
+        setClientSidePacketHandler(9, input -> entityFilter.receivePacketFromServer(input));
+        setServerSidePacketHandler(9, (input, player) -> entityFilter.receivePacketFromClient(input));
         setSavedDataObject("entity_filter", entityFilter);
         setItemSavedDataObject("entity_filter", entityFilter);
     }
