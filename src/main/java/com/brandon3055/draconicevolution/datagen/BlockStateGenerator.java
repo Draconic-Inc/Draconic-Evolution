@@ -43,6 +43,7 @@ public class BlockStateGenerator extends BlockStateProvider {
         simpleBlock(DEContent.ore_draconium_end);
         simpleBlock(DEContent.ore_draconium_nether);
         simpleBlock(DEContent.ore_draconium_overworld);
+        simpleBlock(DEContent.ore_draconium_deepslate);
         simpleBlock(DEContent.infused_obsidian);
         simpleBlock(DEContent.energy_core);
         simpleBlock(DEContent.energy_core_stabilizer, models().getExistingFile(modLoc("block/energy_core_stabilizer")));

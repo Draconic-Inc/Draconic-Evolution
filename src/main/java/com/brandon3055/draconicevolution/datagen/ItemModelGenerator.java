@@ -70,6 +70,7 @@ public class ItemModelGenerator extends ItemModelProvider {
         blockItem(DEContent.ore_draconium_overworld);
         blockItem(DEContent.ore_draconium_nether);
         blockItem(DEContent.ore_draconium_end);
+        blockItem(DEContent.ore_draconium_deepslate);
         blockItem(DEContent.block_draconium);
         blockItem(DEContent.block_draconium_awakened);
         blockItem(DEContent.infused_obsidian);
@@ -132,9 +133,14 @@ public class ItemModelGenerator extends ItemModelProvider {
         simpleItem(DEContent.info_tablet);
         //endregion
 
-       //region Modules
+        //region Modules (Dont mind this. This is just me being to lazy to go copy paste some images)
+//        File textures = new File("/home/brandon3055/Development/WorkSpaces/1.16/BrandonsMods/Draconic-Evolution/src/main/resources/assets/draconicevolution/textures");
         DEModules.moduleItemMap.forEach((module, item) -> {
             String name = Objects.requireNonNull(module.getRegistryName()).getPath();
+//            File itemTexture = new File(textures, "item/modules/" + name + ".png");
+//            File moduleTexture = new File(textures, "module/" + name + ".png");
+//            if (!itemTexture.exists()) SneakyUtils.sneaky(() -> FileUtils.copyFile(new File(textures, "item/modules/blank_" + name.substring(0, name.indexOf("_")) + ".png"), itemTexture));
+//            if (!moduleTexture.exists()) SneakyUtils.sneaky(() -> FileUtils.copyFile(itemTexture, moduleTexture));
             simpleItem(item, new ResourceLocation(DraconicEvolution.MODID, "item/modules/" + name));
         });
         //endregion

@@ -870,27 +870,27 @@ public class LangGenerator extends LanguageProvider {
         add("enchantment." + DraconicEvolution.MODID + ".reaper_enchantment",                 "Reaper");
 
 
-        add("numprefix." + DraconicEvolution.MODID + ".10-3",                                  "Kilo");
-        add("numprefix." + DraconicEvolution.MODID + ".10-6",                                  "Mega");
-        add("numprefix." + DraconicEvolution.MODID + ".10-9",                                  "Giga");
-        add("numprefix." + DraconicEvolution.MODID + ".10-12",                                 "Tera");
-        add("numprefix." + DraconicEvolution.MODID + ".10-15",                                 "Peta");
-        add("numprefix." + DraconicEvolution.MODID + ".10-18",                                 "Exa");
-        add("numprefix." + DraconicEvolution.MODID + ".10-21",                                 "Zetta");
-        add("numprefix." + DraconicEvolution.MODID + ".10-24",                                 "Yotta");
-        add("numprefix." + DraconicEvolution.MODID + ".10-27",                                 "Octillion");
-        add("numprefix." + DraconicEvolution.MODID + ".10-30",                                 "Nonillion");
-        add("numprefix." + DraconicEvolution.MODID + ".10-33",                                 "Decillion");
-        add("numprefix." + DraconicEvolution.MODID + ".10-36",                                 "Undecillion");
-        add("numprefix." + DraconicEvolution.MODID + ".10-39",                                 "Duodecillion");
-        add("numprefix." + DraconicEvolution.MODID + ".10-42",                                 "Tredecillion");
-        add("numprefix." + DraconicEvolution.MODID + ".10-45",                                 "Quattuordecillion");
-        add("numprefix." + DraconicEvolution.MODID + ".10-48",                                 "Quindecillion");
-        add("numprefix." + DraconicEvolution.MODID + ".10-51",                                 "Sexdecillion");
-        add("numprefix." + DraconicEvolution.MODID + ".10-54",                                 "Septendecillion");
-        add("numprefix." + DraconicEvolution.MODID + ".10-57",                                 "Octodecillion");
-        add("numprefix." + DraconicEvolution.MODID + ".10-60",                                 "Novemdecillion");
-        add("numprefix." + DraconicEvolution.MODID + ".10-63",                                 "Vigintillion");
+        add("numprefix." + DraconicEvolution.MODID + ".10-3",                                  " Kilo");
+        add("numprefix." + DraconicEvolution.MODID + ".10-6",                                  " Mega");
+        add("numprefix." + DraconicEvolution.MODID + ".10-9",                                  " Giga");
+        add("numprefix." + DraconicEvolution.MODID + ".10-12",                                 " Tera");
+        add("numprefix." + DraconicEvolution.MODID + ".10-15",                                 " Peta");
+        add("numprefix." + DraconicEvolution.MODID + ".10-18",                                 " Exa");
+        add("numprefix." + DraconicEvolution.MODID + ".10-21",                                 " Zetta");
+        add("numprefix." + DraconicEvolution.MODID + ".10-24",                                 " Yotta");
+        add("numprefix." + DraconicEvolution.MODID + ".10-27",                                 " Octillion");
+        add("numprefix." + DraconicEvolution.MODID + ".10-30",                                 " Nonillion");
+        add("numprefix." + DraconicEvolution.MODID + ".10-33",                                 " Decillion");
+        add("numprefix." + DraconicEvolution.MODID + ".10-36",                                 " Undecillion");
+        add("numprefix." + DraconicEvolution.MODID + ".10-39",                                 " Duodecillion");
+        add("numprefix." + DraconicEvolution.MODID + ".10-42",                                 " Tredecillion");
+        add("numprefix." + DraconicEvolution.MODID + ".10-45",                                 " Quattuordecillion");
+        add("numprefix." + DraconicEvolution.MODID + ".10-48",                                 " Quindecillion");
+        add("numprefix." + DraconicEvolution.MODID + ".10-51",                                 " Sexdecillion");
+        add("numprefix." + DraconicEvolution.MODID + ".10-54",                                 " Septendecillion");
+        add("numprefix." + DraconicEvolution.MODID + ".10-57",                                 " Octodecillion");
+        add("numprefix." + DraconicEvolution.MODID + ".10-60",                                 " Novemdecillion");
+        add("numprefix." + DraconicEvolution.MODID + ".10-63",                                 " Vigintillion");
 
     }
 

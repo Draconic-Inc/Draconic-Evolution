@@ -238,6 +238,7 @@ public class DEContent {
     @ObjectHolder("rain_sensor")                public static RainSensor                rain_sensor;
     @ObjectHolder("dislocation_inhibitor")      public static DislocationInhibitor      dislocation_inhibitor;
     @ObjectHolder("overworld_draconium_ore")    public static DraconiumOre              ore_draconium_overworld;
+    @ObjectHolder("deepslate_draconium_ore")    public static DraconiumOre              ore_draconium_deepslate;
     @ObjectHolder("nether_draconium_ore")       public static DraconiumOre              ore_draconium_nether;
     @ObjectHolder("end_draconium_ore")          public static DraconiumOre              ore_draconium_end;
     @ObjectHolder("draconium_block")            public static DraconiumBlock            block_draconium;
@@ -306,6 +307,7 @@ public class DEContent {
         event.getRegistry().register(new ReactorComponent(Properties.of(Material.METAL, MaterialColor.COLOR_GRAY).strength(5.0F, 6000F).noOcclusion(), true).setRegistryName("reactor_injector"));
         //Ore
         event.getRegistry().register(new DraconiumOre(ore).setRegistryName("overworld_draconium_ore"));
+        event.getRegistry().register(new DraconiumOre(ore).setRegistryName("deepslate_draconium_ore"));
         event.getRegistry().register(new DraconiumOre(ore).setRegistryName("nether_draconium_ore"));
         event.getRegistry().register(new DraconiumOre(ore).setRegistryName("end_draconium_ore"));
         //Storage Blocks
@@ -472,6 +474,7 @@ public class DEContent {
         registerItem(event, new ItemBlockBCore(ore_draconium_end,           new Item.Properties().tab(blockGroup)).setRegistryName(Objects.requireNonNull(ore_draconium_end.getRegistryName())));
         registerItem(event, new ItemBlockBCore(ore_draconium_nether,        new Item.Properties().tab(blockGroup)).setRegistryName(Objects.requireNonNull(ore_draconium_nether.getRegistryName())));
         registerItem(event, new ItemBlockBCore(ore_draconium_overworld,     new Item.Properties().tab(blockGroup)).setRegistryName(Objects.requireNonNull(ore_draconium_overworld.getRegistryName())));
+        registerItem(event, new ItemBlockBCore(ore_draconium_deepslate,     new Item.Properties().tab(blockGroup)).setRegistryName(Objects.requireNonNull(ore_draconium_deepslate.getRegistryName())));
         registerItem(event, new ItemBlockBCore(crystal_io_basic,            new Item.Properties().tab(blockGroup)).setRegistryName(Objects.requireNonNull(crystal_io_basic.getRegistryName())));
         registerItem(event, new ItemBlockBCore(crystal_io_wyvern,           new Item.Properties().tab(blockGroup)).setRegistryName(Objects.requireNonNull(crystal_io_wyvern.getRegistryName())));
         registerItem(event, new ItemBlockBCore(crystal_io_draconic,         new Item.Properties().tab(blockGroup)).setRegistryName(Objects.requireNonNull(crystal_io_draconic.getRegistryName())));
