@@ -74,7 +74,7 @@ public class IngredientStack extends Ingredient {
     }
 
     @Override
-    protected void dissolve() {
+    public void dissolve() {
         if (this.itemStacks == null) {
             this.itemStacks = Arrays.stream(this.values)
                     .flatMap((itemList) -> itemList.getItems().stream())

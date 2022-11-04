@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution;
 
 import codechicken.lib.config.*;
-import com.brandon3055.brandonscore.BrandonsCore;
+import com.brandon3055.draconicevolution.init.DEWorldGen;
 import com.brandon3055.draconicevolution.init.EquipCfg;
 import com.brandon3055.draconicevolution.init.ModuleCfg;
 import com.google.common.collect.Lists;
@@ -19,7 +19,7 @@ public class DEConfig {
 
     private static ConfigCategory config;
     private static ConfigCategory clientTag;
-    private static ConfigCategory serverTag;
+    public static ConfigCategory serverTag;
 
     public static void load() {
         config = new ConfigFile(DraconicEvolution.MODID)
@@ -29,6 +29,7 @@ public class DEConfig {
         loadClient();
         EquipCfg.loadConfig(config);
         ModuleCfg.loadConfig(config);
+        DEWorldGen.init(config);
         config.runSync(ConfigCallback.Reason.MANUAL);
         config.save();
     }
@@ -39,15 +40,6 @@ public class DEConfig {
     public static double armorSpeedLimit;
     public static boolean enableElytraFlight;
     public static boolean enableCreativeFlight;
-    public static boolean enableOreEnd;
-    public static boolean enableOreOverworld;
-    public static boolean enableOreNether;
-    public static int veinsPerChunkEnd;
-    public static int veinSizeEnd;
-    public static int veinSizeOverworld;
-    public static int veinSizeNether;
-    public static int maxOreHeightOverworld;
-    public static int maxOreHeightNether;
     public static int dislocatorBlinkRange;
     public static int dislocatorBlinksPerPearl;
     public static int fusionInjectorRange;
@@ -108,59 +100,6 @@ public class DEConfig {
                 .setComment("Allows you to disable creative flight supplied by DE's armor")
                 .setDefaultBoolean(true)
                 .onSync((tag, type) -> enableCreativeFlight = tag.getBoolean());
-
-        serverTag.getValue("enableOreEnd")
-                .syncTagToClient()
-                .setComment("Allows you to disable draconium ore generation in the End")
-                .setDefaultBoolean(true)
-                .onSync((tag, type) -> enableOreEnd = tag.getBoolean());
-        serverTag.getValue("enableOreOverworld")
-                .syncTagToClient()
-                .setComment("Allows you to disable draconium ore generation in the Overworld")
-                .setDefaultBoolean(true)
-                .onSync((tag, type) -> enableOreOverworld = tag.getBoolean());
-        serverTag.getValue("enableOreNether")
-                .syncTagToClient()
-                .setComment("Allows you to disable draconium ore generation in the Nether")
-                .setDefaultBoolean(true)
-                .onSync((tag, type) -> enableOreNether = tag.getBoolean());
-
-        {
-            ConfigCategory oreGeneration = serverTag.getCategory("Ore Generation");
-            oreGeneration.setComment("Config values related to ore generation.");
-
-            oreGeneration.getValue("veinsPerChunkEnd")
-                    .syncTagToClient()
-                    .setComment("How many veins per chunk in the end")
-                    .setDefaultInt(2)
-                    .onSync((tag, type) -> veinsPerChunkEnd = tag.getInt());
-            oreGeneration.getValue("veinSizeEnd")
-                    .syncTagToClient()
-                    .setComment("Maximum vein size in the end")
-                    .setDefaultInt(8)
-                    .onSync((tag, type) -> veinSizeEnd = tag.getInt());
-            oreGeneration.getValue("veinSizeOverworld")
-                    .syncTagToClient()
-                    .setComment("Maximum vein size in the overworld")
-                    .setDefaultInt(8)
-                    .onSync((tag, type) -> veinSizeOverworld = tag.getInt());
-            oreGeneration.getValue("veinSizeNether")
-                    .syncTagToClient()
-                    .setComment("Maximum vein size in the nether")
-                    .setDefaultInt(16)
-                    .onSync((tag, type) -> veinSizeNether = tag.getInt());
-            oreGeneration.getValue("overworldMaxOreHeight")
-                    .syncTagToClient()
-                    .setComment("Maximum ore generation height in the overworld")
-                    .setDefaultInt(16)
-                    .onSync((tag, type) -> maxOreHeightOverworld = tag.getInt());
-            oreGeneration.getValue("netherMaxOreHeight")
-                    .syncTagToClient()
-                    .setComment("Maximum ore generation height in the nether")
-                    .setDefaultInt(16)
-                    .onSync((tag, type) -> maxOreHeightNether = tag.getInt());
-        }
-
 
         serverTag.getValue("dislocatorBlinkRange")
                 .syncTagToClient()

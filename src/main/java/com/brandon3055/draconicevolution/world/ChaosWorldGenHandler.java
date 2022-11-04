@@ -9,6 +9,7 @@ import com.brandon3055.draconicevolution.DEOldConfig;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileChaosCrystal;
 import com.brandon3055.draconicevolution.entity.guardian.GuardianFightManager;
 import com.brandon3055.draconicevolution.init.DEContent;
+import com.brandon3055.draconicevolution.init.DEWorldGen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
@@ -36,10 +37,10 @@ public class ChaosWorldGenHandler {
      * //     * @param chunkZ       The Z position of the chunk being generated.
      * //     * @param islandCenter Where to generate the island. If left null the islands will generate in a 10000 by 10000 grid.
      */
-    public static boolean generateChunk(Feature<NoneFeatureConfiguration> feature, WorldGenLevel reader, ChunkGenerator generator, Random rand, BlockPos featurePos) {
+    public static boolean generateChunk(DEWorldGen.ChaosIslandFeature feature, WorldGenLevel reader, ChunkGenerator generator, Random rand, BlockPos featurePos) {
 //    public static void generateChunk(World world, int chunkX, int chunkZ, PairXZ<Integer, Integer> islandCenter, Random random) {
         ChunkPos chunkPos = new ChunkPos(featurePos);
-        PairXZ<Integer, Integer> closestSpawn = getClosestChaosSpawn(chunkPos);
+        PairXZ<Integer, Integer> closestSpawn = getClosestChaosSpawn(feature, chunkPos);
 
         if (closestSpawn.x == 0 && closestSpawn.z == 0) {
             return false;
@@ -51,13 +52,13 @@ public class ChaosWorldGenHandler {
 
         boolean chunkModified = false;
         if (closestSpawn.x > posX && closestSpawn.x <= posX + 16 && closestSpawn.z > posZ && closestSpawn.z <= posZ + 16) {
-            generateStructures(reader, closestSpawn, rand);
+            generateStructures(feature, reader, closestSpawn, rand);
             chunkModified = true;
         }
 
         //long l = System.nanoTime();
 
-        if (!DEOldConfig.chaosIslandVoidMode) {
+        if (!DEWorldGen.chaosIslandVoidMode) {
             for (int trueX = posX; trueX < posX + 16; trueX++) {
                 for (int y = 0; y < 255; y++) {
                     for (int trueZ = posZ; trueZ < posZ + 16; trueZ++) {
@@ -119,11 +120,11 @@ public class ChaosWorldGenHandler {
         return chunkModified;
     }
 
-    public static void generateStructures(WorldGenLevel reader, PairXZ<Integer, Integer> islandCenter, Random random) {
+    public static void generateStructures(DEWorldGen.ChaosIslandFeature feature, WorldGenLevel reader, PairXZ<Integer, Integer> islandCenter, Random random) {
         int outerRadius = 330;
 
         //Gen Chaos Cavern
-        int shardY = 80 + DEOldConfig.chaosIslandYOffset;
+        int shardY = 80 + feature.chaosIslandYOffset;
 
         int coreHeight = 10;
         int coreWidth = 20;
@@ -135,8 +136,8 @@ public class ChaosWorldGenHandler {
             int outRadius = (int) (yp * coreWidth);
             outRadius -= (outRadius * outRadius) / 100;
 
-            genCoreSlice(reader, islandCenter.x, y, islandCenter.z, inRadius, shardY, coreWidth, true, random);
-            genCoreSlice(reader, islandCenter.x, y, islandCenter.z, outRadius, shardY, coreWidth, false, random);
+            genCoreSlice(feature, reader, islandCenter.x, y, islandCenter.z, inRadius, shardY, coreWidth, true, random);
+            genCoreSlice(feature, reader, islandCenter.x, y, islandCenter.z, outRadius, shardY, coreWidth, false, random);
         }
 
         BlockPos center = new BlockPos(islandCenter.x, shardY, islandCenter.z);
@@ -176,8 +177,8 @@ public class ChaosWorldGenHandler {
 //        generateObelisks(reader, islandCenter, random);
     }
 
-    public static void genCoreSlice(WorldGenLevel world, int xi, int yi, int zi, int ringRadius, int yc, int coreRadious, boolean fillIn, Random rand) {
-        if (DEOldConfig.chaosIslandVoidMode) return;
+    public static void genCoreSlice(DEWorldGen.ChaosIslandFeature feature, WorldGenLevel world, int xi, int yi, int zi, int ringRadius, int yc, int coreRadious, boolean fillIn, Random rand) {
+        if (DEWorldGen.chaosIslandVoidMode) return;
         for (int x = xi - coreRadious; x <= xi + coreRadious; x++) {
             for (int z = zi - coreRadious; z <= zi + coreRadious; z++) {
                 double dist = Utils.getDistanceAtoB(x, yi, z, xi, yc, zi);
@@ -200,8 +201,8 @@ public class ChaosWorldGenHandler {
     }
 
 
-    public static PairXZ<Integer, Integer> getClosestChaosSpawn(ChunkPos pos) {
-        return new PairXZ<>(MathUtils.getNearestMultiple(pos.x * 16, DEOldConfig.chaosIslandSeparation), MathUtils.getNearestMultiple(pos.z * 16, DEOldConfig.chaosIslandSeparation));
+    public static PairXZ<Integer, Integer> getClosestChaosSpawn(DEWorldGen.ChaosIslandFeature feature, ChunkPos pos) {
+        return new PairXZ<>(MathUtils.getNearestMultiple(pos.x * 16, feature.chaosIslandSeparation), MathUtils.getNearestMultiple(pos.z * 16, feature.chaosIslandSeparation));
     }
 
     public static void generateObelisk(ServerLevel world, BlockPos genPos, Random rand) {
@@ -212,7 +213,7 @@ public class ChaosWorldGenHandler {
         }
 
 
-        if (DEOldConfig.chaosIslandVoidMode) return;
+        if (DEWorldGen.chaosIslandVoidMode) return;
 
         int r = 3;
         BlockPos.betweenClosedStream(genPos.offset(-r, -25, -r), genPos.offset(r, 4, r)).forEach(pos -> {
