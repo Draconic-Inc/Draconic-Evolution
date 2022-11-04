@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.blocks.reactor.tileentity;
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.math.MathHelper;
 import com.brandon3055.brandonscore.BrandonsCore;
+import com.brandon3055.brandonscore.api.TimeKeeper;
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.handlers.ProcessHandler;
 import com.brandon3055.brandonscore.lib.Vec3D;
@@ -141,6 +142,7 @@ public class TileReactorCore extends TileBCore implements MenuProvider {
             componentPositions[i] = register(new ManagedVec3I("component_position" + i, new Vec3I(0, 0, 0), DataFlags.SAVE_NBT_SYNC_TILE));
         }
 
+        shaderAnimationState.setCCSCS();
         effectHandler = DraconicEvolution.proxy.createReactorFXHandler(this);
     }
 
@@ -153,10 +155,13 @@ public class TileReactorCore extends TileBCore implements MenuProvider {
 
     @Override
     public void tick() {
-//        if (explosionProcess != null) {
+        if (explosionProcess != null) {
+            if (explosionProcess.isCalculationComplete()) {
+                explosionCountdown.set(Math.min(explosionCountdown.get(), 100));
+            }
 //            explosionProcess.isDead = true;
 //            explosionProcess = null;
-//        }
+        }
 //        reactorState.set(ReactorState.COLD);
 //        temperature.set(20);
 
@@ -168,7 +173,7 @@ public class TileReactorCore extends TileBCore implements MenuProvider {
 ////                reactorState.set(ReactorState.WARMING_UP);
 //            } else if (reactorState.get() == ReactorState.WARMING_UP && saturation.get() >= maxSaturation.get() / 3) {
 //                reactorState.set(ReactorState.RUNNING);
-//            }
+//            }e
 ////            shieldCharge.set(maxShieldCharge.get() / 2);
 ////            if (reactorState.get() == ReactorState.RUNNING || saturation.get() > maxSaturation.get() * .1) {
 ////                temperature.set(2000);
@@ -179,11 +184,6 @@ public class TileReactorCore extends TileBCore implements MenuProvider {
 
 
 
-//        reactorState.set(ReactorState.COLD);
-//        if (explosionProcess != null) {
-//            explosionProcess.isDead = true;
-//            explosionProcess = null;
-//        }
         super.tick();
         updateCoreLogic();
         frameMoveContactPoints = 0;
@@ -581,6 +581,17 @@ public class TileReactorCore extends TileBCore implements MenuProvider {
 
     @Override
     public void receivePacketFromClient(MCDataInput data, ServerPlayer client, int id) {
+        //Quick work around for the fact that due to recent changes to packet security in BCore client>server packets must go through the container for the tile the player is accessing.
+        if (id == 99) {
+            TileReactorComponent.RSMode mode = TileReactorComponent.RSMode.valueOf(data.readString());
+            BlockPos pos = data.readPos();
+            BlockEntity tile = level.getBlockEntity(pos);
+            if (tile instanceof TileReactorComponent && ((TileReactorComponent) tile).tryGetCore() == this) {
+                ((TileReactorComponent) tile).setRSMode(client, mode);
+            }
+            return;
+        }
+
         byte func = data.readByte();
         if (id == 0 && func == ID_CHARGE) {
             chargeReactor();

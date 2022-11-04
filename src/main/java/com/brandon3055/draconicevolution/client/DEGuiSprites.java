@@ -64,6 +64,7 @@ public class DEGuiSprites {
 
         // Reactor
         BCGuiSprites.register(MODID, "reactor/background");
+        BCGuiSprites.register(MODID, "reactor/pointer");
 
         // Particle
         for (int i = 0; i < 8; i++) {

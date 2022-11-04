@@ -188,11 +188,11 @@ public class CrystalFXBeam<T extends BlockEntity & IENetEffectTile> extends Crys
 
         @Override
         public void begin(BufferBuilder builder, TextureManager textureManager) {
+            RenderSystem.setShader(GameRenderer::getPositionColorTexLightmapShader);
             RenderSystem.disableCull();
             RenderSystem.depthMask(false);
             RenderSystem.enableBlend();
             RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
-            RenderSystem.setShader(GameRenderer::getPositionColorTexLightmapShader);
             if (ClientEventHandler.playerHoldingWrench) {
                 RenderSystem.setShaderTexture(0, highlightTexture);
             } else {

@@ -7,27 +7,43 @@ import codechicken.lib.render.shader.ShaderProgramBuilder;
 import codechicken.lib.render.shader.UniformType;
 import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Vector3;
+import com.brandon3055.brandonscore.api.render.GuiHelper;
 import com.brandon3055.brandonscore.client.ProcessHandlerClient;
+import com.brandon3055.brandonscore.client.render.RenderUtils;
+import com.brandon3055.brandonscore.client.utils.GuiHelperOld;
 import com.brandon3055.brandonscore.lib.DelayedExecutor;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.energy.ICrystalBinder;
+import com.brandon3055.draconicevolution.client.DEShaders;
 import com.brandon3055.draconicevolution.handlers.BinderHandler;
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager.Viewport;
 import com.mojang.blaze3d.platform.Window;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.math.Vector4f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderStateShard;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderLevelLastEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
+import org.lwjgl.opengl.GL11;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -48,21 +64,19 @@ public class ClientEventHandler {
     public static int explosionTime = 0;
     public static boolean explosionRetreating = false;
 
-    public static ShaderProgram explosionShader = ShaderProgramBuilder.builder()
-            .addShader("frag", shader -> shader
-                    .type(ShaderObject.StandardShaderType.FRAGMENT)
-                    .source(new ResourceLocation(DraconicEvolution.MODID, "shaders/explosion_overlay.frag"))
-                    .uniform("screenPos", UniformType.VEC2)
-                    .uniform("intensity", UniformType.FLOAT)
-                    .uniform("screenSize", UniformType.VEC2)
-            )
-            .build();
+    public static final RenderType explosionFlashType = RenderType.create(DraconicEvolution.MODID+":explosion_flash", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 256,
+            RenderType.CompositeState.builder()
+                    .setShaderState(new RenderStateShard.ShaderStateShard(() -> DEShaders.explosionFlashShader))
+                    .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
+                    .setCullState(RenderStateShard.NO_CULL)
+                    .createCompositeState(false)
+    );
 
     @SubscribeEvent
     public void renderGameOverlay(RenderGameOverlayEvent.Post event) {
         if (explosionPos != null && event.getType() == RenderGameOverlayEvent.ElementType.ALL) {
             mc = Minecraft.getInstance();
-            updateExplosionAnimation(mc, mc.level, event.getWindow(), mc.getFrameTime());
+            updateExplosionAnimation(mc, event.getMatrixStack(), event.getWindow(), mc.getFrameTime());
         }
     }
 
@@ -96,7 +110,6 @@ public class ClientEventHandler {
         if (event.isCanceled()) {
             return;
         }
-
         MODELVIEW.set(event.getPoseStack().last().pose());
         PROJECTION.set(event.getProjectionMatrix());
 
@@ -262,7 +275,7 @@ public class ClientEventHandler {
         explosionAnimation = 0;
         explosionTime = 0;
 
-        ProcessHandlerClient.addProcess(new DelayedExecutor(5) {
+        ProcessHandlerClient.addProcess(new DelayedExecutor(13) {
             @Override
             public void execute(Object[] args) {
                 Minecraft.getInstance().levelRenderer.allChanged();
@@ -290,55 +303,45 @@ public class ClientEventHandler {
             explosionAnimation -= 0.01;
         }
 //        explosionTime = 10;
-//        explosionAnimation = explosionTime * 0.01;
+//        explosionAnimation = explosionTime * 0.05;
     }
 
-    public static final IntBuffer VIEWPORT = IntBuffer.allocate(16 << 2);
+    private void updateExplosionAnimation(Minecraft mc, PoseStack poseStack, Window window, float partialTick) {
+        MultiBufferSource.BufferSource buffers = RenderUtils.getGuiBuffers();
 
-    private void updateExplosionAnimation(Minecraft mc, Level world, Window resolution, float partialTick) {
-//        //region TargetPoint Calculation
-//
-//        GL11.glGetIntegerv(GL11.GL_VIEWPORT, VIEWPORT);
-//        Entity entity = mc.getCameraEntity();
-//        float x = (float) (entity.xo + (entity.getX() - entity.xo) * (double) partialTick);
-//        float y = (float) (entity.yo + (entity.getY() - entity.yo) * (double) partialTick);
-//        float z = (float) (entity.zo + (entity.getZ() - entity.zo) * (double) partialTick);
-//        Vector3 targetPos = Vector3.fromBlockPosCenter(explosionPos);
-//        targetPos.subtract(x, y, z);
-//        Vector3 winPos = gluProject(targetPos, MODELVIEW, PROJECTION, VIEWPORT);
-//
-//        boolean behind = winPos.z > 1;
-//        float screenX = behind ? -1 : (float) winPos.x / resolution.getScreenWidth();
-//        float screenY = behind ? -1 : (float) winPos.y / resolution.getScreenHeight();
-//
-//        //endregion
-//
-//        if (!DEConfig.reactorShaders || explosionRetreating) {
-//            float alpha;
-//            if (explosionAnimation <= 0) {
-//                alpha = 0;
-//            } else if (explosionRetreating) {
-//                alpha = (float) explosionAnimation - (partialTick * 0.003F);
-//            } else {
-//                alpha = (float) explosionAnimation + (partialTick * 0.2F);
-//            }
-//            GuiHelperOld.drawColouredRect(0, 0, resolution.getGuiScaledWidth(), resolution.getGuiScaledHeight(), 0x00FFFFFF | (int) (alpha * 255F) << 24);
-//        } else {
-//
-//            UniformCache uniforms = explosionShader.pushCache();
-//            uniforms.glUniform2f("screenPos", screenX, screenY);
-//            uniforms.glUniform1f("intensity", (float) explosionAnimation);
-//            uniforms.glUniform2f("screenSize", resolution.getScreenWidth(), resolution.getScreenHeight());
-//
-//            explosionShader.use();
-//            explosionShader.popCache(uniforms);
-//            GuiHelperOld.drawColouredRect(0, 0, resolution.getGuiScaledWidth(), resolution.getGuiScaledHeight(), 0xFFFFFFFF);
-//            explosionShader.release();
-//        }
+        if (/*true || */explosionRetreating) {
+            float alpha;
+            if (explosionAnimation <= 0) {
+                alpha = 0;
+            } else if (explosionRetreating) {
+                alpha = (float) explosionAnimation - (partialTick * 0.01F);
+            } else {
+                alpha = (float) explosionAnimation + (partialTick * 0.05F);
+            }
+            if (alpha > 1) alpha = 1;
+            GuiHelper.drawRect(buffers, poseStack, 0, 0, window.getGuiScaledWidth(), window.getGuiScaledHeight(), 0x00FFFFFF | (int) (alpha * 255F) << 24);
+            RenderUtils.endBatch(buffers);
+
+        } else {
+            Vec3 camPos = mc.gameRenderer.getMainCamera().getPosition();
+            Vector3 targetPos = Vector3.fromBlockPosCenter(explosionPos);
+            targetPos.subtract(camPos.x, camPos.y, camPos.z);
+            Vector3 winPos = gluProject(targetPos, MODELVIEW, PROJECTION);
+
+            boolean behind = winPos.z > 1;
+            float screenX = behind ? -1 : (float) winPos.x / window.getScreenWidth();
+            float screenY = behind ? -1 : (float) winPos.y / window.getScreenHeight();
+
+            DEShaders.explosionFlashScreenPos.glUniform2f(screenX, screenY);
+            DEShaders.explosionFlashIntensity.glUniform1f((float) explosionAnimation);
+            DEShaders.explosionFlashScreenSize.glUniform2f(window.getScreenWidth(), window.getScreenHeight());
+            GuiHelperOld.drawColouredRect(buffers.getBuffer(explosionFlashType), 0, 0, window.getGuiScaledWidth(), window.getGuiScaledHeight(), 0xFFFFFFFF, 0);
+            RenderUtils.endBatch(buffers);
+        }
     }
 
     //Thanks Covers1624!
-    private static Vector3 gluProject(Vector3 obj, Matrix4 modelMatrix, Matrix4 projMatrix, IntBuffer viewport) {
+    private static Vector3 gluProject(Vector3 obj, Matrix4 modelMatrix, Matrix4 projMatrix) {
         Vector4f o = new Vector4f((float) obj.x, (float) obj.y, (float) obj.z, 1.0F);
         multMatrix(modelMatrix, o);
         multMatrix(projMatrix, o);
@@ -355,8 +358,8 @@ public class ClientEventHandler {
         Vector3 winPos = new Vector3();
         winPos.z = o.z();
 
-        winPos.x = o.x() * viewport.get(viewport.position() + 2) + viewport.get(viewport.position() + 0);
-        winPos.y = o.y() * viewport.get(viewport.position() + 3) + viewport.get(viewport.position() + 1);
+        winPos.x = o.x() * GlStateManager.Viewport.width();
+        winPos.y = o.y() * GlStateManager.Viewport.height();
         return winPos;
     }
 

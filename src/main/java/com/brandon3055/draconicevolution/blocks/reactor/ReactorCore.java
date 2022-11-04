@@ -34,9 +34,8 @@ public class ReactorCore extends BlockBCore implements EntityBlock {
 
     @Override
     public float getExplosionResistance(BlockState state, BlockGetter world, BlockPos pos, Explosion explosion) {
-        BlockEntity tile = world.getBlockEntity(pos);
-        if (tile instanceof TileReactorCore) {
-            return ((TileReactorCore) tile).reactorState.get().isShieldActive() ? 6000000.0F : super.getExplosionResistance(state, world, pos, explosion);
+        if (world.getBlockEntity(pos) instanceof TileReactorCore tile) {
+            return tile.reactorState.get().isShieldActive() ? 6000000.0F : super.getExplosionResistance(state, world, pos, explosion);
         }
 
         return super.getExplosionResistance(state, world, pos, explosion);
@@ -44,9 +43,8 @@ public class ReactorCore extends BlockBCore implements EntityBlock {
 
     @Override
     public float getDestroyProgress(BlockState state, Player player, BlockGetter world, BlockPos pos) {
-        BlockEntity tile = world.getBlockEntity(pos);
-        if (tile instanceof TileReactorCore) {
-            return ((TileReactorCore) tile).reactorState.get().isShieldActive() ? -1F : super.getDestroyProgress(state, player, world, pos);
+        if (world.getBlockEntity(pos) instanceof TileReactorCore tile) {
+            return tile.reactorState.get().isShieldActive() ? -1F : super.getDestroyProgress(state, player, world, pos);
         }
         return super.getDestroyProgress(state, player, world, pos);
     }
@@ -60,8 +58,7 @@ public class ReactorCore extends BlockBCore implements EntityBlock {
 
     @Override
     public void onBlockExploded(BlockState state, Level world, BlockPos pos, Explosion explosion) {
-        BlockEntity tile = world.getBlockEntity(pos);
-        if (tile instanceof TileReactorCore && ((TileReactorCore) tile).reactorState.get().isShieldActive()) {
+        if (world.getBlockEntity(pos) instanceof TileReactorCore tile && tile.reactorState.get().isShieldActive()) {
             return;
         }
         super.onBlockExploded(state, world, pos, explosion);

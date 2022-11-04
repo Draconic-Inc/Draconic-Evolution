@@ -170,7 +170,10 @@ public abstract class TileReactorComponent extends TileBCore {
 
     public void setRSMode(Player player, RSMode rsMode) {
         if (level.isClientSide) {
-            sendPacketToServer(output -> output.writeString(rsMode.name()), 0);
+            TileReactorCore core = tryGetCore();
+            if (core != null) {
+                core.sendPacketToServer(output -> output.writeString(rsMode.name()).writePos(getBlockPos()), 99);
+            }
         }
         else {
             this.rsMode.set(rsMode);

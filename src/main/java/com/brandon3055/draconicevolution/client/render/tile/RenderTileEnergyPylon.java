@@ -35,7 +35,7 @@ public class RenderTileEnergyPylon implements BlockEntityRenderer<TileEnergyPylo
 
     private static RenderType modelType = RenderType.entitySolid(new ResourceLocation(DraconicEvolution.MODID, "textures/block/pylon_sphere_texture.png"));
 
-    private static RenderType shelType = RenderType.create("pylon_sphere", DefaultVertexFormat.POSITION_COLOR_TEX, VertexFormat.Mode.QUADS, 256, RenderType.CompositeState.builder()
+    private static RenderType shellType = RenderType.create("pylon_sphere", DefaultVertexFormat.POSITION_COLOR_TEX, VertexFormat.Mode.QUADS, 256, RenderType.CompositeState.builder()
             .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(DraconicEvolution.MODID, "textures/block/pylon_sphere_texture.png"), false, false))
             .setShaderState(new RenderStateShard.ShaderStateShard(() -> BCShaders.posColourTexAlpha0))
             .setTransparencyState(RenderStateShard.LIGHTNING_TRANSPARENCY)
@@ -66,13 +66,21 @@ public class RenderTileEnergyPylon implements BlockEntityRenderer<TileEnergyPylo
             ccrs.baseColour = te.colour.get().rgba();
         }
 
+        shellType = RenderType.create("pylon_sphere", DefaultVertexFormat.POSITION_COLOR_TEX, VertexFormat.Mode.QUADS, 256, RenderType.CompositeState.builder()
+                .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(DraconicEvolution.MODID, "textures/block/pylon_sphere_texture.png"), false, false))
+                .setShaderState(new RenderStateShard.ShaderStateShard(() -> BCShaders.posColourTexAlpha0))
+                .setTransparencyState(RenderStateShard.LIGHTNING_TRANSPARENCY)
+                .setWriteMaskState(RenderStateShard.COLOR_WRITE)
+                .createCompositeState(false)
+        );
+
         ccrs.bind(modelType, getter);
         mat.translate(te.direction.get().getNormal());
         mat.translate(0.5, 0.5, 0.5);
         mat.rotate(((ClientEventHandler.elapsedTicks + partialTicks) * 2F) * MathHelper.torad, new Vector3(0, 1, 0.5).normalize());
         model.render(ccrs, mat);
 
-        float f = ((ClientEventHandler.elapsedTicks + partialTicks) % 30F) / 30F;
+        float f = MathHelper.clip(((ClientEventHandler.elapsedTicks + partialTicks) % 35F) / 30F, 0, 1);
         if (te.ioMode.get().canExtract()) {
             f = 1F - f;
         }
@@ -82,7 +90,7 @@ public class RenderTileEnergyPylon implements BlockEntityRenderer<TileEnergyPylo
             ccrs.baseColour = Colour.packRGBA(te.colour.get().rF() * (1F - f), te.colour.get().gF(), te.colour.get().bF(), 1F - (f * f));
         }
 
-        ccrs.bind(shelType, getter);
+        ccrs.bind(shellType, getter);
         mat.scale(1 + f);
         model.render(ccrs, mat);
     }

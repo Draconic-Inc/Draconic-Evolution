@@ -514,7 +514,7 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
                     .stream()
                     .map(e -> (CompoundTag) e)
                     .map(e -> PropertyContainer.deserialize(null, e))
-                    .collect(Collectors.toList());
+                    .toList();
             containers.stream()
                     .filter(e -> !e.boundKey.isEmpty() && e.globalKeyBind && e.isPreset)
                     .forEach(e -> keyBindCache.add(e));
@@ -587,7 +587,7 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
                 float offset = (tick / 10F) * 8;
                 RenderSystem.colorMask(true, true, true, false);
                 RenderSystem.disableDepthTest();
-                MultiBufferSource source = RenderUtils.getTypeBuffer();
+                MultiBufferSource source = RenderUtils.getGuiBuffers();
                 PoseStack poseStack = new PoseStack();
                 poseStack.translate(0, 0, 300);
                 GuiHelper.drawGradientRect(source, poseStack, x + offset, y + offset, x + 16 - offset, y + 16 - offset, 0x8000FFFF, 0x8000FFFF);

@@ -22,12 +22,15 @@ import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.server.level.ThreadedLevelLightEngine;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.world.level.lighting.LevelLightEngine;
 import net.minecraft.world.phys.Vec3;
 
 public class ClientPacketHandler implements ICustomPacketHandler.IClientPacketHandler {
@@ -71,15 +74,17 @@ public class ClientPacketHandler implements ICustomPacketHandler.IClientPacketHa
             case DraconicNetwork.C_DISLOCATOR_TELEPORTED:
                 handleDislocatorTeleported(mc);
                 break;
+            case DraconicNetwork.C_CHUNK_RELIGHT:
+                handleChunkRelight(mc, packet.readInt(), packet.readInt());
+                break;
         }
     }
-
 
     public static void handleExplosionEffect(Minecraft mc, BlockPos pos, int radius, boolean reload) {
         if (reload) {
             mc.levelRenderer.allChanged();
         } else {
-            ExplosionFX explosionFX = new ExplosionFX((ClientLevel) BrandonsCore.proxy.getClientWorld(), Vec3D.getCenter(pos), radius);
+            ExplosionFX explosionFX = new ExplosionFX((ClientLevel) BrandonsCore.proxy.getClientWorld(), Vector3.fromBlockPosCenter(pos), radius);
             mc.particleEngine.add(explosionFX);
         }
     }
@@ -209,6 +214,15 @@ public class ClientPacketHandler implements ICustomPacketHandler.IClientPacketHa
             if (tile instanceof TilePortal) {
                 ((TilePortal)tile).clientArrived(player);
             }
+        }
+    }
+
+    private void handleChunkRelight(Minecraft mc, int chunkX, int chunkZ) {
+        if (mc.level == null) return;
+        LevelChunk chunk = mc.level.getChunk(chunkX, chunkZ);
+        if (chunk != null) {
+//            LevelLightEngine lightManager = mc.level.getLightEngine();
+//            lightManager.lightChunk(chunk, false);
         }
     }
 }

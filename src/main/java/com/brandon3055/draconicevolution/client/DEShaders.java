@@ -84,6 +84,25 @@ public class DEShaders {
     public static CCUniform energyCoreFrameColour;
     public static CCUniform energyCoreRotTriColour;
 
+    public static CCShaderInstance reactorBeamShader;
+    public static CCUniform reactorBeamTime;
+    public static CCUniform reactorBeamFade;
+    public static CCUniform reactorBeamPower;
+    public static CCUniform reactorBeamStartup;
+    public static CCUniform reactorBeamType;
+
+    public static CCShaderInstance explosionFlashShader;
+    public static CCUniform explosionFlashScreenPos;
+    public static CCUniform explosionFlashScreenSize;
+    public static CCUniform explosionFlashIntensity;
+
+    public static CCShaderInstance explosionShader;
+    public static CCUniform explosionTime;
+    public static CCUniform explosionScale;
+    public static CCUniform explosionAlpha;
+    public static CCUniform explosionType;
+
+
     public static void init() {
         LOCK.lock();
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -165,6 +184,31 @@ public class DEShaders {
             energyCoreShader.onApply(() -> {
                 energyCoreTime.glUniform1f((TimeKeeper.getClientTick() + Minecraft.getInstance().getFrameTime()) / 20F);
             });
+        });
+
+        event.registerShader(CCShaderInstance.create(event.getResourceManager(), new ResourceLocation(MODID, "reactor_beam"), DefaultVertexFormat.POSITION_COLOR_TEX), e -> {
+            reactorBeamShader = (CCShaderInstance) e;
+            reactorBeamTime = reactorBeamShader.getUniform("Time");
+            reactorBeamFade = reactorBeamShader.getUniform("Fade");
+            reactorBeamPower = reactorBeamShader.getUniform("Power");
+            reactorBeamStartup = reactorBeamShader.getUniform("Startup");
+            reactorBeamType = reactorBeamShader.getUniform("Type");
+            reactorBeamShader.onApply(() -> reactorBeamTime.glUniform1f((TimeKeeper.getClientTick() + Minecraft.getInstance().getFrameTime()) * 0.02F));
+        });
+
+        event.registerShader(CCShaderInstance.create(event.getResourceManager(), new ResourceLocation(MODID, "explosion_flash"), DefaultVertexFormat.POSITION_COLOR), e -> {
+            explosionFlashShader = (CCShaderInstance) e;
+            explosionFlashScreenPos = explosionFlashShader.getUniform("ScreenPos");
+            explosionFlashScreenSize = explosionFlashShader.getUniform("ScreenSize");
+            explosionFlashIntensity = explosionFlashShader.getUniform("Intensity");
+        });
+
+        event.registerShader(CCShaderInstance.create(event.getResourceManager(), new ResourceLocation(MODID, "explosion"), DefaultVertexFormat.POSITION_TEX), e -> {
+            explosionShader = (CCShaderInstance) e;
+            explosionTime = explosionShader.getUniform("Time");
+            explosionScale = explosionShader.getUniform("Scale");
+            explosionAlpha = explosionShader.getUniform("Alpha");
+            explosionType = explosionShader.getUniform("Type");
         });
     }
 

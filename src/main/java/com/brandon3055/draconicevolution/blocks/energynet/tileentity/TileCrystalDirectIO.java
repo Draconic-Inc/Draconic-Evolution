@@ -39,6 +39,7 @@ public class TileCrystalDirectIO extends TileCrystalBase   {
 
     public TileCrystalDirectIO(BlockPos pos, BlockState state) {
         super(DEContent.tile_crystal_io, pos, state);
+        outputMode.addValueListener(newVal -> opStorage.setIOMode(!newVal));
     }
 
     public TileCrystalDirectIO(TechLevel techLevel, BlockPos pos, BlockState state) {
@@ -116,7 +117,7 @@ public class TileCrystalDirectIO extends TileCrystalBase   {
     public void updateRotation(Direction newDirection) {
         facing.set(newDirection);
         capManager.remove(CapabilityOP.OP);
-        opStorage.setIOMode(!outputMode.get());
+//        opStorage.setIOMode(!outputMode.get());
         capManager.setSide(CapabilityOP.OP, opStorage, newDirection);
     }
 

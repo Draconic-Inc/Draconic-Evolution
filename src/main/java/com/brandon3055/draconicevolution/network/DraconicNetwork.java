@@ -18,6 +18,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraftforge.network.event.EventNetworkChannel;
 
 import java.util.UUID;
@@ -57,6 +58,7 @@ public class DraconicNetwork {
     public static final int C_GUARDIAN_PACKET =         9;
     public static final int C_BOSS_SHIELD_INFO =        10;
     public static final int C_DISLOCATOR_TELEPORTED =   11;
+    public static final int C_CHUNK_RELIGHT =           12;
 
     //@formatter:on
 
@@ -189,6 +191,13 @@ public class DraconicNetwork {
 
     public static void sendPlaceItem() {
         new PacketCustom(CHANNEL, S_PLACE_ITEM).sendToServer();
+    }
+
+    public static void sendChunkRelight(LevelChunk chunk) {
+        new PacketCustom(CHANNEL, C_CHUNK_RELIGHT)
+                .writeInt(chunk.getPos().x)
+                .writeInt(chunk.getPos().z)
+                .sendToChunk(chunk.getLevel(), chunk.getPos());
     }
 
     public static void init() {

@@ -1,5 +1,7 @@
 package com.brandon3055.draconicevolution.client.gui;
 
+import com.brandon3055.brandonscore.api.TimeKeeper;
+import com.brandon3055.brandonscore.client.BCGuiSprites;
 import com.brandon3055.brandonscore.client.gui.GuiToolkit;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElementManager;
@@ -7,6 +9,7 @@ import com.brandon3055.brandonscore.client.gui.modulargui.ModularGuiContainer;
 import com.brandon3055.brandonscore.client.gui.modulargui.baseelements.GuiButton;
 import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiBorderedRect;
 import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiLabel;
+import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiSlideIndicator;
 import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiTexture;
 import com.brandon3055.brandonscore.client.gui.modulargui.lib.GuiAlign;
 import com.brandon3055.brandonscore.utils.InfoHelper;
@@ -148,27 +151,19 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> {
 
         //region Slots, Misc labels and gauges
 
+        toolkit.createPlayerSlots(background, false)
+                .setXPos(background.xPos() + 12)
+                .setMaxYPos(background.maxYPos() - 8, false)
+                .setEnabledCallback(() -> tile.reactorState.get() == TileReactorCore.ReactorState.COLD);
 
+        toolkit.createSlots(background, 3, 1, 0)
+                .setPos(leftPos + 182, topPos + 148)
+                .setEnabledCallback(() -> tile.reactorState.get() == TileReactorCore.ReactorState.COLD);
 
-        background.addChild(new GuiElement() {
-            @Override
-            public void renderElement(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
-//                if (tile.reactorState.get() == TileReactorCore.ReactorState.COLD) {
-//                    RenderSystem.color4f(1F, 1F, 1F, 1F);
-//                    Material mat = BCSprites.getThemed("slot");
-//                    bindTexture(mat.atlasLocation());
-//                    MultiBufferSource.BufferSource getter = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
-//                    GuiHelperOld.drawPlayerSlots(GuiReactor.this, leftPos + 43 - 31, topPos + 139, false);
-//                    for (int x = 0; x < 3; x++) {
-//                        drawSprite(getter.getBuffer(mat.renderType(BCSprites::makeType)), leftPos + 182 + (x * 18), topPos + 148, 18, 18, mat.sprite());
-//                    }
-//                    for (int x = 0; x < 3; x++) {
-//                        drawSprite(getter.getBuffer(mat.renderType(BCSprites::makeType)), leftPos + 182 + (x * 18), topPos + 179, 18, 18, mat.sprite());
-//                    }
-//                    getter.endBatch();
-//                }
-            }
-        });
+        toolkit.createSlots(background, 3, 1, 0)
+                .setPos(leftPos + 182, topPos + 179)
+                .setEnabledCallback(() -> tile.reactorState.get() == TileReactorCore.ReactorState.COLD);
+
 
         background.addChild(new GuiLabel(leftPos, topPos + 2, imageWidth, 12, I18n.get("gui.draconicevolution.reactor.title"))
                 .setAlignment(GuiAlign.CENTER)
@@ -196,34 +191,41 @@ public class GuiReactor extends ModularGuiContainer<ContainerReactor> {
                     return ChatFormatting.GOLD + I18n.get("gui.draconicevolution.reactor.status") + ": " + s;
                 }).setAlignment(GuiAlign.LEFT));
 
+        background.addChild(new GuiSlideIndicator(() -> tile.temperature.get() / TileReactorCore.MAX_TEMPERATURE)
+                .setPos(leftPos + 10, topPos + 5)
+                .setSize(16, 112)
+                .setSlideElement(new GuiTexture(16, 8, DEGuiSprites.get("reactor/pointer")))
+                .setOffsets(-2, -1)
+                .setHoverText(element -> getTempStats())
+                .setHoverTextDelay(5)
+        );
 
-//        background.addChild(new GuiTexturedPointer(leftPos + 11, topPos + 5, 14, 112, 0, 222, 5, ResourceHelperDE.getResource(DETextures.GUI_REACTOR)) {
-//            @Override
-//            public double getPos() {
-//                return MathHelper.clip(tile.temperature.get() / TileReactorCore.MAX_TEMPERATURE, 0, 1);
-//            }
-//        }.setHoverText(element -> getTempStats()).setHoverTextDelay(5));
-//
-//        background.addChild(new GuiTexturedPointer(leftPos + 35, topPos + 5, 14, 112, 0, 222, 5, ResourceHelperDE.getResource(DETextures.GUI_REACTOR)) {
-//            @Override
-//            public double getPos() {
-//                return MathHelper.clip(tile.shieldCharge.get() / Math.max(tile.maxShieldCharge.get(), 1), 0, 1);
-//            }
-//        }.setHoverText(element -> getShieldStats()).setHoverTextDelay(5));
-//
-//        background.addChild(new GuiTexturedPointer(leftPos + 199, topPos + 5, 14, 112, 0, 222, 5, ResourceHelperDE.getResource(DETextures.GUI_REACTOR)) {
-//            @Override
-//            public double getPos() {
-//                return MathHelper.clip(tile.saturation.get() / (double) Math.max(tile.maxSaturation.get(), 1), 0, 1);
-//            }
-//        }.setHoverText(element -> getSaturationStats()).setHoverTextDelay(5));
-//
-//        background.addChild(new GuiTexturedPointer(leftPos + 223, topPos + 5, 14, 112, 0, 222, 5, ResourceHelperDE.getResource(DETextures.GUI_REACTOR)) {
-//            @Override
-//            public double getPos() {
-//                return MathHelper.clip(tile.convertedFuel.get() / Math.max(tile.reactableFuel.get() + tile.convertedFuel.get(), 1), 0, 1);
-//            }
-//        }.setHoverText(element -> getFuelStats()).setHoverTextDelay(5));
+        background.addChild(new GuiSlideIndicator(() -> tile.shieldCharge.get() / Math.max(tile.maxShieldCharge.get(), 1))
+                .setPos(leftPos + 34, topPos + 5)
+                .setSize(16, 112)
+                .setSlideElement(new GuiTexture(16, 8, DEGuiSprites.get("reactor/pointer")))
+                .setOffsets(-2, -1)
+                .setHoverText(element -> getShieldStats())
+                .setHoverTextDelay(5)
+        );
+
+        background.addChild(new GuiSlideIndicator(() -> tile.saturation.get() / (double) Math.max(tile.maxSaturation.get(), 1))
+                .setPos(leftPos + 198, topPos + 5)
+                .setSize(16, 112)
+                .setSlideElement(new GuiTexture(16, 8, DEGuiSprites.get("reactor/pointer")))
+                .setOffsets(-2, -1)
+                .setHoverText(element -> getSaturationStats())
+                .setHoverTextDelay(5)
+        );
+
+        background.addChild(new GuiSlideIndicator(() -> tile.convertedFuel.get() / Math.max(tile.reactableFuel.get() + tile.convertedFuel.get(), 1))
+                .setPos(leftPos + 222, topPos + 5)
+                .setSize(16, 112)
+                .setSlideElement(new GuiTexture(16, 8, DEGuiSprites.get("reactor/pointer")))
+                .setOffsets(-2, -1)
+                .setHoverText(element -> getFuelStats())
+                .setHoverTextDelay(5)
+        );
 
         //endregion
 

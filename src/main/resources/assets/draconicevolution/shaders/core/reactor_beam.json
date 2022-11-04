@@ -1,0 +1,25 @@
+{
+    "blend": {
+        "func": "add",
+        "srcrgb": "srcalpha",
+        "dstrgb": "1-srcalpha"
+    },
+    "vertex": "draconicevolution:reactor_beam",
+    "fragment": "draconicevolution:reactor_beam",
+    "attributes": [
+        "Color",
+        "Position",
+        "UV0"
+    ],
+    "samplers": [
+    ],
+    "uniforms": [
+        { "name": "ModelViewMat", "type": "matrix4x4", "count": 16, "values": [ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 ] },
+        { "name": "ProjMat", "type": "matrix4x4", "count": 16, "values": [ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 ] },
+        { "name": "Time", "type": "float", "count": 1, "values": [ 0.0 ] },
+        { "name": "Fade", "type": "float", "count": 1, "values": [ 0.0 ] },
+        { "name": "Power", "type": "float", "count": 1, "values": [ 0.0 ] },
+        { "name": "Startup", "type": "float", "count": 1, "values": [ 0.0 ] },
+        { "name": "Type", "type": "int", "count": 1, "values": [ 0.0 ] }
+    ]
+}
