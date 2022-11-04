@@ -74,8 +74,8 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
     private final DraconicGuardianPartEntity dragonPartTail3;
     private final DraconicGuardianPartEntity dragonPartRightWing;
     private final DraconicGuardianPartEntity dragonPartLeftWing;
-    public float prevAnimTime;
-    public float animTime;
+    public float oFlapTime;
+    public float flapTime;
     public boolean slowed;
     public int deathTicks;
     public float yRotA;
@@ -170,7 +170,7 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
         }
     }
 
-    public double[] getMovementOffsets(int index, float partialTicks) {
+    public double[] getLatencyPos(int index, float partialTicks) {
         if (this.isDeadOrDying()) {
             partialTicks = 0.0F;
         }
@@ -196,8 +196,8 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
         if (this.level.isClientSide) {
             this.setHealth(this.getHealth());
             if (!this.isSilent()) {
-                float f = Mth.cos(this.animTime * ((float) Math.PI * 2F));
-                float f1 = Mth.cos(this.prevAnimTime * ((float) Math.PI * 2F));
+                float f = Mth.cos(this.flapTime * ((float) Math.PI * 2F));
+                float f1 = Mth.cos(this.oFlapTime * ((float) Math.PI * 2F));
                 if (f1 <= -0.3F && f >= -0.3F) {
                     this.level.playLocalSound(this.getX(), this.getY(), this.getZ(), SoundEvents.ENDER_DRAGON_FLAP, this.getSoundSource(), 5.0F, 0.8F + this.random.nextFloat() * 0.3F, false);
                 }
@@ -211,7 +211,7 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
 //            updateShieldState();
         }
 
-        this.prevAnimTime = this.animTime;
+        this.oFlapTime = this.flapTime;
         if (this.isDeadOrDying()) {
             float randX = (this.random.nextFloat() - 0.5F) * 8.0F;
             float randY = (this.random.nextFloat() - 0.5F) * 4.0F;
@@ -223,16 +223,16 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
             float f = 0.2F / ((float) vec3.horizontalDistance() * 10.0F + 1.0F);
             f = f * (float) Math.pow(2.0D, vec3.y);
             if (this.phaseManager.getCurrentPhase().getIsStationary()) {
-                this.animTime += 0.1F;
+                this.flapTime += 0.1F;
             } else if (this.slowed) {
-                this.animTime += f * 0.5F;
+                this.flapTime += f * 0.5F;
             } else {
-                this.animTime += f;
+                this.flapTime += f;
             }
 
             this.setYRot(Mth.wrapDegrees(this.getYRot()));
             if (this.isNoAi()) {
-                this.animTime = 0.5F;
+                this.flapTime = 0.5F;
             } else {
                 if (this.ringBufferIndex < 0) {
                     for (int i = 0; i < this.ringBuffer.length; ++i) {
@@ -327,7 +327,7 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
                     avector3d[j] = new Vec3(this.dragonParts[j].getX(), this.dragonParts[j].getY(), this.dragonParts[j].getZ());
                 }
 
-                float f15 = (float) (this.getMovementOffsets(5, 1.0F)[1] - this.getMovementOffsets(10, 1.0F)[1]) * 10.0F * ((float) Math.PI / 180F);
+                float f15 = (float) (this.getLatencyPos(5, 1.0F)[1] - this.getLatencyPos(10, 1.0F)[1]) * 10.0F * ((float) Math.PI / 180F);
                 float f16 = Mth.cos(f15);
                 float f2 = Mth.sin(f15);
                 float f17 = this.getYRot() * ((float) Math.PI / 180F);
@@ -348,7 +348,7 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
                 float f5 = this.getHeadAndNeckYOffset();
                 this.setPartPosition(this.dragonPartHead, f4 * 6.5F * f16, f5 + f2 * 6.5F, -f19 * 6.5F * f16);
                 this.setPartPosition(this.dragonPartNeck, f4 * 5.5F * f16, f5 + f2 * 5.5F, -f19 * 5.5F * f16);
-                double[] adouble = this.getMovementOffsets(5, 1.0F);
+                double[] adouble = this.getLatencyPos(5, 1.0F);
 
                 for (int k = 0; k < 3; ++k) {
                     DraconicGuardianPartEntity enderdragonpartentity = null;
@@ -364,7 +364,7 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
                         enderdragonpartentity = this.dragonPartTail3;
                     }
 
-                    double[] adouble1 = this.getMovementOffsets(12 + k * 2, 1.0F);
+                    double[] adouble1 = this.getLatencyPos(12 + k * 2, 1.0F);
                     float f7 = this.getYRot() * ((float) Math.PI / 180F) + this.simplifyAngle(adouble1[0] - adouble[0]) * ((float) Math.PI / 180F);
                     float f20 = Mth.sin(f7);
                     float f21 = Mth.cos(f7);
@@ -401,8 +401,8 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
         if (this.phaseManager.getCurrentPhase().getIsStationary()) {
             return -1.0F;
         } else {
-            double[] adouble = this.getMovementOffsets(5, 1.0F);
-            double[] adouble1 = this.getMovementOffsets(0, 1.0F);
+            double[] adouble = this.getLatencyPos(5, 1.0F);
+            double[] adouble1 = this.getLatencyPos(0, 1.0F);
             return (float) (adouble[1] - adouble1[1]);
         }
     }

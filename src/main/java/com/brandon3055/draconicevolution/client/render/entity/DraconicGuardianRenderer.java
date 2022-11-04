@@ -4,8 +4,10 @@ import codechicken.lib.render.shader.ShaderObject;
 import codechicken.lib.render.shader.ShaderProgram;
 import codechicken.lib.render.shader.ShaderProgramBuilder;
 import codechicken.lib.render.shader.UniformType;
+import com.brandon3055.brandonscore.api.TimeKeeper;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.client.DEShaders;
 import com.brandon3055.draconicevolution.entity.guardian.DraconicGuardianEntity;
 import com.brandon3055.draconicevolution.entity.guardian.control.ChargeUpPhase;
 import com.brandon3055.draconicevolution.entity.guardian.control.IPhase;
@@ -17,7 +19,9 @@ import com.mojang.math.Matrix3f;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
 import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
@@ -44,116 +48,98 @@ public class DraconicGuardianRenderer extends EntityRenderer<DraconicGuardianEnt
     private static final RenderType dragonDeathType = RenderType.entityDecal(GUARDIAN_TEXTURE);
     private static final RenderType eyesType = RenderType.eyes(EYES_TEXTURE);
     private static final RenderType beamType = RenderType.entitySmoothCutout(ENDERCRYSTAL_BEAM_TEXTURES);
-    private static RenderType beamType2 = RenderType.create("beam_type_2", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder()
+    private static RenderType BEAM_TYPE2 = RenderType.create("beam_type_2", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder()
+            .setShaderState(new RenderStateShard.ShaderStateShard(GameRenderer::getNewEntityShader))
             .setTextureState(new RenderStateShard.TextureStateShard(ENDERCRYSTAL_BEAM_TEXTURES, false, false))
             .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
             .setCullState(RenderStateShard.NO_CULL)
-//            .setTexturingState(new RenderStateShard.TexturingStateShard("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
             .createCompositeState(false));
 
-    public static final RenderType shieldType = RenderType.create("shield_type", DefaultVertexFormat.POSITION_COLOR_TEX, VertexFormat.Mode.QUADS, 256, RenderType.CompositeState.builder()
+    public static RenderType SHIELD_TYPE = RenderType.create(DraconicEvolution.MODID + ":guardian_shield", DefaultVertexFormat.POSITION_TEX, VertexFormat.Mode.QUADS, 256, RenderType.CompositeState.builder()
+            .setShaderState(new RenderStateShard.ShaderStateShard(() -> DEShaders.armorShieldShader))
             .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
-//            .setTexturingState(new RenderStateShard.TexturingStateShard("lighting", RenderSystem::disableLighting, SneakyUtils.none()))
-//            .setDiffuseLightingState(RenderStateShard.DIFFUSE_LIGHTING)
+            .setLightmapState(RenderStateShard.LIGHTMAP)
             .setCullState(RenderStateShard.NO_CULL)
-//            .setAlphaState(RenderStateShard.DEFAULT_ALPHA)
             .setDepthTestState(RenderStateShard.EQUAL_DEPTH_TEST)
             .createCompositeState(false));
 
-    public static RenderType beamShaderType = RenderType.create("beam_shader_type", DefaultVertexFormat.BLOCK, VertexFormat.Mode.QUADS, 256, RenderType.CompositeState.builder()
+    public static RenderType BEAM_TYPE = RenderType.create(DraconicEvolution.MODID + ":guardian_beam", DefaultVertexFormat.BLOCK, VertexFormat.Mode.QUADS, 256, RenderType.CompositeState.builder()
+            .setShaderState(new RenderStateShard.ShaderStateShard(GameRenderer::getBlockShader))
             .setTextureState(new RenderStateShard.TextureStateShard(ENDERCRYSTAL_BEAM_TEXTURES, true, false))
             .setLightmapState(RenderStateShard.LIGHTMAP)
             .setOverlayState(RenderStateShard.OVERLAY)
             .createCompositeState(false)
     );
 
-
-    public static ShaderProgram shieldShader = ShaderProgramBuilder.builder()
-            .addShader("vert", shader -> shader
-                    .type(ShaderObject.StandardShaderType.VERTEX)
-                    .source(new ResourceLocation(DraconicEvolution.MODID, "shaders/guardian_shield.vert"))
-            )
-            .addShader("frag", shader -> shader
-                    .type(ShaderObject.StandardShaderType.FRAGMENT)
-                    .source(new ResourceLocation(DraconicEvolution.MODID, "shaders/guardian_shield.frag"))
-                    .uniform("time", UniformType.FLOAT)
-                    .uniform("baseColour", UniformType.VEC4)
-                    .uniform("activation", UniformType.FLOAT)
-
-            )
-//            .whenUsed(cache -> {
-//                cache.glUniform1f("time", (BCClientEventHandler.elapsedTicks + Minecraft.getInstance().getFrameTime()) / 20);
-//                cache.glUniform1f("activation", 1F);
-//            })
-            .build();
-
     private static final float sqrt3div2 = (float) (Math.sqrt(3.0D) / 2.0D);
-    private final DraconicGuardianRenderer.EnderDragonModel model = new DraconicGuardianRenderer.EnderDragonModel();
+    private final DraconicGuardianRenderer.DragonModel model;
 
 
     public DraconicGuardianRenderer(EntityRendererProvider.Context context) {
         super(context);
         this.shadowRadius = 0.5F;
+        this.model = new DraconicGuardianRenderer.DragonModel(context.bakeLayer(ModelLayers.ENDER_DRAGON));
     }
 
     @Override
-    public void render(DraconicGuardianEntity guardian, float entityYaw, float partialTicks, PoseStack mStack, MultiBufferSource getter, int packedLight) {
-        mStack.pushPose();
-        float f = (float) guardian.getMovementOffsets(7, partialTicks)[0];
-        float f1 = (float) (guardian.getMovementOffsets(5, partialTicks)[1] - guardian.getMovementOffsets(10, partialTicks)[1]);
-        mStack.mulPose(Vector3f.YP.rotationDegrees(-f));
-        mStack.mulPose(Vector3f.XP.rotationDegrees(f1 * 10.0F));
-        mStack.translate(0.0D, 0.0D, 1.0D);
-        mStack.scale(-1.0F, -1.0F, 1.0F);
-        mStack.translate(0.0D, -1.501F, 0.0D);
+    public void render(DraconicGuardianEntity guardian, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource getter, int packedLight) {
+        poseStack.pushPose();
+        float f = (float) guardian.getLatencyPos(7, partialTicks)[0];
+        float f1 = (float) (guardian.getLatencyPos(5, partialTicks)[1] - guardian.getLatencyPos(10, partialTicks)[1]);
+        poseStack.mulPose(Vector3f.YP.rotationDegrees(-f));
+        poseStack.mulPose(Vector3f.XP.rotationDegrees(f1 * 10.0F));
+        poseStack.translate(0.0D, 0.0D, 1.0D);
+        poseStack.scale(-1.0F, -1.0F, 1.0F);
+        poseStack.translate(0.0D, -1.501F, 0.0D);
         boolean flag = guardian.hurtTime > 0;
         this.model.prepareMobModel(guardian, 0.0F, 0.0F, partialTicks);
 
         if (guardian.deathTicks > 0) {
             float progress = (float) guardian.deathTicks / 200.0F;
-//            VertexConsumer builder = getter.getBuffer(RenderType.dragonExplosionAlpha(DRAGON_EXPLODING_TEXTURES, progress));
-//            this.model.renderToBuffer(mStack, builder, packedLight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
-//            builder = getter.getBuffer(dragonDeathType);
-//            this.model.renderToBuffer(mStack, builder, packedLight, OverlayTexture.pack(0.0F, flag), 1.0F, 1.0F, 1.0F, 1.0F);
+            VertexConsumer builder = getter.getBuffer(RenderType.dragonExplosionAlpha(DRAGON_EXPLODING_TEXTURES));
+            this.model.renderToBuffer(poseStack, builder, packedLight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, progress);
+            builder = getter.getBuffer(dragonDeathType);
+            this.model.renderToBuffer(poseStack, builder, packedLight, OverlayTexture.pack(0.0F, flag), 1.0F, 1.0F, 1.0F, 1.0F);
         } else {
             VertexConsumer builder = getter.getBuffer(dragonCutoutType);
-            this.model.renderToBuffer(mStack, builder, packedLight, OverlayTexture.pack(0.0F, flag), 1.0F, 1.0F, 1.0F, 1.0F);
+            this.model.renderToBuffer(poseStack, builder, packedLight, OverlayTexture.pack(0.0F, flag), 1.0F, 1.0F, 1.0F, 1.0F);
         }
         VertexConsumer builder;
 
         boolean isImmune = guardian.getPhaseManager().getCurrentPhase().isInvulnerable();
         float shieldState = guardian.getEntityData().get(DraconicGuardianEntity.SHIELD_POWER) / (float) DEConfig.guardianShield;
         if (shieldState > 0 || isImmune) {
-//            UniformCache uniforms = shieldShader.pushCache();
-//            if (isImmune) {
-//                uniforms.glUniform4f("baseColour", 0F, 1F, 1F, 2);
-//            } else {
-//                uniforms.glUniform4f("baseColour", 1F, 0F, 0F, 1.5F * shieldState);
-//            }
-//            builder = getter.getBuffer(new ShaderRenderType(shieldType, shieldShader, uniforms));
-//            this.model.renderToBuffer(mStack, builder, packedLight, OverlayTexture.pack(0.0F, flag), 1.0F, 1.0F, 1.0F, 1.0F);
+            if (isImmune) {
+                DEShaders.armorShieldColour.glUniform4f(0F, 1F, 1F, 2);
+            } else {
+                DEShaders.armorShieldColour.glUniform4f(1F, 0F, 0F, 1.5F * shieldState);
+            }
+            DEShaders.armorShieldActivation.glUniform1f(1F);
+
+            builder = getter.getBuffer(SHIELD_TYPE);
+            this.model.renderToBuffer(poseStack, builder, packedLight, OverlayTexture.pack(0.0F, flag), 1.0F, 1.0F, 1.0F, 1.0F);
         }
 
         builder = getter.getBuffer(eyesType);
-        this.model.renderToBuffer(mStack, builder, packedLight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+        this.model.renderToBuffer(poseStack, builder, packedLight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
         if (guardian.deathTicks > 0) {
             float f5 = ((float) guardian.deathTicks + partialTicks) / 200.0F;
             float f7 = Math.min(f5 > 0.8F ? (f5 - 0.8F) / 0.2F : 0.0F, 1.0F);
             Random random = new Random(432L);
             builder = getter.getBuffer(RenderType.lightning());
-            mStack.pushPose();
-            mStack.translate(0.0D, -1.0D, -2.0D);
+            poseStack.pushPose();
+            poseStack.translate(0.0D, -1.0D, -2.0D);
 
             for (int i = 0; (float) i < (f5 + f5 * f5) / 2.0F * 60.0F; ++i) {
-                mStack.mulPose(Vector3f.XP.rotationDegrees(random.nextFloat() * 360.0F));
-                mStack.mulPose(Vector3f.YP.rotationDegrees(random.nextFloat() * 360.0F));
-                mStack.mulPose(Vector3f.ZP.rotationDegrees(random.nextFloat() * 360.0F));
-                mStack.mulPose(Vector3f.XP.rotationDegrees(random.nextFloat() * 360.0F));
-                mStack.mulPose(Vector3f.YP.rotationDegrees(random.nextFloat() * 360.0F));
-                mStack.mulPose(Vector3f.ZP.rotationDegrees(random.nextFloat() * 360.0F + f5 * 90.0F));
+                poseStack.mulPose(Vector3f.XP.rotationDegrees(random.nextFloat() * 360.0F));
+                poseStack.mulPose(Vector3f.YP.rotationDegrees(random.nextFloat() * 360.0F));
+                poseStack.mulPose(Vector3f.ZP.rotationDegrees(random.nextFloat() * 360.0F));
+                poseStack.mulPose(Vector3f.XP.rotationDegrees(random.nextFloat() * 360.0F));
+                poseStack.mulPose(Vector3f.YP.rotationDegrees(random.nextFloat() * 360.0F));
+                poseStack.mulPose(Vector3f.ZP.rotationDegrees(random.nextFloat() * 360.0F + f5 * 90.0F));
                 float f3 = random.nextFloat() * 20.0F + 5.0F + f7 * 10.0F;
                 float f4 = random.nextFloat() * 2.0F + 1.0F + f7 * 2.0F;
-                Matrix4f matrix4f = mStack.last().pose();
+                Matrix4f matrix4f = poseStack.last().pose();
                 int j = (int) (255.0F * (1.0F - f7));
                 deathAnimA(builder, matrix4f, j);
                 deathAnimB(builder, matrix4f, f3, f4);
@@ -166,17 +152,17 @@ public class DraconicGuardianRenderer extends EntityRenderer<DraconicGuardianEnt
                 deathAnimB(builder, matrix4f, f3, f4);
             }
 
-            mStack.popPose();
+            poseStack.popPose();
         }
 
-        mStack.popPose();
+        poseStack.popPose();
         if (guardian.closestGuardianCrystal != null) {
-            mStack.pushPose();
+            poseStack.pushPose();
             float relX = (float) (guardian.closestGuardianCrystal.getX() - Mth.lerp(partialTicks, guardian.xo, guardian.getX()));
             float relY = (float) (guardian.closestGuardianCrystal.getY() - Mth.lerp(partialTicks, guardian.yo, guardian.getY()));
             float relZ = (float) (guardian.closestGuardianCrystal.getZ() - Mth.lerp(partialTicks, guardian.zo, guardian.getZ()));
-            renderBeam(relX, relY + GuardianCrystalRenderer.getY(guardian.closestGuardianCrystal, partialTicks), relZ, partialTicks, guardian.tickCount, mStack, getter, packedLight);
-            mStack.popPose();
+            renderBeam(relX, relY + GuardianCrystalRenderer.getY(guardian.closestGuardianCrystal, partialTicks), relZ, partialTicks, guardian.tickCount, poseStack, getter, packedLight);
+            poseStack.popPose();
         }
 
         IPhase iPhase = guardian.getPhaseManager().getCurrentPhase();
@@ -186,16 +172,16 @@ public class DraconicGuardianRenderer extends EntityRenderer<DraconicGuardianEnt
                 BlockPos origin = guardian.getArenaOrigin();
 //                float beamSin = MathHelper.sin((Math.min(1, phase.animState() + 0.3F)) * (float) Math.PI);
                 float beamSin = Mth.sin(phase.animState() * (float) Math.PI);
-                mStack.pushPose();
+                poseStack.pushPose();
                 float relX = (float) ((origin.getX() + 0.5) - Mth.lerp(partialTicks, guardian.xo, guardian.getX()));
                 float relY = (float) ((origin.getY() + 0.5) - Mth.lerp(partialTicks, guardian.yo, guardian.getY()));
                 float relZ = (float) ((origin.getZ() + 0.5) - Mth.lerp(partialTicks, guardian.zo, guardian.getZ()));
-                renderChargingBeam(relX, relY, relZ, partialTicks, guardian.tickCount, mStack, getter, packedLight, beamSin);
-                mStack.popPose();
+                renderChargingBeam(relX, relY, relZ, partialTicks, guardian.tickCount, poseStack, getter, packedLight, beamSin);
+                poseStack.popPose();
             }
         }
 
-        super.render(guardian, entityYaw, partialTicks, mStack, getter, packedLight);
+        super.render(guardian, entityYaw, partialTicks, poseStack, getter, packedLight);
     }
 
     private static void deathAnimA(VertexConsumer builder, Matrix4f mat, int alpha) {
@@ -246,47 +232,6 @@ public class DraconicGuardianRenderer extends EntityRenderer<DraconicGuardianEnt
         }
 
         mStack.popPose();
-//
-//        int shieldState = 500;//guardian.getEntityData().get(DraconicGuardianEntity.SHIELD_STATE);
-//        float hit = (shieldState / 500F) - 1F;
-//        Color color = Color.getHSBColor(hit / 8F, 1, 1);
-//        UniformCache uniforms = DraconicGuardianRenderer.shieldShader.pushCache();
-//        uniforms.glUniform4f("baseColour", color.getRed() / 255F, color.getGreen() / 255F, color.getBlue() / 255F, 1.5F * (shieldState / 500F));
-//        builder = getter.getBuffer(new ShaderRenderType(DraconicGuardianRenderer.shieldType, DraconicGuardianRenderer.shieldShader, uniforms));
-//
-//        xzDistance = MathHelper.sqrt(crystalRelX * crystalRelX + crystalRelZ * crystalRelZ);
-//        distance = MathHelper.sqrt(crystalRelX * crystalRelX + crystalRelY * crystalRelY + crystalRelZ * crystalRelZ);
-//        mStack.pushPose();
-//        mStack.translate(0.0D, 2.0D, 0.0D);
-//        mStack.mulPose(Vector3f.YP.rotation((float) (-Math.atan2(crystalRelZ, crystalRelX)) - ((float) Math.PI / 2F)));
-//        mStack.mulPose(Vector3f.XP.rotation((float) (-Math.atan2(xzDistance, crystalRelY)) - ((float) Math.PI / 2F)));
-//        f2 = 0;//0.0F - ((float) animTicks + partialTicks) * 0.01F;
-//        f3 = MathHelper.sqrt(crystalRelX * crystalRelX + crystalRelY * crystalRelY + crystalRelZ * crystalRelZ);//MathHelper.sqrt(crystalRelX * crystalRelX + crystalRelY * crystalRelY + crystalRelZ * crystalRelZ) / 32.0F - ((float) animTicks + partialTicks) * 0.01F;
-//        f4 = 0.0F;
-//        f5 = 0.75F;
-//        f6 = 0.0F;
-//        stackLast = mStack.last();
-//        lastMatrix = stackLast.pose();
-//        lastNormal = stackLast.normal();
-//
-//        for (int j = 1; j <= 8; ++j) {
-//            float rSin = MathHelper.sin((float) j * ((float) Math.PI * 2F) / 8.0F) * 0.75F;
-//            float rCos = MathHelper.cos((float) j * ((float) Math.PI * 2F) / 8.0F) * 0.75F;
-//            float indexDecimal = (float) j / 8.0F;
-////            builder.vertex(lastMatrix, f4 * 0.2F, f5 * 0.2F, 0.0F).color(0, 0, 0, 255).uv(f6, f2).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(lastNormal, 0.0F, -1.0F, 0.0F).endVertex();
-////            builder.vertex(lastMatrix, f4, f5, distance).color(255, 255, 255, 255).uv(f6, f3).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(lastNormal, 0.0F, -1.0F, 0.0F).endVertex();
-////            builder.vertex(lastMatrix, rSin, rCos, distance).color(255, 255, 255, 255).uv(indexDecimal, f3).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(lastNormal, 0.0F, -1.0F, 0.0F).endVertex();
-////            builder.vertex(lastMatrix, rSin * 0.2F, rCos * 0.2F, 0.0F).color(0, 0, 0, 255).uv(indexDecimal, f2).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(lastNormal, 0.0F, -1.0F, 0.0F).endVertex();
-//            builder.vertex(lastMatrix, f4 * 0.2F, f5 * 0.2F, 0.0F).color(0, 0, 0, 255).uv(f6, f2).endVertex();
-//            builder.vertex(lastMatrix, f4, f5, distance).color(255, 255, 255, 255).uv(f6, f3).endVertex();
-//            builder.vertex(lastMatrix, rSin, rCos, distance).color(255, 255, 255, 255).uv(indexDecimal, f3).endVertex();
-//            builder.vertex(lastMatrix, rSin * 0.2F, rCos * 0.2F, 0.0F).color(0, 0, 0, 255).uv(indexDecimal, f2).endVertex();
-//            f4 = rSin;
-//            f5 = rCos;
-//            f6 = indexDecimal;
-//        }
-//
-//        mStack.popPose();
     }
 
     public static void renderBeam(float crystalRelX, float crystalRelY, float crystalRelZ, float partialTicks, int animTicks, PoseStack mStack, MultiBufferSource getter, int packedLight, float alpha) {
@@ -296,7 +241,7 @@ public class DraconicGuardianRenderer extends EntityRenderer<DraconicGuardianEnt
         mStack.translate(0.0D, 2.0D, 0.0D);
         mStack.mulPose(Vector3f.YP.rotation((float) (-Math.atan2(crystalRelZ, crystalRelX)) - ((float) Math.PI / 2F)));
         mStack.mulPose(Vector3f.XP.rotation((float) (-Math.atan2(xzDistance, crystalRelY)) - ((float) Math.PI / 2F)));
-        VertexConsumer builder = getter.getBuffer(beamType2);
+        VertexConsumer builder = getter.getBuffer(BEAM_TYPE2);
         float f2 = 0.0F - ((float) animTicks + partialTicks) * 0.01F;
         float f3 = Mth.sqrt(crystalRelX * crystalRelX + crystalRelY * crystalRelY + crystalRelZ * crystalRelZ) / 32.0F - ((float) animTicks + partialTicks) * 0.01F;
         float f4 = 0.0F;
@@ -329,8 +274,8 @@ public class DraconicGuardianRenderer extends EntityRenderer<DraconicGuardianEnt
         mStack.translate(0.0D, 2.0D, 0.0D);
         mStack.mulPose(Vector3f.YP.rotation((float) (-Math.atan2(crystalRelZ, crystalRelX)) - ((float) Math.PI / 2F)));
         mStack.mulPose(Vector3f.XP.rotation((float) (-Math.atan2(xzDistance, crystalRelY)) - ((float) Math.PI / 2F)));
-        VertexConsumer builder = getter.getBuffer(beamType2);
-        float vMin =  ((float) animTicks + partialTicks) * 0.01F;
+        VertexConsumer builder = getter.getBuffer(BEAM_TYPE2);
+        float vMin = ((float) animTicks + partialTicks) * 0.01F;
         float vMax = (Mth.sqrt(crystalRelX * crystalRelX + crystalRelY * crystalRelY + crystalRelZ * crystalRelZ) / 32.0F) + (((float) animTicks + partialTicks) * 0.01F);
         float f4 = 0.0F;
         float f5 = 0.1F;
@@ -398,224 +343,158 @@ public class DraconicGuardianRenderer extends EntityRenderer<DraconicGuardianEnt
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static class EnderDragonModel extends EntityModel<DraconicGuardianEntity> {
-        private /*final*/ ModelPart head;
-        private /*final*/ ModelPart spine;
-        private /*final*/ ModelPart jaw;
-        private /*final*/ ModelPart body;
-        private ModelPart leftProximalWing;
-        private ModelPart leftDistalWing;
-        private ModelPart leftForeThigh;
-        private ModelPart leftForeLeg;
-        private ModelPart leftForeFoot;
-        private ModelPart leftHindThigh;
-        private ModelPart leftHindLeg;
-        private ModelPart leftHindFoot;
-        private ModelPart rightProximalWing;
-        private ModelPart rightDistalWing;
-        private ModelPart rightForeThigh;
-        private ModelPart rightForeLeg;
-        private ModelPart rightForeFoot;
-        private ModelPart rightHindThigh;
-        private ModelPart rightHindLeg;
-        private ModelPart rightHindFoot;
+    public static class DragonModel extends EntityModel<DraconicGuardianEntity> {
+        private final ModelPart head;
+        private final ModelPart neck;
+        private final ModelPart jaw;
+        private final ModelPart body;
+        private final ModelPart leftWing;
+        private final ModelPart leftWingTip;
+        private final ModelPart leftFrontLeg;
+        private final ModelPart leftFrontLegTip;
+        private final ModelPart leftFrontFoot;
+        private final ModelPart leftRearLeg;
+        private final ModelPart leftRearLegTip;
+        private final ModelPart leftRearFoot;
+        private final ModelPart rightWing;
+        private final ModelPart rightWingTip;
+        private final ModelPart rightFrontLeg;
+        private final ModelPart rightFrontLegTip;
+        private final ModelPart rightFrontFoot;
+        private final ModelPart rightRearLeg;
+        private final ModelPart rightRearLegTip;
+        private final ModelPart rightRearFoot;
         @Nullable
-        private DraconicGuardianEntity dragonInstance;
-        private float partialTicks;
+        private DraconicGuardianEntity entity;
+        private float a;
 
-        public EnderDragonModel() {
-//            this.texWidth = 256;
-//            this.texHeight = 256;
-//            float f = -16.0F;
-//            this.head = new ModelPart(this);
-//            this.head.addBox("upperlip", -6.0F, -1.0F, -24.0F, 12, 5, 16, 0.0F, 176, 44);
-//            this.head.addBox("upperhead", -8.0F, -8.0F, -10.0F, 16, 16, 16, 0.0F, 112, 30);
-//            this.head.mirror = true;
-//            this.head.addBox("scale", -5.0F, -12.0F, -4.0F, 2, 4, 6, 0.0F, 0, 0);
-//            this.head.addBox("nostril", -5.0F, -3.0F, -22.0F, 2, 2, 4, 0.0F, 112, 0);
-//            this.head.mirror = false;
-//            this.head.addBox("scale", 3.0F, -12.0F, -4.0F, 2, 4, 6, 0.0F, 0, 0);
-//            this.head.addBox("nostril", 3.0F, -3.0F, -22.0F, 2, 2, 4, 0.0F, 112, 0);
-//            this.jaw = new ModelPart(this);
-//            this.jaw.setPos(0.0F, 4.0F, -8.0F);
-//            this.jaw.addBox("jaw", -6.0F, 0.0F, -16.0F, 12, 4, 16, 0.0F, 176, 65);
-//            this.head.addChild(this.jaw);
-//            this.spine = new ModelPart(this);
-//            this.spine.addBox("box", -5.0F, -5.0F, -5.0F, 10, 10, 10, 0.0F, 192, 104);
-//            this.spine.addBox("scale", -1.0F, -9.0F, -3.0F, 2, 4, 6, 0.0F, 48, 0);
-//            this.body = new ModelPart(this);
-//            this.body.setPos(0.0F, 4.0F, 8.0F);
-//            this.body.addBox("body", -12.0F, 0.0F, -16.0F, 24, 24, 64, 0.0F, 0, 0);
-//            this.body.addBox("scale", -1.0F, -6.0F, -10.0F, 2, 6, 12, 0.0F, 220, 53);
-//            this.body.addBox("scale", -1.0F, -6.0F, 10.0F, 2, 6, 12, 0.0F, 220, 53);
-//            this.body.addBox("scale", -1.0F, -6.0F, 30.0F, 2, 6, 12, 0.0F, 220, 53);
-//            this.leftProximalWing = new ModelPart(this);
-//            this.leftProximalWing.mirror = true;
-//            this.leftProximalWing.setPos(12.0F, 5.0F, 2.0F);
-//            this.leftProximalWing.addBox("bone", 0.0F, -4.0F, -4.0F, 56, 8, 8, 0.0F, 112, 88);
-//            this.leftProximalWing.addBox("skin", 0.0F, 0.0F, 2.0F, 56, 0, 56, 0.0F, -56, 88);
-//            this.leftDistalWing = new ModelPart(this);
-//            this.leftDistalWing.mirror = true;
-//            this.leftDistalWing.setPos(56.0F, 0.0F, 0.0F);
-//            this.leftDistalWing.addBox("bone", 0.0F, -2.0F, -2.0F, 56, 4, 4, 0.0F, 112, 136);
-//            this.leftDistalWing.addBox("skin", 0.0F, 0.0F, 2.0F, 56, 0, 56, 0.0F, -56, 144);
-//            this.leftProximalWing.addChild(this.leftDistalWing);
-//            this.leftForeThigh = new ModelPart(this);
-//            this.leftForeThigh.setPos(12.0F, 20.0F, 2.0F);
-//            this.leftForeThigh.addBox("main", -4.0F, -4.0F, -4.0F, 8, 24, 8, 0.0F, 112, 104);
-//            this.leftForeLeg = new ModelPart(this);
-//            this.leftForeLeg.setPos(0.0F, 20.0F, -1.0F);
-//            this.leftForeLeg.addBox("main", -3.0F, -1.0F, -3.0F, 6, 24, 6, 0.0F, 226, 138);
-//            this.leftForeThigh.addChild(this.leftForeLeg);
-//            this.leftForeFoot = new ModelPart(this);
-//            this.leftForeFoot.setPos(0.0F, 23.0F, 0.0F);
-//            this.leftForeFoot.addBox("main", -4.0F, 0.0F, -12.0F, 8, 4, 16, 0.0F, 144, 104);
-//            this.leftForeLeg.addChild(this.leftForeFoot);
-//            this.leftHindThigh = new ModelPart(this);
-//            this.leftHindThigh.setPos(16.0F, 16.0F, 42.0F);
-//            this.leftHindThigh.addBox("main", -8.0F, -4.0F, -8.0F, 16, 32, 16, 0.0F, 0, 0);
-//            this.leftHindLeg = new ModelPart(this);
-//            this.leftHindLeg.setPos(0.0F, 32.0F, -4.0F);
-//            this.leftHindLeg.addBox("main", -6.0F, -2.0F, 0.0F, 12, 32, 12, 0.0F, 196, 0);
-//            this.leftHindThigh.addChild(this.leftHindLeg);
-//            this.leftHindFoot = new ModelPart(this);
-//            this.leftHindFoot.setPos(0.0F, 31.0F, 4.0F);
-//            this.leftHindFoot.addBox("main", -9.0F, 0.0F, -20.0F, 18, 6, 24, 0.0F, 112, 0);
-//            this.leftHindLeg.addChild(this.leftHindFoot);
-//            this.rightProximalWing = new ModelPart(this);
-//            this.rightProximalWing.setPos(-12.0F, 5.0F, 2.0F);
-//            this.rightProximalWing.addBox("bone", -56.0F, -4.0F, -4.0F, 56, 8, 8, 0.0F, 112, 88);
-//            this.rightProximalWing.addBox("skin", -56.0F, 0.0F, 2.0F, 56, 0, 56, 0.0F, -56, 88);
-//            this.rightDistalWing = new ModelPart(this);
-//            this.rightDistalWing.setPos(-56.0F, 0.0F, 0.0F);
-//            this.rightDistalWing.addBox("bone", -56.0F, -2.0F, -2.0F, 56, 4, 4, 0.0F, 112, 136);
-//            this.rightDistalWing.addBox("skin", -56.0F, 0.0F, 2.0F, 56, 0, 56, 0.0F, -56, 144);
-//            this.rightProximalWing.addChild(this.rightDistalWing);
-//            this.rightForeThigh = new ModelPart(this);
-//            this.rightForeThigh.setPos(-12.0F, 20.0F, 2.0F);
-//            this.rightForeThigh.addBox("main", -4.0F, -4.0F, -4.0F, 8, 24, 8, 0.0F, 112, 104);
-//            this.rightForeLeg = new ModelPart(this);
-//            this.rightForeLeg.setPos(0.0F, 20.0F, -1.0F);
-//            this.rightForeLeg.addBox("main", -3.0F, -1.0F, -3.0F, 6, 24, 6, 0.0F, 226, 138);
-//            this.rightForeThigh.addChild(this.rightForeLeg);
-//            this.rightForeFoot = new ModelPart(this);
-//            this.rightForeFoot.setPos(0.0F, 23.0F, 0.0F);
-//            this.rightForeFoot.addBox("main", -4.0F, 0.0F, -12.0F, 8, 4, 16, 0.0F, 144, 104);
-//            this.rightForeLeg.addChild(this.rightForeFoot);
-//            this.rightHindThigh = new ModelPart(this);
-//            this.rightHindThigh.setPos(-16.0F, 16.0F, 42.0F);
-//            this.rightHindThigh.addBox("main", -8.0F, -4.0F, -8.0F, 16, 32, 16, 0.0F, 0, 0);
-//            this.rightHindLeg = new ModelPart(this);
-//            this.rightHindLeg.setPos(0.0F, 32.0F, -4.0F);
-//            this.rightHindLeg.addBox("main", -6.0F, -2.0F, 0.0F, 12, 32, 12, 0.0F, 196, 0);
-//            this.rightHindThigh.addChild(this.rightHindLeg);
-//            this.rightHindFoot = new ModelPart(this);
-//            this.rightHindFoot.setPos(0.0F, 31.0F, 4.0F);
-//            this.rightHindFoot.addBox("main", -9.0F, 0.0F, -20.0F, 18, 6, 24, 0.0F, 112, 0);
-//            this.rightHindLeg.addChild(this.rightHindFoot);
+        public DragonModel(ModelPart modelPart) {
+            this.head = modelPart.getChild("head");
+            this.jaw = this.head.getChild("jaw");
+            this.neck = modelPart.getChild("neck");
+            this.body = modelPart.getChild("body");
+            this.leftWing = modelPart.getChild("left_wing");
+            this.leftWingTip = this.leftWing.getChild("left_wing_tip");
+            this.leftFrontLeg = modelPart.getChild("left_front_leg");
+            this.leftFrontLegTip = this.leftFrontLeg.getChild("left_front_leg_tip");
+            this.leftFrontFoot = this.leftFrontLegTip.getChild("left_front_foot");
+            this.leftRearLeg = modelPart.getChild("left_hind_leg");
+            this.leftRearLegTip = this.leftRearLeg.getChild("left_hind_leg_tip");
+            this.leftRearFoot = this.leftRearLegTip.getChild("left_hind_foot");
+            this.rightWing = modelPart.getChild("right_wing");
+            this.rightWingTip = this.rightWing.getChild("right_wing_tip");
+            this.rightFrontLeg = modelPart.getChild("right_front_leg");
+            this.rightFrontLegTip = this.rightFrontLeg.getChild("right_front_leg_tip");
+            this.rightFrontFoot = this.rightFrontLegTip.getChild("right_front_foot");
+            this.rightRearLeg = modelPart.getChild("right_hind_leg");
+            this.rightRearLegTip = this.rightRearLeg.getChild("right_hind_leg_tip");
+            this.rightRearFoot = this.rightRearLegTip.getChild("right_hind_foot");
         }
 
-        public void prepareMobModel(DraconicGuardianEntity entityIn, float limbSwing, float limbSwingAmount, float partialTick) {
-            this.dragonInstance = entityIn;
-            this.partialTicks = partialTick;
+        @Override
+        public void prepareMobModel(DraconicGuardianEntity p_114269_, float p_114270_, float p_114271_, float p_114272_) {
+            this.entity = p_114269_;
+            this.a = p_114272_;
         }
 
-        public void setupAnim(DraconicGuardianEntity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        @Override
+        public void setupAnim(DraconicGuardianEntity p_114274_, float p_114275_, float p_114276_, float p_114277_, float p_114278_, float p_114279_) {
         }
 
-        public void renderToBuffer(PoseStack mStack, VertexConsumer getter, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-//            mStack.pushPose();
-//            float f = Mth.lerp(this.partialTicks, this.dragonInstance.prevAnimTime, this.dragonInstance.animTime);
-//            this.jaw.xRot = (float) (Math.sin(f * ((float) Math.PI * 2F)) + 1.0D) * 0.2F;
-//            float f1 = (float) (Math.sin(f * ((float) Math.PI * 2F) - 1.0F) + 1.0D);
-//            f1 = (f1 * f1 + f1 * 2.0F) * 0.05F;
-//            mStack.translate(0.0D, f1 - 2.0F, -3.0D);
-//            mStack.mulPose(Vector3f.XP.rotationDegrees(f1 * 2.0F));
-//            float f2 = 0.0F;
-//            float f3 = 20.0F;
-//            float f4 = -12.0F;
-//            float f5 = 1.5F;
-//            double[] adouble = this.dragonInstance.getMovementOffsets(6, this.partialTicks);
-//            float f6 = Mth.rotWrap(this.dragonInstance.getMovementOffsets(5, this.partialTicks)[0] - this.dragonInstance.getMovementOffsets(10, this.partialTicks)[0]);
-//            float f7 = Mth.rotWrap(this.dragonInstance.getMovementOffsets(5, this.partialTicks)[0] + (double) (f6 / 2.0F));
-//            float f8 = f * ((float) Math.PI * 2F);
-//
-//            for (int i = 0; i < 5; ++i) {
-//                double[] adouble1 = this.dragonInstance.getMovementOffsets(5 - i, this.partialTicks);
-//                float f9 = (float) Math.cos((float) i * 0.45F + f8) * 0.15F;
-//                this.spine.yRot = Mth.rotWrap(adouble1[0] - adouble[0]) * ((float) Math.PI / 180F) * 1.5F;
-//                this.spine.xRot = f9 + this.dragonInstance.getHeadPartYOffset(i, adouble, adouble1) * ((float) Math.PI / 180F) * 1.5F * 5.0F;
-//                this.spine.zRot = -Mth.rotWrap(adouble1[0] - (double) f7) * ((float) Math.PI / 180F) * 1.5F;
-//                this.spine.y = f3;
-//                this.spine.z = f4;
-//                this.spine.x = f2;
-//                f3 = (float) ((double) f3 + Math.sin(this.spine.xRot) * 10.0D);
-//                f4 = (float) ((double) f4 - Math.cos(this.spine.yRot) * Math.cos(this.spine.xRot) * 10.0D);
-//                f2 = (float) ((double) f2 - Math.sin(this.spine.yRot) * Math.cos(this.spine.xRot) * 10.0D);
-//                this.spine.render(mStack, getter, packedLight, packedOverlay);
-//            }
-//
-//            this.head.y = f3;
-//            this.head.z = f4;
-//            this.head.x = f2;
-//            double[] adouble2 = this.dragonInstance.getMovementOffsets(0, this.partialTicks);
-//            this.head.yRot = Mth.rotWrap(adouble2[0] - adouble[0]) * ((float) Math.PI / 180F);
-//            this.head.xRot = Mth.rotWrap(this.dragonInstance.getHeadPartYOffset(6, adouble, adouble2)) * ((float) Math.PI / 180F) * 1.5F * 5.0F;
-//            this.head.zRot = -Mth.rotWrap(adouble2[0] - (double) f7) * ((float) Math.PI / 180F);
-//            this.head.render(mStack, getter, packedLight, packedOverlay);
-//            mStack.pushPose();
-//            mStack.translate(0.0D, 1.0D, 0.0D);
-//            mStack.mulPose(Vector3f.ZP.rotationDegrees(-f6 * 1.5F));
-//            mStack.translate(0.0D, -1.0D, 0.0D);
-//            this.body.zRot = 0.0F;
-//            this.body.render(mStack, getter, packedLight, packedOverlay);
-//            float f10 = f * ((float) Math.PI * 2F);
-//            this.leftProximalWing.xRot = 0.125F - (float) Math.cos(f10) * 0.2F;
-//            this.leftProximalWing.yRot = -0.25F;
-//            this.leftProximalWing.zRot = -((float) (Math.sin(f10) + 0.125D)) * 0.8F;
-//            this.leftDistalWing.zRot = (float) (Math.sin(f10 + 2.0F) + 0.5D) * 0.75F;
-//            this.rightProximalWing.xRot = this.leftProximalWing.xRot;
-//            this.rightProximalWing.yRot = -this.leftProximalWing.yRot;
-//            this.rightProximalWing.zRot = -this.leftProximalWing.zRot;
-//            this.rightDistalWing.zRot = -this.leftDistalWing.zRot;
-//            this.renderSide(mStack, getter, packedLight, packedOverlay, f1, this.leftProximalWing, this.leftForeThigh, this.leftForeLeg, this.leftForeFoot, this.leftHindThigh, this.leftHindLeg, this.leftHindFoot);
-//            this.renderSide(mStack, getter, packedLight, packedOverlay, f1, this.rightProximalWing, this.rightForeThigh, this.rightForeLeg, this.rightForeFoot, this.rightHindThigh, this.rightHindLeg, this.rightHindFoot);
-//            mStack.popPose();
-//            float f11 = -((float) Math.sin(f * ((float) Math.PI * 2F))) * 0.0F;
-//            f8 = f * ((float) Math.PI * 2F);
-//            f3 = 10.0F;
-//            f4 = 60.0F;
-//            f2 = 0.0F;
-//            adouble = this.dragonInstance.getMovementOffsets(11, this.partialTicks);
-//
-//            for (int j = 0; j < 12; ++j) {
-//                adouble2 = this.dragonInstance.getMovementOffsets(12 + j, this.partialTicks);
-//                f11 = (float) ((double) f11 + Math.sin((float) j * 0.45F + f8) * (double) 0.05F);
-//                this.spine.yRot = (Mth.rotWrap(adouble2[0] - adouble[0]) * 1.5F + 180.0F) * ((float) Math.PI / 180F);
-//                this.spine.xRot = f11 + (float) (adouble2[1] - adouble[1]) * ((float) Math.PI / 180F) * 1.5F * 5.0F;
-//                this.spine.zRot = Mth.rotWrap(adouble2[0] - (double) f7) * ((float) Math.PI / 180F) * 1.5F;
-//                this.spine.y = f3;
-//                this.spine.z = f4;
-//                this.spine.x = f2;
-//                f3 = (float) ((double) f3 + Math.sin(this.spine.xRot) * 10.0D);
-//                f4 = (float) ((double) f4 - Math.cos(this.spine.yRot) * Math.cos(this.spine.xRot) * 10.0D);
-//                f2 = (float) ((double) f2 - Math.sin(this.spine.yRot) * Math.cos(this.spine.xRot) * 10.0D);
-//                this.spine.render(mStack, getter, packedLight, packedOverlay);
-//            }
-//
-//            mStack.popPose();
+        @Override
+        public void renderToBuffer(PoseStack p_114281_, VertexConsumer p_114282_, int p_114283_, int p_114284_, float p_114285_, float p_114286_, float p_114287_, float p_114288_) {
+            p_114281_.pushPose();
+            float f = Mth.lerp(this.a, this.entity.oFlapTime, this.entity.flapTime);
+            this.jaw.xRot = (float) (Math.sin((double) (f * ((float) Math.PI * 2F))) + 1.0D) * 0.2F;
+            float f1 = (float) (Math.sin((double) (f * ((float) Math.PI * 2F) - 1.0F)) + 1.0D);
+            f1 = (f1 * f1 + f1 * 2.0F) * 0.05F;
+            p_114281_.translate(0.0D, (double) (f1 - 2.0F), -3.0D);
+            p_114281_.mulPose(Vector3f.XP.rotationDegrees(f1 * 2.0F));
+            float f2 = 0.0F;
+            float f3 = 20.0F;
+            float f4 = -12.0F;
+            float f5 = 1.5F;
+            double[] adouble = this.entity.getLatencyPos(6, this.a);
+            float f6 = Mth.rotWrap(this.entity.getLatencyPos(5, this.a)[0] - this.entity.getLatencyPos(10, this.a)[0]);
+            float f7 = Mth.rotWrap(this.entity.getLatencyPos(5, this.a)[0] + (double) (f6 / 2.0F));
+            float f8 = f * ((float) Math.PI * 2F);
+
+            for (int i = 0; i < 5; ++i) {
+                double[] adouble1 = this.entity.getLatencyPos(5 - i, this.a);
+                float f9 = (float) Math.cos((double) ((float) i * 0.45F + f8)) * 0.15F;
+                this.neck.yRot = Mth.rotWrap(adouble1[0] - adouble[0]) * ((float) Math.PI / 180F) * 1.5F;
+                this.neck.xRot = f9 + this.entity.getHeadPartYOffset(i, adouble, adouble1) * ((float) Math.PI / 180F) * 1.5F * 5.0F;
+                this.neck.zRot = -Mth.rotWrap(adouble1[0] - (double) f7) * ((float) Math.PI / 180F) * 1.5F;
+                this.neck.y = f3;
+                this.neck.z = f4;
+                this.neck.x = f2;
+                f3 += Mth.sin(this.neck.xRot) * 10.0F;
+                f4 -= Mth.cos(this.neck.yRot) * Mth.cos(this.neck.xRot) * 10.0F;
+                f2 -= Mth.sin(this.neck.yRot) * Mth.cos(this.neck.xRot) * 10.0F;
+                this.neck.render(p_114281_, p_114282_, p_114283_, p_114284_, 1.0F, 1.0F, 1.0F, p_114288_);
+            }
+
+            this.head.y = f3;
+            this.head.z = f4;
+            this.head.x = f2;
+            double[] adouble2 = this.entity.getLatencyPos(0, this.a);
+            this.head.yRot = Mth.rotWrap(adouble2[0] - adouble[0]) * ((float) Math.PI / 180F);
+            this.head.xRot = Mth.rotWrap((double) this.entity.getHeadPartYOffset(6, adouble, adouble2)) * ((float) Math.PI / 180F) * 1.5F * 5.0F;
+            this.head.zRot = -Mth.rotWrap(adouble2[0] - (double) f7) * ((float) Math.PI / 180F);
+            this.head.render(p_114281_, p_114282_, p_114283_, p_114284_, 1.0F, 1.0F, 1.0F, p_114288_);
+            p_114281_.pushPose();
+            p_114281_.translate(0.0D, 1.0D, 0.0D);
+            p_114281_.mulPose(Vector3f.ZP.rotationDegrees(-f6 * 1.5F));
+            p_114281_.translate(0.0D, -1.0D, 0.0D);
+            this.body.zRot = 0.0F;
+            this.body.render(p_114281_, p_114282_, p_114283_, p_114284_, 1.0F, 1.0F, 1.0F, p_114288_);
+            float f10 = f * ((float) Math.PI * 2F);
+            this.leftWing.xRot = 0.125F - (float) Math.cos((double) f10) * 0.2F;
+            this.leftWing.yRot = -0.25F;
+            this.leftWing.zRot = -((float) (Math.sin((double) f10) + 0.125D)) * 0.8F;
+            this.leftWingTip.zRot = (float) (Math.sin((double) (f10 + 2.0F)) + 0.5D) * 0.75F;
+            this.rightWing.xRot = this.leftWing.xRot;
+            this.rightWing.yRot = -this.leftWing.yRot;
+            this.rightWing.zRot = -this.leftWing.zRot;
+            this.rightWingTip.zRot = -this.leftWingTip.zRot;
+            this.renderSide(p_114281_, p_114282_, p_114283_, p_114284_, f1, this.leftWing, this.leftFrontLeg, this.leftFrontLegTip, this.leftFrontFoot, this.leftRearLeg, this.leftRearLegTip, this.leftRearFoot, p_114288_);
+            this.renderSide(p_114281_, p_114282_, p_114283_, p_114284_, f1, this.rightWing, this.rightFrontLeg, this.rightFrontLegTip, this.rightFrontFoot, this.rightRearLeg, this.rightRearLegTip, this.rightRearFoot, p_114288_);
+            p_114281_.popPose();
+            float f11 = -Mth.sin(f * ((float) Math.PI * 2F)) * 0.0F;
+            f8 = f * ((float) Math.PI * 2F);
+            f3 = 10.0F;
+            f4 = 60.0F;
+            f2 = 0.0F;
+            adouble = this.entity.getLatencyPos(11, this.a);
+
+            for (int j = 0; j < 12; ++j) {
+                adouble2 = this.entity.getLatencyPos(12 + j, this.a);
+                f11 += Mth.sin((float) j * 0.45F + f8) * 0.05F;
+                this.neck.yRot = (Mth.rotWrap(adouble2[0] - adouble[0]) * 1.5F + 180.0F) * ((float) Math.PI / 180F);
+                this.neck.xRot = f11 + (float) (adouble2[1] - adouble[1]) * ((float) Math.PI / 180F) * 1.5F * 5.0F;
+                this.neck.zRot = Mth.rotWrap(adouble2[0] - (double) f7) * ((float) Math.PI / 180F) * 1.5F;
+                this.neck.y = f3;
+                this.neck.z = f4;
+                this.neck.x = f2;
+                f3 += Mth.sin(this.neck.xRot) * 10.0F;
+                f4 -= Mth.cos(this.neck.yRot) * Mth.cos(this.neck.xRot) * 10.0F;
+                f2 -= Mth.sin(this.neck.yRot) * Mth.cos(this.neck.xRot) * 10.0F;
+                this.neck.render(p_114281_, p_114282_, p_114283_, p_114284_, 1.0F, 1.0F, 1.0F, p_114288_);
+            }
+
+            p_114281_.popPose();
         }
 
-        private void renderSide(PoseStack p_229081_1_, VertexConsumer p_229081_2_, int p_229081_3_, int p_229081_4_, float p_229081_5_, ModelPart p_229081_6_, ModelPart p_229081_7_, ModelPart p_229081_8_, ModelPart p_229081_9_, ModelPart p_229081_10_, ModelPart p_229081_11_, ModelPart p_229081_12_) {
-            p_229081_10_.xRot = 1.0F + p_229081_5_ * 0.1F;
-            p_229081_11_.xRot = 0.5F + p_229081_5_ * 0.1F;
-            p_229081_12_.xRot = 0.75F + p_229081_5_ * 0.1F;
-            p_229081_7_.xRot = 1.3F + p_229081_5_ * 0.1F;
-            p_229081_8_.xRot = -0.5F - p_229081_5_ * 0.1F;
-            p_229081_9_.xRot = 0.75F + p_229081_5_ * 0.1F;
-            p_229081_6_.render(p_229081_1_, p_229081_2_, p_229081_3_, p_229081_4_);
-            p_229081_7_.render(p_229081_1_, p_229081_2_, p_229081_3_, p_229081_4_);
-            p_229081_10_.render(p_229081_1_, p_229081_2_, p_229081_3_, p_229081_4_);
+        private void renderSide(PoseStack p_173978_, VertexConsumer p_173979_, int p_173980_, int p_173981_, float p_173982_, ModelPart p_173983_, ModelPart p_173984_, ModelPart p_173985_, ModelPart p_173986_, ModelPart p_173987_, ModelPart p_173988_, ModelPart p_173989_, float p_173990_) {
+            p_173987_.xRot = 1.0F + p_173982_ * 0.1F;
+            p_173988_.xRot = 0.5F + p_173982_ * 0.1F;
+            p_173989_.xRot = 0.75F + p_173982_ * 0.1F;
+            p_173984_.xRot = 1.3F + p_173982_ * 0.1F;
+            p_173985_.xRot = -0.5F - p_173982_ * 0.1F;
+            p_173986_.xRot = 0.75F + p_173982_ * 0.1F;
+            p_173983_.render(p_173978_, p_173979_, p_173980_, p_173981_, 1.0F, 1.0F, 1.0F, p_173990_);
+            p_173984_.render(p_173978_, p_173979_, p_173980_, p_173981_, 1.0F, 1.0F, 1.0F, p_173990_);
+            p_173987_.render(p_173978_, p_173979_, p_173980_, p_173981_, 1.0F, 1.0F, 1.0F, p_173990_);
         }
     }
 }

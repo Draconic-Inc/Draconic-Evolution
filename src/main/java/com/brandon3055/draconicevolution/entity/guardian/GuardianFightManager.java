@@ -201,6 +201,7 @@ public class GuardianFightManager extends WorldEntity implements ITickableWorldE
             item.age = -32767;
             item.setInvulnerable(true);
             item.setNoGravity(true);
+            item.getPersistentData().putBoolean("guardian_heart", true); //This is here to help fox out
             guardian.level.addFreshEntity(item);
         }
 
