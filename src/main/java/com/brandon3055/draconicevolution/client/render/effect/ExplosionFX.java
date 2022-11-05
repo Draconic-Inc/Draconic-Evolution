@@ -156,7 +156,7 @@ public class ExplosionFX extends Particle {
 
         if (age == 0) {
             coreEffect = new CoreEffect(0);
-            ClientEventHandler.triggerExplosionEffect(pos.pos());
+            ClientEventHandler.triggerExplosionEffect(pos.pos(), true);
         } else if (age == 3 || age == 8 || age == 13) {
             effectParts.addFirst(new LeadingWave(age));
         } else if (age > 30 && age <= 35) {

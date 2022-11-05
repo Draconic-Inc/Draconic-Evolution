@@ -269,18 +269,20 @@ public class ClientEventHandler {
 //        RenderSystem.disableBlend();
 //    }
 
-    public static void triggerExplosionEffect(BlockPos pos) {
+    public static void triggerExplosionEffect(BlockPos pos, boolean reload) {
         explosionPos = pos;
         explosionRetreating = false;
         explosionAnimation = 0;
         explosionTime = 0;
 
-        ProcessHandlerClient.addProcess(new DelayedExecutor(13) {
-            @Override
-            public void execute(Object[] args) {
-                Minecraft.getInstance().levelRenderer.allChanged();
-            }
-        });
+        if (reload){
+            ProcessHandlerClient.addProcess(new DelayedExecutor(13) {
+                @Override
+                public void execute(Object[] args) {
+                    Minecraft.getInstance().levelRenderer.allChanged();
+                }
+            });
+        }
     }
 
     private void updateExplosion() {

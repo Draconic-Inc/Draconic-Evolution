@@ -87,9 +87,9 @@ public class CommandKaboom {
 
     private static int effect(CommandSourceStack source, int radius, Vec3i pos, boolean flash) {
         if (flash) {
-            ClientEventHandler.triggerExplosionEffect(new BlockPos(pos));
+            ClientEventHandler.triggerExplosionEffect(new BlockPos(pos), false);
         } else {
-            DraconicNetwork.sendExplosionEffect(source.getLevel().dimension(), new BlockPos(pos), radius, false);
+            DraconicNetwork.sendExplosionEffect(source.getLevel().dimension(), new BlockPos(pos), radius * 4, true);
         }
         return 0;
     }

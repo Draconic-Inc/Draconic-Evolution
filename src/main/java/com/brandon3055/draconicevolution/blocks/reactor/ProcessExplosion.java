@@ -112,16 +112,15 @@ public class ProcessExplosion implements IProcess {
             startTime = System.currentTimeMillis();
         }
 
-        //TODO Hack
-//        if (calcWait > 0) {
-//            calcWait--;
-//            return;
-//        }
+        if (calcWait > 0) {
+            calcWait--;
+            return;
+        }
 
         if (!calculationComplete) {
             long t = System.currentTimeMillis();
-            //TODO Hack
-            for (int i = 0; i < 500 && !calculationComplete; i++) updateCalculation();
+//            //TODO Hack
+//            for (int i = 0; i < 500 && !calculationComplete; i++) updateCalculation();
             t = System.currentTimeMillis() - t;
             calcWait = t / 40;
             LogHelper.dev("Calculation Progress: " + MathUtils.round((((double) radius / (double) maxRadius) * 100D), 100) + "% " + (Runtime.getRuntime().freeMemory() / 1000000));
@@ -378,7 +377,7 @@ public class ProcessExplosion implements IProcess {
 
         final BlockPos pos = origin.pos();
         if (enableEffect) {
-            DraconicNetwork.sendExplosionEffect(world.dimension(), pos, radius * 4, false);
+            DraconicNetwork.sendExplosionEffect(world.dimension(), pos, radius * 4, true);
         }
 
         new DelayedExecutor(30) {
