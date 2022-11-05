@@ -4,8 +4,8 @@
         "srcrgb": "srcalpha",
         "dstrgb": "1-srcalpha"
     },
-    "vertex": "draconicevolution:armor_shield",
-    "fragment": "draconicevolution:armor_shield",
+    "vertex": "draconicevolution:shield",
+    "fragment": "draconicevolution:shield",
     "attributes": [
         "Position",
         "UV0"
@@ -17,6 +17,7 @@
         { "name": "ProjMat", "type": "matrix4x4", "count": 16, "values": [ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 ] },
         { "name": "Time", "type": "float", "count": 1, "values": [ 0.0 ] },
         { "name": "Activation", "type": "float", "count": 1, "values": [ 0.0 ] },
-        { "name": "BaseColour", "type": "VEC4", "count": 4, "values": [ 0.0 ] }
+        { "name": "BaseColour", "type": "VEC4", "count": 4, "values": [ 0.0 ] },
+        { "name": "BarMode", "type": "int", "count": 1, "values": [ 0.0 ] }
     ]
 }

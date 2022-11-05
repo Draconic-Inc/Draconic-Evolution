@@ -5,6 +5,7 @@
 uniform float Time;
 uniform float Activation;
 uniform vec4 BaseColour;
+uniform int BarMode;
 
 in vec2 texCoord0;
 
@@ -15,7 +16,7 @@ void main() {
     float colour = 0;
 
     float rad = (distance(coord.xy, vec2(0.5, 0.34375)) * 5);
-    float level = max(0, (rad - (Activation * 5)) * 1024);
+    float level = BarMode == 0 ? max(0, (rad - (Activation * 5)) * 1024) : clamp((coord.x - Activation) * 1024, 0, 1);
 
     float density = 8;
     float noise = 0;

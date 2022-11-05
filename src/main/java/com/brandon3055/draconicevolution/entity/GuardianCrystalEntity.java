@@ -40,13 +40,13 @@ public class GuardianCrystalEntity extends Entity {
     private static final EntityDataAccessor<Float> BEAM_POWER = SynchedEntityData.defineId(GuardianCrystalEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Integer> UNSTABLE_TIME = SynchedEntityData.defineId(GuardianCrystalEntity.class, EntityDataSerializers.INT);
     private UUID managerId;
-    public int innerRotation;
+    public int time;
     private int beamChargeAnim = 0;
 
     public GuardianCrystalEntity(EntityType<?> type, Level world) {
         super(type, world);
         this.blocksBuilding = true;
-        this.innerRotation = this.random.nextInt(100000);
+        this.time = this.random.nextInt(100000);
     }
 
     public GuardianCrystalEntity(Level worldIn, double x, double y, double z, UUID managerId) {
@@ -90,7 +90,7 @@ public class GuardianCrystalEntity extends Entity {
 
     @Override
     public void tick() {
-        ++this.innerRotation;
+        ++this.time;
         if (this.level instanceof ServerLevel) {
             BlockPos blockpos = this.blockPosition();
             if (getManagerId() != null && this.level.getBlockState(blockpos).isAir()) {
@@ -138,7 +138,7 @@ public class GuardianCrystalEntity extends Entity {
             compound.put("BeamTarget", NbtUtils.writeBlockPos(this.getBeamTarget()));
         }
 
-        compound.putBoolean("ShowBottom", this.shouldShowBottom());
+        compound.putBoolean("ShowBottom", this.showsBottom());
         compound.putUUID("manager_id", managerId);
     }
 
@@ -245,7 +245,7 @@ public class GuardianCrystalEntity extends Entity {
         this.getEntityData().set(SHOW_BOTTOM, showBottom);
     }
 
-    public boolean shouldShowBottom() {
+    public boolean showsBottom() {
         return this.getEntityData().get(SHOW_BOTTOM);
     }
 

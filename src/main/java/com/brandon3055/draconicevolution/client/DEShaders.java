@@ -59,10 +59,11 @@ public class DEShaders {
     public static final ToolShader CHESTPIECE_GEM_SHADER = new ToolShader("tools/chestpiece_gem", DefaultVertexFormat.NEW_ENTITY)
             .onShaderApplied(e -> e.getTimeUniform().glUniform1f((float) (ClientUtils.getRenderTime() / 20)));
 
-    public static CCShaderInstance armorShieldShader;
-    public static CCUniform armorShieldTime;
-    public static CCUniform armorShieldActivation;
-    public static CCUniform armorShieldColour;
+    public static CCShaderInstance shieldShader;
+    public static CCUniform shieldTime;
+    public static CCUniform shieldActivation;
+    public static CCUniform shieldColour;
+    public static CCUniform shieldBarMode;
 
     public static CCShaderInstance energyCrystalShader;
     public static CCUniform energyCrystalTime;
@@ -137,12 +138,13 @@ public class DEShaders {
             chaosBlockAlpha = chaosBlockShader.getUniform("Alpha");
         });
 
-        event.registerShader(CCShaderInstance.create(event.getResourceManager(), new ResourceLocation(MODID, "armor_shield"), DefaultVertexFormat.POSITION_TEX), e -> {
-            armorShieldShader = (CCShaderInstance) e;
-            armorShieldTime = armorShieldShader.getUniform("Time");
-            armorShieldActivation = armorShieldShader.getUniform("Activation");
-            armorShieldColour = armorShieldShader.getUniform("BaseColour");
-            armorShieldShader.onApply(() -> armorShieldTime.glUniform1f((TimeKeeper.getClientTick() + Minecraft.getInstance().getFrameTime()) / 20F));
+        event.registerShader(CCShaderInstance.create(event.getResourceManager(), new ResourceLocation(MODID, "shield"), DefaultVertexFormat.POSITION_TEX), e -> {
+            shieldShader = (CCShaderInstance) e;
+            shieldTime = shieldShader.getUniform("Time");
+            shieldActivation = shieldShader.getUniform("Activation");
+            shieldColour = shieldShader.getUniform("BaseColour");
+            shieldBarMode = shieldShader.getUniform("BarMode");
+            shieldShader.onApply(() -> shieldTime.glUniform1f((TimeKeeper.getClientTick() + Minecraft.getInstance().getFrameTime()) / 20F));
         });
 
         event.registerShader(CCShaderInstance.create(event.getResourceManager(), new ResourceLocation(MODID, "energy_crystal"), DefaultVertexFormat.POSITION_TEX), e -> {

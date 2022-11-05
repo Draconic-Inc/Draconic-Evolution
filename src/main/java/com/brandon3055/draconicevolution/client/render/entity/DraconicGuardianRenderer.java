@@ -1,10 +1,5 @@
 package com.brandon3055.draconicevolution.client.render.entity;
 
-import codechicken.lib.render.shader.ShaderObject;
-import codechicken.lib.render.shader.ShaderProgram;
-import codechicken.lib.render.shader.ShaderProgramBuilder;
-import codechicken.lib.render.shader.UniformType;
-import com.brandon3055.brandonscore.api.TimeKeeper;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.DEShaders;
@@ -56,7 +51,7 @@ public class DraconicGuardianRenderer extends EntityRenderer<DraconicGuardianEnt
             .createCompositeState(false));
 
     public static RenderType SHIELD_TYPE = RenderType.create(DraconicEvolution.MODID + ":guardian_shield", DefaultVertexFormat.POSITION_TEX, VertexFormat.Mode.QUADS, 256, RenderType.CompositeState.builder()
-            .setShaderState(new RenderStateShard.ShaderStateShard(() -> DEShaders.armorShieldShader))
+            .setShaderState(new RenderStateShard.ShaderStateShard(() -> DEShaders.shieldShader))
             .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
             .setLightmapState(RenderStateShard.LIGHTMAP)
             .setCullState(RenderStateShard.NO_CULL)
@@ -110,11 +105,12 @@ public class DraconicGuardianRenderer extends EntityRenderer<DraconicGuardianEnt
         float shieldState = guardian.getEntityData().get(DraconicGuardianEntity.SHIELD_POWER) / (float) DEConfig.guardianShield;
         if (shieldState > 0 || isImmune) {
             if (isImmune) {
-                DEShaders.armorShieldColour.glUniform4f(0F, 1F, 1F, 2);
+                DEShaders.shieldColour.glUniform4f(0F, 1F, 1F, 2);
             } else {
-                DEShaders.armorShieldColour.glUniform4f(1F, 0F, 0F, 1.5F * shieldState);
+                DEShaders.shieldColour.glUniform4f(1F, 0F, 0F, 1.5F * shieldState);
             }
-            DEShaders.armorShieldActivation.glUniform1f(1F);
+            DEShaders.shieldBarMode.glUniform1i(0);
+            DEShaders.shieldActivation.glUniform1f(1F);
 
             builder = getter.getBuffer(SHIELD_TYPE);
             this.model.renderToBuffer(poseStack, builder, packedLight, OverlayTexture.pack(0.0F, flag), 1.0F, 1.0F, 1.0F, 1.0F);

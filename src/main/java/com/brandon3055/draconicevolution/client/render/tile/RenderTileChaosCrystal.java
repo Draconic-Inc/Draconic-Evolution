@@ -48,7 +48,7 @@ public class RenderTileChaosCrystal implements BlockEntityRenderer<TileChaosCrys
             .createCompositeState(false));
 
     private static final RenderType CHAOS_CRYSTAL_SHIELD = RenderType.create(MODID + ":chaos_shield_type", DefaultVertexFormat.POSITION_TEX, Mode.TRIANGLES, 256, RenderType.CompositeState.builder()
-            .setShaderState(new RenderStateShard.ShaderStateShard(() -> DEShaders.armorShieldShader))
+            .setShaderState(new RenderStateShard.ShaderStateShard(() -> DEShaders.shieldShader))
             .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
             .setLightmapState(RenderStateShard.LIGHTMAP)
             .setCullState(RenderStateShard.NO_CULL)
@@ -95,8 +95,9 @@ public class RenderTileChaosCrystal implements BlockEntityRenderer<TileChaosCrys
         model.render(ccrs, mat);
 
         if (!te.guardianDefeated.get()) {
-            DEShaders.armorShieldActivation.glUniform1f(1F);
-            DEShaders.armorShieldColour.glUniform4f(1F, 0F, 0F, 1F);
+            DEShaders.shieldBarMode.glUniform1i(0);
+            DEShaders.shieldActivation.glUniform1f(1F);
+            DEShaders.shieldColour.glUniform4f(1F, 0F, 0F, 1F);
             ccrs.bind(CHAOS_CRYSTAL_SHIELD, getter);
             model.render(ccrs, mat);
         }
