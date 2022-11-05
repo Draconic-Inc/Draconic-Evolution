@@ -305,6 +305,10 @@ public class ClientProxy extends CommonProxy {
         ItemBlockRenderTypes.setRenderLayer(DEContent.generator, RenderType.cutoutMipped());
         ItemBlockRenderTypes.setRenderLayer(DEContent.energy_transfuser, RenderType.cutoutMipped());
         ItemBlockRenderTypes.setRenderLayer(DEContent.portal, RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(DEContent.ore_draconium_overworld, renderType -> renderType == RenderType.solid() || renderType == RenderType.cutoutMipped());
+        ItemBlockRenderTypes.setRenderLayer(DEContent.ore_draconium_end, renderType -> renderType == RenderType.solid() || renderType == RenderType.cutoutMipped());
+        ItemBlockRenderTypes.setRenderLayer(DEContent.ore_draconium_nether, renderType -> renderType == RenderType.solid() || renderType == RenderType.cutoutMipped());
+        ItemBlockRenderTypes.setRenderLayer(DEContent.ore_draconium_deepslate, renderType -> renderType == RenderType.solid() || renderType == RenderType.cutoutMipped());
 //        RenderTypeLookup.setRenderLayer(DEContent.chaos_crystal, RenderType.getCutout());
 //        RenderTypeLookup.setRenderLayer(DEContent.chaos_crystal_part, RenderType.getCutout());
     }

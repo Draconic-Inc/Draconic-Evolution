@@ -5,6 +5,9 @@ import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCo
 import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -15,9 +18,11 @@ import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.network.NetworkHooks;
 
 /**
  * Created by brandon3055 on 6/11/2016.
@@ -30,6 +35,15 @@ public class ReactorCore extends BlockBCore implements EntityBlock {
     public ReactorCore(Properties properties) {
         super(properties);
         setBlockEntity(() -> DEContent.tile_reactor_core, true);
+    }
+
+    @Override
+    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+        if (world.getBlockEntity(pos) instanceof TileReactorCore core && player instanceof ServerPlayer serverPlayer) {
+            NetworkHooks.openGui(serverPlayer, core, pos);
+        }
+
+        return super.use(state, world, pos, player, hand, hit);
     }
 
     @Override

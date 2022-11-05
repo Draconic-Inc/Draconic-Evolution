@@ -8,6 +8,7 @@ import com.brandon3055.draconicevolution.blocks.machines.EnergyPylon;
 import com.brandon3055.draconicevolution.blocks.machines.Generator;
 import com.brandon3055.draconicevolution.blocks.machines.Grinder;
 import com.brandon3055.draconicevolution.init.DEContent;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.Direction;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
@@ -16,6 +17,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraftforge.client.model.generators.*;
+import net.minecraftforge.client.model.generators.loaders.MultiLayerModelBuilder;
+import net.minecraftforge.client.model.generators.loaders.OBJLoaderBuilder;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -40,10 +43,6 @@ public class BlockStateGenerator extends BlockStateProvider {
         //Simple Blocks
         simpleBlock(DEContent.block_draconium);
         simpleBlock(DEContent.block_draconium_awakened, models().cubeBottomTop("awakened_draconium_block", modLoc("block/awakened_draconium_block_side"), modLoc("block/awakened_draconium_block"), modLoc("block/awakened_draconium_block")));
-        simpleBlock(DEContent.ore_draconium_end);
-        simpleBlock(DEContent.ore_draconium_nether);
-        simpleBlock(DEContent.ore_draconium_overworld);
-        simpleBlock(DEContent.ore_draconium_deepslate);
         simpleBlock(DEContent.infused_obsidian);
         simpleBlock(DEContent.energy_core);
         simpleBlock(DEContent.energy_core_stabilizer, models().getExistingFile(modLoc("block/energy_core_stabilizer")));
@@ -51,8 +50,12 @@ public class BlockStateGenerator extends BlockStateProvider {
         simpleBlock(DEContent.stabilized_spawner, models().getExistingFile(modLoc("block/stabilized_spawner")));
         simpleBlock(DEContent.particle_generator, models().getExistingFile(modLoc("block/particle_generator")));
         simpleBlock(DEContent.crafting_core, models().getExistingFile(modLoc("block/crafting/fusion_crafting_core")));
-
         simpleBlock(DEContent.dislocation_inhibitor, models().cubeBottomTop("dislocation_inhibitor", modLoc("block/dislocation_inhibitor"), modLoc("block/parts/machine_top"), modLoc("block/parts/machine_top")));
+
+        multiLayerBlock(DEContent.ore_draconium_overworld, mcLoc("block/stone"), modLoc("block/draconium_ore_overlay"));
+        multiLayerBlock(DEContent.ore_draconium_nether, mcLoc("block/netherrack"), modLoc("block/draconium_ore_overlay"));
+        multiLayerBlock(DEContent.ore_draconium_end, mcLoc("block/end_stone"), modLoc("block/draconium_ore_overlay"));
+        multiLayerBlock(DEContent.ore_draconium_deepslate, mcLoc("block/deepslate"), modLoc("block/draconium_ore_overlay"));
 
         directionalBlock(DEContent.crafting_injector_basic, models().getExistingFile(modLoc("block/crafting/crafting_injector_draconium")));
         directionalBlock(DEContent.crafting_injector_wyvern, models().getExistingFile(modLoc("block/crafting/crafting_injector_wyvern")));
@@ -61,13 +64,13 @@ public class BlockStateGenerator extends BlockStateProvider {
 
         directionalFromNorth(DEContent.fluid_gate, models().getExistingFile(modLoc("block/fluid_gate")));
         directionalFromNorth(DEContent.flux_gate, models().getExistingFile(modLoc("block/flux_gate")));
-        
+
         activeFromExisting(DEContent.rain_sensor, modLoc("block/rain_sensor_inactive"), modLoc("block/rain_sensor_active"));
-        
+
         directionalBlock(DEContent.potentiometer, models().getExistingFile(modLoc("block/potentiometer")));
 
         simpleBlock(DEContent.energy_transfuser, models().getExistingFile(modLoc("block/energy_transfuser")));
-        
+
         simpleBlock(DEContent.disenchanter, models().getExistingFile(modLoc("block/disenchanter")));
         simpleBlock(DEContent.celestial_manipulator, models().getExistingFile(modLoc("block/celestial_manipulator")));
 
@@ -96,7 +99,7 @@ public class BlockStateGenerator extends BlockStateProvider {
         VariantBlockStateBuilder pylonBuilder = getVariantBuilder(DEContent.energy_pylon);
         for (EnergyPylon.Mode mode : EnergyPylon.Mode.values()) {
             String io = mode == EnergyPylon.Mode.OUTPUT ? "output" : "input";
-            ModelFile model = models().cubeBottomTop("energy_pylon_"+io, modLoc("block/energy_pylon/energy_pylon_" + io), modLoc("block/energy_pylon/energy_pylon_" + io), modLoc("block/energy_pylon/energy_pylon_active_face"));
+            ModelFile model = models().cubeBottomTop("energy_pylon_" + io, modLoc("block/energy_pylon/energy_pylon_" + io), modLoc("block/energy_pylon/energy_pylon_" + io), modLoc("block/energy_pylon/energy_pylon_active_face"));
             for (Direction dir : Direction.values()) {
                 pylonBuilder.partialState()
                         .with(EnergyPylon.FACING, dir)
@@ -201,6 +204,9 @@ public class BlockStateGenerator extends BlockStateProvider {
             grinderBuilder.part().modelFile(modelGrinder).rotationY(angle).addModel().condition(Grinder.FACING, dir).end()
                     .part().modelFile(modelGrinderActive).rotationY(angle).addModel().condition(Grinder.FACING, dir).condition(Grinder.ACTIVE, true).end();
         }
+
+
+
 
         if (true) return;
 
@@ -359,11 +365,21 @@ public class BlockStateGenerator extends BlockStateProvider {
                             .build();
                 });
     }
-    
+
     public void activeFromExisting(Block block, ResourceLocation inactiveModel, ResourceLocation activeModel) {
         getVariantBuilder(block).forAllStates(state -> {
-        	return ConfiguredModel.builder().modelFile(models().getExistingFile(state.getValue(BooleanProperty.create("active")) ? activeModel : inactiveModel)).build();
+            return ConfiguredModel.builder().modelFile(models().getExistingFile(state.getValue(BooleanProperty.create("active")) ? activeModel : inactiveModel)).build();
         });
+    }
+
+    public void multiLayerBlock(Block block, ResourceLocation solid, ResourceLocation overlay) {
+        simpleBlock(block,
+                models().getBuilder(block.getRegistryName().getPath())
+                        .parent(models().getExistingFile(mcLoc("block/block")))
+                        .customLoader(MultiLayerModelBuilder::begin)
+                        .submodel(RenderType.solid(), models().nested().parent(models().getExistingFile(mcLoc("block/cube_all"))).texture("all", solid))
+                        .submodel(RenderType.cutoutMipped(), models().nested().parent(models().getExistingFile(mcLoc("block/cube_all"))).texture("all", overlay))
+                        .end());
     }
 
     @Override
