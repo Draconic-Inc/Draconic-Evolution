@@ -3,7 +3,7 @@ package com.brandon3055.draconicevolution.entity.guardian;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.entity.GuardianCrystalEntity;
 import com.brandon3055.draconicevolution.init.DEContent;
-import com.brandon3055.draconicevolution.world.ChaosWorldGenHandler;
+import com.brandon3055.draconicevolution.world.ChaosIslandFeature;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -49,7 +49,7 @@ public enum GuardianSpawnState {
                         world.removeBlock(blockpos, false);
                     }
 
-                    ChaosWorldGenHandler.generateObelisk(world, nextSpawn, world.random);
+                    ChaosIslandFeature.generateObelisk(world, nextSpawn, world.random);
                     world.setBlock(nextSpawn, DEContent.infused_obsidian.defaultBlockState(), 3);
                     GuardianCrystalEntity crystal = new GuardianCrystalEntity(world.getLevel(), nextSpawn.getX() + 0.5, nextSpawn.getY() + 1, nextSpawn.getZ() + 0.5, manager.getUniqueID());
                     crystal.setInvulnerable(true);

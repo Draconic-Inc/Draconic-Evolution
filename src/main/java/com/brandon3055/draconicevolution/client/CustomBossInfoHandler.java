@@ -52,35 +52,16 @@ public class CustomBossInfoHandler extends GuiComponent {
 
     private static final ModelPart glass;
     private static final ModelPart cube;
-    private static final ModelPart base;
 
     static {
         MeshDefinition meshdefinition = new MeshDefinition();
         PartDefinition partdefinition = meshdefinition.getRoot();
         partdefinition.addOrReplaceChild("glass", CubeListBuilder.create().texOffs(0, 0).addBox(-4.0F, -4.0F, -4.0F, 8.0F, 8.0F, 8.0F), PartPose.ZERO);
         partdefinition.addOrReplaceChild("cube", CubeListBuilder.create().texOffs(32, 0).addBox(-4.0F, -4.0F, -4.0F, 8.0F, 8.0F, 8.0F), PartPose.ZERO);
-        partdefinition.addOrReplaceChild("base", CubeListBuilder.create().texOffs(0, 16).addBox(-6.0F, 0.0F, -6.0F, 12.0F, 4.0F, 12.0F), PartPose.ZERO);
         ModelPart modelRoot = LayerDefinition.create(meshdefinition, 64, 32).bakeRoot();
         glass = modelRoot.getChild("glass");
         cube = modelRoot.getChild("cube");
-        base = modelRoot.getChild("base");
     }
-
-    public static ShaderProgram shieldShader = ShaderProgramBuilder.builder()
-//            .addShader("vert", shader -> shader
-//                    .type(ShaderObject.StandardShaderType.VERTEX)
-//                    .source(new ResourceLocation(DraconicEvolution.MODID, "shaders/guardian_shield.vert"))
-//            )
-//            .addShader("frag", shader -> shader
-//                    .type(ShaderObject.StandardShaderType.FRAGMENT)
-//                    .source(new ResourceLocation(DraconicEvolution.MODID, "shaders/guardian_shield.frag"))
-//                    .uniform("time", UniformType.FLOAT)
-//                    .uniform("baseColour", UniformType.VEC4)
-//                    .uniform("activation", UniformType.FLOAT)
-//
-//            )
-//            .whenUsed(cache -> cache.glUniform1f("time", (BCClientEventHandler.elapsedTicks + Minecraft.getInstance().getFrameTime()) / 20))
-            .build();
 
     public static void init() {
         MinecraftForge.EVENT_BUS.addListener(CustomBossInfoHandler::onClientDisconnect);

@@ -119,8 +119,7 @@ public class ProcessExplosion implements IProcess {
 
         if (!calculationComplete) {
             long t = System.currentTimeMillis();
-//            //TODO Hack
-//            for (int i = 0; i < 500 && !calculationComplete; i++) updateCalculation();
+            updateCalculation();
             t = System.currentTimeMillis() - t;
             calcWait = t / 40;
             LogHelper.dev("Calculation Progress: " + MathUtils.round((((double) radius / (double) maxRadius) * 100D), 100) + "% " + (Runtime.getRuntime().freeMemory() / 1000000));

@@ -63,6 +63,7 @@ public class LangGenerator extends LanguageProvider {
         helper.add(DEContent.grinder,                                           "Mob Grinder");
         helper.add(DEContent.infused_obsidian,                                  "Draconium Infused Obsidian");
         helper.add(DEContent.ore_draconium_overworld,                           "Draconium Ore");
+        helper.add(DEContent.ore_draconium_deepslate,                           "Deepslate Draconium Ore");
         helper.add(DEContent.ore_draconium_nether,                              "Nether Draconium Ore");
         helper.add(DEContent.ore_draconium_end,                                 "Ender Draconium Ore");
         helper.add(DEContent.potentiometer,                                     "Potentiometer");

@@ -55,7 +55,9 @@ public class GuardianFightManager extends WorldEntity implements ITickableWorldE
     public static final float COVER_FIRE_POWER = 15;
 
     private Predicate<Entity> validPlayer;
-    private final ShieldedServerBossInfo bossInfo = (ShieldedServerBossInfo) (new ShieldedServerBossInfo(new TranslatableComponent("entity.draconicevolution.draconic_guardian"), BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.PROGRESS)).setPlayBossMusic(true).setCreateWorldFog(true);
+    private final ShieldedServerBossInfo bossInfo = (ShieldedServerBossInfo) (new ShieldedServerBossInfo(new TranslatableComponent("entity.draconicevolution.draconic_guardian"), BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.PROGRESS))
+            .setPlayBossMusic(true)
+            .setCreateWorldFog(true);
     private int ticksSinceGuardianSeen;
     private int aliveCrystals;
     private int ticksSinceCrystalsScanned;
@@ -305,7 +307,7 @@ public class GuardianFightManager extends WorldEntity implements ITickableWorldE
 
     /**
      * @return false to block the damage (There are still crystals alive)
-     * */
+     */
     public boolean onGuardianAttacked(DraconicGuardianEntity guardian, DamageSource source, float damage) {
         return getNumAliveCrystals() == 0;
     }

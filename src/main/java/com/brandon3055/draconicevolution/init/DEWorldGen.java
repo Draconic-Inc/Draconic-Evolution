@@ -2,9 +2,7 @@ package com.brandon3055.draconicevolution.init;
 
 import codechicken.lib.config.ConfigCategory;
 import codechicken.lib.math.MathHelper;
-import com.brandon3055.draconicevolution.DEConfig;
-import com.brandon3055.draconicevolution.world.ChaosWorldGenHandler;
-import com.mojang.serialization.Codec;
+import com.brandon3055.draconicevolution.world.ChaosIslandFeature;
 import net.covers1624.quack.util.CrashLock;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
@@ -15,7 +13,6 @@ import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
 import net.minecraft.world.level.levelgen.placement.*;
@@ -128,18 +125,23 @@ public class DEWorldGen {
                 .setComment("Allows you to disable generation of chaos islands")
                 .setDefaultBoolean(false)
                 .getBoolean();
-        int yOffset = category.getValue("chaosIslandYOffset")
-                .setComment("Changes the Y coord that the chaos island generates at.  The crystal generates at Y = 80 + chaosIslandYOffset")
-                .setDefaultInt(0)
+        int yPos = category.getValue("chaosIslandYPosition")
+                .setComment("The island will generate so that the chaos crystal is at this y position")
+                .setDefaultInt(80)
                 .getInt();
         int seperation = category.getValue("chaosIslandSeparation")
                 .setComment("Toggles whether the full chaos island should spawn or just the guardian crystals, the chaos crystal, and the guardian.")
                 .setDefaultInt(10000)
                 .getInt();
+        int size = category.getValue("chaosIslandSize")
+                .setComment("Rough radius of the main chaos island. If you prefer the smaller island from pre 1.18 set this to 80")
+                .setDefaultInt(160)
+                .getInt();
+
 
         if (!enabled) return null;
 
-        RegistryObject<ChaosIslandFeature> islandFeature = FEATURES.register("chaos_island", () -> new ChaosIslandFeature(NoneFeatureConfiguration.CODEC, yOffset, seperation));
+        RegistryObject<ChaosIslandFeature> islandFeature = FEATURES.register("chaos_island", () -> new ChaosIslandFeature(NoneFeatureConfiguration.CODEC, yPos, seperation, size));
         RegistryObject<ConfiguredFeature<?, ?>> configuredIsland = CONFIGURED_FEATURES.register("chaos_island", () -> new ConfiguredFeature<>(islandFeature.get(), NoneFeatureConfiguration.INSTANCE));
         return PLACED_FEATURES.register("chaos_island", () -> new PlacedFeature(configuredIsland.getHolder().get(), Collections.emptyList()));
     }
@@ -169,21 +171,5 @@ public class DEWorldGen {
 
     public static boolean isLikelyOverworldBiome(Biome.BiomeCategory category) {
         return category != Biome.BiomeCategory.NONE && category != Biome.BiomeCategory.THEEND && category != Biome.BiomeCategory.NETHER;
-    }
-
-    public static class ChaosIslandFeature extends Feature<NoneFeatureConfiguration> {
-
-        public final int chaosIslandYOffset;
-        public final int chaosIslandSeparation;
-
-        public ChaosIslandFeature(Codec<NoneFeatureConfiguration> codec, int chaosIslandYOffset, int chaosIslandSeparation) {
-            super(codec);
-            this.chaosIslandYOffset = chaosIslandYOffset;
-            this.chaosIslandSeparation = chaosIslandSeparation;
-        }
-
-        public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
-            return ChaosWorldGenHandler.generateChunk(this, context.level(), context.chunkGenerator(), context.random(), context.origin());
-        }
     }
 }
