@@ -21,10 +21,7 @@ public class WhatsBrokenGui extends ModularGuiScreen {
 
     public WhatsBrokenGui() {
         super(new TextComponent("Whats Broken? (Besides this info tablet)"));
-
     }
-
-
 
     @Override
     public void addElements(GuiElementManager manager) {
@@ -32,23 +29,20 @@ public class WhatsBrokenGui extends ModularGuiScreen {
 
         List<String> brokenList = new ArrayList<>();
 
-        brokenList.add(ChatFormatting.BLUE + "Not Implemented / WIP");
+        brokenList.add(ChatFormatting.BLUE + "Not Yet Implemented");
         brokenList.add("- Dislocators & Portals");
-        brokenList.add("- Draconium Chest");
-        brokenList.add("- Fusion crafting (Temporarily hacked in so you can craft stuff. Will be re written later)");
-        brokenList.add("- Bows");
-        brokenList.add("- Staff");
-        brokenList.add("- Particle generator");
-        brokenList.add("- Disenchanter");
-        brokenList.add("- Entity Detectors");
-        brokenList.add("- Chaos guardian is in the process of being re written but does work");
-        brokenList.add("- Modules: Junk filter, Night vision, Mining stability, (bunch of other modules i have planned)");
-
+        brokenList.add("- Particle Generator");
+        brokenList.add("- Additional Modules:");
+        brokenList.add("  - Night Vision");
+        brokenList.add("  - Many more planned modules");
         brokenList.add("");
-        brokenList.add(ChatFormatting.BLUE + "Know Issues");
-        brokenList.add("- Opening creative inventory nukes all data on my tools and armor (forge capability bug)");
+        brokenList.add(ChatFormatting.BLUE + "Work In Progress");
+        brokenList.add("- Chaos Guardian - In the process of being re-written, but does work for now.");
+        brokenList.add("- Fusion Crafting - Temporarily hacked in so you can craft stuff.  Will be re-written later.");
         brokenList.add("");
-        brokenList.add(ChatFormatting.BLUE + "See \"known-issues\" channel on discord for up to date list.");
+        brokenList.add(ChatFormatting.BLUE + "Known Issues");
+        brokenList.add("- On a dedicated server, opening creative inventory nukes all data on DE tools and curios.");
+        brokenList.add("  This is due to a Forge Capability bug and cannot be fixed, so all data will eventually be moved to NBT.");
 
         GuiLabel last = null;
         for (String line : brokenList) {
