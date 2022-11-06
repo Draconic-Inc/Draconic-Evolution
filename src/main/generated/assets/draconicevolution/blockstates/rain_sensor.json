@@ -1,7 +1,7 @@
 {
   "variants": {
     "active=false": {
-      "model": "draconicevolution:block/rain_sensor_inactive"
+      "model": "draconicevolution:block/rain_sensor"
     },
     "active=true": {
       "model": "draconicevolution:block/rain_sensor_active"

@@ -1,4 +1,5 @@
 {
+    "parent": "block/block",
     "textures": {
         "particle": "draconicevolution:block/celestial_manipulator",
         "0": "draconicevolution:block/celestial_manipulator"

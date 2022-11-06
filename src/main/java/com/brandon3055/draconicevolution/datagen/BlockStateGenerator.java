@@ -15,10 +15,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraftforge.client.model.generators.*;
 import net.minecraftforge.client.model.generators.loaders.MultiLayerModelBuilder;
-import net.minecraftforge.client.model.generators.loaders.OBJLoaderBuilder;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -65,7 +63,7 @@ public class BlockStateGenerator extends BlockStateProvider {
         directionalFromNorth(DEContent.fluid_gate, models().getExistingFile(modLoc("block/fluid_gate")));
         directionalFromNorth(DEContent.flux_gate, models().getExistingFile(modLoc("block/flux_gate")));
 
-        activeFromExisting(DEContent.rain_sensor, modLoc("block/rain_sensor_inactive"), modLoc("block/rain_sensor_active"));
+        getVariantBuilder(DEContent.rain_sensor).forAllStates(state -> ConfiguredModel.builder().modelFile(models().getExistingFile(state.getValue(RainSensor.ACTIVE) ? modLoc("block/rain_sensor_active") : modLoc("block/rain_sensor"))).build());
 
         directionalBlock(DEContent.potentiometer, models().getExistingFile(modLoc("block/potentiometer")));
 
@@ -73,6 +71,8 @@ public class BlockStateGenerator extends BlockStateProvider {
 
         simpleBlock(DEContent.disenchanter, models().getExistingFile(modLoc("block/disenchanter")));
         simpleBlock(DEContent.celestial_manipulator, models().getExistingFile(modLoc("block/celestial_manipulator")));
+        simpleBlock(DEContent.entity_detector, models().getExistingFile(modLoc("block/entity_detector")));
+        simpleBlock(DEContent.entity_detector_advanced, models().getExistingFile(modLoc("block/entity_detector_advanced")));
 
         dummyBlock(DEContent.crystal_io_basic);
         dummyBlock(DEContent.crystal_io_wyvern);
@@ -204,8 +204,6 @@ public class BlockStateGenerator extends BlockStateProvider {
             grinderBuilder.part().modelFile(modelGrinder).rotationY(angle).addModel().condition(Grinder.FACING, dir).end()
                     .part().modelFile(modelGrinderActive).rotationY(angle).addModel().condition(Grinder.FACING, dir).condition(Grinder.ACTIVE, true).end();
         }
-
-
 
 
         if (true) return;
@@ -364,12 +362,6 @@ public class BlockStateGenerator extends BlockStateProvider {
                             .rotationY(dir.getAxis().isVertical() ? 0 : (((int) dir.toYRot()) + angleOffset) % 360)
                             .build();
                 });
-    }
-
-    public void activeFromExisting(Block block, ResourceLocation inactiveModel, ResourceLocation activeModel) {
-        getVariantBuilder(block).forAllStates(state -> {
-            return ConfiguredModel.builder().modelFile(models().getExistingFile(state.getValue(BooleanProperty.create("active")) ? activeModel : inactiveModel)).build();
-        });
     }
 
     public void multiLayerBlock(Block block, ResourceLocation solid, ResourceLocation overlay) {
