@@ -16,6 +16,7 @@ import com.brandon3055.draconicevolution.api.config.ConfigProperty.IntegerFormat
 import com.brandon3055.draconicevolution.api.config.DecimalProperty;
 import com.brandon3055.draconicevolution.api.config.IntegerProperty;
 import com.brandon3055.draconicevolution.api.crafting.IFusionDataTransfer;
+import com.brandon3055.draconicevolution.api.event.ModularItemInitEvent;
 import com.brandon3055.draconicevolution.api.modules.ModuleCategory;
 import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
 import com.brandon3055.draconicevolution.api.modules.data.AOEData;
@@ -44,6 +45,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.extensions.IForgeItem;
 import net.minecraftforge.energy.CapabilityEnergy;
 
@@ -94,6 +96,7 @@ public interface IModularItem extends IForgeItem, IFusionDataTransfer {
         }
 
         initCapabilities(stack, host, provider);
+        MinecraftForge.EVENT_BUS.post(new ModularItemInitEvent(stack, host, host));
         return provider;
     }
 
