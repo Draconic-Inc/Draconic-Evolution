@@ -136,7 +136,7 @@ public class GuiEnergyCore extends ModularGuiContainer<ContainerBCTile<TileEnerg
                 .setAlignment(GuiAlign.CENTER);
 
         GuiLabel energy = display.addChild(new GuiLabel())
-                .setDisplaySupplier(() -> tile.energy.getReadable() + " " + I18n.get(pfx + "op"))
+                .setDisplaySupplier(() -> tile.energy.getReadable() + I18n.get(pfx + "op"))
                 .setSize(display.xSize(), 8)
                 .setPos(display.xPos(), opLabel.maxYPos() + 3)
                 .setTextColour(GOLD)
@@ -151,7 +151,7 @@ public class GuiEnergyCore extends ModularGuiContainer<ContainerBCTile<TileEnerg
                 .setEnabledCallback(() -> !tile.energy.isUnlimited());
 
         GuiLabel capacity = display.addChild(new GuiLabel())
-                .setDisplaySupplier(() -> tile.energy.getReadableCapacity() + " " + I18n.get(pfx + "op"))
+                .setDisplaySupplier(() -> tile.energy.getReadableCapacity() + I18n.get(pfx + "op"))
                 .setSize(display.xSize(), 8)
                 .setPos(display.xPos(), capLabel.maxYPos() + 3)
                 .setTextColour(GOLD)
