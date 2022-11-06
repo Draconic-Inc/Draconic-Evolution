@@ -2,7 +2,8 @@
     "parent": "block/block",
     "textures": {
         "bottom": "draconicevolution:block/rain_sensor_side",
-        "top": "draconicevolution:block/rain_sensor_inactive"
+        "top": "draconicevolution:block/rain_sensor_inactive",
+        "particle": "draconicevolution:block/rain_sensor_side"
     },
     "elements": [
         {

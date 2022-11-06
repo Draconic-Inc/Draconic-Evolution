@@ -7,7 +7,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "draconicevolution:advanced_entity_detector"
+          "name": "draconicevolution:entity_detector_advanced"
         }
       ],
       "conditions": [

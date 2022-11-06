@@ -2,7 +2,7 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "draconicevolution:advanced_entity_detector"
+      "draconicevolution:entity_detector_advanced"
     ]
   },
   "criteria": {
@@ -21,7 +21,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "draconicevolution:advanced_entity_detector"
+        "recipe": "draconicevolution:entity_detector_advanced"
       }
     }
   },

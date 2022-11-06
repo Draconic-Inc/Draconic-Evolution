@@ -1,5 +1,4 @@
 {
-  "block.draconicevolution.advanced_entity_detector": "Advanced Entity Detector",
   "block.draconicevolution.awakened_crafting_injector": "Draconic Fusion Crafting Injector",
   "block.draconicevolution.awakened_draconium_block": "Awakened Draconium Block",
   "block.draconicevolution.basic_crafting_injector": "Draconium Fusion Crafting Injector",
@@ -27,6 +26,7 @@
   "block.draconicevolution.energy_pylon": "Energy Pylon",
   "block.draconicevolution.energy_transfuser": "Energy Transfuser",
   "block.draconicevolution.entity_detector": "Entity Detector",
+  "block.draconicevolution.entity_detector_advanced": "Advanced Entity Detector",
   "block.draconicevolution.fluid_gate": "Fluid Gate",
   "block.draconicevolution.flux_gate": "Flux Gate",
   "block.draconicevolution.generator": "Generator",

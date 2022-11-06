@@ -342,6 +342,7 @@ public class ClientProxy extends CommonProxy {
         event.registerBlockEntityRenderer(DEContent.tile_placed_item, RenderTilePlacedItem::new);
         event.registerBlockEntityRenderer(DEContent.tile_disenchanter, RenderTileDisenchanter::new);
         event.registerBlockEntityRenderer(DEContent.tile_celestial_manipulator, RenderTileCelestialManipulator::new);
+        event.registerBlockEntityRenderer(DEContent.tile_entity_detector, RenderTileEntityDetector::new);
 
         //Entities
         event.registerEntityRenderer(DEContent.draconicGuardian, DraconicGuardianRenderer::new);

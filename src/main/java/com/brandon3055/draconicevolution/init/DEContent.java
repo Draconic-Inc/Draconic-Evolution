@@ -213,7 +213,7 @@ public class DEContent {
     @ObjectHolder("dislocator_receptacle")      public static DislocatorReceptacle      dislocator_receptacle;
     @ObjectHolder("creative_op_capacitor")      public static CreativeOPSource          creative_op_capacitor;
     @ObjectHolder("entity_detector")            public static EntityDetector            entity_detector;
-    @ObjectHolder("advanced_entity_detector")   public static EntityDetector            entity_detector_advanced;
+    @ObjectHolder("entity_detector_advanced")   public static EntityDetector            entity_detector_advanced;
     @ObjectHolder("stabilized_spawner")         public static StabilizedSpawner         stabilized_spawner;
     @ObjectHolder("potentiometer")              public static Potentiometer             potentiometer;
     @ObjectHolder("celestial_manipulator")      public static CelestialManipulator      celestial_manipulator;
@@ -276,7 +276,7 @@ public class DEContent {
         event.getRegistry().register(new DislocatorReceptacle(machine).setRegistryName("dislocator_receptacle"));
         event.getRegistry().register(new CreativeOPSource(machine).setRegistryName("creative_op_capacitor"));
         event.getRegistry().register(new EntityDetector(machine, false).setRegistryName("entity_detector"));
-        event.getRegistry().register(new EntityDetector(machine, true).setRegistryName("advanced_entity_detector"));
+        event.getRegistry().register(new EntityDetector(machine, true).setRegistryName("entity_detector_advanced"));
         event.getRegistry().register(new StabilizedSpawner(machine).setRegistryName("stabilized_spawner"));
         event.getRegistry().register(new DraconiumChest(hardenedMachine).setRegistryName("draconium_chest"));
         event.getRegistry().register(new ParticleGenerator(machine).setRegistryName("particle_generator"));

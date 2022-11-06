@@ -1,7 +1,8 @@
 {
     "parent": "block/block",
     "textures": {
-        "texture": "draconicevolution:block/entity_detector"
+        "texture": "draconicevolution:block/entity_detector",
+        "particle": "draconicevolution:block/entity_detector"
     },
     "elements": [
         {
