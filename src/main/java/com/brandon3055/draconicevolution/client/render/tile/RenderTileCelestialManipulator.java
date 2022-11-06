@@ -28,7 +28,7 @@ public class RenderTileCelestialManipulator implements BlockEntityRenderer<TileC
     }
 
     @Override
-    public void render(TileCelestialManipulator p_112307_, float p_112308_, PoseStack p_112309_, MultiBufferSource p_112310_, int p_112311_, int p_112312_) {
+    public void render(TileCelestialManipulator te, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
 
     }
 

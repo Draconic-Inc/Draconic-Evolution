@@ -45,6 +45,8 @@ public class DEParticles {
     public static SimpleParticleType guardian_cloud;
     @ObjectHolder("guardian_beam")
     public static SimpleParticleType guardian_beam;
+    @ObjectHolder("spark")
+    public static IntParticleType spark;
 
     @SubscribeEvent
     public static void registerParticles(RegistryEvent.Register<ParticleType<?>> event) {
@@ -57,6 +59,7 @@ public class DEParticles {
         event.getRegistry().register(new SimpleParticleType(false).setRegistryName("blink"));
         event.getRegistry().register(new SimpleParticleType(false).setRegistryName("guardian_cloud"));
         event.getRegistry().register(new SimpleParticleType(false).setRegistryName("guardian_beam"));
+        event.getRegistry().register(new IntParticleType(false).setRegistryName("spark"));
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -72,6 +75,7 @@ public class DEParticles {
         manager.register(blink, BlinkParticle.Factory::new);
         manager.register(guardian_cloud, GuardianCloudParticle.Factory::new);
         manager.register(guardian_beam, GuardianBeamParticle.Factory::new);
+        manager.register(spark, SparkParticle.Factory::new);
     }
 
 

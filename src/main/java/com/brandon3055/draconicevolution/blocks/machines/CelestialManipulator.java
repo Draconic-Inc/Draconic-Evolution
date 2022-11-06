@@ -15,7 +15,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
  */
 public class CelestialManipulator extends BlockBCore implements EntityBlock {
 
-	protected static final VoxelShape SHAPE = Block.box(1.0, 0, 1.0, 15.0, 13.0, 15.0);
+	protected static final VoxelShape SHAPE = Block.box(1.0, 0, 1.0, 15.0, 8.5, 15.0);
 
     public CelestialManipulator(Properties properties) {
         super(properties);
