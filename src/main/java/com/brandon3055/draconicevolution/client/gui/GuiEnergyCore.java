@@ -136,7 +136,7 @@ public class GuiEnergyCore extends ModularGuiContainer<ContainerBCTile<TileEnerg
                 .setAlignment(GuiAlign.CENTER);
 
         GuiLabel energy = display.addChild(new GuiLabel())
-                .setDisplaySupplier(() -> tile.energy.getReadable() + I18n.get(pfx + "op"))
+                .setDisplaySupplier(() -> tile.energy.getReadable() + (tile.energy.getEnergyStored() < 1000000 ? " " : "") + I18n.get(pfx + "op"))
                 .setSize(display.xSize(), 8)
                 .setPos(display.xPos(), opLabel.maxYPos() + 3)
                 .setTextColour(GOLD)
