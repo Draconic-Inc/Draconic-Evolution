@@ -1,5 +1,11 @@
 package com.brandon3055.draconicevolution.integration.computers;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyPylon;
 import dan200.computercraft.api.lua.LuaFunction;
 import dan200.computercraft.api.peripheral.IPeripheral;
@@ -37,6 +43,25 @@ public class PeripheralEnergyPylon implements IPeripheral, ICapabilityProvider {
 	@LuaFunction
 	public final long getMaxEnergyStored() {
 		return tile.opAdapter.getMaxOPStored();
+	}
+	
+	@LuaFunction
+	public final Map<Object, Object> getEnergyStoredInNotation() {
+		Map<Object, Object> map = new HashMap<Object, Object>();
+		String[] split = tile.getCore().energy.getScientific().split("E", 2);
+		map.put("coefficient", Double.parseDouble(split[0]));
+		map.put("exponent", Integer.parseInt(split[1]));
+		return map;
+	}
+	
+	@LuaFunction
+	public final Map<Object, Object> getMaxEnergyStoredInNotation() {
+		Map<Object, Object> map = new HashMap<Object, Object>();
+		long maxEnergy = tile.opAdapter.getMaxOPStored();
+		String[] split = new DecimalFormat("0.######E0", DecimalFormatSymbols.getInstance(Locale.ROOT)).format(maxEnergy).split("E", 2);
+		map.put("coefficient", Double.parseDouble(maxEnergy == Long.MAX_VALUE ? "-1" : split[0]));
+		map.put("exponent", Integer.parseInt(maxEnergy == Long.MAX_VALUE ? "-1" : split[1]));
+		return map;
 	}
 	
 	@LuaFunction
