@@ -47,10 +47,12 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.extensions.IForgeItem;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by brandon3055 on 16/6/20
@@ -112,6 +114,13 @@ public interface IModularItem extends IForgeItem, IFusionDataTransfer {
         if (!Screen.hasShiftDown()) {
             tooltip.add(new TranslatableComponent("[Modular Item]").withStyle(ChatFormatting.BLUE));
         }
+
+        if (DECapabilities.MODULE_HOST_CAPABILITY != null) {
+            LazyOptional<ModuleHost> opt = stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
+            opt.ifPresent(host -> host.getModuleEntities().forEach(e -> e.addHostHoverText(stack, worldIn, tooltip, flagIn)));
+            opt.ifPresent(host -> host.getInstalledTypes().map(host::getModuleData).filter(Objects::nonNull).forEach(data -> data.addHostHoverText(stack, worldIn, tooltip, flagIn)));
+        }
+
         EnergyUtils.addEnergyInfo(stack, tooltip);
         if (EnergyUtils.isEnergyItem(stack) && EnergyUtils.getMaxEnergyStored(stack) == 0) {
             tooltip.add(new TranslatableComponent("modular_item.draconicevolution.requires_energy").withStyle(ChatFormatting.RED));

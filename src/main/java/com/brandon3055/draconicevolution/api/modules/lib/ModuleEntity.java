@@ -14,9 +14,12 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -25,16 +28,16 @@ import java.util.Map;
 /**
  * Created by brandon3055 on 18/4/20.
  */
-public class ModuleEntity {
+public class ModuleEntity<T extends ModuleData<T>> {
 
-    protected final Module<?> module;
+    protected final Module<T> module;
     protected ModuleHost host;
     protected Map<String, ConfigProperty> propertyMap = new HashMap<>();
     protected boolean savePropertiesToItem = false;
     protected int gridX;
     protected int gridY;
 
-    public ModuleEntity(Module<?> module) {
+    public ModuleEntity(Module<T> module) {
         this.module = module;
 //        addProperty(new IntegerProperty("testModEntProp", 0).range(0, 100));
 //        savePropertiesToItem = true;
@@ -161,7 +164,7 @@ public class ModuleEntity {
 
     //region Setters / Getters
 
-    public Module<?> getModule() {
+    public Module<T> getModule() {
         return module;
     }
 
@@ -208,6 +211,27 @@ public class ModuleEntity {
     public void renderSlotOverlay(MultiBufferSource getter, Minecraft mc, int x, int y, int width, int height, double mouseX, double mouseY, boolean mouseOver, float partialTicks) {
 
     }
+
+    /**
+     * Use to add information to the module item's tool tip.
+     *
+     * @param list The list to which tool tip entries should be added
+     */
+    public void addToolTip(List<Component> list) {}
+
+    /**
+     * Use this method to display information in the tooltip of the {@link com.brandon3055.draconicevolution.items.equipment.IModularItem} this module is installed in.
+     * This will be added directly after the '[Modular Item]' text and before {@link ModuleData#addHostHoverText}.
+     * The recommended implementation is to display this information when the shift key is pressed.
+     *
+     * For a {@link ModuleData} based implementation see {@link ModuleData#addHostHoverText(ItemStack, Level, List, TooltipFlag)}
+     *
+     * @param stack The modular item this tool tip will be added to
+     * @param level The current level
+     * @param tooltip The tooltip list
+     */
+    @OnlyIn(Dist.CLIENT)
+    public void addHostHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {}
 
     //region Helpers
 
@@ -264,6 +288,4 @@ public class ModuleEntity {
                 ", gridY=" + gridY +
                 '}';
     }
-
-    public void addToolTip(List<Component> list) {}
 }

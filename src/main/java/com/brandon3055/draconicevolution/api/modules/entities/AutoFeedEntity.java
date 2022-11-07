@@ -13,6 +13,7 @@ import com.brandon3055.draconicevolution.api.modules.lib.StackModuleContext;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -24,12 +25,15 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.food.FoodData;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class AutoFeedEntity extends ModuleEntity {
+public class AutoFeedEntity extends ModuleEntity<AutoFeedData> {
 
     private BooleanProperty consumeFood;
     private float storedFood = 0;
@@ -42,7 +46,7 @@ public class AutoFeedEntity extends ModuleEntity {
 
     @Override
     public void tick(ModuleContext context) {
-        AutoFeedData data = (AutoFeedData) module.getData();
+        AutoFeedData data = module.getData();
         if (context instanceof StackModuleContext) {
             LivingEntity entity = ((StackModuleContext) context).getEntity();
             if (entity instanceof ServerPlayer && entity.tickCount % 10 == 0 && ((StackModuleContext) context).isEquipped()) {
@@ -90,7 +94,7 @@ public class AutoFeedEntity extends ModuleEntity {
     @OnlyIn(Dist.CLIENT)
     public void renderSlotOverlay(MultiBufferSource getter, Minecraft mc, int x, int y, int width, int height, double mouseX, double mouseY, boolean mouseOver, float partialTicks) {
         VertexConsumer builder = getter.getBuffer(BCGuiSprites.GUI_TYPE);
-        AutoFeedData data = (AutoFeedData) module.getData();
+        AutoFeedData data = module.getData();
         double progress = storedFood / data.getFoodStorage();
         progress = (int) (progress * 21F);
         progress = (20 - progress) - 1;
@@ -110,6 +114,14 @@ public class AutoFeedEntity extends ModuleEntity {
     @Override
     public void addToolTip(List<Component> list) {
         list.add(new TranslatableComponent("module.draconicevolution.auto_feed.stored").withStyle(ChatFormatting.GRAY).append(" ").append(new TranslatableComponent("module.draconicevolution.auto_feed.stored.value", (int)storedFood).withStyle(ChatFormatting.DARK_GREEN)));
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public void addHostHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
+        if (Screen.hasShiftDown()) {
+            tooltip.add(new TranslatableComponent("module.draconicevolution.auto_feed.stored").withStyle(ChatFormatting.GRAY).append(" ").append(new TranslatableComponent("module.draconicevolution.auto_feed.stored.value", (int)storedFood).withStyle(ChatFormatting.DARK_GREEN)));
+        }
     }
 
     @Override

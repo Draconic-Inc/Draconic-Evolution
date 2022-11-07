@@ -30,7 +30,7 @@ import java.util.Set;
 /**
  * Created by brandon3055 on 7/7/20
  */
-public class ShieldControlEntity extends ModuleEntity {
+public class ShieldControlEntity extends ModuleEntity<ShieldControlData> {
     private static final Set<DamageSource> UNBLOCKABLE = Sets.newHashSet(DamageSource.DROWN, DamageSource.STARVE, DamageSource.IN_WALL);
     private static final HashMap<DamageSource, Double> ENV_SOURCES = new HashMap<>();
 
@@ -66,7 +66,7 @@ public class ShieldControlEntity extends ModuleEntity {
     private float shieldHitIndicator;
     private int shieldColour;
 
-    public ShieldControlEntity(Module<?> module) {
+    public ShieldControlEntity(Module<ShieldControlData> module) {
         super(module);
         this.shieldColour = getDefaultShieldColour(module.getModuleTechLevel());
         addProperty(shieldEnabled = new BooleanProperty("shield_mod.enabled", true).setFormatter(BooleanFormatter.ENABLED_DISABLED));
@@ -170,7 +170,7 @@ public class ShieldControlEntity extends ModuleEntity {
     }
 
     public int getMaxShieldCoolDown() {
-        return ((ShieldControlData) module.getData()).getCoolDownTicks() * 100;
+        return module.getData().getCoolDownTicks() * 100;
     }
 
     /**

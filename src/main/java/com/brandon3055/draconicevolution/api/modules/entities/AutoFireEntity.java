@@ -6,7 +6,7 @@ import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.data.NoData;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 
-public class AutoFireEntity extends ModuleEntity {
+public class AutoFireEntity extends ModuleEntity<NoData> {
 
     private BooleanProperty autoFireEnabled;
 

@@ -363,7 +363,6 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
 
         if (timer == ascendStart) {
             for (int i = 0; i < 100; i++) {
-                Direction dir = Direction.values()[2 + level.random.nextInt(4)];
                 IntParticleType.IntParticleData data = new IntParticleType.IntParticleData(DEParticles.spark,
                         0, //R
                         127,  //G

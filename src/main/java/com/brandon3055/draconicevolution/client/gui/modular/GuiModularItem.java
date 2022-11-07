@@ -106,7 +106,7 @@ public class GuiModularItem extends ModularGuiContainer<ContainerModularItem> {
         infoPanel.addDynamicLabel(gridName::toString, 12);
 
         Map<Component, Component> nameStatMap = new LinkedHashMap<>();
-        grid.getModuleHost().addInformation(nameStatMap, container.getModuleContext(), false);
+        grid.getModuleHost().addInformation(nameStatMap, container.getModuleContext());
         for (Component name : nameStatMap.keySet()) {
             infoPanel.addLabeledValue(ChatFormatting.GOLD + name.getString(), 6, 10, () -> ChatFormatting.GRAY + nameStatMap.get(name).getString(), true);
         }

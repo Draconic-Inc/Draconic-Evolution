@@ -8,8 +8,8 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.LazyOptional;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 
 /**
  * Created by brandon3055 on 19/4/20.
@@ -33,6 +33,7 @@ public class StackModuleContext extends ModuleContext {
     }
 
     @Override
+    @Nullable
     public IOPStorageModifiable getOpStorage() {
         LazyOptional<IOPStorage> optional = stack.getCapability(DECapabilities.OP_STORAGE);
         if (optional.isPresent()) {

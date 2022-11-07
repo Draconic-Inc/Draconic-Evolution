@@ -20,8 +20,10 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.sounds.SoundEvents;
@@ -31,6 +33,8 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.LazyOptional;
@@ -38,10 +42,12 @@ import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.fml.util.thread.EffectiveSide;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Iterator;
+import java.util.List;
 
-public class UndyingEntity extends ModuleEntity {
+public class UndyingEntity extends ModuleEntity<UndyingData> {
 
     private int charge;
     private int invulnerableTime = 0;
@@ -78,7 +84,7 @@ public class UndyingEntity extends ModuleEntity {
         }
 
         StackModuleContext context = (StackModuleContext) moduleContext;
-        UndyingData data = (UndyingData) module.getData();
+        UndyingData data = module.getData();
         if (!context.isEquipped() || charge >= data.getChargeTime()) {
             return;
         }
@@ -106,17 +112,17 @@ public class UndyingEntity extends ModuleEntity {
     }
 
     public boolean isCharged() {
-        UndyingData data = (UndyingData) module.getData();
+        UndyingData data = module.getData();
         return charge >= data.getChargeTime();
     }
 
     public double getCharge() {
-        UndyingData data = (UndyingData) module.getData();
+        UndyingData data = module.getData();
         return charge / (double)data.getChargeTime();
     }
 
     public boolean tryBlockDeath(LivingDeathEvent event) {
-        UndyingData data = (UndyingData) module.getData();
+        UndyingData data = module.getData();
         if (charge >= data.getChargeTime()) {
             LivingEntity entity = event.getEntityLiving();
             entity.setHealth(entity.getHealth() + data.getHealthBoost());
@@ -153,7 +159,7 @@ public class UndyingEntity extends ModuleEntity {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void renderSlotOverlay(MultiBufferSource getter, Minecraft mc, int x, int y, int width, int height, double mouseX, double mouseY, boolean mouseOver, float partialTicks) {
-        UndyingData data = (UndyingData) module.getData();
+        UndyingData data = module.getData();
         if (charge >= data.getChargeTime()) return;
         double diameter = Math.min(width, height) * 0.425;
         double progress = charge / Math.max(1D, data.getChargeTime());

@@ -39,9 +39,9 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
     private boolean deleteInvalidModules;
     private TechLevel techLevel;
     private EnergyData energyCache = null;
-    private ModuleData energyLinkCache = null;
+    private ModuleData<?> energyLinkCache = null;
     private EnergyShareData energyShareCache = null;
-    private final List<ModuleEntity> moduleEntities = new ArrayList<>();
+    private final List<ModuleEntity<?>> moduleEntities = new ArrayList<>();
     private Set<ModuleType<?>> additionalTypeList = new HashSet<>();
     private Set<ModuleType<?>> typeBlackList = new HashSet<>();
     private Set<ModuleCategory> categories = new HashSet<>();
@@ -67,14 +67,14 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
     }
 
     @Override
-    public List<ModuleEntity> getModuleEntities() {
+    public List<ModuleEntity<?>> getModuleEntities() {
         synchronized (moduleEntities) {
             return Collections.unmodifiableList(moduleEntities);
         }
     }
 
     @Override
-    public void addModule(ModuleEntity entity, ModuleContext context) {
+    public void addModule(ModuleEntity<?> entity, ModuleContext context) {
         synchronized (moduleEntities) {
             moduleEntities.add(entity);
         }
@@ -85,7 +85,7 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
     }
 
     @Override
-    public void removeModule(ModuleEntity entity, ModuleContext context) {
+    public void removeModule(ModuleEntity<?> entity, ModuleContext context) {
         synchronized (moduleEntities) {
             moduleEntities.remove(entity);
         }
@@ -246,7 +246,7 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
 
             Set<String> installedNames = providedProperties.stream().map(ConfigProperty::getName).collect(Collectors.toSet());
             //Add new properties
-            providedProperties.addAll(gathered.stream().filter(e -> !installedNames.contains(e.getName())).collect(Collectors.toList()));
+            providedProperties.addAll(gathered.stream().filter(e -> !installedNames.contains(e.getName())).toList());
 
             //Repopulate the property map.
             propertyMap.clear();
@@ -298,7 +298,7 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
         //Serialize Modules
         ListTag modules = new ListTag();
         synchronized (moduleEntities) {
-            for (ModuleEntity entity : moduleEntities) {
+            for (ModuleEntity<?> entity : moduleEntities) {
                 CompoundTag entityNBT = new CompoundTag();
                 entityNBT.putString("id", entity.module.getRegistryName().toString());
                 entity.writeToNBT(entityNBT);
@@ -328,7 +328,7 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
                 if (module == null) {
                     logger.warn("Failed to load unregistered module: " + id + " Skipping...");
                 } else {
-                    ModuleEntity entity = module.createEntity();
+                    ModuleEntity<?> entity = module.createEntity();
                     entity.readFromNBT(compound);
                     if (deleteInvalidModules && !entity.isPosValid(gridWidth, gridHeight)) {
                         logger.warn("Deleting module from invalid grid position: " + entity.toString());

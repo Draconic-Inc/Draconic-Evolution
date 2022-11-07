@@ -5,6 +5,7 @@ import com.brandon3055.brandonscore.api.power.IOPStorageModifiable;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.util.LazyOptional;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Created by brandon3055 on 19/4/20.
@@ -18,6 +19,7 @@ public class TileModuleContext extends ModuleContext {
     }
 
     @Override
+    @Nullable
     public IOPStorageModifiable getOpStorage() {
         LazyOptional<IOPStorage> optional = tile.getCapability(DECapabilities.OP_STORAGE);
         if (optional.isPresent()) {
