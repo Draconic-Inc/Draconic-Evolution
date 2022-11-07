@@ -852,7 +852,7 @@ public class LangGenerator extends LanguageProvider {
 
 
 		add("numprefix." + DraconicEvolution.MODID + ".10-3",                   " Kilo ");
-		add("numprefix." + DraconicEvolution.MODID + ".10-6",                   " Kega ");
+		add("numprefix." + DraconicEvolution.MODID + ".10-6",                   " Mega ");
 		add("numprefix." + DraconicEvolution.MODID + ".10-9",                   " Giga ");
 		add("numprefix." + DraconicEvolution.MODID + ".10-12",                  " Tera ");
 		add("numprefix." + DraconicEvolution.MODID + ".10-15",                  " Peta ");
