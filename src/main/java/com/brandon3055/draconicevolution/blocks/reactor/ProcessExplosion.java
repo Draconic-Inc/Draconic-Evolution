@@ -60,7 +60,7 @@ public class ProcessExplosion implements IProcess {
     protected long startTime = -1;
     protected long calcWait = 0;
     /**
-     * Set this to false to disable the laval dropped by the explosion.
+     * Set this to false to disable the lava dropped by the explosion.
      */
     public boolean lava = true;
     public HashSet<Long> blocksToUpdate = new HashSet<>();
