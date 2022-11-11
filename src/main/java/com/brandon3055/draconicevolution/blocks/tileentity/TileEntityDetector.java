@@ -98,7 +98,7 @@ public class TileEntityDetector extends TileBCore implements MenuProvider, IInte
         super(DEContent.tile_entity_detector, pos, state);
         capManager.setManaged("energy", CapabilityOP.OP, opStorage).saveBoth().syncContainer();
         if (isAdvanced()) {
-            entityFilter = new EntityFilter(true, FilterType.values());
+            entityFilter = new EntityFilter(false, FilterType.values());
         } else {
             entityFilter = new EntityFilter(true, FilterType.PLAYER, FilterType.HOSTILE);
         }
