@@ -3,7 +3,6 @@ package com.brandon3055.draconicevolution.client.render.particle;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.utils.MathUtils;
 import com.brandon3055.draconicevolution.client.DEMiscSprites;
-import com.brandon3055.draconicevolution.client.DETextures;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.ParticleRenderType;

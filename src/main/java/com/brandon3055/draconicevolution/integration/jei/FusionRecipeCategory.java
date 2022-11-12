@@ -5,10 +5,9 @@ import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.api.render.GuiHelper;
 import com.brandon3055.brandonscore.client.utils.GuiHelperOld;
 import com.brandon3055.brandonscore.utils.Utils;
+import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.crafting.IFusionRecipe;
-import com.brandon3055.draconicevolution.client.DETextures;
 import com.brandon3055.draconicevolution.init.DEContent;
-import com.brandon3055.draconicevolution.utils.ResourceHelperDE;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import mezz.jei.api.constants.VanillaTypes;
@@ -44,7 +43,7 @@ public class FusionRecipeCategory implements IRecipeCategory<IFusionRecipe> {
     private int ySize = 111;
 
     public FusionRecipeCategory(IGuiHelper guiHelper) {
-        background = guiHelper.createDrawable(ResourceHelperDE.getResource(DETextures.GUI_JEI_FUSION), 0, 0, xSize, ySize);
+        background = guiHelper.createDrawable(new ResourceLocation(DraconicEvolution.MODID, "textures/gui/jei_fusion_background.png"), 0, 0, xSize, ySize);
         localizedName = new TranslatableComponent(DEContent.crafting_core.getDescriptionId());
         icon = guiHelper.createDrawableIngredient(new ItemStack(DEContent.crafting_core));
     }

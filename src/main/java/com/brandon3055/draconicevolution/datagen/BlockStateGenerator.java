@@ -9,6 +9,8 @@ import com.brandon3055.draconicevolution.blocks.machines.Generator;
 import com.brandon3055.draconicevolution.blocks.machines.Grinder;
 import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.core.Direction;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
@@ -266,37 +268,37 @@ public class BlockStateGenerator extends BlockStateProvider {
 //                    ConfiguredModel.class));
 
         // From here on, models are 1-to-1 copies of vanilla (except for model locations) and will be tested as such below
-        ModelFile block = models().getBuilder("block").transforms()
-                .transform(ModelBuilder.Perspective.GUI)
-                .rotation(30, 225, 0)
-                .scale(0.625f)
-                .end()
-                .transform(ModelBuilder.Perspective.GROUND)
-                .translation(0, 3, 0)
-                .scale(0.25f)
-                .end()
-                .transform(ModelBuilder.Perspective.FIXED)
-                .scale(0.5f)
-                .end()
-                .transform(ModelBuilder.Perspective.THIRDPERSON_RIGHT)
-                .rotation(75, 45, 0)
-                .translation(0, 2.5f, 0)
-                .scale(0.375f)
-                .end()
-                .transform(ModelBuilder.Perspective.FIRSTPERSON_RIGHT)
-                .rotation(0, 45, 0)
-                .scale(0.4f)
-                .end()
-                .transform(ModelBuilder.Perspective.FIRSTPERSON_LEFT)
-                .rotation(0, 225, 0)
-                .scale(0.4f)
-                .end()
-                .end();
+//        ModelFile block = models().getBuilder("block").transforms()
+//                .transform(TransformType.GUI)
+//                .rotation(30, 225, 0)
+//                .scale(0.625f)
+//                .end()
+//                .transform(TransformType.GROUND)
+//                .translation(0, 3, 0)
+//                .scale(0.25f)
+//                .end()
+//                .transform(TransformType.FIXED)
+//                .scale(0.5f)
+//                .end()
+//                .transform(TransformType.THIRDPERSON_RIGHT)
+//                .rotation(75, 45, 0)
+//                .translation(0, 2.5f, 0)
+//                .scale(0.375f)
+//                .end()
+//                .transform(TransformType.FIRSTPERSON_RIGHT)
+//                .rotation(0, 45, 0)
+//                .scale(0.4f)
+//                .end()
+//                .transform(TransformType.FIRSTPERSON_LEFT)
+//                .rotation(0, 225, 0)
+//                .scale(0.4f)
+//                .end()
+//                .end();
 
-        models().getBuilder("cube")
-                .parent(block)
-                .element()
-                .allFaces((dir, face) -> face.texture("#" + dir.getSerializedName()).cullface(dir));
+//        models().getBuilder("cube")
+//                .parent(block)
+//                .element()
+//                .allFaces((dir, face) -> face.texture("#" + dir.getSerializedName()).cullface(dir));
 
         ModelFile furnace = models().orientable("furnace", mcLoc("block/furnace_side"), mcLoc("block/furnace_front"), mcLoc("block/furnace_top"));
         ModelFile furnaceLit = models().orientable("furnace_on", mcLoc("block/furnace_side"), mcLoc("block/furnace_front_on"), mcLoc("block/furnace_top"));
