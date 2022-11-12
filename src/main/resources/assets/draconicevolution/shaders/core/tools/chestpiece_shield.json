@@ -1,0 +1,42 @@
+{
+    "blend": {
+        "func": "add",
+        "srcrgb": "srcalpha",
+        "dstrgb": "1-srcalpha"
+    },
+    "vertex": "draconicevolution:tools/tool_base",
+    "fragment": "draconicevolution:tools/chestpiece_shield",
+    "attributes": [
+        "Position",
+        "Color",
+        "UV0",
+        "UV1",
+        "UV2",
+        "Normal"
+    ],
+    "samplers": [
+        { "name": "Sampler1" },
+        { "name": "Sampler2" }
+    ],
+    "uniforms": [
+        { "name": "ModelViewMat", "type": "matrix4x4", "count": 16, "values": [ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 ] },
+        { "name": "ProjMat", "type": "matrix4x4", "count": 16, "values": [ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 ] },
+        { "name": "ModelMat", "type": "matrix4x4", "count": 16, "values": [ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 ] },
+        { "name": "IViewRotMat", "type": "matrix3x3", "count": 9, "values": [ 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0 ] },
+        { "name": "ColorModulator", "type": "vec4", "count": 4, "values": [ 1.0, 1.0, 1.0, 1.0 ] },
+        { "name": "SimpleLight", "type": "int", "count": 1, "values": [0] },
+        { "name": "DisableLight", "type": "int", "count": 1, "values": [1] },
+        { "name": "Light0_Direction", "type": "vec3", "count": 3, "values": [0.0, 0.0, 0.0] },
+        { "name": "Light1_Direction", "type": "vec3", "count": 3, "values": [0.0, 0.0, 0.0] },
+        { "name": "DisableOverlay", "type": "int", "count": 1, "values": [1] },
+        { "name": "FogStart", "type": "float", "count": 1, "values": [ 0.0 ] },
+        { "name": "FogEnd", "type": "float", "count": 1, "values": [ 1.0 ] },
+        { "name": "FogColor", "type": "vec4", "count": 4, "values": [ 0.0, 0.0, 0.0, 0.0 ] },
+        { "name": "FogShape", "type": "int", "count": 1, "values": [ 0 ] },
+        { "name": "Time", "type": "float", "count": 1, "values": [ 0.0 ] },
+        { "name": "Activation", "type": "float", "count": 1, "values": [ 0.0 ] },
+        { "name": "BaseColor", "type": "vec4", "count": 4, "values": [ 1.0, 1.0, 1.0, 1.0 ] },
+        { "name": "UV1Override", "type": "i_vec2", "count": 2, "values": [ -1, -1 ] },
+        { "name": "UV2Override", "type": "i_vec2", "count": 2, "values": [ -1, -1 ] }
+    ]
+}

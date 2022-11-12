@@ -79,7 +79,7 @@ public class RenderModularChestpiece extends ToolRenderBase {
 
     protected CoreGemPart coreGemPart(CCModel model) {
         String levelName = techLevel.name().toLowerCase(Locale.ROOT);
-        RenderType gemType = RenderType.create(MODID + ":tool_gem", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.TRIANGLES, 256, RenderType.CompositeState.builder()
+        RenderType gemType = RenderType.create(MODID + ":core_gem", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.TRIANGLES, 256, RenderType.CompositeState.builder()
                 .setShaderState(new RenderStateShard.ShaderStateShard(DEShaders.CHESTPIECE_GEM_SHADER::getShaderInstance))
                 .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(MODID, "textures/item/equipment/shader_fallback_" + levelName + ".png"), false, false))
                 .setLightmapState(RenderStateShard.LIGHTMAP)
@@ -106,7 +106,7 @@ public class RenderModularChestpiece extends ToolRenderBase {
 
         public void render(MultiBufferSource buffers, Matrix4 mat, int color) {
             buffers.getBuffer(vboType.withCallback(() -> {
-                shader.getBaseColorUniform().glUniform4f(((color >> 24) & 0xFF) / 255F, ((color >> 16) & 0xFF) / 255F, ((color >> 8) & 0xFF) / 255F, (color & 0xFF) / 255F);
+                shader.getBaseColorUniform().glUniform4f(((color >> 16) & 0xFF) / 255F, ((color >> 8) & 0xFF) / 255F, (color & 0xFF) / 255F, ((color >> 24) & 0xFF) / 255F);
                 shader.getModelMatUniform().glUniformMatrix4f(mat);
             }));
         }

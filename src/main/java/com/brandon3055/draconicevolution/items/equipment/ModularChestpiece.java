@@ -11,16 +11,14 @@ import com.brandon3055.draconicevolution.api.modules.data.JumpData;
 import com.brandon3055.draconicevolution.api.modules.data.SpeedData;
 import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleHostImpl;
-import com.brandon3055.draconicevolution.client.model.ModularArmorModel;
+import com.brandon3055.draconicevolution.client.model.ModularChestpieceModel;
 import com.brandon3055.draconicevolution.init.EquipCfg;
 import com.brandon3055.draconicevolution.init.ModuleCfg;
 import com.brandon3055.draconicevolution.init.TechProperties;
 import com.brandon3055.draconicevolution.integration.equipment.EquipmentManager;
 import com.brandon3055.draconicevolution.integration.equipment.IDEEquipment;
 import net.covers1624.quack.util.SneakyUtils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -140,7 +138,7 @@ public class ModularChestpiece extends ArmorItem implements IModularArmor, IDEEq
             @Override
             public HumanoidModel<?> getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlot armorSlot, HumanoidModel<?> _default) {
                 if (model == null) {
-                    model = new ModularArmorModel(1F, techLevel, false);
+                    model = new ModularChestpieceModel<>(techLevel, false);
                 }
                 return SneakyUtils.unsafeCast(model);
             }
@@ -150,8 +148,8 @@ public class ModularChestpiece extends ArmorItem implements IModularArmor, IDEEq
     @OnlyIn(Dist.CLIENT)
     public <A extends HumanoidModel<?>> A getChestPieceModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlot armorSlot, boolean onArmor) {
         if (model == null || model_on_armor == null) {
-            model = new ModularArmorModel(1F, techLevel, false);
-            model_on_armor = new ModularArmorModel(1F, techLevel, true);
+            model = new ModularChestpieceModel<>(techLevel, false);
+            model_on_armor = new ModularChestpieceModel<>(techLevel, true);
         }
 
         return SneakyUtils.unsafeCast(onArmor ? model_on_armor : model);

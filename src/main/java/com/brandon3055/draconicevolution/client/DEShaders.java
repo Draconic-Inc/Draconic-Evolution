@@ -6,6 +6,7 @@ import codechicken.lib.render.shader.CCUniform;
 import codechicken.lib.util.ClientUtils;
 import com.brandon3055.brandonscore.api.TimeKeeper;
 import com.brandon3055.draconicevolution.client.shader.ChaosEntityShader;
+import com.brandon3055.draconicevolution.client.shader.ShieldShader;
 import com.brandon3055.draconicevolution.client.shader.ToolShader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import net.covers1624.quack.util.CrashLock;
@@ -58,6 +59,8 @@ public class DEShaders {
             .onShaderApplied(e -> e.getTimeUniform().glUniform1f((float) (ClientUtils.getRenderTime() / 20)));
     public static final ToolShader CHESTPIECE_GEM_SHADER = new ToolShader("tools/chestpiece_gem", DefaultVertexFormat.NEW_ENTITY)
             .onShaderApplied(e -> e.getTimeUniform().glUniform1f((float) (ClientUtils.getRenderTime() / 20)));
+    public static final ShieldShader CHESTPIECE_SHIELD_SHADER = new ShieldShader("tools/chestpiece_shield", DefaultVertexFormat.NEW_ENTITY)
+            .onShaderApplied(e -> e.getTimeUniform().glUniform1f((float) (ClientUtils.getRenderTime() / 20)));
 
     public static CCShaderInstance shieldShader;
     public static CCUniform shieldTime;
@@ -71,12 +74,12 @@ public class DEShaders {
     public static CCUniform energyCrystalMipmap;
     public static CCUniform energyCrystalAngle;
 
-    public static CCShaderInstance testShader;
-    public static CCUniform testTime;
-    public static CCUniform testColour;
-    public static CCUniform testInB;
-    public static CCUniform testInC;
-    public static CCUniform testInD;
+//    public static CCShaderInstance testShader;
+//    public static CCUniform testTime;
+//    public static CCUniform testColour;
+//    public static CCUniform testInB;
+//    public static CCUniform testInC;
+//    public static CCUniform testInD;
 
     public static CCShaderInstance energyCoreShader;
     public static CCUniform energyCoreTime;
@@ -114,6 +117,7 @@ public class DEShaders {
         TOOL_BLADE_SHADER.register(bus);
         BOW_STRING_SHADER.register(bus);
         CHESTPIECE_GEM_SHADER.register(bus);
+        CHESTPIECE_SHIELD_SHADER.register(bus);
         bus.addListener(DEShaders::onRegisterShaders);
     }
 
@@ -156,25 +160,25 @@ public class DEShaders {
             energyCrystalShader.onApply(() -> energyCrystalTime.glUniform1f((TimeKeeper.getClientTick() + Minecraft.getInstance().getFrameTime()) / 50F));
         });
 
-        try {
-            event.registerShader(CCShaderInstance.create(event.getResourceManager(), new ResourceLocation(MODID, "test"), DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP), e -> {
-                testShader = (CCShaderInstance) e;
-                testTime = testShader.getUniform("Time");
-                testColour = testShader.getUniform("TestColour");
-                testInB = testShader.getUniform("TestInB");
-                testInC = testShader.getUniform("TestInC");
-                testInD = testShader.getUniform("TestInD");
-                testShader.onApply(() -> {
-                    try {
-                        testTime.glUniform1f((TimeKeeper.getClientTick() + Minecraft.getInstance().getFrameTime()) / 20F);
-                    } catch (Throwable e2) {
-                        e2.printStackTrace();
-                    }
-                });
-            });
-        } catch (Throwable e) {
-            e.printStackTrace();
-        }
+//        try {
+//            event.registerShader(CCShaderInstance.create(event.getResourceManager(), new ResourceLocation(MODID, "test"), DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP), e -> {
+//                testShader = (CCShaderInstance) e;
+//                testTime = testShader.getUniform("Time");
+//                testColour = testShader.getUniform("TestColour");
+//                testInB = testShader.getUniform("TestInB");
+//                testInC = testShader.getUniform("TestInC");
+//                testInD = testShader.getUniform("TestInD");
+//                testShader.onApply(() -> {
+//                    try {
+//                        testTime.glUniform1f((TimeKeeper.getClientTick() + Minecraft.getInstance().getFrameTime()) / 20F);
+//                    } catch (Throwable e2) {
+//                        e2.printStackTrace();
+//                    }
+//                });
+//            });
+//        } catch (Throwable e) {
+//            e.printStackTrace();
+//        }
 
         event.registerShader(CCShaderInstance.create(event.getResourceManager(), new ResourceLocation(MODID, "energy_core"), DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP), e -> {
             energyCoreShader = (CCShaderInstance) e;
