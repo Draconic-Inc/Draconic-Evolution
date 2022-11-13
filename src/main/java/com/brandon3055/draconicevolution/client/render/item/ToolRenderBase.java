@@ -91,7 +91,7 @@ public abstract class ToolRenderBase implements IItemRenderer {
             { 0.75F, 0.05F, 0.05F, 0.2F }
     };
 
-    protected static void glUniformBaseColor(DEShader<?> shader, TechLevel techLevel, float pulse) {
+    public static void glUniformBaseColor(DEShader<?> shader, TechLevel techLevel, float pulse) {
         if (!(shader instanceof ToolShader toolShader) || !toolShader.hasBaseColorUniform()) return;
         float[] baseColour = baseColours[techLevel.index];
         float r = baseColour[0];

@@ -56,7 +56,7 @@ public class ItemModelGenerator extends ItemModelProvider {
         blockItem(DEContent.celestial_manipulator);
         blockItem(DEContent.draconium_chest);
         blockItem(DEContent.particle_generator);
-        blockItem(DEContent.placed_item);
+        dummyModel(DEContent.placed_item);
         blockItem(DEContent.portal);
         blockItem(DEContent.chaos_crystal);
         blockItem(DEContent.energy_core);

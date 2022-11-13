@@ -34,9 +34,9 @@
         { "name": "FogColor", "type": "vec4", "count": 4, "values": [ 0.0, 0.0, 0.0, 0.0 ] },
         { "name": "FogShape", "type": "int", "count": 1, "values": [ 0 ] },
         { "name": "Time", "type": "float", "count": 1, "values": [ 0.0 ] },
-        { "name": "Activation", "type": "float", "count": 1, "values": [ 0.0 ] },
         { "name": "BaseColor", "type": "vec4", "count": 4, "values": [ 1.0, 1.0, 1.0, 1.0 ] },
         { "name": "UV1Override", "type": "i_vec2", "count": 2, "values": [ -1, -1 ] },
-        { "name": "UV2Override", "type": "i_vec2", "count": 2, "values": [ -1, -1 ] }
+        { "name": "UV2Override", "type": "i_vec2", "count": 2, "values": [ -1, -1 ] },
+        { "name": "Activation", "type": "float", "count": 1, "values": [ 0.0 ] }
     ]
 }

@@ -269,12 +269,11 @@ public class ClientProxy extends CommonProxy {
             });
         }
 
-//        for (EntityType<?> type : ForgeRegistries.ENTITIES.getValues()) {
-//            EntityRenderer r = event.getRenderer(SneakyUtils.unsafeCast(type));
-//            if (r instanceof LivingEntityRenderer<?, ?> renderer && renderer.getModel() instanceof HumanoidModel) {
-//                renderer.addLayer(new ModularArmorLayer(renderer, event.getEntityModels(), false));
-//            }
-//        }
+        for (EntityRenderer r : Minecraft.getInstance().getEntityRenderDispatcher().renderers.values()) {
+            if (r instanceof LivingEntityRenderer<?, ?> renderer && renderer.getModel() instanceof HumanoidModel) {
+                renderer.addLayer(new ModularArmorLayer(renderer, event.getEntityModels(), false));
+            }
+        }
     }
 
     @Override

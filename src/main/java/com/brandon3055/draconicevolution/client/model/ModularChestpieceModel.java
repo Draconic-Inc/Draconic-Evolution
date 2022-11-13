@@ -13,6 +13,7 @@ import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
 import com.brandon3055.draconicevolution.api.modules.entities.ShieldControlEntity;
 import com.brandon3055.draconicevolution.client.DEShaders;
+import com.brandon3055.draconicevolution.client.render.item.ToolRenderBase;
 import com.brandon3055.draconicevolution.client.shader.DEShader;
 import com.brandon3055.draconicevolution.client.shader.ShieldShader;
 import com.brandon3055.draconicevolution.client.shader.ToolShader;
@@ -41,11 +42,13 @@ import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
  */
 public class ModularChestpieceModel<T extends LivingEntity> extends HumanoidModel<T> {
 
+    private final TechLevel techLevel;
     private int shieldColour;
     private float shieldState;
 
     public ModularChestpieceModel(TechLevel techLevel, boolean isOnArmor) {
         super(createMesh(new CubeDeformation(1), 0).getRoot().bake(64, 64));
+        this.techLevel = techLevel;
         Map<String, CCModel> model = new OBJParser(new ResourceLocation(DraconicEvolution.MODID, "models/item/equipment/chestpeice.obj")).ignoreMtl().parse();
         CCModel baseModel = model.get("base_model").backfacedCopy();
         CCModel materialModel = model.get("chevrons").backfacedCopy();
@@ -98,11 +101,13 @@ public class ModularChestpieceModel<T extends LivingEntity> extends HumanoidMode
                 .createCompositeState(false)
         );
 
-        RenderType shieldType = RenderType.create(MODID + ":armor_shield", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, RenderType.CompositeState.builder()
-                .setShaderState(new RenderStateShard.ShaderStateShard(() -> DEShaders.shieldShader))
+        RenderType shieldType = RenderType.create(MODID + ":armor_shield", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.TRIANGLES, 256, RenderType.CompositeState.builder()
+                .setShaderState(new RenderStateShard.ShaderStateShard(DEShaders.CHESTPIECE_SHIELD_SHADER::getShaderInstance))
                 .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
+                .setOutputState(RenderStateShard.ITEM_ENTITY_TARGET)
+                .setWriteMaskState(RenderStateShard.COLOR_DEPTH_WRITE)
                 .setLightmapState(RenderStateShard.LIGHTMAP)
-                .setCullState(RenderStateShard.NO_CULL)
+//                .setCullState(RenderStateShard.NO_CULL)
                 .createCompositeState(false)
         );
 
@@ -149,7 +154,7 @@ public class ModularChestpieceModel<T extends LivingEntity> extends HumanoidMode
             ShieldControlEntity shieldControl = host.getEntitiesByType(ModuleTypes.SHIELD_CONTROLLER).map(e -> (ShieldControlEntity) e).findAny().orElse(null);
             if (shieldControl != null) {
                 shieldState = shieldControl.getShieldState();
-                shieldColour = shieldControl.getShieldColour();
+                shieldColour = shieldControl.getShieldColour() | 0xFF000000;
             }
         }
 
@@ -175,7 +180,7 @@ public class ModularChestpieceModel<T extends LivingEntity> extends HumanoidMode
         }
     }
 
-    public static class ChestpieceModelPart extends ExtendedModelPart {
+    public class ChestpieceModelPart extends ExtendedModelPart {
         protected final VBORenderType renderType;
         protected final DEShader<?> shader;
 
@@ -195,7 +200,10 @@ public class ModularChestpieceModel<T extends LivingEntity> extends HumanoidMode
                 poseStack.pushPose();
                 this.translateAndRotate(poseStack);
                 Matrix4 mat = new Matrix4(poseStack);
-                buffers.getBuffer(renderType.withCallback(() -> shader.getModelMatUniform().glUniformMatrix4f(mat)));
+                buffers.getBuffer(renderType.withCallback(() -> {
+                    ToolRenderBase.glUniformBaseColor(shader, techLevel, 1F);
+                    shader.getModelMatUniform().glUniformMatrix4f(mat);
+                }));
                 poseStack.popPose();
             }
         }
@@ -235,7 +243,7 @@ public class ModularChestpieceModel<T extends LivingEntity> extends HumanoidMode
 
         @Override
         public void render(PoseStack poseStack, MultiBufferSource buffers, int packedLight, int packedOverlay, float r, float g, float b, float a) {
-            if (this.visible && shieldState > 0) {
+            if (shieldState > 0) {
                 poseStack.pushPose();
                 this.translateAndRotate(poseStack);
                 Matrix4 mat = new Matrix4(poseStack);
