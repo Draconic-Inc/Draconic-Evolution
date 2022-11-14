@@ -14,6 +14,7 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
+import java.util.Locale;
 import java.util.Objects;
 
 /**
@@ -133,17 +134,12 @@ public class ItemModelGenerator extends ItemModelProvider {
         simpleItem(DEContent.info_tablet);
         //endregion
 
-        //region Modules (Dont mind this. This is just me being to lazy to go copy paste some images)
-//        File textures = new File("/home/brandon3055/Development/WorkSpaces/1.16/BrandonsMods/Draconic-Evolution/src/main/resources/assets/draconicevolution/textures");
         DEModules.moduleItemMap.forEach((module, item) -> {
             String name = Objects.requireNonNull(module.getRegistryName()).getPath();
-//            File itemTexture = new File(textures, "item/modules/" + name + ".png");
-//            File moduleTexture = new File(textures, "module/" + name + ".png");
-//            if (!itemTexture.exists()) SneakyUtils.sneaky(() -> FileUtils.copyFile(new File(textures, "item/modules/blank_" + name.substring(0, name.indexOf("_")) + ".png"), itemTexture));
-//            if (!moduleTexture.exists()) SneakyUtils.sneaky(() -> FileUtils.copyFile(itemTexture, moduleTexture));
-            simpleItem(item, new ResourceLocation(DraconicEvolution.MODID, "item/modules/" + name));
+            ResourceLocation baseTexture = new ResourceLocation(DraconicEvolution.MODID, "item/module/" + module.getModuleTechLevel().name().toLowerCase(Locale.ENGLISH));
+            ResourceLocation overlay = new ResourceLocation(DraconicEvolution.MODID, "module/" + name);
+            multiLayerItem(item, baseTexture, overlay);
         });
-        //endregion
 
         //region Modular Tools
         simpleItem(DEContent.capacitor_wyvern, "item/tools");
@@ -192,6 +188,15 @@ public class ItemModelGenerator extends ItemModelProvider {
         getBuilder(reg.getPath())
                 .parent(new ModelFile.UncheckedModelFile("item/generated"))
                 .texture("layer0", texture);
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    private void multiLayerItem(Item item, ResourceLocation texture, ResourceLocation overlay) {
+        ResourceLocation reg = item.getRegistryName();
+        getBuilder(reg.getPath())
+                .parent(new ModelFile.UncheckedModelFile("item/generated"))
+                .texture("layer0", texture)
+                .texture("layer1", overlay);
     }
 
     private void blockItem(Block block) {
