@@ -678,17 +678,14 @@ public class LangGenerator extends LanguageProvider {
         helper.add("custom_colour_true",                                        "Disable colour customisation");
         helper.add("config_colour",                                             "Configure Colour");
         helper.add("reset",                                                     "Reset");
+        helper.add("core_invalid",                                              "Core structure invalid");
+        helper.add("stabilizers_invalid",                                       "Stabiliser configuration invalid" );
+        helper.add("stabilizers_advanced",                                      "(Advanced stabilizers required)");
 
         add("msg." + MODID + ".energy_core.already_building", "Assembly already in progress!");
         add("msg." + MODID + ".energy_core.core_not_found",   "404 Core Not Found!!!");
 
-//        add("gui.de.stabilizers.txt",                                           "Stabilizers");
-//        add("gui.de.invalid.txt",                                               "Invalid");
-//        add("gui.de.valid.txt",                                                 "Valid");
-//        add("gui.de.advancedStabilizersRequired.txt",                           "Advanced Stabilizers Required");
-//        add("gui.de.core.txt",                                                  "Core");
-//        add("gui.de.inactive.txt",                                              "Inactive");
-//        add("gui.de.active.txt",                                                "Active");
+
 
         add("generic.configureRedstone",                                        "Configure Redstone");
     }

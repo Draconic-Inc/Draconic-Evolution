@@ -17,6 +17,7 @@ import com.brandon3055.brandonscore.inventory.SlotDisableable;
 import com.brandon3055.brandonscore.inventory.SlotMover;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyCore;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -106,6 +107,26 @@ public class GuiEnergyCore extends ModularGuiContainer<ContainerBCTile<TileEnerg
                 .onPressed(() -> tile.sendPacketToServer(e -> {}, TileEnergyCore.MSG_TOGGLE_ACTIVATION))
                 .setHoverText(toolkit.i18n("deactivate"));
         toolkit.placeInside(disable, temp.background, GuiToolkit.LayoutPos.TOP_LEFT, 3, 3);
+
+        GuiLabel coreInvalidLabel = toolkit.createHeading("", temp.background).setLabelText(toolkit.i18n("core_invalid"))
+                .setAlignment(GuiAlign.CENTER)
+                .setTextColour(RED)
+                .setSize(temp.playerSlots.xSize(), 8)
+                .setPos(temp.playerSlots.xPos(), temp.title.maxYPos() + 5)
+                .setEnabledCallback(() -> !tile.active.get() && !tile.coreValid.get());
+
+        GuiLabel stabInvalidLabel = toolkit.createHeading("", temp.background).setLabelText(toolkit.i18n("stabilizers_invalid"))
+                .setAlignment(GuiAlign.CENTER)
+                .setTextColour(RED)
+                .setSize(temp.playerSlots.xSize(), 8)
+                .setPos(temp.playerSlots.xPos(), coreInvalidLabel.maxYPos() + 5)
+                .setEnabledCallback(() -> !tile.active.get() && !tile.stabilizersValid.get());
+
+        GuiLabel stabAdvLabel = toolkit.createHeading("", temp.background).setLabelText(toolkit.i18n("stabilizers_advanced"))
+                .setAlignment(GuiAlign.CENTER)
+                .setSize(temp.playerSlots.xSize(), 8)
+                .setPos(temp.playerSlots.xPos(), stabInvalidLabel.maxYPos() + 5)
+                .setEnabledCallback(() -> !tile.active.get() && !tile.stabilizersValid.get() && tile.reqAdvStabilizers());
 
         //Display
 

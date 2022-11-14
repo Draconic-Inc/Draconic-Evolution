@@ -84,7 +84,6 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
     public final ManagedPos[] stabilizerPositions = new ManagedPos[4]; //Relative stabilizer positions
 
     public final ManagedBool buildGuide = register(new ManagedBool("build_guide", SAVE_NBT_SYNC_TILE, CLIENT_CONTROL));
-    public final ManagedString invalidMessage = register(new ManagedString("invalid_message", SYNC_TILE));
     public final ManagedFloat fillPercent = register(new ManagedFloat("fill_percent", 0, SYNC_TILE)); //Not saved just for rendering.
     public final ManagedString energyTarget = register(new ManagedString("user_target", SAVE_NBT_SYNC_CONTAINER, CLIENT_CONTROL));
 
@@ -302,10 +301,6 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
             deactivateCore();
         }
 
-        if (structureValid) {
-            invalidMessage.set("");
-        }
-
         return structureValid;
     }
 
@@ -317,7 +312,6 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
     private boolean isCoreValidForTier(int tier) {
         MultiBlockDefinition definition = getMultiBlockDef();
         if (definition == null) {
-            invalidMessage.set("Error loading MultiBlock Definition. (This is probably a bug)");
             DraconicEvolution.LOGGER.error("Unable to find multi block definition for tier " + tier + " energy core. Something is broken...");
             return false;
         }
