@@ -32,11 +32,11 @@ void main() {
 
     vec3 coord = vec3(p.x * 6, length(p.y)*0.5, .5);
 
-    for(int i = 1; i <= 7; i++)
+    for (int i = 1; i <= 7; i++)
     {
-    	float power = pow(2.0, float(i));
-    	brightness += (1.5 / power) * snoise(coord + vec3(0.,-time*.05, time*.01), power*16.);
+        float power = pow(2.0, float(i));
+        brightness += (1.5 / power) * snoise(coord + vec3(0., -time*.05, time*.01), power*16.);
     }
 
-    gl_FragColor = vec4( brightness, pow(max(brightness,0.),2.)*0.4, pow(max(brightness,0.),3.)*0.15 , max(0, 2 - brightness) * alpha);
+    gl_FragColor = vec4(brightness, pow(max(brightness, 0.), 2.)*0.4, pow(max(brightness, 0.), 3.)*0.15, max(0, 2 - brightness) * alpha);
 }

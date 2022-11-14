@@ -82,7 +82,7 @@ public class DEContent {
     // Tile Entities
     //#################################################################
 
-	//@formatter:off
+    //@formatter:off
     @ObjectHolder("generator")                public static BlockEntityType<TileGenerator>              tile_generator;
     @ObjectHolder("grinder")                  public static BlockEntityType<TileGrinder>                tile_grinder;
     @ObjectHolder("disenchanter")             public static BlockEntityType<TileDisenchanter>           tile_disenchanter;
@@ -118,7 +118,7 @@ public class DEContent {
 
     @SubscribeEvent
     public static void registerTileEntity(RegistryEvent.Register<BlockEntityType<?>> event) {
-    	Block[] entityDetectors = {entity_detector, entity_detector_advanced};
+        Block[] entityDetectors = {entity_detector, entity_detector_advanced};
         Block[] craftInjectors = {crafting_injector_basic, crafting_injector_wyvern, crafting_injector_awakened, crafting_injector_chaotic};
         //@formatter:off
         event.getRegistry().register(BlockEntityType.Builder.of(TileGenerator::new,              generator               ).build(null).setRegistryName("generator"));
