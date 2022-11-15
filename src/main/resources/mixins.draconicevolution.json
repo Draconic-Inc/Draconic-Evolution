@@ -9,6 +9,7 @@
         "ServerEntityMixin"
     ],
     "client":             [
-        "PlayerModelMixin"
+        "PlayerModelMixin",
+        "ServerboundSetCreativeModeSlotPacketMixin"
     ]
 }
