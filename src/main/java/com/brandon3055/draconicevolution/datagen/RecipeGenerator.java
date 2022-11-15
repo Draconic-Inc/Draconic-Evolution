@@ -627,11 +627,11 @@ public class RecipeGenerator extends RecipeProvider {
 		.build(consumer, folder("tools", DEContent.capacitor_wyvern));
 
 		FusionRecipeBuilder.fusionRecipe(DEContent.capacitor_draconic)
-		.catalyst(DEContent.core_awakened)
+		.catalyst(DEContent.capacitor_wyvern)
 		.energy(32000000)
 		.techLevel(TechLevel.DRACONIC)
 		.ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
-		.ingredient(DEContent.capacitor_wyvern)
+		.ingredient(DEContent.core_awakened)
 		.ingredient(DETags.Items.INGOTS_DRACONIUM_AWAKENED)
 		.ingredient(DEContent.energy_core_draconic)
 		.ingredient(DEContent.energy_core_draconic)

@@ -4,7 +4,7 @@
     "item": "draconicevolution:draconic_capacitor"
   },
   "catalyst": {
-    "item": "draconicevolution:awakened_core"
+    "item": "draconicevolution:wyvern_capacitor"
   },
   "total_energy": 32000000,
   "tier": "DRACONIC",
@@ -13,7 +13,7 @@
       "tag": "forge:ingots/draconium_awakened"
     },
     {
-      "item": "draconicevolution:wyvern_capacitor"
+      "item": "draconicevolution:awakened_core"
     },
     {
       "tag": "forge:ingots/draconium_awakened"

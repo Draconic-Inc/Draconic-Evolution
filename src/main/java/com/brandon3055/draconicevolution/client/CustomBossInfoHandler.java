@@ -2,8 +2,6 @@ package com.brandon3055.draconicevolution.client;
 
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.render.buffer.TransformingVertexConsumer;
-import codechicken.lib.render.shader.ShaderProgram;
-import codechicken.lib.render.shader.ShaderProgramBuilder;
 import com.brandon3055.brandonscore.api.TimeKeeper;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;

@@ -52,6 +52,6 @@ public class DraconicEvolution {
         MinecraftForge.EVENT_BUS.addListener(Dislocator::onAnvilUpdate);
         MinecraftForge.EVENT_BUS.register(new DEEventHandler());
 
-        DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> ClientInit::init);
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> ClientInit::init);
     }
 }
