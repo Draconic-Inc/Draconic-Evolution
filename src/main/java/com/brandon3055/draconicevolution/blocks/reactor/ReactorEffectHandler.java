@@ -16,6 +16,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 /**
  * Created by brandon3055 on 11/02/2017.
  */
+@Deprecated
 public class ReactorEffectHandler {
 
     private TileReactorCore reactor;

@@ -15,6 +15,7 @@ import com.brandon3055.draconicevolution.client.render.effect.ExplosionFX;
 import com.brandon3055.draconicevolution.entity.guardian.DraconicGuardianEntity;
 import com.brandon3055.draconicevolution.entity.guardian.control.IPhase;
 import com.brandon3055.draconicevolution.entity.guardian.control.PhaseManager;
+import com.brandon3055.draconicevolution.init.ClientInit;
 import com.brandon3055.draconicevolution.items.equipment.damage.DefaultStaffDmgMod;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -132,7 +133,7 @@ public class ClientPacketHandler implements ICustomPacketHandler.IClientPacketHa
         if (entity != null) {
             mc.particleEngine.createTrackingEmitter(entity, ParticleTypes.TOTEM_OF_UNDYING, 30);
             if (entity == mc.player) {
-                ClientProxy.hudElement.popTotem();
+                ClientInit.hudElement.popTotem();
             }
         }
     }

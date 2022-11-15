@@ -14,6 +14,7 @@ import com.brandon3055.draconicevolution.api.modules.lib.ModuleItem;
 import com.brandon3055.draconicevolution.client.ClientProxy;
 import com.brandon3055.draconicevolution.client.ModuleSpriteUploader;
 import com.brandon3055.draconicevolution.client.render.item.ToolRenderBase;
+import com.brandon3055.draconicevolution.init.ClientInit;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.*;
@@ -258,7 +259,7 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> {
             RenderUtils.endBatch(getter);
         }
 
-        TextureAtlasSprite sprite = ClientProxy.moduleSpriteUploader.getSprite(module);
+        TextureAtlasSprite sprite = ClientInit.moduleSpriteUploader.getSprite(module);
         float ar = (float) sprite.getWidth() / (float) sprite.getHeight();
         float iar = (float) sprite.getHeight() / (float) sprite.getWidth();
 
