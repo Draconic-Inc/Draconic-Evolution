@@ -76,22 +76,6 @@ public class TileEntityDetector extends TileBCore implements MenuProvider, IInte
     public OPStorage opStorage = new OPStorage(512000, 32000, 0);
     public EntityFilter entityFilter;
 
-    //    public TileEntityFilter entityFilter = new TileEntityFilter(this, (byte) 32) {
-//        @Override
-//        public boolean isListEnabled() {
-//            return isAdvanced();
-//        }
-//
-//        @Override
-//        public boolean isOtherSelectorEnabled() {
-//            return isAdvanced();
-//        }
-//
-//        @Override
-//        public boolean isTypeSelectionEnabled() {
-//            return true;
-//        }
-//    };
     public List<String> playerNames = new ArrayList<>(); //TODO Need this?
 
     public TileEntityDetector(BlockPos pos, BlockState state) {
@@ -104,7 +88,7 @@ public class TileEntityDetector extends TileBCore implements MenuProvider, IInte
         }
         entityFilter.setDirtyHandler(this::setChanged);
         entityFilter.setupServerPacketHandling(() -> createClientBoundPacket(9), packet -> sendPacketToClients(getAccessingPlayers(), packet));
-        entityFilter.setupClientPacketHandling(() -> createServerBoundPacket(9), packetCustom -> BrandonsCore.proxy.sendToServer(packetCustom));
+        entityFilter.setupClientPacketHandling(() -> createServerBoundPacket(9));
         setClientSidePacketHandler(9, input -> entityFilter.receivePacketFromServer(input));
         setServerSidePacketHandler(9, (input, player) -> entityFilter.receivePacketFromClient(input));
         setSavedDataObject("entity_filter", entityFilter);

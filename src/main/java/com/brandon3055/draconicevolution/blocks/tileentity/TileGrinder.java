@@ -102,7 +102,7 @@ public class TileGrinder extends TileBCore implements IRSSwitchable, MenuProvide
         entityFilter.setDirtyHandler(this::setChanged);
         entityFilter.setTypePredicate(e -> e != FilterType.PLAYER || DEOldConfig.allowGrindingPlayers);
         entityFilter.setupServerPacketHandling(() -> createClientBoundPacket(0), packet -> sendPacketToClients(getAccessingPlayers(), packet));
-        entityFilter.setupClientPacketHandling(() -> createServerBoundPacket(0), packetCustom -> BrandonsCore.proxy.sendToServer(packetCustom));
+        entityFilter.setupClientPacketHandling(() -> createServerBoundPacket(0));
         setClientSidePacketHandler(0, input -> entityFilter.receivePacketFromServer(input));
         setServerSidePacketHandler(0, (input, player) -> entityFilter.receivePacketFromClient(input));
         setSavedDataObject("entity_filter", entityFilter);

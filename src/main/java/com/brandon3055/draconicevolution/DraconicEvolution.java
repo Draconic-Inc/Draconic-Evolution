@@ -16,7 +16,6 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.OptionalMod;
 import net.minecraftforge.fml.common.Mod;
