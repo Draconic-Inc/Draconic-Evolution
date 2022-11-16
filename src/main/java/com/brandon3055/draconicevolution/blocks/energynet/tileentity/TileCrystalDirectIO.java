@@ -59,7 +59,7 @@ public class TileCrystalDirectIO extends TileCrystalBase   {
         BlockEntity tile = level.getBlockEntity(worldPosition.relative(facing.get()));
 
         if (outputMode.get() && tile != null) {
-            opStorage.extractOP(EnergyUtils.insertEnergy(tile, opStorage.extractOP(opStorage.getMaxExtract(), true), facing.get().getOpposite(), false), false);
+            opStorage.extractOP(EnergyUtils.insertEnergy(tile, opStorage.extractOP(opStorage.maxExtract(), true), facing.get().getOpposite(), false), false);
         }
     }
 

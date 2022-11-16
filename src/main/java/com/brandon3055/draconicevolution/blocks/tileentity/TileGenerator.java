@@ -138,7 +138,7 @@ public class TileGenerator extends TileBCore implements IRSSwitchable, MenuProvi
             tryRefuel();
         }
 
-        opStorage.modifyEnergyStored(-sendEnergyToAll(opStorage.getMaxExtract(), opStorage.getOPStored()));
+        opStorage.modifyEnergyStored(-sendEnergyToAll(opStorage.maxExtract(), opStorage.getOPStored()));
     }
 
     public void tryRefuel() {

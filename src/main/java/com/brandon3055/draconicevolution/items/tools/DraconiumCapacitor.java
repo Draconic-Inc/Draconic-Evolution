@@ -93,7 +93,7 @@ public class DraconiumCapacitor extends Item implements IInvCharge, IModularItem
     @Override
     public ModularOPStorage createOPStorage(ItemStack stack, ModuleHostImpl host) {
         if (this == DEContent.capacitor_creative) {
-            return new ModularOPStorage(host, Long.MAX_VALUE, Long.MAX_VALUE, true) {
+            return new ModularOPStorage(host, Long.MAX_VALUE, Long.MAX_VALUE) {
                 @Override
                 public long getOPStored() {
                     return Long.MAX_VALUE / 2;
@@ -113,9 +113,9 @@ public class DraconiumCapacitor extends Item implements IInvCharge, IModularItem
                 public boolean canExtract() {
                     return true;
                 }
-            };
+            }.setIOMode(true, true);
         }
-        return new ModularOPStorage(host, EquipCfg.getBaseCapEnergy(techLevel), EquipCfg.getBaseCapTransfer(techLevel), true);
+        return new ModularOPStorage(host, EquipCfg.getBaseCapEnergy(techLevel), EquipCfg.getBaseCapTransfer(techLevel)).setIOMode(true, true);
     }
 
     @Override
