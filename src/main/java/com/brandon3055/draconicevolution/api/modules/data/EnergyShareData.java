@@ -10,6 +10,8 @@ import java.util.Map;
  * Created by brandon3055 on 3/5/20.
  */
 public class EnergyShareData implements ModuleData<EnergyShareData> {
+    public static final EnergyShareData EMPTY = new EnergyShareData(0);
+
     private final long transferRate;
 
     public EnergyShareData(long transferRate) {

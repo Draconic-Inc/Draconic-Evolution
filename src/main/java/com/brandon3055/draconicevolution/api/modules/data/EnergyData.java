@@ -16,6 +16,8 @@ import java.util.Map;
  * Created by brandon3055 on 3/5/20.
  */
 public class EnergyData implements ModuleData<EnergyData> {
+    public static final EnergyData EMPTY = new EnergyData(0, 0);
+
     private final long capacity;
     private final long transfer;
 

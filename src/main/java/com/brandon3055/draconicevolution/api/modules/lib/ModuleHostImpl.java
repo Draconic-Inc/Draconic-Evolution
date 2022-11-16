@@ -11,15 +11,14 @@ import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
 import com.brandon3055.draconicevolution.api.modules.data.EnergyData;
 import com.brandon3055.draconicevolution.api.modules.data.EnergyShareData;
 import com.brandon3055.draconicevolution.api.modules.data.ModuleData;
-import com.brandon3055.draconicevolution.api.modules.Module;
 import net.covers1624.quack.util.SneakyUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -29,26 +28,23 @@ import java.util.stream.Stream;
  * Created by brandon3055 and covers1624 on 4/16/20.
  */
 public class ModuleHostImpl implements ModuleHost, PropertyProvider {
+    private static final Logger LOGGER = LogManager.getLogger(ModuleHostImpl.class);
 
-    private static Logger logger = LogManager.getLogger("draconic-modules");
-
-    private int gridWidth;
-    private int gridHeight;
+    private final int gridWidth;
+    private final int gridHeight;
     private UUID providerID = null;
-    private String providerName;
-    private boolean deleteInvalidModules;
-    private TechLevel techLevel;
-    private EnergyData energyCache = null;
-    private ModuleData<?> energyLinkCache = null;
-    private EnergyShareData energyShareCache = null;
+    private final String providerName;
+    private final boolean deleteInvalidModules;
+    private final TechLevel techLevel;
     private final List<ModuleEntity<?>> moduleEntities = new ArrayList<>();
-    private Set<ModuleType<?>> additionalTypeList = new HashSet<>();
-    private Set<ModuleType<?>> typeBlackList = new HashSet<>();
-    private Set<ModuleCategory> categories = new HashSet<>();
-    private List<ConfigProperty> providedProperties = new ArrayList<>();
-    private Map<String, ConfigProperty> propertyMap = new LinkedHashMap<>();
+    private final Set<ModuleType<?>> additionalTypeList = new HashSet<>();
+    private final Set<ModuleType<?>> typeBlackList = new HashSet<>();
+    private final Set<ModuleCategory> categories = new HashSet<>();
+    private final List<ConfigProperty> providedProperties = new ArrayList<>();
+    private final Map<String, ConfigProperty> propertyMap = new LinkedHashMap<>();
+    private final Map<ModuleType<?>, Consumer<?>> propertyValidators = new HashMap<>();
+    private final Map<ModuleType<?>, ModuleData<?>> moduleDataCache = new HashMap<>();
     private Consumer<List<ConfigProperty>> propertyBuilder;
-    private Map<ModuleType<?>, Consumer<?>> propertyValidators = new HashMap<>();
 
     public ModuleHostImpl(TechLevel techLevel, int gridWidth, int gridHeight, String providerName, boolean deleteInvalidModules, ModuleCategory... categories) {
         this.techLevel = techLevel;
@@ -104,7 +100,7 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
             clearCaches();
             gatherProperties();
         } else {
-            logger.warn("Cant transfer modules to smaller grid");
+            LOGGER.warn("Cant transfer modules to smaller grid");
         }
     }
 
@@ -159,14 +155,21 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
         return gridHeight;
     }
 
-//    @Override
-//    public void getAttributeModifiers(EquipmentSlotType slot, ItemStack stack, Multimap<Attribute, AttributeModifier> map) {
-//        getInstalledTypes().forEach(t -> t.getAttributeModifiers(SneakyUtils.unsafeCast(getModuleData(t)), slot, stack, map));
-//        getModuleEntities().forEach(e -> e.getAttributeModifiers(slot, stack, map));
-//    }
-
+    @Override
     public void handleTick(ModuleContext context) {
         getModuleEntities().forEach(e -> e.tick(context));
+    }
+
+    @Nullable
+    @Override
+    public <T extends ModuleData<T>> T getModuleData(ModuleType<T> moduleType) {
+        //noinspection unchecked
+        return (T) moduleDataCache.computeIfAbsent(moduleType, ModuleHost.super::getModuleData);
+    }
+
+    private void clearCaches() {
+        moduleDataCache.clear();
+        getModuleEntities().forEach(ModuleEntity::clearCaches);
     }
 
     //endregion
@@ -263,35 +266,6 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
 
     //endregion
 
-    //helpers
-
-    private void clearCaches() {
-        energyLinkCache = null;
-        energyCache = null;
-        getModuleEntities().forEach(ModuleEntity::clearCaches);
-    }
-
-    public ModuleData getEnergyLink() {
-        return energyLinkCache; //TODO
-    }
-
-    public EnergyShareData getEnergyShare() {
-        if (energyShareCache == null) {
-            energyShareCache = getModuleData(ModuleTypes.ENERGY_SHARE, new EnergyShareData(0));
-        }
-        return energyShareCache; //TODO
-    }
-
-    /**
-     * @return the energy module data for this host. This data is cached for efficiency.
-     */
-    public EnergyData getEnergyData() {
-        if (energyCache == null) {
-            energyCache = getModuleData(ModuleTypes.ENERGY_STORAGE, new EnergyData(0, 0));
-        }
-        return energyCache;
-    }
-
     @Override
     public CompoundTag serializeNBT() {
         CompoundTag nbt = new CompoundTag();
@@ -326,12 +300,12 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
                 ResourceLocation id = new ResourceLocation(compound.getString("id"));
                 com.brandon3055.draconicevolution.api.modules.Module<?> module = ModuleRegistry.getRegistry().getValue(id);
                 if (module == null) {
-                    logger.warn("Failed to load unregistered module: " + id + " Skipping...");
+                    LOGGER.warn("Failed to load unregistered module: " + id + " Skipping...");
                 } else {
                     ModuleEntity<?> entity = module.createEntity();
                     entity.readFromNBT(compound);
                     if (deleteInvalidModules && !entity.isPosValid(gridWidth, gridHeight)) {
-                        logger.warn("Deleting module from invalid grid position: " + entity.toString());
+                        LOGGER.warn("Deleting module from invalid grid position: " + entity.toString());
                     } else {
                         moduleEntities.add(entity);
                         entity.setHost(this);
