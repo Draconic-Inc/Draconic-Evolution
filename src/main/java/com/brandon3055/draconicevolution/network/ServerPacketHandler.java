@@ -7,6 +7,7 @@ import codechicken.lib.packet.PacketCustom;
 import com.brandon3055.brandonscore.handlers.HandHelper;
 import com.brandon3055.draconicevolution.api.crafting.IFusionRecipe;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleGrid;
+import com.brandon3055.draconicevolution.api.modules.lib.ModuleHostContainer;
 import com.brandon3055.draconicevolution.blocks.PlacedItem;
 import com.brandon3055.draconicevolution.blocks.tileentity.TilePlacedItem;
 import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.PropertyData;
@@ -16,7 +17,6 @@ import com.brandon3055.draconicevolution.integration.jei.FusionRecipeTransferHel
 import com.brandon3055.draconicevolution.inventory.ContainerConfigurableItem;
 import com.brandon3055.draconicevolution.inventory.ContainerFusionCraftingCore;
 import com.brandon3055.draconicevolution.inventory.ContainerModularItem;
-import com.brandon3055.draconicevolution.inventory.ContainerModuleHost;
 import com.brandon3055.draconicevolution.items.tools.DislocatorAdvanced;
 import com.brandon3055.draconicevolution.items.tools.Magnet;
 import net.minecraft.ChatFormatting;
@@ -176,8 +176,8 @@ public class ServerPacketHandler implements ICustomPacketHandler.IServerPacketHa
 //    }
 
     private void moduleSlotClick(Player player, MCDataInput input) {
-        if (player.containerMenu instanceof ContainerModuleHost) {
-            ModuleGrid grid = ((ContainerModuleHost<?>) player.containerMenu).getGrid();
+        if (player.containerMenu instanceof ModuleHostContainer container) {
+            ModuleGrid grid = container.getGrid();
             if (grid != null) {
                 ModuleGrid.GridPos pos = grid.getCell(input.readByte(), input.readByte());
                 grid.cellClicked(pos, input.readByte(), input.readEnum(ClickType.class));

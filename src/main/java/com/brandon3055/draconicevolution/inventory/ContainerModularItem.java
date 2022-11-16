@@ -2,12 +2,14 @@ package com.brandon3055.draconicevolution.inventory;
 
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.client.gui.modulargui.baseelements.GuiButton;
+import com.brandon3055.brandonscore.inventory.ContainerBCore;
 import com.brandon3055.brandonscore.inventory.ContainerSlotLayout;
 import com.brandon3055.brandonscore.inventory.PlayerSlot;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleGrid;
+import com.brandon3055.draconicevolution.api.modules.lib.ModuleHostContainer;
 import com.brandon3055.draconicevolution.api.modules.lib.StackModuleContext;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.google.common.collect.Streams;
@@ -39,7 +41,7 @@ import java.util.stream.Stream;
 /**
  * Created by brandon3055 on 19/4/20.
  */
-public class ContainerModularItem extends ContainerModuleHost<TileBCore> {
+public class ContainerModularItem extends ContainerBCore<TileBCore> implements ModuleHostContainer {
 
     private PlayerSlot slot;
     public ItemStack hostStack;
@@ -128,6 +130,14 @@ public class ContainerModularItem extends ContainerModuleHost<TileBCore> {
             return false; //I dont think this is actually possible... But just in case.
         }
         return true;//moduleHost != null && hostStack == slot.getStackInSlot(player);
+    }
+
+    @Override
+    public ItemStack quickMoveStack(Player player, int i) {
+        if (quickMoveModule(player, getSlot(i))) {
+            return ItemStack.EMPTY;
+        }
+        return super.quickMoveStack(player, i);
     }
 
     @Override

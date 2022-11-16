@@ -3,11 +3,9 @@ package com.brandon3055.draconicevolution.api.modules.lib;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.lib.InstallResult.InstallResultType;
-import com.brandon3055.draconicevolution.inventory.ContainerModuleHost;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.item.ItemStack;
 
@@ -21,12 +19,12 @@ public class ModuleGrid {
 
     private int xPos = 0;
     private int yPos = 0;
-    public ContainerModuleHost<?> container;
+    public ModuleHostContainer container;
     private Inventory player;
     private int cellSize = 16;
     private Runnable onGridChange;
 
-    public ModuleGrid(ContainerModuleHost<?> container, Inventory player) {
+    public ModuleGrid(ModuleHostContainer container, Inventory player) {
         this.container = container;
         this.player = player;
     }

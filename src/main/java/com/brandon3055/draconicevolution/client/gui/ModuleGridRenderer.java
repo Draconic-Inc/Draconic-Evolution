@@ -300,7 +300,6 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> {
             hoverTime = 0;
         }
 
-        grid.container.clientTick();
         if (lastError != null && lastErrorTime++ > 100) {
             lastError = null;
         }
