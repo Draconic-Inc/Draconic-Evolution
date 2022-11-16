@@ -31,7 +31,7 @@ public class EnergyTransfuser extends BlockBCore implements EntityBlock {
     static {
         double p = 1D / 16D, hp = p / 2D;
 
-        BASE_SHAPE = new IndexedVoxelShape(Shapes.create(hp, hp, hp, 1 - hp, 1 - hp, 1 - hp), 0);
+        BASE_SHAPE = new IndexedVoxelShape(Shapes.create(hp, hp, hp, 1 - hp, 1 - hp, 1 - hp), -1);
         Cuboid6 interactFace = new Cuboid6(p * 3, p * 3, hp / 2, 1 - (p * 3), 1 - (p * 3), p);
 
         Direction[] dirs = {Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST};
