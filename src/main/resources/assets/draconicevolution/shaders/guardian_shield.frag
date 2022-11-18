@@ -1,10 +1,10 @@
 #version 120
 
 uniform float time;
-uniform vec4 baseColour;
-varying vec3 position;
 uniform float activation;
 
+uniform vec4 baseColour;
+varying vec3 position;
 
 float snoise(vec3 uv, float res){
     const vec3 s = vec3(1e0, 1e2, 1e3);
@@ -30,7 +30,6 @@ vec3 hsv2rgb(vec3 c) {
 void main() {
     vec3 coord = vec3(gl_TexCoord[0]);
     float colour = 0;
-
     //Less than 0 disables pixel
     float rad = (distance(coord.xy, vec2(0.5, 0.34375)) * 5);
     float level = clamp((coord.x - activation) * 1024, 0, 1);

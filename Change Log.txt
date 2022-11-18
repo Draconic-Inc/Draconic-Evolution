@@ -1,5 +1,6 @@
 ######## 3.0.28.x ########
 - *Actually* Re implemented chaos island configs. (Slight github mixup meant this did not get included in the last build)
+- Fixed creative breaking modular items on servers.
 
 ######## 3.0.27.462 ########
 - Re implemented chaos island configs (Thanks to FoxMcloud5655 for the PR)

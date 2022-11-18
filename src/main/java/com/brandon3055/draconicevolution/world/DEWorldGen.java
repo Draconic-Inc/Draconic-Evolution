@@ -58,7 +58,7 @@ public class DEWorldGen {
 
         } else if (event.getCategory() == Biome.Category.NETHER && DEConfig.enableOreNether) {
             event.getGeneration().addFeature(UNDERGROUND_ORES, Feature.ORE.configured(new OreFeatureConfig(NETHER_ORE_REPLACEABLES, DEContent.ore_draconium_nether.defaultBlockState(), DEConfig.veinSizeNether))
-                    .chance(10)
+                    .chance(10) //<- 1 in this number chance
                     .decorated(Placement.RANGE.configured(new TopSolidRangeConfig(4, 4, DEConfig.maxOreHeightNether))));
         } else if (DEConfig.enableOreOverworld) {
             event.getGeneration().addFeature(UNDERGROUND_ORES, Feature.ORE.configured(new OreFeatureConfig(NATURAL_STONE, DEContent.ore_draconium_overworld.defaultBlockState(), DEConfig.veinSizeOverworld))
