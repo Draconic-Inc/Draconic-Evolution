@@ -10,7 +10,7 @@ import net.minecraft.world.entity.player.Inventory;
 /**
  * Created by brandon3055 on 30/3/2016.
  */
-public class ContainerFusionCraftingCore extends ContainerBCTile<TileFusionCraftingCore> {
+public class ContainerFusionCraftingCore extends ContainerDETile<TileFusionCraftingCore> {
 
     public ContainerFusionCraftingCore(int windowId, Inventory player, FriendlyByteBuf extraData, ContainerSlotLayout.LayoutFactory<TileFusionCraftingCore> factory) {
         super(DEContent.container_fusion_crafting_core, windowId, player, extraData, factory);

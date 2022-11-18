@@ -10,6 +10,7 @@ import com.brandon3055.brandonscore.client.gui.modulargui.templates.TBasicMachin
 import com.brandon3055.brandonscore.inventory.ContainerBCTile;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.blocks.tileentity.flowgate.TileFlowGate;
+import com.brandon3055.draconicevolution.client.gui.modular.TModularMachine;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -30,7 +31,7 @@ public class GuiFlowGate extends ModularGuiContainer<ContainerBCTile<TileFlowGat
 
     @Override
     public void addElements(GuiElementManager manager) {
-        TBasicMachine template = toolkit.loadTemplate(new TBasicMachine(this, tile));
+        TBasicMachine template = toolkit.loadTemplate(new TModularMachine(this, tile));
 
         template.background.addChild(new GuiLabel(toolkit.i18n("overridden")))
                 .setHoverText(toolkit.i18n("overridden.info"))

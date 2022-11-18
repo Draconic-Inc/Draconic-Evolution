@@ -76,6 +76,7 @@ public class GuiModularItem extends ModularGuiContainer<ContainerModularItem> {
         template.background.addChild(gridRenderer);
         grid.setPosition(gridRenderer.xPos() - guiLeft(), gridRenderer.yPos() - guiTop());
         grid.setOnGridChange(this::updateInfoPanel);
+        setFloatingItemOverride(gridRenderer::renderStackOverride);
 
         GuiElement<?> equipModSlots = toolkit.createEquipModSlots(template.background, playerInv.player, true, e -> e.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).isPresent());
         equipModSlots.setPos(template.background.xPos() - 28, template.background.yPos());
@@ -112,14 +113,6 @@ public class GuiModularItem extends ModularGuiContainer<ContainerModularItem> {
         }
 
         reloadGui();
-    }
-
-    @Override
-    public void renderFloatingItem(ItemStack stack, int x, int y, String altText) {
-        if (gridRenderer.renderStackOverride(stack, x, y, altText)) {
-            return;
-        }
-        super.renderFloatingItem(stack, x, y, altText);
     }
 
     @Override

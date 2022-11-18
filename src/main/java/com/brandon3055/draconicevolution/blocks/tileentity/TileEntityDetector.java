@@ -20,10 +20,12 @@ import com.brandon3055.brandonscore.lib.datamanager.ManagedShort;
 import com.brandon3055.brandonscore.lib.entityfilter.EntityFilter;
 import com.brandon3055.brandonscore.lib.entityfilter.FilterType;
 import com.brandon3055.brandonscore.utils.MathUtils;
+import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
 import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.client.render.particle.SparkParticle;
 import com.brandon3055.draconicevolution.init.DEContent;
 
+import com.brandon3055.draconicevolution.inventory.ContainerDETile;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -73,7 +75,7 @@ public class TileEntityDetector extends TileBCore implements MenuProvider, IInte
     private int pulseTimer = -1;
     private int pulseDuration = 0;
 
-    public OPStorage opStorage = new OPStorage(512000, 32000, 0);
+    public OPStorage opStorage = new ModularOPStorage(this, 512000, 32000, 0);
     public EntityFilter entityFilter;
 
     public List<String> playerNames = new ArrayList<>(); //TODO Need this?
@@ -340,7 +342,7 @@ public class TileEntityDetector extends TileBCore implements MenuProvider, IInte
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int currentWindowIndex, Inventory playerInventory, Player player) {
-        return new ContainerBCTile<>(DEContent.container_entity_detector, currentWindowIndex, playerInventory, this);
+        return new ContainerDETile<>(DEContent.container_entity_detector, currentWindowIndex, playerInventory, this);
     }
 
     @Override

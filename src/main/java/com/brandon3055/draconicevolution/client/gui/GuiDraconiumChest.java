@@ -39,6 +39,7 @@ public class GuiDraconiumChest extends ModularGuiContainer<ContainerDraconiumChe
     public void addElements(GuiElementManager manager) {
         // Create and load dynamic background
         TGuiBase template = new TGuiBase(this);
+        template.setButtonPlacer(null);
         template.background = GuiTexture.newDynamicTexture(xSize(), ySize(), () -> BCGuiSprites.getThemed("background_dynamic"));
         template.background.onReload(guiTex -> guiTex.setPos(guiLeft(), guiTop()));
         toolkit.loadTemplate(template);
@@ -50,7 +51,7 @@ public class GuiDraconiumChest extends ModularGuiContainer<ContainerDraconiumChe
 
         // Main storage
         GuiElement<?> mainSlots = toolkit.createSlots(template.background, 26, 10, 0, (x, y) -> new SlotMover(container.mainSlots.get(x + (y * 26))), null).setPos(guiLeft() + 5, guiTop() + 5);
-        template.themeButton.setYPos(mainSlots.maxYPos() + 1);
+        template.themeButton.setPos(template.background.maxXPos() - 15, mainSlots.maxYPos() + 1);
 
         GuiButton colourPicker = toolkit.createIconButton(template.background, 12, 12, BCGuiSprites.getter("color_picker"))
                 .setHoverText(toolkit.i18n("color_picker"));

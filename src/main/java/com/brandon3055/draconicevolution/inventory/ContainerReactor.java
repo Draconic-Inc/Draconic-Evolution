@@ -20,7 +20,7 @@ import javax.annotation.Nullable;
 /**
  * Created by brandon3055 on 10/02/2017.
  */
-public class ContainerReactor extends ContainerBCTile<TileReactorCore> {
+public class ContainerReactor extends ContainerDETile<TileReactorCore> {
 
     public boolean fuelSlots = false;
 

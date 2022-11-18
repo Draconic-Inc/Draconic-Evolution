@@ -17,6 +17,7 @@ import com.brandon3055.brandonscore.client.gui.modulargui.templates.TBasicMachin
 import com.brandon3055.brandonscore.inventory.ContainerBCTile;
 import com.brandon3055.brandonscore.inventory.ContainerSlotLayout;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileGrinder;
+import com.brandon3055.draconicevolution.client.gui.modular.TModularMachine;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
@@ -38,7 +39,7 @@ public class GuiGrinder extends ModularGuiContainer<ContainerBCTile<TileGrinder>
 
     @Override
     public void addElements(GuiElementManager manager) {
-        TBasicMachine template = new TBasicMachine(this, tile, container.getSlotLayout());
+        TBasicMachine template = new TModularMachine(this, tile, container.getSlotLayout());
         template.background = GuiTexture.newDynamicTexture(xSize(), ySize(), () -> BCGuiSprites.getThemed("background_dynamic"));
         template.background.onReload(guiTex -> guiTex.setPos(guiLeft(), guiTop()));
         toolkit.loadTemplate(template);

@@ -13,6 +13,7 @@ import javax.annotation.Nullable;
 /**
  * Created by brandon3055 on 17/4/20.
  */
+@Deprecated //This is dumb and will be removed
 public class ItemCapabilityProvider<T extends INBTSerializable<CompoundTag>> implements ICapabilitySerializable<CompoundTag> {
 
     private T capability;

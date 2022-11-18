@@ -20,11 +20,13 @@ import com.brandon3055.brandonscore.lib.datamanager.ManagedByte;
 import com.brandon3055.brandonscore.utils.FacingUtils;
 import com.brandon3055.draconicevolution.DEOldConfig;
 import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
 import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.client.render.effect.EffectTrackerCelestialManipulator;
 import com.brandon3055.draconicevolution.client.sound.CelestialModifierSound;
 import com.brandon3055.draconicevolution.handlers.DESounds;
 import com.brandon3055.draconicevolution.init.DEContent;
+import com.brandon3055.draconicevolution.inventory.ContainerDETile;
 import com.brandon3055.draconicevolution.inventory.GuiLayoutFactories;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.mojang.blaze3d.vertex.Tesselator;
@@ -70,7 +72,7 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
     public boolean rain = false;
     public long targetTime;
 
-    public OPStorage opStorage = new OPStorage(8000000, 4000000, 4000000);
+    public OPStorage opStorage = new ModularOPStorage(this, 8000000, 4000000, 4000000);
 
     public TileCelestialManipulator(BlockPos pos, BlockState state) {
         super(DEContent.tile_celestial_manipulator, pos, state);
@@ -654,7 +656,7 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int currentWindowIndex, Inventory playerInventory, Player player) {
-        return new ContainerBCTile<>(DEContent.container_celestial_manipulator, currentWindowIndex, player.getInventory(), this, GuiLayoutFactories.CELESTIAL_MANIPULATOR_LAYOUT);
+        return new ContainerDETile<>(DEContent.container_celestial_manipulator, currentWindowIndex, player.getInventory(), this, GuiLayoutFactories.CELESTIAL_MANIPULATOR_LAYOUT);
     }
 
     @Override

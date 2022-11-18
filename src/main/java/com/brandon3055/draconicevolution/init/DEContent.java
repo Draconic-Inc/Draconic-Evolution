@@ -161,14 +161,14 @@ public class DEContent {
     //#################################################################
 
     //@formatter:off
-    @ObjectHolder("generator")              public static MenuType<ContainerBCTile<TileGenerator>>             container_generator;
-    @ObjectHolder("grinder")                public static MenuType<ContainerBCTile<TileGrinder>>               container_grinder;
-    @ObjectHolder("energy_core")            public static MenuType<ContainerBCTile<TileEnergyCore>>            container_energy_core;
-    @ObjectHolder("disenchanter")           public static MenuType<ContainerBCTile<TileDisenchanter>>          container_disenchanter;
-    @ObjectHolder("energy_transfuser")      public static MenuType<ContainerBCTile<TileEnergyTransfuser>>      container_energy_transfuser;
-    @ObjectHolder("flow_gate")              public static MenuType<ContainerBCTile<TileFlowGate>>              container_flow_gate;
-    @ObjectHolder("celestial_manipulator")  public static MenuType<ContainerBCTile<TileCelestialManipulator>>  container_celestial_manipulator;
-    @ObjectHolder("entity_detector")        public static MenuType<ContainerBCTile<TileEntityDetector>>        container_entity_detector;
+    @ObjectHolder("generator")              public static MenuType<ContainerDETile<TileGenerator>>             container_generator;
+    @ObjectHolder("grinder")                public static MenuType<ContainerDETile<TileGrinder>>               container_grinder;
+    @ObjectHolder("energy_core")            public static MenuType<ContainerDETile<TileEnergyCore>>            container_energy_core;
+    @ObjectHolder("disenchanter")           public static MenuType<ContainerDETile<TileDisenchanter>>          container_disenchanter;
+    @ObjectHolder("energy_transfuser")      public static MenuType<ContainerDETile<TileEnergyTransfuser>>      container_energy_transfuser;
+    @ObjectHolder("flow_gate")              public static MenuType<ContainerDETile<TileFlowGate>>              container_flow_gate;
+    @ObjectHolder("celestial_manipulator")  public static MenuType<ContainerDETile<TileCelestialManipulator>>  container_celestial_manipulator;
+    @ObjectHolder("entity_detector")        public static MenuType<ContainerDETile<TileEntityDetector>>        container_entity_detector;
     @ObjectHolder("fusion_crafting_core")   public static MenuType<ContainerFusionCraftingCore>                container_fusion_crafting_core;
     @ObjectHolder("modular_item")           public static MenuType<ContainerModularItem>                       container_modular_item;
     @ObjectHolder("configurable_item")      public static MenuType<ContainerConfigurableItem>                  container_configurable_item;
@@ -180,14 +180,14 @@ public class DEContent {
 
     @SubscribeEvent
     public static void registerContainers(RegistryEvent.Register<MenuType<?>> event) {
-        event.getRegistry().register(IForgeMenuType.create((id, inv, data) -> new ContainerBCTile<>(container_generator,             id, inv, data, GuiLayoutFactories.GENERATOR_LAYOUT)).setRegistryName("generator"));
-        event.getRegistry().register(IForgeMenuType.create((id, inv, data) -> new ContainerBCTile<>(container_grinder,               id, inv, data, GuiLayoutFactories.GRINDER_LAYOUT)).setRegistryName("grinder"));
-        event.getRegistry().register(IForgeMenuType.create((id, inv, data) -> new ContainerBCTile<>(container_energy_core,           id, inv, data, GuiLayoutFactories.ENERGY_CORE_LAYOUT)).setRegistryName("energy_core"));
-        event.getRegistry().register(IForgeMenuType.create((id, inv, data) -> new ContainerBCTile<>(container_disenchanter,          id, inv, data, GuiLayoutFactories.DISENCHANTER_LAYOUT)).setRegistryName("disenchanter"));
-        event.getRegistry().register(IForgeMenuType.create((id, inv, data) -> new ContainerBCTile<>(container_energy_transfuser,     id, inv, data, GuiLayoutFactories.TRANSFUSER_LAYOUT)).setRegistryName("energy_transfuser"));
-        event.getRegistry().register(IForgeMenuType.create((id, inv, data) -> new ContainerBCTile<>(container_flow_gate,             id, inv, data, SneakyUtils.unsafeCast(GuiLayoutFactories.PLAYER_ONLY_LAYOUT))).setRegistryName("flow_gate"));
-        event.getRegistry().register(IForgeMenuType.create((id, inv, data) -> new ContainerBCTile<>(container_celestial_manipulator, id, inv, data)).setRegistryName("celestial_manipulator"));
-        event.getRegistry().register(IForgeMenuType.create((id, inv, data) -> new ContainerBCTile<>(container_entity_detector,       id, inv, data)).setRegistryName("entity_detector"));
+        event.getRegistry().register(IForgeMenuType.create((id, inv, data) -> new ContainerDETile<>(container_generator,             id, inv, data, GuiLayoutFactories.GENERATOR_LAYOUT)).setRegistryName("generator"));
+        event.getRegistry().register(IForgeMenuType.create((id, inv, data) -> new ContainerDETile<>(container_grinder,               id, inv, data, GuiLayoutFactories.GRINDER_LAYOUT)).setRegistryName("grinder"));
+        event.getRegistry().register(IForgeMenuType.create((id, inv, data) -> new ContainerDETile<>(container_energy_core,           id, inv, data, GuiLayoutFactories.ENERGY_CORE_LAYOUT)).setRegistryName("energy_core"));
+        event.getRegistry().register(IForgeMenuType.create((id, inv, data) -> new ContainerDETile<>(container_disenchanter,          id, inv, data, GuiLayoutFactories.DISENCHANTER_LAYOUT)).setRegistryName("disenchanter"));
+        event.getRegistry().register(IForgeMenuType.create((id, inv, data) -> new ContainerDETile<>(container_energy_transfuser,     id, inv, data, GuiLayoutFactories.TRANSFUSER_LAYOUT)).setRegistryName("energy_transfuser"));
+        event.getRegistry().register(IForgeMenuType.create((id, inv, data) -> new ContainerDETile<>(container_flow_gate,             id, inv, data, SneakyUtils.unsafeCast(GuiLayoutFactories.PLAYER_ONLY_LAYOUT))).setRegistryName("flow_gate"));
+        event.getRegistry().register(IForgeMenuType.create((id, inv, data) -> new ContainerDETile<>(container_celestial_manipulator, id, inv, data)).setRegistryName("celestial_manipulator"));
+        event.getRegistry().register(IForgeMenuType.create((id, inv, data) -> new ContainerDETile<>(container_entity_detector,       id, inv, data)).setRegistryName("entity_detector"));
         event.getRegistry().register(IForgeMenuType.create((id, inv, data) -> new ContainerFusionCraftingCore(id, inv, data, GuiLayoutFactories.FUSION_CRAFTING_CORE)).setRegistryName("fusion_crafting_core"));
         event.getRegistry().register(IForgeMenuType.create((id, inv, data) -> new ContainerModularItem(id, inv, data,        GuiLayoutFactories.MODULAR_ITEM_LAYOUT)).setRegistryName("modular_item"));
         event.getRegistry().register(IForgeMenuType.create((id, inv, data) -> new ContainerConfigurableItem(id, inv, data,   GuiLayoutFactories.CONFIGURABLE_ITEM_LAYOUT)).setRegistryName("configurable_item"));

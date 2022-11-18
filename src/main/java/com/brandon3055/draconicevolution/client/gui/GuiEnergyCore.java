@@ -17,6 +17,7 @@ import com.brandon3055.brandonscore.inventory.SlotDisableable;
 import com.brandon3055.brandonscore.inventory.SlotMover;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyCore;
+import com.brandon3055.draconicevolution.client.gui.modular.TModularMachine;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
@@ -52,7 +53,7 @@ public class GuiEnergyCore extends ModularGuiContainer<ContainerBCTile<TileEnerg
 
     @Override
     public void addElements(GuiElementManager manager) {
-        TBasicMachine temp = new TBasicMachine(this, tile);
+        TBasicMachine temp = new TModularMachine(this, tile);
         temp.background = GuiTexture.newDynamicTexture(xSize(), ySize(), () -> BCGuiSprites.getThemed("background_dynamic"));
         temp.background.onReload(guiTex -> guiTex.setPos(guiLeft(), guiTop()));
         toolkit.loadTemplate(temp);

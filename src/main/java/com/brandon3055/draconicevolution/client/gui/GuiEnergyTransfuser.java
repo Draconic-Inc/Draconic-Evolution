@@ -16,6 +16,7 @@ import com.brandon3055.brandonscore.inventory.ContainerSlotLayout;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyTransfuser;
 import com.brandon3055.draconicevolution.client.DEGuiSprites;
+import com.brandon3055.draconicevolution.client.gui.modular.TModularMachine;
 import com.brandon3055.draconicevolution.client.render.tile.RenderTileEnergyTransfuser;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
@@ -44,7 +45,7 @@ public class GuiEnergyTransfuser extends ModularGuiContainer<ContainerBCTile<Til
 
     @Override
     public void addElements(GuiElementManager manager) {
-        TBasicMachine temp = new TBasicMachine(this, tile, false);
+        TBasicMachine temp = new TModularMachine(this, tile, false);
         temp.background = GuiTexture.newDynamicTexture(xSize(), ySize(), () -> BCGuiSprites.getThemed("background_dynamic"));
         temp.background.onReload(guiTex -> guiTex.setPos(guiLeft(), guiTop()));
         toolkit.loadTemplate(temp);

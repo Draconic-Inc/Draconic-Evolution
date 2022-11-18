@@ -19,6 +19,7 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.machines.EnergyCore;
 import com.brandon3055.draconicevolution.client.render.tile.RenderTileEnergyCore;
 import com.brandon3055.draconicevolution.init.DEContent;
+import com.brandon3055.draconicevolution.inventory.ContainerDETile;
 import com.brandon3055.draconicevolution.inventory.GuiLayoutFactories;
 import com.brandon3055.draconicevolution.lib.MultiBlockBuilder;
 import com.brandon3055.draconicevolution.lib.OPStorageOP;
@@ -176,7 +177,7 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int currentWindowIndex, Inventory playerInventory, Player player) {
-        return new ContainerBCTile<>(DEContent.container_energy_core, currentWindowIndex, player.getInventory(), this, GuiLayoutFactories.ENERGY_CORE_LAYOUT);
+        return new ContainerDETile<>(DEContent.container_energy_core, currentWindowIndex, player.getInventory(), this, GuiLayoutFactories.ENERGY_CORE_LAYOUT);
     }
 
     @Override

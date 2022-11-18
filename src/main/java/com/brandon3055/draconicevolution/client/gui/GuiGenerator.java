@@ -16,7 +16,10 @@ import com.brandon3055.brandonscore.client.gui.modulargui.templates.TBasicMachin
 import com.brandon3055.brandonscore.inventory.ContainerBCTile;
 import com.brandon3055.brandonscore.inventory.ContainerSlotLayout;
 import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.api.modules.lib.ModuleGrid;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileGenerator;
+import com.brandon3055.draconicevolution.client.gui.modular.TModularMachine;
+import com.brandon3055.draconicevolution.inventory.ContainerDETile;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import net.minecraft.ChatFormatting;
@@ -55,7 +58,7 @@ public class GuiGenerator extends ModularGuiContainer<ContainerBCTile<TileGenera
 
     @Override
     public void addElements(GuiElementManager manager) {
-        TBasicMachine template = toolkit.loadTemplate(new TBasicMachine(this, tile));
+        TBasicMachine template = toolkit.loadTemplate(new TModularMachine(this, tile));
 
         //Storage Renderer
         template.background.addChild(new StorageRenderer().setPos(guiLeft(), guiTop()));

@@ -24,7 +24,7 @@ import java.util.Optional;
 /**
  * Created by brandon3055 on 4/06/2017.
  */
-public class ContainerDraconiumChest extends ContainerBCTile<TileDraconiumChest> {
+public class ContainerDraconiumChest extends ContainerDETile<TileDraconiumChest> {
     public List<Slot> mainSlots = new ArrayList<>();
     public List<Slot> playerSlots = new ArrayList<>();
     public List<Slot> craftInputSlots = new ArrayList<>();

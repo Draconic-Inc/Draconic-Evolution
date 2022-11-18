@@ -2,6 +2,9 @@ package com.brandon3055.draconicevolution.client.gui;
 
 import com.brandon3055.brandonscore.BCConfig;
 import com.brandon3055.brandonscore.api.TechLevel;
+import com.brandon3055.brandonscore.api.render.GuiHelper;
+import com.brandon3055.brandonscore.client.gui.GuiToolkit;
+import com.brandon3055.brandonscore.client.gui.GuiToolkit.Palette;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
 import com.brandon3055.brandonscore.client.gui.modulargui.ThemedElements;
 import com.brandon3055.brandonscore.client.render.RenderUtils;
@@ -57,6 +60,7 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> {
     private ModuleGrid.GridPos lastClickPos;
     private Component lastError = null;
     private int lastErrorTime = 0;
+    public boolean renderBorder = true;
 
 
     public ModuleGridRenderer(ModuleGrid grid, Inventory player) {
@@ -69,13 +73,16 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> {
     public void renderElement(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
         super.renderElement(minecraft, mouseX, mouseY, partialTicks);
         MultiBufferSource.BufferSource getter = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
+        PoseStack poseStack = new PoseStack();
 
-        int light = ThemedElements.getBgLight();
-        int dark = ThemedElements.getBgDark();
-        int fill = ThemedElements.getBgFill();
-        drawShadedRect(getter, xPos() - 2, yPos() - 2, xSize() + 4, ySize() + 4, 1, 0, light, dark, fill);
-        drawShadedRect(getter, xPos() - 1, yPos() - 1, xSize() + 2, ySize() + 2, 1, 0, dark, light, fill);
-        drawColouredRect(getter, xPos(), yPos(), xSize(), ySize(), midColour(light, dark));
+        int light = Palette.BG.accentLight();
+        int dark = Palette.BG.accentDark();
+        int fill = Palette.BG.fill();
+        if (renderBorder) {
+            GuiHelper.drawShadedRect(getter, poseStack, xPos() - 2, yPos() - 2, xSize() + 4, ySize() + 4, 1, 0, light, dark, fill);
+            GuiHelper.drawShadedRect(getter, poseStack, xPos() - 1, yPos() - 1, xSize() + 2, ySize() + 2, 1, 0, dark, light, fill);
+        }
+        GuiHelper.drawRect(getter, poseStack, xPos(), yPos(), xSize(), ySize(), midColour(light, dark));
 
         int s = grid.getCellSize();
         for (int x = 0; x < grid.getWidth(); x++) {

@@ -15,6 +15,7 @@ import com.brandon3055.draconicevolution.api.DraconicAPI;
 import com.brandon3055.draconicevolution.api.crafting.IFusionInjector;
 import com.brandon3055.draconicevolution.api.crafting.IFusionRecipe;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileFusionCraftingCore;
+import com.brandon3055.draconicevolution.client.gui.modular.TModularMachine;
 import com.brandon3055.draconicevolution.inventory.ContainerFusionCraftingCore;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -40,7 +41,7 @@ public class GuiFusionCraftingCore extends ModularGuiContainer<ContainerFusionCr
 
     @Override
     public void addElements(GuiElementManager manager) {
-        TBasicMachine template = new TBasicMachine(this, tile, false);
+        TBasicMachine template = new TModularMachine(this, tile, false);
         template.background = GuiTexture.newDynamicTexture(xSize(), ySize(), () -> BCGuiSprites.getThemed("background_dynamic"));
         template.background.onReload((guiTex) -> guiTex.setPos(guiLeft(), guiTop()));
         toolkit.loadTemplate(template);

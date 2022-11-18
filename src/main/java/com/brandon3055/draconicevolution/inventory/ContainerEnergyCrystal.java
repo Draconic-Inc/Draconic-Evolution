@@ -12,7 +12,7 @@ import javax.annotation.Nullable;
 /**
  * Created by brandon3055 on 21/12/2016.
  */
-public class ContainerEnergyCrystal extends ContainerBCTile<TileCrystalBase> {
+public class ContainerEnergyCrystal extends ContainerDETile<TileCrystalBase> {
 
     public ContainerEnergyCrystal(int windowId, Inventory playerInv, FriendlyByteBuf extraData) {
         this(DEContent.container_energy_crystal, windowId, playerInv, getClientTile(extraData));

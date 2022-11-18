@@ -11,6 +11,7 @@ import com.brandon3055.brandonscore.lib.IInteractTile;
 import com.brandon3055.draconicevolution.DEOldConfig;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.integration.ModHelper;
+import com.brandon3055.draconicevolution.inventory.ContainerDETile;
 import com.brandon3055.draconicevolution.inventory.GuiLayoutFactories;
 
 import net.minecraft.ChatFormatting;
@@ -143,7 +144,7 @@ public class TileDisenchanter extends TileBCore implements MenuProvider, IIntera
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int currentWindowIndex, Inventory playerInventory, Player player) {
-        return new ContainerBCTile<>(DEContent.container_disenchanter, currentWindowIndex, player.getInventory(), this, GuiLayoutFactories.DISENCHANTER_LAYOUT);
+        return new ContainerDETile<>(DEContent.container_disenchanter, currentWindowIndex, player.getInventory(), this, GuiLayoutFactories.DISENCHANTER_LAYOUT);
     }
 
     @Override

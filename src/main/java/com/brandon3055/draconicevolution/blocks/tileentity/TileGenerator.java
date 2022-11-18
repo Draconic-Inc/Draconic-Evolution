@@ -1,8 +1,8 @@
 package com.brandon3055.draconicevolution.blocks.tileentity;
 
+import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.api.power.OPStorage;
 import com.brandon3055.brandonscore.blocks.TileBCore;
-import com.brandon3055.brandonscore.capability.CapabilityOP;
 import com.brandon3055.brandonscore.client.particle.IntParticleType.IntParticleData;
 import com.brandon3055.brandonscore.inventory.ContainerBCTile;
 import com.brandon3055.brandonscore.inventory.ItemHandlerIOControl;
@@ -16,9 +16,15 @@ import com.brandon3055.brandonscore.lib.datamanager.ManagedEnum;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedInt;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
 import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.api.capability.DECapabilities;
+import com.brandon3055.draconicevolution.api.modules.ModuleCategory;
+import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
+import com.brandon3055.draconicevolution.api.modules.lib.SimpleModuleHost;
 import com.brandon3055.draconicevolution.blocks.machines.Generator;
 import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.init.DEContent;
+import com.brandon3055.draconicevolution.init.ModuleCfg;
+import com.brandon3055.draconicevolution.inventory.ContainerDETile;
 import com.brandon3055.draconicevolution.inventory.GuiLayoutFactories;
 import com.brandon3055.draconicevolution.lib.ISidedTileHandler;
 import net.minecraft.client.Minecraft;
@@ -68,13 +74,16 @@ public class TileGenerator extends TileBCore implements IRSSwitchable, MenuProvi
     public float rotationSpeed = 0;
 
     public TileItemStackHandler itemHandler = new TileItemStackHandler(4);
-    public OPStorage opStorage = new OPStorage(100000, 0, 32000);
+//    public SimpleModuleHost moduleHost = new SimpleModuleHost(TechLevel.WYVERN, 5, 5, ModuleCfg.removeInvalidModules, ModuleCategory.ENERGY);
+    public OPStorage opStorage = new ModularOPStorage(this, 100000, 0, 32000);
 
     public TileGenerator(BlockPos pos, BlockState state) {
         super(DEContent.tile_generator, pos, state);
 
+//        capManager.setManaged("module_host", DECapabilities.MODULE_HOST_CAPABILITY, moduleHost).saveBoth().syncContainer();
+
         //Power Cap
-        capManager.setManaged("energy", CapabilityOP.OP, opStorage).saveBoth().syncContainer();
+        capManager.setManaged("energy", DECapabilities.OP_STORAGE, opStorage).saveBoth().syncContainer();
 
         //Inventory Cap
         capManager.setInternalManaged("inventory", CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, itemHandler).saveBoth();
@@ -82,9 +91,6 @@ public class TileGenerator extends TileBCore implements IRSSwitchable, MenuProvi
         setupPowerSlot(itemHandler, 3, opStorage, true);
         capManager.set(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, new ItemHandlerIOControl(itemHandler).setExtractCheck(this::canExtractItem));
         installIOTracker(opStorage);
-
-
-//        animHandler = new SimpleAnimHandler(new ResourceLocation(DraconicEvolution.MODID, "asms/block/generator.json"));
     }
 
     @Override
@@ -245,7 +251,7 @@ public class TileGenerator extends TileBCore implements IRSSwitchable, MenuProvi
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int currentWindowIndex, Inventory playerInventory, Player player) {
-        return new ContainerBCTile<>(DEContent.container_generator, currentWindowIndex, player.getInventory(), this, GuiLayoutFactories.GENERATOR_LAYOUT);
+        return new ContainerDETile<>(DEContent.container_generator, currentWindowIndex, player.getInventory(), this, GuiLayoutFactories.GENERATOR_LAYOUT);
     }
 
     @Override

@@ -19,6 +19,7 @@ import com.brandon3055.brandonscore.inventory.ContainerSlotLayout;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEntityDetector;
 
+import com.brandon3055.draconicevolution.client.gui.modular.TModularMachine;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -39,7 +40,7 @@ public class GuiEntityDetector extends ModularGuiContainer<ContainerBCTile<TileE
 
 	@Override
 	public void addElements(GuiElementManager manager) {
-		TBasicMachine template = new TBasicMachine(this, tile, false);
+		TBasicMachine template = new TModularMachine(this, tile, false);
 		template.background = GuiTexture.newDynamicTexture(xSize(), ySize(), () -> BCGuiSprites.getThemed("background_dynamic"));
 		template.background.onReload(guiTex -> guiTex.setPos(guiLeft(), guiTop()));
 		toolkit.loadTemplate(template);

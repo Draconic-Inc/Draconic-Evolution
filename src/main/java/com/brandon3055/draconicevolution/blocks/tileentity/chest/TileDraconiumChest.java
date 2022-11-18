@@ -13,6 +13,7 @@ import com.brandon3055.brandonscore.lib.datamanager.ManagedInt;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedShort;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
 import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
 import com.brandon3055.draconicevolution.blocks.DraconiumChest;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.inventory.ContainerDraconiumChest;
@@ -49,7 +50,7 @@ public class TileDraconiumChest extends TileBCore implements IRSSwitchable, Menu
     public TileItemStackHandler craftingItems = new TileItemStackHandler(9);
     public TileItemStackHandler furnaceItems = new TileItemStackHandler(5);
     public TileItemStackHandler capacitorInv = new TileItemStackHandler(1);
-    public OPStorage opStorage = new OPStorage(1000000, 128000, 0);
+    public OPStorage opStorage = new ModularOPStorage(this, 1000000, 128000, 0);
 
     public SmeltingLogic smeltingLogic = new SmeltingLogic(this, furnaceItems, mainInventory, opStorage);
 

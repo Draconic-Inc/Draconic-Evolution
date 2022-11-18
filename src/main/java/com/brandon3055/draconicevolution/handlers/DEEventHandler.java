@@ -1,14 +1,24 @@
 package com.brandon3055.draconicevolution.handlers;
 
 import codechicken.lib.raytracer.RayTracer;
+import com.brandon3055.brandonscore.api.TechLevel;
+import com.brandon3055.brandonscore.api.event.TileBCoreInitEvent;
+import com.brandon3055.brandonscore.capability.CapabilityProviderSerializable;
+import com.brandon3055.brandonscore.lib.DelayedTask;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DEOldConfig;
+import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.achievements.Achievements;
 import com.brandon3055.draconicevolution.api.IReaperItem;
+import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.energy.ICrystalBinder;
+import com.brandon3055.draconicevolution.api.modules.ModuleCategory;
+import com.brandon3055.draconicevolution.api.modules.lib.SimpleModuleHost;
+import com.brandon3055.draconicevolution.blocks.tileentity.TileGenerator;
 import com.brandon3055.draconicevolution.entity.GuardianCrystalEntity;
 import com.brandon3055.draconicevolution.entity.guardian.DraconicGuardianEntity;
 import com.brandon3055.draconicevolution.init.DEContent;
+import com.brandon3055.draconicevolution.init.ModuleCfg;
 import com.brandon3055.draconicevolution.network.CrystalUpdateBatcher;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.ChatFormatting;
@@ -16,6 +26,7 @@ import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -30,6 +41,7 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.dimension.end.EndDragonFight;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.feature.EndPodiumFeature;
@@ -38,6 +50,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ClientPlayerChangeGameTypeEvent;
+import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
@@ -55,6 +68,14 @@ public class DEEventHandler {
     private static WeakHashMap<Mob, Long> deSpawnedMobs = new WeakHashMap<>();
     private static Random random = new Random();
     public static int serverTicks = 0;
+
+//    @SubscribeEvent //Example: Attach module host capability via event.
+//    public void attachCaps(TileBCoreInitEvent event) {
+//        if (event.getTile() instanceof TileGenerator tile) {
+//            SimpleModuleHost host = new SimpleModuleHost(TechLevel.WYVERN, 5, 5, ModuleCfg.removeInvalidModules, ModuleCategory.ENERGY);
+//            tile.getCapManager().setManaged(DraconicEvolution.MODID +":host_cap", DECapabilities.MODULE_HOST_CAPABILITY, host).saveBoth().syncContainer();
+//        }
+//    }
 
     //region Ticking
 

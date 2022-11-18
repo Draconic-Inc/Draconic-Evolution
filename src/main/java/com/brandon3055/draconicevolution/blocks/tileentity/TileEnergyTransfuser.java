@@ -15,6 +15,7 @@ import com.brandon3055.brandonscore.lib.datamanager.ManagedBool;
 import com.brandon3055.brandonscore.lib.datamanager.ManagedEnum;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
 import com.brandon3055.draconicevolution.init.DEContent;
+import com.brandon3055.draconicevolution.inventory.ContainerDETile;
 import com.brandon3055.draconicevolution.inventory.GuiLayoutFactories;
 import com.brandon3055.draconicevolution.utils.ItemCapMerger;
 import net.minecraft.core.BlockPos;
@@ -169,7 +170,7 @@ public class TileEnergyTransfuser extends TileBCore implements IInteractTile, Me
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int id, Inventory inv, Player player) {
-        return new ContainerBCTile<>(DEContent.container_energy_transfuser, id, player.getInventory(), this, GuiLayoutFactories.TRANSFUSER_LAYOUT);
+        return new ContainerDETile<>(DEContent.container_energy_transfuser, id, player.getInventory(), this, GuiLayoutFactories.TRANSFUSER_LAYOUT);
     }
 
     public enum ItemIOMode {

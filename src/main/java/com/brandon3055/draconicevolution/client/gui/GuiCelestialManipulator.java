@@ -21,6 +21,7 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileCelestialManipulator;
 import com.brandon3055.draconicevolution.client.DEGuiSprites;
 
+import com.brandon3055.draconicevolution.client.gui.modular.TModularMachine;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
@@ -63,7 +64,7 @@ public class GuiCelestialManipulator extends ModularGuiContainer<ContainerBCTile
 		manager.clear();
 		weatherControls.clear();
 		sunControls.clear();
-		temp = new TBasicMachine(this, tile, false);
+		temp = new TModularMachine(this, tile, false);
 		temp.background = GuiTexture.newDynamicTexture(xSize(), ySize(), () -> BCGuiSprites.getThemed("background_dynamic"));
 		temp.background.onReload(guiTex -> guiTex.setPos(guiLeft(), guiTop()));
 		toolkit.loadTemplate(temp);

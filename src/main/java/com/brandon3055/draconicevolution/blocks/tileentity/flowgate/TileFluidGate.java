@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.blocks.tileentity.flowgate;
 
 import com.brandon3055.brandonscore.inventory.ContainerBCTile;
 import com.brandon3055.draconicevolution.init.DEContent;
+import com.brandon3055.draconicevolution.inventory.ContainerDETile;
 import com.brandon3055.draconicevolution.inventory.GuiLayoutFactories;
 import com.brandon3055.draconicevolution.lib.WTFException;
 import net.covers1624.quack.util.SneakyUtils;
@@ -69,7 +70,7 @@ public class TileFluidGate extends TileFlowGate {
 
     @Override
     public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
-        return new ContainerBCTile<TileFlowGate>(DEContent.container_flow_gate, id, player.getInventory(), this, SneakyUtils.unsafeCast(GuiLayoutFactories.PLAYER_ONLY_LAYOUT));
+        return new ContainerDETile<>(DEContent.container_flow_gate, id, player.getInventory(), this, SneakyUtils.unsafeCast(GuiLayoutFactories.PLAYER_ONLY_LAYOUT));
     }
 
     @Override

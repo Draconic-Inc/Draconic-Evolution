@@ -19,8 +19,10 @@ import com.brandon3055.brandonscore.lib.entityfilter.EntityFilter;
 import com.brandon3055.brandonscore.lib.entityfilter.FilterType;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
 import com.brandon3055.draconicevolution.DEOldConfig;
+import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
 import com.brandon3055.draconicevolution.blocks.machines.Grinder;
 import com.brandon3055.draconicevolution.init.DEContent;
+import com.brandon3055.draconicevolution.inventory.ContainerDETile;
 import com.brandon3055.draconicevolution.inventory.GuiLayoutFactories;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.mojang.authlib.GameProfile;
@@ -69,7 +71,7 @@ public class TileGrinder extends TileBCore implements IRSSwitchable, MenuProvide
     public final ManagedInt storedXP = register(new ManagedInt("stored_xp", DataFlags.SAVE_BOTH_SYNC_CONTAINER));
     public TileItemStackHandler itemHandler = new TileItemStackHandler(2);
     public EntityFilter entityFilter;
-    public OPStorage opStorage = new OPStorage(1000000, 128000, 0);
+    public OPStorage opStorage = new ModularOPStorage(this, 1000000, 128000, 0);
 
     //Client side rendering fields
     public Entity targetA = null;
@@ -403,7 +405,7 @@ public class TileGrinder extends TileBCore implements IRSSwitchable, MenuProvide
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int currentWindowIndex, Inventory playerInventory, Player player) {
-        return new ContainerBCTile<>(DEContent.container_grinder, currentWindowIndex, playerInventory, this, GuiLayoutFactories.GRINDER_LAYOUT);
+        return new ContainerDETile<>(DEContent.container_grinder, currentWindowIndex, playerInventory, this, GuiLayoutFactories.GRINDER_LAYOUT);
     }
 
     @Override

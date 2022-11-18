@@ -16,6 +16,7 @@ import com.brandon3055.brandonscore.inventory.ContainerSlotLayout.SlotType;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileDisenchanter;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileGrinder;
+import com.brandon3055.draconicevolution.client.gui.modular.TModularMachine;
 import com.brandon3055.draconicevolution.inventory.ContainerDisenchanter;
 
 import net.minecraft.nbt.CompoundTag;
@@ -52,7 +53,7 @@ public class GuiDisenchanter extends ModularGuiContainer<ContainerBCTile<TileDis
 	@Override
 	public void addElements(GuiElementManager manager) {
 		int padding = 3;
-		temp = new TBasicMachine(this, tile, false);
+		temp = new TModularMachine(this, tile, false);
 		temp.background = GuiTexture.newDynamicTexture(xSize(), ySize(), () -> BCGuiSprites.getThemed("background_dynamic"));
 		temp.background.onReload(guiTex -> guiTex.setPos(guiLeft(), guiTop()));
 		toolkit.loadTemplate(temp);
