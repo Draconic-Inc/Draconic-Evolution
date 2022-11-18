@@ -315,7 +315,6 @@ public class DEConfig {
     public static boolean guardianShaders;
     public static boolean otherShaders;
     public static boolean itemDislocatorSound;
-    public static boolean creativeWarning;
 
     private static void loadClient() {
         clientTag = config.getCategory("Client");
@@ -377,11 +376,6 @@ public class DEConfig {
                 .setComment("Enable / Disable item dislocator pickup sound")
                 .setDefaultBoolean(true)
                 .onSync((tag, type) -> itemDislocatorSound = tag.getBoolean());
-
-        clientTag.getValue("creativeWarning")
-                .setComment("Set to false to disable the warning that is displayed when you switch to creative mode.")
-                .setDefaultBoolean(true)
-                .onSync((tag, type) -> creativeWarning = tag.getBoolean());
     }
 
     //Common properties
