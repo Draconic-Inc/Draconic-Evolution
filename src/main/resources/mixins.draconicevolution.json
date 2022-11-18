@@ -9,6 +9,7 @@
         "TrackedEntityMixin"
     ],
     "client":             [
-        "PlayerModelMixin"
+        "PlayerModelMixin",
+        "CCreativeInventoryActionPacketMixin"
 	]
 }
