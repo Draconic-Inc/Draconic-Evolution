@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.integration.equipment;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
+import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurio;
 
 import java.util.List;
@@ -25,59 +26,20 @@ public class CurioWrapper implements ICurio {
         item.equipmentTick(stack, livingEntity);
     }
 
-//    @Override
-//    public void curioAnimate(String identifier, int index, LivingEntity livingEntity) {
-//
-//    }
-
-//    @Override
-//    public boolean canUnequip(String identifier, LivingEntity livingEntity) {
-//        return false;
-//    }
-
-
     @Override
-    public boolean canEquip(String identifier, LivingEntity livingEntity) {
-        return item.canEquip(livingEntity, identifier);
+    public boolean canEquip(SlotContext slotContext) {
+        return item.canEquip(stack, slotContext.entity(), slotContext.identifier());
     }
 
     @Override
-    public List<Component> getTagsTooltip(List<Component> tagTooltips) {
-        return item.getTagsTooltip(stack, tagTooltips);
+    public List<Component> getSlotsTooltip(List<Component> tooltips) {
+        return item.getTagsTooltip(stack, tooltips);
     }
-
-//    @Override
-//    public void playRightClickEquipSound(LivingEntity livingEntity) {
-//
-//    }
 
     @Override
-    public boolean canRightClickEquip() {
-        return item.canRightClickEquip(stack);
+    public boolean canEquipFromUse(SlotContext slotContext) {
+        return item.canRightClickEquip(stack, slotContext.entity(), slotContext.identifier());
     }
-
-//    @Override
-//    public void curioBreak(ItemStack stack, LivingEntity livingEntity) {
-//
-//    }
-
-//    @Nonnull
-//    @Override
-//    public DropRule getDropRule(LivingEntity livingEntity) {
-//        return DropRule.DEFAULT;
-//    }
-//
-//    @Override
-//    public boolean showAttributesTooltip(String identifier) {
-//        return false;
-//    }
-
-//    @Override
-//    public boolean canRender(String identifier, int index, LivingEntity livingEntity) {
-//        return false;
-//    }
-//
-
 
     @Override
     public ItemStack getStack() {

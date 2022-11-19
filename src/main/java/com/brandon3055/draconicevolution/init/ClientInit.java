@@ -13,7 +13,7 @@ import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.client.handler.StaffRenderEventHandler;
 import com.brandon3055.draconicevolution.client.keybinding.KeyBindings;
 import com.brandon3055.draconicevolution.client.keybinding.KeyInputHandler;
-import com.brandon3055.draconicevolution.client.model.ModularArmorLayer;
+import com.brandon3055.brandonscore.client.model.EquippedItemModelLayer;
 import com.brandon3055.draconicevolution.client.render.entity.DraconicGuardianRenderer;
 import com.brandon3055.draconicevolution.client.render.entity.GuardianCrystalRenderer;
 import com.brandon3055.draconicevolution.client.render.entity.GuardianProjectileRenderer;
@@ -216,19 +216,12 @@ public class ClientInit {
         for (String skin : event.getSkins()) {
             LivingEntityRenderer renderer = event.getSkin(skin);
             assert renderer != null;
-            renderer.addLayer(new ModularArmorLayer(renderer, event.getEntityModels(), skin.equals("slim")));
             renderer.addLayer(new ElytraLayer(renderer, event.getEntityModels()) {
                 @Override
                 public boolean shouldRender(@NotNull ItemStack stack, @NotNull LivingEntity entity) {
                     return stack.getItem() instanceof IModularArmor && stack.canElytraFly(entity);
                 }
             });
-        }
-
-        for (EntityRenderer r : Minecraft.getInstance().getEntityRenderDispatcher().renderers.values()) {
-            if (r instanceof LivingEntityRenderer<?, ?> renderer && renderer.getModel() instanceof HumanoidModel) {
-                renderer.addLayer(new ModularArmorLayer(renderer, event.getEntityModels(), false));
-            }
         }
     }
 

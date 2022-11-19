@@ -7,6 +7,7 @@ import codechicken.lib.render.model.OBJParser;
 import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Translation;
 import com.brandon3055.brandonscore.api.TechLevel;
+import com.brandon3055.brandonscore.client.render.EquippedItemModel;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
@@ -40,7 +41,7 @@ import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
 /**
  * Created by brandon3055 on 13/11/2022
  */
-public class ModularChestpieceModel<T extends LivingEntity> extends HumanoidModel<T> {
+public class ModularChestpieceModel<T extends LivingEntity> extends HumanoidModel<T> implements EquippedItemModel {
 
     private final TechLevel techLevel;
     private int shieldColour;
@@ -107,7 +108,6 @@ public class ModularChestpieceModel<T extends LivingEntity> extends HumanoidMode
                 .setOutputState(RenderStateShard.ITEM_ENTITY_TARGET)
                 .setWriteMaskState(RenderStateShard.COLOR_DEPTH_WRITE)
                 .setLightmapState(RenderStateShard.LIGHTMAP)
-//                .setCullState(RenderStateShard.NO_CULL)
                 .createCompositeState(false)
         );
 
@@ -145,7 +145,8 @@ public class ModularChestpieceModel<T extends LivingEntity> extends HumanoidMode
         return ImmutableList.of(body, leftArm, rightArm, leftLeg, rightLeg);
     }
 
-    public void render(PoseStack poseStack, MultiBufferSource buffers, ItemStack stack, int packedLight, int packedOverlay, float r, float g, float b, float a) {
+    @Override
+    public void render(PoseStack poseStack, MultiBufferSource buffers, ItemStack stack, int packedLight, int packedOverlay) {
         shieldColour = 0xFFFFFFFF;
         shieldState = 0;
         LazyOptional<ModuleHost> optionalHost = stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
@@ -166,17 +167,17 @@ public class ModularChestpieceModel<T extends LivingEntity> extends HumanoidMode
             }
 
             poseStack.translate(0.0D, this.babyYHeadOffset / 16.0F, this.babyZHeadOffset / 16.0F);
-            this.headParts().forEach(part -> ((ExtendedModelPart) part).render(poseStack, buffers, packedLight, packedOverlay, r, g, b, a));
+            this.headParts().forEach(part -> ((ExtendedModelPart) part).render(poseStack, buffers, packedLight, packedOverlay));
             poseStack.popPose();
             poseStack.pushPose();
             float f1 = 1.0F / this.babyBodyScale;
             poseStack.scale(f1, f1, f1);
             poseStack.translate(0.0D, this.bodyYOffset / 16.0F, 0.0D);
-            this.bodyParts().forEach(part -> ((ExtendedModelPart) part).render(poseStack, buffers, packedLight, packedOverlay, r, g, b, a));
+            this.bodyParts().forEach(part -> ((ExtendedModelPart) part).render(poseStack, buffers, packedLight, packedOverlay));
             poseStack.popPose();
         } else {
-            this.headParts().forEach(part -> ((ExtendedModelPart) part).render(poseStack, buffers, packedLight, packedOverlay, r, g, b, a));
-            this.bodyParts().forEach(part -> ((ExtendedModelPart) part).render(poseStack, buffers, packedLight, packedOverlay, r, g, b, a));
+            this.headParts().forEach(part -> ((ExtendedModelPart) part).render(poseStack, buffers, packedLight, packedOverlay));
+            this.bodyParts().forEach(part -> ((ExtendedModelPart) part).render(poseStack, buffers, packedLight, packedOverlay));
         }
     }
 

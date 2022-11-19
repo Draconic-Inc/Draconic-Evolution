@@ -1,7 +1,6 @@
 package com.brandon3055.draconicevolution.mixin;
 
 import com.brandon3055.draconicevolution.items.equipment.IModularItem;
-import net.minecraft.client.model.PlayerModel;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.game.ServerboundSetCreativeModeSlotPacket;
 import net.minecraft.world.item.ItemStack;

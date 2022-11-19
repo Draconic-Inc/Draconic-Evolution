@@ -17,11 +17,11 @@ public interface IDEEquipment {
         return tagTooltips;
     }
 
-    default boolean canRightClickEquip(ItemStack stack) {
+    default boolean canRightClickEquip(ItemStack stack, LivingEntity livingEntity, String slotID) {
         return false;
     }
 
-    default boolean canEquip(LivingEntity livingEntity, String slotID) {
+    default boolean canEquip(ItemStack stack, LivingEntity livingEntity, String slotID) {
         return true;
     }
 }

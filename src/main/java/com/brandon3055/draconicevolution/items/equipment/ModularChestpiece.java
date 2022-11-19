@@ -2,6 +2,9 @@ package com.brandon3055.draconicevolution.items.equipment;
 
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.capability.MultiCapabilityProvider;
+import com.brandon3055.brandonscore.client.model.DummyHumanoidModel;
+import com.brandon3055.brandonscore.client.render.EquippedItemModel;
+import com.brandon3055.brandonscore.items.EquippedModelItem;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.api.config.ConfigProperty;
 import com.brandon3055.draconicevolution.api.config.DecimalProperty;
@@ -17,7 +20,6 @@ import com.brandon3055.draconicevolution.init.ModuleCfg;
 import com.brandon3055.draconicevolution.init.TechProperties;
 import com.brandon3055.draconicevolution.integration.equipment.EquipmentManager;
 import com.brandon3055.draconicevolution.integration.equipment.IDEEquipment;
-import net.covers1624.quack.util.SneakyUtils;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.damagesource.DamageSource;
@@ -33,9 +35,10 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.IItemRenderProperties;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -43,7 +46,7 @@ import java.util.function.Supplier;
 /**
  * Created by brandon3055 on 21/5/20.
  */
-public class ModularChestpiece extends ArmorItem implements IModularArmor, IDEEquipment {
+public class ModularChestpiece extends ArmorItem implements IModularArmor, IDEEquipment, EquippedModelItem {
     private final TechLevel techLevel;
 
     public ModularChestpiece(TechProperties props) {
@@ -60,8 +63,8 @@ public class ModularChestpiece extends ArmorItem implements IModularArmor, IDEEq
     }
 
     @Override
-    public boolean canEquip(LivingEntity livingEntity, String identifier) {
-        if (!identifier.equals("body") || !EquipmentManager.findItem(e -> e.getItem() instanceof ModularChestpiece, livingEntity).isEmpty()) {
+    public boolean canEquip(ItemStack stack, LivingEntity livingEntity, String slotID) {
+        if (!slotID.equals("body") || !EquipmentManager.findItem(e -> e.getItem() instanceof ModularChestpiece, livingEntity).isEmpty()) {
             return false;
         }
 
@@ -124,37 +127,30 @@ public class ModularChestpiece extends ArmorItem implements IModularArmor, IDEEq
         addModularItemInformation(stack, worldIn, tooltip, flagIn);
     }
 
-    @OnlyIn(Dist.CLIENT)
-    private HumanoidModel<?> model;
-
-    @OnlyIn(Dist.CLIENT)
-    private HumanoidModel<?> model_on_armor;
-
     @Override
     @OnlyIn(Dist.CLIENT)
     public void initializeClient(Consumer<IItemRenderProperties> consumer) {
-        consumer.accept(new IItemRenderProperties() {
-            @Nullable
-            @Override
-            public HumanoidModel<?> getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlot armorSlot, HumanoidModel<?> _default) {
-                if (model == null) {
-                    model = new ModularChestpieceModel<>(techLevel, false);
-                }
-                return SneakyUtils.unsafeCast(model);
-            }
-        });
+        consumer.accept(DummyHumanoidModel.DUMMY_ITEM_RENDER_PROPS);
     }
 
     @OnlyIn(Dist.CLIENT)
-    public <A extends HumanoidModel<?>> A getChestPieceModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlot armorSlot, boolean onArmor) {
+    private ModularChestpieceModel<?> model;
+
+    @OnlyIn(Dist.CLIENT)
+    private ModularChestpieceModel<?> model_on_armor;
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public EquippedItemModel getExtendedModel(LivingEntity entity, ItemStack stack, @Nullable EquipmentSlot slot, HumanoidModel<?> parentModel, boolean slim) {
+        boolean onArmor = slot == null && !entity.getItemBySlot(EquipmentSlot.CHEST).isEmpty();
         if (model == null || model_on_armor == null) {
             model = new ModularChestpieceModel<>(techLevel, false);
             model_on_armor = new ModularChestpieceModel<>(techLevel, true);
         }
-
-        return SneakyUtils.unsafeCast(onArmor ? model_on_armor : model);
+        ModularChestpieceModel<?> activeModel = onArmor ? model_on_armor : model;
+        ForgeHooksClient.copyModelProperties(parentModel, activeModel);
+        return activeModel;
     }
-
 
     public static ItemStack getChestpiece(LivingEntity entity) {
         ItemStack stack = entity.getItemBySlot(EquipmentSlot.CHEST);
