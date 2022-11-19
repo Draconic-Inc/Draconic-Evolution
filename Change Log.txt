@@ -1,4 +1,7 @@
-######## 3.0.28.x ########
+######## 3.0.29.x ########
+- Fixed Wyvern -> Draconic capacitor upgrade loosing data.
+
+######## 3.0.28.500 ########
 - *Actually* Re implemented chaos island configs. (Slight github mixup meant this did not get included in the last build)
 - Fixed creative breaking modular items on servers.
 
