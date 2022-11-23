@@ -1,13 +1,13 @@
 buildscript {
     repositories {
-//        mavenLocal()
+        mavenLocal()
         jcenter()
         maven { url = "https://maven.minecraftforge.net/" }
         maven { url = "https://repo.spongepowered.org/maven" }
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:5.1.+'
-//        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
+        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
     }
 }
 
@@ -17,10 +17,8 @@ plugins {
     id "net.covers1624.signing" version '1.1.4'
 }
 
-
 apply plugin: 'net.minecraftforge.gradle'
-//apply plugin: "org.spongepowered.mixin"
-apply from: 'https://raw.githubusercontent.com/SizableShrimp/Forge-Class-Remapper/main/classremapper.gradle'
+apply plugin: "org.spongepowered.mixin"
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
@@ -66,28 +64,28 @@ minecraft {
         client {
             workingDirectory file('run')
             mods { draconicevolution { source sourceSets.main } }
-            property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+//            property 'mixin.env.remapRefMap', 'true'
+//            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
         }
         server {
             workingDirectory file('run')
             mods { draconicevolution { source sourceSets.main } }
-            property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+//            property 'mixin.env.remapRefMap', 'true'
+//            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
         }
         data {
             workingDirectory file('run')
             args '--mod', 'draconicevolution', '--all', '--output', file("src/main/generated"), '--existing', file("src/main/resources")
             mods { draconicevolution { source sourceSets.main } }
-            property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+//            property 'mixin.env.remapRefMap', 'true'
+//            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
         }
     }
 }
 
-//mixin {
-//    add(sourceSets.main, "mixins.codechickenlib.refmap.json")
-//}
+mixin {
+    add(sourceSets.main, "mixins.draconicevolution.refmap.json")
+}
 
 processResources {
     inputs.property 'mod_version', config.mod_version
