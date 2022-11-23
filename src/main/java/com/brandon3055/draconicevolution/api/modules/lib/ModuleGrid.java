@@ -33,7 +33,7 @@ public class ModuleGrid {
         this.onGridChange = onGridChange;
     }
 
-    private void onGridChange() {
+    protected void onGridChange() {
         if (onGridChange != null) {
             onGridChange.run();;
         }
@@ -139,7 +139,7 @@ public class ModuleGrid {
      * This will attempt to install the module entity in the first available grid cell.
      */
     public boolean attemptInstall(ModuleEntity entity) {
-        for (int y = 0; y < getWidth(); y++) {
+        for (int y = 0; y < getHeight(); y++) {
             for (int x = 0; x < getWidth(); x++) {
                 entity.setPos(x, y);
                 if (checkInstall(entity).resultType == InstallResultType.YES) {

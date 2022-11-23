@@ -25,8 +25,8 @@ import org.jetbrains.annotations.Nullable;
  */
 public class ContainerDETile<T extends TileBCore> extends ContainerBCTile<T> implements ModuleHostContainer {
 
-    private ModuleGrid moduleGrid;
-    private ModuleHost moduleHost = null;
+    protected ModuleGrid moduleGrid;
+    protected ModuleHost moduleHost = null;
 
     public ContainerDETile(@Nullable MenuType<?> type, int windowId, Inventory player, FriendlyByteBuf extraData) {
         super(type, windowId, player, extraData);
@@ -48,7 +48,7 @@ public class ContainerDETile<T extends TileBCore> extends ContainerBCTile<T> imp
         initHost(tile, player);
     }
 
-    private void initHost(T tile, Inventory player) {
+    protected void initHost(T tile, Inventory player) {
         LazyOptional<ModuleHost> opt = tile.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
         opt.ifPresent(host -> {
             this.moduleHost = host;
