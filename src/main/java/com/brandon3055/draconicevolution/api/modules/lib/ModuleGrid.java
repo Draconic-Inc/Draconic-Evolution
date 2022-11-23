@@ -17,12 +17,12 @@ import java.util.Objects;
  */
 public class ModuleGrid {
 
-    private int xPos = 0;
-    private int yPos = 0;
+    protected int xPos = 0;
+    protected int yPos = 0;
     public ModuleHostContainer container;
-    private Inventory player;
-    private int cellSize = 16;
-    private Runnable onGridChange;
+    protected Inventory player;
+    protected int cellSize = 16;
+    protected Runnable onGridChange;
 
     public ModuleGrid(ModuleHostContainer container, Inventory player) {
         this.container = container;
