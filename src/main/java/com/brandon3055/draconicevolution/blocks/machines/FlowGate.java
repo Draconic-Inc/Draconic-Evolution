@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.blocks.machines;
 
 import com.brandon3055.brandonscore.blocks.BlockBCore;
+import com.brandon3055.brandonscore.blocks.EntityBlockBCore;
 import com.brandon3055.brandonscore.utils.FacingUtils;
 import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.core.BlockPos;
@@ -21,7 +22,7 @@ import net.minecraft.world.level.block.state.properties.DirectionProperty;
 /**
  * Created by brandon3055 on 14/11/2016.
  */
-public class FlowGate extends BlockBCore implements EntityBlock {
+public class FlowGate extends EntityBlockBCore {
 
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
     private final boolean fluxGate;

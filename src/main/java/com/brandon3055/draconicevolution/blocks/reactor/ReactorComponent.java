@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.blocks.reactor;
 
 import codechicken.lib.util.RotationUtils;
 import com.brandon3055.brandonscore.blocks.BlockBCore;
+import com.brandon3055.brandonscore.blocks.EntityBlockBCore;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorComponent;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorInjector;
 import com.brandon3055.draconicevolution.init.DEContent;
@@ -35,7 +36,7 @@ import java.util.List;
 /**
  * Created by brandon3055 on 18/01/2017.
  */
-public class ReactorComponent extends BlockBCore implements EntityBlock {
+public class ReactorComponent extends EntityBlockBCore {
 
     private static final VoxelShape SHAPE_INJ_DOWN  = Shapes.box(0F, 0.885F, 0F, 1F, 1F, 1F);
     private static final VoxelShape SHAPE_INJ_UP    = Shapes.box(0F, 0F, 0F, 1F, 0.125F, 1F);

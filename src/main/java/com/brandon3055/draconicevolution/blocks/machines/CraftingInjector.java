@@ -4,6 +4,7 @@ import codechicken.lib.inventory.InventoryUtils;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.api.hud.IHudBlock;
 import com.brandon3055.brandonscore.blocks.BlockBCore;
+import com.brandon3055.brandonscore.blocks.EntityBlockBCore;
 import com.brandon3055.brandonscore.lib.ChatHelper;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileFusionCraftingInjector;
 import com.brandon3055.draconicevolution.init.DEContent;
@@ -38,7 +39,7 @@ import java.util.List;
 /**
  * Created by brandon3055 on 10/06/2016.
  */
-public class CraftingInjector extends BlockBCore implements IHudBlock, EntityBlock {
+public class CraftingInjector extends EntityBlockBCore implements IHudBlock {
 
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
     private static VoxelShape SHAPE_DOWN = Shapes.box(0.0625, 0.375, 0.0625, 0.9375, 1, 0.9375);

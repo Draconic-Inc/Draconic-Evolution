@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.blocks.reactor;
 
 import com.brandon3055.brandonscore.blocks.BlockBCore;
+import com.brandon3055.brandonscore.blocks.EntityBlockBCore;
 import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
 import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.core.BlockPos;
@@ -27,7 +28,7 @@ import net.minecraftforge.network.NetworkHooks;
 /**
  * Created by brandon3055 on 6/11/2016.
  */
-public class ReactorCore extends BlockBCore implements EntityBlock {
+public class ReactorCore extends EntityBlockBCore {
 
     private static final VoxelShape NO_AABB = Shapes.box(0.5, 0.5, 0.5, 0.5, 0.5, 0.5);
     private static final VoxelShape AABB = Shapes.box(0.25, 0.25, 0.25, 0.75, 0.75, 0.75);

@@ -9,6 +9,7 @@ import codechicken.lib.vec.Cuboid6;
 import codechicken.lib.vec.Rotation;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.blocks.BlockBCore;
+import com.brandon3055.brandonscore.blocks.EntityBlockBCore;
 import com.brandon3055.draconicevolution.blocks.tileentity.TilePlacedItem;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.google.common.collect.ImmutableSet;
@@ -46,7 +47,7 @@ import java.util.List;
 /**
  * Created by brandon3055 on 25/07/2016.
  */
-public class PlacedItem extends BlockBCore implements EntityBlock {
+public class PlacedItem extends EntityBlockBCore {
     private static final VoxelShape FALLBACK_SHAPE = Shapes.box(0.1, 0.1, 0.1, 0.9, 0.9, 0.9);
     private static Int2ObjectMap<VoxelShape> SHAPE_CACHE = new Int2ObjectOpenHashMap<>();
     public static final DirectionProperty FACING = BlockStateProperties.FACING;

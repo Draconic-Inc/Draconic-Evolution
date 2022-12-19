@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.blocks.machines;
 
 import com.brandon3055.brandonscore.blocks.BlockBCore;
+import com.brandon3055.brandonscore.blocks.EntityBlockBCore;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileStabilizedSpawner;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.items.MobSoul;
@@ -18,7 +19,7 @@ import javax.annotation.Nullable;
 /**
  * Created by brandon3055 on 25/09/2016.
  */
-public class StabilizedSpawner extends BlockBCore implements EntityBlock {
+public class StabilizedSpawner extends EntityBlockBCore {
 
     public StabilizedSpawner(Properties properties) {
         super(properties);

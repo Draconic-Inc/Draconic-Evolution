@@ -8,6 +8,7 @@ import codechicken.lib.vec.Rotation;
 import codechicken.lib.vec.Transformation;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.blocks.BlockBCore;
+import com.brandon3055.brandonscore.blocks.EntityBlockBCore;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.core.BlockPos;
@@ -22,7 +23,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 /**
  * Created by brandon3055 on 12/12/2020.
  */
-public class EnergyTransfuser extends BlockBCore implements EntityBlock {
+public class EnergyTransfuser extends EntityBlockBCore {
     private static final VoxelShape SHAPE;
 
     private static final IndexedVoxelShape BASE_SHAPE;
@@ -57,5 +58,4 @@ public class EnergyTransfuser extends BlockBCore implements EntityBlock {
     public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
         return SHAPE;
     }
-//
 }

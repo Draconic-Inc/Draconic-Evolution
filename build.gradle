@@ -87,6 +87,12 @@ mixin {
     add(sourceSets.main, "mixins.draconicevolution.refmap.json")
 }
 
+configurations {
+    ////    shadow
+////    implementation.extendsFrom shadow
+    annotationProcessor.extendsFrom minecraft
+}
+
 processResources {
     inputs.property 'mod_version', config.mod_version
     inputs.property 'mc_version', config.mc_version
@@ -105,31 +111,8 @@ processResources {
     }
 }
 
-//configurations {
-////    shadow
-////    implementation.extendsFrom shadow
-//    annotationProcessor.extendsFrom minecraft
-//}
-
-
-//processResources { task ->
-//    inputs.property 'mod_version', config.mod_version
-//    inputs.property 'mc_version', config.mc_version
-//
-//    from(sourceSets.main.resources.srcDirs) { spec ->
-//        spec.include 'META-INF/mods.toml'
-//        task.doFirst {
-//            spec.expand 'version': config.mod_version,
-//                    'mc_version': config.mc_version,
-//                    'ccl_version': "[${config.ccl_version.replace('.+', '')},${config.ccl_version_max})",
-//                    'bcore_version': resolve("BrandonsCore"),
-//                    'cct_version': config.cct_version
-//        }
-//    }
-//}
-
 repositories {
-//    mavenLocal()
+    mavenLocal()
     maven { url = "https://maven.covers1624.net/" }
     maven { url = "https://dvs1.progwml6.com/files/maven" }
     maven { url = "https://maven.cil.li/" }

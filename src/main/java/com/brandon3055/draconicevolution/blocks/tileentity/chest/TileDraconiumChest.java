@@ -132,10 +132,10 @@ public class TileDraconiumChest extends TileBCore implements IRSSwitchable, Menu
     @Override
     public void readExtraTileAndStack(CompoundTag compound) {
         smeltingLogic.loadAdditionalNBT(compound);
-        DraconicEvolution.LOGGER.info("readExtraTileAndStack");
+//        DraconicEvolution.LOGGER.info("readExtraTileAndStack");
         if (!compound.contains("inv_migrated")) {
-            DraconicEvolution.LOGGER.info("Chest Not Migrated!");
-            DraconicEvolution.LOGGER.info(compound);
+//            DraconicEvolution.LOGGER.info("Chest Not Migrated!");
+//            DraconicEvolution.LOGGER.info(compound);
             for (int i = 0; i < old_item_handler.getSlots(); i++) {
                 ItemStack stack = old_item_handler.getStackInSlot(i);
                 if (stack.isEmpty()) {
@@ -154,12 +154,12 @@ public class TileDraconiumChest extends TileBCore implements IRSSwitchable, Menu
             }
 
             if (compound.contains("CraftingItems", 9)) {
-                DraconicEvolution.LOGGER.info("Migrating Crafting Items");
+//                DraconicEvolution.LOGGER.info("Migrating Crafting Items");
                 ListTag nbttaglist = compound.getList("CraftingItems", 10);
-                DraconicEvolution.LOGGER.info(nbttaglist);
+//                DraconicEvolution.LOGGER.info(nbttaglist);
                 for (int i = 1; i < nbttaglist.size(); ++i) {
                     CompoundTag nbttagcompound = nbttaglist.getCompound(i);
-                    DraconicEvolution.LOGGER.info(nbttagcompound);
+//                    DraconicEvolution.LOGGER.info(nbttagcompound);
 //                    int j = nbttagcompound.getByte("Slot") & 255;
                     if (i < craftingItems.getSlots()) {
                         craftingItems.setStackInSlot(i - 1, ItemStack.of(nbttagcompound));
