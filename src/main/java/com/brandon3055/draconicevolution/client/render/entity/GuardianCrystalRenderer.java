@@ -131,7 +131,7 @@ public class GuardianCrystalRenderer extends EntityRenderer<GuardianCrystalEntit
     }
 
     @Override
-    public boolean shouldRender(GuardianCrystalEntity livingEntityIn, Frustum camera, double camX, double camY, double camZ) {
-        return super.shouldRender(livingEntityIn, camera, camX, camY, camZ) || livingEntityIn.getBeamTarget() != null;
+    public boolean shouldRender(GuardianCrystalEntity entity, Frustum camera, double camX, double camY, double camZ) {
+        return super.shouldRender(entity, camera, camX, camY, camZ) || entity.getBeamTarget() != null;
     }
 }

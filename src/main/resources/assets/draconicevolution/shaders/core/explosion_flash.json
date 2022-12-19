@@ -14,7 +14,6 @@
     "uniforms": [
         { "name": "ModelViewMat", "type": "matrix4x4", "count": 16, "values": [ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 ] },
         { "name": "ProjMat", "type": "matrix4x4", "count": 16, "values": [ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 ] },
-        { "name": "ColorModulator", "type": "float", "count": 4, "values": [ 1.0, 1.0, 1.0, 1.0 ] },
         { "name": "ScreenPos", "type": "VEC2", "count": 2, "values": [ 1.0, 1.0 ] },
         { "name": "ScreenSize", "type": "VEC2", "count": 2, "values": [ 1.0, 1.0 ] },
         { "name": "Intensity", "type": "float", "count": 1, "values": [ 1.0 ] }

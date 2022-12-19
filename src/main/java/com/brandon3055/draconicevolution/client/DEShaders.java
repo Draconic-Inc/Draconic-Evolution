@@ -1,18 +1,15 @@
 package com.brandon3055.draconicevolution.client;
 
-import codechicken.lib.math.MathHelper;
 import codechicken.lib.render.shader.CCShaderInstance;
 import codechicken.lib.render.shader.CCUniform;
 import codechicken.lib.util.ClientUtils;
 import com.brandon3055.brandonscore.api.TimeKeeper;
-import com.brandon3055.draconicevolution.client.shader.ChaosEntityShader;
 import com.brandon3055.draconicevolution.client.shader.ShieldShader;
 import com.brandon3055.draconicevolution.client.shader.ToolShader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import net.covers1624.quack.util.CrashLock;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.client.event.RegisterShadersEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -39,14 +36,6 @@ public class DEShaders {
     public static CCUniform chaosBlockYaw;
     public static CCUniform chaosBlockPitch;
     public static CCUniform chaosBlockAlpha;
-
-    public static final ChaosEntityShader CHAOS_ENTITY_SHADER = new ChaosEntityShader("chaos_entity", DefaultVertexFormat.NEW_ENTITY)
-            .onShaderApplied(e -> {
-                Player player = Minecraft.getInstance().player;
-                e.getTimeUniform().glUniform1f((float) ClientUtils.getRenderTime());
-                e.getYawUniform().glUniform1f((float) (player.getYRot() * MathHelper.torad));
-                e.getPitchUniform().glUniform1f((float) -(player.getXRot() * MathHelper.torad));
-            });
 
     public static final ToolShader TOOL_BASE_SHADER = new ToolShader("tools/tool_base", DefaultVertexFormat.NEW_ENTITY);
     public static final ToolShader TOOL_GEM_SHADER = new ToolShader("tools/tool_gem", DefaultVertexFormat.NEW_ENTITY)
@@ -110,7 +99,6 @@ public class DEShaders {
     public static void init() {
         LOCK.lock();
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
-        CHAOS_ENTITY_SHADER.register(bus);
         TOOL_BASE_SHADER.register(bus);
         TOOL_GEM_SHADER.register(bus);
         TOOL_TRACE_SHADER.register(bus);

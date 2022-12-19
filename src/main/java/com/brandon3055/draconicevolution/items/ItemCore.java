@@ -68,6 +68,6 @@ public class ItemCore extends Item {
 
     @Override
     public boolean isFoil(ItemStack stack) {
-        return stack.getItem() == DEContent.core_chaotic;
+        return stack.getItem() == DEContent.core_chaotic || super.isFoil(stack);
     }
 }

@@ -5,7 +5,7 @@
 uniform float Time;
 uniform vec3 Colour;
 uniform float Mipmap;
-uniform vec2 Angle;
+//uniform vec2 Angle;
 
 in vec2 texCoord0;
 in vec3 fPos;
