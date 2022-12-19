@@ -582,8 +582,8 @@ c7f780fde313982a60ffd3e5a09b7124178dad07 data/draconicevolution/recipes/tools/wy
 7bb7099f7e51acce1cb20fa08762fa08e1a3b35a data/draconicevolution/recipes/wyvern_io_crystal.json
 2fcf360dd052f2dc0c6e46f2bca47b5f7345f12f data/draconicevolution/recipes/wyvern_relay_crystal.json
 d671baa3900206c05c291128d44fb3ded404a74e data/draconicevolution/recipes/wyvern_wireless_crystal.json
-00da1f265873ec667bb3e46e26a3609c00889216 data/forge/tags/blocks/ores.json
-00da1f265873ec667bb3e46e26a3609c00889216 data/forge/tags/blocks/ores/draconium.json
+6c8e9a7137ab3dcba5deab5aedacedfc1f15e755 data/forge/tags/blocks/ores.json
+6c8e9a7137ab3dcba5deab5aedacedfc1f15e755 data/forge/tags/blocks/ores/draconium.json
 e4096c0fbd76c6c0b51477e7261c61791c3860ee data/forge/tags/blocks/storage_blocks.json
 ce0c43c4992990fffb27ae30c15de035700f8c6b data/forge/tags/blocks/storage_blocks/draconium.json
 fa0f3e7ef8a5d00a5eccc49d435172c4b4b66c6d data/forge/tags/blocks/storage_blocks/draconium_awakened.json
@@ -601,6 +601,6 @@ a6b9f37826aea51112a32f6afa67f40322244619 data/forge/tags/items/nuggets.json
 a544352a0e9b61caaa4a1da3a14b8364db9eb236 data/forge/tags/items/storage_blocks.json
 ce0c43c4992990fffb27ae30c15de035700f8c6b data/forge/tags/items/storage_blocks/draconium.json
 fa0f3e7ef8a5d00a5eccc49d435172c4b4b66c6d data/forge/tags/items/storage_blocks/draconium_awakened.json
-3cf3a288664167f7744e3fa2e6b2a702e4c67369 data/minecraft/tags/blocks/mineable/pickaxe.json
+fc8859270ab70d5431d92b3abc469837dad5db66 data/minecraft/tags/blocks/mineable/pickaxe.json
 455451495fffd3162a0244c958afa77c9b1d5c6e data/minecraft/tags/blocks/needs_diamond_tool.json
 39f00abbdd11869653338d8c73ffdf525b223f09 data/minecraft/tags/blocks/soul_fire_base_blocks.json
