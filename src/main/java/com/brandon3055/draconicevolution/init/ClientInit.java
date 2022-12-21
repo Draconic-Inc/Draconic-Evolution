@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.init;
 
 import codechicken.lib.model.ModelRegistryHelper;
+import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.api.hud.AbstractHudElement;
 import com.brandon3055.brandonscore.handlers.contributor.ContributorConfig;
@@ -225,7 +226,14 @@ public class ClientInit {
                 @Override
                 public boolean shouldRender(@NotNull ItemStack stack, @NotNull LivingEntity entity) {
                     if (ContributorHandler.shouldCancelElytra(entity)) return false;
-                    return stack.getItem() instanceof IModularArmor && stack.canElytraFly(entity);
+                    if (stack.getItem() instanceof IModularArmor item) {
+                        return item.canElytraFlyBC(stack, entity);
+                    }
+                    if (BrandonsCore.equipmentManager != null) {
+                        ItemStack curio = BrandonsCore.equipmentManager.findMatchingItem(e -> e.getItem() instanceof IModularArmor, entity);
+                        return curio.getItem() instanceof IModularArmor item && item.canElytraFlyBC(curio, entity);
+                    }
+                    return false;
                 }
             });
         }

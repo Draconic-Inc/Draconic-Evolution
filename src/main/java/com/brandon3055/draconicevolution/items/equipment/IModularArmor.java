@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.items.equipment;
 
+import com.brandon3055.brandonscore.api.ElytraEnabledItem;
 import com.brandon3055.brandonscore.api.power.IOPStorage;
 import com.brandon3055.brandonscore.api.power.IOPStorageModifiable;
 import com.brandon3055.draconicevolution.DEConfig;
@@ -25,7 +26,7 @@ import java.util.List;
 /**
  * Created by brandon3055 on 16/6/20
  */
-public interface IModularArmor extends IModularItem {
+public interface IModularArmor extends IModularItem, ElytraEnabledItem {
 
 //    @Override
 //    default Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlotType slot, ItemStack stack) {
@@ -46,7 +47,14 @@ public interface IModularArmor extends IModularItem {
     }
 
     @Override
-    default boolean elytraFlightTick(ItemStack stack, LivingEntity entity, int flightTicks) {
+    default boolean canElytraFlyBC(ItemStack stack, LivingEntity entity) {
+        ModuleHost host = stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new);
+        FlightEntity flight = host.getEntitiesByType(ModuleTypes.FLIGHT).map(e -> (FlightEntity) e).findAny().orElse(null);
+        return flight != null && flight.getElytraEnabled();
+    }
+
+    @Override
+    default boolean elytraFlightTickBC(ItemStack stack, LivingEntity entity, int flightTicks) {
         LazyOptional<IOPStorage> power = stack.getCapability(DECapabilities.OP_STORAGE);
         power.ifPresent(storage -> {
             if (storage.getOPStored() < 512) {
@@ -80,12 +88,5 @@ public interface IModularArmor extends IModularItem {
         });
 
         return true;
-    }
-
-    @Override
-    default boolean canElytraFly(ItemStack stack, LivingEntity entity) {
-        ModuleHost host = stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new);
-        FlightEntity flight = host.getEntitiesByType(ModuleTypes.FLIGHT).map(e -> (FlightEntity) e).findAny().orElse(null);
-        return flight != null && flight.getElytraEnabled();
     }
 }
