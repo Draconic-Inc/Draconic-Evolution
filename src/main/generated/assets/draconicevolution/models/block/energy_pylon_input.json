@@ -2,7 +2,7 @@
   "parent": "minecraft:block/cube_bottom_top",
   "textures": {
     "side": "draconicevolution:block/energy_pylon/energy_pylon_input",
-    "bottom": "draconicevolution:block/energy_pylon/energy_pylon_input",
-    "top": "draconicevolution:block/energy_pylon/energy_pylon_active_face"
+    "bottom": "draconicevolution:block/energy_pylon/energy_pylon_input_top",
+    "top": "draconicevolution:block/energy_pylon/energy_pylon_input_top"
   }
 }
