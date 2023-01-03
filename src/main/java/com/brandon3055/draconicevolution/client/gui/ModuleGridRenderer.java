@@ -100,10 +100,12 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> {
         if (isMouseOver(mouseX, mouseY)) {
             if (player.player.containerMenu.getCarried().isEmpty()) {
                 renderCellOverlay(mouseX, mouseY);
+                return true;
             } else if (lastError != null) {
                 PoseStack poseStack = new PoseStack();
                 poseStack.translate(0, 0, getRenderZLevel());
                 renderToolTipStrings(poseStack, Collections.singletonList(lastError.getString()), mouseX, mouseY);
+                return true;
             }
         }
         return super.renderOverlayLayer(minecraft, mouseX, mouseY, partialTicks);

@@ -91,11 +91,6 @@ public class ModuleItem<P extends ModuleData<P>> extends Item implements ModuleP
         ModuleEntity entity = getModule().createEntity();
         entity.readFromItemStack(stack, new StackModuleContext(stack, null, null));
         entity.addToolTip(tooltip);
-//        tooltip.add(new StringTextComponent("//Module textures are wip"));
-
-        if (getModule().getType() == ModuleTypes.FLIGHT && EquipmentManager.equipModLoaded()) {
-            tooltip.add(new TextComponent("//Elytra does not currently work when chestpiece is in a curio slot."));
-        }
     }
 
     @Override

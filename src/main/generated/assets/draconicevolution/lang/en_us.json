@@ -305,6 +305,7 @@
   "gui.draconicevolution.modular_item.name": "Configure Modules",
   "gui.draconicevolution.modular_item.no_module_hosts": "You do not have any modular items in your inventory!",
   "gui.draconicevolution.modular_item.open_item_config.info": "Open Item Configuration GUI",
+  "gui.draconicevolution.modular_item.supported_modules": "Supported Modules",
   "gui.draconicevolution.reactor.activate": "Activate",
   "gui.draconicevolution.reactor.chaos_out": "Chaos (Out)",
   "gui.draconicevolution.reactor.charge": "Charge",

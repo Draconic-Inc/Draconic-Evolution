@@ -458,6 +458,9 @@ public class LangGenerator extends LanguageProvider {
         helper.add("no_module_hosts",                                           "You do not have any modular items in your inventory!");
         helper.add("module_grid",                                               "Module Grid");
 
+        //SupportedModulesIcon
+        add("gui." + MODID + ".modular_item.supported_modules",                 "Supported Modules");
+
         //Generator
         helper.setPrefix("gui." + MODID + ".generator");
         helper.add("fuel_efficiency",                                           "Fuel Efficiency:");

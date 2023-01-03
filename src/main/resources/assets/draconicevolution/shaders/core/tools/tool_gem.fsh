@@ -28,8 +28,8 @@ void main() {
     float intensity = 1;
     vec3 coord = vec3(texCoord0, 0.0);
 
-//    coord.x += ((fPos.x + vNorm.x) / 10);
-//    coord.y += ((fPos.y + vNorm.y) / 10);
+    coord.x += ((fPos.x + vNorm.x) / 10);
+    coord.y += ((fPos.y + vNorm.y) / 10);
 
     float density = 8;
     float brightness = BaseColor.w;
