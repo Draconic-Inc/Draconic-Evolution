@@ -42,6 +42,7 @@ public class GuiDraconiumChest extends ModularGuiContainer<ContainerDraconiumChe
         template.setButtonPlacer(null);
         template.background = GuiTexture.newDynamicTexture(xSize(), ySize(), () -> BCGuiSprites.getThemed("background_dynamic"));
         template.background.onReload(guiTex -> guiTex.setPos(guiLeft(), guiTop()));
+        template.dragZoneHeight = 5;
         toolkit.loadTemplate(template);
         template.background.removeChild(template.title);
 
