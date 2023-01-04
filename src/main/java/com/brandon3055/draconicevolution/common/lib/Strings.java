@@ -47,6 +47,7 @@ public class Strings { //                                              public st
     public static final String longRangeDislocatorName = "longRangeDislocator";
     public static final String generatorName = "generator";
     public static final String energyStorageCoreName = "energyStorageCore";
+    public static final String earthName = "earth";
     public static final String draconiumBlockName = "draconium";
     public static final String invisibleMultiblockName = "invisibleMultiblock";
     public static final String energyPylonName = "energyPylon";

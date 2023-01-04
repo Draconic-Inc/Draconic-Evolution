@@ -29,6 +29,7 @@ public class ModBlocks {
     public static BlockDE longRangeDislocator;
     public static BlockDE generator;
     public static BlockDE energyStorageCore;
+    public static BlockDE earthBlock;
     public static BlockDE draconiumBlock;
     public static BlockDE invisibleMultiblock;
     public static BlockDE energyPylon;
@@ -71,6 +72,7 @@ public class ModBlocks {
         customSpawner = new CustomSpawner();
         generator = new Generator();
         energyStorageCore = new EnergyStorageCore();
+        earthBlock = new Earth();
         draconiumBlock = new DraconiumBlock();
         invisibleMultiblock = new InvisibleMultiblock();
         energyPylon = new EnergyPylon();

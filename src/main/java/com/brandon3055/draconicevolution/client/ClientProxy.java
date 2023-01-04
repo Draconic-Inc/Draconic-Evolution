@@ -26,6 +26,7 @@ import com.brandon3055.draconicevolution.common.tileentities.*;
 import com.brandon3055.draconicevolution.common.tileentities.energynet.TileEnergyRelay;
 import com.brandon3055.draconicevolution.common.tileentities.energynet.TileEnergyTransceiver;
 import com.brandon3055.draconicevolution.common.tileentities.energynet.TileWirelessEnergyTransceiver;
+import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEarth;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnergyPylon;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnergyStorageCore;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.reactor.TileReactorCore;
@@ -213,6 +214,7 @@ public class ClientProxy extends CommonProxy {
                 Item.getItemFromBlock(ModBlocks.reactorEnergyInjector), new RenderReactorEnergyInjector());
         MinecraftForgeClient.registerItemRenderer(
                 Item.getItemFromBlock(ModBlocks.reactorCore), new RenderReactorCore());
+        MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.earthBlock), new RenderEarthItem());
         MinecraftForgeClient.registerItemRenderer(
                 Item.getItemFromBlock(ModBlocks.chaosCrystal), new RenderChaosShard());
         MinecraftForgeClient.registerItemRenderer(
@@ -228,6 +230,7 @@ public class ClientProxy extends CommonProxy {
         ClientRegistry.bindTileEntitySpecialRenderer(TileCustomSpawner.class, new RenderTileCustomSpawner());
         // ClientRegistry.bindTileEntitySpecialRenderer(TileTestBlock.class, new RenderTileCrystal());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEnergyStorageCore.class, new RenderTileEnergyStorageCore());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEarth.class, new RenderTileEarth());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEnergyPylon.class, new RenderTileEnergyPylon());
         ClientRegistry.bindTileEntitySpecialRenderer(TilePlacedItem.class, new RenderTilePlacedItem());
         ClientRegistry.bindTileEntitySpecialRenderer(TileDissEnchanter.class, new RenderTileDissEnchanter());

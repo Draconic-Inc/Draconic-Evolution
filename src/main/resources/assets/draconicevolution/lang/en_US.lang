@@ -10,6 +10,7 @@ tile.draconicevolution:particleGenerator.name=Particle Generator
 tile.draconicevolution:playerDetector.name=Player Detector
 tile.draconicevolution:playerDetectorAdvanced.name=Advanced Player Detector
 tile.draconicevolution:energyInfuser.name=Energy Infuser
+tile.draconicevolution:earth.name=Earth
 tile.draconicevolution:customSpawner.name=Stabilized Mob Spawner
 tile.draconicevolution:longRangeDislocator1.name=Admin Dislocator
 tile.draconicevolution:longRangeDislocator0.name=Long Range Dislocator
