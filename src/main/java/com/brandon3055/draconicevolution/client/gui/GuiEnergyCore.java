@@ -115,9 +115,9 @@ public class GuiEnergyCore extends ModularGuiContainer<ContainerBCTile<TileEnerg
                 String time = "";
                 if (years > 0) {
                     time += formatYear(years) + ", ";
-                    time += days % 365 + " Days";
+                    time += days % 365 + " Day(s)";
                 } else if (days > 0) {
-                    time += days % 365 + " Days, ";
+                    time += days % 365 + " Day(s), ";
                     time += (hours % 24 < 10 ? "0" : "") + hours % 24 + ":";
                     time += (minutes % 60 < 10 ? "0" : "") + minutes % 60 + ":";
                     time += (seconds % 60 < 10 ? "0" : "") + seconds % 60 + "." + (ticks % 20 < 10 ? "0" : "") + ticks % 20;

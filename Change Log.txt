@@ -1,5 +1,6 @@
 ######## 3.0.29.x ########
 - Fixed Wyvern -> Draconic capacitor upgrade loosing data.
+- Fixed worldgen registration crash.
 
 ######## 3.0.28.500 ########
 - *Actually* Re implemented chaos island configs. (Slight github mixup meant this did not get included in the last build)
