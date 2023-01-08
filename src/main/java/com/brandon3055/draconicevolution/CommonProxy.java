@@ -15,6 +15,7 @@ import com.brandon3055.draconicevolution.integration.equipment.EquipmentManager;
 import com.brandon3055.draconicevolution.items.tools.Dislocator;
 import com.brandon3055.draconicevolution.lib.ISidedTileHandler;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
+import com.brandon3055.draconicevolution.world.DEWorldGen;
 import net.minecraft.client.audio.ISound;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.OptionalMod;
@@ -39,6 +40,7 @@ public class CommonProxy {
 
     public void commonSetup(FMLCommonSetupEvent event) {
         ModCapabilities.register();
+        DEWorldGen.init();
     }
 
     public void clientSetup(FMLClientSetupEvent event) {
