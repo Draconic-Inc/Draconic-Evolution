@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.api.modules.entities;
 
 import com.brandon3055.brandonscore.api.TechLevel;
+import com.brandon3055.brandonscore.api.render.GuiHelper;
 import com.brandon3055.brandonscore.client.BCGuiSprites;
 import com.brandon3055.brandonscore.client.utils.GuiHelperOld;
 import com.brandon3055.draconicevolution.api.config.BooleanProperty;
@@ -10,6 +11,7 @@ import com.brandon3055.draconicevolution.api.modules.data.AutoFeedData;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.brandon3055.draconicevolution.api.modules.lib.StackModuleContext;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -92,20 +94,20 @@ public class AutoFeedEntity extends ModuleEntity<AutoFeedData> {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void renderSlotOverlay(MultiBufferSource getter, Minecraft mc, int x, int y, int width, int height, double mouseX, double mouseY, boolean mouseOver, float partialTicks) {
-        VertexConsumer builder = getter.getBuffer(BCGuiSprites.GUI_TYPE);
+    public void renderSlotOverlay(MultiBufferSource getter, PoseStack poseStack, Minecraft mc, int x, int y, int width, int height, double mouseX, double mouseY, boolean mouseOver, float partialTicks) {
+        VertexConsumer builder = BCGuiSprites.builder(getter, poseStack);
         AutoFeedData data = module.getData();
         double progress = storedFood / data.getFoodStorage();
         progress = (int) (progress * 21F);
         progress = (20 - progress) - 1;
         for (int i = 0; i < 10; i++){
             float size = (width - 3) / 10F;
-            GuiHelperOld.drawSprite(builder, x + 1 + i * size, y + height - size - 2, size + 1, size + 1, BCGuiSprites.get("bars/food_empty").sprite(), 0);
+            GuiHelper.drawSprite(builder, x + 1 + i * size, y + height - size - 2, size + 1, size + 1, BCGuiSprites.get("bars/food_empty").sprite());
             if (progress / 2F <= i){
                 if (progress / 2F < i){
-                    GuiHelperOld.drawSprite(builder, x + 1 + i * size, y + height - size - 2, size + 1, size + 1, BCGuiSprites.get("bars/food_full").sprite(), 0);
+                    GuiHelper.drawSprite(builder, x + 1 + i * size, y + height - size - 2, size + 1, size + 1, BCGuiSprites.get("bars/food_full").sprite());
                 } else {
-                    GuiHelperOld.drawSprite(builder, x + 1 + i * size, y + height - size - 2, size + 1, size + 1, BCGuiSprites.get("bars/food_half").sprite(), 0);
+                    GuiHelper.drawSprite(builder, x + 1 + i * size, y + height - size - 2, size + 1, size + 1, BCGuiSprites.get("bars/food_half").sprite());
                 }
             }
         }

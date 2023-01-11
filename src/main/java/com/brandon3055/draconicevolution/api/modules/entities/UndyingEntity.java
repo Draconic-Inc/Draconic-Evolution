@@ -158,14 +158,13 @@ public class UndyingEntity extends ModuleEntity<UndyingData> {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void renderSlotOverlay(MultiBufferSource getter, Minecraft mc, int x, int y, int width, int height, double mouseX, double mouseY, boolean mouseOver, float partialTicks) {
+    public void renderSlotOverlay(MultiBufferSource getter, PoseStack poseStack, Minecraft mc, int x, int y, int width, int height, double mouseX, double mouseY, boolean mouseOver, float partialTicks) {
         UndyingData data = module.getData();
         if (charge >= data.getChargeTime()) return;
         double diameter = Math.min(width, height) * 0.425;
         double progress = charge / Math.max(1D, data.getChargeTime());
-        PoseStack mStack = new PoseStack();
 
-        GuiHelper.drawRect(getter, mStack, x, y, width, height, 0x20FF0000);
+        GuiHelper.drawRect(getter, poseStack, x, y, width, height, 0x20FF0000);
         VertexConsumer builder = getter.getBuffer(GuiHelperOld.FAN_TYPE);
         builder.vertex(x + (width / 2D), y + (height / 2D), 0).color(0, 255, 255, 64).endVertex();
         for (double d = 0; d <= 1; d += 1D / 30D) {
@@ -178,8 +177,8 @@ public class UndyingEntity extends ModuleEntity<UndyingData> {
 
         String pText = (int) (progress * 100) + "%";
         String tText = ((data.getChargeTime() - charge) / 20) + "s";
-        drawBackgroundString(getter, mStack, mc.font, pText, x + width / 2F, y + height / 2F - 8, 0, 0x4000FF00, 1, false, true);
-        drawBackgroundString(getter, mStack, mc.font, tText, x + width / 2F, y + height / 2F + 1, 0, 0x4000FF00, 1, false, true);
+        drawBackgroundString(getter, poseStack, mc.font, pText, x + width / 2F, y + height / 2F - 8, 0, 0x4000FF00, 1, false, true);
+        drawBackgroundString(getter, poseStack, mc.font, tText, x + width / 2F, y + height / 2F + 1, 0, 0x4000FF00, 1, false, true);
     }
 
     @OnlyIn(Dist.CLIENT)

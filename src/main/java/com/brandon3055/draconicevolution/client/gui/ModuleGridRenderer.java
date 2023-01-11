@@ -122,7 +122,9 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> {
             if (mouseOver) {
                 drawColouredRect(getter, xPos() + (entity.getGridX() * cs), yPos() + (entity.getGridY() * cs), cell.getEntity().getWidth() * cs, cell.getEntity().getHeight() * cs, 0x50FFFFFF);
             }
-            entity.renderSlotOverlay(getter, mc, xPos() + (entity.getGridX() * cs), yPos() + (entity.getGridY() * cs), cell.getEntity().getWidth() * cs, cell.getEntity().getHeight() * cs, mouseX, mouseY, mouseOver, partialTicks);
+            PoseStack poseStack = new PoseStack();
+            poseStack.translate(0, 0, getRenderZLevel());
+            entity.renderSlotOverlay(getter, poseStack, mc, xPos() + (entity.getGridX() * cs), yPos() + (entity.getGridY() * cs), cell.getEntity().getWidth() * cs, cell.getEntity().getHeight() * cs, mouseX, mouseY, mouseOver, partialTicks);
         } else {
             drawColouredRect(getter, x + 1, y + 1, size - 2, size - 2, BCConfig.darkMode ? 0xFF808080 : 0xFF505050);
             if (mouseOver) {
