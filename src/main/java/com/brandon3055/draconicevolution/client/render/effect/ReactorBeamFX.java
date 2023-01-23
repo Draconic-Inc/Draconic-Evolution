@@ -54,7 +54,7 @@ public class ReactorBeamFX extends Particle {
         this.tile = tile;
         this.facing = facing;
         this.isInjectorEffect = isInjectorEffect;
-        this.dist = (float) Utils.getDistanceAtoB(pos, Vec3D.getCenter(tile.getBlockPos()));
+        this.dist = (float) Utils.getDistance(pos, Vec3D.getCenter(tile.getBlockPos()));
         this.random.setSeed(worldIn.random.nextLong());
         setBoundingBox(new AABB(x, y, z, tile.getBlockPos().getX(), tile.getBlockPos().getY(), tile.getBlockPos().getZ()));
     }

@@ -38,7 +38,7 @@ public class ParticleEnergy extends TextureSheetParticle {
         zd = dir.z * speed;
         this.move(this.xd, this.yd, this.zd);
 
-        if (age++ > lifetime || Utils.getDistanceAtoB(x, y, z, targetPos.x, targetPos.y, targetPos.z) < 0.5) {
+        if (age++ > lifetime || Utils.getDistance(x, y, z, targetPos.x, targetPos.y, targetPos.z) < 0.5) {
             remove();
         }
     }

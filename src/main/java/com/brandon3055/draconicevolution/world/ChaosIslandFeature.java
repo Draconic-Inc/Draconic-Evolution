@@ -262,7 +262,7 @@ public class ChaosIslandFeature extends Feature<NoneFeatureConfiguration> {
         BlockPos.betweenClosedStream(genPos.offset(-r, -25, -r), genPos.offset(r, 4, r)).forEach(pos -> {
             if (pos.getY() < genPos.getY()) {
                 double pct = (double) (genPos.getY() - pos.getY()) / 25D;
-                if (Utils.getDistanceAtoB(pos.getX(), pos.getZ(), genPos.getX(), genPos.getZ()) <= r + 0.5) {
+                if (Utils.getDistance(pos.getX(), pos.getZ(), genPos.getX(), genPos.getZ()) <= r + 0.5) {
                     if (1D - pct > rand.nextDouble()) {
                         float block = rand.nextFloat();
                         if (block < 0.1) {

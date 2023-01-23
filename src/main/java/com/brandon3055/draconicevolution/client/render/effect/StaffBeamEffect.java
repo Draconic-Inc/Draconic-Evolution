@@ -93,7 +93,7 @@ public class StaffBeamEffect extends Particle {
         planeB.multiply(scale);
         planeC.multiply(scale);
         planeD.multiply(scale);
-        float dist = 0.2F * (float) Utils.getDistanceAtoB(new Vec3D(source), new Vec3D(target));
+        float dist = 0.2F * (float) Utils.getDistance(new Vec3D(source), new Vec3D(target));
         float anim = (ClientEventHandler.elapsedTicks + partialTicks) / -15F;
 
         Vector3 p1 = source.copy().add(planeA);

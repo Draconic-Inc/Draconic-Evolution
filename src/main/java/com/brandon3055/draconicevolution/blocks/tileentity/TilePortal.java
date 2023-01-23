@@ -14,7 +14,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -76,7 +75,7 @@ public class TilePortal extends TileBCore {
         Minecraft mc = Minecraft.getInstance();
         Player player = mc.player;
 
-        double distanceMod = Utils.getDistanceAtoB(worldPosition.getX() + 0.5, worldPosition.getY() + 0.5, worldPosition.getZ() + 0.5, player.getX(), player.getY(), player.getZ());
+        double distanceMod = Utils.getDistance(worldPosition.getX() + 0.5, worldPosition.getY() + 0.5, worldPosition.getZ() + 0.5, player.getX(), player.getY(), player.getZ());
         if (level.random.nextInt(Math.max((int) (distanceMod * (distanceMod / 5D)), 1)) == 0) {
             BlockState state = level.getBlockState(worldPosition);
             if (state.getBlock() != DEContent.portal) {
