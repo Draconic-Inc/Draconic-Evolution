@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.api.modules.entities;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.api.render.GuiHelper;
 import com.brandon3055.brandonscore.client.BCGuiSprites;
+import com.brandon3055.brandonscore.client.render.RenderUtils;
 import com.brandon3055.brandonscore.client.utils.GuiHelperOld;
 import com.brandon3055.draconicevolution.api.config.BooleanProperty;
 import com.brandon3055.draconicevolution.api.config.ConfigProperty;
@@ -57,7 +58,7 @@ public class AutoFeedEntity extends ModuleEntity<AutoFeedData> {
                     //Do food consumption
                     for (ItemStack stack : player.getInventory().items) {
                         if (!stack.isEmpty() && stack.isEdible()) {
-                            FoodProperties food = stack.getItem().getFoodProperties();
+                            FoodProperties food = stack.getItem().getFoodProperties(stack, player);
                             if (food != null && food.getNutrition() > 0 && food.getEffects().isEmpty()) {
                                 double val = food.getNutrition() + food.getSaturationModifier();
                                 double rem = storedFood + val - data.getFoodStorage();
@@ -94,7 +95,8 @@ public class AutoFeedEntity extends ModuleEntity<AutoFeedData> {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void renderSlotOverlay(MultiBufferSource getter, PoseStack poseStack, Minecraft mc, int x, int y, int width, int height, double mouseX, double mouseY, boolean mouseOver, float partialTicks) {
+    public void renderModule(MultiBufferSource getter, PoseStack poseStack, int x, int y, int width, int height, double mouseX, double mouseY, boolean renderStack, float partialTicks) {
+        super.renderModule(getter, poseStack, x, y, width, height, mouseX, mouseY, renderStack, partialTicks);
         VertexConsumer builder = BCGuiSprites.builder(getter, poseStack);
         AutoFeedData data = module.getData();
         double progress = storedFood / data.getFoodStorage();
@@ -111,6 +113,7 @@ public class AutoFeedEntity extends ModuleEntity<AutoFeedData> {
                 }
             }
         }
+        RenderUtils.endBatch(getter);
     }
 
     @Override
@@ -127,30 +130,12 @@ public class AutoFeedEntity extends ModuleEntity<AutoFeedData> {
     }
 
     @Override
-    public void writeToItemStack(ItemStack stack, ModuleContext context) {
-        super.writeToItemStack(stack, context);
-        CompoundTag nbt = stack.getOrCreateTag();
-        nbt.putFloat("food", storedFood);
+    protected void readExtraData(CompoundTag tag) {
+        storedFood = tag.getFloat("food");
     }
 
     @Override
-    public void readFromItemStack(ItemStack stack, ModuleContext context) {
-        super.readFromItemStack(stack, context);
-        if (stack.hasTag()) {
-            CompoundTag nbt = stack.getOrCreateTag();
-            storedFood = nbt.getFloat("food");
-        }
-    }
-
-    @Override
-    public void writeToNBT(CompoundTag compound) {
-        super.writeToNBT(compound);
-        compound.putFloat("food", storedFood);
-    }
-
-    @Override
-    public void readFromNBT(CompoundTag compound) {
-        super.readFromNBT(compound);
-        storedFood = compound.getFloat("food");
+    protected void writeExtraData(CompoundTag tag) {
+        tag.putFloat("food", storedFood);
     }
 }

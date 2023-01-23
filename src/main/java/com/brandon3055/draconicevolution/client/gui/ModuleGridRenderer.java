@@ -1,55 +1,35 @@
 package com.brandon3055.draconicevolution.client.gui;
 
 import com.brandon3055.brandonscore.BCConfig;
-import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.api.render.GuiHelper;
-import com.brandon3055.brandonscore.client.gui.GuiToolkit;
 import com.brandon3055.brandonscore.client.gui.GuiToolkit.Palette;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
-import com.brandon3055.brandonscore.client.gui.modulargui.ThemedElements;
-import com.brandon3055.brandonscore.client.render.RenderUtils;
-import com.brandon3055.brandonscore.client.utils.GuiHelperOld;
 import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.lib.InstallResult;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleGrid;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleItem;
-import com.brandon3055.draconicevolution.client.ClientProxy;
-import com.brandon3055.draconicevolution.client.ModuleSpriteUploader;
-import com.brandon3055.draconicevolution.client.render.item.ToolRenderBase;
-import com.brandon3055.draconicevolution.init.ClientInit;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.*;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderStateShard;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import org.lwjgl.opengl.GL11;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
  * Created by brandon3055 on 26/4/20.
  */
 public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> {
-    //Does this work?
-    private static final RenderType moduleType = RenderType.create("module_type", DefaultVertexFormat.POSITION_TEX, VertexFormat.Mode.QUADS, 256, RenderType.CompositeState.builder()
-            .setShaderState(new RenderStateShard.ShaderStateShard(GameRenderer::getPositionTexShader))
-            .setTextureState(new RenderStateShard.TextureStateShard(ModuleSpriteUploader.LOCATION_MODULE_TEXTURE, false, false))
-            .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
-            .createCompositeState(false)
-    );
 
     private ModuleGrid grid;
     private Inventory player;
@@ -89,7 +69,7 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> {
             for (int y = 0; y < grid.getHeight(); y++) {
                 int xPos = xPos() + (x * s);
                 int yPos = yPos() + (y * s);
-                renderCell(getter, xPos, yPos, s, x, y, mouseX, mouseY, GuiHelperOld.isInRect(xPos, yPos, s, s, mouseX, mouseY), partialTicks);
+                renderCell(getter, xPos, yPos, s, x, y, mouseX, mouseY, GuiHelper.isInRect(xPos, yPos, s, s, mouseX, mouseY), partialTicks);
             }
         }
         getter.endBatch();
@@ -97,52 +77,47 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> {
 
     @Override
     public boolean renderOverlayLayer(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
-        if (isMouseOver(mouseX, mouseY)) {
-            if (player.player.containerMenu.getCarried().isEmpty()) {
-                renderCellOverlay(mouseX, mouseY);
-                return true;
-            } else if (lastError != null) {
-                PoseStack poseStack = new PoseStack();
-                poseStack.translate(0, 0, getRenderZLevel());
-                renderToolTipStrings(poseStack, Collections.singletonList(lastError.getString()), mouseX, mouseY);
+        boolean carrying = !player.player.containerMenu.getCarried().isEmpty();
+        MultiBufferSource.BufferSource getter = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
+        PoseStack poseStack = new PoseStack();
+        poseStack.translate(0, 0, getRenderZLevel());
+
+        for (ModuleEntity<?> entity : grid.getModuleHost().getModuleEntities()) {
+            int cs = grid.getCellSize();
+            int mw = entity.getWidth() * cs;
+            int mh = entity.getHeight() * cs;
+            int x = xPos() + (entity.getGridX() * cs);
+            int y = yPos() + (entity.getGridY() * cs);
+            if (entity.renderModuleOverlay(getScreen(), grid.container.getModuleContext(), getter, poseStack, x, y, mw, mh, mouseX, mouseY, partialTicks, hoverTime)) {
                 return true;
             }
+        }
+        getter.endBatch();
+
+        if (isMouseOver(mouseX, mouseY) && lastError != null && carrying) {
+            renderTooltip(poseStack, new TextComponent(lastError.getString()), mouseX, mouseY);
+            return true;
         }
         return super.renderOverlayLayer(minecraft, mouseX, mouseY, partialTicks);
     }
 
     public void renderCell(MultiBufferSource getter, int x, int y, int size, int cellX, int cellY, double mouseX, double mouseY, boolean mouseOver, float partialTicks) {
+        PoseStack poseStack = new PoseStack();
+        poseStack.translate(0, 0, getRenderZLevel());
         ModuleGrid.GridPos cell = grid.getCell(cellX, cellY);
         if (cell.hasEntity()) {
-            ModuleEntity entity = cell.getEntity();
+            ModuleEntity<?> entity = cell.getEntity();
             int cs = grid.getCellSize();
+            int mw = entity.getWidth() * cs;                                //Module Render Width
+            int mh = entity.getHeight() * cs;                               //Module Render Height
             if (cell.isActualEntityPos()) {
-                drawModule(getter, x, y, entity.getModule());
+                entity.renderModule(getter, poseStack, x, y, (int) getRenderZLevel(), mw, mh, mouseX, mouseY, false, partialTicks);
             }
-            if (mouseOver) {
-                drawColouredRect(getter, xPos() + (entity.getGridX() * cs), yPos() + (entity.getGridY() * cs), cell.getEntity().getWidth() * cs, cell.getEntity().getHeight() * cs, 0x50FFFFFF);
-            }
-            PoseStack poseStack = new PoseStack();
-            poseStack.translate(0, 0, getRenderZLevel());
-            entity.renderSlotOverlay(getter, poseStack, mc, xPos() + (entity.getGridX() * cs), yPos() + (entity.getGridY() * cs), cell.getEntity().getWidth() * cs, cell.getEntity().getHeight() * cs, mouseX, mouseY, mouseOver, partialTicks);
         } else {
-            drawColouredRect(getter, x + 1, y + 1, size - 2, size - 2, BCConfig.darkMode ? 0xFF808080 : 0xFF505050);
+            GuiHelper.drawRect(getter, poseStack, x + 1, y + 1, size - 2, size - 2, BCConfig.darkMode ? 0xFF808080 : 0xFF505050);
             if (mouseOver) {
-                drawColouredRect(getter, x, y, size, size, 0x50FFFFFF);
+                GuiHelper.drawRect(getter, poseStack, x, y, size, size, 0x50FFFFFF);
             }
-        }
-    }
-
-    public void renderCellOverlay(int mouseX, int mouseY) {
-        ModuleGrid.GridPos cell = getCellAtPos(mouseX, mouseY, false);
-        if (cell.hasEntity() && hoverTime > 10) {
-            Item item = cell.getEntity().getModule().getItem();
-            ItemStack stack = new ItemStack(item);
-            cell.getEntity().writeToItemStack(stack, grid.container.getModuleContext());
-            List<Component> list = getTooltipFromItem(stack);
-            PoseStack poseStack = new PoseStack();
-            poseStack.translate(0, 0, getRenderZLevel());
-            renderTooltip(poseStack, list, mouseX, mouseY);
         }
     }
 
@@ -152,11 +127,14 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> {
         if (isMouseOver(x + modularGui.guiLeft(), y + modularGui.guiTop())) {
             Module<?> module = ModuleItem.getModule(stack);
             if (module != null) {
+                ModuleEntity<?> entity = module.createEntity();
                 int cs = grid.getCellSize();
                 int mw = module.getProperties().getWidth() * cs;
                 int mh = module.getProperties().getHeight() * cs;
+                PoseStack poseStack = new PoseStack();
+                poseStack.translate(0, 0, getRenderZLevel());
                 MultiBufferSource.BufferSource getter = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
-                drawModule(getter, x - (mw / 2), y - (mh / 2), module);
+                entity.renderModule(getter, poseStack, x - (mw / 2), y - (mh / 2), (int) getRenderZLevel(), mw, mh, x, y, true, mc.getDeltaFrameTime());
                 getter.endBatch();
                 if (stack.getCount() > 1 || altText != null) {
                     zOffset += 250;
@@ -250,49 +228,6 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> {
         }
         return grid.getCell(x, y);
     }
-
-    private void drawModule(MultiBufferSource getter, int x, int y, Module<?> module) {
-        int cs = grid.getCellSize();
-        int mw = module.getProperties().getWidth() * cs;
-        int mh = module.getProperties().getHeight() * cs;
-
-        int colour = getModuleColour(module);
-        drawColouredRect(getter, x, y, mw, mh, colour);
-        drawBorderedRect(getter, x, y, mw, mh, 1, 0, mixColours(colour, 0x20202000, true));
-
-        if (module.getProperties().getTechLevel() == TechLevel.CHAOTIC) {
-            VertexConsumer builder = getter.getBuffer(RenderType.glint());
-            float zLevel = getRenderZLevel();
-            builder.vertex(x, y + mh, zLevel).uv(0, ((float) mh / mw) / 64F).endVertex();
-            builder.vertex(x + mw, y + mh, zLevel).uv(((float) mw / mh) / 64F, ((float) mh / mw) / 64F).endVertex();
-            builder.vertex(x + mw, y, zLevel).uv(((float) mw / mh) / 64F, 0).endVertex();
-            builder.vertex(x, y, zLevel).uv(0, 0).endVertex();
-            RenderUtils.endBatch(getter);
-        }
-
-        TextureAtlasSprite sprite = ClientInit.moduleSpriteUploader.getSprite(module);
-        float ar = (float) sprite.getWidth() / (float) sprite.getHeight();
-        float iar = (float) sprite.getHeight() / (float) sprite.getWidth();
-
-        VertexConsumer builder = getter.getBuffer(moduleType);
-        if (iar * mw <= mh) { //Fit Width
-            double height = mw * iar;
-            bufferSprite(builder, sprite, x, y + (mh / 2D) - (height / 2D), mw, height);
-        } else { //Fit height
-            double width = mh * ar;
-            bufferSprite(builder, sprite, x + (mw / 2D) - (width / 2D), y, width, mh);
-        }
-    }
-
-    private void bufferSprite(VertexConsumer builder, TextureAtlasSprite sprite, double x, double y, double width, double height) {
-        //@formatter:off
-        builder.vertex(x,         y + height, zOffset).uv(sprite.getU0(), sprite.getV1()).endVertex();
-        builder.vertex(x + width, y + height, zOffset).uv(sprite.getU1(), sprite.getV1()).endVertex();
-        builder.vertex(x + width, y,          zOffset).uv(sprite.getU1(), sprite.getV0()).endVertex();
-        builder.vertex(x,         y,          zOffset).uv(sprite.getU0(), sprite.getV0()).endVertex();
-        //@formatter:on
-    }
-
 
     private ModuleGrid.GridPos hoverCell = null;
     private int hoverTime = 0;

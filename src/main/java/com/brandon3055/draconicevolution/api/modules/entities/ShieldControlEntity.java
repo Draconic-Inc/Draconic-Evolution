@@ -329,34 +329,12 @@ public class ShieldControlEntity extends ModuleEntity<ShieldControlData> {
         shieldCache = null;
     }
 
-    @Override
-    public void writeToItemStack(ItemStack stack, ModuleContext context) {
-        super.writeToItemStack(stack, context);
-        CompoundTag nbt = stack.getOrCreateTag();
-        nbt.putInt("cap", shieldCapacity);
-        nbt.putDouble("points", shieldPoints);
-        nbt.putInt("cooldwn", shieldCoolDown);
-    }
-
-    @Override
-    public void readFromItemStack(ItemStack stack, ModuleContext context) {
-        super.readFromItemStack(stack, context);
-        if (stack.hasTag()) {
-            CompoundTag nbt = stack.getOrCreateTag();
-            shieldCapacity = nbt.getInt("cap");
-            shieldPoints = nbt.getDouble("points");
-            shieldCoolDown = nbt.getInt("cooldwn");
-        }
-    }
 
     @Override
     public void writeToNBT(CompoundTag compound) {
         super.writeToNBT(compound);
-        compound.putInt("cap", shieldCapacity);
-        compound.putDouble("points", shieldPoints);
         compound.putDouble("boost", shieldBoost);
         compound.putDouble("max_boost", maxBoost);
-        compound.putInt("cooldwn", shieldCoolDown);
         compound.putInt("boost_time", boostTime);
         compound.putByte("env_cdwn", envDmgCoolDown);
         compound.putBoolean("visible", shieldVisible);
@@ -367,16 +345,27 @@ public class ShieldControlEntity extends ModuleEntity<ShieldControlData> {
     @Override
     public void readFromNBT(CompoundTag compound) {
         super.readFromNBT(compound);
-        shieldCapacity = compound.getInt("cap");
-        shieldPoints = compound.getDouble("points");
         shieldBoost = compound.getDouble("boost");
         maxBoost = compound.getDouble("max_boost");
-        shieldCoolDown = compound.getInt("cooldwn");
         boostTime = compound.getInt("boost_time");
         envDmgCoolDown = compound.getByte("env_cdwn");
         shieldVisible = compound.getBoolean("visible");
         shieldAnim = compound.getFloat("anim");
         shieldHitIndicator = compound.getFloat("hit");
+    }
+
+    @Override
+    protected void readExtraData(CompoundTag nbt) {
+        shieldCapacity = nbt.getInt("cap");
+        shieldPoints = nbt.getDouble("points");
+        shieldCoolDown = nbt.getInt("cooldwn");
+    }
+
+    @Override
+    protected void writeExtraData(CompoundTag nbt) {
+        nbt.putInt("cap", shieldCapacity);
+        nbt.putDouble("points", shieldPoints);
+        nbt.putInt("cooldwn", shieldCoolDown);
     }
 
     //endregion
