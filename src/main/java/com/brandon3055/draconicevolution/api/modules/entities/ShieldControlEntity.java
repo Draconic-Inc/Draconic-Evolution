@@ -362,10 +362,11 @@ public class ShieldControlEntity extends ModuleEntity<ShieldControlData> {
     }
 
     @Override
-    protected void writeExtraData(CompoundTag nbt) {
+    protected CompoundTag writeExtraData(CompoundTag nbt) {
         nbt.putInt("cap", shieldCapacity);
         nbt.putDouble("points", shieldPoints);
         nbt.putInt("cooldwn", shieldCoolDown);
+        return nbt;
     }
 
     //endregion

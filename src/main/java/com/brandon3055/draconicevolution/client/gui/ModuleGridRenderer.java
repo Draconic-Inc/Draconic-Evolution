@@ -89,7 +89,7 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> {
             int x = xPos() + (entity.getGridX() * cs);
             int y = yPos() + (entity.getGridY() * cs);
             boolean mouseOver = GuiHelper.isInRect(x, y, mw, mh, mouseX, mouseY);
-            if (entity.renderModuleOverlay(getScreen(), grid.container.getModuleContext(), getter, poseStack, x, y, mw, mh, mouseX, mouseY, partialTicks, mouseOver ? hoverTime : 0)) {
+            if (entity.renderModuleOverlay(this, grid.container.getModuleContext(), getter, poseStack, x, y, mw, mh, mouseX, mouseY, partialTicks, mouseOver ? hoverTime : 0)) {
                 return true;
             }
         }
@@ -112,7 +112,7 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> {
             int mw = entity.getWidth() * cs;                                //Module Render Width
             int mh = entity.getHeight() * cs;                               //Module Render Height
             if (cell.isActualEntityPos()) {
-                entity.renderModule(getter, poseStack, x, y, (int) getRenderZLevel(), mw, mh, mouseX, mouseY, false, partialTicks);
+                entity.renderModule(this, getter, poseStack, x, y, mw, mh, mouseX, mouseY, false, partialTicks);
             }
         } else {
             GuiHelper.drawRect(getter, poseStack, x + 1, y + 1, size - 2, size - 2, BCConfig.darkMode ? 0xFF808080 : 0xFF505050);
@@ -135,14 +135,14 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> {
                 PoseStack poseStack = new PoseStack();
                 poseStack.translate(0, 0, getRenderZLevel());
                 MultiBufferSource.BufferSource getter = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
-                entity.renderModule(getter, poseStack, x - (mw / 2), y - (mh / 2), (int) getRenderZLevel(), mw, mh, x, y, true, mc.getDeltaFrameTime());
+                entity.renderModule(this, getter, poseStack, x - (mw / 2), y - (mh / 2), mw, mh, x, y, true, mc.getDeltaFrameTime());
                 getter.endBatch();
                 if (stack.getCount() > 1 || altText != null) {
-                    zOffset += 250;
                     Font font = fontRenderer;
                     String s = altText == null ? String.valueOf(stack.getCount()) : altText;
-                    font.drawShadow(new PoseStack(), s, (float) (x - font.width(s)) + (mw / 2F) - 1, (float) (y - font.lineHeight) + (mh / 2F), 0xffffff);
-                    zOffset -= 250;
+                    poseStack.translate(0, 0, 250);
+                    font.drawShadow(poseStack, s, (float) (x - font.width(s)) + (mw / 2F) + 1, (float) (y - font.lineHeight) + (mh / 2F) + 2, 0xffffff);
+                    poseStack.translate(0, 0, -250);
                 }
                 return true;
             }
@@ -162,17 +162,29 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> {
             //Double click pickup wont track the cell you click
             doubleClick = i - lastClickTime < 250L && lastClickButton == button && getCellAtPos(mouseX, mouseY, false).equals(lastClickPos);
 
-            if ((button == 0 || pickBlock) && cell.isValidCell()) {
+            if (cell.isValidCell()) {
+                ModuleEntity<?> entity = cell.getEntity();
+                if (entity != null) {
+                    int cs = grid.getCellSize();
+                    int mw = entity.getWidth() * cs;
+                    int mh = entity.getHeight() * cs;
+                    int xPos = xPos() + (entity.getGridX() * cs);
+                    int yPos = yPos() + (entity.getGridY() * cs);
+                    if (entity.clientModuleClicked(this, player.player, xPos, yPos, mw, mh, mouseX, mouseY, button)) {
+                        return true;
+                    }
+                }
+
                 if (player.player.containerMenu.getCarried().isEmpty()) {
                     if (pickBlock) {
-                        handleGridClick(cell, button, ClickType.CLONE); //Creative Clone
+                        handleGridClick(cell, mouseX, mouseY, button, ClickType.CLONE); //Creative Clone
                     } else {
                         boolean shiftClick = (InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), 340) || InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), 344));
                         ClickType clicktype = ClickType.PICKUP;
                         if (shiftClick) {
                             clicktype = ClickType.QUICK_MOVE;
                         }
-                        handleGridClick(cell, button, clicktype);
+                        handleGridClick(cell, mouseX, mouseY, button, clicktype);
                     }
                 } else {
                     canDrop = true;
@@ -191,19 +203,31 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> {
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
         ModuleGrid.GridPos cell = getCellAtPos(mouseX, mouseY, true);
         if (this.doubleClick && button == 0) {
-            this.handleGridClick(cell, button, ClickType.PICKUP_ALL);
+            this.handleGridClick(cell, mouseX, mouseY, button, ClickType.PICKUP_ALL);
             this.doubleClick = false;
             this.lastClickTime = 0L;
-        } else if (canDrop && button == 0) {
-            handleGridClick(cell, button, ClickType.PICKUP);
+        } else if (canDrop) {
+            handleGridClick(cell, mouseX, mouseY, button, ClickType.PICKUP);
         }
 
         return super.mouseReleased(mouseX, mouseY, button);
     }
 
-    protected void handleGridClick(ModuleGrid.GridPos cell, int mouseButton, ClickType type) {
-        DraconicNetwork.sendModuleContainerClick(cell, mouseButton, type);
-        InstallResult result = grid.cellClicked(cell, mouseButton, type);
+    protected void handleGridClick(ModuleGrid.GridPos cell, double mouseX, double mouseY, int mouseButton, ClickType type) {
+        float x = 0.5F;
+        float y = 0.5F;
+        ModuleEntity<?> entity = cell.getEntity();
+        if (entity != null) {
+            int cs = grid.getCellSize();
+            int mw = entity.getWidth() * cs;
+            int mh = entity.getHeight() * cs;
+            int mx = xPos() + (entity.getGridX() * cs);
+            int my = yPos() + (entity.getGridY() * cs);
+            x = (float) (mouseX - mx) / mw;
+            y = (float) (mouseY - my) / mh;
+        }
+        DraconicNetwork.sendModuleContainerClick(cell, x, y, mouseButton, type);
+        InstallResult result = grid.cellClicked(cell, x, y, mouseButton, type);
         if (result != null && result.resultType != InstallResult.InstallResultType.YES && result.resultType != InstallResult.InstallResultType.OVERRIDE) {
             lastError = result.reason;
             lastErrorTime = 0;
@@ -237,6 +261,8 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> {
     public boolean onUpdate() {
         ModuleGrid.GridPos cell = getCellAtPos(getMouseX(), getMouseY(), false);
         if (cell.hasEntity()) {
+            ModuleEntity<?> entity = cell.getEntity();
+            cell = grid.getCell(entity.getGridX(), entity.getGridY());
             if (cell.equals(hoverCell)) {
                 hoverTime++;
             } else {
@@ -251,19 +277,5 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> {
             lastError = null;
         }
         return super.onUpdate();
-    }
-
-    private int getModuleColour(Module<?> module) {
-        switch (module.getProperties().getTechLevel()) {
-            case DRACONIUM:
-                return 0xff1e4596;
-            case WYVERN:
-                return 0xFF3c1551;
-            case DRACONIC:
-                return 0xFFcb2a00;
-            case CHAOTIC:
-                return 0xFF111111;
-        }
-        return 0;
     }
 }

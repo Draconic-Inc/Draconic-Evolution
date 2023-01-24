@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.api.modules.entities;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.api.render.GuiHelper;
 import com.brandon3055.brandonscore.client.BCGuiSprites;
+import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
 import com.brandon3055.brandonscore.client.render.RenderUtils;
 import com.brandon3055.brandonscore.client.utils.GuiHelperOld;
 import com.brandon3055.draconicevolution.api.config.BooleanProperty;
@@ -95,8 +96,8 @@ public class AutoFeedEntity extends ModuleEntity<AutoFeedData> {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void renderModule(MultiBufferSource getter, PoseStack poseStack, int x, int y, int width, int height, double mouseX, double mouseY, boolean renderStack, float partialTicks) {
-        super.renderModule(getter, poseStack, x, y, width, height, mouseX, mouseY, renderStack, partialTicks);
+    public void renderModule(GuiElement<?> parent, MultiBufferSource getter, PoseStack poseStack, int x, int y, int width, int height, double mouseX, double mouseY, boolean renderStack, float partialTicks) {
+        super.renderModule(parent, getter, poseStack, x, y, width, height, mouseX, mouseY, renderStack, partialTicks);
         VertexConsumer builder = BCGuiSprites.builder(getter, poseStack);
         AutoFeedData data = module.getData();
         double progress = storedFood / data.getFoodStorage();
@@ -135,7 +136,8 @@ public class AutoFeedEntity extends ModuleEntity<AutoFeedData> {
     }
 
     @Override
-    protected void writeExtraData(CompoundTag tag) {
+    protected CompoundTag writeExtraData(CompoundTag tag) {
         tag.putFloat("food", storedFood);
+        return tag;
     }
 }

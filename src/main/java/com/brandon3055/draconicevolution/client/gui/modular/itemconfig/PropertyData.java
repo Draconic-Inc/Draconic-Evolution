@@ -12,12 +12,15 @@ import com.brandon3055.draconicevolution.api.config.ConfigProperty.IntegerFormat
 import com.brandon3055.draconicevolution.api.config.ConfigProperty.Type;
 import com.brandon3055.draconicevolution.inventory.ContainerConfigurableItem;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
+import com.google.gson.JsonParseException;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentUtils;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 
 import javax.annotation.Nullable;
@@ -33,8 +36,8 @@ public class PropertyData {
     public final String providerName;
     private String propName;
     protected UUID propUniqueName;
-    public String toolTip;
-    public String displayName;
+    public Component toolTip;
+    public Component displayName;
     public Runnable changeListener;
     //Logic
     public boolean isGlobal = false;
@@ -58,8 +61,8 @@ public class PropertyData {
 
     public PropertyData(PropertyProvider provider, ConfigProperty property, boolean pullValue) {
         this(provider.getProviderID(), provider.getProviderName(), property.getType());
-        this.displayName = property.getDisplayName().getString();
-        this.toolTip = property.getToolTip().getString();
+        this.displayName = property.getDisplayName();
+        this.toolTip = property.getToolTip();
         if (property.getUniqueName() != null) {
             propUniqueName = property.getUniqueName();
         } else {
@@ -82,25 +85,23 @@ public class PropertyData {
     public void pullData(ConfigProperty property, boolean pullValue) {
         isPropertyAvailable = property != null;
         if (isPropertyAvailable) {
-            displayName = property.getDisplayName().getString();
-            Component component = property.getToolTip();
-            toolTip = component.getString();
-            if (component instanceof TranslatableComponent && ((TranslatableComponent) component).getKey().equals(toolTip)) {
-                toolTip = "";
+            displayName = property.getDisplayName();
+            toolTip = property.getToolTip();
+            if (toolTip instanceof TranslatableComponent && ((TranslatableComponent) toolTip).getKey().equals(toolTip.getString())) {
+                toolTip = null;
             }
 
             displayValue = property.getDisplayValue();
 
             switch (property.getType()) {
-                case BOOLEAN: {
+                case BOOLEAN -> {
                     BooleanProperty prop = (BooleanProperty) property;
                     booleanFormatter = prop.getFormatter();
                     if (pullValue) {
                         booleanValue = prop.getValue();
                     }
-                    break;
                 }
-                case INTEGER: {
+                case INTEGER -> {
                     IntegerProperty prop = (IntegerProperty) property;
                     integerFormatter = prop.getFormatter();
                     minValue = prop.getMin();
@@ -108,9 +109,8 @@ public class PropertyData {
                     if (pullValue) {
                         integerValue = prop.getValue();
                     }
-                    break;
                 }
-                case DECIMAL: {
+                case DECIMAL -> {
                     DecimalProperty prop = (DecimalProperty) property;
                     decimalFormatter = prop.getFormatter();
                     minValue = prop.getMin();
@@ -118,16 +118,14 @@ public class PropertyData {
                     if (pullValue) {
                         decimalValue = prop.getValue();
                     }
-                    break;
                 }
-                case ENUM: {
+                case ENUM -> {
                     EnumProperty<?> prop = (EnumProperty<?>) property;
                     enumValueOptions = prop.getAllowedValues().stream().map(Enum::ordinal).collect(Collectors.toList());
                     enumDisplayValues = prop.generateValueDisplayMap();
                     if (pullValue) {
                         enumValueIndex = prop.getValue().ordinal();
                     }
-                    break;
                 }
             }
         }
@@ -148,26 +146,26 @@ public class PropertyData {
 
     public void updateDisplayValue() {
         switch (type) {
-            case BOOLEAN:
+            case BOOLEAN -> {
                 if (booleanFormatter != null) {
                     displayValue = booleanFormatter.format(booleanValue);
                 }
-                break;
-            case INTEGER:
+            }
+            case INTEGER -> {
                 if (integerFormatter != null) {
                     displayValue = integerFormatter.format(integerValue);
                 }
-                break;
-            case DECIMAL:
+            }
+            case DECIMAL -> {
                 if (decimalFormatter != null) {
                     displayValue = decimalFormatter.format(decimalValue);
                 }
-                break;
-            case ENUM:
+            }
+            case ENUM -> {
                 if (enumDisplayValues != null) {
                     displayValue = enumDisplayValues.getOrDefault(enumValueIndex, "[Error]");
                 }
-                break;
+            }
         }
     }
 
@@ -260,17 +258,12 @@ public class PropertyData {
     }
 
     public boolean doesDataMatch(ConfigProperty prop) {
-        switch (type) {
-            case BOOLEAN:
-                return prop instanceof BooleanProperty && ((BooleanProperty) prop).getValue() == booleanValue;
-            case INTEGER:
-                return prop instanceof IntegerProperty && ((IntegerProperty) prop).getValue() == integerValue;
-            case DECIMAL:
-                return prop instanceof DecimalProperty && ((DecimalProperty) prop).getValue() == decimalValue;
-            case ENUM:
-                return prop instanceof EnumProperty && ((EnumProperty<?>) prop).getValue().ordinal() == enumValueIndex;
-        }
-        return false;
+        return switch (type) {
+            case BOOLEAN -> prop instanceof BooleanProperty && ((BooleanProperty) prop).getValue() == booleanValue;
+            case INTEGER -> prop instanceof IntegerProperty && ((IntegerProperty) prop).getValue() == integerValue;
+            case DECIMAL -> prop instanceof DecimalProperty && ((DecimalProperty) prop).getValue() == decimalValue;
+            case ENUM -> prop instanceof EnumProperty && ((EnumProperty<?>) prop).getValue().ordinal() == enumValueIndex;
+        };
     }
 
     public boolean isPropertyAvailable() {
@@ -318,28 +311,28 @@ public class PropertyData {
             nbt.putString("prop_name", propName);
         }
 
-        nbt.putString("tooltip", toolTip);
-        nbt.putString("display_name", displayName);
+        nbt.putString("tooltip", Component.Serializer.toJson(toolTip));
+        nbt.putString("display_name", Component.Serializer.toJson(displayName));
         nbt.putString("display_value", displayValue);
         nbt.putBoolean("global", isGlobal);
         switch (type) {
-            case BOOLEAN:
+            case BOOLEAN -> {
                 nbt.putBoolean("value", booleanValue);
                 nbt.putByte("formatter", (byte) booleanFormatter.ordinal());
-                break;
-            case INTEGER:
+            }
+            case INTEGER -> {
                 nbt.putInt("value", integerValue);
                 nbt.putByte("formatter", (byte) integerFormatter.ordinal());
                 nbt.putInt("min", (int) minValue);
                 nbt.putInt("max", (int) maxValue);
-                break;
-            case DECIMAL:
+            }
+            case DECIMAL -> {
                 nbt.putDouble("value", decimalValue);
                 nbt.putByte("formatter", (byte) decimalFormatter.ordinal());
                 nbt.putDouble("min", minValue);
                 nbt.putDouble("max", maxValue);
-                break;
-            case ENUM:
+            }
+            case ENUM -> {
                 nbt.putInt("value", enumValueIndex);
                 if (enumValueOptions != null) {
                     nbt.put("names", enumValueOptions.stream().map(IntTag::valueOf).collect(Collectors.toCollection(ListTag::new)));
@@ -349,7 +342,7 @@ public class PropertyData {
                     enumDisplayValues.forEach((key, value) -> nameValues.putString(String.valueOf(key), value));
                     nbt.put("name_values", nameValues);
                 }
-                break;
+            }
         }
         return nbt;
     }
@@ -371,29 +364,38 @@ public class PropertyData {
             data.propName = nbt.getString("prop_name");
         }
 
-        data.toolTip = nbt.getString("tooltip");
-        data.displayName = nbt.getString("display_name");
+        try {
+            data.toolTip = Component.Serializer.fromJsonLenient(nbt.getString("tooltip"));
+        }catch (JsonParseException ignored) {
+            data.toolTip = new TextComponent(nbt.getString("tooltip"));
+        }
+        try {
+            data.displayName = Component.Serializer.fromJsonLenient(nbt.getString("display_name"));
+        }catch (JsonParseException ignored) {
+            data.displayName = new TextComponent(nbt.getString("display_name"));
+        }
+
         data.displayValue = nbt.getString("display_value");
         data.isGlobal = nbt.getBoolean("global");
 
         switch (data.type) {
-            case BOOLEAN:
+            case BOOLEAN -> {
                 data.booleanValue = nbt.getBoolean("value");
                 data.booleanFormatter = BooleanFormatter.getSafe(nbt.getByte("formatter"));
-                break;
-            case INTEGER:
+            }
+            case INTEGER -> {
                 data.integerValue = nbt.getInt("value");
                 data.integerFormatter = IntegerFormatter.getSafe(nbt.getByte("formatter"));
                 data.minValue = nbt.getInt("min");
                 data.maxValue = nbt.getInt("max");
-                break;
-            case DECIMAL:
+            }
+            case DECIMAL -> {
                 data.decimalValue = nbt.getDouble("value");
                 data.decimalFormatter = DecimalFormatter.getSafe(nbt.getByte("formatter"));
                 data.minValue = nbt.getDouble("min");
                 data.maxValue = nbt.getDouble("max");
-                break;
-            case ENUM:
+            }
+            case ENUM -> {
                 data.enumValueIndex = nbt.getInt("value");
                 if (nbt.contains("names")) {
                     data.enumValueOptions = nbt.getList("names", 3).stream().map(inbt -> ((IntTag) inbt).getAsInt()).collect(Collectors.toList());
@@ -402,7 +404,7 @@ public class PropertyData {
                     CompoundTag nameValues = nbt.getCompound("name_values");
                     data.enumDisplayValues = nameValues.getAllKeys().stream().collect(Collectors.toMap(Utils::parseInt, nameValues::getString));
                 }
-                break;
+            }
         }
 
         return data;
@@ -420,14 +422,11 @@ public class PropertyData {
             output.writeString(propName);
         }
 
-        if (type == Type.BOOLEAN) {
-            output.writeBoolean(booleanValue);
-        } else if (type == Type.INTEGER) {
-            output.writeVarInt(integerValue);
-        } else if (type == Type.DECIMAL) {
-            output.writeDouble(decimalValue);
-        } else if (type == Type.ENUM) {
-            output.writeVarInt(enumValueIndex);
+        switch (type) {
+            case BOOLEAN -> output.writeBoolean(booleanValue);
+            case INTEGER -> output.writeVarInt(integerValue);
+            case DECIMAL -> output.writeDouble(decimalValue);
+            case ENUM -> output.writeVarInt(enumValueIndex);
         }
     }
 
@@ -444,14 +443,11 @@ public class PropertyData {
         }
 
         data.isGlobal = isGlobal;
-        if (type == Type.BOOLEAN) {
-            data.booleanValue = input.readBoolean();
-        } else if (type == Type.INTEGER) {
-            data.integerValue = input.readVarInt();
-        } else if (type == Type.DECIMAL) {
-            data.decimalValue = input.readDouble();
-        } else if (type == Type.ENUM) {
-            data.enumValueIndex = input.readVarInt();
+        switch (type) {
+            case BOOLEAN -> data.booleanValue = input.readBoolean();
+            case INTEGER -> data.integerValue = input.readVarInt();
+            case DECIMAL -> data.decimalValue = input.readDouble();
+            case ENUM -> data.enumValueIndex = input.readVarInt();
         }
         return data;
     }

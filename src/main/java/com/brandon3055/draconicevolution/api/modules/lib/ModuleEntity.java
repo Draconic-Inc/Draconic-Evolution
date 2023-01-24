@@ -1,8 +1,11 @@
 package com.brandon3055.draconicevolution.api.modules.lib;
 
+import codechicken.lib.data.MCDataInput;
+import codechicken.lib.data.MCDataOutput;
 import codechicken.lib.render.buffer.TransformingVertexConsumer;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.api.render.GuiHelper;
+import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
 import com.brandon3055.brandonscore.client.render.RenderUtils;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.config.ConfigProperty;
@@ -11,11 +14,11 @@ import com.brandon3055.draconicevolution.api.modules.ModuleType;
 import com.brandon3055.draconicevolution.api.modules.data.ModuleData;
 import com.brandon3055.draconicevolution.api.render.RenderTypes;
 import com.brandon3055.draconicevolution.init.ClientInit;
+import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import com.google.common.collect.Multimap;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -35,6 +38,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.Consumer;
 
 /**
  * Created by brandon3055 on 18/4/20.
@@ -190,8 +194,10 @@ public class ModuleEntity<T extends ModuleData<T>> {
      * and when in item form.
      *
      * @param nbt The tag to write your data to. Keep in mind this will be the raw CompoundTag from writeToNBT or the raw ItemStack tag
+     * @return the nbt tag that was passed in.
      */
-    protected void writeExtraData(CompoundTag nbt) {
+    protected CompoundTag writeExtraData(CompoundTag nbt) {
+        return nbt;
     }
 
     /**
@@ -245,15 +251,11 @@ public class ModuleEntity<T extends ModuleData<T>> {
 
     //end
 
-    //Note Ether render with the given PoseStack OR apply the given zOffset. Do not use both!
     @OnlyIn(Dist.CLIENT)
-    @Deprecated //I really want to get rid of this method and rely on z offset being baked into poseStack but for now i need zOffset for item rendering
-    public void renderModule(MultiBufferSource getter, PoseStack poseStack, int x, int y, int zOffset, int width, int height, double mouseX, double mouseY, boolean stackRender, float partialTicks) {
-        renderModule(getter, poseStack, x, y, width, height, mouseX, mouseY, stackRender, partialTicks);
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public void renderModule(MultiBufferSource getter, PoseStack poseStack, int x, int y, int width, int height, double mouseX, double mouseY, boolean stackRender, float partialTicks) {
+    public void renderModule(GuiElement<?> parent, MultiBufferSource getter, PoseStack poseStack, int x, int y, int width, int height, double mouseX, double mouseY, boolean stackRender, float partialTicks) {
+        if (stackRender) {
+            poseStack.translate(0, 0, 200);
+        }
         int colour = getModuleColour(module);
         GuiHelper.drawRect(getter, poseStack, x, y, width, height, colour);
         GuiHelper.drawBorderedRect(getter, poseStack, x, y, width, height, 1, colour, GuiHelper.mixColours(colour, 0x20202000, true));
@@ -281,7 +283,9 @@ public class ModuleEntity<T extends ModuleData<T>> {
         }
 
         //Hover highlight
-        if (GuiHelper.isInRect(x, y, width, height, mouseX, mouseY)){
+        if (stackRender) {
+            poseStack.translate(0, 0, -200);
+        }else  if (GuiHelper.isInRect(x, y, width, height, mouseX, mouseY)){
             GuiHelper.drawRect(getter, poseStack, x, y, width, height, 0x50FFFFFF);
         }
     }
@@ -292,14 +296,14 @@ public class ModuleEntity<T extends ModuleData<T>> {
      * @return true to block further overlay rendering. (Equivalent to returning true in {@link com.brandon3055.brandonscore.client.gui.modulargui.GuiElement#renderOverlayLayer(Minecraft, int, int, float)} )
      */
     @OnlyIn(Dist.CLIENT)
-    public boolean renderModuleOverlay(Screen screen, ModuleContext context, MultiBufferSource getter, PoseStack poseStack, int x, int y, int width, int height, double mouseX, double mouseY, float partialTicks, int hoverTicks) {
+    public boolean renderModuleOverlay(GuiElement<?> parent, ModuleContext context, MultiBufferSource getter, PoseStack poseStack, int x, int y, int width, int height, double mouseX, double mouseY, float partialTicks, int hoverTicks) {
         if (hoverTicks > 10) {
             Minecraft mc = Minecraft.getInstance();
             Item item = getModule().getItem();
             ItemStack stack = new ItemStack(item);
             writeToItemStack(stack, context);
             List<Component> list = stack.getTooltipLines(mc.player, mc.options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL);;
-            screen.renderTooltip(poseStack, list, Optional.empty(), (int)mouseX, (int)mouseY);
+            parent.getScreen().renderTooltip(poseStack, list, Optional.empty(), (int)mouseX, (int)mouseY);
             return true;
         }
         return false;
@@ -307,6 +311,8 @@ public class ModuleEntity<T extends ModuleData<T>> {
 
     /**
      * Use to add information to the module item's tool tip.
+     * This also shows when hovering over the module in the grid because bu default the grid just
+     * renders the item tooltip.
      *
      * @param list The list to which tool tip entries should be added
      */
@@ -327,16 +333,37 @@ public class ModuleEntity<T extends ModuleData<T>> {
     public void addHostHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {}
 
     /**
+     * Called client side when a module in the grid is clicked. This is called before the normal container click.
+     * Returning true will prevent the normal server/client container click interaction from occurring.
+     *
+     * @param parent The parent gui element (Should be a {@link com.brandon3055.draconicevolution.client.gui.ModuleGridRenderer})
+     * @param player The player.
+     * @param x Module gui X position
+     * @param y Module gui Y position
+     * @param width Module width
+     * @param height Module height
+     * @param mouseX Mouse X position
+     * @param mouseY Mouse Y position
+     * @param button The mouse button pressed.
+     * @return true to prevent further click procxessing.
+     */
+    public boolean clientModuleClicked(GuiElement<?> parent, Player player, int x, int y, int width, int height, double mouseX, double mouseY, int button) {
+        return false;
+    }
+
+    /**
      * Called when a module in the grid is clicked. Can be used to add module interactions.
      * Return true to disable the default click action (prevent module pickup)
      * Will be called both client and server. The return value must be the same for both sides.
      *
      * @param player The player.
+     * @param x The x position of the click within the module. 0->1 where 0 is the far left of the module and 1 is the far right.
+     * @param y The y position of the click within the module. 0->1 where 0 is the top of the module and 1 is the bottom.
      * @param button The mouse button pressed.
      * @param clickType The click type.
      * @return true to prevent module pickup from slot. (Returning different values for client and server may result in desync)
      */
-    public boolean moduleClicked(Player player, int button, ClickType clickType) {
+    public boolean moduleClicked(Player player, double x, double y, int button, ClickType clickType) {
         return false;
     }
 
@@ -403,5 +430,25 @@ public class ModuleEntity<T extends ModuleData<T>> {
                 ", gridX=" + gridX +
                 ", gridY=" + gridY +
                 '}';
+    }
+
+    /**
+     * Send a message to the server side ModuleEntity.
+     * Handle the message using {@link #handleClientMessage(MCDataInput)} 
+     * 
+     * @param dataConsumer The data consumer
+     */
+    public void sendMessageToServer(Consumer<MCDataOutput> dataConsumer) {
+        DraconicNetwork.sendModuleMessage(getGridX(), getGridY(), dataConsumer);
+    }
+    
+    /**
+     * Handle a message sent from the client side module entity.
+     * Send message using {@link #sendMessageToServer(Consumer)}
+     * 
+     * @param input The message data
+     */
+    public void handleClientMessage(MCDataInput input) {
+        
     }
 }

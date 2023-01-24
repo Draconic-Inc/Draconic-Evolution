@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.api.modules.entities;
 import codechicken.lib.render.buffer.TransformingVertexConsumer;
 import com.brandon3055.brandonscore.api.power.IOPStorageModifiable;
 import com.brandon3055.brandonscore.api.render.GuiHelper;
+import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
 import com.brandon3055.brandonscore.client.render.RenderUtils;
 import com.brandon3055.brandonscore.client.utils.GuiHelperOld;
 import com.brandon3055.brandonscore.utils.MathUtils;
@@ -159,8 +160,8 @@ public class UndyingEntity extends ModuleEntity<UndyingData> {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void renderModule(MultiBufferSource getter, PoseStack poseStack, int x, int y, int width, int height, double mouseX, double mouseY, boolean renderStack, float partialTicks) {
-        super.renderModule(getter, poseStack, x, y, width, height, mouseX, mouseY, renderStack, partialTicks);
+    public void renderModule(GuiElement<?> parent, MultiBufferSource getter, PoseStack poseStack, int x, int y, int width, int height, double mouseX, double mouseY, boolean renderStack, float partialTicks) {
+        super.renderModule(parent, getter, poseStack, x, y, width, height, mouseX, mouseY, renderStack, partialTicks);
 
         UndyingData data = module.getData();
         if (charge >= data.getChargeTime()) return;

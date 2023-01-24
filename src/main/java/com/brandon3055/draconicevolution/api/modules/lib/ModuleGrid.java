@@ -65,20 +65,20 @@ public class ModuleGrid {
         this.cellSize = cellSize;
     }
 
-    public InstallResult cellClicked(GridPos pos, int button, ClickType clickType) {
+    public InstallResult cellClicked(GridPos pos, double x, double y, int button, ClickType clickType) {
         ItemStack stack = player.player.containerMenu.getCarried();
         Module<?> module = ModuleItem.getModule(stack);
         boolean holdingStack = !stack.isEmpty();
         ModuleContext context = container.getModuleContext();
 
+        ModuleEntity<?> posEntity = pos.getEntity();
+        if (posEntity != null && posEntity.moduleClicked(player.player, x, y, button, clickType)) {
+            return null;
+        }
+
         //Sanity Checks
         if ((holdingStack && module == null) || !pos.isValidCell()) {
             return null; //Player tried to insert an item that is not a valid module
-        }
-
-        ModuleEntity<?> posEntity = pos.getEntity();
-        if (posEntity != null && posEntity.moduleClicked(player.player, button, clickType)) {
-            return null;
         }
 
         //Really this could be pick up or drop off

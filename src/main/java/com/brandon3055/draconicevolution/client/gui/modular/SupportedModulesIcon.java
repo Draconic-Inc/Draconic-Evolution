@@ -162,7 +162,7 @@ public class SupportedModulesIcon extends GuiElement<SupportedModulesIcon> {
         }
 
         if (!hoverElement.isEnabled() || locked) return;
-        hoverElement.setYPos(mouseY);
+        hoverElement.setYPos(mouseY + 4);
         if (mouseX > screenWidth / 2) {
             hoverElement.setMaxXPos(mouseX, false);
         } else {
