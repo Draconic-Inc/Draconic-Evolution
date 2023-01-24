@@ -134,6 +134,13 @@ public class ItemModelGenerator extends ItemModelProvider {
         simpleItem(DEContent.info_tablet);
         //endregion
 
+//        File textures = new File("../BrandonsMods/Draconic-Evolution/src/main/resources/assets/draconicevolution/textures");
+//        DEModules.moduleItemMap.forEach((module, item) -> {
+//            String name = Objects.requireNonNull(module.getRegistryName()).getPath();
+//            File moduleTexture = new File(textures, "module/" + name + ".png");
+//            if (!moduleTexture.exists()) SneakyUtils.sneaky(() -> FileUtils.copyFile(new File(textures, "item/module/" + module.getModuleTechLevel().name().toLowerCase(Locale.ENGLISH) + ".png"), moduleTexture));
+//        });
+
         DEModules.moduleItemMap.forEach((module, item) -> {
             String name = Objects.requireNonNull(module.getRegistryName()).getPath();
             ResourceLocation baseTexture = new ResourceLocation(DraconicEvolution.MODID, "item/module/" + module.getModuleTechLevel().name().toLowerCase(Locale.ENGLISH));

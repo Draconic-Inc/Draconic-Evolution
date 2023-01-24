@@ -10,6 +10,8 @@ import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.capability.PropertyProvider;
 import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
 import com.brandon3055.draconicevolution.api.modules.data.AOEData;
+import com.brandon3055.draconicevolution.api.modules.entities.JunkFilterEntity;
+import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.brandon3055.draconicevolution.init.EquipCfg;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
@@ -33,6 +35,7 @@ import net.minecraftforge.common.ForgeHooks;
 
 import java.util.List;
 import java.util.Random;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -61,14 +64,14 @@ public interface IModularMiningTool extends IModularTieredItem {
         }
 
         if (aoe > 0) {
-            return breakAOEBlocks(stack, pos, aoe, 0, player, aoeSafe);
+            return breakAOEBlocks(host, stack, pos, aoe, 0, player, aoeSafe);
         }
 
         extractEnergy(player, stack, EquipCfg.energyHarvest);
         return false;
     }
 
-    default boolean breakAOEBlocks(ItemStack stack, BlockPos pos, int breakRadius, int breakDepth, Player player, boolean aoeSafe) {
+    default boolean breakAOEBlocks(ModuleHost host, ItemStack stack, BlockPos pos, int breakRadius, int breakDepth, Player player, boolean aoeSafe) {
         BlockState blockState = player.level.getBlockState(pos);
         if (!isCorrectToolForDrops(stack, blockState)) {
             return false;
@@ -98,19 +101,15 @@ public interface IModularMiningTool extends IModularTieredItem {
             }
         }
 
+        Predicate<ItemStack> junkTest = null;
+        for (ModuleEntity<?> entity : host.getEntitiesByType(ModuleTypes.JUNK_FILTER).toList()) {
+            junkTest = junkTest == null ? ((JunkFilterEntity)entity).createJunkTest() : junkTest.or(((JunkFilterEntity)entity).createJunkTest());
+        }
+
         //TODO Junk Filter
-//        Set<ItemStack> junkFilter = getJunkFilter(stack);
-//        if (junkFilter != null) {
-//            boolean nbtSens = ToolConfigHelper.getBooleanField("junkNbtSens", stack);
-//            inventoryDynamic.removeIf(check -> {
-//                for (ItemStack junk : junkFilter) {
-//                    if (junk.isItemEqual(check) && (!nbtSens || ItemStack.areItemStackTagsEqual(junk, check))) {
-//                        return true;
-//                    }
-//                }
-//                return false;
-//            });
-//        }
+        if (junkTest != null) {
+            inventoryDynamic.removeIf(junkTest);
+        }
 
         if (!player.level.isClientSide) {
 //            if (DEOldConfig.disableLootCores) {
