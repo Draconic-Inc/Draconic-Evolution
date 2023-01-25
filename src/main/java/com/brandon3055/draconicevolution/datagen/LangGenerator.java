@@ -643,8 +643,8 @@ public class LangGenerator extends LanguageProvider {
         helper.add("delete.info",                                               "Delete");
         helper.add("edit_lock.info",                                            "Toggle edit lock");
         helper.add("right_click_mode.info",                                     "Switch between \"Teleport to Selected\" and \"Blink\" on right click.\nYou can also configure keybindings.");
-        helper.add("mode_blink",                                                "Use Mode: Blink");
-        helper.add("mode_tp",                                                   "Use Mode: Teleport");
+        helper.add("mode_blink",                                                "Use Mode:\nBlink");
+        helper.add("mode_tp",                                                   "Use Mode:\nTeleport");
         helper.add("add_1",                                                     "+1");
         helper.add("add_16",                                                    "+16");
         helper.add("add_all",                                                   "All");
