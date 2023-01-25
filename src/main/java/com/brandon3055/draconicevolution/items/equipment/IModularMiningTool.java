@@ -2,14 +2,18 @@ package com.brandon3055.draconicevolution.items.equipment;
 
 import codechicken.lib.inventory.InventoryUtils;
 import codechicken.lib.raytracer.RayTracer;
+import com.brandon3055.brandonscore.api.power.IOPStorage;
+import com.brandon3055.brandonscore.api.power.IOPStorageModifiable;
 import com.brandon3055.brandonscore.inventory.BlockToStackHelper;
 import com.brandon3055.brandonscore.inventory.InventoryDynamic;
 import com.brandon3055.brandonscore.lib.Pair;
+import com.brandon3055.brandonscore.utils.EnergyUtils;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.capability.PropertyProvider;
 import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
 import com.brandon3055.draconicevolution.api.modules.data.AOEData;
+import com.brandon3055.draconicevolution.api.modules.entities.EnderCollectionEntity;
 import com.brandon3055.draconicevolution.api.modules.entities.JunkFilterEntity;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.brandon3055.draconicevolution.init.EquipCfg;
@@ -20,7 +24,6 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.network.protocol.game.ClientboundBlockUpdatePacket;
 import net.minecraft.network.protocol.game.ServerboundPlayerActionPacket;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -32,7 +35,9 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.items.IItemHandlerModifiable;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Predicate;
@@ -63,12 +68,7 @@ public interface IModularMiningTool extends IModularTieredItem {
             }
         }
 
-        if (aoe > 0) {
-            return breakAOEBlocks(host, stack, pos, aoe, 0, player, aoeSafe);
-        }
-
-        extractEnergy(player, stack, EquipCfg.energyHarvest);
-        return false;
+        return breakAOEBlocks(host, stack, pos, aoe, 0, player, aoeSafe);
     }
 
     default boolean breakAOEBlocks(ModuleHost host, ItemStack stack, BlockPos pos, int breakRadius, int breakDepth, Player player, boolean aoeSafe) {
@@ -103,12 +103,17 @@ public interface IModularMiningTool extends IModularTieredItem {
 
         Predicate<ItemStack> junkTest = null;
         for (ModuleEntity<?> entity : host.getEntitiesByType(ModuleTypes.JUNK_FILTER).toList()) {
-            junkTest = junkTest == null ? ((JunkFilterEntity)entity).createJunkTest() : junkTest.or(((JunkFilterEntity)entity).createJunkTest());
+            junkTest = junkTest == null ? ((JunkFilterEntity)entity).createFilterTest() : junkTest.or(((JunkFilterEntity)entity).createFilterTest());
         }
-
-        //TODO Junk Filter
         if (junkTest != null) {
             inventoryDynamic.removeIf(junkTest);
+        }
+
+        IOPStorage storage = EnergyUtils.getStorage(stack);
+        ModuleEntity<?> optionalCollector = host.getEntitiesByType(ModuleTypes.ENDER_COLLECTION).findAny().orElse(null);
+        if (optionalCollector instanceof EnderCollectionEntity collector && storage instanceof IOPStorageModifiable modifiable) {
+            List<ItemStack> remainder = collector.insertStacks(player, inventoryDynamic.getStacks(), modifiable);
+            inventoryDynamic.setStacks(new LinkedList<>(remainder));
         }
 
         if (!player.level.isClientSide) {

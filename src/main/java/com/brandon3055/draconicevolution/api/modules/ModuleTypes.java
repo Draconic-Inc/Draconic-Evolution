@@ -46,9 +46,9 @@ public class ModuleTypes {
     public static final ModuleType<AOEData>             AOE                 = new ModuleTypeImpl<>("aoe",               3, 3, ModuleCategory.MINING_TOOL, ModuleCategory.MELEE_WEAPON).setMaxInstallable(1);                           //I want there to be a limit on maximum AOE
     public static final ModuleType<DamageData>          DAMAGE              = new DamageType("damage",                  1, 1, ModuleCategory.MELEE_WEAPON);
     public static final ModuleType<SpeedData>           SPEED               = new ModuleTypeImpl<>("speed",             1, 1, ModuleCategory.MINING_TOOL, ModuleCategory.MELEE_WEAPON, ModuleCategory.RANGED_WEAPON, ModuleCategory.CHESTPIECE, ModuleCategory.ARMOR_LEGS).setMaxInstallable(8);
-    public static final ModuleType<NoData>              JUNK_FILTER         = new ModuleTypeImpl<>("junk_filter",       2, 2, JunkFilterEntity::new, ModuleCategory.MINING_TOOL);
+    public static final ModuleType<NoData>              JUNK_FILTER         = new ModuleTypeImpl<>("junk_filter",       2, 2, JunkFilterEntity::new, ModuleCategory.MINING_TOOL, ModuleCategory.MELEE_WEAPON);
     public static final ModuleType<NoData>              VACUUM              = new ModuleTypeImpl<>("vacuum",            1, 1, ModuleCategory.MINING_TOOL, ModuleCategory.MELEE_WEAPON);
-    public static final ModuleType<NoData>              ITEM_TRANSLOCATION  = new ModuleTypeImpl<>("item_translocation",1, 1, ModuleCategory.MINING_TOOL, ModuleCategory.MELEE_WEAPON, ModuleCategory.RANGED_WEAPON);
+    public static final ModuleType<NoData>              ENDER_COLLECTION    = new ModuleTypeImpl<>("ender_collection",  1, 1, EnderCollectionEntity::new, ModuleCategory.MINING_TOOL, ModuleCategory.MELEE_WEAPON).setMaxInstallable(1);
     public static final ModuleType<DamageModData>       DAMAGE_MOD          = new ModuleTypeImpl<>("damage_mod",        3, 3).setMaxInstallable(1);
 
     //@formatter:on

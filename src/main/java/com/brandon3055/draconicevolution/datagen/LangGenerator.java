@@ -1,6 +1,5 @@
 package com.brandon3055.draconicevolution.datagen;
 
-import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.ModuleType;
 import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
@@ -186,6 +185,7 @@ public class LangGenerator extends LanguageProvider {
         helper.add("feed_mod.consume_food.info",                                "When enabled, this module will automatically consume food from your inventory to fill its internal storage.");
 
         helper.add("junk_filter_mod.enabled",                                   "Incinerate");
+        helper.add("ender_collection_mod.enabled",                              "Ender Collection");
 
         helper.add("flight_mod.elytra",                                         "Elytra Flight");
         helper.add("flight_mod.elytra.info",                                    "Allows you to enable / disable elytra flight.");
@@ -279,20 +279,27 @@ public class LangGenerator extends LanguageProvider {
         helper.add(ModuleTypes.HILL_STEP,                                       "Step Assist");
 
         helper.add(ModuleTypes.JUNK_FILTER,                                     "Junk Filter");
-        helper.add("junk_filter.filter_slot",                                   "Filter Slot");
-        helper.add("junk_filter.filter_item",                                   "Filter Item");
-        helper.add("junk_filter.filter_tag",                                    "Filter Tag");
-        helper.add("junk_filter.set_item_filter",                               "Click with item to set item filter");
-        helper.add("junk_filter.configure_slot",                                "Right click to set tag filter");
-        helper.add("junk_filter.clear_slot",                                    "Shift+Right click to clear");
-        helper.add("junk_filter.matching",                                      "Matching Item(s)");
 
-        helper.add("junk_filter.filter_by_tag",                                 "Filter by item tag");
-        helper.add("junk_filter.filter_example",                                "e.g. forge:stone");
-        helper.add("junk_filter.select_or_enter",                               "Select tag");
-        helper.add("junk_filter.select_from_item",                              "Select tag from item");
+        helper.add("filtered_module.filter_slot",                               "Filter Slot");
+        helper.add("filtered_module.filter_item",                               "Filter Item");
+        helper.add("filtered_module.filter_tag",                                "Filter Tag");
+        helper.add("filtered_module.set_item_filter",                           "Click with item to set item filter");
+        helper.add("filtered_module.configure_slot",                            "Right click to set tag filter");
+        helper.add("filtered_module.clear_slot",                                "Shift+Right click to clear");
+        helper.add("filtered_module.matching",                                  "Matching Item(s)");
 
+        helper.add("filtered_module.filter_by_tag",                             "Filter by item tag");
+        helper.add("filtered_module.filter_example",                            "e.g. forge:stone");
+        helper.add("filtered_module.select_or_enter",                           "Select tag");
+        helper.add("filtered_module.select_from_item",                          "Select tag from item");
 
+        helper.add(ModuleTypes.ENDER_COLLECTION,                                "Ender Collection");
+        helper.add("ender_storage.about",                                       "Transfers collected items to your personal ender chest.");
+        helper.add("ender_storage.about_compat",                                "Can be bound to an Ender Storage ender chest.");
+        helper.add("ender_storage.about_compat2",                               "(Shift+Right Click ender chest with module)");
+        helper.add("ender_storage.frequency",                                   "Frequency");
+        helper.add("ender_storage.owner",                                       "Owner");
+        helper.add("ender_storage.how_to_clear",                                "Shift right click module to clear");
 
         helper.add(ModuleTypes.AUTO_FIRE,                                       "Auto Fire");
 
@@ -341,6 +348,9 @@ public class LangGenerator extends LanguageProvider {
         helper.add(DEModules.chaoticAOE,                                        "Chaotic AOE Module");
 
         helper.add(DEModules.wyvernJunkFilter,                                  "Selective Incineration Module");
+
+        helper.add(DEModules.wyvernEnderCollection,                             "Ender Collection Module");
+        helper.add(DEModules.draconicEnderCollection,                           "Filterable Ender Collection Module");
 
         helper.add(DEModules.wyvernAutoFire,                                    "Auto Fire Module");
 

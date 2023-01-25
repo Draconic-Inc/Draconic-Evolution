@@ -9,7 +9,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.loading.moddiscovery.ModInfo;
+import net.minecraftforge.fml.OptionalMod;
 import net.minecraftforge.forgespi.language.IModInfo;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -26,25 +26,20 @@ public class ModHelper {
 
     private static Map<String, String> loadedMods = null;
 
-    public static boolean isTConInstalled;
-    public static boolean isAvaritiaInstalled;
-    public static boolean isRotaryCraftInstalled;
-    public static boolean isJEIInstalled;
-    public static boolean isBaublesInstalled;
+    public static final OptionalMod<?> TINKERS_CONSTRUCT = OptionalMod.of("tconstruct");
+    public static final OptionalMod<?> AVARITIA = OptionalMod.of("avaritia");
+    public static final OptionalMod<?> ROTARYCRAFT = OptionalMod.of("rotarycraft");
+    public static final OptionalMod<?> JEI = OptionalMod.of("jei");
+    public static final OptionalMod<?> BAUBLES = OptionalMod.of("baubles");
+    public static final OptionalMod<?> ENDERSTORAGE = OptionalMod.of("enderstorage");
     private static Item cleaver;
     private static Item avaritiaSword;
     private static Item bedrockSword;
 
-    public static void init() {
-        isTConInstalled = ModList.get().isLoaded("tconstruct");
-        isAvaritiaInstalled = ModList.get().isLoaded("avaritia");
-        isRotaryCraftInstalled = ModList.get().isLoaded("rotarycraft");
-        isJEIInstalled = ModList.get().isLoaded("jei");
-        isBaublesInstalled = ModList.get().isLoaded("baubles");
-    }
+
 
     public static boolean isHoldingCleaver(Player player) {
-        if (!isTConInstalled) {
+        if (!TINKERS_CONSTRUCT.isPresent()) {
             return false;
         }
         else if (cleaver == null) {
@@ -54,7 +49,7 @@ public class ModHelper {
     }
 
     public static boolean isHoldingAvaritiaSword(Player player) {
-        if (!isAvaritiaInstalled) {
+        if (!AVARITIA.isPresent()) {
             return false;
         }
         else if (avaritiaSword == null) {
@@ -65,7 +60,7 @@ public class ModHelper {
     }
 
     public static boolean isHoldingBedrockSword(Player player) {
-        if (!isRotaryCraftInstalled) {
+        if (!ROTARYCRAFT.isPresent()) {
             return false;
         }
         else if (bedrockSword == null) {
@@ -120,7 +115,7 @@ public class ModHelper {
     }
 
     public static void reloadJEI() {
-        if (isJEIInstalled) {
+        if (JEI.isPresent()) {
             DEJEIPlugin.reloadJEI();
         }
     }

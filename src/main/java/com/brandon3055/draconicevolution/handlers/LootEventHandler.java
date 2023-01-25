@@ -1,8 +1,15 @@
 package com.brandon3055.draconicevolution.handlers;
 
+import com.brandon3055.brandonscore.api.power.IOPStorage;
+import com.brandon3055.brandonscore.api.power.IOPStorageModifiable;
+import com.brandon3055.brandonscore.utils.EnergyUtils;
 import com.brandon3055.draconicevolution.DEConfig;
-import com.brandon3055.draconicevolution.achievements.Achievements;
 import com.brandon3055.draconicevolution.api.IReaperItem;
+import com.brandon3055.draconicevolution.api.capability.DECapabilities;
+import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
+import com.brandon3055.draconicevolution.api.modules.entities.EnderCollectionEntity;
+import com.brandon3055.draconicevolution.api.modules.entities.JunkFilterEntity;
+import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.brandon3055.draconicevolution.entity.guardian.DraconicGuardianEntity;
 import com.brandon3055.draconicevolution.init.DEContent;
 import net.covers1624.quack.util.CrashLock;
@@ -23,13 +30,12 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.feature.EndPodiumFeature;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
+import java.util.function.Predicate;
 
 /**
  * Created by brandon3055 on 25/01/2023
@@ -41,13 +47,14 @@ public class LootEventHandler {
 
     public static void init() {
         LOCK.lock();
-        MinecraftForge.EVENT_BUS.addListener(LootEventHandler::onDropEvent);
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGH, LootEventHandler::addDrops);
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, LootEventHandler::processDrops);
     }
 
-    public static void onDropEvent(LivingDropsEvent event) {
+    public static void addDrops(LivingDropsEvent event) {
         LivingEntity entity = event.getEntityLiving();
         Level level = entity.level;
-        if (level.isClientSide()) {
+        if (level.isClientSide() || event.isCanceled()) {
             return;
         }
 
@@ -59,8 +66,17 @@ public class LootEventHandler {
         }
 
         handleSoulDrops(entity, player, level, event);
-
     }
+
+    public static void processDrops(LivingDropsEvent event) {
+        Entity attacker = event.getSource().getEntity();
+        if (!(attacker instanceof Player player) || player.level.isClientSide()) {
+            return;
+        }
+        handleLootCollection(player, event);
+    }
+
+
 
     private static final List<UUID> deadDragons = new LinkedList<>();
 
@@ -127,8 +143,7 @@ public class LootEventHandler {
 
         if ((rand == 0 && !isAnimal) || (rand2 == 0 && isAnimal)) {
             ItemStack soul = DEContent.mob_soul.getSoulFromEntity(entity, false);
-            level.addFreshEntity(new ItemEntity(level, entity.getX(), entity.getY(), entity.getZ(), soul));
-            Achievements.triggerAchievement(player, "draconicevolution.soul");
+            event.getDrops().add(new ItemEntity(level, entity.getX(), entity.getY(), entity.getZ(), soul));
         }
     }
 
@@ -158,5 +173,41 @@ public class LootEventHandler {
             return false;
         }
         return !DEConfig.spawnerListWhiteList;
+    }
+
+    private static void handleLootCollection(Player player, LivingDropsEvent event) {
+        ItemStack hostStack = player.getMainHandItem();
+        if (hostStack.isEmpty() || event.getDrops().isEmpty()) return;
+
+        hostStack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).ifPresent(host -> {
+            Predicate<ItemStack> junkTest = null;
+            for (ModuleEntity<?> entity : host.getEntitiesByType(ModuleTypes.JUNK_FILTER).toList()) {
+                junkTest = junkTest == null ? ((JunkFilterEntity)entity).createFilterTest() : junkTest.or(((JunkFilterEntity)entity).createFilterTest());
+            }
+            if (junkTest != null) {
+                Predicate<ItemStack> finalJunkTest = junkTest;
+                event.getDrops().removeIf(e -> finalJunkTest.test(e.getItem()));
+            }
+
+            if (event.getDrops().isEmpty()) return;
+
+            IOPStorage storage = EnergyUtils.getStorage(hostStack);
+            ModuleEntity<?> optionalCollector = host.getEntitiesByType(ModuleTypes.ENDER_COLLECTION).findAny().orElse(null);
+            if (optionalCollector instanceof EnderCollectionEntity collector && storage instanceof IOPStorageModifiable modifiable) {
+                List<ItemEntity> remove = new ArrayList<>();
+                for (ItemEntity drop : event.getDrops()) {
+                    ItemStack stack = drop.getItem();
+                    int remainder = collector.insertStack(player, stack, modifiable);
+                    if (remainder == 0) {
+                        drop.setItem(ItemStack.EMPTY);
+                        remove.add(drop);
+                    } else {
+                        stack.setCount(remainder);
+                        drop.setItem(stack);
+                    }
+                }
+                event.getDrops().removeAll(remove);
+            }
+        });
     }
 }

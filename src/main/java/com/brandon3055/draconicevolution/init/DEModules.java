@@ -1,9 +1,7 @@
 package com.brandon3055.draconicevolution.init;
 
-import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.client.utils.CyclingItemGroup;
 import com.brandon3055.draconicevolution.api.modules.Module;
-import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
 import com.brandon3055.draconicevolution.api.modules.data.*;
 import com.brandon3055.draconicevolution.api.modules.lib.*;
 import com.brandon3055.draconicevolution.modules.ProjectileVelocityModule;
@@ -69,8 +67,8 @@ public class DEModules {
 
     @ObjectHolder("wyvern_junk_filter")             public static Module<NoData>            wyvernJunkFilter;
 
-    @ObjectHolder("wyvern_item_translocation")      public static Module<NoData>            wyvernItemTranslocation;
-    @ObjectHolder("draconic_item_translocation")    public static Module<NoData>            draconicItemTranslocation;
+    @ObjectHolder("wyvern_ender_collection")        public static Module<NoData>            wyvernEnderCollection;
+    @ObjectHolder("draconic_ender_collection")      public static Module<NoData>            draconicEnderCollection;
 
     @ObjectHolder("wyvern_auto_fire")               public static Module<NoData>            wyvernAutoFire;
 
@@ -185,8 +183,8 @@ public class DEModules {
 
         register(new ModuleImpl<>(JUNK_FILTER,          WYVERN,         noData()),                                  "wyvern_junk_filter");
 
-        register(new ModuleImpl<>(ITEM_TRANSLOCATION,  WYVERN,          noData()),                                  "wyvern_item_translocation");
-        register(new ModuleImpl<>(ITEM_TRANSLOCATION,  DRACONIC,        noData()),                                  "draconic_item_translocation");
+        register(new ModuleImpl<>(ENDER_COLLECTION,     WYVERN,         noData()),       new EnderCollectionModuleItem(props), "wyvern_ender_collection");
+        register(new ModuleImpl<>(ENDER_COLLECTION,     DRACONIC,       noData(), 2, 2), new EnderCollectionModuleItem(props), "draconic_ender_collection");
 
         //Arrow base velocity is 60 m/s
         register(new ProjectileVelocityModule(PROJ_MODIFIER,        WYVERN,         projVelocityData(0.15F, 1.0F)).setMaxInstall(8),   "wyvern_proj_velocity");   // (1 + (0.15 * 8) * 60) = 132 m/s max

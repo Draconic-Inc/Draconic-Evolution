@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.client;
 
 import com.brandon3055.brandonscore.client.BCGuiSprites;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyTransfuser;
+import com.brandon3055.draconicevolution.integration.ModHelper;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;

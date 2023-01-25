@@ -1,6 +1,8 @@
 package com.brandon3055.draconicevolution.client;
 
+import com.brandon3055.brandonscore.client.BCGuiSprites;
 import com.brandon3055.brandonscore.client.render.CustomSpriteUploader;
+import com.brandon3055.draconicevolution.integration.ModHelper;
 import com.google.common.collect.Streams;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -9,6 +11,7 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.particle.ParticleRenderType;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -39,6 +42,14 @@ public class DEMiscSprites {
     private static final Map<ResourceLocation, Consumer<TextureAtlasSprite>> registeredSprites = new HashMap<>();
     private static final Map<String, Material> matCache = new HashMap<>();
 
+    public static final RenderType GUI_TYPE = RenderType.create("gui_tex", DefaultVertexFormat.POSITION_COLOR_TEX, VertexFormat.Mode.QUADS, 256, RenderType.CompositeState.builder()
+            .setShaderState(new RenderStateShard.ShaderStateShard(GameRenderer::getPositionColorTexShader))
+            .setTextureState(new RenderStateShard.TextureStateShard(ATLAS_LOCATION, false, false))
+            .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
+            .setCullState(RenderStateShard.NO_CULL)
+            .createCompositeState(false)
+    );
+
     public static void initialize(ColorHandlerEvent.Block event) {
         customSpriteUploader = new CustomSpriteUploader(registeredSprites, ATLAS_LOCATION);
 
@@ -51,6 +62,11 @@ public class DEMiscSprites {
         registerToArray(i -> "particle/spell_" + i, () -> SPELL_PARTICLE);
 
         customSpriteUploader.addReloadListener(() -> MIXED_PARTICLE = Stream.concat(Arrays.stream(SPARK_PARTICLE), Arrays.stream(SPELL_PARTICLE)).toArray(TextureAtlasSprite[]::new));
+
+        //Ender storage buttons
+        if (ModHelper.ENDERSTORAGE.isPresent()) {
+            register(new ResourceLocation("enderstorage:buttons"));
+        }
     }
 
     // Static Storage
@@ -108,6 +124,10 @@ public class DEMiscSprites {
                 arraySupplier.get()[finalI] = sprite;
             });
         }
+    }
+
+    public static Material getMat(String modid, String location) {
+        return matCache.computeIfAbsent(modid + ":" + location, s -> new CustomMat(ATLAS_LOCATION, new ResourceLocation(modid, location)));
     }
 
     public static Material getMat(String location) {
