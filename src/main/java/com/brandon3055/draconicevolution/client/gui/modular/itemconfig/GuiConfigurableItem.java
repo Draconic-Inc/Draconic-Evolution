@@ -101,7 +101,7 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
                 int light = 0xFFfbe555;
                 int dark = 0xFFf45905;
 
-                MultiBufferSource.BufferSource getter = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
+                MultiBufferSource.BufferSource getter = RenderUtils.getGuiBuffers();
                 setZLevel(mainUI.displayZLevel);
                 GuiHelperOld.drawShadedRect(getter.getBuffer(GuiHelper.transColourType), x - 1, y - 1, 18, 18, 1, 0, dark, light, GuiElement.midColour(light, dark), mainUI.getRenderZLevel());
 
@@ -587,12 +587,13 @@ public class GuiConfigurableItem extends ModularGuiContainer<ContainerConfigurab
                 float offset = (tick / 10F) * 8;
                 RenderSystem.colorMask(true, true, true, false);
                 RenderSystem.disableDepthTest();
-                MultiBufferSource source = RenderUtils.getGuiBuffers();
+                MultiBufferSource.BufferSource source = RenderUtils.getGuiBuffers();
                 PoseStack poseStack = new PoseStack();
                 poseStack.translate(0, 0, 300);
                 GuiHelper.drawGradientRect(source, poseStack, x + offset, y + offset, x + 16 - offset, y + 16 - offset, 0x8000FFFF, 0x8000FFFF);
                 RenderSystem.colorMask(true, true, true, true);
                 RenderSystem.enableDepthTest();
+                source.endBatch();
             }
         }
     }

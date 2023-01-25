@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.integration.jei;
 import codechicken.lib.render.buffer.TransformingVertexConsumer;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.api.render.GuiHelper;
+import com.brandon3055.brandonscore.client.render.RenderUtils;
 import com.brandon3055.brandonscore.client.utils.GuiHelperOld;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DraconicEvolution;
@@ -87,7 +88,7 @@ public class FusionRecipeCategory implements IRecipeCategory<IFusionRecipe> {
             GuiHelperOld.drawCenteredString(mc.font, matrixStack, Utils.addCommas(recipe.getEnergyCost()) + " OP", this.xSize / 2, this.ySize - 10, 4500223, false);
         }
 
-        MultiBufferSource.BufferSource buffer = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
+        MultiBufferSource.BufferSource buffer = RenderUtils.getGuiBuffers();
         TransformingVertexConsumer builder = new TransformingVertexConsumer(buffer.getBuffer(GuiHelper.transColourType), matrixStack);
         GuiHelperOld.drawBorderedRect(builder, (xSize / 2D) - 10, 22, 20, 66, 1, 0x40FFFFFF, 0xFF00FFFF, 0);
         if (recipe.getIngredients().size() > 16) {

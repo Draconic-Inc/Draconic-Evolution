@@ -140,7 +140,7 @@ public class BinderHandler {
             shape = Shapes.block();
         }
 
-        MultiBufferSource.BufferSource getter = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
+        MultiBufferSource.BufferSource getter = com.brandon3055.brandonscore.client.render.RenderUtils.getGuiBuffers();
 
         Cuboid6 cuboid6 = new Cuboid6(shape.bounds());
         RenderSystem.disableTexture();
@@ -162,6 +162,7 @@ public class BinderHandler {
         RenderSystem.enableDepthTest();
         RenderSystem.disableBlend();
         RenderSystem.enableTexture();
+        getter.endBatch();
     }
 
     private static CCModel modelForAABB(AABB aabb) {

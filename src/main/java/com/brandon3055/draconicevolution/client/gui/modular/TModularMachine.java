@@ -7,6 +7,7 @@ import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
 import com.brandon3055.brandonscore.client.gui.modulargui.ModularGuiContainer;
 import com.brandon3055.brandonscore.client.gui.modulargui.baseelements.GuiButton;
 import com.brandon3055.brandonscore.client.gui.modulargui.templates.TBasicMachine;
+import com.brandon3055.brandonscore.client.render.RenderUtils;
 import com.brandon3055.brandonscore.inventory.ContainerSlotLayout;
 import com.brandon3055.brandonscore.utils.MathUtils;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleGrid;
@@ -157,7 +158,7 @@ public class TModularMachine extends TBasicMachine {
             double fadeAlpha = Math.min(1, ((animState + 0.5) * 2));
             int backgroundCol = 0x100010 | (int) (0xf0 * fadeAlpha) << 24;
             int borderCol = colour | (int) (0xB0 * fadeAlpha) << 24;
-            MultiBufferSource.BufferSource getter = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
+            MultiBufferSource.BufferSource getter = RenderUtils.getGuiBuffers();
             PoseStack poseStack = new PoseStack();
             GuiHelper.drawHoverRect(getter, poseStack, xPos(), yPos(), xSize(), ySize(), backgroundCol, borderCol, false);
             getter.endBatch();

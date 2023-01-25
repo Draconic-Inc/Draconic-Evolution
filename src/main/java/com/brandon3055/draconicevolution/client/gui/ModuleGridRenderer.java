@@ -4,6 +4,7 @@ import com.brandon3055.brandonscore.BCConfig;
 import com.brandon3055.brandonscore.api.render.GuiHelper;
 import com.brandon3055.brandonscore.client.gui.GuiToolkit.Palette;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
+import com.brandon3055.brandonscore.client.render.RenderUtils;
 import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.lib.InstallResult;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
@@ -52,7 +53,7 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> {
     @Override
     public void renderElement(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
         super.renderElement(minecraft, mouseX, mouseY, partialTicks);
-        MultiBufferSource.BufferSource getter = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
+        MultiBufferSource.BufferSource getter = RenderUtils.getGuiBuffers();
         PoseStack poseStack = new PoseStack();
 
         int light = Palette.BG.accentLight();
@@ -78,7 +79,7 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> {
     @Override
     public boolean renderOverlayLayer(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
         boolean carrying = !player.player.containerMenu.getCarried().isEmpty();
-        MultiBufferSource.BufferSource getter = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
+        MultiBufferSource.BufferSource getter = RenderUtils.getGuiBuffers();
         PoseStack poseStack = new PoseStack();
         poseStack.translate(0, 0, getRenderZLevel());
 
@@ -134,7 +135,7 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> {
                 int mh = module.getProperties().getHeight() * cs;
                 PoseStack poseStack = new PoseStack();
                 poseStack.translate(0, 0, getRenderZLevel());
-                MultiBufferSource.BufferSource getter = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
+                MultiBufferSource.BufferSource getter = RenderUtils.getGuiBuffers();
                 entity.renderModule(this, getter, poseStack, x - (mw / 2), y - (mh / 2), mw, mh, x, y, true, mc.getDeltaFrameTime());
                 getter.endBatch();
                 if (stack.getCount() > 1 || altText != null) {

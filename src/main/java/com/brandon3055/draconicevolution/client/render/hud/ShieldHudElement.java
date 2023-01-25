@@ -7,6 +7,7 @@ import com.brandon3055.brandonscore.api.render.GuiHelper;
 import com.brandon3055.brandonscore.capability.CapabilityOP;
 import com.brandon3055.brandonscore.client.BCGuiSprites;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
+import com.brandon3055.brandonscore.client.render.RenderUtils;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
@@ -231,7 +232,7 @@ public class ShieldHudElement extends AbstractHudElement {
         if (!renderHud) return;
         mStack.translate(xPos(), yPos(), 0);
         mStack.scale(scale, scale, scale);
-        MultiBufferSource.BufferSource getter = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
+        MultiBufferSource.BufferSource getter = RenderUtils.getGuiBuffers();
 
         hudOpacity = 1;
 

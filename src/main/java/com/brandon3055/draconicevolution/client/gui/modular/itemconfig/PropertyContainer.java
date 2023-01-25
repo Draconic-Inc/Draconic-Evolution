@@ -11,6 +11,7 @@ import com.brandon3055.brandonscore.client.gui.modulargui.baseelements.GuiScroll
 import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiManipulable;
 import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiTextField;
 import com.brandon3055.brandonscore.client.gui.modulargui.lib.GuiAlign;
+import com.brandon3055.brandonscore.client.render.RenderUtils;
 import com.brandon3055.brandonscore.client.utils.GuiHelperOld;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.GuiConfigurableItem.UpdateAnim;
@@ -573,7 +574,7 @@ public class PropertyContainer extends GuiManipulable {
             animDistance = 0;
         }
 
-        MultiBufferSource.BufferSource getter = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
+        MultiBufferSource.BufferSource getter = RenderUtils.getGuiBuffers();
 
         if (dropTarget != null) {
             double zLevel = getRenderZLevel() - 10;
@@ -590,30 +591,27 @@ public class PropertyContainer extends GuiManipulable {
                 drawGradientRect(getter, dropTarget.xPos() + 3, dropTarget.maxYPos() - 6, dropTarget.maxXPos() - 3, dropTarget.maxYPos() - 3, 0x0000FF00, 0xFF00FF00);
             }
             zOffset += zLevel;
+            getter.endBatch();
         }
 
         int alpha = semiTrans ? 0x60000000 : 0xFF000000;
         Material mat = BCGuiSprites.getThemed("borderless_bg_dynamic_small");
         drawDynamicSprite(getter.getBuffer(mat.renderType(e -> BCGuiSprites.GUI_TYPE)), mat.sprite(), xPos(), yPos(), xSize(), ySize(), 2, 2, 2, 2, 0xFFFFFF | alpha);
+        getter.endBatch();
 
         int contentPos = yPos() + 2 + 9;
         int contentHeight = ySize() - 4 - 9;
         if (isGroup && contentHeight > 0 && !applyPreset.isEnabled()) {
-//            if (applyPreset.isEnabled() && !applyPreset.isPressed()) {
-//                mat = BCSprites.getThemed("button_borderless" + (applyPreset.isPressed() ? "_invert" : ""));
-//                drawDynamicSprite(mat.getBuffer(getter, e -> BCSprites.guiTexType), mat.getSprite(), xPos() + 2, contentPos, xSize() - 4, contentHeight, 2, 2, 2, 2, 0xFFFFFF | alpha);
-//            } else {
             int light = (BCConfig.darkMode ? 0x5b5b5b : 0xFFFFFF) | alpha;
             int dark = (BCConfig.darkMode ? 0x282828 : 0x505050) | alpha;
             drawShadedRect(getter, xPos() + 2, contentPos, xSize() - 4, contentHeight, 1, 0, dark, light, midColour(light, dark));
-//            }
             getter.endBatch();
             if (dataList.isEmpty()) { //TODO Test this???
                 drawCustomString(fontRenderer, new TranslatableComponent("gui.draconicevolution.item_config.drop_prop_here"), xPos() + 3, yPos() + 13, xSize() - 6, GuiToolkit.Palette.BG.text(), GuiAlign.CENTER, false, false, true, BCConfig.darkMode);
+                getter.endBatch();
             }
-        } else {
-            getter.endBatch();
         }
+
         super.renderElement(minecraft, mouseX, mouseY, partialTicks);
 
         if (dragPos && gui.deleteZone.isMouseOver(mouseX, mouseY)) {

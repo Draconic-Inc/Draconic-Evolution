@@ -16,6 +16,7 @@ import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiTextFie
 import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiTexture;
 import com.brandon3055.brandonscore.client.gui.modulargui.lib.GuiAlign;
 import com.brandon3055.brandonscore.client.gui.modulargui.templates.TGuiBase;
+import com.brandon3055.brandonscore.client.render.RenderUtils;
 import com.brandon3055.brandonscore.utils.DataUtils;
 import com.brandon3055.draconicevolution.client.DEGuiSprites;
 import com.brandon3055.draconicevolution.init.DEContent;
@@ -436,7 +437,7 @@ public class GuiDislocator extends ModularGuiScreen {
 
             Material mat = DEGuiSprites.get("dislocator/slot");
             Material matSelect = DEGuiSprites.get("dislocator/slot_selected");
-            MultiBufferSource.BufferSource getter = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
+            MultiBufferSource.BufferSource getter = RenderUtils.getGuiBuffers();
             drawSprite(getter.getBuffer(BCGuiSprites.GUI_TYPE), xPos(), yPos(), (selected ? matSelect : mat).sprite());
             if ((hovered && !selected)) {
                 getter.endBatch();
@@ -454,7 +455,7 @@ public class GuiDislocator extends ModularGuiScreen {
         public boolean renderOverlayLayer(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
             if (dragging) {
                 int yPos = MathHelper.clip(mouseY - 6, getParent().yPos(), getParent().maxYPos() - 12);
-                MultiBufferSource.BufferSource getter = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
+                MultiBufferSource.BufferSource getter = RenderUtils.getGuiBuffers();
 
                 TargetElement hovered = getHovered(mouseX, mouseY);
                 if (hovered != null) {

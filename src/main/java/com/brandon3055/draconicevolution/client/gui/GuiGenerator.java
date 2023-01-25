@@ -13,6 +13,7 @@ import com.brandon3055.brandonscore.client.gui.modulargui.GuiElementManager;
 import com.brandon3055.brandonscore.client.gui.modulargui.ModularGuiContainer;
 import com.brandon3055.brandonscore.client.gui.modulargui.baseelements.GuiButton;
 import com.brandon3055.brandonscore.client.gui.modulargui.templates.TBasicMachine;
+import com.brandon3055.brandonscore.client.render.RenderUtils;
 import com.brandon3055.brandonscore.inventory.ContainerBCTile;
 import com.brandon3055.brandonscore.inventory.ContainerSlotLayout;
 import com.brandon3055.draconicevolution.DraconicEvolution;
@@ -96,7 +97,7 @@ public class GuiGenerator extends ModularGuiContainer<ContainerBCTile<TileGenera
             ccrs.reset();
 
             PoseStack mStack = new PoseStack();
-            MultiBufferSource.BufferSource getter = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
+            MultiBufferSource.BufferSource getter = RenderUtils.getGuiBuffers();
             ccrs.bind(modelType, getter);
 
             Matrix4 mat = new Matrix4(mStack);
