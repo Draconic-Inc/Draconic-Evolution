@@ -4,7 +4,6 @@ import com.brandon3055.brandonscore.client.render.RenderUtils;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.DEOldConfig;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileDislocatorPedestal;
-import com.brandon3055.draconicevolution.client.render.item.ToolRenderBase;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.items.tools.DislocatorAdvanced;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -101,7 +100,7 @@ public class RenderTileDislocatorPedestal implements BlockEntityRenderer<TileDis
         double yDiff = (player.getY() + player.getEyeHeight()) - (tile.getBlockPos().getY() + 1.125);
         double zDiff = player.getZ() - (tile.getBlockPos().getZ() + 0.5);
         double yawAngle = Math.toDegrees(Math.atan2(zDiff, xDiff));
-        double pitchAngle = Math.toDegrees(Math.atan2(yDiff, Utils.getDistanceAtoB(player.getX(), player.getY(), player.getZ(), tile.getBlockPos().getX() + 0.5, tile.getBlockPos().getY() + 0.5, tile.getBlockPos().getZ() + 0.5)));
+        double pitchAngle = Math.toDegrees(Math.atan2(yDiff, Utils.getDistance(player.getX(), player.getY(), player.getZ(), tile.getBlockPos().getX() + 0.5, tile.getBlockPos().getY() + 0.5, tile.getBlockPos().getZ() + 0.5)));
 
         mStack.mulPose(new Quaternion(0, (float) yawAngle, 0, true));
         mStack.mulPose(new Quaternion((float) -pitchAngle, 0, 0, true));

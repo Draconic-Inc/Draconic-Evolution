@@ -7,7 +7,6 @@ import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.capability.CapabilityOP;
 import com.brandon3055.brandonscore.client.particle.IntParticleType;
 import com.brandon3055.brandonscore.lib.Vec3D;
-import com.brandon3055.brandonscore.lib.Vec3I;
 import com.brandon3055.brandonscore.lib.datamanager.*;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.blocks.StructureBlock;
@@ -17,7 +16,6 @@ import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -314,7 +312,7 @@ public class TileEnergyPylon extends TileBCore implements MultiBlockController {
 
         BlockPos thisPos = worldPosition.relative(direction.get());
         Vec3D coreVec = Vec3D.getDirectionVec(new Vec3D(thisPos).add(0.5, 0.5, 0.5), new Vec3D(getCore().getBlockPos()).add(0.5, 0.5, 0.5));
-        double coreDistance = Utils.getDistanceAtoB(new Vec3D(thisPos).add(0.5, 0.5, 0.5), new Vec3D(getCore().getBlockPos().offset(0.5, 0.5, 0.5)));
+        double coreDistance = Utils.getDistance(new Vec3D(thisPos).add(0.5, 0.5, 0.5), new Vec3D(getCore().getBlockPos().offset(0.5, 0.5, 0.5)));
 
         for (int i = 0; i < 100; i++) {
             double location = i / 100D;

@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.blocks.machines;
 
 import com.brandon3055.brandonscore.blocks.BlockBCore;
+import com.brandon3055.brandonscore.blocks.EntityBlockBCore;
 import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -18,7 +19,7 @@ import net.minecraft.world.level.block.state.properties.DirectionProperty;
  * Created by Brandon on 23/07/2014.
  * Block for DE Generator
  */
-public class Generator extends BlockBCore implements EntityBlock {
+public class Generator extends EntityBlockBCore {
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
 

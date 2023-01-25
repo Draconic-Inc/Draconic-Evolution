@@ -59,6 +59,9 @@ public class ServerPacketHandler implements ICustomPacketHandler.IServerPacketHa
             case DraconicNetwork.S_MODULE_CONTAINER_CLICK:
                 moduleSlotClick(sender, packet);
                 break;
+            case DraconicNetwork.S_MODULE_ENTITY_MESSAGE:
+                moduleEntityMessage(sender, packet);
+                break;
             case DraconicNetwork.S_PROPERTY_DATA:
                 propertyData(sender, packet);
                 break;
@@ -180,7 +183,19 @@ public class ServerPacketHandler implements ICustomPacketHandler.IServerPacketHa
             ModuleGrid grid = container.getGrid();
             if (grid != null) {
                 ModuleGrid.GridPos pos = grid.getCell(input.readByte(), input.readByte());
-                grid.cellClicked(pos, input.readByte(), input.readEnum(ClickType.class));
+                grid.cellClicked(pos, input.readFloat(), input.readFloat(), input.readByte(), input.readEnum(ClickType.class));
+            }
+        }
+    }
+
+    private void moduleEntityMessage(Player player, MCDataInput input) {
+        if (player.containerMenu instanceof ModuleHostContainer container) {
+            ModuleGrid grid = container.getGrid();
+            if (grid != null) {
+                ModuleGrid.GridPos pos = grid.getCell(input.readByte(), input.readByte());
+                if (pos.hasEntity()) {
+                    pos.getEntity().handleClientMessage(input);
+                }
             }
         }
     }

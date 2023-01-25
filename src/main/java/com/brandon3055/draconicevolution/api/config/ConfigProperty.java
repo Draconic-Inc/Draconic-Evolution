@@ -13,6 +13,7 @@ import net.minecraftforge.common.util.INBTSerializable;
 
 import java.util.UUID;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * Created by brandon3055 on 2/5/20.
@@ -23,7 +24,8 @@ import java.util.function.Function;
  */
 public abstract class ConfigProperty implements INBTSerializable<CompoundTag> {
     private String name;
-    private Component displayName;
+    private Supplier<Component> displayName;
+    private Supplier<Component> toolTip;
     private boolean showOnHud = true;
     private String modid = "draconicevolution";
     private UUID uniqueName = null;
@@ -34,18 +36,26 @@ public abstract class ConfigProperty implements INBTSerializable<CompoundTag> {
 
     public ConfigProperty(String name, Component displayName) {
         this.name = name;
+        this.displayName = () -> displayName;
+    }
+
+    public void setDisplayName(Supplier<Component> displayName) {
         this.displayName = displayName;
+    }
+
+    public void setToolTip(Supplier<Component> toolTip) {
+        this.toolTip = toolTip;
     }
 
     /**
      * @return the display name for this config property. e.g. Mining AOE
      */
     public Component getDisplayName() {
-        return displayName == null ? new TranslatableComponent("item_prop.draconicevolution." + name) : displayName;
+        return displayName == null ? new TranslatableComponent("item_prop.draconicevolution." + name) : displayName.get();
     }
 
     public Component getToolTip() {
-        return new TranslatableComponent("item_prop.draconicevolution." + name + ".info");
+        return toolTip == null ? new TranslatableComponent("item_prop.draconicevolution." + name + ".info") : toolTip.get();
     }
 
     /**

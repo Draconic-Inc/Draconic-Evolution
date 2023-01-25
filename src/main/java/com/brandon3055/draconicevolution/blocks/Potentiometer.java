@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.blocks;
 
 import com.brandon3055.brandonscore.blocks.BlockBCore;
+import com.brandon3055.brandonscore.blocks.EntityBlockBCore;
 import com.brandon3055.draconicevolution.blocks.tileentity.TilePotentiometer;
 import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.core.BlockPos;
@@ -27,7 +28,7 @@ import javax.annotation.Nullable;
 /**
  * Created by brandon3055 on 25/09/2016.
  */
-public class Potentiometer extends BlockBCore implements EntityBlock {
+public class Potentiometer extends EntityBlockBCore {
 
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
     protected static final VoxelShape AABB_DOWN = Shapes.box(0.0625D, 0.9375D, 0.0625D, 0.9375D, 1.0D, 0.9375D);

@@ -8,8 +8,6 @@ import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Matrix4f;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.util.Mth;
-import org.lwjgl.opengl.GL11;
 
 import java.util.Random;
 
@@ -30,7 +28,7 @@ public class RenderEnergyBolt {
 //        GLX.glMultiTexCoord2f(GLX.GL_TEXTURE1, 200, 200);
         RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
 
-        double distance = Utils.getDistanceAtoB(point1, point2);
+        double distance = Utils.getDistance(point1, point2);
         Vec3D dirVec = Vec3D.getDirectionVec(point1, point2);
         Vec3D invDir = new Vec3D(1D, 1D, 1D).subtract(dirVec);
 
@@ -115,7 +113,7 @@ public class RenderEnergyBolt {
 //        GLX.glMultiTexCoord2f(GLX.GL_TEXTURE1, 200, 200);
         RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
 
-        double distance = Utils.getDistanceAtoB(source, target);
+        double distance = Utils.getDistance(source, target);
         Vec3D dirVec = Vec3D.getDirectionVec(source, target);
         Vec3D invDir = new Vec3D(1D, 1D, 1D).subtract(dirVec);
 

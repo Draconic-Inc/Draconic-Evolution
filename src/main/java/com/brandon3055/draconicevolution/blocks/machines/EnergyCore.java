@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.blocks.machines;
 
 import com.brandon3055.brandonscore.blocks.BlockBCore;
+import com.brandon3055.brandonscore.blocks.EntityBlockBCore;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyCore;
 import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.core.BlockPos;
@@ -20,7 +21,7 @@ import net.minecraft.world.phys.BlockHitResult;
 /**
  * Created by brandon3055 on 30/3/2016.
  */
-public class EnergyCore extends BlockBCore implements EntityBlock {
+public class EnergyCore extends EntityBlockBCore {
 
     public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
 

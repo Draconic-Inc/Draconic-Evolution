@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.blocks;
 
 import com.brandon3055.brandonscore.blocks.BlockBCore;
+import com.brandon3055.brandonscore.blocks.EntityBlockBCore;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileDislocatorReceptacle;
 import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.core.BlockPos;
@@ -18,7 +19,7 @@ import javax.annotation.Nullable;
 /**
  * Created by brandon3055 on 16/07/2016.
  */
-public class DislocatorReceptacle extends BlockBCore implements EntityBlock {
+public class DislocatorReceptacle extends EntityBlockBCore {
 
     public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
     public static final BooleanProperty CAMO = BooleanProperty.create("camo");

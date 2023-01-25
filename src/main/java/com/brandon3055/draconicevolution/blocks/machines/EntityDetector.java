@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.blocks.machines;
 import javax.annotation.Nullable;
 
 import com.brandon3055.brandonscore.blocks.BlockBCore;
+import com.brandon3055.brandonscore.blocks.EntityBlockBCore;
 import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -17,7 +18,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 /**
  * Created by brandon3055 on 25/09/2016.
  */
-public class EntityDetector extends BlockBCore implements EntityBlock {
+public class EntityDetector extends EntityBlockBCore {
     public EntityDetector(Properties properties, boolean advanced) {
         super(properties);
         this.canProvidePower = true;

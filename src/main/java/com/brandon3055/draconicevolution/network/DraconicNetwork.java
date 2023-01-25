@@ -45,6 +45,7 @@ public class DraconicNetwork {
     public static final int S_DISLOCATOR_MESSAGE =      9;
     public static final int S_JEI_FUSION_TRANSFER =     10;
     public static final int S_PLACE_ITEM =              11;
+    public static final int S_MODULE_ENTITY_MESSAGE =   12;
 
     //Server to client
     public static final int C_CRYSTAL_UPDATE =          1;
@@ -84,12 +85,22 @@ public class DraconicNetwork {
         packet.sendToServer();
     }
 
-    public static void sendModuleContainerClick(ModuleGrid.GridPos cell, int mouseButton, ClickType type) {
+    public static void sendModuleContainerClick(ModuleGrid.GridPos cell, float mouseX, float mouseY, int mouseButton, ClickType type) {
         PacketCustom packet = new PacketCustom(CHANNEL, S_MODULE_CONTAINER_CLICK);
         packet.writeByte(cell.getGridX());
         packet.writeByte(cell.getGridY());
+        packet.writeFloat(mouseX);
+        packet.writeFloat(mouseY);
         packet.writeByte(mouseButton);
         packet.writeEnum(type);
+        packet.sendToServer();
+    }
+
+    public static void sendModuleMessage(int gridX, int gridY, Consumer<MCDataOutput> dataConsumer) {
+        PacketCustom packet = new PacketCustom(CHANNEL, S_MODULE_ENTITY_MESSAGE);
+        packet.writeByte(gridX);
+        packet.writeByte(gridY);
+        dataConsumer.accept(packet);
         packet.sendToServer();
     }
 

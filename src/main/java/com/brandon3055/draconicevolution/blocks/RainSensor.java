@@ -5,6 +5,7 @@ import java.util.Random;
 import javax.annotation.Nullable;
 
 import com.brandon3055.brandonscore.blocks.BlockBCore;
+import com.brandon3055.brandonscore.blocks.EntityBlockBCore;
 import com.brandon3055.draconicevolution.init.DEContent;
 
 import net.minecraft.core.BlockPos;
@@ -27,8 +28,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 /**
  * Created by brandon3055 on 25/09/2016.
  */
-public class
-RainSensor extends BlockBCore implements EntityBlock {
+public class RainSensor extends EntityBlockBCore {
 
     protected static final VoxelShape SHAPE = Block.box(0.0D, 0.0D, 0.0D, 16.0, 1.0, 16.0);
     public static final BooleanProperty ACTIVE = BooleanProperty.create("active");

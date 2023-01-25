@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.blocks;
 
 import com.brandon3055.brandonscore.blocks.BlockBCore;
+import com.brandon3055.brandonscore.blocks.EntityBlockBCore;
 import com.brandon3055.brandonscore.utils.ItemNBTHelper;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.blocks.tileentity.chest.TileDraconiumChest;
@@ -39,7 +40,7 @@ import java.util.List;
 /**
  * Created by brandon3055 on 25/09/2016.
  */
-public class DraconiumChest extends BlockBCore implements EntityBlock {
+public class DraconiumChest extends EntityBlockBCore {
 
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 

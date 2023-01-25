@@ -1,7 +1,9 @@
 package com.brandon3055.draconicevolution.api.modules.entities;
 
+import codechicken.lib.render.buffer.TransformingVertexConsumer;
 import com.brandon3055.brandonscore.api.power.IOPStorageModifiable;
 import com.brandon3055.brandonscore.api.render.GuiHelper;
+import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
 import com.brandon3055.brandonscore.client.render.RenderUtils;
 import com.brandon3055.brandonscore.client.utils.GuiHelperOld;
 import com.brandon3055.brandonscore.utils.MathUtils;
@@ -158,28 +160,29 @@ public class UndyingEntity extends ModuleEntity<UndyingData> {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void renderSlotOverlay(MultiBufferSource getter, Minecraft mc, int x, int y, int width, int height, double mouseX, double mouseY, boolean mouseOver, float partialTicks) {
+    public void renderModule(GuiElement<?> parent, MultiBufferSource getter, PoseStack poseStack, int x, int y, int width, int height, double mouseX, double mouseY, boolean renderStack, float partialTicks) {
+        super.renderModule(parent, getter, poseStack, x, y, width, height, mouseX, mouseY, renderStack, partialTicks);
+
         UndyingData data = module.getData();
         if (charge >= data.getChargeTime()) return;
         double diameter = Math.min(width, height) * 0.425;
         double progress = charge / Math.max(1D, data.getChargeTime());
-        PoseStack mStack = new PoseStack();
 
-        GuiHelper.drawRect(getter, mStack, x, y, width, height, 0x20FF0000);
-        VertexConsumer builder = getter.getBuffer(GuiHelperOld.FAN_TYPE);
-        builder.vertex(x + (width / 2D), y + (height / 2D), 0).color(0, 255, 255, 64).endVertex();
+        GuiHelper.drawRect(getter, poseStack, x, y, width, height, 0x60FF0000);
+        VertexConsumer builder = new TransformingVertexConsumer(getter.getBuffer(GuiHelperOld.FAN_TYPE), poseStack);
+        builder.vertex(x + (width / 2D), y + (height / 2D), 0).color(0, 255, 255, 128).endVertex();
         for (double d = 0; d <= 1; d += 1D / 30D) {
             double angle = (d * progress) + 0.5 - progress;
             double vertX = x + (width / 2D) + Math.sin(angle * (Math.PI * 2)) * diameter;
             double vertY = y + (height / 2D) + Math.cos(angle * (Math.PI * 2)) * diameter;
-            builder.vertex(vertX, vertY, 0).color(255, 255, 255, 64).endVertex();
+            builder.vertex(vertX, vertY, 0).color(255, 255, 255, 128).endVertex();
         }
         RenderUtils.endBatch(getter);
 
         String pText = (int) (progress * 100) + "%";
         String tText = ((data.getChargeTime() - charge) / 20) + "s";
-        drawBackgroundString(getter, mStack, mc.font, pText, x + width / 2F, y + height / 2F - 8, 0, 0x4000FF00, 1, false, true);
-        drawBackgroundString(getter, mStack, mc.font, tText, x + width / 2F, y + height / 2F + 1, 0, 0x4000FF00, 1, false, true);
+        drawBackgroundString(getter, poseStack, Minecraft.getInstance().font, pText, x + width / 2F, y + height / 2F - 8, 0, 0x8000FF00, 1, false, true);
+        drawBackgroundString(getter, poseStack, Minecraft.getInstance().font, tText, x + width / 2F, y + height / 2F + 1, 0, 0x8000FF00, 1, false, true);
     }
 
     @OnlyIn(Dist.CLIENT)

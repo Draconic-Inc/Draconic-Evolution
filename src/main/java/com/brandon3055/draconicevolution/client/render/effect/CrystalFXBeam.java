@@ -91,7 +91,7 @@ public class CrystalFXBeam<T extends BlockEntity & IENetEffectTile> extends Crys
         planeB.multiply(scale);
         planeC.multiply(scale);
         planeD.multiply(scale);
-        float dist = 0.2F * (float) Utils.getDistanceAtoB(new Vec3D(source), new Vec3D(target));
+        float dist = 0.2F * (float) Utils.getDistance(new Vec3D(source), new Vec3D(target));
         float anim = (ClientEventHandler.elapsedTicks + partialTicks) / -15F;
         float red = 1F;
         float green = tile.getTier() == 1 ? 0.3F : 1F;

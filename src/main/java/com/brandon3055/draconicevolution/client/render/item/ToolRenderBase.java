@@ -9,9 +9,10 @@ import codechicken.lib.util.TransformUtils;
 import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Vector3;
 import com.brandon3055.brandonscore.api.TechLevel;
+import com.brandon3055.brandonscore.client.shader.BCShaders;
 import com.brandon3055.draconicevolution.client.DEShaders;
-import com.brandon3055.draconicevolution.client.shader.ChaosEntityShader;
-import com.brandon3055.draconicevolution.client.shader.DEShader;
+import com.brandon3055.brandonscore.client.shader.ChaosEntityShader;
+import com.brandon3055.brandonscore.client.shader.BCShader;
 import com.brandon3055.draconicevolution.client.shader.ToolShader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -91,7 +92,7 @@ public abstract class ToolRenderBase implements IItemRenderer {
             { 0.75F, 0.05F, 0.05F, 0.2F }
     };
 
-    public static void glUniformBaseColor(DEShader<?> shader, TechLevel techLevel, float pulse) {
+    public static void glUniformBaseColor(BCShader<?> shader, TechLevel techLevel, float pulse) {
         if (!(shader instanceof ToolShader toolShader) || !toolShader.hasBaseColorUniform()) return;
         float[] baseColour = baseColours[techLevel.index];
         float r = baseColour[0];
@@ -135,13 +136,13 @@ public abstract class ToolRenderBase implements IItemRenderer {
         if (techLevel != TechLevel.CHAOTIC) return basePart(model);
 
         RenderType chaoticType = RenderType.create(MODID + ":tool_chaos", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.TRIANGLES, 256, RenderType.CompositeState.builder()
-                .setShaderState(new RenderStateShard.ShaderStateShard(DEShaders.CHAOS_ENTITY_SHADER::getShaderInstance))
+                .setShaderState(new RenderStateShard.ShaderStateShard(BCShaders.CHAOS_ENTITY_SHADER::getShaderInstance))
                 .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(MODID, "textures/item/equipment/chaos_shader.png"), true, false))
                 .setLightmapState(RenderStateShard.LIGHTMAP)
                 .setOverlayState(RenderStateShard.OVERLAY)
                 .createCompositeState(false)
         );
-        return new ChaoticToolPart(model, chaoticType, DEShaders.CHAOS_ENTITY_SHADER);
+        return new ChaoticToolPart(model, chaoticType, BCShaders.CHAOS_ENTITY_SHADER);
     }
 
     protected ToolPart gemPart(CCModel model) {
@@ -186,9 +187,9 @@ public abstract class ToolRenderBase implements IItemRenderer {
 
     protected abstract static class ToolPart {
 
-        protected final DEShader<?> shader;
+        protected final BCShader<?> shader;
 
-        protected ToolPart(DEShader<?> shader) {
+        protected ToolPart(BCShader<?> shader) {
             this.shader = shader;
         }
 
@@ -204,7 +205,7 @@ public abstract class ToolRenderBase implements IItemRenderer {
         private final VBORenderType vboType;
         private final VBORenderType guiVboType;
 
-        public BaseToolPart(CCModel model, RenderType type, RenderType guiType, DEShader<?> shader) {
+        public BaseToolPart(CCModel model, RenderType type, RenderType guiType, BCShader<?> shader) {
             super(shader);
             vboType = new VBORenderType(type, (format, builder) -> {
                 CCRenderState ccrs = CCRenderState.instance();
@@ -234,7 +235,7 @@ public abstract class ToolRenderBase implements IItemRenderer {
 
         protected final VBORenderType vboType;
 
-        public SimpleToolPart(CCModel model, RenderType baseType, DEShader<?> shader) {
+        public SimpleToolPart(CCModel model, RenderType baseType, BCShader<?> shader) {
             super(shader);
             vboType = new VBORenderType(baseType, (format, builder) -> {
                 CCRenderState ccrs = CCRenderState.instance();

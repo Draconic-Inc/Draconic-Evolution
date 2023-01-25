@@ -142,7 +142,8 @@ public class ModularChestpiece extends ArmorItem implements IModularArmor, IDEEq
     @Override
     @OnlyIn(Dist.CLIENT)
     public EquippedItemModel getExtendedModel(LivingEntity entity, ItemStack stack, @Nullable EquipmentSlot slot, HumanoidModel<?> parentModel, boolean slim) {
-        boolean onArmor = slot == null && !entity.getItemBySlot(EquipmentSlot.CHEST).isEmpty();
+        ItemStack chest = entity.getItemBySlot(EquipmentSlot.CHEST);
+        boolean onArmor = slot == null && !chest.isEmpty() && chest.getItem() instanceof ArmorItem;
         if (model == null || model_on_armor == null) {
             model = new ModularChestpieceModel<>(techLevel, false);
             model_on_armor = new ModularChestpieceModel<>(techLevel, true);

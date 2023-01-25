@@ -7,7 +7,11 @@ import codechicken.lib.render.model.OBJParser;
 import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Translation;
 import com.brandon3055.brandonscore.api.TechLevel;
+import com.brandon3055.brandonscore.client.model.ExtendedModelPart;
 import com.brandon3055.brandonscore.client.render.EquippedItemModel;
+import com.brandon3055.brandonscore.client.shader.BCShaders;
+import com.brandon3055.brandonscore.handlers.contributor.ContributorHandler;
+import com.brandon3055.brandonscore.handlers.contributor.ContributorProperties;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
@@ -15,7 +19,7 @@ import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
 import com.brandon3055.draconicevolution.api.modules.entities.ShieldControlEntity;
 import com.brandon3055.draconicevolution.client.DEShaders;
 import com.brandon3055.draconicevolution.client.render.item.ToolRenderBase;
-import com.brandon3055.draconicevolution.client.shader.DEShader;
+import com.brandon3055.brandonscore.client.shader.BCShader;
 import com.brandon3055.draconicevolution.client.shader.ShieldShader;
 import com.brandon3055.draconicevolution.client.shader.ToolShader;
 import com.google.common.collect.ImmutableList;
@@ -31,6 +35,7 @@ import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.LazyOptional;
 
@@ -79,7 +84,7 @@ public class ModularChestpieceModel<T extends LivingEntity> extends HumanoidMode
         );
 
         RenderType chaoticType = RenderType.create(MODID + ":tool_chaos", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.TRIANGLES, 256, RenderType.CompositeState.builder()
-                .setShaderState(new RenderStateShard.ShaderStateShard(DEShaders.CHAOS_ENTITY_SHADER::getShaderInstance))
+                .setShaderState(new RenderStateShard.ShaderStateShard(BCShaders.CHAOS_ENTITY_SHADER::getShaderInstance))
                 .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(MODID, "textures/item/equipment/chaos_shader.png"), true, false))
                 .setLightmapState(RenderStateShard.LIGHTMAP)
                 .setOverlayState(RenderStateShard.OVERLAY)
@@ -116,7 +121,7 @@ public class ModularChestpieceModel<T extends LivingEntity> extends HumanoidMode
             body.addChild(new ChestpieceModelPart(baseModel, baseType, DEShaders.TOOL_BASE_SHADER));
         }
         if (techLevel == TechLevel.CHAOTIC) {
-            body.addChild(new ChestpieceModelPart(materialModel, chaoticType, DEShaders.CHAOS_ENTITY_SHADER));
+            body.addChild(new ChestpieceModelPart(materialModel, chaoticType, BCShaders.CHAOS_ENTITY_SHADER));
         } else {
             body.addChild(new ChestpieceModelPart(materialModel, baseType, DEShaders.TOOL_BASE_SHADER));
         }
@@ -146,7 +151,7 @@ public class ModularChestpieceModel<T extends LivingEntity> extends HumanoidMode
     }
 
     @Override
-    public void render(PoseStack poseStack, MultiBufferSource buffers, ItemStack stack, int packedLight, int packedOverlay) {
+    public void render(LivingEntity entity, PoseStack poseStack, MultiBufferSource buffers, ItemStack stack, int packedLight, int packedOverlay, float partialTicks) {
         shieldColour = 0xFFFFFFFF;
         shieldState = 0;
         LazyOptional<ModuleHost> optionalHost = stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
@@ -156,6 +161,12 @@ public class ModularChestpieceModel<T extends LivingEntity> extends HumanoidMode
             if (shieldControl != null) {
                 shieldState = shieldControl.getShieldState();
                 shieldColour = shieldControl.getShieldColour() | 0xFF000000;
+                if (entity instanceof Player player) {
+                    ContributorProperties props = ContributorHandler.getProps(player);
+                    if (props.hasShieldRGB() && props.getConfig().overrideShield()) {
+                        shieldColour = props.getConfig().getShieldColour(partialTicks);
+                    }
+                }
             }
         }
 
@@ -183,9 +194,9 @@ public class ModularChestpieceModel<T extends LivingEntity> extends HumanoidMode
 
     public class ChestpieceModelPart extends ExtendedModelPart {
         protected final VBORenderType renderType;
-        protected final DEShader<?> shader;
+        protected final BCShader<?> shader;
 
-        public ChestpieceModelPart(CCModel model, RenderType baseType, DEShader<?> shader) {
+        public ChestpieceModelPart(CCModel model, RenderType baseType, BCShader<?> shader) {
             this.shader = shader;
             renderType = new VBORenderType(baseType, (format, builder) -> {
                 CCRenderState ccrs = CCRenderState.instance();

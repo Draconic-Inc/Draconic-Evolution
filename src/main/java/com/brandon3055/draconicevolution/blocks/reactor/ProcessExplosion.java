@@ -149,7 +149,7 @@ public class ProcessExplosion implements IProcess {
         Vector3 posVecDown = new Vector3();
         for (int x = originPos.getX() - radius; x < originPos.getX() + radius; x++) {
             for (int z = originPos.getZ() - radius; z < originPos.getZ() + radius; z++) {
-                double dist = Utils.getDistanceAtoB(x, z, originPos.getX(), originPos.getZ());
+                double dist = Utils.getDistance(x, z, originPos.getX(), originPos.getZ());
                 if (dist < radius && dist >= radius - 1) {
                     posVecUp.set(x + 0.5, origin.y, z + 0.5);
                     double radialAngle = getRadialAngle(posVecUp);

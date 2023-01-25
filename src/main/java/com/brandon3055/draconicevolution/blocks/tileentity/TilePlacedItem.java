@@ -133,6 +133,13 @@ public class TilePlacedItem extends TileBCore implements IInteractTile {
 
         int index = ((SubHitBlockHitResult) hit).subHit - 1;
 
+        ItemStack held = player.getItemInHand(hand);
+        if (!held.isEmpty() && held.getItem() == DEContent.crystal_binder && getStacksInOrder().size() == 1) {
+            toolMode.invert();
+            tick();
+            return InteractionResult.SUCCESS;
+        }
+
         if (player.isShiftKeyDown()) {
             if (index >= 0 && index < rotation.length) {
                 rotation[index].inc();

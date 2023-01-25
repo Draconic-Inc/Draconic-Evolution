@@ -3,7 +3,6 @@ package com.brandon3055.draconicevolution.blocks.reactor.tileentity;
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.math.MathHelper;
 import com.brandon3055.brandonscore.BrandonsCore;
-import com.brandon3055.brandonscore.api.TimeKeeper;
 import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.handlers.ProcessHandler;
 import com.brandon3055.brandonscore.lib.Vec3D;
@@ -619,7 +618,7 @@ public class TileReactorCore extends TileBCore implements MenuProvider {
 
     private void checkPlayerCollision() {
         Player player = BrandonsCore.proxy.getClientPlayer();
-        double distance = Math.min(Utils.getDistanceAtoB(new Vec3D(player).add(0, player.getEyeHeight(), 0), Vec3D.getCenter(worldPosition)), Utils.getDistanceAtoB(new Vec3D(player), Vec3D.getCenter(worldPosition)));
+        double distance = Math.min(Utils.getDistance(new Vec3D(player).add(0, player.getEyeHeight(), 0), Vec3D.getCenter(worldPosition)), Utils.getDistance(new Vec3D(player), Vec3D.getCenter(worldPosition)));
         if (distance < (getCoreDiameter() / 2) + 0.5 && !player.isSpectator()) {
             double dMod = 1D - (distance / Math.max(0.1, (getCoreDiameter() / 2) + 0.5));
             double offsetX = player.getX() - worldPosition.getX() + 0.5;
@@ -708,7 +707,7 @@ public class TileReactorCore extends TileBCore implements MenuProvider {
             Iterable<BlockPos> inRange = BlockPos.betweenClosed(worldPosition.offset(-rad, -rad, -rad), worldPosition.offset(rad + 1, rad + 1, rad + 1));
 
             for (BlockPos p : inRange) {
-                if (p.equals(worldPosition) || Utils.getDistanceAtoB(p.getX(), p.getY(), p.getZ(), worldPosition.getX(), worldPosition.getY(), worldPosition.getZ()) - 0.5 >= rad) {
+                if (p.equals(worldPosition) || Utils.getDistance(p.getX(), p.getY(), p.getZ(), worldPosition.getX(), worldPosition.getY(), worldPosition.getZ()) - 0.5 >= rad) {
                     continue;
                 }
 

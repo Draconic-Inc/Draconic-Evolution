@@ -24,8 +24,8 @@ public class BlockTagGenerator extends BlockTagsProvider {
         tag(DETags.Blocks.STORAGE_BLOCKS_DRACONIUM_AWAKENED).add(DEContent.block_draconium_awakened);
         tag(Tags.Blocks.STORAGE_BLOCKS).add(DEContent.block_draconium, DEContent.block_draconium_awakened);
 
-        tag(DETags.Blocks.ORES_DRACONIUM).add(DEContent.ore_draconium_end, DEContent.ore_draconium_nether, DEContent.ore_draconium_overworld);
-        tag(Tags.Blocks.ORES).add(DEContent.ore_draconium_end, DEContent.ore_draconium_nether, DEContent.ore_draconium_overworld);
+        tag(DETags.Blocks.ORES_DRACONIUM).add(DEContent.ore_draconium_end, DEContent.ore_draconium_nether, DEContent.ore_draconium_overworld, DEContent.ore_draconium_deepslate);
+        tag(Tags.Blocks.ORES).add(DEContent.ore_draconium_end, DEContent.ore_draconium_nether, DEContent.ore_draconium_overworld, DEContent.ore_draconium_deepslate);
         tag(BlockTags.SOUL_FIRE_BASE_BLOCKS).add(DEContent.infused_obsidian);
 
         tag(BlockTags.MINEABLE_WITH_PICKAXE)
@@ -60,6 +60,7 @@ public class BlockTagGenerator extends BlockTagsProvider {
                 .add(DEContent.rain_sensor)
                 .add(DEContent.dislocation_inhibitor)
                 .add(DEContent.ore_draconium_overworld)
+                .add(DEContent.ore_draconium_deepslate)
                 .add(DEContent.ore_draconium_nether)
                 .add(DEContent.ore_draconium_end)
                 .add(DEContent.block_draconium)

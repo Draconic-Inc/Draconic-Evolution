@@ -46,7 +46,7 @@ public class ProcessChaosImplosion implements IProcess {
 
         for (int x = xCoord - size; x < xCoord + size; x++) {
             for (int z = zCoord - size; z < zCoord + size; z++) {
-                double dist = Utils.getDistanceAtoB(x, z, xCoord, zCoord);
+                double dist = Utils.getDistance(x, z, xCoord, zCoord);
                 if (dist < OD && dist >= ID) {
                     float tracePower = power - (float) (expansion / 10D);
                     tracePower *= 1F + ((random.nextFloat() - 0.5F) * 0.2);

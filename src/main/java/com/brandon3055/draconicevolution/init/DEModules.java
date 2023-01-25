@@ -1,9 +1,7 @@
 package com.brandon3055.draconicevolution.init;
 
-import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.client.utils.CyclingItemGroup;
-import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
 import com.brandon3055.draconicevolution.api.modules.data.*;
@@ -26,7 +24,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import static com.brandon3055.brandonscore.api.TechLevel.*;
 import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
+import static com.brandon3055.draconicevolution.api.modules.ModuleTypes.*;
 
 /**
  * Created by brandon3055 on 18/4/20.
@@ -35,9 +35,9 @@ import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
 @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 @ObjectHolder(MODID)
 public class DEModules {
-    private static transient ArrayList<ResourceLocation> ITEM_REGISTRY_ORDER = new ArrayList<>();
+    private static final transient ArrayList<ResourceLocation> ITEM_REGISTRY_ORDER = new ArrayList<>();
     public static transient Map<BaseModule<?>, Item> moduleItemMap = new LinkedHashMap<>();
-    private static transient CyclingItemGroup moduleGroup = new CyclingItemGroup("draconicevolution.modules", 20, () -> moduleItemMap.values().toArray(new Item[0]), ITEM_REGISTRY_ORDER);
+    private static final transient CyclingItemGroup moduleGroup = new CyclingItemGroup("draconicevolution.modules", 20, () -> moduleItemMap.values().toArray(new Item[0]), ITEM_REGISTRY_ORDER);
     public static IForgeRegistry<Module<?>> MODULE_REGISTRY;
 
     //@formatter:off
@@ -45,6 +45,10 @@ public class DEModules {
     @ObjectHolder("wyvern_energy")                  public static Module<EnergyData>        wyvernEnergy;
     @ObjectHolder("draconic_energy")                public static Module<EnergyData>        draconicEnergy;
     @ObjectHolder("chaotic_energy")                 public static Module<EnergyData>        chaoticEnergy;
+
+    @ObjectHolder("wyvern_energy_link")             public static Module<EnergyLinkData>    wyvernEnergyLink;
+    @ObjectHolder("draconic_energy_link")           public static Module<EnergyLinkData>    draconicEnergyLink;
+    @ObjectHolder("chaotic_energy_link")            public static Module<EnergyLinkData>    chaoticEnergyLink;
 
     @ObjectHolder("draconium_speed")                public static Module<SpeedData>         draconiumSpeed;
     @ObjectHolder("wyvern_speed")                   public static Module<SpeedData>         wyvernSpeed;
@@ -64,6 +68,9 @@ public class DEModules {
     @ObjectHolder("wyvern_mining_stability")        public static Module<NoData>            wyvernMiningStability;
 
     @ObjectHolder("wyvern_junk_filter")             public static Module<NoData>            wyvernJunkFilter;
+
+    @ObjectHolder("wyvern_item_translocation")      public static Module<NoData>            wyvernItemTranslocation;
+    @ObjectHolder("draconic_item_translocation")    public static Module<NoData>            draconicItemTranslocation;
 
     @ObjectHolder("wyvern_auto_fire")               public static Module<NoData>            wyvernAutoFire;
 
@@ -112,6 +119,8 @@ public class DEModules {
     @ObjectHolder("draconic_shield_recovery")       public static Module<ShieldData>        draconicShieldRecovery;
     @ObjectHolder("chaotic_shield_recovery")        public static Module<ShieldData>        chaoticShieldRecovery;
 
+    @ObjectHolder("wyvern_cloaking")                public static Module<NoData>            wyvernCloaking;
+
     @ObjectHolder("wyvern_flight")                  public static Module<FlightData>        wyvernFlight;
     @ObjectHolder("draconic_flight")                public static Module<FlightData>        draconicFlight;
     @ObjectHolder("chaotic_flight")                 public static Module<FlightData>        chaoticFlight;
@@ -143,55 +152,66 @@ public class DEModules {
         //@formatter:off
 
         //Energy
-        register(new ModuleImpl<>(ModuleTypes.ENERGY_STORAGE,       TechLevel.DRACONIUM,      energyData(1000000,  16000)),   new EnergyModuleItem(props), "draconium_energy");
-        register(new ModuleImpl<>(ModuleTypes.ENERGY_STORAGE,       TechLevel.WYVERN,         energyData(4000000,  64000)),   new EnergyModuleItem(props), "wyvern_energy");
-        register(new ModuleImpl<>(ModuleTypes.ENERGY_STORAGE,       TechLevel.DRACONIC,       energyData(16000000, 256000)),  new EnergyModuleItem(props), "draconic_energy");
-        register(new ModuleImpl<>(ModuleTypes.ENERGY_STORAGE,       TechLevel.CHAOTIC,        energyData(64000000, 1024000)), new EnergyModuleItem(props), "chaotic_energy");
+        register(new ModuleImpl<>(ENERGY_STORAGE,       DRACONIUM,      energyData(1000000,  16000)),   new EnergyModuleItem(props), "draconium_energy");
+        register(new ModuleImpl<>(ENERGY_STORAGE,       WYVERN,         energyData(4000000,  64000)),   new EnergyModuleItem(props), "wyvern_energy");
+        register(new ModuleImpl<>(ENERGY_STORAGE,       DRACONIC,       energyData(16000000, 256000)),  new EnergyModuleItem(props), "draconic_energy");
+        register(new ModuleImpl<>(ENERGY_STORAGE,       CHAOTIC,        energyData(64000000, 1024000)), new EnergyModuleItem(props), "chaotic_energy");
+
+        register(new ModuleImpl<>(ENERGY_LINK,          WYVERN,         e -> new EnergyLinkData()),                 "wyvern_energy_link");
+        register(new ModuleImpl<>(ENERGY_LINK,          DRACONIC,       e -> new EnergyLinkData()),                 "draconic_energy_link");
+        register(new ModuleImpl<>(ENERGY_LINK,          CHAOTIC,        e -> new EnergyLinkData()),                 "chaotic_energy_link");
 
         //Tools
-        register(new ModuleImpl<>(ModuleTypes.SPEED,                TechLevel.DRACONIUM,      speedData(0.10)),                           "draconium_speed");
-        register(new ModuleImpl<>(ModuleTypes.SPEED,                TechLevel.WYVERN,         speedData(0.25)),                           "wyvern_speed");
-        register(new ModuleImpl<>(ModuleTypes.SPEED,                TechLevel.DRACONIC,       speedData(0.50)),                           "draconic_speed");
-        register(new ModuleImpl<>(ModuleTypes.SPEED,                TechLevel.CHAOTIC,        speedData(1.50)),                           "chaotic_speed");
+        register(new ModuleImpl<>(SPEED,                DRACONIUM,      speedData(0.10)),                           "draconium_speed");
+        register(new ModuleImpl<>(SPEED,                WYVERN,         speedData(0.25)),                           "wyvern_speed");
+        register(new ModuleImpl<>(SPEED,                DRACONIC,       speedData(0.50)),                           "draconic_speed");
+        register(new ModuleImpl<>(SPEED,                CHAOTIC,        speedData(1.50)),                           "chaotic_speed");
 
-        register(new ModuleImpl<>(ModuleTypes.DAMAGE,               TechLevel.DRACONIUM,      damageData(2)),                             "draconium_damage");
-        register(new ModuleImpl<>(ModuleTypes.DAMAGE,               TechLevel.WYVERN,         damageData(4)),                             "wyvern_damage");
-        register(new ModuleImpl<>(ModuleTypes.DAMAGE,               TechLevel.DRACONIC,       damageData(8)),                             "draconic_damage");
-        register(new ModuleImpl<>(ModuleTypes.DAMAGE,               TechLevel.CHAOTIC,        damageData(16)),                            "chaotic_damage");
+        register(new ModuleImpl<>(DAMAGE,               DRACONIUM,      damageData(2)),                             "draconium_damage");
+        register(new ModuleImpl<>(DAMAGE,               WYVERN,         damageData(4)),                             "wyvern_damage");
+        register(new ModuleImpl<>(DAMAGE,               DRACONIC,       damageData(8)),                             "draconic_damage");
+        register(new ModuleImpl<>(DAMAGE,               CHAOTIC,        damageData(16)),                            "chaotic_damage");
 
-        register(new ModuleImpl<>(ModuleTypes.AOE,                  TechLevel.DRACONIUM,      aoeData(1)),                                "draconium_aoe");
-        register(new ModuleImpl<>(ModuleTypes.AOE,                  TechLevel.WYVERN,         aoeData(2)),                                "wyvern_aoe");
-        register(new ModuleImpl<>(ModuleTypes.AOE,                  TechLevel.DRACONIC,       aoeData(3)),                                "draconic_aoe");
-        register(new ModuleImpl<>(ModuleTypes.AOE,                  TechLevel.CHAOTIC,        aoeData(5)),                                "chaotic_aoe");
+        register(new ModuleImpl<>(AOE,                  DRACONIUM,      aoeData(1)),                                "draconium_aoe");
+        register(new ModuleImpl<>(AOE,                  WYVERN,         aoeData(2)),                                "wyvern_aoe");
+        register(new ModuleImpl<>(AOE,                  DRACONIC,       aoeData(3)),                                "draconic_aoe");
+        register(new ModuleImpl<>(AOE,                  CHAOTIC,        aoeData(5)),                                "chaotic_aoe");
 
-//        register(new ModuleImpl<>(MINING_STABILITY,     WYVERN,         noData()),                                  "wyvern_mining_stability");
+        register(new ModuleImpl<>(MINING_STABILITY,     WYVERN,         noData()),                                  "wyvern_mining_stability");
 
-//        register(new ModuleImpl<>(JUNK_FILTER,          WYVERN,         noData()),                                  "wyvern_junk_filter");
+        register(new ModuleImpl<>(TREE_HARVEST,         WYVERN,         noData()),                                  "wyvern_tree_harvest");
+        register(new ModuleImpl<>(TREE_HARVEST,         DRACONIC,       noData()),                                  "draconic_tree_harvest");
+        register(new ModuleImpl<>(TREE_HARVEST,         CHAOTIC,        noData()),                                  "chaotic_tree_harvest");
+
+        register(new ModuleImpl<>(JUNK_FILTER,          WYVERN,         noData()),                                  "wyvern_junk_filter");
+
+        register(new ModuleImpl<>(ITEM_TRANSLOCATION,  WYVERN,          noData()),                                  "wyvern_item_translocation");
+        register(new ModuleImpl<>(ITEM_TRANSLOCATION,  DRACONIC,        noData()),                                  "draconic_item_translocation");
 
         //Arrow base velocity is 60 m/s
-        register(new ProjectileVelocityModule(ModuleTypes.PROJ_MODIFIER,        TechLevel.WYVERN,         projVelocityData(0.15F, 1.0F)).setMaxInstall(8),   "wyvern_proj_velocity");   // (1 + (0.15 * 8) * 60) = 132 m/s max
-        register(new ProjectileVelocityModule(ModuleTypes.PROJ_MODIFIER,        TechLevel.DRACONIC,       projVelocityData(0.35F, 0.5F)).setMaxInstall(8),   "draconic_proj_velocity"); // (1 + (0.35 * 8) * 60) = 228 m/s max
-        register(new ProjectileVelocityModule(ModuleTypes.PROJ_MODIFIER,        TechLevel.CHAOTIC,        projVelocityData(0.75F, 0.0F)).setMaxInstall(8),   "chaotic_proj_velocity");  // (1 + (0.75 * 8) * 60) = 420 m/s max
+        register(new ProjectileVelocityModule(PROJ_MODIFIER,        WYVERN,         projVelocityData(0.15F, 1.0F)).setMaxInstall(8),   "wyvern_proj_velocity");   // (1 + (0.15 * 8) * 60) = 132 m/s max
+        register(new ProjectileVelocityModule(PROJ_MODIFIER,        DRACONIC,       projVelocityData(0.35F, 0.5F)).setMaxInstall(8),   "draconic_proj_velocity"); // (1 + (0.35 * 8) * 60) = 228 m/s max
+        register(new ProjectileVelocityModule(PROJ_MODIFIER,        CHAOTIC,        projVelocityData(0.75F, 0.0F)).setMaxInstall(8),   "chaotic_proj_velocity");  // (1 + (0.75 * 8) * 60) = 420 m/s max
 
-        register(new ModuleImpl<>(ModuleTypes.PROJ_MODIFIER,        TechLevel.WYVERN,         projAccuracyData(0.125F, 2.0F), 2, 1),      "wyvern_proj_accuracy");
-        register(new ModuleImpl<>(ModuleTypes.PROJ_MODIFIER,        TechLevel.DRACONIC,       projAccuracyData(0.20F, 1.0F), 2, 1),       "draconic_proj_accuracy");
-        register(new ModuleImpl<>(ModuleTypes.PROJ_MODIFIER,        TechLevel.CHAOTIC,        projAccuracyData(0.25F, 0.0F), 2, 1),       "chaotic_proj_accuracy");
+        register(new ModuleImpl<>(PROJ_MODIFIER,        WYVERN,         projAccuracyData(0.125F, 2.0F), 2, 1),      "wyvern_proj_accuracy");
+        register(new ModuleImpl<>(PROJ_MODIFIER,        DRACONIC,       projAccuracyData(0.20F, 1.0F), 2, 1),       "draconic_proj_accuracy");
+        register(new ModuleImpl<>(PROJ_MODIFIER,        CHAOTIC,        projAccuracyData(0.25F, 0.0F), 2, 1),       "chaotic_proj_accuracy");
 
-        register(new ModuleImpl<>(ModuleTypes.PROJ_MODIFIER,        TechLevel.WYVERN,         projAntiGravData(0.20F, 2.0F), 2, 1),      "wyvern_proj_grav_comp");
-        register(new ModuleImpl<>(ModuleTypes.PROJ_MODIFIER,        TechLevel.DRACONIC,       projAntiGravData(0.25F, 1.0F), 2, 1),       "draconic_proj_grav_comp");
-        register(new ModuleImpl<>(ModuleTypes.PROJ_MODIFIER,        TechLevel.CHAOTIC,        projAntiGravData(0.50F, 0.0F), 2, 1),       "chaotic_proj_grav_comp");
+        register(new ModuleImpl<>(PROJ_MODIFIER,        WYVERN,         projAntiGravData(0.20F, 2.0F), 2, 1),      "wyvern_proj_grav_comp");
+        register(new ModuleImpl<>(PROJ_MODIFIER,        DRACONIC,       projAntiGravData(0.25F, 1.0F), 2, 1),       "draconic_proj_grav_comp");
+        register(new ModuleImpl<>(PROJ_MODIFIER,        CHAOTIC,        projAntiGravData(0.50F, 0.0F), 2, 1),       "chaotic_proj_grav_comp");
 
-        register(new ModuleImpl<>(ModuleTypes.PROJ_MODIFIER,        TechLevel.WYVERN,         projPenetrationData(0.25F, 2.0F), 2, 2),    "wyvern_proj_penetration");
-        register(new ModuleImpl<>(ModuleTypes.PROJ_MODIFIER,        TechLevel.DRACONIC,       projPenetrationData(0.50F, 1.0F), 2, 2),    "draconic_proj_penetration");
-        register(new ModuleImpl<>(ModuleTypes.PROJ_MODIFIER,        TechLevel.CHAOTIC,        projPenetrationData(0.75F, 0.0F), 2, 2),    "chaotic_proj_penetration");
+        register(new ModuleImpl<>(PROJ_MODIFIER,        WYVERN,         projPenetrationData(0.25F, 2.0F), 2, 2),    "wyvern_proj_penetration");
+        register(new ModuleImpl<>(PROJ_MODIFIER,        DRACONIC,       projPenetrationData(0.50F, 1.0F), 2, 2),    "draconic_proj_penetration");
+        register(new ModuleImpl<>(PROJ_MODIFIER,        CHAOTIC,        projPenetrationData(0.75F, 0.0F), 2, 2),    "chaotic_proj_penetration");
 
-        register(new ModuleImpl<>(ModuleTypes.PROJ_MODIFIER,        TechLevel.WYVERN,         projDamageData(0.25F, 2.0F)),               "wyvern_proj_damage");
-        register(new ModuleImpl<>(ModuleTypes.PROJ_MODIFIER,        TechLevel.DRACONIC,       projDamageData(0.50F, 1.0F)),               "draconic_proj_damage");
-        register(new ModuleImpl<>(ModuleTypes.PROJ_MODIFIER,        TechLevel.CHAOTIC,        projDamageData(0.75F, 0.0F)),               "chaotic_proj_damage");
+        register(new ModuleImpl<>(PROJ_MODIFIER,        WYVERN,         projDamageData(0.25F, 2.0F)),               "wyvern_proj_damage");
+        register(new ModuleImpl<>(PROJ_MODIFIER,        DRACONIC,       projDamageData(0.50F, 1.0F)),               "draconic_proj_damage");
+        register(new ModuleImpl<>(PROJ_MODIFIER,        CHAOTIC,        projDamageData(0.75F, 0.0F)),               "chaotic_proj_damage");
 
-        register(new ModuleImpl<>(ModuleTypes.AUTO_FIRE,            TechLevel.WYVERN,         noData()), "wyvern_auto_fire");
+        register(new ModuleImpl<>(AUTO_FIRE,            WYVERN,         noData()), "wyvern_auto_fire");
 
-        register(new ModuleImpl<>(ModuleTypes.PROJ_ANTI_IMMUNE,     TechLevel.DRACONIC,       noData()), "draconic_proj_anti_immune");
+        register(new ModuleImpl<>(PROJ_ANTI_IMMUNE,     DRACONIC,       noData()), "draconic_proj_anti_immune");
 
 //        register(new ModuleImpl<>(DAMAGE_MOD,           DRACONIC,       dmgModData(new FireDmgMod())),      "draconic_fire_mod");
 //        register(new ModuleImpl<>(DAMAGE_MOD,           CHAOTIC,        dmgModData(new FireDmgMod())),      "chaotic_fire_mod");
@@ -203,43 +223,44 @@ public class DEModules {
 //        register(new ModuleImpl<>(DAMAGE_MOD,           CHAOTIC,        dmgModData(new IceDmgMod())),       "chaotic_ice_mod");
 
         //Armor
-        register(new ModuleImpl<>(ModuleTypes.SHIELD_CONTROLLER,    TechLevel.WYVERN,         shieldControl(20.0)),                       "wyvern_shield_control");
-        register(new ModuleImpl<>(ModuleTypes.SHIELD_CONTROLLER,    TechLevel.DRACONIC,       shieldControl(10.0)),                       "draconic_shield_control");
-        register(new ModuleImpl<>(ModuleTypes.SHIELD_CONTROLLER,    TechLevel.CHAOTIC,        shieldControl(5.0)),                        "chaotic_shield_control");
+        register(new ModuleImpl<>(SHIELD_CONTROLLER,    WYVERN,         shieldControl(20.0)),                       "wyvern_shield_control");
+        register(new ModuleImpl<>(SHIELD_CONTROLLER,    DRACONIC,       shieldControl(10.0)),                       "draconic_shield_control");
+        register(new ModuleImpl<>(SHIELD_CONTROLLER,    CHAOTIC,        shieldControl(5.0)),                        "chaotic_shield_control");
 
-        register(new ModuleImpl<>(ModuleTypes.SHIELD_BOOST,         TechLevel.WYVERN,         shieldData(25,  0.1)),                      "wyvern_shield_capacity");
-        register(new ModuleImpl<>(ModuleTypes.SHIELD_BOOST,         TechLevel.DRACONIC,       shieldData(50,  0.25)),                     "draconic_shield_capacity");
-        register(new ModuleImpl<>(ModuleTypes.SHIELD_BOOST,         TechLevel.CHAOTIC,        shieldData(100, 0.5)),                      "chaotic_shield_capacity");
-        register(new ModuleImpl<>(ModuleTypes.SHIELD_BOOST,         TechLevel.WYVERN,         shieldData(25*5,  0.0D), 2, 2),             "wyvern_large_shield_capacity");
-        register(new ModuleImpl<>(ModuleTypes.SHIELD_BOOST,         TechLevel.DRACONIC,       shieldData(50*5,  0.0D), 2, 2),             "draconic_large_shield_capacity");
-        register(new ModuleImpl<>(ModuleTypes.SHIELD_BOOST,         TechLevel.CHAOTIC,        shieldData(100*5, 0.0D), 2, 2),             "chaotic_large_shield_capacity");
-        register(new ModuleImpl<>(ModuleTypes.SHIELD_BOOST,         TechLevel.WYVERN,         shieldData(5,   1.0)),                      "wyvern_shield_recovery");
-        register(new ModuleImpl<>(ModuleTypes.SHIELD_BOOST,         TechLevel.DRACONIC,       shieldData(10,  2.5)),                      "draconic_shield_recovery");
-        register(new ModuleImpl<>(ModuleTypes.SHIELD_BOOST,         TechLevel.CHAOTIC,        shieldData(20,  5.0)),                      "chaotic_shield_recovery");
+        register(new ModuleImpl<>(SHIELD_BOOST,         WYVERN,         shieldData(25,  0.1)),                      "wyvern_shield_capacity");
+        register(new ModuleImpl<>(SHIELD_BOOST,         DRACONIC,       shieldData(50,  0.25)),                     "draconic_shield_capacity");
+        register(new ModuleImpl<>(SHIELD_BOOST,         CHAOTIC,        shieldData(100, 0.5)),                      "chaotic_shield_capacity");
+        register(new ModuleImpl<>(SHIELD_BOOST,         WYVERN,         shieldData(25*5,  0.0D), 2, 2),             "wyvern_large_shield_capacity");
+        register(new ModuleImpl<>(SHIELD_BOOST,         DRACONIC,       shieldData(50*5,  0.0D), 2, 2),             "draconic_large_shield_capacity");
+        register(new ModuleImpl<>(SHIELD_BOOST,         CHAOTIC,        shieldData(100*5, 0.0D), 2, 2),             "chaotic_large_shield_capacity");
+        register(new ModuleImpl<>(SHIELD_BOOST,         WYVERN,         shieldData(5,   1.0)),                      "wyvern_shield_recovery");
+        register(new ModuleImpl<>(SHIELD_BOOST,         DRACONIC,       shieldData(10,  2.5)),                      "draconic_shield_recovery");
+        register(new ModuleImpl<>(SHIELD_BOOST,         CHAOTIC,        shieldData(20,  5.0)),                      "chaotic_shield_recovery");
 
-        register(new ModuleImpl<>(ModuleTypes.FLIGHT,               TechLevel.WYVERN,         flightData(true, false, 1), 2, 2),          "wyvern_flight");
-        register(new ModuleImpl<>(ModuleTypes.FLIGHT,               TechLevel.DRACONIC,       flightData(true, true, 2)),                 "draconic_flight");
-        register(new ModuleImpl<>(ModuleTypes.FLIGHT,               TechLevel.CHAOTIC,        flightData(true, true, 3.5)),               "chaotic_flight");
+        register(new ModuleImpl<>(CLOAKING,             WYVERN,         noData()),                                  "wyvern_cloaking");
 
-        register(new ModuleImpl<>(ModuleTypes.UNDYING,              TechLevel.WYVERN,         undyingData(6F,  25F, 15*20,  4*30*20, 5000000, 2)),                       "wyvern_undying");
-        register(new ModuleImpl<>(ModuleTypes.UNDYING,              TechLevel.DRACONIC,       undyingData(12F, 50F, 30*20,  2*30*20, 10000000, 3)).setMaxInstall(2),     "draconic_undying");
-        register(new ModuleImpl<>(ModuleTypes.UNDYING,              TechLevel.CHAOTIC,        undyingData(20F, 100F,120*20, 45*20, 20000000, 3)).setMaxInstall(3),     "chaotic_undying");
+        register(new ModuleImpl<>(FLIGHT,               WYVERN,         flightData(true, false, 1), 2, 2),          "wyvern_flight");
+        register(new ModuleImpl<>(FLIGHT,               DRACONIC,       flightData(true, true, 2)),                 "draconic_flight");
+        register(new ModuleImpl<>(FLIGHT,               CHAOTIC,        flightData(true, true, 3.5)),               "chaotic_flight");
 
-        register(new ModuleImpl<>(ModuleTypes.AUTO_FEED,            TechLevel.DRACONIUM,      autoFeedData(40)),                          "draconium_auto_feed");
-        register(new ModuleImpl<>(ModuleTypes.AUTO_FEED,            TechLevel.WYVERN,         autoFeedData(150)),                         "wyvern_auto_feed");
-        register(new ModuleImpl<>(ModuleTypes.AUTO_FEED,            TechLevel.DRACONIC,       autoFeedData(400)),                         "draconic_auto_feed");
+        register(new ModuleImpl<>(UNDYING,              WYVERN,         undyingData(6F,  25F, 15*20,  4*30*20, 5000000, 2)),                       "wyvern_undying");
+        register(new ModuleImpl<>(UNDYING,              DRACONIC,       undyingData(12F, 50F, 30*20,  2*30*20, 10000000, 3)).setMaxInstall(2),     "draconic_undying");
+        register(new ModuleImpl<>(UNDYING,              CHAOTIC,        undyingData(20F, 100F,120*20, 45*20, 20000000, 3)).setMaxInstall(3),     "chaotic_undying");
 
-//        register(new ModuleImpl<>(NIGHT_VISION,         WYVERN,         noData()),                                  "wyvern_night_vision");
+        register(new ModuleImpl<>(AUTO_FEED,            DRACONIUM,      autoFeedData(40)),                          "draconium_auto_feed");
+        register(new ModuleImpl<>(AUTO_FEED,            WYVERN,         autoFeedData(150)),                         "wyvern_auto_feed");
+        register(new ModuleImpl<>(AUTO_FEED,            DRACONIC,       autoFeedData(400)),                         "draconic_auto_feed");
 
-        register(new ModuleImpl<>(ModuleTypes.HILL_STEP,            TechLevel.WYVERN,         noData()),                                  "wyvern_hill_step");
-//        register(new ModuleImpl<>(HILL_STEP,            DRACONIC,       noData()),                                  "draconic_hill_step");
+        register(new ModuleImpl<>(NIGHT_VISION,         WYVERN,         noData()),                                  "wyvern_night_vision");
 
-        register(new ModuleImpl<>(ModuleTypes.JUMP_BOOST,           TechLevel.DRACONIUM,      jumpData(0.25)),                            "draconium_jump");
-        register(new ModuleImpl<>(ModuleTypes.JUMP_BOOST,           TechLevel.WYVERN,         jumpData(0.75)),                            "wyvern_jump");
-        register(new ModuleImpl<>(ModuleTypes.JUMP_BOOST,           TechLevel.DRACONIC,       jumpData(1.25)),                            "draconic_jump");
-        register(new ModuleImpl<>(ModuleTypes.JUMP_BOOST,           TechLevel.CHAOTIC,        jumpData(4.00)),                            "chaotic_jump");
+        register(new ModuleImpl<>(HILL_STEP,            WYVERN,         noData()),                                  "wyvern_hill_step");
 
-//        register(new ModuleImpl<>(AQUA_ADAPT,           WYVERN,         noData()),                                  "wyvern_aqua_adapt");
+        register(new ModuleImpl<>(JUMP_BOOST,           DRACONIUM,      jumpData(0.25)),                            "draconium_jump");
+        register(new ModuleImpl<>(JUMP_BOOST,           WYVERN,         jumpData(0.75)),                            "wyvern_jump");
+        register(new ModuleImpl<>(JUMP_BOOST,           DRACONIC,       jumpData(1.25)),                            "draconic_jump");
+        register(new ModuleImpl<>(JUMP_BOOST,           CHAOTIC,        jumpData(4.00)),                            "chaotic_jump");
+
+        register(new ModuleImpl<>(AQUA_ADAPT,           WYVERN,         noData()),                                  "wyvern_aqua_adapt");
         //@formatter:on
     }
 

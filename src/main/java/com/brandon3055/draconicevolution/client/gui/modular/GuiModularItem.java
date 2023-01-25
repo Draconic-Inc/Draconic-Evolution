@@ -64,7 +64,12 @@ public class GuiModularItem extends ModularGuiContainer<ContainerModularItem> {
         //Custom background must be set before template is loaded.
         template.background = GuiTexture.newDynamicTexture(xSize(), ySize(), () -> BCGuiSprites.getThemed("background_dynamic"));
         template.background.onReload(guiTex -> guiTex.setPos(guiLeft(), guiTop()));
+
+        SupportedModulesIcon supportedModules = new SupportedModulesIcon(container.getModuleHost())
+                .setSize(12, 12);
+        template.dynamicButtonPrePosition(e -> e.addLast(supportedModules));
         toolkit.loadTemplate(template);
+
         template.title.setInsets(0, 14, 0, 12);
         template.addPlayerSlots(true, true, true);
         infoPanel = template.infoPanel;
@@ -90,6 +95,9 @@ public class GuiModularItem extends ModularGuiContainer<ContainerModularItem> {
         hudConfig.onReload(e -> e.setPos(itemConfig.maxXPos() + 1, itemConfig.yPos()));
         hudConfig.setHoverText(I18n.get("hud.draconicevolution.open_hud_config"));
         hudConfig.onPressed(() -> minecraft.setScreen(new HudConfigGui()));
+
+        //Need to add this last so it renders on top of everything else.
+        template.background.addChild(supportedModules);
 
         updateInfoPanel();
     }

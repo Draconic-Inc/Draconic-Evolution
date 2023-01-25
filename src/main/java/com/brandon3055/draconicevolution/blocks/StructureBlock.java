@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.blocks;
 
 import com.brandon3055.brandonscore.blocks.BlockBCore;
+import com.brandon3055.brandonscore.blocks.EntityBlockBCore;
 import com.brandon3055.brandonscore.multiblock.StructurePart;
 import com.brandon3055.draconicevolution.blocks.tileentity.MultiBlockController;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyCoreStabilizer;
@@ -47,7 +48,7 @@ import java.util.stream.Stream;
  * <p>
  * Created by brandon3055 on 16/08/2022
  */
-public class StructureBlock extends BlockBCore implements EntityBlock, StructurePart {
+public class StructureBlock extends EntityBlockBCore implements StructurePart {
     public static boolean buildingLock = false;
 
     public StructureBlock(Block.Properties properties) {

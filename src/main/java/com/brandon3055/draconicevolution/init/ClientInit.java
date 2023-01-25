@@ -1,8 +1,13 @@
 package com.brandon3055.draconicevolution.init;
 
 import codechicken.lib.model.ModelRegistryHelper;
+import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.api.hud.AbstractHudElement;
+import com.brandon3055.brandonscore.handlers.contributor.ContributorConfig;
+import com.brandon3055.brandonscore.handlers.contributor.ContributorHandler;
+import com.brandon3055.brandonscore.handlers.contributor.ContributorProperties;
+import com.brandon3055.brandonscore.mixin.ElytraLayerMixin;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.blocks.energynet.EnergyCrystal;
 import com.brandon3055.draconicevolution.client.*;
@@ -34,6 +39,7 @@ import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.layers.ElytraLayer;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.client.event.EntityRenderersEvent;
@@ -219,7 +225,15 @@ public class ClientInit {
             renderer.addLayer(new ElytraLayer(renderer, event.getEntityModels()) {
                 @Override
                 public boolean shouldRender(@NotNull ItemStack stack, @NotNull LivingEntity entity) {
-                    return stack.getItem() instanceof IModularArmor && stack.canElytraFly(entity);
+                    if (ContributorHandler.shouldCancelElytra(entity)) return false;
+                    if (stack.getItem() instanceof IModularArmor item) {
+                        return item.canElytraFlyBC(stack, entity);
+                    }
+                    if (BrandonsCore.equipmentManager != null) {
+                        ItemStack curio = BrandonsCore.equipmentManager.findMatchingItem(e -> e.getItem() instanceof IModularArmor, entity);
+                        return curio.getItem() instanceof IModularArmor item && item.canElytraFlyBC(curio, entity);
+                    }
+                    return false;
                 }
             });
         }

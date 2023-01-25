@@ -66,7 +66,7 @@ public class PropertyElement extends GuiElement<PropertyElement> {
         label.setYSize(10).setPos(xPos() + 10, yPos());
         label.onReload(e -> e.setMaxXPos(maxXPos() - 10, true));
         label.setHoverTextDelay(10);
-        label.setHoverText((e) -> enableToolTip.get() ? data.toolTip : Collections.emptyList());
+        label.setComponentHoverText(() -> enableToolTip.get() && data.toolTip != null ? Collections.singletonList(data.toolTip) : Collections.emptyList());
 
         valueButton = addChild(new GuiButton());
         valueButton.setYSize(10).setYPos(10).setXSizeMod(this::xSize);

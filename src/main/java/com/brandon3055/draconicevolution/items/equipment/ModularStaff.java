@@ -74,7 +74,7 @@ public class ModularStaff extends DiggerItem implements IReaperItem, IModularMin
     @Override
     public ModuleHostImpl createHost(ItemStack stack) {
         ModuleHostImpl host = new ModuleHostImpl(techLevel, ModuleCfg.staffWidth(techLevel), ModuleCfg.staffHeight(techLevel), "staff", ModuleCfg.removeInvalidModules);
-        host.addCategories(ModuleCategory.RANGED_WEAPON);
+//        host.addCategories(ModuleCategory.RANGED_WEAPON);
 //        host.addAdditionalType(ModuleTypes.DAMAGE_MOD);
         return host;
     }

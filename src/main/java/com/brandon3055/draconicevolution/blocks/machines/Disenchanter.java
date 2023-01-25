@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.blocks.machines;
 
 import com.brandon3055.brandonscore.blocks.BlockBCore;
+import com.brandon3055.brandonscore.blocks.EntityBlockBCore;
 import com.brandon3055.brandonscore.utils.FacingUtils;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.init.DEContent;
@@ -22,7 +23,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 /**
  * Created by brandon3055 on 25/09/2016.
  */
-public class Disenchanter extends BlockBCore implements EntityBlock {
+public class Disenchanter extends EntityBlockBCore {
     protected static final VoxelShape SHAPE = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 12.0D, 16.0D);
 
     public Disenchanter(Properties properties) {

@@ -65,11 +65,16 @@ public class ModuleGrid {
         this.cellSize = cellSize;
     }
 
-    public InstallResult cellClicked(GridPos pos, int button, ClickType clickType) {
+    public InstallResult cellClicked(GridPos pos, double x, double y, int button, ClickType clickType) {
         ItemStack stack = player.player.containerMenu.getCarried();
         Module<?> module = ModuleItem.getModule(stack);
         boolean holdingStack = !stack.isEmpty();
         ModuleContext context = container.getModuleContext();
+
+        ModuleEntity<?> posEntity = pos.getEntity();
+        if (posEntity != null && posEntity.moduleClicked(player.player, x, y, button, clickType)) {
+            return null;
+        }
 
         //Sanity Checks
         if ((holdingStack && module == null) || !pos.isValidCell()) {
@@ -79,7 +84,7 @@ public class ModuleGrid {
         //Really this could be pick up or drop off
         if (clickType == ClickType.PICKUP) {
             if (holdingStack) { //Try to insert module
-                ModuleEntity entity = module.createEntity();
+                ModuleEntity<?> entity = module.createEntity();
                 entity.setPos(pos.gridX, pos.gridY);
                 InstallResult result = checkInstall(entity);
                 if (result.resultType == InstallResultType.YES) {
@@ -92,7 +97,7 @@ public class ModuleGrid {
                 return result;
             }
             else if (pos.hasEntity()) { //Try to extract module
-                ModuleEntity entity = pos.getEntity();
+                ModuleEntity<?> entity = pos.getEntity();
                 ItemStack extracted = new ItemStack(entity.getModule().getItem());
                 entity.writeToItemStack(extracted, context);
                 getModuleHost().removeModule(entity, context);
@@ -102,7 +107,7 @@ public class ModuleGrid {
         }
         else if (clickType == ClickType.QUICK_MOVE) {
             if (pos.hasEntity()) { //Try to transfer module
-                ModuleEntity entity = pos.getEntity();
+                ModuleEntity<?> entity = pos.getEntity();
                 ItemStack extracted = new ItemStack(entity.getModule().getItem());
                 entity.writeToItemStack(extracted, context);
                 if (player.add(extracted)) {
@@ -112,7 +117,7 @@ public class ModuleGrid {
             }
         }
         else if (clickType == ClickType.PICKUP_ALL && module != null) {
-            for (ModuleEntity entity : ImmutableList.copyOf(getModuleHost().getModuleEntities())) {
+            for (ModuleEntity<?> entity : ImmutableList.copyOf(getModuleHost().getModuleEntities())) {
                 if (entity.module == module) {
                     ItemStack modStack = new ItemStack(module.getItem());
                     entity.writeToItemStack(modStack, context);
@@ -126,7 +131,7 @@ public class ModuleGrid {
         }
         else if (clickType == ClickType.CLONE) {
             if (player.player.getAbilities().instabuild && player.player.inventoryMenu.getCarried().isEmpty() && pos.hasEntity()) {
-                ModuleEntity entity = pos.getEntity();
+                ModuleEntity<?> entity = pos.getEntity();
                 ItemStack modStack = new ItemStack(entity.module.getItem());
                 entity.writeToItemStack(modStack, context);
                 player.player.containerMenu.setCarried(modStack);
@@ -138,7 +143,7 @@ public class ModuleGrid {
     /**
      * This will attempt to install the module entity in the first available grid cell.
      */
-    public boolean attemptInstall(ModuleEntity entity) {
+    public boolean attemptInstall(ModuleEntity<?> entity) {
         for (int y = 0; y < getHeight(); y++) {
             for (int x = 0; x < getWidth(); x++) {
                 entity.setPos(x, y);
@@ -152,7 +157,7 @@ public class ModuleGrid {
         return false;
     }
 
-    public InstallResult checkInstall(ModuleEntity entity) {
+    public InstallResult checkInstall(ModuleEntity<?> entity) {
         ModuleHost host = getModuleHost();
         if (host.getHostTechLevel().index < entity.module.getModuleTechLevel().index) {
             return new InstallResult(InstallResultType.NO, entity.module, null, new TranslatableComponent("modular_item.draconicevolution.cant_install.level_high"));
@@ -192,7 +197,7 @@ public class ModuleGrid {
         private final int gridX;
         private final int gridY;
         private final ModuleGrid grid;
-        private final ModuleEntity entity;
+        private final ModuleEntity<?> entity;
 
         GridPos(ModuleGrid grid) {
             this.grid = grid;
@@ -218,7 +223,7 @@ public class ModuleGrid {
         /**
          * @return The entity occupying this cell.
          */
-        public ModuleEntity getEntity() {
+        public ModuleEntity<?> getEntity() {
             return entity;
         }
 
@@ -255,16 +260,4 @@ public class ModuleGrid {
             return gridX != -1 && gridY != -1;
         }
     }
-
-    //    /**
-//     * Returns the {@link GridModule} occupying the specified grid position (if there is one)
-//     * @param x grid x coord
-//     * @param y grid y coord
-//     * @return the module occupying this position if there is one.
-//     */
-//    @Nullable
-//    public GridModule getModule(int x, int y) {
-//        return gridModules.parallelStream().filter(module -> module.contains(x, y)).findFirst().orElse(null);
-//    }
-
 }

@@ -19,6 +19,7 @@ import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import top.theillusivec4.curios.api.CuriosApi;
+import top.theillusivec4.curios.api.SlotResult;
 import top.theillusivec4.curios.api.SlotTypeMessage;
 import top.theillusivec4.curios.api.SlotTypePreset;
 import top.theillusivec4.curios.api.type.capability.ICurio;
@@ -61,16 +62,16 @@ public class CuriosIntegration extends EquipmentManager {
     @Override
     public ItemStack findMatchingItem(Item item, LivingEntity entity) {
         return CuriosApi.getCuriosHelper()
-                .findEquippedCurio(item, entity)
-                .map(ImmutableTriple::getRight)
+                .findFirstCurio(entity, item)
+                .map(SlotResult::stack)
                 .orElse(ItemStack.EMPTY);
     }
 
     @Override
     public ItemStack findMatchingItem(Predicate<ItemStack> predicate, LivingEntity entity) {
         return CuriosApi.getCuriosHelper()
-                .findEquippedCurio(predicate, entity)
-                .map(ImmutableTriple::getRight)
+                .findFirstCurio(entity, predicate)
+                .map(SlotResult::stack)
                 .orElse(ItemStack.EMPTY);
     }
 

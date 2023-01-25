@@ -4,7 +4,7 @@
 
 in vec4 vertexColor;
 
-uniform vec4 ColorModulator;
+//uniform vec4 ColorModulator;
 uniform vec2 ScreenPos;
 uniform vec2 ScreenSize;
 uniform float Intensity;
