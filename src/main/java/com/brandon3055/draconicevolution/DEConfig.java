@@ -67,7 +67,7 @@ public class DEConfig {
 
     public static int soulDropChance = 1000;
     public static int passiveSoulDropChance = 800;
-    public static String[] spawnerList = {};
+    public static Set<String> spawnerList = new HashSet<>();
     public static boolean spawnerListWhiteList = false;
     public static boolean allowBossSouls = false;
     public static Integer[] spawnerDelays = new Integer[]{200, 800, 100, 400, 50, 200, 25, 100};
@@ -190,9 +190,9 @@ public class DEConfig {
                     .onSync((tag, type) -> passiveSoulDropChance = tag.getInt());
             deSpawner.getValueList("spawnerList")
                     .syncTagToClient()
-                    .setComment("By default, any entities added to this list will not drop their souls and will not be spawnable by the Stabilized Spawner.")
+                    .setComment("By default, any entities added to this list will not drop their souls and will not be spawnable by the Stabilized Spawner. Use entity registry name. e.g. minecraft:cow")
                     .setDefaultStrings(Collections.emptyList())
-                    .onSync((tag, type) -> spawnerList = tag.getStrings().toArray(new String[0]));
+                    .onSync((tag, type) -> spawnerList = new HashSet<>(tag.getStrings()));
             deSpawner.getValue("spawnerListWhiteList")
                     .syncTagToClient()
                     .setComment("Changes the spawner list to a whitelist instead of a blacklist.")

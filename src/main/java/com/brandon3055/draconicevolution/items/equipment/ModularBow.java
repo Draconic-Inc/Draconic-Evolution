@@ -83,7 +83,7 @@ public class ModularBow extends BowItem implements IReaperItem, IModularItem {
 
     @Override
     public int getReaperLevel(ItemStack stack) {
-        return 0;
+        return techLevel.index;
     }
 
     @Override

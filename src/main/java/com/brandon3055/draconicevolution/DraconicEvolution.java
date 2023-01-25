@@ -5,6 +5,7 @@ import com.brandon3055.draconicevolution.api.crafting.IngredientStack;
 import com.brandon3055.draconicevolution.client.ClientProxy;
 import com.brandon3055.draconicevolution.command.DECommands;
 import com.brandon3055.draconicevolution.handlers.DEEventHandler;
+import com.brandon3055.draconicevolution.handlers.LootEventHandler;
 import com.brandon3055.draconicevolution.init.ClientInit;
 import com.brandon3055.draconicevolution.init.DETags;
 import com.brandon3055.draconicevolution.init.ModCapabilities;
@@ -25,7 +26,7 @@ import org.apache.logging.log4j.Logger;
 
 @Mod(DraconicEvolution.MODID)
 public class DraconicEvolution {
-    public static final Logger LOGGER = LogManager.getLogger("DraconicEvolution");
+    public static final Logger LOGGER = LogManager.getLogger();
     public static final String MODID = "draconicevolution";
     public static final String MODNAME = "Draconic Evolution";
 
@@ -47,6 +48,8 @@ public class DraconicEvolution {
         EquipmentManager.initialize();
         DECommands.init();
         ModCapabilities.init();
+        LootEventHandler.init();
+
 
         OptionalMod.of("computercraft").ifPresent(e -> MinecraftForge.EVENT_BUS.register(new ComputerCraftCompatEventHandler()));
         MinecraftForge.EVENT_BUS.addListener(Dislocator::onAnvilUpdate);

@@ -92,7 +92,7 @@ public class ModularAxe extends AxeItem implements IReaperItem, IModularMiningTo
 
     @Override
     public int getReaperLevel(ItemStack stack) {
-        return 0;
+        return techLevel.index;
     }
 
     @Override
