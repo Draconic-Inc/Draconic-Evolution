@@ -172,7 +172,11 @@ public class LangGenerator extends LanguageProvider {
         helper.add("jump_boost.info",                                           "Adjusts jump boost.");
         helper.add("jump_boost_run",                                            "Jump Boost - Running");
         helper.add("jump_boost_run.info",                                       "Adjusts jump boost while sprinting.");
-
+        helper.add("night_vision.enabled",                                      "Night Vision Toggle");
+        helper.add("night_vision.enabled.info",                                 "Allows you to toggle your night vision on and off. While enabled, any other source of night vision is overridden.");
+        helper.add("night_vision.light_level",                                  "Night Vision Light Level");
+        helper.add("night_vision.light_level.info",                             "Sets the light level at which the night vision will become active.  While active, it drains a small amount of OP every tick.");
+        
         helper.add("shield_mod.enabled",                                        "Shield Toggle");
         helper.add("shield_mod.enabled.info",                                   "Allows you to disable your shield. This prevents your shield from using power but leaves you vulnerable to damage.");
         helper.add("shield_mod.always_visible",                                 "Shield Always Visible");
@@ -390,7 +394,7 @@ public class LangGenerator extends LanguageProvider {
         helper.add(DEModules.wyvernAutoFeed,                                    "Wyvern Auto Feed Module");
         helper.add(DEModules.draconicAutoFeed,                                  "Draconic Auto Feed Module");
 
-//        helper.add(DEModules.wyvernNightVision,                                 "Night Vision Module");
+        helper.add(DEModules.wyvernNightVision,                                 "Night Vision Module");
 
         helper.add(DEModules.draconiumJump,                                     "Jump Module");
         helper.add(DEModules.wyvernJump,                                        "Wyvern Jump Module");
