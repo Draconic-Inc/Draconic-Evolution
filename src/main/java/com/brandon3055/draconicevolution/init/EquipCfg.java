@@ -74,6 +74,8 @@ public class EquipCfg {
 
     private static final int ENDER_MODULE_PER_ITEM_ENERGY = 32;
 
+    private static final int NIGHT_VISION_ENERGY          = 20;
+
     //Static Access values
     public static double draconiumHarvestSpeed;
     public static double wyvernHarvestSpeed;
@@ -137,6 +139,8 @@ public class EquipCfg {
     public static int bowBaseEnergy;
 
     public static int enderModulePerItemEnergy;
+
+    public static int nightVisionEnergy;
 
     //@formatter:on
 
@@ -367,6 +371,11 @@ public class EquipCfg {
                 .setComment("Energy required for the ender storage module to transfer one (single) item into storage, Internal Default Value: " + ENDER_MODULE_PER_ITEM_ENERGY)
                 .setDefaultInt(-99)
                 .onSync((tag, type) -> enderModulePerItemEnergy = tag.getInt() != -99 ? tag.getInt() : ENDER_MODULE_PER_ITEM_ENERGY);
+
+        equipTag.getValue("nightVisionEnergy")
+                .setComment("Night vision module energy consumption while operation. (OP per tick), Internal Default Value: " + NIGHT_VISION_ENERGY)
+                .setDefaultInt(-99)
+                .onSync((tag, type) -> nightVisionEnergy = tag.getInt() != -99 ? tag.getInt() : NIGHT_VISION_ENERGY);
 
         equipTag.syncTagToClient();
     }

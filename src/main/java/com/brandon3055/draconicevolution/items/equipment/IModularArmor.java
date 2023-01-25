@@ -14,6 +14,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
@@ -56,8 +57,9 @@ public interface IModularArmor extends IModularItem, ElytraEnabledItem {
     @Override
     default boolean elytraFlightTickBC(ItemStack stack, LivingEntity entity, int flightTicks) {
         LazyOptional<IOPStorage> power = stack.getCapability(DECapabilities.OP_STORAGE);
+        boolean creative = entity instanceof Player player && player.abilities.instabuild;
         power.ifPresent(storage -> {
-            if (storage.getOPStored() < 512) {
+            if (storage.getOPStored() < 512 && !creative) {
                 Vec3 motion = entity.getDeltaMovement();
                 entity.setDeltaMovement(motion.x * 0.95, motion.y > 0 ? motion.y * 0.95 : motion.y, motion.z * 0.95);
 
@@ -81,7 +83,7 @@ public interface IModularArmor extends IModularItem, ElytraEnabledItem {
                     }
                 }
 
-                if (!entity.level.isClientSide) {
+                if (!entity.level.isClientSide && !creative) {
                     ((IOPStorageModifiable) storage).modifyEnergyStored(-energy);
                 }
             }
