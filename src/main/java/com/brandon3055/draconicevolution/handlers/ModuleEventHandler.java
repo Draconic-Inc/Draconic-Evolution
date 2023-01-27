@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.handlers;
 
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
+import com.brandon3055.draconicevolution.api.modules.lib.EntityOverridesItemUse;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import net.covers1624.quack.util.CrashLock;
 import net.minecraft.world.item.ItemStack;
@@ -26,7 +27,10 @@ public class ModuleEventHandler {
         if (stack.isEmpty()) return;
         stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).ifPresent(host -> {
             for (ModuleEntity<?> entity : host.getModuleEntities()) {
-                entity.onPlayerInteractEvent(event);
+                if (entity instanceof EntityOverridesItemUse override) {
+                    override.onPlayerInteractEvent(event);
+                    return;
+                }
             }
         });
     }
@@ -36,7 +40,10 @@ public class ModuleEventHandler {
         if (stack.isEmpty()) return;
         stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).ifPresent(host -> {
             for (ModuleEntity<?> entity : host.getModuleEntities()) {
-                entity.onEntityUseItem(event);
+                if (entity instanceof EntityOverridesItemUse override) {
+                    override.onEntityUseItem(event);
+                    return;
+                }
             }
         });
     }

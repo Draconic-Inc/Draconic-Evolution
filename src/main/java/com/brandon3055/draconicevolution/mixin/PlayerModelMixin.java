@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.mixin;
 
+import com.brandon3055.draconicevolution.client.handler.ModularItemRenderOverrideHandler;
 import com.brandon3055.draconicevolution.client.render.item.RenderModularStaff;
 import net.covers1624.quack.util.SneakyUtils;
 import net.minecraft.client.model.PlayerModel;
@@ -25,5 +26,6 @@ public class PlayerModelMixin {
     )
     public void afterSetupAnim(LivingEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, CallbackInfo ci) {
         RenderModularStaff.doMixinStuff(entity, getThis());
+        ModularItemRenderOverrideHandler.modifyPlayerPose(entity, getThis());
     }
 }

@@ -20,10 +20,10 @@ public class TileModuleContext extends ModuleContext {
 
     @Override
     @Nullable
-    public IOPStorageModifiable getOpStorage() {
+    public IOPStorage getOpStorage() {
         LazyOptional<IOPStorage> optional = tile.getCapability(DECapabilities.OP_STORAGE);
         if (optional.isPresent()) {
-            return (IOPStorageModifiable) optional.orElseThrow(IllegalStateException::new);
+            return optional.orElseThrow(IllegalStateException::new);
         }
         return null;
     }

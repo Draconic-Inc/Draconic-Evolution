@@ -80,7 +80,7 @@ public interface IModularMiningTool extends IModularTieredItem {
         InventoryDynamic inventoryDynamic = new InventoryDynamic();
         float refStrength = blockStrength(blockState, player, player.level, pos);
         Pair<BlockPos, BlockPos> aoe = getMiningArea(pos, player, breakRadius, breakDepth);
-        List<BlockPos> aoeBlocks = BlockPos.betweenClosedStream(aoe.key(), aoe.value()).map(BlockPos::new).collect(Collectors.toList());
+        List<BlockPos> aoeBlocks = BlockPos.betweenClosedStream(aoe.key(), aoe.value()).map(BlockPos::new).toList();
 
         if (aoeSafe) {
             for (BlockPos block : aoeBlocks) {
@@ -111,8 +111,8 @@ public interface IModularMiningTool extends IModularTieredItem {
 
         IOPStorage storage = EnergyUtils.getStorage(stack);
         ModuleEntity<?> optionalCollector = host.getEntitiesByType(ModuleTypes.ENDER_COLLECTION).findAny().orElse(null);
-        if (optionalCollector instanceof EnderCollectionEntity collector && storage instanceof IOPStorageModifiable modifiable) {
-            List<ItemStack> remainder = collector.insertStacks(player, inventoryDynamic.getStacks(), modifiable);
+        if (optionalCollector instanceof EnderCollectionEntity collector) {
+            List<ItemStack> remainder = collector.insertStacks(player, inventoryDynamic.getStacks(), storage);
             inventoryDynamic.setStacks(new LinkedList<>(remainder));
         }
 

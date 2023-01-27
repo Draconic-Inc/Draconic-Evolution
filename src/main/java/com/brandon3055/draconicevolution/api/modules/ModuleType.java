@@ -8,6 +8,7 @@ import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.google.common.collect.Multimap;
 import net.covers1624.quack.util.SneakyUtils;
 import net.minecraft.network.chat.BaseComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -16,6 +17,7 @@ import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -38,7 +40,7 @@ public interface ModuleType<T extends ModuleData<T>> {
      * Otherwise return fail with an ITextTranslation specifying a reason that can be displayed to the player.
      */
     default InstallResult areModulesCompatible(Module<T> thisModule, Module<?> otherModule) {
-        return new InstallResult(InstallResultType.YES, thisModule, null, null);
+        return new InstallResult(InstallResultType.YES, thisModule, null, (List<Component>)null);
     }
 
     /**

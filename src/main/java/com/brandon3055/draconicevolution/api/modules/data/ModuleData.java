@@ -38,7 +38,7 @@ public interface ModuleData<D extends ModuleData<D>> {
      * @param stack True when adding information to item tool tip.
      */
     @Deprecated
-    void addInformation(Map<Component, Component> map, @Nullable ModuleContext context, boolean stack);
+    default void addInformation(Map<Component, Component> map, @Nullable ModuleContext context, boolean stack) {}
 
     /**
      * use this to supply human readable information about this data<br>

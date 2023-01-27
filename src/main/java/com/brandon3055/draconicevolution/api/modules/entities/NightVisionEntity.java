@@ -1,5 +1,6 @@
 package com.brandon3055.draconicevolution.api.modules.entities;
 
+import com.brandon3055.brandonscore.api.power.IOPStorage;
 import com.brandon3055.brandonscore.api.power.IOPStorageModifiable;
 import com.brandon3055.draconicevolution.api.config.BooleanProperty;
 import com.brandon3055.draconicevolution.api.config.ConfigProperty;
@@ -45,7 +46,7 @@ public class NightVisionEntity extends ModuleEntity<AutoFeedData> {
             return;
         }
 
-        IOPStorageModifiable opStorage = ctx.getOpStorage();
+        IOPStorage opStorage = ctx.getOpStorage();
         if (opStorage == null || opStorage.getOPStored() < EquipCfg.nightVisionEnergy * 20L) {
             if (appliedByModule && disableTimer++ >= 3) {
                 player.removeEffect(MobEffects.NIGHT_VISION);

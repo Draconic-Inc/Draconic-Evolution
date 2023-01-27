@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.api.modules.entities;
 
 import codechicken.lib.render.buffer.TransformingVertexConsumer;
+import com.brandon3055.brandonscore.api.power.IOPStorage;
 import com.brandon3055.brandonscore.api.power.IOPStorageModifiable;
 import com.brandon3055.brandonscore.api.render.GuiHelper;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
@@ -80,7 +81,7 @@ public class UndyingEntity extends ModuleEntity<UndyingData> {
             }
         }
 
-        IOPStorageModifiable storage = moduleContext.getOpStorage();
+        IOPStorage storage = moduleContext.getOpStorage();
         if (!(moduleContext instanceof StackModuleContext && EffectiveSide.get().isServer() && storage != null)) {
             return;
         }

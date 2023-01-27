@@ -3,7 +3,6 @@ package com.brandon3055.draconicevolution.items.equipment;
 import codechicken.lib.math.MathHelper;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.api.power.IOPStorage;
-import com.brandon3055.brandonscore.api.power.IOPStorageModifiable;
 import com.brandon3055.brandonscore.capability.MultiCapabilityProvider;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
@@ -223,10 +222,8 @@ public interface IModularItem extends IForgeItem, IFusionDataTransfer {
             return amount;
         }
         IOPStorage storage = EnergyUtils.getStorage(stack);
-        if (storage instanceof IOPStorageModifiable) {
-            return ((IOPStorageModifiable) storage).modifyEnergyStored(-amount);
-        } else if (storage != null) {
-            return storage.extractOP(amount, false);
+        if (storage != null) {
+            return storage.modifyEnergyStored(-amount);
         }
         return 0;
     }

@@ -4,11 +4,13 @@ import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.lib.InstallResult.InstallResultType;
 import com.google.common.collect.ImmutableList;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -173,7 +175,7 @@ public class ModuleGrid {
         }
         InstallResult result = ModuleHost.checkAddModule(host, entity.module);
         if (result.resultType == InstallResultType.YES || result.resultType == InstallResultType.OVERRIDE) {
-            return new InstallResult(InstallResultType.YES, entity.module, null, null);
+            return new InstallResult(InstallResultType.YES, entity.module, null, (List<Component>) null);
         }
         return result;
     }

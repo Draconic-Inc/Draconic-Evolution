@@ -3,7 +3,9 @@ package com.brandon3055.draconicevolution.api.modules;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.draconicevolution.api.modules.data.ModuleData;
 import com.brandon3055.draconicevolution.api.modules.data.ModuleProperties;
+import com.brandon3055.draconicevolution.api.modules.lib.EntityOverridesItemUse;
 import com.brandon3055.draconicevolution.api.modules.lib.InstallResult;
+import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Streams;
@@ -61,7 +63,7 @@ public interface Module<T extends ModuleData<T>> extends IForgeRegistryEntry<Mod
      * @return a new {@link ModuleEntity} instance for this module.
      * @see ModuleType#createEntity(Module)
      */
-    default ModuleEntity createEntity() {
+    default ModuleEntity<?> createEntity() {
         return getType().createEntity(this);
     }
 
@@ -73,6 +75,10 @@ public interface Module<T extends ModuleData<T>> extends IForgeRegistryEntry<Mod
      * Otherwise return fail with an ITextTranslation specifying a reason that can be displayed to the player.
      */
     default InstallResult areModulesCompatible(Module<?> otherModule) {
+        if (this.createEntity() instanceof EntityOverridesItemUse && otherModule.createEntity() instanceof EntityOverridesItemUse) {
+            return new InstallResult(InstallResult.InstallResultType.NO, this, otherModule, List.of(new TranslatableComponent("modular_item.draconicevolution.error.only_one_use_override_module").withStyle(ChatFormatting.RED),
+                    new TranslatableComponent("modular_item.draconicevolution.error.not_compatible_with").withStyle(ChatFormatting.GRAY).append(": ").append(new TranslatableComponent(otherModule.getItem().getDescriptionId()))));
+        }
         return getType().areModulesCompatible(this, otherModule);
     }
 
@@ -83,45 +89,45 @@ public interface Module<T extends ModuleData<T>> extends IForgeRegistryEntry<Mod
         return getType().maxInstallable();
     }
 
-    default void addInformation(List<Component> toolTip) {
-        getProperties().addStats(toolTip, this);
+    default void addInformation(List<Component> toolTip, ModuleContext context) {
+        getProperties().addStats(toolTip, this, context);
 
         if (maxInstallable() != -1) {
-            toolTip.add(new TranslatableComponent("module.draconicevolution.max_installable") //
-                    .withStyle(ChatFormatting.GRAY) //
-                    .append(": ") //
-                    .append(new TextComponent(String.valueOf(maxInstallable())) //
+            toolTip.add(new TranslatableComponent("module.draconicevolution.max_installable")
+                    .withStyle(ChatFormatting.GRAY)
+                    .append(": ")
+                    .append(new TextComponent(String.valueOf(maxInstallable()))
                             .withStyle(ChatFormatting.DARK_GREEN)));
         }
     }
 
     default InstallResult doInstallationCheck(Stream<Module<?>> moduleStream) {
-        Collection<Module<?>> view = Collections.unmodifiableList(moduleStream.collect(Collectors.toList()));
-        Optional<InstallResult> opt = view.stream()//
-                .map(other -> this.areModulesCompatible(other).getBlockingResult(other.areModulesCompatible(this)))//
-                .filter(e -> e.resultType == InstallResult.InstallResultType.NO || e.resultType == InstallResult.InstallResultType.ONLY_WHEN_OVERRIDEN)//
+        Collection<Module<?>> view = moduleStream.toList();
+        Optional<InstallResult> opt = view.stream()
+                .map(other -> this.areModulesCompatible(other).getBlockingResult(other.areModulesCompatible(this)))
+                .filter(e -> e.resultType == InstallResult.InstallResultType.NO || e.resultType == InstallResult.InstallResultType.ONLY_WHEN_OVERRIDEN)
                 .findFirst();
         if (opt.isPresent()) {
             return opt.get();
         }
 
         Iterable<Module<?>> newModules = Iterables.concat(view, Collections.singleton(this));
-        opt = Streams.stream(newModules).parallel()//
+        opt = Streams.stream(newModules).parallel()
                 .map(module -> {
                     int max = module.maxInstallable();
                     if (max == -1) {
                         return null;
                     }
-                    int installed = (int) Streams.stream(newModules)//
-                            .filter(e -> e.getType() == module.getType() && e.getModuleTechLevel().index <= module.getModuleTechLevel().index)//
+                    int installed = (int) Streams.stream(newModules)
+                            .filter(e -> e.getType() == module.getType() && e.getModuleTechLevel().index <= module.getModuleTechLevel().index)
                             .count();
                     if (installed > max) {
-                        return new InstallResult(InstallResult.InstallResultType.NO, module, null, new TranslatableComponent("modular_item.draconicevolution.error.module_install_limit"));
+                        return new InstallResult(InstallResult.InstallResultType.NO, module, null, new TranslatableComponent("modular_item.draconicevolution.error.module_install_limit").withStyle(ChatFormatting.RED));
                     }
                     return null;
-                })//
-                .filter(Objects::nonNull)//
+                })
+                .filter(Objects::nonNull)
                 .findFirst();
-        return opt.orElseGet(() -> new InstallResult(InstallResult.InstallResultType.YES, this, null, null));
+        return opt.orElseGet(() -> new InstallResult(InstallResult.InstallResultType.YES, this, null, (List<Component>)null));
     }
 }

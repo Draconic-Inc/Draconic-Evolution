@@ -3,6 +3,9 @@ package com.brandon3055.draconicevolution.api.modules.lib;
 import com.brandon3055.draconicevolution.api.modules.Module;
 import net.minecraft.network.chat.Component;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Created by covers1624 on 4/16/20.
  *
@@ -14,13 +17,17 @@ public class InstallResult {
     public final Module<?> module;
     public final Module<?> incompatibleModule;
     
-    public final Component reason;
+    public final List<Component> reason;
 
-    public InstallResult(InstallResultType resultType, Module<?> module, Module<?> incompatibleModule, Component reason) {
+    public InstallResult(InstallResultType resultType, Module<?> module, Module<?> incompatibleModule, List<Component> reason) {
         this.resultType = resultType;
         this.module = module;
         this.incompatibleModule = incompatibleModule;
         this.reason = reason;
+    }
+
+    public InstallResult(InstallResultType resultType, Module<?> module, Module<?> incompatibleModule, Component reason) {
+        this(resultType, module, incompatibleModule, Collections.singletonList(reason));
     }
 
     /**

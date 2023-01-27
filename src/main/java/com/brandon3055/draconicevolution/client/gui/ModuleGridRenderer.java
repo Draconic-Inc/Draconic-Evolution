@@ -39,7 +39,7 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> {
     private int lastClickButton;
     private boolean canDrop = false;
     private ModuleGrid.GridPos lastClickPos;
-    private Component lastError = null;
+    private List<Component> lastError = null;
     private int lastErrorTime = 0;
     public boolean renderBorder = true;
 
@@ -97,7 +97,7 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> {
         getter.endBatch();
 
         if (isMouseOver(mouseX, mouseY) && lastError != null && carrying) {
-            renderTooltip(poseStack, new TextComponent(lastError.getString()), mouseX, mouseY);
+            renderTooltip(poseStack, lastError, mouseX, mouseY);
             return true;
         }
         return super.renderOverlayLayer(minecraft, mouseX, mouseY, partialTicks);

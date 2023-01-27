@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.items.equipment;
 
 import com.brandon3055.brandonscore.api.TechLevel;
+import com.brandon3055.draconicevolution.api.modules.ModuleCategory;
 import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleHostImpl;
 import com.brandon3055.draconicevolution.init.EquipCfg;
@@ -55,7 +56,9 @@ public class ModularShovel extends ShovelItem implements IModularMiningTool {
 
     @Override
     public ModuleHostImpl createHost(ItemStack stack) {
-        return new ModuleHostImpl(techLevel, ModuleCfg.toolWidth(techLevel), ModuleCfg.toolHeight(techLevel), "shovel", ModuleCfg.removeInvalidModules);
+        ModuleHostImpl host = new ModuleHostImpl(techLevel, ModuleCfg.toolWidth(techLevel), ModuleCfg.toolHeight(techLevel), "shovel", ModuleCfg.removeInvalidModules);
+        host.addCategories(ModuleCategory.TOOL_SHOVEL);
+        return host;
     }
 
     @Nullable

@@ -83,23 +83,6 @@ public class ModuleEntity<T extends ModuleData<T>> {
     }
 
     /**
-     * Called when the player interact event is fired while the player is holding a host containing this module.
-     * For a specific event simply instanceof check for RightClickBlock, RightClickItem, RightClickEmpty, etc. Any event that extends PlayerInteractEvent.
-     * <p>
-     * Note: be sure to check if the event has already been canceled and react accordingly.
-     */
-    public void onPlayerInteractEvent(PlayerInteractEvent event) {
-
-    }
-
-    /**
-     * Can be used to receive item use start, tick, stop and finish events from the host.
-     */
-    public void onEntityUseItem(LivingEntityUseItemEvent event) {
-
-    }
-
-    /**
      * This can be used to add per module properties.
      * Properties should be added via your {@link ModuleEntity} constructor. These will be saved and loaded along
      * with the rest of the entities data. If you set 'savePropertiesToItem' to true the properties

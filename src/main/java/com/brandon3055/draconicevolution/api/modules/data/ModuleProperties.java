@@ -3,6 +3,8 @@ package com.brandon3055.draconicevolution.api.modules.data;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.ModuleType;
+import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
+import com.brandon3055.draconicevolution.api.modules.lib.StackModuleContext;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
@@ -70,7 +72,7 @@ public class ModuleProperties<T extends ModuleData<T>> {
      *
      * @param toolTip the item tool tip.
      */
-    public void addStats(List<Component> toolTip, Module<?> module) {
+    public void addStats(List<Component> toolTip, Module<?> module, ModuleContext context) {
         toolTip.add(new TranslatableComponent("module.draconicevolution.module_type")
                 .withStyle(ChatFormatting.GRAY)
                 .append(": ")
@@ -83,12 +85,12 @@ public class ModuleProperties<T extends ModuleData<T>> {
                         .withStyle(ChatFormatting.DARK_GREEN)));
 
         Map<Component, Component> map = new HashMap<>();
-        getData().addInformation(map, null, true);
+        getData().addInformation(map, context);
         map.forEach((name, value) -> {
             if (value == null) {
                 toolTip.add(name.plainCopy().withStyle(ChatFormatting.GRAY));
             } else {
-                toolTip.add(name.plainCopy().withStyle(ChatFormatting.GRAY).append(": ").append(value.plainCopy().withStyle(ChatFormatting.DARK_GREEN).getString().replace("\n", " ")));
+                toolTip.add(name.plainCopy().withStyle(ChatFormatting.GRAY).append(": ").append(ChatFormatting.DARK_GREEN + value.plainCopy().getString().replace("\n", " ")));
             }
         });
     }

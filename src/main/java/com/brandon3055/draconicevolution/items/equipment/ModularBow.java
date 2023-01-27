@@ -87,14 +87,14 @@ public class ModularBow extends BowItem implements IReaperItem, IModularItem {
     }
 
     @Override
-    public void onUseTick(Level world, LivingEntity player, ItemStack stack, int count) {
+    public void onUsingTick(ItemStack stack, LivingEntity player, int count) {
         if (getUseDuration(stack) - count >= getChargeTicks(stack)) {
             AutoFireEntity entity = stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new).getEntitiesByType(ModuleTypes.AUTO_FIRE).map(e -> (AutoFireEntity) e).findAny().orElse(null);
             if (entity != null && entity.getAutoFireEnabled()) {
                 // auto fire
                 InteractionHand usingHand = player.getUsedItemHand();
                 player.stopUsingItem();
-                stack.releaseUsing(world, player, 0);
+                stack.releaseUsing(player.level, player, 0);
                 player.startUsingItem(usingHand);
             }
         }

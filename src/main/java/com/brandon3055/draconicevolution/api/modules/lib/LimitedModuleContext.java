@@ -1,33 +1,35 @@
 package com.brandon3055.draconicevolution.api.modules.lib;
 
 import com.brandon3055.brandonscore.api.power.IOPStorage;
-import com.brandon3055.brandonscore.api.power.IOPStorageModifiable;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.items.equipment.IModularItem;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.Nullable;
 
 
 /**
- * Created by brandon3055 on 19/4/20.
+ * Created by brandon3055 on 27/1/23.
  */
-public class StackModuleContext extends ModuleContext {
+public class LimitedModuleContext extends ModuleContext {
     private final ItemStack stack;
     private final LivingEntity entity;
+    private final Level level;
     private final EquipmentSlot slot;
     private boolean inEquipModSlot = false;
 
-    public StackModuleContext(/*ModuleHost moduleHost, */ItemStack stack, LivingEntity entity, EquipmentSlot slot) {
+    public LimitedModuleContext(/*ModuleHost moduleHost, */ItemStack stack, LivingEntity entity, Level level, EquipmentSlot slot) {
         super(/*moduleHost*/);
         this.stack = stack;
         this.entity = entity;
+        this.level = level;
         this.slot = slot;
     }
 
-    public StackModuleContext setInEquipModSlot(boolean inEquipModSlot) {
+    public LimitedModuleContext setInEquipModSlot(boolean inEquipModSlot) {
         this.inEquipModSlot = inEquipModSlot;
         return this;
     }
@@ -44,14 +46,20 @@ public class StackModuleContext extends ModuleContext {
 
     @Override
     public Type getType() {
-        return Type.ITEM_STACK;
+        return Type.LIMITED;
     }
 
     /**
      * @return The ItemStack this module is installed in.
      */
+    @Nullable
     public ItemStack getStack() {
         return stack;
+    }
+
+    @Nullable
+    public Level getLevel() {
+        return level;
     }
 
     /**
@@ -65,6 +73,7 @@ public class StackModuleContext extends ModuleContext {
     /**
      * @return The entity who possesses the ItemStack containing this module.
      */
+    @Nullable
     public LivingEntity getEntity() {
         return entity;
     }

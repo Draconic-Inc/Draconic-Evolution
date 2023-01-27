@@ -5,6 +5,7 @@ import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.ModuleType;
 import com.brandon3055.draconicevolution.api.modules.data.ProjectileData;
 import com.brandon3055.draconicevolution.api.modules.lib.InstallResult;
+import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleImpl;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Streams;
@@ -76,12 +77,12 @@ public class ProjectileVelocityModule extends ModuleImpl<ProjectileData> {
                 })//
                 .filter(Objects::nonNull)//
                 .findFirst();
-        return opt.orElseGet(() -> new InstallResult(InstallResult.InstallResultType.YES, this, null, null));
+        return opt.orElseGet(() -> new InstallResult(InstallResult.InstallResultType.YES, this, null, (List<Component>)null));
     }
 
     @Override
-    public void addInformation(List<Component> toolTip) {
-        super.addInformation(toolTip);
+    public void addInformation(List<Component> toolTip, ModuleContext context) {
+        super.addInformation(toolTip, context);
         toolTip.add(new TranslatableComponent("module.draconicevolution.max_installable")
                 .withStyle(ChatFormatting.GRAY)
                 .append(": ")

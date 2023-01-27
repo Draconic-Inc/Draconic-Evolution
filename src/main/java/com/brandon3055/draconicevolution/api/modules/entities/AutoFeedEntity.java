@@ -53,8 +53,7 @@ public class AutoFeedEntity extends ModuleEntity<AutoFeedData> {
         AutoFeedData data = module.getData();
         if (context instanceof StackModuleContext) {
             LivingEntity entity = ((StackModuleContext) context).getEntity();
-            if (entity instanceof ServerPlayer && entity.tickCount % 10 == 0 && ((StackModuleContext) context).isEquipped()) {
-                ServerPlayer player = (ServerPlayer) entity;
+            if (entity instanceof ServerPlayer player && entity.tickCount % 10 == 0 && ((StackModuleContext) context).isEquipped()) {
                 if (storedFood < data.getFoodStorage() && consumeFood.getValue()) {
                     //Do food consumption
                     for (ItemStack stack : player.getInventory().items) {

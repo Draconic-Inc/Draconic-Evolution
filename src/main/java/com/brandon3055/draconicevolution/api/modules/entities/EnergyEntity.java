@@ -20,7 +20,7 @@ public class EnergyEntity extends ModuleEntity<EnergyData> {
     @Override
     public void onRemoved(ModuleContext context) {
         super.onRemoved(context);
-        IOPStorageModifiable storage = context.getOpStorage();
+        IOPStorage storage = context.getOpStorage();
         if (energy > 0 && storage != null) {
             storage.modifyEnergyStored(-energy);
         }
@@ -29,7 +29,7 @@ public class EnergyEntity extends ModuleEntity<EnergyData> {
     @Override
     public void onInstalled(ModuleContext context) {
         super.onInstalled(context);
-        IOPStorageModifiable storage = context.getOpStorage();
+        IOPStorage storage = context.getOpStorage();
         if (energy > 0 && storage != null) {
             storage.modifyEnergyStored(energy);
         }

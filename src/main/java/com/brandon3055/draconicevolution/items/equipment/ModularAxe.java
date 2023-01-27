@@ -15,6 +15,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
@@ -65,6 +66,7 @@ public class ModularAxe extends AxeItem implements IReaperItem, IModularMiningTo
     public ModuleHostImpl createHost(ItemStack stack) {
         ModuleHostImpl host = new ModuleHostImpl(techLevel, ModuleCfg.toolWidth(techLevel), ModuleCfg.toolHeight(techLevel), "axe", ModuleCfg.removeInvalidModules);
         host.addCategories(ModuleCategory.MELEE_WEAPON);
+        host.addCategories(ModuleCategory.TOOL_AXE);
         return host;
     }
 

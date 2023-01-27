@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.api.modules.entities;
 
 import com.brandon3055.brandonscore.api.TechLevel;
+import com.brandon3055.brandonscore.api.power.IOPStorage;
 import com.brandon3055.brandonscore.api.power.IOPStorageModifiable;
 import com.brandon3055.draconicevolution.api.config.BooleanProperty;
 import com.brandon3055.draconicevolution.api.config.ConfigProperty.BooleanFormatter;
@@ -82,12 +83,11 @@ public class ShieldControlEntity extends ModuleEntity<ShieldControlData> {
             LogHelper.bigDev("Host can be null????");
             return;
         }
-        IOPStorageModifiable storage = moduleContext.getOpStorage();
-        if (!(moduleContext instanceof StackModuleContext && EffectiveSide.get().isServer() && storage != null)) {
+        IOPStorage storage = moduleContext.getOpStorage();
+        if (!(moduleContext instanceof StackModuleContext context && EffectiveSide.get().isServer() && storage != null)) {
             return;
         }
 
-        StackModuleContext context = (StackModuleContext) moduleContext;
         ShieldData data = getShieldData();
         shieldCapacity = data.getShieldCapacity();
         double chargeRate = data.getShieldRecharge();
