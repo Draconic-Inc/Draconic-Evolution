@@ -86,6 +86,11 @@ public class TileReactorStabilizer extends TileReactorComponent {
         }
 
         @Override
+        public long modifyEnergyStored(long amount) {
+            return 0; //Invalid operation for this device
+        }
+
+        @Override
         public boolean canExtract() {
             return true;
         }

@@ -312,6 +312,11 @@ public class TileEnergyTransfuser extends TileBCore implements IInteractTile, Me
             }
             return false;
         }
+
+        @Override
+        public long modifyEnergyStored(long amount) {
+            return 0; //Invalid operation for this device
+        }
     }
 
     public class ItemIOAdapter implements IItemHandler {

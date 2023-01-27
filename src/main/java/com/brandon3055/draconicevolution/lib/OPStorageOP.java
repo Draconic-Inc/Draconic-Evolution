@@ -213,6 +213,15 @@ public class OPStorageOP implements INBTSerializable<CompoundTag>, IValueHashabl
     }
 
     @Override
+    public long modifyEnergyStored(long amount) {
+        if (amount > 0) {
+            return receiveOP(amount, false);
+        } else {
+            return extractOP(-amount, false);
+        }
+    }
+
+    @Override
     public ComparableValue getValueHash() {
         return new ComparableValue(this);
     }

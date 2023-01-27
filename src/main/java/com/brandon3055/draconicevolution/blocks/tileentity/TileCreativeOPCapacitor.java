@@ -49,6 +49,11 @@ public class TileCreativeOPCapacitor extends TileBCore implements IInteractTile 
             }
 
             @Override
+            public long modifyEnergyStored(long amount) {
+                return amount;
+            }
+
+            @Override
             public boolean canExtract() {
                 return true;
             }

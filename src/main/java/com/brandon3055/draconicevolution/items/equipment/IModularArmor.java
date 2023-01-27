@@ -59,12 +59,13 @@ public interface IModularArmor extends IModularItem, ElytraEnabledItem {
         LazyOptional<IOPStorage> power = stack.getCapability(DECapabilities.OP_STORAGE);
         boolean creative = entity instanceof Player player && player.abilities.instabuild;
         power.ifPresent(storage -> {
-            if (storage.getOPStored() < 512 && !creative) {
+            int energy = EquipCfg.elytraFlightEnergy;
+            if (storage.getOPStored() < energy && !creative) {
+                storage.modifyEnergyStored(-10);
                 Vec3 motion = entity.getDeltaMovement();
                 entity.setDeltaMovement(motion.x * 0.95, motion.y > 0 ? motion.y * 0.95 : motion.y, motion.z * 0.95);
 
-            } else if (storage instanceof IOPStorageModifiable) {
-                int energy = EquipCfg.elytraFlightEnergy;
+            } else{
                 if (entity.isSprinting()) {
                     ModuleHost host = stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new);
                     FlightEntity module = (FlightEntity)host.getEntitiesByType(ModuleTypes.FLIGHT).findAny().orElse(null);
@@ -84,7 +85,7 @@ public interface IModularArmor extends IModularItem, ElytraEnabledItem {
                 }
 
                 if (!entity.level.isClientSide && !creative) {
-                    ((IOPStorageModifiable) storage).modifyEnergyStored(-energy);
+                    storage.modifyEnergyStored(-energy);
                 }
             }
         });

@@ -119,6 +119,11 @@ public class TileEnergyPylon extends TileBCore implements MultiBlockController {
         public int getMaxEnergyStored() {
             return (int) Math.min(getMaxOPStored(), Integer.MAX_VALUE);
         }
+
+        @Override
+        public long modifyEnergyStored(long amount) {
+            return 0; //Invalid operation for this device
+        }
     };
 
 

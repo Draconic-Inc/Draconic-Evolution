@@ -206,6 +206,11 @@ public class TileFluxGate extends TileFlowGate {
         }
 
         @Override
+        public long modifyEnergyStored(long amount) {
+            return 0; //Invalid operation for this device
+        }
+
+        @Override
         public boolean canExtract() {
             return !isInput;
         }
