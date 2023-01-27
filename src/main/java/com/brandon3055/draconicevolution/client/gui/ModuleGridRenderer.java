@@ -83,6 +83,11 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> {
         PoseStack poseStack = new PoseStack();
         poseStack.translate(0, 0, getRenderZLevel());
 
+        if (isMouseOver(mouseX, mouseY) && lastError != null) {
+            renderTooltip(poseStack, lastError, mouseX, mouseY);
+            return true;
+        }
+
         for (ModuleEntity<?> entity : grid.getModuleHost().getModuleEntities()) {
             int cs = grid.getCellSize();
             int mw = entity.getWidth() * cs;
@@ -96,10 +101,6 @@ public class ModuleGridRenderer extends GuiElement<ModuleGridRenderer> {
         }
         getter.endBatch();
 
-        if (isMouseOver(mouseX, mouseY) && lastError != null && carrying) {
-            renderTooltip(poseStack, lastError, mouseX, mouseY);
-            return true;
-        }
         return super.renderOverlayLayer(minecraft, mouseX, mouseY, partialTicks);
     }
 

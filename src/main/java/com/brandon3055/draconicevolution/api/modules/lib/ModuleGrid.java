@@ -10,6 +10,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -83,6 +84,7 @@ public class ModuleGrid {
             return null; //Player tried to insert an item that is not a valid module
         }
 
+        ModuleHost host = getModuleHost();
         //Really this could be pick up or drop off
         if (clickType == ClickType.PICKUP) {
             if (holdingStack) { //Try to insert module
@@ -91,7 +93,7 @@ public class ModuleGrid {
                 InstallResult result = checkInstall(entity);
                 if (result.resultType == InstallResultType.YES) {
                     entity.readFromItemStack(stack, context);
-                    getModuleHost().addModule(entity, context);
+                    host.addModule(entity, context);
                     stack.shrink(1);
                     onGridChange();
                     return null;
@@ -102,7 +104,11 @@ public class ModuleGrid {
                 ModuleEntity<?> entity = pos.getEntity();
                 ItemStack extracted = new ItemStack(entity.getModule().getItem());
                 entity.writeToItemStack(extracted, context);
-                getModuleHost().removeModule(entity, context);
+                List<Component> error = new ArrayList<>();
+                if (!host.checkRemoveModule(entity, error)) {
+                    return new InstallResult(InstallResultType.NO, null, null, error);
+                }
+                host.removeModule(entity, context);
                 player.player.containerMenu.setCarried(extracted);
                 onGridChange();
             }
@@ -112,20 +118,28 @@ public class ModuleGrid {
                 ModuleEntity<?> entity = pos.getEntity();
                 ItemStack extracted = new ItemStack(entity.getModule().getItem());
                 entity.writeToItemStack(extracted, context);
+                List<Component> error = new ArrayList<>();
+                if (!host.checkRemoveModule(entity, error)) {
+                    return new InstallResult(InstallResultType.NO, null, null, error);
+                }
                 if (player.add(extracted)) {
-                    getModuleHost().removeModule(entity, context);
+                    host.removeModule(entity, context);
                     onGridChange();
                 }
             }
         }
         else if (clickType == ClickType.PICKUP_ALL && module != null) {
-            for (ModuleEntity<?> entity : ImmutableList.copyOf(getModuleHost().getModuleEntities())) {
+            for (ModuleEntity<?> entity : ImmutableList.copyOf(host.getModuleEntities())) {
                 if (entity.module == module) {
                     ItemStack modStack = new ItemStack(module.getItem());
                     entity.writeToItemStack(modStack, context);
+                    List<Component> error = new ArrayList<>();
+                    if (!host.checkRemoveModule(entity, error)) {
+                        return new InstallResult(InstallResultType.NO, null, null, error);
+                    }
                     if (ItemStack.isSameItemSameTags(stack, modStack) && stack.getCount() < stack.getMaxStackSize()) {
                         stack.grow(1);
-                        getModuleHost().removeModule(entity, context);
+                        host.removeModule(entity, context);
                     }
                 }
                 onGridChange();

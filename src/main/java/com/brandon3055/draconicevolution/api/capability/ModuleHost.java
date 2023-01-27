@@ -147,6 +147,15 @@ public interface ModuleHost extends INBTSerializable<CompoundTag> {
         //Moved this check to the module because i needed more control in cases like the arrow velocity module where specific modules within a module type have a module installation limit.
     }
 
+    /**
+     * Called before module is removed from the module grid to verify the module can be removed.
+     *
+     * @param module The module being removed.
+     * @param reason In the event the module can not be removed you can specify a message to be displayed to the user by adding a text component to this list.
+     * @return false to prevent the module from being removed.
+     */
+    boolean checkRemoveModule(ModuleEntity<?> module, List<Component> reason);
+
 //    void getAttributeModifiers(EquipmentSlotType slot, ItemStack stack, Multimap<Attribute, AttributeModifier> map);
 
 //    /**

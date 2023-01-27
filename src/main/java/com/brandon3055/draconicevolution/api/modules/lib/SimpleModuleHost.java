@@ -8,12 +8,14 @@ import com.brandon3055.draconicevolution.api.modules.ModuleType;
 import com.brandon3055.draconicevolution.api.modules.data.ModuleData;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.function.BiFunction;
 import java.util.stream.Stream;
 
 /**
@@ -31,6 +33,7 @@ public class SimpleModuleHost implements ModuleHost {
     private final Set<ModuleType<?>> typeBlackList = new HashSet<>();
     private final Set<ModuleCategory> categories = new HashSet<>();
     private final Map<ModuleType<?>, ModuleData<?>> moduleDataCache = new HashMap<>();
+    private BiFunction<ModuleEntity<?>, List<Component>, Boolean> removeCheck = null;
 
     public SimpleModuleHost(TechLevel techLevel, int gridWidth, int gridHeight, boolean deleteInvalidModules, ModuleCategory... categories) {
         this.techLevel = techLevel;
@@ -38,6 +41,20 @@ public class SimpleModuleHost implements ModuleHost {
         this.gridHeight = gridHeight;
         this.deleteInvalidModules = deleteInvalidModules;
         this.categories.addAll(Arrays.asList(categories));
+    }
+
+    /**
+     * Allows you to add a listener that will be fired whenever a module is about to be removed.
+     * The listener is a BiFunction that provides the entity being removed and a list of chat components.
+     * The return is a boolean. A return value of true will allow the module to be removed.
+     * False will prevent removal.
+     * In the event removal is blocked you can add chat components to the supplied list.
+     * These will be displayed to the user the same way module installation errors are shown.
+     *
+     * @param removeListener listener callback.
+     */
+    public void setEntityRemoveListener(BiFunction<ModuleEntity<?>, List<Component>, Boolean> removeListener) {
+        this.removeCheck = removeListener;
     }
 
     @Override
@@ -126,6 +143,11 @@ public class SimpleModuleHost implements ModuleHost {
     public <T extends ModuleData<T>> T getModuleData(ModuleType<T> moduleType) {
         //noinspection unchecked
         return (T) moduleDataCache.computeIfAbsent(moduleType, ModuleHost.super::getModuleData);
+    }
+
+    @Override
+    public boolean checkRemoveModule(ModuleEntity<?> module, List<Component> reason) {
+        return removeCheck == null || removeCheck.apply(module, reason);
     }
 
     private void clearCaches() {

@@ -14,12 +14,14 @@ import com.brandon3055.draconicevolution.api.modules.data.ModuleData;
 import net.covers1624.quack.util.SneakyUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -45,6 +47,7 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
     private final Map<ModuleType<?>, Consumer<?>> propertyValidators = new HashMap<>();
     private final Map<ModuleType<?>, ModuleData<?>> moduleDataCache = new HashMap<>();
     private Consumer<List<ConfigProperty>> propertyBuilder;
+    private BiFunction<ModuleEntity<?>, List<Component>, Boolean> removeCheck = null;
 
     public ModuleHostImpl(TechLevel techLevel, int gridWidth, int gridHeight, String providerName, boolean deleteInvalidModules, ModuleCategory... categories) {
         this.techLevel = techLevel;
@@ -53,6 +56,10 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
         this.providerName = providerName;
         this.deleteInvalidModules = deleteInvalidModules;
         this.categories.addAll(Arrays.asList(categories));
+    }
+
+    public void setRemoveCheck(BiFunction<ModuleEntity<?>, List<Component>, Boolean> removeCheck) {
+        this.removeCheck = removeCheck;
     }
 
     //region ModuleHost
@@ -165,6 +172,11 @@ public class ModuleHostImpl implements ModuleHost, PropertyProvider {
     public <T extends ModuleData<T>> T getModuleData(ModuleType<T> moduleType) {
         //noinspection unchecked
         return (T) moduleDataCache.computeIfAbsent(moduleType, ModuleHost.super::getModuleData);
+    }
+
+    @Override
+    public boolean checkRemoveModule(ModuleEntity<?> module, List<Component> reason) {
+        return removeCheck == null || removeCheck.apply(module, reason);
     }
 
     private void clearCaches() {
