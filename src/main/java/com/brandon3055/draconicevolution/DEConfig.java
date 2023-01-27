@@ -213,6 +213,9 @@ public class DEConfig implements IModConfigHelper {
     @ModConfigProperty(category = "Tweaks", name = "entityDetectorPowerModifier", comment = "Allows you to adjust the power requirement of the entity detector.\nSet to 0 to disable completely", autoSync = true)
     public static double entityDetectorPowerModifier = 1D;
 
+    @ModConfigProperty(category = "Tweaks", name = "injectorSingleItemDefault", comment = "If true fusion crafting injectors will be set to single item mode by default.")
+    public static boolean injectorSingleItemDefault = false;
+
     //Category Client
 
     @ModConfigProperty(category = "Client Settings", name = "hudSettings", comment = "This is where the settings for the in game hud are stored. You should not need to adjust these unless something breaks.\nWarning: Changing the number of entries in this list will crash your game.")

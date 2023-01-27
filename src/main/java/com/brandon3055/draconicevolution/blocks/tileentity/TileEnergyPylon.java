@@ -274,7 +274,7 @@ public class TileEnergyPylon extends TileBCBase implements IEnergyReceiver, IEne
     private Vec3D getParticleSpawn(Random random) {
         if (isOutputMode.value) {
             double range = getCore().tier.value;
-            return new Vec3D(getCore().getPos()).add((random.nextFloat() - 0.5F) * range, (random.nextFloat() - 0.5F) * range, (random.nextFloat() - 0.5F) * range);
+            return new Vec3D(getCore().getPos()).add(0.5, 0.5, 0.5).add((random.nextFloat() - 0.5F) * range, (random.nextFloat() - 0.5F) * range, (random.nextFloat() - 0.5F) * range);
         }
         else {
             return sphereOnTop.value ? new Vec3D(pos).add(0.5, 1.5, 0.5) : new Vec3D(pos).add(0.5, -0.5, 0.5);

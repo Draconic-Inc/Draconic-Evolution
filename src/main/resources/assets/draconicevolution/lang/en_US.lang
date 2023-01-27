@@ -439,15 +439,15 @@ entity.draconicevolution:lootCore.name=Loot Core
 
 
 //KeyBinding ----------------------------------------------------------------------------------------------------------------------------------------
-key.placeItem=Place Item in world
-key.toolConfig=Tool & Armor Config GUI
-key.toolProfileChange=Change Tool Config Profile
-key.armorProfileChange=Change Armor Config Profiles
-key.toggleFlight=Toggle Creative Flight
-key.toggleDislocator=Toggle Item Dislocator
-key.cycleDigAOE=Cycle Dig AOE / Depth
-key.cycleAttackAOE=Cycle Attack AOE
-key.toggleShields=Toggle Draconic Shielding
+key.draconicevolution.placeItem=Place Item in world
+key.draconicevolution.toolConfig=Tool & Armor Config GUI
+key.draconicevolution.toolProfileChange=Change Tool Config Profile
+key.draconicevolution.armorProfileChange=Change Armor Config Profiles
+key.draconicevolution.toggleFlight=Toggle Creative Flight
+key.draconicevolution.toggleDislocator=Toggle Item Dislocator
+key.draconicevolution.cycleDigAOE=Cycle Dig AOE / Depth
+key.draconicevolution.cycleAttackAOE=Cycle Attack AOE
+key.draconicevolution.toggleShields=Toggle Draconic Shielding
 
 //Damage ----------------------------------------------------------------------------------------------------------------------------------------
 death.attack.chaos=%1$s was torn apart by a Chaos Guardian

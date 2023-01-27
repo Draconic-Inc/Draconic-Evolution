@@ -1,4 +1,9 @@
-######## 2.3.27.x ########
+######## 2.3.28.354 ########
+-Fixed keybinding conflict with immersive engineering.
+-Added config option for default crafting injector single item mode.
+-Fixed minor rendering bug with energy core particles.
+
+######## 2.3.27.353 ########
 -Fixed some inconsistencies when switching tool profiles with configured enchants.
 -Fixed a crash related to bound player Dislocators.
 -Fixed a bug with loot cores.

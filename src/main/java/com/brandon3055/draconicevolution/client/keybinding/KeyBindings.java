@@ -17,15 +17,15 @@ import static net.minecraftforge.client.settings.KeyConflictContext.IN_GAME;
  */
 @SideOnly(Side.CLIENT)
 public class KeyBindings {
-    public static KeyBinding placeItem = new KeyBinding("key.placeItem", IN_GAME, Keyboard.KEY_P, DraconicEvolution.MODNAME);
-    public static KeyBinding toolConfig = new KeyBinding("key.toolConfig", IN_GAME, Keyboard.KEY_C, DraconicEvolution.MODNAME);
-    public static KeyBinding toolProfileChange = new KeyBinding("key.toolProfileChange", IN_GAME, Keyboard.KEY_BACKSLASH, DraconicEvolution.MODNAME);
-    public static KeyBinding armorProfileChange = new KeyBinding("key.armorProfileChange", IN_GAME,  KeyModifier.ALT, Keyboard.KEY_BACKSLASH, DraconicEvolution.MODNAME);
-    public static KeyBinding toggleFlight = new KeyBinding("key.toggleFlight", IN_GAME, Keyboard.KEY_NONE, DraconicEvolution.MODNAME);
-    public static KeyBinding toggleDislocator = new KeyBinding("key.toggleDislocator", IN_GAME, Keyboard.KEY_NONE, DraconicEvolution.MODNAME);
-    public static KeyBinding cycleDigAOE = new KeyBinding("key.cycleDigAOE", IN_GAME, Keyboard.KEY_NONE, DraconicEvolution.MODNAME);
-    public static KeyBinding cycleAttackAOE = new KeyBinding("key.cycleAttackAOE", IN_GAME, Keyboard.KEY_NONE, DraconicEvolution.MODNAME);
-	public static KeyBinding toggleShields = new KeyBinding("key.toggleShields", IN_GAME, Keyboard.KEY_NONE, DraconicEvolution.MODNAME);
+    public static KeyBinding placeItem = new KeyBinding("key.draconicevolution.placeItem", IN_GAME, Keyboard.KEY_P, DraconicEvolution.MODNAME);
+    public static KeyBinding toolConfig = new KeyBinding("key.draconicevolution.toolConfig", IN_GAME, Keyboard.KEY_C, DraconicEvolution.MODNAME);
+    public static KeyBinding toolProfileChange = new KeyBinding("key.draconicevolution.toolProfileChange", IN_GAME, Keyboard.KEY_BACKSLASH, DraconicEvolution.MODNAME);
+    public static KeyBinding armorProfileChange = new KeyBinding("key.draconicevolution.armorProfileChange", IN_GAME,  KeyModifier.ALT, Keyboard.KEY_BACKSLASH, DraconicEvolution.MODNAME);
+    public static KeyBinding toggleFlight = new KeyBinding("key.draconicevolution.toggleFlight", IN_GAME, Keyboard.KEY_NONE, DraconicEvolution.MODNAME);
+    public static KeyBinding toggleDislocator = new KeyBinding("key.draconicevolution.toggleDislocator", IN_GAME, Keyboard.KEY_NONE, DraconicEvolution.MODNAME);
+    public static KeyBinding cycleDigAOE = new KeyBinding("key.draconicevolution.cycleDigAOE", IN_GAME, Keyboard.KEY_NONE, DraconicEvolution.MODNAME);
+    public static KeyBinding cycleAttackAOE = new KeyBinding("key.draconicevolution.cycleAttackAOE", IN_GAME, Keyboard.KEY_NONE, DraconicEvolution.MODNAME);
+	public static KeyBinding toggleShields = new KeyBinding("key.draconicevolution.toggleShields", IN_GAME, Keyboard.KEY_NONE, DraconicEvolution.MODNAME);
 
     public static void init() {
         ClientRegistry.registerKeyBinding(placeItem);

@@ -5,6 +5,7 @@ import com.brandon3055.brandonscore.blocks.TileInventoryBase;
 import com.brandon3055.brandonscore.lib.EnergyHandlerWrapper;
 import com.brandon3055.brandonscore.lib.Vec3I;
 import com.brandon3055.brandonscore.lib.datamanager.*;
+import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DEFeatures;
 import com.brandon3055.draconicevolution.api.IExtendedRFStorage;
 import com.brandon3055.draconicevolution.api.fusioncrafting.ICraftingInjector;
@@ -24,7 +25,7 @@ public class TileCraftingInjector extends TileInventoryBase implements IEnergyRe
     public final ManagedByte facing = register("facing", new ManagedByte(0)).syncViaTile().saveToTile().trigerUpdate().finish();
     private final ManagedLong energy = register("energy", new ManagedLong(0)).syncViaTile().saveToTile().finish();
     private final ManagedVec3I lastCorePos = register("lastCorePos", new ManagedVec3I(new Vec3I(0, 0, 0))).syncViaTile().saveToTile().finish();
-    public final ManagedBool singleItem = register("singleItem", new ManagedBool(false)).syncViaTile().saveToTile().finish();
+    public final ManagedBool singleItem = register("singleItem", new ManagedBool(DEConfig.injectorSingleItemDefault)).syncViaTile().saveToTile().finish();
     public IFusionCraftingInventory currentCraftingInventory = null;
     private int chargeSpeedModifier = 300;
 
