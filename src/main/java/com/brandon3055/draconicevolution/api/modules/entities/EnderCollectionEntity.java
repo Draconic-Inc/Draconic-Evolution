@@ -9,6 +9,7 @@ import codechicken.lib.colour.EnumColour;
 import codechicken.lib.inventory.InventoryUtils;
 import codechicken.lib.render.buffer.TransformingVertexConsumer;
 import com.brandon3055.brandonscore.api.TechLevel;
+import com.brandon3055.brandonscore.api.power.IOPStorage;
 import com.brandon3055.brandonscore.api.power.IOPStorageModifiable;
 import com.brandon3055.brandonscore.api.render.GuiHelper;
 import com.brandon3055.brandonscore.client.BCGuiSprites;
@@ -40,7 +41,6 @@ import java.util.function.Predicate;
  */
 public class EnderCollectionEntity extends FilteredModuleEntity<NoData> {
 
-    private static final Random rand = new Random();
     private CompoundTag frequencyTag = new CompoundTag();
 
     public EnderCollectionEntity(Module<NoData> module) {
@@ -80,7 +80,7 @@ public class EnderCollectionEntity extends FilteredModuleEntity<NoData> {
         return super.writeExtraData(nbt);
     }
 
-    public List<ItemStack> insertStacks(Player player, Collection<ItemStack> stacks, IOPStorageModifiable opStorage) {
+    public List<ItemStack> insertStacks(Player player, Collection<ItemStack> stacks, IOPStorage opStorage) {
         Container container;
         if (ModHelper.ENDERSTORAGE.isPresent()) {
             container = getEnderStorage(player);
@@ -113,7 +113,7 @@ public class EnderCollectionEntity extends FilteredModuleEntity<NoData> {
     /**
      * @return the remaining items that could not be inserted
      */
-    public int insertStack(Player player, ItemStack stack, IOPStorageModifiable opStorage) {
+    public int insertStack(Player player, ItemStack stack, IOPStorage opStorage) {
         Container container;
         if (ModHelper.ENDERSTORAGE.isPresent()) {
             container = getEnderStorage(player);

@@ -35,6 +35,8 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -67,7 +69,7 @@ public class ModuleEntity<T extends ModuleData<T>> {
     /**
      * Called when this module is installed into a module host
      * After readFromItemStack
-     * */
+     */
     public void onInstalled(ModuleContext context) {
 
     }
@@ -75,8 +77,25 @@ public class ModuleEntity<T extends ModuleData<T>> {
     /**
      * Called when this module is removed from a module host
      * After writeToItemStack
-     * */
+     */
     public void onRemoved(ModuleContext context) {
+
+    }
+
+    /**
+     * Called when the player interact event is fired while the player is holding a host containing this module.
+     * For a specific event simply instanceof check for RightClickBlock, RightClickItem, RightClickEmpty, etc. Any event that extends PlayerInteractEvent.
+     * <p>
+     * Note: be sure to check if the event has already been canceled and react accordingly.
+     */
+    public void onPlayerInteractEvent(PlayerInteractEvent event) {
+
+    }
+
+    /**
+     * Can be used to receive item use start, tick, stop and finish events from the host.
+     */
+    public void onEntityUseItem(LivingEntityUseItemEvent event) {
 
     }
 
@@ -85,12 +104,13 @@ public class ModuleEntity<T extends ModuleData<T>> {
      * Properties should be added via your {@link ModuleEntity} constructor. These will be saved and loaded along
      * with the rest of the entities data. If you set 'savePropertiesToItem' to true the properties
      * will also be saved and loaded from the ItemStack when this module is removed or installed.<br><br>
-     *
+     * <p>
      * These properties will be generated for every single instance of this module that is installed.
      * Therefor these are best used with modules that have a max install count of 1.<br><br>
-     *
+     * <p>
      * If you need to add "global" where you have a single set of properties that apply to all installed modules
      * rather than a set of properties for each module see {@link ModuleType#getTypeProperties(ModuleData, Map)} )}
+     *
      * @param property the property to add.
      * @return the property for convenience.
      * @see ModuleType#getTypeProperties(ModuleData, Map)
@@ -108,9 +128,9 @@ public class ModuleEntity<T extends ModuleData<T>> {
     /**
      * This method allows this module entities to apply attribute modifiers to the items they are installed in.
      *
-     * @param slot the equipment slot that the item containing this module is in.
+     * @param slot  the equipment slot that the item containing this module is in.
      * @param stack The ItemStack containing this module/modules
-     * @param map The map to which the modifiers must be added.
+     * @param map   The map to which the modifiers must be added.
      */
     public void getAttributeModifiers(EquipmentSlot slot, ItemStack stack, Multimap<Attribute, AttributeModifier> map) {
 
@@ -184,7 +204,7 @@ public class ModuleEntity<T extends ModuleData<T>> {
         if (savePropertiesToItem && (properties = stack.getTagElement("properties")) != null) {
             propertyMap.forEach((name, property) -> property.deserializeNBT(properties.getCompound(name)));
         }
-        if (stack.hasTag()){
+        if (stack.hasTag()) {
             readExtraData(stack.getTag());
         }
     }
@@ -285,7 +305,7 @@ public class ModuleEntity<T extends ModuleData<T>> {
         //Hover highlight
         if (stackRender) {
             poseStack.translate(0, 0, -200);
-        }else  if (GuiHelper.isInRect(x, y, width, height, mouseX, mouseY)){
+        } else if (GuiHelper.isInRect(x, y, width, height, mouseX, mouseY)) {
             GuiHelper.drawRect(getter, poseStack, x, y, width, height, 0x50FFFFFF);
         }
     }
@@ -293,6 +313,7 @@ public class ModuleEntity<T extends ModuleData<T>> {
     /**
      * This should be used primarily for things like rendering tool tips.
      * This render method may be blocked by other overlay rendering so don't count on it to always get called.
+     *
      * @return true to block further overlay rendering. (Equivalent to returning true in {@link com.brandon3055.brandonscore.client.gui.modulargui.GuiElement#renderOverlayLayer(Minecraft, int, int, float)} )
      */
     @OnlyIn(Dist.CLIENT)
@@ -302,8 +323,9 @@ public class ModuleEntity<T extends ModuleData<T>> {
             Item item = getModule().getItem();
             ItemStack stack = new ItemStack(item);
             writeToItemStack(stack, context);
-            List<Component> list = stack.getTooltipLines(mc.player, mc.options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL);;
-            parent.getScreen().renderTooltip(poseStack, list, Optional.empty(), (int)mouseX, (int)mouseY);
+            List<Component> list = stack.getTooltipLines(mc.player, mc.options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL);
+            ;
+            parent.getScreen().renderTooltip(poseStack, list, Optional.empty(), (int) mouseX, (int) mouseY);
             return true;
         }
         return false;
@@ -322,11 +344,11 @@ public class ModuleEntity<T extends ModuleData<T>> {
      * Use this method to display information in the tooltip of the {@link com.brandon3055.draconicevolution.items.equipment.IModularItem} this module is installed in.
      * This will be added directly after the '[Modular Item]' text and before {@link ModuleData#addHostHoverText}.
      * The recommended implementation is to display this information when the shift key is pressed.
-     *
+     * <p>
      * For a {@link ModuleData} based implementation see {@link ModuleData#addHostHoverText(ItemStack, Level, List, TooltipFlag)}
      *
-     * @param stack The modular item this tool tip will be added to
-     * @param level The current level
+     * @param stack   The modular item this tool tip will be added to
+     * @param level   The current level
      * @param tooltip The tooltip list
      */
     @OnlyIn(Dist.CLIENT)
@@ -338,9 +360,9 @@ public class ModuleEntity<T extends ModuleData<T>> {
      *
      * @param parent The parent gui element (Should be a {@link com.brandon3055.draconicevolution.client.gui.ModuleGridRenderer})
      * @param player The player.
-     * @param x Module gui X position
-     * @param y Module gui Y position
-     * @param width Module width
+     * @param x      Module gui X position
+     * @param y      Module gui Y position
+     * @param width  Module width
      * @param height Module height
      * @param mouseX Mouse X position
      * @param mouseY Mouse Y position
@@ -356,10 +378,10 @@ public class ModuleEntity<T extends ModuleData<T>> {
      * Return true to disable the default click action (prevent module pickup)
      * Will be called both client and server. The return value must be the same for both sides.
      *
-     * @param player The player.
-     * @param x The x position of the click within the module. 0->1 where 0 is the far left of the module and 1 is the far right.
-     * @param y The y position of the click within the module. 0->1 where 0 is the top of the module and 1 is the bottom.
-     * @param button The mouse button pressed.
+     * @param player    The player.
+     * @param x         The x position of the click within the module. 0->1 where 0 is the far left of the module and 1 is the far right.
+     * @param y         The y position of the click within the module. 0->1 where 0 is the top of the module and 1 is the bottom.
+     * @param button    The mouse button pressed.
      * @param clickType The click type.
      * @return true to prevent module pickup from slot. (Returning different values for client and server may result in desync)
      */
@@ -434,21 +456,21 @@ public class ModuleEntity<T extends ModuleData<T>> {
 
     /**
      * Send a message to the server side ModuleEntity.
-     * Handle the message using {@link #handleClientMessage(MCDataInput)} 
-     * 
+     * Handle the message using {@link #handleClientMessage(MCDataInput)}
+     *
      * @param dataConsumer The data consumer
      */
     public void sendMessageToServer(Consumer<MCDataOutput> dataConsumer) {
         DraconicNetwork.sendModuleMessage(getGridX(), getGridY(), dataConsumer);
     }
-    
+
     /**
      * Handle a message sent from the client side module entity.
      * Send message using {@link #sendMessageToServer(Consumer)}
-     * 
+     *
      * @param input The message data
      */
     public void handleClientMessage(MCDataInput input) {
-        
+
     }
 }

@@ -6,6 +6,7 @@ import com.brandon3055.draconicevolution.client.ClientProxy;
 import com.brandon3055.draconicevolution.command.DECommands;
 import com.brandon3055.draconicevolution.handlers.DEEventHandler;
 import com.brandon3055.draconicevolution.handlers.LootEventHandler;
+import com.brandon3055.draconicevolution.handlers.ModuleEventHandler;
 import com.brandon3055.draconicevolution.init.ClientInit;
 import com.brandon3055.draconicevolution.init.DETags;
 import com.brandon3055.draconicevolution.init.ModCapabilities;
@@ -49,7 +50,7 @@ public class DraconicEvolution {
         DECommands.init();
         ModCapabilities.init();
         LootEventHandler.init();
-
+        ModuleEventHandler.init();
 
         OptionalMod.of("computercraft").ifPresent(e -> MinecraftForge.EVENT_BUS.register(new ComputerCraftCompatEventHandler()));
         MinecraftForge.EVENT_BUS.addListener(Dislocator::onAnvilUpdate);
