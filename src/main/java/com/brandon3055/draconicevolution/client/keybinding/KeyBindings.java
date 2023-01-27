@@ -21,8 +21,8 @@ public final class KeyBindings {
 
     static {
         placeItem = new KeyBinding("key.placeItem", Keyboard.KEY_P, References.MODNAME);
-        toolConfig = new KeyBinding("key.toolConfig", Keyboard.KEY_C, References.MODNAME);
-        toolProfileChange = new KeyBinding("key.toolProfileChange", Keyboard.KEY_BACKSLASH, References.MODNAME);
+        toolConfig = new KeyBinding("key.toolConfig", Keyboard.KEY_NONE, References.MODNAME);
+        toolProfileChange = new KeyBinding("key.toolProfileChange", Keyboard.KEY_NONE, References.MODNAME);
         toggleFlight = new KeyBinding("key.toggleFlight", Keyboard.KEY_NONE, References.MODNAME);
         toggleMagnet = new KeyBinding("key.toggleMagnet", Keyboard.KEY_NONE, References.MODNAME);
     }

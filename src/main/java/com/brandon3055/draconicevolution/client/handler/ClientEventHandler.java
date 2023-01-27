@@ -109,7 +109,7 @@ public class ClientEventHandler {
     @SideOnly(Side.CLIENT)
     public void renderGameOverlayEvent(final RenderGameOverlayEvent.Post event) {
         if (event.type == RenderGameOverlayEvent.ElementType.ALL) {
-            statusDisplayManager.drawItemStack();
+            statusDisplayManager.drawItemStack(event.resolution);
         }
     }
 

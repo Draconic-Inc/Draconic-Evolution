@@ -35,22 +35,16 @@ public final class ItemDisplayManager {
         }
     }
 
-    public void drawItemStack() {
+    public void drawItemStack(ScaledResolution resolution) {
         if (ticksCounter > 0 && itemStack != null && itemStack.getItem() != null) {
             GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
             GL11.glEnable(GL12.GL_RESCALE_NORMAL);
             RenderHelper.enableGUIStandardItemLighting();
 
             GL11.glPushMatrix();
-
-            final Minecraft mc = Minecraft.getMinecraft();
-            final ScaledResolution res = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
-            final int y = res.getScaledHeight();
-
+            final int y = resolution.getScaledHeight();
             GL11.glTranslatef(7.0f, y * 0.25f, 0);
-
             renderItem.renderItemAndEffectIntoGUI(fontRenderer, textureManager, itemStack, 0, 0);
-
             GL11.glPopMatrix();
 
             RenderHelper.disableStandardItemLighting();

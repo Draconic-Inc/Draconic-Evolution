@@ -29,8 +29,9 @@ public class KeyInputHandler {
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
     public void onKeyInput(InputEvent.KeyInputEvent event) {
-        if (KeyBindings.placeItem.isPressed()) handlePlaceItemKey();
-        else if (KeyBindings.toolConfig.isPressed()) {
+        if (KeyBindings.placeItem.isPressed()) {
+            handlePlaceItemKey();
+        } else if (KeyBindings.toolConfig.isPressed()) {
             DraconicEvolution.network.sendToServer(new ButtonPacket(ButtonPacket.ID_TOOLCONFIG, false));
         } else if (KeyBindings.toolProfileChange.isPressed()
                 && Minecraft.getMinecraft().thePlayer != null
@@ -50,19 +51,17 @@ public class KeyInputHandler {
             if (player.capabilities.allowFlying) {
                 if (player.capabilities.isFlying) {
                     player.capabilities.isFlying = false;
-                    player.sendPlayerAbilities();
                 } else {
                     player.capabilities.isFlying = true;
                     if (player.onGround) {
                         player.setPosition(player.posX, player.posY + 0.05D, player.posZ);
                         player.motionY = 0;
                     }
-                    player.sendPlayerAbilities();
                 }
+                player.sendPlayerAbilities();
             }
         } else if (KeyBindings.toggleMagnet.isPressed()) {
             EntityPlayer player = Minecraft.getMinecraft().thePlayer;
-
             if (player.inventory.hasItem(ModItems.magnet)) {
                 DraconicEvolution.network.sendToServer(new MagnetTogglePacket());
             }
@@ -73,16 +72,18 @@ public class KeyInputHandler {
         EntityClientPlayerMP player = Minecraft.getMinecraft().thePlayer;
         WorldClient world = Minecraft.getMinecraft().theWorld;
         MovingObjectPosition mop = ToolHandler.raytraceFromEntity(world, player, 4.5D);
-        if (mop != null)
+        if (mop != null) {
             DraconicEvolution.network.sendToServer(
                     new PlacedItemPacket((byte) mop.sideHit, mop.blockX, mop.blockY, mop.blockZ));
+        }
     }
 
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
     public void onMouseInput(InputEvent.MouseInputEvent event) {
-        if (KeyBindings.placeItem.isPressed()) handlePlaceItemKey();
-        else if (KeyBindings.toolConfig.isPressed()) {
+        if (KeyBindings.placeItem.isPressed()) {
+            handlePlaceItemKey();
+        } else if (KeyBindings.toolConfig.isPressed()) {
             DraconicEvolution.network.sendToServer(new ButtonPacket(ButtonPacket.ID_TOOLCONFIG, false));
         } else if (KeyBindings.toolProfileChange.isPressed() && Minecraft.getMinecraft().thePlayer != null) {
             DraconicEvolution.network.sendToServer(new ButtonPacket(ButtonPacket.ID_TOOL_PROFILE_CHANGE, false));
@@ -107,7 +108,7 @@ public class KeyInputHandler {
                 player.inventory.currentItem = previouseSlot(1, player.inventory.currentItem);
                 DraconicEvolution.network.sendToServer(new TeleporterPacket(TeleporterPacket.SCROLL, -1, false));
             }
-        } else if (change < 0) {
+        } else {
             ItemStack item = player.inventory.getStackInSlot(previouseSlot(-1, player.inventory.currentItem));
             if (item != null && item.getItem().equals(ModItems.teleporterMKII)) {
                 player.inventory.currentItem = previouseSlot(-1, player.inventory.currentItem);
