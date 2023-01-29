@@ -1,9 +1,7 @@
 package com.brandon3055.draconicevolution.common.entity;
 
-import com.brandon3055.draconicevolution.common.ModBlocks;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import java.util.List;
+
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -19,10 +17,16 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProviderEnd;
 
+import com.brandon3055.draconicevolution.common.ModBlocks;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 /**
  * Created by brandon3055 on 30/8/2015.
  */
 public class EntityChaosCrystal extends EntityLivingBase {
+
     public int innerRotation;
     public float deathAnimation = 1F;
     public int shieldTime = 0;
@@ -180,8 +184,7 @@ public class EntityChaosCrystal extends EntityLivingBase {
         if (guardian == null) {
             List<EntityChaosGuardian> list = worldObj.getEntitiesWithinAABB(
                     EntityChaosGuardian.class,
-                    AxisAlignedBB.getBoundingBox(posX, posY, posZ, posX, posY, posZ)
-                            .expand(512, 512, 512));
+                    AxisAlignedBB.getBoundingBox(posX, posY, posZ, posX, posY, posZ).expand(512, 512, 512));
             if (list.size() > 0) guardian = list.get(0);
             if (guardian != null && guardian.crystals != null && !guardian.crystals.contains(this)) {
                 guardian.crystals.add(this);

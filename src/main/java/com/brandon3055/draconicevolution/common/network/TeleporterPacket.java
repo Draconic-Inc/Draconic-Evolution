@@ -1,21 +1,24 @@
 package com.brandon3055.draconicevolution.common.network;
 
-import com.brandon3055.brandonscore.BrandonsCore;
-import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
-import com.brandon3055.brandonscore.common.utills.Teleporter.TeleportLocation;
-import com.brandon3055.draconicevolution.common.ModItems;
-import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
-import cpw.mods.fml.common.network.ByteBufUtils;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
-import io.netty.buffer.ByteBuf;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
+import com.brandon3055.brandonscore.BrandonsCore;
+import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
+import com.brandon3055.brandonscore.common.utills.Teleporter.TeleportLocation;
+import com.brandon3055.draconicevolution.common.ModItems;
+import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
+
+import cpw.mods.fml.common.network.ByteBufUtils;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
+import io.netty.buffer.ByteBuf;
+
 public class TeleporterPacket implements IMessage {
+
     public static final int ADDDESTINATION = 0;
     public static final int REMOVEDESTINATION = 1;
     public static final int UPDATENAME = 2;
@@ -72,8 +75,7 @@ public class TeleporterPacket implements IMessage {
             bytes.writeBoolean(dataB);
         }
 
-        if (function == UPDATEOFFSET
-                || function == CHANGESELECTION
+        if (function == UPDATEOFFSET || function == CHANGESELECTION
                 || function == REMOVEDESTINATION
                 || function == ADDFUEL
                 || function == SCROLL) {
@@ -111,8 +113,7 @@ public class TeleporterPacket implements IMessage {
             dataB = bytes.readBoolean();
         }
 
-        if (function == UPDATEOFFSET
-                || function == CHANGESELECTION
+        if (function == UPDATEOFFSET || function == CHANGESELECTION
                 || function == REMOVEDESTINATION
                 || function == ADDFUEL
                 || function == SCROLL) {
@@ -144,11 +145,9 @@ public class TeleporterPacket implements IMessage {
 
             if (message.function == ADDDESTINATION) {
                 NBTTagCompound tag = new NBTTagCompound();
-                message.location.setDimentionName(BrandonsCore.proxy
-                        .getMCServer()
-                        .worldServerForDimension(message.location.getDimension())
-                        .provider
-                        .getDimensionName());
+                message.location.setDimentionName(
+                        BrandonsCore.proxy.getMCServer()
+                                .worldServerForDimension(message.location.getDimension()).provider.getDimensionName());
                 message.location.writeToNBT(tag);
                 list.appendTag(tag);
                 compound.setTag("Locations", list);
@@ -181,11 +180,9 @@ public class TeleporterPacket implements IMessage {
 
             if (message.function == UPDATEDESTINATION) {
                 NBTTagCompound tag = list.getCompoundTagAt(message.data);
-                message.location.setDimentionName(BrandonsCore.proxy
-                        .getMCServer()
-                        .worldServerForDimension(message.location.getDimension())
-                        .provider
-                        .getDimensionName());
+                message.location.setDimentionName(
+                        BrandonsCore.proxy.getMCServer()
+                                .worldServerForDimension(message.location.getDimension()).provider.getDimensionName());
                 message.location.writeToNBT(tag);
                 list.func_150304_a(message.data, tag);
                 compound.setTag("Locations", list);
@@ -230,24 +227,30 @@ public class TeleporterPacket implements IMessage {
                     if (selected > 0) {
                         NBTTagCompound temp = list.getCompoundTagAt(selected + selectionOffset);
                         list.func_150304_a(
-                                selected + selectionOffset, list.getCompoundTagAt(selected + selectionOffset - 1));
+                                selected + selectionOffset,
+                                list.getCompoundTagAt(selected + selectionOffset - 1));
                         list.func_150304_a(selected + selectionOffset - 1, temp);
                         compound.setTag("Locations", list);
                         teleporter.setTagCompound(compound);
-                        ItemNBTHelper.setShort(teleporter, "Selection", (short)
-                                (ItemNBTHelper.getShort(teleporter, "Selection", (short) 0) - 1));
+                        ItemNBTHelper.setShort(
+                                teleporter,
+                                "Selection",
+                                (short) (ItemNBTHelper.getShort(teleporter, "Selection", (short) 0) - 1));
                     }
                 } else // down
                 {
                     if (selected < maxSelect) {
                         NBTTagCompound temp = list.getCompoundTagAt(selected + selectionOffset);
                         list.func_150304_a(
-                                selected + selectionOffset, list.getCompoundTagAt(selected + selectionOffset + 1));
+                                selected + selectionOffset,
+                                list.getCompoundTagAt(selected + selectionOffset + 1));
                         list.func_150304_a(selected + selectionOffset + 1, temp);
                         compound.setTag("Locations", list);
                         teleporter.setTagCompound(compound);
-                        ItemNBTHelper.setShort(teleporter, "Selection", (short)
-                                (ItemNBTHelper.getShort(teleporter, "Selection", (short) 0) + 1));
+                        ItemNBTHelper.setShort(
+                                teleporter,
+                                "Selection",
+                                (short) (ItemNBTHelper.getShort(teleporter, "Selection", (short) 0) + 1));
                     }
                 }
             }

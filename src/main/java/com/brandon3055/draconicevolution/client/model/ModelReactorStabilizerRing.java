@@ -4,13 +4,14 @@ import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.entity.Entity;
+
 import org.lwjgl.opengl.GL11;
 
 /**
- * EnergyStabilizer - brandon3055
- * Created using Tabula 5.0.0
+ * EnergyStabilizer - brandon3055 Created using Tabula 5.0.0
  */
 public class ModelReactorStabilizerRing extends ModelBase {
+
     public ModelRenderer ringElement1;
     public ModelRenderer ringElement2;
     public ModelRenderer ringElement3;
@@ -114,8 +115,8 @@ public class ModelReactorStabilizerRing extends ModelBase {
     }
 
     @Override
-    public void render(
-            Entity entity, float embitterRotation, float brightness, float f2, float f3, float f4, float scale) {
+    public void render(Entity entity, float embitterRotation, float brightness, float f2, float f3, float f4,
+            float scale) {
 
         this.ringElement1.render(scale);
         this.ringElement2.render(scale);
@@ -187,9 +188,9 @@ public class ModelReactorStabilizerRing extends ModelBase {
         this.hing4.render(scale);
         GL11.glPopMatrix();
 
-        //		float lastBrightnessX = OpenGlHelper.lastBrightnessX;
-        //		float lastBrightnessY = OpenGlHelper.lastBrightnessY;
-        //		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 200F, 200F);
+        // float lastBrightnessX = OpenGlHelper.lastBrightnessX;
+        // float lastBrightnessY = OpenGlHelper.lastBrightnessY;
+        // OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 200F, 200F);
         float lastBrightnessX = OpenGlHelper.lastBrightnessX;
         float lastBrightnessY = OpenGlHelper.lastBrightnessY;
 
@@ -197,7 +198,9 @@ public class ModelReactorStabilizerRing extends ModelBase {
         float colour = Math.min(2F, (brightness * 2F) + 0.1F);
 
         OpenGlHelper.setLightmapTextureCoords(
-                OpenGlHelper.lightmapTexUnit, Math.min(200F, lastBrightnessX + b), Math.min(200F, lastBrightnessY + b));
+                OpenGlHelper.lightmapTexUnit,
+                Math.min(200F, lastBrightnessX + b),
+                Math.min(200F, lastBrightnessY + b));
         GL11.glColor4f(colour, colour, colour, 1F);
         if (brightness > 0F) GL11.glDisable(GL11.GL_LIGHTING);
 

@@ -1,5 +1,8 @@
 package com.brandon3055.draconicevolution.common.network;
 
+import net.minecraft.inventory.Container;
+import net.minecraft.item.ItemStack;
+
 import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.gui.GuiHandler;
@@ -10,14 +13,14 @@ import com.brandon3055.draconicevolution.common.tileentities.TileDissEnchanter;
 import com.brandon3055.draconicevolution.common.tileentities.TileDraconiumChest;
 import com.brandon3055.draconicevolution.common.tileentities.TileWeatherController;
 import com.brandon3055.draconicevolution.common.utills.IConfigurableItem;
+
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.inventory.Container;
-import net.minecraft.item.ItemStack;
 
 public class ButtonPacket implements IMessage {
+
     public static final byte ID_WEATHERCONTROLLER = 0;
     public static final byte ID_DISSENCHANTER = 1;
     public static final byte ID_DRACONIUMCHEST0 = 2;
@@ -111,21 +114,18 @@ public class ButtonPacket implements IMessage {
                     break;
                 }
                 case ID_TOOLCONFIG: {
-                    ctx.getServerHandler()
-                            .playerEntity
-                            .openGui(
-                                    DraconicEvolution.instance,
-                                    GuiHandler.GUIID_TOOL_CONFIG,
-                                    ctx.getServerHandler().playerEntity.worldObj,
-                                    (int) ctx.getServerHandler().playerEntity.posX,
-                                    (int) ctx.getServerHandler().playerEntity.posY,
-                                    (int) ctx.getServerHandler().playerEntity.posZ);
+                    ctx.getServerHandler().playerEntity.openGui(
+                            DraconicEvolution.instance,
+                            GuiHandler.GUIID_TOOL_CONFIG,
+                            ctx.getServerHandler().playerEntity.worldObj,
+                            (int) ctx.getServerHandler().playerEntity.posX,
+                            (int) ctx.getServerHandler().playerEntity.posY,
+                            (int) ctx.getServerHandler().playerEntity.posZ);
                     break;
                 }
                 case ID_TOOL_PROFILE_CHANGE: {
                     ItemStack stack = ctx.getServerHandler().playerEntity.getHeldItem();
-                    if (stack != null
-                            && stack.getItem() instanceof IConfigurableItem
+                    if (stack != null && stack.getItem() instanceof IConfigurableItem
                             && ((IConfigurableItem) stack.getItem()).hasProfiles()) {
                         int preset = ItemNBTHelper.getInteger(stack, "ConfigProfile", 0);
                         if (++preset >= 5) preset = 0;

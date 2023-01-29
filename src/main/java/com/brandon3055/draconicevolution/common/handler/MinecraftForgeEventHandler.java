@@ -1,32 +1,11 @@
 package com.brandon3055.draconicevolution.common.handler;
 
-import com.brandon3055.brandonscore.common.handlers.ProcessHandler;
-import com.brandon3055.brandonscore.common.utills.DataUtills;
-import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
-import com.brandon3055.brandonscore.common.utills.Utills;
-import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.common.ModBlocks;
-import com.brandon3055.draconicevolution.common.ModItems;
-import com.brandon3055.draconicevolution.common.achievements.Achievements;
-import com.brandon3055.draconicevolution.common.entity.EntityCustomDragon;
-import com.brandon3055.draconicevolution.common.entity.EntityDragonHeart;
-import com.brandon3055.draconicevolution.common.entity.ExtendedPlayer;
-import com.brandon3055.draconicevolution.common.items.armor.CustomArmorHandler;
-import com.brandon3055.draconicevolution.common.network.MountUpdatePacket;
-import com.brandon3055.draconicevolution.common.network.SpeedRequestPacket;
-import com.brandon3055.draconicevolution.common.tileentities.TileGrinder;
-import com.brandon3055.draconicevolution.common.utills.LogHelper;
-import com.brandon3055.draconicevolution.common.world.ChaosWorldGenHandler;
-import cpw.mods.fml.common.eventhandler.EventPriority;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.relauncher.ReflectionHelper;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Random;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -62,6 +41,30 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerUseItemEvent;
 import net.minecraftforge.event.world.WorldEvent;
 
+import com.brandon3055.brandonscore.common.handlers.ProcessHandler;
+import com.brandon3055.brandonscore.common.utills.DataUtills;
+import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
+import com.brandon3055.brandonscore.common.utills.Utills;
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.common.ModBlocks;
+import com.brandon3055.draconicevolution.common.ModItems;
+import com.brandon3055.draconicevolution.common.achievements.Achievements;
+import com.brandon3055.draconicevolution.common.entity.EntityCustomDragon;
+import com.brandon3055.draconicevolution.common.entity.EntityDragonHeart;
+import com.brandon3055.draconicevolution.common.entity.ExtendedPlayer;
+import com.brandon3055.draconicevolution.common.items.armor.CustomArmorHandler;
+import com.brandon3055.draconicevolution.common.network.MountUpdatePacket;
+import com.brandon3055.draconicevolution.common.network.SpeedRequestPacket;
+import com.brandon3055.draconicevolution.common.tileentities.TileGrinder;
+import com.brandon3055.draconicevolution.common.utills.LogHelper;
+import com.brandon3055.draconicevolution.common.world.ChaosWorldGenHandler;
+
+import cpw.mods.fml.common.eventhandler.EventPriority;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.relauncher.ReflectionHelper;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 public class MinecraftForgeEventHandler {
 
     Random random = new Random();
@@ -75,8 +78,8 @@ public class MinecraftForgeEventHandler {
 
     public MinecraftForgeEventHandler() {
         try {
-            persistenceRequired =
-                    ReflectionHelper.findField(EntityLiving.class, "field_82179_bU", "persistenceRequired");
+            persistenceRequired = ReflectionHelper
+                    .findField(EntityLiving.class, "field_82179_bU", "persistenceRequired");
         } catch (Exception e) {
             LogHelper.error("Unable to find field \"persistenceRequired\"");
         }
@@ -159,31 +162,34 @@ public class MinecraftForgeEventHandler {
     @SubscribeEvent
     public void onDropEvent(LivingDropsEvent event) {
         if (!event.entity.worldObj.isRemote
-                && ((event.entity instanceof EntityDragon)
-                        || (EntityList.getEntityString(event.entity) != null
-                                && !EntityList.getEntityString(event.entity).isEmpty()
-                                && EntityList.getEntityString(event.entity).equals("HardcoreEnderExpansion.Dragon")))) {
+                && ((event.entity instanceof EntityDragon) || (EntityList.getEntityString(event.entity) != null
+                        && !EntityList.getEntityString(event.entity).isEmpty()
+                        && EntityList.getEntityString(event.entity).equals("HardcoreEnderExpansion.Dragon")))) {
             EntityItem item = new EntityItem(
                     event.entity.worldObj,
                     event.entity.posX,
                     event.entity.posY,
                     event.entity.posZ,
                     new ItemStack(ModItems.dragonHeart));
-            event.entity.worldObj.spawnEntityInWorld(new EntityDragonHeart(
-                    event.entity.worldObj,
-                    ((int) event.entity.posX) + 0.5,
-                    event.entity.posY,
-                    ((int) event.entity.posZ) + 0.5));
+            event.entity.worldObj.spawnEntityInWorld(
+                    new EntityDragonHeart(
+                            event.entity.worldObj,
+                            ((int) event.entity.posX) + 0.5,
+                            event.entity.posY,
+                            ((int) event.entity.posZ) + 0.5));
             if (event.entity instanceof EntityCustomDragon && ((EntityCustomDragon) event.entity).getIsUber()) {
-                event.entity.worldObj.spawnEntityInWorld(new EntityDragonHeart(
-                        event.entity.worldObj, event.entity.posX, event.entity.posY + 2, event.entity.posZ));
+                event.entity.worldObj.spawnEntityInWorld(
+                        new EntityDragonHeart(
+                                event.entity.worldObj,
+                                event.entity.posX,
+                                event.entity.posY + 2,
+                                event.entity.posZ));
             }
 
             for (Object o : event.entity.worldObj.playerEntities) {
                 if (o instanceof EntityPlayer) {
-                    ((EntityPlayer) o)
-                            .addChatComponentMessage(
-                                    new ChatComponentText(StatCollector.translateToLocal("msg.de.dragonDeath.txt")));
+                    ((EntityPlayer) o).addChatComponentMessage(
+                            new ChatComponentText(StatCollector.translateToLocal("msg.de.dragonDeath.txt")));
                 }
             }
 
@@ -257,8 +263,8 @@ public class MinecraftForgeEventHandler {
                 return true;
             } else if (ConfigHandler.spawnerList[i].equals(entity.getCommandSenderName())
                     && !ConfigHandler.spawnerListType) {
-                return false;
-            }
+                        return false;
+                    }
         }
         if (ConfigHandler.spawnerListType) {
             return false;
@@ -292,8 +298,16 @@ public class MinecraftForgeEventHandler {
 
     private boolean makeChange(ExtendedBlockStorage storage, int x, int y, int z, Block block) {
         if (block == null) return false;
-        LogHelper.info("Changing block at [X:" + x + " Y:" + y + " Z:" + z + "] from "
-                + storage.getBlockByExtId(x, y, z).getUnlocalizedName() + " to " + block.getUnlocalizedName());
+        LogHelper.info(
+                "Changing block at [X:" + x
+                        + " Y:"
+                        + y
+                        + " Z:"
+                        + z
+                        + "] from "
+                        + storage.getBlockByExtId(x, y, z).getUnlocalizedName()
+                        + " to "
+                        + block.getUnlocalizedName());
         storage.func_150818_a(x, y, z, block);
         return true;
     }
@@ -349,7 +363,7 @@ public class MinecraftForgeEventHandler {
                         becomeAngryAt = ReflectionHelper.findMethod(
                                 EntityPigZombie.class,
                                 zombie,
-                                new String[] {"becomeAngryAt", "func_70835_c"},
+                                new String[] { "becomeAngryAt", "func_70835_c" },
                                 Entity.class);
                         becomeAngryAt.setAccessible(true);
                     }
@@ -362,9 +376,9 @@ public class MinecraftForgeEventHandler {
                         e.printStackTrace();
                     }
 
-                    if (Math.abs(zombie.posX - player.posX) < 14
-                            && Math.abs(zombie.posY - player.posY) < 14
-                            && Math.abs(zombie.posZ - player.posZ) < 14) flag = true;
+                    if (Math.abs(zombie.posX - player.posX) < 14 && Math.abs(zombie.posY - player.posY) < 14
+                            && Math.abs(zombie.posZ - player.posZ) < 14)
+                        flag = true;
                     zombie.addPotionEffect(new PotionEffect(5, 10000, 3));
                     zombie.addPotionEffect(new PotionEffect(11, 10000, 2));
                 }
@@ -387,8 +401,8 @@ public class MinecraftForgeEventHandler {
     public void getBreakSpeed(PlayerEvent.BreakSpeed event) {
         if (event.entityPlayer != null) {
             float newDigSpeed = event.originalSpeed;
-            CustomArmorHandler.ArmorSummery summery =
-                    new CustomArmorHandler.ArmorSummery().getSummery(event.entityPlayer);
+            CustomArmorHandler.ArmorSummery summery = new CustomArmorHandler.ArmorSummery()
+                    .getSummery(event.entityPlayer);
             if (summery == null) return;
 
             if (event.entityPlayer.isInsideOfMaterial(Material.water)) {
@@ -422,7 +436,12 @@ public class MinecraftForgeEventHandler {
             if (event.world.getBlock(x, y, z) == ModBlocks.safetyFlame) {
                 event.world.setBlockToAir(x, y, z);
                 event.world.playSoundEffect(
-                        x + 0.5D, y + 0.5D, z + 0.5D, "random.fizz", 1F, event.world.rand.nextFloat() * 0.1F + 2F);
+                        x + 0.5D,
+                        y + 0.5D,
+                        z + 0.5D,
+                        "random.fizz",
+                        1F,
+                        event.world.rand.nextFloat() * 0.1F + 2F);
                 event.setCanceled(true);
             }
         }
@@ -431,8 +450,8 @@ public class MinecraftForgeEventHandler {
     @SubscribeEvent
     public void entityJoinWorld(EntityJoinWorldEvent event) {
         if (!event.world.isRemote && event.entity instanceof EntityEnderCrystal && event.entity.dimension == 1) {
-            DataUtills.XZPair<Integer, Integer> location = ChaosWorldGenHandler.getClosestChaosSpawn(
-                    (int) event.entity.posX / 16, (int) event.entity.posZ / 16);
+            DataUtills.XZPair<Integer, Integer> location = ChaosWorldGenHandler
+                    .getClosestChaosSpawn((int) event.entity.posX / 16, (int) event.entity.posZ / 16);
             if ((location.x != 0 || location.z != 0)
                     && Utills.getDistanceAtoB(event.entity.posX, event.entity.posZ, location.x, location.z) < 500) {
                 ProcessHandler.addProcess(new ChaosWorldGenHandler.CrystalRemover(event.entity));

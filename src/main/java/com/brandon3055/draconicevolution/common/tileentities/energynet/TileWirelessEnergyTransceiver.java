@@ -1,6 +1,17 @@
 package com.brandon3055.draconicevolution.common.tileentities.energynet;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ChatComponentTranslation;
+import net.minecraftforge.common.util.ForgeDirection;
+
 import cofh.api.energy.IEnergyReceiver;
+
 import com.brandon3055.brandonscore.common.utills.Utills;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.render.particle.ParticleEnergyField;
@@ -8,16 +19,9 @@ import com.brandon3055.draconicevolution.client.render.particle.Particles;
 import com.brandon3055.draconicevolution.common.handler.BalanceConfigHandler;
 import com.brandon3055.draconicevolution.common.items.tools.Wrench;
 import com.brandon3055.draconicevolution.common.lib.References;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import java.util.ArrayList;
-import java.util.List;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraftforge.common.util.ForgeDirection;
 
 /**
  * Created by Brandon on 10/02/2015.
@@ -38,22 +42,19 @@ public class TileWirelessEnergyTransceiver extends TileRemoteEnergyBase {
 
     @Override
     public int getCap() {
-        return powerTier == 0
-                ? BalanceConfigHandler.energyWirelessTransceiverBasicStorage
+        return powerTier == 0 ? BalanceConfigHandler.energyWirelessTransceiverBasicStorage
                 : BalanceConfigHandler.energyWirelessTransceiverAdvancedStorage;
     }
 
     @Override
     public int getRec() {
-        return powerTier == 0
-                ? BalanceConfigHandler.energyWirelessTransceiverBasicMaxReceive
+        return powerTier == 0 ? BalanceConfigHandler.energyWirelessTransceiverBasicMaxReceive
                 : BalanceConfigHandler.energyWirelessTransceiverAdvancedMaxReceive;
     }
 
     @Override
     public int getExt() {
-        return powerTier == 0
-                ? BalanceConfigHandler.energyWirelessTransceiverBasicMaxExtract
+        return powerTier == 0 ? BalanceConfigHandler.energyWirelessTransceiverBasicMaxExtract
                 : BalanceConfigHandler.energyWirelessTransceiverAdvancedMaxExtract;
     }
 
@@ -63,7 +64,14 @@ public class TileWirelessEnergyTransceiver extends TileRemoteEnergyBase {
 
         if (worldObj.isRemote) {
             ring = DraconicEvolution.proxy.energyField(
-                    worldObj, xCoord + 0.5, yCoord + 0.5, zCoord + 0.5, 2, powerTier == 1, ring, inView > 0);
+                    worldObj,
+                    xCoord + 0.5,
+                    yCoord + 0.5,
+                    zCoord + 0.5,
+                    2,
+                    powerTier == 1,
+                    ring,
+                    inView > 0);
 
             for (LinkedReceiver receiver : receiverList) {
                 int particleValue = 200;
@@ -97,8 +105,7 @@ public class TileWirelessEnergyTransceiver extends TileRemoteEnergyBase {
                         storage.extractEnergy(
                                 receiver.receiveEnergy(
                                         worldObj,
-                                        powerTier == 0
-                                                ? BalanceConfigHandler.energyWirelessTransceiverBasicMaxSend
+                                        powerTier == 0 ? BalanceConfigHandler.energyWirelessTransceiverBasicMaxSend
                                                 : BalanceConfigHandler.energyWirelessTransceiverAdvancedMaxSend,
                                         true),
                                 false),
@@ -153,8 +160,7 @@ public class TileWirelessEnergyTransceiver extends TileRemoteEnergyBase {
             LinkedReceiver r = new LinkedReceiver(x, y, z, side);
 
             for (LinkedReceiver r2 : receiverList) {
-                if (r.xCoord == r2.xCoord
-                        && r.yCoord == r2.yCoord
+                if (r.xCoord == r2.xCoord && r.yCoord == r2.yCoord
                         && r.zCoord == r2.zCoord
                         && r.connectionSide == r2.connectionSide) {
                     player.addChatComponentMessage(new ChatComponentTranslation("msg.de.linked.txt"));
@@ -195,19 +201,17 @@ public class TileWirelessEnergyTransceiver extends TileRemoteEnergyBase {
         }
     }
 
-    //	@Override
-    //	public double getCapacity() {
-    //		return ((double) getEnergyStored(ForgeDirection.UNKNOWN) / (double) getMaxEnergyStored(ForgeDirection.UNKNOWN))
+    // @Override
+    // public double getCapacity() {
+    // return ((double) getEnergyStored(ForgeDirection.UNKNOWN) / (double) getMaxEnergyStored(ForgeDirection.UNKNOWN))
     // * 100D;
-    //	}
+    // }
 
     /**
-     * Calculates the energy flow based on the local buffer
-     * and the remote buffer
-     * return double between 0 to 100
+     * Calculates the energy flow based on the local buffer and the remote buffer return double between 0 to 100
      */
     public double getFlow(double localCap, double remoteCap) {
-        return Math.max(0, Math.min(100, (localCap - remoteCap) * 100D /*Flow Multiplier*/));
+        return Math.max(0, Math.min(100, (localCap - remoteCap) * 100D /* Flow Multiplier */));
     }
 
     @Override

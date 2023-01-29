@@ -1,9 +1,8 @@
 package com.brandon3055.draconicevolution.common.blocks;
 
-import com.brandon3055.brandonscore.common.utills.InventoryUtils;
-import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.List;
+
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -11,10 +10,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
+import com.brandon3055.brandonscore.common.utills.InventoryUtils;
+import com.google.common.collect.Lists;
+
 /**
  * Created by Brandon on 13/11/2014.
  */
 public abstract class BlockCustomDrop extends BlockContainerDE {
+
     public BlockCustomDrop(final Material material) {
         super(material);
     }

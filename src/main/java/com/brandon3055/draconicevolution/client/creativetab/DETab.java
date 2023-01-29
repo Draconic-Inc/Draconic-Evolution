@@ -1,25 +1,27 @@
 package com.brandon3055.draconicevolution.client.creativetab;
 
-import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
-import com.brandon3055.draconicevolution.common.ModBlocks;
-import com.brandon3055.draconicevolution.common.ModItems;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
+import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
+import com.brandon3055.draconicevolution.common.ModBlocks;
+import com.brandon3055.draconicevolution.common.ModItems;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 public class DETab extends CreativeTabs {
+
     private String label;
     private int tab;
 
     static ItemStack iconStackStaff;
 
     public static void initialize() {
-        if (ModItems.isEnabled(ModItems.draconicDestructionStaff))
-            iconStackStaff =
-                    ItemNBTHelper.setInteger(new ItemStack(ModItems.draconicDestructionStaff), "Energy", 30000000);
+        if (ModItems.isEnabled(ModItems.draconicDestructionStaff)) iconStackStaff = ItemNBTHelper
+                .setInteger(new ItemStack(ModItems.draconicDestructionStaff), "Energy", 30000000);
         else iconStackStaff = new ItemStack(Items.stick);
     }
 

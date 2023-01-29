@@ -1,17 +1,20 @@
 package com.brandon3055.draconicevolution.client.gui;
 
-import com.brandon3055.draconicevolution.common.container.ContainerTemplate;
-import com.brandon3055.draconicevolution.common.lib.References;
-import com.brandon3055.draconicevolution.common.tileentities.TileContainerTemplate;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
+
 import org.lwjgl.opengl.GL11;
+
+import com.brandon3055.draconicevolution.common.container.ContainerTemplate;
+import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.tileentities.TileContainerTemplate;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GUIContainerTemplate extends GuiContainer {
@@ -29,8 +32,9 @@ public class GUIContainerTemplate extends GuiContainer {
         this.player = invPlayer.player;
     }
 
-    private static final ResourceLocation texture =
-            new ResourceLocation(References.MODID.toLowerCase(), "textures/gui/.png");
+    private static final ResourceLocation texture = new ResourceLocation(
+            References.MODID.toLowerCase(),
+            "textures/gui/.png");
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float f, int x, int y) {

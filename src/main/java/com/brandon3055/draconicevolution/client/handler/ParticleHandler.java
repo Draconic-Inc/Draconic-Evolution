@@ -1,26 +1,22 @@
 package com.brandon3055.draconicevolution.client.handler;
 
-import com.brandon3055.draconicevolution.client.render.particle.ParticleDistortion;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.world.World;
 
+import com.brandon3055.draconicevolution.client.render.particle.ParticleDistortion;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 @SideOnly(Side.CLIENT)
 public class ParticleHandler {
+
     private static Minecraft mc = Minecraft.getMinecraft();
     private static World theWorld = mc.theWorld;
 
-    public static EntityFX spawnParticle(
-            String particleName,
-            double x,
-            double y,
-            double z,
-            double motionX,
-            double motionY,
-            double motionZ,
-            float scale) {
+    public static EntityFX spawnParticle(String particleName, double x, double y, double z, double motionX,
+            double motionY, double motionZ, float scale) {
         if (mc != null && mc.renderViewEntity != null && mc.effectRenderer != null) {
             int var14 = mc.gameSettings.particleSetting;
             if (var14 == 1 && theWorld.rand.nextInt(3) == 0) {
@@ -38,7 +34,14 @@ public class ParticleHandler {
             } else {
                 if (particleName.equals("distortionParticle")) {
                     var21 = new ParticleDistortion(
-                            theWorld, x, y, z, (float) motionX, (float) motionY, (float) motionZ, scale);
+                            theWorld,
+                            x,
+                            y,
+                            z,
+                            (float) motionX,
+                            (float) motionY,
+                            (float) motionZ,
+                            scale);
                 }
 
                 mc.effectRenderer.addEffect(var21);

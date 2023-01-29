@@ -1,5 +1,24 @@
 package com.brandon3055.draconicevolution.common.items.tools.baseclasses;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.EnumRarity;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.StatCollector;
+import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeHooks;
+
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
+
 import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.common.utills.DataUtills;
 import com.brandon3055.brandonscore.common.utills.InfoHelper;
@@ -13,24 +32,9 @@ import com.brandon3055.draconicevolution.common.utills.IConfigurableItem;
 import com.brandon3055.draconicevolution.common.utills.IUpgradableItem;
 import com.brandon3055.draconicevolution.common.utills.ItemConfigField;
 import com.google.common.collect.Sets;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.item.EnumRarity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.StatCollector;
-import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeHooks;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
 
 /**
  * Created by Brandon on 2/01/2015.
@@ -145,8 +149,7 @@ public class ToolBase extends RFItemBase {
      */
     @Override
     public float func_150893_a(ItemStack stack, Block block) {
-        return blockOverrides.contains(block) || blockOverrides.contains(block.getMaterial())
-                ? getEfficiency(stack)
+        return blockOverrides.contains(block) || blockOverrides.contains(block.getMaterial()) ? getEfficiency(stack)
                 : 1.0F;
     }
 
@@ -191,14 +194,11 @@ public class ToolBase extends RFItemBase {
     @Override
     public List<ItemConfigField> getFields(ItemStack stack, int slot) {
         List<ItemConfigField> list = super.getFields(stack, slot);
-        if (!getToolClasses(stack).isEmpty())
-            list.add(new ItemConfigField(References.FLOAT_ID, slot, References.DIG_SPEED_MULTIPLIER)
-                    .setMinMaxAndIncromente(0f, 1f, 0.01f)
-                    .readFromItem(stack, 1f)
-                    .setModifier("PERCENT"));
-        if (!getToolClasses(stack).isEmpty())
-            list.add(new ItemConfigField(References.BOOLEAN_ID, slot, References.BASE_SAFE_AOE)
-                    .readFromItem(stack, false));
+        if (!getToolClasses(stack).isEmpty()) list.add(
+                new ItemConfigField(References.FLOAT_ID, slot, References.DIG_SPEED_MULTIPLIER)
+                        .setMinMaxAndIncromente(0f, 1f, 0.01f).readFromItem(stack, 1f).setModifier("PERCENT"));
+        if (!getToolClasses(stack).isEmpty()) list.add(
+                new ItemConfigField(References.BOOLEAN_ID, slot, References.BASE_SAFE_AOE).readFromItem(stack, false));
         return list;
     }
 
@@ -209,12 +209,14 @@ public class ToolBase extends RFItemBase {
         if (show) {
             if (hasProfiles()) {
                 int preset = ItemNBTHelper.getInteger(stack, "ConfigProfile", 0);
-                list.add(EnumChatFormatting.DARK_PURPLE + StatCollector.translateToLocal("info.de.capacitorMode.txt")
-                        + ": " + ItemNBTHelper.getString(stack, "ProfileName" + preset, "Profile " + preset));
+                list.add(
+                        EnumChatFormatting.DARK_PURPLE + StatCollector.translateToLocal("info.de.capacitorMode.txt")
+                                + ": "
+                                + ItemNBTHelper.getString(stack, "ProfileName" + preset, "Profile " + preset));
             }
             List<ItemConfigField> l = getFields(stack, 0);
             for (ItemConfigField f : l) list.add(f.getTooltipInfo());
-            //	if (getCapacity(stack) > 0) list.add(InfoHelper.ITC() +
+            // if (getCapacity(stack) > 0) list.add(InfoHelper.ITC() +
             // StatCollector.translateToLocal("info.de.charge.txt") + ": " + InfoHelper.HITC() +
             // Utills.formatNumber(getEnergyStored(stack)) + " / " + Utills.formatNumber(getCapacity(stack)));
         }
@@ -232,8 +234,11 @@ public class ToolBase extends RFItemBase {
             key = Keyboard.getKeyName(KeyBindings.toolConfig.getKeyCode());
         else key = Mouse.getButtonName(KeyBindings.toolConfig.getKeyCode() + 101);
 
-        list.add(StatCollector.translateToLocal("info.de.press.txt") + " " + key + " "
-                + StatCollector.translateToLocal("info.de.toOpenConfigGUI.txt"));
+        list.add(
+                StatCollector.translateToLocal("info.de.press.txt") + " "
+                        + key
+                        + " "
+                        + StatCollector.translateToLocal("info.de.toOpenConfigGUI.txt"));
     }
 
     @Override
@@ -249,8 +254,8 @@ public class ToolBase extends RFItemBase {
             handleModeChange(stack, player, InfoHelper.isShiftKeyDown(), InfoHelper.isCtrlKeyDown());
         } else if (world.isRemote && BrandonsCore.proxy.getMCServer() == null) {
             handleModeChange(stack, player, InfoHelper.isShiftKeyDown(), InfoHelper.isCtrlKeyDown());
-            DraconicEvolution.network.sendToServer(
-                    new ToolModePacket(InfoHelper.isShiftKeyDown(), InfoHelper.isCtrlKeyDown()));
+            DraconicEvolution.network
+                    .sendToServer(new ToolModePacket(InfoHelper.isShiftKeyDown(), InfoHelper.isCtrlKeyDown()));
         }
 
         return super.onItemRightClick(stack, world, player);
@@ -314,15 +319,22 @@ public class ToolBase extends RFItemBase {
 
     public static void holdCTRLForUpgrades(List list, ItemStack stack) {
         if (stack == null || !(stack.getItem() instanceof IUpgradableItem)) return;
-        if (!InfoHelper.isCtrlKeyDown())
-            list.add(StatCollector.translateToLocal("info.de.hold.txt") + " " + EnumChatFormatting.AQUA + ""
-                    + EnumChatFormatting.ITALIC + StatCollector.translateToLocal("info.de.ctrl.txt")
-                    + EnumChatFormatting.RESET + " " + EnumChatFormatting.GRAY
-                    + StatCollector.translateToLocal("info.de.forUpgrades.txt"));
+        if (!InfoHelper.isCtrlKeyDown()) list.add(
+                StatCollector.translateToLocal("info.de.hold.txt") + " "
+                        + EnumChatFormatting.AQUA
+                        + ""
+                        + EnumChatFormatting.ITALIC
+                        + StatCollector.translateToLocal("info.de.ctrl.txt")
+                        + EnumChatFormatting.RESET
+                        + " "
+                        + EnumChatFormatting.GRAY
+                        + StatCollector.translateToLocal("info.de.forUpgrades.txt"));
         else {
             list.addAll(((IUpgradableItem) stack.getItem()).getUpgradeStats(stack));
-            list.add(EnumChatFormatting.GOLD + "" + EnumChatFormatting.ITALIC
-                    + StatCollector.translateToLocal("info.de.useUpgradeModifier.txt"));
+            list.add(
+                    EnumChatFormatting.GOLD + ""
+                            + EnumChatFormatting.ITALIC
+                            + StatCollector.translateToLocal("info.de.useUpgradeModifier.txt"));
         }
     }
 }

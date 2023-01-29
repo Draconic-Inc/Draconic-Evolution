@@ -1,7 +1,5 @@
 package com.brandon3055.draconicevolution.client.render.tile;
 
-import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
-import com.brandon3055.draconicevolution.common.tileentities.TileChaosShard;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -9,14 +7,19 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraftforge.client.model.AdvancedModelLoader;
 import net.minecraftforge.client.model.IModelCustom;
+
 import org.lwjgl.opengl.GL11;
+
+import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
+import com.brandon3055.draconicevolution.common.tileentities.TileChaosShard;
 
 /**
  * Created by brandon3055 on 24/9/2015.
  */
 public class RenderTileChaosShard extends TileEntitySpecialRenderer {
-    public static IModelCustom model =
-            AdvancedModelLoader.loadModel(ResourceHandler.getResource("models/chaosCrystal.obj"));
+
+    public static IModelCustom model = AdvancedModelLoader
+            .loadModel(ResourceHandler.getResource("models/chaosCrystal.obj"));
 
     @Override
     public void renderTileEntityAt(TileEntity tile, double x, double y, double z, float tick) {

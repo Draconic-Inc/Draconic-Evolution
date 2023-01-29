@@ -1,5 +1,22 @@
 package com.brandon3055.draconicevolution.client.gui.guicomponents;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.*;
+import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.oredict.ShapedOreRecipe;
+import net.minecraftforge.oredict.ShapelessOreRecipe;
+
+import org.apache.commons.io.FilenameUtils;
+import org.lwjgl.opengl.GL11;
+
 import com.brandon3055.brandonscore.client.gui.guicomponents.ComponentScrollingBase;
 import com.brandon3055.brandonscore.client.gui.guicomponents.GUIScrollingBase;
 import com.brandon3055.brandonscore.client.utills.GuiHelper;
@@ -8,25 +25,12 @@ import com.brandon3055.brandonscore.common.utills.Utills;
 import com.brandon3055.draconicevolution.client.gui.componentguis.ManualPage;
 import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
 import com.brandon3055.draconicevolution.client.utill.CustomResourceLocation;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.*;
-import net.minecraftforge.oredict.OreDictionary;
-import net.minecraftforge.oredict.ShapedOreRecipe;
-import net.minecraftforge.oredict.ShapelessOreRecipe;
-import org.apache.commons.io.FilenameUtils;
-import org.lwjgl.opengl.GL11;
 
 /**
  * Created by Brandon on 19/03/2015.
  */
 public class ComponentManualPage extends ComponentScrollingBase {
+
     public ManualPage page;
     public List<ContentComponent> contentList = new ArrayList<ContentComponent>();
     private int pageLength = 0;
@@ -56,7 +60,7 @@ public class ComponentManualPage extends ComponentScrollingBase {
 
     @Override
     public void handleScrollInput(int direction) {
-        //	scrollOffset += direction * 10;
+        // scrollOffset += direction * 10;
         scrollOffset += direction * (InfoHelper.isShiftKeyDown() ? 30 : 10);
         if (scrollOffset < 0) scrollOffset = 0;
         if (scrollOffset > pageLength - getHeight()) scrollOffset = pageLength - getHeight();
@@ -154,8 +158,7 @@ public class ComponentManualPage extends ComponentScrollingBase {
 
                 if (stack != null) {
 
-                    for (IRecipe recipe :
-                            (List<IRecipe>) CraftingManager.getInstance().getRecipeList()) {
+                    for (IRecipe recipe : (List<IRecipe>) CraftingManager.getInstance().getRecipeList()) {
                         if (recipe == null) continue;
 
                         ItemStack result = recipe.getRecipeOutput();
@@ -167,10 +170,7 @@ public class ComponentManualPage extends ComponentScrollingBase {
                         recipes.add(recipe);
                     }
 
-                    Iterator iterator = FurnaceRecipes.smelting()
-                            .getSmeltingList()
-                            .entrySet()
-                            .iterator();
+                    Iterator iterator = FurnaceRecipes.smelting().getSmeltingList().entrySet().iterator();
                     Map.Entry entry;
 
                     while (iterator.hasNext()) {
@@ -184,10 +184,8 @@ public class ComponentManualPage extends ComponentScrollingBase {
         }
 
         public int getHeight() {
-            if (type == 1
-                    && (ResourceHandler.downloadedImages.containsKey(FilenameUtils.getName(content))
-                            || (slide
-                                    && ResourceHandler.downloadedImages.containsKey(FilenameUtils.getName(content))))) {
+            if (type == 1 && (ResourceHandler.downloadedImages.containsKey(FilenameUtils.getName(content))
+                    || (slide && ResourceHandler.downloadedImages.containsKey(FilenameUtils.getName(content))))) {
                 CustomResourceLocation texture = slide
                         ? ResourceHandler.downloadedImages.get(FilenameUtils.getName(content))
                         : ResourceHandler.downloadedImages.get(FilenameUtils.getName(content));
@@ -211,7 +209,11 @@ public class ComponentManualPage extends ComponentScrollingBase {
                 int y = yPos - page.scrollOffset;
                 if (y > 310 || y < 5) return;
                 page.drawCenteredString(
-                        page.fontRendererObj, content.substring(content.indexOf("title.") + 6), 128, y, 0x00ffff);
+                        page.fontRendererObj,
+                        content.substring(content.indexOf("title.") + 6),
+                        128,
+                        y,
+                        0x00ffff);
 
                 if ((page.page.name.contains("tile.") || page.page.name.contains("item.")) && page.stack != null) {
                     ResourceHandler.bindResource("textures/gui/Widgets.png");
@@ -229,8 +231,9 @@ public class ComponentManualPage extends ComponentScrollingBase {
         }
 
         private void renderImage() {
-            CustomResourceLocation image =
-                    null; // slide ? ResourceHandler.downloadedImages.get(slides.get(page.slideTick % slides.size() -
+            CustomResourceLocation image = null; // slide ?
+                                                 // ResourceHandler.downloadedImages.get(slides.get(page.slideTick %
+                                                 // slides.size() -
             // 1)) : ResourceHandler.downloadedImages.get(content);
             if (slide) {
                 int index = (page.slideTick / 20) % (slides.size());
@@ -297,13 +300,13 @@ public class ComponentManualPage extends ComponentScrollingBase {
 
                     if (y + yDown + posY < 0 || y + yDown + posY > 305) continue;
                     page.drawTexturedModalRect(x + posX, y + yDown + posY, 138, 0, 18, 18);
-                    ItemStack stack = (ItemStack)
-                            (getRecipeInput(recipe).length > i && getRecipeInput(recipe)[i] instanceof ItemStack
+                    ItemStack stack = (ItemStack) (getRecipeInput(recipe).length > i
+                            && getRecipeInput(recipe)[i] instanceof ItemStack
                                     ? getRecipeInput(recipe)[i]
                                     : getRecipeInput(recipe).length > i
-                                                    && getRecipeInput(recipe)[i] instanceof ArrayList
-                                            ? ((ArrayList) getRecipeInput(recipe)[i]).get(0)
-                                            : null);
+                                            && getRecipeInput(recipe)[i] instanceof ArrayList
+                                                    ? ((ArrayList) getRecipeInput(recipe)[i]).get(0)
+                                                    : null);
 
                     if (stack != null) {
                         if (stack.getItemDamage() == OreDictionary.WILDCARD_VALUE) stack.setItemDamage(0);
@@ -341,13 +344,13 @@ public class ComponentManualPage extends ComponentScrollingBase {
                     int y = i / 3 * 18;
 
                     if (y + yDown + posY < 0 || y + yDown + posY > 305) continue;
-                    ItemStack stack = (ItemStack)
-                            (getRecipeInput(recipe).length > i && getRecipeInput(recipe)[i] instanceof ItemStack
+                    ItemStack stack = (ItemStack) (getRecipeInput(recipe).length > i
+                            && getRecipeInput(recipe)[i] instanceof ItemStack
                                     ? getRecipeInput(recipe)[i]
                                     : getRecipeInput(recipe).length > i
-                                                    && getRecipeInput(recipe)[i] instanceof ArrayList
-                                            ? ((ArrayList) getRecipeInput(recipe)[i]).get(0)
-                                            : null);
+                                            && getRecipeInput(recipe)[i] instanceof ArrayList
+                                                    ? ((ArrayList) getRecipeInput(recipe)[i]).get(0)
+                                                    : null);
 
                     if (stack != null) {
                         if (GuiHelper.isInRect(1 + x + posX, 1 + y + yDown + posY, 18, 18, mouseX, mouseY)) {
@@ -403,8 +406,7 @@ public class ComponentManualPage extends ComponentScrollingBase {
         }
 
         private Object[] getRecipeInput(IRecipe recipe) {
-            if (recipe instanceof ShapelessOreRecipe)
-                return ((ShapelessOreRecipe) recipe).getInput().toArray();
+            if (recipe instanceof ShapelessOreRecipe) return ((ShapelessOreRecipe) recipe).getInput().toArray();
             else if (recipe instanceof ShapedOreRecipe) return getShapedOreRecipe((ShapedOreRecipe) recipe);
             else if (recipe instanceof ShapedRecipes) return ((ShapedRecipes) recipe).recipeItems;
             else if (recipe instanceof ShapelessRecipes)

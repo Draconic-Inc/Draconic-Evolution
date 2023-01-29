@@ -1,24 +1,28 @@
 package com.brandon3055.draconicevolution.client.gui.componentguis;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.StatCollector;
+
+import org.lwjgl.opengl.GL11;
+
 import com.brandon3055.brandonscore.client.gui.guicomponents.*;
 import com.brandon3055.brandonscore.client.utills.GuiHelper;
 import com.brandon3055.brandonscore.common.utills.Utills;
 import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
 import com.brandon3055.draconicevolution.common.container.ContainerReactor;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.reactor.TileReactorCore;
-import java.util.ArrayList;
-import java.util.List;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.StatCollector;
-import org.lwjgl.opengl.GL11;
 
 /**
  * Created by brandon3055 on 30/7/2015.
  */
 public class GUIReactor extends GUIBase {
+
     private TileReactorCore reactor;
     private ContainerReactor container;
     private static boolean showStats = false;
@@ -34,8 +38,8 @@ public class GUIReactor extends GUIBase {
         collection = new ComponentCollection(0, 0, 248, 222, this);
         collection.addComponent(
                 new ComponentTexturedRect(0, 0, xSize, ySize, ResourceHandler.getResource("textures/gui/Reactor.png")));
-        collection
-                .addComponent(new ComponentTextureButton(
+        collection.addComponent(
+                new ComponentTextureButton(
                         14,
                         190,
                         18,
@@ -48,8 +52,8 @@ public class GUIReactor extends GUIBase {
                         StatCollector.translateToLocal("button.de.reactorCharge.txt"),
                         ResourceHandler.getResource("textures/gui/Widgets.png")))
                 .setName("CHARGE");
-        collection
-                .addComponent(new ComponentTextureButton(
+        collection.addComponent(
+                new ComponentTextureButton(
                         14,
                         190,
                         18,
@@ -62,8 +66,8 @@ public class GUIReactor extends GUIBase {
                         StatCollector.translateToLocal("button.de.reactorStart.txt"),
                         ResourceHandler.getResource("textures/gui/Widgets.png")))
                 .setName("ACTIVATE");
-        collection
-                .addComponent(new ComponentTextureButton(
+        collection.addComponent(
+                new ComponentTextureButton(
                         216,
                         190,
                         18,
@@ -76,8 +80,8 @@ public class GUIReactor extends GUIBase {
                         StatCollector.translateToLocal("button.de.reactorStop.txt"),
                         ResourceHandler.getResource("textures/gui/Widgets.png")))
                 .setName("DEACTIVATE");
-        collection
-                .addComponent(new ComponentButton(
+        collection.addComponent(
+                new ComponentButton(
                         9,
                         120,
                         43,
@@ -99,15 +103,15 @@ public class GUIReactor extends GUIBase {
             drawTexturedModalRect(guiLeft + 14, guiTop + 139, 14, ySize, 18, 18);
             drawTexturedModalRect(guiLeft + 216, guiTop + 139, 32, ySize, 18, 18);
 
-            fontRendererObj.drawString(
-                    StatCollector.translateToLocal("gui.de.insert.txt"), guiLeft + 8, guiTop + 159, 0);
-            fontRendererObj.drawString(
-                    StatCollector.translateToLocal("gui.de.fuel.txt"), guiLeft + 13, guiTop + 168, 0);
+            fontRendererObj
+                    .drawString(StatCollector.translateToLocal("gui.de.insert.txt"), guiLeft + 8, guiTop + 159, 0);
+            fontRendererObj
+                    .drawString(StatCollector.translateToLocal("gui.de.fuel.txt"), guiLeft + 13, guiTop + 168, 0);
 
-            fontRendererObj.drawString(
-                    StatCollector.translateToLocal("gui.de.extract.txt"), guiLeft + 206, guiTop + 159, 0);
-            fontRendererObj.drawString(
-                    StatCollector.translateToLocal("gui.de.fuel.txt"), guiLeft + 215, guiTop + 168, 0);
+            fontRendererObj
+                    .drawString(StatCollector.translateToLocal("gui.de.extract.txt"), guiLeft + 206, guiTop + 159, 0);
+            fontRendererObj
+                    .drawString(StatCollector.translateToLocal("gui.de.fuel.txt"), guiLeft + 215, guiTop + 168, 0);
         }
         drawCenteredString(fontRendererObj, "Draconic Reactor", guiLeft + xSize / 2, guiTop + 4, 0x00FFFF);
     }
@@ -157,14 +161,13 @@ public class GUIReactor extends GUIBase {
         }
 
         String status = StatCollector.translateToLocal("gui.de.status.txt") + ": "
-                + (reactor.reactorState == 0
-                        ? EnumChatFormatting.DARK_GRAY
-                        : reactor.reactorState == 1
-                                ? EnumChatFormatting.RED
+                + (reactor.reactorState == 0 ? EnumChatFormatting.DARK_GRAY
+                        : reactor.reactorState == 1 ? EnumChatFormatting.RED
                                 : reactor.reactorState == 2 ? EnumChatFormatting.DARK_GREEN : EnumChatFormatting.RED)
                 + StatCollector.translateToLocal("gui.de.status" + reactor.reactorState + ".txt");
         if (reactor.reactorState == 1 && reactor.canStart())
-            status = StatCollector.translateToLocal("gui.de.status.txt") + ": " + EnumChatFormatting.DARK_GREEN
+            status = StatCollector.translateToLocal("gui.de.status.txt") + ": "
+                    + EnumChatFormatting.DARK_GREEN
                     + StatCollector.translateToLocal("gui.de.status1_5.txt");
         if (!showStats) fontRendererObj.drawString(status, xSize - 5 - fontRendererObj.getStringWidth(status), 125, 0);
     }
@@ -181,52 +184,64 @@ public class GUIReactor extends GUIBase {
             text.add(StatCollector.translateToLocal("gui.de.fieldStrength.txt"));
             if (reactor.maxFieldCharge > 0)
                 text.add(Utills.round(reactor.fieldCharge / reactor.maxFieldCharge * 100D, 100D) + "%");
-            text.add(Utills.addCommas((int) reactor.fieldCharge) + " / "
-                    + Utills.addCommas((int) reactor.maxFieldCharge)); // todo refine or remove
+            text.add(
+                    Utills.addCommas((int) reactor.fieldCharge) + " / "
+                            + Utills.addCommas((int) reactor.maxFieldCharge)); // todo refine or remove
             drawHoveringText(text, mouseX, mouseY, fontRendererObj);
         } else if (GuiHelper.isInRect(197, 4, 18, 114, mouseX - guiLeft, mouseY - guiTop)) {
             text.add(StatCollector.translateToLocal("gui.de.energySaturation.txt"));
-            if (reactor.maxEnergySaturation > 0)
-                text.add(Utills.round(
-                                (double) reactor.energySaturation / (double) reactor.maxEnergySaturation * 100D, 100D)
-                        + "%");
-            text.add(Utills.addCommas(reactor.energySaturation) + " / "
-                    + Utills.addCommas(reactor.maxEnergySaturation)); // todo refine or remove
+            if (reactor.maxEnergySaturation > 0) text.add(
+                    Utills.round((double) reactor.energySaturation / (double) reactor.maxEnergySaturation * 100D, 100D)
+                            + "%");
+            text.add(
+                    Utills.addCommas(reactor.energySaturation) + " / " + Utills.addCommas(reactor.maxEnergySaturation)); // todo
+                                                                                                                         // refine
+                                                                                                                         // or
+                                                                                                                         // remove
             drawHoveringText(text, mouseX, mouseY, fontRendererObj);
         } else if (GuiHelper.isInRect(221, 4, 18, 114, mouseX - guiLeft, mouseY - guiTop)) {
             text.add(StatCollector.translateToLocal("gui.de.fuelConversion.txt"));
-            if (reactor.reactorFuel + reactor.convertedFuel > 0)
-                text.add(Utills.round(
-                                ((double) reactor.convertedFuel + reactor.conversionUnit)
-                                        / ((double) reactor.convertedFuel + (double) reactor.reactorFuel)
-                                        * 100D,
-                                100D)
-                        + "%");
-            text.add(reactor.convertedFuel + " / "
-                    + (reactor.convertedFuel + reactor.reactorFuel)); // todo refine or remove
+            if (reactor.reactorFuel + reactor.convertedFuel > 0) text.add(
+                    Utills.round(
+                            ((double) reactor.convertedFuel + reactor.conversionUnit)
+                                    / ((double) reactor.convertedFuel + (double) reactor.reactorFuel)
+                                    * 100D,
+                            100D) + "%");
+            text.add(reactor.convertedFuel + " / " + (reactor.convertedFuel + reactor.reactorFuel)); // todo refine or
+                                                                                                     // remove
             drawHoveringText(text, mouseX, mouseY, fontRendererObj);
         }
 
         if (showStats) {
             if (GuiHelper.isInRect(53, 15, 140, 18, mouseX - guiLeft, mouseY - guiTop)) {
-                text.addAll(fontRendererObj.listFormattedStringToWidth(
-                        StatCollector.translateToLocal("gui.de.reacTempLoadFactor.txt"), 200));
+                text.addAll(
+                        fontRendererObj.listFormattedStringToWidth(
+                                StatCollector.translateToLocal("gui.de.reacTempLoadFactor.txt"),
+                                200));
                 drawHoveringText(text, mouseX, mouseY, fontRendererObj);
             } else if (GuiHelper.isInRect(53, 40, 140, 18, mouseX - guiLeft, mouseY - guiTop)) {
-                text.addAll(fontRendererObj.listFormattedStringToWidth(
-                        StatCollector.translateToLocal("gui.de.reacCoreMass.txt"), 200));
+                text.addAll(
+                        fontRendererObj.listFormattedStringToWidth(
+                                StatCollector.translateToLocal("gui.de.reacCoreMass.txt"),
+                                200));
                 drawHoveringText(text, mouseX, mouseY, fontRendererObj);
             } else if (GuiHelper.isInRect(53, 65, 140, 18, mouseX - guiLeft, mouseY - guiTop)) {
-                text.addAll(fontRendererObj.listFormattedStringToWidth(
-                        StatCollector.translateToLocal("gui.de.reacGenRate.txt"), 200));
+                text.addAll(
+                        fontRendererObj.listFormattedStringToWidth(
+                                StatCollector.translateToLocal("gui.de.reacGenRate.txt"),
+                                200));
                 drawHoveringText(text, mouseX, mouseY, fontRendererObj);
             } else if (GuiHelper.isInRect(53, 88, 140, 18, mouseX - guiLeft, mouseY - guiTop)) {
-                text.addAll(fontRendererObj.listFormattedStringToWidth(
-                        StatCollector.translateToLocal("gui.de.reacInputRate.txt"), 200));
+                text.addAll(
+                        fontRendererObj.listFormattedStringToWidth(
+                                StatCollector.translateToLocal("gui.de.reacInputRate.txt"),
+                                200));
                 drawHoveringText(text, mouseX, mouseY, fontRendererObj);
             } else if (GuiHelper.isInRect(53, 113, 140, 18, mouseX - guiLeft, mouseY - guiTop)) {
-                text.addAll(fontRendererObj.listFormattedStringToWidth(
-                        StatCollector.translateToLocal("gui.de.reacConversionRate.txt"), 200));
+                text.addAll(
+                        fontRendererObj.listFormattedStringToWidth(
+                                StatCollector.translateToLocal("gui.de.reacConversionRate.txt"),
+                                200));
                 drawHoveringText(text, mouseX, mouseY, fontRendererObj);
             }
         }
@@ -239,17 +254,23 @@ public class GUIReactor extends GUIBase {
         fontRendererObj.drawString(Utills.round(reactor.tempDrainFactor * 100D, 1D) + "%", 60, 2 + 24, 0);
         fontRendererObj.drawString(StatCollector.translateToLocal("gui.de.mass.name"), 55, 16 + 24, 0x0000FF);
         fontRendererObj.drawString(
-                Utills.round((reactor.reactorFuel + reactor.convertedFuel) / 1296D, 100) + "m^3", 60, 2 + 2 * 24, 0);
+                Utills.round((reactor.reactorFuel + reactor.convertedFuel) / 1296D, 100) + "m^3",
+                60,
+                2 + 2 * 24,
+                0);
         fontRendererObj.drawString(StatCollector.translateToLocal("gui.de.genRate.name"), 55, 16 + 2 * 24, 0x0000FF);
         fontRendererObj.drawString(Utills.addCommas((int) reactor.generationRate) + "RF/t", 60, 2 + 3 * 24, 0);
+        fontRendererObj
+                .drawString(StatCollector.translateToLocal("gui.de.fieldInputRate.name"), 55, 16 + 3 * 24, 0x0000FF);
+        fontRendererObj
+                .drawString(Utills.addCommas((int) Math.min(inputRate, Integer.MAX_VALUE)) + "RF/t", 60, 2 + 4 * 24, 0);
+        fontRendererObj
+                .drawString(StatCollector.translateToLocal("gui.de.fuelConversion.name"), 55, 16 + 4 * 24, 0x0000FF);
         fontRendererObj.drawString(
-                StatCollector.translateToLocal("gui.de.fieldInputRate.name"), 55, 16 + 3 * 24, 0x0000FF);
-        fontRendererObj.drawString(
-                Utills.addCommas((int) Math.min(inputRate, Integer.MAX_VALUE)) + "RF/t", 60, 2 + 4 * 24, 0);
-        fontRendererObj.drawString(
-                StatCollector.translateToLocal("gui.de.fuelConversion.name"), 55, 16 + 4 * 24, 0x0000FF);
-        fontRendererObj.drawString(
-                Utills.addCommas((int) Math.round(reactor.fuelUseRate * 1000000D)) + "nb/t", 60, 2 + 5 * 24, 0);
+                Utills.addCommas((int) Math.round(reactor.fuelUseRate * 1000000D)) + "nb/t",
+                60,
+                2 + 5 * 24,
+                0);
     }
 
     @Override
@@ -261,11 +282,12 @@ public class GUIReactor extends GUIBase {
             collection.getComponent("DEACTIVATE").setEnabled(false);
         else collection.getComponent("DEACTIVATE").setEnabled(true);
         if ((reactor.reactorState == TileReactorCore.STATE_OFFLINE
-                        || (reactor.reactorState == TileReactorCore.STATE_STOP && !reactor.canStart()))
-                && reactor.canCharge()) collection.getComponent("CHARGE").setEnabled(true);
+                || (reactor.reactorState == TileReactorCore.STATE_STOP && !reactor.canStart())) && reactor.canCharge())
+            collection.getComponent("CHARGE").setEnabled(true);
         else collection.getComponent("CHARGE").setEnabled(false);
         if ((reactor.reactorState == TileReactorCore.STATE_START || reactor.reactorState == TileReactorCore.STATE_STOP)
-                && reactor.canStart()) collection.getComponent("ACTIVATE").setEnabled(true);
+                && reactor.canStart())
+            collection.getComponent("ACTIVATE").setEnabled(true);
         else collection.getComponent("ACTIVATE").setEnabled(false);
         super.updateScreen();
     }

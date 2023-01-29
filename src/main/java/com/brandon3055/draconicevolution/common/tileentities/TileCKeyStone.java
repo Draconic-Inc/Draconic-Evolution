@@ -1,7 +1,5 @@
 package com.brandon3055.draconicevolution.common.tileentities;
 
-import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
-import com.brandon3055.draconicevolution.common.ModItems;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -11,6 +9,9 @@ import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
+
+import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
+import com.brandon3055.draconicevolution.common.ModItems;
 
 /**
  * Created by Brandon on 27/08/2014.
@@ -43,10 +44,10 @@ public class TileCKeyStone extends TileEntity {
 
     public boolean onActivated(ItemStack stack, EntityPlayer player) {
         if (stack == null || stack.getItem() != ModItems.key) {
-            if (player.capabilities.isCreativeMode
-                    && stack == null
+            if (player.capabilities.isCreativeMode && stack == null
                     && player.isSneaking()
-                    && (getMeta() == 1 || getMeta() == 3)) delay += 5;
+                    && (getMeta() == 1 || getMeta() == 3))
+                delay += 5;
             if (player.capabilities.isCreativeMode && stack == null) giveInformation(player);
             return false;
         }
@@ -77,22 +78,20 @@ public class TileCKeyStone extends TileEntity {
                         0.6F);
                 break;
             case 2: // Toggle Activation
-                if (!isActivated)
-                    worldObj.playSoundEffect(
-                            (double) xCoord + 0.5D,
-                            (double) yCoord + 0.5D,
-                            (double) zCoord + 0.5D,
-                            "random.click",
-                            0.3F,
-                            0.6F);
-                else
-                    worldObj.playSoundEffect(
-                            (double) xCoord + 0.5D,
-                            (double) yCoord + 0.5D,
-                            (double) zCoord + 0.5D,
-                            "random.click",
-                            0.3F,
-                            0.5F);
+                if (!isActivated) worldObj.playSoundEffect(
+                        (double) xCoord + 0.5D,
+                        (double) yCoord + 0.5D,
+                        (double) zCoord + 0.5D,
+                        "random.click",
+                        0.3F,
+                        0.6F);
+                else worldObj.playSoundEffect(
+                        (double) xCoord + 0.5D,
+                        (double) yCoord + 0.5D,
+                        (double) zCoord + 0.5D,
+                        "random.click",
+                        0.3F,
+                        0.5F);
                 isActivated = !isActivated;
                 break;
             case 3: // Button Activation (Consume Key)
@@ -118,30 +117,27 @@ public class TileCKeyStone extends TileEntity {
         if (worldObj.isRemote) {
             player.addChatComponentMessage(new ChatComponentTranslation("msg.cKeyStoneType" + getMeta() + ".txt"));
             player.addChatComponentMessage(new ChatComponentText("Key: " + keyCode));
-            if (getMeta() == 1 || getMeta() == 3)
-                player.addChatComponentMessage(
-                        new ChatComponentText("Delay: " + delay + "t (" + (((double) delay) / 20D) + "s)"));
+            if (getMeta() == 1 || getMeta() == 3) player.addChatComponentMessage(
+                    new ChatComponentText("Delay: " + delay + "t (" + (((double) delay) / 20D) + "s)"));
         }
     }
 
     private boolean isMasterKey(ItemStack key) {
         if (key.getItemDamage() == 1) {
-            if (!isActivated)
-                worldObj.playSoundEffect(
-                        (double) xCoord + 0.5D,
-                        (double) yCoord + 0.5D,
-                        (double) zCoord + 0.5D,
-                        "random.click",
-                        0.3F,
-                        0.6F);
-            else
-                worldObj.playSoundEffect(
-                        (double) xCoord + 0.5D,
-                        (double) yCoord + 0.5D,
-                        (double) zCoord + 0.5D,
-                        "random.click",
-                        0.3F,
-                        0.5F);
+            if (!isActivated) worldObj.playSoundEffect(
+                    (double) xCoord + 0.5D,
+                    (double) yCoord + 0.5D,
+                    (double) zCoord + 0.5D,
+                    "random.click",
+                    0.3F,
+                    0.6F);
+            else worldObj.playSoundEffect(
+                    (double) xCoord + 0.5D,
+                    (double) yCoord + 0.5D,
+                    (double) zCoord + 0.5D,
+                    "random.click",
+                    0.3F,
+                    0.5F);
             isActivated = !isActivated;
             updateBlocks();
             return true;

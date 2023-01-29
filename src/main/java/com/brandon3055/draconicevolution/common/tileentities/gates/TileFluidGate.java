@@ -1,14 +1,15 @@
 package com.brandon3055.draconicevolution.common.tileentities.gates;
 
-import com.brandon3055.brandonscore.common.utills.Utills;
-import com.brandon3055.draconicevolution.common.lib.References;
-import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
+
+import com.brandon3055.brandonscore.common.utills.Utills;
+import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.utills.LogHelper;
 
 /**
  * Created by Brandon on 29/6/2015.
@@ -57,8 +58,8 @@ public class TileFluidGate extends TileGate implements IFluidHandler {
     }
 
     private IFluidHandler getOutputTarget() {
-        TileEntity tile =
-                worldObj.getTileEntity(xCoord + output.offsetX, yCoord + output.offsetY, zCoord + output.offsetZ);
+        TileEntity tile = worldObj
+                .getTileEntity(xCoord + output.offsetX, yCoord + output.offsetY, zCoord + output.offsetZ);
         return tile instanceof IFluidHandler ? (IFluidHandler) tile : null;
     }
 

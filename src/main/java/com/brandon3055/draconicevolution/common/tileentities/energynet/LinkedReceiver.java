@@ -1,11 +1,12 @@
 package com.brandon3055.draconicevolution.common.tileentities.energynet;
 
-import cofh.api.energy.IEnergyReceiver;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import cofh.api.energy.IEnergyReceiver;
 
 /**
  * Created by Brandon on 26/03/2015.
@@ -45,9 +46,8 @@ public class LinkedReceiver {
     }
 
     public int receiveEnergy(World world, int maxReceive, boolean simulate) {
-        if (isStillValid(world))
-            return getReceiver(world)
-                    .receiveEnergy(ForgeDirection.getOrientation(connectionSide), maxReceive, simulate);
+        if (isStillValid(world)) return getReceiver(world)
+                .receiveEnergy(ForgeDirection.getOrientation(connectionSide), maxReceive, simulate);
         else return 0;
     }
 

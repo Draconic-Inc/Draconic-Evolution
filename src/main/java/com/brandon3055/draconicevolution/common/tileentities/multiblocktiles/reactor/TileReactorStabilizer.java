@@ -1,17 +1,8 @@
 package com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.reactor;
 
-import cofh.api.energy.IEnergyProvider;
-import cofh.api.energy.IEnergyReceiver;
-import com.brandon3055.brandonscore.common.utills.Utills;
-import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.client.render.particle.ParticleReactorBeam;
-import com.brandon3055.draconicevolution.common.blocks.multiblock.IReactorPart;
-import com.brandon3055.draconicevolution.common.blocks.multiblock.MultiblockHelper.TileLocation;
-import com.brandon3055.draconicevolution.integration.computers.IDEPeripheral;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import java.util.HashMap;
 import java.util.Map;
+
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
@@ -19,6 +10,19 @@ import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import cofh.api.energy.IEnergyProvider;
+import cofh.api.energy.IEnergyReceiver;
+
+import com.brandon3055.brandonscore.common.utills.Utills;
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.client.render.particle.ParticleReactorBeam;
+import com.brandon3055.draconicevolution.common.blocks.multiblock.IReactorPart;
+import com.brandon3055.draconicevolution.common.blocks.multiblock.MultiblockHelper.TileLocation;
+import com.brandon3055.draconicevolution.integration.computers.IDEPeripheral;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Created by brandon3055 on 5/7/2015.
@@ -54,16 +58,15 @@ public class TileReactorStabilizer extends TileEntity implements IReactorPart, I
         if (master instanceof TileReactorCore
                 && ((TileReactorCore) master).reactorState == TileReactorCore.STATE_ONLINE) {
             ForgeDirection back = ForgeDirection.getOrientation(facingDirection).getOpposite();
-            TileEntity output =
-                    worldObj.getTileEntity(xCoord + back.offsetX, yCoord + back.offsetY, zCoord + back.offsetZ);
+            TileEntity output = worldObj
+                    .getTileEntity(xCoord + back.offsetX, yCoord + back.offsetY, zCoord + back.offsetZ);
             if (output instanceof IEnergyReceiver) {
-                int sent = ((IEnergyReceiver) output)
-                        .receiveEnergy(
-                                back.getOpposite(),
-                                Math.min(
-                                        ((TileReactorCore) master).energySaturation,
-                                        ((TileReactorCore) master).maxEnergySaturation / 100),
-                                false);
+                int sent = ((IEnergyReceiver) output).receiveEnergy(
+                        back.getOpposite(),
+                        Math.min(
+                                ((TileReactorCore) master).energySaturation,
+                                ((TileReactorCore) master).maxEnergySaturation / 100),
+                        false);
                 ((TileReactorCore) master).energySaturation -= sent;
             }
         }
@@ -112,9 +115,19 @@ public class TileReactorStabilizer extends TileEntity implements IReactorPart, I
             int z = zCoord + (dir.offsetZ * i);
             if (!worldObj.isAirBlock(x, y, z)) {
                 TileEntity tile = worldObj.getTileEntity(x, y, z);
-                if (tile instanceof TileReactorCore
-                        && ((TileReactorCore) tile).stabilizerLocations.size()
-                                < 4) // todo add check reactor side to make sure this aligns with other stabilizers
+                if (tile instanceof TileReactorCore && ((TileReactorCore) tile).stabilizerLocations.size() < 4) // todo
+                                                                                                                // add
+                                                                                                                // check
+                                                                                                                // reactor
+                                                                                                                // side
+                                                                                                                // to
+                                                                                                                // make
+                                                                                                                // sure
+                                                                                                                // this
+                                                                                                                // aligns
+                                                                                                                // with
+                                                                                                                // other
+                                                                                                                // stabilizers
                 {
                     ((TileReactorCore) tile).stabilizerLocations.add(new TileLocation(xCoord, yCoord, zCoord));
                     masterLocation.set(x, y, z);
@@ -233,7 +246,7 @@ public class TileReactorStabilizer extends TileEntity implements IReactorPart, I
 
     @Override
     public String[] getMethodNames() {
-        return new String[] {"getReactorInfo", "chargeReactor", "activateReactor", "stopReactor"};
+        return new String[] { "getReactorInfo", "chargeReactor", "activateReactor", "stopReactor" };
     }
 
     @Override
@@ -257,31 +270,27 @@ public class TileReactorStabilizer extends TileEntity implements IReactorPart, I
             map.put("fuelConversionRate", (int) Math.round(reactor.fuelUseRate * 1000000D));
             map.put(
                     "status",
-                    reactor.reactorState == 0
-                            ? "offline"
-                            : reactor.reactorState == 1 && !reactor.canStart()
-                                    ? "charging"
-                                    : reactor.reactorState == 1 && reactor.canStart()
-                                            ? "charged"
-                                            : reactor.reactorState == 2
-                                                    ? "online"
+                    reactor.reactorState == 0 ? "offline"
+                            : reactor.reactorState == 1 && !reactor.canStart() ? "charging"
+                                    : reactor.reactorState == 1 && reactor.canStart() ? "charged"
+                                            : reactor.reactorState == 2 ? "online"
                                                     : reactor.reactorState == 3 ? "stopping" : "invalid");
-            return new Object[] {map};
+            return new Object[] { map };
         } else if (method.equals("chargeReactor")) {
             if (reactor.canCharge()) {
                 reactor.reactorState = TileReactorCore.STATE_START;
-                return new Object[] {true};
-            } else return new Object[] {false};
+                return new Object[] { true };
+            } else return new Object[] { false };
         } else if (method.equals("activateReactor")) {
             if (reactor.canStart()) {
                 reactor.reactorState = TileReactorCore.STATE_ONLINE;
-                return new Object[] {true};
-            } else return new Object[] {false};
+                return new Object[] { true };
+            } else return new Object[] { false };
         } else if (method.equals("stopReactor")) {
             if (reactor.canStop()) {
                 reactor.reactorState = TileReactorCore.STATE_STOP;
-                return new Object[] {true};
-            } else return new Object[] {false};
+                return new Object[] { true };
+            } else return new Object[] { false };
         }
         return new Object[] {};
     }

@@ -1,13 +1,8 @@
 package com.brandon3055.draconicevolution.common.blocks;
 
-import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.common.ModBlocks;
-import com.brandon3055.draconicevolution.common.blocks.itemblocks.TestItemBlock;
-import com.brandon3055.draconicevolution.common.tileentities.TileTestBlock;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import java.util.List;
 import java.util.Random;
+
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.effect.EntityLightningBolt;
@@ -19,6 +14,14 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.common.ModBlocks;
+import com.brandon3055.draconicevolution.common.blocks.itemblocks.TestItemBlock;
+import com.brandon3055.draconicevolution.common.tileentities.TileTestBlock;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class TestBlock extends BlockDE {
 
@@ -73,25 +76,17 @@ public class TestBlock extends BlockDE {
     }
 
     @Override
-    public boolean onBlockActivated(
-            World world, int x, int y, int z, EntityPlayer player, int side, float px, float py, float pz) {
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float px, float py,
+            float pz) {
         EntityLightningBolt bolt = new EntityLightningBolt(world, x, y, z + 5);
         // System.out.println(world.getBlockMetadata(x,y,z));
         world.spawnEntityInWorld(bolt);
         /*
-
-        if (!world.isRemote && !player.isSneaking())
-        {
-        	System.out.println("Sending from server");
-        	DraconicEvolution.channelHandler.sendToAll(new ExamplePacket());
-        }
-
-        if (world.isRemote && player.isSneaking())
-        {
-        	System.out.println("Sending from client");
-        	DraconicEvolution.channelHandler.sendToServer(new ExamplePacket());
-        }
-        */
+         * if (!world.isRemote && !player.isSneaking()) { System.out.println("Sending from server");
+         * DraconicEvolution.channelHandler.sendToAll(new ExamplePacket()); } if (world.isRemote && player.isSneaking())
+         * { System.out.println("Sending from client"); DraconicEvolution.channelHandler.sendToServer(new
+         * ExamplePacket()); }
+         */
         return true;
     }
 
@@ -117,8 +112,8 @@ public class TestBlock extends BlockDE {
     }
 
     @Override
-    public boolean shouldSideBeRendered(
-            IBlockAccess world, int p_149646_2_, int p_149646_3_, int p_149646_4_, int p_149646_5_) {
+    public boolean shouldSideBeRendered(IBlockAccess world, int p_149646_2_, int p_149646_3_, int p_149646_4_,
+            int p_149646_5_) {
         return true;
     }
 

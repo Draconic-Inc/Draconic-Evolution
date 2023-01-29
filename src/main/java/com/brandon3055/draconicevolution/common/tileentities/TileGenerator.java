@@ -1,12 +1,5 @@
 package com.brandon3055.draconicevolution.common.tileentities;
 
-import cofh.api.energy.IEnergyProvider;
-import cofh.api.energy.IEnergyReceiver;
-import com.brandon3055.draconicevolution.common.lib.References;
-import com.brandon3055.draconicevolution.common.utills.EnergyStorage;
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
@@ -21,7 +14,18 @@ import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import cofh.api.energy.IEnergyProvider;
+import cofh.api.energy.IEnergyReceiver;
+
+import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.utills.EnergyStorage;
+
+import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 public class TileGenerator extends TileObjectSync implements ISidedInventory, IEnergyProvider {
+
     // ########### variables #############//
     private ItemStack[] items;
     public int burnTime = 1;
@@ -51,8 +55,9 @@ public class TileGenerator extends TileObjectSync implements ISidedInventory, IE
 
         if (burnTimeRemaining > 0 && storage.getEnergyStored() < storage.getMaxEnergyStored()) {
             burnTimeRemaining -= burnSpeed;
-            storage.setEnergyStored(storage.getEnergyStored()
-                    + Math.min(burnSpeed * EPBT, storage.getMaxEnergyStored() - storage.getEnergyStored()));
+            storage.setEnergyStored(
+                    storage.getEnergyStored()
+                            + Math.min(burnSpeed * EPBT, storage.getMaxEnergyStored() - storage.getEnergyStored()));
         } else if (burnTimeRemaining <= 0) tryRefuel();
 
         if ((storage.getEnergyStored() > 0)) {
@@ -63,11 +68,10 @@ public class TileGenerator extends TileObjectSync implements ISidedInventory, IE
                         zCoord + ForgeDirection.getOrientation(i).offsetZ);
                 if (tile != null && tile instanceof IEnergyReceiver) {
                     storage.extractEnergy(
-                            ((IEnergyReceiver) tile)
-                                    .receiveEnergy(
-                                            ForgeDirection.getOrientation(i).getOpposite(),
-                                            storage.extractEnergy(storage.getMaxExtract(), true),
-                                            false),
+                            ((IEnergyReceiver) tile).receiveEnergy(
+                                    ForgeDirection.getOrientation(i).getOpposite(),
+                                    storage.extractEnergy(storage.getMaxExtract(), true),
+                                    false),
                             false);
                 }
             }
@@ -115,12 +119,9 @@ public class TileGenerator extends TileObjectSync implements ISidedInventory, IE
                 }
             }
 
-            if (item instanceof ItemTool
-                    && ((ItemTool) item).getToolMaterialName().equals("WOOD")) return 200;
-            if (item instanceof ItemSword
-                    && ((ItemSword) item).getToolMaterialName().equals("WOOD")) return 200;
-            if (item instanceof ItemHoe
-                    && ((ItemHoe) item).getToolMaterialName().equals("WOOD")) return 200;
+            if (item instanceof ItemTool && ((ItemTool) item).getToolMaterialName().equals("WOOD")) return 200;
+            if (item instanceof ItemSword && ((ItemSword) item).getToolMaterialName().equals("WOOD")) return 200;
+            if (item instanceof ItemHoe && ((ItemHoe) item).getToolMaterialName().equals("WOOD")) return 200;
             if (item == Items.stick) return 100;
             if (item == Items.coal) return 1600;
             if (item == Items.lava_bucket) return 20000;

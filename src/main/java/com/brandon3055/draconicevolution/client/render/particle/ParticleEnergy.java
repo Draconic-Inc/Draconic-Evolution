@@ -1,11 +1,13 @@
 package com.brandon3055.draconicevolution.client.render.particle;
 
-import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.world.World;
 
+import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
+
 public class ParticleEnergy extends EntityFX {
+
     public double originalX;
     public double originalY;
     public double originalZ;
@@ -15,8 +17,8 @@ public class ParticleEnergy extends EntityFX {
     public int particle;
     public boolean expand = true;
 
-    public ParticleEnergy(
-            World world, double x, double y, double z, double tX, double tY, double tZ, int particle, boolean expand) {
+    public ParticleEnergy(World world, double x, double y, double z, double tX, double tY, double tZ, int particle,
+            boolean expand) {
         this(world, x, y, z, tX, tY, tZ, particle);
         this.expand = expand;
         this.particleRed = 185F / 255F;
@@ -78,8 +80,7 @@ public class ParticleEnergy extends EntityFX {
             motionY = (targetY - posY) * ySpeedMultiplyer;
             motionZ = (targetZ - posZ) * speedMultiplyer;
         }
-        if (expand
-                && Math.abs(targetX - posX) < 0.01
+        if (expand && Math.abs(targetX - posX) < 0.01
                 && Math.abs(targetY - posY) < 0.01
                 && Math.abs(targetZ - posZ) < 0.01) {
             motionX = 0;
@@ -95,13 +96,7 @@ public class ParticleEnergy extends EntityFX {
 
     @Override
     // @SideOnly(Side.CLIENT)
-    public void renderParticle(
-            Tessellator tesselator,
-            float par2,
-            float par3,
-            float par4,
-            float par5,
-            float par6,
+    public void renderParticle(Tessellator tesselator, float par2, float par3, float par4, float par5, float par6,
             float par7) { // Note U=X V=Y
 
         tesselator.draw();

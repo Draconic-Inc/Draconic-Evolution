@@ -1,13 +1,15 @@
 package com.brandon3055.draconicevolution.common.tileentities.multiblocktiles;
 
-import com.brandon3055.brandonscore.common.utills.Utills;
-import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.client.render.particle.Particles;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+
+import com.brandon3055.brandonscore.common.utills.Utills;
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.client.render.particle.Particles;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Created by Brandon on 24/5/2015.
@@ -43,17 +45,16 @@ public class TilePortalBlock extends TileEntity {
             double rO1 = -0.1 + worldObj.rand.nextDouble() * 0.2;
             double rO2 = -0.1 + worldObj.rand.nextDouble() * 0.2;
 
-            if (blockMetadata == 1 && RenderManager.renderPosZ < zCoord + 0.5)
-                DraconicEvolution.proxy.spawnParticle(
-                        new Particles.PortalParticle(
-                                worldObj,
-                                xCoord + rD1,
-                                yCoord + rD2,
-                                zCoord,
-                                xCoord + rD1 + rO1,
-                                yCoord + rD2 + rO2,
-                                zCoord + 0.75),
-                        256);
+            if (blockMetadata == 1 && RenderManager.renderPosZ < zCoord + 0.5) DraconicEvolution.proxy.spawnParticle(
+                    new Particles.PortalParticle(
+                            worldObj,
+                            xCoord + rD1,
+                            yCoord + rD2,
+                            zCoord,
+                            xCoord + rD1 + rO1,
+                            yCoord + rD2 + rO2,
+                            zCoord + 0.75),
+                    256);
             else if (blockMetadata == 1 && RenderManager.renderPosZ > zCoord + 0.5)
                 DraconicEvolution.proxy.spawnParticle(
                         new Particles.PortalParticle(

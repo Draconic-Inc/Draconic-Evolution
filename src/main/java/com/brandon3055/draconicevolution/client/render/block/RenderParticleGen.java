@@ -1,14 +1,17 @@
 package com.brandon3055.draconicevolution.client.render.block;
 
-import com.brandon3055.draconicevolution.common.tileentities.TileParticleGenerator;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.client.IItemRenderer;
+
 import org.lwjgl.opengl.GL11;
 
+import com.brandon3055.draconicevolution.common.tileentities.TileParticleGenerator;
+
 public class RenderParticleGen implements IItemRenderer {
+
     private TileEntity tile;
 
     public RenderParticleGen() {

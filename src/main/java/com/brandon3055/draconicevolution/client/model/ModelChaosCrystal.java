@@ -3,13 +3,14 @@ package com.brandon3055.draconicevolution.client.model;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
+
 import org.lwjgl.opengl.GL11;
 
 /**
- * ModelChaosCrystal - Mojang-(Original) modified by brandon3055
- * Created using Tabula 5.0.0
+ * ModelChaosCrystal - Mojang-(Original) modified by brandon3055 Created using Tabula 5.0.0
  */
 public class ModelChaosCrystal extends ModelBase {
+
     public ModelRenderer base;
     public ModelRenderer glass;
     public ModelRenderer cube;

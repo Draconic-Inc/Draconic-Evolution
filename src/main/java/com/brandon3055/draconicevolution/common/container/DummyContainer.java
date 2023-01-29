@@ -8,6 +8,7 @@ import net.minecraft.item.ItemStack;
  * Created by Brandon on 16/09/2014.
  */
 public class DummyContainer extends Container {
+
     @Override
     public boolean canInteractWith(EntityPlayer p_75145_1_) {
         return true;

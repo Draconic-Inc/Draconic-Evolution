@@ -1,16 +1,7 @@
 package com.brandon3055.draconicevolution.common.entity;
 
-import cofh.api.energy.IEnergyContainerItem;
-import com.brandon3055.brandonscore.common.utills.Teleporter;
-import com.brandon3055.brandonscore.common.utills.Utills;
-import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.client.handler.ParticleHandler;
-import com.brandon3055.draconicevolution.client.render.particle.Particles;
-import com.brandon3055.draconicevolution.common.network.GenericParticlePacket;
-import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import java.util.List;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.EntityDragon;
@@ -21,6 +12,19 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
+
+import cofh.api.energy.IEnergyContainerItem;
+
+import com.brandon3055.brandonscore.common.utills.Teleporter;
+import com.brandon3055.brandonscore.common.utills.Utills;
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.client.handler.ParticleHandler;
+import com.brandon3055.draconicevolution.client.render.particle.Particles;
+import com.brandon3055.draconicevolution.common.network.GenericParticlePacket;
+
+import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Created by brandon3055 on 23/8/2015.
@@ -34,19 +38,14 @@ public class EntityDragonProjectile extends Entity {
     public boolean isChaser;
     private double lastTickTargetDistance = 100;
     private float heath = 5F;
-    private DamageSource damageFireball = new DamageSource("de.GuardianFireball")
-            .setDamageAllowedInCreativeMode()
-            .setMagicDamage()
-            .setExplosion();
-    private DamageSource damageEnergy = new DamageSource("de.GuardianEnergyBall")
-            .setDamageAllowedInCreativeMode()
+    private DamageSource damageFireball = new DamageSource("de.GuardianFireball").setDamageAllowedInCreativeMode()
+            .setMagicDamage().setExplosion();
+    private DamageSource damageEnergy = new DamageSource("de.GuardianEnergyBall").setDamageAllowedInCreativeMode()
             .setDamageBypassesArmor();
-    private DamageSource damageChaos = new DamageSource("de.GuardianChaosBall")
-            .setDamageAllowedInCreativeMode()
-            .setDamageBypassesArmor()
-            .setDamageIsAbsolute();
+    private DamageSource damageChaos = new DamageSource("de.GuardianChaosBall").setDamageAllowedInCreativeMode()
+            .setDamageBypassesArmor().setDamageIsAbsolute();
 
-    // public static final int FIREBALL = 0; 			/** Generic fireball a lot more powerful then ghast fireball */
+    // public static final int FIREBALL = 0; /** Generic fireball a lot more powerful then ghast fireball */
     public static final int FIREBOMB = 1;
     /**
      * Large fireball with a trail and large fiery AOE
@@ -65,7 +64,8 @@ public class EntityDragonProjectile extends Entity {
      */
     public static final int CHAOS_CHASER = 5;
     /**
-     * Chases player. On impact splits into mini chaos charges which lock on to other or the same player (can pass through blocks)
+     * Chases player. On impact splits into mini chaos charges which lock on to other or the same player (can pass
+     * through blocks)
      */
     public static final int MINI_CHAOS_CHASER = 6;
     /**
@@ -86,8 +86,7 @@ public class EntityDragonProjectile extends Entity {
         this.target = target;
         this.shooter = shooter;
         this.power = power;
-        this.isChaser = type == FIRE_CHASER
-                || type == ENERGY_CHASER
+        this.isChaser = type == FIRE_CHASER || type == ENERGY_CHASER
                 || type == CHAOS_CHASER
                 || type == MINI_CHAOS_CHASER
                 || type == IGNITION_CHARGE;
@@ -130,11 +129,11 @@ public class EntityDragonProjectile extends Entity {
 
     @Override
     protected void entityInit() {
-        if (type == ENERGY_CHASER
-                || type == CHAOS_CHASER
+        if (type == ENERGY_CHASER || type == CHAOS_CHASER
                 || type == MINI_CHAOS_CHASER
                 || type == IGNITION_CHARGE
-                || worldObj.isRemote) noClip = true;
+                || worldObj.isRemote)
+            noClip = true;
         dataWatcher.addObject(10, (byte) type);
     }
 
@@ -190,8 +189,7 @@ public class EntityDragonProjectile extends Entity {
 
         switch (type) {
             case FIREBOMB:
-                if (genericHit
-                        || (targetDistance > lastTickTargetDistance && targetDistance < power)
+                if (genericHit || (targetDistance > lastTickTargetDistance && targetDistance < power)
                         || isCollided
                         || ticksExisted > 600
                         || heath <= 0) {
@@ -206,20 +204,16 @@ public class EntityDragonProjectile extends Entity {
                     Entity hit = entityHit != null ? entityHit : target;
                     if (!(hit instanceof EntityPlayer)) break;
                     int r = rand.nextInt();
-                    if (shooter != null)
-                        new Teleporter.TeleportLocation(
-                                        shooter.posX + (Math.cos(r) * 600),
-                                        rand.nextInt(255),
-                                        shooter.posZ + (Math.sin(r) * 600),
-                                        hit.dimension)
-                                .sendEntityToCoords(hit);
-                    else
-                        new Teleporter.TeleportLocation(
-                                        posX + (Math.cos(r) * 600),
-                                        rand.nextInt(255),
-                                        posZ + (Math.sin(r) * 600),
-                                        hit.dimension)
-                                .sendEntityToCoords(hit);
+                    if (shooter != null) new Teleporter.TeleportLocation(
+                            shooter.posX + (Math.cos(r) * 600),
+                            rand.nextInt(255),
+                            shooter.posZ + (Math.sin(r) * 600),
+                            hit.dimension).sendEntityToCoords(hit);
+                    else new Teleporter.TeleportLocation(
+                            posX + (Math.cos(r) * 600),
+                            rand.nextInt(255),
+                            posZ + (Math.sin(r) * 600),
+                            hit.dimension).sendEntityToCoords(hit);
 
                     hit.attackEntityFrom(DamageSource.fall, 10F);
 
@@ -227,8 +221,7 @@ public class EntityDragonProjectile extends Entity {
                 break;
             case FIRE_CHASER:
                 noClip = ticksExisted < 60;
-                if (genericHit
-                        || (targetDistance > lastTickTargetDistance && targetDistance < power / 2)
+                if (genericHit || (targetDistance > lastTickTargetDistance && targetDistance < power / 2)
                         || (isCollided && ticksExisted > 60)
                         || ticksExisted > 400
                         || heath <= 0) {
@@ -238,8 +231,7 @@ public class EntityDragonProjectile extends Entity {
                 }
                 break;
             case ENERGY_CHASER:
-                if (genericHit
-                        || (targetDistance > lastTickTargetDistance && targetDistance < power)
+                if (genericHit || (targetDistance > lastTickTargetDistance && targetDistance < power)
                         || ticksExisted > 800
                         || heath <= 0) {
                     setDead();
@@ -257,8 +249,7 @@ public class EntityDragonProjectile extends Entity {
                 }
                 break;
             case CHAOS_CHASER:
-                if (genericHit
-                        || (targetDistance > lastTickTargetDistance && targetDistance < power)
+                if (genericHit || (targetDistance > lastTickTargetDistance && targetDistance < power)
                         || ticksExisted > 800
                         || heath <= 0) {
                     setDead();
@@ -276,7 +267,9 @@ public class EntityDragonProjectile extends Entity {
                     int i = 3 + rand.nextInt(3);
                     EntityDragonProjectile newProjectile;
                     List<EntityLivingBase> list = worldObj.getEntitiesWithinAABBExcludingEntity(
-                            shooter, boundingBox.expand(60, 60, 60), Utills.selectPlayer);
+                            shooter,
+                            boundingBox.expand(60, 60, 60),
+                            Utills.selectPlayer);
                     for (i = +0; i > 0; i--) {
                         newProjectile = new EntityDragonProjectile(
                                 worldObj,
@@ -296,11 +289,9 @@ public class EntityDragonProjectile extends Entity {
 
                 break;
             case MINI_CHAOS_CHASER:
-                if ((genericHit
-                                || (targetDistance > lastTickTargetDistance && targetDistance < power)
-                                || ticksExisted > 800
-                                || heath <= 0)
-                        && ticksExisted > 5) {
+                if ((genericHit || (targetDistance > lastTickTargetDistance && targetDistance < power)
+                        || ticksExisted > 800
+                        || heath <= 0) && ticksExisted > 5) {
                     setDead();
                     DraconicEvolution.network.sendToAllAround(
                             new GenericParticlePacket(GenericParticlePacket.CHAOS_BALL_KILL, posX, posY, posZ),
@@ -329,15 +320,13 @@ public class EntityDragonProjectile extends Entity {
 
     private Entity getHitEntity() {
         Vec3 vec31 = Vec3.createVectorHelper(this.posX, this.posY, this.posZ);
-        Vec3 vec3 =
-                Vec3.createVectorHelper(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
+        Vec3 vec3 = Vec3
+                .createVectorHelper(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
 
         Entity entityHit = null;
         List list = this.worldObj.getEntitiesWithinAABBExcludingEntity(
                 this,
-                this.boundingBox
-                        .addCoord(this.motionX, this.motionY, this.motionZ)
-                        .expand(1.0D, 1.0D, 1.0D));
+                this.boundingBox.addCoord(this.motionX, this.motionY, this.motionZ).expand(1.0D, 1.0D, 1.0D));
         double d0 = 0.0D;
         int i;
         float f1;
@@ -375,15 +364,13 @@ public class EntityDragonProjectile extends Entity {
             entityLivingBase.hurtResistantTime = 0;
             entityLivingBase.attackEntityFrom(
                     source,
-                    damage
-                            / (float) (Utills.getDistanceAtoB(
-                                            entityLivingBase.posX,
-                                            entityLivingBase.posY,
-                                            entityLivingBase.posZ,
-                                            posX,
-                                            posY,
-                                            posZ)
-                                    / radius));
+                    damage / (float) (Utills.getDistanceAtoB(
+                            entityLivingBase.posX,
+                            entityLivingBase.posY,
+                            entityLivingBase.posZ,
+                            posX,
+                            posY,
+                            posZ) / radius));
             if (source == damageChaos && entityLivingBase instanceof EntityPlayer) {
                 for (ItemStack stack : ((EntityPlayer) entityLivingBase).inventory.armorInventory) {
                     if (stack != null && stack.getItem() instanceof IEnergyContainerItem) {
@@ -399,9 +386,9 @@ public class EntityDragonProjectile extends Entity {
     public boolean attackEntityFrom(DamageSource source, float dmg) {
         if (heath <= 0) return false;
         if ((source.getEntity() instanceof EntityPlayer || source.getEntity() instanceof EntityArrow)
-                && ticksExisted > 5) heath -= dmg;
-        if (source.getSourceOfDamage() instanceof EntityArrow)
-            source.getSourceOfDamage().setDead();
+                && ticksExisted > 5)
+            heath -= dmg;
+        if (source.getSourceOfDamage() instanceof EntityArrow) source.getSourceOfDamage().setDead();
 
         if (heath <= 0) {
             worldObj.newExplosion(this, this.posX, this.posY, this.posZ, 2F, false, false);
@@ -466,8 +453,7 @@ public class EntityDragonProjectile extends Entity {
         type = compound.getInteger("Type");
         if (!worldObj.isRemote) dataWatcher.updateObject(10, (byte) type);
         noClip = type == ENERGY_CHASER || type == CHAOS_CHASER || type == MINI_CHAOS_CHASER || type == IGNITION_CHARGE;
-        isChaser = type == FIRE_CHASER
-                || type == ENERGY_CHASER
+        isChaser = type == FIRE_CHASER || type == ENERGY_CHASER
                 || type == CHAOS_CHASER
                 || type == MINI_CHAOS_CHASER
                 || type == IGNITION_CHARGE;

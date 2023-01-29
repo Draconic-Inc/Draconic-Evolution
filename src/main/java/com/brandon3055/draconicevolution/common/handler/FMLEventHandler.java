@@ -1,16 +1,18 @@
 package com.brandon3055.draconicevolution.common.handler;
 
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ChatComponentText;
+
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.items.armor.CustomArmorHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.utills.LogHelper;
+
 import cpw.mods.fml.client.event.ConfigChangedEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ChatComponentText;
 
 public class FMLEventHandler {
 
@@ -49,12 +51,13 @@ public class FMLEventHandler {
         if (!mmGiven && event.player.getCommandSenderName().toLowerCase().equals("dezil_nz")) {
             mmGiven = true;
             event.player.addChatComponentMessage(new ChatComponentText("Hello Dez! Here have a Marshmallow"));
-            event.player.worldObj.spawnEntityInWorld(new EntityItem(
-                    event.player.worldObj,
-                    event.player.posX,
-                    event.player.posY,
-                    event.player.posZ,
-                    new ItemStack(ModItems.dezilsMarshmallow)));
+            event.player.worldObj.spawnEntityInWorld(
+                    new EntityItem(
+                            event.player.worldObj,
+                            event.player.posX,
+                            event.player.posY,
+                            event.player.posZ,
+                            new ItemStack(ModItems.dezilsMarshmallow)));
         }
 
         ContributorHandler.onPlayerLogin(event);

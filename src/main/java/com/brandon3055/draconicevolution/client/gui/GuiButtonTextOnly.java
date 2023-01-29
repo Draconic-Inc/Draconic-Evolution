@@ -5,17 +5,19 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.util.EnumChatFormatting;
+
 import org.lwjgl.opengl.GL11;
 
 /**
  * Created by Brandon on 17/09/2014.
  */
 public class GuiButtonTextOnly extends GuiButton {
+
     public String LINKED_PAGE;
     public int textColour;
 
-    public GuiButtonTextOnly(
-            int id, int xPos, int yPos, int width, int hight, String displayString, String linkedPage, int colour) {
+    public GuiButtonTextOnly(int id, int xPos, int yPos, int width, int hight, String displayString, String linkedPage,
+            int colour) {
         super(id, xPos, yPos, width, hight, displayString);
         this.LINKED_PAGE = linkedPage;
         this.textColour = colour;
@@ -27,8 +29,7 @@ public class GuiButtonTextOnly extends GuiButton {
             FontRenderer fontrenderer = minecraft.fontRenderer;
             minecraft.getTextureManager().bindTexture(buttonTextures);
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-            this.field_146123_n = mouseX >= this.xPosition
-                    && mouseY >= this.yPosition
+            this.field_146123_n = mouseX >= this.xPosition && mouseY >= this.yPosition
                     && mouseX < this.xPosition + this.width
                     && mouseY < this.yPosition + this.height;
             GL11.glEnable(GL11.GL_BLEND);

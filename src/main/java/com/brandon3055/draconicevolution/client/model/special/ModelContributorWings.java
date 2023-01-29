@@ -1,16 +1,18 @@
 package com.brandon3055.draconicevolution.client.model.special;
 
-import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
+
 import org.lwjgl.opengl.GL11;
 
+import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
+
 /**
- * DragonWings - brandon3055
- * Created using Tabula 5.0.0
+ * DragonWings - brandon3055 Created using Tabula 5.0.0
  */
 public class ModelContributorWings extends ModelBase {
+
     public ModelRenderer rightBaseStem;
     public ModelRenderer leftBaseStem;
     public ModelRenderer rightOuterStem;

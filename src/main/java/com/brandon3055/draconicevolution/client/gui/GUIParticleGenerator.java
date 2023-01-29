@@ -1,23 +1,27 @@
 package com.brandon3055.draconicevolution.client.gui;
 
-import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.common.lib.References;
-import com.brandon3055.draconicevolution.common.network.ParticleGenPacket;
-import com.brandon3055.draconicevolution.common.tileentities.TileParticleGenerator;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
+
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.network.ParticleGenPacket;
+import com.brandon3055.draconicevolution.common.tileentities.TileParticleGenerator;
+
 public class GUIParticleGenerator extends GuiScreen {
+
     private final int xSize = 212;
     private final int ySize = 198;
-    private ResourceLocation guiTexture =
-            new ResourceLocation(References.MODID.toLowerCase(), "textures/gui/ParticleGenerator.png");
+    private ResourceLocation guiTexture = new ResourceLocation(
+            References.MODID.toLowerCase(),
+            "textures/gui/ParticleGenerator.png");
     private int page = 1;
     private int infoPage = 0;
     private boolean hasInitialized = false;
@@ -80,32 +84,33 @@ public class GUIParticleGenerator extends GuiScreen {
         syncWithServer();
     }
 
-    String[] InfoText = {
-        ""
-                + "The Particle Generator is a decorative device that allows you to create your own custom particle effects.                                                                 "
-                + "It is fairly easy you use this device you simply adjust the fields (variables) in the interface to change how the generated particles look and behave.                                                                                            "
-                + "This block is a work in progress and new features and particles are likely to be added in future versions.                                                         "
-                + "The following is a list of all of the fields in the interface and what they do.",
-        "The first thing to note is that most fields have a random modifier which will add a random number between 0 and whatever max (or min) value you give it to the field.                                                                                      "
-                + "-The first 3 fields (Red, Green & Blue) control the colour of the particle. Most people should be familiar with this colour system if not google RGB colours. Note: the max value for each colour can not go higher then 255 so the colour field limits the random modifier e.g. if the colour field is set to 255 and the random modifier is set to 20 the result will always be 255",
-        "-The next 3 fields (Motion X, Y & Z) control the direction and speed of the particle                                                                                            "
-                + "-The \"Life\" field sets how long (in ticks) before the particle despawns.                                                       "
-                + "-The \"Size\" field sets the size of the particle.                                                                                           "
-                + "-The next 3 fields (Spawn X, Y & Z) Sets the spawn location of the particle (relative to the location of the particle generator)",
-        "-The \"Delay\" field sets the delay (in ticks) between each particle spawn e.g. 1=20/s, 20=1/s, 100=1/5s                                                                    "
-                + "-The \"Fade\" field sets how long (in ticks) it takes the partile to fade out of existance. Note: This adds to the life of the particle                                                                                  "
-                + "-The \"Gravity\" field sets how the particle is affected by gravity.                                                              "
-                + "-\"Block Collision\" Toggles weather or not the particle will collide with blocks                                                     "
-                + "-\"Particle Selected\" Switches between the different particles available.",
-        EnumChatFormatting.DARK_RED + "              Redstone Control" + EnumChatFormatting.BLACK
-                + "\nBy default a redstone signal is required for the generator to run."
-                + "\n\nHowever if you shift right click the generator with an empty hand it will switch to inverted mode."
-                + "\nThe redstone mode is indicated by the 8 cubes at the corners of the block.",
-        EnumChatFormatting.DARK_RED + "              Computer Control" + EnumChatFormatting.BLACK
-                + "\nThe Generator can be controlled via a computer" + "\nIt exposes a relatively straight forward API:"
-                + "\n\n  setGeneratorProperty(property, value)\n  getGeneratorState()\n  resetGeneratorState()"
-                + "\n\nGenerator state is obtained as a whole from getGeneratorState, whereas properties are modified one at a time using setGeneratorProperty. Property names are strings and mostly correspond to button labels in the GUI."
-    };
+    String[] InfoText = { ""
+            + "The Particle Generator is a decorative device that allows you to create your own custom particle effects.                                                                 "
+            + "It is fairly easy you use this device you simply adjust the fields (variables) in the interface to change how the generated particles look and behave.                                                                                            "
+            + "This block is a work in progress and new features and particles are likely to be added in future versions.                                                         "
+            + "The following is a list of all of the fields in the interface and what they do.",
+            "The first thing to note is that most fields have a random modifier which will add a random number between 0 and whatever max (or min) value you give it to the field.                                                                                      "
+                    + "-The first 3 fields (Red, Green & Blue) control the colour of the particle. Most people should be familiar with this colour system if not google RGB colours. Note: the max value for each colour can not go higher then 255 so the colour field limits the random modifier e.g. if the colour field is set to 255 and the random modifier is set to 20 the result will always be 255",
+            "-The next 3 fields (Motion X, Y & Z) control the direction and speed of the particle                                                                                            "
+                    + "-The \"Life\" field sets how long (in ticks) before the particle despawns.                                                       "
+                    + "-The \"Size\" field sets the size of the particle.                                                                                           "
+                    + "-The next 3 fields (Spawn X, Y & Z) Sets the spawn location of the particle (relative to the location of the particle generator)",
+            "-The \"Delay\" field sets the delay (in ticks) between each particle spawn e.g. 1=20/s, 20=1/s, 100=1/5s                                                                    "
+                    + "-The \"Fade\" field sets how long (in ticks) it takes the partile to fade out of existance. Note: This adds to the life of the particle                                                                                  "
+                    + "-The \"Gravity\" field sets how the particle is affected by gravity.                                                              "
+                    + "-\"Block Collision\" Toggles weather or not the particle will collide with blocks                                                     "
+                    + "-\"Particle Selected\" Switches between the different particles available.",
+            EnumChatFormatting.DARK_RED + "              Redstone Control"
+                    + EnumChatFormatting.BLACK
+                    + "\nBy default a redstone signal is required for the generator to run."
+                    + "\n\nHowever if you shift right click the generator with an empty hand it will switch to inverted mode."
+                    + "\nThe redstone mode is indicated by the 8 cubes at the corners of the block.",
+            EnumChatFormatting.DARK_RED + "              Computer Control"
+                    + EnumChatFormatting.BLACK
+                    + "\nThe Generator can be controlled via a computer"
+                    + "\nIt exposes a relatively straight forward API:"
+                    + "\n\n  setGeneratorProperty(property, value)\n  getGeneratorState()\n  resetGeneratorState()"
+                    + "\n\nGenerator state is obtained as a whole from getGeneratorState, whereas properties are modified one at a time using setGeneratorProperty. Property names are strings and mostly correspond to button labels in the GUI." };
 
     // @formatter:off
     @Override

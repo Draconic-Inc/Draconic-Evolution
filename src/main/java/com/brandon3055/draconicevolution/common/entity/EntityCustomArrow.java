@@ -1,15 +1,7 @@
 package com.brandon3055.draconicevolution.common.entity;
 
-import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.client.handler.ParticleHandler;
-import com.brandon3055.draconicevolution.client.render.particle.Particles;
-import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
-import com.brandon3055.draconicevolution.common.items.weapons.BowHandler;
-import com.brandon3055.draconicevolution.common.network.GenericParticlePacket;
-import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import java.util.List;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -28,7 +20,19 @@ import net.minecraft.network.play.server.S2BPacketChangeGameState;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
 
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.client.handler.ParticleHandler;
+import com.brandon3055.draconicevolution.client.render.particle.Particles;
+import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
+import com.brandon3055.draconicevolution.common.items.weapons.BowHandler;
+import com.brandon3055.draconicevolution.common.network.GenericParticlePacket;
+
+import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 public class EntityCustomArrow extends EntityArrow {
+
     private int blockX = -1;
     private int blockY = -1;
     private int blockZ = -1;
@@ -55,12 +59,8 @@ public class EntityCustomArrow extends EntityArrow {
         renderDistanceWeight = 40;
     }
 
-    public EntityCustomArrow(
-            World p_i1755_1_,
-            EntityLivingBase p_i1755_2_,
-            EntityLivingBase p_i1755_3_,
-            float p_i1755_4_,
-            float p_i1755_5_) {
+    public EntityCustomArrow(World p_i1755_1_, EntityLivingBase p_i1755_2_, EntityLivingBase p_i1755_3_,
+            float p_i1755_4_, float p_i1755_5_) {
         super(p_i1755_1_, p_i1755_2_, p_i1755_3_, p_i1755_4_, p_i1755_5_);
         renderDistanceWeight = 40;
     }
@@ -108,8 +108,8 @@ public class EntityCustomArrow extends EntityArrow {
 
         if (this.prevRotationPitch == 0.0F && this.prevRotationYaw == 0.0F) {
             float f = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ);
-            this.prevRotationYaw =
-                    this.rotationYaw = (float) (Math.atan2(this.motionX, this.motionZ) * 180.0D / Math.PI);
+            this.prevRotationYaw = this.rotationYaw = (float) (Math.atan2(this.motionX, this.motionZ) * 180.0D
+                    / Math.PI);
             this.prevRotationPitch = this.rotationPitch = (float) (Math.atan2(this.motionY, f) * 180.0D / Math.PI);
         }
 
@@ -124,8 +124,8 @@ public class EntityCustomArrow extends EntityArrow {
         if (block.getMaterial() != Material.air) {
             onHitAnything();
             block.setBlockBoundsBasedOnState(this.worldObj, this.blockX, this.blockY, this.blockZ);
-            AxisAlignedBB axisalignedbb =
-                    block.getCollisionBoundingBoxFromPool(this.worldObj, this.blockX, this.blockY, this.blockZ);
+            AxisAlignedBB axisalignedbb = block
+                    .getCollisionBoundingBoxFromPool(this.worldObj, this.blockX, this.blockY, this.blockZ);
 
             if (axisalignedbb != null
                     && axisalignedbb.isVecInside(Vec3.createVectorHelper(this.posX, this.posY, this.posZ))) {
@@ -140,9 +140,8 @@ public class EntityCustomArrow extends EntityArrow {
             if (block == this.blockHit && j == this.inData) {
                 ++this.ticksInGround;
 
-                if (this.ticksInGround == 1200
-                        || bowProperties
-                                .energyBolt) { // Delete the entity when it hits the ground if it is an energy bolt
+                if (this.ticksInGround == 1200 || bowProperties.energyBolt) { // Delete the entity when it hits the
+                                                                              // ground if it is an energy bolt
                     this.setDead();
                 }
             } else {
@@ -157,12 +156,12 @@ public class EntityCustomArrow extends EntityArrow {
             // region Detect Entity Hit
             ++this.ticksInAir;
             Vec3 vec31 = Vec3.createVectorHelper(this.posX, this.posY, this.posZ);
-            Vec3 vec3 = Vec3.createVectorHelper(
-                    this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
+            Vec3 vec3 = Vec3
+                    .createVectorHelper(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
             MovingObjectPosition movingobjectposition = this.worldObj.func_147447_a(vec31, vec3, false, true, false);
             vec31 = Vec3.createVectorHelper(this.posX, this.posY, this.posZ);
-            vec3 = Vec3.createVectorHelper(
-                    this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
+            vec3 = Vec3
+                    .createVectorHelper(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
 
             if (movingobjectposition != null) {
                 vec3 = Vec3.createVectorHelper(
@@ -174,9 +173,7 @@ public class EntityCustomArrow extends EntityArrow {
             Entity entity = null;
             List list = this.worldObj.getEntitiesWithinAABBExcludingEntity(
                     this,
-                    this.boundingBox
-                            .addCoord(this.motionX, this.motionY, this.motionZ)
-                            .expand(1.0D, 1.0D, 1.0D));
+                    this.boundingBox.addCoord(this.motionX, this.motionY, this.motionZ).expand(1.0D, 1.0D, 1.0D));
             double d0 = 0.0D;
             int i;
             float f1;
@@ -204,14 +201,12 @@ public class EntityCustomArrow extends EntityArrow {
                 movingobjectposition = new MovingObjectPosition(entity);
             }
 
-            if (movingobjectposition != null
-                    && movingobjectposition.entityHit != null
+            if (movingobjectposition != null && movingobjectposition.entityHit != null
                     && movingobjectposition.entityHit instanceof EntityPlayer) {
                 EntityPlayer entityplayer = (EntityPlayer) movingobjectposition.entityHit;
 
-                if (entityplayer.capabilities.disableDamage
-                        || this.shootingEntity instanceof EntityPlayer
-                                && !((EntityPlayer) this.shootingEntity).canAttackPlayer(entityplayer)) {
+                if (entityplayer.capabilities.disableDamage || this.shootingEntity instanceof EntityPlayer
+                        && !((EntityPlayer) this.shootingEntity).canAttackPlayer(entityplayer)) {
                     movingobjectposition = null;
                 }
             }
@@ -243,11 +238,9 @@ public class EntityCustomArrow extends EntityArrow {
 
                     if (bowProperties.energyBolt) movingobjectposition.entityHit.hurtResistantTime = 0;
                     if (movingobjectposition.entityHit instanceof EntityDragonPart
-                            && ((EntityDragonPart) movingobjectposition.entityHit).entityDragonObj
-                                    instanceof EntityDragon
+                            && ((EntityDragonPart) movingobjectposition.entityHit).entityDragonObj instanceof EntityDragon
                             && bowProperties.energyBolt) {
-                        ((EntityDragon) ((EntityDragonPart) movingobjectposition.entityHit).entityDragonObj)
-                                .hurtResistantTime = 0;
+                        ((EntityDragon) ((EntityDragonPart) movingobjectposition.entityHit).entityDragonObj).hurtResistantTime = 0;
                     }
 
                     if (movingobjectposition.entityHit.attackEntityFrom(getDamageSource(), actualDamage)) {
@@ -271,16 +264,15 @@ public class EntityCustomArrow extends EntityArrow {
 
                             if (this.shootingEntity != null && this.shootingEntity instanceof EntityLivingBase) {
                                 EnchantmentHelper.func_151384_a(entitylivingbase, this.shootingEntity);
-                                EnchantmentHelper.func_151385_b(
-                                        (EntityLivingBase) this.shootingEntity, entitylivingbase);
+                                EnchantmentHelper
+                                        .func_151385_b((EntityLivingBase) this.shootingEntity, entitylivingbase);
                             }
 
-                            if (this.shootingEntity != null
-                                    && movingobjectposition.entityHit != this.shootingEntity
+                            if (this.shootingEntity != null && movingobjectposition.entityHit != this.shootingEntity
                                     && movingobjectposition.entityHit instanceof EntityPlayer
                                     && this.shootingEntity instanceof EntityPlayerMP) {
-                                ((EntityPlayerMP) this.shootingEntity)
-                                        .playerNetServerHandler.sendPacket(new S2BPacketChangeGameState(6, 0.0F));
+                                ((EntityPlayerMP) this.shootingEntity).playerNetServerHandler
+                                        .sendPacket(new S2BPacketChangeGameState(6, 0.0F));
                             }
                         }
 
@@ -288,9 +280,8 @@ public class EntityCustomArrow extends EntityArrow {
                         this.setDead();
 
                     } else {
-                        if (!(worldObj.isRemote
-                                && ticksInAir
-                                        < 5)) { // Fix arrow wobble on fire due to client side collision with shooting
+                        if (!(worldObj.isRemote && ticksInAir < 5)) { // Fix arrow wobble on fire due to client side
+                                                                      // collision with shooting
                             // entity
                             this.motionX *= -0.10000000149011612D;
                             this.motionY *= -0.10000000149011612D;
@@ -320,8 +311,8 @@ public class EntityCustomArrow extends EntityArrow {
                     this.arrowShake = 7;
 
                     if (this.blockHit.getMaterial() != Material.air) {
-                        this.blockHit.onEntityCollidedWithBlock(
-                                this.worldObj, this.blockX, this.blockY, this.blockZ, this);
+                        this.blockHit
+                                .onEntityCollidedWithBlock(this.worldObj, this.blockX, this.blockY, this.blockZ, this);
                     }
                 }
             }
@@ -351,9 +342,9 @@ public class EntityCustomArrow extends EntityArrow {
             velocity = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ);
             this.rotationYaw = (float) (Math.atan2(this.motionX, this.motionZ) * 180.0D / Math.PI);
 
-            for (this.rotationPitch = (float) (Math.atan2(this.motionY, velocity) * 180.0D / Math.PI);
-                    this.rotationPitch - this.prevRotationPitch < -180.0F;
-                    this.prevRotationPitch -= 360.0F) {
+            for (this.rotationPitch = (float) (Math.atan2(this.motionY, velocity) * 180.0D
+                    / Math.PI); this.rotationPitch - this.prevRotationPitch
+                            < -180.0F; this.prevRotationPitch -= 360.0F) {
                 ;
             }
 
@@ -458,8 +449,8 @@ public class EntityCustomArrow extends EntityArrow {
     public void onCollideWithPlayer(EntityPlayer par1EntityPlayer) {
         if (!this.worldObj.isRemote && this.inGround && this.arrowShake <= 0) {
 
-            boolean flag =
-                    this.canBePickedUp == 1 || this.canBePickedUp == 2 && par1EntityPlayer.capabilities.isCreativeMode;
+            boolean flag = this.canBePickedUp == 1
+                    || this.canBePickedUp == 2 && par1EntityPlayer.capabilities.isCreativeMode;
 
             if (this.canBePickedUp == 1
                     && !par1EntityPlayer.inventory.addItemStackToInventory(new ItemStack(Items.arrow, 1))) {
@@ -468,7 +459,9 @@ public class EntityCustomArrow extends EntityArrow {
 
             if (flag) {
                 this.playSound(
-                        "random.pop", 0.2F, ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+                        "random.pop",
+                        0.2F,
+                        ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
                 par1EntityPlayer.onItemPickup(this, 1);
                 this.setDead();
             }
@@ -480,13 +473,22 @@ public class EntityCustomArrow extends EntityArrow {
     public void onHitAnything() {
         if (bowProperties.explosionPower > 0 && !worldObj.isRemote) {
             worldObj.createExplosion(
-                    this, prevPosX, prevPosY, prevPosZ, bowProperties.explosionPower, ConfigHandler.bowBlockDamage);
+                    this,
+                    prevPosX,
+                    prevPosY,
+                    prevPosZ,
+                    bowProperties.explosionPower,
+                    ConfigHandler.bowBlockDamage);
             setDead();
         }
         if (bowProperties.shockWavePower > 0 && !worldObj.isRemote) {
             DraconicEvolution.network.sendToAllAround(
-                    new GenericParticlePacket(GenericParticlePacket.ARROW_SHOCK_WAVE, posX, posY, posZ, (int)
-                            (bowProperties.shockWavePower * 100)),
+                    new GenericParticlePacket(
+                            GenericParticlePacket.ARROW_SHOCK_WAVE,
+                            posX,
+                            posY,
+                            posZ,
+                            (int) (bowProperties.shockWavePower * 100)),
                     new NetworkRegistry.TargetPoint(dimension, posX, posY, posZ, 256));
             worldObj.playSoundEffect(
                     posX,
@@ -522,9 +524,9 @@ public class EntityCustomArrow extends EntityArrow {
     private DamageSource getDamageSource() {
         if (bowProperties.energyBolt) {
             return new EntityDamageSourceIndirect(
-                            "customArrowEnergy", this, shootingEntity != null ? shootingEntity : this)
-                    .setProjectile()
-                    .setDamageIsAbsolute();
+                    "customArrowEnergy",
+                    this,
+                    shootingEntity != null ? shootingEntity : this).setProjectile().setDamageIsAbsolute();
         } else return DamageSource.causeArrowDamage(this, shootingEntity != null ? shootingEntity : this);
     }
 }

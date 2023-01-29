@@ -1,6 +1,5 @@
 package com.brandon3055.draconicevolution.common.tileentities;
 
-import com.brandon3055.draconicevolution.common.entity.EntityChaosVortex;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -8,6 +7,8 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+
+import com.brandon3055.draconicevolution.common.entity.EntityChaosVortex;
 
 /**
  * Created by brandon3055 on 24/9/2015.
@@ -23,8 +24,7 @@ public class TileChaosShard extends TileEntity {
     public void updateEntity() {
         tick++;
 
-        if (tick > 1
-                && !worldObj.isRemote
+        if (tick > 1 && !worldObj.isRemote
                 && locationHash != getLocationHash(xCoord, yCoord, zCoord, worldObj.provider.dimensionId))
             worldObj.setBlockToAir(xCoord, yCoord, zCoord);
 
@@ -44,7 +44,10 @@ public class TileChaosShard extends TileEntity {
             int x = 5 - worldObj.rand.nextInt(11);
             int z = 5 - worldObj.rand.nextInt(11);
             EntityLightningBolt bolt = new EntityLightningBolt(
-                    worldObj, xCoord + x, worldObj.getTopSolidOrLiquidBlock(xCoord + x, zCoord + z), zCoord + z);
+                    worldObj,
+                    xCoord + x,
+                    worldObj.getTopSolidOrLiquidBlock(xCoord + x, zCoord + z),
+                    zCoord + z);
             bolt.ignoreFrustumCheck = true;
             worldObj.addWeatherEffect(bolt);
         }

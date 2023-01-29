@@ -1,19 +1,22 @@
 package com.brandon3055.draconicevolution.client.render.item;
 
-import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
-import com.brandon3055.draconicevolution.client.model.special.ModelStaffOfTheGreatOne;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.IItemRenderer;
 import net.minecraftforge.client.model.AdvancedModelLoader;
 import net.minecraftforge.client.model.IModelCustom;
+
 import org.lwjgl.opengl.GL11;
+
+import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
+import com.brandon3055.draconicevolution.client.model.special.ModelStaffOfTheGreatOne;
 
 /**
  * Created by brandon3055 on 1/10/2015.
  */
 public class RenderChaosFragment implements IItemRenderer {
-    private static IModelCustom model =
-            AdvancedModelLoader.loadModel(ResourceHandler.getResource("models/chaosCrystalShard.obj"));
+
+    private static IModelCustom model = AdvancedModelLoader
+            .loadModel(ResourceHandler.getResource("models/chaosCrystalShard.obj"));
 
     private static ModelStaffOfTheGreatOne staff = new ModelStaffOfTheGreatOne();
 

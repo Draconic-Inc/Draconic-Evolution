@@ -1,5 +1,20 @@
 package com.brandon3055.draconicevolution.common.handler;
 
+import java.io.*;
+import java.net.URL;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.UUID;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.client.event.RenderPlayerEvent;
+
+import org.apache.commons.io.IOUtils;
+import org.lwjgl.opengl.GL11;
+
 import com.brandon3055.brandonscore.common.handlers.FileHandler;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
@@ -8,20 +23,9 @@ import com.brandon3055.draconicevolution.common.network.ContributorPacket;
 import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import com.google.common.base.Charsets;
 import com.google.gson.stream.JsonReader;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
-import java.io.*;
-import java.net.URL;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.UUID;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.client.event.RenderPlayerEvent;
-import org.apache.commons.io.IOUtils;
-import org.lwjgl.opengl.GL11;
 
 /**
  * Created by brandon3055 on 5/11/2015.
@@ -43,9 +47,9 @@ public class ContributorHandler {
             Contributor contributor = contributors.get(event.entityPlayer.getCommandSenderName());
 
             if (contributor.contributionLevel >= 1 && (contributor.contributorWingsEnabled)) renderWings(event);
-            if (contributor.contribution != null
-                    && contributor.contribution.toLowerCase().contains("patreon")
-                    && contributor.patreonBadgeEnabled) renderBadge(event);
+            if (contributor.contribution != null && contributor.contribution.toLowerCase().contains("patreon")
+                    && contributor.patreonBadgeEnabled)
+                renderBadge(event);
         }
     }
 
@@ -131,8 +135,7 @@ public class ContributorHandler {
     public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
         if (event.player instanceof EntityPlayerMP) {
             for (String contribName : ContributorHandler.contributors.keySet()) {
-                for (String name :
-                        FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames()) {
+                for (String name : FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames()) {
                     if (name.equals(contribName)) {
                         ContributorHandler.Contributor contributor = ContributorHandler.contributors.get(contribName);
                         DraconicEvolution.network.sendTo(
@@ -250,6 +253,7 @@ public class ContributorHandler {
     // endregion
 
     public static class Contributor {
+
         public String name;
         public String ign;
         public String contribution;
@@ -269,8 +273,8 @@ public class ContributorHandler {
 
         public boolean isUserValid(EntityPlayer player) {
             if (!validated) {
-                isValid = !UUID.nameUUIDFromBytes(
-                                ("OfflinePlayer:" + player.getCommandSenderName()).getBytes(Charsets.UTF_8))
+                isValid = !UUID
+                        .nameUUIDFromBytes(("OfflinePlayer:" + player.getCommandSenderName()).getBytes(Charsets.UTF_8))
                         .equals(player.getUniqueID());
             }
             return isValid;
@@ -278,8 +282,14 @@ public class ContributorHandler {
 
         @Override
         public String toString() {
-            return "[Contributor: " + name + ", Contribution: " + contribution + ", Details: " + details + ", Website: "
-                    + website + "]";
+            return "[Contributor: " + name
+                    + ", Contribution: "
+                    + contribution
+                    + ", Details: "
+                    + details
+                    + ", Website: "
+                    + website
+                    + "]";
         }
     }
 }

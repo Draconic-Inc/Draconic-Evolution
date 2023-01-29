@@ -1,5 +1,18 @@
 package com.brandon3055.draconicevolution.common.items.tools;
 
+import java.util.List;
+
+import net.minecraft.block.Block;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnumEnchantmentType;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.StatCollector;
+import net.minecraft.world.World;
+import net.minecraftforge.client.IItemRenderer;
+
+import org.lwjgl.opengl.GL11;
+
 import com.brandon3055.draconicevolution.client.render.IRenderTweak;
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.brandon3055.draconicevolution.common.handler.BalanceConfigHandler;
@@ -10,16 +23,6 @@ import com.brandon3055.draconicevolution.common.utills.IConfigurableItem;
 import com.brandon3055.draconicevolution.common.utills.IInventoryTool;
 import com.brandon3055.draconicevolution.common.utills.IUpgradableItem;
 import com.brandon3055.draconicevolution.common.utills.ItemConfigField;
-import java.util.List;
-import net.minecraft.block.Block;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnumEnchantmentType;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
-import net.minecraft.world.World;
-import net.minecraftforge.client.IItemRenderer;
-import org.lwjgl.opengl.GL11;
 
 public class DraconicAxe extends MiningTool implements IInventoryTool, IRenderTweak {
 
@@ -38,13 +41,14 @@ public class DraconicAxe extends MiningTool implements IInventoryTool, IRenderTw
     public List<ItemConfigField> getFields(ItemStack stack, int slot) {
         List<ItemConfigField> list = super.getFields(stack, slot);
 
-        list.add(new ItemConfigField(References.INT_ID, slot, References.DIG_AOE)
-                .setMinMaxAndIncromente(0, EnumUpgrade.DIG_AOE.getUpgradePoints(stack), 1)
-                .readFromItem(stack, 0)
-                .setModifier("AOE"));
-        list.add(new ItemConfigField(References.INT_ID, slot, References.DIG_DEPTH)
-                .setMinMaxAndIncromente(1, EnumUpgrade.DIG_DEPTH.getUpgradePoints(stack), 1)
-                .readFromItem(stack, 1));
+        list.add(
+                new ItemConfigField(References.INT_ID, slot, References.DIG_AOE)
+                        .setMinMaxAndIncromente(0, EnumUpgrade.DIG_AOE.getUpgradePoints(stack), 1)
+                        .readFromItem(stack, 0).setModifier("AOE"));
+        list.add(
+                new ItemConfigField(References.INT_ID, slot, References.DIG_DEPTH)
+                        .setMinMaxAndIncromente(1, EnumUpgrade.DIG_DEPTH.getUpgradePoints(stack), 1)
+                        .readFromItem(stack, 1));
         list.add(new ItemConfigField(References.BOOLEAN_ID, slot, References.TREE_MODE).readFromItem(stack, false));
         return list;
     }
@@ -69,14 +73,13 @@ public class DraconicAxe extends MiningTool implements IInventoryTool, IRenderTw
         if (IConfigurableItem.ProfileHelper.getBoolean(stack, References.TREE_MODE, false)
                 && isTree(player.worldObj, x, y, z)) {
             trimLeavs(x, y, z, player, player.worldObj, stack);
-            for (int i = 0; i < 9; i++)
-                player.worldObj.playAuxSFX(
-                        2001,
-                        x,
-                        y,
-                        z,
-                        Block.getIdFromBlock(player.worldObj.getBlock(x, y, z))
-                                + (player.worldObj.getBlockMetadata(x, y, z) << 12));
+            for (int i = 0; i < 9; i++) player.worldObj.playAuxSFX(
+                    2001,
+                    x,
+                    y,
+                    z,
+                    Block.getIdFromBlock(player.worldObj.getBlock(x, y, z))
+                            + (player.worldObj.getBlockMetadata(x, y, z) << 12));
             chopTree(x, y, z, player, player.worldObj, stack);
             return false;
         }
@@ -137,32 +140,32 @@ public class DraconicAxe extends MiningTool implements IInventoryTool, IRenderTw
         return 0;
     }
 
-    //	@Override
-    //	public boolean onBlockStartBreak(ItemStack stack, int X, int Y, int Z, EntityPlayer player) {
-    //		World world = player.worldObj;
-    //		boolean tree = isTree(world, X, Y, Z);
+    // @Override
+    // public boolean onBlockStartBreak(ItemStack stack, int X, int Y, int Z, EntityPlayer player) {
+    // World world = player.worldObj;
+    // boolean tree = isTree(world, X, Y, Z);
     //
-    //		if (player.isSneaking()) {
-    //			return false;
-    //		}
+    // if (player.isSneaking()) {
+    // return false;
+    // }
     //
-    //		Block block = world.getBlock(X, Y, Z);
-    //		Material mat = block.getMaterial();
-    //		if (!ToolHandler.isRightMaterial(mat, ToolHandler.materialsAxe)) {
-    //			return false;
-    //		}
+    // Block block = world.getBlock(X, Y, Z);
+    // Material mat = block.getMaterial();
+    // if (!ToolHandler.isRightMaterial(mat, ToolHandler.materialsAxe)) {
+    // return false;
+    // }
     //
-    //		if (!tree) {
-    //			ToolHandler.disSquare(X, Y, Z, player, world, false, 0, ToolHandler.materialsAxe, stack);
-    //			return false;
-    //		}
+    // if (!tree) {
+    // ToolHandler.disSquare(X, Y, Z, player, world, false, 0, ToolHandler.materialsAxe, stack);
+    // return false;
+    // }
     //
-    //		if (!world.isRemote) world.playAuxSFX(2001, X, Y, Z, Block.getIdFromBlock(world.getBlock(X, Y, Z)));
-    //		trimLeavs(X, Y, Z, player, world, stack);
-    //		chopTree(X, Y, Z, player, world, stack);
+    // if (!world.isRemote) world.playAuxSFX(2001, X, Y, Z, Block.getIdFromBlock(world.getBlock(X, Y, Z)));
+    // trimLeavs(X, Y, Z, player, world, stack);
+    // chopTree(X, Y, Z, player, world, stack);
     //
-    //		return true;
-    //	}
+    // return true;
+    // }
     //
     private boolean isTree(World world, int X, int Y, int Z) {
         final Block wood = world.getBlock(X, Y, Z);
@@ -210,7 +213,7 @@ public class DraconicAxe extends MiningTool implements IInventoryTool, IRenderTw
                         }
                         chopTree(xPos, yPos, zPos, player, world, stack);
                     } // else
-                    // trimLeavs(xPos, yPos, zPos, player, world, stack);
+                      // trimLeavs(xPos, yPos, zPos, player, world, stack);
                 }
             }
         }
@@ -253,18 +256,18 @@ public class DraconicAxe extends MiningTool implements IInventoryTool, IRenderTw
         }
     }
 
-    //	@SuppressWarnings({"rawtypes", "unchecked"})
-    //	@Override
-    //	public void addInformation(final ItemStack stack, final EntityPlayer player, final List list, final boolean
+    // @SuppressWarnings({"rawtypes", "unchecked"})
+    // @Override
+    // public void addInformation(final ItemStack stack, final EntityPlayer player, final List list, final boolean
     // extraInformation) {
-    //		if (InfoHelper.holdShiftForDetails(list)){
-    //			InfoHelper.addEnergyInfo(stack, list);
-    //			list.add(InfoHelper.ITC() + StatCollector.translateToLocal("info.draconicAxe2.txt"));
-    //			list.add(InfoHelper.ITC() + StatCollector.translateToLocal("info.draconicAxe3.txt"));
-    //			list.add(InfoHelper.ITC() + StatCollector.translateToLocal("info.draconicAxe4.txt"));
-    //			InfoHelper.addLore(stack, list);
+    // if (InfoHelper.holdShiftForDetails(list)){
+    // InfoHelper.addEnergyInfo(stack, list);
+    // list.add(InfoHelper.ITC() + StatCollector.translateToLocal("info.draconicAxe2.txt"));
+    // list.add(InfoHelper.ITC() + StatCollector.translateToLocal("info.draconicAxe3.txt"));
+    // list.add(InfoHelper.ITC() + StatCollector.translateToLocal("info.draconicAxe4.txt"));
+    // InfoHelper.addLore(stack, list);
     //
-    //		}else list.add(InfoHelper.ITC() + StatCollector.translateToLocal("info.draconicAxe1.txt"));
-    //	}
+    // }else list.add(InfoHelper.ITC() + StatCollector.translateToLocal("info.draconicAxe1.txt"));
+    // }
 
 }

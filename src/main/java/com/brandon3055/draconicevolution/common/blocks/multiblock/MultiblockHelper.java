@@ -11,6 +11,7 @@ import net.minecraft.world.World;
 public class MultiblockHelper {
 
     public static class TileLocation extends ChunkCoordinates {
+
         public boolean initialized = false;
 
         public TileLocation() {}
@@ -79,6 +80,7 @@ public class MultiblockHelper {
     }
 
     public static class TileOffset {
+
         public int offsetX;
         public int offsetY;
         public int offsetZ;
@@ -122,8 +124,7 @@ public class MultiblockHelper {
         }
 
         public TileEntity getTileEntity(TileEntity tileEntity) {
-            return tileEntity
-                    .getWorldObj()
+            return tileEntity.getWorldObj()
                     .getTileEntity(getXCoord(tileEntity), getYCoord(tileEntity), getZCoord(tileEntity));
         }
 

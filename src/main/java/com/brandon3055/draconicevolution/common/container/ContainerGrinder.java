@@ -1,13 +1,15 @@
 package com.brandon3055.draconicevolution.common.container;
 
-import com.brandon3055.draconicevolution.common.inventory.SlotItemValid;
-import com.brandon3055.draconicevolution.common.tileentities.TileGrinder;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+
+import com.brandon3055.draconicevolution.common.inventory.SlotItemValid;
+import com.brandon3055.draconicevolution.common.tileentities.TileGrinder;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class ContainerGrinder extends ContainerDataSync {
 
@@ -52,8 +54,8 @@ public class ContainerGrinder extends ContainerDataSync {
                 }
             } else if (TileGrinder.getItemBurnTime(stack) == 0
                     || !mergeItemStack(stack, 36, 36 + tile.getSizeInventory(), false)) {
-                return null;
-            }
+                        return null;
+                    }
 
             if (stack.stackSize == 0) {
                 slot.putStack(null);

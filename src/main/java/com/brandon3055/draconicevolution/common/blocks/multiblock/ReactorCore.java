@@ -1,18 +1,20 @@
 package com.brandon3055.draconicevolution.common.blocks.multiblock;
 
-import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.common.ModBlocks;
-import com.brandon3055.draconicevolution.common.blocks.BlockDE;
-import com.brandon3055.draconicevolution.common.lib.References;
-import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.reactor.TileReactorCore;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
+
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.common.ModBlocks;
+import com.brandon3055.draconicevolution.common.blocks.BlockDE;
+import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.reactor.TileReactorCore;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Created by Brandon on 16/6/2015.
@@ -69,21 +71,13 @@ public class ReactorCore extends BlockDE {
     @Override
     public AxisAlignedBB getSelectedBoundingBoxFromPool(World p_149633_1_, int x, int y, int z) {
 
-        return AxisAlignedBB.getBoundingBox(
-                0, 0, 0, 1, 1, 1); // super.getSelectedBoundingBoxFromPool(p_149633_1_, x, y, z);
+        return AxisAlignedBB.getBoundingBox(0, 0, 0, 1, 1, 1); // super.getSelectedBoundingBoxFromPool(p_149633_1_, x,
+                                                               // y, z);
     }
 
     @Override
-    public boolean onBlockActivated(
-            World world,
-            int x,
-            int y,
-            int z,
-            EntityPlayer player,
-            int p_149727_6_,
-            float p_149727_7_,
-            float p_149727_8_,
-            float p_149727_9_) {
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int p_149727_6_,
+            float p_149727_7_, float p_149727_8_, float p_149727_9_) {
         // TileReactorCore tile = world.getTileEntity(x, y, z) instanceof TileReactorCore ? (TileReactorCore)
         // world.getTileEntity(x, y, z) : null;
         // if (tile != null) return tile.onStructureRightClicked(player);

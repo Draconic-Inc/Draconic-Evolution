@@ -1,20 +1,22 @@
 package com.brandon3055.draconicevolution.client.gui.componentguis;
 
-import com.brandon3055.brandonscore.client.gui.guicomponents.*;
-import com.brandon3055.draconicevolution.common.container.ContainerAdvTool;
-import com.brandon3055.draconicevolution.common.lib.References;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
+
 import org.lwjgl.opengl.GL11;
+
+import com.brandon3055.brandonscore.client.gui.guicomponents.*;
+import com.brandon3055.draconicevolution.common.container.ContainerAdvTool;
+import com.brandon3055.draconicevolution.common.lib.References;
 
 /**
  * Created by Brandon on 13/01/2015.
  */
 public class GUIToolInventory extends GUIBase {
 
-    private static final ResourceLocation inventoryTexture =
-            new ResourceLocation(References.RESOURCESPREFIX + "textures/gui/ToolConfig.png");
+    private static final ResourceLocation inventoryTexture = new ResourceLocation(
+            References.RESOURCESPREFIX + "textures/gui/ToolConfig.png");
 
     private ContainerAdvTool container;
     private String inventoryName;
@@ -38,10 +40,8 @@ public class GUIToolInventory extends GUIBase {
     @Override
     protected ComponentCollection assembleComponents() {
         ComponentCollection c = new ComponentCollection(0, 0, xSize, ySize, this);
-        c.addComponent(new ComponentTexturedRect(0, 130 - 89, 198, 89, inventoryTexture))
-                .setGroup("BACKGROUND");
-        c.addComponent(new ComponentTexturedRect(0, 0, 198, 80, inventoryTexture))
-                .setGroup("BACKGROUND");
+        c.addComponent(new ComponentTexturedRect(0, 130 - 89, 198, 89, inventoryTexture)).setGroup("BACKGROUND");
+        c.addComponent(new ComponentTexturedRect(0, 0, 198, 80, inventoryTexture)).setGroup("BACKGROUND");
         c.addComponent(new ComponentButton(172, 3, 18, 12, 0, this, "<=", "Back"));
 
         for (int i = 0; i < 5; i++) {
@@ -68,8 +68,7 @@ public class GUIToolInventory extends GUIBase {
             collection.addComponent(new ComponentSlotBackground(7 + x * 18, 18)).setGroup("INVENTORY");
         ComponentSlotBackground.addInventorySlots(collection, 7, 44, container.inventoryItemSlot);
         if (container.inventoryItemSlot > 35)
-            collection
-                    .addComponent(new ComponentItemRenderer(6, 18, container.inventoryTool.inventoryItem))
+            collection.addComponent(new ComponentItemRenderer(6, 18, container.inventoryTool.inventoryItem))
                     .setGroup("INVENTORY");
     }
 

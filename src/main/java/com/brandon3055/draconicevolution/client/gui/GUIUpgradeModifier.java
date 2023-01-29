@@ -1,16 +1,8 @@
 package com.brandon3055.draconicevolution.client.gui;
 
-import com.brandon3055.brandonscore.client.utills.GuiHelper;
-import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
-import com.brandon3055.draconicevolution.common.ModItems;
-import com.brandon3055.draconicevolution.common.container.ContainerUpgradeModifier;
-import com.brandon3055.draconicevolution.common.tileentities.TileUpgradeModifier;
-import com.brandon3055.draconicevolution.common.utills.IUpgradableItem;
-import com.brandon3055.draconicevolution.common.utills.IUpgradableItem.EnumUpgrade;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import java.util.ArrayList;
 import java.util.List;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiButton;
@@ -20,7 +12,19 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
+
 import org.lwjgl.opengl.GL11;
+
+import com.brandon3055.brandonscore.client.utills.GuiHelper;
+import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
+import com.brandon3055.draconicevolution.common.ModItems;
+import com.brandon3055.draconicevolution.common.container.ContainerUpgradeModifier;
+import com.brandon3055.draconicevolution.common.tileentities.TileUpgradeModifier;
+import com.brandon3055.draconicevolution.common.utills.IUpgradableItem;
+import com.brandon3055.draconicevolution.common.utills.IUpgradableItem.EnumUpgrade;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GUIUpgradeModifier extends GuiContainer {
@@ -34,8 +38,8 @@ public class GUIUpgradeModifier extends GuiContainer {
     private List<EnumUpgrade> itemUpgrades = new ArrayList<EnumUpgrade>();
     private ContainerUpgradeModifier containerEM;
 
-    public GUIUpgradeModifier(
-            InventoryPlayer invPlayer, TileUpgradeModifier tile, ContainerUpgradeModifier containerEM) {
+    public GUIUpgradeModifier(InventoryPlayer invPlayer, TileUpgradeModifier tile,
+            ContainerUpgradeModifier containerEM) {
         super(containerEM);
         this.containerEM = containerEM;
 
@@ -154,24 +158,21 @@ public class GUIUpgradeModifier extends GuiContainer {
 
             for (int i = 0; i <= coreTier; i++) {
                 // Check + buttons
-                if (coreInInventory[i]
-                        && coreSlots > usedSlots
+                if (coreInInventory[i] && coreSlots > usedSlots
                         && GuiHelper.isInRect(xPos, yPos + 33 + i * 18, 8, 8, x, y)
                         && upgrade.getUpgradePoints(stack) < upgradableItem.getMaxUpgradePoints(upgrade.index, stack)) {
                     containerEM.sendObjectToServer(null, upgrade.index, i * 2);
-                    Minecraft.getMinecraft()
-                            .getSoundHandler()
-                            .playSound(PositionedSoundRecord.func_147674_a(
-                                    ResourceHandler.getResourceWOP("gui.button.press"), 1.0F));
+                    Minecraft.getMinecraft().getSoundHandler().playSound(
+                            PositionedSoundRecord
+                                    .func_147674_a(ResourceHandler.getResourceWOP("gui.button.press"), 1.0F));
                 }
 
                 // Check - buttons
                 if (appliedCores[i] > 0 && GuiHelper.isInRect(xPos + 16, yPos + 33 + i * 18, 8, 8, x, y)) {
                     containerEM.sendObjectToServer(null, upgrade.index, 1 + i * 2);
-                    Minecraft.getMinecraft()
-                            .getSoundHandler()
-                            .playSound(PositionedSoundRecord.func_147674_a(
-                                    ResourceHandler.getResourceWOP("gui.button.press"), 1.0F));
+                    Minecraft.getMinecraft().getSoundHandler().playSound(
+                            PositionedSoundRecord
+                                    .func_147674_a(ResourceHandler.getResourceWOP("gui.button.press"), 1.0F));
                 }
             }
         }
@@ -218,12 +219,11 @@ public class GUIUpgradeModifier extends GuiContainer {
                     drawTexturedModalRect(xPos + 16, yPos + 33 + i * 18, 56 + (hovering ? 8 : 0), 208, 8, 8);
                 }
             }
-            for (int i = 0; i <= coreTier; i++)
-                fontRendererObj.drawString(
-                        String.valueOf(appliedCores[i]),
-                        xPos + 12 - fontRendererObj.getStringWidth(String.valueOf(appliedCores[i])) / 2,
-                        yPos + 29 + i * 18,
-                        0xFFFFFF);
+            for (int i = 0; i <= coreTier; i++) fontRendererObj.drawString(
+                    String.valueOf(appliedCores[i]),
+                    xPos + 12 - fontRendererObj.getStringWidth(String.valueOf(appliedCores[i])) / 2,
+                    yPos + 29 + i * 18,
+                    0xFFFFFF);
             fontRendererObj.drawString(
                     String.valueOf(upgrade.getUpgradePoints(stack)),
                     xPos + 12 - fontRendererObj.getStringWidth(String.valueOf(upgrade.getUpgradePoints(stack))) / 2,
@@ -232,15 +232,18 @@ public class GUIUpgradeModifier extends GuiContainer {
         }
 
         fontRendererObj.drawStringWithShadow(
-                StatCollector.translateToLocal("gui.de.cores.txt"), guiLeft + 4, guiTop + 4, 0x00ff00);
-        fontRendererObj.drawString(
-                StatCollector.translateToLocal("gui.de.cap.txt"), guiLeft + 4, guiTop + 16, 0x000000);
+                StatCollector.translateToLocal("gui.de.cores.txt"),
+                guiLeft + 4,
+                guiTop + 4,
+                0x00ff00);
+        fontRendererObj
+                .drawString(StatCollector.translateToLocal("gui.de.cap.txt"), guiLeft + 4, guiTop + 16, 0x000000);
         fontRendererObj.drawString(">" + coreSlots, guiLeft + 4, guiTop + 25, 0x000000);
-        fontRendererObj.drawString(
-                StatCollector.translateToLocal("gui.de.installed.txt"), guiLeft + 4, guiTop + 37, 0x000000);
+        fontRendererObj
+                .drawString(StatCollector.translateToLocal("gui.de.installed.txt"), guiLeft + 4, guiTop + 37, 0x000000);
         fontRendererObj.drawString(">" + usedSlots, guiLeft + 4, guiTop + 46, 0x000000);
-        fontRendererObj.drawString(
-                StatCollector.translateToLocal("gui.de.free.txt"), guiLeft + 4, guiTop + 58, 0x000000);
+        fontRendererObj
+                .drawString(StatCollector.translateToLocal("gui.de.free.txt"), guiLeft + 4, guiTop + 58, 0x000000);
         fontRendererObj.drawString(">" + (coreSlots - usedSlots), guiLeft + 4, guiTop + 67, 0x000000);
     }
 
@@ -265,10 +268,12 @@ public class GUIUpgradeModifier extends GuiContainer {
 
             if (GuiHelper.isInRect(xPos + 3, yPos - 9, 18, 8, x, y)) {
                 List list = new ArrayList();
-                list.add(StatCollector.translateToLocal("gui.de.basePoints.txt") + ": "
-                        + upgradableItem.getBaseUpgradePoints(upgrade.index));
-                list.add(StatCollector.translateToLocal("gui.de.maxPoints.txt") + ": "
-                        + upgradableItem.getMaxUpgradePoints(upgrade.index, stack));
+                list.add(
+                        StatCollector.translateToLocal("gui.de.basePoints.txt") + ": "
+                                + upgradableItem.getBaseUpgradePoints(upgrade.index));
+                list.add(
+                        StatCollector.translateToLocal("gui.de.maxPoints.txt") + ": "
+                                + upgradableItem.getMaxUpgradePoints(upgrade.index, stack));
                 list.add(StatCollector.translateToLocal("gui.de.pointCost.txt") + ": " + upgrade.pointConversion);
                 drawHoveringText(list, x, y, fontRendererObj);
             }
@@ -277,9 +282,10 @@ public class GUIUpgradeModifier extends GuiContainer {
                 if (GuiHelper.isInRect(xPos + 9, yPos + 25 + i * 18, 6, 15, x, y)) {
                     List list = new ArrayList();
                     double value = Math.pow(2, i) / upgrade.pointConversion;
-                    String string = StatCollector.translateToLocal("gui.de.value.txt") + ": " + value + " "
-                            + (value == 1
-                                    ? StatCollector.translateToLocal("gui.de.point.txt")
+                    String string = StatCollector.translateToLocal("gui.de.value.txt") + ": "
+                            + value
+                            + " "
+                            + (value == 1 ? StatCollector.translateToLocal("gui.de.point.txt")
                                     : StatCollector.translateToLocal("gui.de.points.txt"));
                     list.add(string.replace(".0", ""));
                     drawHoveringText(list, x, y, fontRendererObj);

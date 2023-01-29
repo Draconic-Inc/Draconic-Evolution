@@ -1,16 +1,19 @@
 package com.brandon3055.draconicevolution.client.render.particle;
 
-import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.world.World;
+
 import org.lwjgl.opengl.GL11;
+
+import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
 
 /**
  * Created by Brandon on 9/02/2015.
  */
 public class ParticleEnergyField extends EntityFX {
+
     /**
      * Particle Type 0 = Energy Ring, 1 = single particle
      */
@@ -51,8 +54,8 @@ public class ParticleEnergyField extends EntityFX {
     }
 
     @Override
-    public void renderParticle(
-            Tessellator tessellator, float partialTick, float rotX, float rotXZ, float rotZ, float rotYZ, float rotXY) {
+    public void renderParticle(Tessellator tessellator, float partialTick, float rotX, float rotXZ, float rotZ,
+            float rotYZ, float rotXY) {
         if (!renderParticle) return;
         tessellator.draw();
         GL11.glPushMatrix();
@@ -157,7 +160,7 @@ public class ParticleEnergyField extends EntityFX {
             tessellator.draw();
         }
 
-        //		GL11.glDepthMask(true);
+        // GL11.glDepthMask(true);
         // GL11.glPopAttrib();
         GL11.glPopMatrix();
 

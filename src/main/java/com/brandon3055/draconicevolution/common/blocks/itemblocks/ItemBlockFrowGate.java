@@ -8,6 +8,7 @@ import net.minecraft.item.ItemStack;
  * Created by Brandon on 25/6/2015.
  */
 public class ItemBlockFrowGate extends ItemBlock {
+
     public ItemBlockFrowGate(Block block) {
         super(block);
         this.setHasSubtypes(true);

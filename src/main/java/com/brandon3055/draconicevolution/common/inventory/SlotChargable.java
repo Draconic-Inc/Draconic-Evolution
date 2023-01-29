@@ -1,10 +1,12 @@
 package com.brandon3055.draconicevolution.common.inventory;
 
-import cofh.api.energy.IEnergyContainerItem;
-import com.brandon3055.draconicevolution.common.tileentities.TileEnergyInfuser;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+
+import cofh.api.energy.IEnergyContainerItem;
+
+import com.brandon3055.draconicevolution.common.tileentities.TileEnergyInfuser;
 
 public class SlotChargable extends Slot {
 

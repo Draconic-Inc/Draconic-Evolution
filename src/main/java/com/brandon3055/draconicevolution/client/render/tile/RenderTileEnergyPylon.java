@@ -1,27 +1,30 @@
 package com.brandon3055.draconicevolution.client.render.tile;
 
-import com.brandon3055.draconicevolution.common.lib.References;
-import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnergyPylon;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.AdvancedModelLoader;
 import net.minecraftforge.client.model.IModelCustom;
+
 import org.lwjgl.opengl.GL11;
+
+import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnergyPylon;
 
 /**
  * Created by Brandon on 27/07/2014.
  */
 public class RenderTileEnergyPylon extends TileEntitySpecialRenderer {
 
-    private static final ResourceLocation model_texture =
-            new ResourceLocation(References.MODID.toLowerCase(), "textures/models/pylon_sphere_texture.png");
+    private static final ResourceLocation model_texture = new ResourceLocation(
+            References.MODID.toLowerCase(),
+            "textures/models/pylon_sphere_texture.png");
     private IModelCustom model;
 
     public RenderTileEnergyPylon() {
-        model = AdvancedModelLoader.loadModel(
-                new ResourceLocation(References.MODID.toLowerCase(), "models/pylon_sphere.obj"));
+        model = AdvancedModelLoader
+                .loadModel(new ResourceLocation(References.MODID.toLowerCase(), "models/pylon_sphere.obj"));
     }
 
     @Override
@@ -97,5 +100,5 @@ public class RenderTileEnergyPylon extends TileEntitySpecialRenderer {
         GL11.glPopMatrix();
     }
 
-    //	private void renderSphere()
+    // private void renderSphere()
 }

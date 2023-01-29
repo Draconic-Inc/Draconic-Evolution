@@ -8,6 +8,7 @@ import net.minecraft.item.ItemStack;
  * Created by Brandon on 23/06/2014.
  */
 public class LRDItemBlock extends ItemBlock {
+
     public LRDItemBlock(Block block) {
         super(block);
         setHasSubtypes(true);

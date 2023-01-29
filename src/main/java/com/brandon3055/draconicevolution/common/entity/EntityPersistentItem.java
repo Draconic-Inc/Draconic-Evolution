@@ -1,6 +1,5 @@
 package com.brandon3055.draconicevolution.common.entity;
 
-import com.brandon3055.draconicevolution.common.items.DragonHeart;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
@@ -12,10 +11,13 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.item.ItemExpireEvent;
 
+import com.brandon3055.draconicevolution.common.items.DragonHeart;
+
 /**
  * Created by Brandon on 15/08/2014.
  */
 public class EntityPersistentItem extends EntityItem {
+
     public EntityPersistentItem(World par1World, double par2, double par4, double par6) {
         super(par1World, par2, par4, par6);
         this.isImmuneToFire = true;
@@ -47,8 +49,7 @@ public class EntityPersistentItem extends EntityItem {
 
     @Override
     public boolean attackEntityFrom(DamageSource par1DamageSource, float par2) {
-        if (getEntityItem().getItem() instanceof DragonHeart
-                && par1DamageSource.isExplosion()
+        if (getEntityItem().getItem() instanceof DragonHeart && par1DamageSource.isExplosion()
                 && par2 > 10f
                 && !this.isDead) {
             worldObj.spawnEntityInWorld(new EntityDragonHeart(worldObj, posX, posY, posZ));
@@ -75,10 +76,10 @@ public class EntityPersistentItem extends EntityItem {
         if (age + 10 >= lifespan) age = 0;
         boolean flag2 = false;
         if (this.worldObj.getBlock(
-                        MathHelper.floor_double(this.posX),
-                        MathHelper.floor_double(this.posY - 1),
-                        MathHelper.floor_double(this.posZ))
-                == Blocks.end_portal) flag2 = true;
+                MathHelper.floor_double(this.posX),
+                MathHelper.floor_double(this.posY - 1),
+                MathHelper.floor_double(this.posZ)) == Blocks.end_portal)
+            flag2 = true;
         ItemStack stack = this.getDataWatcher().getWatchableObjectItemStack(10);
         if (stack != null && stack.getItem() != null) {
             if (stack.getItem().onEntityItemUpdate(this)) {
@@ -104,21 +105,17 @@ public class EntityPersistentItem extends EntityItem {
                 motionY = 0;
                 motionZ = 0;
             }
-            this.noClip =
-                    this.func_145771_j(this.posX, (this.boundingBox.minY + this.boundingBox.maxY) / 2.0D, this.posZ);
+            this.noClip = this
+                    .func_145771_j(this.posX, (this.boundingBox.minY + this.boundingBox.maxY) / 2.0D, this.posZ);
             this.moveEntity(this.motionX, this.motionY, this.motionZ);
-            boolean flag = (int) this.prevPosX != (int) this.posX
-                    || (int) this.prevPosY != (int) this.posY
+            boolean flag = (int) this.prevPosX != (int) this.posX || (int) this.prevPosY != (int) this.posY
                     || (int) this.prevPosZ != (int) this.posZ;
 
             if (flag || this.ticksExisted % 25 == 0) {
-                if (this.worldObj
-                                .getBlock(
-                                        MathHelper.floor_double(this.posX),
-                                        MathHelper.floor_double(this.posY),
-                                        MathHelper.floor_double(this.posZ))
-                                .getMaterial()
-                        == Material.lava) {
+                if (this.worldObj.getBlock(
+                        MathHelper.floor_double(this.posX),
+                        MathHelper.floor_double(this.posY),
+                        MathHelper.floor_double(this.posZ)).getMaterial() == Material.lava) {
                     this.motionY = 0.20000000298023224D;
                     this.motionX = (double) ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F);
                     this.motionZ = (double) ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F);
@@ -130,11 +127,9 @@ public class EntityPersistentItem extends EntityItem {
 
             if (this.onGround) {
                 f = this.worldObj.getBlock(
-                                        MathHelper.floor_double(this.posX),
-                                        MathHelper.floor_double(this.boundingBox.minY) - 1,
-                                        MathHelper.floor_double(this.posZ))
-                                .slipperiness
-                        * 0.98F;
+                        MathHelper.floor_double(this.posX),
+                        MathHelper.floor_double(this.boundingBox.minY) - 1,
+                        MathHelper.floor_double(this.posZ)).slipperiness * 0.98F;
             }
 
             this.motionX *= (double) f;

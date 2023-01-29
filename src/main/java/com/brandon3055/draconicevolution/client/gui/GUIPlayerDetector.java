@@ -1,14 +1,7 @@
 package com.brandon3055.draconicevolution.client.gui;
 
-import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.common.container.ContainerPlayerDetector;
-import com.brandon3055.draconicevolution.common.lib.References;
-import com.brandon3055.draconicevolution.common.network.PlayerDetectorButtonPacket;
-import com.brandon3055.draconicevolution.common.network.PlayerDetectorStringPacket;
-import com.brandon3055.draconicevolution.common.tileentities.TilePlayerDetectorAdvanced;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import java.util.ArrayList;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
@@ -16,7 +9,18 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
+
 import org.lwjgl.opengl.GL11;
+
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.common.container.ContainerPlayerDetector;
+import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.network.PlayerDetectorButtonPacket;
+import com.brandon3055.draconicevolution.common.network.PlayerDetectorStringPacket;
+import com.brandon3055.draconicevolution.common.tileentities.TilePlayerDetectorAdvanced;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GUIPlayerDetector extends GuiContainer {
@@ -49,8 +53,9 @@ public class GUIPlayerDetector extends GuiContainer {
         syncWithServer();
     }
 
-    private static final ResourceLocation texture =
-            new ResourceLocation(References.MODID.toLowerCase(), "textures/gui/PlayerDetector.png");
+    private static final ResourceLocation texture = new ResourceLocation(
+            References.MODID.toLowerCase(),
+            "textures/gui/PlayerDetector.png");
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float f, int x, int y) {
@@ -158,8 +163,8 @@ public class GUIPlayerDetector extends GuiContainer {
                 names[selected] = selectedNameText.getText();
                 selectedNameText.setText("");
                 selectedNameText.setFocused(false);
-                DraconicEvolution.network.sendToServer(
-                        new PlayerDetectorStringPacket((byte) selected, names[selected]));
+                DraconicEvolution.network
+                        .sendToServer(new PlayerDetectorStringPacket((byte) selected, names[selected]));
                 selected = -1;
             }
         } else super.keyTyped(par1, par2);

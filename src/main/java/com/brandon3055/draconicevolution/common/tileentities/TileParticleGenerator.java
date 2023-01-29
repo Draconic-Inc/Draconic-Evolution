@@ -1,16 +1,9 @@
 package com.brandon3055.draconicevolution.common.tileentities;
 
-import com.brandon3055.draconicevolution.client.handler.ParticleHandler;
-import com.brandon3055.draconicevolution.client.render.particle.ParticleCustom;
-import com.brandon3055.draconicevolution.client.render.particle.Particles;
-import com.brandon3055.draconicevolution.common.blocks.multiblock.MultiblockHelper.TileLocation;
-import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnergyStorageCore;
-import com.brandon3055.draconicevolution.integration.computers.IDEPeripheral;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
@@ -18,7 +11,18 @@ import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 
+import com.brandon3055.draconicevolution.client.handler.ParticleHandler;
+import com.brandon3055.draconicevolution.client.render.particle.ParticleCustom;
+import com.brandon3055.draconicevolution.client.render.particle.Particles;
+import com.brandon3055.draconicevolution.common.blocks.multiblock.MultiblockHelper.TileLocation;
+import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnergyStorageCore;
+import com.brandon3055.draconicevolution.integration.computers.IDEPeripheral;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 public class TileParticleGenerator extends TileEntity implements IDEPeripheral {
+
     public boolean particles_enabled = true;
 
     public int red = 0;
@@ -145,9 +149,23 @@ public class TileParticleGenerator extends TileEntity implements IDEPeripheral {
         else if (getMaster().zCoord < zCoord) direction = 3;
 
         Particles.EnergyBeamParticle particle = new Particles.EnergyBeamParticle(
-                worldObj, x, y, z, getMaster().xCoord + 0.5, getMaster().zCoord + 0.5, direction, false);
+                worldObj,
+                x,
+                y,
+                z,
+                getMaster().xCoord + 0.5,
+                getMaster().zCoord + 0.5,
+                direction,
+                false);
         Particles.EnergyBeamParticle particle2 = new Particles.EnergyBeamParticle(
-                worldObj, x, y, z, getMaster().xCoord + 0.5, getMaster().zCoord + 0.5, direction, true);
+                worldObj,
+                x,
+                y,
+                z,
+                getMaster().xCoord + 0.5,
+                getMaster().zCoord + 0.5,
+                direction,
+                true);
         ParticleHandler.spawnCustomParticle(particle, 60);
         ParticleHandler.spawnCustomParticle(particle2, 60);
     }
@@ -188,13 +206,15 @@ public class TileParticleGenerator extends TileEntity implements IDEPeripheral {
 
     public TileEnergyStorageCore getMaster() {
         if (master == null) return null;
-        TileEnergyStorageCore tile =
-                (worldObj.getTileEntity(master.getXCoord(), master.getYCoord(), master.getZCoord()) != null
-                                && worldObj.getTileEntity(master.getXCoord(), master.getYCoord(), master.getZCoord())
-                                        instanceof TileEnergyStorageCore)
-                        ? (TileEnergyStorageCore)
-                                worldObj.getTileEntity(master.getXCoord(), master.getYCoord(), master.getZCoord())
-                        : null;
+        TileEnergyStorageCore tile = (worldObj.getTileEntity(master.getXCoord(), master.getYCoord(), master.getZCoord())
+                != null
+                && worldObj.getTileEntity(
+                        master.getXCoord(),
+                        master.getYCoord(),
+                        master.getZCoord()) instanceof TileEnergyStorageCore)
+                                ? (TileEnergyStorageCore) worldObj
+                                        .getTileEntity(master.getXCoord(), master.getYCoord(), master.getZCoord())
+                                : null;
         return tile;
     }
 
@@ -319,14 +339,14 @@ public class TileParticleGenerator extends TileEntity implements IDEPeripheral {
 
     @Override
     public String[] getMethodNames() {
-        return new String[] {"setGeneratorProperty", "getGeneratorState", "resetGeneratorState"};
+        return new String[] { "setGeneratorProperty", "getGeneratorState", "resetGeneratorState" };
     }
 
     @Override
     public Object[] callMethod(String method, Object... args) {
         if (method.startsWith("setGeneratorProperty")) {
-            if (args.length != 2) return new Object[] {false};
-            else if (!(args[0] instanceof String)) return new Object[] {false};
+            if (args.length != 2) return new Object[] { false };
+            else if (!(args[0] instanceof String)) return new Object[] { false };
 
             /* Particles */
             if (args[0].equals("particles_enabled") && args[1] instanceof Boolean) {
@@ -408,11 +428,11 @@ public class TileParticleGenerator extends TileEntity implements IDEPeripheral {
             } else if (args[0].equals("beam_rotation") && args[1] instanceof Double) {
                 beam_rotation = (float) limit((Double) args[1], -1F, 1F);
             } else {
-                return new Object[] {false};
+                return new Object[] { false };
             }
 
             worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-            return new Object[] {true};
+            return new Object[] { true };
         } else if (method.startsWith("getGeneratorState")) {
             Map<Object, Object> map = new HashMap<Object, Object>();
 
@@ -458,7 +478,7 @@ public class TileParticleGenerator extends TileEntity implements IDEPeripheral {
             map.put("beam_length", beam_length);
             map.put("beam_rotation", beam_rotation);
 
-            return new Object[] {map};
+            return new Object[] { map };
         } else if (method.startsWith("resetGeneratorState")) {
             particles_enabled = true;
             red = 0;
@@ -504,9 +524,9 @@ public class TileParticleGenerator extends TileEntity implements IDEPeripheral {
             beam_rotation = 0F;
 
             worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-            return new Object[] {true};
+            return new Object[] { true };
         }
 
-        return new Object[] {0};
+        return new Object[] { 0 };
     }
 }

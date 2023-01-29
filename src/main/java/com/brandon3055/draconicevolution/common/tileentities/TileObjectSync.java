@@ -1,9 +1,10 @@
 package com.brandon3055.draconicevolution.common.tileentities;
 
+import net.minecraft.tileentity.TileEntity;
+
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.network.TileObjectPacket;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
-import net.minecraft.tileentity.TileEntity;
 
 /**
  * Created by Brandon on 14/11/2014.
@@ -15,7 +16,10 @@ public abstract class TileObjectSync extends TileEntity {
      */
     public Object sendObjectToClient(byte dataType, int index, Object object) {
         return sendObjectToClient(
-                dataType, index, object, new TargetPoint(worldObj.provider.dimensionId, xCoord, yCoord, zCoord, 64));
+                dataType,
+                index,
+                object,
+                new TargetPoint(worldObj.provider.dimensionId, xCoord, yCoord, zCoord, 64));
     }
 
     /**

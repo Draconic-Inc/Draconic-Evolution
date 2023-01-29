@@ -1,7 +1,5 @@
 package com.brandon3055.draconicevolution.client.render.item;
 
-import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
-import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
@@ -9,32 +7,19 @@ import net.minecraft.entity.EntityList;
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.IItemRenderer;
+
 import org.lwjgl.opengl.GL11;
 
+import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
+import com.brandon3055.draconicevolution.common.utills.LogHelper;
+
 public class RenderMobSoul implements IItemRenderer {
+
     private Minecraft mc;
     private Entity randomEntity = null;
-    private String[] randomEntitys = new String[] {
-        "Pig",
-        "Sheep",
-        "Enderman",
-        "Zombie",
-        "Creeper",
-        "Cow",
-        "Chicken",
-        "Ozelot",
-        "Witch",
-        "Wolf",
-        "MushroomCow",
-        "Squid",
-        "EntityHorse",
-        "Spider",
-        "Skeleton",
-        "Blaze",
-        "Bat",
-        "Villager",
-        "Silverfish"
-    };
+    private String[] randomEntitys = new String[] { "Pig", "Sheep", "Enderman", "Zombie", "Creeper", "Cow", "Chicken",
+            "Ozelot", "Witch", "Wolf", "MushroomCow", "Squid", "EntityHorse", "Spider", "Skeleton", "Blaze", "Bat",
+            "Villager", "Silverfish" };
 
     public RenderMobSoul() {
         this.mc = Minecraft.getMinecraft();
@@ -42,8 +27,7 @@ public class RenderMobSoul implements IItemRenderer {
 
     @Override
     public boolean handleRenderType(ItemStack item, ItemRenderType type) {
-        return type == ItemRenderType.EQUIPPED
-                || type == ItemRenderType.EQUIPPED_FIRST_PERSON
+        return type == ItemRenderType.EQUIPPED || type == ItemRenderType.EQUIPPED_FIRST_PERSON
                 || type == ItemRenderType.INVENTORY
                 || type == ItemRenderType.ENTITY;
     }
@@ -56,8 +40,8 @@ public class RenderMobSoul implements IItemRenderer {
     @Override
     public void renderItem(ItemRenderType type, ItemStack item, Object... data) {
         Entity mob = EntityList.createEntityByName(ItemNBTHelper.getString(item, "Name", "Pig"), mc.theWorld);
-        randomEntity = EntityList.createEntityByName(
-                randomEntitys[(int) ((Minecraft.getSystemTime() / 1000) % 18)], mc.theWorld);
+        randomEntity = EntityList
+                .createEntityByName(randomEntitys[(int) ((Minecraft.getSystemTime() / 1000) % 18)], mc.theWorld);
         if (ItemNBTHelper.getString(item, "Name", "Pig").equals("Any")) mob = randomEntity;
         if (mob instanceof EntitySkeleton)
             ((EntitySkeleton) mob).setSkeletonType(ItemNBTHelper.getInteger(item, "SkeletonType", 0));

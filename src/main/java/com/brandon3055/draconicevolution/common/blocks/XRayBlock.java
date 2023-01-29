@@ -1,13 +1,7 @@
 package com.brandon3055.draconicevolution.common.blocks;
 
-import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.client.handler.ParticleHandler;
-import com.brandon3055.draconicevolution.common.ModBlocks;
-import com.brandon3055.draconicevolution.common.ModItems;
-import com.brandon3055.draconicevolution.common.lib.Strings;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import java.util.Random;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,6 +10,15 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.client.handler.ParticleHandler;
+import com.brandon3055.draconicevolution.common.ModBlocks;
+import com.brandon3055.draconicevolution.common.ModItems;
+import com.brandon3055.draconicevolution.common.lib.Strings;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class XRayBlock extends BlockDE {
 
@@ -44,8 +47,8 @@ public class XRayBlock extends BlockDE {
     }
 
     @Override
-    public AxisAlignedBB getCollisionBoundingBoxFromPool(
-            final World p_149668_1_, final int p_149668_2_, final int p_149668_3_, final int p_149668_4_) {
+    public AxisAlignedBB getCollisionBoundingBoxFromPool(final World p_149668_1_, final int p_149668_2_,
+            final int p_149668_3_, final int p_149668_4_) {
         return null;
     }
 
@@ -98,24 +101,16 @@ public class XRayBlock extends BlockDE {
     }
 
     @Override
-    public void onEntityCollidedWithBlock(
-            final World world, final int x, final int y, final int z, final Entity entity) {
+    public void onEntityCollidedWithBlock(final World world, final int x, final int y, final int z,
+            final Entity entity) {
         // if(entity != EntityItem)
         // System.out.println();
         // entity.attackEntityFrom(DamageSource.magic, 10F);
     }
 
     @Override
-    public boolean onBlockActivated(
-            World world,
-            int x,
-            int y,
-            int z,
-            EntityPlayer player,
-            int p_149727_6_,
-            float p_149727_7_,
-            float p_149727_8_,
-            float p_149727_9_) {
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int p_149727_6_,
+            float p_149727_7_, float p_149727_8_, float p_149727_9_) {
         // world.spawnEntityInWorld(new EntityLightningBolt(world, x, y, z));
         return false;
     }

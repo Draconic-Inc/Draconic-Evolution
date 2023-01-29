@@ -1,17 +1,8 @@
 package com.brandon3055.draconicevolution.common.blocks.machine;
 
-import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.common.ModBlocks;
-import com.brandon3055.draconicevolution.common.blocks.BlockDE;
-import com.brandon3055.draconicevolution.common.blocks.itemblocks.LRDItemBlock;
-import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
-import com.brandon3055.draconicevolution.common.lib.References;
-import com.brandon3055.draconicevolution.common.lib.Strings;
-import com.brandon3055.draconicevolution.common.utills.LogHelper;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import java.util.List;
 import java.util.Random;
+
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -24,6 +15,18 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
+
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.common.ModBlocks;
+import com.brandon3055.draconicevolution.common.blocks.BlockDE;
+import com.brandon3055.draconicevolution.common.blocks.itemblocks.LRDItemBlock;
+import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
+import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.lib.Strings;
+import com.brandon3055.draconicevolution.common.utills.LogHelper;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Created by Brandon on 20/07/2014.
@@ -60,16 +63,8 @@ public class LongRangeDislocator extends BlockDE {
     }
 
     @Override
-    public boolean onBlockActivated(
-            World world,
-            int x,
-            int y,
-            int z,
-            EntityPlayer player,
-            int p_149727_6_,
-            float p_149727_7_,
-            float p_149727_8_,
-            float p_149727_9_) {
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int p_149727_6_,
+            float p_149727_7_, float p_149727_8_, float p_149727_9_) {
         int meta = world.getBlockMetadata(x, y, z);
         if (meta == 0) return false; // return teleportPlayer(world, player, false);
         else if (meta == 1) return false;
@@ -110,8 +105,12 @@ public class LongRangeDislocator extends BlockDE {
                     break;
                 }
             }
-            player.addChatComponentMessage(new ChatComponentText("" + EnumChatFormatting.RED + "[WARNING]"
-                    + EnumChatFormatting.WHITE + " Do not move until the world loads!"));
+            player.addChatComponentMessage(
+                    new ChatComponentText(
+                            "" + EnumChatFormatting.RED
+                                    + "[WARNING]"
+                                    + EnumChatFormatting.WHITE
+                                    + " Do not move until the world loads!"));
             if (world.getBlock(randX, y, randZ).isBlockSolid(world, randX, y, randZ, 0)) {
                 world.setBlock(randX, y, randZ, world.getBlock(randX, y, randZ));
                 player.setLocationAndAngles(randX + 0.5, y + 1.5, randZ + 0.5, 0F, 0F);

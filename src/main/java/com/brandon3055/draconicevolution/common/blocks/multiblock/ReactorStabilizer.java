@@ -1,14 +1,5 @@
 package com.brandon3055.draconicevolution.common.blocks.multiblock;
 
-import com.brandon3055.brandonscore.common.utills.Utills;
-import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.common.ModBlocks;
-import com.brandon3055.draconicevolution.common.blocks.BlockDE;
-import com.brandon3055.draconicevolution.common.lib.References;
-import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.reactor.TileReactorCore;
-import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.reactor.TileReactorStabilizer;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
@@ -19,10 +10,22 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import com.brandon3055.brandonscore.common.utills.Utills;
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.common.ModBlocks;
+import com.brandon3055.draconicevolution.common.blocks.BlockDE;
+import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.reactor.TileReactorCore;
+import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.reactor.TileReactorStabilizer;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 /**
  * Created by Brandon on 5/7/2015.
  */
 public class ReactorStabilizer extends BlockDE {
+
     public ReactorStabilizer() {
         this.setCreativeTab(DraconicEvolution.tabBlocksItems);
         this.setBlockName("reactorStabilizer");
@@ -41,16 +44,8 @@ public class ReactorStabilizer extends BlockDE {
     }
 
     @Override
-    public boolean onBlockActivated(
-            World world,
-            int x,
-            int y,
-            int z,
-            EntityPlayer player,
-            int p_149727_6_,
-            float p_149727_7_,
-            float p_149727_8_,
-            float p_149727_9_) {
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int p_149727_6_,
+            float p_149727_7_, float p_149727_8_, float p_149727_9_) {
         if (!player.isSneaking()) {
             TileReactorStabilizer tile = world.getTileEntity(x, y, z) instanceof TileReactorStabilizer
                     ? (TileReactorStabilizer) world.getTileEntity(x, y, z)
@@ -102,9 +97,7 @@ public class ReactorStabilizer extends BlockDE {
                 ? (TileReactorStabilizer) world.getTileEntity(x, y, z)
                 : null;
         if (tile != null) {
-            if (entity.isSneaking())
-                tile.facingDirection =
-                        ForgeDirection.getOrientation(d).getOpposite().ordinal();
+            if (entity.isSneaking()) tile.facingDirection = ForgeDirection.getOrientation(d).getOpposite().ordinal();
             else tile.facingDirection = ForgeDirection.getOrientation(d).ordinal();
             tile.onPlaced();
         }

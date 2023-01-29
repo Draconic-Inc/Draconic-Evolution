@@ -1,8 +1,7 @@
 package com.brandon3055.draconicevolution.common.utills;
 
-import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.common.entity.EntityChaosGuardian;
 import java.util.*;
+
 import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeChunkManager;
@@ -10,10 +9,14 @@ import net.minecraftforge.common.ForgeChunkManager.LoadingCallback;
 import net.minecraftforge.common.ForgeChunkManager.Ticket;
 import net.minecraftforge.common.MinecraftForge;
 
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.common.entity.EntityChaosGuardian;
+
 /**
  * Created by brandon3055 on 21/10/2015.
  */
 public class DragonChunkLoader implements LoadingCallback {
+
     public static DragonChunkLoader instance;
     public static Map<EntityChaosGuardian, Ticket> ticketList = new HashMap<EntityChaosGuardian, Ticket>();
     public static boolean hasReportedIssue = false;
@@ -30,8 +33,8 @@ public class DragonChunkLoader implements LoadingCallback {
         if (ticketList.containsKey(guardian)) {
             ticket = ticketList.get(guardian);
         } else {
-            ticket = ForgeChunkManager.requestTicket(
-                    DraconicEvolution.instance, guardian.worldObj, ForgeChunkManager.Type.ENTITY);
+            ticket = ForgeChunkManager
+                    .requestTicket(DraconicEvolution.instance, guardian.worldObj, ForgeChunkManager.Type.ENTITY);
 
             if (ticket != null) {
                 ticket.bindEntity(guardian);

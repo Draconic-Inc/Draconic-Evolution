@@ -22,16 +22,16 @@ public class ExtendedPlayer implements IExtendedEntityProperties {
     }
 
     /**
-     * Used to register these extended properties for the player during EntityConstructing event
-     * This method is for convenience only; it will make your code look nicer
+     * Used to register these extended properties for the player during EntityConstructing event This method is for
+     * convenience only; it will make your code look nicer
      */
     public static void register(EntityPlayer player) {
         player.registerExtendedProperties(ExtendedPlayer.EXT_PROP_NAME, new ExtendedPlayer(player));
     }
 
     /**
-     * Returns ExtendedPlayer properties for player
-     * This method is for convenience only; it will make your code look nicer
+     * Returns ExtendedPlayer properties for player This method is for convenience only; it will make your code look
+     * nicer
      */
     public static ExtendedPlayer get(EntityPlayer player) {
         return (ExtendedPlayer) player.getExtendedProperties(EXT_PROP_NAME);

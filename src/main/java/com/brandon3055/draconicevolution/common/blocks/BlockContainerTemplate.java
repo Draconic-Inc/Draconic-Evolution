@@ -1,14 +1,5 @@
 package com.brandon3055.draconicevolution.common.blocks;
 
-import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.client.gui.GuiHandler;
-import com.brandon3055.draconicevolution.common.ModBlocks;
-import com.brandon3055.draconicevolution.common.lib.References;
-import com.brandon3055.draconicevolution.common.lib.Strings;
-import com.brandon3055.draconicevolution.common.tileentities.TileContainerTemplate;
-import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -19,10 +10,22 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.client.gui.GuiHandler;
+import com.brandon3055.draconicevolution.common.ModBlocks;
+import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.lib.Strings;
+import com.brandon3055.draconicevolution.common.tileentities.TileContainerTemplate;
+
+import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 /**
  * Created by Brandon on 27/06/2014.
  */
 public class BlockContainerTemplate extends BlockContainerDE {
+
     public BlockContainerTemplate() {
         super(Material.iron);
         this.setBlockName(Strings.containerTemplateName);
@@ -45,11 +48,11 @@ public class BlockContainerTemplate extends BlockContainerDE {
     }
 
     @Override
-    public boolean onBlockActivated(
-            World world, int x, int y, int z, EntityPlayer player, int side, float prx, float pry, float prz) {
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float prx,
+            float pry, float prz) {
         if (!world.isRemote) {
-            FMLNetworkHandler.openGui(
-                    player, DraconicEvolution.instance, GuiHandler.GUIID_CONTAINER_TEMPLATE, world, x, y, z);
+            FMLNetworkHandler
+                    .openGui(player, DraconicEvolution.instance, GuiHandler.GUIID_CONTAINER_TEMPLATE, world, x, y, z);
         }
         return true;
     }

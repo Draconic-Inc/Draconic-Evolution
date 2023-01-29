@@ -1,11 +1,5 @@
 package com.brandon3055.draconicevolution.client.render.particle;
 
-import com.brandon3055.brandonscore.common.utills.Utills;
-import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
-import com.brandon3055.draconicevolution.common.entity.EntityDragonProjectile;
-import com.brandon3055.draconicevolution.common.lib.References;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
@@ -14,7 +8,16 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.AdvancedModelLoader;
 import net.minecraftforge.client.model.IModelCustom;
+
 import org.lwjgl.opengl.GL11;
+
+import com.brandon3055.brandonscore.common.utills.Utills;
+import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
+import com.brandon3055.draconicevolution.common.entity.EntityDragonProjectile;
+import com.brandon3055.draconicevolution.common.lib.References;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Created by Brandon on 27/07/2014.
@@ -32,8 +35,8 @@ public class Particles {
         private double[] trailY = new double[15];
         private double[] trailZ = new double[15];
 
-        public EnergyBeamParticle(
-                World world, double x, double y, double z, double x1, double z1, int direction, boolean mirror) {
+        public EnergyBeamParticle(World world, double x, double y, double z, double x1, double z1, int direction,
+                boolean mirror) {
             super(world, x, y, z, 0.0D, 0.0D, 0.0D);
             float speed = 0.04F;
             this.motionX = 0;
@@ -123,13 +126,7 @@ public class Particles {
 
         @Override
         @SideOnly(Side.CLIENT)
-        public void renderParticle(
-                Tessellator tesselator,
-                float par2,
-                float par3,
-                float par4,
-                float par5,
-                float par6,
+        public void renderParticle(Tessellator tesselator, float par2, float par3, float par4, float par5, float par6,
                 float par7) { // Note U=X V=Y
 
             tesselator.draw();
@@ -235,8 +232,8 @@ public class Particles {
         private double targetZ;
         private boolean passive;
 
-        public EnergyTransferParticle(
-                World world, double x, double y, double z, double tX, double tY, double tZ, boolean passive) {
+        public EnergyTransferParticle(World world, double x, double y, double z, double tX, double tY, double tZ,
+                boolean passive) {
             super(world, x, y, z, 0.0D, 0.0D, 0.0D);
             this.passive = passive;
             this.targetX = tX;
@@ -273,13 +270,7 @@ public class Particles {
 
         @Override
         @SideOnly(Side.CLIENT)
-        public void renderParticle(
-                Tessellator tesselator,
-                float par2,
-                float par3,
-                float par4,
-                float par5,
-                float par6,
+        public void renderParticle(Tessellator tesselator, float par2, float par3, float par4, float par5, float par6,
                 float par7) { // Note U=X V=Y
 
             tesselator.draw();
@@ -304,18 +295,16 @@ public class Particles {
             float drawY = (float) (this.prevPosY + (this.posY - this.prevPosY) * (double) par2 - interpPosY);
             float drawZ = (float) (this.prevPosZ + (this.posZ - this.prevPosZ) * (double) par2 - interpPosZ);
 
-            if (passive)
-                tesselator.setColorRGBA_F(
-                        (float) this.getDistanceSq(targetX, targetY, targetZ) * 5F * this.particleRed,
-                        (float) this.getDistanceSq(targetX, targetY, targetZ) * 5F * this.particleGreen,
-                        this.particleBlue,
-                        this.particleAlpha);
-            else
-                tesselator.setColorRGBA_F(
-                        this.particleRed,
-                        this.particleGreen,
-                        this.particleBlue,
-                        (float) this.getDistanceSq(targetX, targetY, targetZ) * 5F);
+            if (passive) tesselator.setColorRGBA_F(
+                    (float) this.getDistanceSq(targetX, targetY, targetZ) * 5F * this.particleRed,
+                    (float) this.getDistanceSq(targetX, targetY, targetZ) * 5F * this.particleGreen,
+                    this.particleBlue,
+                    this.particleAlpha);
+            else tesselator.setColorRGBA_F(
+                    this.particleRed,
+                    this.particleGreen,
+                    this.particleBlue,
+                    (float) this.getDistanceSq(targetX, targetY, targetZ) * 5F);
 
             // tesselator.setColorRGBA(0, 255, 255, (int) (this.particleAlpha * 255F));
 
@@ -359,8 +348,8 @@ public class Particles {
         public int behaviour;
         public int timer = 0;
 
-        public AdvancedSeekerParticle(
-                World world, double x, double y, double z, double tX, double tY, double tZ, int type, int maxAge) {
+        public AdvancedSeekerParticle(World world, double x, double y, double z, double tX, double tY, double tZ,
+                int type, int maxAge) {
             super(world, x, y, z, 0.0D, 0.0D, 0.0D);
             this.targetX = tX;
             this.targetY = tY;
@@ -378,39 +367,16 @@ public class Particles {
             this.particleMaxAge = maxAge;
         }
 
-        public AdvancedSeekerParticle(
-                World world,
-                double x,
-                double y,
-                double z,
-                double tX,
-                double tY,
-                double tZ,
-                int type,
-                float red,
-                float green,
-                float blue,
-                int maxAge) {
+        public AdvancedSeekerParticle(World world, double x, double y, double z, double tX, double tY, double tZ,
+                int type, float red, float green, float blue, int maxAge) {
             this(world, x, y, z, tX, tY, tZ, type, maxAge);
             this.particleRed = red;
             this.particleGreen = green;
             this.particleBlue = blue;
         }
 
-        public AdvancedSeekerParticle(
-                World world,
-                double x,
-                double y,
-                double z,
-                double tX,
-                double tY,
-                double tZ,
-                int type,
-                float red,
-                float green,
-                float blue,
-                int maxAge,
-                int timer) {
+        public AdvancedSeekerParticle(World world, double x, double y, double z, double tX, double tY, double tZ,
+                int type, float red, float green, float blue, int maxAge, int timer) {
             this(world, x, y, z, tX, tY, tZ, type, maxAge);
             this.particleRed = red;
             this.particleGreen = green;
@@ -516,8 +482,7 @@ public class Particles {
             motionY = (motionY * directMotT) + (targetY - posY) * directMotMod;
             motionZ = (motionZ * directMotT) + (targetZ - posZ) * directMotMod;
 
-            if (particleMaxAge - particleAge < 40
-                    && timer > 2300
+            if (particleMaxAge - particleAge < 40 && timer > 2300
                     && (particleRed == 1F || (particleGreen == 1f && particleBlue == 1f))) {
                 double yChange = (double) (timer - 2300);
                 // setPosition(posX, targetY + yChange, posZ);
@@ -538,13 +503,7 @@ public class Particles {
 
         @Override
         @SideOnly(Side.CLIENT)
-        public void renderParticle(
-                Tessellator tesselator,
-                float par2,
-                float par3,
-                float par4,
-                float par5,
-                float par6,
+        public void renderParticle(Tessellator tesselator, float par2, float par3, float par4, float par5, float par6,
                 float par7) { // Note U=X V=Y
 
             tesselator.draw();
@@ -560,10 +519,10 @@ public class Particles {
             float minV = vIndex * 0.125F;
             float maxV = (vIndex + 1) * 0.125F;
 
-            //			float minU = 0.0F + 0F;//(float)this.particleTextureIndexX / 32.0F;
-            //			float maxU = 0.0F + 0.1245F;//minU + 0.124F;
-            //			float minV = 0F;//(float)this.particleTextureIndexY / 32.0F;
-            //			float maxV = 0.1245F;//minV + 0.124F;
+            // float minU = 0.0F + 0F;//(float)this.particleTextureIndexX / 32.0F;
+            // float maxU = 0.0F + 0.1245F;//minU + 0.124F;
+            // float minV = 0F;//(float)this.particleTextureIndexY / 32.0F;
+            // float maxV = 0.1245F;//minV + 0.124F;
             float drawScale = 0.1F * this.particleScale;
 
             if (this.particleIcon != null) {
@@ -613,6 +572,7 @@ public class Particles {
     }
 
     public static class TransceiverParticle extends EntityFX {
+
         public double targetX;
         public double targetY;
         public double targetZ;
@@ -651,13 +611,7 @@ public class Particles {
 
         @Override
         @SideOnly(Side.CLIENT)
-        public void renderParticle(
-                Tessellator tesselator,
-                float par2,
-                float par3,
-                float par4,
-                float par5,
-                float par6,
+        public void renderParticle(Tessellator tesselator, float par2, float par3, float par4, float par5, float par6,
                 float par7) { // Note U=X V=Y
 
             tesselator.draw();
@@ -722,6 +676,7 @@ public class Particles {
     }
 
     public static class PortalParticle extends EntityFX {
+
         public double targetX;
         public double targetY;
         public double targetZ;
@@ -768,13 +723,7 @@ public class Particles {
 
         @Override
         @SideOnly(Side.CLIENT)
-        public void renderParticle(
-                Tessellator tesselator,
-                float par2,
-                float par3,
-                float par4,
-                float par5,
-                float par6,
+        public void renderParticle(Tessellator tesselator, float par2, float par3, float par4, float par5, float par6,
                 float par7) { // Note U=X V=Y
 
             tesselator.draw();
@@ -837,15 +786,15 @@ public class Particles {
     }
 
     public static class ReactorExplosionParticle extends EntityFX {
+
         public static IModelCustom uvSphere;
         public double size = 0;
         public double maxSize;
 
         public ReactorExplosionParticle(World world, double x, double y, double z, double maxSize) {
             super(world, x, y, z, 0D, 0D, 0D);
-            if (uvSphere == null)
-                uvSphere = AdvancedModelLoader.loadModel(
-                        new ResourceLocation(References.MODID.toLowerCase(), "models/reactorCoreModel.obj"));
+            if (uvSphere == null) uvSphere = AdvancedModelLoader
+                    .loadModel(new ResourceLocation(References.MODID.toLowerCase(), "models/reactorCoreModel.obj"));
             this.maxSize = maxSize;
         }
 
@@ -864,14 +813,8 @@ public class Particles {
 
         @Override
         @SideOnly(Side.CLIENT)
-        public void renderParticle(
-                Tessellator tessellator,
-                float partialTick,
-                float par3,
-                float par4,
-                float par5,
-                float par6,
-                float par7) { // Note U=X V=Y
+        public void renderParticle(Tessellator tessellator, float partialTick, float par3, float par4, float par5,
+                float par6, float par7) { // Note U=X V=Y
 
             tessellator.draw();
             GL11.glPushMatrix();
@@ -973,15 +916,15 @@ public class Particles {
     }
 
     public static class ChaosImplosionParticle extends EntityFX {
+
         public static IModelCustom uvSphere;
         public double size = 0;
         public double maxSize;
 
         public ChaosImplosionParticle(World world, double x, double y, double z, double maxSize) {
             super(world, x, y, z, 0D, 0D, 0D);
-            if (uvSphere == null)
-                uvSphere = AdvancedModelLoader.loadModel(
-                        new ResourceLocation(References.MODID.toLowerCase(), "models/reactorCoreModel.obj"));
+            if (uvSphere == null) uvSphere = AdvancedModelLoader
+                    .loadModel(new ResourceLocation(References.MODID.toLowerCase(), "models/reactorCoreModel.obj"));
             this.maxSize = maxSize;
         }
 
@@ -1000,14 +943,8 @@ public class Particles {
 
         @Override
         @SideOnly(Side.CLIENT)
-        public void renderParticle(
-                Tessellator tessellator,
-                float partialTick,
-                float par3,
-                float par4,
-                float par5,
-                float par6,
-                float par7) { // Note U=X V=Y
+        public void renderParticle(Tessellator tessellator, float partialTick, float par3, float par4, float par5,
+                float par6, float par7) { // Note U=X V=Y
 
             tessellator.draw();
             GL11.glPushMatrix();
@@ -1033,13 +970,13 @@ public class Particles {
             if (a > 0) uvSphere.renderAll();
             GL11.glPopMatrix();
 
-            //			//Disk
-            //			GL11.glPushMatrix();
-            //			a = (float)Math.max(0D, 0.5D - ((size / (maxSize)) * 0.5D));
-            //			GL11.glColor4f(1F, 1F, 1F, a);
-            //			GL11.glScaled(2, 0.2, 2);
-            //			if (a > 0)uvSphere.renderAll();
-            //			GL11.glPopMatrix();
+            // //Disk
+            // GL11.glPushMatrix();
+            // a = (float)Math.max(0D, 0.5D - ((size / (maxSize)) * 0.5D));
+            // GL11.glColor4f(1F, 1F, 1F, a);
+            // GL11.glScaled(2, 0.2, 2);
+            // if (a > 0)uvSphere.renderAll();
+            // GL11.glPopMatrix();
 
             // Synced edge
             GL11.glPushMatrix();
@@ -1109,6 +1046,7 @@ public class Particles {
     }
 
     public static class DragonProjectileParticle extends EntityFX {
+
         private EntityDragonProjectile entity;
         private int particleColour;
 
@@ -1134,8 +1072,8 @@ public class Particles {
             // super.onUpdate();
             if (particleAge >= particleMaxAge) setDead();
             //
-            //			double d1 = Utills.getDistanceAtoB(startX, startY, startZ, targetX, targetY, targetZ);
-            //			double d2 = Utills.getDistanceAtoB(posX, posY, posZ, targetX, targetY, targetZ);
+            // double d1 = Utills.getDistanceAtoB(startX, startY, startZ, targetX, targetY, targetZ);
+            // double d2 = Utills.getDistanceAtoB(posX, posY, posZ, targetX, targetY, targetZ);
             // particleScale = ((float) (d2 / d1)) * baseScale;
 
             particleAlpha = (1F - (float) ((double) particleAge / particleMaxAge));
@@ -1150,13 +1088,7 @@ public class Particles {
 
         @Override
         @SideOnly(Side.CLIENT)
-        public void renderParticle(
-                Tessellator tesselator,
-                float par2,
-                float par3,
-                float par4,
-                float par5,
-                float par6,
+        public void renderParticle(Tessellator tesselator, float par2, float par3, float par4, float par5, float par6,
                 float par7) { // Note U=X V=Y
             tesselator.draw();
             ResourceHandler.bindParticles();
@@ -1231,8 +1163,8 @@ public class Particles {
 
         private int mode;
 
-        public ChaosBoltParticle(
-                World world, double x, double y, double z, double shardX, double shardY, double shardZ, int mode) {
+        public ChaosBoltParticle(World world, double x, double y, double z, double shardX, double shardY, double shardZ,
+                int mode) {
             super(world, x, y, z, 0.0D, 0.0D, 0.0D);
             this.focalX = x;
             this.focalY = y;
@@ -1296,13 +1228,7 @@ public class Particles {
 
         @Override
         @SideOnly(Side.CLIENT)
-        public void renderParticle(
-                Tessellator tesselator,
-                float par2,
-                float par3,
-                float par4,
-                float par5,
-                float par6,
+        public void renderParticle(Tessellator tesselator, float par2, float par3, float par4, float par5, float par6,
                 float par7) { // Note U=X V=Y
 
             tesselator.draw();
@@ -1366,6 +1292,7 @@ public class Particles {
     }
 
     public static class ChaosExpansionParticle extends EntityFX {
+
         public static IModelCustom uvSphere;
         private final boolean shrink;
         public double size = 0;
@@ -1374,9 +1301,8 @@ public class Particles {
         public ChaosExpansionParticle(World world, double x, double y, double z, boolean shrink) {
             super(world, x, y, z, 0D, 0D, 0D);
             this.shrink = shrink;
-            if (uvSphere == null)
-                uvSphere = AdvancedModelLoader.loadModel(
-                        new ResourceLocation(References.MODID.toLowerCase(), "models/reactorCoreModel.obj"));
+            if (uvSphere == null) uvSphere = AdvancedModelLoader
+                    .loadModel(new ResourceLocation(References.MODID.toLowerCase(), "models/reactorCoreModel.obj"));
             if (shrink) {
                 size = 20;
             }
@@ -1396,14 +1322,8 @@ public class Particles {
 
         @Override
         @SideOnly(Side.CLIENT)
-        public void renderParticle(
-                Tessellator tessellator,
-                float partialTick,
-                float par3,
-                float par4,
-                float par5,
-                float par6,
-                float par7) { // Note U=X V=Y
+        public void renderParticle(Tessellator tessellator, float partialTick, float par3, float par4, float par5,
+                float par6, float par7) { // Note U=X V=Y
 
             tessellator.draw();
             GL11.glPushMatrix();
@@ -1434,6 +1354,7 @@ public class Particles {
     }
 
     public static class ArrowParticle extends EntityFX {
+
         private int particleColour;
         private float setScale;
 
@@ -1463,13 +1384,7 @@ public class Particles {
 
         @Override
         @SideOnly(Side.CLIENT)
-        public void renderParticle(
-                Tessellator tesselator,
-                float par2,
-                float par3,
-                float par4,
-                float par5,
-                float par6,
+        public void renderParticle(Tessellator tesselator, float par2, float par3, float par4, float par5, float par6,
                 float par7) { // Note U=X V=Y
             tesselator.draw();
             ResourceHandler.bindParticles();
@@ -1533,15 +1448,15 @@ public class Particles {
     }
 
     public static class ArrowShockParticle extends EntityFX {
+
         public static IModelCustom uvSphere;
         public double size = 0;
         public double maxSize;
 
         public ArrowShockParticle(World world, double x, double y, double z, int maxSize) {
             super(world, x, y, z, 0D, 0D, 0D);
-            if (uvSphere == null)
-                uvSphere = AdvancedModelLoader.loadModel(
-                        new ResourceLocation(References.MODID.toLowerCase(), "models/reactorCoreModel.obj"));
+            if (uvSphere == null) uvSphere = AdvancedModelLoader
+                    .loadModel(new ResourceLocation(References.MODID.toLowerCase(), "models/reactorCoreModel.obj"));
             this.maxSize = maxSize / 100D;
         }
 
@@ -1560,14 +1475,8 @@ public class Particles {
 
         @Override
         @SideOnly(Side.CLIENT)
-        public void renderParticle(
-                Tessellator tessellator,
-                float partialTick,
-                float par3,
-                float par4,
-                float par5,
-                float par6,
-                float par7) { // Note U=X V=Y
+        public void renderParticle(Tessellator tessellator, float partialTick, float par3, float par4, float par5,
+                float par6, float par7) { // Note U=X V=Y
 
             tessellator.draw();
             GL11.glPushMatrix();
@@ -1592,13 +1501,13 @@ public class Particles {
             // if (a > 0)uvSphere.renderAll();
             GL11.glPopMatrix();
 
-            //			//Disk
-            //			GL11.glPushMatrix();
-            //			a = (float)Math.max(0D, 0.5D - ((size / (maxSize)) * 0.5D));
-            //			GL11.glColor4f(1F, 1F, 1F, a);
-            //			GL11.glScaled(2, 0.2, 2);
-            //			if (a > 0)uvSphere.renderAll();
-            //			GL11.glPopMatrix();
+            // //Disk
+            // GL11.glPushMatrix();
+            // a = (float)Math.max(0D, 0.5D - ((size / (maxSize)) * 0.5D));
+            // GL11.glColor4f(1F, 1F, 1F, a);
+            // GL11.glScaled(2, 0.2, 2);
+            // if (a > 0)uvSphere.renderAll();
+            // GL11.glPopMatrix();
 
             // Synced edge
             GL11.glPushMatrix();
@@ -1607,59 +1516,59 @@ public class Particles {
             if (a > 0) uvSphere.renderAll();
             GL11.glPopMatrix();
 
-            //			GL11.glScalef(1.5F, 1.5F, 1.5F);
+            // GL11.glScalef(1.5F, 1.5F, 1.5F);
             //
-            //			//Inner edges
-            //			GL11.glPushMatrix();
-            //			a = (float)Math.max(0D, 0.5D - ((size / (maxSize)) * 0.5D));
-            ////			GL11.glColor4f(1F, 0.3F, 0F, a);
-            //			GL11.glScaled(0.8, 0.8, 0.8);
-            ////			if (a > 0)uvSphere.renderAll();
+            // //Inner edges
+            // GL11.glPushMatrix();
+            // a = (float)Math.max(0D, 0.5D - ((size / (maxSize)) * 0.5D));
+            //// GL11.glColor4f(1F, 0.3F, 0F, a);
+            // GL11.glScaled(0.8, 0.8, 0.8);
+            //// if (a > 0)uvSphere.renderAll();
             //
-            ////			GL11.glColor4f(1F, 0.3F, 0F, a);
-            //			GL11.glScaled(0.8, 0.8, 0.8);
-            ////			if (a > 0)uvSphere.renderAll();
+            //// GL11.glColor4f(1F, 0.3F, 0F, a);
+            // GL11.glScaled(0.8, 0.8, 0.8);
+            //// if (a > 0)uvSphere.renderAll();
             //
-            ////			GL11.glColor4f(1F, 0.3F, 0F, a);
-            //			GL11.glScaled(0.7, 0.7, 0.7);
-            ////			if (a > 0)uvSphere.renderAll();
+            //// GL11.glColor4f(1F, 0.3F, 0F, a);
+            // GL11.glScaled(0.7, 0.7, 0.7);
+            //// if (a > 0)uvSphere.renderAll();
             //
-            ////			GL11.glColor4f(1F, 0.3F, 0F, a);
-            //			GL11.glScaled(0.6, 0.6, 0.6);
-            ////			if (a > 0)uvSphere.renderAll();
+            //// GL11.glColor4f(1F, 0.3F, 0F, a);
+            // GL11.glScaled(0.6, 0.6, 0.6);
+            //// if (a > 0)uvSphere.renderAll();
             //
-            ////			GL11.glColor4f(1F, 0.3F, 0F, a);
-            //			GL11.glScaled(0.5, 0.5, 0.5);
-            ////			if (a > 0)uvSphere.renderAll();
+            //// GL11.glColor4f(1F, 0.3F, 0F, a);
+            // GL11.glScaled(0.5, 0.5, 0.5);
+            //// if (a > 0)uvSphere.renderAll();
             //
-            //			GL11.glPopMatrix();
+            // GL11.glPopMatrix();
 
-            //			for (int i = 0; i < 10; i++)
-            //			{
-            //				GL11.glScalef(0.95F, 0.95F, 0.95F);
-            //				GL11.glPushMatrix();
-            //				a = (float)Math.max(0D, 0.5D - ((size / (maxSize)) * 0.5D));
-            //				GL11.glColor4f(1F, 1F, 1F, a);
-            //				GL11.glScaled(0.8, 0.6, 0.8);
-            //				if (a > 0)uvSphere.renderAll();
+            // for (int i = 0; i < 10; i++)
+            // {
+            // GL11.glScalef(0.95F, 0.95F, 0.95F);
+            // GL11.glPushMatrix();
+            // a = (float)Math.max(0D, 0.5D - ((size / (maxSize)) * 0.5D));
+            // GL11.glColor4f(1F, 1F, 1F, a);
+            // GL11.glScaled(0.8, 0.6, 0.8);
+            // if (a > 0)uvSphere.renderAll();
             //
-            //				GL11.glColor4f(1F, 1F, 1F, a);
-            //				GL11.glScaled(0.8, 0.7, 0.8);
-            //				if (a > 0)uvSphere.renderAll();
+            // GL11.glColor4f(1F, 1F, 1F, a);
+            // GL11.glScaled(0.8, 0.7, 0.8);
+            // if (a > 0)uvSphere.renderAll();
             //
-            //				GL11.glColor4f(1F, 1F, 1F, a);
-            //				GL11.glScaled(0.7, 0.9, 0.7);
-            //				if (a > 0)uvSphere.renderAll();
+            // GL11.glColor4f(1F, 1F, 1F, a);
+            // GL11.glScaled(0.7, 0.9, 0.7);
+            // if (a > 0)uvSphere.renderAll();
             //
-            //				GL11.glColor4f(1F, 1F, 1F, a);
-            //				GL11.glScaled(0.6, 0.9, 0.6);
-            //				if (a > 0)uvSphere.renderAll();
+            // GL11.glColor4f(1F, 1F, 1F, a);
+            // GL11.glScaled(0.6, 0.9, 0.6);
+            // if (a > 0)uvSphere.renderAll();
             //
-            //				GL11.glColor4f(1F, 1F, 1F, a);
-            //				GL11.glScaled(0.5, 0.9, 0.5);
-            //				if (a > 0)uvSphere.renderAll();
-            //				GL11.glPopMatrix();
-            //			}
+            // GL11.glColor4f(1F, 1F, 1F, a);
+            // GL11.glScaled(0.5, 0.9, 0.5);
+            // if (a > 0)uvSphere.renderAll();
+            // GL11.glPopMatrix();
+            // }
 
             GL11.glEnable(GL11.GL_CULL_FACE);
             GL11.glPopMatrix();

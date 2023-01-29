@@ -1,5 +1,12 @@
 package com.brandon3055.draconicevolution.common;
 
+import net.minecraft.item.Item;
+import net.minecraft.item.Item.ToolMaterial;
+import net.minecraft.item.ItemArmor;
+import net.minecraft.item.ItemArmor.ArmorMaterial;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.util.EnumHelper;
+
 import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
 import com.brandon3055.draconicevolution.common.items.*;
 import com.brandon3055.draconicevolution.common.items.armor.DraconicArmor;
@@ -12,19 +19,14 @@ import com.brandon3055.draconicevolution.common.items.weapons.WyvernSword;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.lib.Strings;
 import cpw.mods.fml.common.registry.GameRegistry;
-import net.minecraft.item.Item;
-import net.minecraft.item.Item.ToolMaterial;
-import net.minecraft.item.ItemArmor;
-import net.minecraft.item.ItemArmor.ArmorMaterial;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.util.EnumHelper;
 
 @GameRegistry.ObjectHolder(References.MODID)
 public class ModItems {
-    public static ArmorMaterial WYVERN_ARMOR =
-            EnumHelper.addArmorMaterial("WYVERN_ARMOR", -1, new int[] {3, 8, 6, 3}, 30);
-    public static ArmorMaterial DRACONIC_ARMOR =
-            EnumHelper.addArmorMaterial("DRACONIC_ARMOR", -1, new int[] {3, 8, 6, 3}, 30);
+
+    public static ArmorMaterial WYVERN_ARMOR = EnumHelper
+            .addArmorMaterial("WYVERN_ARMOR", -1, new int[] { 3, 8, 6, 3 }, 30);
+    public static ArmorMaterial DRACONIC_ARMOR = EnumHelper
+            .addArmorMaterial("DRACONIC_ARMOR", -1, new int[] { 3, 8, 6, 3 }, 30);
     public static ToolMaterial WYVERN = EnumHelper.addToolMaterial("WYVERN", 10, -1, 12.0F, 20.0F, 35);
     public static ToolMaterial AWAKENED = EnumHelper.addToolMaterial("AWAKENED", 10, -1, 16.0F, 40.0F, 40);
     public static ToolMaterial CHAOTIC = EnumHelper.addToolMaterial("CHAOTIC", 10, -1, 400.0F, 60.0F, 45);

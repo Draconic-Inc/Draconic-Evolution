@@ -1,7 +1,5 @@
 package com.brandon3055.draconicevolution.client.render.tile;
 
-import com.brandon3055.draconicevolution.common.lib.References;
-import com.brandon3055.draconicevolution.common.tileentities.TileEnergyInfuser;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -11,12 +9,17 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
+
 import org.lwjgl.opengl.GL11;
+
+import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.tileentities.TileEnergyInfuser;
 
 public class RenderTileEnergyInfiser extends TileEntitySpecialRenderer {
 
-    private final ResourceLocation texture =
-            new ResourceLocation(References.MODID.toLowerCase(), "textures/models/EnergyInfuserTextureSheet.png");
+    private final ResourceLocation texture = new ResourceLocation(
+            References.MODID.toLowerCase(),
+            "textures/models/EnergyInfuserTextureSheet.png");
 
     private static float pxl = 1F / 256F;
 
@@ -149,8 +152,8 @@ public class RenderTileEnergyInfiser extends TileEntitySpecialRenderer {
         GL11.glPopMatrix();
     }
 
-    public static void render2DWithThicness(
-            Tessellator tess, float maxU, float minV, float minU, float maxV, int width, int height, float thickness) {
+    public static void render2DWithThicness(Tessellator tess, float maxU, float minV, float minU, float maxV, int width,
+            int height, float thickness) {
         double pix = 1D / 64D;
         tess.startDrawingQuads();
         tess.setNormal(0.0F, 0.0F, 1.0F);

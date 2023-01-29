@@ -1,12 +1,14 @@
 package com.brandon3055.draconicevolution.common.blocks;
 
-import com.brandon3055.draconicevolution.common.ModBlocks;
-import com.brandon3055.draconicevolution.common.entity.EntityChaosBolt;
 import java.util.Random;
+
 import net.minecraft.block.BlockAir;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+
+import com.brandon3055.draconicevolution.common.ModBlocks;
+import com.brandon3055.draconicevolution.common.entity.EntityChaosBolt;
 
 /**
  * Created by brandon3055 on 30/9/2015.
@@ -28,7 +30,13 @@ public class ChaosShardAtmos extends BlockAir {
                 for (int searchZ = z - 15; searchZ < z + 15; searchZ++) {
                     if (world.getBlock(searchX, 80, searchZ) == ModBlocks.chaosCrystal) {
                         EntityChaosBolt bolt = new EntityChaosBolt(
-                                world, x + 0.5, y + 0.5, z + 0.5, searchX + 0.5, 80.5, searchZ + 0.5);
+                                world,
+                                x + 0.5,
+                                y + 0.5,
+                                z + 0.5,
+                                searchX + 0.5,
+                                80.5,
+                                searchZ + 0.5);
                         world.spawnEntityInWorld(bolt);
                         return;
                     }

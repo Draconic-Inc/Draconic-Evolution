@@ -1,13 +1,7 @@
 package com.brandon3055.draconicevolution.client.render.tile;
 
-import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
-import com.brandon3055.brandonscore.common.utills.Utills;
-import com.brandon3055.draconicevolution.client.model.ModelTeleporterStand;
-import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
-import com.brandon3055.draconicevolution.common.items.tools.TeleporterMKII;
-import com.brandon3055.draconicevolution.common.lib.References;
-import com.brandon3055.draconicevolution.common.tileentities.TileTeleporterStand;
 import java.awt.*;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.FontRenderer;
@@ -22,8 +16,17 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.ResourceLocation;
+
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
+
+import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
+import com.brandon3055.brandonscore.common.utills.Utills;
+import com.brandon3055.draconicevolution.client.model.ModelTeleporterStand;
+import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
+import com.brandon3055.draconicevolution.common.items.tools.TeleporterMKII;
+import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.tileentities.TileTeleporterStand;
 
 /**
  * Created by Brandon on 25/10/2014.
@@ -32,8 +35,9 @@ public class RenderTileTeleporterStand extends TileEntitySpecialRenderer {
 
     ModelTeleporterStand model = new ModelTeleporterStand();
 
-    private final ResourceLocation texture =
-            new ResourceLocation(References.MODID.toLowerCase(), "textures/models/TeleporterStand.png");
+    private final ResourceLocation texture = new ResourceLocation(
+            References.MODID.toLowerCase(),
+            "textures/models/TeleporterStand.png");
 
     @Override
     public void renderTileEntityAt(TileEntity tileentity, double x, double y, double z, float f) {
@@ -94,8 +98,7 @@ public class RenderTileTeleporterStand extends TileEntitySpecialRenderer {
     private void drawNameString(ItemStack item, float rotation, TileEntity tileentity, float f) {
         EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
         MovingObjectPosition mop = player.rayTrace(10, f);
-        boolean isCursorOver = mop != null
-                && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK
+        boolean isCursorOver = mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK
                 && mop.blockX == tileentity.xCoord
                 && mop.blockY == tileentity.yCoord
                 && mop.blockZ == tileentity.zCoord;
@@ -130,15 +133,16 @@ public class RenderTileTeleporterStand extends TileEntitySpecialRenderer {
         double yDiff = player.posY - (tileentity.yCoord + 0.5);
         double zDiff = player.posZ - (tileentity.zCoord + 0.5);
         double yawAngle = Math.toDegrees(Math.atan2(zDiff, xDiff));
-        double pitchAngle = Math.toDegrees(Math.atan2(
-                yDiff,
-                Utills.getDistanceAtoB(
-                        player.posX,
-                        player.posY,
-                        player.posZ,
-                        tileentity.xCoord + 0.5,
-                        tileentity.yCoord + 0.5,
-                        tileentity.zCoord + 0.5)));
+        double pitchAngle = Math.toDegrees(
+                Math.atan2(
+                        yDiff,
+                        Utills.getDistanceAtoB(
+                                player.posX,
+                                player.posY,
+                                player.posZ,
+                                tileentity.xCoord + 0.5,
+                                tileentity.yCoord + 0.5,
+                                tileentity.zCoord + 0.5)));
 
         GL11.glRotated(yawAngle + 90 - rotation, 0, 1, 0);
         GL11.glRotated(-pitchAngle, 1, 0, 0);

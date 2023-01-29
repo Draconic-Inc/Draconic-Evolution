@@ -1,13 +1,15 @@
 package com.brandon3055.draconicevolution.client.render.block;
 
-import com.brandon3055.draconicevolution.common.tileentities.energynet.TileEnergyRelay;
-import com.brandon3055.draconicevolution.common.tileentities.energynet.TileEnergyTransceiver;
-import com.brandon3055.draconicevolution.common.tileentities.energynet.TileWirelessEnergyTransceiver;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.IItemRenderer;
+
 import org.lwjgl.opengl.GL11;
+
+import com.brandon3055.draconicevolution.common.tileentities.energynet.TileEnergyRelay;
+import com.brandon3055.draconicevolution.common.tileentities.energynet.TileEnergyTransceiver;
+import com.brandon3055.draconicevolution.common.tileentities.energynet.TileWirelessEnergyTransceiver;
 
 /**
  * Created by Brandon on 16/02/2015.
@@ -55,14 +57,10 @@ public class RenderCrystal implements IItemRenderer {
         }
         int meta = item.getItemDamage();
         TileEntityRendererDispatcher.instance.renderTileEntityAt(
-                meta == 0
-                        ? relay1
-                        : meta == 1
-                                ? relay2
-                                : meta == 2
-                                        ? transceiver1
-                                        : meta == 3
-                                                ? transceiver2
+                meta == 0 ? relay1
+                        : meta == 1 ? relay2
+                                : meta == 2 ? transceiver1
+                                        : meta == 3 ? transceiver2
                                                 : meta == 4 ? wirelessTransceiver1 : wirelessTransceiver2,
                 0.0D,
                 0.0D,

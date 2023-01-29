@@ -1,10 +1,12 @@
 package com.brandon3055.draconicevolution.common.world;
 
-import com.brandon3055.draconicevolution.common.ModBlocks;
 import java.util.Random;
+
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.WorldGenerator;
+
+import com.brandon3055.draconicevolution.common.ModBlocks;
 
 /**
  * Created by Brandon on 28/08/2014.
@@ -89,8 +91,7 @@ public class WorldGenEnderComet extends WorldGenerator {
         for (int x = xi - r; x <= xi + r; x++) {
             for (int z = zi - r; z <= zi + r; z++) {
                 for (int y = yi - r; y <= yi + r; y++) {
-                    if ((density >= rand.nextInt(10000))
-                            && world.isAirBlock(x, y, z)
+                    if ((density >= rand.nextInt(10000)) && world.isAirBlock(x, y, z)
                             && (int) (getDistance(x, y, z, xi, yi, zi)) == r) {
                         if (0.9F >= rand.nextFloat()) world.setBlock(x, y, z, Blocks.end_stone, 0, 2);
                         else if (rand.nextBoolean()) world.setBlock(x, y, z, Blocks.obsidian, 0, 2);

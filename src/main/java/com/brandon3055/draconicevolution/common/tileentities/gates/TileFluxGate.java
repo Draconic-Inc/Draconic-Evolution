@@ -1,10 +1,12 @@
 package com.brandon3055.draconicevolution.common.tileentities.gates;
 
-import cofh.api.energy.IEnergyReceiver;
-import com.brandon3055.brandonscore.common.utills.Utills;
-import com.brandon3055.draconicevolution.common.lib.References;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import cofh.api.energy.IEnergyReceiver;
+
+import com.brandon3055.brandonscore.common.utills.Utills;
+import com.brandon3055.draconicevolution.common.lib.References;
 
 /**
  * Created by Brandon on 29/6/2015.
@@ -23,11 +25,10 @@ public class TileFluxGate extends TileGate implements IEnergyReceiver {
     @Override
     public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate) {
         IEnergyReceiver target = getOutputTarget();
-        //		int i = buffer.receiveEnergy(Math.max(0, Math.min(maxReceive, Math.min(getActualFlow(), getActualFlow() -
+        // int i = buffer.receiveEnergy(Math.max(0, Math.min(maxReceive, Math.min(getActualFlow(), getActualFlow() -
         // buffer.getEnergyStored()))), simulate);
-        //		return i;
-        int transfer = target == null
-                ? 0
+        // return i;
+        int transfer = target == null ? 0
                 : target.receiveEnergy(
                         from,
                         Math.min(
@@ -38,25 +39,25 @@ public class TileFluxGate extends TileGate implements IEnergyReceiver {
         return transfer;
     }
 
-    //	private EnergyStorage buffer = new EnergyStorage(Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE);
+    // private EnergyStorage buffer = new EnergyStorage(Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE);
     //
-    //	@Override
-    //	public void updateEntity() {
-    //		super.updateEntity();
+    // @Override
+    // public void updateEntity() {
+    // super.updateEntity();
     //
-    //		IEnergyReceiver receiver = getOutputTarget();
-    //		if (receiver != null && !worldObj.isRemote){
-    //			buffer.extractEnergy(receiver.receiveEnergy(output.getOpposite(), getActualFlow(), false), false);
-    //		}
-    //	}
+    // IEnergyReceiver receiver = getOutputTarget();
+    // if (receiver != null && !worldObj.isRemote){
+    // buffer.extractEnergy(receiver.receiveEnergy(output.getOpposite(), getActualFlow(), false), false);
+    // }
+    // }
     //
-    //	@Override
-    //	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate) {
-    //		if (buffer.getEnergyStored() > 0) return 0;
-    //		int i = buffer.receiveEnergy(Math.max(0, Math.min(maxReceive, Math.min(getActualFlow(), getActualFlow() -
+    // @Override
+    // public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate) {
+    // if (buffer.getEnergyStored() > 0) return 0;
+    // int i = buffer.receiveEnergy(Math.max(0, Math.min(maxReceive, Math.min(getActualFlow(), getActualFlow() -
     // buffer.getEnergyStored()))), simulate);
-    //		return i;
-    //	}
+    // return i;
+    // }
 
     @Override
     public int getEnergyStored(ForgeDirection from) {
@@ -76,8 +77,8 @@ public class TileFluxGate extends TileGate implements IEnergyReceiver {
     }
 
     private IEnergyReceiver getOutputTarget() {
-        TileEntity tile =
-                worldObj.getTileEntity(xCoord + output.offsetX, yCoord + output.offsetY, zCoord + output.offsetZ);
+        TileEntity tile = worldObj
+                .getTileEntity(xCoord + output.offsetX, yCoord + output.offsetY, zCoord + output.offsetZ);
         return tile instanceof IEnergyReceiver ? (IEnergyReceiver) tile : null;
     }
 
@@ -88,8 +89,8 @@ public class TileFluxGate extends TileGate implements IEnergyReceiver {
 
     @Override
     public void incrementFlow(int selector, boolean ctrl, boolean shift, boolean add, int button) {
-        int amount =
-                button == 0 ? shift ? ctrl ? 10000 : 1000 : ctrl ? 5 : 50 : shift ? ctrl ? 1000 : 100 : ctrl ? 1 : 10;
+        int amount = button == 0 ? shift ? ctrl ? 10000 : 1000 : ctrl ? 5 : 50
+                : shift ? ctrl ? 1000 : 100 : ctrl ? 1 : 10;
 
         if (selector == 0) {
             if (ctrl && shift && button == 0) amount += flowRSLow / 100000 * 1000;

@@ -1,12 +1,15 @@
 package com.brandon3055.draconicevolution.client.render.block;
 
-import com.brandon3055.draconicevolution.common.tileentities.TileUpgradeModifier;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.IItemRenderer;
+
 import org.lwjgl.opengl.GL11;
 
+import com.brandon3055.draconicevolution.common.tileentities.TileUpgradeModifier;
+
 public class RenderUpgradeModifier implements IItemRenderer {
+
     private TileUpgradeModifier tile;
 
     public RenderUpgradeModifier() {

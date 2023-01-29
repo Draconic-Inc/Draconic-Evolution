@@ -1,15 +1,7 @@
 package com.brandon3055.draconicevolution.common.tileentities;
 
-import cofh.api.energy.IEnergyContainerItem;
-import cofh.api.energy.IEnergyReceiver;
-import com.brandon3055.draconicevolution.client.handler.ParticleHandler;
-import com.brandon3055.draconicevolution.client.render.particle.ParticleEnergy;
-import com.brandon3055.draconicevolution.common.handler.BalanceConfigHandler;
-import com.brandon3055.draconicevolution.common.lib.References;
-import com.brandon3055.draconicevolution.common.utills.EnergyStorage;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import java.util.Random;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
@@ -19,13 +11,27 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import cofh.api.energy.IEnergyContainerItem;
+import cofh.api.energy.IEnergyReceiver;
+
+import com.brandon3055.draconicevolution.client.handler.ParticleHandler;
+import com.brandon3055.draconicevolution.client.render.particle.ParticleEnergy;
+import com.brandon3055.draconicevolution.common.handler.BalanceConfigHandler;
+import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.utills.EnergyStorage;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 /**
  * Created by Brandon on 27/06/2014.
  */
 public class TileEnergyInfuser extends TileObjectSync implements IEnergyReceiver, ISidedInventory {
+
     ItemStack[] items = new ItemStack[1];
-    public EnergyStorage energy =
-            new EnergyStorage(BalanceConfigHandler.energyInfuserStorage, BalanceConfigHandler.energyInfuserMaxTransfer);
+    public EnergyStorage energy = new EnergyStorage(
+            BalanceConfigHandler.energyInfuserStorage,
+            BalanceConfigHandler.energyInfuserMaxTransfer);
     public boolean running = false;
     public boolean runningCach = false;
     private int tick = 0;
@@ -65,8 +71,7 @@ public class TileEnergyInfuser extends TileObjectSync implements IEnergyReceiver
     }
 
     private boolean tryStartOrStop() {
-        if (items[0] != null
-                && items[0].stackSize == 1
+        if (items[0] != null && items[0].stackSize == 1
                 && items[0] != null
                 && items[0].getItem() instanceof IEnergyContainerItem) {
             IEnergyContainerItem item = (IEnergyContainerItem) items[0].getItem();
@@ -343,7 +348,7 @@ public class TileEnergyInfuser extends TileObjectSync implements IEnergyReceiver
 
     @Override
     public int[] getAccessibleSlotsFromSide(int var1) {
-        return new int[] {0};
+        return new int[] { 0 };
     }
 
     @Override
@@ -356,8 +361,9 @@ public class TileEnergyInfuser extends TileObjectSync implements IEnergyReceiver
         if (item == null || !(item.getItem() instanceof IEnergyContainerItem)) return true;
 
         if ((((IEnergyContainerItem) item.getItem()).getEnergyStored(item)
-                        >= ((IEnergyContainerItem) item.getItem()).getMaxEnergyStored(item))
-                || ((IEnergyContainerItem) item.getItem()).receiveEnergy(item, 1, true) == 0) return true;
+                >= ((IEnergyContainerItem) item.getItem()).getMaxEnergyStored(item))
+                || ((IEnergyContainerItem) item.getItem()).receiveEnergy(item, 1, true) == 0)
+            return true;
         else return false;
     }
 

@@ -1,17 +1,19 @@
 package com.brandon3055.draconicevolution.common.items;
 
-import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.common.ModItems;
-import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.common.ModItems;
+import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
+
 /**
  * Created by brandon3055 on 1/10/2015.
  */
 public class ChaosShard extends ItemDE {
+
     public ChaosShard() {
         this.setUnlocalizedName("chaosShard");
         this.setCreativeTab(DraconicEvolution.tabBlocksItems);

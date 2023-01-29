@@ -1,16 +1,10 @@
 package com.brandon3055.draconicevolution.client.gui.guicomponents;
 
-import com.brandon3055.brandonscore.client.gui.guicomponents.ComponentScrollingBase;
-import com.brandon3055.brandonscore.client.gui.guicomponents.GUIScrollingBase;
-import com.brandon3055.brandonscore.client.utills.ClientUtills;
-import com.brandon3055.brandonscore.common.utills.InfoHelper;
-import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
-import com.brandon3055.draconicevolution.common.handler.ContributorHandler;
-import com.brandon3055.draconicevolution.common.handler.ContributorHandler.Contributor;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.gui.GuiConfirmOpenLink;
@@ -20,7 +14,16 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 import net.minecraft.util.StringUtils;
+
 import org.lwjgl.opengl.GL11;
+
+import com.brandon3055.brandonscore.client.gui.guicomponents.ComponentScrollingBase;
+import com.brandon3055.brandonscore.client.gui.guicomponents.GUIScrollingBase;
+import com.brandon3055.brandonscore.client.utills.ClientUtills;
+import com.brandon3055.brandonscore.common.utills.InfoHelper;
+import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
+import com.brandon3055.draconicevolution.common.handler.ContributorHandler;
+import com.brandon3055.draconicevolution.common.handler.ContributorHandler.Contributor;
 
 /**
  * Created by brandon3055 on 5/11/2015.
@@ -40,7 +43,7 @@ public class ComponentContributorsPage extends ComponentScrollingBase implements
 
     @Override
     public void handleScrollInput(int direction) {
-        //	page.scrollOffset += direction * 10;
+        // page.scrollOffset += direction * 10;
         scrollOffset += direction * (InfoHelper.isShiftKeyDown() ? 30 : 10);
         if (scrollOffset < 0) scrollOffset = 0;
         if (scrollOffset > pageLength - getHeight()) scrollOffset = pageLength - getHeight();
@@ -82,8 +85,7 @@ public class ComponentContributorsPage extends ComponentScrollingBase implements
 
             if (!(yOffset > 25 && yOffset < 324)) continue;
 
-            if (mouseX > 15
-                    && mouseX < 245
+            if (mouseX > 15 && mouseX < 245
                     && mouseY < yOffset + 5
                     && mouseY > yOffset - 25
                     && !patreonButtonHighlighted) {
@@ -101,10 +103,10 @@ public class ComponentContributorsPage extends ComponentScrollingBase implements
             renderPlayer(contributor.ign);
             GL11.glPopMatrix();
 
-            fontRendererObj.drawStringWithShadow(
-                    EnumChatFormatting.GOLD + contributor.name, 50, yOffset - 20, 0x000000);
-            fontRendererObj.drawString(
-                    EnumChatFormatting.DARK_BLUE + contributor.contribution, 50, yOffset - 10, 0x000000);
+            fontRendererObj
+                    .drawStringWithShadow(EnumChatFormatting.GOLD + contributor.name, 50, yOffset - 20, 0x000000);
+            fontRendererObj
+                    .drawString(EnumChatFormatting.DARK_BLUE + contributor.contribution, 50, yOffset - 10, 0x000000);
         }
     }
 
@@ -120,8 +122,7 @@ public class ComponentContributorsPage extends ComponentScrollingBase implements
 
             if (!(yOffset > 20 && yOffset < 330)) continue;
 
-            if (mouseX > 15
-                    && mouseX < 245
+            if (mouseX > 15 && mouseX < 245
                     && mouseY < yOffset + 5
                     && mouseY > yOffset - 25
                     && !patreonButtonHighlighted) {
@@ -142,17 +143,17 @@ public class ComponentContributorsPage extends ComponentScrollingBase implements
                 if (!StringUtils.isNullOrEmpty(contributor.website)) {
                     list.add("");
                     list.add("Website: " + EnumChatFormatting.BLUE + contributor.website);
-                    list.add(EnumChatFormatting.GRAY
-                            + StatCollector.translateToLocal("info.de.manual.clickToGoToSite.txt"));
+                    list.add(
+                            EnumChatFormatting.GRAY
+                                    + StatCollector.translateToLocal("info.de.manual.clickToGoToSite.txt"));
                 }
 
                 drawHoveringText(list, offsetX - 7, offsetY + yOffset + 20, fontRendererObj);
             }
         }
 
-        if (!ContributorHandler.successfulLoad)
-            fontRendererObj.drawString(
-                    "[Error] Failed to download contributors list", offsetX + 20, offsetY + 40, 0xFF0000);
+        if (!ContributorHandler.successfulLoad) fontRendererObj
+                .drawString("[Error] Failed to download contributors list", offsetX + 20, offsetY + 40, 0xFF0000);
     }
 
     @Override
@@ -174,8 +175,7 @@ public class ComponentContributorsPage extends ComponentScrollingBase implements
 
             if (!(yOffset > 20 && yOffset < 330) || patreonButtonHighlighted) continue;
 
-            if (x > 15
-                    && x < 245
+            if (x > 15 && x < 245
                     && y < yOffset + 5
                     && y > yOffset - 25
                     && !StringUtils.isNullOrEmpty(contributor.website)) {

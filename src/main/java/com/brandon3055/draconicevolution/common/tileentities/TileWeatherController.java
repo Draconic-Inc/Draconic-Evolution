@@ -1,6 +1,5 @@
 package com.brandon3055.draconicevolution.common.tileentities;
 
-import com.brandon3055.draconicevolution.DraconicEvolution;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
@@ -12,7 +11,10 @@ import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.storage.WorldInfo;
 
+import com.brandon3055.draconicevolution.DraconicEvolution;
+
 public class TileWeatherController extends TileEntity implements IInventory {
+
     int tick = 0;
     boolean running = false;
     public boolean lastTickInput = false;

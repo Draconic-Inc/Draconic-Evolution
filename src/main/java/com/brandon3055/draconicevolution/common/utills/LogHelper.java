@@ -1,9 +1,10 @@
 package com.brandon3055.draconicevolution.common.utills;
 
+import org.apache.logging.log4j.Level;
+
 import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
 import cpw.mods.fml.common.FMLLog;
-import org.apache.logging.log4j.Level;
 
 /**
  * Created by Brandon on 3/07/2014.

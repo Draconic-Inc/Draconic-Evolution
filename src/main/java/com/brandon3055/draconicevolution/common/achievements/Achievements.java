@@ -1,17 +1,20 @@
 package com.brandon3055.draconicevolution.common.achievements;
 
-import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
-import com.brandon3055.draconicevolution.common.ModBlocks;
-import com.brandon3055.draconicevolution.common.ModItems;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent;
 import java.util.HashMap;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.stats.Achievement;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.AchievementPage;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
+
+import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
+import com.brandon3055.draconicevolution.common.ModBlocks;
+import com.brandon3055.draconicevolution.common.ModItems;
+
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent;
 
 /**
  * Created by Brandon on 18/11/2014.
@@ -54,14 +57,12 @@ public class Achievements {
         addAchievement(
                 "draconicevolution.dust",
                 new Achievement(
-                                "draconicevolution.dust",
-                                "draconicevolution.dust",
-                                -10 + x,
-                                0,
-                                ModItems.draconiumDust,
-                                null)
-                        .initIndependentStat()
-                        .setSpecial(),
+                        "draconicevolution.dust",
+                        "draconicevolution.dust",
+                        -10 + x,
+                        0,
+                        ModItems.draconiumDust,
+                        null).initIndependentStat().setSpecial(),
                 "pickup");
         addAchievement(
                 "draconicevolution.ingot",
@@ -86,13 +87,12 @@ public class Achievements {
         addAchievement(
                 "draconicevolution.core2",
                 new Achievement(
-                                "draconicevolution.core2",
-                                "draconicevolution.core2",
-                                -4 + x,
-                                0,
-                                ModItems.wyvernCore,
-                                getAchievement("draconicevolution.core"))
-                        .setSpecial(),
+                        "draconicevolution.core2",
+                        "draconicevolution.core2",
+                        -4 + x,
+                        0,
+                        ModItems.wyvernCore,
+                        getAchievement("draconicevolution.core")).setSpecial(),
                 "craft");
 
         addAchievement(
@@ -269,13 +269,12 @@ public class Achievements {
         addAchievement(
                 "draconicevolution.heart",
                 new Achievement(
-                                "draconicevolution.heart",
-                                "draconicevolution.heart",
-                                0 + x,
-                                0,
-                                ModItems.dragonHeart,
-                                getAchievement("draconicevolution.core2"))
-                        .setSpecial(),
+                        "draconicevolution.heart",
+                        "draconicevolution.heart",
+                        0 + x,
+                        0,
+                        ModItems.dragonHeart,
+                        getAchievement("draconicevolution.core2")).setSpecial(),
                 "pickup");
         addAchievement(
                 "draconicevolution.awakenedblock",
@@ -290,13 +289,12 @@ public class Achievements {
         addAchievement(
                 "draconicevolution.core3",
                 new Achievement(
-                                "draconicevolution.core3",
-                                "draconicevolution.core3",
-                                4 + x,
-                                0,
-                                ModItems.awakenedCore,
-                                getAchievement("draconicevolution.awakenedblock"))
-                        .setSpecial(),
+                        "draconicevolution.core3",
+                        "draconicevolution.core3",
+                        4 + x,
+                        0,
+                        ModItems.awakenedCore,
+                        getAchievement("draconicevolution.awakenedblock")).setSpecial(),
                 "craft");
 
         addAchievement(
@@ -414,13 +412,12 @@ public class Achievements {
         addAchievement(
                 "draconicevolution.dstaff",
                 new Achievement(
-                                "draconicevolution.dstaff",
-                                "draconicevolution.dstaff",
-                                8 + x,
-                                0,
-                                ModItems.draconicDestructionStaff,
-                                getAchievement("draconicevolution.dpick"))
-                        .setSpecial(),
+                        "draconicevolution.dstaff",
+                        "draconicevolution.dstaff",
+                        8 + x,
+                        0,
+                        ModItems.draconicDestructionStaff,
+                        getAchievement("draconicevolution.dpick")).setSpecial(),
                 "craft");
 
         ItemStack mobSoul = new ItemStack(ModItems.mobSoul);
@@ -450,7 +447,8 @@ public class Achievements {
 
         achievements = achievementsList.values().toArray(achievements);
         achievementsPage = new AchievementPage(
-                StatCollector.translateToLocal("draconicevolution.achievementPage.name"), achievements);
+                StatCollector.translateToLocal("draconicevolution.achievementPage.name"),
+                achievements);
         AchievementPage.registerAchievementPage(achievementsPage);
     }
 
@@ -460,9 +458,7 @@ public class Achievements {
         stack.stackSize = 1;
         if (achievementItems.containsKey(stack.getUnlocalizedName())
                 && achievementItems.get(stack.getUnlocalizedName()).isCorrectCondition("pickup")) {
-            triggerAchievement(
-                    event.entityPlayer,
-                    achievementItems.get(stack.getUnlocalizedName()).getName());
+            triggerAchievement(event.entityPlayer, achievementItems.get(stack.getUnlocalizedName()).getName());
         }
     }
 
@@ -472,9 +468,7 @@ public class Achievements {
         stack.stackSize = 1;
         if (achievementItems.containsKey(stack.getUnlocalizedName())
                 && achievementItems.get(stack.getUnlocalizedName()).isCorrectCondition("craft")) {
-            triggerAchievement(
-                    event.player,
-                    achievementItems.get(stack.getUnlocalizedName()).getName());
+            triggerAchievement(event.player, achievementItems.get(stack.getUnlocalizedName()).getName());
         }
     }
 
@@ -484,13 +478,12 @@ public class Achievements {
         stack.stackSize = 1;
         if (achievementItems.containsKey(stack.getUnlocalizedName())
                 && achievementItems.get(stack.getUnlocalizedName()).isCorrectCondition("smelt")) {
-            triggerAchievement(
-                    event.player,
-                    achievementItems.get(stack.getUnlocalizedName()).getName());
+            triggerAchievement(event.player, achievementItems.get(stack.getUnlocalizedName()).getName());
         }
     }
 
     private static class AchievementCondition {
+
         private final String name;
         public final String condition;
 

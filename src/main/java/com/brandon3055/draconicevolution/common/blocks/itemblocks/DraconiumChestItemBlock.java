@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.common.blocks.itemblocks;
 
-import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
 import java.util.List;
+
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -9,10 +9,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
+import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
+
 /**
  * Created by Brandon on 31/10/2014.
  */
 public class DraconiumChestItemBlock extends ItemBlockCustomData {
+
     public DraconiumChestItemBlock(Block block) {
         super(block);
     }

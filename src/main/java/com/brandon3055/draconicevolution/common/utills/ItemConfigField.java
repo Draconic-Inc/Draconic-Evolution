@@ -1,13 +1,14 @@
 package com.brandon3055.draconicevolution.common.utills;
 
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.StatCollector;
+import net.minecraft.util.StringUtils;
+
 import com.brandon3055.brandonscore.common.utills.DataUtills;
 import com.brandon3055.brandonscore.common.utills.InfoHelper;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.network.ItemConfigPacket;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
-import net.minecraft.util.StringUtils;
 
 /**
  * Created by Brandon on 29/12/2014.
@@ -48,13 +49,16 @@ public class ItemConfigField {
         return StatCollector.translateToLocal("button.de." + name + ".name");
     }
 
-    //	public void writeToItem(ItemStack stack){
-    //		DataUtills.writeObjectToItem(stack, value, datatype, name);
-    //	}
+    // public void writeToItem(ItemStack stack){
+    // DataUtills.writeObjectToItem(stack, value, datatype, name);
+    // }
 
     public ItemConfigField readFromItem(ItemStack stack, Object defaultExpected) {
         value = DataUtills.readObjectFromCompound(
-                IConfigurableItem.ProfileHelper.getProfileCompound(stack), datatype, name, defaultExpected);
+                IConfigurableItem.ProfileHelper.getProfileCompound(stack),
+                datatype,
+                name,
+                defaultExpected);
         return this;
     }
 
@@ -69,20 +73,17 @@ public class ItemConfigField {
             i *= 2;
             return String.valueOf((i + 1) + "x" + (i + 1));
         } else if (datatype == References.BOOLEAN_ID) {
-            return (Boolean) value
-                    ? StatCollector.translateToLocal("gui.de.on.txt")
+            return (Boolean) value ? StatCollector.translateToLocal("gui.de.on.txt")
                     : StatCollector.translateToLocal("gui.de.off.txt");
-        } else if (datatype == References.FLOAT_ID
-                && !StringUtils.isNullOrEmpty(modifier)
-                && modifier.equals("PERCENT")) {
-            return Math.round((Float) value * 100D) + "%";
-        } else if (datatype == References.FLOAT_ID
-                && !StringUtils.isNullOrEmpty(modifier)
-                && modifier.equals("PLUSPERCENT")) {
-            return "+" + Math.round((Float) value * 100D) + "%";
-        } else {
-            return String.valueOf(value);
-        }
+        } else
+            if (datatype == References.FLOAT_ID && !StringUtils.isNullOrEmpty(modifier) && modifier.equals("PERCENT")) {
+                return Math.round((Float) value * 100D) + "%";
+            } else if (datatype == References.FLOAT_ID && !StringUtils.isNullOrEmpty(modifier)
+                    && modifier.equals("PLUSPERCENT")) {
+                        return "+" + Math.round((Float) value * 100D) + "%";
+                    } else {
+                        return String.valueOf(value);
+                    }
     }
 
     public String getMaxFormattedValue() {

@@ -1,18 +1,21 @@
 package com.brandon3055.draconicevolution.common.tileentities.energynet;
 
-import cofh.api.energy.IEnergyProvider;
-import cofh.api.energy.IEnergyReceiver;
-import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.client.render.particle.ParticleEnergyField;
-import com.brandon3055.draconicevolution.common.handler.BalanceConfigHandler;
-import com.brandon3055.draconicevolution.common.items.tools.Wrench;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import cofh.api.energy.IEnergyProvider;
+import cofh.api.energy.IEnergyReceiver;
+
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.client.render.particle.ParticleEnergyField;
+import com.brandon3055.draconicevolution.common.handler.BalanceConfigHandler;
+import com.brandon3055.draconicevolution.common.items.tools.Wrench;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Created by Brandon on 16/02/2015.
@@ -39,44 +42,45 @@ public class TileEnergyTransceiver extends TileRemoteEnergyBase {
 
         if (!worldObj.isRemote) {
             ForgeDirection direction = ForgeDirection.getOrientation(facing).getOpposite();
-            TileEntity adjacentTile = worldObj.getTileEntity(
-                    xCoord + direction.offsetX, yCoord + direction.offsetY, zCoord + direction.offsetZ);
+            TileEntity adjacentTile = worldObj
+                    .getTileEntity(xCoord + direction.offsetX, yCoord + direction.offsetY, zCoord + direction.offsetZ);
             if (!input && adjacentTile instanceof IEnergyReceiver) {
                 IEnergyReceiver handler = (IEnergyReceiver) adjacentTile;
                 storage.extractEnergy(
                         handler.receiveEnergy(
-                                direction.getOpposite(), storage.extractEnergy(storage.getMaxExtract(), true), false),
+                                direction.getOpposite(),
+                                storage.extractEnergy(storage.getMaxExtract(), true),
+                                false),
                         false);
                 if (transferBoost) {
-                    for (int i = 0; i < 4; i++)
-                        storage.extractEnergy(
-                                handler.receiveEnergy(
-                                        direction.getOpposite(),
-                                        storage.extractEnergy(storage.getMaxExtract(), true),
-                                        false),
-                                false);
+                    for (int i = 0; i < 4; i++) storage.extractEnergy(
+                            handler.receiveEnergy(
+                                    direction.getOpposite(),
+                                    storage.extractEnergy(storage.getMaxExtract(), true),
+                                    false),
+                            false);
                 }
             } else if (input && adjacentTile instanceof IEnergyProvider) {
                 IEnergyProvider handler = (IEnergyProvider) adjacentTile;
                 storage.receiveEnergy(
                         handler.extractEnergy(
-                                direction.getOpposite(), storage.receiveEnergy(storage.getMaxExtract(), true), false),
+                                direction.getOpposite(),
+                                storage.receiveEnergy(storage.getMaxExtract(), true),
+                                false),
                         false);
                 if (transferBoost) {
-                    for (int i = 0; i < 4; i++)
-                        storage.receiveEnergy(
-                                handler.extractEnergy(
-                                        direction.getOpposite(),
-                                        storage.receiveEnergy(storage.getMaxExtract(), true),
-                                        false),
-                                false);
+                    for (int i = 0; i < 4; i++) storage.receiveEnergy(
+                            handler.extractEnergy(
+                                    direction.getOpposite(),
+                                    storage.receiveEnergy(storage.getMaxExtract(), true),
+                                    false),
+                            false);
                 }
             }
         }
 
-        if (worldObj.isRemote)
-            particle = DraconicEvolution.proxy.energyField(
-                    worldObj, getBeamX(), getBeamY(), getBeamZ(), 1, powerTier == 1, particle, inView > 0);
+        if (worldObj.isRemote) particle = DraconicEvolution.proxy
+                .energyField(worldObj, getBeamX(), getBeamY(), getBeamZ(), 1, powerTier == 1, particle, inView > 0);
     }
 
     @Override
@@ -124,22 +128,19 @@ public class TileEnergyTransceiver extends TileRemoteEnergyBase {
 
     @Override
     public int getCap() {
-        return powerTier == 0
-                ? BalanceConfigHandler.energyTransceiverBasicStorage
+        return powerTier == 0 ? BalanceConfigHandler.energyTransceiverBasicStorage
                 : BalanceConfigHandler.energyTransceiverAdvancedStorage;
     }
 
     @Override
     public int getRec() {
-        return powerTier == 0
-                ? BalanceConfigHandler.energyTransceiverBasicMaxReceive
+        return powerTier == 0 ? BalanceConfigHandler.energyTransceiverBasicMaxReceive
                 : BalanceConfigHandler.energyTransceiverAdvancedMaxReceive;
     }
 
     @Override
     public int getExt() {
-        return powerTier == 0
-                ? BalanceConfigHandler.energyTransceiverBasicMaxExtract
+        return powerTier == 0 ? BalanceConfigHandler.energyTransceiverBasicMaxExtract
                 : BalanceConfigHandler.energyTransceiverAdvancedMaxExtract;
     }
 

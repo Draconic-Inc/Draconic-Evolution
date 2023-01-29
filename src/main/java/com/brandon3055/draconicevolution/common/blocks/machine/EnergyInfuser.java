@@ -1,16 +1,7 @@
 package com.brandon3055.draconicevolution.common.blocks.machine;
 
-import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.client.gui.GuiHandler;
-import com.brandon3055.draconicevolution.common.ModBlocks;
-import com.brandon3055.draconicevolution.common.blocks.BlockCustomDrop;
-import com.brandon3055.draconicevolution.common.lib.References;
-import com.brandon3055.draconicevolution.common.lib.Strings;
-import com.brandon3055.draconicevolution.common.tileentities.TileEnergyInfuser;
-import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import java.util.List;
+
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,10 +11,23 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.client.gui.GuiHandler;
+import com.brandon3055.draconicevolution.common.ModBlocks;
+import com.brandon3055.draconicevolution.common.blocks.BlockCustomDrop;
+import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.lib.Strings;
+import com.brandon3055.draconicevolution.common.tileentities.TileEnergyInfuser;
+
+import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 /**
  * Created by Brandon on 27/06/2014.
  */
 public class EnergyInfuser extends BlockCustomDrop {
+
     public EnergyInfuser() {
         super(Material.iron);
         this.setBlockName(Strings.energyInfuserName);
@@ -45,11 +49,11 @@ public class EnergyInfuser extends BlockCustomDrop {
     }
 
     @Override
-    public boolean onBlockActivated(
-            World world, int x, int y, int z, EntityPlayer player, int side, float prx, float pry, float prz) {
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float prx,
+            float pry, float prz) {
         if (!world.isRemote) {
-            FMLNetworkHandler.openGui(
-                    player, DraconicEvolution.instance, GuiHandler.GUIID_ENERGY_INFUSER, world, x, y, z);
+            FMLNetworkHandler
+                    .openGui(player, DraconicEvolution.instance, GuiHandler.GUIID_ENERGY_INFUSER, world, x, y, z);
         }
         world.markBlockForUpdate(x, y, z);
         return true;

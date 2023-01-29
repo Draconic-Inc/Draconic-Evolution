@@ -1,17 +1,20 @@
 package com.brandon3055.draconicevolution.client.render.item;
 
-import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
-import com.brandon3055.draconicevolution.client.render.IRenderTweak;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.IItemRenderer;
 import net.minecraftforge.client.model.AdvancedModelLoader;
 import net.minecraftforge.client.model.IModelCustom;
+
 import org.lwjgl.opengl.GL11;
+
+import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
+import com.brandon3055.draconicevolution.client.render.IRenderTweak;
 
 /**
  * Created by brandon3055 on 29/10/2015.
  */
 public class RenderTool implements IItemRenderer {
+
     private IModelCustom toolModel;
     private String toolTexture;
     private IRenderTweak tool;

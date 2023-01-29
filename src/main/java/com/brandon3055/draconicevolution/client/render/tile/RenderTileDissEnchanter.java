@@ -1,6 +1,5 @@
 package com.brandon3055.draconicevolution.client.render.tile;
 
-import com.brandon3055.draconicevolution.common.tileentities.TileDissEnchanter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
@@ -12,7 +11,10 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+
 import org.lwjgl.opengl.GL11;
+
+import com.brandon3055.draconicevolution.common.tileentities.TileDissEnchanter;
 
 public class RenderTileDissEnchanter extends TileEntitySpecialRenderer {
 

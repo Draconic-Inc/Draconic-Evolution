@@ -1,11 +1,13 @@
 package com.brandon3055.draconicevolution.client.render.item;
 
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.client.IItemRenderer;
+
+import org.lwjgl.opengl.GL11;
+
 import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
 import com.brandon3055.draconicevolution.client.model.ModelReactorStabilizerCore;
 import com.brandon3055.draconicevolution.client.model.ModelReactorStabilizerRing;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.client.IItemRenderer;
-import org.lwjgl.opengl.GL11;
 
 /**
  * Created by brandon3055 on 2/10/2015.
@@ -39,8 +41,8 @@ public class RenderStabilizerPart implements IItemRenderer {
                 break;
             case 1: // rotor inner
                 ResourceHandler.bindResource("textures/models/reactorStabilizerCore.png");
-                //				GL11.glScaled(2, 2, 2);
-                //				GL11.glTranslated(-0.2, 0, 0);
+                // GL11.glScaled(2, 2, 2);
+                // GL11.glTranslated(-0.2, 0, 0);
                 modelBaseRotors.rotor1R.childModels.clear();
                 modelBaseRotors.rotor1R.render(0.0625F);
                 modelBaseRotors.rotor1R_1.render(0.0625F);
@@ -50,8 +52,8 @@ public class RenderStabilizerPart implements IItemRenderer {
                 break;
             case 2: // rotor outer
                 ResourceHandler.bindResource("textures/models/reactorStabilizerCore.png");
-                //				GL11.glScaled(2, 2, 2);
-                //				GL11.glTranslated(-0.3, 0, 0);
+                // GL11.glScaled(2, 2, 2);
+                // GL11.glTranslated(-0.3, 0, 0);
                 modelBaseRotors.rotor2R.childModels.clear();
                 modelBaseRotors.rotor2R.render(0.0625F);
                 modelBaseRotors.rotor2R_1.render(0.0625F);
@@ -61,8 +63,8 @@ public class RenderStabilizerPart implements IItemRenderer {
                 break;
             case 3: // rotor assembly
                 ResourceHandler.bindResource("textures/models/reactorStabilizerCore.png");
-                //				GL11.glScaled(1.5, 1.5, 1.5);
-                //				GL11.glTranslated(-0.05, 0, 0);
+                // GL11.glScaled(1.5, 1.5, 1.5);
+                // GL11.glTranslated(-0.05, 0, 0);
                 GL11.glRotatef(30F, 0F, 0F, 1F);
                 modelBase.rotor1R.render(0.0625F);
                 modelBase.hub1.render(0.0625F);

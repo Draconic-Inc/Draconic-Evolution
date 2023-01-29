@@ -1,47 +1,50 @@
 package com.brandon3055.draconicevolution.client.render.tile;
 
-import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
-import com.brandon3055.draconicevolution.common.lib.References;
-import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.reactor.TileReactorCore;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.AdvancedModelLoader;
 import net.minecraftforge.client.model.IModelCustom;
+
 import org.lwjgl.opengl.GL11;
+
+import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
+import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.reactor.TileReactorCore;
 
 /**
  * Created by Brandon on 16/6/2015.
  */
 public class RenderTileReactorCore extends TileEntitySpecialRenderer {
+
     public static IModelCustom reactorModel;
 
     public RenderTileReactorCore() {
-        reactorModel = AdvancedModelLoader.loadModel(
-                new ResourceLocation(References.MODID.toLowerCase(), "models/reactorCoreModel.obj"));
+        reactorModel = AdvancedModelLoader
+                .loadModel(new ResourceLocation(References.MODID.toLowerCase(), "models/reactorCoreModel.obj"));
     }
 
     @Override
     public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick) {
         TileReactorCore tile = (TileReactorCore) tileEntity;
-        //		tile.renderList.clear();
+        // tile.renderList.clear();
 
         GL11.glPushMatrix();
         GL11.glTranslated(x + 0.5, y + 0.5, z + 0.5);
 
         renderReactorCore(tile, partialTick);
-        //		for (MultiblockHelper.TileOffset offset : tile.stabilizerLocations){
-        //			if (!(offset.getTileEntity(tileEntity) instanceof TileReactorStabilizer)) continue;
-        //			GL11.glPushMatrix();
+        // for (MultiblockHelper.TileOffset offset : tile.stabilizerLocations){
+        // if (!(offset.getTileEntity(tileEntity) instanceof TileReactorStabilizer)) continue;
+        // GL11.glPushMatrix();
         //
-        //			TileReactorStabilizer stabilizer = (TileReactorStabilizer)offset.getTileEntity(tileEntity);
-        //			GL11.glTranslated(-offset.offsetX, -offset.offsetY, -offset.offsetZ);
-        //			//RenderTileReactorStabilizer.renderCore(stabilizer, partialTick);
-        //			//RenderTileReactorStabilizer.renderEffects(stabilizer, partialTick);
+        // TileReactorStabilizer stabilizer = (TileReactorStabilizer)offset.getTileEntity(tileEntity);
+        // GL11.glTranslated(-offset.offsetX, -offset.offsetY, -offset.offsetZ);
+        // //RenderTileReactorStabilizer.renderCore(stabilizer, partialTick);
+        // //RenderTileReactorStabilizer.renderEffects(stabilizer, partialTick);
         //
-        //			GL11.glPopMatrix();
-        //		}
+        // GL11.glPopMatrix();
+        // }
 
         GL11.glPopMatrix();
     }

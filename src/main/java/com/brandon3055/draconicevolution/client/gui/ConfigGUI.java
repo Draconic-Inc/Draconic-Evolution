@@ -1,16 +1,18 @@
 package com.brandon3055.draconicevolution.client.gui;
 
-import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
-import com.brandon3055.draconicevolution.common.lib.References;
-import cpw.mods.fml.client.config.GuiConfig;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.common.config.Configuration;
+
+import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
+import com.brandon3055.draconicevolution.common.lib.References;
+import cpw.mods.fml.client.config.GuiConfig;
 
 /**
  * Created by Brandon on 6/08/2014.
  */
 public class ConfigGUI extends GuiConfig {
+
     public ConfigGUI(GuiScreen parent) {
         super(
                 parent,

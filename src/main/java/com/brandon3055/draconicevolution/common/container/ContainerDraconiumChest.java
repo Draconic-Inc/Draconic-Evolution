@@ -1,14 +1,5 @@
 package com.brandon3055.draconicevolution.common.container;
 
-import cofh.api.energy.IEnergyContainerItem;
-import com.brandon3055.draconicevolution.common.blocks.DraconiumChest;
-import com.brandon3055.draconicevolution.common.inventory.InventoryCraftingChest;
-import com.brandon3055.draconicevolution.common.inventory.InventoryCraftingChestResult;
-import com.brandon3055.draconicevolution.common.lib.OreDoublingRegistry;
-import com.brandon3055.draconicevolution.common.tileentities.TileDraconiumChest;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import invtweaks.api.container.ChestContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.*;
@@ -17,6 +8,18 @@ import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import cofh.api.energy.IEnergyContainerItem;
+
+import com.brandon3055.draconicevolution.common.blocks.DraconiumChest;
+import com.brandon3055.draconicevolution.common.inventory.InventoryCraftingChest;
+import com.brandon3055.draconicevolution.common.inventory.InventoryCraftingChestResult;
+import com.brandon3055.draconicevolution.common.lib.OreDoublingRegistry;
+import com.brandon3055.draconicevolution.common.tileentities.TileDraconiumChest;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import invtweaks.api.container.ChestContainer;
 
 @ChestContainer(isLargeChest = false, rowSize = 26)
 public class ContainerDraconiumChest extends Container {
@@ -71,11 +74,12 @@ public class ContainerDraconiumChest extends Container {
     private void addPlayerInventory() {
         for (int playerInvRow = 0; playerInvRow < 3; playerInvRow++) {
             for (int playerInvCol = 0; playerInvCol < 9; playerInvCol++) {
-                addSlotToContainer(new Slot(
-                        player.inventory,
-                        playerInvCol + (playerInvRow * 9) + 9,
-                        161 + 18 * playerInvCol,
-                        179 + playerInvRow * 18));
+                addSlotToContainer(
+                        new Slot(
+                                player.inventory,
+                                playerInvCol + (playerInvRow * 9) + 9,
+                                161 + 18 * playerInvCol,
+                                179 + playerInvRow * 18));
             }
         }
 
@@ -98,16 +102,20 @@ public class ContainerDraconiumChest extends Container {
 
         for (int gridCol = 0; gridCol < 3; ++gridCol) {
             for (int gridRow = 0; gridRow < 3; ++gridRow) {
-                addSlotToContainer(new SlotDChest(
-                        craftMatrix, gridRow + (gridCol * 3), xOffset + (gridRow * 18), yOffset + (gridCol * 18)));
+                addSlotToContainer(
+                        new SlotDChest(
+                                craftMatrix,
+                                gridRow + (gridCol * 3),
+                                xOffset + (gridRow * 18),
+                                yOffset + (gridCol * 18)));
             }
         }
     }
 
     @Override
     public void onCraftMatrixChanged(IInventory inventory) {
-        craftResult.setInventorySlotContents(
-                0, CraftingManager.getInstance().findMatchingRecipe(craftMatrix, worldObj));
+        craftResult
+                .setInventorySlotContents(0, CraftingManager.getInstance().findMatchingRecipe(craftMatrix, worldObj));
     }
 
     @Override
@@ -173,9 +181,9 @@ public class ContainerDraconiumChest extends Container {
     @Override
     public void addCraftingToCrafters(ICrafting iCrafting) {
         super.addCraftingToCrafters(iCrafting);
-        //		iCrafting.sendProgressBarUpdate(this, 0, tile.smeltingProgressTime);
-        //		iCrafting.sendProgressBarUpdate(this, 1, tile.getEnergyStored(ForgeDirection.DOWN)/32);
-        //		iCrafting.sendProgressBarUpdate(this, 2, tile.smeltingBurnSpeed);
+        // iCrafting.sendProgressBarUpdate(this, 0, tile.smeltingProgressTime);
+        // iCrafting.sendProgressBarUpdate(this, 1, tile.getEnergyStored(ForgeDirection.DOWN)/32);
+        // iCrafting.sendProgressBarUpdate(this, 2, tile.smeltingBurnSpeed);
     }
 
     @Override

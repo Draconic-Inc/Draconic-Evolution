@@ -1,5 +1,18 @@
 package com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.reactor;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraftforge.common.util.ForgeDirection;
+
 import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.common.handlers.ProcessHandler;
 import com.brandon3055.brandonscore.common.utills.Utills;
@@ -12,26 +25,17 @@ import com.brandon3055.draconicevolution.common.blocks.multiblock.MultiblockHelp
 import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.tileentities.TileObjectSync;
+
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraftforge.common.util.ForgeDirection;
 
 /**
  * Created by Brandon on 16/6/2015.
  */
 public class TileReactorCore extends TileObjectSync {
+
     public static final int MAX_SLAVE_RANGE = 10;
     public static final int STATE_OFFLINE = 0;
     public static final int STATE_START = 1;
@@ -50,8 +54,8 @@ public class TileReactorCore extends TileObjectSync {
     // Key operational figures
     public int reactorFuel = 0;
     public int convertedFuel = 0; // The amount of fuel that has converted
-    public double conversionUnit =
-            0; // used to smooth out the conversion between int and floating point. When >= 1 minus one and convert one
+    public double conversionUnit = 0; // used to smooth out the conversion between int and floating point. When >= 1
+                                      // minus one and convert one
     // int worth of fuel
 
     public double reactionTemperature = 20;
@@ -69,18 +73,18 @@ public class TileReactorCore extends TileObjectSync {
     // #######################
 
     // TODO DONT FORGET TO ACTUALLY FINISH ALL THESE THINGS!!!!
-    // Check			//-Bounding box
-    // Check			//-Custom player collision
-    // Check			//-Finish stabilizer place and break mechanics
-    // Check			//-Have the GUI tell you if the structure is invalid
-    // Check			//-Config
+    // Check //-Bounding box
+    // Check //-Custom player collision
+    // Check //-Finish stabilizer place and break mechanics
+    // Check //-Have the GUI tell you if the structure is invalid
+    // Check //-Config
     // TODO things for later
     // -GUI info (maby speed up gui sync via the container)
     // -GUI warning red bars
     // -Maby get around to setting the angle of the stabiliser elements
-    // Check				//-SOUND!!!!!
-    // Check				//-CC Integration
-    // Check				//-Redstone
+    // Check //-SOUND!!!!!
+    // Check //-CC Integration
+    // Check //-Redstone
     // -Add reactor and gates to tablet
 
     public List<TileLocation> stabilizerLocations = new ArrayList<TileLocation>();
@@ -126,8 +130,8 @@ public class TileReactorCore extends TileObjectSync {
 
     private void checkPlayerCollision() {
         EntityPlayer player = BrandonsCore.proxy.getClientPlayer();
-        double distance =
-                Utills.getDistanceAtoB(player.posX, player.posY, player.posZ, xCoord + 0.5, yCoord + 0.5, zCoord + 0.5);
+        double distance = Utills
+                .getDistanceAtoB(player.posX, player.posY, player.posZ, xCoord + 0.5, yCoord + 0.5, zCoord + 0.5);
         if (distance < (getCoreDiameter() / 2) + 0.5) {
             double dMod = 1D - (distance / Math.max(0.1, (getCoreDiameter() / 2) + 0.5));
             double offsetX = player.posX - xCoord + 0.5;
@@ -172,9 +176,8 @@ public class TileReactorCore extends TileObjectSync {
         double temp = ((reactionTemperature) / maxReactTemperature) * 50D;
         // The conversion level. Ranges from -0.3 to 1.0
         double conversion = (((double) convertedFuel + conversionUnit)
-                        / ((double) (convertedFuel + reactorFuel) - conversionUnit)
-                        * 1.3)
-                - 0.3D;
+                / ((double) (convertedFuel + reactorFuel) - conversionUnit)
+                * 1.3) - 0.3D;
 
         // Temperature Calculation
         double tempOffset = 444.7; // Adjusts where the temp falls to at 100% saturation
@@ -220,21 +223,31 @@ public class TileReactorCore extends TileObjectSync {
         // -field drain
 
         // Field Drain Calculation
-        fieldDrain = (int) Math.min(tempDrainFactor * (1D - saturation) * (baseMaxRFt / 10.923556), (double)
-                Integer.MAX_VALUE); // <(baseMaxRFt/make smaller to increase field power drain)
+        fieldDrain = (int) Math
+                .min(tempDrainFactor * (1D - saturation) * (baseMaxRFt / 10.923556), (double) Integer.MAX_VALUE); // <(baseMaxRFt/make
+                                                                                                                  // smaller
+                                                                                                                  // to
+                                                                                                                  // increase
+                                                                                                                  // field
+                                                                                                                  // power
+                                                                                                                  // drain)
 
         double fieldNegPercent = 1D - (fieldCharge / maxFieldCharge);
         fieldInputRate = fieldDrain / fieldNegPercent;
 
-        //		LogHelper.info(fieldDrain+" "+tempDrainFactor+" "+(1D-saturation)+" "+tempDrainFactor * (1D-saturation) *
+        // LogHelper.info(fieldDrain+" "+tempDrainFactor+" "+(1D-saturation)+" "+tempDrainFactor * (1D-saturation) *
         // (baseMaxRFt/10.923556));
         fieldCharge -= fieldDrain;
         // ======================
 
         // Calculate Fuel Usage
-        fuelUseRate = tempDrainFactor
-                * (1D - saturation)
-                * (0.001 * ConfigHandler.reactorFuelUsageMultiplier); // <Last number is base fuel usage rate
+        fuelUseRate = tempDrainFactor * (1D - saturation) * (0.001 * ConfigHandler.reactorFuelUsageMultiplier); // <Last
+                                                                                                                // number
+                                                                                                                // is
+                                                                                                                // base
+                                                                                                                // fuel
+                                                                                                                // usage
+                                                                                                                // rate
         conversionUnit += fuelUseRate;
         if (conversionUnit >= 1 && reactorFuel > 0) {
             conversionUnit--;
@@ -276,8 +289,8 @@ public class TileReactorCore extends TileObjectSync {
         while (i.hasNext()) {
             TileLocation location = i.next();
             if (!(location.getTileEntity(worldObj) instanceof TileReactorStabilizer)
-                    || !((TileReactorStabilizer) location.getTileEntity(worldObj))
-                            .masterLocation.isThisLocation(xCoord, yCoord, zCoord)) {
+                    || !((TileReactorStabilizer) location.getTileEntity(worldObj)).masterLocation
+                            .isThisLocation(xCoord, yCoord, zCoord)) {
                 i.remove();
                 updateRequired = true;
             } else stabilizers.add((TileReactorStabilizer) location.getTileEntity(worldObj));
@@ -292,8 +305,7 @@ public class TileReactorCore extends TileObjectSync {
             for (TileReactorStabilizer comp : stabilizers) {
                 if (!(comp == stabilizer || checkList.contains(comp))
                         && ForgeDirection.getOrientation(comp.facingDirection)
-                                == ForgeDirection.getOrientation(stabilizer.facingDirection)
-                                        .getOpposite()) {
+                                == ForgeDirection.getOrientation(stabilizer.facingDirection).getOpposite()) {
                     checkList.add(comp);
                     checkList.add(stabilizer);
                     if (checkList.size() == 4) {
@@ -328,7 +340,9 @@ public class TileReactorCore extends TileObjectSync {
             boolean flag = false;
             for (int i = 1; i < MAX_SLAVE_RANGE && !flag; i++) {
                 TileLocation location = new TileLocation(
-                        xCoord + direction.offsetX * i, yCoord + direction.offsetY * i, zCoord + direction.offsetZ * i);
+                        xCoord + direction.offsetX * i,
+                        yCoord + direction.offsetY * i,
+                        zCoord + direction.offsetZ * i);
                 if (location.getTileEntity(worldObj) != null) {
                     if (location.getTileEntity(worldObj) instanceof IReactorPart
                             && !((IReactorPart) location.getTileEntity(worldObj)).getMaster().initialized)
@@ -344,12 +358,13 @@ public class TileReactorCore extends TileObjectSync {
         for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS) {
             for (int i = 1; i < MAX_SLAVE_RANGE; i++) {
                 TileLocation location = new TileLocation(
-                        xCoord + direction.offsetX * i, yCoord + direction.offsetY * i, zCoord + direction.offsetZ * i);
+                        xCoord + direction.offsetX * i,
+                        yCoord + direction.offsetY * i,
+                        zCoord + direction.offsetZ * i);
                 if (location.getTileEntity(worldObj) instanceof IReactorPart
-                        && ((IReactorPart) location.getTileEntity(worldObj))
-                                        .getMaster()
-                                        .compareTo(new TileLocation(xCoord, yCoord, zCoord))
-                                == 0) ((IReactorPart) location.getTileEntity(worldObj)).shutDown();
+                        && ((IReactorPart) location.getTileEntity(worldObj)).getMaster()
+                                .compareTo(new TileLocation(xCoord, yCoord, zCoord)) == 0)
+                    ((IReactorPart) location.getTileEntity(worldObj)).shutDown();
             }
         }
 
@@ -390,8 +405,7 @@ public class TileReactorCore extends TileObjectSync {
 
     public boolean canStart() {
         validateStructure();
-        return reactionTemperature >= 2000
-                && fieldCharge >= (maxFieldCharge / 2)
+        return reactionTemperature >= 2000 && fieldCharge >= (maxFieldCharge / 2)
                 && energySaturation >= (maxEnergySaturation / 2)
                 && isStructureValid
                 && convertedFuel + reactorFuel + conversionUnit >= 144;
@@ -440,14 +454,18 @@ public class TileReactorCore extends TileObjectSync {
     private double maxFieldChargeCach = -1;
 
     private void detectAndSendChanges() {
-        NetworkRegistry.TargetPoint tp =
-                new NetworkRegistry.TargetPoint(worldObj.provider.dimensionId, xCoord, yCoord, zCoord, 128);
+        NetworkRegistry.TargetPoint tp = new NetworkRegistry.TargetPoint(
+                worldObj.provider.dimensionId,
+                xCoord,
+                yCoord,
+                zCoord,
+                128);
         if (reactionTemperatureCach != reactionTemperature)
             reactionTemperatureCach = (Double) sendObjectToClient(References.DOUBLE_ID, 8, reactionTemperature, tp);
         if (tick % 10 != 0) return;
         if (isStructureValidCach != isStructureValid)
             isStructureValidCach = (Boolean) sendObjectToClient(References.BOOLEAN_ID, 0, isStructureValid, tp);
-        // if (isActiveCach != isActive) 							isActiveCach = 				(Boolean) sendObjectToClient(References.BOOLEAN_ID,
+        // if (isActiveCach != isActive) isActiveCach = (Boolean) sendObjectToClient(References.BOOLEAN_ID,
         // 1, isActive, tp);
         if (startupInitializedCach != startupInitialized)
             startupInitializedCach = (Boolean) sendObjectToClient(References.BOOLEAN_ID, 2, startupInitialized, tp);
@@ -517,7 +535,7 @@ public class TileReactorCore extends TileObjectSync {
             case 0:
                 isStructureValid = (Boolean) object;
                 break;
-                // case 1: isActive = (Boolean) object; break;
+            // case 1: isActive = (Boolean) object; break;
             case 2:
                 startupInitialized = (Boolean) object;
                 break;
@@ -549,11 +567,8 @@ public class TileReactorCore extends TileObjectSync {
                 maxFieldCharge = (Double) object;
                 break;
             case 100:
-                FMLClientHandler.instance()
-                        .getClient()
-                        .effectRenderer
-                        .addEffect(new Particles.ReactorExplosionParticle(
-                                worldObj, xCoord, yCoord, zCoord, (Integer) object));
+                FMLClientHandler.instance().getClient().effectRenderer.addEffect(
+                        new Particles.ReactorExplosionParticle(worldObj, xCoord, yCoord, zCoord, (Integer) object));
         }
         super.receiveObjectFromServer(index, object);
     }

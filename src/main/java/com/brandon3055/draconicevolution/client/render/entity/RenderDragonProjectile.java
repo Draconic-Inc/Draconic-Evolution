@@ -1,13 +1,15 @@
 package com.brandon3055.draconicevolution.client.render.entity;
 
-import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
-import com.brandon3055.draconicevolution.common.entity.EntityDragonProjectile;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
+
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
+
+import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
+import com.brandon3055.draconicevolution.common.entity.EntityDragonProjectile;
 
 /**
  * Created by brandon3055 on 24/8/2015.
@@ -53,8 +55,8 @@ public class RenderDragonProjectile extends Render {
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         GL11.glAlphaFunc(GL11.GL_GREATER, 0F);
         GL11.glDisable(GL11.GL_LIGHTING);
-        //		GL11.glDepthMask(false);
-        //		GL11.glEnable(GL11.GL_CULL_FACE);
+        // GL11.glDepthMask(false);
+        // GL11.glEnable(GL11.GL_CULL_FACE);
         float f2 = entity.type == EntityDragonProjectile.MINI_CHAOS_CHASER ? entity.power / 10 : entity.power / 5;
         GL11.glScalef(f2 / 1.0F, f2 / 1.0F, f2 / 1.0F);
         Tessellator tessellator = Tessellator.instance;

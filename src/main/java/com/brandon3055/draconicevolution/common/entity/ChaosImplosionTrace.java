@@ -1,12 +1,14 @@
 package com.brandon3055.draconicevolution.common.entity;
 
-import com.brandon3055.brandonscore.common.handlers.IProcess;
-import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.reactor.ReactorExplosion;
 import java.util.List;
 import java.util.Random;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
+
+import com.brandon3055.brandonscore.common.handlers.IProcess;
+import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.reactor.ReactorExplosion;
 
 /**
  * Created by brandon3055 on 12/8/2015.
@@ -36,7 +38,8 @@ public class ChaosImplosionTrace implements IProcess {
 
         for (int y = yCoord; y > 0 && energy > 0; y--) {
             List<Entity> entities = worldObj.getEntitiesWithinAABB(
-                    Entity.class, AxisAlignedBB.getBoundingBox(xCoord, y, zCoord, xCoord + 1, y + 1, zCoord + 1));
+                    Entity.class,
+                    AxisAlignedBB.getBoundingBox(xCoord, y, zCoord, xCoord + 1, y + 1, zCoord + 1));
             for (Entity entity : entities) entity.attackEntityFrom(ChaosImplosion.chaosImplosion, power * 100);
 
             // energy -= block instanceof BlockLiquid ? 10 : block.getExplosionResistance(null);
@@ -49,7 +52,8 @@ public class ChaosImplosionTrace implements IProcess {
         yCoord++;
         for (int y = yCoord; y < 255 && energy > 0; y++) {
             List<Entity> entities = worldObj.getEntitiesWithinAABB(
-                    Entity.class, AxisAlignedBB.getBoundingBox(xCoord, y, zCoord, xCoord + 1, y + 1, zCoord + 1));
+                    Entity.class,
+                    AxisAlignedBB.getBoundingBox(xCoord, y, zCoord, xCoord + 1, y + 1, zCoord + 1));
             for (Entity entity : entities) entity.attackEntityFrom(ReactorExplosion.fusionExplosion, power * 100);
 
             // energy -= block instanceof BlockLiquid ? 10 : block.getExplosionResistance(null);

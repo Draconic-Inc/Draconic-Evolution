@@ -1,5 +1,9 @@
 package com.brandon3055.draconicevolution.common;
 
+import net.minecraft.block.Block;
+import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemStack;
+
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.blocks.*;
 import com.brandon3055.draconicevolution.common.blocks.machine.*;
@@ -7,12 +11,10 @@ import com.brandon3055.draconicevolution.common.blocks.multiblock.*;
 import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
 import cpw.mods.fml.common.registry.GameRegistry;
-import net.minecraft.block.Block;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemStack;
 
 @GameRegistry.ObjectHolder(References.MODID)
 public class ModBlocks {
+
     public static BlockDE xRayBlock;
     public static BlockDE weatherController;
     public static BlockDE sunDial;
@@ -117,8 +119,7 @@ public class ModBlocks {
     }
 
     public static void registerOther(Block block) {
-        String name =
-                block.getUnlocalizedName().substring(block.getUnlocalizedName().indexOf(".") + 1);
+        String name = block.getUnlocalizedName().substring(block.getUnlocalizedName().indexOf(".") + 1);
         if (isEnabled(block)) GameRegistry.registerBlock(block, name.substring(name.indexOf(":") + 1));
     }
 

@@ -1,15 +1,18 @@
 package com.brandon3055.draconicevolution.integration.nei;
 
+import java.util.Collections;
+import java.util.List;
+
+import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.item.ItemStack;
+
 import codechicken.nei.VisiblityData;
 import codechicken.nei.api.INEIGuiHandler;
 import codechicken.nei.api.TaggedInventoryArea;
+
 import com.brandon3055.draconicevolution.client.gui.GUIUpgradeModifier;
 import com.brandon3055.draconicevolution.client.gui.componentguis.GUIManual;
 import com.brandon3055.draconicevolution.client.gui.componentguis.GUIToolConfig;
-import java.util.Collections;
-import java.util.List;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.item.ItemStack;
 
 /**
  * Created by brandon3055 on 27/1/2016.

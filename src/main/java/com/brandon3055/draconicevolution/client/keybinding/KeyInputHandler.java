@@ -1,5 +1,14 @@
 package com.brandon3055.draconicevolution.client.keybinding;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityClientPlayerMP;
+import net.minecraft.client.multiplayer.WorldClient;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.MovingObjectPosition;
+
+import org.lwjgl.input.Mouse;
+
 import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.ModItems;
@@ -9,17 +18,11 @@ import com.brandon3055.draconicevolution.common.network.MagnetTogglePacket;
 import com.brandon3055.draconicevolution.common.network.PlacedItemPacket;
 import com.brandon3055.draconicevolution.common.network.TeleporterPacket;
 import com.brandon3055.draconicevolution.common.utills.IConfigurableItem;
+
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.InputEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityClientPlayerMP;
-import net.minecraft.client.multiplayer.WorldClient;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.MovingObjectPosition;
-import org.lwjgl.input.Mouse;
 
 /**
  * Created by Brandon on 14/08/2014.
@@ -33,39 +36,39 @@ public class KeyInputHandler {
             handlePlaceItemKey();
         } else if (KeyBindings.toolConfig.isPressed()) {
             DraconicEvolution.network.sendToServer(new ButtonPacket(ButtonPacket.ID_TOOLCONFIG, false));
-        } else if (KeyBindings.toolProfileChange.isPressed()
-                && Minecraft.getMinecraft().thePlayer != null
+        } else if (KeyBindings.toolProfileChange.isPressed() && Minecraft.getMinecraft().thePlayer != null
                 && Minecraft.getMinecraft().thePlayer.getItemInUse() == null) {
-            DraconicEvolution.network.sendToServer(new ButtonPacket(ButtonPacket.ID_TOOL_PROFILE_CHANGE, false));
+                    DraconicEvolution.network
+                            .sendToServer(new ButtonPacket(ButtonPacket.ID_TOOL_PROFILE_CHANGE, false));
 
-            ItemStack stack = Minecraft.getMinecraft().thePlayer.getHeldItem();
-            if (stack != null
-                    && stack.getItem() instanceof IConfigurableItem
-                    && ((IConfigurableItem) stack.getItem()).hasProfiles()) {
-                int preset = ItemNBTHelper.getInteger(stack, "ConfigProfile", 0);
-                if (++preset >= 5) preset = 0;
-                ItemNBTHelper.setInteger(stack, "ConfigProfile", preset);
-            }
-        } else if (KeyBindings.toggleFlight.isPressed()) {
-            EntityPlayer player = Minecraft.getMinecraft().thePlayer;
-            if (player.capabilities.allowFlying) {
-                if (player.capabilities.isFlying) {
-                    player.capabilities.isFlying = false;
-                } else {
-                    player.capabilities.isFlying = true;
-                    if (player.onGround) {
-                        player.setPosition(player.posX, player.posY + 0.05D, player.posZ);
-                        player.motionY = 0;
+                    ItemStack stack = Minecraft.getMinecraft().thePlayer.getHeldItem();
+                    if (stack != null && stack.getItem() instanceof IConfigurableItem
+                            && ((IConfigurableItem) stack.getItem()).hasProfiles()) {
+                        int preset = ItemNBTHelper.getInteger(stack, "ConfigProfile", 0);
+                        if (++preset >= 5) preset = 0;
+                        ItemNBTHelper.setInteger(stack, "ConfigProfile", preset);
                     }
+                } else
+            if (KeyBindings.toggleFlight.isPressed()) {
+                EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+                if (player.capabilities.allowFlying) {
+                    if (player.capabilities.isFlying) {
+                        player.capabilities.isFlying = false;
+                    } else {
+                        player.capabilities.isFlying = true;
+                        if (player.onGround) {
+                            player.setPosition(player.posX, player.posY + 0.05D, player.posZ);
+                            player.motionY = 0;
+                        }
+                    }
+                    player.sendPlayerAbilities();
                 }
-                player.sendPlayerAbilities();
+            } else if (KeyBindings.toggleMagnet.isPressed()) {
+                EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+                if (player.inventory.hasItem(ModItems.magnet)) {
+                    DraconicEvolution.network.sendToServer(new MagnetTogglePacket());
+                }
             }
-        } else if (KeyBindings.toggleMagnet.isPressed()) {
-            EntityPlayer player = Minecraft.getMinecraft().thePlayer;
-            if (player.inventory.hasItem(ModItems.magnet)) {
-                DraconicEvolution.network.sendToServer(new MagnetTogglePacket());
-            }
-        }
     }
 
     private void handlePlaceItemKey() {
@@ -73,8 +76,8 @@ public class KeyInputHandler {
         WorldClient world = Minecraft.getMinecraft().theWorld;
         MovingObjectPosition mop = ToolHandler.raytraceFromEntity(world, player, 4.5D);
         if (mop != null) {
-            DraconicEvolution.network.sendToServer(
-                    new PlacedItemPacket((byte) mop.sideHit, mop.blockX, mop.blockY, mop.blockZ));
+            DraconicEvolution.network
+                    .sendToServer(new PlacedItemPacket((byte) mop.sideHit, mop.blockX, mop.blockY, mop.blockZ));
         }
     }
 
@@ -89,8 +92,7 @@ public class KeyInputHandler {
             DraconicEvolution.network.sendToServer(new ButtonPacket(ButtonPacket.ID_TOOL_PROFILE_CHANGE, false));
 
             ItemStack stack = Minecraft.getMinecraft().thePlayer.getHeldItem();
-            if (stack != null
-                    && stack.getItem() instanceof IConfigurableItem
+            if (stack != null && stack.getItem() instanceof IConfigurableItem
                     && ((IConfigurableItem) stack.getItem()).hasProfiles()) {
                 int preset = ItemNBTHelper.getInteger(stack, "ConfigProfile", 0);
                 if (++preset >= 5) preset = 0;

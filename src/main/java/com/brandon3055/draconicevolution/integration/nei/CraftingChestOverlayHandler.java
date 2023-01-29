@@ -1,23 +1,28 @@
 package com.brandon3055.draconicevolution.integration.nei;
 
-import codechicken.lib.inventory.InventoryUtils;
-import codechicken.nei.FastTransferManager;
-import codechicken.nei.PositionedStack;
-import codechicken.nei.api.IOverlayHandler;
-import codechicken.nei.recipe.IRecipeHandler;
-import com.brandon3055.draconicevolution.common.tileentities.TileDraconiumChest;
-import com.brandon3055.draconicevolution.common.utills.LogHelper;
 import java.util.*;
+
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
+import codechicken.lib.inventory.InventoryUtils;
+import codechicken.nei.FastTransferManager;
+import codechicken.nei.PositionedStack;
+import codechicken.nei.api.IOverlayHandler;
+import codechicken.nei.recipe.IRecipeHandler;
+
+import com.brandon3055.draconicevolution.common.tileentities.TileDraconiumChest;
+import com.brandon3055.draconicevolution.common.utills.LogHelper;
+
 /**
  * Created by Brandon on 30/10/2014.
  */
 public class CraftingChestOverlayHandler implements IOverlayHandler {
+
     public static class DistributedIngred {
+
         public DistributedIngred(ItemStack item) {
             stack = InventoryUtils.copyStack(item, 1);
         }
@@ -30,6 +35,7 @@ public class CraftingChestOverlayHandler implements IOverlayHandler {
     }
 
     public static class IngredientDistribution {
+
         public IngredientDistribution(DistributedIngred distrib, ItemStack permutation) {
             this.distrib = distrib;
             this.permutation = permutation;
@@ -63,14 +69,13 @@ public class CraftingChestOverlayHandler implements IOverlayHandler {
     private boolean clearIngredients(GuiContainer gui, List<PositionedStack> ingreds) {
         int offsetx = getOffsetX(gui);
         int offsety = getOffsetY(gui);
-        for (PositionedStack pstack : ingreds)
-            for (Slot slot : (List<Slot>) gui.inventorySlots.inventorySlots)
-                if (slot.xDisplayPosition == pstack.relx + offsetx && slot.yDisplayPosition == pstack.rely + offsety) {
-                    if (!slot.getHasStack()) continue;
+        for (PositionedStack pstack : ingreds) for (Slot slot : (List<Slot>) gui.inventorySlots.inventorySlots)
+            if (slot.xDisplayPosition == pstack.relx + offsetx && slot.yDisplayPosition == pstack.rely + offsety) {
+                if (!slot.getHasStack()) continue;
 
-                    FastTransferManager.clickSlot(gui, slot.slotNumber, 0, 1);
-                    if (slot.getHasStack()) return false;
-                }
+                FastTransferManager.clickSlot(gui, slot.slotNumber, 0, 1);
+                if (slot.getHasStack()) return false;
+            }
 
         return true;
     }
@@ -130,8 +135,8 @@ public class CraftingChestOverlayHandler implements IOverlayHandler {
         return quantity;
     }
 
-    private Slot[][] assignIngredSlots(
-            GuiContainer gui, List<PositionedStack> ingredients, List<IngredientDistribution> assignedIngredients) {
+    private Slot[][] assignIngredSlots(GuiContainer gui, List<PositionedStack> ingredients,
+            List<IngredientDistribution> assignedIngredients) {
         Slot[][] recipeSlots = mapIngredSlots(gui, ingredients); // setup the slot map
 
         HashMap<Slot, Integer> distribution = new HashMap<Slot, Integer>();
@@ -147,7 +152,7 @@ public class CraftingChestOverlayHandler implements IOverlayHandler {
         }
 
         while (avaliableSlots.size() > 0 && remainingIngreds.size() > 0) {
-            for (Iterator<Integer> iterator = remainingIngreds.iterator(); iterator.hasNext(); ) {
+            for (Iterator<Integer> iterator = remainingIngreds.iterator(); iterator.hasNext();) {
                 int i = iterator.next();
                 boolean assigned = false;
                 DistributedIngred istack = assignedIngredients.get(i).distrib;
@@ -174,8 +179,8 @@ public class CraftingChestOverlayHandler implements IOverlayHandler {
         return recipeSlots;
     }
 
-    private List<IngredientDistribution> assignIngredients(
-            List<PositionedStack> ingredients, List<DistributedIngred> ingredStacks) {
+    private List<IngredientDistribution> assignIngredients(List<PositionedStack> ingredients,
+            List<DistributedIngred> ingredStacks) {
         ArrayList<IngredientDistribution> assignedIngredients = new ArrayList<IngredientDistribution>();
         for (PositionedStack posstack : ingredients) // assign what we need and have
         {
@@ -187,9 +192,14 @@ public class CraftingChestOverlayHandler implements IOverlayHandler {
                 for (int j = 0; j < ingredStacks.size(); j++) {
                     DistributedIngred istack = ingredStacks.get(j);
                     if (!InventoryUtils.canStack(pstack, istack.stack)
-                            || istack.invAmount - istack.distributed < pstack.stackSize) continue;
-                    LogHelper.info(istack.invAmount - istack.invAmount + " " + istack.recipeAmount * istack.distributed
-                            + " " + pstack.stackSize);
+                            || istack.invAmount - istack.distributed < pstack.stackSize)
+                        continue;
+                    LogHelper.info(
+                            istack.invAmount - istack.invAmount
+                                    + " "
+                                    + istack.recipeAmount * istack.distributed
+                                    + " "
+                                    + pstack.stackSize);
                     int relsize = (istack.invAmount - istack.invAmount / istack.recipeAmount * istack.distributed)
                             / pstack.stackSize;
                     if (relsize > biggestSize) {
@@ -202,7 +212,7 @@ public class CraftingChestOverlayHandler implements IOverlayHandler {
             }
 
             if (biggestIngred == null) // not enough ingreds
-            return null;
+                return null;
 
             biggestIngred.distributed += permutation.stackSize;
             assignedIngredients.add(new IngredientDistribution(biggestIngred, permutation));

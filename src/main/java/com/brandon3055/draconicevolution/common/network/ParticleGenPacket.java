@@ -1,11 +1,5 @@
 package com.brandon3055.draconicevolution.common.network;
 
-import com.brandon3055.draconicevolution.common.tileentities.TileParticleGenerator;
-import com.brandon3055.draconicevolution.common.utills.LogHelper;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
-import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -14,7 +8,16 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
 
+import com.brandon3055.draconicevolution.common.tileentities.TileParticleGenerator;
+import com.brandon3055.draconicevolution.common.utills.LogHelper;
+
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
+import io.netty.buffer.ByteBuf;
+
 public class ParticleGenPacket implements IMessage {
+
     byte buttonId = 0;
     short value = 0;
     int tileX = 0;
@@ -53,12 +56,11 @@ public class ParticleGenPacket implements IMessage {
 
         @Override
         public IMessage onMessage(ParticleGenPacket message, MessageContext ctx) {
-            TileEntity tile = ctx.getServerHandler()
-                    .playerEntity
-                    .worldObj
+            TileEntity tile = ctx.getServerHandler().playerEntity.worldObj
                     .getTileEntity(message.tileX, message.tileY, message.tileZ);
-            TileParticleGenerator gen =
-                    (tile != null && tile instanceof TileParticleGenerator) ? (TileParticleGenerator) tile : null;
+            TileParticleGenerator gen = (tile != null && tile instanceof TileParticleGenerator)
+                    ? (TileParticleGenerator) tile
+                    : null;
             if (gen != null) {
                 // System.out.println(buttonId + " " + value);
                 switch (message.buttonId) {
@@ -295,16 +297,11 @@ public class ParticleGenPacket implements IMessage {
                     if (ctx.getServerHandler().playerEntity.capabilities.isCreativeMode
                             || ctx.getServerHandler().playerEntity.inventory.hasItem(Items.paper)) {
                         giveNote(message, ctx);
-                    } else
-                        ctx.getServerHandler()
-                                .playerEntity
-                                .addChatComponentMessage(
-                                        new ChatComponentText("You need paper in your inventory to do that"));
+                    } else ctx.getServerHandler().playerEntity.addChatComponentMessage(
+                            new ChatComponentText("You need paper in your inventory to do that"));
                 }
 
-                ctx.getServerHandler()
-                        .playerEntity
-                        .worldObj
+                ctx.getServerHandler().playerEntity.worldObj
                         .markBlockForUpdate(message.tileX, message.tileY, message.tileZ);
             }
             return null;
@@ -315,12 +312,11 @@ public class ParticleGenPacket implements IMessage {
             if (!player.capabilities.isCreativeMode) player.inventory.consumeInventoryItem(Items.paper);
             ItemStack stack = new ItemStack(Items.paper);
             stack.setTagCompound(new NBTTagCompound());
-            TileEntity tile = ctx.getServerHandler()
-                    .playerEntity
-                    .worldObj
+            TileEntity tile = ctx.getServerHandler().playerEntity.worldObj
                     .getTileEntity(message.tileX, message.tileY, message.tileZ);
-            TileParticleGenerator gen =
-                    (tile != null && tile instanceof TileParticleGenerator) ? (TileParticleGenerator) tile : null;
+            TileParticleGenerator gen = (tile != null && tile instanceof TileParticleGenerator)
+                    ? (TileParticleGenerator) tile
+                    : null;
             if (gen != null) {
                 gen.getBlockNBT(stack.getTagCompound());
                 stack.setStackDisplayName("Saved Particle Gen Settings");

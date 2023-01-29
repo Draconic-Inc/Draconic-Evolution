@@ -1,8 +1,5 @@
 package com.brandon3055.draconicevolution.client.render.tile;
 
-import com.brandon3055.draconicevolution.common.lib.References;
-import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEarth;
-import cpw.mods.fml.client.FMLClientHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -10,20 +7,26 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.AdvancedModelLoader;
 import net.minecraftforge.client.model.IModelCustom;
+
 import org.lwjgl.opengl.GL11;
+
+import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEarth;
+import cpw.mods.fml.client.FMLClientHandler;
 
 /**
  * Created by Brandon on 27/07/2014.
  */
 public class RenderTileEarth extends TileEntitySpecialRenderer {
 
-    private static final ResourceLocation iner_model_texture =
-            new ResourceLocation(References.MODID.toLowerCase(), "textures/models/Earth.png");
+    private static final ResourceLocation iner_model_texture = new ResourceLocation(
+            References.MODID.toLowerCase(),
+            "textures/models/Earth.png");
     public static IModelCustom modelCustom;
 
     public RenderTileEarth() {
-        modelCustom =
-                AdvancedModelLoader.loadModel(new ResourceLocation(References.MODID.toLowerCase(), "models/Earth.obj"));
+        modelCustom = AdvancedModelLoader
+                .loadModel(new ResourceLocation(References.MODID.toLowerCase(), "models/Earth.obj"));
     }
 
     @Override

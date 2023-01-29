@@ -1,16 +1,8 @@
 package com.brandon3055.draconicevolution.common.entity;
 
-import com.brandon3055.brandonscore.common.utills.Utills;
-import com.brandon3055.draconicevolution.client.handler.ParticleHandler;
-import com.brandon3055.draconicevolution.client.render.particle.Particles;
-import com.brandon3055.draconicevolution.common.ModBlocks;
-import com.brandon3055.draconicevolution.common.ModItems;
-import com.brandon3055.draconicevolution.common.blocks.DraconiumBlock;
-import com.brandon3055.draconicevolution.common.blocks.multiblock.MultiblockHelper.TileLocation;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import java.util.ArrayList;
 import java.util.List;
+
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
@@ -20,6 +12,17 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
+
+import com.brandon3055.brandonscore.common.utills.Utills;
+import com.brandon3055.draconicevolution.client.handler.ParticleHandler;
+import com.brandon3055.draconicevolution.client.render.particle.Particles;
+import com.brandon3055.draconicevolution.common.ModBlocks;
+import com.brandon3055.draconicevolution.common.ModItems;
+import com.brandon3055.draconicevolution.common.blocks.DraconiumBlock;
+import com.brandon3055.draconicevolution.common.blocks.multiblock.MultiblockHelper.TileLocation;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Created by Brandon on 21/11/2014.
@@ -102,7 +105,11 @@ public class EntityDragonHeart extends Entity {
                     opPhase = 3;
                     if (coresConsumed < 4) {
                         EntityPersistentItem item = new EntityPersistentItem(
-                                worldObj, posX, posY, posZ, new ItemStack(ModItems.dragonHeart));
+                                worldObj,
+                                posX,
+                                posY,
+                                posZ,
+                                new ItemStack(ModItems.dragonHeart));
                         item.motionX = 0;
                         item.motionY = 0;
                         item.motionZ = 0;
@@ -176,7 +183,11 @@ public class EntityDragonHeart extends Entity {
                 if (blocks.size() == 0) {
                     if (!worldObj.isRemote) {
                         EntityPersistentItem item = new EntityPersistentItem(
-                                worldObj, posX, posY, posZ, new ItemStack(ModItems.dragonHeart));
+                                worldObj,
+                                posX,
+                                posY,
+                                posZ,
+                                new ItemStack(ModItems.dragonHeart));
                         item.motionX = 0;
                         item.motionY = 0;
                         item.motionZ = 0;
@@ -192,9 +203,13 @@ public class EntityDragonHeart extends Entity {
                     break;
                 }
                 for (TileLocation tile : blocks) {
-                    if (!worldObj.isRemote)
-                        worldObj.setBlock(
-                                tile.getXCoord(), tile.getYCoord(), tile.getZCoord(), ModBlocks.draconicBlock, 0, 2);
+                    if (!worldObj.isRemote) worldObj.setBlock(
+                            tile.getXCoord(),
+                            tile.getYCoord(),
+                            tile.getZCoord(),
+                            ModBlocks.draconicBlock,
+                            0,
+                            2);
                     worldObj.createExplosion(null, tile.getXCoord(), tile.getYCoord(), tile.getZCoord(), 4, false);
                 }
                 worldObj.createExplosion(null, posX, posY, posZ, 4, false);
@@ -218,7 +233,18 @@ public class EntityDragonHeart extends Entity {
                 double offsetX = Math.sin(nextFloat);
                 double offsetZ = Math.cos(nextFloat);
                 EntityFX particle = new Particles.AdvancedSeekerParticle(
-                        worldObj, posX + offsetX, correctY, posZ + offsetZ, posX, correctY, posZ, 1, 1f, 1f, 1f, 10);
+                        worldObj,
+                        posX + offsetX,
+                        correctY,
+                        posZ + offsetZ,
+                        posX,
+                        correctY,
+                        posZ,
+                        1,
+                        1f,
+                        1f,
+                        1f,
+                        10);
                 ParticleHandler.spawnCustomParticle(particle, 64);
             }
         }

@@ -1,18 +1,21 @@
 package com.brandon3055.draconicevolution.client.render.item;
 
-import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.IItemRenderer;
 import net.minecraftforge.client.model.AdvancedModelLoader;
 import net.minecraftforge.client.model.IModelCustom;
+
 import org.lwjgl.opengl.GL11;
+
+import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
 
 /**
  * Created by brandon3055 on 1/10/2015.
  */
 public class RenderChaosShard implements IItemRenderer {
-    private static IModelCustom model =
-            AdvancedModelLoader.loadModel(ResourceHandler.getResource("models/chaosCrystalShard.obj"));
+
+    private static IModelCustom model = AdvancedModelLoader
+            .loadModel(ResourceHandler.getResource("models/chaosCrystalShard.obj"));
 
     @Override
     public boolean handleRenderType(ItemStack item, ItemRenderType type) {

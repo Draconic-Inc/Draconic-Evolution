@@ -1,16 +1,19 @@
 package com.brandon3055.draconicevolution.common.handler;
 
-import com.brandon3055.draconicevolution.common.ModBlocks;
-import com.brandon3055.draconicevolution.common.utills.IUpgradableItem.EnumUpgrade;
-import cpw.mods.fml.common.registry.GameRegistry;
 import java.io.File;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.init.Blocks;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 
+import com.brandon3055.draconicevolution.common.ModBlocks;
+import com.brandon3055.draconicevolution.common.utills.IUpgradableItem.EnumUpgrade;
+import cpw.mods.fml.common.registry.GameRegistry;
+
 public class BalanceConfigHandler {
+
     public static final int wyvernArmorMinShieldRecovery = 5;
     public static final int draconicArmorMinShieldRecovery = 5;
     public static final int wyvernToolsMinDigAOEUpgradePoints = 1;
@@ -170,36 +173,47 @@ public class BalanceConfigHandler {
             config.load();
             config.setCategoryRequiresMcRestart("tweaks", true);
             config.setCategoryComment(
-                    "tweaks.armor", "Values in this category may be replaced automatically to prevent problems");
+                    "tweaks.armor",
+                    "Values in this category may be replaced automatically to prevent problems");
             config.setCategoryComment(
-                    "tweaks.tools", "Values in this category may be replaced automatically to prevent problems");
+                    "tweaks.tools",
+                    "Values in this category may be replaced automatically to prevent problems");
             config.setCategoryComment(
-                    "tweaks.weapons", "Values in this category may be replaced automatically to prevent problems");
+                    "tweaks.weapons",
+                    "Values in this category may be replaced automatically to prevent problems");
             syncConfig();
         }
     }
 
     private static void syncConfig() {
-        wyvernArmorBaseStorage =
-                getInteger("energy.armor", "Wyvern Armor: Base energy storage (RF)", wyvernArmorBaseStorage);
+        wyvernArmorBaseStorage = getInteger(
+                "energy.armor",
+                "Wyvern Armor: Base energy storage (RF)",
+                wyvernArmorBaseStorage);
         wyvernArmorStoragePerUpgrade = getInteger(
                 "energy.armor",
                 "Wyvern Armor: Additional energy storage per upgrade installed (RF)",
                 wyvernArmorStoragePerUpgrade);
-        wyvernArmorMaxTransfer =
-                getInteger("energy.armor", "Wyvern Armor: Maximum energy transfer rate (RF/t)", wyvernArmorMaxTransfer);
+        wyvernArmorMaxTransfer = getInteger(
+                "energy.armor",
+                "Wyvern Armor: Maximum energy transfer rate (RF/t)",
+                wyvernArmorMaxTransfer);
         wyvernArmorEnergyPerProtectionPoint = getInteger(
                 "energy.armor",
                 "Wyvern Armor: Amount of energy required to restore protection point (RF)",
                 wyvernArmorEnergyPerProtectionPoint);
-        draconicArmorBaseStorage =
-                getInteger("energy.armor", "Draconic Armor: Base energy storage (RF)", draconicArmorBaseStorage);
+        draconicArmorBaseStorage = getInteger(
+                "energy.armor",
+                "Draconic Armor: Base energy storage (RF)",
+                draconicArmorBaseStorage);
         draconicArmorStoragePerUpgrade = getInteger(
                 "energy.armor",
                 "Draconic Armor: Additional energy storage per upgrade installed (RF)",
                 draconicArmorStoragePerUpgrade);
         draconicArmorMaxTransfer = getInteger(
-                "energy.armor", "Draconic Armor: Maximum energy transfer rate (RF/t)", draconicArmorMaxTransfer);
+                "energy.armor",
+                "Draconic Armor: Maximum energy transfer rate (RF/t)",
+                draconicArmorMaxTransfer);
         draconicArmorEnergyPerProtectionPoint = getInteger(
                 "energy.armor",
                 "Draconic Armor: Amount of energy required to restore protection point (RF)",
@@ -208,32 +222,42 @@ public class BalanceConfigHandler {
                 "energy.armor",
                 "Draconic Armor: Amount of energy required to remove negative effects (RF)",
                 draconicArmorEnergyToRemoveEffects);
-        wyvernToolsBaseStorage =
-                getInteger("energy.tools", "Wyvern Tools: Base energy storage (RF)", wyvernToolsBaseStorage);
+        wyvernToolsBaseStorage = getInteger(
+                "energy.tools",
+                "Wyvern Tools: Base energy storage (RF)",
+                wyvernToolsBaseStorage);
         wyvernToolsStoragePerUpgrade = getInteger(
                 "energy.tools",
                 "Wyvern Tools: Additional energy storage per upgrade installed (RF)",
                 wyvernToolsStoragePerUpgrade);
-        wyvernToolsMaxTransfer =
-                getInteger("energy.tools", "Wyvern Tools: Maximum energy transfer rate (RF/t)", wyvernToolsMaxTransfer);
+        wyvernToolsMaxTransfer = getInteger(
+                "energy.tools",
+                "Wyvern Tools: Maximum energy transfer rate (RF/t)",
+                wyvernToolsMaxTransfer);
         wyvernToolsEnergyPerAction = getInteger(
                 "energy.tools",
                 "Wyvern Tools: Amount of energy required to perform action (RF)",
                 wyvernToolsEnergyPerAction);
-        draconicToolsBaseStorage =
-                getInteger("energy.tools", "Draconic Tools: Base energy storage (RF)", draconicToolsBaseStorage);
+        draconicToolsBaseStorage = getInteger(
+                "energy.tools",
+                "Draconic Tools: Base energy storage (RF)",
+                draconicToolsBaseStorage);
         draconicToolsStoragePerUpgrade = getInteger(
                 "energy.tools",
                 "Draconic Tools: Additional energy storage per upgrade installed (RF)",
                 draconicToolsStoragePerUpgrade);
         draconicToolsMaxTransfer = getInteger(
-                "energy.tools", "Draconic Tools: Maximum energy transfer rate (RF/t)", draconicToolsMaxTransfer);
+                "energy.tools",
+                "Draconic Tools: Maximum energy transfer rate (RF/t)",
+                draconicToolsMaxTransfer);
         draconicToolsEnergyPerAction = getInteger(
                 "energy.tools",
                 "Draconic Tools: Amount of energy required to perform action (RF)",
                 draconicToolsEnergyPerAction);
         wyvernCapacitorBaseStorage = getInteger(
-                "energy.tools", "Wyvern Flux Capacitor: Base energy storage (RF)", wyvernCapacitorBaseStorage);
+                "energy.tools",
+                "Wyvern Flux Capacitor: Base energy storage (RF)",
+                wyvernCapacitorBaseStorage);
         wyvernCapacitorStoragePerUpgrade = getInteger(
                 "energy.tools",
                 "Wyvern Flux Capacitor: Additional energy storage per upgrade installed (RF)",
@@ -247,7 +271,9 @@ public class BalanceConfigHandler {
                 "Wyvern Flux Capacitor: Maximum energy extraction rate (RF/t)",
                 wyvernCapacitorMaxExtract);
         draconicCapacitorBaseStorage = getInteger(
-                "energy.tools", "Draconic Flux Capacitor: Base energy storage (RF)", draconicCapacitorBaseStorage);
+                "energy.tools",
+                "Draconic Flux Capacitor: Base energy storage (RF)",
+                draconicCapacitorBaseStorage);
         draconicCapacitorStoragePerUpgrade = getInteger(
                 "energy.tools",
                 "Draconic Flux Capacitor: Additional energy storage per upgrade installed (RF)",
@@ -260,46 +286,66 @@ public class BalanceConfigHandler {
                 "energy.tools",
                 "Draconic Flux Capacitor: Maximum energy extraction rate (RF/t)",
                 draconicCapacitorMaxExtract);
-        wyvernWeaponsBaseStorage =
-                getInteger("energy.weapons", "Wyvern Weapons: Base energy storage (RF)", wyvernWeaponsBaseStorage);
+        wyvernWeaponsBaseStorage = getInteger(
+                "energy.weapons",
+                "Wyvern Weapons: Base energy storage (RF)",
+                wyvernWeaponsBaseStorage);
         wyvernWeaponsStoragePerUpgrade = getInteger(
                 "energy.weapons",
                 "Wyvern Weapons: Additional energy storage per upgrade installed (RF)",
                 wyvernWeaponsStoragePerUpgrade);
         wyvernWeaponsMaxTransfer = getInteger(
-                "energy.weapons", "Wyvern Weapons: Maximum energy transfer rate (RF/t)", wyvernWeaponsMaxTransfer);
+                "energy.weapons",
+                "Wyvern Weapons: Maximum energy transfer rate (RF/t)",
+                wyvernWeaponsMaxTransfer);
         wyvernWeaponsEnergyPerAttack = getInteger(
                 "energy.weapons",
                 "Wyvern Weapons: Amount of energy required to perform attack (RF)",
                 wyvernWeaponsEnergyPerAttack);
         wyvernBowEnergyPerShot = getInteger(
-                "energy.weapons", "Wyvern Bow: Amount of energy required to shoot (RF)", wyvernBowEnergyPerShot);
-        draconicWeaponsBaseStorage =
-                getInteger("energy.weapons", "Draconic Weapons: Base energy storage (RF)", draconicWeaponsBaseStorage);
+                "energy.weapons",
+                "Wyvern Bow: Amount of energy required to shoot (RF)",
+                wyvernBowEnergyPerShot);
+        draconicWeaponsBaseStorage = getInteger(
+                "energy.weapons",
+                "Draconic Weapons: Base energy storage (RF)",
+                draconicWeaponsBaseStorage);
         draconicWeaponsStoragePerUpgrade = getInteger(
                 "energy.weapons",
                 "Draconic Weapons: Additional energy storage per upgrade installed (RF)",
                 draconicWeaponsStoragePerUpgrade);
         draconicWeaponsMaxTransfer = getInteger(
-                "energy.weapons", "Draconic Weapons: Maximum energy transfer rate (RF/t)", draconicWeaponsMaxTransfer);
+                "energy.weapons",
+                "Draconic Weapons: Maximum energy transfer rate (RF/t)",
+                draconicWeaponsMaxTransfer);
         draconicWeaponsEnergyPerAttack = getInteger(
                 "energy.weapons",
                 "Draconic Weapons: Amount of energy required to perform attack (RF)",
                 draconicWeaponsEnergyPerAttack);
         draconicBowEnergyPerShot = getInteger(
-                "energy.weapons", "Draconic Bow: Amount of energy required to shoot (RF)", draconicBowEnergyPerShot);
+                "energy.weapons",
+                "Draconic Bow: Amount of energy required to shoot (RF)",
+                draconicBowEnergyPerShot);
         draconicFireEnergyCostMultiptier = getInteger(
-                "energy.weapons", "Arrow of Draconic Fire: Energy cost multiplier", draconicFireEnergyCostMultiptier);
+                "energy.weapons",
+                "Arrow of Draconic Fire: Energy cost multiplier",
+                draconicFireEnergyCostMultiptier);
         draconiumBlockEnergyToChange = getInteger(
                 "energy.misc",
                 "Draconium Block: Amount of energy required to charge (RF)",
                 draconiumBlockEnergyToChange);
         draconiumBlockChargingSpeed = getInteger(
-                "energy.misc", "Draconium Block: Maximum charging speed (RF/t)", draconiumBlockChargingSpeed);
-        energyInfuserStorage =
-                getInteger("energy.machines", "Energy Infuser: Energy buffer size (RF)", energyInfuserStorage);
+                "energy.misc",
+                "Draconium Block: Maximum charging speed (RF/t)",
+                draconiumBlockChargingSpeed);
+        energyInfuserStorage = getInteger(
+                "energy.machines",
+                "Energy Infuser: Energy buffer size (RF)",
+                energyInfuserStorage);
         energyInfuserMaxTransfer = getInteger(
-                "energy.machines", "Energy Infuser: Maximum energy transfer rate (RF/t)", energyInfuserMaxTransfer);
+                "energy.machines",
+                "Energy Infuser: Maximum energy transfer rate (RF/t)",
+                energyInfuserMaxTransfer);
         energyStorageTier1Storage = getLong(
                 "energy.machines",
                 "Multiblock Energy Storage Tier 1: Energy buffer size (RF)",
@@ -329,31 +375,49 @@ public class BalanceConfigHandler {
                 "Multiblock Energy Storage Tier 7: Energy buffer size (RF)",
                 energyStorageTier7Storage);
         grinderInternalEnergyBufferSize = getInteger(
-                "energy.machines", "Mob Grinder: Internal energy buffer size (RF)", grinderInternalEnergyBufferSize);
+                "energy.machines",
+                "Mob Grinder: Internal energy buffer size (RF)",
+                grinderInternalEnergyBufferSize);
         grinderExternalEnergyBufferSize = getInteger(
-                "energy.machines", "Mob Grinder: Main energy buffer size (RF)", grinderExternalEnergyBufferSize);
-        grinderMaxReceive =
-                getInteger("energy.machines", "Mob Grinder: Maximum energy reception rate (RF/t)", grinderMaxReceive);
+                "energy.machines",
+                "Mob Grinder: Main energy buffer size (RF)",
+                grinderExternalEnergyBufferSize);
+        grinderMaxReceive = getInteger(
+                "energy.machines",
+                "Mob Grinder: Maximum energy reception rate (RF/t)",
+                grinderMaxReceive);
         grinderEnergyPerKill = getInteger(
-                "energy.machines", "Mob Grinder: Amount of energy required to kill entity (RF)", grinderEnergyPerKill);
-        energyRelayBasicStorage =
-                getInteger("energy.machines", "Energy Relay: Energy buffer size (RF)", energyRelayBasicStorage);
+                "energy.machines",
+                "Mob Grinder: Amount of energy required to kill entity (RF)",
+                grinderEnergyPerKill);
+        energyRelayBasicStorage = getInteger(
+                "energy.machines",
+                "Energy Relay: Energy buffer size (RF)",
+                energyRelayBasicStorage);
         energyRelayAdvancedStorage = getInteger(
-                "energy.machines", "Advanced Energy Relay: Energy buffer size (RF)", energyRelayAdvancedStorage);
+                "energy.machines",
+                "Advanced Energy Relay: Energy buffer size (RF)",
+                energyRelayAdvancedStorage);
         energyRelayBasicMaxReceive = getInteger(
-                "energy.machines", "Energy Relay: Maximum energy reception rate (RF/t)", energyRelayBasicMaxReceive);
+                "energy.machines",
+                "Energy Relay: Maximum energy reception rate (RF/t)",
+                energyRelayBasicMaxReceive);
         energyRelayAdvancedMaxReceive = getInteger(
                 "energy.machines",
                 "Advanced Energy Relay: Maximum energy reception rate (RF/t)",
                 energyRelayAdvancedMaxReceive);
         energyRelayBasicMaxExtract = getInteger(
-                "energy.machines", "Energy Relay: Maximum energy extraction rate (RF/t)", energyRelayBasicMaxExtract);
+                "energy.machines",
+                "Energy Relay: Maximum energy extraction rate (RF/t)",
+                energyRelayBasicMaxExtract);
         energyRelayAdvancedMaxExtract = getInteger(
                 "energy.machines",
                 "Advanced Energy Relay: Maximum energy extraction rate (RF/t)",
                 energyRelayAdvancedMaxExtract);
         energyTransceiverBasicStorage = getInteger(
-                "energy.machines", "Energy Transceiver: Energy buffer size (RF)", energyTransceiverBasicStorage);
+                "energy.machines",
+                "Energy Transceiver: Energy buffer size (RF)",
+                energyTransceiverBasicStorage);
         energyTransceiverAdvancedStorage = getInteger(
                 "energy.machines",
                 "Advanced Energy Transceiver: Energy buffer size (RF)",
@@ -406,33 +470,39 @@ public class BalanceConfigHandler {
                 "energy.machines",
                 "Advanced Wireless Energy Transceiver: Maximum energy " + "sending rate for each linked device (RF/t)",
                 energyWirelessTransceiverAdvancedMaxSend);
-        wyvernArmorMaxCapacityUpgradePoints = (int) Math.floor((double) (Integer.MAX_VALUE - wyvernArmorBaseStorage)
+        wyvernArmorMaxCapacityUpgradePoints = (int) Math.floor(
+                (double) (Integer.MAX_VALUE - wyvernArmorBaseStorage)
                         / (double) Math.max(wyvernArmorStoragePerUpgrade, 1))
                 * EnumUpgrade.RF_CAPACITY.pointConversion;
-        wyvernArmorMaxUpgrades =
-                getInteger("tweaks.armor", "Wyvern Armor: Maximum amount of upgrades", wyvernArmorMaxUpgrades);
+        wyvernArmorMaxUpgrades = getInteger(
+                "tweaks.armor",
+                "Wyvern Armor: Maximum amount of upgrades",
+                wyvernArmorMaxUpgrades);
         wyvernArmorMaxUpgradePoints = getInteger(
                 "tweaks.armor",
                 "Wyvern Armor: Maximum amount of upgrade points",
                 wyvernArmorMaxUpgradePoints,
                 wyvernArmorMaxUpgrades,
                 Integer.MAX_VALUE);
-        wyvernArmorMaxCapacityUpgradePoints =
-                Math.max(Math.min(wyvernArmorMaxUpgradePoints, wyvernArmorMaxCapacityUpgradePoints), 0);
-        draconicArmorMaxCapacityUpgradePoints = (int) Math.floor((double) (Integer.MAX_VALUE - draconicArmorBaseStorage)
-                        / Math.max(draconicArmorStoragePerUpgrade, 1))
+        wyvernArmorMaxCapacityUpgradePoints = Math
+                .max(Math.min(wyvernArmorMaxUpgradePoints, wyvernArmorMaxCapacityUpgradePoints), 0);
+        draconicArmorMaxCapacityUpgradePoints = (int) Math.floor(
+                (double) (Integer.MAX_VALUE - draconicArmorBaseStorage) / Math.max(draconicArmorStoragePerUpgrade, 1))
                 * EnumUpgrade.RF_CAPACITY.pointConversion;
-        draconicArmorMaxUpgrades =
-                getInteger("tweaks.armor", "Draconic Armor: Maximum amount of upgrades", draconicArmorMaxUpgrades);
+        draconicArmorMaxUpgrades = getInteger(
+                "tweaks.armor",
+                "Draconic Armor: Maximum amount of upgrades",
+                draconicArmorMaxUpgrades);
         draconicArmorMaxUpgradePoints = getInteger(
                 "tweaks.armor",
                 "Draconic Armor: Maximum amount of upgrade points",
                 draconicArmorMaxUpgradePoints,
                 draconicArmorMaxUpgrades,
                 Integer.MAX_VALUE);
-        draconicArmorMaxCapacityUpgradePoints =
-                Math.max(Math.min(draconicArmorMaxUpgradePoints, draconicArmorMaxCapacityUpgradePoints), 0);
-        wyvernToolsMaxCapacityUpgradePoints = (int) Math.floor((double) (Integer.MAX_VALUE - wyvernToolsBaseStorage)
+        draconicArmorMaxCapacityUpgradePoints = Math
+                .max(Math.min(draconicArmorMaxUpgradePoints, draconicArmorMaxCapacityUpgradePoints), 0);
+        wyvernToolsMaxCapacityUpgradePoints = (int) Math.floor(
+                (double) (Integer.MAX_VALUE - wyvernToolsBaseStorage)
                         / (double) Math.max(wyvernToolsStoragePerUpgrade, 1))
                 * EnumUpgrade.RF_CAPACITY.pointConversion;
         wyvernToolsMaxUpgrades = getInteger(
@@ -441,7 +511,7 @@ public class BalanceConfigHandler {
                 wyvernToolsMaxUpgrades,
                 0,
                 (wyvernToolsMaxDigAOEUpgradePoints - wyvernToolsMinDigAOEUpgradePoints)
-                                * EnumUpgrade.DIG_AOE.pointConversion
+                        * EnumUpgrade.DIG_AOE.pointConversion
                         + (wyvernToolsMaxDigSpeedUpgradePoints - wyvernToolsMinDigSpeedUpgradePoints)
                                 * EnumUpgrade.DIG_SPEED.pointConversion
                         + wyvernToolsMaxCapacityUpgradePoints);
@@ -451,9 +521,10 @@ public class BalanceConfigHandler {
                 wyvernToolsMaxUpgradePoints,
                 wyvernToolsMaxUpgrades,
                 Integer.MAX_VALUE);
-        wyvernToolsMaxCapacityUpgradePoints =
-                Math.max(Math.min(wyvernToolsMaxUpgradePoints, wyvernToolsMaxCapacityUpgradePoints), 0);
-        draconicToolsMaxCapacityUpgradePoints = (int) Math.floor((double) (Integer.MAX_VALUE - draconicToolsBaseStorage)
+        wyvernToolsMaxCapacityUpgradePoints = Math
+                .max(Math.min(wyvernToolsMaxUpgradePoints, wyvernToolsMaxCapacityUpgradePoints), 0);
+        draconicToolsMaxCapacityUpgradePoints = (int) Math.floor(
+                (double) (Integer.MAX_VALUE - draconicToolsBaseStorage)
                         / (double) Math.max(draconicToolsStoragePerUpgrade, 1))
                 * EnumUpgrade.RF_CAPACITY.pointConversion;
         draconicToolsMaxUpgrades = getInteger(
@@ -462,7 +533,7 @@ public class BalanceConfigHandler {
                 draconicToolsMaxUpgrades,
                 0,
                 (draconicToolsMaxDigAOEUpgradePoints - draconicToolsMinDigAOEUpgradePoints)
-                                * EnumUpgrade.DIG_AOE.pointConversion
+                        * EnumUpgrade.DIG_AOE.pointConversion
                         + (draconicToolsMaxDigSpeedUpgradePoints - draconicToolsMinDigSpeedUpgradePoints)
                                 * EnumUpgrade.DIG_SPEED.pointConversion
                         + (draconicToolsMaxDigDepthUpgradePoints - draconicToolsMinDigDepthUpgradePoints)
@@ -474,9 +545,10 @@ public class BalanceConfigHandler {
                 draconicToolsMaxUpgradePoints,
                 draconicToolsMaxUpgrades,
                 Integer.MAX_VALUE);
-        draconicToolsMaxCapacityUpgradePoints =
-                Math.max(Math.min(draconicToolsMaxUpgradePoints, draconicToolsMaxCapacityUpgradePoints), 0);
-        wyvernWeaponsMaxCapacityUpgradePoints = (int) Math.floor((double) (Integer.MAX_VALUE - wyvernWeaponsBaseStorage)
+        draconicToolsMaxCapacityUpgradePoints = Math
+                .max(Math.min(draconicToolsMaxUpgradePoints, draconicToolsMaxCapacityUpgradePoints), 0);
+        wyvernWeaponsMaxCapacityUpgradePoints = (int) Math.floor(
+                (double) (Integer.MAX_VALUE - wyvernWeaponsBaseStorage)
                         / (double) Math.max(wyvernWeaponsStoragePerUpgrade, 1))
                 * EnumUpgrade.RF_CAPACITY.pointConversion;
         wyvernWeaponsMaxUpgrades = getInteger(
@@ -485,7 +557,7 @@ public class BalanceConfigHandler {
                 wyvernWeaponsMaxUpgrades,
                 0,
                 (wyvernWeaponsMaxAttackAOEUpgradePoints - wyvernWeaponsMinAttackAOEUpgradePoints)
-                                * EnumUpgrade.ATTACK_AOE.pointConversion
+                        * EnumUpgrade.ATTACK_AOE.pointConversion
                         + (wyvernWeaponsMaxAttackDamageUpgradePoints - wyvernWeaponsMinAttackDamageUpgradePoints)
                                 * EnumUpgrade.ATTACK_DAMAGE.pointConversion
                         + wyvernWeaponsMaxCapacityUpgradePoints);
@@ -495,19 +567,19 @@ public class BalanceConfigHandler {
                 wyvernWeaponsMaxUpgradePoints,
                 wyvernWeaponsMaxUpgrades,
                 Integer.MAX_VALUE);
-        wyvernWeaponsMaxCapacityUpgradePoints =
-                Math.max(Math.min(wyvernWeaponsMaxUpgradePoints, wyvernWeaponsMaxCapacityUpgradePoints), 0);
-        draconicWeaponsMaxCapacityUpgradePoints =
-                (int) Math.floor((double) (Integer.MAX_VALUE - draconicWeaponsBaseStorage)
-                                / (double) Math.max(draconicWeaponsStoragePerUpgrade, 1))
-                        * EnumUpgrade.RF_CAPACITY.pointConversion;
+        wyvernWeaponsMaxCapacityUpgradePoints = Math
+                .max(Math.min(wyvernWeaponsMaxUpgradePoints, wyvernWeaponsMaxCapacityUpgradePoints), 0);
+        draconicWeaponsMaxCapacityUpgradePoints = (int) Math.floor(
+                (double) (Integer.MAX_VALUE - draconicWeaponsBaseStorage)
+                        / (double) Math.max(draconicWeaponsStoragePerUpgrade, 1))
+                * EnumUpgrade.RF_CAPACITY.pointConversion;
         draconicWeaponsMaxUpgrades = getInteger(
                 "tweaks.weapons",
                 "Draconic Weapons: Maximum amount of upgrades",
                 draconicWeaponsMaxUpgrades,
                 0,
                 (draconicWeaponsMaxAttackAOEUpgradePoints - draconicWeaponsMinAttackAOEUpgradePoints)
-                                * EnumUpgrade.ATTACK_AOE.pointConversion
+                        * EnumUpgrade.ATTACK_AOE.pointConversion
                         + (draconicWeaponsMaxAttackDamageUpgradePoints - draconicWeaponsMinAttackDamageUpgradePoints)
                                 * EnumUpgrade.ARROW_DAMAGE.pointConversion
                         + draconicWeaponsMaxCapacityUpgradePoints);
@@ -517,9 +589,10 @@ public class BalanceConfigHandler {
                 draconicWeaponsMaxUpgradePoints,
                 draconicWeaponsMaxUpgrades,
                 Integer.MAX_VALUE);
-        draconicWeaponsMaxCapacityUpgradePoints =
-                Math.max(Math.min(draconicWeaponsMaxUpgradePoints, draconicWeaponsMaxCapacityUpgradePoints), 0);
-        wyvernBowMaxCapacityUpgradePoints = (int) Math.floor((double) (Integer.MAX_VALUE - wyvernWeaponsBaseStorage)
+        draconicWeaponsMaxCapacityUpgradePoints = Math
+                .max(Math.min(draconicWeaponsMaxUpgradePoints, draconicWeaponsMaxCapacityUpgradePoints), 0);
+        wyvernBowMaxCapacityUpgradePoints = (int) Math.floor(
+                (double) (Integer.MAX_VALUE - wyvernWeaponsBaseStorage)
                         / (double) Math.max(wyvernWeaponsStoragePerUpgrade, 1))
                 * EnumUpgrade.RF_CAPACITY.pointConversion;
         wyvernBowMaxUpgrades = getInteger(
@@ -528,7 +601,7 @@ public class BalanceConfigHandler {
                 wyvernBowMaxUpgrades,
                 0,
                 (wyvernBowMaxDrawSpeedUpgradePoints - wyvernBowMinDrawSpeedUpgradePoints)
-                                * EnumUpgrade.DRAW_SPEED.pointConversion
+                        * EnumUpgrade.DRAW_SPEED.pointConversion
                         + (wyvernBowMaxArrowSpeedUpgradePoints - wyvernBowMinArrowSpeedUpgradePoints)
                                 * EnumUpgrade.ARROW_SPEED.pointConversion
                         + (wyvernBowMaxArrowDamageUpgradePoints - wyvernBowMinArrowDamageUpgradePoints)
@@ -540,9 +613,10 @@ public class BalanceConfigHandler {
                 wyvernBowMaxUpgradePoints,
                 wyvernBowMaxUpgrades,
                 Integer.MAX_VALUE);
-        wyvernBowMaxCapacityUpgradePoints =
-                Math.max(Math.min(wyvernBowMaxUpgradePoints, wyvernBowMaxCapacityUpgradePoints), 0);
-        draconicBowMaxCapacityUpgradePoints = (int) Math.floor((double) (Integer.MAX_VALUE - draconicWeaponsBaseStorage)
+        wyvernBowMaxCapacityUpgradePoints = Math
+                .max(Math.min(wyvernBowMaxUpgradePoints, wyvernBowMaxCapacityUpgradePoints), 0);
+        draconicBowMaxCapacityUpgradePoints = (int) Math.floor(
+                (double) (Integer.MAX_VALUE - draconicWeaponsBaseStorage)
                         / (double) Math.max(draconicWeaponsStoragePerUpgrade, 1))
                 * EnumUpgrade.RF_CAPACITY.pointConversion;
         draconicBowMaxUpgrades = getInteger(
@@ -551,7 +625,7 @@ public class BalanceConfigHandler {
                 draconicBowMaxUpgrades,
                 0,
                 (draconicBowMaxDrawSpeedUpgradePoints - draconicBowMinDrawSpeedUpgradePoints)
-                                * EnumUpgrade.DRAW_SPEED.pointConversion
+                        * EnumUpgrade.DRAW_SPEED.pointConversion
                         + (draconicBowMaxArrowSpeedUpgradePoints - draconicBowMinArrowSpeedUpgradePoints)
                                 * EnumUpgrade.ARROW_SPEED.pointConversion
                         + (draconicBowMaxArrowDamageUpgradePoints - draconicBowMinArrowDamageUpgradePoints)
@@ -563,20 +637,20 @@ public class BalanceConfigHandler {
                 draconicBowMaxUpgradePoints,
                 draconicBowMaxUpgrades,
                 Integer.MAX_VALUE);
-        draconicBowMaxCapacityUpgradePoints =
-                Math.max(Math.min(draconicBowMaxUpgradePoints, draconicBowMaxCapacityUpgradePoints), 0);
-        draconicStaffMaxCapacityUpgradePoints = (int) Math.floor((double)
-                                (Integer.MAX_VALUE - draconicToolsBaseStorage * 2 - draconicWeaponsBaseStorage)
+        draconicBowMaxCapacityUpgradePoints = Math
+                .max(Math.min(draconicBowMaxUpgradePoints, draconicBowMaxCapacityUpgradePoints), 0);
+        draconicStaffMaxCapacityUpgradePoints = (int) Math.floor(
+                (double) (Integer.MAX_VALUE - draconicToolsBaseStorage * 2 - draconicWeaponsBaseStorage)
                         / (double) Math.max(draconicToolsStoragePerUpgrade + draconicWeaponsStoragePerUpgrade, 1))
                 * EnumUpgrade.RF_CAPACITY.pointConversion;
         draconicStaffMaxUpgrades = draconicToolsMaxUpgrades + draconicWeaponsMaxUpgrades;
         draconicStaffMaxUpgradePoints = draconicToolsMaxUpgradePoints + draconicWeaponsMaxUpgradePoints;
-        draconicStaffMaxCapacityUpgradePoints =
-                Math.max(Math.min(draconicStaffMaxUpgradePoints, draconicStaffMaxCapacityUpgradePoints), 0);
-        wyvernCapacitorMaxCapacityUpgradePoints =
-                (int) Math.floor((double) (Integer.MAX_VALUE - wyvernCapacitorBaseStorage)
-                                / (double) Math.max(wyvernCapacitorStoragePerUpgrade, 1))
-                        * EnumUpgrade.RF_CAPACITY.pointConversion;
+        draconicStaffMaxCapacityUpgradePoints = Math
+                .max(Math.min(draconicStaffMaxUpgradePoints, draconicStaffMaxCapacityUpgradePoints), 0);
+        wyvernCapacitorMaxCapacityUpgradePoints = (int) Math.floor(
+                (double) (Integer.MAX_VALUE - wyvernCapacitorBaseStorage)
+                        / (double) Math.max(wyvernCapacitorStoragePerUpgrade, 1))
+                * EnumUpgrade.RF_CAPACITY.pointConversion;
         wyvernCapacitorMaxUpgrades = getInteger(
                 "tweaks.tools",
                 "Wyvern Flux Capacitor: Maximum amount of upgrades",
@@ -589,12 +663,12 @@ public class BalanceConfigHandler {
                 wyvernCapacitorMaxUpgradePoints,
                 wyvernCapacitorMaxUpgrades,
                 Integer.MAX_VALUE);
-        wyvernCapacitorMaxCapacityUpgradePoints =
-                Math.max(Math.min(wyvernCapacitorMaxUpgradePoints, wyvernCapacitorMaxCapacityUpgradePoints), 0);
-        draconicCapacitorMaxCapacityUpgradePoints =
-                (int) Math.floor((double) (Integer.MAX_VALUE - draconicCapacitorBaseStorage)
-                                / (double) Math.max(draconicCapacitorStoragePerUpgrade, 1))
-                        * EnumUpgrade.RF_CAPACITY.pointConversion;
+        wyvernCapacitorMaxCapacityUpgradePoints = Math
+                .max(Math.min(wyvernCapacitorMaxUpgradePoints, wyvernCapacitorMaxCapacityUpgradePoints), 0);
+        draconicCapacitorMaxCapacityUpgradePoints = (int) Math.floor(
+                (double) (Integer.MAX_VALUE - draconicCapacitorBaseStorage)
+                        / (double) Math.max(draconicCapacitorStoragePerUpgrade, 1))
+                * EnumUpgrade.RF_CAPACITY.pointConversion;
         draconicCapacitorMaxUpgrades = getInteger(
                 "tweaks.tools",
                 "Draconic Flux Capacitor: Maximum amount of upgrades",
@@ -607,10 +681,12 @@ public class BalanceConfigHandler {
                 draconicCapacitorMaxUpgradePoints,
                 draconicCapacitorMaxUpgrades,
                 Integer.MAX_VALUE);
-        draconicCapacitorMaxCapacityUpgradePoints =
-                Math.max(Math.min(draconicCapacitorMaxUpgradePoints, draconicCapacitorMaxCapacityUpgradePoints), 0);
-        grinderShouldUseLooting =
-                getBoolean("tweaks.machines", "Mob Grinder: Use Looting enchantment", grinderShouldUseLooting);
+        draconicCapacitorMaxCapacityUpgradePoints = Math
+                .max(Math.min(draconicCapacitorMaxUpgradePoints, draconicCapacitorMaxCapacityUpgradePoints), 0);
+        grinderShouldUseLooting = getBoolean(
+                "tweaks.machines",
+                "Mob Grinder: Use Looting enchantment",
+                grinderShouldUseLooting);
         energyDeviceBasicLinkingRange = getInteger(
                 "tweaks.machines",
                 "Energy Device (Relay/Transceiver): Linking range",

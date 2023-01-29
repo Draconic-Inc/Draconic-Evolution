@@ -1,11 +1,5 @@
 package com.brandon3055.draconicevolution.client.render.tile;
 
-import com.brandon3055.draconicevolution.common.lib.References;
-import com.brandon3055.draconicevolution.common.tileentities.TileParticleGenerator;
-import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnergyStorageCore;
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -14,24 +8,36 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.AdvancedModelLoader;
 import net.minecraftforge.client.model.IModelCustom;
+
 import org.lwjgl.opengl.GL11;
+
+import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.tileentities.TileParticleGenerator;
+import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnergyStorageCore;
+
+import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class RenderTileParticleGen extends TileEntitySpecialRenderer {
 
-    private final ResourceLocation texture =
-            new ResourceLocation(References.MODID.toLowerCase(), "textures/models/ParticleGenTextureSheet.png");
-    private final ResourceLocation beamTexture =
-            new ResourceLocation(References.MODID.toLowerCase(), "textures/models/stabilizer_beam.png");
-    private static final ResourceLocation modelTexture =
-            new ResourceLocation(References.MODID.toLowerCase(), "textures/models/stabilizer_sphere.png");
+    private final ResourceLocation texture = new ResourceLocation(
+            References.MODID.toLowerCase(),
+            "textures/models/ParticleGenTextureSheet.png");
+    private final ResourceLocation beamTexture = new ResourceLocation(
+            References.MODID.toLowerCase(),
+            "textures/models/stabilizer_beam.png");
+    private static final ResourceLocation modelTexture = new ResourceLocation(
+            References.MODID.toLowerCase(),
+            "textures/models/stabilizer_sphere.png");
     private IModelCustom stabilizerSphereModel;
 
     private float pxl = 1F / 64;
 
     public RenderTileParticleGen() {
-        stabilizerSphereModel = AdvancedModelLoader.loadModel(
-                new ResourceLocation(References.MODID.toLowerCase(), "models/stabilizer_sphere.obj"));
+        stabilizerSphereModel = AdvancedModelLoader
+                .loadModel(new ResourceLocation(References.MODID.toLowerCase(), "models/stabilizer_sphere.obj"));
     }
 
     @Override
@@ -325,8 +331,8 @@ public class RenderTileParticleGen extends TileEntitySpecialRenderer {
         GL11.glPopMatrix();
     }
 
-    private void drawCornerCube(
-            Tessellator tess, float x, float y, float z, float FP, boolean inverted, boolean stabalizerMode) {
+    private void drawCornerCube(Tessellator tess, float x, float y, float z, float FP, boolean inverted,
+            boolean stabalizerMode) {
         float srcXMin = inverted ? 38F * pxl : 32F * pxl;
         float srcYMin = 0F;
         float srcXMax = inverted ? 44F * pxl : 38F * pxl;
@@ -654,8 +660,8 @@ public class RenderTileParticleGen extends TileEntitySpecialRenderer {
         GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glDepthMask(true);
         //
-        //		GL11.glEnable(GL11.GL_LIGHTING);
-        //		GL11.glEnable(GL11.GL_TEXTURE_2D);
+        // GL11.glEnable(GL11.GL_LIGHTING);
+        // GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glDisable(GL11.GL_BLEND);
         GL11.glPopMatrix();
     }

@@ -1,16 +1,7 @@
 package com.brandon3055.draconicevolution.common.tileentities.multiblocktiles;
 
-import com.brandon3055.draconicevolution.client.handler.ParticleHandler;
-import com.brandon3055.draconicevolution.client.render.particle.Particles.AdvancedSeekerParticle;
-import com.brandon3055.draconicevolution.common.ModBlocks;
-import com.brandon3055.draconicevolution.common.blocks.multiblock.MultiblockHelper;
-import com.brandon3055.draconicevolution.common.entity.EntityCustomDragon;
-import com.brandon3055.draconicevolution.common.entity.ExtendedPlayer;
-import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
-import com.brandon3055.draconicevolution.common.utills.LogHelper;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import java.util.Random;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.effect.EntityLightningBolt;
@@ -22,6 +13,18 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentTranslation;
+
+import com.brandon3055.draconicevolution.client.handler.ParticleHandler;
+import com.brandon3055.draconicevolution.client.render.particle.Particles.AdvancedSeekerParticle;
+import com.brandon3055.draconicevolution.common.ModBlocks;
+import com.brandon3055.draconicevolution.common.blocks.multiblock.MultiblockHelper;
+import com.brandon3055.draconicevolution.common.entity.EntityCustomDragon;
+import com.brandon3055.draconicevolution.common.entity.ExtendedPlayer;
+import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
+import com.brandon3055.draconicevolution.common.utills.LogHelper;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Created by Brandon on 8/08/2014.
@@ -67,28 +70,30 @@ public class TileEnderResurrection extends TileEntity {
         for (int i = 0; i < diamondPillars.length; i++) {
             if (diamondPillars[i] == null) return;
             worldObj.setBlockToAir(
-                    diamondPillars[i].getXCoord(), diamondPillars[i].getYCoord(), diamondPillars[i].getZCoord());
-            if (!worldObj.isRemote)
-                worldObj.createExplosion(
-                        owner,
-                        diamondPillars[i].getXCoord() + 0.5,
-                        diamondPillars[i].getYCoord() + 0.5,
-                        diamondPillars[i].getZCoord() + 0.5,
-                        3,
-                        true);
+                    diamondPillars[i].getXCoord(),
+                    diamondPillars[i].getYCoord(),
+                    diamondPillars[i].getZCoord());
+            if (!worldObj.isRemote) worldObj.createExplosion(
+                    owner,
+                    diamondPillars[i].getXCoord() + 0.5,
+                    diamondPillars[i].getYCoord() + 0.5,
+                    diamondPillars[i].getZCoord() + 0.5,
+                    3,
+                    true);
         }
         for (int i = 0; i < draconiumPillars.length; i++) {
             if (draconiumPillars[i] == null) return;
             worldObj.setBlockToAir(
-                    draconiumPillars[i].getXCoord(), draconiumPillars[i].getYCoord(), draconiumPillars[i].getZCoord());
-            if (!worldObj.isRemote)
-                worldObj.createExplosion(
-                        owner,
-                        draconiumPillars[i].getXCoord() + 0.5,
-                        draconiumPillars[i].getYCoord() + 0.5,
-                        draconiumPillars[i].getZCoord() + 0.5,
-                        3,
-                        true);
+                    draconiumPillars[i].getXCoord(),
+                    draconiumPillars[i].getYCoord(),
+                    draconiumPillars[i].getZCoord());
+            if (!worldObj.isRemote) worldObj.createExplosion(
+                    owner,
+                    draconiumPillars[i].getXCoord() + 0.5,
+                    draconiumPillars[i].getYCoord() + 0.5,
+                    draconiumPillars[i].getZCoord() + 0.5,
+                    3,
+                    true);
         }
 
         worldObj.setBlockToAir(xCoord, yCoord, zCoord);
@@ -241,11 +246,13 @@ public class TileEnderResurrection extends TileEntity {
         if (worldObj.getBlock(xCoord + 1, yCoord, zCoord) != Blocks.obsidian
                 || worldObj.getBlock(xCoord - 1, yCoord, zCoord) != Blocks.obsidian
                 || worldObj.getBlock(xCoord, yCoord, zCoord + 1) != Blocks.obsidian
-                || worldObj.getBlock(xCoord, yCoord, zCoord - 1) != Blocks.obsidian) return false;
+                || worldObj.getBlock(xCoord, yCoord, zCoord - 1) != Blocks.obsidian)
+            return false;
         if (worldObj.getBlock(xCoord + 1, yCoord, zCoord + 1) != Blocks.glowstone
                 || worldObj.getBlock(xCoord - 1, yCoord, zCoord - 1) != Blocks.glowstone
                 || worldObj.getBlock(xCoord - 1, yCoord, zCoord + 1) != Blocks.glowstone
-                || worldObj.getBlock(xCoord + 1, yCoord, zCoord - 1) != Blocks.glowstone) return false;
+                || worldObj.getBlock(xCoord + 1, yCoord, zCoord - 1) != Blocks.glowstone)
+            return false;
         return true;
     }
 
@@ -253,38 +260,34 @@ public class TileEnderResurrection extends TileEntity {
         for (int i = 0; i < diamondPillars.length; i++) {
             if (diamondPillars[i] == null) return false;
             if (worldObj.getBlock(
-                                    diamondPillars[i].getXCoord(),
-                                    diamondPillars[i].getYCoord(),
-                                    diamondPillars[i].getZCoord())
-                            != Blocks.diamond_block
+                    diamondPillars[i].getXCoord(),
+                    diamondPillars[i].getYCoord(),
+                    diamondPillars[i].getZCoord()) != Blocks.diamond_block
                     || worldObj.getBlock(
-                                    diamondPillars[i].getXCoord(),
-                                    diamondPillars[i].getYCoord() - 1,
-                                    diamondPillars[i].getZCoord())
-                            != Blocks.quartz_block) return false;
+                            diamondPillars[i].getXCoord(),
+                            diamondPillars[i].getYCoord() - 1,
+                            diamondPillars[i].getZCoord()) != Blocks.quartz_block)
+                return false;
         }
         for (int i = 0; i < draconiumPillars.length; i++) {
             if (draconiumPillars[i] == null) return false;
             if ((worldObj.getBlock(
-                                            draconiumPillars[i].getXCoord(),
-                                            draconiumPillars[i].getYCoord(),
-                                            draconiumPillars[i].getZCoord())
-                                    != ModBlocks.draconiumBlock
-                            && worldObj.getBlockMetadata(
-                                            draconiumPillars[i].getXCoord(),
-                                            draconiumPillars[i].getYCoord(),
-                                            draconiumPillars[i].getZCoord())
-                                    != 2)
+                    draconiumPillars[i].getXCoord(),
+                    draconiumPillars[i].getYCoord(),
+                    draconiumPillars[i].getZCoord()) != ModBlocks.draconiumBlock
+                    && worldObj.getBlockMetadata(
+                            draconiumPillars[i].getXCoord(),
+                            draconiumPillars[i].getYCoord(),
+                            draconiumPillars[i].getZCoord()) != 2)
                     || worldObj.getBlock(
-                                    draconiumPillars[i].getXCoord(),
-                                    draconiumPillars[i].getYCoord() - 1,
-                                    draconiumPillars[i].getZCoord())
-                            != Blocks.quartz_block
+                            draconiumPillars[i].getXCoord(),
+                            draconiumPillars[i].getYCoord() - 1,
+                            draconiumPillars[i].getZCoord()) != Blocks.quartz_block
                     || worldObj.getBlock(
-                                    draconiumPillars[i].getXCoord(),
-                                    draconiumPillars[i].getYCoord() - 2,
-                                    draconiumPillars[i].getZCoord())
-                            != Blocks.quartz_block) return false;
+                            draconiumPillars[i].getXCoord(),
+                            draconiumPillars[i].getYCoord() - 2,
+                            draconiumPillars[i].getZCoord()) != Blocks.quartz_block)
+                return false;
         }
         return true;
     }
@@ -296,8 +299,7 @@ public class TileEnderResurrection extends TileEntity {
         for (int x = xCoord - xzRange; x < xCoord + xzRange; x++) {
             for (int y = yCoord + 2; y < yCoord + 5; y++) {
                 for (int z = zCoord - xzRange; z < zCoord + xzRange; z++) {
-                    if (worldObj.getBlock(x, y, z) == ModBlocks.draconiumBlock
-                            && isPillarValid(0, x, y, z)
+                    if (worldObj.getBlock(x, y, z) == ModBlocks.draconiumBlock && isPillarValid(0, x, y, z)
                             && worldObj.getBlockMetadata(x, y, z) == 2
                             && draconiumCount < 4) {
                         draconiumPillars[draconiumCount] = new MultiblockHelper.TileLocation(x, y, z);
@@ -310,8 +312,7 @@ public class TileEnderResurrection extends TileEntity {
         for (int x = xCoord - xzRange; x < xCoord + xzRange; x++) {
             for (int y = yCoord + 1; y < yCoord + 4; y++) {
                 for (int z = zCoord - xzRange; z < zCoord + xzRange; z++) {
-                    if (worldObj.getBlock(x, y, z) == Blocks.diamond_block
-                            && isPillarValid(1, x, y, z)
+                    if (worldObj.getBlock(x, y, z) == Blocks.diamond_block && isPillarValid(1, x, y, z)
                             && diamondCount < 4) {
                         diamondPillars[diamondCount] = new MultiblockHelper.TileLocation(x, y, z);
                         diamondCount++;
@@ -343,20 +344,19 @@ public class TileEnderResurrection extends TileEntity {
                         1.0F,
                         100);
                 AdvancedSeekerParticle particle2;
-                if (timer < 300)
-                    particle2 = new AdvancedSeekerParticle(
-                            worldObj,
-                            draconiumPillars[i].getXCoord() + 0.5,
-                            draconiumPillars[i].getYCoord() + 0.5,
-                            draconiumPillars[i].getZCoord() + 0.5,
-                            xCoord + 0.5,
-                            yCoord + 0.5,
-                            zCoord + 0.5,
-                            1,
-                            1F,
-                            0.0F,
-                            0F,
-                            40);
+                if (timer < 300) particle2 = new AdvancedSeekerParticle(
+                        worldObj,
+                        draconiumPillars[i].getXCoord() + 0.5,
+                        draconiumPillars[i].getYCoord() + 0.5,
+                        draconiumPillars[i].getZCoord() + 0.5,
+                        xCoord + 0.5,
+                        yCoord + 0.5,
+                        zCoord + 0.5,
+                        1,
+                        1F,
+                        0.0F,
+                        0F,
+                        40);
                 else {
                     particle2 = new AdvancedSeekerParticle(
                             worldObj,
@@ -471,7 +471,8 @@ public class TileEnderResurrection extends TileEntity {
             if (worldObj.getBlock(x, y - 1, z) == Blocks.quartz_block
                     && worldObj.getBlock(x, y - 2, z) == Blocks.quartz_block
                     && worldObj.getBlockMetadata(x, y - 1, z) == 2
-                    && worldObj.getBlockMetadata(x, y - 2, z) == 2) return true;
+                    && worldObj.getBlockMetadata(x, y - 2, z) == 2)
+                return true;
         } else if (type == 1) {
             if (worldObj.getBlock(x, y - 1, z) == Blocks.quartz_block && worldObj.getBlockMetadata(x, y - 1, z) == 2)
                 return true;

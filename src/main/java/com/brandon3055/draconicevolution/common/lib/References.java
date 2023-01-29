@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.common.lib;
 
 public final class References {
+
     public static final String MODID = "DraconicEvolution";
     public static final String MODNAME = "Draconic Evolution";
     public static final String VERSION = VersionHandler.FULL_VERSION;

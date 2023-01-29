@@ -1,9 +1,7 @@
 package com.brandon3055.draconicevolution.common.entity;
 
-import com.brandon3055.brandonscore.common.utills.Utills;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import java.util.List;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
@@ -16,7 +14,13 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.EnderTeleportEvent;
 
+import com.brandon3055.brandonscore.common.utills.Utills;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 public class EntityEnderArrow extends EntityDraconicArrow {
+
     private int field_145791_d = -1;
     private int field_145792_e = -1;
     private int field_145789_f = -1;
@@ -42,12 +46,8 @@ public class EntityEnderArrow extends EntityDraconicArrow {
         super(p_i1754_1_, p_i1754_2_, p_i1754_4_, p_i1754_6_);
     }
 
-    public EntityEnderArrow(
-            World p_i1755_1_,
-            EntityLivingBase p_i1755_2_,
-            EntityLivingBase p_i1755_3_,
-            float p_i1755_4_,
-            float p_i1755_5_) {
+    public EntityEnderArrow(World p_i1755_1_, EntityLivingBase p_i1755_2_, EntityLivingBase p_i1755_3_,
+            float p_i1755_4_, float p_i1755_5_) {
         super(p_i1755_1_, p_i1755_2_, p_i1755_3_, p_i1755_4_, p_i1755_5_);
     }
 
@@ -109,21 +109,20 @@ public class EntityEnderArrow extends EntityDraconicArrow {
 
     @Override
     public void onUpdate() {
-        for (int i = 0; i < 10; i++)
-            this.worldObj.spawnParticle(
-                    "portal",
-                    this.posX + (this.rand.nextDouble() - 0.5D) * (double) this.width,
-                    this.posY + this.rand.nextDouble() * (double) this.height - 0.25D,
-                    this.posZ + (this.rand.nextDouble() - 0.5D) * (double) this.width,
-                    (this.rand.nextDouble() - 0.5D) * 2.0D,
-                    -this.rand.nextDouble(),
-                    (this.rand.nextDouble() - 0.5D) * 2.0D);
+        for (int i = 0; i < 10; i++) this.worldObj.spawnParticle(
+                "portal",
+                this.posX + (this.rand.nextDouble() - 0.5D) * (double) this.width,
+                this.posY + this.rand.nextDouble() * (double) this.height - 0.25D,
+                this.posZ + (this.rand.nextDouble() - 0.5D) * (double) this.width,
+                (this.rand.nextDouble() - 0.5D) * 2.0D,
+                -this.rand.nextDouble(),
+                (this.rand.nextDouble() - 0.5D) * 2.0D);
 
         super.onEntityUpdate();
         if (this.prevRotationPitch == 0.0F && this.prevRotationYaw == 0.0F) {
             float f = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ);
-            this.prevRotationYaw =
-                    this.rotationYaw = (float) (Math.atan2(this.motionX, this.motionZ) * 180.0D / Math.PI);
+            this.prevRotationYaw = this.rotationYaw = (float) (Math.atan2(this.motionX, this.motionZ) * 180.0D
+                    / Math.PI);
             this.prevRotationPitch = this.rotationPitch = (float) (Math.atan2(this.motionY, f) * 180.0D / Math.PI);
         }
 
@@ -132,9 +131,15 @@ public class EntityEnderArrow extends EntityDraconicArrow {
         if (block.getMaterial() != Material.air) {
             onImpact(null);
             block.setBlockBoundsBasedOnState(
-                    this.worldObj, this.field_145791_d, this.field_145792_e, this.field_145789_f);
+                    this.worldObj,
+                    this.field_145791_d,
+                    this.field_145792_e,
+                    this.field_145789_f);
             AxisAlignedBB axisalignedbb = block.getCollisionBoundingBoxFromPool(
-                    this.worldObj, this.field_145791_d, this.field_145792_e, this.field_145789_f);
+                    this.worldObj,
+                    this.field_145791_d,
+                    this.field_145792_e,
+                    this.field_145789_f);
 
             if (axisalignedbb != null
                     && axisalignedbb.isVecInside(Vec3.createVectorHelper(this.posX, this.posY, this.posZ))) {
@@ -151,12 +156,12 @@ public class EntityEnderArrow extends EntityDraconicArrow {
         } else {
             ++this.ticksInAir;
             Vec3 vec31 = Vec3.createVectorHelper(this.posX, this.posY, this.posZ);
-            Vec3 vec3 = Vec3.createVectorHelper(
-                    this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
+            Vec3 vec3 = Vec3
+                    .createVectorHelper(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
             MovingObjectPosition movingobjectposition = this.worldObj.func_147447_a(vec31, vec3, false, true, false);
             vec31 = Vec3.createVectorHelper(this.posX, this.posY, this.posZ);
-            vec3 = Vec3.createVectorHelper(
-                    this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
+            vec3 = Vec3
+                    .createVectorHelper(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
 
             if (movingobjectposition != null) {
                 vec3 = Vec3.createVectorHelper(
@@ -168,9 +173,7 @@ public class EntityEnderArrow extends EntityDraconicArrow {
             Entity entity = null;
             List list = this.worldObj.getEntitiesWithinAABBExcludingEntity(
                     this,
-                    this.boundingBox
-                            .addCoord(this.motionX, this.motionY, this.motionZ)
-                            .expand(1.0D, 1.0D, 1.0D));
+                    this.boundingBox.addCoord(this.motionX, this.motionY, this.motionZ).expand(1.0D, 1.0D, 1.0D));
             double d0 = 0.0D;
             int i;
             float f1;
@@ -200,14 +203,12 @@ public class EntityEnderArrow extends EntityDraconicArrow {
                 movingobjectposition = new MovingObjectPosition(entity);
             }
 
-            if (movingobjectposition != null
-                    && movingobjectposition.entityHit != null
+            if (movingobjectposition != null && movingobjectposition.entityHit != null
                     && movingobjectposition.entityHit instanceof EntityPlayer) {
                 EntityPlayer entityplayer = (EntityPlayer) movingobjectposition.entityHit;
 
-                if (entityplayer.capabilities.disableDamage
-                        || this.shootingEntity instanceof EntityPlayer
-                                && !((EntityPlayer) this.shootingEntity).canAttackPlayer(entityplayer)) {
+                if (entityplayer.capabilities.disableDamage || this.shootingEntity instanceof EntityPlayer
+                        && !((EntityPlayer) this.shootingEntity).canAttackPlayer(entityplayer)) {
                     movingobjectposition = null;
                 }
             }
@@ -216,92 +217,92 @@ public class EntityEnderArrow extends EntityDraconicArrow {
             float f4;
 
             if (movingobjectposition != null) {
-                //				if (movingobjectposition.entityHit != null && movingobjectposition.entityHit != shootingEntity) {
-                //					onImpact(movingobjectposition.entityHit);
-                //					int k;
-                //					if (!ignorSpeed) {
-                //						f2 = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionY * this.motionY +
+                // if (movingobjectposition.entityHit != null && movingobjectposition.entityHit != shootingEntity) {
+                // onImpact(movingobjectposition.entityHit);
+                // int k;
+                // if (!ignorSpeed) {
+                // f2 = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionY * this.motionY +
                 // this.motionZ * this.motionZ);
-                //						k = MathHelper.ceiling_double_int(f2 * this.damage);
+                // k = MathHelper.ceiling_double_int(f2 * this.damage);
                 //
-                //						if (this.getIsCritical()) {
-                //							k += this.rand.nextInt(k / 2 + 2);
-                //						}
-                //					} else {
-                //						k = (int) this.damage;
-                //						if (this.getIsCritical()) {
-                //							k += this.rand.nextInt(k / 2 + 2);
-                //						}
-                //					}
+                // if (this.getIsCritical()) {
+                // k += this.rand.nextInt(k / 2 + 2);
+                // }
+                // } else {
+                // k = (int) this.damage;
+                // if (this.getIsCritical()) {
+                // k += this.rand.nextInt(k / 2 + 2);
+                // }
+                // }
                 //
-                //					DamageSource damagesource = null;
+                // DamageSource damagesource = null;
                 //
-                //					if (this.shootingEntity == null) {
-                //						damagesource = DamageSource.causeArrowDamage(this, this);
-                //					} else {
-                //						damagesource = DamageSource.causeArrowDamage(this, this.shootingEntity);
-                //					}
-                //					if (movingobjectposition.entityHit instanceof EntityEnderman)
-                //						damagesource = DamageSource.magic;
+                // if (this.shootingEntity == null) {
+                // damagesource = DamageSource.causeArrowDamage(this, this);
+                // } else {
+                // damagesource = DamageSource.causeArrowDamage(this, this.shootingEntity);
+                // }
+                // if (movingobjectposition.entityHit instanceof EntityEnderman)
+                // damagesource = DamageSource.magic;
                 //
-                //					if (this.isBurning() && !(movingobjectposition.entityHit instanceof EntityEnderman)) {
-                //						movingobjectposition.entityHit.setFire(5);
-                //					}
+                // if (this.isBurning() && !(movingobjectposition.entityHit instanceof EntityEnderman)) {
+                // movingobjectposition.entityHit.setFire(5);
+                // }
                 //
-                //					movingobjectposition.entityHit.hurtResistantTime = 0;
+                // movingobjectposition.entityHit.hurtResistantTime = 0;
                 //
-                //					if (movingobjectposition.entityHit.attackEntityFrom(damagesource, k)) {
-                //						if (movingobjectposition.entityHit instanceof EntityLivingBase) {
-                //							EntityLivingBase entitylivingbase = (EntityLivingBase) movingobjectposition.entityHit;
+                // if (movingobjectposition.entityHit.attackEntityFrom(damagesource, k)) {
+                // if (movingobjectposition.entityHit instanceof EntityLivingBase) {
+                // EntityLivingBase entitylivingbase = (EntityLivingBase) movingobjectposition.entityHit;
                 //
-                //							if (!this.worldObj.isRemote) {
-                //								entitylivingbase.setArrowCountInEntity(entitylivingbase.getArrowCountInEntity() + 1);
-                //							}
+                // if (!this.worldObj.isRemote) {
+                // entitylivingbase.setArrowCountInEntity(entitylivingbase.getArrowCountInEntity() + 1);
+                // }
                 //
-                //							if (this.knockbackStrength > 0) {
-                //								f4 = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ);
+                // if (this.knockbackStrength > 0) {
+                // f4 = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ);
                 //
-                //								if (f4 > 0.0F) {
-                //									movingobjectposition.entityHit.addVelocity(this.motionX * this.knockbackStrength *
+                // if (f4 > 0.0F) {
+                // movingobjectposition.entityHit.addVelocity(this.motionX * this.knockbackStrength *
                 // 0.6000000238418579D / f4, 0.1D, this.motionZ * this.knockbackStrength * 0.6000000238418579D / f4);
-                //								}
-                //							}
+                // }
+                // }
                 //
-                //							if (this.shootingEntity != null && this.shootingEntity instanceof EntityLivingBase) {
-                //								EnchantmentHelper.func_151384_a(entitylivingbase, this.shootingEntity);
-                //								EnchantmentHelper.func_151385_b((EntityLivingBase) this.shootingEntity, entitylivingbase);
-                //							}
+                // if (this.shootingEntity != null && this.shootingEntity instanceof EntityLivingBase) {
+                // EnchantmentHelper.func_151384_a(entitylivingbase, this.shootingEntity);
+                // EnchantmentHelper.func_151385_b((EntityLivingBase) this.shootingEntity, entitylivingbase);
+                // }
                 //
-                //							if (this.shootingEntity != null && movingobjectposition.entityHit != this.shootingEntity &&
+                // if (this.shootingEntity != null && movingobjectposition.entityHit != this.shootingEntity &&
                 // movingobjectposition.entityHit instanceof EntityPlayer && this.shootingEntity instanceof
                 // EntityPlayerMP) {
-                //								((EntityPlayerMP) this.shootingEntity).playerNetServerHandler.sendPacket(new
+                // ((EntityPlayerMP) this.shootingEntity).playerNetServerHandler.sendPacket(new
                 // S2BPacketChangeGameState(6, 0.0F));
-                //							}
-                //						}
+                // }
+                // }
                 //
-                //						this.playSound("random.bowhit", 1.0F, 1.2F / (this.rand.nextFloat() * 0.2F + 0.9F));
+                // this.playSound("random.bowhit", 1.0F, 1.2F / (this.rand.nextFloat() * 0.2F + 0.9F));
                 //
-                //						// if (!(movingobjectposition.entityHit instanceof EntityEnderman))
-                //						//{
-                //						this.setDead();
-                //						//}
-                //					} else {
-                //						this.motionX *= -0.10000000149011612D;
-                //						this.motionY *= -0.10000000149011612D;
-                //						this.motionZ *= -0.10000000149011612D;
-                //						this.rotationYaw += 180.0F;
-                //						this.prevRotationYaw += 180.0F;
-                //						this.ticksInAir = 0;
-                //					}
-                //				} else
+                // // if (!(movingobjectposition.entityHit instanceof EntityEnderman))
+                // //{
+                // this.setDead();
+                // //}
+                // } else {
+                // this.motionX *= -0.10000000149011612D;
+                // this.motionY *= -0.10000000149011612D;
+                // this.motionZ *= -0.10000000149011612D;
+                // this.rotationYaw += 180.0F;
+                // this.prevRotationYaw += 180.0F;
+                // this.ticksInAir = 0;
+                // }
+                // } else
                 if (movingobjectposition.entityHit == null) {
                     this.field_145791_d = movingobjectposition.blockX;
                     this.field_145792_e = movingobjectposition.blockY;
                     this.field_145789_f = movingobjectposition.blockZ;
                     this.field_145790_g = block;
-                    this.inData = this.worldObj.getBlockMetadata(
-                            this.field_145791_d, this.field_145792_e, this.field_145789_f);
+                    this.inData = this.worldObj
+                            .getBlockMetadata(this.field_145791_d, this.field_145792_e, this.field_145789_f);
                     this.motionX = ((float) (movingobjectposition.hitVec.xCoord - this.posX));
                     this.motionY = ((float) (movingobjectposition.hitVec.yCoord - this.posY));
                     this.motionZ = ((float) (movingobjectposition.hitVec.zCoord - this.posZ));
@@ -317,7 +318,11 @@ public class EntityEnderArrow extends EntityDraconicArrow {
 
                     if (this.field_145790_g.getMaterial() != Material.air) {
                         this.field_145790_g.onEntityCollidedWithBlock(
-                                this.worldObj, this.field_145791_d, this.field_145792_e, this.field_145789_f, this);
+                                this.worldObj,
+                                this.field_145791_d,
+                                this.field_145792_e,
+                                this.field_145789_f,
+                                this);
                     }
                 }
             }
@@ -328,9 +333,8 @@ public class EntityEnderArrow extends EntityDraconicArrow {
             f2 = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ);
             this.rotationYaw = (float) (Math.atan2(this.motionX, this.motionZ) * 180.0D / Math.PI);
 
-            for (this.rotationPitch = (float) (Math.atan2(this.motionY, f2) * 180.0D / Math.PI);
-                    this.rotationPitch - this.prevRotationPitch < -180.0F;
-                    this.prevRotationPitch -= 360.0F) {
+            for (this.rotationPitch = (float) (Math.atan2(this.motionY, f2) * 180.0D / Math.PI); this.rotationPitch
+                    - this.prevRotationPitch < -180.0F; this.prevRotationPitch -= 360.0F) {
                 ;
             }
 
@@ -457,8 +461,12 @@ public class EntityEnderArrow extends EntityDraconicArrow {
 
                     double travelDist = Utills.getDistanceAtoB(startX, startY, startZ, x, y, z);
                     float travelDmg = (float) (travelDist / 5D);
-                    EnderTeleportEvent event =
-                            new EnderTeleportEvent(entityplayermp, x + 0.5, y + 0.5, z + 0.5, travelDmg);
+                    EnderTeleportEvent event = new EnderTeleportEvent(
+                            entityplayermp,
+                            x + 0.5,
+                            y + 0.5,
+                            z + 0.5,
+                            travelDmg);
                     if (!MinecraftForge.EVENT_BUS.post(event)) {
                         if (this.shootingEntity.isRiding()) {
                             shootingEntity.mountEntity((Entity) null);

@@ -1,11 +1,5 @@
 package com.brandon3055.draconicevolution.client.render.tile;
 
-import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
-import com.brandon3055.draconicevolution.common.lib.References;
-import com.brandon3055.draconicevolution.common.tileentities.energynet.TileEnergyRelay;
-import com.brandon3055.draconicevolution.common.tileentities.energynet.TileEnergyTransceiver;
-import com.brandon3055.draconicevolution.common.tileentities.energynet.TileRemoteEnergyBase;
-import com.brandon3055.draconicevolution.common.tileentities.energynet.TileWirelessEnergyTransceiver;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -13,32 +7,45 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.AdvancedModelLoader;
 import net.minecraftforge.client.model.IModelCustom;
+
 import org.lwjgl.opengl.GL11;
+
+import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
+import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.tileentities.energynet.TileEnergyRelay;
+import com.brandon3055.draconicevolution.common.tileentities.energynet.TileEnergyTransceiver;
+import com.brandon3055.draconicevolution.common.tileentities.energynet.TileRemoteEnergyBase;
+import com.brandon3055.draconicevolution.common.tileentities.energynet.TileWirelessEnergyTransceiver;
 
 /**
  * Created by Brandon on 31/01/2015.
  */
 public class RenderTileCrystal extends TileEntitySpecialRenderer {
 
-    private static ResourceLocation texrure =
-            new ResourceLocation(References.MODID.toLowerCase(), "textures/models/CrystalPurpleTransparent.png");
-    private static ResourceLocation crystalBlue =
-            new ResourceLocation(References.MODID.toLowerCase(), "textures/models/CrystalBlue.png");
-    private static ResourceLocation crystalBlueAlpha =
-            new ResourceLocation(References.MODID.toLowerCase(), "textures/models/CrystalBlueAlpha.png");
-    private static ResourceLocation crystalRed =
-            new ResourceLocation(References.MODID.toLowerCase(), "textures/models/CrystalRed.png");
-    private static ResourceLocation crystalRedAlpha =
-            new ResourceLocation(References.MODID.toLowerCase(), "textures/models/CrystalRedAlpha.png");
+    private static ResourceLocation texrure = new ResourceLocation(
+            References.MODID.toLowerCase(),
+            "textures/models/CrystalPurpleTransparent.png");
+    private static ResourceLocation crystalBlue = new ResourceLocation(
+            References.MODID.toLowerCase(),
+            "textures/models/CrystalBlue.png");
+    private static ResourceLocation crystalBlueAlpha = new ResourceLocation(
+            References.MODID.toLowerCase(),
+            "textures/models/CrystalBlueAlpha.png");
+    private static ResourceLocation crystalRed = new ResourceLocation(
+            References.MODID.toLowerCase(),
+            "textures/models/CrystalRed.png");
+    private static ResourceLocation crystalRedAlpha = new ResourceLocation(
+            References.MODID.toLowerCase(),
+            "textures/models/CrystalRedAlpha.png");
 
     private IModelCustom modelCrystal;
     private IModelCustom modelCrystalTransceiver;
 
     public RenderTileCrystal() {
-        modelCrystal = AdvancedModelLoader.loadModel(
-                new ResourceLocation(References.MODID.toLowerCase(), "models/CCrystal.obj"));
-        modelCrystalTransceiver = AdvancedModelLoader.loadModel(
-                new ResourceLocation(References.MODID.toLowerCase(), "models/CrystalTransceiver.obj"));
+        modelCrystal = AdvancedModelLoader
+                .loadModel(new ResourceLocation(References.MODID.toLowerCase(), "models/CCrystal.obj"));
+        modelCrystalTransceiver = AdvancedModelLoader
+                .loadModel(new ResourceLocation(References.MODID.toLowerCase(), "models/CrystalTransceiver.obj"));
     }
 
     @Override
@@ -77,7 +84,7 @@ public class RenderTileCrystal extends TileEntitySpecialRenderer {
         modelCrystal.renderAll();
 
         GL11.glAlphaFunc(GL11.GL_GREATER, 0f);
-        //		GL11.glDisable(GL11.GL_ALPHA_TEST);
+        // GL11.glDisable(GL11.GL_ALPHA_TEST);
 
         // --- Render Overlay ---//
         bindTexture(texrure);
@@ -121,7 +128,7 @@ public class RenderTileCrystal extends TileEntitySpecialRenderer {
         GL11.glTranslated(0, -1, 0);
 
         GL11.glDisable(GL11.GL_LIGHTING);
-        //		RenderHelper.disableStandardItemLighting();
+        // RenderHelper.disableStandardItemLighting();
         GL11.glEnable(GL11.GL_BLEND);
         float innerLight = 100f;
         float outerLight = 140f + ClientEventHandler.energyCrystalAlphaValue * 40F;
@@ -152,7 +159,7 @@ public class RenderTileCrystal extends TileEntitySpecialRenderer {
 
         // --- Post Render ---//
         GL11.glDisable(GL11.GL_BLEND);
-        //		RenderHelper.enableStandardItemLighting();
+        // RenderHelper.enableStandardItemLighting();
         GL11.glEnable(GL11.GL_LIGHTING);
         GL11.glEnable(GL11.GL_ALPHA_TEST);
         GL11.glAlphaFunc(GL11.GL_GREATER, 0.1f);

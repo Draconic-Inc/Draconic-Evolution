@@ -1,5 +1,11 @@
 package com.brandon3055.draconicevolution.client.gui.guicomponents;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StatCollector;
+
 import com.brandon3055.brandonscore.client.gui.guicomponents.ComponentBase;
 import com.brandon3055.brandonscore.client.utills.GuiHelper;
 import com.brandon3055.brandonscore.common.utills.DataUtills;
@@ -7,18 +13,14 @@ import com.brandon3055.draconicevolution.client.gui.componentguis.GUIToolConfig;
 import com.brandon3055.draconicevolution.common.lib.References;
 import com.brandon3055.draconicevolution.common.utills.IConfigurableItem;
 import com.brandon3055.draconicevolution.common.utills.ItemConfigField;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.PositionedSoundRecord;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
 
 /**
  * Created by Brandon on 1/01/2015.
  */
 public class ComponentFieldAdjuster extends ComponentBase {
-    private static final ResourceLocation widgets =
-            new ResourceLocation(References.RESOURCESPREFIX + "textures/gui/Widgets.png");
+
+    private static final ResourceLocation widgets = new ResourceLocation(
+            References.RESOURCESPREFIX + "textures/gui/Widgets.png");
     protected static final ResourceLocation buttonTextures = new ResourceLocation("textures/gui/widgets.png");
 
     public ItemConfigField field;
@@ -103,20 +105,19 @@ public class ComponentFieldAdjuster extends ComponentBase {
             fieldValue = String.valueOf((double) Math.round(d * 100f) / 100D);
         }
         // if (field.datatype == References.FLOAT_ID) {
-        //	float d = (Float)field.value;
-        //	fieldValue = String.valueOf((double)Math.round((double)(d*100f)) / 100D);
+        // float d = (Float)field.value;
+        // fieldValue = String.valueOf((double)Math.round((double)(d*100f)) / 100D);
         // }
 
         int centre = fontRendererObj.getStringWidth(fieldName) / 2;
         fontRendererObj.drawString(fieldName, x + getWidth() / 2 - centre, y - 12, 0x00000);
         drawCenteredString(fontRendererObj, fieldValue, x + getWidth() / 2, y + 6, 0xffffff);
-        if (field.modifier == null || field.modifier.equals("AOE"))
-            drawCenteredString(
-                    fontRendererObj,
-                    StatCollector.translateToLocal("gui.de.max.txt") + " " + field.getMaxFormattedValue(),
-                    x + getWidth() / 2,
-                    y + 20,
-                    0xFFFFFF);
+        if (field.modifier == null || field.modifier.equals("AOE")) drawCenteredString(
+                fontRendererObj,
+                StatCollector.translateToLocal("gui.de.max.txt") + " " + field.getMaxFormattedValue(),
+                x + getWidth() / 2,
+                y + 20,
+                0xFFFFFF);
 
         if (isDecimal() || isNonDecimal()) {
             fontRendererObj.drawString("---", 7, y + 6, 0x000000);
@@ -207,13 +208,15 @@ public class ComponentFieldAdjuster extends ComponentBase {
                 field.value = !(Boolean) field.value;
                 break;
         }
-        Minecraft.getMinecraft()
-                .getSoundHandler()
+        Minecraft.getMinecraft().getSoundHandler()
                 .playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation("gui.button.press"), 1.0F));
         ItemStack stack = gui.player.inventory.getStackInSlot(field.slot);
         if (stack != null && stack.getItem() instanceof IConfigurableItem) {
             DataUtills.writeObjectToCompound(
-                    IConfigurableItem.ProfileHelper.getProfileCompound(stack), field.value, field.datatype, field.name);
+                    IConfigurableItem.ProfileHelper.getProfileCompound(stack),
+                    field.value,
+                    field.datatype,
+                    field.name);
         }
         field.sendChanges();
     }
@@ -225,12 +228,22 @@ public class ComponentFieldAdjuster extends ComponentBase {
 
         this.drawTexturedModalRect(x, y, 0, 46 + k * 20, xSize / 2, 20 - Math.max(0, 20 - ySize));
         this.drawTexturedModalRect(
-                x + xSize / 2, y, 200 - xSize / 2, 46 + k * 20, xSize / 2, 20 - Math.max(0, 20 - ySize));
+                x + xSize / 2,
+                y,
+                200 - xSize / 2,
+                46 + k * 20,
+                xSize / 2,
+                20 - Math.max(0, 20 - ySize));
 
         if (ySize < 20) {
             this.drawTexturedModalRect(x, y + 3, 0, (46 + k * 20) + 20 - ySize + 3, xSize - 1, ySize - 3);
             this.drawTexturedModalRect(
-                    x + xSize / 2, y + 3, 200 - xSize / 2, (46 + k * 20) + 20 - ySize + 3, xSize / 2, ySize - 3);
+                    x + xSize / 2,
+                    y + 3,
+                    200 - xSize / 2,
+                    (46 + k * 20) + 20 - ySize + 3,
+                    xSize / 2,
+                    ySize - 3);
         }
     }
 
@@ -239,8 +252,7 @@ public class ComponentFieldAdjuster extends ComponentBase {
     }
 
     private boolean isNonDecimal() {
-        return field.datatype == References.INT_ID
-                || field.datatype == References.SHORT_ID
+        return field.datatype == References.INT_ID || field.datatype == References.SHORT_ID
                 || field.datatype == References.BYTE_ID;
     }
 

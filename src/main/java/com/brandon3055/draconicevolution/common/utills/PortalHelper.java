@@ -1,13 +1,14 @@
 package com.brandon3055.draconicevolution.common.utills;
 
-import com.brandon3055.draconicevolution.common.ModBlocks;
-import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileDislocatorReceptacle;
-import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TilePortalBlock;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import com.brandon3055.draconicevolution.common.ModBlocks;
+import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileDislocatorReceptacle;
+import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TilePortalBlock;
 
 /**
  * Created by Brandon on 23/5/2015.
@@ -43,8 +44,8 @@ public class PortalHelper {
         return null;
     }
 
-    public static PortalStructure traceFrame(
-            World world, int x, int y, int z, ForgeDirection startDir, ForgeDirection plane) {
+    public static PortalStructure traceFrame(World world, int x, int y, int z, ForgeDirection startDir,
+            ForgeDirection plane) {
         int MAX_SIZE = 150;
         int startX = x + startDir.offsetX;
         int startY = y + startDir.offsetY;
@@ -60,36 +61,42 @@ public class PortalHelper {
         // Get X size
         for (int i = 0; i <= MAX_SIZE; i++) {
             Block block = world.getBlock(
-                    startX + i * startDir.offsetX, startY + i * startDir.offsetY, startZ + i * startDir.offsetZ);
+                    startX + i * startDir.offsetX,
+                    startY + i * startDir.offsetY,
+                    startZ + i * startDir.offsetZ);
             if (isFrame(block)) {
                 xSize = i;
                 break;
             } else if (!world.isAirBlock(
-                    startX + i * startDir.offsetX, startY + i * startDir.offsetY, startZ + i * startDir.offsetZ))
+                    startX + i * startDir.offsetX,
+                    startY + i * startDir.offsetY,
+                    startZ + i * startDir.offsetZ))
                 return null;
         }
 
         // Get Y size above receptacle
         for (int i = 0; i <= MAX_SIZE; i++) {
-            Block block =
-                    world.getBlock(startX + i * plane.offsetX, startY + i * plane.offsetY, startZ + i * plane.offsetZ);
+            Block block = world
+                    .getBlock(startX + i * plane.offsetX, startY + i * plane.offsetY, startZ + i * plane.offsetZ);
             if (isFrame(block)) {
                 ySize = i;
                 break;
-            } else if (!world.isAirBlock(
-                    startX + i * plane.offsetX, startY + i * plane.offsetY, startZ + i * plane.offsetZ)) return null;
+            } else if (!world
+                    .isAirBlock(startX + i * plane.offsetX, startY + i * plane.offsetY, startZ + i * plane.offsetZ))
+                return null;
         }
 
         // Get Y size below receptacle and get y offset
         for (int i = 0; i <= MAX_SIZE; i++) {
-            Block block =
-                    world.getBlock(startX - i * plane.offsetX, startY - i * plane.offsetY, startZ - i * plane.offsetZ);
+            Block block = world
+                    .getBlock(startX - i * plane.offsetX, startY - i * plane.offsetY, startZ - i * plane.offsetZ);
             if (isFrame(block)) {
                 ySize += i - 1;
                 yOffset = i;
                 break;
-            } else if (!world.isAirBlock(
-                    startX - i * plane.offsetX, startY - i * plane.offsetY, startZ - i * plane.offsetZ)) return null;
+            } else if (!world
+                    .isAirBlock(startX - i * plane.offsetX, startY - i * plane.offsetY, startZ - i * plane.offsetZ))
+                return null;
         }
 
         if (xSize == 0 || ySize == 0 || ySize > MAX_SIZE) return null;
@@ -159,8 +166,8 @@ public class PortalHelper {
             return true;
         }
 
-        public boolean scanPortal(
-                World world, int x, int y, int z, boolean setPortalBlocks, boolean checkPortalBlocks) {
+        public boolean scanPortal(World world, int x, int y, int z, boolean setPortalBlocks,
+                boolean checkPortalBlocks) {
             int startX = x + startDir.offsetX;
             int startY = y + startDir.offsetY;
             int startZ = z + startDir.offsetZ;

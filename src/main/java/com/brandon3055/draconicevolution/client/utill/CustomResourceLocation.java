@@ -1,8 +1,9 @@
 package com.brandon3055.draconicevolution.client.utill;
 
+import net.minecraft.util.ResourceLocation;
+
 import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
 import com.brandon3055.draconicevolution.common.lib.References;
-import net.minecraft.util.ResourceLocation;
 
 /**
  * Created by Brandon on 10/03/2015.

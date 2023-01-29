@@ -1,12 +1,14 @@
 package com.brandon3055.draconicevolution.integration;
 
-import com.brandon3055.draconicevolution.common.items.armor.CustomArmorHandler.ArmorSummery;
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
+
+import com.brandon3055.draconicevolution.common.items.armor.CustomArmorHandler.ArmorSummery;
+
+import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.registry.GameRegistry;
 
 /**
  * Created by brandon3055 on 29/9/2015.
@@ -31,49 +33,43 @@ public class ModHelper {
         // isRotaryCraftInstalled = Loader.isModLoaded("RotaryCraft");
         isGregTechInstalled = Loader.isModLoaded("gregtech");
 
-        if (isGregTechInstalled)
-            try {
-                GTores = Class.forName("gregtech.common.blocks.GT_TileEntity_Ores");
-            } catch (ClassNotFoundException e) {
-            }
-        if (Loader.isModLoaded("bartworks"))
-            try {
-                bwores = Class.forName("com.github.bartimaeusnek.bartworks.system.material.BW_MetaGeneratedOreTE");
-            } catch (ClassNotFoundException e) {
-            }
+        if (isGregTechInstalled) try {
+            GTores = Class.forName("gregtech.common.blocks.GT_TileEntity_Ores");
+        } catch (ClassNotFoundException e) {}
+        if (Loader.isModLoaded("bartworks")) try {
+            bwores = Class.forName("com.github.bartimaeusnek.bartworks.system.material.BW_MetaGeneratedOreTE");
+        } catch (ClassNotFoundException e) {}
     }
 
     public static boolean isHoldingCleaver(EntityPlayer player) {
         if (!isTConInstalled) return false;
         else if (cleaver == null) cleaver = GameRegistry.findItem("TConstruct", "cleaver");
 
-        return cleaver != null
-                && player.getHeldItem() != null
-                && player.getHeldItem().getItem().equals(cleaver);
+        return cleaver != null && player.getHeldItem() != null && player.getHeldItem().getItem().equals(cleaver);
     }
 
     public static boolean isHoldingAvaritiaSword(EntityPlayer player) {
         if (!isAvaritiaInstalled) return false;
         else if (avaritiaSword == null) avaritiaSword = GameRegistry.findItem("Avaritia", "Infinity_Sword");
 
-        return avaritiaSword != null
-                && player.getHeldItem() != null
+        return avaritiaSword != null && player.getHeldItem() != null
                 && player.getHeldItem().getItem().equals(avaritiaSword);
     }
 
-    //    public static boolean isHoldingBedrockSword(EntityPlayer player) {
-    //        if (!isRotaryCraftInstalled) return false;
-    //        else if (bedrockSword == null) bedrockSword = GameRegistry.findItem("RotaryCraft",
+    // public static boolean isHoldingBedrockSword(EntityPlayer player) {
+    // if (!isRotaryCraftInstalled) return false;
+    // else if (bedrockSword == null) bedrockSword = GameRegistry.findItem("RotaryCraft",
     // "rotarycraft_item_bedsword");
     //
-    //        return bedrockSword != null && player.getHeldItem() != null &&
+    // return bedrockSword != null && player.getHeldItem() != null &&
     // player.getHeldItem().getItem().equals(bedrockSword);
-    //    }
+    // }
 
     public static float applyModDamageAdjustments(ArmorSummery summery, LivingAttackEvent event) {
         if (summery == null) return event.ammount;
-        EntityPlayer attacker =
-                event.source.getEntity() instanceof EntityPlayer ? (EntityPlayer) event.source.getEntity() : null;
+        EntityPlayer attacker = event.source.getEntity() instanceof EntityPlayer
+                ? (EntityPlayer) event.source.getEntity()
+                : null;
 
         if (attacker == null) {
             return event.ammount;
@@ -83,15 +79,15 @@ public class ModHelper {
             event.entityLiving.hurtResistantTime = 0;
             return 300F;
         }
-        //        else if (isHoldingBedrockSword(attacker)) {
-        //            summery.entropy += 10;
+        // else if (isHoldingBedrockSword(attacker)) {
+        // summery.entropy += 10;
         //
-        //            if (summery.entropy > 100) {
-        //                summery.entropy = 100;
-        //            }
+        // if (summery.entropy > 100) {
+        // summery.entropy = 100;
+        // }
         //
-        //            return Math.max(event.ammount, Math.min(50F, summery.protectionPoints));
-        //        }
+        // return Math.max(event.ammount, Math.min(50F, summery.protectionPoints));
+        // }
         else if (event.source.isUnblockable() || event.source.canHarmInCreative()) {
             summery.entropy += 3;
 

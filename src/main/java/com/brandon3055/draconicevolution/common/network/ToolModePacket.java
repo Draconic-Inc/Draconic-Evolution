@@ -1,6 +1,7 @@
 package com.brandon3055.draconicevolution.common.network;
 
 import com.brandon3055.draconicevolution.common.items.tools.baseclasses.ToolBase;
+
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
@@ -34,6 +35,7 @@ public class ToolModePacket implements IMessage {
     }
 
     public static class Handler implements IMessageHandler<ToolModePacket, IMessage> {
+
         @Override
         public IMessage onMessage(ToolModePacket message, MessageContext ctx) {
             ToolBase.handleModeChange(

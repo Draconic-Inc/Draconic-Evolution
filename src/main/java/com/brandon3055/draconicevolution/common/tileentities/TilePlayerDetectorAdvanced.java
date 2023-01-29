@@ -1,8 +1,8 @@
 package com.brandon3055.draconicevolution.common.tileentities;
 
-import com.brandon3055.draconicevolution.common.container.ContainerPlayerDetector;
 import java.util.Iterator;
 import java.util.List;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
@@ -17,7 +17,10 @@ import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 
+import com.brandon3055.draconicevolution.common.container.ContainerPlayerDetector;
+
 public class TilePlayerDetectorAdvanced extends TileEntity implements IInventory {
+
     public String[] names = new String[42];
     private ItemStack[] items;
     public boolean whiteList = false;
@@ -82,8 +85,8 @@ public class TilePlayerDetectorAdvanced extends TileEntity implements IInventory
         // ScanBox = AxisAlignedBB.getBoundingBox(x1, y1, z1, x2, y2, z2);
         // ScanBox = AxisAlignedBB.getAABBPool().getAABB(xCoord + 0.5 - range, yCoord + 0.5 - range, zCoord + 0.5 -
         // range, xCoord + 0.5 + range, yCoord + 0.5 + range, zCoord + 0.5 + range);
-        EntityList = worldObj.getEntitiesWithinAABB(
-                EntityPlayer.class, AxisAlignedBB.getBoundingBox(x1, y1, z1, x2, y2, z2));
+        EntityList = worldObj
+                .getEntitiesWithinAABB(EntityPlayer.class, AxisAlignedBB.getBoundingBox(x1, y1, z1, x2, y2, z2));
         // System.out.println(EntityList);
     }
 

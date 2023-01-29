@@ -1,14 +1,7 @@
 package com.brandon3055.draconicevolution.common.blocks;
 
-import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.common.ModBlocks;
-import com.brandon3055.draconicevolution.common.blocks.itemblocks.DraconiumItemBlock;
-import com.brandon3055.draconicevolution.common.lib.References;
-import com.brandon3055.draconicevolution.common.lib.Strings;
-import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnderResurrection;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import java.util.List;
+
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
@@ -21,10 +14,21 @@ import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.common.ModBlocks;
+import com.brandon3055.draconicevolution.common.blocks.itemblocks.DraconiumItemBlock;
+import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.lib.Strings;
+import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnderResurrection;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 /**
  * Created by Brandon on 25/07/2014.
  */
 public class DraconiumBlock extends BlockDE {
+
     private final int DRACONIUM_META = 0;
     private final int SUMMON_BLOCK_META = 1;
     private final int CHARGED_DRACONIUM_META = 2;
@@ -81,23 +85,15 @@ public class DraconiumBlock extends BlockDE {
     }
 
     @Override
-    public boolean onBlockActivated(
-            World world,
-            int x,
-            int y,
-            int z,
-            EntityPlayer player,
-            int p_149727_6_,
-            float p_149727_7_,
-            float p_149727_8_,
-            float p_149727_9_) {
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int p_149727_6_,
+            float p_149727_7_, float p_149727_8_, float p_149727_9_) {
         int meta = world.getBlockMetadata(x, y, z);
         if (meta == 0) return false;
         if (meta == 1) {
             TileEnderResurrection tile = (world.getTileEntity(x, y, z) != null
-                            && world.getTileEntity(x, y, z) instanceof TileEnderResurrection)
-                    ? (TileEnderResurrection) world.getTileEntity(x, y, z)
-                    : null;
+                    && world.getTileEntity(x, y, z) instanceof TileEnderResurrection)
+                            ? (TileEnderResurrection) world.getTileEntity(x, y, z)
+                            : null;
             if (tile != null) return tile.onActivated(player);
         }
         return false;

@@ -4,6 +4,7 @@ package com.brandon3055.draconicevolution.common.blocks.multiblock;
  * Created by Brandon on 23/7/2015.
  */
 public interface IReactorPart {
+
     public static int RMODE_TEMP = 0;
     public static int RMODE_TEMP_INV = 1;
     public static int RMODE_FIELD = 2;

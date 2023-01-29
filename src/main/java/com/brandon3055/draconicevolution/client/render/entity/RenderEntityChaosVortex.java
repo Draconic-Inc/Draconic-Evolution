@@ -1,25 +1,28 @@
 package com.brandon3055.draconicevolution.client.render.entity;
 
-import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
-import com.brandon3055.draconicevolution.common.entity.EntityChaosVortex;
-import com.brandon3055.draconicevolution.common.lib.References;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.AdvancedModelLoader;
 import net.minecraftforge.client.model.IModelCustom;
+
 import org.lwjgl.opengl.GL11;
+
+import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
+import com.brandon3055.draconicevolution.common.entity.EntityChaosVortex;
+import com.brandon3055.draconicevolution.common.lib.References;
 
 /**
  * Created by brandon3055 on 3/10/2015.
  */
 public class RenderEntityChaosVortex extends Render {
+
     public static IModelCustom uvSphere;
 
     public RenderEntityChaosVortex() {
-        uvSphere = AdvancedModelLoader.loadModel(
-                new ResourceLocation(References.MODID.toLowerCase(), "models/reactorCoreModel.obj"));
+        uvSphere = AdvancedModelLoader
+                .loadModel(new ResourceLocation(References.MODID.toLowerCase(), "models/reactorCoreModel.obj"));
     }
 
     public void doRender(EntityChaosVortex entity, double x, double y, double z, float f1, float tick) {

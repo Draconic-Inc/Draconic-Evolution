@@ -6,6 +6,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 
 public class TileSunDial extends TileEntity implements IInventory {
+
     int tick;
     int tick2;
     public boolean running = false;
@@ -90,22 +91,20 @@ public class TileSunDial extends TileEntity implements IInventory {
                     0D);
         }
         if (tick > 74) Track(getTime());
-        if (tick > 74)
-            worldObj.playSoundEffect(
-                    xCoord + 0.5D,
-                    yCoord + 0.5D,
-                    zCoord + 0.5D,
-                    "draconicevolution:beam",
-                    5F,
-                    worldObj.rand.nextFloat() * 0.1F + 0.9F);
-        if (tick > 74)
-            worldObj.playSoundEffect(
-                    xCoord + 0.5D,
-                    yCoord + 0.5D,
-                    zCoord + 0.5D,
-                    "draconicevolution:boom",
-                    20F,
-                    worldObj.rand.nextFloat() * 0.1F + 0.9F);
+        if (tick > 74) worldObj.playSoundEffect(
+                xCoord + 0.5D,
+                yCoord + 0.5D,
+                zCoord + 0.5D,
+                "draconicevolution:beam",
+                5F,
+                worldObj.rand.nextFloat() * 0.1F + 0.9F);
+        if (tick > 74) worldObj.playSoundEffect(
+                xCoord + 0.5D,
+                yCoord + 0.5D,
+                zCoord + 0.5D,
+                "draconicevolution:boom",
+                20F,
+                worldObj.rand.nextFloat() * 0.1F + 0.9F);
         if (tick2 == 5) tick2 = 0;
     }
 
@@ -177,8 +176,8 @@ public class TileSunDial extends TileEntity implements IInventory {
         return time4;
     }
 
-    private double map(
-            final double x, final double in_min, final double in_max, final double out_min, final double out_max) {
+    private double map(final double x, final double in_min, final double in_max, final double out_min,
+            final double out_max) {
         return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
     }
 

@@ -13,6 +13,7 @@ import net.minecraft.tileentity.TileEntity;
  * Created by brandon3055 on 23/12/2015.
  */
 public class TileUpgradeModifier extends TileEntity implements ISidedInventory {
+
     ItemStack[] items = new ItemStack[1];
 
     public float rotation = 0;
@@ -129,7 +130,7 @@ public class TileUpgradeModifier extends TileEntity implements ISidedInventory {
 
     @Override
     public int[] getAccessibleSlotsFromSide(int var1) {
-        return new int[] {0};
+        return new int[] { 0 };
     }
 
     @Override

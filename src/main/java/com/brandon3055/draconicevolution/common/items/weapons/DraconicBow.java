@@ -1,5 +1,22 @@
 package com.brandon3055.draconicevolution.common.items.weapons;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnumEnchantmentType;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemBow;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.IIcon;
+import net.minecraft.util.StatCollector;
+import net.minecraft.world.World;
+
 import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.common.utills.InfoHelper;
 import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
@@ -16,28 +33,15 @@ import com.brandon3055.draconicevolution.common.utills.IHudDisplayItem;
 import com.brandon3055.draconicevolution.common.utills.IInventoryTool;
 import com.brandon3055.draconicevolution.common.utills.IUpgradableItem;
 import com.brandon3055.draconicevolution.common.utills.ItemConfigField;
+
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import java.util.ArrayList;
-import java.util.List;
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnumEnchantmentType;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemBow;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IIcon;
-import net.minecraft.util.StatCollector;
-import net.minecraft.world.World;
 
 public class DraconicBow extends ItemBow
         implements IInventoryTool, IUpgradableItem, IEnergyContainerWeaponItem, IHudDisplayItem {
-    public static final String[] bowPullIconNameArray = new String[] {"pulling_0", "pulling_1", "pulling_2"};
+
+    public static final String[] bowPullIconNameArray = new String[] { "pulling_0", "pulling_1", "pulling_2" };
 
     protected int capacity = BalanceConfigHandler.draconicWeaponsBaseStorage;
     protected int maxReceive = BalanceConfigHandler.draconicWeaponsMaxTransfer;
@@ -82,8 +86,8 @@ public class DraconicBow extends ItemBow
         this.iconArray = new IIcon[bowPullIconNameArray.length];
 
         for (int i = 0; i < this.iconArray.length; ++i) {
-            this.iconArray[i] = iconRegister.registerIcon(
-                    References.RESOURCESPREFIX + "draconic_bow" + "_" + bowPullIconNameArray[i]);
+            this.iconArray[i] = iconRegister
+                    .registerIcon(References.RESOURCESPREFIX + "draconic_bow" + "_" + bowPullIconNameArray[i]);
         }
     }
 
@@ -116,13 +120,15 @@ public class DraconicBow extends ItemBow
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(
-            final ItemStack stack, final EntityPlayer player, final List list, final boolean extraInformation) {
+    public void addInformation(final ItemStack stack, final EntityPlayer player, final List list,
+            final boolean extraInformation) {
         boolean show = InfoHelper.holdShiftForDetails(list);
         if (show) {
             int preset = ItemNBTHelper.getInteger(stack, "ConfigProfile", 0);
-            list.add(EnumChatFormatting.DARK_PURPLE + StatCollector.translateToLocal("info.de.capacitorMode.txt") + ": "
-                    + ItemNBTHelper.getString(stack, "ProfileName" + preset, "Profile " + preset));
+            list.add(
+                    EnumChatFormatting.DARK_PURPLE + StatCollector.translateToLocal("info.de.capacitorMode.txt")
+                            + ": "
+                            + ItemNBTHelper.getString(stack, "ProfileName" + preset, "Profile " + preset));
             List<ItemConfigField> l = getFields(stack, 0);
             for (ItemConfigField f : l) list.add(f.getTooltipInfo());
         }
@@ -201,28 +207,26 @@ public class DraconicBow extends ItemBow
     public List<ItemConfigField> getFields(ItemStack stack, int slot) {
         List<ItemConfigField> list = new ArrayList<ItemConfigField>();
 
-        list.add(new ItemConfigField(References.FLOAT_ID, slot, "BowArrowDamage")
-                .setMinMaxAndIncromente(
+        list.add(
+                new ItemConfigField(References.FLOAT_ID, slot, "BowArrowDamage").setMinMaxAndIncromente(
                         (float) getBaseUpgradePoints(EnumUpgrade.ARROW_DAMAGE.index),
                         (float) EnumUpgrade.ARROW_DAMAGE.getUpgradePoints(stack),
-                        0.1F)
-                .readFromItem(stack, (float) EnumUpgrade.ARROW_DAMAGE.getUpgradePoints(stack)));
-        list.add(new ItemConfigField(References.FLOAT_ID, slot, "BowArrowSpeedModifier")
-                .setMinMaxAndIncromente(0F, (float) EnumUpgrade.ARROW_SPEED.getUpgradePoints(stack), 0.01F)
-                .readFromItem(stack, 0F)
-                .setModifier("PLUSPERCENT"));
+                        0.1F).readFromItem(stack, (float) EnumUpgrade.ARROW_DAMAGE.getUpgradePoints(stack)));
+        list.add(
+                new ItemConfigField(References.FLOAT_ID, slot, "BowArrowSpeedModifier")
+                        .setMinMaxAndIncromente(0F, (float) EnumUpgrade.ARROW_SPEED.getUpgradePoints(stack), 0.01F)
+                        .readFromItem(stack, 0F).setModifier("PLUSPERCENT"));
         list.add(new ItemConfigField(References.BOOLEAN_ID, slot, "BowAutoFire").readFromItem(stack, false));
-        list.add(new ItemConfigField(References.FLOAT_ID, slot, "BowExplosionPower")
-                .setMinMaxAndIncromente(0F, 6F, 0.1F)
-                .readFromItem(stack, 0F));
-        list.add(new ItemConfigField(References.FLOAT_ID, slot, "BowShockWavePower")
-                .setMinMaxAndIncromente(0F, 10F, 0.1F)
-                .readFromItem(stack, 0F));
+        list.add(
+                new ItemConfigField(References.FLOAT_ID, slot, "BowExplosionPower").setMinMaxAndIncromente(0F, 6F, 0.1F)
+                        .readFromItem(stack, 0F));
+        list.add(
+                new ItemConfigField(References.FLOAT_ID, slot, "BowShockWavePower")
+                        .setMinMaxAndIncromente(0F, 10F, 0.1F).readFromItem(stack, 0F));
         list.add(new ItemConfigField(References.BOOLEAN_ID, slot, "BowEnergyBolt").readFromItem(stack, false));
-        list.add(new ItemConfigField(References.FLOAT_ID, slot, "BowZoomModifier")
-                .setMinMaxAndIncromente(0F, 6F, 0.01F)
-                .readFromItem(stack, 0F)
-                .setModifier("PLUSPERCENT"));
+        list.add(
+                new ItemConfigField(References.FLOAT_ID, slot, "BowZoomModifier").setMinMaxAndIncromente(0F, 6F, 0.01F)
+                        .readFromItem(stack, 0F).setModifier("PLUSPERCENT"));
 
         return list;
     }
@@ -230,6 +234,7 @@ public class DraconicBow extends ItemBow
     @Override
     public List<EnumUpgrade> getUpgrades(ItemStack itemstack) {
         return new ArrayList<EnumUpgrade>() {
+
             {
                 add(EnumUpgrade.RF_CAPACITY);
                 add(EnumUpgrade.DRAW_SPEED);
@@ -289,16 +294,34 @@ public class DraconicBow extends ItemBow
     public List<String> getUpgradeStats(ItemStack stack) {
         BowHandler.BowProperties properties = new BowHandler.BowProperties(stack, null);
         List<String> list = new ArrayList<String>();
-        list.add(InfoHelper.ITC() + StatCollector.translateToLocal("gui.de.RFCapacity.txt") + ": " + InfoHelper.HITC()
-                + Utills.formatNumber(getMaxEnergyStored(stack)));
-        list.add(InfoHelper.ITC() + StatCollector.translateToLocal("gui.de.max.txt") + " "
-                + StatCollector.translateToLocal("gui.de.ArrowSpeed.txt") + ": " + InfoHelper.HITC() + "+"
-                + EnumUpgrade.ARROW_SPEED.getUpgradePoints(stack) * 100 + "%");
-        list.add(InfoHelper.ITC() + StatCollector.translateToLocal("gui.de.max.txt") + " "
-                + StatCollector.translateToLocal("gui.de.ArrowDamage.txt") + ": " + InfoHelper.HITC()
-                + EnumUpgrade.ARROW_DAMAGE.getUpgradePoints(stack) + "");
-        list.add(InfoHelper.ITC() + StatCollector.translateToLocal("gui.de.DrawSpeed.txt") + ": " + InfoHelper.HITC()
-                + properties.getDrawTicks() / 20D + "s");
+        list.add(
+                InfoHelper.ITC() + StatCollector.translateToLocal("gui.de.RFCapacity.txt")
+                        + ": "
+                        + InfoHelper.HITC()
+                        + Utills.formatNumber(getMaxEnergyStored(stack)));
+        list.add(
+                InfoHelper.ITC() + StatCollector.translateToLocal("gui.de.max.txt")
+                        + " "
+                        + StatCollector.translateToLocal("gui.de.ArrowSpeed.txt")
+                        + ": "
+                        + InfoHelper.HITC()
+                        + "+"
+                        + EnumUpgrade.ARROW_SPEED.getUpgradePoints(stack) * 100
+                        + "%");
+        list.add(
+                InfoHelper.ITC() + StatCollector.translateToLocal("gui.de.max.txt")
+                        + " "
+                        + StatCollector.translateToLocal("gui.de.ArrowDamage.txt")
+                        + ": "
+                        + InfoHelper.HITC()
+                        + EnumUpgrade.ARROW_DAMAGE.getUpgradePoints(stack)
+                        + "");
+        list.add(
+                InfoHelper.ITC() + StatCollector.translateToLocal("gui.de.DrawSpeed.txt")
+                        + ": "
+                        + InfoHelper.HITC()
+                        + properties.getDrawTicks() / 20D
+                        + "s");
 
         return list;
     }
@@ -346,19 +369,21 @@ public class DraconicBow extends ItemBow
     public List<String> getDisplayData(ItemStack stack) {
         List<String> list = new ArrayList<String>();
 
-        if (BrandonsCore.proxy.getClientPlayer() != null
-                && BrandonsCore.proxy.getClientPlayer().getItemInUse() != null
+        if (BrandonsCore.proxy.getClientPlayer() != null && BrandonsCore.proxy.getClientPlayer().getItemInUse() != null
                 && BrandonsCore.proxy.getClientPlayer().getItemInUseDuration() > 2) {
             EntityPlayer player = BrandonsCore.proxy.getClientPlayer();
             BowHandler.BowProperties properties = new BowHandler.BowProperties(stack, player);
-            int power = (int)
-                    Math.min(((float) player.getItemInUseDuration() / (float) properties.getDrawTicks() * 100F), 100F);
-            list.add(InfoHelper.ITC() + StatCollector.translateToLocal("info.de.power.txt") + ": " + InfoHelper.HITC()
-                    + power + "%");
+            int power = (int) Math
+                    .min(((float) player.getItemInUseDuration() / (float) properties.getDrawTicks() * 100F), 100F);
+            list.add(
+                    InfoHelper.ITC() + StatCollector
+                            .translateToLocal("info.de.power.txt") + ": " + InfoHelper.HITC() + power + "%");
         } else {
             int preset = ItemNBTHelper.getInteger(stack, "ConfigProfile", 0);
-            list.add(EnumChatFormatting.DARK_PURPLE + StatCollector.translateToLocal("info.de.capacitorMode.txt") + ": "
-                    + ItemNBTHelper.getString(stack, "ProfileName" + preset, "Profile " + preset));
+            list.add(
+                    EnumChatFormatting.DARK_PURPLE + StatCollector.translateToLocal("info.de.capacitorMode.txt")
+                            + ": "
+                            + ItemNBTHelper.getString(stack, "ProfileName" + preset, "Profile " + preset));
 
             for (ItemConfigField field : getFields(stack, 0)) {
                 if ((field.datatype == References.FLOAT_ID && (Float) field.value > 0)
@@ -366,15 +391,23 @@ public class DraconicBow extends ItemBow
                     list.add(field.getTooltipInfo());
             }
 
-            list.add(InfoHelper.ITC() + StatCollector.translateToLocal("info.de.charge.txt") + ": " + InfoHelper.HITC()
-                    + Utills.formatNumber(getEnergyStored(stack)) + " / "
-                    + Utills.formatNumber(getMaxEnergyStored(stack)));
+            list.add(
+                    InfoHelper.ITC() + StatCollector.translateToLocal("info.de.charge.txt")
+                            + ": "
+                            + InfoHelper.HITC()
+                            + Utills.formatNumber(getEnergyStored(stack))
+                            + " / "
+                            + Utills.formatNumber(getMaxEnergyStored(stack)));
 
             if (BrandonsCore.proxy.getClientPlayer() != null) {
-                BowHandler.BowProperties properties =
-                        new BowHandler.BowProperties(stack, BrandonsCore.proxy.getClientPlayer());
-                list.add(InfoHelper.ITC() + StatCollector.translateToLocal("gui.de.rfPerShot.txt") + ": "
-                        + InfoHelper.HITC() + Utills.addCommas(properties.calculateEnergyCost()));
+                BowHandler.BowProperties properties = new BowHandler.BowProperties(
+                        stack,
+                        BrandonsCore.proxy.getClientPlayer());
+                list.add(
+                        InfoHelper.ITC() + StatCollector.translateToLocal("gui.de.rfPerShot.txt")
+                                + ": "
+                                + InfoHelper.HITC()
+                                + Utills.addCommas(properties.calculateEnergyCost()));
                 if (!properties.canFire() && properties.cantFireMessage != null)
                     list.add(EnumChatFormatting.DARK_RED + StatCollector.translateToLocal(properties.cantFireMessage));
             }

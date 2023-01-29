@@ -1,20 +1,8 @@
 package com.brandon3055.draconicevolution.common.tileentities.energynet;
 
-import com.brandon3055.brandonscore.common.utills.DataUtills;
-import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
-import com.brandon3055.brandonscore.common.utills.Utills;
-import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.common.ModItems;
-import com.brandon3055.draconicevolution.common.handler.BalanceConfigHandler;
-import com.brandon3055.draconicevolution.common.items.tools.Wrench;
-import com.brandon3055.draconicevolution.common.lib.References;
-import com.brandon3055.draconicevolution.common.tileentities.TileObjectSync;
-import com.brandon3055.draconicevolution.common.utills.EnergyStorage;
-import com.brandon3055.draconicevolution.common.utills.LogHelper;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import java.util.ArrayList;
 import java.util.List;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -26,11 +14,29 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import com.brandon3055.brandonscore.common.utills.DataUtills;
+import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
+import com.brandon3055.brandonscore.common.utills.Utills;
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.common.ModItems;
+import com.brandon3055.draconicevolution.common.handler.BalanceConfigHandler;
+import com.brandon3055.draconicevolution.common.items.tools.Wrench;
+import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.tileentities.TileObjectSync;
+import com.brandon3055.draconicevolution.common.utills.EnergyStorage;
+import com.brandon3055.draconicevolution.common.utills.LogHelper;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 /**
  * Created by Brandon on 10/02/2015.
  */
-public abstract class TileRemoteEnergyBase extends TileObjectSync
-        implements IRemoteEnergyHandler { // todo optimize (add cutoff, explore possible cach optimization)
+public abstract class TileRemoteEnergyBase extends TileObjectSync implements IRemoteEnergyHandler { // todo optimize
+                                                                                                    // (add cutoff,
+                                                                                                    // explore possible
+                                                                                                    // cach
+                                                                                                    // optimization)
 
     /**
      * The tier of the relay (0-1)
@@ -109,17 +115,20 @@ public abstract class TileRemoteEnergyBase extends TileObjectSync
                         rType);
             } else {
                 double difference = getCapacity() - remoteTile.getCapacity();
-                double energyToEqual = Math.round(
-                        difference / 100D * (double) remoteTile.getStorage().getMaxEnergyStored() / 2.01D);
-                double maxFlow = Math.min(energyToEqual, (double) Math.min(
-                        storage.getMaxExtract(),
-                        remoteTile.getStorage().getMaxEnergyStored()
-                                - remoteTile.getStorage().getEnergyStored()));
+                double energyToEqual = Math
+                        .round(difference / 100D * (double) remoteTile.getStorage().getMaxEnergyStored() / 2.01D);
+                double maxFlow = Math.min(
+                        energyToEqual,
+                        (double) Math.min(
+                                storage.getMaxExtract(),
+                                remoteTile.getStorage().getMaxEnergyStored()
+                                        - remoteTile.getStorage().getEnergyStored()));
 
                 device.energyFlow = getFlow(getCapacity(), remoteTile.getCapacity());
                 int flow = (int) ((device.energyFlow / 100D) * maxFlow);
                 int transfered = storage.extractEnergy(
-                        remoteTile.getStorage().receiveEnergy(storage.extractEnergy(flow, true), false), false);
+                        remoteTile.getStorage().receiveEnergy(storage.extractEnergy(flow, true), false),
+                        false);
 
                 device.energyFlow = Math.min(((double) transfered / 10000D) * 100D, 100D);
 
@@ -134,11 +143,12 @@ public abstract class TileRemoteEnergyBase extends TileObjectSync
         boolean forceSend = (tick + xCoord + yCoord + zCoord) % 100 == 0;
 
         if ((tick + xCoord + yCoord + zCoord) % 20 == 0 || forceSend) {
-            if (index >= 0
-                    && (linkedDevices.get(index).energyFlow != linkedDevices.get(index).lastTickEnergyFlow
-                            || forceSend)) {
-                sendObjectToClient(References.INT_PAIR_ID, 0, new DataUtills.IntPair(index, (int)
-                        linkedDevices.get(index).energyFlow));
+            if (index >= 0 && (linkedDevices.get(index).energyFlow != linkedDevices.get(index).lastTickEnergyFlow
+                    || forceSend)) {
+                sendObjectToClient(
+                        References.INT_PAIR_ID,
+                        0,
+                        new DataUtills.IntPair(index, (int) linkedDevices.get(index).energyFlow));
                 linkedDevices.get(index).lastTickEnergyFlow = linkedDevices.get(index).energyFlow;
             }
 
@@ -150,8 +160,7 @@ public abstract class TileRemoteEnergyBase extends TileObjectSync
     @SideOnly(Side.CLIENT)
     @Override
     public void receiveObjectFromServer(int index, Object object) {
-        if (index == 0
-                && object instanceof DataUtills.IntPair
+        if (index == 0 && object instanceof DataUtills.IntPair
                 && linkedDevices.size() > ((DataUtills.IntPair) object).i1) {
             linkedDevices.get(((DataUtills.IntPair) object).i1).energyFlow = ((DataUtills.IntPair) object).i2;
         } else if (index == 1) storage.setEnergyStored((Integer) object);
@@ -163,12 +172,10 @@ public abstract class TileRemoteEnergyBase extends TileObjectSync
     }
 
     /**
-     * Calculates the energy flow based on the local buffer
-     * and the remote buffer
-     * return double between 0 to 100
+     * Calculates the energy flow based on the local buffer and the remote buffer return double between 0 to 100
      */
     public double getFlow(double localCap, double remoteCap) {
-        return Math.max(0, Math.min(100, (localCap - remoteCap) * 10D /*Flow Multiplier*/));
+        return Math.max(0, Math.min(100, (localCap - remoteCap) * 10D /* Flow Multiplier */));
     }
 
     public int getPowerTier() {
@@ -214,8 +221,7 @@ public abstract class TileRemoteEnergyBase extends TileObjectSync
         } else if (mode.equals(Wrench.UNBIND_MODE)) {
             if (linkDat != null && linkDat.hasKey("Bound") && linkDat.getBoolean("Bound")) {
                 for (LinkedEnergyDevice ld : linkedDevices) {
-                    if (ld.xCoord == linkDat.getInteger("XCoord")
-                            && ld.yCoord == linkDat.getInteger("YCoord")
+                    if (ld.xCoord == linkDat.getInteger("XCoord") && ld.yCoord == linkDat.getInteger("YCoord")
                             && ld.zCoord == linkDat.getInteger("ZCoord")) {
 
                         if (!(ld.getTile(worldObj) instanceof TileRemoteEnergyBase)) {
@@ -273,8 +279,7 @@ public abstract class TileRemoteEnergyBase extends TileObjectSync
 
     @Override
     public boolean handleBinding(EntityPlayer player, int x, int y, int z, boolean callOther) {
-        int range = powerTier == 0
-                ? BalanceConfigHandler.energyDeviceBasicLinkingRange
+        int range = powerTier == 0 ? BalanceConfigHandler.energyDeviceBasicLinkingRange
                 : BalanceConfigHandler.energyDeviceAdvancedLinkingRange;
         IRemoteEnergyHandler tile = worldObj.getTileEntity(x, y, z) instanceof IRemoteEnergyHandler
                 ? (IRemoteEnergyHandler) worldObj.getTileEntity(x, y, z)

@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.common.network;
 import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.draconicevolution.client.handler.ParticleHandler;
 import com.brandon3055.draconicevolution.client.render.particle.Particles;
+
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
@@ -11,6 +12,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
 
 public class GenericParticlePacket implements IMessage {
+
     public static final byte ENERGY_BALL_KILL = 0;
     public static final byte CHAOS_BALL_KILL = 1;
     public static final byte CHAOS_IMPLOSION = 3;
@@ -126,36 +128,16 @@ public class GenericParticlePacket implements IMessage {
                     for (int i = 0; i < 100; i++) {
                         Particles.ArrowParticle particle = new Particles.ArrowParticle(
                                 BrandonsCore.proxy.getClientWorld(),
-                                message.posX
-                                        - 0.25
-                                        + BrandonsCore.proxy
-                                                        .getClientWorld()
-                                                        .rand
-                                                        .nextDouble()
-                                                * 0.5,
-                                message.posY
-                                        + BrandonsCore.proxy
-                                                        .getClientWorld()
-                                                        .rand
-                                                        .nextDouble()
-                                                * 0.5,
-                                message.posZ
-                                        - 0.25
-                                        + BrandonsCore.proxy
-                                                        .getClientWorld()
-                                                        .rand
-                                                        .nextDouble()
-                                                * 0.5,
+                                message.posX - 0.25 + BrandonsCore.proxy.getClientWorld().rand.nextDouble() * 0.5,
+                                message.posY + BrandonsCore.proxy.getClientWorld().rand.nextDouble() * 0.5,
+                                message.posZ - 0.25 + BrandonsCore.proxy.getClientWorld().rand.nextDouble() * 0.5,
                                 0xff6000,
                                 0.2F + BrandonsCore.proxy.getClientWorld().rand.nextFloat() * 10f);
 
                         double mm = 2;
-                        particle.motionX =
-                                (BrandonsCore.proxy.getClientWorld().rand.nextDouble() - 0.5) * mm;
-                        particle.motionY =
-                                (BrandonsCore.proxy.getClientWorld().rand.nextDouble() - 0.5) * mm;
-                        particle.motionZ =
-                                (BrandonsCore.proxy.getClientWorld().rand.nextDouble() - 0.5) * mm;
+                        particle.motionX = (BrandonsCore.proxy.getClientWorld().rand.nextDouble() - 0.5) * mm;
+                        particle.motionY = (BrandonsCore.proxy.getClientWorld().rand.nextDouble() - 0.5) * mm;
+                        particle.motionZ = (BrandonsCore.proxy.getClientWorld().rand.nextDouble() - 0.5) * mm;
                         ParticleHandler.spawnCustomParticle(particle, 64);
                     }
                     break;

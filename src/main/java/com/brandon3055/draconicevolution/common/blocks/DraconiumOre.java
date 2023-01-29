@@ -1,13 +1,7 @@
 package com.brandon3055.draconicevolution.common.blocks;
 
-import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.common.ModBlocks;
-import com.brandon3055.draconicevolution.common.ModItems;
-import com.brandon3055.draconicevolution.common.lib.References;
-import com.brandon3055.draconicevolution.common.lib.Strings;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import java.util.Random;
+
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -18,7 +12,17 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.common.ModBlocks;
+import com.brandon3055.draconicevolution.common.ModItems;
+import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.lib.Strings;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 public class DraconiumOre extends BlockDE {
+
     public IIcon icon;
     public IIcon iconEnd;
     public IIcon iconNether;
@@ -65,8 +69,7 @@ public class DraconiumOre extends BlockDE {
 
     @Override
     public int quantityDroppedWithBonus(int fortune, Random random) {
-        return fortune == 0
-                ? this.quantityDropped(random)
+        return fortune == 0 ? this.quantityDropped(random)
                 : this.quantityDropped(random) + fortune + random.nextInt(fortune * 2);
     }
 

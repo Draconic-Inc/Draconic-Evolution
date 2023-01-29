@@ -1,13 +1,5 @@
 package com.brandon3055.draconicevolution.common.blocks.multiblock;
 
-import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.common.ModBlocks;
-import com.brandon3055.draconicevolution.common.blocks.BlockDE;
-import com.brandon3055.draconicevolution.common.lib.References;
-import com.brandon3055.draconicevolution.common.lib.Strings;
-import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnergyPylon;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -18,10 +10,21 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.common.ModBlocks;
+import com.brandon3055.draconicevolution.common.blocks.BlockDE;
+import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.lib.Strings;
+import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnergyPylon;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 /**
  * Created by Brandon on 28/07/2014.
  */
 public class EnergyPylon extends BlockDE { // todo fix sphere renderer
+
     @SideOnly(Side.CLIENT)
     public IIcon icon_active_face;
 
@@ -70,8 +73,8 @@ public class EnergyPylon extends BlockDE { // todo fix sphere renderer
         int meta = world.getBlockMetadata(x, y, z);
         if (meta == 1 && side == 1) return icon_active_face;
         if (meta == 2 && side == 0) return icon_active_face;
-        TileEnergyPylon thisTile =
-                (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TileEnergyPylon)
+        TileEnergyPylon thisTile = (world.getTileEntity(x, y, z) != null
+                && world.getTileEntity(x, y, z) instanceof TileEnergyPylon)
                         ? (TileEnergyPylon) world.getTileEntity(x, y, z)
                         : null;
         if (thisTile == null) return icon_input;
@@ -90,18 +93,17 @@ public class EnergyPylon extends BlockDE { // todo fix sphere renderer
                 world.setBlock(x, y - 1, z, ModBlocks.invisibleMultiblock, 2, 2);
             }
         } else {
-            TileEnergyPylon thisTile =
-                    (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TileEnergyPylon)
+            TileEnergyPylon thisTile = (world.getTileEntity(x, y, z) != null
+                    && world.getTileEntity(x, y, z) instanceof TileEnergyPylon)
                             ? (TileEnergyPylon) world.getTileEntity(x, y, z)
                             : null;
-            if (thisTile == null
-                    || (meta == 1 && !isGlass(world, x, y + 1, z))
+            if (thisTile == null || (meta == 1 && !isGlass(world, x, y + 1, z))
                     || (meta == 2 && !isGlass(world, x, y - 1, z))) {
                 world.setBlockMetadataWithNotify(x, y, z, 0, 2);
             }
         }
-        TileEnergyPylon thisTile =
-                (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TileEnergyPylon)
+        TileEnergyPylon thisTile = (world.getTileEntity(x, y, z) != null
+                && world.getTileEntity(x, y, z) instanceof TileEnergyPylon)
                         ? (TileEnergyPylon) world.getTileEntity(x, y, z)
                         : null;
         if (thisTile != null) {
@@ -116,20 +118,12 @@ public class EnergyPylon extends BlockDE { // todo fix sphere renderer
     }
 
     @Override
-    public boolean onBlockActivated(
-            World world,
-            int x,
-            int y,
-            int z,
-            EntityPlayer player,
-            int p_149727_6_,
-            float p_149727_7_,
-            float p_149727_8_,
-            float p_149727_9_) {
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int p_149727_6_,
+            float p_149727_7_, float p_149727_8_, float p_149727_9_) {
         int meta = world.getBlockMetadata(x, y, z);
         if (meta == 0) return false;
-        TileEnergyPylon thisTile =
-                (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TileEnergyPylon)
+        TileEnergyPylon thisTile = (world.getTileEntity(x, y, z) != null
+                && world.getTileEntity(x, y, z) instanceof TileEnergyPylon)
                         ? (TileEnergyPylon) world.getTileEntity(x, y, z)
                         : null;
         if (thisTile != null) {
@@ -152,18 +146,17 @@ public class EnergyPylon extends BlockDE { // todo fix sphere renderer
                 world.setBlock(x, y - 1, z, ModBlocks.invisibleMultiblock, 2, 2);
             }
         } else {
-            TileEnergyPylon thisTile =
-                    (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TileEnergyPylon)
+            TileEnergyPylon thisTile = (world.getTileEntity(x, y, z) != null
+                    && world.getTileEntity(x, y, z) instanceof TileEnergyPylon)
                             ? (TileEnergyPylon) world.getTileEntity(x, y, z)
                             : null;
-            if (thisTile == null
-                    || (meta == 1 && !isGlass(world, x, y + 1, z))
+            if (thisTile == null || (meta == 1 && !isGlass(world, x, y + 1, z))
                     || (meta == 2 && !isGlass(world, x, y - 1, z))) {
                 world.setBlockMetadataWithNotify(x, y, z, 0, 2);
             }
         }
-        TileEnergyPylon thisTile =
-                (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TileEnergyPylon)
+        TileEnergyPylon thisTile = (world.getTileEntity(x, y, z) != null
+                && world.getTileEntity(x, y, z) instanceof TileEnergyPylon)
                         ? (TileEnergyPylon) world.getTileEntity(x, y, z)
                         : null;
         if (thisTile != null) {

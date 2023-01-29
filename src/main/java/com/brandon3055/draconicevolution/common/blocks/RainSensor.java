@@ -1,12 +1,7 @@
 package com.brandon3055.draconicevolution.common.blocks;
 
-import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.common.ModBlocks;
-import com.brandon3055.draconicevolution.common.lib.References;
-import com.brandon3055.draconicevolution.common.lib.Strings;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import java.util.Random;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -14,7 +9,16 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.common.ModBlocks;
+import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.lib.Strings;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 public class RainSensor extends BlockDE {
+
     IIcon icon_inactive;
     IIcon icon_active;
     IIcon icon_side;
@@ -85,16 +89,8 @@ public class RainSensor extends BlockDE {
     }
 
     @Override
-    public int onBlockPlaced(
-            World world,
-            int x,
-            int y,
-            int z,
-            int p_149660_5_,
-            float p_149660_6_,
-            float p_149660_7_,
-            float p_149660_8_,
-            int p_149660_9_) {
+    public int onBlockPlaced(World world, int x, int y, int z, int p_149660_5_, float p_149660_6_, float p_149660_7_,
+            float p_149660_8_, int p_149660_9_) {
         world.scheduleBlockUpdate(x, y, z, this, 10);
         return super.onBlockPlaced(world, x, y, z, p_149660_5_, p_149660_6_, p_149660_7_, p_149660_8_, p_149660_9_);
     }

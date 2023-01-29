@@ -1,12 +1,5 @@
 package com.brandon3055.draconicevolution.common.handler;
 
-import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
-import com.brandon3055.draconicevolution.common.ModBlocks;
-import com.brandon3055.draconicevolution.common.ModItems;
-import com.brandon3055.draconicevolution.common.utills.LogHelper;
-import com.brandon3055.draconicevolution.common.utills.ShapedOreEnergyRecipe;
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -15,7 +8,17 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
+import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
+import com.brandon3055.draconicevolution.common.ModBlocks;
+import com.brandon3055.draconicevolution.common.ModItems;
+import com.brandon3055.draconicevolution.common.utills.LogHelper;
+import com.brandon3055.draconicevolution.common.utills.ShapedOreEnergyRecipe;
+
+import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.registry.GameRegistry;
+
 public class CraftingHandler {
+
     public static void init() {
         // todo In 1.8-1.9 when the feature modals are implemented add a dependency system to automatically disable a
         // recipe if a required component is disabled
@@ -95,9 +98,8 @@ public class CraftingHandler {
 
         if (ModItems.isEnabled(ModItems.draconiumIngot) && ModItems.isEnabled(ModItems.draconiumBlend))
             GameRegistry.addSmelting(ModItems.draconiumBlend, getStack(ModItems.draconiumIngot, 2, 0), 1.0f);
-        if (ModItems.isEnabled(ModItems.draconiumIngot) && ModItems.isEnabled(ModItems.draconiumDust))
-            GameRegistry.addSmelting(
-                    new ItemStack(ModItems.draconiumDust), getStack(ModItems.draconiumIngot, 1, 0), 1.0f);
+        if (ModItems.isEnabled(ModItems.draconiumIngot) && ModItems.isEnabled(ModItems.draconiumDust)) GameRegistry
+                .addSmelting(new ItemStack(ModItems.draconiumDust), getStack(ModItems.draconiumIngot, 1, 0), 1.0f);
 
         // Reactor
         addOre(
@@ -969,8 +971,7 @@ public class CraftingHandler {
         if (result == null) return;
         for (Object o : recipe) {
             if (o == null) return;
-            String s = o instanceof Item
-                    ? ((Item) o).getUnlocalizedName()
+            String s = o instanceof Item ? ((Item) o).getUnlocalizedName()
                     : o instanceof Block ? ((Block) o).getUnlocalizedName() : null;
             if (s != null && ConfigHandler.disabledNamesList.contains(s)) return;
         }
@@ -982,8 +983,7 @@ public class CraftingHandler {
         if (result == null) return;
         for (Object o : recipe) {
             if (o == null) return;
-            String s = o instanceof Item
-                    ? ((Item) o).getUnlocalizedName()
+            String s = o instanceof Item ? ((Item) o).getUnlocalizedName()
                     : o instanceof Block ? ((Block) o).getUnlocalizedName() : null;
             if (s != null && ConfigHandler.disabledNamesList.contains(s)) return;
         }
@@ -1003,8 +1003,7 @@ public class CraftingHandler {
         if (result == null) return;
         for (Object o : recipe) {
             if (o == null) return;
-            String s = o instanceof Item
-                    ? ((Item) o).getUnlocalizedName()
+            String s = o instanceof Item ? ((Item) o).getUnlocalizedName()
                     : o instanceof Block ? ((Block) o).getUnlocalizedName() : null;
             if (s != null && ConfigHandler.disabledNamesList.contains(s)) return;
         }
@@ -1024,8 +1023,7 @@ public class CraftingHandler {
         if (result == null) return;
         for (Object o : recipe) {
             if (o == null) return;
-            String s = o instanceof Item
-                    ? ((Item) o).getUnlocalizedName()
+            String s = o instanceof Item ? ((Item) o).getUnlocalizedName()
                     : o instanceof Block ? ((Block) o).getUnlocalizedName() : null;
             if (s != null && ConfigHandler.disabledNamesList.contains(s)) return;
         }

@@ -4,13 +4,14 @@ import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.entity.Entity;
+
 import org.lwjgl.opengl.GL11;
 
 /**
- * ReactorStabilizerCore - brandon3055
- * Created using Tabula 5.0.0
+ * ReactorStabilizerCore - brandon3055 Created using Tabula 5.0.0
  */
 public class ModelReactorStabilizerCore extends ModelBase {
+
     public ModelRenderer hub1;
     public ModelRenderer hub2;
     public ModelRenderer rotor1R;
@@ -270,7 +271,9 @@ public class ModelReactorStabilizerCore extends ModelBase {
         if (brightness > 0F) GL11.glDisable(GL11.GL_LIGHTING);
 
         OpenGlHelper.setLightmapTextureCoords(
-                OpenGlHelper.lightmapTexUnit, Math.min(200F, lastBrightnessX + b), Math.min(200F, lastBrightnessY + b));
+                OpenGlHelper.lightmapTexUnit,
+                Math.min(200F, lastBrightnessX + b),
+                Math.min(200F, lastBrightnessY + b));
         GL11.glColor4f(colour, colour, colour, 1F);
         this.rotor2R.render(f5);
         GL11.glRotatef(rotation * 2F, 0F, 0F, 1F);

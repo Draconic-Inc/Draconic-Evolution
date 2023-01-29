@@ -1,5 +1,25 @@
 package com.brandon3055.draconicevolution.client.handler;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Random;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.ModelBiped;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.IAttributeInstance;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemArmor;
+import net.minecraftforge.client.event.FOVUpdateEvent;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.RenderPlayerEvent;
+import net.minecraftforge.client.model.AdvancedModelLoader;
+import net.minecraftforge.client.model.IModelCustom;
+
+import org.lwjgl.opengl.GL11;
+
 import com.brandon3055.brandonscore.common.utills.DataUtills.XZPair;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.common.ModItems;
@@ -13,35 +33,19 @@ import com.brandon3055.draconicevolution.common.items.weapons.DraconicBow;
 import com.brandon3055.draconicevolution.common.items.weapons.WyvernBow;
 import com.brandon3055.draconicevolution.common.network.MountUpdatePacket;
 import com.brandon3055.draconicevolution.common.utills.LogHelper;
+
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Random;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.ModelBiped;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.attributes.IAttributeInstance;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemArmor;
-import net.minecraftforge.client.event.FOVUpdateEvent;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.client.event.RenderPlayerEvent;
-import net.minecraftforge.client.model.AdvancedModelLoader;
-import net.minecraftforge.client.model.IModelCustom;
-import org.lwjgl.opengl.GL11;
 
 /**
  * Created by Brandon on 28/10/2014.
  */
 public class ClientEventHandler {
-    public static Map<EntityPlayer, XZPair<Float, Integer>> playerShieldStatus =
-            new HashMap<EntityPlayer, XZPair<Float, Integer>>();
+
+    public static Map<EntityPlayer, XZPair<Float, Integer>> playerShieldStatus = new HashMap<EntityPlayer, XZPair<Float, Integer>>();
 
     public static int elapsedTicks;
     private static float previousFOB = 0f;
@@ -68,9 +72,8 @@ public class ClientEventHandler {
         if (event.phase != TickEvent.Phase.START || event.type != TickEvent.Type.CLIENT || event.side != Side.CLIENT)
             return;
 
-        for (Iterator<Map.Entry<EntityPlayer, XZPair<Float, Integer>>> i =
-                        playerShieldStatus.entrySet().iterator();
-                i.hasNext(); ) {
+        for (Iterator<Map.Entry<EntityPlayer, XZPair<Float, Integer>>> i = playerShieldStatus.entrySet().iterator(); i
+                .hasNext();) {
             Map.Entry<EntityPlayer, XZPair<Float, Integer>> entry = i.next();
             if (elapsedTicks - entry.getValue().getValue() > 5) i.remove();
         }
@@ -122,17 +125,18 @@ public class ClientEventHandler {
                         || event.entity.getHeldItem().getItem() instanceof DraconicBow)
                 && Minecraft.getMinecraft().gameSettings.keyBindUseItem.getIsKeyPressed()) {
 
-            BowHandler.BowProperties properties =
-                    new BowHandler.BowProperties(event.entity.getHeldItem(), event.entity);
+            BowHandler.BowProperties properties = new BowHandler.BowProperties(
+                    event.entity.getHeldItem(),
+                    event.entity);
 
             event.newfov = ((6 - properties.zoomModifier) / 6) * event.fov;
 
-            //			if (ItemNBTHelper.getString(event.entity.getItemInUse(), "mode", "").equals("sharpshooter")){
-            //				if (event.entity.getItemInUse().getItem() instanceof WyvernBow) zMax = 1.35f;
-            //				else if (event.entity.getItemInUse().getItem() instanceof DraconicBow) zMax = 2.5f;
-            //				bowZoom = true;
-            //				tickSet = elapsedTicks;
-            //			}
+            // if (ItemNBTHelper.getString(event.entity.getItemInUse(), "mode", "").equals("sharpshooter")){
+            // if (event.entity.getItemInUse().getItem() instanceof WyvernBow) zMax = 1.35f;
+            // else if (event.entity.getItemInUse().getItem() instanceof DraconicBow) zMax = 2.5f;
+            // bowZoom = true;
+            // tickSet = elapsedTicks;
+            // }
 
         }
         // endregion
@@ -141,11 +145,10 @@ public class ClientEventHandler {
         CustomArmorHandler.ArmorSummery summery = new CustomArmorHandler.ArmorSummery().getSummery(event.entity);
 
         if (summery != null && summery.speedModifier > 0) {
-            IAttributeInstance iattributeinstance =
-                    event.entity.getEntityAttribute(SharedMonsterAttributes.movementSpeed);
-            float f = (float)
-                    ((iattributeinstance.getAttributeValue() / (double) event.entity.capabilities.getWalkSpeed() + 1.0D)
-                            / 2.0D);
+            IAttributeInstance iattributeinstance = event.entity
+                    .getEntityAttribute(SharedMonsterAttributes.movementSpeed);
+            float f = (float) ((iattributeinstance.getAttributeValue()
+                    / (double) event.entity.capabilities.getWalkSpeed() + 1.0D) / 2.0D);
             event.newfov /= f;
         }
 
@@ -211,8 +214,7 @@ public class ClientEventHandler {
 
             EntityPlayer viewingPlayer = Minecraft.getMinecraft().thePlayer;
 
-            int i = 5
-                    - (elapsedTicks - playerShieldStatus.get(event.entityPlayer).getValue());
+            int i = 5 - (elapsedTicks - playerShieldStatus.get(event.entityPlayer).getValue());
 
             GL11.glColor4f(1F - p, 0F, p, i / 5F);
 

@@ -1,7 +1,5 @@
 package com.brandon3055.draconicevolution.client.render.tile;
 
-import com.brandon3055.draconicevolution.common.items.MobSoul;
-import com.brandon3055.draconicevolution.common.tileentities.TilePlacedItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -13,7 +11,11 @@ import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+
 import org.lwjgl.opengl.GL11;
+
+import com.brandon3055.draconicevolution.common.items.MobSoul;
+import com.brandon3055.draconicevolution.common.tileentities.TilePlacedItem;
 
 /**
  * Created by Brandon on 27/07/2014.

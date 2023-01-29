@@ -1,5 +1,25 @@
 package com.brandon3055.draconicevolution.common.items.weapons;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnumEnchantmentType;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.EnumRarity;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemSword;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.StatCollector;
+import net.minecraft.world.World;
+import net.minecraftforge.client.IItemRenderer;
+
+import org.lwjgl.opengl.GL11;
+
 import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.common.utills.InfoHelper;
 import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
@@ -16,29 +36,14 @@ import com.brandon3055.draconicevolution.common.lib.Strings;
 import com.brandon3055.draconicevolution.common.network.ToolModePacket;
 import com.brandon3055.draconicevolution.common.utills.*;
 import com.google.common.collect.Multimap;
+
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import java.util.ArrayList;
-import java.util.List;
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnumEnchantmentType;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.EnumRarity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemSword;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.StatCollector;
-import net.minecraft.world.World;
-import net.minecraftforge.client.IItemRenderer;
-import org.lwjgl.opengl.GL11;
 
 public class DraconicSword extends ItemSword
         implements IEnergyContainerWeaponItem, IInventoryTool, IRenderTweak, IUpgradableItem, IHudDisplayItem {
+
     protected int capacity = BalanceConfigHandler.draconicWeaponsBaseStorage;
     protected int maxReceive = BalanceConfigHandler.draconicWeaponsMaxTransfer;
     protected int maxExtract = BalanceConfigHandler.draconicWeaponsMaxTransfer;
@@ -86,14 +91,17 @@ public class DraconicSword extends ItemSword
     public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity) {
         entity.hurtResistantTime = 0;
         ToolHandler.AOEAttack(
-                player, entity, stack, IConfigurableItem.ProfileHelper.getInteger(stack, References.ATTACK_AOE, 0));
+                player,
+                entity,
+                stack,
+                IConfigurableItem.ProfileHelper.getInteger(stack, References.ATTACK_AOE, 0));
         ToolHandler.damageEntityBasedOnHealth(entity, player, 0.2F);
         return true;
     }
 
     @Override
-    public void addInformation(
-            final ItemStack stack, final EntityPlayer player, final List list, final boolean extraInformation) {
+    public void addInformation(final ItemStack stack, final EntityPlayer player, final List list,
+            final boolean extraInformation) {
         if (InfoHelper.holdShiftForDetails(list)) {
             List<ItemConfigField> l = getFields(stack, 0);
             for (ItemConfigField f : l) list.add(f.getTooltipInfo());
@@ -103,10 +111,15 @@ public class DraconicSword extends ItemSword
         ToolBase.holdCTRLForUpgrades(list, stack);
         InfoHelper.addEnergyInfo(stack, list);
         list.add("");
-        list.add(EnumChatFormatting.BLUE + "+" + ToolHandler.getBaseAttackDamage(stack) + " "
-                + StatCollector.translateToLocal("info.de.attackDamage.txt"));
-        list.add(EnumChatFormatting.BLUE + "+20%" + " "
-                + StatCollector.translateToLocal("info.de.bonusHealthDamage.txt"));
+        list.add(
+                EnumChatFormatting.BLUE + "+"
+                        + ToolHandler.getBaseAttackDamage(stack)
+                        + " "
+                        + StatCollector.translateToLocal("info.de.attackDamage.txt"));
+        list.add(
+                EnumChatFormatting.BLUE + "+20%"
+                        + " "
+                        + StatCollector.translateToLocal("info.de.bonusHealthDamage.txt"));
     }
 
     @Override
@@ -189,10 +202,10 @@ public class DraconicSword extends ItemSword
     @Override
     public List<ItemConfigField> getFields(ItemStack stack, int slot) {
         List<ItemConfigField> list = new ArrayList<ItemConfigField>();
-        list.add(new ItemConfigField(References.INT_ID, slot, References.ATTACK_AOE)
-                .setMinMaxAndIncromente(0, EnumUpgrade.ATTACK_AOE.getUpgradePoints(stack), 1)
-                .readFromItem(stack, 1)
-                .setModifier("AOE"));
+        list.add(
+                new ItemConfigField(References.INT_ID, slot, References.ATTACK_AOE)
+                        .setMinMaxAndIncromente(0, EnumUpgrade.ATTACK_AOE.getUpgradePoints(stack), 1)
+                        .readFromItem(stack, 1).setModifier("AOE"));
         return list;
     }
 
@@ -227,6 +240,7 @@ public class DraconicSword extends ItemSword
     @Override
     public List<EnumUpgrade> getUpgrades(ItemStack itemstack) {
         return new ArrayList<EnumUpgrade>() {
+
             {
                 add(EnumUpgrade.RF_CAPACITY);
                 add(EnumUpgrade.ATTACK_AOE);
@@ -283,13 +297,25 @@ public class DraconicSword extends ItemSword
         for (ItemConfigField field : getFields(stack, 0))
             if (field.name.equals(References.ATTACK_AOE)) attackaoe = 1 + ((Integer) field.max * 2);
 
-        strings.add(InfoHelper.ITC() + StatCollector.translateToLocal("gui.de.RFCapacity.txt") + ": "
-                + InfoHelper.HITC() + Utills.formatNumber(getMaxEnergyStored(stack)));
-        strings.add(InfoHelper.ITC() + StatCollector.translateToLocal("info.de.attackDamage.txt") + ": "
-                + InfoHelper.HITC() + ToolHandler.getBaseAttackDamage(stack));
-        strings.add(InfoHelper.ITC() + StatCollector.translateToLocal("gui.de.max.txt") + " "
-                + StatCollector.translateToLocal("gui.de.AttackAOE.txt") + ": " + InfoHelper.HITC() + attackaoe + "x"
-                + attackaoe);
+        strings.add(
+                InfoHelper.ITC() + StatCollector.translateToLocal("gui.de.RFCapacity.txt")
+                        + ": "
+                        + InfoHelper.HITC()
+                        + Utills.formatNumber(getMaxEnergyStored(stack)));
+        strings.add(
+                InfoHelper.ITC() + StatCollector.translateToLocal("info.de.attackDamage.txt")
+                        + ": "
+                        + InfoHelper.HITC()
+                        + ToolHandler.getBaseAttackDamage(stack));
+        strings.add(
+                InfoHelper.ITC() + StatCollector.translateToLocal("gui.de.max.txt")
+                        + " "
+                        + StatCollector.translateToLocal("gui.de.AttackAOE.txt")
+                        + ": "
+                        + InfoHelper.HITC()
+                        + attackaoe
+                        + "x"
+                        + attackaoe);
 
         return strings;
     }
@@ -297,8 +323,9 @@ public class DraconicSword extends ItemSword
     @Override
     public List<String> getDisplayData(ItemStack stack) {
         List<String> list = new ArrayList<String>();
-        for (ItemConfigField field : getFields(stack, 0))
-            list.add(field.getTooltipInfo()); // list.add(field.getLocalizedName() + ": " + field.getFormattedValue());
+        for (ItemConfigField field : getFields(stack, 0)) list.add(field.getTooltipInfo()); // list.add(field.getLocalizedName()
+                                                                                            // + ": " +
+                                                                                            // field.getFormattedValue());
         return list;
     }
 
@@ -308,8 +335,8 @@ public class DraconicSword extends ItemSword
             ToolBase.handleModeChange(stack, player, InfoHelper.isShiftKeyDown(), InfoHelper.isCtrlKeyDown());
         } else if (world.isRemote && BrandonsCore.proxy.getMCServer() == null) {
             ToolBase.handleModeChange(stack, player, InfoHelper.isShiftKeyDown(), InfoHelper.isCtrlKeyDown());
-            DraconicEvolution.network.sendToServer(
-                    new ToolModePacket(InfoHelper.isShiftKeyDown(), InfoHelper.isCtrlKeyDown()));
+            DraconicEvolution.network
+                    .sendToServer(new ToolModePacket(InfoHelper.isShiftKeyDown(), InfoHelper.isCtrlKeyDown()));
         }
         return super.onItemRightClick(stack, world, player);
     }

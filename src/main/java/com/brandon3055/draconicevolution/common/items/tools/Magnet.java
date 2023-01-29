@@ -1,15 +1,7 @@
 package com.brandon3055.draconicevolution.common.items.tools;
 
-import com.brandon3055.brandonscore.common.utills.InfoHelper;
-import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
-import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.common.ModItems;
-import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
-import com.brandon3055.draconicevolution.common.items.ItemDE;
-import com.brandon3055.draconicevolution.common.lib.References;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import java.util.List;
+
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
@@ -25,10 +17,22 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerPickupXpEvent;
 
+import com.brandon3055.brandonscore.common.utills.InfoHelper;
+import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.common.ModItems;
+import com.brandon3055.draconicevolution.common.handler.ConfigHandler;
+import com.brandon3055.draconicevolution.common.items.ItemDE;
+import com.brandon3055.draconicevolution.common.lib.References;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 /**
  * Created by brandon3055 on 9/3/2016.
  */
 public class Magnet extends ItemDE {
+
     private IIcon draconium;
     private IIcon awakened;
 
@@ -75,8 +79,7 @@ public class Magnet extends ItemDE {
 
     @Override
     public void onUpdate(ItemStack stack, World world, Entity entity, int slot, boolean hotbar) {
-        if (!entity.isSneaking()
-                && entity.ticksExisted % 5 == 0
+        if (!entity.isSneaking() && entity.ticksExisted % 5 == 0
                 && isEnabled(stack)
                 && entity instanceof EntityPlayer) {
             int range = stack.getItemDamage() == 0 ? 8 : 32;
@@ -84,8 +87,12 @@ public class Magnet extends ItemDE {
             List<EntityItem> items = world.getEntitiesWithinAABB(
                     EntityItem.class,
                     AxisAlignedBB.getBoundingBox(
-                                    entity.posX, entity.posY, entity.posZ, entity.posX, entity.posY, entity.posZ)
-                            .expand(range, range, range));
+                            entity.posX,
+                            entity.posY,
+                            entity.posZ,
+                            entity.posX,
+                            entity.posY,
+                            entity.posZ).expand(range, range, range));
 
             boolean playSound = false;
 
@@ -94,8 +101,7 @@ public class Magnet extends ItemDE {
                     continue;
                 }
 
-                String name =
-                        Item.itemRegistry.getNameForObject(item.getEntityItem().getItem());
+                String name = Item.itemRegistry.getNameForObject(item.getEntityItem().getItem());
                 if (ConfigHandler.itemDislocatorBlacklistMap.containsKey(name)
                         && (ConfigHandler.itemDislocatorBlacklistMap.get(name) == -1
                                 || ConfigHandler.itemDislocatorBlacklistMap.get(name)
@@ -127,8 +133,12 @@ public class Magnet extends ItemDE {
                 List<EntityXPOrb> xp = world.getEntitiesWithinAABB(
                         EntityXPOrb.class,
                         AxisAlignedBB.getBoundingBox(
-                                        entity.posX, entity.posY, entity.posZ, entity.posX, entity.posY, entity.posZ)
-                                .expand(4, 4, 4));
+                                entity.posX,
+                                entity.posY,
+                                entity.posZ,
+                                entity.posX,
+                                entity.posY,
+                                entity.posZ).expand(4, 4, 4));
                 EntityPlayer player = (EntityPlayer) entity;
                 for (EntityXPOrb orb : xp) {
                     if (orb.field_70532_c == 0 && orb.isEntityAlive()) {
@@ -171,7 +181,10 @@ public class Magnet extends ItemDE {
     public void addInformation(ItemStack stack, EntityPlayer p_77624_2_, List list, boolean p_77624_4_) {
         list.add(StatCollector.translateToLocal("info.de.shiftRightClickToActivate.txt"));
         int range = stack.getItemDamage() == 0 ? 8 : 32;
-        list.add(InfoHelper.HITC() + range + InfoHelper.ITC() + " "
-                + StatCollector.translateToLocal("info.de.blockRange.txt"));
+        list.add(
+                InfoHelper.HITC() + range
+                        + InfoHelper.ITC()
+                        + " "
+                        + StatCollector.translateToLocal("info.de.blockRange.txt"));
     }
 }

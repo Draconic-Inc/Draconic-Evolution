@@ -1,9 +1,5 @@
 package com.brandon3055.draconicevolution.client.render.particle;
 
-import com.brandon3055.brandonscore.common.utills.Utills;
-import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
-import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
-import com.brandon3055.draconicevolution.common.lib.References;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.renderer.Tessellator;
@@ -11,12 +7,19 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+
 import org.lwjgl.opengl.GL11;
+
+import com.brandon3055.brandonscore.common.utills.Utills;
+import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
+import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
+import com.brandon3055.draconicevolution.common.lib.References;
 
 /**
  * Created by Brandon on 8/02/2015.
  */
 public class ParticleEnergyBeam extends EntityFX {
+
     /**
      * Power flow integer Ranges from 0 to 100
      */
@@ -49,26 +52,18 @@ public class ParticleEnergyBeam extends EntityFX {
 
     // todo make sure not dyrectly up or down on y axis, Set dead when player goes out of range, PaRTICLE eNGINE
 
-    private static ResourceLocation beamTextureBasic =
-            new ResourceLocation(References.MODID.toLowerCase(), "textures/models/EnergyBeamBlue.png");
-    private static ResourceLocation beamTextureAdvanced =
-            new ResourceLocation(References.MODID.toLowerCase(), "textures/models/EnergyBeamRed.png");
+    private static ResourceLocation beamTextureBasic = new ResourceLocation(
+            References.MODID.toLowerCase(),
+            "textures/models/EnergyBeamBlue.png");
+    private static ResourceLocation beamTextureAdvanced = new ResourceLocation(
+            References.MODID.toLowerCase(),
+            "textures/models/EnergyBeamRed.png");
 
     /**
      * @param offsetMode 0 = no offset, 1 = offset target end, 2 = offset start end, 3 offset both ends
      */
-    public ParticleEnergyBeam(
-            World world,
-            double x,
-            double y,
-            double z,
-            double tX,
-            double tY,
-            double tZ,
-            int maxAge,
-            int flow,
-            boolean advanced,
-            int offsetMode) {
+    public ParticleEnergyBeam(World world, double x, double y, double z, double tX, double tY, double tZ, int maxAge,
+            int flow, boolean advanced, int offsetMode) {
         super(world, x, y, z, 0.0D, 0.0D, 0.0D);
         this.particleRed = 1F;
         this.particleGreen = 1F;
@@ -116,8 +111,8 @@ public class ParticleEnergyBeam extends EntityFX {
     @Override
     public void onUpdate() {
         // 1.570797f
-        //		double sin = Math.sin(-1f + (float)(particleAge % 360) / 180f * 1.570797f);
-        //		LogHelper.info(sin + " " + particleAge % 360);
+        // double sin = Math.sin(-1f + (float)(particleAge % 360) / 180f * 1.570797f);
+        // LogHelper.info(sin + " " + particleAge % 360);
 
         this.prevPosX = this.posX;
         this.prevPosY = this.posY;
@@ -149,8 +144,8 @@ public class ParticleEnergyBeam extends EntityFX {
     }
 
     @Override
-    public void renderParticle(
-            Tessellator tessellator, float partialTick, float rotX, float rotXZ, float rotZ, float rotYZ, float rotXY) {
+    public void renderParticle(Tessellator tessellator, float partialTick, float rotX, float rotXZ, float rotZ,
+            float rotYZ, float rotXY) {
         if (!renderParticle) return;
         tessellator.draw();
         GL11.glPushMatrix();
@@ -226,7 +221,7 @@ public class ParticleEnergyBeam extends EntityFX {
         // GL11.glDepthMask(true);
         GL11.glBlendFunc(770, 771);
         GL11.glEnable(GL11.GL_CULL_FACE);
-        //	GL11.glPopAttrib();
+        // GL11.glPopAttrib();
         GL11.glPopMatrix();
 
         ResourceHandler.bindDefaultParticles();

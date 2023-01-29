@@ -1,7 +1,5 @@
 package com.brandon3055.draconicevolution.client.render.tile;
 
-import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
-import com.brandon3055.draconicevolution.common.tileentities.TileUpgradeModifier;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -10,7 +8,11 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+
 import org.lwjgl.opengl.GL11;
+
+import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
+import com.brandon3055.draconicevolution.common.tileentities.TileUpgradeModifier;
 
 public class RenderTileUpgradeModifier extends TileEntitySpecialRenderer {
 
@@ -119,8 +121,8 @@ public class RenderTileUpgradeModifier extends TileEntitySpecialRenderer {
         GL11.glPopMatrix();
     }
 
-    public static void render2DWithThicness(
-            Tessellator tess, float maxU, float minV, float minU, float maxV, int width, int height, float thickness) {
+    public static void render2DWithThicness(Tessellator tess, float maxU, float minV, float minU, float maxV, int width,
+            int height, float thickness) {
         double pix = 1D / 64D;
         tess.startDrawingQuads();
         tess.setNormal(0.0F, 0.0F, 1.0F);

@@ -1,8 +1,5 @@
 package com.brandon3055.draconicevolution.common.container;
 
-import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
-import com.brandon3055.draconicevolution.common.inventory.SlotOutput;
-import com.brandon3055.draconicevolution.common.tileentities.TileDissEnchanter;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -11,6 +8,10 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+
+import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
+import com.brandon3055.draconicevolution.common.inventory.SlotOutput;
+import com.brandon3055.draconicevolution.common.tileentities.TileDissEnchanter;
 
 public class ContainerDissEnchanter extends Container {
 
@@ -61,8 +62,8 @@ public class ContainerDissEnchanter extends Container {
                 }
             } else if ((!isStackValidForInventory(stack, 0) || !mergeItemStack(stack, 36, 37, false))
                     && (!isStackValidForInventory(stack, 1) || !mergeItemStack(stack, 37, 38, false))) {
-                return null;
-            }
+                        return null;
+                    }
 
             if (stack.stackSize == 0) {
                 slot.putStack(null);
@@ -85,6 +86,7 @@ public class ContainerDissEnchanter extends Container {
     }
 
     public class SlotBook extends Slot {
+
         public SlotBook(IInventory inventory, int id, int x, int y) {
             super(inventory, id, x, y);
         }
@@ -101,6 +103,7 @@ public class ContainerDissEnchanter extends Container {
     }
 
     public class SlotEnchantedItem extends Slot {
+
         public SlotEnchantedItem(IInventory inventory, int id, int x, int y) {
             super(inventory, id, x, y);
         }

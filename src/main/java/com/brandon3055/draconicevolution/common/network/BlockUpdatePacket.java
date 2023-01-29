@@ -1,12 +1,14 @@
 package com.brandon3055.draconicevolution.common.network;
 
+import net.minecraft.network.play.server.S23PacketBlockChange;
+
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.network.play.server.S23PacketBlockChange;
 
 public class BlockUpdatePacket implements IMessage {
+
     int x, y, z;
 
     public BlockUpdatePacket() {}
@@ -35,11 +37,12 @@ public class BlockUpdatePacket implements IMessage {
 
         @Override
         public IMessage onMessage(BlockUpdatePacket message, MessageContext ctx) {
-            ctx.getServerHandler()
-                    .playerEntity
-                    .playerNetServerHandler
-                    .sendPacket(new S23PacketBlockChange(
-                            message.x, message.y, message.z, ctx.getServerHandler().playerEntity.worldObj));
+            ctx.getServerHandler().playerEntity.playerNetServerHandler.sendPacket(
+                    new S23PacketBlockChange(
+                            message.x,
+                            message.y,
+                            message.z,
+                            ctx.getServerHandler().playerEntity.worldObj));
             return null;
         }
     }

@@ -1,19 +1,8 @@
 package com.brandon3055.draconicevolution.common.blocks.multiblock;
 
-import com.brandon3055.brandonscore.common.utills.InfoHelper;
-import com.brandon3055.brandonscore.common.utills.Utills;
-import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.common.ModBlocks;
-import com.brandon3055.draconicevolution.common.blocks.BlockDE;
-import com.brandon3055.draconicevolution.common.lib.References;
-import com.brandon3055.draconicevolution.common.lib.Strings;
-import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnergyStorageCore;
-import com.brandon3055.draconicevolution.common.utills.IHudDisplayBlock;
-import com.brandon3055.draconicevolution.common.utills.LogHelper;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import java.util.ArrayList;
 import java.util.List;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -25,6 +14,20 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import com.brandon3055.brandonscore.common.utills.InfoHelper;
+import com.brandon3055.brandonscore.common.utills.Utills;
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.common.ModBlocks;
+import com.brandon3055.draconicevolution.common.blocks.BlockDE;
+import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.lib.Strings;
+import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnergyStorageCore;
+import com.brandon3055.draconicevolution.common.utills.IHudDisplayBlock;
+import com.brandon3055.draconicevolution.common.utills.LogHelper;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Created by Brandon on 25/07/2014.
@@ -67,18 +70,10 @@ public class EnergyStorageCore extends BlockDE implements IHudDisplayBlock {
     }
 
     @Override
-    public boolean onBlockActivated(
-            World world,
-            int x,
-            int y,
-            int z,
-            EntityPlayer player,
-            int p_149727_6_,
-            float p_149727_7_,
-            float p_149727_8_,
-            float p_149727_9_) {
-        TileEnergyStorageCore tile =
-                (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TileEnergyStorageCore)
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int p_149727_6_,
+            float p_149727_7_, float p_149727_8_, float p_149727_9_) {
+        TileEnergyStorageCore tile = (world.getTileEntity(x, y, z) != null
+                && world.getTileEntity(x, y, z) instanceof TileEnergyStorageCore)
                         ? (TileEnergyStorageCore) world.getTileEntity(x, y, z)
                         : null;
         if (tile == null) {
@@ -89,9 +84,15 @@ public class EnergyStorageCore extends BlockDE implements IHudDisplayBlock {
         if (!world.isRemote) {
             player.addChatComponentMessage(new ChatComponentText("Tier:" + (tile.getTier() + 1)));
             String BN = String.valueOf(tile.getEnergyStored());
-            player.addChatComponentMessage(new ChatComponentText(StatCollector.translateToLocal("info.de.charge.txt")
-                    + ": " + Utills.formatNumber(tile.getEnergyStored()) + " / "
-                    + Utills.formatNumber(tile.getMaxEnergyStored()) + " [" + BN + " RF]"));
+            player.addChatComponentMessage(
+                    new ChatComponentText(
+                            StatCollector.translateToLocal("info.de.charge.txt") + ": "
+                                    + Utills.formatNumber(tile.getEnergyStored())
+                                    + " / "
+                                    + Utills.formatNumber(tile.getMaxEnergyStored())
+                                    + " ["
+                                    + BN
+                                    + " RF]"));
         }
         return true;
     }
@@ -100,20 +101,18 @@ public class EnergyStorageCore extends BlockDE implements IHudDisplayBlock {
     @SideOnly(Side.CLIENT)
     public boolean shouldSideBeRendered(IBlockAccess world, int x, int y, int z, int side) {
         TileEnergyStorageCore tile = (world.getTileEntity(
-                                        x - ForgeDirection.getOrientation(side).offsetX,
-                                        y - ForgeDirection.getOrientation(side).offsetY,
-                                        z - ForgeDirection.getOrientation(side).offsetZ)
-                                != null
-                        && world.getTileEntity(
-                                        x - ForgeDirection.getOrientation(side).offsetX,
-                                        y - ForgeDirection.getOrientation(side).offsetY,
-                                        z - ForgeDirection.getOrientation(side).offsetZ)
-                                instanceof TileEnergyStorageCore)
-                ? (TileEnergyStorageCore) world.getTileEntity(
+                x - ForgeDirection.getOrientation(side).offsetX,
+                y - ForgeDirection.getOrientation(side).offsetY,
+                z - ForgeDirection.getOrientation(side).offsetZ) != null
+                && world.getTileEntity(
                         x - ForgeDirection.getOrientation(side).offsetX,
                         y - ForgeDirection.getOrientation(side).offsetY,
-                        z - ForgeDirection.getOrientation(side).offsetZ)
-                : null;
+                        z - ForgeDirection.getOrientation(side).offsetZ) instanceof TileEnergyStorageCore)
+                                ? (TileEnergyStorageCore) world.getTileEntity(
+                                        x - ForgeDirection.getOrientation(side).offsetX,
+                                        y - ForgeDirection.getOrientation(side).offsetY,
+                                        z - ForgeDirection.getOrientation(side).offsetZ)
+                                : null;
         // LogHelper.error(world.getTileEntity(x - ForgeDirection.getOrientation(side).offsetX, y -
         // ForgeDirection.getOrientation(side).offsetY, z - ForgeDirection.getOrientation(side).offsetZ));
         if (tile == null) {
@@ -126,8 +125,8 @@ public class EnergyStorageCore extends BlockDE implements IHudDisplayBlock {
 
     @Override
     public void onNeighborBlockChange(World world, int x, int y, int z, Block p_149695_5_) {
-        TileEnergyStorageCore thisTile =
-                (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TileEnergyStorageCore)
+        TileEnergyStorageCore thisTile = (world.getTileEntity(x, y, z) != null
+                && world.getTileEntity(x, y, z) instanceof TileEnergyStorageCore)
                         ? (TileEnergyStorageCore) world.getTileEntity(x, y, z)
                         : null;
         if (thisTile != null && thisTile.isOnline() && thisTile.getTier() == 0) {
@@ -137,8 +136,8 @@ public class EnergyStorageCore extends BlockDE implements IHudDisplayBlock {
 
     @Override
     public void breakBlock(World world, int x, int y, int z, Block p_149749_5_, int p_149749_6_) {
-        TileEnergyStorageCore thisTile =
-                (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TileEnergyStorageCore)
+        TileEnergyStorageCore thisTile = (world.getTileEntity(x, y, z) != null
+                && world.getTileEntity(x, y, z) instanceof TileEnergyStorageCore)
                         ? (TileEnergyStorageCore) world.getTileEntity(x, y, z)
                         : null;
         if (thisTile != null && thisTile.isOnline() && thisTile.getTier() == 0) {
@@ -149,8 +148,8 @@ public class EnergyStorageCore extends BlockDE implements IHudDisplayBlock {
 
     @Override
     public AxisAlignedBB getSelectedBoundingBoxFromPool(World world, int x, int y, int z) {
-        TileEnergyStorageCore thisTile =
-                (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TileEnergyStorageCore)
+        TileEnergyStorageCore thisTile = (world.getTileEntity(x, y, z) != null
+                && world.getTileEntity(x, y, z) instanceof TileEnergyStorageCore)
                         ? (TileEnergyStorageCore) world.getTileEntity(x, y, z)
                         : null;
         if (thisTile != null && thisTile.isOnline()) {
@@ -169,8 +168,8 @@ public class EnergyStorageCore extends BlockDE implements IHudDisplayBlock {
     public List<String> getDisplayData(World world, int x, int y, int z) {
         List<String> list = new ArrayList<String>();
 
-        TileEnergyStorageCore tile =
-                (world.getTileEntity(x, y, z) != null && world.getTileEntity(x, y, z) instanceof TileEnergyStorageCore)
+        TileEnergyStorageCore tile = (world.getTileEntity(x, y, z) != null
+                && world.getTileEntity(x, y, z) instanceof TileEnergyStorageCore)
                         ? (TileEnergyStorageCore) world.getTileEntity(x, y, z)
                         : null;
         if (tile == null) {
@@ -181,9 +180,15 @@ public class EnergyStorageCore extends BlockDE implements IHudDisplayBlock {
         list.add(InfoHelper.HITC() + getLocalizedName());
         list.add("Tier: " + InfoHelper.ITC() + (tile.getTier() + 1));
         String BN = String.valueOf(tile.getEnergyStored());
-        list.add(StatCollector.translateToLocal("info.de.charge.txt") + ": " + InfoHelper.ITC()
-                + Utills.formatNumber(tile.getEnergyStored()) + " / " + Utills.formatNumber(tile.getMaxEnergyStored())
-                + " [" + BN + " RF]");
+        list.add(
+                StatCollector.translateToLocal("info.de.charge.txt") + ": "
+                        + InfoHelper.ITC()
+                        + Utills.formatNumber(tile.getEnergyStored())
+                        + " / "
+                        + Utills.formatNumber(tile.getMaxEnergyStored())
+                        + " ["
+                        + BN
+                        + " RF]");
 
         return list;
     }

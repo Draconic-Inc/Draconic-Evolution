@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.item.ItemStack;
+
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
@@ -17,8 +18,7 @@ public final class ItemDisplayManager {
     private int ticksCounter;
     private static final RenderItem renderItem = new RenderItem();
     private static final FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
-    private static final TextureManager textureManager =
-            Minecraft.getMinecraft().getTextureManager();
+    private static final TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
 
     public ItemDisplayManager(int ticks) {
         this.ticks = ticks;

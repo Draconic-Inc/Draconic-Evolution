@@ -5,16 +5,16 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 
 /**
- * Draconic Armor.tcn - TechneToTabulaImporter
- * Created using Tabula 5.0.0
+ * Draconic Armor.tcn - TechneToTabulaImporter Created using Tabula 5.0.0
  */
 public class ModelDraconicArmorOld extends ModelBiped { //
-    //    public ModelRenderer bipedHead;
-    //    public ModelRenderer bipedBody;
-    //    public ModelRenderer bipedRightArm;
-    //    public ModelRenderer bipedLeftArm;
-    //    public ModelRenderer bipedRightLeg;/
-    //    public ModelRenderer bipedLeftLeg;
+    // public ModelRenderer bipedHead;
+    // public ModelRenderer bipedBody;
+    // public ModelRenderer bipedRightArm;
+    // public ModelRenderer bipedLeftArm;
+    // public ModelRenderer bipedRightLeg;/
+    // public ModelRenderer bipedLeftLeg;
+
     public ModelRenderer MainHelmPieceRight1;
     public ModelRenderer MainHelmPieceRight2;
     public ModelRenderer MainHelmPieceLeft1;
@@ -108,8 +108,8 @@ public class ModelDraconicArmorOld extends ModelBiped { //
 
     private boolean isDraconic;
 
-    public ModelDraconicArmorOld(
-            float f, boolean isHelmet, boolean isChestPiece, boolean isLeggings, boolean isdBoots, boolean isDraconic) {
+    public ModelDraconicArmorOld(float f, boolean isHelmet, boolean isChestPiece, boolean isLeggings, boolean isdBoots,
+            boolean isDraconic) {
         super(f, 0.0f, 128, 128);
         this.textureWidth = 256;
         this.textureHeight = 128;
@@ -271,7 +271,10 @@ public class ModelDraconicArmorOld extends ModelBiped { //
             this.DrChestDecorationPiece1.setRotationPoint(0.0F, -0.5F, -4.0F);
             this.DrChestDecorationPiece1.addBox(0.0F, 0.0F, -0.5F, 5, 5, 1, 0.0F);
             this.setRotateAngle(
-                    DrChestDecorationPiece1, 0.1426609064282019F, -0.13533507716461618F, 0.7946695004338321F);
+                    DrChestDecorationPiece1,
+                    0.1426609064282019F,
+                    -0.13533507716461618F,
+                    0.7946695004338321F);
 
             this.ChestDecorationPiece2 = new ModelRenderer(this, 229, 38);
             this.ChestDecorationPiece2.setRotationPoint(-3.0F, 7.0F, -3.0F);

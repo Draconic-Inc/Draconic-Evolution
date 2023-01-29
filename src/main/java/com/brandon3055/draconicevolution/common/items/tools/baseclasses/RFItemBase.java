@@ -1,19 +1,8 @@
 package com.brandon3055.draconicevolution.common.items.tools.baseclasses;
 
-import cofh.api.energy.IEnergyContainerItem;
-import com.brandon3055.brandonscore.common.utills.InfoHelper;
-import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
-import com.brandon3055.brandonscore.common.utills.Utills;
-import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
-import com.brandon3055.draconicevolution.common.items.ItemDE;
-import com.brandon3055.draconicevolution.common.utills.IConfigurableItem;
-import com.brandon3055.draconicevolution.common.utills.IHudDisplayItem;
-import com.brandon3055.draconicevolution.common.utills.ItemConfigField;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import java.util.ArrayList;
 import java.util.List;
+
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
@@ -23,10 +12,26 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
+import cofh.api.energy.IEnergyContainerItem;
+
+import com.brandon3055.brandonscore.common.utills.InfoHelper;
+import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
+import com.brandon3055.brandonscore.common.utills.Utills;
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.common.entity.EntityPersistentItem;
+import com.brandon3055.draconicevolution.common.items.ItemDE;
+import com.brandon3055.draconicevolution.common.utills.IConfigurableItem;
+import com.brandon3055.draconicevolution.common.utills.IHudDisplayItem;
+import com.brandon3055.draconicevolution.common.utills.ItemConfigField;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 /**
  * Created by Brandon on 8/01/2015.
  */
 public class RFItemBase extends ItemDE implements IEnergyContainerItem, IConfigurableItem, IHudDisplayItem {
+
     protected int capacity = 0;
     /**
      * Max Receive
@@ -147,8 +152,10 @@ public class RFItemBase extends ItemDE implements IEnergyContainerItem, IConfigu
         List<String> list = new ArrayList<String>();
         if (hasProfiles()) {
             int preset = ItemNBTHelper.getInteger(stack, "ConfigProfile", 0);
-            list.add(EnumChatFormatting.DARK_PURPLE + StatCollector.translateToLocal("info.de.capacitorMode.txt") + ": "
-                    + ItemNBTHelper.getString(stack, "ProfileName" + preset, "Profile " + preset));
+            list.add(
+                    EnumChatFormatting.DARK_PURPLE + StatCollector.translateToLocal("info.de.capacitorMode.txt")
+                            + ": "
+                            + ItemNBTHelper.getString(stack, "ProfileName" + preset, "Profile " + preset));
         }
 
         for (ItemConfigField field : getFields(stack, 0)) {
@@ -156,8 +163,13 @@ public class RFItemBase extends ItemDE implements IEnergyContainerItem, IConfigu
         }
 
         if (getCapacity(stack) > 0) {
-            list.add(InfoHelper.ITC() + StatCollector.translateToLocal("info.de.charge.txt") + ": " + InfoHelper.HITC()
-                    + Utills.formatNumber(getEnergyStored(stack)) + " / " + Utills.formatNumber(capacity));
+            list.add(
+                    InfoHelper.ITC() + StatCollector.translateToLocal("info.de.charge.txt")
+                            + ": "
+                            + InfoHelper.HITC()
+                            + Utills.formatNumber(getEnergyStored(stack))
+                            + " / "
+                            + Utills.formatNumber(capacity));
         }
 
         return list;

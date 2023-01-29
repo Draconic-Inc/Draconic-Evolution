@@ -1,18 +1,21 @@
 package com.brandon3055.draconicevolution.client.render.item;
 
-import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
-import com.brandon3055.draconicevolution.common.items.weapons.BowHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.IItemRenderer;
 import net.minecraftforge.client.model.AdvancedModelLoader;
 import net.minecraftforge.client.model.IModelCustom;
+
 import org.lwjgl.opengl.GL11;
+
+import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
+import com.brandon3055.draconicevolution.common.items.weapons.BowHandler;
 
 /**
  * Created by brandon3055 on 29/10/2015.
  */
 public class RenderBowModel implements IItemRenderer {
+
     private boolean draconic;
     private IModelCustom[] wyvernModels = new IModelCustom[4];
     private IModelCustom[] draconicModels = new IModelCustom[4];
@@ -21,12 +24,10 @@ public class RenderBowModel implements IItemRenderer {
     public RenderBowModel(boolean draconic) {
         this.draconic = draconic;
 
-        for (int i = 0; i < 4; i++)
-            wyvernModels[i] =
-                    AdvancedModelLoader.loadModel(ResourceHandler.getResource("models/tools/WyvernBow0" + i + ".obj"));
-        for (int i = 0; i < 4; i++)
-            draconicModels[i] = AdvancedModelLoader.loadModel(
-                    ResourceHandler.getResource("models/tools/DraconicBow0" + i + ".obj"));
+        for (int i = 0; i < 4; i++) wyvernModels[i] = AdvancedModelLoader
+                .loadModel(ResourceHandler.getResource("models/tools/WyvernBow0" + i + ".obj"));
+        for (int i = 0; i < 4; i++) draconicModels[i] = AdvancedModelLoader
+                .loadModel(ResourceHandler.getResource("models/tools/DraconicBow0" + i + ".obj"));
         this.arrow = AdvancedModelLoader.loadModel(ResourceHandler.getResource("models/tools/ArrowCommon.obj"));
     }
 
@@ -80,8 +81,8 @@ public class RenderBowModel implements IItemRenderer {
         GL11.glPopMatrix();
     }
 
-    private void doRender(
-            IModelCustom modelCustom, ItemRenderType type, int drawState, BowHandler.BowProperties properties) {
+    private void doRender(IModelCustom modelCustom, ItemRenderType type, int drawState,
+            BowHandler.BowProperties properties) {
 
         if (type == ItemRenderType.EQUIPPED) {
             GL11.glScaled(0.8, 0.8, 0.8);
@@ -109,7 +110,9 @@ public class RenderBowModel implements IItemRenderer {
 
         if (drawState != -1) {
             GL11.glTranslated(
-                    0.3, 0.151, -0.2 + (drawState == 1 ? 0 : drawState == 2 ? 0.55 : drawState == 3 ? 1 : -0.7));
+                    0.3,
+                    0.151,
+                    -0.2 + (drawState == 1 ? 0 : drawState == 2 ? 0.55 : drawState == 3 ? 1 : -0.7));
             GL11.glRotatef(90, 0, 0, 1);
 
             if (properties != null && properties.energyBolt) {

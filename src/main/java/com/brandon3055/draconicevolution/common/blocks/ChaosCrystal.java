@@ -1,12 +1,8 @@
 package com.brandon3055.draconicevolution.common.blocks;
 
-import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.common.ModBlocks;
-import com.brandon3055.draconicevolution.common.ModItems;
-import com.brandon3055.draconicevolution.common.lib.References;
-import com.brandon3055.draconicevolution.common.tileentities.TileChaosShard;
 import java.util.List;
 import java.util.Random;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -20,6 +16,12 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.common.ModBlocks;
+import com.brandon3055.draconicevolution.common.ModItems;
+import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.tileentities.TileChaosShard;
 
 /**
  * Created by brandon3055 on 24/9/2015.
@@ -94,11 +96,9 @@ public class ChaosCrystal extends BlockDE {
         entity.attackEntityFrom(punishment, Float.MAX_VALUE);
     }
 
-    private static String[] naughtyList = new String[] {"item.blockMover", "tile.CardboardBox", "item.WandCasting"};
-    private static DamageSource punishment = new DamageSource("chrystalMoved")
-            .setDamageAllowedInCreativeMode()
-            .setDamageBypassesArmor()
-            .setDamageIsAbsolute();
+    private static String[] naughtyList = new String[] { "item.blockMover", "tile.CardboardBox", "item.WandCasting" };
+    private static DamageSource punishment = new DamageSource("chrystalMoved").setDamageAllowedInCreativeMode()
+            .setDamageBypassesArmor().setDamageIsAbsolute();
 
     @Override
     public void onBlockAdded(World world, int x, int y, int z) {

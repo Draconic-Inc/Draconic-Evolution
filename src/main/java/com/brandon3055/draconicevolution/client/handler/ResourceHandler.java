@@ -1,37 +1,43 @@
 package com.brandon3055.draconicevolution.client.handler;
 
-import com.brandon3055.draconicevolution.client.gui.componentguis.GUIManual;
-import com.brandon3055.draconicevolution.client.utill.CustomResourceLocation;
-import com.brandon3055.draconicevolution.common.lib.References;
-import com.brandon3055.draconicevolution.common.utills.LogHelper;
-import com.google.common.io.ByteStreams;
-import com.google.gson.stream.JsonWriter;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
-import cpw.mods.fml.relauncher.ReflectionHelper;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
+
 import javax.imageio.ImageIO;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.client.resources.FolderResourcePack;
 import net.minecraft.util.ResourceLocation;
+
 import org.apache.commons.io.FilenameUtils;
+
+import com.brandon3055.draconicevolution.client.gui.componentguis.GUIManual;
+import com.brandon3055.draconicevolution.client.utill.CustomResourceLocation;
+import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.utills.LogHelper;
+import com.google.common.io.ByteStreams;
+import com.google.gson.stream.JsonWriter;
+
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
+import cpw.mods.fml.relauncher.ReflectionHelper;
 
 /**
  * Created by Brandon on 8/02/2015.
  */
 public class ResourceHandler {
+
     public static ResourceHandler instance = new ResourceHandler();
     private static ResourceLocation defaultParticles;
-    private static ResourceLocation particles =
-            new ResourceLocation(References.RESOURCESPREFIX + "textures/particle/particles.png");
+    private static ResourceLocation particles = new ResourceLocation(
+            References.RESOURCESPREFIX + "textures/particle/particles.png");
     private static Map<String, ResourceLocation> cachedResources = new HashMap<String, ResourceLocation>();
     public static Map<String, CustomResourceLocation> downloadedImages = new HashMap<String, CustomResourceLocation>();
 
@@ -57,9 +63,8 @@ public class ResourceHandler {
     public static void init(FMLPreInitializationEvent event) {
         FMLCommonHandler.instance().bus().register(instance);
 
-        if (event != null)
-            savePath = event.getModConfigurationDirectory().getParentFile().getAbsolutePath()
-                    + "/config/draconicevolution";
+        if (event != null) savePath = event.getModConfigurationDirectory().getParentFile().getAbsolutePath()
+                + "/config/draconicevolution";
         GUIManual.loadPages();
 
         downloadThread = new DownloadThread(GUIManual.imageURLs);
@@ -67,6 +72,7 @@ public class ResourceHandler {
     }
 
     public static class DownloadThread extends Thread {
+
         private List<String> imageURLs;
         private boolean isFinished = false;
         private boolean wasSuccessful = true;
@@ -90,7 +96,9 @@ public class ResourceHandler {
                         downloadedImages.put(
                                 FilenameUtils.getName(fileName),
                                 new CustomResourceLocation(
-                                        FilenameUtils.getName(fileName), bi.getWidth(), bi.getHeight()));
+                                        FilenameUtils.getName(fileName),
+                                        bi.getWidth(),
+                                        bi.getHeight()));
                     } catch (MalformedURLException e) {
                         LogHelper.error("Image Read Failed");
                         e.printStackTrace();
@@ -219,10 +227,9 @@ public class ResourceHandler {
     public static void bindDefaultParticles() {
         if (defaultParticles == null) {
             try {
-                defaultParticles = (ResourceLocation) ReflectionHelper.getPrivateValue(
-                        EffectRenderer.class, null, "particleTextures", "field_110737_b");
-            } catch (Exception e) {
-            }
+                defaultParticles = (ResourceLocation) ReflectionHelper
+                        .getPrivateValue(EffectRenderer.class, null, "particleTextures", "field_110737_b");
+            } catch (Exception e) {}
         }
         if (defaultParticles != null) bindTexture(defaultParticles);
     }

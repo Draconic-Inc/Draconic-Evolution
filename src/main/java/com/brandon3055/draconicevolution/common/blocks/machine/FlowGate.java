@@ -1,19 +1,7 @@
 package com.brandon3055.draconicevolution.common.blocks.machine;
 
-import com.brandon3055.brandonscore.common.utills.Utills;
-import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.client.gui.GuiHandler;
-import com.brandon3055.draconicevolution.common.ModBlocks;
-import com.brandon3055.draconicevolution.common.ModItems;
-import com.brandon3055.draconicevolution.common.blocks.BlockDE;
-import com.brandon3055.draconicevolution.common.blocks.itemblocks.ItemBlockFrowGate;
-import com.brandon3055.draconicevolution.common.lib.References;
-import com.brandon3055.draconicevolution.common.tileentities.gates.TileFluidGate;
-import com.brandon3055.draconicevolution.common.tileentities.gates.TileFluxGate;
-import com.brandon3055.draconicevolution.common.tileentities.gates.TileGate;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import java.util.List;
+
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -28,6 +16,21 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import com.brandon3055.brandonscore.common.utills.Utills;
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.client.gui.GuiHandler;
+import com.brandon3055.draconicevolution.common.ModBlocks;
+import com.brandon3055.draconicevolution.common.ModItems;
+import com.brandon3055.draconicevolution.common.blocks.BlockDE;
+import com.brandon3055.draconicevolution.common.blocks.itemblocks.ItemBlockFrowGate;
+import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.tileentities.gates.TileFluidGate;
+import com.brandon3055.draconicevolution.common.tileentities.gates.TileFluxGate;
+import com.brandon3055.draconicevolution.common.tileentities.gates.TileGate;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Created by Brandon on 25/6/2015.
@@ -181,19 +184,9 @@ public class FlowGate extends BlockDE {
     }
 
     @Override
-    public boolean onBlockActivated(
-            World world,
-            int x,
-            int y,
-            int z,
-            EntityPlayer player,
-            int p_149727_6_,
-            float p_149727_7_,
-            float p_149727_8_,
-            float p_149727_9_) {
-        if (world.isRemote
-                && !(player.getHeldItem() != null
-                        && player.getHeldItem().getItem().equals(ModItems.wrench)))
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int p_149727_6_,
+            float p_149727_7_, float p_149727_8_, float p_149727_9_) {
+        if (world.isRemote && !(player.getHeldItem() != null && player.getHeldItem().getItem().equals(ModItems.wrench)))
             player.openGui(DraconicEvolution.instance, GuiHandler.GUIID_FLOW_GATE, world, x, y, z);
         return true;
     }
@@ -209,8 +202,8 @@ public class FlowGate extends BlockDE {
     }
 
     private void updateSignal(IBlockAccess world, int x, int y, int z) {
-        TileGate gate =
-                world.getTileEntity(x, y, z) instanceof TileGate ? (TileGate) world.getTileEntity(x, y, z) : null;
+        TileGate gate = world.getTileEntity(x, y, z) instanceof TileGate ? (TileGate) world.getTileEntity(x, y, z)
+                : null;
         if (gate != null && world instanceof World) {
             gate.signal = ((World) world).getStrongestIndirectPower(x, y, z);
             ((World) world).markBlockForUpdate(x, y, z);

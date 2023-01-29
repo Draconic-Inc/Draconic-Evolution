@@ -1,7 +1,5 @@
 package com.brandon3055.draconicevolution.common.items;
 
-import com.brandon3055.draconicevolution.common.lib.References;
-import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemFood;
@@ -10,10 +8,14 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.world.World;
 
+import com.brandon3055.draconicevolution.common.lib.References;
+import cpw.mods.fml.common.registry.GameRegistry;
+
 /**
  * Created by Brandon on 4/15/2015.
  */
 public class DezilsMarshmallow extends ItemFood {
+
     public DezilsMarshmallow() {
         super(100, 100F, true);
         this.setUnlocalizedName("draconicevolution:dezilsMarshmallow");

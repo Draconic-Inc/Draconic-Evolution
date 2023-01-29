@@ -1,16 +1,19 @@
 package com.brandon3055.draconicevolution.common.tileentities.energynet;
 
-import com.brandon3055.draconicevolution.client.render.particle.ParticleEnergyBeam;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+
+import com.brandon3055.draconicevolution.client.render.particle.ParticleEnergyBeam;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Created by Brandon on 11/02/2015.
  */
 public class LinkedEnergyDevice {
+
     @SideOnly(Side.CLIENT)
     public ParticleEnergyBeam beam;
     /**
@@ -31,12 +34,12 @@ public class LinkedEnergyDevice {
         this.zCoord = zCoord;
     }
 
-    //    public LinkedEnergyDevice(int xCoord, int yCoord, int zCoord, ParticleEnergyBeam beam) {
-    //        this.xCoord = xCoord;
-    //        this.yCoord = yCoord;
-    //        this.zCoord = zCoord;
-    //        this.beam = beam;
-    //    }
+    // public LinkedEnergyDevice(int xCoord, int yCoord, int zCoord, ParticleEnergyBeam beam) {
+    // this.xCoord = xCoord;
+    // this.yCoord = yCoord;
+    // this.zCoord = zCoord;
+    // this.beam = beam;
+    // }
 
     public TileEntity getTile(World world) {
         return world.getTileEntity(xCoord, yCoord, zCoord);
@@ -54,8 +57,7 @@ public class LinkedEnergyDevice {
             if (beam != null) {
                 compound.setShort("Flow_" + key, (short) beam.getFlow());
             }
-        } catch (Throwable e) {
-        }
+        } catch (Throwable e) {}
         return this;
     }
 
@@ -68,8 +70,7 @@ public class LinkedEnergyDevice {
             if (beam != null) {
                 beam.setFlow(compound.getShort("Flow" + key));
             }
-        } catch (Throwable e) {
-        }
+        } catch (Throwable e) {}
         return this;
     }
 

@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.OpenGlHelper;
+
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -21,8 +22,7 @@ public class GuiButtonAHeight extends GuiButton {
             FontRenderer fontrenderer = minecraft.fontRenderer;
             minecraft.getTextureManager().bindTexture(buttonTextures);
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-            this.field_146123_n = mouseX >= this.xPosition
-                    && mouseY >= this.yPosition
+            this.field_146123_n = mouseX >= this.xPosition && mouseY >= this.yPosition
                     && mouseX < this.xPosition + this.width
                     && mouseY < this.yPosition + this.height;
             int k = this.getHoverState(this.field_146123_n);
@@ -30,7 +30,12 @@ public class GuiButtonAHeight extends GuiButton {
             OpenGlHelper.glBlendFunc(770, 771, 1, 0);
             GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
             this.drawTexturedModalRect(
-                    this.xPosition, this.yPosition, 0, 46 + k * 20, width % 2 + this.width / 2, this.height);
+                    this.xPosition,
+                    this.yPosition,
+                    0,
+                    46 + k * 20,
+                    width % 2 + this.width / 2,
+                    this.height);
             this.drawTexturedModalRect(
                     width % 2 + this.xPosition + this.width / 2,
                     this.yPosition,

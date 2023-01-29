@@ -1,31 +1,35 @@
 package com.brandon3055.draconicevolution.client.render.tile;
 
-import com.brandon3055.draconicevolution.common.lib.References;
-import com.brandon3055.draconicevolution.common.tileentities.TileTestBlock;
-import cpw.mods.fml.client.FMLClientHandler;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.AdvancedModelLoader;
 import net.minecraftforge.client.model.IModelCustom;
+
 import org.lwjgl.opengl.GL11;
+
+import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.tileentities.TileTestBlock;
+import cpw.mods.fml.client.FMLClientHandler;
 
 /**
  * Created by Brandon on 24/07/2014.
  */
 public class RenderTileTestBlock extends TileEntitySpecialRenderer {
 
-    private static final ResourceLocation iner_model_texture =
-            new ResourceLocation(References.MODID.toLowerCase(), "textures/models/power_sphere_layer_1.png");
-    private static final ResourceLocation outer_model_texture =
-            new ResourceLocation(References.MODID.toLowerCase(), "textures/models/power_sphere_layer_2.png");
+    private static final ResourceLocation iner_model_texture = new ResourceLocation(
+            References.MODID.toLowerCase(),
+            "textures/models/power_sphere_layer_1.png");
+    private static final ResourceLocation outer_model_texture = new ResourceLocation(
+            References.MODID.toLowerCase(),
+            "textures/models/power_sphere_layer_2.png");
     private IModelCustom iner_model;
     private IModelCustom outer_model;
 
     public RenderTileTestBlock() {
-        iner_model = AdvancedModelLoader.loadModel(
-                new ResourceLocation(References.MODID.toLowerCase(), "models/power_sphere_layer_1.obj"));
+        iner_model = AdvancedModelLoader
+                .loadModel(new ResourceLocation(References.MODID.toLowerCase(), "models/power_sphere_layer_1.obj"));
         // outer_model = AdvancedModelLoader.loadModel(new ResourceLocation(References.MODID.toLowerCase(),
         // "models/power_sphere_layer_2.obj"));
     }

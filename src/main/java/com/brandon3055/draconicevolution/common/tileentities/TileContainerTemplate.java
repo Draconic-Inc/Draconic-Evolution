@@ -13,6 +13,7 @@ import net.minecraft.tileentity.TileEntity;
  * Created by Brandon on 27/06/2014.
  */
 public class TileContainerTemplate extends TileEntity implements ISidedInventory {
+
     ItemStack[] items = new ItemStack[9];
 
     // ==============================================LOGIC=======================================================//
@@ -111,7 +112,7 @@ public class TileContainerTemplate extends TileEntity implements ISidedInventory
 
     @Override
     public int[] getAccessibleSlotsFromSide(int var1) {
-        return new int[] {0, 1, 2, 3, 4, 5, 6, 7, 8};
+        return new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
     }
 
     @Override

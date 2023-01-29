@@ -1,11 +1,13 @@
 package com.brandon3055.draconicevolution.common.blocks;
 
-import com.brandon3055.draconicevolution.common.lib.References;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
+
+import com.brandon3055.draconicevolution.common.lib.References;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockDE extends Block {
 
@@ -25,7 +27,8 @@ public class BlockDE extends Block {
     public String getUnlocalizedName() {
         return String.format(
                 "tile.%s%s",
-                References.MODID.toLowerCase() + ":", getUnwrappedUnlocalizedName(super.getUnlocalizedName()));
+                References.MODID.toLowerCase() + ":",
+                getUnwrappedUnlocalizedName(super.getUnlocalizedName()));
     }
 
     public String getUnwrappedUnlocalizedName(String unlocalizedName) {
@@ -35,7 +38,7 @@ public class BlockDE extends Block {
     @Override
     @SideOnly(Side.CLIENT)
     public void registerBlockIcons(IIconRegister iconRegister) {
-        this.blockIcon = iconRegister.registerIcon(
-                References.RESOURCESPREFIX + getUnwrappedUnlocalizedName(super.getUnlocalizedName()));
+        this.blockIcon = iconRegister
+                .registerIcon(References.RESOURCESPREFIX + getUnwrappedUnlocalizedName(super.getUnlocalizedName()));
     }
 }

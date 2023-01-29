@@ -1,14 +1,15 @@
 package com.brandon3055.draconicevolution.common.tileentities.gates;
 
-import com.brandon3055.brandonscore.common.utills.Utills;
-import com.brandon3055.draconicevolution.common.lib.References;
-import com.brandon3055.draconicevolution.common.tileentities.TileObjectSync;
-import com.brandon3055.draconicevolution.integration.computers.IDEPeripheral;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import com.brandon3055.brandonscore.common.utills.Utills;
+import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.tileentities.TileObjectSync;
+import com.brandon3055.draconicevolution.integration.computers.IDEPeripheral;
 
 /**
  * Created by Brandon on 29/6/2015.
@@ -90,52 +91,40 @@ public abstract class TileGate extends TileObjectSync implements IDEPeripheral {
 
     @Override
     public String[] getMethodNames() {
-        return new String[] {
-            "getFlow",
-            "setOverrideEnabled",
-            "getOverrideEnabled",
-            "setFlowOverride",
-            "setSignalHighFlow",
-            "getSignalHighFlow",
-            "setSignalLowFlow",
-            "getSignalLowFlow"
-        };
+        return new String[] { "getFlow", "setOverrideEnabled", "getOverrideEnabled", "setFlowOverride",
+                "setSignalHighFlow", "getSignalHighFlow", "setSignalLowFlow", "getSignalLowFlow" };
     }
 
     @Override
     public Object[] callMethod(String method, Object... args) {
         if (method.equals("getFlow")) {
-            return new Object[] {getActualFlow()};
+            return new Object[] { getActualFlow() };
         } else if (method.equals("setOverrideEnabled")) {
-            if (args.length == 0 || !(args[0] instanceof Boolean))
-                throw new IllegalArgumentException("Expected Boolean got "
-                        + (args.length == 0 ? "nil" : args[0].getClass().getSimpleName()));
+            if (args.length == 0 || !(args[0] instanceof Boolean)) throw new IllegalArgumentException(
+                    "Expected Boolean got " + (args.length == 0 ? "nil" : args[0].getClass().getSimpleName()));
             flowOverridden = (Boolean) args[0];
             if (!worldObj.isRemote) sendObjectToClient(References.BOOLEAN_ID, 2, flowOverridden);
         } else if (method.equals("getOverrideEnabled")) {
-            return new Object[] {flowOverridden};
+            return new Object[] { flowOverridden };
         } else if (method.equals("setFlowOverride")) {
-            if (args.length == 0 || !(args[0] instanceof Number))
-                throw new IllegalArgumentException("Expected Number got "
-                        + (args.length == 0 ? "nil" : args[0].getClass().getSimpleName()));
+            if (args.length == 0 || !(args[0] instanceof Number)) throw new IllegalArgumentException(
+                    "Expected Number got " + (args.length == 0 ? "nil" : args[0].getClass().getSimpleName()));
             flowOverride = Utills.toInt((Double) args[0]);
             if (!worldObj.isRemote) sendObjectToClient(References.INT_ID, 3, flowOverride);
         } else if (method.equals("setSignalHighFlow")) {
-            if (args.length == 0 || !(args[0] instanceof Number))
-                throw new IllegalArgumentException("Expected Number got "
-                        + (args.length == 0 ? "nil" : args[0].getClass().getSimpleName()));
+            if (args.length == 0 || !(args[0] instanceof Number)) throw new IllegalArgumentException(
+                    "Expected Number got " + (args.length == 0 ? "nil" : args[0].getClass().getSimpleName()));
             flowRSHigh = Utills.toInt((Double) args[0]);
             if (!worldObj.isRemote) sendObjectToClient(References.INT_ID, 4, flowRSHigh);
         } else if (method.equals("getSignalHighFlow")) {
-            return new Object[] {flowRSHigh};
+            return new Object[] { flowRSHigh };
         } else if (method.equals("setSignalLowFlow")) {
-            if (args.length == 0 || !(args[0] instanceof Number))
-                throw new IllegalArgumentException("Expected Number got "
-                        + (args.length == 0 ? "nil" : args[0].getClass().getSimpleName()));
+            if (args.length == 0 || !(args[0] instanceof Number)) throw new IllegalArgumentException(
+                    "Expected Number got " + (args.length == 0 ? "nil" : args[0].getClass().getSimpleName()));
             flowRSLow = Utills.toInt((Double) args[0]);
             if (!worldObj.isRemote) sendObjectToClient(References.INT_ID, 5, flowRSLow);
         } else if (method.equals("getSignalLowFlow")) {
-            return new Object[] {flowRSLow};
+            return new Object[] { flowRSLow };
         }
 
         return new Object[0];

@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.OpenGlHelper;
+
 import org.lwjgl.opengl.GL11;
 
 public class CustomGuiButton extends GuiButton {
@@ -17,8 +18,7 @@ public class CustomGuiButton extends GuiButton {
             FontRenderer fontrenderer = minecraft.fontRenderer;
             minecraft.getTextureManager().bindTexture(buttonTextures);
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-            this.field_146123_n = p_146112_2_ >= this.xPosition
-                    && p_146112_3_ >= this.yPosition
+            this.field_146123_n = p_146112_2_ >= this.xPosition && p_146112_3_ >= this.yPosition
                     && p_146112_2_ < this.xPosition + this.width
                     && p_146112_3_ < this.yPosition + this.height;
             int k = this.getHoverState(this.field_146123_n);

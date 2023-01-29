@@ -1,15 +1,7 @@
 package com.brandon3055.draconicevolution.common.items.tools;
 
-import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
-import com.brandon3055.draconicevolution.DraconicEvolution;
-import com.brandon3055.draconicevolution.common.ModItems;
-import com.brandon3055.draconicevolution.common.items.ItemDE;
-import com.brandon3055.draconicevolution.common.lib.References;
-import com.brandon3055.draconicevolution.common.lib.Strings;
-import com.brandon3055.draconicevolution.common.utills.LogHelper;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import java.util.List;
+
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
@@ -20,10 +12,22 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import com.brandon3055.brandonscore.common.utills.ItemNBTHelper;
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.common.ModItems;
+import com.brandon3055.draconicevolution.common.items.ItemDE;
+import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.lib.Strings;
+import com.brandon3055.draconicevolution.common.utills.LogHelper;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 /**
  * Created by Brandon on 25/09/2014.
  */
 public class AdminSpawnEgg extends ItemDE {
+
     public AdminSpawnEgg() {
         this.setUnlocalizedName(Strings.adminSpawnEggName);
         this.setCreativeTab(DraconicEvolution.tabBlocksItems);
@@ -31,8 +35,7 @@ public class AdminSpawnEgg extends ItemDE {
     }
 
     public String getItemStackDisplayName(ItemStack stack) {
-        NBTTagCompound compound =
-                (NBTTagCompound) ItemNBTHelper.getCompound(stack).copy();
+        NBTTagCompound compound = (NBTTagCompound) ItemNBTHelper.getCompound(stack).copy();
         if (compound == null) return null;
         String name = compound.getString("EntityName");
         return "Spawn " + name;
@@ -72,19 +75,9 @@ public class AdminSpawnEgg extends ItemDE {
     }
 
     @Override
-    public boolean onItemUse(
-            ItemStack stack,
-            EntityPlayer player,
-            World world,
-            int x,
-            int y,
-            int z,
-            int side,
-            float p_77648_8_,
-            float p_77648_9_,
-            float p_77648_10_) {
-        NBTTagCompound compound =
-                (NBTTagCompound) ItemNBTHelper.getCompound(stack).copy();
+    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side,
+            float p_77648_8_, float p_77648_9_, float p_77648_10_) {
+        NBTTagCompound compound = (NBTTagCompound) ItemNBTHelper.getCompound(stack).copy();
 
         if (compound == null) return false;
 

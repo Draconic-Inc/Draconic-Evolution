@@ -1,12 +1,7 @@
 package com.brandon3055.draconicevolution.client.gui;
 
-import com.brandon3055.brandonscore.client.utills.GuiHelper;
-import com.brandon3055.draconicevolution.common.container.ContainerGenerator;
-import com.brandon3055.draconicevolution.common.lib.References;
-import com.brandon3055.draconicevolution.common.tileentities.TileGenerator;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import java.util.ArrayList;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -15,7 +10,16 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.ForgeDirection;
+
 import org.lwjgl.opengl.GL11;
+
+import com.brandon3055.brandonscore.client.utills.GuiHelper;
+import com.brandon3055.draconicevolution.common.container.ContainerGenerator;
+import com.brandon3055.draconicevolution.common.lib.References;
+import com.brandon3055.draconicevolution.common.tileentities.TileGenerator;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GUIGenerator extends GuiContainer {
@@ -34,8 +38,9 @@ public class GUIGenerator extends GuiContainer {
         this.player = invPlayer.player;
     }
 
-    private static final ResourceLocation texture =
-            new ResourceLocation(References.MODID.toLowerCase(), "textures/gui/GGrinder.png");
+    private static final ResourceLocation texture = new ResourceLocation(
+            References.MODID.toLowerCase(),
+            "textures/gui/GGrinder.png");
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float f, int X, int Y) {
@@ -45,13 +50,12 @@ public class GUIGenerator extends GuiContainer {
         drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
         drawTexturedModalRect(guiLeft + 63, guiTop + 34, 0, ySize, 18, 18); // fuel box
         drawTexturedModalRect(guiLeft + 97, guiTop + 34, 18, ySize, 18, 18); // flame box
-        if (tile.getStackInSlot(0) == null)
-            drawTexturedModalRect(guiLeft + 63, guiTop + 34, 36, ySize, 18, 18); // fuel box
+        if (tile.getStackInSlot(0) == null) drawTexturedModalRect(guiLeft + 63, guiTop + 34, 36, ySize, 18, 18); // fuel
+                                                                                                                 // box
 
         float power = (float) tile.getEnergyStored(ForgeDirection.DOWN)
-                        / (float) tile.getMaxEnergyStored(ForgeDirection.DOWN)
-                        * -1
-                + 1;
+                / (float) tile.getMaxEnergyStored(ForgeDirection.DOWN)
+                * -1 + 1;
         float fuel = tile.burnTimeRemaining / ((float) tile.burnTime) * -1 + 1;
 
         drawTexturedModalRect(
@@ -76,8 +80,11 @@ public class GUIGenerator extends GuiContainer {
         if (GuiHelper.isInRect(83, 10, 12, 40, x, y)) {
             ArrayList<String> internal = new ArrayList<String>();
             internal.add("Internal Storage");
-            internal.add("" + EnumChatFormatting.DARK_BLUE + tile.getEnergyStored(ForgeDirection.UP) + "/"
-                    + tile.getMaxEnergyStored(ForgeDirection.UP));
+            internal.add(
+                    "" + EnumChatFormatting.DARK_BLUE
+                            + tile.getEnergyStored(ForgeDirection.UP)
+                            + "/"
+                            + tile.getMaxEnergyStored(ForgeDirection.UP));
             drawHoveringText(internal, x + guiLeft, y + guiTop, fontRendererObj);
         }
     }
@@ -87,13 +94,12 @@ public class GUIGenerator extends GuiContainer {
 
         int x = X - guiLeft;
         int y = Y - guiTop;
-        /*	if (GuiHelper.isInRect(83, 10, 95, 50, x, y)) {
-        			ArrayList<String> internal = new ArrayList<String>();
-        			internal.add("Internal Storage");
-        			internal.add("" + EnumChatFormatting.DARK_BLUE + tile.getEnergyStored(ForgeDirection.UP) + "/" + tile.getMaxEnergyStored(ForgeDirection.UP));
-        			drawHoveringText(internal, x, y, fontRendererObj);
-        		}
-        */
+        /*
+         * if (GuiHelper.isInRect(83, 10, 95, 50, x, y)) { ArrayList<String> internal = new ArrayList<String>();
+         * internal.add("Internal Storage"); internal.add("" + EnumChatFormatting.DARK_BLUE +
+         * tile.getEnergyStored(ForgeDirection.UP) + "/" + tile.getMaxEnergyStored(ForgeDirection.UP));
+         * drawHoveringText(internal, x, y, fontRendererObj); }
+         */
     }
 
     @Override
@@ -117,6 +123,6 @@ public class GUIGenerator extends GuiContainer {
         super.updateScreen();
     }
 
-    //                      ####Draw at############ read from size
+    // ####Draw at############ read from size
     // drawTexturedModalRect(guiLeft + 37, guiTop + 4, 0, 143, 37, 38);
 }

@@ -1,10 +1,11 @@
 package com.brandon3055.draconicevolution.common.container;
 
-import com.brandon3055.draconicevolution.common.tileentities.TileSunDial;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
+
+import com.brandon3055.draconicevolution.common.tileentities.TileSunDial;
 
 public class ContainerSunDial extends Container {
 

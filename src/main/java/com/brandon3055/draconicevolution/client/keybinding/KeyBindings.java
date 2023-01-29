@@ -1,11 +1,14 @@
 package com.brandon3055.draconicevolution.client.keybinding;
 
+import net.minecraft.client.settings.KeyBinding;
+
+import org.lwjgl.input.Keyboard;
+
 import com.brandon3055.draconicevolution.common.lib.References;
+
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.client.settings.KeyBinding;
-import org.lwjgl.input.Keyboard;
 
 /**
  * Created by Brandon on 14/08/2014.
