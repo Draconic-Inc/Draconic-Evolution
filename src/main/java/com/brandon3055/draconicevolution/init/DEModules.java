@@ -63,7 +63,13 @@ public class DEModules {
     @ObjectHolder("draconic_aoe")                   public static Module<AOEData>           draconicAOE;
     @ObjectHolder("chaotic_aoe")                    public static Module<AOEData>           chaoticAOE;
 
+
     @ObjectHolder("wyvern_mining_stability")        public static Module<NoData>            wyvernMiningStability;
+
+
+    @ObjectHolder("wyvern_tree_harvest")            public static Module<TreeHarvestData>   wyvernTreeHarvest;
+    @ObjectHolder("draconic_tree_harvest")          public static Module<TreeHarvestData>   draconicTreeHarvest;
+    @ObjectHolder("chaotic_tree_harvest")           public static Module<TreeHarvestData>   chaoticTreeHarvest;
 
     @ObjectHolder("wyvern_junk_filter")             public static Module<NoData>            wyvernJunkFilter;
 
@@ -177,9 +183,9 @@ public class DEModules {
 
         register(new ModuleImpl<>(MINING_STABILITY,     WYVERN,         noData()),                                  "wyvern_mining_stability");
 
-        register(new ModuleImpl<>(TREE_HARVEST,         WYVERN,         noData()),                                  "wyvern_tree_harvest");
-        register(new ModuleImpl<>(TREE_HARVEST,         DRACONIC,       noData()),                                  "draconic_tree_harvest");
-        register(new ModuleImpl<>(TREE_HARVEST,         CHAOTIC,        noData()),                                  "chaotic_tree_harvest");
+        register(new ModuleImpl<>(TREE_HARVEST,         WYVERN,         treeHarvestData(0)),                        "wyvern_tree_harvest");
+        register(new ModuleImpl<>(TREE_HARVEST,         DRACONIC,       treeHarvestData(32)),                       "draconic_tree_harvest");
+        register(new ModuleImpl<>(TREE_HARVEST,         CHAOTIC,        treeHarvestData(64)),                       "chaotic_tree_harvest");
 
         register(new ModuleImpl<>(JUNK_FILTER,          WYVERN,         noData()),                                  "wyvern_junk_filter");
 
@@ -375,6 +381,10 @@ public class DEModules {
     private static Function<Module<ProjectileData>, ProjectileData> projDamageData(float damageModifier, float penaltyModifier) {
         float accuracyPenalty = damageModifier * -0.125F * penaltyModifier;
         return projectileData(0, accuracyPenalty, 0, 0, damageModifier);
+    }
+
+    private static Function<Module<TreeHarvestData>, TreeHarvestData> treeHarvestData(int defRange) {
+        return e -> new TreeHarvestData(ModuleCfg.getModuleInt(e, "range", defRange));
     }
 
     private static Function<Module<NoData>, NoData> noData() {

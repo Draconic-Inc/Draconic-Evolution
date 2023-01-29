@@ -57,7 +57,7 @@ public interface IModularArmor extends IModularItem, ElytraEnabledItem {
     @Override
     default boolean elytraFlightTickBC(ItemStack stack, LivingEntity entity, int flightTicks) {
         LazyOptional<IOPStorage> power = stack.getCapability(DECapabilities.OP_STORAGE);
-        boolean creative = entity instanceof Player player && player.abilities.instabuild;
+        boolean creative = entity instanceof Player player && player.getAbilities().instabuild;
         power.ifPresent(storage -> {
             int energy = EquipCfg.elytraFlightEnergy;
             if (storage.getOPStored() < energy && !creative) {

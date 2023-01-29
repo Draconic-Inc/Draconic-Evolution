@@ -301,6 +301,12 @@ public class LangGenerator extends LanguageProvider {
         helper.add("ender_storage.owner",                                       "Owner");
         helper.add("ender_storage.how_to_clear",                                "Shift right click module to clear");
 
+        helper.add(ModuleTypes.TREE_HARVEST,                                    "Tree Harvest");
+        helper.add("tree_harvest_range.name",                                   "Range");
+        helper.add("tree_harvest_range.value",                                  "%s Blocks");
+        helper.add("tree_harvest.single",                                       "Single: Hold right click on tree.");
+        helper.add("tree_harvest.area",                                         "Area: Hold right click in centre of target area.");
+
         helper.add(ModuleTypes.AUTO_FIRE,                                       "Auto Fire");
 
         helper.add(ModuleTypes.PROJ_ANTI_IMMUNE,                                "Projectile Immunity Cancellation");
@@ -351,6 +357,10 @@ public class LangGenerator extends LanguageProvider {
 
         helper.add(DEModules.wyvernEnderCollection,                             "Ender Collection Module");
         helper.add(DEModules.draconicEnderCollection,                           "Filterable Ender Collection Module");
+
+        helper.add(DEModules.wyvernTreeHarvest,                                 "Wyvern Tree Harvester");
+        helper.add(DEModules.draconicTreeHarvest,                               "Draconic Forest Reduction Assistant");
+        helper.add(DEModules.chaoticTreeHarvest,                                "Chaotic Deforestation Module");
 
         helper.add(DEModules.wyvernAutoFire,                                    "Auto Fire Module");
 
@@ -760,6 +770,8 @@ public class LangGenerator extends LanguageProvider {
         helper.add("requires_energy_press",                                     "Press %s to open module config.");
         helper.add("error.no_modular_items",                                    "You don't have any modular items in your inventory!");
         helper.add("error.module_install_limit",                                "Install limit reached for this module.");
+        helper.add("error.only_one_use_override_module",                        "There is already a module that overrides right click functionality installed. Only one such module can be installed at a time!");
+        helper.add("error.not_compatible_with",                                 "Not compatible with");
 
         helper.add("cant_install.level_high",                                   "The module tier is too high for this modular item.");
         helper.add("cant_install.not_supported",                                "This module is not supported by this modular item.");
