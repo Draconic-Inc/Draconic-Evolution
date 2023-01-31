@@ -58,27 +58,26 @@ public class ModularItemRenderOverrideHandler {
         }
 
         if (event.getHand() == InteractionHand.MAIN_HAND && stack.getItem() instanceof ModularStaff) {
-            event.setCanceled(true);
+            modularItemRenderOverride(stack, event);
+            if (event.isCanceled()) return;
+
             HumanoidArm handside = mc.player.getMainArm();
 
             boolean rightHand = handside == HumanoidArm.RIGHT;
             float swingProgress = event.getSwingProgress(); //Going to need something custom when
-            float equippedProgress = 0 /* event.getEquipProgress() GET FUCKED RECHARGE ANIMATION!!!!*/;
+            float equippedProgress = 0;
             PoseStack mStack = event.getPoseStack();
             mStack.pushPose();
 
-//            float f5 = -0.4F * MathHelper.sin(MathHelper.sqrt(swingProgress) * (float)Math.PI);
             float f5 = -0.3F * Mth.sin(Mth.sqrt(swingProgress) * (float) Math.PI); //Shift Left
-//            float f6 = 0.2F * MathHelper.sin(MathHelper.sqrt(swingProgress) * ((float)Math.PI * 2F));
             float f6 = 0.05F * Mth.sin(Mth.sqrt(swingProgress) * ((float) Math.PI * 2F));
-//            float f10 = -0.2F * MathHelper.sin(swingProgress * (float)Math.PI);
             float f10 = -0.3F * Mth.sin(swingProgress * (float) Math.PI);//Shift Forward
 
             int l = rightHand ? 1 : -1;
             mStack.translate((float) l * f5, f6, f10);
-            applyItemArmTransform(mStack, handside, equippedProgress);
 
-            modularItemRenderOverride(stack, event);
+            event.setCanceled(true);
+            applyItemArmTransform(mStack, handside, equippedProgress);
 
             mc.getItemInHandRenderer().renderItem(mc.player, stack, rightHand ? ItemTransforms.TransformType.FIRST_PERSON_RIGHT_HAND : ItemTransforms.TransformType.FIRST_PERSON_LEFT_HAND, !rightHand, mStack, event.getMultiBufferSource(), event.getPackedLight());
             mStack.popPose();
