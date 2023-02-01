@@ -352,7 +352,7 @@ public class ProcessExplosion implements IProcess {
         LogHelper.startTimer("Adding Blocks For Removal");
 
         ExplosionHelper removalHelper = new ExplosionHelper(world, origin.pos());
-        int i = 0;
+        int blocksRemoved = 0;
 
         removalHelper.setBlocksForRemoval(destroyedBlocks);
 
@@ -360,7 +360,7 @@ public class ProcessExplosion implements IProcess {
 
         LogHelper.startTimer("Adding update Blocks");
         removalHelper.addBlocksForUpdate(blocksToUpdate);
-        LogHelper.dev("Blocks Removed: " + i);
+        LogHelper.dev("Blocks Removed: " + blocksRemoved);
         LogHelper.stopTimer();
 
         LogHelper.startTimer("Adding Lava");
@@ -379,17 +379,20 @@ public class ProcessExplosion implements IProcess {
             DraconicNetwork.sendExplosionEffect(world.dimension(), pos, radius * 4, true);
         }
 
-        new DelayedExecutor(30) {
-            @Override
-            public void execute(Object[] args) {
-                List<Entity> list = world.getEntitiesOfClass(Entity.class, new AABB(pos, pos.offset(1, 1, 1)).inflate(radius * 2.5, radius * 2.5, radius * 2.5));
-                for (Entity e : list) {
-                    double dist = Vec3D.getCenter(pos).distance(e);
-                    float dmg = 10000F * (1F - (float) (dist / (radius * 1.2D)));
-                    e.hurt(fusionExplosion, dmg);
+        for (int i = 0; i <= radius; i+=10) {
+        	double calcRadius = radius * (i / (double)radius);
+            new DelayedExecutor(i + 30) {
+                @Override
+                public void execute(Object[] args) {
+                    List<Entity> list = world.getEntitiesOfClass(Entity.class, new AABB(pos, pos.offset(1, 1, 1)).inflate(calcRadius * 2.5, calcRadius * 2.5, calcRadius * 2.5));
+                    for (Entity e : list) {
+                        double dist = Vec3D.getCenter(pos).distance(e);
+                        float dmg = (1000) * (1F - (float) (dist / (calcRadius * 1.2D)));
+                        e.hurt(fusionExplosion, dmg);
+                    }
                 }
-            }
-        }.run();
+            }.run();
+        }
 
         LogHelper.dev("Total explosion time: " + (System.currentTimeMillis() - l) / 1000D + "s");
         return true;
