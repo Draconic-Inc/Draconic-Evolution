@@ -205,6 +205,7 @@ public abstract class FilteredModuleEntity<T extends ModuleData<T>> extends Modu
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public boolean renderModuleOverlay(GuiElement<?> parent, ModuleContext context, MultiBufferSource getter, PoseStack poseStack, int x, int y, int width, int height, double mouseX, double mouseY, float partialTicks, int hoverTicks) {
         if (slotsCount == 0) {
             return super.renderModuleOverlay(parent, context, getter, poseStack, x, y, width, height, mouseX, mouseY, partialTicks, hoverTicks);

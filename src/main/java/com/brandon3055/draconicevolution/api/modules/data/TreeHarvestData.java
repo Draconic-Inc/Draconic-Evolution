@@ -16,24 +16,33 @@ import java.util.Map;
  */
 public class TreeHarvestData implements ModuleData<TreeHarvestData> {
     private final int range;
+    private final int speed;
 
-    public TreeHarvestData(int range) {
+    public TreeHarvestData(int range, int speed) {
         this.range = range;
+        this.speed = speed;
     }
 
     public int getRange() {
         return range;
     }
 
+    public int getSpeed() {
+        return speed;
+    }
+
     @Override
     public TreeHarvestData combine(TreeHarvestData other) {
-        return new TreeHarvestData(range + other.range);
+        return new TreeHarvestData(range + other.range, speed + other.speed);
     }
 
     @Override
     public void addInformation(Map<Component, Component> map, ModuleContext context) {
         if (getRange() > 0) {
             map.put(new TranslatableComponent("module.draconicevolution.tree_harvest_range.name"), new TranslatableComponent("module.draconicevolution.tree_harvest_range.value", range));
+        }
+        if (getSpeed() > 0) {
+            map.put(new TranslatableComponent("module.draconicevolution.tree_harvest_speed.name"), new TranslatableComponent("module.draconicevolution.tree_harvest_speed.value", speed));
         }
     }
 

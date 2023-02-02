@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#A#",
+    "CMC",
+    "#A#"
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:ingots/draconium"
+    },
+    "A": {
+      "item": "minecraft:diamond_axe"
+    },
+    "M": {
+      "item": "draconicevolution:module_core"
+    },
+    "C": {
+      "item": "draconicevolution:draconium_core"
+    }
+  },
+  "result": {
+    "item": "draconicevolution:wyvern_tree_harvest_module"
+  }
+}

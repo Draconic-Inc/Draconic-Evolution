@@ -202,6 +202,9 @@ public class LangGenerator extends LanguageProvider {
         helper.add("charge_hot_bar",                                            "Charge Hotbar");
         helper.add("charge_main",                                               "Charge Main Inventory");
         helper.add("charge_curios",                                             "Charge Curios");
+
+        helper.add("tree_harvest_mod.leaves",                                   "Harvest Leaves");
+        helper.add("tree_harvest_mod.range",                                    "Harvest Radius");
     }
 
     private void modules(PrefixHelper helper) {
@@ -302,8 +305,10 @@ public class LangGenerator extends LanguageProvider {
         helper.add("ender_storage.how_to_clear",                                "Shift right click module to clear");
 
         helper.add(ModuleTypes.TREE_HARVEST,                                    "Tree Harvest");
-        helper.add("tree_harvest_range.name",                                   "Range");
+        helper.add("tree_harvest_range.name",                                   "Tree Harvest Range");
         helper.add("tree_harvest_range.value",                                  "%s Blocks");
+        helper.add("tree_harvest_speed.name",                                   "Tree Harvest Speed");
+        helper.add("tree_harvest_speed.value",                                  "%s Blocks/s");
         helper.add("tree_harvest.single",                                       "Single: Hold right click on tree.");
         helper.add("tree_harvest.area",                                         "Area: Hold right click in centre of target area.");
 

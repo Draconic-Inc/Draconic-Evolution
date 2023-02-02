@@ -193,11 +193,11 @@ public class LootEventHandler {
 
             IOPStorage storage = EnergyUtils.getStorage(hostStack);
             ModuleEntity<?> optionalCollector = host.getEntitiesByType(ModuleTypes.ENDER_COLLECTION).findAny().orElse(null);
-            if (optionalCollector instanceof EnderCollectionEntity collector && storage instanceof IOPStorageModifiable modifiable) {
+            if (optionalCollector instanceof EnderCollectionEntity collector) {
                 List<ItemEntity> remove = new ArrayList<>();
                 for (ItemEntity drop : event.getDrops()) {
                     ItemStack stack = drop.getItem();
-                    int remainder = collector.insertStack(player, stack, modifiable);
+                    int remainder = collector.insertStack(player, stack, storage);
                     if (remainder == 0) {
                         drop.setItem(ItemStack.EMPTY);
                         remove.add(drop);

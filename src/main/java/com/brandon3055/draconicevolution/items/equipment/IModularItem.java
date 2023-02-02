@@ -244,4 +244,9 @@ public interface IModularItem extends IForgeItem, IFusionDataTransfer {
         float f = Math.max(0.0F, (energy) / maxEnergy);
         return Mth.hsvToRgb(f / 3.0F, 1.0F, 1.0F);
     }
+
+    @Override
+    default boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
+        return oldStack.getItem() != newStack.getItem() || slotChanged;
+    }
 }

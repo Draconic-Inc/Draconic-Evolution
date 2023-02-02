@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#C#",
+    "ABA",
+    "#D#"
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:ingots/draconium"
+    },
+    "A": {
+      "item": "draconicevolution:draconium_core"
+    },
+    "B": {
+      "item": "draconicevolution:module_core"
+    },
+    "C": {
+      "item": "minecraft:lava_bucket"
+    },
+    "D": {
+      "tag": "forge:dusts/redstone"
+    }
+  },
+  "result": {
+    "item": "draconicevolution:wyvern_junk_filter_module"
+  }
+}

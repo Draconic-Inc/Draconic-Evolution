@@ -11,6 +11,7 @@ import com.brandon3055.brandonscore.utils.EnergyUtils;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.capability.PropertyProvider;
+import com.brandon3055.draconicevolution.api.modules.ModuleHelper;
 import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
 import com.brandon3055.draconicevolution.api.modules.data.AOEData;
 import com.brandon3055.draconicevolution.api.modules.entities.EnderCollectionEntity;
@@ -101,39 +102,41 @@ public interface IModularMiningTool extends IModularTieredItem {
             }
         }
 
-        Predicate<ItemStack> junkTest = null;
-        for (ModuleEntity<?> entity : host.getEntitiesByType(ModuleTypes.JUNK_FILTER).toList()) {
-            junkTest = junkTest == null ? ((JunkFilterEntity)entity).createFilterTest() : junkTest.or(((JunkFilterEntity)entity).createFilterTest());
-        }
-        if (junkTest != null) {
-            inventoryDynamic.removeIf(junkTest);
-        }
+        ModuleHelper.handleItemCollection(player, host, EnergyUtils.getStorage(stack), inventoryDynamic);
 
-        IOPStorage storage = EnergyUtils.getStorage(stack);
-        ModuleEntity<?> optionalCollector = host.getEntitiesByType(ModuleTypes.ENDER_COLLECTION).findAny().orElse(null);
-        if (optionalCollector instanceof EnderCollectionEntity collector) {
-            List<ItemStack> remainder = collector.insertStacks(player, inventoryDynamic.getStacks(), storage);
-            inventoryDynamic.setStacks(new LinkedList<>(remainder));
-        }
-
-        if (!player.level.isClientSide) {
-//            if (DEOldConfig.disableLootCores) {
-            for (int i = 0; i < inventoryDynamic.getContainerSize(); i++) {
-                ItemStack sis = inventoryDynamic.getItem(i);
-                if (sis != null) {
-                    ItemEntity item = new ItemEntity(player.level, player.getX(), player.getY(), player.getZ(), sis);
-                    item.setPickUpDelay(0);
-                        player.level.addFreshEntity(item);
-                }
-            }
-            player.giveExperiencePoints(inventoryDynamic.xp);
-            inventoryDynamic.clearContent();
-//            } else {
-//                EntityLootCore lootCore = new EntityLootCore(player.world, inventoryDynamic); TODO Entity Stuff
-//                lootCore.setPosition(player.getPosX(), player.getPosY(), player.getPosZ());
-//                player.world.addEntity(lootCore);
+//        Predicate<ItemStack> junkTest = null;
+//        for (ModuleEntity<?> entity : host.getEntitiesByType(ModuleTypes.JUNK_FILTER).toList()) {
+//            junkTest = junkTest == null ? ((JunkFilterEntity)entity).createFilterTest() : junkTest.or(((JunkFilterEntity)entity).createFilterTest());
+//        }
+//        if (junkTest != null) {
+//            inventoryDynamic.removeIf(junkTest);
+//        }
+//
+//        IOPStorage storage = EnergyUtils.getStorage(stack);
+//        ModuleEntity<?> optionalCollector = host.getEntitiesByType(ModuleTypes.ENDER_COLLECTION).findAny().orElse(null);
+//        if (optionalCollector instanceof EnderCollectionEntity collector) {
+//            List<ItemStack> remainder = collector.insertStacks(player, inventoryDynamic.getStacks(), storage);
+//            inventoryDynamic.setStacks(new LinkedList<>(remainder));
+//        }
+//
+//        if (!player.level.isClientSide) {
+////            if (DEOldConfig.disableLootCores) {
+//            for (int i = 0; i < inventoryDynamic.getContainerSize(); i++) {
+//                ItemStack sis = inventoryDynamic.getItem(i);
+//                if (sis != null) {
+//                    ItemEntity item = new ItemEntity(player.level, player.getX(), player.getY(), player.getZ(), sis);
+//                    item.setPickUpDelay(0);
+//                        player.level.addFreshEntity(item);
+//                }
 //            }
-        }
+//            player.giveExperiencePoints(inventoryDynamic.xp);
+//            inventoryDynamic.clearContent();
+////            } else {
+////                EntityLootCore lootCore = new EntityLootCore(player.world, inventoryDynamic); TODO Entity Stuff
+////                lootCore.setPosition(player.getPosX(), player.getPosY(), player.getPosZ());
+////                player.world.addEntity(lootCore);
+////            }
+//        }
 
         return true;
     }
@@ -231,11 +234,13 @@ public interface IModularMiningTool extends IModularTieredItem {
         }
 
         if (player.getAbilities().instabuild) {
+            if (player instanceof ServerPlayer && ForgeHooks.onBlockBreakEvent(world, ((ServerPlayer) player).gameMode.getGameModeForPlayer(), (ServerPlayer) player, pos) == -1) return;
+
             if (block.onDestroyedByPlayer(state, world, pos, player, false, fluidState)) {
                 block.destroy(world, pos, state);
             }
 
-            if (!world.isClientSide) {
+            if (player instanceof ServerPlayer) {
                 ((ServerPlayer) player).connection.send(new ClientboundBlockUpdatePacket(world, pos));
             }
             return;

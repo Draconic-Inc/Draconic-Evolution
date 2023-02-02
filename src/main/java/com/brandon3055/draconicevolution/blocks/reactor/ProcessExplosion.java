@@ -13,6 +13,7 @@ import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -388,6 +389,7 @@ public class ProcessExplosion implements IProcess {
                     for (Entity e : list) {
                         double dist = Vec3D.getCenter(pos).distance(e);
                         float dmg = (1000) * (1F - (float) (dist / (calcRadius * 1.2D)));
+                        if (dmg <= 0) continue;
                         e.hurt(fusionExplosion, dmg);
                     }
                 }

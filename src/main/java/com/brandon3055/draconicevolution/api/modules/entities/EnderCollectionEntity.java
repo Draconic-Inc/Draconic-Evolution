@@ -81,6 +81,7 @@ public class EnderCollectionEntity extends FilteredModuleEntity<NoData> {
     }
 
     public List<ItemStack> insertStacks(Player player, Collection<ItemStack> stacks, IOPStorage opStorage) {
+        if (opStorage == null) return new ArrayList<>(stacks);
         Container container;
         if (ModHelper.ENDERSTORAGE.isPresent()) {
             container = getEnderStorage(player);

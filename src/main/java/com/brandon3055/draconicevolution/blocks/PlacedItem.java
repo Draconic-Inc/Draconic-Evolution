@@ -218,8 +218,8 @@ public class PlacedItem extends EntityBlockBCore {
     }
 
     @Override
-    protected void spawnDestroyParticles(Level level, Player player, BlockPos blockPos, BlockState state) {
-        level.levelEvent(player, 2001, blockPos, getId(state));
+    protected void spawnDestroyParticles(Level level, Player player, BlockPos pos, BlockState state) {
+        level.levelEvent(player, 2001, pos, getId(state));
     }
 
     @Override

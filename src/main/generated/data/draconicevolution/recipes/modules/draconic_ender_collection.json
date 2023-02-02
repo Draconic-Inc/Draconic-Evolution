@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#C#",
+    "IMI",
+    "#W#"
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:nuggets/draconium_awakened"
+    },
+    "C": {
+      "item": "draconicevolution:draconium_core"
+    },
+    "I": {
+      "item": "minecraft:comparator"
+    },
+    "M": {
+      "item": "draconicevolution:wyvern_ender_collection_module"
+    },
+    "W": {
+      "tag": "forge:chests"
+    }
+  },
+  "result": {
+    "item": "draconicevolution:draconic_ender_collection_module"
+  }
+}

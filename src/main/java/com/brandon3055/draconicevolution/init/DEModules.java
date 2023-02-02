@@ -161,9 +161,9 @@ public class DEModules {
         register(new ModuleImpl<>(ENERGY_STORAGE,       DRACONIC,       energyData(16000000, 256000)),  new EnergyModuleItem(props), "draconic_energy");
         register(new ModuleImpl<>(ENERGY_STORAGE,       CHAOTIC,        energyData(64000000, 1024000)), new EnergyModuleItem(props), "chaotic_energy");
 
-        register(new ModuleImpl<>(ENERGY_LINK,          WYVERN,         e -> new EnergyLinkData()),                 "wyvern_energy_link");
-        register(new ModuleImpl<>(ENERGY_LINK,          DRACONIC,       e -> new EnergyLinkData()),                 "draconic_energy_link");
-        register(new ModuleImpl<>(ENERGY_LINK,          CHAOTIC,        e -> new EnergyLinkData()),                 "chaotic_energy_link");
+//        register(new ModuleImpl<>(ENERGY_LINK,          WYVERN,         e -> new EnergyLinkData()),                 "wyvern_energy_link");
+//        register(new ModuleImpl<>(ENERGY_LINK,          DRACONIC,       e -> new EnergyLinkData()),                 "draconic_energy_link");
+//        register(new ModuleImpl<>(ENERGY_LINK,          CHAOTIC,        e -> new EnergyLinkData()),                 "chaotic_energy_link");
 
         //Tools
         register(new ModuleImpl<>(SPEED,                DRACONIUM,      speedData(0.10)),                           "draconium_speed");
@@ -181,11 +181,11 @@ public class DEModules {
         register(new ModuleImpl<>(AOE,                  DRACONIC,       aoeData(3)),                                "draconic_aoe");
         register(new ModuleImpl<>(AOE,                  CHAOTIC,        aoeData(5)),                                "chaotic_aoe");
 
-        register(new ModuleImpl<>(MINING_STABILITY,     WYVERN,         noData()),                                  "wyvern_mining_stability");
+//        register(new ModuleImpl<>(MINING_STABILITY,     WYVERN,         noData()),                                  "wyvern_mining_stability");
 
-        register(new ModuleImpl<>(TREE_HARVEST,         WYVERN,         treeHarvestData(0)),                        "wyvern_tree_harvest");
-        register(new ModuleImpl<>(TREE_HARVEST,         DRACONIC,       treeHarvestData(32)),                       "draconic_tree_harvest");
-        register(new ModuleImpl<>(TREE_HARVEST,         CHAOTIC,        treeHarvestData(64)),                       "chaotic_tree_harvest");
+        register(new ModuleImpl<>(TREE_HARVEST,         WYVERN,         treeHarvestData(16, 5)),                        "wyvern_tree_harvest");
+        register(new ModuleImpl<>(TREE_HARVEST,         DRACONIC,       treeHarvestData(48, 15)),                       "draconic_tree_harvest");
+        register(new ModuleImpl<>(TREE_HARVEST,         CHAOTIC,        treeHarvestData(144, 45)),                       "chaotic_tree_harvest");
 
         register(new ModuleImpl<>(JUNK_FILTER,          WYVERN,         noData()),                                  "wyvern_junk_filter");
 
@@ -241,7 +241,7 @@ public class DEModules {
         register(new ModuleImpl<>(SHIELD_BOOST,         DRACONIC,       shieldData(10,  2.5)),                      "draconic_shield_recovery");
         register(new ModuleImpl<>(SHIELD_BOOST,         CHAOTIC,        shieldData(20,  5.0)),                      "chaotic_shield_recovery");
 
-        register(new ModuleImpl<>(CLOAKING,             WYVERN,         noData()),                                  "wyvern_cloaking");
+//        register(new ModuleImpl<>(CLOAKING,             WYVERN,         noData()),                                  "wyvern_cloaking");
 
         register(new ModuleImpl<>(FLIGHT,               WYVERN,         flightData(true, false, 1), 2, 2),          "wyvern_flight");
         register(new ModuleImpl<>(FLIGHT,               DRACONIC,       flightData(true, true, 2)),                 "draconic_flight");
@@ -264,7 +264,7 @@ public class DEModules {
         register(new ModuleImpl<>(JUMP_BOOST,           DRACONIC,       jumpData(1.25)),                            "draconic_jump");
         register(new ModuleImpl<>(JUMP_BOOST,           CHAOTIC,        jumpData(4.00)),                            "chaotic_jump");
 
-        register(new ModuleImpl<>(AQUA_ADAPT,           WYVERN,         noData()),                                  "wyvern_aqua_adapt");
+//        register(new ModuleImpl<>(AQUA_ADAPT,           WYVERN,         noData()),                                  "wyvern_aqua_adapt");
         //@formatter:on
     }
 
@@ -383,8 +383,8 @@ public class DEModules {
         return projectileData(0, accuracyPenalty, 0, 0, damageModifier);
     }
 
-    private static Function<Module<TreeHarvestData>, TreeHarvestData> treeHarvestData(int defRange) {
-        return e -> new TreeHarvestData(ModuleCfg.getModuleInt(e, "range", defRange));
+    private static Function<Module<TreeHarvestData>, TreeHarvestData> treeHarvestData(int defRange, int defSpeed) {
+        return e -> new TreeHarvestData(ModuleCfg.getModuleInt(e, "range", defRange), ModuleCfg.getModuleInt(e, "speed", defSpeed));
     }
 
     private static Function<Module<NoData>, NoData> noData() {

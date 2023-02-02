@@ -257,7 +257,7 @@ public class ModuleEntity<T extends ModuleData<T>> {
     @OnlyIn(Dist.CLIENT)
     public void renderModule(GuiElement<?> parent, MultiBufferSource getter, PoseStack poseStack, int x, int y, int width, int height, double mouseX, double mouseY, boolean stackRender, float partialTicks) {
         if (stackRender) {
-            poseStack.translate(0, 0, 200);
+            poseStack.translate(0, 0, 210);
         }
         int colour = getModuleColour(module);
         GuiHelper.drawRect(getter, poseStack, x, y, width, height, colour);
@@ -265,7 +265,7 @@ public class ModuleEntity<T extends ModuleData<T>> {
 
         if (module.getProperties().getTechLevel() == TechLevel.CHAOTIC) {
             VertexConsumer builder = new TransformingVertexConsumer(getter.getBuffer(RenderType.glint()), poseStack);
-            builder.vertex(x, y + width, 0).uv(0, ((float) height / width) / 64F).endVertex();
+            builder.vertex(x, y + height, 0).uv(0, ((float) height / width) / 64F).endVertex();
             builder.vertex(x + width, y + height, 0).uv(((float) width / height) / 64F, ((float) height / width) / 64F).endVertex();
             builder.vertex(x + width, y, 0).uv(((float) width / height) / 64F, 0).endVertex();
             builder.vertex(x, y, 0).uv(0, 0).endVertex();
@@ -287,7 +287,7 @@ public class ModuleEntity<T extends ModuleData<T>> {
 
         //Hover highlight
         if (stackRender) {
-            poseStack.translate(0, 0, -200);
+            poseStack.translate(0, 0, -210);
         } else if (GuiHelper.isInRect(x, y, width, height, mouseX, mouseY)) {
             GuiHelper.drawRect(getter, poseStack, x, y, width, height, 0x50FFFFFF);
         }

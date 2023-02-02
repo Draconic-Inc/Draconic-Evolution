@@ -173,7 +173,7 @@ public abstract class ConfigProperty implements INBTSerializable<CompoundTag> {
 
     public enum IntegerFormatter {
         RAW(String::valueOf),
-        AOE(e -> String.format("%sx%s", 1 + (e * 2), 1 + (e * 2)));
+        AOE(e -> String.format("%sx%s", 1 + (e * 2), 1 + (e * 2))); //Input is radius
         //Will add formatters as needed
 
         private Function<Integer, String> formatter;

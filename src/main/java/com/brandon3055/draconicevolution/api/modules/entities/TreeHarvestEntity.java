@@ -1,236 +1,93 @@
 package com.brandon3055.draconicevolution.api.modules.entities;
 
-import codechicken.lib.math.MathHelper;
-import com.brandon3055.brandonscore.utils.Utils;
+import com.brandon3055.brandonscore.api.power.IOPStorage;
+import com.brandon3055.brandonscore.inventory.InventoryDynamic;
+import com.brandon3055.brandonscore.utils.EnergyUtils;
+import com.brandon3055.draconicevolution.api.capability.DECapabilities;
+import com.brandon3055.draconicevolution.api.config.BooleanProperty;
+import com.brandon3055.draconicevolution.api.config.ConfigProperty;
+import com.brandon3055.draconicevolution.api.config.IntegerProperty;
 import com.brandon3055.draconicevolution.api.modules.Module;
+import com.brandon3055.draconicevolution.api.modules.ModuleHelper;
 import com.brandon3055.draconicevolution.api.modules.data.TreeHarvestData;
+import com.brandon3055.draconicevolution.api.modules.entities.logic.ForestHarvestHandler;
+import com.brandon3055.draconicevolution.api.modules.entities.logic.IHarvestHandler;
+import com.brandon3055.draconicevolution.api.modules.entities.logic.TreeHarvestHandler;
 import com.brandon3055.draconicevolution.api.modules.lib.EntityOverridesItemUse;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
-import io.netty.util.collection.IntObjectHashMap;
-import io.netty.util.collection.IntObjectMap;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.model.PlayerModel;
-import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.BrewingStandBlock;
-import net.minecraft.world.level.block.LeavesBlock;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderHandEvent;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.List;
 
 import static com.brandon3055.draconicevolution.DraconicEvolution.LOGGER;
 import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
 
 public class TreeHarvestEntity extends ModuleEntity<TreeHarvestData> implements EntityOverridesItemUse {
 
-    //Single tree mode (Right click tree for single? Right click air for area?)
-    //User defined range
-    //Ability to enable/disable leave collection
+    private IHarvestHandler activeHandler = null;
+    private InventoryDynamic itemBuffer = new InventoryDynamic();
 
-    private boolean areaMode = true;
-    private boolean complete = true;
-    /**
-     * The origin of the tree scan area.
-     */
-    private BlockPos areaModeOrigin = null;
+    private BooleanProperty harvestLeaves;
+    private IntegerProperty harvestRange;
 
     public TreeHarvestEntity(Module<TreeHarvestData> module) {
         super(module);
+        addProperty(harvestLeaves = new BooleanProperty("tree_harvest_mod.leaves", true).setFormatter(ConfigProperty.BooleanFormatter.YES_NO));
+        addProperty(harvestRange = new IntegerProperty("tree_harvest_mod.range", module.getData().getRange()).setFormatter(ConfigProperty.IntegerFormatter.RAW).range(0, module.getData().getRange()));
     }
-
-    /**
-     * Remaining blocks to scan in the current tree.
-     * These are empty positions that previously contained logs.
-     */
-    private LinkedList<Long> scanQue = new LinkedList<>();
-    private IntObjectMap<LinkedList<Long>> leavesWait = new IntObjectHashMap<>();
-
-    /** Set of all block positions that have already been visited/cleared by the scanner or the harvester */
-    private Set<Long> processedBlocks = new HashSet<>();
-
-    private BlockPos.MutableBlockPos mPos = new BlockPos.MutableBlockPos();
-
-    private int leavesWaitIndex = 0;
 
     private void useTick(LivingEntityUseItemEvent.Tick event) {
-        if (complete || !(event.getEntity() instanceof ServerPlayer player)) return;
-
-        if (!scanQue.isEmpty()) {
-            for (int i = 0; i < 100 && !scanQue.isEmpty(); i++) {
-                updateTreeHarvest(player.level);
-            }
-
-        } else if (leavesWaitIndex <= 7) {
-            if (leavesWaitIndex < 0) {
-                leavesWaitIndex++;
-                return;
-            }
-            LinkedList<Long> que = leavesWait.get(leavesWaitIndex);
-//            LOGGER.info("Process Leaves at distance " + leavesWaitIndex + ", " + (que == null ? 0 : que.size()));
-            for (int i = 0; i < 200 && que != null && !que.isEmpty(); i++) {
-                updateLeavesHarvest(player.level, que);
-            }
-            if (que == null || que.isEmpty()) {
-                leavesWaitIndex++;
-            }
-        } else if (areaMode && areaModeOrigin != null) {
-            if (scanPos == -1) {
-                initScanArea();
-                return;
-            }
-
-            LinkedList<Long> que = scanPos < 0 ? null : treeSearch.get(scanPos);
-            if (que == null || que.isEmpty()) {
-                scanPos++;
-                LOGGER.info("Scanning at range " + scanPos);
-                if (scanPos > getModule().getData().getRange()) {
-                    harvestComplete();
-                }
-                return;
-            }
-
-            for (int i = 0; i < 1000 && scanQue.isEmpty(); i++) {
-                updateTreeLocate(player.level, que);
-                if (que.isEmpty() || complete) return;
-            }
-        } else {
-            harvestComplete();
-            player.level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.1F, 0.5F * ((player.level.random.nextFloat() - player.level.random.nextFloat()) * 0.7F + 1.8F));
-        }
-    }
-
-    private IntObjectMap<LinkedList<Long>> treeSearch = new IntObjectHashMap<>();
-    private int scanPos = -1;
-
-    private void initScanArea() {
-        treeSearch.clear();
-        if (areaModeOrigin == null) {
-            harvestComplete();
+        if (activeHandler == null || !(event.getEntity() instanceof ServerPlayer player)) return;
+        ItemStack stack = event.getItem();
+        LazyOptional<IOPStorage> optional = stack.getCapability(DECapabilities.OP_STORAGE);
+        if (!optional.isPresent()) {
             return;
         }
-        int radius = getModule().getData().getRange();
-        int radSq = radius * radius;
+        IOPStorage storage = optional.orElseThrow(IllegalStateException::new);
 
-        IntObjectMap<List<Long>> tempMap = new IntObjectHashMap<>();
-        Utils.betweenClosed(areaModeOrigin.offset(-radius, 0, -radius), areaModeOrigin.offset(radius, 0, radius), pos -> {
-            int distSq = (int) areaModeOrigin.distSqr(pos);
-            if (distSq > radSq) return;
-            tempMap.computeIfAbsent(distSq, i -> new LinkedList<>()).add(pos.asLong());
-        });
+        activeHandler.tick(player.level, player, stack, storage, itemBuffer);
 
-        tempMap.forEach((distSq, positions) -> treeSearch.computeIfAbsent((int) Math.sqrt(distSq), e -> new LinkedList<>()).addAll(positions));
-        scanPos = 0;
-    }
-
-    private void updateTreeLocate(Level level, LinkedList<Long> que) {
-        mPos.set(que.removeFirst());
-//        mPos.move(-10 + level.random.nextInt(20), 0, -10 + level.random.nextInt(20));
-        if (processedBlocks.contains(mPos.asLong())) return;
-
-//        level.setBlockAndUpdate(mPos, Blocks.GLASS.defaultBlockState());
-
-        BlockState state = level.getBlockState(mPos);
-        if (state.is(BlockTags.LOGS)) {
-            leavesWait.clear();
-
-        processedBlocks.clear();
-            processLog(level, mPos);
-            LOGGER.info("Start: " + leavesWaitIndex);
+        if (itemBuffer.getStacks().size() > 8) {
+            dropContents(player, stack);
         }
-    }
-
-    private void updateTreeHarvest(Level level) {
-        mPos.set(scanQue.removeFirst());
-        Utils.betweenClosed(mPos.offset(-1, -1, -1), mPos.offset(1, 1, 1), pos -> {
-            long longPos = pos.asLong();
-            if (processedBlocks.contains(longPos)) return;
-            processedBlocks.add(longPos);
-
-            BlockState state = level.getBlockState(pos);
-            if (state.isAir()) return;
-            if (state.is(BlockTags.LOGS)) {
-                processLog(level, pos);
-            }
-        });
-    }
-
-    private void processLog(Level level, BlockPos pos) {
-        scanQue.add(pos.asLong());
-        level.destroyBlock(pos, false);
-
-        //Scan leaves
-        int r = 7;
-        if (leavesWaitIndex >= 0) {
-            leavesWaitIndex = -4;
-            BlockPos.betweenClosed(pos.offset(-r, -r, -r), pos.offset(r, r, r)).forEach(e -> scanLeaves(level, e));
-        } else {
-            Utils.hollowCube(pos.offset(-r, -r, -r), pos.offset(r, r, r), e -> scanLeaves(level, e));
-        }
-    }
-
-    private void scanLeaves(Level level, BlockPos pos) {
-        long longPos = pos.asLong();
-        if (processedBlocks.contains(longPos)) return;
-        BlockState state = level.getBlockState(pos);
-        if (state.is(BlockTags.LOGS)) return; //If its logs then it needs to be left for the regular scan to find in case its part of another tree,
-        //Anything else we can ignore.
-        processedBlocks.add(longPos);
-
-        if (state.is(BlockTags.LEAVES)) {
-            if (state.getBlock() instanceof LeavesBlock) {
-                int distance = MathHelper.clip(state.getValue(LeavesBlock.DISTANCE), 0, 7);
-                if (distance == LeavesBlock.DECAY_DISTANCE) {
-                    leavesWait.computeIfAbsent(7, e -> new LinkedList<>()).add(longPos);
-                } else {
-                    leavesWait.computeIfAbsent(distance, e -> new LinkedList<>()).add(longPos);
-                }
-            } else {
-                leavesWait.computeIfAbsent(7, e -> new LinkedList<>()).add(longPos);
-            }
-        }
-    }
-
-    private void updateLeavesHarvest(Level level, LinkedList<Long> que) {
-        mPos.set(que.removeFirst());
-        BlockState state = level.getBlockState(mPos);
-        if (state.getBlock() instanceof LeavesBlock && state.getValue(LeavesBlock.DISTANCE) < LeavesBlock.DECAY_DISTANCE) return;
-        level.destroyBlock(mPos, false);
-    }
-
-
-    private void harvestComplete() {
-        scanQue.clear();
-        processedBlocks.clear();
-        leavesWait.clear();
-        areaModeOrigin = null;
-        complete = areaMode = true;
-        LOGGER.info("Harvest end");
     }
 
     private void endUse(LivingEntityUseItemEvent event) {
-        harvestComplete();
+        if (activeHandler != null && event.getEntity() instanceof ServerPlayer player) {
+            activeHandler.stop(player.level, player);
+        }
+        activeHandler = null;
+
+        dropContents(event.getEntity(), event.getItem());
+    }
+
+    private void dropContents(Entity entity, ItemStack stack) {
+        if (entity instanceof ServerPlayer serverPlayer && !itemBuffer.isEmpty()) {
+            ModuleHelper.handleItemCollection(serverPlayer, host, EnergyUtils.getStorage(stack), itemBuffer);
+            itemBuffer.clearContent();
+        }
     }
 
     @Override
@@ -247,44 +104,19 @@ public class TreeHarvestEntity extends ModuleEntity<TreeHarvestData> implements 
 
     @Override
     public void onPlayerInteractEvent(PlayerInteractEvent playerEvent) {
-
-//        if (!(playerEvent instanceof PlayerInteractEvent.RightClickBlock)) {
-//            playerEvent.setCanceled(true);
-//            return;
-//        }
-//
-//        Level level = playerEvent.getWorld();
-//        Utils.hollowCube(playerEvent.getPos(), playerEvent.getPos().offset(10, 5, 20), pos -> {
-//            if (level.isEmptyBlock(pos)) {
-//                level.setBlockAndUpdate(pos, Blocks.GLASS.defaultBlockState());
-//            } else if (level.getBlockState(pos).is(Blocks.GLASS)) {
-//                level.setBlockAndUpdate(pos, Blocks.RED_STAINED_GLASS.defaultBlockState());
-//            }
-//        });
-//
-//        if (true) {
-//            playerEvent.setCanceled(true);
-//            return;
-//        }
-
         if (playerEvent.isCanceled()) return;
-        complete = false;
-        if (playerEvent instanceof PlayerInteractEvent.RightClickItem event && areaMode) {
-            if (getModule().getData().getRange() <= 0) return;
-            if (!playerEvent.getWorld().isClientSide()) {
-                areaModeOrigin = event.getPos();
-                scanPos = -1;
+        TreeHarvestData data = getModule().getData();
+        if (playerEvent instanceof PlayerInteractEvent.RightClickItem event && activeHandler == null) {
+            if (data.getRange() <= 0) return;
+            if (event.getPlayer() instanceof ServerPlayer player) {
+                activeHandler = new ForestHarvestHandler(data.getSpeed(), harvestRange.getValue(), harvestLeaves.getValue());
+                activeHandler.start(event.getPos(), event.getWorld(), player);
             }
-            LOGGER.info("Start Area");
         } else if (playerEvent instanceof PlayerInteractEvent.RightClickBlock event) {
-            BlockState state = event.getPlayer().level.getBlockState(event.getPos());
-            if (!state.is(BlockTags.LOGS)) return;
-            areaMode = false;
-            if (!playerEvent.getWorld().isClientSide()) {
-                leavesWaitIndex = 0;
-                processLog(event.getWorld(), event.getPos());
+            if (event.getPlayer() instanceof ServerPlayer player) {
+                activeHandler = new TreeHarvestHandler(data.getSpeed(), event.getHitVec().getDirection(), harvestLeaves.getValue());
+                activeHandler.start(event.getPos(), event.getWorld(), player);
             }
-            LOGGER.info("Start Single");
         } else {
             return;
         }
@@ -354,5 +186,17 @@ public class TreeHarvestEntity extends ModuleEntity<TreeHarvestData> implements 
         model.leftSleeve.copyFrom(model.leftArm);
         model.rightSleeve.copyFrom(model.rightArm);
         model.jacket.copyFrom(model.body);
+    }
+
+    @Override
+    protected CompoundTag writeExtraData(CompoundTag nbt) {
+        itemBuffer.writeToNBT(nbt);
+        return super.writeExtraData(nbt);
+    }
+
+    @Override
+    protected void readExtraData(CompoundTag nbt) {
+        itemBuffer.readFromNBT(nbt);
+        super.readExtraData(nbt);
     }
 }
