@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.integration.jei;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.DraconicAPI;
+import com.brandon3055.draconicevolution.api.crafting.IFusionRecipe;
 import com.brandon3055.draconicevolution.client.gui.GuiDraconiumChest;
 import com.brandon3055.draconicevolution.client.gui.GuiEnergyCore;
 import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.GuiConfigurableItem;
@@ -11,12 +12,14 @@ import com.brandon3055.draconicevolution.inventory.ContainerDraconiumChest;
 import com.google.common.collect.Lists;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
+import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.constants.VanillaRecipeCategoryUid;
 import mezz.jei.api.gui.handlers.IGuiClickableArea;
 import mezz.jei.api.gui.handlers.IGuiContainerHandler;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.helpers.IJeiHelpers;
 import mezz.jei.api.helpers.IStackHelper;
+import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 import mezz.jei.api.recipe.transfer.IRecipeTransferInfo;
 import mezz.jei.api.registration.*;
@@ -29,6 +32,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
 
 import javax.annotation.Nullable;
@@ -46,6 +50,7 @@ public class DEJEIPlugin implements IModPlugin {
 
     public static IJeiHelpers jeiHelpers = null;
     public static IJeiRuntime jeiRuntime = null;
+    public static RecipeType<IFusionRecipe> FUSION_RECIPE_TYPE = RecipeType.create(DraconicEvolution.MODID, "fusion_crafting", IFusionRecipe.class);
 
     @Nullable
     private FusionRecipeCategory fusionRecipeCategory;
@@ -57,14 +62,14 @@ public class DEJEIPlugin implements IModPlugin {
     public void registerGuiHandlers(IGuiHandlerRegistration registration) {
         registration.addGuiScreenHandler(GuiConfigurableItem.class, gui -> null);
         registration.addGuiScreenHandler(GuiEnergyCore.class, gui -> gui.hideJEI != null && gui.hideJEI.get() ? null : GuiProperties.create(gui));
-        registration.addGuiContainerHandler(GuiDraconiumChest.class, new IGuiContainerHandler<GuiDraconiumChest>() {
+        registration.addGuiContainerHandler(GuiDraconiumChest.class, new IGuiContainerHandler<>() {
             @Override
             public Collection<IGuiClickableArea> getGuiClickableAreas(GuiDraconiumChest gui, double mouseX, double mouseY) {
                 if (gui.colourDialog.isVisible()) return Collections.emptyList();
                 GuiElement<?> craftIcon = gui.craftIcon;
                 GuiElement<?> smeltArrow = gui.furnaceProgress;
-                IGuiClickableArea craftingArea = IGuiClickableArea.createBasic(craftIcon.xPos() - gui.guiLeft(), craftIcon.yPos() - gui.guiTop(), craftIcon.xSize(), craftIcon.ySize(), VanillaRecipeCategoryUid.CRAFTING);
-                IGuiClickableArea smeltingArea = IGuiClickableArea.createBasic(smeltArrow.xPos() - gui.guiLeft(), smeltArrow.yPos() - gui.guiTop(), smeltArrow.xSize(), smeltArrow.ySize(), VanillaRecipeCategoryUid.FURNACE);
+                IGuiClickableArea craftingArea = IGuiClickableArea.createBasic(craftIcon.xPos() - gui.guiLeft(), craftIcon.yPos() - gui.guiTop(), craftIcon.xSize(), craftIcon.ySize(), FUSION_RECIPE_TYPE);
+                IGuiClickableArea smeltingArea = IGuiClickableArea.createBasic(smeltArrow.xPos() - gui.guiLeft(), smeltArrow.yPos() - gui.guiTop(), smeltArrow.xSize(), smeltArrow.ySize(), RecipeTypes.SMELTING);
                 return Lists.newArrayList(craftingArea, smeltingArea);
             }
         });
@@ -91,7 +96,9 @@ public class DEJEIPlugin implements IModPlugin {
         jeiHelpers = registration.getJeiHelpers();
 
         ClientLevel world = Minecraft.getInstance().level;
-        registration.addRecipes(world.getRecipeManager().getAllRecipesFor(DraconicAPI.FUSION_RECIPE_TYPE), RecipeCategoryUids.FUSION_CRAFTING);
+        if (world == null) return;
+
+        registration.addRecipes(FUSION_RECIPE_TYPE, world.getRecipeManager().getAllRecipesFor(DraconicAPI.FUSION_RECIPE_TYPE));
     }
 
     @Override
@@ -99,7 +106,7 @@ public class DEJEIPlugin implements IModPlugin {
         IJeiHelpers jeiHelpers = registration.getJeiHelpers();
         IRecipeTransferHandlerHelper transferHelper = registration.getTransferHelper();
         IStackHelper stackHelper = jeiHelpers.getStackHelper();
-        registration.addRecipeTransferHandler(new FusionRecipeTransferHelper(stackHelper, transferHelper), RecipeCategoryUids.FUSION_CRAFTING);
+        registration.addRecipeTransferHandler(new FusionRecipeTransferHelper(stackHelper, transferHelper), FUSION_RECIPE_TYPE);
 
         //Draconium chest recipe movers
         registration.addRecipeTransferHandler(new IRecipeTransferInfo<ContainerDraconiumChest, CraftingRecipe>() {
@@ -108,6 +115,12 @@ public class DEJEIPlugin implements IModPlugin {
                 return ContainerDraconiumChest.class;
             }
 
+            @Override
+            public RecipeType<CraftingRecipe> getRecipeType() {
+                return RecipeTypes.CRAFTING;
+            }
+
+            @SuppressWarnings("removal")
             @Override
             public ResourceLocation getRecipeCategoryUid() {
                 return VanillaRecipeCategoryUid.CRAFTING;
@@ -128,6 +141,7 @@ public class DEJEIPlugin implements IModPlugin {
                 return Stream.of(container.mainSlots, container.playerSlots).flatMap(Collection::stream).collect(Collectors.toList());
             }
 
+            @SuppressWarnings("removal")
             @Override
             public Class<CraftingRecipe> getRecipeClass() {
                 return CraftingRecipe.class;
@@ -156,11 +170,18 @@ public class DEJEIPlugin implements IModPlugin {
                 return Stream.of(container.mainSlots, container.playerSlots).flatMap(Collection::stream).collect(Collectors.toList());
             }
 
+            @SuppressWarnings("removal")
             @Override
             public Class<SmeltingRecipe> getRecipeClass() {
                 return SmeltingRecipe.class;
             }
 
+            @Override
+            public RecipeType<SmeltingRecipe> getRecipeType() {
+                return RecipeTypes.SMELTING;
+            }
+
+            @SuppressWarnings("removal")
             @Override
             public ResourceLocation getRecipeCategoryUid() {
                 return VanillaRecipeCategoryUid.FURNACE;
@@ -171,8 +192,8 @@ public class DEJEIPlugin implements IModPlugin {
 
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
-        registration.addRecipeCatalyst(new ItemStack(DEContent.crafting_core), RecipeCategoryUids.FUSION_CRAFTING);
-        registration.addRecipeCatalyst(new ItemStack(DEContent.draconium_chest), VanillaRecipeCategoryUid.CRAFTING, VanillaRecipeCategoryUid.FURNACE);
+        registration.addRecipeCatalyst(new ItemStack(DEContent.crafting_core), FUSION_RECIPE_TYPE);
+        registration.addRecipeCatalyst(new ItemStack(DEContent.draconium_chest), RecipeTypes.CRAFTING, RecipeTypes.SMELTING);
 
 //        if (DEContent.crafting_core.isBlockEnabled()){
 //            registration.addRecipeCatalyst(new ItemStack(DEContent.crafting_core), RecipeCategoryUids.FUSION_CRAFTING);

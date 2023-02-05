@@ -17,6 +17,7 @@ import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -53,6 +54,11 @@ public class FusionRecipeCategory implements IRecipeCategory<IFusionRecipe> {
     @Override
     public ResourceLocation getUid() {
         return RecipeCategoryUids.FUSION_CRAFTING;
+    }
+
+    @Override
+    public RecipeType<IFusionRecipe> getRecipeType() {
+        return DEJEIPlugin.FUSION_RECIPE_TYPE;
     }
 
     @Nonnull
