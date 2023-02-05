@@ -18,7 +18,7 @@ in vec4 lightMapColor;
 in vec4 overlayColor;
 in vec2 texCoord0;
 in vec4 normal;
-in vec4 vNorm;
+in vec3 vNorm;
 
 out vec4 fragColor;
 
