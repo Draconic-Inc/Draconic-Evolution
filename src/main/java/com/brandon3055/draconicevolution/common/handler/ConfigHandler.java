@@ -51,6 +51,7 @@ public class ConfigHandler {
     public static boolean enableFlight;
     private static String[] itemDislocatorBlacklist;
     public static Map<String, Integer> itemDislocatorBlacklistMap = new HashMap<String, Integer>();
+    public static boolean itemDislocatorDisableSound;
 
     // spawner
     public static String[] spawnerList;
@@ -266,6 +267,11 @@ public class ConfigHandler {
                     Configuration.CATEGORY_GENERAL,
                     new String[] { "appliedenergistics2:item.ItemCrystalSeed" },
                     "A list of items of items that should be ignored by the item dislocator. Use the items registry name e.g. minecraft:apple you can also add a meta value like so minecraft:wool|4");
+            itemDislocatorDisableSound = config.get(
+                    Configuration.CATEGORY_GENERAL,
+                    "Item Dislocator Disable Sound",
+                    false,
+                    "Disable item dislocator sound").getBoolean(false);
             disableLog = config.get(
                     Configuration.CATEGORY_GENERAL,
                     "Disable Log",

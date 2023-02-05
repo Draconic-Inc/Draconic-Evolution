@@ -121,7 +121,7 @@ public class Magnet extends ItemDE {
                         entity.posY - 0.6,
                         entity.posZ - 0.2 + (world.rand.nextDouble() * 0.4));
             }
-            if (playSound) {
+            if (playSound && !ConfigHandler.itemDislocatorDisableSound) {
                 world.playSoundAtEntity(
                         entity,
                         "random.orb",
