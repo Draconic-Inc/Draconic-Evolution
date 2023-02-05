@@ -160,6 +160,10 @@ public class TileFusionCraftingCore extends TileBCore implements IFusionInventor
             return true;
         }
 
+        if (injectorPositions.isEmpty()) {
+            setFusionStatus(-1, null);
+        }
+
         injectorCache = null;
         List<BlockPos> oldPositions = new ArrayList<>(injectorPositions);
         injectorPositions.clear();
