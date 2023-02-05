@@ -23,7 +23,7 @@ public final class KeyBindings {
     public static final KeyBinding toggleMagnet;
 
     static {
-        placeItem = new KeyBinding("key.placeItem", Keyboard.KEY_P, References.MODNAME);
+        placeItem = new KeyBinding("key.placeItem", Keyboard.KEY_V, References.MODNAME);
         toolConfig = new KeyBinding("key.toolConfig", Keyboard.KEY_NONE, References.MODNAME);
         toolProfileChange = new KeyBinding("key.toolProfileChange", Keyboard.KEY_NONE, References.MODNAME);
         toggleFlight = new KeyBinding("key.toggleFlight", Keyboard.KEY_NONE, References.MODNAME);
