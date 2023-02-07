@@ -43,7 +43,7 @@ public class GuiEnergyCore extends ModularGuiContainer<ContainerBCTile<TileEnerg
     private GuiPickColourDialog frameColourDialog;
     private GuiPickColourDialog triangleColourDialog;
     private GuiPickColourDialog effectColourDialog;
-    public Supplier<Boolean> hideJEI = null;
+    public Supplier<Boolean> hideJEI = () -> false;
 
     public GuiEnergyCore(ContainerBCTile<TileEnergyCore> container, Inventory playerInventory, Component title) {
         super(container, playerInventory, title);

@@ -1,11 +1,13 @@
 package com.brandon3055.draconicevolution.integration.jei;
 
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
+import com.brandon3055.brandonscore.integration.ModularGuiProperties;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.DraconicAPI;
 import com.brandon3055.draconicevolution.api.crafting.IFusionRecipe;
 import com.brandon3055.draconicevolution.client.gui.GuiDraconiumChest;
 import com.brandon3055.draconicevolution.client.gui.GuiEnergyCore;
+import com.brandon3055.draconicevolution.client.gui.GuiFusionCraftingCore;
 import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.GuiConfigurableItem;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.inventory.ContainerDraconiumChest;
@@ -24,16 +26,14 @@ import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 import mezz.jei.api.recipe.transfer.IRecipeTransferInfo;
 import mezz.jei.api.registration.*;
 import mezz.jei.api.runtime.IJeiRuntime;
-import mezz.jei.gui.overlay.GuiProperties;
-import mezz.jei.util.ErrorUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
-import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
@@ -61,16 +61,24 @@ public class DEJEIPlugin implements IModPlugin {
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration registration) {
         registration.addGuiScreenHandler(GuiConfigurableItem.class, gui -> null);
-        registration.addGuiScreenHandler(GuiEnergyCore.class, gui -> gui.hideJEI != null && gui.hideJEI.get() ? null : GuiProperties.create(gui));
+        registration.addGuiScreenHandler(GuiEnergyCore.class, gui -> gui.hideJEI.get() ? null : ModularGuiProperties.create(gui));
         registration.addGuiContainerHandler(GuiDraconiumChest.class, new IGuiContainerHandler<>() {
             @Override
             public Collection<IGuiClickableArea> getGuiClickableAreas(GuiDraconiumChest gui, double mouseX, double mouseY) {
                 if (gui.colourDialog.isVisible()) return Collections.emptyList();
                 GuiElement<?> craftIcon = gui.craftIcon;
                 GuiElement<?> smeltArrow = gui.furnaceProgress;
-                IGuiClickableArea craftingArea = IGuiClickableArea.createBasic(craftIcon.xPos() - gui.guiLeft(), craftIcon.yPos() - gui.guiTop(), craftIcon.xSize(), craftIcon.ySize(), FUSION_RECIPE_TYPE);
+                IGuiClickableArea craftingArea = IGuiClickableArea.createBasic(craftIcon.xPos() - gui.guiLeft(), craftIcon.yPos() - gui.guiTop(), craftIcon.xSize(), craftIcon.ySize(), RecipeTypes.CRAFTING);
                 IGuiClickableArea smeltingArea = IGuiClickableArea.createBasic(smeltArrow.xPos() - gui.guiLeft(), smeltArrow.yPos() - gui.guiTop(), smeltArrow.xSize(), smeltArrow.ySize(), RecipeTypes.SMELTING);
                 return Lists.newArrayList(craftingArea, smeltingArea);
+            }
+        });
+        registration.addGuiContainerHandler(GuiFusionCraftingCore.class, new IGuiContainerHandler<>() {
+            @Override
+            public Collection<IGuiClickableArea> getGuiClickableAreas(GuiFusionCraftingCore gui, double mouseX, double mouseY) {
+                GuiElement<?> craftIcon = gui.stackIcon;
+                IGuiClickableArea craftingArea = IGuiClickableArea.createBasic(craftIcon.xPos() - gui.guiLeft(), craftIcon.yPos() - gui.guiTop(), craftIcon.xSize(), craftIcon.ySize(), FUSION_RECIPE_TYPE);
+                return Collections.singletonList(craftingArea);
             }
         });
     }
@@ -92,7 +100,6 @@ public class DEJEIPlugin implements IModPlugin {
 
     @Override
     public void registerRecipes(IRecipeRegistration registration) {
-        ErrorUtil.checkNotNull(fusionRecipeCategory, "fusionRecipeCategory");
         jeiHelpers = registration.getJeiHelpers();
 
         ClientLevel world = Minecraft.getInstance().level;
@@ -311,7 +318,7 @@ public class DEJEIPlugin implements IModPlugin {
 
 
     @Override
-    public ResourceLocation getPluginUid() {
+    public @NotNull ResourceLocation getPluginUid() {
         return new ResourceLocation(DraconicEvolution.MODID, "jei_plugin");
     }
 }

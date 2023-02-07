@@ -8,6 +8,7 @@ import com.brandon3055.draconicevolution.items.equipment.IModularItem;
 import com.brandon3055.draconicevolution.items.equipment.ModularStaff;
 import com.brandon3055.draconicevolution.lib.WTFException;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.covers1624.quack.util.CrashLock;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -28,8 +29,11 @@ import net.minecraftforge.common.util.LazyOptional;
  * Created by brandon3055 on 9/2/21
  */
 public class ModularItemRenderOverrideHandler {
+    private static final CrashLock LOCK = new CrashLock("Already Initialized");
 
     public static void init() {
+        LOCK.lock();
+
         MinecraftForge.EVENT_BUS.addListener(ModularItemRenderOverrideHandler::renderHandEvent);
     }
 

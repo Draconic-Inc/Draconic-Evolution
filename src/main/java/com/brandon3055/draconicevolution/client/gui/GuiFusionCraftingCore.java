@@ -27,12 +27,11 @@ import java.util.stream.Collectors;
 
 public class GuiFusionCraftingCore extends ModularGuiContainer<ContainerFusionCraftingCore> {
 
-
     private final TileFusionCraftingCore tile;
     private IFusionRecipe currentRecipe = null;
 
     protected GuiToolkit<GuiFusionCraftingCore> toolkit = new GuiToolkit<>(this, 218/*238*/, /*245*/220).setTranslationPrefix("gui.draconicevolution.fusion_craft");
-    private GuiStackIcon stackIcon;
+    public GuiStackIcon stackIcon;
 
     public GuiFusionCraftingCore(ContainerFusionCraftingCore container, Inventory inv, Component titleIn) {
         super(container, inv, titleIn);
@@ -46,24 +45,29 @@ public class GuiFusionCraftingCore extends ModularGuiContainer<ContainerFusionCr
         template.background.onReload((guiTex) -> guiTex.setPos(guiLeft(), guiTop()));
         toolkit.loadTemplate(template);
         template.addPlayerSlots(true, true, true);
+
         //Setup Craft display area
         GuiElement<?> craftArea = template.background.addChild(new GuiElement<>());
         craftArea.setPos(template.background.xPos() + 17, template.title.maxYPos() + 3);
         craftArea.setMaxPos(template.background.maxXPos() - 17, template.playerSlots.yPos() - 3, true);
+
         //Input/OOutput Slots
         GuiElement<?> slots = toolkit.createSlots(template.background, 1, 2, 26, (x, y) -> container.getSlotLayout().getSlotData(ContainerSlotLayout.SlotType.TILE_INV, y), null);
         toolkit.center(slots, craftArea, 0, 3);
+
         //Status Label
         template.background.addChild(new GuiTextCompLabel()
                 .setPosAndSize(template.background.xPos() + (template.background.xSize() / 2) - 40, template.title.maxYPos() + 4, 80, 20)
                 .setAlignment(GuiAlign.CENTER).setTrim(false).setWrap(true).setShadow(true)
                 .setEnabledCallback(() -> tile.userStatus.get() != null)
                 .setTextSupplier(tile.userStatus::get));
+
         //Craft Button
         toolkit.createButton_old("gui.draconicevolution.fusion_craft.craft", template.background)
                 .setPosAndSize(width / 2 - 40, template.playerSlots.yPos() - 17, 80, 14)
                 .setEnabledCallback(() -> tile.getActiveRecipe() != null && !tile.isCrafting())
                 .onButtonReleased((b) -> tile.sendPacketToServer(output -> {}, 0));
+
         //Result Display
         template.background.addChild(stackIcon = new GuiStackIcon(ItemStack.EMPTY));
         toolkit.center(stackIcon, craftArea, 0, 3);
