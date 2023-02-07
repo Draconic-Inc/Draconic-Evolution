@@ -52,6 +52,7 @@ import java.util.Random;
 /**
  * Created by Brandon on 28/10/2014.
  */
+@Deprecated //I eventually want to move all this out into proper dedicated handlers
 public class ClientEventHandler {
     //    public static ObfMapping splashTextMapping = new ObfMapping("net/minecraft/client/gui/GuiMainMenu", "field_110353_x");
     public static FloatBuffer winPos = FloatBuffer.allocate(3);
@@ -105,97 +106,97 @@ public class ClientEventHandler {
     public static final Matrix4 MODELVIEW = new Matrix4();
     public static final Matrix4 PROJECTION = new Matrix4();
 
-    @SubscribeEvent
-    public void renderWorldEvent(RenderLevelLastEvent event) {
-        if (event.isCanceled()) {
-            return;
-        }
-        MODELVIEW.set(event.getPoseStack().last().pose());
-        PROJECTION.set(event.getProjectionMatrix());
-
-        LocalPlayer player = Minecraft.getInstance().player;
-        Level world = player.getCommandSenderWorld();
-        ItemStack stack = player.getMainHandItem();
-        ItemStack offStack = player.getOffhandItem();
-        Minecraft mc = Minecraft.getInstance();
-        float partialTicks = event.getPartialTick();
-
-        try {
-            if (!stack.isEmpty() && stack.getItem() instanceof ICrystalBinder) {
-                BinderHandler.renderWorldOverlay(player, event.getPoseStack(), world, stack, mc, partialTicks);
-                return;
-            } else if (!stack.isEmpty() && offStack.getItem() instanceof ICrystalBinder) {
-                BinderHandler.renderWorldOverlay(player, event.getPoseStack(), world, offStack, mc, partialTicks);
-                return;
-            }
-        } catch (Throwable e) {
-            e.printStackTrace();
-        }
-
-
-        if (!(mc.hitResult instanceof BlockHitResult)) {
-            return;
-        }
-
-//        if (!stack.isEmpty() && stack.getItem() == DEContent.creative_exchanger) {
+//    @SubscribeEvent
+//    public void renderWorldEvent(RenderLevelLastEvent event) {
+//        if (event.isCanceled()) {
+//            return;
+//        }
+//        MODELVIEW.set(event.getPoseStack().last().pose());
+//        PROJECTION.set(event.getProjectionMatrix());
 //
-//            List<BlockPos> blocks = CreativeExchanger.getBlocksToReplace(stack, ((BlockRayTraceResult) mc.hitResult).getBlockPos(), world, ((BlockRayTraceResult) mc.hitResult).getDirection());
+//        LocalPlayer player = Minecraft.getInstance().player;
+//        Level world = player.getCommandSenderWorld();
+//        ItemStack stack = player.getMainHandItem();
+//        ItemStack offStack = player.getOffhandItem();
+//        Minecraft mc = Minecraft.getInstance();
+//        float partialTicks = event.getPartialTick();
 //
-//            Tessellator tessellator = Tessellator.getInstance();
-//            BufferBuilder buffer = tessellator.getBuilder();
-//
-//            double offsetX = player.xo + (player.getX() - player.xo) * (double) partialTicks;
-//            double offsetY = player.yo + (player.getY() - player.yo) * (double) partialTicks;
-//            double offsetZ = player.zo + (player.getZ() - player.zo) * (double) partialTicks;
-//
-//            RenderSystem.enableBlend();
-//            RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-//            RenderSystem.color4f(1F, 1F, 1F, 1F);
-//            RenderSystem.lineWidth(2.0F);
-//            RenderSystem.disableTexture();
-//
-//            for (BlockPos block : blocks) {
-//                if (world.isEmptyBlock(block)) {
-//                    continue;
-//                }
-//
-//                double renderX = block.getX() - offsetX;
-//                double renderY = block.getY() - offsetY;
-//                double renderZ = block.getZ() - offsetZ;
-//
-//                Cuboid6 box = new Cuboid6(renderX, renderY, renderZ, renderX + 1, renderY + 1, renderZ + 1).expand(0.001, 0.001, 0.001);
-//                float colour = 1F;
-//                if (!world.getBlockState(block.relative(((BlockRayTraceResult) mc.hitResult).getDirection())).getMaterial().isReplaceable()) {
-//                    RenderSystem.disableDepthTest();
-//                    colour = 0.2F;
-//                }
-//                GL11.glColor4f(colour, colour, colour, colour);
-//
-////                RenderUtils.drawCuboidOutline(box);
-//
-//                if (!world.getBlockState(block.relative(((BlockRayTraceResult) mc.hitResult).getDirection())).getMaterial().isReplaceable()) {
-//                    RenderSystem.enableDepthTest();
-//                }
+//        try {
+//            if (!stack.isEmpty() && stack.getItem() instanceof ICrystalBinder) {
+//                BinderHandler.renderWorldOverlay(player, event.getPoseStack(), world, stack, mc, partialTicks);
+//                return;
+//            } else if (!stack.isEmpty() && offStack.getItem() instanceof ICrystalBinder) {
+//                BinderHandler.renderWorldOverlay(player, event.getPoseStack(), world, offStack, mc, partialTicks);
+//                return;
 //            }
-//
-//            RenderSystem.enableTexture();
-//            RenderSystem.disableBlend();
+//        } catch (Throwable e) {
+//            e.printStackTrace();
 //        }
-
-//        if (stack.isEmpty() || !(stack.getItem() instanceof MiningToolBase) || !ToolConfigHelper.getBooleanField("showDigAOE", stack)) {
+//
+//
+//        if (!(mc.hitResult instanceof BlockHitResult)) {
 //            return;
 //        }
 //
-//        BlockPos pos = ((BlockRayTraceResult) mc.hitResult).getBlockPos();
-//        BlockState state = world.getBlockState(pos);
-//        MiningToolBase tool = (MiningToolBase) stack.getItem();
+////        if (!stack.isEmpty() && stack.getItem() == DEContent.creative_exchanger) {
+////
+////            List<BlockPos> blocks = CreativeExchanger.getBlocksToReplace(stack, ((BlockRayTraceResult) mc.hitResult).getBlockPos(), world, ((BlockRayTraceResult) mc.hitResult).getDirection());
+////
+////            Tessellator tessellator = Tessellator.getInstance();
+////            BufferBuilder buffer = tessellator.getBuilder();
+////
+////            double offsetX = player.xo + (player.getX() - player.xo) * (double) partialTicks;
+////            double offsetY = player.yo + (player.getY() - player.yo) * (double) partialTicks;
+////            double offsetZ = player.zo + (player.getZ() - player.zo) * (double) partialTicks;
+////
+////            RenderSystem.enableBlend();
+////            RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+////            RenderSystem.color4f(1F, 1F, 1F, 1F);
+////            RenderSystem.lineWidth(2.0F);
+////            RenderSystem.disableTexture();
+////
+////            for (BlockPos block : blocks) {
+////                if (world.isEmptyBlock(block)) {
+////                    continue;
+////                }
+////
+////                double renderX = block.getX() - offsetX;
+////                double renderY = block.getY() - offsetY;
+////                double renderZ = block.getZ() - offsetZ;
+////
+////                Cuboid6 box = new Cuboid6(renderX, renderY, renderZ, renderX + 1, renderY + 1, renderZ + 1).expand(0.001, 0.001, 0.001);
+////                float colour = 1F;
+////                if (!world.getBlockState(block.relative(((BlockRayTraceResult) mc.hitResult).getDirection())).getMaterial().isReplaceable()) {
+////                    RenderSystem.disableDepthTest();
+////                    colour = 0.2F;
+////                }
+////                GL11.glColor4f(colour, colour, colour, colour);
+////
+//////                RenderUtils.drawCuboidOutline(box);
+////
+////                if (!world.getBlockState(block.relative(((BlockRayTraceResult) mc.hitResult).getDirection())).getMaterial().isReplaceable()) {
+////                    RenderSystem.enableDepthTest();
+////                }
+////            }
+////
+////            RenderSystem.enableTexture();
+////            RenderSystem.disableBlend();
+////        }
 //
-//        if (!tool.isToolEffective(stack, state)) {
-//            return;
-//        }
-
-//        renderMiningAOE(world, stack, pos, player, partialTicks);
-    }
+////        if (stack.isEmpty() || !(stack.getItem() instanceof MiningToolBase) || !ToolConfigHelper.getBooleanField("showDigAOE", stack)) {
+////            return;
+////        }
+////
+////        BlockPos pos = ((BlockRayTraceResult) mc.hitResult).getBlockPos();
+////        BlockState state = world.getBlockState(pos);
+////        MiningToolBase tool = (MiningToolBase) stack.getItem();
+////
+////        if (!tool.isToolEffective(stack, state)) {
+////            return;
+////        }
+//
+////        renderMiningAOE(world, stack, pos, player, partialTicks);
+//    }
 
 //    private void renderMiningAOE(World world, ItemStack stack, BlockPos pos, ClientPlayerEntity player, float partialTicks) {
 //        MiningToolBase tool = (MiningToolBase) stack.getItem();

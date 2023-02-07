@@ -13,6 +13,7 @@ import com.brandon3055.draconicevolution.client.gui.modular.GuiModularItem;
 import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.GuiConfigurableItem;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
 import com.brandon3055.draconicevolution.client.handler.ModularItemRenderOverrideHandler;
+import com.brandon3055.draconicevolution.client.handler.OverlayRenderHandler;
 import com.brandon3055.draconicevolution.client.keybinding.KeyBindings;
 import com.brandon3055.draconicevolution.client.keybinding.KeyInputHandler;
 import com.brandon3055.draconicevolution.client.render.entity.DraconicGuardianRenderer;
@@ -68,6 +69,7 @@ public class ClientInit {
 
         ModularItemRenderOverrideHandler.init();
         CustomBossInfoHandler.init();
+        OverlayRenderHandler.init();
         DEShaders.init();
     }
 
