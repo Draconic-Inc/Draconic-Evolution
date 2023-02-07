@@ -309,11 +309,11 @@ public class DEConfig {
     public static boolean configUiEnableAdvancedXOver;
     public static boolean fancyToolModels;
     @Deprecated
-    public static boolean toolShaders;
-    public static boolean crystalShaders;
-    public static boolean reactorShaders;
+//    public static boolean toolShaders;
+//    public static boolean crystalShaders;
+//    public static boolean reactorShaders;
     public static boolean guardianShaders;
-    public static boolean otherShaders;
+//    public static boolean otherShaders;
     public static boolean itemDislocatorSound;
 
     private static void loadClient() {
@@ -324,26 +324,26 @@ public class DEConfig {
                 .setComment("Set this to false to disable the fancy 3D tool models. (Requires restart)")
                 .setDefaultBoolean(true)
                 .onSync((tag, type) -> fancyToolModels = tag.getBoolean());
-        clientTag.getValue("toolShaders")
-                .setComment("Set this to false to disable tool shaders.")
-                .setDefaultBoolean(true)
-                .onSync((tag, type) -> toolShaders = tag.getBoolean());
-        clientTag.getValue("crystalShaders")
-                .setComment("Set this to false to disable crystal shaders.")
-                .setDefaultBoolean(true)
-                .onSync((tag, type) -> crystalShaders = tag.getBoolean());
-        clientTag.getValue("reactorShaders")
-                .setComment("Set this to false to disable reactor shaders.")
-                .setDefaultBoolean(true)
-                .onSync((tag, type) -> reactorShaders = tag.getBoolean());
+//        clientTag.getValue("toolShaders")
+//                .setComment("Set this to false to disable tool shaders.")
+//                .setDefaultBoolean(true)
+//                .onSync((tag, type) -> toolShaders = tag.getBoolean());
+//        clientTag.getValue("crystalShaders")
+//                .setComment("Set this to false to disable crystal shaders.")
+//                .setDefaultBoolean(true)
+//                .onSync((tag, type) -> crystalShaders = tag.getBoolean());
+//        clientTag.getValue("reactorShaders")
+//                .setComment("Set this to false to disable reactor shaders.")
+//                .setDefaultBoolean(true)
+//                .onSync((tag, type) -> reactorShaders = tag.getBoolean());
         clientTag.getValue("guardianShaders")
                 .setComment("Set this to false to disable chaos guardian shaders. (May visually break some stuff but could be useful if you are experiencing gl crashes.)")
                 .setDefaultBoolean(true)
                 .onSync((tag, type) -> guardianShaders = tag.getBoolean());
-        clientTag.getValue("otherShaders")
-                .setComment("Set this to false to disable all other shaders.")
-                .setDefaultBoolean(true)
-                .onSync((tag, type) -> otherShaders = tag.getBoolean());
+//        clientTag.getValue("otherShaders")
+//                .setComment("Set this to false to disable all other shaders.")
+//                .setDefaultBoolean(true)
+//                .onSync((tag, type) -> otherShaders = tag.getBoolean());
 
         ConfigCategory itemConfigGui = clientTag.getCategory("itemConfigGUI");
         itemConfigGui.setComment("These settings is accessible in game via the \"Configure Equipment\" gui.");
