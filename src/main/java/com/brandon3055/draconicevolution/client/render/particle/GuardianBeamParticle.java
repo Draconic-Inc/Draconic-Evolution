@@ -18,13 +18,19 @@ public class GuardianBeamParticle extends TextureSheetParticle {
       this.xd = 0;//*= (double)0.1F;
       this.yd = 0;//*= (double)0.1F;
       this.zd = 0;//*= (double)0.1F;
+      float secondary = Math.max(0, (float) power - 1F);
       this.rCol = 1;
       this.gCol = 0;
       this.bCol = 0;
+      if (secondary > 0) {
+         rCol = 1 - secondary;
+         this.gCol = secondary;
+         this.bCol = secondary;
+      }
       this.lifetime = 2 + world.random.nextInt(2);
       this.hasPhysics = false;
       this.setSpriteFromAge(animatedSprite);
-      scale((float) power * 4);
+      scale((float) Math.min(power, 1) * 4);
    }
 
    @Override
