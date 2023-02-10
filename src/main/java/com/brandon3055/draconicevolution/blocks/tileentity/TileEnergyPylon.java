@@ -48,7 +48,7 @@ public class TileEnergyPylon extends TileBCore implements MultiBlockController {
     public final ManagedEnum<EnumColour> colour = register(new ManagedEnum<>("colour", EnumColour.class, null, DataFlags.SAVE_NBT_SYNC_TILE));
     public final ManagedBool structureValid = register(new ManagedBool("structure_valid", DataFlags.SAVE_NBT_SYNC_TILE));
     public final ManagedPos coreOffset = register(new ManagedPos("core_offset", (BlockPos) null, DataFlags.SAVE_NBT_SYNC_TILE));
-    private final ManagedByte particleRate = register(new ManagedByte("particle_rate", DataFlags.SAVE_NBT_SYNC_TILE));
+    private final ManagedByte particleRate = register(new ManagedByte("particle_rate", DataFlags.SYNC_TILE));
 
     private TileEnergyCore core = null;
     private int coreSelection = 0;

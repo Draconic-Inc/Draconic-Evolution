@@ -413,11 +413,6 @@ public class TileReactorCore extends TileBCore implements MenuProvider {
             }
         }
         //endregion ======
-
-        //Worst case it rolls back a second
-        if (tick % 20 == 0) {
-            setChanged();
-        }
     }
 
     public void updateCriticalState() {

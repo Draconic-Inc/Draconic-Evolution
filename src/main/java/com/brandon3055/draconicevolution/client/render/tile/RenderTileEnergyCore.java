@@ -7,6 +7,7 @@ import codechicken.lib.math.MathHelper;
 import codechicken.lib.render.CCModel;
 import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.buffer.TransformingVertexConsumer;
+import codechicken.lib.render.buffer.VBORenderType;
 import codechicken.lib.render.model.OBJParser;
 import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Vector3;
@@ -88,6 +89,10 @@ public class RenderTileEnergyCore implements BlockEntityRenderer<TileEnergyCore>
     private final CCModel modelStabilizerSphere;
     private final CCModel modelEnergyCore;
 
+    //TODO switch core to VBOs, Requires custom shaders to apply transforms
+//    private final VBORenderType coreType;
+//    private final VBORenderType shieldType;
+
     public RenderTileEnergyCore(BlockEntityRendererProvider.Context context) {
         Map<String, CCModel> map = new OBJParser(new ResourceLocation(DraconicEvolution.MODID, "models/block/energy_core/stabilizer_sphere.obj")).quads().ignoreMtl().parse();
         modelStabilizerSphere = CCModel.combine(map.values());
@@ -96,6 +101,21 @@ public class RenderTileEnergyCore implements BlockEntityRenderer<TileEnergyCore>
         map = new OBJParser(new ResourceLocation(DraconicEvolution.MODID, "models/block/energy_core/energy_core_model.obj")).quads().ignoreMtl().parse();
         modelEnergyCore = CCModel.combine(map.values());
         modelEnergyCore.computeNormals();
+
+//        coreType = new VBORenderType(innerCoreType, (format, builder) -> {
+//            CCRenderState ccrs = CCRenderState.instance();
+//            ccrs.reset();
+//            ccrs.bind(builder, format);
+//            modelEnergyCore.render(ccrs);
+//        });
+//
+//        shieldType = new VBORenderType(outerCoreType, (format, builder) -> {
+//            CCRenderState ccrs = CCRenderState.instance();
+//            ccrs.reset();
+//            ccrs.bind(builder, format);
+//            modelEnergyCore.render(ccrs);
+//        });
+
     }
 
 
