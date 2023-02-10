@@ -49,7 +49,7 @@ public class LangGenerator extends LanguageProvider {
         helper.add(DEContent.celestial_manipulator,                             "Celestial Manipulator");
         helper.add(DEContent.disenchanter,                                      "Disenchanter");
         helper.add(DEContent.dislocation_inhibitor,                             "Dislocation Normalization Field Projector");
-        add("tile." + MODID + ".dislocation_inhibitor.info",  "Prevents items dropped within 5 blocks from being collected by Item Dislocators.");
+        add("tile." + MODID + ".dislocation_inhibitor.info",                    "Prevents items dropped within 5 blocks from being collected by Item Dislocators.");
         helper.add(DEContent.dislocator_pedestal,                               "Dislocator Pedestal");
         helper.add(DEContent.dislocator_receptacle,                             "Dislocator Receptacle");
         helper.add(DEContent.draconium_chest,                                   "Draconium Chest");
@@ -853,7 +853,10 @@ public class LangGenerator extends LanguageProvider {
         helper.add("scale",                                                     "Scale");
         helper.add("scale.info",                                                "Change HUD element scale.");
 
-        add("hud." + MODID + ".open_hud_config",              "Open HUD configuration GUI.");
+        add("hud." + MODID + ".open_hud_config",                                "Open HUD configuration GUI.");
+
+        add("disenchanter." + MODID + ".not_enough_levels",                     "You require %s levels to extract that enchantment!");
+
     }
 
     private void toolTips(PrefixHelper helper) {

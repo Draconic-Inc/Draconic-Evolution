@@ -52,6 +52,7 @@
   "death.attack.draconicevolution.draconic_guardian": "%1$s was torn apart by %2$s",
   "death.attack.draconicevolution.guardian_laser": "%1$s was vaporized by %2$s using a frickin laser beam",
   "death.attack.draconicevolution.guardian_projectile": "%1$s was obliterated by %2$s",
+  "disenchanter.draconicevolution.not_enough_levels": "You require %s levels to extract that enchantment!",
   "dislocate.draconicevolution.already_bound": "ERROR: This charm can only be bound to one location.",
   "dislocate.draconicevolution.bound.bound_to": "Bound To",
   "dislocate.draconicevolution.bound.cant_find_player": "The bound player is not online!",
