@@ -247,7 +247,7 @@ public class DEOldConfig {
     public static boolean bowBlockDamage = true;
 
     //    @ModConfigProperty(category = "Tweaks", name = "grinderEnergyPerHeart", comment = "Sets the energy per use per heart of damage for the grinder.")
-    public static int grinderEnergyPerHeart = 80;
+//    public static int grinderEnergyPerHeart = 80;
 
     //    @ModConfigProperty(category = "Tweaks", name = "dragonEggSpawnOverride", comment = "By default, the dragon egg only ever spawns once. This forces it to spawn every time the dragon is killed.")
 //    public static boolean dragonEggSpawnOverride = true;
@@ -287,7 +287,7 @@ public class DEOldConfig {
     public static String oreDoublingOutputPriority = "thermalfoundation";
 
     //    @ModConfigProperty(category = "Tweaks", name = "grinderBlackList", comment = "This allows you to prevent the mob grinder from attempting to kill specific entities.")
-    public static String[] grinderBlackList = {"evilcraft:vengeance_spirit"};
+//    public static String[] grinderBlackList = {"evilcraft:vengeance_spirit"};
 
     //    @ModConfigProperty(category = "Tweaks", name = "flightSpeedLimit", autoSync = true, comment = "Use this to limit the max flight speed modifier a player can set on the draconic chestplate.\nSetting this to 200 for example would limit the flight speed to +200%.\nDefault -1 removes the limit and allows the full +600% flight speed.")
     public static int flightSpeedLimit = -1; //TODO will be synced from server to client
@@ -317,7 +317,7 @@ public class DEOldConfig {
     public static int draconicFluxCapBaseCap = 256000000;
 
     //    @ModConfigProperty(category = "Tweaks", name = "allowGrindingPlayers", comment = "Allow the mob grinder to grind players", autoSync = true)
-    public static boolean allowGrindingPlayers = false;
+//    public static boolean allowGrindingPlayers = false;
 
     //Category Client
 
@@ -361,7 +361,7 @@ public class DEOldConfig {
 
     public static Map<String, Integer> itemDislocatorBlacklistMap = new HashMap<String, Integer>();
 //    public static Set<String> oreBlacklist = new HashSet<>();
-    public static Set<String> grinderBlacklist = new HashSet<>();
+//    public static Set<String> grinderBlacklist = new HashSet<>();
     public static Set<String> chestBlacklist = new HashSet<>();
 
 //    @Override

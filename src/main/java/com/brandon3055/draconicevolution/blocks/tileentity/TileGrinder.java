@@ -18,6 +18,7 @@ import com.brandon3055.brandonscore.lib.datamanager.ManagedInt;
 import com.brandon3055.brandonscore.lib.entityfilter.EntityFilter;
 import com.brandon3055.brandonscore.lib.entityfilter.FilterType;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
+import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DEOldConfig;
 import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
 import com.brandon3055.draconicevolution.blocks.machines.Grinder;
@@ -102,7 +103,7 @@ public class TileGrinder extends TileBCore implements IRSSwitchable, MenuProvide
 
         entityFilter = new EntityFilter(true, FilterType.HOSTILE, FilterType.TAMED, FilterType.ADULTS, FilterType.ENTITY_TYPE, FilterType.FILTER_GROUP, FilterType.PLAYER);
         entityFilter.setDirtyHandler(this::setChanged);
-        entityFilter.setTypePredicate(e -> e != FilterType.PLAYER || DEOldConfig.allowGrindingPlayers);
+        entityFilter.setTypePredicate(e -> e != FilterType.PLAYER || DEConfig.allowGrindingPlayers);
         entityFilter.setupServerPacketHandling(() -> createClientBoundPacket(0), packet -> sendPacketToClients(getAccessingPlayers(), packet));
         entityFilter.setupClientPacketHandling(() -> createServerBoundPacket(0));
         setClientSidePacketHandler(0, input -> entityFilter.receivePacketFromServer(input));
@@ -173,11 +174,11 @@ public class TileGrinder extends TileBCore implements IRSSwitchable, MenuProvide
     }
 
     private boolean updateActiveState() {
-        int eph = DEOldConfig.grinderEnergyPerHeart;
+        int eph = DEConfig.grinderEnergyPerHeart;
         boolean isActive = isTileEnabled();
 
         //Only run if there is a reasonable energy buffer
-        if (isActive && opStorage.getOPStored() < eph * 50) {
+        if (isActive && opStorage.getOPStored() < eph * 50L) {
             isActive = false;
         }
 
@@ -211,7 +212,7 @@ public class TileGrinder extends TileBCore implements IRSSwitchable, MenuProvide
         }
         getFakePlayer().setItemInHand(InteractionHand.MAIN_HAND, weapon);
 
-        int eph = DEOldConfig.grinderEnergyPerHeart;
+        int eph = DEConfig.grinderEnergyPerHeart;
         float health = nextTarget.getHealth();
 
         //Ensure teh minimum damage dealt is 5 hearts. This is to help prevent endless hurt loops due to mobs with armor.
@@ -289,13 +290,13 @@ public class TileGrinder extends TileBCore implements IRSSwitchable, MenuProvide
             debug("Target Invalid: " + livingBase + ", [Already Dead]");
             return false;
         }
-        if (livingBase instanceof Player && !DEOldConfig.allowGrindingPlayers) {
+        if (livingBase instanceof Player && !DEConfig.allowGrindingPlayers) {
             debug("Target Invalid: " + livingBase + ", [Is Player]");
             return false;
         }
-        if (DEOldConfig.grinderBlacklist.isEmpty()) return true;
+        if (DEConfig.grinderBlackList.isEmpty()) return true;
         ResourceLocation reg = livingBase.getType().getRegistryName();
-        return !(reg != null && DEOldConfig.grinderBlacklist.contains(reg.toString()));
+        return !(reg != null && DEConfig.grinderBlackList.contains(reg.toString()));
     }
 
     private void handleLootCollection() {

@@ -65,6 +65,10 @@ public class DEConfig {
     public static double reactorExplosionScale = 1;
     public static boolean disableLargeReactorBoom = false;
 
+    public static int grinderEnergyPerHeart;
+    public static Set<String> grinderBlackList;
+    public static boolean allowGrindingPlayers;
+
     public static int soulDropChance = 1000;
     public static int passiveSoulDropChance = 800;
     public static Set<String> spawnerList = new HashSet<>();
@@ -298,6 +302,22 @@ public class DEConfig {
                     }
                 })
                 .onSync((tag, reason) -> coreCapacity = tag.getLongs().toArray(new Long[0]));
+
+        serverTag.getValue("grinderEnergyPerHeart")
+                .syncTagToClient()
+                .setComment("Mob Grinder energy required per entity health point")
+                .setDefaultInt(80)
+                .onSync((tag, type) -> grinderEnergyPerHeart = tag.getInt());
+        serverTag.getValueList("grinderBlackList")
+                .syncTagToClient()
+                .setComment("Mob Grinder entity blacklist.")
+                .setDefaultStrings(Lists.newArrayList("evilcraft:vengeance_spirit"))
+                .onSync((tag, type) -> grinderBlackList = new HashSet<>(tag.getStrings()));
+        serverTag.getValue("allowGrindingPlayers")
+                .syncTagToClient()
+                .setComment("Allow mob grinder to grind players")
+                .setDefaultBoolean(false)
+                .onSync((tag, type) -> allowGrindingPlayers = tag.getBoolean());
     }
 
     //Client properties
@@ -313,7 +333,7 @@ public class DEConfig {
 //    public static boolean crystalShaders;
 //    public static boolean reactorShaders;
     public static boolean guardianShaders;
-//    public static boolean otherShaders;
+    //    public static boolean otherShaders;
     public static boolean itemDislocatorSound;
 
     private static void loadClient() {
