@@ -8,6 +8,7 @@ import com.brandon3055.brandonscore.inventory.BlockToStackHelper;
 import com.brandon3055.brandonscore.inventory.InventoryDynamic;
 import com.brandon3055.brandonscore.lib.Pair;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
+import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.capability.PropertyProvider;
@@ -103,41 +104,6 @@ public interface IModularMiningTool extends IModularTieredItem {
         }
 
         ModuleHelper.handleItemCollection(player, host, EnergyUtils.getStorage(stack), inventoryDynamic);
-
-//        Predicate<ItemStack> junkTest = null;
-//        for (ModuleEntity<?> entity : host.getEntitiesByType(ModuleTypes.JUNK_FILTER).toList()) {
-//            junkTest = junkTest == null ? ((JunkFilterEntity)entity).createFilterTest() : junkTest.or(((JunkFilterEntity)entity).createFilterTest());
-//        }
-//        if (junkTest != null) {
-//            inventoryDynamic.removeIf(junkTest);
-//        }
-//
-//        IOPStorage storage = EnergyUtils.getStorage(stack);
-//        ModuleEntity<?> optionalCollector = host.getEntitiesByType(ModuleTypes.ENDER_COLLECTION).findAny().orElse(null);
-//        if (optionalCollector instanceof EnderCollectionEntity collector) {
-//            List<ItemStack> remainder = collector.insertStacks(player, inventoryDynamic.getStacks(), storage);
-//            inventoryDynamic.setStacks(new LinkedList<>(remainder));
-//        }
-//
-//        if (!player.level.isClientSide) {
-////            if (DEOldConfig.disableLootCores) {
-//            for (int i = 0; i < inventoryDynamic.getContainerSize(); i++) {
-//                ItemStack sis = inventoryDynamic.getItem(i);
-//                if (sis != null) {
-//                    ItemEntity item = new ItemEntity(player.level, player.getX(), player.getY(), player.getZ(), sis);
-//                    item.setPickUpDelay(0);
-//                        player.level.addFreshEntity(item);
-//                }
-//            }
-//            player.giveExperiencePoints(inventoryDynamic.xp);
-//            inventoryDynamic.clearContent();
-////            } else {
-////                EntityLootCore lootCore = new EntityLootCore(player.world, inventoryDynamic); TODO Entity Stuff
-////                lootCore.setPosition(player.getPosX(), player.getPosY(), player.getPosZ());
-////                player.world.addEntity(lootCore);
-////            }
-//        }
-
         return true;
     }
 
@@ -171,40 +137,40 @@ public interface IModularMiningTool extends IModularTieredItem {
         int yOffset = 0;
 
         switch (sideHit) {
-            case 0:
+            case 0 -> {
                 yMax = breakDepth;
                 yMin = 0;
                 zMax = breakRadius;
-                break;
-            case 1:
+            }
+            case 1 -> {
                 yMin = breakDepth;
                 yMax = 0;
                 zMax = breakRadius;
-                break;
-            case 2:
+            }
+            case 2 -> {
                 xMax = breakRadius;
                 zMin = 0;
                 zMax = breakDepth;
                 yOffset = breakRadius - 1;
-                break;
-            case 3:
+            }
+            case 3 -> {
                 xMax = breakRadius;
                 zMax = 0;
                 zMin = breakDepth;
                 yOffset = breakRadius - 1;
-                break;
-            case 4:
+            }
+            case 4 -> {
                 xMax = breakDepth;
                 xMin = 0;
                 zMax = breakRadius;
                 yOffset = breakRadius - 1;
-                break;
-            case 5:
+            }
+            case 5 -> {
                 xMin = breakDepth;
                 xMax = 0;
                 zMax = breakRadius;
                 yOffset = breakRadius - 1;
-                break;
+            }
         }
 
         if (breakRadius == 0) {
@@ -233,30 +199,23 @@ public interface IModularMiningTool extends IModularTieredItem {
             return;
         }
 
-        if (player.getAbilities().instabuild) {
-            if (player instanceof ServerPlayer && ForgeHooks.onBlockBreakEvent(world, ((ServerPlayer) player).gameMode.getGameModeForPlayer(), (ServerPlayer) player, pos) == -1) return;
-
-            if (block.onDestroyedByPlayer(state, world, pos, player, false, fluidState)) {
-                block.destroy(world, pos, state);
-            }
-
-            if (player instanceof ServerPlayer) {
-                ((ServerPlayer) player).connection.send(new ClientboundBlockUpdatePacket(world, pos));
-            }
-            return;
-        }
-
-        if (!world.isClientSide) {
-            int xp = ForgeHooks.onBlockBreakEvent(world, ((ServerPlayer) player).gameMode.getGameModeForPlayer(), (ServerPlayer) player, pos);
+        if (player instanceof ServerPlayer serverPlayer) {
+            int xp = ForgeHooks.onBlockBreakEvent(world, serverPlayer.gameMode.getGameModeForPlayer(), (ServerPlayer) player, pos);
             if (xp == -1) {
                 ServerPlayer mpPlayer = (ServerPlayer) player;
                 mpPlayer.connection.send(new ClientboundBlockUpdatePacket(world, pos));
                 return;
             }
 
-            stack.mineBlock(world, state, pos, player);
-            BlockToStackHelper.breakAndCollectWithPlayer(world, pos, inventory, player, xp);
-            extractEnergy(player, stack, EquipCfg.energyHarvest);
+            if (player.getAbilities().instabuild) {
+                if (block.onDestroyedByPlayer(state, world, pos, player, false, fluidState)) {
+                    block.destroy(world, pos, state);
+                }
+            } else {
+                stack.mineBlock(world, state, pos, player);
+                BlockToStackHelper.breakAndCollectWithPlayer(world, pos, inventory, player, xp);
+                extractEnergy(player, stack, EquipCfg.energyHarvest);
+            }
         } else {
             if (block.onDestroyedByPlayer(state, world, pos, player, true, fluidState)) {
                 block.destroy(world, pos, state);
