@@ -112,6 +112,8 @@ public class TileGrinder extends TileBCore implements IRSSwitchable, MenuProvide
 
         aoe.setValidator(value -> (byte) MathHelper.clip(value, 1, getMaxAOE()));
         aoe.addValueListener(e -> killZone = null);
+
+        enableTileDebug();
     }
 
     private boolean canExtractItem(int slot, ItemStack stack) {
@@ -159,6 +161,7 @@ public class TileGrinder extends TileBCore implements IRSSwitchable, MenuProvide
             }
 
             if (coolDown > 0) {
+                debug("Cool down: " + coolDown);
                 coolDown--;
                 return;
             }
@@ -186,18 +189,19 @@ public class TileGrinder extends TileBCore implements IRSSwitchable, MenuProvide
         if (forceReCalc || killZone == null) {
             BlockState state = level.getBlockState(worldPosition);
             Direction facing = state.getValue(Grinder.FACING);
-//            LogHelper.dev("Update Kill Zone: " + facing);
             int aoe = this.aoe.get();
             BlockPos pos1 = worldPosition.offset(-(aoe - 1), -(aoe - 1), -(aoe - 1));
             BlockPos pos2 = worldPosition.offset(aoe, aoe, aoe);
             pos1 = pos1.offset(facing.getStepX() * aoe, 0, facing.getStepZ() * aoe);
             pos2 = pos2.offset(facing.getStepX() * aoe, 0, facing.getStepZ() * aoe);
             killZone = new AABB(pos1, pos2);
+            debug("Kill zone updated: " + killZone);
         }
     }
 
     private boolean attackTarget() {
         if (nextTarget == null || !nextTarget.isAlive()) {
+            debug("Next target is null or dead: " + nextTarget);
             return true;
         }
 
@@ -238,12 +242,12 @@ public class TileGrinder extends TileBCore implements IRSSwitchable, MenuProvide
                 weapon.hurtAndBreak(1, getFakePlayer(), fakePlayer -> itemHandler.setStackInSlot(1, justInCase));
             }
 
-            LogHelper.dev("Grinder: Dealt " + damage + " damage to entity: " + nextTarget);
+            debug("Dealt " + damage + " damage to entity: " + nextTarget);
             nextTarget = null;
             opStorage.modifyEnergyStored(-cost);
             return true;
         }
-        LogHelper.dev("Grinder: Failed to deal damage to entity: " + nextTarget.getType().getDescription().getString() + " Waiting 3 ticks...");
+        debug("Failed to deal damage to entity: " + nextTarget.getType().getDescription().getString() + " Waiting 3 ticks...");
         if (!killZone.intersects(nextTarget.getBoundingBox())) {
             nextTarget = null;
         }
@@ -253,14 +257,16 @@ public class TileGrinder extends TileBCore implements IRSSwitchable, MenuProvide
 
     private void queNextTarget() {
         List<LivingEntity> entitiesInRange = level.getEntitiesOfClass(LivingEntity.class, killZone, entityFilter.predicate());
+        debug("Searching for next target, " + entitiesInRange.size() + " targets in range");
         boolean foundInvulnerable = false;
 
         while (!entitiesInRange.isEmpty()) {
             LivingEntity randEntity = entitiesInRange.remove(level.random.nextInt(entitiesInRange.size()));
+            debug("Checking Target: " + randEntity);
             if (isValidEntity(randEntity)) {
-                LogHelper.dev("Grinder: Found next target: " + randEntity);
+                debug("Found valid target: " + randEntity);
                 if (randEntity.isInvulnerable()) {
-                    LogHelper.dev("Grinder: Target is invulnerable! searching for softer target...");
+                    debug("Target is invulnerable! searching for softer target...");
                     foundInvulnerable = true;
                 } else {
                     nextTarget = randEntity;
@@ -274,12 +280,19 @@ public class TileGrinder extends TileBCore implements IRSSwitchable, MenuProvide
         }
 
         coolDown = foundInvulnerable ? 5 : 100;
+        debug("No attachable target found. Will check again in " + coolDown + " Ticks");
         nextTarget = null;
     }
 
     private boolean isValidEntity(LivingEntity livingBase) {
-        if (!livingBase.isAlive()) return false;
-        if (livingBase instanceof Player && !DEOldConfig.allowGrindingPlayers) return false;
+        if (!livingBase.isAlive()) {
+            debug("Target Invalid: " + livingBase + ", [Already Dead]");
+            return false;
+        }
+        if (livingBase instanceof Player && !DEOldConfig.allowGrindingPlayers) {
+            debug("Target Invalid: " + livingBase + ", [Is Player]");
+            return false;
+        }
         if (DEOldConfig.grinderBlacklist.isEmpty()) return true;
         ResourceLocation reg = livingBase.getType().getRegistryName();
         return !(reg != null && DEOldConfig.grinderBlacklist.contains(reg.toString()));
@@ -287,6 +300,7 @@ public class TileGrinder extends TileBCore implements IRSSwitchable, MenuProvide
 
     private void handleLootCollection() {
         List<ExperienceOrb> xp = level.getEntitiesOfClass(ExperienceOrb.class, killZone.inflate(4, 4, 4));
+        debug("Detected: " + xp.size() + " XP entities");
         for (ExperienceOrb orb : xp) {
             if (!orb.isAlive()) continue;
             if (collectXP.get() && storedXP.get() + orb.value <= getXPStorageCapacity()) {
@@ -299,6 +313,7 @@ public class TileGrinder extends TileBCore implements IRSSwitchable, MenuProvide
 
         if (collectItems.get()) {
             List<ItemEntity> items = level.getEntitiesOfClass(ItemEntity.class, killZone.inflate(1, 1, 1));
+            debug("Detected: " + items.size() + " Item entities");
             for (Direction dir : Direction.values()) {
                 BlockEntity target = level.getBlockEntity(worldPosition.relative(dir));
                 if (target != null) {
