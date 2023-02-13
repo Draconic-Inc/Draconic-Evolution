@@ -16,6 +16,7 @@ import net.minecraft.item.*;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
@@ -227,9 +228,17 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor, IConfigur
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void addInformation(ItemStack stack, EntityPlayer par2EntityPlayer, List list, boolean par4) {
+    public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) {
         InfoHelper.addEnergyAndLore(stack, list);
         ToolBase.holdCTRLForUpgrades(list, stack);
+        if (Loader.isModLoaded("Thaumcraft")) {
+            list.add("");
+            list.add(
+                    EnumChatFormatting.DARK_PURPLE + StatCollector.translateToLocal("tc.visdiscount")
+                            + ": "
+                            + this.getVisDiscount(stack, player, (Aspect) null)
+                            + "%");
+        }
     }
 
     public boolean clearNegativeEffects(Entity par3Entity) {
@@ -399,10 +408,7 @@ public class DraconicArmor extends ItemArmor implements ISpecialArmor, IConfigur
     @Override
     @Method(modid = "Thaumcraft")
     public int getVisDiscount(ItemStack itemStack, EntityPlayer entityPlayer, Aspect aspect) {
-        if (itemStack == null || itemStack.getItem() != ModItems.draconicHelm) {
-            return 0;
-        }
-        return IConfigurableItem.ProfileHelper.getBoolean(itemStack, "GogglesOfRevealing", true) ? 5 : 0;
+        return 15;
     }
 
     @SideOnly(Side.CLIENT)

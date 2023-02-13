@@ -13,10 +13,15 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.*;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ISpecialArmor;
+
+import thaumcraft.api.IVisDiscountGear;
+import thaumcraft.api.IWarpingGear;
+import thaumcraft.api.aspects.Aspect;
 
 import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.common.utills.InfoHelper;
@@ -36,6 +41,8 @@ import com.brandon3055.draconicevolution.common.utills.IInventoryTool;
 import com.brandon3055.draconicevolution.common.utills.IUpgradableItem;
 import com.brandon3055.draconicevolution.common.utills.ItemConfigField;
 
+import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -43,8 +50,11 @@ import cpw.mods.fml.relauncher.SideOnly;
 /**
  * Created by Brandon on 3/07/2014.
  */
-public class WyvernArmor extends ItemArmor
-        implements ISpecialArmor, IConfigurableItem, IInventoryTool, IUpgradableItem, ICustomArmor {
+@Optional.InterfaceList(
+        value = { @Optional.Interface(iface = "thaumcraft.api.IVisDiscountGear", modid = "Thaumcraft"),
+                @Optional.Interface(iface = "thaumcraft.api.IWarpingGear", modid = "Thaumcraft"), })
+public class WyvernArmor extends ItemArmor implements ISpecialArmor, IConfigurableItem, IInventoryTool, IUpgradableItem,
+        ICustomArmor, IVisDiscountGear, IWarpingGear {
 
     @SideOnly(Side.CLIENT)
     private IIcon helmIcon;
@@ -185,9 +195,17 @@ public class WyvernArmor extends ItemArmor
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, EntityPlayer par2EntityPlayer, List list, boolean par4) {
+    public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) {
         InfoHelper.addEnergyAndLore(stack, list);
         ToolBase.holdCTRLForUpgrades(list, stack);
+        if (Loader.isModLoaded("Thaumcraft")) {
+            list.add("");
+            list.add(
+                    EnumChatFormatting.DARK_PURPLE + StatCollector.translateToLocal("tc.visdiscount")
+                            + ": "
+                            + this.getVisDiscount(stack, player, (Aspect) null)
+                            + "%");
+        }
     }
 
     @Override
@@ -466,5 +484,17 @@ public class WyvernArmor extends ItemArmor
     @Override
     public boolean hasProfiles() {
         return false;
+    }
+
+    @Override
+    @Optional.Method(modid = "Thaumcraft")
+    public int getVisDiscount(ItemStack itemStack, EntityPlayer entityPlayer, Aspect aspect) {
+        return 10;
+    }
+
+    @Override
+    @Optional.Method(modid = "Thaumcraft")
+    public int getWarp(ItemStack itemStack, EntityPlayer entityPlayer) {
+        return 5;
     }
 }
