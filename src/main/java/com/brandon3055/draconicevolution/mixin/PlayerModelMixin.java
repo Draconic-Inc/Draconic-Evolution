@@ -16,8 +16,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(PlayerModel.class)
 public class PlayerModelMixin {
 
-    public PlayerModel<?> getThis() {
-        return SneakyUtils.unsafeCast(this);
+    private PlayerModel getThis() {
+        return (PlayerModel) (Object) this;
     }
 
     @Inject(
