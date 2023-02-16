@@ -143,6 +143,7 @@ public class TileReactorCore extends TileBCore implements MenuProvider {
 
         shaderAnimationState.setCCSCS();
         effectHandler = DraconicEvolution.proxy.createReactorFXHandler(this);
+        dataManager.setMaxSaveInterval(10);
     }
 
     @Override

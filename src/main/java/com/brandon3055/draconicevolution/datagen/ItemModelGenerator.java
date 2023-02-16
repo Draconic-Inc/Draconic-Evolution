@@ -215,8 +215,7 @@ public class ItemModelGenerator extends ItemModelProvider {
     private void blockItem(Block block, ResourceLocation blockModel) {
         if (block == null) return;
         ResourceLocation reg = block.getRegistryName();
-        getBuilder(reg.getPath())
-                .parent(new ModelFile.UncheckedModelFile(blockModel));
+        getBuilder(reg.getPath()).parent(new ModelFile.UncheckedModelFile(blockModel));
     }
 
     private void dummyModel(Block block) {

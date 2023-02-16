@@ -148,32 +148,22 @@ public class FusionRecipeTransferHelper implements IRecipeTransferHandler<Contai
             }
 
             boolean foundIngredient = false;
+            //Stacks that will satisfy this ingredient.
             for (ItemStack stack : requiredStacks) {
-                boolean hasItems = false;
-                do {
-                    boolean removing = hasItems;
-                    int required = stack.getCount();
-                    hasItems = false;
-                    int found = 0;
-                    for (ItemStack available : availableItemStacks.values()) {
-                        if (stackhelper.isEquivalent(available, stack, UidContext.Ingredient)) {
-                            if (removing) {
-                                required -= available.getCount();
-                                available.shrink(Math.min(required, available.getCount()));
-                                if (required <= 0) break;
-                            } else {
-                                found += available.getCount();
-                                if (found >= stack.getCount()) {
-                                    hasItems = true;
-                                    foundIngredient = true;
-                                    break;
-                                }
-                            }
+                int required = stack.getCount();
+                for (ItemStack available : availableItemStacks.values()) {
+                    if (stackhelper.isEquivalent(available, stack, UidContext.Ingredient)) {
+                        int consume = Math.min(required, available.getCount());
+                        available.shrink(consume);
+                        required -= consume;
+                        if (required <= 0) {
+                            foundIngredient = true;
+                            break;
                         }
                     }
-                    availableItemStacks.entrySet().removeIf(e -> e.getValue().getCount() <= 0);
                 }
-                while (hasItems);
+
+                availableItemStacks.entrySet().removeIf(e -> e.getValue().getCount() <= 0);
                 if (foundIngredient) {
                     break;
                 }

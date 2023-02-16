@@ -50,6 +50,7 @@ public class LootTableGenerator extends LootTableProvider {
 
     public static class BlockLootTables extends net.minecraft.data.loot.BlockLoot {
 
+        @Override
         protected void addTables() {
             dropSelf(DEContent.generator);
             dropSelf(DEContent.grinder);
