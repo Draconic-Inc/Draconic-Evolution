@@ -33,13 +33,12 @@ public class ModuleHelper {
             inventory.removeIf(junkTest);
         }
 
-        ModuleEntity<?> optionalCollector = host.getEntitiesByType(ModuleTypes.ENDER_COLLECTION).findAny().orElse(null);
-        if (optionalCollector instanceof EnderCollectionEntity collector) {
-            List<ItemStack> remainder = collector.insertStacks(player, inventory.getStacks(), storage);
-            inventory.setStacks(new LinkedList<>(remainder));
-        }
-
         if (!player.level.isClientSide) {
+            ModuleEntity<?> optionalCollector = host.getEntitiesByType(ModuleTypes.ENDER_COLLECTION).findAny().orElse(null);
+            if (optionalCollector instanceof EnderCollectionEntity collector) {
+                List<ItemStack> remainder = collector.insertStacks(player, inventory.getStacks(), storage);
+                inventory.setStacks(new LinkedList<>(remainder));
+            }
             for (int i = 0; i < inventory.getContainerSize(); i++) {
                 ItemStack sis = inventory.getItem(i);
                 if (sis != null) {
