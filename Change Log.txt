@@ -1,4 +1,7 @@
-######## 3.0.29.x ########
+######## 3.0.30.x ########
+- Fixed as dupe bug
+
+######## 3.0.29.507 ########
 - Fixed Wyvern -> Draconic capacitor upgrade loosing data.
 - Fixed worldgen registration crash.
 

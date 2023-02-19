@@ -159,7 +159,6 @@ public class ContainerReactor extends ContainerBCTile<TileReactorCore> {
         return 0;
     }
     public static class SlotReactor extends Slot {
-
         private final TileReactorCore tile;
 
         public SlotReactor(TileReactorCore tile, int index, int xPosition, int yPosition) {
@@ -182,6 +181,11 @@ public class ContainerReactor extends ContainerBCTile<TileReactorCore> {
 
         @Override
         public boolean mayPlace(@Nullable ItemStack stack) {
+            return false;
+        }
+
+        @Override
+        public boolean mayPickup(PlayerEntity p_82869_1_) {
             return false;
         }
 
@@ -245,6 +249,8 @@ public class ContainerReactor extends ContainerBCTile<TileReactorCore> {
         public ItemStack remove(int amount) {
             return ItemStack.EMPTY;//this.inventory.decrStackSize(this.getSlotIndex, amount);
         }
+
+
 
 //        @Override
 //        public boolean isHere(IInventory inv, int slotIn) {
