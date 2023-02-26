@@ -120,7 +120,12 @@ public class ModularStaff extends DiggerItem implements IReaperItem, IModularMin
 
     @Override
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
-        return enchantment.category == EnchantmentCategory.DIGGER || enchantment.category == EnchantmentCategory.WEAPON || super.canApplyAtEnchantingTable(stack, enchantment);
+        return enchantment.category == EnchantmentCategory.DIGGER ||
+                enchantment.category == EnchantmentCategory.WEAPON ||
+                enchantment.category.name().equals("PICKAXE_OR_SHOVEL") ||
+                enchantment.category.name().equals("SWORD_OR_AXE") ||
+                enchantment.category.name().equals("SWORD_OR_AXE_OR_CROSSBOW") ||
+                super.canApplyAtEnchantingTable(stack, enchantment);
     }
 
     @Override
