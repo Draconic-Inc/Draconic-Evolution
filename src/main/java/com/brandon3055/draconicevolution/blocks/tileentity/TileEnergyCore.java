@@ -435,8 +435,8 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
 //    public final ManagedBool stabilizersOK = register(new ManagedBool("stabilizers_ok", SAVE_NBT_SYNC_TILE, TRIGGER_UPDATE));
 //    public final ManagedLong energy = register(new ManagedLong("energy", SAVE_NBT_SYNC_TILE));
 
-    @Deprecated //Not sure how i'm going to handle this yet
-    public final ManagedLong transferRate = register(new ManagedLong("transfer_rate", DataFlags.SYNC_CONTAINER));
+//    @Deprecated //Not sure how i'm going to handle this yet
+//    public final ManagedLong transferRate = register(new ManagedLong("transfer_rate", DataFlags.SYNC_CONTAINER));
 
 //    public final ManagedDouble inputRate = register(new ManagedDouble("input_rate", DataFlags.SYNC_CONTAINER));
 //    public final ManagedDouble outputRate = register(new ManagedDouble("output_rate", DataFlags.SYNC_CONTAINER));

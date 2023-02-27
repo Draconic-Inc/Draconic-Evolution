@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import com.brandon3055.brandonscore.api.power.IOInfo;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyPylon;
 import dan200.computercraft.api.lua.LuaFunction;
 import dan200.computercraft.api.peripheral.IPeripheral;
@@ -69,7 +70,26 @@ public class PeripheralEnergyPylon implements IPeripheral, ICapabilityProvider {
 		if (tile.coreOffset.isNull() || tile.getCore() == null) {
             return 0;
         }
-        return tile.getCore().transferRate.get();
+        IOInfo io = tile.getCore().energy.getIOInfo();//transferRate.get();
+		return io == null ? 0 : io.currentInput() - io.currentOutput();
+	}
+
+	@LuaFunction
+	public final long getInputPerTick() {
+		if (tile.coreOffset.isNull() || tile.getCore() == null) {
+			return 0;
+		}
+		IOInfo io = tile.getCore().energy.getIOInfo();
+		return io == null ? 0 : io.currentInput();
+	}
+
+	@LuaFunction
+	public final long getOutputPerTick() {
+		if (tile.coreOffset.isNull() || tile.getCore() == null) {
+			return 0;
+		}
+		IOInfo io = tile.getCore().energy.getIOInfo();
+		return io == null ? 0 : io.currentOutput();
 	}
 	
 	@Override
