@@ -9,12 +9,14 @@ import com.brandon3055.draconicevolution.entity.guardian.GuardianFightManager;
 import com.brandon3055.draconicevolution.handlers.DESounds;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import net.minecraft.client.Minecraft;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
@@ -39,7 +41,7 @@ public class LaserBeamPhase extends ChargeUpPhase {
 
     public LaserBeamPhase(DraconicGuardianEntity guardian) {
         super(guardian, 3 * 20);
-        this.damage = new DraconicIndirectEntityDamage("draconicevolution.guardian_laser", guardian, guardian, TechLevel.CHAOTIC).bypassMagic().bypassArmor().setMagic().setExplosion();
+        this.damage = new DraconicIndirectEntityDamage("draconicevolution.guardian_laser", guardian, guardian, TechLevel.CHAOTIC).bypassMagic().bypassArmor();
     }
 
     @Override
@@ -83,8 +85,6 @@ public class LaserBeamPhase extends ChargeUpPhase {
         if (fireSecondary()) {
             beamPower += getSecondaryCharge();
             DraconicNetwork.sendGuardianBeam(guardian.level, headPos, beamPos, beamPower);
-            //Seriously. Nothing should be able to block this.
-            //I wound just apply Float.MAX_VALUE damage but that results in the dreaded NaN plague.
             beamPower += getSecondaryCharge() * (Float.MAX_VALUE / 5F);
         } else {
             DraconicNetwork.sendGuardianBeam(guardian.level, headPos, beamPos, beamPower);
@@ -94,7 +94,22 @@ public class LaserBeamPhase extends ChargeUpPhase {
         if (obstructed & chargedTime % 2 == 0) {
             guardian.level.explode(null, damage, null, beamPos.x, beamPos.y, beamPos.z, 8, false, Explosion.BlockInteraction.DESTROY);
         } else if (!obstructed) {
-            attackTarget.hurt(damage, beamPower);
+            float prevHealth = attackTarget.getHealth();
+            if (getSecondaryCharge() >= 1) {
+                /*
+                 * I absolutely hate that I have to do this. But seriously. If some random mid-tier armor with "100% damage absorption" can just magically block
+                 * 60,000,000,000,000,000,000,000,000,000,000,000,000 hit points worth of damage like It's nothing. What the hell am I supposed to do?
+                 * Guardian beam at full power = death. End of story.
+                 * */
+                attackTarget.getCombatTracker().recordDamage(damage, prevHealth, beamPower);
+                attackTarget.setHealth(prevHealth - beamPower);
+                attackTarget.gameEvent(GameEvent.ENTITY_DAMAGED, damage.getEntity());
+                if (attackTarget.isDeadOrDying()) {
+                    attackTarget.die(damage);
+                }
+            } else {
+                attackTarget.hurt(damage, beamPower);
+            }
         }
         if (getBeamCharge() >= 1) {
             if (laserTime == 0) {
@@ -175,7 +190,7 @@ public class LaserBeamPhase extends ChargeUpPhase {
     }
 
     public float getSecondaryCharge() {
-        return Math.min((chargedTime - BUILD_UP_TIME - SECONDARY_DELAY)  / SECONDARY_BUILD_UP, 1F);
+        return Math.min((chargedTime - BUILD_UP_TIME - SECONDARY_DELAY) / SECONDARY_BUILD_UP, 1F);
     }
 
     @Override

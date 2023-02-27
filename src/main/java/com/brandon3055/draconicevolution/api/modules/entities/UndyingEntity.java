@@ -10,6 +10,7 @@ import com.brandon3055.brandonscore.client.utils.GuiHelperOld;
 import com.brandon3055.brandonscore.utils.MathUtils;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
+import com.brandon3055.draconicevolution.api.damage.IDraconicDamage;
 import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
 import com.brandon3055.draconicevolution.api.modules.data.UndyingData;
@@ -125,6 +126,16 @@ public class UndyingEntity extends ModuleEntity<UndyingData> {
     }
 
     public boolean tryBlockDeath(LivingDeathEvent event) {
+        /*
+        * If you die, you die. The invulnerability does not block death only damage. So if someone really wants you kill they player they can.
+        * This is to allow this module to block full power guardian beam damage.
+        * The undying module is intended to be the only way to have *some* change of *maybe* surviving a full power beam hit.
+        * */
+        if (event.getSource() instanceof IDraconicDamage && invulnerableTime > 0) {
+            event.getEntityLiving().setHealth(event.getEntityLiving().getHealth() + 1);
+            return true;
+        }
+
         UndyingData data = module.getData();
         if (charge >= data.getChargeTime()) {
             LivingEntity entity = event.getEntityLiving();
