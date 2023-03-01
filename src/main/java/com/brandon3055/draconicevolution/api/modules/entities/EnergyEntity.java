@@ -42,8 +42,8 @@ public class EnergyEntity extends ModuleEntity<EnergyData> {
         if (storage != null) {
             long moduleCap = ModuleTypes.ENERGY_STORAGE.getData(module).getCapacity();
             long newCapacity = storage.getMaxOPStored() - moduleCap;
-            if (newCapacity < storage.getEnergyStored()) {
-                energy = Math.min(storage.getEnergyStored() - newCapacity, moduleCap);
+            if (newCapacity < storage.getOPStored()) {
+                energy = Math.min(storage.getOPStored() - newCapacity, moduleCap);
                 stack.getOrCreateTag().putLong("stored_energy", energy);
             }
         }
