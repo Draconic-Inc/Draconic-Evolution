@@ -9,16 +9,7 @@ import java.util.Map;
 /**
  * Created by brandon3055 on 3/5/20.
  */
-public class AutoFeedData implements ModuleData<AutoFeedData> {
-    private final double foodStorage;
-
-    public AutoFeedData(double foodStorage) {
-        this.foodStorage = foodStorage;
-    }
-
-    public double getFoodStorage() {
-        return foodStorage;
-    }
+public record AutoFeedData(double foodStorage) implements ModuleData<AutoFeedData> {
 
     @Override
     public AutoFeedData combine(AutoFeedData other) {
@@ -27,6 +18,6 @@ public class AutoFeedData implements ModuleData<AutoFeedData> {
 
     @Override
     public void addInformation(Map<Component, Component> map, ModuleContext context, boolean stack) {
-        map.put(new TranslatableComponent("module.draconicevolution.auto_feed.name"), new TranslatableComponent("module.draconicevolution.auto_feed.value", (int)foodStorage));
+        map.put(new TranslatableComponent("module.draconicevolution.auto_feed.name"), new TranslatableComponent("module.draconicevolution.auto_feed.value", (int) foodStorage));
     }
 }

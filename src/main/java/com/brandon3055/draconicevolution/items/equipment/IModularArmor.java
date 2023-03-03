@@ -2,7 +2,6 @@ package com.brandon3055.draconicevolution.items.equipment;
 
 import com.brandon3055.brandonscore.api.ElytraEnabledItem;
 import com.brandon3055.brandonscore.api.power.IOPStorage;
-import com.brandon3055.brandonscore.api.power.IOPStorageModifiable;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
@@ -41,7 +40,7 @@ public interface IModularArmor extends IModularItem, ElytraEnabledItem {
         if (DEConfig.armorSpeedLimit != -1 && stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).isPresent()) {
             ModuleHost host = stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new);
             SpeedData speed = host.getModuleData(ModuleTypes.SPEED);
-            if (speed != null && speed.getSpeedMultiplier() > DEConfig.armorSpeedLimit) {
+            if (speed != null && speed.speedMultiplier() > DEConfig.armorSpeedLimit) {
                 tooltip.add(new TextComponent("Speed limit on this server is +" + (int) (DEConfig.armorSpeedLimit * 100) + "%").withStyle(ChatFormatting.RED));
             }
         }

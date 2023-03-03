@@ -11,14 +11,25 @@ import java.util.Map;
  */
 public class EnergyLinkData implements ModuleData<EnergyLinkData> {
 
-    public EnergyLinkData() {
+    private final int activationEnergy;
+    private final int operationEnergy;
+
+    public EnergyLinkData(int activationEnergy, int operationEnergy) {
+        this.activationEnergy = activationEnergy;
+        this.operationEnergy = operationEnergy;
     }
 
-    //TODO
+    public int getActivationEnergy() {
+        return activationEnergy;
+    }
+
+    public int getOperationEnergy() {
+        return operationEnergy;
+    }
 
     @Override
     public EnergyLinkData combine(EnergyLinkData other) {
-        return new EnergyLinkData();
+        return new EnergyLinkData(activationEnergy + other.activationEnergy, operationEnergy + other.operationEnergy);
     }
 
     @Override

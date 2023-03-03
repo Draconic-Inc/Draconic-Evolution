@@ -2,22 +2,16 @@ package com.brandon3055.draconicevolution.items.equipment;
 
 import codechicken.lib.inventory.InventoryUtils;
 import codechicken.lib.raytracer.RayTracer;
-import com.brandon3055.brandonscore.api.power.IOPStorage;
-import com.brandon3055.brandonscore.api.power.IOPStorageModifiable;
 import com.brandon3055.brandonscore.inventory.BlockToStackHelper;
 import com.brandon3055.brandonscore.inventory.InventoryDynamic;
 import com.brandon3055.brandonscore.lib.Pair;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
-import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.capability.PropertyProvider;
 import com.brandon3055.draconicevolution.api.modules.ModuleHelper;
 import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
 import com.brandon3055.draconicevolution.api.modules.data.AOEData;
-import com.brandon3055.draconicevolution.api.modules.entities.EnderCollectionEntity;
-import com.brandon3055.draconicevolution.api.modules.entities.JunkFilterEntity;
-import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.brandon3055.draconicevolution.init.EquipCfg;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
@@ -37,13 +31,9 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.items.IItemHandlerModifiable;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 /**
  * Created by brandon3055 on 16/6/20
@@ -59,7 +49,7 @@ public interface IModularMiningTool extends IModularTieredItem {
         }
 
         ModuleHost host = stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new);
-        int aoe = host.getModuleData(ModuleTypes.AOE, new AOEData(0)).getAOE();
+        int aoe = host.getModuleData(ModuleTypes.AOE, new AOEData(0)).aoe();
         boolean aoeSafe = false;
         if (host instanceof PropertyProvider) {
             if (((PropertyProvider) host).hasInt("mining_aoe")) {

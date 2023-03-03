@@ -9,16 +9,7 @@ import java.util.Map;
 /**
  * Created by brandon3055 on 3/5/20.
  */
-public class ShieldControlData implements ModuleData<ShieldControlData> {
-    private final int coolDownTicks;
-
-    public ShieldControlData(int coolDownTicks) {
-        this.coolDownTicks = coolDownTicks;
-    }
-
-    public int getCoolDownTicks() {
-        return coolDownTicks;
-    }
+public record ShieldControlData(int coolDownTicks) implements ModuleData<ShieldControlData> {
 
     @Override
     public ShieldControlData combine(ShieldControlData other) {

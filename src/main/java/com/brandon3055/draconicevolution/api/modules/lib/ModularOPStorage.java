@@ -74,7 +74,7 @@ public class ModularOPStorage extends OPStorage {
             return super.getMaxOPStored();
         }
 
-        return super.getMaxOPStored() + host.getModuleData(ModuleTypes.ENERGY_STORAGE, EnergyData.EMPTY).getCapacity();
+        return super.getMaxOPStored() + host.getModuleData(ModuleTypes.ENERGY_STORAGE, EnergyData.EMPTY).capacity();
     }
 
     @Override
@@ -84,7 +84,7 @@ public class ModularOPStorage extends OPStorage {
             return super.maxReceive();
         }
 
-        return super.maxReceive() + host.getModuleData(ModuleTypes.ENERGY_STORAGE, EnergyData.EMPTY).getTransfer();
+        return super.maxReceive() + host.getModuleData(ModuleTypes.ENERGY_STORAGE, EnergyData.EMPTY).transfer();
     }
 
     @Override
@@ -94,6 +94,6 @@ public class ModularOPStorage extends OPStorage {
             return super.maxExtract();
         }
 
-        return super.maxExtract() + host.getModuleData(ModuleTypes.ENERGY_STORAGE, EnergyData.EMPTY).getTransfer();
+        return super.maxExtract() + host.getModuleData(ModuleTypes.ENERGY_STORAGE, EnergyData.EMPTY).transfer();
     }
 }

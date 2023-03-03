@@ -1,3 +1,12 @@
+######## 3.0.29.524 ########
+- Fixed energy module removal voiding energy when total is over 2.4G
+- Fixed energy core CC integration bug.
+- Fixed a couple bugs with the guardian fight.
+- Fixed staff compatibility with CoFH Enchantments.
+- Fixed a minor bug in fusion crafting JEI recipe transfer.
+
+== start 1.18 ==
+
 ######## 3.0.24.452 (hotfix) ########
 - Fixed broken energy core activation caused by a crash fix in previous version.
 

@@ -2,7 +2,6 @@ package com.brandon3055.draconicevolution.api.modules.entities;
 
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.api.power.IOPStorage;
-import com.brandon3055.brandonscore.api.power.IOPStorageModifiable;
 import com.brandon3055.draconicevolution.api.config.BooleanProperty;
 import com.brandon3055.draconicevolution.api.config.ConfigProperty.BooleanFormatter;
 import com.brandon3055.draconicevolution.api.modules.Module;
@@ -20,7 +19,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.fml.util.thread.EffectiveSide;
@@ -89,8 +87,8 @@ public class ShieldControlEntity extends ModuleEntity<ShieldControlData> {
         }
 
         ShieldData data = getShieldData();
-        shieldCapacity = data.getShieldCapacity();
-        double chargeRate = data.getShieldRecharge();
+        shieldCapacity = data.shieldCapacity();
+        double chargeRate = data.shieldRecharge();
         boolean enabled = shieldEnabled.getValue() && getShieldPoints() > 0;
 
         if (shieldPoints > shieldCapacity) {
@@ -170,7 +168,7 @@ public class ShieldControlEntity extends ModuleEntity<ShieldControlData> {
     }
 
     public int getMaxShieldCoolDown() {
-        return module.getData().getCoolDownTicks() * 100;
+        return module.getData().coolDownTicks() * 100;
     }
 
     /**

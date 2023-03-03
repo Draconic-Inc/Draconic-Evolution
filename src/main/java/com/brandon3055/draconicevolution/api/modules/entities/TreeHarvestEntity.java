@@ -41,7 +41,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-import static com.brandon3055.draconicevolution.DraconicEvolution.LOGGER;
 import static com.brandon3055.draconicevolution.DraconicEvolution.MODID;
 
 public class TreeHarvestEntity extends ModuleEntity<TreeHarvestData> implements EntityOverridesItemUse {
@@ -55,7 +54,7 @@ public class TreeHarvestEntity extends ModuleEntity<TreeHarvestData> implements 
     public TreeHarvestEntity(Module<TreeHarvestData> module) {
         super(module);
         addProperty(harvestLeaves = new BooleanProperty("tree_harvest_mod.leaves", true).setFormatter(ConfigProperty.BooleanFormatter.YES_NO));
-        addProperty(harvestRange = new IntegerProperty("tree_harvest_mod.range", module.getData().getRange()).setFormatter(ConfigProperty.IntegerFormatter.RAW).range(0, module.getData().getRange()));
+        addProperty(harvestRange = new IntegerProperty("tree_harvest_mod.range", module.getData().range()).setFormatter(ConfigProperty.IntegerFormatter.RAW).range(0, module.getData().range()));
     }
 
     private void useTick(LivingEntityUseItemEvent.Tick event) {
@@ -107,14 +106,14 @@ public class TreeHarvestEntity extends ModuleEntity<TreeHarvestData> implements 
         if (playerEvent.isCanceled()) return;
         TreeHarvestData data = getModule().getData();
         if (playerEvent instanceof PlayerInteractEvent.RightClickItem event && activeHandler == null) {
-            if (data.getRange() <= 0) return;
+            if (data.range() <= 0) return;
             if (event.getPlayer() instanceof ServerPlayer player) {
-                activeHandler = new ForestHarvestHandler(data.getSpeed(), harvestRange.getValue(), harvestLeaves.getValue());
+                activeHandler = new ForestHarvestHandler(data.speed(), harvestRange.getValue(), harvestLeaves.getValue());
                 activeHandler.start(event.getPos(), event.getWorld(), player);
             }
         } else if (playerEvent instanceof PlayerInteractEvent.RightClickBlock event) {
             if (event.getPlayer() instanceof ServerPlayer player) {
-                activeHandler = new TreeHarvestHandler(data.getSpeed(), event.getHitVec().getDirection(), harvestLeaves.getValue());
+                activeHandler = new TreeHarvestHandler(data.speed(), event.getHitVec().getDirection(), harvestLeaves.getValue());
                 activeHandler.start(event.getPos(), event.getWorld(), player);
             }
         } else {
@@ -130,7 +129,7 @@ public class TreeHarvestEntity extends ModuleEntity<TreeHarvestData> implements 
     public void addHostHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
         if (Screen.hasShiftDown()) {
             tooltip.add(new TranslatableComponent("module." + MODID + ".tree_harvest.single").withStyle(ChatFormatting.DARK_GRAY));
-            if (getModule().getData().getRange() > 0) {
+            if (getModule().getData().range() > 0) {
                 tooltip.add(new TranslatableComponent("module." + MODID + ".tree_harvest.area").withStyle(ChatFormatting.DARK_GRAY));
             }
         }

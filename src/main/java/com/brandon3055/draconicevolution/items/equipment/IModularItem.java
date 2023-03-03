@@ -80,7 +80,7 @@ public interface IModularItem extends IForgeItem, IFusionDataTransfer {
                 props.add(new DecimalProperty("mining_speed", 1).range(0, 1).setFormatter(DecimalFormatter.PERCENT_1));
                 AOEData aoe = host.getModuleData(ModuleTypes.AOE);
                 if (aoe != null) {
-                    props.add(new IntegerProperty("mining_aoe", aoe.getAOE()).range(0, aoe.getAOE()).setFormatter(IntegerFormatter.AOE));
+                    props.add(new IntegerProperty("mining_aoe", aoe.aoe()).range(0, aoe.aoe()).setFormatter(IntegerFormatter.AOE));
                     props.add(new BooleanProperty("aoe_safe", false).setFormatter(BooleanFormatter.ENABLED_DISABLED));
                 }
             });
@@ -91,7 +91,7 @@ public interface IModularItem extends IForgeItem, IFusionDataTransfer {
             host.addPropertyBuilder(props -> {
                 AOEData aoe = host.getModuleData(ModuleTypes.AOE);
                 if (aoe != null) {
-                    props.add(new DecimalProperty("attack_aoe", aoe.getAOE() * 1.5).range(0, aoe.getAOE() * 1.5).setFormatter(DecimalFormatter.AOE_1));
+                    props.add(new DecimalProperty("attack_aoe", aoe.aoe() * 1.5).range(0, aoe.aoe() * 1.5).setFormatter(DecimalFormatter.AOE_1));
                 }
             });
         }
@@ -161,7 +161,7 @@ public interface IModularItem extends IForgeItem, IFusionDataTransfer {
     default float getDestroySpeed(ItemStack stack, BlockState state) {
         ModuleHost host = stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new);
         SpeedData data = host.getModuleData(ModuleTypes.SPEED);
-        float moduleValue = data == null ? 0 : (float) data.getSpeedMultiplier();
+        float moduleValue = data == null ? 0 : (float) data.speedMultiplier();
         //The way vanilla handles efficiency is kinda dumb. So this is far from perfect but its kinda close... ish.
         float multiplier = MathHelper.map((moduleValue + 1F) * (moduleValue + 1F), 1F, 2F, 1F, 1.65F);
         float propVal = 1F;
@@ -171,7 +171,7 @@ public interface IModularItem extends IForgeItem, IFusionDataTransfer {
             propVal *= propVal; //Make this exponential
         }
 
-        float aoe = host.getModuleData(ModuleTypes.AOE, new AOEData(0)).getAOE();
+        float aoe = host.getModuleData(ModuleTypes.AOE, new AOEData(0)).aoe();
         if (host instanceof PropertyProvider && ((PropertyProvider) host).hasInt("mining_aoe")) {
             aoe = ((PropertyProvider) host).getInt("mining_aoe").getValue();
         }

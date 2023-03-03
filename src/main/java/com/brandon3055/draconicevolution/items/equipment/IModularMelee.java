@@ -31,7 +31,7 @@ public interface IModularMelee extends IModularTieredItem {
         long energyPerHit = (long) (EquipCfg.energyAttack * damage);
         extractEnergy(player, stack, energyPerHit);
 
-        double aoe = host.getModuleData(ModuleTypes.AOE, new AOEData(0)).getAOE() * 1.5;
+        double aoe = host.getModuleData(ModuleTypes.AOE, new AOEData(0)).aoe() * 1.5;
         if (host instanceof PropertyProvider && ((PropertyProvider) host).hasDecimal("attack_aoe")) {
             aoe = ((PropertyProvider) host).getDecimal("attack_aoe").getValue();
         }

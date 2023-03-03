@@ -139,7 +139,7 @@ public class ModularBow extends BowItem implements IReaperItem, IModularItem {
                 ModuleHost host = stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new);
                 ProjectileData projData = host.getModuleData(ModuleTypes.PROJ_MODIFIER, new ProjectileData(0, 0, 0, 0, 0));
 
-                float powerForTime = getPowerForTime(drawTime, stack) * (projData.getVelocity() + 1);
+                float powerForTime = getPowerForTime(drawTime, stack) * (projData.velocity() + 1);
                 if (powerForTime >= 0.1D) {
                     boolean infiniteAmmo = player.getAbilities().instabuild || (ammoStack.getItem() instanceof ArrowItem && ((ArrowItem) ammoStack.getItem()).isInfinite(ammoStack, stack, player));
 
@@ -151,12 +151,12 @@ public class ModularBow extends BowItem implements IReaperItem, IModularItem {
                         } else if (arrowEntity instanceof DraconicArrowEntity) {
                             ((DraconicArrowEntity) arrowEntity).setEffectsFromItem(ammoStack);
                         }
-                        arrowEntity.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, powerForTime * 3.0F, 1 - projData.getAccuracy());
+                        arrowEntity.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, powerForTime * 3.0F, 1 - projData.accuracy());
                         if (arrowEntity instanceof DraconicArrowEntity) {
                             DraconicArrowEntity deArrow = (DraconicArrowEntity) arrowEntity;
                             deArrow.setTechLevel(techLevel);
-                            deArrow.setPenetration(projData.getPenetration());
-                            deArrow.setGravComp(projData.getAntiGrav());
+                            deArrow.setPenetration(projData.penetration());
+                            deArrow.setGravComp(projData.antiGrav());
 
                             if (host.getEntitiesByType(ModuleTypes.PROJ_ANTI_IMMUNE).findAny().isPresent()) {
                                 deArrow.setProjectileImmuneOverride(true);
@@ -167,7 +167,7 @@ public class ModularBow extends BowItem implements IReaperItem, IModularItem {
                             arrowEntity.setCritArrow(true);
                         }
 
-                        arrowEntity.setBaseDamage(arrowEntity.getBaseDamage() * (projData.getDamage() + 1));
+                        arrowEntity.setBaseDamage(arrowEntity.getBaseDamage() * (projData.damage() + 1));
 
                         int j = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
                         if (j > 0) {
@@ -231,8 +231,8 @@ public class ModularBow extends BowItem implements IReaperItem, IModularItem {
         ProjectileData projData = host.getModuleData(ModuleTypes.PROJ_MODIFIER, new ProjectileData(0, 0, 0, 0, 0));
 
         float baseDamage = 2;
-        baseDamage *= (1 + projData.getDamage());
-        baseDamage *= (3 * (1 + projData.getVelocity()));
+        baseDamage *= (1 + projData.damage());
+        baseDamage *= (3 * (1 + projData.velocity()));
         int j = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
         if (j > 0) {
             baseDamage += (double) j * 0.5D + 0.5D;
@@ -259,7 +259,7 @@ public class ModularBow extends BowItem implements IReaperItem, IModularItem {
     public static int getChargeTicks(ItemStack stack) {
         ModuleHost host = stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new);
         SpeedData data = host.getModuleData(ModuleTypes.SPEED);
-        float speedModifier = data == null ? 0 : (float) data.getSpeedMultiplier();
+        float speedModifier = data == null ? 0 : (float) data.speedMultiplier();
         speedModifier++;
         return (int) Math.ceil(20.0F / speedModifier);
     }

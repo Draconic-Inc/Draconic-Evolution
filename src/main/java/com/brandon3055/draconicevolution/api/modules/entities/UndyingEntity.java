@@ -2,7 +2,6 @@ package com.brandon3055.draconicevolution.api.modules.entities;
 
 import codechicken.lib.render.buffer.TransformingVertexConsumer;
 import com.brandon3055.brandonscore.api.power.IOPStorage;
-import com.brandon3055.brandonscore.api.power.IOPStorageModifiable;
 import com.brandon3055.brandonscore.api.render.GuiHelper;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
 import com.brandon3055.brandonscore.client.render.RenderUtils;
@@ -17,17 +16,14 @@ import com.brandon3055.draconicevolution.api.modules.data.UndyingData;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.brandon3055.draconicevolution.api.modules.lib.StackModuleContext;
-import com.brandon3055.draconicevolution.client.render.item.ToolRenderBase;
 import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.sounds.SoundEvents;
@@ -37,8 +33,6 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.LazyOptional;
@@ -46,10 +40,8 @@ import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.fml.util.thread.EffectiveSide;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Iterator;
-import java.util.List;
 
 public class UndyingEntity extends ModuleEntity<UndyingData> {
 
@@ -89,7 +81,7 @@ public class UndyingEntity extends ModuleEntity<UndyingData> {
 
         StackModuleContext context = (StackModuleContext) moduleContext;
         UndyingData data = module.getData();
-        if (!context.isEquipped() || charge >= data.getChargeTime()) {
+        if (!context.isEquipped() || charge >= data.chargeTime()) {
             return;
         }
 
@@ -117,12 +109,12 @@ public class UndyingEntity extends ModuleEntity<UndyingData> {
 
     public boolean isCharged() {
         UndyingData data = module.getData();
-        return charge >= data.getChargeTime();
+        return charge >= data.chargeTime();
     }
 
     public double getCharge() {
         UndyingData data = module.getData();
-        return charge / (double)data.getChargeTime();
+        return charge / (double)data.chargeTime();
     }
 
     public boolean tryBlockDeath(LivingDeathEvent event) {
@@ -137,16 +129,16 @@ public class UndyingEntity extends ModuleEntity<UndyingData> {
         }
 
         UndyingData data = module.getData();
-        if (charge >= data.getChargeTime()) {
+        if (charge >= data.chargeTime()) {
             LivingEntity entity = event.getEntityLiving();
-            entity.setHealth(entity.getHealth() + data.getHealthBoost());
+            entity.setHealth(entity.getHealth() + data.healthBoost());
             ItemStack stack = entity.getItemBySlot(EquipmentSlot.CHEST);
             if (!stack.isEmpty()) {
                 LazyOptional<ModuleHost> optionalHost = stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY);
                 optionalHost.ifPresent(stackHost -> {
                     ShieldControlEntity shield = stackHost.getEntitiesByType(ModuleTypes.SHIELD_CONTROLLER).map(e -> (ShieldControlEntity) e).findAny().orElse(null);
                     if (shield != null) {
-                        shield.boost(data.getShieldBoost(), data.getShieldBoostTime());
+                        shield.boost(data.shieldBoost(), data.shieldBoostTime());
                     }
                 });
             }
@@ -164,7 +156,7 @@ public class UndyingEntity extends ModuleEntity<UndyingData> {
             charge = 0;
             DraconicNetwork.sendUndyingActivation(entity, module.getItem());
             entity.level.playSound(null, entity.blockPosition(), SoundEvents.TOTEM_USE, SoundSource.PLAYERS, 5F, (0.95F + (entity.level.random.nextFloat() * 0.1F)));
-            invulnerableTime = data.getInvulnerableTime();
+            invulnerableTime = data.invulnerableTime();
             return true;
         }
         return false;
@@ -176,9 +168,9 @@ public class UndyingEntity extends ModuleEntity<UndyingData> {
         super.renderModule(parent, getter, poseStack, x, y, width, height, mouseX, mouseY, renderStack, partialTicks);
 
         UndyingData data = module.getData();
-        if (charge >= data.getChargeTime()) return;
+        if (charge >= data.chargeTime()) return;
         double diameter = Math.min(width, height) * 0.425;
-        double progress = charge / Math.max(1D, data.getChargeTime());
+        double progress = charge / Math.max(1D, data.chargeTime());
 
         GuiHelper.drawRect(getter, poseStack, x, y, width, height, 0x60FF0000);
         VertexConsumer builder = new TransformingVertexConsumer(getter.getBuffer(GuiHelperOld.FAN_TYPE), poseStack);
@@ -192,7 +184,7 @@ public class UndyingEntity extends ModuleEntity<UndyingData> {
         RenderUtils.endBatch(getter);
 
         String pText = (int) (progress * 100) + "%";
-        String tText = ((data.getChargeTime() - charge) / 20) + "s";
+        String tText = ((data.chargeTime() - charge) / 20) + "s";
         drawBackgroundString(getter, poseStack, Minecraft.getInstance().font, pText, x + width / 2F, y + height / 2F - 8, 0, 0x8000FF00, 1, false, true);
         drawBackgroundString(getter, poseStack, Minecraft.getInstance().font, tText, x + width / 2F, y + height / 2F + 1, 0, 0x8000FF00, 1, false, true);
     }

@@ -220,7 +220,7 @@ public class DraconicProjectileEntity extends AbstractArrow {
             if (useDefaultStaffModifier) {
                 modifier = defaultStaffModifier;
             } else {
-                modifier = damageMod.getData().getModifier();
+                modifier = damageMod.getData().modifier();
             }
             modifier.doDamageAndEffects(level, pos, traceResult, owner instanceof LivingEntity ? (LivingEntity) owner : null, projectileBaseDamage, secondaryChange, true);
             setDamageModifier(null);

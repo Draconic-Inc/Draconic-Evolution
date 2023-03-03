@@ -9,16 +9,7 @@ import java.util.Map;
 /**
  * Created by brandon3055 on 3/5/20.
  */
-public class DamageData implements ModuleData<DamageData> {
-    private final double damagePoints;
-
-    public DamageData(double damagePoints) {
-        this.damagePoints = damagePoints;
-    }
-
-    public double getDamagePoints() {
-        return damagePoints;
-    }
+public record DamageData(double damagePoints) implements ModuleData<DamageData> {
 
     @Override
     public DamageData combine(DamageData other) {

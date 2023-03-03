@@ -9,16 +9,7 @@ import java.util.Map;
 /**
  * Created by brandon3055 on 3/5/20.
  */
-public class SpeedData implements ModuleData<SpeedData> {
-    private final double speedMultiplier;
-
-    public SpeedData(double speedMultiplier) {
-        this.speedMultiplier = speedMultiplier;
-    }
-
-    public double getSpeedMultiplier() {
-        return speedMultiplier;
-    }
+public record SpeedData(double speedMultiplier) implements ModuleData<SpeedData> {
 
     @Override
     public SpeedData combine(SpeedData other) {
@@ -27,6 +18,6 @@ public class SpeedData implements ModuleData<SpeedData> {
 
     @Override
     public void addInformation(Map<Component, Component> map, ModuleContext context, boolean stack) {
-        map.put(new TranslatableComponent("module.draconicevolution.speed.name"), new TranslatableComponent("module.draconicevolution.speed.value", (int)(speedMultiplier * 100D)));
+        map.put(new TranslatableComponent("module.draconicevolution.speed.name"), new TranslatableComponent("module.draconicevolution.speed.value", (int) (speedMultiplier * 100D)));
     }
 }

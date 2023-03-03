@@ -5,7 +5,6 @@ import com.brandon3055.brandonscore.api.render.GuiHelper;
 import com.brandon3055.brandonscore.client.BCGuiSprites;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
 import com.brandon3055.brandonscore.client.render.RenderUtils;
-import com.brandon3055.brandonscore.client.utils.GuiHelperOld;
 import com.brandon3055.draconicevolution.api.config.BooleanProperty;
 import com.brandon3055.draconicevolution.api.config.ConfigProperty;
 import com.brandon3055.draconicevolution.api.modules.Module;
@@ -16,7 +15,6 @@ import com.brandon3055.draconicevolution.api.modules.lib.StackModuleContext;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.nbt.CompoundTag;
@@ -54,16 +52,16 @@ public class AutoFeedEntity extends ModuleEntity<AutoFeedData> {
         if (context instanceof StackModuleContext) {
             LivingEntity entity = ((StackModuleContext) context).getEntity();
             if (entity instanceof ServerPlayer player && entity.tickCount % 10 == 0 && ((StackModuleContext) context).isEquipped()) {
-                if (storedFood < data.getFoodStorage() && consumeFood.getValue()) {
+                if (storedFood < data.foodStorage() && consumeFood.getValue()) {
                     //Do food consumption
                     for (ItemStack stack : player.getInventory().items) {
                         if (!stack.isEmpty() && stack.isEdible()) {
                             FoodProperties food = stack.getItem().getFoodProperties(stack, player);
                             if (food != null && food.getNutrition() > 0 && food.getEffects().isEmpty()) {
                                 double val = food.getNutrition() + food.getSaturationModifier();
-                                double rem = storedFood + val - data.getFoodStorage();
+                                double rem = storedFood + val - data.foodStorage();
                                 if (rem <= val * 0.25) {
-                                    storedFood = (float) Math.min(storedFood + val, data.getFoodStorage());
+                                    storedFood = (float) Math.min(storedFood + val, data.foodStorage());
                                     entity.level.playSound(null, entity.blockPosition(), SoundEvents.GENERIC_EAT, SoundSource.PLAYERS, 0.25F, (0.95F + (entity.level.random.nextFloat() * 0.1F)));
                                     stack.shrink(1);
                                     break;
@@ -99,7 +97,7 @@ public class AutoFeedEntity extends ModuleEntity<AutoFeedData> {
         super.renderModule(parent, getter, poseStack, x, y, width, height, mouseX, mouseY, renderStack, partialTicks);
         VertexConsumer builder = BCGuiSprites.builder(getter, poseStack);
         AutoFeedData data = module.getData();
-        double progress = storedFood / data.getFoodStorage();
+        double progress = storedFood / data.foodStorage();
         progress = (int) (progress * 21F);
         progress = (20 - progress) - 1;
         for (int i = 0; i < 10; i++){

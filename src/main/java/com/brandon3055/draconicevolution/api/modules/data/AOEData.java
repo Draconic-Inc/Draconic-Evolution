@@ -9,16 +9,7 @@ import java.util.Map;
 /**
  * Created by brandon3055 on 3/5/20.
  */
-public class AOEData implements ModuleData<AOEData> {
-    private final int aoe;
-
-    public AOEData(int aoe) {
-        this.aoe = aoe;
-    }
-
-    public int getAOE() {
-        return aoe;
-    }
+public record AOEData(int aoe) implements ModuleData<AOEData> {
 
     @Override
     public AOEData combine(AOEData other) {

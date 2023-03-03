@@ -234,7 +234,7 @@ public class ModularArmorEventHandler {
         Attribute speedAttr = Attributes.MOVEMENT_SPEED;
         double speedModifier = 0;
         if (armorAbilities.data != null) {
-            speedModifier = armorAbilities.data.getSpeedMultiplier();
+            speedModifier = armorAbilities.data.speedMultiplier();
             if (entity.isSprinting() && armorAbilities.speedSettingRun != -1) {
                 speedModifier = Math.min(speedModifier, armorAbilities.speedSettingRun);
             } else if (armorAbilities.speedSetting != -1) {
@@ -362,7 +362,7 @@ public class ModularArmorEventHandler {
             ModuleHost host = optional.orElseThrow(IllegalStateException::new);
             JumpData jumpData = host.getModuleData(ModuleTypes.JUMP_BOOST);
             if (jumpData != null) {
-                double jump = jumpData.getMultiplier();
+                double jump = jumpData.multiplier();
                 if (max) return (float) jump;
                 if (entity.isSprinting()) {
                     if (host instanceof PropertyProvider && ((PropertyProvider) host).hasDecimal("jump_boost_run")) {

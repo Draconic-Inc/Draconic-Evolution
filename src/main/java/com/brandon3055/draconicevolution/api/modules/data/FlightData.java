@@ -12,28 +12,7 @@ import java.util.Map;
 /**
  * Created by brandon3055 on 3/5/20.
  */
-public class FlightData implements ModuleData<FlightData> {
-    private final boolean elytra;
-    private final boolean creative;
-    private final double elytraSpeed;
-
-    public FlightData(boolean elytra, boolean creative, double elytraSpeed) {
-        this.elytra = elytra;
-        this.creative = creative;
-        this.elytraSpeed = elytraSpeed;
-    }
-
-    public boolean elytra() {
-        return elytra;
-    }
-
-    public boolean creative() {
-        return creative;
-    }
-
-    public double getElytraSpeed() {
-        return elytraSpeed;
-    }
+public record FlightData(boolean elytra, boolean creative, double elytraSpeed) implements ModuleData<FlightData> {
 
     @Override
     public FlightData combine(FlightData other) {
@@ -44,7 +23,7 @@ public class FlightData implements ModuleData<FlightData> {
     public void addInformation(Map<Component, Component> map, ModuleContext context, boolean stack) {
         map.put(new TranslatableComponent("module.draconicevolution.flight.name"), new TranslatableComponent("module.draconicevolution.flight." + elytra + "." + creative));
         if (elytra && elytraSpeed > 0) {
-            map.put(new TranslatableComponent("module.draconicevolution.flight.boost.name"), new TextComponent((int)(elytraSpeed * 100) + "%"));
+            map.put(new TranslatableComponent("module.draconicevolution.flight.boost.name"), new TextComponent((int) (elytraSpeed * 100) + "%"));
         }
         if (elytra && !DEConfig.enableElytraFlight) {
             map.put(new TextComponent("Elytra Flight").withStyle(ChatFormatting.RED), new TextComponent("Disabled by server").withStyle(ChatFormatting.RED));

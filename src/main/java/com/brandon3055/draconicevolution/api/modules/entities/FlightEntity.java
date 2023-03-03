@@ -8,9 +8,6 @@ import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.data.FlightData;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleContext;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-
-import java.util.UUID;
 
 public class FlightEntity extends ModuleEntity<FlightData> {
 
@@ -22,7 +19,7 @@ public class FlightEntity extends ModuleEntity<FlightData> {
         super(module);
         if (module.getData().elytra()) {
             addProperty(elytraEnabled = new BooleanProperty("flight_mod.elytra", true).setFormatter(ConfigProperty.BooleanFormatter.ENABLED_DISABLED));
-            addProperty(elytraBoost = new DecimalProperty("flight_mod.elytra_boost", module.getData().getElytraSpeed()).setFormatter(DecimalFormatter.PERCENT_0).range(0, module.getData().getElytraSpeed()));
+            addProperty(elytraBoost = new DecimalProperty("flight_mod.elytra_boost", module.getData().elytraSpeed()).setFormatter(DecimalFormatter.PERCENT_0).range(0, module.getData().elytraSpeed()));
         }
         if (module.getData().creative()) {
             addProperty(creativeEnabled = new BooleanProperty("flight_mod.creative", true).setFormatter(ConfigProperty.BooleanFormatter.ENABLED_DISABLED));
