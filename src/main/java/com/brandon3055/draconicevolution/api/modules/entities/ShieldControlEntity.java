@@ -77,10 +77,6 @@ public class ShieldControlEntity extends ModuleEntity<ShieldControlData> {
 
     @Override
     public void tick(ModuleContext moduleContext) {
-        if (host == null) {
-            LogHelper.bigDev("Host can be null????");
-            return;
-        }
         IOPStorage storage = moduleContext.getOpStorage();
         if (!(moduleContext instanceof StackModuleContext context && EffectiveSide.get().isServer() && storage != null)) {
             return;
@@ -169,6 +165,10 @@ public class ShieldControlEntity extends ModuleEntity<ShieldControlData> {
 
     public int getMaxShieldCoolDown() {
         return module.getData().coolDownTicks() * 100;
+    }
+
+    public void setShieldCoolDown(int shieldCoolDown) {
+        this.shieldCoolDown = shieldCoolDown;
     }
 
     /**
