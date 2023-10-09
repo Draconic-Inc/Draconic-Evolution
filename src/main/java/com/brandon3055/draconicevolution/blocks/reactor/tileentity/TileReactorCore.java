@@ -156,11 +156,11 @@ public class TileReactorCore extends TileBCore implements MenuProvider {
     @Override
     public void tick() {
 //        if (explosionProcess != null) {
-//            if (explosionProcess.isCalculationComplete()) {
-//                explosionCountdown.set(Math.min(explosionCountdown.get(), 100));
-//            }
-////            explosionProcess.isDead = true;
-////            explosionProcess = null;
+////            if (explosionProcess.isCalculationComplete()) {
+////                explosionCountdown.set(Math.min(explosionCountdown.get(), 100));
+////            }
+//            explosionProcess.isDead = true;
+//            explosionProcess = null;
 //        }
 //        reactorState.set(ReactorState.COLD);
 //        temperature.set(20);

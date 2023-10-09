@@ -40,6 +40,7 @@ import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.fml.util.thread.EffectiveSide;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Iterator;
 
@@ -65,7 +66,7 @@ public class UndyingEntity extends ModuleEntity<UndyingData> {
             if (moduleContext instanceof StackModuleContext) {
                 LivingEntity entity = ((StackModuleContext) moduleContext).getEntity();
                 if (entity instanceof Player) {
-                    if (invulnerableTime == 0){
+                    if (invulnerableTime == 0) {
                         ((Player) entity).displayClientMessage(new TextComponent(""), true);
                     } else {
                         ((Player) entity).displayClientMessage(new TranslatableComponent("module.draconicevolution.undying.invuln.active", MathUtils.round(invulnerableTime / 20D, 10)).withStyle(ChatFormatting.GOLD), true);
@@ -114,15 +115,15 @@ public class UndyingEntity extends ModuleEntity<UndyingData> {
 
     public double getCharge() {
         UndyingData data = module.getData();
-        return charge / (double)data.chargeTime();
+        return charge / (double) data.chargeTime();
     }
 
     public boolean tryBlockDeath(LivingDeathEvent event) {
         /*
-        * If you die, you die. The invulnerability does not block death only damage. So if someone really wants you kill they player they can.
-        * This is to allow this module to block full power guardian beam damage.
-        * The undying module is intended to be the only way to have *some* change of *maybe* surviving a full power beam hit.
-        * */
+         * If you die, you die. The invulnerability does not block death only damage. So if someone really wants you kill they player they can.
+         * This is to allow this module to block full power guardian beam damage.
+         * The undying module is intended to be the only way to have *some* change of *maybe* surviving a full power beam hit.
+         * */
         if (event.getSource() instanceof IDraconicDamage && invulnerableTime > 0) {
             event.getEntityLiving().setHealth(event.getEntityLiving().getHealth() + 1);
             return true;
@@ -169,33 +170,28 @@ public class UndyingEntity extends ModuleEntity<UndyingData> {
 
         UndyingData data = module.getData();
         if (charge >= data.chargeTime()) return;
-        double diameter = Math.min(width, height) * 0.425;
+//        double diameter = Math.min(width, height) * 0.425;
         double progress = charge / Math.max(1D, data.chargeTime());
-
-        GuiHelper.drawRect(getter, poseStack, x, y, width, height, 0x60FF0000);
-        VertexConsumer builder = new TransformingVertexConsumer(getter.getBuffer(GuiHelperOld.FAN_TYPE), poseStack);
-        builder.vertex(x + (width / 2D), y + (height / 2D), 0).color(0, 255, 255, 128).endVertex();
-        for (double d = 0; d <= 1; d += 1D / 30D) {
-            double angle = (d * progress) + 0.5 - progress;
-            double vertX = x + (width / 2D) + Math.sin(angle * (Math.PI * 2)) * diameter;
-            double vertY = y + (height / 2D) + Math.cos(angle * (Math.PI * 2)) * diameter;
-            builder.vertex(vertX, vertY, 0).color(255, 255, 255, 128).endVertex();
-        }
-        RenderUtils.endBatch(getter);
 
         String pText = (int) (progress * 100) + "%";
         String tText = ((data.chargeTime() - charge) / 20) + "s";
-        drawBackgroundString(getter, poseStack, Minecraft.getInstance().font, pText, x + width / 2F, y + height / 2F - 8, 0, 0x8000FF00, 1, false, true);
-        drawBackgroundString(getter, poseStack, Minecraft.getInstance().font, tText, x + width / 2F, y + height / 2F + 1, 0, 0x8000FF00, 1, false, true);
-    }
+        drawChargeProgress(getter, poseStack, x, y, width, height, progress, pText, tText);
 
-    @OnlyIn(Dist.CLIENT)
-    public static void drawBackgroundString(MultiBufferSource getter, PoseStack mStack, Font font, String text, float x, float y, int colour, int background, int padding, boolean shadow, boolean centered) {
-        PoseStack matrixstack = new PoseStack();
-        int width = font.width(text);
-        x = centered ? x - width / 2F : x;
-        GuiHelper.drawRect(getter, mStack, x - padding, y - padding, width + padding * 2, font.lineHeight - 2 + padding * 2, background);
-        font.drawInBatch(text, x, y, colour, shadow, matrixstack.last().pose(), getter, false, 0, 15728880);
+//        GuiHelper.drawRect(getter, poseStack, x, y, width, height, 0x60FF0000);
+//        VertexConsumer builder = new TransformingVertexConsumer(getter.getBuffer(GuiHelperOld.FAN_TYPE), poseStack);
+//        builder.vertex(x + (width / 2D), y + (height / 2D), 0).color(0, 255, 255, 128).endVertex();
+//        for (double d = 0; d <= 1; d += 1D / 30D) {
+//            double angle = (d * progress) + 0.5 - progress;
+//            double vertX = x + (width / 2D) + Math.sin(angle * (Math.PI * 2)) * diameter;
+//            double vertY = y + (height / 2D) + Math.cos(angle * (Math.PI * 2)) * diameter;
+//            builder.vertex(vertX, vertY, 0).color(255, 255, 255, 128).endVertex();
+//        }
+//        RenderUtils.endBatch(getter);
+//
+//        String pText = (int) (progress * 100) + "%";
+//        String tText = ((data.chargeTime() - charge) / 20) + "s";
+//        drawBackgroundString(getter, poseStack, Minecraft.getInstance().font, pText, x + width / 2F, y + height / 2F - 8, 0, 0x8000FF00, 1, false, true);
+//        drawBackgroundString(getter, poseStack, Minecraft.getInstance().font, tText, x + width / 2F, y + height / 2F + 1, 0, 0x8000FF00, 1, false, true);
     }
 
 

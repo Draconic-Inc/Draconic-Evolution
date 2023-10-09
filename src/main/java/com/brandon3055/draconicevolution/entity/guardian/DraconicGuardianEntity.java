@@ -506,7 +506,7 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
     }
 
     public boolean attackEntityPartFrom(DraconicGuardianPartEntity part, DamageSource source, float damage) {
-        if (this.phaseManager.getCurrentPhase().getType() == PhaseType.DYING) {
+        if (this.phaseManager.getCurrentPhase().getType() == PhaseType.DYING || source.getEntity() == this) {
             return false;
         } else {
             float shieldPower = getShieldPower();

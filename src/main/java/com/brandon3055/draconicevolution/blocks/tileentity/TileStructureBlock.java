@@ -6,6 +6,7 @@ import com.brandon3055.brandonscore.lib.Vec3I;
 import com.brandon3055.brandonscore.lib.datamanager.*;
 import com.brandon3055.draconicevolution.blocks.StructureBlock;
 import com.brandon3055.draconicevolution.init.DEContent;
+import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
@@ -42,6 +43,7 @@ public class TileStructureBlock extends TileBCore implements IInteractTile {
 
     public void setController(MultiBlockController controller) {
         controllerOffset.set(worldPosition.subtract(((BlockEntity) controller).getBlockPos()));
+        enableTileDebug();
     }
 
     @Nullable
@@ -59,6 +61,7 @@ public class TileStructureBlock extends TileBCore implements IInteractTile {
             }
         }
 
+        debug("Structure Block: Reverting because controller not found");
         revert();
         return null;
     }
@@ -84,6 +87,8 @@ public class TileStructureBlock extends TileBCore implements IInteractTile {
 
     public void doRevert() {
         if (reverting.get()) {
+            debug("Tile Structure Block: doRevert");
+//            if (debugEnabled()) LogHelper.bigInfo("Trace");
             Block block = getOriginalBlock();
             if (block != null && block != Blocks.AIR) {
                 level.setBlockAndUpdate(worldPosition, block.defaultBlockState());

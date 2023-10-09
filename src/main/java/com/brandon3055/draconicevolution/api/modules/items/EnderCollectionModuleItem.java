@@ -1,10 +1,11 @@
-package com.brandon3055.draconicevolution.api.modules.lib;
+package com.brandon3055.draconicevolution.api.modules.items;
 
 import codechicken.enderstorage.api.Frequency;
 import codechicken.enderstorage.config.EnderStorageConfig;
 import codechicken.enderstorage.tile.TileEnderChest;
 import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.data.NoData;
+import com.brandon3055.draconicevolution.api.modules.items.ModuleItem;
 import com.brandon3055.draconicevolution.integration.ModHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;

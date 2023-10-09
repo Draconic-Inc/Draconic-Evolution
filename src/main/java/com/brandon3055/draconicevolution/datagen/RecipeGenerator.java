@@ -1045,6 +1045,43 @@ public class RecipeGenerator extends RecipeProvider {
                 .unlockedBy("has_module_core", has(DEContent.module_core))
                 .save(consumer, folder("modules", DEModules.chaoticEnergy));
 
+        //Energy Link
+        ShapedRecipeBuilder.shaped(DEModules.wyvernEnergyLink.getItem())
+                .pattern("#E#")
+                .pattern("WMW")
+                .pattern("#C#")
+                .define('#', DETags.Items.INGOTS_DRACONIUM)
+                .define('E', Items.END_CRYSTAL)
+                .define('M', DEContent.module_core)
+                .define('W', DEContent.crystal_wireless_basic)
+                .define('C', DEContent.core_wyvern)
+                .unlockedBy("has_module_core", has(DEContent.module_core))
+                .save(consumer, folder("modules", DEModules.wyvernEnergyLink));
+
+        ShapedRecipeBuilder.shaped(DEModules.draconicEnergyLink.getItem())
+                .pattern("#E#")
+                .pattern("WMW")
+                .pattern("#C#")
+                .define('#', DETags.Items.INGOTS_DRACONIUM_AWAKENED)
+                .define('E', Items.END_CRYSTAL)
+                .define('M', DEModules.wyvernEnergyLink.getItem())
+                .define('W', DEContent.crystal_wireless_wyvern)
+                .define('C', DEContent.core_awakened)
+                .unlockedBy("has_module_core", has(DEContent.module_core))
+                .save(consumer, folder("modules", DEModules.draconicEnergyLink));
+
+        ShapedRecipeBuilder.shaped(DEModules.chaoticEnergyLink.getItem())
+                .pattern("#E#")
+                .pattern("WMW")
+                .pattern("#C#")
+                .define('#', Tags.Items.INGOTS_NETHERITE)
+                .define('E', Items.END_CRYSTAL)
+                .define('M', DEModules.draconicEnergyLink.getItem())
+                .define('W', DEContent.crystal_wireless_draconic)
+                .define('C', DEContent.core_chaotic)
+                .unlockedBy("has_module_core", has(DEContent.module_core))
+                .save(consumer, folder("modules", DEModules.chaoticEnergyLink));
+
         //Speed
         ShapedRecipeBuilder.shaped(DEModules.draconiumSpeed.getItem())
                 .pattern("#P#")

@@ -1,3 +1,9 @@
+######## 3.0.30.x ########
+- Added energy link module.
+- Fixed guardian damaging itself with its own projectiles.
+- Fixed rare edge case energy pylon crash.
+- Fixed energy sometimes getting voided when adding and then removing modules containing energy.
+
 ######## 3.0.29.524 ########
 - Fixed energy module removal voiding energy when total is over 2.4G
 - Fixed energy core CC integration bug.

@@ -7,6 +7,7 @@ import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.api.render.GuiHelper;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
 import com.brandon3055.brandonscore.client.render.RenderUtils;
+import com.brandon3055.brandonscore.client.utils.GuiHelperOld;
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.config.ConfigProperty;
 import com.brandon3055.draconicevolution.api.modules.Module;
@@ -19,6 +20,7 @@ import com.google.common.collect.Multimap;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -455,5 +457,39 @@ public class ModuleEntity<T extends ModuleData<T>> {
      */
     public void handleClientMessage(MCDataInput input) {
 
+    }
+
+    //Render Utils
+
+    @OnlyIn(Dist.CLIENT)
+    protected void drawChargeProgress(MultiBufferSource getter, PoseStack poseStack, int x, int y, int width, int height, double progress, @org.jetbrains.annotations.Nullable String text1, @org.jetbrains.annotations.Nullable String text2) {
+        double diameter = Math.min(width, height) * 0.425;
+
+        GuiHelper.drawRect(getter, poseStack, x, y, width, height, 0x60FF0000);
+        VertexConsumer builder = new TransformingVertexConsumer(getter.getBuffer(GuiHelperOld.FAN_TYPE), poseStack);
+        builder.vertex(x + (width / 2D), y + (height / 2D), 0).color(0, 255, 255, 128).endVertex();
+        for (double d = 0; d <= 1; d += 1D / 30D) {
+            double angle = (d * progress) + 0.5 - progress;
+            double vertX = x + (width / 2D) + Math.sin(angle * (Math.PI * 2)) * diameter;
+            double vertY = y + (height / 2D) + Math.cos(angle * (Math.PI * 2)) * diameter;
+            builder.vertex(vertX, vertY, 0).color(255, 255, 255, 128).endVertex();
+        }
+        RenderUtils.endBatch(getter);
+
+        if (text1 != null) {
+            drawBackgroundString(getter, poseStack, Minecraft.getInstance().font, text1, x + width / 2F, y + height / 2F - (text2 == null ? 4 : 8), 0, 0x8000FF00, 1, false, true);
+        }
+        if (text2 != null) {
+            drawBackgroundString(getter, poseStack, Minecraft.getInstance().font, text2, x + width / 2F, y + height / 2F + 1, 0, 0x8000FF00, 1, false, true);
+        }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public static void drawBackgroundString(MultiBufferSource getter, PoseStack mStack, Font font, String text, float x, float y, int colour, int background, int padding, boolean shadow, boolean centered) {
+        PoseStack matrixstack = new PoseStack();
+        int width = font.width(text);
+        x = centered ? x - width / 2F : x;
+        GuiHelper.drawRect(getter, mStack, x - padding, y - padding, width + padding * 2, font.lineHeight - 2 + padding * 2, background);
+        font.drawInBatch(text, x, y, colour, shadow, matrixstack.last().pose(), getter, false, 0, 15728880);
     }
 }

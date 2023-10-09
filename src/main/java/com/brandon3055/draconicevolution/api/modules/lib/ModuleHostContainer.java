@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.api.modules.lib;
 
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.modules.Module;
+import com.brandon3055.draconicevolution.api.modules.items.ModuleItem;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;

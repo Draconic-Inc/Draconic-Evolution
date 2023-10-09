@@ -153,6 +153,9 @@ public class LangGenerator extends LanguageProvider {
 
     private void itemProps(PrefixHelper helper) {
         helper.setPrefix("item_prop." + MODID);
+        helper.add("energy_link_mod.enabled",                                   "Enable Link");
+        helper.add("energy_link_mod.enabled.info",                              "Allows you to enable / disable the link.\nThe link requires constant energy to maintain.\nBut activating the link also requires a significant amount of energy.");
+
         helper.add("attack_aoe",                                                "Attack Radius");
         helper.add("attack_aoe.info",                                           "Allows you to adjust the area covered by this weapon's swing.\nThis covers a 100 degree arc in the direction you are looking.");
         helper.add("mining_aoe",                                                "Mining AOE");
@@ -210,7 +213,10 @@ public class LangGenerator extends LanguageProvider {
     private void modules(PrefixHelper helper) {
         helper.setPrefix("module." + MODID);
         helper.add(ModuleTypes.ENERGY_STORAGE,                                  "Energy Capacity");
-
+        helper.add(DEModules.draconiumEnergy,                                   "Energy Module");
+        helper.add(DEModules.wyvernEnergy,                                      "Wyvern Energy Module");
+        helper.add(DEModules.draconicEnergy,                                    "Draconic Energy Module");
+        helper.add(DEModules.chaoticEnergy,                                     "Chaotic Energy Module");
         helper.add("energy.stored_energy",                                      "Stored Energy");
         helper.add("energy.capacity",                                           "Energy Capacity");
         helper.add("energy.capacity.value",                                     "+%s OP");
@@ -218,9 +224,40 @@ public class LangGenerator extends LanguageProvider {
         helper.add("energy.transfer.value",                                     "+%s OP/t");
 
         helper.add(ModuleTypes.ENERGY_SHARE,                                    "Energy Share");
+
         helper.add(ModuleTypes.ENERGY_LINK,                                     "Energy Link");
+        helper.add(DEModules.wyvernEnergyLink,                                  "Wireless Energy Link");
+        helper.add(DEModules.draconicEnergyLink,                                "Quantum Energy Tunnel");
+        helper.add(DEModules.chaoticEnergyLink,                                 "Chaos-Entangled Quantum Energy Tunnel");
+        helper.add("energy_link.activation",                                    "Activation Energy");
+        helper.add("energy_link.activation.value",                              "%s OP");
+        helper.add("energy_link.operation",                                     "Operation Energy");
+        helper.add("energy_link.operation.value",                               "Min: %s, Max: %s OP/t");
+        helper.add("energy_link.transfer",                                      "Transfer Rate");
+        helper.add("energy_link.transfer.value",                                "%s OP/t");
+        helper.add("energy_link.dimensional",                                   "Inter-Dimensional");
+        helper.add("energy_link.dimensional.true",                              "True");
+        helper.add("energy_link.dimensional.false",                             "False");
+        helper.add("energy_link.linked_core",                                   "Linked Core");
+        helper.add("energy_link.link_to_core",                                  "Shift Right Click Energy Core with module to link.");
+        helper.add("energy_link.core_not_active",                               "Core must be active.");
+        helper.add("energy_link.charging",                                      "Activating");
+
         helper.add(ModuleTypes.SHIELD_CONTROLLER,                               "Shield Controller");
+        helper.add(DEModules.wyvernShieldControl,                               "Wyvern Shield Control Module");
+        helper.add(DEModules.draconicShieldControl,                             "Draconic Shield Control Module");
+        helper.add(DEModules.chaoticShieldControl,                              "Chaotic Shield Control Module");
+
         helper.add(ModuleTypes.SHIELD_BOOST,                                    "Shield Boost");
+        helper.add(DEModules.wyvernShieldCapacity,                              "Wyvern Shield Capacity Module");
+        helper.add(DEModules.draconicShieldCapacity,                            "Draconic Shield Capacity Module");
+        helper.add(DEModules.chaoticShieldCapacity,                             "Chaotic Shield Capacity Module");
+        helper.add(DEModules.wyvernLargeShieldCapacity,                         "Wyvern Large Shield Capacity Module");
+        helper.add(DEModules.draconicLargeShieldCapacity,                       "Draconic Large Shield Capacity Module");
+        helper.add(DEModules.chaoticLargeShieldCapacity,                        "Chaotic Large Shield Capacity Module");
+        helper.add(DEModules.wyvernShieldRecovery,                              "Wyvern Shield Recovery Module");
+        helper.add(DEModules.draconicShieldRecovery,                            "Draconic Shield Recovery Module");
+        helper.add(DEModules.chaoticShieldRecovery,                             "Chaotic Shield Recovery Module");
         helper.add("shield_capacity.name",                                      "Shield Capacity");
         helper.add("shield_capacity.value",                                     "%s points");
         helper.add("shield_recharge.name",                                      "Shield Recharge");
@@ -231,6 +268,9 @@ public class LangGenerator extends LanguageProvider {
         helper.add("shield_control.value",                                      "%s Seconds");
 
         helper.add(ModuleTypes.FLIGHT,                                          "Flight");
+        helper.add(DEModules.wyvernFlight,                                      "Wyvern Flight Module");
+        helper.add(DEModules.draconicFlight,                                    "Draconic Flight Module");
+        helper.add(DEModules.chaoticFlight,                                     "Chaotic Flight Module");
         helper.add("flight.name",                                               "Flight");
         helper.add("flight.true.false",                                         "Elytra");
         helper.add("flight.false.true",                                         "Creative");
@@ -238,6 +278,9 @@ public class LangGenerator extends LanguageProvider {
         helper.add("flight.boost.name",                                         "Elytra Boost");
 
         helper.add(ModuleTypes.UNDYING,                                         "Undying");
+        helper.add(DEModules.wyvernUndying,                                     "Wyvern Undying Module");
+        helper.add(DEModules.draconicUndying,                                   "Draconic Undying Module");
+        helper.add(DEModules.chaoticUndying,                                    "Chaotic Undying Module");
         helper.add("undying.health.name",                                       "Health Boost");
         helper.add("undying.health.value",                                      "%s Health points");
         helper.add("undying.shield.name",                                       "Shield Boost");
@@ -251,38 +294,59 @@ public class LangGenerator extends LanguageProvider {
         helper.add("undying.invuln.active",                                     "Invulnerable for %s Seconds");
 
         helper.add(ModuleTypes.AUTO_FEED,                                       "Auto Feed");
+        helper.add(DEModules.draconiumAutoFeed,                                 "Auto Feed Module");
+        helper.add(DEModules.wyvernAutoFeed,                                    "Wyvern Auto Feed Module");
+        helper.add(DEModules.draconicAutoFeed,                                  "Draconic Auto Feed Module");
         helper.add("auto_feed.name",                                            "Food Storage");
         helper.add("auto_feed.value",                                           "%s Hunger Points");
         helper.add("auto_feed.stored",                                          "Food Stored:");
         helper.add("auto_feed.stored.value",                                    "%s Hunger Points");
 
         helper.add(ModuleTypes.NIGHT_VISION,                                    "Night Vision");
+        helper.add(DEModules.wyvernNightVision,                                 "Night Vision Module");
 
         helper.add(ModuleTypes.JUMP_BOOST,                                      "Jump Boost");
+        helper.add(DEModules.draconiumJump,                                     "Jump Module");
+        helper.add(DEModules.wyvernJump,                                        "Wyvern Jump Module");
+        helper.add(DEModules.draconicJump,                                      "Draconic Jump Module");
+        helper.add(DEModules.chaoticJump,                                       "Chaotic Jump Module");
         helper.add("jump.name",                                                 "Jump Boost");
         helper.add("jump.value",                                                "+%s%%");
-//        add(ModuleTypes.FALL_PROTECT,                                           "Fall Protection");
 
         helper.add(ModuleTypes.AQUA_ADAPT,                                      "Aqua Adaptation");
+//        helper.add(DEModules.wyvernAquaAdapt,                                   "Aqua Adapt Module");
 
         helper.add(ModuleTypes.MINING_STABILITY,                                "Mining Stabilizer");
 
         helper.add(ModuleTypes.AOE,                                             "AOE");
+        helper.add(DEModules.draconiumAOE,                                      "AOE Module");
+        helper.add(DEModules.wyvernAOE,                                         "Wyvern AOE Module");
+        helper.add(DEModules.draconicAOE,                                       "Draconic AOE Module");
+        helper.add(DEModules.chaoticAOE,                                        "Chaotic AOE Module");
         helper.add("aoe.name",                                                  "AOE");
         helper.add("aoe.value",                                                 "%sx%s");
 
         helper.add(ModuleTypes.DAMAGE,                                          "Damage");
+        helper.add(DEModules.draconiumDamage,                                   "Damage Module");
+        helper.add(DEModules.wyvernDamage,                                      "Wyvern Damage Module");
+        helper.add(DEModules.draconicDamage,                                    "Draconic Damage Module");
+        helper.add(DEModules.chaoticDamage,                                     "Chaotic Damage Module");
         helper.add("damage.name",                                               "Damage");
         helper.add("damage.attack",                                             "+%s Attack Damage");
 
         helper.add(ModuleTypes.SPEED,                                           "Speed");
+        helper.add(DEModules.draconiumSpeed,                                    "Speed Module");
+        helper.add(DEModules.wyvernSpeed,                                       "Wyvern Speed Module");
+        helper.add(DEModules.draconicSpeed,                                     "Draconic Speed Module");
+        helper.add(DEModules.chaoticSpeed,                                      "Chaotic Speed Module");
         helper.add("speed.name",                                                "Speed");
         helper.add("speed.value",                                               "+%s%%");
 
         helper.add(ModuleTypes.HILL_STEP,                                       "Step Assist");
+        helper.add(DEModules.wyvernHillStep,                                    "Hill Step Module");
 
         helper.add(ModuleTypes.JUNK_FILTER,                                     "Junk Filter");
-
+        helper.add(DEModules.wyvernJunkFilter,                                  "Selective Incineration Module");
         helper.add("filtered_module.filter_slot",                               "Filter Slot");
         helper.add("filtered_module.filter_item",                               "Filter Item");
         helper.add("filtered_module.filter_tag",                                "Filter Tag");
@@ -297,6 +361,8 @@ public class LangGenerator extends LanguageProvider {
         helper.add("filtered_module.select_from_item",                          "Select tag from item");
 
         helper.add(ModuleTypes.ENDER_COLLECTION,                                "Ender Collection");
+        helper.add(DEModules.wyvernEnderCollection,                             "Ender Collection Module");
+        helper.add(DEModules.draconicEnderCollection,                           "Filterable Ender Collection Module");
         helper.add("ender_storage.about",                                       "Transfers collected items to your personal ender chest.");
         helper.add("ender_storage.about_compat",                                "Can be bound to an Ender Storage ender chest.");
         helper.add("ender_storage.about_compat2",                               "(Shift+Right Click ender chest with module)");
@@ -305,6 +371,9 @@ public class LangGenerator extends LanguageProvider {
         helper.add("ender_storage.how_to_clear",                                "Shift right click module to clear");
 
         helper.add(ModuleTypes.TREE_HARVEST,                                    "Tree Harvest");
+        helper.add(DEModules.wyvernTreeHarvest,                                 "Wyvern Tree Harvester");
+        helper.add(DEModules.draconicTreeHarvest,                               "Draconic Forest Reduction Assistant");
+        helper.add(DEModules.chaoticTreeHarvest,                                "Chaotic Deforestation Module");
         helper.add("tree_harvest_range.name",                                   "Tree Harvest Range");
         helper.add("tree_harvest_range.value",                                  "%s Blocks");
         helper.add("tree_harvest_speed.name",                                   "Tree Harvest Speed");
@@ -313,122 +382,43 @@ public class LangGenerator extends LanguageProvider {
         helper.add("tree_harvest.area",                                         "Area: Hold right click in centre of target area.");
 
         helper.add(ModuleTypes.AUTO_FIRE,                                       "Auto Fire");
+        helper.add(DEModules.wyvernAutoFire,                                    "Auto Fire Module");
 
         helper.add(ModuleTypes.PROJ_ANTI_IMMUNE,                                "Projectile Immunity Cancellation");
+        helper.add(DEModules.draconicProjAntiImmune,                            "Projectile Immunity Cancellation Module");
 
         helper.add(ModuleTypes.PROJ_MODIFIER,                                   "Projectile Modifier");
-//        helper.add(ModuleTypes.PROJ_VELOCITY,                                   "Projectile Velocity");
+        helper.add(DEModules.wyvernProjVelocity,                                "Wyvern Projectile Velocity Module");
+        helper.add(DEModules.draconicProjVelocity,                              "Draconic Projectile Velocity Module");
+        helper.add(DEModules.chaoticProjVelocity,                               "Chaotic Projectile Velocity Module");
         helper.add("proj_velocity.name",                                        "Velocity");
         helper.add("proj_velocity.value",                                       "%s%% (~%s m/s)");
 
-//        helper.add(ModuleTypes.PROJ_ACCURACY,                                   "Projectile Accuracy");
+        helper.add(DEModules.wyvernProjAccuracy,                                "Wyvern Projectile Accuracy Module");
+        helper.add(DEModules.draconicProjAccuracy,                              "Draconic Projectile Accuracy Module");
+        helper.add(DEModules.chaoticProjAccuracy,                               "Chaotic Projectile Accuracy Module");
         helper.add("proj_accuracy.name",                                        "Inaccuracy");
         helper.add("proj_accuracy.value",                                       "%s%%");
 
-//        helper.add(ModuleTypes.PROJ_GRAV_COMP,                                  "Projectile Gravity Compensation");
+        helper.add(DEModules.wyvernProjGravComp,                                "Wyvern Projectile Gravity Compensation Module");
+        helper.add(DEModules.draconicProjGravComp,                              "Draconic Projectile Gravity Compensation Module");
+        helper.add(DEModules.chaoticProjGravComp,                               "Chaotic Projectile Gravity Compensation Module");
         helper.add("proj_grav_comp.name",                                       "Gravity Cancellation");
         helper.add("proj_grav_comp.value",                                      "%s%%");
 
-//        helper.add(ModuleTypes.PROJ_PENETRATION,                                "Projectile Penetration");
+        helper.add(DEModules.wyvernProjPenetration,                             "Wyvern Projectile Penetration Module");
+        helper.add(DEModules.draconicProjPenetration,                           "Draconic Projectile Penetration Module");
+        helper.add(DEModules.chaoticProjPenetration,                            "Chaotic Projectile Penetration Module");
         helper.add("proj_penetration.name",                                     "Penetration Chance");
         helper.add("proj_penetration.value",                                    "%s%%");
         helper.add("proj_penetration.info",                                     "Increases the chance a projectile will pass through a target and potentially hit additional targets.");
         helper.add("proj_penetration.info2",                                    "Decreases by 25%% for every subsequent target.");
 
-        helper.add("proj_damage.name",                                          "Base Damage");
-        helper.add("proj_damage.value",                                         "%s%%");
-
-        helper.add(DEModules.draconiumEnergy,                                   "Energy Module");
-        helper.add(DEModules.wyvernEnergy,                                      "Wyvern Energy Module");
-        helper.add(DEModules.draconicEnergy,                                    "Draconic Energy Module");
-        helper.add(DEModules.chaoticEnergy,                                     "Chaotic Energy Module");
-
-        helper.add(DEModules.draconiumSpeed,                                    "Speed Module");
-        helper.add(DEModules.wyvernSpeed,                                       "Wyvern Speed Module");
-        helper.add(DEModules.draconicSpeed,                                     "Draconic Speed Module");
-        helper.add(DEModules.chaoticSpeed,                                      "Chaotic Speed Module");
-
-        helper.add(DEModules.draconiumDamage,                                   "Damage Module");
-        helper.add(DEModules.wyvernDamage,                                      "Wyvern Damage Module");
-        helper.add(DEModules.draconicDamage,                                    "Draconic Damage Module");
-        helper.add(DEModules.chaoticDamage,                                     "Chaotic Damage Module");
-
-        helper.add(DEModules.draconiumAOE,                                      "AOE Module");
-        helper.add(DEModules.wyvernAOE,                                         "Wyvern AOE Module");
-        helper.add(DEModules.draconicAOE,                                       "Draconic AOE Module");
-        helper.add(DEModules.chaoticAOE,                                        "Chaotic AOE Module");
-
-        helper.add(DEModules.wyvernJunkFilter,                                  "Selective Incineration Module");
-
-        helper.add(DEModules.wyvernEnderCollection,                             "Ender Collection Module");
-        helper.add(DEModules.draconicEnderCollection,                           "Filterable Ender Collection Module");
-
-        helper.add(DEModules.wyvernTreeHarvest,                                 "Wyvern Tree Harvester");
-        helper.add(DEModules.draconicTreeHarvest,                               "Draconic Forest Reduction Assistant");
-        helper.add(DEModules.chaoticTreeHarvest,                                "Chaotic Deforestation Module");
-
-        helper.add(DEModules.wyvernAutoFire,                                    "Auto Fire Module");
-
-        helper.add(DEModules.draconicProjAntiImmune,                            "Projectile Immunity Cancellation Module");
-
-        helper.add(DEModules.wyvernProjVelocity,                                "Wyvern Projectile Velocity Module");
-        helper.add(DEModules.draconicProjVelocity,                              "Draconic Projectile Velocity Module");
-        helper.add(DEModules.chaoticProjVelocity,                               "Chaotic Projectile Velocity Module");
-
-        helper.add(DEModules.wyvernProjAccuracy,                                "Wyvern Projectile Accuracy Module");
-        helper.add(DEModules.draconicProjAccuracy,                              "Draconic Projectile Accuracy Module");
-        helper.add(DEModules.chaoticProjAccuracy,                               "Chaotic Projectile Accuracy Module");
-
-        helper.add(DEModules.wyvernProjGravComp,                                "Wyvern Projectile Gravity Compensation Module");
-        helper.add(DEModules.draconicProjGravComp,                              "Draconic Projectile Gravity Compensation Module");
-        helper.add(DEModules.chaoticProjGravComp,                               "Chaotic Projectile Gravity Compensation Module");
-
-        helper.add(DEModules.wyvernProjPenetration,                             "Wyvern Projectile Penetration Module");
-        helper.add(DEModules.draconicProjPenetration,                           "Draconic Projectile Penetration Module");
-        helper.add(DEModules.chaoticProjPenetration,                            "Chaotic Projectile Penetration Module");
-
         helper.add(DEModules.wyvernProjDamage,                                  "Wyvern Projectile Damage Module");
         helper.add(DEModules.draconicProjDamage,                                "Draconic Projectile Damage Module");
         helper.add(DEModules.chaoticProjDamage,                                 "Chaotic Projectile Damage Module");
-
-        helper.add(DEModules.wyvernShieldControl,                               "Wyvern Shield Control Module");
-        helper.add(DEModules.draconicShieldControl,                             "Draconic Shield Control Module");
-        helper.add(DEModules.chaoticShieldControl,                              "Chaotic Shield Control Module");
-
-        helper.add(DEModules.wyvernShieldCapacity,                              "Wyvern Shield Capacity Module");
-        helper.add(DEModules.draconicShieldCapacity,                            "Draconic Shield Capacity Module");
-        helper.add(DEModules.chaoticShieldCapacity,                             "Chaotic Shield Capacity Module");
-
-        helper.add(DEModules.wyvernLargeShieldCapacity,                         "Wyvern Large Shield Capacity Module");
-        helper.add(DEModules.draconicLargeShieldCapacity,                       "Draconic Large Shield Capacity Module");
-        helper.add(DEModules.chaoticLargeShieldCapacity,                        "Chaotic Large Shield Capacity Module");
-
-        helper.add(DEModules.wyvernShieldRecovery,                              "Wyvern Shield Recovery Module");
-        helper.add(DEModules.draconicShieldRecovery,                            "Draconic Shield Recovery Module");
-        helper.add(DEModules.chaoticShieldRecovery,                             "Chaotic Shield Recovery Module");
-
-        helper.add(DEModules.wyvernFlight,                                      "Wyvern Flight Module");
-        helper.add(DEModules.draconicFlight,                                    "Draconic Flight Module");
-        helper.add(DEModules.chaoticFlight,                                     "Chaotic Flight Module");
-
-        helper.add(DEModules.wyvernUndying,                                     "Wyvern Undying Module");
-        helper.add(DEModules.draconicUndying,                                   "Draconic Undying Module");
-        helper.add(DEModules.chaoticUndying,                                    "Chaotic Undying Module");
-
-        helper.add(DEModules.draconiumAutoFeed,                                 "Auto Feed Module");
-        helper.add(DEModules.wyvernAutoFeed,                                    "Wyvern Auto Feed Module");
-        helper.add(DEModules.draconicAutoFeed,                                  "Draconic Auto Feed Module");
-
-        helper.add(DEModules.wyvernNightVision,                                 "Night Vision Module");
-
-        helper.add(DEModules.draconiumJump,                                     "Jump Module");
-        helper.add(DEModules.wyvernJump,                                        "Wyvern Jump Module");
-        helper.add(DEModules.draconicJump,                                      "Draconic Jump Module");
-        helper.add(DEModules.chaoticJump,                                       "Chaotic Jump Module");
-
-//        helper.add(DEModules.wyvernAquaAdapt,                                   "Aqua Adapt Module");
-
-        helper.add(DEModules.wyvernHillStep,                                    "Hill Step Module");
+        helper.add("proj_damage.name",                                          "Base Damage");
+        helper.add("proj_damage.value",                                         "%s%%");
 
         helper.add("module_type",                                               "Module Type");
         helper.add("grid_size",                                                 "Module Size");

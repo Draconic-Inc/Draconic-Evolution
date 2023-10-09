@@ -284,4 +284,14 @@ public class ModuleCfg {
         }
         return valueTag.getDouble();
     }
+
+    public static boolean getModuleBoolean(Module<?> module, String tagName, boolean defaultValue) {
+        ConfigCategory tag = getModuleTag(Objects.requireNonNull(module.getRegistryName()));
+        boolean override = getOverride(tag);
+        ConfigValue valueTag = tag.getValue(tagName).setDefaultBoolean(defaultValue);
+        if (!override) {
+            valueTag.setBoolean(defaultValue);
+        }
+        return valueTag.getBoolean();
+    }
 }

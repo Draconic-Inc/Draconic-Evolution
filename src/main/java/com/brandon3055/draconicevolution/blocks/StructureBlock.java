@@ -7,6 +7,7 @@ import com.brandon3055.draconicevolution.blocks.tileentity.MultiBlockController;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyCoreStabilizer;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileStructureBlock;
 import com.brandon3055.draconicevolution.init.DEContent;
+import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.NonNullList;
@@ -81,9 +82,11 @@ public class StructureBlock extends EntityBlockBCore implements StructurePart {
             return;
         }
 
-        BlockEntity tile = world.getBlockEntity(pos);
-        if (tile instanceof TileStructureBlock && (((TileStructureBlock) tile).getController() == null || !((TileStructureBlock) tile).getController().isStructureValid())) {
-            ((TileStructureBlock) tile).revert();
+        BlockEntity blockEntity = world.getBlockEntity(pos);
+        if (blockEntity instanceof TileStructureBlock tile && (tile.getController() == null || !tile.getController().isStructureValid())) {
+            tile.debug("Structure Block: Reverting from neighborChanged");
+//            if (tile.debugEnabled()) LogHelper.bigInfo("Trace");
+            tile.revert();
         }
     }
 
@@ -143,6 +146,8 @@ public class StructureBlock extends EntityBlockBCore implements StructurePart {
     @Override
     public void tick(BlockState state, ServerLevel level, BlockPos pos, Random random) {
         if (level.getBlockEntity(pos) instanceof TileStructureBlock tile) {
+            tile.debug("Structure Block: Block Tick doRevert");
+//            if (tile.debugEnabled()) LogHelper.bigInfo("Trace");
             tile.doRevert();
         }
         super.tick(state, level, pos, random);

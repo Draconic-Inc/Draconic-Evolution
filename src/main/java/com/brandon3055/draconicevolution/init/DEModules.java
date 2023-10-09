@@ -3,6 +3,10 @@ package com.brandon3055.draconicevolution.init;
 import com.brandon3055.brandonscore.client.utils.CyclingItemGroup;
 import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.data.*;
+import com.brandon3055.draconicevolution.api.modules.items.EnderCollectionModuleItem;
+import com.brandon3055.draconicevolution.api.modules.items.EnergyLinkModuleItem;
+import com.brandon3055.draconicevolution.api.modules.items.EnergyModuleItem;
+import com.brandon3055.draconicevolution.api.modules.items.ModuleItem;
 import com.brandon3055.draconicevolution.api.modules.lib.*;
 import com.brandon3055.draconicevolution.modules.ProjectileVelocityModule;
 import net.covers1624.quack.util.SneakyUtils;
@@ -152,18 +156,19 @@ public class DEModules {
 
 
     private static void registerModules() {
-        Properties props = new Properties().tab(moduleGroup);
+        Properties multiProps = new Properties().tab(moduleGroup);
+        Properties singleProps = new Properties().tab(moduleGroup).stacksTo(1);
         //@formatter:off
 
         //Energy
-        register(new ModuleImpl<>(ENERGY_STORAGE,       DRACONIUM,      energyData(1000000,  16000)),   new EnergyModuleItem(props), "draconium_energy");
-        register(new ModuleImpl<>(ENERGY_STORAGE,       WYVERN,         energyData(4000000,  64000)),   new EnergyModuleItem(props), "wyvern_energy");
-        register(new ModuleImpl<>(ENERGY_STORAGE,       DRACONIC,       energyData(16000000, 256000)),  new EnergyModuleItem(props), "draconic_energy");
-        register(new ModuleImpl<>(ENERGY_STORAGE,       CHAOTIC,        energyData(64000000, 1024000)), new EnergyModuleItem(props), "chaotic_energy");
+        register(new ModuleImpl<>(ENERGY_STORAGE,       DRACONIUM,      energyData(1000000,  16000)),   new EnergyModuleItem(multiProps), "draconium_energy");
+        register(new ModuleImpl<>(ENERGY_STORAGE,       WYVERN,         energyData(4000000,  64000)),   new EnergyModuleItem(multiProps), "wyvern_energy");
+        register(new ModuleImpl<>(ENERGY_STORAGE,       DRACONIC,       energyData(16000000, 256000)),  new EnergyModuleItem(multiProps), "draconic_energy");
+        register(new ModuleImpl<>(ENERGY_STORAGE,       CHAOTIC,        energyData(64000000, 1024000)), new EnergyModuleItem(multiProps), "chaotic_energy");
 
-//        register(new ModuleImpl<>(ENERGY_LINK,          WYVERN,         e -> new EnergyLinkData()),                 "wyvern_energy_link");
-//        register(new ModuleImpl<>(ENERGY_LINK,          DRACONIC,       e -> new EnergyLinkData()),                 "draconic_energy_link");
-//        register(new ModuleImpl<>(ENERGY_LINK,          CHAOTIC,        e -> new EnergyLinkData()),                 "chaotic_energy_link");
+        register(new ModuleImpl<>(ENERGY_LINK,          WYVERN,         energyLinkData(4000000,  512,  2048, false)), new EnergyLinkModuleItem(singleProps), "wyvern_energy_link");
+        register(new ModuleImpl<>(ENERGY_LINK,          DRACONIC,       energyLinkData(16000000, 2048, 16000, true)), new EnergyLinkModuleItem(singleProps), "draconic_energy_link");
+        register(new ModuleImpl<>(ENERGY_LINK,          CHAOTIC,        energyLinkData(64000000, 8192, 128000, true)), new EnergyLinkModuleItem(singleProps), "chaotic_energy_link");
 
         //Tools
         register(new ModuleImpl<>(SPEED,                DRACONIUM,      speedData(0.10)),                           "draconium_speed");
@@ -189,8 +194,8 @@ public class DEModules {
 
         register(new ModuleImpl<>(JUNK_FILTER,          WYVERN,         noData()),                                  "wyvern_junk_filter");
 
-        register(new ModuleImpl<>(ENDER_COLLECTION,     WYVERN,         noData()),       new EnderCollectionModuleItem(props), "wyvern_ender_collection");
-        register(new ModuleImpl<>(ENDER_COLLECTION,     DRACONIC,       noData(), 2, 2), new EnderCollectionModuleItem(props), "draconic_ender_collection");
+        register(new ModuleImpl<>(ENDER_COLLECTION,     WYVERN,         noData()),       new EnderCollectionModuleItem(multiProps), "wyvern_ender_collection");
+        register(new ModuleImpl<>(ENDER_COLLECTION,     DRACONIC,       noData(), 2, 2), new EnderCollectionModuleItem(multiProps), "draconic_ender_collection");
 
         //Arrow base velocity is 60 m/s
         register(new ProjectileVelocityModule(PROJ_MODIFIER,        WYVERN,         projVelocityData(0.15F, 1.0F)).setMaxInstall(8),   "wyvern_proj_velocity");   // (1 + (0.15 * 8) * 60) = 132 m/s max
@@ -276,6 +281,16 @@ public class DEModules {
             long capacity = ModuleCfg.getModuleLong(e, "capacity", defCapacity);
             long transfer = ModuleCfg.getModuleLong(e, "transfer", defTransfer);
             return new EnergyData(capacity, transfer);
+        };
+    }
+
+    private static Function<Module<EnergyLinkData>, EnergyLinkData> energyLinkData(long defActivation, long defOperation, long defTransfer, boolean defDimensional) {
+        return e -> {
+            long activation = ModuleCfg.getModuleLong(e, "activation", defActivation);
+            long operation = ModuleCfg.getModuleLong(e, "operation", defOperation);
+            long transfer = ModuleCfg.getModuleLong(e, "transfer", defTransfer);
+            boolean dimensional = ModuleCfg.getModuleBoolean(e, "dimensional", defDimensional);
+            return new EnergyLinkData(activation, operation, transfer, dimensional);
         };
     }
 

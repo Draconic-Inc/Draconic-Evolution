@@ -30,8 +30,8 @@ import java.util.Set;
  * Created by brandon3055 on 7/7/20
  */
 public class ShieldControlEntity extends ModuleEntity<ShieldControlData> {
-    private static final Set<DamageSource> UNBLOCKABLE = Sets.newHashSet(DamageSource.DROWN, DamageSource.STARVE, DamageSource.IN_WALL);
-    private static final HashMap<DamageSource, Double> ENV_SOURCES = new HashMap<>();
+    public static final Set<DamageSource> UNBLOCKABLE = Sets.newHashSet(DamageSource.DROWN, DamageSource.STARVE, DamageSource.IN_WALL);
+    public static final HashMap<DamageSource, Double> ENV_SOURCES = new HashMap<>();
 
     static {
         ENV_SOURCES.put(DamageSource.IN_FIRE, 1D);

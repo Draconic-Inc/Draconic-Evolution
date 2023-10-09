@@ -17,7 +17,7 @@ public class ModuleTypes {
     //Power
     public static final ModuleType<EnergyData>           ENERGY_STORAGE      = new ModuleTypeImpl<>("energy_storage",    1, 1, EnergyEntity::new, ModuleCategory.ENERGY);
     public static final ModuleType<EnergyShareData>      ENERGY_SHARE        = new ModuleTypeImpl<>("energy_share",      1, 1, ModuleCategory.ENERGY); //TODO this will require a custom entity and item
-    public static final ModuleType<EnergyLinkData>       ENERGY_LINK         = new ModuleTypeImpl<>("energy_link",       4, 4, ModuleCategory.ENERGY).setMaxInstallable(1);                              //Higher tiers should work accross dimensions but not lower tiers
+    public static final ModuleType<EnergyLinkData>       ENERGY_LINK         = new ModuleTypeImpl<>("energy_link",       4, 4, EnergyLinkEntity::new, ModuleCategory.ENERGY).setMaxInstallable(1);                              //Higher tiers should work accross dimensions but not lower tiers
 
     //Armor specific
     public static final ModuleType<ShieldControlData>    SHIELD_CONTROLLER   = new ModuleTypeImpl<>("shield_control",    2, 2, ShieldControlEntity::new, ModuleCategory.CHESTPIECE).setMaxInstallable(1);

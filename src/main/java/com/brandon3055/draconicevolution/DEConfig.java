@@ -141,7 +141,7 @@ public class DEConfig {
         serverTag.getValueList("projectileAntiImmuneEntities")
                 .syncTagToClient()
                 .setComment("This is a list of entities that the \"Projectile Immunity Cancellation\" module will work on. Add additional entities as required. (Let me know if i missed any)")
-                .setDefaultStrings(Lists.newArrayList("minecraft:enderman", "minecraft:wither", "minecraft:ender_dragon", "draconicevolution:guardian_wither"))
+                .setDefaultStrings(Lists.newArrayList("minecraft:enderman", "minecraft:wither", "minecraft:ender_dragon", "draconicevolution:guardian_wither", "minecraft:shulker"))
                 .onSync((tag, type) -> projectileAntiImmuneEntities = tag.getStrings());
 
         {

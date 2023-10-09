@@ -119,6 +119,7 @@ repositories {
     maven { url = "https://maven.theillusivec4.top/" }
     maven { url = "https://squiddev.cc/maven/" }
     maven { url = "https://maven.blamejared.com/" }
+    maven { url = "https://modmaven.dev/" }
 }
 
 dependencies {
@@ -129,16 +130,18 @@ dependencies {
     implementation fg.deobf("codechicken:EnderStorage:${config.mc_version}-${config.ender_storage_version}:universal")
     implementation fg.deobf("mezz.jei:jei-${config.mc_version}:${config.jei_version}:api")
     runtimeOnly fg.deobf("mezz.jei:jei-${config.mc_version}:${config.jei_version}")
-
     implementation fg.deobf("top.theillusivec4.curios:curios-forge:${config.mc_version}-${config.curios_version}")
     implementation fg.deobf("org.squiddev:cc-tweaked-${config.mc_version}:${config.cct_version}")
-
-
     compileOnly fg.deobf("com.blamejared.crafttweaker:CraftTweaker-forge-${config.mc_version}:${config.crt_version}")
-//    annotationProcessor("org.spongepowered:mixin:0.8.2:processor")
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+
+    // For Testing
+    runtimeOnly fg.deobf("mekanism:Mekanism:1.18.2-10.2.5.465")// core
+    runtimeOnly fg.deobf("mekanism:Mekanism:1.18.2-10.2.5.465:additions")// Mekanism: Additions
+    runtimeOnly fg.deobf("mekanism:Mekanism:1.18.2-10.2.5.465:generators")// Mekanism: Generators
+    runtimeOnly fg.deobf("mekanism:Mekanism:1.18.2-10.2.5.465:tools")// Mekanism: Tools
 }
 
 test {

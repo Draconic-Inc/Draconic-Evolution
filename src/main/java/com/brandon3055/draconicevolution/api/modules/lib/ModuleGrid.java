@@ -2,6 +2,7 @@ package com.brandon3055.draconicevolution.api.modules.lib;
 
 import com.brandon3055.draconicevolution.api.capability.ModuleHost;
 import com.brandon3055.draconicevolution.api.modules.Module;
+import com.brandon3055.draconicevolution.api.modules.items.ModuleItem;
 import com.brandon3055.draconicevolution.api.modules.lib.InstallResult.InstallResultType;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.network.chat.Component;

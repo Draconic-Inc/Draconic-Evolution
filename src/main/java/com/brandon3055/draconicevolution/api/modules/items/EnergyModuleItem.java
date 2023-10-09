@@ -1,4 +1,4 @@
-package com.brandon3055.draconicevolution.api.modules.lib;
+package com.brandon3055.draconicevolution.api.modules.items;
 
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.api.modules.Module;

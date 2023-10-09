@@ -56,6 +56,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import static com.brandon3055.brandonscore.lib.datamanager.DataFlags.*;
 
@@ -94,6 +95,8 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
     public final ManagedInt frameColour = register(new ManagedInt("frame_colour", DEFAULT_FRAME_COLOUR, SAVE_NBT_SYNC_TILE, CLIENT_CONTROL));
     public final ManagedInt innerColour = register(new ManagedInt("inner_colour", DEFAULT_TRIANGLE_COLOUR, SAVE_NBT_SYNC_TILE, CLIENT_CONTROL));
     public final ManagedInt effectColour = register(new ManagedInt("effect_colour", DEFAULT_EFFECT_COLOUR, SAVE_NBT_SYNC_TILE, CLIENT_CONTROL));
+
+    public final ManagedUUID linkUUID = register(new ManagedUUID("link_uuid", (UUID) null, SAVE_NBT));
 
     public OPStorageOP energy = new OPStorageOP(this::getCapacity);
 
@@ -223,6 +226,7 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
             updateStabilizers(true);
             energy.validateStorage();
             level.setBlockAndUpdate(worldPosition, level.getBlockState(worldPosition).setValue(EnergyCore.ACTIVE, true));
+            linkUUID.set(UUID.randomUUID());
         }
     }
 
@@ -241,11 +245,11 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
         }
     }
 
-    //
     public void deactivateCore() {
         if (level.isClientSide) {
             return;
         }
+        linkUUID.set(null);
         level.setBlockAndUpdate(worldPosition, level.getBlockState(worldPosition).setValue(EnergyCore.ACTIVE, false));
         MultiBlockDefinition definition = getMultiBlockDef();
         if (definition == null) {

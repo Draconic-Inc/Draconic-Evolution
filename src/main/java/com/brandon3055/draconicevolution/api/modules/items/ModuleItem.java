@@ -1,15 +1,15 @@
-package com.brandon3055.draconicevolution.api.modules.lib;
+package com.brandon3055.draconicevolution.api.modules.items;
 
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.capability.ModuleProvider;
 import com.brandon3055.draconicevolution.api.modules.Module;
-import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
 import com.brandon3055.draconicevolution.api.modules.data.ModuleData;
-import com.brandon3055.draconicevolution.integration.equipment.EquipmentManager;
+import com.brandon3055.draconicevolution.api.modules.lib.LimitedModuleContext;
+import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
+import com.brandon3055.draconicevolution.api.modules.lib.StackModuleContext;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
