@@ -1,5 +1,5 @@
-######## 3.0.30.x ########
-- Added energy link module.
+######## 3.0.30.528 ########
+- Added energy link module. (Effectively wireless charging direct from an energy core)
 - Fixed guardian damaging itself with its own projectiles.
 - Fixed rare edge case energy pylon crash.
 - Fixed energy sometimes getting voided when adding and then removing modules containing energy.

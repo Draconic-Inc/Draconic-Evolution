@@ -212,11 +212,18 @@ public class TileEnergyCore extends TileBCore implements MenuProvider, IInteract
                     continue;
                 }
 
-                BlockState state = level.getBlockState(pos);
+                BlockState originalState = level.getBlockState(pos);
+                //Fixes edge case where core can deactivate without reverting structure blocks,
+                //Only ever happened once due to a crash that is now fixed, but just to be safe...
+                if (originalState.is(DEContent.structure_block)) {
+                    deactivateCore();
+                    LOGGER.error("Detected existing structure block when attempting to activate core...");
+                    return;
+                }
                 level.setBlockAndUpdate(pos, DEContent.structure_block.defaultBlockState());
                 BlockEntity tile = level.getBlockEntity(pos);
                 if (tile instanceof TileStructureBlock) {
-                    ((TileStructureBlock) tile).blockName.set(state.getBlock().getRegistryName());
+                    ((TileStructureBlock) tile).blockName.set(originalState.getBlock().getRegistryName());
                     ((TileStructureBlock) tile).setController(this);
                 }
             }
