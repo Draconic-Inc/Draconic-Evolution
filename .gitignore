@@ -17,7 +17,7 @@
 !.github/
 
 # Other Important Files
-!LICENSE
+!LICENSE.md
 !README.md
 !Change Log.txt
 !VERSION.txt
