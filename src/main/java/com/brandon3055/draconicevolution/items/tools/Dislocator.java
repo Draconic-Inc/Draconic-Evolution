@@ -19,6 +19,7 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -208,7 +209,10 @@ public class Dislocator extends Item implements IHudItem {
     }
 
     @Override
-    public int getEntityLifespan(ItemStack itemStack, Level level) {
-        return -32768;
+    public boolean onEntityItemUpdate(ItemStack stack, ItemEntity entity) {
+        if (entity.getAge() >= 0) {
+            entity.setExtendedLifetime();
+        }
+        return super.onEntityItemUpdate(stack, entity);
     }
 }

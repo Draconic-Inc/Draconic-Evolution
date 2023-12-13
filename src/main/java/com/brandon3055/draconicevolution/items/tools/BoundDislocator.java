@@ -67,6 +67,9 @@ public class BoundDislocator extends Dislocator {
 
     @Override
     public boolean onEntityItemUpdate(ItemStack stack, ItemEntity entity) {
+        if (entity.getAge() >= 0) {
+            entity.setExtendedLifetime();
+        }
         if (entity.level instanceof ServerLevel && TimeKeeper.getServerTick() % 20 == 0) {
             if (isValid(stack) && !isPlayer(stack)) {
                 DislocatorSaveData.updateLinkTarget(entity.level, stack, new GroundTarget(entity));
@@ -199,7 +202,6 @@ public class BoundDislocator extends Dislocator {
         return stack;
     }
 
-
     @Override
     public TargetPos getTargetPos(ItemStack stack, @Nullable Level world) {
         if (world instanceof ServerLevel) {
@@ -261,10 +263,5 @@ public class BoundDislocator extends Dislocator {
     @Override
     public boolean canBeHurtBy(DamageSource source) {
         return source == DamageSource.OUT_OF_WORLD;
-    }
-
-    @Override
-    public int getEntityLifespan(ItemStack itemStack, Level level) {
-        return -32768;
     }
 }
