@@ -1,5 +1,6 @@
 ######## 3.0.31.xxx ########
 - Fix: Prevented guardian crystals from being pushed by pistons.
+- Fixed dislocators vanishing when dropped.
 
 ######## 3.0.30.529 ########
 - Added energy link module. (Effectively wireless charging direct from an energy core)

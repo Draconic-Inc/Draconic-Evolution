@@ -34,6 +34,7 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -66,8 +67,11 @@ public class DislocatorAdvanced extends Dislocator {
     }
 
     @Override
-    public int getEntityLifespan(ItemStack itemStack, Level level) {
-        return -32768;
+    public boolean onEntityItemUpdate(ItemStack stack, ItemEntity entity) {
+        if (entity.getAge() >= 0) {
+            entity.setExtendedLifetime();
+        }
+        return super.onEntityItemUpdate(stack, entity);
     }
 
     @Override
@@ -276,7 +280,6 @@ public class DislocatorAdvanced extends Dislocator {
     public void setBlinkMode(ItemStack stack, boolean blink) {
         stack.getOrCreateTag().putBoolean("blink", blink);
     }
-
 
     //Interaction Handling
 
