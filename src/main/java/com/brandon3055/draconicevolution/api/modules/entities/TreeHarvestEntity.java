@@ -24,7 +24,6 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;

@@ -2,7 +2,6 @@ package com.brandon3055.draconicevolution.blocks.tileentity.flowgate;
 
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.inventory.ContainerDETile;
-import com.brandon3055.draconicevolution.inventory.GuiLayoutFactories;
 import com.brandon3055.draconicevolution.lib.WTFException;
 import net.covers1624.quack.util.SneakyUtils;
 import net.minecraft.core.BlockPos;

@@ -15,7 +15,6 @@ import com.brandon3055.brandonscore.lib.datamanager.ManagedEnum;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.inventory.ContainerDETile;
-import com.brandon3055.draconicevolution.inventory.GuiLayoutFactories;
 import com.brandon3055.draconicevolution.utils.ItemCapMerger;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

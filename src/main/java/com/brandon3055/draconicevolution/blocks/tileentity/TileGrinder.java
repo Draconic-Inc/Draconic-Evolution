@@ -24,7 +24,6 @@ import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
 import com.brandon3055.draconicevolution.blocks.machines.Grinder;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.inventory.ContainerDETile;
-import com.brandon3055.draconicevolution.inventory.GuiLayoutFactories;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.core.BlockPos;
@@ -53,7 +52,6 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -235,7 +233,7 @@ public class TileGrinder extends TileBCore implements IRSSwitchable, MenuProvide
 
         //Dont mess around. If we know the mob should die lets just make it die!
         float damage = willKill ? Float.MAX_VALUE : ((float) cost / (float) eph) * 1.1F;
-        DamageSource source = DamageSource.playerAttack(getFakePlayer());
+        DamageSource source = level.damageSources().playerAttack(getFakePlayer());
 
         //Attack the mob and enter cooldown mode for 5 ticks if successful. Else cooldown for 3 ticks.
         if (nextTarget.hurt(source, damage)) {

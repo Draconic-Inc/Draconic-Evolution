@@ -24,7 +24,6 @@ import com.brandon3055.draconicevolution.client.render.tile.fxhandlers.ITileFXHa
 import com.brandon3055.draconicevolution.handlers.DESounds;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.inventory.ContainerFusionCraftingCore;
-import com.brandon3055.draconicevolution.inventory.GuiLayoutFactories;
 import com.google.common.collect.Streams;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -47,7 +46,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nonnull;

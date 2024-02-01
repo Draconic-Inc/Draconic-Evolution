@@ -27,7 +27,6 @@ import com.brandon3055.draconicevolution.client.sound.CelestialModifierSound;
 import com.brandon3055.draconicevolution.handlers.DESounds;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.inventory.ContainerDETile;
-import com.brandon3055.draconicevolution.inventory.GuiLayoutFactories;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import com.mojang.blaze3d.vertex.Tesselator;
 
@@ -38,7 +37,6 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
@@ -304,7 +302,7 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
         }
 
         Vec3D vec = Vec3D.getCenter(worldPosition.offset(0, 1, 0));
-        sound = new CelestialModifierSound(DESounds.ELECTRIC_BUZZ.get(), worldPosition);
+        sound = new CelestialModifierSound(DESounds.ELECTRIC_BUZZ.get(), worldPosition, level.random);
         sound.updateSound(vec, 0.01F, 0.5F);
         Minecraft.getInstance().getSoundManager().play(sound);
         level.playLocalSound(vec.x, vec.y, vec.z, DESounds.FUSION_COMPLETE.get(), SoundSource.BLOCKS, getSoundVolume(), 0.5F, false);
@@ -458,7 +456,7 @@ public class TileCelestialManipulator extends TileBCore implements IChangeListen
         effects.get(1).blue = 1F;
         effects.get(1).renderBolts = false;
 
-        sound = new CelestialModifierSound(DESounds.SUN_DIAL_EFFECT.get(), worldPosition);
+        sound = new CelestialModifierSound(DESounds.SUN_DIAL_EFFECT.get(), worldPosition, level.random);
         sound.updateSound(Vec3D.getCenter(worldPosition), getSoundVolume(), 0.5F);
         Minecraft.getInstance().getSoundManager().play(sound);
     }
