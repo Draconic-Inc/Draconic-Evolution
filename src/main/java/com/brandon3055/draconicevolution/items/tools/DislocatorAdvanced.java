@@ -173,7 +173,7 @@ public class DislocatorAdvanced extends Dislocator {
         ClipContext context = new ClipContext(playerVec, endVec, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player);
         BlockHitResult result = player.level().clip(context);
 
-        player.level().playSound(null, playerVec.x, playerVec.y, playerVec.z, DESounds.blink, SoundSource.PLAYERS, 1F, 1F);
+        player.level().playSound(null, playerVec.x, playerVec.y, playerVec.z, DESounds.BLINK.get(), SoundSource.PLAYERS, 1F, 1F);
 
         DraconicNetwork.sendBlinkEffect(player, (float) (playerVec.distanceTo(endVec) / range));
 
@@ -199,7 +199,7 @@ public class DislocatorAdvanced extends Dislocator {
             TeleportUtils.teleportEntity(player, player.level().dimension(), vec.x, vec.y, vec.z);
         }
 
-        player.level().playSound(null, player.getX(), player.getY(), player.getZ(), DESounds.blink, SoundSource.PLAYERS, 1F, 1F);
+        player.level().playSound(null, player.getX(), player.getY(), player.getZ(), DESounds.BLINK.get(), SoundSource.PLAYERS, 1F, 1F);
     }
 
     @Override
@@ -397,19 +397,19 @@ public class DislocatorAdvanced extends Dislocator {
     }
 
     public static ItemStack findDislocator(Player player) {
-        ItemStack stack = HandHelper.getItem(player, DEContent.dislocator_advanced);
+        ItemStack stack = HandHelper.getItem(player, DEContent.DISLOCATOR_ADVANCED.get());
         if (!stack.isEmpty()) {
             return stack;
         }
 
-        stack = EquipmentManager.findItem(DEContent.dislocator_advanced, player);
+        stack = EquipmentManager.findItem(DEContent.DISLOCATOR_ADVANCED.get(), player);
         if (!stack.isEmpty()) {
             return stack;
         }
 
         for (int i = 0; i < player.getInventory().getContainerSize() - player.getInventory().offhand.size(); i++) {
             stack = player.getInventory().getItem(i);
-            if (stack.getItem() == DEContent.dislocator_advanced) {
+            if (stack.getItem() == DEContent.DISLOCATOR_ADVANCED.get()) {
                 return stack;
             }
         }

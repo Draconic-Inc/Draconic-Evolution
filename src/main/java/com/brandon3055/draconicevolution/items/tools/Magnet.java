@@ -86,7 +86,7 @@ public class Magnet extends ItemBCore /*implements IBauble*/ {
                 BlockPos pos = itemEntity.blockPosition();
                 boolean blocked = false;
                 for (BlockPos checkPos : BlockPos.betweenClosed(pos.offset(-5, -5, -5), pos.offset(5, 5, 5))) {
-                    if (world.getBlockState(checkPos).getBlock() == DEContent.dislocation_inhibitor) {
+                    if (world.getBlockState(checkPos).getBlock() == DEContent.DISLOCATION_INHIBITOR.get()) {
                         blocked = true;
                         break;
                     }
