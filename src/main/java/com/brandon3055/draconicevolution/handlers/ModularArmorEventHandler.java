@@ -60,7 +60,7 @@ public class ModularArmorEventHandler {
 
         ATTRIBUTE_HANDLER.register(WALK_SPEED_UUID, Attributes.MOVEMENT_SPEED, ModularArmorEventHandler::getWalkSpeedAttribute);
         ATTRIBUTE_HANDLER.register(WALK_SPEED_UUID, Attributes.FLYING_SPEED, ModularArmorEventHandler::getFlightSpeedAttribute);
-        ATTRIBUTE_HANDLER.register(WALK_SPEED_UUID, ForgeMod.STEP_HEIGHT_ADDITION.get(), ModularArmorEventHandler::getStepHeight);
+        ATTRIBUTE_HANDLER.register(WALK_SPEED_UUID, ForgeMod.STEP_HEIGHT.get(), ModularArmorEventHandler::getStepHeight);
     }
 
     @Nullable
