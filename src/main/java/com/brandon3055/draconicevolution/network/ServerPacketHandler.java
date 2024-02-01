@@ -208,7 +208,7 @@ public class ServerPacketHandler implements ICustomPacketHandler.IServerPacketHa
     private void dislocatorMessage(ServerPlayer sender, PacketCustom packet) {
         ItemStack stack = DislocatorAdvanced.findDislocator(sender);
         if (!stack.isEmpty()) {
-            DEContent.dislocator_advanced.handleClientAction(sender, stack, packet);
+            DEContent.DISLOCATOR_ADVANCED.get().handleClientAction(sender, stack, packet);
         }
     }
 
@@ -250,7 +250,7 @@ public class ServerPacketHandler implements ICustomPacketHandler.IServerPacketHa
 
             } else if (level.isEmptyBlock(posOnSide)) {
                 if (!ForgeEventFactory.onBlockPlace(player, BlockSnapshot.create(level.dimension(), level, posHit), blockTrace.getDirection())) {
-                    level.setBlockAndUpdate(posOnSide, DEContent.placed_item.defaultBlockState().setValue(PlacedItem.FACING, blockTrace.getDirection()));
+                    level.setBlockAndUpdate(posOnSide, DEContent.PLACED_ITEM.get().defaultBlockState().setValue(PlacedItem.FACING, blockTrace.getDirection()));
                     BlockEntity tile = level.getBlockEntity(posOnSide);
 
                     if (tile instanceof TilePlacedItem) {

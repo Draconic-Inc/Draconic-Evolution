@@ -151,7 +151,7 @@ public class LaserBeamPhase extends ChargeUpPhase {
         super.clientTick();
         if (isCharged() && !soundInitialized) {
             soundInitialized = true;
-            SimpleSoundImpl.create(DESounds.BEAM.get(), SoundSource.HOSTILE)
+            SimpleSoundImpl.create(DESounds.BEAM.get(), SoundSource.HOSTILE, random)
                     .setPitchSupplier(() -> 0.5F + getBeamCharge())
                     .setStoppedSupplier(this::isEnded)
                     .setPos(guardian)
@@ -161,7 +161,7 @@ public class LaserBeamPhase extends ChargeUpPhase {
         }
         if (fireSecondary() && !secondarySoundInit) {
             secondarySoundInit = true;
-            SimpleSoundImpl.create(DESounds.BEAM.get(), SoundSource.HOSTILE)
+            SimpleSoundImpl.create(DESounds.BEAM.get(), SoundSource.HOSTILE, random)
                     .setPitchSupplier(() -> 1.5F + (getSecondaryCharge() / 2F))
                     .setStoppedSupplier(this::isEnded)
                     .setPos(guardian)

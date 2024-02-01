@@ -24,7 +24,6 @@ import net.minecraft.client.resources.language.I18n;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.client.settings.KeyModifier;
 import org.lwjgl.glfw.GLFW;
 

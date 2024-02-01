@@ -117,7 +117,7 @@ public class ClientPacketHandler implements ICustomPacketHandler.IClientPacketHa
     }
 
     private static void createParticle(Minecraft mc, double x, double y, double z, double motionX, double motionY, double motionZ) {
-        mc.particleEngine.createParticle(DEParticles.guardian_projectile, x, y, z, motionX, motionY, motionZ);
+        mc.particleEngine.createParticle(DEParticles.GUARDIAN_PROJECTILE.get(), x, y, z, motionX, motionY, motionZ);
 
 //        FireworkParticle.Spark particle = (FireworkParticle.Spark)mc.particles.addParticle(ParticleTypes.FIREWORK, x, y, z, motionX, motionY, motionZ);
 //        particle.canCollide = false;
@@ -155,7 +155,7 @@ public class ClientPacketHandler implements ICustomPacketHandler.IClientPacketHa
             double y = spawnPos.y + (mc.level.random.nextGaussian() - 0.5) * offset;
             double z = spawnPos.z + (mc.level.random.nextGaussian() - 0.5) * offset;
 
-            mc.level.addParticle(DEParticles.blink, x, y, z, vec.x * speed, vec.y * speed, vec.z * speed);
+            mc.level.addParticle(DEParticles.BLINK.get(), x, y, z, vec.x * speed, vec.y * speed, vec.z * speed);
         }
     }
 
@@ -190,7 +190,7 @@ public class ClientPacketHandler implements ICustomPacketHandler.IClientPacketHa
         if (mc.level == null) return;
         for (double d = 0; d < dist; d += 2) {
             Vector3 pos = MathUtils.interpolateVec3(source, target, ((d - 1) + mc.level.random.nextDouble() * 2) / dist);
-            mc.level.addParticle(DEParticles.guardian_beam, true, pos.x, pos.y, pos.z, power, 0, 0);
+            mc.level.addParticle(DEParticles.GUARDIAN_BEAM.get(), true, pos.x, pos.y, pos.z, power, 0, 0);
         }
     }
 

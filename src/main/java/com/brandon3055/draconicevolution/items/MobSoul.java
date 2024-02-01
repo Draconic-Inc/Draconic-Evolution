@@ -143,7 +143,7 @@ public class MobSoul extends ItemBCore {
     }
 
     public ItemStack getSoulFromEntity(Entity entity, boolean saveEntityData) {
-        ItemStack soul = new ItemStack(DEContent.mob_soul);
+        ItemStack soul = new ItemStack(DEContent.MOB_SOUL.get());
 
         String registryName = ForgeRegistries.ENTITY_TYPES.getKey(entity.getType()).toString();
         ItemNBTHelper.setString(soul, "EntityName", registryName);

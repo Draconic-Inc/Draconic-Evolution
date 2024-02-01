@@ -47,11 +47,11 @@ public class ItemCore extends Item {
                     return InteractionResult.FAIL;
                 }
                 ResourceLocation name = new ResourceLocation(id);
-                ItemStack soul = new ItemStack(DEContent.mob_soul);
-                DEContent.mob_soul.setEntity(name, soul);
+                ItemStack soul = new ItemStack(DEContent.MOB_SOUL.get());
+                DEContent.MOB_SOUL.get().setEntity(name, soul);
                 SpawnerTier tier = SpawnerTier.getTierFromCore(this);
 
-                ItemStack spawner = new ItemStack(DEContent.stabilized_spawner);
+                ItemStack spawner = new ItemStack(DEContent.STABILIZED_SPAWNER.get());
                 CompoundTag managedData = new CompoundTag();
                 spawner.getOrCreateTagElement(BlockBCore.BC_TILE_DATA_TAG).put(BlockBCore.BC_MANAGED_DATA_FLAG, managedData);
                 managedData.put("mob_soul", soul.serializeNBT());
@@ -68,6 +68,6 @@ public class ItemCore extends Item {
 
     @Override
     public boolean isFoil(ItemStack stack) {
-        return stack.getItem() == DEContent.core_chaotic || super.isFoil(stack);
+        return stack.getItem() == DEContent.CORE_CHAOTIC.get() || super.isFoil(stack);
     }
 }

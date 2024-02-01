@@ -3,8 +3,6 @@ package com.brandon3055.draconicevolution.entity.projectile;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.network.BCoreNetwork;
 import com.brandon3055.draconicevolution.DEConfig;
-import com.brandon3055.draconicevolution.api.damage.DraconicDamage;
-import com.brandon3055.draconicevolution.api.damage.DraconicIndirectEntityDamage;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.init.DEDamage;
 import com.google.common.collect.Lists;

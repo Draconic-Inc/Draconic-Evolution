@@ -61,10 +61,10 @@ public class Dislocator extends Item implements IHudItem {
             return target;
         }
 
-        BCoreNetwork.sendSound(target.level(), target.blockPosition(), DESounds.portal, SoundSource.PLAYERS, 0.1F, target.level().random.nextFloat() * 0.1F + 0.9F, false);
+        BCoreNetwork.sendSound(target.level(), target.blockPosition(), DESounds.PORTAL.get(), SoundSource.PLAYERS, 0.1F, target.level().random.nextFloat() * 0.1F + 0.9F, false);
         target = targetPos.teleport(target);
         Entity finalTarget = target;
-        DelayedTask.run(1, () -> BCoreNetwork.sendSound(finalTarget.level(), finalTarget.blockPosition(), DESounds.portal, SoundSource.PLAYERS, 0.1F, finalTarget.level().random.nextFloat() * 0.1F + 0.9F, false));
+        DelayedTask.run(1, () -> BCoreNetwork.sendSound(finalTarget.level(), finalTarget.blockPosition(), DESounds.PORTAL.get(), SoundSource.PLAYERS, 0.1F, finalTarget.level().random.nextFloat() * 0.1F + 0.9F, false));
         return target;
     }
 
@@ -176,7 +176,7 @@ public class Dislocator extends Item implements IHudItem {
 
     @Override
     public boolean isValidRepairItem(ItemStack toRepair, ItemStack repair) {
-        return repair.getItem() == DEContent.ingot_draconium;
+        return repair.getItem() == DEContent.INGOT_DRACONIUM.get();
     }
 
     @Override
@@ -194,7 +194,7 @@ public class Dislocator extends Item implements IHudItem {
     }
 
     public static void onAnvilUpdate(AnvilUpdateEvent event) {
-        if (event.getLeft().getItem() == DEContent.dislocator && event.getRight().getItem() == DEContent.ingot_draconium && event.getLeft().getDamageValue() > 0) {
+        if (event.getLeft().getItem() == DEContent.DISLOCATOR.get() && event.getRight().getItem() == DEContent.INGOT_DRACONIUM.get() && event.getLeft().getDamageValue() > 0) {
             event.setOutput(event.getLeft().copy());
             event.getOutput().setDamageValue(0);
             event.setCost(1);

@@ -79,7 +79,7 @@ public abstract class ChargeUpPhase extends Phase {
                     int threshold = 100*100;
                     int breakAway = 1000*1000; //The player can still teleport away / out of the dimension
 
-                    if (currentDist > threshold && currentDist < breakAway && lastPos.distanceToSqr(center) <= threshold && player.level().dimension().equals(guardian.level.dimension())) {
+                    if (currentDist > threshold && currentDist < breakAway && lastPos.distanceToSqr(center) <= threshold && player.level().dimension().equals(guardian.level().dimension())) {
                         TeleportUtils.teleportEntity(player, player.level().dimension(), lastPos.x, lastPos.y, lastPos.z);
                     }
 
@@ -147,7 +147,7 @@ public abstract class ChargeUpPhase extends Phase {
                 double z = guardian.getZ() + Mth.cos(randDir) * randDist;
                 double y = guardian.getY() - 8 - random.nextInt(32);
                 Vector3 motion = new Vector3(guardian.getX(), y, guardian.getZ()).subtract(x, y, z).normalize().multiply((1 + random.nextDouble()) * getChargeProgress());
-                guardian.level().addParticle(DEParticles.guardian_cloud, true, x, y, z, motion.x, motion.y, motion.z);
+                guardian.level().addParticle(DEParticles.GUARDIAN_CLOUD.get(), true, x, y, z, motion.x, motion.y, motion.z);
             }
 
             Vector3 center = new Vector3(guardian.getX(), guardian.getY() - 32, guardian.getZ());
@@ -191,7 +191,7 @@ public abstract class ChargeUpPhase extends Phase {
                 double y = guardian.getY() - random.nextInt(35);
                 double z = guardian.getZ() - 95 + random.nextInt(95*2);
                 if (guardian.distanceToSqr(x, y, z) < 100 * 100) {
-                    guardian.level().addParticle(DEParticles.guardian_cloud, true, x, y, z, 0, 0, 0);
+                    guardian.level().addParticle(DEParticles.GUARDIAN_CLOUD.get(), true, x, y, z, 0, 0, 0);
                 }
             }
         }

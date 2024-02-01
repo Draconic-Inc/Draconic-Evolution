@@ -13,7 +13,6 @@ import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.integration.ModHelper;
 import com.brandon3055.draconicevolution.inventory.ContainerDETile;
-import com.brandon3055.draconicevolution.inventory.GuiLayoutFactories;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
@@ -21,7 +20,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -37,7 +35,6 @@ import net.minecraft.world.item.enchantment.EnchantmentInstance;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.StringUtils;
@@ -98,7 +95,7 @@ public class TileDisenchanter extends TileBCore implements MenuProvider, IIntera
             int cost = getCostInLevels(e, lvl);
 
             if (!client.getAbilities().instabuild && cost > client.experienceLevel) {
-                client.sendSystemMessage(Component.translatable("disenchanter." + DraconicEvolution.MODID + ".not_enough_levels", cost).withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                client.sendSystemMessage(Component.translatable("disenchanter." + DraconicEvolution.MODID + ".not_enough_levels", cost).withStyle(ChatFormatting.RED));
                 return;
             }
 

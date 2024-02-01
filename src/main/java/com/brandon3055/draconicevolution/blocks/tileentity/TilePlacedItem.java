@@ -30,7 +30,6 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.items.CapabilityItemHandler;
 
 import java.util.ArrayList;
 import java.util.List;

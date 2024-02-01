@@ -7,7 +7,6 @@ import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.PropertyD
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.INBTSerializable;
 

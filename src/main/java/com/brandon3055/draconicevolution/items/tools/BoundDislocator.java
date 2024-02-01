@@ -16,7 +16,6 @@ import net.minecraft.Util;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
@@ -24,6 +23,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -50,7 +50,7 @@ public class BoundDislocator extends Dislocator {
 
     @Override
     public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> list) {
-        if (this.allowdedIn(group) && (this == DEContent.dislocator_player_unbound || this == DEContent.dislocator_p2p_unbound)) {
+        if (this.allowdedIn(group) && (this == DEContent.DISLOCATOR_PLAYER_UNBOUND.get() || this == DEContent.DISLOCATOR_P2P_UNBOUND.get())) {
             list.add(new ItemStack(this));
         }
     }
@@ -70,9 +70,9 @@ public class BoundDislocator extends Dislocator {
         if (entity.getAge() >= 0) {
             entity.setExtendedLifetime();
         }
-        if (entity.level instanceof ServerLevel && TimeKeeper.getServerTick() % 20 == 0) {
+        if (entity.level() instanceof ServerLevel && TimeKeeper.getServerTick() % 20 == 0) {
             if (isValid(stack) && !isPlayer(stack)) {
-                DislocatorSaveData.updateLinkTarget(entity.level, stack, new GroundTarget(entity));
+                DislocatorSaveData.updateLinkTarget(entity.level(), stack, new GroundTarget(entity));
             }
         }
         return false;
@@ -83,7 +83,7 @@ public class BoundDislocator extends Dislocator {
         if (player.level().isClientSide) {
             return true;
         }
-        TargetPos location = getTargetPos(stack, player.level);
+        TargetPos location = getTargetPos(stack, player.level());
         if (location == null) {
             if (isPlayer(stack)) {
                 player.sendMessage(Component.translatable("dislocate.draconicevolution.bound.cant_find_player").withStyle(ChatFormatting.RED), Util.NIL_UUID);
@@ -97,14 +97,14 @@ public class BoundDislocator extends Dislocator {
             return true;
         }
 
-        BCoreNetwork.sendSound(player.level, player.blockPosition(), DESounds.portal, SoundSource.PLAYERS, 0.1F, player.level().random.nextFloat() * 0.1F + 0.9F, false);
+        BCoreNetwork.sendSound(player.level(), player.blockPosition(), DESounds.PORTAL.get(), SoundSource.PLAYERS, 0.1F, player.level().random.nextFloat() * 0.1F + 0.9F, false);
 
         location.setPitch(player.getXRot());
         location.setYaw(player.getYRot());
-        notifyArriving(stack, player.level, entity);
+        notifyArriving(stack, player.level(), entity);
         location.teleport(entity);
 
-        BCoreNetwork.sendSound(player.level, player.blockPosition(), DESounds.portal, SoundSource.PLAYERS, 0.1F, player.level().random.nextFloat() * 0.1F + 0.9F, false);
+        BCoreNetwork.sendSound(player.level(), player.blockPosition(), DESounds.PORTAL.get(), SoundSource.PLAYERS, 0.1F, player.level().random.nextFloat() * 0.1F + 0.9F, false);
         return true;
     }
 
@@ -115,7 +115,7 @@ public class BoundDislocator extends Dislocator {
             return new InteractionResultHolder<>(InteractionResult.PASS, stack);
         }
 
-        if (stack.getItem() == DEContent.dislocator_p2p_unbound) {
+        if (stack.getItem() == DEContent.DISLOCATOR_P2P_UNBOUND.get()) {
             UUID linkID = UUID.randomUUID();
             ItemStack boundA = createP2PDislocator(linkID);
             ItemStack boundB = createP2PDislocator(linkID);
@@ -123,8 +123,8 @@ public class BoundDislocator extends Dislocator {
             InventoryUtils.givePlayerStack(player, boundA);
             InventoryUtils.givePlayerStack(player, boundB);
             return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
-        } else if (stack.getItem() == DEContent.dislocator_player_unbound) {
-            ItemStack bound = new ItemStack(DEContent.dislocator_player);
+        } else if (stack.getItem() == DEContent.DISLOCATOR_PLAYER_UNBOUND.get()) {
+            ItemStack bound = new ItemStack(DEContent.DISLOCATOR_PLAYER.get());
             setPlayerID(bound, player.getUUID());
             setDislocatorId(stack, UUID.randomUUID());
             ItemNBTHelper.setString(bound, "player_name", player.getName().getString());
@@ -142,23 +142,23 @@ public class BoundDislocator extends Dislocator {
                 return new InteractionResultHolder<>(InteractionResult.PASS, stack);
             }
 
-            BCoreNetwork.sendSound(player.level, player.blockPosition(), DESounds.portal, SoundSource.PLAYERS, 0.1F, player.level().random.nextFloat() * 0.1F + 0.9F, false);
+            BCoreNetwork.sendSound(player.level(), player.blockPosition(), DESounds.PORTAL.get(), SoundSource.PLAYERS, 0.1F, player.level().random.nextFloat() * 0.1F + 0.9F, false);
             location.setPitch(player.getXRot());
             location.setYaw(player.getYRot());
-            notifyArriving(stack, player.level, player);
+            notifyArriving(stack, player.level(), player);
             location.teleport(player);
-            BCoreNetwork.sendSound(player.level, player.blockPosition(), DESounds.portal, SoundSource.PLAYERS, 0.1F, player.level().random.nextFloat() * 0.1F + 0.9F, false);
+            BCoreNetwork.sendSound(player.level(), player.blockPosition(), DESounds.PORTAL.get(), SoundSource.PLAYERS, 0.1F, player.level().random.nextFloat() * 0.1F + 0.9F, false);
 
             return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
         }
     }
 
     public static boolean isPlayer(ItemStack stack) {
-        return stack.getItem() == DEContent.dislocator_player;
+        return stack.getItem() == DEContent.DISLOCATOR_PLAYER.get();
     }
 
     public static boolean isP2P(ItemStack stack) {
-        return stack.getItem() == DEContent.dislocator_p2p;
+        return stack.getItem() == DEContent.DISLOCATOR_P2P.get();
     }
 
     public static UUID getPlayerID(ItemStack stack) {
@@ -196,7 +196,7 @@ public class BoundDislocator extends Dislocator {
     }
 
     private static ItemStack createP2PDislocator(UUID linkID) {
-        ItemStack stack = new ItemStack(DEContent.dislocator_p2p);
+        ItemStack stack = new ItemStack(DEContent.DISLOCATOR_P2P.get());
         setLinkId(stack, linkID);
         setDislocatorId(stack, UUID.randomUUID());
         return stack;
@@ -237,9 +237,9 @@ public class BoundDislocator extends Dislocator {
     @OnlyIn(Dist.CLIENT)
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-        if (stack.getItem() == DEContent.dislocator_p2p_unbound) {
+        if (stack.getItem() == DEContent.DISLOCATOR_P2P_UNBOUND.get()) {
             tooltip.add(Component.translatable("dislocate.draconicevolution.bound.click_to_link").withStyle(ChatFormatting.GREEN));
-        } else if (stack.getItem() == DEContent.dislocator_player_unbound) {
+        } else if (stack.getItem() == DEContent.DISLOCATOR_PLAYER_UNBOUND.get()) {
             tooltip.add(Component.translatable("dislocate.draconicevolution.bound.click_to_link_self").withStyle(ChatFormatting.GREEN));
         } else {
             if (isPlayer(stack)) {
@@ -262,6 +262,6 @@ public class BoundDislocator extends Dislocator {
 
     @Override
     public boolean canBeHurtBy(DamageSource source) {
-        return source == DamageSource.OUT_OF_WORLD;
+        return source.is(DamageTypes.FELL_OUT_OF_WORLD);
     }
 }
